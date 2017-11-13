@@ -6,6 +6,8 @@ import * as types from '../../types';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ConstService } from '../../const.service';
 import { SessionService } from '../../session.service';
+import { ActivatedRoute } from '@angular/router';
+
 
 @Component({
   selector: 'app-project-list',
@@ -18,6 +20,8 @@ export class ProjectListComponent implements OnInit {
 
   search: string;
   currentPage = 0;
+  author = '';
+  isProjectsPage = false;
 
   constructor(
     private cp: CreateProjectDialogService,
@@ -26,7 +30,11 @@ export class ProjectListComponent implements OnInit {
     private http: HttpClient,
     private _const: ConstService,
     private ss: SessionService,
+    private route: ActivatedRoute,
   ) {
+    this.author = this.route.snapshot.params['author'];
+    this.isProjectsPage = this.router.isActive('projects', false);
+
    }
 
   ngOnInit(
