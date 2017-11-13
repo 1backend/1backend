@@ -1,0 +1,25 @@
+@media (min-width: 900px) {
+  .search {
+    display: flex;
+  }
+}
+
+.author-link {
+  display: inline-block;
+  color: #2979FF;
+  text-decoration: none;
+}
+
+.author-link::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 2px;
+  background: #1565C0;
+  transition: width .3s;
+}
+
+.author-link:hover::after {
+  width: 100%;
+
+}

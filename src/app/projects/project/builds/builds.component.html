@@ -1,0 +1,33 @@
+<mat-card *ngFor="let build of project.Builds.slice(this.currentPage * 10, (this.currentPage + 1) * 10)" style="margin-bottom: 1em; padding-bottom: 0.5em;">
+  <mat-card-title class="build-title">
+    <div fxLayout="row wrap" fxLayoutAlign="space-between">
+      <div fxFlex="1 1 40%">
+        <span class="success" *ngIf="build.Success">
+          <mat-icon>done</mat-icon>
+        </span>
+        <span class="failed" *ngIf="!build.InProgress && !build.Success" align="start">
+          <mat-icon>close</mat-icon>
+        </span>
+        <span class="inprogress" *ngIf="build.InProgress">
+          <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value" [diameter]="24" [strokeWidth]="3"></mat-progress-spinner>
+        </span> {{build.CreatedAt | amTimeAgo}} <span style="color: #999">({{build.Id}})</span>
+      </div>
+      <div fxFlex="1 1 40%" align="end">
+        <button *ngIf="!build.Selected" mat-button style="min-width: 0%;" type="button" (click)="reveal(build)">
+          <mat-icon aria-hidden="false">keyboard_arrow_down</mat-icon>
+        </button>
+        <button [hidden]="!build.Selected" mat-button style="min-width: 0%;" (click)="reveal(build)">
+          <mat-icon aria-hidden="false">keyboard_arrow_up</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-card-title>
+  <div *ngIf="build.Selected">
+    <ace-editor class="editor" [text]="build.Output" [mode]="'sql'" style="min-height: 200px; width:100%;
+  overflow: auto;" #editor></ace-editor>
+  </div>
+</mat-card>
+<span *ngIf="project.Builds.length > 10">
+  <mat-paginator [length]="project.Builds.length" [pageSize]="10" [pageSizeOptions]="[10]" (page)="pageChanged($event)">
+  </mat-paginator>
+</span>

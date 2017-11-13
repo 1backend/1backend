@@ -1,0 +1,153 @@
+<div fxLayout="row wrap" fxLayoutAlign="space-between" style="margin-top: 1em;">
+  <div fxFlex="1 1 {{rightWidth}}%">
+    <mat-card *ngIf="user.Nick === project.Author" style="padding-top: 0.1em;">
+      <mat-tab-group>
+        <mat-tab label="ReadMe">
+          <markdown-to-html [data]="project.ReadMe"></markdown-to-html>
+        </mat-tab>
+        <mat-tab label="Edit">
+          <ace-editor class="editor" [(ngModel)]="project.ReadMe" text="Your MD FILE" [mode]="'sql'" style="min-height: 200px; width:100%;
+                    overflow: auto;" #editor>
+          </ace-editor>
+          <button mat-raised-button (click)="save()" style="margin-top: 2em; color:#EEEEEE;" color="primary">Save</button>
+        </mat-tab>
+      </mat-tab-group>
+
+    </mat-card>
+
+    <mat-card *ngIf="!(user.Nick === project.Author)" style="padding-top: 0.1em;">
+      <markdown-to-html [data]="project.ReadMe"></markdown-to-html>
+    </mat-card>
+
+    <mat-card *ngIf="user.Nick === project.Author">
+      <div fxLayout="row wrap" fxLayoutAlign="space-between">
+
+        <div fxFlex="1 1 100%">
+          <mat-tab-group>
+
+            <mat-tab label="SQL schema">
+
+              <ace-editor class="editor" text="CREATE TABLE" [mode]="'sql'" style="min-height: 200px; width:100%;
+                      overflow: auto;" #editor></ace-editor>
+              <button (click)="saveSql()" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
+              <button (click)="goSql()" mat-raised-button style="margin-top: 1em; color: #EEEEEE;" color="primary">SQL console</button>
+            </mat-tab>
+
+            <mat-tab label="Imports">
+              <ace-editor class="editor" text="{{project.Imports}}" [mode]="mode" style="min-height: 200px; width:100%;
+                overflow: auto;" #editor></ace-editor>
+                <button (click)="save()" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
+            </mat-tab>
+
+            <mat-tab label="package.json" *ngIf="project.Mode === 'nodejs'">
+              <ace-editor class="editor" text="{{project.Packages}}" [mode]="'json'" style="min-height: 200px; width:100%;
+                overflow: auto;" #editor></ace-editor>
+                <button (click)="save()" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
+            </mat-tab>
+
+          </mat-tab-group>
+        </div>
+
+
+      </div>
+    </mat-card>
+
+    <mat-card *ngIf="user && user.Nick === project.Author">
+      <mat-card-title>
+        Add new endpoint
+      </mat-card-title>
+      <div class="example-container">
+
+        <mat-form-field>
+          <mat-select [(ngModel)]="newEndpoint.Method" placeholder="Method">
+            <mat-option selected value="GET">GET</mat-option>
+            <mat-option value="POST">POST</mat-option>
+            <mat-option value="PUT">PUT</mat-option>
+            <mat-option value="DELETE">DELETE</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input [(ngModel)]="newEndpoint.Url" matInput placeholder="Path (ie. /user)">
+        </mat-form-field>
+
+        <ace-editor class="editor " [(text)]="newEndpoint.Code" [mode]="project.Mode" style="min-height: 200px; width:100%;
+        overflow: auto;" #editor></ace-editor>
+
+      </div>
+      <button (click)="add()" mat-raised-button style="margin-top: 1em; color: #EEEEEE" color="primary">Add</button>
+    </mat-card>
+  </div>
+  <div fxFlex="1 1 {{leftWidth}}%">
+    <mat-form-field class="example-full-width">
+      <input matInput placeholder="Search in endpoints" [(ngModel)]="search" value="e.g. Demo project" style="min-width: 150px;"
+        fxFlex="1 1 200%">
+    </mat-form-field>
+
+    <mat-card *ngFor="let endpoint of project.Endpoints.slice(this.currentPage * 10, (this.currentPage + 1) * 10) | FilterPipe: search"
+      style="margin-bottom: 1em; padding-bottom: 0.5em;">
+      <div fxLayout="row wrap" fxLayoutAlign="space-between">
+        <div fxFlex="1 1 67%">
+          <mat-card-title class="endpoint-title">
+            <div class="method">{{endpoint.Method}}</div> {{endpoint.Url}}</mat-card-title>
+        </div>
+        <div fxFlex="1 1 33%" align="end" *ngIf="!endpoint.Selected">
+          <button mat-button style="min-width: 0%;" type="button" (click)="reveal(endpoint)">
+            <mat-icon aria-hidden="false">keyboard_arrow_down</mat-icon>
+          </button>
+        </div>
+        <div fxFlex="1 1 33%" align="end" *ngIf="endpoint.Selected">
+          <button [hidden]="isLeftFullScreen()" mat-button style="min-width: 0%;" (click)="setLeftFullScreen()">
+            <mat-icon aria-hidden="false">fullscreen</mat-icon>
+          </button>
+          <button [hidden]="!isLeftFullScreen()" mat-button style="min-width: 0%;" (click)="smallScreen()">
+            <mat-icon aria-hidden="false">fullscreen_exit</mat-icon>
+          </button>
+          <button mat-button style="min-width: 0%;" type="button" (click)="delete(endpoint)">
+            <mat-icon aria-hidden="false">clear</mat-icon>
+          </button>
+          <button mat-button style="min-width: 0%;" (click)="reveal(endpoint)">
+            <mat-icon aria-hidden="false">keyboard_arrow_up</mat-icon>
+          </button>
+        </div>
+      </div>
+      <span [hidden]="!endpoint.Selected">
+        <ng-container *ngIf="user && user.Nick === project.Author">
+          <ace-editor class="editor" [(text)]="endpoint.Code" [mode]="project.Mode" style="min-height: 200px; width:100%;
+overflow: auto;" #editor></ace-editor>
+          <div>
+            <div style="margin-top: 1em;" class="example-container">
+              <mat-form-field>
+                <mat-select [(ngModel)]="endpoint.Method" placeholder="Method">
+                  <mat-option value="GET">GET</mat-option>
+                  <mat-option value="POST">POST</mat-option>
+                  <mat-option value="PUT">PUT</mat-option>
+                  <mat-option value="DELETE">DELETE</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+
+              <mat-form-field class="example-full-width">
+                <input matInput placeholder="Path (ie. /user)" [(ngModel)]="endpoint.Url">
+              </mat-form-field>
+            </div>
+            <button (click)="save()" mat-raised-button style="margin-top: 1em; margin-bottom: 1em; color: #EEEEEE;" color="primary">Save</button>
+          </div>
+        </ng-container>
+
+        <ace-editor class="editor" text="curl -X{{endpoint.Method}} http://1backend.com:8883/app/{{project.Author}}/{{project.Name}}{{endpoint.Url}}"
+          mode="sh" style="min-height: 2em; margin-top: 1em; width:100%;
+        overflow: auto;"></ace-editor>
+      </span>
+    </mat-card>
+    <span *ngIf="project.Endpoints.length > 10">
+      <mat-paginator [length]="project.Endpoints.length" [pageSize]="10" [pageSizeOptions]="[10]" (page)="pageChanged($event)">
+      </mat-paginator>
+    </span>
+  </div>
+</div>
+
+<!--
+<textarea style="font-family:Times New Roman; color:#040505; font-size: 20px;" fxLayout="row wrap" fxLayoutAlign="space-between" fxFlex="1 1 100%" rows="25" cols="300px">
+
+</textarea> -->

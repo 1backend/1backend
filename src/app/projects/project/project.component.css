@@ -1,0 +1,33 @@
+.success {
+  color: green;
+}
+.failed {
+  color: red;
+}
+.icons {
+  margin-right: 0.2em;
+}
+
+.Label--outline {
+  font-size: 14px;
+  margin-top: -1px;
+  margin-bottom: -1px;
+  font-weight: 400;
+  color: #586069;
+  background-color: transparent;
+  border: 1px solid rgba(27,31,35,0.15);
+  box-shadow: none;
+  border-radius: 3px;
+}
+
+mat-raised-button {
+  padding-left: -2em !important;
+}
+
+.mat-tab-body-wrapper {
+  color: white;
+  background-color: red;
+}
+.mat-tab-label.mat-tab-label-active {
+  background-color: #3f51b5;
+}

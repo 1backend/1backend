@@ -1,0 +1,70 @@
+<div *ngIf="!userFound">
+  <mat-card align="center">
+    <div>
+    <h1>User not found</h1>
+  </div>
+  <div>
+    <a href="/projects">
+      Navigate to search
+    </a>
+  </div>
+  </mat-card>
+</div>
+<div flexLayout="row" fxLayoutAlign="center" style="margin-top: 2em;" *ngIf="userFound">
+  <div fxFlex="1 1 25%" *ngIf="!saved">
+    <div>
+      <div>
+        <mat-form-field class="example-full-width" style="width: 100%">
+          <input matInput placeholder="Link to your avatar (optional)" [(ngModel)]="user.AvatarLink" />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field style="width: 100%">
+          <input matInput placeholder="Fullname (optional)" [(ngModel)]="user.Name" />
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field style="width: 100%">
+          <input matInput placeholder="Nickname" [(ngModel)]="user.Nick"/>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field style="width: 100%;">
+          <input matInput placeholder="Email" [(ngModel)]="user.Email" />
+        </mat-form-field>
+      </div>
+      <div class="button" align="center">
+        <button mat-raised-button (click)="save()" color="accent">Save</button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="saved" fxFlex="1 1 25%" fxFlex.lt-lg="1 1 30%" [ngStyle.lt-lg]="{'min-width': '200px'}" style="margin-left: auto">
+    <div style="padding-bottom: 2em;" *ngIf="saved && us.user.AvatarLink">
+      <img src="{{user.AvatarLink}}" class="img" align="middle">
+    </div>
+    <div *ngIf="saved && !us.user.AvatarLink" style="padding-bottom: 2em;">
+      <img src="/assets/nophoto.jpg" class="img" align="middle">
+    </div>
+    <div readonly>
+      <font size="7">
+        <b>{{user.Name}}</b>
+      </font>
+    </div>
+    <div style="padding-bottom: 0em">
+      <font size="4" color="green">
+        <i>{{user.Nick}}</i>
+      </font>
+    </div>
+    <div style="padding-top: 1.2em;" readonly>
+      <font size="4">{{user.Email}}</font>
+    </div>
+    <div align="center" style="padding-top: 2em;" *ngIf="author === us.user.Nick">
+      <button mat-raised-button class="button" color="accent" (click)="edit()">Edit</button>
+    </div>
+  </div>
+  <div fxFlex="1 1 75%" fxFlex.lt-lg="1 1 70%" class="project-list" style="margin-bottom: 1em; padding-top: 0em" >
+    <mat-card>
+     <app-project-list [projects]="projects"></app-project-list>
+    </mat-card>
+  </div>
+</div>

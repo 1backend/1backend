@@ -1,0 +1,25 @@
+.editor {
+    font-size: 16px;
+}
+
+.success {
+  display: inline;
+  color: green;
+}
+.failed {
+  display: inline;
+  color: red;
+}
+
+[hidden] {
+  display: none;
+}
+.spinner {
+  display: inline;
+  padding-left: 1em;
+  margin-right: 0.2em;
+}
+
+.build-title {
+  font-size: 1.2em;
+}

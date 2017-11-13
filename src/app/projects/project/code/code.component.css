@@ -1,0 +1,38 @@
+.editor {
+    font-size: 16px;
+}
+
+.example-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.example-full-width {
+    width: 100%
+}
+
+.example-container > * {
+    width: 100%;
+}
+
+[hidden] {
+    display: none;
+}
+
+.method {
+    display: inline-block;
+    width: 100px;
+    color: #999;
+}
+
+mat-card {
+    margin-bottom: 1em;
+}
+
+.save-button {
+    background: #388E3C;
+}
+
+.endpoint-title {
+    font-size: 1.2em;
+}

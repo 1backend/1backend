@@ -1,0 +1,54 @@
+<mat-card style="padding: 0" class="mat-elevation-z2">
+  <mat-toolbar color="primary" class="header">
+    <span style="cursor: pointer;" (click)="home()">
+      <img style="margin-left: 1em; margin-right: 1em; margin-top: 10px; height: 40px; width: 40px;" src="/assets/bam.png" />
+    </span>
+
+    <span>
+      <button mat-button>
+        Get started
+      </button>
+      <button mat-button>
+        Features
+      </button>
+      <a mat-button href="#pricing">
+        Pricing
+      </a>
+      <button mat-button (click)="discoverProjects()">
+        Discover projects
+      </button>
+    </span>
+
+    <span style="flex: 1 1 auto"></span>
+
+    <span>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="viewProfile()">
+          <mat-icon style="color: #1E88E5">assignment_ind</mat-icon>
+          <span>View profile</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon style="color: #F44336">power_settings_new</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
+
+      <button *ngIf="user && user.Id" mat-button [matMenuTriggerFor]="menu">
+        <span>
+          {{user.Nick}}
+        </span>
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      </button>
+
+      <ng-container *ngIf="ss.getToken().length === 0">
+        <button mat-button (click)="login()">
+          Login
+        </button>
+        <button style="color: #2C2C2C;" color="accent" mat-raised-button (click)="register()">
+          Register
+        </button>
+      </ng-container>
+    </span>
+
+  </mat-toolbar>
+</mat-card>

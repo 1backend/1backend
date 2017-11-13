@@ -1,0 +1,6 @@
+.example-form {
+  width: 100%;
+}
+.mat-tab-label {
+  min-width: 50% !important;
+}

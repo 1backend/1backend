@@ -1,0 +1,62 @@
+
+<div fxLayout="row" fxLayoutAlign="center" class="new-project" style="font-family: 'Roboto Light';">
+  <div style="text-align: center" fxFlex="1 1 25%">
+    <mat-card-title style="margin-bottom: 1em">
+      Project type
+    </mat-card-title>
+    <ng-container *ngFor="let language of languages">
+      <mat-card (click)="resetLanguages(); language.Selected = !language.Selected" [style.background]="language.Selected ? '#FFD740':'white'"
+        class="selectable" style="font-family: 'Roboto Light';">
+        <div fxLayout="row wrap" [ngClass]="{'selected': language.Selected}" fxLayoutAlign="center center">
+          <div fxFlex="1 1 30%">
+            <i [ngStyle]="{'color': language.DisplayColor}" class="cbp-ig-icon devicon-{{language.Name}}-plain"></i>
+          </div>
+          <div fxFlex="1 1 30%">
+            {{language.DisplayName}}
+          </div>
+        </div>
+      </mat-card>
+    </ng-container>
+  </div>
+  <div fxFlex="1 1 2.5%"></div>
+  <div fxFlex="0 0 1px" class="separator"></div>
+  <div fxFlex="1 1 2.5%"></div>
+  <div fxFlex="1 1 25%" style="text-align: center">
+    <mat-card-title style="margin-bottom: 1em">
+      Dependencies
+    </mat-card-title>
+    <ng-container *ngFor="let dep of dependencies">
+
+      <mat-card (click)="dep.Selected = !dep.Selected" [style.background]="dep.Selected ? '#FFD740':'white'" class="selectable"
+        style="font-family: 'Roboto Light';">
+
+        <div [ngClass]="{'selected': dep.Selected}" style="padding: 0em;" fxLayout="row wrap" fxLayoutAlign="center center">
+          <div fxFlex="1 1 30%">
+            <i class="cbp-ig-icon devicon-{{dep.Type}}-plain"></i>
+          </div>
+          <div fxFlex="1 1 30%">
+            {{dep.DisplayName}}
+          </div>
+        </div>
+
+      </mat-card>
+    </ng-container>
+  </div>
+  <div fxFlex="1 1 2.5%"></div>
+  <div fxFlex="0 0 1px" class="separator"></div>
+  <div fxFlex="1 1 2.5%"></div>
+  <div fxFlex="1 1 25%" style="text-align: center">
+    <mat-card-title style="margin-bottom: 1em">
+      Let's begin
+    </mat-card-title>
+    <div class="example-container">
+      <mat-form-field>
+        <input matInput placeholder="Name" [formControl]="projectNameControl" [(ngModel)]="name">
+        <mat-error *ngIf="projectNameControl.hasError('pattern')">
+          Project name must contain only lowercase letters
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <button (click)="create()" mat-raised-button color="primary" style="margin-top: 1em;">Create</button>
+  </div>
+</div>

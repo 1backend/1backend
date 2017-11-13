@@ -1,0 +1,60 @@
+<div fxFlexLayout="row" fxLayoutAlign="center">
+  <div fxFlex="1 1 70%">
+    <span>
+      <a href="{{author}}/{{projectName}}/issues/" style="color: black;margin-top: 3em;">
+        <mat-icon style="font-size: 30px; padding-top: 0.3em;">keyboard_backspace</mat-icon>
+      </a>
+    </span>
+    <mat-card style="margin-top: 0.3em;">
+      <h1 style="color: #2196F3;">{{issue.Title}}</h1>
+      issue opened {{issue.CreatedAt | amTimeAgo}} by {{issuerComment.User?.Nick}}
+    </mat-card>
+    <mat-card style="margin-top: 0.5em;">
+      <mat-card-header>
+        <mat-card-title>
+            <a style="color: black;" href="/{{issuerComment.User?.Nick}}">{{issuerComment.User?.Nick}}</a>
+        </mat-card-title>
+        <mat-card-subtitle>{{issuerComment.Content && issuerComment.UpdatedAt | amTimeAgo}}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content style="padding: 1em;">
+        <font style="font-size: 16px;color: rgb(36,41,46);line-height: 21px;">{{issuerComment.Content}}</font>
+      </mat-card-content>
+    </mat-card>
+    <div *ngIf="issue.Comments && issue.Comments.length > 0">
+      <mat-card *ngFor="let c of issue.Comments" style="margin-top: 0.5em;">
+        <mat-card-header>
+          <mat-card-title>
+            <a style="color: black;" href="/{{c.User?.Nick}}">{{c.User?.Nick}}</a>
+          </mat-card-title>
+          <mat-card-subtitle>{{c.Content && c.UpdatedAt | amTimeAgo}}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content style="padding: 1em;">
+          <font style="font-size: 16px;color: rgb(36,41,46);line-height: 21px;">{{c.Content}}</font>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div>
+      <mat-card style="margin-top: 2em; padding-top: 0.5em; margin-bottom: 0.5em;">
+        <mat-card-title>
+        </mat-card-title>
+        <div fxLayout="row">
+          <div fxFlex="1 1 92.5%">
+            <h3>Comment</h3>
+          </div>
+        </div>
+        <div>
+          <textarea name="comment" [(ngModel)]="commentContent" style="font-family:Times New Roman; color:#040505 ; font-size: 20px;"
+            fxLayout="row wrap" fxLayoutAlign="space-between" fxFlex="1 1 100%" rows="10" cols="300px">
+</textarea>
+        </div>
+        <div style="margin-top: 2em; padding-top: 0.5em">
+          <button mat-raised-button style="background-color: rgb(0,192,66);" (click)="addComment()">
+            <font color="white">
+              <b>Comment</b>
+            </font>
+          </button>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+<base href="/">
+<simple-notifications [options]="options"></simple-notifications>
+
+<div *ngIf="router.url !== '/' && router.url !== '/#pricing'; else notcondition">
+    <app-header></app-header>
+    <div style="width: 75%; margin: 0 auto">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+<ng-template style="height: 100%" #notcondition>
+    <router-outlet></router-outlet>
+</ng-template>
