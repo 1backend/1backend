@@ -20,6 +20,7 @@ $my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
 
 html, body {
   background: #F5F5F5;
+  background-image: url('assets/brushed.png');
   padding: 0;
   margin: 0;
   width: 100%;
