@@ -14,8 +14,8 @@ import (
 	"github.com/jinzhu/gorm"
 	httpr "github.com/julienschmidt/httprouter"
 
-	"github.com/crufter/1backend/backend/domain"
-	"github.com/crufter/1backend/backend/endpoints"
+	"github.com/1backend/1backend/backend/domain"
+	"github.com/1backend/1backend/backend/endpoints"
 )
 
 type Handlers struct {

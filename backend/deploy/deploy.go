@@ -13,8 +13,8 @@ import (
 	"github.com/iancoleman/strcase"
 	"github.com/jinzhu/gorm"
 
-	"github.com/crufter/1backend/backend/domain"
-	tp "github.com/crufter/1backend/backend/tech-pack"
+	"github.com/1backend/1backend/backend/domain"
+	tp "github.com/1backend/1backend/backend/tech-pack"
 )
 
 type Deployer struct {

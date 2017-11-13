@@ -3,7 +3,7 @@ package endpoints
 import (
 	"time"
 
-	"github.com/crufter/1backend/backend/domain"
+	"github.com/1backend/1backend/backend/domain"
 )
 
 func (e Endpoints) CreateIssue(iss *domain.Issue) error {

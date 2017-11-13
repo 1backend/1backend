@@ -15,8 +15,8 @@ import (
 	"github.com/jinzhu/gorm"
 	httpr "github.com/julienschmidt/httprouter"
 
-	"github.com/crufter/1backend/backend/domain"
-	"github.com/crufter/1backend/backend/state"
+	"github.com/1backend/1backend/backend/domain"
+	"github.com/1backend/1backend/backend/state"
 )
 
 type Proxy struct {

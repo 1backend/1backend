@@ -3,9 +3,9 @@ package endpoints
 import (
 	"time"
 
-	"github.com/crufter/1backend/backend/deploy"
-	"github.com/crufter/1backend/backend/domain"
-	tp "github.com/crufter/1backend/backend/tech-pack"
+	"github.com/1backend/1backend/backend/deploy"
+	"github.com/1backend/1backend/backend/domain"
+	tp "github.com/1backend/1backend/backend/tech-pack"
 )
 
 func (e Endpoints) CreateProject(proj *domain.Project) error {

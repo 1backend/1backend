@@ -3,7 +3,7 @@ package typescriptpack
 import (
 	"text/template"
 
-	"github.com/crufter/1backend/backend/domain"
+	"github.com/1backend/1backend/backend/domain"
 )
 
 func NewPack(project *domain.Project) TypeScriptPack {

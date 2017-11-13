@@ -10,8 +10,8 @@ import (
 	httpr "github.com/julienschmidt/httprouter"
 	"github.com/rs/cors"
 
-	"github.com/crufter/1backend/backend/handlers"
-	"github.com/crufter/1backend/backend/proxy"
+	"github.com/1backend/1backend/backend/handlers"
+	"github.com/1backend/1backend/backend/proxy"
 )
 
 func registerHandlers(r *httpr.Router, h *handlers.Handlers, p *proxy.Proxy) {

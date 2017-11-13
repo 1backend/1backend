@@ -3,7 +3,7 @@ package handlers
 import (
 	"errors"
 
-	"github.com/crufter/1backend/backend/domain"
+	"github.com/1backend/1backend/backend/domain"
 )
 
 func (h *Handlers) getUser(tokenId string) (*domain.User, error) {

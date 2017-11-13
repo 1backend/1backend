@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/crufter/1backend/backend/domain"
+	"github.com/1backend/1backend/backend/domain"
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
 	"golang.org/x/crypto/bcrypt"
