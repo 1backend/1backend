@@ -75,9 +75,9 @@ CREATE TABLE IF NOT EXISTS endpoints
 (
   id                  VARCHAR(36)                                                     NOT NULL,
   url                 VARCHAR(128)                                                    NOT NULL,
-  method              VARCHAR(6)                                                     NOT NULL,
+  method              VARCHAR(6)                                                      NOT NULL,
   description         VARCHAR(256)                                                    NOT NULL,
-  code 		            TEXT							                                              NOT NULL,
+  `code` 		          TEXT							                                              NOT NULL,
   project_id          VARCHAR(36)                                                     NOT NULL,
   created_at          DATETIME DEFAULT CURRENT_TIMESTAMP                              NOT NULL,
   updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  NOT NULL,
