@@ -39,8 +39,8 @@
                 <button (click)="save()" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
             </mat-tab>
 
-            <mat-tab label="package.json" *ngIf="project.Mode === 'nodejs'">
-              <ace-editor class="editor" text="{{project.Packages}}" [mode]="'json'" style="min-height: 200px; width:100%;
+            <mat-tab label="package.json" *ngIf="mode === 'nodejs'">
+              <ace-editor class="editor" text="{{project.Packages}}" [mode]="mode" style="min-height: 200px; width:100%;
                 overflow: auto;" #editor></ace-editor>
                 <button (click)="save()" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
             </mat-tab>
@@ -71,11 +71,11 @@
           <input [(ngModel)]="newEndpoint.Url" matInput placeholder="Path (ie. /user)">
         </mat-form-field>
 
-        <ace-editor class="editor " [(text)]="newEndpoint.Code" [mode]="project.Mode" style="min-height: 200px; width:100%;
+        <ace-editor class="editor " [(text)]="newEndpoint.Code" [mode]="mode" style="min-height: 200px; width:100%;
         overflow: auto;" #editor></ace-editor>
 
       </div>
-      <button (click)="add()" mat-raised-button style="margin-top: 1em; color: #EEEEEE" color="primary">Add</button>
+      <button [disabled]="newEndpoint.Url === '/' || newEndpoint.Url === '' || !newEndpoint.Url.startsWith('/')" (click)="add()" mat-raised-button style="margin-top: 1em; color: #EEEEEE" color="primary">Add</button>
     </mat-card>
   </div>
   <div fxFlex="1 1 {{leftWidth}}%">
@@ -113,7 +113,7 @@
       </div>
       <span [hidden]="!endpoint.Selected">
         <ng-container *ngIf="user && user.Nick === project.Author">
-          <ace-editor class="editor" [(text)]="endpoint.Code" [mode]="project.Mode" style="min-height: 200px; width:100%;
+          <ace-editor class="editor" [(text)]="endpoint.Code" [mode]="mode" style="min-height: 200px; width:100%;
 overflow: auto;" #editor></ace-editor>
           <div>
             <div style="margin-top: 1em;" class="example-container">
@@ -131,7 +131,7 @@ overflow: auto;" #editor></ace-editor>
                 <input matInput placeholder="Path (ie. /user)" [(ngModel)]="endpoint.Url">
               </mat-form-field>
             </div>
-            <button (click)="save()" mat-raised-button style="margin-top: 1em; margin-bottom: 1em; color: #EEEEEE;" color="primary">Save</button>
+            <button [disabled]="endpoint.Url === '/' || endpoint.Url === '' || !endpoint.Url.startsWith('/')" (click)="save()" mat-raised-button style="margin-top: 1em; margin-bottom: 1em; color: #EEEEEE;" color="primary">Save</button>
           </div>
         </ng-container>
 
