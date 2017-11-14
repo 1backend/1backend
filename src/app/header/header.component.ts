@@ -16,7 +16,7 @@ export class HeaderComponent implements OnInit {
   constructor(
     private us: UserService,
     private sess: SessionService,
-    private ss: SessionService,
+    public ss: SessionService,
     private router: Router,
     private lds: LoginDialogService
   ) {
