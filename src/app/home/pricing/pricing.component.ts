@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LoginDialogService } from '../../login/login-dialog.service';
 
 @Component({
   selector: 'app-pricing',
@@ -7,7 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PricingComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private lds: LoginDialogService
+  ) { }
 
   ngOnInit() {
   }
@@ -27,6 +30,10 @@ export class PricingComponent implements OnInit {
       description: '',
       amount: 19000
     });
+    
+  }
 
+  register() {
+    this.lds.openDialog(false, () => {});
   }
 }

@@ -70,7 +70,7 @@
     <ng-template mat-tab-label>
       Issues
     </ng-template>
-    <app-issues *ngIf="!issueId && project && project.Id" [project]="project"></app-issues>
+    <app-issues *ngIf="!issueId && project?.Id?.length > 0" [project]="project"></app-issues>
     <app-issue *ngIf="issueId" [issueId]="issueId" [author]="author" [projectName]="projectName"></app-issue>
   </mat-tab>
 </mat-tab-group>
