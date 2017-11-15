@@ -39,7 +39,7 @@
                 <button (click)="save()" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
             </mat-tab>
 
-            <mat-tab label="package.json" *ngIf="mode === 'nodejs'">
+            <mat-tab label="package.json" *ngIf="mode === 'nodejs' || mode === 'typescript'">
               <ace-editor class="editor" text="{{project.Packages}}" [mode]="mode" style="min-height: 200px; width:100%;
                 overflow: auto;" #editor></ace-editor>
                 <button (click)="save()" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
@@ -103,7 +103,7 @@
           <button [hidden]="!isLeftFullScreen()" mat-button style="min-width: 0%;" (click)="smallScreen()">
             <mat-icon aria-hidden="false">fullscreen_exit</mat-icon>
           </button>
-          <button mat-button style="min-width: 0%;" type="button" (click)="delete(endpoint)">
+          <button *ngIf="user && user.Nick === project.Author" mat-button style="min-width: 0%;" type="button" (click)="delete(endpoint)">
             <mat-icon aria-hidden="false">clear</mat-icon>
           </button>
           <button mat-button style="min-width: 0%;" (click)="reveal(endpoint)">
@@ -112,10 +112,10 @@
         </div>
       </div>
       <span [hidden]="!endpoint.Selected">
-        <ng-container *ngIf="user && user.Nick === project.Author">
-          <ace-editor class="editor" [(text)]="endpoint.Code" [mode]="mode" style="min-height: 200px; width:100%;
+        <ng-container >
+          <ace-editor *ngIf="project.OpenSource" [readOnly]="readOnly"  class="editor" [(text)]="endpoint.Code" [mode]="mode" style="min-height: 200px; width:100%;
 overflow: auto;" #editor></ace-editor>
-          <div>
+          <div *ngIf="user && user.Nick === project.Author">
             <div style="margin-top: 1em;" class="example-container">
               <mat-form-field>
                 <mat-select [(ngModel)]="endpoint.Method" placeholder="Method">
@@ -135,8 +135,9 @@ overflow: auto;" #editor></ace-editor>
           </div>
         </ng-container>
 
-        <ace-editor class="editor" text="curl -X{{endpoint.Method}} https://1backend.com:9993/app/{{project.Author}}/{{project.Name}}{{endpoint.Url}}"
-          mode="sh" style="min-height: 2em; margin-top: 1em; width:100%;
+
+        <ace-editor class="editor" text="curl -X{{endpoint.Method}} http://1backend.com:8883/app/{{project.Author}}/{{project.Name}}{{endpoint.Url}}"
+          [mode]="'sh'" style="min-height: 2em; margin-top: 1em; width:100%;
         overflow: auto;"></ace-editor>
       </span>
     </mat-card>

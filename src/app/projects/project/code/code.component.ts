@@ -29,6 +29,7 @@ export class CodeComponent implements OnInit {
   readme: string;
   currentPage = 0;
   mode = '';
+  readOnly = true;
 
   constructor(
     private http: HttpClient,
@@ -42,6 +43,9 @@ export class CodeComponent implements OnInit {
 
   ngOnInit() {
     this.getMode();
+    if (this.user.Nick === this.project.Author) {
+      this.readOnly = false;
+    }
   }
 
   add() {
