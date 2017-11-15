@@ -7,6 +7,7 @@ import * as types from '../../types';
 import { SessionService } from '../../session.service';
 import { ConstService } from '../../const.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { UserService } from '../../user.service';
 
 interface PingResponse {
   pong: boolean;
@@ -43,7 +44,8 @@ export class ProjectComponent implements OnInit {
     private ss: SessionService,
     private location: Location,
     private router: Router,
-    private _const: ConstService
+    private _const: ConstService,
+    public us: UserService
   ) {
     this.author = this.route.snapshot.params['author'];
     this.projectName = this.route.snapshot.params['project'];

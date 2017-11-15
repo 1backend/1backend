@@ -24,6 +24,7 @@ export interface Project extends Selectable {
   Imports?: string;
   Packages?: string;
   Source?: string;
+  OpenSource?: boolean;
 }
 
 // not used in backend
@@ -63,6 +64,7 @@ export interface User {
   CreatedAt: number;
   UpdatedAt: number;
   AvatarLink: string;
+  Premium?: boolean;
 }
 
 export interface AccessToken {

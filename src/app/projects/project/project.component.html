@@ -60,7 +60,7 @@
       <app-builds [project]="project"></app-builds>
     </div>
   </mat-tab>
-  <mat-tab [attr.data-pid]="'sql-console'">
+  <mat-tab *ngIf="us.user.Nick === project.Author" [attr.data-pid]="'sql-console'">
     <ng-template mat-tab-label>
       SQL console
     </ng-template>

@@ -96,12 +96,14 @@ export class LoginComponent implements OnInit {
           this.us.get().then(() => {
             this.data.callback();
           });
+          setTimeout(() => {
+            this.router.navigate(['/' + this.username]);
+          }, 200); // database purposes
         },
         e => {
           this.notif.error(e.error.error);
         }
       );
-    this.router.navigate(['/' + this.username]);
   }
 
   validator() {
@@ -133,6 +135,7 @@ export class LoginComponent implements OnInit {
     }
     if (this.password_conf !== this.password) {
       this.notif.error('Passwords does not match');
+      return;
     }
     return 'ok';
   }
