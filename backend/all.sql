@@ -111,6 +111,7 @@ CREATE TABLE IF NOT EXISTS users
   nick                VARCHAR(32)                                                     NOT NULL,
   name                VARCHAR(32)                                                     NOT NULL,
   password            VARCHAR(128)                                                    NOT NULL,
+  premium             BOOLEAN                                                         NOT NULL,
   email               VARCHAR(128)                                                    NOT NULL,
   avatar_link         VARCHAR(128)                                                    NOT NULL,
   created_at          DATETIME DEFAULT CURRENT_TIMESTAMP                              NOT NULL,
