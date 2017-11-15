@@ -1,9 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { UserService } from '../user.service';
 import * as types from '../types';
 import { LoginDialogService } from '../login/login-dialog.service';
 import { SessionService } from '../session.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -16,13 +16,15 @@ export class HeaderComponent implements OnInit {
   constructor(
     private us: UserService,
     private sess: SessionService,
-    private ss: SessionService,
+    public ss: SessionService,
     private router: Router,
     private lds: LoginDialogService
   ) {
     this.user = this.us.user;
+
   }
   ngOnInit() {}
+
 
   login() {
     this.lds.openDialog(true, () => {});
@@ -35,7 +37,7 @@ export class HeaderComponent implements OnInit {
 
   viewProfile() {
     this.router.navigate(['/' + this.user.Nick]);
-  }
+    }
 
   register() {
     this.lds.openDialog(false, () => {});

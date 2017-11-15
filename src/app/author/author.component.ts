@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import * as types from '../types';
-import { Router } from '@angular/router';
+import { Router, NavigationStart, Event } from '@angular/router';
 import { SessionService } from '../session.service';
 import { ConstService } from '../const.service';
 import { NotificationsService } from 'angular2-notifications';
@@ -25,13 +25,12 @@ export class AuthorComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
-    private router: Router,
+    private router: Router, 
     private ss: SessionService,
     private _const: ConstService,
     private notif: NotificationsService,
     public us: UserService,
   ) {
-    this.author = this.route.snapshot.params['author'];
     this.refresh();
 
   }
@@ -58,9 +57,20 @@ export class AuthorComponent implements OnInit {
       );
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+
+// this solution is a bit crufty, but works fine.
+  this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationStart) {
+        setTimeout(() => {
+          this.refresh();
+        }, 500);
+        }
+  });
+}
 
   refresh() {
+    this.author = this.route.snapshot.params['author'];
     let p = new HttpParams();
     p = p.set('nick', this.author);
     p = p.set('token', this.ss.getToken());

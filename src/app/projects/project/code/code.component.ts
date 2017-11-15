@@ -69,6 +69,9 @@ export class CodeComponent implements OnInit {
         this.mode = 'javascript';
         break;
       }
+      case 'typescript': {
+        this. mode = 'typescript';
+      }
     }
   }
 

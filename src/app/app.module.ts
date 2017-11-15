@@ -123,7 +123,7 @@ import 'brace/mode/json';
 // import 'brace/mode/toml';
 // import 'brace/mode/tsx';
 // import 'brace/mode/twig';
-// import 'brace/mode/typescript';
+import 'brace/mode/typescript';
 // import 'brace/mode/vala';
 // import 'brace/mode/vbscript';
 // import 'brace/mode/velocity';
