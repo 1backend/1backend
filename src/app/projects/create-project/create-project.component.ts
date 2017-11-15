@@ -90,7 +90,8 @@ export class CreateProjectComponent implements OnInit {
       Name: this.name,
       Mode: lang.Name,
       Dependencies: dep,
-      Public: true
+      Public: true,
+      OpenSource: true
     };
 
     this.http
