@@ -106,7 +106,7 @@ import 'brace/mode/json';
 // import 'brace/mode/scala';
 // import 'brace/mode/scheme';
 // import 'brace/mode/scss';
-// import 'brace/mode/sh';
+import 'brace/mode/sh';
 // import 'brace/mode/sjs';
 // import 'brace/mode/smarty';
 // import 'brace/mode/snippets';

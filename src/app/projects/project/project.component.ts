@@ -45,7 +45,7 @@ export class ProjectComponent implements OnInit {
     private location: Location,
     private router: Router,
     private _const: ConstService,
-    private us: UserService
+    public us: UserService
   ) {
     this.author = this.route.snapshot.params['author'];
     this.projectName = this.route.snapshot.params['project'];
