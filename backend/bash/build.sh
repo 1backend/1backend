@@ -3,13 +3,9 @@
 # $3 app name
 # $4 infrastructure password
 # $5 recipe path (eg: "go", "nodejs-whatever")
-pwd
 cp ./tech-pack/$5/Dockerfile $1/Dockerfile
 INTERNALIP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8)
 cd $1
-pwd
-ls
-cat package.json
 sudo docker build -t $2_$3 . || exit 1
 sudo docker stop $2_$3
 sudo docker rm $2_$3

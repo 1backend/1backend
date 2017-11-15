@@ -20,6 +20,8 @@ type Project struct {
 	Port int
 	// Private repos can only be read by their owner (no organisations yet)
 	Public bool
+	// Source code is visible to those who can view the project
+	OpenSource bool
 	// Short description of the project)
 	Description string
 	// Eg. go, nodejs, docker
@@ -78,6 +80,7 @@ type User struct {
 	Name       string
 	Email      string
 	AvatarLink string
+	Premium    bool
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }
