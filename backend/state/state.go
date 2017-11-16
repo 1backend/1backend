@@ -6,10 +6,12 @@ import (
 )
 
 var (
-	ports        = sync.Map{}
-	lastCall     = sync.Map{}
-	isUp         = sync.Map{}
-	underStartup = sync.Map{}
+	ports         = sync.Map{}
+	lastCall      = sync.Map{}
+	isUp          = sync.Map{}
+	underStartup  = sync.Map{}
+	reqNums       = sync.Map{}
+	tokensToUsers = sync.Map{}
 )
 
 func Port(author, projectName string) int {
@@ -72,4 +74,57 @@ func LastCallIn(author, projectName string, d time.Duration) bool {
 // Call this when proxying a request
 func SetLastCall(author, projectName string) {
 	lastCall.Store(author+"_"+projectName, time.Now())
+}
+
+// ReqNum keeps track of service calls against a users' quota.+.++.
+type ReqNum struct {
+	mtx   sync.RWMutex
+	Count int64
+}
+
+func Decrement(userId string) {
+	val, ok := reqNums.Load(userId)
+	if !ok {
+		reqNums.Store(userId, &ReqNum{})
+		return
+	}
+	v := val.(*ReqNum)
+	v.mtx.Lock()
+	defer v.mtx.Unlock()
+	v.Count--
+}
+
+// Use at initialization
+func SetQuota(userId string, quota int64) {
+	reqNums.Store(userId, &ReqNum{
+		Count: quota,
+	})
+	return
+}
+
+// Nulls counters and returns and id to request number map to save in the DB
+func NullAndReturn() map[string]int64 {
+	ret := map[string]int64{}
+	reqNums.Range(func(key interface{}, val interface{}) bool {
+		v := val.(*ReqNum)
+		v.mtx.Lock()
+		defer v.mtx.Unlock()
+		v.Count = 0
+		return true
+	})
+	return ret
+}
+
+// Use at initialization
+func SetTokensToUsers(userId, tokenId string) {
+	tokensToUsers.Store(tokenId, userId)
+	return
+}
+
+func GetUserIdOfToken(tokenId string) string {
+	userId, val := tokensToUsers.Load(tokenId)
+	if !val {
+		return ""
+	}
+	return userId.(string)
 }

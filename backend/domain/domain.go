@@ -80,15 +80,28 @@ type User struct {
 	Name       string
 	Email      string
 	AvatarLink string
+	Quota      int64
 	Premium    bool
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }
 
+// For logins
 type AccessToken struct {
 	Id        string
 	Token     string
 	UserId    string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+// service access token
+type Token struct {
+	Id        string
+	Token     string
+	UserId    string
+	Name      string // eg. "test", "xyz-app" etc. max 32 chars
+	Enabled   bool
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

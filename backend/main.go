@@ -58,6 +58,7 @@ func main() {
 	r := httpr.New()
 	p := proxy.NewProxy(db)
 	go p.Nuker()
+	go p.RequestCountPersistor()
 	registerHandlers(r, h, p)
 	handler := cors.New(cors.Options{AllowedHeaders: []string{"*"}, AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"}}).Handler(r)
 	log.Info("Starting http server")

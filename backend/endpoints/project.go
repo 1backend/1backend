@@ -60,7 +60,9 @@ func (e Endpoints) UpdateProject(proj *domain.Project) error {
 		}
 	}
 	for _, v := range proj.Dependencies {
+		if v.Id == "" {
 		v.Id = domain.Sid.MustGenerate()
+		}
 		v.ProjectId = proj.Id
 		err = e.db.Save(&v).Error
 		if err != nil {

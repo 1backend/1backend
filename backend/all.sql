@@ -110,6 +110,7 @@ CREATE TABLE IF NOT EXISTS users
   id                  VARCHAR(36)                                                     NOT NULL,
   nick                VARCHAR(32)                                                     NOT NULL,
   name                VARCHAR(32)                                                     NOT NULL,
+  quota               BIGINT                                                          NOT NULL,            
   password            VARCHAR(128)                                                    NOT NULL,
   premium             BOOLEAN                                                         NOT NULL,
   email               VARCHAR(128)                                                    NOT NULL,
@@ -145,4 +146,19 @@ CREATE TABLE IF NOT EXISTS stars
 ALTER TABLE stars
       ADD CONSTRAINT uniqueStarPerProject UNIQUE (project_id, user_id),
       ADD FOREIGN KEY (project_id) REFERENCES projects (id),
+      ADD FOREIGN KEY (user_id) REFERENCES users (id);
+
+-- service access tokens and not login tokens (access_tokens)
+CREATE TABLE IF NOT EXISTS tokens
+(
+  id                  VARCHAR(36)                                                     NOT NULL,
+  token               VARCHAR(36)                                              UNIQUE NOT NULL,
+  user_id             VARCHAR(36)                                                     NOT NULL,
+  name                VARCHAR(32)                                                     NOT NULL,
+  created_at          DATETIME DEFAULT CURRENT_TIMESTAMP                              NOT NULL,
+  updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE tokens
       ADD FOREIGN KEY (user_id) REFERENCES users (id);

@@ -79,7 +79,16 @@ func (p *Proxy) launchAndWait(author, projectName string) error {
 	return err
 }
 
+func (p *Proxy) getUserIdOfToken() {
+
+}
+
 func (p *Proxy) Proxy(w http.ResponseWriter, req *http.Request, params httpr.Params) {
+	token := http.Header.Get("token")
+	if token == "" {
+		http.Error(w, "Please send a token in the header", http.StatusBadRequest)
+		return
+	}
 	// we need to buffer the body if we want to read it here and send it
 	// in the request.
 	body, err := ioutil.ReadAll(req.Body)
@@ -142,6 +151,30 @@ func (p *Proxy) Proxy(w http.ResponseWriter, req *http.Request, params httpr.Par
 	w.WriteHeader(resp.StatusCode)
 	// body
 	io.Copy(w, resp.Body)
+}
+
+func (p *Proxy) RequestCountPersistor() {
+	users := []domain.User{}
+	err := p.db.Find(&users).Preload("tokens").Error
+	if err != nil {
+		panic(err)
+	}
+	for _, user := range users {
+		state.SetQuota(user.Id, user.Quota)
+		for _, token := range user.Tokens {
+			state.SetTokenToUser(user.Id, token.Id)
+		}
+	}
+	for {
+		time.Sleep(1 * time.Minute)
+		// @todo this is obv a very bad design, gotta fix before going distributed
+		for userId, decrease := range state.NullAndReturn() {
+			err := p.db.Exec("UPDATE users SET quota = ? WHERE id = ?", decrease, userId).Error
+			if err != nil {
+				log.Error(err)
+			}
+		}
+	}
 }
 
 func (p *Proxy) Nuker() {
