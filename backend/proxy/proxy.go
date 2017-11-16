@@ -84,9 +84,14 @@ func (p *Proxy) getUserIdOfToken() {
 }
 
 func (p *Proxy) Proxy(w http.ResponseWriter, req *http.Request, params httpr.Params) {
-	token := http.Header.Get("token")
+	token := req.Header.Get("token")
 	if token == "" {
 		http.Error(w, "Please send a token in the header", http.StatusBadRequest)
+		return
+	}
+	userId := state.GetUserIdOfToken(token)
+	if userId == "" {
+		http.Error(w, "Can't find user of token", http.StatusBadRequest)
 		return
 	}
 	// we need to buffer the body if we want to read it here and send it
@@ -137,6 +142,7 @@ func (p *Proxy) Proxy(w http.ResponseWriter, req *http.Request, params httpr.Par
 	for h, val := range req.Header {
 		proxyReq.Header[h] = val
 	}
+	state.Decrement(userId)
 	client := &http.Client{}
 	resp, err := client.Do(proxyReq)
 	if err != nil {

@@ -31,6 +31,8 @@ func registerHandlers(r *httpr.Router, h *handlers.Handlers, p *proxy.Proxy) {
 	r.POST("/v1/comment", h.CreateComment)
 	r.PUT("/v1/comment", h.UpdateComment)
 
+	r.POST("/v1/token", h.CreateToken)
+
 	r.POST("/v1/run-sql", h.RunSql)
 
 	r.GET("/v1/user", h.GetUser)

@@ -15,7 +15,7 @@ func NewUserDao(db *gorm.DB) *UserDao {
 
 func (ud *UserDao) GetById(id string) (User, error) {
 	u := User{Id: id}
-	err := ud.db.First(&u).Error
+	err := ud.db.Preload("Tokens").First(&u).Error
 	return u, err
 }
 

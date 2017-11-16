@@ -81,6 +81,7 @@ type User struct {
 	Email      string
 	AvatarLink string
 	Quota      int64
+	Tokens     []Token
 	Premium    bool
 	CreatedAt  time.Time
 	UpdatedAt  time.Time

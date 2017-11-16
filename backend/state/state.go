@@ -116,7 +116,7 @@ func NullAndReturn() map[string]int64 {
 }
 
 // Use at initialization
-func SetTokensToUsers(userId, tokenId string) {
+func SetTokenToUser(userId, tokenId string) {
 	tokensToUsers.Store(tokenId, userId)
 	return
 }

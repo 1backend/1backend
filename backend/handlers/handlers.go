@@ -13,6 +13,7 @@ import (
 	log "github.com/cihub/seelog"
 	"github.com/jinzhu/gorm"
 	httpr "github.com/julienschmidt/httprouter"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/1backend/1backend/backend/domain"
 	"github.com/1backend/1backend/backend/endpoints"
@@ -82,9 +83,13 @@ func write500(w http.ResponseWriter, err error) {
 	writeString(w, 500, string(rawBody))
 }
 
+// We either get sent a nick, or a nick + token
+// We get a token when we want to read the user by token
+// We get a nick + token when either viewing our own profile or other peoples' profile
 func (h *Handlers) GetUser(w http.ResponseWriter, r *http.Request, p httpr.Params) {
 	token := r.URL.Query().Get("token")
-	if token != "" {
+	nick := r.URL.Query().Get("nick")
+	if nick == "" {
 		tk, err := domain.NewAccessTokenDao(h.db).GetByToken(token)
 		if err != nil {
 			write400(w, err)
@@ -98,7 +103,22 @@ func (h *Handlers) GetUser(w http.ResponseWriter, r *http.Request, p httpr.Param
 		write(w, user)
 		return
 	}
-	nick := r.URL.Query().Get("nick")
+	own := h.ep.HasNick(token, nick)
+	if own == nil {
+		// nice copypaste bro
+		tk, err := domain.NewAccessTokenDao(h.db).GetByToken(token)
+		if err != nil {
+			write400(w, err)
+			return
+		}
+		user, err := domain.NewUserDao(h.db).GetById(tk.UserId)
+		if err != nil {
+			write400(w, err)
+			return
+		}
+		write(w, user)
+		return
+	}
 	user, err := domain.NewUserDao(h.db).GetByNick(nick)
 	if err != nil {
 		write400(w, err)
@@ -485,6 +505,34 @@ func (h *Handlers) DeleteStar(w http.ResponseWriter, r *http.Request, p httpr.Pa
 		return
 	}
 	err = h.ep.DeleteStar(user.Id, inp.ProjectId)
+	if err != nil {
+		write400(w, err)
+		return
+	}
+	write(w, map[string]string{})
+}
+
+func (h *Handlers) CreateToken(w http.ResponseWriter, r *http.Request, p httpr.Params) {
+	inp := struct {
+		Token            string
+		ServiceTokenName string
+	}{}
+	if err := readJsonBody(r, &inp); err != nil {
+		write400(w, err)
+		return
+	}
+	user, err := h.ep.GetUser(inp.Token)
+	if err != nil {
+		write400(w, err)
+		return
+	}
+	token := &domain.Token{
+		Token:   uuid.NewV4().String(),
+		Name:    inp.ServiceTokenName,
+		Enabled: true,
+		UserId:  user.Id,
+	}
+	err = h.ep.CreateToken(token)
 	if err != nil {
 		write400(w, err)
 		return
