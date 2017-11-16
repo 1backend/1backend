@@ -132,7 +132,6 @@ export class ProjectComponent implements OnInit {
   selectedIndexChange(tabGroup: MatTabGroup) {
     const pid = tabGroup._tabs.find((e, i, a) => i === tabGroup.selectedIndex)
       .content.viewContainerRef.element.nativeElement.dataset.pid;
-    console.log(pid, this.project.Author, this.project.Name, 'ANYAAAAAAAAAAAAAAAAAAAAAAD')
     if (pid !== 'code') {
       this.location.go('/' + this.author + '/' + this.projectName + '/' + pid);
     } else {
