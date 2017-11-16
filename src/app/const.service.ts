@@ -8,7 +8,7 @@ export class ConstService {
   constructor() {
     this.url = window.location.hostname.includes('1backend')
       ? 'https://1backend.com:9993'
-      : 'http://192.168.0.7:8883';
+      : 'http://192.168.0.3:8883';
     this.tokenMinLen = 10;
   }
 }
