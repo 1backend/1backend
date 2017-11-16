@@ -4,7 +4,7 @@
     <h1>User not found</h1>
   </div>
   <div>
-    <a href="/projects">
+    <a routerLink="/projects">
       Navigate to search
     </a>
   </div>
@@ -25,7 +25,7 @@
       </div>
       <div>
         <mat-form-field style="width: 100%">
-          <input matInput placeholder="Nickname" [(ngModel)]="user.Nick"/>
+          <input disabled matInput placeholder="Nickname" [(ngModel)]="user.Nick"/>
         </mat-form-field>
       </div>
       <div>

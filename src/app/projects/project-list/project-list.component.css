@@ -7,9 +7,10 @@
 .author-link {
   display: inline-block;
   color: #2979FF;
-  text-decoration: none;
-}
+  text-decoration: underline;
 
+}
+/*
 .author-link::after {
   content: '';
   display: block;
@@ -23,3 +24,4 @@
   width: 100%;
 
 }
+*/

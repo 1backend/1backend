@@ -53,13 +53,13 @@ export class ProjectComponent implements OnInit {
     this.issueId = this.route.snapshot.params['issueId'];
     this.makeRefresh()();
     if (this.tab === 'sql-console') {
-      this.selectedIndex = 2;
+      this.selectedIndex = 3;
     }
     if (this.tab === 'builds') {
       this.selectedIndex = 1;
     }
     if (this.tab === 'issues' || this.issueId) {
-      this.selectedIndex = 3;
+      this.selectedIndex = 2;
     }
   }
 
@@ -67,7 +67,6 @@ export class ProjectComponent implements OnInit {
     const that = this;
     return () => {
       let p = new HttpParams();
-      console.log(that.leftWidth);
       p = p.set('author', that.author);
       p = p.set('project', that.projectName);
       p = p.set('token', that.ss.getToken());
@@ -133,11 +132,11 @@ export class ProjectComponent implements OnInit {
   selectedIndexChange(tabGroup: MatTabGroup) {
     const pid = tabGroup._tabs.find((e, i, a) => i === tabGroup.selectedIndex)
       .content.viewContainerRef.element.nativeElement.dataset.pid;
-    console.log(pid);
+    console.log(pid, this.project.Author, this.project.Name, 'ANYAAAAAAAAAAAAAAAAAAAAAAD')
     if (pid !== 'code') {
-      this.location.go('/' + this.project.Author + '/' + this.project.Name + '/' + pid);
+      this.location.go('/' + this.author + '/' + this.projectName + '/' + pid);
     } else {
-      this.location.go('/' + this.project.Author + '/' + this.project.Name);
+      this.location.go('/' + this.author + '/' + this.projectName);
     }
   }
 

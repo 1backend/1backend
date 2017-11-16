@@ -50,17 +50,21 @@ export class CodeComponent implements OnInit {
 
   add() {
     this.project.Endpoints.push(this.newEndpoint);
+    this.save();
+  }
+
+  save() {
     this.http
-      .put(this._const.url + '/v1/project', {
-        project: this.project,
-        token: this.ss.getToken(),
-      })
-      .subscribe(
-        data => {
-          this.refresh();
-        },
-        error => {}
-      );
+    .put(this._const.url + '/v1/project', {
+      project: this.project,
+      token: this.ss.getToken(),
+    })
+    .subscribe(
+      data => {
+        this.refresh();
+      },
+      error => {}
+    );
   }
 
   getMode() {
@@ -83,20 +87,7 @@ export class CodeComponent implements OnInit {
     this.currentPage = $event.pageIndex;
   }
 
-  save() {
-    this.http
-      .put(this._const.url + '/v1/project', {
-        project: this.project,
-        token: this.ss.getToken()
-      })
-      .subscribe(
-        data => {
-          this.refresh();
-        },
-        error => {}
-      );
-  }
-
+  
   delete(e: types.Endpoint) {
     let p = new HttpParams;
     p = p.set('id', e.Id);
@@ -133,17 +124,10 @@ export class CodeComponent implements OnInit {
     e.Selected = !e.Selected;
   }
 
-  saveSql() {
-    this.http
-      .put(this._const.url + '/v1/project', {
-        project: this.project
-      })
-      .subscribe(data => {}, error => {});
-  }
   goSql() {
     this.router.navigate([
       '/' + this.project.Author + '/' + this.project.Name + '/' + 'sql-console'
     ]);
-    location.reload();
+    location.reload(); // XD
   }
 }

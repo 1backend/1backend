@@ -40,9 +40,8 @@ export class IssuesComponent implements OnInit {
       .get<types.Issue[]>(this._const.url + '/v1/issues', { params: p })
       .subscribe(
         issues => {
-          this.issues = issues;
-          if (this.issues) {
-            this.issues = this.issues.sort((a, b) => {
+          if (issues) {
+            this.issues = issues.sort((a, b) => {
               if (a.CreatedAt === b.CreatedAt) {
                 return 0;
               }
