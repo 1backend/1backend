@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { SessionService } from '../../../session.service';
 import { UserService } from '../../../user.service';
 import { ConstService } from '../../../const.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-code',
@@ -17,6 +18,7 @@ export class CodeComponent implements OnInit {
   @Input() refresh: () => void;
 
   user: types.User;
+  backendUrl = environment.backendUrl;
   search: string;
   endpoints: types.Endpoint[] = [];
   leftWidth = 49;
@@ -53,7 +55,7 @@ export class CodeComponent implements OnInit {
     this.http
       .put(this._const.url + '/v1/project', {
         project: this.project,
-        token: this.ss.getToken(),
+        token: this.ss.getToken()
       })
       .subscribe(
         data => {
@@ -74,7 +76,7 @@ export class CodeComponent implements OnInit {
         break;
       }
       case 'typescript': {
-        this. mode = 'typescript';
+        this.mode = 'typescript';
       }
     }
   }
@@ -97,8 +99,14 @@ export class CodeComponent implements OnInit {
       );
   }
 
+  getTestToken(): string {
+    return this.us.user.Tokens.filter(t => {
+      return t.Name === 'test';
+    })[0].Token;
+  }
+
   delete(e: types.Endpoint) {
-    let p = new HttpParams;
+    let p = new HttpParams();
     p = p.set('id', e.Id);
     this.http.delete(this._const.url + '/v1/endpoint', { params: p }).subscribe(
       data => {
