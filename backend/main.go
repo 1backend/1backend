@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	log "github.com/cihub/seelog"
+	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	httpr "github.com/julienschmidt/httprouter"
@@ -55,13 +56,24 @@ func main() {
 		panic(fmt.Sprintf("[init] unable to initialize gorm: %s", err.Error()))
 	}
 	db = db.Set("gorm:save_associations", false)
-	h := handlers.NewHandlers(db)
+
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+	_, err = redisClient.Ping().Result()
+	if err != nil {
+		panic(err)
+	}
+
+	h := handlers.NewHandlers(db, redisClient)
 	defer db.Close()
 	r := httpr.New()
-	p := proxy.NewProxy(db)
+	p := proxy.NewProxy(db, redisClient)
 	go p.Nuker()
-	go p.RequestCountPersistor()
 	registerHandlers(r, h, p)
+
 	handler := cors.New(cors.Options{AllowedHeaders: []string{"*"}, AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"}}).Handler(r)
 	log.Info("Starting http server")
 	log.Critical(http.ListenAndServe(fmt.Sprintf(":%v", 8883), handler))

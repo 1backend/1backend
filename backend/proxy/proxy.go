@@ -12,6 +12,7 @@ import (
 	"time"
 
 	log "github.com/cihub/seelog"
+	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	httpr "github.com/julienschmidt/httprouter"
 
@@ -20,29 +21,16 @@ import (
 )
 
 type Proxy struct {
-	db *gorm.DB
+	db          *gorm.DB
+	redisClient *redis.Client
+	state       *state.State
 }
 
-func NewProxy(db *gorm.DB) *Proxy {
+func NewProxy(db *gorm.DB, redisClient *redis.Client) *Proxy {
 	return &Proxy{
-		db: db,
+		db:    db,
+		state: state.NewState(redisClient),
 	}
-}
-
-// get port from memory, fall back to database
-func (p *Proxy) getPort(author, projectName string) (int, error) {
-	port := 0
-	port = state.Port(author, projectName)
-	if port == 0 {
-		project := domain.Project{}
-		err := p.db.Select("name, port, author").Where("author = ? AND name = ?", author, projectName).First(&project).Error
-		if err != nil {
-			return 0, err
-		}
-		port = project.Port
-		state.SetPort(project.Author, project.Name, project.Port)
-	}
-	return port, nil
 }
 
 func (p *Proxy) launchAndWait(author, projectName string) error {
@@ -66,7 +54,10 @@ func (p *Proxy) launchAndWait(author, projectName string) error {
 		if err != nil && i == maxIter {
 			return err
 		}
-		state.SetPort(author, projectName, int(po))
+		err = p.state.SetPort(author, projectName, int(po))
+		if err != nil {
+			continue
+		}
 		port := int(po)
 		time.Sleep(tts)
 		_, err = http.Get(fmt.Sprintf("%s://%s:%v/ping", "http", "127.0.0.1", port))
@@ -79,19 +70,11 @@ func (p *Proxy) launchAndWait(author, projectName string) error {
 	return err
 }
 
-func (p *Proxy) getUserIdOfToken() {
-
-}
-
+// This is a horribly overcomplicated abomination
 func (p *Proxy) Proxy(w http.ResponseWriter, req *http.Request, params httpr.Params) {
 	token := req.Header.Get("token")
 	if token == "" {
 		http.Error(w, "Please send a token in the header", http.StatusBadRequest)
-		return
-	}
-	userId := state.GetUserIdOfToken(token)
-	if userId == "" {
-		http.Error(w, "Can't find user of token", http.StatusBadRequest)
 		return
 	}
 	// we need to buffer the body if we want to read it here and send it
@@ -106,24 +89,42 @@ func (p *Proxy) Proxy(w http.ResponseWriter, req *http.Request, params httpr.Par
 	path := strings.Split(req.RequestURI, "/")
 	author := path[2]
 	projectName := path[3]
-	if !state.IsUp(author, projectName) {
-		state.SetLastCall(author, projectName)
-		if state.IsUnderStartup(author, projectName) {
+	isUp, err := p.state.IsUp(author, projectName)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if !isUp {
+		err := p.state.SetLastCall(author, projectName)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		underStartup, err := p.state.IsUnderStartup(author, projectName)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if underStartup {
 			time.Sleep(450 * time.Millisecond)
 		} else {
-			state.MarkAsUnderStartup(author, projectName)
-			defer state.MarkAsNotUnderStartup(author, projectName)
-			err := p.launchAndWait(author, projectName)
-			state.MarkAsNotUnderStartup(author, projectName)
+			err := p.state.MarkAsUnderStartup(author, projectName)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
-			state.MarkAsUp(author, projectName)
+			defer p.state.MarkAsNotUnderStartup(author, projectName)
+			err = p.launchAndWait(author, projectName)
+			p.state.MarkAsNotUnderStartup(author, projectName)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			p.state.MarkAsUp(author, projectName)
 		}
 	}
-	state.SetLastCall(author, projectName)
-	port, err := p.getPort(author, projectName)
+	p.state.SetLastCall(author, projectName)
+	port, err := p.state.Port(author, projectName)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -142,7 +143,7 @@ func (p *Proxy) Proxy(w http.ResponseWriter, req *http.Request, params httpr.Par
 	for h, val := range req.Header {
 		proxyReq.Header[h] = val
 	}
-	state.Decrement(userId)
+	p.state.Decrement(token)
 	client := &http.Client{}
 	resp, err := client.Do(proxyReq)
 	if err != nil {
@@ -159,30 +160,6 @@ func (p *Proxy) Proxy(w http.ResponseWriter, req *http.Request, params httpr.Par
 	io.Copy(w, resp.Body)
 }
 
-func (p *Proxy) RequestCountPersistor() {
-	users := []domain.User{}
-	err := p.db.Find(&users).Preload("tokens").Error
-	if err != nil {
-		panic(err)
-	}
-	for _, user := range users {
-		state.SetQuota(user.Id, user.Quota)
-		for _, token := range user.Tokens {
-			state.SetTokenToUser(user.Id, token.Id)
-		}
-	}
-	for {
-		time.Sleep(1 * time.Minute)
-		// @todo this is obv a very bad design, gotta fix before going distributed
-		for userId, decrease := range state.NullAndReturn() {
-			err := p.db.Exec("UPDATE users SET quota = ? WHERE id = ?", decrease, userId).Error
-			if err != nil {
-				log.Error(err)
-			}
-		}
-	}
-}
-
 func (p *Proxy) Nuker() {
 	projects := []domain.Project{}
 	err := p.db.Select("name, author").Find(&projects).Error
@@ -191,7 +168,7 @@ func (p *Proxy) Nuker() {
 	}
 	for _, v := range projects {
 		exec.Command("/bin/bash", "./bash/stop-container.sh", v.Author, v.Name).CombinedOutput()
-		state.MarkAsDown(v.Author, v.Name)
+		p.state.MarkAsDown(v.Author, v.Name)
 		//if err != nil {
 		// don't log this - a lot of containers do not exists hence it's producing lot of logs
 		// log.Error("Error stopping container: %v | %v", string(outp), err)
@@ -205,20 +182,20 @@ func (p *Proxy) Nuker() {
 				log.Error(err)
 			}
 			for _, v := range projects {
-				if !state.IsUp(v.Author, v.Name) {
+				if isUp, _ := p.state.IsUp(v.Author, v.Name); !isUp {
 					exec.Command("/bin/bash", "./bash/stop-container.sh", v.Author, v.Name).CombinedOutput()
-					state.MarkAsDown(v.Author, v.Name)
+					p.state.MarkAsDown(v.Author, v.Name)
 				}
 			}
 		}
 		for _, v := range projects {
-			shallLive := state.LastCallIn(v.Author, v.Name, 11*time.Second)
+			shallLive, _ := p.state.LastCallIn(v.Author, v.Name, 11*time.Second)
 			if shallLive {
 				continue
 			}
 			_, err := exec.Command("/bin/bash", "./bash/stop-container.sh", v.Author, v.Name).CombinedOutput()
 			if err == nil {
-				state.MarkAsDown(v.Author, v.Name)
+				p.state.MarkAsDown(v.Author, v.Name)
 			}
 		}
 		i++

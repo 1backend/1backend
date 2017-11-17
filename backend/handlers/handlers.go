@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 
 	log "github.com/cihub/seelog"
+	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	httpr "github.com/julienschmidt/httprouter"
 	uuid "github.com/satori/go.uuid"
@@ -20,14 +21,16 @@ import (
 )
 
 type Handlers struct {
-	db *gorm.DB
-	ep *endpoints.Endpoints
+	db          *gorm.DB
+	ep          *endpoints.Endpoints
+	redisClient *redis.Client
 }
 
-func NewHandlers(db *gorm.DB) *Handlers {
+func NewHandlers(db *gorm.DB, rc *redis.Client) *Handlers {
 	return &Handlers{
-		db: db,
-		ep: endpoints.NewEndpoints(db),
+		db:          db,
+		ep:          endpoints.NewEndpoints(db),
+		redisClient: rc,
 	}
 }
 

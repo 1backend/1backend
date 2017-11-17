@@ -1,130 +1,114 @@
 package state
 
 import (
-	"sync"
+	"errors"
 	"time"
+
+	"github.com/go-redis/redis"
 )
 
-var (
-	ports         = sync.Map{}
-	lastCall      = sync.Map{}
-	isUp          = sync.Map{}
-	underStartup  = sync.Map{}
-	reqNums       = sync.Map{}
-	tokensToUsers = sync.Map{}
-)
+// State stores anythin that you would store in memory
+type State struct {
+	redisClient *redis.Client
+}
 
-func Port(author, projectName string) int {
-	val, ok := ports.Load(author + "_" + projectName)
-	if ok {
-		return val.(int)
+func NewState(redisClient *redis.Client) *State {
+	return &State{
+		redisClient: redisClient,
 	}
-	return 0
 }
 
-func SetPort(author, projectName string, port int) {
-	ports.Store(author+"_"+projectName, port)
+func (s *State) Port(author, projectName string) (int, error) {
+	port, err := s.redisClient.Get("port:" + author + "_" + projectName).Int64()
+	return int(port), err
+}
+
+func (s *State) SetPort(author, projectName string, port int) error {
+	return s.redisClient.Set(author+"_"+projectName, port, 0).Err()
 }
 
 // Use this to remove the service after stopping the container
-func MarkAsDown(author, projectName string) {
-	isUp.Store(author+"_"+projectName, false)
+func (s *State) MarkAsDown(author, projectName string) error {
+	return s.redisClient.Set("isup:"+author+"_"+projectName, 0, 0).Err()
 }
 
 // Use this to remove the service after stopping the container
-func MarkAsUp(author, projectName string) {
-	isUp.Store(author+"_"+projectName, true)
+func (s *State) MarkAsUp(author, projectName string) error {
+	return s.redisClient.Set("isup:"+author+"_"+projectName, 1, 0).Err()
 }
 
-func IsUp(author, projectName string) bool {
-	val, ok := isUp.Load(author + "_" + projectName)
-	if !ok {
-		return false
+func (s *State) IsUp(author, projectName string) (bool, error) {
+	val, err := s.redisClient.Get("isup:" + author + "_" + projectName).Int64()
+	if err != nil {
+		return false, err
 	}
-	return val.(bool)
+	return val == 1, nil
 }
 
 // Use this to remove the service after stopping the container
-func MarkAsUnderStartup(author, projectName string) {
-	underStartup.Store(author+"_"+projectName, true)
+func (s *State) MarkAsUnderStartup(author, projectName string) error {
+	return s.redisClient.Set("starting:"+author+"_"+projectName, 1, 0).Err()
 }
 
 // Use this to remove the service after stopping the container
-func MarkAsNotUnderStartup(author, projectName string) {
-	underStartup.Store(author+"_"+projectName, false)
+func (s *State) MarkAsNotUnderStartup(author, projectName string) error {
+	return s.redisClient.Set("starting:"+author+"_"+projectName, 0, 0).Err()
 }
 
-func IsUnderStartup(author, projectName string) bool {
-	val, ok := underStartup.Load(author + "_" + projectName)
-	if !ok {
-		return false
+func (s *State) IsUnderStartup(author, projectName string) (bool, error) {
+	val, err := s.redisClient.Get("starting:" + author + "_" + projectName).Int64()
+	if err != nil {
+		return false, err
 	}
-	return val.(bool)
+	return val == 1, nil
 }
 
 // Returns wether you can use the service or has to start it
-func LastCallIn(author, projectName string, d time.Duration) bool {
-	lc, ok := lastCall.Load(author + "_" + projectName)
-	if !ok {
-		return false
+func (s *State) LastCallIn(author, projectName string, d time.Duration) (bool, error) {
+	val, err := s.redisClient.Get("lastcall:" + author + "_" + projectName).Int64()
+	if err != nil {
+		return false, err
 	}
-	return time.Now().Sub(lc.(time.Time)) < d
+	return time.Now().Sub(time.Unix(val, 0)) < d, nil
 }
 
 // Call this when proxying a request
-func SetLastCall(author, projectName string) {
-	lastCall.Store(author+"_"+projectName, time.Now())
+func (s *State) SetLastCall(author, projectName string) error {
+	return s.redisClient.Set("lastcall:"+author+"_"+projectName, time.Now().Unix(), 0).Err()
 }
 
-// ReqNum keeps track of service calls against a users' quota.+.++.
-type ReqNum struct {
-	mtx   sync.RWMutex
-	Count int64
-}
-
-func Decrement(userId string) {
-	val, ok := reqNums.Load(userId)
-	if !ok {
-		reqNums.Store(userId, &ReqNum{})
-		return
+func (s *State) Decrement(tokenId string) error {
+	val, err := s.redisClient.Get("quota:" + tokenId).Int64()
+	if err != nil {
+		return err
 	}
-	v := val.(*ReqNum)
-	v.mtx.Lock()
-	defer v.mtx.Unlock()
-	v.Count--
+	if val <= 0 {
+		return errors.New("Quote exceeded")
+	}
+	return s.redisClient.Decr("quota:" + tokenId).Err()
+}
+
+func (s *State) DecrementBy(tokenId string, amt int64) error {
+	val, err := s.redisClient.Get("quota:" + tokenId).Int64()
+	if err != nil {
+		return err
+	}
+	if val <= amt {
+		return errors.New("Quota would be less than 0")
+	}
+	return s.redisClient.DecrBy("quota:"+tokenId, amt).Err()
+}
+
+func (s *State) IncrementBy(tokenId string, amt int64) error {
+	return s.redisClient.IncrBy("quota:"+tokenId, amt).Err()
 }
 
 // Use at initialization
-func SetQuota(userId string, quota int64) {
-	reqNums.Store(userId, &ReqNum{
-		Count: quota,
-	})
-	return
-}
-
-// Nulls counters and returns and id to request number map to save in the DB
-func NullAndReturn() map[string]int64 {
-	ret := map[string]int64{}
-	reqNums.Range(func(key interface{}, val interface{}) bool {
-		v := val.(*ReqNum)
-		v.mtx.Lock()
-		defer v.mtx.Unlock()
-		v.Count = 0
-		return true
-	})
-	return ret
+func (s *State) SetQuota(tokenId string, quota int64) error {
+	return s.redisClient.Set("quota:"+tokenId, quota, 0).Err()
 }
 
 // Use at initialization
-func SetTokenToUser(userId, tokenId string) {
-	tokensToUsers.Store(tokenId, userId)
-	return
-}
-
-func GetUserIdOfToken(tokenId string) string {
-	userId, val := tokensToUsers.Load(tokenId)
-	if !val {
-		return ""
-	}
-	return userId.(string)
+func (s *State) GetQuota(tokenId string, quota int64) error {
+	return s.redisClient.Set("quota:"+tokenId, quota, 0).Err()
 }
