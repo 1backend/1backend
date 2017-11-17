@@ -38,28 +38,33 @@ func (p *Proxy) launchAndWait(author, projectName string) error {
 	if err != nil {
 		return fmt.Errorf("Start container failed: %v | %v ", string(output), err)
 	}
-	time.Sleep(100 * time.Millisecond)
-	output, err = exec.Command("/bin/bash", "./bash/get-port.sh", author, projectName).CombinedOutput()
-	if err != nil {
-		return err
-	}
+	time.Sleep(50 * time.Millisecond)
 	var po int64
-	po, err = strconv.ParseInt(strings.TrimSpace(string(output)), 10, 64)
-	if err != nil {
-		return err
-	}
-	maxIter := 5
-	tts := 125 * time.Millisecond
 	for i := 0; i <= 5; i++ {
-		if err != nil && i == maxIter {
+		time.Sleep(50 * time.Millisecond)
+		if err != nil && i == 5 {
 			return err
 		}
-		err = p.state.SetPort(author, projectName, int(po))
+		output, err = exec.Command("/bin/bash", "./bash/get-port.sh", author, projectName).CombinedOutput()
 		if err != nil {
 			continue
 		}
+		po, err = strconv.ParseInt(strings.TrimSpace(string(output)), 10, 64)
+		if err != nil {
+			continue
+		}
+		break
+	}
+	err = p.state.SetPort(author, projectName, int(po))
+	if err != nil {
+		return err
+	}
+	for i := 0; i <= 5; i++ {
+		if err != nil && i == 5 {
+			return err
+		}
+		time.Sleep(125 * time.Millisecond)
 		port := int(po)
-		time.Sleep(tts)
 		_, err = http.Get(fmt.Sprintf("%s://%s:%v/ping", "http", "127.0.0.1", port))
 		if err != nil {
 			continue
@@ -181,12 +186,6 @@ func (p *Proxy) Nuker() {
 			if err != nil {
 				log.Error(err)
 			}
-			for _, v := range projects {
-				if isUp, _ := p.state.IsUp(v.Author, v.Name); !isUp {
-					exec.Command("/bin/bash", "./bash/stop-container.sh", v.Author, v.Name).CombinedOutput()
-					p.state.MarkAsDown(v.Author, v.Name)
-				}
-			}
 		}
 		for _, v := range projects {
 			shallLive, _ := p.state.LastCallIn(v.Author, v.Name, 11*time.Second)
@@ -199,12 +198,6 @@ func (p *Proxy) Nuker() {
 			}
 		}
 		i++
-		if i%10 == 0 {
-			err := p.db.Select("name, author").Find(&projects).Error
-			if err != nil {
-				log.Error(err)
-			}
-		}
 		time.Sleep(10 * time.Second)
 	}
 }

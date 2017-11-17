@@ -52,6 +52,10 @@ export class CodeComponent implements OnInit {
 
   add() {
     this.project.Endpoints.push(this.newEndpoint);
+    this.save();
+  }
+
+  save() {
     this.http
       .put(this._const.url + '/v1/project', {
         project: this.project,
@@ -63,6 +67,20 @@ export class CodeComponent implements OnInit {
         },
         error => {}
       );
+  }
+
+  getTestToken(): string {
+    const tokens = this.us.user.Tokens;
+    if (!tokens || !tokens.length) {
+      return '';
+    }
+    const token = tokens.filter(t => {
+      return t.Name === 'test';
+    });
+    if (token.length === 0) {
+      return '';
+    }
+    return tokens[0].Token;
   }
 
   getMode() {
@@ -83,26 +101,6 @@ export class CodeComponent implements OnInit {
 
   pageChanged($event: any) {
     this.currentPage = $event.pageIndex;
-  }
-
-  save() {
-    this.http
-      .put(this._const.url + '/v1/project', {
-        project: this.project,
-        token: this.ss.getToken()
-      })
-      .subscribe(
-        data => {
-          this.refresh();
-        },
-        error => {}
-      );
-  }
-
-  getTestToken(): string {
-    return this.us.user.Tokens.filter(t => {
-      return t.Name === 'test';
-    })[0].Token;
   }
 
   delete(e: types.Endpoint) {
@@ -141,17 +139,10 @@ export class CodeComponent implements OnInit {
     e.Selected = !e.Selected;
   }
 
-  saveSql() {
-    this.http
-      .put(this._const.url + '/v1/project', {
-        project: this.project
-      })
-      .subscribe(data => {}, error => {});
-  }
   goSql() {
     this.router.navigate([
       '/' + this.project.Author + '/' + this.project.Name + '/' + 'sql-console'
     ]);
-    location.reload();
+    location.reload(); // XD
   }
 }

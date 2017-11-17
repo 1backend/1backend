@@ -24,7 +24,7 @@
       <mat-card *ngFor="let c of issue.Comments" style="margin-top: 0.5em;">
         <mat-card-header>
           <mat-card-title>
-            <a style="color: black;" href="/{{c.User?.Nick}}">{{c.User?.Nick}}</a>
+            <a style="color: black;" routerLink="/{{c.User?.Nick}}">{{c.User?.Nick}}</a>
           </mat-card-title>
           <mat-card-subtitle>{{c.Content && c.UpdatedAt | amTimeAgo}}</mat-card-subtitle>
         </mat-card-header>

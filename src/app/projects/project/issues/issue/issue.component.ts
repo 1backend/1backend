@@ -30,7 +30,6 @@ export class IssueComponent implements OnInit {
 
   ngOnInit() {
     this.getIssue();
-    console.log(this.issue.Comments)
   }
 
   addComment() {

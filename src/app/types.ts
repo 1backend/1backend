@@ -75,6 +75,7 @@ export interface AccessToken {
   UserId?: string;
   CreatedAt?: string;
   UpdatedAt?: string;
+  Quota?: number;
 }
 
 export interface Issues {

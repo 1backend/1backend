@@ -30,7 +30,7 @@ export class ProjectComponent implements OnInit {
   leftWidth = 19;
   that = this;
   status: boolean;
-  issueId = "";
+  issueId = '';
   loaded = false;
 
   project: types.Project = {
@@ -53,13 +53,13 @@ export class ProjectComponent implements OnInit {
     this.issueId = this.route.snapshot.params['issueId'];
     this.makeRefresh()();
     if (this.tab === 'sql-console') {
-      this.selectedIndex = 2;
+      this.selectedIndex = 3;
     }
     if (this.tab === 'builds') {
       this.selectedIndex = 1;
     }
     if (this.tab === 'issues' || this.issueId) {
-      this.selectedIndex = 3;
+      this.selectedIndex = 2;
     }
     if (this.tab === 'stars') {
       this.selectedIndex = 4;
@@ -70,7 +70,6 @@ export class ProjectComponent implements OnInit {
     const that = this;
     return () => {
       let p = new HttpParams();
-      console.log(that.leftWidth);
       p = p.set('author', that.author);
       p = p.set('project', that.projectName);
       p = p.set('token', that.ss.getToken());
@@ -106,7 +105,8 @@ export class ProjectComponent implements OnInit {
               });
             }
             if (!proj.ReadMe) {
-              proj.ReadMe = proj.Name + '\n===\nThis project doesn\'t have a readme yet.';
+              proj.ReadMe =
+                proj.Name + "\n===\nThis project doesn't have a readme yet.";
             }
             that.project = proj;
             that.loaded = true;
@@ -137,16 +137,17 @@ export class ProjectComponent implements OnInit {
     const pid = tabGroup._tabs.find((e, i, a) => i === tabGroup.selectedIndex)
       .content.viewContainerRef.element.nativeElement.dataset.pid;
     if (pid !== 'code') {
-      this.location.go('/' + this.project.Author + '/' + this.project.Name + '/' + pid);
+      this.location.go('/' + this.author + '/' + this.projectName + '/' + pid);
     } else {
-      this.location.go('/' + this.project.Author + '/' + this.project.Name);
+      this.location.go('/' + this.author + '/' + this.projectName);
     }
   }
 
   getStatus() {
     this.http
       .get<PingResponse>(
-        this._const.url + '/app/' +
+        this._const.url +
+          '/app/' +
           this.author +
           '/' +
           this.projectName +
