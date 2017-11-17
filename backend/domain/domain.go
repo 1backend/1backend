@@ -80,7 +80,6 @@ type User struct {
 	Name       string
 	Email      string
 	AvatarLink string
-	Quota      int64
 	Tokens     []Token
 	Premium    bool
 	CreatedAt  time.Time
@@ -98,13 +97,14 @@ type AccessToken struct {
 
 // service access token
 type Token struct {
-	Id        string
-	Token     string
-	UserId    string
-	Name      string // eg. "test", "xyz-app" etc. max 32 chars
-	Enabled   bool
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Id          string
+	Token       string
+	UserId      string
+	Name        string // eg. "test", "xyz-app" etc. max 32 chars
+	Description string
+	Quota       int64 `gorm:"-"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 type Issue struct {

@@ -18,6 +18,7 @@ import (
 
 	"github.com/1backend/1backend/backend/domain"
 	"github.com/1backend/1backend/backend/endpoints"
+	"github.com/1backend/1backend/backend/state"
 )
 
 type Handlers struct {
@@ -29,7 +30,7 @@ type Handlers struct {
 func NewHandlers(db *gorm.DB, rc *redis.Client) *Handlers {
 	return &Handlers{
 		db:          db,
-		ep:          endpoints.NewEndpoints(db),
+		ep:          endpoints.NewEndpoints(db, rc),
 		redisClient: rc,
 	}
 }
@@ -118,6 +119,11 @@ func (h *Handlers) GetUser(w http.ResponseWriter, r *http.Request, p httpr.Param
 		if err != nil {
 			write400(w, err)
 			return
+		}
+		st := state.NewState(h.redisClient)
+		for i, v := range user.Tokens {
+			val, _ := st.GetQuota(v.Token)
+			user.Tokens[i].Quota = val
 		}
 		write(w, user)
 		return
@@ -517,8 +523,9 @@ func (h *Handlers) DeleteStar(w http.ResponseWriter, r *http.Request, p httpr.Pa
 
 func (h *Handlers) CreateToken(w http.ResponseWriter, r *http.Request, p httpr.Params) {
 	inp := struct {
-		Token            string
-		ServiceTokenName string
+		Token                   string
+		ServiceTokenName        string
+		ServiceTokenDescription string
 	}{}
 	if err := readJsonBody(r, &inp); err != nil {
 		write400(w, err)
@@ -530,10 +537,10 @@ func (h *Handlers) CreateToken(w http.ResponseWriter, r *http.Request, p httpr.P
 		return
 	}
 	token := &domain.Token{
-		Token:   uuid.NewV4().String(),
-		Name:    inp.ServiceTokenName,
-		Enabled: true,
-		UserId:  user.Id,
+		Token:       uuid.NewV4().String(),
+		Name:        inp.ServiceTokenName,
+		Description: inp.ServiceTokenDescription,
+		UserId:      user.Id,
 	}
 	err = h.ep.CreateToken(token)
 	if err != nil {

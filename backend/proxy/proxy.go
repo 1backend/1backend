@@ -126,7 +126,7 @@ func (p *Proxy) Proxy(w http.ResponseWriter, req *http.Request, params httpr.Par
 	p.state.SetLastCall(author, projectName)
 	port, err := p.state.Port(author, projectName)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, fmt.Sprintf("port not found: %v", err), http.StatusInternalServerError)
 		return
 	}
 	// create a new url from the raw RequestURI sent by the client

@@ -20,11 +20,14 @@ func NewState(redisClient *redis.Client) *State {
 
 func (s *State) Port(author, projectName string) (int, error) {
 	port, err := s.redisClient.Get("port:" + author + "_" + projectName).Int64()
-	return int(port), err
+	if err != redis.Nil {
+		return 0, err
+	}
+	return int(port), nil
 }
 
 func (s *State) SetPort(author, projectName string, port int) error {
-	return s.redisClient.Set(author+"_"+projectName, port, 0).Err()
+	return s.redisClient.Set("port:"+author+"_"+projectName, port, 0).Err()
 }
 
 // Use this to remove the service after stopping the container
@@ -39,7 +42,7 @@ func (s *State) MarkAsUp(author, projectName string) error {
 
 func (s *State) IsUp(author, projectName string) (bool, error) {
 	val, err := s.redisClient.Get("isup:" + author + "_" + projectName).Int64()
-	if err != nil {
+	if err != redis.Nil {
 		return false, err
 	}
 	return val == 1, nil
@@ -57,7 +60,7 @@ func (s *State) MarkAsNotUnderStartup(author, projectName string) error {
 
 func (s *State) IsUnderStartup(author, projectName string) (bool, error) {
 	val, err := s.redisClient.Get("starting:" + author + "_" + projectName).Int64()
-	if err != nil {
+	if err != redis.Nil {
 		return false, err
 	}
 	return val == 1, nil
@@ -66,8 +69,11 @@ func (s *State) IsUnderStartup(author, projectName string) (bool, error) {
 // Returns wether you can use the service or has to start it
 func (s *State) LastCallIn(author, projectName string, d time.Duration) (bool, error) {
 	val, err := s.redisClient.Get("lastcall:" + author + "_" + projectName).Int64()
-	if err != nil {
+	if err != redis.Nil {
 		return false, err
+	}
+	if err == redis.Nil {
+		return false, nil
 	}
 	return time.Now().Sub(time.Unix(val, 0)) < d, nil
 }
@@ -79,7 +85,7 @@ func (s *State) SetLastCall(author, projectName string) error {
 
 func (s *State) Decrement(tokenId string) error {
 	val, err := s.redisClient.Get("quota:" + tokenId).Int64()
-	if err != nil {
+	if err != redis.Nil {
 		return err
 	}
 	if val <= 0 {
@@ -109,6 +115,6 @@ func (s *State) SetQuota(tokenId string, quota int64) error {
 }
 
 // Use at initialization
-func (s *State) GetQuota(tokenId string, quota int64) error {
-	return s.redisClient.Set("quota:"+tokenId, quota, 0).Err()
+func (s *State) GetQuota(tokenId string) (int64, error) {
+	return s.redisClient.Get("quota:" + tokenId).Int64()
 }
