@@ -21,18 +21,18 @@ export class AuthorComponent implements OnInit {
   saved = true;
   user: types.User = {} as types.User;
   userFound = true;
+  serviceTokenName = '';
 
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
-    private router: Router, 
+    private router: Router,
     private ss: SessionService,
     private _const: ConstService,
     private notif: NotificationsService,
-    public us: UserService,
+    public us: UserService
   ) {
     this.refresh();
-
   }
   save() {
     if (this.validator() !== 'ok') {
@@ -58,16 +58,15 @@ export class AuthorComponent implements OnInit {
   }
 
   ngOnInit() {
-
-// this solution is a bit crufty, but works fine.
-  this.router.events.subscribe((event: Event) => {
+    // this solution is a bit crufty, but works fine.
+    this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationStart) {
         setTimeout(() => {
           this.refresh();
         }, 500);
-        }
-  });
-}
+      }
+    });
+  }
 
   refresh() {
     this.author = this.route.snapshot.params['author'];
@@ -86,7 +85,8 @@ export class AuthorComponent implements OnInit {
               if (a.UpdatedAt === b.UpdatedAt) {
                 return 0;
               }
-            } if (a.UpdatedAt < b.UpdatedAt) {
+            }
+            if (a.UpdatedAt < b.UpdatedAt) {
               return 1;
             }
             return -1;
@@ -96,17 +96,14 @@ export class AuthorComponent implements OnInit {
           this.userFound = false;
         }
       );
-      p = new HttpParams();
-      if (this.author === this.us.user.Nick) {
-        p = p.set('token', this.ss.getToken());
-      } else {
-        p = p.set('nick', this.author);
-      }
+    p = new HttpParams();
+    p = p.set('token', this.ss.getToken());
+    p = p.set('nick', this.author);
     this.http
       .get<types.User>(this._const.url + '/v1/user', { params: p })
       .subscribe(
         user => {
-            this.user = user;
+          this.user = user;
         },
         error => {
           this.userFound = false;
@@ -137,5 +134,16 @@ export class AuthorComponent implements OnInit {
       return;
     }
     return 'ok';
+  }
+  createToken() {
+    this.http
+      .post(this._const.url + '/v1/token', {
+        token: this.ss.getToken(),
+        serviceTokenName: this.serviceTokenName
+      })
+      .subscribe(tok => {
+        this.refresh();
+      },
+      error => {});
   }
 }

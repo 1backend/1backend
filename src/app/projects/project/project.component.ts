@@ -61,6 +61,9 @@ export class ProjectComponent implements OnInit {
     if (this.tab === 'issues' || this.issueId) {
       this.selectedIndex = 3;
     }
+    if (this.tab === 'stars') {
+      this.selectedIndex = 4;
+    }
   }
 
   makeRefresh(): () => void {
@@ -133,7 +136,6 @@ export class ProjectComponent implements OnInit {
   selectedIndexChange(tabGroup: MatTabGroup) {
     const pid = tabGroup._tabs.find((e, i, a) => i === tabGroup.selectedIndex)
       .content.viewContainerRef.element.nativeElement.dataset.pid;
-    console.log(pid);
     if (pid !== 'code') {
       this.location.go('/' + this.project.Author + '/' + this.project.Name + '/' + pid);
     } else {
