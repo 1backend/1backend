@@ -219,10 +219,14 @@ func (h *Handlers) GetProject(w http.ResponseWriter, r *http.Request, p httpr.Pa
 		write400(w, err)
 		return
 	}
-	if !project.Public {
-		if err := h.ep.OwnsProject(token, project.Id); err != nil {
-			write400(w, err)
-			return
+	owns := h.ep.OwnsProject(token, project.Id)
+	if !project.Public && owns != nil {
+		write400(w, owns)
+		return
+	}
+	if !project.OpenSource && owns != nil {
+		for _, v := range project.Endpoints {
+			v.Code = ""
 		}
 	}
 	write(w, project)
@@ -244,7 +248,7 @@ func (h *Handlers) GetProjects(w http.ResponseWriter, r *http.Request, p httpr.P
 	} else {
 		db = db.Where("author = ? AND public = true", nick)
 	}
-	err := db.Find(&projects).Error
+	err := db.Select("author, name, id, stars, public, open_source, description, recipe, created_at, updated_at").Find(&projects).Error
 	if err != nil {
 		write400(w, err)
 		return

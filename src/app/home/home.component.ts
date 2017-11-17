@@ -8,24 +8,14 @@ import { SessionService } from "../session.service";
   styleUrls: ["./home.component.css"]
 })
 export class HomeComponent implements OnInit {
-
   constructor(
     private loginDialog: LoginDialogService,
     private ss: SessionService
-  ) { }
+  ) {}
 
-  ngOnInit() { }
-
-  create() {
-    if (this.ss.getToken() === '') {
-      this.loginDialog.openDialog(true, () => {
-        alert("xsa xsxax  as");
-      });
-    }
-  }
+  ngOnInit() {}
 
   scroll(el) {
     el.scrollIntoView();
   }
-
 }

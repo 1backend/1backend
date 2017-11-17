@@ -172,7 +172,9 @@ import {
   MatIconModule,
   MatTabsModule,
   MatDialogModule,
-  MatDialog
+  MatDialog,
+  MatListModule,
+  MatExpansionModule
 } from '@angular/material';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -289,7 +291,9 @@ const appRoutes: Routes = [
     MatDialogModule,
     Ng2PageScrollModule,
     MatTooltipModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatListModule,
+    MatExpansionModule
   ],
   providers: [
     HttpClient,

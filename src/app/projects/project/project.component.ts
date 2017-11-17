@@ -61,6 +61,9 @@ export class ProjectComponent implements OnInit {
     if (this.tab === 'issues' || this.issueId) {
       this.selectedIndex = 2;
     }
+    if (this.tab === 'stars') {
+      this.selectedIndex = 4;
+    }
   }
 
   makeRefresh(): () => void {

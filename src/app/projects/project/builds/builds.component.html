@@ -23,7 +23,7 @@
     </div>
   </mat-card-title>
   <div *ngIf="build.Selected">
-    <ace-editor class="editor" [text]="build.Output" [mode]="'sql'" style="min-height: 200px; width:100%;
+    <ace-editor class="editor" [text]="build.Output" [mode]="'sh'" style="min-height: 200px; width:100%;
   overflow: auto;" #editor></ace-editor>
   </div>
 </mat-card>

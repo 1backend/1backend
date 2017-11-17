@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS projects
   description         VARCHAR(256)                                                    NOT NULL,
   name                VARCHAR(128)                                                    NOT NULL,
   public              BOOLEAN                                                         NOT NULL,
+  open_source         BOOLEAN                                                         NOT NULL,
   mode                VARCHAR(32)                                                     NOT NULL,
   recipe              VARCHAR(32)                                                     NOT NULL,
   imports             TEXT                                                            NOT NULL,
@@ -69,6 +70,7 @@ CREATE TABLE IF NOT EXISTS dependencies
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE dependencies
+      ADD CONSTRAINT uniqueDepPerProject UNIQUE (project_id, type),
       ADD FOREIGN KEY (project_id) REFERENCES projects (id);
 
 CREATE TABLE IF NOT EXISTS endpoints
@@ -85,6 +87,7 @@ CREATE TABLE IF NOT EXISTS endpoints
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE endpoints
+      ADD CONSTRAINT uniqueEndpointPerProject UNIQUE (project_id, method, url),
       ADD FOREIGN KEY (project_id) REFERENCES projects (id);
 
 CREATE TABLE IF NOT EXISTS builds
@@ -108,6 +111,7 @@ CREATE TABLE IF NOT EXISTS users
   nick                VARCHAR(32)                                                     NOT NULL,
   name                VARCHAR(32)                                                     NOT NULL,
   password            VARCHAR(128)                                                    NOT NULL,
+  premium             BOOLEAN                                                         NOT NULL,
   email               VARCHAR(128)                                                    NOT NULL,
   avatar_link         VARCHAR(128)                                                    NOT NULL,
   created_at          DATETIME DEFAULT CURRENT_TIMESTAMP                              NOT NULL,
@@ -139,5 +143,6 @@ CREATE TABLE IF NOT EXISTS stars
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE stars
+      ADD CONSTRAINT uniqueStarPerProject UNIQUE (project_id, user_id),
       ADD FOREIGN KEY (project_id) REFERENCES projects (id),
       ADD FOREIGN KEY (user_id) REFERENCES users (id);

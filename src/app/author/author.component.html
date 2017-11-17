@@ -62,9 +62,38 @@
       <button mat-raised-button class="button" color="accent" (click)="edit()">Edit</button>
     </div>
   </div>
-  <div fxFlex="1 1 75%" fxFlex.lt-lg="1 1 70%" class="project-list" style="margin-bottom: 1em; padding-top: 0em" >
-    <mat-card>
-     <app-project-list [projects]="projects"></app-project-list>
-    </mat-card>
+  <div fxFlex="1 1 75%" fxFlex.lt-lg="1 1 70%" class="project-list" style="margin-bottom: 1em; padding-top: 0em">
+    <mat-tab-group>
+      <mat-tab label="Profile">
+        <mat-card>
+          <app-project-list [projects]="projects"></app-project-list>
+        </mat-card>
+      </mat-tab>
+      <mat-tab label="Token">
+        <mat-card>
+          <div class="form">
+            <h2 style="padding-bottom: 1em" align="center">Create new token</h2>
+            <mat-form-field class="example-full-width" style="width: 100%">
+              <input matInput placeholder="Token name" [(ngModel)]="serviceTokenName" />
+            </mat-form-field>
+            <button mat-raised-button (click)="createToken()" color="primary">Create</button>
+          </div>
+        </mat-card>
+          <div *ngFor="let token of user.Tokens" style="padding-bottom: 2em;">
+            <mat-expansion-panel expanded="false">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <font size="4">
+                    <b>Name: </b>{{token.Name}}</font>
+                </mat-panel-title>
+                <mat-panel-description>
+                  Enabled: {{token.Enabled}}
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <p>Token: {{token.Token}}</p> <p>Created: {{token.CreatedAt}}</p>
+            </mat-expansion-panel>
+          </div>
+      </mat-tab>
+    </mat-tab-group>
   </div>
 </div>
