@@ -15,8 +15,8 @@
   <div *ngFor="let p of projects | FilterPipe: search | slice:this.currentPage * 10:(this.currentPage + 1) * 10" style="margin-top: 1em; margin-bottom: 2em; border-bottom: 1px solid #c5c5c5; padding-bottom: 1em; font-family: 'Roboto Light';">
     <div flexLayout="row wrap" fxLayout.xs="column">
       <div fxFlex="1 1 80%" fxFlex.md="1 1 60%" style="padding-top: 0em; padding-bottom: 1em;">
-        <a href="{{p.Author}}"><font class="author-link" size="4">{{p.Author}}</font></a><font size="5" style="color: #757575"> /</font>
-        <a  href="{{p.Author + '/' + p.Name}}"><font class="author-link" size="4" style="margin-left: -4px;"><b>{{p.Name}}</b></font></a>
+        <a routerLink="/{{p.Author}}"><font class="author-link" size="4">{{p.Author}}</font></a><font size="5" style="color: #757575"> /</font>
+        <a routerLink="/{{p.Author}}/{{p.Name}}"><font class="author-link" size="4" style="margin-left: -4px;"><b>{{p.Name}}</b></font></a>
       </div>
       <div align="start" fxFlex="1 1 20%" fxFlex.lt-lg="1 1 50%"  style="padding-top: 0.5em;" fxLayoutAlign="end space-between">
         <button mat-raised-button (click)="star(p)" style="position: relative; top: -10px">

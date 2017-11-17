@@ -1,13 +1,13 @@
 <div *ngIf="!userFound">
   <mat-card align="center">
     <div>
-      <h1>User not found</h1>
-    </div>
-    <div>
-      <a href="/projects">
-        Navigate to search
-      </a>
-    </div>
+    <h1>User not found</h1>
+  </div>
+  <div>
+    <a routerLink="/projects">
+      Navigate to search
+    </a>
+  </div>
   </mat-card>
 </div>
 <div flexLayout="row" fxLayoutAlign="center" style="margin-top: 2em;" *ngIf="userFound">
@@ -25,7 +25,7 @@
       </div>
       <div>
         <mat-form-field style="width: 100%">
-          <input matInput placeholder="Nickname" [(ngModel)]="user.Nick" />
+          <input disabled matInput placeholder="Nickname" [(ngModel)]="user.Nick"/>
         </mat-form-field>
       </div>
       <div>
