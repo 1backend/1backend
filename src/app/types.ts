@@ -65,6 +65,8 @@ export interface User {
   UpdatedAt: number;
   AvatarLink: string;
   Premium?: boolean;
+  Tokens?: Token[];
+  Quota?: number;
 }
 
 export interface AccessToken {
@@ -111,4 +113,13 @@ export interface Issue {
   CreatedBy?: User;
   CreatedAt?: string;
   UpdatedAt?: string;
+}
+export interface Token {
+  Id?: string;
+  Token?: string;
+  UserId?: string;
+  Name?: string;
+  CreatedAt?: string;
+  UpdatedAt?: string;
+  Enabled?: boolean;
 }

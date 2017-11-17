@@ -73,4 +73,21 @@
     <app-issues *ngIf="!issueId && project?.Id?.length > 0" [project]="project"></app-issues>
     <app-issue *ngIf="issueId" [issueId]="issueId" [author]="author" [projectName]="projectName"></app-issue>
   </mat-tab>
+  <mat-tab [attr.data-pid]="'stars'">
+    <ng-template mat-tab-label>
+      Stars
+    </ng-template>
+    <div flexlayout="row wrap" fxLayoutAlign="space-between">
+      <mat-card fxFlex="1 1 30%" style="margin-top: 2em;" class="stars">
+        <div *ngFor="let star of project.Starrers" style="padding-bottom: 1em;padding-top: 1em">
+          <a style="color: #2962FF" href="{{star.Nick}}">
+            <font size="4">{{star.Nick}}</font>
+          </a>
+          <div style="padding-top: 0.5em;">
+            Joined {{star.CreatedAt | amTimeAgo}}
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </mat-tab>
 </mat-tab-group>
