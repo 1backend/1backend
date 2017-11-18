@@ -15,13 +15,17 @@ import { UserService } from '../user.service';
 })
 export class AuthorComponent implements OnInit {
   author = '';
-  language = 'javascript';
   name = '';
   projects: types.Project[] = [];
   saved = true;
   user: types.User = {} as types.User;
   userFound = true;
   serviceTokenName = '';
+  serviceTokenDescription = '';
+  from = '';
+  to = '';
+  transferAmount = 0;
+  selectedTabIndex = 0; // workaround for bug https://github.com/angular/material2/issues/5269
 
   constructor(
     private route: ActivatedRoute,
@@ -34,6 +38,7 @@ export class AuthorComponent implements OnInit {
   ) {
     this.refresh();
   }
+
   save() {
     if (this.validator() !== 'ok') {
       return;
@@ -81,10 +86,8 @@ export class AuthorComponent implements OnInit {
       .subscribe(
         projs => {
           this.projects = projs.sort((a, b) => {
-            for (let p of projs) {
-              if (a.UpdatedAt === b.UpdatedAt) {
-                return 0;
-              }
+            if (a.UpdatedAt === b.UpdatedAt) {
+              return 0;
             }
             if (a.UpdatedAt < b.UpdatedAt) {
               return 1;
@@ -124,6 +127,15 @@ export class AuthorComponent implements OnInit {
     );
   }
 
+  getAllCallsLeft(): number {
+    if (!this.us.user.Tokens) {
+      return 0;
+    }
+    return this.us.user.Tokens.map(t => t.Quota).reduce((prev, curr) => {
+      return prev + curr;
+    });
+  }
+
   validator() {
     if (!this.user.Nick) {
       this.notif.error('Nickname is empty');
@@ -135,15 +147,35 @@ export class AuthorComponent implements OnInit {
     }
     return 'ok';
   }
+
+  transfer() {
+    this.http
+      .post(this._const.url + '/v1/token/transfer', {
+        token: this.ss.getToken(),
+        from: this.from,
+        to: this.to,
+        amount: this.transferAmount
+      })
+      .subscribe(
+        tok => {
+          this.refresh();
+        },
+        error => {}
+      );
+  }
+
   createToken() {
     this.http
       .post(this._const.url + '/v1/token', {
         token: this.ss.getToken(),
-        serviceTokenName: this.serviceTokenName
+        serviceTokenName: this.serviceTokenName,
+        serviceTokenDescription: this.serviceTokenDescription
       })
-      .subscribe(tok => {
-        this.refresh();
-      },
-      error => {});
+      .subscribe(
+        tok => {
+          this.refresh();
+        },
+        error => {}
+      );
   }
 }

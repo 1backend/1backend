@@ -66,7 +66,6 @@ export interface User {
   AvatarLink: string;
   Premium?: boolean;
   Tokens?: Token[];
-  Quota?: number;
 }
 
 export interface AccessToken {
@@ -75,7 +74,6 @@ export interface AccessToken {
   UserId?: string;
   CreatedAt?: string;
   UpdatedAt?: string;
-  Quota?: number;
 }
 
 export interface Issues {
@@ -120,7 +118,9 @@ export interface Token {
   Token?: string;
   UserId?: string;
   Name?: string;
+  Description?: string;
   CreatedAt?: string;
   UpdatedAt?: string;
   Enabled?: boolean;
+  Quota?: number;
 }

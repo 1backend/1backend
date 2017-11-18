@@ -1,13 +1,13 @@
 <div *ngIf="!userFound">
   <mat-card align="center">
     <div>
-    <h1>User not found</h1>
-  </div>
-  <div>
-    <a routerLink="/projects">
-      Navigate to search
-    </a>
-  </div>
+      <h1>User not found</h1>
+    </div>
+    <div>
+      <a routerLink="/projects">
+        Navigate to search
+      </a>
+    </div>
   </mat-card>
 </div>
 <div flexLayout="row" fxLayoutAlign="center" style="margin-top: 2em;" *ngIf="userFound">
@@ -25,7 +25,7 @@
       </div>
       <div>
         <mat-form-field style="width: 100%">
-          <input disabled matInput placeholder="Nickname" [(ngModel)]="user.Nick"/>
+          <input disabled matInput placeholder="Nickname" [(ngModel)]="user.Nick" />
         </mat-form-field>
       </div>
       <div>
@@ -46,53 +46,93 @@
       <img src="/assets/nophoto.jpg" class="img" align="middle">
     </div>
     <div readonly>
-      <font size="7">
+      <font size="6">
         <b>{{user.Name}}</b>
       </font>
     </div>
     <div style="padding-bottom: 0em">
-      <font size="4" color="green">
-        <i>{{user.Nick}}</i>
+      <font size="5" color="#666">
+        <i>@{{user.Nick}}</i>
       </font>
     </div>
-    <div style="padding-top: 1.2em;" readonly>
+    <div *ngIf="author === us.user.Nick" style="padding-top: 1.2em;" readonly>
       <font size="4">{{user.Email}}</font>
     </div>
     <div align="center" style="padding-top: 2em;" *ngIf="author === us.user.Nick">
       <button mat-raised-button class="button" color="accent" (click)="edit()">Edit</button>
     </div>
+    <div style="margin-top: 2em" *ngIf="us.user?.Tokens?.length && author === us.user.Nick" align="center">
+        <font size="6" style="color: green">{{getAllCallsLeft()}}</font> calls left
+      </div>
   </div>
   <div fxFlex="1 1 75%" fxFlex.lt-lg="1 1 70%" class="project-list" style="margin-bottom: 1em; padding-top: 0em">
-    <mat-tab-group>
-      <mat-tab label="Profile">
-        <mat-card>
+    <mat-tab-group [(selectedIndex)]="selectedTabIndex">
+
+      <mat-tab label="Projects">
+        <mat-card style="margin-top: 2em">
           <app-project-list [projects]="projects"></app-project-list>
         </mat-card>
       </mat-tab>
-      <mat-tab label="Token">
-        <mat-card>
-          <div class="form">
-            <h2 style="padding-bottom: 1em" align="center">Create new token</h2>
-            <mat-form-field class="example-full-width" style="width: 100%">
-              <input matInput placeholder="Token name" [(ngModel)]="serviceTokenName" />
-            </mat-form-field>
-            <button mat-raised-button (click)="createToken()" color="primary">Create</button>
+
+      <mat-tab *ngIf="author === us.user.Nick" label="Tokens">
+        <div *ngIf="selectedTabIndex == 1">
+          <!-- workaround for bug https://github.com/angular/material2/issues/5269 -->
+          <mat-card style="margin-top: 1em">
+            <mat-tab-group>
+              <mat-tab label="Create a token">
+                <div class="form" style="margin-top: 1em">
+                  <mat-card-title>Create a new token</mat-card-title>
+                  <mat-form-field class="example-full-width" style="width: 100%">
+                    <input matInput placeholder="Name" [(ngModel)]="serviceTokenName" />
+                  </mat-form-field>
+                  <mat-form-field class="example-full-width" style="width: 100%">
+                    <input matInput placeholder="Description" [(ngModel)]="serviceTokenDescription" />
+                  </mat-form-field>
+                  <button mat-raised-button (click)="createToken()" color="primary">Create</button>
+                </div>
+              </mat-tab>
+              <mat-tab label="Transfer quota">
+                <div class="form" style="margin-top: 1em">
+                  <mat-card-title>Transfer quota between tokens</mat-card-title>
+                  <mat-form-field class="example-full-width" style="width: 100%">
+                    <mat-select [(ngModel)]="from" placeholder="From">
+                      <mat-option *ngFor="let token of user.Tokens" [value]="token.Id">
+                        {{ token.Name }} ({{token.Quota}})
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field class="example-full-width" style="width: 100%">
+                    <mat-select [(ngModel)]="to" placeholder="To">
+                      <mat-option *ngFor="let token of user.Tokens" [value]="token.Id">
+                        {{ token.Name }} ({{token.Quota}})
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field class="example-full-width" style="width: 100%">
+                    <input matInput placeholder="Amount" [(ngModel)]="transferAmount" />
+                  </mat-form-field>
+                  <button mat-raised-button (click)="transfer()" color="primary">Transfer</button>
+                </div>
+              </mat-tab>
+            </mat-tab-group>
+          </mat-card>
+          <div *ngFor="let token of user.Tokens">
+            <mat-card>
+              <mat-card-title>
+                {{token.Name}}
+              </mat-card-title>
+              <mat-card-subtitle>
+                {{token.Description}}
+              </mat-card-subtitle>
+              <mat-card-content>
+                <p>{{token.Token}}</p>
+                <p>
+                  <b style="color: green">{{token.Quota | number:'4.0'}}</b> quota left</p>
+                <p>Created {{token.CreatedAt | amTimeAgo}}</p>
+              </mat-card-content>
+            </mat-card>
           </div>
-        </mat-card>
-          <div *ngFor="let token of user.Tokens" style="padding-bottom: 2em;">
-            <mat-expansion-panel expanded="false">
-              <mat-expansion-panel-header>
-                <mat-panel-title>
-                  <font size="4">
-                    <b>Name: </b>{{token.Name}}</font>
-                </mat-panel-title>
-                <mat-panel-description>
-                  Quota: {{token.Quota}}
-                </mat-panel-description>
-              </mat-expansion-panel-header>
-              <p>Token: {{token.Token}}</p> <p>Created: {{token.CreatedAt}}</p>
-            </mat-expansion-panel>
-          </div>
+        </div>
       </mat-tab>
     </mat-tab-group>
   </div>

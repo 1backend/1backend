@@ -93,23 +93,8 @@ func write500(w http.ResponseWriter, err error) {
 func (h *Handlers) GetUser(w http.ResponseWriter, r *http.Request, p httpr.Params) {
 	token := r.URL.Query().Get("token")
 	nick := r.URL.Query().Get("nick")
-	if nick == "" {
-		tk, err := domain.NewAccessTokenDao(h.db).GetByToken(token)
-		if err != nil {
-			write400(w, err)
-			return
-		}
-		user, err := domain.NewUserDao(h.db).GetById(tk.UserId)
-		if err != nil {
-			write400(w, err)
-			return
-		}
-		write(w, user)
-		return
-	}
-	own := h.ep.HasNick(token, nick)
-	if own == nil {
-		// nice copypaste bro
+	ownErr := h.ep.HasNick(token, nick)
+	if nick == "" || ownErr == nil {
 		tk, err := domain.NewAccessTokenDao(h.db).GetByToken(token)
 		if err != nil {
 			write400(w, err)
