@@ -21,7 +21,7 @@ It's extremely early. It's already usable as it is if you want to host it yourse
 
 #### What's the tech used?
 
-Angular 2, Go, Material Design, MySQL, Redis.
+Angular 2, Go, MySQL, Redis.
 
 #### How can I install it?
 

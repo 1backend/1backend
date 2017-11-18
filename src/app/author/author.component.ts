@@ -157,8 +157,9 @@ export class AuthorComponent implements OnInit {
         amount: this.transferAmount
       })
       .subscribe(
-        tok => {
-          this.refresh();
+        () => {
+          this.us.get();
+          this.notif.success('Successfully transferred');
         },
         error => {}
       );
@@ -172,7 +173,7 @@ export class AuthorComponent implements OnInit {
         serviceTokenDescription: this.serviceTokenDescription
       })
       .subscribe(
-        tok => {
+        () => {
           this.refresh();
         },
         error => {}

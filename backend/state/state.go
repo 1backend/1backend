@@ -83,26 +83,27 @@ func (s *State) SetLastCall(author, projectName string) error {
 	return s.redisClient.Set("lastcall:"+author+"_"+projectName, time.Now().Unix(), 0).Err()
 }
 
-func (s *State) Decrement(tokenId string) error {
-	val, err := s.redisClient.Get("quota:" + tokenId).Int64()
+// Decrement needs the token that's used for calls, not the token id
+func (s *State) Decrement(token string) error {
+	val, err := s.redisClient.Get("quota:" + token).Int64()
 	if err != nil && err != redis.Nil {
 		return err
 	}
 	if val <= 0 {
 		return errors.New("Quote exceeded")
 	}
-	return s.redisClient.Decr("quota:" + tokenId).Err()
+	return s.redisClient.Decr("quota:" + token).Err()
 }
 
-func (s *State) DecrementBy(tokenId string, amt int64) error {
-	val, err := s.redisClient.Get("quota:" + tokenId).Int64()
+func (s *State) DecrementBy(token string, amt int64) error {
+	val, err := s.redisClient.Get("quota:" + token).Int64()
 	if err != nil && err != redis.Nil {
 		return err
 	}
 	if val <= amt {
 		return errors.New("Quota would be less than 0")
 	}
-	return s.redisClient.DecrBy("quota:"+tokenId, amt).Err()
+	return s.redisClient.DecrBy("quota:"+token, amt).Err()
 }
 
 func (s *State) IncrementBy(tokenId string, amt int64) error {
