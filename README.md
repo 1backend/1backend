@@ -6,10 +6,14 @@
 
 #### Why?
 
-We've spent more than 5 years building and using microservices at various companies.
+The idea of building this came when we realised we have a bunch of services running all over the place and it costs a lot of money and time to maintain them, and we couldn't find an open source solution to host them efficiently.
+
+We've also spent more than 5 years building and using microservices at various companies.
 We have seen very many ways of it going wrong.
 
 This project is an excercise in daydreaming about how could it possibly work well.
+
+Perhaps, most importantly, it is also a lot of fun to build this.
 
 #### What's the state of the project?
 
