@@ -77,8 +77,12 @@ func (p *Proxy) launchAndWait(author, projectName string) error {
 
 // This is a horribly overcomplicated abomination
 func (p *Proxy) Proxy(w http.ResponseWriter, req *http.Request, params httpr.Params) {
+	path := strings.Split(req.RequestURI, "/")
+	author := path[2]
+	projectName := path[3]
+	newPath := strings.Join(path[4:], "/")
 	token := req.Header.Get("token")
-	if token == "" {
+	if newPath != "ping" && token == "" {
 		http.Error(w, "Please send a token in the header", http.StatusBadRequest)
 		return
 	}
@@ -91,9 +95,6 @@ func (p *Proxy) Proxy(w http.ResponseWriter, req *http.Request, params httpr.Par
 	}
 	// you can reassign the body if you need to parse it as multipart
 	req.Body = ioutil.NopCloser(bytes.NewReader(body))
-	path := strings.Split(req.RequestURI, "/")
-	author := path[2]
-	projectName := path[3]
 	isUp, err := p.state.IsUp(author, projectName)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -135,7 +136,6 @@ func (p *Proxy) Proxy(w http.ResponseWriter, req *http.Request, params httpr.Par
 		return
 	}
 	// create a new url from the raw RequestURI sent by the client
-	newPath := strings.Join(path[4:], "/")
 	url := fmt.Sprintf("%s://%s:%v/%s", "http", "127.0.0.1", port, newPath)
 	proxyReq, err := http.NewRequest(req.Method, url, bytes.NewReader(body))
 	if err != nil {
