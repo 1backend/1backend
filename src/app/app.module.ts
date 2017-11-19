@@ -73,7 +73,7 @@ import 'brace/mode/json';
 // import 'brace/mode/luapage';
 // import 'brace/mode/lucene';
 // import 'brace/mode/makefile';
-// import 'brace/mode/markdown';
+import 'brace/mode/markdown';
 // import 'brace/mode/mask';
 // import 'brace/mode/matlab';
 // import 'brace/mode/maze';
@@ -183,7 +183,7 @@ import { LoginComponent } from './login/login.component';
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import { HomeComponent } from './home/home.component';
 import { MomentModule } from 'angular2-moment';
-import { SqlConsoleComponent } from './projects/project/sql-console/sql-console.component';
+import { SqlComponent } from './projects/project/sql/sql.component';
 import { BuildsComponent } from './projects/project/builds/builds.component';
 import { CodeComponent } from './projects/project/code/code.component';
 import { MarkdownToHtmlModule } from 'ng2-markdown-to-html';
@@ -245,7 +245,7 @@ const appRoutes: Routes = [
     ProjectComponent,
     AuthorComponent,
     LoginComponent,
-    SqlConsoleComponent,
+    SqlComponent,
     BuildsComponent,
     CodeComponent,
     HomeComponent,

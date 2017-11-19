@@ -52,7 +52,7 @@ export class ProjectComponent implements OnInit {
     this.tab = this.route.snapshot.params['tab'];
     this.issueId = this.route.snapshot.params['issueId'];
     this.makeRefresh()();
-    if (this.tab === 'sql-console') {
+    if (this.tab === 'sql') {
       this.selectedIndex = 3;
     }
     if (this.tab === 'builds') {

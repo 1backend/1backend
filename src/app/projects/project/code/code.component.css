@@ -21,7 +21,7 @@
 
 .method {
     display: inline-block;
-    width: 100px;
+    width: 75px;
     color: #999;
 }
 
@@ -35,4 +35,10 @@ mat-card {
 
 .endpoint-title {
     font-size: 1.2em;
+}
+
+.endpoint-description {
+    color: #666;
+    padding-left: 75px;
+    padding-bottom: 1em;
 }

@@ -9,11 +9,11 @@ interface RunSqlResponse {
 }
 
 @Component({
-  selector: 'app-sql-console',
-  templateUrl: './sql-console.component.html',
-  styleUrls: ['./sql-console.component.css']
+  selector: 'app-sql',
+  templateUrl: './sql.component.html',
+  styleUrls: ['./sql.component.css']
 })
-export class SqlConsoleComponent implements OnInit {
+export class SqlComponent implements OnInit {
   @Input() project: types.Project;
   sqlConsole = 'SELECT CURRENT_USER();';
   sqlAnswer = '';

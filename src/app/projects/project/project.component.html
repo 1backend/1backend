@@ -68,11 +68,11 @@
       <app-issues *ngIf="!issueId && project?.Id?.length > 0" [project]="project"></app-issues>
       <app-issue *ngIf="issueId" [issueId]="issueId" [author]="author" [projectName]="projectName"></app-issue>
     </mat-tab>
-    <mat-tab *ngIf="us.user.Nick === project.Author" [attr.data-pid]="'sql-console'">
+    <mat-tab *ngIf="us.user.Nick === project.Author" [attr.data-pid]="'sql'">
       <ng-template mat-tab-label>
-        SQL console
+        SQL database
       </ng-template>
-      <app-sql-console [project]="project"></app-sql-console>
+      <app-sql [project]="project"></app-sql>
     </mat-tab>
   </mat-tab-group>
 </ng-container>

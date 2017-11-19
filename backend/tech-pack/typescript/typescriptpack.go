@@ -78,7 +78,7 @@ func generateEndpoints(proj *domain.Project) {
 			Url:         "/hi",
 			Method:      "GET",
 			Code:        nodeHi,
-			Description: "A very simple endpoint in go, saying hi to you",
+			Description: "A very simple endpoint in TypeScript, saying hi to you",
 		},
 	}
 	for _, v := range proj.Dependencies {
@@ -88,7 +88,7 @@ func generateEndpoints(proj *domain.Project) {
 					Url:         "/sql-example",
 					Method:      "GET",
 					Code:        nodeSqlExample,
-					Description: "A basic MySQL example",
+					Description: "A basic SQL example",
 				},
 			}...)
 		}

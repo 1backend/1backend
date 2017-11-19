@@ -28,12 +28,15 @@ type Project struct {
 	Mode string
 	// Different setups inside the same tech (see language)
 	Recipe string
+	// Secrets as envars for open source applications with private keys
+	Secrets string
 	// eg. requires for nodejs or github imports for go apps
 	Imports string
 	// eg. package.json for nodejs apps
 	Packages string
 	// Source contains source code if the project mode/recipe does not use the code from the endpoints
-	Source       string
+	Source string
+	// Github ssh for private code
 	Endpoints    []Endpoint
 	Builds       []Build
 	Dependencies []Dependency

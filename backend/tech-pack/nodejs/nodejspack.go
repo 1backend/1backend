@@ -39,7 +39,6 @@ var packageJson = `{
 }`
 
 func (g NodeJSPack) CreateProjectPlugin() error {
-
 	generateEndpoints(g.project)
 	return nil
 }
@@ -58,12 +57,12 @@ func (g NodeJSPack) FilesToBuild() [][]string {
 	}
 }
 
-const nodeHi = `(req, res) => {
+const hi = `(req, res) => {
   res.send('hi');
 }
 `
 
-const nodeSqlExample = `(req, res) => {
+const sqlExample = `(req, res) => {
   db.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
     if (error) throw error;
     res.send('The solution is: ' + results[0].solution);
@@ -76,8 +75,8 @@ func generateEndpoints(proj *domain.Project) {
 		domain.Endpoint{
 			Url:         "/hi",
 			Method:      "GET",
-			Code:        nodeHi,
-			Description: "A very simple endpoint in go, saying hi to you",
+			Code:        hi,
+			Description: "A very simple endpoint in Node.js, saying hi to you",
 		},
 	}
 	for _, v := range proj.Dependencies {
@@ -86,8 +85,8 @@ func generateEndpoints(proj *domain.Project) {
 				domain.Endpoint{
 					Url:         "/sql-example",
 					Method:      "GET",
-					Code:        nodeSqlExample,
-					Description: "A basic MySQL example",
+					Code:        sqlExample,
+					Description: "A basic SQL example",
 				},
 			}...)
 		}

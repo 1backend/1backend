@@ -30,7 +30,6 @@ export class CodeComponent implements OnInit {
   status: boolean;
   readme: string;
   currentPage = 0;
-  mode = '';
   readOnly = true;
 
   constructor(
@@ -44,7 +43,6 @@ export class CodeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getMode();
     if (this.user.Nick === this.project.Author) {
       this.readOnly = false;
     }
@@ -83,18 +81,16 @@ export class CodeComponent implements OnInit {
     return tokens[0].Token;
   }
 
-  getMode() {
+  getAceCompatibleMode(): string {
     switch (this.project.Mode) {
       case 'go': {
-        this.mode = 'golang';
-        break;
+       return 'golang';
       }
       case 'nodejs': {
-        this.mode = 'javascript';
-        break;
+        return 'javascript';
       }
       case 'typescript': {
-        this.mode = 'typescript';
+        return 'typescript';
       }
     }
   }

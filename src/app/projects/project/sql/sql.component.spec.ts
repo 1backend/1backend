@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SqlConsoleComponent } from './sql-console.component';
+import { SqlComponent } from './sql.component';
 
 describe('SqlConsoleComponent', () => {
-  let component: SqlConsoleComponent;
-  let fixture: ComponentFixture<SqlConsoleComponent>;
+  let component: SqlComponent;
+  let fixture: ComponentFixture<SqlComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SqlConsoleComponent ]
+      declarations: [ SqlComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SqlConsoleComponent);
+    fixture = TestBed.createComponent(SqlComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

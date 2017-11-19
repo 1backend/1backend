@@ -63,6 +63,7 @@ func (d Deployer) Deploy(project *domain.Project) error {
 			s = strings.Replace(s, "-", "_", -1)
 			return strings.Title(strings.ToLower(method)) + strcase.ToCamel(s)
 		},
+		"trim": strings.TrimSpace,
 	}
 	techPack.AddTemplateFuncs(&templFuncs)
 	t, err := template.New("code").Funcs(templFuncs).Parse(string(dat))

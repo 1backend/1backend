@@ -37,75 +37,60 @@ func (g GoPack) FilesToBuild() [][]string {
 	return nil
 }
 
-const goCreateUserSql = `type User struct {
-  Id string
-  Name string
-}
-
-func PostUser(w http.ResponseWriter, r *http.Request, p httpr.Params) {
-	input := struct {
-		User User
-	}{}
-	if err := readJsonBody(r, &input); err != nil {
-		write400(w, err)
-		return
-	}
-	err := sql.Save(&input.User).Error
-	if err != nil {
-		write500(w, err)
-		return
-	}
-	write(w, map[string]string{})
+const hi = `func (w http.ResponseWriter, r *http.Request, p httpr.Params) {
+  utils.Write(w, "hi")
 }
 `
 
-const goHi = `
-var hiCount = 0
+const importedHi = `func (w http.ResponseWriter, r *http.Request, p httpr.Params) {
+  example.Hi(w, r, p)
+}
 
-func GetHi(w http.ResponseWriter, r *http.Request, p httpr.Params) {
-  hiCount++
-  write(w, map[string]interface{}{
-	    "hi": hiCount,
-	})
+// alternatively, replace the above 3 lines with the following single line:
+// example.Hi
+`
+
+const sqlExample = `func (w http.ResponseWriter, r *http.Request, p httpr.Params) {
+	rows, err := sqlClient.Query("SELECT 1 + 1 AS solution")
+	if err != nil {
+		utils.Write500(w, err)
+		return
+	}
+	defer rows.Close()
+	solution := ""
+	rows.Scan(&solution)
+	utils.Write(w, solution)
 }
 `
 
-const goGetUserSql = `
-func GetUser(w http.ResponseWriter, r *http.Request, p httpr.Params) {
-  userId := r.URL.Query().Get("id")
-  user := &User{}
-	err := sql.Where("id = ?", userId).Find(user).Error
-	if err != nil {
-		write500(w, err)
-		return
-  }
-	write(w, user)
-}
+const imports = `utils "github.com/1backend/go-utils"
+example "github.com/1backend/go-example-service"
 `
 
 func generateEndpoints(proj *domain.Project) {
+	proj.Imports = imports
 	proj.Endpoints = []domain.Endpoint{
 		domain.Endpoint{
 			Url:         "/hi",
 			Method:      "GET",
-			Code:        goHi,
+			Code:        hi,
 			Description: "A very simple endpoint in go, saying hi to you",
+		},
+		domain.Endpoint{
+			Url:         "/imported-hi",
+			Method:      "GET",
+			Code:        importedHi,
+			Description: "An endpoint that demonstrates the usage of an imported package",
 		},
 	}
 	for _, v := range proj.Dependencies {
 		if v.Type == "mysql" {
 			proj.Endpoints = append(proj.Endpoints, []domain.Endpoint{
 				domain.Endpoint{
-					Url:         "/user",
-					Method:      "POST",
-					Code:        goCreateUserSql,
-					Description: "Saves a user to the mysql database",
-				},
-				domain.Endpoint{
-					Url:         "/user",
+					Url:         "/sql-example",
 					Method:      "GET",
-					Code:        goGetUserSql,
-					Description: "Loads a user from the mysql database",
+					Code:        sqlExample,
+					Description: "A basic SQL example",
 				},
 			}...)
 		}

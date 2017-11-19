@@ -1,0 +1,22 @@
+<div style="margin-top: 2em;">
+  <mat-card>
+    <mat-tab-group>
+      <mat-tab label="Schema">
+
+        <ace-editor class="editor" text="CREATE TABLE" [mode]="'sql'" style="min-height: 200px; width:100%;
+                              overflow: auto;" #editor></ace-editor>
+        <button (click)="save()" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
+        <button (click)="goSql()" mat-raised-button style="margin-top: 1em; color: #EEEEEE;" color="primary">SQL console</button>
+      </mat-tab>
+      <mat-tab label="Console">
+        <ace-editor class="editor sqlconsole" [mode]="'sql'" [(text)]="sqlConsole" style="min-height: 200px; width:100%;
+overflow: auto;" #editor></ace-editor>
+        <div class="wrapper">
+          <button (click)="runSql()" mat-raised-button style="margin-top: 1em; margin-bottom: 1em; color: #EEEEEE;" color="primary">Run</button>
+        </div>
+        <ace-editor class="editor sqlrunning" [mode]="'sql'" [(text)]="sqlAnswer" style="min-height: 572px; width:100%;
+overflow: auto;" #editor></ace-editor>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>
+</div>

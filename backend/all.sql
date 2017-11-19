@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS projects
   port                INT                                                             NOT NULL,
   stars               INT                                                             NOT NULL,
   read_me             TEXT                                                            NOT NULL,
+  secrets             TEXT                                                            NOT NULL,
   created_at          DATETIME DEFAULT CURRENT_TIMESTAMP                              NOT NULL,
   updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  NOT NULL,
   PRIMARY KEY (id)

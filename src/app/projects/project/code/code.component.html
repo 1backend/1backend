@@ -6,7 +6,7 @@
           <markdown-to-html [data]="project.ReadMe"></markdown-to-html>
         </mat-tab>
         <mat-tab label="Edit">
-          <ace-editor class="editor" [(ngModel)]="project.ReadMe" text="Your MD FILE" [mode]="'sql'" style="min-height: 200px; width:100%;
+          <ace-editor class="editor" [(ngModel)]="project.ReadMe" text="Your MD FILE" [mode]="'markdown'" style="min-height: 200px; width:100%;
                     overflow: auto;" #editor>
           </ace-editor>
           <button mat-raised-button (click)="save()" style="margin-top: 2em; color:#EEEEEE;" color="primary">Save</button>
@@ -21,30 +21,19 @@
 
     <mat-card *ngIf="user.Nick === project.Author">
       <div fxLayout="row wrap" fxLayoutAlign="space-between">
-
         <div fxFlex="1 1 100%">
           <mat-tab-group>
-
-            <mat-tab label="SQL schema">
-
-              <ace-editor class="editor" text="CREATE TABLE" [mode]="'sql'" style="min-height: 200px; width:100%;
-                      overflow: auto;" #editor></ace-editor>
-              <button (click)="save()" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
-              <button (click)="goSql()" mat-raised-button style="margin-top: 1em; color: #EEEEEE;" color="primary">SQL console</button>
-            </mat-tab>
-
             <mat-tab label="Imports">
-              <ace-editor class="editor" text="{{project.Imports}}" [mode]="mode" style="min-height: 200px; width:100%;
+              <ace-editor class="editor" [(ngModel)]="project.Imports" [mode]="getAceCompatibleMode()" style="min-height: 200px; width:100%;
                 overflow: auto;" #editor></ace-editor>
               <button (click)="save()" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
             </mat-tab>
 
-            <mat-tab label="package.json" *ngIf="mode === 'nodejs' || mode === 'typescript'">
-              <ace-editor class="editor" text="{{project.Packages}}" [mode]="mode" style="min-height: 200px; width:100%;
+            <mat-tab label="package.json" [(ngModel)]="project.Packages" *ngIf="project.Mode === 'nodejs' || project.Mode === 'typescript'">
+              <ace-editor class="editor" text="{{project.Packages}}" [mode]="'json'" style="min-height: 200px; width:100%;
                 overflow: auto;" #editor></ace-editor>
               <button (click)="save()" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
             </mat-tab>
-
           </mat-tab-group>
         </div>
       </div>
@@ -69,7 +58,7 @@
           <input [(ngModel)]="newEndpoint.Url" matInput placeholder="Path (ie. /user)">
         </mat-form-field>
 
-        <ace-editor class="editor " [(text)]="newEndpoint.Code" [mode]="mode" style="min-height: 200px; width:100%;
+        <ace-editor class="editor " [(text)]="newEndpoint.Code" [mode]="getAceCompatibleMode()" style="min-height: 200px; width:100%;
         overflow: auto;" #editor></ace-editor>
 
       </div>
@@ -88,7 +77,8 @@
       <div fxLayout="row wrap" fxLayoutAlign="space-between">
         <div fxFlex="1 1 67%">
           <mat-card-title class="endpoint-title">
-            <div class="method">{{endpoint.Method}}</div> {{endpoint.Url}}</mat-card-title>
+            <div class="method">{{endpoint.Method}}</div> {{endpoint.Url}}
+          </mat-card-title>
         </div>
         <div fxFlex="1 1 33%" align="end" *ngIf="!endpoint.Selected">
           <button mat-button style="min-width: 0%;" type="button" (click)="reveal(endpoint)">
@@ -109,10 +99,14 @@
             <mat-icon aria-hidden="false">keyboard_arrow_up</mat-icon>
           </button>
         </div>
+        <div class="endpoint-description" fxFlex="1 1 100%">
+          {{endpoint.Description}}
+        </div>
       </div>
       <span [hidden]="!endpoint.Selected">
         <ng-container>
-          <ace-editor *ngIf="project.OpenSource" [readOnly]="readOnly" class="editor" [(text)]="endpoint.Code" [mode]="mode" style="min-height: 200px; width:100%;
+          <ace-editor *ngIf="project.OpenSource" [readOnly]="readOnly" class="editor" [(text)]="endpoint.Code" [mode]="getAceCompatibleMode()"
+            style="min-height: 200px; width:100%;
 overflow: auto;" #editor></ace-editor>
           <div *ngIf="user && user.Nick === project.Author">
             <div style="margin-top: 1em;" class="example-container">
@@ -128,13 +122,16 @@ overflow: auto;" #editor></ace-editor>
               <mat-form-field class="example-full-width">
                 <input matInput placeholder="Path (ie. /user)" [(ngModel)]="endpoint.Url">
               </mat-form-field>
+              <mat-form-field class="example-full-width">
+                <input matInput [(ngModel)]="endpoint.Description">
+              </mat-form-field>
             </div>
             <button [disabled]="endpoint.Url === '/' || endpoint.Url === '' || !endpoint.Url.startsWith('/')" (click)="save()" mat-raised-button
               style="margin-top: 1em; margin-bottom: 1em; color: #EEEEEE;" color="primary">Save</button>
           </div>
         </ng-container>
 
-        <ace-editor class="editor" text="curl -H 'token: {{getTestToken()}}' -X{{endpoint.Method}} {{backendUrl}}/app/{{project.Author}}/{{project.Name}}{{endpoint.Url}}"
+        <ace-editor class="editor" text="curl -X{{endpoint.Method}} {{backendUrl}}/app/{{project.Author}}/{{project.Name}}{{endpoint.Url}} -H 'token: {{getTestToken()}}'"
           [mode]="'sh'" style="min-height: 2em; margin-top: 1em; width:100%;
         overflow: auto;"></ace-editor>
       </span>
