@@ -29,8 +29,8 @@
               <button (click)="save()" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
             </mat-tab>
 
-            <mat-tab label="package.json" [(ngModel)]="project.Packages" *ngIf="project.Mode === 'nodejs' || project.Mode === 'typescript'">
-              <ace-editor class="editor" text="{{project.Packages}}" [mode]="'json'" style="min-height: 200px; width:100%;
+            <mat-tab label="package.json" *ngIf="project.Mode === 'nodejs' || project.Mode === 'typescript'">
+              <ace-editor class="editor" [(ngModel)]="project.Packages" text="{{project.Packages}}" [mode]="'json'" style="min-height: 200px; width:100%;
                 overflow: auto;" #editor></ace-editor>
               <button (click)="save()" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
             </mat-tab>

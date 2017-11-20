@@ -45,9 +45,6 @@ const hi = `func (w http.ResponseWriter, r *http.Request, p httpr.Params) {
 const importedHi = `func (w http.ResponseWriter, r *http.Request, p httpr.Params) {
   example.Hi(w, r, p)
 }
-
-// alternatively, replace the above 3 lines with the following single line:
-// example.Hi
 `
 
 const sqlExample = `func (w http.ResponseWriter, r *http.Request, p httpr.Params) {
