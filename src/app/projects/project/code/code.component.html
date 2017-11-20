@@ -19,22 +19,26 @@
       <markdown-to-html [data]="project.ReadMe"></markdown-to-html>
     </mat-card>
 
-    <mat-card *ngIf="user.Nick === project.Author">
+    <mat-card *ngIf="user.Nick === project.Author || project.OpenSource">
       <div fxLayout="row wrap" fxLayoutAlign="space-between">
         <div fxFlex="1 1 100%">
           <mat-tab-group>
             <mat-tab label="Imports">
               <ace-editor class="editor" [(ngModel)]="project.Imports" [mode]="getAceCompatibleMode()" style="min-height: 200px; width:100%;
                 overflow: auto;" #editor></ace-editor>
-              <button (click)="save()" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
             </mat-tab>
 
             <mat-tab label="package.json" *ngIf="project.Mode === 'nodejs' || project.Mode === 'typescript'">
               <ace-editor class="editor" [(ngModel)]="project.Packages" text="{{project.Packages}}" [mode]="'json'" style="min-height: 200px; width:100%;
                 overflow: auto;" #editor></ace-editor>
-              <button (click)="save()" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
             </mat-tab>
+            <mat-tab label="Types">
+              <ace-editor class="editor" [(ngModel)]="project.Types" text="{{project.Types}}" [mode]="'json'" style="min-height: 200px; width:100%;
+                  overflow: auto;" #editor></ace-editor>
+            </mat-tab>
+
           </mat-tab-group>
+          <button *ngIf="user.Nick === project.Author" (click)="save()" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
         </div>
       </div>
     </mat-card>
@@ -86,6 +90,7 @@
           </button>
         </div>
         <div fxFlex="1 1 33%" align="end" *ngIf="endpoint.Selected">
+          <!--
           <button [hidden]="isLeftFullScreen()" mat-button style="min-width: 0%;" (click)="setLeftFullScreen()">
             <mat-icon aria-hidden="false">fullscreen</mat-icon>
           </button>
@@ -95,6 +100,7 @@
           <button *ngIf="user && user.Nick === project.Author" mat-button style="min-width: 0%;" type="button" (click)="delete(endpoint)">
             <mat-icon aria-hidden="false">clear</mat-icon>
           </button>
+        -->
           <button mat-button style="min-width: 0%;" (click)="reveal(endpoint)">
             <mat-icon aria-hidden="false">keyboard_arrow_up</mat-icon>
           </button>
@@ -103,11 +109,22 @@
           {{endpoint.Description}}
         </div>
       </div>
-      <span [hidden]="!endpoint.Selected">
+      <span *ngIf="endpoint.Selected">
         <ng-container>
-          <ace-editor *ngIf="project.OpenSource" [readOnly]="readOnly" class="editor" [(text)]="endpoint.Code" [mode]="getAceCompatibleMode()"
-            style="min-height: 200px; width:100%;
+          <mat-tab-group *ngIf="project.OpenSource">
+            <mat-tab label="Code">
+              <ace-editor [readOnly]="readOnly" class="editor" [(text)]="endpoint.Code" [mode]="getAceCompatibleMode()" style="min-height: 200px; width:100%;
 overflow: auto;" #editor></ace-editor>
+            </mat-tab>
+            <mat-tab label="Input">
+              <ace-editor [readOnly]="readOnly" class="editor" [(text)]="endpoint.Input" [mode]="'json'" style="min-height: 200px; width:100%;
+  overflow: auto;" #editor></ace-editor>
+            </mat-tab>
+            <mat-tab label="Output">
+              <ace-editor [readOnly]="readOnly" class="editor" [(text)]="endpoint.Output" [mode]="'json'" style="min-height: 200px; width:100%;
+    overflow: auto;" #editor></ace-editor>
+            </mat-tab>
+          </mat-tab-group>
           <div *ngIf="user && user.Nick === project.Author">
             <div style="margin-top: 1em;" class="example-container">
               <mat-form-field>

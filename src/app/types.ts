@@ -3,6 +3,8 @@ export interface Endpoint extends Selectable {
   Url?: string; // ie. /user
   Code?: string;
   Method?: string; // http method
+  Input?: string;
+  Output?: string;
   CreatedAt?: string;
 }
 
@@ -23,6 +25,7 @@ export interface Project extends Selectable {
   Starrers?: User[];
   Imports?: string;
   Packages?: string;
+  Types?: string;
   Source?: string;
   OpenSource?: boolean;
 }
