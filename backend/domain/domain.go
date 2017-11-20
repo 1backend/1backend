@@ -34,6 +34,8 @@ type Project struct {
 	Imports string
 	// eg. package.json for nodejs apps
 	Packages string
+	// JSON that defines the types belonging to this project
+	Types string
 	// Source contains source code if the project mode/recipe does not use the code from the endpoints
 	Source string
 	// Github ssh for private code
@@ -61,9 +63,13 @@ type Endpoint struct {
 	Description string
 	Method      string
 	Code        string
-	ProjectId   string
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	// JSON that defines the input structure
+	Input string
+	// JSON that defines the output structure
+	Output    string
+	ProjectId string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type Build struct {

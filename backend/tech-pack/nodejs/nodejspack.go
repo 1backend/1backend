@@ -29,8 +29,9 @@ var packageJson = `{
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.13.3",
-    "mysql": "^2.15.0"
+		"express": "^4.13.3",
+		"mysql": "^2.15.0",
+		"example": "https://github.com/1backend/nodejs-example-service"
   },
   "engines": {
     "node": "4.0.0"
@@ -62,6 +63,11 @@ const hi = `(req, res) => {
 }
 `
 
+const importedHi = `(req, res) => {
+  example.hi(req, res)
+}
+`
+
 const sqlExample = `(req, res) => {
   db.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
     if (error) throw error;
@@ -71,12 +77,19 @@ const sqlExample = `(req, res) => {
 `
 
 func generateEndpoints(proj *domain.Project) {
+	proj.Imports = `example = require("example")`
 	proj.Endpoints = []domain.Endpoint{
 		domain.Endpoint{
 			Url:         "/hi",
 			Method:      "GET",
 			Code:        hi,
 			Description: "A very simple endpoint in Node.js, saying hi to you",
+		},
+		domain.Endpoint{
+			Url:         "/imported-hi",
+			Method:      "GET",
+			Code:        importedHi,
+			Description: "An endpoint that demonstrates the usage of an imported package",
 		},
 	}
 	for _, v := range proj.Dependencies {
