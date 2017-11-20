@@ -21,7 +21,7 @@ func (g TypeScriptPack) RecipePath() string {
 }
 
 var packageJson = `{
-  "name": "1backend-typescript-example-service",
+  "name": "1backend-typescript-service",
   "version": "0.1.0",
   "description": "A sample TypeScript app for 1backend",
   "main": "server.js",
@@ -32,7 +32,8 @@ var packageJson = `{
     "express": "^4.13.3",
     "mysql": "^2.15.0",
     "@types/mysql": "^2.15.0",
-    "@types/express": "^4.0"
+    "@types/express": "^4.0",
+    "1backend-typescript-example-service": "^0.0.1"
   },
   "engines": {
     "node": "4.0.0"
@@ -41,7 +42,6 @@ var packageJson = `{
 }`
 
 func (g TypeScriptPack) CreateProjectPlugin() error {
-
 	generateEndpoints(g.project)
 	return nil
 }
@@ -60,12 +60,17 @@ func (g TypeScriptPack) FilesToBuild() [][]string {
 	}
 }
 
-const nodeHi = `(req: express.Request, rsp: express.Response) => {
+const hi = `(req: express.Request, rsp: express.Response) => {
   rsp.send('hi');
 }
 `
 
-const nodeSqlExample = `(req: express.Request, rsp: express.Response) => {
+const importedHi = `(req: express.Request, rsp: express.Response) => {
+  service.Hi(req, rsp)
+}
+`
+
+const sqlExample = `(req: express.Request, rsp: express.Response) => {
   db.query('SELECT 1 + 1 AS solution', (err: mysql.MysqlError, rows) => {
     rsp.send('The solution is: ' + rows[0]['solution']);
   });
@@ -73,12 +78,20 @@ const nodeSqlExample = `(req: express.Request, rsp: express.Response) => {
 `
 
 func generateEndpoints(proj *domain.Project) {
+	proj.Imports = `import * as service from '1backend-typescript-example-service';`
+	proj.Packages = packageJson
 	proj.Endpoints = []domain.Endpoint{
 		domain.Endpoint{
 			Url:         "/hi",
 			Method:      "GET",
-			Code:        nodeHi,
+			Code:        hi,
 			Description: "A very simple endpoint in TypeScript, saying hi to you",
+		},
+		domain.Endpoint{
+			Url:         "/imported-hi",
+			Method:      "GET",
+			Code:        importedHi,
+			Description: "An endpoint that demonstrates the usage of an imported package",
 		},
 	}
 	for _, v := range proj.Dependencies {
@@ -87,7 +100,7 @@ func generateEndpoints(proj *domain.Project) {
 				domain.Endpoint{
 					Url:         "/sql-example",
 					Method:      "GET",
-					Code:        nodeSqlExample,
+					Code:        sqlExample,
 					Description: "A basic SQL example",
 				},
 			}...)

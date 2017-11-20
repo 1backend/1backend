@@ -21,7 +21,7 @@ func (g NodeJSPack) RecipePath() string {
 }
 
 var packageJson = `{
-  "name": "1backend-node-example-service",
+  "name": "1backend-nodejs-service",
   "version": "0.1.0",
   "description": "A sample Node.js app for 1backend",
   "main": "server.js",
@@ -31,7 +31,7 @@ var packageJson = `{
   "dependencies": {
 		"express": "^4.13.3",
 		"mysql": "^2.15.0",
-		"example": "https://github.com/1backend/nodejs-example-service"
+		"1backend-nodejs-example-service": "^0.0.1"
   },
   "engines": {
     "node": "4.0.0"
@@ -64,7 +64,7 @@ const hi = `(req, res) => {
 `
 
 const importedHi = `(req, res) => {
-  example.hi(req, res)
+  service.hi(req, res)
 }
 `
 
@@ -77,7 +77,8 @@ const sqlExample = `(req, res) => {
 `
 
 func generateEndpoints(proj *domain.Project) {
-	proj.Imports = `example = require("example")`
+	proj.Imports = `var service = require("1backend-nodejs-example-service")`
+	proj.Packages = packageJson
 	proj.Endpoints = []domain.Endpoint{
 		domain.Endpoint{
 			Url:         "/hi",
