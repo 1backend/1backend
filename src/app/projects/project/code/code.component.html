@@ -109,9 +109,9 @@
           {{endpoint.Description}}
         </div>
       </div>
-      <span [hidden]="!endpoint.Selected">
+      <span *ngIf="endpoint.Selected">
         <ng-container>
-          <mat-tab-group *ngIf="project.OpenSource" class="tab-group" [selectedIndex]="selectedIndex" #tabGroup>
+          <mat-tab-group *ngIf="project.OpenSource">
             <mat-tab label="Code">
               <ace-editor [readOnly]="readOnly" class="editor" [(text)]="endpoint.Code" [mode]="getAceCompatibleMode()" style="min-height: 200px; width:100%;
 overflow: auto;" #editor></ace-editor>

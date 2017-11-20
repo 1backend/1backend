@@ -31,7 +31,6 @@ export class CodeComponent implements OnInit {
   readme: string;
   currentPage = 0;
   readOnly = true;
-  selectedIndex = 0;
 
   constructor(
     private http: HttpClient,
