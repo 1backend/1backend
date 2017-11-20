@@ -39,7 +39,7 @@
   <mat-tab-group class="tab-group" [selectedIndex]="selectedIndex" #tabGroup (selectedIndexChange)="selectedIndexChange(tabGroup)">
     <mat-tab [attr.data-pid]="'code'" mat-ink-ripple="yellow;">
       <ng-template mat-tab-label>
-        Code
+        Project
       </ng-template>
       <app-code *ngIf="project && project.Id" [refresh]="makeRefresh()" [project]="project"></app-code>
     </mat-tab>

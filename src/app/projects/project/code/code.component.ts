@@ -31,6 +31,7 @@ export class CodeComponent implements OnInit {
   readme: string;
   currentPage = 0;
   readOnly = true;
+  selectedIndex = 0;
 
   constructor(
     private http: HttpClient,
@@ -84,7 +85,7 @@ export class CodeComponent implements OnInit {
   getAceCompatibleMode(): string {
     switch (this.project.Mode) {
       case 'go': {
-       return 'golang';
+        return 'golang';
       }
       case 'nodejs': {
         return 'javascript';

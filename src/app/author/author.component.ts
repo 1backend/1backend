@@ -174,7 +174,8 @@ export class AuthorComponent implements OnInit {
       })
       .subscribe(
         () => {
-          this.refresh();
+          this.us.get();
+          this.notif.success('Token successfully created');
         },
         error => {}
       );
