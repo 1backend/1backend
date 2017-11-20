@@ -2,8 +2,8 @@
   <div fxLayout="row" fxLayoutAlign="space-between" style="margin-top: 2em; margin-bottom: 1em;">
 
     <mat-icon *ngIf="loaded && !project.Public" class="icons">lock_outline</mat-icon>
-    <div fxFlex="1 1 100%" style="margin-top: 1em; margin-bottom: 0em;" style="color: #2962FF; font-size: 18px">
-      <a style="font-size: 18px; color: #2962FF;" routerLink="/{{author}}">{{author}}</a> /
+    <div fxFlex="1 1 100%" style="margin-top: 1em; margin-bottom: 0em;" style="color: #2962FF; font-size: 22px">
+      <a style="font-size: 22px; text-decoration: none; color: #2962FF;" routerLink="/{{author}}">{{author}}</a> /
       <b>{{project.Name}}</b>
       <span *ngIf="loaded && !project.Public" style="padding-left: 0.5em; padding-right: 0.5em;" class="Label Label--outline v-align-middle">Private</span>
     </div>

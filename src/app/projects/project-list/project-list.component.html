@@ -1,5 +1,5 @@
-<div fxLayout="row wrap" fxLayoutAlign="space-between" >
-  <div fxFlex="1 1 100%"  >
+<div fxLayout="row wrap" fxLayoutAlign="space-between">
+  <div fxFlex="1 1 100%">
     <mat-form-field style="width: 100%; padding-bottom: 1em;" color="primary">
       <input matInput [(ngModel)]="search" placeholder="Search projects" />
     </mat-form-field>
@@ -15,10 +15,17 @@
   <div *ngFor="let p of projects | FilterPipe: search | slice:this.currentPage * 10:(this.currentPage + 1) * 10" style="margin-top: 1em; margin-bottom: 2em; border-bottom: 1px solid #c5c5c5; padding-bottom: 1em; font-family: 'Roboto Light';">
     <div flexLayout="row wrap" fxLayout.xs="column">
       <div fxFlex="1 1 80%" fxFlex.md="1 1 60%" style="padding-top: 0em; padding-bottom: 1em;">
-        <a routerLink="/{{p.Author}}"><font class="author-link" size="5">{{p.Author}}</font></a><font size="5" style="color: #757575"> /</font>
-        <a routerLink="/{{p.Author}}/{{p.Name}}"><font class="author-link" size="5" style="margin-left: -4px;"><b>{{p.Name}}</b></font></a>
+        <a style="text-decoration: none;" routerLink="/{{p.Author}}">
+          <font class="author-link" size="5">{{p.Author}}</font>
+        </a>
+        <font size="5" style="color: #757575">/ </font>
+        <a routerLink="/{{p.Author}}/{{p.Name}}">
+          <font class="author-link" size="5" style="margin-left: -4px;">
+            <b>{{p.Name}}</b>
+          </font>
+        </a>
       </div>
-      <div align="start" fxFlex="1 1 20%" fxFlex.lt-lg="1 1 50%"  style="padding-top: 0.5em;" fxLayoutAlign="end space-between">
+      <div align="start" fxFlex="1 1 20%" fxFlex.lt-lg="1 1 50%" style="padding-top: 0.5em;" fxLayoutAlign="end space-between">
         <button mat-raised-button (click)="star(p)" style="position: relative; top: -10px">
           <mat-icon aria-hidden="fasle" style="position: relative;top: -2px; right: 5px;">star</mat-icon>Star
         </button>
@@ -40,11 +47,11 @@
           <span fxFlex="1 1 50%" *ngIf="p.Mode === 'go'" style="position: relative; padding-right: 75px; top: 5px;">
             <i style="color: #4DD0E1;" class="cbp-ig-icon devicon-go-plain"></i> Go
           </span>
-          <span fxFlex="1 1 50"*ngIf="p.Mode === 'nodejs'" style="position: relative; padding-right: 40px;  top: 5px;">
-            <i  style="color: #80bd01;" class="cbp-ig-icon devicon-nodejs-plain"></i> NodeJS
+          <span fxFlex="1 1 50" *ngIf="p.Mode === 'nodejs'" style="position: relative; padding-right: 40px;  top: 5px;">
+            <i style="color: #80bd01;" class="cbp-ig-icon devicon-nodejs-plain"></i> NodeJS
           </span>
-          <span fxFlex="1 1 50"*ngIf="p.Mode === 'typescript'" style="position: relative; padding-right: 40px;  top: 5px;">
-            <i  style="color: #0074c1;" class="cbp-ig-icon devicon-typescript-plain"></i> TypeScript
+          <span fxFlex="1 1 50" *ngIf="p.Mode === 'typescript'" style="position: relative; padding-right: 40px;  top: 5px;">
+            <i style="color: #0074c1;" class="cbp-ig-icon devicon-typescript-plain"></i> TypeScript
           </span>
         </div>
         <div fxFlex="1 1 70%" align="end" style="margin-top: 5px;">
@@ -53,6 +60,7 @@
       </div>
     </span>
   </div>
-  <mat-paginator *ngIf="projects.length > 10" style="margin-top: 1em;" [length]="projects | FilterPipe: search | length" [pageSize]="10" [pageSizeOptions]="[10]" (page)="pageChanged($event)">
+  <mat-paginator *ngIf="projects.length > 10" style="margin-top: 1em;" [length]="projects | FilterPipe: search | length" [pageSize]="10"
+    [pageSizeOptions]="[10]" (page)="pageChanged($event)">
   </mat-paginator>
 </div>
