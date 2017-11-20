@@ -7,19 +7,15 @@ import { LoginDialogService } from '../../login/login-dialog.service';
   styleUrls: ['./pricing.component.css']
 })
 export class PricingComponent implements OnInit {
+  constructor(private lds: LoginDialogService) {}
 
-  constructor(
-    private lds: LoginDialogService
-  ) { }
-
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   openCheckout(amount: number) {
     const handler = (<any>window).StripeCheckout.configure({
       key: 'pk_test_jN1awbuFc99uOJvciajTVvCU',
       locale: 'auto',
-      token: function (token: any) {
+      token: function(token: any) {
         // You can access the token ID with `token.id`.
         // Get the token ID to your server-side code for use.
       }
@@ -28,9 +24,8 @@ export class PricingComponent implements OnInit {
     handler.open({
       name: 'Starter',
       description: '',
-      amount: 19000
+      amount: 1900
     });
-    
   }
 
   register() {

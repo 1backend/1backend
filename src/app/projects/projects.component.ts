@@ -37,7 +37,8 @@ export class ProjectsComponent implements OnInit {
               if (a.UpdatedAt === b.UpdatedAt) {
                 return 0;
               }
-            } if (a.UpdatedAt < b.UpdatedAt) {
+            }
+            if (a.UpdatedAt < b.UpdatedAt) {
               return 1;
             }
             return -1;
@@ -54,5 +55,4 @@ export class ProjectsComponent implements OnInit {
   }
 
   ngOnInit() {}
-
 }

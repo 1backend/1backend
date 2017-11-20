@@ -6,9 +6,7 @@
 
 .author-link {
   display: inline-block;
-  color: #2979FF;
-  text-decoration: underline;
-
+  color: #2979ff;
 }
 /*
 .author-link::after {
