@@ -62,7 +62,7 @@
       <button mat-raised-button class="button" color="accent" (click)="edit()">Edit</button>
     </div>
     <div style="margin-top: 2em" *ngIf="us.user?.Tokens?.length && author === us.user.Nick" align="center">
-        <font size="6" style="color: green">{{getAllCallsLeft()}}</font> calls left
+        <font size="6" style="color: green">{{getAllCallsLeft() | number:'4.0'}}</font> calls left
       </div>
   </div>
   <div fxFlex="1 1 75%" fxFlex.lt-lg="1 1 70%" class="project-list" style="margin-bottom: 1em; padding-top: 0em">
@@ -97,14 +97,14 @@
                   <mat-form-field class="example-full-width" style="width: 100%">
                     <mat-select [(ngModel)]="from" placeholder="From">
                       <mat-option *ngFor="let token of user.Tokens" [value]="token.Token">
-                        {{ token.Name }} ({{token.Quota}})
+                        {{ token.Name }} ({{token.Quota | number:'4.0'}})
                       </mat-option>
                     </mat-select>
                   </mat-form-field>
                   <mat-form-field class="example-full-width" style="width: 100%">
                     <mat-select [(ngModel)]="to" placeholder="To">
                       <mat-option *ngFor="let token of user.Tokens" [value]="token.Token">
-                        {{ token.Name }} ({{token.Quota}})
+                        {{ token.Name }} ({{token.Quota | number:'4.0'}})
                       </mat-option>
                     </mat-select>
                   </mat-form-field>

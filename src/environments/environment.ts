@@ -6,5 +6,5 @@
 export const environment = {
   production: false,
   backendUrl: 'http://127.0.0.1:8883',
-  stripeKey: 'sk_test_BQokikJOvBiI2HlWgH4olfQ2'
+  stripeKey: 'pk_test_3GOAJCc3uv8T7CS7tqN3gi4t'
 };
