@@ -50,7 +50,7 @@
         <b>{{user.Name}}</b>
       </font>
       <span fxFlex="1 1 auto"></span>
-      <span align="end" size="5">
+      <span *ngIf="author === us.user?.Nick" align="end" size="5">
         <button mat-icon-button>
           <i (click)="edit()" style="color:#444" class="material-icons">mode_edit</i>
         </button>
