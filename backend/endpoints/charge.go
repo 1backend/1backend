@@ -24,7 +24,7 @@ func (e Endpoints) Charge(accessToken, paymentToken string, amount uint64) error
 	serviceToken := domain.Token{}
 	err = e.db.Where("user_id = ? AND name = 'default'", tk.UserId).First(&serviceToken).Error
 	if err != nil {
-		return err
+		return fmt.Errorf("Can't find default token: %v", err.Error())
 	}
 
 	stripe.Key = config.C.StripeKey
@@ -46,6 +46,7 @@ func (e Endpoints) Charge(accessToken, paymentToken string, amount uint64) error
 		log.Errorf("Charging user withd id %v was unsuccessful: %v", tk.UserId, err)
 		return err
 	}
+	// intentionally not using transactions here
 	ch := &domain.Charge{
 		UserId:    tk.UserId,
 		Id:        domain.Sid.MustGenerate(),
@@ -56,6 +57,10 @@ func (e Endpoints) Charge(accessToken, paymentToken string, amount uint64) error
 	err = e.db.Create(ch).Error
 	if err != nil {
 		log.Errorf("Failed to save charge for user widh id %v: %v", tk.UserId, err)
+	}
+	err = e.db.Table("users").Where("user_id = ?", tk.UserId).Update("premium", true).Error
+	if err != nil {
+		log.Errorf("Could set user to premium: %v", err)
 	}
 	err = e.state.IncrementBy(serviceToken.Token, 100000*int64(amount/pricePer100k))
 	if err != nil {

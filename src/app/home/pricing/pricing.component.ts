@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginDialogService } from '../../login/login-dialog.service';
 import { SessionService } from '../../session.service';
-import { ConstService } from '../../const.service';
+import { ChargeService } from '../../charge.service';
 import { UserService } from '../../user.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -22,45 +22,23 @@ export class PricingComponent implements OnInit {
     private http: HttpClient,
     private router: Router,
     private us: UserService,
-    private _const: ConstService
+    private charge: ChargeService
   ) {}
 
   ngOnInit() {}
 
   openCheckout() {
+    const that = this;
     if (this.ss.getToken()) {
-      this.charge(this.ss.getToken());
+      this.charge.charge(amt, this.ss.getToken(), () => {
+        that.router.navigate(['/' + that.us.user.Nick]);
+      });
       return;
     }
     this.lds.openDialog(false, (tok: types.AccessToken) => {
-      this.charge(tok.Token);
-    });
-  }
-
-  charge(tok: string) {
-    const that = this;
-    const handler = (<any>window).StripeCheckout.configure({
-      key: environment.stripeKey,
-      locale: 'auto',
-      token: function(token: any) {
-        that.http
-          .post(that._const.url + '/v1/charge', {
-            paymentToken: token.id,
-            token: tok,
-            amount: amt
-          })
-          .subscribe(
-            data => {
-              that.router.navigate(['/' + that.us.user.Nick]);
-            },
-            error => {}
-          );
-      }
-    });
-    handler.open({
-      name: 'Buy 100k quota',
-      description: '',
-      amount: amt
+      this.charge.charge(amt, tok.Token, () => {
+        that.router.navigate(['/' + that.us.user.Nick]);
+      });
     });
   }
 

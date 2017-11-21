@@ -62,8 +62,16 @@
       <button mat-raised-button class="button" color="accent" (click)="edit()">Edit</button>
     </div>
     <div style="margin-top: 2em" *ngIf="us.user?.Tokens?.length && author === us.user.Nick" align="center">
-        <font size="6" style="color: green">{{getAllCallsLeft() | number:'4.0'}}</font> calls left
+      <font size="6" style="color: green">{{getAllCallsLeft() | number:'.0-0'}}</font> calls left
+    </div>
+    <div style="margin-top: 2em" *ngIf="us.user?.Tokens?.length && author === us.user.Nick" align="center">
+      <mat-form-field style="width: 100%">
+        <input type="number" matInput placeholder="Buy {{amount/19 * 100000 | number:'.0-0'}} quota for ${{amount}}" [(ngModel)]="amount" />
+      </mat-form-field>
+      <div align="center" style="padding-top: 2em;" *ngIf="author === us.user.Nick">
+        <button mat-raised-button class="button" color="accent" (click)="purchase()">Top up</button>
       </div>
+    </div>
   </div>
   <div fxFlex="1 1 75%" fxFlex.lt-lg="1 1 70%" class="project-list" style="margin-bottom: 1em; padding-top: 0em">
     <mat-tab-group [(selectedIndex)]="selectedTabIndex">
@@ -97,14 +105,14 @@
                   <mat-form-field class="example-full-width" style="width: 100%">
                     <mat-select [(ngModel)]="from" placeholder="From">
                       <mat-option *ngFor="let token of user.Tokens" [value]="token.Token">
-                        {{ token.Name }} ({{token.Quota | number:'4.0'}})
+                        {{ token.Name }} ({{token.Quota | number:'.0-0'}})
                       </mat-option>
                     </mat-select>
                   </mat-form-field>
                   <mat-form-field class="example-full-width" style="width: 100%">
                     <mat-select [(ngModel)]="to" placeholder="To">
                       <mat-option *ngFor="let token of user.Tokens" [value]="token.Token">
-                        {{ token.Name }} ({{token.Quota | number:'4.0'}})
+                        {{ token.Name }} ({{token.Quota | number:'.0-0'}})
                       </mat-option>
                     </mat-select>
                   </mat-form-field>
@@ -127,7 +135,7 @@
               <mat-card-content>
                 <p>{{token.Token}}</p>
                 <p>
-                  <b style="color: green">{{token.Quota | number:'4.0'}}</b> quota left</p>
+                  <b style="color: green">{{token.Quota | number:'.0-0'}}</b> quota left</p>
                 <p>Created {{token.CreatedAt | amTimeAgo}}</p>
               </mat-card-content>
             </mat-card>

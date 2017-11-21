@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import * as types from '../types';
 import { Router, NavigationStart, Event } from '@angular/router';
 import { SessionService } from '../session.service';
+import { ChargeService } from '../charge.service';
 import { ConstService } from '../const.service';
 import { NotificationsService } from 'angular2-notifications';
 import { UserService } from '../user.service';
@@ -14,6 +15,7 @@ import { UserService } from '../user.service';
   styleUrls: ['./author.component.css']
 })
 export class AuthorComponent implements OnInit {
+  amount = 19;
   author = '';
   name = '';
   projects: types.Project[] = [];
@@ -34,7 +36,8 @@ export class AuthorComponent implements OnInit {
     private ss: SessionService,
     private _const: ConstService,
     private notif: NotificationsService,
-    public us: UserService
+    public us: UserService,
+    private charge: ChargeService
   ) {
     this.refresh();
   }
@@ -146,6 +149,12 @@ export class AuthorComponent implements OnInit {
       return;
     }
     return 'ok';
+  }
+
+  purchase() {
+    this.charge.charge(this.amount * 100, () => {
+      this.refresh();
+    });
   }
 
   transfer() {

@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS users
   name                VARCHAR(32)                                                     NOT NULL,          
   password            VARCHAR(128)                                                    NOT NULL,
   premium             BOOLEAN                                                         NOT NULL,
-  email               VARCHAR(128)                                                    NOT NULL,
+  email               VARCHAR(128)                                             UNIQUE NOT NULL,
   avatar_link         VARCHAR(128)                                                    NOT NULL,
   created_at          DATETIME DEFAULT CURRENT_TIMESTAMP                              NOT NULL,
   updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  NOT NULL,

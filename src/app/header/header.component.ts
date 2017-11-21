@@ -21,13 +21,13 @@ export class HeaderComponent implements OnInit {
     private lds: LoginDialogService
   ) {
     this.user = this.us.user;
-
   }
   ngOnInit() {}
 
-
   login() {
-    this.lds.openDialog(true, () => {});
+    this.lds.openDialog(true, () => {
+      this.router.navigate(['/' + this.us.user.Nick]);
+    });
   }
   logout() {
     this.ss.setToken('');
@@ -37,10 +37,12 @@ export class HeaderComponent implements OnInit {
 
   viewProfile() {
     this.router.navigate(['/' + this.user.Nick]);
-    }
+  }
 
   register() {
-    this.lds.openDialog(false, () => {});
+    this.lds.openDialog(false, () => {
+      this.router.navigate(['/' + this.us.user.Nick]);
+    });
   }
 
   scroll(el) {

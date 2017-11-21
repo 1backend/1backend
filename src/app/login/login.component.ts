@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit {
           this.dialogRef.close();
           this.us.get().then(() => {
             if (this.data.callback) {
-              this.data.callback();
+              this.data.callback(data.token);
             } else {
               this.router.navigate(['/' + this.us.user.Nick]);
             }
@@ -95,7 +95,7 @@ export class LoginComponent implements OnInit {
           this.dialogRef.close();
           this.us.get().then(() => {
             if (this.data.callback) {
-              this.data.callback();
+              this.data.callback(data.token);
             } else {
               this.router.navigate(['/' + this.us.user.Nick]);
             }

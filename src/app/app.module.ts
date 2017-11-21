@@ -189,6 +189,7 @@ import { CodeComponent } from './projects/project/code/code.component';
 import { MarkdownToHtmlModule } from 'ng2-markdown-to-html';
 import { SessionService } from './session.service';
 import { ConstService } from './const.service';
+import { ChargeService } from './charge.service';
 import { DemoComponent } from './home/demo/demo.component';
 import { HeaderComponent } from './header/header.component';
 import { ProjectsComponent } from './projects/projects.component';
@@ -302,7 +303,8 @@ const appRoutes: Routes = [
     LoginDialogService,
     UserService,
     CreateProjectDialogService,
-    CreateIssueDialogService
+    CreateIssueDialogService,
+    ChargeService
   ],
   bootstrap: [AppComponent],
   entryComponents: [
