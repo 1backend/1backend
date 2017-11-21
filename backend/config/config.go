@@ -18,7 +18,7 @@ type Config struct {
 }
 
 func init() {
-	file, err := os.Open("config.json")
+	file, err := os.Open("/var/1backend-config.json")
 	if err != nil {
 		log.Error(err)
 		return
