@@ -57,7 +57,7 @@ func (e Endpoints) Charge(accessToken, paymentToken string, amount uint64) error
 	if err != nil {
 		log.Errorf("Failed to save charge for user widh id %v: %v", tk.UserId, err)
 	}
-	err = e.state.IncrementBy(serviceToken.Token, int64(amount/pricePer100k))
+	err = e.state.IncrementBy(serviceToken.Token, 100000*int64(amount/pricePer100k))
 	if err != nil {
 		log.Errorf("Failed to increment quita for user %v, charge id %v", tk.UserId, ch.Id)
 	}
