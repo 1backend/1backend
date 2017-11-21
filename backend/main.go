@@ -32,6 +32,8 @@ func registerHandlers(r *httpr.Router, h *handlers.Handlers, p *proxy.Proxy) {
 	r.POST("/v1/comment", h.CreateComment)
 	r.PUT("/v1/comment", h.UpdateComment)
 
+	r.POST("/v1/charge", h.Carge)
+
 	r.POST("/v1/token", h.CreateToken)
 	r.POST("/v1/token/transfer", h.QuotaTransfer)
 
@@ -79,3 +81,23 @@ func main() {
 	log.Info("Starting http server")
 	log.Critical(http.ListenAndServe(fmt.Sprintf(":%v", 8883), handler))
 }
+
+func init() {
+	logger, err := log.LoggerFromConfigAsString(seelogConf)
+	if err == nil {
+		log.ReplaceLogger(logger)
+	} else {
+		log.Error(err)
+	}
+}
+
+const seelogConf = `
+<seelog>
+  <outputs>
+    <console formatid="colored"/>
+  </outputs>
+  <formats>
+    <format id="colored"  format="%Date(2006 Jan 02 3:04:05.00 PM MST) (%File:%Line) [%EscM(36)%LEVEL%EscM(39)] %Msg%n%EscM(0)"/>
+  </formats>
+</seelog>
+`

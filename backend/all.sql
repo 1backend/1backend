@@ -168,3 +168,18 @@ CREATE TABLE IF NOT EXISTS tokens
 ALTER TABLE tokens
       ADD CONSTRAINT uniqueStarTokenNamePerUser UNIQUE (user_id, name),
       ADD FOREIGN KEY (user_id) REFERENCES users (id);
+
+-- service access tokens and not login tokens (access_tokens)
+CREATE TABLE IF NOT EXISTS charges
+(
+  id                  VARCHAR(36)                                                     NOT NULL,
+  user_id             VARCHAR(36)                                                     NOT NULL,
+  amount              INT                                                             NOT NULL,
+  description         VARCHAR(512)                                                    NOT NULL,
+  created_at          DATETIME DEFAULT CURRENT_TIMESTAMP                              NOT NULL,
+  updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE charges
+      ADD FOREIGN KEY (user_id) REFERENCES users (id);

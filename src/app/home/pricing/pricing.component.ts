@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginDialogService } from '../../login/login-dialog.service';
+import { environment } from '../../../environments/environment';
+import * as types from '../../types';
 
 @Component({
   selector: 'app-pricing',
@@ -12,19 +14,31 @@ export class PricingComponent implements OnInit {
   ngOnInit() {}
 
   openCheckout(amount: number) {
-    const handler = (<any>window).StripeCheckout.configure({
-      key: 'pk_test_jN1awbuFc99uOJvciajTVvCU',
-      locale: 'auto',
-      token: function(token: any) {
-        // You can access the token ID with `token.id`.
-        // Get the token ID to your server-side code for use.
-      }
-    });
-
-    handler.open({
-      name: 'Starter',
-      description: '',
-      amount: 1900
+    const amt = 1900;
+    this.lds.openDialog(false, (tok: types.AccessToken) => {
+      const handler = (<any>window).StripeCheckout.configure({
+        key: environment.stripeKey,
+        locale: 'auto',
+        token: function(token: any) {
+          this.http
+            .poste(this._const.url + '/v1/charge', {
+              paymentToken: token.id,
+              token: tok.Token,
+              amount: amt
+            })
+            .subscribe(
+              data => {
+                this.refresh();
+              },
+              error => {}
+            );
+        }
+      });
+      handler.open({
+        name: 'Starter',
+        description: '',
+        amount: amt
+      });
     });
   }
 
