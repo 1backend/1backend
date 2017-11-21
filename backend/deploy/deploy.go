@@ -103,7 +103,7 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	if err != nil {
 		return err
 	}
-	output, err := exec.Command("/bin/bash", config.C.Path+"/bash/build.sh", buildPath, project.Author, project.Name, project.InfraPassword, recipePath).CombinedOutput()
+	output, err := exec.Command("/bin/bash", config.C.Path+"/bash/build.sh", buildPath, project.Author, project.Name, project.InfraPassword, recipePath, config.C.Path).CombinedOutput()
 	build.Output = string(output)
 	build.Success = err == nil
 	build.InProgress = false
