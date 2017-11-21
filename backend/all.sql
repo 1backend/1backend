@@ -159,7 +159,6 @@ CREATE TABLE IF NOT EXISTS tokens
   user_id             VARCHAR(36)                                                     NOT NULL,
   name                VARCHAR(32)                                                     NOT NULL,
   description         VARCHAR(512)                                                    NOT NULL,
-  enabled             BOOLEAN                                                         NOT NULL,
   created_at          DATETIME DEFAULT CURRENT_TIMESTAMP                              NOT NULL,
   updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  NOT NULL,
   PRIMARY KEY (id)

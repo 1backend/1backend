@@ -13,6 +13,8 @@ var C = Config{
 
 type Config struct {
 	StripeKey string // stripe api key
+	// absolute path to folder containing files (assumes same structure as the repo)
+	Path string
 }
 
 func init() {

@@ -6,9 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"os/exec"
-	"path/filepath"
 
 	log "github.com/cihub/seelog"
 	"github.com/go-redis/redis"
@@ -16,6 +14,7 @@ import (
 	httpr "github.com/julienschmidt/httprouter"
 	uuid "github.com/satori/go.uuid"
 
+	"github.com/1backend/1backend/backend/config"
 	"github.com/1backend/1backend/backend/domain"
 	"github.com/1backend/1backend/backend/endpoints"
 	"github.com/1backend/1backend/backend/state"
@@ -213,11 +212,7 @@ func (h *Handlers) RunSql(w http.ResponseWriter, r *http.Request, p httpr.Params
 		write400(w, err)
 		return
 	}
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err != nil {
-		panic(err)
-	}
-	output, _ := exec.Command("/bin/bash", dir+"/run_h.db.sh", inp.Sql, project.Author, project.Name).CombinedOutput()
+	output, _ := exec.Command("/bin/bash", config.C.Path+"/bash/run-sql.sh", inp.Sql, project.Author, project.Name).CombinedOutput()
 	write(w, map[string]interface{}{
 		"Answer": string(output),
 	})

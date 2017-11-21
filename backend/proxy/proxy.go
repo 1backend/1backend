@@ -16,6 +16,7 @@ import (
 	"github.com/jinzhu/gorm"
 	httpr "github.com/julienschmidt/httprouter"
 
+	"github.com/1backend/1backend/backend/config"
 	"github.com/1backend/1backend/backend/domain"
 	"github.com/1backend/1backend/backend/state"
 )
@@ -34,7 +35,7 @@ func NewProxy(db *gorm.DB, redisClient *redis.Client) *Proxy {
 }
 
 func (p *Proxy) launchAndWait(author, projectName string) error {
-	output, err := exec.Command("/bin/bash", "./bash/start-container.sh", author, projectName).CombinedOutput()
+	output, err := exec.Command("/bin/bash", config.C.Path+"/bash/start-container.sh", author, projectName).CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("Start container failed: %v | %v ", string(output), err)
 	}
@@ -45,7 +46,7 @@ func (p *Proxy) launchAndWait(author, projectName string) error {
 		if err != nil && i == 5 {
 			return err
 		}
-		output, err = exec.Command("/bin/bash", "./bash/get-port.sh", author, projectName).CombinedOutput()
+		output, err = exec.Command("/bin/bash", config.C.Path+"/bash/get-port.sh", author, projectName).CombinedOutput()
 		if err != nil {
 			continue
 		}
@@ -172,7 +173,7 @@ func (p *Proxy) Nuker() {
 		log.Error(err)
 	}
 	for _, v := range projects {
-		exec.Command("/bin/bash", "./bash/stop-container.sh", v.Author, v.Name).CombinedOutput()
+		exec.Command("/bin/bash", config.C.Path+"/bash/stop-container.sh", v.Author, v.Name).CombinedOutput()
 		p.state.MarkAsDown(v.Author, v.Name)
 		//if err != nil {
 		// don't log this - a lot of containers do not exists hence it's producing lot of logs
@@ -192,7 +193,7 @@ func (p *Proxy) Nuker() {
 			if shallLive {
 				continue
 			}
-			_, err := exec.Command("/bin/bash", "./bash/stop-container.sh", v.Author, v.Name).CombinedOutput()
+			_, err := exec.Command("/bin/bash", config.C.Path+"/bash/stop-container.sh", v.Author, v.Name).CombinedOutput()
 			if err == nil {
 				p.state.MarkAsDown(v.Author, v.Name)
 			}
