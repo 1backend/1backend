@@ -30,13 +30,13 @@ export class PricingComponent implements OnInit {
   openCheckout() {
     const that = this;
     if (this.ss.getToken()) {
-      this.charge.charge(amt, this.ss.getToken(), () => {
+      this.charge.charge(amt, () => {
         that.router.navigate(['/' + that.us.user.Nick]);
       });
       return;
     }
     this.lds.openDialog(false, (tok: types.AccessToken) => {
-      this.charge.charge(amt, tok.Token, () => {
+      this.charge.charge(amt, () => {
         that.router.navigate(['/' + that.us.user.Nick]);
       });
     });
