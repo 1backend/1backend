@@ -27,7 +27,7 @@ export class IssuesComponent implements OnInit {
   ) {}
 
   create() {
-    this.cris.openDialog(this.project);
+    this.cris.openDialog(this.project, () => this.refresh());
   }
   pageChanged($event: any) {
     this.currentPage = $event.pageIndex;
