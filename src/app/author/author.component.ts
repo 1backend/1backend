@@ -81,7 +81,6 @@ export class AuthorComponent implements OnInit {
     let p = new HttpParams();
     p = p.set('nick', this.author);
     p = p.set('token', this.ss.getToken());
-    console.log(p);
     this.http
       .get<types.Project[]>(this._const.url + '/v1/projects', {
         params: p
