@@ -4,7 +4,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { ConstService } from './const.service';
 import { SessionService } from './session.service';
 
-const pricePer100k = 1900;
+const pricePer100k = 900;
 
 @Injectable()
 export class ChargeService {

@@ -70,7 +70,7 @@
     <div style="margin-top: 2em" *ngIf="us.user?.Tokens?.length && author === us.user.Nick">
 
       <mat-input-container style="width: 100%">
-        <input type="number" matInput placeholder="Buy {{amount/19 * 100000 | number:'.0-0'}} quota for ${{amount}}" [(ngModel)]="amount"
+        <input type="number" matInput placeholder="Buy {{amount/9 * 100000 | number:'.0-0'}} quota for ${{amount}}" [(ngModel)]="amount"
         />
       </mat-input-container>
 

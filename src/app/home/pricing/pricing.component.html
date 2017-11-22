@@ -5,10 +5,10 @@
         Free
       </li>
       <li>Only public projects</li>
-      <li>No instant support</li>
+      <li>Best effort support</li>
       <li>
         <h3>Free</h3>
-        <span>until 100k requests</span>
+        <span>until first 100k requests</span>
       </li>
       <li *ngIf="!ss.getToken()">
         <button (click)="register()">Join Now</button>
@@ -22,9 +22,9 @@
         Premium
       </li>
       <li>Public and private projects</li>
-      <li>24/7 on-call support</li>
+      <li>Priority support</li>
       <li>
-        <h3>$19</h3>
+        <h3>$9</h3>
         <span>per 100k requests</span>
       </li>
       <li>
@@ -32,5 +32,16 @@
         <button *ngIf="ss.getToken()" (click)="openCheckout()">Go premium</button>
       </li>
     </ul>
+  </div>
+  <div fxFlex="1 1 5%"></div>
+  <div fxFlex="1 1 25%">
+    <div style="color: #555">
+      <p >
+        Earn free credits with by helping us with tweets and other goodies.
+      </p>
+      <p>
+        Just shoot us a mail with the links to <a href="mailto:contact@teleport.tech">contact@teleport.tech</a>.
+      </p>
+    </div>
   </div>
 </div>
