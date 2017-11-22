@@ -61,16 +61,13 @@ export class ProjectListComponent implements OnInit {
   }
   star(p: types.Project) {
     const that = this;
-    this.http
-      .put(this._const.url + '/v1/star', {
-        projectId: p.Id,
-        token: this.ss.getToken()
-      })
-      .subscribe(
-        star => {},
-        error => {
-          console.log(error.error);
-        }
-      );
+    this.http.put(this._const.url + '/v1/star', {
+      'projectId': p.Id,
+      'token': this.ss.getToken(),
+    }).subscribe(() => {
+      p.Stars++;
+    }, error => {
+      console.log(error.error);
+    });
   }
 }
