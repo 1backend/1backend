@@ -12,7 +12,7 @@ import (
 	"github.com/1backend/1backend/backend/domain"
 )
 
-const pricePer100k = 1900 // in cents
+const pricePer100k = 900 // in cents
 
 // taken from https://stripe.com/docs/charges
 

@@ -15,7 +15,7 @@ import { UserService } from '../user.service';
   styleUrls: ['./author.component.css']
 })
 export class AuthorComponent implements OnInit {
-  amount = 19;
+  amount = 9;
   author = '';
   name = '';
   projects: types.Project[] = [];

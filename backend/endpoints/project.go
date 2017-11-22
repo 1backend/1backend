@@ -61,7 +61,7 @@ func (e Endpoints) UpdateProject(proj *domain.Project) error {
 	}
 	for _, v := range proj.Dependencies {
 		if v.Id == "" {
-		v.Id = domain.Sid.MustGenerate()
+			v.Id = domain.Sid.MustGenerate()
 		}
 		v.ProjectId = proj.Id
 		err = e.db.Save(&v).Error
@@ -79,7 +79,18 @@ func (e Endpoints) PutStar(userId, projectId string) error {
 		ProjectId: projectId,
 		UserId:    userId,
 	}
-	return e.db.Save(star).Error
+	tx := e.db.Begin()
+	err := tx.Save(star).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	err = tx.Exec("update projects set stars = stars + 1 where id = ?", projectId).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit().Error
 }
 
 func (e Endpoints) DeleteStar(userId, projectId string) error {
@@ -88,5 +99,16 @@ func (e Endpoints) DeleteStar(userId, projectId string) error {
 	if err != nil {
 		return err
 	}
-	return e.db.Delete(star).Error
+	tx := e.db.Begin()
+	err = tx.Delete(star).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	err = tx.Exec("update projects set stars = stars - 1 where id = ?", projectId).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit().Error
 }
