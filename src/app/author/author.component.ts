@@ -151,8 +151,9 @@ export class AuthorComponent implements OnInit {
   }
 
   purchase() {
+    const that = this;
     this.charge.charge(this.amount * 100, () => {
-      this.refresh();
+      that.us.get();
     });
   }
 

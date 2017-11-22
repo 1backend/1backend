@@ -36,10 +36,12 @@ func (e Endpoints) Charge(accessToken, paymentToken string, amount uint64) error
 	params := &stripe.ChargeParams{
 		Amount:   amount,
 		Currency: "usd",
-		Desc:     fmt.Sprintf("%v00k quota added", amount/pricePer100k), // @todo hardcoded price
+		Desc:     fmt.Sprintf("%v quota added", (amount/pricePer100k)*100000), // @todo hardcoded price
 	}
-	params.SetSource(paymentToken)
-
+	err = params.SetSource(paymentToken)
+	if err != nil {
+		return err
+	}
 	log.Infof("About to charge user with id %v", tk.UserId)
 	_, err = charge.New(params)
 	if err != nil {
@@ -58,7 +60,7 @@ func (e Endpoints) Charge(accessToken, paymentToken string, amount uint64) error
 	if err != nil {
 		log.Errorf("Failed to save charge for user widh id %v: %v", tk.UserId, err)
 	}
-	err = e.db.Table("users").Where("user_id = ?", tk.UserId).Update("premium", true).Error
+	err = e.db.Table("users").Where("id = ?", tk.UserId).Update("premium", true).Error
 	if err != nil {
 		log.Errorf("Could set user to premium: %v", err)
 	}

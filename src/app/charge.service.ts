@@ -3,6 +3,7 @@ import { environment } from '../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ConstService } from './const.service';
 import { SessionService } from './session.service';
+import { NotificationsService } from 'angular2-notifications';
 
 const pricePer100k = 900;
 
@@ -11,7 +12,8 @@ export class ChargeService {
   constructor(
     private http: HttpClient,
     private _const: ConstService,
-    private ss: SessionService
+    private ss: SessionService,
+    private ns: NotificationsService
   ) {}
 
   charge(amt: number, callback: () => void) {
@@ -20,6 +22,7 @@ export class ChargeService {
       key: environment.stripeKey,
       locale: 'auto',
       token: function(token: any) {
+        that.ns.alert('Payment in progress');
         that.http
           .post(that._const.url + '/v1/charge', {
             paymentToken: token.id,
@@ -28,9 +31,12 @@ export class ChargeService {
           })
           .subscribe(
             data => {
+              that.ns.success('Thank you', 'Your payment was successful');
               callback();
             },
-            error => {}
+            error => {
+              that.ns.error(error);
+            }
           );
       }
     });
