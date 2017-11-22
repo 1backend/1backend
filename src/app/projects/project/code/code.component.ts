@@ -70,13 +70,13 @@ export class CodeComponent implements OnInit {
   getTestToken(): string {
     const tokens = this.us.user.Tokens;
     if (!tokens || !tokens.length) {
-      return '';
+      return 'YOUR_API_KEY';
     }
     const token = tokens.filter(t => {
       return t.Name === 'test';
     });
     if (token.length === 0) {
-      return '';
+      return 'YOUR_API_KEY';
     }
     return tokens[0].Token;
   }
