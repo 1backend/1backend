@@ -15,7 +15,7 @@ import { UserService } from '../user.service';
   styleUrls: ['./author.component.css']
 })
 export class AuthorComponent implements OnInit {
-  amount = 19;
+  amount = 9;
   author = '';
   name = '';
   projects: types.Project[] = [];
@@ -81,7 +81,6 @@ export class AuthorComponent implements OnInit {
     let p = new HttpParams();
     p = p.set('nick', this.author);
     p = p.set('token', this.ss.getToken());
-    console.log(p);
     this.http
       .get<types.Project[]>(this._const.url + '/v1/projects', {
         params: p
@@ -152,8 +151,9 @@ export class AuthorComponent implements OnInit {
   }
 
   purchase() {
+    const that = this;
     this.charge.charge(this.amount * 100, () => {
-      this.refresh();
+      that.us.get();
     });
   }
 

@@ -69,10 +69,11 @@
     </div>
     <div style="margin-top: 2em" *ngIf="us.user?.Tokens?.length && author === us.user.Nick">
 
-      <mat-input-container style="width: 100%">
-        <input type="number" matInput placeholder="Buy {{amount/19 * 100000 | number:'.0-0'}} quota for ${{amount}}" [(ngModel)]="amount"
+      <mat-form-field style="width: 100%">
+        <span matPrefix>$</span>
+        <input type="number" matInput placeholder="Buy {{amount/9 * 100000 | number:'.0-0'}} quota for ${{amount}}" [(ngModel)]="amount"
         />
-      </mat-input-container>
+      </mat-form-field>
 
       <button mat-raised-button class="button" color="accent" (click)="purchase()">Top up</button>
     </div>
