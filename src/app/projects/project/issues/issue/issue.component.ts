@@ -17,16 +17,14 @@ export class IssueComponent implements OnInit {
 
   issuerComment: types.Comment = {} as types.Comment;
   projectId: string;
-  issue: types.Issue = {
-  };
+  issue: types.Issue = {};
   commentContent = '';
 
   constructor(
     private http: HttpClient,
     private _const: ConstService,
-    private ss: SessionService,
-
-  ) { }
+    private ss: SessionService
+  ) {}
 
   ngOnInit() {
     this.getIssue();
@@ -34,47 +32,50 @@ export class IssueComponent implements OnInit {
 
   addComment() {
     const that = this;
-    this.http.post(this._const.url + '/v1/comment', {
-      'comment': {
-        'content': this.commentContent,
-        'issueId' : this.issueId
-      },
-      'token': this.ss.getToken()
-    }).subscribe(data => {
-      location.reload();
-    }, error => {
-    });
+    this.http
+      .post(this._const.url + '/v1/comment', {
+        comment: {
+          content: this.commentContent,
+          issueId: this.issueId
+        },
+        token: this.ss.getToken()
+      })
+      .subscribe(
+        data => {
+          this.getIssue();
+          this.commentContent = '';
+        },
+        error => {}
+      );
   }
 
   getIssue() {
-  let p = new HttpParams();
-  p = p.set('issueId', this.issueId);
-  this.http
-    .get<types.Issue>(this._const.url + '/v1/issue', { params: p })
-    .subscribe(
-      issue => {
-        this.issue = issue;
-        if (this.issue.Comments) {
-          this.issue.Comments = this.issue.Comments.sort((a, b) => {
-            if (a.CreatedAt === b.CreatedAt) {
-              return 0;
-            }
-            if (a.CreatedAt < b.CreatedAt) {
-              return 1;
-            }
-            return -1;
-          });
+    let p = new HttpParams();
+    p = p.set('issueId', this.issueId);
+    this.http
+      .get<types.Issue>(this._const.url + '/v1/issue', { params: p })
+      .subscribe(
+        issue => {
+          this.issue = issue;
+          if (this.issue.Comments) {
+            this.issue.Comments = this.issue.Comments.sort((a, b) => {
+              if (a.CreatedAt === b.CreatedAt) {
+                return 0;
+              }
+              if (a.CreatedAt < b.CreatedAt) {
+                return 1;
+              }
+              return -1;
+            });
+          }
+          this.issuerComment = this.issue.Comments.pop();
+          this.issue.Comments = this.issue.Comments.reverse();
+        },
+        error => {
+          console.log(error);
         }
-        this.issuerComment = this.issue.Comments.pop();
-        this.issue.Comments = this.issue.Comments.reverse();
-      },
-      error => {
-        console.log(error);
-      }
-    );
+      );
   }
 
-  back() {
-
-  }
+  back() {}
 }

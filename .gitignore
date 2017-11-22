@@ -1,6 +1,8 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+backend/config.json
 environment.cruft.ts
+environment.cruft-prod.ts
 
 # compiled output
 /dist

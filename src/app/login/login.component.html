@@ -1,16 +1,16 @@
 <div flexLayout="row wrap" fxLayoutAlign="center">
   <div fxFlex="1 1 100%">
-    <mat-tab-group mat-stretch-tabs="true" [selectedIndex]="selectedIndex" >
+    <mat-tab-group mat-stretch-tabs="true" [selectedIndex]="selectedIndex">
       <mat-tab style="padding-top: 2em;" label="Login">
         <ng-template mat-tab-label>Login</ng-template>
 
-        <mat-form-field class="example-full-width" style="text-align: left; width: 100%;">
+        <mat-form-field (keydown.enter)="login()" class="example-full-width" style="text-align: left; width: 100%;">
           <input matInput placeholder="Email address" [formControl]="emailFormControl" [(ngModel)]="email">
           <mat-error *ngIf="emailFormControl.hasError('pattern')">
             Please enter a valid email address
           </mat-error>
         </mat-form-field>
-        <mat-form-field class="example-full-width" style="text-align: left; width: 100%;">
+        <mat-form-field (keydown.enter)="login()" class="example-full-width" style="text-align: left; width: 100%;">
           <input matInput placeholder="Password" [(ngModel)]="password" type="password" required>
           <mat-error *ngIf="!password">
             Password is empty
@@ -36,11 +36,12 @@
             Please enter a valid email address
           </mat-error>
           <mat-error *ngIf="emailFormControl.hasError('required')">
-            Email is <strong>required</strong>
+            Email is
+            <strong>required</strong>
           </mat-error>
           <mat-error *ngIf="!email">
-              Email is empty
-            </mat-error>
+            Email is empty
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field class="example-full-width" style="text-align: left; width: 100%;">
@@ -50,7 +51,7 @@
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field class="example-full-width" style="text-align: left; width: 100%;">
+        <mat-form-field (keydown.enter)="login()" class="example-full-width" style="text-align: left; width: 100%;">
           <input matInput placeholder="Password confirm" [(ngModel)]="password_conf" type="password" required>
           <mat-error *ngIf="!password_conf">
             Password is empty
@@ -58,7 +59,7 @@
         </mat-form-field>
 
         <div flexLayout="row wrap" align="center">
-          <button  mat-raised-button color="primary" class="register" (click)="register()">REGISTER</button>
+          <button mat-raised-button color="primary" class="register" (click)="register()">REGISTER</button>
         </div>
       </mat-tab>
     </mat-tab-group>

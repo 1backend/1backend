@@ -51,7 +51,6 @@ export class LoginComponent implements OnInit {
     }
   }
 
-
   login() {
     if (this.validator() !== 'ok') {
       return;
@@ -67,7 +66,8 @@ export class LoginComponent implements OnInit {
           // this.event.broadcast('logged-in')
           this.dialogRef.close();
           this.us.get().then(() => {
-            if (this.data.callback()) {
+            if (this.data.callback) {
+              this.data.callback(data.token);
             } else {
               this.router.navigate(['/' + this.us.user.Nick]);
             }
@@ -94,11 +94,12 @@ export class LoginComponent implements OnInit {
           this.ss.setToken(data.token.Token);
           this.dialogRef.close();
           this.us.get().then(() => {
-            this.data.callback();
+            if (this.data.callback) {
+              this.data.callback(data.token);
+            } else {
+              this.router.navigate(['/' + this.us.user.Nick]);
+            }
           });
-          setTimeout(() => {
-            this.router.navigate(['/' + this.username]);
-          }, 200); // database purposes
         },
         e => {
           this.notif.error(e.error.error);

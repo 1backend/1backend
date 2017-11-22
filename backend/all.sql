@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS users
   name                VARCHAR(32)                                                     NOT NULL,          
   password            VARCHAR(128)                                                    NOT NULL,
   premium             BOOLEAN                                                         NOT NULL,
-  email               VARCHAR(128)                                                    NOT NULL,
+  email               VARCHAR(128)                                             UNIQUE NOT NULL,
   avatar_link         VARCHAR(128)                                                    NOT NULL,
   created_at          DATETIME DEFAULT CURRENT_TIMESTAMP                              NOT NULL,
   updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  NOT NULL,
@@ -159,7 +159,6 @@ CREATE TABLE IF NOT EXISTS tokens
   user_id             VARCHAR(36)                                                     NOT NULL,
   name                VARCHAR(32)                                                     NOT NULL,
   description         VARCHAR(512)                                                    NOT NULL,
-  enabled             BOOLEAN                                                         NOT NULL,
   created_at          DATETIME DEFAULT CURRENT_TIMESTAMP                              NOT NULL,
   updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  NOT NULL,
   PRIMARY KEY (id)
@@ -167,4 +166,19 @@ CREATE TABLE IF NOT EXISTS tokens
 
 ALTER TABLE tokens
       ADD CONSTRAINT uniqueStarTokenNamePerUser UNIQUE (user_id, name),
+      ADD FOREIGN KEY (user_id) REFERENCES users (id);
+
+-- service access tokens and not login tokens (access_tokens)
+CREATE TABLE IF NOT EXISTS charges
+(
+  id                  VARCHAR(36)                                                     NOT NULL,
+  user_id             VARCHAR(36)                                                     NOT NULL,
+  amount              INT                                                             NOT NULL,
+  description         VARCHAR(512)                                                    NOT NULL,
+  created_at          DATETIME DEFAULT CURRENT_TIMESTAMP                              NOT NULL,
+  updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE charges
       ADD FOREIGN KEY (user_id) REFERENCES users (id);

@@ -154,3 +154,13 @@ func init() {
 		panic(err)
 	}
 }
+
+// service access token
+type Charge struct {
+	Id          string
+	Amount      int
+	UserId      string
+	Description string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}

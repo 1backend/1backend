@@ -13,6 +13,7 @@ import (
 	"github.com/iancoleman/strcase"
 	"github.com/jinzhu/gorm"
 
+	"github.com/1backend/1backend/backend/config"
 	"github.com/1backend/1backend/backend/domain"
 	tp "github.com/1backend/1backend/backend/tech-pack"
 )
@@ -52,7 +53,7 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	}
 	techPack := tp.GetProvider(project)
 	recipePath := techPack.RecipePath()
-	dat, err := ioutil.ReadFile("./tech-pack/" + recipePath + "/code.tpl")
+	dat, err := ioutil.ReadFile(config.C.Path + "/tech-pack/" + recipePath + "/code.tpl")
 	if err != nil {
 		return err
 	}
@@ -77,7 +78,7 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	if err != nil {
 		return err
 	}
-	buildPath := "./builds/" + project.Author + "/" + project.Name + "/" + id
+	buildPath := config.C.Path + "/builds/" + project.Author + "/" + project.Name + "/" + id
 	err = os.MkdirAll(buildPath, 0700)
 	if err != nil {
 		return err
@@ -102,11 +103,11 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	if err != nil {
 		return err
 	}
-	output, err := exec.Command("/bin/bash", "./bash/build.sh", buildPath, project.Author, project.Name, project.InfraPassword, recipePath).CombinedOutput()
+	output, err := exec.Command("/bin/bash", config.C.Path+"/bash/build.sh", buildPath, project.Author, project.Name, project.InfraPassword, recipePath, config.C.Path).CombinedOutput()
 	build.Output = string(output)
 	build.Success = err == nil
 	build.InProgress = false
-	output, err = exec.Command("/bin/bash", "./bash/get-port.sh", project.Author, project.Name).CombinedOutput()
+	output, err = exec.Command("/bin/bash", config.C.Path+"/bash/get-port.sh", project.Author, project.Name).CombinedOutput()
 	if err != nil {
 		return err
 	}

@@ -10,8 +10,8 @@
         <h3>Free</h3>
         <span>until 100k requests</span>
       </li>
-      <li>
-        <button (click)="register()" >Join Now</button>
+      <li *ngIf="!ss.getToken()">
+        <button (click)="register()">Join Now</button>
       </li>
     </ul>
   </div>
@@ -28,10 +28,9 @@
         <span>per 100k requests</span>
       </li>
       <li>
-        <button (click)="openCheckout(1900)">Join Now</button>
+        <button *ngIf="!ss.getToken()" (click)="openCheckout()">Join Now</button>
+        <button *ngIf="ss.getToken()" (click)="openCheckout()">Go premium</button>
       </li>
     </ul>
   </div>
-  <!--<div fxFlex="1 1 5%"></div>
-  <div fxFlex="1 1 25%"></div>-->
 </div>

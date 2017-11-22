@@ -3,7 +3,8 @@
 # $3 app name
 # $4 infrastructure password
 # $5 recipe path (eg: "go", "nodejs-whatever")
-cp ./tech-pack/$5/Dockerfile $1/Dockerfile
+# $6 absolute path to project
+cp $6/tech-pack/$5/Dockerfile $1/Dockerfile
 INTERNALIP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8)
 NAME="\`$2_$3\`"
 cd $1

@@ -1,7 +1,7 @@
 <div fxFlexLayout="row" fxLayoutAlign="center">
   <div fxFlex="1 1 70%">
     <span>
-      <a href="{{author}}/{{projectName}}/issues/" style="color: black;margin-top: 3em;">
+      <a routerLink="/{{author}}/{{projectName}}/issues/" style="color: black;margin-top: 3em;">
         <mat-icon style="font-size: 30px; padding-top: 0.3em;">keyboard_backspace</mat-icon>
       </a>
     </span>
@@ -12,7 +12,7 @@
     <mat-card style="margin-top: 0.5em;">
       <mat-card-header>
         <mat-card-title>
-            <a style="color: black;" href="/{{issuerComment.User?.Nick}}">{{issuerComment.User?.Nick}}</a>
+          <a style="color: black;" routerLink="/{{issuerComment.User?.Nick}}">{{issuerComment.User?.Nick}}</a>
         </mat-card-title>
         <mat-card-subtitle>{{issuerComment.Content && issuerComment.UpdatedAt | amTimeAgo}}</mat-card-subtitle>
       </mat-card-header>

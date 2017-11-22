@@ -45,10 +45,16 @@
     <div *ngIf="!user.AvatarLink" style="padding-bottom: 2em;">
       <img src="/assets/nophoto.jpg" class="img" align="middle">
     </div>
-    <div readonly>
-      <font size="6">
+    <div readonly fxFlexLayout="row" fxLayoutAlign="center center">
+      <font size="5">
         <b>{{user.Name}}</b>
       </font>
+      <span fxFlex="1 1 auto"></span>
+      <span *ngIf="author === us.user?.Nick" align="end" size="5">
+        <button mat-icon-button>
+          <i (click)="edit()" style="color:#444" class="material-icons">mode_edit</i>
+        </button>
+      </span>
     </div>
     <div style="padding-bottom: 0em">
       <font size="5" color="#666">
@@ -58,12 +64,18 @@
     <div *ngIf="author === us.user.Nick" style="padding-top: 1.2em;" readonly>
       <font size="4">{{user.Email}}</font>
     </div>
-    <div align="center" style="padding-top: 2em;" *ngIf="author === us.user.Nick">
-      <button mat-raised-button class="button" color="accent" (click)="edit()">Edit</button>
+    <div style="margin-top: 4em" *ngIf="us.user?.Tokens?.length && author === us.user.Nick">
+      <font size="6" style="color: green">{{getAllCallsLeft() | number:'.0-0'}}</font> calls left
     </div>
-    <div style="margin-top: 2em" *ngIf="us.user?.Tokens?.length && author === us.user.Nick" align="center">
-        <font size="6" style="color: green">{{getAllCallsLeft()}}</font> calls left
-      </div>
+    <div style="margin-top: 2em" *ngIf="us.user?.Tokens?.length && author === us.user.Nick">
+
+      <mat-input-container style="width: 100%">
+        <input type="number" matInput placeholder="Buy {{amount/19 * 100000 | number:'.0-0'}} quota for ${{amount}}" [(ngModel)]="amount"
+        />
+      </mat-input-container>
+
+      <button mat-raised-button class="button" color="accent" (click)="purchase()">Top up</button>
+    </div>
   </div>
   <div fxFlex="1 1 75%" fxFlex.lt-lg="1 1 70%" class="project-list" style="margin-bottom: 1em; padding-top: 0em">
     <mat-tab-group [(selectedIndex)]="selectedTabIndex">
@@ -97,14 +109,14 @@
                   <mat-form-field class="example-full-width" style="width: 100%">
                     <mat-select [(ngModel)]="from" placeholder="From">
                       <mat-option *ngFor="let token of user.Tokens" [value]="token.Token">
-                        {{ token.Name }} ({{token.Quota}})
+                        {{ token.Name }} ({{token.Quota | number:'.0-0'}})
                       </mat-option>
                     </mat-select>
                   </mat-form-field>
                   <mat-form-field class="example-full-width" style="width: 100%">
                     <mat-select [(ngModel)]="to" placeholder="To">
                       <mat-option *ngFor="let token of user.Tokens" [value]="token.Token">
-                        {{ token.Name }} ({{token.Quota}})
+                        {{ token.Name }} ({{token.Quota | number:'.0-0'}})
                       </mat-option>
                     </mat-select>
                   </mat-form-field>
@@ -127,7 +139,7 @@
               <mat-card-content>
                 <p>{{token.Token}}</p>
                 <p>
-                  <b style="color: green">{{token.Quota | number:'4.0'}}</b> quota left</p>
+                  <b style="color: green">{{token.Quota | number:'.0-0'}}</b> quota left</p>
                 <p>Created {{token.CreatedAt | amTimeAgo}}</p>
               </mat-card-content>
             </mat-card>

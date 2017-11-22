@@ -7,10 +7,10 @@ import * as types from '../../../types';
 export class CreateIssueDialogService {
   constructor(public dialog: MatDialog) {}
 
-  openDialog(project: types.Project): void {
+  openDialog(project: types.Project, callback: () => void): void {
     const dialogRef = this.dialog.open(CreateIssueComponent, {
       width: '700px',
-      data: { project: project }
+      data: { project: project, callback: callback }
     });
 
     dialogRef.afterClosed().subscribe(result => {});

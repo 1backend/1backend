@@ -10,14 +10,12 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-create-issue',
   templateUrl: './create-issue.component.html',
-  styleUrls: ['./create-issue.component.css'],
+  styleUrls: ['./create-issue.component.css']
 })
 export class CreateIssueComponent implements OnInit {
-
   issueTitle = '';
   commentContent = '';
   errorString;
-
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -30,11 +28,9 @@ export class CreateIssueComponent implements OnInit {
     private router: Router,
     private _const: ConstService,
     private ss: SessionService
-  ) { }
+  ) {}
 
-
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   addIssue() {
     if (this.commentContent.length < 1 || this.issueTitle.length < 1) {
@@ -42,19 +38,23 @@ export class CreateIssueComponent implements OnInit {
       return;
     }
     const that = this;
-    this.http.post(this._const.url + '/v1/issue', {
-      'issue': {
-        'title': this.issueTitle,
-        'projectId' : this.data.project.Id
-      },
-      'comment': {
-        'content': this.commentContent
-      },
-      'token': this.ss.getToken()
-    }).subscribe(data => {
-      location.reload();
-    }, error => {
-    });
+    this.http
+      .post(this._const.url + '/v1/issue', {
+        issue: {
+          title: this.issueTitle,
+          projectId: this.data.project.Id
+        },
+        comment: {
+          content: this.commentContent
+        },
+        token: this.ss.getToken()
+      })
+      .subscribe(
+        d => {
+          this.data.callback();
+          this.dialogRef.close();
+        },
+        error => {}
+      );
   }
-
 }
