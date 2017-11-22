@@ -8,6 +8,9 @@ import { SessionService } from '../../session.service';
 import { ConstService } from '../../const.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { UserService } from '../../user.service';
+import { SimpleNotificationsModule } from 'angular2-notifications';
+import { NotificationsService } from 'angular2-notifications';
+import { RequestOptions } from '@angular/http/src/base_request_options';
 
 interface PingResponse {
   pong: boolean;
@@ -32,6 +35,8 @@ export class ProjectComponent implements OnInit {
   status: boolean;
   issueId = '';
   loaded = false;
+  stars: number;
+  starred = false;
 
   project: types.Project = {
     Endpoints: [],
@@ -45,7 +50,8 @@ export class ProjectComponent implements OnInit {
     private location: Location,
     private router: Router,
     private _const: ConstService,
-    public us: UserService
+    public us: UserService,
+    private notif: NotificationsService
   ) {
     this.author = this.route.snapshot.params['author'];
     this.projectName = this.route.snapshot.params['project'];
@@ -109,7 +115,15 @@ export class ProjectComponent implements OnInit {
                 proj.Name + "\n===\nThis project doesn't have a readme yet.";
             }
             that.project = proj;
+            if (that.project.Starrers) {
+              for (let s of that.project.Starrers) {
+                if (s.Id === that.us.user.Id) {
+                  that.starred = true;
+                }
+              }
+            }
             that.loaded = true;
+            that.stars = proj.Stars;
           },
           error => {
             console.log(error);
@@ -156,5 +170,38 @@ export class ProjectComponent implements OnInit {
       .subscribe(data => {
         this.status = data.pong;
       });
+  }
+  star(p: types.Project) {
+    const that = this;
+    this.http
+      .put(this._const.url + '/v1/star', {
+        projectId: p.Id,
+        token: this.ss.getToken()
+      })
+      .subscribe(
+        () => {
+          p.Stars++;
+          that.makeRefresh()();
+        },
+        error => {}
+      );
+  }
+  unStar(proj: types.Project) {
+    const that = this;
+    let p = new HttpParams();
+    p = p.set('projectId', proj.Id);
+    p = p.set('token', that.ss.getToken());
+    this.http
+      .delete(this._const.url + '/v1/star', {
+        params: p
+      })
+      .subscribe(
+        () => {
+          proj.Stars--;
+          that.starred = false;
+          that.makeRefresh()();
+        },
+        error => {}
+      );
   }
 }

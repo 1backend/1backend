@@ -56,11 +56,11 @@ export class ProjectListComponent implements OnInit {
     const that = this;
     this.http.put(this._const.url + '/v1/star', {
       'projectId': p.Id,
-      'token': this.ss.getToken()
-    }).subscribe(star => {
+      'token': this.ss.getToken(),
+    }).subscribe(() => {
+      p.Stars++;
     }, error => {
       console.log(error.error);
     });
   }
-
 }

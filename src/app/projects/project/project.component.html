@@ -15,19 +15,25 @@
     </span>
     <span *ngIf="loaded && status" matTooltip="Your project up and ready">
       <button mat-button style="margin-top: -0.5em; margin-left: 1em;" disabled>
-        <mat-icon style="color: rgb(40, 165, 40)" aria-hidden="false">fiber_manual_record</mat-icon>
+        <mat-icon style="color: rgb(40, 165, 40); margin-bottom: 0.2em" aria-hidden="false">fiber_manual_record</mat-icon>
         Status
       </button>
     </span>
     <span *ngIf="loaded && !status" matTooltip="Ups, something wrong">
       <button mat-button style="margin-top: -0.5em; margin-left: 1em;" disabled>
-        <mat-icon style="color: red" aria-hidden="false">fiber_manual_record</mat-icon>
+        <mat-icon style="color: red; margin-bottom: 0.2em" aria-hidden="false">fiber_manual_record</mat-icon>
         Status
       </button>
     </span>
-    <button mat-raised-button style="margin-top: -0.5em; margin-left: 1em;">
-      <mat-icon aria-hidden="false">star</mat-icon>
-      Star
+    <button *ngIf="!starred" mat-raised-button style="margin-top: -0.5em; margin-left: 1em;width: 10em" (click)="star(project)">
+        <span style="border-right: solid 1px; padding-right: 0.5em">{{stars}}</span>
+      <mat-icon aria-hidden="false" style="margin-bottom: 0.2em;">star_border</mat-icon>
+        Star
+    </button>
+    <button *ngIf="starred" mat-raised-button style="margin-top: -0.5em; margin-left: 1em; width: 12em;" (click)="unStar(project)">
+      <span style="border-right: solid 1px; padding-right: 0.5em;">{{stars}}</span>
+      <mat-icon aria-hidden="false" color="accent" style="margin-bottom: 0.2em;">star</mat-icon>
+        Unstar
     </button>
     <!--
   <button mat-raised-button style="margin-top: -0.5em; margin-left: 1em; padding-right: 2.2em;">
@@ -53,7 +59,7 @@
           <mat-icon>close</mat-icon>
         </span>
         <span class="inprogress" *ngIf="lastBuild && lastBuild.InProgress">
-          <mat-progress-spinner style="display: inline; padding: 0.2em;" class="example-margin" [color]="color" [mode]="mode" [value]="value"
+          <mat-progress-spinner class="example-margin" [color]="color" [mode]="mode" [value]="value"
             [diameter]="24" [strokeWidth]="3"></mat-progress-spinner>
         </span>
       </ng-template>
