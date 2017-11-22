@@ -51,6 +51,7 @@ export class ProjectComponent implements OnInit {
     this.projectName = this.route.snapshot.params['project'];
     this.tab = this.route.snapshot.params['tab'];
     this.issueId = this.route.snapshot.params['issueId'];
+    this.getStatus();
     this.makeRefresh()();
     if (this.tab === 'sql') {
       this.selectedIndex = 3;
@@ -118,9 +119,7 @@ export class ProjectComponent implements OnInit {
     };
   }
 
-  ngOnInit() {
-    this.getStatus();
-  }
+  ngOnInit() {}
 
   delete() {
     this.http.delete(this._const.url + '/v1/project', {}).subscribe(

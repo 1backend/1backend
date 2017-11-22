@@ -5,6 +5,8 @@ import { ConstService } from '../../../const.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CreateIssueDialogService } from '../../../projects/project/issues/create-issue-dialog.service';
 import { FilterPipe } from '../../../filter.pipe';
+import { LoginDialogService } from '../../../login/login-dialog.service';
+import { SessionService } from '../../../session.service';
 
 @Component({
   selector: 'app-issues',
@@ -23,12 +25,21 @@ export class IssuesComponent implements OnInit {
     private http: HttpClient,
     private _const: ConstService,
     private router: Router,
-    private cris: CreateIssueDialogService
+    private cris: CreateIssueDialogService,
+    private lds: LoginDialogService,
+    private ss: SessionService
   ) {}
 
   create() {
-    this.cris.openDialog(this.project, () => this.refresh());
+    if (!this.ss.getToken()) {
+      this.lds.openDialog(true, () => {
+        this.cris.openDialog(this.project, () => this.refresh());
+      });
+    } else {
+      this.cris.openDialog(this.project, () => this.refresh());
+    }
   }
+
   pageChanged($event: any) {
     this.currentPage = $event.pageIndex;
   }

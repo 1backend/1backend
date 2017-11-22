@@ -1,4 +1,4 @@
-<ng-container *ngIf="project.Id && us.user.Id">
+<ng-container *ngIf="project.Id">
   <div fxLayout="row" fxLayoutAlign="space-between" style="margin-top: 2em; margin-bottom: 1em;">
 
     <mat-icon *ngIf="loaded && !project.Public" class="icons">lock_outline</mat-icon>
@@ -9,7 +9,7 @@
     </div>
     <span *ngIf="!loaded" matTooltip="Your project up and ready">
       <button mat-button style="margin-top: -0.5em; margin-left: 1em;" disabled>
-        <mat-icon style="color: blue" aria-hidden="false">fiber_manual_record</mat-icon>
+        <mat-icon style="color: grey" aria-hidden="false">fiber_manual_record</mat-icon>
         Status
       </button>
     </span>
