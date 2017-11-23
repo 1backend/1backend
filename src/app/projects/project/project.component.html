@@ -80,7 +80,7 @@
       <mat-card style="margin-top: 0.5em" *ngIf="!project.Starrers">
         No stars yet.
       </mat-card>
-      <div style="padding-bottom: 1em;" flexlayout="row wrap" fxLayoutAlign="space-between" *ngIf="project.Starrers">
+      <div style="padding-bottom: 1em;" fxLayout="row wrap" fxLayoutAlign="space-between" *ngIf="project.Starrers">
         <mat-card fxFlex="1 1 32%" style="margin-top: 2em;" *ngFor="let user of project.Starrers">
           <div style="padding-bottom: 1em;padding-top: 1em">
             <a style="color: #2962FF" routerLink="/{{user.Nick}}">
