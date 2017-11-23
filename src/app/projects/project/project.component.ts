@@ -60,7 +60,7 @@ export class ProjectComponent implements OnInit {
     this.getStatus();
     this.makeRefresh()();
     if (this.tab === 'sql') {
-      this.selectedIndex = 3;
+      this.selectedIndex = 4;
     }
     if (this.tab === 'builds') {
       this.selectedIndex = 1;
@@ -69,7 +69,7 @@ export class ProjectComponent implements OnInit {
       this.selectedIndex = 2;
     }
     if (this.tab === 'stars') {
-      this.selectedIndex = 4;
+      this.selectedIndex = 3;
     }
   }
 
