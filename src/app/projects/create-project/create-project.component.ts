@@ -20,6 +20,7 @@ export class CreateProjectComponent implements OnInit {
   @Input() callback: (p: types.Project) => void;
   name = '';
   user: types.User;
+  private = false;
 
   languages: types.Languages[] = [
     {
@@ -47,7 +48,7 @@ export class CreateProjectComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private us: UserService,
+    public us: UserService,
     private router: Router,
     private ss: SessionService,
     private loginDialog: LoginDialogService,
@@ -85,19 +86,20 @@ export class CreateProjectComponent implements OnInit {
       this.notif.error('Please select dependencies');
       return;
     }
+
     const p = {
       Author: this.user.Nick,
       Name: this.name,
       Mode: lang.Name,
       Dependencies: dep,
-      Public: true,
+      Public: !this.private,
       OpenSource: true
     };
 
     this.http
       .post(this._const.url + '/v1/project', {
         token: this.ss.getToken(),
-        project: p
+        project: p,
       })
       .subscribe(
         data => {

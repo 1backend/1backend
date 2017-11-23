@@ -25,9 +25,14 @@
           </font>
         </a>
       </div>
-      <div align="start" fxFlex="1 1 20%" fxFlex.lt-lg="1 1 50%" style="padding-top: 0.5em;" fxLayoutAlign="end space-between">
+      <div *ngIf="!p.Starrers" align="start" fxFlex="1 1 20%" fxFlex.lt-lg="1 1 50%" style="padding-top: 0.5em;" fxLayoutAlign="end space-between">
         <button mat-raised-button (click)="star(p)" style="position: relative; top: -10px">
-          <mat-icon aria-hidden="fasle" style="position: relative;top: -2px; right: 5px;">star</mat-icon>Star
+          <mat-icon aria-hidden="false" style="position: relative;top: -2px; right: 5px;">star_border</mat-icon>Star
+        </button>
+      </div>
+      <div *ngIf="p.Starrers" align="start" fxFlex="1 1 20%" fxFlex.lt-lg="1 1 50%" style="padding-top: 0.5em;" fxLayoutAlign="end space-between">
+        <button mat-raised-button (click)="unStar(p)" style="position: relative; top: -10px">
+          <mat-icon aria-hidden="false" style="position: relative;top: -2px; right: 5px;">star</mat-icon>Unstar
         </button>
       </div>
     </div>

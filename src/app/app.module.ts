@@ -174,7 +174,8 @@ import {
   MatDialogModule,
   MatDialog,
   MatListModule,
-  MatExpansionModule
+  MatExpansionModule,
+  MatCheckboxModule,
 } from '@angular/material';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -294,7 +295,8 @@ const appRoutes: Routes = [
     MatTooltipModule,
     ReactiveFormsModule,
     MatListModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatCheckboxModule,
   ],
   providers: [
     HttpClient,
