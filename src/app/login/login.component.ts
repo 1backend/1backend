@@ -9,7 +9,8 @@ import { UserService } from '../user.service';
 import * as types from '../types';
 import { FormControl, Validators } from '@angular/forms';
 
-const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}$/;
+const USERNAME_REGEX = /^[a-z0-9]+([a-z0-9\-]*)*[a-z0-9]+$/;
 
 interface LoginResponse {
   token: types.AccessToken;
@@ -31,6 +32,9 @@ export class LoginComponent implements OnInit {
   password_conf = '';
   selectedIndex = 0;
   emailFormControl = new FormControl('', [Validators.pattern(EMAIL_REGEX)]);
+  usernameFormControl = new FormControl('', [
+    Validators.pattern(USERNAME_REGEX)
+  ]);
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -126,8 +130,14 @@ export class LoginComponent implements OnInit {
       this.notif.error('Username is empty.');
       return;
     }
-    if (!this.email.match('@')) {
-      this.notif.error('Wrong email format');
+    if (!USERNAME_REGEX.test(this.username)) {
+      this.notif.error(
+        'Username must contain only lowercase and numerical characters.'
+      );
+      return;
+    }
+    if (!EMAIL_REGEX.test(this.email)) {
+      this.notif.error('Email is invalid.');
       return;
     }
     if (!this.password) {
@@ -135,7 +145,7 @@ export class LoginComponent implements OnInit {
       return;
     }
     if (this.password_conf !== this.password) {
-      this.notif.error('Passwords does not match');
+      this.notif.error('Passwords does not match.');
       return;
     }
     return 'ok';

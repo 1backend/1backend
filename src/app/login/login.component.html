@@ -23,35 +23,32 @@
 
       <mat-tab label="Register">
 
-        <mat-form-field class="example-full-width" style="text-align: left; width: 100%;">
-          <input matInput placeholder="Username" [(ngModel)]="username" required>
+        <mat-form-field (keydown.enter)="register()" class="example-full-width" style="text-align: left; width: 100%;">
+          <input matInput placeholder="Username" [(ngModel)]="username" [formControl]="usernameFormControl" required>
           <mat-error *ngIf="!username">
             Username is empty
           </mat-error>
-        </mat-form-field>
-
-        <mat-form-field class="example-full-width" style="text-align: left; width: 100%;">
-          <input matInput placeholder="Email address" [formControl]="emailFormControl" [(ngModel)]="email">
-          <mat-error *ngIf="emailFormControl.hasError('pattern')">
-            Please enter a valid email address
-          </mat-error>
-          <mat-error *ngIf="emailFormControl.hasError('required')">
-            Email is
-            <strong>required</strong>
-          </mat-error>
-          <mat-error *ngIf="!email">
-            Email is empty
+          <mat-error *ngIf="usernameFormControl.hasError('pattern')">
+            Only lowercase and numerical characters (and dash as infix).
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field class="example-full-width" style="text-align: left; width: 100%;">
+        <mat-form-field (keydown.enter)="register()" class="example-full-width" style="text-align: left; width: 100%;">
+          <input matInput placeholder="Email address" [(ngModel)]="email" email pattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}"
+            required>
+          <mat-error>
+            Invalid email address.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field (keydown.enter)="register()" class="example-full-width" style="text-align: left; width: 100%;">
           <input matInput placeholder="Password" [(ngModel)]="password" type="password" required>
           <mat-error *ngIf="!password">
             Password is empty
           </mat-error>
         </mat-form-field>
 
-        <mat-form-field (keydown.enter)="login()" class="example-full-width" style="text-align: left; width: 100%;">
+        <mat-form-field (keydown.enter)="register()" class="example-full-width" style="text-align: left; width: 100%;">
           <input matInput placeholder="Password confirm" [(ngModel)]="password_conf" type="password" required>
           <mat-error *ngIf="!password_conf">
             Password is empty
