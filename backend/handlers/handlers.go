@@ -265,7 +265,7 @@ func (h *Handlers) GetProjects(w http.ResponseWriter, r *http.Request, p httpr.P
 	} else {
 		db = db.Where("author = ? AND public = true", nick)
 	}
-	db = db.Select("author, name, id, stars, public, open_source, description, recipe, created_at, updated_at")
+	db = db.Select("author, name, id, mode, stars, public, open_source, description, recipe, created_at, updated_at")
 	if getStarrersFor != "" {
 		db = db.Preload("Starrers", "user_id = ?", getStarrersFor)
 	}

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"regexp"
+
 	"github.com/1backend/1backend/backend/domain"
 	"github.com/1backend/1backend/backend/state"
 	"github.com/go-redis/redis"
@@ -12,6 +14,8 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"golang.org/x/crypto/bcrypt"
 )
+
+var reg = regexp.MustCompile("^[0-9a-z-]+$")
 
 // NewEndpoints is just below the http handlers
 func NewEndpoints(
@@ -50,6 +54,9 @@ func (e *Endpoints) Register(email, name, password string) (*domain.User, *domai
 	}
 	if name == "" {
 		return nil, nil, errors.New("Name can't be empty.")
+	}
+	if !reg.Match([]byte(name)) {
+		return nil, nil, errors.New("Allowed name characters: lowercase letters, numbers and dash")
 	}
 	user, err := domain.NewUserDao(e.db).GetByEmail(email)
 	if err == nil && user.Id != "" {

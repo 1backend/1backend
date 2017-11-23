@@ -1,6 +1,7 @@
 package endpoints
 
 import (
+	"errors"
 	"time"
 
 	"github.com/1backend/1backend/backend/deploy"
@@ -9,6 +10,9 @@ import (
 )
 
 func (e Endpoints) CreateProject(proj *domain.Project) error {
+	if !reg.Match([]byte(proj.Name)) {
+		return errors.New("Allowed project name characters: lowercase letters, numbers, dash")
+	}
 	proj.Description = "Change this to something sensible"
 	proj.Id = domain.Sid.MustGenerate()
 	proj.InfraPassword = domain.Sid.MustGenerate()
@@ -44,6 +48,9 @@ func (e Endpoints) CreateProject(proj *domain.Project) error {
 }
 
 func (e Endpoints) UpdateProject(proj *domain.Project) error {
+	if !reg.Match([]byte(proj.Name)) {
+		return errors.New("Allowed project name characters: lowercase letters, numbers, dash")
+	}
 	proj.InfraPassword = domain.Sid.MustGenerate()
 	err := e.db.Save(proj).Error
 	if err != nil {
