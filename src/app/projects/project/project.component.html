@@ -26,14 +26,14 @@
       </button>
     </span>
     <button *ngIf="!starred" mat-raised-button style="margin-top: -0.5em; margin-left: 1em;width: 10em" (click)="star(project)">
-        <span style="border-right: solid 1px; padding-right: 0.5em">{{stars}}</span>
+      <span style="border-right: solid 1px; padding-right: 0.5em">{{stars}}</span>
       <mat-icon aria-hidden="false" style="margin-bottom: 0.2em;">star_border</mat-icon>
-        Star
+      Star
     </button>
     <button *ngIf="starred" mat-raised-button style="margin-top: -0.5em; margin-left: 1em; width: 12em;" (click)="unStar(project)">
       <span style="border-right: solid 1px; padding-right: 0.5em;">{{stars}}</span>
       <mat-icon aria-hidden="false" style="margin-bottom: 0.2em;">star</mat-icon>
-        Unstar
+      Unstar
     </button>
     <!--
   <button mat-raised-button style="margin-top: -0.5em; margin-left: 1em; padding-right: 2.2em;">
@@ -59,8 +59,7 @@
           <mat-icon>close</mat-icon>
         </span>
         <span class="inprogress" *ngIf="lastBuild && lastBuild.InProgress">
-          <mat-progress-spinner class="example-margin" [color]="color" [mode]="mode" [value]="value"
-            [diameter]="24" [strokeWidth]="3"></mat-progress-spinner>
+          <mat-progress-spinner class="example-margin" [color]="color" [mode]="mode" [value]="value" [diameter]="24" [strokeWidth]="3"></mat-progress-spinner>
         </span>
       </ng-template>
       <div style="margin-top: 2em;">
@@ -84,17 +83,17 @@
       <ng-template mat-tab-label>
         Stars
       </ng-template>
-      <div *ngIf="!project.Starrers" align="center">
-        <h2>There is no stars yet</h2>
-      </div>
+      <mat-card style="margin-top: 0.5em" *ngIf="!project.Starrers">
+        No stars yet.
+      </mat-card>
       <div flexlayout="row wrap" fxLayoutAlign="space-between" *ngIf="project.Starrers">
         <mat-card fxFlex="1 1 30%" style="margin-top: 2em;">
-          <div *ngFor="let star of project.Starrers" style="padding-bottom: 1em;padding-top: 1em">
-            <a style="color: #2962FF" href="{{star.Nick}}">
-              <font size="4">{{star.Nick}}</font>
+          <div *ngFor="let user of project.Starrers" style="padding-bottom: 1em;padding-top: 1em">
+            <a style="color: #2962FF" routerLink="/{{user.Nick}}">
+              <font size="4">{{user.Nick}}</font>
             </a>
             <div style="padding-top: 0.5em;">
-              Joined {{star.CreatedAt | amTimeAgo}}
+              Joined {{user.CreatedAt | amTimeAgo}}
             </div>
           </div>
         </mat-card>
