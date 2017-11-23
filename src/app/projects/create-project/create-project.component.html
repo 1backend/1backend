@@ -1,4 +1,3 @@
-
 <div fxLayout="row" fxLayoutAlign="center" class="new-project" style="font-family: 'Roboto Light';">
   <div style="text-align: center" fxFlex="1 1 25%">
     <mat-card-title style="margin-bottom: 1em">
@@ -56,6 +55,13 @@
           Project name must contain only lowercase letters
         </mat-error>
       </mat-form-field>
+    </div>
+    <div *ngIf="user.Premium" align="start" style="margin-top:1em;">
+      <section class="example-selection">
+        <mat-checkbox class="example-margin" [(ngModel)]="private" color="primary" [disabled]="!user.Premium">
+          Private project
+        </mat-checkbox>
+      </section>
     </div>
     <button (click)="create()" mat-raised-button color="primary" style="margin-top: 1em;">Create</button>
   </div>

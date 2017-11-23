@@ -7,7 +7,8 @@
     </span>
     <mat-card style="margin-top: 0.3em;">
       <h1 style="color: #2196F3;">{{issue.Title}}</h1>
-      issue opened {{issue.CreatedAt | amTimeAgo}} by {{issuerComment.User?.Nick}}
+      issue opened {{issue.CreatedAt | amTimeAgo}} by
+      <a style="color: black;" routerLink="/{{issuerComment.User?.Nick}}">{{issuerComment.User?.Nick}}</a>
     </mat-card>
     <mat-card style="margin-top: 0.5em;">
       <mat-card-header>
