@@ -57,8 +57,8 @@
       </mat-form-field>
     </div>
     <div *ngIf="user.Premium" align="start" style="margin-top:1em;">
-      <section class="example-selection">
-        <mat-checkbox class="example-margin" [(ngModel)]="private" color="primary" [disabled]="!user.Premium">
+      <section class="example-selection" >
+        <mat-checkbox class="example-margin" [(ngModel)]="private" color="primary" [disabled]="!user.Premium" matTooltip="Premium members only" matTooltipPosition="left" [matTooltipDisabled]="user.Premium">
           Private project
         </mat-checkbox>
       </section>
