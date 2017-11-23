@@ -250,6 +250,14 @@ func (h *Handlers) GetProjects(w http.ResponseWriter, r *http.Request, p httpr.P
 	if err := h.ep.HasNick(token, nick); nick != "" && err == nil {
 		own = true
 	}
+	getStarrersFor := ""
+	if token != "" {
+		tk, err := domain.NewAccessTokenDao(h.db).GetByToken(token)
+		if err != nil {
+			log.Error(err)
+		}
+		getStarrersFor = tk.UserId
+	}
 	if len(nick) == 0 {
 		db = db.Where("public = true")
 	} else if own {
@@ -257,7 +265,11 @@ func (h *Handlers) GetProjects(w http.ResponseWriter, r *http.Request, p httpr.P
 	} else {
 		db = db.Where("author = ? AND public = true", nick)
 	}
-	err := db.Select("author, name, id, stars, public, open_source, description, recipe, created_at, updated_at").Find(&projects).Error
+	db = db.Select("author, name, id, stars, public, open_source, description, recipe, created_at, updated_at")
+	if getStarrersFor != "" {
+		db = db.Preload("Starrers", "user_id = ?", getStarrersFor)
+	}
+	err := db.Find(&projects).Error
 	if err != nil {
 		write400(w, err)
 		return
