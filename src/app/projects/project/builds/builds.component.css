@@ -3,11 +3,13 @@
 }
 
 .success {
-  display: inline;
+  display: inline-block;
+  vertical-align: middle;
   color: green;
 }
 .failed {
-  display: inline;
+  display: inline-block;
+  vertical-align: middle;
   color: red;
 }
 
@@ -16,8 +18,9 @@
 }
 .spinner {
   display: inline;
+  vertical-align: middle;
   padding-left: 1em;
-  margin-right: 0.2em;
+  margin-right: 0.5em;
 }
 
 .build-title {

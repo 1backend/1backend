@@ -9,7 +9,7 @@
           <mat-icon>close</mat-icon>
         </span>
         <span class="inprogress" *ngIf="build.InProgress">
-          <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value" [diameter]="24" [strokeWidth]="3"></mat-progress-spinner>
+          <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value" [diameter]="22" [strokeWidth]="3"></mat-progress-spinner>
         </span> {{build.CreatedAt | amTimeAgo}} <span style="color: #999">({{build.Id}})</span>
       </div>
       <div fxFlex="1 1 40%" align="end">
