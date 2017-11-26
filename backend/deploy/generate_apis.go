@@ -13,7 +13,7 @@ import (
 
 // @todo revisit this output return: likely output should go into error
 // because the error is only something like "exit status 1"
-func (d Deployer) GenerateAPIs(project *domain.Project) (string, error) {
+func (d Deployer) GenerateAPIs(project *domain.Project, buildId string) (string, error) {
 	noDefs := true
 	if project.Types != "" {
 		noDefs = false
@@ -75,6 +75,7 @@ func (d Deployer) GenerateAPIs(project *domain.Project) (string, error) {
 		config.C.ApiGeneration.GitOrganisation,
 		config.C.ApiGeneration.GithubUser,
 		config.C.ApiGeneration.GitPersonalToken,
+		buildId,
 	).CombinedOutput()
 	if err != nil {
 		return string(output), err

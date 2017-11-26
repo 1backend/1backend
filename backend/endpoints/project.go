@@ -43,7 +43,7 @@ func (e Endpoints) CreateProject(proj *domain.Project) error {
 			return err
 		}
 	}
-	go deploy.NewDeployer(e.db).Deploy(proj)
+	go deploy.NewDeployer(e.db, e.state).Deploy(proj)
 	return nil
 }
 

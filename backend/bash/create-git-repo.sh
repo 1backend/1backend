@@ -26,6 +26,3 @@ if [ ! -d "./$USERNAME" ]; then
     echo "Git repo still does not exists, exiting"
     exit 1
 fi
-
-
-

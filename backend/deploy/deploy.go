@@ -120,7 +120,7 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	err = d.db.Table("projects").Where("id = ?", project.Id).Update(map[string]interface{}{
 		"port": string(output),
 	}).Error
-	outp, err := d.GenerateAPIs(project)
+	outp, err := d.GenerateAPIs(project, build.Id)
 	if err != nil {
 		build.Output += "\n" + outp + "\n" + err.Error()
 		build.Success = false
