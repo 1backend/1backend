@@ -5,7 +5,7 @@ import (
 	"html/template"
 	"strings"
 
-	apiTypes "github.com/1backend/1backend/backend/api-packs/types"
+	apiTypes "github.com/1backend/1backend/backend/api-pack/types"
 	"github.com/1backend/1backend/backend/domain"
 	"github.com/iancoleman/strcase"
 )
@@ -20,8 +20,21 @@ type GoGenerator struct {
 	Project *domain.Project
 }
 
-func (g GoGenerator) GenerateApi(c apiTypes.Context) (string, error) {
-	return g.generateGo(c)
+func (g GoGenerator) FilesToBuild(c apiTypes.Context) ([][]string, error) {
+	code, err := g.generateGo(c)
+	if err != nil {
+		return nil, err
+	}
+	return [][]string{
+		[]string{
+			"client.go",
+			code,
+		},
+	}, nil
+}
+
+func (g GoGenerator) FolderName() string {
+	return "go"
 }
 
 var goTemplate = `
@@ -33,6 +46,8 @@ import(
 {{ end }}
 )
 
+var Token string
+
 {{ range $typeName, $type := .TypeDefinitions }}
 type {{ $typeName | gTypeName }} struct {
 	{{ range $index, $field := $type.Fields }}{{ $field.Name | gFieldName }}	{{ $field.Type | gType }}
@@ -42,7 +57,7 @@ type {{ $typeName | gTypeName }} struct {
 
 {{ range $key, $sig := .EndpointSignatures }}func {{ $sig.Method | gMethod }}{{ $sig.Path | gPathAsFunc }}({{ $sig.Input | gInput }}) {{ $sig.Output | gType }} {
 	var ret {{ $sig.Output | gType }}
-	return ret, goclient.Call(&ret)
+	return ret, goclient.New(Token).Call("{{ $sig.Method }}", "{{ $sig.Path }}", { {{ range $index, $field := $sig.Input }}{{if ne $index 0}}, {{end}}"{{ $field.Name }}": {{ $field.Name }}{{ end }} }, &ret)
 }{{ end }}`
 
 func gPathAsFunc(path string) string {
@@ -73,6 +88,14 @@ func gMethod(method string) string {
 	return strings.Title(strings.ToLower(method))
 }
 
+func gInputToMap(fields []apiTypes.Field) string {
+	inputs := []string{}
+	for _, field := range fields {
+		inputs = append(inputs, "\""+field.Name+"\":"+field.Name)
+	}
+	return "{" + strings.Join(inputs, ", ") + "}"
+}
+
 func gInput(fields []apiTypes.Field) string {
 	inputs := []string{}
 	for _, field := range fields {
@@ -94,19 +117,19 @@ func correctTypeName(s string) string {
 	case "bool":
 		return "bool"
 	case "bool[]":
-		return "[]bool"
+		return "bool"
 	case "int":
 		return "int64"
 	case "int[]":
-		return "[]int"
+		return "int"
 	case "float":
 		return "float64"
 	case "float[]":
-		return "[]float64"
+		return "float64"
 	case "string":
 		return s
 	case "string[]":
-		return "[]string"
+		return "string"
 	}
 	return strings.Title(strings.Replace(s, "[]", "", 1))
 }
@@ -114,6 +137,7 @@ func correctTypeName(s string) string {
 func (g GoGenerator) generateGo(c apiTypes.Context) (string, error) {
 	// Create a new template and parse the letter into it.
 	templFuncs := template.FuncMap{
+		"gInputToMap": gInputToMap,
 		"gType":       gType,
 		"gTypeName":   gTypeName,
 		"gMethod":     gMethod,

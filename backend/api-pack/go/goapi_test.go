@@ -1,10 +1,9 @@
 package goapi
 
 import (
-	"fmt"
 	"testing"
 
-	apiTypes "github.com/1backend/1backend/backend/api-packs/types"
+	apiTypes "github.com/1backend/1backend/backend/api-pack/types"
 	"github.com/1backend/1backend/backend/domain"
 )
 
@@ -35,14 +34,12 @@ func TestBasic(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	str, err := NewGenerator(proj).GenerateApi(*c)
+	files, err := NewGenerator(proj).FilesToBuild(*c)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if str == "" {
+	if len(files) == 0 || files[0][1] == "" {
 		t.Fatal("Output is empty")
 	}
-	fmt.Println(str)
-	t.Fatal(str)
-	t.Log(str)
+	t.Log(files[0][1])
 }

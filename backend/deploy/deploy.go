@@ -5,26 +5,29 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"text/template"
 	"time"
 
 	log "github.com/cihub/seelog"
-	"github.com/iancoleman/strcase"
 	"github.com/jinzhu/gorm"
 
 	"github.com/1backend/1backend/backend/config"
 	"github.com/1backend/1backend/backend/domain"
+	"github.com/1backend/1backend/backend/state"
 	tp "github.com/1backend/1backend/backend/tech-pack"
 )
 
 type Deployer struct {
-	db *gorm.DB
+	db    *gorm.DB
+	state *state.State
 }
 
-func NewDeployer(db *gorm.DB) Deployer {
+func NewDeployer(db *gorm.DB, state *state.State) Deployer {
 	return Deployer{
-		db: db,
+		db:    db,
+		state: state,
 	}
 }
 
@@ -59,11 +62,6 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	}
 	// Create a new template and parse the letter into it.
 	templFuncs := template.FuncMap{
-		"getEndpointName": func(method, path string) string {
-			s := strings.Replace(path, "/", "_", -1)
-			s = strings.Replace(s, "-", "_", -1)
-			return strings.Title(strings.ToLower(method)) + strcase.ToCamel(s)
-		},
 		"trim": strings.TrimSpace,
 	}
 	techPack.AddTemplateFuncs(&templFuncs)
@@ -111,9 +109,22 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	if err != nil {
 		return err
 	}
+	port, err := strconv.ParseInt(string(output), 10, 64)
+	if err != nil {
+		return err
+	}
+	err = d.state.SetPort(project.Author, project.Name, int(port))
+	if err != nil {
+		return err
+	}
 	err = d.db.Table("projects").Where("id = ?", project.Id).Update(map[string]interface{}{
 		"port": string(output),
 	}).Error
+	outp, err := d.GenerateAPIs(project)
+	if err != nil {
+		build.Output += "\n" + outp + "\n" + err.Error()
+		build.Success = false
+	}
 	err = d.db.Save(build).Error
 	if err != nil {
 		return err

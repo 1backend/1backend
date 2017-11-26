@@ -21,6 +21,8 @@ type Type struct {
 	Name   string
 }
 
+// Reprensents both struct definition fields
+// and input arguments (both are a list of name - type pairs)
 type Field struct {
 	Name string
 	Type Type // not recursive
@@ -51,7 +53,10 @@ func GetContext(proj *domain.Project) (*Context, error) {
 		return nil, err
 	}
 	types := parseTypeDefinitions(typs)
-	sigs := parseSignatures(proj.Endpoints)
+	sigs, err := parseSignatures(proj.Endpoints)
+	if err != nil {
+		return nil, err
+	}
 	imports := collectImports(types, sigs)
 	return &Context{
 		Imports:            imports,
@@ -77,13 +82,13 @@ func collectImports(types map[string]TypeDefinition, sigs []EndpointSignature) [
 	return imports
 }
 
-func parseSignatures(eps []domain.Endpoint) []EndpointSignature {
+func parseSignatures(eps []domain.Endpoint) ([]EndpointSignature, error) {
 	ret := []EndpointSignature{}
 	for _, endpoint := range eps {
 		input := map[string]string{}
 		err := json.Unmarshal([]byte(endpoint.Input), &input)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 		typ := parseTypeDefinition("", input)
 		ret = append(ret, EndpointSignature{
@@ -93,7 +98,7 @@ func parseSignatures(eps []domain.Endpoint) []EndpointSignature {
 			Output: parseType(endpoint.Output),
 		})
 	}
-	return ret
+	return ret, nil
 }
 
 // parseTypes parses a whole type definition

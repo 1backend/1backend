@@ -165,7 +165,7 @@ CREATE TABLE IF NOT EXISTS tokens
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE tokens
-      ADD CONSTRAINT uniqueStarTokenNamePerUser UNIQUE (user_id, name),
+      ADD CONSTRAINT uniqueTokenNamePerUser UNIQUE (user_id, name),
       ADD FOREIGN KEY (user_id) REFERENCES users (id);
 
 -- service access tokens and not login tokens (access_tokens)
@@ -182,3 +182,17 @@ CREATE TABLE IF NOT EXISTS charges
 
 ALTER TABLE charges
       ADD FOREIGN KEY (user_id) REFERENCES users (id);
+
+-- enables very basic type checking for the types in projects
+CREATE TABLE IF NOT EXISTS types
+(
+  id                  VARCHAR(36)                                                     NOT NULL,
+  project_id          VARCHAR(36)                                                     NOT NULL,
+  name                VARCHAR(64)                                                     NOT NULL,
+  created_at          DATETIME DEFAULT CURRENT_TIMESTAMP                              NOT NULL,
+  updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE types
+      ADD CONSTRAINT uniqueStarTokenNamePerProject UNIQUE (project_id, name);
