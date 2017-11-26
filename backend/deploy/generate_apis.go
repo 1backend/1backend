@@ -31,13 +31,17 @@ func (d Deployer) GenerateAPIs(project *domain.Project, buildId string) (string,
 		return "", err
 	}
 	reposPath := config.C.Path + "/repos"
+	err = os.MkdirAll(reposPath, 0700)
+	if err != nil {
+		return "", err
+	}
 	output, err := exec.Command("/bin/bash", config.C.Path+"/bash/create-git-repo.sh",
 		reposPath,
 		project.Author,
 		project.Name,
-		config.C.ApiGeneration.GitOrganisation,
+		config.C.ApiGeneration.GithubOrganisation,
 		config.C.ApiGeneration.GithubUser,
-		config.C.ApiGeneration.GitPersonalToken,
+		config.C.ApiGeneration.GithubPersonalToken,
 	).CombinedOutput()
 	if err != nil {
 		return string(output), err
@@ -72,9 +76,9 @@ func (d Deployer) GenerateAPIs(project *domain.Project, buildId string) (string,
 		reposPath,
 		project.Author,
 		project.Name,
-		config.C.ApiGeneration.GitOrganisation,
+		config.C.ApiGeneration.GithubOrganisation,
 		config.C.ApiGeneration.GithubUser,
-		config.C.ApiGeneration.GitPersonalToken,
+		config.C.ApiGeneration.GithubPersonalToken,
 		buildId,
 	).CombinedOutput()
 	if err != nil {

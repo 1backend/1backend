@@ -109,7 +109,7 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	if err != nil {
 		return err
 	}
-	port, err := strconv.ParseInt(string(output), 10, 64)
+	port, err := strconv.ParseInt(strings.TrimSpace(string(output)), 10, 64)
 	if err != nil {
 		return err
 	}

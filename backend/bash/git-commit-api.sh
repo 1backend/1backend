@@ -18,10 +18,17 @@ fi
 cd "./$USERNAME"
 
 if git diff-index --quiet HEAD --; then
-    # no changes
+    echo "No API changes to commit";
 else
-    git commit -am "Commit for build $"
-    $? || echo "Failed to git commit"; exit 1
-    git push https://$BOTNAME:$BOTTOKEN@github.com/$ORGNAME/$USERNAME.git
-    $? || echo "Failed to push"; exit 1
+    git add .
+    if git commit -am "Commit for build $" ; then
+        echo "Commit succeeded";
+    else
+        echo "Failed to git commit"; exit 1
+    fi
+    if git push https://$BOTNAME:$BOTTOKEN@github.com/$ORGNAME/$USERNAME.git ; then
+        echo "Push succeeded";
+    else
+        echo "Failed to push"; exit 1
+    fi
 fi

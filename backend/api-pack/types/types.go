@@ -46,14 +46,17 @@ type Import struct {
 	ProjectName string
 }
 
-func GetContext(proj *domain.Project) (*Context, error) {
-	typs := map[string]map[string]string{}
-	err := json.Unmarshal([]byte(proj.Types), &typs)
-	if err != nil {
-		return nil, err
+func GetContext(project *domain.Project) (*Context, error) {
+	types := map[string]TypeDefinition{}
+	if project.Types != "" {
+		typs := map[string]map[string]string{}
+		err := json.Unmarshal([]byte(project.Types), &typs)
+		if err != nil {
+			return nil, err
+		}
+		types = parseTypeDefinitions(typs)
 	}
-	types := parseTypeDefinitions(typs)
-	sigs, err := parseSignatures(proj.Endpoints)
+	sigs, err := parseSignatures(project.Endpoints)
 	if err != nil {
 		return nil, err
 	}
@@ -62,8 +65,8 @@ func GetContext(proj *domain.Project) (*Context, error) {
 		Imports:            imports,
 		TypeDefinitions:    types,
 		EndpointSignatures: sigs,
-		ProjectName:        proj.Name,
-		Author:             proj.Author,
+		ProjectName:        project.Name,
+		Author:             project.Author,
 	}, nil
 }
 
@@ -85,17 +88,24 @@ func collectImports(types map[string]TypeDefinition, sigs []EndpointSignature) [
 func parseSignatures(eps []domain.Endpoint) ([]EndpointSignature, error) {
 	ret := []EndpointSignature{}
 	for _, endpoint := range eps {
-		input := map[string]string{}
-		err := json.Unmarshal([]byte(endpoint.Input), &input)
-		if err != nil {
-			return nil, err
+		inputTypeDef := TypeDefinition{}
+		if endpoint.Input != "" {
+			input := map[string]string{}
+			err := json.Unmarshal([]byte(endpoint.Input), &input)
+			if err != nil {
+				return nil, fmt.Errorf("Endoint \"%v\" input json is invalid: %v", endpoint.Url, err)
+			}
+			inputTypeDef = parseTypeDefinition("", input)
 		}
-		typ := parseTypeDefinition("", input)
+		outputType := Type{}
+		if endpoint.Output != "" {
+			outputType = parseType(endpoint.Output)
+		}
 		ret = append(ret, EndpointSignature{
 			Method: endpoint.Method,
 			Path:   endpoint.Url,
-			Input:  typ.Fields,
-			Output: parseType(endpoint.Output),
+			Input:  inputTypeDef.Fields,
+			Output: outputType,
 		})
 	}
 	return ret, nil
