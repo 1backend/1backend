@@ -29,6 +29,20 @@ CREATE TABLE IF NOT EXISTS projects
 ALTER TABLE projects
       ADD CONSTRAINT uniqueProjectPerAuthor UNIQUE (author, name);
 
+CREATE TABLE IF NOT EXISTS users
+(
+  id                  VARCHAR(36)                                                     NOT NULL,
+  nick                VARCHAR(32)                                              UNIQUE NOT NULL,
+  name                VARCHAR(32)                                                     NOT NULL,          
+  password            VARCHAR(128)                                                    NOT NULL,
+  premium             BOOLEAN                                                         NOT NULL,
+  email               VARCHAR(128)                                             UNIQUE NOT NULL,
+  avatar_link         VARCHAR(128)                                                    NOT NULL,
+  created_at          DATETIME DEFAULT CURRENT_TIMESTAMP                              NOT NULL,
+  updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE IF NOT EXISTS issues
 (
   id                  VARCHAR(36)                                                     NOT NULL,
@@ -56,7 +70,7 @@ CREATE TABLE IF NOT EXISTS comments
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE issues
+ALTER TABLE comments
       ADD FOREIGN KEY (issue_id) REFERENCES issues (id),
       ADD FOREIGN KEY (user_id) REFERENCES users (id);
 
@@ -108,20 +122,6 @@ CREATE TABLE IF NOT EXISTS builds
 
 ALTER TABLE builds
       ADD FOREIGN KEY (project_id) REFERENCES projects (id);
-
-CREATE TABLE IF NOT EXISTS users
-(
-  id                  VARCHAR(36)                                                     NOT NULL,
-  nick                VARCHAR(32)                                              UNIQUE NOT NULL,
-  name                VARCHAR(32)                                                     NOT NULL,          
-  password            VARCHAR(128)                                                    NOT NULL,
-  premium             BOOLEAN                                                         NOT NULL,
-  email               VARCHAR(128)                                             UNIQUE NOT NULL,
-  avatar_link         VARCHAR(128)                                                    NOT NULL,
-  created_at          DATETIME DEFAULT CURRENT_TIMESTAMP                              NOT NULL,
-  updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  NOT NULL,
-  PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS access_tokens
 (
