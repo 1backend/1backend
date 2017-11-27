@@ -54,3 +54,6 @@ sudo docker run --name some-redis -p=6379:6379 -v /var/redis:/data -d redis redi
 # this assumes you have go installed
 rm main; go build main.go; sudo ./main
 ```
+
+The server loads configuration from the location `/var/1backend-config.json`.
+Details of the config parameters are [here](https://github.com/1backend/1backend/blob/master/backend/config/config.go).

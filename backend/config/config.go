@@ -14,7 +14,13 @@ var C = Config{
 type Config struct {
 	StripeKey string // stripe api key
 	// absolute path to folder containing files (assumes same structure as the repo)
-	Path string
+	Path          string
+	ApiGeneration struct {
+		Enabled             bool // API generation enabled
+		GithubOrganisation  string
+		GithubUser          string
+		GithubPersonalToken string
+	}
 }
 
 func init() {
