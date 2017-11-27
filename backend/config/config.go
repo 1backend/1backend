@@ -16,6 +16,7 @@ type Config struct {
 	// absolute path to folder containing files (assumes same structure as the repo)
 	Path          string
 	ApiGeneration struct {
+		Enabled             bool // API generation enabled
 		GithubOrganisation  string
 		GithubUser          string
 		GithubPersonalToken string
