@@ -11,12 +11,13 @@ cd $REPOSPATH
 
 if [ ! -d "./$USERNAME" ]; then
     echo "Trying to clone github repo"
+    
     timeout 5 git clone https://github.com/$ORGNAME/$USERNAME
 fi
 
 if [ ! -d "./$USERNAME" ]; then
     echo "Cloning did not work. Creating & cloning git repo"
-    if curl --user "$BOTNAME:$BOTTOKEN" https://api.github.com/orgs/$ORGNAME/repos -d "{\"name\":\"$USERNAME\"}" ; then
+    if curl --user "$BOTNAME:$BOTTOKEN" https://api.github.com/orgs/$ORGNAME/repos -d "{\"name\":\"$USERNAME\",\"description\":\"Generated API clients of user $USERNAME\"}" ; then
         echo "Successfully created repo";
     else
         echo "Create failed. Exiting"; exit 1
@@ -28,3 +29,6 @@ if [ ! -d "./$USERNAME" ]; then
     echo "Git repo still does not exists, exiting"
     exit 1
 fi
+
+cd "./$USERNAME"
+git pull origin master

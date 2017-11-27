@@ -37,28 +37,26 @@ func (g GoGenerator) FolderName() string {
 	return "go"
 }
 
-var goTemplate = `
-package {{ .ProjectName }}
+var goTemplate = `package {{ .ProjectName }}
 
 import(
 	"github.com/1backend/go-client"
 {{ range $key, $import := .Imports }}	{{ $import.Author }}_{{ $import.ProjectName }} "github.com/1backend/{{ $import.Author }}/{{ $import.ProjectName }}"
-{{ end }}
-)
+{{ end }})
 
 var Token string
-
 {{ range $typeName, $type := .TypeDefinitions }}
 type {{ $typeName | gTypeName }} struct {
-	{{ range $index, $field := $type.Fields }}{{ $field.Name | gFieldName }}	{{ $field.Type | gType }}
-	{{ end }}
-}
+{{ range $index, $field := $type.Fields }}	{{ $field.Name | gFieldName }}	{{ $field.Type | gType }}
+{{ end }}}
 {{ end }}
 
-{{ range $key, $sig := .EndpointSignatures }}func {{ $sig.Method | gMethod }}{{ $sig.Path | gPathAsFunc }}({{ $sig.Input | gInput }}) {{ $sig.Output | gType }} {
+{{ range $key, $sig := .EndpointSignatures }}func {{ $sig.Method | gMethod }}{{ $sig.Path | gPathAsFunc }}({{ $sig.Input | gInput }}) {{ $sig.Output | gOutput }} {
 	var ret {{ $sig.Output | gType }}
-	return ret, goclient.New(Token).Call("{{ $sig.Method }}", "{{ $sig.Path }}", { {{ range $index, $field := $sig.Input }}{{if ne $index 0}}, {{end}}"{{ $field.Name }}": {{ $field.Name }}{{ end }} }, &ret)
-}{{ end }}`
+	return ret, goclient.New(Token).Call("{{ $.Author }}", "{{ $.ProjectName }}", "{{ $sig.Method }}", "{{ $sig.Path }}", map[string]interface{}{ {{ range $index, $field := $sig.Input }}{{if ne $index 0}}, {{end}}"{{ $field.Name }}": {{ $field.Name }}{{ end }} }, &ret)
+}
+
+{{ end }}`
 
 func gPathAsFunc(path string) string {
 	s := strings.Replace(path, "/", "_", -1)
@@ -104,8 +102,11 @@ func gInput(fields []apiTypes.Field) string {
 	return strings.Join(inputs, ", ")
 }
 
-func gOutput(outp string) string {
-	return ""
+func gOutput(outp apiTypes.Type) string {
+	if outp.Name == "" {
+		return "error"
+	}
+	return "(" + gType(outp) + ", error)"
 }
 
 func gFieldName(s string) string {

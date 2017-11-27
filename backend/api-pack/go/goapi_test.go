@@ -9,21 +9,34 @@ import (
 
 var proj = &domain.Project{
 	Types: `{
-		"user": {
-			"name":   "string",
-			"age":    "int",
-			"foods":  "string[]",
-			"friend": "curfter/other-service.Person"
-		}
+		"user": [
+			{"name":   "string"},
+			{"age":    "int"},
+			{"foods":  "string[]"},
+			{"friend": "curfter/other-service.Person"}
+		],
+		"thing": [
+			{"id": "string"},
+			{"fieldA": "janos/service.ThatThing"}
+		]
 	}`,
 	Endpoints: []domain.Endpoint{
 		domain.Endpoint{
 			Method: "GET",
 			Url:    "/hi-there",
-			Input: `{
-				"userId":  "string",
-				"friends": "user[]"
-			}`,
+			Input: `[
+				{"userId":  "string"},
+				{"friends": "user[]"}
+			]`,
+			Output: `crufter/test.user[]`,
+		},
+		domain.Endpoint{
+			Method: "POST",
+			Url:    "/save-something",
+			Input: `[
+				{"thing":  "thing"},
+				{"tag": "string[]"}
+			]`,
 			Output: `crufter/test.user[]`,
 		},
 	},

@@ -56,7 +56,7 @@ func (d Deployer) GenerateAPIs(project *domain.Project, buildId string) (string,
 		for _, v := range fileTuples {
 			fileName := v[0]
 			fileContents := v[1]
-			fPath := repoPath + "/" + gen.FolderName() + "/" + fileName
+			fPath := repoPath + "/" + project.Name + "/" + gen.FolderName() + "/" + fileName
 			err = os.MkdirAll(filePath.Dir(fPath), 0700)
 			if err != nil {
 				return "", err

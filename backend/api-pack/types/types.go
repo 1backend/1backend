@@ -49,7 +49,7 @@ type Import struct {
 func GetContext(project *domain.Project) (*Context, error) {
 	types := map[string]TypeDefinition{}
 	if project.Types != "" {
-		typs := map[string]map[string]string{}
+		typs := map[string][]map[string]string{}
 		err := json.Unmarshal([]byte(project.Types), &typs)
 		if err != nil {
 			return nil, err
@@ -90,7 +90,7 @@ func parseSignatures(eps []domain.Endpoint) ([]EndpointSignature, error) {
 	for _, endpoint := range eps {
 		inputTypeDef := TypeDefinition{}
 		if endpoint.Input != "" {
-			input := map[string]string{}
+			input := []map[string]string{}
 			err := json.Unmarshal([]byte(endpoint.Input), &input)
 			if err != nil {
 				return nil, fmt.Errorf("Endoint \"%v\" input json is invalid: %v", endpoint.Url, err)
@@ -112,7 +112,7 @@ func parseSignatures(eps []domain.Endpoint) ([]EndpointSignature, error) {
 }
 
 // parseTypes parses a whole type definition
-func parseTypeDefinitions(types map[string]map[string]string) map[string]TypeDefinition {
+func parseTypeDefinitions(types map[string][]map[string]string) map[string]TypeDefinition {
 	ts := map[string]TypeDefinition{}
 	for typeName, fields := range types {
 		ts[typeName] = parseTypeDefinition(typeName, fields)
@@ -141,16 +141,18 @@ func parseType(fieldType string) Type {
 	}
 }
 
-func parseTypeDefinition(name string, typ map[string]string) TypeDefinition {
+func parseTypeDefinition(name string, typ []map[string]string) TypeDefinition {
 	t := TypeDefinition{
 		Name:   name,
 		Fields: []Field{},
 	}
-	for fieldName, fieldType := range typ {
-		t.Fields = append(t.Fields, Field{
-			Name: fieldName,
-			Type: parseType(fieldType),
-		})
+	for _, fieldPairMap := range typ {
+		for fieldName, fieldType := range fieldPairMap {
+			t.Fields = append(t.Fields, Field{
+				Name: fieldName,
+				Type: parseType(fieldType),
+			})
+		}
 	}
 	return t
 }
