@@ -16,6 +16,7 @@ if [ ! -d "./$USERNAME" ]; then
 fi
 
 cd "./$USERNAME"
+git pull origin master || true # freshly created repos has no master branch
 
 if git diff-index --quiet HEAD --; then
     echo "No API changes to commit";

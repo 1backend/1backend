@@ -5,7 +5,7 @@ cheap and fun.
 
 ![1backend service screenshot](https://raw.githubusercontent.com/1backend/1backend/master/1b.png)
 
-#### Why?
+## Why?
 
 The idea of building this came when we realised we have a bunch of services
 running all over the place and it costs a lot of money and time to maintain
@@ -19,27 +19,29 @@ well.
 
 Perhaps, most importantly, it is also a lot of fun to build this.
 
-#### What's the state of the project?
+## What's the state of the project?
 
-It's extremely early. It's already usable as it is if you want to host it
-yourself, but don't trust our version yet.
+It's very early. It's already usable as it is if you want to host it
+yourself, but our version available under https://1backend.com is only recommended for the adventurous.
 
-#### What's the tech used?
+It's fully functional however, and you can use it. All the quota you buy and use now will be given to you again once the testing ends. Beware of storing sensitive data there, since we haven't focus on plugging all security holes yet.
+
+## What's the tech used?
 
 Angular 2, Go, MySQL, Redis.
 
-#### How can I install it?
+## How can I install it?
 
-##### Frontend
+### Frontend
 
-In project root
+In project root:
 
 ```sh
 npm install
 ng serve
 ```
 
-##### Backend
+### Backend
 
 ```sh
 cd backend
@@ -57,3 +59,15 @@ rm main; go build main.go; sudo ./main
 
 The server loads configuration from the location `/var/1backend-config.json`.
 Details of the config parameters are [here](https://github.com/1backend/1backend/blob/master/backend/config/config.go).
+
+#### Api generation
+
+Given services and endpoints have type informations saved with them (can be set on the UI of each service), we generate client APIs for each service in a number of languages.
+
+To do this we need integration with github.
+
+#### GitHub
+
+To get the github integration working you need two things:
+- a user who can create repositories in your organisation (only possible through Github's HTTP API)
+- an SSH key on the machine and added to a users' Github account who can commit into said repositories (`ssh-keygen -t rsa -b 4096 -C "your_email@example.com"; eval "$(ssh-agent -s)"; ssh-add ~/.ssh/id_rsa`). This user must be the one to who runs the server - likely root, since root is needed to access docker, unless you configure your machine otherwise.

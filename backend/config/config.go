@@ -7,9 +7,7 @@ import (
 	log "github.com/cihub/seelog"
 )
 
-var C = Config{
-	StripeKey: "sk_test_BQokikJOvBiI2HlWgH4olfQ2",
-}
+var C = Config{}
 
 type Config struct {
 	StripeKey string // stripe api key

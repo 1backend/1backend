@@ -7,7 +7,6 @@ export class ConstService {
   tokenMinLen: number;
 
   constructor() {
-    this.url = environment.backendUrl,
-    this.tokenMinLen = 10;
+    this.url = environment.backendUrl;
   }
 }
