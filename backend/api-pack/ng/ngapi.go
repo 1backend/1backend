@@ -25,18 +25,21 @@ func (g GoGenerator) FilesToBuild(c apiTypes.Context) ([][]string, error) {
 }
 
 func (g GoGenerator) FolderName() string {
-	return "go"
+	return "ng"
 }
 
 var indexTemplate = `
-{{ range $key, $export := .Projects }} export * from './{{ $.ProjectName }}';
-
-let Token: string
-`
-var serviceTemplate = `import { Injectable } from '@angular/core';
-import * as ngClient from '@1backend/ng-client';
-{{ range $key, $import := .Imports }}import * as {{ $import.Author }} from  '@1backend/{{ $import.Author }}-ng
+export * from './{{ .ProjectName }}.service';
+{{ range $key, $projectName := .ProjectNames }}export * from './{{ $projectName }}.service';
 {{ end }}
+`
+
+var serviceTemplate = `import { Injectable } from '@angular/core';
+import { NgClient } from '@1backend/ng-client';
+{{ range $key, $import := .Imports }}import * as {{ $import.Author }}_{{ $import.ProjectName }} from  '@1backend/{{ $import.Author }}-ng/{{ $import.ProjectName }}.service';
+{{ end }}
+
+let Token: string;
 
 {{ range $typeName, $type := .TypeDefinitions }}
 export interface {{ $typeName | gTypeName }} {
@@ -48,19 +51,17 @@ export interface {{ $typeName | gTypeName }} {
 export class {{ $.ProjectName | gServiceName }} {
   constructor() {}
 
-  {{ range $key, $sig := .EndpointSignatures }}{{ $sig.Method | gMethod }}{{ $sig.Path | gPathAsFunc }}({{ $sig.Input | gInput }}) {{ $sig.Output | gOutput }} {
-	return ret, new ngClient<{{ $sig.Output | gType }}>.(Token).Call("{{ $.Author }}", "{{ $.ProjectName }}", "{{ $sig.Method }}", "{{ $sig.Path }}", { {{ range $index, $field := $sig.Input }}{{if ne $index 0}}, {{end}}"{{ $field.Name }}": {{ $field.Name }}{{ end }} });
-	}
-{{ end }}
-}
+{{ range $key, $sig := .EndpointSignatures }}  {{ $sig.Method | gMethod }}{{ $sig.Path | gPathAsFunc }}({{ $sig.Input | gInput }}): {{ $sig.Output | gOutput }} {
+    return new NgClient<{{ $sig.Output | gType }}>(Token).Call("{{ $.Author }}", "{{ $.ProjectName }}", "{{ $sig.Method }}", "{{ $sig.Path }}", { {{ range $index, $field := $sig.Input }}{{if ne $index 0}}, {{end}}"{{ $field.Name }}": {{ $field.Name }}{{ end }} });
+  }
 
-
+{{ end }}}
 `
 
 var packagejsonTemplate = `{
-	"name": "david-test-xd-xd",
-	"version": "0.0.2",
-	"description": "David test xd",
+	"name": "@1backend/{{ .Author }}",
+	"version": "0.0.1",
+	"description": "Clients for 1Backend services of {{ .Author }}",
 	"main": "./lib/index.js",
 	"typings": "./lib/index.d.ts",
 	"scripts": {
@@ -73,11 +74,14 @@ var packagejsonTemplate = `{
 	],
 	"repository": {
 	  "type": "git",
-	  "url": "https://github.com/dobika/typescript-example-service.git"
+	  "url": "https://github.com/1backend/{{ .Author }}.git"
 	},
 	"dependencies": {
 	  "@angular/core": "5.0.0",
 	  "@angular/common": "5.0.0",
+	  "@1backend/ng-client": "0.0.1",
+{{ range $key, $import := .Imports }}"@1backend/{{ $import.Author }}-ng": "*";
+{{ end }}
 	  "rxjs": "5.5.2",
 	  "zone.js": "0.8.14"
 	}
@@ -141,13 +145,15 @@ func gInputToMap(fields []apiTypes.Field) string {
 func gInput(fields []apiTypes.Field) string {
 	inputs := []string{}
 	for _, field := range fields {
-		inputs = append(inputs, field.Name+" "+gType(field.Type))
+		inputs = append(inputs, field.Name+": "+gType(field.Type))
 	}
 	return strings.Join(inputs, ", ")
 }
 
 func gOutput(outp apiTypes.Type) string {
-
+	if outp.Name == "" {
+		return "Promise<void>"
+	}
 	return "Promise<" + gType(outp) + ">"
 }
 

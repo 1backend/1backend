@@ -26,7 +26,16 @@ func (d Deployer) GenerateAPIs(project *domain.Project, buildId string) (string,
 	if noDefs {
 		return "", nil
 	}
-	context, err := apiTypes.GetContext(project)
+	projects := []domain.Project{}
+	err := d.db.Where("author = ? AND name <> ?", project.Author, project.Name).Find(&projects).Error
+	if err != nil {
+		return "", err
+	}
+	projectNames := []string{}
+	for _, v := range projects {
+		projectNames = append(projectNames, v.Name)
+	}
+	context, err := apiTypes.GetContext(project, projectNames)
 	if err != nil {
 		return "", err
 	}

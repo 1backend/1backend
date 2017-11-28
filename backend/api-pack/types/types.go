@@ -36,6 +36,7 @@ type TypeDefinition struct {
 type Context struct {
 	Author             string
 	ProjectName        string
+	ProjectNames       []string
 	TypeDefinitions    map[string]TypeDefinition
 	Imports            []Import
 	EndpointSignatures []EndpointSignature
@@ -46,7 +47,7 @@ type Import struct {
 	ProjectName string
 }
 
-func GetContext(project *domain.Project) (*Context, error) {
+func GetContext(project *domain.Project, projectNames []string) (*Context, error) {
 	types := map[string]TypeDefinition{}
 	if project.Types != "" {
 		typs := map[string][]map[string]string{}
@@ -66,6 +67,7 @@ func GetContext(project *domain.Project) (*Context, error) {
 		TypeDefinitions:    types,
 		EndpointSignatures: sigs,
 		ProjectName:        project.Name,
+		ProjectNames:       projectNames,
 		Author:             project.Author,
 	}, nil
 }

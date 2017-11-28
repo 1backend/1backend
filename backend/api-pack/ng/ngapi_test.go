@@ -8,7 +8,8 @@ import (
 )
 
 var proj = &domain.Project{
-	Name: "test-service",
+	Name:   "test-service",
+	Author: "crufter",
 	Types: `{
 		"user": [
 			{"name":   "string"},
@@ -45,7 +46,7 @@ var proj = &domain.Project{
 }
 
 func TestBasic(t *testing.T) {
-	c, err := apiTypes.GetContext(proj)
+	c, err := apiTypes.GetContext(proj, []string{"login-service", "customer-service"})
 	if err != nil {
 		t.Fatal(err)
 	}
