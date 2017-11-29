@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS projects
   open_source         BOOLEAN                                                         NOT NULL,
   mode                VARCHAR(32)                                                     NOT NULL,
   recipe              VARCHAR(32)                                                     NOT NULL,
+  version             VARCHAR(16)                                                     NOT NULL,
   imports             TEXT                                                            NOT NULL,
   packages            TEXT                                                            NOT NULL,
   source              TEXT                                                            NOT NULL,

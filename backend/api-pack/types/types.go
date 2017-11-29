@@ -36,10 +36,12 @@ type TypeDefinition struct {
 type Context struct {
 	Author             string
 	ProjectName        string
+	ProjectVersion     string
 	ProjectNames       []string
 	TypeDefinitions    map[string]TypeDefinition
 	Imports            []Import
 	EndpointSignatures []EndpointSignature
+	Meta               map[string]interface{}
 }
 
 type Import struct {
@@ -69,6 +71,7 @@ func GetContext(project *domain.Project, projectNames []string) (*Context, error
 		ProjectName:        project.Name,
 		ProjectNames:       projectNames,
 		Author:             project.Author,
+		ProjectVersion:     project.Version,
 	}, nil
 }
 

@@ -125,6 +125,8 @@ func (d Deployer) Deploy(project *domain.Project) error {
 		if err != nil {
 			build.Output += "\n" + outp + "\n" + err.Error()
 			build.Success = false
+		} else {
+			build.Output += "\n" + outp
 		}
 	}
 	err = d.db.Save(build).Error

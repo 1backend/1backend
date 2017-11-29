@@ -1,9 +1,14 @@
 package deploy
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	filePath "path/filepath"
+	"strconv"
+	"strings"
 
 	"github.com/1backend/1backend/backend/api-pack"
 	apiTypes "github.com/1backend/1backend/backend/api-pack/types"
@@ -35,16 +40,12 @@ func (d Deployer) GenerateAPIs(project *domain.Project, buildId string) (string,
 	for _, v := range projects {
 		projectNames = append(projectNames, v.Name)
 	}
-	context, err := apiTypes.GetContext(project, projectNames)
-	if err != nil {
-		return "", err
-	}
 	reposPath := config.C.Path + "/repos"
 	err = os.MkdirAll(reposPath, 0700)
 	if err != nil {
 		return "", err
 	}
-	output, err := exec.Command("/bin/bash", config.C.Path+"/bash/create-git-repo.sh",
+	createOutput, err := exec.Command("/bin/bash", config.C.Path+"/bash/create-git-repo.sh",
 		reposPath,
 		project.Author,
 		project.Name,
@@ -53,10 +54,14 @@ func (d Deployer) GenerateAPIs(project *domain.Project, buildId string) (string,
 		config.C.ApiGeneration.GithubPersonalToken,
 	).CombinedOutput()
 	if err != nil {
-		return string(output), err
+		return string(createOutput), err
 	}
 	generators := apipack.Generators(project)
 	repoPath := reposPath + "/" + project.Author
+	context, err := apiTypes.GetContext(project, projectNames)
+	if err != nil {
+		return "", err
+	}
 	for _, gen := range generators {
 		fileTuples, err := gen.FilesToBuild(*context)
 		if err != nil {
@@ -65,7 +70,7 @@ func (d Deployer) GenerateAPIs(project *domain.Project, buildId string) (string,
 		for _, v := range fileTuples {
 			fileName := v[0]
 			fileContents := v[1]
-			fPath := repoPath + "/" + gen.FolderName() + "/" + fileName
+			fPath := repoPath + "/" + gen.FolderName() + "/" + project.Name + "/" + fileName
 			err = os.MkdirAll(filePath.Dir(fPath), 0700)
 			if err != nil {
 				return "", err
@@ -81,7 +86,18 @@ func (d Deployer) GenerateAPIs(project *domain.Project, buildId string) (string,
 			}
 		}
 	}
-	output, err = exec.Command("/bin/bash", config.C.Path+"/bash/git-commit-api.sh",
+	npmPublishOutput := []byte{}
+	if config.C.NpmPublication.Enabled {
+		npmPublishOutput, err = exec.Command("/bin/bash", config.C.Path+"/bash/npm-publish.sh",
+			reposPath,
+			project.Author,
+			project.Name,
+		).CombinedOutput()
+		if err != nil {
+			return string(npmPublishOutput), err
+		}
+	}
+	commitOutput, err := exec.Command("/bin/bash", config.C.Path+"/bash/git-commit-api.sh",
 		reposPath,
 		project.Author,
 		project.Name,
@@ -91,7 +107,28 @@ func (d Deployer) GenerateAPIs(project *domain.Project, buildId string) (string,
 		buildId,
 	).CombinedOutput()
 	if err != nil {
-		return string(output), err
+		return string(commitOutput), err
 	}
-	return "", nil
+	return strings.Join([]string{string(createOutput), string(npmPublishOutput), string(commitOutput)}, "\n"), nil
+}
+
+func bumpPackageJsonVersion(filePath string) error {
+	pjsonContents, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+	m := map[string]interface{}{}
+	err = json.Unmarshal(pjsonContents, &m)
+	if err != nil {
+		return err
+	}
+	semVerParts := strings.Split(m["version"].(string), ".")
+	patchNumber, _ := strconv.ParseInt(semVerParts[2], 10, 64)
+	newSemVer := strings.Join([]string{semVerParts[0], semVerParts[1], fmt.Sprintf("%v", patchNumber)}, ".")
+	m["version"] = newSemVer
+	newPackageJson, err := json.Marshal(m)
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(filePath, newPackageJson, 0700)
 }

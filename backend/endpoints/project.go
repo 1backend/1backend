@@ -2,6 +2,9 @@ package endpoints
 
 import (
 	"errors"
+	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/1backend/1backend/backend/deploy"
@@ -13,6 +16,7 @@ func (e Endpoints) CreateProject(proj *domain.Project) error {
 	if !reg.Match([]byte(proj.Name)) {
 		return errors.New("Allowed project name characters: lowercase letters, numbers, dash")
 	}
+	proj.Version = "0.0.1"
 	proj.Description = "Change this to something sensible"
 	proj.Id = domain.Sid.MustGenerate()
 	proj.InfraPassword = domain.Sid.MustGenerate()
@@ -50,6 +54,14 @@ func (e Endpoints) CreateProject(proj *domain.Project) error {
 func (e Endpoints) UpdateProject(proj *domain.Project) error {
 	if !reg.Match([]byte(proj.Name)) {
 		return errors.New("Allowed project name characters: lowercase letters, numbers, dash")
+	}
+	if proj.Version == "" {
+		proj.Version = "0.0.2"
+	} else {
+		semVerParts := strings.Split(proj.Version, ".")
+		patchNumber, _ := strconv.ParseInt(semVerParts[2], 10, 64)
+		patchNumber++
+		proj.Version = strings.Join([]string{semVerParts[0], semVerParts[1], fmt.Sprintf("%v", patchNumber)}, ".")
 	}
 	proj.InfraPassword = domain.Sid.MustGenerate()
 	err := e.db.Save(proj).Error

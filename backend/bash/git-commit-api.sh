@@ -17,12 +17,12 @@ fi
 
 cd "./$USERNAME"
 git pull origin master || true # freshly created repos has no master branch
+git add .
 
 if git diff-index --quiet HEAD --; then
     echo "No API changes to commit";
-else
-    git add .
-    if git commit -am "Commit for build $" ; then
+else    
+    if git commit -am "Commit for build $BUILDID" ; then
         echo "Commit succeeded";
     else
         echo "Failed to git commit"; exit 1

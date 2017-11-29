@@ -30,8 +30,6 @@ func (g GoGenerator) FolderName() string {
 
 var indexTemplate = `
 export * from './{{.ProjectName}}.service';
-{{ range $key, $projectName := .ProjectNames }}export* from './{{ $projectName }}.service';
-{{ end }}
 `
 
 var serviceTemplate = `import { Injectable } from '@angular/core';
@@ -57,8 +55,8 @@ export class Service {
 `
 
 var packageJsonTemplate = `{
-	"name": "@1backend/{{ .Author }}",
-	"version": "0.0.1",
+	"name": "@1backend/{{ .Author }}-{{ .ProjectName }}-ng",
+	"version": "{{ .ProjectVersion }}",
 	"description": "Clients for 1Backend services of {{ .Author }}",
 	"main": "./lib/index.js",
 	"typings": "./lib/index.d.ts",

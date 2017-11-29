@@ -14,7 +14,9 @@ type Project struct {
 	Author string
 	Name   string
 	Stars  int
-	ReadMe string
+	// Semver version of the project.
+	Version string
+	ReadMe  string
 	// The port of the running instance for internal use.
 	// Might have to extend this contept to support multiple instances.
 	Port int
