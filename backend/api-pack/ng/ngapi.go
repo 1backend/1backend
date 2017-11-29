@@ -25,17 +25,18 @@ func (g GoGenerator) FilesToBuild(c apiTypes.Context) ([][]string, error) {
 }
 
 func (g GoGenerator) FolderName() string {
-	return "go"
+	return "ng"
 }
 
 var indexTemplate = `
-{{ range $key, $export := .Projects }} export * from './{{ $.ProjectName }}';
-
-let Token: string
+export * from './{{.ProjectName}}.service';
+{{ range $key, $projectName := .ProjectNames }}export* from './{{ $projectName }}.service';
+{{ end }}
 `
+
 var serviceTemplate = `import { Injectable } from '@angular/core';
-import * as ngClient from '@1backend/ng-client';
-{{ range $key, $import := .Imports }}import * as {{ $import.Author }} from  '@1backend/{{ $import.Author }}-ng
+import { NgClient } from '@1backend/ng-client';
+{{ range $key, $import := .Imports }}import * as {{ $import.Author }}_{{ $import.ProjectName }} from  '@1backend/{{ $import.Author }}-ng/{{ $import.ProjectName }}.service';
 {{ end }}
 
 {{ range $typeName, $type := .TypeDefinitions }}
@@ -45,22 +46,20 @@ export interface {{ $typeName | gTypeName }} {
 {{ end }}
 
 @Injectable()
-export class {{ $.ProjectName | gServiceName }} {
-  constructor() {}
+export class Service {
+  constructor(private ngClient: NgClient) {}
 
-  {{ range $key, $sig := .EndpointSignatures }}{{ $sig.Method | gMethod }}{{ $sig.Path | gPathAsFunc }}({{ $sig.Input | gInput }}) {{ $sig.Output | gOutput }} {
-	return ret, new ngClient<{{ $sig.Output | gType }}>.(Token).Call("{{ $.Author }}", "{{ $.ProjectName }}", "{{ $sig.Method }}", "{{ $sig.Path }}", { {{ range $index, $field := $sig.Input }}{{if ne $index 0}}, {{end}}"{{ $field.Name }}": {{ $field.Name }}{{ end }} });
-	}
-{{ end }}
-}
+{{ range $key, $sig := .EndpointSignatures }}  {{ $sig.Method | gMethod }}{{ $sig.Path | gPathAsFunc }}({{ $sig.Input | gInput }}): Promise<{{ $sig.Output | gType }}> {
+    return this.ngClient.call<{{ $sig.Output | gType }}>("{{ $.Author }}", "{{ $.ProjectName }}", "{{ $sig.Method }}", "{{ $sig.Path }}", { {{ range $index, $field := $sig.Input }}{{if ne $index 0}}, {{end}}"{{ $field.Name }}": {{ $field.Name }}{{ end }} });
+  }
 
-
+{{ end }}}
 `
 
-var packagejsonTemplate = `{
-	"name": "david-test-xd-xd",
-	"version": "0.0.2",
-	"description": "David test xd",
+var packageJsonTemplate = `{
+	"name": "@1backend/{{ .Author }}",
+	"version": "0.0.1",
+	"description": "Clients for 1Backend services of {{ .Author }}",
 	"main": "./lib/index.js",
 	"typings": "./lib/index.d.ts",
 	"scripts": {
@@ -73,28 +72,46 @@ var packagejsonTemplate = `{
 	],
 	"repository": {
 	  "type": "git",
-	  "url": "https://github.com/dobika/typescript-example-service.git"
+	  "url": "https://github.com/1backend/{{ .Author }}.git"
 	},
 	"dependencies": {
-	  "@angular/core": "5.0.0",
-	  "@angular/common": "5.0.0",
-	  "rxjs": "5.5.2",
-	  "zone.js": "0.8.14"
+	  "@1backend/ng-client": "*"{{ range $key, $import := .Imports }},
+	  "@1backend/{{ $import.Author }}-ng": "*";
+{{ end }}
+	},
+	"devDependencies": {
+		"@angular/cli": "^1.5.3",
+		"@angular/compiler-cli": "^5.0.0",
+		"typescript": "~2.4.2",
+		"@angular/core": "^5.0.0",
+		"@angular/common": "^5.0.0",
+		"rxjs": "^5.5.2",
+		"zone.js": "^0.8.14"
 	}
   }
 `
-var tsconfigjsonTemplate = `{
-	"compilerOptions": {
-	  "target": "ES2015",
-	  "module": "commonjs",
-	  "declaration": true,
-	  "experimentalDecorators": true,
-	  "outDir": "./lib",
-	  "strict": true
-	},
-	"include": ["src/**/*"],
-	"exclude": ["src/**/*.spec.*"]
-  }
+
+var gitIgnoreTemplate = `node_modules
+lib
+`
+
+var npmIgnoreTemplate = `node_modules
+`
+
+var tsconfigJsonTemplate = `{
+    "compilerOptions": {
+      "target": "es5",
+      "module": "commonjs",
+      "declaration": true,
+      "lib" : ["es2015", "dom"],
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "outDir": "./lib",
+      "strict": true
+    },
+    "include": ["src/**/*"],
+    "exclude": ["src/**/*.spec.*"]
+}
 `
 
 func gPathAsFunc(path string) string {
@@ -108,6 +125,9 @@ func gTypeName(s string) string {
 }
 
 func gType(f apiTypes.Type) string {
+	if f.Name == "" {
+		return "void"
+	}
 	if f.Import.Author != "" {
 		prefix := f.Import.Author + "_" + f.Import.ProjectName
 		if f.IsList {
@@ -141,14 +161,9 @@ func gInputToMap(fields []apiTypes.Field) string {
 func gInput(fields []apiTypes.Field) string {
 	inputs := []string{}
 	for _, field := range fields {
-		inputs = append(inputs, field.Name+" "+gType(field.Type))
+		inputs = append(inputs, field.Name+": "+gType(field.Type))
 	}
 	return strings.Join(inputs, ", ")
-}
-
-func gOutput(outp apiTypes.Type) string {
-
-	return "Promise<" + gType(outp) + ">"
 }
 
 func gFieldName(s string) string {
@@ -186,13 +201,12 @@ func (g GoGenerator) generateFiles(c apiTypes.Context) ([][]string, error) {
 		"gMethod":      gMethod,
 		"gInput":       gInput,
 		"gFieldName":   gFieldName,
-		"gOutput":      gOutput,
 		"gPathAsFunc":  gPathAsFunc,
 		"trim":         strings.TrimSpace,
 	}
 	ret := [][]string{}
-	titles := []string{"index.ts", "package.json", c.ProjectName + ".service.ts"}
-	toParse := []string{indexTemplate, packagejsonTemplate, serviceTemplate}
+	titles := []string{"src/index.ts", "tsconfig.json", "package.json", "src/" + c.ProjectName + ".service.ts", ".gitignore", ".npmignore"}
+	toParse := []string{indexTemplate, tsconfigJsonTemplate, packageJsonTemplate, serviceTemplate, gitIgnoreTemplate, npmIgnoreTemplate}
 	for i, f := range toParse {
 		templ := template.New(titles[i]).Funcs(templFuncs)
 		t, err := templ.Parse(string(f))
