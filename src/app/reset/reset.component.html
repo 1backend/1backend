@@ -1,0 +1,22 @@
+<div fxLayout="column" fxLayoutAlign="center center">
+  <div fxFlex="1 1">
+      <h3><b>Create new password</b></h3>
+  </div>
+  <mat-card style="width: 30%">
+    <div style="padding-bottom: 0.5em;">
+      <mat-form-field class="example-full-width" style="width: 100%">
+        <input matInput placeholder="New password" [(ngModel)]="newPassword"/>
+      </mat-form-field>
+    </div>
+    <div style="padding-bottom: 0.5em;" >
+        <mat-form-field class="example-full-width" style="width: 100%">
+          <input matInput placeholder="Confirm password" [(ngModel)]="newPassword2"/>
+        </mat-form-field>
+      </div>
+      <div align="center">
+        <button mat-raised-button color="accent" (click)="resetPassword()">
+          Reset password
+        </button>
+      </div>
+  </mat-card>
+</div>
