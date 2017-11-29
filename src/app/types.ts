@@ -28,6 +28,7 @@ export interface Project extends Selectable {
   Types?: string;
   Source?: string;
   OpenSource?: boolean;
+  Version?: string;
 }
 
 // not used in backend
