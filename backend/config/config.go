@@ -12,12 +12,20 @@ var C = Config{}
 type Config struct {
 	StripeKey string // stripe api key
 	// absolute path to folder containing files (assumes same structure as the repo)
-	Path          string
+	Path string
+	// CAUTION! Uses the git user configured on the machine.
 	ApiGeneration struct {
-		Enabled             bool // API generation enabled
-		GithubOrganisation  string
+		Enabled            bool // API generation enabled
+		GithubOrganisation string
+		// user and personal token is used for repo creation when calling GitHub's HTTP API
 		GithubUser          string
 		GithubPersonalToken string
+	}
+	// generated ts, node and ng packages can be publicated to npmjs.org
+	// CAUTION! Uses the npm user already logged in on the machine
+	NpmPublication struct {
+		Enabled         bool
+		NpmOrganisation string
 	}
 }
 

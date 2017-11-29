@@ -2,6 +2,7 @@ package apipack
 
 import (
 	"github.com/1backend/1backend/backend/api-pack/go"
+	"github.com/1backend/1backend/backend/api-pack/ng"
 	apiTypes "github.com/1backend/1backend/backend/api-pack/types"
 	"github.com/1backend/1backend/backend/domain"
 )
@@ -10,6 +11,7 @@ import (
 func Generators(proj *domain.Project) []Generator {
 	return []Generator{
 		goapi.NewGenerator(proj),
+		ngapi.NewGenerator(proj),
 	}
 }
 
