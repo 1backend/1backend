@@ -9,13 +9,13 @@
 }
 
 .Label--outline {
-  font-size: 14px;
+  font-size: 20px;
   margin-top: -1px;
   margin-bottom: -1px;
   font-weight: 400;
-  color: #586069;
+  color: #4a525a;
   background-color: transparent;
-  border: 1px solid rgba(27,31,35,0.15);
+  border: 1px solid rgba(27, 31, 35, 0.15);
   box-shadow: none;
   border-radius: 3px;
 }
