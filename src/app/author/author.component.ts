@@ -8,6 +8,7 @@ import { ChargeService } from '../charge.service';
 import { ConstService } from '../const.service';
 import { NotificationsService } from 'angular2-notifications';
 import { UserService } from '../user.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-author',
@@ -37,7 +38,8 @@ export class AuthorComponent implements OnInit {
     private _const: ConstService,
     private notif: NotificationsService,
     public us: UserService,
-    private charge: ChargeService
+    private charge: ChargeService,
+    private title: Title
   ) {
     this.refresh();
   }

@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AceEditorModule } from 'ng2-ace-editor';
@@ -209,8 +209,18 @@ import { PricingComponent } from './home/pricing/pricing.component';
 import { CreateIssueComponent } from './projects/project/issues/create-issue/create-issue.component';
 import { ProjectListComponent } from './projects/project-list/project-list.component';
 import { LengthPipe } from './length.pipe';
+import { ResetComponent } from './reset/reset.component';
+import { RecoverComponent } from './recover/recover.component';
 
 const appRoutes: Routes = [
+  {
+    path: 'reset',
+    component: ResetComponent
+  },
+  {
+    path: 'recover',
+    component: RecoverComponent
+  },
   {
     path: 'projects',
     component: ProjectsComponent
@@ -262,7 +272,9 @@ const appRoutes: Routes = [
     PricingComponent,
     CreateIssueComponent,
     ProjectListComponent,
-    LengthPipe
+    LengthPipe,
+    ResetComponent,
+    RecoverComponent
   ],
   imports: [
     BrowserModule,
@@ -306,7 +318,8 @@ const appRoutes: Routes = [
     UserService,
     CreateProjectDialogService,
     CreateIssueDialogService,
-    ChargeService
+    ChargeService,
+    Title
   ],
   bootstrap: [AppComponent],
   entryComponents: [

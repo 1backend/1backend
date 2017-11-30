@@ -11,6 +11,7 @@ import { UserService } from '../../user.service';
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import { NotificationsService } from 'angular2-notifications';
 import { RequestOptions } from '@angular/http/src/base_request_options';
+import { Title } from '@angular/platform-browser';
 
 interface PingResponse {
   pong: boolean;
@@ -51,7 +52,8 @@ export class ProjectComponent implements OnInit {
     private router: Router,
     private _const: ConstService,
     public us: UserService,
-    private notif: NotificationsService
+    private notif: NotificationsService,
+    private title: Title
   ) {
     this.author = this.route.snapshot.params['author'];
     this.projectName = this.route.snapshot.params['project'];
@@ -133,7 +135,9 @@ export class ProjectComponent implements OnInit {
     };
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.title.setTitle(this.author + '/' + this.projectName);
+  }
 
   delete() {
     this.http.delete(this._const.url + '/v1/project', {}).subscribe(

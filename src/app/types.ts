@@ -58,6 +58,7 @@ export interface Build {
   InProgress: boolean;
   CreatedAt: string;
   Selected?: boolean;
+  Version?: string;
 }
 export interface User {
   Id: string;

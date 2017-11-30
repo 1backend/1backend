@@ -8,6 +8,7 @@ import { ConstService } from '../../const.service';
 import { SessionService } from '../../session.service';
 import { ActivatedRoute } from '@angular/router';
 import { LoginDialogService } from '../../login/login-dialog.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-project-list',
@@ -32,13 +33,20 @@ export class ProjectListComponent implements OnInit {
     private http: HttpClient,
     private _const: ConstService,
     private ss: SessionService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private title: Title
   ) {
     this.author = this.route.snapshot.params['author'];
     this.isProjectsPage = this.router.isActive('projects', false);
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (this.router.url === '/projects') {
+      this.title.setTitle('Projects');
+    } else if (this.router.url === '/' + this.author) {
+      this.title.setTitle(this.author);
+    }
+  }
 
   create() {
     const that = this;
@@ -62,15 +70,20 @@ export class ProjectListComponent implements OnInit {
   }
   star(p: types.Project) {
     const that = this;
-    this.http.put(this._const.url + '/v1/star', {
-      'projectId': p.Id,
-      'token': that.ss.getToken(),
-    }).subscribe(() => {
-      p.Stars++;
-      p.Starrers = [];
-    }, error => {
-      console.log(error.error);
-    });
+    this.http
+      .put(this._const.url + '/v1/star', {
+        projectId: p.Id,
+        token: that.ss.getToken()
+      })
+      .subscribe(
+        () => {
+          p.Stars++;
+          p.Starrers = [];
+        },
+        error => {
+          console.log(error.error);
+        }
+      );
   }
   unStar(proj: types.Project) {
     const that = this;
