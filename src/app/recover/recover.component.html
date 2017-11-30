@@ -1,0 +1,16 @@
+<div fxLayout="column" fxLayoutAlign="center center">
+  <div fxFlex="1 1">
+    <h3>Reset your password</h3>
+  </div>
+  <mat-card>
+    <p>Please enter your email and we will send a link to reset your password</p>
+    <mat-form-field class="example-full-width" style="width: 100%">
+      <input matInput placeholder="Email" [(ngModel)]="email"/>
+    </mat-form-field>
+    <div align="center" style="padding-top: 1em;">
+      <button mat-raised-button color="accent" (click)="sendReset()">
+        Send email
+      </button>
+    </div>
+  </mat-card>
+</div>

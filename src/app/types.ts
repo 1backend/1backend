@@ -80,13 +80,6 @@ export interface AccessToken {
   UpdatedAt?: string;
 }
 
-export interface Issues {
-  Name: string;
-  CreatedAt: string;
-  Description: string;
-  Closed: boolean;
-  Id: string;
-}
 export interface Profile {
   Link?: string;
   FullName?: string;
@@ -127,4 +120,15 @@ export interface Token {
   UpdatedAt?: string;
   Enabled?: boolean;
   Quota?: number;
+}
+export interface Posts {
+  Id?: string;
+  Title?: string;
+  Subtitle?: string;
+  UserId?: string;
+  Content?: string;
+  User?: User;
+  CreatedAt?: string;
+  UpdatedAt?: string;
+  Slug?: string;
 }
