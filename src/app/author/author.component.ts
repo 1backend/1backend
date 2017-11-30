@@ -1,11 +1,9 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import * as types from '../types';
 import { Router, NavigationStart, Event } from '@angular/router';
-import { SessionService } from '../session.service';
 import { ChargeService } from '../charge.service';
-import { ConstService } from '../const.service';
+import { ProjectService } from '../project.service';
 import { NotificationsService } from 'angular2-notifications';
 import { UserService } from '../user.service';
 import { EventService } from '../event.service';
@@ -30,6 +28,7 @@ export class AuthorComponent implements OnInit {
     private router: Router,
     private notif: NotificationsService,
     public us: UserService,
+    public ps: ProjectService,
     private charge: ChargeService
   ) {
     this.refresh();
@@ -61,42 +60,14 @@ export class AuthorComponent implements OnInit {
 
   refresh() {
     this.author = this.route.snapshot.params['author'];
-    let p = new HttpParams();
-    p = p.set('nick', this.author);
-    p = p.set('token', this.ss.getToken());
-    this.http
-      .get<types.Project[]>(this._const.url + '/v1/projects', {
-        params: p
-      })
-      .subscribe(
-        projs => {
-          this.projects = projs.sort((a, b) => {
-            if (a.UpdatedAt === b.UpdatedAt) {
-              return 0;
-            }
-            if (a.UpdatedAt < b.UpdatedAt) {
-              return 1;
-            }
-            return -1;
-          });
-        },
-        error => {
-          this.userFound = false;
-        }
-      );
-    p = new HttpParams();
-    p = p.set('token', this.ss.getToken());
-    p = p.set('nick', this.author);
-    this.http
-      .get<types.User>(this._const.url + '/v1/user', { params: p })
-      .subscribe(
-        user => {
-          this.user = user;
-        },
-        error => {
-          this.userFound = false;
-        }
-      );
+    this.ps
+      .listByNick(this.author)
+      .then(projects => (this.projects = projects))
+      .catch(err => (this.userFound = false));
+    this.us
+      .getByNick(this.author)
+      .then(user => (this.user = user))
+      .catch(err => (this.userFound = false));
   }
 
   edit() {
@@ -104,12 +75,6 @@ export class AuthorComponent implements OnInit {
   }
 
   delete(project: types.Project) {
-    this.http.delete(this._const.url + '/v1/project', {}).subscribe(
-      data => {
-        this.refresh();
-      },
-      error => {}
-    );
   }
 
   getAllCallsLeft(): number {

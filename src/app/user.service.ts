@@ -5,6 +5,14 @@ import { SessionService } from './session.service';
 import { ConstService } from './const.service';
 import { Observable } from 'rxjs/Observable';
 
+interface LoginResponse {
+  token: types.AccessToken;
+}
+
+interface RegisterResponse {
+  token: types.AccessToken;
+}
+
 @Injectable()
 export class UserService {
   user: types.User = {} as types.User;
@@ -48,6 +56,24 @@ export class UserService {
     });
   }
 
+  getByNick(nick: string): Promise<types.User> {
+    let p = new HttpParams();
+    p = p.set('token', this.sess.getToken());
+    p = p.set('nick', nick);
+    return new Promise<types.User>((resolve, reject) => {
+      this.http
+        .get<types.User>(this._const.url + '/v1/user', { params: p })
+        .subscribe(
+          user => {
+            resolve(user);
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
+  }
+
   save(u: types.User): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.http
@@ -80,6 +106,49 @@ export class UserService {
         nick: this.user.Nick
       },
       token: this.sess.getToken()
+    });
+  }
+
+  login(email: string, password: string): Promise<LoginResponse> {
+    return new Promise<LoginResponse>((resolve, reject) => {
+      this.http
+        .post<LoginResponse>(this._const.url + '/v1/login', {
+          email: email,
+          password: password
+        })
+        .subscribe(
+          data => {
+            this.sess.setToken(data.token.Token);
+            resolve(data);
+          },
+          error => {
+            reject(error);
+          }
+        );
+    });
+  }
+
+  register(
+    userName: string,
+    email: string,
+    password: string
+  ): Promise<LoginResponse> {
+    return new Promise<LoginResponse>((resolve, reject) => {
+      this.http
+        .post<RegisterResponse>(this._const.url + '/v1/register', {
+          nick: userName,
+          email: email,
+          password: password
+        })
+        .subscribe(
+          data => {
+            this.sess.setToken(data.token.Token);
+            resolve(data);
+          },
+          error => {
+            reject(error);
+          }
+        );
     });
   }
 }
