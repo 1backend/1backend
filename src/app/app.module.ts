@@ -211,6 +211,7 @@ import { ProjectListComponent } from './projects/project-list/project-list.compo
 import { LengthPipe } from './length.pipe';
 import { ResetComponent } from './reset/reset.component';
 import { RecoverComponent } from './recover/recover.component';
+import { PostsComponent } from './author/posts/posts.component';
 
 const appRoutes: Routes = [
   {
@@ -274,7 +275,9 @@ const appRoutes: Routes = [
     ProjectListComponent,
     LengthPipe,
     ResetComponent,
-    RecoverComponent
+    RecoverComponent,
+    PostsComponent,
+
   ],
   imports: [
     BrowserModule,
