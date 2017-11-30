@@ -37,3 +37,15 @@ func (e Endpoints) CreateToken(iss *domain.Token) error {
 	iss.UpdatedAt = time.Now()
 	return e.db.Save(iss).Error
 }
+
+func (e Endpoints) CreatePost(iss *domain.Post) error {
+	iss.Id = domain.Sid.MustGenerate()
+	iss.CreatedAt = time.Now()
+	iss.UpdatedAt = time.Now()
+	return e.db.Save(iss).Error
+}
+
+func (e Endpoints) UpdatePost(iss *domain.Post) error {
+	iss.UpdatedAt = time.Now()
+	return e.db.Save(iss).Error
+}

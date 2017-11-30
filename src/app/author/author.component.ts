@@ -8,6 +8,7 @@ import { ChargeService } from '../charge.service';
 import { ConstService } from '../const.service';
 import { NotificationsService } from 'angular2-notifications';
 import { UserService } from '../user.service';
+import { EventService } from '../event.service';
 
 @Component({
   selector: 'app-author',
@@ -22,19 +23,11 @@ export class AuthorComponent implements OnInit {
   saved = true;
   user: types.User = {} as types.User;
   userFound = true;
-  serviceTokenName = '';
-  serviceTokenDescription = '';
-  from = '';
-  to = '';
-  transferAmount = 0;
   selectedTabIndex = 0; // workaround for bug https://github.com/angular/material2/issues/5269
 
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient,
     private router: Router,
-    private ss: SessionService,
-    private _const: ConstService,
     private notif: NotificationsService,
     public us: UserService,
     private charge: ChargeService
@@ -43,26 +36,16 @@ export class AuthorComponent implements OnInit {
   }
 
   save() {
-    if (this.validator() !== 'ok') {
+    if (!this.valid()) {
       return;
     }
-    this.http
-      .put(this._const.url + '/v1/user', {
-        user: {
-          avatarLink: this.user.AvatarLink,
-          name: this.user.Name,
-          email: this.user.Email,
-          nick: this.user.Nick
-        },
-        token: this.ss.getToken()
-      })
-      .subscribe(
-        data => {
-          this.saved = true;
-          this.refresh();
-        },
-        error => {}
-      );
+    this.us.saveSelf().subscribe(
+      data => {
+        this.saved = true;
+        this.refresh();
+      },
+      error => {}
+    );
   }
 
   ngOnInit() {
@@ -138,16 +121,16 @@ export class AuthorComponent implements OnInit {
     });
   }
 
-  validator() {
+  valid(): boolean {
     if (!this.user.Nick) {
       this.notif.error('Nickname is empty');
-      return;
+      return true;
     }
     if (!this.user.Email) {
       this.notif.error('Email is empty');
-      return;
+      return true;
     }
-    return 'ok';
+    return false;
   }
 
   purchase() {
@@ -155,38 +138,5 @@ export class AuthorComponent implements OnInit {
     this.charge.charge(this.amount * 100, () => {
       that.us.get();
     });
-  }
-
-  transfer() {
-    this.http
-      .post(this._const.url + '/v1/token/transfer', {
-        token: this.ss.getToken(),
-        from: this.from,
-        to: this.to,
-        amount: this.transferAmount
-      })
-      .subscribe(
-        () => {
-          this.us.get();
-          this.notif.success('Successfully transferred');
-        },
-        error => {}
-      );
-  }
-
-  createToken() {
-    this.http
-      .post(this._const.url + '/v1/token', {
-        token: this.ss.getToken(),
-        serviceTokenName: this.serviceTokenName,
-        serviceTokenDescription: this.serviceTokenDescription
-      })
-      .subscribe(
-        () => {
-          this.us.get();
-          this.notif.success('Token successfully created');
-        },
-        error => {}
-      );
   }
 }

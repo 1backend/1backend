@@ -1,0 +1,56 @@
+<mat-card>
+  <mat-tab-group>
+    <mat-tab label="Create a token">
+      <div class="form" style="margin-top: 1em">
+        <mat-card-title>Create a new token</mat-card-title>
+        <mat-form-field class="example-full-width" style="width: 100%">
+          <input matInput placeholder="Name" [(ngModel)]="serviceTokenName" />
+        </mat-form-field>
+        <mat-form-field class="example-full-width" style="width: 100%">
+          <input matInput placeholder="Description" [(ngModel)]="serviceTokenDescription" />
+        </mat-form-field>
+        <button mat-raised-button (click)="createToken()" color="primary">Create</button>
+      </div>
+    </mat-tab>
+    <mat-tab label="Transfer quota">
+      <div class="form" style="margin-top: 1em">
+        <mat-card-title>Transfer quota between tokens</mat-card-title>
+        <mat-form-field class="example-full-width" style="width: 100%">
+          <mat-select [(ngModel)]="from" placeholder="From">
+            <mat-option *ngFor="let token of user.Tokens" [value]="token.Token">
+              {{ token.Name }} ({{token.Quota | number:'.0-0'}})
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="example-full-width" style="width: 100%">
+          <mat-select [(ngModel)]="to" placeholder="To">
+            <mat-option *ngFor="let token of user.Tokens" [value]="token.Token">
+              {{ token.Name }} ({{token.Quota | number:'.0-0'}})
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="example-full-width" style="width: 100%">
+          <input type="number" matInput placeholder="Amount" [(ngModel)]="transferAmount" />
+        </mat-form-field>
+        <button mat-raised-button (click)="transfer()" color="primary">Transfer</button>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</mat-card>
+
+<div *ngFor="let token of us.user.Tokens">
+  <mat-card>
+    <mat-card-title>
+      {{token.Name}}
+    </mat-card-title>
+    <mat-card-subtitle>
+      {{token.Description}}
+    </mat-card-subtitle>
+    <mat-card-content>
+      <p>{{token.Token}}</p>
+      <p>
+        <b style="color: green">{{token.Quota | number:'.0-0'}}</b> quota left</p>
+      <p>Created {{token.CreatedAt | amTimeAgo}}</p>
+    </mat-card-content>
+  </mat-card>
+</div>

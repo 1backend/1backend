@@ -169,7 +169,7 @@ ALTER TABLE tokens
       ADD CONSTRAINT uniqueTokenNamePerUser UNIQUE (user_id, name),
       ADD FOREIGN KEY (user_id) REFERENCES users (id);
 
--- service access tokens and not login tokens (access_tokens)
+-- charges only exist as a history, they are not used for much
 CREATE TABLE IF NOT EXISTS charges
 (
   id                  VARCHAR(36)                                                     NOT NULL,
@@ -184,16 +184,19 @@ CREATE TABLE IF NOT EXISTS charges
 ALTER TABLE charges
       ADD FOREIGN KEY (user_id) REFERENCES users (id);
 
--- enables very basic type checking for the types in projects
-CREATE TABLE IF NOT EXISTS types
+CREATE TABLE IF NOT EXISTS posts
 (
   id                  VARCHAR(36)                                                     NOT NULL,
   project_id          VARCHAR(36)                                                     NOT NULL,
-  name                VARCHAR(64)                                                     NOT NULL,
+  title               VARCHAR(256)                                                    NOT NULL,
+  content             TEXT                                                            NOT NULL,
+  slug                VARCHAR(256)                                                    NOT NULL,
+  user_id             VARCHAR(36)                                                     NOT NULL,
   created_at          DATETIME DEFAULT CURRENT_TIMESTAMP                              NOT NULL,
   updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE types
-      ADD CONSTRAINT uniqueStarTokenNamePerProject UNIQUE (project_id, name);
+ALTER TABLE posts
+      ADD FOREIGN KEY (project_id) REFERENCES projects (id),
+      ADD FOREIGN KEY (user_id) REFERENCES users (id);

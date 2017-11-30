@@ -166,3 +166,14 @@ type Charge struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
+
+type Post struct {
+	Id        string
+	Title     string
+	Slug      string
+	Content   string
+	UserId    string
+	User      User
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
