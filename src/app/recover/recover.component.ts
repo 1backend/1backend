@@ -2,6 +2,8 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ConstService } from '../const.service';
 import { NotificationsService } from 'angular2-notifications';
+import { Title } from '@angular/platform-browser';
+
 @Component({
   selector: 'app-recover',
   templateUrl: './recover.component.html',
@@ -13,10 +15,13 @@ export class RecoverComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private _const: ConstService,
-    private notif: NotificationsService
+    private notif: NotificationsService,
+    private title: Title
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.title.setTitle('Recover');
+  }
 
   sendReset() {
     this.http

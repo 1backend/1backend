@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AceEditorModule } from 'ng2-ace-editor';
@@ -318,7 +318,8 @@ const appRoutes: Routes = [
     UserService,
     CreateProjectDialogService,
     CreateIssueDialogService,
-    ChargeService
+    ChargeService,
+    Title
   ],
   bootstrap: [AppComponent],
   entryComponents: [
