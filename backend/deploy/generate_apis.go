@@ -92,6 +92,7 @@ func (d Deployer) GenerateAPIs(project *domain.Project, buildId string) (string,
 			reposPath,
 			project.Author,
 			project.Name,
+			config.C.NpmPublication.NpmToken,
 		).CombinedOutput()
 		if err != nil {
 			return string(npmPublishOutput), err
