@@ -7,10 +7,7 @@
     </span>
     <mat-card style="margin-top: 0.3em;">
       <h1 style="color: #2196F3;">{{issue.Title}}</h1>
-      issue opened {{issue.CreatedAt | amTimeAgo}} by
-      <a style="color: black;" routerLink="/{{issuerComment.User?.Nick}}">{{issuerComment.User?.Nick}}</a>
-    </mat-card>
-    <mat-card style="margin-top: 0.5em;">
+
       <mat-card-header>
         <mat-card-title>
           <a style="color: black;" routerLink="/{{issuerComment.User?.Nick}}">{{issuerComment.User?.Nick}}</a>
@@ -18,21 +15,41 @@
         <mat-card-subtitle>{{issuerComment.Content && issuerComment.UpdatedAt | amTimeAgo}}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content style="padding: 1em;">
-        <font style="font-size: 16px;color: rgb(36,41,46);line-height: 21px;">{{issuerComment.Content}}</font>
+        <markdown-to-html item-width="70%" [data]="issuerComment.Content"></markdown-to-html>
+
       </mat-card-content>
+
+
     </mat-card>
     <div *ngIf="issue.Comments && issue.Comments.length > 0">
-      <mat-card *ngFor="let c of issue.Comments" style="margin-top: 0.5em;">
+      <mat-card *ngFor="let c of issue.Comments.slice(this.currentPage * 10, (this.currentPage + 1) * 10)" style="margin-top: 0.5em; overflow-x: auto;">
         <mat-card-header>
-          <mat-card-title>
-            <a style="color: black;" routerLink="/{{c.User?.Nick}}">{{c.User?.Nick}}</a>
-          </mat-card-title>
-          <mat-card-subtitle>{{c.Content && c.UpdatedAt | amTimeAgo}}</mat-card-subtitle>
+          <div style="width: 100%;" fxFlexLayout="row" fxLayoutAlign="space-between">
+            <div fxFlex="1 1 48%">
+              <mat-card-title-group fxFlexLayout="row">
+                <mat-card-title>
+                  <a style="color: black;" routerLink="/{{c.User?.Nick}}">{{c.User?.Nick}}</a>
+                </mat-card-title>
+
+                <mat-card-subtitle>
+                  {{c.Content && c.UpdatedAt | amTimeAgo}}
+                </mat-card-subtitle>
+              </mat-card-title-group>
+            </div>
+            <div fxFlex="1 1 48%" style="text-align: right; color: #444">
+              #{{c.Index}}
+            </div>
+          </div>
         </mat-card-header>
-        <mat-card-content style="padding: 1em;">
-          <font style="font-size: 16px;color: rgb(36,41,46);line-height: 21px;">{{c.Content}}</font>
+
+        <mat-card-content style="padding: 1em;max-width: 70%;">
+          <markdown-to-html item-width="70%" [data]="c.Content"></markdown-to-html>
+          <!-- <font style="font-size: 16px;color: rgb(36,41,46);line-height: 21px;">{{c.Content}}</font> -->
         </mat-card-content>
       </mat-card>
+      <mat-paginator *ngIf="issue.Comments.length > 10" style="margin-top: 1em;" [length]="issue.Comments.length" [pageSize]="10"
+        [pageSizeOptions]="[50, 100, 200]" (page)="pageChanged($event)">
+      </mat-paginator>
     </div>
     <div>
       <mat-card style="margin-top: 2em; padding-top: 0.5em; margin-bottom: 0.5em;">
