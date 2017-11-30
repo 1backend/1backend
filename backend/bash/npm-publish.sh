@@ -3,8 +3,9 @@
 REPOSPATH=$1
 USERNAME=$2 # author nick
 PROJECTNAME=$3
+NPMTOKEN=$4
 
-echo "Committing generated API..."
+echo "Publishing to NPM..."
 
 cd $REPOSPATH
 
@@ -15,6 +16,4 @@ fi
 
 cd "./$USERNAME/ng/$PROJECTNAME"
 
-npm version patch
-
-npm publish --access public
+docker run --rm -v "$PWD:/usr/src/app" -e NPM_TOKEN=$NPMTOKEN crufter/npm-publish
