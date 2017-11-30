@@ -11,12 +11,13 @@
         <span class="inprogress" *ngIf="build.InProgress">
           <mat-progress-spinner class="spinner" [color]="color" [mode]="mode" [value]="value" [diameter]="22" [strokeWidth]="3"></mat-progress-spinner>
         </span> {{build.CreatedAt | amTimeAgo}} <span style="color: #999">({{build.Id}})</span>
+        <span style="padding-left: 0.5em; padding-right: 0.5em;" class="Label Label--outline v-align-middle">v{{ build?.Version ? build?.Version : '0.0.1'}}</span>
       </div>
       <div fxFlex="1 1 40%" align="end">
-        <button *ngIf="!build.Selected" mat-button style="min-width: 0%;" type="button" (click)="reveal(build)">
+        <button *ngIf="!build.Selected" mat-button style="min-width: 0%; margin-bottom: 10px;" type="button" (click)="reveal(build)">
           <mat-icon aria-hidden="false">keyboard_arrow_down</mat-icon>
         </button>
-        <button [hidden]="!build.Selected" mat-button style="min-width: 0%;" (click)="reveal(build)">
+        <button [hidden]="!build.Selected" mat-button style="min-width: 0%; margin-bottom: 10px;" (click)="reveal(build)">
           <mat-icon aria-hidden="false">keyboard_arrow_up</mat-icon>
         </button>
       </div>
