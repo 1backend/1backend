@@ -13,7 +13,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class CodeComponent implements OnInit {
   @Input() project: types.Project;
-  @Output() onProjectSaved: EventEmitter<void>;
+  @Output() onProjectSaved = new EventEmitter<void>();
 
   user: types.User;
   backendUrl = environment.backendUrl;
