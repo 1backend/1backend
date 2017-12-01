@@ -10,6 +10,7 @@
     </div>
   </mat-card>
 </div>
+
 <div flexLayout="row" fxLayoutAlign="center" style="margin-top: 2em;" *ngIf="userFound">
   <div fxFlex="1 1 25%" fxFlex.lt-lg="1 1 30%" [ngStyle.lt-lg]="{'min-width': '200px'}" style="margin-left: auto">
     <app-profile-edit [author]="author" (onSelfSave)="refresh()"></app-profile-edit>
@@ -40,15 +41,15 @@
       </mat-tab>
 
       <mat-tab label="Blog">
-        <mat-card>
+        <mat-card style="margin-top: 2em; padding-bottom: 1em;">
           <app-posts [author]="author"></app-posts>
         </mat-card>
       </mat-tab>
 
       <mat-tab *ngIf="author === us.user.Nick" label="Tokens">
         <!-- workaround for bug https://github.com/angular/material2/issues/5269 -->
-        <div *ngIf="selectedTabIndex == 2">
-          <app-tokens style="margin-top: 1em"></app-tokens>
+        <div style="margin-top: 2em; padding-bottom: 1em;"*ngIf="selectedTabIndex == 2">
+          <app-tokens ></app-tokens>
         </div>
       </mat-tab>
     </mat-tab-group>

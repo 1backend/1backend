@@ -18,7 +18,7 @@ export class TokensComponent implements OnInit {
 
   constructor(
     private ts: TokenService,
-    private us: UserService,
+    public us: UserService,
     private notif: NotificationsService
   ) {}
 

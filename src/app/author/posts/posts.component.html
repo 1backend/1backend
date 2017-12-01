@@ -1,4 +1,5 @@
-<div fxLayout="row wrap" fxLayoutAlign="space-between">
+<div>
+  <div fxLayout="row wrap" fxLayoutAlign="space-between">
     <div fxFlex="1 1 100%">
       <mat-form-field style="width: 100%; padding-bottom: 1em;" color="primary">
         <input matInput [(ngModel)]="search" placeholder="Search projects" />
@@ -12,23 +13,24 @@
     </span>
   </div>
   <div fxLayout="column">
-  <div style="margin-top: 2em">
-    <mat-card *ngFor="let p of posts" fxFlex="1 1 100%" style="width: 100%;">
-      <mat-card-title>
-        {{p.Title}}
-      </mat-card-title>
-      <mat-card-subtitle>
-        {{p.Subtitle}}
-      </mat-card-subtitle>
-      <div>
-        {{p.Content}}
-      </div>
-      <mat-card-subtitle>
-        {{p.UpdatedAt | amTimeAgo}} by {{p.User}}
-      </mat-card-subtitle>
-    </mat-card>
-  </div>
-  <div *ngIf="posts.length < 1">
-    <h2>There are no posts</h2>
+    <div style="margin-top: 2em">
+      <mat-card *ngFor="let p of posts" fxFlex="1 1 100%" style="width: 100%;">
+        <mat-card-title>
+          {{p.Title}}
+        </mat-card-title>
+        <mat-card-subtitle>
+          {{p.Subtitle}}
+        </mat-card-subtitle>
+        <div>
+          {{p.Content}}
+        </div>
+        <mat-card-subtitle>
+          {{p.UpdatedAt | amTimeAgo}} by {{p.User}}
+        </mat-card-subtitle>
+      </mat-card>
+    </div>
+    <div *ngIf="posts.length < 1">
+      There are no blog posts yet.
+    </div>
   </div>
 </div>

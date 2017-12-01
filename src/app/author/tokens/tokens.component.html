@@ -17,14 +17,14 @@
         <mat-card-title>Transfer quota between tokens</mat-card-title>
         <mat-form-field class="example-full-width" style="width: 100%">
           <mat-select [(ngModel)]="from" placeholder="From">
-            <mat-option *ngFor="let token of user.Tokens" [value]="token.Token">
+            <mat-option *ngFor="let token of us.user.Tokens" [value]="token.Token">
               {{ token.Name }} ({{token.Quota | number:'.0-0'}})
             </mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field class="example-full-width" style="width: 100%">
           <mat-select [(ngModel)]="to" placeholder="To">
-            <mat-option *ngFor="let token of user.Tokens" [value]="token.Token">
+            <mat-option *ngFor="let token of us.user.Tokens" [value]="token.Token">
               {{ token.Name }} ({{token.Quota | number:'.0-0'}})
             </mat-option>
           </mat-select>
