@@ -11,62 +11,13 @@
   </mat-card>
 </div>
 <div flexLayout="row" fxLayoutAlign="center" style="margin-top: 2em;" *ngIf="userFound">
-  <div fxFlex="1 1 25%" *ngIf="!saved">
-    <div>
-      <div>
-        <mat-form-field class="example-full-width" style="width: 100%">
-          <input matInput placeholder="Link to your avatar (optional)" [(ngModel)]="user.AvatarLink" />
-        </mat-form-field>
-      </div>
-      <div>
-        <mat-form-field style="width: 100%">
-          <input matInput placeholder="Fullname (optional)" [(ngModel)]="user.Name" />
-        </mat-form-field>
-      </div>
-      <div>
-        <mat-form-field style="width: 100%">
-          <input disabled matInput placeholder="Nickname" [(ngModel)]="user.Nick" />
-        </mat-form-field>
-      </div>
-      <div>
-        <mat-form-field style="width: 100%;">
-          <input matInput placeholder="Email" [(ngModel)]="user.Email" />
-        </mat-form-field>
-      </div>
-      <div class="button" align="center">
-        <button mat-raised-button (click)="save()" color="accent">Save</button>
-      </div>
-    </div>
-  </div>
-  <div *ngIf="saved" fxFlex="1 1 25%" fxFlex.lt-lg="1 1 30%" [ngStyle.lt-lg]="{'min-width': '200px'}" style="margin-left: auto">
-    <div style="padding-bottom: 2em;" *ngIf="user.AvatarLink">
-      <img src="{{user.AvatarLink}}" class="img" align="middle">
-    </div>
-    <div *ngIf="!user.AvatarLink" style="padding-bottom: 2em;">
-      <img src="/assets/nophoto.jpg" class="img" align="middle">
-    </div>
-    <div readonly fxFlexLayout="row" fxLayoutAlign="center center">
-      <font size="5">
-        <b>{{user.Name}}</b>
-      </font>
-      <span fxFlex="1 1 auto"></span>
-      <span *ngIf="author === us.user?.Nick" align="end" size="5">
-        <button mat-icon-button>
-          <i (click)="edit()" style="color:#444" class="material-icons">mode_edit</i>
-        </button>
-      </span>
-    </div>
-    <div style="padding-bottom: 0em">
-      <font size="5" color="#666">
-        <i>@{{user.Nick}}</i>
-      </font>
-    </div>
-    <div *ngIf="author === us.user.Nick" style="padding-top: 1.2em;" readonly>
-      <font size="4">{{user.Email}}</font>
-    </div>
+  <div fxFlex="1 1 25%" fxFlex.lt-lg="1 1 30%" [ngStyle.lt-lg]="{'min-width': '200px'}" style="margin-left: auto">
+    <app-profile-edit (onSelfSave)="refresh()"></app-profile-edit>
+
     <div style="margin-top: 4em" *ngIf="us.user?.Tokens?.length && author === us.user.Nick">
       <font size="6" style="color: green">{{getAllCallsLeft() | number:'.0-0'}}</font> calls left
     </div>
+
     <div style="margin-top: 2em" *ngIf="us.user?.Tokens?.length && author === us.user.Nick">
 
       <mat-form-field style="width: 100%">
@@ -77,6 +28,7 @@
 
       <button mat-raised-button class="button" color="accent" (click)="purchase()">Top up</button>
     </div>
+
   </div>
   <div fxFlex="1 1 75%" fxFlex.lt-lg="1 1 70%" class="project-list" style="margin-bottom: 1em; padding-top: 0em">
     <mat-tab-group [(selectedIndex)]="selectedTabIndex">
@@ -86,6 +38,7 @@
           <app-project-list [projects]="projects"></app-project-list>
         </mat-card>
       </mat-tab>
+
       <mat-tab label="Blog">
         <mat-card>
           <app-posts [author]="author"></app-posts>
@@ -93,63 +46,9 @@
       </mat-tab>
 
       <mat-tab *ngIf="author === us.user.Nick" label="Tokens">
-        <div *ngIf="selectedTabIndex == 1">
-          <!-- workaround for bug https://github.com/angular/material2/issues/5269 -->
-          <mat-card style="margin-top: 1em">
-            <mat-tab-group>
-              <mat-tab label="Create a token">
-                <div class="form" style="margin-top: 1em">
-                  <mat-card-title>Create a new token</mat-card-title>
-                  <mat-form-field class="example-full-width" style="width: 100%">
-                    <input matInput placeholder="Name" [(ngModel)]="serviceTokenName" />
-                  </mat-form-field>
-                  <mat-form-field class="example-full-width" style="width: 100%">
-                    <input matInput placeholder="Description" [(ngModel)]="serviceTokenDescription" />
-                  </mat-form-field>
-                  <button mat-raised-button (click)="createToken()" color="primary">Create</button>
-                </div>
-              </mat-tab>
-              <mat-tab label="Transfer quota">
-                <div class="form" style="margin-top: 1em">
-                  <mat-card-title>Transfer quota between tokens</mat-card-title>
-                  <mat-form-field class="example-full-width" style="width: 100%">
-                    <mat-select [(ngModel)]="from" placeholder="From">
-                      <mat-option *ngFor="let token of user.Tokens" [value]="token.Token">
-                        {{ token.Name }} ({{token.Quota | number:'.0-0'}})
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                  <mat-form-field class="example-full-width" style="width: 100%">
-                    <mat-select [(ngModel)]="to" placeholder="To">
-                      <mat-option *ngFor="let token of user.Tokens" [value]="token.Token">
-                        {{ token.Name }} ({{token.Quota | number:'.0-0'}})
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                  <mat-form-field class="example-full-width" style="width: 100%">
-                    <input type="number" matInput placeholder="Amount" [(ngModel)]="transferAmount" />
-                  </mat-form-field>
-                  <button mat-raised-button (click)="transfer()" color="primary">Transfer</button>
-                </div>
-              </mat-tab>
-            </mat-tab-group>
-          </mat-card>
-          <div *ngFor="let token of us.user.Tokens">
-            <mat-card>
-              <mat-card-title>
-                {{token.Name}}
-              </mat-card-title>
-              <mat-card-subtitle>
-                {{token.Description}}
-              </mat-card-subtitle>
-              <mat-card-content>
-                <p>{{token.Token}}</p>
-                <p>
-                  <b style="color: green">{{token.Quota | number:'.0-0'}}</b> quota left</p>
-                <p>Created {{token.CreatedAt | amTimeAgo}}</p>
-              </mat-card-content>
-            </mat-card>
-          </div>
+        <!-- workaround for bug https://github.com/angular/material2/issues/5269 -->
+        <div *ngIf="selectedTabIndex == 2">
+          <app-tokens style="margin-top: 1em"></app-tokens>
         </div>
       </mat-tab>
     </mat-tab-group>
