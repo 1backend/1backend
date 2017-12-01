@@ -1,11 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import * as types from '../../../types';
 import { FilterPipe } from '../../../filter.pipe';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { SessionService } from '../../../session.service';
 import { UserService } from '../../../user.service';
-import { ConstService } from '../../../const.service';
+import { ProjectService } from '../../../project.service';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -15,7 +13,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class CodeComponent implements OnInit {
   @Input() project: types.Project;
-  @Input() refresh: () => void;
+  @Output() onProjectSaved: EventEmitter<void>;
 
   user: types.User;
   backendUrl = environment.backendUrl;
@@ -33,11 +31,9 @@ export class CodeComponent implements OnInit {
   readOnly = true;
 
   constructor(
-    private http: HttpClient,
     private router: Router,
     private us: UserService,
-    private ss: SessionService,
-    private _const: ConstService
+    private ps: ProjectService
   ) {
     this.user = this.us.user;
   }
@@ -54,17 +50,12 @@ export class CodeComponent implements OnInit {
   }
 
   save() {
-    this.http
-      .put(this._const.url + '/v1/project', {
-        project: this.project,
-        token: this.ss.getToken()
+    this.ps
+      .save(this.project)
+      .then(data => {
+        this.onProjectSaved.emit();
       })
-      .subscribe(
-        data => {
-          this.refresh();
-        },
-        error => {}
-      );
+      .catch(error => {});
   }
 
   getTestToken(): string {
@@ -97,17 +88,6 @@ export class CodeComponent implements OnInit {
 
   pageChanged($event: any) {
     this.currentPage = $event.pageIndex;
-  }
-
-  delete(e: types.Endpoint) {
-    let p = new HttpParams();
-    p = p.set('id', e.Id);
-    this.http.delete(this._const.url + '/v1/endpoint', { params: p }).subscribe(
-      data => {
-        this.refresh();
-      },
-      error => {}
-    );
   }
 
   setRightFullScreen() {

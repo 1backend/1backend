@@ -1,20 +1,13 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { MatProgressSpinnerModule, MatTabGroup } from '@angular/material';
 import * as types from '../../types';
-import { SessionService } from '../../session.service';
-import { ConstService } from '../../const.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { UserService } from '../../user.service';
+import { ProjectService } from '../../project.service';
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import { NotificationsService } from 'angular2-notifications';
-import { RequestOptions } from '@angular/http/src/base_request_options';
-
-interface PingResponse {
-  pong: boolean;
-}
 
 @Component({
   selector: 'app-project',
@@ -45,11 +38,9 @@ export class ProjectComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private http: HttpClient,
-    private ss: SessionService,
     private location: Location,
     private router: Router,
-    private _const: ConstService,
+    private ps: ProjectService,
     public us: UserService,
     private notif: NotificationsService
   ) {
@@ -58,7 +49,7 @@ export class ProjectComponent implements OnInit {
     this.tab = this.route.snapshot.params['tab'];
     this.issueId = this.route.snapshot.params['issueId'];
     this.getStatus();
-    this.makeRefresh()();
+    this.refresh();
     if (this.tab === 'sql') {
       this.selectedIndex = 4;
     }
@@ -73,78 +64,31 @@ export class ProjectComponent implements OnInit {
     }
   }
 
-  makeRefresh(): () => void {
-    const that = this;
-    return () => {
-      let p = new HttpParams();
-      p = p.set('author', that.author);
-      p = p.set('project', that.projectName);
-      p = p.set('token', that.ss.getToken());
-      that.http
-        .get<types.Project>(this._const.url + '/v1/project', {
-          params: p
-        })
-        .subscribe(
-          proj => {
-            if (proj.Builds) {
-              proj.Builds = proj.Builds.sort((a, b) => {
-                if (a.CreatedAt === b.CreatedAt) {
-                  return 0;
-                }
-                if (a.CreatedAt < b.CreatedAt) {
-                  return 1;
-                }
-                return -1;
-              });
+  refresh(): void {
+    this.ps
+      .getByAuthorAndProjectName(this.author, this.projectName)
+      .then(project => {
+        if (project.Builds && project.Builds.length) {
+          this.lastBuild = project.Builds[0];
+        }
+        if (!project.ReadMe) {
+          project.ReadMe =
+            project.Name + "\n===\nThis project doesn't have a readme yet.";
+        }
+        if (this.project.Starrers) {
+          for (const s of this.project.Starrers) {
+            if (s.Id === this.us.user.Id) {
+              this.starred = true;
             }
-            if (proj.Builds) {
-              that.lastBuild = proj.Builds[0];
-            }
-            if (proj.Endpoints) {
-              proj.Endpoints = proj.Endpoints.sort((a, b) => {
-                if (a.CreatedAt === b.CreatedAt) {
-                  return 0;
-                }
-                if (a.CreatedAt < b.CreatedAt) {
-                  return 1;
-                }
-                return -1;
-              });
-            }
-            if (!proj.ReadMe) {
-              proj.ReadMe =
-                proj.Name + "\n===\nThis project doesn't have a readme yet.";
-            }
-            that.project = proj;
-            if (that.project.Starrers) {
-              for (let s of that.project.Starrers) {
-                if (s.Id === that.us.user.Id) {
-                  that.starred = true;
-                }
-              }
-            }
-            that.loaded = true;
-            that.stars = proj.Stars;
-          },
-          error => {
-            console.log(error);
           }
-        );
-    };
+        }
+        this.loaded = true;
+        this.stars = project.Stars;
+        this.project = project;
+      });
   }
 
   ngOnInit() {}
-
-  delete() {
-    this.http.delete(this._const.url + '/v1/project', {}).subscribe(
-      data => {
-        this.makeRefresh()();
-      },
-      error => {
-        alert(JSON.stringify(error));
-      }
-    );
-  }
 
   selectedIndexChange(tabGroup: MatTabGroup) {
     const pid = tabGroup._tabs.find((e, i, a) => i === tabGroup.selectedIndex)
@@ -157,50 +101,25 @@ export class ProjectComponent implements OnInit {
   }
 
   getStatus() {
-    this.http
-      .get<PingResponse>(
-        this._const.url +
-          '/app/' +
-          this.author +
-          '/' +
-          this.projectName +
-          '/ping'
-      )
-      .subscribe(data => {
-        this.status = data.pong;
-      });
+    this.ps.getStatus(this.author, this.projectName).then(pingResponse => {
+      this.status = pingResponse.pong;
+    });
   }
+
   star(p: types.Project) {
     const that = this;
-    this.http
-      .put(this._const.url + '/v1/star', {
-        projectId: p.Id,
-        token: this.ss.getToken()
-      })
-      .subscribe(
-        () => {
-          p.Stars++;
-          that.makeRefresh()();
-        },
-        error => {}
-      );
+    this.ps.star(p.Id).then(() => {
+      p.Stars++;
+      that.refresh();
+    });
   }
+
   unStar(proj: types.Project) {
     const that = this;
-    let p = new HttpParams();
-    p = p.set('projectId', proj.Id);
-    p = p.set('token', that.ss.getToken());
-    this.http
-      .delete(this._const.url + '/v1/star', {
-        params: p
-      })
-      .subscribe(
-        () => {
-          proj.Stars--;
-          that.starred = false;
-          that.makeRefresh()();
-        },
-        error => {}
-      );
+    this.ps.unstar(proj.Id).then(() => {
+      proj.Stars--;
+      that.starred = false;
+      that.refresh();
+    });
   }
 }

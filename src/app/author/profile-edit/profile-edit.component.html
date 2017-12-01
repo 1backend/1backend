@@ -1,0 +1,53 @@
+<div *ngIf="!saved">
+  <div>
+    <mat-form-field class="example-full-width" style="width: 100%">
+      <input matInput placeholder="Link to your avatar (optional)" [(ngModel)]="us.user.AvatarLink" />
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field style="width: 100%">
+      <input matInput placeholder="Fullname (optional)" [(ngModel)]="us.user.Name" />
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field style="width: 100%">
+      <input disabled matInput placeholder="Nickname" [(ngModel)]="us.user.Nick" />
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field style="width: 100%;">
+      <input matInput placeholder="Email" [(ngModel)]="us.user.Email" />
+    </mat-form-field>
+  </div>
+  <div class="button" align="center">
+    <button mat-raised-button (click)="save()" color="accent">Save</button>
+  </div>
+</div>
+
+<div *ngIf="saved">
+  <div style="padding-bottom: 2em;" *ngIf="us.user.AvatarLink">
+    <img src="{{us.user.AvatarLink}}" class="img" align="middle">
+  </div>
+  <div *ngIf="!user.AvatarLink" style="padding-bottom: 2em;">
+    <img src="/assets/nophoto.jpg" class="img" align="middle">
+  </div>
+  <div readonly fxFlexLayout="row" fxLayoutAlign="center center">
+    <font size="5">
+      <b>{{us.user.Name}}</b>
+    </font>
+    <span fxFlex="1 1 auto"></span>
+    <span *ngIf="author === us.user?.Nick" align="end" size="5">
+      <button mat-icon-button>
+        <i (click)="edit()" style="color:#444" class="material-icons">mode_edit</i>
+      </button>
+    </span>
+  </div>
+  <div style="padding-bottom: 0em">
+    <font size="5" color="#666">
+      <i>@{{us.user.Nick}}</i>
+    </font>
+  </div>
+  <div *ngIf="author === us.user.Nick" style="padding-top: 1.2em;" readonly>
+    <font size="4">{{us.user.Email}}</font>
+  </div>
+</div>

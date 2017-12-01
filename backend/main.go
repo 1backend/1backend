@@ -32,6 +32,11 @@ func registerHandlers(r *httpr.Router, h *handlers.Handlers, p *proxy.Proxy) {
 	r.POST("/v1/comment", h.CreateComment)
 	r.PUT("/v1/comment", h.UpdateComment)
 
+	r.GET("/v1/posts", h.GetPosts)
+	r.GET("/v1/post", h.GetPost)
+	r.POST("/v1/post", h.CreatePost)
+	r.PUT("/v1/post", h.UpdatePost)
+
 	r.POST("/v1/charge", h.Charge)
 
 	r.POST("/v1/token", h.CreateToken)

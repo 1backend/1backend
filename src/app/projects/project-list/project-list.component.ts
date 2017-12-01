@@ -3,11 +3,9 @@ import { CreateProjectDialogService } from '../create-project-dialog.service';
 import { UserService } from '../../user.service';
 import { Router } from '@angular/router';
 import * as types from '../../types';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { ConstService } from '../../const.service';
-import { SessionService } from '../../session.service';
 import { ActivatedRoute } from '@angular/router';
 import { LoginDialogService } from '../../login/login-dialog.service';
+import { ProjectService } from '../../project.service';
 
 @Component({
   selector: 'app-project-list',
@@ -22,16 +20,13 @@ export class ProjectListComponent implements OnInit {
   currentPage = 0;
   author = '';
   isProjectsPage = false;
-  starred = false;
 
   constructor(
     private cp: CreateProjectDialogService,
     private lds: LoginDialogService,
     private router: Router,
     public us: UserService,
-    private http: HttpClient,
-    private _const: ConstService,
-    private ss: SessionService,
+    private ps: ProjectService,
     private route: ActivatedRoute
   ) {
     this.author = this.route.snapshot.params['author'];
@@ -42,7 +37,7 @@ export class ProjectListComponent implements OnInit {
 
   create() {
     const that = this;
-    if (!this.ss.getToken()) {
+    if (!this.us.loggedIn()) {
       this.lds.openDialog(true, () => {
         this.cp.openDialog(proj => {
           that.cp.closeDialog();
@@ -60,34 +55,26 @@ export class ProjectListComponent implements OnInit {
   pageChanged($event: any) {
     this.currentPage = $event.pageIndex;
   }
+
   star(p: types.Project) {
-    const that = this;
-    this.http.put(this._const.url + '/v1/star', {
-      'projectId': p.Id,
-      'token': that.ss.getToken(),
-    }).subscribe(() => {
-      p.Stars++;
-      p.Starrers = [];
-    }, error => {
-      console.log(error.error);
-    });
-  }
-  unStar(proj: types.Project) {
-    const that = this;
-    let p = new HttpParams();
-    p = p.set('projectId', proj.Id);
-    p = p.set('token', this.ss.getToken());
-    this.http
-      .delete(this._const.url + '/v1/star', {
-        params: p
+    this.ps
+      .star(p.Id)
+      .then(() => {
+        p.Stars++;
+        p.Starrers = [];
       })
-      .subscribe(
-        () => {
-          proj.Stars--;
-          that.starred = false;
-          proj.Starrers = null;
-        },
-        error => {}
-      );
+      .catch(error => {
+        console.log(error.error);
+      });
+  }
+
+  unStar(proj: types.Project) {
+    this.ps
+      .unstar(proj.Id)
+      .then(() => {
+        proj.Stars--;
+        proj.Starrers = null;
+      })
+      .catch(error => {});
   }
 }
