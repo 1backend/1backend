@@ -49,12 +49,11 @@ export class CreateIssueComponent implements OnInit {
         },
         token: this.ss.getToken()
       })
-      .subscribe(
+      .toPromise().then(
         d => {
           this.data.callback();
           this.dialogRef.close();
-        },
-        error => {}
+        }
       );
   }
 }

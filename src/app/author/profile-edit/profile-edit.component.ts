@@ -31,12 +31,11 @@ export class ProfileEditComponent implements OnInit {
     if (!this.valid()) {
       return;
     }
-    this.us.saveSelf().subscribe(
+    this.us.saveSelf().toPromise().then(
       data => {
         this.saved = true;
         this.onSelfSave.emit();
-      },
-      error => {}
+      }
     );
   }
 

@@ -101,17 +101,13 @@ export class CreateProjectComponent implements OnInit {
         token: this.ss.getToken(),
         project: p,
       })
-      .subscribe(
+      .toPromise().then(
         data => {
           if (this.callback) {
             this.callback(p);
           } else {
             this.router.navigate(['/' + this.user.Nick + '/' + this.name]);
           }
-        },
-        error => {
-          this.notif.error(error.error.error);
-          // alert(JSON.stringify(error));
         }
       );
   }

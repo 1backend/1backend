@@ -42,12 +42,11 @@ export class IssueComponent implements OnInit {
         },
         token: this.ss.getToken()
       })
-      .subscribe(
+      .toPromise().then(
         data => {
           this.getIssue();
           this.commentContent = '';
-        },
-        error => {}
+        }
       );
   }
 
