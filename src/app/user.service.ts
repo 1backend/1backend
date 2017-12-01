@@ -16,6 +16,9 @@ interface RegisterResponse {
 @Injectable()
 export class UserService {
   user: types.User = {} as types.User;
+  loggedIn(): boolean {
+    return this.sess.getToken().length > 0;
+  }
 
   constructor(
     private http: HttpClient,

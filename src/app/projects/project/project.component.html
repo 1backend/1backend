@@ -48,7 +48,7 @@
       <ng-template mat-tab-label>
         Project
       </ng-template>
-      <app-code *ngIf="project && project.Id" [refresh]="makeRefresh()" [project]="project"></app-code>
+      <app-code *ngIf="project && project.Id" (onProjectSaved)="refresh()" [project]="project"></app-code>
     </mat-tab>
     <mat-tab [attr.data-pid]="'builds'">
       <ng-template mat-tab-label>

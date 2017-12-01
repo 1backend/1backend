@@ -18,7 +18,6 @@ export class AuthorComponent implements OnInit {
   author = '';
   name = '';
   projects: types.Project[] = [];
-  saved = true;
   user: types.User = {} as types.User;
   userFound = true;
   selectedTabIndex = 0; // workaround for bug https://github.com/angular/material2/issues/5269
@@ -32,19 +31,6 @@ export class AuthorComponent implements OnInit {
     private charge: ChargeService
   ) {
     this.refresh();
-  }
-
-  save() {
-    if (!this.valid()) {
-      return;
-    }
-    this.us.saveSelf().subscribe(
-      data => {
-        this.saved = true;
-        this.refresh();
-      },
-      error => {}
-    );
   }
 
   ngOnInit() {
@@ -70,13 +56,6 @@ export class AuthorComponent implements OnInit {
       .catch(err => (this.userFound = false));
   }
 
-  edit() {
-    this.saved = false;
-  }
-
-  delete(project: types.Project) {
-  }
-
   getAllCallsLeft(): number {
     if (!this.us.user.Tokens) {
       return 0;
@@ -84,18 +63,6 @@ export class AuthorComponent implements OnInit {
     return this.us.user.Tokens.map(t => t.Quota).reduce((prev, curr) => {
       return prev + curr;
     });
-  }
-
-  valid(): boolean {
-    if (!this.user.Nick) {
-      this.notif.error('Nickname is empty');
-      return true;
-    }
-    if (!this.user.Email) {
-      this.notif.error('Email is empty');
-      return true;
-    }
-    return false;
   }
 
   purchase() {
