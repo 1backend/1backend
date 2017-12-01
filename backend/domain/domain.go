@@ -75,10 +75,12 @@ type Endpoint struct {
 }
 
 type Build struct {
-	Id         string
-	Output     string
-	Success    bool
-	ProjectId  string
+	Id        string
+	Output    string
+	Success   bool
+	ProjectId string
+	// Version of the project at the time of the build
+	Version    string
 	InProgress bool
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
@@ -157,7 +159,6 @@ func init() {
 	}
 }
 
-// service access token
 type Charge struct {
 	Id          string
 	Amount      int
