@@ -59,73 +59,67 @@ export class UserService {
     let p = new HttpParams();
     p = p.set('token', this.sess.getToken());
     p = p.set('nick', nick);
-    return new Promise<types.User>((resolve, reject) => {
-      this.http
-        .get<types.User>(this._const.url + '/v1/user', { params: p })
-        .toPromise();
-    });
+    return this.http
+      .get<types.User>(this._const.url + '/v1/user', { params: p })
+      .toPromise();
   }
 
   save(u: types.User): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      this.http
-        .post(this._const.url + '/v1/user', {
-          password: u.Password,
-          user: {
-            Name: u.Name,
-            Id: u.Id
-          },
-          token: this.sess.getToken()
-        })
-        .toPromise();
-    });
+    return this.http
+      .post<void>(this._const.url + '/v1/user', {
+        password: u.Password,
+        user: {
+          Name: u.Name,
+          Id: u.Id
+        },
+        token: this.sess.getToken()
+      })
+      .toPromise();
   }
 
   // saves the object in the user service
-  saveSelf(): Observable<void> {
-    return this.http.put<void>(this._const.url + '/v1/user', {
-      user: {
-        avatarLink: this.user.AvatarLink,
-        name: this.user.Name,
-        email: this.user.Email,
-        nick: this.user.Nick
-      },
-      token: this.sess.getToken()
-    });
+  saveSelf(): Promise<void> {
+    return this.http
+      .put<void>(this._const.url + '/v1/user', {
+        user: {
+          avatarLink: this.user.AvatarLink,
+          name: this.user.Name,
+          email: this.user.Email,
+          nick: this.user.Nick
+        },
+        token: this.sess.getToken()
+      })
+      .toPromise();
   }
 
   login(email: string, password: string): Promise<LoginResponse> {
-    return new Promise<LoginResponse>((resolve, reject) => {
-      this.http
-        .post<LoginResponse>(this._const.url + '/v1/login', {
-          email: email,
-          password: password
-        })
-        .toPromise()
-        .then(loginResp => {
-          this.sess.setToken(loginResp.token.Token);
-          resolve(loginResp);
-        });
-    });
+    return this.http
+      .post<LoginResponse>(this._const.url + '/v1/login', {
+        email: email,
+        password: password
+      })
+      .toPromise()
+      .then(loginResp => {
+        this.sess.setToken(loginResp.token.Token);
+        return loginResp;
+      });
   }
 
   register(
     userName: string,
     email: string,
     password: string
-  ): Promise<LoginResponse> {
-    return new Promise<LoginResponse>((resolve, reject) => {
-      this.http
-        .post<RegisterResponse>(this._const.url + '/v1/register', {
-          nick: userName,
-          email: email,
-          password: password
-        })
-        .toPromise()
-        .then(registerResp => {
-          this.sess.setToken(registerResp.token.Token);
-          resolve(registerResp);
-        });
-    });
+  ): Promise<RegisterResponse> {
+    return this.http
+      .post<RegisterResponse>(this._const.url + '/v1/register', {
+        nick: userName,
+        email: email,
+        password: password
+      })
+      .toPromise()
+      .then(registerResp => {
+        this.sess.setToken(registerResp.token.Token);
+        return registerResp;
+      });
   }
 }
