@@ -38,7 +38,7 @@
             </mat-tab>
 
           </mat-tab-group>
-          <button *ngIf="user.Nick === project.Author" (click)="save()" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
+          <button *ngIf="user.Nick === project.Author" (click)="save(project)" mat-raised-button style="margin-top: 1em;color: #EEEEEE;" color="primary">Save</button>
         </div>
       </div>
     </mat-card>
