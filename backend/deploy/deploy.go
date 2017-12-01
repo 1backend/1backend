@@ -38,6 +38,7 @@ func (d Deployer) Deploy(project *domain.Project) error {
 		Id:         id,
 		ProjectId:  project.Id,
 		InProgress: true,
+		Version:    project.Version,
 	}
 	defer func() {
 		if err != nil {

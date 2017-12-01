@@ -113,6 +113,7 @@ CREATE TABLE IF NOT EXISTS builds
 (
   id                  VARCHAR(36)                                                     NOT NULL,
   output              TEXT                                                            NOT NULL,
+  version             VARCHAR(16)                                                     NOT NULL,
   success             BOOLEAN                                                         NOT NULL,
   in_progress         BOOLEAN                                                         NOT NULL,
   project_id          VARCHAR(36)                                                     NOT NULL,
