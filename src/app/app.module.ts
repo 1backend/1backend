@@ -209,8 +209,19 @@ import { PricingComponent } from './home/pricing/pricing.component';
 import { CreateIssueComponent } from './projects/project/issues/create-issue/create-issue.component';
 import { ProjectListComponent } from './projects/project-list/project-list.component';
 import { LengthPipe } from './length.pipe';
+import { ResetComponent } from './reset/reset.component';
+import { RecoverComponent } from './recover/recover.component';
+import { PostsComponent } from './author/posts/posts.component';
 
 const appRoutes: Routes = [
+  {
+    path: 'reset',
+    component: ResetComponent
+  },
+  {
+    path: 'recover',
+    component: RecoverComponent
+  },
   {
     path: 'projects',
     component: ProjectsComponent
@@ -262,7 +273,11 @@ const appRoutes: Routes = [
     PricingComponent,
     CreateIssueComponent,
     ProjectListComponent,
-    LengthPipe
+    LengthPipe,
+    ResetComponent,
+    RecoverComponent,
+    PostsComponent,
+
   ],
   imports: [
     BrowserModule,
