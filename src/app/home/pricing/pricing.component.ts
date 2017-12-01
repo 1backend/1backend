@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import * as types from '../../types';
 
-const amt = 1900;
+const amt = 900;
 
 @Component({
   selector: 'app-pricing',

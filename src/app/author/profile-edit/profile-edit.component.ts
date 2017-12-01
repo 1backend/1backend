@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { UserService } from '../../user.service';
 import { NotificationsService } from 'angular2-notifications';
+import * as types from '../../types';
 
 @Component({
   selector: 'app-profile-edit',
@@ -16,7 +17,7 @@ import { NotificationsService } from 'angular2-notifications';
   encapsulation: ViewEncapsulation.None
 })
 export class ProfileEditComponent implements OnInit {
-  @Input() author = '';
+  @Input() user: types.User;
   @Output() onSelfSave = new EventEmitter<void>();
   saved = true;
 
@@ -28,12 +29,10 @@ export class ProfileEditComponent implements OnInit {
     if (!this.valid()) {
       return;
     }
-    this.us.saveSelf().toPromise().then(
-      data => {
-        this.saved = true;
-        this.onSelfSave.emit();
-      }
-    );
+    this.us.saveSelf().then(data => {
+      this.saved = true;
+      this.onSelfSave.emit();
+    });
   }
 
   edit() {
@@ -41,11 +40,11 @@ export class ProfileEditComponent implements OnInit {
   }
 
   valid(): boolean {
-    if (!this.us.user.Nick) {
+    if (!this.user.Nick) {
       this.notif.error('Nickname is empty');
       return false;
     }
-    if (!this.us.user.Email) {
+    if (!this.user.Email) {
       this.notif.error('Email is empty');
       return false;
     }

@@ -17,7 +17,7 @@ export class AuthorComponent implements OnInit {
   author = '';
   name = '';
   projects: types.Project[] = [];
-  user: types.User = {} as types.User;
+  user: types.User;
   userFound = true;
   selectedTabIndex = 0; // workaround for bug https://github.com/angular/material2/issues/5269
 
@@ -28,12 +28,11 @@ export class AuthorComponent implements OnInit {
     public us: UserService,
     public ps: ProjectService,
     private charge: ChargeService
-  ) {
-    this.refresh();
-  }
+  ) {}
 
   ngOnInit() {
-    // this solution is a bit crufty, but works fine.
+    this.refresh();
+    // This is to force reload when going from one profile to another TODO: fix this
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationStart) {
         setTimeout(() => {
@@ -51,8 +50,12 @@ export class AuthorComponent implements OnInit {
       .catch(err => (this.userFound = false));
     this.us
       .getByNick(this.author)
-      .then(user => (this.user = user))
-      .catch(err => (this.userFound = false));
+      .then(user => {
+        this.user = user;
+      })
+      .catch(err => {
+        this.userFound = false;
+      });
   }
 
   getAllCallsLeft(): number {
