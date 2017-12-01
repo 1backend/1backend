@@ -45,17 +45,13 @@ export class UserService {
         .get<types.User>(
           this._const.url + '/v1/user?token=' + this.sess.getToken()
         )
-        .subscribe(
-          data => {
-            for (const k of Object.keys(data)) {
-              this.user[k] = data[k];
-            }
-            resolve(data);
-          },
-          error => {
-            reject(error);
+        .toPromise()
+        .then(user => {
+          for (const k of Object.keys(user)) {
+            this.user[k] = user[k];
           }
-        );
+          resolve(user);
+        });
     });
   }
 
@@ -66,14 +62,7 @@ export class UserService {
     return new Promise<types.User>((resolve, reject) => {
       this.http
         .get<types.User>(this._const.url + '/v1/user', { params: p })
-        .subscribe(
-          user => {
-            resolve(user);
-          },
-          error => {
-            reject(error);
-          }
-        );
+        .toPromise();
     });
   }
 
@@ -88,14 +77,7 @@ export class UserService {
           },
           token: this.sess.getToken()
         })
-        .subscribe(
-          data => {
-            resolve();
-          },
-          error => {
-            reject(error);
-          }
-        );
+        .toPromise();
     });
   }
 
@@ -119,15 +101,11 @@ export class UserService {
           email: email,
           password: password
         })
-        .subscribe(
-          data => {
-            this.sess.setToken(data.token.Token);
-            resolve(data);
-          },
-          error => {
-            reject(error);
-          }
-        );
+        .toPromise()
+        .then(loginResp => {
+          this.sess.setToken(loginResp.token.Token);
+          resolve(loginResp);
+        });
     });
   }
 
@@ -143,15 +121,11 @@ export class UserService {
           email: email,
           password: password
         })
-        .subscribe(
-          data => {
-            this.sess.setToken(data.token.Token);
-            resolve(data);
-          },
-          error => {
-            reject(error);
-          }
-        );
+        .toPromise()
+        .then(registerResp => {
+          this.sess.setToken(registerResp.token.Token);
+          resolve(registerResp);
+        });
     });
   }
 }

@@ -25,24 +25,18 @@ export class TokensComponent implements OnInit {
   ngOnInit() {}
 
   transfer() {
-    this.ts.transfer(this.from, this.to, this.transferAmount).subscribe(
-      () => {
-        this.us.get();
-        this.notif.success('Successfully transferred');
-      },
-      error => {}
-    );
+    this.ts.transfer(this.from, this.to, this.transferAmount).then(() => {
+      this.us.get();
+      this.notif.success('Successfully transferred');
+    });
   }
 
   createToken() {
     this.ts
       .createToken(this.serviceTokenName, this.serviceTokenDescription)
-      .subscribe(
-        () => {
-          this.us.get();
-          this.notif.success('Token successfully created');
-        },
-        error => {}
-      );
+      .then(() => {
+        this.us.get();
+        this.notif.success('Token successfully created');
+      });
   }
 }

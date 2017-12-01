@@ -2,6 +2,7 @@ import {
   Component,
   OnInit,
   EventEmitter,
+  Input,
   Output,
   ViewEncapsulation
 } from '@angular/core';
@@ -15,6 +16,7 @@ import { NotificationsService } from 'angular2-notifications';
   encapsulation: ViewEncapsulation.None
 })
 export class ProfileEditComponent implements OnInit {
+  @Input() author = '';
   @Output() onSelfSave = new EventEmitter<void>();
   saved = true;
 

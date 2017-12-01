@@ -27,66 +27,61 @@ export class ProjectService {
         .get<types.Project[]>(this._const.url + '/v1/projects', {
           params: p
         })
-        .subscribe(
-          projs => {
-            projs = projs.sort((a, b) => {
-              if (a.UpdatedAt === b.UpdatedAt) {
-                return 0;
-              }
-              if (a.UpdatedAt < b.UpdatedAt) {
-                return 1;
-              }
-              return -1;
-            });
-            resolve(projs);
-          },
-          error => {
-            reject(error);
-          }
-        );
+        .toPromise()
+        .then(projs => {
+          projs = projs.sort((a, b) => {
+            if (a.UpdatedAt === b.UpdatedAt) {
+              return 0;
+            }
+            if (a.UpdatedAt < b.UpdatedAt) {
+              return 1;
+            }
+            return -1;
+          });
+          resolve(projs);
+        });
     });
   }
 
-  getByAuthorAndProjectName(author: string, projectName: string) {
-    let p = new HttpParams();
-    p = p.set('author', author);
-    p = p.set('project', projectName);
-    p = p.set('token', this.ss.getToken());
+  getByAuthorAndProjectName(
+    author: string,
+    projectName: string
+  ): Promise<types.Project> {
     return new Promise<types.Project>((resolve, reject) => {
+      let p = new HttpParams();
+      p = p.set('author', author);
+      p = p.set('project', projectName);
+      p = p.set('token', this.ss.getToken());
       this.http
         .get<types.Project>(this._const.url + '/v1/project', {
           params: p
         })
-        .subscribe(
-          proj => {
-            if (proj.Builds) {
-              proj.Builds = proj.Builds.sort((a, b) => {
-                if (a.CreatedAt === b.CreatedAt) {
-                  return 0;
-                }
-                if (a.CreatedAt < b.CreatedAt) {
-                  return 1;
-                }
-                return -1;
-              });
-            }
-            if (proj.Endpoints) {
-              proj.Endpoints = proj.Endpoints.sort((a, b) => {
-                if (a.CreatedAt === b.CreatedAt) {
-                  return 0;
-                }
-                if (a.CreatedAt < b.CreatedAt) {
-                  return 1;
-                }
-                return -1;
-              });
-            }
-            resolve(proj);
-          },
-          error => {
-            reject(error);
+        .toPromise()
+        .then(proj => {
+          if (proj.Builds) {
+            proj.Builds = proj.Builds.sort((a, b) => {
+              if (a.CreatedAt === b.CreatedAt) {
+                return 0;
+              }
+              if (a.CreatedAt < b.CreatedAt) {
+                return 1;
+              }
+              return -1;
+            });
           }
-        );
+          if (proj.Endpoints) {
+            proj.Endpoints = proj.Endpoints.sort((a, b) => {
+              if (a.CreatedAt === b.CreatedAt) {
+                return 0;
+              }
+              if (a.CreatedAt < b.CreatedAt) {
+                return 1;
+              }
+              return -1;
+            });
+          }
+          resolve(proj);
+        });
     });
   }
 
@@ -96,14 +91,7 @@ export class ProjectService {
         .get<PingResponse>(
           this._const.url + '/app/' + author + '/' + projectName + '/ping'
         )
-        .subscribe(
-          pr => {
-            resolve(pr);
-          },
-          error => {
-            reject(error);
-          }
-        );
+        .toPromise();
     });
   }
 
@@ -114,14 +102,7 @@ export class ProjectService {
           projectId: projectId,
           token: this.ss.getToken()
         })
-        .subscribe(
-          () => {
-            resolve();
-          },
-          error => {
-            reject(error);
-          }
-        );
+        .toPromise();
     });
   }
 
@@ -134,14 +115,7 @@ export class ProjectService {
         .delete(this._const.url + '/v1/star', {
           params: p
         })
-        .subscribe(
-          () => {
-            resolve();
-          },
-          error => {
-            reject(error);
-          }
-        );
+        .toPromise();
     });
   }
 
@@ -153,23 +127,19 @@ export class ProjectService {
         .get<types.Project[]>(this._const.url + '/v1/projects', {
           params: p
         })
-        .subscribe(
-          projs => {
-            projs = projs.sort((a, b) => {
-              if (a.UpdatedAt === b.UpdatedAt) {
-                return 0;
-              }
-              if (a.UpdatedAt < b.UpdatedAt) {
-                return 1;
-              }
-              return -1;
-            });
-            resolve(projs);
-          },
-          error => {
-            reject(error);
-          }
-        );
+        .toPromise()
+        .then(projs => {
+          projs = projs.sort((a, b) => {
+            if (a.UpdatedAt === b.UpdatedAt) {
+              return 0;
+            }
+            if (a.UpdatedAt < b.UpdatedAt) {
+              return 1;
+            }
+            return -1;
+          });
+          resolve(projs);
+        });
     });
   }
 
@@ -180,14 +150,7 @@ export class ProjectService {
           project: project,
           token: this.ss.getToken()
         })
-        .subscribe(
-          () => {
-            resolve();
-          },
-          error => {
-            reject();
-          }
-        );
+        .toPromise();
     });
   }
 }
