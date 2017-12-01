@@ -6,7 +6,6 @@ import {
   ViewEncapsulation
 } from '@angular/core';
 import { UserService } from '../../user.service';
-import { EventService } from '../../event.service';
 import { NotificationsService } from 'angular2-notifications';
 
 @Component({
@@ -20,8 +19,7 @@ export class ProfileEditComponent implements OnInit {
   saved = true;
 
   constructor(
-    private us: UserService,
-    private ev: EventService,
+    public us: UserService,
     private notif: NotificationsService
   ) {}
 

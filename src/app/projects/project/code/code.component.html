@@ -90,17 +90,6 @@
           </button>
         </div>
         <div fxFlex="1 1 33%" align="end" *ngIf="endpoint.Selected">
-          <!--
-          <button [hidden]="isLeftFullScreen()" mat-button style="min-width: 0%;" (click)="setLeftFullScreen()">
-            <mat-icon aria-hidden="false">fullscreen</mat-icon>
-          </button>
-          <button [hidden]="!isLeftFullScreen()" mat-button style="min-width: 0%;" (click)="smallScreen()">
-            <mat-icon aria-hidden="false">fullscreen_exit</mat-icon>
-          </button>
-          <button *ngIf="user && user.Nick === project.Author" mat-button style="min-width: 0%;" type="button" (click)="delete(endpoint)">
-            <mat-icon aria-hidden="false">clear</mat-icon>
-          </button>
-        -->
           <button mat-button style="min-width: 0%;" (click)="reveal(endpoint)">
             <mat-icon aria-hidden="false">keyboard_arrow_up</mat-icon>
           </button>

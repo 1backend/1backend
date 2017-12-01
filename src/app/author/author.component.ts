@@ -6,7 +6,6 @@ import { ChargeService } from '../charge.service';
 import { ProjectService } from '../project.service';
 import { NotificationsService } from 'angular2-notifications';
 import { UserService } from '../user.service';
-import { EventService } from '../event.service';
 
 @Component({
   selector: 'app-author',

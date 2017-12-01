@@ -214,6 +214,8 @@ import { RecoverComponent } from './recover/recover.component';
 import { PostsComponent } from './author/posts/posts.component';
 import { TokensComponent } from './author/tokens/tokens.component';
 import { ProfileEditComponent } from './author/profile-edit/profile-edit.component';
+import { TokenService } from './token.service';
+import { ProjectService } from './project.service';
 
 const appRoutes: Routes = [
   {
@@ -325,7 +327,9 @@ const appRoutes: Routes = [
     UserService,
     CreateProjectDialogService,
     CreateIssueDialogService,
-    ChargeService
+    ChargeService,
+    ProjectService,
+    TokenService
   ],
   bootstrap: [AppComponent],
   entryComponents: [
