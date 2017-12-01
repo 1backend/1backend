@@ -14,7 +14,6 @@ import { ProjectService } from '../../project.service';
 })
 export class ProjectListComponent implements OnInit {
   @Input() projects: types.Project[] = [];
-  @Input() refresh: () => any;
 
   search: string;
   currentPage = 0;

@@ -19,6 +19,8 @@ export class IssueComponent implements OnInit {
   projectId: string;
   issue: types.Issue = {};
   commentContent = '';
+  currentPage = 0;
+  index = 0;
 
   constructor(
     private http: HttpClient,
@@ -70,12 +72,20 @@ export class IssueComponent implements OnInit {
           }
           this.issuerComment = this.issue.Comments.pop();
           this.issue.Comments = this.issue.Comments.reverse();
+          for (let i = 0; i < this.issue.Comments.length; i++) {
+            this.issue.Comments[i].Index = i + 1;
+          }
         },
         error => {
           console.log(error);
         }
       );
   }
+  pageChanged($event: any) {
+    this.currentPage = $event.pageIndex;
+  }
 
-  back() {}
+  getIndex(): number {
+    return this.index++;
+  }
 }

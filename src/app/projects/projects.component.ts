@@ -13,9 +13,7 @@ export class ProjectsComponent implements OnInit {
   search = '';
   projects: types.Project[] = [];
 
-  constructor(private ps: ProjectService) {
-    this.refresh();
-  }
+  constructor(private ps: ProjectService) {}
 
   refresh() {
     this.ps
@@ -28,5 +26,7 @@ export class ProjectsComponent implements OnInit {
     this.currentPage = $event.pageIndex;
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.refresh();
+  }
 }

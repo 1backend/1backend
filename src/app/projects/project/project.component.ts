@@ -43,28 +43,10 @@ export class ProjectComponent implements OnInit {
     private ps: ProjectService,
     public us: UserService,
     private notif: NotificationsService
-  ) {
-    this.author = this.route.snapshot.params['author'];
-    this.projectName = this.route.snapshot.params['project'];
-    this.tab = this.route.snapshot.params['tab'];
-    this.issueId = this.route.snapshot.params['issueId'];
-    this.getStatus();
-    this.refresh();
-    if (this.tab === 'sql') {
-      this.selectedIndex = 4;
-    }
-    if (this.tab === 'builds') {
-      this.selectedIndex = 1;
-    }
-    if (this.tab === 'issues' || this.issueId) {
-      this.selectedIndex = 2;
-    }
-    if (this.tab === 'stars') {
-      this.selectedIndex = 3;
-    }
-  }
+  ) {}
 
   refresh(): void {
+    console.log(' REFRESH IS RUNNING MOTHAFUCKA ');
     this.ps
       .getByAuthorAndProjectName(this.author, this.projectName)
       .then(project => {
@@ -88,7 +70,29 @@ export class ProjectComponent implements OnInit {
       });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.author = this.route.snapshot.params['author'];
+    this.projectName = this.route.snapshot.params['project'];
+    this.tab = this.route.snapshot.params['tab'];
+    this.issueId = this.route.snapshot.params['issueId'];
+
+    this.getStatus();
+    console.log("woot")
+    this.refresh();
+
+    if (this.tab === 'sql') {
+      this.selectedIndex = 4;
+    }
+    if (this.tab === 'builds') {
+      this.selectedIndex = 1;
+    }
+    if (this.tab === 'issues' || this.issueId) {
+      this.selectedIndex = 2;
+    }
+    if (this.tab === 'stars') {
+      this.selectedIndex = 3;
+    }
+  }
 
   selectedIndexChange(tabGroup: MatTabGroup) {
     const pid = tabGroup._tabs.find((e, i, a) => i === tabGroup.selectedIndex)
