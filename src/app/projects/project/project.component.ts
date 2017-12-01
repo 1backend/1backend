@@ -46,7 +46,6 @@ export class ProjectComponent implements OnInit {
   ) {}
 
   refresh(): void {
-    console.log(' REFRESH IS RUNNING MOTHAFUCKA ');
     this.ps
       .getByAuthorAndProjectName(this.author, this.projectName)
       .then(project => {
@@ -77,7 +76,6 @@ export class ProjectComponent implements OnInit {
     this.issueId = this.route.snapshot.params['issueId'];
 
     this.getStatus();
-    console.log("woot")
     this.refresh();
 
     if (this.tab === 'sql') {
