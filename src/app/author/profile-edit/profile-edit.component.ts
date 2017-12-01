@@ -20,10 +20,7 @@ export class ProfileEditComponent implements OnInit {
   @Output() onSelfSave = new EventEmitter<void>();
   saved = true;
 
-  constructor(
-    public us: UserService,
-    private notif: NotificationsService
-  ) {}
+  constructor(public us: UserService, private notif: NotificationsService) {}
 
   ngOnInit() {}
 
@@ -47,12 +44,12 @@ export class ProfileEditComponent implements OnInit {
   valid(): boolean {
     if (!this.us.user.Nick) {
       this.notif.error('Nickname is empty');
-      return true;
+      return false;
     }
     if (!this.us.user.Email) {
       this.notif.error('Email is empty');
-      return true;
+      return false;
     }
-    return false;
+    return true;
   }
 }
