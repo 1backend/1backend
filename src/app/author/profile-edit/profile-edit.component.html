@@ -1,22 +1,22 @@
 <div *ngIf="!saved">
   <div>
     <mat-form-field class="example-full-width" style="width: 100%">
-      <input matInput placeholder="Link to your avatar (optional)" [(ngModel)]="user.AvatarLink" />
+      <input matInput placeholder="Link to your avatar (optional)" [(ngModel)]="us.user.AvatarLink" />
     </mat-form-field>
   </div>
   <div>
     <mat-form-field style="width: 100%">
-      <input matInput placeholder="Fullname (optional)" [(ngModel)]="user.Name" />
+      <input matInput placeholder="Fullname (optional)" [(ngModel)]="us.user.Name" />
     </mat-form-field>
   </div>
   <div>
     <mat-form-field style="width: 100%">
-      <input disabled matInput placeholder="Nickname" [(ngModel)]="user.Nick" />
+      <input disabled matInput placeholder="Nickname" [(ngModel)]="us.user.Nick" />
     </mat-form-field>
   </div>
   <div>
     <mat-form-field style="width: 100%;">
-      <input matInput placeholder="Email" [(ngModel)]="user.Email" />
+      <input matInput placeholder="Email" [(ngModel)]="us.user.Email" />
     </mat-form-field>
   </div>
   <div class="button" align="center">

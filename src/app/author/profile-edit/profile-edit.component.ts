@@ -27,6 +27,7 @@ export class ProfileEditComponent implements OnInit {
 
   save() {
     if (!this.valid()) {
+      console.log('reutrned');
       return;
     }
     this.us.saveSelf().then(data => {

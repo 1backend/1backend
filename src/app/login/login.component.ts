@@ -121,6 +121,6 @@ export class LoginComponent implements OnInit {
       this.notif.error('Passwords does not match.');
       return false;
     }
-    return false;
+    return true;
   }
 }

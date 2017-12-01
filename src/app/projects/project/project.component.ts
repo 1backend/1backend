@@ -56,8 +56,8 @@ export class ProjectComponent implements OnInit {
           project.ReadMe =
             project.Name + "\n===\nThis project doesn't have a readme yet.";
         }
-        if (this.project.Starrers) {
-          for (const s of this.project.Starrers) {
+        if (project.Starrers) {
+          for (const s of project.Starrers) {
             if (s.Id === this.us.user.Id) {
               this.starred = true;
             }

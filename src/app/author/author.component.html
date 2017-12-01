@@ -40,7 +40,7 @@
         </mat-card>
       </mat-tab>
 
-      <mat-tab label="Blog">
+      <mat-tab *ngIf="false" label="Blog">
         <mat-card style="margin-top: 2em; padding-bottom: 1em;">
           <app-posts [author]="author"></app-posts>
         </mat-card>
@@ -48,7 +48,8 @@
 
       <mat-tab *ngIf="author === us.user.Nick" label="Tokens">
         <!-- workaround for bug https://github.com/angular/material2/issues/5269 -->
-        <div style="margin-top: 2em; padding-bottom: 1em;" *ngIf="selectedTabIndex == 2">
+        <div style="margin-top: 2em; padding-bottom: 1em;" *ngIf="selectedTabIndex == 1">
+          <!-- Blog removed for a while -->
           <app-tokens></app-tokens>
         </div>
       </mat-tab>
