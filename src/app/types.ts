@@ -96,6 +96,7 @@ export interface Comment {
   User?: User;
   CreatedBy?: User;
   Issue?: Issue;
+  Index?: number; // not used on the server
   CreatedAt?: string;
   UpdatedAt?: string;
 }
