@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as types from './types';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { SessionService } from './session.service';
-import { ConstService } from './const.service';
+import { environment } from '../environments/environment';
 import { Observable } from 'rxjs/Observable';
 
 interface PingResponse {
@@ -13,7 +13,6 @@ interface PingResponse {
 export class ProjectService {
   constructor(
     private http: HttpClient,
-    private _const: ConstService,
     private ss: SessionService
   ) {}
 
@@ -23,7 +22,7 @@ export class ProjectService {
     p = p.set('nick', nick);
     p = p.set('token', this.ss.getToken());
     return this.http
-      .get<types.Project[]>(this._const.url + '/v1/projects', {
+      .get<types.Project[]>(environment.backendUrl + '/v1/projects', {
         params: p
       })
       .toPromise()
@@ -50,7 +49,7 @@ export class ProjectService {
     p = p.set('project', projectName);
     p = p.set('token', this.ss.getToken());
     return this.http
-      .get<types.Project>(this._const.url + '/v1/project', {
+      .get<types.Project>(environment.backendUrl + '/v1/project', {
         params: p
       })
       .toPromise()
@@ -84,14 +83,14 @@ export class ProjectService {
   getStatus(author: string, projectName: string): Promise<PingResponse> {
     return this.http
       .get<PingResponse>(
-        this._const.url + '/app/' + author + '/' + projectName + '/ping'
+        environment.backendUrl + '/app/' + author + '/' + projectName + '/ping'
       )
       .toPromise();
   }
 
   star(projectId: string): Promise<void> {
     return this.http
-      .put<void>(this._const.url + '/v1/star', {
+      .put<void>(environment.backendUrl + '/v1/star', {
         projectId: projectId,
         token: this.ss.getToken()
       })
@@ -103,7 +102,7 @@ export class ProjectService {
     p = p.set('projectId', projectId);
     p = p.set('token', this.ss.getToken());
     return this.http
-      .delete<void>(this._const.url + '/v1/star', {
+      .delete<void>(environment.backendUrl + '/v1/star', {
         params: p
       })
       .toPromise();
@@ -113,7 +112,7 @@ export class ProjectService {
     let p = new HttpParams();
     p = p.set('token', this.ss.getToken());
     return this.http
-      .get<types.Project[]>(this._const.url + '/v1/projects', {
+      .get<types.Project[]>(environment.backendUrl + '/v1/projects', {
         params: p
       })
       .toPromise()
@@ -133,7 +132,7 @@ export class ProjectService {
 
   save(project: types.Project): Promise<void> {
     return this.http
-      .put<void>(this._const.url + '/v1/project', {
+      .put<void>(environment.backendUrl + '/v1/project', {
         project: project,
         token: this.ss.getToken()
       })

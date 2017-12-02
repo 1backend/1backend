@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ConstService } from '../const.service';
+import { environment } from '../../environments/environment';
 import { NotificationsService } from 'angular2-notifications';
 @Component({
   selector: 'app-recover',
@@ -12,7 +12,7 @@ export class RecoverComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private _const: ConstService,
+
     private notif: NotificationsService
   ) {}
 
@@ -20,7 +20,7 @@ export class RecoverComponent implements OnInit {
 
   sendReset() {
     this.http
-      .post(this._const.url + '/v1/send-reset', {
+      .post(environment.backendUrl + '/v1/send-reset', {
         'email': this.email
       })
       .subscribe(

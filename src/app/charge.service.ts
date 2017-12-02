@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { ConstService } from './const.service';
 import { SessionService } from './session.service';
 import { NotificationsService } from 'angular2-notifications';
 
@@ -11,7 +10,6 @@ const pricePer100k = 900;
 export class ChargeService {
   constructor(
     private http: HttpClient,
-    private _const: ConstService,
     private ss: SessionService,
     private ns: NotificationsService
   ) {}
@@ -24,7 +22,7 @@ export class ChargeService {
       token: function(token: any) {
         that.ns.alert('Payment in progress');
         that.http
-          .post(that._const.url + '/v1/charge', {
+          .post(environment.backendUrl + '/v1/charge', {
             paymentToken: token.id,
             token: that.ss.getToken(),
             amount: amt

@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import * as types from '../../../types';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { SessionService } from '../../../session.service';
-import { ConstService } from '../../../const.service';
+import { environment } from '../../../../environments/environment';
 
 interface RunSqlResponse {
   Answer: string;
@@ -20,15 +20,14 @@ export class SqlComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private ss: SessionService,
-    private _const: ConstService
+    private ss: SessionService
   ) {}
 
   ngOnInit() {}
 
   runSql() {
     this.http
-      .post<RunSqlResponse>(this._const.url + '/v1/run-sql', {
+      .post<RunSqlResponse>(environment.backendUrl + '/v1/run-sql', {
         projectId: this.project.Id,
         sql: this.sqlConsole,
         token: this.ss.getToken()

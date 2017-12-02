@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, Input } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { ConstService } from '../../../../const.service';
+import { environment } from '../../../../../environments/environment';
 import { SessionService } from '../../../../session.service';
 import * as types from '../../../../types';
 import { FormControl, Validators } from '@angular/forms';
@@ -26,7 +26,6 @@ export class CreateIssueComponent implements OnInit {
     public dialogRef: MatDialogRef<CreateIssueComponent>,
     private http: HttpClient,
     private router: Router,
-    private _const: ConstService,
     private ss: SessionService
   ) {}
 
@@ -39,7 +38,7 @@ export class CreateIssueComponent implements OnInit {
     }
     const that = this;
     this.http
-      .post(this._const.url + '/v1/issue', {
+      .post(environment.backendUrl + '/v1/issue', {
         issue: {
           title: this.issueTitle,
           projectId: this.data.project.Id

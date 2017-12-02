@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
 import * as types from '../../../../types';
-import { ConstService } from '../../../../const.service';
+import { environment } from '../../../../../environments/environment';
 import { SessionService } from '../../../../session.service';
 
 @Component({
@@ -24,7 +24,6 @@ export class IssueComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private _const: ConstService,
     private ss: SessionService
   ) {}
 
@@ -35,7 +34,7 @@ export class IssueComponent implements OnInit {
   addComment() {
     const that = this;
     this.http
-      .post(this._const.url + '/v1/comment', {
+      .post(environment.backendUrl + '/v1/comment', {
         comment: {
           content: this.commentContent,
           issueId: this.issueId
@@ -54,7 +53,7 @@ export class IssueComponent implements OnInit {
     let p = new HttpParams();
     p = p.set('issueId', this.issueId);
     this.http
-      .get<types.Issue>(this._const.url + '/v1/issue', { params: p })
+      .get<types.Issue>(environment.backendUrl + '/v1/issue', { params: p })
       .subscribe(
         issue => {
           this.issue = issue;
