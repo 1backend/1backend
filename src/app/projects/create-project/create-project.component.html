@@ -1,5 +1,5 @@
-<div fxLayout="row" fxLayoutAlign="center" class="new-project" style="font-family: 'Roboto Light';">
-  <div style="text-align: center" fxFlex="1 1 25%">
+<div fxLayout="row wrap" ngClass.lt-md="mobile-padding" fxLayoutAlign="center" class="new-project" style="font-family: 'Roboto Light';">
+  <div style="text-align: center" fxFlex="1 1 25%" fxFlex.lt-md="1 1 100%">
     <mat-card-title style="margin-bottom: 1em">
       Project type
     </mat-card-title>
@@ -17,10 +17,10 @@
       </mat-card>
     </ng-container>
   </div>
-  <div fxFlex="1 1 2.5%"></div>
-  <div fxFlex="0 0 1px" class="separator"></div>
-  <div fxFlex="1 1 2.5%"></div>
-  <div fxFlex="1 1 25%" style="text-align: center">
+  <div fxHide.lt-md fxFlex="1 1 2.5%"></div>
+  <div fxHide.lt-md fxFlex="0 0 1px" class="separator"></div>
+  <div fxHide.lt-md fxFlex="1 1 2.5%"></div>
+  <div fxFlex="1 1 25%" fxFlex.lt-md="1 1 100%" style="text-align: center">
     <mat-card-title style="margin-bottom: 1em">
       Dependencies
     </mat-card-title>
@@ -41,10 +41,10 @@
       </mat-card>
     </ng-container>
   </div>
-  <div fxFlex="1 1 2.5%"></div>
-  <div fxFlex="0 0 1px" class="separator"></div>
-  <div fxFlex="1 1 2.5%"></div>
-  <div fxFlex="1 1 25%" style="text-align: center">
+  <div fxHide.lt-md fxFlex="1 1 2.5%"></div>
+  <div fxHide.lt-md fxFlex="0 0 1px" class="separator"></div>
+  <div fxHide.lt-md fxFlex="1 1 2.5%"></div>
+  <div fxFlex="1 1 25%" fxFlex.lt-md="1 1 100%" style="text-align: center">
     <mat-card-title style="margin-bottom: 1em">
       Let's begin
     </mat-card-title>

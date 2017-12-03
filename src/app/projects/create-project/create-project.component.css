@@ -49,3 +49,7 @@ mat-card.selectable:hover {
 .example-container > * {
     width: 100%;
 }
+
+.mobile-padding {
+    padding: 2em;
+}
