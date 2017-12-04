@@ -75,7 +75,6 @@ export class ProjectComponent implements OnInit {
     this.tab = this.route.snapshot.params['tab'];
     this.issueId = this.route.snapshot.params['issueId'];
 
-    this.getStatus();
     this.refresh();
 
     if (this.tab === 'sql') {
@@ -100,28 +99,5 @@ export class ProjectComponent implements OnInit {
     } else {
       this.location.go('/' + this.author + '/' + this.projectName);
     }
-  }
-
-  getStatus() {
-    this.ps.getStatus(this.author, this.projectName).then(pingResponse => {
-      this.status = pingResponse.pong;
-    });
-  }
-
-  star(p: types.Project) {
-    const that = this;
-    this.ps.star(p.Id).then(() => {
-      p.Stars++;
-      that.refresh();
-    });
-  }
-
-  unStar(proj: types.Project) {
-    const that = this;
-    this.ps.unstar(proj.Id).then(() => {
-      proj.Stars--;
-      that.starred = false;
-      that.refresh();
-    });
   }
 }

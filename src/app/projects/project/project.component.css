@@ -31,3 +31,10 @@ mat-raised-button {
 .mat-tab-label.mat-tab-label-active {
   background-color: #3f51b5;
 }
+
+.small-screen {
+  padding: 1em;
+  padding-bottom: 0em;
+  text-align: center;
+  line-height: 3em;
+}

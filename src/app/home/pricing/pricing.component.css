@@ -83,3 +83,7 @@
 .separator {
   background: #c5c5c5;
 }
+
+.mobile-padding {
+  padding: 2em;
+}

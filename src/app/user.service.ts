@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import * as types from './types';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { SessionService } from './session.service';
-import { ConstService } from './const.service';
 import { Observable } from 'rxjs/Observable';
+import { environment } from '../environments/environment';
 
 interface LoginResponse {
   token: types.AccessToken;
@@ -16,20 +16,21 @@ interface RegisterResponse {
 @Injectable()
 export class UserService {
   user: types.User = {} as types.User;
-  loggedIn(): boolean {
-    return this.sess.getToken().length > 0;
-  }
 
-  constructor(
-    private http: HttpClient,
-    private _const: ConstService,
-    private sess: SessionService
-  ) {
+  constructor(private http: HttpClient, private sess: SessionService) {
     this.get().then(user => {
       for (const k of Object.keys(user)) {
         this.user[k] = user[k];
       }
     });
+  }
+
+  loggedIn(): boolean {
+    return this.sess.getToken().length > 0;
+  }
+
+  logout() {
+    this.sess.setToken('');
   }
 
   // gets current user
@@ -43,7 +44,7 @@ export class UserService {
       }
       this.http
         .get<types.User>(
-          this._const.url + '/v1/user?token=' + this.sess.getToken()
+          environment.backendUrl + '/v1/user?token=' + this.sess.getToken()
         )
         .toPromise()
         .then(user => {
@@ -60,13 +61,13 @@ export class UserService {
     p = p.set('token', this.sess.getToken());
     p = p.set('nick', nick);
     return this.http
-      .get<types.User>(this._const.url + '/v1/user', { params: p })
+      .get<types.User>(environment.backendUrl + '/v1/user', { params: p })
       .toPromise();
   }
 
   save(u: types.User): Promise<void> {
     return this.http
-      .post<void>(this._const.url + '/v1/user', {
+      .post<void>(environment.backendUrl + '/v1/user', {
         password: u.Password,
         user: {
           Name: u.Name,
@@ -80,7 +81,7 @@ export class UserService {
   // saves the object in the user service
   saveSelf(): Promise<void> {
     return this.http
-      .put<void>(this._const.url + '/v1/user', {
+      .put<void>(environment.backendUrl + '/v1/user', {
         user: {
           avatarLink: this.user.AvatarLink,
           name: this.user.Name,
@@ -94,7 +95,7 @@ export class UserService {
 
   login(email: string, password: string): Promise<LoginResponse> {
     return this.http
-      .post<LoginResponse>(this._const.url + '/v1/login', {
+      .post<LoginResponse>(environment.backendUrl + '/v1/login', {
         email: email,
         password: password
       })
@@ -111,7 +112,7 @@ export class UserService {
     password: string
   ): Promise<RegisterResponse> {
     return this.http
-      .post<RegisterResponse>(this._const.url + '/v1/register', {
+      .post<RegisterResponse>(environment.backendUrl + '/v1/register', {
         nick: userName,
         email: email,
         password: password

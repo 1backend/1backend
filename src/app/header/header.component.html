@@ -1,10 +1,10 @@
 <mat-card style="padding: 0" class="mat-elevation-z2">
   <mat-toolbar color="primary" class="header">
     <span style="cursor: pointer;" (click)="home()">
-      <img style="margin-left: 1em; margin-right: 1em; margin-top: 10px; height: 40px; width: 40px;" src="/assets/bam.png" />
+      <img id="logo-img" src="/assets/bam.png" />
     </span>
 
-    <span>
+    <span fxHide="false" fxHide.lt-md>
       <a mat-button href="#getStarted">
         Get started
       </a>
@@ -20,31 +20,59 @@
 
     <span>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="viewProfile()">
+        <button fxShow="false" fxShow.lt-md mat-menu-item (click)="getStarted()">
+          <mat-icon style="color: #1E88E5">play_arrow</mat-icon>
+          <span>Get started</span>
+        </button>
+        <button fxShow="false" fxShow.lt-md mat-menu-item (click)="pricing()">
+          <mat-icon style="color: #1E88E5">credit_card</mat-icon>
+          <span>Pricing</span>
+        </button>
+        <button fxShow="false" fxShow.lt-md mat-menu-item (click)="discoverProjects()">
+          <mat-icon style="color: #1E88E5">list</mat-icon>
+          <span>Discover projects</span>
+        </button>
+        <button *ngIf="us.loggedIn()" mat-menu-item (click)="viewProfile()">
           <mat-icon style="color: #1E88E5">assignment_ind</mat-icon>
           <span>View profile</span>
         </button>
-        <button mat-menu-item (click)="logout()">
+        <button fxShow="false" fxShow.lt-md *ngIf="!us.loggedIn()" mat-menu-item (click)="login()">
+          <mat-icon style="color: #1E88E5">power_settings_new</mat-icon>
+          <span>Log in</span>
+        </button>
+        <button fxShow="false" fxShow.lt-md *ngIf="!us.loggedIn()" mat-menu-item (click)="register()">
+          <mat-icon style="color: #1E88E5">power_settings_new</mat-icon>
+          <span>Register</span>
+        </button>
+        <button *ngIf="us.loggedIn()" mat-menu-item (click)="logout()">
           <mat-icon style="color: #F44336">power_settings_new</mat-icon>
           <span>Logout</span>
         </button>
       </mat-menu>
 
-      <button *ngIf="user && user.Id" mat-button [matMenuTriggerFor]="menu">
-        <span>
-          {{user.Nick}}
-        </span>
-        <mat-icon>keyboard_arrow_down</mat-icon>
-      </button>
+      <span fxHide="false" fxHide.lt-md>
+        <button *ngIf="user && user.Id" mat-button [matMenuTriggerFor]="menu">
+          <span>
+            {{user.Nick}}
+          </span>
+          <mat-icon>keyboard_arrow_down</mat-icon>
+        </button>
 
-      <ng-container *ngIf="ss.getToken().length === 0">
-        <button mat-button (click)="login()">
-          Login
+        <ng-container *ngIf="!us.loggedIn()">
+          <button mat-button (click)="login()">
+            Login
+          </button>
+          <button style="color: #2C2C2C;" color="accent" mat-raised-button (click)="register()">
+            Register
+          </button>
+        </ng-container>
+      </span>
+
+      <span fxHide="false" fxHide.gt-sm>
+        <button style="padding-right: 0; margin-right: 0;" mat-button>
+          <mat-icon [matMenuTriggerFor]="menu" style="color: white">dehaze</mat-icon>
         </button>
-        <button style="color: #2C2C2C;" color="accent" mat-raised-button (click)="register()">
-          Register
-        </button>
-      </ng-container>
+      </span>
     </span>
 
   </mat-toolbar>

@@ -1,10 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import * as types from '../../types';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import { UserService } from '../../user.service';
-import { SessionService } from '../../session.service';
-import { ConstService } from '../../const.service';
+import { ProjectService } from '../../project.service';
 import { LoginDialogService } from '../../login/login-dialog.service';
 import { NotificationsService } from 'angular2-notifications';
 import { FormControl, Validators } from '@angular/forms';
@@ -47,13 +45,11 @@ export class CreateProjectComponent implements OnInit {
   ];
 
   constructor(
-    private http: HttpClient,
     public us: UserService,
+    private ps: ProjectService,
     private router: Router,
-    private ss: SessionService,
     private loginDialog: LoginDialogService,
-    private notif: NotificationsService,
-    private _const: ConstService
+    private notif: NotificationsService
   ) {
     this.user = this.us.user;
   }
@@ -96,24 +92,17 @@ export class CreateProjectComponent implements OnInit {
       OpenSource: true
     };
 
-    this.http
-      .post(this._const.url + '/v1/project', {
-        token: this.ss.getToken(),
-        project: p,
-      })
-      .toPromise().then(
-        data => {
-          if (this.callback) {
-            this.callback(p);
-          } else {
-            this.router.navigate(['/' + this.user.Nick + '/' + this.name]);
-          }
-        }
-      );
+    this.ps.save(p).then(() => {
+      if (this.callback) {
+        this.callback(p);
+      } else {
+        this.router.navigate(['/' + this.user.Nick + '/' + this.name]);
+      }
+    });
   }
 
   create() {
-    if (this.ss.getToken().length === 0) {
+    if (!this.us.loggedIn) {
       this.loginDialog.openDialog(true, () => {
         this.createProject();
       });

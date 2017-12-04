@@ -1,48 +1,18 @@
 <ng-container *ngIf="project.Id">
-  <div fxLayout="row" fxLayoutAlign="space-between" style="margin-top: 2em; margin-bottom: 1em;">
-
-    <mat-icon *ngIf="loaded && !project.Public" class="icons">lock_outline</mat-icon>
-    <div fxFlex="1 1 100%" style="margin-top: 1em; margin-bottom: 0em;" style="color: #2962FF; font-size: 22px">
+  <div ngClass.lt-md="small-screen" fxLayout="row wrap" fxLayoutAlign="space-between" style="margin-bottom: 1em;">
+    <div fxFlex="1 1 70%" fxFlex.lt-md="1 1 100%" style="margin-top: 1em; margin-bottom: 0em;" style="color: #2962FF; font-size: 22px">
+      <mat-icon *ngIf="loaded && !project.Public" class="icons">lock_outline</mat-icon>
       <a style="font-size: 22px; text-decoration: none; color: #2962FF;" routerLink="/{{author}}">{{author}}</a> /
       <b>{{project.Name}}</b>
       <span *ngIf="loaded && !project.Public" style="padding-left: 0.5em; padding-right: 0.5em;" class="Label Label--outline v-align-middle">Private</span>
       <span style="padding-left: 0.5em; padding-right: 0.5em;" class="Label Label--outline v-align-middle">v{{ project?.Version ? project?.Version : '0.0.1'}}</span>
     </div>
-    <span *ngIf="!loaded" matTooltip="Your project up and ready">
-      <button mat-button style="margin-top: -0.5em; margin-left: 1em;" disabled>
-        <mat-icon style="color: grey" aria-hidden="false">fiber_manual_record</mat-icon>
-        Status
-      </button>
-    </span>
-    <span *ngIf="loaded && status" matTooltip="Your project up and ready">
-      <button mat-button style="margin-top: -0.5em; margin-left: 1em;" disabled>
-        <mat-icon style="color: rgb(40, 165, 40); margin-bottom: 0.2em" aria-hidden="false">fiber_manual_record</mat-icon>
-        Status
-      </button>
-    </span>
-    <span *ngIf="loaded && !status" matTooltip="Ups, something wrong">
-      <button mat-button style="margin-top: -0.5em; margin-left: 1em;" disabled>
-        <mat-icon style="color: red; margin-bottom: 0.2em" aria-hidden="false">fiber_manual_record</mat-icon>
-        Status
-      </button>
-    </span>
-    <button *ngIf="!starred" mat-raised-button style="margin-top: -0.5em; margin-left: 1em;width: 10em" (click)="star(project)">
-      <span style="border-right: solid 1px; padding-right: 0.5em">{{stars}}</span>
-      <mat-icon aria-hidden="false" style="margin-bottom: 0.2em;">star_border</mat-icon>
-      Star
-    </button>
-    <button *ngIf="starred" mat-raised-button style="margin-top: -0.5em; margin-left: 1em; width: 12em;" (click)="unStar(project)">
-      <span style="border-right: solid 1px; padding-right: 0.5em;">{{stars}}</span>
-      <mat-icon aria-hidden="false" style="margin-bottom: 0.2em;">star</mat-icon>
-      Unstar
-    </button>
-    <!--
-  <button mat-raised-button style="margin-top: -0.5em; margin-left: 1em; padding-right: 2.2em;">
-      <mat-icon aria-hidden="false">call_split</mat-icon>
-      Fork
-    </button>
-  -->
+    <div fxFlex="none" fxFlex.lt-md="1 1 100%">
+      <app-project-status [author]="author" [projectName]="project?.Name"></app-project-status>
+      <app-star-button [project]="project" [showCount]="true"></app-star-button>
+    </div>
   </div>
+
   <mat-tab-group class="tab-group" [selectedIndex]="selectedIndex" #tabGroup (selectedIndexChange)="selectedIndexChange(tabGroup)">
     <mat-tab [attr.data-pid]="'code'" mat-ink-ripple="yellow;">
       <ng-template mat-tab-label>
@@ -50,6 +20,7 @@
       </ng-template>
       <app-code *ngIf="project && project.Id" (onProjectSaved)="refresh()" [project]="project"></app-code>
     </mat-tab>
+
     <mat-tab [attr.data-pid]="'builds'">
       <ng-template mat-tab-label>
         <span>Builds &nbsp;</span>
@@ -66,8 +37,8 @@
       <div style="margin-top: 2em;">
         <app-builds [project]="project"></app-builds>
       </div>
-      
     </mat-tab>
+
     <mat-tab [attr.data-pid]="'issues'">
       <ng-template mat-tab-label>
         Issues
@@ -75,6 +46,7 @@
       <app-issues *ngIf="!issueId && project?.Id?.length > 0" [project]="project"></app-issues>
       <app-issue *ngIf="issueId" [issueId]="issueId" [author]="author" [projectName]="projectName"></app-issue>
     </mat-tab>
+
     <mat-tab [attr.data-pid]="'stars'">
       <ng-template mat-tab-label>
         Stars
@@ -95,6 +67,7 @@
         </mat-card>
       </div>
     </mat-tab>
+
     <mat-tab *ngIf="us.user.Nick === project.Author" [attr.data-pid]="'sql'">
       <ng-template mat-tab-label>
         SQL database

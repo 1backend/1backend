@@ -1,36 +1,34 @@
-<div>
-  <div fxLayout="row wrap" fxLayoutAlign="space-between">
-    <div fxFlex="1 1 100%">
-      <mat-form-field style="width: 100%; padding-bottom: 1em;" color="primary">
-        <input matInput [(ngModel)]="search" placeholder="Search projects" />
-      </mat-form-field>
-    </div>
-    <span *ngIf="author === us.user.Nick" align="end" style="margin-left: -100px; margin-top: -3px;" matTooltip="Create new project"
-      matTooltipPosition="above">
-      <button mat-mini-fab (click)="create()" color="accent">
-        <mat-icon>add</mat-icon>
-      </button>
-    </span>
+<div fxLayout="row wrap" fxLayoutAlign="space-between">
+  <div fxFlex="1 1 100%">
+    <mat-form-field style="width: 100%; padding-bottom: 1em;" color="primary">
+      <input matInput [(ngModel)]="search" placeholder="Search projects" />
+    </mat-form-field>
   </div>
-  <div fxLayout="column">
-    <div style="margin-top: 2em">
-      <mat-card *ngFor="let p of posts" fxFlex="1 1 100%" style="width: 100%;">
-        <mat-card-title>
-          {{p.Title}}
-        </mat-card-title>
-        <mat-card-subtitle>
-          {{p.Subtitle}}
-        </mat-card-subtitle>
-        <div>
-          {{p.Content}}
-        </div>
-        <mat-card-subtitle>
-          {{p.UpdatedAt | amTimeAgo}} by {{p.User}}
-        </mat-card-subtitle>
-      </mat-card>
-    </div>
-    <div *ngIf="posts.length < 1">
-      There are no blog posts yet.
-    </div>
+  <span *ngIf="author === us.user.Nick" align="end" style="margin-left: -100px; margin-top: -3px;" matTooltip="Create new project"
+    matTooltipPosition="above">
+    <button mat-mini-fab (click)="create()" color="accent">
+      <mat-icon>add</mat-icon>
+    </button>
+  </span>
+</div>
+<div fxLayout="column">
+  <div style="margin-top: 2em">
+    <mat-card *ngFor="let p of posts" fxFlex="1 1 100%" style="width: 100%;">
+      <mat-card-title>
+        {{p.Title}}
+      </mat-card-title>
+      <mat-card-subtitle>
+        {{p.Subtitle}}
+      </mat-card-subtitle>
+      <div>
+        {{p.Content}}
+      </div>
+      <mat-card-subtitle>
+        {{p.UpdatedAt | amTimeAgo}} by {{p.User}}
+      </mat-card-subtitle>
+    </mat-card>
+  </div>
+  <div *ngIf="posts.length < 1">
+    There are no blog posts yet.
   </div>
 </div>

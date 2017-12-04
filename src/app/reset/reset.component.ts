@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ConstService } from '../const.service';
 import { SessionService } from '../session.service';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import * as types from '../types';
 import { NotificationsService } from 'angular2-notifications';
@@ -20,7 +20,6 @@ export class ResetComponent implements OnInit {
   newPassword2: string;
 
   constructor(
-    private _const: ConstService,
     private ss: SessionService,
     private http: HttpClient,
     private activatedRoute: ActivatedRoute,
@@ -36,7 +35,7 @@ export class ResetComponent implements OnInit {
       return;
     }
     this.http
-      .post<ResetPasswordResponse>(this._const.url + '/v1/reset-password', {
+      .post<ResetPasswordResponse>(environment.backendUrl + '/v1/reset-password', {
         newPassword: this.newPassword
       })
       .subscribe(

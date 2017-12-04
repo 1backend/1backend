@@ -1,16 +1,23 @@
-
 .header {
-    color: white;
-    /*background: #1565C0;*/
+  color: white;
+  /*background: #1565C0;*/
 }
 
 .header a {
-    text-decoration: none;
-    color: white;
+  text-decoration: none;
+  color: white;
 }
 
 img {
-    -ms-transform: rotate(-90deg); /* IE 9 */
-    -webkit-transform: rotate(-90deg); /* Chrome, Safari, Opera */
-    transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg); /* IE 9 */
+  -webkit-transform: rotate(-90deg); /* Chrome, Safari, Opera */
+  transform: rotate(-90deg);
+}
+
+#logo-img {
+  margin-left: 1em;
+  margin-right: 1em;
+  margin-top: 10px;
+  height: 40px;
+  width: 40px;
 }

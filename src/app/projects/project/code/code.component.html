@@ -1,5 +1,5 @@
 <div fxLayout="row wrap" fxLayoutAlign="space-between" style="margin-top: 1em;">
-  <div fxFlex="1 1 {{rightWidth}}%">
+  <div fxFlex.lt-md="1 1 100%" fxFlex="1 1 {{rightWidth}}%">
     <mat-card *ngIf="user.Nick === project.Author" style="padding-top: 0.1em;">
       <mat-tab-group>
         <mat-tab label="ReadMe">
@@ -70,10 +70,10 @@
         mat-raised-button style="margin-top: 1em; color: #EEEEEE" color="primary">Add</button>
     </mat-card>
   </div>
-  <div fxFlex="1 1 {{leftWidth}}%">
+
+  <div fxFlex.lt-md="1 1 100%" fxFlex="1 1 {{leftWidth}}%">
     <mat-form-field class="example-full-width">
-      <input matInput placeholder="Search in endpoints" [(ngModel)]="search" value="e.g. Demo project" style="min-width: 150px;"
-        fxFlex="1 1 200%">
+      <input matInput placeholder="Search endpoints" [(ngModel)]="search" value="e.g. Demo project" style="min-width: 150px;" fxFlex="1 1 200%">
     </mat-form-field>
 
     <mat-card *ngFor="let endpoint of project.Endpoints.slice(this.currentPage * 10, (this.currentPage + 1) * 10) | FilterPipe: search"

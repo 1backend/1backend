@@ -23,3 +23,11 @@
 
 }
 */
+
+.star-button {
+  position: relative;
+  top: -10px;
+}
+
+.star-icon {
+}

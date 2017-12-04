@@ -1,0 +1,10 @@
+<button *ngIf="!starredBySelf()" mat-raised-button class="star-button" (click)="star()">
+  <span fxHide="false" *ngIf="showCount" class="star-num">{{project.Stars}}</span>
+  <mat-icon *ngIf="showCount" class="iconpos" aria-hidden="false">star_border</mat-icon>
+  <span fxHide="false" fxHide.lt-md>Star</span>
+</button>
+<button *ngIf="starredBySelf()" mat-raised-button class="unstar-button" (click)="unStar()">
+  <span fxHide="false" *ngIf="showCount" class="star-num">{{project.Stars}}</span>
+  <mat-icon *ngIf="showCount" class="iconpos" aria-hidden="false">star</mat-icon>
+  <span fxHide="false" fxHide.lt-md>Unstar</span>
+</button>

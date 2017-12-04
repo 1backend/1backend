@@ -1,5 +1,5 @@
-<div fxFlexLayout="row" fxLayoutAlign="center" class="white" stlye="padding-left: 0; padding-right:0;">
-  <div fxFlex="1 1 25%">
+<div fxLayout="row wrap" ngClass.lt-md="mobile-padding" fxLayoutAlign="center" class="white">
+  <div fxFlex="1 1 25%" fxFlex.lt-md="1 1 100%">
     <ul class="pricing p-blue">
       <li style="background: #42A5F5;font-size: 32px;padding: 5px;font-family: 'Roboto Light';font-weight: 200;color: white;">
         Free
@@ -15,8 +15,8 @@
       </li>
     </ul>
   </div>
-  <div fxFlex="1 1 5%"></div>
-  <div fxFlex="1 1 25%">
+  <div fxHide.lt-md fxFlex="1 1 5%"></div>
+  <div fxFlex.lt-md="1 1 100%" fxFlex="1 1 25%">
     <ul class="pricing p-green">
       <li style="background: #66BB6A;font-size: 32px;padding: 5px;font-family: 'Roboto Light';font-weight: 200;color: white;">
         Premium
@@ -33,8 +33,8 @@
       </li>
     </ul>
   </div>
-  <div fxFlex="1 1 5%"></div>
-  <div fxFlex="1 1 25%">
+  <div fxHide.lt-md fxFlex="1 1 5%"></div>
+  <div fxFlex.lt-md="1 1 100%" fxFlex="1 1 25%">
     <div style="color: #555">
       <p >
         Earn free credits by helping us with tweets and other goodies.

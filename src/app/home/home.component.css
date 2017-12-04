@@ -1,53 +1,78 @@
 #big {
-    background: white;
-    margin-bottom: 2em;
+  background: white;
+  margin-bottom: 2em;
+
+  padding-top: 0;
+  padding-left: 0;
+  padding-right: 0;
+  margin-bottom: 0;
+}
+
+.big-desktop {
+    height: 100%;
+}
+
+.big-mobile {
+    min-height: 100%;
 }
 
 #big h1 {
-    font-family: 'Roboto Light';
-    font-size: 2.6em;
-    font-weight: 200;
-    color: rgb(66, 66, 66);
+  font-family: 'Roboto Light';
+  font-size: 2.6em;
+  font-weight: 200;
+  color: rgb(66, 66, 66);
 }
+
+.mobile-padding {
+    padding: 2em;
+}
+
+.mobile-header-text {
+    text-align: center;
+    margin: 0 auto;
+}
+
 /* @todo: remove deep */
 #big /deep/ mat-card-title {
-    font-family: 'Roboto Light';
-    font-weight: 200;
+  font-family: 'Roboto Light';
+  font-weight: 200;
 }
 
 #big h2 {
-    font-family: 'Roboto Light';
-    font-size: 1.2em;
-    font-weight: 200;
-    color: rgb(117, 117, 117);
+  font-family: 'Roboto Light';
+  font-size: 1.2em;
+  font-weight: 200;
+  color: rgb(117, 117, 117);
 }
 
-.mat-fab{
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+.mat-fab {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .mat-fab:hover {
-    cursor: pointer;
-    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  cursor: pointer;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
 
 .project-title h2 {
-    font-family: 'Roboto Light';
-    font-size: 2em;
-    font-weight: 200;
-    color: #424242;
-
+  font-family: 'Roboto Light';
+  font-size: 2em;
+  font-weight: 200;
+  color: #424242;
 }
 
 .z-depth-2 {
-    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12),
+    0 2px 4px -1px rgba(0, 0, 0, 0.3);
 }
 
 .z-depth-3 {
-    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px -1px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12),
+    0 3px 5px -1px rgba(0, 0, 0, 0.3);
 }
 
 .z-depth-4 {
-    box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12), 0 5px 5px -3px rgba(0, 0, 0, 0.3);
 }
