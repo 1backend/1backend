@@ -1,0 +1,41 @@
+<mat-card style="margin-top: 0.5em; overflow-x: auto;">
+  <mat-card-header>
+    <div style="width: 100%;" fxFlexLayout="row" fxLayoutAlign="space-between">
+      <div fxFlex="1 1 48%">
+        <mat-card-title-group fxFlexLayout="row">
+          <mat-card-title>
+            <a style="color: black;" routerLink="/{{comment.User?.Nick}}">{{comment.User?.Nick}}</a>
+
+          </mat-card-title>
+
+          <mat-card-subtitle>
+            {{comment.CreatedAt | amTimeAgo}}
+            <span *ngIf="comment.CreatedAt !== comment.UpdatedAt">
+              <br>edited {{comment.UpdatedAt | amTimeAgo}}</span>
+          </mat-card-subtitle>
+        </mat-card-title-group>
+      </div>
+      <div fxFlex="1 1 48%" style="text-align: right; color: #444">
+        <button (click)="editComment(comment)" *ngIf="comment?.User?.Nick === us?.user?.Nick" mat-icon-button>
+          <i style="color:#444; font-size: 18px;padding-bottom: 0.2em;" class="material-icons">mode_edit</i>
+        </button>
+        #{{comment.Index}}
+      </div>
+    </div>
+  </mat-card-header>
+
+  <mat-card-content *ngIf="!comment.Editing" style="padding: 1em;max-width: 70%;">
+    <markdown-to-html item-width="70%" [data]="comment.Content"></markdown-to-html>
+    <!-- <font style="font-size: 16px;color: rgb(36,41,46);line-height: 21px;">{{c.Content}}</font> -->
+  </mat-card-content>
+  <mat-card-content *ngIf="comment.Editing" style="padding: 1em;max-width: 100%;">
+    <textarea style="font-family:Times New Roman; color:#040505 ; font-size: 20px;" fxLayout="row wrap" fxLayoutAlign="space-between"
+      fxFlex="1 1 100%" rows="10" cols="300px" [(ngModel)]="comment.Content"></textarea>
+    <!-- <font style="font-size: 16px;color: rgb(36,41,46);line-height: 21px;">{{c.Content}}</font> -->
+  </mat-card-content>
+  <button *ngIf="comment.Editing" mat-raised-button style="background-color: rgb(0,192,66);" (click)="updateComment(comment)">
+    <font color="white">
+      <b>Save</b>
+    </font>
+  </button>
+</mat-card>

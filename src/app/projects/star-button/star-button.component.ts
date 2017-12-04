@@ -34,6 +34,10 @@ export class StarButtonComponent implements OnInit {
   star() {
     this.ps.star(this.project.Id).then(() => {
       this.project.Stars++;
+      if (this.project.Starrers) {
+        this.project.Starrers.push(this.us.user);
+      } else {
+      }
       this.starEvent.emit(true);
     });
   }

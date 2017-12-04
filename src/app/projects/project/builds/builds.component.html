@@ -1,4 +1,5 @@
-<mat-card *ngFor="let build of project.Builds.slice(this.currentPage * 10, (this.currentPage + 1) * 10)" style="margin-bottom: 1em; padding-bottom: 0.5em;">
+<mat-card *ngFor="let build of project.Builds.slice(this.currentPage * 10, (this.currentPage + 1) * 10); let i = index;"
+  style="margin-bottom: 1em; padding-bottom: 0.5em;">
   <mat-card-title class="build-title">
     <div fxLayout="row wrap" fxLayoutAlign="space-between">
       <div fxFlex="1 1 40%">
@@ -18,17 +19,20 @@
         <span style="color: #999">({{build.Id}})</span>
       </div>
       <div fxFlex="1 1 40%" align="end">
-        <button *ngIf="!build.Selected" mat-button style="min-width: 0%; margin-bottom: 10px;" type="button" (click)="reveal(build)">
+        <button *ngIf="!build.Selected && i !== 0" mat-button style="min-width: 0%; margin-bottom: 10px;" type="button" (click)="reveal(build)">
           <mat-icon aria-hidden="false">keyboard_arrow_down</mat-icon>
         </button>
-        <button [hidden]="!build.Selected" mat-button style="min-width: 0%; margin-bottom: 10px;" (click)="reveal(build)">
+        <button [hidden]="!build.Selected  || i === 0" mat-button style="min-width: 0%; margin-bottom: 10px;" (click)="reveal(build)">
           <mat-icon aria-hidden="false">keyboard_arrow_up</mat-icon>
         </button>
       </div>
     </div>
   </mat-card-title>
-  <div *ngIf="build.Selected">
-    <ace-editor class="editor" [text]="build.Output" [mode]="'sh'" style="min-height: 200px; width:100%;
+  <div *ngIf="build.Selected || i === 0">
+    <ace-editor *ngIf="build.Output === ''" class="editor" [text]="'Build is in progress, it may take a few seconds...'" [mode]="'text'"
+      style="min-height: 200px; width:100%;
+      overflow: auto;" #editor></ace-editor>
+    <ace-editor *ngIf="build.Output !== ''" class="editor" [text]="build.Output" [mode]="'sh'" style="min-height: 200px; width:100%;
   overflow: auto;" #editor></ace-editor>
   </div>
 </mat-card>

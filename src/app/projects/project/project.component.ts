@@ -89,6 +89,12 @@ export class ProjectComponent implements OnInit {
     if (this.tab === 'stars') {
       this.selectedIndex = 3;
     }
+    setInterval(() => {
+      if (!this.lastBuild.InProgress) {
+        return;
+      }
+      this.updateBuilds();
+    }, 5000);
   }
 
   selectedIndexChange(tabGroup: MatTabGroup) {
@@ -99,5 +105,16 @@ export class ProjectComponent implements OnInit {
     } else {
       this.location.go('/' + this.author + '/' + this.projectName);
     }
+  }
+
+  updateBuilds() {
+    this.ps
+      .getByAuthorAndProjectName(this.author, this.projectName)
+      .then(project => {
+        if (project.Builds && project.Builds.length) {
+          this.lastBuild = project.Builds[0];
+          this.project.Builds = project.Builds;
+        }
+      });
   }
 }
