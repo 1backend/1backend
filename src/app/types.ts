@@ -98,6 +98,7 @@ export interface Comment {
   CreatedBy?: User;
   Issue?: Issue;
   Index?: number; // not used on the server
+  Editing?: boolean; // not used on the server
   CreatedAt?: string;
   UpdatedAt?: string;
 }

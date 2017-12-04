@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import * as types from '../../../../types';
 import { environment } from '../../../../../environments/environment';
 import { SessionService } from '../../../../session.service';
+import { UserService } from '../../../../user.service';
 
 @Component({
   selector: 'app-issue',
@@ -24,7 +25,8 @@ export class IssueComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private ss: SessionService
+    private ss: SessionService,
+    public us: UserService
   ) {}
 
   ngOnInit() {
@@ -41,12 +43,11 @@ export class IssueComponent implements OnInit {
         },
         token: this.ss.getToken()
       })
-      .toPromise().then(
-        data => {
-          this.getIssue();
-          this.commentContent = '';
-        }
-      );
+      .toPromise()
+      .then(data => {
+        this.getIssue();
+        this.commentContent = '';
+      });
   }
 
   getIssue() {
@@ -68,11 +69,12 @@ export class IssueComponent implements OnInit {
               return -1;
             });
           }
-          this.issuerComment = this.issue.Comments.pop();
           this.issue.Comments = this.issue.Comments.reverse();
           for (let i = 0; i < this.issue.Comments.length; i++) {
             this.issue.Comments[i].Index = i + 1;
           }
+
+          console.log(this.issue.Comments);
         },
         error => {
           console.log(error);
@@ -81,9 +83,5 @@ export class IssueComponent implements OnInit {
   }
   pageChanged($event: any) {
     this.currentPage = $event.pageIndex;
-  }
-
-  getIndex(): number {
-    return this.index++;
   }
 }

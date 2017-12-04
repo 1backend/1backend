@@ -73,9 +73,11 @@ import { PostsComponent } from './author/posts/posts.component';
 import { TokensComponent } from './author/tokens/tokens.component';
 import { ProfileEditComponent } from './author/profile-edit/profile-edit.component';
 import { TokenService } from './token.service';
+import { CommentService } from './comment.service';
 import { ProjectService } from './project.service';
 import { ProjectStatusComponent } from './projects/project/code/project-status/project-status.component';
 import { StarButtonComponent } from './projects/star-button/star-button.component';
+import { CommentComponent } from './projects/project/issues/issue/comment/comment.component';
 
 const appRoutes: Routes = [
   {
@@ -144,7 +146,8 @@ const appRoutes: Routes = [
     TokensComponent,
     ProfileEditComponent,
     ProjectStatusComponent,
-    StarButtonComponent
+    StarButtonComponent,
+    CommentComponent
   ],
   imports: [
     BrowserModule,
@@ -189,7 +192,8 @@ const appRoutes: Routes = [
     CreateIssueDialogService,
     ChargeService,
     ProjectService,
-    TokenService
+    TokenService,
+    CommentService
   ],
   bootstrap: [AppComponent],
   entryComponents: [
