@@ -3,7 +3,7 @@
 
 <div *ngIf="router.url !== '/' && router.url !== '/#pricing' && router.url !== '/#getStarted'; else notcondition">
     <app-header></app-header>
-    <div style="width: 75%; margin: 0 auto">
+    <div ngClass.gt-sm="big-screen" ngClass.lt-md="small-screen">
         <router-outlet></router-outlet>
     </div>
 </div>

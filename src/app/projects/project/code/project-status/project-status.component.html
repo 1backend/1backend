@@ -1,0 +1,18 @@
+<span *ngIf="!loaded" matTooltip="Checking if services is running...">
+  <button mat-button class="status-button" disabled>
+    <mat-icon class="iconpos" style="color: grey;" aria-hidden="false">fiber_manual_record</mat-icon>
+    Status
+  </button>
+</span>
+<span *ngIf="loaded && status" matTooltip="Your service is up and running">
+  <button mat-button class="status-button" disabled>
+    <mat-icon class="iconpos" style="color: rgb(40, 165, 40);" aria-hidden="false">fiber_manual_record</mat-icon>
+    Status
+  </button>
+</span>
+<span *ngIf="loaded && !status" matTooltip="Ups, something is wrong with your service">
+  <button mat-button class="status-button" disabled>
+    <mat-icon class="iconpos" style="color: red;" aria-hidden="false">fiber_manual_record</mat-icon>
+    Status
+  </button>
+</span>

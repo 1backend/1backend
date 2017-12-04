@@ -6,8 +6,14 @@
   padding-left: 0;
   padding-right: 0;
   margin-bottom: 0;
-  height: 100%;
-  overflow: auto;
+}
+
+.big-desktop {
+    height: 100%;
+}
+
+.big-mobile {
+    min-height: 100%;
 }
 
 #big h1 {
@@ -17,7 +23,7 @@
   color: rgb(66, 66, 66);
 }
 
-.mobile-container {
+.mobile-padding {
     padding: 2em;
 }
 

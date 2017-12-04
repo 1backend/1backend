@@ -2,7 +2,6 @@ import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { UserService } from '../user.service';
 import * as types from '../types';
 import { LoginDialogService } from '../login/login-dialog.service';
-import { SessionService } from '../session.service';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -14,9 +13,7 @@ export class HeaderComponent implements OnInit {
   user: types.User;
 
   constructor(
-    private us: UserService,
-    private sess: SessionService,
-    public ss: SessionService,
+    public us: UserService,
     private router: Router,
     private lds: LoginDialogService
   ) {
@@ -29,8 +26,9 @@ export class HeaderComponent implements OnInit {
       this.router.navigate(['/' + this.us.user.Nick]);
     });
   }
+
   logout() {
-    this.ss.setToken('');
+    this.us.logout();
     this.router.navigate(['']);
     location.reload();
   }
@@ -39,10 +37,18 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/' + this.user.Nick]);
   }
 
+  getStarted() {
+    this.router.navigate(['/', { fragment: 'getStarted' }]);
+  }
+
   register() {
     this.lds.openDialog(false, () => {
       this.router.navigate(['/' + this.us.user.Nick]);
     });
+  }
+
+  pricing() {
+    this.router.navigate(['/'], { fragment: 'pricing' });
   }
 
   scroll(el) {

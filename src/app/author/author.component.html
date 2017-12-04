@@ -11,8 +11,8 @@
   </mat-card>
 </div>
 
-<div flexLayout="row" fxLayoutAlign="center" style="margin-top: 2em;" *ngIf="userFound && user?.Id">
-  <div fxFlex="1 1 25%" fxFlex.lt-lg="1 1 30%" [ngStyle.lt-lg]="{'min-width': '200px'}" style="margin-left: auto">
+<div *ngIf="userFound && user?.Id" fxLayout="row wrap" fxLayoutAlign="center">
+  <div fxFlex.lt-md="1 1 100%" fxFlex="1 1 25%" style="margin-left: auto">
     <app-profile-edit [user]="user" (onSelfSave)="refresh()"></app-profile-edit>
 
     <div style="margin-top: 4em" *ngIf="us.user?.Tokens?.length && author === us.user.Nick">
@@ -31,7 +31,7 @@
     </div>
 
   </div>
-  <div fxFlex="1 1 75%" fxFlex.lt-lg="1 1 70%" class="project-list" style="margin-bottom: 1em; padding-top: 0em">
+  <div fxFlex.lt-md="1 1 100%" fxFlex="1 1 75%" ngClass.gt-sm="project-list" style="margin-bottom: 1em; padding-top: 0em">
     <mat-tab-group [(selectedIndex)]="selectedTabIndex">
 
       <mat-tab label="Projects">

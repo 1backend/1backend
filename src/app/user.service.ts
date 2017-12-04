@@ -16,19 +16,21 @@ interface RegisterResponse {
 @Injectable()
 export class UserService {
   user: types.User = {} as types.User;
-  loggedIn(): boolean {
-    return this.sess.getToken().length > 0;
-  }
 
-  constructor(
-    private http: HttpClient,
-    private sess: SessionService
-  ) {
+  constructor(private http: HttpClient, private sess: SessionService) {
     this.get().then(user => {
       for (const k of Object.keys(user)) {
         this.user[k] = user[k];
       }
     });
+  }
+
+  loggedIn(): boolean {
+    return this.sess.getToken().length > 0;
+  }
+
+  logout() {
+    this.sess.setToken('');
   }
 
   // gets current user

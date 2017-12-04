@@ -1,0 +1,18 @@
+.iconpos {
+  margin-bottom: 0.2em;
+}
+
+.star-num {
+  border-right: solid 1px;
+  padding-right: 0.5em;
+}
+
+.star-button {
+  margin-top: -0.5em;
+  margin-left: 1em;
+}
+
+.unstar-button {
+  margin-top: -0.5em;
+  margin-left: 1em;
+}
