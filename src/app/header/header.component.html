@@ -20,15 +20,15 @@
 
     <span>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="getStarted()">
+        <button fxHide="false" fxHide.lt-md mat-menu-item (click)="getStarted()">
           <mat-icon style="color: #1E88E5">play_arrow</mat-icon>
           <span>Get started</span>
         </button>
-        <button mat-menu-item (click)="pricing()">
+        <button fxHide="false" fxHide.lt-md mat-menu-item (click)="pricing()">
           <mat-icon style="color: #1E88E5">credit_card</mat-icon>
           <span>Pricing</span>
         </button>
-        <button mat-menu-item (click)="discoverProjects()">
+        <button fxHide="false" fxHide.lt-md mat-menu-item (click)="discoverProjects()">
           <mat-icon style="color: #1E88E5">list</mat-icon>
           <span>Discover projects</span>
         </button>
@@ -40,11 +40,11 @@
           <mat-icon style="color: #1E88E5">power_settings_new</mat-icon>
           <span>Log in</span>
         </button>
-        <button *ngIf="!us.loggedIn()" mat-menu-item (click)="register()">
+        <button fxHide="false" fxHide.lt-md *ngIf="!us.loggedIn()" mat-menu-item (click)="register()">
           <mat-icon style="color: #1E88E5">power_settings_new</mat-icon>
           <span>Register</span>
         </button>
-        <button *ngIf="us.loggedIn()" mat-menu-item (click)="logout()">
+        <button fxHide="false" fxHide.lt-md *ngIf="us.loggedIn()" mat-menu-item (click)="logout()">
           <mat-icon style="color: #F44336">power_settings_new</mat-icon>
           <span>Logout</span>
         </button>
