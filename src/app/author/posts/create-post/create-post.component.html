@@ -1,0 +1,15 @@
+<div>
+    <textarea name="comment" [(ngModel)]="post.Content" style="font-family:Times New Roman; color:#040505 ; font-size: 20px;"
+      fxLayout="row wrap" fxLayoutAlign="space-between" fxFlex="1 1 100%" rows="10" cols="300px" placeholder="Description">
+    </textarea>
+  </div>
+  <mat-form-field style="width: 100%">
+    <input matInput placeholder="Title" [(ngModel)]="post.Title"/>
+  </mat-form-field>
+  <div style="padding-top: 1em;" align="center">
+      <button mat-raised-button style="background-color: rgb(0,192,66);" (click)="createPost()">
+        <font color="white">
+          <b>Create new post</b>
+        </font>
+      </button>
+    </div>

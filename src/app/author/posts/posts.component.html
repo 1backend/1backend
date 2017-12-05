@@ -1,32 +1,24 @@
 <div fxLayout="row wrap" fxLayoutAlign="space-between">
-  <div fxFlex="1 1 100%">
-    <mat-form-field style="width: 100%; padding-bottom: 1em;" color="primary">
-      <input matInput [(ngModel)]="search" placeholder="Search projects" />
-    </mat-form-field>
+    <div fxFlex="1 1 100%">
+      <mat-form-field style="width: 100%;" color="primary">
+        <input matInput [(ngModel)]="search" placeholder="Search projects" />
+      </mat-form-field>
+    </div>
+    <span *ngIf="author === us.user.Nick" align="end" style="margin-left: -100px; margin-top: -3px;" matTooltip="Create new project"
+      matTooltipPosition="above">
+      <button mat-mini-fab (click)="create()" color="accent">
+        <mat-icon>add</mat-icon>
+      </button>
+    </span>
   </div>
-  <span *ngIf="author === us.user.Nick" align="end" style="margin-left: -100px; margin-top: -3px;" matTooltip="Create new project"
-    matTooltipPosition="above">
-    <button mat-mini-fab (click)="create()" color="accent">
-      <mat-icon>add</mat-icon>
-    </button>
-  </span>
-</div>
 <div fxLayout="column">
-  <div style="margin-top: 2em">
-    <mat-card *ngFor="let p of posts" fxFlex="1 1 100%" style="width: 100%;">
-      <mat-card-title>
-        {{p.Title}}
-      </mat-card-title>
-      <mat-card-subtitle>
-        {{p.Subtitle}}
-      </mat-card-subtitle>
-      <div>
-        {{p.Content}}
+  <div *ngFor="let p of posts" fxFlex="1 1 100%" style="width: 100%;">
+    <div style="padding-bottom: 0.5em; padding-top: 1em">
+        <h2><a routerLink="/{{p.User.Nick}}/p/{{p.Id}}">{{p.Title}}</a></h2>
       </div>
-      <mat-card-subtitle>
-        {{p.UpdatedAt | amTimeAgo}} by {{p.User}}
-      </mat-card-subtitle>
-    </mat-card>
+      <div style="border-bottom: solid 1px;padding-bottom: 0.5em">
+        {{p.UpdatedAt | amTimeAgo}} by {{p.User.Nick}}
+      </div>
   </div>
   <div *ngIf="posts.length < 1">
     There are no blog posts yet.

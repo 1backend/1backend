@@ -124,7 +124,7 @@ export interface Token {
   Enabled?: boolean;
   Quota?: number;
 }
-export interface Posts {
+export interface Post {
   Id?: string;
   Title?: string;
   Subtitle?: string;
@@ -134,4 +134,5 @@ export interface Posts {
   CreatedAt?: string;
   UpdatedAt?: string;
   Slug?: string;
+  Editing?: boolean; // not used on the server
 }
