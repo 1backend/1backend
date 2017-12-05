@@ -10,7 +10,9 @@ import (
 var C = Config{}
 
 type Config struct {
-	StripeKey string // stripe api key
+	SiteUrl     string // eg. https://1backend.com
+	StripeKey   string // stripe api key
+	SendGridKey string
 	// absolute path to folder containing files (assumes same structure as the repo)
 	Path string
 	// CAUTION! Uses the git user configured on the machine.

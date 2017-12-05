@@ -49,6 +49,9 @@ func registerHandlers(r *httpr.Router, h *handlers.Handlers, p *proxy.Proxy) {
 	r.POST("/v1/register", h.Register)
 	r.POST("/v1/login", h.Login)
 
+	r.POST("/v1/send-reset", h.SendResetEmail)
+	r.POST("/v1/reset-password", h.ResetPassword)
+
 	r.GET("/app/:author/:app/*route", p.Proxy)
 	r.POST("/app/:author/:app/*route", p.Proxy)
 	r.PUT("/app/:author/:app/*route", p.Proxy)

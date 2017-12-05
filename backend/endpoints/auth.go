@@ -153,3 +153,84 @@ func (e *Endpoints) GetUser(tokenId string) (*domain.User, error) {
 	u, _ := userDao.GetById(t.UserId)
 	return &u, nil
 }
+
+func (e *Endpoints) SendResetEmail(email string) error {
+	if email == "" {
+		return errors.New("Email can not be empty.")
+	}
+	user, err := domain.NewUserDao(e.db).GetByEmail(email)
+	if err != nil {
+		return err
+	}
+	secret := uuid.NewV4().String() // using the uuid v4 here to ensure that it's absolutely unenumerable. org secrets are ok due to email confirmations
+	tx := e.db.Begin()
+	err = domain.NewResetDao(e.db).Create(domain.Reset{
+		Id:        domain.Sid.MustGenerate(),
+		Secret:    secret,
+		UserId:    user.Id,
+		CreatedAt: time.Now(),
+	})
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	err = domain.SendPasswordReset(secret, &user)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit().Error
+}
+
+func (e *Endpoints) ResetPassword(secret, newPassword string) (*domain.AccessToken, error) {
+	if secret == "" {
+		return nil, errors.New("Secret can not be empty.")
+	}
+	if newPassword == "" {
+		return nil, errors.New("New password can not be empty")
+	}
+	reset, err := domain.NewResetDao(e.db).GetBySecret(secret)
+	if err != nil {
+		return nil, err
+	}
+	if reset.CreatedAt.Before(time.Now().Add(-1 * 168 * time.Hour)) {
+		return nil, errors.New("Reset code older than a week")
+	}
+	if reset.Used {
+		return nil, errors.New("Reset code already used")
+	}
+	user, err := domain.NewUserDao(e.db).GetById(reset.UserId)
+	if err != nil {
+		return nil, err
+	}
+	passw, err := bcrypt.GenerateFromPassword([]byte(newPassword), 5)
+	if err != nil {
+		return nil, err
+	}
+	user.Password = string(passw)
+	tx := e.db.Begin()
+	err = domain.NewUserDao(tx).Update(user)
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+	reset.Used = true
+	err = domain.NewResetDao(tx).Update(reset)
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+	tokenDao := domain.NewAccessTokenDao(tx)
+	token := domain.AccessToken{
+		Id:        domain.Sid.MustGenerate(),
+		Token:     uuid.NewV4().String(),
+		UserId:    user.Id,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	if err := tokenDao.Create(token); err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+	return &token, tx.Commit().Error
+}

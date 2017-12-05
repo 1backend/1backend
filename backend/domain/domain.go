@@ -178,3 +178,11 @@ type Post struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+type Reset struct {
+	Id        string
+	Secret    string
+	UserId    string
+	CreatedAt time.Time
+	Used      bool
+}
