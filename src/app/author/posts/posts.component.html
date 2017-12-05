@@ -1,10 +1,10 @@
 <div fxLayout="row wrap" fxLayoutAlign="space-between">
     <div fxFlex="1 1 100%">
       <mat-form-field style="width: 100%;" color="primary">
-        <input matInput [(ngModel)]="search" placeholder="Search projects" />
+        <input matInput [(ngModel)]="search" placeholder="Search posts" />
       </mat-form-field>
     </div>
-    <span *ngIf="author === us.user.Nick" align="end" style="margin-left: -100px; margin-top: -3px;" matTooltip="Create new project"
+    <span *ngIf="author === us.user.Nick" align="end" style="margin-left: -100px; margin-top: -3px;" matTooltip="Create new post"
       matTooltipPosition="above">
       <button mat-mini-fab (click)="create()" color="accent">
         <mat-icon>add</mat-icon>
