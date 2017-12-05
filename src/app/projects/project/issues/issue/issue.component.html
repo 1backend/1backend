@@ -5,7 +5,10 @@
         <mat-icon style="font-size: 30px; padding-top: 0.3em;">keyboard_backspace</mat-icon>
       </a>
     </span>
-    <h1 style="color: #2196F3; font-size: 24px;">{{issue.Title}}</h1>
+    <h1 style="color: #2196F3; font-size: 24px;">
+      {{issue.Title}}
+    </h1>
+
     <div *ngIf="issue.Comments && issue.Comments.length > 0">
       <app-comment [comment]="c" (onCommentUpdate)="getIssue()" *ngFor="let c of issue.Comments.slice(this.currentPage * 10, (this.currentPage + 1) * 10)">
       </app-comment>

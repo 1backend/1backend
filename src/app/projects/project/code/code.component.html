@@ -62,6 +62,10 @@
           <input [(ngModel)]="newEndpoint.Url" matInput placeholder="Path (ie. /user)">
         </mat-form-field>
 
+        <mat-form-field class="example-full-width">
+          <textarea matInput name="description" placeholder="Description" matTextareaAutosize style="width: 100%;" [(ngModel)]="newEndpoint.Description"> </textarea>
+        </mat-form-field>
+
         <ace-editor class="editor " [(text)]="newEndpoint.Code" [mode]="getAceCompatibleMode()" style="min-height: 200px; width:100%;
         overflow: auto;" #editor></ace-editor>
 
@@ -129,8 +133,10 @@ overflow: auto;" #editor></ace-editor>
                 <input matInput placeholder="Path (ie. /user)" [(ngModel)]="endpoint.Url">
               </mat-form-field>
               <mat-form-field class="example-full-width">
-                <input matInput [(ngModel)]="endpoint.Description">
+                <textarea matInput name="description" placeholder="Description" matTextareaAutosize style="width: 100%;" [(ngModel)]="endpoint.Description"> </textarea>
               </mat-form-field>
+
+
             </div>
             <button [disabled]="endpoint.Url === '/' || endpoint.Url === '' || !endpoint.Url.startsWith('/')" (click)="save()" mat-raised-button
               style="margin-top: 1em; margin-bottom: 1em; color: #EEEEEE;" color="primary">Save</button>

@@ -16,7 +16,7 @@
         </mat-card-title-group>
       </div>
       <div fxFlex="1 1 48%" style="text-align: right; color: #444">
-        <button (click)="editComment(comment)" *ngIf="comment?.User?.Nick === us?.user?.Nick" mat-icon-button>
+        <button (click)="editComment()" *ngIf="comment?.User?.Nick === us?.user?.Nick" mat-icon-button>
           <i style="color:#444; font-size: 18px;padding-bottom: 0.2em;" class="material-icons">mode_edit</i>
         </button>
         #{{comment.Index}}
@@ -30,10 +30,10 @@
   </mat-card-content>
   <mat-card-content *ngIf="comment.Editing" style="padding: 1em;max-width: 100%;">
     <textarea style="font-family:Times New Roman; color:#040505 ; font-size: 20px;" fxLayout="row wrap" fxLayoutAlign="space-between"
-      fxFlex="1 1 100%" rows="10" cols="300px" [(ngModel)]="comment.Content"></textarea>
+      fxFlex="1 1 100%" rows="10" cols="300px" [(ngModel)]="editedCommentContent"></textarea>
     <!-- <font style="font-size: 16px;color: rgb(36,41,46);line-height: 21px;">{{c.Content}}</font> -->
   </mat-card-content>
-  <button *ngIf="comment.Editing" mat-raised-button style="background-color: rgb(0,192,66);" (click)="updateComment(comment)">
+  <button *ngIf="comment.Editing" mat-raised-button style="background-color: rgb(0,192,66);" (click)="updateComment()">
     <font color="white">
       <b>Save</b>
     </font>
