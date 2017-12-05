@@ -1,0 +1,32 @@
+<div fxFlexLayout="row">
+  <mat-card style="overflow-x: auto">
+    <mat-card-title>
+      <div fxFlex="1 1 auto" *ngIf="!post.Editing">
+    {{post.Title}}
+  </div>
+  <div fxFlex="1 1 auto" fxLayoutAlign="end center">
+    <span >
+        <button (click)="editPost()" *ngIf="post?.User?.Nick === us?.user?.Nick" mat-icon-button>
+            <i style="color:#444; font-size: 18px;padding-bottom: 0.2em;" class="material-icons">mode_edit</i>
+          </button>
+    </span>
+  </div>
+  </mat-card-title>
+  <mat-card-subtitle *ngIf="!post.Editing">
+    {{post.CreatedAt | amTimeAgo}} by {{post.User?.Nick}}
+  </mat-card-subtitle>
+  <mat-form-field *ngIf="post.Editing" style="width: 100%">
+      <input matInput placeholder="Title" [(ngModel)]="post.Title"/> 
+  </mat-form-field>
+  <mat-card-content>
+      <markdown-to-html *ngIf="!post.Editing"item-width="70%" [data]="post.Content"></markdown-to-html>
+      <textarea *ngIf="post.Editing" style="font-family:Times New Roman; color:#040505 ; font-size: 20px;" fxLayout="row wrap" fxLayoutAlign="space-between"
+      fxFlex="1 1 100%" rows="10" cols="300px" [(ngModel)]="post.Content"></textarea>
+    </mat-card-content>
+    <button *ngIf="post.Editing" fxLayoutAlign="center center" mat-raised-button style="background-color: rgb(0,192,66);" (click)="updatePost()">
+        <font color="white">
+          <b>Save</b>
+        </font>
+      </button>
+  </mat-card>
+</div>

@@ -78,6 +78,10 @@ import { ProjectService } from './project.service';
 import { ProjectStatusComponent } from './projects/project/code/project-status/project-status.component';
 import { StarButtonComponent } from './projects/star-button/star-button.component';
 import { CommentComponent } from './projects/project/issues/issue/comment/comment.component';
+import { CreatePostComponent } from './author/posts/create-post/create-post.component';
+import { PostComponent } from './author/posts/post/post.component';
+import { PostService } from './post.service';
+import { CreatePostDialogService } from './author/posts/create-post-dialog.service';
 
 const appRoutes: Routes = [
   {
@@ -91,6 +95,10 @@ const appRoutes: Routes = [
   {
     path: 'projects',
     component: ProjectsComponent
+  },
+  {
+    path: ':author/p/:postId',
+    component: PostComponent
   },
   {
     path: ':author/:project/issue/:issueId',
@@ -147,7 +155,9 @@ const appRoutes: Routes = [
     ProfileEditComponent,
     ProjectStatusComponent,
     StarButtonComponent,
-    CommentComponent
+    CommentComponent,
+    CreatePostComponent,
+    PostComponent
   ],
   imports: [
     BrowserModule,
@@ -193,14 +203,17 @@ const appRoutes: Routes = [
     ChargeService,
     ProjectService,
     TokenService,
-    CommentService
+    CommentService,
+    PostService,
+    CreatePostDialogService
   ],
   bootstrap: [AppComponent],
   entryComponents: [
     CreateProjectComponent,
     CreateProjectDialogComponent,
     CreateIssueComponent,
-    LoginComponent
+    LoginComponent,
+    CreatePostComponent
   ]
 })
 export class AppModule {}
