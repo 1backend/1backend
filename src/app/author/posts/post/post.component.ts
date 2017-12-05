@@ -13,7 +13,11 @@ export class PostComponent implements OnInit {
   postId: string;
   post: types.Post = {};
 
-  constructor(private route: ActivatedRoute, private ps: PostService, public us: UserService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private ps: PostService,
+    public us: UserService
+  ) {}
 
   getPost() {
     this.ps
@@ -26,8 +30,18 @@ export class PostComponent implements OnInit {
       });
   }
 
-  editPost () {
-    this.post.Editing = true;
+  editPost() {
+    this.post.Editing = !this.post.Editing;
+  }
+
+  updatePost() {
+    this.ps
+      .edit(this.post)
+      .then(post => {
+        this.post = post;
+        this.getPost();
+      })
+      .catch(err => (err = console.log('error')));
   }
 
   ngOnInit() {

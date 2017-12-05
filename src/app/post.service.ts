@@ -41,11 +41,8 @@ export class PostService {
   edit(post: types.Post): Promise<types.Post> {
     return this.http
       .put(environment.backendUrl + '/v1/post', {
-        post: {
-          content: post.Content,
-          title: post.Title,
-          user: post.User
-        }
+        post: post,
+        token: this.ss.getToken()
       })
       .toPromise();
   }
