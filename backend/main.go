@@ -20,7 +20,6 @@ func registerHandlers(r *httpr.Router, h *handlers.Handlers, p *proxy.Proxy) {
 	r.GET("/v1/projects", h.GetProjects)
 	r.POST("/v1/project", h.CreateProject)
 	r.PUT("/v1/project", h.UpdateProject)
-	r.GET("/v1/builds/:projectId", h.GetBuilds)
 
 	r.PUT("/v1/star", h.PutStar)
 	r.DELETE("/v1/star", h.DeleteStar)
@@ -29,6 +28,7 @@ func registerHandlers(r *httpr.Router, h *handlers.Handlers, p *proxy.Proxy) {
 	r.GET("/v1/issue", h.GetIssue)
 	r.POST("/v1/issue", h.CreateIssue)
 	r.PUT("/v1/issue", h.UpdateIssue)
+
 	r.POST("/v1/comment", h.CreateComment)
 	r.PUT("/v1/comment", h.UpdateComment)
 
@@ -46,7 +46,6 @@ func registerHandlers(r *httpr.Router, h *handlers.Handlers, p *proxy.Proxy) {
 
 	r.GET("/v1/user", h.GetUser)
 	r.PUT("/v1/user", h.UpdateUser)
-
 	r.POST("/v1/register", h.Register)
 	r.POST("/v1/login", h.Login)
 
