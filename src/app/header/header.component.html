@@ -11,6 +11,9 @@
       <a mat-button href="#pricing">
         Pricing
       </a>
+      <a mat-button href="https://github.com/1backend/1backend">
+        GitHub
+      </a>
       <button mat-button (click)="discoverProjects()">
         Discover projects
       </button>
@@ -27,6 +30,10 @@
         <button fxShow="false" fxShow.lt-md mat-menu-item (click)="pricing()">
           <mat-icon style="color: #1E88E5">credit_card</mat-icon>
           <span>Pricing</span>
+        </button>
+        <button fxShow="false" fxShow.lt-md mat-menu-item (click)="github()">
+          <mat-icon style="color: #1E88E5">code</mat-icon>
+          <span>GitHub</span>
         </button>
         <button fxShow="false" fxShow.lt-md mat-menu-item (click)="discoverProjects()">
           <mat-icon style="color: #1E88E5">list</mat-icon>

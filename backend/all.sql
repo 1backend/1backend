@@ -188,7 +188,6 @@ ALTER TABLE charges
 CREATE TABLE IF NOT EXISTS posts
 (
   id                  VARCHAR(36)                                                     NOT NULL,
-  project_id          VARCHAR(36)                                                     NOT NULL,
   title               VARCHAR(256)                                                    NOT NULL,
   content             TEXT                                                            NOT NULL,
   slug                VARCHAR(256)                                                    NOT NULL,
@@ -199,5 +198,4 @@ CREATE TABLE IF NOT EXISTS posts
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE posts
-      ADD FOREIGN KEY (project_id) REFERENCES projects (id),
       ADD FOREIGN KEY (user_id) REFERENCES users (id);

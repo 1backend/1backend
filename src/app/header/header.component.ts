@@ -51,6 +51,10 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/'], { fragment: 'pricing' });
   }
 
+  github() {
+    window.location.href = 'https://github.com/1backend/1backend';
+  }
+
   scroll(el) {
     el.scrollIntoView();
   }
