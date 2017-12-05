@@ -6,6 +6,16 @@ import (
 	shortid "github.com/ventu-io/go-shortid"
 )
 
+var Sid *shortid.Shortid
+
+func init() {
+	var err error
+	Sid, err = shortid.New(1, shortid.DefaultABC, 2719)
+	if err != nil {
+		panic(err)
+	}
+}
+
 type Project struct {
 	Id string
 	// Password for infrastructural elements like mysql, redis etc
@@ -147,16 +157,6 @@ type Star struct {
 	Id        string
 	UserId    string
 	ProjectId string
-}
-
-var Sid *shortid.Shortid
-
-func init() {
-	var err error
-	Sid, err = shortid.New(1, shortid.DefaultABC, 2719)
-	if err != nil {
-		panic(err)
-	}
 }
 
 type Charge struct {
