@@ -187,3 +187,38 @@ func (h *Handlers) Register(w http.ResponseWriter, r *http.Request, p httpr.Para
 		"token": token,
 	})
 }
+
+func (h *Handlers) SendResetEmail(w http.ResponseWriter, r *http.Request, p httpr.Params) {
+	eb := struct {
+		Email string
+	}{}
+	if err := readJsonBody(r, &eb); err != nil {
+		write400(w, err)
+		return
+	}
+	err := h.ep.SendResetEmail(eb.Email)
+	if err != nil {
+		write400(w, err)
+		return
+	}
+	write(w, map[string]interface{}{})
+}
+
+func (h *Handlers) ResetPassword(w http.ResponseWriter, r *http.Request, p httpr.Params) {
+	eb := struct {
+		Secret      string
+		NewPassword string
+	}{}
+	if err := readJsonBody(r, &eb); err != nil {
+		write400(w, err)
+		return
+	}
+	token, err := h.ep.ResetPassword(eb.Secret, eb.NewPassword)
+	if err != nil {
+		write400(w, err)
+		return
+	}
+	write(w, map[string]interface{}{
+		"token": token,
+	})
+}

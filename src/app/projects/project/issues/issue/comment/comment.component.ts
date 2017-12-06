@@ -20,18 +20,22 @@ import { CommentService } from '../../../../../comment.service';
 export class CommentComponent implements OnInit {
   @Output() onCommentUpdate = new EventEmitter<void>();
   @Input() comment: types.Comment;
+  editedCommentContent = '';
 
   constructor(private us: UserService, private cs: CommentService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.editedCommentContent = this.comment.Content;
+  }
 
-  updateComment(comment: types.Comment) {
-    this.cs.update(comment).then(() => {
+  updateComment() {
+    this.comment.Content = this.editedCommentContent;
+    this.cs.update(this.comment).then(() => {
       this.onCommentUpdate.emit();
     });
   }
 
-  editComment(comment: types.Comment) {
-    comment.Editing = true;
+  editComment() {
+    this.comment.Editing = !this.comment.Editing;
   }
 }
