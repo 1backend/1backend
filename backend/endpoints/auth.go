@@ -153,3 +153,16 @@ func (e *Endpoints) GetUser(tokenId string) (*domain.User, error) {
 	u, _ := userDao.GetById(t.UserId)
 	return &u, nil
 }
+
+func (e *Endpoints) ChangePassword(user *domain.User, oldPassword, newPassword string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(oldPassword))
+	if err != nil {
+		return errors.New("Old password is incorrect")
+	}
+	npassw, err := bcrypt.GenerateFromPassword([]byte(newPassword), 5)
+	if err != nil {
+		return err
+	}
+	user.Password = string(npassw)
+	return e.db.Save(user).Error
+}

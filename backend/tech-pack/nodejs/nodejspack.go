@@ -1,6 +1,7 @@
 package nodejspack
 
 import (
+	"fmt"
 	"text/template"
 
 	"github.com/1backend/1backend/backend/domain"
@@ -39,7 +40,16 @@ var packageJson = `{
   "license": "MIT"
 }`
 
+var readme = `
+%v
+===
+
+This is an empty Node.js project.
+`
+
 func (g NodeJSPack) CreateProjectPlugin() error {
+	g.project.ReadMe = fmt.Sprintf(readme, g.project.Name)
+	g.project.Description = "An empty Node.js project"
 	generateEndpoints(g.project)
 	return nil
 }

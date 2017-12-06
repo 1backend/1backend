@@ -48,6 +48,7 @@ func registerHandlers(r *httpr.Router, h *handlers.Handlers, p *proxy.Proxy) {
 	r.PUT("/v1/user", h.UpdateUser)
 	r.POST("/v1/register", h.Register)
 	r.POST("/v1/login", h.Login)
+	r.POST("/v1/change-password", h.ChangePassword)
 
 	r.GET("/app/:author/:app/*route", p.Proxy)
 	r.POST("/app/:author/:app/*route", p.Proxy)
