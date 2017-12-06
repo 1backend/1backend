@@ -6,6 +6,7 @@ import { ChargeService } from '../charge.service';
 import { ProjectService } from '../project.service';
 import { NotificationsService } from 'angular2-notifications';
 import { UserService } from '../user.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-author',
@@ -27,7 +28,8 @@ export class AuthorComponent implements OnInit {
     private notif: NotificationsService,
     public us: UserService,
     public ps: ProjectService,
-    private charge: ChargeService
+    private charge: ChargeService,
+    private title: Title
   ) {}
 
   ngOnInit() {

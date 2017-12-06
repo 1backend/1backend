@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../../../user.service';
 import { ProjectService } from '../../../project.service';
 import { environment } from '../../../../environments/environment';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-code',
@@ -34,7 +35,8 @@ export class CodeComponent implements OnInit {
   constructor(
     private router: Router,
     private us: UserService,
-    private ps: ProjectService
+    private ps: ProjectService,
+    private title: Title
   ) {
     this.user = this.us.user;
   }

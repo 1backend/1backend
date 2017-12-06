@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import * as types from '../types';
 import { NotificationsService } from 'angular2-notifications';
+import { Title } from '@angular/platform-browser';
 
 interface ResetPasswordResponse {
   token: types.AccessToken;
@@ -24,10 +25,13 @@ export class ResetComponent implements OnInit {
     private http: HttpClient,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private notif: NotificationsService
+    private notif: NotificationsService,
+    private title: Title
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.title.setTitle('Password reset');
+  }
 
   resetPassword() {
     if (this.newPassword !== this.newPassword2) {

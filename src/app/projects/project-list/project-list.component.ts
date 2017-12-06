@@ -6,6 +6,7 @@ import * as types from '../../types';
 import { ActivatedRoute } from '@angular/router';
 import { LoginDialogService } from '../../login/login-dialog.service';
 import { ProjectService } from '../../project.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-project-list',
@@ -26,13 +27,20 @@ export class ProjectListComponent implements OnInit {
     private router: Router,
     public us: UserService,
     private ps: ProjectService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private title: Title
   ) {
     this.author = this.route.snapshot.params['author'];
     this.isProjectsPage = this.router.isActive('projects', false);
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (this.router.url === '/projects') {
+      this.title.setTitle('Projects');
+    } else if (this.router.url === '/' + this.author) {
+      this.title.setTitle(this.author);
+    }
+  }
 
   create() {
     const that = this;
