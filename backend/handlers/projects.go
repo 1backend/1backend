@@ -12,7 +12,6 @@ import (
 	"github.com/1backend/1backend/backend/config"
 	"github.com/1backend/1backend/backend/domain"
 	"github.com/1backend/1backend/backend/endpoints"
-	"github.com/1backend/1backend/backend/state"
 )
 
 type Handlers struct {
@@ -27,71 +26,6 @@ func NewHandlers(db *gorm.DB, rc *redis.Client) *Handlers {
 		ep:          endpoints.NewEndpoints(db, rc),
 		redisClient: rc,
 	}
-}
-
-// We either get sent a nick, or a nick + token
-// We get a token when we want to read the user by token
-// We get a nick + token when either viewing our own profile or other peoples' profile
-func (h *Handlers) GetUser(w http.ResponseWriter, r *http.Request, p httpr.Params) {
-	token := r.URL.Query().Get("token")
-	nick := r.URL.Query().Get("nick")
-	ownErr := h.ep.HasNick(token, nick)
-	if nick == "" || ownErr == nil {
-		tk, err := domain.NewAccessTokenDao(h.db).GetByToken(token)
-		if err != nil {
-			write400(w, err)
-			return
-		}
-		user, err := domain.NewUserDao(h.db).GetById(tk.UserId)
-		if err != nil {
-			write400(w, err)
-			return
-		}
-		st := state.NewState(h.redisClient)
-		for i, v := range user.Tokens {
-			val, _ := st.GetQuota(v.Token)
-			user.Tokens[i].Quota = val
-		}
-		write(w, user)
-		return
-	}
-	user, err := domain.NewUserDao(h.db).GetByNick(nick)
-	if err != nil {
-		write400(w, err)
-		return
-	}
-	write(w, user)
-	return
-}
-
-func (h *Handlers) UpdateUser(w http.ResponseWriter, r *http.Request, p httpr.Params) {
-	inp := struct {
-		Token string
-		User  domain.User
-	}{}
-	if err := readJsonBody(r, &inp); err != nil {
-		write400(w, err)
-		return
-	}
-	tk, err := domain.NewAccessTokenDao(h.db).GetByToken(inp.Token)
-	if err != nil {
-		write400(w, err)
-		return
-	}
-	user, err := domain.NewUserDao(h.db).GetById(tk.UserId)
-	if err != nil {
-		write400(w, err)
-		return
-	}
-	user.Email = inp.User.Email
-	user.AvatarLink = inp.User.AvatarLink
-	user.Name = inp.User.Name
-	err = domain.NewUserDao(h.db).Update(user)
-	if err != nil {
-		write500(w, err)
-		return
-	}
-	write(w, map[string]string{})
 }
 
 func (h *Handlers) RunSql(w http.ResponseWriter, r *http.Request, p httpr.Params) {

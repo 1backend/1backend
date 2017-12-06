@@ -154,6 +154,19 @@ func (e *Endpoints) GetUser(tokenId string) (*domain.User, error) {
 	return &u, nil
 }
 
+func (e *Endpoints) ChangePassword(user *domain.User, oldPassword, newPassword string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(oldPassword))
+	if err != nil {
+		return errors.New("Old password is incorrect")
+	}
+	npassw, err := bcrypt.GenerateFromPassword([]byte(newPassword), 5)
+	if err != nil {
+		return err
+	}
+	user.Password = string(npassw)
+	return e.db.Save(user).Error
+}
+
 func (e *Endpoints) SendResetEmail(email string) error {
 	if email == "" {
 		return errors.New("Email can not be empty.")
