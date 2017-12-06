@@ -19,6 +19,7 @@ interface ResetPasswordResponse {
 export class ResetComponent implements OnInit {
   newPassword: string;
   newPassword2: string;
+  secret: string;
 
   constructor(
     private ss: SessionService,
@@ -31,6 +32,7 @@ export class ResetComponent implements OnInit {
 
   ngOnInit() {
     this.title.setTitle('Password reset');
+    this.secret = this.activatedRoute.snapshot.params['secret'];
   }
 
   resetPassword() {
@@ -40,7 +42,8 @@ export class ResetComponent implements OnInit {
     }
     this.http
       .post<ResetPasswordResponse>(environment.backendUrl + '/v1/reset-password', {
-        newPassword: this.newPassword
+        newPassword: this.newPassword,
+        secret: this.secret
       })
       .subscribe(
         rsp => {
