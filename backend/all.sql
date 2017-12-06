@@ -199,3 +199,14 @@ CREATE TABLE IF NOT EXISTS posts
 
 ALTER TABLE posts
       ADD FOREIGN KEY (user_id) REFERENCES users (id);
+
+-- password resets
+CREATE TABLE IF NOT EXISTS resets  
+(
+  id                VARCHAR(36)                         NOT NULL,
+  secret            VARCHAR(36)                  UNIQUE NOT NULL,
+  user_id           VARCHAR(36)                         NOT NULL,
+  used              BOOLEAN DEFAULT FALSE               NOT NULL,
+  created_at        DATETIME DEFAULT CURRENT_TIMESTAMP  NOT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
