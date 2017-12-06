@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import * as types from '../../../types';
 import { MatProgressSpinnerModule } from '@angular/material';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-builds',
@@ -15,9 +16,12 @@ export class BuildsComponent implements OnInit {
   value = 50;
   currentPage = 0;
 
-  constructor() {}
+  constructor(
+    private title: Title
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   reveal(e: types.Build) {
     e.Selected = !e.Selected;

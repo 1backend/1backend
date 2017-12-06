@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AceEditorModule } from 'ng2-ace-editor';
@@ -205,7 +205,8 @@ const appRoutes: Routes = [
     TokenService,
     CommentService,
     PostService,
-    CreatePostDialogService
+    CreatePostDialogService,
+    Title
   ],
   bootstrap: [AppComponent],
   entryComponents: [

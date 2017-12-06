@@ -8,6 +8,7 @@ import { UserService } from '../../user.service';
 import { ProjectService } from '../../project.service';
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import { NotificationsService } from 'angular2-notifications';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-project',
@@ -42,7 +43,8 @@ export class ProjectComponent implements OnInit {
     private router: Router,
     private ps: ProjectService,
     public us: UserService,
-    private notif: NotificationsService
+    private notif: NotificationsService,
+    private title: Title
   ) {}
 
   refresh(): void {
@@ -70,6 +72,7 @@ export class ProjectComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.title.setTitle(this.author + '/' + this.projectName);
     this.author = this.route.snapshot.params['author'];
     this.projectName = this.route.snapshot.params['project'];
     this.tab = this.route.snapshot.params['tab'];
