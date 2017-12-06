@@ -85,7 +85,7 @@ import { CreatePostDialogService } from './author/posts/create-post-dialog.servi
 
 const appRoutes: Routes = [
   {
-    path: 'reset',
+    path: 'reset/:secret',
     component: ResetComponent
   },
   {
