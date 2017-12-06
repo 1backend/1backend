@@ -23,7 +23,8 @@ export class CodeComponent implements OnInit {
   rightWidth = 49;
   newEndpoint: types.Endpoint = {
     Method: 'GET',
-    Url: '/'
+    Url: '/',
+    Description: ''
   };
   status: boolean;
   readme: string;

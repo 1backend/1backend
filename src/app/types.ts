@@ -5,6 +5,7 @@ export interface Endpoint extends Selectable {
   Method?: string; // http method
   Input?: string;
   Output?: string;
+  Description?: string;
   CreatedAt?: string;
 }
 
@@ -109,6 +110,7 @@ export interface Issue {
   Title?: string;
   UserId?: string;
   Comments?: Comment[];
+  User?: User;
   CreatedBy?: User;
   CreatedAt?: string;
   UpdatedAt?: string;
