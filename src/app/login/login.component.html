@@ -37,7 +37,7 @@
         </mat-form-field>
 
         <mat-form-field (keydown.enter)="register()" class="example-full-width" style="text-align: left; width: 100%;">
-          <input matInput placeholder="Email address" [(ngModel)]="email" email pattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}"
+          <input matInput placeholder="Email address" [(ngModel)]="email" email pattern="[a-zA-Z0-9.-_]{1,}([+][a-zA-Z0-9.-_]{1,})*@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}"
             required>
           <mat-error>
             Invalid email address.

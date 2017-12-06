@@ -72,11 +72,11 @@ export class ProjectComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.title.setTitle(this.author + '/' + this.projectName);
     this.author = this.route.snapshot.params['author'];
     this.projectName = this.route.snapshot.params['project'];
     this.tab = this.route.snapshot.params['tab'];
     this.issueId = this.route.snapshot.params['issueId'];
+    this.title.setTitle(this.author + '/' + this.projectName);
 
     this.refresh();
 

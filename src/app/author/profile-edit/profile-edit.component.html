@@ -2,7 +2,7 @@
   <mat-tab-group style="padding-bottom: 1em;">
     <mat-tab label="Edit">
       <div>
-        <mat-form-field class="example-full-width" style="width: 100%">
+        <mat-form-field class="example-full-width" style="width: 100%; padding-top: 1em;">
           <input matInput placeholder="Link to your avatar (optional)" [(ngModel)]="us.user.AvatarLink" />
         </mat-form-field>
       </div>
@@ -21,12 +21,12 @@
           <input matInput placeholder="Email" [(ngModel)]="us.user.Email" />
         </mat-form-field>
       </div>
-      <div class="button" align="center">
+      <div class="button" align="center" style="padding-bottom: 1em;">
         <button mat-raised-button (click)="save()" color="accent">Save</button>
       </div>
     </mat-tab>
     <mat-tab label="Password">
-      <mat-form-field style="width: 100%;">
+      <mat-form-field style="width: 100%; padding-top: 1em;">
         <input matInput placeholder="Old password" type="password" [(ngModel)]="oldPw" />
       </mat-form-field>
       <mat-form-field style="width: 100%;">
