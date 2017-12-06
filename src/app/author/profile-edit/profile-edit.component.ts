@@ -20,6 +20,9 @@ export class ProfileEditComponent implements OnInit {
   @Input() user: types.User;
   @Output() onSelfSave = new EventEmitter<void>();
   saved = true;
+  oldPw = '';
+  newPw = '';
+  newPwCf = '';
 
   constructor(public us: UserService, private notif: NotificationsService) {}
 
@@ -27,7 +30,6 @@ export class ProfileEditComponent implements OnInit {
 
   save() {
     if (!this.valid()) {
-      console.log('reutrned');
       return;
     }
     this.us.saveSelf().then(data => {
@@ -40,6 +42,13 @@ export class ProfileEditComponent implements OnInit {
     this.saved = false;
   }
 
+  changePassword() {
+    if (!this.pwChangeValid()) {
+      return;
+    }
+    this.us.changePassword(this.oldPw, this.newPw);
+  }
+
   valid(): boolean {
     if (!this.user.Nick) {
       this.notif.error('Nickname is empty');
@@ -47,6 +56,18 @@ export class ProfileEditComponent implements OnInit {
     }
     if (!this.user.Email) {
       this.notif.error('Email is empty');
+      return false;
+    }
+    return true;
+  }
+
+  pwChangeValid(): boolean {
+    if (this.newPw.length < 1) {
+      this.notif.error('Password is empty');
+      return false;
+    }
+    if (this.newPw !== this.newPwCf) {
+      this.notif.error('New password and confirm do not match');
       return false;
     }
     return true;

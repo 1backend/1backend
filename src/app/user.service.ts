@@ -123,4 +123,14 @@ export class UserService {
         return registerResp;
       });
   }
+
+  changePassword(oldPw: string, newPw: string): Promise<void> {
+    return this.http
+      .post<void>(environment.backendUrl + '/v1/change-password', {
+        oldPassword: oldPw,
+        newPassword: newPw,
+        token: this.sess.getToken()
+      })
+      .toPromise();
+  }
 }
