@@ -6,7 +6,7 @@ import { UserService } from '../user.service';
 import * as types from '../types';
 import { FormControl, Validators } from '@angular/forms';
 
-const EMAIL_REGEX = /^[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9.-_]{1,}([+][a-zA-Z0-9.-_]{1,})*@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}$/;
 const USERNAME_REGEX = /^[a-z0-9]+([a-z0-9\-]*)*[a-z0-9]+$/;
 
 @Component({
