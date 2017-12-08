@@ -54,6 +54,9 @@
       </div>
     </span>
   </div>
+  <div *ngIf="projects.length < 1">
+    You have no projects yet. Use this big yellow button to create one &#8599;.
+  </div>
   <mat-paginator *ngIf="projects.length> 10" style="margin-top: 1em;" [length]="projects | FilterPipe: search | length" [pageSize]="10"
     [pageSizeOptions]="[10]" (page)="pageChanged($event)">
   </mat-paginator>

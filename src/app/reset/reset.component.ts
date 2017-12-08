@@ -6,6 +6,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import * as types from '../types';
 import { NotificationsService } from 'angular2-notifications';
 import { Title } from '@angular/platform-browser';
+import { UserService } from '../user.service';
 
 interface ResetPasswordResponse {
   token: types.AccessToken;
@@ -27,7 +28,8 @@ export class ResetComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private notif: NotificationsService,
-    private title: Title
+    private title: Title,
+    private us: UserService
   ) {}
 
   ngOnInit() {
@@ -51,7 +53,8 @@ export class ResetComponent implements OnInit {
             this.notif.error('Can\'t find token');
           } else {
             this.ss.setToken(rsp.token.Token);
-            this.router.navigate(['']);
+            this.us.get();
+            this.router.navigate(['/' + this.us.user.Nick]);
           }
         },
         err => {
