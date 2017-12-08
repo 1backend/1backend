@@ -30,10 +30,12 @@ var packageJson = `{
   },
   "dependencies": {
     "express": "^4.13.3",
-    "mysql": "^2.15.0",
+		"mysql": "^2.15.0",
+		"body-parser": "*",
     "@types/mysql": "^2.15.0",
-    "@types/express": "^4.0",
-    "1backend-typescript-example-service": "^0.0.1"
+		"@types/express": "^4.0",
+		"@types/body-parser": "*",
+    "@1backend/typescript-example-service": "*"
   },
   "engines": {
     "node": "4.0.0"
@@ -61,21 +63,42 @@ func (g TypeScriptPack) FilesToBuild() [][]string {
 }
 
 const hi = `(req: express.Request, rsp: express.Response) => {
-  rsp.send('hi');
+  rsp.send(JSON.stringify('hi'));
 }
 `
+const hiInput = `[]`
+const hiOutput = "string"
 
 const importedHi = `(req: express.Request, rsp: express.Response) => {
   service.Hi(req, rsp)
 }
 `
+const importedHiInput = `[]`
+const importedHiOutput = "string"
 
 const sqlExample = `(req: express.Request, rsp: express.Response) => {
-  db.query('SELECT 1 + 1 AS solution', (err: mysql.MysqlError, rows) => {
-    rsp.send('The solution is: ' + rows[0]['solution']);
+  sql.query('SELECT 1 + 1 AS solution', (err: mysql.MysqlError, rows) => {
+		const outpout = 'The solution is: ' + rows[0]['solution'];
+    rsp.send(JSON.stringify(output));
   });
 }
 `
+const sqlExampleInput = `[]`
+const sqlExampleOutput = "string"
+
+const inputExample = `service.CalculateRectangleArea`
+const inputExampleInput = `[
+	{"rect": "rectangle"},
+	{"unit": "string"}
+]`
+const inputExampleOutput = `output`
+
+const types = `{
+	"rectangle": [
+		{"sideA": "number"},
+		{"sideB": "number"}
+	]
+}`
 
 func generateEndpoints(proj *domain.Project) {
 	proj.Imports = `import * as service from '1backend-typescript-example-service';`
