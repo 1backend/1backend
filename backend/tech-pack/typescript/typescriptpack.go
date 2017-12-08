@@ -101,7 +101,7 @@ const types = `{
 }`
 
 func generateEndpoints(proj *domain.Project) {
-	proj.Imports = `import * as service from '1backend-typescript-example-service';`
+	proj.Imports = `import * as service from '@1backend/typescript-example-service';`
 	proj.Packages = packageJson
 	proj.Endpoints = []domain.Endpoint{
 		domain.Endpoint{
