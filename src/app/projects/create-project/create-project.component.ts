@@ -92,13 +92,20 @@ export class CreateProjectComponent implements OnInit {
       OpenSource: true
     };
 
-    this.ps.save(p).then(() => {
-      if (this.callback) {
-        this.callback(p);
-      } else {
-        this.router.navigate(['/' + this.user.Nick + '/' + this.name]);
-      }
-    });
+    this.ps
+      .create(p)
+      .then(() => {
+        if (this.callback) {
+          this.callback(p);
+          console.log('callback');
+        } else {
+          console.log('navigate');
+          this.router.navigate(['/' + this.user.Nick + '/' + this.name]);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   create() {

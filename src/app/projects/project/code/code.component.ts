@@ -54,7 +54,7 @@ export class CodeComponent implements OnInit {
 
   save() {
     this.ps
-      .save(this.project)
+      .update(this.project)
       .then(data => {
         this.onProjectSaved.emit();
       })

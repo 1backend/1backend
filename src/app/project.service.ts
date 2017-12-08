@@ -11,10 +11,7 @@ interface PingResponse {
 
 @Injectable()
 export class ProjectService {
-  constructor(
-    private http: HttpClient,
-    private ss: SessionService
-  ) {}
+  constructor(private http: HttpClient, private ss: SessionService) {}
 
   // returns last updated projects first
   listByNick(nick: string): Promise<types.Project[]> {
@@ -130,9 +127,17 @@ export class ProjectService {
       });
   }
 
-  save(project: types.Project): Promise<void> {
+  update(project: types.Project): Promise<void> {
     return this.http
       .put<void>(environment.backendUrl + '/v1/project', {
+        project: project,
+        token: this.ss.getToken()
+      })
+      .toPromise();
+  }
+  create(project: types.Project): Promise<void> {
+    return this.http
+      .post<void>(environment.backendUrl + '/v1/project', {
         project: project,
         token: this.ss.getToken()
       })
