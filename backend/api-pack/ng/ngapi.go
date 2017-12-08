@@ -145,7 +145,7 @@ func gServiceName(s string) string {
 }
 
 func gMethod(method string) string {
-	return strings.Title(strings.ToLower(method))
+	return strings.ToLower(method)
 }
 
 func gInputToMap(fields []apiTypes.Field) string {
