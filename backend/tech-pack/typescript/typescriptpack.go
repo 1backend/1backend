@@ -4,6 +4,7 @@ import (
 	"text/template"
 
 	"github.com/1backend/1backend/backend/domain"
+	"github.com/1backend/1backend/backend/tech-pack/utils"
 )
 
 func NewPack(project *domain.Project) TypeScriptPack {
@@ -79,6 +80,7 @@ const importedHiOutput = "string"
 
 const sqlExample = `(req: express.Request, rsp: express.Response) => {
   sql.query('SELECT 1 + 1 AS solution', (err: mysql.MysqlError, rows) => {
+		if (error) throw error;
 		const outpout = 'The solution is: ' + rows[0]['solution'];
     rsp.send(JSON.stringify(output));
   });
@@ -87,7 +89,7 @@ const sqlExample = `(req: express.Request, rsp: express.Response) => {
 const sqlExampleInput = `[]`
 const sqlExampleOutput = "string"
 
-const inputExample = `service.CalculateRectangleArea`
+const inputExample = `service.calculateRectangleArea`
 const inputExampleInput = `[
 	{"rect": "rectangle"},
 	{"unit": "string"}
@@ -101,22 +103,39 @@ const types = `{
 	]
 }`
 
-func generateEndpoints(proj *domain.Project) {
+func generateEndpoints(proj *domain.Project) error {
+	proj.Description = "An empty TypeScript project"
 	proj.Imports = `import * as service from '@1backend/typescript-example-service';`
 	proj.Packages = packageJson
+	readme, err := utils.GetReadme(proj)
+	if err != nil {
+		return err
+	}
 	proj.ReadMe = readme
 	proj.Endpoints = []domain.Endpoint{
 		domain.Endpoint{
 			Url:         "/hi",
 			Method:      "GET",
 			Code:        hi,
+			Input:       importedHiInput,
+			Output:      importedHiOutput,
 			Description: "A very simple endpoint in TypeScript, saying hi to you",
 		},
 		domain.Endpoint{
 			Url:         "/imported-hi",
 			Method:      "GET",
 			Code:        importedHi,
+			Input:       importedHiInput,
+			Output:      importedHiOutput,
 			Description: "An endpoint that demonstrates the usage of an imported package",
+		},
+		domain.Endpoint{
+			Url:         "/input-example",
+			Method:      "POST",
+			Code:        inputExample,
+			Input:       inputExampleInput,
+			Output:      inputExampleOutput,
+			Description: "An endpoint that demonstrates endoint input type usage",
 		},
 	}
 	for _, v := range proj.Dependencies {
