@@ -1,15 +1,19 @@
 'use strict';
 
-var mysql = require('mysql');
+const mysql = require('mysql');
+const express = require('express');
+const bodyParser = require('body-parser');
+{{.Project.Imports}}
+
 var db = mysql.createConnection({
   host     : process.env['MYSQLIP'],
   user     : '{{ .Project.Author }}_{{ .Project.Name }}',
   password : process.env['INFRAPASS'],
   database : '{{ .Project.Author }}_{{ .Project.Name }}'
 });
-const express = require('express');
-{{.Project.Imports}}
+
 const app = express();
+app.use(bodyParser.json());
 
 app.get('/ping', (req, res) => {
     res.send({"pong": true});

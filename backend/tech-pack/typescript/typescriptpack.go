@@ -20,6 +20,8 @@ func (g TypeScriptPack) RecipePath() string {
 	return "typescript"
 }
 
+// The service itself is not published to NPM, unlike its clients,
+// we still generate a package json though.
 var packageJson = `{
   "name": "1backend-typescript-service",
   "version": "0.1.0",
@@ -44,8 +46,7 @@ var packageJson = `{
 }`
 
 func (g TypeScriptPack) CreateProjectPlugin() error {
-	generateEndpoints(g.project)
-	return nil
+	return generateEndpoints(g.project)
 }
 
 func (g TypeScriptPack) Outfile() string {
@@ -103,6 +104,7 @@ const types = `{
 func generateEndpoints(proj *domain.Project) {
 	proj.Imports = `import * as service from '@1backend/typescript-example-service';`
 	proj.Packages = packageJson
+	proj.ReadMe = readme
 	proj.Endpoints = []domain.Endpoint{
 		domain.Endpoint{
 			Url:         "/hi",
@@ -129,4 +131,5 @@ func generateEndpoints(proj *domain.Project) {
 			}...)
 		}
 	}
+	return nil
 }
