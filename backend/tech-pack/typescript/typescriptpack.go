@@ -38,7 +38,7 @@ var packageJson = `{
     "@types/mysql": "^2.15.0",
 		"@types/express": "^4.0",
 		"@types/body-parser": "*",
-    "@1backend/typescript-example-service": "*"
+    "@1backend/typescript-example-service": "^0.0"
   },
   "engines": {
     "node": "4.0.0"
