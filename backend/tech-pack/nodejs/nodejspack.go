@@ -32,7 +32,7 @@ var packageJson = `{
   "dependencies": {
 		"express": "^4.13.3",
 		"mysql": "^2.15.0",
-		"@1backend/nodejs-example-service": "^0.0.2"
+		"@1backend/nodejs-example-service": "^0.0"
   },
   "engines": {
     "node": "4.0.0"
