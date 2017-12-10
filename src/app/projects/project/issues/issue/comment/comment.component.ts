@@ -22,7 +22,7 @@ export class CommentComponent implements OnInit {
   @Input() comment: types.Comment;
   editedCommentContent = '';
 
-  constructor(private us: UserService, private cs: CommentService) {}
+  constructor(public us: UserService, private cs: CommentService) {}
 
   ngOnInit() {
     this.editedCommentContent = this.comment.Content;
