@@ -24,7 +24,6 @@ type Config struct {
 		GithubPersonalToken string
 	}
 	// Generated ts, node and ng API packages can be published to npmjs.org
-	// CAUTION! Uses the npm user already logged in on the machine
 	NpmPublication struct {
 		Enabled bool
 		// Org to publish the generated api clients under

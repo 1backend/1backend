@@ -1,8 +1,9 @@
 import * as mysql from 'mysql';
 import * as express from 'express';
+import * as bodyParser from 'body-parser';
 {{.Project.Imports}}
 
-const db = mysql.createConnection({
+const sql = mysql.createConnection({
   host     : process.env['MYSQLIP'],
   user     : '{{ .Project.Author }}_{{ .Project.Name }}',
   password : process.env['INFRAPASS'],
@@ -10,6 +11,7 @@ const db = mysql.createConnection({
 });
 
 const app = express();
+app.use(bodyParser.json());
 
 app.get('/ping', (req: express.Request, rsp: express.Response) => {
     rsp.send({"pong": true});

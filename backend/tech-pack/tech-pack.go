@@ -23,7 +23,7 @@ func GetProvider(proj *domain.Project) Provider {
 	panic(fmt.Sprintf("Can't find recipe for mode %v and recipe %v", proj.Mode, proj.Recipe))
 }
 
-// Provider is the interface every plugin must implement
+// Provider is the interface every tech pack plugin must implement
 type Provider interface {
 	// Folder name of tech pack
 	RecipePath() string
