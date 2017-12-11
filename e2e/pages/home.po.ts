@@ -11,16 +11,6 @@ export class HomePage {
   }
 
   clickRegister(): promise.Promise<void> {
-    const regButton = element(by.id('register-button'));
-    return browser.driver
-      .wait(regButton.isPresent(), 2000)
-      .then(() => {
-        alert('fasz');
-        return regButton.click();
-      })
-      .catch(err => {
-        console.log(err);
-        alert(err);
-      });
+    return element(by.id('register-button')).click();
   }
 }

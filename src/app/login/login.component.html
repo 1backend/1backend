@@ -1,7 +1,7 @@
 <div flexLayout="row wrap" fxLayoutAlign="center">
   <div fxFlex="1 1 100%">
     <mat-tab-group mat-stretch-tabs="true" [selectedIndex]="selectedIndex">
-      <mat-tab id="login-tab" style="padding-top: 2em;" label="Login">
+      <mat-tab style="padding-top: 2em;" label="Login">
         <ng-template mat-tab-label>Login</ng-template>
 
         <mat-form-field (keydown.enter)="login()" class="example-full-width" style="text-align: left; width: 100%;">
@@ -24,7 +24,7 @@
         </div>
       </mat-tab>
 
-      <mat-tab id="register-tab" label="Register">
+      <mat-tab label="Register">
 
         <mat-form-field (keydown.enter)="register()" class="example-full-width" style="text-align: left; width: 100%;">
           <input id="register-username" matInput placeholder="Username" [(ngModel)]="username" [formControl]="usernameFormControl"

@@ -10,21 +10,18 @@ function e(s: string): ElementFinder {
   return element(by.css(s));
 }
 
+function type(id: string, text: string) {
+  const el = element(by.id(id));
+  el.click();
+  el.sendKeys(text);
+}
+
 export class LoginPage {
-  register(user: UserReg): promise.Promise<void> {
-    return e('#register-email')
-      .sendKeys(user.Email)
-      .then(() => {
-        e('#register-username').sendKeys(user.UserName);
-      })
-      .then(() => {
-        e('#register-password').sendKeys(user.Password);
-      })
-      .then(() => {
-        e('#register-password-confirmation').sendKeys(user.Password);
-      })
-      .then(() => {
-        e('#register-submit').click();
-      });
+  register(user: UserReg) {
+    type('register-email', user.Email);
+    type('register-username', user.UserName);
+    type('register-password', user.Password);
+    type('register-password-confirmation', user.Password);
+    e('#register-submit').click();
   }
 }
