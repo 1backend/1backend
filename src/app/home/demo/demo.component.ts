@@ -1,4 +1,11 @@
-import { Component, OnInit, ViewChild, ElementRef, Renderer, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  Renderer,
+  AfterViewInit
+} from '@angular/core';
 
 @Component({
   selector: 'app-demo',
@@ -8,35 +15,29 @@ import { Component, OnInit, ViewChild, ElementRef, Renderer, AfterViewInit } fro
 export class DemoComponent implements OnInit, AfterViewInit {
   @ViewChild('saveButton') saveButton: ElementRef;
 
-  title = 'Pick tech'
-  page = 'language-select'
+  title = 'Pick tech';
+  page = 'language-select';
   selected = 0;
   code = `func hello(rsp http.Response) {
     write(rsp, "hi there")
-}`
+}`;
 
   terminal = `me@laptop$ curl 1backend.com/app/me/my-app/hello
-hi there`
+hi there`;
   counter = 0;
 
-  constructor(
-    private renderer: Renderer
-  ) {}
+  constructor(private renderer: Renderer) {}
 
-  typeTerminal() {
+  typeTerminal() {}
 
-  }
-
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 
   ngAfterViewInit() {
     this.animate(this);
     const that = this;
     const f = this.animate;
     setInterval(() => {
-      f(that)
+      f(that);
     }, 9000);
   }
 
@@ -59,22 +60,22 @@ hi there`
     that.reset();
     setTimeout(() => {
       that.selected = 2;
-    }, that.wait(2000))
+    }, that.wait(2000));
     setTimeout(() => {
       that.page = 'app';
       that.title = 'Customize your endpoints';
       that.selected = 0;
-    }, that.wait(1000))
+    }, that.wait(1000));
     setTimeout(() => {
       that.triggerFalseClick(that);
-    }, that.wait(2000))
+    }, that.wait(2000));
     setTimeout(() => {
       that.page = 'terminal';
       that.title = 'Your API is live!';
-    }, that.wait(1000))
+    }, that.wait(1000));
     setTimeout(() => {
       that.page = 'language-select';
       that.title = 'Pick tech';
-    }, that.wait(3000))
+    }, that.wait(3000));
   }
 }

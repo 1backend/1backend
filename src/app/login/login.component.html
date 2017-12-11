@@ -5,13 +5,13 @@
         <ng-template mat-tab-label>Login</ng-template>
 
         <mat-form-field (keydown.enter)="login()" class="example-full-width" style="text-align: left; width: 100%;">
-          <input matInput placeholder="Email address" [formControl]="emailFormControl" [(ngModel)]="email">
+          <input id="login-email" matInput placeholder="Email address" [formControl]="emailFormControl" [(ngModel)]="email">
           <mat-error *ngIf="emailFormControl.hasError('pattern')">
             Please enter a valid email address
           </mat-error>
         </mat-form-field>
         <mat-form-field (keydown.enter)="login()" class="example-full-width" style="text-align: left; width: 100%;">
-          <input matInput placeholder="Password" [(ngModel)]="password" type="password" required>
+          <input id="login-password" matInput placeholder="Password" [(ngModel)]="password" type="password" required>
           <mat-error *ngIf="!password">
             Password is empty
           </mat-error>
@@ -20,14 +20,15 @@
           <a href="recover">Forgot password</a>
         </div>
         <div flexLayout="row wrap" align="center">
-          <button mat-raised-button color="primary" class="login" (click)="login()">LOGIN</button>
+          <button id="login-submit" mat-raised-button color="primary" class="login" (click)="login()">LOGIN</button>
         </div>
       </mat-tab>
 
       <mat-tab label="Register">
 
         <mat-form-field (keydown.enter)="register()" class="example-full-width" style="text-align: left; width: 100%;">
-          <input matInput placeholder="Username" [(ngModel)]="username" [formControl]="usernameFormControl" required>
+          <input id="register-username" matInput placeholder="Username" [(ngModel)]="username" [formControl]="usernameFormControl"
+            required>
           <mat-error *ngIf="!username">
             Username is empty
           </mat-error>
@@ -37,7 +38,7 @@
         </mat-form-field>
 
         <mat-form-field (keydown.enter)="register()" class="example-full-width" style="text-align: left; width: 100%;">
-          <input matInput placeholder="Email address" [(ngModel)]="email" email pattern="[a-zA-Z0-9.-_]{1,}([+][a-zA-Z0-9.-_]{1,})*@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}"
+          <input id="register-email" matInput placeholder="Email address" [(ngModel)]="email" email pattern="[a-zA-Z0-9.-_]{1,}([+][a-zA-Z0-9.-_]{1,})*@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}"
             required>
           <mat-error>
             Invalid email address.
@@ -45,21 +46,22 @@
         </mat-form-field>
 
         <mat-form-field (keydown.enter)="register()" class="example-full-width" style="text-align: left; width: 100%;">
-          <input matInput placeholder="Password" [(ngModel)]="password" type="password" required>
+          <input id="register-password" matInput placeholder="Password" [(ngModel)]="password" type="password" required>
           <mat-error *ngIf="!password">
             Password is empty
           </mat-error>
         </mat-form-field>
 
         <mat-form-field (keydown.enter)="register()" class="example-full-width" style="text-align: left; width: 100%;">
-          <input matInput placeholder="Password confirm" [(ngModel)]="password_conf" type="password" required>
+          <input id="register-password-confirmation" matInput placeholder="Password confirm" [(ngModel)]="password_conf" type="password"
+            required>
           <mat-error *ngIf="!password_conf">
             Password is empty
           </mat-error>
         </mat-form-field>
 
         <div flexLayout="row wrap" align="center">
-          <button mat-raised-button color="primary" class="register" (click)="register()">REGISTER</button>
+          <button id="register-submit" mat-raised-button color="primary" class="register" (click)="register()">REGISTER</button>
         </div>
       </mat-tab>
     </mat-tab-group>
