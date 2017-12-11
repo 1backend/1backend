@@ -48,7 +48,7 @@ getProductsOnSale(priceMin: number, priceMax: number): Product[]
 
 There are the following built in types supported:
 
-```typescript
+```
 bool;
 bool[];
 string;
@@ -94,6 +94,8 @@ whole without a way to refer to types in other services:
 }
 ```
 
+As you can see, the syntax is "[Use]/[ServiceName].[Type]".
+
 ### List types
 
 All types can be made into lists by appending `[]` to their names:
@@ -101,3 +103,7 @@ All types can be made into lists by appending `[]` to their names:
 ```
  { "owners": "crufter/user-service.User[]" }
 ```
+
+### Codebase pointers
+
+You can find the codes related to client generation in the [api-pack](../backend/api-pack) folder.
