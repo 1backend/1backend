@@ -5,15 +5,15 @@ lambda functions/microservices easy and quick.
 
 ![1backend service screenshot](https://raw.githubusercontent.com/1backend/1backend/master/1b.png)
 
-After choosing your tech stack (ie. go with access to an SQL database) you get
-an empty app which is already live and callable from the outside. You just have
-to plug in your own code (no, you don't have to write code in the browser,
-although you can). I't even preconnected to your database and other
+After choosing your tech stack (eg. go with access to an SQL database) you get
+an empty [app](docs/services.md) which is already live and callable from the outside (through HTTP).
+
+You just have to plug in your own code (no, you don't have to write code in the browser, although you can). I't even preconnected to your database and other
 infratructure elements of your choosing.
 
-With the help of a small DSL you can even define languages agnostic types and
-APIs for your services which is used to generate type safe clients. These
-clients are then published on each language's package manager (eg. NPM).
+With the help of a small [DSL](docs/types.md) you can even define languages agnostic types and APIs for your services which is used to generate type safe clients. These clients are then published on each language's package manager (eg. NPM).
+
+You can find the documentation [here](docs).
 
 ## What's supported?
 
@@ -87,7 +87,6 @@ To get the github integration working you need two things:
 * a user who can create repositories in your organisation (only possible through
   Github's HTTP API)
 * an SSH key on the machine and added to a users' Github account who can commit
-  into said repositories (`ssh-keygen -t rsa -b 4096 -C
-  "your_email@example.com"; eval "$(ssh-agent -s)"; ssh-add ~/.ssh/id_rsa`).
+  into said repositories (`ssh-keygen -t rsa -b 4096 -C "your_email@example.com"; eval "$(ssh-agent -s)"; ssh-add ~/.ssh/id_rsa`).
   This user must be the one to who runs the server - likely root, since root is
   needed to access docker, unless you configure your machine otherwise.
