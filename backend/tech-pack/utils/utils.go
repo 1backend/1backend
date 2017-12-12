@@ -27,7 +27,7 @@ Each lambda should be as short as possible, ideally a single line calling your o
 #### How can I talk to this service?
 
 HTTP is the obvious solution, but there are better ways: for each service type safe clients are generated during builds,
-in the following languages (wait for the first build to finish before checkin these):
+in the following languages (wait for the first build to finish before checking these):
 
 - Go - [GitHub](https://github.com/{{ .GithubOrganisation }}/{{ .Author }}/go/{{ .ProjectName }})
 - Angular - [GitHub](https://github.com/{{ .GithubOrganisation }}/{{ .Author }}/ng/{{ .ProjectName }}), [NPM](https://www.npmjs.com/package/@{{ .NpmOrganisation }}}/{{ .Author }}-{{ .ProjectName }}-ng)
@@ -40,6 +40,8 @@ With the help of a simple language agnostic DSL you can define the following thi
 You can refer to types defined in the mentioned "types" section of your service, or in other services.
 
 You can read more about types and the DSL [here](https://github.com/1backend/1backend/blob/master/docs/types.md)
+
+The complete documentation can be found [here](https://github.com/1backend/1backend/blob/master/docs)
 `
 
 // GetReadme generates a default readme for different tech-packs.
