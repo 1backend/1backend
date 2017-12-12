@@ -51,14 +51,14 @@
           <mat-icon style="color: #1E88E5">power_settings_new</mat-icon>
           <span>Register</span>
         </button>
-        <button *ngIf="us.loggedIn()" mat-menu-item (click)="logout()">
+        <button class="logout" id="logout" *ngIf="us.loggedIn()" mat-menu-item (click)="logout()">
           <mat-icon style="color: #F44336">power_settings_new</mat-icon>
           <span>Logout</span>
         </button>
       </mat-menu>
 
       <span fxHide="false" fxHide.lt-md>
-        <button *ngIf="user && user.Id" mat-button [matMenuTriggerFor]="menu">
+        <button *ngIf="user && user.Id" mat-button [matMenuTriggerFor]="menu" class="dropdown-menu" id="dropdown-menu">
           <span>
             {{user.Nick}}
           </span>
@@ -66,7 +66,7 @@
         </button>
 
         <ng-container *ngIf="!us.loggedIn()">
-          <button class="login-button" mat-button (click)="login()">
+          <button id="login-button" class="ligin-button" mat-button (click)="login()">
             Login
           </button>
           <button id="register-button" class="register-button" style="color: #2C2C2C;" color="accent" mat-raised-button (click)="register()">
