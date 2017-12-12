@@ -66,7 +66,7 @@ const sqlExample = `func (w http.ResponseWriter, r *http.Request, p httpr.Params
 const sqlExampleInput = `[]`
 const sqlExampleOutput = "string"
 
-const inputExample = `service.CalculateRectangleArea`
+const inputExample = `example.CalculateRectangleArea`
 const inputExampleInput = `[
 	{"rect": "rectangle"},
 	{"unit": "string"}

@@ -1,19 +1,18 @@
 # 1Backend
 
-1Backend is a platform designed to make deploying, running and maintaining
-lambda functions/microservices easy and quick.
+1Backend is a platform designed to make deploying, running and maintaining lambda functions/microservices easy
 
 ![1backend service screenshot](https://raw.githubusercontent.com/1backend/1backend/master/1b.png)
 
-After choosing your tech stack (eg. go with access to an SQL database) you get
-an empty [app](docs/services.md) which is already live and callable from the outside (through HTTP).
+It enables you to launch a new live app in seconds - after choosing your tech stack (eg. go with access to an SQL database) you get an empty [app](docs/services.md) which is already live and callable from the outside (through HTTP).
 
-You just have to plug in your own code (no, you don't have to write code in the browser, although you can). I't even preconnected to your database and other
-infratructure elements of your choosing.
+You just have to plug in your own code (no, you don't have to write code in the browser). It's even preconnected to your database and other infratructure elements of your choosing.
 
-With the help of a small [DSL](docs/types.md) you can even define languages agnostic types and APIs for your services which is used to generate type safe clients. These clients are then published on each language's package manager (eg. NPM).
+With the help of a simple [DSL](docs/types.md) you can even define languages agnostic types and APIs for your services which is used to generate type safe clients. These clients are then published on each language's package manager (eg. NPM).
 
-You can find the documentation [here](docs).
+## Documentation
+
+You can find the documentation here [here](docs).
 
 ## What's supported?
 
