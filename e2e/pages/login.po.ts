@@ -1,4 +1,5 @@
 import { browser, by, element, promise, ElementFinder } from 'protractor';
+import * as utils from '../utils/utils';
 
 export interface UserReg {
   Email: string;
@@ -6,28 +7,23 @@ export interface UserReg {
   UserName: string;
 }
 
-function e(s: string): ElementFinder {
-  return element(by.css(s));
-}
-
-function type(id: string, text: string) {
-  const el = element(by.id(id));
-  el.click();
-  browser.sleep(600);
-  el.sendKeys(text);
+export interface UserLogin {
+  Email: string;
+  Password: string;
 }
 
 export class LoginPage {
   register(user: UserReg) {
-    type('register-email', user.Email);
-    type('register-username', user.UserName);
-    type('register-password', user.Password);
-    type('register-password-confirmation', user.Password);
-    e('#register-submit').click();
+    utils.type('register-email', user.Email);
+    utils.type('register-username', user.UserName);
+    utils.type('register-password', user.Password);
+    utils.type('register-password-confirmation', user.Password);
+    utils.e('#register-submit').click();
   }
-  login(user: UserReg) {
-    type('login-email', user.Email);
-    type('login-password', user.Password);
-    e('#login-submit').click();
+
+  login(user: UserLogin) {
+    utils.type('login-email', user.Email);
+    utils.type('login-password', user.Password);
+    utils.e('#login-submit').click();
   }
 }
