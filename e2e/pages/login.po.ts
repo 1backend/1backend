@@ -13,6 +13,7 @@ function e(s: string): ElementFinder {
 function type(id: string, text: string) {
   const el = element(by.id(id));
   el.click();
+  browser.sleep(600);
   el.sendKeys(text);
 }
 
@@ -23,5 +24,10 @@ export class LoginPage {
     type('register-password', user.Password);
     type('register-password-confirmation', user.Password);
     e('#register-submit').click();
+  }
+  login(user: UserReg) {
+    type('login-email', user.Email);
+    type('login-password', user.Password);
+    e('#login-submit').click();
   }
 }
