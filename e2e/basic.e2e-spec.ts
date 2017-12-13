@@ -13,8 +13,8 @@ import {
 
 function makeid() {
   let text = '';
-  const possible = 'abcdfghijklmnopqstuvwxyz012346789';
-  for (let i = 0; i < 5; i++) {
+  const possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i < 12; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
@@ -26,6 +26,8 @@ describe('Home page', () => {
   let header: Header;
   let authorPage: AuthorPage;
   const id = makeid();
+  const pw = makeid();
+  console.log('generated id:', id);
 
   browser.driver
     .manage()
@@ -38,7 +40,6 @@ describe('Home page', () => {
     loginPage = new LoginPage();
     header = new Header();
     authorPage = new AuthorPage();
-    const Id = this.id;
   });
 
   it('should be able to register', () => {
@@ -46,19 +47,20 @@ describe('Home page', () => {
     header.register({
       UserName: 'user-' + id,
       Email: 'user' + id + '@gmail.com',
-      Password: 'pw'
+      Password: pw
     });
   });
 
-  it('should be able to top up', () => {
-    authorPage.topUpBy(9);
-  });
+  // uncomment this to test it locally - can't test payment in live
+  // it('should be able to top up', () => {
+  //  authorPage.topUpBy(9);
+  // });
 
   it('should be able to login', () => {
     header.logout().then(() => {
       header.login({
         Email: 'user' + id + '@gmail.com',
-        Password: 'pw',
+        Password: pw,
         UserName: 'user-' + id
       });
     });
