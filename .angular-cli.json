@@ -7,10 +7,7 @@
     {
       "root": "src",
       "outDir": "dist",
-      "assets": [
-        "assets",
-        "favicon.ico"
-      ],
+      "assets": ["assets", "favicon.ico"],
       "index": "index.html",
       "main": "main.ts",
       "polyfills": "polyfills.ts",
@@ -18,16 +15,15 @@
       "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
-      "styles": [
-        "styles.scss"
-      ],
+      "styles": ["styles.scss"],
       "scripts": [],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",
         "prod": "environments/environment.prod.ts",
-	"cruft": "environments/environment.cruft.ts",
-	"cruft-prod": "environments/environment.cruft-prod.ts"
+        "e2e": "environments/environment.e2e.ts",
+        "cruft": "environments/environment.cruft.ts",
+        "cruft-prod": "environments/environment.cruft-prod.ts"
       }
     }
   ],

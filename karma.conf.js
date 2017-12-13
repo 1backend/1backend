@@ -20,7 +20,7 @@ module.exports = function(config) {
       fixWebpackSourcePaths: true
     },
     angularCli: {
-      environment: 'dev'
+      environment: 'e2e' // originally this was dev, but since we use --serve=false locally, we use e2e to support CI (circleci)
     },
     reporters: ['progress', 'kjhtml'],
     port: 9876,

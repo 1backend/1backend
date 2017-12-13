@@ -50,9 +50,10 @@ describe('Home page', () => {
     });
   });
 
-  it('should be able to top up', () => {
-    authorPage.topUpBy(9);
-  });
+  // uncomment this to test it locally - can't test payment in live
+  // it('should be able to top up', () => {
+  //  authorPage.topUpBy(9);
+  // });
 
   it('should be able to login', () => {
     header.logout().then(() => {
