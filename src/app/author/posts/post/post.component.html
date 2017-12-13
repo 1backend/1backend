@@ -1,32 +1,73 @@
-<div fxFlexLayout="row">
-  <mat-card style="overflow-x: auto">
+<div fxFlexLayout="row" *ngIf="post?.User?.Nick === us?.user?.Nick">
+  <mat-tab-group>
+    <mat-tab label="Post">
+      <mat-card style="overflow-x: auto; margin-top: 2em">
+        <mat-card-title>
+          <div fxFlex="1 1 auto" *ngIf="!post.Editing">
+            {{post.Title}}
+          </div>
+          <div fxFlex="1 1 auto" fxLayoutAlign="end center">
+            <span>
+              <button (click)="editPost()" *ngIf="!post.Editing" mat-icon-button>
+                <i style="color:#444; font-size: 18px;padding-bottom: 0.2em;" class="material-icons">mode_edit</i>
+              </button>
+            </span>
+          </div>
+        </mat-card-title>
+        <mat-card-subtitle *ngIf="!post.Editing">
+          {{post.CreatedAt | amTimeAgo}} by {{post.User?.Nick}}
+        </mat-card-subtitle>
+        <mat-form-field *ngIf="post.Editing" style="width: 100%">
+          <input matInput placeholder="Title" [(ngModel)]="post.Title" />
+        </mat-form-field>
+        <mat-card-content>
+          <markdown-to-html *ngIf="!post.Editing" item-width="70%" [data]="post.Content"></markdown-to-html>
+          <textarea *ngIf="post.Editing" style="font-family:Times New Roman; color:#040505 ; font-size: 20px;" fxLayout="row wrap"
+            fxLayoutAlign="space-between" fxFlex="1 1 100%" rows="10" cols="300px" [(ngModel)]="post.Content"></textarea>
+        </mat-card-content>
+        <div fxFlexLayout="row" *ngIf="post.Editing">
+          <span>
+            <button mat-raised-button style="background-color: rgb(0,192,66);" (click)="updatePost()">
+              <font color="white">
+                <b>Save</b>
+              </font>
+            </button>
+          </span>
+          <span style="padding-left: 1em">
+            <button mat-raised-button (click)="cancel()">
+              <font>
+                <b>Cancel</b>
+              </font>
+            </button>
+          </span>
+        </div>
+      </mat-card>
+    </mat-tab>
+    <mat-tab label="Preview">
+      <mat-card style="margin-top: 2em">
+        <mat-card-title>
+          <div fxFlex="1 1 auto">
+            {{post.Title}}
+          </div>
+        </mat-card-title>
+        <mat-card-subtitle>
+          {{post.CreatedAt | amTimeAgo}} by {{post.User?.Nick}}
+        </mat-card-subtitle>
+        <markdown-to-html item-width="70%" [data]="post.Content"></markdown-to-html>
+      </mat-card>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+<div fxFlexLayout="row" *ngIf="post?.User?.Nick !== us?.user?.Nick">
+  <mat-card style="overflow-x: auto; margin-top: 2em">
     <mat-card-title>
       <div fxFlex="1 1 auto" *ngIf="!post.Editing">
-    {{post.Title}}
-  </div>
-  <div fxFlex="1 1 auto" fxLayoutAlign="end center">
-    <span >
-        <button (click)="editPost()" *ngIf="post?.User?.Nick === us?.user?.Nick" mat-icon-button>
-            <i style="color:#444; font-size: 18px;padding-bottom: 0.2em;" class="material-icons">mode_edit</i>
-          </button>
-    </span>
-  </div>
-  </mat-card-title>
-  <mat-card-subtitle *ngIf="!post.Editing">
-    {{post.CreatedAt | amTimeAgo}} by {{post.User?.Nick}}
-  </mat-card-subtitle>
-  <mat-form-field *ngIf="post.Editing" style="width: 100%">
-      <input matInput placeholder="Title" [(ngModel)]="post.Title"/> 
-  </mat-form-field>
-  <mat-card-content>
-      <markdown-to-html *ngIf="!post.Editing"item-width="70%" [data]="post.Content"></markdown-to-html>
-      <textarea *ngIf="post.Editing" style="font-family:Times New Roman; color:#040505 ; font-size: 20px;" fxLayout="row wrap" fxLayoutAlign="space-between"
-      fxFlex="1 1 100%" rows="10" cols="300px" [(ngModel)]="post.Content"></textarea>
-    </mat-card-content>
-    <button *ngIf="post.Editing" fxLayoutAlign="center center" mat-raised-button style="background-color: rgb(0,192,66);" (click)="updatePost()">
-        <font color="white">
-          <b>Save</b>
-        </font>
-      </button>
+        {{post.Title}}
+      </div>
+    </mat-card-title>
+    <mat-card-subtitle *ngIf="!post.Editing">
+      {{post.CreatedAt | amTimeAgo}} by {{post.User?.Nick}}
+    </mat-card-subtitle>
+    <markdown-to-html *ngIf="!post.Editing" item-width="70%" [data]="post.Content"></markdown-to-html>
   </mat-card>
 </div>

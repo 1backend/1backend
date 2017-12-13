@@ -44,6 +44,10 @@ export class PostComponent implements OnInit {
       .catch(err => (err = console.log('error')));
   }
 
+  cancel() {
+    this.getPost();
+  }
+
   ngOnInit() {
     this.postId = this.route.snapshot.params['postId'];
     this.getPost();
