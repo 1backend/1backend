@@ -14,16 +14,16 @@ export interface UserLogin {
 
 export class LoginPage {
   register(user: UserReg) {
-    utils.type('register-email', user.Email);
-    utils.type('register-username', user.UserName);
-    utils.type('register-password', user.Password);
-    utils.type('register-password-confirmation', user.Password);
+    utils.type('#register-email', user.Email);
+    utils.type('#register-username', user.UserName);
+    utils.type('#register-password', user.Password);
+    utils.type('#register-password-confirmation', user.Password);
     utils.e('#register-submit').click();
   }
 
   login(user: UserLogin) {
-    utils.type('login-email', user.Email);
-    utils.type('login-password', user.Password);
+    utils.type('#login-email', user.Email);
+    utils.type('#login-password', user.Password);
     utils.e('#login-submit').click();
   }
 }

@@ -15,7 +15,7 @@
   <div fxFlex.lt-md="1 1 100%" fxFlex="1 1 25%" style="margin-left: auto">
     <app-profile-edit [user]="user" (onSelfSave)="refresh()"></app-profile-edit>
 
-    <div style="margin-top: 4em" *ngIf="us.user?.Tokens?.length && author === us.user.Nick">
+    <div id="all-calls-left" [attr.data-all-calls-left]="getAllCallsLeft()" style="margin-top: 4em" *ngIf="us.user?.Tokens?.length && author === us.user.Nick">
       <font size="6" style="color: green">{{getAllCallsLeft() | number:'.0-0'}}</font> calls left
     </div>
 
@@ -27,7 +27,7 @@
         />
       </mat-form-field>
 
-      <button mat-raised-button class="button" color="accent" (click)="purchase()">Top up</button>
+      <button id="top-up" mat-raised-button class="button" color="accent" (click)="purchase()">Top up</button>
     </div>
 
   </div>
