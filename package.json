@@ -1,7 +1,11 @@
 {
   "name": "1backend",
   "version": "0.0.0",
-  "license": "MIT",
+  "license": "AGPLv3",
+  "author": {
+    "email": "dobronszki@gmail.com",
+    "name": "Dobronszki János"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

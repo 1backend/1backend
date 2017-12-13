@@ -13,5 +13,5 @@ jobs:
           key: my-project-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - "node_modules"
-      - run: xvfb-run -a npm run test -- --single-run --no-progress --browser=ChromeNoSandbox
+      #- run: xvfb-run -a npm run test -- --single-run --no-progress --browser=ChromeNoSandbox
       - run: xvfb-run -a npm run e2e -- --no-progress --config=protractor-ci.conf.js
