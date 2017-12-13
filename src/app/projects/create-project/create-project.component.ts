@@ -78,10 +78,6 @@ export class CreateProjectComponent implements OnInit {
     const dep = this.dependencies.filter(l => {
       return l.Selected;
     });
-    if (!dep || dep.length < 1) {
-      this.notif.error('Please select dependencies');
-      return;
-    }
 
     const p = {
       Author: this.user.Nick,
@@ -109,7 +105,7 @@ export class CreateProjectComponent implements OnInit {
   }
 
   create() {
-    if (!this.us.loggedIn) {
+    if (!this.us.loggedIn()) {
       this.loginDialog.openDialog(true, () => {
         this.createProject();
       });
