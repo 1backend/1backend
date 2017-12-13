@@ -12,7 +12,7 @@ export class Header {
     return browser
       .wait(
         until.presenceOf(regSubmit),
-        9000,
+        5000,
         'Register tab taking too long to appear in the DOM'
       )
       .then(() => {
@@ -20,7 +20,7 @@ export class Header {
         loginPage.register(user);
         return browser.wait(
           until.titleContains(user.UserName),
-          9000,
+          5000,
           'Redirect to author page after register took too long'
         );
       });
