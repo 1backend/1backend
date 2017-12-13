@@ -12,7 +12,7 @@ With the help of a simple [DSL](docs/types.md) you can even define languages agn
 
 ## Documentation
 
-You can find the documentation here [here](docs).
+You can find the documentation [here](docs).
 
 ## What's supported?
 

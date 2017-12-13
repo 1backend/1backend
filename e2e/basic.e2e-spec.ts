@@ -1,6 +1,7 @@
 import { HomePage } from './pages/home.po';
 import { LoginPage } from './pages/login.po';
 import { Header } from './pages/header.po';
+import { AuthorPage } from './pages/author.po';
 import {
   browser,
   by,
@@ -23,6 +24,7 @@ describe('Home page', () => {
   let homePage: HomePage;
   let loginPage: LoginPage;
   let header: Header;
+  let authorPage: AuthorPage;
   const id = makeid();
 
   browser.driver
@@ -35,6 +37,7 @@ describe('Home page', () => {
     homePage = new HomePage();
     loginPage = new LoginPage();
     header = new Header();
+    authorPage = new AuthorPage();
     const Id = this.id;
   });
 
@@ -45,6 +48,10 @@ describe('Home page', () => {
       Email: 'user' + id + '@gmail.com',
       Password: 'pw'
     });
+  });
+
+  it('should be able to top up', () => {
+    authorPage.topUpBy(9);
   });
 
   it('should be able to login', () => {

@@ -6,8 +6,13 @@ export function e(s: string): ElementFinder {
 }
 
 // type to input field
-export function type(id: string, text: string) {
-  const el = element(by.id(id));
+export function type(elem: string | ElementFinder, text: string) {
+  let el: ElementFinder;
+  if (typeof elem === 'string') {
+    el = element(by.css(<string>elem));
+  } else {
+    el = <ElementFinder>elem;
+  }
   el.click();
   browser.sleep(400);
   el.sendKeys(text);
