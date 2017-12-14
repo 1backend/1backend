@@ -17,6 +17,7 @@
 
         {{build.CreatedAt | amTimeAgo}}
         <span style="color: #999">({{build.Id}})</span>
+        <span *ngIf="!build.InProgress" style="color: #999">- took {{timeItTook(build)}} seconds</span>
       </div>
       <div fxFlex="1 1 40%" align="end">
         <button *ngIf="!build.Selected && i !== 0" mat-button style="min-width: 0%; margin-bottom: 10px;" type="button" (click)="reveal(build)">

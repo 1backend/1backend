@@ -6,7 +6,7 @@
   </div>
   <span *ngIf="author === us.user.Nick || isProjectsPage" align="end" style="margin-left: -100px; margin-top: -3px;" matTooltip="Create new project"
     matTooltipPosition="above">
-    <button mat-mini-fab (click)="create()" color="accent">
+    <button id="add-project-button" mat-mini-fab (click)="create()" color="accent">
       <mat-icon>add</mat-icon>
     </button>
   </span>

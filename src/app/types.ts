@@ -58,6 +58,7 @@ export interface Build {
   ProjectId: string;
   InProgress: boolean;
   CreatedAt: string;
+  UpdatedAt?: string;
   Selected?: boolean;
   Version?: string;
 }

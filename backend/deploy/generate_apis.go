@@ -45,16 +45,19 @@ func (d Deployer) GenerateAPIs(project *domain.Project, buildId string) (string,
 	if err != nil {
 		return "", err
 	}
-	createOutput, err := exec.Command("/bin/bash", config.C.Path+"/bash/create-git-repo.sh",
-		reposPath,
-		project.Author,
-		project.Name,
-		config.C.ApiGeneration.GithubOrganisation,
-		config.C.ApiGeneration.GithubUser,
-		config.C.ApiGeneration.GithubPersonalToken,
-	).CombinedOutput()
-	if err != nil {
-		return string(createOutput), err
+	var createOutput string
+	if !config.IsTestUser(project.Author) {
+		createOutput, err := exec.Command("/bin/bash", config.C.Path+"/bash/create-git-repo.sh",
+			reposPath,
+			project.Author,
+			project.Name,
+			config.C.ApiGeneration.GithubOrganisation,
+			config.C.ApiGeneration.GithubUser,
+			config.C.ApiGeneration.GithubPersonalToken,
+		).CombinedOutput()
+		if err != nil {
+			return string(createOutput), err
+		}
 	}
 	generators := apipack.Generators(project)
 	repoPath := reposPath + "/" + project.Author
@@ -85,6 +88,9 @@ func (d Deployer) GenerateAPIs(project *domain.Project, buildId string) (string,
 				return "", err
 			}
 		}
+	}
+	if config.IsTestUser(project.Author) {
+		return "", nil
 	}
 	npmPublishOutput := []byte{}
 	if config.C.NpmPublication.Enabled {

@@ -24,13 +24,13 @@
     <mat-tab [attr.data-pid]="'builds'">
       <ng-template mat-tab-label>
         <span>Builds &nbsp;</span>
-        <span class="success" *ngIf="lastBuild && lastBuild.Success">
+        <span id="build-tab-icon-success" class="success" *ngIf="lastBuild && lastBuild.Success">
           <mat-icon>done</mat-icon>
         </span>
-        <span class="failed" *ngIf="lastBuild && !lastBuild.InProgress && !lastBuild.Success" align="start">
+        <span id="build-tab-icon-fail" class="failed" *ngIf="lastBuild && !lastBuild.InProgress && !lastBuild.Success" align="start">
           <mat-icon>close</mat-icon>
         </span>
-        <span class="inprogress" *ngIf="lastBuild && lastBuild.InProgress">
+        <span id="build-tab-icon-inprogress" class="inprogress" *ngIf="lastBuild && lastBuild.InProgress">
           <mat-progress-spinner class="example-margin" [color]="color" [mode]="mode" [value]="value" [diameter]="22" [strokeWidth]="3"></mat-progress-spinner>
         </span>
       </ng-template>
