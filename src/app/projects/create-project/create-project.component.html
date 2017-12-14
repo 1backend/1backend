@@ -4,7 +4,7 @@
       Project type
     </mat-card-title>
     <ng-container *ngFor="let language of languages">
-      <mat-card (click)="resetLanguages(); language.Selected = !language.Selected" [style.background]="language.Selected ? '#FFD740':'white'"
+      <mat-card id="mode-picker-{{language.Name}}" (click)="resetLanguages(); language.Selected = !language.Selected" [style.background]="language.Selected ? '#FFD740':'white'"
         class="selectable" style="font-family: 'Roboto Light';">
         <div fxLayout="row wrap" [ngClass]="{'selected': language.Selected}" fxLayoutAlign="center center">
           <div fxFlex="1 1 30%">
@@ -26,8 +26,8 @@
     </mat-card-title>
     <ng-container *ngFor="let dep of dependencies">
 
-      <mat-card (click)="dep.Selected = !dep.Selected" [style.background]="dep.Selected ? '#FFD740':'white'" class="selectable"
-        style="font-family: 'Roboto Light';">
+      <mat-card id="infra-picker-{{dep.Type}}" (click)="dep.Selected = !dep.Selected" [style.background]="dep.Selected ? '#FFD740':'white'"
+        class="selectable" style="font-family: 'Roboto Light';">
 
         <div [ngClass]="{'selected': dep.Selected}" style="padding: 0em;" fxLayout="row wrap" fxLayoutAlign="center center">
           <div fxFlex="1 1 30%">
@@ -50,19 +50,20 @@
     </mat-card-title>
     <div class="example-container">
       <mat-form-field>
-        <input matInput placeholder="Name" [formControl]="projectNameControl" [(ngModel)]="name">
+        <input id="create-project-name" matInput placeholder="Name" [formControl]="projectNameControl" [(ngModel)]="name">
         <mat-error *ngIf="projectNameControl.hasError('pattern')">
           Project name must contain only lowercase letters
         </mat-error>
       </mat-form-field>
     </div>
     <div *ngIf="user.Premium" align="start" style="margin-top:1em;">
-      <section class="example-selection" >
-        <mat-checkbox class="example-margin" [(ngModel)]="private" color="primary" [disabled]="!user.Premium" matTooltip="Premium members only" matTooltipPosition="left" [matTooltipDisabled]="user.Premium">
+      <section class="example-selection">
+        <mat-checkbox class="example-margin" [(ngModel)]="private" color="primary" [disabled]="!user.Premium" matTooltip="Premium members only"
+          matTooltipPosition="left" [matTooltipDisabled]="user.Premium">
           Private project
         </mat-checkbox>
       </section>
     </div>
-    <button (click)="create()" mat-raised-button color="primary" style="margin-top: 1em;">Create</button>
+    <button id="create-project-submit" (click)="create()" mat-raised-button color="primary" style="margin-top: 1em;">Create</button>
   </div>
 </div>

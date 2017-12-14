@@ -39,7 +39,7 @@ describe('Home page', () => {
     homePage = new HomePage();
     loginPage = new LoginPage();
     header = new Header();
-    authorPage = new AuthorPage();
+    authorPage = new AuthorPage('user-' + id);
   });
 
   it('should be able to register', () => {
@@ -48,6 +48,16 @@ describe('Home page', () => {
       UserName: 'user-' + id,
       Email: 'user' + id + '@gmail.com',
       Password: pw
+    });
+  });
+
+  it('should be able to create a project', () => {
+    authorPage.navigateTo();
+    authorPage.createProject({
+      Mode: 'go',
+      Infra: ['mysql'],
+      Name: 'test-project-' + id,
+      Author: 'user-' + id
     });
   });
 
