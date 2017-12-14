@@ -3,9 +3,14 @@ package config
 import (
 	"encoding/json"
 	"os"
+	"strings"
 
 	log "github.com/cihub/seelog"
 )
+
+func IsTestUser(userName string) bool {
+	return len(userName) == 17 && strings.HasPrefix(userName, "user-")
+}
 
 var C = Config{}
 

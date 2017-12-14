@@ -16,15 +16,18 @@ export class BuildsComponent implements OnInit {
   value = 50;
   currentPage = 0;
 
-  constructor(
-    private title: Title
-  ) {}
+  constructor(private title: Title) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   reveal(e: types.Build) {
     e.Selected = !e.Selected;
+  }
+
+  timeItTook(b: types.Build): number {
+    return (
+      (new Date(b.UpdatedAt).getTime() - new Date(b.CreatedAt).getTime()) / 1000
+    );
   }
 
   pageChanged($event: any) {

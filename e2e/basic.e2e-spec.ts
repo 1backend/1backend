@@ -51,12 +51,32 @@ describe('Home page', () => {
     });
   });
 
-  it('should be able to create a project', () => {
+  it('should be able to create a go project', () => {
     authorPage.navigateTo();
     authorPage.createProject({
       Mode: 'go',
       Infra: ['mysql'],
-      Name: 'test-project-' + id,
+      Name: 'go-test',
+      Author: 'user-' + id
+    });
+  });
+
+  it('should be able to create a ts project', () => {
+    authorPage.navigateTo();
+    authorPage.createProject({
+      Mode: 'typescript',
+      Infra: ['mysql'],
+      Name: 'ts-test',
+      Author: 'user-' + id
+    });
+  });
+
+  it('should be able to create a node project', () => {
+    authorPage.navigateTo();
+    authorPage.createProject({
+      Mode: 'nodejs',
+      Infra: ['mysql'],
+      Name: 'node-test',
       Author: 'user-' + id
     });
   });

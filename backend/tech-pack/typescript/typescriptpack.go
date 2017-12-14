@@ -72,7 +72,7 @@ const hiInput = `[]`
 const hiOutput = "string"
 
 const importedHi = `(req: express.Request, rsp: express.Response) => {
-  service.Hi(req, rsp)
+  service.hi(req, rsp)
 }
 `
 const importedHiInput = `[]`

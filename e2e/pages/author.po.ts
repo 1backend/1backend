@@ -72,9 +72,21 @@ export class AuthorPage {
         const cp = new CreateProject();
         cp.create(p);
         return browser.wait(
-          until.presenceOf(utils.e('.project-status-dot')),
+          until.invisibilityOf(utils.e('#project-status-red')),
           9000,
-          'Redirect to project took too long took too long'
+          'Create project build took too long'
+        );
+      })
+      .then(() => {
+        return browser.wait(
+          until.invisibilityOf(utils.e('#build-tab-icon-inprogress')),
+          45000,
+          'Project build took too long'
+        );
+      })
+      .then(() => {
+        expect(utils.e('#build-tab-icon-success').isPresent()).toBeTruthy(
+          'Build is unsuccessful'
         );
       });
   }

@@ -25,7 +25,9 @@ func main() {
   	infraPass := os.Getenv("INFRAPASS")
 	
 	ip := os.Getenv("MYSQLIP")
-	sqlAddress := fmt.Sprintf("%s@tcp(%s)/{{ .Project.Author }}_{{ .Project.Name }}?parseTime=True", "{{ .Project.Author }}_{{ .Project.Name }}:" + infraPass, ip + ":3306") // :t8ecNpCf5u0d
+	sqlUser := os.Getenv("MYSQLUSER")
+	sqlDatabase := os.Getenv("MYSQLDATABASE")
+	sqlAddress := fmt.Sprintf("%s@tcp(%s)/%s?parseTime=True", sqlUser + ":" + infraPass, ip + ":3306", sqlDatabase)
 	if gormClient, err = gorm.Open("mysql", sqlAddress); err != nil {
 		panic(fmt.Sprintf("[init] unable to initialize gorm: %s", err.Error()))
 	}
