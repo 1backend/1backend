@@ -80,8 +80,8 @@ const importedHiOutput = "string"
 
 const sqlExample = `(req: express.Request, rsp: express.Response) => {
   sql.query('SELECT 1 + 1 AS solution', (err: mysql.MysqlError, rows) => {
-		if (error) throw error;
-		const outpout = 'The solution is: ' + rows[0]['solution'];
+		if (err) throw err;
+		const output = 'The solution is: ' + rows[0]['solution'];
     rsp.send(JSON.stringify(output));
   });
 }

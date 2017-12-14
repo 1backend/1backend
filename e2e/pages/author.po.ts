@@ -85,7 +85,9 @@ export class AuthorPage {
         );
       })
       .then(() => {
-        expect(utils.e('#build-tab-icon-success').isPresent()).toBeTruthy(
+        return browser.wait(
+          until.presenceOf(utils.e('#build-tab-icon-success')),
+          1000,
           'Build is unsuccessful'
         );
       });
