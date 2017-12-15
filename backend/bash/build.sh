@@ -4,9 +4,13 @@
 # $4 infrastructure password
 # $5 recipe path (eg: "go", "nodejs-whatever")
 # $6 absolute path to project
+
+# @todo: likely the database operations should be part of some kind of
+# infrastructure plugin, not the standard container build. 
+
 cp $6/tech-pack/$5/Dockerfile $1/Dockerfile
 INTERNALIP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8)
-NAME="\`$2_$3\`"
+NAME="\`$2_$3\`" # quoted db and database name
 cd $1
 sudo docker build -t $2_$3 . || exit 1
 sudo docker stop $2_$3
@@ -17,6 +21,6 @@ echo "SET PASSWORD FOR $NAME@'%' = PASSWORD('$4');" | mysql -h localhost -P 3306
 sudo docker run --name $2_$3 \
     -e MYSQLIP=$INTERNALIP \
     -e INFRAPASS=$4 \
-    -e MYSQLDATABASE=$NAME \
-    -e MYSQLUSER=$NAME \
+    -e MYSQLDATABASE=$2_$3 \
+    -e MYSQLUSER=$2_$3 \
     -p=8883 -d $2_$3
