@@ -1,5 +1,5 @@
 <p align="center">
-![logo](https://raw.githubusercontent.com/1backend/1backend/pic/src/assets/logos/zh_red.svg)
+  <img src="https://raw.githubusercontent.com/1backend/1backend/pic/src/assets/logos/zh_red.svg" />
 <p>
 
 # 1Backend [![circleci status](https://circleci.com/gh/1backend/1backend.svg?style=shield)](https://circleci.com/gh/1backend/1backend) [![go report](https://goreportcard.com/badge/github.com/1backend/1backend)](https://goreportcard.com/report/github.com/1backend/1backend) [![go coverage](https://codecov.io/gh/1backend/1backend/branch/master/graph/badge.svg)](https://codecov.io/gh/1backend/1backend/branch/master)
