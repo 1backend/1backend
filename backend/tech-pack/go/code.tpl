@@ -49,9 +49,10 @@ func endpoints(r *httpr.Router) {
 }
 
 func GetPing(w http.ResponseWriter, r *http.Request, p httpr.Params) {
-	body, _ := json.Marshal(map[string]bool{
+	bod, _ := json.Marshal(map[string]bool{
 		"pong": true ,
 	})
+	body := string(bod)
 	w.Header().Set("Content-Length", fmt.Sprintf("%v", len(body)))
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
