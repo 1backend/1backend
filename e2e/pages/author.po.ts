@@ -87,7 +87,7 @@ export class AuthorPage {
       .then(() => {
         return browser.wait(
           until.presenceOf(utils.e('#build-tab-icon-success')),
-          1000,
+          5000,
           'Build is unsuccessful'
         );
       });
