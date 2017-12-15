@@ -8,7 +8,7 @@ before_install:
   - go get -t -v ./...
 
 script:
-  - cd backend; go test ./... -race -coverprofile=coverage.txt -covermode=atomic
+  - cd backend; bash testall.sh
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
