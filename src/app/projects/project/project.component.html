@@ -1,6 +1,6 @@
 <ng-container *ngIf="project.Id">
   <div ngClass.lt-md="small-screen" fxLayout="row wrap" fxLayoutAlign="space-between" style="margin-bottom: 1em;">
-    <div fxFlex="1 1 70%" fxFlex.lt-md="1 1 100%" style="margin-top: 1em; margin-bottom: 0em;" style="color: #2962FF; font-size: 22px">
+    <div fxFlex="1 1 50%" fxFlex.lt-md="1 1 100%" style="margin-top: 1em; margin-bottom: 0em;" style="color: #2962FF; font-size: 22px">
       <mat-icon *ngIf="loaded && !project.Public" class="icons">lock_outline</mat-icon>
       <a style="font-size: 22px; text-decoration: none; color: #2962FF;" routerLink="/{{author}}">{{author}}</a> /
       <b>{{project.Name}}</b>
