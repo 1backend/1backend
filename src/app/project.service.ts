@@ -112,19 +112,7 @@ export class ProjectService {
       .get<types.Project[]>(environment.backendUrl + '/v1/projects', {
         params: p
       })
-      .toPromise()
-      .then(projs => {
-        projs = projs.sort((a, b) => {
-          if (a.UpdatedAt === b.UpdatedAt) {
-            return 0;
-          }
-          if (a.UpdatedAt < b.UpdatedAt) {
-            return 1;
-          }
-          return -1;
-        });
-        return projs;
-      });
+      .toPromise();
   }
 
   update(project: types.Project): Promise<void> {
