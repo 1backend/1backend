@@ -38,7 +38,7 @@ export class HeaderComponent implements OnInit {
   }
 
   getStarted() {
-    this.router.navigate(['/', { fragment: 'getStarted' }]);
+    this.router.navigate(['/'], { fragment: 'getStarted' });
   }
 
   register() {

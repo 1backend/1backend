@@ -5,6 +5,6 @@
 </button>
 <button *ngIf="starredBySelf()" mat-raised-button class="unstar-button" (click)="unStar()">
   <span fxHide="false" *ngIf="showCount" class="star-num">{{project.Stars}}</span>
-  <mat-icon *ngIf="showCount" class="iconpos" aria-hidden="false">star</mat-icon>
+  <mat-icon *ngIf="showCount" class="iconpos" style="color: #FBC02D" aria-hidden="false">star</mat-icon>
   <span fxHide="false" fxHide.lt-md>Unstar</span>
 </button>
