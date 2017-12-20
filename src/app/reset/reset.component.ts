@@ -43,18 +43,22 @@ export class ResetComponent implements OnInit {
       return;
     }
     this.http
-      .post<ResetPasswordResponse>(environment.backendUrl + '/v1/reset-password', {
-        newPassword: this.newPassword,
-        secret: this.secret
-      })
+      .post<ResetPasswordResponse>(
+        environment.backendUrl + '/v1/reset-password',
+        {
+          newPassword: this.newPassword,
+          secret: this.secret
+        }
+      )
       .subscribe(
         rsp => {
           if (!rsp.token.Token) {
-            this.notif.error('Can\'t find token');
+            this.notif.error("Can't find token");
           } else {
             this.ss.setToken(rsp.token.Token);
-            this.us.get();
-            this.router.navigate(['/' + this.us.user.Nick]);
+            this.us.get().then(() => {
+              this.router.navigate(['/' + this.us.user.Nick]);
+            });
           }
         },
         err => {
