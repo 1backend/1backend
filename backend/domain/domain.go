@@ -20,10 +20,12 @@ type Project struct {
 	Id string
 	// Password for infrastructural elements like mysql, redis etc
 	InfraPassword string `json:"-"`
+	CallerId      string `json:"-"`
 	// Author name. Could be a user id, but it's not due to cruft.
-	Author string
-	Name   string
-	Stars  int
+	Author    string
+	Name      string
+	Namespace string `json:"-"`
+	Stars     int
 	// Semver version of the project.
 	Version string
 	ReadMe  string

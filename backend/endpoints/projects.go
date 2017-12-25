@@ -19,6 +19,7 @@ func (e Endpoints) CreateProject(proj *domain.Project) error {
 	proj.Version = "0.0.1"
 	proj.Description = "Change this to something sensible"
 	proj.Id = domain.Sid.MustGenerate()
+	proj.CallerId = domain.Sid.MustGenerate()
 	proj.InfraPassword = domain.Sid.MustGenerate()
 	proj.CreatedAt = time.Now()
 	proj.UpdatedAt = time.Now()
@@ -63,7 +64,12 @@ func (e Endpoints) UpdateProject(proj *domain.Project) error {
 		patchNumber++
 		proj.Version = strings.Join([]string{semVerParts[0], semVerParts[1], fmt.Sprintf("%v", patchNumber)}, ".")
 	}
+	// @todo this continous regeneration of infra password is likely a bad idea.
+	// it requires a user credential flush in SQL (see build script in bash/build.sh)
 	proj.InfraPassword = domain.Sid.MustGenerate()
+	if proj.CallerId == "" {
+		proj.CallerId = domain.Sid.MustGenerate()
+	}
 	err := e.db.Save(proj).Error
 	if err != nil {
 		return err

@@ -2,7 +2,11 @@
 
 ## [Services](services.md)
 
-Services are applications.
+Services are a collection of functions exposed over HTTP.
+
+## [Namespaces](namespaces.md)
+
+Namespaces enable a project to shard their database to support multiple applications building on top of it.
 
 ## [Types](types.md)
 

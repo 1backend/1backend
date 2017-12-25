@@ -26,7 +26,7 @@ living in your service. An example would be:
 And each endpoint can refer to these types in their "input" and "output"
 sections.
 
-An input section a fictional "/products/on-sale" might look like:
+An input section of a fictional "/products/on-sale" might look like:
 
 ```json
 [{ "priceMin": "float" }, { "priceMax": "float" }]
@@ -94,7 +94,7 @@ whole without a way to refer to types in other services:
 }
 ```
 
-As you can see, the syntax is "[Use]/[ServiceName].[Type]".
+As you can see, the syntax is "[User]/[ServiceName].[Type]".
 
 ### List types
 
