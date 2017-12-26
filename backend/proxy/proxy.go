@@ -144,23 +144,19 @@ func (p *Proxy) Proxy(w http.ResponseWriter, req *http.Request, params httpr.Par
 		return
 	}
 
-	callerId := req.Header.Get("caller-id")
-	callerService := domain.Project{}
-	if callerId != "" {
-		err = p.db.Where("caller_id = ?", callerId).Find(&callerService).Error
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadGateway)
-			return
-		}
-	}
 	// We may want to filter some headers, otherwise we could just use a shallow copy
 	// proxyReq.Header = req.Header
 	proxyReq.Header = make(http.Header)
 	for h, val := range req.Header {
 		proxyReq.Header[h] = val
 	}
-	proxyReq.Header.Set("caller-service", callerService.Author+"/"+callerService.Name)
-
+	callerNamespace, err := p.state.CallerIdToNameSpace(req.Header.Get("caller-id"))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadGateway)
+		return
+	}
+	proxyReq.Header.Set("caller-namespace", callerNamespace)
+	proxyReq.Header.Set("caller-id", req.Header.Get("caller-id"))
 	p.state.Decrement(token)
 	client := &http.Client{}
 	resp, err := client.Do(proxyReq)

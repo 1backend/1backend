@@ -25,4 +25,5 @@ sudo docker run --name $2_$3 \
     -e SQL_DB=$2_$3 \
     -e SQL_USER=$2_$3 \
     -e CALLER_ID=$7 \
+    -e 1BACKEND_URL='http://127.0.0.1:8883' \
     -p=8883 -d $2_$3

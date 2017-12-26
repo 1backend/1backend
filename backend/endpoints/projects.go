@@ -23,8 +23,13 @@ func (e Endpoints) CreateProject(proj *domain.Project) error {
 	proj.InfraPassword = domain.Sid.MustGenerate()
 	proj.CreatedAt = time.Now()
 	proj.UpdatedAt = time.Now()
+	proj.CallerId = domain.Sid.MustGenerate()
+	err := e.state.SetCallerIdToNameSpace(proj.CallerId, proj.Namespace)
+	if err != nil {
+		return err
+	}
 	tp.GetProvider(proj).CreateProjectPlugin()
-	err := e.db.Save(proj).Error
+	err = e.db.Save(proj).Error
 	if err != nil {
 		return err
 	}
@@ -64,13 +69,18 @@ func (e Endpoints) UpdateProject(proj *domain.Project) error {
 		patchNumber++
 		proj.Version = strings.Join([]string{semVerParts[0], semVerParts[1], fmt.Sprintf("%v", patchNumber)}, ".")
 	}
+	proj.CallerId = domain.Sid.MustGenerate()
+	err := e.state.SetCallerIdToNameSpace(proj.CallerId, proj.Namespace)
+	if err != nil {
+		return err
+	}
 	// @todo this continous regeneration of infra password is likely a bad idea.
 	// it requires a user credential flush in SQL (see build script in bash/build.sh)
 	proj.InfraPassword = domain.Sid.MustGenerate()
 	if proj.CallerId == "" {
 		proj.CallerId = domain.Sid.MustGenerate()
 	}
-	err := e.db.Save(proj).Error
+	err = e.db.Save(proj).Error
 	if err != nil {
 		return err
 	}
