@@ -52,11 +52,12 @@ As you can see, each project has a namespace assigned to it. By default it is $A
 You might wonder what happens when the call chain is longer than 1 (is service A calls service B).
 It is entirely up to a service to pass on either its own caller id or the caller id of its caller.
 
-The services you are calling can potentially mishandle the caller id - just like they can mishandle any of your other data. As a general rule of thumb, any service you is assumed trustworthy.
+The services you are calling can potentially mishandle the caller id - just like they can mishandle any of your other data. As a general rule of thumb, any service you is assumed trustworthy, caller ids only protect about other services that you don't call impersonating your service.
 
-####
+#### Forking
 
-If you are really worried about a service seeing your data we advise you to use forking (not implemented yet).
+If you don't want a service seeing your data we advise you to use forking (not implemented yet).
+With forking a service you essentially say "I want to be the one who owns and maintains this service entirely - including it's data".
 
 #### The source of the caller id
 
