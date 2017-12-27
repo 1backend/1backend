@@ -16,17 +16,24 @@ func init() {
 	}
 }
 
+// A Project is a Go, Node, TypeScript etc. application
 type Project struct {
 	Id string
 	// Password for infrastructural elements like mysql, redis etc
 	InfraPassword string `json:"-"`
-	// Author name. Could be a user id, but it's not due to cruft.
+	// A secret value used to map projects to namespaces
+	CallerId string `json:"-"`
+	// Author name.
 	Author string
-	Name   string
-	Stars  int
+	// Project name - make it nice, because it appears everywhere
+	Name string
+	// Project namespace. Defaults to `$AUTHOR:default`
+	Namespace string
+	Stars     int
 	// Semver version of the project.
 	Version string
-	ReadMe  string
+	// A readme that appears on the front page
+	ReadMe string
 	// The port of the running instance for internal use.
 	// Might have to extend this contept to support multiple instances.
 	Port int
@@ -60,6 +67,7 @@ type Project struct {
 	Starrers []User `gorm:"many2many:stars;"`
 }
 
+// A Dependency is an infrastructural element (eg. SQL server)
 type Dependency struct {
 	Id        string
 	ProjectId string
@@ -69,6 +77,7 @@ type Dependency struct {
 	UpdatedAt time.Time
 }
 
+// An Endpoint is a lambda as a HTTP endpoint
 type Endpoint struct {
 	Id          string
 	Url         string
@@ -84,6 +93,7 @@ type Endpoint struct {
 	UpdatedAt time.Time
 }
 
+// A Build is pretty much what the name says: a verification of the project when it's saved.
 type Build struct {
 	Id        string
 	Output    string
@@ -96,6 +106,7 @@ type Build struct {
 	UpdatedAt  time.Time
 }
 
+// A User is a registered user of a 1Backend installation
 type User struct {
 	Id         string
 	Password   string `json:"-"`
@@ -109,7 +120,8 @@ type User struct {
 	UpdatedAt  time.Time
 }
 
-// For logins
+// An AccessToken is used for logins.
+// It is used to call 1Backend daemon endpoints (not services running on 1Backend).
 type AccessToken struct {
 	Id        string
 	Token     string
@@ -118,7 +130,8 @@ type AccessToken struct {
 	UpdatedAt time.Time
 }
 
-// service access token
+// A Token or a service access token is like a service key
+// used to call services running on 1Backend (not the 1Backend daemon itself).
 type Token struct {
 	Id          string
 	Token       string
@@ -130,6 +143,7 @@ type Token struct {
 	UpdatedAt   time.Time
 }
 
+// An Issue is just like a GitHub repo issue, except it's for 1Backend services.
 type Issue struct {
 	Id           string
 	ProjectId    string
@@ -142,6 +156,7 @@ type Issue struct {
 	UpdatedAt    time.Time
 }
 
+// A Comment represents one comment out of the many that can belong to an `Issue`
 type Comment struct {
 	Id        string
 	IssueId   string
@@ -153,12 +168,15 @@ type Comment struct {
 	UpdatedAt time.Time
 }
 
+// A Star is used to express interest in a project (just like GitHub starring).
 type Star struct {
 	Id        string
 	UserId    string
 	ProjectId string
 }
 
+// A Charge is just a bookkeeping entitity - 1Backend saves one when a user pays for platform usage
+// (if the given 1Backend installation is configured as a cloud provider)
 type Charge struct {
 	Id          string
 	Amount      int
@@ -168,6 +186,7 @@ type Charge struct {
 	UpdatedAt   time.Time
 }
 
+// A Post is a blog post that users can publish under their profile.
 type Post struct {
 	Id        string
 	Title     string
@@ -179,6 +198,7 @@ type Post struct {
 	UpdatedAt time.Time
 }
 
+// A Reset is used for password resets.
 type Reset struct {
 	Id        string
 	Secret    string

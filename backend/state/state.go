@@ -119,3 +119,12 @@ func (s *State) SetQuota(tokenId string, quota int64) error {
 func (s *State) GetQuota(tokenId string) (int64, error) {
 	return s.redisClient.Get("quota:" + tokenId).Int64()
 }
+
+func (s *State) SetCallerIdToNameSpace(callerId, namespace string) error {
+	return s.redisClient.Set("callerid:"+callerId, namespace, 0).Err()
+}
+
+func (s *State) CallerIdToNameSpace(callerId string) (string, error) {
+	// @todo how come redis does not return an error with .String()?
+	return s.redisClient.Get("callerid:" + callerId).String(), nil
+}

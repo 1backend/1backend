@@ -5,10 +5,12 @@ USE backend;
 CREATE TABLE IF NOT EXISTS projects
 (
   id                  VARCHAR(36)                                                     NOT NULL,
+  caller_id           VARCHAR(36)                                                     NOT NULL,
   infra_password      VARCHAR(36)                                                     NOT NULL,
   author 	            VARCHAR(128)                                                    NOT NULL,
   description         VARCHAR(256)                                                    NOT NULL,
   name                VARCHAR(128)                                                    NOT NULL,
+  namespace           VARCHAR(32)                                                     NOT NULL,
   public              BOOLEAN                                                         NOT NULL,
   open_source         BOOLEAN                                                         NOT NULL,
   mode                VARCHAR(32)                                                     NOT NULL,
