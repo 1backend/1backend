@@ -80,12 +80,6 @@ export class ProjectComponent implements OnInit {
 
     this.refresh();
 
-    if (this.tab === 'sql') {
-      this.selectedIndex = 5;
-    }
-    if (this.tab === 'settings') {
-      this.selectedIndex = 4;
-    }
     if (this.tab === 'builds') {
       this.selectedIndex = 1;
     }
@@ -95,6 +89,16 @@ export class ProjectComponent implements OnInit {
     if (this.tab === 'stars') {
       this.selectedIndex = 3;
     }
+    if (this.tab === 'logs') {
+      this.selectedIndex = 4;
+    }
+    if (this.tab === 'settings') {
+      this.selectedIndex = 5;
+    }
+    if (this.tab === 'sql') {
+      this.selectedIndex = 6;
+    }
+    
     setInterval(() => {
       if (!this.lastBuild.InProgress) {
         return;

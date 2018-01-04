@@ -73,6 +73,11 @@
         Settings
       </ng-template>
       <app-settings [project]="project"></app-settings>
+    <mat-tab *ngIf="us.user.Nick === project.Author" [attr.data-pid]="'logs'">
+      <ng-template mat-tab-label>
+        Logs
+      </ng-template>
+      <app-logs [project]="project"></app-logs>
     </mat-tab>
 
     <mat-tab *ngIf="us.user.Nick === project.Author" [attr.data-pid]="'sql'">
@@ -81,5 +86,6 @@
       </ng-template>
       <app-sql [project]="project"></app-sql>
     </mat-tab>
+
   </mat-tab-group>
 </ng-container>
