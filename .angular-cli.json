@@ -23,7 +23,8 @@
         "prod": "environments/environment.prod.ts",
         "e2e": "environments/environment.e2e.ts",
         "cruft": "environments/environment.cruft.ts",
-        "cruft-prod": "environments/environment.cruft-prod.ts"
+        "cruft-prod": "environments/environment.cruft-prod.ts",
+	"dobi" : "environments/environment.dobi.ts"
       }
     }
   ],
