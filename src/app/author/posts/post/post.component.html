@@ -15,7 +15,8 @@
           </div>
         </mat-card-title>
         <mat-card-subtitle *ngIf="!post.Editing">
-          {{post.CreatedAt | amTimeAgo}} by {{post.User?.Nick}}
+          {{post.CreatedAt | amTimeAgo}} by
+          <a routerLink="/{{post.User?.Nick}}">{{post.User?.Nick}}</a>
         </mat-card-subtitle>
         <mat-form-field *ngIf="post.Editing" style="width: 100%">
           <input matInput placeholder="Title" [(ngModel)]="post.Title" />
@@ -51,7 +52,8 @@
           </div>
         </mat-card-title>
         <mat-card-subtitle>
-          {{post.CreatedAt | amTimeAgo}} by {{post.User?.Nick}}
+          {{post.CreatedAt | amTimeAgo}} by
+          <a routerLink="/{{post.User?.Nick}}">{{post.User?.Nick}}</a>
         </mat-card-subtitle>
         <markdown-to-html item-width="70%" [data]="post.Content"></markdown-to-html>
       </mat-card>
