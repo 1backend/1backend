@@ -43,6 +43,8 @@ func registerHandlers(r *httpr.Router, h *handlers.Handlers, p *proxy.Proxy) {
 	r.POST("/v1/token/transfer", h.QuotaTransfer)
 
 	r.POST("/v1/run-sql", h.RunSql)
+	r.GET("/v1/logs", h.GetLogs)
+	r.GET("/v1/caller-id", h.GetCallerId)
 
 	r.GET("/v1/user", h.GetUser)
 	r.PUT("/v1/user", h.UpdateUser)
