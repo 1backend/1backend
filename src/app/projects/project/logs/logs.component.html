@@ -1,0 +1,7 @@
+<div flexLayout="row" style="padding-top: 2em;padding-bottom: 2em">
+  <span fxLayoutAlign="center center">
+    <button mat-raised-button color="accent" (click)="reload()">Reload</button>
+  </span>
+</div>
+<ace-editor class="editor logconsole" [mode]="'sh'" [(text)]="logs" style="min-height: 600px; width:100%;
+overflow: auto;" #editor></ace-editor>
