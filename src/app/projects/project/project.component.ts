@@ -81,6 +81,9 @@ export class ProjectComponent implements OnInit {
     this.refresh();
 
     if (this.tab === 'sql') {
+      this.selectedIndex = 5;
+    }
+    if (this.tab === 'settings') {
       this.selectedIndex = 4;
     }
     if (this.tab === 'builds') {

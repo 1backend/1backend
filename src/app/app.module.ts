@@ -82,6 +82,7 @@ import { CreatePostComponent } from './author/posts/create-post/create-post.comp
 import { PostComponent } from './author/posts/post/post.component';
 import { PostService } from './post.service';
 import { CreatePostDialogService } from './author/posts/create-post-dialog.service';
+import { SettingsComponent } from './projects/project/settings/settings.component';
 
 const appRoutes: Routes = [
   {
@@ -157,7 +158,8 @@ const appRoutes: Routes = [
     StarButtonComponent,
     CommentComponent,
     CreatePostComponent,
-    PostComponent
+    PostComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,
