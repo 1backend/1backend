@@ -9,6 +9,10 @@ interface PingResponse {
   pong: boolean;
 }
 
+interface CallerIdResponse {
+  CallerId: string;
+}
+
 @Injectable()
 export class ProjectService {
   constructor(private http: HttpClient, private ss: SessionService) {}
@@ -128,6 +132,17 @@ export class ProjectService {
       .post<void>(environment.backendUrl + '/v1/project', {
         project: project,
         token: this.ss.getToken()
+      })
+      .toPromise();
+  }
+
+  getCallerId(project: types.Project): Promise<CallerIdResponse> {
+    let p = new HttpParams();
+    p = p.set('token', this.ss.getToken());
+    p = p.set('projectId', project.Id);
+    return this.http
+      .get<CallerIdResponse>(environment.backendUrl + '/v1/caller-id', {
+        params: p
       })
       .toPromise();
   }

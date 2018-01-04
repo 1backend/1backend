@@ -68,6 +68,11 @@
       </div>
     </mat-tab>
 
+    <mat-tab *ngIf="us.user.Nick === project.Author" [attr.data-pid]="'settings'">
+      <ng-template mat-tab-label>
+        Settings
+      </ng-template>
+      <app-settings [project]="project"></app-settings>
     <mat-tab *ngIf="us.user.Nick === project.Author" [attr.data-pid]="'logs'">
       <ng-template mat-tab-label>
         Logs
