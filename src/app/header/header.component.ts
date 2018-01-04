@@ -3,6 +3,7 @@ import { UserService } from '../user.service';
 import * as types from '../types';
 import { LoginDialogService } from '../login/login-dialog.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-header',
@@ -15,7 +16,8 @@ export class HeaderComponent implements OnInit {
   constructor(
     public us: UserService,
     private router: Router,
-    private lds: LoginDialogService
+    private lds: LoginDialogService,
+    private title: Title
   ) {
     this.user = this.us.user;
   }
@@ -35,6 +37,7 @@ export class HeaderComponent implements OnInit {
 
   viewProfile() {
     this.router.navigate(['/' + this.user.Nick]);
+    this.title.setTitle(this.user.Nick);
   }
 
   getStarted() {
