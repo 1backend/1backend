@@ -1,0 +1,14 @@
+<div style="margin-top: 2em;">
+  <mat-card>
+    <h2>Settings</h2>
+
+    <font>Caller id:
+      <span *ngIf="!show">***********************</span>
+      <span *ngIf="show">{{callerId}}</span>
+
+    </font>
+    <button *ngIf="!show" (click)="showCallerId()" mat-raised-button style="margin-left: 1em; color: #EEEEEE;" color="primary">Show</button>
+    <button *ngIf="show" (click)="hideCallerId()" mat-raised-button style="margin-left: 1em; color: #EEEEEE;" color="primary">Hide</button>
+
+  </mat-card>
+</div>
