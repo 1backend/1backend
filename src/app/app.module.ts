@@ -160,7 +160,7 @@ const appRoutes: Routes = [
     CommentComponent,
     CreatePostComponent,
     PostComponent,
-    SettingsComponent
+    SettingsComponent,
     LogsComponent
   ],
   imports: [
