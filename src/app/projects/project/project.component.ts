@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatProgressSpinnerModule, MatTabGroup } from '@angular/material';
@@ -9,6 +9,7 @@ import { ProjectService } from '../../project.service';
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import { NotificationsService } from 'angular2-notifications';
 import { Title } from '@angular/platform-browser';
+import { ProjectStatusComponent } from './code/project-status/project-status.component';
 
 @Component({
   selector: 'app-project',
@@ -31,6 +32,8 @@ export class ProjectComponent implements OnInit {
   loaded = false;
   stars: number;
   starred = false;
+
+  @ViewChild('status') private projectStatus: ProjectStatusComponent;
 
   project: types.Project = {
     Endpoints: [],
@@ -98,12 +101,13 @@ export class ProjectComponent implements OnInit {
     if (this.tab === 'sql') {
       this.selectedIndex = 6;
     }
-    
+
     setInterval(() => {
       if (!this.lastBuild.InProgress) {
         return;
       }
       this.updateBuilds();
+      this.projectStatus.getStatus();
     }, 5000);
   }
 

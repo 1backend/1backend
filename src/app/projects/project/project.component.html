@@ -8,7 +8,7 @@
       <span style="padding-left: 0.5em; padding-right: 0.5em;" class="Label Label--outline v-align-middle">v{{ project?.Version ? project?.Version : '0.0.1'}}</span>
     </div>
     <div fxFlex="none" fxFlex.lt-md="1 1 100%">
-      <app-project-status [author]="author" [projectName]="project?.Name"></app-project-status>
+      <app-project-status #status [author]="author" [projectName]="project?.Name"></app-project-status>
       <app-star-button [project]="project" [showCount]="true"></app-star-button>
     </div>
   </div>
