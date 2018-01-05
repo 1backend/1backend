@@ -1,15 +1,33 @@
-<mat-form-field style="width: 100%">
-    <input matInput placeholder="Title" [(ngModel)]="post.Title"/>
-  </mat-form-field>
-<div>
-    <textarea name="post" [(ngModel)]="post.Content" style="font-family:Times New Roman; color:#040505 ; font-size: 20px;"
-      fxLayout="row wrap" fxLayoutAlign="space-between" fxFlex="1 1 100%" rows="10" cols="300px" placeholder="Description">
+<mat-tab-group>
+  <mat-tab label="Post">
+    <mat-form-field style="width: 100%">
+      <input matInput placeholder="Title" [(ngModel)]="post.Title" />
+    </mat-form-field>
+    <div>
+      <textarea name="post" [(ngModel)]="post.Content" style="font-family:Times New Roman; color:#040505 ; font-size: 20px;" fxLayout="row wrap"
+        fxLayoutAlign="space-between" fxFlex="1 1 100%" rows="10" cols="300px" placeholder="Description">
     </textarea>
-  </div>
-  <div style="padding-top: 1em;" align="center">
+    </div>
+    <div style="padding-top: 1em;" align="center">
       <button mat-raised-button style="background-color: rgb(0,192,66);" (click)="createPost()">
         <font color="white">
           <b>Create new post</b>
         </font>
       </button>
     </div>
+  </mat-tab>
+  <mat-tab label="Preview">
+    <mat-card style="margin-top: 2em">
+      <mat-card-title>
+        <div fxFlex="1 1 auto">
+          {{post.Title}}
+        </div>
+      </mat-card-title>
+      <mat-card-subtitle>
+        {{post.CreatedAt | amTimeAgo}} by
+        <a routerLink="/{{us.user.Nick}}">{{us.user.Nick}}</a>
+      </mat-card-subtitle>
+      <markdown-to-html item-width="70%" [data]="post.Content"></markdown-to-html>
+    </mat-card>
+  </mat-tab>
+</mat-tab-group>

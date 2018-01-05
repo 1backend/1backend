@@ -22,7 +22,7 @@ export class CreatePostComponent implements OnInit {
 
   constructor(
     private ps: PostService,
-    private us: UserService,
+    public us: UserService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef: MatDialogRef<CreatePostComponent>
   ) {}
