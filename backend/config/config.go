@@ -36,6 +36,11 @@ type Config struct {
 		// The token used to authenticate for npm publish
 		NpmToken string
 	}
+	Sitemap struct {
+		Enabled bool
+		// defaults to /var/sitemap.xml.gz
+		Path string
+	}
 }
 
 func init() {
