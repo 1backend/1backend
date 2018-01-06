@@ -115,6 +115,7 @@ type User struct {
 	Name       string
 	Email      string
 	AvatarLink string
+	Level      int
 	Tokens     []Token
 	Posts      []Post
 	Premium    bool

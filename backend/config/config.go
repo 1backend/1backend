@@ -44,6 +44,10 @@ type Config struct {
 }
 
 func init() {
+	load()
+}
+
+func load() {
 	file, err := os.Open("/var/1backend-config.json")
 	if err != nil {
 		log.Error(err)
@@ -54,4 +58,12 @@ func init() {
 	if err != nil {
 		log.Error(err)
 	}
+}
+
+func Save(nu Config) error {
+	dat, err := json.Marshal(nu)
+	if err != nil {
+		return err
+	}
+	os.Sav
 }
