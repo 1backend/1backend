@@ -1,6 +1,8 @@
-import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Input, Output, EventEmitter } from '@angular/core';
 import * as types from '../../../types';
 import { ProjectService } from '../../../project.service';
+import { FormsModule } from '@angular/forms';
+import { UserService } from '../../../user.service';
 
 @Component({
   selector: 'app-settings',
@@ -10,12 +12,20 @@ import { ProjectService } from '../../../project.service';
 })
 export class SettingsComponent implements OnInit {
   @Input() project: types.Project;
+  @Output() onProjectSaved = new EventEmitter<void>();
   show = false;
   callerId = '';
+  color = 'accent';
+  privateChecked = false;
+  privateDisabled = false;
+  isPremiumMember = false;
 
-  constructor(private ps: ProjectService) {}
+  constructor(private ps: ProjectService, private us: UserService) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.isPremiumMember = this.us.user.Premium;
+    this.privateChecked != this.project.OpenSource;
+  }
 
   showCallerId() {
     if (this.callerId !== '') {
@@ -31,4 +41,12 @@ export class SettingsComponent implements OnInit {
   hideCallerId() {
     this.show = false;
   }
+
+  saveSettings() {
+    this.project.OpenSource = !this.privateChecked;
+    this.ps.update(this.project).then(() => {
+      this.onProjectSaved.emit();
+    })
+  }
+
 }
