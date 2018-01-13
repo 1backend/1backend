@@ -79,7 +79,7 @@
       <ng-template mat-tab-label>
         Settings
       </ng-template>
-      <app-settings [project]="project"></app-settings>
+      <app-settings [project]="project" (onProjectSaved)="refresh()"></app-settings>
     </mat-tab>
 
 
