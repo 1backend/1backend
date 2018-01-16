@@ -32,13 +32,13 @@ An input section of a fictional "/products/on-sale" might look like:
 [{ "priceMin": "float" }, { "priceMax": "float" }]
 ```
 
-With the following output definition
+With the following output definition:
 
 ```
 product[]
 ```
 
-It will result in the generating an angular service method with the signature:
+This will generate an Angular service method with the signature:
 
 ```typescript
 getProductsOnSale(priceMin: number, priceMax: number): Product[]
@@ -46,7 +46,7 @@ getProductsOnSale(priceMin: number, priceMax: number): Product[]
 
 ### Unnamed types
 
-There are the following built in types supported:
+The following built-in types are supported:
 
 ```
 bool;
@@ -61,8 +61,8 @@ float[];
 
 ### Named types
 
-Named types are a list of field name: type pairs. The type of a field can be an
-other named type, see the "owner" field in the following example:
+Named types are a list of field name -> type pairs. The type of a field can be another
+named type. See the "owner" field in the following example:
 
 ```json
 {
@@ -80,7 +80,7 @@ other named type, see the "owner" field in the following example:
 ### Referring to named types from other services
 
 Since services are designed to talk to each other, the picture would not be
-whole without a way to refer to types in other services:
+complete without a way to refer to types in other services:
 
 ```json
 {
@@ -106,4 +106,4 @@ All types can be made into lists by appending `[]` to their names:
 
 ### Codebase pointers
 
-You can find the codes related to client generation in the [api-pack](../backend/api-pack) folder.
+You can find the code related to client generation in the [api-pack](../backend/api-pack) directory.

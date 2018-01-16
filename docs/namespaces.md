@@ -2,10 +2,10 @@
 
 # Namespaces
 
-Namespaces enable a service to shard their database to support multiple services building on top of it.
+Namespaces enable services to shard their databases to allow multiple services to be built on top of them.
 
 Think about the use case of writing a user service that enables others to register their users into it.
-Let's say the service is in question is `johnsmith/users`, and your database table looks like this:
+Let's say the service in question is `johnsmith/users`, and your database table looks like this:
 
 ```sql
 email               | password
@@ -30,11 +30,11 @@ And this is the reason we need the concept of `namespaces`.
 
 ### Namespace resolution
 
-The only problem remains is how do we assign namespaces to service calls - after all we can't let the caller tell simply which namspace it wants to access, because it could easily lie and get, for example, the users of an other application.
+The only remaining problem is: how do we assign namespaces to service calls? After all, we can't just let the caller tell us which namespace it wants to access, because it could easily lie and get, for example, the users of another application.
 
-The concept of secret `caller ids` were created to prevent this scenario of one service impersonating an other one:
+The concept of secret caller IDs was created to prevent this scenario of one service impersonating another.
 
-Each service has a unique and secret caller id, and when it makes a request to an other service it passes its caller id in the request header. The proxy then translates this id to the service name and passes the translater caller name to the called service (also in the http header):
+Each service has a unique and secret caller ID, and when it makes a request to another service, it passes its caller ID in the request header. The proxy then translates this ID to the service name, and passes the translater caller name to the called service (also in the HTTP header):
 
 ```
                                                     caller-id: x6s70df
@@ -45,22 +45,22 @@ Each service has a unique and secret caller id, and when it makes a request to a
 
 The respective header names are `caller-id` and `caller-namespace`.
 
-As you can see, each project has a namespace assigned to it. By default it is $AUTHOR:default.
+As you can see, each project has a namespace assigned to it. By default it is `$AUTHOR:default`.
 
 #### A chain of calls
 
-You might wonder what happens when the call chain is longer than 1 (is service A calls service B).
-It is entirely up to a service to pass on either its own caller id or the caller id of its caller.
+You might wonder what happens when the call chain is longer than 1 (i.e. service A calls service B).
+It is entirely up to a service to pass on either its own caller ID or the caller ID of its caller.
 
-The services you are calling can potentially mishandle the caller id - just like they can mishandle any of your other data. As a general rule of thumb, any service you is assumed trustworthy, caller ids only protect about other services that you don't call impersonating your service.
+The services you are calling can potentially mishandle the caller ID - just like they can mishandle any of your other data. As a general rule of thumb, any service you use is assumed trustworthy. Caller IDs only protect against other services impersonating your service.
 
 #### Forking
 
-If you don't want a service seeing your data we advise you to use forking (not implemented yet).
-With forking a service you essentially say "I want to be the one who owns and maintains this service entirely - including it's data".
+If you don't want a service seeing your data, we advise you to use forking (not implemented yet).
+By forking a service, you essentially say "I want to be the one who owns and maintains this service entirely - including its data".
 
 #### The source of the caller id
 
-As we mentioned, the secret caller id is unique to each service. Every service container has access to it its own caller id - it is in the environment variable named `CALLER_ID`.
+As we mentioned, the secret caller ID is unique to each service. Every service container has access to its own caller ID - it is in the environment variable named `CALLER_ID`.
 
 ### [Continue with reading about types &#8594;](types.md)

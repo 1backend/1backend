@@ -10,7 +10,7 @@ Namespaces enable a project to shard their database to support multiple applicat
 
 ## [Types](types.md)
 
-Types are used to generate type safe clients for services.
+Types are used to generate type-safe clients for services.
 
 ## [Quotas](quotas.md)
 
