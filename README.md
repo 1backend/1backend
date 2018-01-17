@@ -44,7 +44,13 @@ It's very early.
 
 Angular 2, Go, MySQL, Redis.
 
+## What's happening?
+
+For announcements please follow [our twitter account](https://twitter.com/1backend).
+
 ## How can I install it?
+
+A simple one click/single command installation is coming soon, but in the mean time:
 
 ### Frontend
 
