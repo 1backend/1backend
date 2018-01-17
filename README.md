@@ -52,7 +52,7 @@ In the project root:
 
 ```sh
 npm install
-ng serve
+npm start
 ```
 
 ### Backend
