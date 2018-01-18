@@ -35,6 +35,7 @@ import {
   MatListModule,
   MatExpansionModule,
   MatCheckboxModule,
+  MatRadioModule,
   MatSlideToggleModule,
   MatSliderModule
 } from '@angular/material';
@@ -86,11 +87,16 @@ import { PostService } from './post.service';
 import { CreatePostDialogService } from './author/posts/create-post-dialog.service';
 import { SettingsComponent } from './projects/project/settings/settings.component';
 import { LogsComponent } from './projects/project/logs/logs.component';
+import { ConfigComponent } from './config/config.component';
 
 const appRoutes: Routes = [
   {
     path: 'reset/:secret',
     component: ResetComponent
+  },
+  {
+    path: 'config',
+    component: ConfigComponent
   },
   {
     path: 'recover',
@@ -163,7 +169,8 @@ const appRoutes: Routes = [
     CreatePostComponent,
     PostComponent,
     SettingsComponent,
-    LogsComponent
+    LogsComponent,
+    ConfigComponent
   ],
   imports: [
     BrowserModule,
@@ -198,6 +205,7 @@ const appRoutes: Routes = [
     MatListModule,
     MatExpansionModule,
     MatCheckboxModule,
+    MatRadioModule,
     MatSlideToggleModule,
     MatSliderModule
   ],
