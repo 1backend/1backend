@@ -5,6 +5,25 @@
       <div fxFlex="1 1 50%" fxFlex.lt-md="1 1 100%">
         <form>
           <mat-form-field style="width: 95%;">
+            <input matInput placeholder="Project name" [(ngModel)]="project.Name" name="projectName">
+            <mat-hint style="color: red;">Renaming your project will result in all data lost. </mat-hint>
+          </mat-form-field>
+        </form>
+      </div>
+    </div>
+    <div fxLayout="row wrap" fxLayoutAlign="flex-start" style="padding-left: 2em;margin-top: 2em;">
+      <div fxFlex="1 1 50%" fxFlex.lt-md="1 1 100%">
+        <form>
+          <mat-form-field style="width: 95%;">
+            <input matInput placeholder="Project description" [(ngModel)]="project.Description" name="projectDescription">
+          </mat-form-field>
+        </form>
+      </div>
+    </div>
+    <div fxLayout="row wrap" fxLayoutAlign="flex-start" style="padding-left: 2em;">
+      <div fxFlex="1 1 50%" fxFlex.lt-md="1 1 100%">
+        <form>
+          <mat-form-field style="width: 95%;">
             <input matInput placeholder="Namespace" [(ngModel)]="project.Namespace" name="namespace">
             <mat-hint><a href="https://github.com/1backend/1backend/blob/master/docs/namespaces.md#namespaces" style="color: black;" target="_blank">Namespaces</a> enable a service to shard their database to support multiple services building on top of it.</mat-hint>
           </mat-form-field>
