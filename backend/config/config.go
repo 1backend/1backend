@@ -63,7 +63,7 @@ func load() error {
 }
 
 func Save(nu Config) error {
-	dat, err := json.Marshal(nu)
+	dat, err := json.MarshalIndent(nu, "", "   ")
 	if err != nil {
 		return err
 	}
