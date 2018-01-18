@@ -145,25 +145,25 @@ export interface Config {
   StripeKey?: string;
   SendGridKey?: string;
   Path?: string;
-  Api?: ApiGeneration;
-  Npm?: NpmPublication;
-  Site?: SiteMap;
+  ApiGeneration?: ApiGeneration;
+  NpmPublication?: NpmPublication;
+  Sitemap?: Sitemap;
 }
 
 export interface ApiGeneration {
-  GitOrg?: string;
-  GitUser?: string;
-  GitToken?: string;
-  ApiEnabled?: boolean;
+  GithubOrganisation?: string;
+  GithubUser?: string;
+  GithubPersonalToken?: string;
+  Enabled?: boolean;
 }
 
 export interface NpmPublication {
-  NpmEnabled?: boolean;
+  Enabled?: boolean;
   NpmToken?: string;
-  NpmOrg?: string;
+  NpmOrganisation?: string;
 }
 
-export interface SiteMap {
-  SiteMapEnabled?: boolean;
-  SiteMapPath?: string;
+export interface Sitemap {
+  Enabled?: boolean;
+  Path?: string;
 }
