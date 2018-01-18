@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS users
   premium             BOOLEAN                                                         NOT NULL,
   email               VARCHAR(128)                                             UNIQUE NOT NULL,
   avatar_link         VARCHAR(128)                                                    NOT NULL,
+  level               INT                                                         DEFAULT NULL,
   created_at          DATETIME DEFAULT CURRENT_TIMESTAMP                              NOT NULL,
   updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  NOT NULL,
   PRIMARY KEY (id)
