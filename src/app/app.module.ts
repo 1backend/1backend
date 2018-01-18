@@ -34,7 +34,8 @@ import {
   MatDialog,
   MatListModule,
   MatExpansionModule,
-  MatCheckboxModule
+  MatCheckboxModule,
+  MatRadioModule
 } from '@angular/material';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -84,11 +85,16 @@ import { PostService } from './post.service';
 import { CreatePostDialogService } from './author/posts/create-post-dialog.service';
 import { SettingsComponent } from './projects/project/settings/settings.component';
 import { LogsComponent } from './projects/project/logs/logs.component';
+import { ConfigComponent } from './config/config.component';
 
 const appRoutes: Routes = [
   {
     path: 'reset/:secret',
     component: ResetComponent
+  },
+  {
+    path: 'config',
+    component: ConfigComponent
   },
   {
     path: 'recover',
@@ -161,7 +167,8 @@ const appRoutes: Routes = [
     CreatePostComponent,
     PostComponent,
     SettingsComponent,
-    LogsComponent
+    LogsComponent,
+    ConfigComponent
   ],
   imports: [
     BrowserModule,
@@ -195,7 +202,8 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     MatListModule,
     MatExpansionModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatRadioModule
   ],
   providers: [
     HttpClient,

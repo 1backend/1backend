@@ -139,3 +139,31 @@ export interface Post {
   Slug?: string;
   Editing?: boolean; // not used on the server
 }
+
+export interface Config {
+  SiteUrl?: string;
+  StripeKey?: string;
+  SendGridKey?: string;
+  Path?: string;
+  Api?: ApiGeneration;
+  Npm?: NpmPublication;
+  Site?: SiteMap;
+}
+
+export interface ApiGeneration {
+  GitOrg?: string;
+  GitUser?: string;
+  GitToken?: string;
+  ApiEnabled?: boolean;
+}
+
+export interface NpmPublication {
+  NpmEnabled?: boolean;
+  NpmToken?: string;
+  NpmOrg?: string;
+}
+
+export interface SiteMap {
+  SiteMapEnabled?: boolean;
+  SiteMapPath?: string;
+}
