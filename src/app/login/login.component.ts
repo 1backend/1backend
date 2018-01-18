@@ -6,7 +6,7 @@ import { UserService } from '../user.service';
 import * as types from '../types';
 import { FormControl, Validators } from '@angular/forms';
 
-const EMAIL_REGEX = /^[a-zA-Z0-9.-_]{1,}([+][a-zA-Z0-9.-_]{1,})*@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}$/;
+const EMAIL_REGEX = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$/;
 const USERNAME_REGEX = /^[a-z0-9]+([a-z0-9\-]*)*[a-z0-9]+$/;
 
 @Component({
@@ -101,6 +101,22 @@ export class LoginComponent implements OnInit {
   registerValid(): boolean {
     if (!this.username) {
       this.notif.error('Username is empty.');
+      return false;
+    }
+    if (this.username === 'config') {
+      this.notif.error('"config" is not allowed as username.');
+      return false;
+    }
+    if (this.username === 'projects') {
+      this.notif.error('"projects" is not allowed as username.');
+      return false;
+    }
+    if (this.username === 'reset') {
+      this.notif.error('"reset" is not allowed as username.');
+      return false;
+    }
+    if (this.username === 'recover') {
+      this.notif.error('"recover" is not allowed as username.');
       return false;
     }
     if (!USERNAME_REGEX.test(this.username)) {
