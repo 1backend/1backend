@@ -3,6 +3,7 @@ import * as types from '../../../types';
 import { ProjectService } from '../../../project.service';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-settings',
@@ -19,12 +20,15 @@ export class SettingsComponent implements OnInit {
   privateChecked = false;
   privateDisabled = false;
   isPremiumMember = false;
+  newProjectName;
+  nameChanged = false;
 
-  constructor(private ps: ProjectService, private us: UserService) { }
+  constructor(private ps: ProjectService, private us: UserService, private router: Router) { }
 
   ngOnInit() {
     this.isPremiumMember = this.us.user.Premium;
     this.privateChecked != this.project.OpenSource;
+    this.newProjectName = this.project.Name;
   }
 
   showCallerId() {
@@ -43,10 +47,18 @@ export class SettingsComponent implements OnInit {
   }
 
   saveSettings() {
+    if(this.project.Name != this.newProjectName) {
+      this.project.Name = this.newProjectName;
+      this.nameChanged = true;
+    }
     this.project.OpenSource = !this.privateChecked;
     this.ps.update(this.project).then(() => {
-      this.onProjectSaved.emit();
+      if ( this.nameChanged ) {
+        this.router.navigate(['/' + this.project.Author + '/' + this.project.Name]);
+        this.onProjectSaved.emit();
+      } else {
+        this.onProjectSaved.emit();
+      }
     })
   }
-
 }

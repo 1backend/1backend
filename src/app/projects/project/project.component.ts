@@ -19,8 +19,6 @@ import { ProjectStatusComponent } from './code/project-status/project-status.com
 export class ProjectComponent implements OnInit {
   selectedIndex = 0;
   tab = '';
-  author = '';
-  projectName = '';
   color = 'primary';
   mode = 'indeterminate';
   value = 50;
@@ -52,7 +50,7 @@ export class ProjectComponent implements OnInit {
 
   refresh(): void {
     this.ps
-      .getByAuthorAndProjectName(this.author, this.projectName)
+      .getByAuthorAndProjectName(this.project.Author, this.project.Name)
       .then(project => {
         if (project.Builds && project.Builds.length) {
           this.lastBuild = project.Builds[0];
@@ -75,11 +73,11 @@ export class ProjectComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.author = this.route.snapshot.params['author'];
-    this.projectName = this.route.snapshot.params['project'];
+    this.project.Author = this.route.snapshot.params['author'];
+    this.project.Name = this.route.snapshot.params['project'];
     this.tab = this.route.snapshot.params['tab'];
     this.issueId = this.route.snapshot.params['issueId'];
-    this.title.setTitle(this.author + '/' + this.projectName);
+    this.title.setTitle(this.project.Author + '/' + this.project.Name);
 
     this.refresh();
 
@@ -115,15 +113,15 @@ export class ProjectComponent implements OnInit {
     const pid = tabGroup._tabs.find((e, i, a) => i === tabGroup.selectedIndex)
       .content.viewContainerRef.element.nativeElement.dataset.pid;
     if (pid !== 'code') {
-      this.location.go('/' + this.author + '/' + this.projectName + '/' + pid);
+      this.location.go('/' + this.project.Author + '/' + this.project.Name + '/' + pid);
     } else {
-      this.location.go('/' + this.author + '/' + this.projectName);
+      this.location.go('/' + this.project.Author + '/' + this.project.Name);
     }
   }
 
   updateBuilds() {
     this.ps
-      .getByAuthorAndProjectName(this.author, this.projectName)
+      .getByAuthorAndProjectName(this.project.Author, this.project.Name)
       .then(project => {
         if (project.Builds && project.Builds.length) {
           this.lastBuild = project.Builds[0];

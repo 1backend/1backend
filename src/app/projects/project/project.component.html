@@ -2,13 +2,13 @@
   <div ngClass.lt-md="small-screen" fxLayout="row wrap" fxLayoutAlign="space-between" style="margin-bottom: 1em;">
     <div fxFlex="1 1 50%" fxFlex.lt-md="1 1 100%" style="margin-top: 1em; margin-bottom: 0em;" style="color: #2962FF; font-size: 22px">
       <mat-icon *ngIf="loaded && !project.Public" class="icons">lock_outline</mat-icon>
-      <a style="font-size: 22px; text-decoration: none; color: #2962FF;" routerLink="/{{author}}">{{author}}</a> /
+      <a style="font-size: 22px; text-decoration: none; color: #2962FF;" routerLink="/{{project.Author}}">{{project.Author}}</a> /
       <b>{{project.Name}}</b>
       <span *ngIf="loaded && !project.Public" style="padding-left: 0.5em; padding-right: 0.5em;" class="Label Label--outline v-align-middle">Private</span>
       <span style="padding-left: 0.5em; padding-right: 0.5em;" class="Label Label--outline v-align-middle">v{{ project?.Version ? project?.Version : '0.0.1'}}</span>
     </div>
     <div fxFlex="none" fxFlex.lt-md="1 1 100%">
-      <app-project-status #status [author]="author" [projectName]="project?.Name"></app-project-status>
+      <app-project-status #status [author]="project.Author" [projectName]="project?.Name"></app-project-status>
       <app-star-button [project]="project" [showCount]="true"></app-star-button>
     </div>
   </div>
@@ -44,7 +44,7 @@
         Issues
       </ng-template>
       <app-issues *ngIf="!issueId && project?.Id?.length > 0" [project]="project"></app-issues>
-      <app-issue *ngIf="issueId" [issueId]="issueId" [author]="author" [projectName]="projectName"></app-issue>
+      <app-issue *ngIf="issueId" [issueId]="issueId" [author]="project.Author" [projectName]="projectName"></app-issue>
     </mat-tab>
 
     <mat-tab [attr.data-pid]="'stars'">
