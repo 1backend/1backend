@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"os"
 	"strings"
 
@@ -47,8 +48,10 @@ func init() {
 	load()
 }
 
+const filePath = "/var/1backend-config.json"
+
 func load() {
-	file, err := os.Open("/var/1backend-config.json")
+	file, err := os.Open(filePath)
 	if err != nil {
 		log.Error(err)
 		return
@@ -65,5 +68,5 @@ func Save(nu Config) error {
 	if err != nil {
 		return err
 	}
-	os.Sav
+	return ioutil.WriteFile(filePath, dat, 0644)
 }

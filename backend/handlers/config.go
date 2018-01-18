@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/1backend/1backend/backend/config"
@@ -24,7 +25,7 @@ func (h *Handlers) GetConfig(w http.ResponseWriter, r *http.Request, p httpr.Par
 		return
 	}
 	if user.Level < 100 {
-		write500(w, "No rights to view config")
+		write500(w, errors.New("No rights to view config"))
 		return
 	}
 	write(w, config.C)
@@ -51,7 +52,7 @@ func (h *Handlers) UpdateConfig(w http.ResponseWriter, r *http.Request, p httpr.
 		return
 	}
 	if user.Level < 100 {
-		write500(w, "No rights to view config")
+		write500(w, errors.New("No rights to view config"))
 		return
 	}
 
