@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	log "github.com/cihub/seelog"
 	"github.com/go-redis/redis"
@@ -11,8 +12,10 @@ import (
 	httpr "github.com/julienschmidt/httprouter"
 	"github.com/rs/cors"
 
+	"github.com/1backend/1backend/backend/config"
 	"github.com/1backend/1backend/backend/handlers"
 	"github.com/1backend/1backend/backend/proxy"
+	"github.com/1backend/1backend/backend/sitemap"
 )
 
 func registerHandlers(r *httpr.Router, h *handlers.Handlers, p *proxy.Proxy) {
@@ -45,6 +48,9 @@ func registerHandlers(r *httpr.Router, h *handlers.Handlers, p *proxy.Proxy) {
 	r.POST("/v1/run-sql", h.RunSql)
 	r.GET("/v1/logs", h.GetLogs)
 	r.GET("/v1/caller-id", h.GetCallerId)
+
+	r.GET("/v1/config", h.GetConfig)
+	r.PUT("/v1/config", h.UpdateConfig)
 
 	r.GET("/v1/user", h.GetUser)
 	r.PUT("/v1/user", h.UpdateUser)
@@ -85,6 +91,9 @@ func main() {
 	r := httpr.New()
 	p := proxy.NewProxy(db, redisClient)
 	go p.Nuker()
+	if config.C.Sitemap.Enabled {
+		go sitemapLoop(db)
+	}
 	registerHandlers(r, h, p)
 
 	handler := cors.New(cors.Options{AllowedHeaders: []string{"*"}, AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"}}).Handler(r)
@@ -111,3 +120,14 @@ const seelogConf = `
   </formats>
 </seelog>
 `
+
+func sitemapLoop(db *gorm.DB) {
+	first := true
+	for {
+		if !first {
+			time.Sleep(30 * time.Minute)
+		}
+		first = false
+		sitemap.GenerateSitemap(db)
+	}
+}

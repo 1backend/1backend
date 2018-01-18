@@ -8,11 +8,11 @@
 
 ![1backend service screenshot](https://raw.githubusercontent.com/1backend/1backend/master/1b.png)
 
-It enables you to launch a new live app in seconds - after choosing your tech stack (eg. go with access to an SQL database) you get an empty [app](docs/services.md) which is already live and callable from the outside (through HTTP).
+It enables you to launch a new live app in seconds - after choosing your tech stack (e.g. Go with access to an SQL database) you get an empty [app](docs/services.md) which is already live and callable from the outside (through HTTP).
 
-You just have to plug in your own code (no, you don't have to write code in the browser). It's even preconnected to your database and other infratructure elements of your choosing.
+You just have to plug in your own code (no, you don't have to write code in the browser). It's even pre-connected to your database and other infrastructure elements of your choosing.
 
-With the help of a simple [DSL](docs/types.md) you can even define languages agnostic types and APIs for your services which is used to generate type safe clients. These clients are then published on each language's package manager (eg. NPM).
+With the help of a simple [DSL](docs/types.md), you can even define language-agnostic types and APIs for your services, which are used to generate type-safe clients. These clients are then published on each language's package manager (e.g. NPM).
 
 ## Documentation
 
@@ -23,7 +23,7 @@ You can find the documentation [here](docs).
 ### Languages
 
 * Go
-* Javascript (Node.js)
+* JavaScript (Node.js)
 * TypeScript
 
 ### Infrastructure
@@ -44,15 +44,21 @@ It's very early.
 
 Angular 2, Go, MySQL, Redis.
 
+## What's happening?
+
+For announcements please follow [our twitter account](https://twitter.com/1backend).
+
 ## How can I install it?
+
+A simple one click/single command installation is coming soon, but in the mean time:
 
 ### Frontend
 
-In project root:
+In the project root:
 
 ```sh
 npm install
-ng serve
+npm start
 ```
 
 ### Backend
@@ -75,21 +81,21 @@ The server loads configuration from the location `/var/1backend-config.json`.
 Details of the config parameters are
 [here](https://github.com/1backend/1backend/blob/master/backend/config/config.go).
 
-#### Api generation
+#### API generation
 
-Given services and endpoints have type informations saved with them (can be set
-on the UI of each service), we generate client APIs for each service in a number
+Given services and endpoints have type information saved with them (can be set
+in the UI of each service), we generate client APIs for each service in a number
 of languages.
 
-To do this we need integration with github.
+To do this we need integration with GitHub.
 
 #### GitHub
 
-To get the github integration working you need two things:
+To get the GitHub integration working, you need two things:
 
 * a user who can create repositories in your organisation (only possible through
-  Github's HTTP API)
-* an SSH key on the machine and added to a users' Github account who can commit
+  GitHub's HTTP API)
+* an SSH key on the machine and added to a users' GitHub account who can commit
   into said repositories (`ssh-keygen -t rsa -b 4096 -C "your_email@example.com"; eval "$(ssh-agent -s)"; ssh-add ~/.ssh/id_rsa`).
-  This user must be the one to who runs the server - likely root, since root is
+  This user must be the one who runs the server - likely root, since root is
   needed to access docker, unless you configure your machine otherwise.

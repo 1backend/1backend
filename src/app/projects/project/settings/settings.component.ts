@@ -1,6 +1,9 @@
-import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Input, Output, EventEmitter } from '@angular/core';
 import * as types from '../../../types';
 import { ProjectService } from '../../../project.service';
+import { FormsModule } from '@angular/forms';
+import { UserService } from '../../../user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-settings',
@@ -10,12 +13,23 @@ import { ProjectService } from '../../../project.service';
 })
 export class SettingsComponent implements OnInit {
   @Input() project: types.Project;
+  @Output() onProjectSaved = new EventEmitter<void>();
   show = false;
   callerId = '';
+  color = 'accent';
+  privateChecked = false;
+  privateDisabled = false;
+  isPremiumMember = false;
+  newProjectName;
+  nameChanged = false;
 
-  constructor(private ps: ProjectService) {}
+  constructor(private ps: ProjectService, private us: UserService, private router: Router) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.isPremiumMember = this.us.user.Premium;
+    this.privateChecked != this.project.OpenSource;
+    this.newProjectName = this.project.Name;
+  }
 
   showCallerId() {
     if (this.callerId !== '') {
@@ -30,5 +44,21 @@ export class SettingsComponent implements OnInit {
 
   hideCallerId() {
     this.show = false;
+  }
+
+  saveSettings() {
+    if(this.project.Name != this.newProjectName) {
+      this.project.Name = this.newProjectName;
+      this.nameChanged = true;
+    }
+    this.project.OpenSource = !this.privateChecked;
+    this.ps.update(this.project).then(() => {
+      if ( this.nameChanged ) {
+        this.router.navigate(['/' + this.project.Author + '/' + this.project.Name]);
+        this.onProjectSaved.emit();
+      } else {
+        this.onProjectSaved.emit();
+      }
+    })
   }
 }

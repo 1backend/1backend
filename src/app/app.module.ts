@@ -35,7 +35,9 @@ import {
   MatListModule,
   MatExpansionModule,
   MatCheckboxModule,
-  MatRadioModule
+  MatRadioModule,
+  MatSlideToggleModule,
+  MatSliderModule
 } from '@angular/material';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -203,7 +205,9 @@ const appRoutes: Routes = [
     MatListModule,
     MatExpansionModule,
     MatCheckboxModule,
-    MatRadioModule
+    MatRadioModule,
+    MatSlideToggleModule,
+    MatSliderModule
   ],
   providers: [
     HttpClient,

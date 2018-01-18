@@ -17,6 +17,9 @@ func (e Endpoints) CreateProject(proj *domain.Project) error {
 		return errors.New("Allowed project name characters: lowercase letters, numbers, dash")
 	}
 	proj.Version = "0.0.1"
+	if proj.Namespace == "" {
+		proj.Namespace = proj.Author + ":default"
+	}
 	proj.Description = "Change this to something sensible"
 	proj.Id = domain.Sid.MustGenerate()
 	proj.CallerId = domain.Sid.MustGenerate()
@@ -68,6 +71,9 @@ func (e Endpoints) UpdateProject(proj *domain.Project) error {
 		patchNumber, _ := strconv.ParseInt(semVerParts[2], 10, 64)
 		patchNumber++
 		proj.Version = strings.Join([]string{semVerParts[0], semVerParts[1], fmt.Sprintf("%v", patchNumber)}, ".")
+	}
+	if proj.Namespace == "" {
+		proj.Namespace = proj.Author + ":default"
 	}
 	proj.CallerId = domain.Sid.MustGenerate()
 	err := e.state.SetCallerIdToNameSpace(proj.CallerId, proj.Namespace)

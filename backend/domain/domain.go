@@ -61,6 +61,7 @@ type Project struct {
 	Endpoints    []Endpoint
 	Builds       []Build
 	Dependencies []Dependency
+	Issues       []Issue
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 	// Very stupid, I know
@@ -114,7 +115,9 @@ type User struct {
 	Name       string
 	Email      string
 	AvatarLink string
+	Level      int
 	Tokens     []Token
+	Posts      []Post
 	Premium    bool
 	CreatedAt  time.Time
 	UpdatedAt  time.Time

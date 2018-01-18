@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"os"
 	"strings"
 
@@ -36,17 +37,39 @@ type Config struct {
 		// The token used to authenticate for npm publish
 		NpmToken string
 	}
+	Sitemap struct {
+		Enabled bool
+		// defaults to /var/sitemap.xml.gz
+		Path string
+	}
 }
 
 func init() {
-	file, err := os.Open("/var/1backend-config.json")
+	err := load()
 	if err != nil {
 		log.Error(err)
-		return
+	}
+}
+
+const filePath = "/var/1backend-config.json"
+
+func load() error {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return err
 	}
 	decoder := json.NewDecoder(file)
-	err = decoder.Decode(&C)
+	return decoder.Decode(&C)
+}
+
+func Save(nu Config) error {
+	dat, err := json.MarshalIndent(nu, "", "   ")
 	if err != nil {
-		log.Error(err)
+		return err
 	}
+	err = ioutil.WriteFile(filePath, dat, 0644)
+	if err != nil {
+		return err
+	}
+	return load()
 }
