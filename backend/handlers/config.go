@@ -35,7 +35,7 @@ func (h *Handlers) GetConfig(w http.ResponseWriter, r *http.Request, p httpr.Par
 func (h *Handlers) UpdateConfig(w http.ResponseWriter, r *http.Request, p httpr.Params) {
 	inp := struct {
 		Token  string
-		Config domain.User
+		Config config.Config
 	}{}
 	if err := readJsonBody(r, &inp); err != nil {
 		write400(w, err)
@@ -55,6 +55,10 @@ func (h *Handlers) UpdateConfig(w http.ResponseWriter, r *http.Request, p httpr.
 		write500(w, errors.New("No rights to view config"))
 		return
 	}
-
+	err = config.Save(inp.Config)
+	if err != nil {
+		write500(w, err)
+		return
+	}
 	write(w, map[string]string{})
 }

@@ -45,22 +45,21 @@ type Config struct {
 }
 
 func init() {
-	load()
+	err := load()
+	if err != nil {
+		log.Error(err)
+	}
 }
 
 const filePath = "/var/1backend-config.json"
 
-func load() {
+func load() error {
 	file, err := os.Open(filePath)
 	if err != nil {
-		log.Error(err)
-		return
+		return err
 	}
 	decoder := json.NewDecoder(file)
-	err = decoder.Decode(&C)
-	if err != nil {
-		log.Error(err)
-	}
+	return decoder.Decode(&C)
 }
 
 func Save(nu Config) error {
@@ -68,5 +67,9 @@ func Save(nu Config) error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(filePath, dat, 0644)
+	err = ioutil.WriteFile(filePath, dat, 0644)
+	if err != nil {
+		return err
+	}
+	return load()
 }
