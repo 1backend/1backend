@@ -23,6 +23,7 @@ func registerHandlers(r *httpr.Router, h *handlers.Handlers, p *proxy.Proxy) {
 	r.GET("/v1/projects", h.GetProjects)
 	r.POST("/v1/project", h.CreateProject)
 	r.PUT("/v1/project", h.UpdateProject)
+	r.DELETE("/v1/project", h.DeleteProject)
 
 	r.PUT("/v1/star", h.PutStar)
 	r.DELETE("/v1/star", h.DeleteStar)
