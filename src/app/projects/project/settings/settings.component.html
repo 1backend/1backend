@@ -1,22 +1,11 @@
 <div style="margin-top: 1em;">
   <mat-card>
     <h2 style="color: #607D8B; padding-left: 1em;margin-top: 0.5em;">Settings</h2>
-    <div fxLayout="row wrap" fxLayoutAlign="flex-start" style="padding-left: 2em;margin-top: 2em;">
-      <div fxFlex="1 1 50%" fxFlex.lt-md="1 1 100%">
-        <form>
-          <mat-form-field style="width: 95%;">
-            <input matInput placeholder="Project name" [(ngModel)]="newProjectName" name="projectName">
-            <mat-hint style="color: red;" *ngIf="project.Name != newProjectName">Renaming your project will result in all data lost. </mat-hint>
-            <mat-hint *ngIf="project.Name === newProjectName">Renaming your project will result in all data lost. </mat-hint>
-          </mat-form-field>
-        </form>
-      </div>
-    </div>
     <div fxLayout="row wrap" fxLayoutAlign="flex-start" style="padding-left: 2em;margin-top: 1em;">
       <div fxFlex="1 1 50%" fxFlex.lt-md="1 1 100%">
         <form>
           <mat-form-field style="width: 95%;">
-            <input matInput placeholder="Project description" [(ngModel)]="project.Description" name="projectDescription">
+            <input matInput placeholder="Project description" [(ngModel)]="newDescription" name="projectDescription">
           </mat-form-field>
         </form>
       </div>
@@ -25,7 +14,7 @@
       <div fxFlex="1 1 50%" fxFlex.lt-md="1 1 100%">
         <form>
           <mat-form-field style="width: 95%;">
-            <input matInput placeholder="Project version" [(ngModel)]="project.Version" name="projectVersion">
+            <input matInput placeholder="Project version" [(ngModel)]="newVersion" name="projectVersion">
           </mat-form-field>
         </form>
       </div>
@@ -34,21 +23,22 @@
       <div fxFlex="1 1 50%" fxFlex.lt-md="1 1 100%">
         <form>
           <mat-form-field style="width: 95%;">
-            <input matInput placeholder="Namespace" [(ngModel)]="project.Namespace" name="namespace">
-            <mat-hint><a href="https://github.com/1backend/1backend/blob/master/docs/namespaces.md#namespaces" style="color: black;" target="_blank">Namespaces</a> enable a service to shard their database to support multiple services building on top of it.</mat-hint>
+            <input matInput placeholder="Namespace" [(ngModel)]="newNamespace" name="namespace">
+            <mat-hint>
+              <a href="https://github.com/1backend/1backend/blob/master/docs/namespaces.md#namespaces" style="color: black;" target="_blank">Namespaces</a> enable a service to shard their database to support multiple services building on top of it.</mat-hint>
           </mat-form-field>
         </form>
       </div>
     </div>
     <div fxLayout="row wrap" fxLayoutAlign="flex-start" style="padding-left: 2em;margin-top: 2em;">
-      <div fxFlex="1 1 50%" fxFlex.lt-md="1 1 80%" *ngIf="!show">
+      <div fxFlex="1 1 50%" fxFlex.lt-md="1 1 70%" *ngIf="!show">
         <form>
           <mat-form-field style="width: 95%;">
             <input matInput placeholder="Caller ID" readonly value="***************">
           </mat-form-field>
         </form>
       </div>
-      <div fxFlex="1 1 50%" fxFlex.lt-md="1 1 80%" *ngIf="show">
+      <div fxFlex="1 1 50%" fxFlex.lt-md="1 1 70%" *ngIf="show">
         <form>
           <mat-form-field style="width: 95%;">
             <input matInput placeholder="Caller ID" readonly [(ngModel)]="callerId" name="callerId">
@@ -64,17 +54,46 @@
 
     <div style="padding-left: 2em;margin-top: 1em;">
 
-        Private
-        <mat-slide-toggle [color]="color" style="padding-left: 0.5em;"
-          [checked]="privateChecked"
-          [disabled]="!isPremiumMember"
-          [(ngModel)]="privateChecked"></mat-slide-toggle>
-        <mat-hint *ngIf="!isPremiumMember" style="padding-left: 1em;">Premium members only.</mat-hint>
+      Private
+      <mat-slide-toggle [color]="color" style="padding-left: 0.5em;" [checked]="privateChecked" [disabled]="!isPremiumMember" [(ngModel)]="privateChecked"></mat-slide-toggle>
+      <mat-hint *ngIf="!isPremiumMember" style="padding-left: 1em;">Premium members only.</mat-hint>
 
     </div>
     <mat-hint style="padding-left: 2em;">Private projects are not listed.</mat-hint>
     <div fxLayout="row wrap" fxLayoutAlign="flex-start" style="padding-left: 2em; margin-top: 1em;">
       <button (click)="saveSettings()" mat-raised-button style="color: #EEEEEE;" color="primary">Save</button>
+    </div>
+    <h2 style="color: #607D8B; padding-left: 1em;margin-top: 2em;">Danger zone</h2>
+    <div fxLayout="row wrap" fxLayoutAlign="flex-start" style="padding-left: 2em;margin-top: 2em;">
+      <div fxFlex="1 1 50%" fxFlex.lt-md="1 1 70%">
+        <form>
+          <mat-form-field style="width: 95%;">
+            <input matInput placeholder="Project name" [(ngModel)]="newProjectName" name="projectName">
+            <mat-hint style="color: red;" *ngIf="project.Name != newProjectName">Renaming your project will result in all data lost. </mat-hint>
+            <mat-hint *ngIf="project.Name === newProjectName">Renaming your project will result in all data lost. </mat-hint>
+          </mat-form-field>
+        </form>
+      </div>
+      <div fxFLex="1 1 32%" fxFlex.lt-md="1 1 20%" style="margin-top: 0.5em;">
+        <button (click)="changeName()" mat-raised-button color="accent">
+          Rename
+        </button>
+      </div>
+    </div>
+    <div fxLayout="row wrap" fxLayoutAlign="flex-start" style="padding-left: 2em;margin-top: 1em;">
+      <div fxFlex="1 1 50%" fxFlex.lt-md="1 1 70%">
+        <form>
+          <mat-form-field style="width: 95%">
+            <input matInput [(ngModel)]="deleteProjectName" name="deleteProject" placeholder="Project name">
+            <mat-hint>Enter project name</mat-hint>
+          </mat-form-field>
+        </form>
+      </div>
+      <div class="delete-button" fxFLex="1 1 32%" fxFlex.lt-md="1 1 20%" style="margin-top: 0.5em;">
+        <button (click)="deleteProject()" mat-raised-button>
+          <b>Delete</b>
+        </button>
+      </div>
     </div>
   </mat-card>
 </div>
