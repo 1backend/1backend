@@ -60,7 +60,7 @@ func (g TypeScriptPack) AddTemplateFuncs(t *template.FuncMap) {
 
 func (g TypeScriptPack) FilesToBuild() [][]string {
 	return [][]string{
-		[]string{"package.json", packageJson},
+		[]string{"package.json", g.project.Packages},
 	}
 }
 
