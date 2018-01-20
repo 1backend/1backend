@@ -66,13 +66,13 @@ export class CodeComponent implements OnInit {
     if (!tokens || !tokens.length) {
       return 'YOUR_API_KEY';
     }
-    const token = tokens.filter(t => {
+    const testToken = tokens.filter(t => {
       return t.Name === 'test';
     });
-    if (token.length === 0) {
+    if (testToken.length === 0) {
       return 'YOUR_API_KEY';
     }
-    return tokens[0].Token;
+    return testToken[0].Token;
   }
 
   getAceCompatibleMode(): string {
