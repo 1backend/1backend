@@ -146,4 +146,15 @@ export class ProjectService {
       })
       .toPromise();
   }
+
+  delete(project: types.Project): Promise<void> {
+    let p = new HttpParams();
+    p = p.set('token', this.ss.getToken());
+    p = p.set('projectId', project.Id);
+    return this.http
+      .delete<void>(environment.backendUrl + '/v1/project', {
+        params: p
+      })
+      .toPromise();
+  }
 }
