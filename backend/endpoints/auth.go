@@ -18,7 +18,7 @@ var reg = regexp.MustCompile("^[0-9a-z-]+$")
 func (e Endpoints) createToken(tx *gorm.DB, userId string) (*domain.AccessToken, error) {
 	token := domain.AccessToken{
 		Id:        domain.Sid.MustGenerate(),
-		Token:     uuid.NewV4().String(),
+		Token:     uuid.Must(uuid.NewV4()).String(),
 		UserId:    userId,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
@@ -62,7 +62,7 @@ func (e *Endpoints) Register(email, name, password string) (*domain.User, *domai
 	tokenDao := domain.NewAccessTokenDao(tx)
 	token := domain.AccessToken{
 		Id:        domain.Sid.MustGenerate(),
-		Token:     uuid.NewV4().String(),
+		Token:     uuid.Must(uuid.NewV4()).String(),
 		UserId:    user.Id,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
@@ -71,7 +71,7 @@ func (e *Endpoints) Register(email, name, password string) (*domain.User, *domai
 		Id:          domain.Sid.MustGenerate(),
 		Name:        "default",
 		Description: "The default token is here to collect quota. We advise you to not use this anywhere.",
-		Token:       uuid.NewV4().String(),
+		Token:       uuid.Must(uuid.NewV4()).String(),
 		UserId:      user.Id,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
@@ -80,7 +80,7 @@ func (e *Endpoints) Register(email, name, password string) (*domain.User, *domai
 		Id:          domain.Sid.MustGenerate(),
 		Name:        "test",
 		Description: "The test token is here only for demo purposes.",
-		Token:       uuid.NewV4().String(),
+		Token:       uuid.Must(uuid.NewV4()).String(),
 		UserId:      user.Id,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
@@ -130,7 +130,7 @@ func (e *Endpoints) Login(email, password string) (*domain.User, *domain.AccessT
 	tokenDao := domain.NewAccessTokenDao(e.db)
 	token := domain.AccessToken{
 		Id:        domain.Sid.MustGenerate(),
-		Token:     uuid.NewV4().String(),
+		Token:     uuid.Must(uuid.NewV4()).String(),
 		UserId:    user.Id,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
@@ -175,7 +175,7 @@ func (e *Endpoints) SendResetEmail(email string) error {
 	if err != nil {
 		return err
 	}
-	secret := uuid.NewV4().String() // using the uuid v4 here to ensure that it's absolutely unenumerable. org secrets are ok due to email confirmations
+	secret := uuid.Must(uuid.NewV4()).String() // using the uuid v4 here to ensure that it's absolutely unenumerable. org secrets are ok due to email confirmations
 	tx := e.db.Begin()
 	err = domain.NewResetDao(e.db).Create(domain.Reset{
 		Id:        domain.Sid.MustGenerate(),
@@ -236,7 +236,7 @@ func (e *Endpoints) ResetPassword(secret, newPassword string) (*domain.AccessTok
 	tokenDao := domain.NewAccessTokenDao(tx)
 	token := domain.AccessToken{
 		Id:        domain.Sid.MustGenerate(),
-		Token:     uuid.NewV4().String(),
+		Token:     uuid.Must(uuid.NewV4()).String(),
 		UserId:    user.Id,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),

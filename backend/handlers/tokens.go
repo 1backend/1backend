@@ -27,7 +27,7 @@ func (h *Handlers) CreateToken(w http.ResponseWriter, r *http.Request, p httpr.P
 		return
 	}
 	token := &domain.Token{
-		Token:       uuid.NewV4().String(),
+		Token:       uuid.Must(uuid.NewV4()).String(),
 		Name:        inp.ServiceTokenName,
 		Description: inp.ServiceTokenDescription,
 		UserId:      user.Id,

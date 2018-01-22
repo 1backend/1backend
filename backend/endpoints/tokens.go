@@ -8,7 +8,7 @@ import (
 )
 
 func (e Endpoints) CreateToken(iss *domain.Token) error {
-	iss.Id = uuid.NewV4().String()
+	iss.Id = uuid.Must(uuid.NewV4()).String()
 	iss.CreatedAt = time.Now()
 	iss.UpdatedAt = iss.CreatedAt
 	return e.db.Save(iss).Error
