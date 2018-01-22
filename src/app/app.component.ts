@@ -17,4 +17,8 @@ export class AppComponent {
     pauseOnHover: false,
     clickToClose: false
   };
+
+  pathOnly(): string {
+    return this.router.url.split('#')[0].split('?')[0];
+  }
 }
