@@ -54,7 +54,7 @@ func (g NodeJSPack) AddTemplateFuncs(t *template.FuncMap) {
 
 func (g NodeJSPack) FilesToBuild() [][]string {
 	return [][]string{
-		[]string{"package.json", packageJson},
+		[]string{"package.json", g.project.Packages},
 	}
 }
 

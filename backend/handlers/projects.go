@@ -209,3 +209,18 @@ func (h *Handlers) Charge(w http.ResponseWriter, r *http.Request, p httpr.Params
 	}
 	write(w, map[string]string{})
 }
+
+func (h *Handlers) DeleteProject(w http.ResponseWriter, r *http.Request, p httpr.Params) {
+	token := r.URL.Query().Get("token")
+	projectId := r.URL.Query().Get("projectId")
+	if err := h.ep.OwnsProject(token, projectId); err != nil {
+		write400(w, err)
+		return
+	}
+	err := h.ep.DeleteProject(projectId)
+	if err != nil {
+		write400(w, err)
+		return
+	}
+	write(w, map[string]string{})
+}
