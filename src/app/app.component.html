@@ -1,7 +1,7 @@
 <base href="/">
 <simple-notifications [options]="options"></simple-notifications>
 
-<div *ngIf="router.url !== '/' && router.url !== '/#pricing' && router.url !== '/#getStarted'; else notcondition">
+<div *ngIf="pathOnly() !== '/'; else notcondition">
     <app-header></app-header>
     <div ngClass.gt-sm="big-screen" ngClass.lt-md="small-screen">
         <router-outlet></router-outlet>
