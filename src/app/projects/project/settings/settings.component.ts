@@ -27,7 +27,7 @@ export class SettingsComponent implements OnInit {
 
   ngOnInit() {
     this.isPremiumMember = this.us.user.Premium;
-    this.privateChecked != this.project.OpenSource;
+    this.privateChecked != this.project.Public;
     this.newProjectName = this.project.Name;
   }
 
@@ -51,7 +51,7 @@ export class SettingsComponent implements OnInit {
       this.project.Name = this.newProjectName;
       this.nameChanged = true;
     }
-    this.project.OpenSource = !this.privateChecked;
+    this.project.Public = !this.privateChecked;
     this.ps.update(this.project).then(() => {
       if ( this.nameChanged ) {
         this.router.navigate(['/' + this.project.Author + '/' + this.project.Name]);
