@@ -113,3 +113,47 @@ func (e Endpoints) UpdateProject(proj *domain.Project) error {
 	go deploy.NewDeployer(e.db, e.state).Deploy(proj)
 	return nil
 }
+
+func (e Endpoints) DeleteProject(projectId string) error {
+	if projectId == "" {
+		return errors.New("ProjectId is missing")
+	}
+	tx := e.db.Begin()
+	err := tx.Where("project_id = ?", projectId).Delete(&domain.Star{}).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	err = tx.Where("issue_id in (select id from issues where project_id = ?)", projectId).Delete(&domain.Comment{}).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	err = tx.Where("project_id = ?", projectId).Delete(&domain.Issue{}).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	err = tx.Where("project_id = ?", projectId).Delete(&domain.Endpoint{}).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	err = tx.Where("project_id = ?", projectId).Delete(&domain.Build{}).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	err = tx.Where("project_id = ?", projectId).Delete(&domain.Dependency{}).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	err = tx.Delete(&domain.Project{Id: projectId}).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit().Error
+}
