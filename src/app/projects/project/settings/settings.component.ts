@@ -27,7 +27,7 @@ export class SettingsComponent implements OnInit {
 
   ngOnInit() {
     this.isPremiumMember = this.us.user.Premium;
-    this.privateChecked != this.project.Public;
+    this.privateChecked = !this.project.Public;
     this.newProjectName = this.project.Name;
   }
 
