@@ -209,3 +209,13 @@ type Reset struct {
 	CreatedAt time.Time
 	Used      bool
 }
+
+// non-database types
+
+// CodeSections is used by infra-packs (dependency plugins)
+// to generate appropriate code snippets for a project
+type CodeSections struct {
+	Readme  string
+	Globals string
+	Imports string
+}
