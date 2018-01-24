@@ -20,10 +20,10 @@ echo "CREATE DATABASE IF NOT EXISTS $NAME; CREATE USER IF NOT EXISTS $NAME@'%'; 
 echo "SET PASSWORD FOR $NAME@'%' = PASSWORD('$4');" | mysql -h localhost -P 3306 --protocol=tcp -u root -proot || exit 1
 
 sudo docker run --name $2_$3 \
-    -e SQL_IP=$INTERNALIP \
-    -e INFRAPASS=$4 \
-    -e SQL_DB=$2_$3 \
-    -e SQL_USER=$2_$3 \
+    -e MYSQL_IP=$INTERNALIP \
+    -e MYSQL_DB=$2_$3 \
+    -e MYSQL_USER=$2_$3 \
+    -e MYSQL_PASSWORD=$4 \
     -e CALLER_ID=$7 \
     -e 1BACKEND_URL='http://127.0.0.1:8883' \
     -p=8883 -d $2_$3
