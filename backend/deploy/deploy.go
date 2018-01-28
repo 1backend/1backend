@@ -15,8 +15,9 @@ import (
 
 	"github.com/1backend/1backend/backend/config"
 	"github.com/1backend/1backend/backend/domain"
+	infp "github.com/1backend/1backend/backend/infra-plugins"
 	"github.com/1backend/1backend/backend/state"
-	tp "github.com/1backend/1backend/backend/tech-pack"
+	tp "github.com/1backend/1backend/backend/tech-plugins"
 )
 
 type Deployer struct {
@@ -55,7 +56,7 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	if err != nil {
 		return err
 	}
-	techPack := tp.GetProvider(project)
+	techPack := tp.Plugin(project)
 	recipePath := techPack.RecipePath()
 	dat, err := ioutil.ReadFile(config.C.Path + "/tech-pack/" + recipePath + "/code.tpl")
 	if err != nil {
@@ -101,6 +102,10 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	_, err = f.Write(buf.Bytes())
 	if err != nil {
 		return err
+	}
+	envars := map[string]string{}
+	for _, v := range infp.Plugins(project) {
+		v.PreDeploy(envars)
 	}
 	output, err := exec.Command("/bin/bash", config.C.Path+"/bash/build.sh",
 		buildPath,

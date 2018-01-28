@@ -10,8 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/1backend/1backend/backend/api-pack"
-	apiTypes "github.com/1backend/1backend/backend/api-pack/types"
+	apiTypes "github.com/1backend/1backend/backend/client-plugins/types"
 	"github.com/1backend/1backend/backend/config"
 	"github.com/1backend/1backend/backend/domain"
 )
@@ -59,7 +58,7 @@ func (d Deployer) GenerateAPIs(project *domain.Project, buildId string) (string,
 			return string(createOutput), err
 		}
 	}
-	generators := apipack.Generators(project)
+	generators := clientplugins.Plugins(project)
 	repoPath := reposPath + "/" + project.Author
 	context, err := apiTypes.GetContext(project, projectNames)
 	if err != nil {

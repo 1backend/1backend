@@ -1,4 +1,4 @@
-package ngapi
+package goclient
 
 import (
 	"testing"
@@ -14,7 +14,6 @@ var proj = &domain.Project{
 		"user": [
 			{"name":   "string"},
 			{"age":    "int"},
-			{"likesBananas": "bool"}, 
 			{"foods":  "string[]"},
 			{"friend": "curfter/other-service.Person"}
 		],
@@ -57,9 +56,5 @@ func TestBasic(t *testing.T) {
 	if len(files) == 0 || files[0][1] == "" {
 		t.Fatal("Output is empty")
 	}
-	for _, file := range files {
-		t.Log(file[0])
-		t.Log("====")
-		t.Log(file[1])
-	}
+	t.Log(files[0][1])
 }

@@ -1,13 +1,13 @@
-package techpack
+package techplugins
 
 import (
 	"fmt"
 	"text/template"
 
 	"github.com/1backend/1backend/backend/domain"
-	"github.com/1backend/1backend/backend/tech-pack/go"
-	"github.com/1backend/1backend/backend/tech-pack/nodejs"
-	"github.com/1backend/1backend/backend/tech-pack/typescript"
+	"github.com/1backend/1backend/backend/tech-plugins/go"
+	"github.com/1backend/1backend/backend/tech-plugins/nodejs"
+	"github.com/1backend/1backend/backend/tech-plugins/typescript"
 )
 
 // GetProvider returns the plugin the project uses based on its mode and recipe

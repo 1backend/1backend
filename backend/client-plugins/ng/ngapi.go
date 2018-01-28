@@ -1,31 +1,34 @@
-package ngapi
+package ngclient
 
 import (
 	"bytes"
 	"strings"
 	"text/template"
 
-	apiTypes "github.com/1backend/1backend/backend/api-pack/types"
+	apiTypes "github.com/1backend/1backend/backend/client-plugins/types"
 	"github.com/1backend/1backend/backend/domain"
 	"github.com/iancoleman/strcase"
 )
 
-func NewGenerator(proj *domain.Project) GoGenerator {
-	return GoGenerator{
+func New(proj *domain.Project) NgClient {
+	return NgClient{
 		Project: proj,
 	}
 }
 
-type GoGenerator struct {
+type NgClient struct {
 	Project *domain.Project
 }
 
-func (g GoGenerator) FilesToBuild(c apiTypes.Context) ([][]string, error) {
-	return g.generateFiles(c)
-}
-
-func (g GoGenerator) FolderName() string {
-	return "ng"
+func (g NgClient) ClientFiles(c apiTypes.Context) (*apiTypes.ClientFiles, error) {
+	files, err := g.generateFiles(c)
+	if err != nil {
+		return nil, err
+	}
+	return &apiTypes.ClientFiles{
+		FolderName: "ng",
+		Files:      files,
+	}, nil
 }
 
 var indexTemplate = `
@@ -190,7 +193,7 @@ func correctTypeName(s string) string {
 	return strings.Title(strings.Replace(s, "[]", "", 1))
 }
 
-func (g GoGenerator) generateFiles(c apiTypes.Context) ([][]string, error) {
+func (g NgClient) generateFiles(c apiTypes.Context) ([][]string, error) {
 	templFuncs := template.FuncMap{
 		"gServiceName": gServiceName,
 		"gInputToMap":  gInputToMap,
