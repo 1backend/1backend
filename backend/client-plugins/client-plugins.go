@@ -1,4 +1,4 @@
-package apipack
+package clientplugins
 
 import (
 	goclient "github.com/1backend/1backend/backend/client-plugins/go"

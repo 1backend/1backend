@@ -9,7 +9,7 @@ import (
 
 	"github.com/1backend/1backend/backend/deploy"
 	"github.com/1backend/1backend/backend/domain"
-	tp "github.com/1backend/1backend/backend/tech-pack"
+	tp "github.com/1backend/1backend/backend/tech-plugins"
 )
 
 func (e Endpoints) CreateProject(proj *domain.Project) error {
@@ -31,7 +31,10 @@ func (e Endpoints) CreateProject(proj *domain.Project) error {
 	if err != nil {
 		return err
 	}
-	tp.GetProvider(proj).CreateProjectPlugin()
+	err = tp.Plugin(proj).PreCreate()
+	if err != nil {
+		return err
+	}
 	err = e.db.Save(proj).Error
 	if err != nil {
 		return err

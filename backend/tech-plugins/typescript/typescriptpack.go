@@ -1,29 +1,42 @@
-package typescriptpack
+package typescriptplugin
 
 import (
 	"text/template"
 
 	"github.com/1backend/1backend/backend/domain"
-	"github.com/1backend/1backend/backend/tech-pack/utils"
+	techt "github.com/1backend/1backend/backend/tech-plugins/types"
+	"github.com/1backend/1backend/backend/tech-plugins/utils"
 )
 
-func NewPack(project *domain.Project) TypeScriptPack {
-	return TypeScriptPack{
+func NewPlugin(project *domain.Project) TypeScriptPlugin {
+	return TypeScriptPlugin{
 		project: project,
 	}
 }
 
-type TypeScriptPack struct {
+type TypeScriptPlugin struct {
 	project *domain.Project
 }
 
-func (g TypeScriptPack) RecipePath() string {
-	return "typescript"
+func (g TypeScriptPlugin) PreCreate() error {
+	return generateEndpoints(g.project)
+}
+
+func (g TypeScriptPlugin) Outfile() string {
+	return "server.ts"
+}
+
+func (g TypeScriptPlugin) Build(t *template.FuncMap) (*techt.Build, error) {
+	return &techt.Build{
+		Outfile:    "server.ts",
+		FilesBuilt: [][]string{{"package.json", g.project.Packages}},
+		RecipePath: "typescript",
+	}, nil
 }
 
 // The service itself is not published to NPM, unlike its clients,
-// we still generate a package json though.
-var packageJson = `{
+// we still generate a Pluginage json though.
+var PackageJson = `{
   "name": "1backend-typescript-service",
   "version": "0.1.0",
   "description": "A sample TypeScript app for 1backend",
@@ -45,24 +58,6 @@ var packageJson = `{
   },
   "license": "MIT"
 }`
-
-func (g TypeScriptPack) CreateProjectPlugin() error {
-	return generateEndpoints(g.project)
-}
-
-func (g TypeScriptPack) Outfile() string {
-	return "server.ts"
-}
-
-func (g TypeScriptPack) AddTemplateFuncs(t *template.FuncMap) {
-
-}
-
-func (g TypeScriptPack) FilesToBuild() [][]string {
-	return [][]string{
-		[]string{"package.json", g.project.Packages},
-	}
-}
 
 const hi = `(req: express.Request, rsp: express.Response) => {
   rsp.send(JSON.stringify('hi'));
@@ -106,7 +101,7 @@ const types = `{
 func generateEndpoints(proj *domain.Project) error {
 	proj.Description = "An empty TypeScript project"
 	proj.Imports = `import * as service from '@1backend/typescript-example-service';`
-	proj.Packages = packageJson
+	proj.Packages = PackageJson
 	readme, err := utils.GetReadme(proj)
 	if err != nil {
 		return err
@@ -127,7 +122,7 @@ func generateEndpoints(proj *domain.Project) error {
 			Code:        importedHi,
 			Input:       importedHiInput,
 			Output:      importedHiOutput,
-			Description: "An endpoint that demonstrates the usage of an imported package",
+			Description: "An endpoint that demonstrates the usage of an imported Pluginage",
 		},
 		domain.Endpoint{
 			Url:         "/input-example",

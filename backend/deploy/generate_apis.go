@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/1backend/1backend/backend/client-plugins"
 	apiTypes "github.com/1backend/1backend/backend/client-plugins/types"
 	"github.com/1backend/1backend/backend/config"
 	"github.com/1backend/1backend/backend/domain"
@@ -65,14 +66,14 @@ func (d Deployer) GenerateAPIs(project *domain.Project, buildId string) (string,
 		return "", err
 	}
 	for _, gen := range generators {
-		fileTuples, err := gen.FilesToBuild(*context)
+		files, err := gen.ClientFiles(*context)
 		if err != nil {
 			return "", err
 		}
-		for _, v := range fileTuples {
+		for _, v := range files.Files {
 			fileName := v[0]
 			fileContents := v[1]
-			fPath := repoPath + "/" + gen.FolderName() + "/" + project.Name + "/" + fileName
+			fPath := repoPath + "/" + files.FolderName + "/" + project.Name + "/" + fileName
 			err = os.MkdirAll(filePath.Dir(fPath), 0700)
 			if err != nil {
 				return "", err

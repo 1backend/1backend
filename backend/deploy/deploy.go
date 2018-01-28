@@ -57,16 +57,17 @@ func (d Deployer) Deploy(project *domain.Project) error {
 		return err
 	}
 	techPack := tp.Plugin(project)
-	recipePath := techPack.RecipePath()
-	dat, err := ioutil.ReadFile(config.C.Path + "/tech-pack/" + recipePath + "/code.tpl")
-	if err != nil {
-		return err
-	}
-	// Create a new template and parse the letter into it.
 	templFuncs := template.FuncMap{
 		"trim": strings.TrimSpace,
 	}
-	techPack.AddTemplateFuncs(&templFuncs)
+	buildFiles, err := techPack.Build(&templFuncs)
+	if err != nil {
+		return err
+	}
+	dat, err := ioutil.ReadFile(config.C.Path + "/tech-pack/" + buildFiles.RecipePath + "/code.tpl")
+	if err != nil {
+		return err
+	}
 	t, err := template.New("code").Funcs(templFuncs).Parse(string(dat))
 	if err != nil {
 		return err
@@ -83,7 +84,7 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	if err != nil {
 		return err
 	}
-	for _, v := range techPack.FilesToBuild() {
+	for _, v := range buildFiles.FilesBuilt {
 		f, err := os.Create(buildPath + "/" + v[0])
 		if err != nil {
 			return err
@@ -94,7 +95,7 @@ func (d Deployer) Deploy(project *domain.Project) error {
 			return err
 		}
 	}
-	f, err := os.Create(buildPath + "/" + techPack.Outfile())
+	f, err := os.Create(buildPath + "/" + buildFiles.Outfile)
 	if err != nil {
 		return err
 	}
@@ -112,7 +113,7 @@ func (d Deployer) Deploy(project *domain.Project) error {
 		project.Author,
 		project.Name,
 		project.InfraPassword,
-		recipePath,
+		buildFiles.RecipePath,
 		config.C.Path,
 		project.CallerId).CombinedOutput()
 	build.Output = string(output)

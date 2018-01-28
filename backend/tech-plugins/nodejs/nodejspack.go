@@ -1,24 +1,33 @@
-package nodejspack
+package nodejsplugin
 
 import (
 	"text/template"
 
 	"github.com/1backend/1backend/backend/domain"
-	"github.com/1backend/1backend/backend/tech-pack/utils"
+	techt "github.com/1backend/1backend/backend/tech-plugins/types"
+	"github.com/1backend/1backend/backend/tech-plugins/utils"
 )
 
-func NewPack(project *domain.Project) NodeJSPack {
-	return NodeJSPack{
+func NewPlugin(project *domain.Project) NodeJsPlugin {
+	return NodeJsPlugin{
 		project: project,
 	}
 }
 
-type NodeJSPack struct {
+type NodeJsPlugin struct {
 	project *domain.Project
 }
 
-func (g NodeJSPack) RecipePath() string {
-	return "nodejs"
+func (g NodeJsPlugin) PreCreate() error {
+	return generateEndpoints(g.project)
+}
+
+func (g NodeJsPlugin) Build(t *template.FuncMap) (*techt.Build, error) {
+	return &techt.Build{
+		Outfile:    "server.js",
+		RecipePath: "nodejs",
+		FilesBuilt: [][]string{{"package.json", g.project.Packages}},
+	}, nil
 }
 
 var packageJson = `{
@@ -39,24 +48,6 @@ var packageJson = `{
   },
   "license": "MIT"
 }`
-
-func (g NodeJSPack) CreateProjectPlugin() error {
-	return generateEndpoints(g.project)
-}
-
-func (g NodeJSPack) Outfile() string {
-	return "server.js"
-}
-
-func (g NodeJSPack) AddTemplateFuncs(t *template.FuncMap) {
-
-}
-
-func (g NodeJSPack) FilesToBuild() [][]string {
-	return [][]string{
-		[]string{"package.json", g.project.Packages},
-	}
-}
 
 const hi = `(req, res) => {
   res.send(JSON.stringify('hi'));

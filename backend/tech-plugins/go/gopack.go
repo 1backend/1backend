@@ -1,40 +1,36 @@
-package gopack
+package goplugin
 
 import (
 	"text/template"
 
 	"github.com/1backend/1backend/backend/domain"
-	"github.com/1backend/1backend/backend/tech-pack/utils"
+	techt "github.com/1backend/1backend/backend/tech-plugins/types"
+	"github.com/1backend/1backend/backend/tech-plugins/utils"
 )
 
-func NewPack(project *domain.Project) GoPack {
-	return GoPack{
+func NewPlugin(project *domain.Project) GoPlugin {
+	return GoPlugin{
 		project: project,
 	}
 }
 
-type GoPack struct {
+type GoPlugin struct {
 	project *domain.Project
 }
 
-func (g GoPack) RecipePath() string {
+func (g GoPlugin) RecipePath() string {
 	return "go"
 }
 
-func (g GoPack) CreateProjectPlugin() error {
+func (g GoPlugin) PreCreate() error {
 	return generateEndpoints(g.project)
 }
 
-func (g GoPack) Outfile() string {
-	return "main.go"
-}
-
-func (g GoPack) AddTemplateFuncs(t *template.FuncMap) {
-
-}
-
-func (g GoPack) FilesToBuild() [][]string {
-	return nil
+func (g GoPlugin) Build(t *template.FuncMap) (*techt.Build, error) {
+	return &techt.Build{
+		Outfile:    "main.go",
+		RecipePath: "go",
+	}, nil
 }
 
 const hi = `func (w http.ResponseWriter, r *http.Request, p httpr.Params) {
@@ -107,7 +103,7 @@ func generateEndpoints(proj *domain.Project) error {
 			Code:        importedHi,
 			Input:       importedHiInput,
 			Output:      importedHiOutput,
-			Description: "An endpoint that demonstrates the usage of an imported package",
+			Description: "An endpoint that demonstrates the usage of an imported Pluginage",
 		},
 		domain.Endpoint{
 			Url:         "/input-example",
