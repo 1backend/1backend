@@ -10,6 +10,7 @@ import (
 	"text/template"
 	"time"
 
+	log "github.com/cihub/seelog"
 	"github.com/jinzhu/gorm"
 
 	"github.com/1backend/1backend/backend/config"
@@ -42,10 +43,14 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	}
 	defer func() {
 		build.InProgress = false
+		build.Success = true
 		if err != nil {
 			build.Output += "### Error\n```shell\n" + err.Error() + "\n```"
 			build.Success = false
-			d.db.Save(build)
+		}
+		err := d.db.Save(build)
+		if err != nil {
+			log.Error(err)
 		}
 	}()
 	build.CreatedAt = time.Now()

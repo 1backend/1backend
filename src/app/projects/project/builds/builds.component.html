@@ -30,10 +30,9 @@
     </div>
   </mat-card-title>
   <div *ngIf="build.Selected || i === 0">
-    <markdown-to-html *ngIf="build.Output === ''" class="editor" [data]="'Build is in progress, it may take a few seconds...'"
-      style="min-height: 200px; width:100%;
-      overflow: auto;" #editor></markdown-to-html>
-    <markdown-to-html *ngIf="build.Output !== ''" class="editor" [data]="build.Output" style="min-height: 200px; width:100%;"></markdown-to-html>
+    <showdown *ngIf="build.Output === ''" class="editor" [value]="'Build is in progress, it may take a few seconds...'" style="min-height: 200px; width:100%;
+      overflow: auto;" #editor></showdown>
+    <showdown *ngIf="build.Output !== ''" class="editor" [options]="{'ghCodeBlocks': true}" [value]="build.Output" style="min-height: 200px; width:100%;"></showdown>
   </div>
 </mat-card>
 <span *ngIf="project.Builds.length > 10">
