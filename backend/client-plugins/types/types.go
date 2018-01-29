@@ -9,6 +9,8 @@ import (
 )
 
 type ClientPlugin interface {
+	// Pretty name of language/tech
+	Name() string
 	// Called when generating client files for each language
 	ClientFiles(c Context) (*ClientFiles, error)
 }

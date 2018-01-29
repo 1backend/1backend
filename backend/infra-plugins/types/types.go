@@ -2,6 +2,8 @@ package types
 
 // Provider is the interface every tech pack plugin must implement
 type Plugin interface {
+	// Pretty name of the infrastructure plugin ie. PostgreSQL
+	Name() string
 	// Func added here will be available when generated both the global and the readme section
 	PreDeploy(envars map[string]string) (*PreDeploy, error)
 }

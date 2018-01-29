@@ -20,6 +20,10 @@ type GoClient struct {
 	Project *domain.Project
 }
 
+func (g GoClient) Name() string {
+	return "Go"
+}
+
 func (g GoClient) ClientFiles(c apiTypes.Context) (*apiTypes.ClientFiles, error) {
 	code, err := g.generateGo(c)
 	if err != nil {

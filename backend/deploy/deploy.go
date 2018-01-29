@@ -10,7 +10,6 @@ import (
 	"text/template"
 	"time"
 
-	log "github.com/cihub/seelog"
 	"github.com/jinzhu/gorm"
 
 	"github.com/1backend/1backend/backend/config"
@@ -42,11 +41,10 @@ func (d Deployer) Deploy(project *domain.Project) error {
 		Version:    project.Version,
 	}
 	defer func() {
+		build.InProgress = false
 		if err != nil {
-			log.Error(err)
-			build.Output += "\n" + err.Error()
+			build.Output += "### Error\n```shell\n" + err.Error() + "\n```"
 			build.Success = false
-			build.InProgress = false
 			d.db.Save(build)
 		}
 	}()
@@ -64,7 +62,7 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	if err != nil {
 		return err
 	}
-	dat, err := ioutil.ReadFile(config.C.Path + "/tech-pack/" + buildFiles.RecipePath + "/code.tpl")
+	dat, err := ioutil.ReadFile(config.C.Path + "/tech-plugins/" + buildFiles.RecipePath + "/code.tpl")
 	if err != nil {
 		return err
 	}
@@ -105,20 +103,27 @@ func (d Deployer) Deploy(project *domain.Project) error {
 		return err
 	}
 	envars := map[string]string{}
+	build.Output += "### Setting up infrastructure\n"
 	for _, v := range infp.Plugins(project) {
-		v.PreDeploy(envars)
+		pred, err := v.PreDeploy(envars)
+		if err != nil {
+			return err
+		}
+		build.Output += "#### " + v.Name() + "\n"
+		build.Output += "```sh\n" + pred.Output + "\n```\n"
+		// @todo output of infra stuff is lost
 	}
+	build.Output += "### Building project\n"
 	output, err := exec.Command("/bin/bash", config.C.Path+"/bash/build.sh",
 		buildPath,
 		project.Author,
 		project.Name,
-		project.InfraPassword,
 		buildFiles.RecipePath,
-		config.C.Path,
-		project.CallerId).CombinedOutput()
-	build.Output = string(output)
-	build.Success = err == nil
-	build.InProgress = false
+		config.C.Path).CombinedOutput()
+	build.Output += "```sh\n" + string(output) + "\n```\n"
+	if err != nil {
+		return err
+	}
 	output, err = exec.Command("/bin/bash", config.C.Path+"/bash/get-port.sh",
 		project.Author,
 		project.Name).CombinedOutput()
@@ -136,13 +141,13 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	err = d.db.Table("projects").Where("id = ?", project.Id).Update(map[string]interface{}{
 		"port": string(output),
 	}).Error
+	if err != nil {
+		return err
+	}
 	if config.C.ApiGeneration.Enabled {
-		outp, err := d.GenerateAPIs(project, build.Id)
+		err := d.GenerateAPIs(project, build)
 		if err != nil {
-			build.Output += "\n" + outp + "\n" + err.Error()
-			build.Success = false
-		} else {
-			build.Output += "\n" + outp
+			return err
 		}
 	}
 	err = d.db.Save(build).Error

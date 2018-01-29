@@ -20,6 +20,10 @@ type NgClient struct {
 	Project *domain.Project
 }
 
+func (g NgClient) Name() string {
+	return "Angular"
+}
+
 func (g NgClient) ClientFiles(c apiTypes.Context) (*apiTypes.ClientFiles, error) {
 	files, err := g.generateFiles(c)
 	if err != nil {

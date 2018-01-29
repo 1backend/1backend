@@ -30,11 +30,10 @@
     </div>
   </mat-card-title>
   <div *ngIf="build.Selected || i === 0">
-    <ace-editor *ngIf="build.Output === ''" class="editor" [text]="'Build is in progress, it may take a few seconds...'" [mode]="'text'"
+    <markdown-to-html *ngIf="build.Output === ''" class="editor" [data]="'Build is in progress, it may take a few seconds...'"
       style="min-height: 200px; width:100%;
-      overflow: auto;" #editor></ace-editor>
-    <ace-editor *ngIf="build.Output !== ''" class="editor" [text]="build.Output" [mode]="'sh'" style="min-height: 200px; width:100%;
-  overflow: auto;" #editor></ace-editor>
+      overflow: auto;" #editor></markdown-to-html>
+    <markdown-to-html *ngIf="build.Output !== ''" class="editor" [data]="build.Output" style="min-height: 200px; width:100%;"></markdown-to-html>
   </div>
 </mat-card>
 <span *ngIf="project.Builds.length > 10">

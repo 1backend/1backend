@@ -12,7 +12,7 @@ func Plugins(proj *domain.Project) []infrat.Plugin {
 	for _, dep := range proj.Dependencies {
 		switch dep.Type {
 		case "mysql":
-			ret = append(ret, mysqlpack.NewPack(proj))
+			ret = append(ret, mysqlplugin.New(proj))
 		}
 	}
 	return ret

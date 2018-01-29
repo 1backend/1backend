@@ -1,4 +1,4 @@
-package mysqlpack
+package mysqlplugin
 
 import (
 	"os/exec"
@@ -16,17 +16,21 @@ MYSQL_USER: The user you should use for the connection.
 MYSQL_PASSWORD: The password for your user.
 `
 
-func NewPack(project *domain.Project) MysqlPack {
-	return MysqlPack{
+func New(project *domain.Project) MysqlPlugin {
+	return MysqlPlugin{
 		project: project,
 	}
 }
 
-type MysqlPack struct {
+type MysqlPlugin struct {
 	project *domain.Project
 }
 
-func (g MysqlPack) PreDeploy(envars map[string]string) (*infrat.PreDeploy, error) {
+func (g MysqlPlugin) Name() string {
+	return "MySQL"
+}
+
+func (g MysqlPlugin) PreDeploy(envars map[string]string) (*infrat.PreDeploy, error) {
 	output, err := exec.Command("/bin/bash", config.C.Path+"/infra-plugins/mysql/predeploy.sh",
 		g.project.Author,
 		g.project.Name,
