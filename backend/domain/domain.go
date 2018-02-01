@@ -102,6 +102,7 @@ type Build struct {
 	// Version of the project at the time of the build
 	Version    string
 	InProgress bool
+	Steps      []BuildStep
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }

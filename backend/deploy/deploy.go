@@ -53,17 +53,18 @@ func (d Deployer) Deploy(project *domain.Project) error {
 			steps = append(steps, &domain.BuildStep{
 				Title:   "Internal system error during build",
 				Output:  err.Error(),
-				Success: false,
+				Success: err == nil,
 			})
 		}
-		err := d.db.Save(build)
+		err := d.db.Save(build).Error
 		if err != nil {
 			log.Error(err)
 			return
 		}
 		for _, step := range steps {
 			step.BuildId = build.Id
-			err := d.db.Save(step)
+			step.Id = domain.Sid.MustGenerate()
+			err := d.db.Save(step).Error
 			if err != nil {
 				log.Error(err)
 				return

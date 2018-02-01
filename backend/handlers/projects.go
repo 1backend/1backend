@@ -96,7 +96,7 @@ func (h *Handlers) GetProject(w http.ResponseWriter, r *http.Request, p httpr.Pa
 	projectName := r.URL.Query().Get("project")
 	token := r.URL.Query().Get("token")
 	project := domain.Project{}
-	err := h.db.Where("author = ? AND name = ?", author, projectName).Preload("Starrers").Preload("Dependencies").Preload("Builds").Preload("Endpoints").Find(&project).Error
+	err := h.db.Where("author = ? AND name = ?", author, projectName).Preload("Starrers").Preload("Dependencies").Preload("Builds").Preload("Builds.Steps").Preload("Endpoints").Find(&project).Error
 	if err != nil {
 		write400(w, err)
 		return

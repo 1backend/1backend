@@ -130,10 +130,10 @@ ALTER TABLE builds
 CREATE TABLE IF NOT EXISTS build_steps
 (
   id                  VARCHAR(36)                                                     NOT NULL,
+  title               VARCHAR(64)                                                     NOT NULL,
   output              TEXT                                                            NOT NULL,   
   success             BOOLEAN                                                         NOT NULL,
-  in_progress         BOOLEAN                                                         NOT NULL,
-  build_id          VARCHAR(36)                                                     NOT NULL,
+  build_id            VARCHAR(36)                                                     NOT NULL,
   created_at          DATETIME DEFAULT CURRENT_TIMESTAMP                              NOT NULL,
   updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  NOT NULL,
   PRIMARY KEY (id)
