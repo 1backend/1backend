@@ -18,7 +18,7 @@ import (
 
 // @todo revisit this output return: likely output should go into error
 // because the error is only something like "exit status 1"
-func (d Deployer) GenerateAPIs(project *domain.Project, build *domain.Build) error {
+func (d Deployer) GenerateAPIs(project *domain.Project, build *domain.Build, steps []*domain.BuildStep) error {
 	noDefs := true
 	if project.Types != "" {
 		noDefs = false
@@ -46,7 +46,6 @@ func (d Deployer) GenerateAPIs(project *domain.Project, build *domain.Build) err
 		return err
 	}
 	if !config.IsTestUser(project.Author) {
-		build.Output += "### Creating GitHub repo\n"
 		createOutput, err := exec.Command("/bin/bash", config.C.Path+"/bash/create-git-repo.sh",
 			reposPath,
 			project.Author,
@@ -55,7 +54,11 @@ func (d Deployer) GenerateAPIs(project *domain.Project, build *domain.Build) err
 			config.C.ApiGeneration.GithubUser,
 			config.C.ApiGeneration.GithubPersonalToken,
 		).CombinedOutput()
-		build.Output += "```sh\n" + string(createOutput) + "\n```\n"
+		steps = append(steps, &domain.BuildStep{
+			Title:   "Creating GitHub repo",
+			Output:  string(createOutput),
+			Success: err == nil,
+		})
 		if err != nil {
 			return err
 		}
@@ -66,10 +69,17 @@ func (d Deployer) GenerateAPIs(project *domain.Project, build *domain.Build) err
 	if err != nil {
 		return err
 	}
-	build.Output += "### Generating client libraries\n"
 	for _, gen := range generators {
-		build.Output += "#### Generating " + gen.Name() + " clients\n"
 		files, err := gen.ClientFiles(*context)
+		outp := ""
+		if err != nil {
+			outp = err.Error()
+		}
+		steps = append(steps, &domain.BuildStep{
+			Title:   "Generating " + gen.Name() + " client",
+			Output:  outp,
+			Success: err == nil,
+		})
 		if err != nil {
 			return err
 		}
@@ -97,19 +107,21 @@ func (d Deployer) GenerateAPIs(project *domain.Project, build *domain.Build) err
 	}
 	npmPublishOutput := []byte{}
 	if config.C.NpmPublication.Enabled {
-		build.Output += "### Publishing Angular client to NPM\n"
 		npmPublishOutput, err = exec.Command("/bin/bash", config.C.Path+"/bash/npm-publish.sh",
 			reposPath,
 			project.Author,
 			project.Name,
 			config.C.NpmPublication.NpmToken,
 		).CombinedOutput()
-		build.Output += "```sh\n" + string(npmPublishOutput) + "\n```\n"
+		steps = append(steps, &domain.BuildStep{
+			Title:   "Publishing Angular client to NPM",
+			Output:  string(npmPublishOutput),
+			Success: err == nil,
+		})
 		if err != nil {
 			return err
 		}
 	}
-	build.Output += "### Pushing client sources to GitHub\n"
 	commitOutput, err := exec.Command("/bin/bash", config.C.Path+"/bash/git-commit-api.sh",
 		reposPath,
 		project.Author,
@@ -119,11 +131,12 @@ func (d Deployer) GenerateAPIs(project *domain.Project, build *domain.Build) err
 		config.C.ApiGeneration.GithubPersonalToken,
 		build.Id,
 	).CombinedOutput()
-	build.Output += "```sh\n" + string(commitOutput) + "\n```\n"
-	if err != nil {
-		return err
-	}
-	return nil
+	steps = append(steps, &domain.BuildStep{
+		Title:   "Pushing client sources to GitHub",
+		Output:  string(commitOutput),
+		Success: err == nil,
+	})
+	return err
 }
 
 func bumpPackageJsonVersion(filePath string) error {

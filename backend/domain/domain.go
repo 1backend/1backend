@@ -97,7 +97,6 @@ type Endpoint struct {
 // A Build is pretty much what the name says: a verification of the project when it's saved.
 type Build struct {
 	Id        string
-	Output    string
 	Success   bool
 	ProjectId string
 	// Version of the project at the time of the build
@@ -105,6 +104,18 @@ type Build struct {
 	InProgress bool
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+}
+
+// Build steps could be hierarchised somehow but we are going to ignore that step for now.
+// Perhaps we should implement it with some kind of elegant hack rather than trying to save a tree structure in SQL.
+type BuildStep struct {
+	Id        string
+	Title     string // ie. "Setting up Mysql"
+	Output    string
+	Success   bool
+	BuildId   string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 // A User is a registered user of a 1Backend installation

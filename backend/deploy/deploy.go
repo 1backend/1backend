@@ -41,16 +41,33 @@ func (d Deployer) Deploy(project *domain.Project) error {
 		InProgress: true,
 		Version:    project.Version,
 	}
+	steps := []*domain.BuildStep{}
 	defer func() {
 		build.InProgress = false
 		build.Success = true
-		if err != nil {
-			build.Output += "### Error\n```shell\n" + err.Error() + "\n```"
+		if len(steps) > 0 && steps[len(steps)-1].Success == false {
 			build.Success = false
+		}
+		if err != nil {
+			build.Success = false
+			steps = append(steps, &domain.BuildStep{
+				Title:   "Internal system error during build",
+				Output:  err.Error(),
+				Success: false,
+			})
 		}
 		err := d.db.Save(build)
 		if err != nil {
 			log.Error(err)
+			return
+		}
+		for _, step := range steps {
+			step.BuildId = build.Id
+			err := d.db.Save(step)
+			if err != nil {
+				log.Error(err)
+				return
+			}
 		}
 	}()
 	build.CreatedAt = time.Now()
@@ -108,24 +125,28 @@ func (d Deployer) Deploy(project *domain.Project) error {
 		return err
 	}
 	envars := map[string]string{}
-	build.Output += "### Setting up infrastructure\n"
 	for _, v := range infp.Plugins(project) {
 		pred, err := v.PreDeploy(envars)
+		steps = append(steps, &domain.BuildStep{
+			Title:   v.Name(),
+			Output:  pred.Output,
+			Success: err == nil,
+		})
 		if err != nil {
 			return err
 		}
-		build.Output += "#### " + v.Name() + "\n"
-		build.Output += "```sh\n" + pred.Output + "\n```\n"
-		// @todo output of infra stuff is lost
 	}
-	build.Output += "### Building project\n"
 	output, err := exec.Command("/bin/bash", config.C.Path+"/bash/build.sh",
 		buildPath,
 		project.Author,
 		project.Name,
 		buildFiles.RecipePath,
 		config.C.Path).CombinedOutput()
-	build.Output += "```sh\n" + string(output) + "\n```\n"
+	steps = append(steps, &domain.BuildStep{
+		Title:   "Building project",
+		Output:  string(output),
+		Success: err == nil,
+	})
 	if err != nil {
 		return err
 	}
@@ -150,7 +171,7 @@ func (d Deployer) Deploy(project *domain.Project) error {
 		return err
 	}
 	if config.C.ApiGeneration.Enabled {
-		err := d.GenerateAPIs(project, build)
+		err := d.GenerateAPIs(project, build, steps)
 		if err != nil {
 			return err
 		}
