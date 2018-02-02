@@ -48,7 +48,7 @@ func (d Deployer) Deploy(project *domain.Project) error {
 		if len(steps) > 0 && steps[len(steps)-1].Success == false {
 			build.Success = false
 		}
-		if err != nil {
+		if err != nil && steps[len(steps)-1].Success {
 			build.Success = false
 			steps = append(steps, &domain.BuildStep{
 				Title:   "Internal system error during build",
@@ -61,9 +61,12 @@ func (d Deployer) Deploy(project *domain.Project) error {
 			log.Error(err)
 			return
 		}
-		for _, step := range steps {
+		secs := time.Now().Unix()
+		for i, step := range steps {
 			step.BuildId = build.Id
 			step.Id = domain.Sid.MustGenerate()
+			// so saved steps appear in correct order
+			step.CreatedAt = time.Unix(secs-int64(i), 0)
 			err := d.db.Save(step).Error
 			if err != nil {
 				log.Error(err)
@@ -176,13 +179,6 @@ func (d Deployer) Deploy(project *domain.Project) error {
 		if err != nil {
 			return err
 		}
-	}
-	err = d.db.Save(build).Error
-	if err != nil {
-		return err
-	}
-	if err != nil {
-		return err
 	}
 	return nil
 }

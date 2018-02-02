@@ -33,7 +33,7 @@
     <ace-editor *ngIf="build.InProgress" class="editor" [text]="'Build is in progress, it may take a few seconds...'" [mode]="'text'"
       style="min-height: 200px; width:100%;
     overflow: auto;" #editor></ace-editor>
-    <mat-accordion *ngIf="!build.InProgress">
+    <mat-accordion *ngIf="!build.InProgress" class="example-headers-align">
       <mat-expansion-panel *ngFor="let step of build.Steps">
         <mat-expansion-panel-header>
           <mat-panel-title>
@@ -44,9 +44,7 @@
               <mat-icon>close</mat-icon>
             </span>
           </mat-panel-title>
-          <mat-panel-description>
-            {{step.Title}}
-          </mat-panel-description>
+          <mat-panel-description>{{step.Title}}</mat-panel-description>
         </mat-expansion-panel-header>
         <ace-editor class="editor" [text]="step.Output" [mode]="'sh'" style="min-height: 200px; width:100%;
         overflow: auto;" #editor></ace-editor>

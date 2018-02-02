@@ -49,6 +49,15 @@ export class ProjectService {
     p = p.set('author', author);
     p = p.set('project', projectName);
     p = p.set('token', this.ss.getToken());
+    const createdAtSorter = (a, b) => {
+      if (a.CreatedAt === b.CreatedAt) {
+        return 0;
+      }
+      if (a.CreatedAt < b.CreatedAt) {
+        return 1;
+      }
+      return -1;
+    };
     return this.http
       .get<types.Project>(environment.backendUrl + '/v1/project', {
         params: p
@@ -56,16 +65,11 @@ export class ProjectService {
       .toPromise()
       .then(proj => {
         if (proj.Builds) {
-          proj.Builds = proj.Builds.sort((a, b) => {
-            if (a.CreatedAt === b.CreatedAt) {
-              return 0;
-            }
-            if (a.CreatedAt < b.CreatedAt) {
-              return 1;
-            }
-            return -1;
-          });
+          proj.Builds = proj.Builds.sort(createdAtSorter);
         }
+        proj.Builds.map(b => {
+          b.Steps = b.Steps.sort(createdAtSorter);
+        });
         if (proj.Endpoints) {
           proj.Endpoints = proj.Endpoints.sort((a, b) => {
             if (a.CreatedAt === b.CreatedAt) {
