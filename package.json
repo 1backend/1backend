@@ -27,7 +27,7 @@
     "@angular/material": "^5.0.0-rc0",
     "@angular/platform-browser": "^5.0.0",
     "@angular/platform-browser-dynamic": "^5.0.0",
-    "@angular/platform-server": "^5.0.0",
+    "@angular/platform-server": "^5.2.3",
     "@angular/router": "^5.0.0",
     "angular2-cookie": "^1.2.6",
     "angular2-markdown": "^1.6.0",

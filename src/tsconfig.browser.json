@@ -1,0 +1,7 @@
+{
+  "extends": "../tsconfig.json",
+  "angularCompilerOptions": {
+    "entryModule": "./app/browser.app.module#BrowserAppModule"
+  },
+  "exclude": ["test.ts", "**/*.spec.ts"]
+}
