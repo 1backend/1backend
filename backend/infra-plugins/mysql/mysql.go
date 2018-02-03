@@ -1,6 +1,7 @@
 package mysqlplugin
 
 import (
+	"fmt"
 	"os/exec"
 
 	"github.com/1backend/1backend/backend/config"
@@ -31,6 +32,12 @@ func (g MysqlPlugin) Name() string {
 }
 
 func (g MysqlPlugin) PreDeploy(envars map[string]string) (*infrat.PreDeploy, error) {
+	envars["MYSQL_IP"] = config.InternalIp
+	envars["MYSQL_PORT"] = "3306"
+	envars["MYSQL_ADDRESS"] = fmt.Sprintf("%v:%v", config.InternalIp, "3306")
+	envars["MYSQL_USER"] = fmt.Sprintf("%v_%v", g.project.Author, g.project.Name)
+	envars["MYSQL_DB"] = fmt.Sprintf("%v_%v", g.project.Author, g.project.Name)
+	envars["MYSQL_PASSWORD"] = g.project.InfraPassword
 	output, err := exec.Command("/bin/bash", config.C.Path+"/infra-plugins/mysql/predeploy.sh",
 		g.project.Author,
 		g.project.Name,

@@ -6,10 +6,10 @@ const bodyParser = require('body-parser');
 {{.Project.Imports}}
 
 var db = mysql.createConnection({
-  host     : process.env['MYSQLIP'],
-  user     : '{{ .Project.Author }}_{{ .Project.Name }}',
-  password : process.env['INFRAPASS'],
-  database : '{{ .Project.Author }}_{{ .Project.Name }}'
+  host     : process.env['MYSQL_IP'],
+  user     : process.env['MYSQL_USER'],
+  password : process.env['MYSQL_PASSWORD'],
+  database : process.env['MYSQL_DB']
 });
 
 const app = express();

@@ -2,6 +2,7 @@ package deploy
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -139,6 +140,19 @@ func (d Deployer) Deploy(project *domain.Project) error {
 		if err != nil {
 			return err
 		}
+	}
+	f, err = os.Create(buildPath + "/env")
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	envarLines := []string{}
+	for k, v := range envars {
+		envarLines = append(envarLines, fmt.Sprintf("%v=%v", k, v))
+	}
+	_, err = f.Write([]byte(strings.Join(envarLines, "\n")))
+	if err != nil {
+		return err
 	}
 	output, err := exec.Command("/bin/bash", config.C.Path+"/bash/build.sh",
 		buildPath,

@@ -16,4 +16,4 @@ sudo docker build -t $CONTAINER . || exit 1
 sudo docker stop $CONTAINER
 sudo docker rm $CONTAINER
 
-sudo docker run --name $CONTAINER -p=8883 -d $CONTAINER
+sudo docker run --name $CONTAINER --env-file=$BUILD_PATH/env -p=8883 -d $CONTAINER

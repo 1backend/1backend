@@ -88,7 +88,6 @@ import { CreatePostDialogService } from './author/posts/create-post-dialog.servi
 import { SettingsComponent } from './projects/project/settings/settings.component';
 import { LogsComponent } from './projects/project/logs/logs.component';
 import { ConfigComponent } from './config/config.component';
-import { ShowdownModule } from 'ngx-showdown';
 
 const appRoutes: Routes = [
   {
@@ -208,8 +207,7 @@ const appRoutes: Routes = [
     MatCheckboxModule,
     MatRadioModule,
     MatSlideToggleModule,
-    MatSliderModule,
-    ShowdownModule
+    MatSliderModule
   ],
   providers: [
     HttpClient,

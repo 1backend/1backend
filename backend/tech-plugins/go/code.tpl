@@ -22,12 +22,13 @@ var (
 
 func main() {
 	var err error
-  	infraPass := os.Getenv("INFRAPASS")
+
+  	sqlPass := os.Getenv("MYSQL_PASSWORD")
+	addr := os.Getenv("MYSQL_ADDRESS")
+	sqlUser := os.Getenv("MYSQL_USER")
+	sqlDatabase := os.Getenv("MYSQL_DB")
+	sqlAddress := fmt.Sprintf("%s@tcp(%s)/%s?parseTime=True", sqlUser + ":" + sqlPass, addr, sqlDatabase)
 	
-	ip := os.Getenv("MYSQLIP")
-	sqlUser := os.Getenv("MYSQLUSER")
-	sqlDatabase := os.Getenv("MYSQLDATABASE")
-	sqlAddress := fmt.Sprintf("%s@tcp(%s)/%s?parseTime=True", sqlUser + ":" + infraPass, ip + ":3306", sqlDatabase)
 	if gormClient, err = gorm.Open("mysql", sqlAddress); err != nil {
 		panic(fmt.Sprintf("[init] unable to initialize gorm: %s", err.Error()))
 	}
