@@ -97,14 +97,26 @@ type Endpoint struct {
 // A Build is pretty much what the name says: a verification of the project when it's saved.
 type Build struct {
 	Id        string
-	Output    string
 	Success   bool
 	ProjectId string
 	// Version of the project at the time of the build
 	Version    string
 	InProgress bool
+	Steps      []BuildStep
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+}
+
+// Build steps could be hierarchised somehow but we are going to ignore that step for now.
+// Perhaps we should implement it with some kind of elegant hack rather than trying to save a tree structure in SQL.
+type BuildStep struct {
+	Id        string
+	Title     string // ie. "Setting up Mysql"
+	Output    string
+	Success   bool
+	BuildId   string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 // A User is a registered user of a 1Backend installation
@@ -208,4 +220,14 @@ type Reset struct {
 	UserId    string
 	CreatedAt time.Time
 	Used      bool
+}
+
+// non-database types
+
+// CodeSections is used by infra-packs (dependency plugins)
+// to generate appropriate code snippets for a project
+type CodeSections struct {
+	Readme  string
+	Globals string
+	Imports string
 }

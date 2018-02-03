@@ -52,6 +52,7 @@ export interface Dependency extends Selectable {
 export interface Selectable {
   Selected?: boolean;
 }
+
 export interface Build {
   Id: string;
   Output: string;
@@ -62,7 +63,18 @@ export interface Build {
   UpdatedAt?: string;
   Selected?: boolean;
   Version?: string;
+  Steps?: BuildStep[];
 }
+
+export interface BuildStep {
+  Id: string;
+  Output: string;
+  Success: boolean;
+  BuildId: string;
+  CreatedAt: string;
+  UpdatedAt?: string;
+}
+
 export interface User {
   Id: string;
   Password: string;

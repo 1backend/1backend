@@ -1,9 +1,9 @@
-package goapi
+package ngclient
 
 import (
 	"testing"
 
-	apiTypes "github.com/1backend/1backend/backend/api-pack/types"
+	apiTypes "github.com/1backend/1backend/backend/client-plugins/types"
 	"github.com/1backend/1backend/backend/domain"
 )
 
@@ -14,6 +14,7 @@ var proj = &domain.Project{
 		"user": [
 			{"name":   "string"},
 			{"age":    "int"},
+			{"likesBananas": "bool"}, 
 			{"foods":  "string[]"},
 			{"friend": "curfter/other-service.Person"}
 		],
@@ -56,5 +57,9 @@ func TestBasic(t *testing.T) {
 	if len(files) == 0 || files[0][1] == "" {
 		t.Fatal("Output is empty")
 	}
-	t.Log(files[0][1])
+	for _, file := range files {
+		t.Log(file[0])
+		t.Log("====")
+		t.Log(file[1])
+	}
 }

@@ -1,38 +1,57 @@
-package nodejspack
+package typescriptplugin
 
 import (
 	"text/template"
 
 	"github.com/1backend/1backend/backend/domain"
-	"github.com/1backend/1backend/backend/tech-pack/utils"
+	techt "github.com/1backend/1backend/backend/tech-plugins/types"
+	"github.com/1backend/1backend/backend/tech-plugins/utils"
 )
 
-func NewPack(project *domain.Project) NodeJSPack {
-	return NodeJSPack{
+func NewPlugin(project *domain.Project) TypeScriptPlugin {
+	return TypeScriptPlugin{
 		project: project,
 	}
 }
 
-type NodeJSPack struct {
+type TypeScriptPlugin struct {
 	project *domain.Project
 }
 
-func (g NodeJSPack) RecipePath() string {
-	return "nodejs"
+func (g TypeScriptPlugin) PreCreate() error {
+	return generateEndpoints(g.project)
 }
 
-var packageJson = `{
-  "name": "1backend-nodejs-service",
+func (g TypeScriptPlugin) Outfile() string {
+	return "server.ts"
+}
+
+func (g TypeScriptPlugin) Build(t *template.FuncMap) (*techt.Build, error) {
+	return &techt.Build{
+		Outfile:    "server.ts",
+		FilesBuilt: [][]string{{"package.json", g.project.Packages}},
+		RecipePath: "typescript",
+	}, nil
+}
+
+// The service itself is not published to NPM, unlike its clients,
+// we still generate a Pluginage json though.
+var PackageJson = `{
+  "name": "1backend-typescript-service",
   "version": "0.1.0",
-  "description": "A sample Node.js app for 1backend",
+  "description": "A sample TypeScript app for 1backend",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-		"express": "^4.13.3",
+    "express": "^4.13.3",
 		"mysql": "^2.15.0",
-		"@1backend/nodejs-example-service": "^0.0"
+		"body-parser": "*",
+    "@types/mysql": "^2.15.0",
+		"@types/express": "^4.0",
+		"@types/body-parser": "*",
+    "@1backend/typescript-example-service": "^0.0"
   },
   "engines": {
     "node": "4.0.0"
@@ -40,42 +59,24 @@ var packageJson = `{
   "license": "MIT"
 }`
 
-func (g NodeJSPack) CreateProjectPlugin() error {
-	return generateEndpoints(g.project)
-}
-
-func (g NodeJSPack) Outfile() string {
-	return "server.js"
-}
-
-func (g NodeJSPack) AddTemplateFuncs(t *template.FuncMap) {
-
-}
-
-func (g NodeJSPack) FilesToBuild() [][]string {
-	return [][]string{
-		[]string{"package.json", g.project.Packages},
-	}
-}
-
-const hi = `(req, res) => {
-  res.send(JSON.stringify('hi'));
+const hi = `(req: express.Request, rsp: express.Response) => {
+  rsp.send(JSON.stringify('hi'));
 }
 `
 const hiInput = `[]`
 const hiOutput = "string"
 
-const importedHi = `(req, res) => {
-  service.hi(req, res)
+const importedHi = `(req: express.Request, rsp: express.Response) => {
+  service.hi(req, rsp)
 }
 `
 const importedHiInput = `[]`
 const importedHiOutput = "string"
 
-const sqlExample = `(req, res) => {
-  db.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
-    if (error) throw error;
-    const outpout = 'The solution is: ' + rows[0]['solution'];
+const sqlExample = `(req: express.Request, rsp: express.Response) => {
+  sql.query('SELECT 1 + 1 AS solution', (err: mysql.MysqlError, rows) => {
+		if (err) throw err;
+		const output = 'The solution is: ' + rows[0]['solution'];
     rsp.send(JSON.stringify(output));
   });
 }
@@ -98,9 +99,9 @@ const types = `{
 }`
 
 func generateEndpoints(proj *domain.Project) error {
-	proj.Description = "An empty Node.js project"
-	proj.Imports = `var service = require("@1backend/nodejs-example-service")`
-	proj.Packages = packageJson
+	proj.Description = "An empty TypeScript project"
+	proj.Imports = `import * as service from '@1backend/typescript-example-service';`
+	proj.Packages = PackageJson
 	readme, err := utils.GetReadme(proj)
 	if err != nil {
 		return err
@@ -121,7 +122,7 @@ func generateEndpoints(proj *domain.Project) error {
 			Code:        importedHi,
 			Input:       importedHiInput,
 			Output:      importedHiOutput,
-			Description: "An endpoint that demonstrates the usage of an imported package",
+			Description: "An endpoint that demonstrates the usage of an imported Pluginage",
 		},
 		domain.Endpoint{
 			Url:         "/input-example",

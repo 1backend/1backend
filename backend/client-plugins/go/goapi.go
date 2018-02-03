@@ -1,40 +1,42 @@
-package goapi
+package goclient
 
 import (
 	"bytes"
 	"html/template"
 	"strings"
 
-	apiTypes "github.com/1backend/1backend/backend/api-pack/types"
+	apiTypes "github.com/1backend/1backend/backend/client-plugins/types"
 	"github.com/1backend/1backend/backend/domain"
 	"github.com/iancoleman/strcase"
 )
 
-func NewGenerator(proj *domain.Project) GoGenerator {
-	return GoGenerator{
+func New(proj *domain.Project) GoClient {
+	return GoClient{
 		Project: proj,
 	}
 }
 
-type GoGenerator struct {
+type GoClient struct {
 	Project *domain.Project
 }
 
-func (g GoGenerator) FilesToBuild(c apiTypes.Context) ([][]string, error) {
+func (g GoClient) Name() string {
+	return "Go"
+}
+
+func (g GoClient) ClientFiles(c apiTypes.Context) (*apiTypes.ClientFiles, error) {
 	code, err := g.generateGo(c)
 	if err != nil {
 		return nil, err
 	}
-	return [][]string{
-		[]string{
-			"client.go",
-			code,
-		},
-	}, nil
-}
-
-func (g GoGenerator) FolderName() string {
-	return "go"
+	return &apiTypes.ClientFiles{
+		FolderName: "go",
+		Files: [][]string{
+			[]string{
+				"client.go",
+				code,
+			},
+		}}, nil
 }
 
 var goTemplate = `package {{ .ProjectName }}
@@ -135,7 +137,7 @@ func correctTypeName(s string) string {
 	return strings.Title(strings.Replace(s, "[]", "", 1))
 }
 
-func (g GoGenerator) generateGo(c apiTypes.Context) (string, error) {
+func (g GoClient) generateGo(c apiTypes.Context) (string, error) {
 	// Create a new template and parse the letter into it.
 	templFuncs := template.FuncMap{
 		"gInputToMap": gInputToMap,

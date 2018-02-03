@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"strings"
 
 	log "github.com/cihub/seelog"
@@ -12,6 +13,8 @@ import (
 func IsTestUser(userName string) bool {
 	return len(userName) == 17 && strings.HasPrefix(userName, "user-")
 }
+
+var InternalIp string
 
 var C = Config{}
 
@@ -49,6 +52,11 @@ func init() {
 	if err != nil {
 		log.Error(err)
 	}
+	output, err := exec.Command("/bin/bash", C.Path+"/bash/internalip.sh").CombinedOutput()
+	if err != nil {
+		panic(err)
+	}
+	InternalIp = strings.TrimSpace(string(output))
 }
 
 const filePath = "/var/1backend-config.json"

@@ -2,6 +2,7 @@ package deploy
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -15,8 +16,9 @@ import (
 
 	"github.com/1backend/1backend/backend/config"
 	"github.com/1backend/1backend/backend/domain"
+	infp "github.com/1backend/1backend/backend/infra-plugins"
 	"github.com/1backend/1backend/backend/state"
-	tp "github.com/1backend/1backend/backend/tech-pack"
+	tp "github.com/1backend/1backend/backend/tech-plugins"
 )
 
 type Deployer struct {
@@ -40,13 +42,37 @@ func (d Deployer) Deploy(project *domain.Project) error {
 		InProgress: true,
 		Version:    project.Version,
 	}
+	steps := []*domain.BuildStep{}
 	defer func() {
+		build.InProgress = false
+		build.Success = true
+		if len(steps) > 0 && steps[len(steps)-1].Success == false {
+			build.Success = false
+		}
+		if err != nil && steps[len(steps)-1].Success {
+			build.Success = false
+			steps = append(steps, &domain.BuildStep{
+				Title:   "Internal system error during build",
+				Output:  err.Error(),
+				Success: err == nil,
+			})
+		}
+		err := d.db.Save(build).Error
 		if err != nil {
 			log.Error(err)
-			build.Output += "\n" + err.Error()
-			build.Success = false
-			build.InProgress = false
-			d.db.Save(build)
+			return
+		}
+		secs := time.Now().Unix()
+		for i, step := range steps {
+			step.BuildId = build.Id
+			step.Id = domain.Sid.MustGenerate()
+			// so saved steps appear in correct order
+			step.CreatedAt = time.Unix(secs-int64(i), 0)
+			err := d.db.Save(step).Error
+			if err != nil {
+				log.Error(err)
+				return
+			}
 		}
 	}()
 	build.CreatedAt = time.Now()
@@ -55,17 +81,18 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	if err != nil {
 		return err
 	}
-	techPack := tp.GetProvider(project)
-	recipePath := techPack.RecipePath()
-	dat, err := ioutil.ReadFile(config.C.Path + "/tech-pack/" + recipePath + "/code.tpl")
-	if err != nil {
-		return err
-	}
-	// Create a new template and parse the letter into it.
+	techPack := tp.Plugin(project)
 	templFuncs := template.FuncMap{
 		"trim": strings.TrimSpace,
 	}
-	techPack.AddTemplateFuncs(&templFuncs)
+	buildFiles, err := techPack.Build(&templFuncs)
+	if err != nil {
+		return err
+	}
+	dat, err := ioutil.ReadFile(config.C.Path + "/tech-plugins/" + buildFiles.RecipePath + "/code.tpl")
+	if err != nil {
+		return err
+	}
 	t, err := template.New("code").Funcs(templFuncs).Parse(string(dat))
 	if err != nil {
 		return err
@@ -82,7 +109,7 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	if err != nil {
 		return err
 	}
-	for _, v := range techPack.FilesToBuild() {
+	for _, v := range buildFiles.FilesBuilt {
 		f, err := os.Create(buildPath + "/" + v[0])
 		if err != nil {
 			return err
@@ -93,7 +120,7 @@ func (d Deployer) Deploy(project *domain.Project) error {
 			return err
 		}
 	}
-	f, err := os.Create(buildPath + "/" + techPack.Outfile())
+	f, err := os.Create(buildPath + "/" + buildFiles.Outfile)
 	if err != nil {
 		return err
 	}
@@ -102,17 +129,45 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	if err != nil {
 		return err
 	}
+	envars := map[string]string{}
+	for _, v := range infp.Plugins(project) {
+		pred, err := v.PreDeploy(envars)
+		steps = append(steps, &domain.BuildStep{
+			Title:   v.Name(),
+			Output:  pred.Output,
+			Success: err == nil,
+		})
+		if err != nil {
+			return err
+		}
+	}
+	f, err = os.Create(buildPath + "/env")
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	envarLines := []string{}
+	for k, v := range envars {
+		envarLines = append(envarLines, fmt.Sprintf("%v=%v", k, v))
+	}
+	_, err = f.Write([]byte(strings.Join(envarLines, "\n")))
+	if err != nil {
+		return err
+	}
 	output, err := exec.Command("/bin/bash", config.C.Path+"/bash/build.sh",
 		buildPath,
 		project.Author,
 		project.Name,
-		project.InfraPassword,
-		recipePath,
-		config.C.Path,
-		project.CallerId).CombinedOutput()
-	build.Output = string(output)
-	build.Success = err == nil
-	build.InProgress = false
+		buildFiles.RecipePath,
+		config.C.Path).CombinedOutput()
+	steps = append(steps, &domain.BuildStep{
+		Title:   "Building project",
+		Output:  string(output),
+		Success: err == nil,
+	})
+	if err != nil {
+		return err
+	}
 	output, err = exec.Command("/bin/bash", config.C.Path+"/bash/get-port.sh",
 		project.Author,
 		project.Name).CombinedOutput()
@@ -130,21 +185,20 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	err = d.db.Table("projects").Where("id = ?", project.Id).Update(map[string]interface{}{
 		"port": string(output),
 	}).Error
+	if err != nil {
+		return err
+	}
 	if config.C.ApiGeneration.Enabled {
-		outp, err := d.GenerateAPIs(project, build.Id)
+		err := d.GenerateAPIs(project, build, steps)
 		if err != nil {
-			build.Output += "\n" + outp + "\n" + err.Error()
-			build.Success = false
-		} else {
-			build.Output += "\n" + outp
+			return err
 		}
-	}
-	err = d.db.Save(build).Error
-	if err != nil {
-		return err
-	}
-	if err != nil {
-		return err
+	} else {
+		steps = append(steps, &domain.BuildStep{
+			Title:   "Client generation is turned off - skipping",
+			Output:  "",
+			Success: true,
+		})
 	}
 	return nil
 }

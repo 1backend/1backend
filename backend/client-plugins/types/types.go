@@ -8,6 +8,13 @@ import (
 	"github.com/1backend/1backend/backend/domain"
 )
 
+type ClientPlugin interface {
+	// Pretty name of language/tech
+	Name() string
+	// Called when generating client files for each language
+	ClientFiles(c Context) (*ClientFiles, error)
+}
+
 type EndpointSignature struct {
 	Method string
 	Path   string
@@ -47,6 +54,11 @@ type Context struct {
 type Import struct {
 	Author      string
 	ProjectName string
+}
+
+type ClientFiles struct {
+	FolderName string
+	Files      [][]string // list of (fileName, fileContent) tuple
 }
 
 func GetContext(project *domain.Project, projectNames []string) (*Context, error) {

@@ -30,11 +30,26 @@
     </div>
   </mat-card-title>
   <div *ngIf="build.Selected || i === 0">
-    <ace-editor *ngIf="build.Output === ''" class="editor" [text]="'Build is in progress, it may take a few seconds...'" [mode]="'text'"
+    <ace-editor *ngIf="build.InProgress" class="editor" [text]="'Build is in progress, it may take a few seconds...'" [mode]="'text'"
       style="min-height: 200px; width:100%;
-      overflow: auto;" #editor></ace-editor>
-    <ace-editor *ngIf="build.Output !== ''" class="editor" [text]="build.Output" [mode]="'sh'" style="min-height: 200px; width:100%;
-  overflow: auto;" #editor></ace-editor>
+    overflow: auto;" #editor></ace-editor>
+    <mat-accordion *ngIf="!build.InProgress" class="example-headers-align">
+      <mat-expansion-panel *ngFor="let step of build.Steps">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <span class="success" *ngIf="step.Success">
+              <mat-icon>done</mat-icon>
+            </span>
+            <span class="failed" *ngIf="!step.Success" align="start">
+              <mat-icon>close</mat-icon>
+            </span>
+          </mat-panel-title>
+          <mat-panel-description>{{step.Title}}</mat-panel-description>
+        </mat-expansion-panel-header>
+        <ace-editor class="editor" [text]="step.Output" [mode]="'sh'" style="min-height: 200px; width:100%;
+        overflow: auto;" #editor></ace-editor>
+      </mat-expansion-panel>
+    </mat-accordion>
   </div>
 </mat-card>
 <span *ngIf="project.Builds.length > 10">

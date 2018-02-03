@@ -1,44 +1,47 @@
-package typescriptpack
+package nodejsplugin
 
 import (
 	"text/template"
 
 	"github.com/1backend/1backend/backend/domain"
-	"github.com/1backend/1backend/backend/tech-pack/utils"
+	techt "github.com/1backend/1backend/backend/tech-plugins/types"
+	"github.com/1backend/1backend/backend/tech-plugins/utils"
 )
 
-func NewPack(project *domain.Project) TypeScriptPack {
-	return TypeScriptPack{
+func NewPlugin(project *domain.Project) NodeJsPlugin {
+	return NodeJsPlugin{
 		project: project,
 	}
 }
 
-type TypeScriptPack struct {
+type NodeJsPlugin struct {
 	project *domain.Project
 }
 
-func (g TypeScriptPack) RecipePath() string {
-	return "typescript"
+func (g NodeJsPlugin) PreCreate() error {
+	return generateEndpoints(g.project)
 }
 
-// The service itself is not published to NPM, unlike its clients,
-// we still generate a package json though.
+func (g NodeJsPlugin) Build(t *template.FuncMap) (*techt.Build, error) {
+	return &techt.Build{
+		Outfile:    "server.js",
+		RecipePath: "nodejs",
+		FilesBuilt: [][]string{{"package.json", g.project.Packages}},
+	}, nil
+}
+
 var packageJson = `{
-  "name": "1backend-typescript-service",
+  "name": "1backend-nodejs-service",
   "version": "0.1.0",
-  "description": "A sample TypeScript app for 1backend",
+  "description": "A sample Node.js app for 1backend",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.13.3",
+		"express": "^4.13.3",
 		"mysql": "^2.15.0",
-		"body-parser": "*",
-    "@types/mysql": "^2.15.0",
-		"@types/express": "^4.0",
-		"@types/body-parser": "*",
-    "@1backend/typescript-example-service": "^0.0"
+		"@1backend/nodejs-example-service": "^0.0"
   },
   "engines": {
     "node": "4.0.0"
@@ -46,42 +49,24 @@ var packageJson = `{
   "license": "MIT"
 }`
 
-func (g TypeScriptPack) CreateProjectPlugin() error {
-	return generateEndpoints(g.project)
-}
-
-func (g TypeScriptPack) Outfile() string {
-	return "server.ts"
-}
-
-func (g TypeScriptPack) AddTemplateFuncs(t *template.FuncMap) {
-
-}
-
-func (g TypeScriptPack) FilesToBuild() [][]string {
-	return [][]string{
-		[]string{"package.json", g.project.Packages},
-	}
-}
-
-const hi = `(req: express.Request, rsp: express.Response) => {
-  rsp.send(JSON.stringify('hi'));
+const hi = `(req, res) => {
+  res.send(JSON.stringify('hi'));
 }
 `
 const hiInput = `[]`
 const hiOutput = "string"
 
-const importedHi = `(req: express.Request, rsp: express.Response) => {
-  service.hi(req, rsp)
+const importedHi = `(req, res) => {
+  service.hi(req, res)
 }
 `
 const importedHiInput = `[]`
 const importedHiOutput = "string"
 
-const sqlExample = `(req: express.Request, rsp: express.Response) => {
-  sql.query('SELECT 1 + 1 AS solution', (err: mysql.MysqlError, rows) => {
-		if (err) throw err;
-		const output = 'The solution is: ' + rows[0]['solution'];
+const sqlExample = `(req, res) => {
+  db.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
+    if (error) throw error;
+    const outpout = 'The solution is: ' + rows[0]['solution'];
     rsp.send(JSON.stringify(output));
   });
 }
@@ -104,8 +89,8 @@ const types = `{
 }`
 
 func generateEndpoints(proj *domain.Project) error {
-	proj.Description = "An empty TypeScript project"
-	proj.Imports = `import * as service from '@1backend/typescript-example-service';`
+	proj.Description = "An empty Node.js project"
+	proj.Imports = `var service = require("@1backend/nodejs-example-service")`
 	proj.Packages = packageJson
 	readme, err := utils.GetReadme(proj)
 	if err != nil {
