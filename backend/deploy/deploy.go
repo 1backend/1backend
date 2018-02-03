@@ -193,6 +193,12 @@ func (d Deployer) Deploy(project *domain.Project) error {
 		if err != nil {
 			return err
 		}
+	} else {
+		steps = append(steps, &domain.BuildStep{
+			Title:   "Client generation is turned off - skipping",
+			Output:  "",
+			Success: true,
+		})
 	}
 	return nil
 }

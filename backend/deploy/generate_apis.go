@@ -29,6 +29,11 @@ func (d Deployer) GenerateAPIs(project *domain.Project, build *domain.Build, ste
 		}
 	}
 	if noDefs {
+		steps = append(steps, &domain.BuildStep{
+			Title:   "Type definitions are missing - skipping client generation",
+			Output:  "",
+			Success: true,
+		})
 		return nil
 	}
 	projects := []domain.Project{}
