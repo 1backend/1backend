@@ -55,7 +55,12 @@ const sqlExample = `func (w http.ResponseWriter, r *http.Request, p httpr.Params
 	}
 	defer rows.Close()
 	solution := ""
-	rows.Scan(&solution)
+	rows.Next()
+	err = rows.Scan(&solution)
+	if err != nil {
+	    utils.Write500(w, err)
+		return
+	}
 	utils.Write(w, solution)
 }
 `
