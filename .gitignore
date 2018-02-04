@@ -6,6 +6,7 @@ environment.cruft-prod.ts
 
 # compiled output
 /dist
+/dist-server
 /tmp
 /out-tsc
 

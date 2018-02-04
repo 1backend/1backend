@@ -1,5 +1,8 @@
 import { AppModule } from './app.module';
-import { BrowserModule } from '@angular/platform-browser';
+import {
+  BrowserModule,
+  BrowserTransferStateModule
+} from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 // Installed separately
 import { ServerModule } from '@angular/platform-server';

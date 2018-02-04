@@ -25,6 +25,26 @@
         "cruft": "environments/environment.cruft.ts",
         "cruft-prod": "environments/environment.cruft-prod.ts"
       }
+    },
+    {
+      "root": "src",
+      "outDir": "dist-server",
+      "assets": ["assets", "favicon.ico"],
+      "index": "index.html",
+      "main": "server.main.ts",
+      "platform": "server",
+      "polyfills": "polyfills.ts",
+      "test": "test.ts",
+      "tsconfig": "tsconfig.server.json",
+      "testTsconfig": "tsconfig.spec.json",
+      "prefix": "app",
+      "styles": ["styles.scss"],
+      "scripts": [],
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
     }
   ],
   "e2e": {
