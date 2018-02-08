@@ -54,7 +54,15 @@ A simple one click/single command installation is coming soon, but in the mean t
 
 ### Frontend
 
-In the project root:
+If you have docker:
+
+```sh
+sudo docker run -p 4222:80 1backend/frontend
+```
+
+The above means on https://127.0.0.1:4222 you will have the 1backend app available, once the server is also running (see below).
+
+Or if you want to hack on the Angular app:
 
 ```sh
 npm install
