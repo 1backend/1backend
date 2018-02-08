@@ -46,9 +46,12 @@ func (g MysqlPlugin) PreDeploy(envars map[string]string) (*infrat.PreDeploy, err
 		g.project.Author,
 		g.project.Name,
 		g.project.InfraPassword,
-		config.C.Path).CombinedOutput()
+		config.C.Path,
+		ip).CombinedOutput()
 	if err != nil {
-		return nil, err
+		return &infrat.PreDeploy{
+			Output: string(output),
+		}, err
 	}
 	return &infrat.PreDeploy{
 		Output:        string(output),

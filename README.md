@@ -86,7 +86,8 @@ sudo docker run --name some-redis -p=6379:6379 -v /var/redis:/data -d redis redi
 After this is done, you can launch the 1backend server with the following command:
 
 ```sh
-sudo docker run -e INTERNAL_IP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8) -v /var/1backend-config.json:/var/1backend-config.json -v /var/run/docker.sock:/var/run/docker.sock 1backend-server
+sudo docker run -e INTERNAL_IP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8) -v /var/run/docker.sock:/var/run/docker.sock -v /var/1backend-config.json:/var/1backend-config.json
+-p 8883:8883 1backend/server
 ```
 
 The above does 3 things:

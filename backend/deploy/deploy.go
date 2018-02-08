@@ -49,7 +49,7 @@ func (d Deployer) Deploy(project *domain.Project) error {
 		if len(steps) > 0 && steps[len(steps)-1].Success == false {
 			build.Success = false
 		}
-		if err != nil && steps[len(steps)-1].Success {
+		if err != nil && (len(steps) == 0 || steps[len(steps)-1].Success) {
 			build.Success = false
 			steps = append(steps, &domain.BuildStep{
 				Title:   "Internal system error during build",
@@ -132,9 +132,16 @@ func (d Deployer) Deploy(project *domain.Project) error {
 	envars := map[string]string{}
 	for _, v := range infp.Plugins(project) {
 		pred, err := v.PreDeploy(envars)
+		outp := ""
+		if pred != nil {
+			outp = pred.Output
+		}
+		if outp == "" && err != nil {
+			outp = err.Error()
+		}
 		steps = append(steps, &domain.BuildStep{
 			Title:   v.Name(),
-			Output:  pred.Output,
+			Output:  outp,
 			Success: err == nil,
 		})
 		if err != nil {

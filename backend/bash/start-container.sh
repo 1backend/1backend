@@ -3,4 +3,4 @@
 
 # returns true if the container is running. idempotent
 
-sudo docker start $1_$2
+docker start $1_$2

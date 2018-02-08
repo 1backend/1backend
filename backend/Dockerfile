@@ -1,6 +1,7 @@
 FROM golang:alpine
 
 RUN apk add --no-cache bash curl git openssh-client
+RUN apk add --no-cache mysql-client
 
 ENV VERSION "17.12.0-ce"
 RUN curl -L -o /tmp/docker-$VERSION.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VERSION.tgz \
