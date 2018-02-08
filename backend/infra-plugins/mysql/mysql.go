@@ -32,7 +32,11 @@ func (g MysqlPlugin) Name() string {
 }
 
 func (g MysqlPlugin) PreDeploy(envars map[string]string) (*infrat.PreDeploy, error) {
-	envars["MYSQL_IP"] = config.InternalIp
+	ip := config.InternalIp
+	if config.C.MySQLPlugin.Ip != "127.0.0.1" {
+		ip = config.C.MySQLPlugin.Ip
+	}
+	envars["MYSQL_IP"] = ip
 	envars["MYSQL_PORT"] = "3306"
 	envars["MYSQL_ADDRESS"] = fmt.Sprintf("%v:%v", config.InternalIp, "3306")
 	envars["MYSQL_USER"] = fmt.Sprintf("%v_%v", g.project.Author, g.project.Name)
