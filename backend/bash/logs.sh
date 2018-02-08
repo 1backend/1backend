@@ -3,4 +3,4 @@
 # $1 author name
 # $2 project name
 
-sudo docker logs --tail 500 $1_$2
+docker logs --tail 500 $1_$2

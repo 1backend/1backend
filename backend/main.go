@@ -71,16 +71,25 @@ func registerHandlers(r *httpr.Router, h *handlers.Handlers, p *proxy.Proxy) {
 func main() {
 	var err error
 	var db *gorm.DB
-	dsn := fmt.Sprintf("%s@tcp(%s)/backend?parseTime=True", "root:root", "127.0.0.1:3306")
+
+	sqlIp := config.InternalIp
+	if config.C.MySQL.Ip != "127.0.0.1" {
+		sqlIp = config.C.MySQLPlugin.Ip
+	}
+	dsn := fmt.Sprintf("%s@tcp(%s)/backend?parseTime=True", "root:root", sqlIp+":3306")
 	if db, err = gorm.Open("mysql", dsn); err != nil {
 		panic(fmt.Sprintf("[init] unable to initialize gorm: %s", err.Error()))
 	}
 	db = db.Set("gorm:save_associations", false)
 
+	redisIp := config.InternalIp
+	if config.C.Redis.Ip != "127.0.0.1" {
+		redisIp = config.C.Redis.Ip
+	}
 	redisClient := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
+		Addr:     redisIp + ":" + config.C.Redis.Port,
+		Password: config.C.Redis.Password, // no password set
+		DB:       config.C.Redis.Db,       // use default DB
 	})
 	_, err = redisClient.Ping().Result()
 	if err != nil {

@@ -54,7 +54,15 @@ A simple one click/single command installation is coming soon, but in the mean t
 
 ### Frontend
 
-In the project root:
+If you have docker:
+
+```sh
+sudo docker run -p 4222:80 1backend/frontend
+```
+
+The above means on https://127.0.0.1:4222 you will have the 1backend app available, once the server is also running (see below).
+
+Or if you want to hack on the Angular app:
 
 ```sh
 npm install
@@ -63,23 +71,59 @@ npm start
 
 ### Backend
 
+You need two containers running on your box: a MySQL one and a Redis one. The MySQL one also needs the table schema loaded into it (available in [this](backend/all.sql) file).
+
+Here is a short help:
+
 ```sh
 cd backend
 
+# start mysql container
 sudo docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=root -p=3306:3306 -d mysql
-# in case you don't have the mysql client installed:
+
+# install mysql client so we can load the tables into the mysql container
 sudo apt-get -y install mysql-client
+
+# use the mysql client to load the schema
 mysql -h localhost -P 3306 --protocol=tcp -u root -proot < all.sql
 
+# start redis container
 sudo docker run --name some-redis -p=6379:6379 -v /var/redis:/data -d redis redis-server --appendonly yes
-
-# this assumes you have go installed
-rm main; go build main.go; sudo ./main
 ```
+
+After this is done, you can launch the 1backend server with the following command:
+
+```sh
+sudo docker run -e INTERNAL_IP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8) -v /var/run/docker.sock:/var/run/docker.sock -v /var/1backend-config.json:/var/1backend-config.json
+-p 8883:8883 1backend/server
+```
+
+The above does 3 things:
+
+* passes the host internal network ip as an envar to the container
+* mounts the docker socket
+* mounts the 1backend config file
+
+We haven't talked about the latter, so let's do it now:
+
+### Configuration
 
 The server loads configuration from the location `/var/1backend-config.json`.
 Details of the config parameters are
 [here](https://github.com/1backend/1backend/blob/master/backend/config/config.go).
+
+A very basic and working example of such file would be:
+
+```
+{
+   "SiteUrl": "http://127.0.0.1",
+   "Path": "/go/src/github.com/1backend/1backend/backend",
+}
+```
+
+Such a minimal config file is enough to run the 1backend server docker container.
+
+Of course, there are more in depth things to consider...
 
 #### API generation
 

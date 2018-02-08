@@ -66,7 +66,7 @@ func (p *Proxy) launchAndWait(author, projectName string) error {
 		}
 		time.Sleep(125 * time.Millisecond)
 		port := int(po)
-		_, err = http.Get(fmt.Sprintf("%s://%s:%v/ping", "http", "127.0.0.1", port))
+		_, err = http.Get(fmt.Sprintf("%s://%s:%v/ping", "http", config.InternalIp, port))
 		if err != nil {
 			continue
 		}
@@ -137,7 +137,7 @@ func (p *Proxy) Proxy(w http.ResponseWriter, req *http.Request, params httpr.Par
 		return
 	}
 	// create a new url from the raw RequestURI sent by the client
-	url := fmt.Sprintf("%s://%s:%v/%s", "http", "127.0.0.1", port, newPath)
+	url := fmt.Sprintf("%s://%s:%v/%s", "http", config.InternalIp, port, newPath)
 	proxyReq, err := http.NewRequest(req.Method, url, bytes.NewReader(body))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadGateway)

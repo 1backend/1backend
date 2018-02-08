@@ -12,8 +12,8 @@ cd $BUILD_PATH
 # image and container name is the same
 CONTAINER=$AUTHOR"_"$PROJECT_NAME
 
-sudo docker build -t $CONTAINER . || exit 1
-sudo docker stop $CONTAINER
-sudo docker rm $CONTAINER
+docker build -t $CONTAINER . || exit 1
+docker stop $CONTAINER
+docker rm $CONTAINER
 
-sudo docker run --name $CONTAINER --env-file=$BUILD_PATH/env -p=8883 -d $CONTAINER
+docker run --name $CONTAINER --env-file=$BUILD_PATH/env -p=8883 -d $CONTAINER
