@@ -16,6 +16,8 @@ func IsTestUser(userName string) bool {
 var InternalIp = os.Getenv("INTERNAL_IP")
 
 var C = Config{
+	SiteUrl: "http://127.0.0.1",
+	Path:    "/go/src/github.com/1backend/1backend/backend",
 	MySQL: MySQL{
 		Ip:       "127.0.0.1",
 		Port:     "3306",

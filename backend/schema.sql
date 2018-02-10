@@ -1,4 +1,3 @@
-DROP DATABASE IF EXISTS backend;
 CREATE DATABASE IF NOT EXISTS backend;
 USE backend;
 

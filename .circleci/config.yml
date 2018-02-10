@@ -13,5 +13,11 @@ jobs:
           key: my-project-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - "node_modules"
-      #- run: xvfb-run -a npm run test -- --single-run --no-progress --browser=ChromeNoSandbox
-      - run: xvfb-run -a npm run e2e -- --no-progress --environment e2e --config=protractor-ci.conf.js
+      # - run: xvfb-run -a npm run test -- --single-run --no-progress --browser=ChromeNoSandbox
+      - setup-docker-engine
+      - run: |
+          cd backend; docker build -t 1backend/server . ; cd ..
+          docker run -e MYSQL_ROOT_PASSWORD=root -p=3306:3306 -d 1backend/mysql
+          docker run -p=6379:6379 -d redis redis-server --appendonly yes
+          docker run -e INTERNAL_IP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8) -v /var/run/docker.sock:/var/run/docker.sock -p 8883:8883 -d 1backend/server
+          xvfb-run -a npm run e2e -- --no-progress --environment dev --config=protractor-ci.conf.js
