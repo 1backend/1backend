@@ -71,7 +71,7 @@ npm start
 
 ### Backend
 
-You need two containers running on your box: a MySQL one and a Redis one. The 1backen flavoured MySQL one has the table schemas loaded into it (available in [this](backend/all.sql) file) already.
+You need two containers running on your box: a MySQL one and a Redis one. The 1backen flavoured MySQL one has the table schemas loaded into it (available in [this](backend/schema.sql) file) already.
 
 You can launch the complete sytem with 3 commands:
 
