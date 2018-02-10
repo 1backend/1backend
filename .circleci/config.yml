@@ -18,5 +18,5 @@ jobs:
       - run: |
           docker run -e MYSQL_ROOT_PASSWORD=root -p=3306:3306 -d 1backend/mysql
           docker run -p=6379:6379 -d redis redis-server --appendonly yes
-          docker run -e INTERNAL_IP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8) -v /var/run/docker.sock -p 8883:8883 -d 1backend/server
+          docker run -e INTERNAL_IP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8) -v /var/run/docker.sock:/var/run/docker.sock -p 8883:8883 -d 1backend/server
           xvfb-run -a npm run e2e -- --no-progress --environment dev --config=protractor-ci.conf.js

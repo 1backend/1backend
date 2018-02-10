@@ -77,14 +77,14 @@ You can launch the complete sytem with 3 commands:
 
 ```sh
 # Start mysql container. Comes with the database schema preloaded.
-sudo docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=root -p=3306:3306 -d 1backend/mysql
+sudo docker run -e MYSQL_ROOT_PASSWORD=root -p=3306:3306 -d 1backend/mysql
 
 # Start redis container.
-sudo docker run --name some-redis -p=6379:6379 -v /var/redis:/data -d redis redis-server --appendonly yes
+sudo docker run -p=6379:6379 -d redis redis-server --appendonly yes
 
 # Lunch the 1backend server with the following command:
 sudo docker run -e INTERNAL_IP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8) \
-  -v /var/run/docker.sock \
+  -v /var/run/docker.sock:/var/run/docker.sock \
   -p 8883:8883 1backend/server
 ```
 
