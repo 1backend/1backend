@@ -71,44 +71,34 @@ npm start
 
 ### Backend
 
-You need two containers running on your box: a MySQL one and a Redis one. The MySQL one also needs the table schema loaded into it (available in [this](backend/all.sql) file).
+You need two containers running on your box: a MySQL one and a Redis one. The 1backen flavoured MySQL one has the table schemas loaded into it (available in [this](backend/all.sql) file) already.
 
-Here is a short help:
+You can launch the complete sytem with 3 commands:
 
 ```sh
-cd backend
+# Start mysql container. Comes with the database schema preloaded.
+sudo docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=root -p=3306:3306 -d 1backend/mysql
 
-# start mysql container
-sudo docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=root -p=3306:3306 -d mysql
-
-# install mysql client so we can load the tables into the mysql container
-sudo apt-get -y install mysql-client
-
-# use the mysql client to load the schema
-mysql -h localhost -P 3306 --protocol=tcp -u root -proot < all.sql
-
-# start redis container
+# Start redis container.
 sudo docker run --name some-redis -p=6379:6379 -v /var/redis:/data -d redis redis-server --appendonly yes
-```
 
-After this is done, you can launch the 1backend server with the following command:
-
-```sh
-sudo docker run -e INTERNAL_IP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8) -v /var/run/docker.sock:/var/run/docker.sock -v /var/1backend-config.json:/var/1backend-config.json
--p 8883:8883 1backend/server
+# Lunch the 1backend server with the following command:
+sudo docker run -e INTERNAL_IP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8) \
+  -v /var/run/docker.sock \
+  -p 8883:8883 1backend/server
 ```
 
 The above does 3 things:
 
 * passes the host internal network ip as an envar to the container
 * mounts the docker socket
-* mounts the 1backend config file
 
-We haven't talked about the latter, so let's do it now:
+You can also mount a config file into the container under the path `/var/1backend-config.json`.
+We haven't talked about configuration, so let's do it now:
 
 ### Configuration
 
-The server loads configuration from the location `/var/1backend-config.json`.
+The server container loads configuration from the location `/var/1backend-config.json`.
 Details of the config parameters are
 [here](https://github.com/1backend/1backend/blob/master/backend/config/config.go).
 
@@ -121,7 +111,7 @@ A very basic and working example of such file would be:
 }
 ```
 
-Such a minimal config file is enough to run the 1backend server docker container.
+This is the default config file if you don't mount a config file to run the 1backend server docker container.
 
 Of course, there are more in depth things to consider...
 
