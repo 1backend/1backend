@@ -14,8 +14,4 @@ jobs:
           paths:
             - "node_modules"
       # - run: xvfb-run -a npm run test -- --single-run --no-progress --browser=ChromeNoSandbox
-      - run: |
-          docker build -t .  
-          docker login -u $DOCKER_USER -p $DOCKER_PASS
-          docker push CircleCI-Public/circleci-demo-docker:$TAG
-          xvfb-run -a npm run e2e -- --no-progress --environment e2e --config=protractor-ci.conf.js
+      - run: xvfb-run -a npm run e2e -- --no-progress --environment e2e --config=protractor-ci.conf.js
