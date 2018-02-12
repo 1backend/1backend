@@ -14,7 +14,6 @@ jobs:
           paths:
             - "node_modules"
       # - run: xvfb-run -a npm run test -- --single-run --no-progress --browser=ChromeNoSandbox
-      - setup-docker-engine
       - run: |
           cd backend; docker build -t 1backend/server . ; cd ..
           docker run -e MYSQL_ROOT_PASSWORD=root -p=3306:3306 --name 1backend-mysql -d 1backend/mysql
