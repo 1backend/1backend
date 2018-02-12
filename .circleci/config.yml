@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     working_directory: ~/my-project
-    docker:
+    machine:
       - image: circleci/node:6-browsers
     steps:
       - checkout
