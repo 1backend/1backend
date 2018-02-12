@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/my-project
     machine:
-      - image: circleci/node:6-browsers
+      image: circleci/node:6-browsers
     steps:
       - checkout
       - restore_cache:
