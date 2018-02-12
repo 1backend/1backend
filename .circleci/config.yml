@@ -2,19 +2,11 @@ version: 2
 jobs:
   build:
     working_directory: ~/my-project
-    machine:
-      image: circleci/node:6-browsers
+    machine: true
     steps:
-      - checkout
-      - restore_cache:
-          key: my-project-{{ .Branch }}-{{ checksum "package.json" }}
-      - run: npm install
-      - save_cache:
-          key: my-project-{{ .Branch }}-{{ checksum "package.json" }}
-          paths:
-            - "node_modules"
-      # - run: xvfb-run -a npm run test -- --single-run --no-progress --browser=ChromeNoSandbox
       - run: |
+          apt-get install -y nodejs; apt-get install npm
+          npm install
           cd backend; docker build -t 1backend/server . ; cd ..
           docker run -e MYSQL_ROOT_PASSWORD=root -p=3306:3306 --name 1backend-mysql -d 1backend/mysql
           docker run -p=6379:6379 --name 1backend-redis -d redis redis-server --appendonly yes
