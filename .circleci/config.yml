@@ -1,16 +1,38 @@
 version: 2
 jobs:
+   build_docker_image:
+    working_directory: ~/my-project
+    docker:
+      - image: circleci/node:6-browsers
+    steps:
+      - *restore_repo
+      - setup_remote_docker
+      - run:
+          name: Do the docker build
+          command: |
+            docker build -t 1bserver:$CIRCLE_BRANCH .
+            mkdir -p docker-cache
+            docker save -o docker-cache/built-image.tar 1bserver:$CIRCLE_BRANCH
+      - save_cache:
+          key: *docker_cache_key
+          paths:
+            - docker-cache
   build:
     working_directory: ~/my-project
-    machine: true
+    docker:
+      - image: circleci/node:6-browsers
     steps:
+      - checkout
+      - *restore_docker_cache
+      - run: npm install
+      - save_cache:
+          key: my-project-{{ .Branch }}-{{ checksum "package.json" }}
+          paths:
+            - "node_modules"
+      - setup-docker-engine
       - run: |
-          sudo su
-          apt-get install -y nodejs; apt-get install npm
-          npm install
-          cd backend; docker build -t 1backend/server . ; cd ..
-          docker run -e MYSQL_ROOT_PASSWORD=root -p=3306:3306 --name 1backend-mysql -d 1backend/mysql
-          docker run -p=6379:6379 --name 1backend-redis -d redis redis-server --appendonly yes
-          docker run -e INTERNAL_IP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8) -v /var/run/docker.sock:/var/run/docker.sock -p 8883:8883 --name 1backend-server -d 1backend/server
-          sleep 10; docker ps; docker logs 1backend-mysql; docker logs 1backend-redis; docker logs 1backend-server;
+          docker load < docker-cache/built-image.tar
+          docker run -e MYSQL_ROOT_PASSWORD=root -p=3306:3306 -d 1backend/mysql
+          docker run -p=6379:6379 -d redis redis-server --appendonly yes
+          docker run -e INTERNAL_IP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8) -v /var/run/docker.sock:/var/run/docker.sock -p 8883:8883 -d 1backend/server
           xvfb-run -a npm run e2e -- --no-progress --environment dev --config=protractor-ci.conf.js
