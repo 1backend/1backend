@@ -5,6 +5,7 @@ jobs:
     machine: true
     steps:
       - run: |
+          sudo su
           apt-get install -y nodejs; apt-get install npm
           npm install
           cd backend; docker build -t 1backend/server . ; cd ..
