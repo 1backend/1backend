@@ -1,6 +1,6 @@
 version: 2
 jobs:
-   build_docker_image:
+  build_docker_image:
     working_directory: ~/my-project
     docker:
       - image: circleci/node:6-browsers
