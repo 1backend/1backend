@@ -12,7 +12,7 @@ import (
 const readMe = `{{ .ProjectName }}
 ===
 
-This is a {{ .Mode }} service. If you are new to this, the documentation can be found [here](https://github.com/1backend/1backend/blob/master/docs)
+This is a {{ .Mode }} service. If you are new to this, the documentation can be found [here](https://github.com/1backend/1backend/blob/master/docs).
 
 If you know the drill, then happy crufting!
 `

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import * as types from '../../../../types';
 import { environment } from '../../../../../environments/environment';
 import { SessionService } from '../../../../session.service';
@@ -26,11 +26,13 @@ export class IssueComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private ss: SessionService,
-    public us: UserService
+    public us: UserService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
     this.getIssue();
+    this.projectName = this.route.snapshot.params['project'];
   }
 
   addComment() {
