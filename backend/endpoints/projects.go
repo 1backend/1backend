@@ -143,6 +143,11 @@ func (e Endpoints) DeleteProject(projectId string) error {
 		tx.Rollback()
 		return err
 	}
+	err = tx.Where("build_id in (select id from builds where project_id = ?)", projectId).Delete(&domain.BuildStep{}).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
 	err = tx.Where("project_id = ?", projectId).Delete(&domain.Build{}).Error
 	if err != nil {
 		tx.Rollback()
