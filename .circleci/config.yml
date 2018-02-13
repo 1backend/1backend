@@ -1,38 +1,40 @@
 version: 2
 jobs:
-  build_docker_image:
-    working_directory: ~/my-project
+  build:
     docker:
       - image: circleci/node:6-browsers
     steps:
-      - *restore_repo
       - setup_remote_docker
       - run:
-          name: Do the docker build
+          name: Build 1backend/server and 1backend/mysql, push them to docker hub
           command: |
-            docker build -t 1bserver:$CIRCLE_BRANCH .
-            mkdir -p docker-cache
-            docker save -o docker-cache/built-image.tar 1bserver:$CIRCLE_BRANCH
-      - save_cache:
-          key: *docker_cache_key
-          paths:
-            - docker-cache
-  build:
-    working_directory: ~/my-project
-    docker:
-      - image: circleci/node:6-browsers
+            cd backend
+            docker build -t 1backend/server:$CIRCLE_BRANCH .
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker push 1backend/server:$CIRCLE_BRANCH
+            cd dockerfiles/mysql
+            cp ../../schema.sql .
+            docker build -t 1backend/mysql:$CIRCLE_BRANCH .
+            docker push 1backend/mysql:$CIRCLE_BRANCH
+  test:
+    machine: true
     steps:
       - checkout
-      - *restore_docker_cache
+      restore_cache:
+        key: my-project-{{ .Branch }}-{{ checksum "package.json" }}
       - run: npm install
       - save_cache:
           key: my-project-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - "node_modules"
-      - setup-docker-engine
       - run: |
-          docker load < docker-cache/built-image.tar
-          docker run -e MYSQL_ROOT_PASSWORD=root -p=3306:3306 -d 1backend/mysql
+          docker run -e MYSQL_ROOT_PASSWORD=root -p=3306:3306 -d 1backend/mysql:$CIRCLE_BRANCH
           docker run -p=6379:6379 -d redis redis-server --appendonly yes
-          docker run -e INTERNAL_IP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8) -v /var/run/docker.sock:/var/run/docker.sock -p 8883:8883 -d 1backend/server
+          docker run -e INTERNAL_IP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8) -v /var/run/docker.sock:/var/run/docker.sock -p 8883:8883 -d 1backend/server:$CIRCLE_BRANCH
           xvfb-run -a npm run e2e -- --no-progress --environment dev --config=protractor-ci.conf.js
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test
