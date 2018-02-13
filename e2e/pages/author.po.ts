@@ -73,21 +73,21 @@ export class AuthorPage {
         cp.create(p);
         return browser.wait(
           until.invisibilityOf(utils.e('#project-status-red')),
-          30000,
+          40000,
           'Create project build took too long'
         );
       })
       .then(() => {
         return browser.wait(
           until.invisibilityOf(utils.e('#build-tab-icon-inprogress')),
-          30000,
+          40000,
           'Project build took too long'
         );
       })
       .then(() => {
         return browser.wait(
           until.presenceOf(utils.e('#build-tab-icon-success')),
-          30000,
+          40000,
           'Build is unsuccessful'
         );
       });
