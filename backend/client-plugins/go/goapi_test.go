@@ -3,7 +3,7 @@ package goclient
 import (
 	"testing"
 
-	apiTypes "github.com/1backend/1backend/backend/api-pack/types"
+	apiTypes "github.com/1backend/1backend/backend/client-plugins/types"
 	"github.com/1backend/1backend/backend/domain"
 )
 
