@@ -60,7 +60,7 @@ If you have docker:
 sudo docker run -p 4222:80 1backend/frontend
 ```
 
-The above means on https://127.0.0.1:4222 you will have the 1backend app available, once the server is also running (see below).
+The above means on http://127.0.0.1:4222 you will have the 1backend app available, once the server is also running (see below).
 
 Or if you want to hack on the Angular app:
 
@@ -82,7 +82,7 @@ sudo docker run -e MYSQL_ROOT_PASSWORD=root -p=3306:3306 -d 1backend/mysql
 # Start redis container.
 sudo docker run -p=6379:6379 -d redis redis-server --appendonly yes
 
-# Lunch the 1backend server with the following command:
+# Launch the 1backend server with the following command:
 sudo docker run -e INTERNAL_IP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8) \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -p 8883:8883 1backend/server
