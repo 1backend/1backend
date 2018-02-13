@@ -77,8 +77,13 @@ func main() {
 		sqlIp = config.C.MySQLPlugin.Ip
 	}
 	dsn := fmt.Sprintf("%s@tcp(%s)/backend?parseTime=True", "root:root", sqlIp+":3306")
-	if db, err = gorm.Open("mysql", dsn); err != nil {
-		panic(fmt.Sprintf("[init] unable to initialize gorm: %s", err.Error()))
+	for {
+		if db, err = gorm.Open("mysql", dsn); err != nil {
+			log.Errorf("[init] unable to initialize gorm: %s", err.Error())
+			time.Sleep(1 * time.Second)
+			continue
+		}
+		break
 	}
 	db = db.Set("gorm:save_associations", false)
 
