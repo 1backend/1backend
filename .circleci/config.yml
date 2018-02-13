@@ -4,6 +4,7 @@ jobs:
     docker:
       - image: circleci/node:6-browsers
     steps:
+      - checkout
       - setup_remote_docker
       - run:
           name: Build 1backend/server and 1backend/mysql, push them to docker hub
