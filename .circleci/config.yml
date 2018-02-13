@@ -28,6 +28,13 @@ jobs:
           key: my-project-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
             - "node_modules"
+      - run:
+          name: Install Chrome
+          command: |
+            curl -L -o google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+            sudo dpkg -i google-chrome.deb
+            sudo sed -i 's|HERE/chrome\"|HERE/chrome\" --disable-setuid-sandbox|g' /opt/google/chrome/google-chrome
+            rm google-chrome.deb
       - run: |
           docker run -e MYSQL_ROOT_PASSWORD=root -p=3306:3306 -d 1backend/mysql:$CIRCLE_BRANCH
           docker run -p=6379:6379 -d redis redis-server --appendonly yes
