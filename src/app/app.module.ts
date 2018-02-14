@@ -5,6 +5,7 @@ import 'codemirror/mode/go/go';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/shell/shell';
 import 'codemirror/mode/markdown/markdown';
+import 'codemirror/addon/display/autorefresh';
 
 import { AppComponent } from './app.component';
 import { ProjectComponent } from './projects/project/project.component';

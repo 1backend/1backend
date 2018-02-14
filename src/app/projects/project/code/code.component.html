@@ -6,7 +6,8 @@
           <markdown-to-html [data]="project.ReadMe"></markdown-to-html>
         </mat-tab>
         <mat-tab label="Edit">
-          <codemirror class="editor" [(ngModel)]="project.ReadMe" text="Your MD FILE" [config]="{'mode': 'markdown'}" style="min-height: 200px; width:100%;
+          <codemirror class="editor" [(ngModel)]="project.ReadMe" text="Your MD FILE" [config]="{'mode': 'markdown', 'autoRefresh': true}"
+            style="min-height: 200px; width:100%;
                     overflow: auto;" #editor>
           </codemirror>
           <button mat-raised-button (click)="save()" style="margin-top: 2em; color:#EEEEEE;" color="primary">Save</button>
@@ -106,15 +107,15 @@
         <ng-container>
           <mat-tab-group *ngIf="project.OpenSource">
             <mat-tab label="Code">
-              <codemirror class="editor" [(ngModel)]="endpoint.Code" [config]="{'mode': getAceCompatibleMode()}" style="min-height: 200px; width:100%;
+              <codemirror class="editor" [(ngModel)]="endpoint.Code" [config]="{'mode': getAceCompatibleMode(), 'lineNumbers': true}" style="min-height: 200px; width:100%;
 overflow: auto;" #editor></codemirror>
             </mat-tab>
             <mat-tab label="Input">
-              <codemirror class="editor" [(ngModel)]="endpoint.Input" [config]="{'mode': 'json'}" style="min-height: 200px; width:100%;
+              <codemirror class="editor" [(ngModel)]="endpoint.Input" [config]="{'mode': 'json', 'lineNumbers': true}" style="min-height: 200px; width:100%;
   overflow: auto;" #editor></codemirror>
             </mat-tab>
             <mat-tab label="Output">
-              <codemirror class="editor" [(ngModel)]="endpoint.Output" [config]="{'mode': 'text'}" style="min-height: 200px; width:100%;
+              <codemirror class="editor" [(ngModel)]="endpoint.Output" [config]="{'mode': 'text', 'lineNumbers': true}" style="min-height: 200px; width:100%;
     overflow: auto;" #editor>
               </codemirror>
             </mat-tab>
