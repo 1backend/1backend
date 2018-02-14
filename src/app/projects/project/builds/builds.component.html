@@ -30,9 +30,9 @@
     </div>
   </mat-card-title>
   <div *ngIf="build.Selected || i === 0">
-    <ace-editor *ngIf="build.InProgress" class="editor" [text]="'Build is in progress, it may take a few seconds...'" [mode]="'text'"
+    <codemirror *ngIf="build.InProgress" class="editor" value="'Build is in progress, it may take a few seconds...'" [config]="{'mode': 'text'}"
       style="min-height: 200px; width:100%;
-    overflow: auto;" #editor></ace-editor>
+    overflow: auto;" #editor></codemirror>
     <mat-accordion *ngIf="!build.InProgress" class="example-headers-align">
       <mat-expansion-panel *ngFor="let step of build.Steps">
         <mat-expansion-panel-header>
@@ -46,8 +46,8 @@
           </mat-panel-title>
           <mat-panel-description>{{step.Title}}</mat-panel-description>
         </mat-expansion-panel-header>
-        <ace-editor class="editor" [text]="step.Output" [mode]="'sh'" style="min-height: 200px; width:100%;
-        overflow: auto;" #editor></ace-editor>
+        <codemirror class="editor" [(ngModel)]="step.Output" [config]="{'mode': 'shell'}" style="min-height: 200px; width:100%;
+        overflow: auto;" #editor></codemirror>
       </mat-expansion-panel>
     </mat-accordion>
   </div>

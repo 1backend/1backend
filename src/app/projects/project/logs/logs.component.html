@@ -3,5 +3,5 @@
     <button mat-raised-button color="accent" (click)="reload()">Reload</button>
   </span>
 </div>
-<ace-editor class="editor logconsole" [mode]="'sh'" [(text)]="logs" style="min-height: 600px; width:100%;
-overflow: auto;" #editor></ace-editor>
+<codemirror class="editor logconsole" [config]="{'mode': 'sh'}" [(ngModel)]="logs" style="min-height: 600px; width:100%;
+overflow: auto;" #editor></codemirror>

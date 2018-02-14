@@ -78,7 +78,7 @@ export class CodeComponent implements OnInit {
   getAceCompatibleMode(): string {
     switch (this.project.Mode) {
       case 'go': {
-        return 'golang';
+        return 'go';
       }
       case 'nodejs': {
         return 'javascript';

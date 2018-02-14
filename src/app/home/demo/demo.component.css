@@ -15,7 +15,7 @@ h3 {
 }
 
 .cbp-ig-icon:before {
-  font-family: "devicon";
+  font-family: 'devicon';
   font-size: 2em;
   speak: none;
   font-style: normal;
@@ -93,5 +93,9 @@ mat-card {
 }
 .step {
   opacity: 0;
-  transition: 1.0s ease-in-out all;
+  transition: 1s ease-in-out all;
+}
+
+CodeMirror {
+  height: 10em;
 }

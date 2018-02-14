@@ -42,8 +42,8 @@
           <mat-card-title>
             <div class="method">GET</div> /hello</mat-card-title>
         </div>
-        <ace-editor class="editor" [text]="code" [mode]="'golang'" style="min-height: 5em; width:100%;
-          overflow: auto;" #editor></ace-editor>
+        <codemirror class="editor" [(ngModel)]="code" [config]="{'mode':'go'}" style="width:100%;
+          overflow: auto;" #editor></codemirror>
         <button #saveButton (click)="page = 'terminal'; typeTerminal()" mat-raised-button color="primary" style="color: white;margin-top: 1em;">Save</button>
       </div>
     </mat-card>
@@ -53,8 +53,8 @@
     <mat-card style="margin-bottom: 1em;">
       <div fxLayout="row wrap" fxLayoutAlign="space-between">
 
-        <ace-editor class="editor" [text]="terminal" [mode]="'sh'" style="min-height: 5em; width:100%;
-            overflow: auto;" #editor></ace-editor>
+        <codemirror class="editor" [(ngModel)]="terminal" [config]="{'mode': 'shell'}" style="width:100%;
+            overflow: auto;" #editor></codemirror>
 
       </div>
     </mat-card>

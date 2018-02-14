@@ -6,9 +6,9 @@
           <markdown-to-html [data]="project.ReadMe"></markdown-to-html>
         </mat-tab>
         <mat-tab label="Edit">
-          <ace-editor class="editor" [(ngModel)]="project.ReadMe" text="Your MD FILE" [mode]="'markdown'" style="min-height: 200px; width:100%;
+          <codemirror class="editor" [(ngModel)]="project.ReadMe" text="Your MD FILE" [config]="{'mode': 'markdown'}" style="min-height: 200px; width:100%;
                     overflow: auto;" #editor>
-          </ace-editor>
+          </codemirror>
           <button mat-raised-button (click)="save()" style="margin-top: 2em; color:#EEEEEE;" color="primary">Save</button>
         </mat-tab>
       </mat-tab-group>
@@ -24,17 +24,17 @@
         <div fxFlex="1 1 100%">
           <mat-tab-group>
             <mat-tab label="Imports">
-              <ace-editor class="editor" [(ngModel)]="project.Imports" [mode]="getAceCompatibleMode()" style="min-height: 200px; width:100%;
-                overflow: auto;" #editor></ace-editor>
+              <codemirror class="editor" [(ngModel)]="project.Imports" [config]="{'mode': getAceCompatibleMode()}" style="min-height: 200px; width:100%;
+                overflow: auto;" #editor></codemirror>
             </mat-tab>
 
             <mat-tab label="package.json" *ngIf="project.Mode === 'nodejs' || project.Mode === 'typescript'">
-              <ace-editor class="editor" [(ngModel)]="project.Packages" text="{{project.Packages}}" [mode]="'json'" style="min-height: 200px; width:100%;
-                overflow: auto;" #editor></ace-editor>
+              <codemirror class="editor" [(ngModel)]="project.Packages" [config]="{'mode': 'json'}" style="min-height: 200px; width:100%;
+                overflow: auto;" #editor></codemirror>
             </mat-tab>
             <mat-tab label="Types">
-              <ace-editor class="editor" [(ngModel)]="project.Types" text="{{project.Types}}" [mode]="'json'" style="min-height: 200px; width:100%;
-                  overflow: auto;" #editor></ace-editor>
+              <codemirror class="editor" [(ngModel)]="project.Types" [config]="{'mode': 'json'}" style="min-height: 200px; width:100%;
+                  overflow: auto;" #editor></codemirror>
             </mat-tab>
 
           </mat-tab-group>
@@ -66,8 +66,8 @@
           <textarea matInput name="description" placeholder="Description" matTextareaAutosize style="width: 100%;" [(ngModel)]="newEndpoint.Description"> </textarea>
         </mat-form-field>
 
-        <ace-editor class="editor " [(text)]="newEndpoint.Code" [mode]="getAceCompatibleMode()" style="min-height: 200px; width:100%;
-        overflow: auto;" #editor></ace-editor>
+        <codemirror class="editor " [(ngModel)]="newEndpoint.Code" [config]="{'mode': getAceCompatibleMode()}" style="min-height: 200px; width:100%;
+        overflow: auto;" #editor></codemirror>
 
       </div>
       <button [disabled]="newEndpoint.Url === '/' || newEndpoint.Url === '' || !newEndpoint.Url.startsWith('/')" (click)="add()"
@@ -106,16 +106,17 @@
         <ng-container>
           <mat-tab-group *ngIf="project.OpenSource">
             <mat-tab label="Code">
-              <ace-editor [readOnly]="readOnly" class="editor" [(text)]="endpoint.Code" [mode]="getAceCompatibleMode()" style="min-height: 200px; width:100%;
-overflow: auto;" #editor></ace-editor>
+              <codemirror class="editor" [(ngModel)]="endpoint.Code" [config]="{'mode': getAceCompatibleMode()}" style="min-height: 200px; width:100%;
+overflow: auto;" #editor></codemirror>
             </mat-tab>
             <mat-tab label="Input">
-              <ace-editor [readOnly]="readOnly" class="editor" [(text)]="endpoint.Input" [mode]="'json'" style="min-height: 200px; width:100%;
-  overflow: auto;" #editor></ace-editor>
+              <codemirror class="editor" [(ngModel)]="endpoint.Input" [config]="{'mode': 'json'}" style="min-height: 200px; width:100%;
+  overflow: auto;" #editor></codemirror>
             </mat-tab>
             <mat-tab label="Output">
-              <ace-editor [readOnly]="readOnly" class="editor" [(text)]="endpoint.Output" [mode]="'text'" style="min-height: 200px; width:100%;
-    overflow: auto;" #editor></ace-editor>
+              <codemirror class="editor" [(ngModel)]="endpoint.Output" [config]="{'mode': 'text'}" style="min-height: 200px; width:100%;
+    overflow: auto;" #editor>
+              </codemirror>
             </mat-tab>
           </mat-tab-group>
           <div *ngIf="user && user.Nick === project.Author">
@@ -143,9 +144,9 @@ overflow: auto;" #editor></ace-editor>
           </div>
         </ng-container>
 
-        <ace-editor class="editor" text="curl -X{{endpoint.Method}} {{backendUrl}}/app/{{project.Author}}/{{project.Name}}{{endpoint.Url}} -H 'token: {{getTestToken()}}'"
-          [mode]="'sh'" style="min-height: 2em; margin-top: 1em; width:100%;
-        overflow: auto;"></ace-editor>
+        <codemirror class="editor" value="curl -X{{endpoint.Method}} {{backendUrl}}/app/{{project.Author}}/{{project.Name}}{{endpoint.Url}} -H 'token: {{getTestToken()}}'"
+          [config]="{'mode': 'shell', 'lineWrapping': true, 'readOnly': true}" style="height: 2em; margin-top: 1em; width:100%;
+        overflow: auto;"></codemirror>
       </span>
     </mat-card>
     <span *ngIf="project.Endpoints.length > 10">

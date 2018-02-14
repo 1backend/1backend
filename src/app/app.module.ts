@@ -1,14 +1,10 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { AceEditorModule } from 'ng2-ace-editor';
-import 'brace/mode/sql';
-import 'brace/mode/golang';
-import 'brace/mode/javascript';
-import 'brace/mode/json';
-import 'brace/mode/markdown';
-import 'brace/mode/sh';
-import 'brace/mode/typescript';
+import 'codemirror/mode/go/go';
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/shell/shell';
+import 'codemirror/mode/markdown/markdown';
 
 import { AppComponent } from './app.component';
 import { ProjectComponent } from './projects/project/project.component';
@@ -88,6 +84,7 @@ import { CreatePostDialogService } from './author/posts/create-post-dialog.servi
 import { SettingsComponent } from './projects/project/settings/settings.component';
 import { LogsComponent } from './projects/project/logs/logs.component';
 import { ConfigComponent } from './config/config.component';
+import { CodemirrorModule } from 'ng2-codemirror';
 
 const appRoutes: Routes = [
   {
@@ -180,7 +177,6 @@ const appRoutes: Routes = [
       appRoutes,
       { enableTracing: true } // <-- debugging purposes only
     ),
-    AceEditorModule,
     BrowserAnimationsModule,
     HttpClientModule,
     MatCardModule,
@@ -207,7 +203,8 @@ const appRoutes: Routes = [
     MatCheckboxModule,
     MatRadioModule,
     MatSlideToggleModule,
-    MatSliderModule
+    MatSliderModule,
+    CodemirrorModule
   ],
   providers: [
     HttpClient,
