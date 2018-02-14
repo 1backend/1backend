@@ -6,7 +6,7 @@
           <markdown-to-html [data]="project.ReadMe"></markdown-to-html>
         </mat-tab>
         <mat-tab label="Edit">
-          <codemirror class="editor" [(ngModel)]="project.ReadMe" text="Your MD FILE" [config]="{'mode': 'markdown', 'autoRefresh': true}"
+          <codemirror class="editor" [(ngModel)]="project.ReadMe" text="Your MD FILE" [config]="{'mode': 'markdown', 'lineNumbers': true,'autoRefresh': true}"
             style="min-height: 200px; width:100%;
                     overflow: auto;" #editor>
           </codemirror>
@@ -30,11 +30,11 @@
             </mat-tab>
 
             <mat-tab label="package.json" *ngIf="project.Mode === 'nodejs' || project.Mode === 'typescript'">
-              <codemirror class="editor" [(ngModel)]="project.Packages" [config]="{'mode': 'json'}" style="min-height: 200px; width:100%;
+              <codemirror class="editor" [(ngModel)]="project.Packages" [config]="{'mode': 'json', 'autoRefresh': true}" style="min-height: 200px; width:100%;
                 overflow: auto;" #editor></codemirror>
             </mat-tab>
             <mat-tab label="Types">
-              <codemirror class="editor" [(ngModel)]="project.Types" [config]="{'mode': 'json'}" style="min-height: 200px; width:100%;
+              <codemirror class="editor" [(ngModel)]="project.Types" [config]="{'mode': 'json', 'autoRefresh': true}" style="min-height: 200px; width:100%;
                   overflow: auto;" #editor></codemirror>
             </mat-tab>
 
@@ -66,10 +66,8 @@
         <mat-form-field class="example-full-width">
           <textarea matInput name="description" placeholder="Description" matTextareaAutosize style="width: 100%;" [(ngModel)]="newEndpoint.Description"> </textarea>
         </mat-form-field>
-
-        <codemirror class="editor " [(ngModel)]="newEndpoint.Code" [config]="{'mode': getAceCompatibleMode()}" style="min-height: 200px; width:100%;
-        overflow: auto;" #editor></codemirror>
-
+        <codemirror class="editor" [(ngModel)]="newEndpoint.Code" [config]="{'mode': getAceCompatibleMode(), 'lineNumbers': true, 'autoRefresh': true}"
+          #editor></codemirror>
       </div>
       <button [disabled]="newEndpoint.Url === '/' || newEndpoint.Url === '' || !newEndpoint.Url.startsWith('/')" (click)="add()"
         mat-raised-button style="margin-top: 1em; color: #EEEEEE" color="primary">Add</button>
@@ -111,11 +109,13 @@
 overflow: auto;" #editor></codemirror>
             </mat-tab>
             <mat-tab label="Input">
-              <codemirror class="editor" [(ngModel)]="endpoint.Input" [config]="{'mode': 'json', 'lineNumbers': true}" style="min-height: 200px; width:100%;
+              <codemirror class="editor" [(ngModel)]="endpoint.Input" [config]="{'mode': 'json', 'lineNumbers': true, 'autoRefresh': true}"
+                style="min-height: 200px; width:100%;
   overflow: auto;" #editor></codemirror>
             </mat-tab>
             <mat-tab label="Output">
-              <codemirror class="editor" [(ngModel)]="endpoint.Output" [config]="{'mode': 'text', 'lineNumbers': true}" style="min-height: 200px; width:100%;
+              <codemirror class="editor" [(ngModel)]="endpoint.Output" [config]="{'mode': 'text', 'lineNumbers': true, 'autoRefresh': true}"
+                style="min-height: 200px; width:100%;
     overflow: auto;" #editor>
               </codemirror>
             </mat-tab>
@@ -145,7 +145,7 @@ overflow: auto;" #editor></codemirror>
           </div>
         </ng-container>
 
-        <codemirror class="editor" value="curl -X{{endpoint.Method}} {{backendUrl}}/app/{{project.Author}}/{{project.Name}}{{endpoint.Url}} -H 'token: {{getTestToken()}}'"
+        <codemirror class="editor shell-editor" value="curl -X{{endpoint.Method}} {{backendUrl}}/app/{{project.Author}}/{{project.Name}}{{endpoint.Url}} -H 'token: {{getTestToken()}}'"
           [config]="{'mode': 'shell', 'lineWrapping': true, 'readOnly': true}" style="height: 2em; margin-top: 1em; width:100%;
         overflow: auto;"></codemirror>
       </span>

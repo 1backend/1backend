@@ -25,7 +25,8 @@ export class CodeComponent implements OnInit {
   newEndpoint: types.Endpoint = {
     Method: 'GET',
     Url: '/',
-    Description: ''
+    Description: '',
+    Code: ' '
   };
   status: boolean;
   readme: string;
