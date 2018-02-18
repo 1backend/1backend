@@ -42,8 +42,7 @@
           <mat-card-title>
             <div class="method">GET</div> /hello</mat-card-title>
         </div>
-        <ace-editor class="editor" [text]="code" [mode]="'golang'" style="min-height: 5em; width:100%;
-          overflow: auto;" #editor></ace-editor>
+        <ngx-monaco-editor [options]="{}" #editor [(ngModel)]="code"></ngx-monaco-editor>
         <button #saveButton (click)="page = 'terminal'; typeTerminal()" mat-raised-button color="primary" style="color: white;margin-top: 1em;">Save</button>
       </div>
     </mat-card>
@@ -52,9 +51,7 @@
     <h3>{{title}}</h3>
     <mat-card style="margin-bottom: 1em;">
       <div fxLayout="row wrap" fxLayoutAlign="space-between">
-
-        <ace-editor class="editor" [text]="terminal" [mode]="'sh'" style="min-height: 5em; width:100%;
-            overflow: auto;" #editor></ace-editor>
+        <ngx-monaco-editor [options]="{}" #editor [(ngModel)]="terminal"></ngx-monaco-editor>
 
       </div>
     </mat-card>

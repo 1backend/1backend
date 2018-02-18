@@ -7,7 +7,15 @@
     {
       "root": "src",
       "outDir": "dist",
-      "assets": ["assets", "favicon.ico"],
+      "assets": [
+        "assets",
+        "favicon.ico",
+        {
+          "glob": "**/*",
+          "input": "../node_modules/ngx-monaco-editor/assets/monaco",
+          "output": "./assets/monaco/"
+        }
+      ],
       "index": "index.html",
       "main": "main.ts",
       "polyfills": "polyfills.ts",

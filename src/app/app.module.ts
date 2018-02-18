@@ -1,6 +1,7 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { AceEditorModule } from 'ng2-ace-editor';
 import 'brace/mode/sql';
 import 'brace/mode/golang';
@@ -207,7 +208,8 @@ const appRoutes: Routes = [
     MatCheckboxModule,
     MatRadioModule,
     MatSlideToggleModule,
-    MatSliderModule
+    MatSliderModule,
+    MonacoEditorModule.forRoot()
   ],
   providers: [
     HttpClient,
