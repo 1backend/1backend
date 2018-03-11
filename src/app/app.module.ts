@@ -2,6 +2,7 @@ import { BrowserModule, Title } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AceEditorModule } from 'ng2-ace-editor';
+import 'brace/ext/searchbox';
 import 'brace/mode/sql';
 import 'brace/mode/golang';
 import 'brace/mode/javascript';
