@@ -33,7 +33,7 @@ func (e Endpoints) Charge(accessToken, paymentToken string, amount uint64) error
 	// token is the payment token ID submitted by the form
 
 	curr := "usd"
-	amt := uint64(amount)
+	amt := int64(amount)
 	// Charge the user's card:
 	params := &stripe.ChargeParams{
 		Amount:   &amt,
