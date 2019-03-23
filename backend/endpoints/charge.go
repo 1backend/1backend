@@ -32,11 +32,12 @@ func (e Endpoints) Charge(accessToken, paymentToken string, amount uint64) error
 	// token is created using Checkout or Elements!
 	// token is the payment token ID submitted by the form
 
+	curr := "usd"
 	// Charge the user's card:
 	params := &stripe.ChargeParams{
-		Amount:   amount,
-		Currency: "usd",
-		Desc:     fmt.Sprintf("%v quota added", (amount/pricePer100k)*100000), // @todo hardcoded price
+		Amount:   &amount,
+		Currency: &curr,
+		//Desc:     fmt.Sprintf("%v quota added", (amount/pricePer100k)*100000), // @todo hardcoded price
 	}
 	err = params.SetSource(paymentToken)
 	if err != nil {
