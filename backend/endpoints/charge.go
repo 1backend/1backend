@@ -33,9 +33,10 @@ func (e Endpoints) Charge(accessToken, paymentToken string, amount uint64) error
 	// token is the payment token ID submitted by the form
 
 	curr := "usd"
+	amt := uint64(amount)
 	// Charge the user's card:
 	params := &stripe.ChargeParams{
-		Amount:   &amount,
+		Amount:   &amt,
 		Currency: &curr,
 		//Desc:     fmt.Sprintf("%v quota added", (amount/pricePer100k)*100000), // @todo hardcoded price
 	}
