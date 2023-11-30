@@ -73,7 +73,7 @@ npm start
 
 You need two containers running on your box: a MySQL one and a Redis one. The 1backen flavoured MySQL one has the table schemas loaded into it (available in [this](backend/schema.sql) file) already.
 
-You can launch the complete sytem with 3 commands:
+You can launch the complete system with 3 commands:
 
 ```sh
 # Start mysql container. Comes with the database schema preloaded.
