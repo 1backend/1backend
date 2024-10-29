@@ -4,6 +4,10 @@
 
 # 1Backend [![circleci status](https://circleci.com/gh/1backend/1backend.svg?style=shield)](https://circleci.com/gh/1backend/1backend) [![go report](https://goreportcard.com/badge/github.com/1backend/1backend)](https://goreportcard.com/report/github.com/1backend/1backend) [![go coverage](https://codecov.io/gh/1backend/1backend/branch/master/graph/badge.svg)](https://codecov.io/gh/1backend/1backend/branch/master)
 
+THIS PROJECT IS NOT ACTIVE ANYMORE  
+This project is not active anymore. The spiritual successor of this platform is [Singulatron's Superplatform](https://github.com/singulatron/superplatform)  
+THIS PROJECT IS NOT ACTIVE ANYMORE  
+
 1Backend is a platform designed to make deploying, running and maintaining lambda functions/microservices easy.
 
 ![1backend service screenshot](https://raw.githubusercontent.com/1backend/1backend/master/1b.png)
