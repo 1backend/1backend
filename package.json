@@ -43,7 +43,7 @@
     "ng2-monaco-editor": "0.0.1",
     "ng2-page-scroll": "^4.0.0-beta.12",
     "ngx-showdown": "^3.1.0",
-    "node-sass": "^4.6.0",
+    "node-sass": "^7.0.0",
     "rxjs": "^5.5.2",
     "showdown": "^1.8.6",
     "zone.js": "^0.8.14"
