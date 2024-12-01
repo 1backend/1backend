@@ -20,7 +20,7 @@
     "@angular/cdk": "^5.0.0-rc0",
     "@angular/common": "^5.0.0",
     "@angular/compiler": "^5.0.0",
-    "@angular/core": "^5.2.2",
+    "@angular/core": "^11.0.5",
     "@angular/flex-layout": "^2.0.0-beta.11",
     "@angular/forms": "^5.0.0",
     "@angular/http": "^5.2.2",
