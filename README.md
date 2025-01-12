@@ -1,3 +1,7 @@
+# Deprecated
+
+Please see the spiritual successor of this platform: https://github.com/openorch/openorch
+
 <p align="center">
   <img width="200px" src="https://cdn.rawgit.com/1backend/1backend/master/src/assets/logos/trex.svg" />
 <p>
