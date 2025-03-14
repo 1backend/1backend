@@ -19,12 +19,12 @@ import (
 
 	"github.com/gorilla/mux"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/logger"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/logger"
 
-	streammanager "github.com/openorch/openorch/server/internal/services/prompt/stream"
-	prompt "github.com/openorch/openorch/server/internal/services/prompt/types"
+	streammanager "github.com/1backend/1backend/server/internal/services/prompt/stream"
+	prompt "github.com/1backend/1backend/server/internal/services/prompt/types"
 )
 
 // @ID subscribeToPromptResponses

@@ -21,10 +21,10 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	"github.com/openorch/openorch/sdk/go/logger"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/logger"
 
-	user "github.com/openorch/openorch/server/internal/services/user/types"
+	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 // @ID isAuthorized

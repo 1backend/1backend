@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"go.uber.org/mock/gomock"
 )
 
@@ -14,7 +14,7 @@ func AdminClient(clientFactory sdk.ClientFactory) (*openapi.APIClient, string, e
 	userSvc := clientFactory.Client().UserSvcAPI
 
 	adminLoginRsp, _, err := userSvc.Login(context.Background()).Body(openapi.UserSvcLoginRequest{
-		Slug:     openapi.PtrString("openorch"),
+		Slug:     openapi.PtrString("1backend"),
 		Password: openapi.PtrString("changeme"),
 	}).Execute()
 	if err != nil {

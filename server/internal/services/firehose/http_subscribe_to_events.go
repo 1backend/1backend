@@ -17,9 +17,9 @@ import (
 	"log"
 	"net/http"
 
-	sdk "github.com/openorch/openorch/sdk/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 
-	firehose "github.com/openorch/openorch/server/internal/services/firehose/types"
+	firehose "github.com/1backend/1backend/server/internal/services/firehose/types"
 )
 
 // @ID subscribeToEvents

@@ -18,12 +18,12 @@ import { WindowApiConst } from 'shared-lib';
 import { Subscription } from 'rxjs';
 import { ChatService } from '../services/chat.service';
 import { PromptService } from '../services/prompt.service';
-import { PromptSvcPrompt as Prompt } from '@openorch/client';
+import { PromptSvcPrompt as Prompt } from '@1backend/client';
 import { ModelService } from '../services/model.service';
 import {
 	ChatSvcThread as Thread,
 	ModelSvcModel as Model,
-} from '@openorch/client';
+} from '@1backend/client';
 import { ConfigService } from '../services/config.service';
 import { ChatBoxComponent } from './chat-box/chat-box.component';
 import { NgFor, NgIf, AsyncPipe } from '@angular/common';

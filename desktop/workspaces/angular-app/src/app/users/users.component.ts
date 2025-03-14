@@ -40,7 +40,7 @@ import {
 	UserSvcUser,
 	DatastoreOp,
 	UserSvcGetUsersRequest,
-} from '@openorch/client';
+} from '@1backend/client';
 
 interface UserVisible extends UserSvcUser {
 	visible?: boolean;

@@ -1,10 +1,10 @@
-module github.com/openorch/openorch/server
+module github.com/1backend/1backend/server
 
 go 1.23
 
-replace github.com/openorch/openorch/clients/go => ../clients/go
+replace github.com/1backend/1backend/clients/go => ../clients/go
 
-replace github.com/openorch/openorch/sdk/go => ../sdk/go
+replace github.com/1backend/1backend/sdk/go => ../sdk/go
 
 require (
 	github.com/docker/docker v26.0.0+incompatible
@@ -16,8 +16,8 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/onsi/ginkgo/v2 v2.20.2
 	github.com/onsi/gomega v1.34.2
-	github.com/openorch/openorch/clients/go v0.0.0
-	github.com/openorch/openorch/sdk/go v0.0.0
+	github.com/1backend/1backend/clients/go v0.0.0
+	github.com/1backend/1backend/sdk/go v0.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/r3labs/sse v0.0.0-20210224172625-26fe804710bc
 	github.com/samber/lo v1.49.1

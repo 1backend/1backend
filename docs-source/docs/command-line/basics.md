@@ -8,10 +8,10 @@ tags:
 
 ## CLI installation
 
-At the moment you need Go to install the OpenOrch CLI:
+At the moment you need Go to install the 1Backend CLI:
 
 ```sh
-go install github.com/openorch/openorch/cli/oo@latest
+go install github.com/1backend/1backend/cli/oo@latest
 ```
 
 ## CLI usage
@@ -30,13 +30,13 @@ SELECTED   NAME    URL                           DESCRIPTION
 After this you you need to log in:
 
 ```sh
-$ oo login openorch
+$ oo login 1backend
 Enter password:
 ```
 
 ```sh
 $ oo whoami
-slug: openorch
+slug: 1backend
 id: usr_eH9mXKgmb0
 roles:
 - user-svc:admin

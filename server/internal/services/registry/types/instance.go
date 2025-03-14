@@ -36,15 +36,15 @@ type Instance struct {
 	URL string `json:"url,omitempty" example:"https://myserver.com:5981" binding:"required"`
 
 	// The ID of the deployment that this instance is an instance of.
-	// Only instances deployed by OpenOrch have a DeploymentId.
+	// Only instances deployed by 1Backend have a DeploymentId.
 	// Services can be deployed through other means (Docker Compose, K8s, anything),
 	// in that case they self-register and will not have a DeploymentId.
 	DeploymentId string `json:"deploymentId,omitempty" example:"depl_deBUCtJirc"`
 
-	// NodeURL is the URL of the OpenOrch server the instance is running on.
+	// NodeURL is the URL of the 1Backend server the instance is running on.
 	// To have a NodeURL the instance must either:
-	// - Be deployed by OpenOrch
-	// - Declare the OpenOrch server URL when registering its instance
+	// - Be deployed by 1Backend
+	// - Declare the 1Backend server URL when registering its instance
 	NodeURL string `json:"nodeUrl,omitempty" example:"https://myserver.com:58231"`
 
 	// Last time the instance gave a sign of life
@@ -76,7 +76,7 @@ type Instance struct {
 	// Slug of the account that owns this instance
 	// Services that want to be proxied by their slug are advised to self register
 	// their instance at startup.
-	// Keep in mind, instances might be deployed by OpenOrch yet they still won't be OpenOrch services
+	// Keep in mind, instances might be deployed by 1Backend yet they still won't be 1Backend services
 	// and they won't have slugs. Think NGINX, MySQL, etc.
 	Slug string `json:"slug,omitempty" example:"my-svc"`
 

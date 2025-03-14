@@ -1,4 +1,4 @@
-import { Configuration, UserSvcApi } from "@openorch/client";
+import { Configuration, UserSvcApi } from "@1backend/client";
 import { dynamicTest } from "./data_example.js";
 import { promptTest } from "./prompt_example.js";
 
@@ -6,7 +6,7 @@ async function start() {
   let userService = new UserSvcApi();
   let loginResponse = await userService.login({
     body: {
-      slug: "openorch",
+      slug: "1backend",
       password: "changeme",
     },
   });
@@ -20,7 +20,7 @@ async function start() {
   );
 
   const readTokenResponse = await userService.readUserByToken();
-  if (readTokenResponse.user?.slug !== "openorch") {
+  if (readTokenResponse.user?.slug !== "1backend") {
     process.exit(1);
   }
 

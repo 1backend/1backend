@@ -16,7 +16,7 @@ import (
 	"context"
 
 	dockercontainer "github.com/docker/docker/api/types/container"
-	container "github.com/openorch/openorch/server/internal/services/container/types"
+	container "github.com/1backend/1backend/server/internal/services/container/types"
 )
 
 func (dm *DockerBackend) StopContainer(

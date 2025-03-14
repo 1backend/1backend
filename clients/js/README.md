@@ -1,7 +1,7 @@
 # js clients
 
-This file contains the JavaScript OpenOrch clients. The `*-example` folders contains tiny example projects.
+This file contains the JavaScript 1Backend clients. The `*-example` folders contains tiny example projects.
 
 ## types
 
-Contains only the shared OpenOrch TypeScript files that will be used by Node, Angular, React etc clients.
+Contains only the shared 1Backend TypeScript files that will be used by Node, Angular, React etc clients.

@@ -7,9 +7,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	"github.com/openorch/openorch/server/internal/di"
-	policytypes "github.com/openorch/openorch/server/internal/services/policy/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	"github.com/1backend/1backend/server/internal/di"
+	policytypes "github.com/1backend/1backend/server/internal/services/policy/types"
 )
 
 func TestRateLimiting(t *testing.T) {
@@ -40,7 +40,7 @@ func TestRateLimiting(t *testing.T) {
 
 	adminLoginRsp, _, err := client.UserSvcAPI.Login(context.Background()).
 		Body(openapi.UserSvcLoginRequest{
-			Slug:     openapi.PtrString("openorch"),
+			Slug:     openapi.PtrString("1backend"),
 			Password: openapi.PtrString("changeme"),
 		}).
 		Execute()

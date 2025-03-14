@@ -10,44 +10,44 @@ import (
 	"path"
 	"sync"
 
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/clients/llamacpp"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/datastore/localstore"
+	"github.com/1backend/1backend/sdk/go/datastore/sqlstore"
+	"github.com/1backend/1backend/sdk/go/lock"
+	distlock "github.com/1backend/1backend/sdk/go/lock/local"
+	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/router"
+	node_types "github.com/1backend/1backend/server/internal/node/types"
+	chatservice "github.com/1backend/1backend/server/internal/services/chat"
+	configservice "github.com/1backend/1backend/server/internal/services/config"
+	containerservice "github.com/1backend/1backend/server/internal/services/container"
+	dataservice "github.com/1backend/1backend/server/internal/services/data"
+	deployservice "github.com/1backend/1backend/server/internal/services/deploy"
+	emailservice "github.com/1backend/1backend/server/internal/services/email"
+	fileservice "github.com/1backend/1backend/server/internal/services/file"
+	firehoseservice "github.com/1backend/1backend/server/internal/services/firehose"
+	modelservice "github.com/1backend/1backend/server/internal/services/model"
+	policyservice "github.com/1backend/1backend/server/internal/services/policy"
+	promptservice "github.com/1backend/1backend/server/internal/services/prompt"
+	proxyservice "github.com/1backend/1backend/server/internal/services/proxy"
+	registryservice "github.com/1backend/1backend/server/internal/services/registry"
+	secretservice "github.com/1backend/1backend/server/internal/services/secret"
+	sourceservice "github.com/1backend/1backend/server/internal/services/source"
+	userservice "github.com/1backend/1backend/server/internal/services/user"
 	"github.com/gorilla/mux"
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/clients/llamacpp"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	"github.com/openorch/openorch/sdk/go/datastore/localstore"
-	"github.com/openorch/openorch/sdk/go/datastore/sqlstore"
-	"github.com/openorch/openorch/sdk/go/lock"
-	distlock "github.com/openorch/openorch/sdk/go/lock/local"
-	"github.com/openorch/openorch/sdk/go/logger"
-	"github.com/openorch/openorch/sdk/go/middlewares"
-	"github.com/openorch/openorch/sdk/go/router"
-	node_types "github.com/openorch/openorch/server/internal/node/types"
-	chatservice "github.com/openorch/openorch/server/internal/services/chat"
-	configservice "github.com/openorch/openorch/server/internal/services/config"
-	containerservice "github.com/openorch/openorch/server/internal/services/container"
-	dataservice "github.com/openorch/openorch/server/internal/services/data"
-	deployservice "github.com/openorch/openorch/server/internal/services/deploy"
-	emailservice "github.com/openorch/openorch/server/internal/services/email"
-	fileservice "github.com/openorch/openorch/server/internal/services/file"
-	firehoseservice "github.com/openorch/openorch/server/internal/services/firehose"
-	modelservice "github.com/openorch/openorch/server/internal/services/model"
-	policyservice "github.com/openorch/openorch/server/internal/services/policy"
-	promptservice "github.com/openorch/openorch/server/internal/services/prompt"
-	proxyservice "github.com/openorch/openorch/server/internal/services/proxy"
-	registryservice "github.com/openorch/openorch/server/internal/services/registry"
-	secretservice "github.com/openorch/openorch/server/internal/services/secret"
-	sourceservice "github.com/openorch/openorch/server/internal/services/source"
-	userservice "github.com/openorch/openorch/server/internal/services/user"
 	"github.com/pkg/errors"
 )
 
-const openorchFolder = ".openorch"
+const onebackendFolder = ".1backend"
 
 type Options struct {
 	// NodeOptions contains settings coming from envars
 	NodeOptions *node_types.Options
 
-	// URL of the local OpenOrch server instance
+	// URL of the local 1Backend server instance
 	Url string
 
 	// Test mode if true will cause the localstore to
@@ -64,9 +64,9 @@ type Options struct {
 	// DatastoreFactory can create database tables
 	DatastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
 
-	// HomeDir is the OpenOrch config/data/uploads/downloads directory.
-	// For tests it's something like /tmp/openorch-2698538720/
-	// For live it's /home/youruser/.openorch
+	// HomeDir is the 1Backend config/data/uploads/downloads directory.
+	// For tests it's something like /tmp/1backend-2698538720/
+	// For live it's /home/youruser/.1backend
 	HomeDir string
 
 	// ClientFactory is used for service to service communication
@@ -86,7 +86,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 	var homeDir string
 	var err error
 	if options.Test {
-		homeDir, err = os.MkdirTemp("", "openorch-")
+		homeDir, err = os.MkdirTemp("", "1backend-")
 		if err != nil {
 			logger.Error(
 				"Homedir creation failed",
@@ -100,7 +100,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 			logger.Error("Homedir creation failed", slog.String("error", err.Error()))
 			os.Exit(1)
 		}
-		homeDir = path.Join(homeDir, openorchFolder)
+		homeDir = path.Join(homeDir, onebackendFolder)
 	}
 
 	options.HomeDir = homeDir

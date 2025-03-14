@@ -17,10 +17,10 @@ import (
 	"errors"
 	"net/http"
 
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	data "github.com/openorch/openorch/server/internal/services/data/types"
-	dynamictypes "github.com/openorch/openorch/server/internal/services/data/types"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	data "github.com/1backend/1backend/server/internal/services/data/types"
+	dynamictypes "github.com/1backend/1backend/server/internal/services/data/types"
 )
 
 // @ID updateObjects

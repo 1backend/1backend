@@ -10,7 +10,7 @@ import { DataService } from './generic.service';
 import { ServerService } from './server.service';
 import { UserService } from './user.service';
 import { first } from 'rxjs';
-import { DataSvcObject } from '@openorch/client';
+import { DataSvcObject } from '@1backend/client';
 
 const CHARACTERS_TABLE_NAME = 'characters';
 const SELECTED_CHARACTERS_TABLE_NAME = 'selected-characters';

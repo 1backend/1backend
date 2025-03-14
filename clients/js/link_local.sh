@@ -10,10 +10,10 @@ npm link;
 cd ..
 
 cd example;
-npm link @openorch/client;
+npm link @1backend/client;
 npm run build
 cd ..
 
 cd ../../desktop/workspaces/angular-app/
-npm link @openorch/client
+npm link @1backend/client
 cd ../../../clients/js

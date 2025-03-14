@@ -15,7 +15,7 @@ package promptservice
 import (
 	"net/http"
 
-	prompt "github.com/openorch/openorch/server/internal/services/prompt/types"
+	prompt "github.com/1backend/1backend/server/internal/services/prompt/types"
 )
 
 // @ID promptTypes

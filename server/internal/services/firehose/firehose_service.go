@@ -17,11 +17,11 @@ import (
 	"log"
 	"sync"
 
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	"github.com/openorch/openorch/sdk/go/lock"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/lock"
 
-	firehosetypes "github.com/openorch/openorch/server/internal/services/firehose/types"
+	firehosetypes "github.com/1backend/1backend/server/internal/services/firehose/types"
 )
 
 type FirehoseService struct {

@@ -27,10 +27,10 @@ import (
 	"unicode/utf8"
 
 	"github.com/docker/docker/client"
-	container "github.com/openorch/openorch/server/internal/services/container/types"
+	container "github.com/1backend/1backend/server/internal/services/container/types"
 	"github.com/pkg/errors"
 
-	"github.com/openorch/openorch/sdk/go/logger"
+	"github.com/1backend/1backend/sdk/go/logger"
 )
 
 func (d *DockerBackend) DaemonInfo(container.DaemonInfoRequest) (*container.DaemonInfoResponse, error) {

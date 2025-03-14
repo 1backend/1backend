@@ -16,8 +16,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	sdk "github.com/openorch/openorch/sdk/go"
-	dynamictypes "github.com/openorch/openorch/server/internal/services/data/types"
+	sdk "github.com/1backend/1backend/sdk/go"
+	dynamictypes "github.com/1backend/1backend/server/internal/services/data/types"
 )
 
 func (g *DataService) CreateMany(

@@ -12,7 +12,7 @@ const docTemplate = `{
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "API Support",
-            "url": "http://openorch.org/",
+            "url": "http://1backend.com/",
             "email": "sales@singulatron.com"
         },
         "license": {
@@ -2057,7 +2057,7 @@ const docTemplate = `{
         },
         "/file-svc/serve/upload/{fileId}": {
             "get": {
-                "description": "Retrieves and serves a previously uploaded file using its File ID.\nNote: The ` + "`" + `ID` + "`" + ` and ` + "`" + `FileID` + "`" + ` fields of an upload are different.\n- ` + "`" + `FileID` + "`" + ` is a unique identifier for the file itself.\n- ` + "`" + `ID` + "`" + ` is a unique identifier for a specific replica of the file.\nSince OpenOrch is a distributed system, files can be replicated across multiple nodes.\nThis means each uploaded file may have multiple records with the same ` + "`" + `FileID` + "`" + ` but different ` + "`" + `ID` + "`" + `s.",
+                "description": "Retrieves and serves a previously uploaded file using its File ID.\nNote: The ` + "`" + `ID` + "`" + ` and ` + "`" + `FileID` + "`" + ` fields of an upload are different.\n- ` + "`" + `FileID` + "`" + ` is a unique identifier for the file itself.\n- ` + "`" + `ID` + "`" + ` is a unique identifier for a specific replica of the file.\nSince 1Backend is a distributed system, files can be replicated across multiple nodes.\nThis means each uploaded file may have multiple records with the same ` + "`" + `FileID` + "`" + ` but different ` + "`" + `ID` + "`" + `s.",
                 "consumes": [
                     "application/json"
                 ],
@@ -7507,7 +7507,7 @@ const docTemplate = `{
                     "example": 10
                 },
                 "modelId": {
-                    "description": "ModelId is just the OpenOrch internal ID of the model.",
+                    "description": "ModelId is just the 1Backend internal ID of the model.",
                     "type": "string",
                     "example": "huggingface/TheBloke/mistral-7b-instruct-v0.2.Q3_K_S.gguf"
                 },
@@ -7592,7 +7592,7 @@ const docTemplate = `{
                     "example": 10
                 },
                 "modelId": {
-                    "description": "ModelId is just the OpenOrch internal ID of the model.",
+                    "description": "ModelId is just the 1Backend internal ID of the model.",
                     "type": "string",
                     "example": "huggingface/TheBloke/mistral-7b-instruct-v0.2.Q3_K_S.gguf"
                 },
@@ -8082,7 +8082,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "deploymentId": {
-                    "description": "The ID of the deployment that this instance is an instance of.\nOnly instances deployed by OpenOrch have a DeploymentId.\nServices can be deployed through other means (Docker Compose, K8s, anything),\nin that case they self-register and will not have a DeploymentId.",
+                    "description": "The ID of the deployment that this instance is an instance of.\nOnly instances deployed by 1Backend have a DeploymentId.\nServices can be deployed through other means (Docker Compose, K8s, anything),\nin that case they self-register and will not have a DeploymentId.",
                     "type": "string",
                     "example": "depl_deBUCtJirc"
                 },
@@ -8111,7 +8111,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "nodeUrl": {
-                    "description": "NodeURL is the URL of the OpenOrch server the instance is running on.\nTo have a NodeURL the instance must either:\n- Be deployed by OpenOrch\n- Declare the OpenOrch server URL when registering its instance",
+                    "description": "NodeURL is the URL of the 1Backend server the instance is running on.\nTo have a NodeURL the instance must either:\n- Be deployed by 1Backend\n- Declare the 1Backend server URL when registering its instance",
                     "type": "string",
                     "example": "https://myserver.com:58231"
                 },
@@ -8131,7 +8131,7 @@ const docTemplate = `{
                     "example": "https"
                 },
                 "slug": {
-                    "description": "Slug of the account that owns this instance\nServices that want to be proxied by their slug are advised to self register\ntheir instance at startup.\nKeep in mind, instances might be deployed by OpenOrch yet they still won't be OpenOrch services\nand they won't have slugs. Think NGINX, MySQL, etc.",
+                    "description": "Slug of the account that owns this instance\nServices that want to be proxied by their slug are advised to self register\ntheir instance at startup.\nKeep in mind, instances might be deployed by 1Backend yet they still won't be 1Backend services\nand they won't have slugs. Think NGINX, MySQL, etc.",
                     "type": "string",
                     "example": "my-svc"
                 },
@@ -8308,7 +8308,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "url": {
-                    "description": "URL of the daemon running on the node.\nIf not configured defaults to hostname + default OpenOrch server port.",
+                    "description": "URL of the daemon running on the node.\nIf not configured defaults to hostname + default 1Backend server port.",
                     "type": "string"
                 },
                 "usage": {
@@ -8441,7 +8441,7 @@ const docTemplate = `{
                 "url": {
                     "description": "URL is the URL to the repository",
                     "type": "string",
-                    "example": "https://github.com/openorch/openorch.git"
+                    "example": "https://github.com/1backend/1backend.git"
                 },
                 "version": {
                     "description": "Version of the code to use",
@@ -9055,7 +9055,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
-                    "description": "The unique identifier, which can be a URL.\n\nExample values: \"joe12\" (openorch username), \"twitter.com/thejoe\" (twitter url), \"joe@joesdomain.com\" (email)",
+                    "description": "The unique identifier, which can be a URL.\n\nExample values: \"joe12\" (1backend username), \"twitter.com/thejoe\" (twitter url), \"joe@joesdomain.com\" (email)",
                     "type": "string",
                     "example": "twitter.com/thejoe"
                 },
@@ -9075,7 +9075,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "value": {
-                    "description": "Value is the platform local unique identifier.\nIe. while the ` + "`" + `id` + "`" + ` of a Twitter contact is ` + "`" + `twitter.com/thejoe` + "`" + `, the value will be only ` + "`" + `thejoe` + "`" + `.\nFor email and phones the ` + "`" + `id` + "`" + ` and the ` + "`" + `value` + "`" + ` will be the same.\nThis field mostly exists for display purposes.\n\nExample values: \"joe12\" (openorch username), \"thejoe\" (twitter username), \"joe@joesdomain.com\" (email)",
+                    "description": "Value is the platform local unique identifier.\nIe. while the ` + "`" + `id` + "`" + ` of a Twitter contact is ` + "`" + `twitter.com/thejoe` + "`" + `, the value will be only ` + "`" + `thejoe` + "`" + `.\nFor email and phones the ` + "`" + `id` + "`" + ` and the ` + "`" + `value` + "`" + ` will be the same.\nThis field mostly exists for display purposes.\n\nExample values: \"joe12\" (1backend username), \"thejoe\" (twitter username), \"joe@joesdomain.com\" (email)",
                     "type": "string",
                     "example": "thejoe"
                 },
@@ -9574,8 +9574,8 @@ const docTemplate = `{
         }
     },
     "externalDocs": {
-        "description": "OpenOrch API",
-        "url": "https://openorch.org/docs/category/openorch-api"
+        "description": "1Backend API",
+        "url": "https://1backend.com/docs/category/1backend-api"
     }
 }`
 
@@ -9585,7 +9585,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:58231",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "OpenOrch",
+	Title:            "1Backend",
 	Description:      "A language-agnostic microservices framework for building AI applications.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

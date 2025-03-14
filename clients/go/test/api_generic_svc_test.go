@@ -1,5 +1,5 @@
 /*
-OpenOrch
+1Backend
 
 Testing GenericSvcAPIService
 
@@ -13,7 +13,7 @@ import (
 	"context"
 	"testing"
 
-	openapiclient "github.com/openorch/openorch/clients/go"
+	openapiclient "github.com/1backend/1backend/clients/go"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

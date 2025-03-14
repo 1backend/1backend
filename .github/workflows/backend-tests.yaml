@@ -1,4 +1,4 @@
-name: "OpenOrch backend tests"
+name: "1Backend backend tests"
 
 on:
   push:

@@ -21,7 +21,7 @@ import {
 	PromptSvcListPromptsRequest,
 	PromptSvcListPromptsResponse,
 	PromptSvcStreamChunk,
-} from '@openorch/client';
+} from '@1backend/client';
 
 @Injectable({
 	providedIn: 'root',

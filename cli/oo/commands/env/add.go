@@ -3,8 +3,8 @@ package env
 import (
 	"fmt"
 
-	"github.com/openorch/openorch/cli/oo/config"
-	"github.com/openorch/openorch/cli/oo/types"
+	"github.com/1backend/1backend/cli/oo/config"
+	"github.com/1backend/1backend/cli/oo/types"
 	"github.com/spf13/cobra"
 )
 

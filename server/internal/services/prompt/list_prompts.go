@@ -15,8 +15,8 @@ package promptservice
 import (
 	"encoding/json"
 
-	"github.com/openorch/openorch/sdk/go/datastore"
-	prompttypes "github.com/openorch/openorch/server/internal/services/prompt/types"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	prompttypes "github.com/1backend/1backend/server/internal/services/prompt/types"
 )
 
 func (p *PromptService) listPrompts(

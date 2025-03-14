@@ -11,10 +11,10 @@ package secretservice
 import (
 	"context"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	secrettypes "github.com/openorch/openorch/server/internal/services/secret/types"
-	usertypes "github.com/openorch/openorch/server/internal/services/user/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	secrettypes "github.com/1backend/1backend/server/internal/services/secret/types"
+	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 func (p *SecretService) registerPermissions() error {

@@ -28,11 +28,11 @@ import { PromptService } from '../../services/prompt.service';
 import {
 	PromptSvcPrompt as Prompt,
 	PromptSvcStreamChunkType as ChunkType,
-} from '@openorch/client';
+} from '@1backend/client';
 import {
 	ChatSvcThread as Thread,
 	ChatSvcMessage as Message,
-} from '@openorch/client';
+} from '@1backend/client';
 import { ElectronAppService } from '../../services/electron-app.service';
 
 import { FormsModule } from '@angular/forms';

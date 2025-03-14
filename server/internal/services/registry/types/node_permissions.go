@@ -9,7 +9,7 @@
 package registry_svc
 
 import (
-	openapi "github.com/openorch/openorch/clients/go"
+	openapi "github.com/1backend/1backend/clients/go"
 )
 
 var PermissionNodeCreate = openapi.UserSvcPermission{

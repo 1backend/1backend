@@ -11,9 +11,9 @@ package allocator_test
 import (
 	"testing"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	"github.com/openorch/openorch/server/internal/services/deploy/allocator"
-	deploy "github.com/openorch/openorch/server/internal/services/deploy/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	"github.com/1backend/1backend/server/internal/services/deploy/allocator"
+	deploy "github.com/1backend/1backend/server/internal/services/deploy/types"
 	"github.com/stretchr/testify/require"
 )
 

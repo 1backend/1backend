@@ -17,7 +17,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	user "github.com/openorch/openorch/server/internal/services/user/types"
+	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 // @ID saveUser

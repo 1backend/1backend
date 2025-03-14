@@ -16,9 +16,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	secret "github.com/openorch/openorch/server/internal/services/secret/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	secret "github.com/1backend/1backend/server/internal/services/secret/types"
 )
 
 // @Id decryptValue

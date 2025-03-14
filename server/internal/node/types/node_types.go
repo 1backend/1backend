@@ -7,13 +7,13 @@
  */
 package node_types
 
-import sdk "github.com/openorch/openorch/sdk/go"
+import sdk "github.com/1backend/1backend/sdk/go"
 
 type Options struct {
 	Port        int
 	GpuPlatform string
 
-	// OpenOrch Server Address
+	// 1Backend Server Address
 	// Crucial for distributed features.
 	// Please see the documentation for the envar OPENORCH_URL
 	Address string

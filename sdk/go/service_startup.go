@@ -3,9 +3,9 @@ package sdk
 import (
 	"context"
 
-	"github.com/openorch/openorch/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/datastore"
 
-	client "github.com/openorch/openorch/clients/go"
+	client "github.com/1backend/1backend/clients/go"
 )
 
 func RegisterServiceAccount(userService client.UserSvcAPI, serviceSlug, serviceName string, store datastore.DataStore) (string, error) {

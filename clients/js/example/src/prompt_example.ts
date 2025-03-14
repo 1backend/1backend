@@ -3,7 +3,7 @@ import {
   PromptSvcApi,
   ModelSvcApi,
   FileSvcApi,
-} from "@openorch/client";
+} from "@1backend/client";
 
 const tinyLamaModelId = `huggingface/TheBloke/tinyllama-1.1b-chat-v1.0.Q4_K_S.gguf`;
 const tinyLamaAssetURL = `https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q4_K_S.gguf?download=true`;

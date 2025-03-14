@@ -3,7 +3,7 @@ import { UserService } from '../../services/user.service';
 import {
 	UserSvcRole as Role,
 	UserSvcPermission as Permission,
-} from '@openorch/client';
+} from '@1backend/client';
 import { first } from 'rxjs';
 import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';

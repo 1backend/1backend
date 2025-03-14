@@ -18,8 +18,8 @@ import (
 	"net/http"
 	"strings"
 
-	sdk "github.com/openorch/openorch/sdk/go"
-	data "github.com/openorch/openorch/server/internal/services/data/types"
+	sdk "github.com/1backend/1backend/sdk/go"
+	data "github.com/1backend/1backend/server/internal/services/data/types"
 )
 
 // @ID createObject

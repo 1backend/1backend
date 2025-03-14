@@ -7,7 +7,7 @@
  */
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { UserService } from '../services/user.service';
-import { UserSvcLoginResponse as LoginResponse } from '@openorch/client';
+import { UserSvcLoginResponse as LoginResponse } from '@1backend/client';
 import {
 	ToastController,
 	IonCard,

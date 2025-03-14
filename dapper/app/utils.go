@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"strings"
 
-	dt "github.com/openorch/openorch/dapper/types"
+	dt "github.com/1backend/1backend/dapper/types"
 )
 
 func (cm ConfigurationManager) flatDefinitionsOfInvokedFunctions(featureInvocations []any) ([]dt.Feature, error) {

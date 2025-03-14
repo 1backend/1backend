@@ -18,7 +18,7 @@
 					<span *ngIf="message.userId">{{
 						(userService.getUser(message.userId) | async)?.name || 'User'
 						}}</span>
-					<span *ngIf="!message.userId">OpenOrch </span>
+					<span *ngIf="!message.userId">1Backend </span>
 				</span>
 				<span title="{{ message.createdAt | date: 'EEEE h:mm a, M/d/yyyy' }}" class="time"
 					style="margin-left: 0.5rem; color: #999">
@@ -54,7 +54,7 @@
 			<div style="font-size: 1rem">
 				<div style="color: #3c70ad">
 					<span *ngIf="message.userId">You</span>
-					<span *ngIf="!message.userId">OpenOrch</span>
+					<span *ngIf="!message.userId">1Backend</span>
 				</div>
 				<div title="{{ message.createdAt | date: 'EEEE h:mm a, M/d/yyyy' }}" class="time" style="color: #999">
 					{{ message.createdAt | date: 'EEEE h:mm a' }}

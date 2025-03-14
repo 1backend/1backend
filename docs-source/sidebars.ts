@@ -18,16 +18,16 @@ const sidebars: SidebarsConfig = {
   openApiSidebar: [
     {
       type: "category",
-      label: "OpenOrch",
+      label: "1Backend",
       link: {
         type: "generated-index",
-        title: "OpenOrch API",
+        title: "1Backend API",
         description:
-          "API documentation for the batteries that are included with your OpenOrch installation.",
-        slug: "/category/openorch-api",
+          "API documentation for the batteries that are included with your 1Backend installation.",
+        slug: "/category/1backend-api",
       },
       // @ts-ignore
-      items: require("./docs/openorch/sidebar.js"),
+      items: require("./docs/1backend/sidebar.js"),
     },
   ],
 

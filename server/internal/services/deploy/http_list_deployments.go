@@ -16,8 +16,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	sdk "github.com/openorch/openorch/sdk/go"
-	deploy "github.com/openorch/openorch/server/internal/services/deploy/types"
+	sdk "github.com/1backend/1backend/sdk/go"
+	deploy "github.com/1backend/1backend/server/internal/services/deploy/types"
 )
 
 // @ID listDeployments

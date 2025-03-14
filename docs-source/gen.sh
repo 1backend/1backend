@@ -26,13 +26,13 @@ swag init --parseDependency
 
 # Copy Swagger file to docs-source examples
 echo "Copying Swagger file to $EXAMPLES_DIR"
-cp "$SWAGGER_FILE" "$EXAMPLES_DIR/openorch.yaml"
+cp "$SWAGGER_FILE" "$EXAMPLES_DIR/1backend.yaml"
 
 # Clean and generate API documentation
 echo "Cleaning and generating API documentation"
 cd "$DOCS_SOURCE_DIR"
-yarn clean-api-docs openorch
-yarn gen-api-docs openorch
+yarn clean-api-docs 1backend
+yarn gen-api-docs 1backend
 
 # Build the project
 echo "Building the project"

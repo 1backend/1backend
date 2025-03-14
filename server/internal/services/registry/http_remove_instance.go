@@ -4,10 +4,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	registry "github.com/openorch/openorch/server/internal/services/registry/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	registry "github.com/1backend/1backend/server/internal/services/registry/types"
 )
 
 // @ID removeInstance

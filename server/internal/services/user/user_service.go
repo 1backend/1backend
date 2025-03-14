@@ -16,10 +16,10 @@ import (
 	"crypto/rsa"
 	"time"
 
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/datastore"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/datastore"
 
-	usertypes "github.com/openorch/openorch/server/internal/services/user/types"
+	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 type UserService struct {
@@ -229,18 +229,18 @@ func (s *UserService) bootstrap() error {
 	}
 
 	// Bootstrapping the admin user. Instead of inefficient role-based queries,
-	// we enforce the existence of an admin account with the slug "openorch".
+	// we enforce the existence of an admin account with the slug "1backend".
 	// If absent, it's created with a default password, which should be updated for security.
 
 	count, err := s.usersStore.Query(
-		datastore.Equals([]string{"slug"}, "openorch"),
+		datastore.Equals([]string{"slug"}, "1backend"),
 	).Count()
 	if err != nil {
 		return err
 	}
 
 	if count == 0 {
-		_, err = s.register("openorch", "changeme", "Admin", []string{
+		_, err = s.register("1backend", "changeme", "Admin", []string{
 			usertypes.RoleAdmin.Id,
 		})
 		if err != nil {

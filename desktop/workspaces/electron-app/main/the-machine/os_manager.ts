@@ -28,7 +28,7 @@ export class OSManager {
 		});
 
 		// @todo fix path, config service is now in server
-		this.logFilePath = path.join(os.homedir(), 'openorch_install.log');
+		this.logFilePath = path.join(os.homedir(), '1backend_install.log');
 
 		this.initLogFile();
 
@@ -96,7 +96,7 @@ export class OSManager {
 			sudo.exec(
 				command,
 				{
-					name: 'OpenOrch Environment Setup',
+					name: '1Backend Environment Setup',
 					icns: getIconPath(this.assetFolder),
 				},
 				(error, stdout, stderr) => {

@@ -1,5 +1,5 @@
 /*
-OpenOrch
+1Backend
 
 Testing EmailSvcAPIService
 
@@ -11,10 +11,11 @@ package openapi
 
 import (
 	"context"
+	"testing"
+
+	openapiclient "github.com/1backend/1backend/clients/go"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
-	openapiclient "github.com/openorch/openorch/clients/go"
 )
 
 func Test_openapi_EmailSvcAPIService(t *testing.T) {
@@ -24,7 +25,7 @@ func Test_openapi_EmailSvcAPIService(t *testing.T) {
 
 	t.Run("Test EmailSvcAPIService SendEmail", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.EmailSvcAPI.SendEmail(context.Background()).Execute()
 

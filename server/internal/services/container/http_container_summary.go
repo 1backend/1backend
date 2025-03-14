@@ -17,9 +17,9 @@ import (
 	"net/http"
 	"strconv"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	container "github.com/openorch/openorch/server/internal/services/container/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	container "github.com/1backend/1backend/server/internal/services/container/types"
 )
 
 // @ID containerSummary

@@ -17,12 +17,12 @@ import (
 	"fmt"
 	"log/slog"
 
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/logger"
+	downloadtypes "github.com/1backend/1backend/server/internal/services/file/types"
+	modeltypes "github.com/1backend/1backend/server/internal/services/model/types"
 	"github.com/flusflas/dipper"
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	"github.com/openorch/openorch/sdk/go/logger"
-	downloadtypes "github.com/openorch/openorch/server/internal/services/file/types"
-	modeltypes "github.com/openorch/openorch/server/internal/services/model/types"
 	"github.com/pkg/errors"
 )
 
@@ -37,9 +37,9 @@ func (ms *ModelService) status(
 	}
 
 	dockerHost := hostRsp.Host
-	openorchLLMHost := ms.llmHost
-	if openorchLLMHost != "" {
-		dockerHost = openorchLLMHost
+
+	if ms.llmHost != "" {
+		dockerHost = ms.llmHost
 	}
 
 	modelAddress := fmt.Sprintf("%v:%v", dockerHost, hostPortNum)

@@ -1,4 +1,4 @@
-name: "OpenOrch frontend Docker build"
+name: "1Backend frontend Docker build"
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-  IMAGE_NAME: "openorch-frontend"
+  IMAGE_NAME: "1backend-frontend"
 
 jobs:
   build-and-push:

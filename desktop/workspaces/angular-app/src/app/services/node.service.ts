@@ -11,7 +11,7 @@ import {
 	RegistrySvcApi,
 	RegistrySvcListNodesResponse,
 	Configuration,
-} from '@openorch/client';
+} from '@1backend/client';
 import { UserService } from './user.service';
 import { first } from 'rxjs';
 

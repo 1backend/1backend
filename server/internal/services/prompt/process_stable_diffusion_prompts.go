@@ -20,12 +20,12 @@ import (
 
 	"github.com/pkg/errors"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/clients/stable_diffusion"
-	"github.com/openorch/openorch/sdk/go/logger"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/clients/stable_diffusion"
+	"github.com/1backend/1backend/sdk/go/logger"
 
-	prompttypes "github.com/openorch/openorch/server/internal/services/prompt/types"
+	prompttypes "github.com/1backend/1backend/server/internal/services/prompt/types"
 )
 
 func (p *PromptService) processStableDiffusion(

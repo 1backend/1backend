@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	sdk "github.com/openorch/openorch/sdk/go"
-	policy "github.com/openorch/openorch/server/internal/services/policy/types"
+	sdk "github.com/1backend/1backend/sdk/go"
+	policy "github.com/1backend/1backend/server/internal/services/policy/types"
 )
 
 // @ID upsertInstance

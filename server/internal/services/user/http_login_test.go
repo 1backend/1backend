@@ -8,11 +8,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/test"
-	"github.com/openorch/openorch/server/internal/di"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/test"
+	"github.com/1backend/1backend/server/internal/di"
 
-	clients "github.com/openorch/openorch/clients/go"
+	clients "github.com/1backend/1backend/clients/go"
 )
 
 func TestRegistration(t *testing.T) {
@@ -51,13 +51,13 @@ func TestRegistration(t *testing.T) {
 			Execute()
 		require.NoError(t, err)
 
-		require.Equal(t, "openorch", *byTokenRsp.User.Slug)
+		require.Equal(t, "1backend", *byTokenRsp.User.Slug)
 		require.True(t, nil == byTokenRsp.User.PasswordHash)
 
 		require.Equal(t, &claim.UserId, byTokenRsp.User.Id)
 
 		changePassReq := clients.UserSvcChangePasswordRequest{
-			Slug:            clients.PtrString("openorch"),
+			Slug:            clients.PtrString("1backend"),
 			CurrentPassword: clients.PtrString("changeme"),
 			NewPassword:     clients.PtrString("yo"),
 		}
@@ -135,7 +135,7 @@ func TestOrganization(t *testing.T) {
 			require.Equal(t, 1, len(claim.RoleIds), claim.RoleIds)
 
 			loginReq := clients.UserSvcLoginRequest{
-				Slug:     clients.PtrString("openorch"),
+				Slug:     clients.PtrString("1backend"),
 				Password: clients.PtrString("changeme"),
 			}
 			loginRsp, _, err := adminClient.UserSvcAPI.Login(context.Background()).

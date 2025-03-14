@@ -17,9 +17,9 @@ import (
 	"net/http"
 	"path"
 
-	config "github.com/openorch/openorch/server/internal/services/config/types"
-	types "github.com/openorch/openorch/server/internal/services/config/types"
-	modelservice "github.com/openorch/openorch/server/internal/services/model"
+	config "github.com/1backend/1backend/server/internal/services/config/types"
+	types "github.com/1backend/1backend/server/internal/services/config/types"
+	modelservice "github.com/1backend/1backend/server/internal/services/model"
 	"github.com/pkg/errors"
 )
 

@@ -19,22 +19,22 @@ import (
 	"os"
 	"time"
 
-	"github.com/openorch/openorch/sdk/go/logger"
-	"github.com/openorch/openorch/sdk/go/router"
-	_ "github.com/openorch/openorch/server/docs"
-	"github.com/openorch/openorch/server/internal/node"
-	node_types "github.com/openorch/openorch/server/internal/node/types"
+	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/1backend/1backend/sdk/go/router"
+	_ "github.com/1backend/1backend/server/docs"
+	"github.com/1backend/1backend/server/internal/node"
+	node_types "github.com/1backend/1backend/server/internal/node/types"
 )
 
 var port = router.GetPort()
 
-// @title           OpenOrch
+// @title           1Backend
 // @version         0.3.0-rc.29
 // @description     A language-agnostic microservices framework for building AI applications.
 // @termsOfService  http://swagger.io/terms/
 
 // @contact.name   API Support
-// @contact.url    http://openorch.org/
+// @contact.url    http://1backend.com/
 // @contact.email  sales@singulatron.com
 
 // @license.name  AGPL v3.0
@@ -48,8 +48,8 @@ var port = router.GetPort()
 // @name Authorization
 // @description Type "Bearer" followed by a space and token acquired from the User Svc Login endpoint.
 
-// @externalDocs.description  OpenOrch API
-// @externalDocs.url          https://openorch.org/docs/category/openorch-api
+// @externalDocs.description  1Backend API
+// @externalDocs.url          https://1backend.com/docs/category/1backend-api
 func main() {
 	nodeInfo, err := node.Start(&node_types.Options{})
 	if err != nil {

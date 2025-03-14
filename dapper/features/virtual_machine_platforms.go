@@ -7,7 +7,7 @@
  */
 package features
 
-import dt "github.com/openorch/openorch/dapper/types"
+import dt "github.com/1backend/1backend/dapper/types"
 
 var VirtualMachinePlatformFeature = dt.Feature{
 	ID:   "virtual-machine-platform-enabled",

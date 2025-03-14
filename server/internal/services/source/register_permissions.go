@@ -11,11 +11,11 @@ package sourceservice
 import (
 	"context"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	usertypes "github.com/openorch/openorch/server/internal/services/user/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 
-	sourcetypes "github.com/openorch/openorch/server/internal/services/source/types"
+	sourcetypes "github.com/1backend/1backend/server/internal/services/source/types"
 )
 
 func (ns *SourceService) registerPermissions() error {

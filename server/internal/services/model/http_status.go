@@ -18,9 +18,9 @@ import (
 	"net/url"
 
 	"github.com/gorilla/mux"
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	model "github.com/openorch/openorch/server/internal/services/model/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	model "github.com/1backend/1backend/server/internal/services/model/types"
 )
 
 // @ID getModelStatus

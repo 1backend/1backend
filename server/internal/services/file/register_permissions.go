@@ -15,10 +15,10 @@ package fileservice
 import (
 	"context"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	filetypes "github.com/openorch/openorch/server/internal/services/file/types"
-	usertypes "github.com/openorch/openorch/server/internal/services/user/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	filetypes "github.com/1backend/1backend/server/internal/services/file/types"
+	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 func (fs *FileService) registerPermissions() error {

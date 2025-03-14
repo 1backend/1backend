@@ -7,8 +7,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	"github.com/openorch/openorch/server/internal/di"
+	openapi "github.com/1backend/1backend/clients/go"
+	"github.com/1backend/1backend/server/internal/di"
 )
 
 func TestRegister(t *testing.T) {

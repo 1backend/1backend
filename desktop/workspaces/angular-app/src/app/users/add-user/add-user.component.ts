@@ -14,7 +14,7 @@ import {
 	ReactiveFormsModule,
 } from '@angular/forms';
 import { UserService } from '../../services/user.service';
-import { UserSvcUser as User, UserSvcRole as Role } from '@openorch/client';
+import { UserSvcUser as User, UserSvcRole as Role } from '@1backend/client';
 import { first } from 'rxjs';
 import {
 	ToastController,

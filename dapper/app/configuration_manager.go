@@ -13,8 +13,8 @@ import (
 	"path"
 	"runtime"
 
-	features "github.com/openorch/openorch/dapper/features"
-	dt "github.com/openorch/openorch/dapper/types"
+	features "github.com/1backend/1backend/dapper/features"
+	dt "github.com/1backend/1backend/dapper/types"
 )
 
 // ConfigurationManager manages configurations and feature dependencies.

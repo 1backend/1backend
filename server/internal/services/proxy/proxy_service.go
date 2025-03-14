@@ -22,11 +22,11 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/exp/rand"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	"github.com/openorch/openorch/sdk/go/lock"
-	"github.com/openorch/openorch/sdk/go/logger"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/lock"
+	"github.com/1backend/1backend/sdk/go/logger"
 )
 
 type ProxyService struct {

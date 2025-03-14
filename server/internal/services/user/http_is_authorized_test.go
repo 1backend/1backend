@@ -7,11 +7,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/test"
-	"github.com/openorch/openorch/server/internal/di"
-	user_svc "github.com/openorch/openorch/server/internal/services/user/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/test"
+	"github.com/1backend/1backend/server/internal/di"
+	user_svc "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 func TestGrants(t *testing.T) {

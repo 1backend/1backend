@@ -5,6 +5,6 @@ stable-diffusion-webui-docker](https://github.com/AbdBarho/stable-diffusion-webu
 
 ## simple
 
-The simple folder version used by OpenOrch by the image name `crufter/stable-diffusion-simple`.
+The simple folder version used by 1Backend by the image name `crufter/stable-diffusion-simple`.
 
 It is aimed to run on any platform.

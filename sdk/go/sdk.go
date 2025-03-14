@@ -11,13 +11,13 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sony/sonyflake"
 
-	openapi "github.com/openorch/openorch/clients/go"
+	openapi "github.com/1backend/1backend/clients/go"
 )
 
 type Claims struct {
-	UserId  string   `json:"oui"` // `sui`: openorch user ids
-	Slug    string   `json:"olu"` // `slu`: openorch slug
-	RoleIds []string `json:"ori"` // `sri`: openorch role ids
+	UserId  string   `json:"oui"` // `sui`: 1backend user ids
+	Slug    string   `json:"olu"` // `slu`: 1backend slug
+	RoleIds []string `json:"ori"` // `sri`: 1backend role ids
 	jwt.RegisteredClaims
 }
 

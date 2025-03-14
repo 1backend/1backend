@@ -3,8 +3,8 @@ package secret
 import (
 	"fmt"
 
-	"github.com/openorch/openorch/cli/oo/config"
-	sdk "github.com/openorch/openorch/sdk/go"
+	"github.com/1backend/1backend/cli/oo/config"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )

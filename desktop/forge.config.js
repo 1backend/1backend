@@ -7,7 +7,7 @@
  */
 module.exports = {
 	packagerConfig: {
-		name: 'OpenOrch',
+		name: '1Backend',
 		executableName: 'singulatron',
 		icon: './workspaces/electron-app/main/assets/icons/icon.png',
 	},

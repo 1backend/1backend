@@ -23,12 +23,12 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/clients/llamacpp"
-	"github.com/openorch/openorch/sdk/go/test"
-	"github.com/openorch/openorch/server/internal/di"
-	modeltypes "github.com/openorch/openorch/server/internal/services/model/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/clients/llamacpp"
+	"github.com/1backend/1backend/sdk/go/test"
+	"github.com/1backend/1backend/server/internal/di"
+	modeltypes "github.com/1backend/1backend/server/internal/services/model/types"
 	"go.uber.org/mock/gomock"
 )
 

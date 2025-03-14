@@ -25,7 +25,7 @@ import {
 	DataSvcUpsertObjectResponse,
 	// DataSvcDeleteObjectRequest as DeleteObjectRequest,
 	// DataSvcDeleteObjectResponse as DeleteObjectResponse,
-} from '@openorch/client';
+} from '@1backend/client';
 
 @Injectable({
 	providedIn: 'root',

@@ -1,5 +1,5 @@
 /**
- * OpenOrch
+ * 1Backend
  * A language-agnostic microservices framework for building AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
@@ -49,7 +49,7 @@ export interface RegistrySvcNode {
     region?: string;
     /**
      * URL of the daemon running on the node.
-     * If not configured defaults to hostname + default OpenOrch server port.
+     * If not configured defaults to hostname + default 1Backend server port.
      * @type {string}
      * @memberof RegistrySvcNode
      */

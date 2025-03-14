@@ -24,7 +24,7 @@ import {
 	Configuration,
 	FileSvcDownload as Download,
 	FileSvcDownloadsResponse,
-} from '@openorch/client';
+} from '@1backend/client';
 
 export interface FileSvcConfig {
 	downloadFolder: string;

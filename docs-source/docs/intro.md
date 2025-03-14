@@ -4,11 +4,11 @@ tags:
   - intro
 ---
 
-# Welcome to OpenOrch
+# Welcome to 1Backend
 
-OpenOrch transforms your servers into a powerful development environment. It can run AI models, containers, and microservices.
+1Backend transforms your servers into a powerful development environment. It can run AI models, containers, and microservices.
 
-Whether you're deploying AI or building microservices, OpenOrch is your one-stop shop for creating and managing applications, all while keeping full control over your infrastructure and data.
+Whether you're deploying AI or building microservices, 1Backend is your one-stop shop for creating and managing applications, all while keeping full control over your infrastructure and data.
 
 ## Running the server
 
@@ -20,7 +20,7 @@ For a quick overview about what the system is capable, read through the [Built-i
 
 ## Building your services
 
-To build and run your own services on OpenOrch, see [Your First Service](/docs/writing-custom-services/your-first-service)
+To build and run your own services on 1Backend, see [Your First Service](/docs/writing-custom-services/your-first-service)
 
 ## Privacy notice
 

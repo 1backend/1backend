@@ -19,7 +19,7 @@ const FeatureList = [
     Svg: require("@site/static/img/undraw_docusaurus_tree.svg").default,
     description: (
       <>
-        Built on Docker and other container engines, OpenOrch streamlines
+        Built on Docker and other container engines, 1Backend streamlines
         the deployment of AI models and microservices, keeping things efficient
         and scalable.
       </>
@@ -30,7 +30,7 @@ const FeatureList = [
     Svg: require("@site/static/img/undraw_docusaurus_react.svg").default,
     description: (
       <>
-        Use what works for you. OpenOrch is designed for flexibility,
+        Use what works for you. 1Backend is designed for flexibility,
         giving you the freedom to adopt or rewrite components to suit your
         needs.
       </>

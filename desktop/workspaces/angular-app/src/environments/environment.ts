@@ -1,6 +1,6 @@
 export const environment = {
 	production: false,
-	brandName: 'OpenOrch',
+	brandName: '1Backend',
 	shortBrandName: 'OO',
 	// Don't forget to change this when trying to USB debug/accessing this from local network.
 	// Find the address of your laptop with `ifconfig` or the respective tool and change:

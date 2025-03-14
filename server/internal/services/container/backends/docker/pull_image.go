@@ -22,9 +22,9 @@ import (
 	"strconv"
 	"sync"
 
+	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/docker/docker/api/types/image"
 	"github.com/docker/docker/client"
-	"github.com/openorch/openorch/sdk/go/logger"
 	"github.com/pkg/errors"
 )
 
@@ -89,7 +89,7 @@ type PullStatus struct {
 	Progress string `json:"progress"`
 	ID       string `json:"id"`
 
-	// Fields set by OpenOrch
+	// Fields set by 1Backend
 
 	ImageName string
 }

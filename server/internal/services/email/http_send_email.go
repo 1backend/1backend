@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"time"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	email "github.com/openorch/openorch/server/internal/services/email/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	email "github.com/1backend/1backend/server/internal/services/email/types"
 	"github.com/pkg/errors"
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"

@@ -16,9 +16,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	secret "github.com/openorch/openorch/server/internal/services/secret/types"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	secret "github.com/1backend/1backend/server/internal/services/secret/types"
 	"github.com/pkg/errors"
 )
 

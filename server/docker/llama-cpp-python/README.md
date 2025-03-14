@@ -15,6 +15,6 @@ Aimed to run on any platform, uses the CPU+GPU..
 
 ## cuda
 
-The cuda folder version is used by OpenOrch (see the `OPENORCH_GPU_PLATFORM` on the [Server envars page](https://openorch.org/docs/running-the-server/backend-environment-variables)).
+The cuda folder version is used by 1Backend (see the `OPENORCH_GPU_PLATFORM` on the [Server envars page](https://1backend.com/docs/running-the-server/backend-environment-variables)).
 
 It is designed to run on multiple GPUs with CUDA support.

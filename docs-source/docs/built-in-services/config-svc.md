@@ -10,7 +10,7 @@ tags:
 
 The Config Svc stores public, non-sensitive and end-user-facing data.
 
-> This page provides a high-level overview of `Config Svc`. For detailed information, refer to the [Secret Svc API documentation](/docs/openorch/get-config).
+> This page provides a high-level overview of `Config Svc`. For detailed information, refer to the [Secret Svc API documentation](/docs/1backend/get-config).
 
 The Config Svc is less critical than it might seem—most configuration happens internally through the [Secret Svc](/docs/built-in-services/secret-svc).
 

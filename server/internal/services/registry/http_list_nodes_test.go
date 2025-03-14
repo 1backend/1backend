@@ -9,11 +9,11 @@ import (
 	"strings"
 	"testing"
 
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/test"
-	"github.com/openorch/openorch/server/internal/di"
-	"github.com/openorch/openorch/server/internal/node"
-	node_types "github.com/openorch/openorch/server/internal/node/types"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/test"
+	"github.com/1backend/1backend/server/internal/di"
+	"github.com/1backend/1backend/server/internal/node"
+	node_types "github.com/1backend/1backend/server/internal/node/types"
 	"github.com/stretchr/testify/require"
 )
 

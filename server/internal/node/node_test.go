@@ -10,11 +10,11 @@ import (
 	"testing"
 	"time"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/test"
-	"github.com/openorch/openorch/server/internal/di"
-	node_types "github.com/openorch/openorch/server/internal/node/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/test"
+	"github.com/1backend/1backend/server/internal/di"
+	node_types "github.com/1backend/1backend/server/internal/node/types"
 	"github.com/stretchr/testify/require"
 )
 

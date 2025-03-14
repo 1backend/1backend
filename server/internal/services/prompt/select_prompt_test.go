@@ -16,11 +16,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/openorch/openorch/sdk/go/datastore"
-	"github.com/openorch/openorch/sdk/go/datastore/localstore"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/datastore/localstore"
 
-	promptservice "github.com/openorch/openorch/server/internal/services/prompt"
-	prompttypes "github.com/openorch/openorch/server/internal/services/prompt/types"
+	promptservice "github.com/1backend/1backend/server/internal/services/prompt"
+	prompttypes "github.com/1backend/1backend/server/internal/services/prompt/types"
 	"github.com/stretchr/testify/require"
 )
 

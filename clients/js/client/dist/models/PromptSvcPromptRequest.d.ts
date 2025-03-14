@@ -1,5 +1,5 @@
 /**
- * OpenOrch
+ * 1Backend
  * A language-agnostic microservices framework for building AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
@@ -36,7 +36,7 @@ export interface PromptSvcPromptRequest {
      */
     maxRetries?: number;
     /**
-     * ModelId is just the OpenOrch internal ID of the model.
+     * ModelId is just the 1Backend internal ID of the model.
      * @type {string}
      * @memberof PromptSvcPromptRequest
      */

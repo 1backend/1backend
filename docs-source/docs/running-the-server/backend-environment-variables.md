@@ -12,11 +12,11 @@ tags:
 
 ## `OPENORCH_URL`
 
-The OPENORCH_URL is the internally addressable (non-public-facing) URL of an OpenOrch server. It should point to the local OpenOrch instance on each physical node. Ideally, every node should have its own OpenOrch instance.
+The OPENORCH_URL is the internally addressable (non-public-facing) URL of an 1Backend server. It should point to the local 1Backend instance on each physical node. Ideally, every node should have its own 1Backend instance.
 
 This local address serves two purposes:
 
-- It acts as the "self address" for the OpenOrch server when calling built-in services (though it can default to 127.0.0.1).
+- It acts as the "self address" for the 1Backend server when calling built-in services (though it can default to 127.0.0.1).
 - It is also used by custom services when registering themselves, among other tasks.
 
 ## `OPENORCH_NODE_ID`
@@ -34,57 +34,57 @@ Do not set this if your card doesn't support the given architecture or things wi
 
 ## `OPENORCH_VOLUME_NAME`
 
-**This flag is typically unnecessary since OpenOrch automatically detects the volume that is bound to `/root/.openorch`. Use it only as a corrective action.**
+**This flag is typically unnecessary since 1Backend automatically detects the volume that is bound to `/root/.1backend`. Use it only as a corrective action.**
 
-This envar is needed when OpenOrch runs as a container next to containers it starts:
+This envar is needed when 1Backend runs as a container next to containers it starts:
 
 ```sh
 Host
  |
- |-> OpenOrch Container
- |-> Container Launched By OpenOrch
+ |-> 1Backend Container
+ |-> Container Launched By 1Backend
 ```
 
-For the containers like `llama-cpp` to be able to read the models downloaded by OpenOrch we they must both mount the same docker volume.
+For the containers like `llama-cpp` to be able to read the models downloaded by 1Backend we they must both mount the same docker volume.
 
 An example of this can be seen in the root `docker-compose.yaml` file: `OPENORCH_VOLUME_NAME=singulatron-data`.
 
 So cycle goes like this:
 
-- OpenOrch container writes to `/root/.openorch`, which is mounted to the volume `singulatron-data`
-- Assets (which are basically downloaded files) will be passed to containers created by OpenOrch by mounting files in `singulatron-data`.
+- 1Backend container writes to `/root/.1backend`, which is mounted to the volume `singulatron-data`
+- Assets (which are basically downloaded files) will be passed to containers created by 1Backend by mounting files in `singulatron-data`.
 
 ## `OPENORCH_LLM_HOST`
 
-**This flag is typically unnecessary since OpenOrch retrieves the IP of the Docker bridge. Use it only as a corrective action.**
+**This flag is typically unnecessary since 1Backend retrieves the IP of the Docker bridge. Use it only as a corrective action.**
 
-When OpenOrch is running in a container, it needs to know how to address its siblings (other containers it started):
+When 1Backend is running in a container, it needs to know how to address its siblings (other containers it started):
 
 ```sh
 Host
  |
- |-> OpenOrch Container
- |-> Container Launched By OpenOrch
+ |-> 1Backend Container
+ |-> Container Launched By 1Backend
 ```
 
-The `OpenOrch Container` uses the envar `OPENORCH_LLM_HOST` to address `Container Launched By OpenOrch`.
+The `1Backend Container` uses the envar `OPENORCH_LLM_HOST` to address `Container Launched By 1Backend`.
 
 Typically this value should be `172.17.0.1` if you are using the default docker network.
 
 If you are using an other network than default, use `docker network inspect` to find out the IP of your docker bridge for that network.
 Usually it's going to be `172.18.0.1`.
 
-This envar is not needed if OpenOrch runs directly on the host:
+This envar is not needed if 1Backend runs directly on the host:
 
 ```sh
-Host With OpenOrch
+Host With 1Backend
  |
- |-> Container Launched By OpenOrch
+ |-> Container Launched By 1Backend
 ```
 
 ## `OPENORCH_DB`
 
-You can use this envar to make OpenOrch actually use a database instead of local file storage to store data.
+You can use this envar to make 1Backend actually use a database instead of local file storage to store data.
 
 ### PostgreSQL
 

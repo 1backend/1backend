@@ -3,6 +3,6 @@
 	"version": "2.0.0",
 	"main": ".dist/index.js",
 	"scripts": {},
-	"author": "OpenOrch",
+	"author": "1Backend",
 	"license": "Proprietary"
 }

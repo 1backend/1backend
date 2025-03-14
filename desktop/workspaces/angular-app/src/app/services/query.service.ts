@@ -6,7 +6,7 @@
  * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
  */
 import { Injectable } from '@angular/core';
-import { DatastoreFilter, DatastoreQuery } from '@openorch/client';
+import { DatastoreFilter, DatastoreQuery } from '@1backend/client';
 
 @Injectable({
 	providedIn: 'root',

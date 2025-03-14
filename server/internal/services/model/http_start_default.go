@@ -16,8 +16,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	sdk "github.com/openorch/openorch/sdk/go"
-	model "github.com/openorch/openorch/server/internal/services/model/types"
+	sdk "github.com/1backend/1backend/sdk/go"
+	model "github.com/1backend/1backend/server/internal/services/model/types"
 )
 
 // @ID startDefaultModel

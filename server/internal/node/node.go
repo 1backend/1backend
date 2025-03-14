@@ -21,16 +21,16 @@ import (
 	"runtime/debug"
 
 	"github.com/gorilla/mux"
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	"github.com/openorch/openorch/sdk/go/datastore/sqlstore"
-	pglock "github.com/openorch/openorch/sdk/go/lock/pg"
-	"github.com/openorch/openorch/sdk/go/logger"
-	"github.com/openorch/openorch/server/internal/di"
-	node_types "github.com/openorch/openorch/server/internal/node/types"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/datastore/sqlstore"
+	pglock "github.com/1backend/1backend/sdk/go/lock/pg"
+	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/1backend/1backend/server/internal/di"
+	node_types "github.com/1backend/1backend/server/internal/node/types"
 	"github.com/pkg/errors"
 
-	_ "github.com/openorch/openorch/server/docs"
+	_ "github.com/1backend/1backend/server/docs"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 

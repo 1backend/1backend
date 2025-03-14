@@ -1,5 +1,5 @@
 /*
-OpenOrch
+1Backend
 
 Testing DataSvcAPIService
 
@@ -11,10 +11,11 @@ package openapi
 
 import (
 	"context"
+	"testing"
+
+	openapiclient "github.com/1backend/1backend/clients/go"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
-	openapiclient "github.com/openorch/openorch/clients/go"
 )
 
 func Test_openapi_DataSvcAPIService(t *testing.T) {
@@ -24,7 +25,7 @@ func Test_openapi_DataSvcAPIService(t *testing.T) {
 
 	t.Run("Test DataSvcAPIService CreateObject", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.DataSvcAPI.CreateObject(context.Background()).Execute()
 
@@ -36,7 +37,7 @@ func Test_openapi_DataSvcAPIService(t *testing.T) {
 
 	t.Run("Test DataSvcAPIService DeleteObjects", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.DataSvcAPI.DeleteObjects(context.Background()).Execute()
 
@@ -48,7 +49,7 @@ func Test_openapi_DataSvcAPIService(t *testing.T) {
 
 	t.Run("Test DataSvcAPIService Query", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.DataSvcAPI.Query(context.Background()).Execute()
 
@@ -60,7 +61,7 @@ func Test_openapi_DataSvcAPIService(t *testing.T) {
 
 	t.Run("Test DataSvcAPIService UpdateObjects", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.DataSvcAPI.UpdateObjects(context.Background()).Execute()
 
@@ -72,7 +73,7 @@ func Test_openapi_DataSvcAPIService(t *testing.T) {
 
 	t.Run("Test DataSvcAPIService UpsertObject", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var objectId string
 

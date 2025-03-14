@@ -20,7 +20,7 @@ openapi-generator-cli generate \
 rm -rf api docs go.mod
 cp go.mod.template go.mod
 
-sed -i 's|github.com/GIT_USER_ID/GIT_REPO_ID|github.com/openorch/openorch/clients/go|g' test/*.go
+sed -i 's|github.com/GIT_USER_ID/GIT_REPO_ID|github.com/1backend/1backend/clients/go|g' test/*.go
 go mod tidy
 
 bash "$SERVER_DIR/mock_go.sh"

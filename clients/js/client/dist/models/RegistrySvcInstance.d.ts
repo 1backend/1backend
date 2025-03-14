@@ -1,5 +1,5 @@
 /**
- * OpenOrch
+ * 1Backend
  * A language-agnostic microservices framework for building AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
@@ -18,7 +18,7 @@ import type { RegistrySvcInstanceStatus } from './RegistrySvcInstanceStatus';
 export interface RegistrySvcInstance {
     /**
      * The ID of the deployment that this instance is an instance of.
-     * Only instances deployed by OpenOrch have a DeploymentId.
+     * Only instances deployed by 1Backend have a DeploymentId.
      * Services can be deployed through other means (Docker Compose, K8s, anything),
      * in that case they self-register and will not have a DeploymentId.
      * @type {string}
@@ -56,10 +56,10 @@ export interface RegistrySvcInstance {
      */
     lastHeartbeat?: string;
     /**
-     * NodeURL is the URL of the OpenOrch server the instance is running on.
+     * NodeURL is the URL of the 1Backend server the instance is running on.
      * To have a NodeURL the instance must either:
-     * - Be deployed by OpenOrch
-     * - Declare the OpenOrch server URL when registering its instance
+     * - Be deployed by 1Backend
+     * - Declare the 1Backend server URL when registering its instance
      * @type {string}
      * @memberof RegistrySvcInstance
      */
@@ -86,7 +86,7 @@ export interface RegistrySvcInstance {
      * Slug of the account that owns this instance
      * Services that want to be proxied by their slug are advised to self register
      * their instance at startup.
-     * Keep in mind, instances might be deployed by OpenOrch yet they still won't be OpenOrch services
+     * Keep in mind, instances might be deployed by 1Backend yet they still won't be 1Backend services
      * and they won't have slugs. Think NGINX, MySQL, etc.
      * @type {string}
      * @memberof RegistrySvcInstance

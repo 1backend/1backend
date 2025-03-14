@@ -19,7 +19,7 @@ The File Service handles file-related operations, including downloading files fr
 
 The File Svc is distributed. Downloads and uploads may reside on any node in the system, any File Svc node will be able to proxy them to you.
 
-> This page provides a high-level overview of `File Svc`. For detailed information, refer to the [File Svc API documentation](/docs/openorch/download-file).
+> This page provides a high-level overview of `File Svc`. For detailed information, refer to the [File Svc API documentation](/docs/1backend/download-file).
 
 ## Responsibilities
 

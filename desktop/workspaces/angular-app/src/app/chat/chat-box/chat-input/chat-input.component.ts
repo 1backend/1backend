@@ -36,7 +36,7 @@ import { ModelService } from '../../../services/model.service';
 import {
 	ModelSvcModel as Model,
 	PromptSvcEngineParameters,
-} from '@openorch/client';
+} from '@1backend/client';
 import { ConfigService } from '../../../services/config.service';
 import { ChatService } from '../../../services/chat.service';
 import { addIcons } from 'ionicons';

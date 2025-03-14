@@ -1,4 +1,4 @@
-name: "@openorch/node publish to npm"
+name: "@1backend/node publish to npm"
 
 on:
   push:

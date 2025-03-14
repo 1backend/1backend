@@ -16,7 +16,7 @@ import {
 	ConfigSvcGetConfigResponse,
 	Configuration,
 	ConfigSvcConfig,
-} from '@openorch/client';
+} from '@1backend/client';
 
 @Injectable({
 	providedIn: 'root',

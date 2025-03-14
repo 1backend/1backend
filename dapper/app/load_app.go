@@ -11,7 +11,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
-	dt "github.com/openorch/openorch/dapper/types"
+	dt "github.com/1backend/1backend/dapper/types"
 )
 
 // LoadAppConfiguration loads an application configuration from a JSON file.

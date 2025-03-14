@@ -15,7 +15,7 @@ package fileservice
 import (
 	"path/filepath"
 
-	types "github.com/openorch/openorch/server/internal/services/file/types"
+	types "github.com/1backend/1backend/server/internal/services/file/types"
 	"github.com/pkg/errors"
 )
 

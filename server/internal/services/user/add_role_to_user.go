@@ -16,8 +16,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/openorch/openorch/sdk/go/datastore"
-	usertypes "github.com/openorch/openorch/server/internal/services/user/types"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 func (s *UserService) addRoleToUser(userId string, roleId string) error {

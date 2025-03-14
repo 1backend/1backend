@@ -25,12 +25,12 @@ import (
 	"syscall"
 	"time"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	"github.com/openorch/openorch/sdk/go/logger"
-	"github.com/openorch/openorch/server/internal/services/deploy/allocator"
-	deploy "github.com/openorch/openorch/server/internal/services/deploy/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/1backend/1backend/server/internal/services/deploy/allocator"
+	deploy "github.com/1backend/1backend/server/internal/services/deploy/types"
 	"github.com/pkg/errors"
 )
 
@@ -345,7 +345,7 @@ func (ns *DeployService) makeSureItRuns(
 			Image: definition.Image.Name,
 			Ports: []openapi.ContainerSvcPortMapping{},
 			Names: []string{
-				fmt.Sprintf("openorch-%v", definition.Id),
+				fmt.Sprintf("1backend-%v", definition.Id),
 			},
 		}
 		for _, port := range definition.Ports {
@@ -387,7 +387,7 @@ func (ns *DeployService) makeSureItRuns(
 		}
 
 		runContainerReq := openapi.ContainerSvcRunContainerRequest{
-			Image: fmt.Sprintf("openorch-%v", definition.Id),
+			Image: fmt.Sprintf("1backend-%v", definition.Id),
 			Ports: []openapi.ContainerSvcPortMapping{
 				{
 					// @todo multiport issues
@@ -395,7 +395,7 @@ func (ns *DeployService) makeSureItRuns(
 					Host:     definition.Repository.Ports[0],
 				},
 			},
-			Names: []string{fmt.Sprintf("openorch-%v", definition.Id)},
+			Names: []string{fmt.Sprintf("1backend-%v", definition.Id)},
 		}
 
 		_, _, err = client.ContainerSvcAPI.RunContainer(ctx).Body(

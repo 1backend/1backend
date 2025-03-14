@@ -1,4 +1,4 @@
-module github.com/openorch/openorch/clients/go
+module github.com/1backend/1backend/clients/go
 
 go 1.23
 

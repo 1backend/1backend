@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/openorch/openorch/cli/oo/config"
+	"github.com/1backend/1backend/cli/oo/config"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )

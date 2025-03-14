@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	pglock "github.com/openorch/openorch/sdk/go/lock/pg"
+	pglock "github.com/1backend/1backend/sdk/go/lock/pg"
 
 	"github.com/stretchr/testify/require"
 )

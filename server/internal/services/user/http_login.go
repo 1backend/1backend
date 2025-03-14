@@ -17,9 +17,9 @@ import (
 	"net/http"
 	"time"
 
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	user "github.com/openorch/openorch/server/internal/services/user/types"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	user "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )

@@ -1,5 +1,5 @@
 /*
-OpenOrch
+1Backend
 
 A language-agnostic microservices framework for building AI applications.
 
@@ -22,7 +22,7 @@ var _ MappedNullable = &UserSvcContact{}
 type UserSvcContact struct {
 	CreatedAt *string `json:"createdAt,omitempty"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
-	// The unique identifier, which can be a URL.  Example values: \"joe12\" (openorch username), \"twitter.com/thejoe\" (twitter url), \"joe@joesdomain.com\" (email)
+	// The unique identifier, which can be a URL.  Example values: \"joe12\" (1backend username), \"twitter.com/thejoe\" (twitter url), \"joe@joesdomain.com\" (email)
 	Id *string `json:"id,omitempty"`
 	// If this is the primary contact method
 	IsPrimary *bool `json:"isPrimary,omitempty"`
@@ -30,7 +30,7 @@ type UserSvcContact struct {
 	Platform *string `json:"platform,omitempty"`
 	UpdatedAt *string `json:"updatedAt,omitempty"`
 	UserId *string `json:"userId,omitempty"`
-	// Value is the platform local unique identifier. Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`. For email and phones the `id` and the `value` will be the same. This field mostly exists for display purposes.  Example values: \"joe12\" (openorch username), \"thejoe\" (twitter username), \"joe@joesdomain.com\" (email)
+	// Value is the platform local unique identifier. Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`. For email and phones the `id` and the `value` will be the same. This field mostly exists for display purposes.  Example values: \"joe12\" (1backend username), \"thejoe\" (twitter username), \"joe@joesdomain.com\" (email)
 	Value *string `json:"value,omitempty"`
 	// Whether the contact is verified
 	Verified *bool `json:"verified,omitempty"`

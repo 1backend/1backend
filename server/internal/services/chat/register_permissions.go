@@ -11,10 +11,10 @@ package chatservice
 import (
 	"context"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	chattypes "github.com/openorch/openorch/server/internal/services/chat/types"
-	usertypes "github.com/openorch/openorch/server/internal/services/user/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	chattypes "github.com/1backend/1backend/server/internal/services/chat/types"
+	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 func (p *ChatService) registerPermissions() error {

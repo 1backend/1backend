@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	client "github.com/openorch/openorch/clients/go"
-	"github.com/openorch/openorch/sdk/go/test"
-	"github.com/openorch/openorch/server/internal/di"
-	firehose "github.com/openorch/openorch/server/internal/services/firehose/types"
+	client "github.com/1backend/1backend/clients/go"
+	"github.com/1backend/1backend/sdk/go/test"
+	"github.com/1backend/1backend/server/internal/di"
+	firehose "github.com/1backend/1backend/server/internal/services/firehose/types"
 	"github.com/r3labs/sse"
 	"github.com/stretchr/testify/require"
 )

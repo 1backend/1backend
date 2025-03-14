@@ -19,7 +19,7 @@ import (
 	"strings"
 
 	dockerapicontainer "github.com/docker/docker/api/types/container"
-	container "github.com/openorch/openorch/server/internal/services/container/types"
+	container "github.com/1backend/1backend/server/internal/services/container/types"
 	"github.com/pkg/errors"
 )
 
@@ -41,7 +41,7 @@ func (d *DockerBackend) GetContainerSummary(
 	}
 
 	for _, modelContainer := range containers {
-		if modelContainer.Labels["openorch-hash"] == request.Hash {
+		if modelContainer.Labels["1backend-hash"] == request.Hash {
 			logOptions := dockerapicontainer.LogsOptions{
 				ShowStdout: true,
 				ShowStderr: true,

@@ -11,7 +11,7 @@ tags:
 
 The Secret Svc stores sensitive or internal (non-end-user-facing) configuration. Aims to store all configuration not required at bootstrap, both for internal and external services.
 
-> This page provides a high-level overview of `Secret Svc`. For detailed information, refer to the [Secret Svc API documentation](/docs/openorch/list-secrets).
+> This page provides a high-level overview of `Secret Svc`. For detailed information, refer to the [Secret Svc API documentation](/docs/1backend/list-secrets).
 
 ## Access rules
 
@@ -84,11 +84,11 @@ canChangeDeleters:
 
 ## Design choices
 
-The Secret Svc, like most things in OpenOrch, is designed to be simple to reason about.
+The Secret Svc, like most things in 1Backend, is designed to be simple to reason about.
 
-Instead of the OpenOrch injecting environment variables into service containers when they are deployed, the services are left to their own devices to read secrets from the Secret Svc through normal service calls, using their credentials.
+Instead of the 1Backend injecting environment variables into service containers when they are deployed, the services are left to their own devices to read secrets from the Secret Svc through normal service calls, using their credentials.
 
-This approach also works for services that you deploy manually (e.g., Kubernetes, Docker Compose) rather than through OpenOrch.
+This approach also works for services that you deploy manually (e.g., Kubernetes, Docker Compose) rather than through 1Backend.
 
 ### Encryption at rest and transit
 

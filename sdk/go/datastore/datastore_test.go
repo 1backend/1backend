@@ -17,9 +17,9 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	localstore "github.com/openorch/openorch/sdk/go/datastore/localstore"
-	"github.com/openorch/openorch/sdk/go/datastore/sqlstore"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	localstore "github.com/1backend/1backend/sdk/go/datastore/localstore"
+	"github.com/1backend/1backend/sdk/go/datastore/sqlstore"
 	"github.com/stretchr/testify/require"
 )
 

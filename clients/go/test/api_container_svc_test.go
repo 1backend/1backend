@@ -1,5 +1,5 @@
 /*
-OpenOrch
+1Backend
 
 Testing ContainerSvcAPIService
 
@@ -11,10 +11,11 @@ package openapi
 
 import (
 	"context"
+	"testing"
+
+	openapiclient "github.com/1backend/1backend/clients/go"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
-	openapiclient "github.com/openorch/openorch/clients/go"
 )
 
 func Test_openapi_ContainerSvcAPIService(t *testing.T) {
@@ -24,7 +25,7 @@ func Test_openapi_ContainerSvcAPIService(t *testing.T) {
 
 	t.Run("Test ContainerSvcAPIService BuildImage", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.ContainerSvcAPI.BuildImage(context.Background()).Execute()
 
@@ -36,7 +37,7 @@ func Test_openapi_ContainerSvcAPIService(t *testing.T) {
 
 	t.Run("Test ContainerSvcAPIService ContainerIsRunning", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.ContainerSvcAPI.ContainerIsRunning(context.Background()).Execute()
 
@@ -48,7 +49,7 @@ func Test_openapi_ContainerSvcAPIService(t *testing.T) {
 
 	t.Run("Test ContainerSvcAPIService ContainerSummary", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.ContainerSvcAPI.ContainerSummary(context.Background()).Execute()
 
@@ -60,7 +61,7 @@ func Test_openapi_ContainerSvcAPIService(t *testing.T) {
 
 	t.Run("Test ContainerSvcAPIService GetInfo", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.ContainerSvcAPI.GetInfo(context.Background()).Execute()
 
@@ -72,7 +73,7 @@ func Test_openapi_ContainerSvcAPIService(t *testing.T) {
 
 	t.Run("Test ContainerSvcAPIService ImageExists", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.ContainerSvcAPI.ImageExists(context.Background()).Execute()
 
@@ -84,7 +85,7 @@ func Test_openapi_ContainerSvcAPIService(t *testing.T) {
 
 	t.Run("Test ContainerSvcAPIService RunContainer", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.ContainerSvcAPI.RunContainer(context.Background()).Execute()
 
@@ -96,7 +97,7 @@ func Test_openapi_ContainerSvcAPIService(t *testing.T) {
 
 	t.Run("Test ContainerSvcAPIService StopContainer", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.ContainerSvcAPI.StopContainer(context.Background()).Execute()
 

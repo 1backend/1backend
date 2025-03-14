@@ -11,11 +11,11 @@ package emailservice
 import (
 	"context"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	usertypes "github.com/openorch/openorch/server/internal/services/user/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 
-	emailtypes "github.com/openorch/openorch/server/internal/services/email/types"
+	emailtypes "github.com/1backend/1backend/server/internal/services/email/types"
 )
 
 func (ns *EmailService) registerPermissions() error {

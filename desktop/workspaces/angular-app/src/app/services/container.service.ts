@@ -13,7 +13,7 @@ import {
 	ContainerSvcApi,
 	Configuration,
 	ContainerSvcDaemonInfoResponse,
-} from '@openorch/client';
+} from '@1backend/client';
 
 @Injectable({
 	providedIn: 'root',

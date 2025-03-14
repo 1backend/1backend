@@ -13,7 +13,7 @@ import {
 	ChangeDetectionStrategy,
 } from '@angular/core';
 import { ChatService } from '../../../services/chat.service';
-import { ChatSvcMessage as Message, ModelSvcPlatform } from '@openorch/client';
+import { ChatSvcMessage as Message, ModelSvcPlatform } from '@1backend/client';
 import { PromptService } from '../../../services/prompt.service';
 import { ServerService } from '../../../services/server.service';
 import { MarkdownComponent, provideMarkdown } from 'ngx-markdown';
@@ -33,7 +33,7 @@ import { environment } from '../../../../environments/environment';
 import { ModelService } from '../../../../app/services/model.service';
 import {
 	ModelSvcModel as Model,
-} from '@openorch/client';
+} from '@1backend/client';
 
 @Component({
 	selector: 'app-message',

@@ -9,9 +9,9 @@ import (
 	"log"
 
 	"github.com/golang-jwt/jwt/v4"
-	sdk "github.com/openorch/openorch/sdk/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 
-	usertypes "github.com/openorch/openorch/server/internal/services/user/types"
+	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 func generateRSAKeys(bits int) (privateKeyPem, publicKeyPem string, err error) {

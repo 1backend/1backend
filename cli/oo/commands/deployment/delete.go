@@ -3,9 +3,9 @@ package deployment
 import (
 	"fmt"
 
-	"github.com/openorch/openorch/cli/oo/config"
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
+	"github.com/1backend/1backend/cli/oo/config"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/spf13/cobra"
 )
 

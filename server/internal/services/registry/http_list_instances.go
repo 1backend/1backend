@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	registry "github.com/openorch/openorch/server/internal/services/registry/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	registry "github.com/1backend/1backend/server/internal/services/registry/types"
 )
 
 // @ID listInstances

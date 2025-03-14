@@ -13,25 +13,25 @@ tags:
 
 # User Svc
 
-The user service is at the heart of OpenOrch, managing users, tokens, organizations, permissions and more. Each service and human on an OpenOrch network has an account in the `User Svc`.
+The user service is at the heart of 1Backend, managing users, tokens, organizations, permissions and more. Each service and human on an 1Backend network has an account in the `User Svc`.
 
-> This page provides a high-level overview of `User Svc`. For detailed information, refer to the [User Svc API documentation](/docs/openorch/login).
+> This page provides a high-level overview of `User Svc`. For detailed information, refer to the [User Svc API documentation](/docs/1backend/login).
 
 ## Overview
 
 The most important thing about the User Svc is that service (machine) and user (human) accounts look and function the same.
 
-Every service you write needs to [register](/docs/openorch/register) at startup, or [log in](/docs/openorch/login) with the credentials it saves and manages if it's already registered. Just like a human.
+Every service you write needs to [register](/docs/1backend/register) at startup, or [log in](/docs/1backend/login) with the credentials it saves and manages if it's already registered. Just like a human.
 
 A service account is not an admin account, it's a simple user level account. You might wonder how service-to-service calls work then.
 
 ## Service to service calls
 
-Most endpoints on OpenOrch can only be called by administrators by default.
+Most endpoints on 1Backend can only be called by administrators by default.
 
 Let's take prompting. If you want to let your users prompt AIs you might write a wrapper service called `User Prompter Svc` with the slug `user-prompter-svc`.
 
-If we look at the [Add Prompt endpoint API docs](/docs/openorch/prompt), we can see that it mentions
+If we look at the [Add Prompt endpoint API docs](/docs/1backend/prompt), we can see that it mentions
 
 ```
 Requires the `prompt-svc:prompt:create` permission.
@@ -54,15 +54,15 @@ oo grant save user-prompter-grant.yaml
 
 ## Tokens
 
-The User Svc produces a JWT ([JSON Web Token](https://en.wikipedia.org/wiki/JSON_Web_Token)) upon [/user-svc/login](/docs/openorch/login) in the `token.token` field (see the response documentation).
+The User Svc produces a JWT ([JSON Web Token](https://en.wikipedia.org/wiki/JSON_Web_Token)) upon [/user-svc/login](/docs/1backend/login) in the `token.token` field (see the response documentation).
 
-You can either use this token as a proper JWT - decode it and inspect the contents, or you can just use the token to read the user account that belongs to the token with the [/user-svc/user/by-token](/docs/openorch/read-user-by-token) endpoint.
+You can either use this token as a proper JWT - decode it and inspect the contents, or you can just use the token to read the user account that belongs to the token with the [/user-svc/user/by-token](/docs/1backend/read-user-by-token) endpoint.
 
 ### Decoding a token
 
-The [`/user-svc/public-key`](/docs/openorch/get-public-key) will return you the public key of the User Svc which then you can use that to decode the token.
+The [`/user-svc/public-key`](/docs/1backend/get-public-key) will return you the public key of the User Svc which then you can use that to decode the token.
 
-Use the JWT libraries that are available in your programming language to do that, or use the Singularon [SDK](https://github.com/openorch/openorch/tree/main/sdk) if your language is supported.
+Use the JWT libraries that are available in your programming language to do that, or use the Singularon [SDK](https://github.com/1backend/1backend/tree/main/sdk) if your language is supported.
 
 ### Token structure
 
@@ -83,9 +83,9 @@ The field names are kept short to save space, so perhaps the Go definition is al
 
 ```go
 type Claims struct {
-	UserId  string   `json:"sui"` // `sui`: openorch (previously singulatron) user ids
-	Slug    string   `json:"slu"` // `slu`: openorch (previously singulatron) slug
-	RoleIds []string `json:"sri"` // `sri`: openorch (previously singulatron) role ids
+	UserId  string   `json:"sui"` // `sui`: 1backend (previously singulatron) user ids
+	Slug    string   `json:"slu"` // `slu`: 1backend (previously singulatron) slug
+	RoleIds []string `json:"sri"` // `sri`: 1backend (previously singulatron) role ids
 	jwt.RegisteredClaims
 }
 ```
@@ -118,8 +118,8 @@ user-svc:user
 
 defined by the `User Svc` are used for role-based access control. Each role has a list of permissions associated with it. When endpoints authorize a user it can do two things:
 
-- Call the [Is Authorized](/docs/openorch/is-authorized) with the caller user auth headers and a permission ID to see if a given caller is authorized for that endpoint.
-- Cache the list of permissions belonging to different roles and inspect only the caller's token to see if an appropriate role is present. This has the advantage of being quicker but slightly more complex (suitable SDK functions can help here). To parse and verify a token yourself, see the [Get Public Key](/docs/openorch/get-public-key) endpoint.
+- Call the [Is Authorized](/docs/1backend/is-authorized) with the caller user auth headers and a permission ID to see if a given caller is authorized for that endpoint.
+- Cache the list of permissions belonging to different roles and inspect only the caller's token to see if an appropriate role is present. This has the advantage of being quicker but slightly more complex (suitable SDK functions can help here). To parse and verify a token yourself, see the [Get Public Key](/docs/1backend/get-public-key) endpoint.
 
 > If you are looking at restricting access to endpoints in other ways, you might be interested in: [Policy Svc](/docs/built-in-services/policy-svc).
 
@@ -128,7 +128,7 @@ defined by the `User Svc` are used for role-based access control. Each role has 
 While deceptively simple, static roles can get you far, even without any permissions associated with them. A prime use case is product subscriptions.
 
 Let's say you have a new product called "Funny Cats Newsletter" with two subscription tiers: Pro and Ultra.
-You might create a service with the slug `funny-cats-newsletter-svc` for this product. You could have the following custom static roles created by your service (by calling the [Create Role](/docs/openorch/create-role) endpoint):
+You might create a service with the slug `funny-cats-newsletter-svc` for this product. You could have the following custom static roles created by your service (by calling the [Create Role](/docs/1backend/create-role) endpoint):
 
 ```yaml
 funny-cats-newsletter-svc:pro
@@ -191,7 +191,7 @@ Each permission created must by prefixed by the slug of the account that created
 
 > Once you (your service) own a permission (by creating it, and it being prefixed by your account slug), you can add it to any role, not just roles owned by you.
 
-Example; let's say your service is `petstore-svc`. OpenOrch prefers fine-grained access control, so you are free to define your own permissions, such as `petstore-svc:read` or `petstore-svc:pet:read`.
+Example; let's say your service is `petstore-svc`. 1Backend prefers fine-grained access control, so you are free to define your own permissions, such as `petstore-svc:read` or `petstore-svc:pet:read`.
 
 ## Services with multiple nodes
 

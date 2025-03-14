@@ -10,7 +10,7 @@ package backends
 import (
 	reflect "reflect"
 
-	container_svc "github.com/openorch/openorch/server/internal/services/container/types"
+	container_svc "github.com/1backend/1backend/server/internal/services/container/types"
 	gomock "go.uber.org/mock/gomock"
 )
 

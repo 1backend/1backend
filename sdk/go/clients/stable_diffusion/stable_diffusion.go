@@ -19,7 +19,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/openorch/openorch/sdk/go/logger"
+	"github.com/1backend/1backend/sdk/go/logger"
 )
 
 type Client struct {

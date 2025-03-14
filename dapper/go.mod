@@ -1,4 +1,4 @@
-module github.com/openorch/openorch/dapper
+module github.com/1backend/1backend/dapper
 
 go 1.23
 

@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	sdk "github.com/openorch/openorch/sdk/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 )
 
 type LogEntry struct {

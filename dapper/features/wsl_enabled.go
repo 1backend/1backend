@@ -8,7 +8,7 @@
 package features
 
 import (
-	dt "github.com/openorch/openorch/dapper/types"
+	dt "github.com/1backend/1backend/dapper/types"
 )
 
 var WslEnabled = dt.Feature{

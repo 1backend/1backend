@@ -6,23 +6,23 @@ tags:
   - local
 ---
 
-# Running the OpenOrch server locally
+# Running the 1Backend server locally
 
-The easiest way to run OpenOrch is to use [Docker Compose](https://docs.docker.com/compose/install/).
+The easiest way to run 1Backend is to use [Docker Compose](https://docs.docker.com/compose/install/).
 
 ## Using Docker Compose
 
-The easiest way to run this is to clone [the repo](https://github.com/openorch/openorch), step into the repo root and run:
+The easiest way to run this is to clone [the repo](https://github.com/1backend/1backend), step into the repo root and run:
 
 ```sh
-git clone git@github.com:openorch/openorch.git
-cd openorch
+git clone git@github.com:1backend/1backend.git
+cd 1backend
 docker compose up
 # or use the -d flag to run it in the background
 # docker compose up -d
 ```
 
-The `docker-compose-yaml` in the root folder is designed to build and run the current code. For a more production ready Docker Compose file see the [Running the OpenOrch server with Docker Compose and prebuilt images](./docker-compose/).
+The `docker-compose-yaml` in the root folder is designed to build and run the current code. For a more production ready Docker Compose file see the [Running the 1Backend server with Docker Compose and prebuilt images](./docker-compose/).
 
 ### Once it's running in Docker Compose
 
@@ -30,7 +30,7 @@ After the containers successfully start, you can go to [http://127.0.0.1:3901](h
 
 ## Running natively (Go & Angular)
 
-If you have both Go and Angular installed on your computer, the easiest way to dip your feet into OpenOrch is to run things locally.
+If you have both Go and Angular installed on your computer, the easiest way to dip your feet into 1Backend is to run things locally.
 
 ## Running the backend natively (with Go)
 
@@ -54,26 +54,26 @@ After the both the backend and frontend starts, you can go to [http://127.0.0.1:
 
 ### Local files
 
-By default OpenOrch uses the folder `~/.openorch` on your machine for data tables, file downloads, file uploads.
-The `~/.openorch/cliConfig.yaml` file is where the [`oo CLI`](/docs/command-line/basics) stores all its data.
+By default 1Backend uses the folder `~/.1backend` on your machine for data tables, file downloads, file uploads.
+The `~/.1backend/cliConfig.yaml` file is where the [`oo CLI`](/docs/command-line/basics) stores all its data.
 
 #### Download & Uploads
 
 Downloads and uploads are managed by the [File Svc](/docs/built-in-services/file-svc), and by default are stored here:
 
 ```bash
-~/.openorch/downloads
-~/.openorch/uploads
+~/.1backend/downloads
+~/.1backend/uploads
 ```
 
 #### Data files
 
-By default OpenOrch uses local gzipped json files to store database entries. Data access across OpenOrch is interface based so the this implementation can be easily swapped out for PostgreSQL and other database backends.
+By default 1Backend uses local gzipped json files to store database entries. Data access across 1Backend is interface based so the this implementation can be easily swapped out for PostgreSQL and other database backends.
 
 These files are located at
 
 ```bash
-ls ~/.openorch/data
+ls ~/.1backend/data
 ```
 
 Each file is prefixed by the owner service slug, so the `User Svc` `users` table becomes `userSvcUsers`.
@@ -81,8 +81,8 @@ Each file is prefixed by the owner service slug, so the `User Svc` `users` table
 If you want to view the contents of a file:
 
 ```bash
-cat ~/.openorch/data/userSvcUsers.zip | gzip -dc
+cat ~/.1backend/data/userSvcUsers.zip | gzip -dc
 
 # or if you jave jq installed
-cat ~/.openorch/data/userSvcUsers.zip | gzip -dc | jq
+cat ~/.1backend/data/userSvcUsers.zip | gzip -dc | jq
 ```

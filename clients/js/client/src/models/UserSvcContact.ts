@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * OpenOrch
+ * 1Backend
  * A language-agnostic microservices framework for building AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
@@ -34,7 +34,7 @@ export interface UserSvcContact {
     /**
      * The unique identifier, which can be a URL.
      * 
-     * Example values: "joe12" (openorch username), "twitter.com/thejoe" (twitter url), "joe@joesdomain.com" (email)
+     * Example values: "joe12" (1backend username), "twitter.com/thejoe" (twitter url), "joe@joesdomain.com" (email)
      * @type {string}
      * @memberof UserSvcContact
      */
@@ -69,7 +69,7 @@ export interface UserSvcContact {
      * For email and phones the `id` and the `value` will be the same.
      * This field mostly exists for display purposes.
      * 
-     * Example values: "joe12" (openorch username), "thejoe" (twitter username), "joe@joesdomain.com" (email)
+     * Example values: "joe12" (1backend username), "thejoe" (twitter username), "joe@joesdomain.com" (email)
      * @type {string}
      * @memberof UserSvcContact
      */

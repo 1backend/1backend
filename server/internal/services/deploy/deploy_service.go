@@ -15,10 +15,10 @@ package deployservice
 import (
 	"context"
 
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	"github.com/openorch/openorch/sdk/go/lock"
-	deploy "github.com/openorch/openorch/server/internal/services/deploy/types"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/lock"
+	deploy "github.com/1backend/1backend/server/internal/services/deploy/types"
 )
 
 type DeployService struct {

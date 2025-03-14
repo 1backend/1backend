@@ -11,11 +11,11 @@ package modelservice
 import (
 	"context"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	modeltypes "github.com/openorch/openorch/server/internal/services/model/types"
-	usertypes "github.com/openorch/openorch/server/internal/services/user/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	modeltypes "github.com/1backend/1backend/server/internal/services/model/types"
+	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 func (p *ModelService) registerPermissions() error {

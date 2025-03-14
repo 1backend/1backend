@@ -21,11 +21,11 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	"github.com/openorch/openorch/sdk/go/logger"
-	chat "github.com/openorch/openorch/server/internal/services/chat/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/logger"
+	chat "github.com/1backend/1backend/server/internal/services/chat/types"
 )
 
 // @ID addMessage

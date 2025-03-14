@@ -9,8 +9,8 @@
 package allocator
 
 import (
-	openapi "github.com/openorch/openorch/clients/go"
-	deploy "github.com/openorch/openorch/server/internal/services/deploy/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	deploy "github.com/1backend/1backend/server/internal/services/deploy/types"
 )
 
 func GenerateCommands(

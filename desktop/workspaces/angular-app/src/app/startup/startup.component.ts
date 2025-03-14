@@ -12,13 +12,13 @@ import { ElectronAppService } from '../services/electron-app.service';
 import { combineLatest, Subscription } from 'rxjs';
 import { DownloadService, FileSvcConfig } from '../services/download.service';
 import { ModelService, ModelSvcConfig } from '../services/model.service';
-import { ModelSvcModel } from '@openorch/client';
+import { ModelSvcModel } from '@1backend/client';
 import { ContainerService } from '../services/container.service';
 import { ConfigService } from '../services/config.service';
 import {
 	FileSvcDownload as Download,
 	ConfigSvcConfig as Config,
-} from '@openorch/client';
+} from '@1backend/client';
 import { TranslatePipe } from '../translate.pipe';
 import { TranslateModule } from '@ngx-translate/core';
 import { DownloadingComponent } from '../downloading/downloading.component';

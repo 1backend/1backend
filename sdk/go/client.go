@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	openapi "github.com/openorch/openorch/clients/go"
+	openapi "github.com/1backend/1backend/clients/go"
 )
 
 type ClientOption func(*openapi.Configuration)

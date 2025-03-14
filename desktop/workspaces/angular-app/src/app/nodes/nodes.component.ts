@@ -26,7 +26,7 @@ import { IconMenuComponent } from '../components/icon-menu/icon-menu.component';
 import { CenteredComponent } from '../components/centered/centered.component';
 import { NodeService } from '../services/node.service';
 import { UserService } from '../services/user.service';
-import { RegistrySvcNode as Node } from '@openorch/client';
+import { RegistrySvcNode as Node } from '@1backend/client';
 
 @Component({
 	selector: 'app-nodes',

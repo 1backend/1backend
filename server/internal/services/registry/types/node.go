@@ -15,7 +15,7 @@ type Node struct {
 	Id string `json:"id,omitempty" example:"node_di9riJEvH2" binding:"required"`
 
 	// URL of the daemon running on the node.
-	// If not configured defaults to hostname + default OpenOrch server port.
+	// If not configured defaults to hostname + default 1Backend server port.
 	URL string `json:"url" binding:"required"`
 
 	// The availability zone of the node

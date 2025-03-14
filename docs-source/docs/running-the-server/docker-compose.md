@@ -5,7 +5,7 @@ tags:
   - deploy
 ---
 
-# Running the OpenOrch server with Docker Compose and prebuilt images
+# Running the 1Backend server with Docker Compose and prebuilt images
 
 This deployment method is one step above local development in terms of sophistication. It’s suitable for a development server or simple production environments.
 
@@ -15,13 +15,13 @@ This snippet will give you a quick idea about how to deploy the frontend and bac
 version: "3.8"
 
 volumes:
-  openorch-data:
-    name: openorch-data
+  1backend-data:
+    name: 1backend-data
     driver: local
 
 services:
-  openorch-frontend:
-    image: crufter/openorch-frontend:latest
+  1backend-frontend:
+    image: crufter/1backend-frontend:latest
     ports:
       - "3901:80"
     environment:
@@ -29,13 +29,13 @@ services:
       # This is the API the browser will communicate with, not an internal address.
       - BACKEND_ADDRESS=http://127.0.0.1:58231
 
-  openorch-backend:
-    image: crufter/openorch-backend:default-1-latest
+  1backend-backend:
+    image: crufter/1backend-backend:default-1-latest
     # Use a version that matches your GPU architecture for GPU acceleration, e.g.:
-    # crufter/openorch-backend:cuda-12.2.0-latest
+    # crufter/1backend-backend:cuda-12.2.0-latest
     # For available versions, see:
-    # - https://hub.docker.com/r/crufter/openorch-backend/tags
-    # - The build file `openorch-docker-build.yaml`
+    # - https://hub.docker.com/r/crufter/1backend-backend/tags
+    # - The build file `1backend-docker-build.yaml`
     ports:
       - "58231:58231"
     volumes:
@@ -44,9 +44,9 @@ services:
       # We mount the docker socket so the backend can start   containers
       - /var/run/docker.sock:/var/run/docker.sock
       # We mount a volume so data will be persisted
-      - openorch-data:/root/.openorch
-    # Grants OpenOrch access to GPU metrics.
-    # Containers launched by OpenOrch can still use GPU acceleration even if OpenOrch lacks direct GPU access.
+      - 1backend-data:/root/.1backend
+    # Grants 1Backend access to GPU metrics.
+    # Containers launched by 1Backend can still use GPU acceleration even if 1Backend lacks direct GPU access.
     # deploy:
     #   resources:
     #     reservations:
@@ -55,11 +55,11 @@ services:
     #           count: all
     #           capabilities: [gpu]
     environment:
-      # Volume mounted by AI containers launched by OpenOrch to access models downloaded by the OpenOrch File Svc.
-      - OPENORCH_VOLUME_NAME=openorch-data
+      # Volume mounted by AI containers launched by 1Backend to access models downloaded by the 1Backend File Svc.
+      - OPENORCH_VOLUME_NAME=1backend-data
       #
       # Enables GPU acceleration for NVIDIA GPUs.
-      # This flag controls GPU access for AI containers launched by OpenOrch.
+      # This flag controls GPU access for AI containers launched by 1Backend.
       #
       # - OPENORCH_GPU_PLATFORM=cuda
 ```

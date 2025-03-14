@@ -16,13 +16,13 @@ import (
 	"context"
 	"sync"
 
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/clients/llamacpp"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	"github.com/openorch/openorch/sdk/go/lock"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/clients/llamacpp"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/lock"
 
-	streammanager "github.com/openorch/openorch/server/internal/services/prompt/stream"
-	prompttypes "github.com/openorch/openorch/server/internal/services/prompt/types"
+	streammanager "github.com/1backend/1backend/server/internal/services/prompt/stream"
+	prompttypes "github.com/1backend/1backend/server/internal/services/prompt/types"
 )
 
 type PromptService struct {

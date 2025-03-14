@@ -28,7 +28,7 @@ const (
 type Contact struct {
 	// The unique identifier, which can be a URL.
 	//
-	// Example values: "joe12" (openorch username), "twitter.com/thejoe" (twitter url), "joe@joesdomain.com" (email)
+	// Example values: "joe12" (1backend username), "twitter.com/thejoe" (twitter url), "joe@joesdomain.com" (email)
 	Id string `json:"id,omitempty" example:"twitter.com/thejoe"`
 
 	CreatedAt time.Time  `json:"createdAt,omitempty"`
@@ -45,7 +45,7 @@ type Contact struct {
 	// For email and phones the `id` and the `value` will be the same.
 	// This field mostly exists for display purposes.
 	//
-	// Example values: "joe12" (openorch username), "thejoe" (twitter username), "joe@joesdomain.com" (email)
+	// Example values: "joe12" (1backend username), "thejoe" (twitter username), "joe@joesdomain.com" (email)
 	Value string `json:"value,omitempty" example:"thejoe"`
 
 	// Whether the contact is verified

@@ -17,11 +17,11 @@ import (
 	"errors"
 	"strings"
 
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	"github.com/openorch/openorch/sdk/go/lock"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/lock"
 
-	dynamictypes "github.com/openorch/openorch/server/internal/services/data/types"
+	dynamictypes "github.com/1backend/1backend/server/internal/services/data/types"
 )
 
 type DataService struct {

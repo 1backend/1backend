@@ -1,5 +1,5 @@
 /*
-OpenOrch
+1Backend
 
 Testing FileSvcAPIService
 
@@ -11,10 +11,11 @@ package openapi
 
 import (
 	"context"
+	"testing"
+
+	openapiclient "github.com/1backend/1backend/clients/go"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
-	openapiclient "github.com/openorch/openorch/clients/go"
 )
 
 func Test_openapi_FileSvcAPIService(t *testing.T) {
@@ -24,7 +25,7 @@ func Test_openapi_FileSvcAPIService(t *testing.T) {
 
 	t.Run("Test FileSvcAPIService DownloadFile", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.FileSvcAPI.DownloadFile(context.Background()).Execute()
 
@@ -36,7 +37,7 @@ func Test_openapi_FileSvcAPIService(t *testing.T) {
 
 	t.Run("Test FileSvcAPIService GetDownload", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var downloadId string
 
@@ -50,7 +51,7 @@ func Test_openapi_FileSvcAPIService(t *testing.T) {
 
 	t.Run("Test FileSvcAPIService ListDownloads", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		resp, httpRes, err := apiClient.FileSvcAPI.ListDownloads(context.Background()).Execute()
 
@@ -62,7 +63,7 @@ func Test_openapi_FileSvcAPIService(t *testing.T) {
 
 	t.Run("Test FileSvcAPIService PauseDownload", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var downloadId string
 

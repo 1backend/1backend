@@ -3,6 +3,6 @@
   "position": 2,
   "link": {
     "type": "generated-index",
-    "description": "Running OpenOrch server locally or in production environments."
+    "description": "Running 1Backend server locally or in production environments."
   }
 }

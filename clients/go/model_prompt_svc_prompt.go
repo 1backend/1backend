@@ -1,5 +1,5 @@
 /*
-OpenOrch
+1Backend
 
 A language-agnostic microservices framework for building AI applications.
 
@@ -34,7 +34,7 @@ type PromptSvcPrompt struct {
 	LastRun *string `json:"lastRun,omitempty"`
 	// MaxRetries specified how many times the system should retry a prompt when it keeps erroring.
 	MaxRetries *int32 `json:"maxRetries,omitempty"`
-	// ModelId is just the OpenOrch internal ID of the model.
+	// ModelId is just the 1Backend internal ID of the model.
 	ModelId *string `json:"modelId,omitempty"`
 	// AI engine/platform (eg. LlamaCpp, Stable Diffusion) agnostic parameters. Use these high level parameters when you don't care about the actual engine, only the functionality (eg. text to image, image to image) it provides.
 	Parameters *PromptSvcParameters `json:"parameters,omitempty"`

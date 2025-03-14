@@ -26,12 +26,12 @@ jobs:
 
       - name: Start docker containers
         run: |
-          docker compose up openorch-backend -d
+          docker compose up 1backend-backend -d
 
       - name: Run
         run: |
           npm install
-          npm link @openorch/client
+          npm link @1backend/client
           npm run build
 
           HOST="127.0.0.1"
@@ -51,7 +51,7 @@ jobs:
             echo "Node.js script failed, running docker commands for diagnostics..."
             docker ps -a
             docker logs llama-cpp || true
-            docker logs openorch-openorch-backend-1
+            docker logs 1backend-1backend-backend-1
             ifconfig
             exit 1
           )

@@ -16,9 +16,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	prompt "github.com/openorch/openorch/server/internal/services/prompt/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	prompt "github.com/1backend/1backend/server/internal/services/prompt/types"
 )
 
 // @ID prompt

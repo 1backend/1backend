@@ -2,7 +2,7 @@ name: "Deploy Demo"
 
 on:
   workflow_run:
-    workflows: ["OpenOrch frontend Docker build"]
+    workflows: ["1Backend frontend Docker build"]
     branches: [main]
     types:
       - completed

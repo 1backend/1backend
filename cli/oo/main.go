@@ -5,23 +5,23 @@ import (
 
 	"github.com/spf13/cobra"
 
-	call "github.com/openorch/openorch/cli/oo/commands/call"
-	definition "github.com/openorch/openorch/cli/oo/commands/definition"
-	deployment "github.com/openorch/openorch/cli/oo/commands/deployment"
-	"github.com/openorch/openorch/cli/oo/commands/env"
-	"github.com/openorch/openorch/cli/oo/commands/grant"
-	instance "github.com/openorch/openorch/cli/oo/commands/instance"
-	"github.com/openorch/openorch/cli/oo/commands/node"
-	secret "github.com/openorch/openorch/cli/oo/commands/secret"
-	"github.com/openorch/openorch/cli/oo/commands/user/login"
-	"github.com/openorch/openorch/cli/oo/commands/user/token"
-	"github.com/openorch/openorch/cli/oo/commands/user/whoami"
+	call "github.com/1backend/1backend/cli/oo/commands/call"
+	definition "github.com/1backend/1backend/cli/oo/commands/definition"
+	deployment "github.com/1backend/1backend/cli/oo/commands/deployment"
+	"github.com/1backend/1backend/cli/oo/commands/env"
+	"github.com/1backend/1backend/cli/oo/commands/grant"
+	instance "github.com/1backend/1backend/cli/oo/commands/instance"
+	"github.com/1backend/1backend/cli/oo/commands/node"
+	secret "github.com/1backend/1backend/cli/oo/commands/secret"
+	"github.com/1backend/1backend/cli/oo/commands/user/login"
+	"github.com/1backend/1backend/cli/oo/commands/user/token"
+	"github.com/1backend/1backend/cli/oo/commands/user/whoami"
 )
 
 func main() {
 	var rootCmd = &cobra.Command{
 		Use:   "oo",
-		Short: "OpenOrch CLI",
+		Short: "1Backend CLI",
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return cmd.Help()

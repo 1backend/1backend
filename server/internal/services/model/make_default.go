@@ -16,8 +16,8 @@ import (
 	"context"
 	"fmt"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 )
 
 func (ms *ModelService) makeDefault(ctx context.Context, modelId string) error {

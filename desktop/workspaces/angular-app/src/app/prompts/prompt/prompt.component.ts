@@ -15,7 +15,7 @@ import {
 	IonItem,
 	IonLabel,
 } from '@ionic/angular/standalone';
-import { PromptSvcPrompt as Prompt } from '@openorch/client';
+import { PromptSvcPrompt as Prompt } from '@1backend/client';
 import { DatePipe } from '@angular/common';
 @Component({
 	selector: 'app-prompt',

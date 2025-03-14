@@ -16,7 +16,7 @@ import {
 	Configuration,
 	ModelSvcStatusResponse,
 	ModelSvcPlatform as Platform
-} from '@openorch/client';
+} from '@1backend/client';
 import {
 	OnModelLaunch,
 	OnModelCheck,

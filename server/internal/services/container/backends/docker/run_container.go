@@ -34,14 +34,14 @@ import (
 	"github.com/flusflas/dipper"
 	"github.com/pkg/errors"
 
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/logger"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/logger"
 
-	container "github.com/openorch/openorch/server/internal/services/container/types"
+	container "github.com/1backend/1backend/server/internal/services/container/types"
 )
 
 // This obviously means there is a single container that can be active at the moment on a node.
-const launchedContainerName = "openorch-ai-container"
+const launchedContainerName = "1backend-ai-container"
 
 /*
 A low level method for running containers.
@@ -143,7 +143,7 @@ func (d *DockerBackend) RunContainer(
 
 	if existingContainer != nil {
 		if existingContainer.State != "running" ||
-			existingContainer.Labels["openorch-hash"] != req.Hash {
+			existingContainer.Labels["1backend-hash"] != req.Hash {
 			logs, err := d.GetContainerSummary(container.GetContainerSummaryRequest{
 				Hash:  req.Hash,
 				Lines: 10,
@@ -171,7 +171,7 @@ func (d *DockerBackend) RunContainer(
 		}
 	}
 
-	containerConfig.Labels["openorch-hash"] = req.Hash
+	containerConfig.Labels["1backend-hash"] = req.Hash
 
 	name := ""
 	if len(req.Names) > 0 {
@@ -215,10 +215,10 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 	// by streaming the URL from the File Svc into a file and then mounting that file.
 
 	for _, asset := range assets {
-		// We use the /root/.openorch/downloads as it's also the location that the File Svc uses.
+		// We use the /root/.1backend/downloads as it's also the location that the File Svc uses.
 		// So if everything is running on the same node we avoid unnecessary processing.
 		// This is obviously just a hack for local setups when we run directly on the host and not inside containers.
-		assetPath := filepath.Join("/root/.openorch/downloads", encodeURLtoFileName(asset.Url))
+		assetPath := filepath.Join("/root/.1backend/downloads", encodeURLtoFileName(asset.Url))
 
 		assetExists := false
 		if fileExists(assetPath) {
@@ -249,7 +249,7 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 
 		assetPath = transformWinPaths(assetPath)
 
-		// eg. MODEL=/root/.openorch/downloads/sOm3H4ashedFileName
+		// eg. MODEL=/root/.1backend/downloads/sOm3H4ashedFileName
 		environment = append(
 			environment,
 			fmt.Sprintf(
@@ -260,13 +260,13 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 		)
 	}
 
-	// If the OpenOrch server is running in Docker, we need to find the volume it mounted so we can share
-	// the downloaded files with containers the OpenOrch server starts.
-	// If the OpenOrch server is running directly on the host, we will just mount the ~/.openorch folder in
-	// the containers the OpenOrch server starts.
+	// If the 1Backend server is running in Docker, we need to find the volume it mounted so we can share
+	// the downloaded files with containers the 1Backend server starts.
+	// If the 1Backend server is running directly on the host, we will just mount the ~/.1backend folder in
+	// the containers the 1Backend server starts.
 
-	openorchVolumeName := d.volumeName
-	if openorchVolumeName == "" {
+	volumeName := d.volumeName
+	if volumeName == "" {
 		if isRunningInDocker() {
 			currentContainerId, err := getContainerID()
 			if err != nil {
@@ -275,16 +275,16 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 
 			mountedVolume, err := d.getMountedVolume(
 				currentContainerId,
-				"/root/.openorch",
+				"/root/.1backend",
 			)
 			if err != nil {
 				return nil, nil, err
 			}
 
-			openorchVolumeName = mountedVolume
+			volumeName = mountedVolume
 		} else {
 			// If we are not running in Docker, we will ask the Config Svc about the config directory and we mount that.
-			// If that's not set, we will just default to `~/.openorch`.
+			// If that's not set, we will just default to `~/.1backend`.
 			getConfigResponse, _, err := d.clientFactory.Client(sdk.WithToken(d.token)).
 				ConfigSvcAPI.GetConfig(context.Background()).
 				Execute()
@@ -296,10 +296,10 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 			configFolderPath, ok := configFolderPathI.(string)
 			if !ok {
 				homeDir, _ := os.UserHomeDir()
-				configFolderPath = path.Join(homeDir, ".openorch")
+				configFolderPath = path.Join(homeDir, ".1backend")
 			}
 
-			openorchVolumeName = configFolderPath
+			volumeName = configFolderPath
 		}
 
 	}
@@ -308,18 +308,18 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 
 	hostBinds = append(
 		hostBinds,
-		fmt.Sprintf("%v:/root/.openorch", openorchVolumeName),
+		fmt.Sprintf("%v:/root/.1backend", volumeName),
 	)
 
 	// Persistent paths are paths in the container we want to persist.
 	// eg. /root/.cache/huggingface/diffusers
-	// Then here we mount openorch-data:/root/.cache/huggingface/diffusers
+	// Then here we mount 1backend-data:/root/.cache/huggingface/diffusers
 	for _, keep := range keeps {
 		hostBinds = append(
 			hostBinds,
 			fmt.Sprintf(
 				"%v:%v",
-				openorchVolumeName,
+				volumeName,
 				keep.Path,
 			),
 		)

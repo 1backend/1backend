@@ -10,11 +10,11 @@ import (
 	"path/filepath"
 	"strconv"
 
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	file "github.com/1backend/1backend/server/internal/services/file/types"
 	"github.com/gorilla/mux"
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	file "github.com/openorch/openorch/server/internal/services/file/types"
 	"github.com/pkg/errors"
 )
 
@@ -24,7 +24,7 @@ import (
 // @Description Note: The `ID` and `FileID` fields of an upload are different.
 // @Description - `FileID` is a unique identifier for the file itself.
 // @Description - `ID` is a unique identifier for a specific replica of the file.
-// @Description Since OpenOrch is a distributed system, files can be replicated across multiple nodes.
+// @Description Since 1Backend is a distributed system, files can be replicated across multiple nodes.
 // @Description This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
 // @Tags File Svc
 // @Accept json

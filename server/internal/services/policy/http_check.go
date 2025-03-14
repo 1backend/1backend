@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	sdk "github.com/openorch/openorch/sdk/go"
-	policy "github.com/openorch/openorch/server/internal/services/policy/types"
+	sdk "github.com/1backend/1backend/sdk/go"
+	policy "github.com/1backend/1backend/server/internal/services/policy/types"
 	"golang.org/x/time/rate"
 )
 

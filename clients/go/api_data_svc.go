@@ -1,5 +1,5 @@
 /*
-OpenOrch
+1Backend
 
 A language-agnostic microservices framework for building AI applications.
 

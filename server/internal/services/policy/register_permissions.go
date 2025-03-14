@@ -11,10 +11,10 @@ package policyservice
 import (
 	"context"
 
-	openapi "github.com/openorch/openorch/clients/go"
-	sdk "github.com/openorch/openorch/sdk/go"
-	policytypes "github.com/openorch/openorch/server/internal/services/policy/types"
-	usertypes "github.com/openorch/openorch/server/internal/services/user/types"
+	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
+	policytypes "github.com/1backend/1backend/server/internal/services/policy/types"
+	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 func (p *PolicyService) registerPermissions() error {

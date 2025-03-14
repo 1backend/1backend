@@ -18,7 +18,7 @@ For simplicity the Container Svc is only concerned with the node it resides on. 
 - [Model Svc](/docs/built-in-services/file-svc) to launch containers running AI models.
 - [Deploy Svc](/docs/built-in-services/file-svc) to launch containers to deploy service instances.
 
-> This page provides a high-level overview of `Container Svc`. For detailed information, refer to the [Container Svc API documentation](/docs/openorch/run-container).
+> This page provides a high-level overview of `Container Svc`. For detailed information, refer to the [Container Svc API documentation](/docs/1backend/run-container).
 
 ## Responsibilities
 

@@ -18,10 +18,10 @@ import (
 	"path"
 	"sync"
 
-	sdk "github.com/openorch/openorch/sdk/go"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	"github.com/openorch/openorch/sdk/go/lock"
-	types "github.com/openorch/openorch/server/internal/services/file/types"
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/lock"
+	types "github.com/1backend/1backend/server/internal/services/file/types"
 )
 
 type FileService struct {

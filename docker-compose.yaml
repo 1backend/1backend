@@ -1,15 +1,15 @@
 # This yaml file builds the current code in this repo.
 # For production use the docker-compose.yaml found at ./docs-source/docs/start/docker-compose.yaml
-# or search for "Docker Compose" here https://openorch.org/
+# or search for "Docker Compose" here https://1backend.com/
 version: "3.8"
 
 volumes:
-  openorch-data:
-    name: openorch-data
+  1backend-data:
+    name: 1backend-data
     driver: local
 
 services:
-  openorch-frontend:
+  1backend-frontend:
     build:
       context: ./desktop
       dockerfile: ./docker/Dockerfile
@@ -20,10 +20,10 @@ services:
       # It is not an internal address, it's the address the browser will make API requests to.
       - BACKEND_ADDRESS=http://127.0.0.1:58231
 
-  openorch-backend:
+  1backend-backend:
     build:
       context: .
-      dockerfile: ./server/docker/openorch/default/Dockerfile
+      dockerfile: ./server/docker/1backend/default/Dockerfile
     ports:
       - "58231:58231"
     volumes:
@@ -32,7 +32,7 @@ services:
       # We mount the docker socket so the backend can start containers
       - /var/run/docker.sock:/var/run/docker.sock
       # We mount a volume so data will be persisted
-      - openorch-data:/root/.openorch
+      - 1backend-data:/root/.1backend
       # environment:
       # GPU Acceleration for NVIDIA GPUs
       # Uncomment this envar for NVIDIA GPUs.

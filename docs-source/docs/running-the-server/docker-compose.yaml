@@ -1,13 +1,13 @@
 version: "3.8"
 
 volumes:
-  openorch--data:
-    name: openorch--data
+  1backend--data:
+    name: 1backend--data
     driver: local
 
 services:
-  openorch-frontend:
-    image: crufter/openorch--frontend:latest
+  1backend-frontend:
+    image: crufter/1backend--frontend:latest
     ports:
       - "3901:80"
     environment:
@@ -15,8 +15,8 @@ services:
       # It is not an internal address, it's the address the   browser will make API requests to.
       - BACKEND_ADDRESS=http://127.0.0.1:58231
 
-  openorch-backend:
-    image: crufter/openorch--backend:latest
+  1backend-backend:
+    image: crufter/1backend--backend:latest
     # use this if you have an nvidia card
     # build: ./localtron/docker/DockerfileNvidia
     ports:
@@ -27,10 +27,10 @@ services:
       # We mount the docker socket so the backend can start containers
       - /var/run/docker.sock:/var/run/docker.sock
       # We mount a volume so data will be persisted
-      - openorch--data:/root/.openorch-
+      - 1backend--data:/root/.1backend-
     environment:
-      # This volume will be mounted by the LLM containers to access the models downloaded by OpenOrch.
-      - OPENORCH_VOLUME_NAME=openorch--data
+      # This volume will be mounted by the LLM containers to access the models downloaded by 1Backend.
+      - OPENORCH_VOLUME_NAME=1backend--data
       # Address of the host so we can access the containers running the LLMs from the backend container
       # See "System Specific Settings" on this page for more information.
       - OPENORCH_LLM_HOST=172.17.0.1

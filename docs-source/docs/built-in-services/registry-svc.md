@@ -12,7 +12,7 @@ tags:
 
 The registry service is designed to maintain a database of service definitions, service instances and nodes.
 
-> This page provides a high-level overview of `Registry Svc`. For detailed information, refer to the [Registry Svc API documentation](/docs/openorch/register-instance).
+> This page provides a high-level overview of `Registry Svc`. For detailed information, refer to the [Registry Svc API documentation](/docs/1backend/register-instance).
 
 ## Entities
 
@@ -46,7 +46,7 @@ HostPorts are a temporary requirement until support for dynamic port assignment 
 ```yaml
 id: test-b
 repository:
-  url: https://github.com/openorch/openorch.git
+  url: https://github.com/1backend/1backend.git
   containerFile: server/docker/Dockerfile
 hostPort: 9998
 ```
@@ -66,7 +66,7 @@ Definitions become instances through the [Deployment entity of the Deploy Servic
 
 ### Node
 
-A `Node` is a physical or virtual machine that runs a OpenOrch server.
+A `Node` is a physical or virtual machine that runs a 1Backend server.
 Maintaining a list of nodes is important so the daemon can efficiently distribute workload across the nodes. It's the basis for all distributed features.
 
 This is how a well configured node should look like:
@@ -97,7 +97,7 @@ To configure the nodes, please see the `OPENORCH_URL` and `OPENORCH_NODE_ID` env
 
 ## How It Works
 
-The registry is needed when you want to call services not included in the OpenOrch server. You can think of the daemon as the standard library and services in the registry as third party libraries.
+The registry is needed when you want to call services not included in the 1Backend server. You can think of the daemon as the standard library and services in the registry as third party libraries.
 
 When you want to call a service, you can ask the registry to provide you with a list of instance addresses for a service by service slug. Then you can use any of those instance addresses to make a call.
 

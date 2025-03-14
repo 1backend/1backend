@@ -25,7 +25,7 @@ import {
 	DatastoreFilter,
 	PromptSvcPrompt as Prompt,
 	PromptSvcListPromptsRequest,
-} from '@openorch/client';
+} from '@1backend/client';
 
 import { ActivatedRoute, Router } from '@angular/router';
 

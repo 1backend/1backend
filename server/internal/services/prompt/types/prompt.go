@@ -16,11 +16,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/openorch/openorch/sdk/go/clients/stable_diffusion"
-	"github.com/openorch/openorch/sdk/go/datastore"
-	streammanager "github.com/openorch/openorch/server/internal/services/prompt/stream"
+	"github.com/1backend/1backend/sdk/go/clients/stable_diffusion"
+	"github.com/1backend/1backend/sdk/go/datastore"
+	streammanager "github.com/1backend/1backend/server/internal/services/prompt/stream"
 
-	chat "github.com/openorch/openorch/server/internal/services/chat/types"
+	chat "github.com/1backend/1backend/server/internal/services/chat/types"
 )
 
 type ErrorResponse struct {
@@ -122,7 +122,7 @@ type Prompt struct {
 	RequestMessageId  string `json:"requestMessageId"`
 	ResponseMessageId string `json:"responseMessageId"`
 
-	// ModelId is just the OpenOrch internal ID of the model.
+	// ModelId is just the 1Backend internal ID of the model.
 	ModelId string `json:"modelId,omitempty" example:"huggingface/TheBloke/mistral-7b-instruct-v0.2.Q3_K_S.gguf"`
 
 	// MaxRetries specified how many times the system should retry a prompt when it keeps erroring.
@@ -265,7 +265,7 @@ type PromptRequest struct {
 	// or set `prompt.sync` to true for a blocking answer.
 	ThreadId string `json:"threadId"`
 
-	// ModelId is just the OpenOrch internal ID of the model.
+	// ModelId is just the 1Backend internal ID of the model.
 	ModelId string `json:"modelId,omitempty" example:"huggingface/TheBloke/mistral-7b-instruct-v0.2.Q3_K_S.gguf"`
 
 	// MaxRetries specified how many times the system should retry a prompt when it keeps erroring.

@@ -13,10 +13,10 @@ const fs = require('fs');
 
 const child_process = require('child_process');
 
-class OpenOrchAfterEmitPlugin {
+class 1BackendAfterEmitPlugin {
 	apply(compiler) {
 		compiler.hooks.afterEmit.tapPromise(
-			'OpenOrchAfterEmitPlugin',
+			'1BackendAfterEmitPlugin',
 			async (compilation) => {
 				const outputPath = compilation.outputOptions.path;
 
@@ -109,6 +109,6 @@ module.exports = {
 				},
 			],
 		}),
-		new OpenOrchAfterEmitPlugin(),
+		new 1BackendAfterEmitPlugin(),
 	],
 };

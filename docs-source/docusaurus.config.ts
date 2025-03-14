@@ -7,10 +7,10 @@ import type * as Plugin from "@docusaurus/types/src/plugin";
 import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
 
 const config: Config = {
-  title: "OpenOrch",
+  title: "1Backend",
   tagline:
     "A language-agnostic microservices framework for building AI applications.",
-  url: "https://openorch.org",
+  url: "https://1backend.com",
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
@@ -18,8 +18,8 @@ const config: Config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "openorch", // Usually your GitHub org/user name.
-  projectName: "openorch", // Usually your repo name.
+  organizationName: "1backend", // Usually your GitHub org/user name.
+  projectName: "1backend", // Usually your repo name.
 
   presets: [
     [
@@ -30,7 +30,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            "https://github.com/openorch/openorch/tree/main/docs-source/",
+            "https://github.com/1backend/1backend/tree/main/docs-source/",
           docItemComponent: "@theme/ApiItem", // Derived from docusaurus-theme-openapi
         },
         blog: {
@@ -38,7 +38,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            "https://github.com/openorch/openorch/tree/main/docs-source/",
+            "https://github.com/1backend/1backend/tree/main/docs-source/",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
@@ -61,18 +61,18 @@ const config: Config = {
       },
       {
         name: "title",
-        content: "OpenOrch Documentation",
+        content: "1Backend Documentation",
       },
       {
         name: "description",
-        content: "OpenOrch API, Tutorials, Snippets and more",
+        content: "1Backend API, Tutorials, Snippets and more",
       },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     navbar: {
-      title: "OpenOrch",
+      title: "1Backend",
       logo: {
-        alt: "OpenOrch Logo",
+        alt: "1Backend Logo",
         src: "img/logo_circled_grey.svg",
       },
       items: [
@@ -90,10 +90,10 @@ const config: Config = {
         {
           label: "API",
           position: "left",
-          to: "/docs/category/openorch-api",
+          to: "/docs/category/1backend-api",
         },
         {
-          href: "https://github.com/openorch/openorch",
+          href: "https://github.com/1backend/1backend",
           label: "GitHub",
           position: "right",
         },
@@ -106,8 +106,8 @@ const config: Config = {
           title: "Docs",
           items: [
             {
-              label: "openorch.org",
-              href: "https://openorch.org",
+              label: "1backend.com",
+              href: "https://1backend.com",
             },
             {
               label: "singulatron.com",
@@ -133,12 +133,12 @@ const config: Config = {
           items: [
             {
               label: "GitHub",
-              href: "https://github.com/openorch/openorch",
+              href: "https://github.com/1backend/1backend",
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} OpenOrch, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} 1Backend, Inc. Built with Docusaurus.`,
     },
     prism: {
       prism: {
@@ -211,11 +211,11 @@ const config: Config = {
         id: "openapi",
         docsPluginId: "classic",
         config: {
-          openorch: {
-            specPath: "examples/openorch.yaml",
-            outputDir: "docs/openorch",
+          1backend: {
+            specPath: "examples/1backend.yaml",
+            outputDir: "docs/1backend",
             downloadUrl:
-              "https://raw.githubusercontent.com/openorch/openorch/main/server/docs/swagger.yaml",
+              "https://raw.githubusercontent.com/1backend/1backend/main/server/docs/swagger.yaml",
             sidebarOptions: {
               groupPathsBy: "tag",
               categoryLinkSource: "tag",

@@ -1,5 +1,5 @@
 /*
-OpenOrch
+1Backend
 
 A language-agnostic microservices framework for building AI applications.
 
@@ -42,7 +42,7 @@ var (
 	queryDescape    = strings.NewReplacer( "%5B", "[", "%5D", "]" )
 )
 
-// APIClient manages communication with the OpenOrch API v0.3.0-rc.29
+// APIClient manages communication with the 1Backend API v0.3.0-rc.29
 // In most cases there should be only one, shared, APIClient.
 type APIClient struct {
 	cfg    *Configuration

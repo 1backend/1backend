@@ -8,7 +8,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Subscription, throttleTime } from 'rxjs';
 import { DownloadService } from '../services/download.service';
-import { FileSvcDownload as Download } from '@openorch/client';
+import { FileSvcDownload as Download } from '@1backend/client';
 import { TranslatePipe } from '../translate.pipe';
 import { TranslateModule } from '@ngx-translate/core';
 import { IonSpinner, IonIcon } from '@ionic/angular/standalone';

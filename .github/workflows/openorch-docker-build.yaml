@@ -1,10 +1,10 @@
-name: "OpenOrch backend Docker build"
+name: "1Backend backend Docker build"
 
 on:
   workflow_dispatch:
     inputs:
       branch:
-        description: "Branch to build your image from. The final image tag will follow this format: 'name/openorch-backend:cuda-12.2.2-0.3.0-rc.16'"
+        description: "Branch to build your image from. The final image tag will follow this format: 'name/1backend-backend:cuda-12.2.2-0.3.0-rc.16'"
         required: false
         default: "main"
       backend:
@@ -23,7 +23,7 @@ on:
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-  IMAGE_NAME: "openorch-backend"
+  IMAGE_NAME: "1backend-backend"
 
 jobs:
   build-and-push:
@@ -58,7 +58,7 @@ jobs:
         run: |
           DOCKER_BUILDKIT=1 docker build \
             --build-arg BACKEND_VERSION="${{ github.event.inputs.backend_version }}" \
-            -f server/docker/openorch/${{ github.event.inputs.backend }}/Dockerfile \
+            -f server/docker/1backend/${{ github.event.inputs.backend }}/Dockerfile \
             -t ${{ env.IMAGE_TAG }} .
 
           docker push ${{ env.IMAGE_TAG }}
