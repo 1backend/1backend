@@ -1,0 +1,63 @@
+---
+id: subscribe-to-events
+title: "Subscribe to the Event Stream"
+description: "Establish a subscription to the firehose events and accept a real time stream of them."
+sidebar_label: "Subscribe to the Event Stream"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VE2P2zYQ/SvEnGnJu9sArU7dANtg0QAN4N2T48OIGkvsUiRDUnZdQUB/RH9hf0kx+vA6bnLoIblYBjkfb968xx4qiipon7SzUMBDTFgaHRuBInbl+UokJ1JDYq8DNS6SoAPZFAXaSqBS5JNAEQiNSLolEVMgbIXbc1KbgQTnKSBXeqyggLl0SU/uYSwEEgJF72ykCEUPt+s1f67AcaioMCFIUM4msomjEv2R8hHQamrMh1E11OJ4ffLEPVPQtoZhGAYJP6xv/lv/2WKXGhf0n1T9rw4+8HhJT9gpBBe+1FguJ678nVSaobz50qiPNlGwaMSGwoGCeBhrfidMg4RIqgs6naDY9vCWMFC471IDxXY37CQkrCMUW/hlkcPmoGAnoaXUOF5wTQkkeOQUyBfVrOJBTZBjfpYAcDceMo7NumA4JTdOoWlcTMWbH2/vboDbLqg2POU02CW2axKfTp7ExznkI4i9M8YdqRLlieXtUdEo4OReyApUnzodqBL74NpR7M+RAk8m3rtaW0G28k7bxHLWXL8hrIi3YrFlCu9n9Yw6hzOz6PWvdBq51nbvGCevEdW4RmpR88QRDcWfo7Z1ZzAFZzPl2ovaHx7FpvPeBSZ2IqlJyRd5flOieiFbcUIOg7xi4V4o17bOijlM7F0QJ9cFcf8o0Huj1Qg4/vPX361WwfE2tKK4KjFSNTJUdtokfgOiQkNMgNGKbCSeYEH47sN7cbjL1p/hi0WeH4/HrLZd5kKdz3kxx9qb1V22zprUGkadKLTxt/1m6v46XjxiXVPItMvHkJyZ1clwyM3baSaQwAKaBl5nd9l6FVR2+xPX9S6mFu0F0s0iveVVmx6WzeSiK/76V899u9dxVspoaW9QWwY+ktjPJtrCpYlAAi3v5quRdhLYMBzc97y852CGgY8/dRTYyzsJBwwaS2ZvuxvkomF23gudeI0jXiYUTXcG9dk7M1w6/d3DE0jA2YCvkudqcvnD5Zcre7oofm2ZCQP/DvIrKX0/GWoYzvHT1Vczzj6dopnd3TAM/wIZIGjO
+sidebar_class_name: "get api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Subscribe to the Event Stream"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/firehose-svc/events/subscribe"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Establish a subscription to the firehose events and accept a real time stream of them.
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Event data","content":{"text/event-stream":{"schema":{"type":"string"}}}},"401":{"description":"Unauthorized","content":{"text/event-stream":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"text/event-stream":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

@@ -1,0 +1,73 @@
+---
+id: assign-permissions
+title: "Assign Permissions"
+description: "Assign permissions to roles."
+sidebar_label: "Assign Permissions"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9Vdtu4zYQ/RVinmXJSbpAq6c6xaIIGqBBvHlyDCxNjWVuKJLhUPa6goB+RL+wX1KMLrHjuHt5aF9siTocnjkzZ9hAgaSC9lE7CznMiHRphcdQaSLtLInoRHAGKX20j/Yen2sdkETcoPhYE4YJbVV+wOeyi/DxKEQKCTiPQfIZNwXk0GPuDodAAgGfa6R47Yo95A0oZyPayI/Se6NVtzv7REyzAVIbrCQ/+cCxo0bq3l5i3mr71C3piBV9CcmUGoh7j5ADxaBtCW0CnPTZT20yrrjVJ1QRDgsyBLk/h+Cls0ofiSDuewkGMXTAAvIYamQySN5Z6qlfTqf899V4VCuFROvamD0k3y7pG+5tAj9ML96e+WBlHTcu6D+w+J4DXlcCQ3Dhm3TumLw7l/2NjRisNGKOYYtBvO9i/j+U2gQIVR103EO+aOAaZcAwq+MG8sWyXSYQZUmQL+CBMIj5VsEygQrjxrEZfM0V95LhkI2WyjrPZf6VR6hLjrpT6mAYnxmnpNk4ivm7Hy+vLoDPG+nMOb0+o2NSp+J92HsUjwPkEcTaGeN2WIjVXkhBXioU0hYiuie0Qqq+N8U6uKqbA2Na4taV2gq0hXfaRva95vgblAVyNaysWLvZ0DRdLeBgHq9/w949XJ/7w0B4/1lW3uBZgy9OrTwW6+Dgl/ItW2a0duOAkarrDKykZjFJGqSfSduyNjIGZ1PlqiPadzdiXnvvAhes138To8+z7GIl1RPagjdk8NbrQrmqclYMMLF2QexdHcTsRhz1Jf3951+VVsFxobVCmqwkYdGJv6q1iTyMSUmDrK3RCi11qowMf727FdurdPqKH+VZttvt0tLWqQtlNuyjTJbeTK7SabqJlemmGIaKfl/P+9MP6dFOliWGVLusg2RcNB25InBx3ecECXBv9glP06t0OgkqvfyJ43pHsZL2mOmbaQUnoh1dAf/ZrTQ0XsTPMfNGastkO+GawZALGKMN/cQ8j025TIDNx8im4Wo9BNO2vPxcY+CBsExgK4OWK5ZrwS04+IFb9wn3kMMvfaYTNiLrKE3dG+JkYrXJuGOmFPr4RezxjLl7+AAJrIa7tXIFbwlyx0nJHeTQXdFdCzKgW2vASFvWsmRsH5KtKYcRcjAtM0rGB05q/GT3RwRPTd/nwb+c1dktTdOPhLZ9wfef/nXHy6Tp0VzQZdu2/wBVtBu+
+sidebar_class_name: "put api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Assign Permissions"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/user-svc/roles/permissions"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Assign permissions to roles.
+
+Requires the `user-svc:permission:assign` permission.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"permissionLinks":{"items":{"properties":{"permissionId":{"type":"string"},"roleId":{"type":"string"}},"type":"object"},"type":"array"}},"type":"object"}}},"description":"Assign Permissions Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Assign Permissions successfully","content":{"application/json":{"schema":{"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

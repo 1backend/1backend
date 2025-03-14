@@ -1,0 +1,71 @@
+---
+id: get-messages
+title: "List Messages"
+description: "Fetch messages (and associated assets) for a specific chat thread."
+sidebar_label: "List Messages"
+hide_title: true
+hide_table_of_contents: true
+api: eJytVttu4zYQ/RWCL90FFMlJGmCrl9bbblq3aRPUCfYhMYoJNZa4oUgtObLjGgL6Ef3CfkkxkmzLsXeBRfuSyORw5szlHHItMwzK64q0szKVl0iqECWGADkG8QpsJiAEpzQQtp9I4bWYOy9AhAqVnmslVAEkqPAIWSwj6Sr0wA4nmUxljvRr709GsgIPJRL6INP79Yvot60LMflBRlLzQgVUyEhaKFGmsoswyWQkPX6stcdMpuRrjGRQBZYg07WkVcW2gby2uWyaGRuHytmAgffPRiP+tx94A1D0+SIFEWqlMIR5bcxKeCSvcYEcWzlLaIm9QFUZrdpckw+BXa0HUCrPlSDdBd4Ulb81YRkOTZRHLvOYjiQSybk2OMnCIfrLbkNkONcWg6ACBRsLIAJVlGipW+whiAIC92mL4iBUvwDew4p/64zN8BnKyvBGGfI/sJxe35j3F2+cjA49lEhtDSDLNMMEczNItWtaf8g9fkBFbVh8psP0bvGZRF904eZ7mWAeiwf5k47EsgD6Koi6+vZBHgO0HZ5D//3OC99coV3GVPg2Y3x3936cHwtQV9lnmlcH9MeC37XrQncN0lsQbC+WhRNL7wj3cD3YS+fFeLKjKRU6iLlG0zrCsqJVfAixGdLmnns6qMrsWDv2pqA5sGh47etjfJrYBRidiZ+n1799CWNeIu4CnB4pm4WaCuf1n19GyWMBLo5nQOgtGDFFv0Av3nnv/H+L1EQyoKq9plWrfW8RPPpxTYVM72csVAQ5y6L8nvV0ulDclRKpcKyjlQvUCijby4Q19yQsVNK1MFlvWtkk5U5uQ4u+09raGz6YGKfAFC5QevHm7PxUcuQNsCnj78RoCO+AMqsKxUNv8iDF3BnjlpiJx1V7L4DCVkrJPaEVoLqpE3PvynaUeeo5QXHlcm0F2qxy2lK80f0CIUO/U/5x3+y22LvJhkr/gt1oajt3rYQ6S6Da/mAJmjMOYDB8F7TNawPknY2VKwe+byZiWleV81zerkgFUZUmyekjqCe0GR9ImBH7VRgL5crSWdGbtdfiytUtOQfTEf756+9SK++4G1phOHmEwLepzcRjrQ0JciIoMK3mGK3QBuQMNgh/vLkSi/N4tIcvpEmyXC7j3Nax83nSnwsJ5JU5OY9HcUGl6WTVl+F6Pu2i79ILS8hz9LF2SWuScGU1tXp3+rbLSUaSB6hLeBSfx6MTr+Kzb9gvT2QJdoD0SgcSg9t+r17rHXn+n3dGPwV8aySVAW1boeUCrXua3MsNTbZaJyOZDh4SW67MIsmc4DPrNffnzpum4eWPNXpm7CySC/AaHrlA/HbRgb8zmc7BBPxMtq9+73X3tRg+cY7i34y2XXHpwdT8S0byCVfDJ1Aza6INTRhMtz1WCisaHDzQqGYoKTfX01sZSeg5vmMVe4s2H+z+KKqXrOww8N8m+sSR9brjbNNs7butT57YSkFnzUWaNU3zL8Qqrac=
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List Messages"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/chat-svc/thread/{threadId}/messages"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Fetch messages (and associated assets) for a specific chat thread.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Thread ID","in":"path","name":"threadId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Messages and assets successfully retrieved","content":{"application/json":{"schema":{"properties":{"messages":{"items":{"properties":{"createdAt":{"type":"string"},"fileIds":{"description":"FileIds defines the file attachments the message has.","items":{"type":"string"},"type":"array"},"id":{"example":"msg_emSOPlW58o","type":"string"},"meta":{"additionalProperties":true,"type":"object"},"text":{"description":"Text content of the message eg. \"Hi, what's up?\"","type":"string"},"threadId":{"description":"ThreadId of the message.","example":"thr_emSOeEUWAg","type":"string"},"updatedAt":{"type":"string"},"userId":{"description":"UserId is the id of the user who wrote the message.\nFor AI messages this field is empty.","type":"string"}},"required":["id","threadId"],"type":"object"},"type":"array"}},"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"type":"string"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"string"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

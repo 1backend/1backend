@@ -1,0 +1,73 @@
+---
+id: save-user
+title: "Save User"
+description: "Save user information based on the provided user ID."
+sidebar_label: "Save User"
+hide_title: true
+hide_table_of_contents: true
+api: eJzdVsFu4zYQ/RViTi2gSE7SBVqd6rTbwt1FE8SbU2JgaWoscUORXJKy1zUE9CP6hf2SYkgpdmJ3sb3soZeEImc4b95w3ngHFXrhpA3SaChhztfIOo+OSb0yruW0z5bcY8WMZqFBZp1ZywqrZDb7OX/Qs8CkZ1IH1HSwMo7xqpXaZ2yJgncemQxk7+MN78nzzK9FSYsSKxneM4uuld5TuE0jRcOMVtvhGtbwNeYP+he6OMUNhpEfk8Ezs9GEaiUVZswjMs/XOEe1yiEDY9HFLGYVlEAndx4dZGC54y0GdB7K+90LHu5SbpCBpE/LQwMZaN4ilEAAZhVk4PBjJx1WUAbXYQZeNNhyKHcQtpYsfXBS19D3i2SMPlyZaksWwhBdgZbcWiVFBFl88BR/d3CVdZRCkOjpK0E4CpCBV119KnI27pjlBxQBeto6UfSbRCC7TTCPsutpw1ujfQJyMZnQv+c3Xb+B7MszOwLWZ/DdqWtnes2VrNhv8+vf/0uA59Shc8Z9IUURyfkxkjvNu9AYJ//A6qsheXWak4BOc8Xm6Nbo2Ot459eBRM8NRedk2MbeuULu0E270EB5v6DHHnhNbZX6aL4WsMigxdAYakLbhdh/ZA7FKAZxUexSc/VAISix1J2dU2RbKCO4aowP5avvLy7PgWKNUOaUWsrmENBL4t5tLbKHweQB2MooZTZYseWWceYtF8i4rlgwj6gZF6kJ2MqZNqrXmBJ7a2qpGerKGqlDPmpFg7yKAjOoxXR4MLEO8EQnt/INbiPBVJvbvTq8/sRbq3Df7WMxxiY/6HpS6VFNuIhVx5ZLFaVOof/RS113igdndC5MewDrZsbmnbXGUTESv00ItiyK8yUXj6grcijgSC6mTJi2jWMhmkW935rOsemMHbw5//eff7VSOEOFlAL9WZojRO6ykyqQiHvBFRJ3SgrU/jDr6a83b9n6Mp88w+fLothsNnmtu9y4uhj8fMFrq84u80nehFYR6oCu9dereYq+T89veF2jy6UpoklBRZGBGIfzq5QTZEBvLyU8yS/zyZkT+cUPdK81PrRcHyCNAjqMlWdcHcj8/3C0Di854KdQWMWlJnZipXZDd9/DiIdqmAgqh/G5yIAamYx2O6Lhzqm+p+2PHToSlkUGa+4kX1JpaERLT+sKyhVXHj/D9Te3w+z6lu0n+Um4YzfqLZWcq46+IINH3O4nfb/os7GvCUg6/CmFOyNBOXA+Ut0+Gz2mQqANn7U91Mmbu3eQwXL4wdCailwc39Bs5puE08Tso+jFvR0oruuO12SbriSJ4YMU7sWHEGXjgpI6ycRL8Up50F/K6qTLbpekre+f7NPRv3o8KWaypsIs+r7/B6/GqWE=
+sidebar_class_name: "put api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Save User"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/user-svc/user/{userId}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Save user information based on the provided user ID.
+It is intended for admins, because it uses the `user-svc:user:edit` permission which only admins have.
+For a user to edit its own profile, see saveSelf.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"User ID","in":"path","name":"userId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"name":{"type":"string"},"slug":{"type":"string"}},"type":"object"}}},"description":"Save Profile Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

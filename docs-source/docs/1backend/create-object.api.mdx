@@ -1,0 +1,71 @@
+---
+id: create-object
+title: "Create a Generic Object"
+description: "Creates a new object with the provided details. Requires authorization and user authentication."
+sidebar_label: "Create a Generic Object"
+hide_title: true
+hide_table_of_contents: true
+api: eJztWF+PEzcQ/yqWX9pKe9n7Ay3kqUcPobSodyKgPlwimNiTXXNee7G9CWm0Uj9EP2E/STX2bi4h4QStQCrlJVnbM+OZ3/yzveYSvXCqDsoaPuQ/OYSAngEzuGR29hpFYEsVShZKZLWzCyVRMokBlPYD9gzfNMoRQxNK69TvQIIYGMkajy5OowlKxPkBz7it0cXBSPIhF3G/y7gPz7jDNw368MjKFR+uubAmoAn0CXWtOyn5a0+6rrkXJVZAX7UjsUGhp1FSe38+6Rg/d60+TwtMkeFa+cDsPOk/uoi2WFeA6Y0bXbBlaVlSXUZg0o6DiRnNGZg9cuWZsWEDXxZ5ROMcmqBXDERQC9zlWiqtJ2aG7E2DTqFkc2eryPeC9BovBIGJb6GqNfLhNb+e8Ma7lyenZ/fuTzjPOJtw64qX3//w4OHxhE/5NOMqYBXND6sa+ZD74JQpeJv1E+AcrGgsIURgQUpF+oC+2oIyuAY3PB3axIQaAx4C+KJbOYiwjxA7qzEOQgmBCTAsidvF99VLj3r+Kq7PkCRIFixzOEdHHxFY0BpdlP6Nj38jSVsQt3XF3cwd193O+VbNGb5VPvjvyAsfDquSB8kcgjyI27O08FGwkbAvCrQAMwrxA5RLpw7H229p4aNwi8K+IODaVE6VQ0n1IWZ0D+Z0L3vb/ZmY0fvNgXVFmtWw0hYk396HKkPc2NfW+FR2T4+P9z00boRA73n2Hyzyz0vs+p1nc4VasuBA3Hi2LJUoo0zPrNsR6DeiwDA0wa0yVqKulSkoGGqHCzSB+RqqL6iNdDafh4PUX5vMR6T9J/PR15706TF+fwtranlHhvwvG9wn8sK/74dtxu8d6mUjswCtJPt5fPnrP29o6Jx1B+x4ryYn+5q8MP09DOVn0+T+YUwCOgOajdEt0LHHUebnUanNuEfROBVWfHi95o8QHDrq/3x4PW3J2VB4CoILCEBNkAKgwlBaupPW1tNdtAai5zkFypFfiNz2t1QfTfJRduM0EeXaCtCl9WF4/8Hp2QmnXXolxmRUsmNblXche76qkU06kglnc6u1XaJksxUDOhkIjJkd7A0aBiLF8n5HZ09toeiQIWurTIhnRpJfxsLNM26gws2BqEtCfpsutfoFU76QV57dXskf94m5ffranLc+LFu7nr/TyK97d05TN+qHW01om6QrprdUmyp5S0XaKzO3/SsCJGWxAkX+8qDR/+iVKRoNwVkzELbaQuZqxMZNXVtH7k4uLkOoh3l+MgNxg0YSQ873jsjnTNiqsoZ1ZGxuHVvZxrHzEdsKeP/XH39WSjhLsaQE+qMZ+Hg4lGzWKB2ogHoBGsl9Wgk0PgLfa/jk6ilbnA2Od/TzwzxfLpeDwjQD64q84/M5FLU+OhscD8pQ6Vga0VX+cj5Ou9+a55dQFOgGyuaRJKe4UCHiffIo2cQzTuGfDD4enA2Oj5wYnD4kuZQ7FZgtTbtLA7AnaNApwTaPPTvIbT32fIZHqC7UA74Nea1BmdiKCcd1l/epQVDe05tVUnmaccpwWlyvyV8vnG5bmqbTNdWaacYX4FQK0Otpm/VJR6XiBldkXDLziLKdkATdpKx7pxi2Wc9xLgTW4U7a7fJ1dTl+zjM+697QKiuJx8GS8gmWfMjjK1yMQiKIc2uuwRQNFESbZFIKQVeobksDqZT1H2RVv2RWWxq+W1qSIfRLZh1kWa9T4WnbDX1aei/Hpp4lanLitG3bvwEWmzRe
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Create a Generic Object"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/data-svc/object"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Creates a new object with the provided details. Requires authorization and user authentication.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"object":{"properties":{"authors":{"description":"Authors is a list of user ID and organization ID who created the object.\nIf an organization ID is not provided, the currently active organization will\nbe queried from the User Svc.","example":["[\"usr_12345\""," \"org_67890\"]"],"items":{"type":"string"},"type":"array"},"data":{"additionalProperties":true,"type":"object"},"deleters":{"description":"Deleters is a list of user IDs and role IDs that can delete the object.\n`_self` can be used to refer to the caller user's userId and\n`_org` can be used to refer to the user's currently active organization (if exists).","items":{"type":"string"},"type":"array"},"id":{"type":"string"},"readers":{"description":"Readers is a list of user IDs and role IDs that can read the object.\n`_self` can be used to refer to the caller user's userId and\n`_org` can be used to refer to the user's currently active organization (if exists).","items":{"type":"string"},"type":"array"},"table":{"type":"string"},"writers":{"description":"Writers is a list of user IDs and role IDs that can write the object.\n`_self` can be used to refer to the caller user's userId and\n`_org` can be used to refer to the user's currently active organization (if exists).","items":{"type":"string"},"type":"array"}},"required":["data","table"],"type":"object"}},"type":"object"}}},"description":"Create request payload","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Success","content":{"application/json":{"schema":{"properties":{"object":{"properties":{"authors":{"description":"Authors is a list of user ID and organization ID who created the object.\nThe authors field tracks which users or organizations created an entry, helping to prevent spam.\nIf an organization ID is not provided, the currently active organization will\nbe queried from the User Svc.","example":["[\"usr_12345\""," \"org_67890\"]"],"items":{"type":"string"},"type":"array"},"createdAt":{"type":"string"},"data":{"additionalProperties":true,"type":"object"},"deleters":{"description":"Deleters is a list of user IDs and role IDs that can delete the object.\n`_self` can be used to refer to the caller user's userId and\n`_org` can be used to refer to the user's currently active organization (if exists).","example":["[\"usr_12345\""," \"org_67890\"]"],"items":{"type":"string"},"type":"array"},"id":{"type":"string"},"readers":{"description":"Readers is a list of user IDs and role IDs that can read the object.\n`_self` can be used to refer to the caller user's userId and\n`_org` can be used to refer to the user's currently active organization (if exists).","example":["[\"usr_12345\""," \"org_67890\"]"],"items":{"type":"string"},"type":"array"},"table":{"type":"string"},"updatedAt":{"type":"string"},"writers":{"description":"Writers is a list of user IDs and role IDs that can write the object.\n`_self` can be used to refer to the caller user's userId and\n`_org` can be used to refer to the user's currently active organization (if exists).","example":["[\"usr_12345\""," \"org_67890\"]"],"items":{"type":"string"},"type":"array"}},"required":["data","table"],"type":"object"}},"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

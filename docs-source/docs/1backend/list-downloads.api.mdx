@@ -1,0 +1,65 @@
+---
+id: list-downloads
+title: "List Downloads"
+description: "List download details."
+sidebar_label: "List Downloads"
+hide_title: true
+hide_table_of_contents: true
+api: eJytVdtuGzcQ/RWCz+td2U6Kdp8qI21h1GiMKn6yBYTijlaMuSTDmZUiCwvkI/qF/ZJiuLqsbDlo0L7owrnwzJkzw42sAHU0gYx3spQ3BklUfuWsV5WogJSxmD+4B/cnfG5NBBS0APFxbiyc4VKXO99yaWD1UQSIjUE03uUykz5AVJz5upKltAbp3dYdZSYjYPAOAWW5kRejEX+dQOPne0Acpb0jcMTOKgRrdLqg+IQcsZGoF9Ao/hUiX0+mz39IUW6kIWjwpY+OoAiqcUpO6wCylEjRuFp22T4DVFdr2iY9Qvvu2EHAF4OEgrzAhV8l3vbMhujrCIjCOEEQG+Qy2cO1zQwi/5ulJMpGUNVaHG5nYuc+NopkKY2jH97IbIfWOIIaIsOFGH08WQj37g/VwKvGW0WLV40T8wQva/91axGmF8i8tVbMjVN2gFxwvEDzBP+yBlOdhLEjb2DsaWMjkqIWT8a1ofpGf9toT5x3e1x+9gk0ycOBilGtT3l0fPZmdP6SpjunWlr4aJ6g+h4tPwfFF7w9NTHXjiAy6xOIS4jil6SC/3QTcwq6jYbWsrzfyCtQEeK4ZY3cT7tpJknVKMv7JAIxWWo5zWQDtPA89cEjyUyGpClZ7BZHMZxpTGAxpU9tkEVhvVZ24ZHKtz9eXJ5LvmiHY8Jw+xEconlOxod1APGwdXmQYu6t9SuoxGwtlMCgNAjlKkH+EZxQOi24Ssyjb5KI7xAi1yNufG2cAFcFbxyxeA3nX4CqgNl1aZrkeNvbxO1B0CqY36EXinFznzaNd6R0agc0ynDFqCzgz2hc3VpF0btc+2aQ+/ZaTNoQfGQ2e5IWRKEsivOZ0o/gKg4o0qY6YmEstG8a78TWTcx9FGvfRjG+FgMx4N9f/2qMjp67YTTg2UwhVImhWWsspU2mlU3Ta40Gh2kT7BD+dnsjlpf56AgflkWxWq3y2rW5j3WxjcNC1cGeXeajfEGNTVPFa/D9fNLffigPV6quIebGF8mlYGYNWXY5v+prkplkAfUFj/LLfHQWdX7xU9oWHqlRboA0PSvDl+iIsM1hWP7n53CrB4IvVASrjBusnX4+7uUuk8wGT9Y0kzwJbN9suCt30XYdH39uIfJYTjO5VNGoGdNyP+2ynTh5pB5hzf3RGgKLZ6ls2+vy2SLohnN7+37yQWZStUdvgQqGs2W7H5x+Z3LrQfLns9Bj4M8ueyVks+knpev2/r3p1Yj9APbeTOi067p/AAsTDuU=
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List Downloads"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/file-svc/downloads"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+List download details.
+
+Requires the `file-svc:download:view` permission.
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"List of downloads","content":{"application/json":{"schema":{"properties":{"downloads":{"items":{"properties":{"createdAt":{"type":"string"},"downloadedBytes":{"description":"DownloadedBytes exists to show the download progress in terms of the number of bytes already downloaded.","format":"int64","type":"integer"},"error":{"type":"string"},"fileName":{"type":"string"},"filePath":{"type":"string"},"fileSize":{"description":"FileSize is the full final downloaded file size.","format":"int64","type":"integer"},"id":{"type":"string"},"progress":{"type":"number"},"status":{"type":"string"},"updatedAt":{"type":"string"},"url":{"type":"string"}},"type":"object"},"type":"array"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"string"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

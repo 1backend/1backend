@@ -1,0 +1,71 @@
+---
+id: publish-event
+title: "Publish an Event"
+description: "Publishes an event to the firehose service after authorization check"
+sidebar_label: "Publish an Event"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9Vdtu4zYQ/RVinmnJSVqg1VOdIi3SLpqg3jx5/UBTY4kbiuSSlL2uQGA/ol/YLylGl0Rx0qIoir4Y8nBmdObwnFEHJQbplYvKGijgvt1pFWoMTBiGBzSRRctijWyvPNY2IAvoD0oiE/uInok21tar3wQ1YLJG+QgcrEPfR25LKMANTW+oHXDw+KnFEK9teYKiA2lNpIOiA+GcVrIvzD8GAtRBkDU2gp6cp7ZRYaB/PbjX4VJESk4cjGiQIvHkEAoI0StTQUp8itjdR5TxzUjiZ7zcTFSMs4xjKI8lFNG3mCgQnDVhwHG5XPZwXnTpEiQOX711dGsOQquS/bS++wX4vybFe+v/2dCpR3LxGsmDme4Uy/8JSeIQULZexRMUmw6uUXj0qzbWUGy2acshiipAsYEfJhWuDxK2HBqMte01ZgNpywmqgXxS6yIcZI6j8Ei56EP/itZrysu1lULXNsTi628ury6AXjZhWdNswzhzROeEvT85ZB/GlA/A9lZre8SS7U5MsOAEmcWULNpHNEzIQTZs723TO+shoKd52DtbKcPQlM4qEzPgoKh/jaJED5OiYTW3HDzxKZz6GU89w3Q5vz677OazaJzGF64598n8gpTZ28mZQvbp2AhFhAWhMXwXlKlaLaK3JpO2mUG7v2Xr1jnrie+B4zpGV+T5xU7IRzQlFeTwymArJm3TWMPGNLa3np1s69nqls2EF/748nujpLfjGgqLnQhY9gTvWqV7kwYpNBJ/Wkk0oZ98Qvjj/Tt2uMqWL/CFIs+Px2NWmTazvsrHupCLyunFVbbM6thoQh3RN+Fuvx7e/jxeOIqqQp8pm/cpOV2MisQ6XFwPMwEH0t8w8DK7ypYLL7PLb6kv6bcRZoZ0XMW0iKfN+YKy2eb8r9b2qKSIn2PutFCGkPUsdaOzNjB3FvBRUFsO5CE67zq6kAevU6LwpxY9mXrL4SC8EjtiZLNNfJI1mfERT1DA98M4C/ITUSV0O+j6bOskPlWspEQX/zZ3viPu79bvgcNu/PA0tqQaL460zcURCug/Xb3MKKGPdaCFqVpRUe7QkzwixlXwbD6CxKcHmmo6MqcZwnPzDoPQL431ZknXDdZO6Sl/OPrLiqeNMWTTPW5TSn8CdW+7/A==
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Publish an Event"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/firehose-svc/event"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Publishes an event to the firehose service after authorization check
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"event":{"properties":{"data":{},"name":{"type":"string"}},"type":"object"}},"type":"object"}}},"description":"Event to publish","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"{}"},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

@@ -90,7 +90,7 @@ func (dm *ContainerService) listContainers(req *container.ListContainersRequest)
 		q = dm.containerStore.Query(datastore.Equals([]string{"containerId"}, req.ContainerId))
 	}
 
-	q = q.OrderBy(datastore.OrderByField("createdAt", true))
+	// q = q.OrderBy(datastore.OrderByField("createdAt", true))
 
 	if req.Limit != 0 {
 		q.Limit(req.Limit)

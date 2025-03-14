@@ -1,0 +1,72 @@
+---
+id: prompt-types
+title: "Prompt Types"
+description: "The only purpose of this 'endpoint' is to export types otherwise not appearing in the API docs."
+sidebar_label: "Prompt Types"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVs1u3DYQfpXBnFpAK/mnAVqd6jhB4Sapjax98vrApWYlxhTJkNSutwsBfYg+YZ+kGErybmynKHoI0Iu9IOfnm29mPmqHFQXplYvKGizxuiGwRm/Bdd7ZQGBXEBsVYIFkKmeViQsEFSBaoAdnfYS4dRTAxob8RgUCYyMI50h4ZWpQBmJDcHZ1AZWVIV+Yaw43BTvwqywFdm6UqXN4Y1OgihyZCqwZUExu2QBSxTCkzzFD68gLLuOiwhKdt62L13yJGXr63FGIr221xXKH0ppIJvJP4ZxWMvkVnwJzsMMgG2oF/+LgWKJdfiIZse/77ClfqfiPQ/gxkfJUYRl9Rz0fBGdNoMDhTo6O+N+XIS7fYfbvETnPdUY1BJRNZ+6fH7cUgqiJiXia7cN0lZrYEJw3Is7XEsYLUBXERsR0l8KzoRM+gl3lC/NB1U0c2F8SiLVQWiw1wcp6WGBlDS1w8EtNGQkMkYcB+wwjPcTnqK7pIZ6nZEyEUCaAmJImJOwGtouui7Dytk2HIXoS7ctp0sEOhdaXKyxvd0ima7G8ZaZqT4GngtHi3VPvDB9mbDxbC29Ey4zeYgLHzb7auz+evUlx+ruXhgOUqbibNLDNqaaaBvhAazIRvqO8zrNUZwYM7Psc+8dC9hP4/ITPfnhpsC7MWmhVwa/zy9/++4iR99Yf7MLE8VeRHD9HcmNEFxvr1e9UfTMkr17mJJI3QsOc/Jo8vE0xvw2kPsNAsvMqbtNEvibhyZ91scHyNo1PFHWatqskXjBfSx7PlmJjk6bZpDFOsAcWg8TNwloWcdS5kKoKKXznNVsV2kqhGxti+erHk9Nj5EQTjjnXNZRyiObZevLULkaTBcLKam03VMFyCwKCE5JAmAqivScDQg4auF/Um0Ceq4H3tlbmUcV5cxXHb0hUxG3gfcMSz8ZpSU3Yr7dw6h1tE7vcmI97UX/7IFqneeN7Drmyk8oLmXpKrVDMRhCaws9BmbrTInprcmnbg7xXFzDvHD9rmI0ENjG6siiOl0Lek6nYocBn78AZSNu21sBolvRwazsPZxdwMFHhrz/+bJX0ljulJIXZUgSqEnvLTunID2uQQhOTo5UkE5KQTQh/uXoP69P86At8oSyKzWaT16bLra+L0S8UonZ6dpof5U1s9SC/vg2Xq/mQfV9e2Ii6Jp8rWySTgllXkSnF49dDTZghD9dQ8FF+mh/NvMxPfuK4PJqtMAdIxxmeXuAv6Dp4gf/PXxzjWLJmF04LZZiJ1JXduKS3uF/S0SHwSvM68u1ux+2/8brv+fhzR5614S7DtfCKH9YkDdm0IbzX97TFEs8HAmfMLzdG6G5YkSfi1WeTx5mU5OI/2h6KzdXl/BozXI6fTK2t2MeLDX/liA2WmL650lCzQTrboRam7kTNtkNM3lYxqsp+jxlSNv3gqqYrsz1A+FQHhkL4L5f1ostuN6hE3z/aD1df9XgUn8Gau3jX9/3fQ6rbWw==
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Prompt Types"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/prompt-svc/types"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+The only purpose of this "endpoint" is to export types otherwise not appearing in the API docs.
+This endpoint otherwise does nothing. Do not depend on this endpoint, only its types.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"type":"object"}}},"description":"Types Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"chunk":{"properties":{"messageId":{"description":"MessageId is the ChatSvc Message id that the chunk is part of.\nMight only be available for \"done\" chunks.","type":"string"},"text":{"description":"TextChunk contains a part of the text output from the stream.","type":"string"},"type":{"allOf":[{"enum":["progress","done"],"type":"string","x-enum-varnames":["ChunkTypeProgress","ChunkTypeDone"]}],"description":"Type indicates the type of the stream event (e.g., text, done)."}},"type":"object"}},"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

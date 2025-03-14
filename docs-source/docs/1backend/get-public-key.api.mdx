@@ -1,0 +1,63 @@
+---
+id: get-public-key
+title: "Get Public Key"
+description: "Get the public key to parse and verify the JWT."
+sidebar_label: "Get Public Key"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VMtu2zAQ/BViz7LkJC3Q6lQHKII80ARwgh4cH2hqLTGhSGZJ2VUFAf2IfmG/pFjJzqu9NIeeRFDD5ezsDDsoMCjSPmpnIYcTjCJWKHyzMlqJe2xFdMJLCiikLcQGSa/bAXL29TqFBJxHknz6tIAcSoxXw9FzbCEBwuCdDRgg7+BwOuXPywsvzyEB5WxEG/mv9N5oNRTM7gJDOgiqwlryyhNfF/VY0D/elHcQW4+QQ4ikbQl9n+x33OoOVYS+5713f+NwajfS6EKczS+/CEei1iFoWwqPNCydFbp4O00kcvQvFA/+pHhjZRMrR/o7/i8mvCnLAPkCbgKSmG8ULBOoMVZuN2pIwMtYQQ5ZE5AmYaOycSiT+2H+AWmDxDU6aMgwMDNOSVO5EPP3Hw6PDqBfMk41pGM7Z+Ij12OUhDRruPxrNa5bj+J2B7kFsXbGuC0WYtUKKYKXanRrdPdohVQPjSYsxJpcPVh334+4cKW2Am3hnbaR7ay5foWyQIIErKxZldlO+0FleBRLes3mY6W0XTvmyYORahgM1lJzx0EaDJ/YUI2RkZxNlauf1b46FfPGe0cs5yhSFaPPs+xgJdU92oIPZNAnr1SYCeXq2lmxg4m1I9G6hsTsVDyzRfj142etFTmehlYYJisZsBgUWjXaRI54UNIgC2C0QhuQO9gzPLm6EJujdPqCX8izbLvdpqVtUkdltjsXMll6MzlKp2kVa8OsI1IdLtfz8fan9sJWliVSql02QDJWVkfDkIPjsSdIgA00NjxNj9LphFR6+JHrehdiLe0zpvx6jc+PGN+fF4J1T7F5wzu3m3nEbzHzRmrLFAY5ul0IFrAPAefiKQbLBNjuDOg6lv6GTN/z9kOD1EK+WCawkaTlintfLPtk70DODZfIYaYUenbIRppmNN+r3PfPw3ny+Rr6/jdjDQO1
+sidebar_class_name: "get api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get Public Key"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/user-svc/public-key"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Get the public key to parse and verify the JWT.
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"publicKey":{"type":"string"}},"type":"object"}}}},"400":{"description":"Invalid JSON or missing permission id","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

@@ -1,5 +1,5 @@
 <p align="center">
-  <!-- <img width="150px" src="./docs-source/1backend_logo.svg" style="border-radius: 50%;" /> -->
+  <img width="150px" src="./docs-source/static/img/logo.svg" style="border-radius: 50%;" />
   <div align="center">
     <span>
       <h1 style="border-bottom: none">1Backend</h1>

@@ -30,7 +30,7 @@ var port = router.GetPort()
 
 // @title           1Backend
 // @version         0.3.0-rc.29
-// @description     A language-agnostic microservices framework for building AI applications.
+// @description     A common backend for your AI applications—microservices-based and built to scale.
 // @termsOfService  http://swagger.io/terms/
 
 // @contact.name   API Support

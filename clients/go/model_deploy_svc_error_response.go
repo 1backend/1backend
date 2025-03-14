@@ -1,7 +1,7 @@
 /*
 1Backend
 
-A language-agnostic microservices framework for building AI applications.
+A common backend for your AI applications—microservices-based and built to scale.
 
 API version: 0.3.0-rc.29
 Contact: sales@singulatron.com

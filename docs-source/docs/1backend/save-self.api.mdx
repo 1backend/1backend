@@ -1,0 +1,71 @@
+---
+id: save-self
+title: "Save User Profile"
+description: "Save user's own profile information."
+sidebar_label: "Save User Profile"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VdFu2zYU/RXivmwDFMlJVmDV05ytGLwWSxA3T6kfaOpaYkORLEnZdQUB+4h94b6kuKIUK7FXZC99sUXykvfcw3sOWyjQCydtkEZDDku+RdZ4dD94ZnaaWWc2UiGTemNczSkqhQSMRdcPFgXk4PkWl6g2kIDljtcY0HnI79tnh995dGzxOyQgaWh5qCABzWuEHCjpooAEHH5qpMMC8uAaTMCLCmsOeQthbynSByd1CV23isHow5Up9hQhjA6oA31ya5UUPcjso6f87eQo66iEINHTKEI4SpCAV015KnMyzpj1RxQBOpo6weTNQN9thHlUXUcT3hrtI5CL2Yz+np50/RaSl1d2BKxL4OdTxy70litZsD+X13/9nwRPqUPnjHshRT2S82Mkd5o3oTJOfsHiuyF5dZqTgE5zxZbotujYm/7M7wOJ2g1F42TY99q5Qu7QzZtQQX6/omYPvCRZRR0ttwJWCdQYKkMitE3o9UfhkJGazvxWZD7q0vf1RFE2TlFIpozgqjI+5K9+ubg8B0oxIlhSRbGIKY7nfL3fW2QfhpAPwDZGKbPDgq33jDNvuUDGdcGCeUDNuIi9zzbO1CxUyMZK2DtTSs1QF9ZIHdLRIirkBbqDScyHPunph0cWuZVvcd/zSldyezCFN595bRUeRD7ewajtidjJ40YT4aK/bKy5VL3DKfS/eqnLRvHgjE6FqSewbhZs2VhrHN1B5LcKweZZdr7m4gF1QRsyOHKJOROmro1mQxjbGMf2pnFsvmCTVvP//v1PLYUzdJFSoD9bc49FT+66kSqwYJgXXCFxp6RA7adVz/+4ece2l+nsCT6fZ9lut0tL3aTGldmwz2e8tOrsMp2lVagVoQ7oan+9Wcbsh/L8jpclulSarA/J6FJkIMbh/CrWBAlQ78WCZ+llOjtzIr14Teda40PN9QRp75t9XwzmCc84m7j8S5+roU0Cfg6ZVVxqSt3T0A6KuYdRMb1Y1Ia0RdqgpbYlsu+c6jqa/tSgI4muEthyJ/maqqXHTnr6LiDfcOXxG7B/vB1egZ/Y4U08CXJscL0nFrlqaAQJPOD+8GZ2qy4ZpUJA4uJvMd0ZaXSy+ci/umTcMRcCbfhm7NRxbu7eQwLr4emtTUFbHN/RK8d3Eafpq+99pJ9rQXFdNryk2HgkqZYP7nLQMyFKxg8q6iQTz/0g1kG/VNXJLW0b3aLrHuPj0n/ueDShGE0Xs+q67itm2ym+
+sidebar_class_name: "put api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Save User Profile"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/user-svc/self"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Save user's own profile information.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"User ID","in":"path","name":"userId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"name":{"type":"string"},"slug":{"type":"string"}},"type":"object"}}},"description":"Save Profile Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

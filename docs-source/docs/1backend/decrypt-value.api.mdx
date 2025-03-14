@@ -1,0 +1,71 @@
+---
+id: decrypt-value
+title: "Decrypt a Value"
+description: "Decrypt a value and return the encrypted result"
+sidebar_label: "Decrypt a Value"
+hide_title: true
+hide_table_of_contents: true
+api: eJzNVcGO2zYQ/RVizrLk3W2AVqd606BYNEAWcbYXxweaGsvMUiQzpOyogoB+RL+wX1IMJa+djRMUzaUXmxrOcN48zhv2UGFQpH3UzkIJv6CizkchxV6aFoW0lSCMLVkRdyjQpm1kY2hNhAycR5IcfVdBCdUY/zsHQwaEH1sM8dZVHZQ9KGcj2shL6b3RKgUWHwLn7iGoHTaSV5742Kgx8FeCwovYeYQSQiRtaxiycSf56IhNuOgzGSSR7GA4GdzmA6oIA5suk5CqEG/HGqZqNGEFZaQWBzYE72wYEVzP5/z37aNGf8j+r1QMGfxwqY5bWZ0R8a/BP0MwnX/15fkPVrZx50j/gdX3JnhxqYA7G5GsNGKJtEcSr4gcfV+mIYOAqiUdOyhXPdyiJKRFG3dQrtbDOoMo6wDlCpaoCKNY7hWsM2gw7hyLxbvEppccAUVIXrOwV8UkI+AMDDekBC0Z9iuMU9LsXIjlix+vb66AUx2RLBnw2AfneJ7T8a7zKN5PLu9BbJ0x7oCV2HRCiuClGrUf3SNaIdXY+GJLrkmD4CEgcT3itau1FWgr77SNOWSg+fwdygqZXysbpm0x3W5iF06d6PVvOLYiM/72NC5efZKNN3jW80fqT62+OprWA6fduuOMkSpdKDZSM2NBGgw/B23r1shIzubKNWfY7u/EsvXeERM+kryL0ZdFcbWR6hFtxQEFfDEoFkK5pnFWTG5i60h0riWxuBNn7RT+/vOvRityfJtaYZhtZMAqMbxptYkiOhGUNMgEGq2Qh0TZPyH89f612N/k88/whbIoDodDXts2d1QXU1woZO3N7Caf57vYmKR7pCa82S7H7KfywkHWNVKuXZFcCr4ZHZl2uLoda2K+kcJY8Dy/yeczUvn1T3wuN3Aj7RnS0/txfAI+Y+zsCfgPT83UNBE/xcIbqS1jSHz0k4hWcBJRyj3KaJ0By4X3+56pfyAzDGz+2CKxetfcVaTlhmtfcT9NHcy6e8QOSng5Ip+xdI5NmFr42dQYsmPEQilMIv667/k4uH+zfAcZbKbHsnEVx5A88NMjD1BCem5TQ7FDsvVgpK1bWbPveCarSU6qP+mMIWXHBVd13LLdGcLnOh0L4V8u62JI348qHoYn/3HrqxFPw2H05ntcD8PwD1W78rU=
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Decrypt a Value"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/secret-svc/decrypt"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Decrypt a value and return the encrypted result
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"value":{"type":"string"},"values":{"items":{"type":"string"},"type":"array"}},"type":"object"}}},"description":"Decrypt Value Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Decrypt Value Response","content":{"application/json":{"schema":{"properties":{"value":{"type":"string"},"values":{"items":{"type":"string"},"type":"array"}},"type":"object"}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"string"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"string"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

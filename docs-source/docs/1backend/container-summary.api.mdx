@@ -1,0 +1,71 @@
+---
+id: container-summary
+title: "Get Container Summary"
+description: "Get a summary of the Docker container identified by hash or name, limited to a specified number of lines."
+sidebar_label: "Get Container Summary"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9Vs1u4zYQfhWCZ0Vyki7Q6lTvxkjTTZOgTk5eH2hqLHFDkVqSsusVBPQh+oT7JIshZUuO7QDNIZc4Eufnm48z36ihGVhuROWEVjSl1+AII7YuS2Y2RC+JK4Bcaf4MhnCtHBMKDBEZKCeWAjKy2JCC2YJoQxQrISJSlMJBRpzGQBXwYKfqcgEGI0qhwMY0oroCwzDvTUZTuos+DclpRCtmWAkOjKXprHmB9NMOzR/MFjSiAt9+q8G7Ihaa0iIcWV5AyWjaULep8L11Rqictm10OuwdhjgeVoWj/xH2blf+LZZ/Iq7szg4CC+UgB0Pbdh5RA7bSyoJFg4vRCH/2s91/ppEnFJTDU1ZVUnDPdfLVokkzyFEZvAknQkCpc3ukpIhax1x94qi7sgMgV5OHvyefxo+Tq5h097ptI0sW2hVk6qMSpjJyq3PfFwdkUgPfamEgo+ks4Nuh6XPPd4568RW4o22Lrr8c4+dGrZgUGflzen+HnfuXsFaonDz0Dfdm/sAYbY72xAl854f4nhSrXaGN+A7ZuyH5cJwpB0YxSaZgVmDIxMd8H0jYWMBrI9zGz/9HYAbMuHYFTWdznATHsFdng6Gdrjh2Qgmu0KgqOTgvJOhDk53GnNkV758Su5Mc68sMelMbiU6J1JzJQluXfvj14vKcYuYtsCkWGmobwntJ4+OmAvKlM/lCyVJLqddBPlElGQc/Ak4/gyKMh3YnS6NLr8BPNtSGMyIUAZVVWigXb3WkAJaB6YVk3LWPv5V+pFglPsPG0y3UUiNOTwL3FwklE1ixZRLs7zgQtWTOaBVzXQ5iP9yQaV1V2iC1gaTCuSpNkvMF48+gMnRIUBj2WRgTrstSK9KZkaU2ZKNrQ8Y3ZNBG9se//5WCG423ITjYswWzkHmGFrWQDpeL5UwCEiAFB2UBK9givH64JavLeLSHz6ZJsl6v41zVsTZ50vnZhOWVPLuMR3HhSomoHZjS3i+nIXtfnl2zPAcTC514kwSZFU6iyfnHUBONKDZQKHgUX8ajM8Pji98wbqWtK5kaIMV1O2jeXRvu8db00/au+7lrGgf/uKSSTCiswfPZdBM1o3sT1emCf95XZpweNG8avMknI9sWX4f153e7sGwhUeGXTFp4hYGDvX8U5jNs+vW/YrJGE+r38hsydZ8Cr2TqvgjemOnw6+CVVNuPhD7XHB+MwGReGaOtHiCzwWnMOVRu4HWg2u1QNq8njzSirNOyXj0wWLT9B6Nvj9RmEPul+gQI+BdpOerSNEGb2nZnH45OeuwkL1gjQ/O2bX8Cneq3Pg==
+sidebar_class_name: "get api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get Container Summary"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/container-svc/container/summary"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Get a summary of the Docker container identified by hash or name, limited to a specified number of lines.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Container Hash","in":"query","name":"hash","schema":{"type":"string"}},{"description":"Container Name","in":"query","name":"name","schema":{"type":"string"}},{"description":"Number of Lines","in":"query","name":"lines","schema":{"type":"integer"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"logs":{"type":"string"},"status":{"type":"string"},"summary":{"description":"DEPRECATED. Summary contains both Status and Logs.","type":"string"}},"required":["logs","status","summary"],"type":"object"}}}},"400":{"description":"Invalid JSON or Missing Parameters","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      
