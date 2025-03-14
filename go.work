@@ -1,0 +1,11 @@
+go 1.23
+
+use ./server
+
+use ./dapper
+
+use ./clients/go
+
+use ./sdk/go
+
+use ./cli/oo

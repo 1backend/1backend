@@ -1,0 +1,73 @@
+---
+id: subscribe-to-prompt-responses
+title: "Subscribe to Prompt Responses by Thread"
+description: "Subscribe to prompt responses by thread via Server-Sent Events (SSE)."
+sidebar_label: "Subscribe to Prompt Responses by Thread"
+hide_title: true
+hide_table_of_contents: true
+api: eJzdVc1u4zYQfhViTrsLWnKSFmh1qrcNFka3aBA5hyIxsDQ1tthIJJeknLqCgD5En7BPUowoyY43aU+99GJT0vx8M/N9wxYK9NIpG5TRkEHebOhxgywYZp2pbWAOvTXao2ebAwulQ1GwvRIsR7dHN8tRB3a9Rx08e5Pn12+TB/2LaZgUmvnTcNHVsw1ujUMWSjww4ZBJhyJgkTzoVYnMB4eixoIOSu98b2K2LBwssk95//X7stGPnzjz2IdhNz3Q1cGiZ6gLa5QObGscqylRgUGoyifAwVh0gkpdFpDBhG5lYoTbsVLgYIUTNQZ0HrL79qxNq9iF5Q/AQdELK0IJHLSoETKIlS4L4ODwc6McFpAF1yAHL0usBWQtUEEEoi8Tum5NxmP+rIXL+Zz+zubT16/0bpoKcJBGB9SBrN+l7+jv9Sxdx+GrlyL/pLynuCN2NjXgXzJYR10NKqJG54x7KTEf35jNryjDBOXiSyh3WjShNE79jsV/l7zj4FE2ToVDP+H3KBy6RRNKyO7XNI4gdjR8iORg+V7CmkONoTREnx2GnifkAGkUy8zv5XD0aTv2skunyaYT6YDyk4IiwRpXUZi0MlJUpfEh+/qby6sLICAjzpzqjqWeov2CnSSVh8HkAdjWVJV5woL0K5i3QiITumDBPKJmQkaGsq0zdS+nO4+OqmUfzU7pSVHJSPYSRdHTYqD7YphWryyYei2s+hEPffeV3hrCSaMUsh8l1kJRxV5U6L8j6jWVCM7oRJr6JPbNkuWNtcZRs2OTyhBslqYXGyEfURfkkELHz7qwYNLUtdFsMOsXwsE0ji2WTFhbKdkD9n/98WetpDM0DSXRzzbCY9F3aNOoKtDu8lJUSA2olERSXdZOCD/cfGT7q2T+DJ/P0vTp6SnZ6SYxbpcOfj4VO1vNrpJ5Uoa6ItQBXe1/3uYx+7E8/yR2O3SJMmlvklJnVajI5OJ9rAk4EIFiwfPkKpnPnEwuv6W41vhQC32C9NlyH0h9e7rc41qDs062RwX+3++HgbkBfwuprYTS1Mh+qO0g9Hs4Cp3UH6UOHLJnS/94jxz1vuZAuqYYbUscu3NV19Hrzw06WkJrDnvhlNjQkOnSUZ7OBWRbUXn8h7m8uR3umbfs9G56sZ5RnvpA9BFVQ0/A4REPp3dXt+74KHUCEz8vpEQbThxpJXena/HD9Qo4iGEzHXcB+fPxQAFfxHG+S2JW+u34Ky5tGzdN10328dOrHtMCi9bUlnXXdX8DB3kgEQ==
+sidebar_class_name: "get api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Subscribe to Prompt Responses by Thread"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/prompt-svc/prompts/{threadId}/responses/subscribe"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Subscribe to prompt responses by thread via Server-Sent Events (SSE).
+You can subscribe to threads before they are created.
+The streamed strings are of type `StreamChunk`, see the PromptTypes endpoint for more details.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Thread ID","in":"path","name":"threadId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Streaming response","content":{"*/*":{"schema":{"type":"string"}}}},"400":{"description":"Missing threadId parameter","content":{"*/*":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"*/*":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

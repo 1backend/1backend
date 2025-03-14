@@ -1,0 +1,194 @@
+{
+	"$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+	"version": 1,
+	"newProjectRoot": "projects",
+	"projects": {
+		"angular-app": {
+			"projectType": "application",
+			"schematics": {
+				"@schematics/angular:component": {
+					"style": "scss"
+				},
+				"@schematics/angular:application": {
+					"strict": true
+				}
+			},
+			"root": "",
+			"sourceRoot": "src",
+			"prefix": "app",
+			"architect": {
+				"build": {
+					"builder": "@angular-devkit/build-angular:application",
+					"options": {
+						"outputPath": {
+							"base": "./.dist/angular-app"
+						},
+						"index": "src/index.html",
+						"polyfills": ["zone.js"],
+						"browser": "src/main.ts",
+						"server": "src/main.server.ts",
+						"tsConfig": "tsconfig.app.json",
+						"inlineStyleLanguage": "scss",
+						"assets": [
+							"src/favicon.ico",
+							"src/assets",
+							{
+								"glob": "**/*.svg",
+								"input": "../../node_modules/ionicons/dist/ionicons/svg",
+								"output": "./svg"
+							}
+						],
+						"styles": [
+							"src/styles.scss",
+							"../../node_modules/prismjs/themes/prism-twilight.css",
+							{
+								"input": "../../node_modules/@ionic/angular/css/core.css"
+							},
+							{
+								"input": "../../node_modules/@ionic/angular/css/normalize.css"
+							},
+							{
+								"input": "../../node_modules/@ionic/angular/css/structure.css"
+							},
+							{
+								"input": "../../node_modules/@ionic/angular/css/typography.css"
+							},
+							{
+								"input": "../../node_modules/@ionic/angular/css/display.css"
+							},
+							{
+								"input": "../../node_modules/@ionic/angular/css/padding.css"
+							},
+							{
+								"input": "../../node_modules/@ionic/angular/css/float-elements.css"
+							},
+							{
+								"input": "../../node_modules/@ionic/angular/css/text-alignment.css"
+							},
+							{
+								"input": "../../node_modules/@ionic/angular/css/text-transformation.css"
+							},
+							{
+								"input": "../../node_modules/@ionic/angular/css/flex-utils.css"
+							},
+							{
+								"input": "src/variables.scss"
+							}
+						],
+						"scripts": [
+							"../../node_modules/prismjs/prism.js",
+							"../../node_modules/prismjs/components/prism-css.min.js",
+							"../../node_modules/prismjs/components/prism-go.min.js",
+							"../../node_modules/prismjs/components/prism-bash.min.js"
+						]
+					},
+					"configurations": {
+						"production": {
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kb",
+									"maximumError": "1.5mb"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kb",
+									"maximumError": "16kb"
+								}
+							],
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.ts",
+									"with": "src/environments/environment.production.ts"
+								}
+							],
+							"outputHashing": "all",
+							"optimization": true,
+							"extractLicenses": true,
+							"sourceMap": false
+						},
+						"development": {
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true,
+							"namedChunks": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve": {
+					"builder": "@angular-devkit/build-angular:dev-server",
+					"configurations": {
+						"production": {
+							"buildTarget": "angular-app:build:production"
+						},
+						"development": {
+							"buildTarget": "angular-app:build:development"
+						}
+					},
+					"defaultConfiguration": "development"
+				},
+				"extract-i18n": {
+					"builder": "@angular-devkit/build-angular:extract-i18n",
+					"options": {
+						"buildTarget": "angular-app:build"
+					}
+				},
+				"test": {
+					"builder": "@angular-devkit/build-angular:karma",
+					"options": {
+						"main": "src/test.ts",
+						"tsConfig": "tsconfig.spec.json",
+						"karmaConfig": "karma.conf.js",
+						"inlineStyleLanguage": "scss",
+						"include": ["**/*.spec.ts"],
+						"assets": ["src/favicon.ico", "src/assets"],
+						"styles": ["src/styles.scss"],
+						"scripts": []
+					}
+				},
+				"cypress-run": {
+					"builder": "@cypress/schematic:cypress",
+					"options": {
+						"devServerTarget": "angular-app:serve"
+					},
+					"configurations": {
+						"production": {
+							"devServerTarget": "angular-app:serve:production"
+						}
+					}
+				},
+				"cypress-open": {
+					"builder": "@cypress/schematic:cypress",
+					"options": {
+						"watch": true,
+						"headless": false
+					}
+				},
+				"e2e": {
+					"builder": "@cypress/schematic:cypress",
+					"options": {
+						"devServerTarget": "angular-app:serve",
+						"watch": true,
+						"headless": false
+					},
+					"configurations": {
+						"production": {
+							"devServerTarget": "angular-app:serve:production"
+						}
+					}
+				},
+				"lint": {
+					"builder": "@angular-eslint/builder:lint",
+					"options": {
+						"lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+					}
+				}
+			}
+		}
+	},
+	"cli": {
+		"analytics": false,
+		"schematicCollections": ["@angular-eslint/schematics"]
+	}
+}

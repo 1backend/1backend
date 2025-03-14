@@ -1,0 +1,71 @@
+---
+id: serve-download
+title: "Serve a Downloaded file"
+description: "Serves a previously downloaded file based on its URL."
+sidebar_label: "Serve a Downloaded file"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VcFu4zYQ/ZXBnFpAlpxkF2h1ahabLoIG6CLenLI+0NRIZkOR3CFlVzUE9CP6hf2SYiTbcYKkhz3kZJkczrz3OI+zw4qiZhOS8Q5LXBBvKIKCwLQxvou2h8pvnfWqogpqYwlWKlIF3oFJEe5ub3LM0AdiJTmuKywxSpaP+2OYYVCsWkrEEcv73bOSd7c34GtIaxrT53C1IQeqTsTH0sY12TECTISYjLXAVBOT01TBqh/heDaNccqCcYnYUToANFIqqLTGDJ1qCUvs2GKGTN86w1RhmbijDKNeU6uw3GHqg4TFxMY1OAxLCY7Bu0hR9s/nc/l5yuZXATjyryB2WlOMdWdtjxlq7xK5JGdUCNboUbDC60RpFhOTamXvNQAZ1p5blbDElXGKexyGYcjw3Uswrt1GWVMdBRQZvgdCYLnZZCbGxOz5JWmyw4pf/UE6HZG9e0Ug5xPUvnPVm2N6/7Ja0izKwtj+DFdjzreFJouqEYNMEi02GpcZtpTWXjzVUBqdlNZYYiE+mMWNLsZWKw7XXOw6tgNmkwP3dpM+L7EorNfKrn1M5fufzi/OUBo6ku7YpH4hFCbUH0gx8WUnhZ4L9aUPBF/3IV8Ram+t3072UxCD0gTKVZD8g3hYT9aCmn072vcuEgszuPGNcUCuCt64dDTomlRF/GhRQeHZ/DXqjkfZVDC/UT8KaVztBadcldLjVVGrjDCOylL8JRrXdFYl9i7Xvj3J/fkaFl0InkXYSaR1SqEsirOV0g/kKjlQ4JA9U+EStG9b72AfBrVn6H3HcHkNJ40S//37n9Zo9nIbRlOcTU+nKLTqjE2QPEStLIkA1mhykYTBAeGnzzewucjnT/DFsii2223euC733BT7c7FQTbCzi3yer1NrBXUibuPv9WKq/kgvblXTEOfGF2NIIcqaZCXk7MPECTOUBpoIz/OLfD5jnZ//LHmDj6lV7gTp6BtQ8PHpqMBnyu0eHfXdk2bfAon+TEWwyjhBNKqz27vjHg/uOBhBcDxOo1KilxmKFSR6t5M6d2yHQZa/dcQ9lvfLDDeKjVqJLjK1TJTvCsta2Uj/Q+2H2/1M+RHeZri9qMnBK05mz0bZTv5hhg/U74ffsByyg+WE4bRzqTWFdHLm1advOH2fPl19wWH4D8Y936s=
+sidebar_class_name: "get api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Serve a Downloaded file"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/file-svc/serve/download/{url}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Serves a previously downloaded file based on its URL.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"URL of the file. Even after downloading, the file is still referenced by its original internet URL.","in":"path","name":"url","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"File served successfully","content":{"application/octet-stream":{"schema":{"type":"string","format":"binary"}}}},"400":{"description":"Invalid download URL","content":{"application/octet-stream":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"404":{"description":"File not found","content":{"application/octet-stream":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/octet-stream":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

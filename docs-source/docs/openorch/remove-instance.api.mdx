@@ -1,0 +1,71 @@
+---
+id: remove-instance
+title: "Remove Instance"
+description: "Removes a registered instance by ID."
+sidebar_label: "Remove Instance"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VU1v2zgQ/SvEnLaAIrlJC+zqtN5NsDA22BRJc0p9oKmxxIYi2SFlr1fgfy9GkhM7cYs95eIP6Q3nveF7ZA8VBkXaR+0slHCLrdtgEFIQ1jpEJKyEtiFKq1CsdmJxmUMGziNJLllUUAINRYsJBRl4SbLFiBSgfOhftNjjxOISMtD8yMvYQAZWtggl6AoyIPzWacIKykgdZhBUg62Esoe484wKkbStIaUlg4N3NmDg9+ezD/x13PQfJ/50NqKNkDL4MJu9hizsRhpdjbTUBC57kN4brQa1xdfA0P6AjSeeRdRjbyRydIpktn/iVl9RRUgpDTzev+Zxb2UXG0f6P6zekMmJod0hbbRCYV0Ua9fZt6Pz8fQGRSQrjWBeSOJqWPNtKKUMAqqOdNwNlv4DJSHNu9hA+bBkD0ZZs9vhdsgN7cTdRsEygxZj4zglFRqMYzq4CgqakGdho4p9xopeVwm4G2sc89ORYXxhnJKmcSGWH389v3gP3HbP6o5VjsIOub2c4eedR/FlgnwBsXbGuC1WHG0pgpcKhbSViO4RrZBqDKFYk2tFbFDcByRWJq5dra1AW3mnbcz3SW5QVkjPWZ5PVh62BJ4mK73+G3fDrLVdO+bJuyjVsIvYSs2KgzQYfg/a1p2RkZzNlWsP1v60EHed944iZNOQmhh9WRTOo3WkmtxRXXDij6cwF0baupM1nsnauhC1Eq1W5MLo+CDWfIBtHT2KtSOx6rSptK3FfCEOLBZYttEKbUDmvef116drsbnIZ0esQlkU2+02r203sJrqQiFrb84u8lnexNYw14jUhpv1lL5nUWEr6xop164YIAXPU0fDkBuP9oYUn6Jsm1HmLL/IZ2ek8vPfeF3vQmylPWA6nvbi4OQ+mlP/HK3/ezFM+xvx31h4I7XlxsMQ+sn3D3Do+8E3T91LXXFk2OIM7PuVDHhPJiV+/K1D4vQtM9hI0nLFyvl60YF/V1CupQn4ExG/3E63yjtxfAudpL33qt3xVKXp+B9k8Ii78ZZKy5TtHc9ExhdzpdDHg5JXh1I6PBYur66vPl9BBnIK7HNEeL1s/4MbnGT0MmIjC/5M2Q9K+n4MYEpP+PHVDyuecj2JZxEppe+5NNK4
+sidebar_class_name: "delete api-method"
+info_path: docs/1backend/1backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Remove Instance"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/registry-svc/instance/{id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Removes a registered instance by ID.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Instance ID","in":"path","name":"id","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"204":{"description":"No Content"},"400":{"description":"Invalid ID","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"404":{"description":"Service not found","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

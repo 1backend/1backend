@@ -1,0 +1,75 @@
+---
+id: save-permissions
+title: "Save Permissions"
+description: "Creates or updates a list of permissions."
+sidebar_label: "Save Permissions"
+hide_title: true
+hide_table_of_contents: true
+api: eJztV+9u2zYQf5UDv3QDFClpVmATimJJWwxe/wV1U2CIA+RMnSU2FKmSlF3PELCH2BPuSYajLNtx3AJDsW/5Ikjk3fHufnc/nlaiIC+daoKyRuTiuSMM5ME6aJsiviJo5QPYGTTkauW9ssanE/N0+uxDRTuLMHoBdesDTAkaRzP1hQqYLiFUBBK1JufB67ZMn2bTZxPzskxBzeKuXRhyj/pdUB5uGgo+WEdHfi5vosjOMb6yrS5AW3sLWt3SXfG8oZBTocJNOjET854+t8qRj0ZuWk9uLTSYy2UM+WbnhFQkwjbkkJMyKkQuPM7pYhu9SISjzy35cG6LpchXQloTyAR+xabRSkbd7JPnrK6ElxXVyG+NY8tBkY9fOzbzlVCBan9fqvewOIvmw7Ih9ig4ZUrRJXcBPLCvCl6+CzOVKUwEZyOdK1qQmwiR3Fc1WNPXlC89Ofj4DeUI6ujA4WNycyUJFpVl5P0evozapZHkAirTV4jygFqVxsNChSrK+6UPVD/y0Hri2uTS4aoced8SkJG2NYEcFTmMwBFHUsALK2/JwXguIVh4bg0fsV5QBsLCgg/UePhhuoRa+YC39GM6MVznbCGLBVphAagdYbEEWaEpqWBzk1gE0SCXWDIRMG0DFBgQFujBB6U1TEmZErieionhMyuCiSiiY+O5fO6oIBMUaj8REHCqKZ2Ys1kg10fB2qwTtzyghwVpncAIKhUA2Qs0xoZ1+0JrGIdiN78CyDnrJmZKEmP6GClfqQYcacXdb/qkzxTpAhyGihyECnt3uWz6RoY/3rz5mB4Cvz/9cMl2G3k7/UQyiO0COofLQxLdfqGLbTvCCwqo9NCVylEh8uBa6njBN9b4vo8eHx/fr8Z3r0Ty0L4P7fvQvv9r+3aJ+OlQ+51jAe/7uzSHkZmjVgX8Pn73lkcQ3nyLNfkGJf2XNt13uT/+5P7xlwbbUFmn/qTiew94cii+EZexQQ3cNuTgJWP3fSd1ifAkW6fCUuRXK3FO6MidtaES+dV1d52IgKUX+VXf5OO5FNeJqClUlmeZpg0iEQ2yuMiGiShr7ow3Pnrro/3WaZbMtJWoK+tD/uTnx6cngk8aHBmzvz3d7bqzn40Py4b7pReZCJhZre2iHxMRIsyAhvvxlgyg7NkcZs7WsXaHgOC1LZUBMkVjlQlcw4rtV4QFcXp76hNna3BjcreFjo16RX2hcsLfb2e5l1+wbjTdI/erOzQ+oLF/J22WVbH7tXZm872h1u3STsNtoL5m9jczO8yXKGO5UI1Kx5lUk//VK1O2GoOzJpW23gn9YgTjtmmsY7h7DKsQmjzLTqYob8kUrJDdu4PEGUhb19bAWgxm1sHStg7ORrBTrP6fv/6ulXTW9zeCP5qipyICOG2VDkyrXqImxkcrScbHzA4e/nbxGuan6fEd/3yeZYvFIi1Nm1pXZms9n2HZ6KPT9DitQq0j6ZCr/bvZ+j7ahucXWJbkUmWzKJIx8CowquLkvI9JJILruw/4OD1Nj4+cTB//wnYb60ONZsfTMc4J7s7/e9f2pp0f/qCGP6h1rwX6ErJGozLxYmGcV2v2uRKDNSaknfReJ4J5hiVWKy6qS6e7jpc/t+SY9a4TMUen+BaNpJcMrc+dektLBqKH5Ig5h+FG3fa9v8e2XTJonElJTfim7C6RXlx+EImYrv8Aa1uwisMFz6G4ELmIv5FhmA7j2kpoNGWLJcv2JpmFcM2WW35ij5LhhYMatsxyx8F9fuvj4CdHdVBlterZr+s28v3WVzU2pNpLM5DXXdf9C6UysxE=
+sidebar_class_name: "put api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Save Permissions"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/user-svc/permissions"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Creates or updates a list of permissions.
+<b>The permission ID must be prefixed by the callers slug.</b>
+Eg. if the owner's slug is `petstore-svc` the permission should look like `petstore-svc:pet:edit`.
+
+Requires the `user-svc:permission:create` permission.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"permissions":{"items":{"properties":{"createdAt":{"type":"string"},"description":{"type":"string"},"id":{"description":"eg. \"user.viewer\"","type":"string"},"name":{"description":"eg. \"User Viewer\"","type":"string"},"ownerId":{"description":"Service who owns the permission\n\nUncertain if this aligns with the system's use of slugs.\nIssue encountered: I renamed Docker Svc to Container Svc in two steps (by mistake).\nThe name/slug had already changed to \"container-svc,\" but data was still being saved\nin the \"dockerSvcCredentials\" table.\nAfter renaming the tables as well, I hit a \"cannot update unowned permission\" error\nbecause ownership relies on this field rather than the user slug. YMMV.","type":"string"},"updatedAt":{"type":"string"}},"type":"object"},"type":"array"}},"type":"object"}}},"description":"Permission Details","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"permissions":{"items":{"properties":{"createdAt":{"type":"string"},"description":{"type":"string"},"id":{"description":"eg. \"user.viewer\"","type":"string"},"name":{"description":"eg. \"User Viewer\"","type":"string"},"ownerId":{"description":"Service who owns the permission\n\nUncertain if this aligns with the system's use of slugs.\nIssue encountered: I renamed Docker Svc to Container Svc in two steps (by mistake).\nThe name/slug had already changed to \"container-svc,\" but data was still being saved\nin the \"dockerSvcCredentials\" table.\nAfter renaming the tables as well, I hit a \"cannot update unowned permission\" error\nbecause ownership relies on this field rather than the user slug. YMMV.","type":"string"},"updatedAt":{"type":"string"}},"type":"object"},"type":"array"}},"type":"object"}}}},"400":{"description":"Bad Request: Invalid JSON or Bad Namespace","content":{"application/json":{"schema":{"type":"string"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"string"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

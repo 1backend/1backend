@@ -1,0 +1,72 @@
+---
+id: set-role-permission
+title: "Set Role Permissions"
+description: "Set permissions for a specified role. The caller can add permissions it owns to any role."
+sidebar_label: "Set Role Permissions"
+hide_title: true
+hide_table_of_contents: true
+api: eJzdVsFu4zYQ/RViLm0BRXKSLtDq1KRdFO4umiBOTomBHZNjmxuKVEjKXq8goB/RL+yXFEPZsRK7i/ayh14SiZ7hvDfD96gWFAXpdR21s1DChKKoyVc6BO1sEHPnBYpQk9RzTUp4ZygXt0sSEo0hLyRagUq9SNJRuLUNIjqBdtPnPNjxXMR9XvSa+gilBA7SOVs5CvabtEsKSVtk4sMkYmzCJaobemooxA9irY0RMxKeYuMtqRwycDV5ZD5jBSUEijfO0PVzAcigRo8VRfIByvv2VQs4Wox/gQw0v9YYl5CBxYqgBAYyVpCBp6dGe1JQRt9QBkEuqUIoW4ibmiND9NouoOumfTCFeOnUhiOks5Fs5Eesa6NlQlt8DFy/HWxVe+YSNYX09kxhrNKCjlSFIyWz3QJ6jxvo9gtu9pFkhI6XDgefmF8PBrlt8wHdjhdC7WzokZ2NRvzv5Y5X7yD791QPAHYZfH9s27FdodFK/Da5+v2/FHjZS/Le+WPTOtKqhOT0EMmdxSYundefSX01JG+O9ySSt2jEhPyKvHib9vw6kLoMAsnG67hJYrok9OQvmriE8n7Kpz/ignUGd4G8mKwkTDOoKC4dy7NuYhIkh0PRBPInYSUL1lnR9mrrioG5AJdjkr10G284rzBOolm6EMs3P5ydnwLX3cGaMM2e2RDc6ybebmoSD9uQBxBzZ4xbkxKzTbJAlCTQKhHdI1mBsheEmHtXJWPb0RPv3UJbQVbVTtuY74xkSajI763kYnt40kxgr9lav6NetDynm711vP2EVW3oiBXc70Y07bjY3O1cBmUaPlWouU8BDYWfgraLxmD0zubSVQNE12MxaeraeZ5J39pljHVZFKczlI9kFScUcOAeF0K6qnJWbMPSvbFxjRcXYzE4euGvP/6stPSOZ6glhZMZBlKpr7NGm8h2HyQa4rYZLcmGRHiH8Nfr92J1no9e4AtlUazX63xhm9z5RbHNCwUuanNyno/yZaxM8kXyVbiaT/rqe3phjYsF+Vy7IoUUPA8dudlwetlzggz42PWER/l5PjrxMj/7kfetXYgV2gHSY34Kr9o2uAn+Fxfv9gRH+hSL2qC23Jo0pnar8HvYKZzvFGcIMiif79ShzKcZsJw5pW35kNx503W8/NSQZ6uZZrBCr3HGU+JbXAd+VlDO0QT6Qq+/vdneZt+J/WV/FPxOk3bD00fT8Btk8Eib/cdAx6rbqpuB9D/+3Jc7YVsZJB/4cJftMi6kpDp+MXbonNd3t5DBbPtNUTmVvk9wzZ3FdY/TJfbJ+tJaCwbtosEFx/ZbstHg1hD3FsSIst0DkzraidcW1vPgv8zqaErb9gbXdc/x/U//mPHsm300D2badd3fIc+2Gg==
+sidebar_class_name: "put api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Set Role Permissions"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/user-svc/role/{roleId}/permissions"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Set permissions for a specified role. The caller can add permissions it owns to any role.
+If the caller tries to add a permission it doesn't own to a role, `StatusBadRequest` will be returned.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Role ID","in":"path","name":"roleId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"permissionIds":{"items":{"type":"string"},"type":"array"}},"type":"object"}}},"description":"Set Role Permissions Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

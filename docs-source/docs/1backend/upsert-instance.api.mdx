@@ -1,0 +1,71 @@
+---
+id: upsert-instance
+title: "Upsert an Instance"
+description: "Allows user to upsert a new policy instance based on a template."
+sidebar_label: "Upsert an Instance"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9Vt1u2zYUfhWCVxsgW06zApuulmxB4a1Yg7jBLlxf0NSxzIYiWZKy4xoC9hB7wj3JcEjJkmy1yIChN4klHZ7znR9+3znSHBy3wnihFc3ojZR670jlwBKvSWUcWE8YUbAnRkvBD0Qo55niQNbMQU60Iox4KI1kHqY0odqAZehuntOMRg/z5gxNqGGWleDBOpotj2fhWzsy/5UmVOArw/yWJlSxEmhG2+DznCbUwqdKWMhp5m0FCXV8CyWj2ZH6g0Fr561QBa3rVTQG5291fkALrpUH5fEnM0YKHiCnHx3iOPZcGYsJeQEOn9r4l19A5UaL6BGeWWkkIkixkhO346mFQjgPlibn6BIq8hHQw1Kdh1tLzZ+kcP4LnyCf30fEHko36r55waxlB1p3L/T6I3CPFpZ5eCtKMRIElBc+VJJJ+W4TegmqKmm2pJhzaJAwdHWebkKfJ2g42TGLTcUxoHfB2yOew8bHx/k9XWHnumo2juuEluz5ITbUDQp+NTvFE8pDARatHdcGxrGe2pbQQuo1ky9EvECXd93h8Pym8TBEfQqBJRYl/ClUrvfDObkqL+fisiNjPWqv3jwfTxB7OJGhiUlval6W5fuT84fTKCS9t7edv2HOvaiIurupy/5UD9CvXpAuvhoyxmNkqBNxNFNxwQ4BhDNauTi/r2Yz/PcF+omsBTlxFefg3KaS8kCTl7PGBe46oT+Mh9wxKXLy2+LdH/8lwNlttFbbMeIbqWBAcnWJ5FGxym+1FZ8h/2ZIXo/XxINVTJIF2B1Ychd8fhtIyBbAKxvIbXmkt8As2JvKb2m2DEPuWRHuxn2Uw8WO4+iW4LcaBc9UPqgcHqBp1MwgAK10pMdOxGqK4TDJqIaVlXgqlZozudXOZ69/fHV9RTFuC2uBacbM+uDOi/j+YIB8aEw+ULLRKO2Qk/WBMOIM40CYyonXT6AI4/GykI3VJfFbIEjGmBx5qwuhSEti01aXt8DyoGaNMt80wxN60pEZM+J3iPKCfXroVPiuJYuhqnY6Oi6eqJUdZw0lciCKfRlctidW56rW6lgnWgNpQT1p1KMvFX0aR+6uz4j4nP+E2uh262A8Bi6ZwGY7JsH97IQqKsm81WrKddkr6/2cLCpjtMW4cT623pssTa/WjD+ByvFASi+Y8YZwXZZakcaMbLQlB11ZcjMnvfvj/vnr71Jwq3EQBQc3iYsdDse6EtLjIug4k2G7k4KDcqFTLcI392/J7no6G+BzWZru9/tpoaqptkXanHMpK4ycXE9n060vZRQwW7p3m0WM3qXn9qwowE6FToNJGuruo1zexpxoQvHuxIRn0+vpbGL59NVPYXvSzpdM9ZA2WsEU6e2jg6L19sL/YxVu7oCHZ58ayYRCXKFGx4YhlrRjiHCzTriy3qq7SiiSAZofjxjr0cq6xtefKrBIVKuE7pgVbI3lwbVaOPyd02zDpIOvpPndQ6OT35Ph9j0Kvr3VCtVwx2SFTzShT3AYbuc13rSGIxBQNPglhp0gOfUcXLB5nbQnbjgH479q22ff+8f3uOY0S36p87iM7HEfYPuIVYcqBMII745UMlVUrEDb6BLvLGtotSMyRJS0PzCp0WqcE2HMA/9iVqNHjsdIk3V9so+fvnjixL5t4bHgdf0vRVfFTA==
+sidebar_class_name: "put api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Upsert an Instance"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/policy-svc/instance/{instanceId}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Allows user to upsert a new policy instance based on a template.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Instance ID","in":"path","name":"instanceId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"instance":{"properties":{"endpoint":{"example":"/user-svc/register","type":"string"},"id":{"type":"string"},"parameters":{"properties":{"blocklist":{"properties":{"blockedIPs":{"items":{"type":"string"},"type":"array"}},"type":"object"},"rateLimit":{"properties":{"entity":{"allOf":[{"enum":["userId","ip"],"type":"string","x-enum-varnames":["EntityUserID","EntityIP"]}],"example":"userId"},"maxRequests":{"example":10,"type":"integer"},"scope":{"allOf":[{"enum":["endpoint","global"],"type":"string","x-enum-varnames":["ScopeEndpoint","ScopeGlobal"]}],"example":"endpoint"},"timeWindow":{"example":"1m","type":"string"}},"type":"object"}},"type":"object"},"templateId":{"allOf":[{"enum":["rate-limit","blocklist"],"type":"string","x-enum-varnames":["TemplateIdRateLimit","TemplateIdBlocklist"]}],"example":"rate-limit"}},"required":["parameters","templateId"],"type":"object"}},"type":"object"}}},"description":"Upsert Instance Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Instance upserted successfully","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

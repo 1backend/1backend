@@ -1,0 +1,138 @@
+.message-block-wide {
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+
+	:hover {
+		background: #f4f4f4;
+		border-radius: 0.5rem;
+	}
+
+	.left-column {
+		flex-shrink: 0;
+		width: 3.25rem;
+
+		.chat-user-icon {
+			height: 2.5rem;
+			width: 2.5rem;
+			position: relative;
+			top: 0.0625rem;
+			border-radius: 50%;
+		}
+	}
+
+	.main-content {
+		.time {
+			margin-left: 0.25rem;
+			color: #999;
+			font-size: 0.8rem;
+		}
+
+		.header {
+			.message-action-wrapper {
+				.message-action-buttons {
+					.small-icon {
+						width: 1rem;
+						height: 1rem;
+						position: relative;
+						top: 0.125rem;
+
+						margin-left: 0.5rem;
+						margin-right: 0.5rem;
+						cursor: pointer;
+						transition:
+							transform 0.2s ease,
+							color 0.2s ease;
+
+						margin-left: 0px;
+					}
+
+					.small-icon:hover {
+						color: #4caf50;
+					}
+
+					.small-icon:active {
+						transform: scale(1.1);
+						color: #4caf50;
+					}
+				}
+			}
+		}
+	}
+}
+
+.message-block-wide .message-action-buttons {
+	visibility: hidden;
+}
+
+.message-block-wide:hover .message-action-buttons {
+	visibility: visible; /* Show buttons on hover of the parent */
+}
+
+.message-block-narrow {
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+
+	:hover {
+		background: #f4f4f4;
+		border-radius: 0.5rem;
+	}
+
+	.left-column {
+		flex-shrink: 0;
+		width: 3.25rem;
+
+		.chat-user-icon {
+			height: 2.5rem;
+			width: 2.5rem;
+			position: relative;
+			top: 0.0625rem;
+			border-radius: 50%;
+		}
+	}
+
+	.main-content {
+		.time {
+			color: #999;
+			font-size: 0.8rem;
+		}
+
+		.header {
+			.message-action-wrapper {
+				.message-action-buttons {
+					.small-icon {
+						width: 1rem;
+						height: 1rem;
+						position: relative;
+						top: 0.125rem;
+
+						margin-left: 0.5rem;
+						margin-right: 0.5rem;
+						cursor: pointer;
+						transition:
+							transform 0.2s ease,
+							color 0.2s ease;
+
+						margin-left: 0px;
+					}
+
+					.small-icon:hover {
+						color: #4caf50;
+					}
+
+					.small-icon:active {
+						transform: scale(1.1);
+						color: #4caf50;
+					}
+				}
+			}
+		}
+	}
+}
+
+.message-block-narrow .message-action-buttons {
+	visibility: hidden;
+}
+
+.message-block-narrow:hover .message-action-buttons {
+	visibility: visible; /* Show buttons on hover of the parent */
+}

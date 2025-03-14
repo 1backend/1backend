@@ -1,0 +1,95 @@
+<!--
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ -->
+<app-page
+	title="Add User"
+	[menuWidth]="'3rem'"
+	[columnWidths]="['3rem']"
+	[mobileColumnWidths]="['3rem']"
+>
+	<ng-template #columnContent>
+		<div>
+			<app-icon-menu></app-icon-menu>
+		</div>
+	</ng-template>
+	<ng-template #mainContent>
+		<app-centered [headerHeight]="'56px'" [vertical]="true">
+			<div style="padding: 0rem 2rem">
+				<h2 style="margin-bottom: 2rem">{{ 'Add User' | translate }}</h2>
+				<form [formGroup]="addUserForm" (ngSubmit)="createUser()">
+					<ion-card-content>
+						<ion-item>
+							<ion-input
+								formControlName="name"
+								label="Name"
+								ngDefaultControl
+								labelPlacement="floating"
+								type="text"
+							></ion-input>
+						</ion-item>
+
+						<ion-item>
+							<ion-input
+								formControlName="email"
+								label="Email"
+								ngDefaultControl
+								labelPlacement="floating"
+								type="text"
+							></ion-input>
+						</ion-item>
+
+						<ion-item>
+							<ion-select
+								formControlName="roles"
+								label="Roles"
+								labelPlacement="floating"
+								multiple="true"
+							>
+								<ion-select-option
+									*ngFor="let role of roles"
+									[value]="role.id"
+									>{{ role.name }}</ion-select-option
+								>
+							</ion-select>
+						</ion-item>
+
+						<ion-item>
+							<ion-input
+								formControlName="password"
+								label="Password"
+								ngDefaultControl
+								labelPlacement="floating"
+								type="password"
+							></ion-input>
+						</ion-item>
+
+						<ion-item>
+							<ion-input
+								formControlName="passwordConfirmation"
+								ngDefaultControl
+								label="Password Confirmation"
+								labelPlacement="floating"
+								type="password"
+							></ion-input>
+						</ion-item>
+
+						<ion-row style="margin-top: 1em">
+							<ion-col size-lg="6" size-md="12" size-sm="12" size-xs="12">
+								<ion-button
+									type="submit"
+									style="margin-left: 0.75rem; color: white"
+								>
+									Create
+								</ion-button>
+							</ion-col>
+						</ion-row>
+					</ion-card-content>
+				</form>
+			</div>
+		</app-centered>
+	</ng-template>
+</app-page>

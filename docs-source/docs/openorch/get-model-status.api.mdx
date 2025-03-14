@@ -1,0 +1,73 @@
+---
+id: get-model-status
+title: "Get Model Status"
+description: "Retrieves the status of a model by ID."
+sidebar_label: "Get Model Status"
+hide_title: true
+hide_table_of_contents: true
+api: eJy1VU1v4zYQ/SsETy2gSN6kC7Q6NcUuAqMpsog3p8TAjqmxxA1FcjmUXVfQfy+Gkj/iZAsURS8JLc4M3zy+N+xlhaSC9lE7K0t5jzFo3CCJ2KCgCLEj4dYCROsqNGK1E/MP+ZN9svf4rdNhCvySdi9oo8q0Kjcat1+Ex9BqIu1sLjPpPAbgc+aVLGWN8Q8OXaQzZCY9BGgxYiBZPvZnuFKomH+QmdT820NsZCYttChLmc6cVzKTYURVyTKGDjNJqsEWZNnLuPMcSjFoW8thWHIweWcJifcvZzP+99axEw1h4qYS1CmFROvOmJ3MpHI2oo2cDt4brVKXxVfiGv0JBh+Yg6jHE8eyr79DVQUkegN0JoEII90jVLuT/ZVzBsFyQOis5dhXrdyPGyIGXdcYSDiburuFzqpGOJsuch1SLxVfcdynaBLMptg2OEaNWtAkVi42YjpSgK0EWNoig+X8C5EYEsZBhRVL4BzvcHpjj4fOX/Z5bGp5qOBWX1HFVOD8C3/7afbuNQMPFrrYuKD/wurf3Nq5cviA92+pZW4jBgtGLDBsMIiPIbjw304aMkmouqDjLrniN4SA4bqLjSwflyziCDUbZpLqYqOYpRZj4yaXJWtxvCwOLh1XRT8ZZyho70JK0EcLdsFwVmGcAtM4iuX7ny+v3kk+do9qweBH3Z5iO6fm886jeJpCnqRYO2PcFiseKCDIg8Kkn+ie0QpQoyZYjm1S3ANh4ObErau1FWgr77SN+X4eNAgVhuNEuJ5uOjF9FB54/Tvukmy0XTvGyZcDKl0OtqC5YwKD9CtpW3cGYnA2V649qf1pLhad9y4wtyNJTYy+LArn0bqgmtyFumA7vmThWhiwdQc1XkBtHUWtRKtVcMy6VkhizTNw68KzWLsgVp02FVvrei5OlEPcttEKLSHj3uO6+XQrNlf57AUqKotiu93mte0SqimPCqi9ubjKZ3kTW8NYI4aW7taLEcuxKdoCT4xcuyKFFMynjoZD7jzau6B4FrNsxjZn+VU+uwgqv/yF63pHsQV7gvQGo5j0utfdC6L6o2X+1xdpUkXEP2PhDeg0QRN1/eSZR3moI7NxLTNZHh+cyTjLTLJBOKHvV0D4EMww8OdvHQb27jKTGwgaVswbv2+aeF3Jcg2G8B8Y+GFqrPpRnDyDb2Lfy9zy1NyA6fiXzOQz7k6eyWE5ZHvHMJRx91op9PEk79WsGk4ny83HzzynJ7cf/cXFsv2Cq7+J6dyfIwT+O2TfSen70b3DcIgft76bcRgKYzRTtByG4W+roRho
+sidebar_class_name: "get api-method"
+info_path: docs/1backend/1backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get Model Status"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/model-svc/model/{modelId}/status"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Retrieves the status of a model by ID.
+
+Requires the `model-svc:model:view` permission.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Model ID","in":"path","name":"modelId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Model status retrieved successfully","content":{"application/json":{"schema":{"properties":{"status":{"properties":{"address":{"type":"string"},"assetsReady":{"type":"boolean"},"running":{"description":"Running triggers onModelLaunch on the frontend.\n\tRunning is true when the model is both running and answering\n\t- fully loaded.","type":"boolean"}},"required":["address","assetsReady","running"],"type":"object"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"string"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

@@ -1,0 +1,72 @@
+---
+id: prompt-types
+title: "Prompt Types"
+description: "The only purpose of this 'endpoint' is to export types otherwise not appearing in the API docs."
+sidebar_label: "Prompt Types"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVk1v3DYQ/SuDObWAVnLiBmh1quMEhZuka2Ttk9eHWWlWYiyRDEnterPQfy+GkrzrjxRFDwF6sRckZ/jmzZtH7bFkXzhlgzIac7yqGYxudmA7Z41nMGsItfKwRNalNUqHJYLyEAzwvTUuQNhZ9mBCzW6rPIM2AchaJqd0BUpDqBnOLi+gNIVPl/pK0k3JjuJKw16Ca6WrFN6ZmKhky7oEowcUU1gygFTBD9enmKCx7EjKuCgxR+tMa8OVbGKCjr927MNbU+4w32NhdGAd5CdZ26gixmVfvHCwR1/U3JL8kuSYo1l94SJg3/fJU75i8Z+H9ONFynGJeXAd97LgrdGevaR7fXIi/x6nmH/A5N8jsk7qDGpIWNSdvnu+3LL3VLEQ8fS2T9NWbGLNcF5TWGwKGDdAlRBqCnEvppeDllwAs06X+pOq6jCwv2KgDamGVg3D2jhYYmk0L3GIi00ZCfRBxIB9goHvw3NUV3wfzuNlQgQp7YGmSyMSCQPTBdsFWDvTxkUfHFP78jVxYY/UNPM15jd7ZN21mN8IU5VjL6oQtHj7NDrB+5kcnm3IaWqF0RuM4KTZl4fwh7V3MU9/+5I4QOlSuskD23LVVNMAH3jDOsBPnFZpEutMQID9nGL/UMhBgc9XZO2Xl4R1oTfUqBL+XMz/+u8SY+eMO5qFiePvInn1HMm1pi7UxqlvXP4wJG9e5iSw09TAgt2GHbyPOX8MpD5Bz0XnVNhFRb5lcuzOulBjfhPlE6iKaruM5gWLTSHybDnUJnqaiR5jSSIwGyxu5jdFFkaf87EqH9N3rpFTWWMKamrjQ/7m19enr1AumnAspK6hlGM0z8ZTVLscjywR1qZpzJZLWO2AwFsqGEiXEMwda6Bi8MDDoF57dlINfDSV0g8uLpOrJH/NVLK0QeYNczwb1RKbcBhvsuoD7yK70pjPB1N/f0+tbWTie0m5NpPLUxF7yi0pYcNTw/53r3TVNRSc0Wlh2qN7Ly9g0Vl51jAZCaxDsHmWGcvauKJOjasyfPYOnEFDuuqo4hlV2vigCmhV4Yx0RBXsYe2o5a1xd9EqV51qSnkfzy7gSHDRMxtVsPbRviZcf1x+hM1pevIIlc+zbLvdppXuIqoxzmdU2WZ2mp6kdWibwXRd6+frxYDlUJTfUlWxS5XJ4pFMuFZBiMS5ZT13RY0JiqSGMk/S0/Rk5or09W+SVwTZkj5COip3encfkXT07v6fvzNGMYpTZ7YhpYWJ2JX9OJo3eBjNMcDLIMsQyu5+vyLP167pe1n+2rETR7hNcENOyXMaDSGZ5kKm+Y53mOP5QOBM+JXGUNMNg/HEsvpkijgrCrbhH88eW8zlfHGFCa7GD6XWlBLjaCvfNrTFHOOXVtSqHIhre5zEjzkOOWVGafSSw/QKpGT6IVVNW3p3hPDp9A+FyF8p68WQ/X7whr5/OD9sfTfiwXKG09LF277v/wYk/tgT
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Prompt Types"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/prompt-svc/types"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+The only purpose of this "endpoint" is to export types otherwise not appearing in the API docs.
+This endpoint otherwise does nothing. Do not depend on this endpoint, only its types.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"type":"object"}}},"description":"Types Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"chunk":{"properties":{"messageId":{"description":"MessageId is the ChatSvc Message id that the chunk is part of.\nMight only be available for \"done\" chunks.","type":"string"},"text":{"description":"TextChunk contains a part of the text output from the stream.","type":"string"},"type":{"allOf":[{"enum":["progress","done"],"type":"string","x-enum-varnames":["ChunkTypeProgress","ChunkTypeDone"]}],"description":"Type indicates the type of the stream event (e.g., text, done)."}},"type":"object"}},"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

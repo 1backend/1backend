@@ -1,0 +1,50 @@
+{
+  "name": "@1backend/node",
+  "version": "0.3.0-rc.29",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc && rollup -c"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "keywords": [
+    "typescript",
+    "library",
+    "module",
+    "commonjs",
+    "esm"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/1backend/1backend.git"
+  },
+  "author": "Janos Dobronszki",
+  "license": "AGPL-3.0-only",
+  "description": "JS/TS client for 1Backend. Works both from the browser and from Node.js",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.3.1",
+    "@types/axios": "^0.14.0",
+    "rollup": "^3.0.0",
+    "rollup-plugin-typescript2": "^0.31.1",
+    "typescript": "^5.5.3"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "glob": "^11.0.0",
+    "request": "^2.88.2",
+    "tslib": "^2.8.1"
+  }
+}

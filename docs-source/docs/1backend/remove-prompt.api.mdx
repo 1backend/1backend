@@ -1,0 +1,71 @@
+---
+id: remove-prompt
+title: "Remove Prompt"
+description: "Remove a prompt by ID."
+sidebar_label: "Remove Prompt"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9Vdtu4zYQ/RVinmXJSbpAq6c67aJwu2iCePPk9cOYGsvcUCSXpOx1BQH9iH5hv6QYSk7sXIDty74kMjWXc87MoTqoKEivXFTWQAl31NgdCRTO28ZFsT6I+a85ZGAdeeSgeQUl+BR2m2IgA09fWgrx2lYHKDuQ1kQykR/ROa1kSiw+B27RQZBbapCfnOeyUVEYfzUucv0O4sERlBCiV6aGvs+OJ3b9mWSEno9ehT6AEncDpBGc8lRBGX1LPR8EZ00Yml5Op/zvvFTXQ/btLF4g6zP44bWyc7NDrSrx++Lmz//T4Fwm8t76b9QoIbl4ieTeYBu31qu/qPpuSN69rkkkb1CLBfkdefE+1fw+kPoMAsnWq3iActnBNaEnP2vjFsrlql9lELEOUC5hXKrFTsIqg4bi1rINnE0b5pAzoBgWeBJ2shgMAtyAaYVUv/WawwptJeqtDbF89+Pl1QVwpyOQBRMbuJzCeS7bx4Mj8WkM+QRiY7W2e6rYsCiCQ0kCTSWifSAjUA4WEBtvGxG3JO4DeaYjPthaGUGmclaZyE5XXH9LWBHPwWDDqs3GdUlTgEcx0ak/6JDk5cncPd0D779i4zSd+/pxHNxlY493Bco0Z2pQsUABNYWfgzJ1qzF6a3JpmxMot3OxaJ2znrUfNN3G6MqiuFijfCBTcUIBL26ImZC2aawRY5jYWC8OtvViNhcnWxb+/fufRklveXhKUpisMVCVBF23SkcRrQgSNbFeWkkyITE9Ivzt9oPYXeXTM3yhLIr9fp/Xps2tr4sxLxRYOz25yqf5NjaaUUfyTbjZLIbuT/TCHuuafK5skUIKHoSKrDJcXA+cIAPet4HwNL/KpxMv88ufuC6va4PmBOnZnQnP9Dq5yN/+LoyLEOlrLJxGZbhRIt2NvljCky/SdZycscqAHcCvu47lvfe67/n4S0ue/bjKYIde4Zr5LVd9dlxKttIDHaCEXwZ8E3YDE0fdDlv57MLos2PGTEpKTN+OPTX47c3iI2SwHj9sja04x+OeieAeSkifxrQ0HJDOOtBo6hZrjh1qskFwNPKTdRhSdnxgVsdX5nCC8Ln1BiL8l2m9mtJ1gzH7/jF+ePVmxqPfh2ge46rv+/8Ast/LYg==
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Remove Prompt"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/prompt-svc/remove"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Remove a prompt by ID.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"promptId":{"type":"string"}},"type":"object"}}},"description":"Remove Prompt Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"{}","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

@@ -1,0 +1,76 @@
+---
+id: serve-upload
+title: "Serve an Uploaded File"
+description: "Retrieves and serves a previously uploaded file using its File ID."
+sidebar_label: "Serve an Uploaded File"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVlFv4zYM/iuCnjbAtbP2Dtj8tA69HYLd1sOlfWoKVJFpW6ssqaSczAv83wfK8SVXtBv2csCAPcWSKOrjx49k9rIC0mhCNN7JUn6CiAa2QEK5ShBg+hQBYWt8T3YQfbBeVVCJ2lgQPRnXCBNJ/MzL5VW+dr/5CKW4aUE8LK8ekqMHPuVFbcBWJHwtlDu4EgpBVKauAcHFfO3OjuaGH++deepBmApcNLUBFLVHEVuYIJhIYOvp3j/cUYICaFMbLRCCNVoxktlTvnYr4zSI6wDuGnU7uaoMRTSbPkIlaKAIXZbMSWjlxAZmV3yuNHoi0fU2mmBBOF8B5Wt30xoSHShHApRun5HYqUG0agvHewjaY0ViZ2Kb8JHq4EjLpo9HxlLUlMtM+gCoOJHLSpYyJe82PSQzGRSqDiIgyfJu/yzrk5VYXslMGt4IKrYyk051IEvJIJfsBOGpNwiVLCP2kEnSLXRKlnsZh8CWzJRr5DjeszEF7wiIz88XC/758tkkmQSzEtRrDUR1b+0gM6m9i+Ai31Fhotd4V3gdIZ5RRFAdn70GIJO1x05FWcqNcQoHOY7jmMk3L8H41VBScX/Cwr9+PyCzH80ULiB6fImXbN7xm99Bx8+w3rzCjvNR1L531VfH9PYlqpYuAjplxYqzhuJd8vl1ofGmaljGE0WrrZb3mewgtp5130BMeo+tLGXB2j2jrS6Szoopx8V+kvQos6lMDlXRo+U7hfVa2dZTLN9+f37xnWQ5E+geTRxWHMME+ydQCHjZ80vPmboZAoj1wWQtRe2t9TuoxGZIbUhpSJ0x+kdwQumpsESNvksFf0uAHJr44BvjBLgqeONiPldoC6oCPNYoo/Bo/kzEy8+8qWB+gSExaVztGSfnSumUK+iU4YhJWaAfuQh6qyJ6l2vfnfj+uBSrPgSPzOxEUhtjKIvCB3AedZt7bAo5Zs9YuBRWuaZXDZypxnmKRovOcJME3BoNJGpuSzuPj6lBb3pjK67Fy6U4EVLqbtZocASMe8b1/uMHsb3IF1+gorIodrtd3rg+oTrco0I1wZ5d5Iu8jZ1lrBGwo+t6NWE5BkU71TSAufFFMimYTxMtm8yzQWaSZTOFucgv8sUZ6vz8B/YbPMVOuROkqVx45N3OjZ+lK5/RtT/W0f+D+L88iA/FF+GPWASrjGNVJIXuD43pTs6NaW5BrOF5WJeHiXufSe5CbL7fbxTBLdpx5O2nHnCQ5d19JrcKjdqwOHmuG+LvSpa1sgR/I7BvPh2G+bfidPy/CH1uJo5H81bZnlcyk48wHP8ejPdjNrclhjIdXmoNIZ5ce3U+jKdN/P27GzmOfwHEurHS
+sidebar_class_name: "get api-method"
+info_path: docs/1backend/1backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Serve an Uploaded File"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/file-svc/serve/upload/{fileId}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Retrieves and serves a previously uploaded file using its File ID.
+Note: The `ID` and `FileID` fields of an upload are different.
+- `FileID` is a unique identifier for the file itself.
+- `ID` is a unique identifier for a specific replica of the file.
+Since 1Backend is a distributed system, files can be replicated across multiple nodes.
+This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Upload ID","in":"path","name":"fileId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"File served successfully","content":{"application/octet-stream":{"schema":{"type":"string","format":"binary"}}}},"400":{"description":"Missing upload ID","content":{"application/octet-stream":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"404":{"description":"File not found","content":{"application/octet-stream":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/octet-stream":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

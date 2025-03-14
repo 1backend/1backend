@@ -1,0 +1,39 @@
+<!--
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ -->
+<span *ngIf="!isValid()"> Invalid URL: {{ url }}</span>
+<ng-container
+	*ngIf="details?.status == 'inProgress' || details?.status == 'paused'"
+>
+	<span style="display: inline-flex; align-items: center">
+		<span *ngIf="details?.status == 'inProgress'">{{
+			'Downloading' | translate
+		}}</span>
+		<span *ngIf="details?.status == 'paused'">{{
+			'Download paused at' | translate
+		}}</span
+		>&nbsp;{{ details.progress | number: '1.2-2' }}%.
+		<ion-spinner
+			*ngIf="details?.status == 'inProgress'"
+			style="margin-left: 1rem"
+			name="crescent"
+		></ion-spinner>
+	</span>
+</ng-container>
+<ion-icon
+	*ngIf="details?.status == 'inProgress'"
+	(click)="pauseDownload()"
+	name="pause"
+	style="cursor: pointer; position: relative; margin-left: 1rem"
+></ion-icon>
+<ion-icon
+	*ngIf="details?.status == 'paused'"
+	(click)="resumeDownload()"
+	name="play"
+	style="cursor: pointer; position: relative; margin-left: 1rem"
+></ion-icon>
+<ng-container *ngIf="details?.status == 'completed'">Downloaded</ng-container>

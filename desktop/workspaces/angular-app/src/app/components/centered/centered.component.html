@@ -1,0 +1,34 @@
+<!--
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ -->
+
+<!--
+The Core Issue with <ng-content> and *ngIf
+Single Projection: Content projected using <ng-content> can only be projected once.
+If you attempt to conditionally display it in multiple places using *ngIf, Angular will not duplicate the content.
+Once content has been projected to a location in the DOM, it cannot be re-projected or moved.
+Directive Evaluation Order:
+The *ngIf directive can prevent content from being projected at all if it evaluates to false because Angular removes the element (and its children) from the DOM.
+-->
+<ng-template #content>
+	<ng-content></ng-content>
+</ng-template>
+
+<div *ngIf="!vertical" class="horizontally-centered-content">
+	<ng-container *ngTemplateOutlet="content"></ng-container>
+</div>
+
+<div *ngIf="vertical">
+	<div
+		class="vertically-centered-container"
+		[ngStyle]="{ 'min-height': 'calc(100vh - ' + headerHeight + ')' }"
+	>
+		<div class="horizontally-centered-content">
+			<ng-container *ngTemplateOutlet="content"></ng-container>
+		</div>
+	</div>
+</div>

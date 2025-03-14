@@ -1,0 +1,25 @@
+{
+	"compilerOptions": {
+		"allowJs": true,
+		"module": "es2022",
+		"target": "es2022",
+		"skipLibCheck": true,
+		"esModuleInterop": true,
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
+		"sourceMap": true,
+		"baseUrl": ".",
+		"outDir": ".dist",
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"paths": {
+			"*": ["node_modules/*"]
+		},
+		"types": ["node"],
+		"allowSyntheticDefaultImports": true,
+		"noUnusedLocals": true,
+		// "noUnusedParameters": true,
+		"strict": true
+	},
+	"include": ["workspaces/electron-app/**/*", "workspaces/shared-lib/**/*"]
+}

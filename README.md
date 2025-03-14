@@ -1,143 +1,190 @@
-# Deprecated
-
-Please see the spiritual successor of this platform: https://github.com/openorch/openorch
-
 <p align="center">
-  <img width="200px" src="https://cdn.rawgit.com/1backend/1backend/master/src/assets/logos/trex.svg" />
-<p>
+  <img width="150px" src="./docs-source/1b_logo.svg" style="border-radius: 50%;" />
+  <div align="center">
+    <span>
+      <h1 style="border-bottom: none">1Backend</h1>
+      <a href="https://discord.gg/eRXyzeXEvM" rel="nofollow"><img src="https://camo.githubusercontent.com/66351093b042f69e9698398d33f08a6c36f1b7c56e1494b1e2902950eb24c94f/68747470733a2f2f646362616467652e6c696d65732e70696e6b2f6170692f7365727665722f68747470733a2f2f646973636f72642e67672f655258797a655845764d" alt="" data-canonical-src="https://dcbadge.limes.pink/api/server/https://discord.gg/eRXyzeXEvM" style="max-width: 100%;"></a>
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/1backend/1backend/actions/workflows/backend-tests.yaml/badge.svg"><img src="https://github.com/1backend/1backend/actions/workflows/backend-tests.yaml/badge.svg" alt="backend build" style="max-width: 100%;"></a>
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/1backend/1backend/actions/workflows/1backend-frontend-docker-build.yaml/badge.svg"><img src="https://github.com/1backend/1backend/actions/workflows/1backend-frontend-docker-build.yaml/badge.svg" alt="frontend build" style="max-width: 100%;"></a>
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/1backend/1backend/actions/workflows/go-client-build.yaml/badge.svg"><img src="https://github.com/1backend/1backend/actions/workflows/go-client-build.yaml/badge.svg" alt="go client build" style="max-width: 100%;"></a>
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/1backend/1backend/actions/workflows/js-client-build.yaml/badge.svg"><img src="https://github.com/1backend/1backend/actions/workflows/js-client-build.yaml/badge.svg" alt="js client build" style="max-width: 100%;"></a>
+<a target="_blank" rel="noopener noreferrer" href="https://github.com/1backend/1backend/actions/workflows/go-sdk-build.yaml/badge.svg"><img src="https://github.com/1backend/1backend/actions/workflows/go-sdk-build.yaml/badge.svg" alt="go sdk" style="max-width: 100%;"></a>
+    </span>
+    <div style="margin-top: 2rem">A common backend for your AI applications—microservices-based and built to scale.</div>
+    <div>
+      <a href="https://1backend.com">1backend.com</a>
+    </div>
+  </div>
+</p>
 
-# 1Backend [![circleci status](https://circleci.com/gh/1backend/1backend.svg?style=shield)](https://circleci.com/gh/1backend/1backend) [![go report](https://goreportcard.com/badge/github.com/1backend/1backend)](https://goreportcard.com/report/github.com/1backend/1backend) [![go coverage](https://codecov.io/gh/1backend/1backend/branch/master/graph/badge.svg)](https://codecov.io/gh/1backend/1backend/branch/master)
+The first iteration of 1Backend was a microservies PaaS in 2017.
 
-THIS PROJECT IS NOT ACTIVE ANYMORE  
-This project is not active anymore. The spiritual successor of this platform is [Singulatron's Superplatform](https://github.com/singulatron/superplatform)  
-THIS PROJECT IS NOT ACTIVE ANYMORE  
+The second iteration was initially created to solve the challenge of running AI models on private servers, handling many concurrent prompts from both users and services. The goal was to build a ChatGPT-like interface for humans and a network-accessible API for machines.
 
-1Backend is a platform designed to make deploying, running and maintaining lambda functions/microservices easy.
+As the system grew, the authors—despite 10+ years of building both closed and open-source microservices platforms—realized there was still no backend framework that met their needs. So, 1Backend evolved into the flexible, scalable microservices platform they had been searching for.
 
-![1backend service screenshot](https://raw.githubusercontent.com/1backend/1backend/master/1b.png)
+## Highlights
 
-It enables you to launch a new live app in seconds - after choosing your tech stack (e.g. Go with access to an SQL database) you get an empty [app](docs/services.md) which is already live and callable from the outside (through HTTP).
+- On-premise ChatGPT alternative – Run your AI models locally through a UI, CLI or API.
+- A "microservices-first" web framework – Think of it like Angular for the backend, built for large, scalable enterprise codebases.
+- Out-of-the-box services – Includes built-in file uploads, downloads, user management, and more.
+- Infrastructure simplification – Acts as a container orchestrator, reverse proxy, and more.
+- Multi-database support – Comes with its own built-in ORM.
+- AI integration – Works with LlamaCpp, StableDiffusion, and other AI platforms.
 
-You just have to plug in your own code (no, you don't have to write code in the browser). It's even pre-connected to your database and other infrastructure elements of your choosing.
+## Starting
 
-With the help of a simple [DSL](docs/types.md), you can even define language-agnostic types and APIs for your services, which are used to generate type-safe clients. These clients are then published on each language's package manager (e.g. NPM).
-
-## Documentation
-
-You can find the documentation [here](docs).
-
-## What's supported?
-
-### Languages
-
-* Go
-* JavaScript (Node.js)
-* TypeScript
-
-### Infrastructure
-
-* MySQL
-
-### Client library generation
-
-* Go
-* Angular: an NPM installable Angular service is generated and published on NPM
-  if your service has type definitions.
-
-## What's the state of the project?
-
-It's very early.
-
-## What's the tech used?
-
-Angular 2, Go, MySQL, Redis.
-
-## What's happening?
-
-For announcements please follow [our twitter account](https://twitter.com/1backend).
-
-## How can I install it?
-
-A simple one click/single command installation is coming soon, but in the mean time:
-
-### Frontend
-
-If you have docker:
+Easiest way to run 1Backend is with Docker. [Install Docker if you don't have it](https://docs.docker.com/engine/install/).
+Step into repo root and:
 
 ```sh
-sudo docker run -p 4222:80 1backend/frontend
+docker compose up
 ```
 
-The above means on http://127.0.0.1:4222 you will have the 1backend app available, once the server is also running (see below).
-
-Or if you want to hack on the Angular app:
+to run the platform in foreground. It stops running if you Ctrl+C it. If you want to run it in the background:
 
 ```sh
-npm install
-npm start
+docker compose up -d
 ```
 
-### Backend
+## Using
 
-You need two containers running on your box: a MySQL one and a Redis one. The 1backen flavoured MySQL one has the table schemas loaded into it (available in [this](backend/schema.sql) file) already.
+Now that the 1Backend is running you have a few options to interact with it.
 
-You can launch the complete sytem with 3 commands:
+### UI
+
+You can go to `http://127.0.0.1:3901` and log in with username `1backend` and password `changeme` and start using it just like you would use ChatGPT.
+
+Click on the big "AI" button and download a model first. Don't worry, this model will be persisted across restarts (see volumes in the docker-compose.yaml).
+
+### Clients
+
+For brevity the below example assumes you went to the UI and downloaded a model already. (That could also be done in code with the clients but then the code snippet would be longer).
+
+Let's do a sync prompting in JS. In your project run
 
 ```sh
-# Start mysql container. Comes with the database schema preloaded.
-sudo docker run -e MYSQL_ROOT_PASSWORD=root -p=3306:3306 -d 1backend/mysql
-
-# Start redis container.
-sudo docker run -p=6379:6379 -d redis redis-server --appendonly yes
-
-# Launch the 1backend server with the following command:
-sudo docker run -e INTERNAL_IP=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8) \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  -p 8883:8883 1backend/server
+npm init -y && jq '. + { "type": "module" }' package.json > temp.json && mv temp.json package.json
+npm i -s @1backend/client
 ```
 
-The above does 3 things:
+Make sure your `package.json` contains `"type": "module"`, put the following snippet into `index.js`
 
-* passes the host internal network ip as an envar to the container
-* mounts the docker socket
+```js
+import { UserSvcApi, PromptSvcApi, Configuration } from "@1backend/client";
 
-You can also mount a config file into the container under the path `/var/1backend-config.json`.
-We haven't talked about configuration, so let's do it now:
+async function testDrive() {
+  let userService = new UserSvcApi();
+  let loginResponse = await userService.login({
+    body: {
+      slug: "1backend",
+      password: "changeme",
+    },
+  });
 
-### Configuration
+  const promptSvc = new PromptSvcApi(
+    new Configuration({
+      apiKey: loginResponse.token?.token,
+    })
+  );
 
-The server container loads configuration from the location `/var/1backend-config.json`.
-Details of the config parameters are
-[here](https://github.com/1backend/1backend/blob/master/backend/config/config.go).
+  // Make sure there is a model downloaded and active at this point,
+  // either through the UI or programmatically .
 
-A very basic and working example of such file would be:
+  let promptRsp = await promptSvc.prompt({
+    body: {
+      sync: true,
+      prompt: "Is a cat an animal? Just answer with yes or no please.",
+    },
+  });
 
+  console.log(promptRsp);
+}
+
+testDrive();
 ```
+
+and run
+
+```js
+$ node index.js
 {
-   "SiteUrl": "http://127.0.0.1",
-   "Path": "/go/src/github.com/1backend/1backend/backend",
+  prompt: {
+    createdAt: '2025-02-03T16:53:09.883792389Z',
+    id: 'prom_emaAv7SlM2',
+    prompt: 'Is a cat an animal? Just answer with yes or no please.',
+    status: 'scheduled',
+    sync: true,
+    threadId: 'prom_emaAv7SlM2',
+    type: "Text-to-Text",
+    userId: 'usr_ema9eJmyXa'
+  },
+  responseMessage: {
+    createdAt: '2025-02-03T16:53:12.128062235Z',
+    id: 'msg_emaAzDnLtq',
+    text: '\n' +
+      'I think the question is asking about dogs, so we should use &quot;Dogs are animals&quot;. But what about cats?',
+    threadId: 'prom_emaAv7SlM2'
+  }
 }
 ```
 
-This is the default config file if you don't mount a config file to run the 1backend server docker container.
+Depending on your system it might take a while for the AI to respond.
+In case it takes long check the backend logs if it's processing, you should see something like this:
 
-Of course, there are more in depth things to consider...
+```sh
+1backend-backend-1   | {"time":"2024-11-27T17:27:14.602762664Z","level":"DEBUG","msg":"LLM is streaming","promptId":"prom_e3SA9bJV5u","responsesPerSecond":1,"totalResponses":1}
+1backend-backend-1   | {"time":"2024-11-27T17:27:15.602328634Z","level":"DEBUG","msg":"LLM is streaming","promptId":"prom_e3SA9bJV5u","responsesPerSecond":4,"totalResponses":9}
+```
 
-#### API generation
+## CLI
 
-Given services and endpoints have type information saved with them (can be set
-in the UI of each service), we generate client APIs for each service in a number
-of languages.
+Install `oo` to get started (at the moment you need Go to install it):
 
-To do this we need integration with GitHub.
+```sh
+go install github.com/1backend/1backend/cli/oo@latest
+```
 
-#### GitHub
+```sh
+$ oo env add local http://127.0.0.1:58231
 
-To get the GitHub integration working, you need two things:
+$ oo env ls
+ENV NAME   SELECTED   URL                           DESCRIPTION
+local      *          http://127.0.0.1:58231
+```
 
-* a user who can create repositories in your organisation (only possible through
-  GitHub's HTTP API)
-* an SSH key on the machine and added to a users' GitHub account who can commit
-  into said repositories (`ssh-keygen -t rsa -b 4096 -C "your_email@example.com"; eval "$(ssh-agent -s)"; ssh-add ~/.ssh/id_rsa`).
-  This user must be the one who runs the server - likely root, since root is
-  needed to access docker, unless you configure your machine otherwise.
+```sh
+$ oo login 1backend changeme
+
+$ oo whoami
+slug: 1backend
+id: usr_e9WSQYiJc9
+roles:
+- user-svc:admin
+```
+
+```sh
+$ oo post /prompt-svc/prompt --sync=true --prompt="Is a cat an animal? Just answer with yes or no please."
+# see example response above...
+```
+
+## Context
+
+1Backend is a microservices-based AI platform, the seeds of which began taking shape in 2013 while I was at Hailo, an Uber competitor. The idea stuck with me and kept evolving over the years – including during my time at [Micro](https://github.com/micro/micro), a microservices platform company. I assumed someone else would eventually build it, but with the AI boom and the wave of AI apps we’re rolling out, I’ve realized it’s time to build it myself.
+
+## Run On Your Servers
+
+See the [Running the daemon](https://1backend.com/docs/category/running-the-server) page to help you get started.
+
+## Services
+
+For articles about the built-in services see the [Built-in services](https://1backend.com/docs/category/built-in-services) page.
+For comprehensive API docs see the [1Backend API](https://1backend.com/docs/category/1backend-api) page.
+
+## Run On Your Laptop/PC
+
+We have temporarily discontinued the distribution of the desktop version. Please refer to this page for alternative methods to run the software.
+
+## License
+
+1Backend is licensed under AGPL-3.0.

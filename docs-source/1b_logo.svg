@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="203.79807mm"
+   height="203.79803mm"
+   viewBox="0 0 203.79807 203.79804"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="logo_full_dark_blue.svg"
+   inkscape:version="1.3.2 (1:1.3.2+202404261509+091e20ef0f)"
+   inkscape:export-filename="1b.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.0801543"
+     inkscape:cx="385.59305"
+     inkscape:cy="385.13016"
+     inkscape:window-width="1866"
+     inkscape:window-height="1011"
+     inkscape:window-x="54"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1"
+     showgrid="false" />
+  <defs
+     id="defs8">
+    <linearGradient
+       id="strokeGradient"
+       x1="3.0565073"
+       y1="30.650845"
+       x2="206.85455"
+       y2="30.650845"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#00ccff"
+         id="stop3" />
+      <stop
+         offset="100%"
+         stop-color="#EF233C"
+         id="stop5" />
+    </linearGradient>
+  </defs>
+  <g
+     id="layer1"
+     transform="translate(-3.0565073,-30.650845)"
+     style="stroke:#ef233c;stroke-opacity:1">
+    <circle
+       id="path14"
+       stroke="url(#strokeGradient)"
+       stroke-width="6.7537"
+       cx="104.95553"
+       cy="132.54987"
+       r="98.522171"
+       style="stroke:url(#strokeGradient)" />
+    <g
+       aria-label="13"
+       transform="rotate(0.23134562)"
+       id="text1281"
+       style="font-size:92.9108px;font-family:'Zen Dots';-inkscape-font-specification:'Zen Dots, Normal';letter-spacing:-10.0176px;fill:#ffffff;stroke:#ffffff;stroke-width:0.278726">
+      <path
+         d="m 68.171737,166.07425 v -54.167 H 48.474648 V 99.828851 H 82.57291 v 66.245399 z"
+         id="path3662" />
+      <path
+         d="m 81.846436,166.07425 v -12.0784 h 51.100934 q 3.53062,0 5.29592,-1.95113 1.76531,-2.04404 1.76531,-5.57465 0,-3.62352 -1.76531,-5.66756 -1.7653,-2.04404 -5.29592,-2.04404 H 90.580051 v -11.98549 h 42.274409 q 7.15414,0 7.15414,-7.52577 0,-7.43287 -7.15414,-7.43287 H 81.846436 v -12.0784 h 53.795354 q 9.66272,0 14.95864,4.83136 5.38882,4.73845 5.38882,13.28625 0,4.64554 -1.7653,8.82652 -1.76531,4.08808 -5.85338,6.0392 4.08807,2.04404 5.85338,6.0392 1.7653,3.90226 1.7653,8.64071 0,8.45488 -5.38882,13.56498 -5.29592,5.11009 -14.95864,5.11009 z"
+         id="path3664" />
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,42 @@
+name: Documentation build
+
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "^1.23.2"
+
+      - name: Install dependencies
+        run: |
+          go install github.com/swaggo/swag/cmd/swag@latest
+          yarn install
+          chmod +x gen.sh
+          ./gen.sh
+        working-directory: ./docs-source
+
+      # - name: Check for uncommitted changes
+      #   run: |
+      #     if [ -n "$(git status --porcelain)" ]; then
+      #       echo "Uncommitted changes detected. Failing the build."
+      #       git status
+      #       exit 1
+      #     else
+      #       echo "No changes detected."
+      #     fi

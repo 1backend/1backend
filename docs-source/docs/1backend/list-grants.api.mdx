@@ -1,0 +1,75 @@
+---
+id: list-grants
+title: "List Grants"
+description: "List grants."
+sidebar_label: "List Grants"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVsFu2zgQ/RVizrLkJFtgV6d1iqIIGiBB3JwSA6WpscSGIhmSsusVBOxH9Av3SxZDSbEae7tFDwvsxabJmeGb92aGbqFAL5y0QRoNOVxLH1jpuA4+fdSP+n1csgI3UiPbVVJUzKum9Iw7ZNx7WWosmLco5EYKZtHV0ntptE+Y2aJzspC6ZKFCCsIbFZgweiPLxnG6M95yh8+NdOij2afGo5v5rcgjjnwrcfdpEjiFBIzF3v2qgByU9KEHCgk4fG7Qh0tT7CFvQRgdUAdacmuVFNEt++wp3Ra8qLDmtLKOggaJPv56uY5uaCHsLUIOPjipS+gSIBJOHHTJuGPWn1EE6GjrBMcDsXc92gG3dFhAHlyDHW14a7Tv8ZzP5/T1baCbD5D8bIK9xrSSAWt/bCBP5/1DxPhjrMtYNLvKxMKJt2MR9b6dRkwOcI4iDxvcOb4/xfS/W0QxfpmfHcO717wJlXHyDyx+nlR0zrgfrIougTenRL3SAZ3mii3RbdGxdzHmfwOJ5EPROBn2kD+0cIncoVs0oYL8YdWtEgicxH2Ae4+OLbcCVgnUGCpDfWhNrGTLyR6ysY+zcuxNH1PyMXbjFBllygiuKuND/ubX84szoFtGEEtKqs9jCuU1ZR/3FtnjYPIIbGOUMjss2HrPOPOWC2RcFyyYJ9SMi77R2MaZOlbgmAy7NqXUDHVhjdSBBo2k+BXyAkkDzWtibDGUSlQADmVn5Qfs645UuTsMondfeG0VHg+WUY5xnkyqXeqNGQcYF1F3rLkk0jxX6H/3UpeN4sEZnQpTT+DdXrFlY61xpEbPcxWCzbPsbM3FE+qCHDI4mkwLJkxdG80GM7Yxju1N49jiik2qzv/159daCmdIUCnQz9bcYxFJXjdSBRYM84IrJA6VFKh9zH5E+P72mm0v0vk3+HyeZbvdLi11kxpXZoOfz3hp1ewinadVqFXsc3S1v9ks+9sP6fkdL0t0qTRZNMlIHBmIeTi77HOCBKgG+4Tn6UU6nzmRnv8Wh5vxoeZ6gnQyq+EVW5O35f/ybA6FGvBLyKziUlPSUYB26NoHGMNAMr4RqwSoP+mwbUnoe6e6jrafG3Q0KVYJbLmTfE1MP6y6ZGwZavQn3EMOb3uuZtSrJAFXTd8zr0ZZl4weCyHQhu/aTofP7c3yIySwHt792hTk4/iO3la+gxzi/4ZYvmQQ91pQXJcNL8m2j0nty4cxc2hsgpSMC8pqPNL7CcLXg6FPhD4prZMubduPja57se+P/tHjZRr11iTiquu6vwFYgGpG
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List Grants"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/user-svc/grants"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+List grants.
+
+Grants define which slugs are assigned specific permissions, overriding the default configuration.
+
+Requires the `user-svc:grant:view` permission.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"permissionId":{"type":"string"},"slug":{"type":"string"}},"type":"object"}}},"description":"List Grants Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"grants":{"items":{"properties":{"id":{"type":"string"},"permissionId":{"type":"string"},"slugs":{"description":"Slugs who are granted the PermissionId","items":{"type":"string"},"type":"array"}},"type":"object"},"type":"array"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

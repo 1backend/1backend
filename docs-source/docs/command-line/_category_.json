@@ -1,0 +1,8 @@
+{
+  "label": "Command line",
+  "position": 42,
+  "link": {
+    "type": "generated-index",
+    "description": "Interacting with 1Backend through the command line."
+  }
+}

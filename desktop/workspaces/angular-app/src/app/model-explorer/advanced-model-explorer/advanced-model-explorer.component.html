@@ -1,0 +1,268 @@
+<!--
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ -->
+
+<ion-grid>
+	<ion-grid>
+		<ion-row class="ion-justify-content-center">
+			<ion-col size="12">
+				<ion-searchbar
+					placeholder="{{
+						'Search models' | translate
+					}}. Try 'Chat', 'Instruct', '5 GB' etc..."
+					name="searchQuery"
+					ngDefaultControl
+					[(ngModel)]="searchQuery"
+					(ionChange)="filterModels()"
+				></ion-searchbar>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+</ion-grid>
+
+<ion-grid *ngIf="gridView">
+	<ion-row>
+		<ion-col size="12" *ngFor="let model of models; trackBy: trackById">
+			<ion-card class="flat-card" style="padding-bottom: 0.5rem">
+				<ion-card-header style="padding-right: 0.5rem">
+					<ion-card-title>
+						<span>
+							<span title="Model name is {{ model.name }}">{{
+								model.name
+							}}</span
+							><span
+								*ngIf="model?.parameters"
+								title="Number of parameters is {{ model.parameters }}"
+								>&nbsp;{{ model.parameters }}</span
+							> </span
+						>&nbsp;<ion-chip
+							*ngIf="model?.flavour"
+							title="Flavour {{ model.flavour }}"
+							outline
+						>
+							<ion-label>{{ model.flavour }}</ion-label>
+						</ion-chip>
+						<ion-chip
+							*ngIf="model?.version"
+							title="Version {{ model.version }}"
+							outline
+						>
+							<ion-label>{{ model.version }}</ion-label>
+						</ion-chip>
+						<ion-chip
+							*ngIf="model?.quality"
+							title="Quality {{ model.quality }}"
+							outline
+						>
+							<ion-label style="color: #666">{{ model.quality }}</ion-label>
+						</ion-chip>
+						<ion-chip
+							*ngIf="model.uncensored"
+							title="Uncensored version"
+							outline
+						>
+							<ion-label>!</ion-label>
+						</ion-chip>
+						<!-- Compact Flavour, Version, and VRAM Requirements Display -->
+						<div
+							style="
+								margin-right: 0;
+								padding-right: 0;
+								float: right;
+								text-align: right;
+							"
+						>
+							<ion-chip *ngIf="model?.maxRam" color="dark" outline>
+								<ion-icon name="hardware-chip-outline"></ion-icon>
+								<ion-label
+									title="Amount of RAM or GPU VRAM required: {{
+										model.maxRam
+									}} GB"
+									>{{ model.maxRam | number }} GB</ion-label
+								>
+							</ion-chip>
+						</div>
+					</ion-card-title>
+				</ion-card-header>
+				<ion-card-content>
+					<p *ngIf="model.quantComment">
+						The "{{ model.quantComment }}" version of {{ model.name }}
+						{{ model.parameters }}.
+						{{ getDescription(model) }}
+					</p>
+					<button ion-button clear small (click)="toggleItem(model.id!)">
+						{{ expandedStates.get(model.id!) ? 'Less' : 'More' }}
+					</button>
+					<div class="stat">
+						<div class="stat-title">
+							Bits
+							<span class="stat-val">{{ getStatValue(model) }} out of 8</span>
+						</div>
+						<div class="stat-bar" [ngStyle]="getStatStyle(model)"></div>
+					</div>
+				</ion-card-content>
+				<div>
+					<div
+						style="
+							display: flex;
+							justify-content: space-between;
+							align-items: center;
+							padding-left: 0.75rem;
+							padding-right: 1rem;
+						"
+					>
+						<ion-button
+							(click)="download(model)"
+							*ngIf="
+								hasAssets(model) &&
+								!isDownloading(
+									model,
+									downloadService.onFileDownloadStatus$ | async
+								) &&
+								!downloaded(
+									model,
+									downloadService.onFileDownloadStatus$ | async
+								)
+							"
+							fill="outline"
+							color="secondary"
+						>
+							<ion-icon slot="start" name="download-outline"></ion-icon>
+							{{ 'Download' | translate }}
+						</ion-button>
+
+						<span
+							*ngIf="
+								!hasAssets(model) ||
+								downloaded(model, downloadService.onFileDownloadStatus$ | async)
+							"
+						>
+							<ion-button
+								*ngIf="
+									(configService.config$ | async)!.data['model-svc']
+										.currentModelId !== model.id
+								"
+								(click)="makeModelDefault(model.id!)"
+								fill="outline"
+								color="secondary"
+							>
+								<ion-icon slot="start" name="caret-forward-outline"></ion-icon>
+								{{ 'Make default' | translate }}
+							</ion-button>
+							<ion-button
+								*ngIf="
+									(configService.config$ | async)!.data['model-svc']
+										.currentModelId === model.id
+								"
+								color="secondary"
+								(click)="makeModelDefault(model.id!)"
+								fill="outline"
+								disabled="true"
+							>
+								{{ 'Default' | translate }}
+							</ion-button>
+						</span>
+						<span style="padding-left: 0.25rem">
+							<app-downloading
+								*ngIf="hasModelAsset(model)"
+								[url]="modelAssetUrl(model)"
+							></app-downloading>
+						</span>
+
+						<span *ngIf="model?.size"
+							>{{ 'Size on disk' | translate }}
+							<strong>{{ model.size | number }}</strong> GB</span
+						>
+					</div>
+				</div>
+			</ion-card>
+		</ion-col>
+	</ion-row>
+	<ion-row *ngIf="itemsPerPage < totalItems">
+		<ion-col class="ion-text-center">
+			<ion-button
+				(click)="loadPage(currentPage - 1)"
+				[disabled]="currentPage <= 1"
+				><span style="color: white">Previous</span></ion-button
+			>
+			<ion-button
+				(click)="loadPage(currentPage + 1)"
+				[disabled]="currentPage * itemsPerPage >= totalItems"
+				><span style="color: white">Next</span></ion-button
+			>
+		</ion-col>
+	</ion-row>
+</ion-grid>
+
+<ng-container *ngIf="!gridView">
+	<ion-grid class="list-view">
+		<ion-row>
+			<ion-col> Name </ion-col>
+			<ion-col title="Number of parameters"> Parameters </ion-col>
+			<ion-col> Flavour </ion-col>
+			<ion-col> Version </ion-col>
+			<ion-col title="Amount of RAM or GPU VRAM required"> RAM </ion-col>
+			<ion-col title="Size on disk"> Size </ion-col>
+			<ion-col> Actions </ion-col>
+		</ion-row>
+		<ion-row *ngFor="let model of models; trackBy: trackById">
+			<ion-col title="Model name is {{ model.name }}">
+				{{ model.name }}
+			</ion-col>
+			<ion-col title="Number of parameters is {{ model.parameters }}">
+				{{ model.parameters }}
+			</ion-col>
+			<ion-col title="Flavour {{ model.flavour }}">
+				{{ model.flavour }}
+			</ion-col>
+			<ion-col>
+				{{ model.version }}
+			</ion-col>
+			<ion-col
+				title="Amount of RAM or GPU VRAM required: {{ model.maxRam }} GB"
+			>
+				{{ model.maxRam }}
+			</ion-col>
+			<ion-col title="Size on disk: {{ model.size }} GB">
+				{{ model.size + 'GB' }}
+			</ion-col>
+			<ion-col>
+				<ion-icon
+					*ngIf="
+						!isDownloading(
+							model,
+							downloadService.onFileDownloadStatus$ | async
+						) &&
+						!downloaded(model, downloadService.onFileDownloadStatus$ | async)
+					"
+					name="cloud-download-outline"
+				></ion-icon>
+				<ion-icon
+					*ngIf="
+						(configService.config$ | async)!;
+						data: ['model-svc']?.currentModelId === model.id
+					"
+					name="play-outline"
+				></ion-icon>
+				<ion-icon name="pause-circle-outline"></ion-icon>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+
+	<div class="ion-text-center">
+		<ion-button
+			(click)="loadPage(currentPage - 1)"
+			[disabled]="currentPage <= 1"
+			><span style="color: white">Previous</span></ion-button
+		>
+		<ion-button
+			(click)="loadPage(currentPage + 1)"
+			[disabled]="currentPage * itemsPerPage >= totalItems"
+			><span style="color: white">Next</span></ion-button
+		>
+	</div>
+</ng-container>

@@ -1,0 +1,7 @@
+id: test-b
+repository:
+  url: https://github.com/1backend/1backend.git
+  containerFile: server/docker/Dockerfile
+  port: 58231
+ports:
+  "9998": 58231

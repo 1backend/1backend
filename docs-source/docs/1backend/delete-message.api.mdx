@@ -1,0 +1,71 @@
+---
+id: delete-message
+title: "Delete a Message"
+description: "Delete a specific message from a chat thread by its ID"
+sidebar_label: "Delete a Message"
+hide_title: true
+hide_table_of_contents: true
+api: eJylVdtu4zYQ/RVinlqAkZykC7R6Wm8TFG7TblBvnrJ+GFNjixuK1JKUU1cg0I/oF/ZLFiPJl3i9BbZ98UWc4Zw5c86og5KC8rqJ2lko4IYMRRIoQkNKr7QSNYWAaxIr72qBQlUYRaw8YSmWW6FjELMbkOAa8siXzEoooOyv+XVIBQkNeqwpkg9QPHYnNcew4R7NTxqMFUiwWBMUMCKYlSDB08dWeyqhiL4lCUFVVCMUHcRtw8Ehem3XkNKCg0PjbKDA51eTCX+dLx1apSiEVWvMVgzguZpyNpKNnIdNY7TqO8w/BE7ujopjWWo+QnPvmYmouegAcQTmlh9IRUgpJQnfnQMzsxs0uhQ/z9/+9jXFTzsfClx+XuDBYhsr5/WfX9fduQKvzncQyVs0Yk5+Q17ceu/8/6uUJARSrddx20vnDaEnP21jBcXjgqcccc2qgh9ZmfONgoWEmmLlDkLsFcgZkLN+L8JG5aOq8m4vrwRci4EPKm294YzcOIWmciEWr76/ur4ELrrDNGfog8COkZ0S827bkHg/hrwHsXLGuGfqLcReQ0UCbSmieyIrUA0iHzwXKxIPgTz3Ju7cWltBtmyctjHbGaYiLMkfLDMd59zzDHsNYqN/oS0wqdquHOPk0aDqR0M1au44oKHwOmi7bg1G72ymXH109/1MzNumcT6CHEmqYmyKPL9conoiW3JCDkmesDAVytW1s2IMEyvnxda1Xkxn4kgY4Z+//q618o6noRWFiyUGKnuGlq02UUQngkJDTIDRimwg7mCH8Kf7O7G5ziYv8IUiz5+fn7O1bTPn1/mYF3JcN+biOptkVawNo47k6/B2NR+qH9oLz7hek8+0y/uQnJnV0XDI5ZuhJ5DAAhoanmTX2eTCq+zqB763cSHWaI+Q7tftYVW+oKw7WOe/r+Zx+JH+iHljUFvG0vPSjbZ4hJ0tQO7WLUgoDpt3IYEdwKFdx9N48CYlfvyxJc/WXEjYoNe4ZDp4x+vAv0soVmgC/Utj3/w+LvVvxYtXwVncOyXbLTONpuV/IOGJti9eFWmR5M4WDGc4nypFTTzK/GwdpePtcXN7d/vuFiTg6OqDj/g+ufvBBc4CO/XhgII/k/xCStcNLk1pHz8cfTFjb/4hmnlapJQ+AZSVr4I=
+sidebar_class_name: "delete api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Delete a Message"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/chat-svc/message/{messageId}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Delete a specific message from a chat thread by its ID
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Message ID","in":"path","name":"messageId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Message successfully deleted","content":{"application/json":{"schema":{"additionalProperties":true,"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"type":"string"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"string"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

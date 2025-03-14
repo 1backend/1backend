@@ -1,0 +1,75 @@
+<ion-modal [isOpen]="isOpen">
+	<ng-template>
+		<ion-header>
+			<ion-toolbar>
+				<ion-title>Characters</ion-title>
+				<ion-buttons slot="end">
+					<ion-button (click)="close()"
+						><ion-icon name="close-outline"></ion-icon>Close</ion-button
+					>
+				</ion-buttons>
+			</ion-toolbar>
+		</ion-header>
+		<ion-content class="ion-padding character-items">
+			<ion-segment [(ngModel)]="segment">
+				<ion-segment-button value="select" (click)="clearEditingCharacter()">
+					<ion-label>Select</ion-label>
+				</ion-segment-button>
+				<ion-segment-button value="create">
+					<ion-label>{{ getModeText() }}</ion-label>
+				</ion-segment-button>
+			</ion-segment>
+			<ng-container *ngIf="segment === 'create'">
+				<ion-item>
+					<ion-input
+						label="Character name"
+						[(ngModel)]="editingCharacter.data.name"
+						labelPlacement="stacked"
+						type="text"
+						placeholder='e.g. "Short and straightforward"'
+					></ion-input>
+				</ion-item>
+				<ion-item>
+					<ion-textarea
+						label="Define the behaviour"
+						labelPlacement="stacked"
+						[(ngModel)]="editingCharacter.data.behaviour"
+						placeholder='e.g. "Give me short answers and make it straightforward"'
+						[autoGrow]="true"
+					></ion-textarea>
+				</ion-item>
+				<ion-item>
+					<ion-toggle
+						justify="start"
+						[(ngModel)]="editingCharacter.data.private"
+					>
+						Private character
+					</ion-toggle>
+				</ion-item>
+				<ion-item  lines="none">
+					<ion-button
+						style="color: white"
+						(click)="upsertCharacter(editingCharacter)"
+						>{{ getModeText() }}</ion-button
+					>
+				</ion-item>
+			</ng-container>
+			<ng-container *ngIf="segment === 'select'">
+				<ion-item *ngFor="let character of characters">
+					<ion-label (click)="selectCharacter(character)">
+						{{ character.data.name }}
+					</ion-label>
+					<ion-icon
+						(click)="deleteCharacter(character)"
+						name="trash-outline"
+					></ion-icon>
+					<ion-icon
+						(click)="selectCharacterForEdit(character)"
+						name="create-outline"
+						slot="end"
+					></ion-icon>
+				</ion-item>
+			</ng-container>
+		</ion-content>
+	</ng-template>
+</ion-modal>

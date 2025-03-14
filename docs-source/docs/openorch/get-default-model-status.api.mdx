@@ -1,0 +1,65 @@
+---
+id: get-default-model-status
+title: "Get Default Model Status"
+description: "Retrieves the status of the default model."
+sidebar_label: "Get Default Model Status"
+hide_title: true
+hide_table_of_contents: true
+api: eJy1VV1v2zYU/SsEn2XJTVZg09MyrAiCZUgRN0+OgV5T1xIbimR5KXueoP9eXEp2bKd9KIa92DR5P849PIfuZYWkgvZROytL+YgxaNwiidigoAixI+E26VeFG+hMFK2r0OTP9tk+4tdOhyn4c9qf0VaVaVVuNe4+C4+h1UTa2Vxm0nkMwL3uKlnKGuOfY9G/OWOR2slMBiTvLCHJspdX8zl/neNM8Qd8YQJdCeqUQqJNZ8xeZlI5G9FGTgfvjVapdfGFuEYvSTXYAq98YGBRjx3Hsm/3oaoCUlrGvUdZSopB21oOmQQijPSIUO1PztfOGQTLAaGzlmPfjPI4HogYdF1jIOFsmu4eOqsa4WxidxPSLBXzHg8pmkQMHYpdg2NUIp631y42YmopwFYCLO2QwXL+TCSGhHFQYcX3comXAY+XW8lyeZz8fM7XoVbHCm79BVVMBS53eO+X+bu3DDxZ6GLjgv4Xq5+5tYtLSA3ef08tdzZisGDEAsMWg/gQggv/rdOQSULVBR33slz28g+EgOGmi40sl6uBCYGamLtRqoutYpZajI2bpC8z6YHjZXG0TjGZbJZ2Cjo4ghJwSq26YDinME6BaRzF8v2vV9fvJDc9YFow9FG1p8guifm09yiep5BnKTbOGLfDSqz3AgR5UJjUE90LWgFqVASLsU16eyIMPJq4d7W2Am3lnbaRFaW5foNQITNtoWUCb6Z7Tjy/yg68/gv3STTabhzj5KsBla4GW9A8MYFB+p20rTsDMTibK9ee1P54Jxad9y4wsyNJTYy+LArn0bqgmtyFumAznrNwIwzYuoMaZ1BbR1Er0WoVHLOuFZLYBGhx58KL2Lgg1p02FRvr5k6c6IZ4bKMVWkLGfcB1+/FebK/z+RkqKotit9vlte0SqimPCqi9mV3n87yJrWGsEUNLD5vFiOV1KNoBvxe5dkUKKZhPHQ2HPHi0D0E1MpMsm3HMeX6dz2dB5Ve/cV3vKLZgT5DeYhTTeywm1R70d0ZY/2qc//0PY1JIxH9i4Q3o9JYmGvvJPUt5rJOAnviHjTNOsMokO4Wj+34NhE/BDANvf+0wsIVXmdxC0LBmAperITuIly33gnu+SaXQs7i2YLpRtxePxnBq8dsPn/jBnIz3KnUulh0WXP1wZPcntS+tMkLgzyH7QUrfj0YahmP8ePTDjKM/x2hmdzUMwzfZitFO
+sidebar_class_name: "get api-method"
+info_path: docs/1backend/1backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get Default Model Status"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/model-svc/default-model/status"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Retrieves the status of the default model.
+
+Requires the `model-svc:model:view` permission.
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Model status retrieved successfully","content":{"application/json":{"schema":{"properties":{"status":{"properties":{"address":{"type":"string"},"assetsReady":{"type":"boolean"},"running":{"description":"Running triggers onModelLaunch on the frontend.\n\tRunning is true when the model is both running and answering\n\t- fully loaded.","type":"boolean"}},"required":["address","assetsReady","running"],"type":"object"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"string"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

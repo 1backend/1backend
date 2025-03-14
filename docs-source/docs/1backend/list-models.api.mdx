@@ -1,0 +1,65 @@
+---
+id: list-models
+title: "List Models"
+description: "Retrieves a list of models."
+sidebar_label: "List Models"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9Vttu40YM/ZXBPCuSk3SBVk9NiqIINm2CeNMXx8DSEm3PZm7hjOR4DQH9iH5hv6SgJDuOLbdoUfTFloacM4fkIUcbWWIoSPmonJW5fMBICmsMAoRWIQo3F8aVqEP6ZJ/sA75UijCIz+3iWaiLvH3Ka4Wrz8IjGRWCcjaViXQeCRj4ppS5ZLifWyiZSMLgnQ0YZL6RF6MR/71ncvdRJrJwNqKNbAXvtSpauOxLYJeNDMUSDfCTJz4sqg6wY8xPKqIJxw4QAsa/ckBb/wr0Edf8EtceZS5DJGUXsklkRXpgveGw2vyUMp/sQXQbpsl2g5t9wSIyUL8ARLDm95nqWPXrykZcILHlXXIGKOFrRBtOWecaalfRsK3S+hcwOGhU5eCygdfrk1QNvD6A2bPZysx6kyJy9D7xR+CHSbGnyHkgMBiRhnG8hjh3ZG6GY/DkjI+f0LDf8AEvFWgVhzXwUoGNPzhjen0eOQT1FQeTEGHxDzNQ2QJtcK2wdu4z5zSCZXuNdKL0B5pUpezz+S49fy/N5sij4bVvRufHnftooYpLR+orlv++h5GVMhzREJMPQzPkxkYkC1qMkWok8WOL+f9QYgVgUVGrn8lGXiMQ0lUVlzKfTJvpVgcT2Q5FMa4LroPBuHQ8Lr0LkasEvEFmu3mbme0MDW1QoUVvJ5LMMu0K0EsXYv7h24vLc8nnbGmMOawukn0yh0n7tPYonnqXJynmTmu3wlLM1gJE8FCgAFuK6J7RCig6dYk5OSPiEsVjQOJoxK1bKCvQlt4pG/lCUIy/RCiRtjrM5VUvlrYG8k14XvHs5DwqO3fMk8sGRVs2NKA44gAaw/dB2UWlIZKzaeHMHvb9jRhX3juK/RTO5TJGn2fZ+QyKZ7Qlb8iOJqy8EoUzxlnRu4m5I7F2FYmrG7EnmvDHb78bVZDjaqgCw9kMApZthmaV0lFEJ0IBGjkBWnEjt2Nhy/Cn+1tRX6ajd/xCnmWr1Spd2Cp1tMj6fSGDhddnl+koXUaj2zZFMuFuPu5OfwsvrGCxQEqVy1qXjDOromaX8+suJrk3OeQovUxHZ1SkF9+109GFaMDuMb3lz4HdBX5wH+066r/9gui1EPE1Zl6Dsnu3b9cZE7nDkcn24p8mknuArZsN1+ORdNPw8kuFxP04TWQNpGDGCZlMm2QrS26mZ7725VVRoGfZ1KCrTpEHo6LZ79f7u/EnmUjoe+pNxc/tF0D/wPBbk13vgR92QceBf5vkxJbNpuuRptn5d6aTO3at13lzOqdN0/wJTR5z8Q==
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List Models"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/model-svc/models"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Retrieves a list of models.
+
+Requires `model-svc:model:view` permission.
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"models":{"items":{"properties":{"assets":{"items":{"properties":{"envVarKey":{"type":"string"},"url":{"type":"string"}},"required":["envVarKey","url"],"type":"object"},"type":"array"},"bits":{"type":"integer"},"description":{"type":"string"},"extension":{"type":"string"},"flavour":{"type":"string"},"fullName":{"type":"string"},"id":{"type":"string"},"maxBits":{"type":"integer"},"maxRam":{"type":"number"},"mirrors":{"items":{"type":"string"},"type":"array"},"name":{"type":"string"},"parameters":{"type":"string"},"platformId":{"type":"string"},"promptTemplate":{"type":"string"},"quality":{"type":"string"},"quantComment":{"type":"string"},"size":{"type":"number"},"tags":{"items":{"type":"string"},"type":"array"},"uncensored":{"type":"boolean"},"version":{"type":"string"}},"required":["id","name","platformId"],"type":"object"},"type":"array"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

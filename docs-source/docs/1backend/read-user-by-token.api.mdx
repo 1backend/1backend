@@ -1,0 +1,63 @@
+---
+id: read-user-by-token
+title: "Read User by Token"
+description: "Retrieve user information based on an authentication token."
+sidebar_label: "Read User by Token"
+hide_title: true
+hide_table_of_contents: true
+api: eJzNV91u2zYUfpUDXrWALOVnBTZfNe3aLVuGBHGyXcQGTFPHFlOKZEnKrmYY2EPsCfckw6Ek/1TO0HbosJuEJg/P7/cdHq1Zjl44aYM0mg3ZLQYncYlQeXQg9dy4ktMZzLjHHIwGroFXoUAdpGiOgnmHOmUJMxZd3LrM2ZA55Pm9R/eqviMBljCH3hrt0bPhmp2dnNC/Q/vXP7OECaMD6kCn3FrVmskePYmsmRcFlpxW1pHFIBuFXAS5xGu34Fr+vnVjzUJtkQ2ZD07qBdskzOyJxJsyYOn7CoVDHjC/CEe15Kjw6VN53LTmJfajflspBXQEZg6hQNj3kCUMP/DSKtJ0IUqE18ZZ47rDng2vqkXfxv3t1WDuJOpc1VBp+b5CeCa1lzlGkyOpF5Xizmiwigcq/HOQOZV5LtHB3LgoN933bZoeeMdFiQPxz95VNn8yqZutvJk9oghst8Gd43W879EdKZXRgYvg+3G/bk+Au4jqPEaizEISlPNtiC2WbeWs8egpsK8Gi0MP7wrsCrLLdwKrQooCBNcwQ+Bwf3uVjvVYv2myDUuuKvRDGLNHg6dnYwbPTmdcvEOdR/ISnJ4nMGZhJUNAlwpTZqHAR4Mk2+5C5VSUejT48tGgz03JpSZhksKSS/X8oMZ9dceqLP2NkyV3dT/cS4K49CB9xJNt5KCtIJQYCpPvdM6MUcg1Ke1w2dd50550/OmUPcN0kVJ4MZAxo6UtjMZm2cYyZkdD/Fz0Nth8oufEcvUd/5W2t6noolBGcNXHRDrWl5gSMFTD2anMpxQyh7u2nF3g0sO0X6lpEq9FX2AllSJoGa1qmLYC6Vi/NQ5iuiI9Yrb8zhrtxR9RyXSrhfY8LzEd6zuq7lyiyqE0Pqga8IP0wUfi5dJbxesdz74M030c7x9/OpifBPASHeX8CF1/KzAU6A5wJj1sL/SR+ylt7f/x1hy285+4Rvj+eH4s935lXP4j98VR61/5FaJ6f/T6PHKNg/y4u5/36hzZob1vjk0scbaBX6T3pOyLhxd0zrhPc472Xhxz5VIHIoGCEbolOngTdf43LlHFUVROhpoNH9bsFXKH7qIKBRs+TDaThAW+8Gz4wGgkhNFSsEnC2mY/ZNb4wAhVJM8yqu7AL0VcZLN6ENoJ0sfIfDRROUWyWeyWhfFh+OLbs/NTRsY6X0YUWxPOvke9ItYWYdyKjBnMjVJmhTnMauDgLRfYdL5YbC7eV9LRJOFMGeHYxQRXca5AnVsjdYhDBOkvkOfxQWk4ycgL43YDXtcNrPwZ65hhGr33BptYD+pfVAeu0L/0DVOCM7HB7em+uYRRZa1xlNEmSUUIdphlXTONT0LTV/azcAHClGWc9ZueS2yrTeXg4hL2kOP/+uPPUgpnqBpSoB80HweUoVklVYBgwAuukBKgpEDtYyfqPPzh5gqW5+nJgX9+mGWr1Spd6Co1bpG193zGF1YNztOTtAilir0TXemv56PG+i48v+KLBbpUmiyKZJRZGWJzOH3VxMRia/dNwCfpeXoycCI9+y72NONDyfWep7fI86a4sxq6r5iDpK137PqXH08tBgJ+CJlVXMaRJ6Zn3fLigXW8YO0cnLAtNyYJIw6Q1HpN9u6d2mxo+32FNIc9TGgKcZLPKCEPk03SwZLI9A7r+Hkh0BJs2nGl3y82+6y9uR7dsYTxllM7FJO2pFuQ+u5I13vKP2ZB4wP93SRPXFmvG45sNlv55ujJG1vqNdKU1slms/kb5moyfQ==
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Read User by Token"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/user-svc/user/by-token"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Retrieve user information based on an authentication token.
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"activeOrganizationId":{"type":"string"},"organizations":{"items":{"properties":{"createdAt":{"type":"string"},"deletedAt":{"type":"string"},"id":{"type":"string"},"name":{"description":"Full name of the organization","example":"Acme Corporation","type":"string"},"slug":{"description":"URL-friendly unique (inside the Singularon platform) identifier for the `organization`.","example":"acme-corporation","type":"string"},"updatedAt":{"type":"string"}},"type":"object"},"type":"array"},"user":{"properties":{"contacts":{"description":"Contacts are used for login and identification purposes.","items":{"properties":{"createdAt":{"type":"string"},"deletedAt":{"type":"string"},"id":{"description":"The unique identifier, which can be a URL.\n\nExample values: \"joe12\" (1backend username), \"twitter.com/thejoe\" (twitter url), \"joe@joesdomain.com\" (email)","example":"twitter.com/thejoe","type":"string"},"isPrimary":{"description":"If this is the primary contact method","type":"boolean"},"platform":{"description":"Platform of the contact (e.g., \"email\", \"phone\", \"twitter\")","example":"twitter","type":"string"},"updatedAt":{"type":"string"},"userId":{"type":"string"},"value":{"description":"Value is the platform local unique identifier.\nIe. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`.\nFor email and phones the `id` and the `value` will be the same.\nThis field mostly exists for display purposes.\n\nExample values: \"joe12\" (1backend username), \"thejoe\" (twitter username), \"joe@joesdomain.com\" (email)","example":"thejoe","type":"string"},"verified":{"description":"Whether the contact is verified","type":"boolean"}},"type":"object"},"type":"array"},"createdAt":{"type":"string"},"deletedAt":{"type":"string"},"id":{"type":"string"},"name":{"description":"Full name of the organization.","example":"Jane Doe","type":"string"},"passwordHash":{"type":"string"},"slug":{"description":"URL-friendly unique (inside the Singularon platform) identifier for the `user`.","example":"jane-doe","type":"string"},"updatedAt":{"type":"string"}},"type":"object"}},"type":"object"}}}},"400":{"description":"Token Missing","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

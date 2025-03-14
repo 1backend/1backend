@@ -1,0 +1,51 @@
+name: "@1backend/client publish to npm"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./clients/js/client
+
+      - name: Get current version from npm
+        id: get-npm-version
+        run: |
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          NPM_VERSION=$(npm view $PACKAGE_NAME version || echo "0.0.0")
+          echo "npm_version=$NPM_VERSION" >> $GITHUB_ENV
+        working-directory: ./clients/js/client
+
+      - name: Authenticate to npm
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+      - name: Compare versions and publish if local version is greater
+        run: |
+          LOCAL_VERSION=$(node -p "require('./package.json').version")
+          NPM_VERSION=${{ env.npm_version }}
+          echo "Local version: $LOCAL_VERSION"
+          echo "Published npm version: $NPM_VERSION"
+          if [ "$(printf '%s\n' "$NPM_VERSION" "$LOCAL_VERSION" | sort -V | head -n1)" != "$LOCAL_VERSION" ]; then
+            echo "Publishing new version $LOCAL_VERSION"
+            npm run build
+            npm publish --access public
+          else
+            echo "No need to publish. Local version is not greater than published version."
+          fi
+        working-directory: ./clients/js/client
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

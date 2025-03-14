@@ -1,0 +1,65 @@
+---
+id: list-models
+title: "List Models"
+description: "Retrieves a list of models."
+sidebar_label: "List Models"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9Vttu40YM/ZXBPDuSN+kCrZ6aLYoi2LQJ4qQvjoGlJVqazdzCGdnxGvr3BSXZ8UVu0aLoiz0aco4OOYekNrLAkJPyUTkrM/mAkRQuMQgQWoUo3EIYV6AOybN9tg/4WivCIL60mxdhmWftKlsqXH0RHsmoEJSziRxJ55GAgW8KmUmG+72FkiNJGLyzAYPMNvJyPOa/QyZ3n+VI5s5GtJGt4L1WeQuXfg3sspEhr9AArzzxy6LqADvGvFIRTTh1gBAw/pUD2uWfQJ9xzQ9x7VFmMkRStpTNSNakB/YbDqvNTyGz6R5Ed2A22h5w86+YRwbqN4AI1vw8Vx2rfl/ZiCUSWw6SM0AJ3yLacM660LB0NQ3baq3/AIODRlUMbht4+3SWqoG3BzB7NlubeW9SRI4OE38CfpwUe46cBwKDEWkYx2uIC0fmZjgGT874+IiG/YZf8FqDVnFYA6812PiLM6bX54lDUN9wMAkRyn+YgdrmaINrhbVznzunESzbl0hnrv5Ik6qQfT4P0vP30mxOPBre+2H84bRynyzUsXKkvmHx72sYWSnDEQ0x+TjUQ25sRLKgxQRpiSR+bTH/H0qsAMxravUz3chPCIR0XcdKZtNZM9vqYCrbpigmy5zvwWCsHLdL70LkWwI+INNdv03NtoeGNqjQorcdSaapdjnoyoWYffzx8uqD5PdsaUw4rC6SfTLHSXtcexTPvcuzFAuntVthIeZrASJ4yFGALUR0L2gF5J26xIKcEbFC8RSQOBpx60plBdrCO2UjDwTF+BVCgbTVYSave7G0dyDfhecV907Oo7ILxzz52iBvrw0NKI44gMbwc1C2rDVEcjbJndnDvr8Rk9p7R7HvwpmsYvRZmjqP1lFeJY7K9KTDymuhwZY1lHgBpXUhqlwYlZPjrKscg1hw81k5ehELR2JeK10oW4rrG7GnqcBha8Xl2zaDLa/f7m/F8ioZH7AKWZquVquktHXLqj8XUii9vrhKxkkVjW6LE8mEu8Wk4/IeVFhBWSIlyqWtS8r5VFGzy51He0d5Jff6hRwnV8n4gvLk8qe2J7oQDdg9prf8EbAb20dTaFdH/+13Q6+AiG8x9RqU3Zu5XT1M5Q5HjrbjfjaSrHy2bjZzCPhEuml4+7VG4iqcjeQSSMGcEzKdNaOtGLmEXnjYy+s8R89iWYKuOx0eNYhmv0rv7yaPciShr6R37b60c79fMPzWZNd74Mfa7zjwbzM6c2Sz6SqjaXb+nensiV3Bdd6czlnTNN8BDURwqQ==
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List Models"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/model-svc/models"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Retrieves a list of models.
+
+Requires `model-svc:model:view` permission.
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"models":{"items":{"properties":{"assets":{"items":{"properties":{"envVarKey":{"type":"string"},"url":{"type":"string"}},"required":["envVarKey","url"],"type":"object"},"type":"array"},"bits":{"type":"integer"},"description":{"type":"string"},"extension":{"type":"string"},"flavour":{"type":"string"},"fullName":{"type":"string"},"id":{"type":"string"},"maxBits":{"type":"integer"},"maxRam":{"type":"number"},"mirrors":{"items":{"type":"string"},"type":"array"},"name":{"type":"string"},"parameters":{"type":"string"},"platformId":{"type":"string"},"promptTemplate":{"type":"string"},"quality":{"type":"string"},"quantComment":{"type":"string"},"size":{"type":"number"},"tags":{"items":{"type":"string"},"type":"array"},"uncensored":{"type":"boolean"},"version":{"type":"string"}},"required":["id","name","platformId"],"type":"object"},"type":"array"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

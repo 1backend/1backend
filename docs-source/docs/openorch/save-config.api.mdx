@@ -1,0 +1,71 @@
+---
+id: save-config
+title: "Save Config"
+description: "Save the provided configuration to the server"
+sidebar_label: "Save Config"
+hide_title: true
+hide_table_of_contents: true
+api: eJylVd9v2zgM/lcEPjt21t6AOz8tOwyH3g1osaxPWR4YmbG12pImyclyhv/3AyWndZvecD9eAkWkyI/k99EDVOSlUzYoo6GENR5IhIaEdeagKqqENHqv6t4he4hgotWTO5CDDIylZLmpoASPB/o1+kMGjr715MN7U52gHEAaHUgHPqK1rZLxWfHVc94BvGyoQz5Zx0GDIj8943AX9xWG6I1VpTgQtncze3A9ZRBOlqAEs/tKMsCYxUe/Twknow9O6ZqNqnr1WmNH3qKkV6xjqlI5qqDcJEzbi7zj5Q1juex7ap34lBoH8+BcUMzmrdE+teBquYyd+EGg5A3ZP+/+BdIxg5+Wby4T3WvsQ2Oc+pOq/5DgsYWc4O1rldzoQE5jK9aRbOKDc8b9v0xjBp5k71Q4QbkZ4D2hI7fqQwPlZjvy6LD2PMqpg+uD5IF2FBrDBLc9j8UiP4AicXPhD3I6AsdnsD6G713LbkVrJLaN8aF8+/PV9RvgRGcca4ab5jlH87IZn0+WxJfJ5QuIvWlbc6RK7E4CReSnQF2JYB5IC5SJN2LvTBcFe+/JcTXio6mVFqQra5QOOWSgOH5DWEVBM92hhNU029hbeCQwWvUHnSKlud+fniT+4Tt2tqXnkp1E+kx553kkwT39m+lsri+l9+a8PlDGqVOHqo3bpiX/zitd9y0GZ3QuTTcr4e5GrHtrjeOZpVk0IdiyKIwlbZxscuPqAi7EuBIt6rrHmhZYa+ODkqJT0hkerpLkxd5hR0fjHsTeOLHrVVspXYvVjZhR0nN3WyWJJVgOj7h+u/soDtf58hkqXxbF8XjMa91HVNM7X2Bt28V1vsyb0LWMNZDr/O1+nbA8FeWPWNfkcmWK6FLw2FTgmcCtJX3rZAMZMDtTmcv8Ol8unMyvfuG41vjQoZ4hne0SeNGj2T7/19+MiUuBvofCtqg0Z4+dGCZpbeBJWknxDGGbAYuIzcOwQ0/3rh1Hvv7Wk2NFbzM4oFO446I32zE785rV+EAnKFnYDHvBguJuYNsnYr/YJGN2frGSkmz4oe98Rdzdf4YMdtNXrzMVP3F45HWORyghfjUjP9gh3g1wJhyUkEIy93FaBU/iY0TZ+cBFnU36NAP4UrypDv7lql59MgxJ2uP46J9Mf/vicWMkb57idhzHvwB3vt0U
+sidebar_class_name: "put api-method"
+info_path: docs/1backend/1backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Save Config"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/config-svc/config"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Save the provided configuration to the server
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"config":{"properties":{"data":{"additionalProperties":true,"type":"object"},"dataJson":{"type":"string"},"id":{"type":"string"},"namespace":{"type":"string"}},"required":["data"],"type":"object"}},"type":"object"}}},"description":"Save Config Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Save Config Response","content":{"application/json":{"schema":{"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"string"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

@@ -1,0 +1,71 @@
+---
+id: get-message
+title: "Get Message"
+description: "Fetch information about a specific chat message by its ID"
+sidebar_label: "Get Message"
+hide_title: true
+hide_table_of_contents: true
+api: eJylVttu20YQ/ZXFvrQFaFK2ayDlS6u0tqs2qY0qRh5soRgtR+TGy11mdyhZFQj0I/qF/ZJiSMqSLCZAkBddZudy5nZ2NzLDoLyuSDsrU3mFpAqh7cL5ElgmYO5qEiBChUovtBKqABIlhgA5ivlaaApi8ouMpKvQtzaTTKYyR3rbKclIVuChREIfZHq/eRGzV+ucaJZUQIWMpIUSZSr7WJNMRtLjx1p7zGRKvsZIBlVgCTLdSFpXrBzIa5vLppmxcqicDRj4/Gw04q/h0BkSaBNEqJXCEBa1MWvhkbzGJXJc5SyhJfYAVWW0ahNNPgR2s9mDUXkuA+kuKD7pQGEP3tw5g2BlE23TOjZSHoEwG9NAWpFcaIOTLBznctUdiAwX2mIQVKBgZQFEoIoSLXXCbe8KCDFXnLAMg6F6AXgPa/6vsy4nKCvTNibkf2E5vbk17y9eORkdeyiR2qpAlmmGCeZ2L9Wuhb2Rm39ARW1YfKLj9N7hE4m+DcItDjLBPBYP8lcdiVUB9E0QdfXjgxwCRIVHyCbZgP/+5IVvrtAuYyp8mzFe3r0f50MB6ir7TPPqgH4o+F0rF7prkH4GwfpiVTix8o7wANeDvXJejCdbAZvqIBYaTesIy4rW8THEZn+J7rmne1WZHbWjOZaw7PuhbZrYJRidid+mN398yc68RNgFOB0ok4WaCuf131+2lEMBLoYzIPQWjJiiX6IXl947/3WRmkgGVLXXtG657zWCRz+uqZDp/YxpiiBnWpQ/M7FOl4q7UCIVrqfRlj9ZXSbMvSdhqZK+6cnmmRwbyYEYdcextTdskRinwBQuUHrx6uz8VHLELaAp4+5IZx/W0WqsKxQPvcqDFAtnjFthxuzPFwMoFGAzQe4RrQDVTZdYeFe2I8vTzYmJNy7XVqDNKqctxVu6LxAy9DvCH/dNbou8m2Co9O+4bkeSL6iWKp0lUG1fsATNGQcwGH4K2ua1AfLOxsqVe75vJ2JaV5XzXNeuSAVRlSbJ6RzUI9qMDRLe1sMqjIVyZems6NXEwnmxdnW7hHtTEf77599SK++4G1phOJlDwKyt0LzWhgQ5ERSYlluMVmhDewtsEV7fvhHL83h0gC+kSbJareLc1rHzedLbhQTyypycx6O4oNJ09OnLcLOYdtF36YUV5Dn6WLukVUm4sppaXjt93eUkI8kD1CU8is/j0YlX8dkP7LdygUqwe0ivkcTujj+o1ma3Ml/1puhbz1dCUhnQ7c3ZVmXTL8W93C6F3N2pkUx3r4ZZJHn+WXWz4V7cedM0LP5Yo+etnEVyCV7DnIvB7xMd+Hcm0wWYgJ/J7ds/ey79Thw8YwZxb+fYrrnOYGr+JyP5iOuDZ04za6LtUjCc7nysFFa0Z3nERM0+cVxfvpORhH6hdyvEzqLtD/Y+iOrlCnYQ+LOJPmGy2XQL2jTP+t3RJy2e977T5iLNmqb5H6QgoI8=
+sidebar_class_name: "get api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get Message"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/chat-svc/message/{messageId}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Fetch information about a specific chat message by its ID
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Message ID","in":"path","name":"messageId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Message details successfully retrieved","content":{"application/json":{"schema":{"properties":{"exists":{"type":"boolean"},"message":{"properties":{"createdAt":{"type":"string"},"fileIds":{"description":"FileIds defines the file attachments the message has.","items":{"type":"string"},"type":"array"},"id":{"example":"msg_emSOPlW58o","type":"string"},"meta":{"additionalProperties":true,"type":"object"},"text":{"description":"Text content of the message eg. \"Hi, what's up?\"","type":"string"},"threadId":{"description":"ThreadId of the message.","example":"thr_emSOeEUWAg","type":"string"},"updatedAt":{"type":"string"},"userId":{"description":"UserId is the id of the user who wrote the message.\nFor AI messages this field is empty.","type":"string"}},"required":["id","threadId"],"type":"object"}},"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"type":"string"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"string"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

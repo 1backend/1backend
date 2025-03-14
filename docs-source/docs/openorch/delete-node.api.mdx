@@ -1,0 +1,71 @@
+---
+id: delete-node
+title: "Delete Node"
+description: "Deletes a registered node by node URL. This endpoint is useful when a node is no longer available but it's still present in the database."
+sidebar_label: "Delete Node"
+hide_title: true
+hide_table_of_contents: true
+api: eJzNlU1v3DYQhv/KYC5tAVna2AnQ6lS3NgqjRhL44+TsgUvNSowpkhlSu90I+u/FSFp7/ZEejV70+ZJ8ZjjvsMeKomYTkvEOSzwjS4kiKGCqTUzEVIHzFcFqN91vry5zuGlMBHJV8MYlMBG6SOvOwrYhB2oSmgjOg/WuJga1UcaqlSVYdQlM+ilCTMZaCEyRZA4HqSGoVFIrFSnHDH0gVsJ1UWGJ1Uj20VeEGQbFqqVEHLG865/F8HHGxAyNvAeVGszQqZawxI4tZsj0rTNMFZaJO8ow6oZahWWPaRdEFhMbV+MwLEUcg3eRovw/XryX2/Ml4U/vErmEQ4bvF4uXkgu3UdZUcHGGGepZXPaoQrBGj3EWX6NI+wOawJKFZKa1idnza5DZ/otffSWdcBiGkePdS45bp7rUeDbfqXpDkleSdk28MZrA+QRr37m3w/nw+gYlYqcsCBcxnI9zvg3SkGEk3bFJu7Gg/yDFxKddarC8W0oNJlVLrePVaEvewfVG4zLDllLjH/0xekNGYcGz8ihudCGOLPqO7YCylAQ4WUfsUGJRWK+VbXxM5Ydfj0/eoay5R7qWEKeoDsGeJ/BmFwi+zJIvCGtvrd9SJa1DQQxKEyhXQfL30iX05EBYs29H799GYgkLLn1t3EN7yfc+bkhVxI9OPp3reNwPfEirCuZv2o2JNm7thVO2UOlxC6lVRiKOylL8PRpXd1Yl9i7Xvj2Y+/MFXHcheE6YzUlqUgplUfhAzrNucs91IXZ/moVTsMrVnarpSNXOx2Q0tEazj1O5R1hL79p6voe1Z1h1xlbG1XB6AQf1FSVsazS5SMK95/rr8yVsTvLFE6pYFsV2u81r141U87hYqDrYo5N8kTeptcKaiNv4aT1b7zGouFV1TZwbX4ySQvJpkhXJp0DuE2vpoVI2U5iL/CRfHLHOj3+TeYOPqVXugHQ6SWBu2E9y1D966n914MwFlOifVASrjJPIxiz3s6vu8NBVUi5TeKWolhmKgUTV9zLnLdthkM/fOmIx9jLDjWIjWNO5ZaI8V1iulY30H2n6+Wo+sH6Bg+PtVeC9DdxONkzZTt4ww3vazcffsByyvZsEY/pzqjWFdDDmRbcbDvvN2fnl+c05ZqjmZvBoP5kv2z/IAq8iPbfvRCHXIfvBkL6fzD0MD/rp1w9HPPSMSS0ZWg7D8C9+qBNx
+sidebar_class_name: "delete api-method"
+info_path: docs/1backend/1backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Delete Node"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/registry-svc/node/{url}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Deletes a registered node by node URL. This endpoint is useful when a node is no longer available but it's still present in the database.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Node URL","in":"path","name":"url","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"204":{"description":"No Content"},"400":{"description":"Invalid ID","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"404":{"description":"Service not found","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

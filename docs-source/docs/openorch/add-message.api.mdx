@@ -1,0 +1,71 @@
+---
+id: add-message
+title: "Add Message"
+description: "Add a new message to a specific thread."
+sidebar_label: "Add Message"
+hide_title: true
+hide_table_of_contents: true
+api: eJylVltv2zYU/isEX7YBipQ2K9DpZXO7dvPWLUHdog+JMZyQRxJbiVRJKq5n6L8Ph5RsJdKKBXsxZPJcvnP7Dg9cohNWtV4ZzXO+kpIB07hjDToHJTJvGDDXolCFEsxXFkGmPOGmRQuktZY85yDlH1GBJ7wFCw16tI7n14cHHt4FC2z9M0+4ooMWfMUTrqFBnvPoYC15wi1+7pRFyXNvO0y4ExU2wPMD9/uWZJ23Spe877dRGJ1/YeSeJITRHrWnT2jbWokANfvoCMNhYqq1FIhX6OjfEPT8QlgEj3LlF9wnvFA1rmUQvB/s63jBJBZKo2O+QkbCDLwHUTWofTwcs12Bo+Qqj41bdDUcgLWwp/9Kkhh+gaat6aJx5V/YbC6v6g/PnhuezC006EPkIKUimFBfTUKNqR6UzO1HFD64xS9+Ht47/OLZkGpminuRYJmyG/6rStiuAv+NY1374w1fAnQs+dz+cPPANmXoFLGvbIgYX73/sCqXHHSt/ErxOod2yfn7cM5ULJA6giB5tqsM21nj8R6uG/3aWLZajwekqhwrFNbBEDat36dziP202a+pppOsbGfl6OcnfbIwyMNEsrdxNmYjFdy61mgXm/zp+fk8DaMR1wmBzhVdXe8ZSIkE8j+P2SOaLQTz/RKUtb6DWkn22+byz8c4f5jt6ODJQsk1dL4yVv39uOiWHDxbjsCj1VCzDdo7tOyVtcb+P099wh2Kziq/D2z7AsGiXXW+4vn1lqjRQ0lEzF9W4NnmTlBHNegrQ8TdmtAYgYRznokK/Jm7E1lsv+wwtmGfNUd+dwF8JPfO1qSX1UZAXRnn82fPn1484eR4xLUh+LHFpuhm075vkd0MIjecFaauzQ4lu92HFQQCGWjJvPmEmoGIrcwKa5owhTSwFB97Y0qlGWrZGqV9Oi6aCkGiPa2a1VDrkOvTUEKrfsd9mDLK/9vTYnk1cs69RTFZDWNdJhvhejzbRq6eE/TAx0eSPRk5EeOc5CacdlIYqWxKLEoXZtyIIEKLYQOKquagRveTU7rsavDW6FSYZpKfqzXbdG1rLHVILHTlfZtnmWlRGyuq1Ngy43PyYTXosoMSz6DUxnklWKOENdQ5SqBjBb0QdsZ+YoWx7LZTtVS6JOqc9H9YhbUSqF3I9Ijrl6s37O4iPb+HyuVZttvt0lJ3AdWg5zIo2/rsIj1PK9/UcZfZxl0Wm4jlFJTbQVmiTZXJgkhGJVA+LJnLFvWlFfRQodaPYZ6nF+n5mRXp0x/ILo1SA3qK9ETC/EGOJk+URzy6hhalRsnaGpQOC4xycBhG+JqPI3xsIJ7wfPKsGlt3m3CaV1I5HG7B4Xtb9z0df+7QEplsE34HVsEtpYAecsrRt+R5AbXDr0T07dth0XzHpu+9Rfjj2Ok9JRfqjv7xhH/C/fQ92G/7ZBxhAhOvX0aXZ8QdE/UZifbJqLESAlv/VdkpP15dbt7xhN8O78rGSNKxsKNtCrsI1YQUBIILZwc+9j/PebRJowgD7Z2IhiAl4wdFtZiMh0QVA6FfCmtR5XCINNb3R/l49a8aR3aM0lSbbd/3/wBh7ydI
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Add Message"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/chat-svc/thread/{threadId}/message"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Add a new message to a specific thread.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Thread ID","in":"path","name":"threadId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"message":{"properties":{"createdAt":{"type":"string"},"fileIds":{"description":"FileIds defines the file attachments the message has.","items":{"type":"string"},"type":"array"},"id":{"example":"msg_emSOPlW58o","type":"string"},"meta":{"additionalProperties":true,"type":"object"},"text":{"description":"Text content of the message eg. \"Hi, what's up?\"","type":"string"},"threadId":{"description":"ThreadId of the message.","example":"thr_emSOeEUWAg","type":"string"},"updatedAt":{"type":"string"},"userId":{"description":"UserId is the id of the user who wrote the message.\nFor AI messages this field is empty.","type":"string"}},"required":["id","threadId"],"type":"object"}},"type":"object"}}},"description":"Add Message Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Message successfully added","content":{"application/json":{"schema":{"additionalProperties":true,"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"type":"string"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"string"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

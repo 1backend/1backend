@@ -1,0 +1,71 @@
+---
+id: remove-user-from-organization
+title: "Remove a User from an Organization"
+description: "Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization."
+sidebar_label: "Remove a User from an Organization"
+hide_title: true
+hide_table_of_contents: true
+api: eJzNVttu20YQ/ZXFPLUALfqSAC2fajdOodZoAl+eHD2MdkfkxstdZncpRSEI9CP6hf2SYkjKoiU5QFLA6ItNkXM5Z2b27DSgKEivq6idhQzOjXGrINAKrGPhvP5CStSBvIhOoFICrYsF+e07ESqSeqGlcD5Hq78gh5qI24J6o5U2RsxJYAg6t6TGLt4ZEisdC21FLOhpCEjAVeS7H1MFGXgq3ZLuAvm33pXvRraQQIUeS4rkA2T3zQ6tsa2YvoEENL+uMBaQgMWSIINx8qmCBDx9qrUnBVn0NSUQZEElQtZAXFfsEaLXNoe2TXYTMshnE3FZvjHBrDemEC+cWrOFdDaSjfyIVWW07HCnHwPnb/ZDuflHkhHatk12e66UuBva+aRQ131GaDl5qJwNFDji6fEx/zvAGJUiJUItJYWwqI1ZQ/IfkLYJvDqUa2qXaLQSv9+8+/NbElSeByrqngZ57/zBbj6D5OQAa7s9Jy+I5GwfyVvn51opsi8I49U+jPEApd1MWBfFwtX25erz+vDMRPIWjbghvyQvLruYLwOpTSCQrL2O606cLgg9+fM6FpDdz/hwR8xZt/pTdLOUMEugpFg41j1FhiJ1GscekLKAHIWlTMeSlTZPBaztzNKmV5sWGAMz7/Wx9oYjpcZJNIULMXv90+nZCTCYDdYb5t7THSPereztuiLxYTD5AGLh+BIhJebrTutRkkCrRHQPZAXKXvPEwruyE/0NZ3Hlcm0FWVU5beNkI54FoSK/lc/z4cRtlH+oN1b6D1p3HeDmXW/l8vIzlpUhyJqWQy7cRj9Rdn2nEjVXI6Ch8EvQNq8NRu/sRLpylPf9VNzUVeV8hGQoYBFjlaXpyRzlA1nFDinsK6yQriydFYOZWDgv1q724nwqRlMX/vnr71JL77hTWlI4mmPgG9MqMa+1iSzRQaIhLo7RkmxgWo8If3t/JZZnk+Mn+EKWpqvVapLbeuJ8ng5+IcW8Mkdnk+NJEUvDqCP5Mrxb3PTZt/TCCvOc/ES7tDNJueo6cknh5KLnBAnwcPWEjydnk+MjLyenP3PcyoVYoh0hve6ucoF987tRQCt2rvQnRRzdeP+3LWUYwEifY1oZ1JY5d/VvhiN7D5sjy0vNU5bZ3t7Btvxh2BNmCfAB5ShNwwNx503b8utPNXlWlFkCS/Qa59wRXn504GcF2QJNoK9U8ofrYQX5UezvSAd5bU6b5at9iabmX5DAA633d6huMfoeMNv96TtADHVrZ22yEQ+uSv/x1z7dEavWyHlP+xl673EuJVXxq7ZjtX5zeXV5ewkJzIdNrXSKvTyueOXDVQ/VdQXoxLV714BBm9eYs20flaUMB8ndihyDSjYPzOtgMXZFsqfCf5nYQZem6SW0bR/t+0/Pejwqc2/NvZm1bfsvJFhHCA==
+sidebar_class_name: "delete api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Remove a User from an Organization"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/user-svc/organization/{organizationId}/user/{userId}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Organization ID","in":"path","name":"organizationId","required":true,"schema":{"type":"string"}},{"description":"User ID","in":"path","name":"userId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"type":"object"}}},"description":"Add User to Organization Request"}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"User added successfully","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"403":{"description":"Forbidden","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"404":{"description":"Organization/User not found","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

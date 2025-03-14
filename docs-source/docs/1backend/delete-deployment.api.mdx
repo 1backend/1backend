@@ -1,0 +1,71 @@
+---
+id: delete-deployment
+title: "Delete Deployment"
+description: "Delete a deployment."
+sidebar_label: "Delete Deployment"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VU1z2zYQ/SuYPVOkbDczLU+VY03HjafORPHJ0WEFrinEIIAAoBSVw5n+iP7C/pLMEvq0lU57yUVDkW+x7+3uW3RQUZBeuaisgRJuSFMkgaIip+2mIRNzyMA68siQ2wpKqAbQzR4BGXj60lKI17baQNmBtCbyh7IDdE4rOQQXnwMn6SDIJTXIT87z0VFR4H+HpJyng7hxBCWE6JWpoe9THuWpgvLxFD3Pdmi7+EwyQs/ws+IS8SA+JM4wHBucNSGxuByPE5nj2Pt3kP13Wa+o9Bn8dO7YW7NCrSrx++z+j/+T4LRu5L315wt2nsnFayYPBtu4tF79SdUPY/LmfE0ieYNazMivyIvpcOaPodRnEEi2XsUNlI8dXBN68pM2LqF8nPc8ZVgHnr40RWK2kjx7DcWlPXgDMnDIMVCkKR2FlSyqY8eEQVwYsrReM7TQVqJe2hDLNz9fXl0A59vRmbG8pOiY1Mvifdw4Ep+2kE8gnqzWdk2VWGwEiuBQkkBTiWifyQiUyU7iydtGxCWJh0CeRYk7WysjyFTOqrQEFJ+/JKyIu2Gw4dpNtkMz9AL2JUWn3tFmKDL358NhPUy/YuM0vbb7vjGc6cnu1gjKoePUoOIiBdQUfg3K1K3G6K3JpW2O6Ly/FbPWOeu5xqmuyxhdWRQXC5TPZCoOKODVcpgIaZvGGrGFiSfrxca2XkxuxdG8hX/++rtR0ltuoJIURgsMVA1FXbRKRxGtCBI1cc20kmTCoHbH8Lf3d2J1lY9P+IWyKNbrdV6bNre+LrZxocDa6dFVPs6XsdHMOpJvwv3TLGU/yAtrrGvyubLFACm4GSpypeHiOmmCDHjmkuBxfpWPR17ml7/wuc6G2KA5YnqyLrdTe1Kzoz3/vYtjOw6RvsbCaVSGUw2yu61DdnucHTIk2GebZ8BeYEjXcZEfvO57fv2lJc/+nGewQq9wwSof5322G0821TNtoIS3ieGIfcHyUbdpPl8skD7bRUykJBf/FXts+Jvp3fTjFDJYbO++xlYc5XHN9yKuoYThBh2GhwHDuw40mrrFmrHpVDYLbk19sBGTynYPrGv3yWyOOL60YZLCvyzsbEjXJZP2/R6fPn03Yu/9hOZmzvu+/wYw2dmw
+sidebar_class_name: "delete api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Delete Deployment"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/deploy-svc/deployment"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Delete a deployment.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"deploymentId":{"type":"string"}},"required":["deploymentId"],"type":"object"}}},"description":"Delete Deploys Request"}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

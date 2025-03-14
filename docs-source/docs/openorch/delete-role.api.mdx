@@ -1,0 +1,71 @@
+---
+id: delete-role
+title: "Delete a Role"
+description: "Delete a role based on the role ID."
+sidebar_label: "Delete a Role"
+hide_title: true
+hide_table_of_contents: true
+api: eJylVE1v4zYQ/SvEnFpAkbxJF2h1qosEhbtBvYg3p6wPNDWWuKFI7pCy6wr878VIcux8bFF0L7Ykzsx7M3zzeqgwKNI+amehhGs0GFFIQc6g2MiAlXBWxAbHL4vrHDJwHklyxqKCEqoh584ZhAy8JNliRApQPvQvqt+NJSADza9exgYysLJFKIHrLyrIgPBrpwkrKCN1mEFQDbYSyh7iwXNkiKRtDSmtOTh4ZwMGPr+czfjvOejyA2SgnI1oI59K741WA/3iS+CQ/jWE23xBFSGllDL46a2yC7uTRlfij9Xyz/8B8NTDCPDuNcC9lV1sHOm/sfpegPdvdxCRrDRihbRDEjdEjr4PKWUQUHWk42G4/t9QEtK8iw2UD2u+ryhrVgbcBySx2ilYZ9BibNxJSYOKOAOKLiBdhJ0qWBxFP0okAaMw5VFjHRmOLYxT0jQuxPL9z5dX74DhjmxWTHoUyTmnlyP5dPAoPk8hn0FsnTFuj5XYHIQUwUuFQtpKRPeIVkg1ClVsybXDjhy7Ereu1lagrbzTNuZHxTcoK6ST5ufTDQ8Thuw4Uen1BzwAj1PbrWOefClSDZeCrdTccZAGw69B27ozMpKzuXLtWe2PC7HqvHcUIZuG1MToy6JwHq0j1eSO6gJS9mIKc2GkrTtZ44WsrQtRK9FqRY6nrhUGseUl3zt6FFtHYtNpU2lbi/lCnCkmcNtGK7QBmfeR1+8fb8XuKp89YxXKotjv93ltu4HVlBcKWXtzcZXP8ia2hrlGpDYst6uRy6mpsJd1jZRrVwwhBc9TR8MhS492SYrdhmUztjnLr/LZBan88heu612IrbRnTJ/McPK2Z1PqT3vyH11zutyIf8XCG6ktow4T6CfBP8BR8GyDI2g5+eI6A9Y2B/U9Q9yTSYk/f+2QeN3WGewkabnhltl7deDnCsqtNAH/hf8Pd5Pl/ihOFv0m3aNA7YFHKU3Hb5DBIx5OFp7WKTtKnYmMh3Ol0MeztFfmks694Prm9ubTDWQgp0097QbXy44PDPAmq5e7NbLg35R9I6Xvx81L6Sl+PPpmxtNCj9E8pHVK6R/7o30a
+sidebar_class_name: "delete api-method"
+info_path: docs/1backend/1backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Delete a Role"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/user-svc/role/{roleId}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Delete a role based on the role ID.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Role ID","in":"path","name":"roleId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"type":"string"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"string"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

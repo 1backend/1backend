@@ -1,0 +1,30 @@
+.character-items {
+
+    ion-list {
+        border: 1px solid var(--ion-color-light);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      
+      ion-item {
+        --border-width:  1px 0 0 0;
+        --border-color: var(--ion-color-light);
+        --padding-start: 16px;
+        --inner-padding-end: 0;
+        --ion-item-background: var(--ion-color-white);
+        --border-style: solid;
+        cursor: pointer;
+      }
+      
+      ion-item:first-of-type {
+        --border-width: 0;
+      }
+      
+      ion-item:last-of-type {
+        --border-width: 1px 0 1px 0;
+      }
+      
+      ion-icon {
+        color: var(--ion-color-primary);
+      }
+}

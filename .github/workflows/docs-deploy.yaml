@@ -1,0 +1,38 @@
+name: Documentation build and deploy
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "^1.23.2"
+
+      - name: Install dependencies and build
+        run: |
+          go install github.com/swaggo/swag/cmd/swag@latest
+          yarn install
+          chmod +x gen.sh
+          ./gen.sh
+        working-directory: ./docs-source
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GH_PAT  }}
+          publish_dir: ./docs

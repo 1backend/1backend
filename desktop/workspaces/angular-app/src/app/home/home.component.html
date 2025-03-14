@@ -1,0 +1,51 @@
+ű<!--
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ -->
+<app-page title="Home" [menuEnabled]="false" [columnWidths]="['3rem']">
+	<ng-template #columnContent>
+		<div>
+			<app-icon-menu></app-icon-menu>
+		</div>
+	</ng-template>
+	<ng-template #mainContent>
+		<app-centered [headerHeight]="'56px'" [vertical]="true">
+			<div style="padding: 1rem">
+				<div class="container">
+					<div class="logo-container">
+						<img src="/assets/logo_circled_grey.svg" alt="Logo" />
+					</div>
+					<div class="text-container">
+						<ion-input
+							fill="outline"
+							expand="block"
+							label="Search"
+							labelPlacement="floating"
+							[(ngModel)]="searchTerm"
+						></ion-input>
+					</div>
+				</div>
+
+				<div class="buttons-container">
+					<ng-container *ngFor="let button of buttons">
+						<ion-button
+							class="menu-buttons sng-test-ai-button"
+							routerLink="{{ button.link }}"
+							color="secondary"
+							fill="outline"
+							*ngIf="
+								!searchTerm ||
+								button.title.toLowerCase().includes(searchTerm.toLowerCase())
+							"
+						>
+							{{ button.title | translate }}
+						</ion-button>
+					</ng-container>
+				</div>
+			</div>
+		</app-centered>
+	</ng-template>
+</app-page>

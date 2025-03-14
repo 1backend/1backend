@@ -1,0 +1,76 @@
+---
+id: create-role
+title: "Create a New Role"
+description: "Create a new role."
+sidebar_label: "Create a New Role"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVk1v3DYQ/SsDXnqRpY3dAK0QBHVao9g2iA2vffIaMJealRhTJE1SljcL/fdiSO2H7U1RBG1OvQgiORy+mTfzyDWr0AsnbZBGs5L96pAHBA4ae3BGYT7X7xbvrxqMI5j+Bm3nAywQrMOlfMIKFisIDYLgSqH7wYNXXZ2/Kxbv5/qszkEuXy+D9HBnMfhgHB75R3EXbeIRvjGdqkAZcw9K3uNzw5JXrdR3+VwTps6jAy6E6XSAvjEgIn6/89ZLpWCBwrQYJ02v0YEhTDxEkwy4rsBotdozGLcBXyiEYAArGbZO87me60t86KQbj7ojIBEerZcJxR1YdK30Xhqds4wZi45TnqcVK1myuTQKWcYcPnTowwdTrVi5ZsLogDrQL7dWSRG3FZ89cbRmXjTYcvqzjpwGiZ5Gz6hcs7CyyErmg5O6ZkPGZHVwWvMWDy7s4E+reIAM2PqDpuMEd46v2DCkiKTDipU3dO7t1sQsPqMIbCCjg7VHKYHLlBC27yi4DqNnb432KeTjyeRV5Cx6SPmtwHdCoPfLTqkVy741tUTr69nxjNNwMCf/Nh2xMqeHN3W2+iqS4XXuD7AxZOzHQ8mc6keuZAV/zM4/fXv+0Dnj/hm2hOTNayTXmnehMU5+weq7IXl7OCcBneYKZuge0cFZ9Pl9IA0Z8yg6J8OKlTdr9gG5Q3fahYaVN7cDNRqvPbXdNYnj7FFQ87UYGkOyY03sKsvJnhUb3SpcEiIfA/LRc+cUmRTKCK4a40P59qfjkzeMzthAmFFIKYp9IC8TdrWyCPPRZM5gaZQyfbo7OHjLBUYVDuYeNXCRWh6WzrRRXzehwEdTSw2oK2ukDqSqkvw3yCskBlLzsNOxUGL+2U6erPwTkz4RJ5c71T174q1NLf4c+chF6tbdaDxnO34hlTeblVvqc700G1XnIlYHtlxScj1X6H/xUted4sEZnQvT7oVxMYVZZ61xxFniownBlkVhLGrjRJMbVxev1IadguK67niNR7zWxgcpoJXCGSJYCvSwdLzF3rh7WBoHi06qSuoaTqewV7qeMqykQO1jbja4fr/4CI8n+eQZKl8WRd/3ea27iGrc5wteW3V0kk/yJrQq3hboWn++nCUsu6B8z+saXS5NEU0Kok4G4oWdW9TnTjQsY1ShKcxJfpJPjpzIj3+OF5bxoeV6D+n2PfMJexgv2xe6vG3a/x8//+HjZ+zAgE+hsIpLHW8tqp31KEY3bOOHbn2i6jZjJDu0tF4vuMdrp4aBph86dCR/txl75E4S0Kh+2UYJSL/ucUWkJnqPSIKodrjqkhS80Och2+w4FQJt+FvbfUW9OJ9dsYwtxrdbayra43hPYfCelSy+/WI7xacEza3Zpj9ZyZJPUiU+qudOrwhStvmhqDZLerWH8KXepUDoS2Ed3LJeJzUchq19Wvrqjq3IJmui8HYYhr8AxK9CSA==
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Create a New Role"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/user-svc/role"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Create a new role.
+<b>The role ID must be prefixed by the caller's slug.</b>
+Eg. if the caller's slug is `petstore-svc` the role should look like `petstore-svc:admin`.
+The user account who creates the role will become the owner of that role, and only the owner will be able to edit the role.
+
+Requires the `user-svc:role:create` permission.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"description":{"type":"string"},"id":{"type":"string"},"name":{"type":"string"},"permissionIds":{"items":{"type":"string"},"type":"array"}},"required":["id"],"type":"object"}}},"description":"Create Role Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Role created successfully","content":{"application/json":{"schema":{"properties":{"role":{"properties":{"createdAt":{"type":"string"},"description":{"type":"string"},"id":{"type":"string"},"name":{"type":"string"},"ownerId":{"type":"string"},"updatedAt":{"type":"string"}},"type":"object"}},"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

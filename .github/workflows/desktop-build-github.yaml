@@ -1,0 +1,444 @@
+name: "Desktop build"
+# ..
+on:
+  push:
+    paths:
+      - "desktop/**"
+      - "dapper/**"
+      - "server/**"
+      - ".github/workflows/desktop-build-github.yaml"
+
+jobs:
+  build-windows:
+    timeout-minutes: 20
+    runs-on: windows-latest
+    env:
+      CGO_ENABLED: 0
+    if: false
+    # if: ${{ !contains(github.event.head_commit.message, 'NOBUILD') }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Cache npm cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+          key: ${{ runner.os }}-npm-cache-${{ hashFiles('desktop/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-cache-
+
+      - name: Prepare environment variables
+        run: |
+          # Define the target executable and the symlink path
+          $TargetPath = "C:\Program Files (x86)\Windows Kits\10\App Certification Kit\signtool.exe"
+          $LinkPath = "C:\Windows\System32\signtool.exe"
+
+          # Check if the symlink already exists and points to the correct target
+          if (Test-Path $LinkPath) {
+              $existingTarget = (Get-Item -Path $LinkPath).Target
+
+              # If the existing symlink does not point to the correct target, remove it and create a new one
+              if ($existingTarget -ne $TargetPath) {
+                  Remove-Item -Path $LinkPath
+                  New-Item -ItemType SymbolicLink -Path $LinkPath -Target $TargetPath
+                  Write-Host "Updated existing symbolic link to point to the correct target."
+              } else {
+                  Write-Host "The symbolic link already exists and points to the correct target."
+              }
+          } else {
+              # Create the symbolic link if it does not exist
+              New-Item -ItemType SymbolicLink -Path $LinkPath -Target $TargetPath
+              Write-Host "Symbolic link created successfully."
+          }
+
+          try {
+            $env:WSL_UTF8=1
+            # Get the Base64 encoded PFX from an environment variable
+            $base64Pfx = $env:CERT_PFX_BASE64
+
+            # Save the Base64 string to a temporary file
+            $base64Pfx | Set-Content -Path ".\tempBase64.txt"
+
+            # Use certutil to decode the Base64 file to binary format
+            cmd /c certutil -decode ".\tempBase64.txt" ".\mycert.pfx"
+
+            # Remove the temporary Base64 file
+            Remove-Item -Path ".\tempBase64.txt" -Force
+
+            # Write the password to another file from an environment variable
+            $env:SIGNING_PASS | Out-File -FilePath ".\mycert.pass" -Encoding utf8 -NoNewline
+
+            Write-Output "Certificate and password files created successfully."
+          } catch {
+              Write-Output "Failed to create file: $_"
+          }
+
+        working-directory: ./desktop
+        env:
+          CERT_PFX_BASE64: ${{ secrets.CERT_PFX_BASE64 }}
+          SIGNING_PASS: ${{ secrets.SIGNING_PASS }}
+
+      - name: Cache npm cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+          key: ${{ runner.os }}-npm-cache-${{ hashFiles('desktop/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-cache-
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./desktop
+
+      - name: Build and Package for Windows
+        run: npm run make
+        working-directory: ./desktop
+        env:
+          SIGNING_PASS: ${{ secrets.SIGNING_PASS }}
+
+      - name: Convert to APPX
+        if: false
+        run: |
+          npm run make-appx
+        working-directory: ./desktop
+
+      - name: Extract tag or branch name
+        if: always()
+        run: |
+          if ($env:GITHUB_REF.StartsWith("refs/tags/")) {
+            $env:GIT_TAG = $env:GITHUB_REF.Substring("refs/tags/".Length)
+          }
+          elseif ($env:GITHUB_REF.StartsWith("refs/heads/")) {
+            $env:GIT_TAG = $env:GITHUB_REF.Substring("refs/heads/".Length)
+          }
+          echo "GIT_TAG=$env:GIT_TAG" | Out-File -Append -FilePath $env:GITHUB_ENV
+
+      - name: Deploy exe to Server
+        if: always()
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          REMOTE_PATH: /var/www/singulatron/
+          LOCAL_PATH: ./out/make/squirrel.windows/x64/
+        run: |
+          Write-Host "Create a local directory for the SSH key within the working directory"
+          $localSshDir = New-Item -ItemType Directory -Force -Path "./.ssh_automation_deploy"
+
+          Write-Host "Define the path for the SSH key within the local directory"
+          $idRsaAutomationPath = Join-Path -Path $localSshDir -ChildPath "id_rsa_automation"
+
+          Write-Host "Save the SSH_PRIVATE_KEY to a file"
+          Set-Content -Path $idRsaAutomationPath -Value $env:SSH_PRIVATE_KEY
+
+          Write-Host "Adjust permissions for the key file"
+          icacls.exe $idRsaAutomationPath /inheritance:r /grant "${env:USERNAME}:R"
+
+          Write-Host "Add server to known hosts to prevent interactive prompt"
+          ssh-keyscan $env:REMOTE_HOST | Out-File -Append -FilePath "$localSshDir\known_hosts"
+
+          Write-Host "Create a version-specific folder on the server using the GIT_TAG"
+          $versionPath = "${env:REMOTE_PATH}/${env:GIT_TAG}/windows/out/make/squirrel.windows"
+          ssh -o StrictHostKeyChecking=no -i $idRsaAutomationPath "${env:REMOTE_USER}@${env:REMOTE_HOST}" "mkdir -p $versionPath"
+
+          Write-Host "Recursively copy the entire out directory to the server into the version-specific folder"
+          scp -v -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $idRsaAutomationPath -r "${env:LOCAL_PATH}" "${env:REMOTE_USER}@${env:REMOTE_HOST}:$versionPath"
+
+          Write-Host "Clean up: Remove the local SSH directory and its contents after use"
+          Try {
+            Remove-Item -Path "$idRsaAutomationPath" -Force
+            Remove-Item -Path "$localSshDir" -Force -Recurse
+          } Catch {
+            Write-Warning "Warning: Failed to clean up SSH key or directory. Manual cleanup may be required."
+          }
+        working-directory: ./desktop
+        # for some reason this fails even though stuff gets copied successfully
+        continue-on-error: true
+
+      - name: Run tests
+        run: |
+          $env:OPENORCH_CONFIG_PATH="${GITHUB_WORKSPACE}"
+          npm run test:playwright
+        working-directory: ./desktop
+
+      - name: Save artifacts
+        if: always()
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          REMOTE_PATH: /var/www/singulatron
+          LOCAL_PATH: ./playwright-traces
+        run: |
+          Write-Host "Create a local directory for the SSH key within the working directory"
+          $localSshDir = New-Item -ItemType Directory -Force -Path "./.ssh_automation_artifacts"
+
+          Write-Host "Define the path for the SSH key within the local directory"
+          $idRsaAutomationPath = Join-Path -Path $localSshDir -ChildPath "id_rsa_automation"
+
+          Write-Host "Save the SSH_PRIVATE_KEY to a file"
+          Set-Content -Path $idRsaAutomationPath -Value $env:SSH_PRIVATE_KEY
+
+          Write-Host "Adjust permissions for the key file"
+          icacls.exe $idRsaAutomationPath /inheritance:r /grant "${env:USERNAME}:R"
+
+          Write-Host "Add server to known hosts to prevent interactive prompt"
+          ssh-keyscan $env:REMOTE_HOST | Out-File -Append -FilePath "$localSshDir\known_hosts"
+
+          Write-Host "Create a version-specific folder on the server using the GIT_TAG"
+          $versionPath = "${env:REMOTE_PATH}/${env:GIT_TAG}/windows"
+
+          Write-Host "Create version path on remote"
+          ssh -o StrictHostKeyChecking=no -i $idRsaAutomationPath "${env:REMOTE_USER}@${env:REMOTE_HOST}" "mkdir -p $versionPath"
+
+          Write-Host "Recursively copy the entire out directory to the server into the version-specific folder"
+          scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $idRsaAutomationPath -r "${env:LOCAL_PATH}" "${env:REMOTE_USER}@${env:REMOTE_HOST}:$versionPath"
+
+          Write-Host "Clean up: Remove the local SSH directory and its contents after use"
+          Try {
+            Remove-Item -Path "$idRsaAutomationPath" -Force
+            Remove-Item -Path "$localSshDir" -Force -Recurse
+          } Catch {
+            Write-Warning "Warning: Failed to clean up SSH key or directory. Manual cleanup may be required."
+          }
+        working-directory: ./desktop
+
+  build-macos:
+    timeout-minutes: 10
+    runs-on: macos-latest
+    env:
+      CGO_ENABLED: 0
+    if: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22.4"
+          check-latest: true
+
+      - name: Cache npm cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+          key: ${{ runner.os }}-npm-cache-${{ hashFiles('desktop/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-cache-
+
+      - name: Install dependencies
+        run: |
+          # Fix for:
+          # npm ERR!   File "/Users/runner/work/mono/mono/desktop/node_modules/node-gyp/gyp/pylib/gyp/input.py", line 19, in <module>
+          # npm ERR!     from distutils.version import StrictVersion
+          # npm ERR! ModuleNotFoundError: No module named 'distutils'
+          # https://github.com/nodejs/node-gyp/issues/2869
+          brew install python-setuptools
+          npm install --save-dev appdmg
+          npm install
+        working-directory: ./desktop
+
+      - name: Build and Package for Linux
+        run: |
+          npm run make
+        working-directory: ./desktop
+
+      - name: Extract tag or branch name
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "GIT_TAG=$(echo ${GITHUB_REF#refs/tags/})" >> $GITHUB_ENV
+          elif [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+            echo "GIT_TAG=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+          fi
+
+      - name: Deploy exe to Server
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          REMOTE_PATH: /var/www/singulatron
+        run: |
+          # Prepare SSH key
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          # Add server to known hosts to avoid interactive prompts
+          ssh-keyscan $REMOTE_HOST >> ~/.ssh/known_hosts
+
+          # Define the path for the Debian package, incorporating the GIT_TAG
+          cp ./out/make/*.dmg ./out/make/singulatron_${GIT_TAG}_amd64.dmg
+          ls -alh ./out/make/
+          DEB_PACKAGE_PATH="./out/make/singulatron_${GIT_TAG}_amd64.dmg"
+          REMOTE_DEB_PATH="${REMOTE_PATH}/${GIT_TAG}/macos/singulatron_${GIT_TAG}_amd64.dmg"
+
+          # Ensure remote directory exists
+          ssh ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ${REMOTE_PATH}/${GIT_TAG}/macos"
+
+          # Upload the Debian package to the server using SCP
+          scp $DEB_PACKAGE_PATH ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DEB_PATH}
+
+          # Clean up the SSH key
+          rm -rf ~/.ssh/id_rsa
+        shell: bash
+        working-directory: ./desktop
+
+      - name: Run tests
+        run: |
+          export OPENORCH_CONFIG_PATH="${GITHUB_WORKSPACE}"
+          npm run test:playwright
+        working-directory: ./desktop
+
+      - name: Save artifacts
+        if: always()
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          REMOTE_PATH: /var/www/singulatron
+          LOCAL_PATH: ./playwright-traces
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          # Add your server to known hosts to avoid prompts
+          ssh-keyscan $REMOTE_HOST >> ~/.ssh/known_hosts
+
+          # Define version-specific remote path including the GIT_TAG
+          VERSION_PATH="${REMOTE_PATH}/${GIT_TAG}/macos"
+
+          # Use SSH to create the version-specific directory on the server
+          ssh -i ~/.ssh/id_rsa ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p $VERSION_PATH"
+
+          # Use rsync to upload the whole folder to the version-specific directory, overwriting if exists
+          rsync -avz ${LOCAL_PATH} ${REMOTE_USER}@${REMOTE_HOST}:${VERSION_PATH}
+
+          # Clean up
+          rm -rf ~/.ssh/id_rsa
+        shell: bash
+        working-directory: ./desktop
+
+  build-linux:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    env:
+      CGO_ENABLED: 0
+    if: false
+    # if: ${{ !contains(github.event.head_commit.message, 'NOBUILD') }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Cache npm cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+          key: ${{ runner.os }}-npm-cache-${{ hashFiles('desktop/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-cache-
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./desktop
+
+      - name: Build and Package for Linux
+        run: npm run make
+        working-directory: ./desktop
+
+      - name: Extract tag or branch name
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "GIT_TAG=$(echo ${GITHUB_REF#refs/tags/})" >> $GITHUB_ENV
+          elif [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+            echo "GIT_TAG=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+          fi
+
+      - name: Deploy exe to Server
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          REMOTE_PATH: /var/www/singulatron
+        run: |
+          # Prepare SSH key
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          # Add server to known hosts to avoid interactive prompts
+          ssh-keyscan $REMOTE_HOST >> ~/.ssh/known_hosts
+
+          # Define the path for the Debian package, incorporating the GIT_TAG
+          cp ./out/make/deb/x64/*.deb ./out/make/deb/x64/singulatron_${GIT_TAG}_amd64.deb
+          DEB_PACKAGE_PATH="./out/make/deb/x64/singulatron_${GIT_TAG}_amd64.deb"
+          REMOTE_DEB_PATH="${REMOTE_PATH}/${GIT_TAG}/linux/singulatron_${GIT_TAG}_amd64.deb"
+
+          # Ensure remote directory exists
+          ssh ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p ${REMOTE_PATH}/${GIT_TAG}/linux"
+
+          # Upload the Debian package to the server using SCP
+          scp $DEB_PACKAGE_PATH ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DEB_PATH}
+
+          # Clean up the SSH key
+          rm -rf ~/.ssh/id_rsa
+        shell: bash
+        working-directory: ./desktop
+
+      - name: Run tests
+        run: |
+          # server has no GUI env so we launch a virtual one
+          # sudo apt-get update
+          # sudo apt-get install -y xvfb
+          Xvfb :99 -screen 0 1280x720x24 &
+          export DISPLAY=:99
+          export OPENORCH_CONFIG_PATH="${GITHUB_WORKSPACE}"
+          npm run test:playwright
+        working-directory: ./desktop
+
+      - name: Save artifacts
+        if: always()
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          REMOTE_PATH: /var/www/singulatron
+          LOCAL_PATH: ./playwright-traces
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          # Add your server to known hosts to avoid prompts
+          ssh-keyscan $REMOTE_HOST >> ~/.ssh/known_hosts
+
+          # Define version-specific remote path including the GIT_TAG
+          VERSION_PATH="${REMOTE_PATH}/${GIT_TAG}/linux"
+
+          # Use SSH to create the version-specific directory on the server
+          ssh -i ~/.ssh/id_rsa ${REMOTE_USER}@${REMOTE_HOST} "mkdir -p $VERSION_PATH"
+
+          # Use rsync to upload the whole folder to the version-specific directory, overwriting if exists
+          rsync -avz ${LOCAL_PATH} ${REMOTE_USER}@${REMOTE_HOST}:${VERSION_PATH}
+
+          # Clean up
+          rm -rf ~/.ssh/id_rsa
+        shell: bash
+        working-directory: ./desktop

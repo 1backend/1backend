@@ -1,0 +1,140 @@
+<div class="icons-container">
+	<div
+		class="menu-entry"
+		title="Startup information and system overview"
+		routerLink="/"
+	>
+		<ion-icon
+			[ngStyle]="{
+				color: currentPath === '' ? 'gold' : '',
+			}"
+			name="home-outline"
+		></ion-icon>
+	</div>
+
+	<div
+		*ngIf="group() === 'ai-group'"
+		class="menu-entry"
+		title="Startup information and system overview"
+		routerLink="/startup"
+	>
+		<ion-icon
+			[ngStyle]="{
+				color: currentPath === 'startup' ? 'gold' : '',
+			}"
+			name="arrow-up-circle-outline"
+		></ion-icon>
+	</div>
+
+	<div
+		*ngIf="group() === 'ai-group'"
+		class="menu-entry"
+		title="Chat with your model"
+		routerLink="/chat"
+	>
+		<ion-icon
+			[ngStyle]="{
+				color: currentPath === 'chat' ? 'gold' : '',
+			}"
+			name="chatbox-ellipses-outline"
+		></ion-icon>
+	</div>
+
+	<div
+		*ngIf="group() === 'ai-group'"
+		class="menu-entry"
+		title="Model Explorer"
+		routerLink="/model-explorer"
+	>
+		<ion-icon
+			[ngStyle]="{
+				color: currentPath === 'model-explorer' ? 'gold' : '',
+			}"
+			name="list-outline"
+		></ion-icon>
+	</div>
+
+	<div
+		*ngIf="group() === 'ai-group'"
+		class="menu-entry"
+		title="Prompts"
+		routerLink="/prompts"
+	>
+		<ion-icon
+			[ngStyle]="{
+				color: currentPath === 'prompts' ? 'gold' : '',
+			}"
+			name="code-working-outline"
+		></ion-icon>
+	</div>
+
+	<div
+		*ngIf="group() === 'users-group'"
+		class="menu-entry"
+		title="Users"
+		routerLink="/users"
+	>
+		<ion-icon
+			[ngStyle]="{
+				color: currentPath === 'users' ? 'gold' : '',
+			}"
+			name="people-outline"
+		></ion-icon>
+	</div>
+
+	<div
+		*ngIf="group() === 'users-group'"
+		class="menu-entry"
+		title="Add user"
+		routerLink="/add-user"
+	>
+		<ion-icon
+			[ngStyle]="{
+				color: currentPath === 'add-user' ? 'gold' : '',
+			}"
+			name="person-add-outline"
+		></ion-icon>
+	</div>
+
+	<div
+		*ngIf="group() === 'users-group'"
+		class="menu-entry"
+		title="Roles"
+		routerLink="/roles"
+	>
+		<ion-icon
+			[ngStyle]="{
+				color: currentPath === 'roles' ? 'gold' : '',
+			}"
+			name="shirt-outline"
+		></ion-icon>
+	</div>
+
+	<div
+		*ngIf="group() === 'users-group'"
+		class="menu-entry"
+		title="Logout"
+		routerLink="/logout"
+	>
+		<ion-icon
+			[ngStyle]="{
+				color: currentPath === 'logout' ? 'gold' : '',
+			}"
+			name="power-outline"
+		></ion-icon>
+	</div>
+
+	<div
+		*ngIf="group() === 'cluster'"
+		class="menu-entry"
+		title="Nodes"
+		routerLink="/nodes"
+	>
+		<ion-icon
+			[ngStyle]="{
+				color: currentPath === 'nodes' ? 'gold' : '',
+			}"
+			name="server-outline"
+		></ion-icon>
+	</div>
+</div>

@@ -1,0 +1,71 @@
+---
+id: upsert-objects
+title: "Upsert Objects"
+description: "Upserts objects by ids."
+sidebar_label: "Upsert Objects"
+hide_title: true
+hide_table_of_contents: true
+api: eJztWN2OEzcUfhXLN22l2Ux2F1rIVZeCqrSouyKserGJ4MRzMmPWYxvbkxCikfoQfcI+SXXsyR8JK2gFUik3yYx9fr/z5/GKF+iFkzZIo/mAX1uPLnhmpq9QBM+mSyYL3+MZNxYdENWw4APeRLrLRMUz7vB1gz48MsWSD1ZcGB1QB3oEa5UUkTN/5UnJintRYQ30ZB3JDRI9vSWth+vQhMq4+Lhv7kXaYNIzYEr6wMyMNR4dGz5moAtmXAlavo3qaW1RGSYcQsCChQo7P3tjPZwx0Afk0jNtArPOzGWBRRZ5ROMc6qCWDESQc9znWkilxnqK7HWDTmLBZs7Uke+a7BrNBaGJb6C2Cvnght+MeePdi9Oz83v3x5xnnI25ceWL73948LA/5hM+ybgMWEf3w9IiH3AfnNQlb7P1AjgHS3ovIERgoSgk2QPqagfK4Brc8HRoExMqDHgM4MfdzlGEfYTYGYXxJVQQmADNkrh9fF++8KhmL+P+FElCwYJhDmfo6CECC0qhi9K/8fFvWJAK4jauvJu547o7ON/KGcM30gf/HUXhw2GVxVEyh1Acxe1Z2vgo2EjYFwVagCml+BHKhZPH8+33tPFRuEVhXxBwbWqn0mFB/SFW9BrMyUH1tocrsaIPuzrrmjSzsFQGCr6rhzpDVOyt0T613bN+/zBCo0YI9H7WKJaGAEXIbAbBf6/zP6+QdWrYTKIqWHAgbj1bVFJUUaZnxu0J9BtRoBnq4JYZq1BZqUvKEOtwjjowb6H+gmZL5/NFOEr9dfJ8RC/4ZDH6Oqg+Pcbvn2uNLe6okP/l1PtEUfj3Q7LN+L1jA26o56BkwX4ZXf72zwcaOmfcET/ea8npoSXXOs0l+RaLz2bJ/eOYBHQaFBuhm6NjT6LMz2NSm3GPonEyLPngZsUfITh0NP/54GbSUrCh9JQEjyEADUFKgBpDZehL1TaBZ9wCkfOc8uTEz0XenVjydIbhpIM881FF4xQR58oIUJXxYXD/wdn5KSdla1tG5FtyZ9eid5F7vrTIxh3JmLOZUcossKAva6ADgsBY4MHcomYgUkofDnb21JSSzhqFNVKHeJ4k+VXs3zzjGmrcnIu6WuTbqrHyV0xlQ8F5tv1cf7Kuz91D2ObY9WFF243+vXl+s47qJA2l9evOLNol6XrqlmrTLLdUZL3UM7O+YYBkLNYgKV4eFPofvdRloyA4o3vC1DvIXA3ZqLHWxHCnEFch2EGen05B3KIuiCHnB8fnCyZMXRvNOjI2M44tTePYxZDt5L3/648/aymcoVySAv3JFHw8IxZs2kgVqI96AQopfEoK1D4Cv7bw56unbH7e6+/Z5wd5vlgseqVuesaVecfncyitOjnv9XtVqFXskOhqfzkbJe1b9/wCyhJdT5o8kuSUFzJEvE8fJZ94xin9k8P93nmvf+JE7+whybXGhxr0jqXdB8X2/mcPsJ37nzsulLrMDPgm5FaB1HGAkturrlxTW6dypfunja6uZCcZp9IkstWKgL52qm1pmU7H1CsmGZ+DkymzbiZttq4WqvFbXPIB/ykZekJlShCAalK5vNPM2mzNcSEE2nAn7W77ubp+zjM+7e7FalMQi4MF1QEs+IDHq7WYPUQQ11ZcgS4bKIk2iaTUh67BbEuaLMrWD+TUeksvdwx8tyUkP+iXvDrKslqlhtG2G/q09V6OTR9K1BTNSdu2fwPO8gov
+sidebar_class_name: "put api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Upsert Objects"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/data-svc/objects/upsert"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Upserts objects by ids.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"object":{"properties":{"authors":{"description":"Authors is a list of user ID and organization ID who created the object.\nIf an organization ID is not provided, the currently active organization will\nbe queried from the User Svc.","example":["[\"usr_12345\""," \"org_67890\"]"],"items":{"type":"string"},"type":"array"},"data":{"additionalProperties":true,"type":"object"},"deleters":{"description":"Deleters is a list of user IDs and role IDs that can delete the object.\n`_self` can be used to refer to the caller user's userId and\n`_org` can be used to refer to the user's currently active organization (if exists).","items":{"type":"string"},"type":"array"},"id":{"type":"string"},"readers":{"description":"Readers is a list of user IDs and role IDs that can read the object.\n`_self` can be used to refer to the caller user's userId and\n`_org` can be used to refer to the user's currently active organization (if exists).","items":{"type":"string"},"type":"array"},"table":{"type":"string"},"writers":{"description":"Writers is a list of user IDs and role IDs that can write the object.\n`_self` can be used to refer to the caller user's userId and\n`_org` can be used to refer to the user's currently active organization (if exists).","items":{"type":"string"},"type":"array"}},"required":["data","table"],"type":"object"}},"type":"object"}}},"description":"Upsert request payload","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Successful upsert of objects","content":{"application/json":{"schema":{"properties":{"object":{"properties":{"authors":{"description":"Authors is a list of user ID and organization ID who created the object.\nThe authors field tracks which users or organizations created an entry, helping to prevent spam.\nIf an organization ID is not provided, the currently active organization will\nbe queried from the User Svc.","example":["[\"usr_12345\""," \"org_67890\"]"],"items":{"type":"string"},"type":"array"},"createdAt":{"type":"string"},"data":{"additionalProperties":true,"type":"object"},"deleters":{"description":"Deleters is a list of user IDs and role IDs that can delete the object.\n`_self` can be used to refer to the caller user's userId and\n`_org` can be used to refer to the user's currently active organization (if exists).","example":["[\"usr_12345\""," \"org_67890\"]"],"items":{"type":"string"},"type":"array"},"id":{"type":"string"},"readers":{"description":"Readers is a list of user IDs and role IDs that can read the object.\n`_self` can be used to refer to the caller user's userId and\n`_org` can be used to refer to the user's currently active organization (if exists).","example":["[\"usr_12345\""," \"org_67890\"]"],"items":{"type":"string"},"type":"array"},"table":{"type":"string"},"updatedAt":{"type":"string"},"writers":{"description":"Writers is a list of user IDs and role IDs that can write the object.\n`_self` can be used to refer to the caller user's userId and\n`_org` can be used to refer to the user's currently active organization (if exists).","example":["[\"usr_12345\""," \"org_67890\"]"],"items":{"type":"string"},"type":"array"}},"required":["data","table"],"type":"object"}},"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      
