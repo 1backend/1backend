@@ -211,7 +211,7 @@ const config: Config = {
         id: "openapi",
         docsPluginId: "classic",
         config: {
-          1backend: {
+          "1backend": {
             specPath: "examples/1backend.yaml",
             outputDir: "docs/1backend",
             downloadUrl:
