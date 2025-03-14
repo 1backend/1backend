@@ -7,7 +7,9 @@ replace github.com/1backend/1backend/clients/go => ../clients/go
 replace github.com/1backend/1backend/sdk/go => ../sdk/go
 
 require (
-	github.com/docker/docker v26.0.0+incompatible
+	github.com/1backend/1backend/clients/go v0.0.0
+	github.com/1backend/1backend/sdk/go v0.0.0
+	github.com/docker/docker v26.1.5+incompatible
 	github.com/docker/go-connections v0.5.0
 	github.com/flusflas/dipper v0.2.1
 	github.com/go-git/go-git/v5 v5.12.0
@@ -16,8 +18,6 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/onsi/ginkgo/v2 v2.20.2
 	github.com/onsi/gomega v1.34.2
-	github.com/1backend/1backend/clients/go v0.0.0
-	github.com/1backend/1backend/sdk/go v0.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/r3labs/sse v0.0.0-20210224172625-26fe804710bc
 	github.com/samber/lo v1.49.1
