@@ -1,1 +1,55 @@
-<svg id="svg1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 578.19 578.19"><defs><style>.cls-1{fill:#444;}.cls-2{fill:#fff;}</style></defs><circle class="cls-1" cx="289.1" cy="289.1" r="289.1"/><path class="cls-2" d="M153.32,372.49q-39,0-60.82-19.35T70.68,296.25c0-25,7.27-44.28,21.82-57.18s34.82-19.35,60.82-19.35h53.83q39,0,60.82,19.35t21.83,57.18c0,25.22-7.27,44-21.83,56.89s-34.82,19.35-60.82,19.35Zm0-33.46h53.83q18.91,0,28.95-10.48t10-32.3c0-14.55-3.35-25.61-10-32.59s-16.35-10.48-28.95-10.48H153.32q-18.91,0-28.95,10.48t-10,32.59c0,14.74,3.35,25.32,10,32.3S140.71,339,153.32,339Z"/><path class="cls-2" d="M305.72,311.09V257.32h41.13q9.09,0,13.36,4.54t4.28,11.95V285H349.14v-9.29q0-6.27-6.26-6.26H321.06v41.66H305.72Z"/><path class="cls-2" d="M402.5,311.61q-14,0-21.82-6.94t-7.83-20.41c0-9,2.61-15.88,7.83-20.51s12.49-6.94,21.82-6.94h35v12h-35q-6.79,0-10.39,3.76t-3.6,11.69c0,5.29,1.2,9.08,3.6,11.59s5.86,3.76,10.39,3.76h36v12h-36Z"/><path class="cls-2" d="M446.35,311.09V236.44h15.14v20.88h31.74q9.18,0,13.42,4.54t4.23,11.95v37.27H495.74v-35.5q0-6.27-6.26-6.26h-28v41.76H446.35Z"/></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="203.79807mm"
+   height="203.79803mm"
+   viewBox="0 0 203.79807 203.79804"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs8">
+    <linearGradient
+       id="strokeGradient"
+       x1="3.0565073"
+       y1="30.650845"
+       x2="206.85455"
+       y2="30.650845"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         offset="0%"
+         stop-color="#00ccff"
+         id="stop3" />
+      <stop
+         offset="100%"
+         stop-color="#EF233C"
+         id="stop5" />
+    </linearGradient>
+  </defs>
+  <g
+     id="layer1"
+     transform="translate(-3.0565073,-30.650845)"
+     style="stroke:#ef233c;stroke-opacity:1">
+    <circle
+       id="path14"
+       stroke="url(#strokeGradient)"
+       stroke-width="6.7537"
+       cx="104.95553"
+       cy="132.54987"
+       r="98.522171"
+       style="stroke:url(#strokeGradient)" />
+    <text
+       xml:space="preserve"
+       style="font-size:92.9108px;font-family:'Zen Dots';-inkscape-font-specification:'Zen Dots, Normal';letter-spacing:-10.0176px;fill:#ffffff;stroke:#ffffff;stroke-width:0.278726;stroke-opacity:1"
+       x="47.54554"
+       y="166.07425"
+       id="text1281"
+       transform="rotate(0.23134562)"><tspan
+         id="tspan1279"
+         style="font-size:92.9108px;stroke-width:0.278726"
+         x="47.54554"
+         y="166.07425">13</tspan></text>
+  </g>
+</svg>

@@ -9,7 +9,7 @@ import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
 const config: Config = {
   title: "1Backend",
   tagline:
-    "A language-agnostic microservices framework for building AI applications.",
+    "A common backend for your AI applications—microservices-based and built to scale.",
   url: "https://1backend.com",
   baseUrl: "/",
   onBrokenLinks: "throw",
