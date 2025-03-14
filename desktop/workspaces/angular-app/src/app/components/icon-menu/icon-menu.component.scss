@@ -1,0 +1,50 @@
+.icons-container {
+	background-color: #1E1E24;
+	height: 100vh;
+}
+
+.menu-entry {
+	cursor: pointer;
+	padding: 0.5rem;
+	color: #444;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.menu-entry:hover {
+	background-color: rgba(83, 83, 83, 0.123);
+}
+
+.menu-entry:active {
+	background-color: rgba(83, 83, 83, 0.24);
+}
+
+.logo {
+	opacity: 0.8;
+	font-size: larger;
+	font-family: 'Zen Dots';
+	color: #00ace0d3;
+}
+
+.logo-bar {
+	margin-top: 1em;
+	margin-bottom: 0.75em;
+}
+
+ion-icon {
+	font-size: 2rem;
+	margin: 0 auto;
+	color: rgb(159, 159, 159);
+	--ionicon-stroke-width: 1.5rem;
+}
+
+.active {
+	background-color: rgba(
+		0,
+		0,
+		0,
+		0.1
+	); /* Example: Highlight active menu item */
+	color: #ffe74c; /* Example: Change text color of active menu item */
+}

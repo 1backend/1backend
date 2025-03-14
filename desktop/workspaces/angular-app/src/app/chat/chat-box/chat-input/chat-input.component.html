@@ -1,0 +1,91 @@
+<!--
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ -->
+<div class="wrapper" style="display: flex; width: 100%; flex-direction: column">
+	<div [class.expanded]="expanded" [class.second-expanded]="isAdvancedConfigVisible" [style.height]="getPanelHeight()"
+		class="chat-input-params">
+		<div *ngIf="this.model?.platformId != 'stable-diffusion'" style="
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 140px;
+			">
+			<p style="
+					text-align: center;
+					color: #494949;
+					margin-bottom: 1em;
+					align-self: center;
+				">
+				There are no parameters for this model.
+			</p>
+		</div>
+
+
+		<div *ngIf="this.isAdvancedConfigVisible == true" class="advanced-config">
+			<div *ngIf="this.model?.platformId == 'stable-diffusion'">
+				<div style="position: relative; text-align: center;">
+					<p style="text-align: center; color: #494949; margin-bottom: 1em">
+						Parameter JSON Input
+					</p>
+					<span (click)="toggleAdvancedConfig()" class="advanced-span">Back</span>
+				</div>
+				<span class="error-span" *ngIf="isInvalidJson">Invalid JSON</span>
+				<div style="width: 100%; display: flex; align-items: center; flex-direction: column;">
+					<ion-textarea (click)="this.isInvalidJson = false" [(ngModel)]="jsonData"  class="json-textarea" placeholder="Edit your JSON here..." [readonly]="false"
+						autoGrow="true">
+					</ion-textarea>
+				</div>
+
+			</div>
+		</div>
+
+		<div *ngIf="this.isAdvancedConfigVisible == false">
+			<div *ngIf="this.model?.platformId == 'stable-diffusion'">
+				<div style="position: relative; text-align: center;">
+					<p style="text-align: center; color: #494949; margin-bottom: 1em">
+						Stable Diffusion parameters
+					</p>
+					<span (click)="toggleAdvancedConfig()" class="advanced-span">Advanced Config</span>
+				</div>
+				<div class="param-inputs">
+					<ion-input [(ngModel)]="width" type="number" label="Width" label-placement="floating"
+						placeholder="Width of the generated image in pixels."></ion-input>
+					<ion-input [(ngModel)]="height" type="number" label="Height" label-placement="floating"
+						placeholder="Height of the generated image in pixels."></ion-input>
+					<ion-input [(ngModel)]="steps" type="number" label="Steps" label-placement="floating"
+						placeholder="Number of steps for generation."></ion-input>
+					<ion-input [(ngModel)]="hrScale" type="number" label="HRScale" label-placement="floating"
+						placeholder="Controls the level of detail in the image."></ion-input>
+					<ion-input [(ngModel)]="cfgScale" type="number" label="GuidanceScale" label-placement="floating"
+						placeholder="How closely the image follows the input."></ion-input>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="chat input" style="
+			flex: 1;
+			position: relative;
+			display: flex;
+			align-items: center;
+			margin-top: auto;
+		">
+		<span (click)="toggleExpand()" class="settings-icon">
+			<ion-icon *ngIf="!expanded" name="add-outline"></ion-icon>
+			<ion-icon *ngIf="expanded" name="remove-outline"></ion-icon>
+		</span>
+
+		<ion-textarea class="chat-input sng-test-chat-textarea" (keydown)="handleKeydown($event)"
+			placeholder="{{ 'Type your message' | translate }}" autoGrow="true" [(ngModel)]="message"></ion-textarea>
+		<ion-fab-button (click)="send()" size="small" color="secondary" [disabled]="!hasNonWhiteSpace(message)"
+			class="send-button sng-test-chat-send-button">
+			<span class="send-icon">
+				<ion-icon name="arrow-up-outline"></ion-icon>
+			</span>
+		</ion-fab-button>
+	</div>
+</div>
+<div #modalContainer></div>

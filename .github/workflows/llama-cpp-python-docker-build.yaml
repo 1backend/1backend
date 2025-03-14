@@ -1,0 +1,66 @@
+name: "Llama CPP Python Docker build"
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to build from. The final image tag will follow this format: 'name/llama-cpp-python:cuda-12.2.2-0.3.0-rc.16'"
+        required: false
+        default: "main"
+      backend:
+        description: "Compute backend (cuda, openblas, mkl, default)"
+        required: true
+        default: "cuda"
+      backend_version:
+        description: "Backend version (e.g., 12.5.0 for CUDA, etc.)"
+        required: false
+        default: "12.5.0"
+      tag:
+        description: "User-defined tag for the Docker image (e.g., 0.3.0-rc.16)"
+        required: false
+        default: "latest"
+
+env:
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  IMAGE_NAME: "llama-cpp-python"
+
+jobs:
+  build-and-push:
+    timeout-minutes: 45
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Login to Docker Hub
+        id: login-dockerhub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Validate Backend Selection
+        run: |
+          case "${{ github.event.inputs.backend }}" in
+            "cuda"|"openblas"|"mkl"|"default") ;;
+            *) echo "Error: Invalid backend specified"; exit 1 ;;
+          esac
+
+      - name: Set Image Tag
+        run: |
+          IMAGE_TAG="${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.event.inputs.backend }}-${{ github.event.inputs.backend_version }}-${{ github.event.inputs.tag }}"
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+
+      - name: Build and Push Docker Image
+        run: |
+          cd ${{ github.event.inputs.backend }}
+
+          DOCKER_BUILDKIT=1 docker build \
+            --build-arg BACKEND_VERSION="${{ github.event.inputs.backend_version }}" \
+            -t ${{ env.IMAGE_TAG }} .
+
+          docker push ${{ env.IMAGE_TAG }}
+        working-directory: ./server/docker/llama-cpp-python

@@ -1,0 +1,71 @@
+---
+id: delete-definition
+title: "Delete Definition"
+description: "Deletes a registered definition by ID."
+sidebar_label: "Delete Definition"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VcFu4zYQ/RViTi2gSN5kF2h1qlsHhdGgWWw2p6wPNDWWuKFI7pCy6wr898VIcuwk3qKnXGyJesN5bzhv2EOFQZH2UTsLJSzQYMQgpCCsdYhIWIkKN9pqRoj1XiwXOWTgPJLkpWUFJVRD2OIJBxl4SbLFiBSgfOhfpXnacbmADDQvehkbyMDKFqEEXUEGhN86TVhBGanDDIJqsJVQ9hD3nlEhkrY1pLRicPDOBgz8/XL2nv+ep/3biT+cjWgjpAzez2avIUu7lUZXIy01gcsepPdGq0Fx8TUwtD9h44nrEfWYG4kcnSOZHVbc+iuqCCmlgce71zzurexi40j/i9UbMjlTtDukrVYorIti4zr7dnQ+nD+giGSlEcwLSVwPe74NpZRBQNWRjvuhqX9HSUjzLjZQPqy4B6Osud/h0+Ae2ou7rYJVBi3Gxh2dMviDo6CgCXkRtqo4Oq3odZWA87HK0UMdGY4ojFPSNC7E8sMvl1fvgBMfeN2xzlHaKbuXVfy89yi+TJAvIDbOGLfDig0uRfBSoZC2EtE9ohVSjTYUG3KtiA2K+4DE2sSNq7UVaCvvtI35wcsNygrp6Ob51Mxymg5TbaXXf+F+qLa2G8c8+RylGs4RW6lZcZAGw29B27ozMpKzuXLtyd4fl+Ku895RhGwqUhOjL4vCebSOVJM7qgv2/PMqzIWRtu5kjReyti5ErUSrFbkw9nwQGx5iO0ePYuNIrDttKm1rMV+KkyYLLNtohTYg8z7w+vPjjdhe5bNnrEJZFLvdLq9tN7Ca4kIha28urvJZ3sTWMNeI1IbbzeS/o6iwk3WNlGtXDJCC66mjYcitR3tLiucot80oc5Zf5bMLUvnlr7yvdyG20p4wHae+eDa/n1WqP9rr/18R0xlH/CcW3khtOflQiH7q/gc47f4h6QmDUldsHW50hvb9Wga8J5MSL3/rkNiFqwy2krRcs36+aHTg5wrKjTQB/0PIT5+m2+Vn8fI+Okv90LN2z9WVpuM3yOAR9+N9lVYpO3Q+Uxk/zJVCH09CXo2ndDogFtc315+vIQM5GfdoFd4vOzxwgrOMXlptZMG/KftBSN+PRkzpCT9++mHEk78n8SwipfQdR1HY7A==
+sidebar_class_name: "delete api-method"
+info_path: docs/openorch/openorch
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Delete Definition"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/registry-svc/definition/{id}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Deletes a registered definition by ID.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Definition ID","in":"path","name":"id","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"204":{"description":"No Content"},"400":{"description":"Invalid ID","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"404":{"description":"Service not found","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

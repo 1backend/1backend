@@ -1,0 +1,73 @@
+---
+id: list-container-logs
+title: "List Logs"
+description: "List Container logs."
+sidebar_label: "List Logs"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9Vttu2zgQ/RVinhXJTbbArp7WTYJdb4M4iJun2GhpaiyzoUhlSNn1Gvr3xVC+xt4LikVfbIFz4Tkzc0ZaQ4Feka6DdhZyuNM+iGtng9QWSRhX+nRsx/YRXxtN6EWYo/iitg4XfqFy48p8oXH5RdRIlfZeO5tCAq5Gkpx3UEAORvuwS3znSg8JEL426MMHV6wgXwOnRRv4Uda10SpGZ189Q1uDV3OsJD/VxLmDRr8Ni1n5njWEVY2Qgw+kbQltAkZXOhxYtA1YIrHJugLPRrXJ9sRNv6IK0PLRmVoxE/HY8dgw0oQF5IEabPnA1876Dullr8d/x2mGHyH5XurcH/7XASv/r5U5vvd6bxS6ayzJpWhsgWRW2pZiFy4GN+nY3papuHHqBenAootU3LsChXFKGm77Sf0PuJ3aCGXAon/eqs83dN+1Y0YRx6AY2weD0qPwiJFW4VRToQ2xpmLmKJ6iXUgSw4fb++Hj9e+f74c3t58HN6cETkdhdyCJ5Or8sLQJ/HSu2wO7kEYX4o/R8P77+45Ejv7j2EYk706RPFnZhLkj/ScWPwzJ+/M1CUhWGjFCWiCJ25jzx0BqE/CoGtJhBfnzGj6gJKR+E+aQP0/aSQJBssae93oRo4WCSQIVhrnj1Va7qP1achBkR9sxM92q85Gaj3c0ZNgvi5KZOx/y9z9fXr0Dvm0LZsTkOj6HkN6W7tOqRjHeuIxBzJwxbomFmK6EFL6WCoW0hQjuBa2QqttOYkauiiJ48h0f3mPaCrRF7bQNrGPN+ecoC+ReWFlx5fqbkYmd2GtF1vojdkrg7jzu9/rtN1nVBk+20bYru/Xc2+v6cAPYmdvFqjgKWEnN9fPSoP/Va1s2RgZyNlWuOkD6MBCjpq4dcW+6ks9DqPMsczVaR2qeOiozONnrfWGkLRtZ4oUsrfNBK1FpRY57qBV6MSNZ4dLRS1wm00abgvdlfyAO5tSnkZxC6yP9La7fHu7E4irtHaHyeZYtl8u0tE1EtYnzmSxrc3GV9tJ5qExcPUiVH85GHZY9Kb+UZYmUapdFl4y7owOXHoY12iGpOSTAQ9jR7KVXae+CVHr5C+flIa6kPUC6e7/BmwodvKn/1w+GzTAF/Bay2khtGVes0Xojrmc4ysQFZnyTBFhGbF+vp9LjE5m25ePXBomFPUlgIUnLKdfjedIm28lmPb7gavM+RBsuWFJcKGmabrTfbJ422Ub0lcI6/KPv4Zp4GI4+QQLTzddO5QqOIbnk7wa5hBziR1OcHXaIZ2vYDiPk0OVklcnNNtjrjyEl2wdmtTXZ1QHCt/rtiPAv0zobsl536m7bnX9n+tuI3dLovLmPk7Zt/wJJoJr9
+sidebar_class_name: "post api-method"
+info_path: docs/openorch/openorch
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List Logs"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/container-svc/logs"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+List Container logs.
+
+Requires the `container-svc:log:view` permission.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"containerId":{"type":"string"},"limit":{"type":"integer"},"nodeId":{"type":"string"}},"type":"object"}}},"description":"List Logs Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"logs":{"items":{"properties":{"containerId":{"description":"ContainerId is the raw underlying container ID.\nEg. Docker container id. Node local.","type":"string"},"content":{"type":"string"},"createdAt":{"type":"string"},"id":{"type":"string"},"nodeId":{"description":"Node Id\nPlease see the documentation for the envar OPENORCH_NODE_ID","type":"string"}},"type":"object"},"type":"array"}},"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

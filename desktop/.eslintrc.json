@@ -1,0 +1,47 @@
+{
+	"env": {
+		"browser": true,
+		"es2020": true,
+		"node": true
+	},
+	"plugins": ["@typescript-eslint", "unicorn", "sonarjs"],
+	"extends": [
+		"plugin:unicorn/recommended",
+		//"plugin:sonarjs/recommended",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended"
+		//"plugin:import/errors",
+		//"plugin:import/warnings",
+		//"plugin:import/typescript"
+	],
+	"parser": "@typescript-eslint/parser",
+	"settings": {
+		"import/resolver": {
+			"typescript": {
+				"project": "workspaces/*/tsconfig.json"
+			}
+		}
+	},
+	"ignorePatterns": ["**/dist/**/*", "**/.dist/**/*"],
+	"rules": {
+		"@typescript-eslint/no-unused-vars": [
+			"error",
+			{
+				"argsIgnorePattern": "^_"
+			}
+		],
+		// "@typescript-eslint/no-explicit-any": [
+		// 	"error",
+		// 	{
+		// 		"ignoreRestArgs": true
+		// 	}
+		// ],
+		"@typescript-eslint/no-explicit-any": "off",
+		"unicorn/prefer-module": "off",
+		"unicorn/no-abusive-eslint-disable": "off",
+		// turned off because dynamicservice.find triggerds this
+		"unicorn/no-array-method-this-argument": "off",
+		"unicorn/prefer-global-this": "off",
+		"unicorn/prevent-abbreviations": "off"
+	}
+}

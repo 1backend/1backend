@@ -1,0 +1,162 @@
+.wrapper {
+	--padding-start: 0;
+	--padding-end: 0;
+	--inner-padding-end: 0px;
+	--shadow: none;
+	--border-style: none;
+
+	ion-textarea.chat-input {
+		cursor: pointer;
+		border-radius: 1rem;
+		margin-left: 0;
+		margin-bottom: 0;
+		border: 1px solid #ccc;
+		padding-left: 3.5rem;
+		/* Make space for the left FAB */
+		padding-right: 3.5rem;
+		/* Make space for the right FAB */
+
+		--highlight-color: none;
+		color: #222;
+	}
+
+	ion-fab-button.send-button {
+		z-index: 10;
+		margin-right: 0;
+		position: absolute;
+		top: -1rem;
+		right: 0.5rem;
+		top: 1.25rem;
+		transform: translateY(-50%);
+
+		.send-icon {
+			ion-icon {
+				color: white;
+				font-size: 1.5rem;
+			}
+		}
+	}
+
+	.settings-icon {
+		z-index: 10;
+		margin-right: 0;
+		position: absolute;
+		left: 1rem;
+		top: 0.9rem;
+
+		ion-icon {
+			cursor: pointer;
+			color: #444;
+			font-size: 1.5rem;
+		}
+	}
+
+	textarea.native-textarea {
+		padding: 1rem 0rem 0rem 0rem !important;
+	}
+
+	ion-input {
+		width: 200px;
+		height: 50px;
+	}
+
+	.chat-input-params {
+		width: 100%;
+		height: 0;
+		transition: height 0.3s ease-in-out;
+		//overflow: hidden;
+		border-radius: 1rem;
+		border: 1px solid transparent;
+		margin-bottom: 0.5rem;
+		overflow-y: scroll;
+
+	}
+
+	.chat-input-params.expanded {
+		border-radius: 1rem;
+		border: 1px solid #ccc;
+	}
+
+	.chat-input-params.second-expanded {
+		border-radius: 1rem;
+	}
+
+	.param-inputs {
+		margin: 10px;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+
+	}
+
+	ion-input {
+		color: #494949;
+		width: 240px;
+		border-bottom: #ccc 1px solid;
+		--highlight-color: #00bfff !important;
+	}
+	ion-textarea{
+		--highlight-color: #00bfff !important;
+	}
+
+	ion-input input::placeholder {
+		font-size: 12px;
+	}
+
+	@media (max-width: 600px) {
+		.param-inputs {
+			flex-direction: row;
+			flex-wrap: wrap;
+			gap: 10px;
+			justify-content: center;
+		}
+
+		.param-inputs ion-input {
+			width: 48%;
+			margin-bottom: 10px;
+		}
+
+		ion-input input::placeholder {
+			font-size: 10px;
+		}
+
+		.advanced-span {
+			white-space: normal;
+			width: 60px;
+			text-align: left;
+		}
+	}
+
+	.advanced-span {
+		position: absolute;
+		top: -5px;
+		right: 10px;
+		color: #494949;
+		cursor: pointer;
+		font-size: small;
+		text-decoration: underline;
+	}
+
+	.error-span {
+		position: absolute;
+		top: 15px;
+		left: 15px;
+		color: #bd0000;
+		cursor: pointer;
+		font-size: smaller;
+	}
+	.json-textarea {
+		font-family: monospace;
+		font-size: 14px;
+		background-color: #f4f4f4;
+		color: #333;
+		padding: 10px;
+		border: 2px solid #ccc;
+		border-radius: 2px;
+		white-space: pre-wrap;
+		box-sizing: border-box;
+		width: 60%;
+		min-height: 200px;
+	}
+ 
+}

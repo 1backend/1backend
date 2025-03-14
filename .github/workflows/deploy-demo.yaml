@@ -1,0 +1,29 @@
+name: "Deploy Demo"
+
+on:
+  workflow_run:
+    workflows: ["OpenOrch frontend Docker build"]
+    branches: [main]
+    types:
+      - completed
+
+jobs:
+  demo-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.DEMO_SSH_PRIVATE_KEY }}
+
+      - name: Add SSH key to known_hosts
+        run: ssh-keyscan -H ${{ secrets.DEMO_DOMAIN }} >> ~/.ssh/known_host
+
+      - name: Deploy to server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.DEMO_USER }}@${{ secrets.DEMO_DOMAIN }} << 'ENDSSH'
+            cd ${{ secrets.DEMO_FOLDER }}
+            bash ${{ secrets.DEMO_SCRIPT }}
+          ENDSSH

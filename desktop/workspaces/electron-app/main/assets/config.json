@@ -1,0 +1,28 @@
+{
+	"development": {
+		"configId": "development",
+		"mainLogFile": "dist/dev-main.log",
+		"mainLogLevel": "debug",
+		"isIconAvailable": true,
+		"isNodeIntegration": false,
+		"isContextIsolation": true,
+		"isEnableRemoteModule": false,
+		"isSandbox": false,
+		"isOpenDevTools": true
+	},
+	"e2e-test": {
+		"configId": "e2e-test",
+		"mainLogFile": "dist/e2e-main.log",
+		"mainLogLevel": "error",
+		"isSandbox": true,
+		"isOpenDevTools": false
+	},
+	"production": {
+		"configId": "production",
+		"mainLogFile": "main.log",
+		"mainLogLevel": "error",
+		"isIconAvailable": false,
+		"isSandbox": true,
+		"isOpenDevTools": false
+	}
+}

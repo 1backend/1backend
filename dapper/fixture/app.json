@@ -1,0 +1,9 @@
+{
+  "name": "server",
+  "features": [
+    {
+      "featureId": "docker-daemon-running",
+      "args": ["{{.username}}", "{{.assetfolder}}"]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+<!--
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ -->
+<app-page title="Logout" [menuWidth]="'3rem'" [columnWidths]="['3rem']">
+	<ng-template #columnContent>
+		<div>
+			<app-icon-menu></app-icon-menu>
+		</div>
+	</ng-template>
+	<ng-template #mainContent>
+		<app-centered [headerHeight]="'56px'" [vertical]="true">
+			<div style="padding: 0rem 2rem">
+				<h2 style="margin-bottom: 2rem">{{ 'Logout' | translate }}</h2>
+				<ion-list>
+					<ion-item>
+						<ion-label> Are you sure you want to log out? </ion-label>
+					</ion-item>
+					<ion-button (click)="logout()">Logout</ion-button>
+				</ion-list>
+			</div>
+		</app-centered>
+	</ng-template>
+</app-page>

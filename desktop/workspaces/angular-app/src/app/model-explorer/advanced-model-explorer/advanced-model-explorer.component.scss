@@ -1,0 +1,72 @@
+.stat {
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+
+	.stat-title {
+		margin-bottom: 5px;
+		font-weight: bold;
+
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.stat-val {
+		font-weight: normal;
+		color: #888;
+	}
+
+	.stat-bar {
+		height: 4px;
+		background-color: #3880ff;
+		/* Ionic primary color */
+		width: var(--width, 50%);
+		/* Default width if not specified */
+	}
+}
+
+.flat-card {
+	box-shadow: none;
+	border: none;
+	background: #f8f9fa; /* Light background for contrast */
+	border-radius: 8px; /* Optional rounded corners */
+}
+
+.list-view {
+	font-family: Arial, sans-serif;
+	color: #333;
+
+	ion-col {
+		border: 1px solid #ddd;
+		padding: 8px;
+		text-align: center;
+
+		&[data-tooltip]:hover::after {
+			content: attr(data-tooltip);
+			position: absolute;
+			padding: 4px 8px;
+			border: 1px solid #ccc;
+			background-color: white;
+			color: black;
+			min-width: 150px;
+			white-space: nowrap;
+			left: 50%;
+			transform: translateX(-50%);
+			box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+			z-index: 1000;
+		}
+	}
+
+	ion-row {
+		&:first-child {
+			ion-col {
+				background-color: #f4f4f8;
+				font-weight: bold;
+				text-transform: uppercase;
+			}
+		}
+
+		&:hover {
+			background-color: #e9ecef;
+		}
+	}
+}

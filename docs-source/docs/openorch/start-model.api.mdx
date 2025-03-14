@@ -1,0 +1,71 @@
+---
+id: start-model
+title: "Start a Model"
+description: "Starts a model by ID"
+sidebar_label: "Start a Model"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VU2P2zYQ/SvEnBqAKzm7DdDq1C1aFG7SelFnTxsfxtRYYpYiGZKy6wj878VI9tr7FaCXXGxKfJx58/hmNEBNUQXtk3YWKlgmDCkKFJ2ryYj1Xsx/AwnOU0CGzGuoIDLoLwaABI8BO0oUIlR3w5NwI2gKofnZY2pBgsWOoIIxx7wGCYG+9DpQDVUKPUmIqqUOoRog7T2NKYO2DeS8YnD0zkaKvH85m/Hf47SL9yBBOZvIJt5F741WYwHl58iQ4XkKt/5MKkHOOUv48aWwc7tFo2vx53Lx9/9J4APrl/TEmEJw4aXS5CtM3j5ncmuxT60L+ivV343Ju5c1SRQsGrGksKUgfh9jfh9KWUIk1Qed9qP3fiUMFK771EJ1t2KrJGzYlgcfLrcKVhI6Sq1jH/s+jQZmPJSjGy/iVk2rcjjYM5ej34GTcYmTz/tg+FBpnELTupiqdz9dXr0FznokteQip7rOqT2V8OPek/h0gHwCsXHGuB3V3H0ookdFAm0tkrsnK1BNrSI2wXUitSRuIwWuTXxwjbaCbO2dtqk4Nl1LWFM4td31wTrjjcCDsOj1e9qPUmu7ccyTLxHVeInUoeaKIxqKv0Rtm95gCs4WynVnsW/mYtl770bBJpHalHxVls6TdUG1hQtNCVk+UeFaGLRNjw1dYGNdTFqJTqvgWHWtKIoND5qdC/di44JY99rU2jbiei7OHBa5bKMV2UjM+8jrj5sPYntVzB6xilVZ7na7orH9yOpwLpbYeHNxVcyKNnWGuSYKXVxslhOXU1Fxh01DodCuHCEl66mTYcjCk10ExQOPbTOVOSuuitlFUMXlzxzXu5g6tGdMxwksUBzn6yOVhlNfvTaqD7eZ6N9UeoPacpqx5OFg9Tt4sDrIaQ0SqtM0nvy+ksC+ZvwwrDHSbTA58+svPQXuuJWELQaNay6XZ7+OvK6h2qCJ9A3uP/xzGPhvxNkn4kXqR3faPeuIpucnkHBP+7NPSF5leTQ6U5l2r5Uin87OPRtF+Xwe3Nx+BAl4aNJTW3AweVxw9Bc5PW2riQL/ZvnKkWGYmi7nB/y09eqJh16e0CzRKuf8HyNsphc=
+sidebar_class_name: "put api-method"
+info_path: docs/openorch/openorch
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Start a Model"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/model-svc/model/{modelId}/start"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Starts a model by ID
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Model ID","in":"path","name":"modelId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

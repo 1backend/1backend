@@ -1,0 +1,73 @@
+---
+id: create-organization
+title: "Create an Organization"
+description: "Allows a logged-in user to create a new organization. The user initiating the request will be assigned the role of admin for that organization."
+sidebar_label: "Create an Organization"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVsGO2zYQ/ZUBTwkgW5tsA7Q6ddOmxbZBN4iT08bAjqmRxIQiGZKy1zH078VQ0kb2ukV7ySkXQyaHwzdvHh95ECUF6ZWLyhpRiCut7S4AgrZ1TeVCGegCeYgWpCeMBAiGdmB9jUZ9QV62hHcNDWHKqKgwKlNDbAg8fe4oRNgprWFDgCGo2lA5TFpNYCvAslUGKushNhiPM38wnHqWNe2S0nmSpLaMp9wbbJUcEiqTklfWtxjhjuMXYSsL6+viMM99XfZF2voug11DnuDudP4OFFPRGfW5I1AlmagqRX4ESyMl5SnmX2eAAqAnqMmQT6EbDLzAQHAkVaVkKmnhKdjOy0SRlSplCvAkVaMCSAw0MjrGbWgieb750wxsVZHnudZ6gkrTvdpoAke+VSEoa6BFgzW1ZCJI2zr03BALIWKcQC9FJqxjyIkJUYih1JvZXiITY39f2nIvioOQ1kQykT/ROa1kiss/BpbWQQTZUIv85Twnj4oC/1Ml/8a9I1GIEBm86DNhsCWeOBbob53WwFMsndPyGfajPEF39eM879++XlRekSn1furwE2WCKgeiV8rUnUZvDTiNkfX09JwE7ub7350B0D+M2M1HklH0PHQM5pfhaL1ncb8dOB3ZVZ5KUUTfUc8DwVkTBtaeX1ycqYozTKoMnZQUQtVpvRfZf+/OI7h9Jn44t9u12aJWJfyxuvnr/2xw3H7y3vozCjhHXELy7EzdBrvYWK++UPnNkLw4z0kkb1DDivyWPLxKOb8NJBY7yc6ruBfF7UG8JPTkr7rYiOJ23a8zEbEOorgddLLaSrHOREuxsXzEnU2yc8jxIp+sM7fHhz6kwkLaofOaQ3NtJerGhli8+PH55TPBe01QVlzaUM0c0Clx7/aO4MMY8kFAZfkqYsfcA0JwyOZo2Kk+kQGUw9mAyts2HcSpJHhta2WATOmsMpFPpOL8DWFJ3InBV8TVKJiprJFOdOpP2ieCuTdvvzrcq3tsnabJsaZWPCR8+D8YzsyBlKns5I8okwaoRcXUBdQUfg6D2URvzVLadgbyzTWsOues584MbDcxuiLPrSNjvWyW1te5eGQpV6DR1B3WtMDa2MDW3irpLbdPSQpQeWxpZ/2n5GWbTumSr42ra5gJNN0EWkkyIVU+4fr9zWvYXi4vjlCFIs93u92yNl1CNa4LOdZOLy6XF8smtpqxRvJtuKlWA5avRYUd1jX5pbJ5Csm5MSoy6+LGkbnxshGZYP0NZV4sL5cXCy+Xz3/ivCzhFs0M6WitaODk7jqia3Z3fX8CfX8CTU+g0RMi3cfcaVSGNZb0fhht8lZM9PKLaa6wdSbYEDnkcOCS33vd9zz8uSPPBr3OxBa9wg3L+3bdZ5NHsbN+oj2rd1Dlgs2RdY+6G0zq5Abps2nFlZTk4r/Gzj3/zc3qncjEZnzBtbbkNR53/P7AnShEegmmXnBAGjuIyVtEIYac7Jc4+vpXJ2VI2fTBVU1TZj9DeOrEQyH8y2WdXXI4DD7d9w/xw9Q/rniw/yGaW7nu+/5v/IGZfw==
+sidebar_class_name: "post api-method"
+info_path: docs/openorch/openorch
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Create an Organization"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/user-svc/organization"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Allows a logged-in user to create a new organization. The user initiating the request will be assigned the role of admin for that organization.
+The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the created organization.
+Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"id":{"type":"string"},"name":{"description":"Full name of the organization.","type":"string"},"slug":{"description":"URL-friendly unique (inside the Singularon platform) identifier for the `organization`.","type":"string"}},"type":"object"}}},"description":"Create User Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"User created successfully","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

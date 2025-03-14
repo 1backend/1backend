@@ -1,0 +1,22 @@
+.flat-card {
+	border: 1px solid #e0e0e0; /* Light border */
+	box-shadow: none; /* Remove shadow */
+	border-radius: 0; /* Remove rounded corners */
+	margin: 16px; /* Add some margin around the card */
+	padding: 0.5rem; /* Add some padding inside the card */
+	background-color: #fff; /* White background */
+}
+
+.flat-card ion-card-header {
+	margin-bottom: 8px; /* Space between header and content */
+}
+
+.flat-card ion-card-title {
+	font-size: 1.5em;
+	margin-bottom: 4px;
+}
+
+.flat-card ion-card-subtitle {
+	font-size: 1em;
+	color: #999;
+}

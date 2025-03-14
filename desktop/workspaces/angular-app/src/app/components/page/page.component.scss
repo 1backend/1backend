@@ -1,0 +1,47 @@
+.flex-container {
+	display: flex;
+}
+
+.column {
+	height: 100vh;
+	overflow-y: scroll;
+}
+
+/** On desktop we have at least one column on the left - the icon menu bar
+	so we need the main content to fill out the remaining space. */
+.main-content.desktop {
+	flex: 1;
+	height: 100vh;
+	overflow-y: auto;
+}
+
+/** On mobile only the main content area is shown, the columns go to
+	the menu */
+.main-content.mobile {
+	width: 100vw;
+	overflow-x: auto;
+}
+
+ion-menu {
+	--width: var(--menu-width, 80%);
+}
+
+ion-list {
+	padding: 0;
+}
+
+ion-footer {
+	box-shadow: none;
+}
+
+.ion-footer-mobile-padding {
+	padding: 0.25rem;
+}
+
+/* Ensure ion-content fills the full height */
+ion-content {
+	--padding-top: 0;
+	--padding-bottom: 0;
+	--padding-start: 0;
+	--padding-end: 0;
+}

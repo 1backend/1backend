@@ -1,0 +1,77 @@
+<!--
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ -->
+<div *ngIf="!(mobile.isMobile$ | async)" class="message-block-wide" style="display: flex; align-items: flex-start">
+	<div class="left-column">
+		<ion-icon class="chat-user-icon" *ngIf="message?.userId" name="person-circle-outline"></ion-icon>
+		<img *ngIf="!message?.userId" class="chat-user-icon" src="/assets/logo_circled_grey.svg" alt="Logo" />
+	</div>
+
+	<div class="main-content" style="flex-grow: 1; position: relative">
+		<div class="header" style="display: flex; align-items: center">
+			<div style="font-size: 1rem">
+				<span style="color: #3c70ad">
+					<span *ngIf="message.userId">{{
+						(userService.getUser(message.userId) | async)?.name || 'User'
+						}}</span>
+					<span *ngIf="!message.userId">OpenOrch </span>
+				</span>
+				<span title="{{ message.createdAt | date: 'EEEE h:mm a, M/d/yyyy' }}" class="time"
+					style="margin-left: 0.5rem; color: #999">
+					{{formatPlatformName(modelService.platforms$ | async)}}
+					on {{ message.createdAt | date: 'EEEE h:mm a' }}
+				</span>
+			</div>
+			<div class="message-action-wrapper sng-test-message-footer" style="margin-left: auto">
+				<div *ngIf="!streaming" class="message-action-buttons">
+					<ion-icon title="Copy to clipboard" class="small-icon" name="copy-outline"
+						(click)="propagateCopyToClipboard(message.text)"></ion-icon>
+					<ion-icon title="Delete message" class="small-icon" name="trash-outline"
+						(click)="deleteMessage(message.id)"></ion-icon>
+
+					<ion-icon *ngIf="false && !message?.userId" title="Regenerate answer" class="small-icon"
+						name="reload-outline" (click)="regenerateAnswer(message)"></ion-icon>
+				</div>
+			</div>
+		</div>
+		<markdown class="markdown-body" [data]="message.text"></markdown>
+		<img [src]="asset(message)" *ngIf="message.fileIds?.length" />
+	</div>
+</div>
+
+<div *ngIf="mobile.isMobile$ | async" class="message-block-narrow">
+	<div class="main-content" style="flex-grow: 1; position: relative">
+		<div class="header" style="display: flex; align-items: center">
+			<div class="left-column">
+				<ion-icon class="chat-user-icon" *ngIf="message?.userId" name="person-circle-outline"></ion-icon>
+				<img *ngIf="!message?.userId" class="chat-user-icon" src="/assets/logo_circled_grey.svg" alt="Logo" />
+			</div>
+
+			<div style="font-size: 1rem">
+				<div style="color: #3c70ad">
+					<span *ngIf="message.userId">You</span>
+					<span *ngIf="!message.userId">OpenOrch</span>
+				</div>
+				<div title="{{ message.createdAt | date: 'EEEE h:mm a, M/d/yyyy' }}" class="time" style="color: #999">
+					{{ message.createdAt | date: 'EEEE h:mm a' }}
+				</div>
+			</div>
+			<div class="message-footer sng-test-message-footer" style="margin-left: auto">
+				<div *ngIf="!streaming" class="message-action-buttons">
+					<ion-icon title="Copy to clipboard" class="small-icon" name="copy-outline"
+						(click)="propagateCopyToClipboard(message.text)"></ion-icon>
+					<ion-icon title="Delete message" class="small-icon" name="trash-outline"
+						(click)="deleteMessage(message.id)"></ion-icon>
+					<ion-icon *ngIf="!message?.userId" title="Regenerate answer" class="small-icon"
+						name="reload-outline" (click)="regenerateAnswer(message)"></ion-icon>
+				</div>
+			</div>
+		</div>
+		<markdown class="markdown-body" [data]="message.text"></markdown>
+		<img [src]="asset(message)" *ngIf="message?.fileIds?.length" />
+	</div>
+</div>

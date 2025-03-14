@@ -1,0 +1,71 @@
+---
+id: encrypt-value
+title: "Encrypt a Value"
+description: "Encrypt a value and return the encrypted result"
+sidebar_label: "Encrypt a Value"
+hide_title: true
+hide_table_of_contents: true
+api: eJzNVVFv2zYQ/ivEPcuSm6zApqc5QzAEK5Cgbvbi+oGmzhIbimSPVFxP0H8fjpJiN3WHYX3ZSyIf78jvPn7fsYcKgyLto3YWSri1io4+CimepelQSFsJwtiRFbFBgeMycjB0JkIGziNJrr6roIQp4U8uhgwIP3cY4o2rjlD2oJyNaCN/Su+NVqmw+BT47B6CarCV/OWJt40aA/9KUPgjHj1CCSGStjUM2biScnTENlzMmQKSSB5hOAXc7hOqCAOHLpOQuhDvxx6mbjRhBWWkDgcOBO9sGBFcLZf875+3GvMh+79SMWTw06U+bmR1RsS/Bv8KwbT/m2/3f7Syi40j/RdWP3rA20sN3NmIZKURa6RnJHFL5OjHThoyCKg60vEI5aaHG5SEtOpiA+VmO2wziLIOUG5gjYowivWzgm0GLcbGsVm8S2x6yRVQhJS1CM+qmGwEfALDDemAjgznFcYpaRoXYvn256vrN8BHzUjWDHjUwTme13R8OHoUH6eUjyD2zhh3wErsjkKK4KUavR/dE1oh1Sh8sSfXpkHwGJC4H/HO1doKtJV32sYcMtC8f4OyQubXypZpW023m9iFkxK9/gNHKTLj70/j4vaLbL3BM83P1J+kvplD24GP3bt5xkiVLhRbqZmxIA2GX4O2dWdkJGdz5dozbA93Yt1574gJH0luYvRlUTiP1pFqckd1Ad8MipUw0tadrHEha+tC1Eq0WpHjW9MKg9iTbPHg6EnsHYldp02lbS1Wd+JMbYFpM1ohj4ayf8H1+8M78XydL79CFcqiOBwOeW27hGqqC4WsvVlc58u8ia1Jbkdqw/1+PWI5NRUOsq6Rcu2KlFLwfejIZMO9R3tPqmGWkcLY5jK/zpcLUvnVL7wvy7aV9gzp6dWYB/9XPJ0N/v/wwExSifglFt5IbRlD4qOfrLOBk3Ugm98gthqbhNf7ficDPpIZBg5/7pDYs1vWEmm54943rKJJt+y2JzxCCb+NyBdsmFl6SbivZsWQzRUrpTBZ9/u550Pg4X79ATLYTU9k6yquIXngB0ceoIT0yCadcEKK9TALD0oY92QPycnrJ3cxpGz+4K7mJXs8Q/janWMj/JfbuljS96N3h+Elf1z6bsXLSBiz+R63wzD8DcLR770=
+sidebar_class_name: "post api-method"
+info_path: docs/openorch/openorch
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Encrypt a Value"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/secret-svc/encrypt"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Encrypt a value and return the encrypted result
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"value":{"type":"string"},"values":{"items":{"type":"string"},"type":"array"}},"type":"object"}}},"description":"Encrypt Value Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Encrypt Value Response","content":{"application/json":{"schema":{"properties":{"value":{"type":"string"},"values":{"items":{"type":"string"},"type":"array"}},"type":"object"}}}},"400":{"description":"Bad Request","content":{"application/json":{"schema":{"type":"string"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"string"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

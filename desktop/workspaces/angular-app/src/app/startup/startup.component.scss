@@ -1,0 +1,19 @@
+ion-label {
+	font-size: 1.5em;
+	font-family: 'Roboto', sans-serif;
+	color: #444;
+}
+
+.dropdown {
+	margin-bottom: 2rem;
+}
+
+.logViewer {
+	height: 10rem;
+	overflow-y: auto;
+	overflow-x: auto;
+	background: #444;
+	color: white;
+	padding: 1rem;
+	margin-top: 1rem;
+}

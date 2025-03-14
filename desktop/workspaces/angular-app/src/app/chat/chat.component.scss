@@ -1,0 +1,93 @@
+.thread-list {
+	.thread-header {
+		font-size: 16px;
+		margin-top: 5px;
+		color: #222;
+
+		.logo {
+			height: 24px;
+			width: auto;
+			margin-right: 1rem;
+		}
+
+		.brand-name {
+			flex-grow: 1;
+		}
+
+		ion-icon {
+			font-size: 24px;
+		}
+	}
+
+	> div {
+		padding: 10px;
+		padding-left: 1rem;
+		margin-bottom: 5px;
+		border-radius: 4px;
+		cursor: pointer;
+		transition: background-color 0.2s;
+		display: flex;
+		align-items: center;
+		font-size: 14px;
+
+		&:hover {
+			background-color: #e0e0e0;
+		}
+	}
+
+	.thread-item {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+
+		& > div {
+			flex-grow: 1;
+			margin-right: 10px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		&:hover {
+			.icon-delete {
+				visibility: visible;
+			}
+		}
+
+		&.selected-thread {
+			background-color: #d1e8ff;
+			color: #0056b3;
+
+			&:hover {
+				background-color: #b8daff;
+			}
+		}
+	}
+
+	.icon-delete {
+		visibility: hidden;
+		color: #ff6347;
+		flex-shrink: 0;
+		width: 18px;
+		height: 18px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+}
+
+.flashing {
+	animation: flash 1s infinite;
+}
+
+@keyframes flash {
+	0% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}

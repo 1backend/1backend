@@ -1,0 +1,63 @@
+---
+id: container-daemon-info
+title: "Get Container Daemon Information"
+description: "Retrieve detailed information about the availability and status of container daemons on the node."
+sidebar_label: "Get Container Daemon Information"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VE2P0zAQ/SuWz9mk7IIEObF8aFWBtIhlT6WHqTNNzDoeYzstJcp/R+OkX8vCgQOXNopnxu+9vDe9rDAor13UZGUpP2P0GjcoKoygDVZC2zX5FvhcwIq6KGKDAjagDay00XEnwFYiRIhdELQWimwEbdGLCrAlGwTZ1GOpwlxmkhz6NG9eyVIeyt+l6rldk8ykx+DIBgyy7OXlbMZ/50jv0G+0QjE/4pNZmoY2cjk4Z7RKB8W3wD29DKrBFvjJeYYR9XgDVJXHkB7jzqEsZYhe21oOmZyoGjw5XREZBMvH6D35JxoHJvG90x4rWS5OpiyzfSmtvqGKchi4+Pns2e8k7y10sSGvf2L17+z+AvEpJC+ekntuI3oLRrDu6MX7NPP/QBoyGVB1XsedLBe9fIPg0V93sZHlYjmwoFAHVvntwXt3G8VKtxgbYpvVGGUmHXCPLA6muwgbVYw+LfRovZAIhnRT5w2XF4YUmIZCLF+8vLx6JvnOPaQ7pjiyOgX2WMAvO4fi61TyVYo1GUNbrMRqJ0AEBwpTkCI9oBWgRuuItac2pec+jKzER6q1FWgrR9pGDpTm+Q1ChfxFLLSs3/VknH0yJlnB6Q+4S0InvmU/JlClT4gtaGYcwGB4HbStOwPRk80VtSezP83FXecceRZ1FKmJ0ZVFQQ4tedXk5OuC83GuwrUwYOsOaryA2lKIWolWK09hjHMQaw8tbsk/iDV5seq0qbStxfVcnPgrMG2jFdqQYrnHdfPpo9hc5bMzVKEsiu12m9e2S6imvlBA7czFVT7Lm9gaxhrRt+F2Pa2WI6mwhbpGn2sqUknBeurIK0HeOrS3XjUyk2ybkeYsv8pnF17ll694rqMQW7AnSG8wiqNZx9X3aJWdCdcfg/ZfdvTklog/YuEM6LTqkqT9FKKFPAsRA06j5GSsZSY5MFzY9ysIeO/NMPDr7x16DvIykxvwelyti+WQ7T3MyXvAHX9QpdCxxzZgutG+j3bMcBrym/dfZCZhyt/R8Tws2z/w9P2R3Z3MfpyYEQL/DtkfWvp+zNMwHOrHoz92HGI6VrOwy2EYfgGWrJwD
+sidebar_class_name: "get api-method"
+info_path: docs/openorch/openorch
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Get Container Daemon Information"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/container-svc/daemon/info"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Retrieve detailed information about the availability and status of container daemons on the node.
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Service Information","content":{"application/json":{"schema":{"properties":{"address":{"type":"string"},"available":{"type":"boolean"},"error":{"type":"string"}},"required":["available"],"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

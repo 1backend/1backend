@@ -1,0 +1,69 @@
+<!--
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ -->
+<app-page
+	title="Roles"
+	[columnWidths]="['3rem', '33%']"
+	[mobileColumnWidths]="['3rem', 'calc(100% - 3rem)']"
+>
+	<ng-template #columnContent>
+		<div>
+			<app-icon-menu></app-icon-menu>
+		</div>
+	</ng-template>
+	<ng-template #columnContent>
+		<div class="roles-container">
+			<ion-searchbar
+				ngDefaultControl
+				[(ngModel)]="roleSearchQuery"
+				placeholder="Search Roles"
+			></ion-searchbar>
+			<ion-list>
+				<ion-list-header>
+					<ion-label>Roles</ion-label>
+				</ion-list-header>
+				<ion-item
+					*ngFor="let role of filteredRoles()"
+					(click)="selectRole(role)"
+					[class.selected]="selectedRole?.id === role.id"
+					button
+				>
+					<ion-label>{{ role?.name }}</ion-label>
+				</ion-item>
+			</ion-list>
+		</div>
+	</ng-template>
+	<ng-template #mainContent>
+		<div class="permissions-container">
+			<ion-item *ngIf="selectedRole">
+				<ion-searchbar
+					ngDefaultControl
+					[(ngModel)]="permissionSearchQuery"
+					placeholder="Search Permissions"
+				></ion-searchbar>
+				<ion-button slot="end" style="color: white" (click)="savePermissions()"
+					>Save</ion-button
+				>
+			</ion-item>
+			<ion-list *ngIf="selectedRole">
+				<ion-list-header>
+					<ion-label>Permissions</ion-label>
+				</ion-list-header>
+				<ion-item *ngFor="let permission of filteredPermissions()">
+					<ion-checkbox
+						color="secondary"
+						class="custom-checkbox"
+						slot="start"
+						[checked]="selectedRolePermissions.has(permission.id || '')"
+						(ionChange)="togglePermission(permission.id || '')"
+					></ion-checkbox>
+					<ion-label>{{ permission?.name }}</ion-label>
+				</ion-item>
+			</ion-list>
+		</div>
+	</ng-template>
+</app-page>

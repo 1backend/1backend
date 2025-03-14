@@ -1,0 +1,78 @@
+<!--
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ -->
+<app-page
+	title="Chat"
+	[columnWidths]="['3rem', '25%']"
+	[mobileColumnWidths]="['3rem', 'calc(100% - 3rem)']"
+>
+	<ng-template #columnContent>
+		<div>
+			<app-icon-menu></app-icon-menu>
+		</div>
+	</ng-template>
+	<ng-template #columnContent>
+		<div class="thread-list">
+			<div
+				class="thread-header sng-test-open-new-thread"
+				(click)="openNewThread()"
+			>
+				<img class="logo" src="/assets/logo_circled_grey.svg" alt="OpenOrch" />
+				<span class="brand-name">OpenOrch</span>
+				<ion-icon name="create-outline"></ion-icon>
+			</div>
+			<div
+				*ngFor="let thread of chatThreads; let i = index; trackBy: trackById"
+				class="thread-item
+				sng-test-thread-item
+				sng-test-thread-item-index-{{ i }}"
+				(click)="setThreadAsActive(thread)"
+				[class.selected-thread]="thread?.id === activeThread?.id"
+				[title]="thread?.title"
+			>
+				<div>
+					<span
+						style="color: #888"
+						*ngIf="
+							num(thread?.id, promptService.onPromptListUpdate$ | async) > 0
+						"
+						>{{
+							num(thread?.id, promptService.onPromptListUpdate$ | async)
+						}}</span
+					>
+					<span
+						class="sng-test-streaming-is-in-progress"
+						style="position: relative; top: 0.125rem; margin-right: 0.125rem"
+						*ngIf="
+							num(thread?.id, promptService.onPromptListUpdate$ | async) == 0
+						"
+					>
+						<ion-icon
+							class="flashing"
+							style="color: rgb(250, 48, 48)"
+							name="play-circle-outline"
+						></ion-icon>
+					</span>
+					{{ thread?.title }}
+				</div>
+				<ion-icon
+					(click)="removeThread(thread)"
+					name="trash-outline"
+					class="icon-delete"
+				></ion-icon>
+			</div>
+		</div>
+	</ng-template>
+	<ng-template #mainContent>
+		<app-chat-box
+			*ngIf="activeThread"
+			[thread]="activeThread"
+			[promptTemplate]="model?.promptTemplate || defaultPrompt"
+			(onCopyToClipboard)="onCopyToClipboard($event)"
+		></app-chat-box>
+	</ng-template>
+</app-page>

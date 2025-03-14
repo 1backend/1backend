@@ -1,0 +1,37 @@
+{
+	"compileOnSave": false,
+	"compilerOptions": {
+		"baseUrl": "./",
+		"paths": {
+			"*": ["node_modules/*"],
+			"@shared/*": ["../../shared/*"]
+		},
+		"outDir": "./.dist/out-tsc",
+		"forceConsistentCasingInFileNames": true,
+		"noFallthroughCasesInSwitch": true,
+		"sourceMap": true,
+		"declaration": false,
+		"downlevelIteration": true,
+		"experimentalDecorators": true,
+		"moduleResolution": "node",
+		"importHelpers": true,
+		"target": "esnext",
+		"module": "esnext",
+		"lib": ["esnext", "dom"],
+		"useDefineForClassFields": false,
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"strict": true,
+		"noImplicitReturns": true,
+		"noImplicitAny": true,
+		"skipLibCheck": true
+	},
+	"angularCompilerOptions": {
+		"enableI18nLegacyMessageIdFormat": false,
+		"strictTemplates": true
+	},
+	"references": [{ "path": "../shared-lib" }],
+	"exclude": ["./**/*.spec.ts"]
+}

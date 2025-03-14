@@ -1,0 +1,71 @@
+---
+id: login
+title: "Login"
+description: "Authenticates a user and returns a token."
+sidebar_label: "Login"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VsFu20YQ/ZXFXHqhSNVugJanOkVQuDVqI0rQg+XDaDkiN17ubmaXklVBQD4iX5gvKWYpxXKsBm0O1UXE7Mzsm5k3j9xCQ1GzCcl4BzVcDKkjl4zGRFGhGiKxQtcopjSwE1Py9+RKKMAHYpS4ywZqsL41Dgpgej9QTC99s4F6C9q7RC7JI4ZgJbHxrnoX5botRN1Rj/IUWPIlQ/EQhjqHpU0gqCEmNq6FXQEBY1x7bk4eRju0Jw52xcHiF+9IJ9iJ6WntV1KBej3i31dimBqoEw+0E0MM3sUR4dl0Kn+nUsRBa4pxOVgovrUBucvPzaiTWdHziy+yfZxNVLl7xqnUkep9TGoIk+QnDSZSxi099xlEOXd/duT2Y/4uKvaWlO7QtRQ/ffjYDJJxtGKMpnU9uVQozy0681fOMXeaaSzp2IWSLj99+IjWKnowMRnXHsAhk+qR76lRxo31lHP3tADxYRoiNaoZZIIq06tQ685Y+hy3d5+70V9qpkYtPavOxOTZaLSKaUlMTpNwdk+ChfeW0AlhMnxqLk5zrSFL/3xqTnPw8+yenQyh+cplMoXLUylPsPcEn3cF/HCKlJduhdY06rfZ9R/fTkhi9vwvN2tXwIvTSBKxQ6tmxCti9Srn/H8giRHbCPUtvBVRm6003BXQU+q86FfweekDpg5qqGQWk7jS1UHXYoYs8VsY2IpPZb1G2/mY6hc/np1/D7s78dMDm7SZCegR50tCJhZpfd6SN5tAar53mYNaemv9mhq12ChUMaCmrL+ZUwr1KElqyb7P632oRY3SQ64J3rgkXDeSvyNsSHrssKe9wHveL+/jQmAwv9Mmt066/vpRxF89YB8sPRHlQ6ePtfjRNkrw8Zq4pf9C1KlHIz2MaCn+HI1rB4uJvSu174/Q3lyq2RCCZ5nN2PYupVBXlQ/kPOuu9NxW8EzML5RF1w7Y0gRb52MyWvVGs5c5Gk1RLRl7Wnu+z4KxGIxtRGguLtURB6M00hpNLuYWHHD9enOlVufl9AmqWFfVer0uWzdkVPu4WGEb7OS8nJZd6m1WCOI+Xi9nI5bHouIa25a4NL7KLpVMyCRpP1wHctesOyhAiDiWOS3Py+mEdXn2U341+ph6dEdIr/b0fdKdo9fyf3rj78mS6CFVwaLJAprr3+4X5xYOiyN9y3ffFSArImfb7QIjvWW724n5/UC8gfr2roAVssGF1Hl7tysOrJVdu6cN1PDLiHci6yINQDuMtP1CLXbFIeJCawrpq77H639zPXsDBSz2ny29bySGcS0fAriGGvIXT+aEOGTbFg4kgxrGnPL7GxouQwU=
+sidebar_class_name: "post api-method"
+info_path: docs/openorch/openorch
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Login"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/user-svc/login"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Authenticates a user and returns a token.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"contact":{"type":"string"},"password":{"type":"string"},"slug":{"type":"string"}},"type":"object"}}},"description":"Login Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Login successful","content":{"application/json":{"schema":{"properties":{"token":{"properties":{"active":{"description":"Active tokens contain the most up-to-date information.\nWhen a user's role changes—due to role assignment, organization\ncreation/assignment, etc.—all existing tokens are marked inactive.\nActive tokens are reused during login, while inactive tokens\nare retained for historical reference.","type":"boolean"},"createdAt":{"type":"string"},"deletedAt":{"type":"string"},"id":{"type":"string"},"token":{"type":"string"},"updatedAt":{"type":"string"},"userId":{"type":"string"}},"type":"object"}},"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

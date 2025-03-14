@@ -1,0 +1,119 @@
+<!--
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ -->
+<app-page
+	title="Login"
+	[menuEnabled]="false"
+	[menuWidth]="'3rem'"
+	[columnWidths]="['3rem']"
+>
+	<ng-template #columnContent>
+		<div>
+			<app-icon-menu></app-icon-menu>
+		</div>
+	</ng-template>
+	<ng-template #mainContent>
+		<app-centered [headerHeight]="'56px'" [vertical]="true">
+			<ion-card style="margin: 0 auto; padding: 1em">
+				<!--
+                <ion-segment [(ngModel)]="selectedSegment" value="Login">
+				<ion-segment-button value="login">
+					<ion-label>Login</ion-label>
+				</ion-segment-button>
+				<ion-segment-button value="register">
+					<ion-label>Register</ion-label>
+				</ion-segment-button>
+			</ion-segment>
+        -->
+
+				<ng-container *ngIf="true">
+					<ion-card-content style="padding-top: 2em; padding-bottom: 0">
+						<ion-item>
+							<ion-input
+								label="Username or Identifier"
+								labelPlacement="floating"
+								type="text"
+								[(ngModel)]="slug"
+								required
+							></ion-input>
+						</ion-item>
+
+						<ion-item>
+							<ion-input
+								label="Password"
+								labelPlacement="floating"
+								type="password"
+								[(ngModel)]="password"
+								required
+							></ion-input>
+						</ion-item>
+
+						<ion-row style="margin-top: 1em">
+							<ion-col size.lg="6" size.md="12" size.sm="12" size.xs="12">
+								<ion-button expand="block" (click)="login()"
+									>Login</ion-button
+								>
+							</ion-col>
+						</ion-row>
+					</ion-card-content>
+				</ng-container>
+
+				<ng-container *ngIf="false">
+					<ion-card-content style="padding-top: 2em; padding-bottom: 0">
+						<ion-item>
+							<ion-input
+								label="Username or Email"
+								labelPlacement="floating"
+								type="text"
+								[(ngModel)]="slug"
+								required
+							></ion-input>
+						</ion-item>
+
+						<ion-item>
+							<ion-input
+								label="Name"
+								labelPlacement="floating"
+								type="text"
+								[(ngModel)]="name"
+								required
+							></ion-input>
+						</ion-item>
+
+						<ion-item>
+							<ion-input
+								label="Password"
+								labelPlacement="floating"
+								type="password"
+								[(ngModel)]="password"
+								required
+							></ion-input>
+						</ion-item>
+
+						<ion-item>
+							<ion-input
+								label="Password Confirmation"
+								labelPlacement="floating"
+								type="password"
+								[(ngModel)]="passwordConfirmation"
+								required
+							></ion-input>
+						</ion-item>
+
+						<ion-row style="margin-top: 1em">
+							<ion-col size.lg="6" size.md="12" size.sm="12" size.xs="12">
+								<ion-button expand="block" 
+									>Register</ion-button
+								>
+							</ion-col>
+						</ion-row>
+					</ion-card-content>
+				</ng-container>
+			</ion-card>
+		</app-centered>
+	</ng-template>
+</app-page>

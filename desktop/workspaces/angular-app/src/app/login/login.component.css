@@ -1,0 +1,5 @@
+app-centered ion-card {
+	width: 600px;
+	max-width: 100%;
+	box-sizing: border-box;
+}

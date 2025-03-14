@@ -1,0 +1,37 @@
+* {
+	scrollbar-width: thin; /* Firefox */
+	-ms-overflow-style: scrollbar; /* Internet Explorer and Edge */
+}
+
+*::-webkit-scrollbar {
+	display: none; /* Safari and Chrome */
+}
+
+*::-webkit-scrollbar {
+	width: 4px; /* Safari and Chrome */
+}
+
+*::-webkit-scrollbar-track {
+	background: #f1f1f1;
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: rgb(240, 240, 240);
+	border-radius: 10px;
+	border: 2px solid transparent; /* Optional: space around the thumb */
+}
+
+*::-webkit-scrollbar-thumb:hover {
+	background: #555;
+}
+
+.white-text {
+	color: #ffffff;
+}
+
+/** This is to make ion menu content clickable
+https://forum.ionicframework.com/t/ion-items-not-clickable-as-button-in-content-of-ion-menu/179115/7
+*/
+ion-menu * {
+	pointer-events: auto !important;
+}

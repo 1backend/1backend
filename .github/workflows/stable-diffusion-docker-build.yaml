@@ -1,0 +1,104 @@
+name: "Stable Diffusion Docker build"
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: |
+          Branch to build from.  
+          - Example: "main", "dev", "feature-xyz"
+        required: false
+        default: "main"
+
+      tag:
+        description: |
+          Specifies the image tag suffix.  
+          - This will appear at the end of the final image name.  
+          - Example:  
+            - "latest" → `cuda-12.1-latest`  
+            - "dev" → `cuda-12.1-dev`  
+            - "release-1.0" → `cuda-12.1-release-1.0`
+        required: false
+        default: "latest"
+
+      backend:
+        description: |
+          Specifies the compute backend.  
+          - Used as the first part of the image tag.  
+          - Determines the hardware acceleration libraries.  
+          - Options:  
+            - "cuda" → For NVIDIA GPUs (e.g., `cuda-12.1-latest`)  
+            - "openblas" → For OpenBLAS-based CPU computations (e.g., `openblas-12.1-latest`)  
+            - "mkl" → For Intel MKL-based CPU computations (e.g., `mkl-12.1-latest`)  
+            - "default" → Automatic selection
+        required: true
+        default: "cuda"
+
+      backend_version:
+        description: |
+          Specifies the backend version.  
+          - Appears in the middle of the image tag after the backend.  
+          - Typically relevant for GPU setups.  
+          - Example:  
+            - `"12.5"` for CUDA → `cuda-12.5-latest`  
+            - `"11.8"` for CUDA → `cuda-11.8-latest`  
+            - `"default"` (if not specified, uses default backend version)
+        required: false
+        default: "12.1"
+
+      pytorch_image:
+        description: |
+          Specifies the base PyTorch Docker image.  
+          - This is used as the foundation for the build.  
+          - Example:  
+            - `"pytorch/pytorch:2.3.0-cuda12.1-cudnn8-runtime"`  
+            - `"pytorch/pytorch:1.13.1-cpu"`  
+            - `"pytorch/pytorch:2.0.0-mkl"`
+        required: false
+        default: "pytorch/pytorch:2.3.0-cuda12.1-cudnn8-runtime"
+
+env:
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  IMAGE_NAME: "stable-diffusion"
+
+jobs:
+  build-and-push:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      - name: Login to Docker Hub
+        id: login-dockerhub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Validate Backend Selection
+        run: |
+          case "${{ github.event.inputs.backend }}" in
+            "cuda"|"openblas"|"mkl"|"default") ;;
+            *) echo "Error: Invalid backend specified"; exit 1 ;;
+          esac
+
+      - name: Set Image Tag
+        run: |
+          IMAGE_TAG="${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.event.inputs.backend }}-${{ github.event.inputs.backend_version }}-${{ github.event.inputs.tag }}"
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+
+      - name: Build and Push Docker Image
+        run: |
+          cd ${{ github.event.inputs.backend }}
+
+          DOCKER_BUILDKIT=1 docker build \
+            --build-arg BACKEND_VERSION=${{ github.event.inputs.backend_version }} \
+            --build-arg PYTORCH_IMAGE=${{ github.event.inputs.pytorch_image }} \
+            -t ${{ env.IMAGE_TAG }} .
+
+          docker push ${{ env.IMAGE_TAG }}
+        working-directory: ./server/docker/stable-diffusion

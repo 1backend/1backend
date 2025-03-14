@@ -1,0 +1,40 @@
+# This yaml file builds the current code in this repo.
+# For production use the docker-compose.yaml found at ./docs-source/docs/start/docker-compose.yaml
+# or search for "Docker Compose" here https://openorch.org/
+version: "3.8"
+
+volumes:
+  openorch-data:
+    name: openorch-data
+    driver: local
+
+services:
+  openorch-frontend:
+    build:
+      context: ./desktop
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "3901:80"
+    environment:
+      # The `BACKEND_ADDRESS` must be accessible from the browser.
+      # It is not an internal address, it's the address the browser will make API requests to.
+      - BACKEND_ADDRESS=http://127.0.0.1:58231
+
+  openorch-backend:
+    build:
+      context: .
+      dockerfile: ./server/docker/openorch/default/Dockerfile
+    ports:
+      - "58231:58231"
+    volumes:
+      # We mount the hostname to have a sensible fallback node URL
+      - /etc/hostname:/etc/host_hostname:ro
+      # We mount the docker socket so the backend can start containers
+      - /var/run/docker.sock:/var/run/docker.sock
+      # We mount a volume so data will be persisted
+      - openorch-data:/root/.openorch
+      # environment:
+      # GPU Acceleration for NVIDIA GPUs
+      # Uncomment this envar for NVIDIA GPUs.
+      #
+      # - OPENORCH_GPU_PLATFORM=cuda

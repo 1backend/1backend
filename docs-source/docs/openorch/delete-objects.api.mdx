@@ -1,0 +1,71 @@
+---
+id: delete-objects
+title: "Delete Objects"
+description: "Deletes all objects matchin the provided filters."
+sidebar_label: "Delete Objects"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VsFu4zYQ/RWCl15kyZt0gVaHot7dYOF2UQf1pj04PoypscQNRTIkZcc19O/FUFKsxG6x7WEvgkTNcGbevHnkkRfohZM2SKN5zj+gwoCegVLMbL6gCJ7VEEQlNQsVMuvMThZYsK1UAZ1PecKNRQfkPy94zou4w6Lz5Ql3+NigD+9MceD5kQujA+pAr2CtkiJ6Zl88hT9yLyqsgd6so32DRE9ffTh6lQFrf8kCVfHSIBws8pz74KQueZsMC+AcHOibov4Bqul2eInEL8vFb90/Jj0DRt+sBucrUAoLFjdhZst20Si91/PwnX82662KBlkwETolaxlitZ7cQoX3ermHsjRs8hNbWNSz2zm7Sqfjz4+GlagJX+NYMEaJCqQm1M+KM5aKQN3UPF9xfGxAEf4EOEjtl82mt024D+CC/1OGiidcakK275b0c/1J+sDXryMk/GlCm0924DTUBNmKL+zNEGdh31+ItLDLcayFnY+jLez8OV576k9HvEsNC7BReKG15760dInarOcjs3BQBoqeodJhwfPgGmxpwVujfceKq+n0nBzLRgj0ftsoFvkujaae9sGTr2f5WdZtwr+/FHGud6BkEfn1XwK8HBJ0zrivxC9m8uY8kzsNTaiMk39h8c0yeXsZk4BOg2JLdDt07Cbu+W1SahPuUTROhgPPV0f+DsGhmzWh4vlq3dL4QBln5AMEYMudoJGqMVSGVNIaTzyxQPY8KyDAxO9E1mtu1qkojWoszccYjVNknCkjQFXGh/ztD1fXbzhFG5JZUnFdPeOUXkP3+WCR3fcm95xtjVJmjwXbHBgwb0EgA12wYB5QMxDdhLCtM3UUszuPjopin0wpNUNdWCN1SKOe8JxXCAVSL0gqeM5nPWViJ07qBVb+iocIMXXn99NZcfMEte1m/Vn7VyeVXw3dWb9U8ZNakRwOKti1I0rHSDCl3prhSAIR6YI1SMLYg0L/s5e6bBQEZ3QqTD2q5nbOlo21xlETu7ZUIdg8y4xFbZyoUuPKjJ+J0Iwp0GUDJU6g1MYHKVgthTPUZynQs62DGvfGPbCtcWzTSFVIXbLZnI24HM9dJQVqHyEa8vp4+4ntrtPpi6x8nmX7/T4tdROz6v18BqVVk+t0mlahVlFe0dV+sV12uZyK8nRMoUulyaJJRh2UIeJJJ9XCCVJ3ImpX5jS9TqcTJ9KrH2lfYnsNepRpL8ana8ILmEbXhP91I+nZFfApZFaB1JREBOTYj9yKDyNHVBllEcdunXAaLzI7Hjfg8c6ptqXlxwYdDfw64TtwsuPUat0mA+OJpA944Dl/35UwoVEjcIihkfKvFKlNBo+ZEGjDv9qONeR2sfzME77pb1a1KcjHwZ7ONNjznMcxiHwhg7h25AMBec67PWn6oFeJ01xSSsnwQlUNv/RhlOHrue4KoSeVddHleOymvm2f7btf/+jxLCadNbVz3bbt30XntKM=
+sidebar_class_name: "post api-method"
+info_path: docs/openorch/openorch
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Delete Objects"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/data-svc/objects/delete"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Deletes all objects matchin the provided filters.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"filters":{"items":{"properties":{"fields":{"items":{"type":"string"},"type":"array"},"jsonValues":{"description":"JSONValues is a JSON marshalled array of values.\nIt's JSON marhalled due to the limitations of the\nSwaggo -> OpenAPI 2.0 -> OpenAPI Go generator toolchain.","type":"string"},"op":{"enum":["equals","containsSubstring","startsWith","intersects","isInList"],"type":"string","x-enum-varnames":["OpEquals","OpContainsSubstring","OpStartsWith","OpIntersects","OpIsInList"]}},"type":"object"},"type":"array"},"table":{"type":"string"}},"type":"object"}}},"description":"Delete request payload","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Successful deletion of object","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

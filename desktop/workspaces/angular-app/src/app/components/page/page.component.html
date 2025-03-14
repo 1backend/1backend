@@ -1,0 +1,82 @@
+<!--
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ -->
+<ion-app>
+	<ion-menu
+		[style.--menu-width]="menuWidth"
+		side="start"
+		menuId="menu-{{ id }}"
+		contentId="main-content-{{ id }}"
+	>
+		<ion-content>
+			<ion-list>
+				<ion-item *ngIf="false" (click)="toggleMenu()">
+					<ion-icon slot="start" name="close-outline"></ion-icon>
+					Close {{ title }} Menu
+				</ion-item>
+				<div class="flex-container">
+					<div
+						*ngFor="let column of columns; let i = index"
+						class="column"
+						[ngStyle]="{
+							flex: '0 0 ' + getColumnWidth(i),
+							'max-width': getColumnWidth(i),
+						}"
+					>
+						<ng-container [ngTemplateOutlet]="column"> </ng-container>
+					</div>
+				</div>
+			</ion-list>
+		</ion-content>
+	</ion-menu>
+
+	<ion-header *ngIf="mobile.isMobile$ | async">
+		<ion-toolbar>
+			<ion-buttons *ngIf="menuEnabled" slot="start">
+				<ion-menu-button
+					menu="menu-{{ id }}"
+					autoHide="false"
+				></ion-menu-button>
+			</ion-buttons>
+			<ion-title>{{ title }}</ion-title>
+		</ion-toolbar>
+	</ion-header>
+
+	<ion-content id="main-content-{{ id }}">
+		<div class="flex-container">
+			<ng-container *ngIf="!(mobile.isMobile$ | async)">
+				<!-- [ngClass]="{ column: i > 0 }" here is a hack to not affect styling if icon-menu with the column class,
+					fix icon-menu instead! -->
+				<div
+					*ngFor="let column of columns; let i = index"
+					[ngClass]="{ column: i > 0 }"
+					[ngStyle]="{
+						flex: '0 0 ' + getColumnWidth(i),
+						'max-width': getColumnWidth(i),
+					}"
+				>
+					<ng-container [ngTemplateOutlet]="column"></ng-container>
+				</div>
+			</ng-container>
+			<div
+				class="main-content"
+				[class.mobile]="mobile.getMobileStatus()"
+				[class.desktop]="!mobile.getMobileStatus()"
+			>
+				<ng-container [ngTemplateOutlet]="main"></ng-container>
+			</div>
+		</div>
+	</ion-content>
+
+	<ion-footer
+		[ngClass]="{ 'ion-footer-mobile-padding': mobile.getMobileStatus() }"
+		no-border
+		*ngIf="(mobile.isMobile$ | async) && (footer.footerComponent$ | async)"
+	>
+		<ng-container #footerContainer></ng-container>
+	</ion-footer>
+</ion-app>

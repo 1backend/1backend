@@ -1,0 +1,132 @@
+<!--
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ -->
+<app-page title="Startup" [menuWidth]="'3rem'" [columnWidths]="['3rem']">
+	<ng-template #columnContent>
+		<div>
+			<app-icon-menu></app-icon-menu>
+		</div>
+	</ng-template>
+	<ng-template #mainContent>
+		<app-centered [headerHeight]="'56px'" [vertical]="true">
+			<div style="padding: 1rem">
+				<h2 style="margin-bottom: 2rem">Nodes</h2>
+
+				<div *ngIf="error" style="color: var(--ion-color-danger)">
+					{{ error }}
+				</div>
+
+				<ion-list *ngIf="!error">
+					<ng-container *ngFor="let node of nodes; let i = index">
+						<ion-card class="flat-card">
+							<ion-card-header>
+								<ion-card-title
+									><span style="color: #888">Node </span
+									><strong>{{ node.url }}</strong></ion-card-title
+								>
+							</ion-card-header>
+							<ion-card>
+								<ion-card-content>
+									<ion-item>
+										<ion-label>CPU Usage</ion-label>
+										<ion-text
+											>{{
+												node.usage?.cpu?.percent | number: '1.2-2'
+											}}%</ion-text
+										>
+									</ion-item>
+									<ion-item>
+										<ion-label>Memory Usage</ion-label>
+										<ion-text
+											>{{
+												node.usage?.memory?.percent | number: '1.2-2'
+											}}%</ion-text
+										>
+									</ion-item>
+									<ion-item>
+										<ion-label>Disk Usage</ion-label>
+										<ion-text
+											>{{
+												node.usage?.disk?.percent | number: '1.2-2'
+											}}%</ion-text
+										>
+									</ion-item>
+								</ion-card-content>
+							</ion-card>
+							<ng-container *ngFor="let gpu of node.gpus; let i = index">
+								<ion-card class="flat-card">
+									<ion-card-header>
+										<ion-card-title
+											><span style="color: #888">GPU </span
+											><strong>{{ gpu.id }} </strong
+											><span style="color: #888">temp.</span>
+											{{ gpu.temperature }} °C</ion-card-title
+										>
+									</ion-card-header>
+									<ion-card-content>
+										<ion-item>
+											<ion-label>Intra Node ID:</ion-label>
+											<ion-text>{{ gpu.intraNodeId }}</ion-text>
+										</ion-item>
+										<ion-item>
+											<ion-label>Name:</ion-label>
+											<ion-text>{{ gpu.name }}</ion-text>
+										</ion-item>
+										<ion-item>
+											<ion-label>Bus ID:</ion-label>
+											<ion-text>{{ gpu.busId }}</ion-text>
+										</ion-item>
+										<ion-item>
+											<ion-label>Temperature:</ion-label>
+											<ion-text>{{ gpu.temperature }}°C</ion-text>
+										</ion-item>
+										<ion-item>
+											<ion-label>Performance State:</ion-label>
+											<ion-text>{{ gpu.performanceState }}</ion-text>
+										</ion-item>
+										<ion-item>
+											<ion-label>Power Usage:</ion-label>
+											<ion-text>{{ gpu.powerUsage }} W</ion-text>
+										</ion-item>
+										<ion-item>
+											<ion-label>Power Cap:</ion-label>
+											<ion-text>{{ gpu.powerCap }} W</ion-text>
+										</ion-item>
+										<ion-item>
+											<ion-label>Memory Usage:</ion-label>
+											<ion-text>{{ gpu.memoryUsage }} MB</ion-text>
+										</ion-item>
+										<ion-item>
+											<ion-label>Memory Total:</ion-label>
+											<ion-text>{{ gpu.memoryTotal }} MB</ion-text>
+										</ion-item>
+										<ion-item>
+											<ion-label>GPU Utilization:</ion-label>
+											<ion-text>{{ gpu.gpuUtilization }}%</ion-text>
+										</ion-item>
+										<ion-item>
+											<ion-label>Compute Mode:</ion-label>
+											<ion-text>{{ gpu.computeMode }}</ion-text>
+										</ion-item>
+										<ion-item>
+											<ion-label>Process Details:</ion-label>
+											<ion-list>
+												<ion-item *ngFor="let process of gpu.processDetails">
+													<ion-label>{{ process }}</ion-label>
+												</ion-item>
+											</ion-list>
+										</ion-item>
+									</ion-card-content>
+								</ion-card>
+							</ng-container>
+						</ion-card>
+					</ng-container>
+				</ion-list>
+			</div>
+		</app-centered>
+	</ng-template>
+</app-page>

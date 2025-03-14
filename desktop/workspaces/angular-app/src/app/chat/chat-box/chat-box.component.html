@@ -1,0 +1,88 @@
+<!--
+	* @license
+	* Copyright (c) The Authors (see the AUTHORS file)
+	*
+	* This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3) for personal, non-commercial use.
+	* You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+	*
+	* For commercial use, a separate license must be obtained by purchasing from The Authors.
+	* For commercial licensing inquiries, please contact The Authors listed in the AUTHORS file.
+	-->
+<div class="container-for-ion-card">
+	<div class="main-card" #scrollableElement>
+		<div>
+			<ng-container
+				*ngFor="
+					let message of messages;
+					let i = index;
+					let isLast = last;
+					trackBy: trackById
+				"
+			>
+				<app-message [message]="message"></app-message>
+			</ng-container>
+
+			<ng-container *ngIf="messageCurrentlyStreamed.text?.length">
+				<app-message
+					[message]="messageCurrentlyStreamed"
+					[streaming]="true"
+				></app-message>
+			</ng-container>
+		</div>
+
+		<div *ngIf="promptQueue?.length">
+			<div style="display: flex; margin-bottom: 1rem; width: 100%">
+				<!-- Why 3.25 rem? To align with the icon with in the message component.
+						Admittedly suboptimal. @todo fix -->
+				<div
+					*ngIf="!(mobile.isMobile$ | async)"
+					style="width: 3.25rem; flex-shrink: 0"
+				></div>
+				<div
+					style="flex: 1"
+					[ngStyle]="{
+						'max-width':
+							(mobile.isMobile$ | async) ? '100%' : 'calc(100% - 3.5rem)',
+					}"
+				>
+					<div
+						style="
+							max-width: 100%;
+							color: #666;
+							overflow: hidden;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+							display: flex;
+							align-items: center;
+							font-size: 1rem;
+						"
+						*ngFor="let prompt of promptQueue; trackBy: trackById"
+					>
+						<ng-container *ngIf="prompt.status !== 'running'">
+							<ion-icon
+								style="
+									width: 1rem;
+									height: 1rem;
+									cursor: pointer;
+									padding-right: 0.3rem;
+									flex-shrink: 0;
+								"
+								name="close-circle-outline"
+								title="Remove prompt from queue"
+								(click)="removePromptFromQueue(prompt)"
+							>
+							</ion-icon>
+							{{ prompt.prompt }}</ng-container
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div *ngIf="!(mobile.isMobile$ | async)" class="footer">
+		<app-chat-input (sends)="handleSend($event)"></app-chat-input>
+	</div>
+
+	<ng-container #footerContainer> </ng-container>
+</div>
