@@ -11,7 +11,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RouterLink } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonInput, IonButton } from '@ionic/angular/standalone';
+import { IonInput } from '@ionic/angular/standalone';
 import { CenteredComponent } from '../components/centered/centered.component';
 import { PageComponent } from '../components/page/page.component';
 import { IconMenuComponent } from '../components/icon-menu/icon-menu.component';
@@ -26,7 +26,6 @@ import { UserService } from '../services/user.service';
 		PageComponent,
 		CenteredComponent,
 		IonInput,
-		IonButton,
 		NgFor,
 		NgIf,
 		FormsModule,
@@ -43,14 +42,46 @@ export class HomeComponent {
 		{
 			title: 'AI',
 			link: '/startup',
+			description:
+				'Use the ChatGPT-inspired local AI platform. No third parties have access to your chats—100% private.',
+		},
+		{
+			title: 'Chat',
+			link: '/chat',
+			description: 'Chat with any downloaded AI models.',
+		},
+		{
+			title: 'Models',
+			link: '/model-explorer',
+			description:
+				'Download models, set the default model, and pause or resume downloads. View downloaded AI models.',
+		},
+		{
+			title: 'Prompts',
+			link: '/prompts',
+			description:
+				'View and search prompts. Filter by user, model, and more. Cancel prompts or allow them to be retried with exponential backoff.',
 		},
 		{
 			title: 'Users',
 			link: '/users',
+			description: 'Manage users across all namespaces.',
+		},
+		{
+			title: 'Roles',
+			link: '/roles',
+			description: 'View and edit roles and their corresponding permissions.',
 		},
 		{
 			title: 'Cluster',
 			link: '/nodes',
+			description: 'Manage your servers.',
+		},
+		{
+			title: 'GPUs',
+			link: '/nodes',
+			description:
+				'Monitor GPU temperatures, utilization, driver versions, and more.',
 		},
 	];
 
