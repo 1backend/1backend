@@ -13,7 +13,7 @@
 	</ng-template>
 	<ng-template #mainContent>
 		<app-centered [headerHeight]="'56px'" [vertical]="true">
-			<div style="padding: 1rem">
+			<div class="wrapper" style="padding: 1rem">
 				<div class="container">
 					<div class="logo-container">
 						<img src="/assets/logo_circled_grey.svg" alt="Logo" />
@@ -29,20 +29,24 @@
 					</div>
 				</div>
 
-				<div class="buttons-container">
+				<div>
 					<ng-container *ngFor="let button of buttons">
-						<ion-button
-							class="menu-buttons sng-test-ai-button"
+						<div
+							class="card"
 							routerLink="{{ button.link }}"
-							color="secondary"
-							fill="outline"
 							*ngIf="
 								!searchTerm ||
-								button.title.toLowerCase().includes(searchTerm.toLowerCase())
+								button.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+								button.description
+									.toLowerCase()
+									.includes(searchTerm.toLowerCase())
 							"
 						>
-							{{ button.title | translate }}
-						</ion-button>
+							<h1>{{ button.title | translate }}</h1>
+							<div class="description">
+								{{ button.description }}
+							</div>
+						</div>
 					</ng-container>
 				</div>
 			</div>

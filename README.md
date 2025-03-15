@@ -17,11 +17,11 @@
   </div>
 </p>
 
-The first iteration of 1Backend was a microservies PaaS in 2017.
+1Backend started as a microservices PaaS and then evolved into a flexible and scalable platform designed for running AI models on private servers and handling high-concurrency workloads.
 
-The second iteration was initially created to solve the challenge of running AI models on private servers, handling many concurrent prompts from both users and services. The goal was to build a ChatGPT-like interface for humans and a network-accessible API for machines.
+Built by engineers who’ve spent over a decade building and scaling microservices in fast-moving startups, 1Backend provides both a ChatGPT-like interface for users and a network-accessible API for machines—while also serving as a general-purpose backend framework.
 
-As the system grew, the authors—despite 10+ years of building both closed and open-source microservices platforms—realized there was still no backend framework that met their needs. So, 1Backend evolved into the flexible, scalable microservices platform they had been searching for.
+<img src="https://singulatron.com/assets/1b.png" />
 
 ## Highlights
 
