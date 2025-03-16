@@ -2273,7 +2273,7 @@ definitions:
           Relative from the build context. By default, it is assumed to be a Dockerfile.
         example: docker/Dockerfile
         type: string
-      ports:
+      internalPorts:
         description: Ports the container will listen on internally
         items:
           type: integer
@@ -2287,7 +2287,7 @@ definitions:
         example: v1.0.0
         type: string
     required:
-    - ports
+    - internalPorts
     - url
     type: object
   registry_svc.ResourceUsage:

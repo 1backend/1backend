@@ -27,7 +27,7 @@ type RegistrySvcRepositorySpec struct {
 	// ContainerFile is the path to the file that contains the container build instructions Relative from the build context. By default, it is assumed to be a Dockerfile.
 	ContainerFile *string `json:"containerFile,omitempty"`
 	// Ports the container will listen on internally
-	Ports []int32 `json:"ports"`
+	InternalPorts []int32 `json:"internalPorts"`
 	// URL is the URL to the repository
 	Url string `json:"url"`
 	// Version of the code to use
@@ -40,9 +40,9 @@ type _RegistrySvcRepositorySpec RegistrySvcRepositorySpec
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRegistrySvcRepositorySpec(ports []int32, url string) *RegistrySvcRepositorySpec {
+func NewRegistrySvcRepositorySpec(internalPorts []int32, url string) *RegistrySvcRepositorySpec {
 	this := RegistrySvcRepositorySpec{}
-	this.Ports = ports
+	this.InternalPorts = internalPorts
 	this.Url = url
 	return &this
 }
@@ -119,28 +119,28 @@ func (o *RegistrySvcRepositorySpec) SetContainerFile(v string) {
 	o.ContainerFile = &v
 }
 
-// GetPorts returns the Ports field value
-func (o *RegistrySvcRepositorySpec) GetPorts() []int32 {
+// GetInternalPorts returns the InternalPorts field value
+func (o *RegistrySvcRepositorySpec) GetInternalPorts() []int32 {
 	if o == nil {
 		var ret []int32
 		return ret
 	}
 
-	return o.Ports
+	return o.InternalPorts
 }
 
-// GetPortsOk returns a tuple with the Ports field value
+// GetInternalPortsOk returns a tuple with the InternalPorts field value
 // and a boolean to check if the value has been set.
-func (o *RegistrySvcRepositorySpec) GetPortsOk() ([]int32, bool) {
+func (o *RegistrySvcRepositorySpec) GetInternalPortsOk() ([]int32, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return o.Ports, true
+	return o.InternalPorts, true
 }
 
-// SetPorts sets field value
-func (o *RegistrySvcRepositorySpec) SetPorts(v []int32) {
-	o.Ports = v
+// SetInternalPorts sets field value
+func (o *RegistrySvcRepositorySpec) SetInternalPorts(v []int32) {
+	o.InternalPorts = v
 }
 
 // GetUrl returns the Url field value
@@ -215,7 +215,7 @@ func (o RegistrySvcRepositorySpec) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ContainerFile) {
 		toSerialize["containerFile"] = o.ContainerFile
 	}
-	toSerialize["ports"] = o.Ports
+	toSerialize["internalPorts"] = o.InternalPorts
 	toSerialize["url"] = o.Url
 	if !IsNil(o.Version) {
 		toSerialize["version"] = o.Version
@@ -228,7 +228,7 @@ func (o *RegistrySvcRepositorySpec) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"ports",
+		"internalPorts",
 		"url",
 	}
 

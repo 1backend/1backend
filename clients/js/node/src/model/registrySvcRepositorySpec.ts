@@ -24,7 +24,7 @@ export class RegistrySvcRepositorySpec {
     /**
     * Ports the container will listen on internally
     */
-    'ports': Array<number>;
+    'internalPorts': Array<number>;
     /**
     * URL is the URL to the repository
     */
@@ -48,8 +48,8 @@ export class RegistrySvcRepositorySpec {
             "type": "string"
         },
         {
-            "name": "ports",
-            "baseName": "ports",
+            "name": "internalPorts",
+            "baseName": "internalPorts",
             "type": "Array<number>"
         },
         {

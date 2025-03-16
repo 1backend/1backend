@@ -37,7 +37,7 @@ export interface RegistrySvcRepositorySpec {
      * @type {Array<number>}
      * @memberof RegistrySvcRepositorySpec
      */
-    ports: Array<number>;
+    internalPorts: Array<number>;
     /**
      * URL is the URL to the repository
      * @type {string}
@@ -56,7 +56,7 @@ export interface RegistrySvcRepositorySpec {
  * Check if a given object implements the RegistrySvcRepositorySpec interface.
  */
 export function instanceOfRegistrySvcRepositorySpec(value: object): value is RegistrySvcRepositorySpec {
-    if (!('ports' in value) || value['ports'] === undefined) return false;
+    if (!('internalPorts' in value) || value['internalPorts'] === undefined) return false;
     if (!('url' in value) || value['url'] === undefined) return false;
     return true;
 }
@@ -73,7 +73,7 @@ export function RegistrySvcRepositorySpecFromJSONTyped(json: any, ignoreDiscrimi
         
         'buildContext': json['buildContext'] == null ? undefined : json['buildContext'],
         'containerFile': json['containerFile'] == null ? undefined : json['containerFile'],
-        'ports': json['ports'],
+        'internalPorts': json['internalPorts'],
         'url': json['url'],
         'version': json['version'] == null ? undefined : json['version'],
     };
@@ -92,7 +92,7 @@ export function RegistrySvcRepositorySpecToJSONTyped(value?: RegistrySvcReposito
         
         'buildContext': value['buildContext'],
         'containerFile': value['containerFile'],
-        'ports': value['ports'],
+        'internalPorts': value['internalPorts'],
         'url': value['url'],
         'version': value['version'],
     };
