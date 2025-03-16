@@ -24,7 +24,7 @@ import {
 	HttpClient,
 } from '@angular/common/http';
 import {
-	OPENORCH_SERVICE_CONFIG,
+	OB_SERVICE_CONFIG,
 	ServerService,
 } from './app/services/server.service';
 import { MobileService } from './app/services/mobile.service';
@@ -60,7 +60,7 @@ import { FooterService } from './app/services/footer.service';
 			MarkdownModule.forRoot()
 		),
 		{
-			provide: OPENORCH_SERVICE_CONFIG,
+			provide: OB_SERVICE_CONFIG,
 			useValue: { env: environment },
 		},
 		ServerService,

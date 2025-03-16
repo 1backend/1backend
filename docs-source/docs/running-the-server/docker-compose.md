@@ -56,12 +56,12 @@ services:
     #           capabilities: [gpu]
     environment:
       # Volume mounted by AI containers launched by 1Backend to access models downloaded by the 1Backend File Svc.
-      - OPENORCH_VOLUME_NAME=1backend-data
+      - OB_VOLUME_NAME=1backend-data
       #
       # Enables GPU acceleration for NVIDIA GPUs.
       # This flag controls GPU access for AI containers launched by 1Backend.
       #
-      # - OPENORCH_GPU_PLATFORM=cuda
+      # - OB_GPU_PLATFORM=cuda
 ```
 
 Put the above into a file called `docker-compose.yaml` in a folder on your computer and run it with the following command:

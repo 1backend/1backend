@@ -3,8 +3,8 @@ module github.com/1backend/1backend/cli/oo
 go 1.23
 
 require (
-	github.com/1backend/1backend/clients/go v0.0.0-20250315124453-e49718380a69
-	github.com/1backend/1backend/sdk/go v0.0.0-20250315124453-e49718380a69
+	github.com/1backend/1backend/clients/go v0.0.0-20250316071826-33e9249d162d
+	github.com/1backend/1backend/sdk/go v0.0.0-20250316071826-33e9249d162d
 	github.com/ghodss/yaml v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.8.1

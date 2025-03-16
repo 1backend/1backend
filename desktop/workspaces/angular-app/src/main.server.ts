@@ -9,7 +9,7 @@ import {
 	withInterceptorsFromDi,
 } from '@angular/common/http';
 import { routes } from './app/app-routing.module';
-import { OPENORCH_SERVICE_CONFIG } from './app/services/server.service';
+import { OB_SERVICE_CONFIG } from './app/services/server.service';
 
 import { environment } from './environments/environment';
 import { provideServerRendering } from '@angular/platform-server';
@@ -21,7 +21,7 @@ const bootstrap = () =>
 			provideHttpClient(withFetch(), withInterceptorsFromDi()),
 			provideServerRendering(),
 			{
-				provide: OPENORCH_SERVICE_CONFIG,
+				provide: OB_SERVICE_CONFIG,
 				useValue: { env: environment },
 			},
 			provideClientHydration(),

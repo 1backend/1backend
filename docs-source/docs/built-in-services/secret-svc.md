@@ -92,7 +92,7 @@ This approach also works for services that you deploy manually (e.g., Kubernetes
 
 ### Encryption at rest and transit
 
-All data is encrypted using the encryption key provided by the envar `OPENORCH_ENCRYPTION_KEY` (see Todo section).
+All data is encrypted using the encryption key provided by the envar `OB_ENCRYPTION_KEY` (see Todo section).
 
 The server encrypts the secret values before saving them to disk/DB. The secret values are transmitted to readers unencrypted.
 
