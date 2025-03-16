@@ -62,7 +62,7 @@ func List(cmd *cobra.Command, args []string) error {
 			port = fmt.Sprintf("%d", definition.Image.InternalPorts[0])
 		}
 		if definition.Repository != nil {
-			port = fmt.Sprintf("%d", &definition.Repository.Ports[0])
+			port = fmt.Sprintf("%d", &definition.Repository.InternalPorts[0])
 		}
 
 		fmt.Fprintf(

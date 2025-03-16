@@ -392,7 +392,7 @@ func (ns *DeployService) makeSureItRuns(
 				{
 					// @todo multiport issues
 					Internal: definition.Image.InternalPorts[0],
-					Host:     definition.Repository.Ports[0],
+					Host:     definition.Repository.InternalPorts[0],
 				},
 			},
 			Names: []string{fmt.Sprintf("1backend-%v", definition.Id)},
