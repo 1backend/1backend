@@ -21,7 +21,7 @@ export declare class RegistrySvcRepositorySpec {
     /**
     * Ports the container will listen on internally
     */
-    'ports': Array<number>;
+    'internalPorts': Array<number>;
     /**
     * URL is the URL to the repository
     */

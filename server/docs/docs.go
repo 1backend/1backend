@@ -8417,7 +8417,7 @@ const docTemplate = `{
         "registry_svc.RepositorySpec": {
             "type": "object",
             "required": [
-                "ports",
+                "internalPorts",
                 "url"
             ],
             "properties": {
@@ -8431,7 +8431,7 @@ const docTemplate = `{
                     "type": "string",
                     "example": "docker/Dockerfile"
                 },
-                "ports": {
+                "internalPorts": {
                     "description": "Ports the container will listen on internally",
                     "type": "array",
                     "items": {

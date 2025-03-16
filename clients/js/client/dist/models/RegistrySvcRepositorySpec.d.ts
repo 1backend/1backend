@@ -33,7 +33,7 @@ export interface RegistrySvcRepositorySpec {
      * @type {Array<number>}
      * @memberof RegistrySvcRepositorySpec
      */
-    ports: Array<number>;
+    internalPorts: Array<number>;
     /**
      * URL is the URL to the repository
      * @type {string}

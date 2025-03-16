@@ -3,9 +3,9 @@ module github.com/1backend/1backend/cli/oo
 go 1.23
 
 require (
+	github.com/1backend/1backend/clients/go v0.0.0-20250315124453-e49718380a69
+	github.com/1backend/1backend/sdk/go v0.0.0-20250315124453-e49718380a69
 	github.com/ghodss/yaml v1.0.0
-	github.com/1backend/1backend/clients/go v0.0.0-20250309204912-9df2230dc3b2
-	github.com/1backend/1backend/sdk/go v0.0.0-20250309204912-9df2230dc3b2
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/pflag v1.0.5

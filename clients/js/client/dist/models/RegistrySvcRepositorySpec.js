@@ -15,7 +15,7 @@
  * Check if a given object implements the RegistrySvcRepositorySpec interface.
  */
 export function instanceOfRegistrySvcRepositorySpec(value) {
-    if (!('ports' in value) || value['ports'] === undefined)
+    if (!('internalPorts' in value) || value['internalPorts'] === undefined)
         return false;
     if (!('url' in value) || value['url'] === undefined)
         return false;
@@ -31,7 +31,7 @@ export function RegistrySvcRepositorySpecFromJSONTyped(json, ignoreDiscriminator
     return {
         'buildContext': json['buildContext'] == null ? undefined : json['buildContext'],
         'containerFile': json['containerFile'] == null ? undefined : json['containerFile'],
-        'ports': json['ports'],
+        'internalPorts': json['internalPorts'],
         'url': json['url'],
         'version': json['version'] == null ? undefined : json['version'],
     };
@@ -46,7 +46,7 @@ export function RegistrySvcRepositorySpecToJSONTyped(value, ignoreDiscriminator 
     return {
         'buildContext': value['buildContext'],
         'containerFile': value['containerFile'],
-        'ports': value['ports'],
+        'internalPorts': value['internalPorts'],
         'url': value['url'],
         'version': value['version'],
     };
