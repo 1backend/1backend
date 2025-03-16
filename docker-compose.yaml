@@ -37,4 +37,4 @@ services:
       # GPU Acceleration for NVIDIA GPUs
       # Uncomment this envar for NVIDIA GPUs.
       #
-      # - OPENORCH_GPU_PLATFORM=cuda
+      # - OB_GPU_PLATFORM=cuda

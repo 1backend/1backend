@@ -164,7 +164,7 @@ jobs:
 
       - name: Run tests
         run: |
-          $env:OPENORCH_CONFIG_PATH="${GITHUB_WORKSPACE}"
+          $env:OB_CONFIG_PATH="${GITHUB_WORKSPACE}"
           npm run test:playwright
         working-directory: ./desktop
 
@@ -297,7 +297,7 @@ jobs:
 
       - name: Run tests
         run: |
-          export OPENORCH_CONFIG_PATH="${GITHUB_WORKSPACE}"
+          export OB_CONFIG_PATH="${GITHUB_WORKSPACE}"
           npm run test:playwright
         working-directory: ./desktop
 
@@ -409,7 +409,7 @@ jobs:
           # sudo apt-get install -y xvfb
           Xvfb :99 -screen 0 1280x720x24 &
           export DISPLAY=:99
-          export OPENORCH_CONFIG_PATH="${GITHUB_WORKSPACE}"
+          export OB_CONFIG_PATH="${GITHUB_WORKSPACE}"
           npm run test:playwright
         working-directory: ./desktop
 

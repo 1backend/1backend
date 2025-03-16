@@ -10,20 +10,20 @@ tags:
 
 # Backend Environment Variables
 
-## `OPENORCH_URL`
+## `OB_URL`
 
-The OPENORCH_URL is the internally addressable (non-public-facing) URL of an 1Backend server. It should point to the local 1Backend instance on each physical node. Ideally, every node should have its own 1Backend instance.
+The OB_URL is the internally addressable (non-public-facing) URL of an 1Backend server. It should point to the local 1Backend instance on each physical node. Ideally, every node should have its own 1Backend instance.
 
 This local address serves two purposes:
 
 - It acts as the "self address" for the 1Backend server when calling built-in services (though it can default to 127.0.0.1).
 - It is also used by custom services when registering themselves, among other tasks.
 
-## `OPENORCH_NODE_ID`
+## `OB_NODE_ID`
 
 For information about this, please refer to the [Registry Svc Node section](/docs/built-in-services/registry-svc#node)
 
-## `OPENORCH_GPU_PLATFORM`
+## `OB_GPU_PLATFORM`
 
 This envar is used to enabel GPU acceleration.
 Supported platforms:
@@ -32,7 +32,7 @@ Supported platforms:
 
 Do not set this if your card doesn't support the given architecture or things will break.
 
-## `OPENORCH_VOLUME_NAME`
+## `OB_VOLUME_NAME`
 
 **This flag is typically unnecessary since 1Backend automatically detects the volume that is bound to `/root/.1backend`. Use it only as a corrective action.**
 
@@ -47,14 +47,14 @@ Host
 
 For the containers like `llama-cpp` to be able to read the models downloaded by 1Backend we they must both mount the same docker volume.
 
-An example of this can be seen in the root `docker-compose.yaml` file: `OPENORCH_VOLUME_NAME=singulatron-data`.
+An example of this can be seen in the root `docker-compose.yaml` file: `OB_VOLUME_NAME=singulatron-data`.
 
 So cycle goes like this:
 
 - 1Backend container writes to `/root/.1backend`, which is mounted to the volume `singulatron-data`
 - Assets (which are basically downloaded files) will be passed to containers created by 1Backend by mounting files in `singulatron-data`.
 
-## `OPENORCH_LLM_HOST`
+## `OB_LLM_HOST`
 
 **This flag is typically unnecessary since 1Backend retrieves the IP of the Docker bridge. Use it only as a corrective action.**
 
@@ -67,7 +67,7 @@ Host
  |-> Container Launched By 1Backend
 ```
 
-The `1Backend Container` uses the envar `OPENORCH_LLM_HOST` to address `Container Launched By 1Backend`.
+The `1Backend Container` uses the envar `OB_LLM_HOST` to address `Container Launched By 1Backend`.
 
 Typically this value should be `172.17.0.1` if you are using the default docker network.
 
@@ -82,16 +82,16 @@ Host With 1Backend
  |-> Container Launched By 1Backend
 ```
 
-## `OPENORCH_DB`
+## `OB_DB`
 
 You can use this envar to make 1Backend actually use a database instead of local file storage to store data.
 
 ### PostgreSQL
 
 ```sh
-OPENORCH_DB=postgres
-OPENORCH_DB_DRIVER="postgres" # or "mysql"
-OPENORCH_DB_STRING="postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
+OB_DB=postgres
+OB_DB_DRIVER="postgres" # or "mysql"
+OB_DB_STRING="postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
 ```
 
 Naturally, you should change the details of the connection string to reflect your environment.

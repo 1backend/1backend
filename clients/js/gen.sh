@@ -6,19 +6,19 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Define relevant paths
-OPENORCH_DIR="$SCRIPT_DIR/../../server"
+OB_DIR="$SCRIPT_DIR/../../server"
 JS_CLIENT_DIR="$SCRIPT_DIR/../js"
 TYPESCRIPT_CLIENT_DIR="$JS_CLIENT_DIR/client"
 TYPESCRIPT_NODE_DIR="$JS_CLIENT_DIR/node"
 LIBRARIES_DIR="$SCRIPT_DIR/../libraries"
-SWAGGER_FILE="$OPENORCH_DIR/docs/swagger.yaml"
+SWAGGER_FILE="$OB_DIR/docs/swagger.yaml"
 
 # Error handler
 trap 'echo "Error occurred in script at line $LINENO"; exit 1' ERR
 
 # Initialize Swagger in server
-echo "Initializing Swagger in $OPENORCH_DIR"
-cd "$OPENORCH_DIR"
+echo "Initializing Swagger in $OB_DIR"
+cd "$OB_DIR"
 swag init --parseDependency
 
 # Generate TypeScript Fetch client

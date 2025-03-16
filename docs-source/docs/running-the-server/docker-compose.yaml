@@ -30,12 +30,12 @@ services:
       - 1backend--data:/root/.1backend-
     environment:
       # This volume will be mounted by the LLM containers to access the models downloaded by 1Backend.
-      - OPENORCH_VOLUME_NAME=1backend--data
+      - OB_VOLUME_NAME=1backend--data
       # Address of the host so we can access the containers running the LLMs from the backend container
       # See "System Specific Settings" on this page for more information.
-      - OPENORCH_LLM_HOST=172.17.0.1
+      - OB_LLM_HOST=172.17.0.1
       #
       # GPU Acceleration for NVIDIA GPUs
       # Uncomment this envar for NVIDIA GPUs.
       #
-      # - OPENORCH_GPU_PLATFORM=cuda
+      # - OB_GPU_PLATFORM=cuda

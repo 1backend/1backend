@@ -10,7 +10,7 @@ import {
 	withInterceptorsFromDi,
 	withFetch,
 } from '@angular/common/http';
-import { OPENORCH_SERVICE_CONFIG } from './app/services/server.service';
+import { OB_SERVICE_CONFIG } from './app/services/server.service';
 import { API_SERVICE_CONFIG } from './app/api.service';
 import { provideRouter, RouteReuseStrategy } from '@angular/router';
 import { routes } from './app/app-routing.module';
@@ -31,7 +31,7 @@ bootstrapApplication(AppComponent, {
 		provideRouter(routes),
 		// provideExperimentalZonelessChangeDetection(),
 		{
-			provide: OPENORCH_SERVICE_CONFIG,
+			provide: OB_SERVICE_CONFIG,
 			useValue: { env: environment },
 		},
 		{

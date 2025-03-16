@@ -6,11 +6,11 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Define relevant paths
-OPENORCH_DIR="$SCRIPT_DIR/../server"
+OB_DIR="$SCRIPT_DIR/../server"
 DOCS_SOURCE_DIR="$SCRIPT_DIR/../docs-source"
 DOCS_DIR="$SCRIPT_DIR/../docs"
 BUILD_DIR="$DOCS_SOURCE_DIR/build"
-SWAGGER_FILE="$OPENORCH_DIR/docs/swagger.yaml"
+SWAGGER_FILE="$OB_DIR/docs/swagger.yaml"
 EXAMPLES_DIR="$DOCS_SOURCE_DIR/examples"
 CNAME_FILE="$DOCS_SOURCE_DIR/CNAME"
 
@@ -20,8 +20,8 @@ mkdir -p $DOCS_DIR
 trap 'echo "Error occurred in script at line $LINENO"; exit 1' ERR
 
 # Initialize Swagger in server
-echo "Initializing Swagger in $OPENORCH_DIR"
-cd "$OPENORCH_DIR"
+echo "Initializing Swagger in $OB_DIR"
+cd "$OB_DIR"
 swag init --parseDependency
 
 # Copy Swagger file to docs-source examples
