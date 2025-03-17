@@ -24,7 +24,7 @@ func List(cmd *cobra.Command, args []string, show bool) error {
 
 	url, token, err := config.GetSelectedUrlAndToken()
 	if err != nil {
-		return errors.Wrap(err, "cannot get env url")
+		return errors.Wrap(err, "cannot get env url and token")
 	}
 
 	cf := sdk.NewApiClientFactory(url)

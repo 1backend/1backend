@@ -3068,8 +3068,8 @@ info:
     email: sales@singulatron.com
     name: API Support
     url: http://1backend.com/
-  description: A common backend for your AI applications—microservices-based and built
-    to scale.
+  description: A unified backend for your AI applications—microservices-based and
+    built to scale.
   license:
     name: AGPL v3.0
     url: https://www.gnu.org/licenses/agpl-3.0.html

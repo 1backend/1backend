@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "A common backend for your AI applications—microservices-based and built to scale.",
+        "description": "A unified backend for your AI applications—microservices-based and built to scale.",
         "title": "1Backend",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
