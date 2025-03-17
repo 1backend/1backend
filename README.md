@@ -146,11 +146,9 @@ go install github.com/1backend/1backend/cli/oo@latest
 ```
 
 ```sh
-$ oo env add local http://127.0.0.1:58231
-
 $ oo env ls
-ENV NAME   SELECTED   URL                           DESCRIPTION
-local      *          http://127.0.0.1:58231
+ENV NAME   SELECTED   URL                           DESCRIPTION   REACHABLE
+local      *          http://127.0.0.1:58231                      true
 ```
 
 ```sh
