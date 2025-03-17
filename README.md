@@ -10,7 +10,7 @@
 <a target="_blank" rel="noopener noreferrer" href="https://github.com/1backend/1backend/actions/workflows/js-client-build.yaml/badge.svg"><img src="https://github.com/1backend/1backend/actions/workflows/js-client-build.yaml/badge.svg" alt="js client build" style="max-width: 100%;"></a>
 <a target="_blank" rel="noopener noreferrer" href="https://github.com/1backend/1backend/actions/workflows/go-sdk-build.yaml/badge.svg"><img src="https://github.com/1backend/1backend/actions/workflows/go-sdk-build.yaml/badge.svg" alt="go sdk" style="max-width: 100%;"></a>
     </span>
-    <div style="margin-top: 2rem">A common backend for your AI applications—microservices-based and built to scale.</div>
+    <div style="margin-top: 2rem">A unified backend for your AI applications—microservices-based and built to scale.</div>
     <div>
       <a href="https://1backend.com">1backend.com</a>
     </div>

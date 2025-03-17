@@ -15,11 +15,11 @@ import (
 func Whoami(cmd *cobra.Command, args []string) error {
 	conf, err := config.LoadConfig()
 	if err != nil {
-		return fmt.Errorf("Failed to load config: %w", err)
+		return fmt.Errorf("failed to load config: %w", err)
 	}
 
 	if conf.Environments == nil {
-		return fmt.Errorf("No environments")
+		return fmt.Errorf("no environments")
 	}
 	env, ok := conf.Environments[conf.SelectedEnvironment]
 	if !ok {
@@ -31,7 +31,7 @@ func Whoami(cmd *cobra.Command, args []string) error {
 
 	if env.SelectedUser == "" {
 		return fmt.Errorf(
-			"No selected user in env '%v'",
+			"no selected user in env '%v'",
 			conf.SelectedEnvironment,
 		)
 	}
@@ -39,7 +39,7 @@ func Whoami(cmd *cobra.Command, args []string) error {
 	usr, ok := env.Users[env.SelectedUser]
 	if !ok {
 		return fmt.Errorf(
-			"Cannot find user '%v' in env '%v'",
+			"cannot find user '%v' in env '%v'",
 			env.SelectedUser,
 			conf.SelectedEnvironment,
 		)

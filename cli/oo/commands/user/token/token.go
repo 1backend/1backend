@@ -27,7 +27,7 @@ func Token(cmd *cobra.Command, args []string) error {
 
 	if env.SelectedUser == "" {
 		return fmt.Errorf(
-			"No selected user in env '%v'",
+			"no selected user in env '%v'",
 			conf.SelectedEnvironment,
 		)
 	}

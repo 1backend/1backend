@@ -33,5 +33,10 @@ func GetSelectedUrlAndToken() (string, string, error) {
 		return "", "", err
 	}
 
-	return env.URL, env.Users[env.SelectedUser].Token, nil
+	selectedUser, ok := env.Users[env.SelectedUser]
+	if !ok {
+		return "", "", fmt.Errorf("no user selected. maybe try logging in first?")
+	}
+
+	return env.URL, selectedUser.Token, nil
 }
