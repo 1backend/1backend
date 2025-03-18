@@ -30,7 +30,7 @@ var port = router.GetPort()
 
 // @title           1Backend
 // @version         0.3.0-rc.29
-// @description     A unified backend for your AI applications—microservices-based and built to scale.
+// @description     A unified backend development platform for your AI applications—microservices-based and built to scale.
 // @termsOfService  http://swagger.io/terms/
 
 // @contact.name   API Support
