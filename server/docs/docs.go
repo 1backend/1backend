@@ -9585,7 +9585,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "1Backend",
-	Description:      "A unified backend for your AI applications—microservices-based and built to scale.",
+	Description:      "A unified backend development platform for your AI applications—microservices-based and built to scale.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

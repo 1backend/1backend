@@ -1,6 +1,6 @@
 /**
  * 1Backend
- * A unified backend for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
