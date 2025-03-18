@@ -1,7 +1,7 @@
 /*
 1Backend
 
-A common backend for your AI applications—microservices-based and built to scale.
+A unified backend for your AI applications—microservices-based and built to scale.
 
 API version: 0.3.0-rc.29
 Contact: sales@singulatron.com

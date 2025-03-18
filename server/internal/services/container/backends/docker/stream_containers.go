@@ -7,12 +7,12 @@ import (
 	"strings"
 	"sync"
 
+	container "github.com/1backend/1backend/server/internal/services/container/types"
 	"github.com/docker/docker/api/types"
 	dockerapitypes "github.com/docker/docker/api/types"
 	dockercontainer "github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/events"
 	"github.com/docker/docker/client"
-	container "github.com/1backend/1backend/server/internal/services/container/types"
 	"github.com/samber/lo"
 )
 
@@ -29,7 +29,7 @@ func NewContainerTracker() *ContainerTracker {
 
 func StartDockerContainerTracker(cli *client.Client, tracker *ContainerTracker) {
 	ctx := context.Background()
-	eventChan, errChan := cli.Events(ctx, types.EventsOptions{})
+	eventChan, errChan := cli.Events(ctx, events.ListOptions{})
 
 	// Initialize active container list
 	containers, err := cli.ContainerList(ctx, dockercontainer.ListOptions{All: true})

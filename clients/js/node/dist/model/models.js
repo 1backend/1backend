@@ -66,8 +66,8 @@ export * from './deploySvcResourceLimits';
 export * from './deploySvcSaveDeploymentRequest';
 export * from './deploySvcStrategyType';
 export * from './deploySvcTargetRegion';
+export * from './emailSvcAttachment';
 export * from './emailSvcErrorResponse';
-export * from './emailSvcFile';
 export * from './emailSvcSendEmailRequest';
 export * from './emailSvcSendEmailResponse';
 export * from './fileSvcDownload';
@@ -268,8 +268,8 @@ import { DeploySvcResourceLimits } from './deploySvcResourceLimits';
 import { DeploySvcSaveDeploymentRequest } from './deploySvcSaveDeploymentRequest';
 import { DeploySvcStrategyType } from './deploySvcStrategyType';
 import { DeploySvcTargetRegion } from './deploySvcTargetRegion';
+import { EmailSvcAttachment } from './emailSvcAttachment';
 import { EmailSvcErrorResponse } from './emailSvcErrorResponse';
-import { EmailSvcFile } from './emailSvcFile';
 import { EmailSvcSendEmailRequest } from './emailSvcSendEmailRequest';
 import { EmailSvcSendEmailResponse } from './emailSvcSendEmailResponse';
 import { FileSvcDownload } from './fileSvcDownload';
@@ -493,8 +493,8 @@ let typeMap = {
     "DeploySvcResourceLimits": DeploySvcResourceLimits,
     "DeploySvcSaveDeploymentRequest": DeploySvcSaveDeploymentRequest,
     "DeploySvcTargetRegion": DeploySvcTargetRegion,
+    "EmailSvcAttachment": EmailSvcAttachment,
     "EmailSvcErrorResponse": EmailSvcErrorResponse,
-    "EmailSvcFile": EmailSvcFile,
     "EmailSvcSendEmailRequest": EmailSvcSendEmailRequest,
     "EmailSvcSendEmailResponse": EmailSvcSendEmailResponse,
     "FileSvcDownload": FileSvcDownload,

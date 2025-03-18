@@ -956,33 +956,44 @@ definitions:
         description: 'Optional: Specific zone for the deployment'
         type: string
     type: object
+  email_svc.Attachment:
+    properties:
+      content:
+        description: |-
+          Base64-encoded file content. Use this for small files.
+          Required for inline attachments (i.e., those not using File Svc, see FileId).
+        type: string
+      contentType:
+        description: |-
+          MIME type of the file (e.g., "application/pdf", "image/png")
+          Required for inline attachments (i.e., those not using File Svc, see FileId).
+        type: string
+      fileId:
+        description: |-
+          A File Svc file ID. Requires the file to be uploaded separately.
+          Recommended for mid to large-sized files.
+          If this field is specified, all other fields are optional.
+        type: string
+      filename:
+        description: |-
+          File name for the attachment.
+          Required for inline attachments (i.e., those not using File Svc, see FileId).
+        type: string
+    required:
+    - contentType
+    - filename
+    type: object
   email_svc.ErrorResponse:
     properties:
       error:
         type: string
-    type: object
-  email_svc.File:
-    properties:
-      content:
-        description: Base64-encoded content of the file
-        type: string
-      contentType:
-        description: MIME type of the file (e.g., "application/pdf")
-        type: string
-      filename:
-        description: Name of the attached file
-        type: string
-    required:
-    - content
-    - contentType
-    - filename
     type: object
   email_svc.SendEmailRequest:
     properties:
       attachments:
         description: List of file attachments (optional)
         items:
-          $ref: '#/definitions/email_svc.File'
+          $ref: '#/definitions/email_svc.Attachment'
         type: array
       bcc:
         description: List of BCC recipient email addresses (optional)
@@ -1000,9 +1011,6 @@ definitions:
       contentType:
         description: 'Content type: "text/plain" or "text/html"'
         type: string
-      createdAt:
-        description: Timestamp of email creation
-        type: string
       id:
         description: Unique identifier
         type: string
@@ -1017,7 +1025,7 @@ definitions:
     required:
     - body
     - contentType
-    - createdAt
+    - id
     - subject
     - to
     type: object
@@ -4434,7 +4442,8 @@ paths:
         This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
       operationId: serveUpload
       parameters:
-      - description: Upload ID
+      - description: FileID uniquely identifies the file itself (not an ID, which
+          represents a specific replica)
         in: path
         name: fileId
         required: true
@@ -4508,7 +4517,9 @@ paths:
       consumes:
       - application/json
       description: |-
-        List the uploaded files.
+        Lists uploaded files, returning only metadata about each upload.
+        To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request.
+        Note: Retrieving the contents of multiple files in a single request is not supported currently.
 
         Requires the `file-svc:upload:view` permission.
       operationId: listUploads

@@ -1,6 +1,6 @@
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -305,7 +305,7 @@ export class FileSvcApi {
         });
     }
     /**
-     * List the uploaded files.  Requires the `file-svc:upload:view` permission.
+     * Lists uploaded files, returning only metadata about each upload. To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request. Note: Retrieving the contents of multiple files in a single request is not supported currently.  Requires the `file-svc:upload:view` permission.
      * @summary List Uploads
      * @param body List Uploads Request
      */
@@ -515,7 +515,7 @@ export class FileSvcApi {
     /**
      * Retrieves and serves a previously uploaded file using its File ID. Note: The `ID` and `FileID` fields of an upload are different. - `FileID` is a unique identifier for the file itself. - `ID` is a unique identifier for a specific replica of the file. Since 1Backend is a distributed system, files can be replicated across multiple nodes. This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
      * @summary Serve an Uploaded File
-     * @param fileId Upload ID
+     * @param fileId FileID uniquely identifies the file itself (not an ID, which represents a specific replica)
      */
     public async serveUpload (fileId: string, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: Buffer;  }> {
         const localVarPath = this.basePath + '/file-svc/serve/upload/{fileId}'

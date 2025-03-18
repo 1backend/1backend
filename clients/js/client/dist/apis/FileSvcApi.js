@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -125,7 +125,7 @@ export class FileSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * List the uploaded files.  Requires the `file-svc:upload:view` permission.
+     * Lists uploaded files, returning only metadata about each upload. To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request. Note: Retrieving the contents of multiple files in a single request is not supported currently.  Requires the `file-svc:upload:view` permission.
      * List Uploads
      */
     listUploadsRaw(requestParameters, initOverrides) {
@@ -147,7 +147,7 @@ export class FileSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * List the uploaded files.  Requires the `file-svc:upload:view` permission.
+     * Lists uploaded files, returning only metadata about each upload. To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request. Note: Retrieving the contents of multiple files in a single request is not supported currently.  Requires the `file-svc:upload:view` permission.
      * List Uploads
      */
     listUploads() {

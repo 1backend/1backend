@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -11,7 +11,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { EmailSvcFileFromJSON, EmailSvcFileToJSON, } from './EmailSvcFile';
+import { EmailSvcAttachmentFromJSON, EmailSvcAttachmentToJSON, } from './EmailSvcAttachment';
 /**
  * Check if a given object implements the EmailSvcSendEmailRequest interface.
  */
@@ -20,7 +20,7 @@ export function instanceOfEmailSvcSendEmailRequest(value) {
         return false;
     if (!('contentType' in value) || value['contentType'] === undefined)
         return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined)
+    if (!('id' in value) || value['id'] === undefined)
         return false;
     if (!('subject' in value) || value['subject'] === undefined)
         return false;
@@ -36,13 +36,12 @@ export function EmailSvcSendEmailRequestFromJSONTyped(json, ignoreDiscriminator)
         return json;
     }
     return {
-        'attachments': json['attachments'] == null ? undefined : (json['attachments'].map(EmailSvcFileFromJSON)),
+        'attachments': json['attachments'] == null ? undefined : (json['attachments'].map(EmailSvcAttachmentFromJSON)),
         'bcc': json['bcc'] == null ? undefined : json['bcc'],
         'body': json['body'],
         'cc': json['cc'] == null ? undefined : json['cc'],
         'contentType': json['contentType'],
-        'createdAt': json['createdAt'],
-        'id': json['id'] == null ? undefined : json['id'],
+        'id': json['id'],
         'subject': json['subject'],
         'to': json['to'],
     };
@@ -55,12 +54,11 @@ export function EmailSvcSendEmailRequestToJSONTyped(value, ignoreDiscriminator =
         return value;
     }
     return {
-        'attachments': value['attachments'] == null ? undefined : (value['attachments'].map(EmailSvcFileToJSON)),
+        'attachments': value['attachments'] == null ? undefined : (value['attachments'].map(EmailSvcAttachmentToJSON)),
         'bcc': value['bcc'],
         'body': value['body'],
         'cc': value['cc'],
         'contentType': value['contentType'],
-        'createdAt': value['createdAt'],
         'id': value['id'],
         'subject': value['subject'],
         'to': value['to'],

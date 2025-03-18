@@ -1,6 +1,6 @@
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -11,13 +11,13 @@
  */
 
 import { RequestFile } from './models';
-import { EmailSvcFile } from './emailSvcFile';
+import { EmailSvcAttachment } from './emailSvcAttachment';
 
 export class EmailSvcSendEmailRequest {
     /**
     * List of file attachments (optional)
     */
-    'attachments'?: Array<EmailSvcFile>;
+    'attachments'?: Array<EmailSvcAttachment>;
     /**
     * List of BCC recipient email addresses (optional)
     */
@@ -35,13 +35,9 @@ export class EmailSvcSendEmailRequest {
     */
     'contentType': string;
     /**
-    * Timestamp of email creation
-    */
-    'createdAt': string;
-    /**
     * Unique identifier
     */
-    'id'?: string;
+    'id': string;
     /**
     * Email subject line
     */
@@ -57,7 +53,7 @@ export class EmailSvcSendEmailRequest {
         {
             "name": "attachments",
             "baseName": "attachments",
-            "type": "Array<EmailSvcFile>"
+            "type": "Array<EmailSvcAttachment>"
         },
         {
             "name": "bcc",
@@ -77,11 +73,6 @@ export class EmailSvcSendEmailRequest {
         {
             "name": "contentType",
             "baseName": "contentType",
-            "type": "string"
-        },
-        {
-            "name": "createdAt",
-            "baseName": "createdAt",
             "type": "string"
         },
         {

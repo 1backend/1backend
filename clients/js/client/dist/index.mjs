@@ -4,7 +4,7 @@ import { __awaiter } from 'tslib';
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -325,7 +325,7 @@ class TextApiResponse {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -385,7 +385,7 @@ function ChatSvcMessageToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -427,7 +427,7 @@ function ChatSvcAddMessageRequestToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -481,7 +481,7 @@ function ChatSvcThreadToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -523,7 +523,7 @@ function ChatSvcAddThreadRequestToJSONTyped(value, ignoreDiscriminator = false) 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -565,7 +565,7 @@ function ChatSvcAddThreadResponseToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -607,7 +607,7 @@ function ChatSvcEventMessageAddedToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -649,7 +649,7 @@ function ChatSvcEventThreadAddedToJSONTyped(value, ignoreDiscriminator = false) 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -691,7 +691,7 @@ function ChatSvcEventThreadUpdateToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -735,7 +735,7 @@ function ChatSvcGetMessageResponseToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -777,7 +777,7 @@ function ChatSvcGetMessagesResponseToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -821,7 +821,7 @@ function ChatSvcGetThreadResponseToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -863,7 +863,7 @@ function ChatSvcGetThreadsResponseToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -905,7 +905,7 @@ function ChatSvcUpdateThreadRequestToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -955,7 +955,7 @@ function ConfigSvcConfigToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -997,7 +997,7 @@ function ConfigSvcGetConfigResponseToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1039,7 +1039,7 @@ function ConfigSvcSaveConfigRequestToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1087,7 +1087,7 @@ function ContainerSvcAssetToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1137,7 +1137,7 @@ function ContainerSvcBuildImageRequestToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1179,7 +1179,7 @@ function ContainerSvcCapabilitiesToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1225,7 +1225,7 @@ function ContainerSvcKeepToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1271,7 +1271,7 @@ function ContainerSvcNetworkToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1317,7 +1317,7 @@ function ContainerSvcVolumeToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1365,7 +1365,7 @@ function ContainerSvcLabelToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1413,7 +1413,7 @@ function ContainerSvcEnvVarToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1459,7 +1459,7 @@ function ContainerSvcResourcesToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1507,7 +1507,7 @@ function ContainerSvcPortMappingToJSONTyped(value, ignoreDiscriminator = false) 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1579,7 +1579,7 @@ function ContainerSvcContainerToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1623,7 +1623,7 @@ function ContainerSvcContainerIsRunningResponseToJSONTyped(value, ignoreDiscrimi
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1671,7 +1671,7 @@ function ContainerSvcDaemonInfoResponseToJSONTyped(value, ignoreDiscriminator = 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1713,7 +1713,7 @@ function ContainerSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1765,7 +1765,7 @@ function ContainerSvcGetContainerSummaryResponseToJSONTyped(value, ignoreDiscrim
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1809,7 +1809,7 @@ function ContainerSvcGetHostResponseToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1853,7 +1853,7 @@ function ContainerSvcImagePullableResponseToJSONTyped(value, ignoreDiscriminator
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1899,7 +1899,7 @@ function ContainerSvcListContainersRequestToJSONTyped(value, ignoreDiscriminator
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1941,7 +1941,7 @@ function ContainerSvcListContainersResponseToJSONTyped(value, ignoreDiscriminato
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1987,7 +1987,7 @@ function ContainerSvcListLogsRequestToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2037,7 +2037,7 @@ function ContainerSvcLogToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2079,7 +2079,7 @@ function ContainerSvcListLogsResponseToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2139,7 +2139,7 @@ function ContainerSvcRunContainerRequestToJSONTyped(value, ignoreDiscriminator =
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2183,7 +2183,7 @@ function ContainerSvcRunContainerResponseToJSONTyped(value, ignoreDiscriminator 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2227,7 +2227,7 @@ function ContainerSvcStopContainerRequestToJSONTyped(value, ignoreDiscriminator 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2285,7 +2285,7 @@ function DataSvcCreateObjectFieldsToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2327,7 +2327,7 @@ function DataSvcCreateObjectRequestToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2389,7 +2389,7 @@ function DataSvcObjectToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2431,7 +2431,7 @@ function DataSvcCreateObjectResponseToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2478,7 +2478,7 @@ function DatastoreOpToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2524,7 +2524,7 @@ function DatastoreFilterToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2568,7 +2568,7 @@ function DataSvcDeleteObjectRequestToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2610,7 +2610,7 @@ function DataSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2656,7 +2656,7 @@ function DatastoreSortingTypeToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2704,7 +2704,7 @@ function DatastoreOrderByToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2754,7 +2754,7 @@ function DatastoreQueryToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2800,7 +2800,7 @@ function DataSvcQueryRequestToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2842,7 +2842,7 @@ function DataSvcQueryResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2888,7 +2888,7 @@ function DataSvcUpdateObjectsRequestToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2930,7 +2930,7 @@ function DataSvcUpsertObjectRequestToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2972,7 +2972,7 @@ function DataSvcUpsertObjectResponseToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3018,7 +3018,7 @@ function DeploySvcAutoScalingConfigToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3062,7 +3062,7 @@ function DeploySvcDeleteDeploymentRequestToJSONTyped(value, ignoreDiscriminator 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3106,7 +3106,7 @@ function DeploySvcStrategyTypeToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3152,7 +3152,7 @@ function DeploySvcDeploymentStrategyToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3199,7 +3199,7 @@ function DeploySvcDeploymentStatusToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3243,7 +3243,7 @@ function DeploySvcTargetRegionToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3289,7 +3289,7 @@ function DeploySvcResourceLimitsToJSONTyped(value, ignoreDiscriminator = false) 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3357,7 +3357,7 @@ function DeploySvcDeploymentToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3399,7 +3399,7 @@ function DeploySvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3441,7 +3441,7 @@ function DeploySvcListDeploymentsResponseToJSONTyped(value, ignoreDiscriminator 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3483,7 +3483,59 @@ function DeploySvcSaveDeploymentRequestToJSONTyped(value, ignoreDiscriminator = 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
+ *
+ * The version of the OpenAPI document: 0.3.0-rc.29
+ * Contact: sales@singulatron.com
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+/**
+ * Check if a given object implements the EmailSvcAttachment interface.
+ */
+function instanceOfEmailSvcAttachment(value) {
+    if (!('contentType' in value) || value['contentType'] === undefined)
+        return false;
+    if (!('filename' in value) || value['filename'] === undefined)
+        return false;
+    return true;
+}
+function EmailSvcAttachmentFromJSON(json) {
+    return EmailSvcAttachmentFromJSONTyped(json);
+}
+function EmailSvcAttachmentFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'content': json['content'] == null ? undefined : json['content'],
+        'contentType': json['contentType'],
+        'fileId': json['fileId'] == null ? undefined : json['fileId'],
+        'filename': json['filename'],
+    };
+}
+function EmailSvcAttachmentToJSON(json) {
+    return EmailSvcAttachmentToJSONTyped(json, false);
+}
+function EmailSvcAttachmentToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'content': value['content'],
+        'contentType': value['contentType'],
+        'fileId': value['fileId'],
+        'filename': value['filename'],
+    };
+}
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * 1Backend
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3525,59 +3577,7 @@ function EmailSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
- *
- * The version of the OpenAPI document: 0.3.0-rc.29
- * Contact: sales@singulatron.com
- *
- * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
- * https://openapi-generator.tech
- * Do not edit the class manually.
- */
-/**
- * Check if a given object implements the EmailSvcFile interface.
- */
-function instanceOfEmailSvcFile(value) {
-    if (!('content' in value) || value['content'] === undefined)
-        return false;
-    if (!('contentType' in value) || value['contentType'] === undefined)
-        return false;
-    if (!('filename' in value) || value['filename'] === undefined)
-        return false;
-    return true;
-}
-function EmailSvcFileFromJSON(json) {
-    return EmailSvcFileFromJSONTyped(json);
-}
-function EmailSvcFileFromJSONTyped(json, ignoreDiscriminator) {
-    if (json == null) {
-        return json;
-    }
-    return {
-        'content': json['content'],
-        'contentType': json['contentType'],
-        'filename': json['filename'],
-    };
-}
-function EmailSvcFileToJSON(json) {
-    return EmailSvcFileToJSONTyped(json, false);
-}
-function EmailSvcFileToJSONTyped(value, ignoreDiscriminator = false) {
-    if (value == null) {
-        return value;
-    }
-    return {
-        'content': value['content'],
-        'contentType': value['contentType'],
-        'filename': value['filename'],
-    };
-}
-
-/* tslint:disable */
-/* eslint-disable */
-/**
- * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3594,7 +3594,7 @@ function instanceOfEmailSvcSendEmailRequest(value) {
         return false;
     if (!('contentType' in value) || value['contentType'] === undefined)
         return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined)
+    if (!('id' in value) || value['id'] === undefined)
         return false;
     if (!('subject' in value) || value['subject'] === undefined)
         return false;
@@ -3610,13 +3610,12 @@ function EmailSvcSendEmailRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'attachments': json['attachments'] == null ? undefined : (json['attachments'].map(EmailSvcFileFromJSON)),
+        'attachments': json['attachments'] == null ? undefined : (json['attachments'].map(EmailSvcAttachmentFromJSON)),
         'bcc': json['bcc'] == null ? undefined : json['bcc'],
         'body': json['body'],
         'cc': json['cc'] == null ? undefined : json['cc'],
         'contentType': json['contentType'],
-        'createdAt': json['createdAt'],
-        'id': json['id'] == null ? undefined : json['id'],
+        'id': json['id'],
         'subject': json['subject'],
         'to': json['to'],
     };
@@ -3629,12 +3628,11 @@ function EmailSvcSendEmailRequestToJSONTyped(value, ignoreDiscriminator = false)
         return value;
     }
     return {
-        'attachments': value['attachments'] == null ? undefined : (value['attachments'].map(EmailSvcFileToJSON)),
+        'attachments': value['attachments'] == null ? undefined : (value['attachments'].map(EmailSvcAttachmentToJSON)),
         'bcc': value['bcc'],
         'body': value['body'],
         'cc': value['cc'],
         'contentType': value['contentType'],
-        'createdAt': value['createdAt'],
         'id': value['id'],
         'subject': value['subject'],
         'to': value['to'],
@@ -3645,7 +3643,7 @@ function EmailSvcSendEmailRequestToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3689,7 +3687,7 @@ function EmailSvcSendEmailResponseToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3751,7 +3749,7 @@ function FileSvcDownloadToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3797,7 +3795,7 @@ function FileSvcDownloadFileRequestToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3839,7 +3837,7 @@ function FileSvcDownloadsResponseToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3881,7 +3879,7 @@ function FileSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3927,7 +3925,7 @@ function FileSvcGetDownloadResponseToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3973,7 +3971,7 @@ function FileSvcListUploadsRequestToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4033,7 +4031,7 @@ function FileSvcUploadToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4075,7 +4073,7 @@ function FileSvcListUploadsResponseToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4117,7 +4115,7 @@ function FileSvcUploadFileResponseToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4159,7 +4157,7 @@ function FirehoseSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4203,7 +4201,7 @@ function FirehoseSvcEventToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4245,7 +4243,7 @@ function FirehoseSvcEventPublishRequestToJSONTyped(value, ignoreDiscriminator = 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4289,7 +4287,7 @@ function ModelSvcKeepToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4333,7 +4331,7 @@ function ModelSvcEnvVarToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4381,7 +4379,7 @@ function ModelSvcContainerToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4429,7 +4427,7 @@ function ModelSvcCudaParametersToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4471,7 +4469,7 @@ function ModelSvcDefaultParametersToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4515,7 +4513,7 @@ function ModelSvcArchitecturesToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4563,7 +4561,7 @@ function ModelSvcAssetToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4605,7 +4603,7 @@ function ModelSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4691,7 +4689,7 @@ function ModelSvcModelToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4761,7 +4759,7 @@ function PromptSvcPromptTypeToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4811,7 +4809,7 @@ function ModelSvcPlatformToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4863,7 +4861,7 @@ function ModelSvcGetModelResponseToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4905,7 +4903,7 @@ function ModelSvcListModelsResponseToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4949,7 +4947,7 @@ function ModelSvcListPlatformsResponseToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5001,7 +4999,7 @@ function ModelSvcModelStatusToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5043,7 +5041,7 @@ function ModelSvcStatusResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5085,7 +5083,7 @@ function PolicySvcBlocklistParametersToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5133,7 +5131,7 @@ function PolicySvcCheckRequestToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5177,7 +5175,7 @@ function PolicySvcCheckResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5221,7 +5219,7 @@ function PolicySvcEntityToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5263,7 +5261,7 @@ function PolicySvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5307,7 +5305,7 @@ function PolicySvcTemplateIdToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5351,7 +5349,7 @@ function PolicySvcScopeToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5399,7 +5397,7 @@ function PolicySvcRateLimitParametersToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5443,7 +5441,7 @@ function PolicySvcParametersToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5495,7 +5493,7 @@ function PolicySvcInstanceToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5537,7 +5535,7 @@ function PolicySvcUpsertInstanceRequestToJSONTyped(value, ignoreDiscriminator = 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5579,7 +5577,7 @@ function PromptSvcLlamaCppParametersToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5729,7 +5727,7 @@ function StableDiffusionTxt2ImgRequestToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5771,7 +5769,7 @@ function PromptSvcStableDiffusionParametersToJSONTyped(value, ignoreDiscriminato
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5815,7 +5813,7 @@ function PromptSvcEngineParametersToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5857,7 +5855,7 @@ function PromptSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5899,7 +5897,7 @@ function PromptSvcListPromptsRequestToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5973,7 +5971,7 @@ function PromptSvcTextToImageParametersToJSONTyped(value, ignoreDiscriminator = 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6015,7 +6013,7 @@ function PromptSvcTextToTextParametersToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6059,7 +6057,7 @@ function PromptSvcParametersToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6107,7 +6105,7 @@ function PromptSvcPromptStatusToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6185,7 +6183,7 @@ function PromptSvcPromptToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6231,7 +6229,7 @@ function PromptSvcListPromptsResponseToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6289,7 +6287,7 @@ function PromptSvcPromptRequestToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6333,7 +6331,7 @@ function PromptSvcPromptResponseToJSONTyped(value, ignoreDiscriminator = false) 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6375,7 +6373,7 @@ function PromptSvcRemovePromptRequestToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6419,7 +6417,7 @@ function PromptSvcStreamChunkTypeToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6465,7 +6463,7 @@ function PromptSvcStreamChunkToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6507,7 +6505,7 @@ function PromptSvcTypesResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6555,7 +6553,7 @@ function RegistrySvcAPISpecToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6616,7 +6614,7 @@ function RegistrySvcLanguageToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6664,7 +6662,7 @@ function RegistrySvcClientToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6712,7 +6710,7 @@ function RegistrySvcPortMappingToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6760,7 +6758,7 @@ function RegistrySvcImageSpecToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6814,7 +6812,7 @@ function RegistrySvcRepositorySpecToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6862,7 +6860,7 @@ function RegistrySvcEnvVarToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6918,7 +6916,7 @@ function RegistrySvcDefinitionToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6960,7 +6958,7 @@ function RegistrySvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7006,7 +7004,7 @@ function RegistrySvcProcessToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7074,7 +7072,7 @@ function RegistrySvcGPUToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7121,7 +7119,7 @@ function RegistrySvcInstanceStatusToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7195,7 +7193,7 @@ function RegistrySvcInstanceToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7237,7 +7235,7 @@ function RegistrySvcListDefinitionsResponseToJSONTyped(value, ignoreDiscriminato
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7279,7 +7277,7 @@ function RegistrySvcListInstancesResponseToJSONTyped(value, ignoreDiscriminator 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7321,7 +7319,7 @@ function RegistrySvcListNodesRequestToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7367,7 +7365,7 @@ function RegistrySvcUsageToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7413,7 +7411,7 @@ function RegistrySvcResourceUsageToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7471,7 +7469,7 @@ function RegistrySvcNodeToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7513,7 +7511,7 @@ function RegistrySvcListNodesResponseToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7557,7 +7555,7 @@ function RegistrySvcNodeSelfResponseToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7615,7 +7613,7 @@ function RegistrySvcRegisterInstanceRequestToJSONTyped(value, ignoreDiscriminato
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7657,7 +7655,7 @@ function RegistrySvcSaveDefinitionRequestToJSONTyped(value, ignoreDiscriminator 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7704,7 +7702,7 @@ function SecretSvcChecksumAlgorithmToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7748,7 +7746,7 @@ function SecretSvcDecryptValueRequestToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7792,7 +7790,7 @@ function SecretSvcDecryptValueResponseToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7836,7 +7834,7 @@ function SecretSvcEncryptValueRequestToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7880,7 +7878,7 @@ function SecretSvcEncryptValueResponseToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7924,7 +7922,7 @@ function SecretSvcIsSecureResponseToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7970,7 +7968,7 @@ function SecretSvcListSecretsRequestToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8036,7 +8034,7 @@ function SecretSvcSecretToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8078,7 +8076,7 @@ function SecretSvcListSecretsResponseToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8126,7 +8124,7 @@ function SecretSvcRemoveSecretsRequestToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8168,7 +8166,7 @@ function SecretSvcSaveSecretsRequestToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8222,7 +8220,7 @@ function SourceSvcCheckoutRepoRequestToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8264,7 +8262,7 @@ function SourceSvcCheckoutRepoResponseToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8306,7 +8304,7 @@ function SourceSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8348,7 +8346,7 @@ function UserSvcAddUserToOrganizationRequestToJSONTyped(value, ignoreDiscriminat
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8392,7 +8390,7 @@ function UserSvcPermissionLinkToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8434,7 +8432,7 @@ function UserSvcAssignPermissionsRequestToJSONTyped(value, ignoreDiscriminator =
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8488,7 +8486,7 @@ function UserSvcAuthTokenToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8534,7 +8532,7 @@ function UserSvcChangePasswordRequestToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8592,7 +8590,7 @@ function UserSvcContactToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8638,7 +8636,7 @@ function UserSvcCreateOrganizationRequestToJSONTyped(value, ignoreDiscriminator 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8688,7 +8686,7 @@ function UserSvcCreateRoleRequestToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8740,7 +8738,7 @@ function UserSvcRoleToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8782,7 +8780,7 @@ function UserSvcCreateRoleResponseToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8838,7 +8836,7 @@ function UserSvcUserToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8884,7 +8882,7 @@ function UserSvcCreateUserRequestToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8926,7 +8924,7 @@ function UserSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8978,7 +8976,7 @@ function UserSvcPermissionToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9020,7 +9018,7 @@ function UserSvcGetPermissionsResponseToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9062,7 +9060,7 @@ function UserSvcGetPublicKeyResponseToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9104,7 +9102,7 @@ function UserSvcGetRolesResponseToJSONTyped(value, ignoreDiscriminator = false) 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9146,7 +9144,7 @@ function UserSvcGetUsersRequestToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9192,7 +9190,7 @@ function UserSvcGetUsersResponseToJSONTyped(value, ignoreDiscriminator = false) 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9238,7 +9236,7 @@ function UserSvcGrantToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9282,7 +9280,7 @@ function UserSvcIsAuthorizedRequestToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9326,7 +9324,7 @@ function UserSvcIsAuthorizedResponseToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9370,7 +9368,7 @@ function UserSvcListGrantsRequestToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9412,7 +9410,7 @@ function UserSvcListGrantsResponseToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9458,7 +9456,7 @@ function UserSvcLoginRequestToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9500,7 +9498,7 @@ function UserSvcLoginResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9552,7 +9550,7 @@ function UserSvcOrganizationToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9598,7 +9596,7 @@ function UserSvcReadUserByTokenResponseToJSONTyped(value, ignoreDiscriminator = 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9646,7 +9644,7 @@ function UserSvcRegisterRequestToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9688,7 +9686,7 @@ function UserSvcRegisterResponseToJSONTyped(value, ignoreDiscriminator = false) 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9732,7 +9730,7 @@ function UserSvcResetPasswordRequestToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9774,7 +9772,7 @@ function UserSvcSaveGrantsRequestToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9816,7 +9814,7 @@ function UserSvcSavePermissionsRequestToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9858,7 +9856,7 @@ function UserSvcSavePermissionsResponseToJSONTyped(value, ignoreDiscriminator = 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9902,7 +9900,7 @@ function UserSvcSaveProfileRequestToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9944,7 +9942,7 @@ function UserSvcSetRolePermissionsRequestToJSONTyped(value, ignoreDiscriminator 
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -10298,7 +10296,7 @@ class ChatSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -10385,7 +10383,7 @@ class ConfigSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -10747,7 +10745,7 @@ class ContainerSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -10976,7 +10974,7 @@ class DataSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -11091,7 +11089,7 @@ class DeploySvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -11145,7 +11143,7 @@ class EmailSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -11257,7 +11255,7 @@ class FileSvcApi extends BaseAPI {
         });
     }
     /**
-     * List the uploaded files.  Requires the `file-svc:upload:view` permission.
+     * Lists uploaded files, returning only metadata about each upload. To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request. Note: Retrieving the contents of multiple files in a single request is not supported currently.  Requires the `file-svc:upload:view` permission.
      * List Uploads
      */
     listUploadsRaw(requestParameters, initOverrides) {
@@ -11279,7 +11277,7 @@ class FileSvcApi extends BaseAPI {
         });
     }
     /**
-     * List the uploaded files.  Requires the `file-svc:upload:view` permission.
+     * Lists uploaded files, returning only metadata about each upload. To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request. Note: Retrieving the contents of multiple files in a single request is not supported currently.  Requires the `file-svc:upload:view` permission.
      * List Uploads
      */
     listUploads() {
@@ -11439,7 +11437,7 @@ class FileSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -11527,7 +11525,7 @@ class FirehoseSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -11798,7 +11796,7 @@ class ModelSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -11890,7 +11888,7 @@ class PolicySvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -12084,7 +12082,7 @@ class PromptSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -12414,7 +12412,7 @@ class RegistrySvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -12635,7 +12633,7 @@ class SecretSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -12689,7 +12687,7 @@ class SourceSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -13529,4 +13527,4 @@ class UserSvcApi extends BaseAPI {
     }
 }
 
-export { BASE_PATH, BaseAPI, BlobApiResponse, COLLECTION_FORMATS, ChatSvcAddMessageRequestFromJSON, ChatSvcAddMessageRequestFromJSONTyped, ChatSvcAddMessageRequestToJSON, ChatSvcAddMessageRequestToJSONTyped, ChatSvcAddThreadRequestFromJSON, ChatSvcAddThreadRequestFromJSONTyped, ChatSvcAddThreadRequestToJSON, ChatSvcAddThreadRequestToJSONTyped, ChatSvcAddThreadResponseFromJSON, ChatSvcAddThreadResponseFromJSONTyped, ChatSvcAddThreadResponseToJSON, ChatSvcAddThreadResponseToJSONTyped, ChatSvcApi, ChatSvcEventMessageAddedFromJSON, ChatSvcEventMessageAddedFromJSONTyped, ChatSvcEventMessageAddedToJSON, ChatSvcEventMessageAddedToJSONTyped, ChatSvcEventThreadAddedFromJSON, ChatSvcEventThreadAddedFromJSONTyped, ChatSvcEventThreadAddedToJSON, ChatSvcEventThreadAddedToJSONTyped, ChatSvcEventThreadUpdateFromJSON, ChatSvcEventThreadUpdateFromJSONTyped, ChatSvcEventThreadUpdateToJSON, ChatSvcEventThreadUpdateToJSONTyped, ChatSvcGetMessageResponseFromJSON, ChatSvcGetMessageResponseFromJSONTyped, ChatSvcGetMessageResponseToJSON, ChatSvcGetMessageResponseToJSONTyped, ChatSvcGetMessagesResponseFromJSON, ChatSvcGetMessagesResponseFromJSONTyped, ChatSvcGetMessagesResponseToJSON, ChatSvcGetMessagesResponseToJSONTyped, ChatSvcGetThreadResponseFromJSON, ChatSvcGetThreadResponseFromJSONTyped, ChatSvcGetThreadResponseToJSON, ChatSvcGetThreadResponseToJSONTyped, ChatSvcGetThreadsResponseFromJSON, ChatSvcGetThreadsResponseFromJSONTyped, ChatSvcGetThreadsResponseToJSON, ChatSvcGetThreadsResponseToJSONTyped, ChatSvcMessageFromJSON, ChatSvcMessageFromJSONTyped, ChatSvcMessageToJSON, ChatSvcMessageToJSONTyped, ChatSvcThreadFromJSON, ChatSvcThreadFromJSONTyped, ChatSvcThreadToJSON, ChatSvcThreadToJSONTyped, ChatSvcUpdateThreadRequestFromJSON, ChatSvcUpdateThreadRequestFromJSONTyped, ChatSvcUpdateThreadRequestToJSON, ChatSvcUpdateThreadRequestToJSONTyped, ConfigSvcApi, ConfigSvcConfigFromJSON, ConfigSvcConfigFromJSONTyped, ConfigSvcConfigToJSON, ConfigSvcConfigToJSONTyped, ConfigSvcGetConfigResponseFromJSON, ConfigSvcGetConfigResponseFromJSONTyped, ConfigSvcGetConfigResponseToJSON, ConfigSvcGetConfigResponseToJSONTyped, ConfigSvcSaveConfigRequestFromJSON, ConfigSvcSaveConfigRequestFromJSONTyped, ConfigSvcSaveConfigRequestToJSON, ConfigSvcSaveConfigRequestToJSONTyped, Configuration, ContainerSvcApi, ContainerSvcAssetFromJSON, ContainerSvcAssetFromJSONTyped, ContainerSvcAssetToJSON, ContainerSvcAssetToJSONTyped, ContainerSvcBuildImageRequestFromJSON, ContainerSvcBuildImageRequestFromJSONTyped, ContainerSvcBuildImageRequestToJSON, ContainerSvcBuildImageRequestToJSONTyped, ContainerSvcCapabilitiesFromJSON, ContainerSvcCapabilitiesFromJSONTyped, ContainerSvcCapabilitiesToJSON, ContainerSvcCapabilitiesToJSONTyped, ContainerSvcContainerFromJSON, ContainerSvcContainerFromJSONTyped, ContainerSvcContainerIsRunningResponseFromJSON, ContainerSvcContainerIsRunningResponseFromJSONTyped, ContainerSvcContainerIsRunningResponseToJSON, ContainerSvcContainerIsRunningResponseToJSONTyped, ContainerSvcContainerToJSON, ContainerSvcContainerToJSONTyped, ContainerSvcDaemonInfoResponseFromJSON, ContainerSvcDaemonInfoResponseFromJSONTyped, ContainerSvcDaemonInfoResponseToJSON, ContainerSvcDaemonInfoResponseToJSONTyped, ContainerSvcEnvVarFromJSON, ContainerSvcEnvVarFromJSONTyped, ContainerSvcEnvVarToJSON, ContainerSvcEnvVarToJSONTyped, ContainerSvcErrorResponseFromJSON, ContainerSvcErrorResponseFromJSONTyped, ContainerSvcErrorResponseToJSON, ContainerSvcErrorResponseToJSONTyped, ContainerSvcGetContainerSummaryResponseFromJSON, ContainerSvcGetContainerSummaryResponseFromJSONTyped, ContainerSvcGetContainerSummaryResponseToJSON, ContainerSvcGetContainerSummaryResponseToJSONTyped, ContainerSvcGetHostResponseFromJSON, ContainerSvcGetHostResponseFromJSONTyped, ContainerSvcGetHostResponseToJSON, ContainerSvcGetHostResponseToJSONTyped, ContainerSvcImagePullableResponseFromJSON, ContainerSvcImagePullableResponseFromJSONTyped, ContainerSvcImagePullableResponseToJSON, ContainerSvcImagePullableResponseToJSONTyped, ContainerSvcKeepFromJSON, ContainerSvcKeepFromJSONTyped, ContainerSvcKeepToJSON, ContainerSvcKeepToJSONTyped, ContainerSvcLabelFromJSON, ContainerSvcLabelFromJSONTyped, ContainerSvcLabelToJSON, ContainerSvcLabelToJSONTyped, ContainerSvcListContainersRequestFromJSON, ContainerSvcListContainersRequestFromJSONTyped, ContainerSvcListContainersRequestToJSON, ContainerSvcListContainersRequestToJSONTyped, ContainerSvcListContainersResponseFromJSON, ContainerSvcListContainersResponseFromJSONTyped, ContainerSvcListContainersResponseToJSON, ContainerSvcListContainersResponseToJSONTyped, ContainerSvcListLogsRequestFromJSON, ContainerSvcListLogsRequestFromJSONTyped, ContainerSvcListLogsRequestToJSON, ContainerSvcListLogsRequestToJSONTyped, ContainerSvcListLogsResponseFromJSON, ContainerSvcListLogsResponseFromJSONTyped, ContainerSvcListLogsResponseToJSON, ContainerSvcListLogsResponseToJSONTyped, ContainerSvcLogFromJSON, ContainerSvcLogFromJSONTyped, ContainerSvcLogToJSON, ContainerSvcLogToJSONTyped, ContainerSvcNetworkFromJSON, ContainerSvcNetworkFromJSONTyped, ContainerSvcNetworkToJSON, ContainerSvcNetworkToJSONTyped, ContainerSvcPortMappingFromJSON, ContainerSvcPortMappingFromJSONTyped, ContainerSvcPortMappingToJSON, ContainerSvcPortMappingToJSONTyped, ContainerSvcResourcesFromJSON, ContainerSvcResourcesFromJSONTyped, ContainerSvcResourcesToJSON, ContainerSvcResourcesToJSONTyped, ContainerSvcRunContainerRequestFromJSON, ContainerSvcRunContainerRequestFromJSONTyped, ContainerSvcRunContainerRequestToJSON, ContainerSvcRunContainerRequestToJSONTyped, ContainerSvcRunContainerResponseFromJSON, ContainerSvcRunContainerResponseFromJSONTyped, ContainerSvcRunContainerResponseToJSON, ContainerSvcRunContainerResponseToJSONTyped, ContainerSvcStopContainerRequestFromJSON, ContainerSvcStopContainerRequestFromJSONTyped, ContainerSvcStopContainerRequestToJSON, ContainerSvcStopContainerRequestToJSONTyped, ContainerSvcVolumeFromJSON, ContainerSvcVolumeFromJSONTyped, ContainerSvcVolumeToJSON, ContainerSvcVolumeToJSONTyped, DataSvcApi, DataSvcCreateObjectFieldsFromJSON, DataSvcCreateObjectFieldsFromJSONTyped, DataSvcCreateObjectFieldsToJSON, DataSvcCreateObjectFieldsToJSONTyped, DataSvcCreateObjectRequestFromJSON, DataSvcCreateObjectRequestFromJSONTyped, DataSvcCreateObjectRequestToJSON, DataSvcCreateObjectRequestToJSONTyped, DataSvcCreateObjectResponseFromJSON, DataSvcCreateObjectResponseFromJSONTyped, DataSvcCreateObjectResponseToJSON, DataSvcCreateObjectResponseToJSONTyped, DataSvcDeleteObjectRequestFromJSON, DataSvcDeleteObjectRequestFromJSONTyped, DataSvcDeleteObjectRequestToJSON, DataSvcDeleteObjectRequestToJSONTyped, DataSvcErrorResponseFromJSON, DataSvcErrorResponseFromJSONTyped, DataSvcErrorResponseToJSON, DataSvcErrorResponseToJSONTyped, DataSvcObjectFromJSON, DataSvcObjectFromJSONTyped, DataSvcObjectToJSON, DataSvcObjectToJSONTyped, DataSvcQueryRequestFromJSON, DataSvcQueryRequestFromJSONTyped, DataSvcQueryRequestToJSON, DataSvcQueryRequestToJSONTyped, DataSvcQueryResponseFromJSON, DataSvcQueryResponseFromJSONTyped, DataSvcQueryResponseToJSON, DataSvcQueryResponseToJSONTyped, DataSvcUpdateObjectsRequestFromJSON, DataSvcUpdateObjectsRequestFromJSONTyped, DataSvcUpdateObjectsRequestToJSON, DataSvcUpdateObjectsRequestToJSONTyped, DataSvcUpsertObjectRequestFromJSON, DataSvcUpsertObjectRequestFromJSONTyped, DataSvcUpsertObjectRequestToJSON, DataSvcUpsertObjectRequestToJSONTyped, DataSvcUpsertObjectResponseFromJSON, DataSvcUpsertObjectResponseFromJSONTyped, DataSvcUpsertObjectResponseToJSON, DataSvcUpsertObjectResponseToJSONTyped, DatastoreFilterFromJSON, DatastoreFilterFromJSONTyped, DatastoreFilterToJSON, DatastoreFilterToJSONTyped, DatastoreOp, DatastoreOpFromJSON, DatastoreOpFromJSONTyped, DatastoreOpToJSON, DatastoreOpToJSONTyped, DatastoreOrderByFromJSON, DatastoreOrderByFromJSONTyped, DatastoreOrderByToJSON, DatastoreOrderByToJSONTyped, DatastoreQueryFromJSON, DatastoreQueryFromJSONTyped, DatastoreQueryToJSON, DatastoreQueryToJSONTyped, DatastoreSortingType, DatastoreSortingTypeFromJSON, DatastoreSortingTypeFromJSONTyped, DatastoreSortingTypeToJSON, DatastoreSortingTypeToJSONTyped, DefaultConfig, DeploySvcApi, DeploySvcAutoScalingConfigFromJSON, DeploySvcAutoScalingConfigFromJSONTyped, DeploySvcAutoScalingConfigToJSON, DeploySvcAutoScalingConfigToJSONTyped, DeploySvcDeleteDeploymentRequestFromJSON, DeploySvcDeleteDeploymentRequestFromJSONTyped, DeploySvcDeleteDeploymentRequestToJSON, DeploySvcDeleteDeploymentRequestToJSONTyped, DeploySvcDeploymentFromJSON, DeploySvcDeploymentFromJSONTyped, DeploySvcDeploymentStatus, DeploySvcDeploymentStatusFromJSON, DeploySvcDeploymentStatusFromJSONTyped, DeploySvcDeploymentStatusToJSON, DeploySvcDeploymentStatusToJSONTyped, DeploySvcDeploymentStrategyFromJSON, DeploySvcDeploymentStrategyFromJSONTyped, DeploySvcDeploymentStrategyToJSON, DeploySvcDeploymentStrategyToJSONTyped, DeploySvcDeploymentToJSON, DeploySvcDeploymentToJSONTyped, DeploySvcErrorResponseFromJSON, DeploySvcErrorResponseFromJSONTyped, DeploySvcErrorResponseToJSON, DeploySvcErrorResponseToJSONTyped, DeploySvcListDeploymentsResponseFromJSON, DeploySvcListDeploymentsResponseFromJSONTyped, DeploySvcListDeploymentsResponseToJSON, DeploySvcListDeploymentsResponseToJSONTyped, DeploySvcResourceLimitsFromJSON, DeploySvcResourceLimitsFromJSONTyped, DeploySvcResourceLimitsToJSON, DeploySvcResourceLimitsToJSONTyped, DeploySvcSaveDeploymentRequestFromJSON, DeploySvcSaveDeploymentRequestFromJSONTyped, DeploySvcSaveDeploymentRequestToJSON, DeploySvcSaveDeploymentRequestToJSONTyped, DeploySvcStrategyType, DeploySvcStrategyTypeFromJSON, DeploySvcStrategyTypeFromJSONTyped, DeploySvcStrategyTypeToJSON, DeploySvcStrategyTypeToJSONTyped, DeploySvcTargetRegionFromJSON, DeploySvcTargetRegionFromJSONTyped, DeploySvcTargetRegionToJSON, DeploySvcTargetRegionToJSONTyped, EmailSvcApi, EmailSvcErrorResponseFromJSON, EmailSvcErrorResponseFromJSONTyped, EmailSvcErrorResponseToJSON, EmailSvcErrorResponseToJSONTyped, EmailSvcFileFromJSON, EmailSvcFileFromJSONTyped, EmailSvcFileToJSON, EmailSvcFileToJSONTyped, EmailSvcSendEmailRequestFromJSON, EmailSvcSendEmailRequestFromJSONTyped, EmailSvcSendEmailRequestToJSON, EmailSvcSendEmailRequestToJSONTyped, EmailSvcSendEmailResponseFromJSON, EmailSvcSendEmailResponseFromJSONTyped, EmailSvcSendEmailResponseToJSON, EmailSvcSendEmailResponseToJSONTyped, FetchError, FileSvcApi, FileSvcDownloadFileRequestFromJSON, FileSvcDownloadFileRequestFromJSONTyped, FileSvcDownloadFileRequestToJSON, FileSvcDownloadFileRequestToJSONTyped, FileSvcDownloadFromJSON, FileSvcDownloadFromJSONTyped, FileSvcDownloadToJSON, FileSvcDownloadToJSONTyped, FileSvcDownloadsResponseFromJSON, FileSvcDownloadsResponseFromJSONTyped, FileSvcDownloadsResponseToJSON, FileSvcDownloadsResponseToJSONTyped, FileSvcErrorResponseFromJSON, FileSvcErrorResponseFromJSONTyped, FileSvcErrorResponseToJSON, FileSvcErrorResponseToJSONTyped, FileSvcGetDownloadResponseFromJSON, FileSvcGetDownloadResponseFromJSONTyped, FileSvcGetDownloadResponseToJSON, FileSvcGetDownloadResponseToJSONTyped, FileSvcListUploadsRequestFromJSON, FileSvcListUploadsRequestFromJSONTyped, FileSvcListUploadsRequestToJSON, FileSvcListUploadsRequestToJSONTyped, FileSvcListUploadsResponseFromJSON, FileSvcListUploadsResponseFromJSONTyped, FileSvcListUploadsResponseToJSON, FileSvcListUploadsResponseToJSONTyped, FileSvcUploadFileResponseFromJSON, FileSvcUploadFileResponseFromJSONTyped, FileSvcUploadFileResponseToJSON, FileSvcUploadFileResponseToJSONTyped, FileSvcUploadFromJSON, FileSvcUploadFromJSONTyped, FileSvcUploadToJSON, FileSvcUploadToJSONTyped, FirehoseSvcApi, FirehoseSvcErrorResponseFromJSON, FirehoseSvcErrorResponseFromJSONTyped, FirehoseSvcErrorResponseToJSON, FirehoseSvcErrorResponseToJSONTyped, FirehoseSvcEventFromJSON, FirehoseSvcEventFromJSONTyped, FirehoseSvcEventPublishRequestFromJSON, FirehoseSvcEventPublishRequestFromJSONTyped, FirehoseSvcEventPublishRequestToJSON, FirehoseSvcEventPublishRequestToJSONTyped, FirehoseSvcEventToJSON, FirehoseSvcEventToJSONTyped, JSONApiResponse, ModelSvcApi, ModelSvcArchitecturesFromJSON, ModelSvcArchitecturesFromJSONTyped, ModelSvcArchitecturesToJSON, ModelSvcArchitecturesToJSONTyped, ModelSvcAssetFromJSON, ModelSvcAssetFromJSONTyped, ModelSvcAssetToJSON, ModelSvcAssetToJSONTyped, ModelSvcContainerFromJSON, ModelSvcContainerFromJSONTyped, ModelSvcContainerToJSON, ModelSvcContainerToJSONTyped, ModelSvcCudaParametersFromJSON, ModelSvcCudaParametersFromJSONTyped, ModelSvcCudaParametersToJSON, ModelSvcCudaParametersToJSONTyped, ModelSvcDefaultParametersFromJSON, ModelSvcDefaultParametersFromJSONTyped, ModelSvcDefaultParametersToJSON, ModelSvcDefaultParametersToJSONTyped, ModelSvcEnvVarFromJSON, ModelSvcEnvVarFromJSONTyped, ModelSvcEnvVarToJSON, ModelSvcEnvVarToJSONTyped, ModelSvcErrorResponseFromJSON, ModelSvcErrorResponseFromJSONTyped, ModelSvcErrorResponseToJSON, ModelSvcErrorResponseToJSONTyped, ModelSvcGetModelResponseFromJSON, ModelSvcGetModelResponseFromJSONTyped, ModelSvcGetModelResponseToJSON, ModelSvcGetModelResponseToJSONTyped, ModelSvcKeepFromJSON, ModelSvcKeepFromJSONTyped, ModelSvcKeepToJSON, ModelSvcKeepToJSONTyped, ModelSvcListModelsResponseFromJSON, ModelSvcListModelsResponseFromJSONTyped, ModelSvcListModelsResponseToJSON, ModelSvcListModelsResponseToJSONTyped, ModelSvcListPlatformsResponseFromJSON, ModelSvcListPlatformsResponseFromJSONTyped, ModelSvcListPlatformsResponseToJSON, ModelSvcListPlatformsResponseToJSONTyped, ModelSvcModelFromJSON, ModelSvcModelFromJSONTyped, ModelSvcModelStatusFromJSON, ModelSvcModelStatusFromJSONTyped, ModelSvcModelStatusToJSON, ModelSvcModelStatusToJSONTyped, ModelSvcModelToJSON, ModelSvcModelToJSONTyped, ModelSvcPlatformFromJSON, ModelSvcPlatformFromJSONTyped, ModelSvcPlatformToJSON, ModelSvcPlatformToJSONTyped, ModelSvcStatusResponseFromJSON, ModelSvcStatusResponseFromJSONTyped, ModelSvcStatusResponseToJSON, ModelSvcStatusResponseToJSONTyped, PolicySvcApi, PolicySvcBlocklistParametersFromJSON, PolicySvcBlocklistParametersFromJSONTyped, PolicySvcBlocklistParametersToJSON, PolicySvcBlocklistParametersToJSONTyped, PolicySvcCheckRequestFromJSON, PolicySvcCheckRequestFromJSONTyped, PolicySvcCheckRequestToJSON, PolicySvcCheckRequestToJSONTyped, PolicySvcCheckResponseFromJSON, PolicySvcCheckResponseFromJSONTyped, PolicySvcCheckResponseToJSON, PolicySvcCheckResponseToJSONTyped, PolicySvcEntity, PolicySvcEntityFromJSON, PolicySvcEntityFromJSONTyped, PolicySvcEntityToJSON, PolicySvcEntityToJSONTyped, PolicySvcErrorResponseFromJSON, PolicySvcErrorResponseFromJSONTyped, PolicySvcErrorResponseToJSON, PolicySvcErrorResponseToJSONTyped, PolicySvcInstanceFromJSON, PolicySvcInstanceFromJSONTyped, PolicySvcInstanceToJSON, PolicySvcInstanceToJSONTyped, PolicySvcParametersFromJSON, PolicySvcParametersFromJSONTyped, PolicySvcParametersToJSON, PolicySvcParametersToJSONTyped, PolicySvcRateLimitParametersFromJSON, PolicySvcRateLimitParametersFromJSONTyped, PolicySvcRateLimitParametersToJSON, PolicySvcRateLimitParametersToJSONTyped, PolicySvcScope, PolicySvcScopeFromJSON, PolicySvcScopeFromJSONTyped, PolicySvcScopeToJSON, PolicySvcScopeToJSONTyped, PolicySvcTemplateId, PolicySvcTemplateIdFromJSON, PolicySvcTemplateIdFromJSONTyped, PolicySvcTemplateIdToJSON, PolicySvcTemplateIdToJSONTyped, PolicySvcUpsertInstanceRequestFromJSON, PolicySvcUpsertInstanceRequestFromJSONTyped, PolicySvcUpsertInstanceRequestToJSON, PolicySvcUpsertInstanceRequestToJSONTyped, PromptSvcApi, PromptSvcEngineParametersFromJSON, PromptSvcEngineParametersFromJSONTyped, PromptSvcEngineParametersToJSON, PromptSvcEngineParametersToJSONTyped, PromptSvcErrorResponseFromJSON, PromptSvcErrorResponseFromJSONTyped, PromptSvcErrorResponseToJSON, PromptSvcErrorResponseToJSONTyped, PromptSvcListPromptsRequestFromJSON, PromptSvcListPromptsRequestFromJSONTyped, PromptSvcListPromptsRequestToJSON, PromptSvcListPromptsRequestToJSONTyped, PromptSvcListPromptsResponseFromJSON, PromptSvcListPromptsResponseFromJSONTyped, PromptSvcListPromptsResponseToJSON, PromptSvcListPromptsResponseToJSONTyped, PromptSvcLlamaCppParametersFromJSON, PromptSvcLlamaCppParametersFromJSONTyped, PromptSvcLlamaCppParametersToJSON, PromptSvcLlamaCppParametersToJSONTyped, PromptSvcParametersFromJSON, PromptSvcParametersFromJSONTyped, PromptSvcParametersToJSON, PromptSvcParametersToJSONTyped, PromptSvcPromptFromJSON, PromptSvcPromptFromJSONTyped, PromptSvcPromptRequestFromJSON, PromptSvcPromptRequestFromJSONTyped, PromptSvcPromptRequestToJSON, PromptSvcPromptRequestToJSONTyped, PromptSvcPromptResponseFromJSON, PromptSvcPromptResponseFromJSONTyped, PromptSvcPromptResponseToJSON, PromptSvcPromptResponseToJSONTyped, PromptSvcPromptStatus, PromptSvcPromptStatusFromJSON, PromptSvcPromptStatusFromJSONTyped, PromptSvcPromptStatusToJSON, PromptSvcPromptStatusToJSONTyped, PromptSvcPromptToJSON, PromptSvcPromptToJSONTyped, PromptSvcPromptType, PromptSvcPromptTypeFromJSON, PromptSvcPromptTypeFromJSONTyped, PromptSvcPromptTypeToJSON, PromptSvcPromptTypeToJSONTyped, PromptSvcRemovePromptRequestFromJSON, PromptSvcRemovePromptRequestFromJSONTyped, PromptSvcRemovePromptRequestToJSON, PromptSvcRemovePromptRequestToJSONTyped, PromptSvcStableDiffusionParametersFromJSON, PromptSvcStableDiffusionParametersFromJSONTyped, PromptSvcStableDiffusionParametersToJSON, PromptSvcStableDiffusionParametersToJSONTyped, PromptSvcStreamChunkFromJSON, PromptSvcStreamChunkFromJSONTyped, PromptSvcStreamChunkToJSON, PromptSvcStreamChunkToJSONTyped, PromptSvcStreamChunkType, PromptSvcStreamChunkTypeFromJSON, PromptSvcStreamChunkTypeFromJSONTyped, PromptSvcStreamChunkTypeToJSON, PromptSvcStreamChunkTypeToJSONTyped, PromptSvcTextToImageParametersFromJSON, PromptSvcTextToImageParametersFromJSONTyped, PromptSvcTextToImageParametersToJSON, PromptSvcTextToImageParametersToJSONTyped, PromptSvcTextToTextParametersFromJSON, PromptSvcTextToTextParametersFromJSONTyped, PromptSvcTextToTextParametersToJSON, PromptSvcTextToTextParametersToJSONTyped, PromptSvcTypesResponseFromJSON, PromptSvcTypesResponseFromJSONTyped, PromptSvcTypesResponseToJSON, PromptSvcTypesResponseToJSONTyped, RegistrySvcAPISpecFromJSON, RegistrySvcAPISpecFromJSONTyped, RegistrySvcAPISpecToJSON, RegistrySvcAPISpecToJSONTyped, RegistrySvcApi, RegistrySvcClientFromJSON, RegistrySvcClientFromJSONTyped, RegistrySvcClientToJSON, RegistrySvcClientToJSONTyped, RegistrySvcDefinitionFromJSON, RegistrySvcDefinitionFromJSONTyped, RegistrySvcDefinitionToJSON, RegistrySvcDefinitionToJSONTyped, RegistrySvcEnvVarFromJSON, RegistrySvcEnvVarFromJSONTyped, RegistrySvcEnvVarToJSON, RegistrySvcEnvVarToJSONTyped, RegistrySvcErrorResponseFromJSON, RegistrySvcErrorResponseFromJSONTyped, RegistrySvcErrorResponseToJSON, RegistrySvcErrorResponseToJSONTyped, RegistrySvcGPUFromJSON, RegistrySvcGPUFromJSONTyped, RegistrySvcGPUToJSON, RegistrySvcGPUToJSONTyped, RegistrySvcImageSpecFromJSON, RegistrySvcImageSpecFromJSONTyped, RegistrySvcImageSpecToJSON, RegistrySvcImageSpecToJSONTyped, RegistrySvcInstanceFromJSON, RegistrySvcInstanceFromJSONTyped, RegistrySvcInstanceStatus, RegistrySvcInstanceStatusFromJSON, RegistrySvcInstanceStatusFromJSONTyped, RegistrySvcInstanceStatusToJSON, RegistrySvcInstanceStatusToJSONTyped, RegistrySvcInstanceToJSON, RegistrySvcInstanceToJSONTyped, RegistrySvcLanguage, RegistrySvcLanguageFromJSON, RegistrySvcLanguageFromJSONTyped, RegistrySvcLanguageToJSON, RegistrySvcLanguageToJSONTyped, RegistrySvcListDefinitionsResponseFromJSON, RegistrySvcListDefinitionsResponseFromJSONTyped, RegistrySvcListDefinitionsResponseToJSON, RegistrySvcListDefinitionsResponseToJSONTyped, RegistrySvcListInstancesResponseFromJSON, RegistrySvcListInstancesResponseFromJSONTyped, RegistrySvcListInstancesResponseToJSON, RegistrySvcListInstancesResponseToJSONTyped, RegistrySvcListNodesRequestFromJSON, RegistrySvcListNodesRequestFromJSONTyped, RegistrySvcListNodesRequestToJSON, RegistrySvcListNodesRequestToJSONTyped, RegistrySvcListNodesResponseFromJSON, RegistrySvcListNodesResponseFromJSONTyped, RegistrySvcListNodesResponseToJSON, RegistrySvcListNodesResponseToJSONTyped, RegistrySvcNodeFromJSON, RegistrySvcNodeFromJSONTyped, RegistrySvcNodeSelfResponseFromJSON, RegistrySvcNodeSelfResponseFromJSONTyped, RegistrySvcNodeSelfResponseToJSON, RegistrySvcNodeSelfResponseToJSONTyped, RegistrySvcNodeToJSON, RegistrySvcNodeToJSONTyped, RegistrySvcPortMappingFromJSON, RegistrySvcPortMappingFromJSONTyped, RegistrySvcPortMappingToJSON, RegistrySvcPortMappingToJSONTyped, RegistrySvcProcessFromJSON, RegistrySvcProcessFromJSONTyped, RegistrySvcProcessToJSON, RegistrySvcProcessToJSONTyped, RegistrySvcRegisterInstanceRequestFromJSON, RegistrySvcRegisterInstanceRequestFromJSONTyped, RegistrySvcRegisterInstanceRequestToJSON, RegistrySvcRegisterInstanceRequestToJSONTyped, RegistrySvcRepositorySpecFromJSON, RegistrySvcRepositorySpecFromJSONTyped, RegistrySvcRepositorySpecToJSON, RegistrySvcRepositorySpecToJSONTyped, RegistrySvcResourceUsageFromJSON, RegistrySvcResourceUsageFromJSONTyped, RegistrySvcResourceUsageToJSON, RegistrySvcResourceUsageToJSONTyped, RegistrySvcSaveDefinitionRequestFromJSON, RegistrySvcSaveDefinitionRequestFromJSONTyped, RegistrySvcSaveDefinitionRequestToJSON, RegistrySvcSaveDefinitionRequestToJSONTyped, RegistrySvcUsageFromJSON, RegistrySvcUsageFromJSONTyped, RegistrySvcUsageToJSON, RegistrySvcUsageToJSONTyped, RequiredError, ResponseError, SecretSvcApi, SecretSvcChecksumAlgorithm, SecretSvcChecksumAlgorithmFromJSON, SecretSvcChecksumAlgorithmFromJSONTyped, SecretSvcChecksumAlgorithmToJSON, SecretSvcChecksumAlgorithmToJSONTyped, SecretSvcDecryptValueRequestFromJSON, SecretSvcDecryptValueRequestFromJSONTyped, SecretSvcDecryptValueRequestToJSON, SecretSvcDecryptValueRequestToJSONTyped, SecretSvcDecryptValueResponseFromJSON, SecretSvcDecryptValueResponseFromJSONTyped, SecretSvcDecryptValueResponseToJSON, SecretSvcDecryptValueResponseToJSONTyped, SecretSvcEncryptValueRequestFromJSON, SecretSvcEncryptValueRequestFromJSONTyped, SecretSvcEncryptValueRequestToJSON, SecretSvcEncryptValueRequestToJSONTyped, SecretSvcEncryptValueResponseFromJSON, SecretSvcEncryptValueResponseFromJSONTyped, SecretSvcEncryptValueResponseToJSON, SecretSvcEncryptValueResponseToJSONTyped, SecretSvcIsSecureResponseFromJSON, SecretSvcIsSecureResponseFromJSONTyped, SecretSvcIsSecureResponseToJSON, SecretSvcIsSecureResponseToJSONTyped, SecretSvcListSecretsRequestFromJSON, SecretSvcListSecretsRequestFromJSONTyped, SecretSvcListSecretsRequestToJSON, SecretSvcListSecretsRequestToJSONTyped, SecretSvcListSecretsResponseFromJSON, SecretSvcListSecretsResponseFromJSONTyped, SecretSvcListSecretsResponseToJSON, SecretSvcListSecretsResponseToJSONTyped, SecretSvcRemoveSecretsRequestFromJSON, SecretSvcRemoveSecretsRequestFromJSONTyped, SecretSvcRemoveSecretsRequestToJSON, SecretSvcRemoveSecretsRequestToJSONTyped, SecretSvcSaveSecretsRequestFromJSON, SecretSvcSaveSecretsRequestFromJSONTyped, SecretSvcSaveSecretsRequestToJSON, SecretSvcSaveSecretsRequestToJSONTyped, SecretSvcSecretFromJSON, SecretSvcSecretFromJSONTyped, SecretSvcSecretToJSON, SecretSvcSecretToJSONTyped, SourceSvcApi, SourceSvcCheckoutRepoRequestFromJSON, SourceSvcCheckoutRepoRequestFromJSONTyped, SourceSvcCheckoutRepoRequestToJSON, SourceSvcCheckoutRepoRequestToJSONTyped, SourceSvcCheckoutRepoResponseFromJSON, SourceSvcCheckoutRepoResponseFromJSONTyped, SourceSvcCheckoutRepoResponseToJSON, SourceSvcCheckoutRepoResponseToJSONTyped, SourceSvcErrorResponseFromJSON, SourceSvcErrorResponseFromJSONTyped, SourceSvcErrorResponseToJSON, SourceSvcErrorResponseToJSONTyped, StableDiffusionTxt2ImgRequestFromJSON, StableDiffusionTxt2ImgRequestFromJSONTyped, StableDiffusionTxt2ImgRequestToJSON, StableDiffusionTxt2ImgRequestToJSONTyped, TextApiResponse, UserSvcAddUserToOrganizationRequestFromJSON, UserSvcAddUserToOrganizationRequestFromJSONTyped, UserSvcAddUserToOrganizationRequestToJSON, UserSvcAddUserToOrganizationRequestToJSONTyped, UserSvcApi, UserSvcAssignPermissionsRequestFromJSON, UserSvcAssignPermissionsRequestFromJSONTyped, UserSvcAssignPermissionsRequestToJSON, UserSvcAssignPermissionsRequestToJSONTyped, UserSvcAuthTokenFromJSON, UserSvcAuthTokenFromJSONTyped, UserSvcAuthTokenToJSON, UserSvcAuthTokenToJSONTyped, UserSvcChangePasswordRequestFromJSON, UserSvcChangePasswordRequestFromJSONTyped, UserSvcChangePasswordRequestToJSON, UserSvcChangePasswordRequestToJSONTyped, UserSvcContactFromJSON, UserSvcContactFromJSONTyped, UserSvcContactToJSON, UserSvcContactToJSONTyped, UserSvcCreateOrganizationRequestFromJSON, UserSvcCreateOrganizationRequestFromJSONTyped, UserSvcCreateOrganizationRequestToJSON, UserSvcCreateOrganizationRequestToJSONTyped, UserSvcCreateRoleRequestFromJSON, UserSvcCreateRoleRequestFromJSONTyped, UserSvcCreateRoleRequestToJSON, UserSvcCreateRoleRequestToJSONTyped, UserSvcCreateRoleResponseFromJSON, UserSvcCreateRoleResponseFromJSONTyped, UserSvcCreateRoleResponseToJSON, UserSvcCreateRoleResponseToJSONTyped, UserSvcCreateUserRequestFromJSON, UserSvcCreateUserRequestFromJSONTyped, UserSvcCreateUserRequestToJSON, UserSvcCreateUserRequestToJSONTyped, UserSvcErrorResponseFromJSON, UserSvcErrorResponseFromJSONTyped, UserSvcErrorResponseToJSON, UserSvcErrorResponseToJSONTyped, UserSvcGetPermissionsResponseFromJSON, UserSvcGetPermissionsResponseFromJSONTyped, UserSvcGetPermissionsResponseToJSON, UserSvcGetPermissionsResponseToJSONTyped, UserSvcGetPublicKeyResponseFromJSON, UserSvcGetPublicKeyResponseFromJSONTyped, UserSvcGetPublicKeyResponseToJSON, UserSvcGetPublicKeyResponseToJSONTyped, UserSvcGetRolesResponseFromJSON, UserSvcGetRolesResponseFromJSONTyped, UserSvcGetRolesResponseToJSON, UserSvcGetRolesResponseToJSONTyped, UserSvcGetUsersRequestFromJSON, UserSvcGetUsersRequestFromJSONTyped, UserSvcGetUsersRequestToJSON, UserSvcGetUsersRequestToJSONTyped, UserSvcGetUsersResponseFromJSON, UserSvcGetUsersResponseFromJSONTyped, UserSvcGetUsersResponseToJSON, UserSvcGetUsersResponseToJSONTyped, UserSvcGrantFromJSON, UserSvcGrantFromJSONTyped, UserSvcGrantToJSON, UserSvcGrantToJSONTyped, UserSvcIsAuthorizedRequestFromJSON, UserSvcIsAuthorizedRequestFromJSONTyped, UserSvcIsAuthorizedRequestToJSON, UserSvcIsAuthorizedRequestToJSONTyped, UserSvcIsAuthorizedResponseFromJSON, UserSvcIsAuthorizedResponseFromJSONTyped, UserSvcIsAuthorizedResponseToJSON, UserSvcIsAuthorizedResponseToJSONTyped, UserSvcListGrantsRequestFromJSON, UserSvcListGrantsRequestFromJSONTyped, UserSvcListGrantsRequestToJSON, UserSvcListGrantsRequestToJSONTyped, UserSvcListGrantsResponseFromJSON, UserSvcListGrantsResponseFromJSONTyped, UserSvcListGrantsResponseToJSON, UserSvcListGrantsResponseToJSONTyped, UserSvcLoginRequestFromJSON, UserSvcLoginRequestFromJSONTyped, UserSvcLoginRequestToJSON, UserSvcLoginRequestToJSONTyped, UserSvcLoginResponseFromJSON, UserSvcLoginResponseFromJSONTyped, UserSvcLoginResponseToJSON, UserSvcLoginResponseToJSONTyped, UserSvcOrganizationFromJSON, UserSvcOrganizationFromJSONTyped, UserSvcOrganizationToJSON, UserSvcOrganizationToJSONTyped, UserSvcPermissionFromJSON, UserSvcPermissionFromJSONTyped, UserSvcPermissionLinkFromJSON, UserSvcPermissionLinkFromJSONTyped, UserSvcPermissionLinkToJSON, UserSvcPermissionLinkToJSONTyped, UserSvcPermissionToJSON, UserSvcPermissionToJSONTyped, UserSvcReadUserByTokenResponseFromJSON, UserSvcReadUserByTokenResponseFromJSONTyped, UserSvcReadUserByTokenResponseToJSON, UserSvcReadUserByTokenResponseToJSONTyped, UserSvcRegisterRequestFromJSON, UserSvcRegisterRequestFromJSONTyped, UserSvcRegisterRequestToJSON, UserSvcRegisterRequestToJSONTyped, UserSvcRegisterResponseFromJSON, UserSvcRegisterResponseFromJSONTyped, UserSvcRegisterResponseToJSON, UserSvcRegisterResponseToJSONTyped, UserSvcResetPasswordRequestFromJSON, UserSvcResetPasswordRequestFromJSONTyped, UserSvcResetPasswordRequestToJSON, UserSvcResetPasswordRequestToJSONTyped, UserSvcRoleFromJSON, UserSvcRoleFromJSONTyped, UserSvcRoleToJSON, UserSvcRoleToJSONTyped, UserSvcSaveGrantsRequestFromJSON, UserSvcSaveGrantsRequestFromJSONTyped, UserSvcSaveGrantsRequestToJSON, UserSvcSaveGrantsRequestToJSONTyped, UserSvcSavePermissionsRequestFromJSON, UserSvcSavePermissionsRequestFromJSONTyped, UserSvcSavePermissionsRequestToJSON, UserSvcSavePermissionsRequestToJSONTyped, UserSvcSavePermissionsResponseFromJSON, UserSvcSavePermissionsResponseFromJSONTyped, UserSvcSavePermissionsResponseToJSON, UserSvcSavePermissionsResponseToJSONTyped, UserSvcSaveProfileRequestFromJSON, UserSvcSaveProfileRequestFromJSONTyped, UserSvcSaveProfileRequestToJSON, UserSvcSaveProfileRequestToJSONTyped, UserSvcSetRolePermissionsRequestFromJSON, UserSvcSetRolePermissionsRequestFromJSONTyped, UserSvcSetRolePermissionsRequestToJSON, UserSvcSetRolePermissionsRequestToJSONTyped, UserSvcUserFromJSON, UserSvcUserFromJSONTyped, UserSvcUserToJSON, UserSvcUserToJSONTyped, VoidApiResponse, canConsumeForm, exists, instanceOfChatSvcAddMessageRequest, instanceOfChatSvcAddThreadRequest, instanceOfChatSvcAddThreadResponse, instanceOfChatSvcEventMessageAdded, instanceOfChatSvcEventThreadAdded, instanceOfChatSvcEventThreadUpdate, instanceOfChatSvcGetMessageResponse, instanceOfChatSvcGetMessagesResponse, instanceOfChatSvcGetThreadResponse, instanceOfChatSvcGetThreadsResponse, instanceOfChatSvcMessage, instanceOfChatSvcThread, instanceOfChatSvcUpdateThreadRequest, instanceOfConfigSvcConfig, instanceOfConfigSvcGetConfigResponse, instanceOfConfigSvcSaveConfigRequest, instanceOfContainerSvcAsset, instanceOfContainerSvcBuildImageRequest, instanceOfContainerSvcCapabilities, instanceOfContainerSvcContainer, instanceOfContainerSvcContainerIsRunningResponse, instanceOfContainerSvcDaemonInfoResponse, instanceOfContainerSvcEnvVar, instanceOfContainerSvcErrorResponse, instanceOfContainerSvcGetContainerSummaryResponse, instanceOfContainerSvcGetHostResponse, instanceOfContainerSvcImagePullableResponse, instanceOfContainerSvcKeep, instanceOfContainerSvcLabel, instanceOfContainerSvcListContainersRequest, instanceOfContainerSvcListContainersResponse, instanceOfContainerSvcListLogsRequest, instanceOfContainerSvcListLogsResponse, instanceOfContainerSvcLog, instanceOfContainerSvcNetwork, instanceOfContainerSvcPortMapping, instanceOfContainerSvcResources, instanceOfContainerSvcRunContainerRequest, instanceOfContainerSvcRunContainerResponse, instanceOfContainerSvcStopContainerRequest, instanceOfContainerSvcVolume, instanceOfDataSvcCreateObjectFields, instanceOfDataSvcCreateObjectRequest, instanceOfDataSvcCreateObjectResponse, instanceOfDataSvcDeleteObjectRequest, instanceOfDataSvcErrorResponse, instanceOfDataSvcObject, instanceOfDataSvcQueryRequest, instanceOfDataSvcQueryResponse, instanceOfDataSvcUpdateObjectsRequest, instanceOfDataSvcUpsertObjectRequest, instanceOfDataSvcUpsertObjectResponse, instanceOfDatastoreFilter, instanceOfDatastoreOp, instanceOfDatastoreOrderBy, instanceOfDatastoreQuery, instanceOfDatastoreSortingType, instanceOfDeploySvcAutoScalingConfig, instanceOfDeploySvcDeleteDeploymentRequest, instanceOfDeploySvcDeployment, instanceOfDeploySvcDeploymentStatus, instanceOfDeploySvcDeploymentStrategy, instanceOfDeploySvcErrorResponse, instanceOfDeploySvcListDeploymentsResponse, instanceOfDeploySvcResourceLimits, instanceOfDeploySvcSaveDeploymentRequest, instanceOfDeploySvcStrategyType, instanceOfDeploySvcTargetRegion, instanceOfEmailSvcErrorResponse, instanceOfEmailSvcFile, instanceOfEmailSvcSendEmailRequest, instanceOfEmailSvcSendEmailResponse, instanceOfFileSvcDownload, instanceOfFileSvcDownloadFileRequest, instanceOfFileSvcDownloadsResponse, instanceOfFileSvcErrorResponse, instanceOfFileSvcGetDownloadResponse, instanceOfFileSvcListUploadsRequest, instanceOfFileSvcListUploadsResponse, instanceOfFileSvcUpload, instanceOfFileSvcUploadFileResponse, instanceOfFirehoseSvcErrorResponse, instanceOfFirehoseSvcEvent, instanceOfFirehoseSvcEventPublishRequest, instanceOfModelSvcArchitectures, instanceOfModelSvcAsset, instanceOfModelSvcContainer, instanceOfModelSvcCudaParameters, instanceOfModelSvcDefaultParameters, instanceOfModelSvcEnvVar, instanceOfModelSvcErrorResponse, instanceOfModelSvcGetModelResponse, instanceOfModelSvcKeep, instanceOfModelSvcListModelsResponse, instanceOfModelSvcListPlatformsResponse, instanceOfModelSvcModel, instanceOfModelSvcModelStatus, instanceOfModelSvcPlatform, instanceOfModelSvcStatusResponse, instanceOfPolicySvcBlocklistParameters, instanceOfPolicySvcCheckRequest, instanceOfPolicySvcCheckResponse, instanceOfPolicySvcEntity, instanceOfPolicySvcErrorResponse, instanceOfPolicySvcInstance, instanceOfPolicySvcParameters, instanceOfPolicySvcRateLimitParameters, instanceOfPolicySvcScope, instanceOfPolicySvcTemplateId, instanceOfPolicySvcUpsertInstanceRequest, instanceOfPromptSvcEngineParameters, instanceOfPromptSvcErrorResponse, instanceOfPromptSvcListPromptsRequest, instanceOfPromptSvcListPromptsResponse, instanceOfPromptSvcLlamaCppParameters, instanceOfPromptSvcParameters, instanceOfPromptSvcPrompt, instanceOfPromptSvcPromptRequest, instanceOfPromptSvcPromptResponse, instanceOfPromptSvcPromptStatus, instanceOfPromptSvcPromptType, instanceOfPromptSvcRemovePromptRequest, instanceOfPromptSvcStableDiffusionParameters, instanceOfPromptSvcStreamChunk, instanceOfPromptSvcStreamChunkType, instanceOfPromptSvcTextToImageParameters, instanceOfPromptSvcTextToTextParameters, instanceOfPromptSvcTypesResponse, instanceOfRegistrySvcAPISpec, instanceOfRegistrySvcClient, instanceOfRegistrySvcDefinition, instanceOfRegistrySvcEnvVar, instanceOfRegistrySvcErrorResponse, instanceOfRegistrySvcGPU, instanceOfRegistrySvcImageSpec, instanceOfRegistrySvcInstance, instanceOfRegistrySvcInstanceStatus, instanceOfRegistrySvcLanguage, instanceOfRegistrySvcListDefinitionsResponse, instanceOfRegistrySvcListInstancesResponse, instanceOfRegistrySvcListNodesRequest, instanceOfRegistrySvcListNodesResponse, instanceOfRegistrySvcNode, instanceOfRegistrySvcNodeSelfResponse, instanceOfRegistrySvcPortMapping, instanceOfRegistrySvcProcess, instanceOfRegistrySvcRegisterInstanceRequest, instanceOfRegistrySvcRepositorySpec, instanceOfRegistrySvcResourceUsage, instanceOfRegistrySvcSaveDefinitionRequest, instanceOfRegistrySvcUsage, instanceOfSecretSvcChecksumAlgorithm, instanceOfSecretSvcDecryptValueRequest, instanceOfSecretSvcDecryptValueResponse, instanceOfSecretSvcEncryptValueRequest, instanceOfSecretSvcEncryptValueResponse, instanceOfSecretSvcIsSecureResponse, instanceOfSecretSvcListSecretsRequest, instanceOfSecretSvcListSecretsResponse, instanceOfSecretSvcRemoveSecretsRequest, instanceOfSecretSvcSaveSecretsRequest, instanceOfSecretSvcSecret, instanceOfSourceSvcCheckoutRepoRequest, instanceOfSourceSvcCheckoutRepoResponse, instanceOfSourceSvcErrorResponse, instanceOfStableDiffusionTxt2ImgRequest, instanceOfUserSvcAddUserToOrganizationRequest, instanceOfUserSvcAssignPermissionsRequest, instanceOfUserSvcAuthToken, instanceOfUserSvcChangePasswordRequest, instanceOfUserSvcContact, instanceOfUserSvcCreateOrganizationRequest, instanceOfUserSvcCreateRoleRequest, instanceOfUserSvcCreateRoleResponse, instanceOfUserSvcCreateUserRequest, instanceOfUserSvcErrorResponse, instanceOfUserSvcGetPermissionsResponse, instanceOfUserSvcGetPublicKeyResponse, instanceOfUserSvcGetRolesResponse, instanceOfUserSvcGetUsersRequest, instanceOfUserSvcGetUsersResponse, instanceOfUserSvcGrant, instanceOfUserSvcIsAuthorizedRequest, instanceOfUserSvcIsAuthorizedResponse, instanceOfUserSvcListGrantsRequest, instanceOfUserSvcListGrantsResponse, instanceOfUserSvcLoginRequest, instanceOfUserSvcLoginResponse, instanceOfUserSvcOrganization, instanceOfUserSvcPermission, instanceOfUserSvcPermissionLink, instanceOfUserSvcReadUserByTokenResponse, instanceOfUserSvcRegisterRequest, instanceOfUserSvcRegisterResponse, instanceOfUserSvcResetPasswordRequest, instanceOfUserSvcRole, instanceOfUserSvcSaveGrantsRequest, instanceOfUserSvcSavePermissionsRequest, instanceOfUserSvcSavePermissionsResponse, instanceOfUserSvcSaveProfileRequest, instanceOfUserSvcSetRolePermissionsRequest, instanceOfUserSvcUser, mapValues, querystring };
+export { BASE_PATH, BaseAPI, BlobApiResponse, COLLECTION_FORMATS, ChatSvcAddMessageRequestFromJSON, ChatSvcAddMessageRequestFromJSONTyped, ChatSvcAddMessageRequestToJSON, ChatSvcAddMessageRequestToJSONTyped, ChatSvcAddThreadRequestFromJSON, ChatSvcAddThreadRequestFromJSONTyped, ChatSvcAddThreadRequestToJSON, ChatSvcAddThreadRequestToJSONTyped, ChatSvcAddThreadResponseFromJSON, ChatSvcAddThreadResponseFromJSONTyped, ChatSvcAddThreadResponseToJSON, ChatSvcAddThreadResponseToJSONTyped, ChatSvcApi, ChatSvcEventMessageAddedFromJSON, ChatSvcEventMessageAddedFromJSONTyped, ChatSvcEventMessageAddedToJSON, ChatSvcEventMessageAddedToJSONTyped, ChatSvcEventThreadAddedFromJSON, ChatSvcEventThreadAddedFromJSONTyped, ChatSvcEventThreadAddedToJSON, ChatSvcEventThreadAddedToJSONTyped, ChatSvcEventThreadUpdateFromJSON, ChatSvcEventThreadUpdateFromJSONTyped, ChatSvcEventThreadUpdateToJSON, ChatSvcEventThreadUpdateToJSONTyped, ChatSvcGetMessageResponseFromJSON, ChatSvcGetMessageResponseFromJSONTyped, ChatSvcGetMessageResponseToJSON, ChatSvcGetMessageResponseToJSONTyped, ChatSvcGetMessagesResponseFromJSON, ChatSvcGetMessagesResponseFromJSONTyped, ChatSvcGetMessagesResponseToJSON, ChatSvcGetMessagesResponseToJSONTyped, ChatSvcGetThreadResponseFromJSON, ChatSvcGetThreadResponseFromJSONTyped, ChatSvcGetThreadResponseToJSON, ChatSvcGetThreadResponseToJSONTyped, ChatSvcGetThreadsResponseFromJSON, ChatSvcGetThreadsResponseFromJSONTyped, ChatSvcGetThreadsResponseToJSON, ChatSvcGetThreadsResponseToJSONTyped, ChatSvcMessageFromJSON, ChatSvcMessageFromJSONTyped, ChatSvcMessageToJSON, ChatSvcMessageToJSONTyped, ChatSvcThreadFromJSON, ChatSvcThreadFromJSONTyped, ChatSvcThreadToJSON, ChatSvcThreadToJSONTyped, ChatSvcUpdateThreadRequestFromJSON, ChatSvcUpdateThreadRequestFromJSONTyped, ChatSvcUpdateThreadRequestToJSON, ChatSvcUpdateThreadRequestToJSONTyped, ConfigSvcApi, ConfigSvcConfigFromJSON, ConfigSvcConfigFromJSONTyped, ConfigSvcConfigToJSON, ConfigSvcConfigToJSONTyped, ConfigSvcGetConfigResponseFromJSON, ConfigSvcGetConfigResponseFromJSONTyped, ConfigSvcGetConfigResponseToJSON, ConfigSvcGetConfigResponseToJSONTyped, ConfigSvcSaveConfigRequestFromJSON, ConfigSvcSaveConfigRequestFromJSONTyped, ConfigSvcSaveConfigRequestToJSON, ConfigSvcSaveConfigRequestToJSONTyped, Configuration, ContainerSvcApi, ContainerSvcAssetFromJSON, ContainerSvcAssetFromJSONTyped, ContainerSvcAssetToJSON, ContainerSvcAssetToJSONTyped, ContainerSvcBuildImageRequestFromJSON, ContainerSvcBuildImageRequestFromJSONTyped, ContainerSvcBuildImageRequestToJSON, ContainerSvcBuildImageRequestToJSONTyped, ContainerSvcCapabilitiesFromJSON, ContainerSvcCapabilitiesFromJSONTyped, ContainerSvcCapabilitiesToJSON, ContainerSvcCapabilitiesToJSONTyped, ContainerSvcContainerFromJSON, ContainerSvcContainerFromJSONTyped, ContainerSvcContainerIsRunningResponseFromJSON, ContainerSvcContainerIsRunningResponseFromJSONTyped, ContainerSvcContainerIsRunningResponseToJSON, ContainerSvcContainerIsRunningResponseToJSONTyped, ContainerSvcContainerToJSON, ContainerSvcContainerToJSONTyped, ContainerSvcDaemonInfoResponseFromJSON, ContainerSvcDaemonInfoResponseFromJSONTyped, ContainerSvcDaemonInfoResponseToJSON, ContainerSvcDaemonInfoResponseToJSONTyped, ContainerSvcEnvVarFromJSON, ContainerSvcEnvVarFromJSONTyped, ContainerSvcEnvVarToJSON, ContainerSvcEnvVarToJSONTyped, ContainerSvcErrorResponseFromJSON, ContainerSvcErrorResponseFromJSONTyped, ContainerSvcErrorResponseToJSON, ContainerSvcErrorResponseToJSONTyped, ContainerSvcGetContainerSummaryResponseFromJSON, ContainerSvcGetContainerSummaryResponseFromJSONTyped, ContainerSvcGetContainerSummaryResponseToJSON, ContainerSvcGetContainerSummaryResponseToJSONTyped, ContainerSvcGetHostResponseFromJSON, ContainerSvcGetHostResponseFromJSONTyped, ContainerSvcGetHostResponseToJSON, ContainerSvcGetHostResponseToJSONTyped, ContainerSvcImagePullableResponseFromJSON, ContainerSvcImagePullableResponseFromJSONTyped, ContainerSvcImagePullableResponseToJSON, ContainerSvcImagePullableResponseToJSONTyped, ContainerSvcKeepFromJSON, ContainerSvcKeepFromJSONTyped, ContainerSvcKeepToJSON, ContainerSvcKeepToJSONTyped, ContainerSvcLabelFromJSON, ContainerSvcLabelFromJSONTyped, ContainerSvcLabelToJSON, ContainerSvcLabelToJSONTyped, ContainerSvcListContainersRequestFromJSON, ContainerSvcListContainersRequestFromJSONTyped, ContainerSvcListContainersRequestToJSON, ContainerSvcListContainersRequestToJSONTyped, ContainerSvcListContainersResponseFromJSON, ContainerSvcListContainersResponseFromJSONTyped, ContainerSvcListContainersResponseToJSON, ContainerSvcListContainersResponseToJSONTyped, ContainerSvcListLogsRequestFromJSON, ContainerSvcListLogsRequestFromJSONTyped, ContainerSvcListLogsRequestToJSON, ContainerSvcListLogsRequestToJSONTyped, ContainerSvcListLogsResponseFromJSON, ContainerSvcListLogsResponseFromJSONTyped, ContainerSvcListLogsResponseToJSON, ContainerSvcListLogsResponseToJSONTyped, ContainerSvcLogFromJSON, ContainerSvcLogFromJSONTyped, ContainerSvcLogToJSON, ContainerSvcLogToJSONTyped, ContainerSvcNetworkFromJSON, ContainerSvcNetworkFromJSONTyped, ContainerSvcNetworkToJSON, ContainerSvcNetworkToJSONTyped, ContainerSvcPortMappingFromJSON, ContainerSvcPortMappingFromJSONTyped, ContainerSvcPortMappingToJSON, ContainerSvcPortMappingToJSONTyped, ContainerSvcResourcesFromJSON, ContainerSvcResourcesFromJSONTyped, ContainerSvcResourcesToJSON, ContainerSvcResourcesToJSONTyped, ContainerSvcRunContainerRequestFromJSON, ContainerSvcRunContainerRequestFromJSONTyped, ContainerSvcRunContainerRequestToJSON, ContainerSvcRunContainerRequestToJSONTyped, ContainerSvcRunContainerResponseFromJSON, ContainerSvcRunContainerResponseFromJSONTyped, ContainerSvcRunContainerResponseToJSON, ContainerSvcRunContainerResponseToJSONTyped, ContainerSvcStopContainerRequestFromJSON, ContainerSvcStopContainerRequestFromJSONTyped, ContainerSvcStopContainerRequestToJSON, ContainerSvcStopContainerRequestToJSONTyped, ContainerSvcVolumeFromJSON, ContainerSvcVolumeFromJSONTyped, ContainerSvcVolumeToJSON, ContainerSvcVolumeToJSONTyped, DataSvcApi, DataSvcCreateObjectFieldsFromJSON, DataSvcCreateObjectFieldsFromJSONTyped, DataSvcCreateObjectFieldsToJSON, DataSvcCreateObjectFieldsToJSONTyped, DataSvcCreateObjectRequestFromJSON, DataSvcCreateObjectRequestFromJSONTyped, DataSvcCreateObjectRequestToJSON, DataSvcCreateObjectRequestToJSONTyped, DataSvcCreateObjectResponseFromJSON, DataSvcCreateObjectResponseFromJSONTyped, DataSvcCreateObjectResponseToJSON, DataSvcCreateObjectResponseToJSONTyped, DataSvcDeleteObjectRequestFromJSON, DataSvcDeleteObjectRequestFromJSONTyped, DataSvcDeleteObjectRequestToJSON, DataSvcDeleteObjectRequestToJSONTyped, DataSvcErrorResponseFromJSON, DataSvcErrorResponseFromJSONTyped, DataSvcErrorResponseToJSON, DataSvcErrorResponseToJSONTyped, DataSvcObjectFromJSON, DataSvcObjectFromJSONTyped, DataSvcObjectToJSON, DataSvcObjectToJSONTyped, DataSvcQueryRequestFromJSON, DataSvcQueryRequestFromJSONTyped, DataSvcQueryRequestToJSON, DataSvcQueryRequestToJSONTyped, DataSvcQueryResponseFromJSON, DataSvcQueryResponseFromJSONTyped, DataSvcQueryResponseToJSON, DataSvcQueryResponseToJSONTyped, DataSvcUpdateObjectsRequestFromJSON, DataSvcUpdateObjectsRequestFromJSONTyped, DataSvcUpdateObjectsRequestToJSON, DataSvcUpdateObjectsRequestToJSONTyped, DataSvcUpsertObjectRequestFromJSON, DataSvcUpsertObjectRequestFromJSONTyped, DataSvcUpsertObjectRequestToJSON, DataSvcUpsertObjectRequestToJSONTyped, DataSvcUpsertObjectResponseFromJSON, DataSvcUpsertObjectResponseFromJSONTyped, DataSvcUpsertObjectResponseToJSON, DataSvcUpsertObjectResponseToJSONTyped, DatastoreFilterFromJSON, DatastoreFilterFromJSONTyped, DatastoreFilterToJSON, DatastoreFilterToJSONTyped, DatastoreOp, DatastoreOpFromJSON, DatastoreOpFromJSONTyped, DatastoreOpToJSON, DatastoreOpToJSONTyped, DatastoreOrderByFromJSON, DatastoreOrderByFromJSONTyped, DatastoreOrderByToJSON, DatastoreOrderByToJSONTyped, DatastoreQueryFromJSON, DatastoreQueryFromJSONTyped, DatastoreQueryToJSON, DatastoreQueryToJSONTyped, DatastoreSortingType, DatastoreSortingTypeFromJSON, DatastoreSortingTypeFromJSONTyped, DatastoreSortingTypeToJSON, DatastoreSortingTypeToJSONTyped, DefaultConfig, DeploySvcApi, DeploySvcAutoScalingConfigFromJSON, DeploySvcAutoScalingConfigFromJSONTyped, DeploySvcAutoScalingConfigToJSON, DeploySvcAutoScalingConfigToJSONTyped, DeploySvcDeleteDeploymentRequestFromJSON, DeploySvcDeleteDeploymentRequestFromJSONTyped, DeploySvcDeleteDeploymentRequestToJSON, DeploySvcDeleteDeploymentRequestToJSONTyped, DeploySvcDeploymentFromJSON, DeploySvcDeploymentFromJSONTyped, DeploySvcDeploymentStatus, DeploySvcDeploymentStatusFromJSON, DeploySvcDeploymentStatusFromJSONTyped, DeploySvcDeploymentStatusToJSON, DeploySvcDeploymentStatusToJSONTyped, DeploySvcDeploymentStrategyFromJSON, DeploySvcDeploymentStrategyFromJSONTyped, DeploySvcDeploymentStrategyToJSON, DeploySvcDeploymentStrategyToJSONTyped, DeploySvcDeploymentToJSON, DeploySvcDeploymentToJSONTyped, DeploySvcErrorResponseFromJSON, DeploySvcErrorResponseFromJSONTyped, DeploySvcErrorResponseToJSON, DeploySvcErrorResponseToJSONTyped, DeploySvcListDeploymentsResponseFromJSON, DeploySvcListDeploymentsResponseFromJSONTyped, DeploySvcListDeploymentsResponseToJSON, DeploySvcListDeploymentsResponseToJSONTyped, DeploySvcResourceLimitsFromJSON, DeploySvcResourceLimitsFromJSONTyped, DeploySvcResourceLimitsToJSON, DeploySvcResourceLimitsToJSONTyped, DeploySvcSaveDeploymentRequestFromJSON, DeploySvcSaveDeploymentRequestFromJSONTyped, DeploySvcSaveDeploymentRequestToJSON, DeploySvcSaveDeploymentRequestToJSONTyped, DeploySvcStrategyType, DeploySvcStrategyTypeFromJSON, DeploySvcStrategyTypeFromJSONTyped, DeploySvcStrategyTypeToJSON, DeploySvcStrategyTypeToJSONTyped, DeploySvcTargetRegionFromJSON, DeploySvcTargetRegionFromJSONTyped, DeploySvcTargetRegionToJSON, DeploySvcTargetRegionToJSONTyped, EmailSvcApi, EmailSvcAttachmentFromJSON, EmailSvcAttachmentFromJSONTyped, EmailSvcAttachmentToJSON, EmailSvcAttachmentToJSONTyped, EmailSvcErrorResponseFromJSON, EmailSvcErrorResponseFromJSONTyped, EmailSvcErrorResponseToJSON, EmailSvcErrorResponseToJSONTyped, EmailSvcSendEmailRequestFromJSON, EmailSvcSendEmailRequestFromJSONTyped, EmailSvcSendEmailRequestToJSON, EmailSvcSendEmailRequestToJSONTyped, EmailSvcSendEmailResponseFromJSON, EmailSvcSendEmailResponseFromJSONTyped, EmailSvcSendEmailResponseToJSON, EmailSvcSendEmailResponseToJSONTyped, FetchError, FileSvcApi, FileSvcDownloadFileRequestFromJSON, FileSvcDownloadFileRequestFromJSONTyped, FileSvcDownloadFileRequestToJSON, FileSvcDownloadFileRequestToJSONTyped, FileSvcDownloadFromJSON, FileSvcDownloadFromJSONTyped, FileSvcDownloadToJSON, FileSvcDownloadToJSONTyped, FileSvcDownloadsResponseFromJSON, FileSvcDownloadsResponseFromJSONTyped, FileSvcDownloadsResponseToJSON, FileSvcDownloadsResponseToJSONTyped, FileSvcErrorResponseFromJSON, FileSvcErrorResponseFromJSONTyped, FileSvcErrorResponseToJSON, FileSvcErrorResponseToJSONTyped, FileSvcGetDownloadResponseFromJSON, FileSvcGetDownloadResponseFromJSONTyped, FileSvcGetDownloadResponseToJSON, FileSvcGetDownloadResponseToJSONTyped, FileSvcListUploadsRequestFromJSON, FileSvcListUploadsRequestFromJSONTyped, FileSvcListUploadsRequestToJSON, FileSvcListUploadsRequestToJSONTyped, FileSvcListUploadsResponseFromJSON, FileSvcListUploadsResponseFromJSONTyped, FileSvcListUploadsResponseToJSON, FileSvcListUploadsResponseToJSONTyped, FileSvcUploadFileResponseFromJSON, FileSvcUploadFileResponseFromJSONTyped, FileSvcUploadFileResponseToJSON, FileSvcUploadFileResponseToJSONTyped, FileSvcUploadFromJSON, FileSvcUploadFromJSONTyped, FileSvcUploadToJSON, FileSvcUploadToJSONTyped, FirehoseSvcApi, FirehoseSvcErrorResponseFromJSON, FirehoseSvcErrorResponseFromJSONTyped, FirehoseSvcErrorResponseToJSON, FirehoseSvcErrorResponseToJSONTyped, FirehoseSvcEventFromJSON, FirehoseSvcEventFromJSONTyped, FirehoseSvcEventPublishRequestFromJSON, FirehoseSvcEventPublishRequestFromJSONTyped, FirehoseSvcEventPublishRequestToJSON, FirehoseSvcEventPublishRequestToJSONTyped, FirehoseSvcEventToJSON, FirehoseSvcEventToJSONTyped, JSONApiResponse, ModelSvcApi, ModelSvcArchitecturesFromJSON, ModelSvcArchitecturesFromJSONTyped, ModelSvcArchitecturesToJSON, ModelSvcArchitecturesToJSONTyped, ModelSvcAssetFromJSON, ModelSvcAssetFromJSONTyped, ModelSvcAssetToJSON, ModelSvcAssetToJSONTyped, ModelSvcContainerFromJSON, ModelSvcContainerFromJSONTyped, ModelSvcContainerToJSON, ModelSvcContainerToJSONTyped, ModelSvcCudaParametersFromJSON, ModelSvcCudaParametersFromJSONTyped, ModelSvcCudaParametersToJSON, ModelSvcCudaParametersToJSONTyped, ModelSvcDefaultParametersFromJSON, ModelSvcDefaultParametersFromJSONTyped, ModelSvcDefaultParametersToJSON, ModelSvcDefaultParametersToJSONTyped, ModelSvcEnvVarFromJSON, ModelSvcEnvVarFromJSONTyped, ModelSvcEnvVarToJSON, ModelSvcEnvVarToJSONTyped, ModelSvcErrorResponseFromJSON, ModelSvcErrorResponseFromJSONTyped, ModelSvcErrorResponseToJSON, ModelSvcErrorResponseToJSONTyped, ModelSvcGetModelResponseFromJSON, ModelSvcGetModelResponseFromJSONTyped, ModelSvcGetModelResponseToJSON, ModelSvcGetModelResponseToJSONTyped, ModelSvcKeepFromJSON, ModelSvcKeepFromJSONTyped, ModelSvcKeepToJSON, ModelSvcKeepToJSONTyped, ModelSvcListModelsResponseFromJSON, ModelSvcListModelsResponseFromJSONTyped, ModelSvcListModelsResponseToJSON, ModelSvcListModelsResponseToJSONTyped, ModelSvcListPlatformsResponseFromJSON, ModelSvcListPlatformsResponseFromJSONTyped, ModelSvcListPlatformsResponseToJSON, ModelSvcListPlatformsResponseToJSONTyped, ModelSvcModelFromJSON, ModelSvcModelFromJSONTyped, ModelSvcModelStatusFromJSON, ModelSvcModelStatusFromJSONTyped, ModelSvcModelStatusToJSON, ModelSvcModelStatusToJSONTyped, ModelSvcModelToJSON, ModelSvcModelToJSONTyped, ModelSvcPlatformFromJSON, ModelSvcPlatformFromJSONTyped, ModelSvcPlatformToJSON, ModelSvcPlatformToJSONTyped, ModelSvcStatusResponseFromJSON, ModelSvcStatusResponseFromJSONTyped, ModelSvcStatusResponseToJSON, ModelSvcStatusResponseToJSONTyped, PolicySvcApi, PolicySvcBlocklistParametersFromJSON, PolicySvcBlocklistParametersFromJSONTyped, PolicySvcBlocklistParametersToJSON, PolicySvcBlocklistParametersToJSONTyped, PolicySvcCheckRequestFromJSON, PolicySvcCheckRequestFromJSONTyped, PolicySvcCheckRequestToJSON, PolicySvcCheckRequestToJSONTyped, PolicySvcCheckResponseFromJSON, PolicySvcCheckResponseFromJSONTyped, PolicySvcCheckResponseToJSON, PolicySvcCheckResponseToJSONTyped, PolicySvcEntity, PolicySvcEntityFromJSON, PolicySvcEntityFromJSONTyped, PolicySvcEntityToJSON, PolicySvcEntityToJSONTyped, PolicySvcErrorResponseFromJSON, PolicySvcErrorResponseFromJSONTyped, PolicySvcErrorResponseToJSON, PolicySvcErrorResponseToJSONTyped, PolicySvcInstanceFromJSON, PolicySvcInstanceFromJSONTyped, PolicySvcInstanceToJSON, PolicySvcInstanceToJSONTyped, PolicySvcParametersFromJSON, PolicySvcParametersFromJSONTyped, PolicySvcParametersToJSON, PolicySvcParametersToJSONTyped, PolicySvcRateLimitParametersFromJSON, PolicySvcRateLimitParametersFromJSONTyped, PolicySvcRateLimitParametersToJSON, PolicySvcRateLimitParametersToJSONTyped, PolicySvcScope, PolicySvcScopeFromJSON, PolicySvcScopeFromJSONTyped, PolicySvcScopeToJSON, PolicySvcScopeToJSONTyped, PolicySvcTemplateId, PolicySvcTemplateIdFromJSON, PolicySvcTemplateIdFromJSONTyped, PolicySvcTemplateIdToJSON, PolicySvcTemplateIdToJSONTyped, PolicySvcUpsertInstanceRequestFromJSON, PolicySvcUpsertInstanceRequestFromJSONTyped, PolicySvcUpsertInstanceRequestToJSON, PolicySvcUpsertInstanceRequestToJSONTyped, PromptSvcApi, PromptSvcEngineParametersFromJSON, PromptSvcEngineParametersFromJSONTyped, PromptSvcEngineParametersToJSON, PromptSvcEngineParametersToJSONTyped, PromptSvcErrorResponseFromJSON, PromptSvcErrorResponseFromJSONTyped, PromptSvcErrorResponseToJSON, PromptSvcErrorResponseToJSONTyped, PromptSvcListPromptsRequestFromJSON, PromptSvcListPromptsRequestFromJSONTyped, PromptSvcListPromptsRequestToJSON, PromptSvcListPromptsRequestToJSONTyped, PromptSvcListPromptsResponseFromJSON, PromptSvcListPromptsResponseFromJSONTyped, PromptSvcListPromptsResponseToJSON, PromptSvcListPromptsResponseToJSONTyped, PromptSvcLlamaCppParametersFromJSON, PromptSvcLlamaCppParametersFromJSONTyped, PromptSvcLlamaCppParametersToJSON, PromptSvcLlamaCppParametersToJSONTyped, PromptSvcParametersFromJSON, PromptSvcParametersFromJSONTyped, PromptSvcParametersToJSON, PromptSvcParametersToJSONTyped, PromptSvcPromptFromJSON, PromptSvcPromptFromJSONTyped, PromptSvcPromptRequestFromJSON, PromptSvcPromptRequestFromJSONTyped, PromptSvcPromptRequestToJSON, PromptSvcPromptRequestToJSONTyped, PromptSvcPromptResponseFromJSON, PromptSvcPromptResponseFromJSONTyped, PromptSvcPromptResponseToJSON, PromptSvcPromptResponseToJSONTyped, PromptSvcPromptStatus, PromptSvcPromptStatusFromJSON, PromptSvcPromptStatusFromJSONTyped, PromptSvcPromptStatusToJSON, PromptSvcPromptStatusToJSONTyped, PromptSvcPromptToJSON, PromptSvcPromptToJSONTyped, PromptSvcPromptType, PromptSvcPromptTypeFromJSON, PromptSvcPromptTypeFromJSONTyped, PromptSvcPromptTypeToJSON, PromptSvcPromptTypeToJSONTyped, PromptSvcRemovePromptRequestFromJSON, PromptSvcRemovePromptRequestFromJSONTyped, PromptSvcRemovePromptRequestToJSON, PromptSvcRemovePromptRequestToJSONTyped, PromptSvcStableDiffusionParametersFromJSON, PromptSvcStableDiffusionParametersFromJSONTyped, PromptSvcStableDiffusionParametersToJSON, PromptSvcStableDiffusionParametersToJSONTyped, PromptSvcStreamChunkFromJSON, PromptSvcStreamChunkFromJSONTyped, PromptSvcStreamChunkToJSON, PromptSvcStreamChunkToJSONTyped, PromptSvcStreamChunkType, PromptSvcStreamChunkTypeFromJSON, PromptSvcStreamChunkTypeFromJSONTyped, PromptSvcStreamChunkTypeToJSON, PromptSvcStreamChunkTypeToJSONTyped, PromptSvcTextToImageParametersFromJSON, PromptSvcTextToImageParametersFromJSONTyped, PromptSvcTextToImageParametersToJSON, PromptSvcTextToImageParametersToJSONTyped, PromptSvcTextToTextParametersFromJSON, PromptSvcTextToTextParametersFromJSONTyped, PromptSvcTextToTextParametersToJSON, PromptSvcTextToTextParametersToJSONTyped, PromptSvcTypesResponseFromJSON, PromptSvcTypesResponseFromJSONTyped, PromptSvcTypesResponseToJSON, PromptSvcTypesResponseToJSONTyped, RegistrySvcAPISpecFromJSON, RegistrySvcAPISpecFromJSONTyped, RegistrySvcAPISpecToJSON, RegistrySvcAPISpecToJSONTyped, RegistrySvcApi, RegistrySvcClientFromJSON, RegistrySvcClientFromJSONTyped, RegistrySvcClientToJSON, RegistrySvcClientToJSONTyped, RegistrySvcDefinitionFromJSON, RegistrySvcDefinitionFromJSONTyped, RegistrySvcDefinitionToJSON, RegistrySvcDefinitionToJSONTyped, RegistrySvcEnvVarFromJSON, RegistrySvcEnvVarFromJSONTyped, RegistrySvcEnvVarToJSON, RegistrySvcEnvVarToJSONTyped, RegistrySvcErrorResponseFromJSON, RegistrySvcErrorResponseFromJSONTyped, RegistrySvcErrorResponseToJSON, RegistrySvcErrorResponseToJSONTyped, RegistrySvcGPUFromJSON, RegistrySvcGPUFromJSONTyped, RegistrySvcGPUToJSON, RegistrySvcGPUToJSONTyped, RegistrySvcImageSpecFromJSON, RegistrySvcImageSpecFromJSONTyped, RegistrySvcImageSpecToJSON, RegistrySvcImageSpecToJSONTyped, RegistrySvcInstanceFromJSON, RegistrySvcInstanceFromJSONTyped, RegistrySvcInstanceStatus, RegistrySvcInstanceStatusFromJSON, RegistrySvcInstanceStatusFromJSONTyped, RegistrySvcInstanceStatusToJSON, RegistrySvcInstanceStatusToJSONTyped, RegistrySvcInstanceToJSON, RegistrySvcInstanceToJSONTyped, RegistrySvcLanguage, RegistrySvcLanguageFromJSON, RegistrySvcLanguageFromJSONTyped, RegistrySvcLanguageToJSON, RegistrySvcLanguageToJSONTyped, RegistrySvcListDefinitionsResponseFromJSON, RegistrySvcListDefinitionsResponseFromJSONTyped, RegistrySvcListDefinitionsResponseToJSON, RegistrySvcListDefinitionsResponseToJSONTyped, RegistrySvcListInstancesResponseFromJSON, RegistrySvcListInstancesResponseFromJSONTyped, RegistrySvcListInstancesResponseToJSON, RegistrySvcListInstancesResponseToJSONTyped, RegistrySvcListNodesRequestFromJSON, RegistrySvcListNodesRequestFromJSONTyped, RegistrySvcListNodesRequestToJSON, RegistrySvcListNodesRequestToJSONTyped, RegistrySvcListNodesResponseFromJSON, RegistrySvcListNodesResponseFromJSONTyped, RegistrySvcListNodesResponseToJSON, RegistrySvcListNodesResponseToJSONTyped, RegistrySvcNodeFromJSON, RegistrySvcNodeFromJSONTyped, RegistrySvcNodeSelfResponseFromJSON, RegistrySvcNodeSelfResponseFromJSONTyped, RegistrySvcNodeSelfResponseToJSON, RegistrySvcNodeSelfResponseToJSONTyped, RegistrySvcNodeToJSON, RegistrySvcNodeToJSONTyped, RegistrySvcPortMappingFromJSON, RegistrySvcPortMappingFromJSONTyped, RegistrySvcPortMappingToJSON, RegistrySvcPortMappingToJSONTyped, RegistrySvcProcessFromJSON, RegistrySvcProcessFromJSONTyped, RegistrySvcProcessToJSON, RegistrySvcProcessToJSONTyped, RegistrySvcRegisterInstanceRequestFromJSON, RegistrySvcRegisterInstanceRequestFromJSONTyped, RegistrySvcRegisterInstanceRequestToJSON, RegistrySvcRegisterInstanceRequestToJSONTyped, RegistrySvcRepositorySpecFromJSON, RegistrySvcRepositorySpecFromJSONTyped, RegistrySvcRepositorySpecToJSON, RegistrySvcRepositorySpecToJSONTyped, RegistrySvcResourceUsageFromJSON, RegistrySvcResourceUsageFromJSONTyped, RegistrySvcResourceUsageToJSON, RegistrySvcResourceUsageToJSONTyped, RegistrySvcSaveDefinitionRequestFromJSON, RegistrySvcSaveDefinitionRequestFromJSONTyped, RegistrySvcSaveDefinitionRequestToJSON, RegistrySvcSaveDefinitionRequestToJSONTyped, RegistrySvcUsageFromJSON, RegistrySvcUsageFromJSONTyped, RegistrySvcUsageToJSON, RegistrySvcUsageToJSONTyped, RequiredError, ResponseError, SecretSvcApi, SecretSvcChecksumAlgorithm, SecretSvcChecksumAlgorithmFromJSON, SecretSvcChecksumAlgorithmFromJSONTyped, SecretSvcChecksumAlgorithmToJSON, SecretSvcChecksumAlgorithmToJSONTyped, SecretSvcDecryptValueRequestFromJSON, SecretSvcDecryptValueRequestFromJSONTyped, SecretSvcDecryptValueRequestToJSON, SecretSvcDecryptValueRequestToJSONTyped, SecretSvcDecryptValueResponseFromJSON, SecretSvcDecryptValueResponseFromJSONTyped, SecretSvcDecryptValueResponseToJSON, SecretSvcDecryptValueResponseToJSONTyped, SecretSvcEncryptValueRequestFromJSON, SecretSvcEncryptValueRequestFromJSONTyped, SecretSvcEncryptValueRequestToJSON, SecretSvcEncryptValueRequestToJSONTyped, SecretSvcEncryptValueResponseFromJSON, SecretSvcEncryptValueResponseFromJSONTyped, SecretSvcEncryptValueResponseToJSON, SecretSvcEncryptValueResponseToJSONTyped, SecretSvcIsSecureResponseFromJSON, SecretSvcIsSecureResponseFromJSONTyped, SecretSvcIsSecureResponseToJSON, SecretSvcIsSecureResponseToJSONTyped, SecretSvcListSecretsRequestFromJSON, SecretSvcListSecretsRequestFromJSONTyped, SecretSvcListSecretsRequestToJSON, SecretSvcListSecretsRequestToJSONTyped, SecretSvcListSecretsResponseFromJSON, SecretSvcListSecretsResponseFromJSONTyped, SecretSvcListSecretsResponseToJSON, SecretSvcListSecretsResponseToJSONTyped, SecretSvcRemoveSecretsRequestFromJSON, SecretSvcRemoveSecretsRequestFromJSONTyped, SecretSvcRemoveSecretsRequestToJSON, SecretSvcRemoveSecretsRequestToJSONTyped, SecretSvcSaveSecretsRequestFromJSON, SecretSvcSaveSecretsRequestFromJSONTyped, SecretSvcSaveSecretsRequestToJSON, SecretSvcSaveSecretsRequestToJSONTyped, SecretSvcSecretFromJSON, SecretSvcSecretFromJSONTyped, SecretSvcSecretToJSON, SecretSvcSecretToJSONTyped, SourceSvcApi, SourceSvcCheckoutRepoRequestFromJSON, SourceSvcCheckoutRepoRequestFromJSONTyped, SourceSvcCheckoutRepoRequestToJSON, SourceSvcCheckoutRepoRequestToJSONTyped, SourceSvcCheckoutRepoResponseFromJSON, SourceSvcCheckoutRepoResponseFromJSONTyped, SourceSvcCheckoutRepoResponseToJSON, SourceSvcCheckoutRepoResponseToJSONTyped, SourceSvcErrorResponseFromJSON, SourceSvcErrorResponseFromJSONTyped, SourceSvcErrorResponseToJSON, SourceSvcErrorResponseToJSONTyped, StableDiffusionTxt2ImgRequestFromJSON, StableDiffusionTxt2ImgRequestFromJSONTyped, StableDiffusionTxt2ImgRequestToJSON, StableDiffusionTxt2ImgRequestToJSONTyped, TextApiResponse, UserSvcAddUserToOrganizationRequestFromJSON, UserSvcAddUserToOrganizationRequestFromJSONTyped, UserSvcAddUserToOrganizationRequestToJSON, UserSvcAddUserToOrganizationRequestToJSONTyped, UserSvcApi, UserSvcAssignPermissionsRequestFromJSON, UserSvcAssignPermissionsRequestFromJSONTyped, UserSvcAssignPermissionsRequestToJSON, UserSvcAssignPermissionsRequestToJSONTyped, UserSvcAuthTokenFromJSON, UserSvcAuthTokenFromJSONTyped, UserSvcAuthTokenToJSON, UserSvcAuthTokenToJSONTyped, UserSvcChangePasswordRequestFromJSON, UserSvcChangePasswordRequestFromJSONTyped, UserSvcChangePasswordRequestToJSON, UserSvcChangePasswordRequestToJSONTyped, UserSvcContactFromJSON, UserSvcContactFromJSONTyped, UserSvcContactToJSON, UserSvcContactToJSONTyped, UserSvcCreateOrganizationRequestFromJSON, UserSvcCreateOrganizationRequestFromJSONTyped, UserSvcCreateOrganizationRequestToJSON, UserSvcCreateOrganizationRequestToJSONTyped, UserSvcCreateRoleRequestFromJSON, UserSvcCreateRoleRequestFromJSONTyped, UserSvcCreateRoleRequestToJSON, UserSvcCreateRoleRequestToJSONTyped, UserSvcCreateRoleResponseFromJSON, UserSvcCreateRoleResponseFromJSONTyped, UserSvcCreateRoleResponseToJSON, UserSvcCreateRoleResponseToJSONTyped, UserSvcCreateUserRequestFromJSON, UserSvcCreateUserRequestFromJSONTyped, UserSvcCreateUserRequestToJSON, UserSvcCreateUserRequestToJSONTyped, UserSvcErrorResponseFromJSON, UserSvcErrorResponseFromJSONTyped, UserSvcErrorResponseToJSON, UserSvcErrorResponseToJSONTyped, UserSvcGetPermissionsResponseFromJSON, UserSvcGetPermissionsResponseFromJSONTyped, UserSvcGetPermissionsResponseToJSON, UserSvcGetPermissionsResponseToJSONTyped, UserSvcGetPublicKeyResponseFromJSON, UserSvcGetPublicKeyResponseFromJSONTyped, UserSvcGetPublicKeyResponseToJSON, UserSvcGetPublicKeyResponseToJSONTyped, UserSvcGetRolesResponseFromJSON, UserSvcGetRolesResponseFromJSONTyped, UserSvcGetRolesResponseToJSON, UserSvcGetRolesResponseToJSONTyped, UserSvcGetUsersRequestFromJSON, UserSvcGetUsersRequestFromJSONTyped, UserSvcGetUsersRequestToJSON, UserSvcGetUsersRequestToJSONTyped, UserSvcGetUsersResponseFromJSON, UserSvcGetUsersResponseFromJSONTyped, UserSvcGetUsersResponseToJSON, UserSvcGetUsersResponseToJSONTyped, UserSvcGrantFromJSON, UserSvcGrantFromJSONTyped, UserSvcGrantToJSON, UserSvcGrantToJSONTyped, UserSvcIsAuthorizedRequestFromJSON, UserSvcIsAuthorizedRequestFromJSONTyped, UserSvcIsAuthorizedRequestToJSON, UserSvcIsAuthorizedRequestToJSONTyped, UserSvcIsAuthorizedResponseFromJSON, UserSvcIsAuthorizedResponseFromJSONTyped, UserSvcIsAuthorizedResponseToJSON, UserSvcIsAuthorizedResponseToJSONTyped, UserSvcListGrantsRequestFromJSON, UserSvcListGrantsRequestFromJSONTyped, UserSvcListGrantsRequestToJSON, UserSvcListGrantsRequestToJSONTyped, UserSvcListGrantsResponseFromJSON, UserSvcListGrantsResponseFromJSONTyped, UserSvcListGrantsResponseToJSON, UserSvcListGrantsResponseToJSONTyped, UserSvcLoginRequestFromJSON, UserSvcLoginRequestFromJSONTyped, UserSvcLoginRequestToJSON, UserSvcLoginRequestToJSONTyped, UserSvcLoginResponseFromJSON, UserSvcLoginResponseFromJSONTyped, UserSvcLoginResponseToJSON, UserSvcLoginResponseToJSONTyped, UserSvcOrganizationFromJSON, UserSvcOrganizationFromJSONTyped, UserSvcOrganizationToJSON, UserSvcOrganizationToJSONTyped, UserSvcPermissionFromJSON, UserSvcPermissionFromJSONTyped, UserSvcPermissionLinkFromJSON, UserSvcPermissionLinkFromJSONTyped, UserSvcPermissionLinkToJSON, UserSvcPermissionLinkToJSONTyped, UserSvcPermissionToJSON, UserSvcPermissionToJSONTyped, UserSvcReadUserByTokenResponseFromJSON, UserSvcReadUserByTokenResponseFromJSONTyped, UserSvcReadUserByTokenResponseToJSON, UserSvcReadUserByTokenResponseToJSONTyped, UserSvcRegisterRequestFromJSON, UserSvcRegisterRequestFromJSONTyped, UserSvcRegisterRequestToJSON, UserSvcRegisterRequestToJSONTyped, UserSvcRegisterResponseFromJSON, UserSvcRegisterResponseFromJSONTyped, UserSvcRegisterResponseToJSON, UserSvcRegisterResponseToJSONTyped, UserSvcResetPasswordRequestFromJSON, UserSvcResetPasswordRequestFromJSONTyped, UserSvcResetPasswordRequestToJSON, UserSvcResetPasswordRequestToJSONTyped, UserSvcRoleFromJSON, UserSvcRoleFromJSONTyped, UserSvcRoleToJSON, UserSvcRoleToJSONTyped, UserSvcSaveGrantsRequestFromJSON, UserSvcSaveGrantsRequestFromJSONTyped, UserSvcSaveGrantsRequestToJSON, UserSvcSaveGrantsRequestToJSONTyped, UserSvcSavePermissionsRequestFromJSON, UserSvcSavePermissionsRequestFromJSONTyped, UserSvcSavePermissionsRequestToJSON, UserSvcSavePermissionsRequestToJSONTyped, UserSvcSavePermissionsResponseFromJSON, UserSvcSavePermissionsResponseFromJSONTyped, UserSvcSavePermissionsResponseToJSON, UserSvcSavePermissionsResponseToJSONTyped, UserSvcSaveProfileRequestFromJSON, UserSvcSaveProfileRequestFromJSONTyped, UserSvcSaveProfileRequestToJSON, UserSvcSaveProfileRequestToJSONTyped, UserSvcSetRolePermissionsRequestFromJSON, UserSvcSetRolePermissionsRequestFromJSONTyped, UserSvcSetRolePermissionsRequestToJSON, UserSvcSetRolePermissionsRequestToJSONTyped, UserSvcUserFromJSON, UserSvcUserFromJSONTyped, UserSvcUserToJSON, UserSvcUserToJSONTyped, VoidApiResponse, canConsumeForm, exists, instanceOfChatSvcAddMessageRequest, instanceOfChatSvcAddThreadRequest, instanceOfChatSvcAddThreadResponse, instanceOfChatSvcEventMessageAdded, instanceOfChatSvcEventThreadAdded, instanceOfChatSvcEventThreadUpdate, instanceOfChatSvcGetMessageResponse, instanceOfChatSvcGetMessagesResponse, instanceOfChatSvcGetThreadResponse, instanceOfChatSvcGetThreadsResponse, instanceOfChatSvcMessage, instanceOfChatSvcThread, instanceOfChatSvcUpdateThreadRequest, instanceOfConfigSvcConfig, instanceOfConfigSvcGetConfigResponse, instanceOfConfigSvcSaveConfigRequest, instanceOfContainerSvcAsset, instanceOfContainerSvcBuildImageRequest, instanceOfContainerSvcCapabilities, instanceOfContainerSvcContainer, instanceOfContainerSvcContainerIsRunningResponse, instanceOfContainerSvcDaemonInfoResponse, instanceOfContainerSvcEnvVar, instanceOfContainerSvcErrorResponse, instanceOfContainerSvcGetContainerSummaryResponse, instanceOfContainerSvcGetHostResponse, instanceOfContainerSvcImagePullableResponse, instanceOfContainerSvcKeep, instanceOfContainerSvcLabel, instanceOfContainerSvcListContainersRequest, instanceOfContainerSvcListContainersResponse, instanceOfContainerSvcListLogsRequest, instanceOfContainerSvcListLogsResponse, instanceOfContainerSvcLog, instanceOfContainerSvcNetwork, instanceOfContainerSvcPortMapping, instanceOfContainerSvcResources, instanceOfContainerSvcRunContainerRequest, instanceOfContainerSvcRunContainerResponse, instanceOfContainerSvcStopContainerRequest, instanceOfContainerSvcVolume, instanceOfDataSvcCreateObjectFields, instanceOfDataSvcCreateObjectRequest, instanceOfDataSvcCreateObjectResponse, instanceOfDataSvcDeleteObjectRequest, instanceOfDataSvcErrorResponse, instanceOfDataSvcObject, instanceOfDataSvcQueryRequest, instanceOfDataSvcQueryResponse, instanceOfDataSvcUpdateObjectsRequest, instanceOfDataSvcUpsertObjectRequest, instanceOfDataSvcUpsertObjectResponse, instanceOfDatastoreFilter, instanceOfDatastoreOp, instanceOfDatastoreOrderBy, instanceOfDatastoreQuery, instanceOfDatastoreSortingType, instanceOfDeploySvcAutoScalingConfig, instanceOfDeploySvcDeleteDeploymentRequest, instanceOfDeploySvcDeployment, instanceOfDeploySvcDeploymentStatus, instanceOfDeploySvcDeploymentStrategy, instanceOfDeploySvcErrorResponse, instanceOfDeploySvcListDeploymentsResponse, instanceOfDeploySvcResourceLimits, instanceOfDeploySvcSaveDeploymentRequest, instanceOfDeploySvcStrategyType, instanceOfDeploySvcTargetRegion, instanceOfEmailSvcAttachment, instanceOfEmailSvcErrorResponse, instanceOfEmailSvcSendEmailRequest, instanceOfEmailSvcSendEmailResponse, instanceOfFileSvcDownload, instanceOfFileSvcDownloadFileRequest, instanceOfFileSvcDownloadsResponse, instanceOfFileSvcErrorResponse, instanceOfFileSvcGetDownloadResponse, instanceOfFileSvcListUploadsRequest, instanceOfFileSvcListUploadsResponse, instanceOfFileSvcUpload, instanceOfFileSvcUploadFileResponse, instanceOfFirehoseSvcErrorResponse, instanceOfFirehoseSvcEvent, instanceOfFirehoseSvcEventPublishRequest, instanceOfModelSvcArchitectures, instanceOfModelSvcAsset, instanceOfModelSvcContainer, instanceOfModelSvcCudaParameters, instanceOfModelSvcDefaultParameters, instanceOfModelSvcEnvVar, instanceOfModelSvcErrorResponse, instanceOfModelSvcGetModelResponse, instanceOfModelSvcKeep, instanceOfModelSvcListModelsResponse, instanceOfModelSvcListPlatformsResponse, instanceOfModelSvcModel, instanceOfModelSvcModelStatus, instanceOfModelSvcPlatform, instanceOfModelSvcStatusResponse, instanceOfPolicySvcBlocklistParameters, instanceOfPolicySvcCheckRequest, instanceOfPolicySvcCheckResponse, instanceOfPolicySvcEntity, instanceOfPolicySvcErrorResponse, instanceOfPolicySvcInstance, instanceOfPolicySvcParameters, instanceOfPolicySvcRateLimitParameters, instanceOfPolicySvcScope, instanceOfPolicySvcTemplateId, instanceOfPolicySvcUpsertInstanceRequest, instanceOfPromptSvcEngineParameters, instanceOfPromptSvcErrorResponse, instanceOfPromptSvcListPromptsRequest, instanceOfPromptSvcListPromptsResponse, instanceOfPromptSvcLlamaCppParameters, instanceOfPromptSvcParameters, instanceOfPromptSvcPrompt, instanceOfPromptSvcPromptRequest, instanceOfPromptSvcPromptResponse, instanceOfPromptSvcPromptStatus, instanceOfPromptSvcPromptType, instanceOfPromptSvcRemovePromptRequest, instanceOfPromptSvcStableDiffusionParameters, instanceOfPromptSvcStreamChunk, instanceOfPromptSvcStreamChunkType, instanceOfPromptSvcTextToImageParameters, instanceOfPromptSvcTextToTextParameters, instanceOfPromptSvcTypesResponse, instanceOfRegistrySvcAPISpec, instanceOfRegistrySvcClient, instanceOfRegistrySvcDefinition, instanceOfRegistrySvcEnvVar, instanceOfRegistrySvcErrorResponse, instanceOfRegistrySvcGPU, instanceOfRegistrySvcImageSpec, instanceOfRegistrySvcInstance, instanceOfRegistrySvcInstanceStatus, instanceOfRegistrySvcLanguage, instanceOfRegistrySvcListDefinitionsResponse, instanceOfRegistrySvcListInstancesResponse, instanceOfRegistrySvcListNodesRequest, instanceOfRegistrySvcListNodesResponse, instanceOfRegistrySvcNode, instanceOfRegistrySvcNodeSelfResponse, instanceOfRegistrySvcPortMapping, instanceOfRegistrySvcProcess, instanceOfRegistrySvcRegisterInstanceRequest, instanceOfRegistrySvcRepositorySpec, instanceOfRegistrySvcResourceUsage, instanceOfRegistrySvcSaveDefinitionRequest, instanceOfRegistrySvcUsage, instanceOfSecretSvcChecksumAlgorithm, instanceOfSecretSvcDecryptValueRequest, instanceOfSecretSvcDecryptValueResponse, instanceOfSecretSvcEncryptValueRequest, instanceOfSecretSvcEncryptValueResponse, instanceOfSecretSvcIsSecureResponse, instanceOfSecretSvcListSecretsRequest, instanceOfSecretSvcListSecretsResponse, instanceOfSecretSvcRemoveSecretsRequest, instanceOfSecretSvcSaveSecretsRequest, instanceOfSecretSvcSecret, instanceOfSourceSvcCheckoutRepoRequest, instanceOfSourceSvcCheckoutRepoResponse, instanceOfSourceSvcErrorResponse, instanceOfStableDiffusionTxt2ImgRequest, instanceOfUserSvcAddUserToOrganizationRequest, instanceOfUserSvcAssignPermissionsRequest, instanceOfUserSvcAuthToken, instanceOfUserSvcChangePasswordRequest, instanceOfUserSvcContact, instanceOfUserSvcCreateOrganizationRequest, instanceOfUserSvcCreateRoleRequest, instanceOfUserSvcCreateRoleResponse, instanceOfUserSvcCreateUserRequest, instanceOfUserSvcErrorResponse, instanceOfUserSvcGetPermissionsResponse, instanceOfUserSvcGetPublicKeyResponse, instanceOfUserSvcGetRolesResponse, instanceOfUserSvcGetUsersRequest, instanceOfUserSvcGetUsersResponse, instanceOfUserSvcGrant, instanceOfUserSvcIsAuthorizedRequest, instanceOfUserSvcIsAuthorizedResponse, instanceOfUserSvcListGrantsRequest, instanceOfUserSvcListGrantsResponse, instanceOfUserSvcLoginRequest, instanceOfUserSvcLoginResponse, instanceOfUserSvcOrganization, instanceOfUserSvcPermission, instanceOfUserSvcPermissionLink, instanceOfUserSvcReadUserByTokenResponse, instanceOfUserSvcRegisterRequest, instanceOfUserSvcRegisterResponse, instanceOfUserSvcResetPasswordRequest, instanceOfUserSvcRole, instanceOfUserSvcSaveGrantsRequest, instanceOfUserSvcSavePermissionsRequest, instanceOfUserSvcSavePermissionsResponse, instanceOfUserSvcSaveProfileRequest, instanceOfUserSvcSetRolePermissionsRequest, instanceOfUserSvcUser, mapValues, querystring };

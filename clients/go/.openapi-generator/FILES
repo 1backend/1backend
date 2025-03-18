@@ -93,8 +93,8 @@ docs/DeploySvcSaveDeploymentRequest.md
 docs/DeploySvcStrategyType.md
 docs/DeploySvcTargetRegion.md
 docs/EmailSvcAPI.md
+docs/EmailSvcAttachment.md
 docs/EmailSvcErrorResponse.md
-docs/EmailSvcFile.md
 docs/EmailSvcSendEmailRequest.md
 docs/EmailSvcSendEmailResponse.md
 docs/FileSvcAPI.md
@@ -307,8 +307,8 @@ model_deploy_svc_resource_limits.go
 model_deploy_svc_save_deployment_request.go
 model_deploy_svc_strategy_type.go
 model_deploy_svc_target_region.go
+model_email_svc_attachment.go
 model_email_svc_error_response.go
-model_email_svc_file.go
 model_email_svc_send_email_request.go
 model_email_svc_send_email_response.go
 model_file_svc_download.go

@@ -1,6 +1,6 @@
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9,13 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export class EmailSvcFile {
+export class EmailSvcAttachment {
     static getAttributeTypeMap() {
-        return EmailSvcFile.attributeTypeMap;
+        return EmailSvcAttachment.attributeTypeMap;
     }
 }
-EmailSvcFile.discriminator = undefined;
-EmailSvcFile.attributeTypeMap = [
+EmailSvcAttachment.discriminator = undefined;
+EmailSvcAttachment.attributeTypeMap = [
     {
         "name": "content",
         "baseName": "content",
@@ -24,6 +24,11 @@ EmailSvcFile.attributeTypeMap = [
     {
         "name": "contentType",
         "baseName": "contentType",
+        "type": "string"
+    },
+    {
+        "name": "fileId",
+        "baseName": "fileId",
         "type": "string"
     },
     {
