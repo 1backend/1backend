@@ -29,7 +29,6 @@ type EmailService struct {
 
 	credentialStore datastore.DataStore
 	emailStore      datastore.DataStore
-	attachentStore  datastore.DataStore
 }
 
 func NewEmailService(
@@ -51,20 +50,12 @@ func NewEmailService(
 	if err != nil {
 		return nil, err
 	}
-	attachmentStore, err := datastoreFactory(
-		"emailSvcAttachments",
-		&email.Attachment{},
-	)
-	if err != nil {
-		return nil, err
-	}
 
 	service := &EmailService{
 		clientFactory:   clientFactory,
 		lock:            lock,
 		credentialStore: credentialStore,
 		emailStore:      emailStore,
-		attachentStore:  attachmentStore,
 	}
 
 	return service, nil

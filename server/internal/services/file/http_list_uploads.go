@@ -14,7 +14,9 @@ import (
 
 // @ID listUploads
 // @Summary List Uploads
-// @Description List the uploaded files.
+// @Description Lists uploaded files, returning only metadata about each upload.
+// @Description To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request.
+// @Description Note: Retrieving the contents of multiple files in a single request is not supported currently.
 // @Description
 // @Description Requires the `file-svc:upload:view` permission.
 // @Tags File Svc

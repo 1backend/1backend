@@ -1,7 +1,7 @@
 /*
 1Backend
 
-A common backend for your AI applications—microservices-based and built to scale.
+A unified backend for your AI applications—microservices-based and built to scale.
 
 API version: 0.3.0-rc.29
 Contact: sales@singulatron.com
@@ -76,7 +76,9 @@ Requires the `file-svc:download:view` permission.
 	/*
 	ListUploads List Uploads
 
-	List the uploaded files.
+	Lists uploaded files, returning only metadata about each upload.
+To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request.
+Note: Retrieving the contents of multiple files in a single request is not supported currently.
 
 Requires the `file-svc:upload:view` permission.
 
@@ -132,7 +134,7 @@ Since 1Backend is a distributed system, files can be replicated across multiple 
 This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param fileId Upload ID
+	@param fileId FileID uniquely identifies the file itself (not an ID, which represents a specific replica)
 	@return ApiServeUploadRequest
 	*/
 	ServeUpload(ctx context.Context, fileId string) ApiServeUploadRequest
@@ -618,7 +620,9 @@ func (r ApiListUploadsRequest) Execute() (*FileSvcListUploadsResponse, *http.Res
 /*
 ListUploads List Uploads
 
-List the uploaded files.
+Lists uploaded files, returning only metadata about each upload.
+To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request.
+Note: Retrieving the contents of multiple files in a single request is not supported currently.
 
 Requires the `file-svc:upload:view` permission.
 
@@ -1051,7 +1055,7 @@ Since 1Backend is a distributed system, files can be replicated across multiple 
 This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param fileId Upload ID
+ @param fileId FileID uniquely identifies the file itself (not an ID, which represents a specific replica)
  @return ApiServeUploadRequest
 */
 func (a *FileSvcAPIService) ServeUpload(ctx context.Context, fileId string) ApiServeUploadRequest {

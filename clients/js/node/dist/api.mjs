@@ -3,7 +3,7 @@ import localVarRequest from 'request';
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -28,7 +28,7 @@ ChatSvcAddMessageRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -53,7 +53,7 @@ ChatSvcAddThreadRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -78,7 +78,7 @@ ChatSvcAddThreadResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -103,7 +103,7 @@ ChatSvcEventMessageAdded.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -128,7 +128,7 @@ ChatSvcEventThreadAdded.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -153,7 +153,7 @@ ChatSvcEventThreadUpdate.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -183,7 +183,7 @@ ChatSvcGetMessageResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -208,7 +208,7 @@ ChatSvcGetMessagesResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -238,7 +238,7 @@ ChatSvcGetThreadResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -263,7 +263,7 @@ ChatSvcGetThreadsResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -323,7 +323,7 @@ ChatSvcMessage.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -373,7 +373,7 @@ ChatSvcThread.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -398,7 +398,7 @@ ChatSvcUpdateThreadRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -438,7 +438,7 @@ ConfigSvcConfig.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -463,7 +463,7 @@ ConfigSvcGetConfigResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -488,7 +488,7 @@ ConfigSvcSaveConfigRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -518,7 +518,7 @@ ContainerSvcAsset.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -553,7 +553,7 @@ ContainerSvcBuildImageRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -578,7 +578,7 @@ ContainerSvcCapabilities.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -678,7 +678,7 @@ ContainerSvcContainer.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -703,7 +703,7 @@ ContainerSvcContainerIsRunningResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -738,7 +738,7 @@ ContainerSvcDaemonInfoResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -768,7 +768,7 @@ ContainerSvcEnvVar.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -793,7 +793,7 @@ ContainerSvcErrorResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -828,7 +828,7 @@ ContainerSvcGetContainerSummaryResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -853,7 +853,7 @@ ContainerSvcGetHostResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -878,7 +878,7 @@ ContainerSvcImagePullableResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -908,7 +908,7 @@ ContainerSvcKeep.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -938,7 +938,7 @@ ContainerSvcLabel.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -973,7 +973,7 @@ ContainerSvcListContainersRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -998,7 +998,7 @@ ContainerSvcListContainersResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1033,7 +1033,7 @@ ContainerSvcListLogsRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1058,7 +1058,7 @@ ContainerSvcListLogsResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1103,7 +1103,7 @@ ContainerSvcLog.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1138,7 +1138,7 @@ ContainerSvcNetwork.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1168,7 +1168,7 @@ ContainerSvcPortMapping.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1203,7 +1203,7 @@ ContainerSvcResources.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1268,7 +1268,7 @@ ContainerSvcRunContainerRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1298,7 +1298,7 @@ ContainerSvcRunContainerResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1328,7 +1328,7 @@ ContainerSvcStopContainerRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1363,7 +1363,7 @@ ContainerSvcVolume.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1418,7 +1418,7 @@ DataSvcCreateObjectFields.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1443,7 +1443,7 @@ DataSvcCreateObjectRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1468,7 +1468,7 @@ DataSvcCreateObjectResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1498,7 +1498,7 @@ DataSvcDeleteObjectRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1523,7 +1523,7 @@ DataSvcErrorResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1588,7 +1588,7 @@ DataSvcObject.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1623,7 +1623,7 @@ DataSvcQueryRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1648,7 +1648,7 @@ DataSvcQueryResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1683,7 +1683,7 @@ DataSvcUpdateObjectsRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1708,7 +1708,7 @@ DataSvcUpsertObjectRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1733,7 +1733,7 @@ DataSvcUpsertObjectResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1768,7 +1768,7 @@ DatastoreFilter.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1788,7 +1788,7 @@ var DatastoreOp;
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1828,7 +1828,7 @@ DatastoreOrderBy.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1873,7 +1873,7 @@ DatastoreQuery.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1892,7 +1892,7 @@ var DatastoreSortingType;
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1927,7 +1927,7 @@ DeploySvcAutoScalingConfig.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1952,7 +1952,7 @@ DeploySvcDeleteDeploymentRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2032,7 +2032,7 @@ DeploySvcDeployment.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2052,7 +2052,7 @@ var DeploySvcDeploymentStatus;
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2087,7 +2087,7 @@ DeploySvcDeploymentStrategy.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2112,7 +2112,7 @@ DeploySvcErrorResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2137,7 +2137,7 @@ DeploySvcListDeploymentsResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2172,7 +2172,7 @@ DeploySvcResourceLimits.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2197,7 +2197,7 @@ DeploySvcSaveDeploymentRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2214,7 +2214,7 @@ var DeploySvcStrategyType;
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2244,7 +2244,47 @@ DeploySvcTargetRegion.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
+ *
+ * The version of the OpenAPI document: 0.3.0-rc.29
+ * Contact: sales@singulatron.com
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+class EmailSvcAttachment {
+    static getAttributeTypeMap() {
+        return EmailSvcAttachment.attributeTypeMap;
+    }
+}
+EmailSvcAttachment.discriminator = undefined;
+EmailSvcAttachment.attributeTypeMap = [
+    {
+        "name": "content",
+        "baseName": "content",
+        "type": "string"
+    },
+    {
+        "name": "contentType",
+        "baseName": "contentType",
+        "type": "string"
+    },
+    {
+        "name": "fileId",
+        "baseName": "fileId",
+        "type": "string"
+    },
+    {
+        "name": "filename",
+        "baseName": "filename",
+        "type": "string"
+    }
+];
+
+/**
+ * 1Backend
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2269,42 +2309,7 @@ EmailSvcErrorResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
- *
- * The version of the OpenAPI document: 0.3.0-rc.29
- * Contact: sales@singulatron.com
- *
- * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
- * https://openapi-generator.tech
- * Do not edit the class manually.
- */
-class EmailSvcFile {
-    static getAttributeTypeMap() {
-        return EmailSvcFile.attributeTypeMap;
-    }
-}
-EmailSvcFile.discriminator = undefined;
-EmailSvcFile.attributeTypeMap = [
-    {
-        "name": "content",
-        "baseName": "content",
-        "type": "string"
-    },
-    {
-        "name": "contentType",
-        "baseName": "contentType",
-        "type": "string"
-    },
-    {
-        "name": "filename",
-        "baseName": "filename",
-        "type": "string"
-    }
-];
-
-/**
- * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2323,7 +2328,7 @@ EmailSvcSendEmailRequest.attributeTypeMap = [
     {
         "name": "attachments",
         "baseName": "attachments",
-        "type": "Array<EmailSvcFile>"
+        "type": "Array<EmailSvcAttachment>"
     },
     {
         "name": "bcc",
@@ -2346,11 +2351,6 @@ EmailSvcSendEmailRequest.attributeTypeMap = [
         "type": "string"
     },
     {
-        "name": "createdAt",
-        "baseName": "createdAt",
-        "type": "string"
-    },
-    {
         "name": "id",
         "baseName": "id",
         "type": "string"
@@ -2369,7 +2369,7 @@ EmailSvcSendEmailRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2399,7 +2399,7 @@ EmailSvcSendEmailResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2474,7 +2474,7 @@ FileSvcDownload.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2504,7 +2504,7 @@ FileSvcDownloadFileRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2529,7 +2529,7 @@ FileSvcDownloadsResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2554,7 +2554,7 @@ FileSvcErrorResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2584,7 +2584,7 @@ FileSvcGetDownloadResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2619,7 +2619,7 @@ FileSvcListUploadsRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2644,7 +2644,7 @@ FileSvcListUploadsResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2709,7 +2709,7 @@ FileSvcUpload.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2734,7 +2734,7 @@ FileSvcUploadFileResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2759,7 +2759,7 @@ FirehoseSvcErrorResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2789,7 +2789,7 @@ FirehoseSvcEvent.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2814,7 +2814,7 @@ FirehoseSvcEventPublishRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2844,7 +2844,7 @@ ModelSvcArchitectures.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2874,7 +2874,7 @@ ModelSvcAsset.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2914,7 +2914,7 @@ ModelSvcContainer.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2954,7 +2954,7 @@ ModelSvcCudaParameters.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2979,7 +2979,7 @@ ModelSvcDefaultParameters.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3009,7 +3009,7 @@ ModelSvcEnvVar.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3034,7 +3034,7 @@ ModelSvcErrorResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3069,7 +3069,7 @@ ModelSvcGetModelResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3099,7 +3099,7 @@ ModelSvcKeep.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3124,7 +3124,7 @@ ModelSvcListModelsResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3149,7 +3149,7 @@ ModelSvcListPlatformsResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3269,7 +3269,7 @@ ModelSvcModel.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3304,7 +3304,7 @@ ModelSvcModelStatus.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3349,7 +3349,7 @@ ModelSvcPlatform.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3374,7 +3374,7 @@ ModelSvcStatusResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3399,7 +3399,7 @@ PolicySvcBlocklistParameters.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3439,7 +3439,7 @@ PolicySvcCheckRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3464,7 +3464,7 @@ PolicySvcCheckResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3481,7 +3481,7 @@ var PolicySvcEntity;
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3506,7 +3506,7 @@ PolicySvcErrorResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3546,7 +3546,7 @@ PolicySvcInstance.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3576,7 +3576,7 @@ PolicySvcParameters.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3616,7 +3616,7 @@ PolicySvcRateLimitParameters.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3633,7 +3633,7 @@ var PolicySvcScope;
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3650,7 +3650,7 @@ var PolicySvcTemplateId;
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3675,7 +3675,7 @@ PolicySvcUpsertInstanceRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3705,7 +3705,7 @@ PromptSvcEngineParameters.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3730,7 +3730,7 @@ PromptSvcErrorResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3755,7 +3755,7 @@ PromptSvcListPromptsRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3790,7 +3790,7 @@ PromptSvcListPromptsResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3815,7 +3815,7 @@ PromptSvcLlamaCppParameters.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3845,7 +3845,7 @@ PromptSvcParameters.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3955,7 +3955,7 @@ PromptSvcPrompt.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4015,7 +4015,7 @@ PromptSvcPromptRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4045,7 +4045,7 @@ PromptSvcPromptResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4066,7 +4066,7 @@ var PromptSvcPromptStatus;
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4109,7 +4109,7 @@ var PromptSvcPromptType;
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4134,7 +4134,7 @@ PromptSvcRemovePromptRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4159,7 +4159,7 @@ PromptSvcStableDiffusionParameters.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4194,7 +4194,7 @@ PromptSvcStreamChunk.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4211,7 +4211,7 @@ var PromptSvcStreamChunkType;
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4316,7 +4316,7 @@ PromptSvcTextToImageParameters.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4341,7 +4341,7 @@ PromptSvcTextToTextParameters.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4366,7 +4366,7 @@ PromptSvcTypesResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4406,7 +4406,7 @@ RegistrySvcAPISpec.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4436,7 +4436,7 @@ RegistrySvcClient.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4491,7 +4491,7 @@ RegistrySvcDefinition.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4521,7 +4521,7 @@ RegistrySvcEnvVar.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4546,7 +4546,7 @@ RegistrySvcErrorResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4636,7 +4636,7 @@ RegistrySvcGPU.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4666,7 +4666,7 @@ RegistrySvcImageSpec.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4756,7 +4756,7 @@ RegistrySvcInstance.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4776,7 +4776,7 @@ var RegistrySvcInstanceStatus;
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4810,7 +4810,7 @@ var RegistrySvcLanguage;
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4835,7 +4835,7 @@ RegistrySvcListDefinitionsResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4860,7 +4860,7 @@ RegistrySvcListInstancesResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4885,7 +4885,7 @@ RegistrySvcListNodesRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4910,7 +4910,7 @@ RegistrySvcListNodesResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4965,7 +4965,7 @@ RegistrySvcNode.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4990,7 +4990,7 @@ RegistrySvcNodeSelfResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5020,7 +5020,7 @@ RegistrySvcPortMapping.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5055,7 +5055,7 @@ RegistrySvcProcess.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5115,7 +5115,7 @@ RegistrySvcRegisterInstanceRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5160,7 +5160,7 @@ RegistrySvcRepositorySpec.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5195,7 +5195,7 @@ RegistrySvcResourceUsage.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5220,7 +5220,7 @@ RegistrySvcSaveDefinitionRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5255,7 +5255,7 @@ RegistrySvcUsage.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5275,7 +5275,7 @@ var SecretSvcChecksumAlgorithm;
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5305,7 +5305,7 @@ SecretSvcDecryptValueRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5335,7 +5335,7 @@ SecretSvcDecryptValueResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5365,7 +5365,7 @@ SecretSvcEncryptValueRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5395,7 +5395,7 @@ SecretSvcEncryptValueResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5420,7 +5420,7 @@ SecretSvcIsSecureResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5455,7 +5455,7 @@ SecretSvcListSecretsRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5480,7 +5480,7 @@ SecretSvcListSecretsResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5520,7 +5520,7 @@ SecretSvcRemoveSecretsRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5545,7 +5545,7 @@ SecretSvcSaveSecretsRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5630,7 +5630,7 @@ SecretSvcSecret.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5685,7 +5685,7 @@ SourceSvcCheckoutRepoRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5710,7 +5710,7 @@ SourceSvcCheckoutRepoResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5735,7 +5735,7 @@ SourceSvcErrorResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6030,7 +6030,7 @@ StableDiffusionTxt2ImgRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6055,7 +6055,7 @@ UserSvcAddUserToOrganizationRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6080,7 +6080,7 @@ UserSvcAssignPermissionsRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6135,7 +6135,7 @@ UserSvcAuthToken.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6170,7 +6170,7 @@ UserSvcChangePasswordRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6235,7 +6235,7 @@ UserSvcContact.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6270,7 +6270,7 @@ UserSvcCreateOrganizationRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6310,7 +6310,7 @@ UserSvcCreateRoleRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6335,7 +6335,7 @@ UserSvcCreateRoleResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6370,7 +6370,7 @@ UserSvcCreateUserRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6395,7 +6395,7 @@ UserSvcErrorResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6420,7 +6420,7 @@ UserSvcGetPermissionsResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6445,7 +6445,7 @@ UserSvcGetPublicKeyResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6470,7 +6470,7 @@ UserSvcGetRolesResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6495,7 +6495,7 @@ UserSvcGetUsersRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6530,7 +6530,7 @@ UserSvcGetUsersResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6565,7 +6565,7 @@ UserSvcGrant.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6595,7 +6595,7 @@ UserSvcIsAuthorizedRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6625,7 +6625,7 @@ UserSvcIsAuthorizedResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6655,7 +6655,7 @@ UserSvcListGrantsRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6680,7 +6680,7 @@ UserSvcListGrantsResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6715,7 +6715,7 @@ UserSvcLoginRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6740,7 +6740,7 @@ UserSvcLoginResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6790,7 +6790,7 @@ UserSvcOrganization.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6840,7 +6840,7 @@ UserSvcPermission.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6870,7 +6870,7 @@ UserSvcPermissionLink.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6905,7 +6905,7 @@ UserSvcReadUserByTokenResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6945,7 +6945,7 @@ UserSvcRegisterRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6970,7 +6970,7 @@ UserSvcRegisterResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7000,7 +7000,7 @@ UserSvcResetPasswordRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7050,7 +7050,7 @@ UserSvcRole.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7075,7 +7075,7 @@ UserSvcSaveGrantsRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7100,7 +7100,7 @@ UserSvcSavePermissionsRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7125,7 +7125,7 @@ UserSvcSavePermissionsResponse.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7155,7 +7155,7 @@ UserSvcSaveProfileRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7180,7 +7180,7 @@ UserSvcSetRolePermissionsRequest.attributeTypeMap = [
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7329,8 +7329,8 @@ let typeMap = {
     "DeploySvcResourceLimits": DeploySvcResourceLimits,
     "DeploySvcSaveDeploymentRequest": DeploySvcSaveDeploymentRequest,
     "DeploySvcTargetRegion": DeploySvcTargetRegion,
+    "EmailSvcAttachment": EmailSvcAttachment,
     "EmailSvcErrorResponse": EmailSvcErrorResponse,
-    "EmailSvcFile": EmailSvcFile,
     "EmailSvcSendEmailRequest": EmailSvcSendEmailRequest,
     "EmailSvcSendEmailResponse": EmailSvcSendEmailResponse,
     "FileSvcDownload": FileSvcDownload,
@@ -7685,7 +7685,7 @@ class VoidAuth {
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8420,7 +8420,7 @@ class ChatSvcApi {
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8618,7 +8618,7 @@ class ConfigSvcApi {
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9350,7 +9350,7 @@ class ContainerSvcApi {
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9820,7 +9820,7 @@ class DataSvcApi {
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -10075,7 +10075,7 @@ class DeploySvcApi {
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -10208,7 +10208,7 @@ class EmailSvcApi {
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -10466,7 +10466,7 @@ class FileSvcApi {
         });
     }
     /**
-     * List the uploaded files.  Requires the `file-svc:upload:view` permission.
+     * Lists uploaded files, returning only metadata about each upload. To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request. Note: Retrieving the contents of multiple files in a single request is not supported currently.  Requires the `file-svc:upload:view` permission.
      * @summary List Uploads
      * @param body List Uploads Request
      */
@@ -10662,7 +10662,7 @@ class FileSvcApi {
     /**
      * Retrieves and serves a previously uploaded file using its File ID. Note: The `ID` and `FileID` fields of an upload are different. - `FileID` is a unique identifier for the file itself. - `ID` is a unique identifier for a specific replica of the file. Since 1Backend is a distributed system, files can be replicated across multiple nodes. This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
      * @summary Serve an Uploaded File
-     * @param fileId Upload ID
+     * @param fileId FileID uniquely identifies the file itself (not an ID, which represents a specific replica)
      */
     serveUpload(fileId_1) {
         return __awaiter(this, arguments, void 0, function* (fileId, options = { headers: {} }) {
@@ -10801,7 +10801,7 @@ class FileSvcApi {
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -10994,7 +10994,7 @@ class FirehoseSvcApi {
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -11572,7 +11572,7 @@ class ModelSvcApi {
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -11778,7 +11778,7 @@ class PolicySvcApi {
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -12175,7 +12175,7 @@ class PromptSvcApi {
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -12849,7 +12849,7 @@ class RegistrySvcApi {
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -13307,7 +13307,7 @@ class SecretSvcApi {
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -13440,7 +13440,7 @@ class SourceSvcApi {
 
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -15132,4 +15132,4 @@ class HttpError extends Error {
 }
 const APIS = [ChatSvcApi, ConfigSvcApi, ContainerSvcApi, DataSvcApi, DeploySvcApi, EmailSvcApi, FileSvcApi, FirehoseSvcApi, ModelSvcApi, PolicySvcApi, PromptSvcApi, RegistrySvcApi, SecretSvcApi, SourceSvcApi, UserSvcApi];
 
-export { APIS, ApiKeyAuth, ChatSvcAddMessageRequest, ChatSvcAddThreadRequest, ChatSvcAddThreadResponse, ChatSvcApi, ChatSvcApiApiKeys, ChatSvcEventMessageAdded, ChatSvcEventThreadAdded, ChatSvcEventThreadUpdate, ChatSvcGetMessageResponse, ChatSvcGetMessagesResponse, ChatSvcGetThreadResponse, ChatSvcGetThreadsResponse, ChatSvcMessage, ChatSvcThread, ChatSvcUpdateThreadRequest, ConfigSvcApi, ConfigSvcApiApiKeys, ConfigSvcConfig, ConfigSvcGetConfigResponse, ConfigSvcSaveConfigRequest, ContainerSvcApi, ContainerSvcApiApiKeys, ContainerSvcAsset, ContainerSvcBuildImageRequest, ContainerSvcCapabilities, ContainerSvcContainer, ContainerSvcContainerIsRunningResponse, ContainerSvcDaemonInfoResponse, ContainerSvcEnvVar, ContainerSvcErrorResponse, ContainerSvcGetContainerSummaryResponse, ContainerSvcGetHostResponse, ContainerSvcImagePullableResponse, ContainerSvcKeep, ContainerSvcLabel, ContainerSvcListContainersRequest, ContainerSvcListContainersResponse, ContainerSvcListLogsRequest, ContainerSvcListLogsResponse, ContainerSvcLog, ContainerSvcNetwork, ContainerSvcPortMapping, ContainerSvcResources, ContainerSvcRunContainerRequest, ContainerSvcRunContainerResponse, ContainerSvcStopContainerRequest, ContainerSvcVolume, DataSvcApi, DataSvcApiApiKeys, DataSvcCreateObjectFields, DataSvcCreateObjectRequest, DataSvcCreateObjectResponse, DataSvcDeleteObjectRequest, DataSvcErrorResponse, DataSvcObject, DataSvcQueryRequest, DataSvcQueryResponse, DataSvcUpdateObjectsRequest, DataSvcUpsertObjectRequest, DataSvcUpsertObjectResponse, DatastoreFilter, DatastoreOp, DatastoreOrderBy, DatastoreQuery, DatastoreSortingType, DeploySvcApi, DeploySvcApiApiKeys, DeploySvcAutoScalingConfig, DeploySvcDeleteDeploymentRequest, DeploySvcDeployment, DeploySvcDeploymentStatus, DeploySvcDeploymentStrategy, DeploySvcErrorResponse, DeploySvcListDeploymentsResponse, DeploySvcResourceLimits, DeploySvcSaveDeploymentRequest, DeploySvcStrategyType, DeploySvcTargetRegion, EmailSvcApi, EmailSvcApiApiKeys, EmailSvcErrorResponse, EmailSvcFile, EmailSvcSendEmailRequest, EmailSvcSendEmailResponse, FileSvcApi, FileSvcApiApiKeys, FileSvcDownload, FileSvcDownloadFileRequest, FileSvcDownloadsResponse, FileSvcErrorResponse, FileSvcGetDownloadResponse, FileSvcListUploadsRequest, FileSvcListUploadsResponse, FileSvcUpload, FileSvcUploadFileResponse, FirehoseSvcApi, FirehoseSvcApiApiKeys, FirehoseSvcErrorResponse, FirehoseSvcEvent, FirehoseSvcEventPublishRequest, HttpBasicAuth, HttpBearerAuth, HttpError, ModelSvcApi, ModelSvcApiApiKeys, ModelSvcArchitectures, ModelSvcAsset, ModelSvcContainer, ModelSvcCudaParameters, ModelSvcDefaultParameters, ModelSvcEnvVar, ModelSvcErrorResponse, ModelSvcGetModelResponse, ModelSvcKeep, ModelSvcListModelsResponse, ModelSvcListPlatformsResponse, ModelSvcModel, ModelSvcModelStatus, ModelSvcPlatform, ModelSvcStatusResponse, OAuth, ObjectSerializer, PolicySvcApi, PolicySvcApiApiKeys, PolicySvcBlocklistParameters, PolicySvcCheckRequest, PolicySvcCheckResponse, PolicySvcEntity, PolicySvcErrorResponse, PolicySvcInstance, PolicySvcParameters, PolicySvcRateLimitParameters, PolicySvcScope, PolicySvcTemplateId, PolicySvcUpsertInstanceRequest, PromptSvcApi, PromptSvcApiApiKeys, PromptSvcEngineParameters, PromptSvcErrorResponse, PromptSvcListPromptsRequest, PromptSvcListPromptsResponse, PromptSvcLlamaCppParameters, PromptSvcParameters, PromptSvcPrompt, PromptSvcPromptRequest, PromptSvcPromptResponse, PromptSvcPromptStatus, PromptSvcPromptType, PromptSvcRemovePromptRequest, PromptSvcStableDiffusionParameters, PromptSvcStreamChunk, PromptSvcStreamChunkType, PromptSvcTextToImageParameters, PromptSvcTextToTextParameters, PromptSvcTypesResponse, RegistrySvcAPISpec, RegistrySvcApi, RegistrySvcApiApiKeys, RegistrySvcClient, RegistrySvcDefinition, RegistrySvcEnvVar, RegistrySvcErrorResponse, RegistrySvcGPU, RegistrySvcImageSpec, RegistrySvcInstance, RegistrySvcInstanceStatus, RegistrySvcLanguage, RegistrySvcListDefinitionsResponse, RegistrySvcListInstancesResponse, RegistrySvcListNodesRequest, RegistrySvcListNodesResponse, RegistrySvcNode, RegistrySvcNodeSelfResponse, RegistrySvcPortMapping, RegistrySvcProcess, RegistrySvcRegisterInstanceRequest, RegistrySvcRepositorySpec, RegistrySvcResourceUsage, RegistrySvcSaveDefinitionRequest, RegistrySvcUsage, SecretSvcApi, SecretSvcApiApiKeys, SecretSvcChecksumAlgorithm, SecretSvcDecryptValueRequest, SecretSvcDecryptValueResponse, SecretSvcEncryptValueRequest, SecretSvcEncryptValueResponse, SecretSvcIsSecureResponse, SecretSvcListSecretsRequest, SecretSvcListSecretsResponse, SecretSvcRemoveSecretsRequest, SecretSvcSaveSecretsRequest, SecretSvcSecret, SourceSvcApi, SourceSvcApiApiKeys, SourceSvcCheckoutRepoRequest, SourceSvcCheckoutRepoResponse, SourceSvcErrorResponse, StableDiffusionTxt2ImgRequest, UserSvcAddUserToOrganizationRequest, UserSvcApi, UserSvcApiApiKeys, UserSvcAssignPermissionsRequest, UserSvcAuthToken, UserSvcChangePasswordRequest, UserSvcContact, UserSvcCreateOrganizationRequest, UserSvcCreateRoleRequest, UserSvcCreateRoleResponse, UserSvcCreateUserRequest, UserSvcErrorResponse, UserSvcGetPermissionsResponse, UserSvcGetPublicKeyResponse, UserSvcGetRolesResponse, UserSvcGetUsersRequest, UserSvcGetUsersResponse, UserSvcGrant, UserSvcIsAuthorizedRequest, UserSvcIsAuthorizedResponse, UserSvcListGrantsRequest, UserSvcListGrantsResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcOrganization, UserSvcPermission, UserSvcPermissionLink, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcRole, UserSvcSaveGrantsRequest, UserSvcSavePermissionsRequest, UserSvcSavePermissionsResponse, UserSvcSaveProfileRequest, UserSvcSetRolePermissionsRequest, UserSvcUser, VoidAuth };
+export { APIS, ApiKeyAuth, ChatSvcAddMessageRequest, ChatSvcAddThreadRequest, ChatSvcAddThreadResponse, ChatSvcApi, ChatSvcApiApiKeys, ChatSvcEventMessageAdded, ChatSvcEventThreadAdded, ChatSvcEventThreadUpdate, ChatSvcGetMessageResponse, ChatSvcGetMessagesResponse, ChatSvcGetThreadResponse, ChatSvcGetThreadsResponse, ChatSvcMessage, ChatSvcThread, ChatSvcUpdateThreadRequest, ConfigSvcApi, ConfigSvcApiApiKeys, ConfigSvcConfig, ConfigSvcGetConfigResponse, ConfigSvcSaveConfigRequest, ContainerSvcApi, ContainerSvcApiApiKeys, ContainerSvcAsset, ContainerSvcBuildImageRequest, ContainerSvcCapabilities, ContainerSvcContainer, ContainerSvcContainerIsRunningResponse, ContainerSvcDaemonInfoResponse, ContainerSvcEnvVar, ContainerSvcErrorResponse, ContainerSvcGetContainerSummaryResponse, ContainerSvcGetHostResponse, ContainerSvcImagePullableResponse, ContainerSvcKeep, ContainerSvcLabel, ContainerSvcListContainersRequest, ContainerSvcListContainersResponse, ContainerSvcListLogsRequest, ContainerSvcListLogsResponse, ContainerSvcLog, ContainerSvcNetwork, ContainerSvcPortMapping, ContainerSvcResources, ContainerSvcRunContainerRequest, ContainerSvcRunContainerResponse, ContainerSvcStopContainerRequest, ContainerSvcVolume, DataSvcApi, DataSvcApiApiKeys, DataSvcCreateObjectFields, DataSvcCreateObjectRequest, DataSvcCreateObjectResponse, DataSvcDeleteObjectRequest, DataSvcErrorResponse, DataSvcObject, DataSvcQueryRequest, DataSvcQueryResponse, DataSvcUpdateObjectsRequest, DataSvcUpsertObjectRequest, DataSvcUpsertObjectResponse, DatastoreFilter, DatastoreOp, DatastoreOrderBy, DatastoreQuery, DatastoreSortingType, DeploySvcApi, DeploySvcApiApiKeys, DeploySvcAutoScalingConfig, DeploySvcDeleteDeploymentRequest, DeploySvcDeployment, DeploySvcDeploymentStatus, DeploySvcDeploymentStrategy, DeploySvcErrorResponse, DeploySvcListDeploymentsResponse, DeploySvcResourceLimits, DeploySvcSaveDeploymentRequest, DeploySvcStrategyType, DeploySvcTargetRegion, EmailSvcApi, EmailSvcApiApiKeys, EmailSvcAttachment, EmailSvcErrorResponse, EmailSvcSendEmailRequest, EmailSvcSendEmailResponse, FileSvcApi, FileSvcApiApiKeys, FileSvcDownload, FileSvcDownloadFileRequest, FileSvcDownloadsResponse, FileSvcErrorResponse, FileSvcGetDownloadResponse, FileSvcListUploadsRequest, FileSvcListUploadsResponse, FileSvcUpload, FileSvcUploadFileResponse, FirehoseSvcApi, FirehoseSvcApiApiKeys, FirehoseSvcErrorResponse, FirehoseSvcEvent, FirehoseSvcEventPublishRequest, HttpBasicAuth, HttpBearerAuth, HttpError, ModelSvcApi, ModelSvcApiApiKeys, ModelSvcArchitectures, ModelSvcAsset, ModelSvcContainer, ModelSvcCudaParameters, ModelSvcDefaultParameters, ModelSvcEnvVar, ModelSvcErrorResponse, ModelSvcGetModelResponse, ModelSvcKeep, ModelSvcListModelsResponse, ModelSvcListPlatformsResponse, ModelSvcModel, ModelSvcModelStatus, ModelSvcPlatform, ModelSvcStatusResponse, OAuth, ObjectSerializer, PolicySvcApi, PolicySvcApiApiKeys, PolicySvcBlocklistParameters, PolicySvcCheckRequest, PolicySvcCheckResponse, PolicySvcEntity, PolicySvcErrorResponse, PolicySvcInstance, PolicySvcParameters, PolicySvcRateLimitParameters, PolicySvcScope, PolicySvcTemplateId, PolicySvcUpsertInstanceRequest, PromptSvcApi, PromptSvcApiApiKeys, PromptSvcEngineParameters, PromptSvcErrorResponse, PromptSvcListPromptsRequest, PromptSvcListPromptsResponse, PromptSvcLlamaCppParameters, PromptSvcParameters, PromptSvcPrompt, PromptSvcPromptRequest, PromptSvcPromptResponse, PromptSvcPromptStatus, PromptSvcPromptType, PromptSvcRemovePromptRequest, PromptSvcStableDiffusionParameters, PromptSvcStreamChunk, PromptSvcStreamChunkType, PromptSvcTextToImageParameters, PromptSvcTextToTextParameters, PromptSvcTypesResponse, RegistrySvcAPISpec, RegistrySvcApi, RegistrySvcApiApiKeys, RegistrySvcClient, RegistrySvcDefinition, RegistrySvcEnvVar, RegistrySvcErrorResponse, RegistrySvcGPU, RegistrySvcImageSpec, RegistrySvcInstance, RegistrySvcInstanceStatus, RegistrySvcLanguage, RegistrySvcListDefinitionsResponse, RegistrySvcListInstancesResponse, RegistrySvcListNodesRequest, RegistrySvcListNodesResponse, RegistrySvcNode, RegistrySvcNodeSelfResponse, RegistrySvcPortMapping, RegistrySvcProcess, RegistrySvcRegisterInstanceRequest, RegistrySvcRepositorySpec, RegistrySvcResourceUsage, RegistrySvcSaveDefinitionRequest, RegistrySvcUsage, SecretSvcApi, SecretSvcApiApiKeys, SecretSvcChecksumAlgorithm, SecretSvcDecryptValueRequest, SecretSvcDecryptValueResponse, SecretSvcEncryptValueRequest, SecretSvcEncryptValueResponse, SecretSvcIsSecureResponse, SecretSvcListSecretsRequest, SecretSvcListSecretsResponse, SecretSvcRemoveSecretsRequest, SecretSvcSaveSecretsRequest, SecretSvcSecret, SourceSvcApi, SourceSvcApiApiKeys, SourceSvcCheckoutRepoRequest, SourceSvcCheckoutRepoResponse, SourceSvcErrorResponse, StableDiffusionTxt2ImgRequest, UserSvcAddUserToOrganizationRequest, UserSvcApi, UserSvcApiApiKeys, UserSvcAssignPermissionsRequest, UserSvcAuthToken, UserSvcChangePasswordRequest, UserSvcContact, UserSvcCreateOrganizationRequest, UserSvcCreateRoleRequest, UserSvcCreateRoleResponse, UserSvcCreateUserRequest, UserSvcErrorResponse, UserSvcGetPermissionsResponse, UserSvcGetPublicKeyResponse, UserSvcGetRolesResponse, UserSvcGetUsersRequest, UserSvcGetUsersResponse, UserSvcGrant, UserSvcIsAuthorizedRequest, UserSvcIsAuthorizedResponse, UserSvcListGrantsRequest, UserSvcListGrantsResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcOrganization, UserSvcPermission, UserSvcPermissionLink, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcRole, UserSvcSaveGrantsRequest, UserSvcSavePermissionsRequest, UserSvcSavePermissionsResponse, UserSvcSaveProfileRequest, UserSvcSetRolePermissionsRequest, UserSvcUser, VoidAuth };

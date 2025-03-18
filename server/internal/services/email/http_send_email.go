@@ -133,6 +133,12 @@ func (s *EmailService) sendgridSendEmail(req email.SendEmailRequest) error {
 	message := mail.NewV3MailInit(from, subject, to, &content)
 
 	for _, attachment := range req.Attachments {
+		if attachment.FileId != "" && attachment.Content != "" {
+			return errors.New("only one of 'FileId' or 'Content' should be provided")
+		}
+
+		// @todo support FileSvc.serveUpload too
+
 		file := mail.NewAttachment()
 		file.SetContent(attachment.Content)   // File content as base64-encoded string
 		file.SetType(attachment.ContentType)  // MIME type of the file
@@ -166,20 +172,6 @@ func (s *EmailService) sendgridSendEmail(req email.SendEmailRequest) error {
 	})
 	if err != nil {
 		return errors.Wrap(err, "failed to store email")
-	}
-	for _, attachment := range req.Attachments {
-		err = s.attachentStore.Create(&email.Attachment{
-			Id:      sdk.Id("mattch"),
-			EmailId: emailId,
-			File: email.File{
-				Filename:    attachment.Filename,
-				Content:     attachment.Content,
-				ContentType: attachment.ContentType,
-			},
-		})
-		if err != nil {
-			return errors.Wrap(err, "failed to store attachment")
-		}
 	}
 
 	return nil

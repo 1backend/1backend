@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { EmailSvcFile } from './EmailSvcFile';
+import type { EmailSvcAttachment } from './EmailSvcAttachment';
 import {
-    EmailSvcFileFromJSON,
-    EmailSvcFileFromJSONTyped,
-    EmailSvcFileToJSON,
-    EmailSvcFileToJSONTyped,
-} from './EmailSvcFile';
+    EmailSvcAttachmentFromJSON,
+    EmailSvcAttachmentFromJSONTyped,
+    EmailSvcAttachmentToJSON,
+    EmailSvcAttachmentToJSONTyped,
+} from './EmailSvcAttachment';
 
 /**
  * 
@@ -29,10 +29,10 @@ import {
 export interface EmailSvcSendEmailRequest {
     /**
      * List of file attachments (optional)
-     * @type {Array<EmailSvcFile>}
+     * @type {Array<EmailSvcAttachment>}
      * @memberof EmailSvcSendEmailRequest
      */
-    attachments?: Array<EmailSvcFile>;
+    attachments?: Array<EmailSvcAttachment>;
     /**
      * List of BCC recipient email addresses (optional)
      * @type {Array<string>}
@@ -58,17 +58,11 @@ export interface EmailSvcSendEmailRequest {
      */
     contentType: string;
     /**
-     * Timestamp of email creation
-     * @type {string}
-     * @memberof EmailSvcSendEmailRequest
-     */
-    createdAt: string;
-    /**
      * Unique identifier
      * @type {string}
      * @memberof EmailSvcSendEmailRequest
      */
-    id?: string;
+    id: string;
     /**
      * Email subject line
      * @type {string}
@@ -89,7 +83,7 @@ export interface EmailSvcSendEmailRequest {
 export function instanceOfEmailSvcSendEmailRequest(value: object): value is EmailSvcSendEmailRequest {
     if (!('body' in value) || value['body'] === undefined) return false;
     if (!('contentType' in value) || value['contentType'] === undefined) return false;
-    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
     if (!('subject' in value) || value['subject'] === undefined) return false;
     if (!('to' in value) || value['to'] === undefined) return false;
     return true;
@@ -105,13 +99,12 @@ export function EmailSvcSendEmailRequestFromJSONTyped(json: any, ignoreDiscrimin
     }
     return {
         
-        'attachments': json['attachments'] == null ? undefined : ((json['attachments'] as Array<any>).map(EmailSvcFileFromJSON)),
+        'attachments': json['attachments'] == null ? undefined : ((json['attachments'] as Array<any>).map(EmailSvcAttachmentFromJSON)),
         'bcc': json['bcc'] == null ? undefined : json['bcc'],
         'body': json['body'],
         'cc': json['cc'] == null ? undefined : json['cc'],
         'contentType': json['contentType'],
-        'createdAt': json['createdAt'],
-        'id': json['id'] == null ? undefined : json['id'],
+        'id': json['id'],
         'subject': json['subject'],
         'to': json['to'],
     };
@@ -128,12 +121,11 @@ export function EmailSvcSendEmailRequestToJSONTyped(value?: EmailSvcSendEmailReq
 
     return {
         
-        'attachments': value['attachments'] == null ? undefined : ((value['attachments'] as Array<any>).map(EmailSvcFileToJSON)),
+        'attachments': value['attachments'] == null ? undefined : ((value['attachments'] as Array<any>).map(EmailSvcAttachmentToJSON)),
         'bcc': value['bcc'],
         'body': value['body'],
         'cc': value['cc'],
         'contentType': value['contentType'],
-        'createdAt': value['createdAt'],
         'id': value['id'],
         'subject': value['subject'],
         'to': value['to'],

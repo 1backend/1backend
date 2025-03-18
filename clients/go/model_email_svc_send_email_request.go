@@ -23,7 +23,7 @@ var _ MappedNullable = &EmailSvcSendEmailRequest{}
 // EmailSvcSendEmailRequest struct for EmailSvcSendEmailRequest
 type EmailSvcSendEmailRequest struct {
 	// List of file attachments (optional)
-	Attachments []EmailSvcFile `json:"attachments,omitempty"`
+	Attachments []EmailSvcAttachment `json:"attachments,omitempty"`
 	// List of BCC recipient email addresses (optional)
 	Bcc []string `json:"bcc,omitempty"`
 	// Email body content (plain text or HTML)
@@ -32,10 +32,8 @@ type EmailSvcSendEmailRequest struct {
 	Cc []string `json:"cc,omitempty"`
 	// Content type: \"text/plain\" or \"text/html\"
 	ContentType string `json:"contentType"`
-	// Timestamp of email creation
-	CreatedAt string `json:"createdAt"`
 	// Unique identifier
-	Id *string `json:"id,omitempty"`
+	Id string `json:"id"`
 	// Email subject line
 	Subject string `json:"subject"`
 	// List of recipient email addresses
@@ -48,11 +46,11 @@ type _EmailSvcSendEmailRequest EmailSvcSendEmailRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewEmailSvcSendEmailRequest(body string, contentType string, createdAt string, subject string, to []string) *EmailSvcSendEmailRequest {
+func NewEmailSvcSendEmailRequest(body string, contentType string, id string, subject string, to []string) *EmailSvcSendEmailRequest {
 	this := EmailSvcSendEmailRequest{}
 	this.Body = body
 	this.ContentType = contentType
-	this.CreatedAt = createdAt
+	this.Id = id
 	this.Subject = subject
 	this.To = to
 	return &this
@@ -67,9 +65,9 @@ func NewEmailSvcSendEmailRequestWithDefaults() *EmailSvcSendEmailRequest {
 }
 
 // GetAttachments returns the Attachments field value if set, zero value otherwise.
-func (o *EmailSvcSendEmailRequest) GetAttachments() []EmailSvcFile {
+func (o *EmailSvcSendEmailRequest) GetAttachments() []EmailSvcAttachment {
 	if o == nil || IsNil(o.Attachments) {
-		var ret []EmailSvcFile
+		var ret []EmailSvcAttachment
 		return ret
 	}
 	return o.Attachments
@@ -77,7 +75,7 @@ func (o *EmailSvcSendEmailRequest) GetAttachments() []EmailSvcFile {
 
 // GetAttachmentsOk returns a tuple with the Attachments field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *EmailSvcSendEmailRequest) GetAttachmentsOk() ([]EmailSvcFile, bool) {
+func (o *EmailSvcSendEmailRequest) GetAttachmentsOk() ([]EmailSvcAttachment, bool) {
 	if o == nil || IsNil(o.Attachments) {
 		return nil, false
 	}
@@ -93,8 +91,8 @@ func (o *EmailSvcSendEmailRequest) HasAttachments() bool {
 	return false
 }
 
-// SetAttachments gets a reference to the given []EmailSvcFile and assigns it to the Attachments field.
-func (o *EmailSvcSendEmailRequest) SetAttachments(v []EmailSvcFile) {
+// SetAttachments gets a reference to the given []EmailSvcAttachment and assigns it to the Attachments field.
+func (o *EmailSvcSendEmailRequest) SetAttachments(v []EmailSvcAttachment) {
 	o.Attachments = v
 }
 
@@ -210,60 +208,28 @@ func (o *EmailSvcSendEmailRequest) SetContentType(v string) {
 	o.ContentType = v
 }
 
-// GetCreatedAt returns the CreatedAt field value
-func (o *EmailSvcSendEmailRequest) GetCreatedAt() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.CreatedAt
-}
-
-// GetCreatedAtOk returns a tuple with the CreatedAt field value
-// and a boolean to check if the value has been set.
-func (o *EmailSvcSendEmailRequest) GetCreatedAtOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.CreatedAt, true
-}
-
-// SetCreatedAt sets field value
-func (o *EmailSvcSendEmailRequest) SetCreatedAt(v string) {
-	o.CreatedAt = v
-}
-
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value
 func (o *EmailSvcSendEmailRequest) GetId() string {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Id
+
+	return o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *EmailSvcSendEmailRequest) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Id, true
+	return &o.Id, true
 }
 
-// HasId returns a boolean if a field has been set.
-func (o *EmailSvcSendEmailRequest) HasId() bool {
-	if o != nil && !IsNil(o.Id) {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
+// SetId sets field value
 func (o *EmailSvcSendEmailRequest) SetId(v string) {
-	o.Id = &v
+	o.Id = v
 }
 
 // GetSubject returns the Subject field value
@@ -335,10 +301,7 @@ func (o EmailSvcSendEmailRequest) ToMap() (map[string]interface{}, error) {
 		toSerialize["cc"] = o.Cc
 	}
 	toSerialize["contentType"] = o.ContentType
-	toSerialize["createdAt"] = o.CreatedAt
-	if !IsNil(o.Id) {
-		toSerialize["id"] = o.Id
-	}
+	toSerialize["id"] = o.Id
 	toSerialize["subject"] = o.Subject
 	toSerialize["to"] = o.To
 	return toSerialize, nil
@@ -351,7 +314,7 @@ func (o *EmailSvcSendEmailRequest) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"body",
 		"contentType",
-		"createdAt",
+		"id",
 		"subject",
 		"to",
 	}

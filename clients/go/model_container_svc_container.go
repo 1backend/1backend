@@ -40,7 +40,7 @@ type ContainerSvcContainer struct {
 	Names []string `json:"names,omitempty"`
 	// Network contains networking-related information for the container.
 	Network *ContainerSvcNetwork `json:"network,omitempty"`
-	// Node Id Please see the documentation for the envar 1B_NODE_ID
+	// Node Id Please see the documentation for the envar OPENORCH_NODE_ID
 	NodeId *string `json:"nodeId,omitempty"`
 	// Ports maps host ports (keys) to container ports (values).
 	Ports []ContainerSvcPortMapping `json:"ports,omitempty"`

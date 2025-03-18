@@ -29,7 +29,7 @@ import (
 // @Tags File Svc
 // @Accept json
 // @Produce application/octet-stream
-// @Param fileId path string true "Upload ID"
+// @Param fileId path string true "FileID uniquely identifies the file itself (not an ID, which represents a specific replica)"
 // @Success 200 {file} binary "File served successfully"
 // @Failure 400 {object} file.ErrorResponse "Missing upload ID"
 // @Failure 404 {object} file.ErrorResponse "File not found"

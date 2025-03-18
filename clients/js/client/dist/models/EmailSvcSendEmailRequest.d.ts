@@ -1,6 +1,6 @@
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9,7 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import type { EmailSvcFile } from './EmailSvcFile';
+import type { EmailSvcAttachment } from './EmailSvcAttachment';
 /**
  *
  * @export
@@ -18,10 +18,10 @@ import type { EmailSvcFile } from './EmailSvcFile';
 export interface EmailSvcSendEmailRequest {
     /**
      * List of file attachments (optional)
-     * @type {Array<EmailSvcFile>}
+     * @type {Array<EmailSvcAttachment>}
      * @memberof EmailSvcSendEmailRequest
      */
-    attachments?: Array<EmailSvcFile>;
+    attachments?: Array<EmailSvcAttachment>;
     /**
      * List of BCC recipient email addresses (optional)
      * @type {Array<string>}
@@ -47,17 +47,11 @@ export interface EmailSvcSendEmailRequest {
      */
     contentType: string;
     /**
-     * Timestamp of email creation
-     * @type {string}
-     * @memberof EmailSvcSendEmailRequest
-     */
-    createdAt: string;
-    /**
      * Unique identifier
      * @type {string}
      * @memberof EmailSvcSendEmailRequest
      */
-    id?: string;
+    id: string;
     /**
      * Email subject line
      * @type {string}

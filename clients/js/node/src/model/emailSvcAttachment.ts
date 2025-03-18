@@ -1,6 +1,6 @@
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -12,17 +12,21 @@
 
 import { RequestFile } from './models';
 
-export class EmailSvcFile {
+export class EmailSvcAttachment {
     /**
-    * Base64-encoded content of the file
+    * Base64-encoded file content. Use this for small files. Required for inline attachments (i.e., those not using File Svc, see FileId).
     */
-    'content': string;
+    'content'?: string;
     /**
-    * MIME type of the file (e.g., \"application/pdf\")
+    * MIME type of the file (e.g., \"application/pdf\", \"image/png\") Required for inline attachments (i.e., those not using File Svc, see FileId).
     */
     'contentType': string;
     /**
-    * Name of the attached file
+    * A File Svc file ID. Requires the file to be uploaded separately. Recommended for mid to large-sized files. If this field is specified, all other fields are optional.
+    */
+    'fileId'?: string;
+    /**
+    * File name for the attachment. Required for inline attachments (i.e., those not using File Svc, see FileId).
     */
     'filename': string;
 
@@ -40,13 +44,18 @@ export class EmailSvcFile {
             "type": "string"
         },
         {
+            "name": "fileId",
+            "baseName": "fileId",
+            "type": "string"
+        },
+        {
             "name": "filename",
             "baseName": "filename",
             "type": "string"
         }    ];
 
     static getAttributeTypeMap() {
-        return EmailSvcFile.attributeTypeMap;
+        return EmailSvcAttachment.attributeTypeMap;
     }
 }
 

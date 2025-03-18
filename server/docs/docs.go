@@ -2072,7 +2072,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Upload ID",
+                        "description": "FileID uniquely identifies the file itself (not an ID, which represents a specific replica)",
                         "name": "fileId",
                         "in": "path",
                         "required": true
@@ -2169,7 +2169,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "List the uploaded files.\n\nRequires the ` + "`" + `file-svc:upload:view` + "`" + ` permission.",
+                "description": "Lists uploaded files, returning only metadata about each upload.\nTo retrieve file content, use the ` + "`" + `Serve an Uploaded File` + "`" + ` endpoint, which serves a single file per request.\nNote: Retrieving the contents of multiple files in a single request is not supported currently.\n\nRequires the ` + "`" + `file-svc:upload:view` + "`" + ` permission.",
                 "consumes": [
                     "application/json"
                 ],
@@ -6647,32 +6647,35 @@ const docTemplate = `{
                 }
             }
         },
-        "email_svc.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
-        "email_svc.File": {
+        "email_svc.Attachment": {
             "type": "object",
             "required": [
-                "content",
                 "contentType",
                 "filename"
             ],
             "properties": {
                 "content": {
-                    "description": "Base64-encoded content of the file",
+                    "description": "Base64-encoded file content. Use this for small files.\nRequired for inline attachments (i.e., those not using File Svc, see FileId).",
                     "type": "string"
                 },
                 "contentType": {
-                    "description": "MIME type of the file (e.g., \"application/pdf\")",
+                    "description": "MIME type of the file (e.g., \"application/pdf\", \"image/png\")\nRequired for inline attachments (i.e., those not using File Svc, see FileId).",
+                    "type": "string"
+                },
+                "fileId": {
+                    "description": "A File Svc file ID. Requires the file to be uploaded separately.\nRecommended for mid to large-sized files.\nIf this field is specified, all other fields are optional.",
                     "type": "string"
                 },
                 "filename": {
-                    "description": "Name of the attached file",
+                    "description": "File name for the attachment.\nRequired for inline attachments (i.e., those not using File Svc, see FileId).",
+                    "type": "string"
+                }
+            }
+        },
+        "email_svc.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
                     "type": "string"
                 }
             }
@@ -6682,7 +6685,7 @@ const docTemplate = `{
             "required": [
                 "body",
                 "contentType",
-                "createdAt",
+                "id",
                 "subject",
                 "to"
             ],
@@ -6691,7 +6694,7 @@ const docTemplate = `{
                     "description": "List of file attachments (optional)",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/email_svc.File"
+                        "$ref": "#/definitions/email_svc.Attachment"
                     }
                 },
                 "bcc": {
@@ -6714,10 +6717,6 @@ const docTemplate = `{
                 },
                 "contentType": {
                     "description": "Content type: \"text/plain\" or \"text/html\"",
-                    "type": "string"
-                },
-                "createdAt": {
-                    "description": "Timestamp of email creation",
                     "type": "string"
                 },
                 "id": {

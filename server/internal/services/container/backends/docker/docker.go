@@ -23,6 +23,7 @@ import (
 	"github.com/docker/docker/client"
 
 	dockerapitypes "github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/network"
 )
 
 type DockerBackend struct {
@@ -78,7 +79,7 @@ func (ds *DockerBackend) getDockerPort() int {
 func (d *DockerBackend) getDockerBridgeIP() (string, error) {
 	ctx := context.Background()
 
-	networks, err := d.client.NetworkList(ctx, dockerapitypes.NetworkListOptions{})
+	networks, err := d.client.NetworkList(ctx, network.ListOptions{})
 	if err != nil {
 		return "", fmt.Errorf("failed to list Docker networks: %w", err)
 	}

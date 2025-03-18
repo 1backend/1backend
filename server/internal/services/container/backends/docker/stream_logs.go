@@ -6,18 +6,17 @@ import (
 	"log"
 	"sync"
 
-	"github.com/docker/docker/api/types"
+	"github.com/1backend/1backend/server/internal/services/container/logaccumulator"
 	"github.com/docker/docker/api/types/container"
 	dockercontainer "github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/events"
 	"github.com/docker/docker/client"
-	"github.com/1backend/1backend/server/internal/services/container/logaccumulator"
 )
 
 // Start listening to Docker logs
 func StartDockerLogListener(cli *client.Client, la *logaccumulator.LogAccumulator) {
 	ctx := context.Background()
-	eventChan, errChan := cli.Events(ctx, types.EventsOptions{})
+	eventChan, errChan := cli.Events(ctx, events.ListOptions{})
 
 	activeContainers := make(map[string]bool)
 	var mu sync.Mutex

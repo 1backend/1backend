@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * 1Backend
- * A common backend for your AI applications—microservices-based and built to scale.
+ * A unified backend for your AI applications—microservices-based and built to scale.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -12,40 +12,40 @@
  * Do not edit the class manually.
  */
 /**
- * Check if a given object implements the EmailSvcFile interface.
+ * Check if a given object implements the EmailSvcAttachment interface.
  */
-export function instanceOfEmailSvcFile(value) {
-    if (!('content' in value) || value['content'] === undefined)
-        return false;
+export function instanceOfEmailSvcAttachment(value) {
     if (!('contentType' in value) || value['contentType'] === undefined)
         return false;
     if (!('filename' in value) || value['filename'] === undefined)
         return false;
     return true;
 }
-export function EmailSvcFileFromJSON(json) {
-    return EmailSvcFileFromJSONTyped(json, false);
+export function EmailSvcAttachmentFromJSON(json) {
+    return EmailSvcAttachmentFromJSONTyped(json, false);
 }
-export function EmailSvcFileFromJSONTyped(json, ignoreDiscriminator) {
+export function EmailSvcAttachmentFromJSONTyped(json, ignoreDiscriminator) {
     if (json == null) {
         return json;
     }
     return {
-        'content': json['content'],
+        'content': json['content'] == null ? undefined : json['content'],
         'contentType': json['contentType'],
+        'fileId': json['fileId'] == null ? undefined : json['fileId'],
         'filename': json['filename'],
     };
 }
-export function EmailSvcFileToJSON(json) {
-    return EmailSvcFileToJSONTyped(json, false);
+export function EmailSvcAttachmentToJSON(json) {
+    return EmailSvcAttachmentToJSONTyped(json, false);
 }
-export function EmailSvcFileToJSONTyped(value, ignoreDiscriminator = false) {
+export function EmailSvcAttachmentToJSONTyped(value, ignoreDiscriminator = false) {
     if (value == null) {
         return value;
     }
     return {
         'content': value['content'],
         'contentType': value['contentType'],
+        'fileId': value['fileId'],
         'filename': value['filename'],
     };
 }
