@@ -4,7 +4,7 @@ import { __awaiter } from 'tslib';
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -325,7 +325,7 @@ class TextApiResponse {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -385,7 +385,7 @@ function ChatSvcMessageToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -427,7 +427,7 @@ function ChatSvcAddMessageRequestToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -481,7 +481,7 @@ function ChatSvcThreadToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -523,7 +523,7 @@ function ChatSvcAddThreadRequestToJSONTyped(value, ignoreDiscriminator = false) 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -565,7 +565,7 @@ function ChatSvcAddThreadResponseToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -607,7 +607,7 @@ function ChatSvcEventMessageAddedToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -649,7 +649,7 @@ function ChatSvcEventThreadAddedToJSONTyped(value, ignoreDiscriminator = false) 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -691,7 +691,7 @@ function ChatSvcEventThreadUpdateToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -735,7 +735,7 @@ function ChatSvcGetMessageResponseToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -777,7 +777,7 @@ function ChatSvcGetMessagesResponseToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -821,7 +821,7 @@ function ChatSvcGetThreadResponseToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -863,7 +863,7 @@ function ChatSvcGetThreadsResponseToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -905,7 +905,7 @@ function ChatSvcUpdateThreadRequestToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -955,7 +955,7 @@ function ConfigSvcConfigToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -997,7 +997,7 @@ function ConfigSvcGetConfigResponseToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1039,7 +1039,7 @@ function ConfigSvcSaveConfigRequestToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1087,7 +1087,7 @@ function ContainerSvcAssetToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1137,7 +1137,7 @@ function ContainerSvcBuildImageRequestToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1179,7 +1179,7 @@ function ContainerSvcCapabilitiesToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1225,7 +1225,7 @@ function ContainerSvcKeepToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1271,7 +1271,7 @@ function ContainerSvcNetworkToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1317,7 +1317,7 @@ function ContainerSvcVolumeToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1365,7 +1365,7 @@ function ContainerSvcLabelToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1413,7 +1413,7 @@ function ContainerSvcEnvVarToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1459,7 +1459,7 @@ function ContainerSvcResourcesToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1507,7 +1507,7 @@ function ContainerSvcPortMappingToJSONTyped(value, ignoreDiscriminator = false) 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1579,7 +1579,7 @@ function ContainerSvcContainerToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1623,7 +1623,7 @@ function ContainerSvcContainerIsRunningResponseToJSONTyped(value, ignoreDiscrimi
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1671,7 +1671,7 @@ function ContainerSvcDaemonInfoResponseToJSONTyped(value, ignoreDiscriminator = 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1713,7 +1713,7 @@ function ContainerSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1765,7 +1765,7 @@ function ContainerSvcGetContainerSummaryResponseToJSONTyped(value, ignoreDiscrim
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1809,7 +1809,7 @@ function ContainerSvcGetHostResponseToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1853,7 +1853,7 @@ function ContainerSvcImagePullableResponseToJSONTyped(value, ignoreDiscriminator
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1899,7 +1899,7 @@ function ContainerSvcListContainersRequestToJSONTyped(value, ignoreDiscriminator
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1941,7 +1941,7 @@ function ContainerSvcListContainersResponseToJSONTyped(value, ignoreDiscriminato
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -1987,7 +1987,7 @@ function ContainerSvcListLogsRequestToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2037,7 +2037,7 @@ function ContainerSvcLogToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2079,7 +2079,7 @@ function ContainerSvcListLogsResponseToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2139,7 +2139,7 @@ function ContainerSvcRunContainerRequestToJSONTyped(value, ignoreDiscriminator =
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2183,7 +2183,7 @@ function ContainerSvcRunContainerResponseToJSONTyped(value, ignoreDiscriminator 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2227,7 +2227,7 @@ function ContainerSvcStopContainerRequestToJSONTyped(value, ignoreDiscriminator 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2285,7 +2285,7 @@ function DataSvcCreateObjectFieldsToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2327,7 +2327,7 @@ function DataSvcCreateObjectRequestToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2389,7 +2389,7 @@ function DataSvcObjectToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2431,7 +2431,7 @@ function DataSvcCreateObjectResponseToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2478,7 +2478,7 @@ function DatastoreOpToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2524,7 +2524,7 @@ function DatastoreFilterToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2568,7 +2568,7 @@ function DataSvcDeleteObjectRequestToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2610,7 +2610,7 @@ function DataSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2656,7 +2656,7 @@ function DatastoreSortingTypeToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2704,7 +2704,7 @@ function DatastoreOrderByToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2754,7 +2754,7 @@ function DatastoreQueryToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2800,7 +2800,7 @@ function DataSvcQueryRequestToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2842,7 +2842,7 @@ function DataSvcQueryResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2888,7 +2888,7 @@ function DataSvcUpdateObjectsRequestToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2930,7 +2930,7 @@ function DataSvcUpsertObjectRequestToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -2972,7 +2972,7 @@ function DataSvcUpsertObjectResponseToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3018,7 +3018,7 @@ function DeploySvcAutoScalingConfigToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3062,7 +3062,7 @@ function DeploySvcDeleteDeploymentRequestToJSONTyped(value, ignoreDiscriminator 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3106,7 +3106,7 @@ function DeploySvcStrategyTypeToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3152,7 +3152,7 @@ function DeploySvcDeploymentStrategyToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3199,7 +3199,7 @@ function DeploySvcDeploymentStatusToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3243,7 +3243,7 @@ function DeploySvcTargetRegionToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3289,7 +3289,7 @@ function DeploySvcResourceLimitsToJSONTyped(value, ignoreDiscriminator = false) 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3357,7 +3357,7 @@ function DeploySvcDeploymentToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3399,7 +3399,7 @@ function DeploySvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3441,7 +3441,7 @@ function DeploySvcListDeploymentsResponseToJSONTyped(value, ignoreDiscriminator 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3483,7 +3483,7 @@ function DeploySvcSaveDeploymentRequestToJSONTyped(value, ignoreDiscriminator = 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3535,7 +3535,7 @@ function EmailSvcAttachmentToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3577,7 +3577,7 @@ function EmailSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3643,7 +3643,7 @@ function EmailSvcSendEmailRequestToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3687,7 +3687,7 @@ function EmailSvcSendEmailResponseToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3749,7 +3749,7 @@ function FileSvcDownloadToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3795,7 +3795,7 @@ function FileSvcDownloadFileRequestToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3837,7 +3837,7 @@ function FileSvcDownloadsResponseToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3879,7 +3879,7 @@ function FileSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3925,7 +3925,7 @@ function FileSvcGetDownloadResponseToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -3971,7 +3971,7 @@ function FileSvcListUploadsRequestToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4031,7 +4031,7 @@ function FileSvcUploadToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4073,7 +4073,7 @@ function FileSvcListUploadsResponseToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4115,7 +4115,7 @@ function FileSvcUploadFileResponseToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4157,7 +4157,7 @@ function FirehoseSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4201,7 +4201,7 @@ function FirehoseSvcEventToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4243,7 +4243,7 @@ function FirehoseSvcEventPublishRequestToJSONTyped(value, ignoreDiscriminator = 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4287,7 +4287,7 @@ function ModelSvcKeepToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4331,7 +4331,7 @@ function ModelSvcEnvVarToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4379,7 +4379,7 @@ function ModelSvcContainerToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4427,7 +4427,7 @@ function ModelSvcCudaParametersToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4469,7 +4469,7 @@ function ModelSvcDefaultParametersToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4513,7 +4513,7 @@ function ModelSvcArchitecturesToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4561,7 +4561,7 @@ function ModelSvcAssetToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4603,7 +4603,7 @@ function ModelSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4689,7 +4689,7 @@ function ModelSvcModelToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4759,7 +4759,7 @@ function PromptSvcPromptTypeToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4809,7 +4809,7 @@ function ModelSvcPlatformToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4861,7 +4861,7 @@ function ModelSvcGetModelResponseToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4903,7 +4903,7 @@ function ModelSvcListModelsResponseToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4947,7 +4947,7 @@ function ModelSvcListPlatformsResponseToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -4999,7 +4999,7 @@ function ModelSvcModelStatusToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5041,7 +5041,7 @@ function ModelSvcStatusResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5083,7 +5083,7 @@ function PolicySvcBlocklistParametersToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5131,7 +5131,7 @@ function PolicySvcCheckRequestToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5175,7 +5175,7 @@ function PolicySvcCheckResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5219,7 +5219,7 @@ function PolicySvcEntityToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5261,7 +5261,7 @@ function PolicySvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5305,7 +5305,7 @@ function PolicySvcTemplateIdToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5349,7 +5349,7 @@ function PolicySvcScopeToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5397,7 +5397,7 @@ function PolicySvcRateLimitParametersToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5441,7 +5441,7 @@ function PolicySvcParametersToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5493,7 +5493,7 @@ function PolicySvcInstanceToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5535,7 +5535,7 @@ function PolicySvcUpsertInstanceRequestToJSONTyped(value, ignoreDiscriminator = 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5577,7 +5577,7 @@ function PromptSvcLlamaCppParametersToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5727,7 +5727,7 @@ function StableDiffusionTxt2ImgRequestToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5769,7 +5769,7 @@ function PromptSvcStableDiffusionParametersToJSONTyped(value, ignoreDiscriminato
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5813,7 +5813,7 @@ function PromptSvcEngineParametersToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5855,7 +5855,7 @@ function PromptSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5897,7 +5897,7 @@ function PromptSvcListPromptsRequestToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -5971,7 +5971,7 @@ function PromptSvcTextToImageParametersToJSONTyped(value, ignoreDiscriminator = 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6013,7 +6013,7 @@ function PromptSvcTextToTextParametersToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6057,7 +6057,7 @@ function PromptSvcParametersToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6105,7 +6105,7 @@ function PromptSvcPromptStatusToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6183,7 +6183,7 @@ function PromptSvcPromptToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6229,7 +6229,7 @@ function PromptSvcListPromptsResponseToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6287,7 +6287,7 @@ function PromptSvcPromptRequestToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6331,7 +6331,7 @@ function PromptSvcPromptResponseToJSONTyped(value, ignoreDiscriminator = false) 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6373,7 +6373,7 @@ function PromptSvcRemovePromptRequestToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6417,7 +6417,7 @@ function PromptSvcStreamChunkTypeToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6463,7 +6463,7 @@ function PromptSvcStreamChunkToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6505,7 +6505,7 @@ function PromptSvcTypesResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6553,7 +6553,7 @@ function RegistrySvcAPISpecToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6614,7 +6614,7 @@ function RegistrySvcLanguageToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6662,7 +6662,7 @@ function RegistrySvcClientToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6710,7 +6710,7 @@ function RegistrySvcPortMappingToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6758,7 +6758,7 @@ function RegistrySvcImageSpecToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6812,7 +6812,7 @@ function RegistrySvcRepositorySpecToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6860,7 +6860,7 @@ function RegistrySvcEnvVarToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6916,7 +6916,7 @@ function RegistrySvcDefinitionToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -6958,7 +6958,7 @@ function RegistrySvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7004,7 +7004,7 @@ function RegistrySvcProcessToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7072,7 +7072,7 @@ function RegistrySvcGPUToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7119,7 +7119,7 @@ function RegistrySvcInstanceStatusToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7193,7 +7193,7 @@ function RegistrySvcInstanceToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7235,7 +7235,7 @@ function RegistrySvcListDefinitionsResponseToJSONTyped(value, ignoreDiscriminato
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7277,7 +7277,7 @@ function RegistrySvcListInstancesResponseToJSONTyped(value, ignoreDiscriminator 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7319,7 +7319,7 @@ function RegistrySvcListNodesRequestToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7365,7 +7365,7 @@ function RegistrySvcUsageToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7411,7 +7411,7 @@ function RegistrySvcResourceUsageToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7469,7 +7469,7 @@ function RegistrySvcNodeToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7511,7 +7511,7 @@ function RegistrySvcListNodesResponseToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7555,7 +7555,7 @@ function RegistrySvcNodeSelfResponseToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7613,7 +7613,7 @@ function RegistrySvcRegisterInstanceRequestToJSONTyped(value, ignoreDiscriminato
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7655,7 +7655,7 @@ function RegistrySvcSaveDefinitionRequestToJSONTyped(value, ignoreDiscriminator 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7702,7 +7702,7 @@ function SecretSvcChecksumAlgorithmToJSONTyped(value, ignoreDiscriminator) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7746,7 +7746,7 @@ function SecretSvcDecryptValueRequestToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7790,7 +7790,7 @@ function SecretSvcDecryptValueResponseToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7834,7 +7834,7 @@ function SecretSvcEncryptValueRequestToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7878,7 +7878,7 @@ function SecretSvcEncryptValueResponseToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7922,7 +7922,7 @@ function SecretSvcIsSecureResponseToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -7968,7 +7968,7 @@ function SecretSvcListSecretsRequestToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8034,7 +8034,7 @@ function SecretSvcSecretToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8076,7 +8076,7 @@ function SecretSvcListSecretsResponseToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8124,7 +8124,7 @@ function SecretSvcRemoveSecretsRequestToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8166,7 +8166,7 @@ function SecretSvcSaveSecretsRequestToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8220,7 +8220,7 @@ function SourceSvcCheckoutRepoRequestToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8262,7 +8262,7 @@ function SourceSvcCheckoutRepoResponseToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8304,7 +8304,7 @@ function SourceSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8346,7 +8346,7 @@ function UserSvcAddUserToOrganizationRequestToJSONTyped(value, ignoreDiscriminat
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8390,7 +8390,7 @@ function UserSvcPermissionLinkToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8432,7 +8432,7 @@ function UserSvcAssignPermissionsRequestToJSONTyped(value, ignoreDiscriminator =
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8486,7 +8486,7 @@ function UserSvcAuthTokenToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8532,7 +8532,7 @@ function UserSvcChangePasswordRequestToJSONTyped(value, ignoreDiscriminator = fa
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8590,7 +8590,7 @@ function UserSvcContactToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8636,7 +8636,7 @@ function UserSvcCreateOrganizationRequestToJSONTyped(value, ignoreDiscriminator 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8686,7 +8686,7 @@ function UserSvcCreateRoleRequestToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8738,7 +8738,7 @@ function UserSvcRoleToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8780,7 +8780,7 @@ function UserSvcCreateRoleResponseToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8836,7 +8836,7 @@ function UserSvcUserToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8882,7 +8882,7 @@ function UserSvcCreateUserRequestToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8924,7 +8924,7 @@ function UserSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -8976,7 +8976,7 @@ function UserSvcPermissionToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9018,7 +9018,7 @@ function UserSvcGetPermissionsResponseToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9060,7 +9060,7 @@ function UserSvcGetPublicKeyResponseToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9102,7 +9102,7 @@ function UserSvcGetRolesResponseToJSONTyped(value, ignoreDiscriminator = false) 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9144,7 +9144,7 @@ function UserSvcGetUsersRequestToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9190,7 +9190,7 @@ function UserSvcGetUsersResponseToJSONTyped(value, ignoreDiscriminator = false) 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9236,7 +9236,7 @@ function UserSvcGrantToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9280,7 +9280,7 @@ function UserSvcIsAuthorizedRequestToJSONTyped(value, ignoreDiscriminator = fals
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9324,7 +9324,7 @@ function UserSvcIsAuthorizedResponseToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9368,7 +9368,7 @@ function UserSvcListGrantsRequestToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9410,7 +9410,7 @@ function UserSvcListGrantsResponseToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9456,7 +9456,7 @@ function UserSvcLoginRequestToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9498,7 +9498,7 @@ function UserSvcLoginResponseToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9550,7 +9550,7 @@ function UserSvcOrganizationToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9596,7 +9596,7 @@ function UserSvcReadUserByTokenResponseToJSONTyped(value, ignoreDiscriminator = 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9644,7 +9644,7 @@ function UserSvcRegisterRequestToJSONTyped(value, ignoreDiscriminator = false) {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9686,7 +9686,7 @@ function UserSvcRegisterResponseToJSONTyped(value, ignoreDiscriminator = false) 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9730,7 +9730,7 @@ function UserSvcResetPasswordRequestToJSONTyped(value, ignoreDiscriminator = fal
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9772,7 +9772,7 @@ function UserSvcSaveGrantsRequestToJSONTyped(value, ignoreDiscriminator = false)
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9814,7 +9814,7 @@ function UserSvcSavePermissionsRequestToJSONTyped(value, ignoreDiscriminator = f
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9856,7 +9856,7 @@ function UserSvcSavePermissionsResponseToJSONTyped(value, ignoreDiscriminator = 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9900,7 +9900,7 @@ function UserSvcSaveProfileRequestToJSONTyped(value, ignoreDiscriminator = false
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -9942,7 +9942,7 @@ function UserSvcSetRolePermissionsRequestToJSONTyped(value, ignoreDiscriminator 
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -10296,7 +10296,7 @@ class ChatSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -10383,7 +10383,7 @@ class ConfigSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -10745,7 +10745,7 @@ class ContainerSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -10974,7 +10974,7 @@ class DataSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -11089,7 +11089,7 @@ class DeploySvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -11143,7 +11143,7 @@ class EmailSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -11437,7 +11437,7 @@ class FileSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -11525,7 +11525,7 @@ class FirehoseSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -11796,7 +11796,7 @@ class ModelSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -11888,7 +11888,7 @@ class PolicySvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -12082,7 +12082,7 @@ class PromptSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -12412,7 +12412,7 @@ class RegistrySvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -12633,7 +12633,7 @@ class SecretSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com
@@ -12687,7 +12687,7 @@ class SourceSvcApi extends BaseAPI {
 /* eslint-disable */
 /**
  * 1Backend
- * A unified backend development platform for your AI applications—microservices-based and built to scale.
+ * A unified backend development platform for microservices-based AI applications.
  *
  * The version of the OpenAPI document: 0.3.0-rc.29
  * Contact: sales@singulatron.com

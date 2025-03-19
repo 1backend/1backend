@@ -3076,8 +3076,7 @@ info:
     email: sales@singulatron.com
     name: API Support
     url: http://1backend.com/
-  description: A unified backend development platform for your AI applications—microservices-based
-    and built to scale.
+  description: A unified backend development platform for microservices-based AI applications.
   license:
     name: AGPL v3.0
     url: https://www.gnu.org/licenses/agpl-3.0.html
