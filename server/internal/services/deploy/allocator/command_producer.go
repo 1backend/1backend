@@ -27,7 +27,9 @@ func GenerateCommands(
 	}
 
 	for _, instance := range serviceInstances {
-		commands = append(commands, checkHealthAndKill(instance)...)
+		if instance.DeploymentId != nil {
+			commands = append(commands, checkHealthAndKill(instance)...)
+		}
 	}
 
 	return commands
