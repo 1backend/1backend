@@ -1,10 +1,10 @@
-name: "1Backend backend Docker build"
+name: "1Backend Docker build"
 
 on:
   workflow_dispatch:
     inputs:
       branch:
-        description: "Branch to build your image from. The final image tag will follow this format: 'name/1backend-backend:cuda-12.2.2-0.3.0-rc.16'"
+        description: "Branch to build your image from. The final image tag will follow this format: 'name/1backend:cuda-12.2.2-0.3.0-rc.16'"
         required: false
         default: "main"
       backend:
@@ -23,7 +23,7 @@ on:
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-  IMAGE_NAME: "1backend-backend"
+  IMAGE_NAME: "1backend"
 
 jobs:
   build-and-push:

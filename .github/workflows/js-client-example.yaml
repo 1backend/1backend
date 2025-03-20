@@ -26,7 +26,7 @@ jobs:
 
       - name: Start docker containers
         run: |
-          docker compose up 1backend-backend -d
+          docker compose up 1backend -d
 
       - name: Run
         run: |
@@ -51,7 +51,7 @@ jobs:
             echo "Node.js script failed, running docker commands for diagnostics..."
             docker ps -a
             docker logs llama-cpp || true
-            docker logs 1backend-1backend-backend-1
+            docker logs 1backend-1backend-1
             ifconfig
             exit 1
           )
