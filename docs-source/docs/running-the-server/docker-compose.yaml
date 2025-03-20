@@ -6,7 +6,7 @@ volumes:
     driver: local
 
 services:
-  1backend-frontend:
+  1backend-ui:
     image: crufter/1backend--frontend:latest
     ports:
       - "3901:80"
@@ -15,7 +15,7 @@ services:
       # It is not an internal address, it's the address the   browser will make API requests to.
       - BACKEND_ADDRESS=http://127.0.0.1:58231
 
-  1backend-backend:
+  1backend:
     image: crufter/1backend--backend:latest
     # use this if you have an nvidia card
     # build: ./localtron/docker/DockerfileNvidia

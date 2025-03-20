@@ -20,8 +20,8 @@ volumes:
     driver: local
 
 services:
-  1backend-frontend:
-    image: crufter/1backend-frontend:latest
+  1backend-ui:
+    image: crufter/1backend-ui:latest
     ports:
       - "3901:80"
     environment:
@@ -29,12 +29,12 @@ services:
       # This is the API the browser will communicate with, not an internal address.
       - BACKEND_ADDRESS=http://127.0.0.1:58231
 
-  1backend-backend:
-    image: crufter/1backend-backend:default-1-latest
+  1backend:
+    image: crufter/1backend:default-1-latest
     # Use a version that matches your GPU architecture for GPU acceleration, e.g.:
-    # crufter/1backend-backend:cuda-12.2.0-latest
+    # crufter/1backend:cuda-12.2.0-latest
     # For available versions, see:
-    # - https://hub.docker.com/r/crufter/1backend-backend/tags
+    # - https://hub.docker.com/r/crufter/1backend/tags
     # - The build file `1backend-docker-build.yaml`
     ports:
       - "58231:58231"

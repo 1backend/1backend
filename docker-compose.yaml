@@ -9,7 +9,7 @@ volumes:
     driver: local
 
 services:
-  1backend-frontend:
+  1backend-ui:
     build:
       context: ./desktop
       dockerfile: ./docker/Dockerfile
@@ -20,7 +20,7 @@ services:
       # It is not an internal address, it's the address the browser will make API requests to.
       - BACKEND_ADDRESS=http://127.0.0.1:58231
 
-  1backend-backend:
+  1backend:
     build:
       context: .
       dockerfile: ./server/docker/1backend/default/Dockerfile
