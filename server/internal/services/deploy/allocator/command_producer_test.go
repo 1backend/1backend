@@ -117,6 +117,25 @@ func TestGenerateCommands_KillUnhealthy(t *testing.T) {
 	require.Equal(t, "instance1", *commands[0].InstanceId)
 }
 
+func TestGenerateCommands_NoDeploymentNoCommand(t *testing.T) {
+	nodes := []openapi.RegistrySvcNode{
+		{
+			Id: "node1",
+			Usage: &openapi.RegistrySvcResourceUsage{
+				Cpu: &openapi.RegistrySvcUsage{Percent: Float32Ptr(50)},
+			},
+		},
+	}
+	serviceInstances := []openapi.RegistrySvcInstance{
+		{Id: "instance1", LastHeartbeat: nil},
+	}
+	deployments := []*deploy.Deployment{}
+
+	commands := allocator.GenerateCommands(nodes, serviceInstances, deployments)
+
+	require.Equal(t, 0, len(commands))
+}
+
 func TestGenerateCommands_NoAction(t *testing.T) {
 	nodes := []openapi.RegistrySvcNode{
 		{
