@@ -1,7 +1,7 @@
 /*
 1Backend
 
-A unified backend development platform for microservices-based AI applications.
+AI-native microservices platform.
 
 API version: 0.3.0-rc.29
 Contact: sales@singulatron.com

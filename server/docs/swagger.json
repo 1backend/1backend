@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "A unified backend development platform for microservices-based AI applications.",
+        "description": "AI-native microservices platform.",
         "title": "1Backend",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {

@@ -30,7 +30,7 @@ var port = router.GetPort()
 
 // @title           1Backend
 // @version         0.3.0-rc.29
-// @description     A unified backend development platform for microservices-based AI applications.
+// @description     AI-native microservices platform.
 // @termsOfService  http://swagger.io/terms/
 
 // @contact.name   API Support
