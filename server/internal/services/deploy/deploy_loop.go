@@ -146,8 +146,17 @@ func (ns *DeployService) cycle() error {
 			if command.DeploymentId != nil {
 				deploymentId = *command.DeploymentId
 			}
-			logger.Error("No deployment",
+
+			instanceId := ""
+			if command.InstanceId != nil {
+				instanceId = *command.InstanceId
+			}
+
+			logger.Error("No deployment for command",
 				slog.String("deploymentId", deploymentId),
+				slog.String("instanceId", instanceId),
+				slog.String("nodeId", node.Id),
+				slog.String("nodeUrl", node.Url),
 				slog.String("commandAction", string(command.Action)),
 			)
 			continue
