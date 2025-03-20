@@ -15,7 +15,7 @@ type Log struct {
 	Id string `json:"id"`
 
 	// Node Id
-	// Please see the documentation for the envar OPENORCH_NODE_ID
+	// Please see the documentation for the envar OB_NODE_ID
 	NodeId string `json:"nodeId"`
 
 	// ContainerId is the raw underlying container ID.

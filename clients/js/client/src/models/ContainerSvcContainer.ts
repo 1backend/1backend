@@ -149,7 +149,7 @@ export interface ContainerSvcContainer {
     network?: ContainerSvcNetwork;
     /**
      * Node Id
-     * Please see the documentation for the envar OPENORCH_NODE_ID
+     * Please see the documentation for the envar OB_NODE_ID
      * @type {string}
      * @memberof ContainerSvcContainer
      */

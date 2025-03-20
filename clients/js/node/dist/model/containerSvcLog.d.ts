@@ -18,7 +18,7 @@ export declare class ContainerSvcLog {
     'createdAt'?: string;
     'id'?: string;
     /**
-    * Node Id Please see the documentation for the envar OPENORCH_NODE_ID
+    * Node Id Please see the documentation for the envar OB_NODE_ID
     */
     'nodeId'?: string;
     static discriminator: string | undefined;

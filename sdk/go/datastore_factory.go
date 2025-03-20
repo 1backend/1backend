@@ -14,9 +14,9 @@ import (
 )
 
 func NewDatastoreFactory(tablePrefix string) (func(tableName string, instance any) (datastore.DataStore, error), error) {
-	dbType := os.Getenv("OPENORCH_DB")
-	dbDriver := os.Getenv("OPENORCH_DB_DRIVER")
-	dbString := os.Getenv("OPENORCH_DB_STRING")
+	dbType := os.Getenv("OB_DB")
+	dbDriver := os.Getenv("OB_DB_DRIVER")
+	dbString := os.Getenv("OB_DB_STRING")
 
 	if dbDriver == "" {
 		dbDriver = "postgres"

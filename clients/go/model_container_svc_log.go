@@ -25,7 +25,7 @@ type ContainerSvcLog struct {
 	Content *string `json:"content,omitempty"`
 	CreatedAt *string `json:"createdAt,omitempty"`
 	Id *string `json:"id,omitempty"`
-	// Node Id Please see the documentation for the envar OPENORCH_NODE_ID
+	// Node Id Please see the documentation for the envar OB_NODE_ID
 	NodeId *string `json:"nodeId,omitempty"`
 }
 
