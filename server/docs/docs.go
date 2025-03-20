@@ -5685,7 +5685,7 @@ const docTemplate = `{
                     ]
                 },
                 "nodeId": {
-                    "description": "Node Id\nPlease see the documentation for the envar OPENORCH_NODE_ID",
+                    "description": "Node Id\nPlease see the documentation for the envar OB_NODE_ID",
                     "type": "string"
                 },
                 "ports": {
@@ -5913,7 +5913,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "nodeId": {
-                    "description": "Node Id\nPlease see the documentation for the envar OPENORCH_NODE_ID",
+                    "description": "Node Id\nPlease see the documentation for the envar OB_NODE_ID",
                     "type": "string"
                 }
             }

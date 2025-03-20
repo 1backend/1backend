@@ -20,7 +20,6 @@ import (
 	"os"
 	"runtime/debug"
 
-	"github.com/gorilla/mux"
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/datastore/sqlstore"
@@ -28,6 +27,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/1backend/1backend/server/internal/di"
 	node_types "github.com/1backend/1backend/server/internal/node/types"
+	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 
 	_ "github.com/1backend/1backend/server/docs"
@@ -58,40 +58,40 @@ func Start(options *node_types.Options) (*NodeInfo, error) {
 
 	// @todo GPU platform maybe this could be autodetected
 	if options.GpuPlatform == "" {
-		options.GpuPlatform = os.Getenv("OPENORCH_GPU_PLATFORM")
+		options.GpuPlatform = os.Getenv("OB_GPU_PLATFORM")
 	}
 	if options.Address == "" {
-		options.Address = os.Getenv("OPENORCH_URL")
+		options.Address = os.Getenv("OB_URL")
 	}
 	if options.NodeId == "" {
-		options.NodeId = os.Getenv("OPENORCH_NODE_ID")
+		options.NodeId = os.Getenv("OB_NODE_ID")
 	}
 	if options.Az == "" {
-		options.Az = os.Getenv("OPENORCH_AZ")
+		options.Az = os.Getenv("OB_AZ")
 	}
 	if options.Region == "" {
-		options.Region = os.Getenv("OPENORCH_AZ")
+		options.Region = os.Getenv("OB_AZ")
 	}
 	if options.LLMHost == "" {
-		options.LLMHost = os.Getenv("OPENORCH_LLM_HOST")
+		options.LLMHost = os.Getenv("OB_LLM_HOST")
 	}
 	if options.VolumeName == "" {
-		options.VolumeName = os.Getenv("OPENORCH_VOLUME_NAME")
+		options.VolumeName = os.Getenv("OB_VOLUME_NAME")
 	}
 	if options.ConfigPath == "" {
-		options.ConfigPath = os.Getenv("OPENORCH_CONFIG_PATH")
+		options.ConfigPath = os.Getenv("OB_CONFIG_PATH")
 	}
 	if options.Db == "" {
-		options.Db = os.Getenv("OPENORCH_DB")
+		options.Db = os.Getenv("OB_DB")
 	}
 	if options.DbDriver == "" {
-		options.DbDriver = os.Getenv("OPENORCH_DB_DRIVER")
+		options.DbDriver = os.Getenv("OB_DB_DRIVER")
 	}
 	if options.DbString == "" {
-		options.DbString = os.Getenv("OPENORCH_DB_STRING")
+		options.DbString = os.Getenv("OB_DB_STRING")
 	}
 	if options.SecretEncryptionKey == "" {
-		options.SecretEncryptionKey = os.Getenv("OPENORCH_ENCRYPTION_KEY")
+		options.SecretEncryptionKey = os.Getenv("OB_ENCRYPTION_KEY")
 		if options.SecretEncryptionKey == "" {
 			options.SecretEncryptionKey = "changeMeToSomethingSecureForReal"
 		}

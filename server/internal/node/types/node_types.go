@@ -15,7 +15,7 @@ type Options struct {
 
 	// 1Backend Server Address
 	// Crucial for distributed features.
-	// Please see the documentation for the envar OPENORCH_URL
+	// Please see the documentation for the envar OB_URL
 	Address string
 
 	Az         string
@@ -28,7 +28,7 @@ type Options struct {
 	DbString   string
 
 	// Crucial for distributed features.
-	// Please see the documentation for the envar OPENORCH_NODE_ID
+	// Please see the documentation for the envar OB_NODE_ID
 	NodeId string
 
 	// DbPrefix allows us to have isolated envs for different test cases
