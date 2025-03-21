@@ -153,7 +153,9 @@ func TestOr(t *testing.T, store DataStore) {
 			Equals([]string{"name"}, "SecondObject"),
 			Equals([]string{"name"}, "ThirdObject"),
 		),
-	).OrderBy().
+	).OrderBy(
+		OrderByField("name", false),
+	).
 		Find()
 
 	require.NoError(t, err)
@@ -182,7 +184,9 @@ func TestPointerOr(t *testing.T, store DataStore) {
 			Equals([]string{"name"}, "SecondObject"),
 			Equals([]string{"name"}, "ThirdObject"),
 		),
-	).OrderBy().Find()
+	).OrderBy(
+		OrderByField("name", false),
+	).Find()
 
 	require.NoError(t, err)
 	require.Equal(t, 2, len(res))
