@@ -25,15 +25,15 @@ type Authorizer interface {
 	// the `user-svc:admin` role.
 	IsAdminFromRequest(userSvcPublicKey string, r *http.Request) (bool, error)
 
-	// RolesInOrg extracts organization-specific roles
+	// RolesInOrganization extracts organization-specific roles
 	// from a request. Given a role string like
 	// `user-svc:org:{org_dBZRCej3fo}:admin`, it returns `[admin]`.
-	RolesInOrg(userSvcPublicKey string, token string) ([]string, error)
+	RolesInOrganization(userSvcPublicKey string, token string) ([]string, error)
 
-	// RolesInOrgFromRequest extracts organization-specific roles
+	// RolesInOrganizationFromRequest extracts organization-specific roles
 	// from a request. Given a role string like
 	// `user-svc:org:{org_dBZRCej3fo}:admin`, it returns `[admin]`.
-	RolesInOrgFromRequest(userSvcPublicKey string, r *http.Request) ([]string, error)
+	RolesInOrganizationFromRequest(userSvcPublicKey string, r *http.Request) ([]string, error)
 }
 
 type AuthorizerImpl struct{}
@@ -122,16 +122,20 @@ func (a AuthorizerImpl) RolesInOrg(userSvcPublicKey, token string) ([]string, er
 		return nil, err
 	}
 
+	return ExtractOrganizationRoles(claims.RoleIds), nil
+}
+
+func ExtractOrganizationRoles(roleIds []string) []string {
 	ret := []string{}
 
-	for _, roleId := range claims.RoleIds {
+	for _, roleId := range roleIds {
 		// @todo constant
 		if strings.HasPrefix(roleId, "user-svc:org:{") {
 			v := strings.Split(roleId, "{")[1]
-			v = strings.Split(v, "}")[0]
+			v = strings.Split(v, "}:")[1]
 			ret = append(ret, v)
 		}
 	}
 
-	return ret, nil
+	return ret
 }
