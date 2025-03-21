@@ -7,10 +7,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ghodss/yaml"
 	"github.com/1backend/1backend/cli/oo/config"
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
@@ -50,7 +50,7 @@ func Encrypt(cmd *cobra.Command, args []string) error {
 	// this will mess up the yaml structure but that is intentional
 	var returnErr error
 	if err != nil {
-		returnErr = fmt.Errorf("warning: cannot identify if the server is secure: %s", err)
+		returnErr = errors.Wrap(err, "warning: cannot identify if the server is secure")
 	} else if !isSecureRsp.IsSecure {
 		returnErr = fmt.Errorf("warning: secret service is not secure")
 	}

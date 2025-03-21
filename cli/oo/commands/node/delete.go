@@ -1,8 +1,6 @@
 package node
 
 import (
-	"fmt"
-
 	"github.com/1backend/1backend/cli/oo/config"
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/pkg/errors"
@@ -25,7 +23,7 @@ func Delete(cmd *cobra.Command, args []string) error {
 		RegistrySvcAPI.DeleteNode(ctx, nodeUrl).
 		Execute()
 	if err != nil {
-		return fmt.Errorf("Error deleting node: '%v'", err)
+		return errors.Wrap(err, "error deleting node")
 	}
 
 	return nil

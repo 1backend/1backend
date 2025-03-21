@@ -1,10 +1,9 @@
 package definition
 
 import (
-	"fmt"
-
 	"github.com/1backend/1backend/cli/oo/config"
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -14,7 +13,7 @@ func Delete(cmd *cobra.Command, args []string) error {
 
 	url, token, err := config.GetSelectedUrlAndToken()
 	if err != nil {
-		return fmt.Errorf("Cannot get env url: '%v'", err)
+		return errors.Wrap(err, "cannot get env url")
 	}
 
 	cf := sdk.NewApiClientFactory(url)
@@ -23,7 +22,7 @@ func Delete(cmd *cobra.Command, args []string) error {
 		RegistrySvcAPI.DeleteDefinition(ctx, serviceDefinitionId).
 		Execute()
 	if err != nil {
-		return fmt.Errorf("Error deleting service definition: '%v'", err)
+		return errors.Wrap(err, "Error deleting service definition")
 	}
 
 	return nil

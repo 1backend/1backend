@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/1backend/1backend/cli/oo/config"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -11,16 +12,16 @@ import (
 func Token(cmd *cobra.Command, args []string) error {
 	conf, err := config.LoadConfig()
 	if err != nil {
-		return fmt.Errorf("Failed to load config: %w", err)
+		return errors.Wrap(err, "failed to load config")
 	}
 
 	if conf.Environments == nil {
-		return fmt.Errorf("No environments")
+		return errors.New("no environments")
 	}
 	env, ok := conf.Environments[conf.SelectedEnvironment]
 	if !ok {
 		return fmt.Errorf(
-			"failed to find selected env: %s",
+			"failed to find selected env '%s'",
 			conf.SelectedEnvironment,
 		)
 	}
@@ -35,7 +36,7 @@ func Token(cmd *cobra.Command, args []string) error {
 	usr, ok := env.Users[env.SelectedUser]
 	if !ok {
 		return fmt.Errorf(
-			"Cannot find user '%v' in env '%v'",
+			"cannot find user '%v' in env '%v'",
 			env.SelectedUser,
 			conf.SelectedEnvironment,
 		)
