@@ -16,8 +16,24 @@ type Authorizer interface {
 	TokenFromRequest(r *http.Request) (string, bool)
 	ParseJWT(userSvcPublicKey, token string) (*Claims, error)
 	ParseJWTFromRequest(userSvcPublicKey string, r *http.Request) (*Claims, error)
+
+	// IsAdmin returns true if the user has
+	// the `user-svc:admin` role.
 	IsAdmin(userSvcPublicKey string, token string) (bool, error)
+
+	// IsAdminFromRequest returns true if the user has
+	// the `user-svc:admin` role.
 	IsAdminFromRequest(userSvcPublicKey string, r *http.Request) (bool, error)
+
+	// RolesInOrg extracts organization-specific roles
+	// from a request. Given a role string like
+	// `user-svc:org:{org_dBZRCej3fo}:admin`, it returns `[admin]`.
+	RolesInOrg(userSvcPublicKey string, token string) ([]string, error)
+
+	// RolesInOrgFromRequest extracts organization-specific roles
+	// from a request. Given a role string like
+	// `user-svc:org:{org_dBZRCej3fo}:admin`, it returns `[admin]`.
+	RolesInOrgFromRequest(userSvcPublicKey string, r *http.Request) ([]string, error)
 }
 
 type AuthorizerImpl struct{}
@@ -89,4 +105,33 @@ func (a AuthorizerImpl) IsAdmin(userSvcPublicKey, token string) (bool, error) {
 	}
 
 	return false, nil
+}
+
+func (a AuthorizerImpl) RolesInOrgFromRequest(userSvcPublicKey string, r *http.Request) ([]string, error) {
+	tokenString, hasToken := a.TokenFromRequest(r)
+	if !hasToken {
+		return nil, fmt.Errorf("no token found in request")
+	}
+
+	return a.RolesInOrg(userSvcPublicKey, tokenString)
+}
+
+func (a AuthorizerImpl) RolesInOrg(userSvcPublicKey, token string) ([]string, error) {
+	claims, err := a.ParseJWT(userSvcPublicKey, token)
+	if err != nil {
+		return nil, err
+	}
+
+	ret := []string{}
+
+	for _, roleId := range claims.RoleIds {
+		// @todo constant
+		if strings.HasPrefix(roleId, "user-svc:org:{") {
+			v := strings.Split(roleId, "{")[1]
+			v = strings.Split(v, "}")[0]
+			ret = append(ret, v)
+		}
+	}
+
+	return ret, nil
 }
