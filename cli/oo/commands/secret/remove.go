@@ -6,6 +6,7 @@ import (
 	"github.com/1backend/1backend/cli/oo/config"
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -24,7 +25,7 @@ func Remove(cmd *cobra.Command, args []string) error {
 
 	url, token, err := config.GetSelectedUrlAndToken()
 	if err != nil {
-		return fmt.Errorf("cannot get env URL: '%v'", err)
+		return errors.Wrap(err, "cannot get env URL")
 	}
 
 	cf := sdk.NewApiClientFactory(url)
@@ -37,7 +38,7 @@ func Remove(cmd *cobra.Command, args []string) error {
 		}).
 		Execute()
 	if err != nil {
-		return fmt.Errorf("error deleting secrets: '%v'", err)
+		return errors.Wrap(err, "error deleting secrets")
 	}
 
 	return nil

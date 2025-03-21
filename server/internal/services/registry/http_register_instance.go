@@ -9,6 +9,7 @@ import (
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
+	"github.com/pkg/errors"
 )
 
 // @ID registerInstance
@@ -127,6 +128,10 @@ func (rs *RegistryService) registerInstance(
 
 	if instance.Status == "" {
 		instance.Status = registry.InstanceStatusUnknown
+	}
+
+	if instance.URL == "" {
+		return errors.New("url is missing")
 	}
 
 	return rs.instanceStore.Upsert(&instance)

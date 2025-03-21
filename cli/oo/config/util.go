@@ -4,22 +4,23 @@ import (
 	"fmt"
 
 	"github.com/1backend/1backend/cli/oo/types"
+	"github.com/pkg/errors"
 )
 
 func GetSelectedEnv() (*types.Environment, error) {
 	conf, err := LoadConfig()
 	if err != nil {
-		return nil, fmt.Errorf("failed to load config: %w", err)
+		return nil, errors.Wrap(err, "failed to load config")
 	}
 
 	if conf.Environments == nil {
-		return nil, fmt.Errorf("No environments")
+		return nil, fmt.Errorf("no environments")
 	}
 
 	env, ok := conf.Environments[conf.SelectedEnvironment]
 	if !ok {
 		return nil, fmt.Errorf(
-			"failed to find selected env: %s",
+			"failed to find selected env '%s'",
 			conf.SelectedEnvironment,
 		)
 	}

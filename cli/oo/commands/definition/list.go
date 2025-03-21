@@ -7,6 +7,7 @@ import (
 
 	"github.com/1backend/1backend/cli/oo/config"
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -16,7 +17,7 @@ func List(cmd *cobra.Command, args []string) error {
 
 	url, token, err := config.GetSelectedUrlAndToken()
 	if err != nil {
-		return fmt.Errorf("Cannot get env url: '%v'", err)
+		return errors.Wrap(err, "cannot get env url")
 	}
 
 	cf := sdk.NewApiClientFactory(url)
@@ -25,7 +26,7 @@ func List(cmd *cobra.Command, args []string) error {
 		RegistrySvcAPI.ListDefinitions(ctx).
 		Execute()
 	if err != nil {
-		return fmt.Errorf("Failed to list service definitions: '%v'", err)
+		return errors.Wrap(err, "failed to list service definitions")
 	}
 
 	writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
