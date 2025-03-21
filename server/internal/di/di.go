@@ -138,7 +138,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		// Rethink this and the `node.Start` functions (which is supposed to self contain)
 		// the envars.
 		if os.Getenv("OB_DB") == "postgres" {
-			db, err := sql.Open("postgres", os.Getenv("OB_DB_SQL_CONNECTION_STRING"))
+			db, err := sql.Open("postgres", os.Getenv("OB_DB_CONNECTION_STRING"))
 			if err != nil {
 				return nil, nil, errors.Wrap(err, "error opening sql db")
 			}

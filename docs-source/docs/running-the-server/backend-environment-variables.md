@@ -91,7 +91,7 @@ You can use this envar to make 1Backend actually use a database instead of local
 ```sh
 OB_DB=postgres
 OB_DB_DRIVER="postgres" # or "mysql"
-OB_DB_STRING="postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
+OB_DB_CONNECTION_STRING="postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
 ```
 
 Naturally, you should change the details of the connection string to reflect your environment.
