@@ -19,11 +19,11 @@ import (
 	"sync"
 	"time"
 
+	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/logger"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/lib/pq"
 	_ "github.com/lib/pq"
-	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/logger"
 
 	"github.com/pkg/errors"
 )
@@ -458,8 +458,9 @@ type SQLQueryBuilder struct {
 
 func (q *SQLQueryBuilder) OrderBy(orderbys ...datastore.OrderBy) datastore.QueryBuilder {
 	if len(orderbys) == 0 {
-		return nil
+		return q
 	}
+
 	q.orderField = orderbys[0].Field
 	q.orderDesc = orderbys[0].Desc
 	q.orderSortingType = orderbys[0].SortingType

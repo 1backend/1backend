@@ -19,30 +19,40 @@ func (s *SQLStore) fieldName(fieldName string, cast ...string) string {
 
 	fieldParts := strings.Split(fieldName, ".")
 
-	if len(cast) > 0 && len(cast[0]) > 0 {
-		fieldParts[0] = "((" + fieldParts[0]
-	}
+	casted := len(cast) > 0 && len(cast[0]) > 0
 
-	for i, v := range fieldParts {
-		f := escape(strings.ToLower(v[0:1]) + v[1:])
-
-		if i == 0 {
-			fieldParts[i] = f
-			continue
+	if len(fieldParts) > 1 {
+		if casted {
+			fieldParts[0] = "((" + fieldParts[0]
 		}
 
-		if i == len(fieldParts)-1 {
-			if len(cast) > 0 && len(cast[0]) > 0 {
-				fieldParts[i] = fmt.Sprintf("->>'%v')::%s)", f, cast[0])
-			} else {
-				fieldParts[i] = "->>" + fmt.Sprintf("'%v'", f)
+		for i, v := range fieldParts {
+			f := escape(strings.ToLower(v[0:1]) + v[1:])
+
+			if i == 0 {
+				fieldParts[i] = f
+				continue
 			}
-		} else {
-			fieldParts[i] = "->" + f
+
+			if i == len(fieldParts)-1 {
+				if casted {
+					fieldParts[i] = fmt.Sprintf("->>'%v')::%s)", f, cast[0])
+				} else {
+					fieldParts[i] = "->>" + fmt.Sprintf("'%v'", f)
+				}
+			} else {
+				fieldParts[i] = "->" + f
+			}
 		}
+
+		return strings.Join(fieldParts, "")
 	}
 
-	return strings.Join(fieldParts, "")
+	if casted {
+		return fmt.Sprintf("(%s::%s)", fieldName, cast[0])
+	}
+
+	return fieldName
 }
 
 func escape(columnName string) string {

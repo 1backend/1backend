@@ -18,8 +18,8 @@ import (
 	"io"
 	"strings"
 
-	dockerapicontainer "github.com/docker/docker/api/types/container"
 	container "github.com/1backend/1backend/server/internal/services/container/types"
+	dockerapicontainer "github.com/docker/docker/api/types/container"
 	"github.com/pkg/errors"
 )
 
@@ -92,7 +92,7 @@ func (d *DockerBackend) GetContainerSummary(
 
 			state := "unknown"
 			healthStatus := "unknown"
-			startedAt := "unkown"
+			startedAt := "unknown"
 			if containerJSON.State != nil {
 				state = containerJSON.State.Status
 				startedAt = containerJSON.State.StartedAt

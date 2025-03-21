@@ -18,11 +18,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/flusflas/dipper"
-	"github.com/google/uuid"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/datastore/localstore/statemanager"
 	"github.com/1backend/1backend/sdk/go/reflector"
+	"github.com/flusflas/dipper"
+	"github.com/google/uuid"
 )
 
 type LocalStore struct {
@@ -509,254 +509,265 @@ func (q *QueryBuilder) Delete() error {
 	return nil
 }
 
-func (q *QueryBuilder) match(obj any) (bool, error) {
-	for _, cond := range q.filters {
-		switch cond.Op {
-		case datastore.OpEquals:
-			matchFunc := func(subject, test any) bool {
-				subject = toBaseType(subject)
-				test = toBaseType(test)
-				if subject == "dipper: field not found" {
-					panic("dipper")
-				}
+func evaluate(filter datastore.Filter, obj any) (bool, error) {
+	switch filter.Op {
+	case datastore.OpOr:
+		for _, filter := range filter.SubFilters {
+			matches, err := evaluate(filter, obj)
+			if err != nil {
+				return false, err
+			}
+			if matches {
+				return true, nil
+			}
+		}
+		return false, nil
 
-				return reflect.DeepEqual(test, subject)
+	case datastore.OpEquals:
+		matchFunc := func(subject, test any) bool {
+			subject = toBaseType(subject)
+			test = toBaseType(test)
+			if subject == "dipper: field not found" {
+				panic("dipper")
 			}
 
-			fieldNames := cond.Fields
+			return reflect.DeepEqual(test, subject)
+		}
 
-			matched := false
-			for _, fieldName := range fieldNames {
-				fieldValue := getField(obj, fieldName)
+		fieldNames := filter.Fields
 
-				if fmt.Sprintf("%v", fieldValue) == "dipper: field not found" {
-					continue
-				}
+		matched := false
+		for _, fieldName := range fieldNames {
+			fieldValue := getField(obj, fieldName)
 
-				values := []any{}
-				err := json.Unmarshal([]byte(cond.JSONValues), &values)
-				if err != nil {
-					return false, err
-				}
-
-				value := values[0]
-				queryValue := reflect.ValueOf(value)
-				fieldV := reflect.ValueOf(fieldValue)
-
-				if fieldV.Kind() == reflect.Slice {
-					for i := 0; i < fieldV.Len(); i++ {
-						if matchFunc(fieldV.Index(i).Interface(), queryValue.Interface()) {
-							matched = true
-							continue
-						}
-					}
-				} else {
-					if matchFunc(fieldValue, value) {
-						matched = true
-					}
-				}
-			}
-			if !matched {
-				return false, nil
-			}
-		case datastore.OpIsInList:
-
-			matchFunc := func(subject, test any) bool {
-				subject = toBaseType(subject)
-				test = toBaseType(test)
-				if subject == "dipper: field not found" {
-					panic("dipper")
-				}
-
-				return reflect.DeepEqual(test, subject)
+			if fmt.Sprintf("%v", fieldValue) == "dipper: field not found" {
+				continue
 			}
 
-			fieldNames := cond.Fields
-
-			matched := false
-			for _, fieldName := range fieldNames {
-				fieldValue := getField(obj, fieldName)
-
-				if fmt.Sprintf("%v", fieldValue) == "dipper: field not found" {
-					continue
-				}
-
-				value := []any{}
-				err := json.Unmarshal([]byte(cond.JSONValues), &value)
-				if err != nil {
-					return false, err
-				}
-
-				queryValue := reflect.ValueOf(value)
-				fieldV := reflect.ValueOf(fieldValue)
-
-				if fieldV.Kind() == reflect.Slice {
-					return false, nil
-				} else if queryValue.Kind() == reflect.Slice {
-					for i := 0; i < queryValue.Len(); i++ {
-						if reflect.ValueOf(queryValue.Index(i).Interface()).Kind() == reflect.Slice {
-							return false, errors.New("OpIsInList slice member should not be a slice")
-						}
-						if matchFunc(fieldValue, queryValue.Index(i).Interface()) {
-							matched = true
-							continue
-						}
-					}
-				} else {
-					return false, nil
-				}
-			}
-			if !matched {
-				return false, nil
+			values := []any{}
+			err := json.Unmarshal([]byte(filter.JSONValues), &values)
+			if err != nil {
+				return false, err
 			}
 
-		case datastore.OpStartsWith:
-			matchFunc := func(subject, test any) bool {
-				testStr, testOk := test.(string)
-				subjectStr, subjectOk := subject.(string)
-				if !testOk || !subjectOk {
-					return false
-				}
-				return strings.HasPrefix(subjectStr, testStr)
-			}
-			fieldNames := cond.Fields
+			value := values[0]
+			queryValue := reflect.ValueOf(value)
+			fieldV := reflect.ValueOf(fieldValue)
 
-			matched := false
-			for _, fieldName := range fieldNames {
-				fieldValue := getField(obj, fieldName)
-
-				if fmt.Sprintf("%v", fieldValue) == "dipper: field not found" {
-					continue
-				}
-
-				value := []any{}
-				err := json.Unmarshal([]byte(cond.JSONValues), &value)
-				if err != nil {
-					return false, err
-				}
-
-				queryValue := reflect.ValueOf(value)
-				fieldV := reflect.ValueOf(fieldValue)
-
-				if fieldV.Kind() == reflect.Slice {
-					for i := 0; i < fieldV.Len(); i++ {
-						if matchFunc(fieldV.Index(i).Interface(), queryValue.Interface()) {
-							matched = true
-							continue
-						}
-					}
-				} else {
-					if matchFunc(fieldValue, value) {
-						matched = true
-					}
-				}
-			}
-			if !matched {
-				return false, nil
-			}
-
-		case datastore.OpContainsSubstring:
-			matchFunc := func(subject, test any) bool {
-				testStr, testOk := test.(string)
-				subjectStr, subjectOk := subject.(string)
-
-				if !testOk || !subjectOk {
-					return false
-				}
-
-				return strings.Contains(subjectStr, testStr)
-			}
-			fieldNames := cond.Fields
-
-			matched := false
-			for _, fieldName := range fieldNames {
-				fieldValue := getField(obj, fieldName)
-
-				if fmt.Sprintf("%v", fieldValue) == "dipper: field not found" {
-					continue
-				}
-
-				values := []any{}
-				err := json.Unmarshal([]byte(cond.JSONValues), &values)
-				if err != nil {
-					return false, err
-				}
-				value := values[0]
-
-				queryValue := reflect.ValueOf(value)
-				fieldV := reflect.ValueOf(fieldValue)
-
-				if fieldV.Kind() == reflect.Slice {
-					for i := 0; i < fieldV.Len(); i++ {
-						if matchFunc(fieldV.Index(i).Interface(), queryValue.Interface()) {
-							matched = true
-							continue
-						}
-					}
-				} else {
-					if matchFunc(fieldValue, value) {
-						matched = true
-					}
-				}
-			}
-			if !matched {
-				return false, nil
-			}
-
-		case datastore.OpIntersects:
-			matchFunc := func(subject, test any) bool {
-				subject = toBaseType(subject)
-				test = toBaseType(test)
-				if subject == "dipper: field not found" {
-					panic("dipper")
-				}
-
-				return reflect.DeepEqual(test, subject)
-			}
-
-			fieldNames := cond.Fields
-
-			matched := false
-			for _, fieldName := range fieldNames {
-				fieldValue := getField(obj, fieldName)
-
-				if fmt.Sprintf("%v", fieldValue) == "dipper: field not found" {
-					continue
-				}
-
-				values := []any{}
-				err := json.Unmarshal([]byte(cond.JSONValues), &values)
-				if err != nil {
-					return false, err
-				}
-
-				value := values
-				queryValue := reflect.ValueOf(value)
-				fieldV := reflect.ValueOf(fieldValue)
-
-				if fieldV.Kind() != reflect.Slice {
-					continue
-				}
-				if queryValue.Kind() != reflect.Slice {
-					continue
-				}
-
+			if fieldV.Kind() == reflect.Slice {
 				for i := 0; i < fieldV.Len(); i++ {
-					for j := 0; j < queryValue.Len(); j++ {
-						if matchFunc(fieldV.Index(i).Interface(), queryValue.Index(j).Interface()) {
-							matched = true
-							continue
-						}
+					if matchFunc(fieldV.Index(i).Interface(), queryValue.Interface()) {
+						matched = true
+						continue
 					}
 				}
-
+			} else {
+				if matchFunc(fieldValue, value) {
+					matched = true
+				}
 			}
-			if !matched {
+		}
+		return matched, nil
+
+	case datastore.OpIsInList:
+		matchFunc := func(subject, test any) bool {
+			subject = toBaseType(subject)
+			test = toBaseType(test)
+			if subject == "dipper: field not found" {
+				panic("dipper")
+			}
+
+			return reflect.DeepEqual(test, subject)
+		}
+
+		fieldNames := filter.Fields
+
+		matched := false
+		for _, fieldName := range fieldNames {
+			fieldValue := getField(obj, fieldName)
+
+			if fmt.Sprintf("%v", fieldValue) == "dipper: field not found" {
+				continue
+			}
+
+			value := []any{}
+			err := json.Unmarshal([]byte(filter.JSONValues), &value)
+			if err != nil {
+				return false, err
+			}
+
+			queryValue := reflect.ValueOf(value)
+			fieldV := reflect.ValueOf(fieldValue)
+
+			if fieldV.Kind() == reflect.Slice {
+				return false, nil
+			} else if queryValue.Kind() == reflect.Slice {
+				for i := 0; i < queryValue.Len(); i++ {
+					if reflect.ValueOf(queryValue.Index(i).Interface()).Kind() == reflect.Slice {
+						return false, errors.New("OpIsInList slice member should not be a slice")
+					}
+					if matchFunc(fieldValue, queryValue.Index(i).Interface()) {
+						matched = true
+						continue
+					}
+				}
+			} else {
 				return false, nil
 			}
+		}
+		return matched, nil
 
-		default:
-			return false, fmt.Errorf("unkown filter %v", cond)
+	case datastore.OpStartsWith:
+		matchFunc := func(subject, test any) bool {
+			testStr, testOk := test.(string)
+			subjectStr, subjectOk := subject.(string)
+			if !testOk || !subjectOk {
+				return false
+			}
+			return strings.HasPrefix(subjectStr, testStr)
+		}
+		fieldNames := filter.Fields
+
+		matched := false
+		for _, fieldName := range fieldNames {
+			fieldValue := getField(obj, fieldName)
+
+			if fmt.Sprintf("%v", fieldValue) == "dipper: field not found" {
+				continue
+			}
+
+			value := []any{}
+			err := json.Unmarshal([]byte(filter.JSONValues), &value)
+			if err != nil {
+				return false, err
+			}
+
+			queryValue := reflect.ValueOf(value)
+			fieldV := reflect.ValueOf(fieldValue)
+
+			if fieldV.Kind() == reflect.Slice {
+				for i := 0; i < fieldV.Len(); i++ {
+					if matchFunc(fieldV.Index(i).Interface(), queryValue.Interface()) {
+						matched = true
+						continue
+					}
+				}
+			} else {
+				if matchFunc(fieldValue, value) {
+					matched = true
+				}
+			}
+		}
+		return matched, nil
+
+	case datastore.OpContainsSubstring:
+		matchFunc := func(subject, test any) bool {
+			testStr, testOk := test.(string)
+			subjectStr, subjectOk := subject.(string)
+
+			if !testOk || !subjectOk {
+				return false
+			}
+
+			return strings.Contains(subjectStr, testStr)
+		}
+		fieldNames := filter.Fields
+
+		matched := false
+		for _, fieldName := range fieldNames {
+			fieldValue := getField(obj, fieldName)
+
+			if fmt.Sprintf("%v", fieldValue) == "dipper: field not found" {
+				continue
+			}
+
+			values := []any{}
+			err := json.Unmarshal([]byte(filter.JSONValues), &values)
+			if err != nil {
+				return false, err
+			}
+			value := values[0]
+
+			queryValue := reflect.ValueOf(value)
+			fieldV := reflect.ValueOf(fieldValue)
+
+			if fieldV.Kind() == reflect.Slice {
+				for i := 0; i < fieldV.Len(); i++ {
+					if matchFunc(fieldV.Index(i).Interface(), queryValue.Interface()) {
+						matched = true
+						continue
+					}
+				}
+			} else {
+				if matchFunc(fieldValue, value) {
+					matched = true
+				}
+			}
+		}
+		return matched, nil
+
+	case datastore.OpIntersects:
+		matchFunc := func(subject, test any) bool {
+			subject = toBaseType(subject)
+			test = toBaseType(test)
+			if subject == "dipper: field not found" {
+				panic("dipper")
+			}
+
+			return reflect.DeepEqual(test, subject)
+		}
+
+		fieldNames := filter.Fields
+
+		matched := false
+		for _, fieldName := range fieldNames {
+			fieldValue := getField(obj, fieldName)
+
+			if fmt.Sprintf("%v", fieldValue) == "dipper: field not found" {
+				continue
+			}
+
+			values := []any{}
+			err := json.Unmarshal([]byte(filter.JSONValues), &values)
+			if err != nil {
+				return false, err
+			}
+
+			value := values
+			queryValue := reflect.ValueOf(value)
+			fieldV := reflect.ValueOf(fieldValue)
+
+			if fieldV.Kind() != reflect.Slice {
+				continue
+			}
+			if queryValue.Kind() != reflect.Slice {
+				continue
+			}
+
+			for i := 0; i < fieldV.Len(); i++ {
+				for j := 0; j < queryValue.Len(); j++ {
+					if matchFunc(fieldV.Index(i).Interface(), queryValue.Index(j).Interface()) {
+						matched = true
+						continue
+					}
+				}
+			}
+
+		}
+		return matched, nil
+	}
+
+	return false, fmt.Errorf("unknown filter %v", filter)
+}
+
+func (q *QueryBuilder) match(obj any) (bool, error) {
+	for _, filter := range q.filters {
+		matches, err := evaluate(filter, obj)
+		if err != nil {
+			return false, err
+		}
+		if !matches {
+			return false, nil
 		}
 	}
 
