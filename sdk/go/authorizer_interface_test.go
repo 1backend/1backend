@@ -8,6 +8,10 @@ import (
 )
 
 func TestOrgExtraction(t *testing.T) {
+	var auth sdk.Authorizer
+	auth = sdk.AuthorizerImpl{}
+	require.Equal(t, true, auth != nil)
+
 	roleIds := []string{
 		"user-svc:org:{org_dBZRCej3fo}:admin",
 		"user-svc:org:{org_dBZRCej3fo}:member",
