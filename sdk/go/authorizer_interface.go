@@ -25,15 +25,15 @@ type Authorizer interface {
 	// the `user-svc:admin` role.
 	IsAdminFromRequest(userSvcPublicKey string, r *http.Request) (bool, error)
 
-	// RolesInOrganization extracts organization-specific roles
+	// Organizations extracts organizations and organization-internal roles
 	// from a request. Given a role string like
-	// `user-svc:org:{org_dBZRCej3fo}:admin`, it returns `[admin]`.
-	RolesInOrganization(userSvcPublicKey string, token string) ([]string, error)
+	// `user-svc:org:{org_dBZRCej3fo}:admin`, it returns `{"org_dBZRCej3fo": ["admin"]}`.
+	Organizations(userSvcPublicKey string, token string) (map[string][]string, error)
 
-	// RolesInOrganizationFromRequest extracts organization-specific roles
+	// OrganizationsFromRequest extracts organizations and organization-internal roles
 	// from a request. Given a role string like
-	// `user-svc:org:{org_dBZRCej3fo}:admin`, it returns `[admin]`.
-	RolesInOrganizationFromRequest(userSvcPublicKey string, r *http.Request) ([]string, error)
+	// `user-svc:org:{org_dBZRCej3fo}:admin`, it returns `{"org_dBZRCej3fo": ["admin"]}`.
+	OrganizationsFromRequest(userSvcPublicKey string, r *http.Request) (map[string][]string, error)
 }
 
 type AuthorizerImpl struct{}
@@ -107,16 +107,16 @@ func (a AuthorizerImpl) IsAdmin(userSvcPublicKey, token string) (bool, error) {
 	return false, nil
 }
 
-func (a AuthorizerImpl) RolesInOrganizationFromRequest(userSvcPublicKey string, r *http.Request) ([]string, error) {
+func (a AuthorizerImpl) OrganizationsFromRequest(userSvcPublicKey string, r *http.Request) (map[string][]string, error) {
 	tokenString, hasToken := a.TokenFromRequest(r)
 	if !hasToken {
 		return nil, fmt.Errorf("no token found in request")
 	}
 
-	return a.RolesInOrganization(userSvcPublicKey, tokenString)
+	return a.Organizations(userSvcPublicKey, tokenString)
 }
 
-func (a AuthorizerImpl) RolesInOrganization(userSvcPublicKey, token string) ([]string, error) {
+func (a AuthorizerImpl) Organizations(userSvcPublicKey, token string) (map[string][]string, error) {
 	claims, err := a.ParseJWT(userSvcPublicKey, token)
 	if err != nil {
 		return nil, err
@@ -125,15 +125,22 @@ func (a AuthorizerImpl) RolesInOrganization(userSvcPublicKey, token string) ([]s
 	return ExtractOrganizationRoles(claims.RoleIds), nil
 }
 
-func ExtractOrganizationRoles(roleIds []string) []string {
-	ret := []string{}
+func ExtractOrganizationRoles(roleIds []string) map[string][]string {
+	ret := map[string][]string{}
 
 	for _, roleId := range roleIds {
 		// @todo constant
 		if strings.HasPrefix(roleId, "user-svc:org:{") {
 			v := strings.Split(roleId, "{")[1]
-			v = strings.Split(v, "}:")[1]
-			ret = append(ret, v)
+			parts := strings.Split(v, "}:")
+			orgId := parts[0]
+			role := parts[1]
+
+			if ret[orgId] == nil {
+				ret[orgId] = []string{}
+			}
+
+			ret[orgId] = append(ret[orgId], role)
 		}
 	}
 

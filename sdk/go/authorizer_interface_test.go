@@ -19,7 +19,7 @@ func TestOrgExtraction(t *testing.T) {
 
 	roles := sdk.ExtractOrganizationRoles(roleIds)
 
-	require.Equal(t, 2, len(roles))
-	require.Equal(t, "admin", roles[0])
-	require.Equal(t, "member", roles[1])
+	require.Equal(t, 1, len(roles))
+	require.Equal(t, "admin", roles["org_dBZRCej3fo"][0])
+	require.Equal(t, "member", roles["org_dBZRCej3fo"][1])
 }
