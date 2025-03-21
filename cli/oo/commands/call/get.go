@@ -73,13 +73,17 @@ func Get(cmd *cobra.Command, args []string) error {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode >= 400 {
-		return fmt.Errorf("HTTP request failed with status %d", resp.StatusCode)
-	}
-
 	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return errors.Wrap(err, "failed to read response body")
+	}
+
+	if resp.StatusCode >= 400 {
+		return fmt.Errorf(
+			"HTTP request failed with status %d: %s",
+			resp.StatusCode,
+			string(respBody),
+		)
 	}
 
 	fmt.Println(string(respBody))

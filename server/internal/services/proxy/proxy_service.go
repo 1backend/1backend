@@ -68,7 +68,10 @@ func NewProxyService(
 }
 
 func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
-	logger.Debug("Proxying", slog.String("path", r.URL.Path))
+	logger.Debug("Proxying",
+		slog.String("path", r.URL.Path),
+		slog.String("method", r.Method),
+	)
 
 	// @todo cache?
 
@@ -99,7 +102,7 @@ func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
 
 	if len(healtyInstances) == 0 {
 		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("not healthy instance found"))
+		w.Write([]byte("no healthy instance found"))
 		return
 	}
 
@@ -128,13 +131,29 @@ func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
 	defer resp.Body.Close()
 
 	for k, v := range resp.Header {
-		w.Header().Set(k, v[0])
+		// Skip "Content-Length" and "Transfer-Encoding" to prevent HTTP response errors.
+		// - Go automatically sets "Content-Length" based on the actual body size.
+		// - "Transfer-Encoding: chunked" conflicts with "Content-Length", so we avoid copying it.
+		if k == "Content-Length" || k == "Transfer-Encoding" {
+			continue
+		}
+		for _, vv := range v {
+			w.Header().Add(k, vv)
+		}
 	}
 
-	logger.Debug("Proxy request returned", slog.Int("statusCode", resp.StatusCode))
+	logger.Debug("Proxy request returned",
+		slog.Int("statusCode", resp.StatusCode),
+	)
 
 	w.WriteHeader(resp.StatusCode)
-	io.Copy(w, resp.Body)
+
+	_, err = io.Copy(w, resp.Body)
+	if err != nil {
+		logger.Error("Error proxying body",
+			slog.String("error", err.Error()),
+		)
+	}
 }
 
 // gets service slug from http request path

@@ -70,7 +70,11 @@ func Post(cmd *cobra.Command, args []string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 400 {
-		body, _ := ioutil.ReadAll(resp.Body)
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			body = []byte("error getting body: " + err.Error())
+		}
+
 		return fmt.Errorf(
 			"HTTP request to %v failed with status %d: %s",
 			request.URL.Path,
