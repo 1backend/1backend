@@ -77,6 +77,11 @@ type QueryBuilder interface {
 type Op string
 
 const (
+	// OpOr allows grouping multiple filters with an OR condition.
+	// Example: `field = "value1" OR field = "value2"`
+	// SQL Equivalent: `SELECT * FROM table WHERE field = 'value1' OR field = 'value2';`
+	OpOr Op = "or"
+
 	// OpEquals selects objects where the value of a field equals (=) the specified value in the query.
 	// Example: `"fieldValue" = "value"`
 	// SQL Equivalent: `SELECT * FROM table WHERE field = 'value';`
@@ -157,6 +162,9 @@ type Filter struct {
 	JSONValues string `json:"jsonValues,omitempty"`
 
 	Op Op `json:"op"`
+
+	// SubFilters is used for operations like OR where multiple filters are combined.
+	SubFilters []Filter `json:"subFilters,omitempty"`
 }
 
 func (c Filter) FieldIs(fieldName string) bool {
@@ -250,6 +258,13 @@ func marshal(value any) string {
 	jsonBytes, _ := json.Marshal(value)
 
 	return string(jsonBytes)
+}
+
+func Or(filters ...Filter) Filter {
+	return Filter{
+		Op:         OpOr,
+		SubFilters: filters,
+	}
 }
 
 func Equals(fields []string, value any) Filter {

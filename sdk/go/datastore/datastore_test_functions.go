@@ -133,6 +133,126 @@ func TestPointerRandomize(t *testing.T, store DataStore) {
 	// require.True(t, isDifferent, "Expected results to be randomized, but they were the same in multiple queries")
 }
 
+func TestOr(t *testing.T, store DataStore) {
+	obj1 := TestObject{Name: "FirstObject"}
+	obj2 := TestObject{Name: "SecondObject"}
+	obj3 := TestObject{Name: "ThirdObject"}
+
+	// Create objects in the store
+	err := store.Create(obj1)
+	require.NoError(t, err)
+
+	err = store.Create(obj2)
+	require.NoError(t, err)
+
+	err = store.Create(obj3)
+	require.NoError(t, err)
+
+	res, err := store.Query(
+		Or(
+			Equals([]string{"name"}, "SecondObject"),
+			Equals([]string{"name"}, "ThirdObject"),
+		),
+	).OrderBy().
+		Find()
+
+	require.NoError(t, err)
+	require.Equal(t, 2, len(res))
+	require.Equal(t, "SecondObject", res[0].GetId())
+	require.Equal(t, "ThirdObject", res[1].GetId())
+}
+
+func TestPointerOr(t *testing.T, store DataStore) {
+	obj1 := &TestObject{Name: "FirstObject"}
+	obj2 := &TestObject{Name: "SecondObject"}
+	obj3 := &TestObject{Name: "ThirdObject"}
+
+	// Create objects in the store
+	err := store.Create(obj1)
+	require.NoError(t, err)
+
+	err = store.Create(obj2)
+	require.NoError(t, err)
+
+	err = store.Create(obj3)
+	require.NoError(t, err)
+
+	res, err := store.Query(
+		Or(
+			Equals([]string{"name"}, "SecondObject"),
+			Equals([]string{"name"}, "ThirdObject"),
+		),
+	).OrderBy().Find()
+
+	require.NoError(t, err)
+	require.Equal(t, 2, len(res))
+	require.Equal(t, "SecondObject", res[0].GetId())
+	require.Equal(t, "ThirdObject", res[1].GetId())
+}
+
+func TestComplexOr(t *testing.T, store DataStore) {
+	obj1 := TestObject{Name: "FirstObject", Age: 10}
+	obj2 := TestObject{Name: "SecondObject", Age: 20}
+	obj3 := TestObject{Name: "ThirdObject", Age: 30}
+
+	// Create objects in the store
+	err := store.Create(obj1)
+	require.NoError(t, err)
+
+	err = store.Create(obj2)
+	require.NoError(t, err)
+
+	err = store.Create(obj3)
+	require.NoError(t, err)
+
+	res, err := store.Query(
+		Or(
+			Equals([]string{"name"}, "SecondObject"),
+			Equals([]string{"name"}, "ThirdObject"),
+		),
+		Or(
+			Equals([]string{"age"}, 10),
+			Equals([]string{"age"}, 30),
+		),
+	).OrderBy().
+		Find()
+
+	require.NoError(t, err)
+	require.Equal(t, 1, len(res))
+	require.Equal(t, "ThirdObject", res[0].GetId())
+}
+
+func TestPointerComplexOr(t *testing.T, store DataStore) {
+	obj1 := TestObject{Name: "FirstObject", Age: 10}
+	obj2 := TestObject{Name: "SecondObject", Age: 20}
+	obj3 := TestObject{Name: "ThirdObject", Age: 30}
+
+	// Create objects in the store
+	err := store.Create(obj1)
+	require.NoError(t, err)
+
+	err = store.Create(obj2)
+	require.NoError(t, err)
+
+	err = store.Create(obj3)
+	require.NoError(t, err)
+
+	res, err := store.Query(
+		Or(
+			Equals([]string{"name"}, "SecondObject"),
+			Equals([]string{"name"}, "ThirdObject"),
+		),
+		Or(
+			Equals([]string{"age"}, 10),
+			Equals([]string{"age"}, 30),
+		),
+	).OrderBy().Find()
+
+	require.NoError(t, err)
+	require.Equal(t, 1, len(res))
+	require.Equal(t, "ThirdObject", res[0].GetId())
+}
+
 func TestContains(t *testing.T, store DataStore) {
 	obj1 := TestObject{Name: "HelloThere"}
 	obj2 := TestObject{Name: "HiWhatsUp"}
@@ -192,14 +312,23 @@ func TestPagination(t *testing.T, store DataStore) {
 		require.NoError(t, err)
 	}
 
-	results, err := store.Query().OrderBy(OrderByField("Value", true)).Limit(5).Find()
+	results, err := store.Query().OrderBy(
+		OrderByField("Value", true),
+	).
+		Limit(5).
+		Find()
 	require.NoError(t, err)
 	require.Len(t, results, 5)
 	require.Equal(t, "PaginationTest10", results[0].(TestObject).Name)
 	require.Equal(t, 10, results[0].(TestObject).Value)
 
 	lastValue := results[len(results)-1].(TestObject).Value
-	results, err = store.Query().OrderBy(OrderByField("Value", true)).Limit(5).After(lastValue).Find()
+	results, err = store.Query().OrderBy(
+		OrderByField("Value", true),
+	).
+		Limit(5).
+		After(lastValue).
+		Find()
 	require.NoError(t, err)
 	require.Len(t, results, 5)
 	require.Equal(t, "PaginationTest5", results[0].(TestObject).Name)
@@ -213,14 +342,22 @@ func TestPointerPagination(t *testing.T, store DataStore) {
 		require.NoError(t, err)
 	}
 
-	results, err := store.Query().OrderBy(OrderByField("Value", true)).Limit(5).Find()
+	results, err := store.Query().OrderBy(
+		OrderByField("Value", true)).
+		Limit(5).
+		Find()
 	require.NoError(t, err)
 	require.Len(t, results, 5)
 	require.Equal(t, "PaginationTest10", results[0].(*TestObject).Name)
 	require.Equal(t, 10, results[0].(*TestObject).Value)
 
 	lastValue := results[len(results)-1].(*TestObject).Value
-	results, err = store.Query().OrderBy(OrderByField("Value", true)).Limit(5).After(lastValue).Find()
+	results, err = store.Query().OrderBy(
+		OrderByField("Value", true),
+	).
+		Limit(5).
+		After(lastValue).
+		Find()
 	require.NoError(t, err)
 	require.Len(t, results, 5)
 	require.Equal(t, "PaginationTest5", results[0].(*TestObject).Name)

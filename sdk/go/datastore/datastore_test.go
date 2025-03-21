@@ -16,10 +16,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/google/uuid"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	localstore "github.com/1backend/1backend/sdk/go/datastore/localstore"
 	"github.com/1backend/1backend/sdk/go/datastore/sqlstore"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -93,6 +93,8 @@ func TestAll(t *testing.T) {
 		"Map":                    datastore.TestMap,
 		"Contains":               datastore.TestContains,
 		"Randomize":              datastore.TestRandomize,
+		"OrTest":                 datastore.TestOr,
+		"ComplexOrTest":          datastore.TestComplexOr,
 	}
 	pointerTests := map[string]func(t *testing.T, store datastore.DataStore){
 		"PointerCreate":                 datastore.TestPointerCreate,
@@ -110,6 +112,8 @@ func TestAll(t *testing.T) {
 		"PointerUpdate":                 datastore.TestPointerUpdate,
 		"MapPointer":                    datastore.TestMapPointer,
 		"PointerRandomize":              datastore.TestPointerRandomize,
+		"PointerOrTest":                 datastore.TestPointerOr,
+		"PointerComplexOrTest":          datastore.TestPointerComplexOr,
 	}
 
 	for testName, test := range tests {

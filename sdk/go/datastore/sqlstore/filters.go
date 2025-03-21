@@ -28,6 +28,196 @@ func (s *SQLStore) placeholder(counter int) string {
 	}
 }
 
+func (q *SQLQueryBuilder) evaluateFilters(
+	filter datastore.Filter,
+	filters *[]string,
+	params *[]interface{},
+	paramCounter *int,
+) error {
+	var param any
+	var err error
+
+	fieldNames := filter.Fields
+
+	if filter.Op == datastore.OpOr {
+		localFilters := []string{}
+		for _, f := range filter.SubFilters {
+			err := q.evaluateFilters(f, &localFilters, params, paramCounter)
+			if err != nil {
+				return err
+			}
+		}
+		*filters = append(*filters, fmt.Sprintf("(%s)", strings.Join(localFilters, " OR ")))
+
+	} else if filter.Op == datastore.OpEquals {
+		orFilters := []string{}
+
+		var values []any
+		err = json.Unmarshal([]byte(filter.JSONValues), &values)
+		if err != nil {
+			return err
+		}
+
+		for _, field := range fieldNames {
+			fieldName := q.store.fieldName(field)
+			placeHolder := q.store.placeholder(*paramCounter)
+
+			parts := strings.Split(field, ".")
+
+			if len(values) > 1 {
+				orFilters = append(orFilters, fmt.Sprintf("%s = ANY(%s)", placeHolder, fieldName))
+				param, err = q.store.convertParam(values)
+			} else if v := q.store.fieldTypes[lowercaseFirstChar(parts[0])]; v != nil && v.Kind() == reflect.Slice {
+				orFilters = append(orFilters, fmt.Sprintf("%s = ANY(%s)", placeHolder, fieldName))
+				param, err = q.store.convertParam(values[0])
+			} else {
+				orFilters = append(orFilters, fmt.Sprintf("%s = %s", placeHolder, fieldName))
+				param, err = q.store.convertParam(values[0])
+			}
+
+			*params = append(*params, param)
+			*paramCounter++
+		}
+
+		if len(orFilters) == 1 {
+			*filters = append(*filters, orFilters...)
+		} else {
+			*filters = append(*filters, fmt.Sprintf("(%s)", strings.Join(orFilters, " OR ")))
+		}
+
+	} else if filter.Op == datastore.OpContainsSubstring {
+		orFilters := []string{}
+
+		var values []any
+		err = json.Unmarshal([]byte(filter.JSONValues), &values)
+		if err != nil {
+			return err
+		}
+		if len(values) > 1 {
+			panic("OpContainsSubstring does not support multiple values")
+		}
+
+		for _, field := range fieldNames {
+			fieldName := q.store.fieldName(field)
+			placeHolder := q.store.placeholder(*paramCounter)
+
+			orFilters = append(orFilters, fmt.Sprintf("%s ILIKE %s", fieldName, placeHolder))
+			param, err = q.store.convertParam(fmt.Sprintf("%%%s%%", values[0]))
+
+			*params = append(*params, param)
+			*paramCounter++
+		}
+
+		if len(orFilters) == 1 {
+			*filters = append(*filters, orFilters...)
+		} else {
+			*filters = append(*filters, fmt.Sprintf("(%s)", strings.Join(orFilters, " OR ")))
+		}
+	} else if filter.Op == datastore.OpStartsWith {
+		orFilters := []string{}
+
+		var values []any
+		err = json.Unmarshal([]byte(filter.JSONValues), &values)
+		if err != nil {
+			return err
+		}
+		if len(values) > 1 {
+			panic("OpStartsWith does not support multiple values")
+		}
+
+		for _, field := range fieldNames {
+			fieldName := q.store.fieldName(field)
+			placeHolder := q.store.placeholder(*paramCounter)
+
+			orFilters = append(orFilters, fmt.Sprintf("%s ILIKE %s", fieldName, placeHolder))
+			param, err = q.store.convertParam(fmt.Sprintf("%s%%", values[0]))
+
+			*params = append(*params, param)
+			*paramCounter++
+		}
+
+		if len(orFilters) == 1 {
+			*filters = append(*filters, orFilters...)
+		} else {
+			*filters = append(*filters, fmt.Sprintf("(%s)", strings.Join(orFilters, " OR ")))
+		}
+	} else if filter.Op == datastore.OpIsInList {
+		orFilters := []string{}
+
+		var values []any
+		err = json.Unmarshal([]byte(filter.JSONValues), &values)
+		if err != nil {
+			return err
+		}
+
+		for _, field := range fieldNames {
+			fieldName := q.store.fieldName(field)
+			placeHolder := q.store.placeholder(*paramCounter)
+
+			if reflect.TypeOf(values).Kind() == reflect.Slice {
+				orFilters = append(orFilters, fmt.Sprintf("%s = ANY(%s)", fieldName, placeHolder))
+				param, err = q.store.convertParam(values)
+			} else if typ, hasTyp := q.store.fieldTypes[fieldName]; hasTyp && typ.Kind() == reflect.Slice {
+				// "reverse" IN clause
+				orFilters = append(orFilters, fmt.Sprintf("%s = ANY(%s)", placeHolder, fieldName))
+				param, err = q.store.convertParam(values)
+			} else {
+				orFilters = append(orFilters, fmt.Sprintf("%s = %s", fieldName, placeHolder))
+				param, err = q.store.convertParam(values)
+			}
+
+			*params = append(*params, param)
+			*paramCounter++
+		}
+
+		if len(orFilters) == 1 {
+			*filters = append(*filters, orFilters...)
+		} else {
+			*filters = append(*filters, fmt.Sprintf("(%s)", strings.Join(orFilters, " OR ")))
+		}
+	} else if filter.Op == datastore.OpIntersects {
+		orFilters := []string{}
+
+		var values []any
+		err = json.Unmarshal([]byte(filter.JSONValues), &values)
+		if err != nil {
+			return err
+		}
+
+		for _, field := range fieldNames {
+			fieldName := q.store.fieldName(field)
+			placeHolder := q.store.placeholder(*paramCounter)
+
+			// Ensure that the values being passed are an array (e.g., converting to PostgreSQL array format)
+			if reflect.TypeOf(values).Kind() != reflect.Slice {
+				return fmt.Errorf("OpIntersects requires array values")
+			}
+
+			// Use PostgreSQL's array intersection operator (&&)
+			orFilters = append(orFilters, fmt.Sprintf("%s && %s", fieldName, placeHolder))
+
+			// Convert the values to a PostgreSQL array or the relevant database format
+			param, err = q.store.convertParam(values)
+			if err != nil {
+				return err
+			}
+
+			*params = append(*params, param)
+			*paramCounter++
+		}
+
+		if len(orFilters) == 1 {
+			*filters = append(*filters, orFilters...)
+		} else {
+			*filters = append(*filters, fmt.Sprintf("(%s)", strings.Join(orFilters, " OR ")))
+		}
+	} else {
+		panic(fmt.Sprintf("unknown filter %v", filter))
+	}
+
+	return err
+}
+
 func (q *SQLQueryBuilder) buildFilters(start ...int) ([]string, []interface{}, error) {
 	var params []interface{}
 	paramCounter := 1
@@ -36,177 +226,8 @@ func (q *SQLQueryBuilder) buildFilters(start ...int) ([]string, []interface{}, e
 	}
 	var filters []string
 
-	for _, cond := range q.filters {
-		var param any
-		var err error
-
-		fieldNames := cond.Fields
-
-		if cond.Op == datastore.OpEquals {
-			orFilters := []string{}
-
-			var values []any
-			err = json.Unmarshal([]byte(cond.JSONValues), &values)
-			if err != nil {
-				return nil, nil, err
-			}
-
-			for _, field := range fieldNames {
-				fieldName := q.store.fieldName(field)
-				placeHolder := q.store.placeholder(paramCounter)
-
-				parts := strings.Split(field, ".")
-
-				if len(values) > 1 {
-					orFilters = append(orFilters, fmt.Sprintf("%s = ANY(%s)", placeHolder, fieldName))
-					param, err = q.store.convertParam(values)
-				} else if v := q.store.fieldTypes[lowercaseFirstChar(parts[0])]; v != nil && v.Kind() == reflect.Slice {
-					orFilters = append(orFilters, fmt.Sprintf("%s = ANY(%s)", placeHolder, fieldName))
-					param, err = q.store.convertParam(values[0])
-				} else {
-					orFilters = append(orFilters, fmt.Sprintf("%s = %s", placeHolder, fieldName))
-					param, err = q.store.convertParam(values[0])
-				}
-
-				params = append(params, param)
-				paramCounter++
-			}
-
-			if len(orFilters) == 1 {
-				filters = append(filters, orFilters...)
-			} else {
-				filters = append(filters, fmt.Sprintf("(%s)", strings.Join(orFilters, " OR ")))
-			}
-		} else if cond.Op == datastore.OpContainsSubstring {
-			orFilters := []string{}
-
-			var values []any
-			err = json.Unmarshal([]byte(cond.JSONValues), &values)
-			if err != nil {
-				return nil, nil, err
-			}
-			if len(values) > 1 {
-				panic("OpContainsSubstring does not support multiple values")
-			}
-
-			for _, field := range fieldNames {
-				fieldName := q.store.fieldName(field)
-				placeHolder := q.store.placeholder(paramCounter)
-
-				orFilters = append(orFilters, fmt.Sprintf("%s ILIKE %s", fieldName, placeHolder))
-				param, err = q.store.convertParam(fmt.Sprintf("%%%s%%", values[0]))
-
-				params = append(params, param)
-				paramCounter++
-			}
-
-			if len(orFilters) == 1 {
-				filters = append(filters, orFilters...)
-			} else {
-				filters = append(filters, fmt.Sprintf("(%s)", strings.Join(orFilters, " OR ")))
-			}
-		} else if cond.Op == datastore.OpStartsWith {
-			orFilters := []string{}
-
-			var values []any
-			err = json.Unmarshal([]byte(cond.JSONValues), &values)
-			if err != nil {
-				return nil, nil, err
-			}
-			if len(values) > 1 {
-				panic("OpStartsWith does not support multiple values")
-			}
-
-			for _, field := range fieldNames {
-				fieldName := q.store.fieldName(field)
-				placeHolder := q.store.placeholder(paramCounter)
-
-				orFilters = append(orFilters, fmt.Sprintf("%s ILIKE %s", fieldName, placeHolder))
-				param, err = q.store.convertParam(fmt.Sprintf("%s%%", values[0]))
-
-				params = append(params, param)
-				paramCounter++
-			}
-
-			if len(orFilters) == 1 {
-				filters = append(filters, orFilters...)
-			} else {
-				filters = append(filters, fmt.Sprintf("(%s)", strings.Join(orFilters, " OR ")))
-			}
-		} else if cond.Op == datastore.OpIsInList {
-			orFilters := []string{}
-
-			var values []any
-			err = json.Unmarshal([]byte(cond.JSONValues), &values)
-			if err != nil {
-				return nil, nil, err
-			}
-
-			for _, field := range fieldNames {
-				fieldName := q.store.fieldName(field)
-				placeHolder := q.store.placeholder(paramCounter)
-
-				if reflect.TypeOf(values).Kind() == reflect.Slice {
-					orFilters = append(orFilters, fmt.Sprintf("%s = ANY(%s)", fieldName, placeHolder))
-					param, err = q.store.convertParam(values)
-				} else if typ, hasTyp := q.store.fieldTypes[fieldName]; hasTyp && typ.Kind() == reflect.Slice {
-					// "reverse" IN clause
-					orFilters = append(orFilters, fmt.Sprintf("%s = ANY(%s)", placeHolder, fieldName))
-					param, err = q.store.convertParam(values)
-				} else {
-					orFilters = append(orFilters, fmt.Sprintf("%s = %s", fieldName, placeHolder))
-					param, err = q.store.convertParam(values)
-				}
-
-				params = append(params, param)
-				paramCounter++
-			}
-
-			if len(orFilters) == 1 {
-				filters = append(filters, orFilters...)
-			} else {
-				filters = append(filters, fmt.Sprintf("(%s)", strings.Join(orFilters, " OR ")))
-			}
-		} else if cond.Op == datastore.OpIntersects {
-			orFilters := []string{}
-
-			var values []any
-			err = json.Unmarshal([]byte(cond.JSONValues), &values)
-			if err != nil {
-				return nil, nil, err
-			}
-
-			for _, field := range fieldNames {
-				fieldName := q.store.fieldName(field)
-				placeHolder := q.store.placeholder(paramCounter)
-
-				// Ensure that the values being passed are an array (e.g., converting to PostgreSQL array format)
-				if reflect.TypeOf(values).Kind() != reflect.Slice {
-					return nil, nil, fmt.Errorf("OpIntersects requires array values")
-				}
-
-				// Use PostgreSQL's array intersection operator (&&)
-				orFilters = append(orFilters, fmt.Sprintf("%s && %s", fieldName, placeHolder))
-
-				// Convert the values to a PostgreSQL array or the relevant database format
-				param, err = q.store.convertParam(values)
-				if err != nil {
-					return nil, nil, err
-				}
-
-				params = append(params, param)
-				paramCounter++
-			}
-
-			if len(orFilters) == 1 {
-				filters = append(filters, orFilters...)
-			} else {
-				filters = append(filters, fmt.Sprintf("(%s)", strings.Join(orFilters, " OR ")))
-			}
-		} else {
-			panic(fmt.Sprintf("unknown filter %v", cond))
-		}
-
+	for _, filter := range q.filters {
+		err := q.evaluateFilters(filter, &filters, &params, &paramCounter)
 		if err != nil {
 			return nil, nil, err
 		}

@@ -28,11 +28,18 @@ jobs:
           docker rm -f mypostgres
           docker run --name mypostgres -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_DB=mydatabase -p 5432:5432 -d postgres
 
-          # We rerun the tests with an SQL backend
+          echo "Waiting for PostgreSQL to be ready..."
+          until docker exec mypostgres pg_isready -U postgres -d mydatabase; do
+            sleep 1
+          done
+      
+          echo "PostgreSQL is ready. Running tests..."      
+
+          # Run tags with --tags=dist so Postgres based tests run too
           OB_DB=postgres \
             OB_DB_DEBUG=true \
             OB_DB_SQL_CONNECTION_STRING="postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable" \
-            go test ./... -v -timeout=30s
+            go test ./... --tags=dist -v -timeout=30s
         working-directory: sdk/go
 
       - name: Test OpenAPI annotations
