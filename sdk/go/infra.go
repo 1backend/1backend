@@ -16,7 +16,10 @@ import (
 const onebackendFolder = ".1backend"
 
 type InfraOptions struct {
-	Test bool
+	Test               bool
+	DbName             string
+	DbConnectionString string
+	HomeDir            string
 }
 
 type Infra struct {
@@ -24,28 +27,38 @@ type Infra struct {
 }
 
 func InfraFactory(options InfraOptions) (*Infra, error) {
-	var homeDir string
-	var err error
-	if options.Test {
-		homeDir, err = os.MkdirTemp("", "1backend-")
-		if err != nil {
-			return nil, errors.Wrap(err,
-				"homedir creation failed",
-			)
+	if options.HomeDir == "" {
+		var homeDir string
+		var err error
+		if options.Test {
+			homeDir, err = os.MkdirTemp("", "1backend-")
+			if err != nil {
+				return nil, errors.Wrap(err,
+					"homedir creation failed",
+				)
+			}
+		} else {
+			homeDir, err = os.UserHomeDir()
+			if err != nil {
+				return nil, errors.Wrap(err, "homedir creation failed")
+			}
+			homeDir = path.Join(homeDir, onebackendFolder)
 		}
-	} else {
-		homeDir, err = os.UserHomeDir()
-		if err != nil {
-			return nil, errors.Wrap(err, "homedir creation failed")
-		}
-		homeDir = path.Join(homeDir, onebackendFolder)
+
+		options.HomeDir = homeDir
 	}
 
 	infra := &Infra{}
 
-	dbName := os.Getenv("OB_DB")
-	if dbName == "" {
-		localStorePath := path.Join(homeDir, "data")
+	if options.DbName == "" {
+		options.DbName = os.Getenv("OB_DB")
+	}
+	if options.DbConnectionString == "" {
+		options.DbConnectionString = os.Getenv("OB_DB_CONNECTION_STRING")
+	}
+
+	if options.DbName == "" {
+		localStorePath := path.Join(options.HomeDir, "data")
 		err := os.MkdirAll(localStorePath, 0755)
 		if err != nil {
 			logger.Error(
@@ -61,8 +74,8 @@ func InfraFactory(options InfraOptions) (*Infra, error) {
 				path.Join(localStorePath, tableName),
 			)
 		}
-	} else if dbName == "postgres" {
-		db, err := sql.Open("postgres", os.Getenv("OB_DB_CONNECTION_STRING"))
+	} else if options.DbName == "postgres" {
+		db, err := sql.Open("postgres", options.DbConnectionString)
 		if err != nil {
 			return nil, errors.Wrap(err, "error opening sql db")
 		}
