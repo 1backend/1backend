@@ -107,16 +107,16 @@ func (a AuthorizerImpl) IsAdmin(userSvcPublicKey, token string) (bool, error) {
 	return false, nil
 }
 
-func (a AuthorizerImpl) RolesInOrgFromRequest(userSvcPublicKey string, r *http.Request) ([]string, error) {
+func (a AuthorizerImpl) RolesInOrganizationFromRequest(userSvcPublicKey string, r *http.Request) ([]string, error) {
 	tokenString, hasToken := a.TokenFromRequest(r)
 	if !hasToken {
 		return nil, fmt.Errorf("no token found in request")
 	}
 
-	return a.RolesInOrg(userSvcPublicKey, tokenString)
+	return a.RolesInOrganization(userSvcPublicKey, tokenString)
 }
 
-func (a AuthorizerImpl) RolesInOrg(userSvcPublicKey, token string) ([]string, error) {
+func (a AuthorizerImpl) RolesInOrganization(userSvcPublicKey, token string) ([]string, error) {
 	claims, err := a.ParseJWT(userSvcPublicKey, token)
 	if err != nil {
 		return nil, err
