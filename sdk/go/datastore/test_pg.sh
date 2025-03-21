@@ -4,5 +4,5 @@ docker run --name mypostgres -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_D
 
 OB_DB=postgres \
 OB_DB_DEBUG=true \
-OB_DB_SQL_CONNECTION_STRING="postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable" \
+OB_DB_CONNECTION_STRING="postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable" \
 go test ./... -tags=dist -timeout=30s

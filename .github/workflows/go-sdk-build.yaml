@@ -38,7 +38,7 @@ jobs:
           # Run tags with --tags=dist so Postgres based tests run too
           OB_DB=postgres \
             OB_DB_DEBUG=true \
-            OB_DB_SQL_CONNECTION_STRING="postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable" \
+            OB_DB_CONNECTION_STRING="postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable" \
             go test ./... --tags=dist -v -timeout=30s
         working-directory: sdk/go
 
