@@ -52,7 +52,7 @@ func Put(cmd *cobra.Command, args []string) error {
 
 	request, err := http.NewRequestWithContext(
 		ctx,
-		http.MethodPost,
+		http.MethodPut,
 		fullUrl,
 		bytes.NewBuffer(jsonData),
 	)
@@ -70,7 +70,11 @@ func Put(cmd *cobra.Command, args []string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 400 {
-		body, _ := ioutil.ReadAll(resp.Body)
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			body = []byte("error getting body: " + err.Error())
+		}
+
 		return fmt.Errorf(
 			"HTTP request failed with status %d: %s",
 			resp.StatusCode,
@@ -78,6 +82,5 @@ func Put(cmd *cobra.Command, args []string) error {
 		)
 	}
 
-	fmt.Println("Request successful")
 	return nil
 }
