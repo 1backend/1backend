@@ -54,6 +54,7 @@ jobs:
           done
 
           oo login 1backend changeme
+          oo instances list
           oo instances list | grep -q first-go-svc || (echo "Service not found!" && exit 1)
         timeout-minutes: 1
         working-directory: docs-source/docs/writing-custom-services/first-service-go
