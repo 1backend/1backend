@@ -20,6 +20,10 @@ export class DatastoreFilter {
     */
     'jsonValues'?: string;
     'op'?: DatastoreOp;
+    /**
+    * SubFilters is used for operations like OR where multiple filters are combined.
+    */
+    'subFilters'?: Array<DatastoreFilter>;
 
     static discriminator: string | undefined = undefined;
 
@@ -38,6 +42,11 @@ export class DatastoreFilter {
             "name": "op",
             "baseName": "op",
             "type": "DatastoreOp"
+        },
+        {
+            "name": "subFilters",
+            "baseName": "subFilters",
+            "type": "Array<DatastoreFilter>"
         }    ];
 
     static getAttributeTypeMap() {

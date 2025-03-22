@@ -2445,6 +2445,7 @@ function DataSvcCreateObjectResponseToJSONTyped(value, ignoreDiscriminator = fal
  * @export
  */
 const DatastoreOp = {
+    OpOr: 'or',
     OpEquals: 'equals',
     OpContainsSubstring: 'containsSubstring',
     OpStartsWith: 'startsWith',
@@ -2504,6 +2505,7 @@ function DatastoreFilterFromJSONTyped(json, ignoreDiscriminator) {
         'fields': json['fields'] == null ? undefined : json['fields'],
         'jsonValues': json['jsonValues'] == null ? undefined : json['jsonValues'],
         'op': json['op'] == null ? undefined : DatastoreOpFromJSON(json['op']),
+        'subFilters': json['subFilters'] == null ? undefined : (json['subFilters'].map(DatastoreFilterFromJSON)),
     };
 }
 function DatastoreFilterToJSON(json) {
@@ -2517,6 +2519,7 @@ function DatastoreFilterToJSONTyped(value, ignoreDiscriminator = false) {
         'fields': value['fields'],
         'jsonValues': value['jsonValues'],
         'op': DatastoreOpToJSON(value['op']),
+        'subFilters': value['subFilters'] == null ? undefined : (value['subFilters'].map(DatastoreFilterToJSON)),
     };
 }
 

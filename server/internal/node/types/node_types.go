@@ -15,7 +15,7 @@ type Options struct {
 
 	// 1Backend Server Address
 	// Crucial for distributed features.
-	// Please see the documentation for the envar OB_URL
+	// Please see the documentation for the envar OB_SERVER_URL
 	Address string
 
 	Az         string
@@ -23,9 +23,13 @@ type Options struct {
 	LLMHost    string
 	VolumeName string
 	ConfigPath string
-	Db         string
-	DbDriver   string
-	DbString   string
+
+	// eg. mysql, postgres
+	Db string
+
+	// Connection string eg.
+	// "postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
+	DbConnectionString string
 
 	// Crucial for distributed features.
 	// Please see the documentation for the envar OB_NODE_ID

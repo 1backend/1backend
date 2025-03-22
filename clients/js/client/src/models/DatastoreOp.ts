@@ -18,6 +18,7 @@
  * @export
  */
 export const DatastoreOp = {
+    OpOr: 'or',
     OpEquals: 'equals',
     OpContainsSubstring: 'containsSubstring',
     OpStartsWith: 'startsWith',

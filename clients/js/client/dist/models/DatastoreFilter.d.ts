@@ -36,6 +36,12 @@ export interface DatastoreFilter {
      * @memberof DatastoreFilter
      */
     op?: DatastoreOp;
+    /**
+     * SubFilters is used for operations like OR where multiple filters are combined.
+     * @type {Array<DatastoreFilter>}
+     * @memberof DatastoreFilter
+     */
+    subFilters?: Array<DatastoreFilter>;
 }
 /**
  * Check if a given object implements the DatastoreFilter interface.

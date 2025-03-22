@@ -63,7 +63,7 @@ func (cs *ConfigService) SetClientFactory(clientFactory sdk.ClientFactory) {
 	cs.clientFactory = clientFactory
 }
 
-func (cs *ConfigService) SetDatastoreFactory(
+func (cs *ConfigService) SetDatastoreConstructor(
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 ) {
 	cs.datastoreFactory = datastoreFactory

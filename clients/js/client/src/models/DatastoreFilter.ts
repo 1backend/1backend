@@ -47,6 +47,12 @@ export interface DatastoreFilter {
      * @memberof DatastoreFilter
      */
     op?: DatastoreOp;
+    /**
+     * SubFilters is used for operations like OR where multiple filters are combined.
+     * @type {Array<DatastoreFilter>}
+     * @memberof DatastoreFilter
+     */
+    subFilters?: Array<DatastoreFilter>;
 }
 
 
@@ -71,6 +77,7 @@ export function DatastoreFilterFromJSONTyped(json: any, ignoreDiscriminator: boo
         'fields': json['fields'] == null ? undefined : json['fields'],
         'jsonValues': json['jsonValues'] == null ? undefined : json['jsonValues'],
         'op': json['op'] == null ? undefined : DatastoreOpFromJSON(json['op']),
+        'subFilters': json['subFilters'] == null ? undefined : ((json['subFilters'] as Array<any>).map(DatastoreFilterFromJSON)),
     };
 }
 
@@ -88,6 +95,7 @@ export function DatastoreFilterToJSONTyped(value?: DatastoreFilter | null, ignor
         'fields': value['fields'],
         'jsonValues': value['jsonValues'],
         'op': DatastoreOpToJSON(value['op']),
+        'subFilters': value['subFilters'] == null ? undefined : ((value['subFilters'] as Array<any>).map(DatastoreFilterToJSON)),
     };
 }
 

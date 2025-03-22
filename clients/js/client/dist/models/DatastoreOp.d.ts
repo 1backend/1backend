@@ -14,6 +14,7 @@
  * @export
  */
 export declare const DatastoreOp: {
+    readonly OpOr: "or";
     readonly OpEquals: "equals";
     readonly OpContainsSubstring: "containsSubstring";
     readonly OpStartsWith: "startsWith";

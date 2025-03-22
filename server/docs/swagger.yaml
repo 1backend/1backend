@@ -720,9 +720,16 @@ definitions:
         type: string
       op:
         $ref: '#/definitions/datastore.Op'
+      subFilters:
+        description: SubFilters is used for operations like OR where multiple filters
+          are combined.
+        items:
+          $ref: '#/definitions/datastore.Filter'
+        type: array
     type: object
   datastore.Op:
     enum:
+    - or
     - equals
     - containsSubstring
     - startsWith
@@ -730,6 +737,7 @@ definitions:
     - isInList
     type: string
     x-enum-varnames:
+    - OpOr
     - OpEquals
     - OpContainsSubstring
     - OpStartsWith

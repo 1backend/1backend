@@ -61,7 +61,7 @@ func Start(options *node_types.Options) (*NodeInfo, error) {
 		options.GpuPlatform = os.Getenv("OB_GPU_PLATFORM")
 	}
 	if options.Address == "" {
-		options.Address = os.Getenv("OB_URL")
+		options.Address = os.Getenv("OB_SERVER_URL")
 	}
 	if options.NodeId == "" {
 		options.NodeId = os.Getenv("OB_NODE_ID")
@@ -84,11 +84,8 @@ func Start(options *node_types.Options) (*NodeInfo, error) {
 	if options.Db == "" {
 		options.Db = os.Getenv("OB_DB")
 	}
-	if options.DbDriver == "" {
-		options.DbDriver = os.Getenv("OB_DB_DRIVER")
-	}
-	if options.DbString == "" {
-		options.DbString = os.Getenv("OB_DB_STRING")
+	if options.DbConnectionString == "" {
+		options.DbConnectionString = os.Getenv("OB_DB_CONNECTION_STRING")
 	}
 	if options.SecretEncryptionKey == "" {
 		options.SecretEncryptionKey = os.Getenv("OB_ENCRYPTION_KEY")
@@ -111,14 +108,11 @@ func Start(options *node_types.Options) (*NodeInfo, error) {
 	ctx := context.Background()
 
 	if options.Db != "" {
-		if options.DbDriver == "" {
-			options.DbDriver = "postgres"
-		}
-		if options.DbString == "" {
-			options.DbString = "postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
+		if options.DbConnectionString == "" {
+			options.DbConnectionString = "postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
 		}
 
-		db, err := sql.Open(options.DbDriver, options.DbString)
+		db, err := sql.Open(options.Db, options.DbConnectionString)
 		if err != nil {
 			return nil, errors.Wrap(err, "error opening sql db")
 		}
@@ -129,10 +123,10 @@ func Start(options *node_types.Options) (*NodeInfo, error) {
 		}
 		diopt.Lock = pglock.NewPGDistributedLock(conn)
 
-		diopt.DatastoreFactory = func(tableName string, instance any) (datastore.DataStore, error) {
+		diopt.DatastoreConstructor = func(tableName string, instance any) (datastore.DataStore, error) {
 			return sqlstore.NewSQLStore(
 				instance,
-				options.DbDriver,
+				options.Db,
 				db,
 				tablePrefix+tableName,
 				false,

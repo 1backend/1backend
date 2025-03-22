@@ -17,6 +17,10 @@ export declare class DatastoreFilter {
     */
     'jsonValues'?: string;
     'op'?: DatastoreOp;
+    /**
+    * SubFilters is used for operations like OR where multiple filters are combined.
+    */
+    'subFilters'?: Array<DatastoreFilter>;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

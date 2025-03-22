@@ -48,6 +48,8 @@ func (s *SQLStore) fieldName(fieldName string, cast ...string) string {
 		return strings.Join(fieldParts, "")
 	}
 
+	fieldName = escape(strings.ToLower(fieldName[0:1]) + fieldName[1:])
+
 	if casted {
 		return fmt.Sprintf("(%s::%s)", fieldName, cast[0])
 	}

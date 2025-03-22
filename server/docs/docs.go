@@ -6328,12 +6328,20 @@ const docTemplate = `{
                 },
                 "op": {
                     "$ref": "#/definitions/datastore.Op"
+                },
+                "subFilters": {
+                    "description": "SubFilters is used for operations like OR where multiple filters are combined.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/datastore.Filter"
+                    }
                 }
             }
         },
         "datastore.Op": {
             "type": "string",
             "enum": [
+                "or",
                 "equals",
                 "containsSubstring",
                 "startsWith",
@@ -6341,6 +6349,7 @@ const docTemplate = `{
                 "isInList"
             ],
             "x-enum-varnames": [
+                "OpOr",
                 "OpEquals",
                 "OpContainsSubstring",
                 "OpStartsWith",

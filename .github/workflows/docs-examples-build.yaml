@@ -1,0 +1,60 @@
+name: "E2E: Docs example code snippets work"
+
+on:
+  push:
+
+jobs:
+  test:
+    timeout-minutes: 2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "^1.23.2"
+
+      - name: Start docker containers
+        run: |
+          docker compose up 1backend -d
+
+          HOST="127.0.0.1"
+          PORT=58231
+
+          while ! nc -z $HOST $PORT; do
+            echo "Waiting for $HOST:$PORT to come online..."
+            sleep 1
+          done
+
+      - name: Install current branch oo
+        run: |
+          go install github.com/1backend/1backend/cli/oo@${{ github.sha }}
+
+      - name: Install dependencies
+        run: |
+          go mod tidy
+        working-directory: server
+
+      - name: Run first go server example
+        run: |
+          go mod tidy
+
+          OB_SERVER_URL=http://127.0.0.1:58231 \
+            OB_SELF_URL=http://127.0.0.1:9311 \
+            go run main.go &
+
+          HOST="127.0.0.1"
+          PORT=9311
+
+          while ! nc -z $HOST $PORT; do
+            echo "Waiting for $HOST:$PORT to come online..."
+            sleep 1
+          done
+
+          oo login 1backend changeme
+          oo instances list
+          oo instances list | grep -q first-go-svc || (echo "Service not found!" && exit 1)
+        timeout-minutes: 1
+        working-directory: docs-source/docs/writing-custom-services/first-service-go
