@@ -32,6 +32,10 @@ func NewDatastoreConstructor(options DatastoreConstructorOptions) (DatastoreCons
 		options.HomeDir = homeDir
 	}
 
+	if options.Test && options.TablePrefix == "" {
+		options.TablePrefix = Id("test") + "_"
+	}
+
 	if options.Db == "" {
 		localStorePath := path.Join(options.HomeDir, onebackendFolder, "data")
 		err := os.MkdirAll(localStorePath, 0755)
@@ -46,7 +50,7 @@ func NewDatastoreConstructor(options DatastoreConstructorOptions) (DatastoreCons
 		return func(tableName string, instance any) (datastore.DataStore, error) {
 			return localstore.NewLocalStore(
 				instance,
-				path.Join(localStorePath, tableName),
+				path.Join(localStorePath, options.TablePrefix+tableName),
 			)
 		}, nil
 	}
@@ -62,10 +66,6 @@ func NewDatastoreConstructor(options DatastoreConstructorOptions) (DatastoreCons
 	db, err := sql.Open(options.Db, options.DbConnectionString)
 	if err != nil {
 		return nil, errors.Wrap(err, "error opening sql db")
-	}
-
-	if options.Test && options.TablePrefix == "" {
-		options.TablePrefix = Id("test") + "_"
 	}
 
 	return func(tableName string, instance any) (datastore.DataStore, error) {

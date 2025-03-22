@@ -30,7 +30,6 @@ jobs:
 
           # We rerun the tests with an SQL backend
           OB_DB=postgres \
-            OB_DB_DEBUG=true \
             OB_DB_CONNECTION_STRING="postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable" \
             go test ./... -tags=dist -v -timeout=90s
         working-directory: server
