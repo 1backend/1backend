@@ -12,7 +12,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-// yo
 func main() {
 	skeletonService, err := NewService()
 	if err != nil {
