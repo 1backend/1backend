@@ -1,4 +1,3 @@
-// EHHEHE
 package main
 
 import (

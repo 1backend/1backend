@@ -22,8 +22,8 @@ find "$DOCS_DIR" -name "*.md" | while read -r md_file; do
             inside_include = 1
             print $0  # Print the INCLUDE comment
 
-            # Extract file path using sed
-            cmd = "echo \"" $0 "\" | sed -n \"s/<!-- INCLUDE: \\(.*\\) -->/\\1/p\""
+            # Extract file path and strip potential comment markers (// or #)
+            cmd = "echo \"" $0 "\" | sed -n \"s/.*<!-- INCLUDE: \\(.*\\) -->/\\1/p\" | sed \"s/^\\s*\\/\\///\""
             cmd | getline file
             close(cmd)
 
