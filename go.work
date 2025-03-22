@@ -11,3 +11,5 @@ use ./clients/go
 use ./sdk/go
 
 use ./cli/oo
+
+use ./docs-source/docs/writing-custom-services/first-service-go

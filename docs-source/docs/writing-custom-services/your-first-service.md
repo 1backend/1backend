@@ -23,8 +23,8 @@ You may notice that the following code uses a "Go SDK," but it's simply a set of
 1Backend is language-agnostic and can be used with any language, even if no SDK is available in the repository.
 
 ```go
-// <!-- INCLUDE: ./docs/writing-custom-services/first-service-go/main.go -->
-package main
+// <!-- INCLUDE: ./first-service-go/main.go -->
+package main1
 
 import (
 	"context"

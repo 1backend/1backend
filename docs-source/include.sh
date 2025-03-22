@@ -13,8 +13,10 @@ INCLUDE_END="<!-- /INCLUDE -->"
 # Process all .md files in the docs directory
 find "$DOCS_DIR" -name "*.md" | while read -r md_file; do
     echo "Processing $md_file..."
+
+    MD_DIR=$(dirname "$md_file")
     
-    awk -v INCLUDE_START="$INCLUDE_START" -v INCLUDE_END="$INCLUDE_END" '
+    awk -v INCLUDE_START="$INCLUDE_START" -v INCLUDE_END="$INCLUDE_END" -v MD_DIR="$MD_DIR" '
     BEGIN { inside_include = 0 }
     {
         # Detect the start of an INCLUDE block
@@ -26,6 +28,9 @@ find "$DOCS_DIR" -name "*.md" | while read -r md_file; do
             cmd = "echo \"" $0 "\" | sed -n \"s/.*<!-- INCLUDE: \\(.*\\) -->/\\1/p\" | sed \"s/^\\s*\\/\\///\""
             cmd | getline file
             close(cmd)
+
+            # Resolve relative path based on Markdown files directory
+            file = MD_DIR "/" file
 
             # Only include content if the file exists
             if (system("[ -f \"" file "\" ]") == 0) {
