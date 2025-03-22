@@ -53,6 +53,20 @@ func LoadConfig() (types.Config, error) {
 		return config, fmt.Errorf("failed to decode config file: %v", err)
 	}
 
+	if len(config.Environments) == 0 {
+		config.Environments = map[string]*types.Environment{}
+
+		shortName := "local"
+		config.Environments["local"] = &types.Environment{
+			ShortName: shortName,
+			// @todo make this come from somewhere else
+			URL: "http://127.0.0.1:58231",
+		}
+		config.SelectedEnvironment = shortName
+
+		SaveConfig(config)
+	}
+
 	return config, nil
 }
 

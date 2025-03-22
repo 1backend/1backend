@@ -24,7 +24,7 @@ You may notice that the following code uses a "Go SDK," but it's simply a set of
 
 ```go
 // <!-- INCLUDE: ./first-service-go/main.go -->
-package main1
+package main
 
 import (
 	"context"
@@ -41,12 +41,12 @@ import (
 func main() {
 	skeletonService, err := NewService()
 	if err != nil {
-		log.Fatalf("Failed to initialize skeleton service: %v", err)
+		log.Fatalf("Failed to initialize service: %v", err)
 	}
 
 	router := http.NewServeMux()
 
-	router.HandleFunc("/skeleton-svc/hello", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/first-go-svc/hello", func(w http.ResponseWriter, r *http.Request) {
 		skeletonService.Hello(w, r)
 	})
 
@@ -65,9 +65,9 @@ func NewService() (*SkeletonService, error) {
 		return nil, errors.New("OB_SERVER_URL cannot be found")
 	}
 
-	selfUrl := os.Getenv("SELF_URL")
+	selfUrl := os.Getenv("OB_SELF_URL")
 
-	dsf, err := sdk.NewDatastoreConstructor("")
+	dsf, err := sdk.NewDatastoreConstructor(sdk.DatastoreConstructorOptions{})
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot create datastore factory")
 	}
@@ -80,8 +80,8 @@ func NewService() (*SkeletonService, error) {
 	client := sdk.NewApiClientFactory(spUrl).Client()
 	token, err := sdk.RegisterServiceAccount(
 		client.UserSvcAPI,
-		"skeleton-svc",
-		"Skeleton Svc",
+		"first-go-svc",
+		"First Go Svc",
 		credentialStore,
 	)
 	if err != nil {

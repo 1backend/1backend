@@ -8,7 +8,6 @@ import (
 	"text/tabwriter"
 
 	"github.com/1backend/1backend/cli/oo/config"
-	"github.com/1backend/1backend/cli/oo/types"
 	"github.com/spf13/cobra"
 )
 
@@ -17,20 +16,6 @@ func List(cmd *cobra.Command, args []string) error {
 	conf, err := config.LoadConfig()
 	if err != nil {
 		return fmt.Errorf("failed to load config: %w", err)
-	}
-
-	if len(conf.Environments) == 0 {
-		conf.Environments = map[string]*types.Environment{}
-
-		shortName := "local"
-		conf.Environments["local"] = &types.Environment{
-			ShortName: shortName,
-			// @todo make this come from somewhere else
-			URL: "http://127.0.0.1:58231",
-		}
-		conf.SelectedEnvironment = shortName
-
-		config.SaveConfig(conf)
 	}
 
 	writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
