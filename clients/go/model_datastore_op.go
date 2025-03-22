@@ -21,6 +21,7 @@ type DatastoreOp string
 
 // List of datastore.Op
 const (
+	OpOr DatastoreOp = "or"
 	OpEquals DatastoreOp = "equals"
 	OpContainsSubstring DatastoreOp = "containsSubstring"
 	OpStartsWith DatastoreOp = "startsWith"
@@ -30,6 +31,7 @@ const (
 
 // All allowed values of DatastoreOp enum
 var AllowedDatastoreOpEnumValues = []DatastoreOp{
+	"or",
 	"equals",
 	"containsSubstring",
 	"startsWith",

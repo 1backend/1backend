@@ -68,6 +68,36 @@ func (mr *MockAuthorizerMockRecorder) IsAdminFromRequest(userSvcPublicKey, r any
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsAdminFromRequest", reflect.TypeOf((*MockAuthorizer)(nil).IsAdminFromRequest), userSvcPublicKey, r)
 }
 
+// Organizations mocks base method.
+func (m *MockAuthorizer) Organizations(userSvcPublicKey, token string) (map[string][]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Organizations", userSvcPublicKey, token)
+	ret0, _ := ret[0].(map[string][]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Organizations indicates an expected call of Organizations.
+func (mr *MockAuthorizerMockRecorder) Organizations(userSvcPublicKey, token any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Organizations", reflect.TypeOf((*MockAuthorizer)(nil).Organizations), userSvcPublicKey, token)
+}
+
+// OrganizationsFromRequest mocks base method.
+func (m *MockAuthorizer) OrganizationsFromRequest(userSvcPublicKey string, r *http.Request) (map[string][]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "OrganizationsFromRequest", userSvcPublicKey, r)
+	ret0, _ := ret[0].(map[string][]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// OrganizationsFromRequest indicates an expected call of OrganizationsFromRequest.
+func (mr *MockAuthorizerMockRecorder) OrganizationsFromRequest(userSvcPublicKey, r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "OrganizationsFromRequest", reflect.TypeOf((*MockAuthorizer)(nil).OrganizationsFromRequest), userSvcPublicKey, r)
+}
+
 // ParseJWT mocks base method.
 func (m *MockAuthorizer) ParseJWT(userSvcPublicKey, token string) (*Claims, error) {
 	m.ctrl.T.Helper()

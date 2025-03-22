@@ -24,6 +24,8 @@ type DatastoreFilter struct {
 	// JSONValues is a JSON marshalled array of values. It's JSON marhalled due to the limitations of the Swaggo -> OpenAPI 2.0 -> OpenAPI Go generator toolchain.
 	JsonValues *string `json:"jsonValues,omitempty"`
 	Op *DatastoreOp `json:"op,omitempty"`
+	// SubFilters is used for operations like OR where multiple filters are combined.
+	SubFilters []DatastoreFilter `json:"subFilters,omitempty"`
 }
 
 // NewDatastoreFilter instantiates a new DatastoreFilter object
@@ -139,6 +141,38 @@ func (o *DatastoreFilter) SetOp(v DatastoreOp) {
 	o.Op = &v
 }
 
+// GetSubFilters returns the SubFilters field value if set, zero value otherwise.
+func (o *DatastoreFilter) GetSubFilters() []DatastoreFilter {
+	if o == nil || IsNil(o.SubFilters) {
+		var ret []DatastoreFilter
+		return ret
+	}
+	return o.SubFilters
+}
+
+// GetSubFiltersOk returns a tuple with the SubFilters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DatastoreFilter) GetSubFiltersOk() ([]DatastoreFilter, bool) {
+	if o == nil || IsNil(o.SubFilters) {
+		return nil, false
+	}
+	return o.SubFilters, true
+}
+
+// HasSubFilters returns a boolean if a field has been set.
+func (o *DatastoreFilter) HasSubFilters() bool {
+	if o != nil && !IsNil(o.SubFilters) {
+		return true
+	}
+
+	return false
+}
+
+// SetSubFilters gets a reference to the given []DatastoreFilter and assigns it to the SubFilters field.
+func (o *DatastoreFilter) SetSubFilters(v []DatastoreFilter) {
+	o.SubFilters = v
+}
+
 func (o DatastoreFilter) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -157,6 +191,9 @@ func (o DatastoreFilter) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Op) {
 		toSerialize["op"] = o.Op
+	}
+	if !IsNil(o.SubFilters) {
+		toSerialize["subFilters"] = o.SubFilters
 	}
 	return toSerialize, nil
 }
