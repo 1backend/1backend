@@ -61,10 +61,15 @@ func NewDatastoreConstructor(options DatastoreConstructorOptions) (DatastoreCons
 		}
 
 		return func(tableName string, instance any) (datastore.DataStore, error) {
-			return localstore.NewLocalStore(
+			d, err := localstore.NewLocalStore(
 				instance,
 				path.Join(localStorePath, options.TablePrefix+tableName),
 			)
+			if err != nil {
+				return nil, err
+			}
+			d.SetDebug(options.Test)
+			return d, nil
 		}, nil
 	}
 
@@ -74,12 +79,17 @@ func NewDatastoreConstructor(options DatastoreConstructorOptions) (DatastoreCons
 	}
 
 	return func(tableName string, instance any) (datastore.DataStore, error) {
-		return sqlstore.NewSQLStore(
+		d, err := sqlstore.NewSQLStore(
 			instance,
 			options.Db,
 			db,
 			options.TablePrefix+tableName,
 			false,
 		)
+		if err != nil {
+			return nil, err
+		}
+		d.SetDebug(options.Test)
+		return d, nil
 	}, nil
 }
