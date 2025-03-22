@@ -61,7 +61,7 @@ func Start(options *node_types.Options) (*NodeInfo, error) {
 		options.GpuPlatform = os.Getenv("OB_GPU_PLATFORM")
 	}
 	if options.Address == "" {
-		options.Address = os.Getenv("OB_URL")
+		options.Address = os.Getenv("OB_SERVER_URL")
 	}
 	if options.NodeId == "" {
 		options.NodeId = os.Getenv("OB_NODE_ID")

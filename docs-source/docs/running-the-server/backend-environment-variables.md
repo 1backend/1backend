@@ -10,9 +10,9 @@ tags:
 
 # Backend Environment Variables
 
-## `OB_URL`
+## `OB_SERVER_URL`
 
-The OB_URL is the internally addressable (non-public-facing) URL of an 1Backend server. It should point to the local 1Backend instance on each physical node. Ideally, every node should have its own 1Backend instance.
+The OB_SERVER_URL is the internally addressable (non-public-facing) URL of an 1Backend server. It should point to the local 1Backend instance on each physical node. Ideally, every node should have its own 1Backend instance.
 
 This local address serves two purposes:
 

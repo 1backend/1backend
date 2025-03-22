@@ -93,7 +93,7 @@ node_eIfnt9CGJV   http://127.0.0.1:58231      8s ago
 
 For single node setups that can work, but not if you plan to use distributed features.
 
-To configure the nodes, please see the `OB_URL` and `OB_NODE_ID` envars [here](/docs/running-the-server/backend-environment-variables)
+To configure the nodes, please see the `OB_SERVER_URL` and `OB_NODE_ID` envars [here](/docs/running-the-server/backend-environment-variables)
 
 ## How It Works
 

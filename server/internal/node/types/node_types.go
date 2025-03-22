@@ -15,7 +15,7 @@ type Options struct {
 
 	// 1Backend Server Address
 	// Crucial for distributed features.
-	// Please see the documentation for the envar OB_URL
+	// Please see the documentation for the envar OB_SERVER_URL
 	Address string
 
 	Az         string
