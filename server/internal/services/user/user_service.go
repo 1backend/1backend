@@ -51,7 +51,7 @@ type UserService struct {
 func NewUserService(
 	clientFactory sdk.ClientFactory,
 	authorizer sdk.Authorizer,
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
+	datastoreFactory sdk.DatastoreConstructor,
 	isTest bool,
 ) (*UserService, error) {
 	usersStore, err := datastoreFactory("userSvcUsers", &usertypes.User{})

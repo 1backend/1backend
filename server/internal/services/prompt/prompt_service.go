@@ -45,7 +45,7 @@ func NewPromptService(
 	clientFactory sdk.ClientFactory,
 	llamaCppClient llamacpp.ClientI,
 	lock lock.DistributedLock,
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
+	datastoreFactory sdk.DatastoreConstructor,
 ) (*PromptService, error) {
 	promptsStore, err := datastoreFactory(
 		"promptSvcPrompts",

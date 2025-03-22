@@ -32,7 +32,7 @@ type SourceService struct {
 func NewSourceService(
 	clientFactory sdk.ClientFactory,
 	lock lock.DistributedLock,
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
+	datastoreFactory sdk.DatastoreConstructor,
 ) (*SourceService, error) {
 	credentialStore, err := datastoreFactory(
 		"sourceSvcCredentials",

@@ -3,18 +3,14 @@ package di
 // This is some of the cruftiest files in the system.
 
 import (
-	"database/sql"
 	"log/slog"
 	"net/http"
 	"os"
-	"path"
 	"sync"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/clients/llamacpp"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/datastore/localstore"
-	"github.com/1backend/1backend/sdk/go/datastore/sqlstore"
 	"github.com/1backend/1backend/sdk/go/lock"
 	distlock "github.com/1backend/1backend/sdk/go/lock/local"
 	"github.com/1backend/1backend/sdk/go/logger"
@@ -61,8 +57,8 @@ type Options struct {
 
 	LLamaCppClient llamacpp.ClientI
 
-	// DatastoreFactory can create database tables
-	DatastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
+	// DatastoreConstructor can create database tables
+	DatastoreConstructor func(tableName string, instance any) (datastore.DataStore, error)
 
 	// HomeDir is the 1Backend config/data/uploads/downloads directory.
 	// For tests it's something like /tmp/1backend-2698538720/
@@ -83,24 +79,11 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		options.NodeOptions = &node_types.Options{}
 	}
 
-	var homeDir string
-	var err error
-	if options.Test {
-		homeDir, err = os.MkdirTemp("", "1backend-")
-		if err != nil {
-			logger.Error(
-				"Homedir creation failed",
-				slog.String("error", err.Error()),
-			)
-			os.Exit(1)
-		}
-	} else {
-		homeDir, err = os.UserHomeDir()
-		if err != nil {
-			logger.Error("Homedir creation failed", slog.String("error", err.Error()))
-			os.Exit(1)
-		}
-		homeDir = path.Join(homeDir, onebackendFolder)
+	homeDir, err := sdk.HomeDir(sdk.HomeDirOptions{
+		Test: options.Test,
+	})
+	if err != nil {
+		return nil, nil, err
 	}
 
 	options.HomeDir = homeDir
@@ -130,46 +113,16 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		options.HomeDir = options.NodeOptions.ConfigPath
 	}
 
-	if options.DatastoreFactory == nil {
-		// @todo This is a temporary ugly hack
-		// to make tests work automatically with
-		// localstore and postgres depending on envars.
-		//
-		// Rethink this and the `node.Start` functions (which is supposed to self contain)
-		// the envars.
-		if os.Getenv("OB_DB") == "postgres" {
-			db, err := sql.Open("postgres", os.Getenv("OB_DB_CONNECTION_STRING"))
-			if err != nil {
-				return nil, nil, errors.Wrap(err, "error opening sql db")
-			}
-
-			options.DatastoreFactory = func(tableName string, instance any) (datastore.DataStore, error) {
-				return sqlstore.NewSQLStore(
-					instance,
-					"postgres",
-					db,
-					sdk.Id("test")+"_"+tableName,
-					false,
-				)
-			}
-		} else {
-			localStorePath := path.Join(homeDir, "data")
-			err = os.MkdirAll(localStorePath, 0755)
-			if err != nil {
-				logger.Error(
-					"Creating data folder failed",
-					slog.String("error", err.Error()),
-				)
-				os.Exit(1)
-			}
-
-			options.DatastoreFactory = func(tableName string, instance any) (datastore.DataStore, error) {
-				return localstore.NewLocalStore(
-					instance,
-					path.Join(localStorePath, tableName),
-				)
-			}
+	if options.DatastoreConstructor == nil {
+		dc, err := sdk.NewDatastoreConstructor(sdk.DatastoreConstructorOptions{
+			Test:               options.Test,
+			Db:                 options.NodeOptions.Db,
+			DbConnectionString: options.NodeOptions.DbConnectionString,
+		})
+		if err != nil {
+			return nil, nil, err
 		}
+		options.DatastoreConstructor = dc
 	}
 
 	if options.Url == "" {
@@ -182,14 +135,14 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 	// so ugly
 	options.NodeOptions.ClientFactory = options.ClientFactory
 
-	configService.SetDatastoreFactory(options.DatastoreFactory)
+	configService.SetDatastoreConstructor(options.DatastoreConstructor)
 
 	configService.SetClientFactory(options.ClientFactory)
 
 	userService, err := userservice.NewUserService(
 		options.ClientFactory,
 		options.Authorizer,
-		options.DatastoreFactory,
+		options.DatastoreConstructor,
 		options.Test,
 	)
 	if err != nil {
@@ -211,7 +164,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 	firehoseService, err := firehoseservice.NewFirehoseService(
 		options.ClientFactory,
 		options.Lock,
-		options.DatastoreFactory,
+		options.DatastoreConstructor,
 	)
 	if err != nil {
 		logger.Error(
@@ -233,7 +186,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 	fileService, err := fileservice.NewFileService(
 		options.ClientFactory,
 		options.Lock,
-		options.DatastoreFactory,
+		options.DatastoreConstructor,
 		options.HomeDir,
 	)
 	if err != nil {
@@ -248,7 +201,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		options.NodeOptions.VolumeName,
 		options.ClientFactory,
 		options.Lock,
-		options.DatastoreFactory,
+		options.DatastoreConstructor,
 	)
 	if err != nil {
 		logger.Error(
@@ -264,7 +217,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		options.NodeOptions.LLMHost,
 		options.ClientFactory,
 		options.Lock,
-		options.DatastoreFactory,
+		options.DatastoreConstructor,
 	)
 	if err != nil {
 		logger.Error(
@@ -277,7 +230,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 	chatService, err := chatservice.NewChatService(
 		options.ClientFactory,
 		options.Lock,
-		options.DatastoreFactory,
+		options.DatastoreConstructor,
 	)
 	if err != nil {
 		logger.Error(
@@ -291,7 +244,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		options.ClientFactory,
 		options.LLamaCppClient,
 		options.Lock,
-		options.DatastoreFactory,
+		options.DatastoreConstructor,
 	)
 	if err != nil {
 		logger.Error(
@@ -305,7 +258,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		options.ClientFactory,
 		options.Lock,
 		options.Authorizer,
-		options.DatastoreFactory,
+		options.DatastoreConstructor,
 	)
 	if err != nil {
 		logger.Error(
@@ -318,7 +271,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 	policyService, err := policyservice.NewPolicyService(
 		options.ClientFactory,
 		options.Lock,
-		options.DatastoreFactory,
+		options.DatastoreConstructor,
 	)
 	if err != nil {
 		logger.Error(
@@ -334,7 +287,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		options.NodeOptions.Region,
 		options.ClientFactory,
 		options.Lock,
-		options.DatastoreFactory,
+		options.DatastoreConstructor,
 		options.NodeOptions.NodeId,
 	)
 	if err != nil {
@@ -348,7 +301,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 	deployService, err := deployservice.NewDeployService(
 		options.ClientFactory,
 		options.Lock,
-		options.DatastoreFactory,
+		options.DatastoreConstructor,
 		options.Test,
 	)
 	if err != nil {
@@ -362,7 +315,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 	sourceService, err := sourceservice.NewSourceService(
 		options.ClientFactory,
 		options.Lock,
-		options.DatastoreFactory,
+		options.DatastoreConstructor,
 	)
 
 	if options.NodeOptions.SecretEncryptionKey == "" {
@@ -372,7 +325,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		options.ClientFactory,
 		options.Authorizer,
 		options.Lock,
-		options.DatastoreFactory,
+		options.DatastoreConstructor,
 		options.NodeOptions.SecretEncryptionKey,
 	)
 	if err != nil {
@@ -387,7 +340,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		options.ClientFactory,
 		options.Authorizer,
 		options.Lock,
-		options.DatastoreFactory,
+		options.DatastoreConstructor,
 	)
 	if err != nil {
 		logger.Error(
@@ -400,7 +353,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 	emailService, err := emailservice.NewEmailService(
 		options.ClientFactory,
 		options.Lock,
-		options.DatastoreFactory,
+		options.DatastoreConstructor,
 	)
 	if err != nil {
 		logger.Error(

@@ -34,7 +34,7 @@ type EmailService struct {
 func NewEmailService(
 	clientFactory sdk.ClientFactory,
 	lock lock.DistributedLock,
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
+	datastoreFactory sdk.DatastoreConstructor,
 ) (*EmailService, error) {
 	credentialStore, err := datastoreFactory(
 		"emailSvcCredentials",
