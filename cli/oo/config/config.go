@@ -44,13 +44,11 @@ func LoadConfig() (types.Config, error) {
 	if err != nil {
 		return config, fmt.Errorf("failed to stat config file: %v", err)
 	}
-	if fileInfo.Size() == 0 {
-		return config, nil
-	}
-
-	decoder := yaml.NewDecoder(file)
-	if err := decoder.Decode(&config); err != nil {
-		return config, fmt.Errorf("failed to decode config file: %v", err)
+	if fileInfo.Size() > 0 {
+		decoder := yaml.NewDecoder(file)
+		if err := decoder.Decode(&config); err != nil {
+			return config, fmt.Errorf("failed to decode config file: %v", err)
+		}
 	}
 
 	if len(config.Environments) == 0 {
@@ -64,7 +62,10 @@ func LoadConfig() (types.Config, error) {
 		}
 		config.SelectedEnvironment = shortName
 
-		SaveConfig(config)
+		err = SaveConfig(config)
+		if err != nil {
+			return types.Config{}, err
+		}
 	}
 
 	return config, nil
