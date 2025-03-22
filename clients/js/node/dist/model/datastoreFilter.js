@@ -30,5 +30,10 @@ DatastoreFilter.attributeTypeMap = [
         "name": "op",
         "baseName": "op",
         "type": "DatastoreOp"
+    },
+    {
+        "name": "subFilters",
+        "baseName": "subFilters",
+        "type": "Array<DatastoreFilter>"
     }
 ];

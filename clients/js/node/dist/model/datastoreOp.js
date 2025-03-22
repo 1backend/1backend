@@ -11,6 +11,7 @@
  */
 export var DatastoreOp;
 (function (DatastoreOp) {
+    DatastoreOp[DatastoreOp["OpOr"] = 'or'] = "OpOr";
     DatastoreOp[DatastoreOp["OpEquals"] = 'equals'] = "OpEquals";
     DatastoreOp[DatastoreOp["OpContainsSubstring"] = 'containsSubstring'] = "OpContainsSubstring";
     DatastoreOp[DatastoreOp["OpStartsWith"] = 'startsWith'] = "OpStartsWith";

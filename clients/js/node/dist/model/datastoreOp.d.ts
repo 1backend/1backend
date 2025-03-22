@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 export declare enum DatastoreOp {
+    OpOr,
     OpEquals,
     OpContainsSubstring,
     OpStartsWith,

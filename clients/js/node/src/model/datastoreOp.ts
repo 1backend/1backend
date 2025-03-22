@@ -13,6 +13,7 @@
 import { RequestFile } from './models';
 
 export enum DatastoreOp {
+    OpOr = <any> 'or',
     OpEquals = <any> 'equals',
     OpContainsSubstring = <any> 'containsSubstring',
     OpStartsWith = <any> 'startsWith',

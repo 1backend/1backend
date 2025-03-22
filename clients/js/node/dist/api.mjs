@@ -1763,6 +1763,11 @@ DatastoreFilter.attributeTypeMap = [
         "name": "op",
         "baseName": "op",
         "type": "DatastoreOp"
+    },
+    {
+        "name": "subFilters",
+        "baseName": "subFilters",
+        "type": "Array<DatastoreFilter>"
     }
 ];
 
@@ -1779,6 +1784,7 @@ DatastoreFilter.attributeTypeMap = [
  */
 var DatastoreOp;
 (function (DatastoreOp) {
+    DatastoreOp[DatastoreOp["OpOr"] = 'or'] = "OpOr";
     DatastoreOp[DatastoreOp["OpEquals"] = 'equals'] = "OpEquals";
     DatastoreOp[DatastoreOp["OpContainsSubstring"] = 'containsSubstring'] = "OpContainsSubstring";
     DatastoreOp[DatastoreOp["OpStartsWith"] = 'startsWith'] = "OpStartsWith";

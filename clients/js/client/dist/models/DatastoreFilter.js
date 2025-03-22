@@ -29,6 +29,7 @@ export function DatastoreFilterFromJSONTyped(json, ignoreDiscriminator) {
         'fields': json['fields'] == null ? undefined : json['fields'],
         'jsonValues': json['jsonValues'] == null ? undefined : json['jsonValues'],
         'op': json['op'] == null ? undefined : DatastoreOpFromJSON(json['op']),
+        'subFilters': json['subFilters'] == null ? undefined : (json['subFilters'].map(DatastoreFilterFromJSON)),
     };
 }
 export function DatastoreFilterToJSON(json) {
@@ -42,5 +43,6 @@ export function DatastoreFilterToJSONTyped(value, ignoreDiscriminator = false) {
         'fields': value['fields'],
         'jsonValues': value['jsonValues'],
         'op': DatastoreOpToJSON(value['op']),
+        'subFilters': value['subFilters'] == null ? undefined : (value['subFilters'].map(DatastoreFilterToJSON)),
     };
 }
