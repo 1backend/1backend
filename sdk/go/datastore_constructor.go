@@ -37,6 +37,19 @@ func NewDatastoreConstructor(options DatastoreConstructorOptions) (DatastoreCons
 	}
 
 	if options.Db == "" {
+		options.Db = os.Getenv("OB_DB")
+	}
+
+	if options.DbConnectionString == "" {
+		options.DbConnectionString = os.Getenv("OB_DB_CONNECTION_STRING")
+	}
+
+	// Default used for tests
+	if options.DbConnectionString == "" {
+		options.DbConnectionString = "postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
+	}
+
+	if options.Db == "" {
 		localStorePath := path.Join(options.HomeDir, onebackendFolder, "data")
 		err := os.MkdirAll(localStorePath, 0755)
 		if err != nil {
@@ -53,14 +66,6 @@ func NewDatastoreConstructor(options DatastoreConstructorOptions) (DatastoreCons
 				path.Join(localStorePath, options.TablePrefix+tableName),
 			)
 		}, nil
-	}
-
-	if options.Db == "" {
-		options.Db = os.Getenv("OB_DB")
-	}
-
-	if options.DbConnectionString == "" {
-		options.DbConnectionString = os.Getenv("OB_DB_CONNECTION_STRING")
 	}
 
 	db, err := sql.Open(options.Db, options.DbConnectionString)
