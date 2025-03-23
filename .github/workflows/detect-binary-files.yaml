@@ -19,9 +19,7 @@ jobs:
         run: |
           # Scan all files in the repo, ignoring shell scripts, node_modules, and .git/hooks
           find . -type f -executable ! -path "*/node_modules/*" ! -path "*/.git/hooks/*" | while read file; do
-            if file "$file" | grep -q 'shell script'; then
-              # echo "Ignoring shell script: $file"
-            else
+            if ! file "$file" | grep -q 'shell script'; then
               echo "Binary executable file detected: $file"
               exit 1
             fi
