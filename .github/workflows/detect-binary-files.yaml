@@ -1,0 +1,28 @@
+name: Detect Binary Files
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  detect-binary-files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Detect binary files
+        run: |
+          # Get the list of committed files
+          git ls-files | while read file; do
+            if [ -f "$file" ] && grep -Iq . "$file"; then
+              echo "Text file detected: $file"
+            else
+              echo "Binary file detected: $file"
+              exit 1
+            fi
+          done

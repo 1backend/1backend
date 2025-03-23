@@ -41,12 +41,12 @@ func NewService() (*SkeletonService, error) {
 
 	selfUrl := os.Getenv("OB_SELF_URL")
 
-	dsf, err := sdk.NewDatastoreConstructor(sdk.DatastoreConstructorOptions{})
+	dsf, err := sdk.NewDataStoreFactory(sdk.DataStoreConfig{})
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot create datastore factory")
 	}
 
-	credentialStore, err := dsf("skeletonSvcCredentials", &sdk.Credential{})
+	credentialStore, err := dsf.Create("skeletonSvcCredentials", &sdk.Credential{})
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot create credential store")
 	}
