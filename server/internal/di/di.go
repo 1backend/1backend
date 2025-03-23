@@ -259,7 +259,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 	)
 	if err != nil {
 		logger.Error(
-			"Generic service creation failed",
+			"Data service creation failed",
 			slog.String("error", err.Error()),
 		)
 		os.Exit(1)
