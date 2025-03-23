@@ -39,14 +39,14 @@ type ProxyService struct {
 	publicKey string
 
 	credentialStore  datastore.DataStore
-	datastoreFactory sdk.DatastoreConstructor
+	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
 }
 
 func NewProxyService(
 	clientFactory sdk.ClientFactory,
 	authorizer sdk.Authorizer,
 	lock lock.DistributedLock,
-	datastoreFactory sdk.DatastoreConstructor,
+	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 ) (*ProxyService, error) {
 	cs := &ProxyService{
 		lock:             lock,

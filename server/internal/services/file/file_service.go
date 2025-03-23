@@ -49,7 +49,7 @@ type FileService struct {
 func NewFileService(
 	clientFactory sdk.ClientFactory,
 	lock lock.DistributedLock,
-	datastoreFactory sdk.DatastoreConstructor,
+	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 	homeDir string,
 ) (*FileService, error) {
 	credentialStore, err := datastoreFactory(

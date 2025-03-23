@@ -37,7 +37,7 @@ type DeployService struct {
 func NewDeployService(
 	clientFactory sdk.ClientFactory,
 	lock lock.DistributedLock,
-	datastoreFactory sdk.DatastoreConstructor,
+	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 	triggerOnly bool,
 ) (*DeployService, error) {
 

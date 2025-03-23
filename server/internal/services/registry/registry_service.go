@@ -49,7 +49,7 @@ func NewRegistryService(
 	region string,
 	clientFactory sdk.ClientFactory,
 	lock lock.DistributedLock,
-	datastoreFactory sdk.DatastoreConstructor,
+	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 	nodeId string,
 ) (*RegistryService, error) {
 

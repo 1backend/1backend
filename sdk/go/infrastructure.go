@@ -4,7 +4,6 @@ import (
 	"os"
 	"path"
 
-	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/pkg/errors"
 )
 
@@ -21,7 +20,7 @@ type InfrastructureOptions struct {
 }
 
 type Infrastructure struct {
-	DatastoreConstructor func(tableName string, instance any) (datastore.DataStore, error)
+	DatastoreFactory DataStoreFactory
 }
 
 func NewInfrastructure(options InfrastructureOptions) (*Infrastructure, error) {
@@ -55,18 +54,18 @@ func NewInfrastructure(options InfrastructureOptions) (*Infrastructure, error) {
 		options.DbConnectionString = os.Getenv("OB_DB_CONNECTION_STRING")
 	}
 
-	dopts := DatastoreConstructorOptions{
+	dopts := DataStoreConfig{
 		HomeDir:            options.HomeDir,
 		Db:                 options.Db,
 		DbConnectionString: options.DbConnectionString,
 	}
 
-	datastoreConstructor, err := NewDatastoreConstructor(dopts)
+	dataStoreFactory, err := NewDataStoreFactory(dopts)
 	if err != nil {
 		return nil, err
 	}
 
-	infra.DatastoreConstructor = datastoreConstructor
+	infra.DatastoreFactory = dataStoreFactory
 
 	return infra, nil
 }

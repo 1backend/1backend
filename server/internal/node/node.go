@@ -21,8 +21,6 @@ import (
 	"runtime/debug"
 
 	sdk "github.com/1backend/1backend/sdk/go"
-	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/datastore/sqlstore"
 	pglock "github.com/1backend/1backend/sdk/go/lock/pg"
 	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/1backend/1backend/server/internal/di"
@@ -123,14 +121,13 @@ func Start(options *node_types.Options) (*NodeInfo, error) {
 		}
 		diopt.Lock = pglock.NewPGDistributedLock(conn)
 
-		diopt.DatastoreConstructor = func(tableName string, instance any) (datastore.DataStore, error) {
-			return sqlstore.NewSQLStore(
-				instance,
-				options.Db,
-				db,
-				tablePrefix+tableName,
-				false,
-			)
+		diopt.DataStoreFactory, err = sdk.NewDataStoreFactory(sdk.DataStoreConfig{
+			Db:          options.Db,
+			TablePrefix: tablePrefix,
+		})
+		if err != nil {
+			logger.Error("Cannot create dataStore factory", slog.Any("error", err))
+			os.Exit(1)
 		}
 	}
 

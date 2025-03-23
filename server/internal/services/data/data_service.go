@@ -40,7 +40,7 @@ func NewDataService(
 	clientFactory sdk.ClientFactory,
 	lock lock.DistributedLock,
 	authorizer sdk.Authorizer,
-	datastoreFactory sdk.DatastoreConstructor,
+	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 ) (*DataService, error) {
 	store, err := datastoreFactory("dataSvcObjects", &dynamictypes.Object{})
 	if err != nil {
