@@ -41,7 +41,7 @@ type PolicyService struct {
 func NewPolicyService(
 	clientFactory sdk.ClientFactory,
 	lock lock.DistributedLock,
-	datastoreFactory sdk.DatastoreConstructor,
+	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 ) (*PolicyService, error) {
 
 	instancesStore, err := datastoreFactory(

@@ -36,7 +36,7 @@ type ChatService struct {
 func NewChatService(
 	clientFactory sdk.ClientFactory,
 	lock lock.DistributedLock,
-	datastoreFactory sdk.DatastoreConstructor,
+	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 ) (*ChatService, error) {
 	threadsStore, err := datastoreFactory("chatSvcThreads", &chattypes.Thread{})
 	if err != nil {

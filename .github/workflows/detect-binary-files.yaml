@@ -1,0 +1,26 @@
+name: Detect Binary Files
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  detect-binary-files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Detect binary files
+        run: |
+          # Scan all files in the repo, ignoring shell scripts, node_modules, and .git
+          find . -type f -executable ! -path "*/node_modules/*" ! -path "*/.git/*" | while read file; do
+            if ! file "$file" | grep -q 'shell script'; then
+              echo "Binary executable file detected: $file"
+              exit 1
+            fi
+          done

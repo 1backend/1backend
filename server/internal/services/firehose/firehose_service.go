@@ -40,7 +40,7 @@ type FirehoseService struct {
 func NewFirehoseService(
 	clientFactory sdk.ClientFactory,
 	lock lock.DistributedLock,
-	datastoreFactory sdk.DatastoreConstructor,
+	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 ) (*FirehoseService, error) {
 	credentialStore, err := datastoreFactory(
 		"firehoseSvcCredentials",
