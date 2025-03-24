@@ -36,8 +36,9 @@ import (
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Router /user-svc/register [post]
 func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
-	req := user.RegisterRequest{}
 	w.Header().Set("Content-Type", "application/json")
+
+	req := user.RegisterRequest{}
 
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
@@ -46,6 +47,12 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer r.Body.Close()
+
+	if req.Password == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(`Password missing`))
+		return
+	}
 
 	newUser := &user.User{
 		Name: req.Name,
@@ -74,6 +81,7 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte(err.Error()))
 			return
 		}
+
 		if len(invites) > 0 {
 			for _, invite := range invites {
 				roles = append(roles, invite.(*user.Invite).RoleId)

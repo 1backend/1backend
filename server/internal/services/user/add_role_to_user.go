@@ -13,9 +13,10 @@
 package userservice
 
 import (
-	"errors"
 	"fmt"
 	"strings"
+
+	"github.com/pkg/errors"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
@@ -66,11 +67,16 @@ func (s *UserService) addRoleToUser(userId string, roleId string) error {
 		return nil
 	}
 
-	return s.userRoleLinksStore.Upsert(&usertypes.UserRoleLink{
+	err = s.userRoleLinksStore.Upsert(&usertypes.UserRoleLink{
 		Id:     fmt.Sprintf("%v:%v", userId, roleId),
 		RoleId: roleId,
 		UserId: user.Id,
 	})
+	if err != nil {
+		return errors.Wrap(err, "failed to add role to user")
+	}
+
+	return s.inactivateTokens(userId)
 }
 
 func (s *UserService) removeRoleFromUser(userId string, roleId string) error {

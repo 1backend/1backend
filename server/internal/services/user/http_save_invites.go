@@ -21,6 +21,7 @@ import (
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
+	"github.com/samber/lo"
 )
 
 // @ID saveInvites
@@ -38,7 +39,7 @@ import (
 // @Router /user-svc/invites [put]
 func (s *UserService) SaveInvites(w http.ResponseWriter, r *http.Request) {
 
-	rsp, err := s.isAuthorized(r, user.PermissionInviteEdit.Id, nil, nil)
+	_, err := s.isAuthorized(r, user.PermissionInviteEdit.Id, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
@@ -70,7 +71,7 @@ func (s *UserService) SaveInvites(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	invites, err := s.saveInvites(rsp.Id, rsp.Slug, &req)
+	invites, err := s.saveInvites(&req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -84,17 +85,44 @@ func (s *UserService) SaveInvites(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) saveInvites(
-	callerId string,
-	callerSlug string,
 	req *user.SaveInvitesRequest,
 ) ([]user.Invite, error) {
+
 	if len(req.Invites) == 0 {
 		return nil, errors.New("no invites provided")
 	}
 	now := time.Now()
 
+	contactIds := lo.Map(req.Invites, func(inv user.NewInvite, _ int) any {
+		return inv.ContactId
+	})
+
+	contacts, err := s.contactsStore.Query(
+		datastore.IsInList(
+			datastore.Field("id"),
+			contactIds...,
+		)).
+		Find()
+	if err != nil {
+		return nil, err
+	}
+
+	// Map contactIds -> userId
+	existingContact := map[string]string{}
+	for _, contact := range contacts {
+		existingContact[contact.GetId()] = contact.(*user.Contact).UserId
+	}
+
 	invites := []user.Invite{}
 	for _, invite := range req.Invites {
+		if userId, ok := existingContact[invite.ContactId]; ok {
+			err = s.addRoleToUser(userId, invite.RoleId)
+			if err != nil {
+				return nil, err
+			}
+			continue
+		}
+
 		if invite.ContactId == "" || invite.RoleId == "" {
 			return nil, errors.New("invite missing required fields")
 		}
@@ -115,7 +143,7 @@ func (s *UserService) saveInvites(
 		rows = append(rows, invite)
 	}
 
-	err := s.invitesStore.UpsertMany(rows)
+	err = s.invitesStore.UpsertMany(rows)
 	if err != nil {
 		return nil, err
 	}
