@@ -531,10 +531,10 @@ func (a *ContainerSvcAPIService) ContainerIsRunningExecute(r ApiContainerIsRunni
 	localVarFormParams := url.Values{}
 
 	if r.hash != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "hash", r.hash, "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "hash", r.hash, "", "")
 	}
 	if r.name != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "name", r.name, "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "name", r.name, "", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -703,13 +703,13 @@ func (a *ContainerSvcAPIService) ContainerSummaryExecute(r ApiContainerSummaryRe
 	localVarFormParams := url.Values{}
 
 	if r.hash != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "hash", r.hash, "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "hash", r.hash, "", "")
 	}
 	if r.name != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "name", r.name, "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "name", r.name, "", "")
 	}
 	if r.lines != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "lines", r.lines, "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "lines", r.lines, "", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

@@ -38,7 +38,7 @@ export interface UserSvcContact {
      * @type {string}
      * @memberof UserSvcContact
      */
-    id?: string;
+    id: string;
     /**
      * If this is the primary contact method
      * @type {boolean}
@@ -62,7 +62,7 @@ export interface UserSvcContact {
      * @type {string}
      * @memberof UserSvcContact
      */
-    userId?: string;
+    userId: string;
     /**
      * Value is the platform local unique identifier.
      * Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`.
@@ -86,6 +86,8 @@ export interface UserSvcContact {
  * Check if a given object implements the UserSvcContact interface.
  */
 export function instanceOfUserSvcContact(value: object): value is UserSvcContact {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('userId' in value) || value['userId'] === undefined) return false;
     return true;
 }
 
@@ -101,11 +103,11 @@ export function UserSvcContactFromJSONTyped(json: any, ignoreDiscriminator: bool
         
         'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
-        'id': json['id'] == null ? undefined : json['id'],
+        'id': json['id'],
         'isPrimary': json['isPrimary'] == null ? undefined : json['isPrimary'],
         'platform': json['platform'] == null ? undefined : json['platform'],
         'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
-        'userId': json['userId'] == null ? undefined : json['userId'],
+        'userId': json['userId'],
         'value': json['value'] == null ? undefined : json['value'],
         'verified': json['verified'] == null ? undefined : json['verified'],
     };

@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the UserSvcRegisterRequest type satisfies the MappedNullable interface at compile time
@@ -23,15 +25,19 @@ type UserSvcRegisterRequest struct {
 	Contact *UserSvcContact `json:"contact,omitempty"`
 	Name *string `json:"name,omitempty"`
 	Password *string `json:"password,omitempty"`
-	Slug *string `json:"slug,omitempty"`
+	// Slug is a URL-friendly unique (inside the 1Backend platform) identifier for the `user`. Required due to its central role in the platform. If your project has no use for a slug, just derive it from the email or similar.
+	Slug string `json:"slug"`
 }
+
+type _UserSvcRegisterRequest UserSvcRegisterRequest
 
 // NewUserSvcRegisterRequest instantiates a new UserSvcRegisterRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcRegisterRequest() *UserSvcRegisterRequest {
+func NewUserSvcRegisterRequest(slug string) *UserSvcRegisterRequest {
 	this := UserSvcRegisterRequest{}
+	this.Slug = slug
 	return &this
 }
 
@@ -139,36 +145,28 @@ func (o *UserSvcRegisterRequest) SetPassword(v string) {
 	o.Password = &v
 }
 
-// GetSlug returns the Slug field value if set, zero value otherwise.
+// GetSlug returns the Slug field value
 func (o *UserSvcRegisterRequest) GetSlug() string {
-	if o == nil || IsNil(o.Slug) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Slug
+
+	return o.Slug
 }
 
-// GetSlugOk returns a tuple with the Slug field value if set, nil otherwise
+// GetSlugOk returns a tuple with the Slug field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcRegisterRequest) GetSlugOk() (*string, bool) {
-	if o == nil || IsNil(o.Slug) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Slug, true
+	return &o.Slug, true
 }
 
-// HasSlug returns a boolean if a field has been set.
-func (o *UserSvcRegisterRequest) HasSlug() bool {
-	if o != nil && !IsNil(o.Slug) {
-		return true
-	}
-
-	return false
-}
-
-// SetSlug gets a reference to the given string and assigns it to the Slug field.
+// SetSlug sets field value
 func (o *UserSvcRegisterRequest) SetSlug(v string) {
-	o.Slug = &v
+	o.Slug = v
 }
 
 func (o UserSvcRegisterRequest) MarshalJSON() ([]byte, error) {
@@ -190,10 +188,45 @@ func (o UserSvcRegisterRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Password) {
 		toSerialize["password"] = o.Password
 	}
-	if !IsNil(o.Slug) {
-		toSerialize["slug"] = o.Slug
-	}
+	toSerialize["slug"] = o.Slug
 	return toSerialize, nil
+}
+
+func (o *UserSvcRegisterRequest) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"slug",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varUserSvcRegisterRequest := _UserSvcRegisterRequest{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varUserSvcRegisterRequest)
+
+	if err != nil {
+		return err
+	}
+
+	*o = UserSvcRegisterRequest(varUserSvcRegisterRequest)
+
+	return err
 }
 
 type NullableUserSvcRegisterRequest struct {

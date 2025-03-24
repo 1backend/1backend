@@ -678,6 +678,14 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		userService.ListGrants(w, r)
 	})).
 		Methods("OPTIONS", "POST")
+	router.HandleFunc("/user-svc/invites", appl(func(w http.ResponseWriter, r *http.Request) {
+		userService.SaveInvites(w, r)
+	})).
+		Methods("OPTIONS", "PUT")
+	router.HandleFunc("/user-svc/invites", appl(func(w http.ResponseWriter, r *http.Request) {
+		userService.ListInvites(w, r)
+	})).
+		Methods("OPTIONS", "POST")
 
 	router.HandleFunc("/data-svc/object", appl(func(w http.ResponseWriter, r *http.Request) {
 		dataService.Create(w, r)

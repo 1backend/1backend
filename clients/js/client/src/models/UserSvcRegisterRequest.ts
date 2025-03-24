@@ -46,17 +46,20 @@ export interface UserSvcRegisterRequest {
      */
     password?: string;
     /**
-     * 
+     * Slug is a URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
+     * Required due to its central role in the platform.
+     * If your project has no use for a slug, just derive it from the email or similar.
      * @type {string}
      * @memberof UserSvcRegisterRequest
      */
-    slug?: string;
+    slug: string;
 }
 
 /**
  * Check if a given object implements the UserSvcRegisterRequest interface.
  */
 export function instanceOfUserSvcRegisterRequest(value: object): value is UserSvcRegisterRequest {
+    if (!('slug' in value) || value['slug'] === undefined) return false;
     return true;
 }
 
@@ -73,7 +76,7 @@ export function UserSvcRegisterRequestFromJSONTyped(json: any, ignoreDiscriminat
         'contact': json['contact'] == null ? undefined : UserSvcContactFromJSON(json['contact']),
         'name': json['name'] == null ? undefined : json['name'],
         'password': json['password'] == null ? undefined : json['password'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
+        'slug': json['slug'],
     };
 }
 

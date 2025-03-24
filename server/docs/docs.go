@@ -4154,6 +4154,114 @@ const docTemplate = `{
                 }
             }
         },
+        "/user-svc/invites": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Save a list of user invites to the database.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Svc"
+                ],
+                "summary": "Save Invites",
+                "operationId": "saveInvites",
+                "parameters": [
+                    {
+                        "description": "Save Invites Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.SaveInvitesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Invites saved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.SaveInvitesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "List user invites stored in the database.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Svc"
+                ],
+                "summary": "List Invites",
+                "operationId": "listInvites",
+                "parameters": [
+                    {
+                        "description": "List Invites Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ListInvitesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Invites listed successfully",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ListInvitesResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user-svc/login": {
             "post": {
                 "description": "Authenticates a user and returns a token.",
@@ -9130,6 +9238,10 @@ const docTemplate = `{
         },
         "user_svc.Contact": {
             "type": "object",
+            "required": [
+                "id",
+                "userId"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"
@@ -9349,6 +9461,44 @@ const docTemplate = `{
                 }
             }
         },
+        "user_svc.Invite": {
+            "type": "object",
+            "required": [
+                "contactId",
+                "createdAt",
+                "id",
+                "roleId"
+            ],
+            "properties": {
+                "appliedAt": {
+                    "type": "string"
+                },
+                "contactId": {
+                    "description": "ContactId represents the recipient of the invite.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "expiresAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "inv_fIYPbMHIcI"
+                },
+                "roleId": {
+                    "description": "RoleId specifies the role to be assigned to the ContactId.\nCallers can only assign roles they own, identified by their service slug\n(e.g., if \"my-service\" creates an invite, the role must be \"my-service:admin\").\nDynamic organization roles can also be assigned\n(e.g., \"user-svc:org:{%orgId}:admin\" or \"user-svc:org:{%orgId}:user\"),\nbut in this case, the caller must be an admin of the target organization.",
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
         "user_svc.IsAuthorizedRequest": {
             "type": "object",
             "properties": {
@@ -9399,6 +9549,31 @@ const docTemplate = `{
                 }
             }
         },
+        "user_svc.ListInvitesRequest": {
+            "type": "object",
+            "properties": {
+                "contactId": {
+                    "type": "string"
+                },
+                "roleId": {
+                    "type": "string"
+                }
+            }
+        },
+        "user_svc.ListInvitesResponse": {
+            "type": "object",
+            "required": [
+                "invites"
+            ],
+            "properties": {
+                "invites": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user_svc.Invite"
+                    }
+                }
+            }
+        },
         "user_svc.LoginRequest": {
             "type": "object",
             "properties": {
@@ -9418,6 +9593,25 @@ const docTemplate = `{
             "properties": {
                 "token": {
                     "$ref": "#/definitions/user_svc.AuthToken"
+                }
+            }
+        },
+        "user_svc.NewInvite": {
+            "type": "object",
+            "required": [
+                "contactId",
+                "roleId"
+            ],
+            "properties": {
+                "contactId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "inv_fIYPbMHIcI"
+                },
+                "roleId": {
+                    "type": "string"
                 }
             }
         },
@@ -9509,6 +9703,9 @@ const docTemplate = `{
         },
         "user_svc.RegisterRequest": {
             "type": "object",
+            "required": [
+                "slug"
+            ],
             "properties": {
                 "contact": {
                     "$ref": "#/definitions/user_svc.Contact"
@@ -9520,6 +9717,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "slug": {
+                    "description": "Slug is a URL-friendly unique (inside the 1Backend platform) identifier for the ` + "`" + `user` + "`" + `.\nRequired due to its central role in the platform.\nIf your project has no use for a slug, just derive it from the email or similar.",
                     "type": "string"
                 }
             }
@@ -9588,6 +9786,34 @@ const docTemplate = `{
         },
         "user_svc.SaveGrantsResponse": {
             "type": "object"
+        },
+        "user_svc.SaveInvitesRequest": {
+            "type": "object",
+            "required": [
+                "invites"
+            ],
+            "properties": {
+                "invites": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user_svc.NewInvite"
+                    }
+                }
+            }
+        },
+        "user_svc.SaveInvitesResponse": {
+            "type": "object",
+            "required": [
+                "invites"
+            ],
+            "properties": {
+                "invites": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user_svc.Invite"
+                    }
+                }
+            }
         },
         "user_svc.SavePermissionsRequest": {
             "type": "object",

@@ -166,7 +166,7 @@ func TestAssignRoleToUser(t *testing.T) {
 			fmt.Sprintf("user-svc:org:{%v}:user", orgId),
 		).Execute()
 
-		require.Error(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("second user now can give third user user rights", func(t *testing.T) {
@@ -176,6 +176,6 @@ func TestAssignRoleToUser(t *testing.T) {
 			fmt.Sprintf("user-svc:org:{%v}:admin", orgId),
 		).Execute()
 
-		require.Error(t, err)
+		require.NoError(t, err)
 	})
 }

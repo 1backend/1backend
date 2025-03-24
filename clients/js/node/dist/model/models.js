@@ -180,12 +180,16 @@ export * from './userSvcGetRolesResponse';
 export * from './userSvcGetUsersRequest';
 export * from './userSvcGetUsersResponse';
 export * from './userSvcGrant';
+export * from './userSvcInvite';
 export * from './userSvcIsAuthorizedRequest';
 export * from './userSvcIsAuthorizedResponse';
 export * from './userSvcListGrantsRequest';
 export * from './userSvcListGrantsResponse';
+export * from './userSvcListInvitesRequest';
+export * from './userSvcListInvitesResponse';
 export * from './userSvcLoginRequest';
 export * from './userSvcLoginResponse';
+export * from './userSvcNewInvite';
 export * from './userSvcOrganization';
 export * from './userSvcPermission';
 export * from './userSvcPermissionLink';
@@ -195,6 +199,8 @@ export * from './userSvcRegisterResponse';
 export * from './userSvcResetPasswordRequest';
 export * from './userSvcRole';
 export * from './userSvcSaveGrantsRequest';
+export * from './userSvcSaveInvitesRequest';
+export * from './userSvcSaveInvitesResponse';
 export * from './userSvcSavePermissionsRequest';
 export * from './userSvcSavePermissionsResponse';
 export * from './userSvcSaveProfileRequest';
@@ -382,12 +388,16 @@ import { UserSvcGetRolesResponse } from './userSvcGetRolesResponse';
 import { UserSvcGetUsersRequest } from './userSvcGetUsersRequest';
 import { UserSvcGetUsersResponse } from './userSvcGetUsersResponse';
 import { UserSvcGrant } from './userSvcGrant';
+import { UserSvcInvite } from './userSvcInvite';
 import { UserSvcIsAuthorizedRequest } from './userSvcIsAuthorizedRequest';
 import { UserSvcIsAuthorizedResponse } from './userSvcIsAuthorizedResponse';
 import { UserSvcListGrantsRequest } from './userSvcListGrantsRequest';
 import { UserSvcListGrantsResponse } from './userSvcListGrantsResponse';
+import { UserSvcListInvitesRequest } from './userSvcListInvitesRequest';
+import { UserSvcListInvitesResponse } from './userSvcListInvitesResponse';
 import { UserSvcLoginRequest } from './userSvcLoginRequest';
 import { UserSvcLoginResponse } from './userSvcLoginResponse';
+import { UserSvcNewInvite } from './userSvcNewInvite';
 import { UserSvcOrganization } from './userSvcOrganization';
 import { UserSvcPermission } from './userSvcPermission';
 import { UserSvcPermissionLink } from './userSvcPermissionLink';
@@ -397,6 +407,8 @@ import { UserSvcRegisterResponse } from './userSvcRegisterResponse';
 import { UserSvcResetPasswordRequest } from './userSvcResetPasswordRequest';
 import { UserSvcRole } from './userSvcRole';
 import { UserSvcSaveGrantsRequest } from './userSvcSaveGrantsRequest';
+import { UserSvcSaveInvitesRequest } from './userSvcSaveInvitesRequest';
+import { UserSvcSaveInvitesResponse } from './userSvcSaveInvitesResponse';
 import { UserSvcSavePermissionsRequest } from './userSvcSavePermissionsRequest';
 import { UserSvcSavePermissionsResponse } from './userSvcSavePermissionsResponse';
 import { UserSvcSaveProfileRequest } from './userSvcSaveProfileRequest';
@@ -598,12 +610,16 @@ let typeMap = {
     "UserSvcGetUsersRequest": UserSvcGetUsersRequest,
     "UserSvcGetUsersResponse": UserSvcGetUsersResponse,
     "UserSvcGrant": UserSvcGrant,
+    "UserSvcInvite": UserSvcInvite,
     "UserSvcIsAuthorizedRequest": UserSvcIsAuthorizedRequest,
     "UserSvcIsAuthorizedResponse": UserSvcIsAuthorizedResponse,
     "UserSvcListGrantsRequest": UserSvcListGrantsRequest,
     "UserSvcListGrantsResponse": UserSvcListGrantsResponse,
+    "UserSvcListInvitesRequest": UserSvcListInvitesRequest,
+    "UserSvcListInvitesResponse": UserSvcListInvitesResponse,
     "UserSvcLoginRequest": UserSvcLoginRequest,
     "UserSvcLoginResponse": UserSvcLoginResponse,
+    "UserSvcNewInvite": UserSvcNewInvite,
     "UserSvcOrganization": UserSvcOrganization,
     "UserSvcPermission": UserSvcPermission,
     "UserSvcPermissionLink": UserSvcPermissionLink,
@@ -613,6 +629,8 @@ let typeMap = {
     "UserSvcResetPasswordRequest": UserSvcResetPasswordRequest,
     "UserSvcRole": UserSvcRole,
     "UserSvcSaveGrantsRequest": UserSvcSaveGrantsRequest,
+    "UserSvcSaveInvitesRequest": UserSvcSaveInvitesRequest,
+    "UserSvcSaveInvitesResponse": UserSvcSaveInvitesResponse,
     "UserSvcSavePermissionsRequest": UserSvcSavePermissionsRequest,
     "UserSvcSavePermissionsResponse": UserSvcSavePermissionsResponse,
     "UserSvcSaveProfileRequest": UserSvcSaveProfileRequest,

@@ -35,7 +35,7 @@ func TestRegister(t *testing.T) {
 	t.Run("anyone can register", func(t *testing.T) {
 		rsp, _, err := options.ClientFactory.Client().UserSvcAPI.Register(ctx).Body(
 			openapi.UserSvcRegisterRequest{
-				Slug:     openapi.PtrString("test-slug-1"),
+				Slug:     "test-slug-1",
 				Name:     openapi.PtrString("Test Name"),
 				Password: openapi.PtrString("testPass123"),
 			},
@@ -48,7 +48,7 @@ func TestRegister(t *testing.T) {
 	t.Run("cannot re-register", func(t *testing.T) {
 		_, _, err := options.ClientFactory.Client().UserSvcAPI.Register(ctx).Body(
 			openapi.UserSvcRegisterRequest{
-				Slug:     openapi.PtrString("test-slug-1"),
+				Slug:     "test-slug-1",
 				Name:     openapi.PtrString("Test Name"),
 				Password: openapi.PtrString("testPass123"),
 			},

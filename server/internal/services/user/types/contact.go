@@ -29,13 +29,13 @@ type Contact struct {
 	// The unique identifier, which can be a URL.
 	//
 	// Example values: "joe12" (1backend username), "twitter.com/thejoe" (twitter url), "joe@joesdomain.com" (email)
-	Id string `json:"id,omitempty" example:"twitter.com/thejoe"`
+	Id string `json:"id,omitempty" example:"twitter.com/thejoe" binding:"required"`
 
 	CreatedAt time.Time  `json:"createdAt,omitempty"`
 	UpdatedAt time.Time  `json:"updatedAt,omitempty"`
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`
 
-	UserId string `json:"userId,omitempty"`
+	UserId string `json:"userId,omitempty" binding:"required"`
 
 	// Platform of the contact (e.g., "email", "phone", "twitter")
 	Platform string `json:"platform,omitempty" example:"twitter"`
@@ -53,4 +53,26 @@ type Contact struct {
 
 	// If this is the primary contact method
 	IsPrimary bool `json:"isPrimary,omitempty"`
+}
+
+func (c Contact) GetId() string {
+	return c.Id
+}
+
+type PartialContact struct {
+	// The unique identifier, which can be a URL.
+	//
+	// Example values: "joe12" (1backend username), "twitter.com/thejoe" (twitter url), "joe@joesdomain.com" (email)
+	Id string `json:"id,omitempty" example:"twitter.com/thejoe"`
+
+	// Platform of the contact (e.g., "email", "phone", "twitter")
+	Platform string `json:"platform,omitempty" example:"twitter"`
+
+	// Value is the platform local unique identifier.
+	// Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`.
+	// For email and phones the `id` and the `value` will be the same.
+	// This field mostly exists for display purposes.
+	//
+	// Example values: "joe12" (1backend username), "thejoe" (twitter username), "joe@joesdomain.com" (email)
+	Value string `json:"value,omitempty" example:"thejoe"`
 }
