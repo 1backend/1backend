@@ -32,19 +32,19 @@ export interface UserSvcOrganization {
      * @type {string}
      * @memberof UserSvcOrganization
      */
-    id?: string;
+    id: string;
     /**
      * Full name of the organization
      * @type {string}
      * @memberof UserSvcOrganization
      */
-    name?: string;
+    name: string;
     /**
      * URL-friendly unique (inside the Singularon platform) identifier for the `organization`.
      * @type {string}
      * @memberof UserSvcOrganization
      */
-    slug?: string;
+    slug: string;
     /**
      *
      * @type {string}

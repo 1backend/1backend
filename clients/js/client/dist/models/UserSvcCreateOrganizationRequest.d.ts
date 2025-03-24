@@ -26,13 +26,13 @@ export interface UserSvcCreateOrganizationRequest {
      * @type {string}
      * @memberof UserSvcCreateOrganizationRequest
      */
-    name?: string;
+    name: string;
     /**
      * URL-friendly unique (inside the Singularon platform) identifier for the `organization`.
      * @type {string}
      * @memberof UserSvcCreateOrganizationRequest
      */
-    slug?: string;
+    slug: string;
 }
 /**
  * Check if a given object implements the UserSvcCreateOrganizationRequest interface.

@@ -20,7 +20,7 @@ export interface UserSvcGetPublicKeyResponse {
      * @type {string}
      * @memberof UserSvcGetPublicKeyResponse
      */
-    publicKey?: string;
+    publicKey: string;
 }
 /**
  * Check if a given object implements the UserSvcGetPublicKeyResponse interface.

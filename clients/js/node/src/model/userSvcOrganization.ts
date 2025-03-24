@@ -15,15 +15,15 @@ import { RequestFile } from './models';
 export class UserSvcOrganization {
     'createdAt'?: string;
     'deletedAt'?: string;
-    'id'?: string;
+    'id': string;
     /**
     * Full name of the organization
     */
-    'name'?: string;
+    'name': string;
     /**
     * URL-friendly unique (inside the Singularon platform) identifier for the `organization`.
     */
-    'slug'?: string;
+    'slug': string;
     'updatedAt'?: string;
 
     static discriminator: string | undefined = undefined;

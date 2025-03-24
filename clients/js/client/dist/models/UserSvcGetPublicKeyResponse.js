@@ -15,6 +15,8 @@
  * Check if a given object implements the UserSvcGetPublicKeyResponse interface.
  */
 export function instanceOfUserSvcGetPublicKeyResponse(value) {
+    if (!('publicKey' in value) || value['publicKey'] === undefined)
+        return false;
     return true;
 }
 export function UserSvcGetPublicKeyResponseFromJSON(json) {
@@ -25,7 +27,7 @@ export function UserSvcGetPublicKeyResponseFromJSONTyped(json, ignoreDiscriminat
         return json;
     }
     return {
-        'publicKey': json['publicKey'] == null ? undefined : json['publicKey'],
+        'publicKey': json['publicKey'],
     };
 }
 export function UserSvcGetPublicKeyResponseToJSON(json) {

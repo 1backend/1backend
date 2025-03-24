@@ -30,19 +30,21 @@ export interface UserSvcCreateOrganizationRequest {
      * @type {string}
      * @memberof UserSvcCreateOrganizationRequest
      */
-    name?: string;
+    name: string;
     /**
      * URL-friendly unique (inside the Singularon platform) identifier for the `organization`.
      * @type {string}
      * @memberof UserSvcCreateOrganizationRequest
      */
-    slug?: string;
+    slug: string;
 }
 
 /**
  * Check if a given object implements the UserSvcCreateOrganizationRequest interface.
  */
 export function instanceOfUserSvcCreateOrganizationRequest(value: object): value is UserSvcCreateOrganizationRequest {
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('slug' in value) || value['slug'] === undefined) return false;
     return true;
 }
 
@@ -57,8 +59,8 @@ export function UserSvcCreateOrganizationRequestFromJSONTyped(json: any, ignoreD
     return {
         
         'id': json['id'] == null ? undefined : json['id'],
-        'name': json['name'] == null ? undefined : json['name'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
+        'name': json['name'],
+        'slug': json['slug'],
     };
 }
 

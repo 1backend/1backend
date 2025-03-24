@@ -10,10 +10,10 @@
  * Do not edit the class manually.
  */
 import http from 'http';
-import { UserSvcAddUserToOrganizationRequest } from '../model/userSvcAddUserToOrganizationRequest';
 import { UserSvcAssignPermissionsRequest } from '../model/userSvcAssignPermissionsRequest';
 import { UserSvcChangePasswordRequest } from '../model/userSvcChangePasswordRequest';
 import { UserSvcCreateOrganizationRequest } from '../model/userSvcCreateOrganizationRequest';
+import { UserSvcCreateOrganizationResponse } from '../model/userSvcCreateOrganizationResponse';
 import { UserSvcCreateRoleRequest } from '../model/userSvcCreateRoleRequest';
 import { UserSvcCreateRoleResponse } from '../model/userSvcCreateRoleResponse';
 import { UserSvcCreateUserRequest } from '../model/userSvcCreateUserRequest';
@@ -61,12 +61,28 @@ export declare class UserSvcApi {
     setApiKey(key: UserSvcApiApiKeys, value: string): void;
     addInterceptor(interceptor: Interceptor): void;
     /**
+     * Assign a role to a user. The caller can assign any roles it owns, typically those prefixed with the caller’s identifier (e.g., `my-service:admin`). One exception to this rule is dynamic organization roles: If the caller is an organization admin (e.g., has a role like \"user-svc:org:{%orgId}:admin\"), they can also assign such roles.
+     * @summary Assign Role to User
+     * @param userId User ID
+     * @param roleId Role ID
+     * @param body Add Role to User Request
+     */
+    addRoleToUser(userId: string, roleId: string, body?: object, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: object;
+    }>;
+    /**
      * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
      * @summary Add a User to an Organization
      * @param organizationId Organization ID
+     * @param userId User ID
      * @param body Add User to Organization Request
      */
-    addUserToOrganization(organizationId: string, body: UserSvcAddUserToOrganizationRequest, options?: {
+    addUserToOrganization(organizationId: string, userId: string, body?: object, options?: {
         headers: {
             [name: string]: string;
         };
@@ -111,7 +127,7 @@ export declare class UserSvcApi {
         };
     }): Promise<{
         response: http.IncomingMessage;
-        body: object;
+        body: UserSvcCreateOrganizationResponse;
     }>;
     /**
      * Create a new role. <b>The role ID must be prefixed by the caller\'s slug.</b> Eg. if the caller\'s slug is `petstore-svc` the role should look like `petstore-svc:admin`. The user account who creates the role will become the owner of that role, and only the owner will be able to edit the role.  Requires the `user-svc:role:create` permission.
@@ -216,7 +232,7 @@ export declare class UserSvcApi {
         body: UserSvcGetUsersResponse;
     }>;
     /**
-     * Check if a user is authorized for a specific permission.
+     * Verify whether a user has a specific permission. Ideally, this endpoint should rarely be used, as the JWT token already includes all user roles. Caching the `Get Permissions by Role` responses allows services to determine user authorization without repeatedly calling this endpoint.
      * @summary Is Authorized
      * @param permissionId Permission ID
      * @param body Is Authorized Request
@@ -285,7 +301,7 @@ export declare class UserSvcApi {
      * @summary Remove a User from an Organization
      * @param organizationId Organization ID
      * @param userId User ID
-     * @param body Add User to Organization Request
+     * @param body Remove User From Organization Request
      */
     removeUserFromOrganization(organizationId: string, userId: string, body?: object, options?: {
         headers: {

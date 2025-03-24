@@ -49,6 +49,27 @@ func MakeClients(clientFactory sdk.ClientFactory, num int) ([]*openapi.APIClient
 	return clients, tokens, nil
 }
 
+func LoggedInClient(
+	clientFactory sdk.ClientFactory,
+	slug,
+	password string,
+) (*openapi.APIClient, *openapi.UserSvcAuthToken, error) {
+	loginReq := openapi.UserSvcLoginRequest{
+		Slug:     openapi.PtrString("test-user-slug-1"),
+		Password: openapi.PtrString("testUserPassword1"),
+	}
+
+	loginRsp, _, err := clientFactory.Client().UserSvcAPI.Login(context.Background()).
+		Body(loginReq).
+		Execute()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	cl := clientFactory.Client(sdk.WithToken(loginRsp.Token.Token))
+	return cl, loginRsp.Token, nil
+}
+
 type MockUserOptions struct {
 	IdFactory           func() string
 	SlugFactory         func() string

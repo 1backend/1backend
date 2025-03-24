@@ -21,11 +21,49 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as runtime from '../runtime';
-import { UserSvcAddUserToOrganizationRequestToJSON, UserSvcAssignPermissionsRequestToJSON, UserSvcChangePasswordRequestToJSON, UserSvcCreateOrganizationRequestToJSON, UserSvcCreateRoleRequestToJSON, UserSvcCreateRoleResponseFromJSON, UserSvcCreateUserRequestToJSON, UserSvcGetPermissionsResponseFromJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcGetRolesResponseFromJSON, UserSvcGetUsersRequestToJSON, UserSvcGetUsersResponseFromJSON, UserSvcIsAuthorizedRequestToJSON, UserSvcIsAuthorizedResponseFromJSON, UserSvcListGrantsRequestToJSON, UserSvcListGrantsResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadUserByTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcSaveGrantsRequestToJSON, UserSvcSavePermissionsRequestToJSON, UserSvcSavePermissionsResponseFromJSON, UserSvcSaveProfileRequestToJSON, UserSvcSetRolePermissionsRequestToJSON, } from '../models/index';
+import { UserSvcAssignPermissionsRequestToJSON, UserSvcChangePasswordRequestToJSON, UserSvcCreateOrganizationRequestToJSON, UserSvcCreateOrganizationResponseFromJSON, UserSvcCreateRoleRequestToJSON, UserSvcCreateRoleResponseFromJSON, UserSvcCreateUserRequestToJSON, UserSvcGetPermissionsResponseFromJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcGetRolesResponseFromJSON, UserSvcGetUsersRequestToJSON, UserSvcGetUsersResponseFromJSON, UserSvcIsAuthorizedRequestToJSON, UserSvcIsAuthorizedResponseFromJSON, UserSvcListGrantsRequestToJSON, UserSvcListGrantsResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadUserByTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcSaveGrantsRequestToJSON, UserSvcSavePermissionsRequestToJSON, UserSvcSavePermissionsResponseFromJSON, UserSvcSaveProfileRequestToJSON, UserSvcSetRolePermissionsRequestToJSON, } from '../models/index';
 /**
  *
  */
 export class UserSvcApi extends runtime.BaseAPI {
+    /**
+     * Assign a role to a user. The caller can assign any roles it owns, typically those prefixed with the caller’s identifier (e.g., `my-service:admin`). One exception to this rule is dynamic organization roles: If the caller is an organization admin (e.g., has a role like \"user-svc:org:{%orgId}:admin\"), they can also assign such roles.
+     * Assign Role to User
+     */
+    addRoleToUserRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['userId'] == null) {
+                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling addRoleToUser().');
+            }
+            if (requestParameters['roleId'] == null) {
+                throw new runtime.RequiredError('roleId', 'Required parameter "roleId" was null or undefined when calling addRoleToUser().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            const response = yield this.request({
+                path: `/user-svc/user/{userId}/role/{roleId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))).replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
+                method: 'PUT',
+                headers: headerParameters,
+                query: queryParameters,
+                body: requestParameters['body'],
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response);
+        });
+    }
+    /**
+     * Assign a role to a user. The caller can assign any roles it owns, typically those prefixed with the caller’s identifier (e.g., `my-service:admin`). One exception to this rule is dynamic organization roles: If the caller is an organization admin (e.g., has a role like \"user-svc:org:{%orgId}:admin\"), they can also assign such roles.
+     * Assign Role to User
+     */
+    addRoleToUser(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.addRoleToUserRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
     /**
      * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
      * Add a User to an Organization
@@ -35,8 +73,8 @@ export class UserSvcApi extends runtime.BaseAPI {
             if (requestParameters['organizationId'] == null) {
                 throw new runtime.RequiredError('organizationId', 'Required parameter "organizationId" was null or undefined when calling addUserToOrganization().');
             }
-            if (requestParameters['body'] == null) {
-                throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling addUserToOrganization().');
+            if (requestParameters['userId'] == null) {
+                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling addUserToOrganization().');
             }
             const queryParameters = {};
             const headerParameters = {};
@@ -45,11 +83,11 @@ export class UserSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             const response = yield this.request({
-                path: `/user-svc/organization/{organizationId}/user`.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId']))),
-                method: 'POST',
+                path: `/user-svc/organization/{organizationId}/user/{userId}`.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId']))).replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+                method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcAddUserToOrganizationRequestToJSON(requestParameters['body']),
+                body: requestParameters['body'],
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
@@ -156,7 +194,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 query: queryParameters,
                 body: UserSvcCreateOrganizationRequestToJSON(requestParameters['body']),
             }, initOverrides);
-            return new runtime.JSONApiResponse(response);
+            return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcCreateOrganizationResponseFromJSON(jsonValue));
         });
     }
     /**
@@ -428,7 +466,7 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Check if a user is authorized for a specific permission.
+     * Verify whether a user has a specific permission. Ideally, this endpoint should rarely be used, as the JWT token already includes all user roles. Caching the `Get Permissions by Role` responses allows services to determine user authorization without repeatedly calling this endpoint.
      * Is Authorized
      */
     isAuthorizedRaw(requestParameters, initOverrides) {
@@ -453,7 +491,7 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Check if a user is authorized for a specific permission.
+     * Verify whether a user has a specific permission. Ideally, this endpoint should rarely be used, as the JWT token already includes all user roles. Caching the `Get Permissions by Role` responses allows services to determine user authorization without repeatedly calling this endpoint.
      * Is Authorized
      */
     isAuthorized(requestParameters, initOverrides) {

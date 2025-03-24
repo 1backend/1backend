@@ -15,6 +15,12 @@
  * Check if a given object implements the UserSvcOrganization interface.
  */
 export function instanceOfUserSvcOrganization(value) {
+    if (!('id' in value) || value['id'] === undefined)
+        return false;
+    if (!('name' in value) || value['name'] === undefined)
+        return false;
+    if (!('slug' in value) || value['slug'] === undefined)
+        return false;
     return true;
 }
 export function UserSvcOrganizationFromJSON(json) {
@@ -27,9 +33,9 @@ export function UserSvcOrganizationFromJSONTyped(json, ignoreDiscriminator) {
     return {
         'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'name': json['name'] == null ? undefined : json['name'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
+        'id': json['id'],
+        'name': json['name'],
+        'slug': json['slug'],
         'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
     };
 }

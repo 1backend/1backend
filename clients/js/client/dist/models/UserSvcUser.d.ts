@@ -39,7 +39,7 @@ export interface UserSvcUser {
      * @type {string}
      * @memberof UserSvcUser
      */
-    id?: string;
+    id: string;
     /**
      * Full name of the organization.
      * @type {string}
@@ -57,7 +57,7 @@ export interface UserSvcUser {
      * @type {string}
      * @memberof UserSvcUser
      */
-    slug?: string;
+    slug: string;
     /**
      *
      * @type {string}

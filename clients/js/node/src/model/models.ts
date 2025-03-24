@@ -166,12 +166,12 @@ export * from './sourceSvcCheckoutRepoRequest';
 export * from './sourceSvcCheckoutRepoResponse';
 export * from './sourceSvcErrorResponse';
 export * from './stableDiffusionTxt2ImgRequest';
-export * from './userSvcAddUserToOrganizationRequest';
 export * from './userSvcAssignPermissionsRequest';
 export * from './userSvcAuthToken';
 export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';
 export * from './userSvcCreateOrganizationRequest';
+export * from './userSvcCreateOrganizationResponse';
 export * from './userSvcCreateRoleRequest';
 export * from './userSvcCreateRoleResponse';
 export * from './userSvcCreateUserRequest';
@@ -382,12 +382,12 @@ import { SourceSvcCheckoutRepoRequest } from './sourceSvcCheckoutRepoRequest';
 import { SourceSvcCheckoutRepoResponse } from './sourceSvcCheckoutRepoResponse';
 import { SourceSvcErrorResponse } from './sourceSvcErrorResponse';
 import { StableDiffusionTxt2ImgRequest } from './stableDiffusionTxt2ImgRequest';
-import { UserSvcAddUserToOrganizationRequest } from './userSvcAddUserToOrganizationRequest';
 import { UserSvcAssignPermissionsRequest } from './userSvcAssignPermissionsRequest';
 import { UserSvcAuthToken } from './userSvcAuthToken';
 import { UserSvcChangePasswordRequest } from './userSvcChangePasswordRequest';
 import { UserSvcContact } from './userSvcContact';
 import { UserSvcCreateOrganizationRequest } from './userSvcCreateOrganizationRequest';
+import { UserSvcCreateOrganizationResponse } from './userSvcCreateOrganizationResponse';
 import { UserSvcCreateRoleRequest } from './userSvcCreateRoleRequest';
 import { UserSvcCreateRoleResponse } from './userSvcCreateRoleResponse';
 import { UserSvcCreateUserRequest } from './userSvcCreateUserRequest';
@@ -601,12 +601,12 @@ let typeMap: {[index: string]: any} = {
     "SourceSvcCheckoutRepoResponse": SourceSvcCheckoutRepoResponse,
     "SourceSvcErrorResponse": SourceSvcErrorResponse,
     "StableDiffusionTxt2ImgRequest": StableDiffusionTxt2ImgRequest,
-    "UserSvcAddUserToOrganizationRequest": UserSvcAddUserToOrganizationRequest,
     "UserSvcAssignPermissionsRequest": UserSvcAssignPermissionsRequest,
     "UserSvcAuthToken": UserSvcAuthToken,
     "UserSvcChangePasswordRequest": UserSvcChangePasswordRequest,
     "UserSvcContact": UserSvcContact,
     "UserSvcCreateOrganizationRequest": UserSvcCreateOrganizationRequest,
+    "UserSvcCreateOrganizationResponse": UserSvcCreateOrganizationResponse,
     "UserSvcCreateRoleRequest": UserSvcCreateRoleRequest,
     "UserSvcCreateRoleResponse": UserSvcCreateRoleResponse,
     "UserSvcCreateUserRequest": UserSvcCreateUserRequest,

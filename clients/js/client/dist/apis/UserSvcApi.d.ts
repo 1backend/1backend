@@ -10,10 +10,16 @@
  * Do not edit the class manually.
  */
 import * as runtime from '../runtime';
-import type { UserSvcAddUserToOrganizationRequest, UserSvcAssignPermissionsRequest, UserSvcChangePasswordRequest, UserSvcCreateOrganizationRequest, UserSvcCreateRoleRequest, UserSvcCreateRoleResponse, UserSvcCreateUserRequest, UserSvcGetPermissionsResponse, UserSvcGetPublicKeyResponse, UserSvcGetRolesResponse, UserSvcGetUsersRequest, UserSvcGetUsersResponse, UserSvcIsAuthorizedRequest, UserSvcIsAuthorizedResponse, UserSvcListGrantsRequest, UserSvcListGrantsResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveGrantsRequest, UserSvcSavePermissionsRequest, UserSvcSavePermissionsResponse, UserSvcSaveProfileRequest, UserSvcSetRolePermissionsRequest } from '../models/index';
+import type { UserSvcAssignPermissionsRequest, UserSvcChangePasswordRequest, UserSvcCreateOrganizationRequest, UserSvcCreateOrganizationResponse, UserSvcCreateRoleRequest, UserSvcCreateRoleResponse, UserSvcCreateUserRequest, UserSvcGetPermissionsResponse, UserSvcGetPublicKeyResponse, UserSvcGetRolesResponse, UserSvcGetUsersRequest, UserSvcGetUsersResponse, UserSvcIsAuthorizedRequest, UserSvcIsAuthorizedResponse, UserSvcListGrantsRequest, UserSvcListGrantsResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveGrantsRequest, UserSvcSavePermissionsRequest, UserSvcSavePermissionsResponse, UserSvcSaveProfileRequest, UserSvcSetRolePermissionsRequest } from '../models/index';
+export interface AddRoleToUserRequest {
+    userId: string;
+    roleId: string;
+    body?: object;
+}
 export interface AddUserToOrganizationRequest {
     organizationId: string;
-    body: UserSvcAddUserToOrganizationRequest;
+    userId: string;
+    body?: object;
 }
 export interface AssignPermissionsRequest {
     body: UserSvcAssignPermissionsRequest;
@@ -87,6 +93,16 @@ export interface SetRolePermissionRequest {
  */
 export declare class UserSvcApi extends runtime.BaseAPI {
     /**
+     * Assign a role to a user. The caller can assign any roles it owns, typically those prefixed with the caller’s identifier (e.g., `my-service:admin`). One exception to this rule is dynamic organization roles: If the caller is an organization admin (e.g., has a role like \"user-svc:org:{%orgId}:admin\"), they can also assign such roles.
+     * Assign Role to User
+     */
+    addRoleToUserRaw(requestParameters: AddRoleToUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+    /**
+     * Assign a role to a user. The caller can assign any roles it owns, typically those prefixed with the caller’s identifier (e.g., `my-service:admin`). One exception to this rule is dynamic organization roles: If the caller is an organization admin (e.g., has a role like \"user-svc:org:{%orgId}:admin\"), they can also assign such roles.
+     * Assign Role to User
+     */
+    addRoleToUser(requestParameters: AddRoleToUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+    /**
      * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
      * Add a User to an Organization
      */
@@ -120,12 +136,12 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      * Allows a logged-in user to create a new organization. The user initiating the request will be assigned the role of admin for that organization. The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the created organization. Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
      * Create an Organization
      */
-    createOrganizationRaw(requestParameters: CreateOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+    createOrganizationRaw(requestParameters: CreateOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcCreateOrganizationResponse>>;
     /**
      * Allows a logged-in user to create a new organization. The user initiating the request will be assigned the role of admin for that organization. The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the created organization. Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
      * Create an Organization
      */
-    createOrganization(requestParameters: CreateOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+    createOrganization(requestParameters: CreateOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcCreateOrganizationResponse>;
     /**
      * Create a new role. <b>The role ID must be prefixed by the caller\'s slug.</b> Eg. if the caller\'s slug is `petstore-svc` the role should look like `petstore-svc:admin`. The user account who creates the role will become the owner of that role, and only the owner will be able to edit the role.  Requires the `user-svc:role:create` permission.
      * Create a New Role
@@ -207,12 +223,12 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      */
     getUsers(requestParameters?: GetUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcGetUsersResponse>;
     /**
-     * Check if a user is authorized for a specific permission.
+     * Verify whether a user has a specific permission. Ideally, this endpoint should rarely be used, as the JWT token already includes all user roles. Caching the `Get Permissions by Role` responses allows services to determine user authorization without repeatedly calling this endpoint.
      * Is Authorized
      */
     isAuthorizedRaw(requestParameters: IsAuthorizedRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcIsAuthorizedResponse>>;
     /**
-     * Check if a user is authorized for a specific permission.
+     * Verify whether a user has a specific permission. Ideally, this endpoint should rarely be used, as the JWT token already includes all user roles. Caching the `Get Permissions by Role` responses allows services to determine user authorization without repeatedly calling this endpoint.
      * Is Authorized
      */
     isAuthorized(requestParameters: IsAuthorizedRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcIsAuthorizedResponse>;

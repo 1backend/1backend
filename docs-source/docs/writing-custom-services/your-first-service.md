@@ -88,7 +88,7 @@ func NewService() (*SkeletonService, error) {
 		return nil, errors.Wrap(err, "cannot register service")
 	}
 
-	client = sdk.NewApiClientFactory(spUrl).Client(sdk.WithToken(token))
+	client = sdk.NewApiClientFactory(spUrl).Client(sdk.WithToken(token.Token))
 	_, _, err = client.RegistrySvcAPI.
 		RegisterInstance(context.Background()).
 		Body(openapi.RegistrySvcRegisterInstanceRequest{
@@ -99,7 +99,7 @@ func NewService() (*SkeletonService, error) {
 	}
 
 	repo := &SkeletonService{
-		token: token,
+		token: token.Token,
 	}
 
 	return repo, nil

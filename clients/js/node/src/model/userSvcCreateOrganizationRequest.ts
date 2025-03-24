@@ -17,11 +17,11 @@ export class UserSvcCreateOrganizationRequest {
     /**
     * Full name of the organization.
     */
-    'name'?: string;
+    'name': string;
     /**
     * URL-friendly unique (inside the Singularon platform) identifier for the `organization`.
     */
-    'slug'?: string;
+    'slug': string;
 
     static discriminator: string | undefined = undefined;
 

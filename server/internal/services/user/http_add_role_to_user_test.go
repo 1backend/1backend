@@ -32,14 +32,10 @@ func TestAssignRoleToUser(t *testing.T) {
 	err = starterFunc()
 	require.NoError(t, err)
 
-	manyClients, tokens, err := test.MakeClients(options.ClientFactory, 2)
+	manyClients, tokens, err := test.MakeClients(options.ClientFactory, 3)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
-	//userToken := sdk.TokenFromClient(userClient)
-
-	//otherClient := manyClients[1]
-	//otherToken := sdk.TokenFromClient(otherClient)
 
 	t.Run("user creates role", func(t *testing.T) {
 		_, _, err := userClient.UserSvcAPI.CreateRole(context.Background()).
@@ -109,5 +105,77 @@ func TestAssignRoleToUser(t *testing.T) {
 		).Execute()
 
 		require.NoError(t, err)
+	})
+
+	secondClient, _, err := test.LoggedInClient(
+		options.ClientFactory,
+		"test-user-slug-1",
+		"testUserPassword1",
+	)
+	require.NoError(t, err)
+
+	t.Run("second user cannot give itself admin rights", func(t *testing.T) {
+		_, _, err := secondClient.UserSvcAPI.AddRoleToUser(
+			context.Background(),
+			tokens[1].UserId,
+			fmt.Sprintf("user-svc:org:{%v}:user", orgId),
+		).Execute()
+
+		require.Error(t, err)
+	})
+
+	t.Run("second user cannot give a third user admin or user rights", func(t *testing.T) {
+		_, _, err := secondClient.UserSvcAPI.AddRoleToUser(
+			context.Background(),
+			tokens[2].UserId,
+			fmt.Sprintf("user-svc:org:{%v}:user", orgId),
+		).Execute()
+
+		require.Error(t, err)
+
+		_, _, err = secondClient.UserSvcAPI.AddRoleToUser(
+			context.Background(),
+			tokens[2].UserId,
+			fmt.Sprintf("user-svc:org:{%v}:admin", orgId),
+		).Execute()
+
+		require.Error(t, err)
+	})
+
+	// After making the second user admin, it can give the third user and admin rights
+
+	_, _, err = userClient.UserSvcAPI.AddRoleToUser(
+		context.Background(),
+		tokens[1].UserId,
+		fmt.Sprintf("user-svc:org:{%v}:admin", orgId),
+	).Execute()
+
+	require.NoError(t, err)
+
+	secondClient, _, err = test.LoggedInClient(
+		options.ClientFactory,
+		"test-user-slug-1",
+		"testUserPassword1",
+	)
+	require.NoError(t, err)
+
+	t.Run("second user now can give third user user rights", func(t *testing.T) {
+		_, _, err = secondClient.UserSvcAPI.AddRoleToUser(
+			context.Background(),
+			tokens[2].UserId,
+			fmt.Sprintf("user-svc:org:{%v}:user", orgId),
+		).Execute()
+
+		require.Error(t, err)
+	})
+
+	t.Run("second user now can give third user user rights", func(t *testing.T) {
+		_, _, err = secondClient.UserSvcAPI.AddRoleToUser(
+			context.Background(),
+			tokens[2].UserId,
+			fmt.Sprintf("user-svc:org:{%v}:admin", orgId),
+		).Execute()
+
+		require.Error(t, err)
 	})
 }
