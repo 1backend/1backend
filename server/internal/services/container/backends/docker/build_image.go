@@ -18,7 +18,9 @@ import (
 	container "github.com/1backend/1backend/server/internal/services/container/types"
 )
 
-func (dm *DockerBackend) BuildImage(req container.BuildImageRequest) (*container.BuildImageResponse, error) {
+func (dm *DockerBackend) BuildImage(
+	req container.BuildImageRequest,
+) (*container.BuildImageResponse, error) {
 	ctx := context.Background()
 
 	tarBuffer, err := createTarFromContext(req.ContextPath)

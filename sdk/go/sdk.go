@@ -1,3 +1,15 @@
+/*
+*
+
+  - @license
+
+  - Copyright (c) The Authors (see the AUTHORS file)
+    *
+
+  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+
+  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+*/
 package sdk
 
 import (
@@ -15,9 +27,9 @@ import (
 )
 
 type Claims struct {
-	UserId  string   `json:"oui"` // `sui`: 1backend user ids
-	Slug    string   `json:"olu"` // `slu`: 1backend slug
-	RoleIds []string `json:"ori"` // `sri`: 1backend role ids
+	UserId  string   `json:"oui"` // `oui`: 1backend user ids
+	Slug    string   `json:"olu"` // `olu`: 1backend slug
+	RoleIds []string `json:"ori"` // `ori`: 1backend role ids
 	jwt.RegisteredClaims
 }
 

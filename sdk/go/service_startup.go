@@ -1,3 +1,15 @@
+/*
+*
+
+  - @license
+
+  - Copyright (c) The Authors (see the AUTHORS file)
+    *
+
+  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+
+  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+*/
 package sdk
 
 import (
@@ -8,12 +20,12 @@ import (
 	client "github.com/1backend/1backend/clients/go"
 )
 
-func RegisterServiceAccount(userService client.UserSvcAPI, serviceSlug, serviceName string, store datastore.DataStore) (string, error) {
+func RegisterServiceAccount(userService client.UserSvcAPI, serviceSlug, serviceName string, store datastore.DataStore) (*client.UserSvcAuthToken, error) {
 	ctx := context.Background()
 
 	res, err := store.Query().Find()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	slug := serviceSlug
@@ -30,11 +42,11 @@ func RegisterServiceAccount(userService client.UserSvcAPI, serviceSlug, serviceN
 			Password: pw,
 		})
 		if err != nil {
-			return "", err
+			return nil, err
 		}
 		err = store.Refresh()
 		if err != nil {
-			return "", err
+			return nil, err
 		}
 	}
 
@@ -50,7 +62,7 @@ func RegisterServiceAccount(userService client.UserSvcAPI, serviceSlug, serviceN
 			Password: client.PtrString(pw),
 		}).Execute()
 		if err != nil {
-			return "", err
+			return nil, err
 		}
 
 		loginRsp, _, err = userService.Login(ctx).Body(client.UserSvcLoginRequest{
@@ -58,14 +70,14 @@ func RegisterServiceAccount(userService client.UserSvcAPI, serviceSlug, serviceN
 			Password: client.PtrString(pw),
 		}).Execute()
 		if err != nil {
-			return "", err
+			return nil, err
 		}
 	}
 
-	return *loginRsp.Token.Token, nil
+	return loginRsp.Token, nil
 }
 
-func RegisterUserAccount(userService client.UserSvcAPI, slug, password, username string) (string, error) {
+func RegisterUserAccount(userService client.UserSvcAPI, slug, password, username string) (*client.UserSvcAuthToken, error) {
 	_, _, err := userService.Register(context.Background()).Body(client.UserSvcRegisterRequest{
 		Slug:     client.PtrString(slug),
 		Password: client.PtrString(password),
@@ -73,7 +85,7 @@ func RegisterUserAccount(userService client.UserSvcAPI, slug, password, username
 	}).Execute()
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	loginRsp, _, err := userService.Login(context.Background()).Body(client.UserSvcLoginRequest{
@@ -81,8 +93,8 @@ func RegisterUserAccount(userService client.UserSvcAPI, slug, password, username
 		Password: client.PtrString(password),
 	}).Execute()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return *loginRsp.Token.Token, nil
+	return loginRsp.Token, nil
 }

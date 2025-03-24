@@ -20,10 +20,10 @@ type Event struct {
 
 type Email struct {
 	// Unique identifier
-	Id string `json:"id"            binding:"required"`
+	Id string `json:"id" binding:"required"`
 
 	// List of recipient email addresses
-	To []string `json:"to"            binding:"required"`
+	To []string `json:"to" binding:"required"`
 
 	// List of CC recipient email addresses (optional)
 	CC []string `json:"cc,omitempty"`
@@ -32,24 +32,24 @@ type Email struct {
 	BCC []string `json:"bcc,omitempty"`
 
 	// Email subject line
-	Subject string `json:"subject"       binding:"required"`
+	Subject string `json:"subject" binding:"required"`
 
 	// Email body content (plain text or HTML)
-	Body string `json:"body"          binding:"required"`
+	Body string `json:"body" binding:"required"`
 
 	// Content type: "text/plain" or "text/html"
-	ContentType string `json:"contentType"   binding:"required"`
+	ContentType string `json:"contentType" binding:"required"`
 
 	// Timestamp of email creation
-	CreatedAt time.Time `json:"createdAt"     binding:"required"`
+	CreatedAt time.Time `json:"createdAt" binding:"required"`
 }
 
 type SendEmailRequest struct {
 	// Unique identifier
-	Id string `json:"id"            binding:"required"`
+	Id string `json:"id" binding:"required"`
 
 	// List of recipient email addresses
-	To []string `json:"to"            binding:"required"`
+	To []string `json:"to" binding:"required"`
 
 	// List of CC recipient email addresses (optional)
 	CC []string `json:"cc,omitempty"`
@@ -58,13 +58,13 @@ type SendEmailRequest struct {
 	BCC []string `json:"bcc,omitempty"`
 
 	// Email subject line
-	Subject string `json:"subject"       binding:"required"`
+	Subject string `json:"subject" binding:"required"`
 
 	// Email body content (plain text or HTML)
-	Body string `json:"body"          binding:"required"`
+	Body string `json:"body" binding:"required"`
 
 	// Content type: "text/plain" or "text/html"
-	ContentType string `json:"contentType"   binding:"required"`
+	ContentType string `json:"contentType" binding:"required"`
 
 	// List of file attachments (optional)
 	Attachments []Attachment `json:"attachments"`

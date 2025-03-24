@@ -6,10 +6,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/google/uuid"
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 
 	client "github.com/1backend/1backend/clients/go"
@@ -38,7 +38,7 @@ func TestQueryObjects(t *testing.T) {
 	err = starterFunc()
 	require.NoError(t, err)
 
-	manyClients, err := test.MakeClients(options.ClientFactory, 1)
+	manyClients, _, err := test.MakeClients(options.ClientFactory, 1)
 	require.NoError(t, err)
 	client1 := manyClients[0]
 

@@ -79,7 +79,9 @@ func (dm *ContainerService) ListLogs(
 	w.Write(jsonData)
 }
 
-func (dm *ContainerService) listLogs(req *container.ListLogsRequest) (*container.ListLogsResponse, error) {
+func (dm *ContainerService) listLogs(
+	req *container.ListLogsRequest,
+) (*container.ListLogsResponse, error) {
 	q := dm.logStore.Query()
 
 	if req.NodeId != "" {

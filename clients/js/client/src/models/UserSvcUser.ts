@@ -50,7 +50,7 @@ export interface UserSvcUser {
      * @type {string}
      * @memberof UserSvcUser
      */
-    id?: string;
+    id: string;
     /**
      * Full name of the organization.
      * @type {string}
@@ -68,7 +68,7 @@ export interface UserSvcUser {
      * @type {string}
      * @memberof UserSvcUser
      */
-    slug?: string;
+    slug: string;
     /**
      * 
      * @type {string}
@@ -81,6 +81,8 @@ export interface UserSvcUser {
  * Check if a given object implements the UserSvcUser interface.
  */
 export function instanceOfUserSvcUser(value: object): value is UserSvcUser {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('slug' in value) || value['slug'] === undefined) return false;
     return true;
 }
 
@@ -97,10 +99,10 @@ export function UserSvcUserFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'contacts': json['contacts'] == null ? undefined : ((json['contacts'] as Array<any>).map(UserSvcContactFromJSON)),
         'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
-        'id': json['id'] == null ? undefined : json['id'],
+        'id': json['id'],
         'name': json['name'] == null ? undefined : json['name'],
         'passwordHash': json['passwordHash'] == null ? undefined : json['passwordHash'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
+        'slug': json['slug'],
         'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
     };
 }

@@ -92,7 +92,7 @@ func (cs *SecretService) Start() error {
 	if err != nil {
 		return err
 	}
-	cs.publicKey = *pk.PublicKey
+	cs.publicKey = pk.PublicKey
 
 	client := cs.clientFactory.Client()
 
@@ -105,7 +105,7 @@ func (cs *SecretService) Start() error {
 	if err != nil {
 		return err
 	}
-	cs.token = token
+	cs.token = token.Token
 
 	err = cs.registerPermissions()
 	if err != nil {

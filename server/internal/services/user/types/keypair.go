@@ -17,12 +17,12 @@ import (
 )
 
 type KeyPair struct {
-	Id        string    `json:"id,omitempty"`
+	Id        string    `json:"id" binding:"required"`
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
 
-	PrivateKey string `json:"privateKey,omitempty"`
-	PublicKey  string `json:"publicKey,omitempty"`
+	PrivateKey string `json:"privateKey" binding:"required"`
+	PublicKey  string `json:"publicKey" binding:"required"`
 }
 
 func (k *KeyPair) GetId() string {
@@ -32,5 +32,5 @@ func (k *KeyPair) GetId() string {
 type GetPublicKeyRequest struct{}
 
 type GetPublicKeyResponse struct {
-	PublicKey string `json:"publicKey,omitempty"`
+	PublicKey string `json:"publicKey" binding:"required"`
 }

@@ -15,8 +15,8 @@ type AuthToken struct {
 	UpdatedAt time.Time  `json:"updatedAt,omitempty"`
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`
 
-	UserId string `json:"userId,omitempty"`
-	Token  string `json:"token,omitempty"`
+	UserId string `json:"userId,omitempty" binding:"required"`
+	Token  string `json:"token,omitempty" binding:"required"`
 
 	// Active tokens contain the most up-to-date information.
 	// When a user's role changes—due to role assignment, organization

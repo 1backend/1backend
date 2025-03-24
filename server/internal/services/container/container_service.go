@@ -26,8 +26,8 @@ import (
 	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/pkg/errors"
 
-	dockerclient "github.com/docker/docker/client"
 	container "github.com/1backend/1backend/server/internal/services/container/types"
+	dockerclient "github.com/docker/docker/client"
 
 	"github.com/1backend/1backend/server/internal/services/container/backends"
 	dockerbackend "github.com/1backend/1backend/server/internal/services/container/backends/docker"
@@ -114,7 +114,7 @@ func (ds *ContainerService) Start() error {
 	if err != nil {
 		return err
 	}
-	ds.token = token
+	ds.token = token.Token
 
 	backend, err := dockerbackend.NewDockerBackend(
 		ds.volumeName,
@@ -176,7 +176,10 @@ func (ms *ContainerService) logLoop() {
 func (ms *ContainerService) containerLoop() {
 	ctracker := dockerbackend.NewContainerTracker()
 
-	go dockerbackend.StartDockerContainerTracker(ms.backend.Client().(*dockerclient.Client), ctracker)
+	go dockerbackend.StartDockerContainerTracker(
+		ms.backend.Client().(*dockerclient.Client),
+		ctracker,
+	)
 
 	ticker := time.NewTicker(1000 * time.Millisecond)
 	defer ticker.Stop()

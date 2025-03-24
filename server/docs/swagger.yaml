@@ -532,8 +532,7 @@ definitions:
           If an organization ID is not provided, the currently active organization will
           be queried from the User Svc.
         example:
-        - '["usr_12345"'
-        - ' "org_67890"]'
+        - '['
         items:
           type: string
         type: array
@@ -607,8 +606,7 @@ definitions:
           If an organization ID is not provided, the currently active organization will
           be queried from the User Svc.
         example:
-        - '["usr_12345"'
-        - ' "org_67890"]'
+        - '['
         items:
           type: string
         type: array
@@ -623,8 +621,7 @@ definitions:
           `_self` can be used to refer to the caller user's userId and
           `_org` can be used to refer to the user's currently active organization (if exists).
         example:
-        - '["usr_12345"'
-        - ' "org_67890"]'
+        - '['
         items:
           type: string
         type: array
@@ -636,8 +633,7 @@ definitions:
           `_self` can be used to refer to the caller user's userId and
           `_org` can be used to refer to the user's currently active organization (if exists).
         example:
-        - '["usr_12345"'
-        - ' "org_67890"]'
+        - '['
         items:
           type: string
         type: array
@@ -651,8 +647,7 @@ definitions:
           `_self` can be used to refer to the caller user's userId and
           `_org` can be used to refer to the user's currently active organization (if exists).
         example:
-        - '["usr_12345"'
-        - ' "org_67890"]'
+        - '['
         items:
           type: string
         type: array
@@ -2662,10 +2657,11 @@ definitions:
       width:
         type: integer
     type: object
+  user_svc.AddRoleToUserRequest:
+    type: object
+  user_svc.AddRoleToUserResponse:
+    type: object
   user_svc.AddUserToOrganizationRequest:
-    properties:
-      userId:
-        type: string
     type: object
   user_svc.AddUserToOrganizationResponse:
     type: object
@@ -2700,6 +2696,9 @@ definitions:
         type: string
       userId:
         type: string
+    required:
+    - token
+    - userId
     type: object
   user_svc.ChangePasswordRequest:
     properties:
@@ -2761,8 +2760,23 @@ definitions:
         description: URL-friendly unique (inside the Singularon platform) identifier
           for the `organization`.
         type: string
+    required:
+    - name
+    - slug
     type: object
   user_svc.CreateOrganizationResponse:
+    properties:
+      organization:
+        $ref: '#/definitions/user_svc.Organization'
+      token:
+        allOf:
+        - $ref: '#/definitions/user_svc.AuthToken'
+        description: |-
+          Due to the nature of JWT tokens, the token must be refreshed after
+          creating an organization, as dynamic organization roles are embedded in it.
+    required:
+    - organization
+    - token
     type: object
   user_svc.CreateRoleRequest:
     properties:
@@ -2817,6 +2831,8 @@ definitions:
     properties:
       publicKey:
         type: string
+    required:
+    - publicKey
     type: object
   user_svc.GetRolesResponse:
     properties:
@@ -2918,6 +2934,10 @@ definitions:
         type: string
       updatedAt:
         type: string
+    required:
+    - id
+    - name
+    - slug
     type: object
   user_svc.Permission:
     properties:
@@ -3074,6 +3094,9 @@ definitions:
         type: string
       updatedAt:
         type: string
+    required:
+    - id
+    - slug
     type: object
 externalDocs:
   description: 1Backend API
@@ -5960,57 +5983,6 @@ paths:
       summary: Create an Organization
       tags:
       - User Svc
-  /user-svc/organization/{organizationId}/user:
-    post:
-      consumes:
-      - application/json
-      description: Allows an authorized user to add another user to a specific organization.
-        The user will be assigned a specific role within the organization.
-      operationId: addUserToOrganization
-      parameters:
-      - description: Organization ID
-        in: path
-        name: organizationId
-        required: true
-        type: string
-      - description: Add User to Organization Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/user_svc.AddUserToOrganizationRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: User added successfully
-          schema:
-            $ref: '#/definitions/user_svc.AddUserToOrganizationResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "403":
-          description: Forbidden
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "404":
-          description: Organization/User not found
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Add a User to an Organization
-      tags:
-      - User Svc
   /user-svc/organization/{organizationId}/user/{userId}:
     delete:
       consumes:
@@ -6029,7 +6001,7 @@ paths:
         name: userId
         required: true
         type: string
-      - description: Add User to Organization Request
+      - description: Remove User From Organization Request
         in: body
         name: body
         schema:
@@ -6066,11 +6038,70 @@ paths:
       summary: Remove a User from an Organization
       tags:
       - User Svc
+    put:
+      consumes:
+      - application/json
+      description: Allows an authorized user to add another user to a specific organization.
+        The user will be assigned a specific role within the organization.
+      operationId: addUserToOrganization
+      parameters:
+      - description: Organization ID
+        in: path
+        name: organizationId
+        required: true
+        type: string
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: Add User to Organization Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/user_svc.AddUserToOrganizationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User added successfully
+          schema:
+            $ref: '#/definitions/user_svc.AddUserToOrganizationResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "404":
+          description: Organization/User not found
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Add a User to an Organization
+      tags:
+      - User Svc
   /user-svc/permission/{permissionId}/is-authorized:
     post:
       consumes:
       - application/json
-      description: Check if a user is authorized for a specific permission.
+      description: |-
+        Verify whether a user has a specific permission.
+        Ideally, this endpoint should rarely be used, as the JWT token
+        already includes all user roles. Caching the `Get Permissions by Role`
+        responses allows services to determine user authorization
+        without repeatedly calling this endpoint.
       operationId: isAuthorized
       parameters:
       - description: Permission ID
@@ -6574,6 +6605,56 @@ paths:
       security:
       - BearerAuth: []
       summary: Save User
+      tags:
+      - User Svc
+  /user-svc/user/{userId}/role/{roleId}:
+    put:
+      consumes:
+      - application/json
+      description: |-
+        Assign a role to a user. The caller can assign any roles it owns,
+        typically those prefixed with the caller’s identifier (e.g., `my-service:admin`).
+        One exception to this rule is dynamic organization roles: If the caller is an organization admin
+        (e.g., has a role like "user-svc:org:{%orgId}:admin"), they can also assign such roles.
+      operationId: addRoleToUser
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: Role ID
+        in: path
+        name: roleId
+        required: true
+        type: string
+      - description: Add Role to User Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/user_svc.AddRoleToUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.AddRoleToUserResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Role not found
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Assign Role to User
       tags:
       - User Svc
   /user-svc/user/by-token:

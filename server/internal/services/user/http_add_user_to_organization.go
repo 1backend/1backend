@@ -29,7 +29,8 @@ import (
 // @Accept json
 // @Produce json
 // @Param organizationId path string true "Organization ID"
-// @Param body body user.AddUserToOrganizationRequest true "Add User to Organization Request"
+// @Param userId path string true "User ID"
+// @Param body body user.AddUserToOrganizationRequest false "Add User to Organization Request"
 // @Success 200 {object} user.AddUserToOrganizationResponse "User added successfully"
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
@@ -37,13 +38,14 @@ import (
 // @Failure 404 {object} user.ErrorResponse "Organization/User not found"
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
-// @Router /user-svc/organization/{organizationId}/user [post]
+// @Router /user-svc/organization/{organizationId}/user/{userId} [put]
 func (s *UserService) AddUserToOrganization(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
 
 	organizationId := mux.Vars(r)["organizationId"]
+	userId := mux.Vars(r)["userId"]
 
 	usr, err := s.isAuthorized(
 		r,
@@ -66,7 +68,7 @@ func (s *UserService) AddUserToOrganization(
 	}
 	defer r.Body.Close()
 
-	err = s.addUserToOrganization(usr.Id, req.UserId, organizationId)
+	err = s.addUserToOrganization(usr.Id, userId, organizationId)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

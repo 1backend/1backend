@@ -5,7 +5,7 @@ description: "Get the public key to parse and verify the JWT."
 sidebar_label: "Get Public Key"
 hide_title: true
 hide_table_of_contents: true
-api: eJy9VE1v2zAM/SsCz46dNhuw+bQUGIq0xVogLXZoc1BkxlYjSxolO8sM//eBdtKv7bIedrJA8+Px8ZEdFBgUaR+1s5DDOUYRKxS+WRutxBb3IjrhJQUU0haiRdKb/eBy8f02hQScR5IcvSgghxLjzRB6iXtIgDB4ZwMGyDs4nU7587rg9SUkoJyNaCP/ld4brYaE2WNglw6CqrCW/PLE5aIeE/qnSnkHce8RcgiRtC2h75Ojxa0fUUXoe7Z9+BuGhW2l0YW4WF5/E45ErUPQthQeaXg6K3TxfphI5OhfIJ78CfHOyiZWjvQv/F9I2CjLAPk93AUksWwVrBKoMVbuMGpIwMtYQQ5ZE5AmoVXZOJTJdph/QGqROEcHDRl2zIxT0lQuxPzjp9PZCfQr9lMN6bhfMvAR6xlKQpo3nP4tG7d7j+Lh4PIAYuOMcTssxHovpAheqlGt0W3RCql+NJqwEBty9SDdYz/iypXaCrSFd9pGlrPm/BXKAgkSsLJmVuYH7geW4Yks6TWLj5nSduMYJw9GqmEwWEvNHQdpMHxhQTVGRnI2Va5+kftmIZaN946YzpGkKkafZ9nJWqot2oIDMuiTNyzMFxMro25R1FqRY661wiC8kXHjqOZ2jFZoAzKeY73zmyvRztLpq2ohz7LdbpeWtkkdldkhLmSy9GYyS6dpFWvDGCJSHa43y7HaM9iwk2WJlGqXDS4Z86SjYZeTs7ERSIDlMMKfprN0OiGVnn7mvN6FWEv7AinfovGYiPGavGq/e16Cd1ytwwQj/oyZN1JbhjDQ0R0kfQ9HSbPKn0W9SoDFyw5dt5YB78j0PZt/NEh7yO9XCbSStFxz7/erPjnqibeAU+QwVwo9z7uVphml9GaL+5erdv71Fvr+NzZQ8LA=
+api: eJy9VE1v2zAM/SsCz46dtBuw+bQWGIp+YC2QFjukOSgyY6uVJY2SnXmG//tAO+nXeuphJwvyI/n4+KgeCgyKtI/aWcjhDKOIFQrfbIxW4hE7EZ3wkgIKaQvRIultN0Iuft6mkIDzSJKjzwvIocR4M4ZeYgcJEAbvbMAAeQ9H8zl/Xhe8voQElLMRbeS/0nuj1ZgwewgM6SGoCmvJJ09cLuopoX+qlPcQO4+QQ4ikbQnDwMV/NZqwgHz1ArpODlC3eUAVYRgY/Ok9cue2lUYX4mJ5/UM4ErUOQdtSeKTx6KzQxcf5I5Gj97m/T3HxL8U7K5tYOdJ/8H8x4UtZBpb1LiCJZatY1Rpj5fYegAS8jBXkkDUBaRZalU0jmD2OxghILRLn6KEhw8DMOCVN5ULMP385Ol7AsGacakjHbsnEJ66nKAnppOH0b9W47TyK+z3kHsTWGeN2WIhNJ6QIXqrJxtE9ohVSTQYRW3L16OlDP+LKldoKtIV32kb2ueb8FcoCCRKwsmZVTvbajyrDk1jSa7YaK6Xt1jFPHoxU42Cwlpo7DtJg+MaGaoyM5GyqXP0i9825WDbeO2I5J5GqGH2eZYuNVI9oCw7IYEjeqHByPrMy6hZFrRU51lorDMIbGbeOam7HaIU2IPM51Du7uRLtcTp/VS3kWbbb7dLSNqmjMtvHhUyW3syO03laxdowh4hUh+vtcqr2TDbsZFkipdplIyRjnXQ0DFmcTo1AAmyHif48PU7nM1Lp0VfO612ItbQvmPIjNb0yYnpmXrXfPy/BB56z/QQj/o6ZN1JbpjDK0e8tvYKDpdnlz6ZeJ8DmZUDfb2TAOzLDwNe/GqQO8tU6gVaSlhvufbUekoOfeAs4RQ4nSqHnebfSNJOV3mzx8HLVzr7fwjD8BfJu+V8=
 sidebar_class_name: "get api-method"
 info_path: docs/1backend/1-backend
 custom_edit_url: null
@@ -54,7 +54,7 @@ Get the public key to parse and verify the JWT.
 <StatusCodes
   id={undefined}
   label={undefined}
-  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"publicKey":{"type":"string"}},"type":"object"}}}},"400":{"description":"Invalid JSON or missing permission id","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"publicKey":{"type":"string"}},"required":["publicKey"],"type":"object"}}}},"400":{"description":"Invalid JSON or missing permission id","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
 >
   
 </StatusCodes>

@@ -109,7 +109,7 @@ func (fs *FileService) UploadFile(
 			NodeId:    fs.nodeId,
 			FileName:  part.FileName(),
 			FilePath:  destinationFilePath,
-			UserId:    *isAuthRsp.GetUser().Id,
+			UserId:    isAuthRsp.GetUser().Id,
 			FileSize:  written,
 			CreatedAt: time.Now(),
 		}

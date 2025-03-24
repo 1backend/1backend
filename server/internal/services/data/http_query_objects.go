@@ -78,13 +78,13 @@ func (g *DataService) Query(
 
 	for i, v := range req.Readers {
 		if v == "_self" {
-			req.Readers[i] = *isAuthRsp.User.Id
+			req.Readers[i] = isAuthRsp.User.Id
 		}
 	}
 
 	identifiers := append(
 		claims.RoleIds,
-		[]string{*isAuthRsp.User.Id, data.AnyIdentifier}...)
+		[]string{isAuthRsp.User.Id, data.AnyIdentifier}...)
 
 	allowedReaders := identifiers
 	if req.Readers != nil {

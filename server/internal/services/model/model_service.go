@@ -109,7 +109,7 @@ func (ms *ModelService) Start() error {
 	if err != nil {
 		return err
 	}
-	ms.token = token
+	ms.token = token.Token
 
 	return ms.registerPermissions()
 }

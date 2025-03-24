@@ -69,15 +69,21 @@ func TestLogAccumulatorTimeTriggeredFlush(t *testing.T) {
 		Message:    msg,
 	})
 
-	t.Run("elapsed flush interval should trigger a flush when there is content", func(t *testing.T) {
-		require.Equal(t, 0, len(chunks))
-	})
+	t.Run(
+		"elapsed flush interval should trigger a flush when there is content",
+		func(t *testing.T) {
+			require.Equal(t, 0, len(chunks))
+		},
+	)
 
-	t.Run("elapsed flush interval should trigger a flush when there is content", func(t *testing.T) {
-		time.Sleep(11 * time.Millisecond)
+	t.Run(
+		"elapsed flush interval should trigger a flush when there is content",
+		func(t *testing.T) {
+			time.Sleep(11 * time.Millisecond)
 
-		require.Equal(t, 1, len(chunks))
-	})
+			require.Equal(t, 1, len(chunks))
+		},
+	)
 
 	t.Run("no new chunk because there were no new writes", func(t *testing.T) {
 		time.Sleep(11 * time.Millisecond)

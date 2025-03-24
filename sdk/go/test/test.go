@@ -21,11 +21,14 @@ func AdminClient(clientFactory sdk.ClientFactory) (*openapi.APIClient, string, e
 		return nil, "", err
 	}
 
-	return clientFactory.Client(sdk.WithToken(*adminLoginRsp.Token.Token)), *adminLoginRsp.Token.Token, nil
+	return clientFactory.Client(sdk.WithToken(adminLoginRsp.Token.Token)), adminLoginRsp.Token.Token, nil
 }
 
-func MakeClients(clientFactory sdk.ClientFactory, num int) ([]*openapi.APIClient, error) {
-	var ret []*openapi.APIClient
+func MakeClients(clientFactory sdk.ClientFactory, num int) ([]*openapi.APIClient, []*openapi.UserSvcAuthToken, error) {
+	var (
+		clients []*openapi.APIClient
+		tokens  []*openapi.UserSvcAuthToken
+	)
 
 	for i := 0; i < num; i++ {
 		slug := fmt.Sprintf("test-user-slug-%v", i)
@@ -34,15 +37,37 @@ func MakeClients(clientFactory sdk.ClientFactory, num int) ([]*openapi.APIClient
 
 		token, err := sdk.RegisterUserAccount(clientFactory.Client().UserSvcAPI, slug, password, username)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 
-		c := clientFactory.Client(sdk.WithToken(token))
+		c := clientFactory.Client(sdk.WithToken(token.Token))
 
-		ret = append(ret, c)
+		clients = append(clients, c)
+		tokens = append(tokens, token)
 	}
 
-	return ret, nil
+	return clients, tokens, nil
+}
+
+func LoggedInClient(
+	clientFactory sdk.ClientFactory,
+	slug,
+	password string,
+) (*openapi.APIClient, *openapi.UserSvcAuthToken, error) {
+	loginReq := openapi.UserSvcLoginRequest{
+		Slug:     openapi.PtrString("test-user-slug-1"),
+		Password: openapi.PtrString("testUserPassword1"),
+	}
+
+	loginRsp, _, err := clientFactory.Client().UserSvcAPI.Login(context.Background()).
+		Body(loginReq).
+		Execute()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	cl := clientFactory.Client(sdk.WithToken(loginRsp.Token.Token))
+	return cl, loginRsp.Token, nil
 }
 
 type MockUserOptions struct {
@@ -82,7 +107,7 @@ func MockUserSvc(ctx context.Context, ctrl *gomock.Controller, options ...MockUs
 
 	expectedUserSvcLoginResponse := &openapi.UserSvcLoginResponse{
 		Token: &openapi.UserSvcAuthToken{
-			Token: openapi.PtrString("HELLO"),
+			Token: "HELLO",
 		},
 	}
 	mockLoginRequest := openapi.ApiLoginRequest{
@@ -105,7 +130,7 @@ func MockUserSvc(ctx context.Context, ctrl *gomock.Controller, options ...MockUs
 		ApiService: mockUserSvc,
 	}).AnyTimes()
 	mockUserSvc.EXPECT().GetPublicKeyExecute(gomock.Any()).Return(&openapi.UserSvcGetPublicKeyResponse{
-		PublicKey: openapi.PtrString(""),
+		PublicKey: "",
 	}, nil, nil).AnyTimes()
 	mockUserSvc.EXPECT().Login(ctx).Return(mockLoginRequest).AnyTimes()
 	mockUserSvc.EXPECT().LoginExecute(gomock.Any()).Return(expectedUserSvcLoginResponse, nil, nil).AnyTimes()
@@ -133,8 +158,8 @@ func MockUserSvc(ctx context.Context, ctrl *gomock.Controller, options ...MockUs
 		return &openapi.UserSvcIsAuthorizedResponse{
 			Authorized: openapi.PtrBool(isAuthorized), // Dynamically evaluate
 			User: &openapi.UserSvcUser{
-				Id:   openapi.PtrString(id),   // Dynamically evaluate
-				Slug: openapi.PtrString(slug), // Dynamically evaluate
+				Id:   id,   // Dynamically evaluate
+				Slug: slug, // Dynamically evaluate
 			},
 		}, nil, nil
 	}).

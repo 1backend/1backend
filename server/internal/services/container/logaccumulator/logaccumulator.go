@@ -33,7 +33,11 @@ type LogAccumulator struct {
 	flushInterval time.Duration
 }
 
-func NewLogAccumulator(maxChunkSize int, flushInterval time.Duration, consumer func([]*LogChunk)) *LogAccumulator {
+func NewLogAccumulator(
+	maxChunkSize int,
+	flushInterval time.Duration,
+	consumer func([]*LogChunk),
+) *LogAccumulator {
 	if maxChunkSize == 0 {
 		maxChunkSize = 8 * 1024 // 8 KB per batch default
 	}

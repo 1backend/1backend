@@ -119,7 +119,7 @@ func (cs *PromptService) Start() error {
 	if err != nil {
 		return err
 	}
-	cs.token = token
+	cs.token = token.Token
 
 	return cs.registerPermissions()
 }

@@ -65,17 +65,17 @@ func (g *DataService) Create(
 
 	for i, v := range req.Object.Readers {
 		if v == "_self" {
-			req.Object.Readers[i] = *isAuthRsp.User.Id
+			req.Object.Readers[i] = isAuthRsp.User.Id
 		}
 	}
 	for i, v := range req.Object.Writers {
 		if v == "_self" {
-			req.Object.Writers[i] = *isAuthRsp.User.Id
+			req.Object.Writers[i] = isAuthRsp.User.Id
 		}
 	}
 	for i, v := range req.Object.Deleters {
 		if v == "_self" {
-			req.Object.Deleters[i] = *isAuthRsp.User.Id
+			req.Object.Deleters[i] = isAuthRsp.User.Id
 		}
 	}
 

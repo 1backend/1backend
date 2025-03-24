@@ -79,7 +79,9 @@ func (dm *ContainerService) ListContainers(
 	w.Write(jsonData)
 }
 
-func (dm *ContainerService) listContainers(req *container.ListContainersRequest) (*container.ListContainersResponse, error) {
+func (dm *ContainerService) listContainers(
+	req *container.ListContainersRequest,
+) (*container.ListContainersResponse, error) {
 	q := dm.containerStore.Query()
 
 	if req.NodeId != "" {

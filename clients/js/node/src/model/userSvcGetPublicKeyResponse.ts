@@ -13,7 +13,7 @@
 import { RequestFile } from './models';
 
 export class UserSvcGetPublicKeyResponse {
-    'publicKey'?: string;
+    'publicKey': string;
 
     static discriminator: string | undefined = undefined;
 

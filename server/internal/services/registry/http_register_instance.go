@@ -55,7 +55,7 @@ func (rs *RegistryService) RegisterInstance(
 	}
 	defer r.Body.Close()
 
-	err = rs.registerInstance(*isAuthRsp.User.Slug, req)
+	err = rs.registerInstance(isAuthRsp.User.Slug, req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

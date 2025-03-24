@@ -20,9 +20,9 @@ export class UserSvcAuthToken {
     'createdAt'?: string;
     'deletedAt'?: string;
     'id'?: string;
-    'token'?: string;
+    'token': string;
     'updatedAt'?: string;
-    'userId'?: string;
+    'userId': string;
 
     static discriminator: string | undefined = undefined;
 

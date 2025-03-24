@@ -19,16 +19,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/flusflas/dipper"
-	"github.com/gorilla/mux"
-	"github.com/onsi/ginkgo/v2"
-	"github.com/onsi/gomega"
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/clients/llamacpp"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
 	modeltypes "github.com/1backend/1backend/server/internal/services/model/types"
+	"github.com/flusflas/dipper"
+	"github.com/gorilla/mux"
+	"github.com/onsi/ginkgo/v2"
+	"github.com/onsi/gomega"
 	"go.uber.org/mock/gomock"
 )
 

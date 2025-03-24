@@ -26,14 +26,16 @@ import (
 	"unicode/utf16"
 	"unicode/utf8"
 
-	"github.com/docker/docker/client"
 	container "github.com/1backend/1backend/server/internal/services/container/types"
+	"github.com/docker/docker/client"
 	"github.com/pkg/errors"
 
 	"github.com/1backend/1backend/sdk/go/logger"
 )
 
-func (d *DockerBackend) DaemonInfo(container.DaemonInfoRequest) (*container.DaemonInfoResponse, error) {
+func (d *DockerBackend) DaemonInfo(
+	container.DaemonInfoRequest,
+) (*container.DaemonInfoResponse, error) {
 	d.mutex.Lock()
 	defer d.mutex.Unlock()
 

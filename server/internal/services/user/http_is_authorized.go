@@ -20,16 +20,20 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/gorilla/mux"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/gorilla/mux"
 
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 // @ID isAuthorized
 // @Summary Is Authorized
-// @Description Check if a user is authorized for a specific permission.
+// @Description Verify whether a user has a specific permission.
+// @Description Ideally, this endpoint should rarely be used, as the JWT token
+// @Description already includes all user roles. Caching the `Get Permissions by Role`
+// @Description responses allows services to determine user authorization
+// @Description without repeatedly calling this endpoint.
 // @Tags User Svc
 // @Accept json
 // @Produce json
@@ -82,8 +86,12 @@ func (s *UserService) IsAuthorized(
 	w.Write(bs)
 }
 
-func (s *UserService) isAuthorized(r *http.Request, permissionId string,
-	grantedSlugs, contactsGranted []string) (*user.User, error) {
+func (s *UserService) isAuthorized(
+	r *http.Request,
+	permissionId string,
+	grantedSlugs,
+	contactsGranted []string,
+) (*user.User, error) {
 	usr, err := s.getUserFromRequest(r)
 	if err != nil {
 		return nil, err

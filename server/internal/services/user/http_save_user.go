@@ -16,8 +16,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
+	"github.com/gorilla/mux"
 )
 
 // @ID saveUser

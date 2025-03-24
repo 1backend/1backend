@@ -14,11 +14,13 @@ package userservice
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"time"
 
+	"github.com/pkg/errors"
+
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
@@ -63,29 +65,36 @@ func (s *UserService) CreateOrganization(
 	}
 	defer r.Body.Close()
 
-	err = s.createOrganization(usr.Id, req.Id, req.Name, req.Slug)
+	org, token, err := s.createOrganization(usr.Id, req.Id, req.Name, req.Slug)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	bs, _ := json.Marshal(user.CreateOrganizationResponse{})
+	bs, _ := json.Marshal(user.CreateOrganizationResponse{
+		Organization: *org,
+		Token:        *token,
+	})
 	w.Write(bs)
 }
 
 func (s *UserService) createOrganization(
 	userId, orgId, name, slug string,
-) error {
+) (*user.Organization, *user.AuthToken, error) {
 	_, exists, err := s.organizationsStore.Query(
 		datastore.Equals(datastore.Field("slug"), slug),
 	).FindOne()
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 
 	if exists {
-		return errors.New("organization already exists")
+		return nil, nil, errors.New("organization already exists")
+	}
+
+	if orgId == "" {
+		orgId = sdk.Id("org")
 	}
 
 	org := &user.Organization{
@@ -101,7 +110,7 @@ func (s *UserService) createOrganization(
 		),
 	).Count()
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 
 	link := &user.OrganizationUserLink{
@@ -113,12 +122,12 @@ func (s *UserService) createOrganization(
 
 	err = s.organizationUserLinksStore.Create(link)
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 
 	err = s.organizationsStore.Create(org)
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 
 	err = s.addDynamicRoleToUser(
@@ -126,10 +135,33 @@ func (s *UserService) createOrganization(
 		fmt.Sprintf("user-svc:org:{%v}:admin", org.Id),
 	)
 	if err != nil {
-		return err
+		return nil, nil, err
 	}
 
-	return s.inactivateTokens(userId)
+	err = s.inactivateTokens(userId)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "error inactivating tokens")
+	}
+
+	userI, found, err := s.usersStore.Query(
+		datastore.Id(userId),
+	).FindOne()
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "error finding user by id")
+	}
+	if !found {
+		return nil, nil, errors.New("user not found by id")
+	}
+	u := userI.(*user.User)
+
+	token, err := s.generateAuthToken(u)
+
+	err = s.authTokensStore.Create(token)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "error creating token")
+	}
+
+	return org, token, nil
 }
 
 func (s *UserService) inactivateTokens(userId string) error {

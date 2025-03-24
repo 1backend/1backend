@@ -117,13 +117,13 @@ type Container struct {
 
 type Asset struct {
 	EnvVarKey string `json:"envVarKey" binding:"required"`
-	Url       string `json:"url" binding:"required"`
+	Url       string `json:"url"       binding:"required"`
 }
 
 type Model struct {
-	Id             string   `json:"id" binding:"required"`
-	PlatformId     string   `json:"platformId" binding:"required"`
-	Name           string   `json:"name" binding:"required"`
+	Id             string   `json:"id"                       binding:"required"`
+	PlatformId     string   `json:"platformId"               binding:"required"`
+	Name           string   `json:"name"                     binding:"required"`
 	Parameters     string   `json:"parameters,omitempty"`
 	Flavour        string   `json:"flavour,omitempty"`
 	Version        string   `json:"version,omitempty"`

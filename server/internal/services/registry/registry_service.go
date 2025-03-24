@@ -132,7 +132,7 @@ func (ns *RegistryService) Start() error {
 	if err != nil {
 		return err
 	}
-	ns.token = token
+	ns.token = token.Token
 
 	return ns.registerPermissions()
 }

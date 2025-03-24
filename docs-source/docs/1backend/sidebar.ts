@@ -570,15 +570,15 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
-          id: "1backend/add-user-to-organization",
-          label: "Add a User to an Organization",
-          className: "api-method post",
-        },
-        {
-          type: "doc",
           id: "1backend/remove-user-from-organization",
           label: "Remove a User from an Organization",
           className: "api-method delete",
+        },
+        {
+          type: "doc",
+          id: "1backend/add-user-to-organization",
+          label: "Add a User to an Organization",
+          className: "api-method put",
         },
         {
           type: "doc",
@@ -662,6 +662,12 @@ const sidebar: SidebarsConfig = {
           type: "doc",
           id: "1backend/save-user",
           label: "Save User",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend/add-role-to-user",
+          label: "Assign Role to User",
           className: "api-method put",
         },
         {

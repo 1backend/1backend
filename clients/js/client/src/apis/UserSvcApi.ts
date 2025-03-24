@@ -15,10 +15,10 @@
 
 import * as runtime from '../runtime';
 import type {
-  UserSvcAddUserToOrganizationRequest,
   UserSvcAssignPermissionsRequest,
   UserSvcChangePasswordRequest,
   UserSvcCreateOrganizationRequest,
+  UserSvcCreateOrganizationResponse,
   UserSvcCreateRoleRequest,
   UserSvcCreateRoleResponse,
   UserSvcCreateUserRequest,
@@ -45,14 +45,14 @@ import type {
   UserSvcSetRolePermissionsRequest,
 } from '../models/index';
 import {
-    UserSvcAddUserToOrganizationRequestFromJSON,
-    UserSvcAddUserToOrganizationRequestToJSON,
     UserSvcAssignPermissionsRequestFromJSON,
     UserSvcAssignPermissionsRequestToJSON,
     UserSvcChangePasswordRequestFromJSON,
     UserSvcChangePasswordRequestToJSON,
     UserSvcCreateOrganizationRequestFromJSON,
     UserSvcCreateOrganizationRequestToJSON,
+    UserSvcCreateOrganizationResponseFromJSON,
+    UserSvcCreateOrganizationResponseToJSON,
     UserSvcCreateRoleRequestFromJSON,
     UserSvcCreateRoleRequestToJSON,
     UserSvcCreateRoleResponseFromJSON,
@@ -103,9 +103,16 @@ import {
     UserSvcSetRolePermissionsRequestToJSON,
 } from '../models/index';
 
+export interface AddRoleToUserRequest {
+    userId: string;
+    roleId: string;
+    body?: object;
+}
+
 export interface AddUserToOrganizationRequest {
     organizationId: string;
-    body: UserSvcAddUserToOrganizationRequest;
+    userId: string;
+    body?: object;
 }
 
 export interface AssignPermissionsRequest {
@@ -201,21 +208,21 @@ export interface SetRolePermissionRequest {
 export class UserSvcApi extends runtime.BaseAPI {
 
     /**
-     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
-     * Add a User to an Organization
+     * Assign a role to a user. The caller can assign any roles it owns, typically those prefixed with the caller’s identifier (e.g., `my-service:admin`). One exception to this rule is dynamic organization roles: If the caller is an organization admin (e.g., has a role like \"user-svc:org:{%orgId}:admin\"), they can also assign such roles.
+     * Assign Role to User
      */
-    async addUserToOrganizationRaw(requestParameters: AddUserToOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['organizationId'] == null) {
+    async addRoleToUserRaw(requestParameters: AddRoleToUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
-                'organizationId',
-                'Required parameter "organizationId" was null or undefined when calling addUserToOrganization().'
+                'userId',
+                'Required parameter "userId" was null or undefined when calling addRoleToUser().'
             );
         }
 
-        if (requestParameters['body'] == null) {
+        if (requestParameters['roleId'] == null) {
             throw new runtime.RequiredError(
-                'body',
-                'Required parameter "body" was null or undefined when calling addUserToOrganization().'
+                'roleId',
+                'Required parameter "roleId" was null or undefined when calling addRoleToUser().'
             );
         }
 
@@ -230,11 +237,60 @@ export class UserSvcApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/user-svc/organization/{organizationId}/user`.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId']))),
-            method: 'POST',
+            path: `/user-svc/user/{userId}/role/{roleId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))).replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
+            method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: UserSvcAddUserToOrganizationRequestToJSON(requestParameters['body']),
+            body: requestParameters['body'] as any,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Assign a role to a user. The caller can assign any roles it owns, typically those prefixed with the caller’s identifier (e.g., `my-service:admin`). One exception to this rule is dynamic organization roles: If the caller is an organization admin (e.g., has a role like \"user-svc:org:{%orgId}:admin\"), they can also assign such roles.
+     * Assign Role to User
+     */
+    async addRoleToUser(requestParameters: AddRoleToUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+        const response = await this.addRoleToUserRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
+     * Add a User to an Organization
+     */
+    async addUserToOrganizationRaw(requestParameters: AddUserToOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters['organizationId'] == null) {
+            throw new runtime.RequiredError(
+                'organizationId',
+                'Required parameter "organizationId" was null or undefined when calling addUserToOrganization().'
+            );
+        }
+
+        if (requestParameters['userId'] == null) {
+            throw new runtime.RequiredError(
+                'userId',
+                'Required parameter "userId" was null or undefined when calling addUserToOrganization().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/user-svc/organization/{organizationId}/user/{userId}`.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId']))).replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['body'] as any,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -337,7 +393,7 @@ export class UserSvcApi extends runtime.BaseAPI {
      * Allows a logged-in user to create a new organization. The user initiating the request will be assigned the role of admin for that organization. The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the created organization. Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
      * Create an Organization
      */
-    async createOrganizationRaw(requestParameters: CreateOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async createOrganizationRaw(requestParameters: CreateOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcCreateOrganizationResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -363,14 +419,14 @@ export class UserSvcApi extends runtime.BaseAPI {
             body: UserSvcCreateOrganizationRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcCreateOrganizationResponseFromJSON(jsonValue));
     }
 
     /**
      * Allows a logged-in user to create a new organization. The user initiating the request will be assigned the role of admin for that organization. The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the created organization. Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
      * Create an Organization
      */
-    async createOrganization(requestParameters: CreateOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async createOrganization(requestParameters: CreateOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcCreateOrganizationResponse> {
         const response = await this.createOrganizationRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -672,7 +728,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Check if a user is authorized for a specific permission.
+     * Verify whether a user has a specific permission. Ideally, this endpoint should rarely be used, as the JWT token already includes all user roles. Caching the `Get Permissions by Role` responses allows services to determine user authorization without repeatedly calling this endpoint.
      * Is Authorized
      */
     async isAuthorizedRaw(requestParameters: IsAuthorizedRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcIsAuthorizedResponse>> {
@@ -705,7 +761,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Check if a user is authorized for a specific permission.
+     * Verify whether a user has a specific permission. Ideally, this endpoint should rarely be used, as the JWT token already includes all user roles. Caching the `Get Permissions by Role` responses allows services to determine user authorization without repeatedly calling this endpoint.
      * Is Authorized
      */
     async isAuthorized(requestParameters: IsAuthorizedRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcIsAuthorizedResponse> {

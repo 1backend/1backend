@@ -23,22 +23,22 @@ type Object struct {
 	// The authors field tracks which users or organizations created an entry, helping to prevent spam.
 	// If an organization ID is not provided, the currently active organization will
 	// be queried from the User Svc.
-	Authors []string `json:"authors" example:"[\"usr_12345\", \"org_67890\"]"`
+	Authors []string `json:"authors" example:"["usr_12345", "org_67890"]"`
 
 	// Readers is a list of user IDs and role IDs that can read the object.
 	// `_self` can be used to refer to the caller user's userId and
 	// `_org` can be used to refer to the user's currently active organization (if exists).
-	Readers []string `json:"readers,omitempty" example:"[\"usr_12345\", \"org_67890\"]"`
+	Readers []string `json:"readers,omitempty" example:"["usr_12345", "org_67890"]"`
 
 	// Writers is a list of user IDs and role IDs that can write the object.
 	// `_self` can be used to refer to the caller user's userId and
 	// `_org` can be used to refer to the user's currently active organization (if exists).
-	Writers []string `json:"writers,omitempty" example:"[\"usr_12345\", \"org_67890\"]"`
+	Writers []string `json:"writers,omitempty" example:"["usr_12345", "org_67890"]"`
 
 	// Deleters is a list of user IDs and role IDs that can delete the object.
 	// `_self` can be used to refer to the caller user's userId and
 	// `_org` can be used to refer to the user's currently active organization (if exists).
-	Deleters []string `json:"deleters,omitempty" example:"[\"usr_12345\", \"org_67890\"]"`
+	Deleters []string `json:"deleters,omitempty" example:"["usr_12345", "org_67890"]"`
 
 	Data map[string]interface{} `json:"data,omitempty" binding:"required"`
 
@@ -72,7 +72,7 @@ type CreateObjectFields struct {
 	// Authors is a list of user ID and organization ID who created the object.
 	// If an organization ID is not provided, the currently active organization will
 	// be queried from the User Svc.
-	Authors []string `json:"authors" example:"[\"usr_12345\", \"org_67890\"]"`
+	Authors []string `json:"authors" example:"["usr_12345", "org_67890"]"`
 
 	// Readers is a list of user IDs and role IDs that can read the object.
 	// `_self` can be used to refer to the caller user's userId and

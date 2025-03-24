@@ -75,7 +75,7 @@ func (fs *FirehoseService) Start() error {
 	if err != nil {
 		return err
 	}
-	fs.token = token
+	fs.token = token.Token
 
 	return fs.registerPermissions()
 }

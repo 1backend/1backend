@@ -3,11 +3,11 @@ package registryservice
 import (
 	"net/http"
 
-	"github.com/gorilla/mux"
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
+	"github.com/gorilla/mux"
 )
 
 // @ID deleteDefinition

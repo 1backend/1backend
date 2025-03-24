@@ -74,17 +74,17 @@ type Keep struct {
 
 type PortMapping struct {
 	Internal uint16 `json:"internal" binding:"required"`
-	Host     uint16 `json:"host" binding:"required"`
+	Host     uint16 `json:"host"     binding:"required"`
 }
 
 type Label struct {
-	Key   string `json:"key" binding:"required"`
+	Key   string `json:"key"   binding:"required"`
 	Value string `json:"value" binding:"required"`
 }
 
 type Asset struct {
 	EnvVarKey string `json:"envVarKey" binding:"required"`
-	Url       string `json:"url" binding:"required"`
+	Url       string `json:"url"       binding:"required"`
 }
 
 // Container represents a running container instance.
@@ -200,8 +200,8 @@ type GetContainerSummaryRequest struct {
 }
 
 type GetContainerSummaryResponse struct {
-	Status string `json:"status"  binding:"required"`
-	Logs   string `json:"logs"    binding:"required"`
+	Status string `json:"status" binding:"required"`
+	Logs   string `json:"logs"   binding:"required"`
 
 	// DEPRECATED. Summary contains both Status and Logs.
 	Summary string `json:"summary" binding:"required"`

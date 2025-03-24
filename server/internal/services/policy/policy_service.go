@@ -96,7 +96,7 @@ func (cs *PolicyService) Start() error {
 	if err != nil {
 		return err
 	}
-	cs.token = token
+	cs.token = token.Token
 
 	return cs.registerPermissions()
 }

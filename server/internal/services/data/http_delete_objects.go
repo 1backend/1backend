@@ -63,7 +63,7 @@ func (g *DataService) DeleteObjects(
 	}
 	defer r.Body.Close()
 
-	err = g.deleteObjects(req.Table, *isAuthRsp.User.Id, req.Filters)
+	err = g.deleteObjects(req.Table, isAuthRsp.User.Id, req.Filters)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

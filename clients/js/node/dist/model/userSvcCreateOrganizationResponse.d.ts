@@ -9,8 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export declare class UserSvcAddUserToOrganizationRequest {
-    'userId'?: string;
+import { UserSvcAuthToken } from './userSvcAuthToken';
+import { UserSvcOrganization } from './userSvcOrganization';
+export declare class UserSvcCreateOrganizationResponse {
+    'organization': UserSvcOrganization;
+    /**
+    * Due to the nature of JWT tokens, the token must be refreshed after creating an organization, as dynamic organization roles are embedded in it.
+    */
+    'token': UserSvcAuthToken;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

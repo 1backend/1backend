@@ -75,7 +75,7 @@ func (cs *ConfigService) Save(
 		return
 	}
 
-	err = cs.saveConfig(isAdmin, *isAuthRsp.User.Slug, *req.Config)
+	err = cs.saveConfig(isAdmin, isAuthRsp.User.Slug, *req.Config)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

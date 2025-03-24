@@ -52,7 +52,7 @@ func (c *Role) GetUpdatedAt() string {
 }
 
 type CreateRoleRequest struct {
-	Id            string   `json:"id" binding:"required"`
+	Id            string   `json:"id"            binding:"required"`
 	Name          string   `json:"name"`
 	Description   string   `json:"description"`
 	PermissionIds []string `json:"permissionIds"`

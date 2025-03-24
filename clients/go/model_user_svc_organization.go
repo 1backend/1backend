@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the UserSvcOrganization type satisfies the MappedNullable interface at compile time
@@ -22,20 +24,25 @@ var _ MappedNullable = &UserSvcOrganization{}
 type UserSvcOrganization struct {
 	CreatedAt *string `json:"createdAt,omitempty"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
-	Id *string `json:"id,omitempty"`
+	Id string `json:"id"`
 	// Full name of the organization
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// URL-friendly unique (inside the Singularon platform) identifier for the `organization`.
-	Slug *string `json:"slug,omitempty"`
+	Slug string `json:"slug"`
 	UpdatedAt *string `json:"updatedAt,omitempty"`
 }
+
+type _UserSvcOrganization UserSvcOrganization
 
 // NewUserSvcOrganization instantiates a new UserSvcOrganization object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcOrganization() *UserSvcOrganization {
+func NewUserSvcOrganization(id string, name string, slug string) *UserSvcOrganization {
 	this := UserSvcOrganization{}
+	this.Id = id
+	this.Name = name
+	this.Slug = slug
 	return &this
 }
 
@@ -111,100 +118,76 @@ func (o *UserSvcOrganization) SetDeletedAt(v string) {
 	o.DeletedAt = &v
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value
 func (o *UserSvcOrganization) GetId() string {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Id
+
+	return o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcOrganization) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Id, true
+	return &o.Id, true
 }
 
-// HasId returns a boolean if a field has been set.
-func (o *UserSvcOrganization) HasId() bool {
-	if o != nil && !IsNil(o.Id) {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
+// SetId sets field value
 func (o *UserSvcOrganization) SetId(v string) {
-	o.Id = &v
+	o.Id = v
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// GetName returns the Name field value
 func (o *UserSvcOrganization) GetName() string {
-	if o == nil || IsNil(o.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Name
+
+	return o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcOrganization) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Name, true
+	return &o.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *UserSvcOrganization) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
+// SetName sets field value
 func (o *UserSvcOrganization) SetName(v string) {
-	o.Name = &v
+	o.Name = v
 }
 
-// GetSlug returns the Slug field value if set, zero value otherwise.
+// GetSlug returns the Slug field value
 func (o *UserSvcOrganization) GetSlug() string {
-	if o == nil || IsNil(o.Slug) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Slug
+
+	return o.Slug
 }
 
-// GetSlugOk returns a tuple with the Slug field value if set, nil otherwise
+// GetSlugOk returns a tuple with the Slug field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcOrganization) GetSlugOk() (*string, bool) {
-	if o == nil || IsNil(o.Slug) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Slug, true
+	return &o.Slug, true
 }
 
-// HasSlug returns a boolean if a field has been set.
-func (o *UserSvcOrganization) HasSlug() bool {
-	if o != nil && !IsNil(o.Slug) {
-		return true
-	}
-
-	return false
-}
-
-// SetSlug gets a reference to the given string and assigns it to the Slug field.
+// SetSlug sets field value
 func (o *UserSvcOrganization) SetSlug(v string) {
-	o.Slug = &v
+	o.Slug = v
 }
 
 // GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
@@ -255,19 +238,52 @@ func (o UserSvcOrganization) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.DeletedAt) {
 		toSerialize["deletedAt"] = o.DeletedAt
 	}
-	if !IsNil(o.Id) {
-		toSerialize["id"] = o.Id
-	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !IsNil(o.Slug) {
-		toSerialize["slug"] = o.Slug
-	}
+	toSerialize["id"] = o.Id
+	toSerialize["name"] = o.Name
+	toSerialize["slug"] = o.Slug
 	if !IsNil(o.UpdatedAt) {
 		toSerialize["updatedAt"] = o.UpdatedAt
 	}
 	return toSerialize, nil
+}
+
+func (o *UserSvcOrganization) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"id",
+		"name",
+		"slug",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varUserSvcOrganization := _UserSvcOrganization{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varUserSvcOrganization)
+
+	if err != nil {
+		return err
+	}
+
+	*o = UserSvcOrganization(varUserSvcOrganization)
+
+	return err
 }
 
 type NullableUserSvcOrganization struct {

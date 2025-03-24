@@ -13,7 +13,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
 
-	clients "github.com/1backend/1backend/clients/go"
+	openapi "github.com/1backend/1backend/clients/go"
 )
 
 func TestRegistration(t *testing.T) {
@@ -35,7 +35,7 @@ func TestRegistration(t *testing.T) {
 
 	userSvc := options.ClientFactory.Client().UserSvcAPI
 
-	manyClients, err := test.MakeClients(options.ClientFactory, 1)
+	manyClients, _, err := test.MakeClients(options.ClientFactory, 1)
 
 	require.NoError(t, err)
 
@@ -49,7 +49,7 @@ func TestRegistration(t *testing.T) {
 
 	t.Run("user password change", func(t *testing.T) {
 		claim, err := options.Authorizer.ParseJWT(
-			*publicKeyRsp.PublicKey,
+			publicKeyRsp.PublicKey,
 			userToken,
 		)
 		require.NoError(t, err)
@@ -58,15 +58,15 @@ func TestRegistration(t *testing.T) {
 			Execute()
 		require.NoError(t, err)
 
-		require.Equal(t, "test-user-slug-0", *byTokenRsp.User.Slug)
+		require.Equal(t, "test-user-slug-0", byTokenRsp.User.Slug)
 		require.True(t, nil == byTokenRsp.User.PasswordHash)
 
-		require.Equal(t, &claim.UserId, byTokenRsp.User.Id)
+		require.Equal(t, claim.UserId, byTokenRsp.User.Id)
 
-		changePassReq := clients.UserSvcChangePasswordRequest{
-			Slug:            clients.PtrString("test-user-slug-0"),
-			CurrentPassword: clients.PtrString("testUserPassword0"),
-			NewPassword:     clients.PtrString("yo"),
+		changePassReq := openapi.UserSvcChangePasswordRequest{
+			Slug:            openapi.PtrString("test-user-slug-0"),
+			CurrentPassword: openapi.PtrString("testUserPassword0"),
+			NewPassword:     openapi.PtrString("yo"),
 		}
 		_, _, err = userSvc.ChangePassword(context.Background()).
 			Body(changePassReq).
@@ -79,8 +79,8 @@ func TestRegistration(t *testing.T) {
 		require.NoError(t, err)
 
 		// changing with wrong password should error
-		changePassReq.CurrentPassword = clients.PtrString("yoWRONG")
-		changePassReq.NewPassword = clients.PtrString("yo1")
+		changePassReq.CurrentPassword = openapi.PtrString("yoWRONG")
+		changePassReq.NewPassword = openapi.PtrString("yo1")
 
 		_, _, err = userClient.UserSvcAPI.ChangePassword(context.Background()).
 			Body(changePassReq).
@@ -105,7 +105,7 @@ func TestOrganization(t *testing.T) {
 	err = starterFunc()
 	require.NoError(t, err)
 
-	manyClients, err := test.MakeClients(options.ClientFactory, 3)
+	manyClients, _, err := test.MakeClients(options.ClientFactory, 3)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -127,10 +127,10 @@ func TestOrganization(t *testing.T) {
 	t.Run(
 		"claim contains new organization admin role after creating organization",
 		func(t *testing.T) {
-			createOrgReq := clients.UserSvcCreateOrganizationRequest{
-				Id:   clients.PtrString(orgId1),
-				Slug: clients.PtrString("test-org"),
-				Name: clients.PtrString("Test Org"),
+			createOrgReq := openapi.UserSvcCreateOrganizationRequest{
+				Id:   openapi.PtrString(orgId1),
+				Slug: "test-org",
+				Name: "Test Org",
 			}
 			_, _, err := userClient.UserSvcAPI.CreateOrganization(context.Background()).
 				Body(createOrgReq).
@@ -138,16 +138,16 @@ func TestOrganization(t *testing.T) {
 			require.NoError(t, err)
 
 			claim, err := options.Authorizer.ParseJWT(
-				*publicKeyRsp.PublicKey,
+				publicKeyRsp.PublicKey,
 				userToken,
 			)
 			require.NoError(t, err)
 			require.NotNil(t, claim)
 			require.Equal(t, 1, len(claim.RoleIds), claim.RoleIds)
 
-			loginReq := clients.UserSvcLoginRequest{
-				Slug:     clients.PtrString("test-user-slug-0"),
-				Password: clients.PtrString("testUserPassword0"),
+			loginReq := openapi.UserSvcLoginRequest{
+				Slug:     openapi.PtrString("test-user-slug-0"),
+				Password: openapi.PtrString("testUserPassword0"),
 			}
 			loginRsp, _, err := userClient.UserSvcAPI.Login(context.Background()).
 				Body(loginReq).
@@ -155,8 +155,8 @@ func TestOrganization(t *testing.T) {
 			require.NoError(t, err)
 
 			claim, err = options.Authorizer.ParseJWT(
-				*publicKeyRsp.PublicKey,
-				*loginRsp.Token.Token,
+				publicKeyRsp.PublicKey,
+				loginRsp.Token.Token,
 			)
 			require.NoError(t, err)
 			require.NotNil(t, claim)
@@ -174,7 +174,7 @@ func TestOrganization(t *testing.T) {
 			require.Equal(t, 1, len(tokenRsp.Organizations))
 			require.Equal(
 				t,
-				clients.PtrString(orgId1),
+				openapi.PtrString(orgId1),
 				tokenRsp.ActiveOrganizationId,
 			)
 		},
@@ -185,17 +185,17 @@ func TestOrganization(t *testing.T) {
 			Execute()
 		require.NoError(t, err)
 
-		addUserReq := clients.UserSvcAddUserToOrganizationRequest{
-			UserId: byTokenRsp.User.Id,
-		}
-		_, _, err = userClient.UserSvcAPI.AddUserToOrganization(context.Background(), orgId1).
-			Body(addUserReq).
+		_, _, err = userClient.UserSvcAPI.AddUserToOrganization(
+			context.Background(),
+			orgId1,
+			byTokenRsp.User.Id,
+		).
 			Execute()
 		require.NoError(t, err)
 
-		loginReq := clients.UserSvcLoginRequest{
-			Slug:     clients.PtrString("test-user-slug-1"),
-			Password: clients.PtrString("testUserPassword1"),
+		loginReq := openapi.UserSvcLoginRequest{
+			Slug:     openapi.PtrString("test-user-slug-1"),
+			Password: openapi.PtrString("testUserPassword1"),
 		}
 		// log in again and see the claim
 		loginRsp, _, err := otherClient.UserSvcAPI.Login(context.Background()).
@@ -204,8 +204,8 @@ func TestOrganization(t *testing.T) {
 		require.NoError(t, err)
 
 		claim, err := options.Authorizer.ParseJWT(
-			*publicKeyRsp.PublicKey,
-			*loginRsp.Token.Token,
+			publicKeyRsp.PublicKey,
+			loginRsp.Token.Token,
 		)
 
 		require.NoError(t, err)
@@ -217,12 +217,20 @@ func TestOrganization(t *testing.T) {
 			fmt.Sprintf("user-svc:org:{%v}:user", orgId1),
 		)
 
-		_, _, err = thirdClient.UserSvcAPI.RemoveUserFromOrganization(context.Background(), orgId1, *byTokenRsp.User.Id).
+		_, _, err = thirdClient.UserSvcAPI.RemoveUserFromOrganization(
+			context.Background(),
+			orgId1,
+			byTokenRsp.User.Id,
+		).
 			Execute()
 		// third user cannot remove the second from the org of the first
 		require.Error(t, err)
 
-		_, _, err = userClient.UserSvcAPI.RemoveUserFromOrganization(context.Background(), orgId1, *byTokenRsp.User.Id).
+		_, _, err = userClient.UserSvcAPI.RemoveUserFromOrganization(
+			context.Background(),
+			orgId1,
+			byTokenRsp.User.Id,
+		).
 			Execute()
 		require.NoError(t, err)
 	})

@@ -89,7 +89,7 @@ func (cs *ConfigService) Start() error {
 	if err != nil {
 		return err
 	}
-	cs.publicKey = *pk.PublicKey
+	cs.publicKey = pk.PublicKey
 
 	configStore, err := cs.datastoreFactory(
 		"configSvcConfig",
@@ -116,7 +116,7 @@ func (cs *ConfigService) Start() error {
 	if err != nil {
 		return err
 	}
-	cs.token = token
+	cs.token = token.Token
 
 	err = cs.registerPermissions()
 	if err != nil {

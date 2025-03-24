@@ -24,15 +24,35 @@ import (
 type UserSvcAPI interface {
 
 	/*
+	AddRoleToUser Assign Role to User
+
+	Assign a role to a user. The caller can assign any roles it owns,
+typically those prefixed with the caller’s identifier (e.g., `my-service:admin`).
+One exception to this rule is dynamic organization roles: If the caller is an organization admin
+(e.g., has a role like "user-svc:org:{%orgId}:admin"), they can also assign such roles.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param userId User ID
+	@param roleId Role ID
+	@return ApiAddRoleToUserRequest
+	*/
+	AddRoleToUser(ctx context.Context, userId string, roleId string) ApiAddRoleToUserRequest
+
+	// AddRoleToUserExecute executes the request
+	//  @return map[string]interface{}
+	AddRoleToUserExecute(r ApiAddRoleToUserRequest) (map[string]interface{}, *http.Response, error)
+
+	/*
 	AddUserToOrganization Add a User to an Organization
 
 	Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param organizationId Organization ID
+	@param userId User ID
 	@return ApiAddUserToOrganizationRequest
 	*/
-	AddUserToOrganization(ctx context.Context, organizationId string) ApiAddUserToOrganizationRequest
+	AddUserToOrganization(ctx context.Context, organizationId string, userId string) ApiAddUserToOrganizationRequest
 
 	// AddUserToOrganizationExecute executes the request
 	//  @return map[string]interface{}
@@ -81,8 +101,8 @@ Dynamic roles are generated based on specific user-resource associations (in thi
 	CreateOrganization(ctx context.Context) ApiCreateOrganizationRequest
 
 	// CreateOrganizationExecute executes the request
-	//  @return map[string]interface{}
-	CreateOrganizationExecute(r ApiCreateOrganizationRequest) (map[string]interface{}, *http.Response, error)
+	//  @return UserSvcCreateOrganizationResponse
+	CreateOrganizationExecute(r ApiCreateOrganizationRequest) (*UserSvcCreateOrganizationResponse, *http.Response, error)
 
 	/*
 	CreateRole Create a New Role
@@ -207,7 +227,11 @@ Requires the `user-svc:role:create` permission.
 	/*
 	IsAuthorized Is Authorized
 
-	Check if a user is authorized for a specific permission.
+	Verify whether a user has a specific permission.
+Ideally, this endpoint should rarely be used, as the JWT token
+already includes all user roles. Caching the `Get Permissions by Role`
+responses allows services to determine user authorization
+without repeatedly calling this endpoint.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param permissionId Permission ID
@@ -398,15 +422,181 @@ If the caller tries to add a permission it doesn't own to a role, `StatusBadRequ
 // UserSvcAPIService UserSvcAPI service
 type UserSvcAPIService service
 
+type ApiAddRoleToUserRequest struct {
+	ctx context.Context
+	ApiService UserSvcAPI
+	userId string
+	roleId string
+	body *map[string]interface{}
+}
+
+// Add Role to User Request
+func (r ApiAddRoleToUserRequest) Body(body map[string]interface{}) ApiAddRoleToUserRequest {
+	r.body = &body
+	return r
+}
+
+func (r ApiAddRoleToUserRequest) Execute() (map[string]interface{}, *http.Response, error) {
+	return r.ApiService.AddRoleToUserExecute(r)
+}
+
+/*
+AddRoleToUser Assign Role to User
+
+Assign a role to a user. The caller can assign any roles it owns,
+typically those prefixed with the caller’s identifier (e.g., `my-service:admin`).
+One exception to this rule is dynamic organization roles: If the caller is an organization admin
+(e.g., has a role like "user-svc:org:{%orgId}:admin"), they can also assign such roles.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param userId User ID
+ @param roleId Role ID
+ @return ApiAddRoleToUserRequest
+*/
+func (a *UserSvcAPIService) AddRoleToUser(ctx context.Context, userId string, roleId string) ApiAddRoleToUserRequest {
+	return ApiAddRoleToUserRequest{
+		ApiService: a,
+		ctx: ctx,
+		userId: userId,
+		roleId: roleId,
+	}
+}
+
+// Execute executes the request
+//  @return map[string]interface{}
+func (a *UserSvcAPIService) AddRoleToUserExecute(r ApiAddRoleToUserRequest) (map[string]interface{}, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPut
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  map[string]interface{}
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.AddRoleToUser")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/user-svc/user/{userId}/role/{roleId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"userId"+"}", url.PathEscape(parameterValueToString(r.userId, "userId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"roleId"+"}", url.PathEscape(parameterValueToString(r.roleId, "roleId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.body
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["BearerAuth"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 500 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiAddUserToOrganizationRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
 	organizationId string
-	body *UserSvcAddUserToOrganizationRequest
+	userId string
+	body *map[string]interface{}
 }
 
 // Add User to Organization Request
-func (r ApiAddUserToOrganizationRequest) Body(body UserSvcAddUserToOrganizationRequest) ApiAddUserToOrganizationRequest {
+func (r ApiAddUserToOrganizationRequest) Body(body map[string]interface{}) ApiAddUserToOrganizationRequest {
 	r.body = &body
 	return r
 }
@@ -422,13 +612,15 @@ Allows an authorized user to add another user to a specific organization. The us
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param organizationId Organization ID
+ @param userId User ID
  @return ApiAddUserToOrganizationRequest
 */
-func (a *UserSvcAPIService) AddUserToOrganization(ctx context.Context, organizationId string) ApiAddUserToOrganizationRequest {
+func (a *UserSvcAPIService) AddUserToOrganization(ctx context.Context, organizationId string, userId string) ApiAddUserToOrganizationRequest {
 	return ApiAddUserToOrganizationRequest{
 		ApiService: a,
 		ctx: ctx,
 		organizationId: organizationId,
+		userId: userId,
 	}
 }
 
@@ -436,7 +628,7 @@ func (a *UserSvcAPIService) AddUserToOrganization(ctx context.Context, organizat
 //  @return map[string]interface{}
 func (a *UserSvcAPIService) AddUserToOrganizationExecute(r ApiAddUserToOrganizationRequest) (map[string]interface{}, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPost
+		localVarHTTPMethod   = http.MethodPut
 		localVarPostBody     interface{}
 		formFiles            []formFile
 		localVarReturnValue  map[string]interface{}
@@ -447,15 +639,13 @@ func (a *UserSvcAPIService) AddUserToOrganizationExecute(r ApiAddUserToOrganizat
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/user-svc/organization/{organizationId}/user"
+	localVarPath := localBasePath + "/user-svc/organization/{organizationId}/user/{userId}"
 	localVarPath = strings.Replace(localVarPath, "{"+"organizationId"+"}", url.PathEscape(parameterValueToString(r.organizationId, "organizationId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"userId"+"}", url.PathEscape(parameterValueToString(r.userId, "userId")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/json"}
@@ -898,7 +1088,7 @@ func (r ApiCreateOrganizationRequest) Body(body UserSvcCreateOrganizationRequest
 	return r
 }
 
-func (r ApiCreateOrganizationRequest) Execute() (map[string]interface{}, *http.Response, error) {
+func (r ApiCreateOrganizationRequest) Execute() (*UserSvcCreateOrganizationResponse, *http.Response, error) {
 	return r.ApiService.CreateOrganizationExecute(r)
 }
 
@@ -920,13 +1110,13 @@ func (a *UserSvcAPIService) CreateOrganization(ctx context.Context) ApiCreateOrg
 }
 
 // Execute executes the request
-//  @return map[string]interface{}
-func (a *UserSvcAPIService) CreateOrganizationExecute(r ApiCreateOrganizationRequest) (map[string]interface{}, *http.Response, error) {
+//  @return UserSvcCreateOrganizationResponse
+func (a *UserSvcAPIService) CreateOrganizationExecute(r ApiCreateOrganizationRequest) (*UserSvcCreateOrganizationResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  map[string]interface{}
+		localVarReturnValue  *UserSvcCreateOrganizationResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.CreateOrganization")
@@ -2228,7 +2418,11 @@ func (r ApiIsAuthorizedRequest) Execute() (*UserSvcIsAuthorizedResponse, *http.R
 /*
 IsAuthorized Is Authorized
 
-Check if a user is authorized for a specific permission.
+Verify whether a user has a specific permission.
+Ideally, this endpoint should rarely be used, as the JWT token
+already includes all user roles. Caching the `Get Permissions by Role`
+responses allows services to determine user authorization
+without repeatedly calling this endpoint.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param permissionId Permission ID
@@ -2911,7 +3105,7 @@ type ApiRemoveUserFromOrganizationRequest struct {
 	body *map[string]interface{}
 }
 
-// Add User to Organization Request
+// Remove User From Organization Request
 func (r ApiRemoveUserFromOrganizationRequest) Body(body map[string]interface{}) ApiRemoveUserFromOrganizationRequest {
 	r.body = &body
 	return r

@@ -182,7 +182,7 @@ func (cs *ProxyService) Start() error {
 	if err != nil {
 		return err
 	}
-	cs.publicKey = *pk.PublicKey
+	cs.publicKey = pk.PublicKey
 
 	client := cs.clientFactory.Client()
 
@@ -195,7 +195,7 @@ func (cs *ProxyService) Start() error {
 	if err != nil {
 		return err
 	}
-	cs.token = token
+	cs.token = token.Token
 
 	return nil
 }

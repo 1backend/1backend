@@ -15,6 +15,10 @@
  * Check if a given object implements the UserSvcCreateOrganizationRequest interface.
  */
 export function instanceOfUserSvcCreateOrganizationRequest(value) {
+    if (!('name' in value) || value['name'] === undefined)
+        return false;
+    if (!('slug' in value) || value['slug'] === undefined)
+        return false;
     return true;
 }
 export function UserSvcCreateOrganizationRequestFromJSON(json) {
@@ -26,8 +30,8 @@ export function UserSvcCreateOrganizationRequestFromJSONTyped(json, ignoreDiscri
     }
     return {
         'id': json['id'] == null ? undefined : json['id'],
-        'name': json['name'] == null ? undefined : json['name'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
+        'name': json['name'],
+        'slug': json['slug'],
     };
 }
 export function UserSvcCreateOrganizationRequestToJSON(json) {

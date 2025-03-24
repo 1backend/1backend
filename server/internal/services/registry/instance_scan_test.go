@@ -8,13 +8,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/gorilla/mux"
-	"github.com/onsi/ginkgo/v2"
-	"github.com/onsi/gomega"
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
+	"github.com/gorilla/mux"
+	"github.com/onsi/ginkgo/v2"
+	"github.com/onsi/gomega"
 	"go.uber.org/mock/gomock"
 )
 

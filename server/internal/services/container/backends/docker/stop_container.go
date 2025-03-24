@@ -15,8 +15,8 @@ package dockerbackend
 import (
 	"context"
 
-	dockercontainer "github.com/docker/docker/api/types/container"
 	container "github.com/1backend/1backend/server/internal/services/container/types"
+	dockercontainer "github.com/docker/docker/api/types/container"
 )
 
 func (dm *DockerBackend) StopContainer(
@@ -27,5 +27,9 @@ func (dm *DockerBackend) StopContainer(
 		stopID = req.Name
 	}
 
-	return &container.StopContainerResponse{}, dm.client.ContainerStop(context.Background(), stopID, dockercontainer.StopOptions{})
+	return &container.StopContainerResponse{}, dm.client.ContainerStop(
+		context.Background(),
+		stopID,
+		dockercontainer.StopOptions{},
+	)
 }

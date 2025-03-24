@@ -46,7 +46,7 @@ func (s Definition) GetId() string {
 
 type PortMapping struct {
 	Internal uint16 `json:"internal" binding:"required"`
-	Host     uint16 `json:"host" binding:"required"`
+	Host     uint16 `json:"host"     binding:"required"`
 }
 
 // EnvVar represents an environment variable inside the container.

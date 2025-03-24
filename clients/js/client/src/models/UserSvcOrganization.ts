@@ -36,19 +36,19 @@ export interface UserSvcOrganization {
      * @type {string}
      * @memberof UserSvcOrganization
      */
-    id?: string;
+    id: string;
     /**
      * Full name of the organization
      * @type {string}
      * @memberof UserSvcOrganization
      */
-    name?: string;
+    name: string;
     /**
      * URL-friendly unique (inside the Singularon platform) identifier for the `organization`.
      * @type {string}
      * @memberof UserSvcOrganization
      */
-    slug?: string;
+    slug: string;
     /**
      * 
      * @type {string}
@@ -61,6 +61,9 @@ export interface UserSvcOrganization {
  * Check if a given object implements the UserSvcOrganization interface.
  */
 export function instanceOfUserSvcOrganization(value: object): value is UserSvcOrganization {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('slug' in value) || value['slug'] === undefined) return false;
     return true;
 }
 
@@ -76,9 +79,9 @@ export function UserSvcOrganizationFromJSONTyped(json: any, ignoreDiscriminator:
         
         'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'name': json['name'] == null ? undefined : json['name'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
+        'id': json['id'],
+        'name': json['name'],
+        'slug': json['slug'],
         'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
     };
 }

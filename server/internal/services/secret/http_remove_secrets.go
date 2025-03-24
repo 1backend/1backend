@@ -75,7 +75,7 @@ func (cs *SecretService) RemoveSecrets(
 		r.Context(),
 		req,
 		isAdmin,
-		*isAuthRsp.User.Slug,
+		isAuthRsp.User.Slug,
 	)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

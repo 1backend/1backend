@@ -20,7 +20,7 @@ export class UserSvcUser {
     'contacts'?: Array<UserSvcContact>;
     'createdAt'?: string;
     'deletedAt'?: string;
-    'id'?: string;
+    'id': string;
     /**
     * Full name of the organization.
     */
@@ -29,7 +29,7 @@ export class UserSvcUser {
     /**
     * URL-friendly unique (inside the Singularon platform) identifier for the `user`.
     */
-    'slug'?: string;
+    'slug': string;
     'updatedAt'?: string;
 
     static discriminator: string | undefined = undefined;

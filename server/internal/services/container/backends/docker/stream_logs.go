@@ -50,7 +50,13 @@ func StartDockerLogListener(cli *client.Client, la *logaccumulator.LogAccumulato
 }
 
 // Stream logs from containers
-func streamLogs(cli *client.Client, la *logaccumulator.LogAccumulator, containerID string, mu *sync.Mutex, activeContainers map[string]bool) {
+func streamLogs(
+	cli *client.Client,
+	la *logaccumulator.LogAccumulator,
+	containerID string,
+	mu *sync.Mutex,
+	activeContainers map[string]bool,
+) {
 	mu.Lock()
 	if activeContainers[containerID] {
 		mu.Unlock()

@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the UserSvcCreateOrganizationRequest type satisfies the MappedNullable interface at compile time
@@ -22,17 +24,21 @@ var _ MappedNullable = &UserSvcCreateOrganizationRequest{}
 type UserSvcCreateOrganizationRequest struct {
 	Id *string `json:"id,omitempty"`
 	// Full name of the organization.
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 	// URL-friendly unique (inside the Singularon platform) identifier for the `organization`.
-	Slug *string `json:"slug,omitempty"`
+	Slug string `json:"slug"`
 }
+
+type _UserSvcCreateOrganizationRequest UserSvcCreateOrganizationRequest
 
 // NewUserSvcCreateOrganizationRequest instantiates a new UserSvcCreateOrganizationRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcCreateOrganizationRequest() *UserSvcCreateOrganizationRequest {
+func NewUserSvcCreateOrganizationRequest(name string, slug string) *UserSvcCreateOrganizationRequest {
 	this := UserSvcCreateOrganizationRequest{}
+	this.Name = name
+	this.Slug = slug
 	return &this
 }
 
@@ -76,68 +82,52 @@ func (o *UserSvcCreateOrganizationRequest) SetId(v string) {
 	o.Id = &v
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// GetName returns the Name field value
 func (o *UserSvcCreateOrganizationRequest) GetName() string {
-	if o == nil || IsNil(o.Name) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Name
+
+	return o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcCreateOrganizationRequest) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Name, true
+	return &o.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *UserSvcCreateOrganizationRequest) HasName() bool {
-	if o != nil && !IsNil(o.Name) {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
+// SetName sets field value
 func (o *UserSvcCreateOrganizationRequest) SetName(v string) {
-	o.Name = &v
+	o.Name = v
 }
 
-// GetSlug returns the Slug field value if set, zero value otherwise.
+// GetSlug returns the Slug field value
 func (o *UserSvcCreateOrganizationRequest) GetSlug() string {
-	if o == nil || IsNil(o.Slug) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Slug
+
+	return o.Slug
 }
 
-// GetSlugOk returns a tuple with the Slug field value if set, nil otherwise
+// GetSlugOk returns a tuple with the Slug field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcCreateOrganizationRequest) GetSlugOk() (*string, bool) {
-	if o == nil || IsNil(o.Slug) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Slug, true
+	return &o.Slug, true
 }
 
-// HasSlug returns a boolean if a field has been set.
-func (o *UserSvcCreateOrganizationRequest) HasSlug() bool {
-	if o != nil && !IsNil(o.Slug) {
-		return true
-	}
-
-	return false
-}
-
-// SetSlug gets a reference to the given string and assigns it to the Slug field.
+// SetSlug sets field value
 func (o *UserSvcCreateOrganizationRequest) SetSlug(v string) {
-	o.Slug = &v
+	o.Slug = v
 }
 
 func (o UserSvcCreateOrganizationRequest) MarshalJSON() ([]byte, error) {
@@ -153,13 +143,47 @@ func (o UserSvcCreateOrganizationRequest) ToMap() (map[string]interface{}, error
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}
-	if !IsNil(o.Name) {
-		toSerialize["name"] = o.Name
-	}
-	if !IsNil(o.Slug) {
-		toSerialize["slug"] = o.Slug
-	}
+	toSerialize["name"] = o.Name
+	toSerialize["slug"] = o.Slug
 	return toSerialize, nil
+}
+
+func (o *UserSvcCreateOrganizationRequest) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"name",
+		"slug",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varUserSvcCreateOrganizationRequest := _UserSvcCreateOrganizationRequest{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varUserSvcCreateOrganizationRequest)
+
+	if err != nil {
+		return err
+	}
+
+	*o = UserSvcCreateOrganizationRequest(varUserSvcCreateOrganizationRequest)
+
+	return err
 }
 
 type NullableUserSvcCreateOrganizationRequest struct {

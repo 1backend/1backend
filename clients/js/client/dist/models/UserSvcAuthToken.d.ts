@@ -48,7 +48,7 @@ export interface UserSvcAuthToken {
      * @type {string}
      * @memberof UserSvcAuthToken
      */
-    token?: string;
+    token: string;
     /**
      *
      * @type {string}
@@ -60,7 +60,7 @@ export interface UserSvcAuthToken {
      * @type {string}
      * @memberof UserSvcAuthToken
      */
-    userId?: string;
+    userId: string;
 }
 /**
  * Check if a given object implements the UserSvcAuthToken interface.

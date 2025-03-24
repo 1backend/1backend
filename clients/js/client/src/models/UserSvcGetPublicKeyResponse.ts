@@ -24,13 +24,14 @@ export interface UserSvcGetPublicKeyResponse {
      * @type {string}
      * @memberof UserSvcGetPublicKeyResponse
      */
-    publicKey?: string;
+    publicKey: string;
 }
 
 /**
  * Check if a given object implements the UserSvcGetPublicKeyResponse interface.
  */
 export function instanceOfUserSvcGetPublicKeyResponse(value: object): value is UserSvcGetPublicKeyResponse {
+    if (!('publicKey' in value) || value['publicKey'] === undefined) return false;
     return true;
 }
 
@@ -44,7 +45,7 @@ export function UserSvcGetPublicKeyResponseFromJSONTyped(json: any, ignoreDiscri
     }
     return {
         
-        'publicKey': json['publicKey'] == null ? undefined : json['publicKey'],
+        'publicKey': json['publicKey'],
     };
 }
 

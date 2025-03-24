@@ -86,7 +86,7 @@ func (ns *DeployService) Start() error {
 		return err
 	}
 
-	ns.token = token
+	ns.token = token.Token
 
 	go ns.loop(ns.triggerOnly)
 
