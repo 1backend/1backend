@@ -610,10 +610,10 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		userService.CreateOrganization(w, r)
 	})).
 		Methods("OPTIONS", "POST")
-	router.HandleFunc("/user-svc/organization/{organizationId}/user", appl(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/organization/{organizationId}/user/{userId}", appl(func(w http.ResponseWriter, r *http.Request) {
 		userService.AddUserToOrganization(w, r)
 	})).
-		Methods("OPTIONS", "POST")
+		Methods("OPTIONS", "PUT")
 	router.HandleFunc("/user-svc/organization/{organizationId}/user/{userId}", appl(func(w http.ResponseWriter, r *http.Request) {
 		userService.RemoveUserFromOrganization(w, r)
 	})).
@@ -648,6 +648,10 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		Methods("OPTIONS", "GET")
 	router.HandleFunc("/user-svc/role/{roleId}/permissions", appl(func(w http.ResponseWriter, r *http.Request) {
 		userService.SetRolePermissions(w, r)
+	})).
+		Methods("OPTIONS", "PUT")
+	router.HandleFunc("/user-svc/user/{userId}/role/{roleId}", appl(func(w http.ResponseWriter, r *http.Request) {
+		userService.AddRoleToUser(w, r)
 	})).
 		Methods("OPTIONS", "PUT")
 	router.HandleFunc("/user-svc/permissions", appl(func(w http.ResponseWriter, r *http.Request) {

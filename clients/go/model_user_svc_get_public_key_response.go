@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the UserSvcGetPublicKeyResponse type satisfies the MappedNullable interface at compile time
@@ -20,15 +22,18 @@ var _ MappedNullable = &UserSvcGetPublicKeyResponse{}
 
 // UserSvcGetPublicKeyResponse struct for UserSvcGetPublicKeyResponse
 type UserSvcGetPublicKeyResponse struct {
-	PublicKey *string `json:"publicKey,omitempty"`
+	PublicKey string `json:"publicKey"`
 }
+
+type _UserSvcGetPublicKeyResponse UserSvcGetPublicKeyResponse
 
 // NewUserSvcGetPublicKeyResponse instantiates a new UserSvcGetPublicKeyResponse object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcGetPublicKeyResponse() *UserSvcGetPublicKeyResponse {
+func NewUserSvcGetPublicKeyResponse(publicKey string) *UserSvcGetPublicKeyResponse {
 	this := UserSvcGetPublicKeyResponse{}
+	this.PublicKey = publicKey
 	return &this
 }
 
@@ -40,36 +45,28 @@ func NewUserSvcGetPublicKeyResponseWithDefaults() *UserSvcGetPublicKeyResponse {
 	return &this
 }
 
-// GetPublicKey returns the PublicKey field value if set, zero value otherwise.
+// GetPublicKey returns the PublicKey field value
 func (o *UserSvcGetPublicKeyResponse) GetPublicKey() string {
-	if o == nil || IsNil(o.PublicKey) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.PublicKey
+
+	return o.PublicKey
 }
 
-// GetPublicKeyOk returns a tuple with the PublicKey field value if set, nil otherwise
+// GetPublicKeyOk returns a tuple with the PublicKey field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcGetPublicKeyResponse) GetPublicKeyOk() (*string, bool) {
-	if o == nil || IsNil(o.PublicKey) {
+	if o == nil {
 		return nil, false
 	}
-	return o.PublicKey, true
+	return &o.PublicKey, true
 }
 
-// HasPublicKey returns a boolean if a field has been set.
-func (o *UserSvcGetPublicKeyResponse) HasPublicKey() bool {
-	if o != nil && !IsNil(o.PublicKey) {
-		return true
-	}
-
-	return false
-}
-
-// SetPublicKey gets a reference to the given string and assigns it to the PublicKey field.
+// SetPublicKey sets field value
 func (o *UserSvcGetPublicKeyResponse) SetPublicKey(v string) {
-	o.PublicKey = &v
+	o.PublicKey = v
 }
 
 func (o UserSvcGetPublicKeyResponse) MarshalJSON() ([]byte, error) {
@@ -82,10 +79,45 @@ func (o UserSvcGetPublicKeyResponse) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcGetPublicKeyResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.PublicKey) {
-		toSerialize["publicKey"] = o.PublicKey
-	}
+	toSerialize["publicKey"] = o.PublicKey
 	return toSerialize, nil
+}
+
+func (o *UserSvcGetPublicKeyResponse) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"publicKey",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varUserSvcGetPublicKeyResponse := _UserSvcGetPublicKeyResponse{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varUserSvcGetPublicKeyResponse)
+
+	if err != nil {
+		return err
+	}
+
+	*o = UserSvcGetPublicKeyResponse(varUserSvcGetPublicKeyResponse)
+
+	return err
 }
 
 type NullableUserSvcGetPublicKeyResponse struct {

@@ -37,16 +37,16 @@ func (o *OrganizationUserLink) GetId() string {
 }
 
 type Organization struct {
-	Id        string     `json:"id,omitempty"`
+	Id        string     `json:"id" binding:"required"`
 	CreatedAt time.Time  `json:"createdAt,omitempty"`
 	UpdatedAt time.Time  `json:"updatedAt,omitempty"`
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`
 
 	// Full name of the organization
-	Name string `json:"name,omitempty" example:"Acme Corporation"`
+	Name string `json:"name" example:"Acme Corporation" binding:"required"`
 
 	// URL-friendly unique (inside the Singularon platform) identifier for the `organization`.
-	Slug string `json:"slug,omitempty" example:"acme-corporation"`
+	Slug string `json:"slug" example:"acme-corporation" binding:"required"`
 }
 
 func (o *Organization) GetId() string {
@@ -54,19 +54,24 @@ func (o *Organization) GetId() string {
 }
 
 type CreateOrganizationRequest struct {
-	Id string `json:"id,omitempty"`
+	Id string `json:"id"`
 
 	// Full name of the organization.
-	Name string `json:"name,omitempty"`
+	Name string `json:"name" binding:"required"`
 
 	// URL-friendly unique (inside the Singularon platform) identifier for the `organization`.
-	Slug string `json:"slug,omitempty"`
+	Slug string `json:"slug" binding:"required"`
 }
 
-type CreateOrganizationResponse struct{}
+type CreateOrganizationResponse struct {
+	Organization Organization `json:"organization" binding:"required"`
+
+	// Due to the nature of JWT tokens, the token must be refreshed after
+	// creating an organization, as dynamic organization roles are embedded in it.
+	Token AuthToken `json:"token" binding:"required"`
+}
 
 type AddUserToOrganizationRequest struct {
-	UserId string `json:"userId,omitempty"`
 }
 
 type AddUserToOrganizationResponse struct {

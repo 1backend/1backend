@@ -36,7 +36,7 @@ func TestCreateRole(t *testing.T) {
 		"Some name",
 	)
 	require.NoError(t, err)
-	userClient := options.ClientFactory.Client(sdk.WithToken(token))
+	userClient := options.ClientFactory.Client(sdk.WithToken(token.Token))
 
 	ctx := context.Background()
 

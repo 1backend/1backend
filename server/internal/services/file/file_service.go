@@ -118,7 +118,7 @@ func (dm *FileService) Start() error {
 	if err != nil {
 		return err
 	}
-	dm.token = token
+	dm.token = token.Token
 
 	err = dm.registerPermissions()
 	if err != nil {

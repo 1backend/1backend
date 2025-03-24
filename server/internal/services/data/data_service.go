@@ -78,7 +78,7 @@ func (g *DataService) Start() error {
 	if err != nil {
 		return err
 	}
-	g.publicKey = *pk.PublicKey
+	g.publicKey = pk.PublicKey
 
 	token, err := sdk.RegisterServiceAccount(
 		g.clientFactory.Client().UserSvcAPI,
@@ -89,7 +89,7 @@ func (g *DataService) Start() error {
 	if err != nil {
 		return err
 	}
-	g.token = token
+	g.token = token.Token
 
 	return g.registerPermissions()
 }

@@ -15,6 +15,7 @@ package userservice
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
@@ -32,6 +33,21 @@ func (s *UserService) addRoleToUser(userId string, roleId string) error {
 		return errors.New("user not found")
 	}
 	user := userI.(*usertypes.User)
+
+	q = s.rolesStore.Query(
+		datastore.Id(roleId),
+	)
+
+	// Only check static roles
+	if !strings.Contains(roleId, ":{") {
+		roleIs, err := q.Find()
+		if err != nil {
+			return nil
+		}
+		if len(roleIs) == 0 {
+			return errors.New("role not found")
+		}
+	}
 
 	roleLinks, err := s.userRoleLinksStore.Query(
 		datastore.Equals(datastore.Field("userId"), userId),

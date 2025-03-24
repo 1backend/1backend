@@ -82,7 +82,7 @@ func (cs *SecretService) SaveSecrets(
 		r.Context(),
 		req.Secrets,
 		isAdmin,
-		*isAuthRsp.User.Slug,
+		isAuthRsp.User.Slug,
 	)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

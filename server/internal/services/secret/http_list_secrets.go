@@ -68,7 +68,7 @@ func (cs *SecretService) ListSecrets(
 		return
 	}
 
-	ss, err := cs.getSecrets(req, isAdmin, *isAuthRsp.User.Slug)
+	ss, err := cs.getSecrets(req, isAdmin, isAuthRsp.User.Slug)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

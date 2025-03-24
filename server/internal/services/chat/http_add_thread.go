@@ -75,7 +75,7 @@ func (a *ChatService) AddThread(
 		return
 	}
 
-	req.Thread.UserIds = append(req.Thread.UserIds, *isAuthRsp.User.Id)
+	req.Thread.UserIds = append(req.Thread.UserIds, isAuthRsp.User.Id)
 
 	thread, err := a.addThread(r.Context(), req.Thread)
 	if err != nil {

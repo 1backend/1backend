@@ -92,7 +92,7 @@ func (p *PromptService) ListPrompts(
 	}
 
 	for i := range prompts {
-		if prompts[i].UserId != *isAuthRsp.User.Id {
+		if prompts[i].UserId != isAuthRsp.User.Id {
 			// do not let users see other peoples promtps,
 			// not even if they are admins
 			// eg. imagine a sysadmin looking at the CEO's prompt

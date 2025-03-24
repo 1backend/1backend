@@ -114,7 +114,7 @@ func (ds *ContainerService) Start() error {
 	if err != nil {
 		return err
 	}
-	ds.token = token
+	ds.token = token.Token
 
 	backend, err := dockerbackend.NewDockerBackend(
 		ds.volumeName,

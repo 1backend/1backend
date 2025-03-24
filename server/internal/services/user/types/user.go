@@ -27,7 +27,7 @@ type GetUsersOptions struct {
 }
 
 type User struct {
-	Id        string    `json:"id,omitempty"`
+	Id        string    `json:"id" binding:"required"`
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
 
@@ -37,7 +37,7 @@ type User struct {
 	Name string `json:"name,omitempty" example:"Jane Doe"`
 
 	// URL-friendly unique (inside the Singularon platform) identifier for the `user`.
-	Slug string `json:"slug,omitempty" example:"jane-doe"`
+	Slug string `json:"slug" example:"jane-doe" binding:"required"`
 
 	// Contacts are used for login and identification purposes.
 	Contacts []Contact `json:"contacts,omitempty"`

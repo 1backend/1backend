@@ -1,57 +1,113 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
 package userservice_test
 
 import (
+	"context"
+	"fmt"
+	"net/http/httptest"
 	"testing"
 
-	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/stretchr/testify/require"
+
+	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/test"
+	"github.com/1backend/1backend/server/internal/di"
+
+	openapi "github.com/1backend/1backend/clients/go"
 )
 
-func TestOwnsRole(t *testing.T) {
-	t.Run("prefixed slug user owns role", func(t *testing.T) {
-		owns := sdk.OwnsRole(&sdk.Claims{
-			Slug: "user-svc",
-		}, "user-svc:admin")
+func TestAssignRoleToUser(t *testing.T) {
+	hs := &di.HandlerSwitcher{}
+	server := httptest.NewServer(hs)
+	defer server.Close()
 
-		require.Equal(t, true, owns)
+	options := &di.Options{
+		Test: true,
+		Url:  server.URL,
+	}
+	universe, starterFunc, err := di.BigBang(options)
+	require.NoError(t, err)
+
+	hs.UpdateHandler(universe)
+
+	err = starterFunc()
+	require.NoError(t, err)
+
+	manyClients, tokens, err := test.MakeClients(options.ClientFactory, 2)
+	require.NoError(t, err)
+
+	userClient := manyClients[0]
+	//userToken := sdk.TokenFromClient(userClient)
+
+	//otherClient := manyClients[1]
+	//otherToken := sdk.TokenFromClient(otherClient)
+
+	t.Run("user creates role", func(t *testing.T) {
+		_, _, err := userClient.UserSvcAPI.CreateRole(context.Background()).
+			Body(openapi.UserSvcCreateRoleRequest{
+				Id: "test-user-slug-0:custom-role",
+			}).Execute()
+
+		require.NoError(t, err)
 	})
 
-	t.Run("org user does not own org user role", func(t *testing.T) {
-		owns := sdk.OwnsRole(&sdk.Claims{
-			RoleIds: []string{"user-svc:org:{abc}:user"},
-			Slug:    "some-svc",
-		}, "user-svc:org:{abc}:user")
+	t.Run("nonexistent role", func(t *testing.T) {
+		_, _, err := userClient.UserSvcAPI.AddRoleToUser(
+			context.Background(),
+			tokens[1].UserId,
+			"test-user-slug-0:custom-role-nonexistent",
+		).Execute()
 
-		require.Equal(t, false, owns)
+		require.Error(t, err)
 	})
 
-	t.Run("org admin owns org user role", func(t *testing.T) {
-		owns := sdk.OwnsRole(&sdk.Claims{
-			RoleIds: []string{"user-svc:org:{abc}:admin"},
-			Slug:    "some-svc",
-		}, "user-svc:org:{abc}:user")
+	t.Run("assign role", func(t *testing.T) {
+		_, _, err := userClient.UserSvcAPI.AddRoleToUser(
+			context.Background(),
+			tokens[1].UserId,
+			"test-user-slug-0:custom-role",
+		).Execute()
 
-		require.Equal(t, true, owns)
+		require.NoError(t, err)
 	})
 
-	t.Run("test for prefix logic error", func(t *testing.T) {
-		owns := sdk.OwnsRole(&sdk.Claims{
-			RoleIds: []string{"user-svc:org:{abc}:admin"},
-			Slug:    "some-svc",
-		}, "user-svc:org:{abcd}:user")
+	orgId := ""
 
-		require.Equal(t, false, owns)
+	t.Run("create organization", func(t *testing.T) {
+		rsp, _, err := userClient.UserSvcAPI.CreateOrganization(
+			context.Background(),
+		).Body(openapi.UserSvcCreateOrganizationRequest{
+			Slug: "test-org",
+			Name: "Test Org",
+		}).Execute()
+		require.NoError(t, err)
+		require.NotEmpty(t, rsp.Organization.Id)
+
+		orgId = rsp.Organization.Id
+		require.NotEmpty(t, orgId)
+
+		require.NotEmpty(t, rsp.Token.Token)
+
+		// Here we refresh the token to include the new org role
+		userClient = options.ClientFactory.Client(sdk.WithToken(rsp.Token.Token))
+	})
+
+	t.Run("nonexistent org role assignment", func(t *testing.T) {
+		_, _, err := userClient.UserSvcAPI.AddRoleToUser(
+			context.Background(),
+			tokens[1].UserId,
+			"user-svc:org:{some-nonexistent-org-id}:user",
+		).Execute()
+
+		require.Error(t, err)
+	})
+
+	t.Run("org role assignment", func(t *testing.T) {
+		_, _, err := userClient.UserSvcAPI.AddRoleToUser(
+			context.Background(),
+			tokens[1].UserId,
+			fmt.Sprintf("user-svc:org:{%v}:user", orgId),
+		).Execute()
+
+		require.NoError(t, err)
 	})
 }

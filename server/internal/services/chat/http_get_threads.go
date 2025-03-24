@@ -53,7 +53,7 @@ func (a *ChatService) GetThreads(
 		return
 	}
 
-	threads, err := a.getThreads(*isAuthRsp.User.Id)
+	threads, err := a.getThreads(isAuthRsp.User.Id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

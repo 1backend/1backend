@@ -15,6 +15,7 @@ package userservice
 import (
 	"encoding/json"
 	"net/http"
+	"net/url"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
@@ -32,11 +33,11 @@ import (
 // @Produce json
 // @Param userId path string true "User ID"
 // @Param roleId path string true "Role ID"
-// @Param body body user.AddRoleToUserRequest true "Add Role to User Request"
+// @Param body body user.AddRoleToUserRequest false "Add Role to User Request"
 // @Success 200 {object} user.AddRoleToUserResponse
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
-// @Failure 500 {object} user.ErrorResponse "Internal Server Error"
+// @Failure 500 {object} user.ErrorResponse "Role not found"
 // @Security BearerAuth
 // @Router /user-svc/user/{userId}/role/{roleId} [put]
 func (s *UserService) AddRoleToUser(
@@ -47,7 +48,7 @@ func (s *UserService) AddRoleToUser(
 	claim, err := authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
 	if err != nil || claim == nil {
 		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(err.Error()))
+		w.Write([]byte("Unauthorized"))
 		return
 	}
 
@@ -60,12 +61,22 @@ func (s *UserService) AddRoleToUser(
 	// }
 	// defer r.Body.Close()
 
-	userId := mux.Vars(r)["userId"]
-	roleId := mux.Vars(r)["roleId"]
+	userId, err := url.PathUnescape(mux.Vars(r)["userId"])
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(`Invalid JSON`))
+		return
+	}
+	roleId, err := url.PathUnescape(mux.Vars(r)["roleId"])
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(`Invalid JSON`))
+		return
+	}
 
 	if !sdk.OwnsRole(claim, roleId) {
 		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(err.Error()))
+		w.Write([]byte("Unauthorized"))
 		return
 	}
 

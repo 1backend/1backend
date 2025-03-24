@@ -152,7 +152,8 @@ Class | Method | HTTP request | Description
 *SecretSvcAPI* | [**RemoveSecrets**](docs/SecretSvcAPI.md#removesecrets) | **Delete** /secret-svc/secrets | Remove Secrets
 *SecretSvcAPI* | [**SaveSecrets**](docs/SecretSvcAPI.md#savesecrets) | **Put** /secret-svc/secrets | Save Secrets
 *SourceSvcAPI* | [**CheckoutRepo**](docs/SourceSvcAPI.md#checkoutrepo) | **Post** /source-svc/repo/checkout | Checkout a git repository
-*UserSvcAPI* | [**AddUserToOrganization**](docs/UserSvcAPI.md#addusertoorganization) | **Post** /user-svc/organization/{organizationId}/user | Add a User to an Organization
+*UserSvcAPI* | [**AddRoleToUser**](docs/UserSvcAPI.md#addroletouser) | **Put** /user-svc/user/{userId}/role/{roleId} | Assign Role to User
+*UserSvcAPI* | [**AddUserToOrganization**](docs/UserSvcAPI.md#addusertoorganization) | **Put** /user-svc/organization/{organizationId}/user/{userId} | Add a User to an Organization
 *UserSvcAPI* | [**AssignPermissions**](docs/UserSvcAPI.md#assignpermissions) | **Put** /user-svc/roles/permissions | Assign Permissions
 *UserSvcAPI* | [**ChangePassword**](docs/UserSvcAPI.md#changepassword) | **Post** /user-svc/change-password | Change User Password
 *UserSvcAPI* | [**CreateOrganization**](docs/UserSvcAPI.md#createorganization) | **Post** /user-svc/organization | Create an Organization
@@ -346,12 +347,12 @@ Class | Method | HTTP request | Description
  - [SourceSvcCheckoutRepoResponse](docs/SourceSvcCheckoutRepoResponse.md)
  - [SourceSvcErrorResponse](docs/SourceSvcErrorResponse.md)
  - [StableDiffusionTxt2ImgRequest](docs/StableDiffusionTxt2ImgRequest.md)
- - [UserSvcAddUserToOrganizationRequest](docs/UserSvcAddUserToOrganizationRequest.md)
  - [UserSvcAssignPermissionsRequest](docs/UserSvcAssignPermissionsRequest.md)
  - [UserSvcAuthToken](docs/UserSvcAuthToken.md)
  - [UserSvcChangePasswordRequest](docs/UserSvcChangePasswordRequest.md)
  - [UserSvcContact](docs/UserSvcContact.md)
  - [UserSvcCreateOrganizationRequest](docs/UserSvcCreateOrganizationRequest.md)
+ - [UserSvcCreateOrganizationResponse](docs/UserSvcCreateOrganizationResponse.md)
  - [UserSvcCreateRoleRequest](docs/UserSvcCreateRoleRequest.md)
  - [UserSvcCreateRoleResponse](docs/UserSvcCreateRoleResponse.md)
  - [UserSvcCreateUserRequest](docs/UserSvcCreateUserRequest.md)

@@ -73,7 +73,7 @@ func (p *PromptService) Prompt(
 	}
 	defer r.Body.Close()
 
-	prsp, err := p.prompt(r.Context(), req, *isAuthRsp.User.Id)
+	prsp, err := p.prompt(r.Context(), req, isAuthRsp.User.Id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

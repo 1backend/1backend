@@ -66,7 +66,7 @@ func (fs *SourceService) Start() error {
 		return err
 	}
 
-	fs.token = token
+	fs.token = token.Token
 
 	return fs.registerPermissions()
 }

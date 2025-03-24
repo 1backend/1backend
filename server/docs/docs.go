@@ -4259,8 +4259,8 @@ const docTemplate = `{
                 }
             }
         },
-        "/user-svc/organization/{organizationId}/user": {
-            "post": {
+        "/user-svc/organization/{organizationId}/user/{userId}": {
+            "put": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -4287,10 +4287,16 @@ const docTemplate = `{
                         "required": true
                     },
                     {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "Add User to Organization Request",
                         "name": "body",
                         "in": "body",
-                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/user_svc.AddUserToOrganizationRequest"
                         }
@@ -4334,9 +4340,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/user-svc/organization/{organizationId}/user/{userId}": {
+            },
             "delete": {
                 "security": [
                     {
@@ -4371,7 +4375,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Add User to Organization Request",
+                        "description": "Remove User From Organization Request",
                         "name": "body",
                         "in": "body",
                         "schema": {
@@ -4426,7 +4430,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Check if a user is authorized for a specific permission.",
+                "description": "Verify whether a user has a specific permission.\nIdeally, this endpoint should rarely be used, as the JWT token\nalready includes all user roles. Caching the ` + "`" + `Get Permissions by Role` + "`" + `\nresponses allows services to determine user authorization\nwithout repeatedly calling this endpoint.",
                 "consumes": [
                     "application/json"
                 ],
@@ -5216,6 +5220,77 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-svc/user/{userId}/role/{roleId}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Assign a role to a user. The caller can assign any roles it owns,\ntypically those prefixed with the caller’s identifier (e.g., ` + "`" + `my-service:admin` + "`" + `).\nOne exception to this rule is dynamic organization roles: If the caller is an organization admin\n(e.g., has a role like \"user-svc:org:{%orgId}:admin\"), they can also assign such roles.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Svc"
+                ],
+                "summary": "Assign Role to User",
+                "operationId": "addRoleToUser",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Role ID",
+                        "name": "roleId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Add Role to User Request",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.AddRoleToUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.AddRoleToUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Role not found",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
                         }
                     }
                 }
@@ -6096,8 +6171,7 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "[\"usr_12345\"",
-                        " \"org_67890\"]"
+                        "["
                     ]
                 },
                 "data": {
@@ -6188,8 +6262,7 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "[\"usr_12345\"",
-                        " \"org_67890\"]"
+                        "["
                     ]
                 },
                 "createdAt": {
@@ -6206,8 +6279,7 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "[\"usr_12345\"",
-                        " \"org_67890\"]"
+                        "["
                     ]
                 },
                 "id": {
@@ -6220,8 +6292,7 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "[\"usr_12345\"",
-                        " \"org_67890\"]"
+                        "["
                     ]
                 },
                 "table": {
@@ -6237,8 +6308,7 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "[\"usr_12345\"",
-                        " \"org_67890\"]"
+                        "["
                     ]
                 }
             }
@@ -8984,13 +9054,14 @@ const docTemplate = `{
                 }
             }
         },
+        "user_svc.AddRoleToUserRequest": {
+            "type": "object"
+        },
+        "user_svc.AddRoleToUserResponse": {
+            "type": "object"
+        },
         "user_svc.AddUserToOrganizationRequest": {
-            "type": "object",
-            "properties": {
-                "userId": {
-                    "type": "string"
-                }
-            }
+            "type": "object"
         },
         "user_svc.AddUserToOrganizationResponse": {
             "type": "object"
@@ -9011,6 +9082,10 @@ const docTemplate = `{
         },
         "user_svc.AuthToken": {
             "type": "object",
+            "required": [
+                "token",
+                "userId"
+            ],
             "properties": {
                 "active": {
                     "description": "Active tokens contain the most up-to-date information.\nWhen a user's role changes—due to role assignment, organization\ncreation/assignment, etc.—all existing tokens are marked inactive.\nActive tokens are reused during login, while inactive tokens\nare retained for historical reference.",
@@ -9095,6 +9170,10 @@ const docTemplate = `{
         },
         "user_svc.CreateOrganizationRequest": {
             "type": "object",
+            "required": [
+                "name",
+                "slug"
+            ],
             "properties": {
                 "id": {
                     "type": "string"
@@ -9110,7 +9189,24 @@ const docTemplate = `{
             }
         },
         "user_svc.CreateOrganizationResponse": {
-            "type": "object"
+            "type": "object",
+            "required": [
+                "organization",
+                "token"
+            ],
+            "properties": {
+                "organization": {
+                    "$ref": "#/definitions/user_svc.Organization"
+                },
+                "token": {
+                    "description": "Due to the nature of JWT tokens, the token must be refreshed after\ncreating an organization, as dynamic organization roles are embedded in it.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/user_svc.AuthToken"
+                        }
+                    ]
+                }
+            }
         },
         "user_svc.CreateRoleRequest": {
             "type": "object",
@@ -9190,6 +9286,9 @@ const docTemplate = `{
         },
         "user_svc.GetPublicKeyResponse": {
             "type": "object",
+            "required": [
+                "publicKey"
+            ],
             "properties": {
                 "publicKey": {
                     "type": "string"
@@ -9324,6 +9423,11 @@ const docTemplate = `{
         },
         "user_svc.Organization": {
             "type": "object",
+            "required": [
+                "id",
+                "name",
+                "slug"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"
@@ -9537,6 +9641,10 @@ const docTemplate = `{
         },
         "user_svc.User": {
             "type": "object",
+            "required": [
+                "id",
+                "slug"
+            ],
             "properties": {
                 "contacts": {
                     "description": "Contacts are used for login and identification purposes.",

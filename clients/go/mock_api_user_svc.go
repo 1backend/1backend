@@ -39,18 +39,48 @@ func (m *MockUserSvcAPI) EXPECT() *MockUserSvcAPIMockRecorder {
 	return m.recorder
 }
 
-// AddUserToOrganization mocks base method.
-func (m *MockUserSvcAPI) AddUserToOrganization(ctx context.Context, organizationId string) ApiAddUserToOrganizationRequest {
+// AddRoleToUser mocks base method.
+func (m *MockUserSvcAPI) AddRoleToUser(ctx context.Context, userId, roleId string) ApiAddRoleToUserRequest {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddUserToOrganization", ctx, organizationId)
+	ret := m.ctrl.Call(m, "AddRoleToUser", ctx, userId, roleId)
+	ret0, _ := ret[0].(ApiAddRoleToUserRequest)
+	return ret0
+}
+
+// AddRoleToUser indicates an expected call of AddRoleToUser.
+func (mr *MockUserSvcAPIMockRecorder) AddRoleToUser(ctx, userId, roleId any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddRoleToUser", reflect.TypeOf((*MockUserSvcAPI)(nil).AddRoleToUser), ctx, userId, roleId)
+}
+
+// AddRoleToUserExecute mocks base method.
+func (m *MockUserSvcAPI) AddRoleToUserExecute(r ApiAddRoleToUserRequest) (map[string]any, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddRoleToUserExecute", r)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// AddRoleToUserExecute indicates an expected call of AddRoleToUserExecute.
+func (mr *MockUserSvcAPIMockRecorder) AddRoleToUserExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddRoleToUserExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).AddRoleToUserExecute), r)
+}
+
+// AddUserToOrganization mocks base method.
+func (m *MockUserSvcAPI) AddUserToOrganization(ctx context.Context, organizationId, userId string) ApiAddUserToOrganizationRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddUserToOrganization", ctx, organizationId, userId)
 	ret0, _ := ret[0].(ApiAddUserToOrganizationRequest)
 	return ret0
 }
 
 // AddUserToOrganization indicates an expected call of AddUserToOrganization.
-func (mr *MockUserSvcAPIMockRecorder) AddUserToOrganization(ctx, organizationId any) *gomock.Call {
+func (mr *MockUserSvcAPIMockRecorder) AddUserToOrganization(ctx, organizationId, userId any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddUserToOrganization", reflect.TypeOf((*MockUserSvcAPI)(nil).AddUserToOrganization), ctx, organizationId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddUserToOrganization", reflect.TypeOf((*MockUserSvcAPI)(nil).AddUserToOrganization), ctx, organizationId, userId)
 }
 
 // AddUserToOrganizationExecute mocks base method.
@@ -144,10 +174,10 @@ func (mr *MockUserSvcAPIMockRecorder) CreateOrganization(ctx any) *gomock.Call {
 }
 
 // CreateOrganizationExecute mocks base method.
-func (m *MockUserSvcAPI) CreateOrganizationExecute(r ApiCreateOrganizationRequest) (map[string]any, *http.Response, error) {
+func (m *MockUserSvcAPI) CreateOrganizationExecute(r ApiCreateOrganizationRequest) (*UserSvcCreateOrganizationResponse, *http.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateOrganizationExecute", r)
-	ret0, _ := ret[0].(map[string]any)
+	ret0, _ := ret[0].(*UserSvcCreateOrganizationResponse)
 	ret1, _ := ret[1].(*http.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2

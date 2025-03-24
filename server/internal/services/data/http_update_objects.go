@@ -65,7 +65,7 @@ func (g *DataService) UpdateObjects(
 	}
 	defer r.Body.Close()
 
-	err = g.updateObjects(req.Table, *isAuthRsp.User.Id, req.Filters, req.Object)
+	err = g.updateObjects(req.Table, isAuthRsp.User.Id, req.Filters, req.Object)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

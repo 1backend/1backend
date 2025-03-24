@@ -17,6 +17,7 @@ import (
 	"net/http"
 	"strings"
 
+	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/pkg/errors"
 	"github.com/samber/lo"
@@ -189,4 +190,11 @@ func OwnsRole(claim *Claims, roleId string) bool {
 	}
 
 	return false
+}
+
+func TokenFromClient(client *openapi.APIClient) string {
+	userToken := client.GetConfig().DefaultHeader["Authorization"]
+	userToken = strings.Replace(userToken, "Bearer ", "", -1)
+
+	return userToken
 }

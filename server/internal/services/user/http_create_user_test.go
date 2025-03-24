@@ -35,7 +35,7 @@ func TestCreateUser(t *testing.T) {
 		_, _, err = options.ClientFactory.Client().UserSvcAPI.CreateUser(ctx).Body(
 			openapi.UserSvcCreateUserRequest{
 				User: &openapi.UserSvcUser{
-					Slug: openapi.PtrString("test-slug-1"),
+					Slug: "test-slug-1",
 					Name: openapi.PtrString("Test Name"),
 				},
 			},
@@ -50,7 +50,7 @@ func TestCreateUser(t *testing.T) {
 		_, httpRsp, err := adminClient.UserSvcAPI.CreateUser(ctx).Body(
 			openapi.UserSvcCreateUserRequest{
 				User: &openapi.UserSvcUser{
-					Slug: openapi.PtrString("test-slug-1"),
+					Slug: "test-slug-1",
 					Name: openapi.PtrString("Test Name"),
 				},
 			},
@@ -62,7 +62,7 @@ func TestCreateUser(t *testing.T) {
 		_, _, err = adminClient.UserSvcAPI.CreateUser(ctx).Body(
 			openapi.UserSvcCreateUserRequest{
 				User: &openapi.UserSvcUser{
-					Slug: openapi.PtrString("test-slug-1"),
+					Slug: "test-slug-1",
 					Name: openapi.PtrString("Test Name"),
 				},
 			},

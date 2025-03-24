@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the UserSvcAuthToken type satisfies the MappedNullable interface at compile time
@@ -25,17 +27,21 @@ type UserSvcAuthToken struct {
 	CreatedAt *string `json:"createdAt,omitempty"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	Id *string `json:"id,omitempty"`
-	Token *string `json:"token,omitempty"`
+	Token string `json:"token"`
 	UpdatedAt *string `json:"updatedAt,omitempty"`
-	UserId *string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 }
+
+type _UserSvcAuthToken UserSvcAuthToken
 
 // NewUserSvcAuthToken instantiates a new UserSvcAuthToken object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcAuthToken() *UserSvcAuthToken {
+func NewUserSvcAuthToken(token string, userId string) *UserSvcAuthToken {
 	this := UserSvcAuthToken{}
+	this.Token = token
+	this.UserId = userId
 	return &this
 }
 
@@ -175,36 +181,28 @@ func (o *UserSvcAuthToken) SetId(v string) {
 	o.Id = &v
 }
 
-// GetToken returns the Token field value if set, zero value otherwise.
+// GetToken returns the Token field value
 func (o *UserSvcAuthToken) GetToken() string {
-	if o == nil || IsNil(o.Token) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Token
+
+	return o.Token
 }
 
-// GetTokenOk returns a tuple with the Token field value if set, nil otherwise
+// GetTokenOk returns a tuple with the Token field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcAuthToken) GetTokenOk() (*string, bool) {
-	if o == nil || IsNil(o.Token) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Token, true
+	return &o.Token, true
 }
 
-// HasToken returns a boolean if a field has been set.
-func (o *UserSvcAuthToken) HasToken() bool {
-	if o != nil && !IsNil(o.Token) {
-		return true
-	}
-
-	return false
-}
-
-// SetToken gets a reference to the given string and assigns it to the Token field.
+// SetToken sets field value
 func (o *UserSvcAuthToken) SetToken(v string) {
-	o.Token = &v
+	o.Token = v
 }
 
 // GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
@@ -239,36 +237,28 @@ func (o *UserSvcAuthToken) SetUpdatedAt(v string) {
 	o.UpdatedAt = &v
 }
 
-// GetUserId returns the UserId field value if set, zero value otherwise.
+// GetUserId returns the UserId field value
 func (o *UserSvcAuthToken) GetUserId() string {
-	if o == nil || IsNil(o.UserId) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.UserId
+
+	return o.UserId
 }
 
-// GetUserIdOk returns a tuple with the UserId field value if set, nil otherwise
+// GetUserIdOk returns a tuple with the UserId field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcAuthToken) GetUserIdOk() (*string, bool) {
-	if o == nil || IsNil(o.UserId) {
+	if o == nil {
 		return nil, false
 	}
-	return o.UserId, true
+	return &o.UserId, true
 }
 
-// HasUserId returns a boolean if a field has been set.
-func (o *UserSvcAuthToken) HasUserId() bool {
-	if o != nil && !IsNil(o.UserId) {
-		return true
-	}
-
-	return false
-}
-
-// SetUserId gets a reference to the given string and assigns it to the UserId field.
+// SetUserId sets field value
 func (o *UserSvcAuthToken) SetUserId(v string) {
-	o.UserId = &v
+	o.UserId = v
 }
 
 func (o UserSvcAuthToken) MarshalJSON() ([]byte, error) {
@@ -293,16 +283,50 @@ func (o UserSvcAuthToken) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}
-	if !IsNil(o.Token) {
-		toSerialize["token"] = o.Token
-	}
+	toSerialize["token"] = o.Token
 	if !IsNil(o.UpdatedAt) {
 		toSerialize["updatedAt"] = o.UpdatedAt
 	}
-	if !IsNil(o.UserId) {
-		toSerialize["userId"] = o.UserId
-	}
+	toSerialize["userId"] = o.UserId
 	return toSerialize, nil
+}
+
+func (o *UserSvcAuthToken) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"token",
+		"userId",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varUserSvcAuthToken := _UserSvcAuthToken{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varUserSvcAuthToken)
+
+	if err != nil {
+		return err
+	}
+
+	*o = UserSvcAuthToken(varUserSvcAuthToken)
+
+	return err
 }
 
 type NullableUserSvcAuthToken struct {
