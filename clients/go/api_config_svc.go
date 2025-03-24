@@ -107,7 +107,7 @@ func (a *ConfigSvcAPIService) GetConfigExecute(r ApiGetConfigRequest) (*ConfigSv
 	localVarFormParams := url.Values{}
 
 	if r.namespace != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "namespace", r.namespace, "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "namespace", r.namespace, "", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

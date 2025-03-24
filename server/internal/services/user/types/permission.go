@@ -166,6 +166,16 @@ var PermissionGrantView = Permission{
 	Name: "User Svc - View Grant",
 }
 
+var PermissionInviteEdit = Permission{
+	Id:   "user-svc:invite:edit",
+	Name: "User Svc - Edit Invite",
+}
+
+var PermissionInviteView = Permission{
+	Id:   "user-svc:invite:view",
+	Name: "User Svc - View Invite",
+}
+
 var UserPermissions = []*Permission{
 	&PermissionUserPasswordChange,
 
@@ -184,6 +194,9 @@ var UserPermissions = []*Permission{
 	&PermissionOrganizationCreate,
 	&PermissionOrganizationAddUser,
 	&PermissionOrganizationRemoveUser,
+
+	&PermissionInviteEdit,
+	&PermissionInviteView,
 }
 
 var AdminPermissions = []*Permission{

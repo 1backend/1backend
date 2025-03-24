@@ -680,25 +680,25 @@ func (a *RegistrySvcAPIService) ListInstancesExecute(r ApiListInstancesRequest) 
 	localVarFormParams := url.Values{}
 
 	if r.scheme != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "scheme", r.scheme, "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "scheme", r.scheme, "", "")
 	}
 	if r.ip != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "ip", r.ip, "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "ip", r.ip, "", "")
 	}
 	if r.deploymentId != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "deploymentId", r.deploymentId, "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "deploymentId", r.deploymentId, "", "")
 	}
 	if r.host != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "host", r.host, "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "host", r.host, "", "")
 	}
 	if r.ip2 != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "ip", r.ip2, "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "ip", r.ip2, "", "")
 	}
 	if r.id != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "id", r.id, "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "id", r.id, "", "")
 	}
 	if r.slug != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "slug", r.slug, "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "slug", r.slug, "", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}

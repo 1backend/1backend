@@ -669,6 +669,36 @@ func (mr *MockUserSvcAPIMockRecorder) SaveGrantsExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveGrantsExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).SaveGrantsExecute), r)
 }
 
+// SaveInvites mocks base method.
+func (m *MockUserSvcAPI) SaveInvites(ctx context.Context) ApiSaveInvitesRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveInvites", ctx)
+	ret0, _ := ret[0].(ApiSaveInvitesRequest)
+	return ret0
+}
+
+// SaveInvites indicates an expected call of SaveInvites.
+func (mr *MockUserSvcAPIMockRecorder) SaveInvites(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveInvites", reflect.TypeOf((*MockUserSvcAPI)(nil).SaveInvites), ctx)
+}
+
+// SaveInvitesExecute mocks base method.
+func (m *MockUserSvcAPI) SaveInvitesExecute(r ApiSaveInvitesRequest) (*UserSvcSaveInvitesResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveInvitesExecute", r)
+	ret0, _ := ret[0].(*UserSvcSaveInvitesResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// SaveInvitesExecute indicates an expected call of SaveInvitesExecute.
+func (mr *MockUserSvcAPIMockRecorder) SaveInvitesExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveInvitesExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).SaveInvitesExecute), r)
+}
+
 // SavePermissions mocks base method.
 func (m *MockUserSvcAPI) SavePermissions(ctx context.Context) ApiSavePermissionsRequest {
 	m.ctrl.T.Helper()

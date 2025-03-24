@@ -40,8 +40,8 @@ func TestRegistration(t *testing.T) {
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
-	userToken := userClient.GetConfig().DefaultHeader["Authorization"]
-	userToken = strings.Replace(userToken, "Bearer ", "", -1)
+	userToken := sdk.TokenFromClient(userClient)
+
 	require.Equal(t, true, len(userToken) > 0)
 
 	publicKeyRsp, _, err := userSvc.GetPublicKey(context.Background()).Execute()

@@ -23,8 +23,10 @@ import (
 //
 // To extend an expired invite, update the `expiresAt` field with a new date.
 // If a user is deleted and later re-registers, the invite remains valid unless explicitly revoked.
+//
+// While admittedly informal, the term Invite is preferred over Invitation for brevity.
 type Invite struct {
-	Id string `json:"id,omitempty" example:"inv_fIYPbMHIcI"`
+	Id string `json:"id" example:"inv_fIYPbMHIcI" binding:"required"`
 
 	CreatedAt time.Time `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
@@ -45,4 +47,31 @@ type Invite struct {
 	// (e.g., "user-svc:org:{%orgId}:admin" or "user-svc:org:{%orgId}:user"),
 	// but in this case, the caller must be an admin of the target organization.
 	RoleId string `json:"roleId" binding:"required"`
+}
+
+func (i Invite) GetId() string {
+	return i.Id
+}
+
+type PartialInvite struct {
+	Id        string `json:"id,omitempty" example:"inv_fIYPbMHIcI"`
+	ContactId string `json:"contactId" binding:"required"`
+	RoleId    string `json:"roleId" binding:"required"`
+}
+
+type SaveInvitesRequest struct {
+	Invites []Invite `json:"invites" binding:"required"`
+}
+
+type SaveInvitesResponse struct {
+	Invites []Invite `json:"invites" binding:"required"`
+}
+
+type ListInvitesRequest struct {
+	ContactId string `json:"contactId,omitempty"`
+	RoleId    string `json:"roleId,omitempty"`
+}
+
+type ListInvitesResponse struct {
+	Invites []Invite `json:"invites" binding:"required"`
 }
