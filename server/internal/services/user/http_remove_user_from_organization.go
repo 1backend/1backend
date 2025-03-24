@@ -17,9 +17,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
+	"github.com/gorilla/mux"
 )
 
 // @ID removeUserFromOrganization
@@ -30,7 +30,7 @@ import (
 // @Produce json
 // @Param organizationId path string true "Organization ID"
 // @Param userId path string true "User ID"
-// @Param body body user.RemoveUserFromOrganizationRequest false "Add User to Organization Request"
+// @Param body body user.RemoveUserFromOrganizationRequest false "Remove User From Organization Request"
 // @Success 200 {object} user.RemoveUserFromOrganizationResponse "User added successfully"
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"

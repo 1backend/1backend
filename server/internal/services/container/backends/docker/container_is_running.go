@@ -15,13 +15,15 @@ package dockerbackend
 import (
 	"context"
 
-	dockercontainer "github.com/docker/docker/api/types/container"
 	container "github.com/1backend/1backend/server/internal/services/container/types"
+	dockercontainer "github.com/docker/docker/api/types/container"
 
 	"github.com/pkg/errors"
 )
 
-func (d *DockerBackend) ContainerIsRunning(req container.ContainerIsRunningRequest) (*container.ContainerIsRunningResponse, error) {
+func (d *DockerBackend) ContainerIsRunning(
+	req container.ContainerIsRunningRequest,
+) (*container.ContainerIsRunningResponse, error) {
 	if req.Hash != "" {
 		isRunning, err := d.hashIsRunning(req.Hash)
 		if err != nil {

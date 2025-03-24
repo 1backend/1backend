@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/golang-jwt/jwt/v4"
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/golang-jwt/jwt/v4"
 
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )

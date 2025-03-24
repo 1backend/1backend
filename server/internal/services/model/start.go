@@ -110,14 +110,21 @@ func (ms *ModelService) startWithDocker(
 			// to actual images here.
 			// To do this we need to find the CUDA version on the current machine.
 
-			systemCudaVersion, err := ms.cudaVersion(platform.Architectures.Cuda.CudaVersionPrecision)
+			systemCudaVersion, err := ms.cudaVersion(
+				platform.Architectures.Cuda.CudaVersionPrecision,
+			)
 			if err != nil {
 				logger.Error("Error getting cuda version",
 					slog.String("error", err.Error()))
 			}
 			defaultCudaVersion := platform.Architectures.Cuda.DefaultCudaVersion
 
-			systemMatchingImage := strings.Replace(cudaImageTemplate, "$cudaVersion", systemCudaVersion, -1)
+			systemMatchingImage := strings.Replace(
+				cudaImageTemplate,
+				"$cudaVersion",
+				systemCudaVersion,
+				-1,
+			)
 
 			systemMatchingImagePullableRsp, _, err := ms.clientFactory.Client(sdk.WithToken(ms.token)).
 				ContainerSvcAPI.

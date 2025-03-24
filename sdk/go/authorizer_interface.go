@@ -1,3 +1,15 @@
+/*
+*
+
+  - @license
+
+  - Copyright (c) The Authors (see the AUTHORS file)
+    *
+
+  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+
+  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+*/
 package sdk
 
 import (
@@ -7,6 +19,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/pkg/errors"
+	"github.com/samber/lo"
 )
 
 // Authorizer can extract roles from tokens.
@@ -145,4 +158,35 @@ func ExtractOrganizationRoles(roleIds []string) map[string][]string {
 	}
 
 	return ret
+}
+
+// OwnsRole determines if the user owns the specified role based on the role ID.
+// It checks if the role is associated with the user's slug or if the user is an admin of the organization the role belongs to.
+// Role ownership can be determined in two cases:
+// 1. The role ID starts with the user's slug (i.e., "user-svc:{slug}:{roleId}").
+// 2. The role ID represents a dynamic role linked to an organization (i.e., "user-svc:org:{orgId}:admin").
+// In the second case, the user is considered the owner if they have an admin role for all organizations in the role ID's organization.
+func OwnsRole(claim *Claims, roleId string) bool {
+	if strings.HasPrefix(roleId, claim.Slug) {
+		return true
+	}
+
+	if strings.HasPrefix(roleId, "user-svc:org:") {
+		claimRoles := ExtractOrganizationRoles(claim.RoleIds)
+		assignRoles := ExtractOrganizationRoles([]string{roleId})
+
+		for assignOrgId := range assignRoles {
+			localRoles, ok := claimRoles[assignOrgId]
+			if !ok {
+				return false
+			}
+			if !lo.Contains(localRoles, "admin") {
+				return false
+			}
+		}
+
+		return true
+	}
+
+	return false
 }

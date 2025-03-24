@@ -16,9 +16,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	sdk "github.com/1backend/1backend/sdk/go"
 	chat "github.com/1backend/1backend/server/internal/services/chat/types"
+	"github.com/gorilla/mux"
 )
 
 // @ID updateThread

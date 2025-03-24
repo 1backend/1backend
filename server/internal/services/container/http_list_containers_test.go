@@ -48,34 +48,36 @@ func TestListContainers(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("run container", func(t *testing.T) {
-		_, _, err := adminClient.ContainerSvcAPI.RunContainer(ctx).Body(openapi.ContainerSvcRunContainerRequest{
-			Image: "nginx:latest",
-			Ports: []openapi.ContainerSvcPortMapping{
-				{
-					Internal: 9080,
-					Host:     9082,
+		_, _, err := adminClient.ContainerSvcAPI.RunContainer(ctx).
+			Body(openapi.ContainerSvcRunContainerRequest{
+				Image: "nginx:latest",
+				Ports: []openapi.ContainerSvcPortMapping{
+					{
+						Internal: 9080,
+						Host:     9082,
+					},
 				},
-			},
-			Names: []string{"test-container-2"},
-			Hash:  openapi.PtrString("abc123"),
-			Envs: []openapi.ContainerSvcEnvVar{
-				{
-					Key:   "ENV_VAR",
-					Value: "value",
+				Names: []string{"test-container-2"},
+				Hash:  openapi.PtrString("abc123"),
+				Envs: []openapi.ContainerSvcEnvVar{
+					{
+						Key:   "ENV_VAR",
+						Value: "value",
+					},
 				},
-			},
-			Labels: []openapi.ContainerSvcLabel{
-				{
-					Key:   "app",
-					Value: "test",
+				Labels: []openapi.ContainerSvcLabel{
+					{
+						Key:   "app",
+						Value: "test",
+					},
 				},
-			},
-			Keeps: []openapi.ContainerSvcKeep{
-				{
-					Path: "/data",
+				Keeps: []openapi.ContainerSvcKeep{
+					{
+						Path: "/data",
+					},
 				},
-			},
-		}).Execute()
+			}).
+			Execute()
 
 		require.NoError(t, err)
 	})
@@ -83,7 +85,9 @@ func TestListContainers(t *testing.T) {
 	time.Sleep(1100 * time.Millisecond)
 
 	t.Run("list containers", func(t *testing.T) {
-		rsp, _, err := adminClient.ContainerSvcAPI.ListContainers(ctx).Body(openapi.ContainerSvcListContainersRequest{}).Execute()
+		rsp, _, err := adminClient.ContainerSvcAPI.ListContainers(ctx).
+			Body(openapi.ContainerSvcListContainersRequest{}).
+			Execute()
 		require.NoError(t, err)
 
 		found := false

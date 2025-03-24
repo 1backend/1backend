@@ -17,9 +17,9 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/gorilla/mux"
 	sdk "github.com/1backend/1backend/sdk/go"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
+	"github.com/gorilla/mux"
 )
 
 // @ID pauseDownload

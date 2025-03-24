@@ -18,10 +18,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
+	"github.com/gorilla/mux"
 )
 
 // @ID resetPassword

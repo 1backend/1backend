@@ -40,6 +40,7 @@ type UserService struct {
 	userRoleLinksStore         datastore.DataStore
 	permissionRoleLinksStore   datastore.DataStore
 	grantsStore                datastore.DataStore
+	invitesStore               datastore.DataStore
 
 	privateKey    *rsa.PrivateKey
 	publicKeyPem  string
@@ -104,6 +105,14 @@ func NewUserService(
 		return nil, err
 	}
 
+	invitesStore, err := datastoreFactory(
+		"userSvcInvites",
+		&usertypes.Contact{},
+	)
+	if err != nil {
+		return nil, err
+	}
+
 	organizationsStore, err := datastoreFactory(
 		"userSvcOrganizations",
 		&usertypes.Organization{},
@@ -159,6 +168,7 @@ func NewUserService(
 		userRoleLinksStore:         userRoleLinksStore,
 		permissionRoleLinksStore:   permissionRoleLinksStore,
 		grantsStore:                grantsStore,
+		invitesStore:               invitesStore,
 		isTest:                     isTest,
 	}
 

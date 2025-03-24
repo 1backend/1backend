@@ -19,10 +19,10 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/gorilla/mux"
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
 	container "github.com/1backend/1backend/server/internal/services/container/types"
+	"github.com/gorilla/mux"
 )
 
 // @ID imagePullable
@@ -101,7 +101,11 @@ func imageExistsInRegistry(image, tag string) (bool, error) {
 		image = "library/" + image
 	}
 
-	url := fmt.Sprintf("https://hub.docker.com/v2/repositories/%s/tags/%s", image, url.PathEscape(tag))
+	url := fmt.Sprintf(
+		"https://hub.docker.com/v2/repositories/%s/tags/%s",
+		image,
+		url.PathEscape(tag),
+	)
 
 	resp, err := http.Get(url)
 	if err != nil {

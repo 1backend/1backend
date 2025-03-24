@@ -20,12 +20,12 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/mux"
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/logger"
 	chat "github.com/1backend/1backend/server/internal/services/chat/types"
+	"github.com/gorilla/mux"
 )
 
 // @ID addMessage

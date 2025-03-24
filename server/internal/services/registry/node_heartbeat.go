@@ -124,8 +124,12 @@ func (ns *RegistryService) heartbeatCycle() error {
 	return nil
 }
 
-func (ns *RegistryService) ParseNvidiaSmiQueryOutput(output string) (cudaVersion string, err error) {
-	rgx := regexp.MustCompile(`CUDA Version\s*:\s*([0-9]+\.[0-9]+)`) // Matches 'CUDA Version : 12.2'
+func (ns *RegistryService) ParseNvidiaSmiQueryOutput(
+	output string,
+) (cudaVersion string, err error) {
+	rgx := regexp.MustCompile(
+		`CUDA Version\s*:\s*([0-9]+\.[0-9]+)`,
+	) // Matches 'CUDA Version : 12.2'
 	matches := rgx.FindStringSubmatch(output)
 
 	if len(matches) < 2 {

@@ -18,7 +18,9 @@ import (
 
 type ContainerBackend interface {
 	// Get
-	GetContainerSummary(container.GetContainerSummaryRequest) (*container.GetContainerSummaryResponse, error)
+	GetContainerSummary(
+		container.GetContainerSummaryRequest,
+	) (*container.GetContainerSummaryResponse, error)
 
 	// Build and image
 	BuildImage(container.BuildImageRequest) (*container.BuildImageResponse, error)
@@ -30,7 +32,9 @@ type ContainerBackend interface {
 	StopContainer(container.StopContainerRequest) (*container.StopContainerResponse, error)
 
 	// Check if a container is running
-	ContainerIsRunning(container.ContainerIsRunningRequest) (*container.ContainerIsRunningResponse, error)
+	ContainerIsRunning(
+		container.ContainerIsRunningRequest,
+	) (*container.ContainerIsRunningResponse, error)
 
 	DaemonInfo(container.DaemonInfoRequest) (*container.DaemonInfoResponse, error)
 
