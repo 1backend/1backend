@@ -61,7 +61,7 @@ func TestRegistration(t *testing.T) {
 		require.Equal(t, "test-user-slug-0", byTokenRsp.User.Slug)
 		require.True(t, nil == byTokenRsp.User.PasswordHash)
 
-		require.Equal(t, &claim.UserId, byTokenRsp.User.Id)
+		require.Equal(t, claim.UserId, byTokenRsp.User.Id)
 
 		changePassReq := openapi.UserSvcChangePasswordRequest{
 			Slug:            openapi.PtrString("test-user-slug-0"),

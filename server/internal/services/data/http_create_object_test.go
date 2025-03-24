@@ -38,7 +38,7 @@ func TestCreate(t *testing.T) {
 	err = starterFunc()
 	require.NoError(t, err)
 
-	manyClients, err := test.MakeClients(options.ClientFactory, 2)
+	manyClients, _, err := test.MakeClients(options.ClientFactory, 2)
 	require.NoError(t, err)
 	client1 := manyClients[0]
 	client2 := manyClients[1]
@@ -73,7 +73,7 @@ func TestCreate(t *testing.T) {
 	t.Run("user 1 can find its own private record", func(t *testing.T) {
 		req := client.DataSvcQueryRequest{
 			Table:   &table1,
-			Readers: []string{*tokenReadRsp1.User.Id},
+			Readers: []string{tokenReadRsp1.User.Id},
 		}
 
 		rsp, _, err := client1.DataSvcAPI.QueryObjects(context.Background()).
@@ -87,7 +87,7 @@ func TestCreate(t *testing.T) {
 	obj2 := client.DataSvcCreateObjectFields{
 		Id:      &uuid2,
 		Table:   table2,
-		Readers: []string{*tokenReadRsp2.User.Id},
+		Readers: []string{tokenReadRsp2.User.Id},
 		Data:    map[string]interface{}{"key": "value"},
 	}
 
@@ -101,7 +101,7 @@ func TestCreate(t *testing.T) {
 	t.Run("query user2 records", func(t *testing.T) {
 		req := client.DataSvcQueryRequest{
 			Table:   &table2,
-			Readers: []string{*tokenReadRsp2.User.Id},
+			Readers: []string{tokenReadRsp2.User.Id},
 		}
 
 		rsp, _, err := client2.DataSvcAPI.QueryObjects(context.Background()).
@@ -123,7 +123,7 @@ func TestCreate(t *testing.T) {
 				},
 			}},
 
-			Readers: []string{*tokenReadRsp1.User.Id},
+			Readers: []string{tokenReadRsp1.User.Id},
 		}
 
 		rsp, _, err := client1.DataSvcAPI.QueryObjects(context.Background()).
@@ -176,7 +176,7 @@ func TestCreate(t *testing.T) {
 					JsonValues: sdk.Marshal([]any{uuid2}),
 				},
 			}},
-			Readers: []string{*tokenReadRsp2.User.Id},
+			Readers: []string{tokenReadRsp2.User.Id},
 		}
 		rsp, _, err := client1.DataSvcAPI.QueryObjects(context.Background()).
 			Body(req).
@@ -211,7 +211,7 @@ func TestCreate(t *testing.T) {
 	t.Run("user 1 can find its own record", func(t *testing.T) {
 		req := &client.DataSvcQueryRequest{
 			Table:   client.PtrString(table1),
-			Readers: []string{*tokenReadRsp1.User.Id},
+			Readers: []string{tokenReadRsp1.User.Id},
 		}
 		rsp, _, err := client1.DataSvcAPI.QueryObjects(context.Background()).
 			Body(*req).
@@ -243,7 +243,7 @@ func TestCreate(t *testing.T) {
 		// Check if user 1 can still find it
 		listReq := &client.DataSvcQueryRequest{
 			Table:   client.PtrString(table1),
-			Readers: []string{*tokenReadRsp1.User.Id},
+			Readers: []string{tokenReadRsp1.User.Id},
 		}
 		rsp, _, err := client1.DataSvcAPI.QueryObjects(context.Background()).
 			Body(*listReq).

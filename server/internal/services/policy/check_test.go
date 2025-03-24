@@ -54,7 +54,7 @@ func TestRateLimiting(t *testing.T) {
 			},
 		},
 		DefaultHeader: map[string]string{
-			"Authorization": "Bearer " + *adminLoginRsp.Token.Token,
+			"Authorization": "Bearer " + adminLoginRsp.Token.Token,
 		},
 	})
 

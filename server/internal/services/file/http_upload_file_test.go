@@ -49,7 +49,7 @@ func TestUploadFile(t *testing.T) {
 		"Some name",
 	)
 	require.NoError(t, err)
-	userClient := options.ClientFactory.Client(sdk.WithToken(token))
+	userClient := options.ClientFactory.Client(sdk.WithToken(token.Token))
 
 	adminClient, _, err := test.AdminClient(options.ClientFactory)
 	require.NoError(t, err)

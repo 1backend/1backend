@@ -71,7 +71,7 @@ func TestDownloadFile(t *testing.T) {
 		"Some name",
 	)
 	require.NoError(t, err)
-	userClient := options.ClientFactory.Client(sdk.WithToken(token))
+	userClient := options.ClientFactory.Client(sdk.WithToken(token.Token))
 
 	downloadUrl := fileHostServer.URL + "/somefile.txt"
 
@@ -173,7 +173,7 @@ func TestDownloadFileWithPartFile(t *testing.T) {
 		"Some name",
 	)
 	require.NoError(t, err)
-	userClient := options.ClientFactory.Client(sdk.WithToken(token))
+	userClient := options.ClientFactory.Client(sdk.WithToken(token.Token))
 
 	adminClient, _, err := test.AdminClient(options.ClientFactory)
 	require.NoError(t, err)
@@ -262,7 +262,7 @@ func TestDownloadFileWithFullFile(t *testing.T) {
 		"Some name",
 	)
 	require.NoError(t, err)
-	userClient := options.ClientFactory.Client(sdk.WithToken(token))
+	userClient := options.ClientFactory.Client(sdk.WithToken(token.Token))
 
 	adminClient, _, err := test.AdminClient(options.ClientFactory)
 	require.NoError(t, err)

@@ -38,7 +38,7 @@ func TestQueryObjects(t *testing.T) {
 	err = starterFunc()
 	require.NoError(t, err)
 
-	manyClients, err := test.MakeClients(options.ClientFactory, 1)
+	manyClients, _, err := test.MakeClients(options.ClientFactory, 1)
 	require.NoError(t, err)
 	client1 := manyClients[0]
 

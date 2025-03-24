@@ -37,7 +37,7 @@ func TestMessageCreatesThread(t *testing.T) {
 		"Some name",
 	)
 	require.NoError(t, err)
-	userClient := options.ClientFactory.Client(sdk.WithToken(token))
+	userClient := options.ClientFactory.Client(sdk.WithToken(token.Token))
 
 	t.Run("no thread id", func(t *testing.T) {
 		req := &chattypes.AddMessageRequest{
