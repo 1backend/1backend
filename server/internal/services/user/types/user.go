@@ -78,10 +78,16 @@ type ReadUserByTokenResponse struct {
 }
 
 type RegisterRequest struct {
-	Name     string  `json:"name,omitempty"`
-	Slug     string  `json:"slug,omitempty"`
-	Contact  Contact `json:"contact,omitempty"`
-	Password string  `json:"password,omitempty"`
+	Name string `json:"name,omitempty"`
+
+	// Slug is a URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
+	// Required due to its central role in the platform.
+	// If your project has no use for a slug, just derive it from the email or similar.
+	Slug string `json:"slug" binding:"required"`
+
+	Contact Contact `json:"contact,omitempty"`
+
+	Password string `json:"password,omitempty"`
 }
 
 type RegisterResponse struct {

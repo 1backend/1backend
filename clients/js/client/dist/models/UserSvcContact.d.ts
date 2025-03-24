@@ -34,7 +34,7 @@ export interface UserSvcContact {
      * @type {string}
      * @memberof UserSvcContact
      */
-    id?: string;
+    id: string;
     /**
      * If this is the primary contact method
      * @type {boolean}
@@ -58,7 +58,7 @@ export interface UserSvcContact {
      * @type {string}
      * @memberof UserSvcContact
      */
-    userId?: string;
+    userId: string;
     /**
      * Value is the platform local unique identifier.
      * Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`.

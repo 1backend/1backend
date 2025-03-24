@@ -35,11 +35,13 @@ export interface UserSvcRegisterRequest {
      */
     password?: string;
     /**
-     *
+     * Slug is a URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
+     * Required due to its central role in the platform.
+     * If your project has no use for a slug, just derive it from the email or similar.
      * @type {string}
      * @memberof UserSvcRegisterRequest
      */
-    slug?: string;
+    slug: string;
 }
 /**
  * Check if a given object implements the UserSvcRegisterRequest interface.

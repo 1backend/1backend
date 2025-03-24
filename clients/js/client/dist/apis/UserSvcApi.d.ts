@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 import * as runtime from '../runtime';
-import type { UserSvcAssignPermissionsRequest, UserSvcChangePasswordRequest, UserSvcCreateOrganizationRequest, UserSvcCreateOrganizationResponse, UserSvcCreateRoleRequest, UserSvcCreateRoleResponse, UserSvcCreateUserRequest, UserSvcGetPermissionsResponse, UserSvcGetPublicKeyResponse, UserSvcGetRolesResponse, UserSvcGetUsersRequest, UserSvcGetUsersResponse, UserSvcIsAuthorizedRequest, UserSvcIsAuthorizedResponse, UserSvcListGrantsRequest, UserSvcListGrantsResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveGrantsRequest, UserSvcSavePermissionsRequest, UserSvcSavePermissionsResponse, UserSvcSaveProfileRequest, UserSvcSetRolePermissionsRequest } from '../models/index';
+import type { UserSvcAssignPermissionsRequest, UserSvcChangePasswordRequest, UserSvcCreateOrganizationRequest, UserSvcCreateOrganizationResponse, UserSvcCreateRoleRequest, UserSvcCreateRoleResponse, UserSvcCreateUserRequest, UserSvcGetPermissionsResponse, UserSvcGetPublicKeyResponse, UserSvcGetRolesResponse, UserSvcGetUsersRequest, UserSvcGetUsersResponse, UserSvcIsAuthorizedRequest, UserSvcIsAuthorizedResponse, UserSvcListGrantsRequest, UserSvcListGrantsResponse, UserSvcListInvitesRequest, UserSvcListInvitesResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveGrantsRequest, UserSvcSaveInvitesRequest, UserSvcSaveInvitesResponse, UserSvcSavePermissionsRequest, UserSvcSavePermissionsResponse, UserSvcSaveProfileRequest, UserSvcSetRolePermissionsRequest } from '../models/index';
 export interface AddRoleToUserRequest {
     userId: string;
     roleId: string;
@@ -55,6 +55,9 @@ export interface IsAuthorizedRequest {
 export interface ListGrantsRequest {
     body: UserSvcListGrantsRequest;
 }
+export interface ListInvitesRequest {
+    body: UserSvcListInvitesRequest;
+}
 export interface LoginRequest {
     body: UserSvcLoginRequest;
 }
@@ -72,6 +75,9 @@ export interface ResetPasswordRequest {
 }
 export interface SaveGrantsRequest {
     body: UserSvcSaveGrantsRequest;
+}
+export interface SaveInvitesRequest {
+    body: UserSvcSaveInvitesRequest;
 }
 export interface SavePermissionsRequest {
     body: UserSvcSavePermissionsRequest;
@@ -243,6 +249,16 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      */
     listGrants(requestParameters: ListGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListGrantsResponse>;
     /**
+     * List user invites stored in the database.
+     * List Invites
+     */
+    listInvitesRaw(requestParameters: ListInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListInvitesResponse>>;
+    /**
+     * List user invites stored in the database.
+     * List Invites
+     */
+    listInvites(requestParameters: ListInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListInvitesResponse>;
+    /**
      * Authenticates a user and returns a token.
      * Login
      */
@@ -302,6 +318,16 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      * Save Grants
      */
     saveGrants(requestParameters: SaveGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+    /**
+     * Save a list of user invites to the database.
+     * Save Invites
+     */
+    saveInvitesRaw(requestParameters: SaveInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcSaveInvitesResponse>>;
+    /**
+     * Save a list of user invites to the database.
+     * Save Invites
+     */
+    saveInvites(requestParameters: SaveInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcSaveInvitesResponse>;
     /**
      * Creates or updates a list of permissions. <b>The permission ID must be prefixed by the callers slug.</b> Eg. if the owner\'s slug is `petstore-svc` the permission should look like `petstore-svc:pet:edit`.  Requires the `user-svc:permission:create` permission.
      * Save Permissions

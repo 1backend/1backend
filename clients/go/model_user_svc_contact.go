@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the UserSvcContact type satisfies the MappedNullable interface at compile time
@@ -23,25 +25,29 @@ type UserSvcContact struct {
 	CreatedAt *string `json:"createdAt,omitempty"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	// The unique identifier, which can be a URL.  Example values: \"joe12\" (1backend username), \"twitter.com/thejoe\" (twitter url), \"joe@joesdomain.com\" (email)
-	Id *string `json:"id,omitempty"`
+	Id string `json:"id"`
 	// If this is the primary contact method
 	IsPrimary *bool `json:"isPrimary,omitempty"`
 	// Platform of the contact (e.g., \"email\", \"phone\", \"twitter\")
 	Platform *string `json:"platform,omitempty"`
 	UpdatedAt *string `json:"updatedAt,omitempty"`
-	UserId *string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 	// Value is the platform local unique identifier. Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`. For email and phones the `id` and the `value` will be the same. This field mostly exists for display purposes.  Example values: \"joe12\" (1backend username), \"thejoe\" (twitter username), \"joe@joesdomain.com\" (email)
 	Value *string `json:"value,omitempty"`
 	// Whether the contact is verified
 	Verified *bool `json:"verified,omitempty"`
 }
 
+type _UserSvcContact UserSvcContact
+
 // NewUserSvcContact instantiates a new UserSvcContact object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcContact() *UserSvcContact {
+func NewUserSvcContact(id string, userId string) *UserSvcContact {
 	this := UserSvcContact{}
+	this.Id = id
+	this.UserId = userId
 	return &this
 }
 
@@ -117,36 +123,28 @@ func (o *UserSvcContact) SetDeletedAt(v string) {
 	o.DeletedAt = &v
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value
 func (o *UserSvcContact) GetId() string {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Id
+
+	return o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcContact) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Id, true
+	return &o.Id, true
 }
 
-// HasId returns a boolean if a field has been set.
-func (o *UserSvcContact) HasId() bool {
-	if o != nil && !IsNil(o.Id) {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
+// SetId sets field value
 func (o *UserSvcContact) SetId(v string) {
-	o.Id = &v
+	o.Id = v
 }
 
 // GetIsPrimary returns the IsPrimary field value if set, zero value otherwise.
@@ -245,36 +243,28 @@ func (o *UserSvcContact) SetUpdatedAt(v string) {
 	o.UpdatedAt = &v
 }
 
-// GetUserId returns the UserId field value if set, zero value otherwise.
+// GetUserId returns the UserId field value
 func (o *UserSvcContact) GetUserId() string {
-	if o == nil || IsNil(o.UserId) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.UserId
+
+	return o.UserId
 }
 
-// GetUserIdOk returns a tuple with the UserId field value if set, nil otherwise
+// GetUserIdOk returns a tuple with the UserId field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcContact) GetUserIdOk() (*string, bool) {
-	if o == nil || IsNil(o.UserId) {
+	if o == nil {
 		return nil, false
 	}
-	return o.UserId, true
+	return &o.UserId, true
 }
 
-// HasUserId returns a boolean if a field has been set.
-func (o *UserSvcContact) HasUserId() bool {
-	if o != nil && !IsNil(o.UserId) {
-		return true
-	}
-
-	return false
-}
-
-// SetUserId gets a reference to the given string and assigns it to the UserId field.
+// SetUserId sets field value
 func (o *UserSvcContact) SetUserId(v string) {
-	o.UserId = &v
+	o.UserId = v
 }
 
 // GetValue returns the Value field value if set, zero value otherwise.
@@ -357,9 +347,7 @@ func (o UserSvcContact) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.DeletedAt) {
 		toSerialize["deletedAt"] = o.DeletedAt
 	}
-	if !IsNil(o.Id) {
-		toSerialize["id"] = o.Id
-	}
+	toSerialize["id"] = o.Id
 	if !IsNil(o.IsPrimary) {
 		toSerialize["isPrimary"] = o.IsPrimary
 	}
@@ -369,9 +357,7 @@ func (o UserSvcContact) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.UpdatedAt) {
 		toSerialize["updatedAt"] = o.UpdatedAt
 	}
-	if !IsNil(o.UserId) {
-		toSerialize["userId"] = o.UserId
-	}
+	toSerialize["userId"] = o.UserId
 	if !IsNil(o.Value) {
 		toSerialize["value"] = o.Value
 	}
@@ -379,6 +365,44 @@ func (o UserSvcContact) ToMap() (map[string]interface{}, error) {
 		toSerialize["verified"] = o.Verified
 	}
 	return toSerialize, nil
+}
+
+func (o *UserSvcContact) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"id",
+		"userId",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varUserSvcContact := _UserSvcContact{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varUserSvcContact)
+
+	if err != nil {
+		return err
+	}
+
+	*o = UserSvcContact(varUserSvcContact)
+
+	return err
 }
 
 type NullableUserSvcContact struct {

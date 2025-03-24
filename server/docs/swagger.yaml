@@ -2748,6 +2748,9 @@ definitions:
       verified:
         description: Whether the contact is verified
         type: boolean
+    required:
+    - id
+    - userId
     type: object
   user_svc.CreateOrganizationRequest:
     properties:
@@ -2967,6 +2970,19 @@ definitions:
       token:
         $ref: '#/definitions/user_svc.AuthToken'
     type: object
+  user_svc.NewInvite:
+    properties:
+      contactId:
+        type: string
+      id:
+        example: inv_fIYPbMHIcI
+        type: string
+      roleId:
+        type: string
+    required:
+    - contactId
+    - roleId
+    type: object
   user_svc.Organization:
     properties:
       createdAt:
@@ -3044,7 +3060,13 @@ definitions:
       password:
         type: string
       slug:
+        description: |-
+          Slug is a URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
+          Required due to its central role in the platform.
+          If your project has no use for a slug, just derive it from the email or similar.
         type: string
+    required:
+    - slug
     type: object
   user_svc.RegisterResponse:
     properties:
@@ -3092,7 +3114,7 @@ definitions:
     properties:
       invites:
         items:
-          $ref: '#/definitions/user_svc.Invite'
+          $ref: '#/definitions/user_svc.NewInvite'
         type: array
     required:
     - invites
@@ -5984,6 +6006,38 @@ paths:
       - User Svc
   /user-svc/invites:
     post:
+      consumes:
+      - application/json
+      description: List user invites stored in the database.
+      operationId: listInvites
+      parameters:
+      - description: List Invites Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.ListInvitesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Invites listed successfully
+          schema:
+            $ref: '#/definitions/user_svc.ListInvitesResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List Invites
+      tags:
+      - User Svc
+    put:
       consumes:
       - application/json
       description: Save a list of user invites to the database.

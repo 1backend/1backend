@@ -32,6 +32,8 @@ import type {
   UserSvcIsAuthorizedResponse,
   UserSvcListGrantsRequest,
   UserSvcListGrantsResponse,
+  UserSvcListInvitesRequest,
+  UserSvcListInvitesResponse,
   UserSvcLoginRequest,
   UserSvcLoginResponse,
   UserSvcReadUserByTokenResponse,
@@ -39,6 +41,8 @@ import type {
   UserSvcRegisterResponse,
   UserSvcResetPasswordRequest,
   UserSvcSaveGrantsRequest,
+  UserSvcSaveInvitesRequest,
+  UserSvcSaveInvitesResponse,
   UserSvcSavePermissionsRequest,
   UserSvcSavePermissionsResponse,
   UserSvcSaveProfileRequest,
@@ -79,6 +83,10 @@ import {
     UserSvcListGrantsRequestToJSON,
     UserSvcListGrantsResponseFromJSON,
     UserSvcListGrantsResponseToJSON,
+    UserSvcListInvitesRequestFromJSON,
+    UserSvcListInvitesRequestToJSON,
+    UserSvcListInvitesResponseFromJSON,
+    UserSvcListInvitesResponseToJSON,
     UserSvcLoginRequestFromJSON,
     UserSvcLoginRequestToJSON,
     UserSvcLoginResponseFromJSON,
@@ -93,6 +101,10 @@ import {
     UserSvcResetPasswordRequestToJSON,
     UserSvcSaveGrantsRequestFromJSON,
     UserSvcSaveGrantsRequestToJSON,
+    UserSvcSaveInvitesRequestFromJSON,
+    UserSvcSaveInvitesRequestToJSON,
+    UserSvcSaveInvitesResponseFromJSON,
+    UserSvcSaveInvitesResponseToJSON,
     UserSvcSavePermissionsRequestFromJSON,
     UserSvcSavePermissionsRequestToJSON,
     UserSvcSavePermissionsResponseFromJSON,
@@ -160,6 +172,10 @@ export interface ListGrantsRequest {
     body: UserSvcListGrantsRequest;
 }
 
+export interface ListInvitesRequest {
+    body: UserSvcListInvitesRequest;
+}
+
 export interface LoginRequest {
     body: UserSvcLoginRequest;
 }
@@ -181,6 +197,10 @@ export interface ResetPasswordRequest {
 
 export interface SaveGrantsRequest {
     body: UserSvcSaveGrantsRequest;
+}
+
+export interface SaveInvitesRequest {
+    body: UserSvcSaveInvitesRequest;
 }
 
 export interface SavePermissionsRequest {
@@ -812,6 +832,48 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
+     * List user invites stored in the database.
+     * List Invites
+     */
+    async listInvitesRaw(requestParameters: ListInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListInvitesResponse>> {
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling listInvites().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/user-svc/invites`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserSvcListInvitesRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListInvitesResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * List user invites stored in the database.
+     * List Invites
+     */
+    async listInvites(requestParameters: ListInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListInvitesResponse> {
+        const response = await this.listInvitesRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * Authenticates a user and returns a token.
      * Login
      */
@@ -1056,6 +1118,48 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     async saveGrants(requestParameters: SaveGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.saveGrantsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Save a list of user invites to the database.
+     * Save Invites
+     */
+    async saveInvitesRaw(requestParameters: SaveInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcSaveInvitesResponse>> {
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling saveInvites().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/user-svc/invites`,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserSvcSaveInvitesRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcSaveInvitesResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Save a list of user invites to the database.
+     * Save Invites
+     */
+    async saveInvites(requestParameters: SaveInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcSaveInvitesResponse> {
+        const response = await this.saveInvitesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

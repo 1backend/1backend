@@ -489,6 +489,36 @@ func (mr *MockUserSvcAPIMockRecorder) ListGrantsExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGrantsExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListGrantsExecute), r)
 }
 
+// ListInvites mocks base method.
+func (m *MockUserSvcAPI) ListInvites(ctx context.Context) ApiListInvitesRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListInvites", ctx)
+	ret0, _ := ret[0].(ApiListInvitesRequest)
+	return ret0
+}
+
+// ListInvites indicates an expected call of ListInvites.
+func (mr *MockUserSvcAPIMockRecorder) ListInvites(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListInvites", reflect.TypeOf((*MockUserSvcAPI)(nil).ListInvites), ctx)
+}
+
+// ListInvitesExecute mocks base method.
+func (m *MockUserSvcAPI) ListInvitesExecute(r ApiListInvitesRequest) (*UserSvcListInvitesResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListInvitesExecute", r)
+	ret0, _ := ret[0].(*UserSvcListInvitesResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListInvitesExecute indicates an expected call of ListInvitesExecute.
+func (mr *MockUserSvcAPIMockRecorder) ListInvitesExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListInvitesExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListInvitesExecute), r)
+}
+
 // Login mocks base method.
 func (m *MockUserSvcAPI) Login(ctx context.Context) ApiLoginRequest {
 	m.ctrl.T.Helper()

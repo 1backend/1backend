@@ -35,7 +35,7 @@ import (
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
-// @Router /user-svc/invites [post]
+// @Router /user-svc/invites [put]
 func (s *UserService) SaveInvites(w http.ResponseWriter, r *http.Request) {
 
 	rsp, err := s.isAuthorized(r, user.PermissionInviteEdit.Id, nil, nil)
@@ -53,6 +53,22 @@ func (s *UserService) SaveInvites(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer r.Body.Close()
+
+	auth := sdk.AuthorizerImpl{}
+	claim, err := auth.ParseJWTFromRequest(s.publicKeyPem, r)
+	if err != nil || claim == nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("Unauthorized"))
+		return
+	}
+
+	for _, invite := range req.Invites {
+		if !sdk.OwnsRole(claim, invite.RoleId) {
+			w.WriteHeader(http.StatusUnauthorized)
+			w.Write([]byte("Unauthorized"))
+			return
+		}
+	}
 
 	invites, err := s.saveInvites(rsp.Id, rsp.Slug, &req)
 	if err != nil {
@@ -85,7 +101,6 @@ func (s *UserService) saveInvites(
 
 		if invite.Id == "" {
 			invite.Id = sdk.Id("inv")
-			invite.CreatedAt = now
 		}
 
 		invites = append(invites, user.Invite{

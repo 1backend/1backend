@@ -16,6 +16,8 @@ import { UserSvcContactFromJSON, UserSvcContactToJSON, } from './UserSvcContact'
  * Check if a given object implements the UserSvcRegisterRequest interface.
  */
 export function instanceOfUserSvcRegisterRequest(value) {
+    if (!('slug' in value) || value['slug'] === undefined)
+        return false;
     return true;
 }
 export function UserSvcRegisterRequestFromJSON(json) {
@@ -29,7 +31,7 @@ export function UserSvcRegisterRequestFromJSONTyped(json, ignoreDiscriminator) {
         'contact': json['contact'] == null ? undefined : UserSvcContactFromJSON(json['contact']),
         'name': json['name'] == null ? undefined : json['name'],
         'password': json['password'] == null ? undefined : json['password'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
+        'slug': json['slug'],
     };
 }
 export function UserSvcRegisterRequestToJSON(json) {

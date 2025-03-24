@@ -57,7 +57,7 @@ func RegisterServiceAccount(userService client.UserSvcAPI, serviceSlug, serviceN
 
 	if err != nil {
 		_, _, err = userService.Register(ctx).Body(client.UserSvcRegisterRequest{
-			Slug:     client.PtrString(slug),
+			Slug:     slug,
 			Name:     client.PtrString(serviceName),
 			Password: client.PtrString(pw),
 		}).Execute()
@@ -79,7 +79,7 @@ func RegisterServiceAccount(userService client.UserSvcAPI, serviceSlug, serviceN
 
 func RegisterUserAccount(userService client.UserSvcAPI, slug, password, username string) (*client.UserSvcAuthToken, error) {
 	_, _, err := userService.Register(context.Background()).Body(client.UserSvcRegisterRequest{
-		Slug:     client.PtrString(slug),
+		Slug:     slug,
 		Password: client.PtrString(password),
 		Name:     client.PtrString(username),
 	}).Execute()

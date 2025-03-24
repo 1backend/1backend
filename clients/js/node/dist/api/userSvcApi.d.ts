@@ -26,6 +26,8 @@ import { UserSvcIsAuthorizedRequest } from '../model/userSvcIsAuthorizedRequest'
 import { UserSvcIsAuthorizedResponse } from '../model/userSvcIsAuthorizedResponse';
 import { UserSvcListGrantsRequest } from '../model/userSvcListGrantsRequest';
 import { UserSvcListGrantsResponse } from '../model/userSvcListGrantsResponse';
+import { UserSvcListInvitesRequest } from '../model/userSvcListInvitesRequest';
+import { UserSvcListInvitesResponse } from '../model/userSvcListInvitesResponse';
 import { UserSvcLoginRequest } from '../model/userSvcLoginRequest';
 import { UserSvcLoginResponse } from '../model/userSvcLoginResponse';
 import { UserSvcReadUserByTokenResponse } from '../model/userSvcReadUserByTokenResponse';
@@ -33,6 +35,8 @@ import { UserSvcRegisterRequest } from '../model/userSvcRegisterRequest';
 import { UserSvcRegisterResponse } from '../model/userSvcRegisterResponse';
 import { UserSvcResetPasswordRequest } from '../model/userSvcResetPasswordRequest';
 import { UserSvcSaveGrantsRequest } from '../model/userSvcSaveGrantsRequest';
+import { UserSvcSaveInvitesRequest } from '../model/userSvcSaveInvitesRequest';
+import { UserSvcSaveInvitesResponse } from '../model/userSvcSaveInvitesResponse';
 import { UserSvcSavePermissionsRequest } from '../model/userSvcSavePermissionsRequest';
 import { UserSvcSavePermissionsResponse } from '../model/userSvcSavePermissionsResponse';
 import { UserSvcSaveProfileRequest } from '../model/userSvcSaveProfileRequest';
@@ -259,6 +263,19 @@ export declare class UserSvcApi {
         body: UserSvcListGrantsResponse;
     }>;
     /**
+     * List user invites stored in the database.
+     * @summary List Invites
+     * @param body List Invites Request
+     */
+    listInvites(body: UserSvcListInvitesRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: UserSvcListInvitesResponse;
+    }>;
+    /**
      * Authenticates a user and returns a token.
      * @summary Login
      * @param body Login Request
@@ -337,6 +354,19 @@ export declare class UserSvcApi {
     }): Promise<{
         response: http.IncomingMessage;
         body: object;
+    }>;
+    /**
+     * Save a list of user invites to the database.
+     * @summary Save Invites
+     * @param body Save Invites Request
+     */
+    saveInvites(body: UserSvcSaveInvitesRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: UserSvcSaveInvitesResponse;
     }>;
     /**
      * Creates or updates a list of permissions. <b>The permission ID must be prefixed by the callers slug.</b> Eg. if the owner\'s slug is `petstore-svc` the permission should look like `petstore-svc:pet:edit`.  Requires the `user-svc:permission:create` permission.

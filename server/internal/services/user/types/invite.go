@@ -53,14 +53,16 @@ func (i Invite) GetId() string {
 	return i.Id
 }
 
-type PartialInvite struct {
+// NewInvite is used to create a new invite.
+// It is a subset of the Invite struct, as some fields are set automatically.
+type NewInvite struct {
 	Id        string `json:"id,omitempty" example:"inv_fIYPbMHIcI"`
 	ContactId string `json:"contactId" binding:"required"`
 	RoleId    string `json:"roleId" binding:"required"`
 }
 
 type SaveInvitesRequest struct {
-	Invites []Invite `json:"invites" binding:"required"`
+	Invites []NewInvite `json:"invites" binding:"required"`
 }
 
 type SaveInvitesResponse struct {

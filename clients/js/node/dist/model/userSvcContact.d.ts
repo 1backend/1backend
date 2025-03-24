@@ -15,7 +15,7 @@ export declare class UserSvcContact {
     /**
     * The unique identifier, which can be a URL.  Example values: \"joe12\" (1backend username), \"twitter.com/thejoe\" (twitter url), \"joe@joesdomain.com\" (email)
     */
-    'id'?: string;
+    'id': string;
     /**
     * If this is the primary contact method
     */
@@ -25,7 +25,7 @@ export declare class UserSvcContact {
     */
     'platform'?: string;
     'updatedAt'?: string;
-    'userId'?: string;
+    'userId': string;
     /**
     * Value is the platform local unique identifier. Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`. For email and phones the `id` and the `value` will be the same. This field mostly exists for display purposes.  Example values: \"joe12\" (1backend username), \"thejoe\" (twitter username), \"joe@joesdomain.com\" (email)
     */

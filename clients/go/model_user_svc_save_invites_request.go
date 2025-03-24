@@ -22,7 +22,7 @@ var _ MappedNullable = &UserSvcSaveInvitesRequest{}
 
 // UserSvcSaveInvitesRequest struct for UserSvcSaveInvitesRequest
 type UserSvcSaveInvitesRequest struct {
-	Invites []UserSvcInvite `json:"invites"`
+	Invites []UserSvcNewInvite `json:"invites"`
 }
 
 type _UserSvcSaveInvitesRequest UserSvcSaveInvitesRequest
@@ -31,7 +31,7 @@ type _UserSvcSaveInvitesRequest UserSvcSaveInvitesRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcSaveInvitesRequest(invites []UserSvcInvite) *UserSvcSaveInvitesRequest {
+func NewUserSvcSaveInvitesRequest(invites []UserSvcNewInvite) *UserSvcSaveInvitesRequest {
 	this := UserSvcSaveInvitesRequest{}
 	this.Invites = invites
 	return &this
@@ -46,9 +46,9 @@ func NewUserSvcSaveInvitesRequestWithDefaults() *UserSvcSaveInvitesRequest {
 }
 
 // GetInvites returns the Invites field value
-func (o *UserSvcSaveInvitesRequest) GetInvites() []UserSvcInvite {
+func (o *UserSvcSaveInvitesRequest) GetInvites() []UserSvcNewInvite {
 	if o == nil {
-		var ret []UserSvcInvite
+		var ret []UserSvcNewInvite
 		return ret
 	}
 
@@ -57,7 +57,7 @@ func (o *UserSvcSaveInvitesRequest) GetInvites() []UserSvcInvite {
 
 // GetInvitesOk returns a tuple with the Invites field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcSaveInvitesRequest) GetInvitesOk() ([]UserSvcInvite, bool) {
+func (o *UserSvcSaveInvitesRequest) GetInvitesOk() ([]UserSvcNewInvite, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -65,7 +65,7 @@ func (o *UserSvcSaveInvitesRequest) GetInvitesOk() ([]UserSvcInvite, bool) {
 }
 
 // SetInvites sets field value
-func (o *UserSvcSaveInvitesRequest) SetInvites(v []UserSvcInvite) {
+func (o *UserSvcSaveInvitesRequest) SetInvites(v []UserSvcNewInvite) {
 	o.Invites = v
 }
 

@@ -107,7 +107,7 @@ func NewUserService(
 
 	invitesStore, err := datastoreFactory(
 		"userSvcInvites",
-		&usertypes.Contact{},
+		&usertypes.Invite{},
 	)
 	if err != nil {
 		return nil, err

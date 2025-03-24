@@ -167,13 +167,14 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**GetUsers**](docs/UserSvcAPI.md#getusers) | **Post** /user-svc/users | List Users
 *UserSvcAPI* | [**IsAuthorized**](docs/UserSvcAPI.md#isauthorized) | **Post** /user-svc/permission/{permissionId}/is-authorized | Is Authorized
 *UserSvcAPI* | [**ListGrants**](docs/UserSvcAPI.md#listgrants) | **Post** /user-svc/grants | List Grants
+*UserSvcAPI* | [**ListInvites**](docs/UserSvcAPI.md#listinvites) | **Post** /user-svc/invites | List Invites
 *UserSvcAPI* | [**Login**](docs/UserSvcAPI.md#login) | **Post** /user-svc/login | Login
 *UserSvcAPI* | [**ReadUserByToken**](docs/UserSvcAPI.md#readuserbytoken) | **Post** /user-svc/user/by-token | Read User by Token
 *UserSvcAPI* | [**Register**](docs/UserSvcAPI.md#register) | **Post** /user-svc/register | Register
 *UserSvcAPI* | [**RemoveUserFromOrganization**](docs/UserSvcAPI.md#removeuserfromorganization) | **Delete** /user-svc/organization/{organizationId}/user/{userId} | Remove a User from an Organization
 *UserSvcAPI* | [**ResetPassword**](docs/UserSvcAPI.md#resetpassword) | **Post** /user-svc/{userId}/reset-password | Reset Password
 *UserSvcAPI* | [**SaveGrants**](docs/UserSvcAPI.md#savegrants) | **Put** /user-svc/grants | Save Grants
-*UserSvcAPI* | [**SaveInvites**](docs/UserSvcAPI.md#saveinvites) | **Post** /user-svc/invites | Save Invites
+*UserSvcAPI* | [**SaveInvites**](docs/UserSvcAPI.md#saveinvites) | **Put** /user-svc/invites | Save Invites
 *UserSvcAPI* | [**SavePermissions**](docs/UserSvcAPI.md#savepermissions) | **Put** /user-svc/permissions | Save Permissions
 *UserSvcAPI* | [**SaveSelf**](docs/UserSvcAPI.md#saveself) | **Put** /user-svc/self | Save User Profile
 *UserSvcAPI* | [**SaveUser**](docs/UserSvcAPI.md#saveuser) | **Put** /user-svc/user/{userId} | Save User
@@ -373,6 +374,7 @@ Class | Method | HTTP request | Description
  - [UserSvcListInvitesResponse](docs/UserSvcListInvitesResponse.md)
  - [UserSvcLoginRequest](docs/UserSvcLoginRequest.md)
  - [UserSvcLoginResponse](docs/UserSvcLoginResponse.md)
+ - [UserSvcNewInvite](docs/UserSvcNewInvite.md)
  - [UserSvcOrganization](docs/UserSvcOrganization.md)
  - [UserSvcPermission](docs/UserSvcPermission.md)
  - [UserSvcPermissionLink](docs/UserSvcPermissionLink.md)

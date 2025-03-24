@@ -225,6 +225,7 @@ docs/UserSvcListInvitesRequest.md
 docs/UserSvcListInvitesResponse.md
 docs/UserSvcLoginRequest.md
 docs/UserSvcLoginResponse.md
+docs/UserSvcNewInvite.md
 docs/UserSvcOrganization.md
 docs/UserSvcPermission.md
 docs/UserSvcPermissionLink.md
@@ -435,6 +436,7 @@ model_user_svc_list_invites_request.go
 model_user_svc_list_invites_response.go
 model_user_svc_login_request.go
 model_user_svc_login_response.go
+model_user_svc_new_invite.go
 model_user_svc_organization.go
 model_user_svc_permission.go
 model_user_svc_permission_link.go

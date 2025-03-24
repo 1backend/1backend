@@ -4155,7 +4155,7 @@ const docTemplate = `{
             }
         },
         "/user-svc/invites": {
-            "post": {
+            "put": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -4195,6 +4195,56 @@ const docTemplate = `{
                         "description": "Invalid JSON",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "List user invites stored in the database.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Svc"
+                ],
+                "summary": "List Invites",
+                "operationId": "listInvites",
+                "parameters": [
+                    {
+                        "description": "List Invites Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ListInvitesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Invites listed successfully",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ListInvitesResponse"
                         }
                     },
                     "401": {
@@ -9188,6 +9238,10 @@ const docTemplate = `{
         },
         "user_svc.Contact": {
             "type": "object",
+            "required": [
+                "id",
+                "userId"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"
@@ -9542,6 +9596,25 @@ const docTemplate = `{
                 }
             }
         },
+        "user_svc.NewInvite": {
+            "type": "object",
+            "required": [
+                "contactId",
+                "roleId"
+            ],
+            "properties": {
+                "contactId": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "inv_fIYPbMHIcI"
+                },
+                "roleId": {
+                    "type": "string"
+                }
+            }
+        },
         "user_svc.Organization": {
             "type": "object",
             "required": [
@@ -9630,6 +9703,9 @@ const docTemplate = `{
         },
         "user_svc.RegisterRequest": {
             "type": "object",
+            "required": [
+                "slug"
+            ],
             "properties": {
                 "contact": {
                     "$ref": "#/definitions/user_svc.Contact"
@@ -9641,6 +9717,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "slug": {
+                    "description": "Slug is a URL-friendly unique (inside the 1Backend platform) identifier for the ` + "`" + `user` + "`" + `.\nRequired due to its central role in the platform.\nIf your project has no use for a slug, just derive it from the email or similar.",
                     "type": "string"
                 }
             }
@@ -9719,7 +9796,7 @@ const docTemplate = `{
                 "invites": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user_svc.Invite"
+                        "$ref": "#/definitions/user_svc.NewInvite"
                     }
                 }
             }
