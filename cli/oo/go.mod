@@ -3,8 +3,8 @@ module github.com/1backend/1backend/cli/oo
 go 1.23
 
 require (
-	github.com/1backend/1backend/clients/go v0.0.0-20250316071826-33e9249d162d
-	github.com/1backend/1backend/sdk/go v0.0.0-20250316071826-33e9249d162d
+	github.com/1backend/1backend/clients/go v0.0.0-20250324133935-7e41e6b7b238
+	github.com/1backend/1backend/sdk/go v0.0.0-20250324133935-7e41e6b7b238
 	github.com/ghodss/yaml v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.8.1
@@ -24,8 +24,10 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/lib/pq v1.10.9 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/samber/lo v1.49.1 // indirect
 	github.com/sony/sonyflake v1.2.0 // indirect
 	go.uber.org/mock v0.5.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
