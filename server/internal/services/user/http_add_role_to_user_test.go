@@ -46,14 +46,15 @@ func TestAssignRoleToUser(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	t.Run("nonexistent role", func(t *testing.T) {
+	// This is needed for dynamic roles.
+	t.Run("can add nonexistent role to user", func(t *testing.T) {
 		_, _, err := userClient.UserSvcAPI.AddRoleToUser(
 			context.Background(),
 			tokens[1].UserId,
 			"test-user-slug-0:custom-role-nonexistent",
 		).Execute()
 
-		require.Error(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("assign role", func(t *testing.T) {
