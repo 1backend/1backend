@@ -21,12 +21,21 @@ import (
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
-	"github.com/samber/lo"
 )
 
 // @ID saveInvites
 // @Summary Save Invites
-// @Description Save a list of user invites to the database.
+// @Description Invite a list of users by contact ID to acquire a role. Works on future or current users.
+// @Description A user can only invite an other user to a role if the user owns that role.
+// @Description
+// @Description A user "owns" a role in the following cases:
+// @Description - A static role where the role ID is prefixed with the caller's slug.
+// @Description - Any dynamic or static role where the caller is an admin.
+// @Description
+// @Description Examples:
+// @Description - A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
+// @Description - A user with any slug who has the role "my-service:admin" owns "my-service:user".
+// @Description - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
 // @Tags User Svc
 // @Accept json
 // @Produce json
@@ -39,7 +48,7 @@ import (
 // @Router /user-svc/invites [put]
 func (s *UserService) SaveInvites(w http.ResponseWriter, r *http.Request) {
 
-	_, err := s.isAuthorized(r, user.PermissionInviteEdit.Id, nil, nil)
+	usr, err := s.isAuthorized(r, user.PermissionInviteEdit.Id, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
@@ -71,7 +80,7 @@ func (s *UserService) SaveInvites(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	invites, err := s.saveInvites(&req)
+	invites, err := s.saveInvites(usr, &req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -85,17 +94,24 @@ func (s *UserService) SaveInvites(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) saveInvites(
+	usr *user.User,
 	req *user.SaveInvitesRequest,
 ) ([]user.Invite, error) {
+	// @todo lock here
 
 	if len(req.Invites) == 0 {
 		return nil, errors.New("no invites provided")
 	}
 	now := time.Now()
 
-	contactIds := lo.Map(req.Invites, func(inv user.NewInvite, _ int) any {
-		return inv.ContactId
-	})
+	var (
+		contactIds []any
+		inviteIds  []any
+	)
+	for _, invite := range req.Invites {
+		contactIds = append(contactIds, invite.ContactId)
+		inviteIds = append(inviteIds, invite.Id)
+	}
 
 	contacts, err := s.contactsStore.Query(
 		datastore.IsInList(
@@ -107,6 +123,20 @@ func (s *UserService) saveInvites(
 		return nil, err
 	}
 
+	inviteIs, err := s.invitesStore.Query(
+		datastore.IsInList(
+			datastore.Field("id"),
+			inviteIds...,
+		)).
+		Find()
+	if err != nil {
+		return nil, err
+	}
+	existingInvites := map[string]*user.Invite{}
+	for _, inviteI := range inviteIs {
+		existingInvites[inviteI.GetId()] = inviteI.(*user.Invite)
+	}
+
 	// Map contactIds -> userId
 	existingContact := map[string]string{}
 	for _, contact := range contacts {
@@ -115,8 +145,9 @@ func (s *UserService) saveInvites(
 
 	invites := []user.Invite{}
 	for _, invite := range req.Invites {
+		// Already registered users get applied the role immediately
 		if userId, ok := existingContact[invite.ContactId]; ok {
-			err = s.addRoleToUser(userId, invite.RoleId)
+			err = s.assignRole(userId, invite.RoleId)
 			if err != nil {
 				return nil, err
 			}
@@ -131,11 +162,22 @@ func (s *UserService) saveInvites(
 			invite.Id = sdk.Id("inv")
 		}
 
-		invites = append(invites, user.Invite{
-			CreatedAt: now,
+		i := user.Invite{
 			ContactId: invite.ContactId,
 			RoleId:    invite.RoleId,
-		})
+		}
+
+		if existingInvite, ok := existingInvites[invite.Id]; ok {
+			i.CreatedAt = existingInvite.CreatedAt
+			i.UpdatedAt = now
+			i.OwnerIds = append(existingInvite.OwnerIds, usr.Id)
+		} else {
+			i.CreatedAt = now
+			i.UpdatedAt = now
+			i.OwnerIds = []string{usr.Id}
+		}
+
+		invites = append(invites, i)
 	}
 
 	rows := []datastore.Row{}

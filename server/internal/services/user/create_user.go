@@ -94,14 +94,14 @@ func (s *UserService) createUser(
 	}
 
 	for _, roleId := range roleIds {
-		err = s.addRoleToUser(user.Id, roleId)
+		err = s.assignRole(user.Id, roleId)
 		if err != nil {
 			return err
 		}
 	}
 
 	if len(roleIds) == 0 {
-		err = s.addRoleToUser(user.Id, usertypes.RoleUser.Id)
+		err = s.assignRole(user.Id, usertypes.RoleUser.Id)
 		if err != nil {
 			return err
 		}

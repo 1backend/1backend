@@ -35,7 +35,7 @@ import (
 // @Router /user-svc/invites [post]
 func (s *UserService) ListInvites(w http.ResponseWriter, r *http.Request) {
 
-	_, err := s.isAuthorized(r, user.PermissionInviteView.Id, nil, nil)
+	usr, err := s.isAuthorized(r, user.PermissionInviteView.Id, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
@@ -51,7 +51,7 @@ func (s *UserService) ListInvites(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	invites, err := s.listInvites(req)
+	invites, err := s.listInvites(usr.Id, req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -64,8 +64,13 @@ func (s *UserService) ListInvites(w http.ResponseWriter, r *http.Request) {
 	w.Write(bs)
 }
 
-func (s *UserService) listInvites(req *user.ListInvitesRequest) ([]user.Invite, error) {
-	filters := []datastore.Filter{}
+func (s *UserService) listInvites(
+	callerId string,
+	req *user.ListInvitesRequest,
+) ([]user.Invite, error) {
+	filters := []datastore.Filter{
+		datastore.Equals([]string{"ownerIds"}, callerId),
+	}
 	if req.ContactId != "" {
 		filters = append(filters, datastore.Equals([]string{"contactId"}, req.ContactId))
 	}
@@ -80,7 +85,9 @@ func (s *UserService) listInvites(req *user.ListInvitesRequest) ([]user.Invite, 
 
 	invites := []user.Invite{}
 	for _, inviteI := range inviteIs {
-		invites = append(invites, *inviteI.(*user.Invite))
+		i := *inviteI.(*user.Invite)
+		i.OwnerIds = nil
+		invites = append(invites, i)
 	}
 
 	return invites, nil

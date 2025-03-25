@@ -20,7 +20,6 @@ import (
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/pkg/errors"
-	"github.com/samber/lo"
 )
 
 // Authorizer can extract roles from tokens.
@@ -162,31 +161,40 @@ func ExtractOrganizationRoles(roleIds []string) map[string][]string {
 }
 
 // OwnsRole determines if the user owns the specified role based on the role ID.
-// It checks if the role is associated with the user's slug or if the user is an admin of the organization the role belongs to.
-// Role ownership can be determined in two cases:
-// 1. The role ID starts with the user's slug (i.e., "user-svc:{slug}:{roleId}").
-// 2. The role ID represents a dynamic role linked to an organization (i.e., "user-svc:org:{orgId}:admin").
-// In the second case, the user is considered the owner if they have an admin role for all organizations in the role ID's organization.
+// This simple function is a critical part of the authorization logic.
+//
+// A user "owns" a role in the following cases:
+// - A static role where the role ID is prefixed with the caller's slug.
+// - Any dynamic or static role where the caller is an admin.
+//
+// Examples:
+// - A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
+// - A user with any slug who has the role "my-service:admin" owns "my-service:user".
+// - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
 func OwnsRole(claim *Claims, roleId string) bool {
 	if strings.HasPrefix(roleId, claim.Slug) {
 		return true
 	}
 
-	if strings.HasPrefix(roleId, "user-svc:org:") {
-		claimRoles := ExtractOrganizationRoles(claim.RoleIds)
-		assignRoles := ExtractOrganizationRoles([]string{roleId})
+	idx := strings.LastIndex(roleId, ":")
+	if idx == -1 {
+		return false
+	}
 
-		for assignOrgId := range assignRoles {
-			localRoles, ok := claimRoles[assignOrgId]
-			if !ok {
-				return false
-			}
-			if !lo.Contains(localRoles, "admin") {
-				return false
-			}
+	rolePrefix := roleId[:idx]
+
+	for _, userRole := range claim.RoleIds {
+		idx := strings.LastIndex(userRole, ":")
+		if idx == -1 {
+			continue
 		}
 
-		return true
+		userRolePrefix := userRole[:idx]
+		userRoleSuffix := userRole[idx+1:]
+
+		if userRolePrefix == rolePrefix && userRoleSuffix == "admin" {
+			return true
+		}
 	}
 
 	return false

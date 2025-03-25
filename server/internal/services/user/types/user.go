@@ -152,13 +152,8 @@ type DeleteUserRequest struct {
 
 type DeleteUserResponse struct{}
 
-type AddRoleToUserRequests struct {
-	UserId string
-	RoleId string
+type AssignRoleRequest struct {
 }
 
-type AddRoleToUserRequest struct {
-}
-
-type AddRoleToUserResponse struct {
+type AssignRoleResponse struct {
 }

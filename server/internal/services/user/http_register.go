@@ -165,7 +165,7 @@ func (s *UserService) register(
 	}
 
 	for _, roleId := range roleIds {
-		err = s.addRoleToUser(user.Id, roleId)
+		err = s.assignRole(user.Id, roleId)
 		if err != nil {
 			return nil, err
 		}
