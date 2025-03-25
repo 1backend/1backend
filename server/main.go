@@ -29,7 +29,7 @@ import (
 var port = router.GetPort()
 
 // @title           1Backend
-// @version         0.3.0-rc.29
+// @version         0.3.0-rc.30
 // @description     AI-native microservices platform.
 // @termsOfService  http://swagger.io/terms/
 

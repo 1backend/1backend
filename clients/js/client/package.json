@@ -1,6 +1,6 @@
 {
   "name": "@1backend/client",
-  "version": "0.3.0-rc.29",
+  "version": "0.3.0-rc.30",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
