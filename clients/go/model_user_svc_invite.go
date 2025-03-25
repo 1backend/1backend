@@ -29,6 +29,8 @@ type UserSvcInvite struct {
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	ExpiresAt *string `json:"expiresAt,omitempty"`
 	Id string `json:"id"`
+	// OwnerIds specifies the users who created the invite. If you create an invite that already exists for a given role and contact ID, you get added to the list of owners.
+	OwnerIds []string `json:"ownerIds"`
 	// RoleId specifies the role to be assigned to the ContactId. Callers can only assign roles they own, identified by their service slug (e.g., if \"my-service\" creates an invite, the role must be \"my-service:admin\"). Dynamic organization roles can also be assigned (e.g., \"user-svc:org:{%orgId}:admin\" or \"user-svc:org:{%orgId}:user\"), but in this case, the caller must be an admin of the target organization.
 	RoleId string `json:"roleId"`
 	UpdatedAt *string `json:"updatedAt,omitempty"`
@@ -40,11 +42,12 @@ type _UserSvcInvite UserSvcInvite
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcInvite(contactId string, createdAt string, id string, roleId string) *UserSvcInvite {
+func NewUserSvcInvite(contactId string, createdAt string, id string, ownerIds []string, roleId string) *UserSvcInvite {
 	this := UserSvcInvite{}
 	this.ContactId = contactId
 	this.CreatedAt = createdAt
 	this.Id = id
+	this.OwnerIds = ownerIds
 	this.RoleId = roleId
 	return &this
 }
@@ -225,6 +228,30 @@ func (o *UserSvcInvite) SetId(v string) {
 	o.Id = v
 }
 
+// GetOwnerIds returns the OwnerIds field value
+func (o *UserSvcInvite) GetOwnerIds() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+
+	return o.OwnerIds
+}
+
+// GetOwnerIdsOk returns a tuple with the OwnerIds field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcInvite) GetOwnerIdsOk() ([]string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.OwnerIds, true
+}
+
+// SetOwnerIds sets field value
+func (o *UserSvcInvite) SetOwnerIds(v []string) {
+	o.OwnerIds = v
+}
+
 // GetRoleId returns the RoleId field value
 func (o *UserSvcInvite) GetRoleId() string {
 	if o == nil {
@@ -303,6 +330,7 @@ func (o UserSvcInvite) ToMap() (map[string]interface{}, error) {
 		toSerialize["expiresAt"] = o.ExpiresAt
 	}
 	toSerialize["id"] = o.Id
+	toSerialize["ownerIds"] = o.OwnerIds
 	toSerialize["roleId"] = o.RoleId
 	if !IsNil(o.UpdatedAt) {
 		toSerialize["updatedAt"] = o.UpdatedAt
@@ -318,6 +346,7 @@ func (o *UserSvcInvite) UnmarshalJSON(data []byte) (err error) {
 		"contactId",
 		"createdAt",
 		"id",
+		"ownerIds",
 		"roleId",
 	}
 

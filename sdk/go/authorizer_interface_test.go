@@ -43,6 +43,12 @@ func TestOwnsRole(t *testing.T) {
 		}, "user-svc:admin")
 
 		require.Equal(t, true, owns)
+
+		owns = sdk.OwnsRole(&sdk.Claims{
+			Slug: "user-svc",
+		}, "user-svc:custom")
+
+		require.Equal(t, true, owns)
 	})
 
 	t.Run("org user does not own org user role", func(t *testing.T) {
@@ -68,6 +74,24 @@ func TestOwnsRole(t *testing.T) {
 			RoleIds: []string{"user-svc:org:{abc}:admin"},
 			Slug:    "some-svc",
 		}, "user-svc:org:{abcd}:user")
+
+		require.Equal(t, false, owns)
+	})
+
+	t.Run("static admin should own", func(t *testing.T) {
+		owns := sdk.OwnsRole(&sdk.Claims{
+			RoleIds: []string{"a-role:admin"},
+			Slug:    "some-svc",
+		}, "a-role:user")
+
+		require.Equal(t, true, owns)
+	})
+
+	t.Run("static non-admin should not own", func(t *testing.T) {
+		owns := sdk.OwnsRole(&sdk.Claims{
+			RoleIds: []string{"a-role:user"},
+			Slug:    "some-svc",
+		}, "a-role:user")
 
 		require.Equal(t, false, owns)
 	})

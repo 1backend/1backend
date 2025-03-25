@@ -2657,10 +2657,6 @@ definitions:
       width:
         type: integer
     type: object
-  user_svc.AddRoleToUserRequest:
-    type: object
-  user_svc.AddRoleToUserResponse:
-    type: object
   user_svc.AddUserToOrganizationRequest:
     type: object
   user_svc.AddUserToOrganizationResponse:
@@ -2673,6 +2669,10 @@ definitions:
         type: array
     type: object
   user_svc.AssignPermissionsResponse:
+    type: object
+  user_svc.AssignRoleRequest:
+    type: object
+  user_svc.AssignRoleResponse:
     type: object
   user_svc.AuthToken:
     properties:
@@ -2891,6 +2891,14 @@ definitions:
       id:
         example: inv_fIYPbMHIcI
         type: string
+      ownerIds:
+        description: |-
+          OwnerIds specifies the users who created the invite.
+          If you create an invite that already exists for a given role and contact ID,
+          you get added to the list of owners.
+        items:
+          type: string
+        type: array
       roleId:
         description: |-
           RoleId specifies the role to be assigned to the ContactId.
@@ -2906,6 +2914,7 @@ definitions:
     - contactId
     - createdAt
     - id
+    - ownerIds
     - roleId
     type: object
   user_svc.IsAuthorizedRequest:
@@ -6040,7 +6049,18 @@ paths:
     put:
       consumes:
       - application/json
-      description: Save a list of user invites to the database.
+      description: |-
+        Invite a list of users by contact ID to acquire a role. Works on future or current users.
+        A user can only invite an other user to a role if the user owns that role.
+
+        A user "owns" a role in the following cases:
+        - A static role where the role ID is prefixed with the caller's slug.
+        - Any dynamic or static role where the caller is an admin.
+
+        Examples:
+        - A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
+        - A user with any slug who has the role "my-service:admin" owns "my-service:user".
+        - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
       operationId: saveInvites
       parameters:
       - description: Save Invites Request
@@ -6773,11 +6793,16 @@ paths:
       consumes:
       - application/json
       description: |-
-        Assign a role to a user. The caller can assign any roles it owns,
-        typically those prefixed with the caller’s identifier (e.g., `my-service:admin`).
-        One exception to this rule is dynamic organization roles: If the caller is an organization admin
-        (e.g., has a role like "user-svc:org:{%orgId}:admin"), they can also assign such roles.
-      operationId: addRoleToUser
+        Assigns a role to a user. The caller can only assign roles they own.
+        A user "owns" a role in the following cases:
+        - A static role where the role ID is prefixed with the caller's slug.
+        - Any dynamic or static role where the caller is an admin.
+
+        Examples:
+        - A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
+        - A user with any slug who has the role "my-service:admin" owns "my-service:user".
+        - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
+      operationId: assignRole
       parameters:
       - description: User ID
         in: path
@@ -6789,18 +6814,18 @@ paths:
         name: roleId
         required: true
         type: string
-      - description: Add Role to User Request
+      - description: Assign Role Request
         in: body
         name: body
         schema:
-          $ref: '#/definitions/user_svc.AddRoleToUserRequest'
+          $ref: '#/definitions/user_svc.AssignRoleRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user_svc.AddRoleToUserResponse'
+            $ref: '#/definitions/user_svc.AssignRoleResponse'
         "400":
           description: Invalid JSON
           schema:
@@ -6815,7 +6840,7 @@ paths:
             $ref: '#/definitions/user_svc.ErrorResponse'
       security:
       - BearerAuth: []
-      summary: Assign Role to User
+      summary: Assign Role
       tags:
       - User Svc
   /user-svc/user/by-token:

@@ -21,6 +21,8 @@ export function instanceOfUserSvcInvite(value) {
         return false;
     if (!('id' in value) || value['id'] === undefined)
         return false;
+    if (!('ownerIds' in value) || value['ownerIds'] === undefined)
+        return false;
     if (!('roleId' in value) || value['roleId'] === undefined)
         return false;
     return true;
@@ -39,6 +41,7 @@ export function UserSvcInviteFromJSONTyped(json, ignoreDiscriminator) {
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'expiresAt': json['expiresAt'] == null ? undefined : json['expiresAt'],
         'id': json['id'],
+        'ownerIds': json['ownerIds'],
         'roleId': json['roleId'],
         'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
     };
@@ -57,6 +60,7 @@ export function UserSvcInviteToJSONTyped(value, ignoreDiscriminator = false) {
         'deletedAt': value['deletedAt'],
         'expiresAt': value['expiresAt'],
         'id': value['id'],
+        'ownerIds': value['ownerIds'],
         'roleId': value['roleId'],
         'updatedAt': value['updatedAt'],
     };

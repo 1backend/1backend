@@ -48,7 +48,7 @@ func TestAssignRoleToUser(t *testing.T) {
 
 	// This is needed for dynamic roles.
 	t.Run("can add nonexistent role to user", func(t *testing.T) {
-		_, _, err := userClient.UserSvcAPI.AddRoleToUser(
+		_, _, err := userClient.UserSvcAPI.AssignRole(
 			context.Background(),
 			tokens[1].UserId,
 			"test-user-slug-0:custom-role-nonexistent",
@@ -58,7 +58,7 @@ func TestAssignRoleToUser(t *testing.T) {
 	})
 
 	t.Run("assign role", func(t *testing.T) {
-		_, _, err := userClient.UserSvcAPI.AddRoleToUser(
+		_, _, err := userClient.UserSvcAPI.AssignRole(
 			context.Background(),
 			tokens[1].UserId,
 			"test-user-slug-0:custom-role",
@@ -89,7 +89,7 @@ func TestAssignRoleToUser(t *testing.T) {
 	})
 
 	t.Run("nonexistent org role assignment", func(t *testing.T) {
-		_, _, err := userClient.UserSvcAPI.AddRoleToUser(
+		_, _, err := userClient.UserSvcAPI.AssignRole(
 			context.Background(),
 			tokens[1].UserId,
 			"user-svc:org:{some-nonexistent-org-id}:user",
@@ -99,7 +99,7 @@ func TestAssignRoleToUser(t *testing.T) {
 	})
 
 	t.Run("org role assignment", func(t *testing.T) {
-		_, _, err := userClient.UserSvcAPI.AddRoleToUser(
+		_, _, err := userClient.UserSvcAPI.AssignRole(
 			context.Background(),
 			tokens[1].UserId,
 			fmt.Sprintf("user-svc:org:{%v}:user", orgId),
@@ -116,7 +116,7 @@ func TestAssignRoleToUser(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Run("second user cannot give itself admin rights", func(t *testing.T) {
-		_, _, err := secondClient.UserSvcAPI.AddRoleToUser(
+		_, _, err := secondClient.UserSvcAPI.AssignRole(
 			context.Background(),
 			tokens[1].UserId,
 			fmt.Sprintf("user-svc:org:{%v}:user", orgId),
@@ -126,7 +126,7 @@ func TestAssignRoleToUser(t *testing.T) {
 	})
 
 	t.Run("second user cannot give a third user admin or user rights", func(t *testing.T) {
-		_, _, err := secondClient.UserSvcAPI.AddRoleToUser(
+		_, _, err := secondClient.UserSvcAPI.AssignRole(
 			context.Background(),
 			tokens[2].UserId,
 			fmt.Sprintf("user-svc:org:{%v}:user", orgId),
@@ -134,7 +134,7 @@ func TestAssignRoleToUser(t *testing.T) {
 
 		require.Error(t, err)
 
-		_, _, err = secondClient.UserSvcAPI.AddRoleToUser(
+		_, _, err = secondClient.UserSvcAPI.AssignRole(
 			context.Background(),
 			tokens[2].UserId,
 			fmt.Sprintf("user-svc:org:{%v}:admin", orgId),
@@ -145,7 +145,7 @@ func TestAssignRoleToUser(t *testing.T) {
 
 	// After making the second user admin, it can give the third user and admin rights
 
-	_, _, err = userClient.UserSvcAPI.AddRoleToUser(
+	_, _, err = userClient.UserSvcAPI.AssignRole(
 		context.Background(),
 		tokens[1].UserId,
 		fmt.Sprintf("user-svc:org:{%v}:admin", orgId),
@@ -161,7 +161,7 @@ func TestAssignRoleToUser(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Run("second user now can give third user user rights", func(t *testing.T) {
-		_, _, err = secondClient.UserSvcAPI.AddRoleToUser(
+		_, _, err = secondClient.UserSvcAPI.AssignRole(
 			context.Background(),
 			tokens[2].UserId,
 			fmt.Sprintf("user-svc:org:{%v}:user", orgId),
@@ -171,7 +171,7 @@ func TestAssignRoleToUser(t *testing.T) {
 	})
 
 	t.Run("second user now can give third user user rights", func(t *testing.T) {
-		_, _, err = secondClient.UserSvcAPI.AddRoleToUser(
+		_, _, err = secondClient.UserSvcAPI.AssignRole(
 			context.Background(),
 			tokens[2].UserId,
 			fmt.Sprintf("user-svc:org:{%v}:admin", orgId),

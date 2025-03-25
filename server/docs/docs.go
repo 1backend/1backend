@@ -4161,7 +4161,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Save a list of user invites to the database.",
+                "description": "Invite a list of users by contact ID to acquire a role. Works on future or current users.\nA user can only invite an other user to a role if the user owns that role.\n\nA user \"owns\" a role in the following cases:\n- A static role where the role ID is prefixed with the caller's slug.\n- Any dynamic or static role where the caller is an admin.\n\nExamples:\n- A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\".\n- A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\".\n- A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".",
                 "consumes": [
                     "application/json"
                 ],
@@ -5340,7 +5340,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Assign a role to a user. The caller can assign any roles it owns,\ntypically those prefixed with the caller’s identifier (e.g., ` + "`" + `my-service:admin` + "`" + `).\nOne exception to this rule is dynamic organization roles: If the caller is an organization admin\n(e.g., has a role like \"user-svc:org:{%orgId}:admin\"), they can also assign such roles.",
+                "description": "Assigns a role to a user. The caller can only assign roles they own.\nA user \"owns\" a role in the following cases:\n- A static role where the role ID is prefixed with the caller's slug.\n- Any dynamic or static role where the caller is an admin.\n\nExamples:\n- A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\".\n- A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\".\n- A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".",
                 "consumes": [
                     "application/json"
                 ],
@@ -5350,8 +5350,8 @@ const docTemplate = `{
                 "tags": [
                     "User Svc"
                 ],
-                "summary": "Assign Role to User",
-                "operationId": "addRoleToUser",
+                "summary": "Assign Role",
+                "operationId": "assignRole",
                 "parameters": [
                     {
                         "type": "string",
@@ -5368,11 +5368,11 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Add Role to User Request",
+                        "description": "Assign Role Request",
                         "name": "body",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.AddRoleToUserRequest"
+                            "$ref": "#/definitions/user_svc.AssignRoleRequest"
                         }
                     }
                 ],
@@ -5380,7 +5380,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.AddRoleToUserResponse"
+                            "$ref": "#/definitions/user_svc.AssignRoleResponse"
                         }
                     },
                     "400": {
@@ -9162,12 +9162,6 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.AddRoleToUserRequest": {
-            "type": "object"
-        },
-        "user_svc.AddRoleToUserResponse": {
-            "type": "object"
-        },
         "user_svc.AddUserToOrganizationRequest": {
             "type": "object"
         },
@@ -9186,6 +9180,12 @@ const docTemplate = `{
             }
         },
         "user_svc.AssignPermissionsResponse": {
+            "type": "object"
+        },
+        "user_svc.AssignRoleRequest": {
+            "type": "object"
+        },
+        "user_svc.AssignRoleResponse": {
             "type": "object"
         },
         "user_svc.AuthToken": {
@@ -9467,6 +9467,7 @@ const docTemplate = `{
                 "contactId",
                 "createdAt",
                 "id",
+                "ownerIds",
                 "roleId"
             ],
             "properties": {
@@ -9489,6 +9490,13 @@ const docTemplate = `{
                 "id": {
                     "type": "string",
                     "example": "inv_fIYPbMHIcI"
+                },
+                "ownerIds": {
+                    "description": "OwnerIds specifies the users who created the invite.\nIf you create an invite that already exists for a given role and contact ID,\nyou get added to the list of owners.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "roleId": {
                     "description": "RoleId specifies the role to be assigned to the ContactId.\nCallers can only assign roles they own, identified by their service slug\n(e.g., if \"my-service\" creates an invite, the role must be \"my-service:admin\").\nDynamic organization roles can also be assigned\n(e.g., \"user-svc:org:{%orgId}:admin\" or \"user-svc:org:{%orgId}:user\"),\nbut in this case, the caller must be an admin of the target organization.",

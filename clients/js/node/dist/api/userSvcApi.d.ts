@@ -65,21 +65,6 @@ export declare class UserSvcApi {
     setApiKey(key: UserSvcApiApiKeys, value: string): void;
     addInterceptor(interceptor: Interceptor): void;
     /**
-     * Assign a role to a user. The caller can assign any roles it owns, typically those prefixed with the caller’s identifier (e.g., `my-service:admin`). One exception to this rule is dynamic organization roles: If the caller is an organization admin (e.g., has a role like \"user-svc:org:{%orgId}:admin\"), they can also assign such roles.
-     * @summary Assign Role to User
-     * @param userId User ID
-     * @param roleId Role ID
-     * @param body Add Role to User Request
-     */
-    addRoleToUser(userId: string, roleId: string, body?: object, options?: {
-        headers: {
-            [name: string]: string;
-        };
-    }): Promise<{
-        response: http.IncomingMessage;
-        body: object;
-    }>;
-    /**
      * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
      * @summary Add a User to an Organization
      * @param organizationId Organization ID
@@ -100,6 +85,21 @@ export declare class UserSvcApi {
      * @param body Assign Permissions Request
      */
     assignPermissions(body: UserSvcAssignPermissionsRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: object;
+    }>;
+    /**
+     * Assigns a role to a user. The caller can only assign roles they own. A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
+     * @summary Assign Role
+     * @param userId User ID
+     * @param roleId Role ID
+     * @param body Assign Role Request
+     */
+    assignRole(userId: string, roleId: string, body?: object, options?: {
         headers: {
             [name: string]: string;
         };
@@ -356,7 +356,7 @@ export declare class UserSvcApi {
         body: object;
     }>;
     /**
-     * Save a list of user invites to the database.
+     * Invite a list of users by contact ID to acquire a role. Works on future or current users. A user can only invite an other user to a role if the user owns that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
      * @summary Save Invites
      * @param body Save Invites Request
      */

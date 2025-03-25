@@ -47,6 +47,11 @@ type Invite struct {
 	// (e.g., "user-svc:org:{%orgId}:admin" or "user-svc:org:{%orgId}:user"),
 	// but in this case, the caller must be an admin of the target organization.
 	RoleId string `json:"roleId" binding:"required"`
+
+	// OwnerIds specifies the users who created the invite.
+	// If you create an invite that already exists for a given role and contact ID,
+	// you get added to the list of owners.
+	OwnerIds []string `json:"ownerIds" binding:"required"`
 }
 
 func (i Invite) GetId() string {

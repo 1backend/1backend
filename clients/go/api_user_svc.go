@@ -24,25 +24,6 @@ import (
 type UserSvcAPI interface {
 
 	/*
-	AddRoleToUser Assign Role to User
-
-	Assign a role to a user. The caller can assign any roles it owns,
-typically those prefixed with the caller’s identifier (e.g., `my-service:admin`).
-One exception to this rule is dynamic organization roles: If the caller is an organization admin
-(e.g., has a role like "user-svc:org:{%orgId}:admin"), they can also assign such roles.
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param userId User ID
-	@param roleId Role ID
-	@return ApiAddRoleToUserRequest
-	*/
-	AddRoleToUser(ctx context.Context, userId string, roleId string) ApiAddRoleToUserRequest
-
-	// AddRoleToUserExecute executes the request
-	//  @return map[string]interface{}
-	AddRoleToUserExecute(r ApiAddRoleToUserRequest) (map[string]interface{}, *http.Response, error)
-
-	/*
 	AddUserToOrganization Add a User to an Organization
 
 	Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
@@ -73,6 +54,30 @@ Requires the `user-svc:permission:assign` permission.
 	// AssignPermissionsExecute executes the request
 	//  @return map[string]interface{}
 	AssignPermissionsExecute(r ApiAssignPermissionsRequest) (map[string]interface{}, *http.Response, error)
+
+	/*
+	AssignRole Assign Role
+
+	Assigns a role to a user. The caller can only assign roles they own.
+A user "owns" a role in the following cases:
+- A static role where the role ID is prefixed with the caller's slug.
+- Any dynamic or static role where the caller is an admin.
+
+Examples:
+- A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
+- A user with any slug who has the role "my-service:admin" owns "my-service:user".
+- A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param userId User ID
+	@param roleId Role ID
+	@return ApiAssignRoleRequest
+	*/
+	AssignRole(ctx context.Context, userId string, roleId string) ApiAssignRoleRequest
+
+	// AssignRoleExecute executes the request
+	//  @return map[string]interface{}
+	AssignRoleExecute(r ApiAssignRoleRequest) (map[string]interface{}, *http.Response, error)
 
 	/*
 	ChangePassword Change User Password
@@ -369,7 +374,17 @@ Requires the `user-svc:grant:create` permission.
 	/*
 	SaveInvites Save Invites
 
-	Save a list of user invites to the database.
+	Invite a list of users by contact ID to acquire a role. Works on future or current users.
+A user can only invite an other user to a role if the user owns that role.
+
+A user "owns" a role in the following cases:
+- A static role where the role ID is prefixed with the caller's slug.
+- Any dynamic or static role where the caller is an admin.
+
+Examples:
+- A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
+- A user with any slug who has the role "my-service:admin" owns "my-service:user".
+- A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiSaveInvitesRequest
@@ -449,171 +464,6 @@ If the caller tries to add a permission it doesn't own to a role, `StatusBadRequ
 
 // UserSvcAPIService UserSvcAPI service
 type UserSvcAPIService service
-
-type ApiAddRoleToUserRequest struct {
-	ctx context.Context
-	ApiService UserSvcAPI
-	userId string
-	roleId string
-	body *map[string]interface{}
-}
-
-// Add Role to User Request
-func (r ApiAddRoleToUserRequest) Body(body map[string]interface{}) ApiAddRoleToUserRequest {
-	r.body = &body
-	return r
-}
-
-func (r ApiAddRoleToUserRequest) Execute() (map[string]interface{}, *http.Response, error) {
-	return r.ApiService.AddRoleToUserExecute(r)
-}
-
-/*
-AddRoleToUser Assign Role to User
-
-Assign a role to a user. The caller can assign any roles it owns,
-typically those prefixed with the caller’s identifier (e.g., `my-service:admin`).
-One exception to this rule is dynamic organization roles: If the caller is an organization admin
-(e.g., has a role like "user-svc:org:{%orgId}:admin"), they can also assign such roles.
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param userId User ID
- @param roleId Role ID
- @return ApiAddRoleToUserRequest
-*/
-func (a *UserSvcAPIService) AddRoleToUser(ctx context.Context, userId string, roleId string) ApiAddRoleToUserRequest {
-	return ApiAddRoleToUserRequest{
-		ApiService: a,
-		ctx: ctx,
-		userId: userId,
-		roleId: roleId,
-	}
-}
-
-// Execute executes the request
-//  @return map[string]interface{}
-func (a *UserSvcAPIService) AddRoleToUserExecute(r ApiAddRoleToUserRequest) (map[string]interface{}, *http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  map[string]interface{}
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.AddRoleToUser")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/user-svc/user/{userId}/role/{roleId}"
-	localVarPath = strings.Replace(localVarPath, "{"+"userId"+"}", url.PathEscape(parameterValueToString(r.userId, "userId")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"roleId"+"}", url.PathEscape(parameterValueToString(r.roleId, "roleId")), -1)
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	// body params
-	localVarPostBody = r.body
-	if r.ctx != nil {
-		// API Key Authentication
-		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["BearerAuth"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
-				}
-				localVarHeaderParams["Authorization"] = key
-			}
-		}
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v UserSvcErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v UserSvcErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v UserSvcErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
 
 type ApiAddUserToOrganizationRequest struct {
 	ctx context.Context
@@ -910,6 +760,176 @@ func (a *UserSvcAPIService) AssignPermissionsExecute(r ApiAssignPermissionsReque
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 500 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiAssignRoleRequest struct {
+	ctx context.Context
+	ApiService UserSvcAPI
+	userId string
+	roleId string
+	body *map[string]interface{}
+}
+
+// Assign Role Request
+func (r ApiAssignRoleRequest) Body(body map[string]interface{}) ApiAssignRoleRequest {
+	r.body = &body
+	return r
+}
+
+func (r ApiAssignRoleRequest) Execute() (map[string]interface{}, *http.Response, error) {
+	return r.ApiService.AssignRoleExecute(r)
+}
+
+/*
+AssignRole Assign Role
+
+Assigns a role to a user. The caller can only assign roles they own.
+A user "owns" a role in the following cases:
+- A static role where the role ID is prefixed with the caller's slug.
+- Any dynamic or static role where the caller is an admin.
+
+Examples:
+- A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
+- A user with any slug who has the role "my-service:admin" owns "my-service:user".
+- A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param userId User ID
+ @param roleId Role ID
+ @return ApiAssignRoleRequest
+*/
+func (a *UserSvcAPIService) AssignRole(ctx context.Context, userId string, roleId string) ApiAssignRoleRequest {
+	return ApiAssignRoleRequest{
+		ApiService: a,
+		ctx: ctx,
+		userId: userId,
+		roleId: roleId,
+	}
+}
+
+// Execute executes the request
+//  @return map[string]interface{}
+func (a *UserSvcAPIService) AssignRoleExecute(r ApiAssignRoleRequest) (map[string]interface{}, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPut
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  map[string]interface{}
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.AssignRole")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/user-svc/user/{userId}/role/{roleId}"
+	localVarPath = strings.Replace(localVarPath, "{"+"userId"+"}", url.PathEscape(parameterValueToString(r.userId, "userId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"roleId"+"}", url.PathEscape(parameterValueToString(r.roleId, "roleId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.body
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["BearerAuth"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v UserSvcErrorResponse
@@ -3796,7 +3816,17 @@ func (r ApiSaveInvitesRequest) Execute() (*UserSvcSaveInvitesResponse, *http.Res
 /*
 SaveInvites Save Invites
 
-Save a list of user invites to the database.
+Invite a list of users by contact ID to acquire a role. Works on future or current users.
+A user can only invite an other user to a role if the user owns that role.
+
+A user "owns" a role in the following cases:
+- A static role where the role ID is prefixed with the caller's slug.
+- Any dynamic or static role where the caller is an admin.
+
+Examples:
+- A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
+- A user with any slug who has the role "my-service:admin" owns "my-service:user".
+- A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiSaveInvitesRequest

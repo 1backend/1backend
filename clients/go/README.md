@@ -152,9 +152,9 @@ Class | Method | HTTP request | Description
 *SecretSvcAPI* | [**RemoveSecrets**](docs/SecretSvcAPI.md#removesecrets) | **Delete** /secret-svc/secrets | Remove Secrets
 *SecretSvcAPI* | [**SaveSecrets**](docs/SecretSvcAPI.md#savesecrets) | **Put** /secret-svc/secrets | Save Secrets
 *SourceSvcAPI* | [**CheckoutRepo**](docs/SourceSvcAPI.md#checkoutrepo) | **Post** /source-svc/repo/checkout | Checkout a git repository
-*UserSvcAPI* | [**AddRoleToUser**](docs/UserSvcAPI.md#addroletouser) | **Put** /user-svc/user/{userId}/role/{roleId} | Assign Role to User
 *UserSvcAPI* | [**AddUserToOrganization**](docs/UserSvcAPI.md#addusertoorganization) | **Put** /user-svc/organization/{organizationId}/user/{userId} | Add a User to an Organization
 *UserSvcAPI* | [**AssignPermissions**](docs/UserSvcAPI.md#assignpermissions) | **Put** /user-svc/roles/permissions | Assign Permissions
+*UserSvcAPI* | [**AssignRole**](docs/UserSvcAPI.md#assignrole) | **Put** /user-svc/user/{userId}/role/{roleId} | Assign Role
 *UserSvcAPI* | [**ChangePassword**](docs/UserSvcAPI.md#changepassword) | **Post** /user-svc/change-password | Change User Password
 *UserSvcAPI* | [**CreateOrganization**](docs/UserSvcAPI.md#createorganization) | **Post** /user-svc/organization | Create an Organization
 *UserSvcAPI* | [**CreateRole**](docs/UserSvcAPI.md#createrole) | **Post** /user-svc/role | Create a New Role

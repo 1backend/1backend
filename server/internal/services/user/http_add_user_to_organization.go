@@ -103,7 +103,7 @@ func (s *UserService) addUserToOrganization(
 		return fmt.Errorf("not an admin of the organization")
 	}
 
-	err = s.addRoleToUser(
+	err = s.assignRole(
 		userId,
 		fmt.Sprintf("user-svc:org:{%v}:user", org.(*user.Organization).Id),
 	)

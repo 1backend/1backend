@@ -22,25 +22,30 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// @ID addRoleToUser
-// @Summary Assign Role to User
-// @Description Assign a role to a user. The caller can assign any roles it owns,
-// @Description typically those prefixed with the caller’s identifier (e.g., `my-service:admin`).
-// @Description One exception to this rule is dynamic organization roles: If the caller is an organization admin
-// @Description (e.g., has a role like "user-svc:org:{%orgId}:admin"), they can also assign such roles.
+// @ID assignRole
+// @Summary Assign Role
+// @Description Assigns a role to a user. The caller can only assign roles they own.
+// @Description A user "owns" a role in the following cases:
+// @Description - A static role where the role ID is prefixed with the caller's slug.
+// @Description - Any dynamic or static role where the caller is an admin.
+// @Description
+// @Description Examples:
+// @Description - A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
+// @Description - A user with any slug who has the role "my-service:admin" owns "my-service:user".
+// @Description - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
 // @Tags User Svc
 // @Accept json
 // @Produce json
 // @Param userId path string true "User ID"
 // @Param roleId path string true "Role ID"
-// @Param body body user.AddRoleToUserRequest false "Add Role to User Request"
-// @Success 200 {object} user.AddRoleToUserResponse
+// @Param body body user.AssignRoleRequest false "Assign Role Request"
+// @Success 200 {object} user.AssignRoleResponse
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Failure 500 {object} user.ErrorResponse "Role not found"
 // @Security BearerAuth
 // @Router /user-svc/user/{userId}/role/{roleId} [put]
-func (s *UserService) AddRoleToUser(
+func (s *UserService) AssignRole(
 	w http.ResponseWriter,
 	r *http.Request) {
 
@@ -52,7 +57,7 @@ func (s *UserService) AddRoleToUser(
 		return
 	}
 
-	// req := user.AddRoleToUserRequest{}
+	// req := user.AssignRoleRequest{}
 	// err = json.NewDecoder(r.Body).Decode(&req)
 	// if err != nil {
 	// 	w.WriteHeader(http.StatusBadRequest)
@@ -80,13 +85,13 @@ func (s *UserService) AddRoleToUser(
 		return
 	}
 
-	err = s.addRoleToUser(userId, roleId)
+	err = s.assignRole(userId, roleId)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	bs, _ := json.Marshal(user.AddRoleToUserResponse{})
+	bs, _ := json.Marshal(user.AssignRoleResponse{})
 	w.Write(bs)
 }
