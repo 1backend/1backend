@@ -47,6 +47,11 @@ UserSvcInvite.attributeTypeMap = [
         "type": "string"
     },
     {
+        "name": "ownerIds",
+        "baseName": "ownerIds",
+        "type": "Array<string>"
+    },
+    {
         "name": "roleId",
         "baseName": "roleId",
         "type": "string"

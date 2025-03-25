@@ -9340,6 +9340,8 @@ function instanceOfUserSvcInvite(value) {
         return false;
     if (!('id' in value) || value['id'] === undefined)
         return false;
+    if (!('ownerIds' in value) || value['ownerIds'] === undefined)
+        return false;
     if (!('roleId' in value) || value['roleId'] === undefined)
         return false;
     return true;
@@ -9358,6 +9360,7 @@ function UserSvcInviteFromJSONTyped(json, ignoreDiscriminator) {
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'expiresAt': json['expiresAt'] == null ? undefined : json['expiresAt'],
         'id': json['id'],
+        'ownerIds': json['ownerIds'],
         'roleId': json['roleId'],
         'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
     };
@@ -9376,6 +9379,7 @@ function UserSvcInviteToJSONTyped(value, ignoreDiscriminator = false) {
         'deletedAt': value['deletedAt'],
         'expiresAt': value['expiresAt'],
         'id': value['id'],
+        'ownerIds': value['ownerIds'],
         'roleId': value['roleId'],
         'updatedAt': value['updatedAt'],
     };
@@ -13026,44 +13030,6 @@ class SourceSvcApi extends BaseAPI {
  */
 class UserSvcApi extends BaseAPI {
     /**
-     * Assign a role to a user. The caller can assign any roles it owns, typically those prefixed with the caller’s identifier (e.g., `my-service:admin`). One exception to this rule is dynamic organization roles: If the caller is an organization admin (e.g., has a role like \"user-svc:org:{%orgId}:admin\"), they can also assign such roles.
-     * Assign Role to User
-     */
-    addRoleToUserRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userId'] == null) {
-                throw new RequiredError('userId', 'Required parameter "userId" was null or undefined when calling addRoleToUser().');
-            }
-            if (requestParameters['roleId'] == null) {
-                throw new RequiredError('roleId', 'Required parameter "roleId" was null or undefined when calling addRoleToUser().');
-            }
-            const queryParameters = {};
-            const headerParameters = {};
-            headerParameters['Content-Type'] = 'application/json';
-            if (this.configuration && this.configuration.apiKey) {
-                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
-            }
-            const response = yield this.request({
-                path: `/user-svc/user/{userId}/role/{roleId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))).replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
-                method: 'PUT',
-                headers: headerParameters,
-                query: queryParameters,
-                body: requestParameters['body'],
-            }, initOverrides);
-            return new JSONApiResponse(response);
-        });
-    }
-    /**
-     * Assign a role to a user. The caller can assign any roles it owns, typically those prefixed with the caller’s identifier (e.g., `my-service:admin`). One exception to this rule is dynamic organization roles: If the caller is an organization admin (e.g., has a role like \"user-svc:org:{%orgId}:admin\"), they can also assign such roles.
-     * Assign Role to User
-     */
-    addRoleToUser(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.addRoleToUserRaw(requestParameters, initOverrides);
-            return yield response.value();
-        });
-    }
-    /**
      * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
      * Add a User to an Organization
      */
@@ -13133,6 +13099,44 @@ class UserSvcApi extends BaseAPI {
     assignPermissions(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.assignPermissionsRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * Assigns a role to a user. The caller can only assign roles they own. A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
+     * Assign Role
+     */
+    assignRoleRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['userId'] == null) {
+                throw new RequiredError('userId', 'Required parameter "userId" was null or undefined when calling assignRole().');
+            }
+            if (requestParameters['roleId'] == null) {
+                throw new RequiredError('roleId', 'Required parameter "roleId" was null or undefined when calling assignRole().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            const response = yield this.request({
+                path: `/user-svc/user/{userId}/role/{roleId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))).replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
+                method: 'PUT',
+                headers: headerParameters,
+                query: queryParameters,
+                body: requestParameters['body'],
+            }, initOverrides);
+            return new JSONApiResponse(response);
+        });
+    }
+    /**
+     * Assigns a role to a user. The caller can only assign roles they own. A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
+     * Assign Role
+     */
+    assignRole(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.assignRoleRaw(requestParameters, initOverrides);
             return yield response.value();
         });
     }
@@ -13775,7 +13779,7 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Save a list of user invites to the database.
+     * Invite a list of users by contact ID to acquire a role. Works on future or current users. A user can only invite an other user to a role if the user owns that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
      * Save Invites
      */
     saveInvitesRaw(requestParameters, initOverrides) {
@@ -13800,7 +13804,7 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Save a list of user invites to the database.
+     * Invite a list of users by contact ID to acquire a role. Works on future or current users. A user can only invite an other user to a role if the user owns that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
      * Save Invites
      */
     saveInvites(requestParameters, initOverrides) {

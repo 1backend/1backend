@@ -4161,7 +4161,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Save a list of user invites to the database, essentially inviting certain contact IDs to roles.",
+                "description": "Invite a list of users by contact ID to acquire a role. Works on future or current users.\nA user can only invite an other user to a role if the user owns that role.\n\nA user \"owns\" a role in the following cases:\n- A static role where the role ID is prefixed with the caller's slug.\n- Any dynamic or static role where the caller is an admin.\n\nExamples:\n- A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\".\n- A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\".\n- A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".",
                 "consumes": [
                     "application/json"
                 ],
@@ -5340,7 +5340,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Assign a role to a user. The caller can assign any roles it owns.\nWhat roles does a user \"own\"? Either static roles where the slug is prefixed with the callers slug,\nor any dynamic roles where the caller is an admin of such dynamic role.\nEg \"user-svc:org:{%orgId}:admin\", \"any-dynamic-made-up-role:{%orgId}:admin\".\nDynamic roles are any roles that have a variable inside {} brackets.",
+                "description": "Assigns a role to a user. The caller can only assign roles they own.\nA user \"owns\" a role in the following cases:\n- A static role where the role ID is prefixed with the caller's slug.\n- Any dynamic or static role where the caller is an admin.\n\nExamples:\n- A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\".\n- A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\".\n- A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".",
                 "consumes": [
                     "application/json"
                 ],

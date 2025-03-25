@@ -11,11 +11,6 @@
  */
 import * as runtime from '../runtime';
 import type { UserSvcAssignPermissionsRequest, UserSvcChangePasswordRequest, UserSvcCreateOrganizationRequest, UserSvcCreateOrganizationResponse, UserSvcCreateRoleRequest, UserSvcCreateRoleResponse, UserSvcCreateUserRequest, UserSvcGetPermissionsResponse, UserSvcGetPublicKeyResponse, UserSvcGetRolesResponse, UserSvcGetUsersRequest, UserSvcGetUsersResponse, UserSvcIsAuthorizedRequest, UserSvcIsAuthorizedResponse, UserSvcListGrantsRequest, UserSvcListGrantsResponse, UserSvcListInvitesRequest, UserSvcListInvitesResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveGrantsRequest, UserSvcSaveInvitesRequest, UserSvcSaveInvitesResponse, UserSvcSavePermissionsRequest, UserSvcSavePermissionsResponse, UserSvcSaveProfileRequest, UserSvcSetRolePermissionsRequest } from '../models/index';
-export interface AddRoleToUserRequest {
-    userId: string;
-    roleId: string;
-    body?: object;
-}
 export interface AddUserToOrganizationRequest {
     organizationId: string;
     userId: string;
@@ -23,6 +18,11 @@ export interface AddUserToOrganizationRequest {
 }
 export interface AssignPermissionsRequest {
     body: UserSvcAssignPermissionsRequest;
+}
+export interface AssignRoleRequest {
+    userId: string;
+    roleId: string;
+    body?: object;
 }
 export interface ChangePasswordRequest {
     body: UserSvcChangePasswordRequest;
@@ -99,16 +99,6 @@ export interface SetRolePermissionRequest {
  */
 export declare class UserSvcApi extends runtime.BaseAPI {
     /**
-     * Assign a role to a user. The caller can assign any roles it owns, typically those prefixed with the caller’s identifier (e.g., `my-service:admin`). One exception to this rule is dynamic organization roles: If the caller is an organization admin (e.g., has a role like \"user-svc:org:{%orgId}:admin\"), they can also assign such roles.
-     * Assign Role to User
-     */
-    addRoleToUserRaw(requestParameters: AddRoleToUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
-    /**
-     * Assign a role to a user. The caller can assign any roles it owns, typically those prefixed with the caller’s identifier (e.g., `my-service:admin`). One exception to this rule is dynamic organization roles: If the caller is an organization admin (e.g., has a role like \"user-svc:org:{%orgId}:admin\"), they can also assign such roles.
-     * Assign Role to User
-     */
-    addRoleToUser(requestParameters: AddRoleToUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
-    /**
      * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
      * Add a User to an Organization
      */
@@ -128,6 +118,16 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      * Assign Permissions
      */
     assignPermissions(requestParameters: AssignPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+    /**
+     * Assigns a role to a user. The caller can only assign roles they own. A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
+     * Assign Role
+     */
+    assignRoleRaw(requestParameters: AssignRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+    /**
+     * Assigns a role to a user. The caller can only assign roles they own. A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
+     * Assign Role
+     */
+    assignRole(requestParameters: AssignRoleRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
      * Allows an authenticated user to change their own password.
      * Change User Password
@@ -319,12 +319,12 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      */
     saveGrants(requestParameters: SaveGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
-     * Save a list of user invites to the database.
+     * Invite a list of users by contact ID to acquire a role. Works on future or current users. A user can only invite an other user to a role if the user owns that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
      * Save Invites
      */
     saveInvitesRaw(requestParameters: SaveInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcSaveInvitesResponse>>;
     /**
-     * Save a list of user invites to the database.
+     * Invite a list of users by contact ID to acquire a role. Works on future or current users. A user can only invite an other user to a role if the user owns that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
      * Save Invites
      */
     saveInvites(requestParameters: SaveInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcSaveInvitesResponse>;

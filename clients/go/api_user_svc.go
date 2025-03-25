@@ -58,11 +58,15 @@ Requires the `user-svc:permission:assign` permission.
 	/*
 	AssignRole Assign Role
 
-	Assign a role to a user. The caller can assign any roles it owns.
-What roles does a user "own"? Either static roles where the slug is prefixed with the callers slug,
-or any dynamic roles where the caller is an admin of such dynamic role.
-Eg "user-svc:org:{%orgId}:admin", "any-dynamic-made-up-role:{%orgId}:admin".
-Dynamic roles are any roles that have a variable inside {} brackets.
+	Assigns a role to a user. The caller can only assign roles they own.
+A user "owns" a role in the following cases:
+- A static role where the role ID is prefixed with the caller's slug.
+- Any dynamic or static role where the caller is an admin.
+
+Examples:
+- A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
+- A user with any slug who has the role "my-service:admin" owns "my-service:user".
+- A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param userId User ID
@@ -370,7 +374,17 @@ Requires the `user-svc:grant:create` permission.
 	/*
 	SaveInvites Save Invites
 
-	Save a list of user invites to the database, essentially inviting certain contact IDs to roles.
+	Invite a list of users by contact ID to acquire a role. Works on future or current users.
+A user can only invite an other user to a role if the user owns that role.
+
+A user "owns" a role in the following cases:
+- A static role where the role ID is prefixed with the caller's slug.
+- Any dynamic or static role where the caller is an admin.
+
+Examples:
+- A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
+- A user with any slug who has the role "my-service:admin" owns "my-service:user".
+- A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiSaveInvitesRequest
@@ -804,11 +818,15 @@ func (r ApiAssignRoleRequest) Execute() (map[string]interface{}, *http.Response,
 /*
 AssignRole Assign Role
 
-Assign a role to a user. The caller can assign any roles it owns.
-What roles does a user "own"? Either static roles where the slug is prefixed with the callers slug,
-or any dynamic roles where the caller is an admin of such dynamic role.
-Eg "user-svc:org:{%orgId}:admin", "any-dynamic-made-up-role:{%orgId}:admin".
-Dynamic roles are any roles that have a variable inside {} brackets.
+Assigns a role to a user. The caller can only assign roles they own.
+A user "owns" a role in the following cases:
+- A static role where the role ID is prefixed with the caller's slug.
+- Any dynamic or static role where the caller is an admin.
+
+Examples:
+- A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
+- A user with any slug who has the role "my-service:admin" owns "my-service:user".
+- A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param userId User ID
@@ -3798,7 +3816,17 @@ func (r ApiSaveInvitesRequest) Execute() (*UserSvcSaveInvitesResponse, *http.Res
 /*
 SaveInvites Save Invites
 
-Save a list of user invites to the database, essentially inviting certain contact IDs to roles.
+Invite a list of users by contact ID to acquire a role. Works on future or current users.
+A user can only invite an other user to a role if the user owns that role.
+
+A user "owns" a role in the following cases:
+- A static role where the role ID is prefixed with the caller's slug.
+- Any dynamic or static role where the caller is an admin.
+
+Examples:
+- A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
+- A user with any slug who has the role "my-service:admin" owns "my-service:user".
+- A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiSaveInvitesRequest

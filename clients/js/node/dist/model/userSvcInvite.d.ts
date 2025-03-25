@@ -20,6 +20,10 @@ export declare class UserSvcInvite {
     'expiresAt'?: string;
     'id': string;
     /**
+    * OwnerIds specifies the users who created the invite. If you create an invite that already exists for a given role and contact ID, you get added to the list of owners.
+    */
+    'ownerIds': Array<string>;
+    /**
     * RoleId specifies the role to be assigned to the ContactId. Callers can only assign roles they own, identified by their service slug (e.g., if \"my-service\" creates an invite, the role must be \"my-service:admin\"). Dynamic organization roles can also be assigned (e.g., \"user-svc:org:{%orgId}:admin\" or \"user-svc:org:{%orgId}:user\"), but in this case, the caller must be an admin of the target organization.
     */
     'roleId': string;
