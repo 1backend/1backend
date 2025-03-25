@@ -59,12 +59,32 @@ func (sm *StateManager) LoadState() (any, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		emptyData := []byte("{}")
 		zippedEmptyData, err := zipData(sm.filePath, emptyData)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to zip data")
 		}
+
 		err = ioutil.WriteFile(sm.filePath, zippedEmptyData, 0644)
+		if err != nil {
+			return nil, err
+		}
+
+		//
+		// Some hacks below to prevent sync issues with the file system
+		// (fixes issue: Config service start failed: failed to create zip reader: zip: not a valid zip file)
+		//
+
+		// Open the file and sync it to disk (flush it)
+		file, err := os.OpenFile(sm.filePath, os.O_RDWR, 0644)
+		if err != nil {
+			return nil, err
+		}
+		defer file.Close()
+
+		// Ensure the data is physically written to disk
+		err = file.Sync()
 		if err != nil {
 			return nil, err
 		}
