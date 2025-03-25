@@ -237,21 +237,23 @@ func zipData(filePath string, data []byte) ([]byte, error) {
 func unzipData(data []byte) ([]byte, error) {
 	reader, err := zip.NewReader(bytes.NewReader(data), int64(len(data)))
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to create zip reader")
 	}
 	if len(reader.File) != 1 {
-		return nil, os.ErrInvalid
+		return nil, errors.Wrap(err, "expected exactly one file in zip archive")
 	}
+
 	file := reader.File[0]
 	rc, err := file.Open()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to open file in zip archive")
 	}
 	defer rc.Close()
 
 	unzippedData, err := ioutil.ReadAll(rc)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to read file in zip archive")
 	}
+
 	return unzippedData, nil
 }
