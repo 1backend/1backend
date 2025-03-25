@@ -69,14 +69,11 @@ Use the JWT libraries that are available in your programming language to do that
 The structure of the JWT is the following:
 
 ```js
-{
-   "sui":"usr_dC4K75Cbp6",
-   "slu":"test-user-slug-0",
-   "sri":[
-      "user-svc:user",
-      "user-svc:org:{org_dC4K7NNDCG}:user"
-   ]
-}
+sui: usr_dC4K75Cbp6
+slu: test-user-slug-0
+sri:
+  - user-svc:user
+  - user-svc:org:{org_dC4K7NNDCG}:user
 ```
 
 The field names are kept short to save space, so perhaps the Go definition is also educational:
@@ -153,6 +150,25 @@ The dynamic values must be surrounded by `{}` symbols. The above example is how 
 These dynamic roles, like static roles are stored in the JWT tokens so it is advisable to keep them to a minimum. The organization example is an apt one here: think about how many GitHub or Google organizations you are part of. Likely even a few dozen are at the most extreme upper limit.
 
 > JWT tokens (and the dynamic they contain) are sent with each request, so try to be efficient with dynamic roles.
+
+### Owning Roles
+
+In many endpoints such as assignRole and saveInvites, the topic of "role ownership" comes up. The basic problem is simple: just because someone has a role, it doesn't mean they can also bestow that role upon other users. In simple terms, if an admin makes someone a user, that user should not be able to make others users, as that is the privilege of the admins.
+
+#### When Does a User "Own" a Role?
+
+A user "owns" a role in the following cases:
+
+- Static Roles: The role ID is prefixed with the caller's slug.
+- Admin Privileges: The user is an admin and can assign both static and dynamic roles within their administrative scope.
+
+Examples of Role Ownership
+
+- A user with the slug joe-doe owns roles like joe-doe:any-custom-role.
+- A user with any slug who has the role my-service:admin owns my-service:user.
+- A user with any slug who has the role user-svc:org:{%orgId}:admin owns user-svc:org:{%orgId}:user.
+
+By enforcing role ownership rules, the system ensures that roles are only assigned by authorized users, preventing privilege escalation and maintaining security within the organization.
 
 ### Conventions
 

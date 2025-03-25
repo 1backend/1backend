@@ -24,6 +24,7 @@ import (
 	"time"
 
 	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/pkg/errors"
 )
 
 type StateFile struct {
@@ -58,12 +59,32 @@ func (sm *StateManager) LoadState() (any, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		emptyData := []byte("{}")
 		zippedEmptyData, err := zipData(sm.filePath, emptyData)
 		if err != nil {
+			return nil, errors.Wrap(err, "failed to zip data")
+		}
+
+		err = ioutil.WriteFile(sm.filePath, zippedEmptyData, 0644)
+		if err != nil {
 			return nil, err
 		}
-		err = ioutil.WriteFile(sm.filePath, zippedEmptyData, 0644)
+
+		//
+		// Some hacks below to prevent sync issues with the file system
+		// (fixes issue: Config service start failed: failed to create zip reader: zip: not a valid zip file)
+		//
+
+		// Open the file and sync it to disk (flush it)
+		file, err := os.OpenFile(sm.filePath, os.O_RDWR, 0644)
+		if err != nil {
+			return nil, err
+		}
+		defer file.Close()
+
+		// Ensure the data is physically written to disk
+		err = file.Sync()
 		if err != nil {
 			return nil, err
 		}
@@ -134,24 +155,24 @@ func (sm *StateManager) SaveState(shallowCopy []any) error {
 		Rows: shallowCopy,
 	})
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to marshal data when saving state")
 	}
 
 	zippedData, err := zipData(sm.filePath, data)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to zip data when saving state")
 	}
 
 	tempFilePath := sm.filePath + ".tmp"
 	err = ioutil.WriteFile(tempFilePath, zippedData, 0644)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to write temp file when saving state")
 	}
 
 	finalFilePath := sm.filePath
 	err = os.Rename(tempFilePath, finalFilePath)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to rename temp file when saving state")
 	}
 
 	sm.hasChanged = false
@@ -212,41 +233,47 @@ func (sm *StateManager) Refresh() error {
 func zipData(filePath string, data []byte) ([]byte, error) {
 	var buf bytes.Buffer
 	zipWriter := zip.NewWriter(&buf)
+
 	writer, err := zipWriter.Create(
 		fmt.Sprintf("%v.json", path.Base(filePath)),
 	)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to create zip writer")
 	}
+
 	_, err = writer.Write(data)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to write zip data")
 	}
+
 	err = zipWriter.Close()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to close zip writer")
 	}
+
 	return buf.Bytes(), nil
 }
 
 func unzipData(data []byte) ([]byte, error) {
 	reader, err := zip.NewReader(bytes.NewReader(data), int64(len(data)))
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to create zip reader")
 	}
 	if len(reader.File) != 1 {
-		return nil, os.ErrInvalid
+		return nil, errors.Wrap(err, "expected exactly one file in zip archive")
 	}
+
 	file := reader.File[0]
 	rc, err := file.Open()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to open file in zip archive")
 	}
 	defer rc.Close()
 
 	unzippedData, err := ioutil.ReadAll(rc)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to read file in zip archive")
 	}
+
 	return unzippedData, nil
 }
