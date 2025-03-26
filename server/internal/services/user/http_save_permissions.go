@@ -45,10 +45,15 @@ func (s *UserService) SavePermissions(
 	r *http.Request,
 ) {
 
-	usr, _, err := s.isAuthorized(r, user.PermissionPermissionCreate.Id, nil, nil)
+	usr, isAuthorized, err := s.isAuthorized(r, user.PermissionPermissionCreate.Id, nil, nil)
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
+		return
+	}
+	if !isAuthorized {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("Unauthorized"))
 		return
 	}
 
