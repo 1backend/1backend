@@ -23,14 +23,15 @@ import (
 
 func (s *UserService) createUser(
 	user *usertypes.User,
+	contacts []usertypes.Contact,
 	password string,
 	roleIds []string,
 ) error {
-	if len(user.Contacts) > 0 {
+	if len(contacts) > 0 {
 		_, contactExists, err := s.contactsStore.Query(
 			datastore.Equals(
 				datastore.Field("id"),
-				user.Contacts[0].Id,
+				contacts[0].Id,
 			),
 		).FindOne()
 		if err != nil {
@@ -40,7 +41,6 @@ func (s *UserService) createUser(
 		if contactExists {
 			return errors.New("contact already exists")
 		}
-
 	}
 
 	_, slugExists, err := s.usersStore.Query(
@@ -108,7 +108,7 @@ func (s *UserService) createUser(
 	}
 
 	contactIs := []datastore.Row{}
-	for _, contact := range user.Contacts {
+	for _, contact := range contacts {
 		contact.UserId = user.Id
 		contactIs = append(contactIs, contact)
 	}

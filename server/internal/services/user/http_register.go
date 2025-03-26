@@ -67,9 +67,6 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		req.Contact.CreatedAt = now
 		req.Contact.UpdatedAt = now
-		newUser.Contacts = []user.Contact{
-			req.Contact,
-		}
 
 		invites, err := s.invitesStore.Query(
 			datastore.Equals(
@@ -89,8 +86,13 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	var contacts []user.Contact
+	if req.Contact.Id != "" {
+		contacts = append(contacts, req.Contact)
+	}
 	err = s.createUser(
 		newUser,
+		contacts,
 		req.Password,
 		roles,
 	)

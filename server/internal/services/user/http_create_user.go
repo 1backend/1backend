@@ -53,14 +53,14 @@ func (s *UserService) CreateUser(
 	}
 	defer r.Body.Close()
 
-	err = validateUser(req.User)
+	err = validateUser(req.User, req.Contacts)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	err = s.createUser(req.User, req.Password, req.RoleIds)
+	err = s.createUser(req.User, req.Contacts, req.Password, req.RoleIds)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -71,7 +71,7 @@ func (s *UserService) CreateUser(
 	w.Write(bs)
 }
 
-func validateUser(u *user.User) error {
+func validateUser(u *user.User, contacts []user.Contact) error {
 	if u == nil {
 		return errors.New("user is required")
 	}
@@ -81,7 +81,7 @@ func validateUser(u *user.User) error {
 	if u.Slug == "" {
 		return errors.New("slug is required")
 	}
-	if len(u.Contacts) > 1 {
+	if len(contacts) > 1 {
 		return errors.New("more than one contact")
 	}
 

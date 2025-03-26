@@ -24,16 +24,16 @@ var _ MappedNullable = &UserSvcContact{}
 type UserSvcContact struct {
 	CreatedAt *string `json:"createdAt,omitempty"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
+	// Handle is the platform local unique identifier. Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`. For email and phones the `id` and the `value` will be the same. This field mostly exists for display purposes.  Example values: \"joe12\" (1backend username), \"thejoe\" (twitter username), \"joe@joesdomain.com\" (email)
+	Handle string `json:"handle"`
 	// The unique identifier, which can be a URL.  Example values: \"joe12\" (1backend username), \"twitter.com/thejoe\" (twitter url), \"joe@joesdomain.com\" (email)
 	Id string `json:"id"`
 	// If this is the primary contact method
 	IsPrimary *bool `json:"isPrimary,omitempty"`
 	// Platform of the contact (e.g., \"email\", \"phone\", \"twitter\")
-	Platform *string `json:"platform,omitempty"`
+	Platform string `json:"platform"`
 	UpdatedAt *string `json:"updatedAt,omitempty"`
 	UserId string `json:"userId"`
-	// Value is the platform local unique identifier. Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`. For email and phones the `id` and the `value` will be the same. This field mostly exists for display purposes.  Example values: \"joe12\" (1backend username), \"thejoe\" (twitter username), \"joe@joesdomain.com\" (email)
-	Value *string `json:"value,omitempty"`
 	// Whether the contact is verified
 	Verified *bool `json:"verified,omitempty"`
 }
@@ -44,9 +44,11 @@ type _UserSvcContact UserSvcContact
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcContact(id string, userId string) *UserSvcContact {
+func NewUserSvcContact(handle string, id string, platform string, userId string) *UserSvcContact {
 	this := UserSvcContact{}
+	this.Handle = handle
 	this.Id = id
+	this.Platform = platform
 	this.UserId = userId
 	return &this
 }
@@ -123,6 +125,30 @@ func (o *UserSvcContact) SetDeletedAt(v string) {
 	o.DeletedAt = &v
 }
 
+// GetHandle returns the Handle field value
+func (o *UserSvcContact) GetHandle() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Handle
+}
+
+// GetHandleOk returns a tuple with the Handle field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcContact) GetHandleOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Handle, true
+}
+
+// SetHandle sets field value
+func (o *UserSvcContact) SetHandle(v string) {
+	o.Handle = v
+}
+
 // GetId returns the Id field value
 func (o *UserSvcContact) GetId() string {
 	if o == nil {
@@ -179,36 +205,28 @@ func (o *UserSvcContact) SetIsPrimary(v bool) {
 	o.IsPrimary = &v
 }
 
-// GetPlatform returns the Platform field value if set, zero value otherwise.
+// GetPlatform returns the Platform field value
 func (o *UserSvcContact) GetPlatform() string {
-	if o == nil || IsNil(o.Platform) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Platform
+
+	return o.Platform
 }
 
-// GetPlatformOk returns a tuple with the Platform field value if set, nil otherwise
+// GetPlatformOk returns a tuple with the Platform field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcContact) GetPlatformOk() (*string, bool) {
-	if o == nil || IsNil(o.Platform) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Platform, true
+	return &o.Platform, true
 }
 
-// HasPlatform returns a boolean if a field has been set.
-func (o *UserSvcContact) HasPlatform() bool {
-	if o != nil && !IsNil(o.Platform) {
-		return true
-	}
-
-	return false
-}
-
-// SetPlatform gets a reference to the given string and assigns it to the Platform field.
+// SetPlatform sets field value
 func (o *UserSvcContact) SetPlatform(v string) {
-	o.Platform = &v
+	o.Platform = v
 }
 
 // GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
@@ -267,38 +285,6 @@ func (o *UserSvcContact) SetUserId(v string) {
 	o.UserId = v
 }
 
-// GetValue returns the Value field value if set, zero value otherwise.
-func (o *UserSvcContact) GetValue() string {
-	if o == nil || IsNil(o.Value) {
-		var ret string
-		return ret
-	}
-	return *o.Value
-}
-
-// GetValueOk returns a tuple with the Value field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcContact) GetValueOk() (*string, bool) {
-	if o == nil || IsNil(o.Value) {
-		return nil, false
-	}
-	return o.Value, true
-}
-
-// HasValue returns a boolean if a field has been set.
-func (o *UserSvcContact) HasValue() bool {
-	if o != nil && !IsNil(o.Value) {
-		return true
-	}
-
-	return false
-}
-
-// SetValue gets a reference to the given string and assigns it to the Value field.
-func (o *UserSvcContact) SetValue(v string) {
-	o.Value = &v
-}
-
 // GetVerified returns the Verified field value if set, zero value otherwise.
 func (o *UserSvcContact) GetVerified() bool {
 	if o == nil || IsNil(o.Verified) {
@@ -347,20 +333,16 @@ func (o UserSvcContact) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.DeletedAt) {
 		toSerialize["deletedAt"] = o.DeletedAt
 	}
+	toSerialize["handle"] = o.Handle
 	toSerialize["id"] = o.Id
 	if !IsNil(o.IsPrimary) {
 		toSerialize["isPrimary"] = o.IsPrimary
 	}
-	if !IsNil(o.Platform) {
-		toSerialize["platform"] = o.Platform
-	}
+	toSerialize["platform"] = o.Platform
 	if !IsNil(o.UpdatedAt) {
 		toSerialize["updatedAt"] = o.UpdatedAt
 	}
 	toSerialize["userId"] = o.UserId
-	if !IsNil(o.Value) {
-		toSerialize["value"] = o.Value
-	}
 	if !IsNil(o.Verified) {
 		toSerialize["verified"] = o.Verified
 	}
@@ -372,7 +354,9 @@ func (o *UserSvcContact) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"handle",
 		"id",
+		"platform",
 		"userId",
 	}
 
