@@ -20,6 +20,7 @@ var _ MappedNullable = &UserSvcCreateUserRequest{}
 
 // UserSvcCreateUserRequest struct for UserSvcCreateUserRequest
 type UserSvcCreateUserRequest struct {
+	Contacts []UserSvcContact `json:"contacts,omitempty"`
 	Password *string `json:"password,omitempty"`
 	RoleIds []string `json:"roleIds,omitempty"`
 	User *UserSvcUser `json:"user,omitempty"`
@@ -40,6 +41,38 @@ func NewUserSvcCreateUserRequest() *UserSvcCreateUserRequest {
 func NewUserSvcCreateUserRequestWithDefaults() *UserSvcCreateUserRequest {
 	this := UserSvcCreateUserRequest{}
 	return &this
+}
+
+// GetContacts returns the Contacts field value if set, zero value otherwise.
+func (o *UserSvcCreateUserRequest) GetContacts() []UserSvcContact {
+	if o == nil || IsNil(o.Contacts) {
+		var ret []UserSvcContact
+		return ret
+	}
+	return o.Contacts
+}
+
+// GetContactsOk returns a tuple with the Contacts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcCreateUserRequest) GetContactsOk() ([]UserSvcContact, bool) {
+	if o == nil || IsNil(o.Contacts) {
+		return nil, false
+	}
+	return o.Contacts, true
+}
+
+// HasContacts returns a boolean if a field has been set.
+func (o *UserSvcCreateUserRequest) HasContacts() bool {
+	if o != nil && !IsNil(o.Contacts) {
+		return true
+	}
+
+	return false
+}
+
+// SetContacts gets a reference to the given []UserSvcContact and assigns it to the Contacts field.
+func (o *UserSvcCreateUserRequest) SetContacts(v []UserSvcContact) {
+	o.Contacts = v
 }
 
 // GetPassword returns the Password field value if set, zero value otherwise.
@@ -148,6 +181,9 @@ func (o UserSvcCreateUserRequest) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcCreateUserRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Contacts) {
+		toSerialize["contacts"] = o.Contacts
+	}
 	if !IsNil(o.Password) {
 		toSerialize["password"] = o.Password
 	}

@@ -39,9 +39,6 @@ type User struct {
 	// URL-friendly unique (inside the Singularon platform) identifier for the `user`.
 	Slug string `json:"slug" example:"jane-doe" binding:"required"`
 
-	// Contacts are used for login and identification purposes.
-	Contacts []Contact `json:"contacts,omitempty"`
-
 	PasswordHash string `json:"passwordHash,omitempty"`
 }
 
@@ -138,9 +135,10 @@ type GetUsersResponse struct {
 }
 
 type CreateUserRequest struct {
-	User     *User    `json:"user,omitempty"`
-	Password string   `json:"password,omitempty"`
-	RoleIds  []string `json:"roleIds,omitempty"`
+	User     *User     `json:"user,omitempty"`
+	Contacts []Contact `json:"contacts,omitempty"`
+	Password string    `json:"password,omitempty"`
+	RoleIds  []string  `json:"roleIds,omitempty"`
 }
 
 type CreateUserResponse struct {

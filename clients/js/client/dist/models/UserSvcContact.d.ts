@@ -28,6 +28,17 @@ export interface UserSvcContact {
      */
     deletedAt?: string;
     /**
+     * Handle is the platform local unique identifier.
+     * Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`.
+     * For email and phones the `id` and the `value` will be the same.
+     * This field mostly exists for display purposes.
+     *
+     * Example values: "joe12" (1backend username), "thejoe" (twitter username), "joe@joesdomain.com" (email)
+     * @type {string}
+     * @memberof UserSvcContact
+     */
+    handle: string;
+    /**
      * The unique identifier, which can be a URL.
      *
      * Example values: "joe12" (1backend username), "twitter.com/thejoe" (twitter url), "joe@joesdomain.com" (email)
@@ -46,7 +57,7 @@ export interface UserSvcContact {
      * @type {string}
      * @memberof UserSvcContact
      */
-    platform?: string;
+    platform: string;
     /**
      *
      * @type {string}
@@ -59,17 +70,6 @@ export interface UserSvcContact {
      * @memberof UserSvcContact
      */
     userId: string;
-    /**
-     * Value is the platform local unique identifier.
-     * Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`.
-     * For email and phones the `id` and the `value` will be the same.
-     * This field mostly exists for display purposes.
-     *
-     * Example values: "joe12" (1backend username), "thejoe" (twitter username), "joe@joesdomain.com" (email)
-     * @type {string}
-     * @memberof UserSvcContact
-     */
-    value?: string;
     /**
      * Whether the contact is verified
      * @type {boolean}

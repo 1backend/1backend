@@ -9,8 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { UserSvcContact } from './userSvcContact';
 import { UserSvcUser } from './userSvcUser';
 export declare class UserSvcCreateUserRequest {
+    'contacts'?: Array<UserSvcContact>;
     'password'?: string;
     'roleIds'?: Array<string>;
     'user'?: UserSvcUser;

@@ -54,6 +54,12 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if req.Slug == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(`Slug missing`))
+		return
+	}
+
 	newUser := &user.User{
 		Name: req.Name,
 		Slug: req.Slug,
@@ -67,9 +73,6 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		req.Contact.CreatedAt = now
 		req.Contact.UpdatedAt = now
-		newUser.Contacts = []user.Contact{
-			req.Contact,
-		}
 
 		invites, err := s.invitesStore.Query(
 			datastore.Equals(
@@ -89,8 +92,13 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	var contacts []user.Contact
+	if req.Contact.Id != "" {
+		contacts = append(contacts, req.Contact)
+	}
 	err = s.createUser(
 		newUser,
+		contacts,
 		req.Password,
 		roles,
 	)
@@ -113,25 +121,10 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	w.Write(bs)
 }
 
-func validateUserRegistration(req user.RegisterRequest) error {
-	if req.Name == "" {
-		return errors.New("name missing")
-	}
-	if req.Contact.Id == "" {
-		return errors.New("email missing")
-	}
-	if req.Slug == "" {
-		req.Slug = req.Contact.Id
-	}
-	if req.Password == "" {
-		return errors.New("password missing")
-	}
-
-	return nil
-}
-
 func (s *UserService) register(
-	slug, password, name string,
+	slug,
+	password,
+	name string,
 	roleIds []string,
 ) (*user.AuthToken, error) {
 	_, alreadyExists, err := s.usersStore.Query(

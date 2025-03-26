@@ -94,7 +94,6 @@ func (s *UserService) readUserByToken(token string) (*user.User, error) {
 		Id:        u.Id,
 		Name:      u.Name,
 		Slug:      u.Slug,
-		Contacts:  u.Contacts,
 		CreatedAt: u.CreatedAt,
 		UpdatedAt: u.UpdatedAt,
 	}

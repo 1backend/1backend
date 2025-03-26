@@ -17,6 +17,11 @@ export class UserSvcCreateUserRequest {
 UserSvcCreateUserRequest.discriminator = undefined;
 UserSvcCreateUserRequest.attributeTypeMap = [
     {
+        "name": "contacts",
+        "baseName": "contacts",
+        "type": "Array<UserSvcContact>"
+    },
+    {
         "name": "password",
         "baseName": "password",
         "type": "string"

@@ -32,6 +32,17 @@ export interface UserSvcContact {
      */
     deletedAt?: string;
     /**
+     * Handle is the platform local unique identifier.
+     * Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`.
+     * For email and phones the `id` and the `value` will be the same.
+     * This field mostly exists for display purposes.
+     * 
+     * Example values: "joe12" (1backend username), "thejoe" (twitter username), "joe@joesdomain.com" (email)
+     * @type {string}
+     * @memberof UserSvcContact
+     */
+    handle: string;
+    /**
      * The unique identifier, which can be a URL.
      * 
      * Example values: "joe12" (1backend username), "twitter.com/thejoe" (twitter url), "joe@joesdomain.com" (email)
@@ -50,7 +61,7 @@ export interface UserSvcContact {
      * @type {string}
      * @memberof UserSvcContact
      */
-    platform?: string;
+    platform: string;
     /**
      * 
      * @type {string}
@@ -64,17 +75,6 @@ export interface UserSvcContact {
      */
     userId: string;
     /**
-     * Value is the platform local unique identifier.
-     * Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`.
-     * For email and phones the `id` and the `value` will be the same.
-     * This field mostly exists for display purposes.
-     * 
-     * Example values: "joe12" (1backend username), "thejoe" (twitter username), "joe@joesdomain.com" (email)
-     * @type {string}
-     * @memberof UserSvcContact
-     */
-    value?: string;
-    /**
      * Whether the contact is verified
      * @type {boolean}
      * @memberof UserSvcContact
@@ -86,7 +86,9 @@ export interface UserSvcContact {
  * Check if a given object implements the UserSvcContact interface.
  */
 export function instanceOfUserSvcContact(value: object): value is UserSvcContact {
+    if (!('handle' in value) || value['handle'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('platform' in value) || value['platform'] === undefined) return false;
     if (!('userId' in value) || value['userId'] === undefined) return false;
     return true;
 }
@@ -103,12 +105,12 @@ export function UserSvcContactFromJSONTyped(json: any, ignoreDiscriminator: bool
         
         'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
+        'handle': json['handle'],
         'id': json['id'],
         'isPrimary': json['isPrimary'] == null ? undefined : json['isPrimary'],
-        'platform': json['platform'] == null ? undefined : json['platform'],
+        'platform': json['platform'],
         'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
         'userId': json['userId'],
-        'value': json['value'] == null ? undefined : json['value'],
         'verified': json['verified'] == null ? undefined : json['verified'],
     };
 }
@@ -126,12 +128,12 @@ export function UserSvcContactToJSONTyped(value?: UserSvcContact | null, ignoreD
         
         'createdAt': value['createdAt'],
         'deletedAt': value['deletedAt'],
+        'handle': value['handle'],
         'id': value['id'],
         'isPrimary': value['isPrimary'],
         'platform': value['platform'],
         'updatedAt': value['updatedAt'],
         'userId': value['userId'],
-        'value': value['value'],
         'verified': value['verified'],
     };
 }

@@ -9239,7 +9239,9 @@ const docTemplate = `{
         "user_svc.Contact": {
             "type": "object",
             "required": [
+                "handle",
                 "id",
+                "platform",
                 "userId"
             ],
             "properties": {
@@ -9248,6 +9250,11 @@ const docTemplate = `{
                 },
                 "deletedAt": {
                     "type": "string"
+                },
+                "handle": {
+                    "description": "Handle is the platform local unique identifier.\nIe. while the ` + "`" + `id` + "`" + ` of a Twitter contact is ` + "`" + `twitter.com/thejoe` + "`" + `, the value will be only ` + "`" + `thejoe` + "`" + `.\nFor email and phones the ` + "`" + `id` + "`" + ` and the ` + "`" + `value` + "`" + ` will be the same.\nThis field mostly exists for display purposes.\n\nExample values: \"joe12\" (1backend username), \"thejoe\" (twitter username), \"joe@joesdomain.com\" (email)",
+                    "type": "string",
+                    "example": "thejoe"
                 },
                 "id": {
                     "description": "The unique identifier, which can be a URL.\n\nExample values: \"joe12\" (1backend username), \"twitter.com/thejoe\" (twitter url), \"joe@joesdomain.com\" (email)",
@@ -9268,11 +9275,6 @@ const docTemplate = `{
                 },
                 "userId": {
                     "type": "string"
-                },
-                "value": {
-                    "description": "Value is the platform local unique identifier.\nIe. while the ` + "`" + `id` + "`" + ` of a Twitter contact is ` + "`" + `twitter.com/thejoe` + "`" + `, the value will be only ` + "`" + `thejoe` + "`" + `.\nFor email and phones the ` + "`" + `id` + "`" + ` and the ` + "`" + `value` + "`" + ` will be the same.\nThis field mostly exists for display purposes.\n\nExample values: \"joe12\" (1backend username), \"thejoe\" (twitter username), \"joe@joesdomain.com\" (email)",
-                    "type": "string",
-                    "example": "thejoe"
                 },
                 "verified": {
                     "description": "Whether the contact is verified",
@@ -9354,6 +9356,12 @@ const docTemplate = `{
         "user_svc.CreateUserRequest": {
             "type": "object",
             "properties": {
+                "contacts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user_svc.Contact"
+                    }
+                },
                 "password": {
                     "type": "string"
                 },
@@ -9880,13 +9888,6 @@ const docTemplate = `{
                 "slug"
             ],
             "properties": {
-                "contacts": {
-                    "description": "Contacts are used for login and identification purposes.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/user_svc.Contact"
-                    }
-                },
                 "createdAt": {
                     "type": "string"
                 },

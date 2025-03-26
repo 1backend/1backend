@@ -6178,6 +6178,11 @@ UserSvcContact.attributeTypeMap = [
         "type": "string"
     },
     {
+        "name": "handle",
+        "baseName": "handle",
+        "type": "string"
+    },
+    {
         "name": "id",
         "baseName": "id",
         "type": "string"
@@ -6200,11 +6205,6 @@ UserSvcContact.attributeTypeMap = [
     {
         "name": "userId",
         "baseName": "userId",
-        "type": "string"
-    },
-    {
-        "name": "value",
-        "baseName": "value",
         "type": "string"
     },
     {
@@ -6362,6 +6362,11 @@ class UserSvcCreateUserRequest {
 }
 UserSvcCreateUserRequest.discriminator = undefined;
 UserSvcCreateUserRequest.attributeTypeMap = [
+    {
+        "name": "contacts",
+        "baseName": "contacts",
+        "type": "Array<UserSvcContact>"
+    },
     {
         "name": "password",
         "baseName": "password",
@@ -7412,11 +7417,6 @@ class UserSvcUser {
 }
 UserSvcUser.discriminator = undefined;
 UserSvcUser.attributeTypeMap = [
-    {
-        "name": "contacts",
-        "baseName": "contacts",
-        "type": "Array<UserSvcContact>"
-    },
     {
         "name": "createdAt",
         "baseName": "createdAt",

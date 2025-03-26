@@ -9,19 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import type { UserSvcContact } from './UserSvcContact';
 /**
  *
  * @export
  * @interface UserSvcUser
  */
 export interface UserSvcUser {
-    /**
-     * Contacts are used for login and identification purposes.
-     * @type {Array<UserSvcContact>}
-     * @memberof UserSvcUser
-     */
-    contacts?: Array<UserSvcContact>;
     /**
      *
      * @type {string}

@@ -11,13 +11,8 @@
  */
 
 import { RequestFile } from './models';
-import { UserSvcContact } from './userSvcContact';
 
 export class UserSvcUser {
-    /**
-    * Contacts are used for login and identification purposes.
-    */
-    'contacts'?: Array<UserSvcContact>;
     'createdAt'?: string;
     'deletedAt'?: string;
     'id': string;
@@ -35,11 +30,6 @@ export class UserSvcUser {
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
-        {
-            "name": "contacts",
-            "baseName": "contacts",
-            "type": "Array<UserSvcContact>"
-        },
         {
             "name": "createdAt",
             "baseName": "createdAt",

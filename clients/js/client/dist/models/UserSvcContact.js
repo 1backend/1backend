@@ -15,7 +15,11 @@
  * Check if a given object implements the UserSvcContact interface.
  */
 export function instanceOfUserSvcContact(value) {
+    if (!('handle' in value) || value['handle'] === undefined)
+        return false;
     if (!('id' in value) || value['id'] === undefined)
+        return false;
+    if (!('platform' in value) || value['platform'] === undefined)
         return false;
     if (!('userId' in value) || value['userId'] === undefined)
         return false;
@@ -31,12 +35,12 @@ export function UserSvcContactFromJSONTyped(json, ignoreDiscriminator) {
     return {
         'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
+        'handle': json['handle'],
         'id': json['id'],
         'isPrimary': json['isPrimary'] == null ? undefined : json['isPrimary'],
-        'platform': json['platform'] == null ? undefined : json['platform'],
+        'platform': json['platform'],
         'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
         'userId': json['userId'],
-        'value': json['value'] == null ? undefined : json['value'],
         'verified': json['verified'] == null ? undefined : json['verified'],
     };
 }
@@ -50,12 +54,12 @@ export function UserSvcContactToJSONTyped(value, ignoreDiscriminator = false) {
     return {
         'createdAt': value['createdAt'],
         'deletedAt': value['deletedAt'],
+        'handle': value['handle'],
         'id': value['id'],
         'isPrimary': value['isPrimary'],
         'platform': value['platform'],
         'updatedAt': value['updatedAt'],
         'userId': value['userId'],
-        'value': value['value'],
         'verified': value['verified'],
     };
 }

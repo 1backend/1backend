@@ -2717,6 +2717,16 @@ definitions:
         type: string
       deletedAt:
         type: string
+      handle:
+        description: |-
+          Handle is the platform local unique identifier.
+          Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`.
+          For email and phones the `id` and the `value` will be the same.
+          This field mostly exists for display purposes.
+
+          Example values: "joe12" (1backend username), "thejoe" (twitter username), "joe@joesdomain.com" (email)
+        example: thejoe
+        type: string
       id:
         description: |-
           The unique identifier, which can be a URL.
@@ -2735,21 +2745,13 @@ definitions:
         type: string
       userId:
         type: string
-      value:
-        description: |-
-          Value is the platform local unique identifier.
-          Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`.
-          For email and phones the `id` and the `value` will be the same.
-          This field mostly exists for display purposes.
-
-          Example values: "joe12" (1backend username), "thejoe" (twitter username), "joe@joesdomain.com" (email)
-        example: thejoe
-        type: string
       verified:
         description: Whether the contact is verified
         type: boolean
     required:
+    - handle
     - id
+    - platform
     - userId
     type: object
   user_svc.CreateOrganizationRequest:
@@ -2803,6 +2805,10 @@ definitions:
     type: object
   user_svc.CreateUserRequest:
     properties:
+      contacts:
+        items:
+          $ref: '#/definitions/user_svc.Contact'
+        type: array
       password:
         type: string
       roleIds:
@@ -3171,11 +3177,6 @@ definitions:
     type: object
   user_svc.User:
     properties:
-      contacts:
-        description: Contacts are used for login and identification purposes.
-        items:
-          $ref: '#/definitions/user_svc.Contact'
-        type: array
       createdAt:
         type: string
       deletedAt:

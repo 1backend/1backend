@@ -13,26 +13,12 @@
  */
 
 import { mapValues } from '../runtime';
-import type { UserSvcContact } from './UserSvcContact';
-import {
-    UserSvcContactFromJSON,
-    UserSvcContactFromJSONTyped,
-    UserSvcContactToJSON,
-    UserSvcContactToJSONTyped,
-} from './UserSvcContact';
-
 /**
  * 
  * @export
  * @interface UserSvcUser
  */
 export interface UserSvcUser {
-    /**
-     * Contacts are used for login and identification purposes.
-     * @type {Array<UserSvcContact>}
-     * @memberof UserSvcUser
-     */
-    contacts?: Array<UserSvcContact>;
     /**
      * 
      * @type {string}
@@ -96,7 +82,6 @@ export function UserSvcUserFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'contacts': json['contacts'] == null ? undefined : ((json['contacts'] as Array<any>).map(UserSvcContactFromJSON)),
         'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'id': json['id'],
@@ -118,7 +103,6 @@ export function UserSvcUserToJSONTyped(value?: UserSvcUser | null, ignoreDiscrim
 
     return {
         
-        'contacts': value['contacts'] == null ? undefined : ((value['contacts'] as Array<any>).map(UserSvcContactToJSON)),
         'createdAt': value['createdAt'],
         'deletedAt': value['deletedAt'],
         'id': value['id'],

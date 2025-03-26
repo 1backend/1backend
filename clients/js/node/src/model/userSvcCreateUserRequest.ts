@@ -11,9 +11,11 @@
  */
 
 import { RequestFile } from './models';
+import { UserSvcContact } from './userSvcContact';
 import { UserSvcUser } from './userSvcUser';
 
 export class UserSvcCreateUserRequest {
+    'contacts'?: Array<UserSvcContact>;
     'password'?: string;
     'roleIds'?: Array<string>;
     'user'?: UserSvcUser;
@@ -21,6 +23,11 @@ export class UserSvcCreateUserRequest {
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
+        {
+            "name": "contacts",
+            "baseName": "contacts",
+            "type": "Array<UserSvcContact>"
+        },
         {
             "name": "password",
             "baseName": "password",
