@@ -27,6 +27,11 @@ UserSvcContact.attributeTypeMap = [
         "type": "string"
     },
     {
+        "name": "handle",
+        "baseName": "handle",
+        "type": "string"
+    },
+    {
         "name": "id",
         "baseName": "id",
         "type": "string"
@@ -49,11 +54,6 @@ UserSvcContact.attributeTypeMap = [
     {
         "name": "userId",
         "baseName": "userId",
-        "type": "string"
-    },
-    {
-        "name": "value",
-        "baseName": "value",
         "type": "string"
     },
     {

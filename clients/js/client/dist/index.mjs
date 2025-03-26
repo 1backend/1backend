@@ -8510,7 +8510,11 @@ function UserSvcChangePasswordRequestToJSONTyped(value, ignoreDiscriminator = fa
  * Check if a given object implements the UserSvcContact interface.
  */
 function instanceOfUserSvcContact(value) {
+    if (!('handle' in value) || value['handle'] === undefined)
+        return false;
     if (!('id' in value) || value['id'] === undefined)
+        return false;
+    if (!('platform' in value) || value['platform'] === undefined)
         return false;
     if (!('userId' in value) || value['userId'] === undefined)
         return false;
@@ -8526,12 +8530,12 @@ function UserSvcContactFromJSONTyped(json, ignoreDiscriminator) {
     return {
         'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
+        'handle': json['handle'],
         'id': json['id'],
         'isPrimary': json['isPrimary'] == null ? undefined : json['isPrimary'],
-        'platform': json['platform'] == null ? undefined : json['platform'],
+        'platform': json['platform'],
         'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
         'userId': json['userId'],
-        'value': json['value'] == null ? undefined : json['value'],
         'verified': json['verified'] == null ? undefined : json['verified'],
     };
 }
@@ -8545,12 +8549,12 @@ function UserSvcContactToJSONTyped(value, ignoreDiscriminator = false) {
     return {
         'createdAt': value['createdAt'],
         'deletedAt': value['deletedAt'],
+        'handle': value['handle'],
         'id': value['id'],
         'isPrimary': value['isPrimary'],
         'platform': value['platform'],
         'updatedAt': value['updatedAt'],
         'userId': value['userId'],
-        'value': value['value'],
         'verified': value['verified'],
     };
 }
@@ -8886,7 +8890,6 @@ function UserSvcUserFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'contacts': json['contacts'] == null ? undefined : (json['contacts'].map(UserSvcContactFromJSON)),
         'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'id': json['id'],
@@ -8904,7 +8907,6 @@ function UserSvcUserToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
-        'contacts': value['contacts'] == null ? undefined : (value['contacts'].map(UserSvcContactToJSON)),
         'createdAt': value['createdAt'],
         'deletedAt': value['deletedAt'],
         'id': value['id'],
@@ -8942,6 +8944,7 @@ function UserSvcCreateUserRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'contacts': json['contacts'] == null ? undefined : (json['contacts'].map(UserSvcContactFromJSON)),
         'password': json['password'] == null ? undefined : json['password'],
         'roleIds': json['roleIds'] == null ? undefined : json['roleIds'],
         'user': json['user'] == null ? undefined : UserSvcUserFromJSON(json['user']),
@@ -8955,6 +8958,7 @@ function UserSvcCreateUserRequestToJSONTyped(value, ignoreDiscriminator = false)
         return value;
     }
     return {
+        'contacts': value['contacts'] == null ? undefined : (value['contacts'].map(UserSvcContactToJSON)),
         'password': value['password'],
         'roleIds': value['roleIds'],
         'user': UserSvcUserToJSON(value['user']),

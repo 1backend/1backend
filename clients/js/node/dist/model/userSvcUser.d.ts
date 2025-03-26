@@ -9,12 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UserSvcContact } from './userSvcContact';
 export declare class UserSvcUser {
-    /**
-    * Contacts are used for login and identification purposes.
-    */
-    'contacts'?: Array<UserSvcContact>;
     'createdAt'?: string;
     'deletedAt'?: string;
     'id': string;

@@ -11,7 +11,6 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UserSvcContactFromJSON, UserSvcContactToJSON, } from './UserSvcContact';
 /**
  * Check if a given object implements the UserSvcUser interface.
  */
@@ -30,7 +29,6 @@ export function UserSvcUserFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'contacts': json['contacts'] == null ? undefined : (json['contacts'].map(UserSvcContactFromJSON)),
         'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'id': json['id'],
@@ -48,7 +46,6 @@ export function UserSvcUserToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
-        'contacts': value['contacts'] == null ? undefined : (value['contacts'].map(UserSvcContactToJSON)),
         'createdAt': value['createdAt'],
         'deletedAt': value['deletedAt'],
         'id': value['id'],

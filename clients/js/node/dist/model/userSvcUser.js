@@ -17,11 +17,6 @@ export class UserSvcUser {
 UserSvcUser.discriminator = undefined;
 UserSvcUser.attributeTypeMap = [
     {
-        "name": "contacts",
-        "baseName": "contacts",
-        "type": "Array<UserSvcContact>"
-    },
-    {
         "name": "createdAt",
         "baseName": "createdAt",
         "type": "string"
