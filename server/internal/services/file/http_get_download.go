@@ -49,7 +49,7 @@ func (fs *FileService) GetDownload(
 		}).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
 		return
 	}

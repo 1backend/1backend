@@ -44,7 +44,7 @@ func (g *DataService) DeleteObjects(
 		UserSvcAPI.IsAuthorized(r.Context(), *data.PermissionObjectDelete.Id).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
 		return
 	}

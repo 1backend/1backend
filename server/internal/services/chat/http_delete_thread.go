@@ -44,7 +44,7 @@ func (a *ChatService) DeleteThread(
 		UserSvcAPI.IsAuthorized(r.Context(), *chattypes.PermissionThreadCreate.Id).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
 		return
 	}

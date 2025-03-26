@@ -42,7 +42,7 @@ func (cs *SecretService) ListSecrets(
 		UserSvcAPI.IsAuthorized(r.Context(), *secret.PermissionSecretList.Id).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
 		return
 	}

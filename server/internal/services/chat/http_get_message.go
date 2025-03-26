@@ -44,7 +44,7 @@ func (a *ChatService) GetMessage(
 		UserSvcAPI.IsAuthorized(r.Context(), *chat.PermissionMessageCreate.Id).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
 		return
 	}
