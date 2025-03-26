@@ -1,4 +1,4 @@
-package whoami
+package user
 
 import (
 	"fmt"
