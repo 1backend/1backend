@@ -42,7 +42,7 @@ func (ns *DeployService) ListDeployments(
 		UserSvcAPI.IsAuthorized(r.Context(), *deploy.PermissionDeploymentView.Id).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
 		return
 	}

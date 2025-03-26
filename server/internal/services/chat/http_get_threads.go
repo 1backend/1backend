@@ -43,7 +43,7 @@ func (a *ChatService) GetThreads(
 		UserSvcAPI.IsAuthorized(r.Context(), *chat.PermissionThreadView.Id).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
 		return
 	}

@@ -33,7 +33,7 @@ func (s *PolicyService) Check(
 		UserSvcAPI.IsAuthorized(r.Context(), *policy.PermissionTemplateEdit.Id).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
 		return
 	}

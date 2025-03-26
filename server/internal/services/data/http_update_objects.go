@@ -46,7 +46,7 @@ func (g *DataService) UpdateObjects(
 		UserSvcAPI.IsAuthorized(r.Context(), *data.PermissionObjectEdit.Id).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
 		return
 	}

@@ -43,7 +43,7 @@ func (g *DataService) SaveObjects(
 		UserSvcAPI.IsAuthorized(r.Context(), *data.PermissionObjectCreate.Id).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
 		return
 	}

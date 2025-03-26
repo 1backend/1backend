@@ -147,7 +147,7 @@ func (fs *FileService) serveRemote(
 			},
 		).Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
 		return
 	}
@@ -168,7 +168,7 @@ func (fs *FileService) serveRemote(
 		ServeUpload(r.Context(), uploads[0].FileId).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
 		return
 	}
