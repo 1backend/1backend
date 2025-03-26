@@ -51,7 +51,7 @@ func (ms *ModelService) StartSpecific(
 		UserSvcAPI.IsAuthorized(r.Context(), *model.PermissionModelCreate.Id).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}

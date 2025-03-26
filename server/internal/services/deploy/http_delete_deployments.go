@@ -43,7 +43,7 @@ func (ns *DeployService) DeleteDeployment(
 		UserSvcAPI.IsAuthorized(r.Context(), *deploy.PermissionDeploymentView.Id).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}

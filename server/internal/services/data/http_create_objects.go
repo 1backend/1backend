@@ -29,7 +29,7 @@ func (g *DataService) CreateMany(
 		UserSvcAPI.IsAuthorized(r.Context(), *dynamictypes.PermissionObjectCreate.Id).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
