@@ -54,6 +54,12 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if req.Slug == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(`Slug missing`))
+		return
+	}
+
 	newUser := &user.User{
 		Name: req.Name,
 		Slug: req.Slug,
@@ -115,25 +121,10 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	w.Write(bs)
 }
 
-func validateUserRegistration(req user.RegisterRequest) error {
-	if req.Name == "" {
-		return errors.New("name missing")
-	}
-	if req.Contact.Id == "" {
-		return errors.New("email missing")
-	}
-	if req.Slug == "" {
-		req.Slug = req.Contact.Id
-	}
-	if req.Password == "" {
-		return errors.New("password missing")
-	}
-
-	return nil
-}
-
 func (s *UserService) register(
-	slug, password, name string,
+	slug,
+	password,
+	name string,
 	roleIds []string,
 ) (*user.AuthToken, error) {
 	_, alreadyExists, err := s.usersStore.Query(

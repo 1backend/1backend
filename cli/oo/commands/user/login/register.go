@@ -65,9 +65,9 @@ func Register(cmd *cobra.Command, args []string) error {
 	cf := sdk.NewApiClientFactory(env.URL)
 
 	rsp, _, err := cf.Client().
-		UserSvcAPI.Login(cmd.Context()).
-		Body(openapi.UserSvcLoginRequest{
-			Slug:     &slug,
+		UserSvcAPI.Register(cmd.Context()).
+		Body(openapi.UserSvcRegisterRequest{
+			Slug:     slug,
 			Password: &password,
 		}).
 		Execute()

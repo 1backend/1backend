@@ -67,15 +67,43 @@ that the password will be visible in the terminal command history.`,
 	}
 
 	rootCmd.AddCommand(runCmd)
+
+	var (
+		contactId       string
+		contactPlatform string
+	)
+
+	var registerCmd = &cobra.Command{
+		Use:   "register [slug] [password]",
+		Args:  cobra.MaximumNArgs(2),
+		Short: "Register a new user in the currently selected environment.",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return login.Register(cmd, args)
+		},
+	}
+
+	registerCmd.Flags().
+		StringVarP(&contactId, "contact-id", "i", "", "Contact ID to register")
+
+	registerCmd.Flags().
+		StringVarP(&contactPlatform, "contact-platform", "p", "", "Contact platform to register")
+
+	rootCmd.AddCommand(registerCmd)
 }
 
 func addWhoamiCommands(rootCmd *cobra.Command) {
+	all := false
+
 	var runCmd = &cobra.Command{
 		Use:   "whoami",
 		Args:  cobra.ExactArgs(0),
 		Short: "Display the user currently logged in",
-		RunE:  whoami.Whoami,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return whoami.Whoami(cmd, args, all)
+		},
 	}
+
+	runCmd.Flags().BoolVarP(&all, "all", "a", false, "Display all logged in user information, not just the currently selected one")
 
 	rootCmd.AddCommand(runCmd)
 }
