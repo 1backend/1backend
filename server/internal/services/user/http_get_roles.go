@@ -36,7 +36,7 @@ func (s *UserService) GetRoles(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	_, err := s.isAuthorized(r, user.PermissionRoleView.Id, nil, nil)
+	_, _, err := s.isAuthorized(r, user.PermissionRoleView.Id, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))

@@ -38,7 +38,7 @@ import (
 // @Router /user-svc/change-password [post]
 func (s *UserService) ChangePassword(w http.ResponseWriter, r *http.Request) {
 
-	_, err := s.isAuthorized(r, user.PermissionUserPasswordChange.Id, nil, nil)
+	_, _, err := s.isAuthorized(r, user.PermissionUserPasswordChange.Id, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))

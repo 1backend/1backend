@@ -42,7 +42,7 @@ func (s *UserService) SetRolePermissions(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	usr, err := s.isAuthorized(r, user.PermissionRoleEdit.Id, nil, nil)
+	usr, _, err := s.isAuthorized(r, user.PermissionRoleEdit.Id, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))

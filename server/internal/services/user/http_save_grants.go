@@ -41,7 +41,7 @@ import (
 // @Router /user-svc/grants [put]
 func (s *UserService) SaveGrants(w http.ResponseWriter, r *http.Request) {
 
-	_, err := s.isAuthorized(r, user.PermissionRoleCreate.Id, nil, nil)
+	_, _, err := s.isAuthorized(r, user.PermissionRoleCreate.Id, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))

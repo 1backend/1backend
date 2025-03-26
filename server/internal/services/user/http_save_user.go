@@ -38,7 +38,7 @@ import (
 // @Router /user-svc/user/{userId} [put]
 func (s *UserService) SaveUser(w http.ResponseWriter, r *http.Request) {
 
-	_, err := s.isAuthorized(r, user.PermissionUserEdit.Id, nil, nil)
+	_, _, err := s.isAuthorized(r, user.PermissionUserEdit.Id, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))

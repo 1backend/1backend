@@ -44,7 +44,7 @@ func (s *UserService) CreateOrganization(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	usr, err := s.isAuthorized(
+	usr, _, err := s.isAuthorized(
 		r,
 		user.PermissionOrganizationCreate.Id,
 		nil,

@@ -43,7 +43,7 @@ import (
 // @Router /user-svc/role [post]
 func (s *UserService) CreateRole(w http.ResponseWriter, r *http.Request) {
 
-	rsp, err := s.isAuthorized(r, user.PermissionRoleCreate.Id, nil, nil)
+	rsp, _, err := s.isAuthorized(r, user.PermissionRoleCreate.Id, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))

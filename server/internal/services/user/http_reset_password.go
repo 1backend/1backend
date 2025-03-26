@@ -43,7 +43,7 @@ func (s *UserService) ResetPassword(
 	r *http.Request,
 ) {
 
-	_, err := s.isAuthorized(r, user.PermissionUserPasswordChange.Id, nil, nil)
+	_, _, err := s.isAuthorized(r, user.PermissionUserPasswordChange.Id, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(err.Error()))
