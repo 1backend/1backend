@@ -45,10 +45,15 @@ func (s *UserService) AssignPermissions(
 ) {
 
 	// @todo add proper permission here
-	_, err := s.isAuthorized(r, user.PermissionPermissionAssign.Id, nil, nil)
+	_, isAuthorized, err := s.isAuthorized(r, user.PermissionPermissionAssign.Id, nil, nil)
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
+		return
+	}
+	if !isAuthorized {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("Unauthorized"))
 		return
 	}
 

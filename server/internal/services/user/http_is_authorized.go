@@ -71,7 +71,7 @@ func (s *UserService) IsAuthorized(
 		req = &user.IsAuthorizedRequest{}
 	}
 
-	usr, err := s.isAuthorized(r, permissionId, req.GrantedSlugs, nil)
+	usr, isAuth, err := s.isAuthorized(r, permissionId, req.GrantedSlugs, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("Unauthorized"))
@@ -79,7 +79,7 @@ func (s *UserService) IsAuthorized(
 	}
 
 	bs, _ := json.Marshal(&user.IsAuthorizedResponse{
-		Authorized: true,
+		Authorized: isAuth,
 		User:       usr,
 	})
 
@@ -91,10 +91,10 @@ func (s *UserService) isAuthorized(
 	permissionId string,
 	grantedSlugs,
 	contactsGranted []string,
-) (*user.User, error) {
+) (*user.User, bool, error) {
 	usr, err := s.getUserFromRequest(r)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	slugGrant := false
@@ -104,13 +104,13 @@ func (s *UserService) isAuthorized(
 		}
 	}
 	if slugGrant {
-		return usr, nil
+		return usr, true, nil
 	}
 	roleLinks, err := s.userRoleLinksStore.Query(
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 	).Find()
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 	roleIds := []string{}
 	for _, role := range roleLinks {
@@ -125,12 +125,12 @@ func (s *UserService) isAuthorized(
 		datastore.IsInList(datastore.Field("roleId"), roleIdAnys...),
 	).Find()
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	for _, permissionLink := range permissionLinks {
 		if permissionLink.(*user.PermissionRoleLink).PermissionId == permissionId {
-			return usr, nil
+			return usr, true, nil
 		}
 
 	}
@@ -148,7 +148,7 @@ func (s *UserService) isAuthorized(
 		datastore.Equals([]string{"permissionId"}, permissionId),
 	).Find()
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	exists := false
@@ -166,10 +166,10 @@ func (s *UserService) isAuthorized(
 	}
 
 	if exists {
-		return usr, nil
+		return usr, true, nil
 	}
 
-	return nil, errors.New("unauthorized")
+	return nil, false, nil
 }
 
 func (s *UserService) getRoleIdsByUserId(userId string) ([]string, error) {

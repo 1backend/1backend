@@ -51,7 +51,12 @@ func (s *UserService) AssignRole(
 
 	authorizer := sdk.AuthorizerImpl{}
 	claim, err := authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
-	if err != nil || claim == nil {
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+	if claim == nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("Unauthorized"))
 		return

@@ -31,7 +31,7 @@ func (rs *RegistryService) SaveDefinition(
 		UserSvcAPI.IsAuthorized(r.Context(), *registry.PermissionNodeView.Id).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}

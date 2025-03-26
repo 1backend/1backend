@@ -44,7 +44,7 @@ func (a *ChatService) DeleteMessage(
 		UserSvcAPI.IsAuthorized(r.Context(), *chat.PermissionMessageDelete.Id).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}

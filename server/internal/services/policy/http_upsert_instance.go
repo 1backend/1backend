@@ -32,7 +32,7 @@ func (s *PolicyService) UpsertInstance(
 		UserSvcAPI.IsAuthorized(r.Context(), *policy.PermissionInstanceEdit.Id).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
