@@ -3,10 +3,15 @@ package di
 // This is some of the cruftiest files in the system.
 
 import (
+	"database/sql"
 	"log/slog"
 	"net/http"
 	"os"
 	"sync"
+
+	pglock "github.com/1backend/1backend/sdk/go/lock/pg"
+	"github.com/gorilla/mux"
+	"github.com/pkg/errors"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/clients/llamacpp"
@@ -32,8 +37,6 @@ import (
 	secretservice "github.com/1backend/1backend/server/internal/services/secret"
 	sourceservice "github.com/1backend/1backend/server/internal/services/source"
 	userservice "github.com/1backend/1backend/server/internal/services/user"
-	"github.com/gorilla/mux"
-	"github.com/pkg/errors"
 )
 
 type Options struct {
@@ -113,6 +116,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 	if options.DataStoreFactory == nil {
 		dc, err := sdk.NewDataStoreFactory(sdk.DataStoreConfig{
 			Test:               options.Test,
+			TablePrefix:        options.NodeOptions.DbPrefix,
 			Db:                 options.NodeOptions.Db,
 			DbConnectionString: options.NodeOptions.DbConnectionString,
 		})
@@ -120,6 +124,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 			return nil, nil, err
 		}
 		options.DataStoreFactory = dc
+		options.Lock = pglock.NewPGDistributedLock(dc.Handle().(*sql.Conn))
 	}
 
 	if options.Url == "" {

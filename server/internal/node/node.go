@@ -13,20 +13,16 @@
 package node
 
 import (
-	"context"
-	"database/sql"
 	"fmt"
 	"log/slog"
 	"os"
 	"runtime/debug"
 
 	sdk "github.com/1backend/1backend/sdk/go"
-	pglock "github.com/1backend/1backend/sdk/go/lock/pg"
 	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/1backend/1backend/server/internal/di"
 	node_types "github.com/1backend/1backend/server/internal/node/types"
 	"github.com/gorilla/mux"
-	"github.com/pkg/errors"
 
 	_ "github.com/1backend/1backend/server/docs"
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -76,8 +72,11 @@ func Start(options *node_types.Options) (*NodeInfo, error) {
 	if options.VolumeName == "" {
 		options.VolumeName = os.Getenv("OB_VOLUME_NAME")
 	}
-	if options.ConfigPath == "" {
-		options.ConfigPath = os.Getenv("OB_CONFIG_PATH")
+	if options.DbPrefix == "" {
+		options.VolumeName = os.Getenv("OB_VOLUME_NAME")
+	}
+	if options.DbPrefix == "" {
+		options.DbPrefix = os.Getenv("OB_DB_PREFIX")
 	}
 	if options.Db == "" {
 		options.Db = os.Getenv("OB_DB")
@@ -96,39 +95,6 @@ func Start(options *node_types.Options) (*NodeInfo, error) {
 		NodeOptions: options,
 		Test:        options.Test,
 		Url:         options.Address,
-	}
-
-	var tablePrefix string
-	if options.DbPrefix != "" {
-		tablePrefix = options.DbPrefix
-	}
-
-	ctx := context.Background()
-
-	if options.Db != "" {
-		if options.DbConnectionString == "" {
-			options.DbConnectionString = "postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
-		}
-
-		db, err := sql.Open(options.Db, options.DbConnectionString)
-		if err != nil {
-			return nil, errors.Wrap(err, "error opening sql db")
-		}
-
-		conn, err := db.Conn(ctx)
-		if err != nil {
-			return nil, err
-		}
-		diopt.Lock = pglock.NewPGDistributedLock(conn)
-
-		diopt.DataStoreFactory, err = sdk.NewDataStoreFactory(sdk.DataStoreConfig{
-			Db:          options.Db,
-			TablePrefix: tablePrefix,
-		})
-		if err != nil {
-			logger.Error("Cannot create dataStore factory", slog.Any("error", err))
-			os.Exit(1)
-		}
 	}
 
 	router, starter, err := di.BigBang(diopt)
