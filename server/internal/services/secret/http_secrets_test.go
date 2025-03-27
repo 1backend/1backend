@@ -22,7 +22,6 @@ import (
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
-	"github.com/gorilla/mux"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"go.uber.org/mock/gomock"
@@ -43,7 +42,7 @@ var _ = ginkgo.Describe("Secret Tests", func() {
 		mockClientFactory *sdk.MockClientFactory
 		mockUserSvc       *openapi.MockUserSvcAPI
 
-		universe    *mux.Router
+		universe    *di.Universe
 		starterFunc func() error
 
 		isAdmin      bool
@@ -94,10 +93,10 @@ var _ = ginkgo.Describe("Secret Tests", func() {
 		}
 
 		var err error
-		universe, starterFunc, err = di.BigBang(options)
+		universe, err = di.BigBang(options)
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 
-		hs.UpdateHandler(universe)
+		hs.UpdateHandler(universe.Router)
 
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 	})

@@ -5,14 +5,17 @@ package di
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
+	"runtime/debug"
 	"sync"
 
 	pglock "github.com/1backend/1backend/sdk/go/lock/pg"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
+	httpSwagger "github.com/swaggo/http-swagger"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/clients/llamacpp"
@@ -21,7 +24,6 @@ import (
 	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/router"
-	node_types "github.com/1backend/1backend/server/internal/node/types"
 	chatservice "github.com/1backend/1backend/server/internal/services/chat"
 	configservice "github.com/1backend/1backend/server/internal/services/config"
 	containerservice "github.com/1backend/1backend/server/internal/services/container"
@@ -41,8 +43,33 @@ import (
 )
 
 type Options struct {
-	// NodeOptions contains settings coming from envars
-	NodeOptions *node_types.Options
+	Port        int
+	GpuPlatform string
+
+	Az         string
+	Region     string
+	LLMHost    string
+	VolumeName string
+	ConfigPath string
+
+	// eg. mysql, postgres
+	Db string
+
+	// Connection string eg.
+	// "postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
+	DbConnectionString string
+
+	// Crucial for distributed features.
+	// Please see the documentation for the envar OB_NODE_ID
+	NodeId string
+
+	// DbPrefix allows us to have isolated envs for different test cases
+	// but still make multiple nodes in those test cases use the same
+	// shard of the db.
+	DbPrefix string
+
+	SourceControlToken  string
+	SecretEncryptionKey string
 
 	// URL of the local 1Backend server instance
 	Url string
@@ -75,16 +102,70 @@ type Options struct {
 	Authorizer sdk.Authorizer
 }
 
-func BigBang(options *Options) (*mux.Router, func() error, error) {
-	if options.NodeOptions == nil {
-		options.NodeOptions = &node_types.Options{}
+type Universe struct {
+	Options       Options
+	Router        *mux.Router
+	StarterFunc   func() error
+	ClientFactory sdk.ClientFactory
+}
+
+func BigBang(options *Options) (*Universe, error) {
+	defer func() {
+		if r := recover(); r != nil {
+			logger.Error("Panic in BinBang",
+				slog.String("error", fmt.Sprintf("%v", r)),
+				slog.String("trace", string(debug.Stack())),
+			)
+			os.Exit(1)
+		}
+	}()
+
+	// @todo GPU platform maybe this could be autodetected
+	if options.GpuPlatform == "" {
+		options.GpuPlatform = os.Getenv("OB_GPU_PLATFORM")
+	}
+	if options.Url == "" {
+		options.Url = os.Getenv("OB_SERVER_URL")
+	}
+	if options.NodeId == "" {
+		options.NodeId = os.Getenv("OB_NODE_ID")
+	}
+	if options.Az == "" {
+		options.Az = os.Getenv("OB_AZ")
+	}
+	if options.Region == "" {
+		options.Region = os.Getenv("OB_AZ")
+	}
+	if options.LLMHost == "" {
+		options.LLMHost = os.Getenv("OB_LLM_HOST")
+	}
+	if options.VolumeName == "" {
+		options.VolumeName = os.Getenv("OB_VOLUME_NAME")
+	}
+	if options.DbPrefix == "" {
+		options.VolumeName = os.Getenv("OB_VOLUME_NAME")
+	}
+	if options.DbPrefix == "" {
+		options.DbPrefix = os.Getenv("OB_DB_PREFIX")
+	}
+	if options.Db == "" {
+		options.Db = os.Getenv("OB_DB")
+	}
+	if options.DbConnectionString == "" {
+		options.DbConnectionString = os.Getenv("OB_DB_CONNECTION_STRING")
+	}
+	if options.SecretEncryptionKey == "" {
+		options.SecretEncryptionKey = os.Getenv("OB_ENCRYPTION_KEY")
+		if options.SecretEncryptionKey == "" {
+			options.SecretEncryptionKey = "changeMeToSomethingSecureForReal"
+		}
 	}
 
 	homeDir, err := sdk.HomeDir(sdk.HomeDirOptions{
 		Test: options.Test,
 	})
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	options.HomeDir = homeDir
@@ -110,23 +191,23 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		os.Exit(1)
 	}
 
-	if options.NodeOptions.ConfigPath != "" {
-		options.HomeDir = options.NodeOptions.ConfigPath
+	if options.ConfigPath != "" {
+		options.HomeDir = options.ConfigPath
 	}
 
 	if options.DataStoreFactory == nil {
 		dc, err := sdk.NewDataStoreFactory(sdk.DataStoreConfig{
 			Test:               options.Test,
-			TablePrefix:        options.NodeOptions.DbPrefix,
-			Db:                 options.NodeOptions.Db,
-			DbConnectionString: options.NodeOptions.DbConnectionString,
+			TablePrefix:        options.DbPrefix,
+			Db:                 options.Db,
+			DbConnectionString: options.DbConnectionString,
 		})
 		if err != nil {
-			return nil, nil, err
+			return nil, err
 		}
 		options.DataStoreFactory = dc
 
-		if options.NodeOptions.Db != "" {
+		if options.Db != "" {
 			dbHandle, err := dc.Handle()
 			if err != nil {
 				logger.Error(
@@ -155,7 +236,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		options.ClientFactory = sdk.NewApiClientFactory(options.Url)
 	}
 	// so ugly
-	options.NodeOptions.ClientFactory = options.ClientFactory
+	options.ClientFactory = options.ClientFactory
 
 	configService.SetDataStoreFactory(options.DataStoreFactory.Create)
 
@@ -220,7 +301,7 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 	}
 
 	containerService, err := containerservice.NewContainerService(
-		options.NodeOptions.VolumeName,
+		options.VolumeName,
 		options.ClientFactory,
 		options.Lock,
 		options.DataStoreFactory.Create,
@@ -235,8 +316,8 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 
 	modelService, err := modelservice.NewModelService(
 		// @todo GPU platform maybe this could be autodetected
-		options.NodeOptions.GpuPlatform,
-		options.NodeOptions.LLMHost,
+		options.GpuPlatform,
+		options.LLMHost,
 		options.ClientFactory,
 		options.Lock,
 		options.DataStoreFactory.Create,
@@ -305,12 +386,12 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 
 	registryService, err := registryservice.NewRegistryService(
 		options.Url,
-		options.NodeOptions.Az,
-		options.NodeOptions.Region,
+		options.Az,
+		options.Region,
 		options.ClientFactory,
 		options.Lock,
 		options.DataStoreFactory.Create,
-		options.NodeOptions.NodeId,
+		options.NodeId,
 	)
 	if err != nil {
 		logger.Error(
@@ -339,16 +420,23 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		options.Lock,
 		options.DataStoreFactory.Create,
 	)
+	if err != nil {
+		logger.Error(
+			"Source service creation failed",
+			slog.String("error", err.Error()),
+		)
+		os.Exit(1)
+	}
 
-	if options.NodeOptions.SecretEncryptionKey == "" {
-		options.NodeOptions.SecretEncryptionKey = "changeMeToSomethingSecureForReal"
+	if options.SecretEncryptionKey == "" {
+		options.SecretEncryptionKey = "changeMeToSomethingSecureForReal"
 	}
 	secretService, err := secretservice.NewSecretService(
 		options.ClientFactory,
 		options.Authorizer,
 		options.Lock,
 		options.DataStoreFactory.Create,
-		options.NodeOptions.SecretEncryptionKey,
+		options.SecretEncryptionKey,
 	)
 	if err != nil {
 		logger.Error(
@@ -839,69 +927,75 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		proxyService.Route(w, r)
 	}))
 
-	return router, func() error {
-		err = configService.Start()
-		if err != nil {
-			return errors.Wrap(err, "config service start failed")
-		}
-		err = firehoseService.Start()
-		if err != nil {
-			return errors.Wrap(err, "firehose service start failed")
-		}
-		err = containerService.Start()
-		if err != nil {
-			return errors.Wrap(err, "docker service start failed")
-		}
-		err = modelService.Start()
-		if err != nil {
-			return errors.Wrap(err, "model service start failed")
-		}
-		err = chatService.Start()
-		if err != nil {
-			return errors.Wrap(err, "chat service start failed")
-		}
-		err = promptService.Start()
-		if err != nil {
-			return errors.Wrap(err, "prompt service start failed")
-		}
-		err = dataService.Start()
-		if err != nil {
-			return errors.Wrap(err, "data service start failed")
-		}
-		err = policyService.Start()
-		if err != nil {
-			return errors.Wrap(err, "policy service start failed")
-		}
-		err = registryService.Start()
-		if err != nil {
-			return errors.Wrap(err, "registry service start failed")
-		}
-		err = fileService.Start()
-		if err != nil {
-			return errors.Wrap(err, "file service start failed")
-		}
-		err = deployService.Start()
-		if err != nil {
-			return errors.Wrap(err, "deploy service start failed")
-		}
-		err = sourceService.Start()
-		if err != nil {
-			return errors.Wrap(err, "source service start failed")
-		}
-		err = secretService.Start()
-		if err != nil {
-			return errors.Wrap(err, "secret service start failed")
-		}
-		err = proxyService.Start()
-		if err != nil {
-			return errors.Wrap(err, "proxy service start failed")
-		}
-		err = emailService.Start()
-		if err != nil {
-			return errors.Wrap(err, "email service start failed")
-		}
+	router.HandleFunc("/swagger/", httpSwagger.WrapHandler)
 
-		return nil
+	return &Universe{
+		Router: router,
+		StarterFunc: func() error {
+			err = configService.Start()
+			if err != nil {
+				return errors.Wrap(err, "config service start failed")
+			}
+			err = firehoseService.Start()
+			if err != nil {
+				return errors.Wrap(err, "firehose service start failed")
+			}
+			err = containerService.Start()
+			if err != nil {
+				return errors.Wrap(err, "docker service start failed")
+			}
+			err = modelService.Start()
+			if err != nil {
+				return errors.Wrap(err, "model service start failed")
+			}
+			err = chatService.Start()
+			if err != nil {
+				return errors.Wrap(err, "chat service start failed")
+			}
+			err = promptService.Start()
+			if err != nil {
+				return errors.Wrap(err, "prompt service start failed")
+			}
+			err = dataService.Start()
+			if err != nil {
+				return errors.Wrap(err, "data service start failed")
+			}
+			err = policyService.Start()
+			if err != nil {
+				return errors.Wrap(err, "policy service start failed")
+			}
+			err = registryService.Start()
+			if err != nil {
+				return errors.Wrap(err, "registry service start failed")
+			}
+			err = fileService.Start()
+			if err != nil {
+				return errors.Wrap(err, "file service start failed")
+			}
+			err = deployService.Start()
+			if err != nil {
+				return errors.Wrap(err, "deploy service start failed")
+			}
+			err = sourceService.Start()
+			if err != nil {
+				return errors.Wrap(err, "source service start failed")
+			}
+			err = secretService.Start()
+			if err != nil {
+				return errors.Wrap(err, "secret service start failed")
+			}
+			err = proxyService.Start()
+			if err != nil {
+				return errors.Wrap(err, "proxy service start failed")
+			}
+			err = emailService.Start()
+			if err != nil {
+				return errors.Wrap(err, "email service start failed")
+			}
+
+			return nil
+		},
+		Options: *options,
 	}, nil
 }
 

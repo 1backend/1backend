@@ -26,7 +26,6 @@ import (
 	"github.com/1backend/1backend/server/internal/di"
 	modeltypes "github.com/1backend/1backend/server/internal/services/model/types"
 	"github.com/flusflas/dipper"
-	"github.com/gorilla/mux"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"go.uber.org/mock/gomock"
@@ -52,7 +51,7 @@ var _ = ginkgo.Describe("Prompt Processing Loop", func() {
 		mockConfigSvc     *openapi.MockConfigSvcAPI
 		mockFirehoseSvc   *openapi.MockFirehoseSvcAPI
 
-		universe    *mux.Router
+		universe    *di.Universe
 		starterFunc func() error
 
 		responses []*llamacpp.CompletionResponse
@@ -97,10 +96,10 @@ var _ = ginkgo.Describe("Prompt Processing Loop", func() {
 		}
 
 		var err error
-		universe, starterFunc, err = di.BigBang(options)
+		universe, err = di.BigBang(options)
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 
-		hs.UpdateHandler(universe)
+		hs.UpdateHandler(universe.Router)
 
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 	})
