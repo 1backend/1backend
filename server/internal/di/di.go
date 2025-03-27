@@ -124,7 +124,10 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 			return nil, nil, err
 		}
 		options.DataStoreFactory = dc
-		options.Lock = pglock.NewPGDistributedLock(dc.Handle().(*sql.Conn))
+
+		if options.NodeOptions.Db != "" {
+			options.Lock = pglock.NewPGDistributedLock(dc.Handle().(*sql.Conn))
+		}
 	}
 
 	if options.Url == "" {
