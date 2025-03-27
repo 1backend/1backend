@@ -22,12 +22,12 @@ func TestInviteForUnregistered(t *testing.T) {
 		Test: true,
 		Url:  server.URL,
 	}
-	universe, starterFunc, err := di.BigBang(options)
+	universe, err := di.BigBang(options)
 	require.NoError(t, err)
 
-	hs.UpdateHandler(universe)
+	hs.UpdateHandler(universe.Router)
 
-	err = starterFunc()
+	err = universe.StarterFunc()
 	require.NoError(t, err)
 
 	manyClients, _, err := test.MakeClients(options.ClientFactory, 1)
@@ -124,11 +124,11 @@ func TestInviteForRegisteredUser(t *testing.T) {
 		Test: true,
 		Url:  server.URL,
 	}
-	universe, starterFunc, err := di.BigBang(options)
+	universe, err := di.BigBang(options)
 	require.NoError(t, err)
 
-	hs.UpdateHandler(universe)
-	err = starterFunc()
+	hs.UpdateHandler(universe.Router)
+	err = universe.StarterFunc()
 	require.NoError(t, err)
 
 	manyClients, _, err := test.MakeClients(options.ClientFactory, 1)
@@ -210,11 +210,11 @@ func TestListInviteAuthorization(t *testing.T) {
 		Test: true,
 		Url:  server.URL,
 	}
-	universe, starterFunc, err := di.BigBang(options)
+	universe, err := di.BigBang(options)
 	require.NoError(t, err)
 
-	hs.UpdateHandler(universe)
-	err = starterFunc()
+	hs.UpdateHandler(universe.Router)
+	err = universe.StarterFunc()
 	require.NoError(t, err)
 
 	manyClients, tokens, err := test.MakeClients(options.ClientFactory, 2)

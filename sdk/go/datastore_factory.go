@@ -43,7 +43,7 @@ type DataStoreFactory interface {
 
 	// eg. *sql.Db
 	// Don't use this, it's only for system level hacks
-	Handle() any
+	Handle() (any, error)
 }
 
 type DataStoreConfig struct {
@@ -114,7 +114,7 @@ func (df *DataStoreFactoryPostgresImpl) Create(tableName string, instance any) (
 		return nil, err
 	}
 
-	d.SetDebug(df.options.Test)
+	// d.SetDebug(df.options.Test)
 
 	return d, nil
 
@@ -141,15 +141,27 @@ func (df *DataStoreFactoryLocalImpl) Create(tableName string, instance any) (dat
 	if err != nil {
 		return nil, err
 	}
-	d.SetDebug(df.options.Test)
+
+	//d.SetDebug(df.options.Test)
 
 	return d, nil
 }
 
-func (df *DataStoreFactoryLocalImpl) Handle() any {
-	return nil
+func (df *DataStoreFactoryLocalImpl) Handle() (any, error) {
+	return nil, nil
 }
 
-func (df *DataStoreFactoryPostgresImpl) Handle() any {
-	return df.db
+func (df *DataStoreFactoryPostgresImpl) Handle() (any, error) {
+	df.mutex.Lock()
+	defer df.mutex.Unlock()
+
+	if df.db == nil {
+		db, err := sql.Open(df.options.Db, df.options.DbConnectionString)
+		if err != nil {
+			return nil, errors.Wrap(err, "error opening sql db")
+		}
+		df.db = db
+	}
+
+	return df.db, nil
 }

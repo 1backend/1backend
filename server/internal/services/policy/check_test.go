@@ -21,12 +21,12 @@ func TestRateLimiting(t *testing.T) {
 		Test: true,
 		Url:  server.URL,
 	}
-	universe, starterFunc, err := di.BigBang(options)
+	universe, err := di.BigBang(options)
 	require.NoError(t, err)
 
-	hs.UpdateHandler(universe)
+	hs.UpdateHandler(universe.Router)
 
-	err = starterFunc()
+	err = universe.StarterFunc()
 	require.NoError(t, err)
 
 	client := openapi.NewAPIClient(&openapi.Configuration{

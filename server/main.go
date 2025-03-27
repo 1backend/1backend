@@ -22,8 +22,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/1backend/1backend/sdk/go/router"
 	_ "github.com/1backend/1backend/server/docs"
-	"github.com/1backend/1backend/server/internal/node"
-	node_types "github.com/1backend/1backend/server/internal/node/types"
+	"github.com/1backend/1backend/server/internal/di"
 )
 
 var port = router.GetPort()
@@ -51,7 +50,7 @@ var port = router.GetPort()
 // @externalDocs.description  1Backend API
 // @externalDocs.url          https://1backend.com/docs/category/1backend-api
 func main() {
-	nodeInfo, err := node.Start(&node_types.Options{})
+	nodeInfo, err := di.BigBang(&di.Options{})
 	if err != nil {
 		logger.Error("Cannot start node", slog.Any("error", err))
 		os.Exit(1)

@@ -28,11 +28,11 @@ func TestFirehoseSubscription(t *testing.T) {
 		Test: true,
 		Url:  server.URL,
 	}
-	universe, starterFunc, err := di.BigBang(options)
+	universe, err := di.BigBang(options)
 	require.NoError(t, err)
 
-	hs.UpdateHandler(universe)
-	err = starterFunc()
+	hs.UpdateHandler(universe.Router)
+	err = universe.StarterFunc()
 	require.NoError(t, err)
 
 	cl, adminToken, err := test.AdminClient(options.ClientFactory)

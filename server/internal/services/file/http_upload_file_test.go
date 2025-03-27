@@ -36,11 +36,11 @@ func TestUploadFile(t *testing.T) {
 		Test: true,
 		Url:  server.URL,
 	}
-	universe, starterFunc, err := di.BigBang(options)
+	universe, err := di.BigBang(options)
 	require.NoError(t, err)
 
-	hs.UpdateHandler(universe)
-	require.NoError(t, starterFunc())
+	hs.UpdateHandler(universe.Router)
+	require.NoError(t, universe.StarterFunc())
 
 	token, err := sdk.RegisterUserAccount(
 		options.ClientFactory.Client().UserSvcAPI,

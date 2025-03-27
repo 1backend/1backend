@@ -1,7 +1,7 @@
 //go:build dist
 // +build dist
 
-package node
+package di_test
 
 import (
 	"context"
@@ -14,7 +14,6 @@ import (
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
-	node_types "github.com/1backend/1backend/server/internal/node/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -25,48 +24,48 @@ func TestStart(t *testing.T) {
 
 	dbprefix := sdk.Id("node_start")
 
-	options1 := &node_types.Options{
+	options1 := &di.Options{
 		Db:       "postgres",
 		DbPrefix: dbprefix,
-		Address:  server1.URL,
+		Url:      server1.URL,
 	}
 
-	nodeInfo1, err := Start(options1)
+	universe1, err := di.BigBang(options1)
 	require.NoError(t, err)
 
-	hs1.UpdateHandler(nodeInfo1.Router)
+	hs1.UpdateHandler(universe1.Router)
 	// @todo Why is this called here and also down below?
 	// If I remove this there is a config service error
 	// which i think points to a syncronization issue.
-	err = nodeInfo1.StarterFunc()
+	err = universe1.StarterFunc()
 	require.NoError(t, err)
 
 	hs2 := &di.HandlerSwitcher{}
 	server2 := httptest.NewServer(hs1)
 	defer server1.Close()
 
-	options2 := &node_types.Options{
+	options2 := &di.Options{
 		Db:       "postgres",
 		DbPrefix: dbprefix,
-		Address:  server2.URL,
+		Url:      server2.URL,
 	}
-	nodeInfo2, err := Start(options2)
+	universe2, err := di.BigBang(options2)
 	require.NoError(t, err)
 
-	hs2.UpdateHandler(nodeInfo2.Router)
+	hs2.UpdateHandler(universe2.Router)
 
 	var wg sync.WaitGroup
 	wg.Add(2)
 
 	go func() {
-		err := nodeInfo1.StarterFunc()
+		err := universe1.StarterFunc()
 		wg.Done()
 		require.NoError(t, err)
 
 	}()
 
 	go func() {
-		err := nodeInfo2.StarterFunc()
+		err := universe2.StarterFunc()
 		wg.Done()
 		require.NoError(t, err)
 	}()
@@ -80,7 +79,7 @@ func TestStart(t *testing.T) {
 		time.Sleep(100 * time.Millisecond)
 		c++
 
-		adminClient, _, err := test.AdminClient(nodeInfo1.Options.ClientFactory)
+		adminClient, _, err := test.AdminClient(universe1.Options.ClientFactory)
 		require.NoError(t, err)
 
 		rsp, _, err := adminClient.RegistrySvcAPI.ListNodes(context.Background()).

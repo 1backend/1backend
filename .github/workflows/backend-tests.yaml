@@ -23,7 +23,7 @@ jobs:
 
       - name: Run tests
         run: |
-          go test ./... -v -timeout=30s
+          go test ./... -v -failfast -timeout=30s
 
           docker rm -f mypostgres
           docker run --name mypostgres -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_DB=mydatabase -p 5432:5432 -d postgres
@@ -31,5 +31,5 @@ jobs:
           # We rerun the tests with an SQL backend
           OB_DB=postgres \
             OB_DB_CONNECTION_STRING="postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable" \
-            go test ./... -tags=dist -v -timeout=90s
+            go test ./... -failfast -tags=dist -v -timeout=90s
         working-directory: server
