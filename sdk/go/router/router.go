@@ -4,6 +4,9 @@ import (
 	"fmt"
 )
 
+// GLOBALS.
+// Abhorrent.
+
 var port = "58231"
 
 const address = "http://127.0.0.1"

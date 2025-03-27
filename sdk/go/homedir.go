@@ -23,8 +23,14 @@ const onebackendFolder = ".1backend"
 
 type HomeDirOptions struct {
 	Test bool
+
+	// The config folder name. Not the full path.
+	// This mostly exists to support running multiple local
+	// servers for testing purposes.
+	ConfigFolder string
 }
 
+// HomeDir of the 1backend server
 func HomeDir(options HomeDirOptions) (string, error) {
 	var (
 		homeDir string
@@ -42,7 +48,11 @@ func HomeDir(options HomeDirOptions) (string, error) {
 		if err != nil {
 			return "", errors.Wrap(err, "homedir creation failed")
 		}
-		homeDir = path.Join(homeDir, onebackendFolder)
+		fold := onebackendFolder
+		if options.ConfigFolder != "" {
+			fold = options.ConfigFolder
+		}
+		homeDir = path.Join(homeDir, fold)
 	}
 
 	return homeDir, nil

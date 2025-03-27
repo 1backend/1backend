@@ -8,8 +8,11 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"os"
 	"runtime/debug"
+	"strconv"
+	"strings"
 	"sync"
 
 	pglock "github.com/1backend/1backend/sdk/go/lock/pg"
@@ -127,6 +130,23 @@ func BigBang(options *Options) (*Universe, error) {
 	if options.Url == "" {
 		options.Url = os.Getenv("OB_SERVER_URL")
 	}
+	if options.Url == "" {
+		options.Url = router.SelfAddress()
+	} else {
+		if !strings.HasPrefix(options.Url, "http") {
+			options.Url = fmt.Sprintf("http://%v", options.Url)
+		}
+		uri, err := url.Parse(options.Url)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to parse url")
+		}
+		p, err := strconv.ParseInt(uri.Port(), 10, 64)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to parse port")
+		}
+		router.SetPort(int(p))
+	}
+
 	if options.NodeId == "" {
 		options.NodeId = os.Getenv("OB_NODE_ID")
 	}
@@ -140,9 +160,6 @@ func BigBang(options *Options) (*Universe, error) {
 		options.LLMHost = os.Getenv("OB_LLM_HOST")
 	}
 	if options.VolumeName == "" {
-		options.VolumeName = os.Getenv("OB_VOLUME_NAME")
-	}
-	if options.DbPrefix == "" {
 		options.VolumeName = os.Getenv("OB_VOLUME_NAME")
 	}
 	if options.DbPrefix == "" {
@@ -162,7 +179,8 @@ func BigBang(options *Options) (*Universe, error) {
 	}
 
 	homeDir, err := sdk.HomeDir(sdk.HomeDirOptions{
-		Test: options.Test,
+		Test:         options.Test,
+		ConfigFolder: os.Getenv("OB_CONFIG_FOLDER"),
 	})
 	if err != nil {
 		return nil, err
@@ -189,10 +207,6 @@ func BigBang(options *Options) (*Universe, error) {
 			slog.String("error", err.Error()),
 		)
 		os.Exit(1)
-	}
-
-	if options.ConfigPath != "" {
-		options.HomeDir = options.ConfigPath
 	}
 
 	if options.DataStoreFactory == nil {
@@ -228,15 +242,9 @@ func BigBang(options *Options) (*Universe, error) {
 		}
 	}
 
-	if options.Url == "" {
-		options.Url = router.SelfAddress()
-	}
-
 	if options.ClientFactory == nil {
 		options.ClientFactory = sdk.NewApiClientFactory(options.Url)
 	}
-	// so ugly
-	options.ClientFactory = options.ClientFactory
 
 	configService.SetDataStoreFactory(options.DataStoreFactory.Create)
 

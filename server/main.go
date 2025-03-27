@@ -25,8 +25,6 @@ import (
 	"github.com/1backend/1backend/server/internal/di"
 )
 
-var port = router.GetPort()
-
 // @title           1Backend
 // @version         0.3.0-rc.30
 // @description     AI-native microservices platform.
@@ -59,6 +57,8 @@ func main() {
 	srv := &http.Server{
 		Handler: nodeInfo.Router,
 	}
+
+	port := router.GetPort()
 
 	logger.Info("Server started", slog.String("port", port))
 	go func() {
