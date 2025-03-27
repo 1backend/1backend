@@ -14,9 +14,7 @@ import (
 
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
-	"github.com/1backend/1backend/server/internal/node"
 
-	node_types "github.com/1backend/1backend/server/internal/node/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -32,15 +30,15 @@ func TestServeUploadProxy(t *testing.T) {
 
 	dbprefix := sdk.Id("node_id")
 
-	opt1 := &node_types.Options{
+	opt1 := &di.Options{
 		Test:     true,
 		NodeId:   "node1",
 		Db:       "postgres",
 		DbPrefix: dbprefix,
-		Address:  server.URL,
+		Url:      server.URL,
 	}
 
-	nodeInfo1, err := node.Start(opt1)
+	nodeInfo1, err := di.BigBang(opt1)
 	require.NoError(t, err)
 
 	hs.UpdateHandler(nodeInfo1.Router)
@@ -61,14 +59,14 @@ func TestServeUploadProxy(t *testing.T) {
 	server2 := httptest.NewServer(hs2)
 	defer server2.Close()
 
-	opt2 := &node_types.Options{
+	opt2 := &di.Options{
 		Test:     true,
 		NodeId:   "node2",
 		Db:       "postgres",
 		DbPrefix: dbprefix,
-		Address:  server2.URL,
+		Url:      server2.URL,
 	}
-	nodeInfo2, err := node.Start(opt2)
+	nodeInfo2, err := di.BigBang(opt2)
 	hs2.UpdateHandler(nodeInfo2.Router)
 	require.NoError(t, nodeInfo2.StarterFunc())
 
