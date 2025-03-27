@@ -42,8 +42,7 @@ var _ = ginkgo.Describe("Config Tests", func() {
 		mockUserSvc       *openapi.MockUserSvcAPI
 		mockFirehoseSvc   *openapi.MockFirehoseSvcAPI
 
-		universe    *di.Universe
-		starterFunc func() error
+		universe *di.Universe
 
 		isAuthorized bool
 		isAdmin      bool
@@ -112,7 +111,7 @@ var _ = ginkgo.Describe("Config Tests", func() {
 	})
 
 	ginkgo.JustBeforeEach(func() {
-		err := starterFunc()
+		err := universe.StarterFunc()
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 	})
 

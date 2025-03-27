@@ -31,7 +31,6 @@ var _ = ginkgo.Describe("Deploy Loop", func() {
 		universe             *di.Universe
 		mockRegistrySvc      *openapi.MockRegistrySvcAPI
 		mockContainerSvc     *openapi.MockContainerSvcAPI
-		starterFunc          func() error
 		adminClient          *openapi.APIClient
 		launchContainerError error
 
@@ -145,7 +144,7 @@ var _ = ginkgo.Describe("Deploy Loop", func() {
 			Return(nil, nil, nil).
 			AnyTimes()
 
-		err := starterFunc()
+		err := universe.StarterFunc()
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 	})
 

@@ -51,8 +51,7 @@ var _ = ginkgo.Describe("Prompt Processing Loop", func() {
 		mockConfigSvc     *openapi.MockConfigSvcAPI
 		mockFirehoseSvc   *openapi.MockFirehoseSvcAPI
 
-		universe    *di.Universe
-		starterFunc func() error
+		universe *di.Universe
 
 		responses []*llamacpp.CompletionResponse
 	)
@@ -228,7 +227,7 @@ var _ = ginkgo.Describe("Prompt Processing Loop", func() {
 				return nil
 			})
 
-		err := starterFunc()
+		err := universe.StarterFunc()
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 	})
 

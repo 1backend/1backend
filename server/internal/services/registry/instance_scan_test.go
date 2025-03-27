@@ -30,7 +30,6 @@ var _ = ginkgo.Describe("Instance Scan", func() {
 		mockClientFactory *sdk.MockClientFactory
 		mockUserSvc       *openapi.MockUserSvcAPI
 		universe          *di.Universe
-		starterFunc       func() error
 		adminClient       *openapi.APIClient
 	)
 
@@ -73,7 +72,7 @@ var _ = ginkgo.Describe("Instance Scan", func() {
 	})
 
 	ginkgo.JustBeforeEach(func() {
-		err := starterFunc()
+		err := universe.StarterFunc()
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 	})
 

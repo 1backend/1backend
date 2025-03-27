@@ -42,8 +42,7 @@ var _ = ginkgo.Describe("Secret Tests", func() {
 		mockClientFactory *sdk.MockClientFactory
 		mockUserSvc       *openapi.MockUserSvcAPI
 
-		universe    *di.Universe
-		starterFunc func() error
+		universe *di.Universe
 
 		isAdmin      bool
 		isAuthorized bool
@@ -102,7 +101,7 @@ var _ = ginkgo.Describe("Secret Tests", func() {
 	})
 
 	ginkgo.JustBeforeEach(func() {
-		err := starterFunc()
+		err := universe.StarterFunc()
 		gomega.Expect(err).NotTo(gomega.HaveOccurred())
 	})
 
