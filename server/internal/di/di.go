@@ -3,6 +3,7 @@ package di
 // This is some of the cruftiest files in the system.
 
 import (
+	"context"
 	"database/sql"
 	"log/slog"
 	"net/http"
@@ -126,15 +127,23 @@ func BigBang(options *Options) (*mux.Router, func() error, error) {
 		options.DataStoreFactory = dc
 
 		if options.NodeOptions.Db != "" {
-			conn, err := dc.Handle()
+			dbHandle, err := dc.Handle()
 			if err != nil {
 				logger.Error(
-					"User service start failed",
+					"Failed to get DB handle",
 					slog.String("error", err.Error()),
 				)
 				os.Exit(1)
 			}
-			options.Lock = pglock.NewPGDistributedLock(conn.(*sql.Conn))
+			conn, err := dbHandle.(*sql.DB).Conn(context.Background())
+			if err != nil {
+				logger.Error(
+					"Failed to get DB connection",
+					slog.String("error", err.Error()),
+				)
+				os.Exit(1)
+			}
+			options.Lock = pglock.NewPGDistributedLock(conn)
 		}
 	}
 

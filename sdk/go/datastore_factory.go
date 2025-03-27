@@ -114,7 +114,7 @@ func (df *DataStoreFactoryPostgresImpl) Create(tableName string, instance any) (
 		return nil, err
 	}
 
-	d.SetDebug(df.options.Test)
+	// d.SetDebug(df.options.Test)
 
 	return d, nil
 
@@ -141,7 +141,8 @@ func (df *DataStoreFactoryLocalImpl) Create(tableName string, instance any) (dat
 	if err != nil {
 		return nil, err
 	}
-	d.SetDebug(df.options.Test)
+
+	//d.SetDebug(df.options.Test)
 
 	return d, nil
 }
