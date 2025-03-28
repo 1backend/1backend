@@ -186,14 +186,14 @@ func StartServer(options Options) (*ServerProcess, error) {
 		return nil, errors.Wrap(err, "server failed to start")
 	}
 
-	timeout := 7 * time.Second
+	timeout := 10 * time.Second
 
 	select {
 	case <-waitChan:
 	case <-time.After(timeout): // Timeout in case the server fails to start
 		server.Stop()
 		return nil, errors.Errorf(
-			"server did not produce output within %v seconds", timeout,
+			"server did not produce output within %v", timeout,
 		)
 	}
 
