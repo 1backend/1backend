@@ -3,36 +3,28 @@ package userservice_test
 import (
 	"context"
 	"fmt"
-	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/test"
-	"github.com/1backend/1backend/server/internal/di"
 
 	openapi "github.com/1backend/1backend/clients/go"
 )
 
 func TestAssignRoleToUser(t *testing.T) {
-	hs := &di.HandlerSwitcher{}
-	server := httptest.NewServer(hs)
-	defer server.Close()
+	t.Parallel()
 
-	options := &di.Options{
+	server, err := test.StartServer(test.Options{
 		Test: true,
-		Url:  server.URL,
-	}
-	universe, err := di.BigBang(options)
+	})
 	require.NoError(t, err)
+	defer server.Cleanup(t)
 
-	hs.UpdateHandler(universe.Router)
+	clientFactory := sdk.NewApiClientFactory(server.Url)
 
-	err = universe.StarterFunc()
-	require.NoError(t, err)
-
-	manyClients, tokens, err := test.MakeClients(options.ClientFactory, 3)
+	manyClients, tokens, err := test.MakeClients(clientFactory, 3)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -85,7 +77,7 @@ func TestAssignRoleToUser(t *testing.T) {
 		require.NotEmpty(t, rsp.Token.Token)
 
 		// Here we refresh the token to include the new org role
-		userClient = options.ClientFactory.Client(sdk.WithToken(rsp.Token.Token))
+		userClient = clientFactory.Client(sdk.WithToken(rsp.Token.Token))
 	})
 
 	t.Run("nonexistent org role assignment", func(t *testing.T) {
@@ -109,7 +101,7 @@ func TestAssignRoleToUser(t *testing.T) {
 	})
 
 	secondClient, _, err := test.LoggedInClient(
-		options.ClientFactory,
+		clientFactory,
 		"test-user-slug-1",
 		"testUserPassword1",
 	)
@@ -154,7 +146,7 @@ func TestAssignRoleToUser(t *testing.T) {
 	require.NoError(t, err)
 
 	secondClient, _, err = test.LoggedInClient(
-		options.ClientFactory,
+		clientFactory,
 		"test-user-slug-1",
 		"testUserPassword1",
 	)

@@ -12,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/pkg/errors"
 )
 
@@ -93,6 +94,10 @@ func StartServer(options Options) (*ServerProcess, error) {
 
 	if port == "" {
 		port = "58231"
+	}
+
+	if options.Test {
+		options.DbPrefix = sdk.Id("t")
 	}
 
 	envVars := map[string]string{
