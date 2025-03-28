@@ -166,7 +166,7 @@ Examples of Role Ownership
 
 - A user with the slug joe-doe owns roles like joe-doe:any-custom-role.
 - A user with any slug who has the role my-service:admin owns my-service:user.
-- A user with any slug who has the role user-svc:org:{$orgId}:admin owns user-svc:org:{$orgId}:user.
+- A user with any slug who has the role `user-svc:org:{orgId}:admin` owns `user-svc:org:{orgId}:user`.
 
 By enforcing role ownership rules, the system ensures that roles are only assigned by authorized users, preventing privilege escalation and maintaining security within the organization.
 
@@ -189,11 +189,11 @@ createdAt: "2025-01-15T12:00:00Z" # Example ISO 8601 timestamp
 
 #### Create
 
-Any logged in user can create an organization, provided the `Organization` slug is not taken yet. The creator becomes the first admin of the organization, acquiring the role of `user-svc:org:{$orgId}:admin` role.
+Any logged in user can create an organization, provided the `Organization` slug is not taken yet. The creator becomes the first admin of the organization, acquiring the role of `user-svc:org:{orgId}:admin` role.
 
 #### Membership
 
-Admins can assign other users member (`user-svc:org:{$orgId}:user`) or admin roles (`user-svc:org:{$orgId}:admin`) for the organizations they administer.
+Admins can assign other users member (`user-svc:org:{orgId}:user`) or admin roles (`user-svc:org:{orgId}:admin`) for the organizations they administer.
 
 ### Use cases
 
