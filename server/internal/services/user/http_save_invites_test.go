@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
 
@@ -14,23 +15,14 @@ import (
 )
 
 func TestInviteForUnregistered(t *testing.T) {
-	hs := &di.HandlerSwitcher{}
-	server := httptest.NewServer(hs)
-	defer server.Close()
-
-	options := &di.Options{
+	server, err := test.StartServer(test.Options{
 		Test: true,
-		Url:  server.URL,
-	}
-	universe, err := di.BigBang(options)
+	})
 	require.NoError(t, err)
+	defer server.Cleanup(t)
 
-	hs.UpdateHandler(universe.Router)
-
-	err = universe.StarterFunc()
-	require.NoError(t, err)
-
-	manyClients, _, err := test.MakeClients(options.ClientFactory, 1)
+	manyClients, _, err := test.MakeClients(
+		sdk.NewApiClientFactory(server.Url), 1)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -98,7 +90,7 @@ func TestInviteForUnregistered(t *testing.T) {
 
 		require.NoError(t, err)
 
-		claim, err := options.Authorizer.ParseJWT(
+		claim, err := sdk.AuthorizerImpl{}.ParseJWT(
 			pkRsp.PublicKey,
 			rsp.Token.Token,
 		)
