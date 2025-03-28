@@ -55,8 +55,8 @@ func LoggedInClient(
 	password string,
 ) (*openapi.APIClient, *openapi.UserSvcAuthToken, error) {
 	loginReq := openapi.UserSvcLoginRequest{
-		Slug:     openapi.PtrString("test-user-slug-1"),
-		Password: openapi.PtrString("testUserPassword1"),
+		Slug:     openapi.PtrString(slug),
+		Password: openapi.PtrString(password),
 	}
 
 	loginRsp, _, err := clientFactory.Client().UserSvcAPI.Login(context.Background()).

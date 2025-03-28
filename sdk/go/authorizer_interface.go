@@ -20,6 +20,7 @@ import (
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/pkg/errors"
+	"github.com/samber/lo"
 )
 
 // Authorizer can extract roles from tokens.
@@ -172,6 +173,11 @@ func ExtractOrganizationRoles(roleIds []string) map[string][]string {
 // - A user with any slug who has the role "my-service:admin" owns "my-service:user".
 // - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
 func OwnsRole(claim *Claims, roleId string) bool {
+	// @todo Probably not great in terms of zero trust design ; )
+	if lo.Contains(claim.RoleIds, "user-svc:admin") {
+		return true
+	}
+
 	if strings.HasPrefix(roleId, claim.Slug) {
 		return true
 	}
