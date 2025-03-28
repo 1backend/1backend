@@ -243,7 +243,7 @@ func TestListInviteAuthorization(t *testing.T) {
 		require.Len(t, rsp.Invites[0].OwnerIds, 0)
 	})
 
-	secondUserClient, _, err = test.LoggedInClient(clientFactory, "test-user-slug-1", "testUserPassword%v")
+	secondUserClient, _, err = test.LoggedInClient(clientFactory, "test-user-slug-1", "testUserPassword1")
 	require.NoError(t, err)
 
 	t.Run("second user cannot invite as it has the role but does not own it", func(t *testing.T) {
