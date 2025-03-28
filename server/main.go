@@ -48,26 +48,29 @@ import (
 // @externalDocs.description  1Backend API
 // @externalDocs.url          https://1backend.com/docs/category/1backend-api
 func main() {
-	nodeInfo, err := di.BigBang(&di.Options{})
+	logger.Info("Starting...")
+
+	universe, err := di.BigBang(&di.Options{})
 	if err != nil {
 		logger.Error("Cannot start node", slog.Any("error", err))
 		os.Exit(1)
 	}
 
 	srv := &http.Server{
-		Handler: nodeInfo.Router,
+		Handler: universe.Router,
 	}
 
 	port := router.GetPort()
 
-	logger.Info("Server started", slog.String("port", port))
 	go func() {
-		time.Sleep(5 * time.Millisecond)
-		err := nodeInfo.StarterFunc()
+		err := universe.StarterFunc()
 		if err != nil {
 			logger.Error("Cannot start universe", slog.Any("error", err))
 			os.Exit(1)
 		}
+
+		time.Sleep(5 * time.Millisecond)
+		logger.Info("Server started", slog.String("port", port))
 	}()
 
 	err = http.ListenAndServe(fmt.Sprintf(":%v", port), srv.Handler)

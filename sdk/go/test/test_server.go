@@ -155,9 +155,8 @@ func StartServer(options Options) (*ServerProcess, error) {
 		for {
 			time.Sleep(10 * time.Millisecond)
 			output := stdout.String() + stderr.String()
+
 			if strings.Contains(output, "Server started") {
-				// hmmm
-				time.Sleep(1500 * time.Millisecond)
 				close(waitChan)
 				return
 			}
@@ -168,7 +167,9 @@ func StartServer(options Options) (*ServerProcess, error) {
 	case <-waitChan:
 	case <-time.After(5 * time.Second): // Timeout in case the server fails to start
 		server.Stop()
-		return nil, errors.New("server did not produce output within 5 seconds")
+		return nil, errors.New(
+			"server did not produce output within 5 seconds: ",
+		)
 	}
 
 	server.wg.Add(1)
