@@ -25,6 +25,7 @@ import (
 )
 
 type RegistryService struct {
+	publicKey     string
 	clientFactory sdk.ClientFactory
 	token         string
 
@@ -133,6 +134,14 @@ func (ns *RegistryService) Start() error {
 		return err
 	}
 	ns.token = token.Token
+
+	pk, _, err := ns.clientFactory.Client(sdk.WithToken(ns.token)).
+		UserSvcAPI.GetPublicKey(context.Background()).
+		Execute()
+	if err != nil {
+		return err
+	}
+	ns.publicKey = pk.PublicKey
 
 	return ns.registerPermissions()
 }

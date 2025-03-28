@@ -57,7 +57,14 @@ func (rs *RegistryService) ListInstances(
 	path := q.Get("path")
 	slug := q.Get("slug")
 
-	instances, err := rs.getInstances(List{
+	isAdmin, err := sdk.AuthorizerImpl{}.IsAdminFromRequest(rs.publicKey, r)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	instances, err := rs.getInstances(isAuthRsp.User.Slug, isAdmin, List{
 		Id:           id,
 		Host:         host,
 		DeploymentId: deploymentId,
@@ -90,6 +97,8 @@ type List struct {
 }
 
 func (rs *RegistryService) getInstances(
+	callerSlug string,
+	isAdmin bool,
 	query List,
 ) ([]*registry.Instance, error) {
 	instanceIs, err := rs.instanceStore.Query().Find()
@@ -104,6 +113,10 @@ func (rs *RegistryService) getInstances(
 
 	filtered := []*registry.Instance{}
 	for _, v := range instances {
+		if !isAdmin && v.Slug != callerSlug {
+			continue
+		}
+
 		match := true
 
 		if query.IP != "" && v.IP != query.IP {
