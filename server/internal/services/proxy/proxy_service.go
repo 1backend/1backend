@@ -93,21 +93,21 @@ func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	healtyInstances := make([]openapi.RegistrySvcInstance, 0, len(rsp.Instances))
+	// Prioritize healthy instances
+	selectedInstances := make([]openapi.RegistrySvcInstance, 0, len(rsp.Instances))
 	for _, instance := range rsp.Instances {
 		if instance.Status == openapi.InstanceStatusHealthy {
-			healtyInstances = append(healtyInstances, instance)
+			selectedInstances = append(selectedInstances, instance)
 		}
 	}
 
-	if len(healtyInstances) == 0 {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("no healthy instance found"))
-		return
+	// But fall back to any instances if none found
+	if len(selectedInstances) == 0 {
+		selectedInstances = rsp.Instances
 	}
 
-	randomIndex := rand.Intn(len(healtyInstances))
-	instance := healtyInstances[randomIndex]
+	randomIndex := rand.Intn(len(selectedInstances))
+	instance := selectedInstances[randomIndex]
 
 	uri := strings.TrimSuffix(instance.Url, "/") + "/" + strings.TrimLeft(r.URL.Path, "/")
 
@@ -148,11 +148,29 @@ func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(resp.StatusCode)
 
-	_, err = io.Copy(w, resp.Body)
+	// Unfortunately io.Copy does not work here and causes "invalid write result"
+
+	//_, err = io.Copy(w, resp.Body)
+	//if err != nil {
+	//	logger.Error("Error proxying body",
+	//		slog.String("error", err.Error()),
+	//	)
+	//}
+
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		logger.Error("Error proxying body",
-			slog.String("error", err.Error()),
-		)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(errors.Wrap(err, "failed to read body while proxying").Error()))
+		return
+	}
+
+	_, err = w.Write(body)
+	if err != nil {
+		logger.Error("Error writing response body", slog.String("error", err.Error()))
+	}
+
+	if flusher, ok := w.(http.Flusher); ok {
+		flusher.Flush()
 	}
 }
 
