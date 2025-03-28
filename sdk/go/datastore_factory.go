@@ -63,6 +63,9 @@ func NewDataStoreFactory(options DataStoreConfig) (DataStoreFactory, error) {
 		options.HomeDir = homeDir
 	}
 
+	if options.TablePrefix == "" {
+		options.TablePrefix = os.Getenv("OB_DB_PREFIX")
+	}
 	if options.Test && options.TablePrefix == "" {
 		options.TablePrefix = Id("test") + "_"
 	}

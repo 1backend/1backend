@@ -2,7 +2,6 @@ package userservice_test
 
 import (
 	"context"
-	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -10,42 +9,35 @@ import (
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/test"
-	"github.com/1backend/1backend/server/internal/di"
 	user_svc "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 func TestGrants(t *testing.T) {
-	hs := &di.HandlerSwitcher{}
-	server := httptest.NewServer(hs)
-	defer server.Close()
+	t.Parallel()
 
-	options := &di.Options{
+	server, err := test.StartServer(test.Options{
 		Test: true,
-		Url:  server.URL,
-	}
-	universe, err := di.BigBang(options)
+	})
 	require.NoError(t, err)
+	defer server.Cleanup(t)
 
-	hs.UpdateHandler(universe.Router)
-
-	err = universe.StarterFunc()
-	require.NoError(t, err)
+	clientFactory := sdk.NewApiClientFactory(server.Url)
 
 	token, err := sdk.RegisterUserAccount(
-		options.ClientFactory.Client().UserSvcAPI,
+		clientFactory.Client().UserSvcAPI,
 		"someuser",
 		"pw123",
 		"Some name",
 	)
 	require.NoError(t, err)
-	userClient := options.ClientFactory.Client(sdk.WithToken(token.Token))
+	userClient := clientFactory.Client(sdk.WithToken(token.Token))
 
 	ctx := context.Background()
 
 	_, _, err = userClient.UserSvcAPI.GetRoles(ctx).Execute()
 	require.Error(t, err)
 
-	adminClient, _, err := test.AdminClient(options.ClientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory)
 	require.NoError(t, err)
 
 	_, _, err = adminClient.UserSvcAPI.SaveGrants(ctx).Body(openapi.UserSvcSaveGrantsRequest{

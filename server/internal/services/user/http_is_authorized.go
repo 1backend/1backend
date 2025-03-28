@@ -110,8 +110,10 @@ func (s *UserService) isAuthorized(
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 	).Find()
 	if err != nil {
+
 		return nil, false, err
 	}
+
 	roleIds := []string{}
 	for _, role := range roleLinks {
 		roleIds = append(roleIds, role.(*user.UserRoleLink).RoleId)

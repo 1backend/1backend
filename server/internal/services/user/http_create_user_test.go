@@ -2,37 +2,30 @@ package userservice_test
 
 import (
 	"context"
-	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/test"
-	"github.com/1backend/1backend/server/internal/di"
 )
 
 func TestCreateUser(t *testing.T) {
-	hs := &di.HandlerSwitcher{}
-	server := httptest.NewServer(hs)
-	defer server.Close()
+	t.Parallel()
 
-	options := &di.Options{
+	server, err := test.StartServer(test.Options{
 		Test: true,
-		Url:  server.URL,
-	}
-	universe, err := di.BigBang(options)
+	})
 	require.NoError(t, err)
+	defer server.Cleanup(t)
 
-	hs.UpdateHandler(universe.Router)
-
-	err = universe.StarterFunc()
-	require.NoError(t, err)
+	clientFactory := sdk.NewApiClientFactory(server.Url)
 
 	ctx := context.Background()
 
 	t.Run("non-admins cannot create users", func(t *testing.T) {
-		_, _, err = options.ClientFactory.Client().UserSvcAPI.CreateUser(ctx).Body(
+		_, _, err = clientFactory.Client().UserSvcAPI.CreateUser(ctx).Body(
 			openapi.UserSvcCreateUserRequest{
 				User: &openapi.UserSvcUser{
 					Slug: "test-slug-1",
@@ -43,7 +36,7 @@ func TestCreateUser(t *testing.T) {
 		require.Error(t, err)
 	})
 
-	adminClient, _, err := test.AdminClient(options.ClientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory)
 	require.NoError(t, err)
 
 	t.Run("admins can create users", func(t *testing.T) {

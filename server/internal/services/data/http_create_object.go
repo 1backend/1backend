@@ -48,6 +48,7 @@ func (g *DataService) Create(
 		w.Write([]byte(err.Error()))
 		return
 	}
+
 	if !isAuthRsp.GetAuthorized() {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(`Unauthorized`))

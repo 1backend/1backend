@@ -23,6 +23,9 @@ jobs:
 
       - name: Run tests
         run: |
+          # Some tests invoke the server cli itself
+          go install
+
           go test ./... -v -failfast -timeout=30s
 
           docker rm -f mypostgres

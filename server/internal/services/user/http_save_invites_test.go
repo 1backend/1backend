@@ -2,35 +2,27 @@ package userservice_test
 
 import (
 	"context"
-	"net/http/httptest"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/test"
-	"github.com/1backend/1backend/server/internal/di"
 
 	openapi "github.com/1backend/1backend/clients/go"
 )
 
 func TestInviteForUnregistered(t *testing.T) {
-	hs := &di.HandlerSwitcher{}
-	server := httptest.NewServer(hs)
-	defer server.Close()
+	t.Parallel()
 
-	options := &di.Options{
+	server, err := test.StartServer(test.Options{
 		Test: true,
-		Url:  server.URL,
-	}
-	universe, err := di.BigBang(options)
+	})
 	require.NoError(t, err)
+	defer server.Cleanup(t)
 
-	hs.UpdateHandler(universe.Router)
-
-	err = universe.StarterFunc()
-	require.NoError(t, err)
-
-	manyClients, _, err := test.MakeClients(options.ClientFactory, 1)
+	manyClients, _, err := test.MakeClients(
+		sdk.NewApiClientFactory(server.Url), 1)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -98,7 +90,7 @@ func TestInviteForUnregistered(t *testing.T) {
 
 		require.NoError(t, err)
 
-		claim, err := options.Authorizer.ParseJWT(
+		claim, err := sdk.AuthorizerImpl{}.ParseJWT(
 			pkRsp.PublicKey,
 			rsp.Token.Token,
 		)
@@ -116,22 +108,16 @@ func TestInviteForUnregistered(t *testing.T) {
 }
 
 func TestInviteForRegisteredUser(t *testing.T) {
-	hs := &di.HandlerSwitcher{}
-	server := httptest.NewServer(hs)
-	defer server.Close()
+	t.Parallel()
 
-	options := &di.Options{
+	server, err := test.StartServer(test.Options{
 		Test: true,
-		Url:  server.URL,
-	}
-	universe, err := di.BigBang(options)
+	})
 	require.NoError(t, err)
+	defer server.Cleanup(t)
 
-	hs.UpdateHandler(universe.Router)
-	err = universe.StarterFunc()
-	require.NoError(t, err)
-
-	manyClients, _, err := test.MakeClients(options.ClientFactory, 1)
+	clientFactory := sdk.NewApiClientFactory(server.Url)
+	manyClients, _, err := test.MakeClients(clientFactory, 1)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -180,12 +166,12 @@ func TestInviteForRegisteredUser(t *testing.T) {
 			Execute()
 		require.NoError(t, err)
 
-		publicKeyRsp, _, err := options.ClientFactory.Client().
+		publicKeyRsp, _, err := clientFactory.Client().
 			UserSvcAPI.GetPublicKey(context.Background()).
 			Execute()
 		require.NoError(t, err)
 
-		claim, err := options.Authorizer.ParseJWT(
+		claim, err := sdk.AuthorizerImpl{}.ParseJWT(
 			publicKeyRsp.PublicKey,
 			loginRsp.Token.Token,
 		)
@@ -202,22 +188,16 @@ func TestInviteForRegisteredUser(t *testing.T) {
 }
 
 func TestListInviteAuthorization(t *testing.T) {
-	hs := &di.HandlerSwitcher{}
-	server := httptest.NewServer(hs)
-	defer server.Close()
+	t.Parallel()
 
-	options := &di.Options{
+	server, err := test.StartServer(test.Options{
 		Test: true,
-		Url:  server.URL,
-	}
-	universe, err := di.BigBang(options)
+	})
 	require.NoError(t, err)
+	defer server.Cleanup(t)
 
-	hs.UpdateHandler(universe.Router)
-	err = universe.StarterFunc()
-	require.NoError(t, err)
-
-	manyClients, tokens, err := test.MakeClients(options.ClientFactory, 2)
+	clientFactory := sdk.NewApiClientFactory(server.Url)
+	manyClients, tokens, err := test.MakeClients(clientFactory, 2)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -263,7 +243,7 @@ func TestListInviteAuthorization(t *testing.T) {
 		require.Len(t, rsp.Invites[0].OwnerIds, 0)
 	})
 
-	secondUserClient, _, err = test.LoggedInClient(options.ClientFactory, "test-user-slug-1", "testUserPassword%v")
+	secondUserClient, _, err = test.LoggedInClient(clientFactory, "test-user-slug-1", "testUserPassword%v")
 	require.NoError(t, err)
 
 	t.Run("second user cannot invite as it has the role but does not own it", func(t *testing.T) {

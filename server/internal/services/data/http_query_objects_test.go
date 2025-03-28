@@ -2,51 +2,39 @@ package dynamicservice_test
 
 import (
 	"context"
-	"net/http/httptest"
 	"strings"
 	"testing"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/test"
-	"github.com/1backend/1backend/server/internal/di"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 
-	client "github.com/1backend/1backend/clients/go"
 	openapi "github.com/1backend/1backend/clients/go"
 )
 
 func TestQueryObjects(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartServer(test.Options{
+		Test: true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := sdk.NewApiClientFactory(server.Url)
+
 	uniq := uuid.New().String()
 	uniq = strings.Replace(uniq, "-", "", -1)[0:10]
 
 	table1 := "test_table_" + uniq
 
-	hs := &di.HandlerSwitcher{}
-	server := httptest.NewServer(hs)
-	defer server.Close()
-
-	options := &di.Options{
-		Test: true,
-		Url:  server.URL,
-	}
-	universe, err := di.BigBang(options)
-	require.NoError(t, err)
-
-	hs.UpdateHandler(universe.Router)
-
-	err = universe.StarterFunc()
-	require.NoError(t, err)
-
-	manyClients, _, err := test.MakeClients(options.ClientFactory, 1)
+	manyClients, _, err := test.MakeClients(clientFactory, 1)
 	require.NoError(t, err)
 	client1 := manyClients[0]
 
-	uuids := []string{}
-
 	for i := 0; i < 20; i++ {
 		uuid1 := sdk.Id(table1)
-		uuids = append(uuids, uuid1)
 
 		obj := openapi.DataSvcCreateObjectFields{
 			Id:       &uuid1,
@@ -58,7 +46,7 @@ func TestQueryObjects(t *testing.T) {
 		}
 
 		_, _, err = client1.DataSvcAPI.CreateObject(context.Background()).
-			Body(client.DataSvcCreateObjectRequest{
+			Body(openapi.DataSvcCreateObjectRequest{
 				Object: &obj,
 			}).
 			Execute()

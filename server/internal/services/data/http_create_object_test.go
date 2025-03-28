@@ -2,13 +2,11 @@ package dynamicservice_test
 
 import (
 	"context"
-	"net/http/httptest"
 	"strings"
 	"testing"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/test"
-	"github.com/1backend/1backend/server/internal/di"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 
@@ -16,29 +14,23 @@ import (
 )
 
 func TestCreate(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartServer(test.Options{
+		Test: true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := sdk.NewApiClientFactory(server.Url)
+
 	uniq := uuid.New().String()
 	uniq = strings.Replace(uniq, "-", "", -1)[0:10]
 
 	table1 := "test_table" + uniq
 	table2 := "test_table2" + uniq
 
-	hs := &di.HandlerSwitcher{}
-	server := httptest.NewServer(hs)
-	defer server.Close()
-
-	options := &di.Options{
-		Test: true,
-		Url:  server.URL,
-	}
-	universe, err := di.BigBang(options)
-	require.NoError(t, err)
-
-	hs.UpdateHandler(universe.Router)
-
-	err = universe.StarterFunc()
-	require.NoError(t, err)
-
-	manyClients, _, err := test.MakeClients(options.ClientFactory, 2)
+	manyClients, _, err := test.MakeClients(clientFactory, 2)
 	require.NoError(t, err)
 	client1 := manyClients[0]
 	client2 := manyClients[1]
