@@ -8,6 +8,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -153,7 +154,10 @@ func StartServer(options Options) (*ServerProcess, error) {
 	go func() {
 		for {
 			time.Sleep(10 * time.Millisecond)
-			if stdout.Len() > 0 || stderr.Len() > 0 {
+			output := stdout.String() + stderr.String()
+			if strings.Contains(output, "Server started") {
+				// hmmm
+				time.Sleep(1000 * time.Millisecond)
 				close(waitChan)
 				return
 			}
