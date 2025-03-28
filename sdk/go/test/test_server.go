@@ -1,6 +1,7 @@
 package test
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"fmt"
@@ -60,13 +61,15 @@ type Options struct {
 }
 
 type ServerProcess struct {
-	Cmd    *exec.Cmd
-	Url    string
-	Stdout *bytes.Buffer
-	Stderr *bytes.Buffer
-	cancel context.CancelFunc
-	wg     sync.WaitGroup
-	Port   string
+	Cmd        *exec.Cmd
+	Url        string
+	StdoutPipe io.ReadCloser
+	StderrPipe io.ReadCloser
+	Stdout     bytes.Buffer
+	Stderr     bytes.Buffer
+	cancel     context.CancelFunc
+	wg         sync.WaitGroup
+	Port       string
 }
 
 func findAvailablePort() (string, error) {
@@ -131,37 +134,57 @@ func StartServer(options Options) (*ServerProcess, error) {
 		cmd.Env = append(cmd.Env, fmt.Sprintf("%s=%s", key, value))
 	}
 
-	stdout := &bytes.Buffer{}
-	stderr := &bytes.Buffer{}
-	cmd.Stdout = io.MultiWriter(stdout)
-	cmd.Stderr = io.MultiWriter(stderr)
-
-	server := &ServerProcess{
-		Cmd:    cmd,
-		Stdout: stdout,
-		Stderr: stderr,
-		cancel: cancel,
-		Port:   port,
-		Url:    fmt.Sprintf("http://127.0.0.1:%v", port),
+	stdoutPipe, err := cmd.StdoutPipe()
+	if err != nil {
+		return nil, err
+	}
+	stderrPipe, err := cmd.StderrPipe()
+	if err != nil {
+		return nil, err
 	}
 
-	if err := cmd.Start(); err != nil {
-		return nil, errors.Wrap(err, "server failed to start")
+	server := &ServerProcess{
+		Cmd:        cmd,
+		StdoutPipe: stdoutPipe,
+		StderrPipe: stderrPipe,
+		cancel:     cancel,
+		Port:       port,
+		Url:        fmt.Sprintf("http://127.0.0.1:%v", port),
 	}
 
 	// **Wait until first line of output appears**
 	waitChan := make(chan struct{})
-	go func() {
-		for {
-			time.Sleep(10 * time.Millisecond)
-			output := stdout.String() + stderr.String()
+	started := false
 
-			if strings.Contains(output, "Server started") {
-				close(waitChan)
+	readAndSignal := func(pipe io.ReadCloser, err bool) {
+		scanner := bufio.NewScanner(pipe)
+		for scanner.Scan() {
+			line := scanner.Bytes()
+			if err {
+				server.Stderr.Write(line)
+			} else {
+				server.Stdout.Write(line)
+			}
+
+			if started {
+				continue
+			}
+
+			if strings.Contains(string(line), "Server started") {
+				started = true
+				close(waitChan) // Signal that the server is up
 				return
 			}
 		}
-	}()
+	}
+
+	// Start goroutines to read both stdout and stderr
+	go readAndSignal(stdoutPipe, false)
+	go readAndSignal(stderrPipe, true)
+
+	if err := cmd.Start(); err != nil {
+		return nil, errors.Wrap(err, "server failed to start")
+	}
 
 	select {
 	case <-waitChan:
