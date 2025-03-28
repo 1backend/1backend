@@ -166,7 +166,7 @@ Examples of Role Ownership
 
 - A user with the slug joe-doe owns roles like joe-doe:any-custom-role.
 - A user with any slug who has the role my-service:admin owns my-service:user.
-- A user with any slug who has the role user-svc:org:{%orgId}:admin owns user-svc:org:{%orgId}:user.
+- A user with any slug who has the role user-svc:org:{$orgId}:admin owns user-svc:org:{$orgId}:user.
 
 By enforcing role ownership rules, the system ensures that roles are only assigned by authorized users, preventing privilege escalation and maintaining security within the organization.
 
