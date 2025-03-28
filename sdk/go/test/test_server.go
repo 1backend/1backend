@@ -157,7 +157,7 @@ func StartServer(options Options) (*ServerProcess, error) {
 			output := stdout.String() + stderr.String()
 			if strings.Contains(output, "Server started") {
 				// hmmm
-				time.Sleep(1000 * time.Millisecond)
+				time.Sleep(1500 * time.Millisecond)
 				close(waitChan)
 				return
 			}
