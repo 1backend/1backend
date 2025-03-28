@@ -7,7 +7,13 @@ import (
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
+	"github.com/samber/lo"
 )
+
+var grantedSlugs = []string{
+	"deploy-svc",
+	"proxy-svc",
+}
 
 // @ID listInstances
 // @Summary List Service Instances
@@ -35,7 +41,7 @@ func (rs *RegistryService) ListInstances(
 	isAuthRsp, _, err := rs.clientFactory.Client(sdk.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *registry.PermissionInstanceView.Id).
 		Body(openapi.UserSvcIsAuthorizedRequest{
-			GrantedSlugs: []string{"deploy-svc"},
+			GrantedSlugs: grantedSlugs,
 		}).
 		Execute()
 	if err != nil {
@@ -113,7 +119,9 @@ func (rs *RegistryService) getInstances(
 
 	filtered := []*registry.Instance{}
 	for _, v := range instances {
-		if !isAdmin && v.Slug != callerSlug {
+		if !isAdmin &&
+			v.Slug != callerSlug &&
+			!lo.Contains(grantedSlugs, callerSlug) {
 			continue
 		}
 

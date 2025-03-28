@@ -16,6 +16,7 @@ import (
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/pkg/errors"
+	"github.com/stretchr/testify/require"
 )
 
 type Options struct {
@@ -162,8 +163,10 @@ func StartServer(options Options) (*ServerProcess, error) {
 			line := scanner.Bytes()
 			if err {
 				server.Stderr.Write(line)
+				server.Stderr.Write([]byte("\n"))
 			} else {
 				server.Stdout.Write(line)
+				server.Stderr.Write([]byte("\n"))
 			}
 
 			if started {
@@ -173,7 +176,6 @@ func StartServer(options Options) (*ServerProcess, error) {
 			if strings.Contains(string(line), "Server started") {
 				started = true
 				close(waitChan) // Signal that the server is up
-				return
 			}
 		}
 	}
@@ -225,4 +227,15 @@ func (s *ServerProcess) Cleanup(t *testing.T) {
 	}
 
 	s.Stop()
+}
+
+func NewSelfUrl(t *testing.T) string {
+	listener, err := net.Listen("tcp", "localhost:0")
+	require.NoError(t, err)
+	defer listener.Close()
+
+	port := listener.Addr().(*net.TCPAddr).Port
+	selfURL := fmt.Sprintf("http://localhost:%d", port)
+
+	return selfURL
 }
