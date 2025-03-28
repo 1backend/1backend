@@ -95,4 +95,13 @@ func TestOwnsRole(t *testing.T) {
 
 		require.Equal(t, false, owns)
 	})
+
+	t.Run("admin owns any role", func(t *testing.T) {
+		owns := sdk.OwnsRole(&sdk.Claims{
+			Slug:    "does-not-matter",
+			RoleIds: []string{"user-svc:admin"},
+		}, "anything")
+
+		require.Equal(t, true, owns)
+	})
 }
