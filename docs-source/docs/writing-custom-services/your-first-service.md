@@ -114,7 +114,7 @@ func (service *BasicService) Start() error {
 }
 
 func (service *BasicService) registerAccount() error {
-	credentialStore, err := service.dataStoreFactory.Create("petSvcCredentials", &sdk.Credential{})
+	credentialStore, err := service.dataStoreFactory.Create("basicSvcCredentials", &sdk.Credential{})
 	if err != nil {
 		return errors.Wrap(err, "cannot create credential store")
 	}
