@@ -1,0 +1,85 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "An example service for bootstrapping.",
+        "title": "Multi Svc",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "https://1backend.com/",
+            "email": "sales@singulatron.com"
+        },
+        "license": {
+            "name": "Proprietary"
+        },
+        "version": "0.3.0-rc.8"
+    },
+    "host": "localhost:58231",
+    "basePath": "/",
+    "paths": {
+        "/multi-svc/pets/count": {
+            "get": {
+                "description": "Count the pets living in the Multi Svc.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Multi Svc"
+                ],
+                "summary": "Count Pets",
+                "operationId": "countPets",
+                "parameters": [
+                    {
+                        "description": "Count Pets Request",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/multi_svc.CountPetsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}",
+                        "schema": {
+                            "$ref": "#/definitions/multi_svc.CountPetsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "multi_svc.CountPetsRequest": {
+            "type": "object"
+        },
+        "multi_svc.CountPetsResponse": {
+            "type": "object",
+            "required": [
+                "petCount"
+            ],
+            "properties": {
+                "petCount": {
+                    "type": "integer"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Type \"Bearer\" followed by a space and token acquired from the User Svc Login endpoint.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

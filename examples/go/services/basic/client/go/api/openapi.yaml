@@ -3,7 +3,7 @@ info:
   contact:
     email: sales@singulatron.com
     name: API Support
-    url: http://openorch.org/
+    url: https://1backend.com/
   description: An example service for bootstrapping.
   license:
     name: Proprietary
@@ -50,8 +50,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/basic_svc.ListPetsRequest'
-        description: Registration Tracking Request
-        required: true
+        description: List Pets Request
+        required: false
       responses:
         "200":
           content:
@@ -70,7 +70,7 @@ paths:
             application/json:
               schema:
                 type: string
-          description: Error Tracking Registration
+          description: Error Listing Pets
       summary: List Pets
       tags:
       - Basic Svc

@@ -15,7 +15,7 @@ import (
 func TestInviteForUnregistered(t *testing.T) {
 	t.Parallel()
 
-	server, err := test.StartServer(test.Options{
+	server, err := test.StartService(test.Options{
 		Test: true,
 	})
 	require.NoError(t, err)
@@ -110,7 +110,7 @@ func TestInviteForUnregistered(t *testing.T) {
 func TestInviteForRegisteredUser(t *testing.T) {
 	t.Parallel()
 
-	server, err := test.StartServer(test.Options{
+	server, err := test.StartService(test.Options{
 		Test: true,
 	})
 	require.NoError(t, err)
@@ -190,7 +190,7 @@ func TestInviteForRegisteredUser(t *testing.T) {
 func TestListInviteAuthorization(t *testing.T) {
 	t.Parallel()
 
-	server, err := test.StartServer(test.Options{
+	server, err := test.StartService(test.Options{
 		Test: true,
 	})
 	require.NoError(t, err)

@@ -1,0 +1,64 @@
+openapi: 3.0.1
+info:
+  contact:
+    email: sales@singulatron.com
+    name: API Support
+    url: https://1backend.com/
+  description: An example service for bootstrapping.
+  license:
+    name: Proprietary
+  termsOfService: http://swagger.io/terms/
+  title: Multi Svc
+  version: 0.3.0-rc.8
+servers:
+- url: //localhost:58231/
+paths:
+  /multi-svc/pets/count:
+    get:
+      description: Count the pets living in the Multi Svc.
+      operationId: countPets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/multi_svc.CountPetsRequest'
+        description: Count Pets Request
+        required: false
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/multi_svc.CountPetsResponse'
+          description: "{}"
+        "400":
+          content:
+            application/json:
+              schema:
+                type: string
+          description: Invalid JSON
+      summary: Count Pets
+      tags:
+      - Multi Svc
+      x-codegen-request-body-name: body
+components:
+  schemas:
+    multi_svc.CountPetsRequest:
+      type: object
+    multi_svc.CountPetsResponse:
+      example:
+        petCount: 0
+      properties:
+        petCount:
+          type: integer
+      required:
+      - petCount
+      type: object
+  securitySchemes:
+    BearerAuth:
+      description: Type "Bearer" followed by a space and token acquired from the User
+        Svc Login endpoint.
+      in: header
+      name: Authorization
+      type: apiKey
+x-original-swagger-version: "2.0"

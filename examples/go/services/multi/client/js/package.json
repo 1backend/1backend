@@ -1,0 +1,41 @@
+{
+  "name": "@1backend/multi-svc",
+  "version": "0.3.0-rc.8",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc && rollup -c"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "keywords": [
+    "typescript",
+    "library",
+    "module",
+    "commonjs",
+    "esm"
+  ],
+  "author": "Janos Dobronszki",
+  "license": "Proprietary",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@types/axios": "^0.14.0",
+    "rollup": "^3.0.0",
+    "rollup-plugin-typescript2": "^0.31.1",
+    "typescript": "^5.5.3"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "glob": "^11.0.0"
+  }
+}

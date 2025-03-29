@@ -1,0 +1,15 @@
+.gitignore
+.travis.yml
+README.md
+api/openapi.yaml
+api_multi_svc.go
+client.go
+configuration.go
+docs/MultiSvcAPI.md
+docs/MultiSvcCountPetsResponse.md
+git_push.sh
+go.mod
+go.sum
+model_multi_svc_count_pets_response.go
+response.go
+utils.go

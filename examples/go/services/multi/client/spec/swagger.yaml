@@ -1,0 +1,58 @@
+basePath: /
+definitions:
+  multi_svc.CountPetsRequest:
+    type: object
+  multi_svc.CountPetsResponse:
+    properties:
+      petCount:
+        type: integer
+    required:
+    - petCount
+    type: object
+host: localhost:58231
+info:
+  contact:
+    email: sales@singulatron.com
+    name: API Support
+    url: https://1backend.com/
+  description: An example service for bootstrapping.
+  license:
+    name: Proprietary
+  termsOfService: http://swagger.io/terms/
+  title: Multi Svc
+  version: 0.3.0-rc.8
+paths:
+  /multi-svc/pets/count:
+    get:
+      consumes:
+      - application/json
+      description: Count the pets living in the Multi Svc.
+      operationId: countPets
+      parameters:
+      - description: Count Pets Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/multi_svc.CountPetsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{}'
+          schema:
+            $ref: '#/definitions/multi_svc.CountPetsResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            type: string
+      summary: Count Pets
+      tags:
+      - Multi Svc
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and token acquired from the User
+      Svc Login endpoint.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -15,3 +15,7 @@ use ./cli/oo
 use ./examples/go/services/basic
 
 use ./examples/go/services/basic/client/go
+
+use ./examples/go/services/multi
+
+use ./examples/go/services/multi/client/go

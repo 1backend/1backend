@@ -19,7 +19,7 @@ import (
 func TestListPets(t *testing.T) {
 	t.Parallel()
 
-	server, err := test.StartServer(test.Options{
+	server, err := test.StartService(test.Options{
 		Test: true,
 	})
 	require.NoError(t, err)
@@ -36,6 +36,7 @@ func TestListPets(t *testing.T) {
 
 	basicServer := httptest.NewServer(service.Router)
 	defer basicServer.Close()
+
 	service.Options.SelfUrl = basicServer.URL
 	require.NoError(t, service.Start())
 
@@ -61,7 +62,7 @@ func TestListPets(t *testing.T) {
 		require.Error(t, err, rsp)
 	})
 
-	t.Run("basicmin assigns role to user", func(t *testing.T) {
+	t.Run("admin assigns role to user", func(t *testing.T) {
 		_, rsp, err := serverAdminClient.UserSvcAPI.AssignRole(
 			context.Background(),
 			tokens[0].UserId,

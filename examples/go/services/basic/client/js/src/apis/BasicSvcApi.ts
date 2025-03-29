@@ -26,7 +26,7 @@ import {
 } from '../models/index';
 
 export interface ListPetsRequest {
-    body: object;
+    body?: object;
 }
 
 export interface SavePetRequest {
@@ -43,13 +43,6 @@ export class BasicSvcApi extends runtime.BaseAPI {
      * List Pets
      */
     async listPetsRaw(requestParameters: ListPetsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<BasicSvcListPetsResponse>> {
-        if (requestParameters['body'] == null) {
-            throw new runtime.RequiredError(
-                'body',
-                'Required parameter "body" was null or undefined when calling listPets().'
-            );
-        }
-
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -71,7 +64,7 @@ export class BasicSvcApi extends runtime.BaseAPI {
      * List pets.
      * List Pets
      */
-    async listPets(requestParameters: ListPetsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BasicSvcListPetsResponse> {
+    async listPets(requestParameters: ListPetsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BasicSvcListPetsResponse> {
         const response = await this.listPetsRaw(requestParameters, initOverrides);
         return await response.value();
     }

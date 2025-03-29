@@ -17,6 +17,6 @@ RUN apt-get update && apt-get install -y ca-certificates
 WORKDIR /app
 COPY --from=build /app/main .
 
-EXPOSE 9011
+EXPOSE 9111
 
 CMD ["./main"]

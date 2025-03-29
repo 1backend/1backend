@@ -1,4 +1,4 @@
-name: Detect Binary Files
+name: Detect binary files
 
 on:
   push:

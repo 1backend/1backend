@@ -14,10 +14,11 @@ tags:
 
 The OB_SERVER_URL is the internally addressable (non-public-facing) URL of an 1Backend server. It should point to the local 1Backend instance on each physical node. Ideally, every node should have its own 1Backend instance.
 
-This local address serves two purposes:
+This envar should be set only for microservices built on 1Backend. The 1Backend server itself should use `OB_SELF_URL`.
 
-- It acts as the "self address" for the 1Backend server when calling built-in services (though it can default to 127.0.0.1).
-- It is also used by custom services when registering themselves, among other tasks.
+## `OB_SELF_URL`
+
+Microservices use this to register themselves in the 1Backend registry. The 1Backend server uses this to address itself.
 
 ## `OB_NODE_ID`
 

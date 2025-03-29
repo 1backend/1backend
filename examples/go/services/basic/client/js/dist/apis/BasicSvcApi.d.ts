@@ -12,7 +12,7 @@
 import * as runtime from '../runtime';
 import type { BasicSvcListPetsResponse, BasicSvcSavePetRequest } from '../models/index';
 export interface ListPetsRequest {
-    body: object;
+    body?: object;
 }
 export interface SavePetRequest {
     body: BasicSvcSavePetRequest;
@@ -30,7 +30,7 @@ export declare class BasicSvcApi extends runtime.BaseAPI {
      * List pets.
      * List Pets
      */
-    listPets(requestParameters: ListPetsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BasicSvcListPetsResponse>;
+    listPets(requestParameters?: ListPetsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<BasicSvcListPetsResponse>;
     /**
      * Save a pet for a user and an organization.
      * Save Pet

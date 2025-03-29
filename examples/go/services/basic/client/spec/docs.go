@@ -12,7 +12,7 @@ const docTemplate = `{
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "API Support",
-            "url": "http://openorch.org/",
+            "url": "https://1backend.com/",
             "email": "sales@singulatron.com"
         },
         "license": {
@@ -80,10 +80,9 @@ const docTemplate = `{
                 "operationId": "listPets",
                 "parameters": [
                     {
-                        "description": "Registration Tracking Request",
+                        "description": "List Pets Request",
                         "name": "body",
                         "in": "body",
-                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/basic_svc.ListPetsRequest"
                         }
@@ -103,7 +102,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Error Tracking Registration",
+                        "description": "Error Listing Pets",
                         "schema": {
                             "type": "string"
                         }

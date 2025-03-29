@@ -482,9 +482,6 @@ class BasicSvcApi extends BaseAPI {
      */
     listPetsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['body'] == null) {
-                throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling listPets().');
-            }
             const queryParameters = {};
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
@@ -502,8 +499,8 @@ class BasicSvcApi extends BaseAPI {
      * List pets.
      * List Pets
      */
-    listPets(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
+    listPets() {
+        return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
             const response = yield this.listPetsRaw(requestParameters, initOverrides);
             return yield response.value();
         });
