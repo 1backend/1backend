@@ -82,7 +82,7 @@ func (service *MultiService) Start() error {
 }
 
 func (service *MultiService) registerAccount() error {
-	credentialStore, err := service.dataStoreFactory.Create("petSvcCredentials", &sdk.Credential{})
+	credentialStore, err := service.dataStoreFactory.Create("multiSvcCredentials", &sdk.Credential{})
 	if err != nil {
 		return errors.Wrap(err, "cannot create credential store")
 	}
