@@ -7,6 +7,7 @@ import (
 	"os"
 
 	multi "github.com/1backend/1backend/examples/go/services/multi/internal"
+	sdk "github.com/1backend/1backend/sdk/go"
 )
 
 // @title           Multi Svc
@@ -47,5 +48,5 @@ func main() {
 	}
 
 	log.Println("Server started on " + selfUrl)
-	log.Fatal(http.ListenAndServe(selfUrl, multiService.Router))
+	log.Fatal(http.ListenAndServe(sdk.ListenAddress(selfUrl), multiService.Router))
 }
