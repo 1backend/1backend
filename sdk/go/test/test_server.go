@@ -20,6 +20,8 @@ import (
 )
 
 type Options struct {
+	Name string
+
 	Port        int
 	GpuPlatform string
 
@@ -48,7 +50,10 @@ type Options struct {
 	SourceControlToken  string
 	SecretEncryptionKey string
 
-	// URL of the local 1Backend server instance
+	// Url of the 1Backend server
+	ServerUrl string
+
+	// Self url
 	Url string
 
 	// Test mode if true will cause the localstore to
@@ -61,9 +66,11 @@ type Options struct {
 	HomeDir string
 }
 
-type ServerProcess struct {
-	Cmd        *exec.Cmd
+type ServiceProcess struct {
+	Options Options
+	// Url of the service process
 	Url        string
+	Cmd        *exec.Cmd
 	StdoutPipe io.ReadCloser
 	StderrPipe io.ReadCloser
 	Stdout     bytes.Buffer
@@ -82,7 +89,14 @@ func findAvailablePort() (string, error) {
 	return fmt.Sprintf("%v", listener.Addr().(*net.TCPAddr).Port), nil
 }
 
-func StartServer(options Options) (*ServerProcess, error) {
+// Start either the 1Backend server (if no `Name` is specified)
+// or a microservice by executable name.
+func StartService(options Options) (*ServiceProcess, error) {
+	if options.Name == "" {
+		// By default this launches the executable called "server"
+		options.Name = "server"
+	}
+
 	var (
 		port string
 		err  error
@@ -108,6 +122,7 @@ func StartServer(options Options) (*ServerProcess, error) {
 	envVars := map[string]string{
 		"OB_GPU_PLATFORM":         options.GpuPlatform,
 		"OB_SELF_URL":             options.Url,
+		"OB_SERVER_URL":           options.ServerUrl,
 		"OB_NODE_ID":              options.NodeId,
 		"OB_AZ":                   options.Az,
 		"OB_REGION":               options.Region,
@@ -128,7 +143,7 @@ func StartServer(options Options) (*ServerProcess, error) {
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
-	cmd := exec.CommandContext(ctx, "server")
+	cmd := exec.CommandContext(ctx, options.Name)
 
 	cmd.Env = append(cmd.Env, os.Environ()...)
 	for key, value := range envVars {
@@ -144,13 +159,14 @@ func StartServer(options Options) (*ServerProcess, error) {
 		return nil, err
 	}
 
-	server := &ServerProcess{
+	service := &ServiceProcess{
+		Options:    options,
 		Cmd:        cmd,
 		StdoutPipe: stdoutPipe,
 		StderrPipe: stderrPipe,
 		cancel:     cancel,
 		Port:       port,
-		Url:        fmt.Sprintf("http://127.0.0.1:%v", port),
+		Url:        options.Url,
 	}
 
 	// **Wait until first line of output appears**
@@ -162,20 +178,22 @@ func StartServer(options Options) (*ServerProcess, error) {
 		for scanner.Scan() {
 			line := scanner.Bytes()
 			if err {
-				server.Stderr.Write(line)
-				server.Stderr.Write([]byte("\n"))
+				service.Stderr.Write(line)
+				service.Stderr.Write([]byte("\n"))
 			} else {
-				server.Stdout.Write(line)
-				server.Stderr.Write([]byte("\n"))
+				service.Stdout.Write(line)
+				service.Stderr.Write([]byte("\n"))
 			}
 
 			if started {
 				continue
 			}
 
-			if strings.Contains(string(line), "Server started") {
+			l := string(line)
+			if strings.Contains(l, "Server started") ||
+				strings.Contains(l, "Service started") {
 				started = true
-				close(waitChan) // Signal that the server is up
+				close(waitChan) // Signal that the service is up
 			}
 		}
 	}
@@ -185,45 +203,56 @@ func StartServer(options Options) (*ServerProcess, error) {
 	go readAndSignal(stderrPipe, true)
 
 	if err := cmd.Start(); err != nil {
-		return nil, errors.Wrap(err, "server failed to start")
+		return nil, errors.Wrap(err, "service failed to start")
 	}
 
 	timeout := 15 * time.Second
 
 	select {
 	case <-waitChan:
-	case <-time.After(timeout): // Timeout in case the server fails to start
-		server.Stop()
+	case <-time.After(timeout): // Timeout in case the service fails to start
+		service.Stop()
 		return nil, errors.Errorf(
-			"server did not produce output within %v", timeout,
+			"process '%v' did not produce desired output within %v: %v",
+			options.Name,
+			timeout,
+			service.Output(),
 		)
 	}
 
-	server.wg.Add(1)
+	service.wg.Add(1)
 	go func() {
-		defer server.wg.Done()
+		defer service.wg.Done()
 		cmd.Wait()
 	}()
 
-	return server, nil
+	return service, nil
 }
 
-func (s *ServerProcess) Stop() {
+func (s *ServiceProcess) Stop() {
 	s.cancel()
 	time.Sleep(100 * time.Millisecond) // Give process some time to exit
 	_ = s.Cmd.Process.Kill()
 	s.wg.Wait()
 }
 
-func (s *ServerProcess) Output() string {
+func (s *ServiceProcess) Output() string {
 	return s.Stdout.String() + s.Stderr.String()
 }
 
-func (s *ServerProcess) Cleanup(t *testing.T) {
+func (s *ServiceProcess) Cleanup(t *testing.T) {
+	processName := strings.ToUpper(s.Options.Name)
+
 	if t.Failed() {
-		fmt.Println("=== SERVER OUTPUT ===")
+		fmt.Printf(
+			"=== %v OUTPUT ===\n",
+			processName,
+		)
 		fmt.Print(s.Stdout.String() + s.Stderr.String())
-		fmt.Println("=== END OF SERVER OUTPUT ===")
+		fmt.Printf(
+			"=== END OF %v OUTPUT ===\n",
+			processName,
+		)
 	}
 
 	s.Stop()

@@ -1,4 +1,4 @@
-name: "E2E: Docs example code snippets work"
+name: "E2E: Go examples work"
 
 on:
   push:
@@ -56,6 +56,7 @@ jobs:
       - name: Run Basic Svc tests
         run: |
           go mod tidy
+          go install
 
           OB_SERVER_URL=http://127.0.0.1:58231 \
             OB_SELF_URL=http://127.0.0.1:9111 \
@@ -75,3 +76,26 @@ jobs:
           go test ./...
         timeout-minutes: 1
         working-directory: examples/go/services/basic
+
+      - name: Run Multi Svc tests
+        run: |
+          go mod tidy
+
+          OB_SERVER_URL=http://127.0.0.1:58231 \
+            OB_SELF_URL=http://127.0.0.1:9211 \
+            go run main.go &
+
+          HOST="127.0.0.1"
+          PORT=9211
+
+          while ! nc -z $HOST $PORT; do
+            echo "Waiting for $HOST:$PORT to come online..."
+            sleep 1
+          done
+
+          oo instances list
+          oo instances list | grep -q multi-svc || (echo "Service not found!" && exit 1)
+
+          go test ./...
+        timeout-minutes: 1
+        working-directory: examples/go/services/multi

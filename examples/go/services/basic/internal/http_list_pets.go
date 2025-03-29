@@ -15,10 +15,10 @@ import (
 // @Tags Basic Svc
 // @Accept json
 // @Produce json
-// @Param body body basic.ListPetsRequest true "Registration Tracking Request"
+// @Param body body basic.ListPetsRequest false "List Pets Request"
 // @Success 200 {object} basic.ListPetsResponse "{}"
 // @Failure 400 {string} string "Invalid JSON"
-// @Failure 500 {string} string "Error Tracking Registration"
+// @Failure 500 {string} string "Error Listing Pets"
 // @Router /basic-svc/pets [post]
 func (s *BasicService) ListPets(w http.ResponseWriter, r *http.Request) {
 	var request basic.ListPetsRequest

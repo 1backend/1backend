@@ -60,7 +60,7 @@ type ApiListPetsRequest struct {
 	body *map[string]interface{}
 }
 
-// Registration Tracking Request
+// List Pets Request
 func (r ApiListPetsRequest) Body(body map[string]interface{}) ApiListPetsRequest {
 	r.body = &body
 	return r
@@ -105,9 +105,6 @@ func (a *BasicSvcAPIService) ListPetsExecute(r ApiListPetsRequest) (*BasicSvcLis
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/json"}

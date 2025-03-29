@@ -30,7 +30,7 @@ import (
 )
 
 func main() {
-	body := map[string]interface{}{ ... } // map[string]interface{} | Registration Tracking Request
+	body := map[string]interface{}{ ... } // map[string]interface{} | List Pets Request (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
@@ -55,7 +55,7 @@ Other parameters are passed through a pointer to a apiListPetsRequest struct via
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | **map[string]interface{}** | Registration Tracking Request | 
+ **body** | **map[string]interface{}** | List Pets Request | 
 
 ### Return type
 

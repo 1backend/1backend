@@ -38,7 +38,7 @@ info:
   contact:
     email: sales@singulatron.com
     name: API Support
-    url: http://openorch.org/
+    url: https://1backend.com/
   description: An example service for bootstrapping.
   license:
     name: Proprietary
@@ -80,10 +80,9 @@ paths:
       description: List pets.
       operationId: listPets
       parameters:
-      - description: Registration Tracking Request
+      - description: List Pets Request
         in: body
         name: body
-        required: true
         schema:
           $ref: '#/definitions/basic_svc.ListPetsRequest'
       produces:
@@ -98,7 +97,7 @@ paths:
           schema:
             type: string
         "500":
-          description: Error Tracking Registration
+          description: Error Listing Pets
           schema:
             type: string
       summary: List Pets

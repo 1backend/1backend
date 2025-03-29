@@ -32,9 +32,6 @@ export class BasicSvcApi extends runtime.BaseAPI {
      */
     listPetsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['body'] == null) {
-                throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling listPets().');
-            }
             const queryParameters = {};
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
@@ -52,8 +49,8 @@ export class BasicSvcApi extends runtime.BaseAPI {
      * List pets.
      * List Pets
      */
-    listPets(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
+    listPets() {
+        return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
             const response = yield this.listPetsRaw(requestParameters, initOverrides);
             return yield response.value();
         });

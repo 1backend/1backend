@@ -14,6 +14,7 @@ package sdk
 
 import (
 	"context"
+	"strings"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 
@@ -97,4 +98,13 @@ func RegisterUserAccount(userService client.UserSvcAPI, slug, password, username
 	}
 
 	return loginRsp.Token, nil
+}
+
+func ListenAddress(s string) string {
+	return strings.Replace(
+		strings.Replace(s, "https://", "", -1),
+		"http://",
+		"",
+		-1,
+	)
 }
