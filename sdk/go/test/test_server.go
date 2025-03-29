@@ -107,7 +107,7 @@ func StartServer(options Options) (*ServerProcess, error) {
 
 	envVars := map[string]string{
 		"OB_GPU_PLATFORM":         options.GpuPlatform,
-		"OB_SERVER_URL":           options.Url,
+		"OB_SELF_URL":             options.Url,
 		"OB_NODE_ID":              options.NodeId,
 		"OB_AZ":                   options.Az,
 		"OB_REGION":               options.Region,
