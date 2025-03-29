@@ -12,4 +12,6 @@ use ./sdk/go
 
 use ./cli/oo
 
-use ./docs-source/docs/writing-custom-services/first-service-go
+use ./examples/go/services/basic
+
+use ./examples/go/services/basic/client/go

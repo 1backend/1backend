@@ -1,0 +1,135 @@
+openapi: 3.0.1
+info:
+  contact:
+    email: sales@singulatron.com
+    name: API Support
+    url: http://openorch.org/
+  description: An example service for bootstrapping.
+  license:
+    name: Proprietary
+  termsOfService: http://swagger.io/terms/
+  title: Basic Svc
+  version: 0.3.0-rc.8
+servers:
+- url: //localhost:58231/
+paths:
+  /basic-svc/pet:
+    put:
+      description: Save a pet for a user and an organization.
+      operationId: savePet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/basic_svc.SavePetRequest'
+        description: Registration Tracking Request
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/basic_svc.SavePetResponse'
+          description: "{}"
+        "400":
+          content:
+            application/json:
+              schema:
+                type: string
+          description: Invalid JSON
+      summary: Save Pet
+      tags:
+      - Basic Svc
+      x-codegen-request-body-name: body
+  /basic-svc/pets:
+    post:
+      description: List pets.
+      operationId: listPets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/basic_svc.ListPetsRequest'
+        description: Registration Tracking Request
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/basic_svc.ListPetsResponse'
+          description: "{}"
+        "400":
+          content:
+            application/json:
+              schema:
+                type: string
+          description: Invalid JSON
+        "500":
+          content:
+            application/json:
+              schema:
+                type: string
+          description: Error Tracking Registration
+      summary: List Pets
+      tags:
+      - Basic Svc
+      x-codegen-request-body-name: body
+components:
+  schemas:
+    basic_svc.ListPetsRequest:
+      type: object
+    basic_svc.ListPetsResponse:
+      example:
+        pets:
+        - createdAt: createdAt
+          name: name
+          id: id
+          updatedAt: updatedAt
+        - createdAt: createdAt
+          name: name
+          id: id
+          updatedAt: updatedAt
+      properties:
+        pets:
+          items:
+            $ref: '#/components/schemas/basic_svc.Pet'
+          type: array
+      type: object
+    basic_svc.Pet:
+      example:
+        createdAt: createdAt
+        name: name
+        id: id
+        updatedAt: updatedAt
+      properties:
+        createdAt:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        updatedAt:
+          type: string
+      required:
+      - id
+      type: object
+    basic_svc.SavePetRequest:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+      required:
+      - name
+      type: object
+    basic_svc.SavePetResponse:
+      type: object
+  securitySchemes:
+    BearerAuth:
+      description: Type "Bearer" followed by a space and token acquired from the User
+        Svc Login endpoint.
+      in: header
+      name: Authorization
+      type: apiKey
+x-original-swagger-version: "2.0"

@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Check for uncommitted changes
         run: |
           bash include.sh
@@ -45,30 +45,33 @@ jobs:
       - name: Install current branch oo
         run: |
           go install github.com/1backend/1backend/cli/oo@${{ github.sha }}
+          oo login 1backend changeme
 
       - name: Install dependencies
         run: |
           go mod tidy
+          go install
         working-directory: server
 
-      - name: Run first go server example
+      - name: Run Basic Svc tests
         run: |
           go mod tidy
 
           OB_SERVER_URL=http://127.0.0.1:58231 \
-            OB_SELF_URL=http://127.0.0.1:9311 \
+            OB_SELF_URL=http://127.0.0.1:9111 \
             go run main.go &
 
           HOST="127.0.0.1"
-          PORT=9311
+          PORT=9111
 
           while ! nc -z $HOST $PORT; do
             echo "Waiting for $HOST:$PORT to come online..."
             sleep 1
           done
 
-          oo login 1backend changeme
           oo instances list
-          oo instances list | grep -q first-go-svc || (echo "Service not found!" && exit 1)
+          oo instances list | grep -q basic-svc || (echo "Service not found!" && exit 1)
+
+          go test ./...
         timeout-minutes: 1
-        working-directory: docs-source/docs/writing-custom-services/first-service-go
+        working-directory: examples/go/services/basic
