@@ -50,6 +50,7 @@ jobs:
       - name: Install dependencies
         run: |
           go mod tidy
+          go install
         working-directory: server
 
       - name: Run Basic Svc tests
