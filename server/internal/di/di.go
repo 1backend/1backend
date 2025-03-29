@@ -128,7 +128,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.GpuPlatform = os.Getenv("OB_GPU_PLATFORM")
 	}
 	if options.Url == "" {
-		options.Url = os.Getenv("OB_SERVER_URL")
+		options.Url = os.Getenv("OB_SELF_URL")
 	}
 	if options.Url == "" {
 		options.Url = router.SelfAddress()
