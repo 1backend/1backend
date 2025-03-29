@@ -1,0 +1,170 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "An example service for bootstrapping.",
+        "title": "Basic Svc",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://openorch.org/",
+            "email": "sales@singulatron.com"
+        },
+        "license": {
+            "name": "Proprietary"
+        },
+        "version": "0.3.0-rc.8"
+    },
+    "host": "localhost:58231",
+    "basePath": "/",
+    "paths": {
+        "/basic-svc/pet": {
+            "put": {
+                "description": "Save a pet for a user and an organization.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Basic Svc"
+                ],
+                "summary": "Save Pet",
+                "operationId": "savePet",
+                "parameters": [
+                    {
+                        "description": "Registration Tracking Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/basic_svc.SavePetRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}",
+                        "schema": {
+                            "$ref": "#/definitions/basic_svc.SavePetResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/basic-svc/pets": {
+            "post": {
+                "description": "List pets.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Basic Svc"
+                ],
+                "summary": "List Pets",
+                "operationId": "listPets",
+                "parameters": [
+                    {
+                        "description": "Registration Tracking Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/basic_svc.ListPetsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{}",
+                        "schema": {
+                            "$ref": "#/definitions/basic_svc.ListPetsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error Tracking Registration",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "basic_svc.ListPetsRequest": {
+            "type": "object"
+        },
+        "basic_svc.ListPetsResponse": {
+            "type": "object",
+            "properties": {
+                "pets": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/basic_svc.Pet"
+                    }
+                }
+            }
+        },
+        "basic_svc.Pet": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "basic_svc.SavePetRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "basic_svc.SavePetResponse": {
+            "type": "object"
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Type \"Bearer\" followed by a space and token acquired from the User Svc Login endpoint.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

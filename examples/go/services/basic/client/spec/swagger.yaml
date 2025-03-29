@@ -1,0 +1,114 @@
+basePath: /
+definitions:
+  basic_svc.ListPetsRequest:
+    type: object
+  basic_svc.ListPetsResponse:
+    properties:
+      pets:
+        items:
+          $ref: '#/definitions/basic_svc.Pet'
+        type: array
+    type: object
+  basic_svc.Pet:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - id
+    type: object
+  basic_svc.SavePetRequest:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  basic_svc.SavePetResponse:
+    type: object
+host: localhost:58231
+info:
+  contact:
+    email: sales@singulatron.com
+    name: API Support
+    url: http://openorch.org/
+  description: An example service for bootstrapping.
+  license:
+    name: Proprietary
+  termsOfService: http://swagger.io/terms/
+  title: Basic Svc
+  version: 0.3.0-rc.8
+paths:
+  /basic-svc/pet:
+    put:
+      consumes:
+      - application/json
+      description: Save a pet for a user and an organization.
+      operationId: savePet
+      parameters:
+      - description: Registration Tracking Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/basic_svc.SavePetRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{}'
+          schema:
+            $ref: '#/definitions/basic_svc.SavePetResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            type: string
+      summary: Save Pet
+      tags:
+      - Basic Svc
+  /basic-svc/pets:
+    post:
+      consumes:
+      - application/json
+      description: List pets.
+      operationId: listPets
+      parameters:
+      - description: Registration Tracking Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/basic_svc.ListPetsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{}'
+          schema:
+            $ref: '#/definitions/basic_svc.ListPetsResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            type: string
+        "500":
+          description: Error Tracking Registration
+          schema:
+            type: string
+      summary: List Pets
+      tags:
+      - Basic Svc
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and token acquired from the User
+      Svc Login endpoint.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
