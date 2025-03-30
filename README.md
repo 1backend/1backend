@@ -47,7 +47,13 @@ to run the platform in foreground. It stops running if you Ctrl+C it. If you wan
 docker compose up -d
 ```
 
-## Using
+Also see [this page](https://1backend.com/docs/category/running-the-server) for other ways to launch 1Backend.
+
+## Building microservices
+
+See the [examples](./examples/go/services/) folder or the [relevant documentation](https://1backend.com/docs/writing-custom-services/your-first-service) on how to build testable, scalable microservices easy on top of 1Backend.
+
+## Prompting
 
 Now that the 1Backend is running you have a few options to interact with it.
 
@@ -137,7 +143,7 @@ In case it takes long check the backend logs if it's processing, you should see 
 1backend-1backend-1   | {"time":"2024-11-27T17:27:15.602328634Z","level":"DEBUG","msg":"LLM is streaming","promptId":"prom_e3SA9bJV5u","responsesPerSecond":4,"totalResponses":9}
 ```
 
-## CLI
+### CLI
 
 Install `oo` to get started (at the moment you need Go to install it):
 
