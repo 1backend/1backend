@@ -22,10 +22,6 @@ type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
-type GetUsersOptions struct {
-	Query *datastore.Query `json:"query"`
-}
-
 type User struct {
 	Id        string    `json:"id" binding:"required"`
 	CreatedAt time.Time `json:"createdAt,omitempty"`
@@ -33,13 +29,28 @@ type User struct {
 
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`
 
-	// Full name of the organization.
+	// Full name of the user.
 	Name string `json:"name,omitempty" example:"Jane Doe"`
 
-	// URL-friendly unique (inside the Singularon platform) identifier for the `user`.
+	// URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
 	Slug string `json:"slug" example:"jane-doe" binding:"required"`
 
 	PasswordHash string `json:"passwordHash,omitempty"`
+}
+
+type UserRecord struct {
+	Id        string    `json:"id" binding:"required"`
+	CreatedAt time.Time `json:"createdAt,omitempty"`
+	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+
+	// Full name of the user.
+	Name string `json:"name,omitempty" example:"Jane Doe"`
+
+	// URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
+	Slug string `json:"slug" example:"jane-doe" binding:"required"`
+
+	ContactIds []string `json:"contactIds,omitempty"`
+	RoleIds    []string `json:"roleIds,omitempty"`
 }
 
 type UserRoleLink struct {
@@ -124,14 +135,18 @@ type ResetPasswordRequest struct {
 
 type ResetPasswordResponse struct{}
 
-type GetUsersRequest struct {
+type ListUsersRequest struct {
+	// This should be used sparingly or not at all. Might deprecate.
 	Query *datastore.Query `json:"query"`
+
+	UserId    string `json:"userId,omitempty"`
+	ContactId string `json:"contactId,omitempty"`
 }
 
-type GetUsersResponse struct {
-	Users []*User   `json:"users,omitempty"`
-	After time.Time `json:"after,omitempty"`
-	Count int64     `json:"count"`
+type ListUsersResponse struct {
+	Users []*UserRecord `json:"users,omitempty"`
+	After time.Time     `json:"after,omitempty"`
+	Count int64         `json:"count"`
 }
 
 type CreateUserRequest struct {

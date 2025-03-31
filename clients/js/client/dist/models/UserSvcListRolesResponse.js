@@ -13,15 +13,15 @@
  */
 import { UserSvcRoleFromJSON, UserSvcRoleToJSON, } from './UserSvcRole';
 /**
- * Check if a given object implements the UserSvcGetRolesResponse interface.
+ * Check if a given object implements the UserSvcListRolesResponse interface.
  */
-export function instanceOfUserSvcGetRolesResponse(value) {
+export function instanceOfUserSvcListRolesResponse(value) {
     return true;
 }
-export function UserSvcGetRolesResponseFromJSON(json) {
-    return UserSvcGetRolesResponseFromJSONTyped(json, false);
+export function UserSvcListRolesResponseFromJSON(json) {
+    return UserSvcListRolesResponseFromJSONTyped(json, false);
 }
-export function UserSvcGetRolesResponseFromJSONTyped(json, ignoreDiscriminator) {
+export function UserSvcListRolesResponseFromJSONTyped(json, ignoreDiscriminator) {
     if (json == null) {
         return json;
     }
@@ -29,10 +29,10 @@ export function UserSvcGetRolesResponseFromJSONTyped(json, ignoreDiscriminator) 
         'roles': json['roles'] == null ? undefined : (json['roles'].map(UserSvcRoleFromJSON)),
     };
 }
-export function UserSvcGetRolesResponseToJSON(json) {
-    return UserSvcGetRolesResponseToJSONTyped(json, false);
+export function UserSvcListRolesResponseToJSON(json) {
+    return UserSvcListRolesResponseToJSONTyped(json, false);
 }
-export function UserSvcGetRolesResponseToJSONTyped(value, ignoreDiscriminator = false) {
+export function UserSvcListRolesResponseToJSONTyped(value, ignoreDiscriminator = false) {
     if (value == null) {
         return value;
     }

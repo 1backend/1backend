@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 import * as runtime from '../runtime';
-import type { UserSvcAssignPermissionsRequest, UserSvcChangePasswordRequest, UserSvcCreateOrganizationRequest, UserSvcCreateOrganizationResponse, UserSvcCreateRoleRequest, UserSvcCreateRoleResponse, UserSvcCreateUserRequest, UserSvcGetPermissionsResponse, UserSvcGetPublicKeyResponse, UserSvcGetRolesResponse, UserSvcGetUsersRequest, UserSvcGetUsersResponse, UserSvcIsAuthorizedRequest, UserSvcIsAuthorizedResponse, UserSvcListGrantsRequest, UserSvcListGrantsResponse, UserSvcListInvitesRequest, UserSvcListInvitesResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveGrantsRequest, UserSvcSaveInvitesRequest, UserSvcSaveInvitesResponse, UserSvcSavePermissionsRequest, UserSvcSavePermissionsResponse, UserSvcSaveProfileRequest, UserSvcSetRolePermissionsRequest } from '../models/index';
+import type { UserSvcAssignPermissionsRequest, UserSvcChangePasswordRequest, UserSvcCreateOrganizationRequest, UserSvcCreateOrganizationResponse, UserSvcCreateRoleRequest, UserSvcCreateRoleResponse, UserSvcCreateUserRequest, UserSvcGetPermissionsResponse, UserSvcGetPublicKeyResponse, UserSvcIsAuthorizedRequest, UserSvcIsAuthorizedResponse, UserSvcListGrantsRequest, UserSvcListGrantsResponse, UserSvcListInvitesRequest, UserSvcListInvitesResponse, UserSvcListRolesResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveGrantsRequest, UserSvcSaveInvitesRequest, UserSvcSaveInvitesResponse, UserSvcSavePermissionsRequest, UserSvcSavePermissionsResponse, UserSvcSaveProfileRequest, UserSvcSetRolePermissionsRequest } from '../models/index';
 export interface AddUserToOrganizationRequest {
     organizationId: string;
     userId: string;
@@ -45,9 +45,6 @@ export interface DeleteUserRequest {
 export interface GetPermissionsByRoleRequest {
     roleId: string;
 }
-export interface GetUsersRequest {
-    body?: UserSvcGetUsersRequest;
-}
 export interface IsAuthorizedRequest {
     permissionId: string;
     body?: UserSvcIsAuthorizedRequest;
@@ -57,6 +54,9 @@ export interface ListGrantsRequest {
 }
 export interface ListInvitesRequest {
     body: UserSvcListInvitesRequest;
+}
+export interface ListUsersRequest {
+    body?: UserSvcListUsersRequest;
 }
 export interface LoginRequest {
     body: UserSvcLoginRequest;
@@ -209,26 +209,6 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      */
     getPublicKey(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcGetPublicKeyResponse>;
     /**
-     * Retrieve all roles from the user service.
-     * Get all Roles
-     */
-    getRolesRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcGetRolesResponse>>;
-    /**
-     * Retrieve all roles from the user service.
-     * Get all Roles
-     */
-    getRoles(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcGetRolesResponse>;
-    /**
-     * Fetches a list of users with optional query filters and pagination.
-     * List Users
-     */
-    getUsersRaw(requestParameters: GetUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcGetUsersResponse>>;
-    /**
-     * Fetches a list of users with optional query filters and pagination.
-     * List Users
-     */
-    getUsers(requestParameters?: GetUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcGetUsersResponse>;
-    /**
      * Verify whether a user has a specific permission. Ideally, this endpoint should rarely be used, as the JWT token already includes all user roles. Caching the `Get Permissions by Role` responses allows services to determine user authorization without repeatedly calling this endpoint.
      * Is Authorized
      */
@@ -258,6 +238,26 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      * List Invites
      */
     listInvites(requestParameters: ListInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListInvitesResponse>;
+    /**
+     * Retrieve all roles from the user service.
+     * List Roles
+     */
+    listRolesRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListRolesResponse>>;
+    /**
+     * Retrieve all roles from the user service.
+     * List Roles
+     */
+    listRoles(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListRolesResponse>;
+    /**
+     * Fetches a list of users with optional query filters and pagination.
+     * List Users
+     */
+    listUsersRaw(requestParameters: ListUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListUsersResponse>>;
+    /**
+     * Fetches a list of users with optional query filters and pagination.
+     * List Users
+     */
+    listUsers(requestParameters?: ListUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListUsersResponse>;
     /**
      * Authenticates a user and returns a token.
      * Login

@@ -9,16 +9,26 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export class UserSvcGetUsersRequest {
+export class UserSvcListUsersRequest {
     static getAttributeTypeMap() {
-        return UserSvcGetUsersRequest.attributeTypeMap;
+        return UserSvcListUsersRequest.attributeTypeMap;
     }
 }
-UserSvcGetUsersRequest.discriminator = undefined;
-UserSvcGetUsersRequest.attributeTypeMap = [
+UserSvcListUsersRequest.discriminator = undefined;
+UserSvcListUsersRequest.attributeTypeMap = [
+    {
+        "name": "contactId",
+        "baseName": "contactId",
+        "type": "string"
+    },
     {
         "name": "query",
         "baseName": "query",
         "type": "DatastoreQuery"
+    },
+    {
+        "name": "userId",
+        "baseName": "userId",
+        "type": "string"
     }
 ];

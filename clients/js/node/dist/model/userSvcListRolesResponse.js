@@ -9,13 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export class UserSvcGetRolesResponse {
+export class UserSvcListRolesResponse {
     static getAttributeTypeMap() {
-        return UserSvcGetRolesResponse.attributeTypeMap;
+        return UserSvcListRolesResponse.attributeTypeMap;
     }
 }
-UserSvcGetRolesResponse.discriminator = undefined;
-UserSvcGetRolesResponse.attributeTypeMap = [
+UserSvcListRolesResponse.discriminator = undefined;
+UserSvcListRolesResponse.attributeTypeMap = [
     {
         "name": "roles",
         "baseName": "roles",

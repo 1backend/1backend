@@ -163,11 +163,11 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**DeleteUser**](docs/UserSvcAPI.md#deleteuser) | **Delete** /user-svc/user/{userId} | Delete a User
 *UserSvcAPI* | [**GetPermissionsByRole**](docs/UserSvcAPI.md#getpermissionsbyrole) | **Get** /user-svc/role/{roleId}/permissions | Get Permissions by Role
 *UserSvcAPI* | [**GetPublicKey**](docs/UserSvcAPI.md#getpublickey) | **Get** /user-svc/public-key | Get Public Key
-*UserSvcAPI* | [**GetRoles**](docs/UserSvcAPI.md#getroles) | **Get** /user-svc/roles | Get all Roles
-*UserSvcAPI* | [**GetUsers**](docs/UserSvcAPI.md#getusers) | **Post** /user-svc/users | List Users
 *UserSvcAPI* | [**IsAuthorized**](docs/UserSvcAPI.md#isauthorized) | **Post** /user-svc/permission/{permissionId}/is-authorized | Is Authorized
 *UserSvcAPI* | [**ListGrants**](docs/UserSvcAPI.md#listgrants) | **Post** /user-svc/grants | List Grants
 *UserSvcAPI* | [**ListInvites**](docs/UserSvcAPI.md#listinvites) | **Post** /user-svc/invites | List Invites
+*UserSvcAPI* | [**ListRoles**](docs/UserSvcAPI.md#listroles) | **Get** /user-svc/roles | List Roles
+*UserSvcAPI* | [**ListUsers**](docs/UserSvcAPI.md#listusers) | **Post** /user-svc/users | List Users
 *UserSvcAPI* | [**Login**](docs/UserSvcAPI.md#login) | **Post** /user-svc/login | Login
 *UserSvcAPI* | [**ReadUserByToken**](docs/UserSvcAPI.md#readuserbytoken) | **Post** /user-svc/user/by-token | Read User by Token
 *UserSvcAPI* | [**Register**](docs/UserSvcAPI.md#register) | **Post** /user-svc/register | Register
@@ -361,9 +361,6 @@ Class | Method | HTTP request | Description
  - [UserSvcErrorResponse](docs/UserSvcErrorResponse.md)
  - [UserSvcGetPermissionsResponse](docs/UserSvcGetPermissionsResponse.md)
  - [UserSvcGetPublicKeyResponse](docs/UserSvcGetPublicKeyResponse.md)
- - [UserSvcGetRolesResponse](docs/UserSvcGetRolesResponse.md)
- - [UserSvcGetUsersRequest](docs/UserSvcGetUsersRequest.md)
- - [UserSvcGetUsersResponse](docs/UserSvcGetUsersResponse.md)
  - [UserSvcGrant](docs/UserSvcGrant.md)
  - [UserSvcInvite](docs/UserSvcInvite.md)
  - [UserSvcIsAuthorizedRequest](docs/UserSvcIsAuthorizedRequest.md)
@@ -372,6 +369,9 @@ Class | Method | HTTP request | Description
  - [UserSvcListGrantsResponse](docs/UserSvcListGrantsResponse.md)
  - [UserSvcListInvitesRequest](docs/UserSvcListInvitesRequest.md)
  - [UserSvcListInvitesResponse](docs/UserSvcListInvitesResponse.md)
+ - [UserSvcListRolesResponse](docs/UserSvcListRolesResponse.md)
+ - [UserSvcListUsersRequest](docs/UserSvcListUsersRequest.md)
+ - [UserSvcListUsersResponse](docs/UserSvcListUsersResponse.md)
  - [UserSvcLoginRequest](docs/UserSvcLoginRequest.md)
  - [UserSvcLoginResponse](docs/UserSvcLoginResponse.md)
  - [UserSvcNewInvite](docs/UserSvcNewInvite.md)
@@ -391,6 +391,7 @@ Class | Method | HTTP request | Description
  - [UserSvcSaveProfileRequest](docs/UserSvcSaveProfileRequest.md)
  - [UserSvcSetRolePermissionsRequest](docs/UserSvcSetRolePermissionsRequest.md)
  - [UserSvcUser](docs/UserSvcUser.md)
+ - [UserSvcUserRecord](docs/UserSvcUserRecord.md)
 
 
 ## Documentation For Authorization

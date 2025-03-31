@@ -25,15 +25,15 @@ import type {
   UserSvcErrorResponse,
   UserSvcGetPermissionsResponse,
   UserSvcGetPublicKeyResponse,
-  UserSvcGetRolesResponse,
-  UserSvcGetUsersRequest,
-  UserSvcGetUsersResponse,
   UserSvcIsAuthorizedRequest,
   UserSvcIsAuthorizedResponse,
   UserSvcListGrantsRequest,
   UserSvcListGrantsResponse,
   UserSvcListInvitesRequest,
   UserSvcListInvitesResponse,
+  UserSvcListRolesResponse,
+  UserSvcListUsersRequest,
+  UserSvcListUsersResponse,
   UserSvcLoginRequest,
   UserSvcLoginResponse,
   UserSvcReadUserByTokenResponse,
@@ -69,12 +69,6 @@ import {
     UserSvcGetPermissionsResponseToJSON,
     UserSvcGetPublicKeyResponseFromJSON,
     UserSvcGetPublicKeyResponseToJSON,
-    UserSvcGetRolesResponseFromJSON,
-    UserSvcGetRolesResponseToJSON,
-    UserSvcGetUsersRequestFromJSON,
-    UserSvcGetUsersRequestToJSON,
-    UserSvcGetUsersResponseFromJSON,
-    UserSvcGetUsersResponseToJSON,
     UserSvcIsAuthorizedRequestFromJSON,
     UserSvcIsAuthorizedRequestToJSON,
     UserSvcIsAuthorizedResponseFromJSON,
@@ -87,6 +81,12 @@ import {
     UserSvcListInvitesRequestToJSON,
     UserSvcListInvitesResponseFromJSON,
     UserSvcListInvitesResponseToJSON,
+    UserSvcListRolesResponseFromJSON,
+    UserSvcListRolesResponseToJSON,
+    UserSvcListUsersRequestFromJSON,
+    UserSvcListUsersRequestToJSON,
+    UserSvcListUsersResponseFromJSON,
+    UserSvcListUsersResponseToJSON,
     UserSvcLoginRequestFromJSON,
     UserSvcLoginRequestToJSON,
     UserSvcLoginResponseFromJSON,
@@ -159,10 +159,6 @@ export interface GetPermissionsByRoleRequest {
     roleId: string;
 }
 
-export interface GetUsersRequest {
-    body?: UserSvcGetUsersRequest;
-}
-
 export interface IsAuthorizedRequest {
     permissionId: string;
     body?: UserSvcIsAuthorizedRequest;
@@ -174,6 +170,10 @@ export interface ListGrantsRequest {
 
 export interface ListInvitesRequest {
     body: UserSvcListInvitesRequest;
+}
+
+export interface ListUsersRequest {
+    body?: UserSvcListUsersRequest;
 }
 
 export interface LoginRequest {
@@ -681,73 +681,6 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieve all roles from the user service.
-     * Get all Roles
-     */
-    async getRolesRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcGetRolesResponse>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
-        }
-
-        const response = await this.request({
-            path: `/user-svc/roles`,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcGetRolesResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * Retrieve all roles from the user service.
-     * Get all Roles
-     */
-    async getRoles(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcGetRolesResponse> {
-        const response = await this.getRolesRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Fetches a list of users with optional query filters and pagination.
-     * List Users
-     */
-    async getUsersRaw(requestParameters: GetUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcGetUsersResponse>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
-        }
-
-        const response = await this.request({
-            path: `/user-svc/users`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: UserSvcGetUsersRequestToJSON(requestParameters['body']),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcGetUsersResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * Fetches a list of users with optional query filters and pagination.
-     * List Users
-     */
-    async getUsers(requestParameters: GetUsersRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcGetUsersResponse> {
-        const response = await this.getUsersRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Verify whether a user has a specific permission. Ideally, this endpoint should rarely be used, as the JWT token already includes all user roles. Caching the `Get Permissions by Role` responses allows services to determine user authorization without repeatedly calling this endpoint.
      * Is Authorized
      */
@@ -870,6 +803,73 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     async listInvites(requestParameters: ListInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListInvitesResponse> {
         const response = await this.listInvitesRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Retrieve all roles from the user service.
+     * List Roles
+     */
+    async listRolesRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListRolesResponse>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/user-svc/roles`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListRolesResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Retrieve all roles from the user service.
+     * List Roles
+     */
+    async listRoles(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListRolesResponse> {
+        const response = await this.listRolesRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Fetches a list of users with optional query filters and pagination.
+     * List Users
+     */
+    async listUsersRaw(requestParameters: ListUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListUsersResponse>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/user-svc/users`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserSvcListUsersRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListUsersResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Fetches a list of users with optional query filters and pagination.
+     * List Users
+     */
+    async listUsers(requestParameters: ListUsersRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListUsersResponse> {
+        const response = await this.listUsersRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

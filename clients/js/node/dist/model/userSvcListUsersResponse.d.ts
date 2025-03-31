@@ -9,11 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UserSvcUser } from './userSvcUser';
-export declare class UserSvcGetUsersResponse {
+import { UserSvcUserRecord } from './userSvcUserRecord';
+export declare class UserSvcListUsersResponse {
     'after'?: string;
     'count'?: number;
-    'users'?: Array<UserSvcUser>;
+    'users'?: Array<UserSvcUserRecord>;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

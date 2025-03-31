@@ -9,9 +9,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { DatastoreQuery } from './datastoreQuery';
-export declare class UserSvcGetUsersRequest {
-    'query'?: DatastoreQuery;
+import { UserSvcRole } from './userSvcRole';
+export declare class UserSvcListRolesResponse {
+    'roles'?: Array<UserSvcRole>;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

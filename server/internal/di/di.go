@@ -708,7 +708,7 @@ func BigBang(options *Options) (*Universe, error) {
 	})).
 		Methods("OPTIONS", "POST")
 	router.HandleFunc("/user-svc/users", appl(func(w http.ResponseWriter, r *http.Request) {
-		userService.GetUsers(w, r)
+		userService.ListUsers(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 	router.HandleFunc("/user-svc/user/{userId}", appl(func(w http.ResponseWriter, r *http.Request) {
@@ -748,7 +748,7 @@ func BigBang(options *Options) (*Universe, error) {
 	})).
 		Methods("OPTIONS", "DELETE")
 	router.HandleFunc("/user-svc/roles", appl(func(w http.ResponseWriter, r *http.Request) {
-		userService.GetRoles(w, r)
+		userService.ListRoles(w, r)
 	})).
 		Methods("OPTIONS", "GET")
 	router.HandleFunc("/user-svc/role/{roleId}", appl(func(w http.ResponseWriter, r *http.Request) {

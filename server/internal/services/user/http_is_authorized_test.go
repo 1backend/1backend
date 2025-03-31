@@ -34,7 +34,7 @@ func TestGrants(t *testing.T) {
 
 	ctx := context.Background()
 
-	_, _, err = userClient.UserSvcAPI.GetRoles(ctx).Execute()
+	_, _, err = userClient.UserSvcAPI.ListRoles(ctx).Execute()
 	require.Error(t, err)
 
 	adminClient, _, err := test.AdminClient(clientFactory)
@@ -50,7 +50,7 @@ func TestGrants(t *testing.T) {
 	}).Execute()
 	require.NoError(t, err)
 
-	rsp, _, err := userClient.UserSvcAPI.GetRoles(ctx).Execute()
+	rsp, _, err := userClient.UserSvcAPI.ListRoles(ctx).Execute()
 	require.NoError(t, err)
 	require.Equal(t, 2, len(rsp.Roles))
 }

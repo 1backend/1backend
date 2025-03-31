@@ -176,9 +176,6 @@ export * from './userSvcCreateUserRequest';
 export * from './userSvcErrorResponse';
 export * from './userSvcGetPermissionsResponse';
 export * from './userSvcGetPublicKeyResponse';
-export * from './userSvcGetRolesResponse';
-export * from './userSvcGetUsersRequest';
-export * from './userSvcGetUsersResponse';
 export * from './userSvcGrant';
 export * from './userSvcInvite';
 export * from './userSvcIsAuthorizedRequest';
@@ -187,6 +184,9 @@ export * from './userSvcListGrantsRequest';
 export * from './userSvcListGrantsResponse';
 export * from './userSvcListInvitesRequest';
 export * from './userSvcListInvitesResponse';
+export * from './userSvcListRolesResponse';
+export * from './userSvcListUsersRequest';
+export * from './userSvcListUsersResponse';
 export * from './userSvcLoginRequest';
 export * from './userSvcLoginResponse';
 export * from './userSvcNewInvite';
@@ -206,6 +206,7 @@ export * from './userSvcSavePermissionsResponse';
 export * from './userSvcSaveProfileRequest';
 export * from './userSvcSetRolePermissionsRequest';
 export * from './userSvcUser';
+export * from './userSvcUserRecord';
 import { ChatSvcAddMessageRequest } from './chatSvcAddMessageRequest';
 import { ChatSvcAddThreadRequest } from './chatSvcAddThreadRequest';
 import { ChatSvcAddThreadResponse } from './chatSvcAddThreadResponse';
@@ -384,9 +385,6 @@ import { UserSvcCreateUserRequest } from './userSvcCreateUserRequest';
 import { UserSvcErrorResponse } from './userSvcErrorResponse';
 import { UserSvcGetPermissionsResponse } from './userSvcGetPermissionsResponse';
 import { UserSvcGetPublicKeyResponse } from './userSvcGetPublicKeyResponse';
-import { UserSvcGetRolesResponse } from './userSvcGetRolesResponse';
-import { UserSvcGetUsersRequest } from './userSvcGetUsersRequest';
-import { UserSvcGetUsersResponse } from './userSvcGetUsersResponse';
 import { UserSvcGrant } from './userSvcGrant';
 import { UserSvcInvite } from './userSvcInvite';
 import { UserSvcIsAuthorizedRequest } from './userSvcIsAuthorizedRequest';
@@ -395,6 +393,9 @@ import { UserSvcListGrantsRequest } from './userSvcListGrantsRequest';
 import { UserSvcListGrantsResponse } from './userSvcListGrantsResponse';
 import { UserSvcListInvitesRequest } from './userSvcListInvitesRequest';
 import { UserSvcListInvitesResponse } from './userSvcListInvitesResponse';
+import { UserSvcListRolesResponse } from './userSvcListRolesResponse';
+import { UserSvcListUsersRequest } from './userSvcListUsersRequest';
+import { UserSvcListUsersResponse } from './userSvcListUsersResponse';
 import { UserSvcLoginRequest } from './userSvcLoginRequest';
 import { UserSvcLoginResponse } from './userSvcLoginResponse';
 import { UserSvcNewInvite } from './userSvcNewInvite';
@@ -414,6 +415,7 @@ import { UserSvcSavePermissionsResponse } from './userSvcSavePermissionsResponse
 import { UserSvcSaveProfileRequest } from './userSvcSaveProfileRequest';
 import { UserSvcSetRolePermissionsRequest } from './userSvcSetRolePermissionsRequest';
 import { UserSvcUser } from './userSvcUser';
+import { UserSvcUserRecord } from './userSvcUserRecord';
 /* tslint:disable:no-unused-variable */
 let primitives = [
     "string",
@@ -606,9 +608,6 @@ let typeMap = {
     "UserSvcErrorResponse": UserSvcErrorResponse,
     "UserSvcGetPermissionsResponse": UserSvcGetPermissionsResponse,
     "UserSvcGetPublicKeyResponse": UserSvcGetPublicKeyResponse,
-    "UserSvcGetRolesResponse": UserSvcGetRolesResponse,
-    "UserSvcGetUsersRequest": UserSvcGetUsersRequest,
-    "UserSvcGetUsersResponse": UserSvcGetUsersResponse,
     "UserSvcGrant": UserSvcGrant,
     "UserSvcInvite": UserSvcInvite,
     "UserSvcIsAuthorizedRequest": UserSvcIsAuthorizedRequest,
@@ -617,6 +616,9 @@ let typeMap = {
     "UserSvcListGrantsResponse": UserSvcListGrantsResponse,
     "UserSvcListInvitesRequest": UserSvcListInvitesRequest,
     "UserSvcListInvitesResponse": UserSvcListInvitesResponse,
+    "UserSvcListRolesResponse": UserSvcListRolesResponse,
+    "UserSvcListUsersRequest": UserSvcListUsersRequest,
+    "UserSvcListUsersResponse": UserSvcListUsersResponse,
     "UserSvcLoginRequest": UserSvcLoginRequest,
     "UserSvcLoginResponse": UserSvcLoginResponse,
     "UserSvcNewInvite": UserSvcNewInvite,
@@ -636,6 +638,7 @@ let typeMap = {
     "UserSvcSaveProfileRequest": UserSvcSaveProfileRequest,
     "UserSvcSetRolePermissionsRequest": UserSvcSetRolePermissionsRequest,
     "UserSvcUser": UserSvcUser,
+    "UserSvcUserRecord": UserSvcUserRecord,
 };
 // Check if a string starts with another string without using es6 features
 function startsWith(str, match) {

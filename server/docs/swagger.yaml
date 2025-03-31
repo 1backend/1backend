@@ -2843,29 +2843,6 @@ definitions:
     required:
     - publicKey
     type: object
-  user_svc.GetRolesResponse:
-    properties:
-      roles:
-        items:
-          $ref: '#/definitions/user_svc.Role'
-        type: array
-    type: object
-  user_svc.GetUsersRequest:
-    properties:
-      query:
-        $ref: '#/definitions/datastore.Query'
-    type: object
-  user_svc.GetUsersResponse:
-    properties:
-      after:
-        type: string
-      count:
-        type: integer
-      users:
-        items:
-          $ref: '#/definitions/user_svc.User'
-        type: array
-    type: object
   user_svc.Grant:
     properties:
       id:
@@ -2970,6 +2947,35 @@ definitions:
         type: array
     required:
     - invites
+    type: object
+  user_svc.ListRolesResponse:
+    properties:
+      roles:
+        items:
+          $ref: '#/definitions/user_svc.Role'
+        type: array
+    type: object
+  user_svc.ListUsersRequest:
+    properties:
+      contactId:
+        type: string
+      query:
+        allOf:
+        - $ref: '#/definitions/datastore.Query'
+        description: This should be used sparingly or not at all. Might deprecate.
+      userId:
+        type: string
+    type: object
+  user_svc.ListUsersResponse:
+    properties:
+      after:
+        type: string
+      count:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/user_svc.UserRecord'
+        type: array
     type: object
   user_svc.LoginRequest:
     properties:
@@ -3184,13 +3190,42 @@ definitions:
       id:
         type: string
       name:
-        description: Full name of the organization.
+        description: Full name of the user.
         example: Jane Doe
         type: string
       passwordHash:
         type: string
       slug:
-        description: URL-friendly unique (inside the Singularon platform) identifier
+        description: URL-friendly unique (inside the 1Backend platform) identifier
+          for the `user`.
+        example: jane-doe
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - id
+    - slug
+    type: object
+  user_svc.UserRecord:
+    properties:
+      contactIds:
+        items:
+          type: string
+        type: array
+      createdAt:
+        type: string
+      id:
+        type: string
+      name:
+        description: Full name of the user.
+        example: Jane Doe
+        type: string
+      roleIds:
+        items:
+          type: string
+        type: array
+      slug:
+        description: URL-friendly unique (inside the 1Backend platform) identifier
           for the `user`.
         example: jane-doe
         type: string
@@ -6576,14 +6611,14 @@ paths:
       consumes:
       - application/json
       description: Retrieve all roles from the user service.
-      operationId: getRoles
+      operationId: listRoles
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user_svc.GetRolesResponse'
+            $ref: '#/definitions/user_svc.ListRolesResponse'
         "401":
           description: Unauthorized
           schema:
@@ -6594,7 +6629,7 @@ paths:
             type: string
       security:
       - BearerAuth: []
-      summary: Get all Roles
+      summary: List Roles
       tags:
       - User Svc
   /user-svc/roles/permissions:
@@ -6875,20 +6910,20 @@ paths:
       consumes:
       - application/json
       description: Fetches a list of users with optional query filters and pagination.
-      operationId: getUsers
+      operationId: listUsers
       parameters:
-      - description: Get Users Request
+      - description: List Users Request
         in: body
         name: body
         schema:
-          $ref: '#/definitions/user_svc.GetUsersRequest'
+          $ref: '#/definitions/user_svc.ListUsersRequest'
       produces:
       - application/json
       responses:
         "200":
           description: List of users retrieved successfully
           schema:
-            $ref: '#/definitions/user_svc.GetUsersResponse'
+            $ref: '#/definitions/user_svc.ListUsersResponse'
         "400":
           description: Invalid JSON
           schema:

@@ -13,7 +13,7 @@
 import { RequestFile } from './models';
 import { UserSvcRole } from './userSvcRole';
 
-export class UserSvcGetRolesResponse {
+export class UserSvcListRolesResponse {
     'roles'?: Array<UserSvcRole>;
 
     static discriminator: string | undefined = undefined;
@@ -26,7 +26,7 @@ export class UserSvcGetRolesResponse {
         }    ];
 
     static getAttributeTypeMap() {
-        return UserSvcGetRolesResponse.attributeTypeMap;
+        return UserSvcListRolesResponse.attributeTypeMap;
     }
 }
 

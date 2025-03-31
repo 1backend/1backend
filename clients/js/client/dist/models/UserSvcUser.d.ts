@@ -34,7 +34,7 @@ export interface UserSvcUser {
      */
     id: string;
     /**
-     * Full name of the organization.
+     * Full name of the user.
      * @type {string}
      * @memberof UserSvcUser
      */
@@ -46,7 +46,7 @@ export interface UserSvcUser {
      */
     passwordHash?: string;
     /**
-     * URL-friendly unique (inside the Singularon platform) identifier for the `user`.
+     * URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
      * @type {string}
      * @memberof UserSvcUser
      */
