@@ -19,15 +19,15 @@ import { UserSvcCreateRoleResponse } from '../model/userSvcCreateRoleResponse';
 import { UserSvcCreateUserRequest } from '../model/userSvcCreateUserRequest';
 import { UserSvcGetPermissionsResponse } from '../model/userSvcGetPermissionsResponse';
 import { UserSvcGetPublicKeyResponse } from '../model/userSvcGetPublicKeyResponse';
-import { UserSvcGetRolesResponse } from '../model/userSvcGetRolesResponse';
-import { UserSvcGetUsersRequest } from '../model/userSvcGetUsersRequest';
-import { UserSvcGetUsersResponse } from '../model/userSvcGetUsersResponse';
 import { UserSvcIsAuthorizedRequest } from '../model/userSvcIsAuthorizedRequest';
 import { UserSvcIsAuthorizedResponse } from '../model/userSvcIsAuthorizedResponse';
 import { UserSvcListGrantsRequest } from '../model/userSvcListGrantsRequest';
 import { UserSvcListGrantsResponse } from '../model/userSvcListGrantsResponse';
 import { UserSvcListInvitesRequest } from '../model/userSvcListInvitesRequest';
 import { UserSvcListInvitesResponse } from '../model/userSvcListInvitesResponse';
+import { UserSvcListRolesResponse } from '../model/userSvcListRolesResponse';
+import { UserSvcListUsersRequest } from '../model/userSvcListUsersRequest';
+import { UserSvcListUsersResponse } from '../model/userSvcListUsersResponse';
 import { UserSvcLoginRequest } from '../model/userSvcLoginRequest';
 import { UserSvcLoginResponse } from '../model/userSvcLoginResponse';
 import { UserSvcReadUserByTokenResponse } from '../model/userSvcReadUserByTokenResponse';
@@ -211,31 +211,6 @@ export declare class UserSvcApi {
         body: UserSvcGetPublicKeyResponse;
     }>;
     /**
-     * Retrieve all roles from the user service.
-     * @summary Get all Roles
-     */
-    getRoles(options?: {
-        headers: {
-            [name: string]: string;
-        };
-    }): Promise<{
-        response: http.IncomingMessage;
-        body: UserSvcGetRolesResponse;
-    }>;
-    /**
-     * Fetches a list of users with optional query filters and pagination.
-     * @summary List Users
-     * @param body Get Users Request
-     */
-    getUsers(body?: UserSvcGetUsersRequest, options?: {
-        headers: {
-            [name: string]: string;
-        };
-    }): Promise<{
-        response: http.IncomingMessage;
-        body: UserSvcGetUsersResponse;
-    }>;
-    /**
      * Verify whether a user has a specific permission. Ideally, this endpoint should rarely be used, as the JWT token already includes all user roles. Caching the `Get Permissions by Role` responses allows services to determine user authorization without repeatedly calling this endpoint.
      * @summary Is Authorized
      * @param permissionId Permission ID
@@ -274,6 +249,31 @@ export declare class UserSvcApi {
     }): Promise<{
         response: http.IncomingMessage;
         body: UserSvcListInvitesResponse;
+    }>;
+    /**
+     * Retrieve all roles from the user service.
+     * @summary List Roles
+     */
+    listRoles(options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: UserSvcListRolesResponse;
+    }>;
+    /**
+     * Fetches a list of users with optional query filters and pagination.
+     * @summary List Users
+     * @param body List Users Request
+     */
+    listUsers(body?: UserSvcListUsersRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: UserSvcListUsersResponse;
     }>;
     /**
      * Authenticates a user and returns a token.

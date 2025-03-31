@@ -25,10 +25,10 @@ type UserSvcUser struct {
 	CreatedAt *string `json:"createdAt,omitempty"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	Id string `json:"id"`
-	// Full name of the organization.
+	// Full name of the user.
 	Name *string `json:"name,omitempty"`
 	PasswordHash *string `json:"passwordHash,omitempty"`
-	// URL-friendly unique (inside the Singularon platform) identifier for the `user`.
+	// URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
 	Slug string `json:"slug"`
 	UpdatedAt *string `json:"updatedAt,omitempty"`
 }

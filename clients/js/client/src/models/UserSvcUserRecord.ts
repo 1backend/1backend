@@ -16,98 +16,98 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface UserSvcUser
+ * @interface UserSvcUserRecord
  */
-export interface UserSvcUser {
+export interface UserSvcUserRecord {
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof UserSvcUserRecord
+     */
+    contactIds?: Array<string>;
     /**
      * 
      * @type {string}
-     * @memberof UserSvcUser
+     * @memberof UserSvcUserRecord
      */
     createdAt?: string;
     /**
      * 
      * @type {string}
-     * @memberof UserSvcUser
-     */
-    deletedAt?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserSvcUser
+     * @memberof UserSvcUserRecord
      */
     id: string;
     /**
      * Full name of the user.
      * @type {string}
-     * @memberof UserSvcUser
+     * @memberof UserSvcUserRecord
      */
     name?: string;
     /**
      * 
-     * @type {string}
-     * @memberof UserSvcUser
+     * @type {Array<string>}
+     * @memberof UserSvcUserRecord
      */
-    passwordHash?: string;
+    roleIds?: Array<string>;
     /**
      * URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
      * @type {string}
-     * @memberof UserSvcUser
+     * @memberof UserSvcUserRecord
      */
     slug: string;
     /**
      * 
      * @type {string}
-     * @memberof UserSvcUser
+     * @memberof UserSvcUserRecord
      */
     updatedAt?: string;
 }
 
 /**
- * Check if a given object implements the UserSvcUser interface.
+ * Check if a given object implements the UserSvcUserRecord interface.
  */
-export function instanceOfUserSvcUser(value: object): value is UserSvcUser {
+export function instanceOfUserSvcUserRecord(value: object): value is UserSvcUserRecord {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('slug' in value) || value['slug'] === undefined) return false;
     return true;
 }
 
-export function UserSvcUserFromJSON(json: any): UserSvcUser {
-    return UserSvcUserFromJSONTyped(json, false);
+export function UserSvcUserRecordFromJSON(json: any): UserSvcUserRecord {
+    return UserSvcUserRecordFromJSONTyped(json, false);
 }
 
-export function UserSvcUserFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcUser {
+export function UserSvcUserRecordFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcUserRecord {
     if (json == null) {
         return json;
     }
     return {
         
+        'contactIds': json['contactIds'] == null ? undefined : json['contactIds'],
         'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
-        'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'id': json['id'],
         'name': json['name'] == null ? undefined : json['name'],
-        'passwordHash': json['passwordHash'] == null ? undefined : json['passwordHash'],
+        'roleIds': json['roleIds'] == null ? undefined : json['roleIds'],
         'slug': json['slug'],
         'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
     };
 }
 
-export function UserSvcUserToJSON(json: any): UserSvcUser {
-    return UserSvcUserToJSONTyped(json, false);
+export function UserSvcUserRecordToJSON(json: any): UserSvcUserRecord {
+    return UserSvcUserRecordToJSONTyped(json, false);
 }
 
-export function UserSvcUserToJSONTyped(value?: UserSvcUser | null, ignoreDiscriminator: boolean = false): any {
+export function UserSvcUserRecordToJSONTyped(value?: UserSvcUserRecord | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
+        'contactIds': value['contactIds'],
         'createdAt': value['createdAt'],
-        'deletedAt': value['deletedAt'],
         'id': value['id'],
         'name': value['name'],
-        'passwordHash': value['passwordHash'],
+        'roleIds': value['roleIds'],
         'slug': value['slug'],
         'updatedAt': value['updatedAt'],
     };

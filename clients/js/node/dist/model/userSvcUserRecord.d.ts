@@ -9,15 +9,15 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export declare class UserSvcUser {
+export declare class UserSvcUserRecord {
+    'contactIds'?: Array<string>;
     'createdAt'?: string;
-    'deletedAt'?: string;
     'id': string;
     /**
     * Full name of the user.
     */
     'name'?: string;
-    'passwordHash'?: string;
+    'roleIds'?: Array<string>;
     /**
     * URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
     */

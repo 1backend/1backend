@@ -10,6 +10,15 @@ func AddUserCommands(rootCmd *cobra.Command) {
 	addWhoamiCommand(rootCmd)
 	addTokenCommand(rootCmd)
 	addUseCommand(rootCmd)
+
+	var usersCmd = &cobra.Command{
+		Use:     "user",
+		Aliases: []string{"u", "users"},
+		Short:   "Manage users",
+	}
+	rootCmd.AddCommand(usersCmd)
+
+	addListUsersCommand(usersCmd)
 }
 
 func addLoginCommand(rootCmd *cobra.Command) {
@@ -93,6 +102,30 @@ func addUseCommand(rootCmd *cobra.Command) {
 		Short: "Switch user by specifying their slug.",
 		RunE:  Use,
 	}
+
+	rootCmd.AddCommand(runCmd)
+}
+
+func addListUsersCommand(rootCmd *cobra.Command) {
+	var (
+		userId    string
+		contactId string
+		limit     int64
+	)
+
+	var runCmd = &cobra.Command{
+		Use:     "list",
+		Aliases: []string{"ls"},
+		Args:    cobra.ExactArgs(0),
+		Short:   "Display the user currently logged in",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return ListUsers(cmd, args, userId, contactId, limit)
+		},
+	}
+
+	runCmd.Flags().StringVarP(&userId, "userId", "u", "", "Filter by user Id")
+	runCmd.Flags().StringVarP(&contactId, "contactId", "c", "", "Filter by contact Id")
+	runCmd.Flags().Int64VarP(&limit, "limit", "l", 0, "Limit result set")
 
 	rootCmd.AddCommand(runCmd)
 }

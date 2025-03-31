@@ -33,7 +33,7 @@ func TestCreateRole(t *testing.T) {
 
 	ctx := context.Background()
 
-	_, _, err = userClient.UserSvcAPI.GetRoles(ctx).Execute()
+	_, _, err = userClient.UserSvcAPI.ListRoles(ctx).Execute()
 	require.Error(t, err)
 
 	t.Run("created role should fail if not prefixed by user slug", func(t *testing.T) {

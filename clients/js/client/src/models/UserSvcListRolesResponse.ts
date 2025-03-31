@@ -24,29 +24,29 @@ import {
 /**
  * 
  * @export
- * @interface UserSvcGetRolesResponse
+ * @interface UserSvcListRolesResponse
  */
-export interface UserSvcGetRolesResponse {
+export interface UserSvcListRolesResponse {
     /**
      * 
      * @type {Array<UserSvcRole>}
-     * @memberof UserSvcGetRolesResponse
+     * @memberof UserSvcListRolesResponse
      */
     roles?: Array<UserSvcRole>;
 }
 
 /**
- * Check if a given object implements the UserSvcGetRolesResponse interface.
+ * Check if a given object implements the UserSvcListRolesResponse interface.
  */
-export function instanceOfUserSvcGetRolesResponse(value: object): value is UserSvcGetRolesResponse {
+export function instanceOfUserSvcListRolesResponse(value: object): value is UserSvcListRolesResponse {
     return true;
 }
 
-export function UserSvcGetRolesResponseFromJSON(json: any): UserSvcGetRolesResponse {
-    return UserSvcGetRolesResponseFromJSONTyped(json, false);
+export function UserSvcListRolesResponseFromJSON(json: any): UserSvcListRolesResponse {
+    return UserSvcListRolesResponseFromJSONTyped(json, false);
 }
 
-export function UserSvcGetRolesResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcGetRolesResponse {
+export function UserSvcListRolesResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcListRolesResponse {
     if (json == null) {
         return json;
     }
@@ -56,11 +56,11 @@ export function UserSvcGetRolesResponseFromJSONTyped(json: any, ignoreDiscrimina
     };
 }
 
-export function UserSvcGetRolesResponseToJSON(json: any): UserSvcGetRolesResponse {
-    return UserSvcGetRolesResponseToJSONTyped(json, false);
+export function UserSvcListRolesResponseToJSON(json: any): UserSvcListRolesResponse {
+    return UserSvcListRolesResponseToJSONTyped(json, false);
 }
 
-export function UserSvcGetRolesResponseToJSONTyped(value?: UserSvcGetRolesResponse | null, ignoreDiscriminator: boolean = false): any {
+export function UserSvcListRolesResponseToJSONTyped(value?: UserSvcListRolesResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

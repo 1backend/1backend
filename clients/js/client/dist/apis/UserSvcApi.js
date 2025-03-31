@@ -21,7 +21,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as runtime from '../runtime';
-import { UserSvcAssignPermissionsRequestToJSON, UserSvcChangePasswordRequestToJSON, UserSvcCreateOrganizationRequestToJSON, UserSvcCreateOrganizationResponseFromJSON, UserSvcCreateRoleRequestToJSON, UserSvcCreateRoleResponseFromJSON, UserSvcCreateUserRequestToJSON, UserSvcGetPermissionsResponseFromJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcGetRolesResponseFromJSON, UserSvcGetUsersRequestToJSON, UserSvcGetUsersResponseFromJSON, UserSvcIsAuthorizedRequestToJSON, UserSvcIsAuthorizedResponseFromJSON, UserSvcListGrantsRequestToJSON, UserSvcListGrantsResponseFromJSON, UserSvcListInvitesRequestToJSON, UserSvcListInvitesResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadUserByTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcSaveGrantsRequestToJSON, UserSvcSaveInvitesRequestToJSON, UserSvcSaveInvitesResponseFromJSON, UserSvcSavePermissionsRequestToJSON, UserSvcSavePermissionsResponseFromJSON, UserSvcSaveProfileRequestToJSON, UserSvcSetRolePermissionsRequestToJSON, } from '../models/index';
+import { UserSvcAssignPermissionsRequestToJSON, UserSvcChangePasswordRequestToJSON, UserSvcCreateOrganizationRequestToJSON, UserSvcCreateOrganizationResponseFromJSON, UserSvcCreateRoleRequestToJSON, UserSvcCreateRoleResponseFromJSON, UserSvcCreateUserRequestToJSON, UserSvcGetPermissionsResponseFromJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcIsAuthorizedRequestToJSON, UserSvcIsAuthorizedResponseFromJSON, UserSvcListGrantsRequestToJSON, UserSvcListGrantsResponseFromJSON, UserSvcListInvitesRequestToJSON, UserSvcListInvitesResponseFromJSON, UserSvcListRolesResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadUserByTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcSaveGrantsRequestToJSON, UserSvcSaveInvitesRequestToJSON, UserSvcSaveInvitesResponseFromJSON, UserSvcSavePermissionsRequestToJSON, UserSvcSavePermissionsResponseFromJSON, UserSvcSaveProfileRequestToJSON, UserSvcSetRolePermissionsRequestToJSON, } from '../models/index';
 /**
  *
  */
@@ -404,68 +404,6 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Retrieve all roles from the user service.
-     * Get all Roles
-     */
-    getRolesRaw(initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const queryParameters = {};
-            const headerParameters = {};
-            if (this.configuration && this.configuration.apiKey) {
-                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
-            }
-            const response = yield this.request({
-                path: `/user-svc/roles`,
-                method: 'GET',
-                headers: headerParameters,
-                query: queryParameters,
-            }, initOverrides);
-            return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcGetRolesResponseFromJSON(jsonValue));
-        });
-    }
-    /**
-     * Retrieve all roles from the user service.
-     * Get all Roles
-     */
-    getRoles(initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.getRolesRaw(initOverrides);
-            return yield response.value();
-        });
-    }
-    /**
-     * Fetches a list of users with optional query filters and pagination.
-     * List Users
-     */
-    getUsersRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const queryParameters = {};
-            const headerParameters = {};
-            headerParameters['Content-Type'] = 'application/json';
-            if (this.configuration && this.configuration.apiKey) {
-                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
-            }
-            const response = yield this.request({
-                path: `/user-svc/users`,
-                method: 'POST',
-                headers: headerParameters,
-                query: queryParameters,
-                body: UserSvcGetUsersRequestToJSON(requestParameters['body']),
-            }, initOverrides);
-            return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcGetUsersResponseFromJSON(jsonValue));
-        });
-    }
-    /**
-     * Fetches a list of users with optional query filters and pagination.
-     * List Users
-     */
-    getUsers() {
-        return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
-            const response = yield this.getUsersRaw(requestParameters, initOverrides);
-            return yield response.value();
-        });
-    }
-    /**
      * Verify whether a user has a specific permission. Ideally, this endpoint should rarely be used, as the JWT token already includes all user roles. Caching the `Get Permissions by Role` responses allows services to determine user authorization without repeatedly calling this endpoint.
      * Is Authorized
      */
@@ -567,6 +505,68 @@ export class UserSvcApi extends runtime.BaseAPI {
     listInvites(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.listInvitesRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * Retrieve all roles from the user service.
+     * List Roles
+     */
+    listRolesRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            const response = yield this.request({
+                path: `/user-svc/roles`,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListRolesResponseFromJSON(jsonValue));
+        });
+    }
+    /**
+     * Retrieve all roles from the user service.
+     * List Roles
+     */
+    listRoles(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.listRolesRaw(initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * Fetches a list of users with optional query filters and pagination.
+     * List Users
+     */
+    listUsersRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            const response = yield this.request({
+                path: `/user-svc/users`,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: UserSvcListUsersRequestToJSON(requestParameters['body']),
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListUsersResponseFromJSON(jsonValue));
+        });
+    }
+    /**
+     * Fetches a list of users with optional query filters and pagination.
+     * List Users
+     */
+    listUsers() {
+        return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
+            const response = yield this.listUsersRaw(requestParameters, initOverrides);
             return yield response.value();
         });
     }

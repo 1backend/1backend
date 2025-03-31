@@ -9,13 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export class UserSvcGetUsersResponse {
+export class UserSvcListUsersResponse {
     static getAttributeTypeMap() {
-        return UserSvcGetUsersResponse.attributeTypeMap;
+        return UserSvcListUsersResponse.attributeTypeMap;
     }
 }
-UserSvcGetUsersResponse.discriminator = undefined;
-UserSvcGetUsersResponse.attributeTypeMap = [
+UserSvcListUsersResponse.discriminator = undefined;
+UserSvcListUsersResponse.attributeTypeMap = [
     {
         "name": "after",
         "baseName": "after",
@@ -29,6 +29,6 @@ UserSvcGetUsersResponse.attributeTypeMap = [
     {
         "name": "users",
         "baseName": "users",
-        "type": "Array<UserSvcUser>"
+        "type": "Array<UserSvcUserRecord>"
     }
 ];

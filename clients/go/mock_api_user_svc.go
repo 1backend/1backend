@@ -369,66 +369,6 @@ func (mr *MockUserSvcAPIMockRecorder) GetPublicKeyExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPublicKeyExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).GetPublicKeyExecute), r)
 }
 
-// GetRoles mocks base method.
-func (m *MockUserSvcAPI) GetRoles(ctx context.Context) ApiGetRolesRequest {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetRoles", ctx)
-	ret0, _ := ret[0].(ApiGetRolesRequest)
-	return ret0
-}
-
-// GetRoles indicates an expected call of GetRoles.
-func (mr *MockUserSvcAPIMockRecorder) GetRoles(ctx any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRoles", reflect.TypeOf((*MockUserSvcAPI)(nil).GetRoles), ctx)
-}
-
-// GetRolesExecute mocks base method.
-func (m *MockUserSvcAPI) GetRolesExecute(r ApiGetRolesRequest) (*UserSvcGetRolesResponse, *http.Response, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetRolesExecute", r)
-	ret0, _ := ret[0].(*UserSvcGetRolesResponse)
-	ret1, _ := ret[1].(*http.Response)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// GetRolesExecute indicates an expected call of GetRolesExecute.
-func (mr *MockUserSvcAPIMockRecorder) GetRolesExecute(r any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRolesExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).GetRolesExecute), r)
-}
-
-// GetUsers mocks base method.
-func (m *MockUserSvcAPI) GetUsers(ctx context.Context) ApiGetUsersRequest {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetUsers", ctx)
-	ret0, _ := ret[0].(ApiGetUsersRequest)
-	return ret0
-}
-
-// GetUsers indicates an expected call of GetUsers.
-func (mr *MockUserSvcAPIMockRecorder) GetUsers(ctx any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsers", reflect.TypeOf((*MockUserSvcAPI)(nil).GetUsers), ctx)
-}
-
-// GetUsersExecute mocks base method.
-func (m *MockUserSvcAPI) GetUsersExecute(r ApiGetUsersRequest) (*UserSvcGetUsersResponse, *http.Response, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetUsersExecute", r)
-	ret0, _ := ret[0].(*UserSvcGetUsersResponse)
-	ret1, _ := ret[1].(*http.Response)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// GetUsersExecute indicates an expected call of GetUsersExecute.
-func (mr *MockUserSvcAPIMockRecorder) GetUsersExecute(r any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUsersExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).GetUsersExecute), r)
-}
-
 // IsAuthorized mocks base method.
 func (m *MockUserSvcAPI) IsAuthorized(ctx context.Context, permissionId string) ApiIsAuthorizedRequest {
 	m.ctrl.T.Helper()
@@ -517,6 +457,66 @@ func (m *MockUserSvcAPI) ListInvitesExecute(r ApiListInvitesRequest) (*UserSvcLi
 func (mr *MockUserSvcAPIMockRecorder) ListInvitesExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListInvitesExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListInvitesExecute), r)
+}
+
+// ListRoles mocks base method.
+func (m *MockUserSvcAPI) ListRoles(ctx context.Context) ApiListRolesRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListRoles", ctx)
+	ret0, _ := ret[0].(ApiListRolesRequest)
+	return ret0
+}
+
+// ListRoles indicates an expected call of ListRoles.
+func (mr *MockUserSvcAPIMockRecorder) ListRoles(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRoles", reflect.TypeOf((*MockUserSvcAPI)(nil).ListRoles), ctx)
+}
+
+// ListRolesExecute mocks base method.
+func (m *MockUserSvcAPI) ListRolesExecute(r ApiListRolesRequest) (*UserSvcListRolesResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListRolesExecute", r)
+	ret0, _ := ret[0].(*UserSvcListRolesResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListRolesExecute indicates an expected call of ListRolesExecute.
+func (mr *MockUserSvcAPIMockRecorder) ListRolesExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRolesExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListRolesExecute), r)
+}
+
+// ListUsers mocks base method.
+func (m *MockUserSvcAPI) ListUsers(ctx context.Context) ApiListUsersRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListUsers", ctx)
+	ret0, _ := ret[0].(ApiListUsersRequest)
+	return ret0
+}
+
+// ListUsers indicates an expected call of ListUsers.
+func (mr *MockUserSvcAPIMockRecorder) ListUsers(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUsers", reflect.TypeOf((*MockUserSvcAPI)(nil).ListUsers), ctx)
+}
+
+// ListUsersExecute mocks base method.
+func (m *MockUserSvcAPI) ListUsersExecute(r ApiListUsersRequest) (*UserSvcListUsersResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListUsersExecute", r)
+	ret0, _ := ret[0].(*UserSvcListUsersResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListUsersExecute indicates an expected call of ListUsersExecute.
+func (mr *MockUserSvcAPIMockRecorder) ListUsersExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListUsersExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListUsersExecute), r)
 }
 
 // Login mocks base method.

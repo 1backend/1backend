@@ -12,15 +12,15 @@
 
 import { RequestFile } from './models';
 
-export class UserSvcUser {
+export class UserSvcUserRecord {
+    'contactIds'?: Array<string>;
     'createdAt'?: string;
-    'deletedAt'?: string;
     'id': string;
     /**
     * Full name of the user.
     */
     'name'?: string;
-    'passwordHash'?: string;
+    'roleIds'?: Array<string>;
     /**
     * URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
     */
@@ -31,13 +31,13 @@ export class UserSvcUser {
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "createdAt",
-            "baseName": "createdAt",
-            "type": "string"
+            "name": "contactIds",
+            "baseName": "contactIds",
+            "type": "Array<string>"
         },
         {
-            "name": "deletedAt",
-            "baseName": "deletedAt",
+            "name": "createdAt",
+            "baseName": "createdAt",
             "type": "string"
         },
         {
@@ -51,9 +51,9 @@ export class UserSvcUser {
             "type": "string"
         },
         {
-            "name": "passwordHash",
-            "baseName": "passwordHash",
-            "type": "string"
+            "name": "roleIds",
+            "baseName": "roleIds",
+            "type": "Array<string>"
         },
         {
             "name": "slug",
@@ -67,7 +67,7 @@ export class UserSvcUser {
         }    ];
 
     static getAttributeTypeMap() {
-        return UserSvcUser.attributeTypeMap;
+        return UserSvcUserRecord.attributeTypeMap;
     }
 }
 

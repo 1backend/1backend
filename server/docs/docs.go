@@ -4980,13 +4980,13 @@ const docTemplate = `{
                 "tags": [
                     "User Svc"
                 ],
-                "summary": "Get all Roles",
-                "operationId": "getRoles",
+                "summary": "List Roles",
+                "operationId": "listRoles",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.GetRolesResponse"
+                            "$ref": "#/definitions/user_svc.ListRolesResponse"
                         }
                     },
                     "401": {
@@ -5422,14 +5422,14 @@ const docTemplate = `{
                     "User Svc"
                 ],
                 "summary": "List Users",
-                "operationId": "getUsers",
+                "operationId": "listUsers",
                 "parameters": [
                     {
-                        "description": "Get Users Request",
+                        "description": "List Users Request",
                         "name": "body",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.GetUsersRequest"
+                            "$ref": "#/definitions/user_svc.ListUsersRequest"
                         }
                     }
                 ],
@@ -5437,7 +5437,7 @@ const docTemplate = `{
                     "200": {
                         "description": "List of users retrieved successfully",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.GetUsersResponse"
+                            "$ref": "#/definitions/user_svc.ListUsersResponse"
                         }
                     },
                     "400": {
@@ -9415,42 +9415,6 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.GetRolesResponse": {
-            "type": "object",
-            "properties": {
-                "roles": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/user_svc.Role"
-                    }
-                }
-            }
-        },
-        "user_svc.GetUsersRequest": {
-            "type": "object",
-            "properties": {
-                "query": {
-                    "$ref": "#/definitions/datastore.Query"
-                }
-            }
-        },
-        "user_svc.GetUsersResponse": {
-            "type": "object",
-            "properties": {
-                "after": {
-                    "type": "string"
-                },
-                "count": {
-                    "type": "integer"
-                },
-                "users": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/user_svc.User"
-                    }
-                }
-            }
-        },
         "user_svc.Grant": {
             "type": "object",
             "properties": {
@@ -9586,6 +9550,53 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/user_svc.Invite"
+                    }
+                }
+            }
+        },
+        "user_svc.ListRolesResponse": {
+            "type": "object",
+            "properties": {
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user_svc.Role"
+                    }
+                }
+            }
+        },
+        "user_svc.ListUsersRequest": {
+            "type": "object",
+            "properties": {
+                "contactId": {
+                    "type": "string"
+                },
+                "query": {
+                    "description": "This should be used sparingly or not at all. Might deprecate.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/datastore.Query"
+                        }
+                    ]
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
+        "user_svc.ListUsersResponse": {
+            "type": "object",
+            "properties": {
+                "after": {
+                    "type": "string"
+                },
+                "count": {
+                    "type": "integer"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user_svc.UserRecord"
                     }
                 }
             }
@@ -9898,7 +9909,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
-                    "description": "Full name of the organization.",
+                    "description": "Full name of the user.",
                     "type": "string",
                     "example": "Jane Doe"
                 },
@@ -9906,7 +9917,47 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "slug": {
-                    "description": "URL-friendly unique (inside the Singularon platform) identifier for the ` + "`" + `user` + "`" + `.",
+                    "description": "URL-friendly unique (inside the 1Backend platform) identifier for the ` + "`" + `user` + "`" + `.",
+                    "type": "string",
+                    "example": "jane-doe"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "user_svc.UserRecord": {
+            "type": "object",
+            "required": [
+                "id",
+                "slug"
+            ],
+            "properties": {
+                "contactIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Full name of the user.",
+                    "type": "string",
+                    "example": "Jane Doe"
+                },
+                "roleIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "slug": {
+                    "description": "URL-friendly unique (inside the 1Backend platform) identifier for the ` + "`" + `user` + "`" + `.",
                     "type": "string",
                     "example": "jane-doe"
                 },

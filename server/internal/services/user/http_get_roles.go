@@ -18,21 +18,20 @@ import (
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
-	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-// @ID getRoles
-// @Summary Get all Roles
+// @ID listRoles
+// @Summary List Roles
 // @Description Retrieve all roles from the user service.
 // @Tags User Svc
 // @Accept json
 // @Produce json
-// @Success 200 {object} user.GetRolesResponse
+// @Success 200 {object} user.ListRolesResponse
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 500 {string} string "Internal Server Error"
 // @Security BearerAuth
 // @Router /user-svc/roles [get]
-func (s *UserService) GetRoles(
+func (s *UserService) ListRoles(
 	w http.ResponseWriter,
 	r *http.Request) {
 
@@ -48,20 +47,20 @@ func (s *UserService) GetRoles(
 		return
 	}
 
-	roles, err := s.getRoles()
+	roles, err := s.listRoles()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	bs, _ := json.Marshal(user.GetRolesResponse{
+	bs, _ := json.Marshal(user.ListRolesResponse{
 		Roles: roles,
 	})
 	w.Write(bs)
 }
 
-func (s *UserService) getRoles() ([]*usertypes.Role, error) {
+func (s *UserService) listRoles() ([]*user.Role, error) {
 	rolesI, err := s.rolesStore.Query().
 		OrderBy(datastore.OrderByField("name", false)).
 		Find()
@@ -70,9 +69,9 @@ func (s *UserService) getRoles() ([]*usertypes.Role, error) {
 		return nil, err
 	}
 
-	roles := []*usertypes.Role{}
+	roles := []*user.Role{}
 	for _, roleI := range rolesI {
-		roles = append(roles, roleI.(*usertypes.Role))
+		roles = append(roles, roleI.(*user.Role))
 	}
 
 	return roles, err

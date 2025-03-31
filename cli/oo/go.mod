@@ -2,6 +2,10 @@ module github.com/1backend/1backend/cli/oo
 
 go 1.23
 
+replace (
+	// github.com/1backend/1backend/clients/go => ../../clients/go
+)
+
 require (
 	github.com/1backend/1backend/clients/go v0.0.0-20250326133927-5d19064bf38b
 	github.com/1backend/1backend/sdk/go v0.0.0-20250326133927-5d19064bf38b

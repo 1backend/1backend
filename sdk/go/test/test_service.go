@@ -91,6 +91,9 @@ func findAvailablePort() (string, error) {
 
 // Start either the 1Backend server (if no `Name` is specified)
 // or a microservice by executable name.
+//
+// It will wait for "Server started" or "Service started" outputs.
+// Will time out if it won't see those outputs.
 func StartService(options Options) (*ServiceProcess, error) {
 	if options.Name == "" {
 		// By default this launches the executable called "server"
@@ -120,9 +123,9 @@ func StartService(options Options) (*ServiceProcess, error) {
 	}
 
 	envVars := map[string]string{
-		"OB_GPU_PLATFORM":         options.GpuPlatform,
 		"OB_SELF_URL":             options.Url,
 		"OB_SERVER_URL":           options.ServerUrl,
+		"OB_GPU_PLATFORM":         options.GpuPlatform,
 		"OB_NODE_ID":              options.NodeId,
 		"OB_AZ":                   options.Az,
 		"OB_REGION":               options.Region,

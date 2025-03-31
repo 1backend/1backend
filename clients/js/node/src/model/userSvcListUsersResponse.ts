@@ -11,12 +11,12 @@
  */
 
 import { RequestFile } from './models';
-import { UserSvcUser } from './userSvcUser';
+import { UserSvcUserRecord } from './userSvcUserRecord';
 
-export class UserSvcGetUsersResponse {
+export class UserSvcListUsersResponse {
     'after'?: string;
     'count'?: number;
-    'users'?: Array<UserSvcUser>;
+    'users'?: Array<UserSvcUserRecord>;
 
     static discriminator: string | undefined = undefined;
 
@@ -34,11 +34,11 @@ export class UserSvcGetUsersResponse {
         {
             "name": "users",
             "baseName": "users",
-            "type": "Array<UserSvcUser>"
+            "type": "Array<UserSvcUserRecord>"
         }    ];
 
     static getAttributeTypeMap() {
-        return UserSvcGetUsersResponse.attributeTypeMap;
+        return UserSvcListUsersResponse.attributeTypeMap;
     }
 }
 

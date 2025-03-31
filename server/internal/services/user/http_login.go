@@ -120,15 +120,9 @@ func checkPasswordHash(password, hash string) bool {
 func (s *UserService) generateAuthToken(
 	u *user.User,
 ) (*user.AuthToken, error) {
-	roleLinks, err := s.userRoleLinksStore.Query(
-		datastore.Equals(datastore.Field("userId"), u.Id),
-	).Find()
+	roleIds, err := s.getRoleIdsByUserId(u.Id)
 	if err != nil {
 		return nil, err
-	}
-	roleIds := []string{}
-	for _, roleLink := range roleLinks {
-		roleIds = append(roleIds, roleLink.(*user.UserRoleLink).RoleId)
 	}
 
 	token, err := generateJWT(u, roleIds, s.privateKey)
