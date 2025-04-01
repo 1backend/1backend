@@ -17,16 +17,18 @@ import (
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 type UserService struct {
-	clientFactory sdk.ClientFactory
+	clientFactory client.ClientFactory
 	token         string
 
-	authorizer sdk.Authorizer
+	authorizer auth.Authorizer
 
 	usersStore                 datastore.DataStore
 	rolesStore                 datastore.DataStore
@@ -50,8 +52,8 @@ type UserService struct {
 }
 
 func NewUserService(
-	clientFactory sdk.ClientFactory,
-	authorizer sdk.Authorizer,
+	clientFactory client.ClientFactory,
+	authorizer auth.Authorizer,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 	isTest bool,
 ) (*UserService, error) {
@@ -83,7 +85,7 @@ func NewUserService(
 
 	credentialsStore, err := datastoreFactory(
 		"userSvcCredetentials",
-		&sdk.Credential{},
+		&auth.Credential{},
 	)
 	if err != nil {
 		return nil, err
@@ -269,12 +271,12 @@ func (s *UserService) bootstrap() error {
 	pw := ""
 
 	if len(credentials) > 0 {
-		cred := credentials[0].(*sdk.Credential)
+		cred := credentials[0].(*auth.Credential)
 		slug = cred.Slug
 		pw = cred.Password
 	} else {
 		pw = sdk.Id("cred")
-		err = s.credentialsStore.Upsert(&sdk.Credential{
+		err = s.credentialsStore.Upsert(&auth.Credential{
 			Slug:     slug,
 			Password: pw,
 		})

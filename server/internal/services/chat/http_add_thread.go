@@ -22,6 +22,7 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/logger"
 	chat "github.com/1backend/1backend/server/internal/services/chat/types"
 )
@@ -46,7 +47,7 @@ func (a *ChatService) AddThread(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := a.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := a.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *chat.PermissionThreadCreate.Id).
 		Execute()
 	if err != nil {
@@ -120,7 +121,7 @@ func (a *ChatService) addThread(
 	js, _ := json.Marshal(ev)
 	json.Unmarshal(js, &m)
 
-	_, err = a.clientFactory.Client(sdk.WithToken(a.token)).
+	_, err = a.clientFactory.Client(client.WithToken(a.token)).
 		FirehoseSvcAPI.PublishEvent(context.Background()).
 		Event(openapi.FirehoseSvcEventPublishRequest{
 			Event: &openapi.FirehoseSvcEvent{

@@ -17,7 +17,7 @@ import (
 	"net/http"
 	"net/url"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	model "github.com/1backend/1backend/server/internal/services/model/types"
 	"github.com/gorilla/mux"
 )
@@ -40,7 +40,7 @@ func (ms *ModelService) MakeDefault(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := ms.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := ms.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *model.PermissionModelEdit.Id).
 		Execute()
 	if err != nil {

@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 )
 
@@ -20,7 +20,7 @@ func TestCreateUser(t *testing.T) {
 	require.NoError(t, err)
 	defer server.Cleanup(t)
 
-	clientFactory := sdk.NewApiClientFactory(server.Url)
+	clientFactory := client.NewApiClientFactory(server.Url)
 
 	ctx := context.Background()
 

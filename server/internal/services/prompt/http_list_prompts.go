@@ -17,7 +17,7 @@ import (
 	"net/http"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	prompt "github.com/1backend/1backend/server/internal/services/prompt/types"
 )
@@ -40,7 +40,7 @@ func (p *PromptService) ListPrompts(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := p.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := p.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *prompt.PermissionPromptView.Id).
 		Body(openapi.UserSvcIsAuthorizedRequest{}).
 		Execute()

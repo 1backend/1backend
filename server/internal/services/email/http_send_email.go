@@ -9,6 +9,7 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	email "github.com/1backend/1backend/server/internal/services/email/types"
 	"github.com/pkg/errors"
 	"github.com/sendgrid/sendgrid-go"
@@ -30,7 +31,7 @@ import (
 // @Router /email-svc/email [post]
 func (s *EmailService) SendEmail(w http.ResponseWriter, r *http.Request) {
 	// Authorization check (similar to the original code)
-	isAuthRsp, _, err := s.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := s.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *email.PermissionSendEmail.Id).Body(
 		openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{"user-svc"},
@@ -71,7 +72,7 @@ func (s *EmailService) SendEmail(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *EmailService) sendgridSendEmail(req email.SendEmailRequest) error {
-	secretClient := s.clientFactory.Client(sdk.WithToken(s.token)).SecretSvcAPI
+	secretClient := s.clientFactory.Client(client.WithToken(s.token)).SecretSvcAPI
 	secretResp, _, err := secretClient.ListSecrets(context.Background()).Body(
 		openapi.SecretSvcListSecretsRequest{
 			Keys: []string{

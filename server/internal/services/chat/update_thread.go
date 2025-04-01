@@ -18,7 +18,7 @@ import (
 	"log/slog"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/logger"
 	chattypes "github.com/1backend/1backend/server/internal/services/chat/types"
@@ -43,7 +43,7 @@ func (a *ChatService) updateThread(
 	js, _ := json.Marshal(ev)
 	json.Unmarshal(js, &m)
 
-	_, err = a.clientFactory.Client(sdk.WithToken(a.token)).
+	_, err = a.clientFactory.Client(client.WithToken(a.token)).
 		FirehoseSvcAPI.PublishEvent(context.Background()).
 		Event(openapi.FirehoseSvcEventPublishRequest{
 			Event: &openapi.FirehoseSvcEvent{

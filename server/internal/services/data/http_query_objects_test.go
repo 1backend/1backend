@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
@@ -22,7 +23,7 @@ func TestQueryObjects(t *testing.T) {
 	require.NoError(t, err)
 	defer server.Cleanup(t)
 
-	clientFactory := sdk.NewApiClientFactory(server.Url)
+	clientFactory := client.NewApiClientFactory(server.Url)
 
 	uniq := uuid.New().String()
 	uniq = strings.Replace(uniq, "-", "", -1)[0:10]

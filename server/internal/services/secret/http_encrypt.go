@@ -17,7 +17,7 @@ import (
 	"net/http"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	secret "github.com/1backend/1backend/server/internal/services/secret/types"
 )
 
@@ -38,7 +38,7 @@ func (cs *SecretService) Encrypt(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	isAuthRsp, _, err := cs.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := cs.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *secret.PermissionSecretSave.Id).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{"model-svc"},

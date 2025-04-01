@@ -11,7 +11,7 @@ import (
 	"strconv"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
 	"github.com/gorilla/mux"
@@ -139,7 +139,7 @@ func (fs *FileService) serveRemote(
 	}
 
 	nodesRsp, _, err := fs.clientFactory.
-		Client(sdk.WithToken(fs.token)).
+		Client(client.WithToken(fs.token)).
 		RegistrySvcAPI.ListNodes(r.Context()).
 		Body(
 			openapi.RegistrySvcListNodesRequest{
@@ -163,7 +163,7 @@ func (fs *FileService) serveRemote(
 
 	// todo it would be probably better to stream this ourselves here but for now it will do
 	file, fileHttpRsp, err := fs.clientFactory.
-		Client(sdk.WithAddress(node.Url), sdk.WithToken(fs.token)).
+		Client(client.WithAddress(node.Url), client.WithToken(fs.token)).
 		FileSvcAPI.
 		ServeUpload(r.Context(), uploads[0].FileId).
 		Execute()
@@ -256,7 +256,7 @@ func (fs *FileService) pickRemotes(
 
 func (fs *FileService) getNodeId(ctx context.Context) error {
 	nodeRsp, _, err := fs.clientFactory.
-		Client(sdk.WithToken(fs.token)).
+		Client(client.WithToken(fs.token)).
 		RegistrySvcAPI.SelfNode(ctx).
 		Execute()
 	if err != nil {

@@ -17,7 +17,7 @@ import (
 	"net/http"
 	"net/url"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/gorilla/mux"
 )
@@ -49,7 +49,7 @@ func (s *UserService) AssignRole(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	authorizer := sdk.AuthorizerImpl{}
+	authorizer := auth.AuthorizerImpl{}
 	claim, err := authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -84,7 +84,7 @@ func (s *UserService) AssignRole(
 		return
 	}
 
-	if !sdk.OwnsRole(claim, roleId) {
+	if !auth.OwnsRole(claim, roleId) {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("Unauthorized"))
 		return

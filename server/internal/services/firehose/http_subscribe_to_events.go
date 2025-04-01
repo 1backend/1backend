@@ -17,8 +17,7 @@ import (
 	"log"
 	"net/http"
 
-	sdk "github.com/1backend/1backend/sdk/go"
-
+	"github.com/1backend/1backend/sdk/go/client"
 	firehose "github.com/1backend/1backend/server/internal/services/firehose/types"
 )
 
@@ -38,7 +37,7 @@ func (p *FirehoseService) Subscribe(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := p.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := p.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *firehose.PermissionFirehoseStream.Id).
 		Execute()
 	if err != nil {

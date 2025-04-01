@@ -17,7 +17,7 @@ import (
 	"net/http"
 	"net/url"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	model "github.com/1backend/1backend/server/internal/services/model/types"
 	"github.com/gorilla/mux"
 )
@@ -47,7 +47,7 @@ func (ms *ModelService) StartSpecific(
 		return
 	}
 
-	isAuthRsp, _, err := ms.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := ms.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *model.PermissionModelCreate.Id).
 		Execute()
 	if err != nil {

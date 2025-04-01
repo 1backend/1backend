@@ -17,7 +17,7 @@ import (
 	"net/http"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
 )
 
@@ -41,7 +41,7 @@ func (ds *FileService) Download(
 	r *http.Request,
 ) {
 
-	isAuthRsp, isAuthHttpRsp, err := ds.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, isAuthHttpRsp, err := ds.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *file.PermissionDownloadCreate.Id).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{"model-svc"},

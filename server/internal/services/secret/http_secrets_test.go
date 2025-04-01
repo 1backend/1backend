@@ -20,6 +20,7 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
 	"github.com/onsi/ginkgo/v2"
@@ -78,7 +79,7 @@ var _ = ginkgo.Describe("Secret Tests", func() {
 			Client(gomock.Any()).
 			Return(&openapi.APIClient{
 				UserSvcAPI: mockUserSvc,
-				SecretSvcAPI: sdk.NewApiClientFactory(server.URL).
+				SecretSvcAPI: client.NewApiClientFactory(server.URL).
 					Client().
 					SecretSvcAPI,
 			}).

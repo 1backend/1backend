@@ -16,7 +16,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	chat "github.com/1backend/1backend/server/internal/services/chat/types"
 	"github.com/gorilla/mux"
 )
@@ -40,7 +40,7 @@ func (a *ChatService) UpdateThread(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := a.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := a.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *chat.PermissionThreadCreate.Id).
 		Execute()
 	if err != nil {

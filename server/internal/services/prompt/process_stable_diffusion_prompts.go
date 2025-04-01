@@ -21,10 +21,12 @@ import (
 	"github.com/pkg/errors"
 
 	openapi "github.com/1backend/1backend/clients/go"
+
 	sdk "github.com/1backend/1backend/sdk/go"
-	"github.com/1backend/1backend/sdk/go/clients/stable_diffusion"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/logger"
 
+	"github.com/1backend/1backend/server/internal/clients/stable_diffusion"
 	prompttypes "github.com/1backend/1backend/server/internal/services/prompt/types"
 )
 
@@ -108,7 +110,7 @@ func (p *PromptService) processStableDiffusion(
 	}
 	defer imageFile.Close()
 
-	uploadRsp, _, err := p.clientFactory.Client(sdk.WithToken(p.token)).
+	uploadRsp, _, err := p.clientFactory.Client(client.WithToken(p.token)).
 		FileSvcAPI.UploadFile(context.Background()).
 		File(imageFile).
 		Execute()
@@ -118,7 +120,7 @@ func (p *PromptService) processStableDiffusion(
 
 	fileIds := []string{*uploadRsp.Upload.FileId}
 
-	_, _, err = p.clientFactory.Client(sdk.WithToken(p.token)).
+	_, _, err = p.clientFactory.Client(client.WithToken(p.token)).
 		ChatSvcAPI.AddMessage(context.Background(), currentPrompt.ThreadId).
 		Body(
 			openapi.ChatSvcAddMessageRequest{

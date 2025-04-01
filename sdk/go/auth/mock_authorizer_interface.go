@@ -5,7 +5,7 @@
 //
 
 // Package sdk is a generated GoMock package.
-package sdk
+package auth
 
 import (
 	http "net/http"

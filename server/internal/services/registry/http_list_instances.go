@@ -5,7 +5,8 @@ import (
 	"net/http"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/client"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
 	"github.com/samber/lo"
 )
@@ -38,7 +39,7 @@ func (rs *RegistryService) ListInstances(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := rs.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := rs.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *registry.PermissionInstanceView.Id).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: grantedSlugs,
@@ -63,7 +64,7 @@ func (rs *RegistryService) ListInstances(
 	path := q.Get("path")
 	slug := q.Get("slug")
 
-	isAdmin, err := sdk.AuthorizerImpl{}.IsAdminFromRequest(rs.publicKey, r)
+	isAdmin, err := auth.AuthorizerImpl{}.IsAdminFromRequest(rs.publicKey, r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

@@ -18,6 +18,9 @@ import (
 	"strings"
 
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 
@@ -25,11 +28,11 @@ import (
 )
 
 type DataService struct {
-	clientFactory sdk.ClientFactory
+	clientFactory client.ClientFactory
 	token         string
 
 	lock       lock.DistributedLock
-	authorizer sdk.Authorizer
+	authorizer auth.Authorizer
 
 	store           datastore.DataStore
 	credentialStore datastore.DataStore
@@ -37,9 +40,9 @@ type DataService struct {
 }
 
 func NewDataService(
-	clientFactory sdk.ClientFactory,
+	clientFactory client.ClientFactory,
 	lock lock.DistributedLock,
-	authorizer sdk.Authorizer,
+	authorizer auth.Authorizer,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 ) (*DataService, error) {
 	store, err := datastoreFactory("dataSvcObjects", &dynamictypes.Object{})
@@ -48,7 +51,7 @@ func NewDataService(
 	}
 	credentialStore, err := datastoreFactory(
 		"dataSvcCredentials",
-		&sdk.Credential{},
+		&auth.Credential{},
 	)
 	if err != nil {
 		return nil, err
@@ -72,7 +75,7 @@ func (g *DataService) Start() error {
 	g.lock.Acquire(ctx, "data-svc-start")
 	defer g.lock.Release(ctx, "data-svc-start")
 
-	pk, _, err := g.clientFactory.Client(sdk.WithToken(g.token)).
+	pk, _, err := g.clientFactory.Client(client.WithToken(g.token)).
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	if err != nil {
@@ -80,7 +83,7 @@ func (g *DataService) Start() error {
 	}
 	g.publicKey = pk.PublicKey
 
-	token, err := sdk.RegisterServiceAccount(
+	token, err := boot.RegisterServiceAccount(
 		g.clientFactory.Client().UserSvcAPI,
 		"data-svc",
 		"Data Svc",

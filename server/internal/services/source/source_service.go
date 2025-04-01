@@ -15,13 +15,15 @@ package sourceservice
 import (
 	"context"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 )
 
 type SourceService struct {
-	clientFactory sdk.ClientFactory
+	clientFactory client.ClientFactory
 	lock          lock.DistributedLock
 
 	token string
@@ -30,13 +32,13 @@ type SourceService struct {
 }
 
 func NewSourceService(
-	clientFactory sdk.ClientFactory,
+	clientFactory client.ClientFactory,
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 ) (*SourceService, error) {
 	credentialStore, err := datastoreFactory(
 		"sourceSvcCredentials",
-		&sdk.Credential{},
+		&auth.Credential{},
 	)
 	if err != nil {
 		return nil, err
@@ -56,7 +58,7 @@ func (fs *SourceService) Start() error {
 	fs.lock.Acquire(ctx, "source-svc-start")
 	defer fs.lock.Release(ctx, "source-svc-start")
 
-	token, err := sdk.RegisterServiceAccount(
+	token, err := boot.RegisterServiceAccount(
 		fs.clientFactory.Client().UserSvcAPI,
 		"source-svc",
 		"Source Svc",

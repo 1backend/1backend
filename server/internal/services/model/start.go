@@ -27,7 +27,7 @@ import (
 	"github.com/pkg/errors"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/logger"
 
@@ -126,7 +126,7 @@ func (ms *ModelService) startWithDocker(
 				-1,
 			)
 
-			systemMatchingImagePullableRsp, _, err := ms.clientFactory.Client(sdk.WithToken(ms.token)).
+			systemMatchingImagePullableRsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
 				ContainerSvcAPI.
 				ImagePullable(context.Background(), systemMatchingImage).
 				Execute()
@@ -174,7 +174,7 @@ func (ms *ModelService) startWithDocker(
 		},
 	}
 
-	runRsp, _, err := ms.clientFactory.Client(sdk.WithToken(ms.token)).
+	runRsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
 		ContainerSvcAPI.RunContainer(context.Background()).
 		Body(*req).
 		Execute()
@@ -327,7 +327,7 @@ func (ms *ModelService) checkIfAnswers(
 
 		logger.Debug("Checking for answer started", slog.Int("port", port))
 
-		isRunningRsp, _, err := ms.clientFactory.Client(sdk.WithToken(ms.token)).
+		isRunningRsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
 			ContainerSvcAPI.ContainerIsRunning(context.Background()).
 			Hash(hash).
 			Execute()
@@ -344,7 +344,7 @@ func (ms *ModelService) checkIfAnswers(
 			continue
 		}
 
-		hostRsp, _, err := ms.clientFactory.Client(sdk.WithToken(ms.token)).
+		hostRsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
 			ContainerSvcAPI.GetHost(context.Background()).
 			Execute()
 		if err != nil {
@@ -385,7 +385,7 @@ func (ms *ModelService) checkIfAnswers(
 }
 
 func (ms *ModelService) printContainerLogs(modelId, hash string) {
-	summaryRsp, _, err := ms.clientFactory.Client(sdk.WithToken(ms.token)).
+	summaryRsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
 		ContainerSvcAPI.ContainerSummary(context.Background()).
 		Hash(hash).
 		Lines(10).

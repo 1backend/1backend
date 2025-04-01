@@ -17,7 +17,7 @@ import (
 	"fmt"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 )
 
 func (ms *ModelService) makeDefault(ctx context.Context, modelId string) error {
@@ -29,7 +29,7 @@ func (ms *ModelService) makeDefault(ctx context.Context, modelId string) error {
 		return fmt.Errorf("cannot set model as it is not downloaded yet")
 	}
 
-	rsp, _, err := ms.clientFactory.Client(sdk.WithToken(ms.token)).
+	rsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
 		ConfigSvcAPI.GetConfig(ctx).
 		Execute()
 
@@ -46,7 +46,7 @@ func (ms *ModelService) makeDefault(ctx context.Context, modelId string) error {
 
 	m["currentModelId"] = modelId
 
-	_, _, err = ms.clientFactory.Client(sdk.WithToken(ms.token)).
+	_, _, err = ms.clientFactory.Client(client.WithToken(ms.token)).
 		ConfigSvcAPI.SaveConfig(ctx).
 		Body(openapi.ConfigSvcSaveConfigRequest{
 			Config: rsp.Config,

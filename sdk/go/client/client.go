@@ -10,19 +10,19 @@
 
   - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
 */
-package sdk
+package client
 
 import (
 	"net/http"
 	"strings"
 
-	openapi "github.com/1backend/1backend/clients/go"
+	onebackendapi "github.com/1backend/1backend/clients/go"
 )
 
-type ClientOption func(*openapi.Configuration)
+type ClientOption func(*onebackendapi.Configuration)
 
 func WithToken(token string) ClientOption {
-	return func(cfg *openapi.Configuration) {
+	return func(cfg *onebackendapi.Configuration) {
 		cfg.DefaultHeader = map[string]string{
 			"Authorization": "Bearer " + token,
 		}
@@ -33,7 +33,7 @@ func WithTokenFromRequest(req *http.Request) ClientOption {
 	authHeader := req.Header.Get("Authorization")
 	authHeader = strings.Replace(authHeader, "Bearer ", "", 1)
 
-	return func(cfg *openapi.Configuration) {
+	return func(cfg *onebackendapi.Configuration) {
 		cfg.DefaultHeader = map[string]string{
 			"Authorization": "Bearer " + authHeader,
 		}
@@ -41,8 +41,8 @@ func WithTokenFromRequest(req *http.Request) ClientOption {
 }
 
 func WithAddress(address string) ClientOption {
-	return func(cfg *openapi.Configuration) {
-		cfg.Servers = openapi.ServerConfigurations{
+	return func(cfg *onebackendapi.Configuration) {
+		cfg.Servers = onebackendapi.ServerConfigurations{
 			{
 				URL:         address,
 				Description: "Default server",
@@ -52,7 +52,7 @@ func WithAddress(address string) ClientOption {
 }
 
 func CustomHeader(key, value string) ClientOption {
-	return func(cfg *openapi.Configuration) {
+	return func(cfg *onebackendapi.Configuration) {
 		if cfg.DefaultHeader == nil {
 			cfg.DefaultHeader = make(map[string]string)
 		}
@@ -70,9 +70,9 @@ func NewApiClientFactory(url string) *APIClientFactory {
 	}
 }
 
-func (f *APIClientFactory) Client(opts ...ClientOption) *openapi.APIClient {
-	cfg := &openapi.Configuration{
-		Servers: openapi.ServerConfigurations{
+func (f *APIClientFactory) Client(opts ...ClientOption) *onebackendapi.APIClient {
+	cfg := &onebackendapi.Configuration{
+		Servers: onebackendapi.ServerConfigurations{
 			{
 				URL:         f.url,
 				Description: "Default server",
@@ -84,5 +84,5 @@ func (f *APIClientFactory) Client(opts ...ClientOption) *openapi.APIClient {
 		opt(cfg)
 	}
 
-	return openapi.NewAPIClient(cfg)
+	return onebackendapi.NewAPIClient(cfg)
 }

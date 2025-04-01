@@ -17,7 +17,7 @@ import (
 	"fmt"
 	"log/slog"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/logger"
 	downloadtypes "github.com/1backend/1backend/server/internal/services/file/types"
@@ -29,7 +29,7 @@ import (
 func (ms *ModelService) status(
 	modelId string,
 ) (*modeltypes.ModelStatus, error) {
-	hostRsp, _, err := ms.clientFactory.Client(sdk.WithToken(ms.token)).
+	hostRsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
 		ContainerSvcAPI.GetHost(context.Background()).
 		Execute()
 	if err != nil {
@@ -45,7 +45,7 @@ func (ms *ModelService) status(
 	modelAddress := fmt.Sprintf("%v:%v", dockerHost, hostPortNum)
 
 	if modelId == "" {
-		rsp, _, err := ms.clientFactory.Client(sdk.WithToken(ms.token)).
+		rsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
 			ConfigSvcAPI.GetConfig(context.Background()).
 			Execute()
 		if err != nil {
@@ -72,7 +72,7 @@ func (ms *ModelService) status(
 	model := modelI.(*modeltypes.Model)
 
 	for _, asset := range model.Assets {
-		rsp, _, err := ms.clientFactory.Client(sdk.WithToken(ms.token)).
+		rsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
 			FileSvcAPI.GetDownload(context.Background(), asset.Url).
 			Execute()
 		if err != nil {
@@ -107,7 +107,7 @@ func (ms *ModelService) status(
 
 	isRunning := false
 
-	hashRsp, _, err := ms.clientFactory.Client(sdk.WithToken(ms.token)).
+	hashRsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
 		ContainerSvcAPI.ContainerIsRunning(context.Background()).
 		Hash(hash).
 		Execute()

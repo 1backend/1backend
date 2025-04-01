@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
 )
@@ -32,7 +32,7 @@ func (fs *FileService) ListUploads(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	isAuthRsp, _, err := fs.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := fs.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *file.PermissionUploadCreate.Id).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{},

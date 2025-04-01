@@ -19,7 +19,7 @@ import (
 
 	"github.com/samber/lo"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	data "github.com/1backend/1backend/server/internal/services/data/types"
 )
@@ -46,7 +46,7 @@ func (g *DataService) Query(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := g.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := g.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *data.PermissionObjectView.Id).
 		Execute()
 	if err != nil {

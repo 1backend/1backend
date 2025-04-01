@@ -16,17 +16,19 @@ import (
 	"context"
 	"sync"
 
-	sdk "github.com/1backend/1backend/sdk/go"
-	"github.com/1backend/1backend/sdk/go/clients/llamacpp"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 
+	"github.com/1backend/1backend/server/internal/clients/llamacpp"
 	streammanager "github.com/1backend/1backend/server/internal/services/prompt/stream"
 	prompttypes "github.com/1backend/1backend/server/internal/services/prompt/types"
 )
 
 type PromptService struct {
-	clientFactory sdk.ClientFactory
+	clientFactory client.ClientFactory
 	token         string
 
 	llamaCppCLient llamacpp.ClientI
@@ -42,7 +44,7 @@ type PromptService struct {
 }
 
 func NewPromptService(
-	clientFactory sdk.ClientFactory,
+	clientFactory client.ClientFactory,
 	llamaCppClient llamacpp.ClientI,
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
@@ -57,7 +59,7 @@ func NewPromptService(
 
 	credentialStore, err := datastoreFactory(
 		"promptSvcCredentials",
-		&sdk.Credential{},
+		&auth.Credential{},
 	)
 	if err != nil {
 		return nil, err
@@ -110,7 +112,7 @@ func (cs *PromptService) Start() error {
 	cs.lock.Acquire(ctx, "prompt-svc-start")
 	defer cs.lock.Release(ctx, "prompt-svc-start")
 
-	token, err := sdk.RegisterServiceAccount(
+	token, err := boot.RegisterServiceAccount(
 		cs.clientFactory.Client().UserSvcAPI,
 		"prompt-svc",
 		"Prompt Svc",

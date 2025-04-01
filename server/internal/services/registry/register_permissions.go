@@ -16,7 +16,7 @@ import (
 	"context"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	registrytypes "github.com/1backend/1backend/server/internal/services/registry/types"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
@@ -31,7 +31,7 @@ func app(permSlices ...[]openapi.UserSvcPermission) []openapi.UserSvcPermission 
 
 func (ns *RegistryService) registerPermissions() error {
 	ctx := context.Background()
-	userSvc := ns.clientFactory.Client(sdk.WithToken(ns.token)).UserSvcAPI
+	userSvc := ns.clientFactory.Client(client.WithToken(ns.token)).UserSvcAPI
 
 	_, _, err := userSvc.SavePermissions(ctx).
 		Body(openapi.UserSvcSavePermissionsRequest{

@@ -10,7 +10,7 @@
 
   - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
 */
-package sdk
+package infra
 
 import (
 	"database/sql"
@@ -18,6 +18,7 @@ import (
 	"path"
 	"sync"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/datastore/localstore"
 	"github.com/1backend/1backend/sdk/go/datastore/sqlstore"
@@ -67,7 +68,7 @@ func NewDataStoreFactory(options DataStoreConfig) (DataStoreFactory, error) {
 		options.TablePrefix = os.Getenv("OB_DB_PREFIX")
 	}
 	if options.Test && options.TablePrefix == "" {
-		options.TablePrefix = Id("test") + "_"
+		options.TablePrefix = sdk.Id("test") + "_"
 	}
 
 	if options.Db == "" {

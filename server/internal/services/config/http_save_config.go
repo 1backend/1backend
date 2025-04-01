@@ -19,7 +19,7 @@ import (
 	"net/http"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/logger"
 	config "github.com/1backend/1backend/server/internal/services/config/types"
 	types "github.com/1backend/1backend/server/internal/services/config/types"
@@ -42,7 +42,7 @@ func (cs *ConfigService) Save(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	isAuthRsp, _, err := cs.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := cs.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *config.PermissionConfigEdit.Id).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{"model-svc"},
@@ -121,7 +121,7 @@ func (cs *ConfigService) saveConfig(isAdmin bool, callerSlug string, newConfig t
 	}
 
 	ev := types.EventConfigUpdate{}
-	_, err = cs.clientFactory.Client(sdk.WithToken(cs.token)).
+	_, err = cs.clientFactory.Client(client.WithToken(cs.token)).
 		FirehoseSvcAPI.PublishEvent(context.Background()).
 		Event(openapi.FirehoseSvcEventPublishRequest{
 			Event: &openapi.FirehoseSvcEvent{

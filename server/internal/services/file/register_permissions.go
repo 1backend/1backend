@@ -16,14 +16,14 @@ import (
 	"context"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	filetypes "github.com/1backend/1backend/server/internal/services/file/types"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 func (fs *FileService) registerPermissions() error {
 	ctx := context.Background()
-	userSvc := fs.clientFactory.Client(sdk.WithToken(fs.token)).UserSvcAPI
+	userSvc := fs.clientFactory.Client(client.WithToken(fs.token)).UserSvcAPI
 
 	_, _, err := userSvc.SavePermissions(ctx).
 		Body(openapi.UserSvcSavePermissionsRequest{
