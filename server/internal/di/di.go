@@ -931,9 +931,9 @@ func BigBang(options *Options) (*Universe, error) {
 	})).
 		Methods("OPTIONS", "PUT")
 
-	router.PathPrefix("/").HandlerFunc(appl(func(w http.ResponseWriter, r *http.Request) {
+	router.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		proxyService.Route(w, r)
-	}))
+	})
 
 	router.HandleFunc("/swagger/", httpSwagger.WrapHandler)
 
