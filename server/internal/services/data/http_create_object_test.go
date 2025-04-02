@@ -6,11 +6,14 @@ import (
 	"testing"
 
 	sdk "github.com/1backend/1backend/sdk/go"
+	sdkclient "github.com/1backend/1backend/sdk/go/client"
+
 	"github.com/1backend/1backend/sdk/go/test"
+
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 
-	client "github.com/1backend/1backend/clients/go"
+	obapi "github.com/1backend/1backend/clients/go"
 )
 
 func TestCreate(t *testing.T) {
@@ -22,7 +25,7 @@ func TestCreate(t *testing.T) {
 	require.NoError(t, err)
 	defer server.Cleanup(t)
 
-	clientFactory := client.NewApiClientFactory(server.Url)
+	clientFactory := sdkclient.NewApiClientFactory(server.Url)
 
 	uniq := uuid.New().String()
 	uniq = strings.Replace(uniq, "-", "", -1)[0:10]
@@ -46,7 +49,7 @@ func TestCreate(t *testing.T) {
 	uuid1 := sdk.Id(table1)
 	uuid2 := sdk.Id(table2)
 
-	obj := client.DataSvcCreateObjectFields{
+	obj := obapi.DataSvcCreateObjectFields{
 		Id:       &uuid1,
 		Table:    table1,
 		Readers:  []string{"_self"},
@@ -56,14 +59,14 @@ func TestCreate(t *testing.T) {
 	}
 
 	_, _, err = client1.DataSvcAPI.CreateObject(context.Background()).
-		Body(client.DataSvcCreateObjectRequest{
+		Body(obapi.DataSvcCreateObjectRequest{
 			Object: &obj,
 		}).
 		Execute()
 	require.NoError(t, err)
 
 	t.Run("user 1 can find its own private record", func(t *testing.T) {
-		req := client.DataSvcQueryRequest{
+		req := obapi.DataSvcQueryRequest{
 			Table:   &table1,
 			Readers: []string{tokenReadRsp1.User.Id},
 		}
@@ -76,7 +79,7 @@ func TestCreate(t *testing.T) {
 		require.Equal(t, uuid1, *rsp.Objects[0].Id)
 	})
 
-	obj2 := client.DataSvcCreateObjectFields{
+	obj2 := obapi.DataSvcCreateObjectFields{
 		Id:      &uuid2,
 		Table:   table2,
 		Readers: []string{tokenReadRsp2.User.Id},
@@ -84,14 +87,14 @@ func TestCreate(t *testing.T) {
 	}
 
 	_, _, err = client2.DataSvcAPI.CreateObject(context.Background()).
-		Body(client.DataSvcCreateObjectRequest{
+		Body(obapi.DataSvcCreateObjectRequest{
 			Object: &obj2,
 		}).
 		Execute()
 	require.NoError(t, err)
 
 	t.Run("query user2 records", func(t *testing.T) {
-		req := client.DataSvcQueryRequest{
+		req := obapi.DataSvcQueryRequest{
 			Table:   &table2,
 			Readers: []string{tokenReadRsp2.User.Id},
 		}
@@ -105,12 +108,12 @@ func TestCreate(t *testing.T) {
 	})
 
 	t.Run("query user1 records", func(t *testing.T) {
-		req := client.DataSvcQueryRequest{
+		req := obapi.DataSvcQueryRequest{
 			Table: &table1,
-			Query: &client.DatastoreQuery{Filters: []client.DatastoreFilter{
+			Query: &obapi.DatastoreQuery{Filters: []obapi.DatastoreFilter{
 				{
 					Fields:     []string{"id"},
-					Op:         client.OpEquals.Ptr(),
+					Op:         obapi.OpEquals.Ptr(),
 					JsonValues: sdk.Marshal([]any{uuid1}),
 				},
 			}},
@@ -127,12 +130,12 @@ func TestCreate(t *testing.T) {
 	})
 
 	t.Run("query user1 records with _self", func(t *testing.T) {
-		req := client.DataSvcQueryRequest{
+		req := obapi.DataSvcQueryRequest{
 			Table: &table1,
-			Query: &client.DatastoreQuery{Filters: []client.DatastoreFilter{
+			Query: &obapi.DatastoreQuery{Filters: []obapi.DatastoreFilter{
 				{
 					Fields:     []string{"id"},
-					Op:         client.OpEquals.Ptr(),
+					Op:         obapi.OpEquals.Ptr(),
 					JsonValues: sdk.Marshal([]any{uuid1}),
 				},
 			}},
@@ -150,7 +153,7 @@ func TestCreate(t *testing.T) {
 
 	t.Run("already exists", func(t *testing.T) {
 		_, _, err = client1.DataSvcAPI.CreateObject(context.Background()).
-			Body(client.DataSvcCreateObjectRequest{
+			Body(obapi.DataSvcCreateObjectRequest{
 				Object: &obj,
 			}).
 			Execute()
@@ -159,12 +162,12 @@ func TestCreate(t *testing.T) {
 	})
 
 	t.Run("user 1 cannot see record of user 2", func(t *testing.T) {
-		req := client.DataSvcQueryRequest{
+		req := obapi.DataSvcQueryRequest{
 			Table: &table1,
-			Query: &client.DatastoreQuery{Filters: []client.DatastoreFilter{
+			Query: &obapi.DatastoreQuery{Filters: []obapi.DatastoreFilter{
 				{
 					Fields:     []string{"id"},
-					Op:         client.OpEquals.Ptr(),
+					Op:         obapi.OpEquals.Ptr(),
 					JsonValues: sdk.Marshal([]any{uuid2}),
 				},
 			}},
@@ -178,7 +181,7 @@ func TestCreate(t *testing.T) {
 	})
 
 	t.Run("user 2 cannot update record of user 1", func(t *testing.T) {
-		req := &client.DataSvcUpsertObjectRequest{
+		req := &obapi.DataSvcUpsertObjectRequest{
 			Object: &obj,
 		}
 		_, _, err = client2.DataSvcAPI.UpsertObject(context.Background(), *obj.Id).
@@ -190,7 +193,7 @@ func TestCreate(t *testing.T) {
 	})
 
 	t.Run("user 1 can upsert its own record", func(t *testing.T) {
-		req := &client.DataSvcUpsertObjectRequest{
+		req := &obapi.DataSvcUpsertObjectRequest{
 			Object: &obj,
 		}
 		_, _, err = client1.DataSvcAPI.UpsertObject(context.Background(), *obj.Id).
@@ -201,8 +204,8 @@ func TestCreate(t *testing.T) {
 	})
 
 	t.Run("user 1 can find its own record", func(t *testing.T) {
-		req := &client.DataSvcQueryRequest{
-			Table:   client.PtrString(table1),
+		req := &obapi.DataSvcQueryRequest{
+			Table:   obapi.PtrString(table1),
 			Readers: []string{tokenReadRsp1.User.Id},
 		}
 		rsp, _, err := client1.DataSvcAPI.QueryObjects(context.Background()).
@@ -215,12 +218,12 @@ func TestCreate(t *testing.T) {
 	})
 
 	t.Run("user 2 cannot delete user 1's record", func(t *testing.T) {
-		req := &client.DataSvcDeleteObjectRequest{
-			Table: client.PtrString(table1),
-			Filters: []client.DatastoreFilter{
+		req := &obapi.DataSvcDeleteObjectRequest{
+			Table: obapi.PtrString(table1),
+			Filters: []obapi.DatastoreFilter{
 				{
 					Fields:     []string{"id"},
-					Op:         client.OpEquals.Ptr(),
+					Op:         obapi.OpEquals.Ptr(),
 					JsonValues: sdk.Marshal([]any{obj.Id}),
 				},
 			},
@@ -233,8 +236,8 @@ func TestCreate(t *testing.T) {
 		require.NoError(t, err)
 
 		// Check if user 1 can still find it
-		listReq := &client.DataSvcQueryRequest{
-			Table:   client.PtrString(table1),
+		listReq := &obapi.DataSvcQueryRequest{
+			Table:   obapi.PtrString(table1),
 			Readers: []string{tokenReadRsp1.User.Id},
 		}
 		rsp, _, err := client1.DataSvcAPI.QueryObjects(context.Background()).
@@ -247,8 +250,8 @@ func TestCreate(t *testing.T) {
 
 	// ...item wont be deleted
 	t.Run("user 2 will no see other tables", func(t *testing.T) {
-		req := &client.DataSvcQueryRequest{
-			Table: client.PtrString(table1),
+		req := &obapi.DataSvcQueryRequest{
+			Table: obapi.PtrString(table1),
 		}
 		rsp, _, err := client2.DataSvcAPI.QueryObjects(context.Background()).
 			Body(*req).

@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
 
@@ -40,7 +41,7 @@ func TestRegistration(t *testing.T) {
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
-	userToken := sdk.TokenFromClient(userClient)
+	userToken := auth.TokenFromClient(userClient)
 
 	require.Equal(t, true, len(userToken) > 0)
 
