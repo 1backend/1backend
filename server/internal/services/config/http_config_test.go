@@ -18,7 +18,7 @@ import (
 	"testing"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
@@ -39,7 +39,7 @@ var _ = ginkgo.Describe("Config Tests", func() {
 		ctx        context.Context
 		userClient *openapi.APIClient
 
-		mockClientFactory *sdk.MockClientFactory
+		mockClientFactory *client.MockClientFactory
 		mockUserSvc       *openapi.MockUserSvcAPI
 		mockFirehoseSvc   *openapi.MockFirehoseSvcAPI
 
@@ -56,7 +56,7 @@ var _ = ginkgo.Describe("Config Tests", func() {
 		hs := &di.HandlerSwitcher{}
 		server = httptest.NewServer(hs)
 
-		mockClientFactory = sdk.NewMockClientFactory(ctrl)
+		mockClientFactory = client.NewMockClientFactory(ctrl)
 
 		mockUserSvc = test.MockUserSvc(
 			ctx,
@@ -68,7 +68,7 @@ var _ = ginkgo.Describe("Config Tests", func() {
 				return userSlug
 			}),
 		)
-		mockAuthorizer := sdk.NewMockAuthorizer(ctrl)
+		mockAuthorizer := auth.NewMockAuthorizer(ctrl)
 		mockAuthorizer.EXPECT().
 			IsAdminFromRequest(gomock.Any(), gomock.Any()).
 			Return(isAdmin, nil).AnyTimes()

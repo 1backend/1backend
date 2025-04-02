@@ -21,7 +21,6 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 
-	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 
@@ -48,7 +47,7 @@ var _ = ginkgo.Describe("Prompt Processing Loop", func() {
 		lc         *llamacpp.MockClientI
 		userClient *openapi.APIClient
 
-		mockClientFactory *sdk.MockClientFactory
+		mockClientFactory *client.MockClientFactory
 		mockUserSvc       *openapi.MockUserSvcAPI
 		mockChatSvc       *openapi.MockChatSvcAPI
 		mockModelSvc      *openapi.MockModelSvcAPI
@@ -68,7 +67,7 @@ var _ = ginkgo.Describe("Prompt Processing Loop", func() {
 
 		lc = llamacpp.NewMockClientI(ctrl)
 
-		mockClientFactory = sdk.NewMockClientFactory(ctrl)
+		mockClientFactory = client.NewMockClientFactory(ctrl)
 		mockUserSvc = test.MockUserSvc(ctx, ctrl, test.WithIsAuthorizedFactory(func() bool {
 			return true
 		}))

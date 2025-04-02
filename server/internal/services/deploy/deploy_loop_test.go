@@ -8,7 +8,6 @@ import (
 	"time"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
@@ -27,7 +26,7 @@ var _ = ginkgo.Describe("Deploy Loop", func() {
 		server               *httptest.Server
 		ctrl                 *gomock.Controller
 		ctx                  context.Context
-		mockClientFactory    *sdk.MockClientFactory
+		mockClientFactory    *client.MockClientFactory
 		mockUserSvc          *openapi.MockUserSvcAPI
 		universe             *di.Universe
 		mockRegistrySvc      *openapi.MockRegistrySvcAPI
@@ -46,7 +45,7 @@ var _ = ginkgo.Describe("Deploy Loop", func() {
 		hs := &di.HandlerSwitcher{}
 		server = httptest.NewServer(hs)
 
-		mockClientFactory = sdk.NewMockClientFactory(ctrl)
+		mockClientFactory = client.NewMockClientFactory(ctrl)
 		mockUserSvc = test.MockUserSvc(ctx, ctrl, test.WithIsAuthorizedFactory(func() bool {
 			return true
 		}))
