@@ -8,7 +8,7 @@ import (
 	"github.com/1backend/1backend/cli/oo/config"
 	"github.com/1backend/1backend/cli/oo/util"
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -21,7 +21,7 @@ func Save(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "cannot get env url")
 	}
 
-	cf := sdk.NewApiClientFactory(url)
+	cf := client.NewApiClientFactory(url)
 
 	path := args[0]
 
@@ -68,7 +68,7 @@ func Save(cmd *cobra.Command, args []string) error {
 	}
 
 	// Make a single API call to save all grants
-	_, _, err = cf.Client(sdk.WithToken(token)).
+	_, _, err = cf.Client(client.WithToken(token)).
 		UserSvcAPI.SaveGrants(ctx).
 		Body(openapi.UserSvcSaveGrantsRequest{
 			Grants: grants,

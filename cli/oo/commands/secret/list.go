@@ -8,7 +8,7 @@ import (
 
 	"github.com/1backend/1backend/cli/oo/config"
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -27,7 +27,7 @@ func List(cmd *cobra.Command, args []string, show bool) error {
 		return errors.Wrap(err, "cannot get env url and token")
 	}
 
-	cf := sdk.NewApiClientFactory(url)
+	cf := client.NewApiClientFactory(url)
 
 	req := openapi.SecretSvcListSecretsRequest{
 		Key: openapi.PtrString(key),
@@ -37,7 +37,7 @@ func List(cmd *cobra.Command, args []string, show bool) error {
 		req.Namespace = openapi.PtrString(namespaceFlag)
 	}
 
-	rsp, _, err := cf.Client(sdk.WithToken(token)).
+	rsp, _, err := cf.Client(client.WithToken(token)).
 		SecretSvcAPI.ListSecrets(ctx).
 		Body(req).
 		Execute()
