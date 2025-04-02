@@ -51,7 +51,7 @@ Also see [this page](https://1backend.com/docs/category/running-the-server) for 
 
 ## Building microservices
 
-See the [examples](./examples/go/services/) folder or the [relevant documentation](https://1backend.com/docs/writing-custom-services/your-first-service) on how to build testable, scalable microservices easy on top of 1Backend.
+Check out the [examples](./examples/go/services/) folder or the [relevant documentation](https://1backend.com/docs/writing-custom-services/your-first-service) to learn how to easily build testable, scalable microservices on 1Backend.
 
 ## Prompting
 
