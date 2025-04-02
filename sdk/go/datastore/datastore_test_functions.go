@@ -311,61 +311,126 @@ func TestMapPointer(t *testing.T, store DataStore) {
 
 func TestPagination(t *testing.T, store DataStore) {
 	for i := 1; i <= 10; i++ {
-		obj := TestObject{Name: fmt.Sprintf("PaginationTest%d", i), Value: i}
+		now := time.Now()
+		obj := TestObject{
+			Name:      fmt.Sprintf("PaginationTest%d", i),
+			Value:     i,
+			CreatedAt: now,
+		}
 		err := store.Create(obj)
+		time.Sleep(1 * time.Millisecond)
 		require.NoError(t, err)
 	}
 
-	results, err := store.Query().OrderBy(
-		OrderByField("Value", true),
-	).
-		Limit(5).
-		Find()
-	require.NoError(t, err)
-	require.Len(t, results, 5)
-	require.Equal(t, "PaginationTest10", results[0].(TestObject).Name)
-	require.Equal(t, 10, results[0].(TestObject).Value)
+	t.Run("test int", func(t *testing.T) {
+		results, err := store.Query().OrderBy(
+			OrderByField("Value", true),
+		).
+			Limit(5).
+			Find()
+		require.NoError(t, err)
+		require.Len(t, results, 5)
+		require.Equal(t, "PaginationTest10", results[0].(TestObject).Name)
+		require.Equal(t, 10, results[0].(TestObject).Value)
 
-	lastValue := results[len(results)-1].(TestObject).Value
-	results, err = store.Query().OrderBy(
-		OrderByField("Value", true),
-	).
-		Limit(5).
-		After(lastValue).
-		Find()
-	require.NoError(t, err)
-	require.Len(t, results, 5)
-	require.Equal(t, "PaginationTest5", results[0].(TestObject).Name)
-	require.Equal(t, 5, results[0].(TestObject).Value)
+		lastValue := results[len(results)-1].(TestObject).Value
+		results, err = store.Query().OrderBy(
+			OrderByField("Value", true),
+		).
+			Limit(5).
+			After(lastValue).
+			Find()
+		require.NoError(t, err)
+		require.Len(t, results, 5)
+		require.Equal(t, "PaginationTest5", results[0].(TestObject).Name)
+		require.Equal(t, 5, results[0].(TestObject).Value)
+	})
+
+	t.Run("test date", func(t *testing.T) {
+		results, err := store.Query().OrderBy(
+			OrderByField("createdAt", true),
+		).
+			Limit(5).
+			Find()
+		require.NoError(t, err)
+		require.Len(t, results, 5)
+		require.Equal(t, "PaginationTest10", results[0].(TestObject).Name)
+		require.Equal(t, 10, results[0].(TestObject).Value)
+
+		lastValue := results[len(results)-1].(TestObject).CreatedAt
+		results, err = store.Query().OrderBy(
+			OrderByField("createdAt", true),
+		).
+			Limit(5).
+			After(lastValue).
+			Find()
+		require.NoError(t, err)
+		require.Len(t, results, 5)
+		require.Equal(t, "PaginationTest5", results[0].(TestObject).Name)
+		require.Equal(t, 5, results[0].(TestObject).Value)
+	})
 }
 
 func TestPointerPagination(t *testing.T, store DataStore) {
 	for i := 1; i <= 10; i++ {
-		obj := &TestObject{Name: fmt.Sprintf("PaginationTest%d", i), Value: i}
+		now := time.Now()
+		obj := &TestObject{
+			Name:      fmt.Sprintf("PaginationTest%d", i),
+			Value:     i,
+			CreatedAt: now,
+		}
 		err := store.Create(obj)
+		time.Sleep(1 * time.Millisecond)
 		require.NoError(t, err)
 	}
 
-	results, err := store.Query().OrderBy(
-		OrderByField("Value", true)).
-		Limit(5).
-		Find()
-	require.NoError(t, err)
-	require.Len(t, results, 5)
-	require.Equal(t, "PaginationTest10", results[0].(*TestObject).Name)
-	require.Equal(t, 10, results[0].(*TestObject).Value)
+	t.Run("test int", func(t *testing.T) {
+		results, err := store.Query().OrderBy(
+			OrderByField("Value", true),
+		).
+			Limit(5).
+			Find()
+		require.NoError(t, err)
+		require.Len(t, results, 5)
+		require.Equal(t, "PaginationTest10", results[0].(*TestObject).Name)
+		require.Equal(t, 10, results[0].(*TestObject).Value)
 
-	lastValue := results[len(results)-1].(*TestObject).Value
-	results, err = store.Query().OrderBy(
-		OrderByField("Value", true),
-	).
-		Limit(5).
-		After(lastValue).
-		Find()
-	require.NoError(t, err)
-	require.Len(t, results, 5)
-	require.Equal(t, "PaginationTest5", results[0].(*TestObject).Name)
-	require.Equal(t, 5, results[0].(*TestObject).Value)
+		lastValue := results[len(results)-1].(*TestObject).Value
+		results, err = store.Query().OrderBy(
+			OrderByField("Value", true),
+		).
+			Limit(5).
+			After(lastValue).
+			Find()
+		require.NoError(t, err)
+		require.Len(t, results, 5)
+		require.Equal(t, "PaginationTest5", results[0].(*TestObject).Name)
+		require.Equal(t, 5, results[0].(*TestObject).Value)
+	})
+
+	t.Run("test date", func(t *testing.T) {
+		results, err := store.Query().OrderBy(
+			OrderByField("createdAt", true),
+		).
+			Limit(5).
+			Find()
+		require.NoError(t, err)
+		require.Len(t, results, 5)
+		require.Equal(t, "PaginationTest10", results[0].(*TestObject).Name)
+		require.Equal(t, 10, results[0].(*TestObject).Value)
+
+		lastValue := results[len(results)-1].(*TestObject).CreatedAt
+		results, err = store.Query().OrderBy(
+			OrderByField("createdAt", true),
+		).
+			Limit(5).
+			After(lastValue).
+			Find()
+		require.NoError(t, err)
+		require.Len(t, results, 5)
+		require.Equal(t, "PaginationTest5", results[0].(*TestObject).Name)
+		require.Equal(t, 5, results[0].(*TestObject).Value)
+	})
 }
 
 func TestCreatedAt(t *testing.T, store DataStore) {

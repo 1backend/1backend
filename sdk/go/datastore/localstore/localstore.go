@@ -289,16 +289,22 @@ func (q *QueryBuilder) After(value ...any) datastore.QueryBuilder {
 	}
 
 	q.after = value
+
 	for i := range q.after {
-		str, ok := q.after[i].(string)
+		// JSON marshal time.Times
+		t, ok := q.after[i].(time.Time)
 		if !ok {
 			continue
 		}
-		t, err := datastore.ParseAnyDate(str)
-		if err == nil {
-			q.after[i] = t
+
+		v, err := json.Marshal(t)
+		if err != nil {
+			panic(err)
 		}
+
+		q.after[i] = strings.Replace(string(v), "\"", "", -1)
 	}
+
 	return q
 }
 
@@ -335,8 +341,8 @@ func (q *QueryBuilder) Find() ([]datastore.Row, error) {
 		for i, obj := range result {
 			vi := getField(obj, q.orderField)
 
-			if reflect.DeepEqual(toBaseType(vi), toBaseType(q.after[0])) {
-				startIndex = i + 1
+			if compare(toBaseType(q.after[0]), toBaseType(vi), q.orderDesc) {
+				startIndex = i
 				break
 			}
 		}
@@ -836,18 +842,31 @@ func compare(vi, vj interface{}, desc bool) bool {
 			return viTime.Before(vjTime)
 		}
 	default:
+		// @todo don't think time.Time ever gets saved
+		// due to JSON marshalling. Rethink
+		//
 		// Handle pointers to time.Time explicitly
-		if viVal.Type() == reflect.TypeOf(&time.Time{}) && vjVal.Type() == reflect.TypeOf(&time.Time{}) {
-			viTime := viVal.Interface().(*time.Time)
-			vjTime := vjVal.Interface().(*time.Time)
-			if viTime == nil || vjTime == nil {
-				return false
-			}
-			if desc {
-				return viTime.After(*vjTime)
-			}
-			return viTime.Before(*vjTime)
-		}
+		//if viVal.Type() == reflect.TypeOf(&time.Time{}) && vjVal.Type() == reflect.TypeOf(&time.Time{}) {
+		//	viTime := viVal.Interface().(*time.Time)
+		//	vjTime := vjVal.Interface().(*time.Time)
+		//	if viTime == nil || vjTime == nil {
+		//		return false
+		//	}
+		//	if desc {
+		//		return viTime.After(*vjTime)
+		//	}
+		//	return viTime.Before(*vjTime)
+		//}
+		//
+		//if viVal.Type() == reflect.TypeOf(time.Time{}) {
+		//
+		//	viTime := viVal.Interface().(time.Time)
+		//	vjTime := vjVal.Interface().(time.Time)
+		//	if desc {
+		//		return viTime.After(vjTime)
+		//	}
+		//	return viTime.Before(vjTime)
+		//}
 	}
 	return false
 }
