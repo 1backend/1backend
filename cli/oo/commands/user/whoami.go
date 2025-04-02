@@ -5,7 +5,8 @@ import (
 
 	"github.com/1backend/1backend/cli/oo/config"
 	"github.com/1backend/1backend/cli/oo/types"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
@@ -37,7 +38,7 @@ func Whoami(cmd *cobra.Command, args []string, all bool) error {
 		)
 	}
 
-	cf := sdk.NewApiClientFactory(env.URL)
+	cf := client.NewApiClientFactory(env.URL)
 	publicKeyRsp, _, err := cf.Client().UserSvcAPI.GetPublicKey(cmd.Context()).Execute()
 	if err != nil {
 		return errors.Wrap(err, "failed to get public key")
@@ -83,7 +84,7 @@ func displayUser(
 	active bool,
 	usr *types.User,
 ) error {
-	claims, err := sdk.AuthorizerImpl{}.ParseJWT(publicKey, usr.Token)
+	claims, err := auth.AuthorizerImpl{}.ParseJWT(publicKey, usr.Token)
 	if err != nil {
 		return errors.Wrap(err, "failed to decode JWT. it is possible that the public key of the server has changed. try logging in again")
 	}

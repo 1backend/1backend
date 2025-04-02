@@ -5,7 +5,7 @@ import (
 
 	"github.com/1backend/1backend/cli/oo/config"
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -28,9 +28,9 @@ func Remove(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "cannot get env URL")
 	}
 
-	cf := sdk.NewApiClientFactory(url)
+	cf := client.NewApiClientFactory(url)
 
-	_, _, err = cf.Client(sdk.WithToken(token)).
+	_, _, err = cf.Client(client.WithToken(token)).
 		SecretSvcAPI.RemoveSecrets(ctx).
 		Body(openapi.SecretSvcRemoveSecretsRequest{
 			Keys: keys,

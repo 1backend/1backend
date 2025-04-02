@@ -22,9 +22,9 @@ package grant
 // 		return fmt.Errorf("cannot get environment URL: '%v'", err)
 // 	}
 //
-// 	cf := sdk.NewApiClientFactory(url)
+// 	cf := client.NewApiClientFactory(url)
 //
-// 	_, _, err = cf.Client(sdk.WithToken(token)).
+// 	_, _, err = cf.Client(client.WithToken(token)).
 // 		UserSvcAPI.RemoveGrant(ctx).
 // 		Body(openapi.SecretSvcRemoveSecretsRequest{
 // 			Ids: args, // Use args directly as IDs

@@ -8,7 +8,7 @@ import (
 	"github.com/1backend/1backend/cli/oo/config"
 	"github.com/1backend/1backend/cli/oo/types"
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
@@ -62,7 +62,7 @@ func Login(cmd *cobra.Command, args []string) error {
 		)
 	}
 
-	cf := sdk.NewApiClientFactory(env.URL)
+	cf := client.NewApiClientFactory(env.URL)
 
 	rsp, _, err := cf.Client().
 		UserSvcAPI.Login(cmd.Context()).

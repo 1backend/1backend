@@ -2,7 +2,7 @@ package definition
 
 import (
 	"github.com/1backend/1backend/cli/oo/config"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -16,9 +16,9 @@ func Delete(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "cannot get env url")
 	}
 
-	cf := sdk.NewApiClientFactory(url)
+	cf := client.NewApiClientFactory(url)
 
-	_, err = cf.Client(sdk.WithToken(token)).
+	_, err = cf.Client(client.WithToken(token)).
 		RegistrySvcAPI.DeleteDefinition(ctx, serviceDefinitionId).
 		Execute()
 	if err != nil {

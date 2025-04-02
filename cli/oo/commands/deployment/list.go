@@ -7,7 +7,7 @@ import (
 	"text/tabwriter"
 
 	"github.com/1backend/1backend/cli/oo/config"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -21,9 +21,9 @@ func List(cmd *cobra.Command, args []string, full bool) error {
 		return errors.Wrap(err, "cannot get env url")
 	}
 
-	cf := sdk.NewApiClientFactory(url)
+	cf := client.NewApiClientFactory(url)
 
-	rsp, _, err := cf.Client(sdk.WithToken(token)).
+	rsp, _, err := cf.Client(client.WithToken(token)).
 		DeploySvcAPI.ListDeployments(ctx).
 		Execute()
 	if err != nil {
