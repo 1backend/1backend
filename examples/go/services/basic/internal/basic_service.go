@@ -8,7 +8,11 @@ import (
 	openapi "github.com/1backend/1backend/clients/go"
 	basic "github.com/1backend/1backend/examples/go/services/basic/internal/types"
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/infra"
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -22,7 +26,7 @@ type BasicService struct {
 	token            string
 	userSvcPublicKey string
 
-	dataStoreFactory sdk.DataStoreFactory
+	dataStoreFactory infra.DataStoreFactory
 
 	petsStore       datastore.DataStore
 	credentialStore datastore.DataStore
@@ -47,7 +51,7 @@ func NewService(options *Options) (*BasicService, error) {
 		options.SelfUrl = os.Getenv("OB_SELF_URL")
 	}
 
-	dconf := sdk.DataStoreConfig{}
+	dconf := infra.DataStoreConfig{}
 	if options.Test {
 		dconf.TablePrefix = sdk.Id("t")
 	}
@@ -56,7 +60,7 @@ func NewService(options *Options) (*BasicService, error) {
 		Options: options,
 	}
 
-	dsf, err := sdk.NewDataStoreFactory(dconf)
+	dsf, err := infra.NewDataStoreFactory(dconf)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot create datastore factory")
 	}
@@ -75,11 +79,14 @@ func NewService(options *Options) (*BasicService, error) {
 }
 
 func (service *BasicService) Start() error {
-	client := sdk.NewApiClientFactory(service.Options.ServerUrl).Client(sdk.WithToken(service.token))
+	client := client.NewApiClientFactory(service.Options.ServerUrl).
+		Client(client.WithToken(service.token))
 
-	_, _, err := client.RegistrySvcAPI.RegisterInstance(context.Background()).Body(openapi.RegistrySvcRegisterInstanceRequest{
-		Url: service.Options.SelfUrl,
-	}).Execute()
+	_, _, err := client.RegistrySvcAPI.
+		RegisterInstance(context.Background()).
+		Body(openapi.RegistrySvcRegisterInstanceRequest{
+			Url: service.Options.SelfUrl,
+		}).Execute()
 	if err != nil {
 		return errors.Wrap(err, "cannot register instance")
 	}
@@ -88,15 +95,15 @@ func (service *BasicService) Start() error {
 }
 
 func (service *BasicService) registerAccount() error {
-	credentialStore, err := service.dataStoreFactory.Create("basicSvcCredentials", &sdk.Credential{})
+	credentialStore, err := service.dataStoreFactory.Create("basicSvcCredentials", &auth.Credential{})
 	if err != nil {
 		return errors.Wrap(err, "cannot create credential store")
 	}
 	service.credentialStore = credentialStore
 
-	client := sdk.NewApiClientFactory(service.Options.ServerUrl).Client()
-	token, err := sdk.RegisterServiceAccount(
-		client.UserSvcAPI,
+	obClient := client.NewApiClientFactory(service.Options.ServerUrl).Client()
+	token, err := boot.RegisterServiceAccount(
+		obClient.UserSvcAPI,
 		"basic-svc",
 		"Basic Svc",
 		service.credentialStore,
@@ -106,16 +113,19 @@ func (service *BasicService) registerAccount() error {
 	}
 	service.token = token.Token
 
-	client = sdk.NewApiClientFactory(service.Options.ServerUrl).Client(sdk.WithToken(service.token))
+	obClient = client.NewApiClientFactory(service.Options.ServerUrl).
+		Client(client.WithToken(service.token))
 
-	_, _, err = client.RegistrySvcAPI.RegisterInstance(context.Background()).Body(openapi.RegistrySvcRegisterInstanceRequest{
-		Url: service.Options.SelfUrl,
-	}).Execute()
+	_, _, err = obClient.RegistrySvcAPI.
+		RegisterInstance(context.Background()).
+		Body(openapi.RegistrySvcRegisterInstanceRequest{
+			Url: service.Options.SelfUrl,
+		}).Execute()
 	if err != nil {
 		return errors.Wrap(err, "cannot register instance")
 	}
 
-	pk, _, err := client.
+	pk, _, err := obClient.
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	if err != nil {

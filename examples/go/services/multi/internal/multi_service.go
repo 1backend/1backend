@@ -7,7 +7,11 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/infra"
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -23,7 +27,7 @@ type MultiService struct {
 	token            string
 	userSvcPublicKey string
 
-	dataStoreFactory sdk.DataStoreFactory
+	dataStoreFactory infra.DataStoreFactory
 
 	credentialStore datastore.DataStore
 
@@ -47,7 +51,7 @@ func NewService(options *Options) (*MultiService, error) {
 		options.SelfUrl = os.Getenv("OB_SELF_URL")
 	}
 
-	dconf := sdk.DataStoreConfig{}
+	dconf := infra.DataStoreConfig{}
 	if options.Test {
 		dconf.TablePrefix = sdk.Id("t")
 	}
@@ -56,7 +60,7 @@ func NewService(options *Options) (*MultiService, error) {
 		Options: options,
 	}
 
-	dsf, err := sdk.NewDataStoreFactory(dconf)
+	dsf, err := infra.NewDataStoreFactory(dconf)
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot create datastore factory")
 	}
@@ -69,7 +73,8 @@ func NewService(options *Options) (*MultiService, error) {
 }
 
 func (service *MultiService) Start() error {
-	client := sdk.NewApiClientFactory(service.Options.ServerUrl).Client(sdk.WithToken(service.token))
+	client := client.NewApiClientFactory(service.Options.ServerUrl).
+		Client(client.WithToken(service.token))
 
 	_, _, err := client.RegistrySvcAPI.RegisterInstance(context.Background()).Body(openapi.RegistrySvcRegisterInstanceRequest{
 		Url: service.Options.SelfUrl,
@@ -82,15 +87,15 @@ func (service *MultiService) Start() error {
 }
 
 func (service *MultiService) registerAccount() error {
-	credentialStore, err := service.dataStoreFactory.Create("multiSvcCredentials", &sdk.Credential{})
+	credentialStore, err := service.dataStoreFactory.Create("multiSvcCredentials", &auth.Credential{})
 	if err != nil {
 		return errors.Wrap(err, "cannot create credential store")
 	}
 	service.credentialStore = credentialStore
 
-	client := sdk.NewApiClientFactory(service.Options.ServerUrl).Client()
-	token, err := sdk.RegisterServiceAccount(
-		client.UserSvcAPI,
+	obClient := client.NewApiClientFactory(service.Options.ServerUrl).Client()
+	token, err := boot.RegisterServiceAccount(
+		obClient.UserSvcAPI,
 		"multi-svc",
 		"Multi Svc",
 		service.credentialStore,
@@ -101,16 +106,19 @@ func (service *MultiService) registerAccount() error {
 	service.token = token.Token
 	service.basicSvcClient = newBasicSvcClient(service.Options.ServerUrl, service.token)
 
-	client = sdk.NewApiClientFactory(service.Options.ServerUrl).Client(sdk.WithToken(service.token))
+	obClient = client.NewApiClientFactory(service.Options.ServerUrl).
+		Client(client.WithToken(service.token))
 
-	_, _, err = client.RegistrySvcAPI.RegisterInstance(context.Background()).Body(openapi.RegistrySvcRegisterInstanceRequest{
-		Url: service.Options.SelfUrl,
-	}).Execute()
+	_, _, err = obClient.RegistrySvcAPI.
+		RegisterInstance(context.Background()).
+		Body(openapi.RegistrySvcRegisterInstanceRequest{
+			Url: service.Options.SelfUrl,
+		}).Execute()
 	if err != nil {
 		return errors.Wrap(err, "cannot register instance")
 	}
 
-	pk, _, err := client.
+	pk, _, err := obClient.
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	if err != nil {

@@ -6,11 +6,12 @@ import (
 	"net/http"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"go.uber.org/mock/gomock"
 )
 
-func AdminClient(clientFactory sdk.ClientFactory) (*openapi.APIClient, string, error) {
+func AdminClient(clientFactory client.ClientFactory) (*openapi.APIClient, string, error) {
 	userSvc := clientFactory.Client().UserSvcAPI
 
 	adminLoginRsp, _, err := userSvc.Login(context.Background()).Body(openapi.UserSvcLoginRequest{
@@ -21,10 +22,10 @@ func AdminClient(clientFactory sdk.ClientFactory) (*openapi.APIClient, string, e
 		return nil, "", err
 	}
 
-	return clientFactory.Client(sdk.WithToken(adminLoginRsp.Token.Token)), adminLoginRsp.Token.Token, nil
+	return clientFactory.Client(client.WithToken(adminLoginRsp.Token.Token)), adminLoginRsp.Token.Token, nil
 }
 
-func MakeClients(clientFactory sdk.ClientFactory, num int) ([]*openapi.APIClient, []*openapi.UserSvcAuthToken, error) {
+func MakeClients(clientFactory client.ClientFactory, num int) ([]*openapi.APIClient, []*openapi.UserSvcAuthToken, error) {
 	var (
 		clients []*openapi.APIClient
 		tokens  []*openapi.UserSvcAuthToken
@@ -35,12 +36,12 @@ func MakeClients(clientFactory sdk.ClientFactory, num int) ([]*openapi.APIClient
 		password := fmt.Sprintf("testUserPassword%v", i)
 		username := fmt.Sprintf("Test User Name %v", i)
 
-		token, err := sdk.RegisterUserAccount(clientFactory.Client().UserSvcAPI, slug, password, username)
+		token, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, slug, password, username)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		c := clientFactory.Client(sdk.WithToken(token.Token))
+		c := clientFactory.Client(client.WithToken(token.Token))
 
 		clients = append(clients, c)
 		tokens = append(tokens, token)
@@ -50,7 +51,7 @@ func MakeClients(clientFactory sdk.ClientFactory, num int) ([]*openapi.APIClient
 }
 
 func LoggedInClient(
-	clientFactory sdk.ClientFactory,
+	clientFactory client.ClientFactory,
 	slug,
 	password string,
 ) (*openapi.APIClient, *openapi.UserSvcAuthToken, error) {
@@ -66,7 +67,7 @@ func LoggedInClient(
 		return nil, nil, err
 	}
 
-	cl := clientFactory.Client(sdk.WithToken(loginRsp.Token.Token))
+	cl := clientFactory.Client(client.WithToken(loginRsp.Token.Token))
 	return cl, loginRsp.Token, nil
 }
 

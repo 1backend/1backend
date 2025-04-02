@@ -7,6 +7,7 @@ import (
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/samber/lo"
 
@@ -33,7 +34,7 @@ func (s *BasicService) SavePet(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	var authorizer sdk.Authorizer = sdk.AuthorizerImpl{}
+	var authorizer auth.Authorizer = auth.AuthorizerImpl{}
 	token, err := authorizer.ParseJWTFromRequest(s.userSvcPublicKey, r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

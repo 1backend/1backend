@@ -8,7 +8,7 @@ import (
 	basicservice "github.com/1backend/1backend/examples/go/services/basic/internal"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -40,7 +40,7 @@ func TestListPets(t *testing.T) {
 	service.Options.SelfUrl = basicServer.URL
 	require.NoError(t, service.Start())
 
-	clientFactory := sdk.NewApiClientFactory(server.Url)
+	clientFactory := client.NewApiClientFactory(server.Url)
 
 	serverAdminClient, _, err := test.AdminClient(clientFactory)
 	assert.NoError(t, err)
