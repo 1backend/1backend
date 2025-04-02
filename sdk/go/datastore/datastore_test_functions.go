@@ -392,10 +392,10 @@ func TestPointerPagination(t *testing.T, store DataStore) {
 			Find()
 		require.NoError(t, err)
 		require.Len(t, results, 5)
-		require.Equal(t, "PaginationTest10", results[0].(TestObject).Name)
-		require.Equal(t, 10, results[0].(TestObject).Value)
+		require.Equal(t, "PaginationTest10", results[0].(*TestObject).Name)
+		require.Equal(t, 10, results[0].(*TestObject).Value)
 
-		lastValue := results[len(results)-1].(TestObject).Value
+		lastValue := results[len(results)-1].(*TestObject).Value
 		results, err = store.Query().OrderBy(
 			OrderByField("Value", true),
 		).
@@ -404,8 +404,8 @@ func TestPointerPagination(t *testing.T, store DataStore) {
 			Find()
 		require.NoError(t, err)
 		require.Len(t, results, 5)
-		require.Equal(t, "PaginationTest5", results[0].(TestObject).Name)
-		require.Equal(t, 5, results[0].(TestObject).Value)
+		require.Equal(t, "PaginationTest5", results[0].(*TestObject).Name)
+		require.Equal(t, 5, results[0].(*TestObject).Value)
 	})
 
 	t.Run("test date", func(t *testing.T) {
@@ -416,10 +416,10 @@ func TestPointerPagination(t *testing.T, store DataStore) {
 			Find()
 		require.NoError(t, err)
 		require.Len(t, results, 5)
-		require.Equal(t, "PaginationTest10", results[0].(TestObject).Name)
-		require.Equal(t, 10, results[0].(TestObject).Value)
+		require.Equal(t, "PaginationTest10", results[0].(*TestObject).Name)
+		require.Equal(t, 10, results[0].(*TestObject).Value)
 
-		lastValue := results[len(results)-1].(TestObject).CreatedAt
+		lastValue := results[len(results)-1].(*TestObject).CreatedAt
 		results, err = store.Query().OrderBy(
 			OrderByField("createdAt", true),
 		).
@@ -428,8 +428,8 @@ func TestPointerPagination(t *testing.T, store DataStore) {
 			Find()
 		require.NoError(t, err)
 		require.Len(t, results, 5)
-		require.Equal(t, "PaginationTest5", results[0].(TestObject).Name)
-		require.Equal(t, 5, results[0].(TestObject).Value)
+		require.Equal(t, "PaginationTest5", results[0].(*TestObject).Name)
+		require.Equal(t, 5, results[0].(*TestObject).Value)
 	})
 }
 
