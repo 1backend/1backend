@@ -7,6 +7,7 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
 	"github.com/pkg/errors"
@@ -30,7 +31,7 @@ func (rs *RegistryService) RegisterInstance(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := rs.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := rs.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *registry.PermissionInstanceEdit.Id).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{"deploy-svc"},

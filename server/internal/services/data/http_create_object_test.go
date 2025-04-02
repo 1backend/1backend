@@ -22,7 +22,7 @@ func TestCreate(t *testing.T) {
 	require.NoError(t, err)
 	defer server.Cleanup(t)
 
-	clientFactory := sdk.NewApiClientFactory(server.Url)
+	clientFactory := client.NewApiClientFactory(server.Url)
 
 	uniq := uuid.New().String()
 	uniq = strings.Replace(uniq, "-", "", -1)[0:10]

@@ -15,18 +15,21 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/client"
 	pglock "github.com/1backend/1backend/sdk/go/lock/pg"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	httpSwagger "github.com/swaggo/http-swagger"
 
-	sdk "github.com/1backend/1backend/sdk/go"
-	"github.com/1backend/1backend/sdk/go/clients/llamacpp"
+	"github.com/1backend/1backend/sdk/go/infra"
 	"github.com/1backend/1backend/sdk/go/lock"
 	distlock "github.com/1backend/1backend/sdk/go/lock/local"
 	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/1backend/1backend/sdk/go/middlewares"
-	"github.com/1backend/1backend/sdk/go/router"
+
+	"github.com/1backend/1backend/server/internal/clients/llamacpp"
+	"github.com/1backend/1backend/server/internal/router"
 	chatservice "github.com/1backend/1backend/server/internal/services/chat"
 	configservice "github.com/1backend/1backend/server/internal/services/config"
 	containerservice "github.com/1backend/1backend/server/internal/services/container"
@@ -89,7 +92,7 @@ type Options struct {
 	LLamaCppClient llamacpp.ClientI
 
 	// DataStoreFactory can create database tables
-	DataStoreFactory sdk.DataStoreFactory
+	DataStoreFactory infra.DataStoreFactory
 
 	// HomeDir is the 1Backend config/data/uploads/downloads directory.
 	// For tests it's something like /tmp/1backend-2698538720/
@@ -98,18 +101,18 @@ type Options struct {
 
 	// ClientFactory is used for service to service communication
 	// ie. this is how services call each other
-	ClientFactory sdk.ClientFactory
+	ClientFactory client.ClientFactory
 
 	// Authorizer is a helper interface that contains
 	// auth related utility functions
-	Authorizer sdk.Authorizer
+	Authorizer auth.Authorizer
 }
 
 type Universe struct {
 	Options       Options
 	Router        *mux.Router
 	StarterFunc   func() error
-	ClientFactory sdk.ClientFactory
+	ClientFactory client.ClientFactory
 }
 
 func BigBang(options *Options) (*Universe, error) {
@@ -178,7 +181,7 @@ func BigBang(options *Options) (*Universe, error) {
 		}
 	}
 
-	homeDir, err := sdk.HomeDir(sdk.HomeDirOptions{
+	homeDir, err := infra.HomeDir(infra.HomeDirOptions{
 		Test:         options.Test,
 		ConfigFolder: os.Getenv("OB_CONFIG_FOLDER"),
 	})
@@ -193,7 +196,7 @@ func BigBang(options *Options) (*Universe, error) {
 	}
 
 	if options.Authorizer == nil {
-		options.Authorizer = sdk.AuthorizerImpl{}
+		options.Authorizer = auth.AuthorizerImpl{}
 	}
 
 	configService, err := configservice.NewConfigService(
@@ -210,7 +213,7 @@ func BigBang(options *Options) (*Universe, error) {
 	}
 
 	if options.DataStoreFactory == nil {
-		dc, err := sdk.NewDataStoreFactory(sdk.DataStoreConfig{
+		dc, err := infra.NewDataStoreFactory(infra.DataStoreConfig{
 			Test:               options.Test,
 			TablePrefix:        options.DbPrefix,
 			Db:                 options.Db,
@@ -243,7 +246,7 @@ func BigBang(options *Options) (*Universe, error) {
 	}
 
 	if options.ClientFactory == nil {
-		options.ClientFactory = sdk.NewApiClientFactory(options.Url)
+		options.ClientFactory = client.NewApiClientFactory(options.Url)
 	}
 
 	configService.SetDataStoreFactory(options.DataStoreFactory.Create)

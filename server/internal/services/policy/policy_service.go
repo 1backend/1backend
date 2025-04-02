@@ -16,7 +16,9 @@ import (
 	"context"
 	"sync"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 
@@ -24,7 +26,7 @@ import (
 )
 
 type PolicyService struct {
-	clientFactory sdk.ClientFactory
+	clientFactory client.ClientFactory
 	token         string
 
 	lock lock.DistributedLock
@@ -39,7 +41,7 @@ type PolicyService struct {
 }
 
 func NewPolicyService(
-	clientFactory sdk.ClientFactory,
+	clientFactory client.ClientFactory,
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 ) (*PolicyService, error) {
@@ -54,7 +56,7 @@ func NewPolicyService(
 
 	credentialStore, err := datastoreFactory(
 		"policySvcCredentials",
-		&sdk.Credential{},
+		&auth.Credential{},
 	)
 	if err != nil {
 		return nil, err
@@ -87,7 +89,7 @@ func (cs *PolicyService) Start() error {
 		cs.instances = append(cs.instances, instance)
 	}
 
-	token, err := sdk.RegisterServiceAccount(
+	token, err := boot.RegisterServiceAccount(
 		cs.clientFactory.Client().UserSvcAPI,
 		"policy-svc",
 		"Policy Svc",

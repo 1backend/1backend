@@ -16,7 +16,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
 )
 
@@ -38,7 +38,7 @@ func (ds *FileService) ListDownloads(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := ds.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := ds.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *file.PermissionDownloadView.Id).
 		Execute()
 	if err != nil {

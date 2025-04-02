@@ -17,7 +17,7 @@ import (
 	"net/http"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	container "github.com/1backend/1backend/server/internal/services/container/types"
 )
@@ -42,7 +42,7 @@ func (dm *ContainerService) ListContainers(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := dm.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := dm.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *container.PermissionLogView.Id).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{"model-svc", "deploy-svc"},

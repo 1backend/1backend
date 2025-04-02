@@ -18,14 +18,16 @@ import (
 	"path"
 	"sync"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 	types "github.com/1backend/1backend/server/internal/services/file/types"
 )
 
 type FileService struct {
-	clientFactory sdk.ClientFactory
+	clientFactory client.ClientFactory
 	token         string
 
 	dlock lock.DistributedLock
@@ -47,14 +49,14 @@ type FileService struct {
 }
 
 func NewFileService(
-	clientFactory sdk.ClientFactory,
+	clientFactory client.ClientFactory,
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 	homeDir string,
 ) (*FileService, error) {
 	credentialStore, err := datastoreFactory(
 		"fileSvcCredentials",
-		&sdk.Credential{},
+		&auth.Credential{},
 	)
 	if err != nil {
 		return nil, err
@@ -109,7 +111,7 @@ func (dm *FileService) Start() error {
 	dm.dlock.Acquire(ctx, "file-svc-start")
 	defer dm.dlock.Release(ctx, "file-svc-start")
 
-	token, err := sdk.RegisterServiceAccount(
+	token, err := boot.RegisterServiceAccount(
 		dm.clientFactory.Client().UserSvcAPI,
 		"file-svc",
 		"File Svc",

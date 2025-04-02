@@ -19,6 +19,8 @@ import (
 	"strings"
 
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
+
 	data "github.com/1backend/1backend/server/internal/services/data/types"
 )
 
@@ -40,7 +42,7 @@ func (g *DataService) Create(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := g.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := g.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *data.PermissionObjectCreate.Id).
 		Execute()
 	if err != nil {

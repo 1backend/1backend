@@ -17,7 +17,7 @@ import (
 	"errors"
 	"net/http"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	data "github.com/1backend/1backend/server/internal/services/data/types"
 )
@@ -40,7 +40,7 @@ func (g *DataService) DeleteObjects(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := g.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := g.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *data.PermissionObjectDelete.Id).
 		Execute()
 	if err != nil {

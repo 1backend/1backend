@@ -19,14 +19,16 @@ import (
 
 	"github.com/pkg/errors"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 	types "github.com/1backend/1backend/server/internal/services/config/types"
 )
 
 type ConfigService struct {
-	clientFactory sdk.ClientFactory
+	clientFactory client.ClientFactory
 	token         string
 
 	lock lock.DistributedLock
@@ -40,13 +42,13 @@ type ConfigService struct {
 	configs     map[string]map[string]any
 
 	publicKey  string
-	authorizer sdk.Authorizer
+	authorizer auth.Authorizer
 	homeDir    string
 }
 
 func NewConfigService(
 	lock lock.DistributedLock,
-	authorizer sdk.Authorizer,
+	authorizer auth.Authorizer,
 	homeDir string,
 ) (*ConfigService, error) {
 	cs := &ConfigService{
@@ -59,7 +61,7 @@ func NewConfigService(
 	return cs, nil
 }
 
-func (cs *ConfigService) SetClientFactory(clientFactory sdk.ClientFactory) {
+func (cs *ConfigService) SetClientFactory(clientFactory client.ClientFactory) {
 	cs.clientFactory = clientFactory
 }
 
@@ -76,14 +78,14 @@ func (cs *ConfigService) Start() error {
 
 	credentialStore, err := cs.datastoreFactory(
 		"configSvcCredentials",
-		&sdk.Credential{},
+		&auth.Credential{},
 	)
 	if err != nil {
 		return err
 	}
 	cs.credentialStore = credentialStore
 
-	pk, _, err := cs.clientFactory.Client(sdk.WithToken(cs.token)).
+	pk, _, err := cs.clientFactory.Client(client.WithToken(cs.token)).
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	if err != nil {
@@ -107,7 +109,7 @@ func (cs *ConfigService) Start() error {
 
 	client := cs.clientFactory.Client()
 
-	token, err := sdk.RegisterServiceAccount(
+	token, err := boot.RegisterServiceAccount(
 		client.UserSvcAPI,
 		"config-svc",
 		"Config Svc",

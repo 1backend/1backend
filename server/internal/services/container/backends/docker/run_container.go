@@ -34,7 +34,7 @@ import (
 	"github.com/flusflas/dipper"
 	"github.com/pkg/errors"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/logger"
 
 	container "github.com/1backend/1backend/server/internal/services/container/types"
@@ -227,7 +227,7 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 
 		if !assetExists {
 			// @todo we could do checksum calculation to verify file integrity as well
-			rspFile, _, err := d.clientFactory.Client(sdk.WithToken(d.token)).
+			rspFile, _, err := d.clientFactory.Client(client.WithToken(d.token)).
 				FileSvcAPI.ServeDownload(context.Background(), asset.Url).
 				Execute()
 			if err != nil {
@@ -285,7 +285,7 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 		} else {
 			// If we are not running in Docker, we will ask the Config Svc about the config directory and we mount that.
 			// If that's not set, we will just default to `~/.1backend`.
-			getConfigResponse, _, err := d.clientFactory.Client(sdk.WithToken(d.token)).
+			getConfigResponse, _, err := d.clientFactory.Client(client.WithToken(d.token)).
 				ConfigSvcAPI.GetConfig(context.Background()).
 				Execute()
 			if err != nil {

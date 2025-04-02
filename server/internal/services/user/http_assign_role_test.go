@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 
 	openapi "github.com/1backend/1backend/clients/go"
@@ -22,7 +22,7 @@ func TestAssignRoleToUser(t *testing.T) {
 	require.NoError(t, err)
 	defer server.Cleanup(t)
 
-	clientFactory := sdk.NewApiClientFactory(server.Url)
+	clientFactory := client.NewApiClientFactory(server.Url)
 
 	manyClients, tokens, err := test.MakeClients(clientFactory, 3)
 	require.NoError(t, err)
@@ -77,7 +77,7 @@ func TestAssignRoleToUser(t *testing.T) {
 		require.NotEmpty(t, rsp.Token.Token)
 
 		// Here we refresh the token to include the new org role
-		userClient = clientFactory.Client(sdk.WithToken(rsp.Token.Token))
+		userClient = clientFactory.Client(client.WithToken(rsp.Token.Token))
 	})
 
 	t.Run("nonexistent org role assignment", func(t *testing.T) {

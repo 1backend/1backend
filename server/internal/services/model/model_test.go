@@ -7,7 +7,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
 )
@@ -28,14 +29,14 @@ func TestModel(t *testing.T) {
 	hs.UpdateHandler(universe.Router)
 	require.NoError(t, universe.StarterFunc())
 
-	token, err := sdk.RegisterUserAccount(
+	token, err := boot.RegisterUserAccount(
 		options.ClientFactory.Client().UserSvcAPI,
 		"someuser",
 		"pw123",
 		"Some name",
 	)
 	require.NoError(t, err)
-	userClient := options.ClientFactory.Client(sdk.WithToken(token.Token))
+	userClient := options.ClientFactory.Client(client.WithToken(token.Token))
 
 	adminClient, _, err := test.AdminClient(options.ClientFactory)
 	require.NoError(t, err)

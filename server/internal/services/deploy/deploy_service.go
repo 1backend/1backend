@@ -15,14 +15,16 @@ package deployservice
 import (
 	"context"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 	deploy "github.com/1backend/1backend/server/internal/services/deploy/types"
 )
 
 type DeployService struct {
-	clientFactory sdk.ClientFactory
+	clientFactory client.ClientFactory
 	token         string
 
 	lock lock.DistributedLock
@@ -35,7 +37,7 @@ type DeployService struct {
 }
 
 func NewDeployService(
-	clientFactory sdk.ClientFactory,
+	clientFactory client.ClientFactory,
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 	triggerOnly bool,
@@ -43,7 +45,7 @@ func NewDeployService(
 
 	credentialStore, err := datastoreFactory(
 		"deploySvcCredentials",
-		&sdk.Credential{},
+		&auth.Credential{},
 	)
 	if err != nil {
 		return nil, err
@@ -76,7 +78,7 @@ func (ns *DeployService) Start() error {
 	ns.lock.Acquire(ctx, "deploy-svc-start")
 	defer ns.lock.Release(ctx, "deploy-svc-start")
 
-	token, err := sdk.RegisterServiceAccount(
+	token, err := boot.RegisterServiceAccount(
 		ns.clientFactory.Client().UserSvcAPI,
 		"deploy-svc",
 		"Deploy Svc",

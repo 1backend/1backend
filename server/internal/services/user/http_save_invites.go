@@ -19,6 +19,7 @@ import (
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
@@ -69,8 +70,8 @@ func (s *UserService) SaveInvites(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	auth := sdk.AuthorizerImpl{}
-	claim, err := auth.ParseJWTFromRequest(s.publicKeyPem, r)
+	authr := auth.AuthorizerImpl{}
+	claim, err := authr.ParseJWTFromRequest(s.publicKeyPem, r)
 	if err != nil || claim == nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("Unauthorized"))
@@ -78,7 +79,7 @@ func (s *UserService) SaveInvites(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, invite := range req.Invites {
-		if !sdk.OwnsRole(claim, invite.RoleId) {
+		if !auth.OwnsRole(claim, invite.RoleId) {
 			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("Unauthorized"))
 			return

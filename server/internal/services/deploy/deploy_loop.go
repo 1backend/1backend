@@ -27,6 +27,7 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/1backend/1backend/server/internal/services/deploy/allocator"
@@ -89,7 +90,7 @@ func (ns *DeployService) cycle() error {
 	ns.lock.Acquire(ctx, "deploy-svc-deploy")
 	defer ns.lock.Release(ctx, "deploy-svc-deploy")
 
-	registry := ns.clientFactory.Client(sdk.WithToken(ns.token)).RegistrySvcAPI
+	registry := ns.clientFactory.Client(client.WithToken(ns.token)).RegistrySvcAPI
 
 	deploymentIs, err := ns.deploymentStore.Query().Find()
 	if err != nil {
@@ -232,8 +233,8 @@ func (ns *DeployService) executeKillCommand(
 		slog.String("deploymentId", deployment.Id),
 	)
 	client := ns.clientFactory.Client(
-		sdk.WithAddress(command.NodeUrl),
-		sdk.WithToken(ns.token),
+		client.WithAddress(command.NodeUrl),
+		client.WithToken(ns.token),
 	)
 
 	name := fmt.Sprintf("sup-%v", definition.Id)
@@ -258,8 +259,8 @@ func (ns *DeployService) executeStartCommand(
 		slog.String("deploymentId", deployment.Id),
 	)
 	client := ns.clientFactory.Client(
-		sdk.WithAddress(command.NodeUrl),
-		sdk.WithToken(ns.token),
+		client.WithAddress(command.NodeUrl),
+		client.WithToken(ns.token),
 	)
 
 	err := ns.makeSureItRuns(client, ctx, definition, deployment)
@@ -347,7 +348,7 @@ func (ns *DeployService) makeSureItRuns(
 	deployment *deploy.Deployment,
 ) (err error) {
 	defer func() {
-		err = sdk.OpenAPIError(err)
+		err = sdk.OneBackendAPIError(err)
 	}()
 
 	if definition == nil {

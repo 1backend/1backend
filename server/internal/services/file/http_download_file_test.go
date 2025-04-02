@@ -24,7 +24,8 @@ import (
 	"time"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
 	fileservice "github.com/1backend/1backend/server/internal/services/file"
@@ -64,14 +65,14 @@ func TestDownloadFile(t *testing.T) {
 	err = universe.StarterFunc()
 	require.NoError(t, err)
 
-	token, err := sdk.RegisterUserAccount(
+	token, err := boot.RegisterUserAccount(
 		options.ClientFactory.Client().UserSvcAPI,
 		"someuser",
 		"pw123",
 		"Some name",
 	)
 	require.NoError(t, err)
-	userClient := options.ClientFactory.Client(sdk.WithToken(token.Token))
+	userClient := options.ClientFactory.Client(client.WithToken(token.Token))
 
 	downloadUrl := fileHostServer.URL + "/somefile.txt"
 
@@ -166,14 +167,14 @@ func TestDownloadFileWithPartFile(t *testing.T) {
 	err = universe.StarterFunc()
 	require.NoError(t, err)
 
-	token, err := sdk.RegisterUserAccount(
+	token, err := boot.RegisterUserAccount(
 		options.ClientFactory.Client().UserSvcAPI,
 		"someuser",
 		"pw123",
 		"Some name",
 	)
 	require.NoError(t, err)
-	userClient := options.ClientFactory.Client(sdk.WithToken(token.Token))
+	userClient := options.ClientFactory.Client(client.WithToken(token.Token))
 
 	adminClient, _, err := test.AdminClient(options.ClientFactory)
 	require.NoError(t, err)
@@ -255,14 +256,14 @@ func TestDownloadFileWithFullFile(t *testing.T) {
 	err = universe.StarterFunc()
 	require.NoError(t, err)
 
-	token, err := sdk.RegisterUserAccount(
+	token, err := boot.RegisterUserAccount(
 		options.ClientFactory.Client().UserSvcAPI,
 		"someuser",
 		"pw123",
 		"Some name",
 	)
 	require.NoError(t, err)
-	userClient := options.ClientFactory.Client(sdk.WithToken(token.Token))
+	userClient := options.ClientFactory.Client(client.WithToken(token.Token))
 
 	adminClient, _, err := test.AdminClient(options.ClientFactory)
 	require.NoError(t, err)

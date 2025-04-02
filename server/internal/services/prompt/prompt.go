@@ -20,6 +20,7 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/pkg/errors"
 
@@ -73,7 +74,7 @@ func (p *PromptService) prompt(
 
 	threadId := prompt.ThreadId
 
-	getThreadRsp, _, err := p.clientFactory.Client(sdk.WithToken(p.token)).
+	getThreadRsp, _, err := p.clientFactory.Client(client.WithToken(p.token)).
 		ChatSvcAPI.GetThread(ctx, threadId).
 		Execute()
 	if err != nil {
@@ -101,7 +102,7 @@ func (p *PromptService) prompt(
 			}
 		}
 
-		_, _, err := p.clientFactory.Client(sdk.WithToken(p.token)).
+		_, _, err := p.clientFactory.Client(client.WithToken(p.token)).
 			ChatSvcAPI.AddThread(ctx).
 			Body(openapi.ChatSvcAddThreadRequest{
 				Thread: &openapi.ChatSvcThread{
@@ -130,7 +131,7 @@ func (p *PromptService) prompt(
 	js, _ := json.Marshal(ev)
 	json.Unmarshal(js, &m)
 
-	_, err = p.clientFactory.Client(sdk.WithToken(p.token)).
+	_, err = p.clientFactory.Client(client.WithToken(p.token)).
 		FirehoseSvcAPI.PublishEvent(context.Background()).
 		Event(openapi.FirehoseSvcEventPublishRequest{
 			Event: &openapi.FirehoseSvcEvent{
@@ -160,7 +161,7 @@ func (p *PromptService) prompt(
 
 		for resp := range subscriber {
 			if resp.Type == streammanager.ChunkTypeDone {
-				r, _, err := p.clientFactory.Client(sdk.WithToken(p.token)).
+				r, _, err := p.clientFactory.Client(client.WithToken(p.token)).
 					ChatSvcAPI.
 					GetMessage(ctx, resp.MessageId).
 					Execute()

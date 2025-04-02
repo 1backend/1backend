@@ -17,7 +17,7 @@ import (
 	"net/http"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
 )
 
@@ -39,7 +39,7 @@ func (ns *RegistryService) ListNodes(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := ns.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := ns.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *registry.PermissionNodeView.Id).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{

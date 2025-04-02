@@ -6,7 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 
 	openapi "github.com/1backend/1backend/clients/go"
@@ -22,7 +23,7 @@ func TestInviteForUnregistered(t *testing.T) {
 	defer server.Cleanup(t)
 
 	manyClients, _, err := test.MakeClients(
-		sdk.NewApiClientFactory(server.Url), 1)
+		client.NewApiClientFactory(server.Url), 1)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -90,7 +91,7 @@ func TestInviteForUnregistered(t *testing.T) {
 
 		require.NoError(t, err)
 
-		claim, err := sdk.AuthorizerImpl{}.ParseJWT(
+		claim, err := auth.AuthorizerImpl{}.ParseJWT(
 			pkRsp.PublicKey,
 			rsp.Token.Token,
 		)
@@ -116,7 +117,7 @@ func TestInviteForRegisteredUser(t *testing.T) {
 	require.NoError(t, err)
 	defer server.Cleanup(t)
 
-	clientFactory := sdk.NewApiClientFactory(server.Url)
+	clientFactory := client.NewApiClientFactory(server.Url)
 	manyClients, _, err := test.MakeClients(clientFactory, 1)
 	require.NoError(t, err)
 
@@ -171,7 +172,7 @@ func TestInviteForRegisteredUser(t *testing.T) {
 			Execute()
 		require.NoError(t, err)
 
-		claim, err := sdk.AuthorizerImpl{}.ParseJWT(
+		claim, err := auth.AuthorizerImpl{}.ParseJWT(
 			publicKeyRsp.PublicKey,
 			loginRsp.Token.Token,
 		)
@@ -196,7 +197,7 @@ func TestListInviteAuthorization(t *testing.T) {
 	require.NoError(t, err)
 	defer server.Cleanup(t)
 
-	clientFactory := sdk.NewApiClientFactory(server.Url)
+	clientFactory := client.NewApiClientFactory(server.Url)
 	manyClients, tokens, err := test.MakeClients(clientFactory, 2)
 	require.NoError(t, err)
 

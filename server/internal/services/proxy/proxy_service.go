@@ -23,17 +23,19 @@ import (
 	"golang.org/x/exp/rand"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/logger"
 )
 
 type ProxyService struct {
-	clientFactory sdk.ClientFactory
+	clientFactory client.ClientFactory
 	token         string
 
-	authorizer sdk.Authorizer
+	authorizer auth.Authorizer
 
 	lock      lock.DistributedLock
 	publicKey string
@@ -43,8 +45,8 @@ type ProxyService struct {
 }
 
 func NewProxyService(
-	clientFactory sdk.ClientFactory,
-	authorizer sdk.Authorizer,
+	clientFactory client.ClientFactory,
+	authorizer auth.Authorizer,
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 ) (*ProxyService, error) {
@@ -57,7 +59,7 @@ func NewProxyService(
 
 	credentialStore, err := cs.datastoreFactory(
 		"proxySvcCredentials",
-		&sdk.Credential{},
+		&auth.Credential{},
 	)
 	if err != nil {
 		return nil, err
@@ -77,7 +79,7 @@ func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
 
 	serviceSlug := getServiceSlug(r)
 
-	rsp, _, err := cs.clientFactory.Client(sdk.WithToken(cs.token)).
+	rsp, _, err := cs.clientFactory.Client(client.WithToken(cs.token)).
 		RegistrySvcAPI.ListInstances(context.Background()).
 		Slug(serviceSlug).
 		Execute()
@@ -194,7 +196,7 @@ func (cs *ProxyService) Start() error {
 	cs.lock.Acquire(ctx, "proxy-svc-start")
 	defer cs.lock.Release(ctx, "proxy-svc-start")
 
-	pk, _, err := cs.clientFactory.Client(sdk.WithToken(cs.token)).
+	pk, _, err := cs.clientFactory.Client(client.WithToken(cs.token)).
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	if err != nil {
@@ -204,7 +206,7 @@ func (cs *ProxyService) Start() error {
 
 	client := cs.clientFactory.Client()
 
-	token, err := sdk.RegisterServiceAccount(
+	token, err := boot.RegisterServiceAccount(
 		client.UserSvcAPI,
 		"proxy-svc",
 		"Proxy Svc",

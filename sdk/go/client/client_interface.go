@@ -10,10 +10,10 @@
 
   - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
 */
-package sdk
+package client
 
-import openapi "github.com/1backend/1backend/clients/go"
+import onebackendapi "github.com/1backend/1backend/clients/go"
 
 type ClientFactory interface {
-	Client(opts ...ClientOption) *openapi.APIClient
+	Client(opts ...ClientOption) *onebackendapi.APIClient
 }

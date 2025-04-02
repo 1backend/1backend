@@ -25,6 +25,7 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/logger"
 	types "github.com/1backend/1backend/server/internal/services/file/types"
 	"github.com/pkg/errors"
@@ -203,7 +204,7 @@ func (dm *FileService) downloadFile(d *types.InternalDownload) error {
 				}
 
 				ev := types.EventDownloadStatusChange{}
-				_, err = dm.clientFactory.Client(sdk.WithToken(dm.token)).
+				_, err = dm.clientFactory.Client(client.WithToken(dm.token)).
 					FirehoseSvcAPI.PublishEvent(context.Background()).
 					Event(openapi.FirehoseSvcEventPublishRequest{
 						Event: &openapi.FirehoseSvcEvent{

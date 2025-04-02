@@ -19,7 +19,9 @@ import (
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/pkg/errors"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 
@@ -29,7 +31,7 @@ import (
 const DefaultModelId = `huggingface/TheBloke/mistral-7b-instruct-v0.2.Q3_K_S.gguf`
 
 type ModelService struct {
-	clientFactory sdk.ClientFactory
+	clientFactory client.ClientFactory
 	token         string
 
 	modelStateMutex sync.Mutex
@@ -53,7 +55,7 @@ func NewModelService(
 	// @todo GPU platform maybe this could be autodetected
 	gpuPlatform string,
 	llmHost string,
-	clientFactory sdk.ClientFactory,
+	clientFactory client.ClientFactory,
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, insance any) (datastore.DataStore, error),
 ) (*ModelService, error) {
@@ -80,7 +82,7 @@ func NewModelService(
 
 	credentialStore, err := datastoreFactory(
 		"modelSvcCredentials",
-		&sdk.Credential{},
+		&auth.Credential{},
 	)
 	if err != nil {
 		return nil, err
@@ -100,7 +102,7 @@ func (ms *ModelService) Start() error {
 	ms.lock.Acquire(ctx, "model-svc-start")
 	defer ms.lock.Release(ctx, "model-svc-start")
 
-	token, err := sdk.RegisterServiceAccount(
+	token, err := boot.RegisterServiceAccount(
 		ms.clientFactory.Client().UserSvcAPI,
 		"model-svc",
 		"Model Svc",
@@ -122,7 +124,7 @@ func (ms *ModelService) getNode() (*openapi.RegistrySvcNode, error) {
 		return ms.selfNode, nil
 	}
 
-	rsp, _, err := ms.clientFactory.Client(sdk.WithToken(ms.token)).
+	rsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
 		RegistrySvcAPI.SelfNode(context.Background()).
 		Execute()
 

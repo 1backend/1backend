@@ -7,7 +7,8 @@ import (
 	"github.com/stretchr/testify/require"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 )
 
@@ -20,16 +21,16 @@ func TestCreateRole(t *testing.T) {
 	require.NoError(t, err)
 	defer server.Cleanup(t)
 
-	clientFactory := sdk.NewApiClientFactory(server.Url)
+	clientFactory := client.NewApiClientFactory(server.Url)
 
-	token, err := sdk.RegisterUserAccount(
+	token, err := boot.RegisterUserAccount(
 		clientFactory.Client().UserSvcAPI,
 		"someuser",
 		"pw123",
 		"Some name",
 	)
 	require.NoError(t, err)
-	userClient := clientFactory.Client(sdk.WithToken(token.Token))
+	userClient := clientFactory.Client(client.WithToken(token.Token))
 
 	ctx := context.Background()
 

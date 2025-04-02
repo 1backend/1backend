@@ -13,35 +13,14 @@
 package sdk
 
 import (
-	"crypto/rsa"
-	"crypto/x509"
 	"encoding/json"
-	"encoding/pem"
+	"errors"
 	"fmt"
 
-	"github.com/golang-jwt/jwt/v4"
-	"github.com/pkg/errors"
+	onebackendapi "github.com/1backend/1backend/clients/go"
+
 	"github.com/sony/sonyflake"
-
-	openapi "github.com/1backend/1backend/clients/go"
 )
-
-type Claims struct {
-	UserId  string   `json:"oui"` // `oui`: 1backend user ids
-	Slug    string   `json:"olu"` // `olu`: 1backend slug
-	RoleIds []string `json:"ori"` // `ori`: 1backend role ids
-	jwt.RegisteredClaims
-}
-
-type Credential struct {
-	Slug     string `json:"slug,omitempty"`
-	Contact  string `json:"contact,omitempty"`
-	Password string `json:"password,omitempty"`
-}
-
-func (c *Credential) GetId() string {
-	return c.Contact
-}
 
 var sonyFlake *sonyflake.Sonyflake
 
@@ -74,40 +53,14 @@ func Id(prefix string) string {
 	return prefix + "_" + string(b)
 }
 
-func PublicKeyFromString(publicKeyPem string) (*rsa.PublicKey, error) {
-	block, _ := pem.Decode([]byte(publicKeyPem))
-	if block == nil || block.Type != "PUBLIC KEY" {
-		return nil, fmt.Errorf("failed to decode PEM block containing public key")
-	}
-	pub, err := x509.ParsePKIXPublicKey(block.Bytes)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse public key: %v", err)
-	}
-
-	// Type assertion to convert from interface{} to *rsa.PublicKey
-	rsaPub, ok := pub.(*rsa.PublicKey)
-	if !ok {
-		return nil, fmt.Errorf("not an RSA public key")
-	}
-
-	return rsaPub, nil
-}
-
-func Marshal(value any) *string {
-	jsonBytes, _ := json.Marshal(value)
-
-	v := string(jsonBytes)
-	return &v
-}
-
-// OpenAPIError checks if an error is a GenericOpenAPIError and returns a meaningful error.
-func OpenAPIError(err error) error {
+// OneBackendAPIError checks if an error is a GenericOpenAPIError and returns a meaningful error.
+func OneBackendAPIError(err error) error {
 	if err == nil {
 		return nil
 	}
 
 	// Check if it's a GenericOpenAPIError
-	if apiErr, ok := err.(*openapi.GenericOpenAPIError); ok {
+	if apiErr, ok := err.(*onebackendapi.GenericOpenAPIError); ok {
 		var errorResponse map[string]interface{}
 		if unmarshalErr := json.Unmarshal(apiErr.Body(), &errorResponse); unmarshalErr == nil {
 			if message, exists := errorResponse["error"]; exists {
@@ -120,4 +73,11 @@ func OpenAPIError(err error) error {
 
 	// Return the original error if it's not a GenericOpenAPIError
 	return err
+}
+
+func Marshal(value any) *string {
+	jsonBytes, _ := json.Marshal(value)
+
+	v := string(jsonBytes)
+	return &v
 }

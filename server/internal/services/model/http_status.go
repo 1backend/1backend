@@ -18,7 +18,7 @@ import (
 	"net/url"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	model "github.com/1backend/1backend/server/internal/services/model/types"
 	"github.com/gorilla/mux"
 )
@@ -42,7 +42,7 @@ func (ms *ModelService) Status(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := ms.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := ms.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *model.PermissionModelView.Id).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{"prompt-svc"},

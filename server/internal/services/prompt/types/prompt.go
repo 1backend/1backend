@@ -16,8 +16,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/1backend/1backend/sdk/go/clients/stable_diffusion"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/server/internal/clients/stable_diffusion"
 	streammanager "github.com/1backend/1backend/server/internal/services/prompt/stream"
 
 	chat "github.com/1backend/1backend/server/internal/services/chat/types"

@@ -20,7 +20,9 @@ import (
 	"unicode/utf8"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/logger"
@@ -35,7 +37,7 @@ import (
 )
 
 type ContainerService struct {
-	clientFactory sdk.ClientFactory
+	clientFactory client.ClientFactory
 	token         string
 
 	lock lock.DistributedLock
@@ -55,7 +57,7 @@ type ContainerService struct {
 
 func NewContainerService(
 	volumeName string,
-	clientFactory sdk.ClientFactory,
+	clientFactory client.ClientFactory,
 	lock lock.DistributedLock,
 	datastoreFactory func(
 		tableName string,
@@ -64,7 +66,7 @@ func NewContainerService(
 ) (*ContainerService, error) {
 	credentialStore, err := datastoreFactory(
 		"containerSvcCredentials",
-		&sdk.Credential{},
+		&auth.Credential{},
 	)
 	if err != nil {
 		return nil, err
@@ -105,7 +107,7 @@ func (ds *ContainerService) Start() error {
 	ds.lock.Acquire(ctx, "container-svc-start")
 	defer ds.lock.Release(ctx, "container-svc-start")
 
-	token, err := sdk.RegisterServiceAccount(
+	token, err := boot.RegisterServiceAccount(
 		ds.clientFactory.Client().UserSvcAPI,
 		"container-svc",
 		"Container Svc",
@@ -247,7 +249,7 @@ func (ms *ContainerService) getNode() (*openapi.RegistrySvcNode, error) {
 		return ms.selfNode, nil
 	}
 
-	rsp, _, err := ms.clientFactory.Client(sdk.WithToken(ms.token)).
+	rsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
 		RegistrySvcAPI.SelfNode(context.Background()).
 		Execute()
 

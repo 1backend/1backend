@@ -7,7 +7,7 @@ import (
 	"os"
 
 	basic "github.com/1backend/1backend/examples/go/services/basic/internal"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/boot"
 )
 
 // @title           Basic Svc
@@ -48,5 +48,5 @@ func main() {
 	}
 
 	log.Println("Server started on " + selfUrl)
-	log.Fatal(http.ListenAndServe(sdk.ListenAddress(selfUrl), basicService.Router))
+	log.Fatal(http.ListenAndServe(boot.ListenAddress(selfUrl), basicService.Router))
 }

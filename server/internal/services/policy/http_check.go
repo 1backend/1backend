@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	policy "github.com/1backend/1backend/server/internal/services/policy/types"
 	"golang.org/x/time/rate"
 )
@@ -29,7 +29,7 @@ func (s *PolicyService) Check(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := s.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := s.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *policy.PermissionTemplateEdit.Id).
 		Execute()
 	if err != nil {

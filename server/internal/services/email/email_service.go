@@ -15,14 +15,16 @@ package emailservice
 import (
 	"context"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 	email "github.com/1backend/1backend/server/internal/services/email/types"
 )
 
 type EmailService struct {
-	clientFactory sdk.ClientFactory
+	clientFactory client.ClientFactory
 	lock          lock.DistributedLock
 
 	token string
@@ -32,13 +34,13 @@ type EmailService struct {
 }
 
 func NewEmailService(
-	clientFactory sdk.ClientFactory,
+	clientFactory client.ClientFactory,
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 ) (*EmailService, error) {
 	credentialStore, err := datastoreFactory(
 		"emailSvcCredentials",
-		&sdk.Credential{},
+		&auth.Credential{},
 	)
 	if err != nil {
 		return nil, err
@@ -67,7 +69,7 @@ func (fs *EmailService) Start() error {
 	fs.lock.Acquire(ctx, "email-svc-start")
 	defer fs.lock.Release(ctx, "email-svc-start")
 
-	token, err := sdk.RegisterServiceAccount(
+	token, err := boot.RegisterServiceAccount(
 		fs.clientFactory.Client().UserSvcAPI,
 		"email-svc",
 		"Email Svc",

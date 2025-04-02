@@ -16,7 +16,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	deploy "github.com/1backend/1backend/server/internal/services/deploy/types"
 )
@@ -39,7 +39,7 @@ func (ns *DeployService) DeleteDeployment(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := ns.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := ns.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *deploy.PermissionDeploymentView.Id).
 		Execute()
 	if err != nil {

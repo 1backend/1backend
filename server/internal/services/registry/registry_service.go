@@ -18,7 +18,9 @@ import (
 	"os"
 	"strings"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
@@ -26,7 +28,7 @@ import (
 
 type RegistryService struct {
 	publicKey     string
-	clientFactory sdk.ClientFactory
+	clientFactory client.ClientFactory
 	token         string
 
 	URL              string
@@ -48,7 +50,7 @@ func NewRegistryService(
 	address string,
 	az string,
 	region string,
-	clientFactory sdk.ClientFactory,
+	clientFactory client.ClientFactory,
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 	nodeId string,
@@ -72,7 +74,7 @@ func NewRegistryService(
 
 	credentialStore, err := datastoreFactory(
 		"registrySvcCredentials",
-		&sdk.Credential{},
+		&auth.Credential{},
 	)
 	if err != nil {
 		return nil, err
@@ -124,7 +126,7 @@ func (ns *RegistryService) Start() error {
 	ns.lock.Acquire(ctx, "registry-svc-start")
 	defer ns.lock.Release(ctx, "registry-svc-start")
 
-	token, err := sdk.RegisterServiceAccount(
+	token, err := boot.RegisterServiceAccount(
 		ns.clientFactory.Client().UserSvcAPI,
 		"registry-svc",
 		"Registry Svc",
@@ -135,7 +137,7 @@ func (ns *RegistryService) Start() error {
 	}
 	ns.token = token.Token
 
-	pk, _, err := ns.clientFactory.Client(sdk.WithToken(ns.token)).
+	pk, _, err := ns.clientFactory.Client(client.WithToken(ns.token)).
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	if err != nil {

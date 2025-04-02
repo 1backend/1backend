@@ -16,7 +16,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	data "github.com/1backend/1backend/server/internal/services/data/types"
 )
@@ -39,7 +39,7 @@ func (g *DataService) SaveObjects(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := g.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := g.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *data.PermissionObjectCreate.Id).
 		Execute()
 	if err != nil {

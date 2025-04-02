@@ -21,8 +21,9 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
-	"github.com/1backend/1backend/sdk/go/clients/llamacpp"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/1backend/1backend/server/internal/clients/llamacpp"
 
 	streammanager "github.com/1backend/1backend/server/internal/services/prompt/stream"
 	prompttypes "github.com/1backend/1backend/server/internal/services/prompt/types"
@@ -46,7 +47,7 @@ func (p *PromptService) processLlamaCpp(
 	}
 
 	if template == "" {
-		modelRsp, _, err := p.clientFactory.Client(sdk.WithToken(p.token)).
+		modelRsp, _, err := p.clientFactory.Client(client.WithToken(p.token)).
 			ModelSvcAPI.GetModel(context.Background(), currentPrompt.ModelId).
 			Execute()
 		if err != nil {
@@ -121,7 +122,7 @@ func (p *PromptService) processLlamaCpp(
 
 			messageId := sdk.Id("msg")
 
-			_, _, err := p.clientFactory.Client(sdk.WithToken(p.token)).
+			_, _, err := p.clientFactory.Client(client.WithToken(p.token)).
 				ChatSvcAPI.AddMessage(context.Background(), currentPrompt.ThreadId).
 				Body(
 					openapi.ChatSvcAddMessageRequest{

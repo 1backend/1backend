@@ -19,16 +19,18 @@ import (
 
 	secret "github.com/1backend/1backend/server/internal/services/secret/types"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 )
 
 type SecretService struct {
-	clientFactory sdk.ClientFactory
+	clientFactory client.ClientFactory
 	token         string
 
-	authorizer sdk.Authorizer
+	authorizer auth.Authorizer
 
 	lock      lock.DistributedLock
 	publicKey string
@@ -41,8 +43,8 @@ type SecretService struct {
 }
 
 func NewSecretService(
-	clientFactory sdk.ClientFactory,
-	authorizer sdk.Authorizer,
+	clientFactory client.ClientFactory,
+	authorizer auth.Authorizer,
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 	secretEncryptionKey string,
@@ -58,7 +60,7 @@ func NewSecretService(
 
 	credentialStore, err := cs.datastoreFactory(
 		"secretSvcCredentials",
-		&sdk.Credential{},
+		&auth.Credential{},
 	)
 	if err != nil {
 		return nil, err
@@ -86,7 +88,7 @@ func (cs *SecretService) Start() error {
 	cs.lock.Acquire(ctx, "secret-svc-start")
 	defer cs.lock.Release(ctx, "secret-svc-start")
 
-	pk, _, err := cs.clientFactory.Client(sdk.WithToken(cs.token)).
+	pk, _, err := cs.clientFactory.Client(client.WithToken(cs.token)).
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	if err != nil {
@@ -96,7 +98,7 @@ func (cs *SecretService) Start() error {
 
 	client := cs.clientFactory.Client()
 
-	token, err := sdk.RegisterServiceAccount(
+	token, err := boot.RegisterServiceAccount(
 		client.UserSvcAPI,
 		"secret-svc",
 		"Secret Svc",

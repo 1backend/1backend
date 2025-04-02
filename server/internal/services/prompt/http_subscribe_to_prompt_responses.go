@@ -20,7 +20,7 @@ import (
 	"github.com/gorilla/mux"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/logger"
 
 	streammanager "github.com/1backend/1backend/server/internal/services/prompt/stream"
@@ -44,7 +44,7 @@ func (p *PromptService) SubscribeToPromptResponses(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := p.clientFactory.Client(sdk.WithTokenFromRequest(r)).
+	isAuthRsp, _, err := p.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), *prompt.PermissionPromptStream.Id).
 		Body(openapi.UserSvcIsAuthorizedRequest{}).
 		Execute()

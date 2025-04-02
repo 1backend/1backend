@@ -16,7 +16,7 @@ import (
 	"github.com/pkg/errors"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
 )
@@ -143,7 +143,7 @@ func (fs *FileService) serveRemoteDownload(
 	}
 
 	nodesRsp, _, err := fs.clientFactory.
-		Client(sdk.WithToken(fs.token)).
+		Client(client.WithToken(fs.token)).
 		RegistrySvcAPI.ListNodes(r.Context()).
 		Body(
 			openapi.RegistrySvcListNodesRequest{
@@ -167,7 +167,7 @@ func (fs *FileService) serveRemoteDownload(
 
 	// todo it would be probably better to stream this ourselves here but for now it will do
 	file, fileHttpRsp, err := fs.clientFactory.
-		Client(sdk.WithAddress(node.Url), sdk.WithToken(fs.token)).
+		Client(client.WithAddress(node.Url), client.WithToken(fs.token)).
 		FileSvcAPI.
 		ServeDownload(r.Context(), downloads[0].URL).
 		Execute()

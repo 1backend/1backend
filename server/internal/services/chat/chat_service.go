@@ -15,7 +15,9 @@ package chatservice
 import (
 	"context"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/boot"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 
@@ -23,7 +25,7 @@ import (
 )
 
 type ChatService struct {
-	clientFactory sdk.ClientFactory
+	clientFactory client.ClientFactory
 	token         string
 
 	lock lock.DistributedLock
@@ -34,7 +36,7 @@ type ChatService struct {
 }
 
 func NewChatService(
-	clientFactory sdk.ClientFactory,
+	clientFactory client.ClientFactory,
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 ) (*ChatService, error) {
@@ -53,7 +55,7 @@ func NewChatService(
 
 	credentialStore, err := datastoreFactory(
 		"chatSvcCredentials",
-		&sdk.Credential{},
+		&auth.Credential{},
 	)
 	if err != nil {
 		return nil, err
@@ -76,7 +78,7 @@ func (cs *ChatService) Start() error {
 	cs.lock.Acquire(ctx, "chat-svc-start")
 	defer cs.lock.Release(ctx, "chat-svc-start")
 
-	token, err := sdk.RegisterServiceAccount(
+	token, err := boot.RegisterServiceAccount(
 		cs.clientFactory.Client().UserSvcAPI,
 		"chat-svc",
 		"Chat Svc",

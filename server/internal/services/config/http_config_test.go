@@ -19,6 +19,7 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
 	"github.com/onsi/ginkgo/v2"
@@ -88,7 +89,7 @@ var _ = ginkgo.Describe("Config Tests", func() {
 			Return(&openapi.APIClient{
 				UserSvcAPI:     mockUserSvc,
 				FirehoseSvcAPI: mockFirehoseSvc,
-				ConfigSvcAPI: sdk.NewApiClientFactory(server.URL).
+				ConfigSvcAPI: client.NewApiClientFactory(server.URL).
 					Client().
 					ConfigSvcAPI,
 			}).

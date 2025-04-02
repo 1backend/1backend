@@ -17,7 +17,7 @@ import (
 	"fmt"
 	"sync"
 
-	sdk "github.com/1backend/1backend/sdk/go"
+	sdkclient "github.com/1backend/1backend/sdk/go/client"
 	container "github.com/1backend/1backend/server/internal/services/container/types"
 
 	"github.com/docker/docker/client"
@@ -40,13 +40,13 @@ type DockerBackend struct {
 
 	volumeName string
 
-	clientFactory sdk.ClientFactory
+	clientFactory sdkclient.ClientFactory
 	token         string
 }
 
 func NewDockerBackend(
 	volumeName string,
-	clientFactory sdk.ClientFactory,
+	clientFactory sdkclient.ClientFactory,
 	token string,
 ) (*DockerBackend, error) {
 	c, err := client.NewClientWithOpts(

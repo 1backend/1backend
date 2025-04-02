@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"log"
 
-	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/golang-jwt/jwt/v4"
 
+	"github.com/1backend/1backend/sdk/go/auth"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
@@ -60,7 +60,7 @@ func generateJWT(
 	roleIds []string,
 	privateKey *rsa.PrivateKey,
 ) (string, error) {
-	claims := &sdk.Claims{
+	claims := &auth.Claims{
 		UserId:           user.Id,
 		Slug:             user.Slug,
 		RoleIds:          roleIds,

@@ -24,7 +24,7 @@ import (
 	"github.com/pkg/errors"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/logger"
 
@@ -167,7 +167,7 @@ func (p *PromptService) processPrompt(
 		js, _ := json.Marshal(ev)
 		json.Unmarshal(js, &m)
 
-		_, err = p.clientFactory.Client(sdk.WithToken(p.token)).
+		_, err = p.clientFactory.Client(client.WithToken(p.token)).
 			FirehoseSvcAPI.PublishEvent(context.Background()).
 			Event(openapi.FirehoseSvcEventPublishRequest{
 				Event: &openapi.FirehoseSvcEvent{
@@ -206,7 +206,7 @@ func (p *PromptService) processPrompt(
 	js, _ := json.Marshal(ev)
 	json.Unmarshal(js, &m)
 
-	_, err = p.clientFactory.Client(sdk.WithToken(p.token)).
+	_, err = p.clientFactory.Client(client.WithToken(p.token)).
 		FirehoseSvcAPI.PublishEvent(context.Background()).
 		Event(openapi.FirehoseSvcEventPublishRequest{
 			Event: &openapi.FirehoseSvcEvent{
@@ -221,7 +221,7 @@ func (p *PromptService) processPrompt(
 
 	modelId := currentPrompt.ModelId
 	if modelId == "" {
-		getConfigRsp, _, err := p.clientFactory.Client(sdk.WithToken(p.token)).
+		getConfigRsp, _, err := p.clientFactory.Client(client.WithToken(p.token)).
 			ConfigSvcAPI.GetConfig(context.Background()).
 			Execute()
 		if err != nil {
@@ -239,13 +239,13 @@ func (p *PromptService) processPrompt(
 		currentPrompt.ModelId = modelId
 	}
 
-	getModelRsp, _, err := p.clientFactory.Client(sdk.WithToken(p.token)).
+	getModelRsp, _, err := p.clientFactory.Client(client.WithToken(p.token)).
 		ModelSvcAPI.GetModel(context.Background(), modelId).
 		Execute()
 	if err != nil {
 		return err
 	}
-	_, _, err = p.clientFactory.Client(sdk.WithToken(p.token)).
+	_, _, err = p.clientFactory.Client(client.WithToken(p.token)).
 		ChatSvcAPI.AddMessage(context.Background(), currentPrompt.ThreadId).
 		Body(openapi.ChatSvcAddMessageRequest{
 			Message: &openapi.ChatSvcMessage{
@@ -269,7 +269,7 @@ func (p *PromptService) processPrompt(
 		return err
 	}
 
-	statusRsp, _, err := p.clientFactory.Client(sdk.WithToken(p.token)).
+	statusRsp, _, err := p.clientFactory.Client(client.WithToken(p.token)).
 		ModelSvcAPI.GetModelStatus(context.Background(), modelId).
 		Execute()
 	if err != nil {
