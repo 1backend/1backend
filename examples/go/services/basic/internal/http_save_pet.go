@@ -8,7 +8,6 @@ import (
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/samber/lo"
 
 	basic "github.com/1backend/1backend/examples/go/services/basic/internal/types"
@@ -43,7 +42,6 @@ func (s *BasicService) SavePet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !lo.Contains(token.RoleIds, RolePetManager) {
-		spew.Dump(token.RoleIds)
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("Unauthorized"))
 		return
