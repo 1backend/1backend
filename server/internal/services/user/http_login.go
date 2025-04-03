@@ -78,7 +78,25 @@ func (s *UserService) login(
 		return nil, err
 	}
 	if !found {
-		return nil, errors.New("slug not found")
+		contactI, found, err := s.contactsStore.Query(
+			datastore.Equals(datastore.Field("id"), slug),
+		).FindOne()
+		if err != nil {
+			return nil, err
+		}
+		if !found {
+			return nil, errors.New("not found")
+		}
+
+		userI, found, err = s.usersStore.Query(
+			datastore.Equals(datastore.Field("id"), contactI.(*user.Contact).UserId),
+		).FindOne()
+		if err != nil {
+			return nil, err
+		}
+		if !found {
+			return nil, errors.New("not found")
+		}
 	}
 	u := userI.(*user.User)
 
