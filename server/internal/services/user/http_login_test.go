@@ -133,9 +133,7 @@ func TestRegistration(t *testing.T) {
 
 	t.Run("contact login works", func(t *testing.T) {
 		loginReq := openapi.UserSvcLoginRequest{
-			// Slug should support checking contact IDs too for easy
-			// "Email or username" logins.
-			Slug:     openapi.PtrString("test1@test.comm"),
+			Contact:  openapi.PtrString("test1@test.comm"),
 			Password: openapi.PtrString("test"),
 		}
 		_, _, err := options.ClientFactory.Client().UserSvcAPI.Login(context.Background()).
