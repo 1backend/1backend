@@ -17,7 +17,7 @@ import (
 	openapi "github.com/1backend/1backend/clients/go"
 )
 
-func TestRegistration(t *testing.T) {
+func TestPasswordChange(t *testing.T) {
 	hs := &di.HandlerSwitcher{}
 	server := httptest.NewServer(hs)
 	defer server.Close()
@@ -87,6 +87,59 @@ func TestRegistration(t *testing.T) {
 			Body(changePassReq).
 			Execute()
 		require.Error(t, err)
+	})
+}
+
+func TestRegistration(t *testing.T) {
+	hs := &di.HandlerSwitcher{}
+	server := httptest.NewServer(hs)
+	defer server.Close()
+
+	options := &di.Options{
+		Test: true,
+		Url:  server.URL,
+	}
+	universe, err := di.BigBang(options)
+	require.NoError(t, err)
+
+	hs.UpdateHandler(universe.Router)
+
+	err = universe.StarterFunc()
+	require.NoError(t, err)
+
+	userSvc := options.ClientFactory.Client().UserSvcAPI
+	_, _, err = userSvc.Register(context.Background()).Body(
+		openapi.UserSvcRegisterRequest{
+			Slug: "test-1",
+			Contact: &openapi.UserSvcContact{
+				Id:       "test1@test.comm",
+				Platform: "email",
+			},
+			Password: openapi.PtrString("test"),
+		},
+	).Execute()
+	require.NoError(t, err)
+
+	t.Run("slug login works", func(t *testing.T) {
+		loginReq := openapi.UserSvcLoginRequest{
+			Slug:     openapi.PtrString("test-1"),
+			Password: openapi.PtrString("test"),
+		}
+		_, _, err := options.ClientFactory.Client().UserSvcAPI.Login(context.Background()).
+			Body(loginReq).
+			Execute()
+		require.NoError(t, err)
+	})
+
+	t.Run("contact login works", func(t *testing.T) {
+		loginReq := openapi.UserSvcLoginRequest{
+			Contact:  openapi.PtrString("test1@test.comm"),
+			Password: openapi.PtrString("test"),
+		}
+		_, _, err := options.ClientFactory.Client().UserSvcAPI.Login(context.Background()).
+			Body(loginReq).
+			Execute()
+		require.NoError(t, err)
 	})
 }
 

@@ -108,7 +108,10 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := s.login(req.Slug, req.Password)
+	token, err := s.login(&user.LoginRequest{
+		Slug:     req.Slug,
+		Password: req.Password,
+	})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

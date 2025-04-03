@@ -285,7 +285,10 @@ func (s *UserService) bootstrap() error {
 		}
 	}
 
-	tok, err := s.login(slug, pw)
+	tok, err := s.login(&usertypes.LoginRequest{
+		Slug:     slug,
+		Password: pw,
+	})
 	if err != nil {
 		usr, err := s.register(slug, pw,
 			"User Svc", []string{

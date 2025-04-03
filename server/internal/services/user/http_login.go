@@ -36,9 +36,8 @@ import (
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Router /user-svc/login [post]
 func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
-
-	req := user.LoginRequest{}
-	err := json.NewDecoder(r.Body).Decode(&req)
+	request := user.LoginRequest{}
+	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(`Invalid JSON`))
@@ -46,7 +45,7 @@ func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	token, err := s.login(req.Slug, req.Password)
+	token, err := s.login(&request)
 	if err != nil {
 		switch err.Error() {
 		case "unauthorized":
@@ -69,26 +68,53 @@ func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) login(
-	slug, password string,
+	request *user.LoginRequest,
 ) (*user.AuthToken, error) {
-	userI, found, err := s.usersStore.Query(
-		datastore.Equals(datastore.Field("slug"), slug),
-	).FindOne()
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, errors.New("slug not found")
-	}
-	u := userI.(*user.User)
+	var usr *user.User
 
-	if !checkPasswordHash(password, u.PasswordHash) {
+	if request.Slug != "" {
+		userI, found, err := s.usersStore.Query(
+			datastore.Equals(datastore.Field("slug"), request.Slug),
+		).FindOne()
+		if err != nil {
+			return nil, err
+		}
+		if !found {
+			return nil, errors.New("not found")
+		}
+
+		usr = userI.(*user.User)
+	} else if request.Contact != "" {
+		contactI, found, err := s.contactsStore.Query(
+			datastore.Equals(datastore.Field("id"), request.Contact),
+		).FindOne()
+		if err != nil {
+			return nil, err
+		}
+		if !found {
+			return nil, errors.New("not found")
+		}
+
+		userI, found, err := s.usersStore.Query(
+			datastore.Equals(datastore.Field("id"), contactI.(*user.Contact).UserId),
+		).FindOne()
+		if err != nil {
+			return nil, err
+		}
+		if !found {
+			return nil, errors.New("not found")
+		}
+
+		usr = userI.(*user.User)
+	}
+
+	if !checkPasswordHash(request.Password, usr.PasswordHash) {
 		return nil, errors.New("unauthorized")
 	}
 
 	// Let's see if there is an active token we can reuse
 	tokenI, found, err := s.authTokensStore.Query(
-		datastore.Equals(datastore.Field("userId"), u.Id),
+		datastore.Equals(datastore.Field("userId"), usr.Id),
 		datastore.Equals(datastore.Field("active"), true),
 	).FindOne()
 	if err != nil {
@@ -99,7 +125,7 @@ func (s *UserService) login(
 		return tokenI.(*user.AuthToken), nil
 	}
 
-	token, err := s.generateAuthToken(u)
+	token, err := s.generateAuthToken(usr)
 	if err != nil {
 		return nil, err
 	}
