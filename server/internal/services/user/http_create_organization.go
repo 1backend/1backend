@@ -160,6 +160,9 @@ func (s *UserService) createOrganization(
 	u := userI.(*user.User)
 
 	token, err := s.generateAuthToken(u)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "error generating token")
+	}
 
 	err = s.authTokensStore.Create(token)
 	if err != nil {

@@ -51,9 +51,9 @@ func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
 		case "unauthorized":
 			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte(`Invalid password`))
-		case "slug not found":
+		case "not found":
 			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte(`Slug not found`))
+			w.Write([]byte(`Not found`))
 		default:
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))
@@ -106,6 +106,8 @@ func (s *UserService) login(
 		}
 
 		usr = userI.(*user.User)
+	} else {
+		return nil, errors.New("slug or contact required")
 	}
 
 	if !checkPasswordHash(request.Password, usr.PasswordHash) {
