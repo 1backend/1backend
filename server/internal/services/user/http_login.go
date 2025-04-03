@@ -122,10 +122,14 @@ func (s *UserService) generateAuthToken(
 ) (*user.AuthToken, error) {
 	roleIds, err := s.getRoleIdsByUserId(u.Id)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error listing roles")
+	}
+	_, activeOrganizationId, err := s.getUserOrganizations(u.Id)
+	if err != nil {
+		return nil, errors.Wrap(err, "error listing organizations")
 	}
 
-	token, err := generateJWT(u, roleIds, s.privateKey)
+	token, err := generateJWT(u, roleIds, activeOrganizationId, s.privateKey)
 	if err != nil {
 		return nil, err
 	}

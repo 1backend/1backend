@@ -58,13 +58,15 @@ func privateKeyFromString(privateKeyPem string) (*rsa.PrivateKey, error) {
 func generateJWT(
 	user *usertypes.User,
 	roleIds []string,
+	activeOrganizationId string,
 	privateKey *rsa.PrivateKey,
 ) (string, error) {
 	claims := &auth.Claims{
-		UserId:           user.Id,
-		Slug:             user.Slug,
-		RoleIds:          roleIds,
-		RegisteredClaims: jwt.RegisteredClaims{},
+		UserId:               user.Id,
+		Slug:                 user.Slug,
+		RoleIds:              roleIds,
+		ActiveOrganizationId: activeOrganizationId,
+		RegisteredClaims:     jwt.RegisteredClaims{},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
