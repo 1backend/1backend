@@ -22,9 +22,17 @@ import (
 )
 
 type Claims struct {
-	UserId  string   `json:"oui"` // `oui`: 1backend user ids
-	Slug    string   `json:"olu"` // `olu`: 1backend slug
-	RoleIds []string `json:"ori"` // `ori`: 1backend role ids
+	UserId  string   `json:"oui,omitempty"` // `oui`: 1backend user ids
+	Slug    string   `json:"olu,omitempty"` // `olu`: 1backend slug
+	RoleIds []string `json:"ori,omitempty"` // `ori`: 1backend role ids
+
+	// Organization IDs are already included within role IDs
+	// (e.g., `user-svc:org:{org_dBZRCej3fo}:admin`).
+	// Helper functions make it easy to extract them, so they aren't stored separately to save space.
+	// However, role IDs don’t specify the active or default organization.
+	// This field explicitly provides that information.
+	ActiveOrganizationId string `json:"oao,omitempty"` // `ooi`: 1backend active organization id
+
 	jwt.RegisteredClaims
 }
 
