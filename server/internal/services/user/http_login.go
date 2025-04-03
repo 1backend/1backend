@@ -21,7 +21,6 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/pkg/errors"
-	"github.com/samber/lo"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -125,15 +124,12 @@ func (s *UserService) generateAuthToken(
 	if err != nil {
 		return nil, errors.Wrap(err, "error listing roles")
 	}
-	organizations, activeOrganizationId, err := s.getUserOrganizations(u.Id)
+	_, activeOrganizationId, err := s.getUserOrganizations(u.Id)
 	if err != nil {
 		return nil, errors.Wrap(err, "error listing organizations")
 	}
-	organizationIds := lo.Map(organizations, func(item *user.Organization, _ int) string {
-		return item.Id
-	})
 
-	token, err := generateJWT(u, roleIds, organizationIds, activeOrganizationId, s.privateKey)
+	token, err := generateJWT(u, roleIds, activeOrganizationId, s.privateKey)
 	if err != nil {
 		return nil, err
 	}

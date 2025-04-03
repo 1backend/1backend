@@ -168,6 +168,7 @@ func TestOrganization(t *testing.T) {
 				fmt.Sprintf("user-svc:org:{%v}:admin", orgId1),
 				claim.RoleIds,
 			)
+			require.Equal(t, orgId1, claim.ActiveOrganizationId)
 
 			tokenRsp, _, err := userClient.UserSvcAPI.ReadUserByToken(context.Background()).
 				Execute()
