@@ -55,7 +55,6 @@ func (us *UserService) registerPermissions() error {
 	}
 
 	err = us.assignPermissions(
-		us.serviceUserId,
 		links,
 	)
 	if err != nil {

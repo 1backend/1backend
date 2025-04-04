@@ -37,8 +37,8 @@ func (p *ConfigService) registerPermissions() error {
 	} {
 		for _, permission := range configtypes.AdminPermissions {
 			req.PermissionLinks = append(req.PermissionLinks, openapi.UserSvcPermissionLink{
-				RoleId:       openapi.PtrString(role.Id),
-				PermissionId: permission.Id,
+				RoleId:       role.Id,
+				PermissionId: *permission.Id,
 			})
 		}
 	}

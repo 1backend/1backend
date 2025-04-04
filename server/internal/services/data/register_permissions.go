@@ -38,8 +38,8 @@ func (p *DataService) registerPermissions() error {
 	} {
 		for _, permission := range data.Permissions {
 			req.PermissionLinks = append(req.PermissionLinks, openapi.UserSvcPermissionLink{
-				RoleId:       openapi.PtrString(role.Id),
-				PermissionId: permission.Id,
+				RoleId:       role.Id,
+				PermissionId: *permission.Id,
 			})
 		}
 	}

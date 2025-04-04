@@ -59,8 +59,8 @@ func (ns *RegistryService) registerPermissions() error {
 			registrytypes.DefinitionAdminPermissions,
 		) {
 			req.PermissionLinks = append(req.PermissionLinks, openapi.UserSvcPermissionLink{
-				RoleId:       openapi.PtrString(role.Id),
-				PermissionId: permission.Id,
+				RoleId:       role.Id,
+				PermissionId: *permission.Id,
 			})
 		}
 	}
@@ -73,8 +73,8 @@ func (ns *RegistryService) registerPermissions() error {
 			registrytypes.DefinitionUserPermissions,
 		) {
 			req.PermissionLinks = append(req.PermissionLinks, openapi.UserSvcPermissionLink{
-				RoleId:       openapi.PtrString(role.Id),
-				PermissionId: permission.Id,
+				RoleId:       role.Id,
+				PermissionId: *permission.Id,
 			})
 		}
 	}

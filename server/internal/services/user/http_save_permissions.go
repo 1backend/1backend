@@ -14,8 +14,8 @@ package userservice
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
@@ -44,7 +44,6 @@ func (s *UserService) SavePermissions(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-
 	usr, isAuthorized, err := s.isAuthorized(r, user.PermissionPermissionCreate.Id, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -65,6 +64,14 @@ func (s *UserService) SavePermissions(
 		return
 	}
 	defer r.Body.Close()
+
+	for _, permission := range req.Permissions {
+		if !strings.HasPrefix(permission.Id, usr.Slug) {
+			w.WriteHeader(http.StatusUnauthorized)
+			w.Write([]byte("Unauthorized"))
+			return
+		}
+	}
 
 	permissions, err := s.savePermissions(
 		usr.Id,
@@ -100,9 +107,6 @@ func (s *UserService) savePermissions(
 
 		if found {
 			perm := permI.(*user.Permission)
-			if perm.OwnerId != userId {
-				return nil, fmt.Errorf("cannot update unowned permission")
-			}
 
 			perm.Name = permission.Name
 			perm.Description = permission.Description
@@ -119,7 +123,6 @@ func (s *UserService) savePermissions(
 			Id:          permission.Id,
 			Name:        permission.Name,
 			Description: permission.Description,
-			OwnerId:     userId,
 		}
 
 		err = s.permissionsStore.Create(perm)

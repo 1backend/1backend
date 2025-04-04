@@ -240,7 +240,6 @@ docs/UserSvcSaveOrganizationResponse.md
 docs/UserSvcSavePermissionsRequest.md
 docs/UserSvcSavePermissionsResponse.md
 docs/UserSvcSaveProfileRequest.md
-docs/UserSvcSetRolePermissionsRequest.md
 docs/UserSvcUser.md
 docs/UserSvcUserRecord.md
 git_push.sh
@@ -452,7 +451,6 @@ model_user_svc_save_organization_response.go
 model_user_svc_save_permissions_request.go
 model_user_svc_save_permissions_response.go
 model_user_svc_save_profile_request.go
-model_user_svc_set_role_permissions_request.go
 model_user_svc_user.go
 model_user_svc_user_record.go
 response.go

@@ -4892,69 +4892,6 @@
                         }
                     }
                 }
-            },
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Set permissions for a specified role. The caller can add permissions it owns to any role.\nIf the caller tries to add a permission it doesn't own to a role, `StatusBadRequest` will be returned.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User Svc"
-                ],
-                "summary": "Set Role Permissions",
-                "operationId": "setRolePermission",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Role ID",
-                        "name": "roleId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Set Role Permissions Request",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.SetRolePermissionsRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.SetRolePermissionsResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid JSON",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    }
-                }
             }
         },
         "/user-svc/roles": {
@@ -9382,14 +9319,14 @@
                     "type": "string"
                 },
                 "roleIds": {
-                    "description": "Role Ids who are granted the permission",
+                    "description": "Role IDs that have been granted the specified permission.\n\nOriginally, grants were designed for slugs to facilitate service-to-service calls.\nDue to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.\n\nAlternatively, permissions can be assigned to roles using UserSvc.AssignPermissions.\nGrants currently offer a more streamlined approach, though this may evolve over time.",
                     "type": "array",
                     "items": {
                         "type": "string"
                     }
                 },
                 "slugs": {
-                    "description": "Slugs who are granted the permission",
+                    "description": "Slugs that have been granted the specified permission.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -9659,10 +9596,6 @@
                     "description": "eg. \"User Viewer\"",
                     "type": "string"
                 },
-                "ownerId": {
-                    "description": "Service who owns the permission\n\nUncertain if this aligns with the system's use of slugs.\nIssue encountered: I renamed Docker Svc to Container Svc in two steps (by mistake).\nThe name/slug had already changed to \"container-svc,\" but data was still being saved\nin the \"dockerSvcCredentials\" table.\nAfter renaming the tables as well, I hit a \"cannot update unowned permission\" error\nbecause ownership relies on this field rather than the user slug. YMMV.",
-                    "type": "string"
-                },
                 "updatedAt": {
                     "type": "string"
                 }
@@ -9670,6 +9603,10 @@
         },
         "user_svc.PermissionLink": {
             "type": "object",
+            "required": [
+                "permissionId",
+                "roleId"
+            ],
             "properties": {
                 "permissionId": {
                     "type": "string"
@@ -9758,9 +9695,6 @@
                     "type": "string"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "ownerId": {
                     "type": "string"
                 },
                 "updatedAt": {
@@ -9891,20 +9825,6 @@
             }
         },
         "user_svc.SaveProfileResponse": {
-            "type": "object"
-        },
-        "user_svc.SetRolePermissionsRequest": {
-            "type": "object",
-            "properties": {
-                "permissionIds": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "user_svc.SetRolePermissionsResponse": {
             "type": "object"
         },
         "user_svc.User": {

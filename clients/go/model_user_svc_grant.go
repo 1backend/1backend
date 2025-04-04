@@ -24,9 +24,9 @@ var _ MappedNullable = &UserSvcGrant{}
 type UserSvcGrant struct {
 	Id *string `json:"id,omitempty"`
 	PermissionId string `json:"permissionId"`
-	// Role Ids who are granted the permission
+	// Role IDs that have been granted the specified permission.  Originally, grants were designed for slugs to facilitate service-to-service calls. Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.  Alternatively, permissions can be assigned to roles using UserSvc.AssignPermissions. Grants currently offer a more streamlined approach, though this may evolve over time.
 	RoleIds []string `json:"roleIds,omitempty"`
-	// Slugs who are granted the permission
+	// Slugs that have been granted the specified permission.
 	Slugs []string `json:"slugs,omitempty"`
 }
 

@@ -18,16 +18,6 @@ type Permission struct {
 	// eg. "User Viewer"
 	Name        string `json:"name,omitempty"`
 	Description string `json:"description,omitempty"`
-
-	// Service who owns the permission
-	//
-	// Uncertain if this aligns with the system's use of slugs.
-	// Issue encountered: I renamed Docker Svc to Container Svc in two steps (by mistake).
-	// The name/slug had already changed to "container-svc," but data was still being saved
-	// in the "dockerSvcCredentials" table.
-	// After renaming the tables as well, I hit a "cannot update unowned permission" error
-	// because ownership relies on this field rather than the user slug. YMMV.
-	OwnerId string `json:"ownerId,omitempty"`
 }
 
 func (c *Permission) GetId() string {
@@ -71,8 +61,8 @@ type SavePermissionsResponse struct {
 }
 
 type PermissionLink struct {
-	RoleId       string `json:"roleId"`
-	PermissionId string `json:"permissionId"`
+	RoleId       string `json:"roleId" binding:"required"`
+	PermissionId string `json:"permissionId" binding:"required"`
 }
 
 type AssignPermissionsRequest struct {
@@ -136,11 +126,6 @@ var PermissionPermissionEdit = Permission{
 	Name: "User Svc - Permission Edit",
 }
 
-var PermissionPermissionAssign = Permission{
-	Id:   "user-svc:permission:assign",
-	Name: "User Svc - Permission Assign",
-}
-
 var PermissionOrganizationCreate = Permission{
 	Id:   "user-svc:organization:create",
 	Name: "User Svc - Organization Create",
@@ -184,10 +169,9 @@ var UserPermissions = []*Permission{
 	&PermissionRoleCreate,
 
 	// Anyone can create and edit their own permissions
-	// given they start wiht their slug
+	// given the permission starts with their slug
 	&PermissionPermissionCreate,
 	&PermissionPermissionEdit,
-	&PermissionPermissionAssign,
 
 	// Anyone can create their own organizations and manage users there.
 	// Organization
@@ -210,7 +194,6 @@ var AdminPermissions = []*Permission{
 	&PermissionRoleDelete,
 	&PermissionPermissionCreate,
 	&PermissionPermissionEdit,
-	&PermissionPermissionAssign,
 	&PermissionOrganizationCreate,
 	&PermissionOrganizationAddUser,
 	&PermissionOrganizationRemoveUser,

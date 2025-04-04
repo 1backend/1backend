@@ -178,7 +178,6 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**SavePermissions**](docs/UserSvcAPI.md#savepermissions) | **Put** /user-svc/permissions | Save Permissions
 *UserSvcAPI* | [**SaveSelf**](docs/UserSvcAPI.md#saveself) | **Put** /user-svc/self | Save User Profile
 *UserSvcAPI* | [**SaveUser**](docs/UserSvcAPI.md#saveuser) | **Put** /user-svc/user/{userId} | Save User
-*UserSvcAPI* | [**SetRolePermission**](docs/UserSvcAPI.md#setrolepermission) | **Put** /user-svc/role/{roleId}/permissions | Set Role Permissions
 
 
 ## Documentation For Models
@@ -389,7 +388,6 @@ Class | Method | HTTP request | Description
  - [UserSvcSavePermissionsRequest](docs/UserSvcSavePermissionsRequest.md)
  - [UserSvcSavePermissionsResponse](docs/UserSvcSavePermissionsResponse.md)
  - [UserSvcSaveProfileRequest](docs/UserSvcSaveProfileRequest.md)
- - [UserSvcSetRolePermissionsRequest](docs/UserSvcSetRolePermissionsRequest.md)
  - [UserSvcUser](docs/UserSvcUser.md)
  - [UserSvcUserRecord](docs/UserSvcUserRecord.md)
 

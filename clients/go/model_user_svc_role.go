@@ -24,7 +24,6 @@ type UserSvcRole struct {
 	Description *string `json:"description,omitempty"`
 	Id *string `json:"id,omitempty"`
 	Name *string `json:"name,omitempty"`
-	OwnerId *string `json:"ownerId,omitempty"`
 	UpdatedAt *string `json:"updatedAt,omitempty"`
 }
 
@@ -173,38 +172,6 @@ func (o *UserSvcRole) SetName(v string) {
 	o.Name = &v
 }
 
-// GetOwnerId returns the OwnerId field value if set, zero value otherwise.
-func (o *UserSvcRole) GetOwnerId() string {
-	if o == nil || IsNil(o.OwnerId) {
-		var ret string
-		return ret
-	}
-	return *o.OwnerId
-}
-
-// GetOwnerIdOk returns a tuple with the OwnerId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcRole) GetOwnerIdOk() (*string, bool) {
-	if o == nil || IsNil(o.OwnerId) {
-		return nil, false
-	}
-	return o.OwnerId, true
-}
-
-// HasOwnerId returns a boolean if a field has been set.
-func (o *UserSvcRole) HasOwnerId() bool {
-	if o != nil && !IsNil(o.OwnerId) {
-		return true
-	}
-
-	return false
-}
-
-// SetOwnerId gets a reference to the given string and assigns it to the OwnerId field.
-func (o *UserSvcRole) SetOwnerId(v string) {
-	o.OwnerId = &v
-}
-
 // GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
 func (o *UserSvcRole) GetUpdatedAt() string {
 	if o == nil || IsNil(o.UpdatedAt) {
@@ -258,9 +225,6 @@ func (o UserSvcRole) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
-	}
-	if !IsNil(o.OwnerId) {
-		toSerialize["ownerId"] = o.OwnerId
 	}
 	if !IsNil(o.UpdatedAt) {
 		toSerialize["updatedAt"] = o.UpdatedAt

@@ -38,8 +38,8 @@ func (p *ChatService) registerPermissions() error {
 	} {
 		for _, permission := range append(chattypes.ThreadPermissions, chattypes.MessagePermissions...) {
 			req.PermissionLinks = append(req.PermissionLinks, openapi.UserSvcPermissionLink{
-				RoleId:       openapi.PtrString(role.Id),
-				PermissionId: permission.Id,
+				RoleId:       role.Id,
+				PermissionId: *permission.Id,
 			})
 		}
 	}

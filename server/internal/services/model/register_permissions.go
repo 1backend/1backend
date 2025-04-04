@@ -38,8 +38,8 @@ func (p *ModelService) registerPermissions() error {
 	} {
 		for _, permission := range modeltypes.AdminPermissions {
 			req.PermissionLinks = append(req.PermissionLinks, openapi.UserSvcPermissionLink{
-				RoleId:       openapi.PtrString(role.Id),
-				PermissionId: permission.Id,
+				RoleId:       role.Id,
+				PermissionId: *permission.Id,
 			})
 		}
 	}

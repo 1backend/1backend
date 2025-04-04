@@ -65,7 +65,6 @@ func (s *UserService) CreateRole(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	role, err := s.createRole(
-		rsp.Id,
 		rsp.Slug,
 		&req,
 	)
@@ -82,7 +81,6 @@ func (s *UserService) CreateRole(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) createRole(
-	callerId string,
 	callerSlug string,
 	req *user.CreateRoleRequest,
 ) (*user.Role, error) {
@@ -107,7 +105,6 @@ func (s *UserService) createRole(
 		Id:          req.Id,
 		Name:        req.Name,
 		Description: req.Description,
-		OwnerId:     callerId,
 	}
 
 	err = s.rolesStore.Upsert(role)
@@ -123,7 +120,7 @@ func (s *UserService) createRole(
 		})
 	}
 
-	err = s.assignPermissions(callerId, links)
+	err = s.assignPermissions(links)
 	if err != nil {
 		return nil, err
 	}

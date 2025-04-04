@@ -26,7 +26,6 @@ type Role struct {
 
 	Name        string `json:"name"`
 	Description string `json:"description,omitempty"`
-	OwnerId     string `json:"ownerId,omitempty"`
 }
 
 type PermissionRoleLink struct {

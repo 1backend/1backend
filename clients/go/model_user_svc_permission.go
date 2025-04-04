@@ -26,8 +26,6 @@ type UserSvcPermission struct {
 	Id *string `json:"id,omitempty"`
 	// eg. \"User Viewer\"
 	Name *string `json:"name,omitempty"`
-	// Service who owns the permission  Uncertain if this aligns with the system's use of slugs. Issue encountered: I renamed Docker Svc to Container Svc in two steps (by mistake). The name/slug had already changed to \"container-svc,\" but data was still being saved in the \"dockerSvcCredentials\" table. After renaming the tables as well, I hit a \"cannot update unowned permission\" error because ownership relies on this field rather than the user slug. YMMV.
-	OwnerId *string `json:"ownerId,omitempty"`
 	UpdatedAt *string `json:"updatedAt,omitempty"`
 }
 
@@ -176,38 +174,6 @@ func (o *UserSvcPermission) SetName(v string) {
 	o.Name = &v
 }
 
-// GetOwnerId returns the OwnerId field value if set, zero value otherwise.
-func (o *UserSvcPermission) GetOwnerId() string {
-	if o == nil || IsNil(o.OwnerId) {
-		var ret string
-		return ret
-	}
-	return *o.OwnerId
-}
-
-// GetOwnerIdOk returns a tuple with the OwnerId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcPermission) GetOwnerIdOk() (*string, bool) {
-	if o == nil || IsNil(o.OwnerId) {
-		return nil, false
-	}
-	return o.OwnerId, true
-}
-
-// HasOwnerId returns a boolean if a field has been set.
-func (o *UserSvcPermission) HasOwnerId() bool {
-	if o != nil && !IsNil(o.OwnerId) {
-		return true
-	}
-
-	return false
-}
-
-// SetOwnerId gets a reference to the given string and assigns it to the OwnerId field.
-func (o *UserSvcPermission) SetOwnerId(v string) {
-	o.OwnerId = &v
-}
-
 // GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
 func (o *UserSvcPermission) GetUpdatedAt() string {
 	if o == nil || IsNil(o.UpdatedAt) {
@@ -261,9 +227,6 @@ func (o UserSvcPermission) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
-	}
-	if !IsNil(o.OwnerId) {
-		toSerialize["ownerId"] = o.OwnerId
 	}
 	if !IsNil(o.UpdatedAt) {
 		toSerialize["updatedAt"] = o.UpdatedAt

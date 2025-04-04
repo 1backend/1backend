@@ -818,33 +818,3 @@ func (mr *MockUserSvcAPIMockRecorder) SaveUserExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveUserExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).SaveUserExecute), r)
 }
-
-// SetRolePermission mocks base method.
-func (m *MockUserSvcAPI) SetRolePermission(ctx context.Context, roleId string) ApiSetRolePermissionRequest {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SetRolePermission", ctx, roleId)
-	ret0, _ := ret[0].(ApiSetRolePermissionRequest)
-	return ret0
-}
-
-// SetRolePermission indicates an expected call of SetRolePermission.
-func (mr *MockUserSvcAPIMockRecorder) SetRolePermission(ctx, roleId any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetRolePermission", reflect.TypeOf((*MockUserSvcAPI)(nil).SetRolePermission), ctx, roleId)
-}
-
-// SetRolePermissionExecute mocks base method.
-func (m *MockUserSvcAPI) SetRolePermissionExecute(r ApiSetRolePermissionRequest) (map[string]any, *http.Response, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SetRolePermissionExecute", r)
-	ret0, _ := ret[0].(map[string]any)
-	ret1, _ := ret[1].(*http.Response)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// SetRolePermissionExecute indicates an expected call of SetRolePermissionExecute.
-func (mr *MockUserSvcAPIMockRecorder) SetRolePermissionExecute(r any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetRolePermissionExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).SetRolePermissionExecute), r)
-}

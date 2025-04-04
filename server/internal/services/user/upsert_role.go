@@ -72,7 +72,7 @@ func (s *UserService) upsertRole(
 		})
 	}
 
-	err = s.assignPermissions(userId, links)
+	err = s.assignPermissions(links)
 	if err != nil {
 		return err
 	}

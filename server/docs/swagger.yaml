@@ -2821,12 +2821,19 @@ definitions:
       permissionId:
         type: string
       roleIds:
-        description: Role Ids who are granted the permission
+        description: |-
+          Role IDs that have been granted the specified permission.
+
+          Originally, grants were designed for slugs to facilitate service-to-service calls.
+          Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.
+
+          Alternatively, permissions can be assigned to roles using UserSvc.AssignPermissions.
+          Grants currently offer a more streamlined approach, though this may evolve over time.
         items:
           type: string
         type: array
       slugs:
-        description: Slugs who are granted the permission
+        description: Slugs that have been granted the specified permission.
         items:
           type: string
         type: array
@@ -3021,17 +3028,6 @@ definitions:
       name:
         description: eg. "User Viewer"
         type: string
-      ownerId:
-        description: |-
-          Service who owns the permission
-
-          Uncertain if this aligns with the system's use of slugs.
-          Issue encountered: I renamed Docker Svc to Container Svc in two steps (by mistake).
-          The name/slug had already changed to "container-svc," but data was still being saved
-          in the "dockerSvcCredentials" table.
-          After renaming the tables as well, I hit a "cannot update unowned permission" error
-          because ownership relies on this field rather than the user slug. YMMV.
-        type: string
       updatedAt:
         type: string
     type: object
@@ -3041,6 +3037,9 @@ definitions:
         type: string
       roleId:
         type: string
+    required:
+    - permissionId
+    - roleId
     type: object
   user_svc.ReadUserByTokenResponse:
     properties:
@@ -3097,8 +3096,6 @@ definitions:
       id:
         type: string
       name:
-        type: string
-      ownerId:
         type: string
       updatedAt:
         type: string
@@ -3186,15 +3183,6 @@ definitions:
         type: string
     type: object
   user_svc.SaveProfileResponse:
-    type: object
-  user_svc.SetRolePermissionsRequest:
-    properties:
-      permissionIds:
-        items:
-          type: string
-        type: array
-    type: object
-  user_svc.SetRolePermissionsResponse:
     type: object
   user_svc.User:
     properties:
@@ -6579,49 +6567,6 @@ paths:
       security:
       - BearerAuth: []
       summary: Get Permissions by Role
-      tags:
-      - User Svc
-    put:
-      consumes:
-      - application/json
-      description: |-
-        Set permissions for a specified role. The caller can add permissions it owns to any role.
-        If the caller tries to add a permission it doesn't own to a role, `StatusBadRequest` will be returned.
-      operationId: setRolePermission
-      parameters:
-      - description: Role ID
-        in: path
-        name: roleId
-        required: true
-        type: string
-      - description: Set Role Permissions Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/user_svc.SetRolePermissionsRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_svc.SetRolePermissionsResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Set Role Permissions
       tags:
       - User Svc
   /user-svc/roles:

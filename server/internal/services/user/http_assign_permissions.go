@@ -16,6 +16,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
@@ -44,19 +45,6 @@ func (s *UserService) AssignPermissions(
 	r *http.Request,
 ) {
 
-	// @todo add proper permission here
-	_, isAuthorized, err := s.isAuthorized(r, user.PermissionPermissionAssign.Id, nil, nil)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
-		return
-	}
-	if !isAuthorized {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte("Unauthorized"))
-		return
-	}
-
 	usr, err := s.getUserFromRequest(r)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -73,7 +61,15 @@ func (s *UserService) AssignPermissions(
 	}
 	defer r.Body.Close()
 
-	err = s.assignPermissions(usr.Id, req.PermissionLinks)
+	for _, link := range req.PermissionLinks {
+		if !strings.HasPrefix(link.PermissionId, usr.Slug) {
+			w.WriteHeader(http.StatusUnauthorized)
+			w.Write([]byte("Unauthorized"))
+			return
+		}
+	}
+
+	err = s.assignPermissions(req.PermissionLinks)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -85,7 +81,6 @@ func (s *UserService) AssignPermissions(
 }
 
 func (s *UserService) assignPermissions(
-	userId string,
 	permissionLinks []*user.PermissionLink,
 ) error {
 	for _, permissionLink := range permissionLinks {
@@ -112,10 +107,6 @@ func (s *UserService) assignPermissions(
 			return fmt.Errorf("cannot find permission %v", permissionLink.PermissionId)
 		}
 		permission := permissionI.(*usertypes.Permission)
-
-		if permission.OwnerId != "" && permission.OwnerId != userId {
-			return errors.New("not an owner of the permission")
-		}
 
 		err = s.permissionRoleLinksStore.Upsert(&usertypes.PermissionRoleLink{
 			Id:           fmt.Sprintf("%v:%v", permission.Id, role.Id),
