@@ -7,37 +7,6 @@
  */
 package user_svc
 
-import "time"
-
-type Permission struct {
-	// eg. "user.viewer"
-	Id        string    `json:"id,omitempty"`
-	CreatedAt time.Time `json:"createdAt,omitempty"`
-	UpdatedAt time.Time `json:"updatedAt,omitempty"`
-
-	// eg. "User Viewer"
-	Name        string `json:"name,omitempty"`
-	Description string `json:"description,omitempty"`
-
-	// Service who owns the permission
-	//
-	// Uncertain if this aligns with the system's use of slugs.
-	// Issue encountered: I renamed Docker Svc to Container Svc in two steps (by mistake).
-	// The name/slug had already changed to "container-svc," but data was still being saved
-	// in the "dockerSvcCredentials" table.
-	// After renaming the tables as well, I hit a "cannot update unowned permission" error
-	// because ownership relies on this field rather than the user slug. YMMV.
-	OwnerId string `json:"ownerId,omitempty"`
-}
-
-func (c *Permission) GetId() string {
-	return c.Id
-}
-
-func (c *Permission) GetUpdatedAt() string {
-	return c.Id
-}
-
 type IsAuthorizedRequest struct {
 	GrantedSlugs    []string `json:"grantedSlugs,omitempty"`
 	ContactsGranted []string `json:"contactsGranted,omitempty"`
@@ -59,20 +28,20 @@ type CreatePermissionResponse struct {
 type GetPermissionsRequest struct{}
 
 type GetPermissionsResponse struct {
-	Permissions []*Permission `json:"permissions"`
+	Permissions []string `json:"permissions"`
 }
 
 type SavePermissionsRequest struct {
-	Permissions []*Permission `json:"permissions"`
+	Permissions []string `json:"permissions"`
 }
 
 type SavePermissionsResponse struct {
-	Permissions []*Permission `json:"permissions"`
+	Permissions []string `json:"permissions"`
 }
 
 type PermissionLink struct {
-	RoleId       string `json:"roleId"`
-	PermissionId string `json:"permissionId"`
+	Role       string `json:"role" binding:"required"`
+	Permission string `json:"permission" binding:"required"`
 }
 
 type AssignPermissionsRequest struct {
@@ -81,139 +50,74 @@ type AssignPermissionsRequest struct {
 
 type AssignPermissionsResponse struct{}
 
-var PermissionUserCreate = Permission{
-	Id:   "user-svc:user:create",
-	Name: "User Svc - User Create",
-}
+var (
+	// User Permissions
+	PermissionUserCreate         = "user-svc:user:create"
+	PermissionUserView           = "user-svc:user:view"
+	PermissionUserEdit           = "user-svc:user:edit"
+	PermissionUserDelete         = "user-svc:user:delete"
+	PermissionUserPasswordChange = "user-svc:user:passwordChange"
 
-var PermissionUserView = Permission{
-	Id:   "user-svc:user:view",
-	Name: "User Svc - User View",
-}
+	// Role Permissions
+	PermissionRoleCreate = "user-svc:role:create"
+	PermissionRoleView   = "user-svc:role:view"
+	PermissionRoleEdit   = "user-svc:role:edit"
+	PermissionRoleDelete = "user-svc:role:delete"
 
-var PermissionUserEdit = Permission{
-	Id:   "user-svc:user:edit",
-	Name: "User Svc - User Edit",
-}
+	// Permission Permissions
+	PermissionPermissionCreate = "user-svc:permission:create"
+	PermissionPermissionEdit   = "user-svc:permission:edit"
 
-var PermissionUserDelete = Permission{
-	Id:   "user-svc:user:delete",
-	Name: "User Svc - User Delete",
-}
+	// Organization Permissions
+	PermissionOrganizationCreate     = "user-svc:organization:create"
+	PermissionOrganizationAddUser    = "user-svc:organization:add-user"
+	PermissionOrganizationRemoveUser = "user-svc:organization:remove-user"
 
-var PermissionUserPasswordChange = Permission{
-	Id:   "user-svc:user:passwordChange",
-	Name: "User Svc - User Password Change",
-}
+	// Grant Permissions
+	PermissionGrantCreate = "user-svc:grant:create"
+	PermissionGrantView   = "user-svc:grant:view"
 
-var PermissionRoleCreate = Permission{
-	Id:   "user-svc:role:create",
-	Name: "User Svc - Role Create",
-}
+	// Invite Permissions
+	PermissionInviteEdit = "user-svc:invite:edit"
+	PermissionInviteView = "user-svc:invite:view"
+)
 
-var PermissionRoleView = Permission{
-	Id:   "user-svc:role:view",
-	Name: "User Svc - Role View",
-}
-
-var PermissionRoleEdit = Permission{
-	Id:   "user-svc:role:edit",
-	Name: "User Svc - Role Edit",
-}
-
-var PermissionRoleDelete = Permission{
-	Id:   "user-svc:role:delete",
-	Name: "User Svc - Role Delete",
-}
-
-var PermissionPermissionCreate = Permission{
-	Id:   "user-svc:permission:create",
-	Name: "User Svc - Permission Create",
-}
-
-var PermissionPermissionEdit = Permission{
-	Id:   "user-svc:permission:edit",
-	Name: "User Svc - Permission Edit",
-}
-
-var PermissionPermissionAssign = Permission{
-	Id:   "user-svc:permission:assign",
-	Name: "User Svc - Permission Assign",
-}
-
-var PermissionOrganizationCreate = Permission{
-	Id:   "user-svc:organization:create",
-	Name: "User Svc - Organization Create",
-}
-
-var PermissionOrganizationAddUser = Permission{
-	Id:   "user-svc:organization:add-user",
-	Name: "User Svc - Organization Add User",
-}
-
-var PermissionOrganizationRemoveUser = Permission{
-	Id:   "user-svc:organization:remove-user",
-	Name: "User Svc - Organization Remove User",
-}
-
-var PermissionGrantCreate = Permission{
-	Id:   "user-svc:grant:create",
-	Name: "User Svc - Create Grant",
-}
-
-var PermissionGrantView = Permission{
-	Id:   "user-svc:grant:view",
-	Name: "User Svc - View Grant",
-}
-
-var PermissionInviteEdit = Permission{
-	Id:   "user-svc:invite:edit",
-	Name: "User Svc - Edit Invite",
-}
-
-var PermissionInviteView = Permission{
-	Id:   "user-svc:invite:view",
-	Name: "User Svc - View Invite",
-}
-
-var UserPermissions = []*Permission{
-	&PermissionUserPasswordChange,
+var UserPermissions = []string{
+	PermissionUserPasswordChange,
 
 	// Anyone can create and edit their own roles,
 	// provided the role ID is prefixed by the caller's slug.
-	&PermissionRoleCreate,
+	PermissionRoleCreate,
 
 	// Anyone can create and edit their own permissions
-	// given they start wiht their slug
-	&PermissionPermissionCreate,
-	&PermissionPermissionEdit,
-	&PermissionPermissionAssign,
+	// given the permission starts with their slug
+	PermissionPermissionCreate,
+	PermissionPermissionEdit,
 
 	// Anyone can create their own organizations and manage users there.
 	// Organization
-	&PermissionOrganizationCreate,
-	&PermissionOrganizationAddUser,
-	&PermissionOrganizationRemoveUser,
+	PermissionOrganizationCreate,
+	PermissionOrganizationAddUser,
+	PermissionOrganizationRemoveUser,
 
-	&PermissionInviteEdit,
-	&PermissionInviteView,
+	PermissionInviteEdit,
+	PermissionInviteView,
 }
 
-var AdminPermissions = []*Permission{
-	&PermissionUserCreate,
-	&PermissionUserView,
-	&PermissionUserEdit,
-	&PermissionUserDelete,
-	&PermissionRoleCreate,
-	&PermissionRoleEdit,
-	&PermissionRoleView,
-	&PermissionRoleDelete,
-	&PermissionPermissionCreate,
-	&PermissionPermissionEdit,
-	&PermissionPermissionAssign,
-	&PermissionOrganizationCreate,
-	&PermissionOrganizationAddUser,
-	&PermissionOrganizationRemoveUser,
-	&PermissionGrantView,
-	&PermissionGrantCreate,
+var AdminPermissions = []string{
+	PermissionUserCreate,
+	PermissionUserView,
+	PermissionUserEdit,
+	PermissionUserDelete,
+	PermissionRoleCreate,
+	PermissionRoleEdit,
+	PermissionRoleView,
+	PermissionRoleDelete,
+	PermissionPermissionCreate,
+	PermissionPermissionEdit,
+	PermissionOrganizationCreate,
+	PermissionOrganizationAddUser,
+	PermissionOrganizationRemoveUser,
+	PermissionGrantView,
+	PermissionGrantCreate,
 }

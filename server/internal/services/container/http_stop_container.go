@@ -42,7 +42,7 @@ func (dm *ContainerService) StopContainer(
 ) {
 
 	isAuthRsp, _, err := dm.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *container.PermissionContainerStop.Id).
+		UserSvcAPI.IsAuthorized(r.Context(), container.PermissionContainerStop).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{"model-svc", "deploy-svc"},
 		}).

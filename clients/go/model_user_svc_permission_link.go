@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the UserSvcPermissionLink type satisfies the MappedNullable interface at compile time
@@ -20,16 +22,20 @@ var _ MappedNullable = &UserSvcPermissionLink{}
 
 // UserSvcPermissionLink struct for UserSvcPermissionLink
 type UserSvcPermissionLink struct {
-	PermissionId *string `json:"permissionId,omitempty"`
-	RoleId *string `json:"roleId,omitempty"`
+	Permission string `json:"permission"`
+	Role string `json:"role"`
 }
+
+type _UserSvcPermissionLink UserSvcPermissionLink
 
 // NewUserSvcPermissionLink instantiates a new UserSvcPermissionLink object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcPermissionLink() *UserSvcPermissionLink {
+func NewUserSvcPermissionLink(permission string, role string) *UserSvcPermissionLink {
 	this := UserSvcPermissionLink{}
+	this.Permission = permission
+	this.Role = role
 	return &this
 }
 
@@ -41,68 +47,52 @@ func NewUserSvcPermissionLinkWithDefaults() *UserSvcPermissionLink {
 	return &this
 }
 
-// GetPermissionId returns the PermissionId field value if set, zero value otherwise.
-func (o *UserSvcPermissionLink) GetPermissionId() string {
-	if o == nil || IsNil(o.PermissionId) {
+// GetPermission returns the Permission field value
+func (o *UserSvcPermissionLink) GetPermission() string {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.PermissionId
+
+	return o.Permission
 }
 
-// GetPermissionIdOk returns a tuple with the PermissionId field value if set, nil otherwise
+// GetPermissionOk returns a tuple with the Permission field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcPermissionLink) GetPermissionIdOk() (*string, bool) {
-	if o == nil || IsNil(o.PermissionId) {
+func (o *UserSvcPermissionLink) GetPermissionOk() (*string, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.PermissionId, true
+	return &o.Permission, true
 }
 
-// HasPermissionId returns a boolean if a field has been set.
-func (o *UserSvcPermissionLink) HasPermissionId() bool {
-	if o != nil && !IsNil(o.PermissionId) {
-		return true
-	}
-
-	return false
+// SetPermission sets field value
+func (o *UserSvcPermissionLink) SetPermission(v string) {
+	o.Permission = v
 }
 
-// SetPermissionId gets a reference to the given string and assigns it to the PermissionId field.
-func (o *UserSvcPermissionLink) SetPermissionId(v string) {
-	o.PermissionId = &v
-}
-
-// GetRoleId returns the RoleId field value if set, zero value otherwise.
-func (o *UserSvcPermissionLink) GetRoleId() string {
-	if o == nil || IsNil(o.RoleId) {
+// GetRole returns the Role field value
+func (o *UserSvcPermissionLink) GetRole() string {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.RoleId
+
+	return o.Role
 }
 
-// GetRoleIdOk returns a tuple with the RoleId field value if set, nil otherwise
+// GetRoleOk returns a tuple with the Role field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcPermissionLink) GetRoleIdOk() (*string, bool) {
-	if o == nil || IsNil(o.RoleId) {
+func (o *UserSvcPermissionLink) GetRoleOk() (*string, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.RoleId, true
+	return &o.Role, true
 }
 
-// HasRoleId returns a boolean if a field has been set.
-func (o *UserSvcPermissionLink) HasRoleId() bool {
-	if o != nil && !IsNil(o.RoleId) {
-		return true
-	}
-
-	return false
-}
-
-// SetRoleId gets a reference to the given string and assigns it to the RoleId field.
-func (o *UserSvcPermissionLink) SetRoleId(v string) {
-	o.RoleId = &v
+// SetRole sets field value
+func (o *UserSvcPermissionLink) SetRole(v string) {
+	o.Role = v
 }
 
 func (o UserSvcPermissionLink) MarshalJSON() ([]byte, error) {
@@ -115,13 +105,47 @@ func (o UserSvcPermissionLink) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcPermissionLink) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.PermissionId) {
-		toSerialize["permissionId"] = o.PermissionId
-	}
-	if !IsNil(o.RoleId) {
-		toSerialize["roleId"] = o.RoleId
-	}
+	toSerialize["permission"] = o.Permission
+	toSerialize["role"] = o.Role
 	return toSerialize, nil
+}
+
+func (o *UserSvcPermissionLink) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"permission",
+		"role",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varUserSvcPermissionLink := _UserSvcPermissionLink{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varUserSvcPermissionLink)
+
+	if err != nil {
+		return err
+	}
+
+	*o = UserSvcPermissionLink(varUserSvcPermissionLink)
+
+	return err
 }
 
 type NullableUserSvcPermissionLink struct {

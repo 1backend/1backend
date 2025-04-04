@@ -41,7 +41,7 @@ func (s *UserService) ListGrants(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	_, isAuthorized, err := s.isAuthorized(r, user.PermissionRoleView.Id, nil, nil)
+	_, isAuthorized, err := s.isAuthorized(r, user.PermissionRoleView, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -77,8 +77,8 @@ func (s *UserService) ListGrants(
 
 func (us *UserService) listGrants(req *user.ListGrantsRequest) ([]*user.Grant, error) {
 	filters := []datastore.Filter{}
-	if req.PermissionId != "" {
-		filters = append(filters, datastore.Equals([]string{"permissionId"}, req.PermissionId))
+	if req.Permission != "" {
+		filters = append(filters, datastore.Equals([]string{"permission"}, req.Permission))
 	}
 	if req.Slug != "" {
 		filters = append(filters, datastore.Equals([]string{"slug"}, req.Slug))

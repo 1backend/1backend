@@ -13193,7 +13193,7 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             const response = yield this.request({
-                path: `/user-svc/user/{userId}/role/{roleId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))).replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
+                path: `/user-svc/user/{userId}/role/{role}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))).replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13332,7 +13332,7 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             const response = yield this.request({
-                path: `/user-svc/role/{roleId}`.replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
+                path: `/user-svc/role/{role}`.replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13398,7 +13398,7 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             const response = yield this.request({
-                path: `/user-svc/role/{roleId}/permissions`.replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
+                path: `/user-svc/role/{role}/permissions`.replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14015,7 +14015,7 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             const response = yield this.request({
-                path: `/user-svc/role/{roleId}/permissions`.replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
+                path: `/user-svc/role/{role}/permissions`.replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,

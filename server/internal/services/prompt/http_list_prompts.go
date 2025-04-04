@@ -41,7 +41,7 @@ func (p *PromptService) ListPrompts(
 ) {
 
 	isAuthRsp, _, err := p.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *prompt.PermissionPromptView.Id).
+		UserSvcAPI.IsAuthorized(r.Context(), prompt.PermissionPromptView).
 		Body(openapi.UserSvcIsAuthorizedRequest{}).
 		Execute()
 	if err != nil {

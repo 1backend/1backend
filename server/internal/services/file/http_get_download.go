@@ -43,7 +43,7 @@ func (fs *FileService) GetDownload(
 ) {
 
 	isAuthRsp, _, err := fs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *file.PermissionDownloadView.Id).
+		UserSvcAPI.IsAuthorized(r.Context(), file.PermissionDownloadView).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{"docker-svc", "model-svc"},
 		}).

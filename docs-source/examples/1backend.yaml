@@ -6274,7 +6274,7 @@ paths:
       summary: Create a New Role
       tags:
       - User Svc
-  /user-svc/role/{roleId}:
+  /user-svc/role/{role}:
     delete:
       consumes:
       - application/json
@@ -6310,7 +6310,7 @@ paths:
       summary: Delete a Role
       tags:
       - User Svc
-  /user-svc/role/{roleId}/permissions:
+  /user-svc/role/{role}/permissions:
     get:
       consumes:
       - application/json
@@ -6607,7 +6607,7 @@ paths:
       summary: Save User
       tags:
       - User Svc
-  /user-svc/user/{userId}/role/{roleId}:
+  /user-svc/user/{userId}/role/{role}:
     put:
       consumes:
       - application/json

@@ -8,39 +8,20 @@
 
 package prompt_svc
 
-import (
-	openapi "github.com/1backend/1backend/clients/go"
+var (
+	// Prompt Service - Prompt Permissions
+	PermissionPromptCreate = "prompt-svc:prompt:create"
+	PermissionPromptView   = "prompt-svc:prompt:view"
+	PermissionPromptEdit   = "prompt-svc:prompt:edit"
+	PermissionPromptDelete = "prompt-svc:prompt:delete"
+	PermissionPromptStream = "prompt-svc:prompt:stream"
+
+	// Admin Permission Group
+	AdminPermissions = []string{
+		PermissionPromptCreate,
+		PermissionPromptView,
+		PermissionPromptEdit,
+		PermissionPromptDelete,
+		PermissionPromptStream,
+	}
 )
-
-var PermissionPromptCreate = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("prompt-svc:prompt:create"),
-	Name: openapi.PtrString("Prompt Svc - Prompt Create"),
-}
-
-var PermissionPromptView = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("prompt-svc:prompt:view"),
-	Name: openapi.PtrString("Prompt Svc - Prompt View"),
-}
-
-var PermissionPromptEdit = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("prompt-svc:prompt:edit"),
-	Name: openapi.PtrString("Prompt Svc - Prompt Edit"),
-}
-
-var PermissionPromptDelete = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("prompt-svc:prompt:delete"),
-	Name: openapi.PtrString("Prompt Svc - Prompt Delete"),
-}
-
-var PermissionPromptStream = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("prompt-svc:prompt:stream"),
-	Name: openapi.PtrString("Prompt Svc - Prompt Stream"),
-}
-
-var AdminPermissions = []openapi.UserSvcPermission{
-	PermissionPromptCreate,
-	PermissionPromptView,
-	PermissionPromptEdit,
-	PermissionPromptDelete,
-	PermissionPromptStream,
-}

@@ -38,7 +38,7 @@ import (
 // @Router /user-svc/user/{userId} [delete]
 func (s *UserService) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
-	usr, isAuthorized, err := s.isAuthorized(r, user.PermissionUserDelete.Id, nil, nil)
+	usr, isAuthorized, err := s.isAuthorized(r, user.PermissionUserDelete, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -98,7 +98,7 @@ func (s *UserService) deleteUser(userId string) error {
 
 	if isAdminUser {
 		adminUsers, err := s.userRoleLinksStore.Query(
-			datastore.Equals(datastore.Field("roleId"), usertypes.RoleAdmin.Id),
+			datastore.Equals(datastore.Field("roleId"), usertypes.RoleAdmin),
 		).Find()
 		if err != nil {
 			return err
@@ -116,7 +116,7 @@ func (s *UserService) deleteUser(userId string) error {
 
 func (s *UserService) isAdmin(userId string) (bool, error) {
 	_, isAdminUser, err := s.userRoleLinksStore.Query(
-		datastore.Id(fmt.Sprintf("%v:%v", userId, usertypes.RoleAdmin.Id)),
+		datastore.Id(fmt.Sprintf("%v:%v", userId, usertypes.RoleAdmin)),
 	).FindOne()
 	if err != nil {
 		return false, err

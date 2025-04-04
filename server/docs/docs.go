@@ -4531,7 +4531,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user-svc/permission/{permissionId}/is-authorized": {
+        "/user-svc/permission/{permission}/is-authorized": {
             "post": {
                 "security": [
                     {
@@ -4554,7 +4554,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Permission ID",
-                        "name": "permissionId",
+                        "name": "permission",
                         "in": "path",
                         "required": true
                     },
@@ -4584,64 +4584,6 @@ const docTemplate = `{
                         "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-svc/permissions": {
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Creates or updates a list of permissions.\n\u003cb\u003eThe permission ID must be prefixed by the callers slug.\u003c/b\u003e\nEg. if the owner's slug is ` + "`" + `petstore-svc` + "`" + ` the permission should look like ` + "`" + `petstore-svc:pet:edit` + "`" + `.\n\nRequires the ` + "`" + `user-svc:permission:create` + "`" + ` permission.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User Svc"
-                ],
-                "summary": "Save Permissions",
-                "operationId": "savePermissions",
-                "parameters": [
-                    {
-                        "description": "Permission Details",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.SavePermissionsRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.SavePermissionsResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request: Invalid JSON or Bad Namespace",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
                         }
                     }
                 }
@@ -4730,120 +4672,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/user-svc/role": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Create a new role.\n\u003cb\u003eThe role ID must be prefixed by the caller's slug.\u003c/b\u003e\nEg. if the caller's slug is ` + "`" + `petstore-svc` + "`" + ` the role should look like ` + "`" + `petstore-svc:admin` + "`" + `.\nThe user account who creates the role will become the owner of that role, and only the owner will be able to edit the role.\n\nRequires the ` + "`" + `user-svc:role:create` + "`" + ` permission.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User Svc"
-                ],
-                "summary": "Create a New Role",
-                "operationId": "createRole",
-                "parameters": [
-                    {
-                        "description": "Create Role Request",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.CreateRoleRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Role created successfully",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.CreateRoleResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid JSON",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-svc/role/{roleId}": {
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Delete a role based on the role ID.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User Svc"
-                ],
-                "summary": "Delete a Role",
-                "operationId": "deleteRole",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Role ID",
-                        "name": "roleId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.DeleteRoleResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid JSON",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/user-svc/role/{roleId}/permissions": {
             "get": {
                 "security": [
@@ -4895,69 +4723,6 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "type": "string"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Set permissions for a specified role. The caller can add permissions it owns to any role.\nIf the caller tries to add a permission it doesn't own to a role, ` + "`" + `StatusBadRequest` + "`" + ` will be returned.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User Svc"
-                ],
-                "summary": "Set Role Permissions",
-                "operationId": "setRolePermission",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Role ID",
-                        "name": "roleId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Set Role Permissions Request",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.SetRolePermissionsRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.SetRolePermissionsResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid JSON",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
                         }
                     }
                 }
@@ -5333,7 +5098,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user-svc/user/{userId}/role/{roleId}": {
+        "/user-svc/user/{userId}/role/{role}": {
             "put": {
                 "security": [
                     {
@@ -5363,7 +5128,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Role ID",
-                        "name": "roleId",
+                        "name": "role",
                         "in": "path",
                         "required": true
                     },
@@ -9282,37 +9047,6 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.CreateRoleRequest": {
-            "type": "object",
-            "required": [
-                "id"
-            ],
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "permissionIds": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "user_svc.CreateRoleResponse": {
-            "type": "object",
-            "properties": {
-                "role": {
-                    "$ref": "#/definitions/user_svc.Role"
-                }
-            }
-        },
         "user_svc.CreateUserRequest": {
             "type": "object",
             "properties": {
@@ -9339,9 +9073,6 @@ const docTemplate = `{
         "user_svc.CreateUserResponse": {
             "type": "object"
         },
-        "user_svc.DeleteRoleResponse": {
-            "type": "object"
-        },
         "user_svc.DeleteUserResponse": {
             "type": "object"
         },
@@ -9359,7 +9090,7 @@ const docTemplate = `{
                 "permissions": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user_svc.Permission"
+                        "type": "string"
                     }
                 }
             }
@@ -9377,15 +9108,25 @@ const docTemplate = `{
         },
         "user_svc.Grant": {
             "type": "object",
+            "required": [
+                "permission"
+            ],
             "properties": {
                 "id": {
                     "type": "string"
                 },
-                "permissionId": {
+                "permission": {
                     "type": "string"
                 },
+                "roles": {
+                    "description": "Role IDs that have been granted the specified permission.\n\nOriginally, grants were designed for slugs to facilitate service-to-service calls.\nDue to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.\n\nAlternatively, permissions can be assigned to roles using UserSvc.AssignPermissions.\nGrants currently offer a more streamlined approach, though this may evolve over time.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "slugs": {
-                    "description": "Slugs who are granted the PermissionId",
+                    "description": "Slugs that have been granted the specified permission.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -9470,7 +9211,7 @@ const docTemplate = `{
         "user_svc.ListGrantsRequest": {
             "type": "object",
             "properties": {
-                "permissionId": {
+                "permission": {
                     "type": "string"
                 },
                 "slug": {
@@ -9520,7 +9261,7 @@ const docTemplate = `{
                 "roles": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user_svc.Role"
+                        "type": "string"
                     }
                 }
             }
@@ -9638,39 +9379,17 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.Permission": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "description": "eg. \"user.viewer\"",
-                    "type": "string"
-                },
-                "name": {
-                    "description": "eg. \"User Viewer\"",
-                    "type": "string"
-                },
-                "ownerId": {
-                    "description": "Service who owns the permission\n\nUncertain if this aligns with the system's use of slugs.\nIssue encountered: I renamed Docker Svc to Container Svc in two steps (by mistake).\nThe name/slug had already changed to \"container-svc,\" but data was still being saved\nin the \"dockerSvcCredentials\" table.\nAfter renaming the tables as well, I hit a \"cannot update unowned permission\" error\nbecause ownership relies on this field rather than the user slug. YMMV.",
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
         "user_svc.PermissionLink": {
             "type": "object",
+            "required": [
+                "permission",
+                "role"
+            ],
             "properties": {
-                "permissionId": {
+                "permission": {
                     "type": "string"
                 },
-                "roleId": {
+                "role": {
                     "type": "string"
                 }
             }
@@ -9740,29 +9459,6 @@ const docTemplate = `{
         },
         "user_svc.ResetPasswordResponse": {
             "type": "object"
-        },
-        "user_svc.Role": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "ownerId": {
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                }
-            }
         },
         "user_svc.SaveGrantsRequest": {
             "type": "object",
@@ -9849,28 +9545,6 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.SavePermissionsRequest": {
-            "type": "object",
-            "properties": {
-                "permissions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/user_svc.Permission"
-                    }
-                }
-            }
-        },
-        "user_svc.SavePermissionsResponse": {
-            "type": "object",
-            "properties": {
-                "permissions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/user_svc.Permission"
-                    }
-                }
-            }
-        },
         "user_svc.SaveProfileRequest": {
             "type": "object",
             "properties": {
@@ -9887,20 +9561,6 @@ const docTemplate = `{
             }
         },
         "user_svc.SaveProfileResponse": {
-            "type": "object"
-        },
-        "user_svc.SetRolePermissionsRequest": {
-            "type": "object",
-            "properties": {
-                "permissionIds": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "user_svc.SetRolePermissionsResponse": {
             "type": "object"
         },
         "user_svc.User": {
@@ -9965,7 +9625,7 @@ const docTemplate = `{
                     "type": "string",
                     "example": "Jane Doe"
                 },
-                "roleIds": {
+                "roles": {
                     "type": "array",
                     "items": {
                         "type": "string"

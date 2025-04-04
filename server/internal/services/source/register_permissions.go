@@ -22,29 +22,20 @@ func (ns *SourceService) registerPermissions() error {
 	ctx := context.Background()
 	userSvc := ns.clientFactory.Client(client.WithToken(ns.token)).UserSvcAPI
 
-	_, _, err := userSvc.SavePermissions(ctx).
-		Body(openapi.UserSvcSavePermissionsRequest{
-			Permissions: sourcetypes.AdminPermissions,
-		}).
-		Execute()
-	if err != nil {
-		return err
-	}
-
 	req := openapi.UserSvcAssignPermissionsRequest{}
 
-	for _, role := range []*usertypes.Role{
+	for _, role := range []string{
 		usertypes.RoleAdmin,
 	} {
 		for _, permission := range sourcetypes.AdminPermissions {
 			req.PermissionLinks = append(req.PermissionLinks, openapi.UserSvcPermissionLink{
-				RoleId:       openapi.PtrString(role.Id),
-				PermissionId: permission.Id,
+				Role:       role,
+				Permission: permission,
 			})
 		}
 	}
 
-	_, _, err = userSvc.AssignPermissions(ctx).
+	_, _, err := userSvc.AssignPermissions(ctx).
 		Body(req).
 		Execute()
 	if err != nil {

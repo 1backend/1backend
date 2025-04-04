@@ -43,7 +43,7 @@ func (dm *ContainerService) ImagePullable(
 ) {
 
 	isAuthRsp, _, err := dm.clientFactory.Client(client.WithTokenFromRequest(req)).
-		UserSvcAPI.IsAuthorized(req.Context(), *container.PermissionContainerView.Id).
+		UserSvcAPI.IsAuthorized(req.Context(), container.PermissionContainerView).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{"model-svc"},
 		}).

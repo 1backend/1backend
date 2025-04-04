@@ -8,36 +8,18 @@
 
 package config_svc
 
-import (
-	openapi "github.com/1backend/1backend/clients/go"
+var (
+	// Config Service - Config Permissions
+	PermissionConfigCreate = "config-svc:config:create"
+	PermissionConfigEdit   = "config-svc:config:edit"
+	PermissionConfigDelete = "config-svc:config:delete"
+	PermissionConfigStream = "config-svc:config:stream"
+
+	// Admin Permission Group
+	AdminPermissions = []string{
+		PermissionConfigCreate,
+		PermissionConfigEdit,
+		PermissionConfigDelete,
+		PermissionConfigStream,
+	}
 )
-
-var PermissionConfigCreate = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("config-svc:config:create"),
-	Name: openapi.PtrString("Config Svc - Config Create"),
-}
-
-// There is no view permission as configs are public facing,
-// can be read even without logging in
-
-var PermissionConfigEdit = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("config-svc:config:edit"),
-	Name: openapi.PtrString("Config Svc - Config Edit"),
-}
-
-var PermissionConfigDelete = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("config-svc:config:delete"),
-	Name: openapi.PtrString("Config Svc - Delete"),
-}
-
-var PermissionConfigStream = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("config-svc:config:stream"),
-	Name: openapi.PtrString("Config Svc - Config Stream"),
-}
-
-var AdminPermissions = []openapi.UserSvcPermission{
-	PermissionConfigCreate,
-	PermissionConfigEdit,
-	PermissionConfigDelete,
-	PermissionConfigStream,
-}

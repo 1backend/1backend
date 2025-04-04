@@ -46,7 +46,7 @@ func (s *UserService) SaveOrganization(
 
 	usr, isAuthorized, err := s.isAuthorized(
 		r,
-		user.PermissionOrganizationCreate.Id,
+		user.PermissionOrganizationCreate,
 		nil,
 		nil,
 	)
@@ -194,40 +194,6 @@ func (s *UserService) inactivateTokens(userId string) error {
 			userId,
 		)).UpdateFields(map[string]any{
 		"active": false,
-	})
-}
-
-func (s *UserService) addStaticRoleToUser(userId, roleId string) error {
-	roleQ := s.rolesStore.Query(
-		datastore.Id(roleId),
-	)
-	roleI, found, err := roleQ.FindOne()
-	if err != nil {
-		return err
-	}
-	if !found {
-		return fmt.Errorf("cannot find role %v", roleId)
-	}
-	role := roleI.(*user.Role)
-
-	userQ := s.usersStore.Query(
-		datastore.Id(userId),
-	)
-	userI, found, err := userQ.FindOne()
-	if err != nil {
-		return err
-	}
-	if !found {
-		return fmt.Errorf("cannot find user %v", userId)
-	}
-	u := userI.(*user.User)
-
-	return s.userRoleLinksStore.Upsert(&user.UserRoleLink{
-		Id:        fmt.Sprintf("%v:%v", u.Id, role.Id),
-		CreatedAt: time.Now(),
-
-		RoleId: roleId,
-		UserId: userId,
 	})
 }
 

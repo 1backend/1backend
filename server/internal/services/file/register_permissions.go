@@ -25,29 +25,20 @@ func (fs *FileService) registerPermissions() error {
 	ctx := context.Background()
 	userSvc := fs.clientFactory.Client(client.WithToken(fs.token)).UserSvcAPI
 
-	_, _, err := userSvc.SavePermissions(ctx).
-		Body(openapi.UserSvcSavePermissionsRequest{
-			Permissions: filetypes.AdminPermissions,
-		}).
-		Execute()
-	if err != nil {
-		return err
-	}
-
 	req := openapi.UserSvcAssignPermissionsRequest{}
 
-	for _, role := range []*usertypes.Role{
+	for _, role := range []string{
 		usertypes.RoleAdmin,
 	} {
 		for _, permission := range filetypes.AdminPermissions {
 			req.PermissionLinks = append(req.PermissionLinks, openapi.UserSvcPermissionLink{
-				RoleId:       openapi.PtrString(role.Id),
-				PermissionId: permission.Id,
+				Role:       role,
+				Permission: permission,
 			})
 		}
 	}
 
-	_, _, err = userSvc.AssignPermissions(ctx).
+	_, _, err := userSvc.AssignPermissions(ctx).
 		Body(req).
 		Execute()
 	if err != nil {

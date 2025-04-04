@@ -8,39 +8,20 @@
 
 package chat_svc
 
-import (
-	openapi "github.com/1backend/1backend/clients/go"
+var (
+	// Chat Service - Message Permissions
+	PermissionMessageCreate = "chat-svc:message:create"
+	PermissionMessageView   = "chat-svc:message:view"
+	PermissionMessageEdit   = "chat-svc:message:edit"
+	PermissionMessageDelete = "chat-svc:message:delete"
+	PermissionMessageStream = "chat-svc:message:stream"
+
+	// Message Permission Group
+	MessagePermissions = []string{
+		PermissionMessageCreate,
+		PermissionMessageView,
+		PermissionMessageEdit,
+		PermissionMessageDelete,
+		PermissionMessageStream,
+	}
 )
-
-var PermissionMessageCreate = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("chat-svc:message:create"),
-	Name: openapi.PtrString("Message Create"),
-}
-
-var PermissionMessageView = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("chat-svc:message:view"),
-	Name: openapi.PtrString("Message View"),
-}
-
-var PermissionMessageEdit = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("chat-svc:message:edit"),
-	Name: openapi.PtrString("Message Edit"),
-}
-
-var PermissionMessageDelete = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("chat-svc:message:delete"),
-	Name: openapi.PtrString("Message Delete"),
-}
-
-var PermissionMessageStream = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("chat-svc:message:stream"),
-	Name: openapi.PtrString("Message Stream"),
-}
-
-var MessagePermissions = []openapi.UserSvcPermission{
-	PermissionMessageCreate,
-	PermissionMessageView,
-	PermissionMessageEdit,
-	PermissionMessageDelete,
-	PermissionMessageStream,
-}

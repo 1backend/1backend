@@ -49,7 +49,7 @@ import (
 // @Router /user-svc/invites [put]
 func (s *UserService) SaveInvites(w http.ResponseWriter, r *http.Request) {
 
-	usr, isAuthorized, err := s.isAuthorized(r, user.PermissionInviteEdit.Id, nil, nil)
+	usr, isAuthorized, err := s.isAuthorized(r, user.PermissionInviteEdit, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

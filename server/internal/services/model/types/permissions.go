@@ -8,51 +8,26 @@
 
 package model_svc
 
-import (
-	openapi "github.com/1backend/1backend/clients/go"
+var (
+	// Model Service - Model Permissions
+	PermissionModelCreate = "model-svc:model:create"
+	PermissionModelView   = "model-svc:model:view"
+	PermissionModelEdit   = "model-svc:model:edit"
+	PermissionModelDelete = "model-svc:model:delete"
+	PermissionModelStream = "model-svc:model:stream"
+
+	// Model Service - Platform Permissions
+	PermissionPlatformView = "model-svc:platform:view"
+	PermissionPlatformEdit = "model-svc:platform:edit"
+
+	// Admin Permission Group
+	AdminPermissions = []string{
+		PermissionModelCreate,
+		PermissionModelView,
+		PermissionModelEdit,
+		PermissionModelDelete,
+		PermissionModelStream,
+		PermissionPlatformEdit,
+		PermissionPlatformView,
+	}
 )
-
-var PermissionModelCreate = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("model-svc:model:create"),
-	Name: openapi.PtrString("Model Svc - Model Create"),
-}
-
-var PermissionModelView = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("model-svc:model:view"),
-	Name: openapi.PtrString("Model Svc - Model View"),
-}
-
-var PermissionModelEdit = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("model-svc:model:edit"),
-	Name: openapi.PtrString("Model Svc - Model Edit"),
-}
-
-var PermissionModelDelete = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("model-svc:model:delete"),
-	Name: openapi.PtrString("Model Svc - Model Delete"),
-}
-
-var PermissionModelStream = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("model-svc:model:stream"),
-	Name: openapi.PtrString("Model Svc - Model Stream"),
-}
-
-var PermissionPlatformView = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("model-svc:platform:view"),
-	Name: openapi.PtrString("Model Svc - Platform View"),
-}
-
-var PermissionPlatformEdit = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("model-svc:platform:edit"),
-	Name: openapi.PtrString("Model Svc - Platform Edit"),
-}
-
-var AdminPermissions = []openapi.UserSvcPermission{
-	PermissionModelCreate,
-	PermissionModelView,
-	PermissionModelEdit,
-	PermissionModelDelete,
-	PermissionModelStream,
-	PermissionPlatformEdit,
-	PermissionPlatformView,
-}

@@ -27,7 +27,7 @@ type UserSvcUserRecord struct {
 	Id string `json:"id"`
 	// Full name of the user.
 	Name *string `json:"name,omitempty"`
-	RoleIds []string `json:"roleIds,omitempty"`
+	Roles []string `json:"roles,omitempty"`
 	// URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
 	Slug string `json:"slug"`
 	UpdatedAt *string `json:"updatedAt,omitempty"`
@@ -174,36 +174,36 @@ func (o *UserSvcUserRecord) SetName(v string) {
 	o.Name = &v
 }
 
-// GetRoleIds returns the RoleIds field value if set, zero value otherwise.
-func (o *UserSvcUserRecord) GetRoleIds() []string {
-	if o == nil || IsNil(o.RoleIds) {
+// GetRoles returns the Roles field value if set, zero value otherwise.
+func (o *UserSvcUserRecord) GetRoles() []string {
+	if o == nil || IsNil(o.Roles) {
 		var ret []string
 		return ret
 	}
-	return o.RoleIds
+	return o.Roles
 }
 
-// GetRoleIdsOk returns a tuple with the RoleIds field value if set, nil otherwise
+// GetRolesOk returns a tuple with the Roles field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcUserRecord) GetRoleIdsOk() ([]string, bool) {
-	if o == nil || IsNil(o.RoleIds) {
+func (o *UserSvcUserRecord) GetRolesOk() ([]string, bool) {
+	if o == nil || IsNil(o.Roles) {
 		return nil, false
 	}
-	return o.RoleIds, true
+	return o.Roles, true
 }
 
-// HasRoleIds returns a boolean if a field has been set.
-func (o *UserSvcUserRecord) HasRoleIds() bool {
-	if o != nil && !IsNil(o.RoleIds) {
+// HasRoles returns a boolean if a field has been set.
+func (o *UserSvcUserRecord) HasRoles() bool {
+	if o != nil && !IsNil(o.Roles) {
 		return true
 	}
 
 	return false
 }
 
-// SetRoleIds gets a reference to the given []string and assigns it to the RoleIds field.
-func (o *UserSvcUserRecord) SetRoleIds(v []string) {
-	o.RoleIds = v
+// SetRoles gets a reference to the given []string and assigns it to the Roles field.
+func (o *UserSvcUserRecord) SetRoles(v []string) {
+	o.Roles = v
 }
 
 // GetSlug returns the Slug field value
@@ -282,8 +282,8 @@ func (o UserSvcUserRecord) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}
-	if !IsNil(o.RoleIds) {
-		toSerialize["roleIds"] = o.RoleIds
+	if !IsNil(o.Roles) {
+		toSerialize["roles"] = o.Roles
 	}
 	toSerialize["slug"] = o.Slug
 	if !IsNil(o.UpdatedAt) {

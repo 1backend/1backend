@@ -281,7 +281,7 @@ export class UserSvcApi {
      * @param body Assign Role Request
      */
     public async assignRole (userId: string, roleId: string, body?: object, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: object;  }> {
-        const localVarPath = this.basePath + '/user-svc/user/{userId}/role/{roleId}'
+        const localVarPath = this.basePath + '/user-svc/user/{userId}/role/{role}'
             .replace('{' + 'userId' + '}', encodeURIComponent(String(userId)))
             .replace('{' + 'roleId' + '}', encodeURIComponent(String(roleId)));
         let localVarQueryParameters: any = {};
@@ -576,7 +576,7 @@ export class UserSvcApi {
      * @param roleId Role ID
      */
     public async deleteRole (roleId: string, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: object;  }> {
-        const localVarPath = this.basePath + '/user-svc/role/{roleId}'
+        const localVarPath = this.basePath + '/user-svc/role/{role}'
             .replace('{' + 'roleId' + '}', encodeURIComponent(String(roleId)));
         let localVarQueryParameters: any = {};
         let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
@@ -720,7 +720,7 @@ export class UserSvcApi {
      * @param roleId Role ID
      */
     public async getPermissionsByRole (roleId: string, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: UserSvcGetPermissionsResponse;  }> {
-        const localVarPath = this.basePath + '/user-svc/role/{roleId}/permissions'
+        const localVarPath = this.basePath + '/user-svc/role/{role}/permissions'
             .replace('{' + 'roleId' + '}', encodeURIComponent(String(roleId)));
         let localVarQueryParameters: any = {};
         let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
@@ -2014,7 +2014,7 @@ export class UserSvcApi {
      * @param body Set Role Permissions Request
      */
     public async setRolePermission (roleId: string, body: UserSvcSetRolePermissionsRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: object;  }> {
-        const localVarPath = this.basePath + '/user-svc/role/{roleId}/permissions'
+        const localVarPath = this.basePath + '/user-svc/role/{role}/permissions'
             .replace('{' + 'roleId' + '}', encodeURIComponent(String(roleId)));
         let localVarQueryParameters: any = {};
         let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);

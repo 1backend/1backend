@@ -8,37 +8,22 @@
 
 package registry_svc
 
-import (
-	openapi "github.com/1backend/1backend/clients/go"
+var (
+	// Registry Instance Permissions
+	PermissionInstanceCreate = "registry-svc:instance:create"
+	PermissionInstanceView   = "registry-svc:instance:view"
+	PermissionInstanceEdit   = "registry-svc:instance:edit"
+	PermissionInstanceDelete = "registry-svc:instance:delete"
+
+	// Instance Permission Groups
+	InstanceUserPermissions = []string{
+		PermissionInstanceView,
+		PermissionInstanceEdit,
+	}
+
+	InstanceAdminPermissions = []string{
+		PermissionInstanceView,
+		PermissionInstanceCreate,
+		PermissionInstanceDelete,
+	}
 )
-
-var PermissionInstanceCreate = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("registry-svc:instance:create"),
-	Name: openapi.PtrString("Registry Svc - Instance Create"),
-}
-
-var PermissionInstanceView = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("registry-svc:instance:view"),
-	Name: openapi.PtrString("Registry Svc - Instance View"),
-}
-
-var PermissionInstanceEdit = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("registry-svc:instance:edit"),
-	Name: openapi.PtrString("Registry Svc - Instance Edit"),
-}
-
-var PermissionInstanceDelete = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("registry-svc:instance:delete"),
-	Name: openapi.PtrString("Registry Svc - Instance Delete"),
-}
-
-var InstanceUserPermissions = []openapi.UserSvcPermission{
-	PermissionInstanceView,
-	PermissionInstanceEdit,
-}
-
-var InstanceAdminPermissions = []openapi.UserSvcPermission{
-	PermissionInstanceView,
-	PermissionInstanceCreate,
-	PermissionInstanceDelete,
-}

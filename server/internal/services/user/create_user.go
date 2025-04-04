@@ -59,26 +59,6 @@ func (s *UserService) createUser(
 		return err
 	}
 
-	if len(roleIds) > 0 {
-		roleIdAnys := []any{}
-		for _, roleId := range roleIds {
-			roleIdAnys = append(roleIdAnys, roleId)
-		}
-
-		roles, err := s.rolesStore.Query(
-			datastore.IsInList(datastore.Field("id"), roleIdAnys...),
-		).Find()
-		if err != nil {
-			return err
-		}
-		if len(roles) == 0 {
-			return errors.New("no roles found")
-		}
-		if len(roles) < len(roleIds) {
-			return errors.New("some roles are not found")
-		}
-	}
-
 	user.PasswordHash = passwordHash
 	if user.Id == "" {
 		user.Id = sdk.Id("usr")
@@ -101,7 +81,7 @@ func (s *UserService) createUser(
 	}
 
 	if len(roleIds) == 0 {
-		err = s.assignRole(user.Id, usertypes.RoleUser.Id)
+		err = s.assignRole(user.Id, usertypes.RoleUser)
 		if err != nil {
 			return err
 		}

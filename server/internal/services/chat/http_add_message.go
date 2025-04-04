@@ -49,7 +49,7 @@ func (a *ChatService) AddMessage(
 ) {
 
 	isAuthRsp, _, err := a.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *chat.PermissionMessageCreate.Id).
+		UserSvcAPI.IsAuthorized(r.Context(), chat.PermissionMessageCreate).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

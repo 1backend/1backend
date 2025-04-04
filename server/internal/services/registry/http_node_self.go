@@ -42,7 +42,7 @@ func (ns *RegistryService) NodeSelf(
 ) {
 
 	isAuthRsp, _, err := ns.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *registry.PermissionNodeView.Id).
+		UserSvcAPI.IsAuthorized(r.Context(), registry.PermissionNodeView).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{
 				"file-svc",

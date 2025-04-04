@@ -31,8 +31,6 @@ type UserService struct {
 	authorizer auth.Authorizer
 
 	usersStore                 datastore.DataStore
-	rolesStore                 datastore.DataStore
-	permissionsStore           datastore.DataStore
 	credentialsStore           datastore.DataStore
 	authTokensStore            datastore.DataStore
 	keyPairsStore              datastore.DataStore
@@ -62,22 +60,9 @@ func NewUserService(
 		return nil, err
 	}
 
-	rolesStore, err := datastoreFactory("userSvcRoles", &usertypes.Role{})
-	if err != nil {
-		return nil, err
-	}
-
 	authTokensStore, err := datastoreFactory(
 		"userSvcAuthTokens",
 		&usertypes.AuthToken{},
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	permissionsStore, err := datastoreFactory(
-		"userSvcPermissions",
-		&usertypes.Permission{},
 	)
 	if err != nil {
 		return nil, err
@@ -159,9 +144,7 @@ func NewUserService(
 		authorizer:                 authorizer,
 		clientFactory:              clientFactory,
 		usersStore:                 usersStore,
-		rolesStore:                 rolesStore,
 		authTokensStore:            authTokensStore,
-		permissionsStore:           permissionsStore,
 		credentialsStore:           credentialsStore,
 		keyPairsStore:              keyPairsStore,
 		contactsStore:              contactsStore,
@@ -172,11 +155,6 @@ func NewUserService(
 		grantsStore:                grantsStore,
 		invitesStore:               invitesStore,
 		isTest:                     isTest,
-	}
-
-	err = service.registerRoles()
-	if err != nil {
-		return nil, err
 	}
 
 	err = service.registerPermissions()
@@ -253,7 +231,7 @@ func (s *UserService) bootstrap() error {
 
 	if count == 0 {
 		_, err = s.register("1backend", "changeme", "Admin", []string{
-			usertypes.RoleAdmin.Id,
+			usertypes.RoleAdmin,
 		})
 		if err != nil {
 			return err
@@ -292,7 +270,7 @@ func (s *UserService) bootstrap() error {
 	if err != nil {
 		usr, err := s.register(slug, pw,
 			"User Svc", []string{
-				usertypes.RoleUser.Id,
+				usertypes.RoleUser,
 			})
 		if err != nil {
 			return err
@@ -304,32 +282,6 @@ func (s *UserService) bootstrap() error {
 			return err
 		}
 		s.serviceUserId = usr.Id
-	}
-
-	return nil
-}
-
-func (s *UserService) registerRoles() error {
-	err := s.upsertRole(
-		s.serviceUserId,
-		usertypes.RoleAdmin.Id,
-		usertypes.RoleAdmin.Name,
-		"",
-		[]string{},
-	)
-	if err != nil {
-		return err
-	}
-
-	err = s.upsertRole(
-		s.serviceUserId,
-		usertypes.RoleUser.Id,
-		usertypes.RoleUser.Name,
-		"",
-		[]string{},
-	)
-	if err != nil {
-		return err
 	}
 
 	return nil

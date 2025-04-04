@@ -66,7 +66,7 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	roles := []string{
-		user.RoleUser.Id,
+		user.RoleUser,
 	}
 
 	if req.Contact.Id != "" {

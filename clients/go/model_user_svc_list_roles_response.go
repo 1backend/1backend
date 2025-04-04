@@ -20,7 +20,7 @@ var _ MappedNullable = &UserSvcListRolesResponse{}
 
 // UserSvcListRolesResponse struct for UserSvcListRolesResponse
 type UserSvcListRolesResponse struct {
-	Roles []UserSvcRole `json:"roles,omitempty"`
+	Roles []string `json:"roles,omitempty"`
 }
 
 // NewUserSvcListRolesResponse instantiates a new UserSvcListRolesResponse object
@@ -41,9 +41,9 @@ func NewUserSvcListRolesResponseWithDefaults() *UserSvcListRolesResponse {
 }
 
 // GetRoles returns the Roles field value if set, zero value otherwise.
-func (o *UserSvcListRolesResponse) GetRoles() []UserSvcRole {
+func (o *UserSvcListRolesResponse) GetRoles() []string {
 	if o == nil || IsNil(o.Roles) {
-		var ret []UserSvcRole
+		var ret []string
 		return ret
 	}
 	return o.Roles
@@ -51,7 +51,7 @@ func (o *UserSvcListRolesResponse) GetRoles() []UserSvcRole {
 
 // GetRolesOk returns a tuple with the Roles field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcListRolesResponse) GetRolesOk() ([]UserSvcRole, bool) {
+func (o *UserSvcListRolesResponse) GetRolesOk() ([]string, bool) {
 	if o == nil || IsNil(o.Roles) {
 		return nil, false
 	}
@@ -67,8 +67,8 @@ func (o *UserSvcListRolesResponse) HasRoles() bool {
 	return false
 }
 
-// SetRoles gets a reference to the given []UserSvcRole and assigns it to the Roles field.
-func (o *UserSvcListRolesResponse) SetRoles(v []UserSvcRole) {
+// SetRoles gets a reference to the given []string and assigns it to the Roles field.
+func (o *UserSvcListRolesResponse) SetRoles(v []string) {
 	o.Roles = v
 }
 

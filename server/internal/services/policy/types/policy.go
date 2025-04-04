@@ -12,10 +12,6 @@
 */
 package policy_svc
 
-import (
-	openapi "github.com/1backend/1backend/clients/go"
-)
-
 type ErrorResponse struct {
 	Error string `json:"error"`
 }
@@ -113,52 +109,23 @@ type CheckResponse struct {
 }
 
 var (
-	PermissionTemplateView = openapi.UserSvcPermission{
-		Id:   openapi.PtrString("policy-svc:template:view"),
-		Name: openapi.PtrString("Policy Svc - Template View"),
-	}
+	// Policy Service - Template Permissions
+	PermissionTemplateView   = "policy-svc:template:view"
+	PermissionTemplateCreate = "policy-svc:template:create"
+	PermissionTemplateEdit   = "policy-svc:template:edit"
+	PermissionTemplateDelete = "policy-svc:template:delete"
 
-	PermissionTemplateCreate = openapi.UserSvcPermission{
-		Id:   openapi.PtrString("policy-svc:template:create"),
-		Name: openapi.PtrString("Policy Svc - Template Create"),
-	}
+	// Policy Service - Instance Permissions
+	PermissionInstanceView   = "policy-svc:instance:view"
+	PermissionInstanceCreate = "policy-svc:instance:create"
+	PermissionInstanceEdit   = "policy-svc:instance:edit"
+	PermissionInstanceDelete = "policy-svc:instance:delete"
 
-	PermissionTemplateEdit = openapi.UserSvcPermission{
-		Id:   openapi.PtrString("policy-svc:template:edit"),
-		Name: openapi.PtrString("Policy Svc - Template Edit"),
-	}
+	// Policy Service - Check Permissions
+	PermissionCheckView = "policy-svc:check:view"
 
-	PermissionTemplateDelete = openapi.UserSvcPermission{
-		Id:   openapi.PtrString("policy-svc:template:delete"),
-		Name: openapi.PtrString("Policy Svc - Template Delete"),
-	}
-
-	PermissionInstanceView = openapi.UserSvcPermission{
-		Id:   openapi.PtrString("policy-svc:instance:view"),
-		Name: openapi.PtrString("Policy Svc - Instance View"),
-	}
-
-	PermissionInstanceCreate = openapi.UserSvcPermission{
-		Id:   openapi.PtrString("policy-svc:instance:create"),
-		Name: openapi.PtrString("Policy Svc - Instance Create"),
-	}
-
-	PermissionInstanceEdit = openapi.UserSvcPermission{
-		Id:   openapi.PtrString("policy-svc:instance:edit"),
-		Name: openapi.PtrString("Policy Svc - Instance Edit"),
-	}
-
-	PermissionInstanceDelete = openapi.UserSvcPermission{
-		Id:   openapi.PtrString("policy-svc:instance:delete"),
-		Name: openapi.PtrString("Policy Svc - Instance Delete"),
-	}
-
-	PermissionCheckView = openapi.UserSvcPermission{
-		Id:   openapi.PtrString("policy-svc:check:view"),
-		Name: openapi.PtrString("Policy Svc - Check View"),
-	}
-
-	AdminPermissions = []openapi.UserSvcPermission{
+	// Admin Permission Group
+	AdminPermissions = []string{
 		PermissionTemplateView,
 		PermissionTemplateCreate,
 		PermissionTemplateEdit,
@@ -169,7 +136,8 @@ var (
 		PermissionInstanceDelete,
 	}
 
-	UserPermissions = []openapi.UserSvcPermission{
+	// User Permission Group
+	UserPermissions = []string{
 		PermissionCheckView,
 	}
 )

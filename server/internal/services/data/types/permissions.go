@@ -8,39 +8,20 @@
 
 package data_svc
 
-import (
-	openapi "github.com/1backend/1backend/clients/go"
+var (
+	// Data Service - Object Permissions
+	PermissionObjectCreate = "data-svc:object:create"
+	PermissionObjectView   = "data-svc:object:view"
+	PermissionObjectEdit   = "data-svc:object:edit"
+	PermissionObjectDelete = "data-svc:object:delete"
+	PermissionObjectStream = "data-svc:object:stream"
+
+	// Object Permission Group
+	Permissions = []string{
+		PermissionObjectCreate,
+		PermissionObjectView,
+		PermissionObjectEdit,
+		PermissionObjectDelete,
+		PermissionObjectStream,
+	}
 )
-
-var PermissionObjectCreate = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("data-svc:object:create"),
-	Name: openapi.PtrString("Data Svc - Object Create"),
-}
-
-var PermissionObjectView = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("data-svc:object:view"),
-	Name: openapi.PtrString("Data Svc - Object View"),
-}
-
-var PermissionObjectEdit = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("data-svc:object:edit"),
-	Name: openapi.PtrString("Data Svc - Object Edit"),
-}
-
-var PermissionObjectDelete = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("data-svc:object:delete"),
-	Name: openapi.PtrString("Data Svc - Object Delete"),
-}
-
-var PermissionObjectStream = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("data-svc:object:stream"),
-	Name: openapi.PtrString("Data Svc - Object Stream"),
-}
-
-var Permissions = []openapi.UserSvcPermission{
-	PermissionObjectCreate,
-	PermissionObjectView,
-	PermissionObjectEdit,
-	PermissionObjectDelete,
-	PermissionObjectStream,
-}

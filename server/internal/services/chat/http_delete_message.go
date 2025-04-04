@@ -41,7 +41,7 @@ func (a *ChatService) DeleteMessage(
 ) {
 
 	isAuthRsp, _, err := a.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *chat.PermissionMessageDelete.Id).
+		UserSvcAPI.IsAuthorized(r.Context(), chat.PermissionMessageDelete).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

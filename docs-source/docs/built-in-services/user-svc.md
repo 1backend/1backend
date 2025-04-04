@@ -91,18 +91,9 @@ type Claims struct {
 
 Every user has a role, and a user token (see more about tokens on this page) produced upon login contains all the roles a user has.
 
-```yaml
-id: "user-svc:admin"
-name: "User Svc - Admin Role"
-```
+Roles are simply strings. They are not a database record, they don't have an ID, name etc. They are simple strings, such as `user-svc:admin`.
 
-```yaml
-id: "your-svc:your-role"
-name: "Your Svc - Your Role"
-ownerId: "usr_eaSNcJ0BB0" # your user ID
-```
-
-In the below sections we'll refer to roles by their ID (such as `user-svc:admin`). Usually such readable strings are slugs, but in the case of roles slugs were eliminated for simplicity.
+Usually such readable strings are slugs, but in the case of roles slugs were eliminated for simplicity.
 
 ### Static roles
 
@@ -113,43 +104,49 @@ user-svc:admin
 user-svc:user
 ```
 
-defined by the `User Svc` are used for role-based access control. Each role has a list of permissions associated with it. When endpoints authorize a user it can do two things:
+are defined by User Svc and used for role-based access control. Each role comes with a set of permissions. When checking if a user is authorized, there are a few approaches:
 
-- Call the [Is Authorized](/docs/1backend/is-authorized) with the caller user auth headers and a permission ID to see if a given caller is authorized for that endpoint.
-- Cache the list of permissions belonging to different roles and inspect only the caller's token to see if an appropriate role is present. This has the advantage of being quicker but slightly more complex (suitable SDK functions can help here). To parse and verify a token yourself, see the [Get Public Key](/docs/1backend/get-public-key) endpoint.
+- **Role-Based Authorization**: Skip checking individual permissions and authorize users based solely on their roles.
+
+- **Permission Check via API**: Use the Is Authorized endpoint with the user's authentication headers and a permission ID to verify access.
+
+- **Cached Role Permissions**: Store role-permission mappings locally and check only the user's token for the required role. This method is faster but slightly more complex. (An SDK can simplify this.) If you need to verify a token yourself, see the Get Public Key endpoint.
 
 > If you are looking at restricting access to endpoints in other ways, you might be interested in: [Policy Svc](/docs/built-in-services/policy-svc).
 
 #### Custom static roles
 
-While deceptively simple, static roles can get you far, even without any permissions associated with them. A prime use case is product subscriptions.
+Static roles are powerful, even without specific permissions attached. One common use case is managing product subscriptions.
 
-Let's say you have a new product called "Funny Cats Newsletter" with two subscription tiers: Pro and Ultra.
-You might create a service with the slug `funny-cats-newsletter-svc` for this product. You could have the following custom static roles created by your service (by calling the [Create Role](/docs/1backend/create-role) endpoint):
+For example, suppose you launch a new product called Funny Cats Newsletter with two subscription tiers: Pro and Ultra. You could create a service with the slug funny-cats-newsletter-svc and define custom static roles for each tier:
 
 ```yaml
 funny-cats-newsletter-svc:pro
 funny-cats-newsletter-svc:ultra
 ```
 
-By checking the existence of these roles in a user's token you can successfully authorize product specific features.
+By checking if these roles exist in a user's token, you can authorize access to product-specific features. These roles can be created dynamically by calling the Create Role endpoint.
 
 ### Dynamic roles
 
-Dynamic roles are generated based on specific user-resource associations, offering more flexible permission management compared to static roles.
+Dynamic roles are generated based on user-resource associations, allowing for more flexible permission management than static roles.
 
-Dynamic roles look like
+> While we use the terms static and dynamic roles, these aren't rigid categories—just different ways to structure access control.
+
+Example format:
 
 ```sh
 user-svc:org:{org_dBZRCej3fo}:admin
 user-svc:org:{org_dBZRCej3fo}:user
 ```
 
-The dynamic values must be surrounded by `{}` symbols. The above example is how organization roles are represented. For more about organizations see the Organizations section on this page.
+Dynamic values are enclosed in {}. In this example, roles are assigned per organization. For more details, see the Organizations section.
 
-These dynamic roles, like static roles are stored in the JWT tokens so it is advisable to keep them to a minimum. The organization example is an apt one here: think about how many GitHub or Google organizations you are part of. Likely even a few dozen are at the most extreme upper limit.
+#### Considerations
 
-> JWT tokens (and the dynamic they contain) are sent with each request, so try to be efficient with dynamic roles.
+Like static roles, dynamic roles are stored in JWT tokens. To keep token size manageable, it's best to limit their number. For example, consider how many organizations you belong to on platforms like GitHub or Google—typically only a handful, even at the high end.
+
+> Efficiency Tip: JWT tokens are sent with every request. Keeping dynamic roles minimal improves performance.
 
 ### Owning Roles
 

@@ -49,7 +49,7 @@ func (s *UserService) AddUserToOrganization(
 
 	usr, isAuthorized, err := s.isAuthorized(
 		r,
-		user.PermissionOrganizationAddUser.Id,
+		user.PermissionOrganizationAddUser,
 		nil,
 		nil,
 	)
@@ -87,7 +87,7 @@ func (s *UserService) AddUserToOrganization(
 func (s *UserService) addUserToOrganization(
 	callerId, userId, organizationId string,
 ) error {
-	roleIds, err := s.getRoleIdsByUserId(callerId)
+	roleIds, err := s.getRolesByUserId(callerId)
 	if err != nil {
 		return err
 	}

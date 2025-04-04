@@ -40,7 +40,7 @@ func (s *UserService) ListUsers(
 	r *http.Request,
 ) {
 
-	_, isAuthorized, err := s.isAuthorized(r, user.PermissionUserView.Id, nil, nil)
+	_, isAuthorized, err := s.isAuthorized(r, user.PermissionUserView, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -147,7 +147,7 @@ func (s *UserService) listUsers(
 	for _, v := range res {
 		usr := v.(*user.User)
 
-		roleIds, err := s.getRoleIdsByUserId(usr.Id)
+		roles, err := s.getRolesByUserId(usr.Id)
 		if err != nil {
 			return nil, 0, err
 		}
@@ -162,7 +162,7 @@ func (s *UserService) listUsers(
 			Slug:       usr.Slug,
 			CreatedAt:  usr.CreatedAt,
 			UpdatedAt:  usr.UpdatedAt,
-			RoleIds:    roleIds,
+			Roles:      roles,
 			ContactIds: contactIds,
 		})
 	}
