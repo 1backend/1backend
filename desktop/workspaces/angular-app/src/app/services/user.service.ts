@@ -29,7 +29,6 @@ import {
 	UserSvcSaveProfileRequest,
 	UserSvcChangePasswordRequest,
 	UserSvcResetPasswordRequest,
-	UserSvcSetRolePermissionsRequest,
 } from '@1backend/client';
 
 @Injectable({
@@ -137,7 +136,9 @@ export class UserService {
 		return this.userService.readUserByToken({});
 	}
 
-	getUsers(request: UserSvcListUsersRequest): Promise<UserSvcListUsersResponse> {
+	getUsers(
+		request: UserSvcListUsersRequest
+	): Promise<UserSvcListUsersResponse> {
 		return this.userService.listUsers({
 			body: request,
 		});
@@ -204,22 +205,6 @@ export class UserService {
 
 	getPermissions(roleId: string): Promise<UserSvcGetPermissionsResponse> {
 		return this.userService.getPermissionsByRole({
-			roleId: roleId,
-		});
-	}
-
-	setRolePermissions(roleId: string, permissionIds: string[]): Promise<object> {
-		const request: UserSvcSetRolePermissionsRequest = {
-			permissionIds: permissionIds,
-		};
-		return this.userService.setRolePermission({
-			roleId: roleId,
-			body: request,
-		});
-	}
-
-	deleteRole(roleId: string): Promise<object> {
-		return this.userService.deleteRole({
 			roleId: roleId,
 		});
 	}

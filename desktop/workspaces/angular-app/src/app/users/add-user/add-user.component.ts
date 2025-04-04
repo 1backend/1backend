@@ -14,7 +14,7 @@ import {
 	ReactiveFormsModule,
 } from '@angular/forms';
 import { UserService } from '../../services/user.service';
-import { UserSvcUser as User, UserSvcRole as Role } from '@1backend/client';
+import { UserSvcUser as User } from '@1backend/client';
 import { first } from 'rxjs';
 import {
 	ToastController,
@@ -59,7 +59,7 @@ import { IconMenuComponent } from '../../components/icon-menu/icon-menu.componen
 })
 export class AddUserComponent implements OnInit {
 	addUserForm!: FormGroup;
-	roles: Role[] = [];
+	roles:string[] = [];
 
 	constructor(
 		private fb: FormBuilder,
