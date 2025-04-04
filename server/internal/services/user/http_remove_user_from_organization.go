@@ -49,7 +49,7 @@ func (s *UserService) RemoveUserFromOrganization(
 
 	usr, isAuthorized, err := s.isAuthorized(
 		r,
-		user.PermissionOrganizationCreate.Id,
+		user.PermissionOrganizationCreate,
 		nil,
 		nil,
 	)
@@ -87,7 +87,7 @@ func (s *UserService) RemoveUserFromOrganization(
 func (s *UserService) removeUserFromOrganization(
 	callerId, userId, organizationId string,
 ) error {
-	roleIds, err := s.getRoleIdsByUserId(callerId)
+	roleIds, err := s.getRolesByUserId(callerId)
 	if err != nil {
 		return err
 	}

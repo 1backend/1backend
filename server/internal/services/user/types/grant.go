@@ -18,8 +18,8 @@ package user_svc
 // While UserSvc.AssignPermissions is the standard method for assigning permissions to roles,
 // grants provide an alternative, streamlined approach.
 type Grant struct {
-	Id           string `json:"id,omitempty"`
-	PermissionId string `json:"permissionId" binding:"required"`
+	Id         string `json:"id,omitempty"`
+	Permission string `json:"permission" binding:"required"`
 
 	// Slugs that have been granted the specified permission.
 	Slugs []string `json:"slugs,omitempty"`
@@ -31,7 +31,7 @@ type Grant struct {
 	//
 	// Alternatively, permissions can be assigned to roles using UserSvc.AssignPermissions.
 	// Grants currently offer a more streamlined approach, though this may evolve over time.
-	RoleIds []string `json:"roleIds,omitempty"`
+	Roles []string `json:"roles,omitempty"`
 }
 
 func (g Grant) GetId() string {
@@ -39,8 +39,8 @@ func (g Grant) GetId() string {
 }
 
 type ListGrantsRequest struct {
-	PermissionId string `json:"permissionId,omitempty"`
-	Slug         string `json:"slug,omitempty"`
+	Permission string `json:"permission,omitempty"`
+	Slug       string `json:"slug,omitempty"`
 }
 
 type ListGrantsResponse struct {

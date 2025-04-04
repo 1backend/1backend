@@ -21,18 +21,9 @@ func (p *SecretService) registerPermissions() error {
 	ctx := context.Background()
 	userSvc := p.clientFactory.Client(client.WithToken(p.token)).UserSvcAPI
 
-	_, _, err := userSvc.SavePermissions(ctx).
-		Body(openapi.UserSvcSavePermissionsRequest{
-			Permissions: secrettypes.Permissions,
-		}).
-		Execute()
-	if err != nil {
-		return err
-	}
-
 	req := openapi.UserSvcAssignPermissionsRequest{}
 
-	for _, role := range []*usertypes.Role{
+	for _, role := range []string{
 		usertypes.RoleAdmin,
 		// THIS IS CORRECT, DO NOT PANIC
 		// Users can list, save and delete secrets if they
@@ -42,13 +33,13 @@ func (p *SecretService) registerPermissions() error {
 	} {
 		for _, permission := range secrettypes.Permissions {
 			req.PermissionLinks = append(req.PermissionLinks, openapi.UserSvcPermissionLink{
-				RoleId:       role.Id,
-				PermissionId: *permission.Id,
+				Role:       role,
+				Permission: permission,
 			})
 		}
 	}
 
-	_, _, err = userSvc.AssignPermissions(ctx).
+	_, _, err := userSvc.AssignPermissions(ctx).
 		Body(req).
 		Execute()
 	if err != nil {

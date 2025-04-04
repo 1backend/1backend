@@ -48,7 +48,7 @@ func (ms *ModelService) StartSpecific(
 	}
 
 	isAuthRsp, _, err := ms.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *model.PermissionModelCreate.Id).
+		UserSvcAPI.IsAuthorized(r.Context(), model.PermissionModelCreate).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

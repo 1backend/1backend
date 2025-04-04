@@ -40,7 +40,7 @@ func (rs *RegistryService) ListInstances(
 ) {
 
 	isAuthRsp, _, err := rs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *registry.PermissionInstanceView.Id).
+		UserSvcAPI.IsAuthorized(r.Context(), registry.PermissionInstanceView).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: grantedSlugs,
 		}).

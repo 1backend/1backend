@@ -8,33 +8,18 @@
 
 package deploy_svc
 
-import (
-	openapi "github.com/1backend/1backend/clients/go"
+var (
+	// Deploy Service - Deployment Permissions
+	PermissionDeploymentCreate = "deploy-svc:deployment:create"
+	PermissionDeploymentView   = "deploy-svc:deployment:view"
+	PermissionDeploymentEdit   = "deploy-svc:deployment:edit"
+	PermissionDeploymentDelete = "deploy-svc:deployment:delete"
+
+	// Admin Permission Group
+	AdminPermissions = []string{
+		PermissionDeploymentCreate,
+		PermissionDeploymentEdit,
+		PermissionDeploymentView,
+		PermissionDeploymentDelete,
+	}
 )
-
-var PermissionDeploymentCreate = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("deploy-svc:deployment:create"),
-	Name: openapi.PtrString("Deploy Svc - Deployment Create"),
-}
-
-var PermissionDeploymentView = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("deploy-svc:deployment:view"),
-	Name: openapi.PtrString("Deploy Svc - Deployment View"),
-}
-
-var PermissionDeploymentEdit = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("deploy-svc:deployment:create"),
-	Name: openapi.PtrString("Deploy Svc - Deployment Create"),
-}
-
-var PermissionDeploymentDelete = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("deploy-svc:deployment:delete"),
-	Name: openapi.PtrString("Deploy Svc - Deployment Delete"),
-}
-
-var AdminPermissions = []openapi.UserSvcPermission{
-	PermissionDeploymentCreate,
-	PermissionDeploymentEdit,
-	PermissionDeploymentView,
-	PermissionDeploymentDelete,
-}

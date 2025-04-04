@@ -30,7 +30,7 @@ func (rs *RegistryService) RemoveInstance(
 ) {
 
 	isAuthRsp, _, err := rs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *registry.PermissionInstanceDelete.Id).
+		UserSvcAPI.IsAuthorized(r.Context(), registry.PermissionInstanceDelete).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{"deploy-svc"},
 		}).

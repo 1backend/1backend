@@ -8,21 +8,14 @@
 
 package firehose_svc
 
-import (
-	openapi "github.com/1backend/1backend/clients/go"
+var (
+	// Firehose Service - Event Permissions
+	PermissionEventPublish   = "firehose-svc:event:publish"
+	PermissionFirehoseStream = "firehose-svc:event:stream"
+
+	// Admin Permission Group
+	AdminPermissions = []string{
+		PermissionEventPublish,
+		PermissionFirehoseStream,
+	}
 )
-
-var PermissionEventPublish = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("firehose-svc:event:publish"),
-	Name: openapi.PtrString("Firehose Svc - Event Publish"),
-}
-
-var PermissionFirehoseStream = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("firehose-svc:event:stream"),
-	Name: openapi.PtrString("Firehose Svc - Event Stream"),
-}
-
-var AdminPermissions = []openapi.UserSvcPermission{
-	PermissionEventPublish,
-	PermissionFirehoseStream,
-}

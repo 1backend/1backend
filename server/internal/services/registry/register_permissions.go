@@ -21,8 +21,8 @@ import (
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-func app(permSlices ...[]openapi.UserSvcPermission) []openapi.UserSvcPermission {
-	ret := []openapi.UserSvcPermission{}
+func app(permSlices ...[]string) []string {
+	ret := []string{}
 	for _, ps := range permSlices {
 		ret = append(ret, ps...)
 	}
@@ -33,24 +33,9 @@ func (ns *RegistryService) registerPermissions() error {
 	ctx := context.Background()
 	userSvc := ns.clientFactory.Client(client.WithToken(ns.token)).UserSvcAPI
 
-	_, _, err := userSvc.SavePermissions(ctx).
-		Body(openapi.UserSvcSavePermissionsRequest{
-			Permissions: app(
-				registrytypes.NodeAdminPermissions,
-				registrytypes.InstanceUserPermissions,
-				registrytypes.InstanceAdminPermissions,
-				registrytypes.DefinitionUserPermissions,
-				registrytypes.DefinitionAdminPermissions,
-			),
-		}).
-		Execute()
-	if err != nil {
-		return err
-	}
-
 	req := openapi.UserSvcAssignPermissionsRequest{}
 
-	for _, role := range []*usertypes.Role{
+	for _, role := range []string{
 		usertypes.RoleAdmin,
 	} {
 		for _, permission := range app(
@@ -59,13 +44,13 @@ func (ns *RegistryService) registerPermissions() error {
 			registrytypes.DefinitionAdminPermissions,
 		) {
 			req.PermissionLinks = append(req.PermissionLinks, openapi.UserSvcPermissionLink{
-				RoleId:       role.Id,
-				PermissionId: *permission.Id,
+				Role:       role,
+				Permission: permission,
 			})
 		}
 	}
 
-	for _, role := range []*usertypes.Role{
+	for _, role := range []string{
 		usertypes.RoleUser,
 	} {
 		for _, permission := range app(
@@ -73,13 +58,13 @@ func (ns *RegistryService) registerPermissions() error {
 			registrytypes.DefinitionUserPermissions,
 		) {
 			req.PermissionLinks = append(req.PermissionLinks, openapi.UserSvcPermissionLink{
-				RoleId:       role.Id,
-				PermissionId: *permission.Id,
+				Role:       role,
+				Permission: permission,
 			})
 		}
 	}
 
-	_, _, err = userSvc.AssignPermissions(ctx).
+	_, _, err := userSvc.AssignPermissions(ctx).
 		Body(req).
 		Execute()
 	if err != nil {

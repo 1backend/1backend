@@ -37,7 +37,7 @@ func (s *UserService) GetPermissions(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	_, isAuthorized, err := s.isAuthorized(r, user.PermissionRoleView.Id, nil, nil)
+	_, isAuthorized, err := s.isAuthorized(r, user.PermissionRoleView, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -62,25 +62,19 @@ func (s *UserService) GetPermissions(
 	w.Write(bs)
 }
 
-func (s *UserService) getPermissions() ([]*user.Permission, error) {
-	permissionsI, err := s.permissionsStore.Query().
-		OrderBy(datastore.OrderByField("name", false)).
+func (s *UserService) getPermissions() ([]string, error) {
+	permissionsI, err := s.permissionRoleLinksStore.Query().
+		OrderBy(datastore.OrderByField("createdAt", false)).
 		Find()
 
 	if err != nil {
 		return nil, err
 	}
 
-	permissions := []*user.Permission{}
+	permissions := []string{}
 	for _, permissionI := range permissionsI {
-		permissions = append(permissions, permissionI.(*user.Permission))
+		permissions = append(permissions, permissionI.(*user.PermissionRoleLink).Permission)
 	}
 
 	return permissions, nil
-}
-
-func (s *UserService) deletePermission(permissionId string) error {
-	return s.permissionsStore.Query(
-		datastore.Id(permissionId),
-	).Delete()
 }

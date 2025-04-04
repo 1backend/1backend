@@ -42,7 +42,7 @@ func (ds *FileService) Download(
 ) {
 
 	isAuthRsp, isAuthHttpRsp, err := ds.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *file.PermissionDownloadCreate.Id).
+		UserSvcAPI.IsAuthorized(r.Context(), file.PermissionDownloadCreate).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{"model-svc"},
 		}).

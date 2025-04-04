@@ -23,9 +23,9 @@ var _ MappedNullable = &UserSvcGrant{}
 // UserSvcGrant struct for UserSvcGrant
 type UserSvcGrant struct {
 	Id *string `json:"id,omitempty"`
-	PermissionId string `json:"permissionId"`
+	Permission string `json:"permission"`
 	// Role IDs that have been granted the specified permission.  Originally, grants were designed for slugs to facilitate service-to-service calls. Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.  Alternatively, permissions can be assigned to roles using UserSvc.AssignPermissions. Grants currently offer a more streamlined approach, though this may evolve over time.
-	RoleIds []string `json:"roleIds,omitempty"`
+	Roles []string `json:"roles,omitempty"`
 	// Slugs that have been granted the specified permission.
 	Slugs []string `json:"slugs,omitempty"`
 }
@@ -36,9 +36,9 @@ type _UserSvcGrant UserSvcGrant
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcGrant(permissionId string) *UserSvcGrant {
+func NewUserSvcGrant(permission string) *UserSvcGrant {
 	this := UserSvcGrant{}
-	this.PermissionId = permissionId
+	this.Permission = permission
 	return &this
 }
 
@@ -82,60 +82,60 @@ func (o *UserSvcGrant) SetId(v string) {
 	o.Id = &v
 }
 
-// GetPermissionId returns the PermissionId field value
-func (o *UserSvcGrant) GetPermissionId() string {
+// GetPermission returns the Permission field value
+func (o *UserSvcGrant) GetPermission() string {
 	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.PermissionId
+	return o.Permission
 }
 
-// GetPermissionIdOk returns a tuple with the PermissionId field value
+// GetPermissionOk returns a tuple with the Permission field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcGrant) GetPermissionIdOk() (*string, bool) {
+func (o *UserSvcGrant) GetPermissionOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.PermissionId, true
+	return &o.Permission, true
 }
 
-// SetPermissionId sets field value
-func (o *UserSvcGrant) SetPermissionId(v string) {
-	o.PermissionId = v
+// SetPermission sets field value
+func (o *UserSvcGrant) SetPermission(v string) {
+	o.Permission = v
 }
 
-// GetRoleIds returns the RoleIds field value if set, zero value otherwise.
-func (o *UserSvcGrant) GetRoleIds() []string {
-	if o == nil || IsNil(o.RoleIds) {
+// GetRoles returns the Roles field value if set, zero value otherwise.
+func (o *UserSvcGrant) GetRoles() []string {
+	if o == nil || IsNil(o.Roles) {
 		var ret []string
 		return ret
 	}
-	return o.RoleIds
+	return o.Roles
 }
 
-// GetRoleIdsOk returns a tuple with the RoleIds field value if set, nil otherwise
+// GetRolesOk returns a tuple with the Roles field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcGrant) GetRoleIdsOk() ([]string, bool) {
-	if o == nil || IsNil(o.RoleIds) {
+func (o *UserSvcGrant) GetRolesOk() ([]string, bool) {
+	if o == nil || IsNil(o.Roles) {
 		return nil, false
 	}
-	return o.RoleIds, true
+	return o.Roles, true
 }
 
-// HasRoleIds returns a boolean if a field has been set.
-func (o *UserSvcGrant) HasRoleIds() bool {
-	if o != nil && !IsNil(o.RoleIds) {
+// HasRoles returns a boolean if a field has been set.
+func (o *UserSvcGrant) HasRoles() bool {
+	if o != nil && !IsNil(o.Roles) {
 		return true
 	}
 
 	return false
 }
 
-// SetRoleIds gets a reference to the given []string and assigns it to the RoleIds field.
-func (o *UserSvcGrant) SetRoleIds(v []string) {
-	o.RoleIds = v
+// SetRoles gets a reference to the given []string and assigns it to the Roles field.
+func (o *UserSvcGrant) SetRoles(v []string) {
+	o.Roles = v
 }
 
 // GetSlugs returns the Slugs field value if set, zero value otherwise.
@@ -183,9 +183,9 @@ func (o UserSvcGrant) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}
-	toSerialize["permissionId"] = o.PermissionId
-	if !IsNil(o.RoleIds) {
-		toSerialize["roleIds"] = o.RoleIds
+	toSerialize["permission"] = o.Permission
+	if !IsNil(o.Roles) {
+		toSerialize["roles"] = o.Roles
 	}
 	if !IsNil(o.Slugs) {
 		toSerialize["slugs"] = o.Slugs
@@ -198,7 +198,7 @@ func (o *UserSvcGrant) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"permissionId",
+		"permission",
 	}
 
 	allProperties := make(map[string]interface{})

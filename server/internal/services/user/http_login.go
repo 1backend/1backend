@@ -148,7 +148,7 @@ func checkPasswordHash(password, hash string) bool {
 func (s *UserService) generateAuthToken(
 	u *user.User,
 ) (*user.AuthToken, error) {
-	roleIds, err := s.getRoleIdsByUserId(u.Id)
+	roleIds, err := s.getRolesByUserId(u.Id)
 	if err != nil {
 		return nil, errors.Wrap(err, "error listing roles")
 	}

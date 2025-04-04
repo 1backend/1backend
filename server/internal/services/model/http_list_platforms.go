@@ -40,7 +40,7 @@ func (ms *ModelService) ListPlatforms(
 ) {
 
 	isAuthRsp, _, err := ms.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *model.PermissionPlatformView.Id).
+		UserSvcAPI.IsAuthorized(r.Context(), model.PermissionPlatformView).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{"prompt-svc"},
 		}).

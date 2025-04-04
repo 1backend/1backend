@@ -30,7 +30,7 @@ func (dm *ContainerService) BuildImage(
 ) {
 
 	isAuthRsp, _, err := dm.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *container.PermissionImageBuild.Id).
+		UserSvcAPI.IsAuthorized(r.Context(), container.PermissionImageBuild).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{"deploy-svc"},
 		}).

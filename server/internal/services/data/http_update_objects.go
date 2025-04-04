@@ -43,7 +43,7 @@ func (g *DataService) UpdateObjects(
 ) {
 
 	isAuthRsp, _, err := g.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *data.PermissionObjectEdit.Id).
+		UserSvcAPI.IsAuthorized(r.Context(), data.PermissionObjectEdit).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

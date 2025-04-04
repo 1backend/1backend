@@ -35,7 +35,7 @@ func (s *UserService) ListRoles(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	_, isAuthorized, err := s.isAuthorized(r, user.PermissionRoleView.Id, nil, nil)
+	_, isAuthorized, err := s.isAuthorized(r, user.PermissionRoleView, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -60,8 +60,8 @@ func (s *UserService) ListRoles(
 	w.Write(bs)
 }
 
-func (s *UserService) listRoles() ([]*user.Role, error) {
-	rolesI, err := s.rolesStore.Query().
+func (s *UserService) listRoles() ([]string, error) {
+	linkIs, err := s.permissionRoleLinksStore.Query().
 		OrderBy(datastore.OrderByField("name", false)).
 		Find()
 
@@ -69,9 +69,9 @@ func (s *UserService) listRoles() ([]*user.Role, error) {
 		return nil, err
 	}
 
-	roles := []*user.Role{}
-	for _, roleI := range rolesI {
-		roles = append(roles, roleI.(*user.Role))
+	roles := []string{}
+	for _, linkI := range linkIs {
+		roles = append(roles, linkI.(*user.PermissionRoleLink).Role)
 	}
 
 	return roles, err

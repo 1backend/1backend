@@ -94,25 +94,6 @@ Examples:
 	ChangePasswordExecute(r ApiChangePasswordRequest) (map[string]interface{}, *http.Response, error)
 
 	/*
-	CreateRole Create a New Role
-
-	Create a new role.
-<b>The role ID must be prefixed by the caller's slug.</b>
-Eg. if the caller's slug is `petstore-svc` the role should look like `petstore-svc:admin`.
-The user account who creates the role will become the owner of that role, and only the owner will be able to edit the role.
-
-Requires the `user-svc:role:create` permission.
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return ApiCreateRoleRequest
-	*/
-	CreateRole(ctx context.Context) ApiCreateRoleRequest
-
-	// CreateRoleExecute executes the request
-	//  @return UserSvcCreateRoleResponse
-	CreateRoleExecute(r ApiCreateRoleRequest) (*UserSvcCreateRoleResponse, *http.Response, error)
-
-	/*
 	CreateUser Create a New User
 
 	Allows an authenticated administrator to create a new user with specified details.
@@ -125,21 +106,6 @@ Requires the `user-svc:role:create` permission.
 	// CreateUserExecute executes the request
 	//  @return map[string]interface{}
 	CreateUserExecute(r ApiCreateUserRequest) (map[string]interface{}, *http.Response, error)
-
-	/*
-	DeleteRole Delete a Role
-
-	Delete a role based on the role ID.
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param roleId Role ID
-	@return ApiDeleteRoleRequest
-	*/
-	DeleteRole(ctx context.Context, roleId string) ApiDeleteRoleRequest
-
-	// DeleteRoleExecute executes the request
-	//  @return map[string]interface{}
-	DeleteRoleExecute(r ApiDeleteRoleRequest) (map[string]interface{}, *http.Response, error)
 
 	/*
 	DeleteUser Delete a User
@@ -195,10 +161,10 @@ responses allows services to determine user authorization
 without repeatedly calling this endpoint.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param permissionId Permission ID
+	@param permission Permission ID
 	@return ApiIsAuthorizedRequest
 	*/
-	IsAuthorized(ctx context.Context, permissionId string) ApiIsAuthorizedRequest
+	IsAuthorized(ctx context.Context, permission string) ApiIsAuthorizedRequest
 
 	// IsAuthorizedExecute executes the request
 	//  @return UserSvcIsAuthorizedResponse
@@ -394,24 +360,6 @@ Dynamic roles are generated based on specific user-resource associations (in thi
 	// SaveOrganizationExecute executes the request
 	//  @return UserSvcSaveOrganizationResponse
 	SaveOrganizationExecute(r ApiSaveOrganizationRequest) (*UserSvcSaveOrganizationResponse, *http.Response, error)
-
-	/*
-	SavePermissions Save Permissions
-
-	Creates or updates a list of permissions.
-<b>The permission ID must be prefixed by the callers slug.</b>
-Eg. if the owner's slug is `petstore-svc` the permission should look like `petstore-svc:pet:edit`.
-
-Requires the `user-svc:permission:create` permission.
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return ApiSavePermissionsRequest
-	*/
-	SavePermissions(ctx context.Context) ApiSavePermissionsRequest
-
-	// SavePermissionsExecute executes the request
-	//  @return UserSvcSavePermissionsResponse
-	SavePermissionsExecute(r ApiSavePermissionsRequest) (*UserSvcSavePermissionsResponse, *http.Response, error)
 
 	/*
 	SaveSelf Save User Profile
@@ -1108,168 +1056,6 @@ func (a *UserSvcAPIService) ChangePasswordExecute(r ApiChangePasswordRequest) (m
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiCreateRoleRequest struct {
-	ctx context.Context
-	ApiService UserSvcAPI
-	body *UserSvcCreateRoleRequest
-}
-
-// Create Role Request
-func (r ApiCreateRoleRequest) Body(body UserSvcCreateRoleRequest) ApiCreateRoleRequest {
-	r.body = &body
-	return r
-}
-
-func (r ApiCreateRoleRequest) Execute() (*UserSvcCreateRoleResponse, *http.Response, error) {
-	return r.ApiService.CreateRoleExecute(r)
-}
-
-/*
-CreateRole Create a New Role
-
-Create a new role.
-<b>The role ID must be prefixed by the caller's slug.</b>
-Eg. if the caller's slug is `petstore-svc` the role should look like `petstore-svc:admin`.
-The user account who creates the role will become the owner of that role, and only the owner will be able to edit the role.
-
-Requires the `user-svc:role:create` permission.
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateRoleRequest
-*/
-func (a *UserSvcAPIService) CreateRole(ctx context.Context) ApiCreateRoleRequest {
-	return ApiCreateRoleRequest{
-		ApiService: a,
-		ctx: ctx,
-	}
-}
-
-// Execute executes the request
-//  @return UserSvcCreateRoleResponse
-func (a *UserSvcAPIService) CreateRoleExecute(r ApiCreateRoleRequest) (*UserSvcCreateRoleResponse, *http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserSvcCreateRoleResponse
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.CreateRole")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/user-svc/role"
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
-	}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	// body params
-	localVarPostBody = r.body
-	if r.ctx != nil {
-		// API Key Authentication
-		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["BearerAuth"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
-				}
-				localVarHeaderParams["Authorization"] = key
-			}
-		}
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v UserSvcErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v UserSvcErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v UserSvcErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
 type ApiCreateUserRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
@@ -1404,155 +1190,6 @@ func (a *UserSvcAPIService) CreateUserExecute(r ApiCreateUserRequest) (map[strin
 		}
 		if localVarHTTPResponse.StatusCode == 500 {
 			var v UserSvcErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-type ApiDeleteRoleRequest struct {
-	ctx context.Context
-	ApiService UserSvcAPI
-	roleId string
-}
-
-func (r ApiDeleteRoleRequest) Execute() (map[string]interface{}, *http.Response, error) {
-	return r.ApiService.DeleteRoleExecute(r)
-}
-
-/*
-DeleteRole Delete a Role
-
-Delete a role based on the role ID.
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param roleId Role ID
- @return ApiDeleteRoleRequest
-*/
-func (a *UserSvcAPIService) DeleteRole(ctx context.Context, roleId string) ApiDeleteRoleRequest {
-	return ApiDeleteRoleRequest{
-		ApiService: a,
-		ctx: ctx,
-		roleId: roleId,
-	}
-}
-
-// Execute executes the request
-//  @return map[string]interface{}
-func (a *UserSvcAPIService) DeleteRoleExecute(r ApiDeleteRoleRequest) (map[string]interface{}, *http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodDelete
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  map[string]interface{}
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.DeleteRole")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/user-svc/role/{roleId}"
-	localVarPath = strings.Replace(localVarPath, "{"+"roleId"+"}", url.PathEscape(parameterValueToString(r.roleId, "roleId")), -1)
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	if r.ctx != nil {
-		// API Key Authentication
-		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["BearerAuth"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
-				}
-				localVarHeaderParams["Authorization"] = key
-			}
-		}
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v string
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()
@@ -1986,7 +1623,7 @@ func (a *UserSvcAPIService) GetPublicKeyExecute(r ApiGetPublicKeyRequest) (*User
 type ApiIsAuthorizedRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	permissionId string
+	permission string
 	body *UserSvcIsAuthorizedRequest
 }
 
@@ -2010,14 +1647,14 @@ responses allows services to determine user authorization
 without repeatedly calling this endpoint.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param permissionId Permission ID
+ @param permission Permission ID
  @return ApiIsAuthorizedRequest
 */
-func (a *UserSvcAPIService) IsAuthorized(ctx context.Context, permissionId string) ApiIsAuthorizedRequest {
+func (a *UserSvcAPIService) IsAuthorized(ctx context.Context, permission string) ApiIsAuthorizedRequest {
 	return ApiIsAuthorizedRequest{
 		ApiService: a,
 		ctx: ctx,
-		permissionId: permissionId,
+		permission: permission,
 	}
 }
 
@@ -2036,8 +1673,8 @@ func (a *UserSvcAPIService) IsAuthorizedExecute(r ApiIsAuthorizedRequest) (*User
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/user-svc/permission/{permissionId}/is-authorized"
-	localVarPath = strings.Replace(localVarPath, "{"+"permissionId"+"}", url.PathEscape(parameterValueToString(r.permissionId, "permissionId")), -1)
+	localVarPath := localBasePath + "/user-svc/permission/{permission}/is-authorized"
+	localVarPath = strings.Replace(localVarPath, "{"+"permission"+"}", url.PathEscape(parameterValueToString(r.permission, "permission")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3925,167 +3562,6 @@ func (a *UserSvcAPIService) SaveOrganizationExecute(r ApiSaveOrganizationRequest
 		}
 		if localVarHTTPResponse.StatusCode == 500 {
 			var v UserSvcErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-type ApiSavePermissionsRequest struct {
-	ctx context.Context
-	ApiService UserSvcAPI
-	body *UserSvcSavePermissionsRequest
-}
-
-// Permission Details
-func (r ApiSavePermissionsRequest) Body(body UserSvcSavePermissionsRequest) ApiSavePermissionsRequest {
-	r.body = &body
-	return r
-}
-
-func (r ApiSavePermissionsRequest) Execute() (*UserSvcSavePermissionsResponse, *http.Response, error) {
-	return r.ApiService.SavePermissionsExecute(r)
-}
-
-/*
-SavePermissions Save Permissions
-
-Creates or updates a list of permissions.
-<b>The permission ID must be prefixed by the callers slug.</b>
-Eg. if the owner's slug is `petstore-svc` the permission should look like `petstore-svc:pet:edit`.
-
-Requires the `user-svc:permission:create` permission.
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiSavePermissionsRequest
-*/
-func (a *UserSvcAPIService) SavePermissions(ctx context.Context) ApiSavePermissionsRequest {
-	return ApiSavePermissionsRequest{
-		ApiService: a,
-		ctx: ctx,
-	}
-}
-
-// Execute executes the request
-//  @return UserSvcSavePermissionsResponse
-func (a *UserSvcAPIService) SavePermissionsExecute(r ApiSavePermissionsRequest) (*UserSvcSavePermissionsResponse, *http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserSvcSavePermissionsResponse
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.SavePermissions")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/user-svc/permissions"
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
-	}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	// body params
-	localVarPostBody = r.body
-	if r.ctx != nil {
-		// API Key Authentication
-		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["BearerAuth"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
-				}
-				localVarHeaderParams["Authorization"] = key
-			}
-		}
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v string
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

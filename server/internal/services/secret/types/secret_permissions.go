@@ -8,30 +8,16 @@
 
 package secret_svc
 
-import (
-	openapi "github.com/1backend/1backend/clients/go"
+var (
+	// Secret Service - Secret Permissions
+	PermissionSecretList   = "secret-svc:secret:list"
+	PermissionSecretSave   = "secret-svc:secret:save"
+	PermissionSecretRemove = "secret-svc:secret:remove"
+
+	// Secret Permissions Group
+	Permissions = []string{
+		PermissionSecretList,
+		PermissionSecretSave,
+		PermissionSecretRemove,
+	}
 )
-
-var PermissionSecretList = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("secret-svc:secret:list"),
-	Name: openapi.PtrString("Secret Svc - Secret List"),
-}
-
-var PermissionSecretSave = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("secret-svc:secret:save"),
-	Name: openapi.PtrString("Secret Svc - Secret Save"),
-}
-
-var PermissionSecretRemove = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("secret-svc:secret:remove"),
-	Name: openapi.PtrString("Secret Svc - Secret Remove"),
-}
-
-// These sensitive looking permissions are not
-// just for the admins because there is custom authorization
-// (eg. 'readers', 'writers', 'deleters' etc) in the endpoints.
-var Permissions = []openapi.UserSvcPermission{
-	PermissionSecretList,
-	PermissionSecretSave,
-	PermissionSecretRemove,
-}

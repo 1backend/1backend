@@ -2754,26 +2754,6 @@ definitions:
     - platform
     - userId
     type: object
-  user_svc.CreateRoleRequest:
-    properties:
-      description:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      permissionIds:
-        items:
-          type: string
-        type: array
-    required:
-    - id
-    type: object
-  user_svc.CreateRoleResponse:
-    properties:
-      role:
-        $ref: '#/definitions/user_svc.Role'
-    type: object
   user_svc.CreateUserRequest:
     properties:
       contacts:
@@ -2791,8 +2771,6 @@ definitions:
     type: object
   user_svc.CreateUserResponse:
     type: object
-  user_svc.DeleteRoleResponse:
-    type: object
   user_svc.DeleteUserResponse:
     type: object
   user_svc.ErrorResponse:
@@ -2804,7 +2782,7 @@ definitions:
     properties:
       permissions:
         items:
-          $ref: '#/definitions/user_svc.Permission'
+          type: string
         type: array
     type: object
   user_svc.GetPublicKeyResponse:
@@ -2818,9 +2796,9 @@ definitions:
     properties:
       id:
         type: string
-      permissionId:
+      permission:
         type: string
-      roleIds:
+      roles:
         description: |-
           Role IDs that have been granted the specified permission.
 
@@ -2838,7 +2816,7 @@ definitions:
           type: string
         type: array
     required:
-    - permissionId
+    - permission
     type: object
   user_svc.Invite:
     properties:
@@ -2905,7 +2883,7 @@ definitions:
     type: object
   user_svc.ListGrantsRequest:
     properties:
-      permissionId:
+      permission:
         type: string
       slug:
         type: string
@@ -2937,7 +2915,7 @@ definitions:
     properties:
       roles:
         items:
-          $ref: '#/definitions/user_svc.Role'
+          type: string
         type: array
     type: object
   user_svc.ListUsersRequest:
@@ -3016,30 +2994,15 @@ definitions:
     - name
     - slug
     type: object
-  user_svc.Permission:
-    properties:
-      createdAt:
-        type: string
-      description:
-        type: string
-      id:
-        description: eg. "user.viewer"
-        type: string
-      name:
-        description: eg. "User Viewer"
-        type: string
-      updatedAt:
-        type: string
-    type: object
   user_svc.PermissionLink:
     properties:
-      permissionId:
+      permission:
         type: string
-      roleId:
+      role:
         type: string
     required:
-    - permissionId
-    - roleId
+    - permission
+    - role
     type: object
   user_svc.ReadUserByTokenResponse:
     properties:
@@ -3086,19 +3049,6 @@ definitions:
         type: string
     type: object
   user_svc.ResetPasswordResponse:
-    type: object
-  user_svc.Role:
-    properties:
-      createdAt:
-        type: string
-      description:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      updatedAt:
-        type: string
     type: object
   user_svc.SaveGrantsRequest:
     properties:
@@ -3158,20 +3108,6 @@ definitions:
     - organization
     - token
     type: object
-  user_svc.SavePermissionsRequest:
-    properties:
-      permissions:
-        items:
-          $ref: '#/definitions/user_svc.Permission'
-        type: array
-    type: object
-  user_svc.SavePermissionsResponse:
-    properties:
-      permissions:
-        items:
-          $ref: '#/definitions/user_svc.Permission'
-        type: array
-    type: object
   user_svc.SaveProfileRequest:
     properties:
       name:
@@ -3226,7 +3162,7 @@ definitions:
         description: Full name of the user.
         example: Jane Doe
         type: string
-      roleIds:
+      roles:
         items:
           type: string
         type: array
@@ -6315,7 +6251,7 @@ paths:
       summary: Add a User to an Organization
       tags:
       - User Svc
-  /user-svc/permission/{permissionId}/is-authorized:
+  /user-svc/permission/{permission}/is-authorized:
     post:
       consumes:
       - application/json
@@ -6329,7 +6265,7 @@ paths:
       parameters:
       - description: Permission ID
         in: path
-        name: permissionId
+        name: permission
         required: true
         type: string
       - description: Is Authorized Request
@@ -6355,48 +6291,6 @@ paths:
       security:
       - BearerAuth: []
       summary: Is Authorized
-      tags:
-      - User Svc
-  /user-svc/permissions:
-    put:
-      consumes:
-      - application/json
-      description: |-
-        Creates or updates a list of permissions.
-        <b>The permission ID must be prefixed by the callers slug.</b>
-        Eg. if the owner's slug is `petstore-svc` the permission should look like `petstore-svc:pet:edit`.
-
-        Requires the `user-svc:permission:create` permission.
-      operationId: savePermissions
-      parameters:
-      - description: Permission Details
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/user_svc.SavePermissionsRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_svc.SavePermissionsResponse'
-        "400":
-          description: 'Bad Request: Invalid JSON or Bad Namespace'
-          schema:
-            type: string
-        "401":
-          description: Unauthorized
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Save Permissions
       tags:
       - User Svc
   /user-svc/public-key:
@@ -6452,85 +6346,6 @@ paths:
           schema:
             $ref: '#/definitions/user_svc.ErrorResponse'
       summary: Register
-      tags:
-      - User Svc
-  /user-svc/role:
-    post:
-      consumes:
-      - application/json
-      description: |-
-        Create a new role.
-        <b>The role ID must be prefixed by the caller's slug.</b>
-        Eg. if the caller's slug is `petstore-svc` the role should look like `petstore-svc:admin`.
-        The user account who creates the role will become the owner of that role, and only the owner will be able to edit the role.
-
-        Requires the `user-svc:role:create` permission.
-      operationId: createRole
-      parameters:
-      - description: Create Role Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/user_svc.CreateRoleRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Role created successfully
-          schema:
-            $ref: '#/definitions/user_svc.CreateRoleResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Create a New Role
-      tags:
-      - User Svc
-  /user-svc/role/{roleId}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a role based on the role ID.
-      operationId: deleteRole
-      parameters:
-      - description: Role ID
-        in: path
-        name: roleId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_svc.DeleteRoleResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            type: string
-        "401":
-          description: Unauthorized
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Delete a Role
       tags:
       - User Svc
   /user-svc/role/{roleId}/permissions:

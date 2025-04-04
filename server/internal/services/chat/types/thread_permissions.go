@@ -8,39 +8,20 @@
 
 package chat_svc
 
-import (
-	openapi "github.com/1backend/1backend/clients/go"
+var (
+	// Chat Service - Thread Permissions
+	PermissionThreadCreate = "chat-svc:thread:create"
+	PermissionThreadView   = "chat-svc:thread:view"
+	PermissionThreadEdit   = "chat-svc:thread:edit"
+	PermissionThreadDelete = "chat-svc:thread:delete"
+	PermissionThreadStream = "chat-svc:thread:stream"
+
+	// Thread Permission Group
+	ThreadPermissions = []string{
+		PermissionThreadCreate,
+		PermissionThreadView,
+		PermissionThreadEdit,
+		PermissionThreadDelete,
+		PermissionThreadStream,
+	}
 )
-
-var PermissionThreadCreate = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("chat-svc:thread:create"),
-	Name: openapi.PtrString("Chat Svc - Thread Create"),
-}
-
-var PermissionThreadView = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("chat-svc:thread:view"),
-	Name: openapi.PtrString("Chat Svc - Thread View"),
-}
-
-var PermissionThreadEdit = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("chat-svc:thread:edit"),
-	Name: openapi.PtrString("Chat Svc - Thread Edit"),
-}
-
-var PermissionThreadDelete = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("chat-svc:thread:delete"),
-	Name: openapi.PtrString("Chat Svc - Thread Delete"),
-}
-
-var PermissionThreadStream = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("chat-svc:thread:stream"),
-	Name: openapi.PtrString("Chat Svc - Thread Stream"),
-}
-
-var ThreadPermissions = []openapi.UserSvcPermission{
-	PermissionThreadCreate,
-	PermissionThreadView,
-	PermissionThreadEdit,
-	PermissionThreadDelete,
-	PermissionThreadStream,
-}

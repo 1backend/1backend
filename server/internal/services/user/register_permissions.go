@@ -18,43 +18,31 @@ import (
 )
 
 func (us *UserService) registerPermissions() error {
-	ps := append(usertypes.UserPermissions, usertypes.AdminPermissions...)
-
-	_, err := us.savePermissions(
-		us.serviceUserId,
-		&usertypes.SavePermissionsRequest{
-			Permissions: ps,
-		},
-	)
-	if err != nil {
-		return err
-	}
-
 	links := []*user.PermissionLink{}
 
-	for _, role := range []*usertypes.Role{
+	for _, role := range []string{
 		usertypes.RoleAdmin,
 	} {
 		for _, permission := range usertypes.AdminPermissions {
 			links = append(links, &user.PermissionLink{
-				RoleId:       role.Id,
-				PermissionId: permission.Id,
+				Role:       role,
+				Permission: permission,
 			})
 		}
 	}
 
-	for _, role := range []*usertypes.Role{
+	for _, role := range []string{
 		usertypes.RoleUser,
 	} {
 		for _, permission := range usertypes.UserPermissions {
 			links = append(links, &user.PermissionLink{
-				RoleId:       role.Id,
-				PermissionId: permission.Id,
+				Role:       role,
+				Permission: permission,
 			})
 		}
 	}
 
-	err = us.assignPermissions(
+	err := us.assignPermissions(
 		links,
 	)
 	if err != nil {

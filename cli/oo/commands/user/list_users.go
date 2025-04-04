@@ -66,7 +66,7 @@ func ListUsers(
 		if user.Name != nil {
 			name = *user.Name
 		}
-		roleIds := strings.Join(user.RoleIds, ", ")
+		roleIds := strings.Join(user.Roles, ", ")
 		contactIds := strings.Join(user.ContactIds, ", ")
 
 		fmt.Fprintf(

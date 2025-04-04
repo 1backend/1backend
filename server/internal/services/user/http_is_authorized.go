@@ -37,13 +37,13 @@ import (
 // @Tags User Svc
 // @Accept json
 // @Produce json
-// @Param permissionId path string true "Permission ID"
+// @Param permission path string true "Permission ID"
 // @Param body body user.IsAuthorizedRequest false "Is Authorized Request"
 // @Success 200 {object} user.IsAuthorizedResponse
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON or missing permission id"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Security BearerAuth
-// @Router /user-svc/permission/{permissionId}/is-authorized [post]
+// @Router /user-svc/permission/{permission}/is-authorized [post]
 func (s *UserService) IsAuthorized(
 	w http.ResponseWriter,
 	r *http.Request,
@@ -59,9 +59,9 @@ func (s *UserService) IsAuthorized(
 	defer r.Body.Close()
 
 	vars := mux.Vars(r)
-	permissionId := vars["permissionId"]
+	permission := vars["permission"]
 
-	if permissionId == "" {
+	if permission == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(`missing permission id`))
 		return
@@ -71,7 +71,7 @@ func (s *UserService) IsAuthorized(
 		req = &user.IsAuthorizedRequest{}
 	}
 
-	usr, isAuth, err := s.isAuthorized(r, permissionId, req.GrantedSlugs, nil)
+	usr, isAuth, err := s.isAuthorized(r, permission, req.GrantedSlugs, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("Unauthorized"))
@@ -88,7 +88,7 @@ func (s *UserService) IsAuthorized(
 
 func (s *UserService) isAuthorized(
 	r *http.Request,
-	permissionId string,
+	permission string,
 	grantedSlugs,
 	contactsGranted []string,
 ) (*user.User, bool, error) {
@@ -131,7 +131,7 @@ func (s *UserService) isAuthorized(
 	}
 
 	for _, permissionLink := range permissionLinks {
-		if permissionLink.(*user.PermissionRoleLink).PermissionId == permissionId {
+		if permissionLink.(*user.PermissionRoleLink).Permission == permission {
 			return usr, true, nil
 		}
 
@@ -147,7 +147,7 @@ func (s *UserService) isAuthorized(
 	// ).FindOne()
 
 	grantIs, err := s.grantsStore.Query(
-		datastore.Equals([]string{"permissionId"}, permissionId),
+		datastore.Equals([]string{"permission"}, permission),
 	).Find()
 	if err != nil {
 		return nil, false, err
@@ -167,7 +167,7 @@ func (s *UserService) isAuthorized(
 		}
 
 		for _, userRoleId := range roleIds {
-			for _, grantRoleIds := range grant.RoleIds {
+			for _, grantRoleIds := range grant.Roles {
 
 				if userRoleId == grantRoleIds {
 					exists = true
@@ -187,7 +187,7 @@ func (s *UserService) isAuthorized(
 	return nil, false, nil
 }
 
-func (s *UserService) getRoleIdsByUserId(userId string) ([]string, error) {
+func (s *UserService) getRolesByUserId(userId string) ([]string, error) {
 	roleLinks, err := s.userRoleLinksStore.Query(
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Find()
@@ -195,12 +195,12 @@ func (s *UserService) getRoleIdsByUserId(userId string) ([]string, error) {
 		return nil, err
 	}
 
-	roleIds := []string{}
+	roles := []string{}
 	for _, role := range roleLinks {
-		roleIds = append(roleIds, role.(*user.UserRoleLink).RoleId)
+		roles = append(roles, role.(*user.UserRoleLink).RoleId)
 	}
 
-	return roleIds, nil
+	return roles, nil
 }
 
 func (s *UserService) getContactIdsByUserId(userId string) ([]string, error) {

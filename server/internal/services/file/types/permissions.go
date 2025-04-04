@@ -8,45 +8,24 @@
 
 package file_svc
 
-import (
-	openapi "github.com/1backend/1backend/clients/go"
+var (
+	// File Service - Download Permissions
+	PermissionDownloadCreate = "file-svc:download:create"
+	PermissionDownloadView   = "file-svc:download:view"
+	PermissionDownloadEdit   = "file-svc:download:edit"
+	PermissionDownloadDelete = "file-svc:download:delete"
+
+	// File Service - Upload Permissions
+	PermissionUploadCreate = "file-svc:upload:create"
+	PermissionUploadView   = "file-svc:upload:view"
+
+	// Admin Permission Group
+	AdminPermissions = []string{
+		PermissionDownloadCreate,
+		PermissionDownloadView,
+		PermissionDownloadEdit,
+		PermissionDownloadDelete,
+		PermissionUploadCreate,
+		PermissionUploadView,
+	}
 )
-
-var PermissionDownloadCreate = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("file-svc:download:create"),
-	Name: openapi.PtrString("File Svc - Download Create"),
-}
-
-var PermissionDownloadView = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("file-svc:download:view"),
-	Name: openapi.PtrString("File Svc - Download View"),
-}
-
-var PermissionDownloadEdit = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("file-svc:download:edit"),
-	Name: openapi.PtrString("File Svc - Download Edit"),
-}
-
-var PermissionDownloadDelete = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("file-svc:download:delete"),
-	Name: openapi.PtrString("File Svc - Download Delete"),
-}
-
-var PermissionUploadCreate = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("file-svc:upload:create"),
-	Name: openapi.PtrString("File Svc - Upload Create"),
-}
-
-var PermissionUploadView = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("file-svc:upload:view"),
-	Name: openapi.PtrString("File Svc - Upload View"),
-}
-
-var AdminPermissions = []openapi.UserSvcPermission{
-	PermissionDownloadCreate,
-	PermissionDownloadView,
-	PermissionDownloadEdit,
-	PermissionDownloadDelete,
-	PermissionUploadCreate,
-	PermissionUploadView,
-}

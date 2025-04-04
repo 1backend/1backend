@@ -8,15 +8,8 @@
 
 package source_svc
 
-import (
-	openapi "github.com/1backend/1backend/clients/go"
-)
+var PermissionSourceRepoCheckout = "source-svc:repo:checkout"
 
-var PermissionSourceRepoCheckout = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("source-svc:repo:checkout"),
-	Name: openapi.PtrString("Source Svc - Repo Checkout"),
-}
-
-var AdminPermissions = []openapi.UserSvcPermission{
+var AdminPermissions = []string{
 	PermissionSourceRepoCheckout,
 }

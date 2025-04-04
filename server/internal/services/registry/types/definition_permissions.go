@@ -8,37 +8,22 @@
 
 package registry_svc
 
-import (
-	openapi "github.com/1backend/1backend/clients/go"
+var (
+	// Registry Service - Definition Permissions
+	PermissionDefinitionCreate = "registry-svc:definition:create"
+	PermissionDefinitionView   = "registry-svc:definition:view"
+	PermissionDefinitionEdit   = "registry-svc:definition:edit"
+	PermissionDefinitionDelete = "registry-svc:definition:delete"
+
+	// Definition Permission Groups
+	DefinitionUserPermissions = []string{
+		PermissionDefinitionView,
+	}
+
+	DefinitionAdminPermissions = []string{
+		PermissionDefinitionCreate,
+		PermissionDefinitionView,
+		PermissionDefinitionEdit,
+		PermissionDefinitionDelete,
+	}
 )
-
-var PermissionDefinitionCreate = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("registry-svc:definition:create"),
-	Name: openapi.PtrString("Registry Svc - Definition Create"),
-}
-
-var PermissionDefinitionView = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("registry-svc:definition:view"),
-	Name: openapi.PtrString("Registry Svc - Definition View"),
-}
-
-var PermissionDefinitionEdit = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("registry-svc:definition:edit"),
-	Name: openapi.PtrString("Registry Svc - Definition Edit"),
-}
-
-var PermissionDefinitionDelete = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("registry-svc:definition:delete"),
-	Name: openapi.PtrString("Registry Svc - Definition Delete"),
-}
-
-var DefinitionUserPermissions = []openapi.UserSvcPermission{
-	PermissionDefinitionView,
-}
-
-var DefinitionAdminPermissions = []openapi.UserSvcPermission{
-	PermissionDefinitionCreate,
-	PermissionDefinitionView,
-	PermissionDefinitionEdit,
-	PermissionDefinitionDelete,
-}

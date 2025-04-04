@@ -37,7 +37,7 @@ func (s *SourceService) CheckoutRepo(w http.ResponseWriter,
 	r *http.Request) {
 
 	isAuthRsp, _, err := s.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *source.PermissionSourceRepoCheckout.Id).Body(
+		UserSvcAPI.IsAuthorized(r.Context(), source.PermissionSourceRepoCheckout).Body(
 		openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{"deploy-svc"},
 		}).

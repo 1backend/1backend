@@ -9,24 +9,10 @@ package user_svc
 
 import "time"
 
-var RoleAdmin = &Role{
-	Id:   "user-svc:admin",
-	Name: "User Svc - Admin Role",
-}
-
-var RoleUser = &Role{
-	Id:   "user-svc:user",
-	Name: "User Svc - User Role",
-}
-
-type Role struct {
-	Id        string    `json:"id,omitempty"`
-	CreatedAt time.Time `json:"createdAt,omitempty"`
-	UpdatedAt time.Time `json:"updatedAt,omitempty"`
-
-	Name        string `json:"name"`
-	Description string `json:"description,omitempty"`
-}
+var (
+	RoleAdmin = "user-svc:admin"
+	RoleUser  = "user-svc:user"
+)
 
 type PermissionRoleLink struct {
 	// permissionId:roleId
@@ -34,55 +20,24 @@ type PermissionRoleLink struct {
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	UpdatedAt time.Time `json:"updatedAt,omitempty"`
 
-	PermissionId string `json:"permissionId,omitempty"`
-	RoleId       string `json:"roleId,omitempty"`
+	Permission string `json:"permission,omitempty"`
+	Role       string `json:"role,omitempty"`
 }
 
 func (c *PermissionRoleLink) GetId() string {
 	return c.Id
 }
 
-func (c *Role) GetId() string {
-	return c.Id
-}
-
-func (c *Role) GetUpdatedAt() string {
-	return c.Id
-}
-
-type CreateRoleRequest struct {
-	Id            string   `json:"id"            binding:"required"`
-	Name          string   `json:"name"`
-	Description   string   `json:"description"`
-	PermissionIds []string `json:"permissionIds"`
-}
-
-type CreateRoleResponse struct {
-	Role *Role `json:"role,omitempty"`
-}
-
-type DeleteRoleRequest struct {
-	RoleId string `json:"roleId,omitempty"`
-}
-
-type DeleteRoleResponse struct{}
-
-type RemoveRoleRequest struct {
+type UnassignRoleRequest struct {
 	UserId string `json:"userId,omitempty"`
-	RoleId string `json:"roleId,omitempty"`
+	Role   string `json:"role,omitempty"`
 }
 
-type RemoveRoleResponse struct{}
+type UnassignRoleResponse struct{}
 
 type ListRolesRequest struct {
 }
 
 type ListRolesResponse struct {
-	Roles []*Role `json:"roles,omitempty"`
+	Roles []string `json:"roles,omitempty"`
 }
-
-type SetRolePermissionsRequest struct {
-	PermissionIds []string `json:"permissionIds,omitempty"`
-}
-
-type SetRolePermissionsResponse struct{}

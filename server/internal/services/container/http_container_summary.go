@@ -43,7 +43,7 @@ func (dm *ContainerService) Summary(
 ) {
 
 	isAuthRsp, _, err := dm.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *container.PermissionContainerView.Id).
+		UserSvcAPI.IsAuthorized(r.Context(), container.PermissionContainerView).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{"model-svc"},
 		}).

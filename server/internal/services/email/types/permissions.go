@@ -8,15 +8,8 @@
 
 package email_svc
 
-import (
-	openapi "github.com/1backend/1backend/clients/go"
-)
+var PermissionSendEmail = "email-svc:email:send"
 
-var PermissionSendEmail = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("email-svc:email:send"),
-	Name: openapi.PtrString("Email Svc - Email Send"),
-}
-
-var AdminPermissions = []openapi.UserSvcPermission{
+var AdminPermissions = []string{
 	PermissionSendEmail,
 }

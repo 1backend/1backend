@@ -20,7 +20,7 @@ var _ MappedNullable = &UserSvcGetPermissionsResponse{}
 
 // UserSvcGetPermissionsResponse struct for UserSvcGetPermissionsResponse
 type UserSvcGetPermissionsResponse struct {
-	Permissions []UserSvcPermission `json:"permissions,omitempty"`
+	Permissions []string `json:"permissions,omitempty"`
 }
 
 // NewUserSvcGetPermissionsResponse instantiates a new UserSvcGetPermissionsResponse object
@@ -41,9 +41,9 @@ func NewUserSvcGetPermissionsResponseWithDefaults() *UserSvcGetPermissionsRespon
 }
 
 // GetPermissions returns the Permissions field value if set, zero value otherwise.
-func (o *UserSvcGetPermissionsResponse) GetPermissions() []UserSvcPermission {
+func (o *UserSvcGetPermissionsResponse) GetPermissions() []string {
 	if o == nil || IsNil(o.Permissions) {
-		var ret []UserSvcPermission
+		var ret []string
 		return ret
 	}
 	return o.Permissions
@@ -51,7 +51,7 @@ func (o *UserSvcGetPermissionsResponse) GetPermissions() []UserSvcPermission {
 
 // GetPermissionsOk returns a tuple with the Permissions field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcGetPermissionsResponse) GetPermissionsOk() ([]UserSvcPermission, bool) {
+func (o *UserSvcGetPermissionsResponse) GetPermissionsOk() ([]string, bool) {
 	if o == nil || IsNil(o.Permissions) {
 		return nil, false
 	}
@@ -67,8 +67,8 @@ func (o *UserSvcGetPermissionsResponse) HasPermissions() bool {
 	return false
 }
 
-// SetPermissions gets a reference to the given []UserSvcPermission and assigns it to the Permissions field.
-func (o *UserSvcGetPermissionsResponse) SetPermissions(v []UserSvcPermission) {
+// SetPermissions gets a reference to the given []string and assigns it to the Permissions field.
+func (o *UserSvcGetPermissionsResponse) SetPermissions(v []string) {
 	o.Permissions = v
 }
 

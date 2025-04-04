@@ -8,39 +8,20 @@
 
 package registry_svc
 
-import (
-	openapi "github.com/1backend/1backend/clients/go"
+var (
+	// Registry Node Permissions
+	PermissionNodeCreate = "registry-svc:node:create"
+	PermissionNodeView   = "registry-svc:node:view"
+	PermissionNodeEdit   = "registry-svc:node:edit"
+	PermissionNodeDelete = "registry-svc:node:delete"
+	PermissionNodeStream = "registry-svc:node:stream"
+
+	// Node Permission Groups
+	NodeAdminPermissions = []string{
+		PermissionNodeCreate,
+		PermissionNodeView,
+		PermissionNodeEdit,
+		PermissionNodeDelete,
+		PermissionNodeStream,
+	}
 )
-
-var PermissionNodeCreate = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("registry-svc:node:create"),
-	Name: openapi.PtrString("Registry Svc - Node Create"),
-}
-
-var PermissionNodeView = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("registry-svc:node:view"),
-	Name: openapi.PtrString("Registry Svc - Node View"),
-}
-
-var PermissionNodeEdit = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("registry-svc:node:edit"),
-	Name: openapi.PtrString("Registry Svc - Node Edit"),
-}
-
-var PermissionNodeDelete = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("registry-svc:node:delete"),
-	Name: openapi.PtrString("Registry Svc - Node Delete"),
-}
-
-var PermissionNodeStream = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("registry-svc:node:stream"),
-	Name: openapi.PtrString("Registry Svc - Node Stream"),
-}
-
-var NodeAdminPermissions = []openapi.UserSvcPermission{
-	PermissionNodeCreate,
-	PermissionNodeView,
-	PermissionNodeEdit,
-	PermissionNodeDelete,
-	PermissionNodeStream,
-}

@@ -91,18 +91,9 @@ type Claims struct {
 
 Every user has a role, and a user token (see more about tokens on this page) produced upon login contains all the roles a user has.
 
-```yaml
-id: "user-svc:admin"
-name: "User Svc - Admin Role"
-```
+Roles are simply strings. They are not a database record, they don't have an ID, name etc. They are simple strings, such as `user-svc:admin`.
 
-```yaml
-id: "your-svc:your-role"
-name: "Your Svc - Your Role"
-ownerId: "usr_eaSNcJ0BB0" # your user ID
-```
-
-In the below sections we'll refer to roles by their ID (such as `user-svc:admin`). Usually such readable strings are slugs, but in the case of roles slugs were eliminated for simplicity.
+Usually such readable strings are slugs, but in the case of roles slugs were eliminated for simplicity.
 
 ### Static roles
 

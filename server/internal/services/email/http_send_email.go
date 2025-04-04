@@ -32,7 +32,7 @@ import (
 func (s *EmailService) SendEmail(w http.ResponseWriter, r *http.Request) {
 	// Authorization check (similar to the original code)
 	isAuthRsp, _, err := s.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *email.PermissionSendEmail.Id).Body(
+		UserSvcAPI.IsAuthorized(r.Context(), email.PermissionSendEmail).Body(
 		openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{"user-svc"},
 		}).

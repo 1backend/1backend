@@ -156,13 +156,11 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**AssignPermissions**](docs/UserSvcAPI.md#assignpermissions) | **Put** /user-svc/roles/permissions | Assign Permissions
 *UserSvcAPI* | [**AssignRole**](docs/UserSvcAPI.md#assignrole) | **Put** /user-svc/user/{userId}/role/{roleId} | Assign Role
 *UserSvcAPI* | [**ChangePassword**](docs/UserSvcAPI.md#changepassword) | **Post** /user-svc/change-password | Change User Password
-*UserSvcAPI* | [**CreateRole**](docs/UserSvcAPI.md#createrole) | **Post** /user-svc/role | Create a New Role
 *UserSvcAPI* | [**CreateUser**](docs/UserSvcAPI.md#createuser) | **Post** /user-svc/user | Create a New User
-*UserSvcAPI* | [**DeleteRole**](docs/UserSvcAPI.md#deleterole) | **Delete** /user-svc/role/{roleId} | Delete a Role
 *UserSvcAPI* | [**DeleteUser**](docs/UserSvcAPI.md#deleteuser) | **Delete** /user-svc/user/{userId} | Delete a User
 *UserSvcAPI* | [**GetPermissionsByRole**](docs/UserSvcAPI.md#getpermissionsbyrole) | **Get** /user-svc/role/{roleId}/permissions | Get Permissions by Role
 *UserSvcAPI* | [**GetPublicKey**](docs/UserSvcAPI.md#getpublickey) | **Get** /user-svc/public-key | Get Public Key
-*UserSvcAPI* | [**IsAuthorized**](docs/UserSvcAPI.md#isauthorized) | **Post** /user-svc/permission/{permissionId}/is-authorized | Is Authorized
+*UserSvcAPI* | [**IsAuthorized**](docs/UserSvcAPI.md#isauthorized) | **Post** /user-svc/permission/{permission}/is-authorized | Is Authorized
 *UserSvcAPI* | [**ListGrants**](docs/UserSvcAPI.md#listgrants) | **Post** /user-svc/grants | List Grants
 *UserSvcAPI* | [**ListInvites**](docs/UserSvcAPI.md#listinvites) | **Post** /user-svc/invites | List Invites
 *UserSvcAPI* | [**ListRoles**](docs/UserSvcAPI.md#listroles) | **Get** /user-svc/roles | List Roles
@@ -175,7 +173,6 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**SaveGrants**](docs/UserSvcAPI.md#savegrants) | **Put** /user-svc/grants | Save Grants
 *UserSvcAPI* | [**SaveInvites**](docs/UserSvcAPI.md#saveinvites) | **Put** /user-svc/invites | Save Invites
 *UserSvcAPI* | [**SaveOrganization**](docs/UserSvcAPI.md#saveorganization) | **Put** /user-svc/organization | Save an Organization
-*UserSvcAPI* | [**SavePermissions**](docs/UserSvcAPI.md#savepermissions) | **Put** /user-svc/permissions | Save Permissions
 *UserSvcAPI* | [**SaveSelf**](docs/UserSvcAPI.md#saveself) | **Put** /user-svc/self | Save User Profile
 *UserSvcAPI* | [**SaveUser**](docs/UserSvcAPI.md#saveuser) | **Put** /user-svc/user/{userId} | Save User
 
@@ -352,8 +349,6 @@ Class | Method | HTTP request | Description
  - [UserSvcAuthToken](docs/UserSvcAuthToken.md)
  - [UserSvcChangePasswordRequest](docs/UserSvcChangePasswordRequest.md)
  - [UserSvcContact](docs/UserSvcContact.md)
- - [UserSvcCreateRoleRequest](docs/UserSvcCreateRoleRequest.md)
- - [UserSvcCreateRoleResponse](docs/UserSvcCreateRoleResponse.md)
  - [UserSvcCreateUserRequest](docs/UserSvcCreateUserRequest.md)
  - [UserSvcErrorResponse](docs/UserSvcErrorResponse.md)
  - [UserSvcGetPermissionsResponse](docs/UserSvcGetPermissionsResponse.md)
@@ -373,20 +368,16 @@ Class | Method | HTTP request | Description
  - [UserSvcLoginResponse](docs/UserSvcLoginResponse.md)
  - [UserSvcNewInvite](docs/UserSvcNewInvite.md)
  - [UserSvcOrganization](docs/UserSvcOrganization.md)
- - [UserSvcPermission](docs/UserSvcPermission.md)
  - [UserSvcPermissionLink](docs/UserSvcPermissionLink.md)
  - [UserSvcReadUserByTokenResponse](docs/UserSvcReadUserByTokenResponse.md)
  - [UserSvcRegisterRequest](docs/UserSvcRegisterRequest.md)
  - [UserSvcRegisterResponse](docs/UserSvcRegisterResponse.md)
  - [UserSvcResetPasswordRequest](docs/UserSvcResetPasswordRequest.md)
- - [UserSvcRole](docs/UserSvcRole.md)
  - [UserSvcSaveGrantsRequest](docs/UserSvcSaveGrantsRequest.md)
  - [UserSvcSaveInvitesRequest](docs/UserSvcSaveInvitesRequest.md)
  - [UserSvcSaveInvitesResponse](docs/UserSvcSaveInvitesResponse.md)
  - [UserSvcSaveOrganizationRequest](docs/UserSvcSaveOrganizationRequest.md)
  - [UserSvcSaveOrganizationResponse](docs/UserSvcSaveOrganizationResponse.md)
- - [UserSvcSavePermissionsRequest](docs/UserSvcSavePermissionsRequest.md)
- - [UserSvcSavePermissionsResponse](docs/UserSvcSavePermissionsResponse.md)
  - [UserSvcSaveProfileRequest](docs/UserSvcSaveProfileRequest.md)
  - [UserSvcUser](docs/UserSvcUser.md)
  - [UserSvcUserRecord](docs/UserSvcUserRecord.md)

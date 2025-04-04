@@ -49,7 +49,7 @@ func (p *PromptService) Prompt(
 ) {
 
 	isAuthRsp, _, err := p.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *prompt.PermissionPromptCreate.Id).
+		UserSvcAPI.IsAuthorized(r.Context(), prompt.PermissionPromptCreate).
 		Body(openapi.UserSvcIsAuthorizedRequest{}).
 		Execute()
 

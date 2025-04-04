@@ -33,7 +33,7 @@ func (p *FirehoseService) Publish(w http.ResponseWriter,
 	r *http.Request) {
 
 	isAuthRsp, _, err := p.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), *firehose.PermissionEventPublish.Id).
+		UserSvcAPI.IsAuthorized(r.Context(), firehose.PermissionEventPublish).
 		Body(openapi.UserSvcIsAuthorizedRequest{
 			GrantedSlugs: []string{
 				"config-svc",

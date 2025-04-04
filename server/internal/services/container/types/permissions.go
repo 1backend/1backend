@@ -8,45 +8,22 @@
 
 package container_svc
 
-import (
-	openapi "github.com/1backend/1backend/clients/go"
+var (
+	// Container Service Permissions
+	PermissionContainerCreate = "container-svc:container:create"
+	PermissionContainerView   = "container-svc:container:view"
+	PermissionContainerEdit   = "container-svc:container:edit"
+	PermissionContainerStop   = "container-svc:container:stop"
+	PermissionImageBuild      = "container-svc:image:build"
+	PermissionLogView         = "container-svc:log:view"
+
+	// Admin Permission Group
+	AdminPermissions = []string{
+		PermissionContainerCreate,
+		PermissionContainerView,
+		PermissionContainerEdit,
+		PermissionContainerStop,
+		PermissionImageBuild,
+		PermissionLogView,
+	}
 )
-
-var PermissionContainerCreate = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("container-svc:container:create"),
-	Name: openapi.PtrString("Container Svc - Container Create"),
-}
-
-var PermissionContainerView = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("container-svc:container:view"),
-	Name: openapi.PtrString("Container Svc - Container View"),
-}
-
-var PermissionContainerEdit = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("container-svc:container:edit"),
-	Name: openapi.PtrString("Container Svc - Container Edit"),
-}
-
-var PermissionContainerStop = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("container-svc:container:stop"),
-	Name: openapi.PtrString("Container Svc - Container Stop"),
-}
-
-var PermissionImageBuild = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("container-svc:image:build"),
-	Name: openapi.PtrString("Container Svc - Image Build"),
-}
-
-var PermissionLogView = openapi.UserSvcPermission{
-	Id:   openapi.PtrString("container-svc:log:view"),
-	Name: openapi.PtrString("Container Svc - Log View"),
-}
-
-var AdminPermissions = []openapi.UserSvcPermission{
-	PermissionContainerCreate,
-	PermissionContainerView,
-	PermissionContainerEdit,
-	PermissionContainerStop,
-	PermissionImageBuild,
-	PermissionLogView,
-}

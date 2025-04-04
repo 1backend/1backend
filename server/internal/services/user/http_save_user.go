@@ -42,7 +42,7 @@ import (
 // @Router /user-svc/user/{userId} [put]
 func (s *UserService) SaveUser(w http.ResponseWriter, r *http.Request) {
 
-	_, isAuthorized, err := s.isAuthorized(r, user.PermissionUserEdit.Id, nil, nil)
+	_, isAuthorized, err := s.isAuthorized(r, user.PermissionUserEdit, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

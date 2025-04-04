@@ -52,7 +52,7 @@ type UserRecord struct {
 	Slug string `json:"slug" example:"jane-doe" binding:"required"`
 
 	ContactIds []string `json:"contactIds,omitempty"`
-	RoleIds    []string `json:"roleIds,omitempty"`
+	Roles      []string `json:"roles,omitempty"`
 }
 
 type UserRoleLink struct {

@@ -19,7 +19,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 
@@ -62,7 +61,7 @@ func (s *UserService) AssignPermissions(
 	defer r.Body.Close()
 
 	for _, link := range req.PermissionLinks {
-		if !strings.HasPrefix(link.PermissionId, usr.Slug) {
+		if !strings.HasPrefix(link.Permission, usr.Slug) {
 			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("Unauthorized"))
 			return
@@ -84,35 +83,12 @@ func (s *UserService) assignPermissions(
 	permissionLinks []*user.PermissionLink,
 ) error {
 	for _, permissionLink := range permissionLinks {
-		roleQ := s.rolesStore.Query(
-			datastore.Id(permissionLink.RoleId),
-		)
-		roleI, found, err := roleQ.FindOne()
-		if err != nil {
-			return err
-		}
-		if !found {
-			return fmt.Errorf("cannot find role %v", permissionLink.RoleId)
-		}
-		role := roleI.(*usertypes.Role)
 
-		permQ := s.permissionsStore.Query(
-			datastore.Id(permissionLink.PermissionId),
-		)
-		permissionI, found, err := permQ.FindOne()
-		if err != nil {
-			return err
-		}
-		if !found {
-			return fmt.Errorf("cannot find permission %v", permissionLink.PermissionId)
-		}
-		permission := permissionI.(*usertypes.Permission)
-
-		err = s.permissionRoleLinksStore.Upsert(&usertypes.PermissionRoleLink{
-			Id:           fmt.Sprintf("%v:%v", permission.Id, role.Id),
-			CreatedAt:    time.Now(),
-			RoleId:       permissionLink.RoleId,
-			PermissionId: permissionLink.PermissionId,
+		err := s.permissionRoleLinksStore.Upsert(&usertypes.PermissionRoleLink{
+			Id:         fmt.Sprintf("%v:%v", permissionLink.Permission, permissionLink.Role),
+			CreatedAt:  time.Now(),
+			Role:       permissionLink.Role,
+			Permission: permissionLink.Permission,
 		})
 		if err != nil {
 			return errors.Wrap(err, "error saving permission role link")

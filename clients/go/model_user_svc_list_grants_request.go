@@ -20,7 +20,7 @@ var _ MappedNullable = &UserSvcListGrantsRequest{}
 
 // UserSvcListGrantsRequest struct for UserSvcListGrantsRequest
 type UserSvcListGrantsRequest struct {
-	PermissionId *string `json:"permissionId,omitempty"`
+	Permission *string `json:"permission,omitempty"`
 	Slug *string `json:"slug,omitempty"`
 }
 
@@ -41,36 +41,36 @@ func NewUserSvcListGrantsRequestWithDefaults() *UserSvcListGrantsRequest {
 	return &this
 }
 
-// GetPermissionId returns the PermissionId field value if set, zero value otherwise.
-func (o *UserSvcListGrantsRequest) GetPermissionId() string {
-	if o == nil || IsNil(o.PermissionId) {
+// GetPermission returns the Permission field value if set, zero value otherwise.
+func (o *UserSvcListGrantsRequest) GetPermission() string {
+	if o == nil || IsNil(o.Permission) {
 		var ret string
 		return ret
 	}
-	return *o.PermissionId
+	return *o.Permission
 }
 
-// GetPermissionIdOk returns a tuple with the PermissionId field value if set, nil otherwise
+// GetPermissionOk returns a tuple with the Permission field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcListGrantsRequest) GetPermissionIdOk() (*string, bool) {
-	if o == nil || IsNil(o.PermissionId) {
+func (o *UserSvcListGrantsRequest) GetPermissionOk() (*string, bool) {
+	if o == nil || IsNil(o.Permission) {
 		return nil, false
 	}
-	return o.PermissionId, true
+	return o.Permission, true
 }
 
-// HasPermissionId returns a boolean if a field has been set.
-func (o *UserSvcListGrantsRequest) HasPermissionId() bool {
-	if o != nil && !IsNil(o.PermissionId) {
+// HasPermission returns a boolean if a field has been set.
+func (o *UserSvcListGrantsRequest) HasPermission() bool {
+	if o != nil && !IsNil(o.Permission) {
 		return true
 	}
 
 	return false
 }
 
-// SetPermissionId gets a reference to the given string and assigns it to the PermissionId field.
-func (o *UserSvcListGrantsRequest) SetPermissionId(v string) {
-	o.PermissionId = &v
+// SetPermission gets a reference to the given string and assigns it to the Permission field.
+func (o *UserSvcListGrantsRequest) SetPermission(v string) {
+	o.Permission = &v
 }
 
 // GetSlug returns the Slug field value if set, zero value otherwise.
@@ -115,8 +115,8 @@ func (o UserSvcListGrantsRequest) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcListGrantsRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.PermissionId) {
-		toSerialize["permissionId"] = o.PermissionId
+	if !IsNil(o.Permission) {
+		toSerialize["permission"] = o.Permission
 	}
 	if !IsNil(o.Slug) {
 		toSerialize["slug"] = o.Slug
