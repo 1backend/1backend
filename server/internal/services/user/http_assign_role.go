@@ -37,14 +37,14 @@ import (
 // @Accept json
 // @Produce json
 // @Param userId path string true "User ID"
-// @Param roleId path string true "Role ID"
+// @Param role path string true "Role ID"
 // @Param body body user.AssignRoleRequest false "Assign Role Request"
 // @Success 200 {object} user.AssignRoleResponse
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Failure 500 {object} user.ErrorResponse "Role not found"
 // @Security BearerAuth
-// @Router /user-svc/user/{userId}/role/{roleId} [put]
+// @Router /user-svc/user/{userId}/role/{role} [put]
 func (s *UserService) AssignRole(
 	w http.ResponseWriter,
 	r *http.Request) {
@@ -77,20 +77,20 @@ func (s *UserService) AssignRole(
 		w.Write([]byte(`Invalid JSON`))
 		return
 	}
-	roleId, err := url.PathUnescape(mux.Vars(r)["roleId"])
+	role, err := url.PathUnescape(mux.Vars(r)["role"])
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(`Invalid JSON`))
 		return
 	}
 
-	if !auth.OwnsRole(claim, roleId) {
+	if !auth.OwnsRole(claim, role) {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("Unauthorized"))
 		return
 	}
 
-	err = s.assignRole(userId, roleId)
+	err = s.assignRole(userId, role)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

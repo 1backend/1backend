@@ -55,34 +55,12 @@ func TestAssignPermissions(t *testing.T) {
 
 	ctx := context.Background()
 
-	t.Run("user 1 creates permission", func(t *testing.T) {
-		_, _, err = userClient.UserSvcAPI.SavePermissions(ctx).Body(openapi.UserSvcSavePermissionsRequest{
-			Permissions: []openapi.UserSvcPermission{
-				{
-					Id: openapi.PtrString("firstuser:myperm"),
-				},
-			},
-		}).Execute()
-		require.NoError(t, err)
-	})
-
-	t.Run("user 2 creates permission", func(t *testing.T) {
-		_, _, err = userClient2.UserSvcAPI.SavePermissions(ctx).Body(openapi.UserSvcSavePermissionsRequest{
-			Permissions: []openapi.UserSvcPermission{
-				{
-					Id: openapi.PtrString("seconduser:myperm"),
-				},
-			},
-		}).Execute()
-		require.NoError(t, err)
-	})
-
 	t.Run("user 1 cannot assign role it does not own", func(t *testing.T) {
 		_, _, err = userClient.UserSvcAPI.AssignPermissions(ctx).Body(openapi.UserSvcAssignPermissionsRequest{
 			PermissionLinks: []openapi.UserSvcPermissionLink{
 				{
-					RoleId:       "user-svc:user",
-					PermissionId: "seconduser:myperm",
+					Role:       "user-svc:user",
+					Permission: "seconduser:myperm",
 				},
 			},
 		}).Execute()
@@ -94,8 +72,8 @@ func TestAssignPermissions(t *testing.T) {
 		_, _, err = userClient.UserSvcAPI.AssignPermissions(ctx).Body(openapi.UserSvcAssignPermissionsRequest{
 			PermissionLinks: []openapi.UserSvcPermissionLink{
 				{
-					RoleId:       "user-svc:user",
-					PermissionId: "firstuser:myperm",
+					Role:       "user-svc:user",
+					Permission: "firstuser:myperm",
 				},
 			},
 		}).Execute()
@@ -107,8 +85,8 @@ func TestAssignPermissions(t *testing.T) {
 		_, _, err = userClient2.UserSvcAPI.AssignPermissions(ctx).Body(openapi.UserSvcAssignPermissionsRequest{
 			PermissionLinks: []openapi.UserSvcPermissionLink{
 				{
-					RoleId:       "user-svc:user",
-					PermissionId: "firstuser:myperm",
+					Role:       "user-svc:user",
+					Permission: "firstuser:myperm",
 				},
 			},
 		}).Execute()
@@ -120,8 +98,8 @@ func TestAssignPermissions(t *testing.T) {
 		_, _, err = userClient.UserSvcAPI.AssignPermissions(ctx).Body(openapi.UserSvcAssignPermissionsRequest{
 			PermissionLinks: []openapi.UserSvcPermissionLink{
 				{
-					RoleId:       "user-svc:user",
-					PermissionId: "firstuser:myperm",
+					Role:       "user-svc:user",
+					Permission: "firstuser:myperm",
 				},
 			},
 		}).Execute()

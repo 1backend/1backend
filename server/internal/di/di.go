@@ -754,7 +754,7 @@ func BigBang(options *Options) (*Universe, error) {
 		userService.ListRoles(w, r)
 	})).
 		Methods("OPTIONS", "GET")
-	router.HandleFunc("/user-svc/permission/{permissionId}/is-authorized", appl(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/permission/{permission}/is-authorized", appl(func(w http.ResponseWriter, r *http.Request) {
 		userService.IsAuthorized(w, r)
 	})).
 		Methods("OPTIONS", "POST")
@@ -762,7 +762,7 @@ func BigBang(options *Options) (*Universe, error) {
 		userService.GetPermissions(w, r)
 	})).
 		Methods("OPTIONS", "GET")
-	router.HandleFunc("/user-svc/user/{userId}/role/{roleId}", appl(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/user/{userId}/role/{role}", appl(func(w http.ResponseWriter, r *http.Request) {
 		userService.AssignRole(w, r)
 	})).
 		Methods("OPTIONS", "PUT")

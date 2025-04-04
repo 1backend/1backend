@@ -70,8 +70,14 @@ func (s *UserService) listRoles() ([]string, error) {
 	}
 
 	roles := []string{}
+	index := map[string]bool{}
 	for _, linkI := range linkIs {
-		roles = append(roles, linkI.(*user.PermissionRoleLink).Role)
+		role := linkI.(*user.PermissionRoleLink).Role
+		if _, ok := index[role]; ok {
+			continue
+		}
+		index[role] = true
+		roles = append(roles, role)
 	}
 
 	return roles, err

@@ -70,10 +70,10 @@ Examples:
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param userId User ID
-	@param roleId Role ID
+	@param role Role ID
 	@return ApiAssignRoleRequest
 	*/
-	AssignRole(ctx context.Context, userId string, roleId string) ApiAssignRoleRequest
+	AssignRole(ctx context.Context, userId string, role string) ApiAssignRoleRequest
 
 	// AssignRoleExecute executes the request
 	//  @return map[string]interface{}
@@ -733,7 +733,7 @@ type ApiAssignRoleRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
 	userId string
-	roleId string
+	role string
 	body *map[string]interface{}
 }
 
@@ -762,15 +762,15 @@ Examples:
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param userId User ID
- @param roleId Role ID
+ @param role Role ID
  @return ApiAssignRoleRequest
 */
-func (a *UserSvcAPIService) AssignRole(ctx context.Context, userId string, roleId string) ApiAssignRoleRequest {
+func (a *UserSvcAPIService) AssignRole(ctx context.Context, userId string, role string) ApiAssignRoleRequest {
 	return ApiAssignRoleRequest{
 		ApiService: a,
 		ctx: ctx,
 		userId: userId,
-		roleId: roleId,
+		role: role,
 	}
 }
 
@@ -789,9 +789,9 @@ func (a *UserSvcAPIService) AssignRoleExecute(r ApiAssignRoleRequest) (map[strin
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/user-svc/user/{userId}/role/{roleId}"
+	localVarPath := localBasePath + "/user-svc/user/{userId}/role/{role}"
 	localVarPath = strings.Replace(localVarPath, "{"+"userId"+"}", url.PathEscape(parameterValueToString(r.userId, "userId")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"roleId"+"}", url.PathEscape(parameterValueToString(r.roleId, "roleId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"role"+"}", url.PathEscape(parameterValueToString(r.role, "role")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}

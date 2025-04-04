@@ -44,7 +44,10 @@ func (dm *ContainerService) RunContainer(
 	isAuthRsp, _, err := dm.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.IsAuthorized(r.Context(), container.PermissionContainerCreate).
 		Body(openapi.UserSvcIsAuthorizedRequest{
-			GrantedSlugs: []string{"model-svc", "deploy-svc"},
+			GrantedSlugs: []string{
+				"model-svc",
+				"deploy-svc",
+			},
 		}).
 		Execute()
 	if err != nil {

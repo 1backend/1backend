@@ -13961,7 +13961,7 @@ class UserSvcApi {
      */
     assignRole(userId_1, roleId_1, body_1) {
         return __awaiter(this, arguments, void 0, function* (userId, roleId, body, options = { headers: {} }) {
-            const localVarPath = this.basePath + '/user-svc/user/{userId}/role/{roleId}'
+            const localVarPath = this.basePath + '/user-svc/user/{userId}/role/{role}'
                 .replace('{' + 'userId' + '}', encodeURIComponent(String(userId)))
                 .replace('{' + 'roleId' + '}', encodeURIComponent(String(roleId)));
             let localVarQueryParameters = {};
@@ -14235,7 +14235,7 @@ class UserSvcApi {
      */
     deleteRole(roleId_1) {
         return __awaiter(this, arguments, void 0, function* (roleId, options = { headers: {} }) {
-            const localVarPath = this.basePath + '/user-svc/role/{roleId}'
+            const localVarPath = this.basePath + '/user-svc/role/{role}'
                 .replace('{' + 'roleId' + '}', encodeURIComponent(String(roleId)));
             let localVarQueryParameters = {};
             let localVarHeaderParams = Object.assign({}, this._defaultHeaders);
@@ -14369,7 +14369,7 @@ class UserSvcApi {
      */
     getPermissionsByRole(roleId_1) {
         return __awaiter(this, arguments, void 0, function* (roleId, options = { headers: {} }) {
-            const localVarPath = this.basePath + '/user-svc/role/{roleId}/permissions'
+            const localVarPath = this.basePath + '/user-svc/role/{role}/permissions'
                 .replace('{' + 'roleId' + '}', encodeURIComponent(String(roleId)));
             let localVarQueryParameters = {};
             let localVarHeaderParams = Object.assign({}, this._defaultHeaders);
@@ -15573,7 +15573,7 @@ class UserSvcApi {
      */
     setRolePermission(roleId_1, body_1) {
         return __awaiter(this, arguments, void 0, function* (roleId, body, options = { headers: {} }) {
-            const localVarPath = this.basePath + '/user-svc/role/{roleId}/permissions'
+            const localVarPath = this.basePath + '/user-svc/role/{role}/permissions'
                 .replace('{' + 'roleId' + '}', encodeURIComponent(String(roleId)));
             let localVarQueryParameters = {};
             let localVarHeaderParams = Object.assign({}, this._defaultHeaders);

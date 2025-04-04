@@ -78,7 +78,7 @@ func (s *UserService) ListGrants(
 func (us *UserService) listGrants(req *user.ListGrantsRequest) ([]*user.Grant, error) {
 	filters := []datastore.Filter{}
 	if req.Permission != "" {
-		filters = append(filters, datastore.Equals([]string{"permissionId"}, req.Permission))
+		filters = append(filters, datastore.Equals([]string{"permission"}, req.Permission))
 	}
 	if req.Slug != "" {
 		filters = append(filters, datastore.Equals([]string{"slug"}, req.Slug))

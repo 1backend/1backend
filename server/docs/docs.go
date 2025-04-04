@@ -5098,7 +5098,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user-svc/user/{userId}/role/{roleId}": {
+        "/user-svc/user/{userId}/role/{role}": {
             "put": {
                 "security": [
                     {
@@ -5128,7 +5128,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Role ID",
-                        "name": "roleId",
+                        "name": "role",
                         "in": "path",
                         "required": true
                     },

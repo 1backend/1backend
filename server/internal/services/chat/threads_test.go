@@ -71,6 +71,8 @@ func TestMessageCreatesThread(t *testing.T) {
 			},
 		}
 
+		require.NotEmpty(t, req.Message.ThreadId)
+
 		_, _, err := userClient.ChatSvcAPI.AddMessage(context.Background(), req.Message.ThreadId).
 			Body(
 				openapi.ChatSvcAddMessageRequest{
@@ -95,7 +97,7 @@ func TestMessageCreatesThread(t *testing.T) {
 			},
 		}
 
-		_, _, err = userClient.ChatSvcAPI.AddThread(context.Background()).
+		_, rsp, err := userClient.ChatSvcAPI.AddThread(context.Background()).
 			Body(
 				openapi.ChatSvcAddThreadRequest{
 					Thread: &openapi.ChatSvcThread{
@@ -105,7 +107,7 @@ func TestMessageCreatesThread(t *testing.T) {
 				},
 			).
 			Execute()
-		require.NoError(t, err)
+		require.NoError(t, err, rsp)
 	})
 
 	userId := "usr-1"
@@ -151,6 +153,7 @@ func TestMessageCreatesThread(t *testing.T) {
 				Text:     "hi there",
 			}}
 
+		require.NotEmpty(t, req.Message.ThreadId)
 		_, _, err := userClient.ChatSvcAPI.AddMessage(context.Background(), req.Message.ThreadId).
 			Body(
 				openapi.ChatSvcAddMessageRequest{

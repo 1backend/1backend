@@ -100,17 +100,17 @@ func (mr *MockUserSvcAPIMockRecorder) AssignPermissionsExecute(r any) *gomock.Ca
 }
 
 // AssignRole mocks base method.
-func (m *MockUserSvcAPI) AssignRole(ctx context.Context, userId, roleId string) ApiAssignRoleRequest {
+func (m *MockUserSvcAPI) AssignRole(ctx context.Context, userId, role string) ApiAssignRoleRequest {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AssignRole", ctx, userId, roleId)
+	ret := m.ctrl.Call(m, "AssignRole", ctx, userId, role)
 	ret0, _ := ret[0].(ApiAssignRoleRequest)
 	return ret0
 }
 
 // AssignRole indicates an expected call of AssignRole.
-func (mr *MockUserSvcAPIMockRecorder) AssignRole(ctx, userId, roleId any) *gomock.Call {
+func (mr *MockUserSvcAPIMockRecorder) AssignRole(ctx, userId, role any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssignRole", reflect.TypeOf((*MockUserSvcAPI)(nil).AssignRole), ctx, userId, roleId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssignRole", reflect.TypeOf((*MockUserSvcAPI)(nil).AssignRole), ctx, userId, role)
 }
 
 // AssignRoleExecute mocks base method.

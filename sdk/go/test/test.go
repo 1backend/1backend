@@ -118,10 +118,6 @@ func MockUserSvc(ctx context.Context, ctrl *gomock.Controller, options ...MockUs
 		ApiService: mockUserSvc,
 	}
 	expectedUserSvcAddPermissionToRoleResponse := map[string]any{}
-	expectedUserSvcUpsertPermissionResponse := &openapi.UserSvcSavePermissionsResponse{}
-	mockUpsertPermissionRequest := openapi.ApiSavePermissionsRequest{
-		ApiService: mockUserSvc,
-	}
 
 	mockIsAuthorizedRequest := openapi.ApiIsAuthorizedRequest{
 		ApiService: mockUserSvc,
@@ -135,8 +131,6 @@ func MockUserSvc(ctx context.Context, ctrl *gomock.Controller, options ...MockUs
 	}, nil, nil).AnyTimes()
 	mockUserSvc.EXPECT().Login(ctx).Return(mockLoginRequest).AnyTimes()
 	mockUserSvc.EXPECT().LoginExecute(gomock.Any()).Return(expectedUserSvcLoginResponse, nil, nil).AnyTimes()
-	mockUserSvc.EXPECT().SavePermissions(ctx).Return(mockUpsertPermissionRequest).AnyTimes()
-	mockUserSvc.EXPECT().SavePermissionsExecute(gomock.Any()).Return(expectedUserSvcUpsertPermissionResponse, nil, nil).AnyTimes()
 	mockUserSvc.EXPECT().AssignPermissions(ctx).Return(mockAddPermissionToRoleRequest).AnyTimes()
 	mockUserSvc.EXPECT().AssignPermissionsExecute(gomock.Any()).Return(expectedUserSvcAddPermissionToRoleResponse, nil, nil).AnyTimes()
 	mockUserSvc.EXPECT().IsAuthorized(gomock.Any(), gomock.Any()).Return(mockIsAuthorizedRequest).AnyTimes()

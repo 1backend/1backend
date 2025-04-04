@@ -6602,7 +6602,7 @@ paths:
       summary: Save User
       tags:
       - User Svc
-  /user-svc/user/{userId}/role/{roleId}:
+  /user-svc/user/{userId}/role/{role}:
     put:
       consumes:
       - application/json
@@ -6625,7 +6625,7 @@ paths:
         type: string
       - description: Role ID
         in: path
-        name: roleId
+        name: role
         required: true
         type: string
       - description: Assign Role Request

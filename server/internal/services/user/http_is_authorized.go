@@ -124,7 +124,7 @@ func (s *UserService) isAuthorized(
 		roleIdAnys = append(roleIdAnys, roleId)
 	}
 	permissionLinks, err := s.permissionRoleLinksStore.Query(
-		datastore.IsInList(datastore.Field("roleId"), roleIdAnys...),
+		datastore.IsInList(datastore.Field("role"), roleIdAnys...),
 	).Find()
 	if err != nil {
 		return nil, false, err
@@ -142,7 +142,7 @@ func (s *UserService) isAuthorized(
 	// @todo investigate why this doesn't work
 	//
 	// _, exists, err := s.grantsStore.Query(
-	// 	datastore.Equals([]string{"permissionId"}, permissionId),
+	// 	datastore.Equals([]string{"permission"}, permissionId),
 	// 	datastore.IsInList([]string{"slugs"}, usr.Slug),
 	// ).FindOne()
 

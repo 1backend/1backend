@@ -29,15 +29,6 @@ func TestAssignRoleToUser(t *testing.T) {
 
 	userClient := manyClients[0]
 
-	t.Run("user creates role", func(t *testing.T) {
-		_, _, err := userClient.UserSvcAPI.CreateRole(context.Background()).
-			Body(openapi.UserSvcCreateRoleRequest{
-				Id: "test-user-slug-0:custom-role",
-			}).Execute()
-
-		require.NoError(t, err)
-	})
-
 	// This is needed for dynamic roles.
 	t.Run("can add nonexistent role to user", func(t *testing.T) {
 		_, _, err := userClient.UserSvcAPI.AssignRole(
