@@ -29,10 +29,10 @@
 				<ion-item
 					*ngFor="let role of filteredRoles()"
 					(click)="selectRole(role)"
-					[class.selected]="selectedRole?.id === role.id"
+					[class.selected]="selectedRole === role"
 					button
 				>
-					<ion-label>{{ role?.name }}</ion-label>
+					<ion-label>{{ role }}</ion-label>
 				</ion-item>
 			</ion-list>
 		</div>
@@ -58,10 +58,10 @@
 						color="secondary"
 						class="custom-checkbox"
 						slot="start"
-						[checked]="selectedRolePermissions.has(permission.id || '')"
-						(ionChange)="togglePermission(permission.id || '')"
+						[checked]="selectedRolePermissions.has(permission || '')"
+						(ionChange)="togglePermission(permission || '')"
 					></ion-checkbox>
-					<ion-label>{{ permission?.name }}</ion-label>
+					<ion-label>{{ permission }}</ion-label>
 				</ion-item>
 			</ion-list>
 		</div>

@@ -49,11 +49,9 @@
 								labelPlacement="floating"
 								multiple="true"
 							>
-								<ion-select-option
-									*ngFor="let role of roles"
-									[value]="role.id"
-									>{{ role.name }}</ion-select-option
-								>
+								<ion-select-option *ngFor="let role of roles" [value]="role">{{
+									role
+								}}</ion-select-option>
 							</ion-select>
 						</ion-item>
 

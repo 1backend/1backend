@@ -1,9 +1,5 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
-import {
-	UserSvcRole as Role,
-	UserSvcPermission as Permission,
-} from '@1backend/client';
 import { first } from 'rxjs';
 import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -39,9 +35,9 @@ import { IconMenuComponent } from '../../components/icon-menu/icon-menu.componen
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RolesComponent {
-	roles: Role[] = [];
-	permissions: Permission[] = [];
-	selectedRole: Role | undefined;
+	roles: string[] = [];
+	permissions: string[] = [];
+	selectedRole: string | undefined;
 	selectedRolePermissions: Set<string> = new Set<string>();
 
 	roleSearchQuery: string = '';
@@ -63,14 +59,14 @@ export class RolesComponent {
 		this.cd.markForCheck();
 	}
 
-	selectRole(role: Role) {
+	selectRole(role: string) {
 		this.selectedRole = role;
 		this.loadRolePermissions(role);
 	}
 
-	async loadRolePermissions(role: Role) {
+	async loadRolePermissions(role: string) {
 		this.selectedRolePermissions.clear();
-		const rsp = await this.userService.getPermissions(role.id!);
+		const rsp = await this.userService.getPermissions(role!);
 		this.permissions = rsp.permissions!;
 		// @todo fix this
 		// if (role.permissionIds) {
@@ -91,24 +87,21 @@ export class RolesComponent {
 
 	async savePermissions() {
 		if (this.selectedRole) {
-			const permissionIds = [...this.selectedRolePermissions];
-			await this.userService.setRolePermissions(
-				this.selectedRole.id as string,
-				permissionIds
-			);
+			// const permissionIds = [...this.selectedRolePermissions];
+			// @todo
 		}
 	}
 
 	filteredRoles() {
 		return this.roles.filter((role) =>
-			role.name?.toLowerCase().includes(this.roleSearchQuery.toLowerCase())
+			role?.toLowerCase().includes(this.roleSearchQuery.toLowerCase())
 		);
 	}
 
 	filteredPermissions() {
 		return this.permissions.filter((permission) =>
 			permission
-				.name!.toLowerCase()
+				.toLowerCase()
 				.includes(this.permissionSearchQuery.toLowerCase())
 		);
 	}

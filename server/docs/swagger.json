@@ -13,7 +13,7 @@
             "name": "AGPL v3.0",
             "url": "https://www.gnu.org/licenses/agpl-3.0.html"
         },
-        "version": "0.3.0-rc.31"
+        "version": "0.3.0-rc.32"
     },
     "host": "localhost:58231",
     "basePath": "/",
