@@ -165,6 +165,19 @@ func (s *UserService) isAuthorized(
 				break
 			}
 		}
+
+		for _, userRoleId := range roleIds {
+			for _, grantRoleIds := range grant.RoleIds {
+
+				if userRoleId == grantRoleIds {
+					exists = true
+					break
+				}
+			}
+			if exists {
+				break
+			}
+		}
 	}
 
 	if exists {

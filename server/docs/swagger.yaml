@@ -2820,11 +2820,18 @@ definitions:
         type: string
       permissionId:
         type: string
-      slugs:
-        description: Slugs who are granted the PermissionId
+      roleIds:
+        description: Role Ids who are granted the permission
         items:
           type: string
         type: array
+      slugs:
+        description: Slugs who are granted the permission
+        items:
+          type: string
+        type: array
+    required:
+    - permissionId
     type: object
   user_svc.Invite:
     properties:

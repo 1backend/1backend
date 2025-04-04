@@ -9377,6 +9377,9 @@ const docTemplate = `{
         },
         "user_svc.Grant": {
             "type": "object",
+            "required": [
+                "permissionId"
+            ],
             "properties": {
                 "id": {
                     "type": "string"
@@ -9384,8 +9387,15 @@ const docTemplate = `{
                 "permissionId": {
                     "type": "string"
                 },
+                "roleIds": {
+                    "description": "Role Ids who are granted the permission",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
                 "slugs": {
-                    "description": "Slugs who are granted the PermissionId",
+                    "description": "Slugs who are granted the permission",
                     "type": "array",
                     "items": {
                         "type": "string"

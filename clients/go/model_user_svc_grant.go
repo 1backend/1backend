@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the UserSvcGrant type satisfies the MappedNullable interface at compile time
@@ -21,17 +23,22 @@ var _ MappedNullable = &UserSvcGrant{}
 // UserSvcGrant struct for UserSvcGrant
 type UserSvcGrant struct {
 	Id *string `json:"id,omitempty"`
-	PermissionId *string `json:"permissionId,omitempty"`
-	// Slugs who are granted the PermissionId
+	PermissionId string `json:"permissionId"`
+	// Role Ids who are granted the permission
+	RoleIds []string `json:"roleIds,omitempty"`
+	// Slugs who are granted the permission
 	Slugs []string `json:"slugs,omitempty"`
 }
+
+type _UserSvcGrant UserSvcGrant
 
 // NewUserSvcGrant instantiates a new UserSvcGrant object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcGrant() *UserSvcGrant {
+func NewUserSvcGrant(permissionId string) *UserSvcGrant {
 	this := UserSvcGrant{}
+	this.PermissionId = permissionId
 	return &this
 }
 
@@ -75,36 +82,60 @@ func (o *UserSvcGrant) SetId(v string) {
 	o.Id = &v
 }
 
-// GetPermissionId returns the PermissionId field value if set, zero value otherwise.
+// GetPermissionId returns the PermissionId field value
 func (o *UserSvcGrant) GetPermissionId() string {
-	if o == nil || IsNil(o.PermissionId) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.PermissionId
+
+	return o.PermissionId
 }
 
-// GetPermissionIdOk returns a tuple with the PermissionId field value if set, nil otherwise
+// GetPermissionIdOk returns a tuple with the PermissionId field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcGrant) GetPermissionIdOk() (*string, bool) {
-	if o == nil || IsNil(o.PermissionId) {
+	if o == nil {
 		return nil, false
 	}
-	return o.PermissionId, true
+	return &o.PermissionId, true
 }
 
-// HasPermissionId returns a boolean if a field has been set.
-func (o *UserSvcGrant) HasPermissionId() bool {
-	if o != nil && !IsNil(o.PermissionId) {
+// SetPermissionId sets field value
+func (o *UserSvcGrant) SetPermissionId(v string) {
+	o.PermissionId = v
+}
+
+// GetRoleIds returns the RoleIds field value if set, zero value otherwise.
+func (o *UserSvcGrant) GetRoleIds() []string {
+	if o == nil || IsNil(o.RoleIds) {
+		var ret []string
+		return ret
+	}
+	return o.RoleIds
+}
+
+// GetRoleIdsOk returns a tuple with the RoleIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcGrant) GetRoleIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.RoleIds) {
+		return nil, false
+	}
+	return o.RoleIds, true
+}
+
+// HasRoleIds returns a boolean if a field has been set.
+func (o *UserSvcGrant) HasRoleIds() bool {
+	if o != nil && !IsNil(o.RoleIds) {
 		return true
 	}
 
 	return false
 }
 
-// SetPermissionId gets a reference to the given string and assigns it to the PermissionId field.
-func (o *UserSvcGrant) SetPermissionId(v string) {
-	o.PermissionId = &v
+// SetRoleIds gets a reference to the given []string and assigns it to the RoleIds field.
+func (o *UserSvcGrant) SetRoleIds(v []string) {
+	o.RoleIds = v
 }
 
 // GetSlugs returns the Slugs field value if set, zero value otherwise.
@@ -152,13 +183,51 @@ func (o UserSvcGrant) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}
-	if !IsNil(o.PermissionId) {
-		toSerialize["permissionId"] = o.PermissionId
+	toSerialize["permissionId"] = o.PermissionId
+	if !IsNil(o.RoleIds) {
+		toSerialize["roleIds"] = o.RoleIds
 	}
 	if !IsNil(o.Slugs) {
 		toSerialize["slugs"] = o.Slugs
 	}
 	return toSerialize, nil
+}
+
+func (o *UserSvcGrant) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"permissionId",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varUserSvcGrant := _UserSvcGrant{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varUserSvcGrant)
+
+	if err != nil {
+		return err
+	}
+
+	*o = UserSvcGrant(varUserSvcGrant)
+
+	return err
 }
 
 type NullableUserSvcGrant struct {
