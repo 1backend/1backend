@@ -4,7 +4,7 @@
 //
 //
 
-// Package sdk is a generated GoMock package.
+// Package client is a generated GoMock package.
 package client
 
 import (

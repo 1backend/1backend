@@ -168,8 +168,6 @@ export * from './userSvcAssignPermissionsRequest';
 export * from './userSvcAuthToken';
 export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';
-export * from './userSvcCreateOrganizationRequest';
-export * from './userSvcCreateOrganizationResponse';
 export * from './userSvcCreateRoleRequest';
 export * from './userSvcCreateRoleResponse';
 export * from './userSvcCreateUserRequest';
@@ -201,6 +199,8 @@ export * from './userSvcRole';
 export * from './userSvcSaveGrantsRequest';
 export * from './userSvcSaveInvitesRequest';
 export * from './userSvcSaveInvitesResponse';
+export * from './userSvcSaveOrganizationRequest';
+export * from './userSvcSaveOrganizationResponse';
 export * from './userSvcSavePermissionsRequest';
 export * from './userSvcSavePermissionsResponse';
 export * from './userSvcSaveProfileRequest';
@@ -377,8 +377,6 @@ import { UserSvcAssignPermissionsRequest } from './userSvcAssignPermissionsReque
 import { UserSvcAuthToken } from './userSvcAuthToken';
 import { UserSvcChangePasswordRequest } from './userSvcChangePasswordRequest';
 import { UserSvcContact } from './userSvcContact';
-import { UserSvcCreateOrganizationRequest } from './userSvcCreateOrganizationRequest';
-import { UserSvcCreateOrganizationResponse } from './userSvcCreateOrganizationResponse';
 import { UserSvcCreateRoleRequest } from './userSvcCreateRoleRequest';
 import { UserSvcCreateRoleResponse } from './userSvcCreateRoleResponse';
 import { UserSvcCreateUserRequest } from './userSvcCreateUserRequest';
@@ -410,6 +408,8 @@ import { UserSvcRole } from './userSvcRole';
 import { UserSvcSaveGrantsRequest } from './userSvcSaveGrantsRequest';
 import { UserSvcSaveInvitesRequest } from './userSvcSaveInvitesRequest';
 import { UserSvcSaveInvitesResponse } from './userSvcSaveInvitesResponse';
+import { UserSvcSaveOrganizationRequest } from './userSvcSaveOrganizationRequest';
+import { UserSvcSaveOrganizationResponse } from './userSvcSaveOrganizationResponse';
 import { UserSvcSavePermissionsRequest } from './userSvcSavePermissionsRequest';
 import { UserSvcSavePermissionsResponse } from './userSvcSavePermissionsResponse';
 import { UserSvcSaveProfileRequest } from './userSvcSaveProfileRequest';
@@ -600,8 +600,6 @@ let typeMap = {
     "UserSvcAuthToken": UserSvcAuthToken,
     "UserSvcChangePasswordRequest": UserSvcChangePasswordRequest,
     "UserSvcContact": UserSvcContact,
-    "UserSvcCreateOrganizationRequest": UserSvcCreateOrganizationRequest,
-    "UserSvcCreateOrganizationResponse": UserSvcCreateOrganizationResponse,
     "UserSvcCreateRoleRequest": UserSvcCreateRoleRequest,
     "UserSvcCreateRoleResponse": UserSvcCreateRoleResponse,
     "UserSvcCreateUserRequest": UserSvcCreateUserRequest,
@@ -633,6 +631,8 @@ let typeMap = {
     "UserSvcSaveGrantsRequest": UserSvcSaveGrantsRequest,
     "UserSvcSaveInvitesRequest": UserSvcSaveInvitesRequest,
     "UserSvcSaveInvitesResponse": UserSvcSaveInvitesResponse,
+    "UserSvcSaveOrganizationRequest": UserSvcSaveOrganizationRequest,
+    "UserSvcSaveOrganizationResponse": UserSvcSaveOrganizationResponse,
     "UserSvcSavePermissionsRequest": UserSvcSavePermissionsRequest,
     "UserSvcSavePermissionsResponse": UserSvcSavePermissionsResponse,
     "UserSvcSaveProfileRequest": UserSvcSaveProfileRequest,

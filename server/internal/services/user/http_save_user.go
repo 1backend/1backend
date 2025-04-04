@@ -15,9 +15,13 @@ package userservice
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
+	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
+	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/gorilla/mux"
+	"github.com/pkg/errors"
 )
 
 // @ID saveUser
@@ -62,7 +66,7 @@ func (s *UserService) SaveUser(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	err = s.saveProfile(userId, req.Name)
+	err = s.saveUser(userId, &req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -71,4 +75,37 @@ func (s *UserService) SaveUser(w http.ResponseWriter, r *http.Request) {
 
 	bs, _ := json.Marshal(user.SaveProfileResponse{})
 	w.Write(bs)
+}
+
+func (s *UserService) saveUser(
+	userId string,
+	request *user.SaveProfileRequest,
+) error {
+	query := s.usersStore.Query(
+		datastore.Equals(datastore.Field("id"), userId),
+	)
+
+	userI, found, err := query.FindOne()
+	if err != nil {
+		return err
+	}
+
+	if !found {
+		return errors.New("user not found")
+	}
+	user := userI.(*usertypes.User)
+
+	if request.Name != "" {
+		user.Name = request.Name
+	}
+
+	if request.ThumbnailFileId != "" {
+		user.ThumbnailFileId = request.ThumbnailFileId
+	}
+
+	user.UpdatedAt = time.Now()
+
+	query.Update(user)
+
+	return nil
 }

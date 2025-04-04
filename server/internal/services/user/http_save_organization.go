@@ -25,22 +25,22 @@ import (
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-// @ID createOrganization
-// @Summary Create an Organization
-// @Description Allows a logged-in user to create a new organization. The user initiating the request will be assigned the role of admin for that organization.
-// @Description The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the created organization.
+// @ID saveOrganization
+// @Summary Save an Organization
+// @Description Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization.
+// @Description The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the saved organization.
 // @Description Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
 // @Tags User Svc
 // @Accept json
 // @Produce json
-// @Param body body user.CreateOrganizationRequest true "Create User Request"
-// @Success 200 {object} user.CreateOrganizationResponse "User created successfully"
+// @Param body body user.SaveOrganizationRequest true "Save User Request"
+// @Success 200 {object} user.SaveOrganizationResponse "User saved successfully"
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
-// @Router /user-svc/organization [post]
-func (s *UserService) CreateOrganization(
+// @Router /user-svc/organization [put]
+func (s *UserService) SaveOrganization(
 	w http.ResponseWriter,
 	r *http.Request) {
 
@@ -61,7 +61,7 @@ func (s *UserService) CreateOrganization(
 		return
 	}
 
-	req := user.CreateOrganizationRequest{}
+	req := user.SaveOrganizationRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -70,42 +70,57 @@ func (s *UserService) CreateOrganization(
 	}
 	defer r.Body.Close()
 
-	org, token, err := s.createOrganization(usr.Id, req.Id, req.Name, req.Slug)
+	org, token, err := s.saveOrganization(usr.Id, &req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	bs, _ := json.Marshal(user.CreateOrganizationResponse{
+	bs, _ := json.Marshal(user.SaveOrganizationResponse{
 		Organization: *org,
 		Token:        *token,
 	})
 	w.Write(bs)
 }
 
-func (s *UserService) createOrganization(
-	userId, orgId, name, slug string,
+func (s *UserService) saveOrganization(
+	userId string,
+	request *user.SaveOrganizationRequest,
 ) (*user.Organization, *user.AuthToken, error) {
-	_, exists, err := s.organizationsStore.Query(
-		datastore.Equals(datastore.Field("slug"), slug),
+	if request.Slug == "" {
+		return nil, nil, errors.New("slug is required")
+	}
+
+	orgI, exists, err := s.organizationsStore.Query(
+		datastore.Equals(datastore.Field("slug"), request.Slug),
 	).FindOne()
 	if err != nil {
 		return nil, nil, err
 	}
 
+	var final *user.Organization
+
 	if exists {
-		return nil, nil, errors.New("organization already exists")
-	}
+		final = orgI.(*user.Organization)
+		if request.Name != "" {
+			final.Name = request.Name
+		}
+		if request.ThumbnailFileId != "" {
+			final.ThumbnailFileId = request.ThumbnailFileId
+		}
+	} else {
+		final = &user.Organization{}
 
-	if orgId == "" {
-		orgId = sdk.Id("org")
-	}
+		if request.Id != "" {
+			final.Id = request.Id
+		} else {
+			final.Id = sdk.Id("org")
+		}
 
-	org := &user.Organization{
-		Id:   orgId,
-		Name: name,
-		Slug: slug,
+		if request.Name == "" {
+			return nil, nil, errors.New("name is required")
+		}
 	}
 
 	count, err := s.organizationUserLinksStore.Query(
@@ -119,25 +134,25 @@ func (s *UserService) createOrganization(
 	}
 
 	link := &user.OrganizationUserLink{
-		Id:             fmt.Sprintf("%v:%v", org.Id, userId),
+		Id:             fmt.Sprintf("%v:%v", final.Id, userId),
 		UserId:         userId,
-		OrganizationId: org.Id,
+		OrganizationId: final.Id,
 		Active:         count == 0, // make the first org active
 	}
 
-	err = s.organizationUserLinksStore.Create(link)
+	err = s.organizationUserLinksStore.Upsert(link)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	err = s.organizationsStore.Create(org)
+	err = s.organizationsStore.Upsert(final)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	err = s.addDynamicRoleToUser(
 		userId,
-		fmt.Sprintf("user-svc:org:{%v}:admin", org.Id),
+		fmt.Sprintf("user-svc:org:{%v}:admin", final.Id),
 	)
 	if err != nil {
 		return nil, nil, err
@@ -164,12 +179,12 @@ func (s *UserService) createOrganization(
 		return nil, nil, errors.Wrap(err, "error generating token")
 	}
 
-	err = s.authTokensStore.Create(token)
+	err = s.authTokensStore.Upsert(token)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "error creating token")
 	}
 
-	return org, token, nil
+	return final, token, nil
 }
 
 func (s *UserService) inactivateTokens(userId string) error {

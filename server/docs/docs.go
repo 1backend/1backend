@@ -4310,13 +4310,13 @@ const docTemplate = `{
             }
         },
         "/user-svc/organization": {
-            "post": {
+            "put": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Allows a logged-in user to create a new organization. The user initiating the request will be assigned the role of admin for that organization.\nThe initiating user will receive a dynamic role in the format ` + "`" + `user-svc:org:{organizationId}:admin` + "`" + `, where ` + "`" + `{organizationId}` + "`" + ` is a unique identifier for the created organization.\nDynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.",
+                "description": "Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization.\nThe initiating user will receive a dynamic role in the format ` + "`" + `user-svc:org:{organizationId}:admin` + "`" + `, where ` + "`" + `{organizationId}` + "`" + ` is a unique identifier for the saved organization.\nDynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4326,24 +4326,24 @@ const docTemplate = `{
                 "tags": [
                     "User Svc"
                 ],
-                "summary": "Create an Organization",
-                "operationId": "createOrganization",
+                "summary": "Save an Organization",
+                "operationId": "saveOrganization",
                 "parameters": [
                     {
-                        "description": "Create User Request",
+                        "description": "Save User Request",
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user_svc.CreateOrganizationRequest"
+                            "$ref": "#/definitions/user_svc.SaveOrganizationRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "User created successfully",
+                        "description": "User saved successfully",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.CreateOrganizationResponse"
+                            "$ref": "#/definitions/user_svc.SaveOrganizationResponse"
                         }
                     },
                     "400": {
@@ -9282,46 +9282,6 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.CreateOrganizationRequest": {
-            "type": "object",
-            "required": [
-                "name",
-                "slug"
-            ],
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "description": "Full name of the organization.",
-                    "type": "string"
-                },
-                "slug": {
-                    "description": "URL-friendly unique (inside the Singularon platform) identifier for the ` + "`" + `organization` + "`" + `.",
-                    "type": "string"
-                }
-            }
-        },
-        "user_svc.CreateOrganizationResponse": {
-            "type": "object",
-            "required": [
-                "organization",
-                "token"
-            ],
-            "properties": {
-                "organization": {
-                    "$ref": "#/definitions/user_svc.Organization"
-                },
-                "token": {
-                    "description": "Due to the nature of JWT tokens, the token must be refreshed after\ncreating an organization, as dynamic organization roles are embedded in it.",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/user_svc.AuthToken"
-                        }
-                    ]
-                }
-            }
-        },
         "user_svc.CreateRoleRequest": {
             "type": "object",
             "required": [
@@ -9669,6 +9629,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "acme-corporation"
                 },
+                "thumbnailFileId": {
+                    "type": "string",
+                    "example": "file_fQDxusW8og"
+                },
                 "updatedAt": {
                     "type": "string"
                 }
@@ -9842,6 +9806,49 @@ const docTemplate = `{
                 }
             }
         },
+        "user_svc.SaveOrganizationRequest": {
+            "type": "object",
+            "required": [
+                "slug"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Full name of the organization.",
+                    "type": "string"
+                },
+                "slug": {
+                    "description": "URL-friendly unique (inside the Singularon platform) identifier for the ` + "`" + `organization` + "`" + `.",
+                    "type": "string"
+                },
+                "thumbnailFileId": {
+                    "type": "string",
+                    "example": "file_fQDxusW8og"
+                }
+            }
+        },
+        "user_svc.SaveOrganizationResponse": {
+            "type": "object",
+            "required": [
+                "organization",
+                "token"
+            ],
+            "properties": {
+                "organization": {
+                    "$ref": "#/definitions/user_svc.Organization"
+                },
+                "token": {
+                    "description": "Due to the nature of JWT tokens, the token must be refreshed after\ncreating an organization, as dynamic organization roles are embedded in it.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/user_svc.AuthToken"
+                        }
+                    ]
+                }
+            }
+        },
         "user_svc.SavePermissionsRequest": {
             "type": "object",
             "properties": {
@@ -9872,6 +9879,10 @@ const docTemplate = `{
                 },
                 "slug": {
                     "type": "string"
+                },
+                "thumbnailFileId": {
+                    "type": "string",
+                    "example": "file_fQDxusW8og"
                 }
             }
         },
@@ -9920,6 +9931,10 @@ const docTemplate = `{
                     "description": "URL-friendly unique (inside the 1Backend platform) identifier for the ` + "`" + `user` + "`" + `.",
                     "type": "string",
                     "example": "jane-doe"
+                },
+                "thumbnailFileId": {
+                    "type": "string",
+                    "example": "file_fQDyi1xdHK"
                 },
                 "updatedAt": {
                     "type": "string"
@@ -9983,7 +9998,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.3.0-rc.30",
+	Version:          "0.3.0-rc.31",
 	Host:             "localhost:58231",
 	BasePath:         "/",
 	Schemes:          []string{},

@@ -181,15 +181,15 @@ func TestOrganization(t *testing.T) {
 	t.Run(
 		"claim contains new organization admin role after creating organization",
 		func(t *testing.T) {
-			createOrgReq := openapi.UserSvcCreateOrganizationRequest{
+			createOrgReq := openapi.UserSvcSaveOrganizationRequest{
 				Id:   openapi.PtrString(orgId1),
 				Slug: "test-org",
-				Name: "Test Org",
+				Name: openapi.PtrString("Test Org"),
 			}
-			_, _, err := userClient.UserSvcAPI.CreateOrganization(context.Background()).
+			_, rsp, err := userClient.UserSvcAPI.SaveOrganization(context.Background()).
 				Body(createOrgReq).
 				Execute()
-			require.NoError(t, err)
+			require.NoError(t, err, rsp)
 
 			claim, err := options.Authorizer.ParseJWT(
 				publicKeyRsp.PublicKey,

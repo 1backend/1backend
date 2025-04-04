@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.3.0-rc.30
+API version: 0.3.0-rc.31
 Contact: sales@singulatron.com
 */
 
@@ -22,6 +22,7 @@ var _ MappedNullable = &UserSvcSaveProfileRequest{}
 type UserSvcSaveProfileRequest struct {
 	Name *string `json:"name,omitempty"`
 	Slug *string `json:"slug,omitempty"`
+	ThumbnailFileId *string `json:"thumbnailFileId,omitempty"`
 }
 
 // NewUserSvcSaveProfileRequest instantiates a new UserSvcSaveProfileRequest object
@@ -105,6 +106,38 @@ func (o *UserSvcSaveProfileRequest) SetSlug(v string) {
 	o.Slug = &v
 }
 
+// GetThumbnailFileId returns the ThumbnailFileId field value if set, zero value otherwise.
+func (o *UserSvcSaveProfileRequest) GetThumbnailFileId() string {
+	if o == nil || IsNil(o.ThumbnailFileId) {
+		var ret string
+		return ret
+	}
+	return *o.ThumbnailFileId
+}
+
+// GetThumbnailFileIdOk returns a tuple with the ThumbnailFileId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcSaveProfileRequest) GetThumbnailFileIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ThumbnailFileId) {
+		return nil, false
+	}
+	return o.ThumbnailFileId, true
+}
+
+// HasThumbnailFileId returns a boolean if a field has been set.
+func (o *UserSvcSaveProfileRequest) HasThumbnailFileId() bool {
+	if o != nil && !IsNil(o.ThumbnailFileId) {
+		return true
+	}
+
+	return false
+}
+
+// SetThumbnailFileId gets a reference to the given string and assigns it to the ThumbnailFileId field.
+func (o *UserSvcSaveProfileRequest) SetThumbnailFileId(v string) {
+	o.ThumbnailFileId = &v
+}
+
 func (o UserSvcSaveProfileRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -120,6 +153,9 @@ func (o UserSvcSaveProfileRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Slug) {
 		toSerialize["slug"] = o.Slug
+	}
+	if !IsNil(o.ThumbnailFileId) {
+		toSerialize["thumbnailFileId"] = o.ThumbnailFileId
 	}
 	return toSerialize, nil
 }
