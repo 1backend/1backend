@@ -36,6 +36,8 @@ type User struct {
 	Slug string `json:"slug" example:"jane-doe" binding:"required"`
 
 	PasswordHash string `json:"passwordHash,omitempty"`
+
+	ThumbnailFileId string `json:"thumbnailFileId,omitempty" example:"file_fQDyi1xdHK"`
 }
 
 type UserRecord struct {
@@ -113,8 +115,9 @@ type LoginResponse struct {
 }
 
 type SaveProfileRequest struct {
-	Slug string `json:"slug,omitempty"`
-	Name string `json:"name,omitempty"`
+	Slug            string `json:"slug,omitempty"`
+	Name            string `json:"name,omitempty"`
+	ThumbnailFileId string `json:"thumbnailFileId,omitempty" example:"file_fQDxusW8og"`
 }
 
 type SaveProfileResponse struct {

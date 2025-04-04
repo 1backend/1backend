@@ -204,8 +204,6 @@ docs/UserSvcAssignPermissionsRequest.md
 docs/UserSvcAuthToken.md
 docs/UserSvcChangePasswordRequest.md
 docs/UserSvcContact.md
-docs/UserSvcCreateOrganizationRequest.md
-docs/UserSvcCreateOrganizationResponse.md
 docs/UserSvcCreateRoleRequest.md
 docs/UserSvcCreateRoleResponse.md
 docs/UserSvcCreateUserRequest.md
@@ -237,6 +235,8 @@ docs/UserSvcRole.md
 docs/UserSvcSaveGrantsRequest.md
 docs/UserSvcSaveInvitesRequest.md
 docs/UserSvcSaveInvitesResponse.md
+docs/UserSvcSaveOrganizationRequest.md
+docs/UserSvcSaveOrganizationResponse.md
 docs/UserSvcSavePermissionsRequest.md
 docs/UserSvcSavePermissionsResponse.md
 docs/UserSvcSaveProfileRequest.md
@@ -416,8 +416,6 @@ model_user_svc_assign_permissions_request.go
 model_user_svc_auth_token.go
 model_user_svc_change_password_request.go
 model_user_svc_contact.go
-model_user_svc_create_organization_request.go
-model_user_svc_create_organization_response.go
 model_user_svc_create_role_request.go
 model_user_svc_create_role_response.go
 model_user_svc_create_user_request.go
@@ -449,6 +447,8 @@ model_user_svc_role.go
 model_user_svc_save_grants_request.go
 model_user_svc_save_invites_request.go
 model_user_svc_save_invites_response.go
+model_user_svc_save_organization_request.go
+model_user_svc_save_organization_response.go
 model_user_svc_save_permissions_request.go
 model_user_svc_save_permissions_response.go
 model_user_svc_save_profile_request.go

@@ -62,11 +62,11 @@ func TestAssignRoleToUser(t *testing.T) {
 	orgId := ""
 
 	t.Run("create organization", func(t *testing.T) {
-		rsp, _, err := userClient.UserSvcAPI.CreateOrganization(
+		rsp, _, err := userClient.UserSvcAPI.SaveOrganization(
 			context.Background(),
-		).Body(openapi.UserSvcCreateOrganizationRequest{
+		).Body(openapi.UserSvcSaveOrganizationRequest{
 			Slug: "test-org",
-			Name: "Test Org",
+			Name: openapi.PtrString("Test Org"),
 		}).Execute()
 		require.NoError(t, err)
 		require.NotEmpty(t, rsp.Organization.Id)

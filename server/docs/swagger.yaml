@@ -2754,35 +2754,6 @@ definitions:
     - platform
     - userId
     type: object
-  user_svc.CreateOrganizationRequest:
-    properties:
-      id:
-        type: string
-      name:
-        description: Full name of the organization.
-        type: string
-      slug:
-        description: URL-friendly unique (inside the Singularon platform) identifier
-          for the `organization`.
-        type: string
-    required:
-    - name
-    - slug
-    type: object
-  user_svc.CreateOrganizationResponse:
-    properties:
-      organization:
-        $ref: '#/definitions/user_svc.Organization'
-      token:
-        allOf:
-        - $ref: '#/definitions/user_svc.AuthToken'
-        description: |-
-          Due to the nature of JWT tokens, the token must be refreshed after
-          creating an organization, as dynamic organization roles are embedded in it.
-    required:
-    - organization
-    - token
-    type: object
   user_svc.CreateRoleRequest:
     properties:
       description:
@@ -3021,6 +2992,9 @@ definitions:
           for the `organization`.
         example: acme-corporation
         type: string
+      thumbnailFileId:
+        example: file_fQDxusW8og
+        type: string
       updatedAt:
         type: string
     required:
@@ -3149,6 +3123,37 @@ definitions:
     required:
     - invites
     type: object
+  user_svc.SaveOrganizationRequest:
+    properties:
+      id:
+        type: string
+      name:
+        description: Full name of the organization.
+        type: string
+      slug:
+        description: URL-friendly unique (inside the Singularon platform) identifier
+          for the `organization`.
+        type: string
+      thumbnailFileId:
+        example: file_fQDxusW8og
+        type: string
+    required:
+    - slug
+    type: object
+  user_svc.SaveOrganizationResponse:
+    properties:
+      organization:
+        $ref: '#/definitions/user_svc.Organization'
+      token:
+        allOf:
+        - $ref: '#/definitions/user_svc.AuthToken'
+        description: |-
+          Due to the nature of JWT tokens, the token must be refreshed after
+          creating an organization, as dynamic organization roles are embedded in it.
+    required:
+    - organization
+    - token
+    type: object
   user_svc.SavePermissionsRequest:
     properties:
       permissions:
@@ -3168,6 +3173,9 @@ definitions:
       name:
         type: string
       slug:
+        type: string
+      thumbnailFileId:
+        example: file_fQDxusW8og
         type: string
     type: object
   user_svc.SaveProfileResponse:
@@ -3199,6 +3207,9 @@ definitions:
         description: URL-friendly unique (inside the 1Backend platform) identifier
           for the `user`.
         example: jane-doe
+        type: string
+      thumbnailFileId:
+        example: file_fQDyi1xdHK
         type: string
       updatedAt:
         type: string
@@ -6161,28 +6172,28 @@ paths:
       tags:
       - User Svc
   /user-svc/organization:
-    post:
+    put:
       consumes:
       - application/json
       description: |-
-        Allows a logged-in user to create a new organization. The user initiating the request will be assigned the role of admin for that organization.
-        The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the created organization.
+        Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization.
+        The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the saved organization.
         Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
-      operationId: createOrganization
+      operationId: saveOrganization
       parameters:
-      - description: Create User Request
+      - description: Save User Request
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/user_svc.CreateOrganizationRequest'
+          $ref: '#/definitions/user_svc.SaveOrganizationRequest'
       produces:
       - application/json
       responses:
         "200":
-          description: User created successfully
+          description: User saved successfully
           schema:
-            $ref: '#/definitions/user_svc.CreateOrganizationResponse'
+            $ref: '#/definitions/user_svc.SaveOrganizationResponse'
         "400":
           description: Invalid JSON
           schema:
@@ -6197,7 +6208,7 @@ paths:
             $ref: '#/definitions/user_svc.ErrorResponse'
       security:
       - BearerAuth: []
-      summary: Create an Organization
+      summary: Save an Organization
       tags:
       - User Svc
   /user-svc/organization/{organizationId}/user/{userId}:

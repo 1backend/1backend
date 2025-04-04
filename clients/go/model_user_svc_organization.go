@@ -29,6 +29,7 @@ type UserSvcOrganization struct {
 	Name string `json:"name"`
 	// URL-friendly unique (inside the Singularon platform) identifier for the `organization`.
 	Slug string `json:"slug"`
+	ThumbnailFileId *string `json:"thumbnailFileId,omitempty"`
 	UpdatedAt *string `json:"updatedAt,omitempty"`
 }
 
@@ -190,6 +191,38 @@ func (o *UserSvcOrganization) SetSlug(v string) {
 	o.Slug = v
 }
 
+// GetThumbnailFileId returns the ThumbnailFileId field value if set, zero value otherwise.
+func (o *UserSvcOrganization) GetThumbnailFileId() string {
+	if o == nil || IsNil(o.ThumbnailFileId) {
+		var ret string
+		return ret
+	}
+	return *o.ThumbnailFileId
+}
+
+// GetThumbnailFileIdOk returns a tuple with the ThumbnailFileId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcOrganization) GetThumbnailFileIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ThumbnailFileId) {
+		return nil, false
+	}
+	return o.ThumbnailFileId, true
+}
+
+// HasThumbnailFileId returns a boolean if a field has been set.
+func (o *UserSvcOrganization) HasThumbnailFileId() bool {
+	if o != nil && !IsNil(o.ThumbnailFileId) {
+		return true
+	}
+
+	return false
+}
+
+// SetThumbnailFileId gets a reference to the given string and assigns it to the ThumbnailFileId field.
+func (o *UserSvcOrganization) SetThumbnailFileId(v string) {
+	o.ThumbnailFileId = &v
+}
+
 // GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
 func (o *UserSvcOrganization) GetUpdatedAt() string {
 	if o == nil || IsNil(o.UpdatedAt) {
@@ -241,6 +274,9 @@ func (o UserSvcOrganization) ToMap() (map[string]interface{}, error) {
 	toSerialize["id"] = o.Id
 	toSerialize["name"] = o.Name
 	toSerialize["slug"] = o.Slug
+	if !IsNil(o.ThumbnailFileId) {
+		toSerialize["thumbnailFileId"] = o.ThumbnailFileId
+	}
 	if !IsNil(o.UpdatedAt) {
 		toSerialize["updatedAt"] = o.UpdatedAt
 	}

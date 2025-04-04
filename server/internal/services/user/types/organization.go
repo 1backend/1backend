@@ -47,23 +47,27 @@ type Organization struct {
 
 	// URL-friendly unique (inside the Singularon platform) identifier for the `organization`.
 	Slug string `json:"slug" example:"acme-corporation" binding:"required"`
+
+	ThumbnailFileId string `json:"thumbnailFileId,omitempty" example:"file_fQDxusW8og"`
 }
 
 func (o *Organization) GetId() string {
 	return o.Id
 }
 
-type CreateOrganizationRequest struct {
+type SaveOrganizationRequest struct {
 	Id string `json:"id"`
-
-	// Full name of the organization.
-	Name string `json:"name" binding:"required"`
 
 	// URL-friendly unique (inside the Singularon platform) identifier for the `organization`.
 	Slug string `json:"slug" binding:"required"`
+
+	// Full name of the organization.
+	Name string `json:"name,omitempty"`
+
+	ThumbnailFileId string `json:"thumbnailFileId,omitempty" example:"file_fQDxusW8og"`
 }
 
-type CreateOrganizationResponse struct {
+type SaveOrganizationResponse struct {
 	Organization Organization `json:"organization" binding:"required"`
 
 	// Due to the nature of JWT tokens, the token must be refreshed after
