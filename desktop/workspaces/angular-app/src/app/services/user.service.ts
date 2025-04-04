@@ -20,12 +20,12 @@ import {
 	Configuration,
 	UserSvcApi,
 	UserSvcGetPermissionsResponse,
-	UserSvcGetRolesResponse,
-	UserSvcGetUsersResponse,
+	UserSvcListRolesResponse,
+	UserSvcListUsersResponse,
 	UserSvcLoginResponse,
 	UserSvcReadUserByTokenResponse,
 	UserSvcUser,
-	UserSvcGetUsersRequest,
+	UserSvcListUsersRequest,
 	UserSvcSaveProfileRequest,
 	UserSvcChangePasswordRequest,
 	UserSvcResetPasswordRequest,
@@ -137,8 +137,8 @@ export class UserService {
 		return this.userService.readUserByToken({});
 	}
 
-	getUsers(request: UserSvcGetUsersRequest): Promise<UserSvcGetUsersResponse> {
-		return this.userService.getUsers({
+	getUsers(request: UserSvcListUsersRequest): Promise<UserSvcListUsersResponse> {
+		return this.userService.listUsers({
 			body: request,
 		});
 	}
@@ -198,8 +198,8 @@ export class UserService {
 		});
 	}
 
-	getRoles(): Promise<UserSvcGetRolesResponse> {
-		return this.userService.getRoles();
+	getRoles(): Promise<UserSvcListRolesResponse> {
+		return this.userService.listRoles();
 	}
 
 	getPermissions(roleId: string): Promise<UserSvcGetPermissionsResponse> {

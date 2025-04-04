@@ -39,7 +39,7 @@ import {
 	DatastoreFilter,
 	UserSvcUser,
 	DatastoreOp,
-	UserSvcGetUsersRequest,
+	UserSvcListUsersRequest,
 } from '@1backend/client';
 
 interface UserVisible extends UserSvcUser {
@@ -164,7 +164,7 @@ export class UsersComponent {
 		query.count = true;
 		query.filters = query.filters || [];
 
-		const request: UserSvcGetUsersRequest = {
+		const request: UserSvcListUsersRequest = {
 			query: query,
 		};
 
