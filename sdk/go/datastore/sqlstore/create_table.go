@@ -13,6 +13,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/1backend/1backend/sdk/go/datastore"
+
 	"github.com/pkg/errors"
 )
 
@@ -67,17 +69,55 @@ func (s *SQLStore) createTable(instance any, db DB, tableName string) (map[strin
 	if tableName == "" {
 		tableName = strings.ToLower(typ.Name())
 	}
-	createQuery := fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s ();", tableName)
+
+	statements := []string{
+		fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s ();", tableName),
+	}
 	for index, fieldName := range fieldNames {
-		createQuery += fmt.Sprintf(" ALTER TABLE %s ADD COLUMN IF NOT EXISTS %s %s;", tableName, fieldName, fieldTypes[index])
+		statements = append(statements,
+			fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS %s %s;", tableName, fieldName, fieldTypes[index]),
+		)
 	}
 
+	statements = append(statements, s.indexesStatement(instance, tableName)...)
+
+	createQuery := strings.Join(statements, " ")
 	_, err := db.Exec(createQuery)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("failed to create table with query '%v'", createQuery))
 	}
 
 	return typeMap, nil
+}
+
+func (s *SQLStore) indexesStatement(instance any, tableName string) []string {
+	statements := []string{}
+
+	// Handle index creation if the instance implements Indexable
+	if indexable, ok := instance.(datastore.Indexable); ok {
+		for _, index := range indexable.Indexes() {
+			indexName := fmt.Sprintf("%s_%s_idx", tableName, strings.Join(index.Fields, "_"))
+			order := "ASC"
+			if !index.Ascending {
+				order = "DESC"
+			}
+			unique := ""
+			if index.Unique {
+				unique = "UNIQUE"
+			}
+			columns := []string{}
+			for _, field := range index.Fields {
+				columns = append(columns, fmt.Sprintf("%s %s", escape(field), order))
+			}
+
+			statements = append(statements, fmt.Sprintf(
+				"CREATE %s INDEX IF NOT EXISTS %s ON %s (%s);",
+				unique, indexName, tableName, strings.Join(columns, ", "),
+			))
+		}
+	}
+
+	return statements
 }
 
 func (s *SQLStore) sqlType(t reflect.Type) string {

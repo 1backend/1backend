@@ -95,6 +95,7 @@ func TestAll(t *testing.T) {
 		"Randomize":              datastore.TestRandomize,
 		"OrTest":                 datastore.TestOr,
 		"ComplexOrTest":          datastore.TestComplexOr,
+		"TestIndex":              datastore.TestIndex,
 	}
 	pointerTests := map[string]func(t *testing.T, store datastore.DataStore){
 		"PointerCreate":                 datastore.TestPointerCreate,
@@ -118,7 +119,7 @@ func TestAll(t *testing.T) {
 
 	for testName, test := range tests {
 		for storeName, storeFunc := range stores {
-			t.Run(fmt.Sprintf("%v %v", storeName, testName), func(t *testing.T) {
+			t.Run(fmt.Sprintf("%v %v", testName, storeName), func(t *testing.T) {
 				store := storeFunc(datastore.TestObject{})
 				test(t, store)
 			})
@@ -127,7 +128,7 @@ func TestAll(t *testing.T) {
 	}
 	for testName, test := range pointerTests {
 		for storeName, storeFunc := range pointerStores {
-			t.Run(fmt.Sprintf("%v %v", storeName, testName), func(t *testing.T) {
+			t.Run(fmt.Sprintf("%v %v", testName, storeName), func(t *testing.T) {
 				store := storeFunc(&datastore.TestObject{})
 				test(t, store)
 			})

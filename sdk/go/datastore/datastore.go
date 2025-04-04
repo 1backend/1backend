@@ -74,6 +74,21 @@ type QueryBuilder interface {
 	Delete() error
 }
 
+type Indexable interface {
+	Indexes() []Index
+}
+
+type Index struct {
+	// Support composite indexes
+	Fields []string
+
+	// true = ASC, false = DESC
+	Ascending bool
+
+	// true = UNIQUE index
+	Unique bool
+}
+
 type Op string
 
 const (

@@ -119,7 +119,7 @@ func createNewElement(instance interface{}) interface{} {
 }
 
 func (s *SQLStore) SetDebug(debug bool) {
-	s.db.SetDebug(true)
+	s.db.SetDebug(debug)
 }
 
 func (s *SQLStore) Close() error {
