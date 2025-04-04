@@ -110,9 +110,14 @@ func (s *UserService) saveOrganization(
 			final.ThumbnailFileId = request.ThumbnailFileId
 		}
 	} else {
-		final = &user.Organization{
-			Id: sdk.Id("org"),
+		final = &user.Organization{}
+
+		if request.Id != "" {
+			final.Id = request.Id
+		} else {
+			final.Id = sdk.Id("org")
 		}
+
 		if request.Name == "" {
 			return nil, nil, errors.New("name is required")
 		}
