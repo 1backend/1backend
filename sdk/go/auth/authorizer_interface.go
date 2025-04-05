@@ -18,7 +18,7 @@ import (
 	"strings"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/pkg/errors"
 	"github.com/samber/lo"
 )
