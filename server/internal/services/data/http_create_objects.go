@@ -26,7 +26,7 @@ func (g *DataService) CreateMany(
 ) {
 
 	isAuthRsp, _, err := g.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), dynamictypes.PermissionObjectCreate).
+		UserSvcAPI.HasPermission(r.Context(), dynamictypes.PermissionObjectCreate).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.3.0-rc.32
+API version: 0.3.0-rc.34
 Contact: sales@singulatron.com
 */
 
@@ -38,22 +38,6 @@ type UserSvcAPI interface {
 	// AddUserToOrganizationExecute executes the request
 	//  @return map[string]interface{}
 	AddUserToOrganizationExecute(r ApiAddUserToOrganizationRequest) (map[string]interface{}, *http.Response, error)
-
-	/*
-	AssignPermissions Assign Permissions
-
-	Assign permissions to roles.
-
-Requires the `user-svc:permission:assign` permission.
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return ApiAssignPermissionsRequest
-	*/
-	AssignPermissions(ctx context.Context) ApiAssignPermissionsRequest
-
-	// AssignPermissionsExecute executes the request
-	//  @return map[string]interface{}
-	AssignPermissionsExecute(r ApiAssignPermissionsRequest) (map[string]interface{}, *http.Response, error)
 
 	/*
 	AssignRole Assign Role
@@ -123,21 +107,6 @@ Examples:
 	DeleteUserExecute(r ApiDeleteUserRequest) (map[string]interface{}, *http.Response, error)
 
 	/*
-	GetPermissionsByRole Get Permissions by Role
-
-	Retrieve permissions associated with a specific role ID.
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param roleId Role ID
-	@return ApiGetPermissionsByRoleRequest
-	*/
-	GetPermissionsByRole(ctx context.Context, roleId string) ApiGetPermissionsByRoleRequest
-
-	// GetPermissionsByRoleExecute executes the request
-	//  @return UserSvcGetPermissionsResponse
-	GetPermissionsByRoleExecute(r ApiGetPermissionsByRoleRequest) (*UserSvcGetPermissionsResponse, *http.Response, error)
-
-	/*
 	GetPublicKey Get Public Key
 
 	Get the public key to parse and verify the JWT.
@@ -152,32 +121,30 @@ Examples:
 	GetPublicKeyExecute(r ApiGetPublicKeyRequest) (*UserSvcGetPublicKeyResponse, *http.Response, error)
 
 	/*
-	IsAuthorized Is Authorized
+	HasPermission Has Permission
 
-	Verify whether a user has a specific permission.
+	Check whether the caller user has a specific permission.
 Ideally, this endpoint should rarely be used, as the JWT token
-already includes all user roles. Caching the `Get Permissions by Role`
+already includes all user roles. Caching the `List Permissions` and `List Grants`
 responses allows services to determine user authorization
 without repeatedly calling this endpoint.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param permission Permission ID
-	@return ApiIsAuthorizedRequest
+	@param permission Permission
+	@return ApiHasPermissionRequest
 	*/
-	IsAuthorized(ctx context.Context, permission string) ApiIsAuthorizedRequest
+	HasPermission(ctx context.Context, permission string) ApiHasPermissionRequest
 
-	// IsAuthorizedExecute executes the request
-	//  @return UserSvcIsAuthorizedResponse
-	IsAuthorizedExecute(r ApiIsAuthorizedRequest) (*UserSvcIsAuthorizedResponse, *http.Response, error)
+	// HasPermissionExecute executes the request
+	//  @return UserSvcHasPermissionResponse
+	HasPermissionExecute(r ApiHasPermissionRequest) (*UserSvcHasPermissionResponse, *http.Response, error)
 
 	/*
 	ListGrants List Grants
 
-	List grants.
-
-Grants define which slugs are assigned specific permissions, overriding the default configuration.
-
-Requires the `user-svc:grant:view` permission.
+	Grants give access to users with certain slugs and roles to permissions.
+Users can list grants for permissions they have access to
+but they will only see grants the grant refers to their slug or one of their roles.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiListGrantsRequest
@@ -203,18 +170,20 @@ Requires the `user-svc:grant:view` permission.
 	ListInvitesExecute(r ApiListInvitesRequest) (*UserSvcListInvitesResponse, *http.Response, error)
 
 	/*
-	ListRoles List Roles
+	ListPermissions List Permissions
 
-	Retrieve all roles from the user service.
+	List permissions by roles.
+Caller can only list permissions for roles they have.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return ApiListRolesRequest
+	@param roleId Role ID
+	@return ApiListPermissionsRequest
 	*/
-	ListRoles(ctx context.Context) ApiListRolesRequest
+	ListPermissions(ctx context.Context, roleId string) ApiListPermissionsRequest
 
-	// ListRolesExecute executes the request
-	//  @return UserSvcListRolesResponse
-	ListRolesExecute(r ApiListRolesRequest) (*UserSvcListRolesResponse, *http.Response, error)
+	// ListPermissionsExecute executes the request
+	//  @return UserSvcListPermissionsResponse
+	ListPermissionsExecute(r ApiListPermissionsRequest) (*UserSvcListPermissionsResponse, *http.Response, error)
 
 	/*
 	ListUsers List Users
@@ -306,11 +275,7 @@ Requires the `user-svc:grant:view` permission.
 	/*
 	SaveGrants Save Grants
 
-	Save grants.
-
-Grants define which slugs are assigned specific permissions, overriding the default configuration.
-
-Requires the `user-svc:grant:create` permission.
+	Save grants. // @Description Grants give access to users with certain slugs and roles to permissions.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiSaveGrantsRequest
@@ -546,154 +511,6 @@ func (a *UserSvcAPIService) AddUserToOrganizationExecute(r ApiAddUserToOrganizat
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
-			var v UserSvcErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v UserSvcErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-type ApiAssignPermissionsRequest struct {
-	ctx context.Context
-	ApiService UserSvcAPI
-	body *UserSvcAssignPermissionsRequest
-}
-
-// Assign Permissions Request
-func (r ApiAssignPermissionsRequest) Body(body UserSvcAssignPermissionsRequest) ApiAssignPermissionsRequest {
-	r.body = &body
-	return r
-}
-
-func (r ApiAssignPermissionsRequest) Execute() (map[string]interface{}, *http.Response, error) {
-	return r.ApiService.AssignPermissionsExecute(r)
-}
-
-/*
-AssignPermissions Assign Permissions
-
-Assign permissions to roles.
-
-Requires the `user-svc:permission:assign` permission.
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAssignPermissionsRequest
-*/
-func (a *UserSvcAPIService) AssignPermissions(ctx context.Context) ApiAssignPermissionsRequest {
-	return ApiAssignPermissionsRequest{
-		ApiService: a,
-		ctx: ctx,
-	}
-}
-
-// Execute executes the request
-//  @return map[string]interface{}
-func (a *UserSvcAPIService) AssignPermissionsExecute(r ApiAssignPermissionsRequest) (map[string]interface{}, *http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodPut
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  map[string]interface{}
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.AssignPermissions")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/user-svc/roles/permissions"
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
-	}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	// body params
-	localVarPostBody = r.body
-	if r.ctx != nil {
-		// API Key Authentication
-		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["BearerAuth"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
-				}
-				localVarHeaderParams["Authorization"] = key
-			}
-		}
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
 			var v UserSvcErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -1351,155 +1168,6 @@ func (a *UserSvcAPIService) DeleteUserExecute(r ApiDeleteUserRequest) (map[strin
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiGetPermissionsByRoleRequest struct {
-	ctx context.Context
-	ApiService UserSvcAPI
-	roleId string
-}
-
-func (r ApiGetPermissionsByRoleRequest) Execute() (*UserSvcGetPermissionsResponse, *http.Response, error) {
-	return r.ApiService.GetPermissionsByRoleExecute(r)
-}
-
-/*
-GetPermissionsByRole Get Permissions by Role
-
-Retrieve permissions associated with a specific role ID.
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param roleId Role ID
- @return ApiGetPermissionsByRoleRequest
-*/
-func (a *UserSvcAPIService) GetPermissionsByRole(ctx context.Context, roleId string) ApiGetPermissionsByRoleRequest {
-	return ApiGetPermissionsByRoleRequest{
-		ApiService: a,
-		ctx: ctx,
-		roleId: roleId,
-	}
-}
-
-// Execute executes the request
-//  @return UserSvcGetPermissionsResponse
-func (a *UserSvcAPIService) GetPermissionsByRoleExecute(r ApiGetPermissionsByRoleRequest) (*UserSvcGetPermissionsResponse, *http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *UserSvcGetPermissionsResponse
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.GetPermissionsByRole")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/user-svc/role/{roleId}/permissions"
-	localVarPath = strings.Replace(localVarPath, "{"+"roleId"+"}", url.PathEscape(parameterValueToString(r.roleId, "roleId")), -1)
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	if r.ctx != nil {
-		// API Key Authentication
-		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["BearerAuth"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
-				}
-				localVarHeaderParams["Authorization"] = key
-			}
-		}
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
 type ApiGetPublicKeyRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
@@ -1620,38 +1288,38 @@ func (a *UserSvcAPIService) GetPublicKeyExecute(r ApiGetPublicKeyRequest) (*User
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiIsAuthorizedRequest struct {
+type ApiHasPermissionRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
 	permission string
-	body *UserSvcIsAuthorizedRequest
+	body *UserSvcHasPermissionRequest
 }
 
 // Is Authorized Request
-func (r ApiIsAuthorizedRequest) Body(body UserSvcIsAuthorizedRequest) ApiIsAuthorizedRequest {
+func (r ApiHasPermissionRequest) Body(body UserSvcHasPermissionRequest) ApiHasPermissionRequest {
 	r.body = &body
 	return r
 }
 
-func (r ApiIsAuthorizedRequest) Execute() (*UserSvcIsAuthorizedResponse, *http.Response, error) {
-	return r.ApiService.IsAuthorizedExecute(r)
+func (r ApiHasPermissionRequest) Execute() (*UserSvcHasPermissionResponse, *http.Response, error) {
+	return r.ApiService.HasPermissionExecute(r)
 }
 
 /*
-IsAuthorized Is Authorized
+HasPermission Has Permission
 
-Verify whether a user has a specific permission.
+Check whether the caller user has a specific permission.
 Ideally, this endpoint should rarely be used, as the JWT token
-already includes all user roles. Caching the `Get Permissions by Role`
+already includes all user roles. Caching the `List Permissions` and `List Grants`
 responses allows services to determine user authorization
 without repeatedly calling this endpoint.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param permission Permission ID
- @return ApiIsAuthorizedRequest
+ @param permission Permission
+ @return ApiHasPermissionRequest
 */
-func (a *UserSvcAPIService) IsAuthorized(ctx context.Context, permission string) ApiIsAuthorizedRequest {
-	return ApiIsAuthorizedRequest{
+func (a *UserSvcAPIService) HasPermission(ctx context.Context, permission string) ApiHasPermissionRequest {
+	return ApiHasPermissionRequest{
 		ApiService: a,
 		ctx: ctx,
 		permission: permission,
@@ -1659,21 +1327,21 @@ func (a *UserSvcAPIService) IsAuthorized(ctx context.Context, permission string)
 }
 
 // Execute executes the request
-//  @return UserSvcIsAuthorizedResponse
-func (a *UserSvcAPIService) IsAuthorizedExecute(r ApiIsAuthorizedRequest) (*UserSvcIsAuthorizedResponse, *http.Response, error) {
+//  @return UserSvcHasPermissionResponse
+func (a *UserSvcAPIService) HasPermissionExecute(r ApiHasPermissionRequest) (*UserSvcHasPermissionResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *UserSvcIsAuthorizedResponse
+		localVarReturnValue  *UserSvcHasPermissionResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.IsAuthorized")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.HasPermission")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/user-svc/permission/{permission}/is-authorized"
+	localVarPath := localBasePath + "/user-svc/self/has/{permission}"
 	localVarPath = strings.Replace(localVarPath, "{"+"permission"+"}", url.PathEscape(parameterValueToString(r.permission, "permission")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -1790,11 +1458,9 @@ func (r ApiListGrantsRequest) Execute() (*UserSvcListGrantsResponse, *http.Respo
 /*
 ListGrants List Grants
 
-List grants.
-
-Grants define which slugs are assigned specific permissions, overriding the default configuration.
-
-Requires the `user-svc:grant:view` permission.
+Grants give access to users with certain slugs and roles to permissions.
+Users can list grants for permissions they have access to
+but they will only see grants the grant refers to their slug or one of their roles.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiListGrantsRequest
@@ -2067,46 +1733,51 @@ func (a *UserSvcAPIService) ListInvitesExecute(r ApiListInvitesRequest) (*UserSv
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiListRolesRequest struct {
+type ApiListPermissionsRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
+	roleId string
 }
 
-func (r ApiListRolesRequest) Execute() (*UserSvcListRolesResponse, *http.Response, error) {
-	return r.ApiService.ListRolesExecute(r)
+func (r ApiListPermissionsRequest) Execute() (*UserSvcListPermissionsResponse, *http.Response, error) {
+	return r.ApiService.ListPermissionsExecute(r)
 }
 
 /*
-ListRoles List Roles
+ListPermissions List Permissions
 
-Retrieve all roles from the user service.
+List permissions by roles.
+Caller can only list permissions for roles they have.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiListRolesRequest
+ @param roleId Role ID
+ @return ApiListPermissionsRequest
 */
-func (a *UserSvcAPIService) ListRoles(ctx context.Context) ApiListRolesRequest {
-	return ApiListRolesRequest{
+func (a *UserSvcAPIService) ListPermissions(ctx context.Context, roleId string) ApiListPermissionsRequest {
+	return ApiListPermissionsRequest{
 		ApiService: a,
 		ctx: ctx,
+		roleId: roleId,
 	}
 }
 
 // Execute executes the request
-//  @return UserSvcListRolesResponse
-func (a *UserSvcAPIService) ListRolesExecute(r ApiListRolesRequest) (*UserSvcListRolesResponse, *http.Response, error) {
+//  @return UserSvcListPermissionsResponse
+func (a *UserSvcAPIService) ListPermissionsExecute(r ApiListPermissionsRequest) (*UserSvcListPermissionsResponse, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
+		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *UserSvcListRolesResponse
+		localVarReturnValue  *UserSvcListPermissionsResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.ListRoles")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.ListPermissions")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/user-svc/roles"
+	localVarPath := localBasePath + "/user-svc/permissions"
+	localVarPath = strings.Replace(localVarPath, "{"+"roleId"+"}", url.PathEscape(parameterValueToString(r.roleId, "roleId")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2164,6 +1835,17 @@ func (a *UserSvcAPIService) ListRolesExecute(r ApiListRolesRequest) (*UserSvcLis
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v string
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v string
@@ -3117,11 +2799,7 @@ func (r ApiSaveGrantsRequest) Execute() (map[string]interface{}, *http.Response,
 /*
 SaveGrants Save Grants
 
-Save grants.
-
-Grants define which slugs are assigned specific permissions, overriding the default configuration.
-
-Requires the `user-svc:grant:create` permission.
+Save grants. // @Description Grants give access to users with certain slugs and roles to permissions.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiSaveGrantsRequest

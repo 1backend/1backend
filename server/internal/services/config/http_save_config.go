@@ -43,8 +43,8 @@ func (cs *ConfigService) Save(
 	r *http.Request,
 ) {
 	isAuthRsp, _, err := cs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), config.PermissionConfigEdit).
-		Body(openapi.UserSvcIsAuthorizedRequest{
+		UserSvcAPI.HasPermission(r.Context(), config.PermissionConfigEdit).
+		Body(openapi.UserSvcHasPermissionRequest{
 			GrantedSlugs: []string{"model-svc"},
 		}).
 		Execute()

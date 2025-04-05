@@ -16,19 +16,17 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/pkg/errors"
 )
 
 // @ID saveGrants
 // @Summary Save Grants
-// @Description Save grants.
-// @Description
-// @Description Grants define which slugs are assigned specific permissions, overriding the default configuration.
-// @Description
-// @Description Requires the `user-svc:grant:create` permission.
+// @Description Save grants. // @Description Grants give access to users with certain slugs and roles to permissions.
 // @Tags User Svc
 // @Accept json
 // @Produce json
@@ -40,16 +38,10 @@ import (
 // @Security BearerAuth
 // @Router /user-svc/grants [put]
 func (s *UserService) SaveGrants(w http.ResponseWriter, r *http.Request) {
-
-	_, isAuthorized, err := s.isAuthorized(r, user.PermissionRoleCreate, nil, nil)
+	usr, err := s.getUserFromRequest(r)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
-		return
-	}
-	if !isAuthorized {
 		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte("Unauthorized"))
+		w.Write([]byte(err.Error()))
 		return
 	}
 
@@ -61,6 +53,23 @@ func (s *UserService) SaveGrants(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer r.Body.Close()
+
+	isAdmin, err := auth.AuthorizerImpl{}.IsAdminFromRequest(s.publicKeyPem, r)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	if !isAdmin {
+		for _, grant := range req.Grants {
+			if !strings.HasPrefix(grant.Permission, usr.Slug) {
+				w.WriteHeader(http.StatusUnauthorized)
+				w.Write([]byte("Unauthorized"))
+				return
+			}
+		}
+	}
 
 	err = s.saveGrants(
 		r.Context(),

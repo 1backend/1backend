@@ -275,6 +275,9 @@ func marshal(value any) string {
 	return string(jsonBytes)
 }
 
+// OpOr allows grouping multiple filters with an OR condition.
+// Example: `field = "value1" OR field = "value2"`
+// SQL Equivalent: `SELECT * FROM table WHERE field = 'value1' OR field = 'value2';`
 func Or(filters ...Filter) Filter {
 	return Filter{
 		Op:         OpOr,
@@ -282,6 +285,18 @@ func Or(filters ...Filter) Filter {
 	}
 }
 
+// OpEquals selects objects where the value of a field equals (=) the specified value in the query.
+// Example: `"fieldValue" = "value"`
+// SQL Equivalent: `SELECT * FROM table WHERE field = 'value';`
+// Elasticsearch Equivalent:
+//
+//	{
+//	  "query": {
+//	    "term": {
+//	      "field": "value"
+//	    }
+//	  }
+//	}
 func Equals(fields []string, value any) Filter {
 	return Filter{
 		Fields:     fields,
@@ -290,6 +305,23 @@ func Equals(fields []string, value any) Filter {
 	}
 }
 
+// OpIntersects selects objects where the slice value of a field intersects with the slice value in the query.
+// Example: `["fieldValue2", "fieldValue3"] INTERSECTS ["value1", "value2"]`
+// SQL Equivalent: `SELECT * FROM table WHERE field && ARRAY['value1', 'value2'];` (PostgreSQL syntax)
+// Elasticsearch Equivalent:
+//
+//	{
+//	  "query": {
+//	    "terms_set": {
+//	      "field": {
+//	        "terms": ["value1", "value2"],
+//	        "minimum_should_match_script": {
+//	          "source": "1"
+//	        }
+//	      }
+//	    }
+//	  }
+//	}
 func Intersects(fields []string, values []any) Filter {
 	return Filter{
 		Fields:     fields,
@@ -298,6 +330,18 @@ func Intersects(fields []string, values []any) Filter {
 	}
 }
 
+// OpStartsWith selects all objects where the field's value starts with a particular string.
+// Example: `"fieldValue" STARTS WITH "prefix"`
+// SQL Equivalent: `SELECT * FROM table WHERE field LIKE 'prefix%';`
+// Elasticsearch Equivalent:
+//
+//	{
+//	  "query": {
+//	    "prefix": {
+//	      "field": "prefix"
+//	    }
+//	  }
+//	}
 func StartsWith(fields []string, value any) Filter {
 	return Filter{
 		Fields:     fields,
@@ -306,6 +350,18 @@ func StartsWith(fields []string, value any) Filter {
 	}
 }
 
+// OpContainsSubstring selects all objects where the field's value contains a particular substring.
+// Example: `"fieldValue" CONTAINS_SUBSTRING "subString"`
+// SQL Equivalent: `SELECT * FROM table WHERE field LIKE '%subString%';`
+// Elasticsearch Equivalent:
+//
+//	{
+//	  "query": {
+//	    "wildcard": {
+//	      "field": "*subString*"
+//	    }
+//	  }
+//	}
 func ContainsSubstring(fields []string, value any) Filter {
 	return Filter{
 		Fields:     fields,
@@ -314,7 +370,18 @@ func ContainsSubstring(fields []string, value any) Filter {
 	}
 }
 
-// See `OpIsInList` for more information.
+// OpIsInList selects objects where the value of a field is one of the specified values in a list.
+// Example: `"fieldValue" IS_IN_LIST ["value1", "value2", "value3"]`
+// SQL Equivalent: `SELECT * FROM table WHERE field IN ('value1', 'value2', 'value3');`
+// Elasticsearch Equivalent:
+//
+//	{
+//	  "query": {
+//	    "terms": {
+//	      "field": ["value1", "value2", "value3"]
+//	    }
+//	  }
+//	}
 func IsInList(fields []string, values ...any) Filter {
 	return Filter{
 		Fields:     fields,

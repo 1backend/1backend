@@ -41,8 +41,8 @@ func (cs *SecretService) RemoveSecrets(
 	r *http.Request,
 ) {
 	isAuthRsp, _, err := cs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), secret.PermissionSecretRemove).
-		Body(openapi.UserSvcIsAuthorizedRequest{}).
+		UserSvcAPI.HasPermission(r.Context(), secret.PermissionSecretRemove).
+		Body(openapi.UserSvcHasPermissionRequest{}).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

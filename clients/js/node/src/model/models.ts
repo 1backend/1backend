@@ -166,30 +166,27 @@ export * from './sourceSvcCheckoutRepoRequest';
 export * from './sourceSvcCheckoutRepoResponse';
 export * from './sourceSvcErrorResponse';
 export * from './stableDiffusionTxt2ImgRequest';
-export * from './userSvcAssignPermissionsRequest';
 export * from './userSvcAuthToken';
 export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';
 export * from './userSvcCreateUserRequest';
 export * from './userSvcErrorResponse';
-export * from './userSvcGetPermissionsResponse';
 export * from './userSvcGetPublicKeyResponse';
 export * from './userSvcGrant';
+export * from './userSvcHasPermissionRequest';
+export * from './userSvcHasPermissionResponse';
 export * from './userSvcInvite';
-export * from './userSvcIsAuthorizedRequest';
-export * from './userSvcIsAuthorizedResponse';
 export * from './userSvcListGrantsRequest';
 export * from './userSvcListGrantsResponse';
 export * from './userSvcListInvitesRequest';
 export * from './userSvcListInvitesResponse';
-export * from './userSvcListRolesResponse';
+export * from './userSvcListPermissionsResponse';
 export * from './userSvcListUsersRequest';
 export * from './userSvcListUsersResponse';
 export * from './userSvcLoginRequest';
 export * from './userSvcLoginResponse';
 export * from './userSvcNewInvite';
 export * from './userSvcOrganization';
-export * from './userSvcPermissionLink';
 export * from './userSvcReadUserByTokenResponse';
 export * from './userSvcRegisterRequest';
 export * from './userSvcRegisterResponse';
@@ -382,30 +379,27 @@ import { SourceSvcCheckoutRepoRequest } from './sourceSvcCheckoutRepoRequest';
 import { SourceSvcCheckoutRepoResponse } from './sourceSvcCheckoutRepoResponse';
 import { SourceSvcErrorResponse } from './sourceSvcErrorResponse';
 import { StableDiffusionTxt2ImgRequest } from './stableDiffusionTxt2ImgRequest';
-import { UserSvcAssignPermissionsRequest } from './userSvcAssignPermissionsRequest';
 import { UserSvcAuthToken } from './userSvcAuthToken';
 import { UserSvcChangePasswordRequest } from './userSvcChangePasswordRequest';
 import { UserSvcContact } from './userSvcContact';
 import { UserSvcCreateUserRequest } from './userSvcCreateUserRequest';
 import { UserSvcErrorResponse } from './userSvcErrorResponse';
-import { UserSvcGetPermissionsResponse } from './userSvcGetPermissionsResponse';
 import { UserSvcGetPublicKeyResponse } from './userSvcGetPublicKeyResponse';
 import { UserSvcGrant } from './userSvcGrant';
+import { UserSvcHasPermissionRequest } from './userSvcHasPermissionRequest';
+import { UserSvcHasPermissionResponse } from './userSvcHasPermissionResponse';
 import { UserSvcInvite } from './userSvcInvite';
-import { UserSvcIsAuthorizedRequest } from './userSvcIsAuthorizedRequest';
-import { UserSvcIsAuthorizedResponse } from './userSvcIsAuthorizedResponse';
 import { UserSvcListGrantsRequest } from './userSvcListGrantsRequest';
 import { UserSvcListGrantsResponse } from './userSvcListGrantsResponse';
 import { UserSvcListInvitesRequest } from './userSvcListInvitesRequest';
 import { UserSvcListInvitesResponse } from './userSvcListInvitesResponse';
-import { UserSvcListRolesResponse } from './userSvcListRolesResponse';
+import { UserSvcListPermissionsResponse } from './userSvcListPermissionsResponse';
 import { UserSvcListUsersRequest } from './userSvcListUsersRequest';
 import { UserSvcListUsersResponse } from './userSvcListUsersResponse';
 import { UserSvcLoginRequest } from './userSvcLoginRequest';
 import { UserSvcLoginResponse } from './userSvcLoginResponse';
 import { UserSvcNewInvite } from './userSvcNewInvite';
 import { UserSvcOrganization } from './userSvcOrganization';
-import { UserSvcPermissionLink } from './userSvcPermissionLink';
 import { UserSvcReadUserByTokenResponse } from './userSvcReadUserByTokenResponse';
 import { UserSvcRegisterRequest } from './userSvcRegisterRequest';
 import { UserSvcRegisterResponse } from './userSvcRegisterResponse';
@@ -601,30 +595,27 @@ let typeMap: {[index: string]: any} = {
     "SourceSvcCheckoutRepoResponse": SourceSvcCheckoutRepoResponse,
     "SourceSvcErrorResponse": SourceSvcErrorResponse,
     "StableDiffusionTxt2ImgRequest": StableDiffusionTxt2ImgRequest,
-    "UserSvcAssignPermissionsRequest": UserSvcAssignPermissionsRequest,
     "UserSvcAuthToken": UserSvcAuthToken,
     "UserSvcChangePasswordRequest": UserSvcChangePasswordRequest,
     "UserSvcContact": UserSvcContact,
     "UserSvcCreateUserRequest": UserSvcCreateUserRequest,
     "UserSvcErrorResponse": UserSvcErrorResponse,
-    "UserSvcGetPermissionsResponse": UserSvcGetPermissionsResponse,
     "UserSvcGetPublicKeyResponse": UserSvcGetPublicKeyResponse,
     "UserSvcGrant": UserSvcGrant,
+    "UserSvcHasPermissionRequest": UserSvcHasPermissionRequest,
+    "UserSvcHasPermissionResponse": UserSvcHasPermissionResponse,
     "UserSvcInvite": UserSvcInvite,
-    "UserSvcIsAuthorizedRequest": UserSvcIsAuthorizedRequest,
-    "UserSvcIsAuthorizedResponse": UserSvcIsAuthorizedResponse,
     "UserSvcListGrantsRequest": UserSvcListGrantsRequest,
     "UserSvcListGrantsResponse": UserSvcListGrantsResponse,
     "UserSvcListInvitesRequest": UserSvcListInvitesRequest,
     "UserSvcListInvitesResponse": UserSvcListInvitesResponse,
-    "UserSvcListRolesResponse": UserSvcListRolesResponse,
+    "UserSvcListPermissionsResponse": UserSvcListPermissionsResponse,
     "UserSvcListUsersRequest": UserSvcListUsersRequest,
     "UserSvcListUsersResponse": UserSvcListUsersResponse,
     "UserSvcLoginRequest": UserSvcLoginRequest,
     "UserSvcLoginResponse": UserSvcLoginResponse,
     "UserSvcNewInvite": UserSvcNewInvite,
     "UserSvcOrganization": UserSvcOrganization,
-    "UserSvcPermissionLink": UserSvcPermissionLink,
     "UserSvcReadUserByTokenResponse": UserSvcReadUserByTokenResponse,
     "UserSvcRegisterRequest": UserSvcRegisterRequest,
     "UserSvcRegisterResponse": UserSvcRegisterResponse,

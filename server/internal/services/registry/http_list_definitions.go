@@ -26,8 +26,8 @@ func (rs *RegistryService) ListDefinitions(
 ) {
 
 	isAuthRsp, _, err := rs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), registry.PermissionDefinitionView).
-		Body(openapi.UserSvcIsAuthorizedRequest{
+		UserSvcAPI.HasPermission(r.Context(), registry.PermissionDefinitionView).
+		Body(openapi.UserSvcHasPermissionRequest{
 			GrantedSlugs: []string{"deploy-svc"},
 		}).
 		Execute()

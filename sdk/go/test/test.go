@@ -72,9 +72,9 @@ func LoggedInClient(
 }
 
 type MockUserOptions struct {
-	IdFactory           func() string
-	SlugFactory         func() string
-	IsAuthorizedFactory func() bool
+	IdFactory            func() string
+	SlugFactory          func() string
+	HasPermissionFactory func() bool
 }
 
 type MockUserOption func(*MockUserOptions)
@@ -91,9 +91,9 @@ func WithSlugFactory(slugFactory func() string) MockUserOption {
 	}
 }
 
-func WithIsAuthorizedFactory(isAuthorizedFactory func() bool) MockUserOption {
+func WithHasPermissionFactory(hasPermissionFactory func() bool) MockUserOption {
 	return func(o *MockUserOptions) {
-		o.IsAuthorizedFactory = isAuthorizedFactory
+		o.HasPermissionFactory = hasPermissionFactory
 	}
 }
 
@@ -114,12 +114,12 @@ func MockUserSvc(ctx context.Context, ctrl *gomock.Controller, options ...MockUs
 	mockLoginRequest := openapi.ApiLoginRequest{
 		ApiService: mockUserSvc,
 	}
-	mockAddPermissionToRoleRequest := openapi.ApiAssignPermissionsRequest{
+	mockAddPermissionToRoleRequest := openapi.ApiSaveGrantsRequest{
 		ApiService: mockUserSvc,
 	}
 	expectedUserSvcAddPermissionToRoleResponse := map[string]any{}
 
-	mockIsAuthorizedRequest := openapi.ApiIsAuthorizedRequest{
+	mockHasPermissionRequest := openapi.ApiHasPermissionRequest{
 		ApiService: mockUserSvc,
 	}
 
@@ -131,13 +131,13 @@ func MockUserSvc(ctx context.Context, ctrl *gomock.Controller, options ...MockUs
 	}, nil, nil).AnyTimes()
 	mockUserSvc.EXPECT().Login(ctx).Return(mockLoginRequest).AnyTimes()
 	mockUserSvc.EXPECT().LoginExecute(gomock.Any()).Return(expectedUserSvcLoginResponse, nil, nil).AnyTimes()
-	mockUserSvc.EXPECT().AssignPermissions(ctx).Return(mockAddPermissionToRoleRequest).AnyTimes()
-	mockUserSvc.EXPECT().AssignPermissionsExecute(gomock.Any()).Return(expectedUserSvcAddPermissionToRoleResponse, nil, nil).AnyTimes()
-	mockUserSvc.EXPECT().IsAuthorized(gomock.Any(), gomock.Any()).Return(mockIsAuthorizedRequest).AnyTimes()
-	mockUserSvc.EXPECT().IsAuthorizedExecute(gomock.Any()).DoAndReturn(func(req openapi.ApiIsAuthorizedRequest) (*openapi.UserSvcIsAuthorizedResponse, *http.Response, error) {
-		var isAuthorized bool
-		if opts.IsAuthorizedFactory != nil {
-			isAuthorized = opts.IsAuthorizedFactory()
+	mockUserSvc.EXPECT().SaveGrants(ctx).Return(mockAddPermissionToRoleRequest).AnyTimes()
+	mockUserSvc.EXPECT().SaveGrantsExecute(gomock.Any()).Return(expectedUserSvcAddPermissionToRoleResponse, nil, nil).AnyTimes()
+	mockUserSvc.EXPECT().HasPermission(gomock.Any(), gomock.Any()).Return(mockHasPermissionRequest).AnyTimes()
+	mockUserSvc.EXPECT().HasPermissionExecute(gomock.Any()).DoAndReturn(func(req openapi.ApiHasPermissionRequest) (*openapi.UserSvcHasPermissionResponse, *http.Response, error) {
+		var hasPermission bool
+		if opts.HasPermissionFactory != nil {
+			hasPermission = opts.HasPermissionFactory()
 		}
 
 		var id string
@@ -150,8 +150,8 @@ func MockUserSvc(ctx context.Context, ctrl *gomock.Controller, options ...MockUs
 			slug = opts.SlugFactory()
 		}
 
-		return &openapi.UserSvcIsAuthorizedResponse{
-			Authorized: openapi.PtrBool(isAuthorized), // Dynamically evaluate
+		return &openapi.UserSvcHasPermissionResponse{
+			Authorized: openapi.PtrBool(hasPermission), // Dynamically evaluate
 			User: &openapi.UserSvcUser{
 				Id:   id,   // Dynamically evaluate
 				Slug: slug, // Dynamically evaluate

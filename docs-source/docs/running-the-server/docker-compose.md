@@ -27,7 +27,7 @@ services:
     environment:
       # `BACKEND_ADDRESS` must be reachable from the browser.
       # This is the API the browser will communicate with, not an internal address.
-      - BACKEND_ADDRESS=http://127.0.0.1:58231
+      - BACKEND_ADDRESS=http://127.0.0.1:11337
 
   1backend:
     image: crufter/1backend:default-1-latest
@@ -37,7 +37,7 @@ services:
     # - https://hub.docker.com/r/crufter/1backend/tags
     # - The build file `1backend-docker-build.yaml`
     ports:
-      - "58231:58231"
+      - "11337:11337"
     volumes:
       # We mount the hostname to have a sensible fallback node URL
       - /etc/hostname:/etc/host_hostname:ro

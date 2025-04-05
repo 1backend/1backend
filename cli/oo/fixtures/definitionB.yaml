@@ -2,6 +2,6 @@ id: test-b
 repository:
   url: https://github.com/1backend/1backend.git
   containerFile: server/docker/Dockerfile
-  port: 58231
+  port: 11337
 ports:
-  "9998": 58231
+  "9998": 11337

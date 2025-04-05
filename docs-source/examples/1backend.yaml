@@ -2034,7 +2034,7 @@ definitions:
           To have a NodeURL the instance must either:
           - Be deployed by 1Backend
           - Declare the 1Backend server URL when registering its instance
-        example: https://myserver.com:58231
+        example: https://myserver.com:11337
         type: string
       path:
         description: Path of the instance address. Optional (e.g., "/api")
@@ -2665,14 +2665,14 @@ definitions:
     type: object
   user_svc.AddUserToOrganizationResponse:
     type: object
-  user_svc.AssignPermissionsRequest:
+  user_svc.SaveGrantsRequest:
     properties:
       permissionLinks:
         items:
           $ref: '#/definitions/user_svc.PermissionLink'
         type: array
     type: object
-  user_svc.AssignPermissionsResponse:
+  user_svc.SaveGrantsResponse:
     type: object
   user_svc.AuthToken:
     properties:
@@ -2869,7 +2869,7 @@ definitions:
           type: string
         type: array
     type: object
-  user_svc.IsAuthorizedRequest:
+  user_svc.HasPermissionRequest:
     properties:
       contactsGranted:
         items:
@@ -2880,7 +2880,7 @@ definitions:
           type: string
         type: array
     type: object
-  user_svc.IsAuthorizedResponse:
+  user_svc.HasPermissionResponse:
     properties:
       authorized:
         type: boolean
@@ -3101,7 +3101,7 @@ definitions:
 externalDocs:
   description: 1Backend API
   url: https://1backend.com/docs/category/1backend-api
-host: localhost:58231
+host: localhost:11337
 info:
   contact:
     email: sales@singulatron.com
@@ -6102,7 +6102,7 @@ paths:
         already includes all user roles. Caching the `Get Permissions by Role`
         responses allows services to determine user authorization
         without repeatedly calling this endpoint.
-      operationId: isAuthorized
+      operationId: hasPermission
       parameters:
       - description: Permission ID
         in: path
@@ -6113,14 +6113,14 @@ paths:
         in: body
         name: body
         schema:
-          $ref: '#/definitions/user_svc.IsAuthorizedRequest'
+          $ref: '#/definitions/user_svc.HasPermissionRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user_svc.IsAuthorizedResponse'
+            $ref: '#/definitions/user_svc.HasPermissionResponse'
         "400":
           description: Invalid JSON or missing permission id
           schema:
@@ -6430,14 +6430,14 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/user_svc.AssignPermissionsRequest'
+          $ref: '#/definitions/user_svc.SaveGrantsRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Assign Permissions successfully
           schema:
-            $ref: '#/definitions/user_svc.AssignPermissionsResponse'
+            $ref: '#/definitions/user_svc.SaveGrantsResponse'
         "401":
           description: Unauthorized
           schema:

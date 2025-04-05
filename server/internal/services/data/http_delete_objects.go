@@ -41,7 +41,7 @@ func (g *DataService) DeleteObjects(
 ) {
 
 	isAuthRsp, _, err := g.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), data.PermissionObjectDelete).
+		UserSvcAPI.HasPermission(r.Context(), data.PermissionObjectDelete).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

@@ -47,7 +47,7 @@ func (s *UserService) AddUserToOrganization(
 	organizationId := mux.Vars(r)["organizationId"]
 	userId := mux.Vars(r)["userId"]
 
-	usr, isAuthorized, err := s.isAuthorized(
+	usr, hasPermission, err := s.hasPermission(
 		r,
 		user.PermissionOrganizationAddUser,
 		nil,
@@ -58,7 +58,7 @@ func (s *UserService) AddUserToOrganization(
 		w.Write([]byte(err.Error()))
 		return
 	}
-	if !isAuthorized {
+	if !hasPermission {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("Unauthorized"))
 		return

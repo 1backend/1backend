@@ -40,8 +40,8 @@ func (ns *RegistryService) ListNodes(
 ) {
 
 	isAuthRsp, _, err := ns.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), registry.PermissionNodeView).
-		Body(openapi.UserSvcIsAuthorizedRequest{
+		UserSvcAPI.HasPermission(r.Context(), registry.PermissionNodeView).
+		Body(openapi.UserSvcHasPermissionRequest{
 			GrantedSlugs: []string{
 				"deploy-svc",
 				"file-svc",

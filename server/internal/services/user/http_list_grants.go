@@ -23,11 +23,10 @@ import (
 
 // @ID listGrants
 // @Summary List Grants
-// @Description List grants.
 // @Description
-// @Description Grants define which slugs are assigned specific permissions, overriding the default configuration.
-// @Description
-// @Description Requires the `user-svc:grant:view` permission.
+// @Description Grants give access to users with certain slugs and roles to permissions.
+// @Description Users can list grants for permissions they have access to
+// @Description but they will only see grants the grant refers to their slug or one of their roles.
 // @Tags User Svc
 // @Accept json
 // @Produce json
@@ -41,26 +40,28 @@ func (s *UserService) ListGrants(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	_, isAuthorized, err := s.isAuthorized(r, user.PermissionRoleView, nil, nil)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
-		return
-	}
-	if !isAuthorized {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte("Unauthorized"))
-		return
-	}
-
 	req := &user.ListGrantsRequest{}
-	err = json.NewDecoder(r.Body).Decode(req)
+	err := json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(`Invalid JSON`))
 		return
 	}
 	defer r.Body.Close()
+
+	if req.Permission != "" {
+		_, has, err := s.hasPermission(r, req.Permission, nil, nil)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		}
+		if !has {
+			w.WriteHeader(http.StatusUnauthorized)
+			w.Write([]byte(`Unauthorized`))
+			return
+		}
+	}
 
 	grants, err := s.listGrants(req)
 	if err != nil {

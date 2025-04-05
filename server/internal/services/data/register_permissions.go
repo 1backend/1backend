@@ -21,21 +21,21 @@ func (p *DataService) registerPermissions() error {
 	ctx := context.Background()
 	userSvc := p.clientFactory.Client(client.WithToken(p.token)).UserSvcAPI
 
-	req := openapi.UserSvcAssignPermissionsRequest{}
+	req := openapi.UserSvcSaveGrantsRequest{}
 
 	for _, role := range []string{
 		usertypes.RoleAdmin,
 		usertypes.RoleUser,
 	} {
 		for _, permission := range data.Permissions {
-			req.PermissionLinks = append(req.PermissionLinks, openapi.UserSvcPermissionLink{
-				Role:       role,
+			req.Grants = append(req.Grants, openapi.UserSvcGrant{
+				Roles:      []string{role},
 				Permission: permission,
 			})
 		}
 	}
 
-	_, _, err := userSvc.AssignPermissions(ctx).
+	_, _, err := userSvc.SaveGrants(ctx).
 		Body(req).
 		Execute()
 	if err != nil {

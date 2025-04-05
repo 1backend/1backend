@@ -45,8 +45,8 @@ func (p *PromptService) SubscribeToPromptResponses(
 ) {
 
 	isAuthRsp, _, err := p.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), prompt.PermissionPromptStream).
-		Body(openapi.UserSvcIsAuthorizedRequest{}).
+		UserSvcAPI.HasPermission(r.Context(), prompt.PermissionPromptStream).
+		Body(openapi.UserSvcHasPermissionRequest{}).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

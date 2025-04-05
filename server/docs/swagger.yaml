@@ -2661,15 +2661,6 @@ definitions:
     type: object
   user_svc.AddUserToOrganizationResponse:
     type: object
-  user_svc.AssignPermissionsRequest:
-    properties:
-      permissionLinks:
-        items:
-          $ref: '#/definitions/user_svc.PermissionLink'
-        type: array
-    type: object
-  user_svc.AssignPermissionsResponse:
-    type: object
   user_svc.AssignRoleRequest:
     type: object
   user_svc.AssignRoleResponse:
@@ -2778,13 +2769,6 @@ definitions:
       error:
         type: string
     type: object
-  user_svc.GetPermissionsResponse:
-    properties:
-      permissions:
-        items:
-          type: string
-        type: array
-    type: object
   user_svc.GetPublicKeyResponse:
     properties:
       publicKey:
@@ -2817,6 +2801,24 @@ definitions:
         type: array
     required:
     - permission
+    type: object
+  user_svc.HasPermissionRequest:
+    properties:
+      contactsGranted:
+        items:
+          type: string
+        type: array
+      grantedSlugs:
+        items:
+          type: string
+        type: array
+    type: object
+  user_svc.HasPermissionResponse:
+    properties:
+      authorized:
+        type: boolean
+      user:
+        $ref: '#/definitions/user_svc.User'
     type: object
   user_svc.Invite:
     properties:
@@ -2863,24 +2865,6 @@ definitions:
     - ownerIds
     - roleId
     type: object
-  user_svc.IsAuthorizedRequest:
-    properties:
-      contactsGranted:
-        items:
-          type: string
-        type: array
-      grantedSlugs:
-        items:
-          type: string
-        type: array
-    type: object
-  user_svc.IsAuthorizedResponse:
-    properties:
-      authorized:
-        type: boolean
-      user:
-        $ref: '#/definitions/user_svc.User'
-    type: object
   user_svc.ListGrantsRequest:
     properties:
       permission:
@@ -2911,9 +2895,9 @@ definitions:
     required:
     - invites
     type: object
-  user_svc.ListRolesResponse:
+  user_svc.ListPermissionsResponse:
     properties:
-      roles:
+      permissions:
         items:
           type: string
         type: array
@@ -2993,16 +2977,6 @@ definitions:
     - id
     - name
     - slug
-    type: object
-  user_svc.PermissionLink:
-    properties:
-      permission:
-        type: string
-      role:
-        type: string
-    required:
-    - permission
-    - role
     type: object
   user_svc.ReadUserByTokenResponse:
     properties:
@@ -3180,7 +3154,7 @@ definitions:
 externalDocs:
   description: 1Backend API
   url: https://1backend.com/docs/category/1backend-api
-host: localhost:58231
+host: localhost:11337
 info:
   contact:
     email: sales@singulatron.com
@@ -3192,7 +3166,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.3.0-rc.32
+  version: 0.3.0-rc.34
 paths:
   /chat-svc/events:
     get:
@@ -5917,11 +5891,9 @@ paths:
       consumes:
       - application/json
       description: |-
-        List grants.
-
-        Grants define which slugs are assigned specific permissions, overriding the default configuration.
-
-        Requires the `user-svc:grant:view` permission.
+        Grants give access to users with certain slugs and roles to permissions.
+        Users can list grants for permissions they have access to
+        but they will only see grants the grant refers to their slug or one of their roles.
       operationId: listGrants
       parameters:
       - description: List Grants Request
@@ -5953,12 +5925,8 @@ paths:
     put:
       consumes:
       - application/json
-      description: |-
-        Save grants.
-
-        Grants define which slugs are assigned specific permissions, overriding the default configuration.
-
-        Requires the `user-svc:grant:create` permission.
+      description: Save grants. // @Description Grants give access to users with certain
+        slugs and roles to permissions.
       operationId: saveGrants
       parameters:
       - description: Save Grants Request
@@ -6251,46 +6219,42 @@ paths:
       summary: Add a User to an Organization
       tags:
       - User Svc
-  /user-svc/permission/{permission}/is-authorized:
+  /user-svc/permissions:
     post:
       consumes:
       - application/json
       description: |-
-        Verify whether a user has a specific permission.
-        Ideally, this endpoint should rarely be used, as the JWT token
-        already includes all user roles. Caching the `Get Permissions by Role`
-        responses allows services to determine user authorization
-        without repeatedly calling this endpoint.
-      operationId: isAuthorized
+        List permissions by roles.
+        Caller can only list permissions for roles they have.
+      operationId: listPermissions
       parameters:
-      - description: Permission ID
+      - description: Role ID
         in: path
-        name: permission
+        name: roleId
         required: true
         type: string
-      - description: Is Authorized Request
-        in: body
-        name: body
-        schema:
-          $ref: '#/definitions/user_svc.IsAuthorizedRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user_svc.IsAuthorizedResponse'
+            $ref: '#/definitions/user_svc.ListPermissionsResponse'
         "400":
-          description: Invalid JSON or missing permission id
+          description: Invalid JSON
           schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
+            type: string
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
       security:
       - BearerAuth: []
-      summary: Is Authorized
+      summary: List Permissions
       tags:
       - User Svc
   /user-svc/public-key:
@@ -6348,104 +6312,6 @@ paths:
       summary: Register
       tags:
       - User Svc
-  /user-svc/role/{roleId}/permissions:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve permissions associated with a specific role ID.
-      operationId: getPermissionsByRole
-      parameters:
-      - description: Role ID
-        in: path
-        name: roleId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_svc.GetPermissionsResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            type: string
-        "401":
-          description: Unauthorized
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Get Permissions by Role
-      tags:
-      - User Svc
-  /user-svc/roles:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve all roles from the user service.
-      operationId: listRoles
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_svc.ListRolesResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: List Roles
-      tags:
-      - User Svc
-  /user-svc/roles/permissions:
-    put:
-      consumes:
-      - application/json
-      description: |-
-        Assign permissions to roles.
-
-        Requires the `user-svc:permission:assign` permission.
-      operationId: assignPermissions
-      parameters:
-      - description: Assign Permissions Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/user_svc.AssignPermissionsRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Assign Permissions successfully
-          schema:
-            $ref: '#/definitions/user_svc.AssignPermissionsResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Assign Permissions
-      tags:
-      - User Svc
   /user-svc/self:
     put:
       consumes:
@@ -6486,6 +6352,48 @@ paths:
       security:
       - BearerAuth: []
       summary: Save User Profile
+      tags:
+      - User Svc
+  /user-svc/self/has/{permission}:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Check whether the caller user has a specific permission.
+        Ideally, this endpoint should rarely be used, as the JWT token
+        already includes all user roles. Caching the `List Permissions` and `List Grants`
+        responses allows services to determine user authorization
+        without repeatedly calling this endpoint.
+      operationId: hasPermission
+      parameters:
+      - description: Permission
+        in: path
+        name: permission
+        required: true
+        type: string
+      - description: Is Authorized Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/user_svc.HasPermissionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.HasPermissionResponse'
+        "400":
+          description: Invalid JSON or missing permission id
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Has Permission
       tags:
       - User Svc
   /user-svc/user:

@@ -47,7 +47,7 @@ func (g *DataService) Query(
 ) {
 
 	isAuthRsp, _, err := g.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), data.PermissionObjectView).
+		UserSvcAPI.HasPermission(r.Context(), data.PermissionObjectView).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

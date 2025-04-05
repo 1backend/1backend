@@ -13,19 +13,21 @@
 package userservice
 
 import (
+	"context"
+
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 func (us *UserService) registerPermissions() error {
-	links := []*user.PermissionLink{}
+	grants := []*user.Grant{}
 
 	for _, role := range []string{
 		usertypes.RoleAdmin,
 	} {
 		for _, permission := range usertypes.AdminPermissions {
-			links = append(links, &user.PermissionLink{
-				Role:       role,
+			grants = append(grants, &user.Grant{
+				Roles:      []string{role},
 				Permission: permission,
 			})
 		}
@@ -35,15 +37,18 @@ func (us *UserService) registerPermissions() error {
 		usertypes.RoleUser,
 	} {
 		for _, permission := range usertypes.UserPermissions {
-			links = append(links, &user.PermissionLink{
-				Role:       role,
+			grants = append(grants, &user.Grant{
+				Roles:      []string{role},
 				Permission: permission,
 			})
 		}
 	}
 
-	err := us.assignPermissions(
-		links,
+	err := us.saveGrants(
+		context.Background(),
+		&usertypes.SaveGrantsRequest{
+			Grants: grants,
+		},
 	)
 	if err != nil {
 		return err

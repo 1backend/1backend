@@ -39,7 +39,7 @@ func (cs *SecretService) ListSecrets(
 	r *http.Request,
 ) {
 	isAuthRsp, _, err := cs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), secret.PermissionSecretList).
+		UserSvcAPI.HasPermission(r.Context(), secret.PermissionSecretList).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

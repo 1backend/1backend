@@ -38,8 +38,8 @@ func (dm *ContainerService) DaemonInfo(
 ) {
 
 	isAuthRsp, _, err := dm.clientFactory.Client(client.WithTokenFromRequest(req)).
-		UserSvcAPI.IsAuthorized(req.Context(), container.PermissionContainerView).
-		Body(openapi.UserSvcIsAuthorizedRequest{}).
+		UserSvcAPI.HasPermission(req.Context(), container.PermissionContainerView).
+		Body(openapi.UserSvcHasPermissionRequest{}).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

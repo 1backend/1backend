@@ -42,7 +42,7 @@ var _ = ginkgo.Describe("Instance Scan", func() {
 		server = httptest.NewServer(hs)
 
 		mockClientFactory = client.NewMockClientFactory(ctrl)
-		mockUserSvc = test.MockUserSvc(ctx, ctrl, test.WithIsAuthorizedFactory(func() bool {
+		mockUserSvc = test.MockUserSvc(ctx, ctrl, test.WithHasPermissionFactory(func() bool {
 			return true
 		}))
 		mockDeploySvc := openapi.NewMockDeploySvcAPI(ctrl)

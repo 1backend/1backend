@@ -20,7 +20,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-export const BASE_PATH = "http://localhost:58231".replace(/\/+$/, "");
+export const BASE_PATH = "http://localhost:11337".replace(/\/+$/, "");
 export class Configuration {
     constructor(configuration = {}) {
         this.configuration = configuration;

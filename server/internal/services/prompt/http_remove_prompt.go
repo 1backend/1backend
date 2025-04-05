@@ -40,8 +40,8 @@ func (p *PromptService) RemovePrompt(
 ) {
 
 	isAuthRsp, _, err := p.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), prompt.PermissionPromptCreate).
-		Body(openapi.UserSvcIsAuthorizedRequest{}).
+		UserSvcAPI.HasPermission(r.Context(), prompt.PermissionPromptCreate).
+		Body(openapi.UserSvcHasPermissionRequest{}).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
