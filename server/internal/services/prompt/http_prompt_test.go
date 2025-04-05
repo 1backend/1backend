@@ -68,7 +68,7 @@ var _ = ginkgo.Describe("Prompt Processing Loop", func() {
 		lc = llamacpp.NewMockClientI(ctrl)
 
 		mockClientFactory = client.NewMockClientFactory(ctrl)
-		mockUserSvc = test.MockUserSvc(ctx, ctrl, test.WithIsAuthorizedFactory(func() bool {
+		mockUserSvc = test.MockUserSvc(ctx, ctrl, test.WithHasPermissionFactory(func() bool {
 			return true
 		}))
 		mockChatSvc = openapi.NewMockChatSvcAPI(ctrl)

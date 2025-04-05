@@ -44,7 +44,7 @@ func (s *UserService) SaveOrganization(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	usr, isAuthorized, err := s.hasPermission(
+	usr, hasPermission, err := s.hasPermission(
 		r,
 		user.PermissionOrganizationCreate,
 		nil,
@@ -55,7 +55,7 @@ func (s *UserService) SaveOrganization(
 		w.Write([]byte(err.Error()))
 		return
 	}
-	if !isAuthorized {
+	if !hasPermission {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("Unauthorized"))
 		return

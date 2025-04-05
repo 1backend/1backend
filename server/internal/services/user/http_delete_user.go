@@ -38,13 +38,13 @@ import (
 // @Router /user-svc/user/{userId} [delete]
 func (s *UserService) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
-	usr, isAuthorized, err := s.hasPermission(r, user.PermissionUserDelete, nil, nil)
+	usr, hasPermission, err := s.hasPermission(r, user.PermissionUserDelete, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
-	if !isAuthorized {
+	if !hasPermission {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("Unauthorized"))
 		return

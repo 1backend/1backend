@@ -2869,7 +2869,7 @@ definitions:
           type: string
         type: array
     type: object
-  user_svc.IsAuthorizedRequest:
+  user_svc.HasPermissionRequest:
     properties:
       contactsGranted:
         items:
@@ -2880,7 +2880,7 @@ definitions:
           type: string
         type: array
     type: object
-  user_svc.IsAuthorizedResponse:
+  user_svc.HasPermissionResponse:
     properties:
       authorized:
         type: boolean
@@ -6102,7 +6102,7 @@ paths:
         already includes all user roles. Caching the `Get Permissions by Role`
         responses allows services to determine user authorization
         without repeatedly calling this endpoint.
-      operationId: isAuthorized
+      operationId: hasPermission
       parameters:
       - description: Permission ID
         in: path
@@ -6113,14 +6113,14 @@ paths:
         in: body
         name: body
         schema:
-          $ref: '#/definitions/user_svc.IsAuthorizedRequest'
+          $ref: '#/definitions/user_svc.HasPermissionRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user_svc.IsAuthorizedResponse'
+            $ref: '#/definitions/user_svc.HasPermissionResponse'
         "400":
           description: Invalid JSON or missing permission id
           schema:
