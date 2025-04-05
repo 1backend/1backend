@@ -19,8 +19,6 @@ import { Router } from '@angular/router';
 import {
 	Configuration,
 	UserSvcApi,
-	UserSvcGetPermissionsResponse,
-	UserSvcListRolesResponse,
 	UserSvcListUsersResponse,
 	UserSvcLoginResponse,
 	UserSvcReadUserByTokenResponse,
@@ -196,16 +194,6 @@ export class UserService {
 				password: password,
 				roleIds: roleIds,
 			},
-		});
-	}
-
-	getRoles(): Promise<UserSvcListRolesResponse> {
-		return this.userService.listRoles();
-	}
-
-	getPermissions(roleId: string): Promise<UserSvcGetPermissionsResponse> {
-		return this.userService.getPermissionsByRole({
-			roleId: roleId,
 		});
 	}
 

@@ -67,11 +67,11 @@ export class HomeComponent {
 			link: '/users',
 			description: 'Manage users across all namespaces.',
 		},
-		{
-			title: 'Roles',
-			link: '/roles',
-			description: 'View and edit roles and their corresponding permissions.',
-		},
+		//{
+		//	title: 'Roles',
+		//	link: '/roles',
+		//	description: 'View and edit roles and their corresponding permissions.',
+		//},
 		{
 			title: 'Cluster',
 			link: '/nodes',
