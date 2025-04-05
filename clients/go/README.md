@@ -153,7 +153,6 @@ Class | Method | HTTP request | Description
 *SecretSvcAPI* | [**SaveSecrets**](docs/SecretSvcAPI.md#savesecrets) | **Put** /secret-svc/secrets | Save Secrets
 *SourceSvcAPI* | [**CheckoutRepo**](docs/SourceSvcAPI.md#checkoutrepo) | **Post** /source-svc/repo/checkout | Checkout a git repository
 *UserSvcAPI* | [**AddUserToOrganization**](docs/UserSvcAPI.md#addusertoorganization) | **Put** /user-svc/organization/{organizationId}/user/{userId} | Add a User to an Organization
-*UserSvcAPI* | [**AssignRole**](docs/UserSvcAPI.md#assignrole) | **Put** /user-svc/user/{userId}/role/{role} | Assign Role
 *UserSvcAPI* | [**ChangePassword**](docs/UserSvcAPI.md#changepassword) | **Post** /user-svc/change-password | Change User Password
 *UserSvcAPI* | [**CreateUser**](docs/UserSvcAPI.md#createuser) | **Post** /user-svc/user | Create a New User
 *UserSvcAPI* | [**DeleteUser**](docs/UserSvcAPI.md#deleteuser) | **Delete** /user-svc/user/{userId} | Delete a User

@@ -197,7 +197,7 @@ func TestOrganization(t *testing.T) {
 			)
 			require.NoError(t, err)
 			require.NotNil(t, claim)
-			require.Equal(t, 1, len(claim.RoleIds), claim.RoleIds)
+			require.Equal(t, 1, len(claim.Roles), claim.Roles)
 
 			loginReq := openapi.UserSvcLoginRequest{
 				Slug:     openapi.PtrString("test-user-slug-0"),
@@ -214,12 +214,12 @@ func TestOrganization(t *testing.T) {
 			)
 			require.NoError(t, err)
 			require.NotNil(t, claim)
-			require.Equal(t, 2, len(claim.RoleIds), claim.RoleIds)
+			require.Equal(t, 2, len(claim.Roles), claim.Roles)
 			require.Contains(
 				t,
-				claim.RoleIds,
+				claim.Roles,
 				fmt.Sprintf("user-svc:org:{%v}:admin", orgId1),
-				claim.RoleIds,
+				claim.Roles,
 			)
 			require.Equal(t, orgId1, claim.ActiveOrganizationId)
 
@@ -265,10 +265,10 @@ func TestOrganization(t *testing.T) {
 
 		require.NoError(t, err)
 		require.NotNil(t, claim)
-		require.Equal(t, 2, len(claim.RoleIds), claim.RoleIds)
+		require.Equal(t, 2, len(claim.Roles), claim.Roles)
 		require.Contains(
 			t,
-			claim.RoleIds,
+			claim.Roles,
 			fmt.Sprintf("user-svc:org:{%v}:user", orgId1),
 		)
 

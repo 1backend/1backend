@@ -69,36 +69,6 @@ func (mr *MockUserSvcAPIMockRecorder) AddUserToOrganizationExecute(r any) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddUserToOrganizationExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).AddUserToOrganizationExecute), r)
 }
 
-// AssignRole mocks base method.
-func (m *MockUserSvcAPI) AssignRole(ctx context.Context, userId, role string) ApiAssignRoleRequest {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AssignRole", ctx, userId, role)
-	ret0, _ := ret[0].(ApiAssignRoleRequest)
-	return ret0
-}
-
-// AssignRole indicates an expected call of AssignRole.
-func (mr *MockUserSvcAPIMockRecorder) AssignRole(ctx, userId, role any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssignRole", reflect.TypeOf((*MockUserSvcAPI)(nil).AssignRole), ctx, userId, role)
-}
-
-// AssignRoleExecute mocks base method.
-func (m *MockUserSvcAPI) AssignRoleExecute(r ApiAssignRoleRequest) (map[string]any, *http.Response, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AssignRoleExecute", r)
-	ret0, _ := ret[0].(map[string]any)
-	ret1, _ := ret[1].(*http.Response)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// AssignRoleExecute indicates an expected call of AssignRoleExecute.
-func (mr *MockUserSvcAPIMockRecorder) AssignRoleExecute(r any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssignRoleExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).AssignRoleExecute), r)
-}
-
 // ChangePassword mocks base method.
 func (m *MockUserSvcAPI) ChangePassword(ctx context.Context) ApiChangePasswordRequest {
 	m.ctrl.T.Helper()

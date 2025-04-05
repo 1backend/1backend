@@ -87,7 +87,7 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 
 		if len(invites) > 0 {
 			for _, invite := range invites {
-				roles = append(roles, invite.(*user.Invite).RoleId)
+				roles = append(roles, invite.(*user.Invite).Role)
 			}
 		}
 	}

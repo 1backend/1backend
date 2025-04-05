@@ -26,7 +26,9 @@ import (
 
 // @ID saveInvites
 // @Summary Save Invites
-// @Description Invite a list of users by contact ID to acquire a role. Works on future or current users.
+// @Description Invite a list of users by contact or user Id to acquire a role.
+// @Description Works on future or current users.
+// @Description
 // @Description A user can only invite an other user to a role if the user owns that role.
 // @Description
 // @Description A user "owns" a role in the following cases:
@@ -79,7 +81,7 @@ func (s *UserService) SaveInvites(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, invite := range req.Invites {
-		if !auth.OwnsRole(claim, invite.RoleId) {
+		if !auth.OwnsRole(claim, invite.Role) {
 			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("Unauthorized"))
 			return
@@ -112,17 +114,29 @@ func (s *UserService) saveInvites(
 
 	var (
 		contactIds []any
+		userIds    []any
 		inviteIds  []any
 	)
 	for _, invite := range req.Invites {
 		contactIds = append(contactIds, invite.ContactId)
 		inviteIds = append(inviteIds, invite.Id)
+		userIds = append(userIds, invite.UserId)
 	}
 
 	contacts, err := s.contactsStore.Query(
 		datastore.IsInList(
 			datastore.Field("id"),
 			contactIds...,
+		)).
+		Find()
+	if err != nil {
+		return nil, err
+	}
+
+	users, err := s.usersStore.Query(
+		datastore.IsInList(
+			datastore.Field("id"),
+			userIds...,
 		)).
 		Find()
 	if err != nil {
@@ -149,18 +163,31 @@ func (s *UserService) saveInvites(
 		existingContact[contact.GetId()] = contact.(*user.Contact).UserId
 	}
 
+	existingUser := map[string]bool{}
+	for _, usr := range users {
+		existingUser[usr.GetId()] = true
+	}
+
 	invites := []user.Invite{}
 	for _, invite := range req.Invites {
 		// Already registered users get applied the role immediately
 		if userId, ok := existingContact[invite.ContactId]; ok {
-			err = s.assignRole(userId, invite.RoleId)
+			err = s.assignRole(userId, invite.Role)
 			if err != nil {
 				return nil, err
 			}
 			continue
 		}
 
-		if invite.ContactId == "" || invite.RoleId == "" {
+		if _, ok := existingUser[invite.UserId]; ok {
+			err = s.assignRole(invite.UserId, invite.Role)
+			if err != nil {
+				return nil, err
+			}
+			continue
+		}
+
+		if (invite.ContactId == "" && invite.UserId == "") || invite.Role == "" {
 			return nil, errors.New("invite missing required fields")
 		}
 
@@ -170,7 +197,7 @@ func (s *UserService) saveInvites(
 
 		i := user.Invite{
 			ContactId: invite.ContactId,
-			RoleId:    invite.RoleId,
+			Role:      invite.Role,
 		}
 
 		if existingInvite, ok := existingInvites[invite.Id]; ok {

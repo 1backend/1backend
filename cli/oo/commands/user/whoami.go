@@ -92,7 +92,7 @@ func displayUser(
 	userInfo := UserInfo{
 		Id:    claims.UserId,
 		Slug:  claims.Slug,
-		Roles: claims.RoleIds,
+		Roles: claims.Roles,
 	}
 
 	enc := yaml.NewEncoder(cmd.OutOrStdout())

@@ -111,7 +111,7 @@ func (a AuthorizerImpl) IsAdmin(userSvcPublicKey, token string) (bool, error) {
 		return false, err
 	}
 
-	for _, roleId := range claims.RoleIds {
+	for _, roleId := range claims.Roles {
 		// @todo remove constant
 		if roleId == "user-svc:admin" {
 			return true, nil
@@ -136,7 +136,7 @@ func (a AuthorizerImpl) Organizations(userSvcPublicKey, token string) (map[strin
 		return nil, err
 	}
 
-	return ExtractOrganizationRoles(claims.RoleIds), nil
+	return ExtractOrganizationRoles(claims.Roles), nil
 }
 
 func ExtractOrganizationRoles(roleIds []string) map[string][]string {
@@ -174,7 +174,7 @@ func ExtractOrganizationRoles(roleIds []string) map[string][]string {
 // - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
 func OwnsRole(claim *Claims, roleId string) bool {
 	// @todo Probably not great in terms of zero trust design ; )
-	if lo.Contains(claim.RoleIds, "user-svc:admin") {
+	if lo.Contains(claim.Roles, "user-svc:admin") {
 		return true
 	}
 
@@ -189,7 +189,7 @@ func OwnsRole(claim *Claims, roleId string) bool {
 
 	rolePrefix := roleId[:idx]
 
-	for _, userRole := range claim.RoleIds {
+	for _, userRole := range claim.Roles {
 		idx := strings.LastIndex(userRole, ":")
 		if idx == -1 {
 			continue
