@@ -58,7 +58,7 @@ func LoadConfig() (types.Config, error) {
 		config.Environments["local"] = &types.Environment{
 			ShortName: shortName,
 			// @todo make this come from somewhere else
-			URL: "http://127.0.0.1:58231",
+			URL: "http://127.0.0.1:11337",
 		}
 		config.SelectedEnvironment = shortName
 
