@@ -15,7 +15,7 @@ require (
 	github.com/docker/go-connections v0.5.0
 	github.com/flusflas/dipper v0.2.1
 	github.com/go-git/go-git/v5 v5.14.0
-	github.com/golang-jwt/jwt/v4 v4.5.1
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/mux v1.8.1
 	github.com/onsi/ginkgo/v2 v2.23.0
