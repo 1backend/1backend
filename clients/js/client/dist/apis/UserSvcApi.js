@@ -21,7 +21,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as runtime from '../runtime';
-import { UserSvcSaveGrantsRequestToJSON, UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionRequestToJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListGrantsRequestToJSON, UserSvcListGrantsResponseFromJSON, UserSvcListInvitesRequestToJSON, UserSvcListInvitesResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadUserByTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcSaveGrantsRequestToJSON, UserSvcSaveInvitesRequestToJSON, UserSvcSaveInvitesResponseFromJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSaveProfileRequestToJSON, } from '../models/index';
+import { UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionRequestToJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListGrantsRequestToJSON, UserSvcListGrantsResponseFromJSON, UserSvcListInvitesRequestToJSON, UserSvcListInvitesResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadUserByTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcSaveGrantsRequestToJSON, UserSvcSaveInvitesRequestToJSON, UserSvcSaveInvitesResponseFromJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSaveProfileRequestToJSON, } from '../models/index';
 /**
  *
  */
@@ -61,41 +61,6 @@ export class UserSvcApi extends runtime.BaseAPI {
     addUserToOrganization(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.addUserToOrganizationRaw(requestParameters, initOverrides);
-            return yield response.value();
-        });
-    }
-    /**
-     * Assign permissions to roles.  Requires the `user-svc:permission:assign` permission.
-     * Assign Permissions
-     */
-    assignPermissionsRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['body'] == null) {
-                throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling assignPermissions().');
-            }
-            const queryParameters = {};
-            const headerParameters = {};
-            headerParameters['Content-Type'] = 'application/json';
-            if (this.configuration && this.configuration.apiKey) {
-                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
-            }
-            const response = yield this.request({
-                path: `/user-svc/roles/permissions`,
-                method: 'PUT',
-                headers: headerParameters,
-                query: queryParameters,
-                body: UserSvcSaveGrantsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
-            return new runtime.JSONApiResponse(response);
-        });
-    }
-    /**
-     * Assign permissions to roles.  Requires the `user-svc:permission:assign` permission.
-     * Assign Permissions
-     */
-    assignPermissions(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.assignPermissionsRaw(requestParameters, initOverrides);
             return yield response.value();
         });
     }
@@ -303,7 +268,7 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * List grants.  Grants define which slugs are assigned specific permissions, overriding the default configuration.  Requires the `user-svc:grant:view` permission.
+     * Grants give access to users with certain slugs and roles to permissions. Users can list grants for permissions they have access to but they will only see grants the grant refers to their slug or one of their roles.
      * List Grants
      */
     listGrantsRaw(requestParameters, initOverrides) {
@@ -328,7 +293,7 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * List grants.  Grants define which slugs are assigned specific permissions, overriding the default configuration.  Requires the `user-svc:grant:view` permission.
+     * Grants give access to users with certain slugs and roles to permissions. Users can list grants for permissions they have access to but they will only see grants the grant refers to their slug or one of their roles.
      * List Grants
      */
     listGrants(requestParameters, initOverrides) {
@@ -373,7 +338,7 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Retrieve permissions by roles.
+     * List permissions by roles. Caller can only list permissions for roles they have.
      * List Permissions
      */
     listPermissionsRaw(requestParameters, initOverrides) {
@@ -396,7 +361,7 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Retrieve permissions by roles.
+     * List permissions by roles. Caller can only list permissions for roles they have.
      * List Permissions
      */
     listPermissions(requestParameters, initOverrides) {
@@ -608,7 +573,7 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Save grants.  Grants define which slugs are assigned specific permissions, overriding the default configuration.  Requires the `user-svc:grant:create` permission.
+     * Save grants. // @Description Grants give access to users with certain slugs and roles to permissions.
      * Save Grants
      */
     saveGrantsRaw(requestParameters, initOverrides) {
@@ -633,7 +598,7 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Save grants.  Grants define which slugs are assigned specific permissions, overriding the default configuration.  Requires the `user-svc:grant:create` permission.
+     * Save grants. // @Description Grants give access to users with certain slugs and roles to permissions.
      * Save Grants
      */
     saveGrants(requestParameters, initOverrides) {

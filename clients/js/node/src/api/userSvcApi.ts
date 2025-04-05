@@ -15,7 +15,6 @@ import localVarRequest from 'request';
 import http from 'http';
 
 /* tslint:disable:no-unused-locals */
-import { UserSvcSaveGrantsRequest } from '../model/userSvcSaveGrantsRequest';
 import { UserSvcChangePasswordRequest } from '../model/userSvcChangePasswordRequest';
 import { UserSvcCreateUserRequest } from '../model/userSvcCreateUserRequest';
 import { UserSvcErrorResponse } from '../model/userSvcErrorResponse';
@@ -158,78 +157,6 @@ export class UserSvcApi {
             useQuerystring: this._useQuerystring,
             json: true,
             body: ObjectSerializer.serialize(body, "object")
-        };
-
-        let authenticationPromise = Promise.resolve();
-        if (this.authentications.BearerAuth.apiKey) {
-            authenticationPromise = authenticationPromise.then(() => this.authentications.BearerAuth.applyToRequest(localVarRequestOptions));
-        }
-        authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
-
-        let interceptorPromise = authenticationPromise;
-        for (const interceptor of this.interceptors) {
-            interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
-        }
-
-        return interceptorPromise.then(() => {
-            if (Object.keys(localVarFormParams).length) {
-                if (localVarUseFormData) {
-                    (<any>localVarRequestOptions).formData = localVarFormParams;
-                } else {
-                    localVarRequestOptions.form = localVarFormParams;
-                }
-            }
-            return new Promise<{ response: http.IncomingMessage; body: object;  }>((resolve, reject) => {
-                localVarRequest(localVarRequestOptions, (error, response, body) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
-                            body = ObjectSerializer.deserialize(body, "object");
-                            resolve({ response: response, body: body });
-                        } else {
-                            reject(new HttpError(response, body, response.statusCode));
-                        }
-                    }
-                });
-            });
-        });
-    }
-    /**
-     * Assign permissions to roles.  Requires the `user-svc:permission:assign` permission.
-     * @summary Assign Permissions
-     * @param body Assign Permissions Request
-     */
-    public async assignPermissions (body: UserSvcSaveGrantsRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: object;  }> {
-        const localVarPath = this.basePath + '/user-svc/roles/permissions';
-        let localVarQueryParameters: any = {};
-        let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
-        const produces = ['application/json'];
-        // give precedence to 'application/json'
-        if (produces.indexOf('application/json') >= 0) {
-            localVarHeaderParams.Accept = 'application/json';
-        } else {
-            localVarHeaderParams.Accept = produces.join(',');
-        }
-        let localVarFormParams: any = {};
-
-        // verify required parameter 'body' is not null or undefined
-        if (body === null || body === undefined) {
-            throw new Error('Required parameter body was null or undefined when calling assignPermissions.');
-        }
-
-        (<any>Object).assign(localVarHeaderParams, options.headers);
-
-        let localVarUseFormData = false;
-
-        let localVarRequestOptions: localVarRequest.Options = {
-            method: 'PUT',
-            qs: localVarQueryParameters,
-            headers: localVarHeaderParams,
-            uri: localVarPath,
-            useQuerystring: this._useQuerystring,
-            json: true,
-            body: ObjectSerializer.serialize(body, "UserSvcSaveGrantsRequest")
         };
 
         let authenticationPromise = Promise.resolve();
@@ -701,7 +628,7 @@ export class UserSvcApi {
         });
     }
     /**
-     * List grants.  Grants define which slugs are assigned specific permissions, overriding the default configuration.  Requires the `user-svc:grant:view` permission.
+     * Grants give access to users with certain slugs and roles to permissions. Users can list grants for permissions they have access to but they will only see grants the grant refers to their slug or one of their roles.
      * @summary List Grants
      * @param body List Grants Request
      */
@@ -845,7 +772,7 @@ export class UserSvcApi {
         });
     }
     /**
-     * Retrieve permissions by roles.
+     * List permissions by roles. Caller can only list permissions for roles they have.
      * @summary List Permissions
      * @param roleId Role ID
      */
@@ -1347,7 +1274,7 @@ export class UserSvcApi {
         });
     }
     /**
-     * Save grants.  Grants define which slugs are assigned specific permissions, overriding the default configuration.  Requires the `user-svc:grant:create` permission.
+     * Save grants. // @Description Grants give access to users with certain slugs and roles to permissions.
      * @summary Save Grants
      * @param body Save Grants Request
      */

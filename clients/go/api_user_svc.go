@@ -145,7 +145,6 @@ without repeatedly calling this endpoint.
 	Grants give access to users with certain slugs and roles to permissions.
 Users can list grants for permissions they have access to
 but they will only see grants the grant refers to their slug or one of their roles.
-(This is to prevent users from seeing grants for other users.)
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiListGrantsRequest
@@ -173,7 +172,8 @@ but they will only see grants the grant refers to their slug or one of their rol
 	/*
 	ListPermissions List Permissions
 
-	Retrieve permissions by roles. Caller can only list permissions for roles they have.
+	List permissions by roles.
+Caller can only list permissions for roles they have.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param roleId Role ID
@@ -1461,7 +1461,6 @@ ListGrants List Grants
 Grants give access to users with certain slugs and roles to permissions.
 Users can list grants for permissions they have access to
 but they will only see grants the grant refers to their slug or one of their roles.
-(This is to prevent users from seeing grants for other users.)
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiListGrantsRequest
@@ -1747,7 +1746,8 @@ func (r ApiListPermissionsRequest) Execute() (*UserSvcListPermissionsResponse, *
 /*
 ListPermissions List Permissions
 
-Retrieve permissions by roles. Caller can only list permissions for roles they have.
+List permissions by roles.
+Caller can only list permissions for roles they have.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param roleId Role ID

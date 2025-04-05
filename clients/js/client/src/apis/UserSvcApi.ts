@@ -15,7 +15,6 @@
 
 import * as runtime from '../runtime';
 import type {
-  UserSvcSaveGrantsRequest,
   UserSvcChangePasswordRequest,
   UserSvcCreateUserRequest,
   UserSvcErrorResponse,
@@ -43,8 +42,6 @@ import type {
   UserSvcSaveProfileRequest,
 } from '../models/index';
 import {
-    UserSvcSaveGrantsRequestFromJSON,
-    UserSvcSaveGrantsRequestToJSON,
     UserSvcChangePasswordRequestFromJSON,
     UserSvcChangePasswordRequestToJSON,
     UserSvcCreateUserRequestFromJSON,
@@ -101,10 +98,6 @@ export interface AddUserToOrganizationRequest {
     organizationId: string;
     userId: string;
     body?: object;
-}
-
-export interface SaveGrantsRequest {
-    body: UserSvcSaveGrantsRequest;
 }
 
 export interface AssignRoleRequest {
@@ -238,48 +231,6 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     async addUserToOrganization(requestParameters: AddUserToOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.addUserToOrganizationRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Assign permissions to roles.  Requires the `user-svc:permission:assign` permission.
-     * Assign Permissions
-     */
-    async assignPermissionsRaw(requestParameters: SaveGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['body'] == null) {
-            throw new runtime.RequiredError(
-                'body',
-                'Required parameter "body" was null or undefined when calling assignPermissions().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
-        }
-
-        const response = await this.request({
-            path: `/user-svc/roles/permissions`,
-            method: 'PUT',
-            headers: headerParameters,
-            query: queryParameters,
-            body: UserSvcSaveGrantsRequestToJSON(requestParameters['body']),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse<any>(response);
-    }
-
-    /**
-     * Assign permissions to roles.  Requires the `user-svc:permission:assign` permission.
-     * Assign Permissions
-     */
-    async assignPermissions(requestParameters: SaveGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.assignPermissionsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -526,7 +477,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * List grants.  Grants define which slugs are assigned specific permissions, overriding the default configuration.  Requires the `user-svc:grant:view` permission.
+     * Grants give access to users with certain slugs and roles to permissions. Users can list grants for permissions they have access to but they will only see grants the grant refers to their slug or one of their roles.
      * List Grants
      */
     async listGrantsRaw(requestParameters: ListGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListGrantsResponse>> {
@@ -559,7 +510,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * List grants.  Grants define which slugs are assigned specific permissions, overriding the default configuration.  Requires the `user-svc:grant:view` permission.
+     * Grants give access to users with certain slugs and roles to permissions. Users can list grants for permissions they have access to but they will only see grants the grant refers to their slug or one of their roles.
      * List Grants
      */
     async listGrants(requestParameters: ListGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListGrantsResponse> {
@@ -610,7 +561,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieve permissions by roles.
+     * List permissions by roles. Caller can only list permissions for roles they have.
      * List Permissions
      */
     async listPermissionsRaw(requestParameters: ListPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListPermissionsResponse>> {
@@ -640,7 +591,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieve permissions by roles.
+     * List permissions by roles. Caller can only list permissions for roles they have.
      * List Permissions
      */
     async listPermissions(requestParameters: ListPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListPermissionsResponse> {
@@ -890,7 +841,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Save grants.  Grants define which slugs are assigned specific permissions, overriding the default configuration.  Requires the `user-svc:grant:create` permission.
+     * Save grants. // @Description Grants give access to users with certain slugs and roles to permissions.
      * Save Grants
      */
     async saveGrantsRaw(requestParameters: SaveGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
@@ -923,7 +874,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Save grants.  Grants define which slugs are assigned specific permissions, overriding the default configuration.  Requires the `user-svc:grant:create` permission.
+     * Save grants. // @Description Grants give access to users with certain slugs and roles to permissions.
      * Save Grants
      */
     async saveGrants(requestParameters: SaveGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {

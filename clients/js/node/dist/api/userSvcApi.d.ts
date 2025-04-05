@@ -10,7 +10,6 @@
  * Do not edit the class manually.
  */
 import http from 'http';
-import { UserSvcSaveGrantsRequest } from '../model/userSvcSaveGrantsRequest';
 import { UserSvcChangePasswordRequest } from '../model/userSvcChangePasswordRequest';
 import { UserSvcCreateUserRequest } from '../model/userSvcCreateUserRequest';
 import { UserSvcGetPublicKeyResponse } from '../model/userSvcGetPublicKeyResponse';
@@ -66,19 +65,6 @@ export declare class UserSvcApi {
      * @param body Add User to Organization Request
      */
     addUserToOrganization(organizationId: string, userId: string, body?: object, options?: {
-        headers: {
-            [name: string]: string;
-        };
-    }): Promise<{
-        response: http.IncomingMessage;
-        body: object;
-    }>;
-    /**
-     * Assign permissions to roles.  Requires the `user-svc:permission:assign` permission.
-     * @summary Assign Permissions
-     * @param body Assign Permissions Request
-     */
-    assignPermissions(body: UserSvcSaveGrantsRequest, options?: {
         headers: {
             [name: string]: string;
         };
@@ -167,7 +153,7 @@ export declare class UserSvcApi {
         body: UserSvcHasPermissionResponse;
     }>;
     /**
-     * List grants.  Grants define which slugs are assigned specific permissions, overriding the default configuration.  Requires the `user-svc:grant:view` permission.
+     * Grants give access to users with certain slugs and roles to permissions. Users can list grants for permissions they have access to but they will only see grants the grant refers to their slug or one of their roles.
      * @summary List Grants
      * @param body List Grants Request
      */
@@ -193,7 +179,7 @@ export declare class UserSvcApi {
         body: UserSvcListInvitesResponse;
     }>;
     /**
-     * Retrieve permissions by roles.
+     * List permissions by roles. Caller can only list permissions for roles they have.
      * @summary List Permissions
      * @param roleId Role ID
      */
@@ -286,7 +272,7 @@ export declare class UserSvcApi {
         body: object;
     }>;
     /**
-     * Save grants.  Grants define which slugs are assigned specific permissions, overriding the default configuration.  Requires the `user-svc:grant:create` permission.
+     * Save grants. // @Description Grants give access to users with certain slugs and roles to permissions.
      * @summary Save Grants
      * @param body Save Grants Request
      */

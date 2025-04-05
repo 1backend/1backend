@@ -2789,7 +2789,7 @@ definitions:
           Originally, grants were designed for slugs to facilitate service-to-service calls.
           Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.
 
-          Alternatively, permissions can be assigned to roles using UserSvc.SaveGrants.
+          Alternatively, permissions can be assigned to roles using UserSvc.AssignPermissions.
           Grants currently offer a more streamlined approach, though this may evolve over time.
         items:
           type: string
@@ -5894,7 +5894,6 @@ paths:
         Grants give access to users with certain slugs and roles to permissions.
         Users can list grants for permissions they have access to
         but they will only see grants the grant refers to their slug or one of their roles.
-        (This is to prevent users from seeing grants for other users.)
       operationId: listGrants
       parameters:
       - description: List Grants Request
@@ -6224,8 +6223,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: Retrieve permissions by roles. Caller can only list permissions
-        for roles they have.
+      description: |-
+        List permissions by roles.
+        Caller can only list permissions for roles they have.
       operationId: listPermissions
       parameters:
       - description: Role ID

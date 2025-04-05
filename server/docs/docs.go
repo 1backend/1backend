@@ -4109,7 +4109,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Grants give access to users with certain slugs and roles to permissions.\nUsers can list grants for permissions they have access to\nbut they will only see grants the grant refers to their slug or one of their roles.\n(This is to prevent users from seeing grants for other users.)",
+                "description": "Grants give access to users with certain slugs and roles to permissions.\nUsers can list grants for permissions they have access to\nbut they will only see grants the grant refers to their slug or one of their roles.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4538,7 +4538,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Retrieve permissions by roles. Caller can only list permissions for roles they have.",
+                "description": "List permissions by roles.\nCaller can only list permissions for roles they have.",
                 "consumes": [
                     "application/json"
                 ],

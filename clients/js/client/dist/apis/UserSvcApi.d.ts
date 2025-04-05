@@ -10,14 +10,11 @@
  * Do not edit the class manually.
  */
 import * as runtime from '../runtime';
-import type { UserSvcSaveGrantsRequest, UserSvcChangePasswordRequest, UserSvcCreateUserRequest, UserSvcGetPublicKeyResponse, UserSvcHasPermissionRequest, UserSvcHasPermissionResponse, UserSvcListGrantsRequest, UserSvcListGrantsResponse, UserSvcListInvitesRequest, UserSvcListInvitesResponse, UserSvcListPermissionsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveGrantsRequest, UserSvcSaveInvitesRequest, UserSvcSaveInvitesResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSaveProfileRequest } from '../models/index';
+import type { UserSvcChangePasswordRequest, UserSvcCreateUserRequest, UserSvcGetPublicKeyResponse, UserSvcHasPermissionRequest, UserSvcHasPermissionResponse, UserSvcListGrantsRequest, UserSvcListGrantsResponse, UserSvcListInvitesRequest, UserSvcListInvitesResponse, UserSvcListPermissionsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveGrantsRequest, UserSvcSaveInvitesRequest, UserSvcSaveInvitesResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSaveProfileRequest } from '../models/index';
 export interface AddUserToOrganizationRequest {
     organizationId: string;
     userId: string;
     body?: object;
-}
-export interface SaveGrantsRequest {
-    body: UserSvcSaveGrantsRequest;
 }
 export interface AssignRoleRequest {
     userId: string;
@@ -96,16 +93,6 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      */
     addUserToOrganization(requestParameters: AddUserToOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
-     * Assign permissions to roles.  Requires the `user-svc:permission:assign` permission.
-     * Assign Permissions
-     */
-    assignPermissionsRaw(requestParameters: SaveGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
-    /**
-     * Assign permissions to roles.  Requires the `user-svc:permission:assign` permission.
-     * Assign Permissions
-     */
-    assignPermissions(requestParameters: SaveGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
-    /**
      * Assigns a role to a user. The caller can only assign roles they own. A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
      * Assign Role
      */
@@ -166,12 +153,12 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      */
     hasPermission(requestParameters: HasPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcHasPermissionResponse>;
     /**
-     * List grants.  Grants define which slugs are assigned specific permissions, overriding the default configuration.  Requires the `user-svc:grant:view` permission.
+     * Grants give access to users with certain slugs and roles to permissions. Users can list grants for permissions they have access to but they will only see grants the grant refers to their slug or one of their roles.
      * List Grants
      */
     listGrantsRaw(requestParameters: ListGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListGrantsResponse>>;
     /**
-     * List grants.  Grants define which slugs are assigned specific permissions, overriding the default configuration.  Requires the `user-svc:grant:view` permission.
+     * Grants give access to users with certain slugs and roles to permissions. Users can list grants for permissions they have access to but they will only see grants the grant refers to their slug or one of their roles.
      * List Grants
      */
     listGrants(requestParameters: ListGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListGrantsResponse>;
@@ -186,12 +173,12 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      */
     listInvites(requestParameters: ListInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListInvitesResponse>;
     /**
-     * Retrieve permissions by roles.
+     * List permissions by roles. Caller can only list permissions for roles they have.
      * List Permissions
      */
     listPermissionsRaw(requestParameters: ListPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListPermissionsResponse>>;
     /**
-     * Retrieve permissions by roles.
+     * List permissions by roles. Caller can only list permissions for roles they have.
      * List Permissions
      */
     listPermissions(requestParameters: ListPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListPermissionsResponse>;
@@ -256,12 +243,12 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      */
     resetPassword(requestParameters: ResetPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
-     * Save grants.  Grants define which slugs are assigned specific permissions, overriding the default configuration.  Requires the `user-svc:grant:create` permission.
+     * Save grants. // @Description Grants give access to users with certain slugs and roles to permissions.
      * Save Grants
      */
     saveGrantsRaw(requestParameters: SaveGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
     /**
-     * Save grants.  Grants define which slugs are assigned specific permissions, overriding the default configuration.  Requires the `user-svc:grant:create` permission.
+     * Save grants. // @Description Grants give access to users with certain slugs and roles to permissions.
      * Save Grants
      */
     saveGrants(requestParameters: SaveGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
