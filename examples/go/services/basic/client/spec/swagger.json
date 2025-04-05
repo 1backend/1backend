@@ -14,7 +14,7 @@
         },
         "version": "0.3.0-rc.8"
     },
-    "host": "localhost:58231",
+    "host": "localhost:11337",
     "basePath": "/",
     "paths": {
         "/basic-svc/pet": {

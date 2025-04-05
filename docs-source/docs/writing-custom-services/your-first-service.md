@@ -71,7 +71,7 @@ func NewService(options *Options) (*BasicService, error) {
 		options.ServerUrl = os.Getenv("OB_SERVER_URL")
 	}
 	if options.ServerUrl == "" {
-		options.ServerUrl = "http://127.0.0.1:58231"
+		options.ServerUrl = "http://127.0.0.1:11337"
 	}
 	if options.SelfUrl == "" {
 		options.SelfUrl = os.Getenv("OB_SELF_URL")
@@ -201,14 +201,14 @@ func applicator(
 Just make sure you run it with the appropriate envars:
 
 ```sh
-OB_SERVER_URL=http://127.0.0.1:58231 OB_SELF_URL=http://127.0.0.1:9111 go run main.go
+OB_SERVER_URL=http://127.0.0.1:11337 OB_SELF_URL=http://127.0.0.1:9111 go run main.go
 ```
 
 Once it's running you will be able to call the 1Backend server proxy and that will proxy to your basic service:
 
 ```sh
-# 127.0.0.1:58231 here is the address of the 1Backend server
-$ curl 127.0.0.1:58231/basic-svc/hello
+# 127.0.0.1:11337 here is the address of the 1Backend server
+$ curl 127.0.0.1:11337/basic-svc/hello
 {"hello": "world"}
 ```
 
@@ -218,7 +218,7 @@ Let's recap how the proxying works:
 
 - Service registers an account, acquires the `basic-svc` slug.
 - Service calls the 1Backend [Registry Svc](/docs/built-in-services/registry-svc) to tell the system an instance of the Basic service is available under the URL `http://127.0.0.1:9111`
-- When you curl the 1Backend server with a path like `127.0.0.1:58231/basic-svc/hello`, the first section of the path will be a user account slug. The daemon checks what instances are owned by that slug and routes the request to one of the instances.
+- When you curl the 1Backend server with a path like `127.0.0.1:11337/basic-svc/hello`, the first section of the path will be a user account slug. The daemon checks what instances are owned by that slug and routes the request to one of the instances.
 
 ```sh
 $ oo instance ls

@@ -28,7 +28,7 @@ func (rs *RegistryService) SaveDefinition(
 ) {
 
 	isAuthRsp, _, err := rs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), registry.PermissionNodeView).
+		UserSvcAPI.HasPermission(r.Context(), registry.PermissionNodeView).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

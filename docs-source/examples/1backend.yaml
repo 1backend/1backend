@@ -2034,7 +2034,7 @@ definitions:
           To have a NodeURL the instance must either:
           - Be deployed by 1Backend
           - Declare the 1Backend server URL when registering its instance
-        example: https://myserver.com:58231
+        example: https://myserver.com:11337
         type: string
       path:
         description: Path of the instance address. Optional (e.g., "/api")
@@ -3101,7 +3101,7 @@ definitions:
 externalDocs:
   description: 1Backend API
   url: https://1backend.com/docs/category/1backend-api
-host: localhost:58231
+host: localhost:11337
 info:
   contact:
     email: sales@singulatron.com

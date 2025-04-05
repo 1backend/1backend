@@ -47,7 +47,7 @@ func (s *UserService) AddUserToOrganization(
 	organizationId := mux.Vars(r)["organizationId"]
 	userId := mux.Vars(r)["userId"]
 
-	usr, isAuthorized, err := s.isAuthorized(
+	usr, isAuthorized, err := s.hasPermission(
 		r,
 		user.PermissionOrganizationAddUser,
 		nil,

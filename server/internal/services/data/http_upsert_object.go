@@ -44,7 +44,7 @@ func (g *DataService) Upsert(
 ) {
 
 	isAuthRsp, _, err := g.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), data.PermissionObjectCreate).
+		UserSvcAPI.HasPermission(r.Context(), data.PermissionObjectCreate).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

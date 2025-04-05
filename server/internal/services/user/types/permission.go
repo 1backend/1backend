@@ -7,12 +7,12 @@
  */
 package user_svc
 
-type IsAuthorizedRequest struct {
+type HasPermissionRequest struct {
 	GrantedSlugs    []string `json:"grantedSlugs,omitempty"`
 	ContactsGranted []string `json:"contactsGranted,omitempty"`
 }
 
-type IsAuthorizedResponse struct {
+type HasPermissionResponse struct {
 	Authorized bool  `json:"authorized,omitempty"`
 	User       *User `json:"user,omitempty"`
 }
@@ -25,9 +25,11 @@ type CreatePermissionRequest struct {
 type CreatePermissionResponse struct {
 }
 
-type GetPermissionsRequest struct{}
+type ListPermissionsRequest struct {
+	Roles []string `json:"roles"`
+}
 
-type GetPermissionsResponse struct {
+type ListPermissionsResponse struct {
 	Permissions []string `json:"permissions"`
 }
 

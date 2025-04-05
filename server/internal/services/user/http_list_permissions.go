@@ -20,24 +20,24 @@ import (
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-// @ID getPermissionsByRole
-// @Summary Get Permissions by Role
-// @Description Retrieve permissions associated with a specific role ID.
+// @ID listPermissions
+// @Summary List Permissions
+// @Description Retrieve permissions by roles.
 // @Tags User Svc
 // @Accept  json
 // @Produce  json
 // @Param   roleId     path    string     true        "Role ID"
-// @Success 200 {object} user.GetPermissionsResponse
+// @Success 200 {object} user.ListPermissionsResponse
 // @Failure 400 {string} string "Invalid JSON"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 500 {string} string "Internal Server Error"
 // @Security BearerAuth
-// @Router /user-svc/role/{roleId}/permissions [get]
-func (s *UserService) GetPermissions(
+// @Router /user-svc/permissions [post]
+func (s *UserService) ListPermissions(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	_, isAuthorized, err := s.isAuthorized(r, user.PermissionRoleView, nil, nil)
+	_, isAuthorized, err := s.hasPermission(r, user.PermissionRoleView, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -49,6 +49,15 @@ func (s *UserService) GetPermissions(
 		return
 	}
 
+	req := user.ListPermissionsRequest{}
+	err = json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(`Invalid JSON`))
+		return
+	}
+	defer r.Body.Close()
+
 	permissions, err := s.getPermissions()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -56,7 +65,7 @@ func (s *UserService) GetPermissions(
 		return
 	}
 
-	bs, _ := json.Marshal(user.GetPermissionsResponse{
+	bs, _ := json.Marshal(user.ListPermissionsResponse{
 		Permissions: permissions,
 	})
 	w.Write(bs)

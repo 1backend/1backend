@@ -40,8 +40,8 @@ func (ms *ModelService) DefaultStatus(
 ) {
 
 	isAuthRsp, _, err := ms.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), model.PermissionModelView).
-		Body(openapi.UserSvcIsAuthorizedRequest{
+		UserSvcAPI.HasPermission(r.Context(), model.PermissionModelView).
+		Body(openapi.UserSvcHasPermissionRequest{
 			GrantedSlugs: []string{"prompt-svc"},
 		}).
 		Execute()

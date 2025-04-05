@@ -35,7 +35,7 @@ jobs:
           npm run build
 
           HOST="127.0.0.1"
-          PORT=58231
+          PORT=11337
 
           while ! nc -z $HOST $PORT; do
             echo "Waiting for $HOST:$PORT to come online..."

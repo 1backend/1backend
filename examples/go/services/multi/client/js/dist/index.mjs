@@ -13,7 +13,7 @@ import { __awaiter } from 'tslib';
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-const BASE_PATH = "http://localhost:58231".replace(/\/+$/, "");
+const BASE_PATH = "http://localhost:11337".replace(/\/+$/, "");
 class Configuration {
     constructor(configuration = {}) {
         this.configuration = configuration;

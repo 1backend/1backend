@@ -6,7 +6,7 @@
  * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
  */
 // @todo get this from some config
-export var apiURL = 'http://127.0.0.1:58231';
+export var apiURL = 'http://127.0.0.1:11337';
 
 import { post } from './api';
 

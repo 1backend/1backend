@@ -18,14 +18,14 @@ services:
     environment:
       # The `BACKEND_ADDRESS` must be accessible from the browser.
       # It is not an internal address, it's the address the browser will make API requests to.
-      - BACKEND_ADDRESS=http://127.0.0.1:58231
+      - BACKEND_ADDRESS=http://127.0.0.1:11337
 
   1backend:
     build:
       context: .
       dockerfile: ./server/docker/1backend/default/Dockerfile
     ports:
-      - "58231:58231"
+      - "11337:11337"
     volumes:
       # We mount the hostname to have a sensible fallback node URL
       - /etc/hostname:/etc/host_hostname:ro

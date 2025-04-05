@@ -1,6 +1,6 @@
 # \MultiSvcAPI
 
-All URIs are relative to *http://localhost:58231*
+All URIs are relative to *http://localhost:11337*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------

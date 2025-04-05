@@ -7,7 +7,7 @@ import (
 // GLOBALS.
 // Abhorrent.
 
-var port = "58231"
+var port = "11337"
 
 const address = "http://127.0.0.1"
 

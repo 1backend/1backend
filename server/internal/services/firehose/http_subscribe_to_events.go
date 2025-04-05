@@ -38,7 +38,7 @@ func (p *FirehoseService) Subscribe(
 ) {
 
 	isAuthRsp, _, err := p.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), firehose.PermissionFirehoseStream).
+		UserSvcAPI.HasPermission(r.Context(), firehose.PermissionFirehoseStream).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

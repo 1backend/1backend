@@ -41,7 +41,7 @@ func (a *ChatService) GetMessages(
 ) {
 
 	isAuthRsp, _, err := a.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), chat.PermissionMessageView).
+		UserSvcAPI.HasPermission(r.Context(), chat.PermissionMessageView).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

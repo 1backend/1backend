@@ -27,29 +27,30 @@ import (
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-// @ID isAuthorized
-// @Summary Is Authorized
-// @Description Verify whether a user has a specific permission.
+// @ID hasPermission
+// @Summary Has Permission
+// @Description Check whether the caller user has a specific permission.
 // @Description Ideally, this endpoint should rarely be used, as the JWT token
-// @Description already includes all user roles. Caching the `Get Permissions by Role`
+// @Description already includes all user roles. Caching the `List Permissions` and `List Grants`
 // @Description responses allows services to determine user authorization
 // @Description without repeatedly calling this endpoint.
+// @Desciption This endpoint also checks for grants.
 // @Tags User Svc
 // @Accept json
 // @Produce json
-// @Param permission path string true "Permission ID"
-// @Param body body user.IsAuthorizedRequest false "Is Authorized Request"
-// @Success 200 {object} user.IsAuthorizedResponse
+// @Param permission path string true "Permission"
+// @Param body body user.HasPermissionRequest false "Is Authorized Request"
+// @Success 200 {object} user.HasPermissionResponse
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON or missing permission id"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Security BearerAuth
-// @Router /user-svc/permission/{permission}/is-authorized [post]
-func (s *UserService) IsAuthorized(
+// @Router /user-svc/self/has/{permission} [post]
+func (s *UserService) HasPermission(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
 
-	req := &user.IsAuthorizedRequest{}
+	req := &user.HasPermissionRequest{}
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -68,17 +69,17 @@ func (s *UserService) IsAuthorized(
 	}
 
 	if req == nil {
-		req = &user.IsAuthorizedRequest{}
+		req = &user.HasPermissionRequest{}
 	}
 
-	usr, isAuth, err := s.isAuthorized(r, permission, req.GrantedSlugs, nil)
+	usr, isAuth, err := s.hasPermission(r, permission, req.GrantedSlugs, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("Unauthorized"))
 		return
 	}
 
-	bs, _ := json.Marshal(&user.IsAuthorizedResponse{
+	bs, _ := json.Marshal(&user.HasPermissionResponse{
 		Authorized: isAuth,
 		User:       usr,
 	})
@@ -86,7 +87,7 @@ func (s *UserService) IsAuthorized(
 	w.Write(bs)
 }
 
-func (s *UserService) isAuthorized(
+func (s *UserService) hasPermission(
 	r *http.Request,
 	permission string,
 	grantedSlugs,

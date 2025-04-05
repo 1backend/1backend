@@ -9,7 +9,7 @@ definitions:
     required:
     - petCount
     type: object
-host: localhost:58231
+host: localhost:11337
 info:
   contact:
     email: sales@singulatron.com

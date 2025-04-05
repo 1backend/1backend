@@ -21,10 +21,10 @@ Assuming the daemon is running already (see [this section about that](/docs/runn
 Let's add the local environment first:
 
 ```sh
-$ oo env add local http://127.0.0.1:58231
+$ oo env add local http://127.0.0.1:11337
 $ oo env ls
 SELECTED   NAME    URL                           DESCRIPTION
-*          local   http://127.0.0.1:58231
+*          local   http://127.0.0.1:11337
 ```
 
 After this you you need to log in:

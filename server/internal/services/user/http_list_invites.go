@@ -35,7 +35,7 @@ import (
 // @Router /user-svc/invites [post]
 func (s *UserService) ListInvites(w http.ResponseWriter, r *http.Request) {
 
-	usr, isAuthorized, err := s.isAuthorized(r, user.PermissionInviteView, nil, nil)
+	usr, isAuthorized, err := s.hasPermission(r, user.PermissionInviteView, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

@@ -749,19 +749,15 @@ func BigBang(options *Options) (*Universe, error) {
 	router.HandleFunc("/user-svc/user/{userId}", appl(func(w http.ResponseWriter, r *http.Request) {
 		userService.DeleteUser(w, r)
 	})).
-		Methods("OPTIONS", "DELETE")
-	router.HandleFunc("/user-svc/roles", appl(func(w http.ResponseWriter, r *http.Request) {
-		userService.ListRoles(w, r)
-	})).
 		Methods("OPTIONS", "GET")
-	router.HandleFunc("/user-svc/permission/{permission}/is-authorized", appl(func(w http.ResponseWriter, r *http.Request) {
-		userService.IsAuthorized(w, r)
+	router.HandleFunc("/user-svc/self/has/{permission}", appl(func(w http.ResponseWriter, r *http.Request) {
+		userService.HasPermission(w, r)
 	})).
 		Methods("OPTIONS", "POST")
-	router.HandleFunc("/user-svc/role/{roleId}/permissions", appl(func(w http.ResponseWriter, r *http.Request) {
-		userService.GetPermissions(w, r)
+	router.HandleFunc("/user-svc/permissions", appl(func(w http.ResponseWriter, r *http.Request) {
+		userService.ListPermissions(w, r)
 	})).
-		Methods("OPTIONS", "GET")
+		Methods("OPTIONS", "POST")
 	router.HandleFunc("/user-svc/user/{userId}/role/{role}", appl(func(w http.ResponseWriter, r *http.Request) {
 		userService.AssignRole(w, r)
 	})).

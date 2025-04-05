@@ -41,7 +41,7 @@ func (ns *DeployService) SaveDeployment(
 ) {
 
 	isAuthRsp, _, err := ns.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), deploy.PermissionDeploymentView).
+		UserSvcAPI.HasPermission(r.Context(), deploy.PermissionDeploymentView).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

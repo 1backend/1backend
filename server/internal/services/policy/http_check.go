@@ -30,7 +30,7 @@ func (s *PolicyService) Check(
 ) {
 
 	isAuthRsp, _, err := s.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), policy.PermissionTemplateEdit).
+		UserSvcAPI.HasPermission(r.Context(), policy.PermissionTemplateEdit).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

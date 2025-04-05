@@ -35,7 +35,7 @@ jobs:
           docker compose up 1backend -d
 
           HOST="127.0.0.1"
-          PORT=58231
+          PORT=11337
 
           while ! nc -z $HOST $PORT; do
             echo "Waiting for $HOST:$PORT to come online..."
@@ -58,7 +58,7 @@ jobs:
           go mod tidy
           go install
 
-          OB_SERVER_URL=http://127.0.0.1:58231 \
+          OB_SERVER_URL=http://127.0.0.1:11337 \
             OB_SELF_URL=http://127.0.0.1:9111 \
             go run main.go &
 
@@ -81,7 +81,7 @@ jobs:
         run: |
           go mod tidy
 
-          OB_SERVER_URL=http://127.0.0.1:58231 \
+          OB_SERVER_URL=http://127.0.0.1:11337 \
             OB_SELF_URL=http://127.0.0.1:9211 \
             go run main.go &
 

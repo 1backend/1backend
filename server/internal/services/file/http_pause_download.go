@@ -43,7 +43,7 @@ func (ds *FileService) PauseDownload(
 ) {
 
 	isAuthRsp, _, err := ds.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), file.PermissionDownloadEdit).
+		UserSvcAPI.HasPermission(r.Context(), file.PermissionDownloadEdit).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

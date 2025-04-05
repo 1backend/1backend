@@ -13,7 +13,7 @@ This CLI is first and foremost aimed at administrators (as opposed to both admin
 ```sh
 ~/1backend/cli$ go run main.go env list
 SELECTED   NAME    URL                                DESCRIPTION
-*          local   http://127.0.0.1:58231
+*          local   http://127.0.0.1:11337
            prod    https://api.myprodserver.com
 ```
 
@@ -47,7 +47,7 @@ id: test-b
 repository:
   url: https://github.com/1backend/1backend.git
   containerFile: server/docker/Dockerfile
-  port: 58231
+  port: 11337
 hostPort: 9998
 
 ~/1backend/cli$ go run main.go definition save fixtures/definitionA.yaml

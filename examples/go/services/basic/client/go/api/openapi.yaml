@@ -11,7 +11,7 @@ info:
   title: Basic Svc
   version: 0.3.0-rc.8
 servers:
-- url: //localhost:58231/
+- url: //localhost:11337/
 paths:
   /basic-svc/pet:
     put:

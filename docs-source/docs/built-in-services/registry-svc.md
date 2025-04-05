@@ -74,7 +74,7 @@ This is how a well configured node should look like:
 ```sh
 $ oo nodes lis
 NODE ID    URL                                  LAST HEARTBEAT
-myNodeId   http://myNetworkInternalHost:58231   8s ago
+myNodeId   http://myNetworkInternalHost:11337   8s ago
 ```
 
 For well configured nodes, the following must be present
@@ -88,7 +88,7 @@ Here is how a suboptimally configured node looks like:
 ```sh
 $ oo nodes lis
 NODE ID           URL                         LAST HEARTBEAT
-node_eIfnt9CGJV   http://127.0.0.1:58231      8s ago
+node_eIfnt9CGJV   http://127.0.0.1:11337      8s ago
 ```
 
 For single node setups that can work, but not if you plan to use distributed features.

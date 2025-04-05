@@ -37,7 +37,7 @@ import (
 // @license.name  AGPL v3.0
 // @license.url   https://www.gnu.org/licenses/agpl-3.0.html
 
-// @host      localhost:58231
+// @host      localhost:11337
 // @BasePath  /
 
 // @securityDefinitions.apikey BearerAuth

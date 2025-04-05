@@ -172,17 +172,16 @@ export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';
 export * from './userSvcCreateUserRequest';
 export * from './userSvcErrorResponse';
-export * from './userSvcGetPermissionsResponse';
 export * from './userSvcGetPublicKeyResponse';
 export * from './userSvcGrant';
+export * from './userSvcHasPermissionRequest';
+export * from './userSvcHasPermissionResponse';
 export * from './userSvcInvite';
-export * from './userSvcIsAuthorizedRequest';
-export * from './userSvcIsAuthorizedResponse';
 export * from './userSvcListGrantsRequest';
 export * from './userSvcListGrantsResponse';
 export * from './userSvcListInvitesRequest';
 export * from './userSvcListInvitesResponse';
-export * from './userSvcListRolesResponse';
+export * from './userSvcListPermissionsResponse';
 export * from './userSvcListUsersRequest';
 export * from './userSvcListUsersResponse';
 export * from './userSvcLoginRequest';
@@ -388,17 +387,16 @@ import { UserSvcChangePasswordRequest } from './userSvcChangePasswordRequest';
 import { UserSvcContact } from './userSvcContact';
 import { UserSvcCreateUserRequest } from './userSvcCreateUserRequest';
 import { UserSvcErrorResponse } from './userSvcErrorResponse';
-import { UserSvcGetPermissionsResponse } from './userSvcGetPermissionsResponse';
 import { UserSvcGetPublicKeyResponse } from './userSvcGetPublicKeyResponse';
 import { UserSvcGrant } from './userSvcGrant';
+import { UserSvcHasPermissionRequest } from './userSvcHasPermissionRequest';
+import { UserSvcHasPermissionResponse } from './userSvcHasPermissionResponse';
 import { UserSvcInvite } from './userSvcInvite';
-import { UserSvcIsAuthorizedRequest } from './userSvcIsAuthorizedRequest';
-import { UserSvcIsAuthorizedResponse } from './userSvcIsAuthorizedResponse';
 import { UserSvcListGrantsRequest } from './userSvcListGrantsRequest';
 import { UserSvcListGrantsResponse } from './userSvcListGrantsResponse';
 import { UserSvcListInvitesRequest } from './userSvcListInvitesRequest';
 import { UserSvcListInvitesResponse } from './userSvcListInvitesResponse';
-import { UserSvcListRolesResponse } from './userSvcListRolesResponse';
+import { UserSvcListPermissionsResponse } from './userSvcListPermissionsResponse';
 import { UserSvcListUsersRequest } from './userSvcListUsersRequest';
 import { UserSvcListUsersResponse } from './userSvcListUsersResponse';
 import { UserSvcLoginRequest } from './userSvcLoginRequest';
@@ -607,17 +605,16 @@ let typeMap: {[index: string]: any} = {
     "UserSvcContact": UserSvcContact,
     "UserSvcCreateUserRequest": UserSvcCreateUserRequest,
     "UserSvcErrorResponse": UserSvcErrorResponse,
-    "UserSvcGetPermissionsResponse": UserSvcGetPermissionsResponse,
     "UserSvcGetPublicKeyResponse": UserSvcGetPublicKeyResponse,
     "UserSvcGrant": UserSvcGrant,
+    "UserSvcHasPermissionRequest": UserSvcHasPermissionRequest,
+    "UserSvcHasPermissionResponse": UserSvcHasPermissionResponse,
     "UserSvcInvite": UserSvcInvite,
-    "UserSvcIsAuthorizedRequest": UserSvcIsAuthorizedRequest,
-    "UserSvcIsAuthorizedResponse": UserSvcIsAuthorizedResponse,
     "UserSvcListGrantsRequest": UserSvcListGrantsRequest,
     "UserSvcListGrantsResponse": UserSvcListGrantsResponse,
     "UserSvcListInvitesRequest": UserSvcListInvitesRequest,
     "UserSvcListInvitesResponse": UserSvcListInvitesResponse,
-    "UserSvcListRolesResponse": UserSvcListRolesResponse,
+    "UserSvcListPermissionsResponse": UserSvcListPermissionsResponse,
     "UserSvcListUsersRequest": UserSvcListUsersRequest,
     "UserSvcListUsersResponse": UserSvcListUsersResponse,
     "UserSvcLoginRequest": UserSvcLoginRequest,

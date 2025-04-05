@@ -30,8 +30,8 @@ func (rs *RegistryService) DeleteDefinition(
 ) {
 
 	isAuthRsp, _, err := rs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.IsAuthorized(r.Context(), registry.PermissionDefinitionDelete).
-		Body(openapi.UserSvcIsAuthorizedRequest{
+		UserSvcAPI.HasPermission(r.Context(), registry.PermissionDefinitionDelete).
+		Body(openapi.UserSvcHasPermissionRequest{
 			GrantedSlugs: []string{"deploy-svc"},
 		}).
 		Execute()

@@ -75,7 +75,7 @@ ctx = context.WithValue(context.Background(), openapi.ContextOperationServerVari
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://localhost:58231*
+All URIs are relative to *http://localhost:11337*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------

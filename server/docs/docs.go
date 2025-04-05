@@ -4531,14 +4531,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/user-svc/permission/{permission}/is-authorized": {
+        "/user-svc/permissions": {
             "post": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Verify whether a user has a specific permission.\nIdeally, this endpoint should rarely be used, as the JWT token\nalready includes all user roles. Caching the ` + "`" + `Get Permissions by Role` + "`" + `\nresponses allows services to determine user authorization\nwithout repeatedly calling this endpoint.",
+                "description": "Retrieve permissions by roles.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4548,42 +4548,40 @@ const docTemplate = `{
                 "tags": [
                     "User Svc"
                 ],
-                "summary": "Is Authorized",
-                "operationId": "isAuthorized",
+                "summary": "List Permissions",
+                "operationId": "listPermissions",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Permission ID",
-                        "name": "permission",
+                        "description": "Role ID",
+                        "name": "roleId",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "description": "Is Authorized Request",
-                        "name": "body",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.IsAuthorizedRequest"
-                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.IsAuthorizedResponse"
+                            "$ref": "#/definitions/user_svc.ListPermissionsResponse"
                         }
                     },
                     "400": {
-                        "description": "Invalid JSON or missing permission id",
+                        "description": "Invalid JSON",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                            "type": "string"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
@@ -4667,103 +4665,6 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-svc/role/{roleId}/permissions": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retrieve permissions associated with a specific role ID.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User Svc"
-                ],
-                "summary": "Get Permissions by Role",
-                "operationId": "getPermissionsByRole",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Role ID",
-                        "name": "roleId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.GetPermissionsResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid JSON",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-svc/roles": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retrieve all roles from the user service.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User Svc"
-                ],
-                "summary": "List Roles",
-                "operationId": "listRoles",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ListRolesResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
                         }
                     }
                 }
@@ -4879,6 +4780,64 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user-svc/self/has/{permission}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Check whether the caller user has a specific permission.\nIdeally, this endpoint should rarely be used, as the JWT token\nalready includes all user roles. Caching the ` + "`" + `List Permissions` + "`" + ` and ` + "`" + `List Grants` + "`" + `\nresponses allows services to determine user authorization\nwithout repeatedly calling this endpoint.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Svc"
+                ],
+                "summary": "Has Permission",
+                "operationId": "hasPermission",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Permission",
+                        "name": "permission",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Is Authorized Request",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.HasPermissionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.HasPermissionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON or missing permission id",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
                         }
@@ -9084,17 +9043,6 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.GetPermissionsResponse": {
-            "type": "object",
-            "properties": {
-                "permissions": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
         "user_svc.GetPublicKeyResponse": {
             "type": "object",
             "required": [
@@ -9131,6 +9079,34 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "user_svc.HasPermissionRequest": {
+            "type": "object",
+            "properties": {
+                "contactsGranted": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "grantedSlugs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "user_svc.HasPermissionResponse": {
+            "type": "object",
+            "properties": {
+                "authorized": {
+                    "type": "boolean"
+                },
+                "user": {
+                    "$ref": "#/definitions/user_svc.User"
                 }
             }
         },
@@ -9177,34 +9153,6 @@ const docTemplate = `{
                 },
                 "updatedAt": {
                     "type": "string"
-                }
-            }
-        },
-        "user_svc.IsAuthorizedRequest": {
-            "type": "object",
-            "properties": {
-                "contactsGranted": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "grantedSlugs": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "user_svc.IsAuthorizedResponse": {
-            "type": "object",
-            "properties": {
-                "authorized": {
-                    "type": "boolean"
-                },
-                "user": {
-                    "$ref": "#/definitions/user_svc.User"
                 }
             }
         },
@@ -9255,10 +9203,10 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.ListRolesResponse": {
+        "user_svc.ListPermissionsResponse": {
             "type": "object",
             "properties": {
-                "roles": {
+                "permissions": {
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -9658,8 +9606,8 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.3.0-rc.32",
-	Host:             "localhost:58231",
+	Version:          "0.3.0-rc.33",
+	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "1Backend",

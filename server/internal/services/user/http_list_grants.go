@@ -41,7 +41,7 @@ func (s *UserService) ListGrants(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	_, isAuthorized, err := s.isAuthorized(r, user.PermissionRoleView, nil, nil)
+	_, isAuthorized, err := s.hasPermission(r, user.PermissionRoleView, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

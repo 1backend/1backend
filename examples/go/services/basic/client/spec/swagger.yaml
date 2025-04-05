@@ -33,7 +33,7 @@ definitions:
     type: object
   basic_svc.SavePetResponse:
     type: object
-host: localhost:58231
+host: localhost:11337
 info:
   contact:
     email: sales@singulatron.com
