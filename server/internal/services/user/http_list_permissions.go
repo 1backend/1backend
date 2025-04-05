@@ -22,7 +22,7 @@ import (
 
 // @ID listPermissions
 // @Summary List Permissions
-// @Description Retrieve permissions by roles.
+// @Description Retrieve permissions by roles. Caller can only list permissions for roles they have.
 // @Tags User Svc
 // @Accept  json
 // @Produce  json

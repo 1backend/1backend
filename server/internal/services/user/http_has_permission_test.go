@@ -47,7 +47,7 @@ func TestGrantsBySlug(t *testing.T) {
 
 	ctx := context.Background()
 
-	_, _, err = userClient.UserSvcAPI.ListRoles(ctx).Execute()
+	_, _, err = userClient.UserSvcAPI.ListUsers(ctx).Execute()
 	require.Error(t, err)
 
 	adminClient, _, err := test.AdminClient(clientFactory)
@@ -57,15 +57,15 @@ func TestGrantsBySlug(t *testing.T) {
 		Grants: []openapi.UserSvcGrant{
 			{
 				Slugs:      []string{"someuser"},
-				Permission: user_svc.PermissionRoleView,
+				Permission: user_svc.PermissionUserView,
 			},
 		},
 	}).Execute()
 	require.NoError(t, err)
 
-	rsp, _, err := userClient.UserSvcAPI.ListRoles(ctx).Execute()
+	rsp, _, err := userClient.UserSvcAPI.ListUsers(ctx).Execute()
 	require.NoError(t, err)
-	require.Equal(t, 2, len(rsp.Roles), rsp.Roles)
+	require.NotEmpty(t, len(rsp.Users))
 }
 
 func TestGrantsByRoleId(t *testing.T) {
@@ -90,7 +90,7 @@ func TestGrantsByRoleId(t *testing.T) {
 
 	ctx := context.Background()
 
-	_, _, err = userClient.UserSvcAPI.ListRoles(ctx).Execute()
+	_, _, err = userClient.UserSvcAPI.ListUsers(ctx).Execute()
 	require.Error(t, err)
 
 	adminClient, _, err := test.AdminClient(clientFactory)
@@ -100,13 +100,13 @@ func TestGrantsByRoleId(t *testing.T) {
 		Grants: []openapi.UserSvcGrant{
 			{
 				Roles:      []string{"user-svc:user"},
-				Permission: user_svc.PermissionRoleView,
+				Permission: user_svc.PermissionUserView,
 			},
 		},
 	}).Execute()
 	require.NoError(t, err)
 
-	rsp, _, err := userClient.UserSvcAPI.ListRoles(ctx).Execute()
+	rsp, _, err := userClient.UserSvcAPI.ListUsers(ctx).Execute()
 	require.NoError(t, err)
-	require.Equal(t, 2, len(rsp.Roles))
+	require.NotEmpty(t, len(rsp.Users))
 }
