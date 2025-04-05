@@ -758,10 +758,6 @@ func BigBang(options *Options) (*Universe, error) {
 		userService.ListPermissions(w, r)
 	})).
 		Methods("OPTIONS", "POST")
-	router.HandleFunc("/user-svc/user/{userId}/role/{role}", appl(func(w http.ResponseWriter, r *http.Request) {
-		userService.AssignRole(w, r)
-	})).
-		Methods("OPTIONS", "PUT")
 	router.HandleFunc("/user-svc/register", appl(func(w http.ResponseWriter, r *http.Request) {
 		userService.Register(w, r)
 	})).

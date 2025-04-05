@@ -56,7 +56,7 @@ func (s *UserService) ListPermissions(
 		return
 	}
 	rolesIndex := map[string]bool{}
-	for _, role := range claim.RoleIds {
+	for _, role := range claim.Roles {
 		rolesIndex[role] = true
 	}
 	for _, role := range req.Roles {

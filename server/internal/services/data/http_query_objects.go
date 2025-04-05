@@ -83,7 +83,7 @@ func (g *DataService) Query(
 	}
 
 	identifiers := append(
-		claims.RoleIds,
+		claims.Roles,
 		[]string{isAuthRsp.User.Id, data.AnyIdentifier}...)
 
 	allowedReaders := identifiers

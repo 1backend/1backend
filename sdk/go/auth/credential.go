@@ -22,9 +22,9 @@ import (
 )
 
 type Claims struct {
-	UserId  string   `json:"oui,omitempty"` // `oui`: 1backend user ids
-	Slug    string   `json:"olu,omitempty"` // `olu`: 1backend slug
-	RoleIds []string `json:"ori,omitempty"` // `ori`: 1backend role ids
+	UserId string   `json:"oui,omitempty"` // `oui`: 1backend user ids
+	Slug   string   `json:"olu,omitempty"` // `olu`: 1backend slug
+	Roles  []string `json:"ori,omitempty"` // `ori`: 1backend role ids
 
 	// Organization IDs are already included within role IDs
 	// (e.g., `user-svc:org:{org_dBZRCej3fo}:admin`).
