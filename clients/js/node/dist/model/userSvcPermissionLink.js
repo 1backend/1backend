@@ -9,13 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export class UserSvcPermissionLink {
+export class UserSvcGrant {
     static getAttributeTypeMap() {
-        return UserSvcPermissionLink.attributeTypeMap;
+        return UserSvcGrant.attributeTypeMap;
     }
 }
-UserSvcPermissionLink.discriminator = undefined;
-UserSvcPermissionLink.attributeTypeMap = [
+UserSvcGrant.discriminator = undefined;
+UserSvcGrant.attributeTypeMap = [
     {
         "name": "permission",
         "baseName": "permission",

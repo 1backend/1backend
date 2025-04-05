@@ -15,7 +15,7 @@ import localVarRequest from 'request';
 import http from 'http';
 
 /* tslint:disable:no-unused-locals */
-import { UserSvcAssignPermissionsRequest } from '../model/userSvcAssignPermissionsRequest';
+import { UserSvcSaveGrantsRequest } from '../model/userSvcSaveGrantsRequest';
 import { UserSvcChangePasswordRequest } from '../model/userSvcChangePasswordRequest';
 import { UserSvcCreateUserRequest } from '../model/userSvcCreateUserRequest';
 import { UserSvcErrorResponse } from '../model/userSvcErrorResponse';
@@ -200,7 +200,7 @@ export class UserSvcApi {
      * @summary Assign Permissions
      * @param body Assign Permissions Request
      */
-    public async assignPermissions (body: UserSvcAssignPermissionsRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: object;  }> {
+    public async assignPermissions (body: UserSvcSaveGrantsRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: object;  }> {
         const localVarPath = this.basePath + '/user-svc/roles/permissions';
         let localVarQueryParameters: any = {};
         let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
@@ -229,7 +229,7 @@ export class UserSvcApi {
             uri: localVarPath,
             useQuerystring: this._useQuerystring,
             json: true,
-            body: ObjectSerializer.serialize(body, "UserSvcAssignPermissionsRequest")
+            body: ObjectSerializer.serialize(body, "UserSvcSaveGrantsRequest")
         };
 
         let authenticationPromise = Promise.resolve();

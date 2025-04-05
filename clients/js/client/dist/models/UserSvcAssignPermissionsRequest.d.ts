@@ -9,25 +9,25 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import type { UserSvcPermissionLink } from './UserSvcPermissionLink';
+import type { UserSvcGrant } from './UserSvcGrant';
 /**
  *
  * @export
- * @interface UserSvcAssignPermissionsRequest
+ * @interface UserSvcSaveGrantsRequest
  */
-export interface UserSvcAssignPermissionsRequest {
+export interface UserSvcSaveGrantsRequest {
     /**
      *
-     * @type {Array<UserSvcPermissionLink>}
-     * @memberof UserSvcAssignPermissionsRequest
+     * @type {Array<UserSvcGrant>}
+     * @memberof UserSvcSaveGrantsRequest
      */
-    permissionLinks?: Array<UserSvcPermissionLink>;
+    permissionLinks?: Array<UserSvcGrant>;
 }
 /**
- * Check if a given object implements the UserSvcAssignPermissionsRequest interface.
+ * Check if a given object implements the UserSvcSaveGrantsRequest interface.
  */
-export declare function instanceOfUserSvcAssignPermissionsRequest(value: object): value is UserSvcAssignPermissionsRequest;
-export declare function UserSvcAssignPermissionsRequestFromJSON(json: any): UserSvcAssignPermissionsRequest;
-export declare function UserSvcAssignPermissionsRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcAssignPermissionsRequest;
-export declare function UserSvcAssignPermissionsRequestToJSON(json: any): UserSvcAssignPermissionsRequest;
-export declare function UserSvcAssignPermissionsRequestToJSONTyped(value?: UserSvcAssignPermissionsRequest | null, ignoreDiscriminator?: boolean): any;
+export declare function instanceOfUserSvcSaveGrantsRequest(value: object): value is UserSvcSaveGrantsRequest;
+export declare function UserSvcSaveGrantsRequestFromJSON(json: any): UserSvcSaveGrantsRequest;
+export declare function UserSvcSaveGrantsRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcSaveGrantsRequest;
+export declare function UserSvcSaveGrantsRequestToJSON(json: any): UserSvcSaveGrantsRequest;
+export declare function UserSvcSaveGrantsRequestToJSONTyped(value?: UserSvcSaveGrantsRequest | null, ignoreDiscriminator?: boolean): any;

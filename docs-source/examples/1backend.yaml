@@ -2665,14 +2665,14 @@ definitions:
     type: object
   user_svc.AddUserToOrganizationResponse:
     type: object
-  user_svc.AssignPermissionsRequest:
+  user_svc.SaveGrantsRequest:
     properties:
       permissionLinks:
         items:
           $ref: '#/definitions/user_svc.PermissionLink'
         type: array
     type: object
-  user_svc.AssignPermissionsResponse:
+  user_svc.SaveGrantsResponse:
     type: object
   user_svc.AuthToken:
     properties:
@@ -6430,14 +6430,14 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/user_svc.AssignPermissionsRequest'
+          $ref: '#/definitions/user_svc.SaveGrantsRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Assign Permissions successfully
           schema:
-            $ref: '#/definitions/user_svc.AssignPermissionsResponse'
+            $ref: '#/definitions/user_svc.SaveGrantsResponse'
         "401":
           description: Unauthorized
           schema:

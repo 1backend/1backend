@@ -166,7 +166,7 @@ export * from './sourceSvcCheckoutRepoRequest';
 export * from './sourceSvcCheckoutRepoResponse';
 export * from './sourceSvcErrorResponse';
 export * from './stableDiffusionTxt2ImgRequest';
-export * from './userSvcAssignPermissionsRequest';
+export * from './userSvcSaveGrantsRequest';
 export * from './userSvcAuthToken';
 export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';
@@ -381,7 +381,7 @@ import { SourceSvcCheckoutRepoRequest } from './sourceSvcCheckoutRepoRequest';
 import { SourceSvcCheckoutRepoResponse } from './sourceSvcCheckoutRepoResponse';
 import { SourceSvcErrorResponse } from './sourceSvcErrorResponse';
 import { StableDiffusionTxt2ImgRequest } from './stableDiffusionTxt2ImgRequest';
-import { UserSvcAssignPermissionsRequest } from './userSvcAssignPermissionsRequest';
+import { UserSvcSaveGrantsRequest } from './userSvcSaveGrantsRequest';
 import { UserSvcAuthToken } from './userSvcAuthToken';
 import { UserSvcChangePasswordRequest } from './userSvcChangePasswordRequest';
 import { UserSvcContact } from './userSvcContact';
@@ -403,7 +403,7 @@ import { UserSvcLoginRequest } from './userSvcLoginRequest';
 import { UserSvcLoginResponse } from './userSvcLoginResponse';
 import { UserSvcNewInvite } from './userSvcNewInvite';
 import { UserSvcOrganization } from './userSvcOrganization';
-import { UserSvcPermissionLink } from './userSvcPermissionLink';
+import { UserSvcGrant } from './userSvcPermissionLink';
 import { UserSvcReadUserByTokenResponse } from './userSvcReadUserByTokenResponse';
 import { UserSvcRegisterRequest } from './userSvcRegisterRequest';
 import { UserSvcRegisterResponse } from './userSvcRegisterResponse';
@@ -599,7 +599,7 @@ let typeMap: {[index: string]: any} = {
     "SourceSvcCheckoutRepoResponse": SourceSvcCheckoutRepoResponse,
     "SourceSvcErrorResponse": SourceSvcErrorResponse,
     "StableDiffusionTxt2ImgRequest": StableDiffusionTxt2ImgRequest,
-    "UserSvcAssignPermissionsRequest": UserSvcAssignPermissionsRequest,
+    "UserSvcSaveGrantsRequest": UserSvcSaveGrantsRequest,
     "UserSvcAuthToken": UserSvcAuthToken,
     "UserSvcChangePasswordRequest": UserSvcChangePasswordRequest,
     "UserSvcContact": UserSvcContact,
@@ -621,7 +621,7 @@ let typeMap: {[index: string]: any} = {
     "UserSvcLoginResponse": UserSvcLoginResponse,
     "UserSvcNewInvite": UserSvcNewInvite,
     "UserSvcOrganization": UserSvcOrganization,
-    "UserSvcPermissionLink": UserSvcPermissionLink,
+    "UserSvcGrant": UserSvcGrant,
     "UserSvcReadUserByTokenResponse": UserSvcReadUserByTokenResponse,
     "UserSvcRegisterRequest": UserSvcRegisterRequest,
     "UserSvcRegisterResponse": UserSvcRegisterResponse,

@@ -12,19 +12,19 @@
  * Do not edit the class manually.
  */
 /**
- * Check if a given object implements the UserSvcPermissionLink interface.
+ * Check if a given object implements the UserSvcGrant interface.
  */
-export function instanceOfUserSvcPermissionLink(value) {
+export function instanceOfUserSvcGrant(value) {
     if (!('permission' in value) || value['permission'] === undefined)
         return false;
     if (!('role' in value) || value['role'] === undefined)
         return false;
     return true;
 }
-export function UserSvcPermissionLinkFromJSON(json) {
-    return UserSvcPermissionLinkFromJSONTyped(json, false);
+export function UserSvcGrantFromJSON(json) {
+    return UserSvcGrantFromJSONTyped(json, false);
 }
-export function UserSvcPermissionLinkFromJSONTyped(json, ignoreDiscriminator) {
+export function UserSvcGrantFromJSONTyped(json, ignoreDiscriminator) {
     if (json == null) {
         return json;
     }
@@ -33,10 +33,10 @@ export function UserSvcPermissionLinkFromJSONTyped(json, ignoreDiscriminator) {
         'role': json['role'],
     };
 }
-export function UserSvcPermissionLinkToJSON(json) {
-    return UserSvcPermissionLinkToJSONTyped(json, false);
+export function UserSvcGrantToJSON(json) {
+    return UserSvcGrantToJSONTyped(json, false);
 }
-export function UserSvcPermissionLinkToJSONTyped(value, ignoreDiscriminator = false) {
+export function UserSvcGrantToJSONTyped(value, ignoreDiscriminator = false) {
     if (value == null) {
         return value;
     }

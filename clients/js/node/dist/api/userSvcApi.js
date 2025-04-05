@@ -186,7 +186,7 @@ export class UserSvcApi {
                 uri: localVarPath,
                 useQuerystring: this._useQuerystring,
                 json: true,
-                body: ObjectSerializer.serialize(body, "UserSvcAssignPermissionsRequest")
+                body: ObjectSerializer.serialize(body, "UserSvcSaveGrantsRequest")
             };
             let authenticationPromise = Promise.resolve();
             if (this.authentications.BearerAuth.apiKey) {

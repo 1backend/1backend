@@ -153,7 +153,6 @@ Class | Method | HTTP request | Description
 *SecretSvcAPI* | [**SaveSecrets**](docs/SecretSvcAPI.md#savesecrets) | **Put** /secret-svc/secrets | Save Secrets
 *SourceSvcAPI* | [**CheckoutRepo**](docs/SourceSvcAPI.md#checkoutrepo) | **Post** /source-svc/repo/checkout | Checkout a git repository
 *UserSvcAPI* | [**AddUserToOrganization**](docs/UserSvcAPI.md#addusertoorganization) | **Put** /user-svc/organization/{organizationId}/user/{userId} | Add a User to an Organization
-*UserSvcAPI* | [**AssignPermissions**](docs/UserSvcAPI.md#assignpermissions) | **Put** /user-svc/roles/permissions | Assign Permissions
 *UserSvcAPI* | [**AssignRole**](docs/UserSvcAPI.md#assignrole) | **Put** /user-svc/user/{userId}/role/{role} | Assign Role
 *UserSvcAPI* | [**ChangePassword**](docs/UserSvcAPI.md#changepassword) | **Post** /user-svc/change-password | Change User Password
 *UserSvcAPI* | [**CreateUser**](docs/UserSvcAPI.md#createuser) | **Post** /user-svc/user | Create a New User
@@ -344,7 +343,6 @@ Class | Method | HTTP request | Description
  - [SourceSvcCheckoutRepoResponse](docs/SourceSvcCheckoutRepoResponse.md)
  - [SourceSvcErrorResponse](docs/SourceSvcErrorResponse.md)
  - [StableDiffusionTxt2ImgRequest](docs/StableDiffusionTxt2ImgRequest.md)
- - [UserSvcAssignPermissionsRequest](docs/UserSvcAssignPermissionsRequest.md)
  - [UserSvcAuthToken](docs/UserSvcAuthToken.md)
  - [UserSvcChangePasswordRequest](docs/UserSvcChangePasswordRequest.md)
  - [UserSvcContact](docs/UserSvcContact.md)
@@ -366,7 +364,6 @@ Class | Method | HTTP request | Description
  - [UserSvcLoginResponse](docs/UserSvcLoginResponse.md)
  - [UserSvcNewInvite](docs/UserSvcNewInvite.md)
  - [UserSvcOrganization](docs/UserSvcOrganization.md)
- - [UserSvcPermissionLink](docs/UserSvcPermissionLink.md)
  - [UserSvcReadUserByTokenResponse](docs/UserSvcReadUserByTokenResponse.md)
  - [UserSvcRegisterRequest](docs/UserSvcRegisterRequest.md)
  - [UserSvcRegisterResponse](docs/UserSvcRegisterResponse.md)

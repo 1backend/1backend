@@ -4053,7 +4053,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Save grants.\n\nGrants define which slugs are assigned specific permissions, overriding the default configuration.\n\nRequires the ` + "`" + `user-svc:grant:create` + "`" + ` permission.",
+                "description": "Save grants. // @Description Grants give access to users with certain slugs and roles to permissions.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4109,7 +4109,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "List grants.\n\nGrants define which slugs are assigned specific permissions, overriding the default configuration.\n\nRequires the ` + "`" + `user-svc:grant:view` + "`" + ` permission.",
+                "description": "Grants give access to users with certain slugs and roles to permissions.\nUsers can list grants for permissions they have access to\nbut they will only see grants the grant refers to their slug or one of their roles.\n(This is to prevent users from seeing grants for other users.)",
                 "consumes": [
                     "application/json"
                 ],
@@ -4538,7 +4538,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Retrieve permissions by roles.",
+                "description": "Retrieve permissions by roles. Caller can only list permissions for roles they have.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4657,58 +4657,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Invalid JSON",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-svc/roles/permissions": {
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Assign permissions to roles.\n\nRequires the ` + "`" + `user-svc:permission:assign` + "`" + ` permission.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User Svc"
-                ],
-                "summary": "Assign Permissions",
-                "operationId": "assignPermissions",
-                "parameters": [
-                    {
-                        "description": "Assign Permissions Request",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.AssignPermissionsRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Assign Permissions successfully",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.AssignPermissionsResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
                         }
@@ -8892,20 +8840,6 @@ const docTemplate = `{
         "user_svc.AddUserToOrganizationResponse": {
             "type": "object"
         },
-        "user_svc.AssignPermissionsRequest": {
-            "type": "object",
-            "properties": {
-                "permissionLinks": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/user_svc.PermissionLink"
-                    }
-                }
-            }
-        },
-        "user_svc.AssignPermissionsResponse": {
-            "type": "object"
-        },
         "user_svc.AssignRoleRequest": {
             "type": "object"
         },
@@ -9323,21 +9257,6 @@ const docTemplate = `{
                     "example": "file_fQDxusW8og"
                 },
                 "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
-        "user_svc.PermissionLink": {
-            "type": "object",
-            "required": [
-                "permission",
-                "role"
-            ],
-            "properties": {
-                "permission": {
-                    "type": "string"
-                },
-                "role": {
                     "type": "string"
                 }
             }

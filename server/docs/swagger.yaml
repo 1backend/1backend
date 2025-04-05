@@ -2661,15 +2661,6 @@ definitions:
     type: object
   user_svc.AddUserToOrganizationResponse:
     type: object
-  user_svc.AssignPermissionsRequest:
-    properties:
-      permissionLinks:
-        items:
-          $ref: '#/definitions/user_svc.PermissionLink'
-        type: array
-    type: object
-  user_svc.AssignPermissionsResponse:
-    type: object
   user_svc.AssignRoleRequest:
     type: object
   user_svc.AssignRoleResponse:
@@ -2798,7 +2789,7 @@ definitions:
           Originally, grants were designed for slugs to facilitate service-to-service calls.
           Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.
 
-          Alternatively, permissions can be assigned to roles using UserSvc.AssignPermissions.
+          Alternatively, permissions can be assigned to roles using UserSvc.SaveGrants.
           Grants currently offer a more streamlined approach, though this may evolve over time.
         items:
           type: string
@@ -2986,16 +2977,6 @@ definitions:
     - id
     - name
     - slug
-    type: object
-  user_svc.PermissionLink:
-    properties:
-      permission:
-        type: string
-      role:
-        type: string
-    required:
-    - permission
-    - role
     type: object
   user_svc.ReadUserByTokenResponse:
     properties:
@@ -5910,11 +5891,10 @@ paths:
       consumes:
       - application/json
       description: |-
-        List grants.
-
-        Grants define which slugs are assigned specific permissions, overriding the default configuration.
-
-        Requires the `user-svc:grant:view` permission.
+        Grants give access to users with certain slugs and roles to permissions.
+        Users can list grants for permissions they have access to
+        but they will only see grants the grant refers to their slug or one of their roles.
+        (This is to prevent users from seeing grants for other users.)
       operationId: listGrants
       parameters:
       - description: List Grants Request
@@ -5946,12 +5926,8 @@ paths:
     put:
       consumes:
       - application/json
-      description: |-
-        Save grants.
-
-        Grants define which slugs are assigned specific permissions, overriding the default configuration.
-
-        Requires the `user-svc:grant:create` permission.
+      description: Save grants. // @Description Grants give access to users with certain
+        slugs and roles to permissions.
       operationId: saveGrants
       parameters:
       - description: Save Grants Request
@@ -6248,7 +6224,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Retrieve permissions by roles.
+      description: Retrieve permissions by roles. Caller can only list permissions
+        for roles they have.
       operationId: listPermissions
       parameters:
       - description: Role ID
@@ -6333,42 +6310,6 @@ paths:
           schema:
             $ref: '#/definitions/user_svc.ErrorResponse'
       summary: Register
-      tags:
-      - User Svc
-  /user-svc/roles/permissions:
-    put:
-      consumes:
-      - application/json
-      description: |-
-        Assign permissions to roles.
-
-        Requires the `user-svc:permission:assign` permission.
-      operationId: assignPermissions
-      parameters:
-      - description: Assign Permissions Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/user_svc.AssignPermissionsRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Assign Permissions successfully
-          schema:
-            $ref: '#/definitions/user_svc.AssignPermissionsResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Assign Permissions
       tags:
       - User Svc
   /user-svc/self:

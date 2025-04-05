@@ -9,7 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export declare class UserSvcPermissionLink {
+export declare class UserSvcGrant {
     'permission': string;
     'role': string;
     static discriminator: string | undefined;

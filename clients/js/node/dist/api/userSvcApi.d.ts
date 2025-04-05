@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 import http from 'http';
-import { UserSvcAssignPermissionsRequest } from '../model/userSvcAssignPermissionsRequest';
+import { UserSvcSaveGrantsRequest } from '../model/userSvcSaveGrantsRequest';
 import { UserSvcChangePasswordRequest } from '../model/userSvcChangePasswordRequest';
 import { UserSvcCreateUserRequest } from '../model/userSvcCreateUserRequest';
 import { UserSvcGetPublicKeyResponse } from '../model/userSvcGetPublicKeyResponse';
@@ -78,7 +78,7 @@ export declare class UserSvcApi {
      * @summary Assign Permissions
      * @param body Assign Permissions Request
      */
-    assignPermissions(body: UserSvcAssignPermissionsRequest, options?: {
+    assignPermissions(body: UserSvcSaveGrantsRequest, options?: {
         headers: {
             [name: string]: string;
         };

@@ -12,7 +12,7 @@
 
 import { RequestFile } from './models';
 
-export class UserSvcPermissionLink {
+export class UserSvcGrant {
     'permission': string;
     'role': string;
 
@@ -31,7 +31,7 @@ export class UserSvcPermissionLink {
         }    ];
 
     static getAttributeTypeMap() {
-        return UserSvcPermissionLink.attributeTypeMap;
+        return UserSvcGrant.attributeTypeMap;
     }
 }
 

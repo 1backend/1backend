@@ -9,9 +9,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UserSvcPermissionLink } from './userSvcPermissionLink';
-export declare class UserSvcAssignPermissionsRequest {
-    'permissionLinks'?: Array<UserSvcPermissionLink>;
+import { UserSvcGrant } from './userSvcPermissionLink';
+export declare class UserSvcSaveGrantsRequest {
+    'permissionLinks'?: Array<UserSvcGrant>;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

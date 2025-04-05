@@ -16,37 +16,37 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface UserSvcPermissionLink
+ * @interface UserSvcGrant
  */
-export interface UserSvcPermissionLink {
+export interface UserSvcGrant {
     /**
      * 
      * @type {string}
-     * @memberof UserSvcPermissionLink
+     * @memberof UserSvcGrant
      */
     permission: string;
     /**
      * 
      * @type {string}
-     * @memberof UserSvcPermissionLink
+     * @memberof UserSvcGrant
      */
     role: string;
 }
 
 /**
- * Check if a given object implements the UserSvcPermissionLink interface.
+ * Check if a given object implements the UserSvcGrant interface.
  */
-export function instanceOfUserSvcPermissionLink(value: object): value is UserSvcPermissionLink {
+export function instanceOfUserSvcGrant(value: object): value is UserSvcGrant {
     if (!('permission' in value) || value['permission'] === undefined) return false;
     if (!('role' in value) || value['role'] === undefined) return false;
     return true;
 }
 
-export function UserSvcPermissionLinkFromJSON(json: any): UserSvcPermissionLink {
-    return UserSvcPermissionLinkFromJSONTyped(json, false);
+export function UserSvcGrantFromJSON(json: any): UserSvcGrant {
+    return UserSvcGrantFromJSONTyped(json, false);
 }
 
-export function UserSvcPermissionLinkFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcPermissionLink {
+export function UserSvcGrantFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcGrant {
     if (json == null) {
         return json;
     }
@@ -57,11 +57,11 @@ export function UserSvcPermissionLinkFromJSONTyped(json: any, ignoreDiscriminato
     };
 }
 
-export function UserSvcPermissionLinkToJSON(json: any): UserSvcPermissionLink {
-    return UserSvcPermissionLinkToJSONTyped(json, false);
+export function UserSvcGrantToJSON(json: any): UserSvcGrant {
+    return UserSvcGrantToJSONTyped(json, false);
 }
 
-export function UserSvcPermissionLinkToJSONTyped(value?: UserSvcPermissionLink | null, ignoreDiscriminator: boolean = false): any {
+export function UserSvcGrantToJSONTyped(value?: UserSvcGrant | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

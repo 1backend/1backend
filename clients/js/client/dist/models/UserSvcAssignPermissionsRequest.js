@@ -11,32 +11,32 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UserSvcPermissionLinkFromJSON, UserSvcPermissionLinkToJSON, } from './UserSvcPermissionLink';
+import { UserSvcGrantFromJSON, UserSvcGrantToJSON, } from './UserSvcGrant';
 /**
- * Check if a given object implements the UserSvcAssignPermissionsRequest interface.
+ * Check if a given object implements the UserSvcSaveGrantsRequest interface.
  */
-export function instanceOfUserSvcAssignPermissionsRequest(value) {
+export function instanceOfUserSvcSaveGrantsRequest(value) {
     return true;
 }
-export function UserSvcAssignPermissionsRequestFromJSON(json) {
-    return UserSvcAssignPermissionsRequestFromJSONTyped(json, false);
+export function UserSvcSaveGrantsRequestFromJSON(json) {
+    return UserSvcSaveGrantsRequestFromJSONTyped(json, false);
 }
-export function UserSvcAssignPermissionsRequestFromJSONTyped(json, ignoreDiscriminator) {
+export function UserSvcSaveGrantsRequestFromJSONTyped(json, ignoreDiscriminator) {
     if (json == null) {
         return json;
     }
     return {
-        'permissionLinks': json['permissionLinks'] == null ? undefined : (json['permissionLinks'].map(UserSvcPermissionLinkFromJSON)),
+        'permissionLinks': json['permissionLinks'] == null ? undefined : (json['permissionLinks'].map(UserSvcGrantFromJSON)),
     };
 }
-export function UserSvcAssignPermissionsRequestToJSON(json) {
-    return UserSvcAssignPermissionsRequestToJSONTyped(json, false);
+export function UserSvcSaveGrantsRequestToJSON(json) {
+    return UserSvcSaveGrantsRequestToJSONTyped(json, false);
 }
-export function UserSvcAssignPermissionsRequestToJSONTyped(value, ignoreDiscriminator = false) {
+export function UserSvcSaveGrantsRequestToJSONTyped(value, ignoreDiscriminator = false) {
     if (value == null) {
         return value;
     }
     return {
-        'permissionLinks': value['permissionLinks'] == null ? undefined : (value['permissionLinks'].map(UserSvcPermissionLinkToJSON)),
+        'permissionLinks': value['permissionLinks'] == null ? undefined : (value['permissionLinks'].map(UserSvcGrantToJSON)),
     };
 }

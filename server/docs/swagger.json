@@ -4047,7 +4047,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Save grants.\n\nGrants define which slugs are assigned specific permissions, overriding the default configuration.\n\nRequires the `user-svc:grant:create` permission.",
+                "description": "Save grants. // @Description Grants give access to users with certain slugs and roles to permissions.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4103,7 +4103,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "List grants.\n\nGrants define which slugs are assigned specific permissions, overriding the default configuration.\n\nRequires the `user-svc:grant:view` permission.",
+                "description": "Grants give access to users with certain slugs and roles to permissions.\nUsers can list grants for permissions they have access to\nbut they will only see grants the grant refers to their slug or one of their roles.\n(This is to prevent users from seeing grants for other users.)",
                 "consumes": [
                     "application/json"
                 ],
@@ -4532,7 +4532,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Retrieve permissions by roles.",
+                "description": "Retrieve permissions by roles. Caller can only list permissions for roles they have.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4651,58 +4651,6 @@
                     },
                     "400": {
                         "description": "Invalid JSON",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-svc/roles/permissions": {
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Assign permissions to roles.\n\nRequires the `user-svc:permission:assign` permission.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User Svc"
-                ],
-                "summary": "Assign Permissions",
-                "operationId": "assignPermissions",
-                "parameters": [
-                    {
-                        "description": "Assign Permissions Request",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.AssignPermissionsRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Assign Permissions successfully",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.AssignPermissionsResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
                         }
@@ -8886,20 +8834,6 @@
         "user_svc.AddUserToOrganizationResponse": {
             "type": "object"
         },
-        "user_svc.AssignPermissionsRequest": {
-            "type": "object",
-            "properties": {
-                "permissionLinks": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/user_svc.PermissionLink"
-                    }
-                }
-            }
-        },
-        "user_svc.AssignPermissionsResponse": {
-            "type": "object"
-        },
         "user_svc.AssignRoleRequest": {
             "type": "object"
         },
@@ -9061,7 +8995,7 @@
                     "type": "string"
                 },
                 "roles": {
-                    "description": "Role IDs that have been granted the specified permission.\n\nOriginally, grants were designed for slugs to facilitate service-to-service calls.\nDue to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.\n\nAlternatively, permissions can be assigned to roles using UserSvc.AssignPermissions.\nGrants currently offer a more streamlined approach, though this may evolve over time.",
+                    "description": "Role IDs that have been granted the specified permission.\n\nOriginally, grants were designed for slugs to facilitate service-to-service calls.\nDue to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.\n\nAlternatively, permissions can be assigned to roles using UserSvc.SaveGrants.\nGrants currently offer a more streamlined approach, though this may evolve over time.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -9317,21 +9251,6 @@
                     "example": "file_fQDxusW8og"
                 },
                 "updatedAt": {
-                    "type": "string"
-                }
-            }
-        },
-        "user_svc.PermissionLink": {
-            "type": "object",
-            "required": [
-                "permission",
-                "role"
-            ],
-            "properties": {
-                "permission": {
-                    "type": "string"
-                },
-                "role": {
                     "type": "string"
                 }
             }

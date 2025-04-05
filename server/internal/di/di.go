@@ -766,10 +766,6 @@ func BigBang(options *Options) (*Universe, error) {
 		userService.Register(w, r)
 	})).
 		Methods("OPTIONS", "POST")
-	router.HandleFunc("/user-svc/roles/permissions", appl(func(w http.ResponseWriter, r *http.Request) {
-		userService.AssignPermissions(w, r)
-	})).
-		Methods("OPTIONS", "PUT")
 	router.HandleFunc("/user-svc/public-key", appl(func(w http.ResponseWriter, r *http.Request) {
 		userService.GetPublicKey(w, r)
 	})).

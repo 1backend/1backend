@@ -17,14 +17,6 @@ type HasPermissionResponse struct {
 	User       *User `json:"user,omitempty"`
 }
 
-type CreatePermissionRequest struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
-}
-
-type CreatePermissionResponse struct {
-}
-
 type ListPermissionsRequest struct {
 	Roles []string `json:"roles"`
 }
@@ -32,25 +24,6 @@ type ListPermissionsRequest struct {
 type ListPermissionsResponse struct {
 	Permissions []string `json:"permissions"`
 }
-
-type SavePermissionsRequest struct {
-	Permissions []string `json:"permissions"`
-}
-
-type SavePermissionsResponse struct {
-	Permissions []string `json:"permissions"`
-}
-
-type PermissionLink struct {
-	Role       string `json:"role" binding:"required"`
-	Permission string `json:"permission" binding:"required"`
-}
-
-type AssignPermissionsRequest struct {
-	PermissionLinks []*PermissionLink `json:"permissionLinks"`
-}
-
-type AssignPermissionsResponse struct{}
 
 var (
 	// User Permissions
@@ -60,16 +33,6 @@ var (
 	PermissionUserDelete         = "user-svc:user:delete"
 	PermissionUserPasswordChange = "user-svc:user:passwordChange"
 
-	// Role Permissions
-	PermissionRoleCreate = "user-svc:role:create"
-	PermissionRoleView   = "user-svc:role:view"
-	PermissionRoleEdit   = "user-svc:role:edit"
-	PermissionRoleDelete = "user-svc:role:delete"
-
-	// Permission Permissions
-	PermissionPermissionCreate = "user-svc:permission:create"
-	PermissionPermissionEdit   = "user-svc:permission:edit"
-
 	// Organization Permissions
 	PermissionOrganizationCreate     = "user-svc:organization:create"
 	PermissionOrganizationAddUser    = "user-svc:organization:add-user"
@@ -77,7 +40,6 @@ var (
 
 	// Grant Permissions
 	PermissionGrantCreate = "user-svc:grant:create"
-	PermissionGrantView   = "user-svc:grant:view"
 
 	// Invite Permissions
 	PermissionInviteEdit = "user-svc:invite:edit"
@@ -87,17 +49,7 @@ var (
 var UserPermissions = []string{
 	PermissionUserPasswordChange,
 
-	// Anyone can create and edit their own roles,
-	// provided the role ID is prefixed by the caller's slug.
-	PermissionRoleCreate,
-
-	// Anyone can create and edit their own permissions
-	// given the permission starts with their slug
-	PermissionPermissionCreate,
-	PermissionPermissionEdit,
-
 	// Anyone can create their own organizations and manage users there.
-	// Organization
 	PermissionOrganizationCreate,
 	PermissionOrganizationAddUser,
 	PermissionOrganizationRemoveUser,
@@ -111,15 +63,8 @@ var AdminPermissions = []string{
 	PermissionUserView,
 	PermissionUserEdit,
 	PermissionUserDelete,
-	PermissionRoleCreate,
-	PermissionRoleEdit,
-	PermissionRoleView,
-	PermissionRoleDelete,
-	PermissionPermissionCreate,
-	PermissionPermissionEdit,
 	PermissionOrganizationCreate,
 	PermissionOrganizationAddUser,
 	PermissionOrganizationRemoveUser,
-	PermissionGrantView,
 	PermissionGrantCreate,
 }

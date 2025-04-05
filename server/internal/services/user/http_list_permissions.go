@@ -16,13 +16,15 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 // @ID listPermissions
 // @Summary List Permissions
-// @Description Retrieve permissions by roles. Caller can only list permissions for roles they have.
+// @Description List permissions by roles.
+// @Description Caller can only list permissions for roles they have.
 // @Tags User Svc
 // @Accept  json
 // @Produce  json
@@ -37,20 +39,8 @@ func (s *UserService) ListPermissions(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	_, hasPermission, err := s.hasPermission(r, user.PermissionRoleView, nil, nil)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
-		return
-	}
-	if !hasPermission {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte("Unauthorized"))
-		return
-	}
-
 	req := user.ListPermissionsRequest{}
-	err = json.NewDecoder(r.Body).Decode(&req)
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(`Invalid JSON`))
@@ -58,7 +48,26 @@ func (s *UserService) ListPermissions(
 	}
 	defer r.Body.Close()
 
-	permissions, err := s.getPermissions()
+	authr := auth.AuthorizerImpl{}
+	claim, err := authr.ParseJWTFromRequest(s.publicKeyPem, r)
+	if err != nil || claim == nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte("Unauthorized"))
+		return
+	}
+	rolesIndex := map[string]bool{}
+	for _, role := range claim.RoleIds {
+		rolesIndex[role] = true
+	}
+	for _, role := range req.Roles {
+		if !rolesIndex[role] {
+			w.WriteHeader(http.StatusUnauthorized)
+			w.Write([]byte("Unauthorized"))
+			return
+		}
+	}
+
+	permissions, err := s.listPermissions(req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -71,9 +80,20 @@ func (s *UserService) ListPermissions(
 	w.Write(bs)
 }
 
-func (s *UserService) getPermissions() ([]string, error) {
-	permissionsI, err := s.permissionRoleLinksStore.Query().
-		OrderBy(datastore.OrderByField("createdAt", false)).
+func (s *UserService) listPermissions(
+	request user.ListPermissionsRequest,
+) ([]string, error) {
+	roles := []any{}
+	for _, role := range request.Roles {
+		roles = append(roles, role)
+	}
+
+	permissionsI, err := s.permissionRoleLinksStore.Query(
+		datastore.IsInList([]string{"role"}, roles...),
+	).
+		OrderBy(
+			datastore.OrderByField("createdAt", false),
+		).
 		Find()
 
 	if err != nil {

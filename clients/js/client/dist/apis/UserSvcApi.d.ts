@@ -10,14 +10,14 @@
  * Do not edit the class manually.
  */
 import * as runtime from '../runtime';
-import type { UserSvcAssignPermissionsRequest, UserSvcChangePasswordRequest, UserSvcCreateUserRequest, UserSvcGetPublicKeyResponse, UserSvcHasPermissionRequest, UserSvcHasPermissionResponse, UserSvcListGrantsRequest, UserSvcListGrantsResponse, UserSvcListInvitesRequest, UserSvcListInvitesResponse, UserSvcListPermissionsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveGrantsRequest, UserSvcSaveInvitesRequest, UserSvcSaveInvitesResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSaveProfileRequest } from '../models/index';
+import type { UserSvcSaveGrantsRequest, UserSvcChangePasswordRequest, UserSvcCreateUserRequest, UserSvcGetPublicKeyResponse, UserSvcHasPermissionRequest, UserSvcHasPermissionResponse, UserSvcListGrantsRequest, UserSvcListGrantsResponse, UserSvcListInvitesRequest, UserSvcListInvitesResponse, UserSvcListPermissionsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveGrantsRequest, UserSvcSaveInvitesRequest, UserSvcSaveInvitesResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSaveProfileRequest } from '../models/index';
 export interface AddUserToOrganizationRequest {
     organizationId: string;
     userId: string;
     body?: object;
 }
-export interface AssignPermissionsRequest {
-    body: UserSvcAssignPermissionsRequest;
+export interface SaveGrantsRequest {
+    body: UserSvcSaveGrantsRequest;
 }
 export interface AssignRoleRequest {
     userId: string;
@@ -99,12 +99,12 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      * Assign permissions to roles.  Requires the `user-svc:permission:assign` permission.
      * Assign Permissions
      */
-    assignPermissionsRaw(requestParameters: AssignPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+    assignPermissionsRaw(requestParameters: SaveGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
     /**
      * Assign permissions to roles.  Requires the `user-svc:permission:assign` permission.
      * Assign Permissions
      */
-    assignPermissions(requestParameters: AssignPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+    assignPermissions(requestParameters: SaveGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
      * Assigns a role to a user. The caller can only assign roles they own. A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
      * Assign Role

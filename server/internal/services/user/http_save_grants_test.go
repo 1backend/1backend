@@ -24,7 +24,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/test"
 )
 
-func TestAssignPermissions(t *testing.T) {
+func TestSaveGrants(t *testing.T) {
 	t.Parallel()
 
 	server, err := test.StartService(test.Options{
@@ -56,10 +56,10 @@ func TestAssignPermissions(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("user 1 cannot assign role it does not own", func(t *testing.T) {
-		_, _, err = userClient.UserSvcAPI.AssignPermissions(ctx).Body(openapi.UserSvcAssignPermissionsRequest{
-			PermissionLinks: []openapi.UserSvcPermissionLink{
+		_, _, err = userClient.UserSvcAPI.SaveGrants(ctx).Body(openapi.UserSvcSaveGrantsRequest{
+			Grants: []openapi.UserSvcGrant{
 				{
-					Role:       "user-svc:user",
+					Roles:      []string{"user-svc:user"},
 					Permission: "seconduser:myperm",
 				},
 			},
@@ -69,10 +69,10 @@ func TestAssignPermissions(t *testing.T) {
 	})
 
 	t.Run("user 1 can assign role it owns", func(t *testing.T) {
-		_, _, err = userClient.UserSvcAPI.AssignPermissions(ctx).Body(openapi.UserSvcAssignPermissionsRequest{
-			PermissionLinks: []openapi.UserSvcPermissionLink{
+		_, _, err = userClient.UserSvcAPI.SaveGrants(ctx).Body(openapi.UserSvcSaveGrantsRequest{
+			Grants: []openapi.UserSvcGrant{
 				{
-					Role:       "user-svc:user",
+					Roles:      []string{"user-svc:user"},
 					Permission: "firstuser:myperm",
 				},
 			},
@@ -82,10 +82,10 @@ func TestAssignPermissions(t *testing.T) {
 	})
 
 	t.Run("user 2 cannot assign role it does not own", func(t *testing.T) {
-		_, _, err = userClient2.UserSvcAPI.AssignPermissions(ctx).Body(openapi.UserSvcAssignPermissionsRequest{
-			PermissionLinks: []openapi.UserSvcPermissionLink{
+		_, _, err = userClient2.UserSvcAPI.SaveGrants(ctx).Body(openapi.UserSvcSaveGrantsRequest{
+			Grants: []openapi.UserSvcGrant{
 				{
-					Role:       "user-svc:user",
+					Roles:      []string{"user-svc:user"},
 					Permission: "firstuser:myperm",
 				},
 			},
@@ -95,10 +95,10 @@ func TestAssignPermissions(t *testing.T) {
 	})
 
 	t.Run("user 1 can assign role it owns", func(t *testing.T) {
-		_, _, err = userClient.UserSvcAPI.AssignPermissions(ctx).Body(openapi.UserSvcAssignPermissionsRequest{
-			PermissionLinks: []openapi.UserSvcPermissionLink{
+		_, _, err = userClient.UserSvcAPI.SaveGrants(ctx).Body(openapi.UserSvcSaveGrantsRequest{
+			Grants: []openapi.UserSvcGrant{
 				{
-					Role:       "user-svc:user",
+					Roles:      []string{"user-svc:user"},
 					Permission: "firstuser:myperm",
 				},
 			},

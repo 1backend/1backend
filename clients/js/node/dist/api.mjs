@@ -6045,17 +6045,17 @@ StableDiffusionTxt2ImgRequest.attributeTypeMap = [
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-class UserSvcAssignPermissionsRequest {
+class UserSvcSaveGrantsRequest {
     static getAttributeTypeMap() {
-        return UserSvcAssignPermissionsRequest.attributeTypeMap;
+        return UserSvcSaveGrantsRequest.attributeTypeMap;
     }
 }
-UserSvcAssignPermissionsRequest.discriminator = undefined;
-UserSvcAssignPermissionsRequest.attributeTypeMap = [
+UserSvcSaveGrantsRequest.discriminator = undefined;
+UserSvcSaveGrantsRequest.attributeTypeMap = [
     {
         "name": "permissionLinks",
         "baseName": "permissionLinks",
-        "type": "Array<UserSvcPermissionLink>"
+        "type": "Array<UserSvcGrant>"
     }
 ];
 
@@ -6835,13 +6835,13 @@ UserSvcOrganization.attributeTypeMap = [
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-class UserSvcPermissionLink {
+class UserSvcGrant {
     static getAttributeTypeMap() {
-        return UserSvcPermissionLink.attributeTypeMap;
+        return UserSvcGrant.attributeTypeMap;
     }
 }
-UserSvcPermissionLink.discriminator = undefined;
-UserSvcPermissionLink.attributeTypeMap = [
+UserSvcGrant.discriminator = undefined;
+UserSvcGrant.attributeTypeMap = [
     {
         "name": "permission",
         "baseName": "permission",
@@ -7459,7 +7459,7 @@ let typeMap = {
     "SourceSvcCheckoutRepoResponse": SourceSvcCheckoutRepoResponse,
     "SourceSvcErrorResponse": SourceSvcErrorResponse,
     "StableDiffusionTxt2ImgRequest": StableDiffusionTxt2ImgRequest,
-    "UserSvcAssignPermissionsRequest": UserSvcAssignPermissionsRequest,
+    "UserSvcSaveGrantsRequest": UserSvcSaveGrantsRequest,
     "UserSvcAuthToken": UserSvcAuthToken,
     "UserSvcChangePasswordRequest": UserSvcChangePasswordRequest,
     "UserSvcContact": UserSvcContact,
@@ -7481,7 +7481,7 @@ let typeMap = {
     "UserSvcLoginResponse": UserSvcLoginResponse,
     "UserSvcNewInvite": UserSvcNewInvite,
     "UserSvcOrganization": UserSvcOrganization,
-    "UserSvcPermissionLink": UserSvcPermissionLink,
+    "UserSvcGrant": UserSvcGrant,
     "UserSvcReadUserByTokenResponse": UserSvcReadUserByTokenResponse,
     "UserSvcRegisterRequest": UserSvcRegisterRequest,
     "UserSvcRegisterResponse": UserSvcRegisterResponse,
@@ -13648,7 +13648,7 @@ class UserSvcApi {
                 uri: localVarPath,
                 useQuerystring: this._useQuerystring,
                 json: true,
-                body: ObjectSerializer.serialize(body, "UserSvcAssignPermissionsRequest")
+                body: ObjectSerializer.serialize(body, "UserSvcSaveGrantsRequest")
             };
             let authenticationPromise = Promise.resolve();
             if (this.authentications.BearerAuth.apiKey) {
@@ -15048,4 +15048,4 @@ class HttpError extends Error {
 }
 const APIS = [ChatSvcApi, ConfigSvcApi, ContainerSvcApi, DataSvcApi, DeploySvcApi, EmailSvcApi, FileSvcApi, FirehoseSvcApi, ModelSvcApi, PolicySvcApi, PromptSvcApi, RegistrySvcApi, SecretSvcApi, SourceSvcApi, UserSvcApi];
 
-export { APIS, ApiKeyAuth, ChatSvcAddMessageRequest, ChatSvcAddThreadRequest, ChatSvcAddThreadResponse, ChatSvcApi, ChatSvcApiApiKeys, ChatSvcEventMessageAdded, ChatSvcEventThreadAdded, ChatSvcEventThreadUpdate, ChatSvcGetMessageResponse, ChatSvcGetMessagesResponse, ChatSvcGetThreadResponse, ChatSvcGetThreadsResponse, ChatSvcMessage, ChatSvcThread, ChatSvcUpdateThreadRequest, ConfigSvcApi, ConfigSvcApiApiKeys, ConfigSvcConfig, ConfigSvcGetConfigResponse, ConfigSvcSaveConfigRequest, ContainerSvcApi, ContainerSvcApiApiKeys, ContainerSvcAsset, ContainerSvcBuildImageRequest, ContainerSvcCapabilities, ContainerSvcContainer, ContainerSvcContainerIsRunningResponse, ContainerSvcDaemonInfoResponse, ContainerSvcEnvVar, ContainerSvcErrorResponse, ContainerSvcGetContainerSummaryResponse, ContainerSvcGetHostResponse, ContainerSvcImagePullableResponse, ContainerSvcKeep, ContainerSvcLabel, ContainerSvcListContainersRequest, ContainerSvcListContainersResponse, ContainerSvcListLogsRequest, ContainerSvcListLogsResponse, ContainerSvcLog, ContainerSvcNetwork, ContainerSvcPortMapping, ContainerSvcResources, ContainerSvcRunContainerRequest, ContainerSvcRunContainerResponse, ContainerSvcStopContainerRequest, ContainerSvcVolume, DataSvcApi, DataSvcApiApiKeys, DataSvcCreateObjectFields, DataSvcCreateObjectRequest, DataSvcCreateObjectResponse, DataSvcDeleteObjectRequest, DataSvcErrorResponse, DataSvcObject, DataSvcQueryRequest, DataSvcQueryResponse, DataSvcUpdateObjectsRequest, DataSvcUpsertObjectRequest, DataSvcUpsertObjectResponse, DatastoreFilter, DatastoreOp, DatastoreOrderBy, DatastoreQuery, DatastoreSortingType, DeploySvcApi, DeploySvcApiApiKeys, DeploySvcAutoScalingConfig, DeploySvcDeleteDeploymentRequest, DeploySvcDeployment, DeploySvcDeploymentStatus, DeploySvcDeploymentStrategy, DeploySvcErrorResponse, DeploySvcListDeploymentsResponse, DeploySvcResourceLimits, DeploySvcSaveDeploymentRequest, DeploySvcStrategyType, DeploySvcTargetRegion, EmailSvcApi, EmailSvcApiApiKeys, EmailSvcAttachment, EmailSvcErrorResponse, EmailSvcSendEmailRequest, EmailSvcSendEmailResponse, FileSvcApi, FileSvcApiApiKeys, FileSvcDownload, FileSvcDownloadFileRequest, FileSvcDownloadsResponse, FileSvcErrorResponse, FileSvcGetDownloadResponse, FileSvcListUploadsRequest, FileSvcListUploadsResponse, FileSvcUpload, FileSvcUploadFileResponse, FirehoseSvcApi, FirehoseSvcApiApiKeys, FirehoseSvcErrorResponse, FirehoseSvcEvent, FirehoseSvcEventPublishRequest, HttpBasicAuth, HttpBearerAuth, HttpError, ModelSvcApi, ModelSvcApiApiKeys, ModelSvcArchitectures, ModelSvcAsset, ModelSvcContainer, ModelSvcCudaParameters, ModelSvcDefaultParameters, ModelSvcEnvVar, ModelSvcErrorResponse, ModelSvcGetModelResponse, ModelSvcKeep, ModelSvcListModelsResponse, ModelSvcListPlatformsResponse, ModelSvcModel, ModelSvcModelStatus, ModelSvcPlatform, ModelSvcStatusResponse, OAuth, ObjectSerializer, PolicySvcApi, PolicySvcApiApiKeys, PolicySvcBlocklistParameters, PolicySvcCheckRequest, PolicySvcCheckResponse, PolicySvcEntity, PolicySvcErrorResponse, PolicySvcInstance, PolicySvcParameters, PolicySvcRateLimitParameters, PolicySvcScope, PolicySvcTemplateId, PolicySvcUpsertInstanceRequest, PromptSvcApi, PromptSvcApiApiKeys, PromptSvcEngineParameters, PromptSvcErrorResponse, PromptSvcListPromptsRequest, PromptSvcListPromptsResponse, PromptSvcLlamaCppParameters, PromptSvcParameters, PromptSvcPrompt, PromptSvcPromptRequest, PromptSvcPromptResponse, PromptSvcPromptStatus, PromptSvcPromptType, PromptSvcRemovePromptRequest, PromptSvcStableDiffusionParameters, PromptSvcStreamChunk, PromptSvcStreamChunkType, PromptSvcTextToImageParameters, PromptSvcTextToTextParameters, PromptSvcTypesResponse, RegistrySvcAPISpec, RegistrySvcApi, RegistrySvcApiApiKeys, RegistrySvcClient, RegistrySvcDefinition, RegistrySvcEnvVar, RegistrySvcErrorResponse, RegistrySvcGPU, RegistrySvcImageSpec, RegistrySvcInstance, RegistrySvcInstanceStatus, RegistrySvcLanguage, RegistrySvcListDefinitionsResponse, RegistrySvcListInstancesResponse, RegistrySvcListNodesRequest, RegistrySvcListNodesResponse, RegistrySvcNode, RegistrySvcNodeSelfResponse, RegistrySvcPortMapping, RegistrySvcProcess, RegistrySvcRegisterInstanceRequest, RegistrySvcRepositorySpec, RegistrySvcResourceUsage, RegistrySvcSaveDefinitionRequest, RegistrySvcUsage, SecretSvcApi, SecretSvcApiApiKeys, SecretSvcChecksumAlgorithm, SecretSvcDecryptValueRequest, SecretSvcDecryptValueResponse, SecretSvcEncryptValueRequest, SecretSvcEncryptValueResponse, SecretSvcIsSecureResponse, SecretSvcListSecretsRequest, SecretSvcListSecretsResponse, SecretSvcRemoveSecretsRequest, SecretSvcSaveSecretsRequest, SecretSvcSecret, SourceSvcApi, SourceSvcApiApiKeys, SourceSvcCheckoutRepoRequest, SourceSvcCheckoutRepoResponse, SourceSvcErrorResponse, StableDiffusionTxt2ImgRequest, UserSvcApi, UserSvcApiApiKeys, UserSvcAssignPermissionsRequest, UserSvcAuthToken, UserSvcChangePasswordRequest, UserSvcContact, UserSvcCreateUserRequest, UserSvcErrorResponse, UserSvcGetPublicKeyResponse, UserSvcGrant, UserSvcHasPermissionRequest, UserSvcHasPermissionResponse, UserSvcInvite, UserSvcListGrantsRequest, UserSvcListGrantsResponse, UserSvcListInvitesRequest, UserSvcListInvitesResponse, UserSvcListPermissionsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcNewInvite, UserSvcOrganization, UserSvcPermissionLink, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveGrantsRequest, UserSvcSaveInvitesRequest, UserSvcSaveInvitesResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSaveProfileRequest, UserSvcUser, UserSvcUserRecord, VoidAuth };
+export { APIS, ApiKeyAuth, ChatSvcAddMessageRequest, ChatSvcAddThreadRequest, ChatSvcAddThreadResponse, ChatSvcApi, ChatSvcApiApiKeys, ChatSvcEventMessageAdded, ChatSvcEventThreadAdded, ChatSvcEventThreadUpdate, ChatSvcGetMessageResponse, ChatSvcGetMessagesResponse, ChatSvcGetThreadResponse, ChatSvcGetThreadsResponse, ChatSvcMessage, ChatSvcThread, ChatSvcUpdateThreadRequest, ConfigSvcApi, ConfigSvcApiApiKeys, ConfigSvcConfig, ConfigSvcGetConfigResponse, ConfigSvcSaveConfigRequest, ContainerSvcApi, ContainerSvcApiApiKeys, ContainerSvcAsset, ContainerSvcBuildImageRequest, ContainerSvcCapabilities, ContainerSvcContainer, ContainerSvcContainerIsRunningResponse, ContainerSvcDaemonInfoResponse, ContainerSvcEnvVar, ContainerSvcErrorResponse, ContainerSvcGetContainerSummaryResponse, ContainerSvcGetHostResponse, ContainerSvcImagePullableResponse, ContainerSvcKeep, ContainerSvcLabel, ContainerSvcListContainersRequest, ContainerSvcListContainersResponse, ContainerSvcListLogsRequest, ContainerSvcListLogsResponse, ContainerSvcLog, ContainerSvcNetwork, ContainerSvcPortMapping, ContainerSvcResources, ContainerSvcRunContainerRequest, ContainerSvcRunContainerResponse, ContainerSvcStopContainerRequest, ContainerSvcVolume, DataSvcApi, DataSvcApiApiKeys, DataSvcCreateObjectFields, DataSvcCreateObjectRequest, DataSvcCreateObjectResponse, DataSvcDeleteObjectRequest, DataSvcErrorResponse, DataSvcObject, DataSvcQueryRequest, DataSvcQueryResponse, DataSvcUpdateObjectsRequest, DataSvcUpsertObjectRequest, DataSvcUpsertObjectResponse, DatastoreFilter, DatastoreOp, DatastoreOrderBy, DatastoreQuery, DatastoreSortingType, DeploySvcApi, DeploySvcApiApiKeys, DeploySvcAutoScalingConfig, DeploySvcDeleteDeploymentRequest, DeploySvcDeployment, DeploySvcDeploymentStatus, DeploySvcDeploymentStrategy, DeploySvcErrorResponse, DeploySvcListDeploymentsResponse, DeploySvcResourceLimits, DeploySvcSaveDeploymentRequest, DeploySvcStrategyType, DeploySvcTargetRegion, EmailSvcApi, EmailSvcApiApiKeys, EmailSvcAttachment, EmailSvcErrorResponse, EmailSvcSendEmailRequest, EmailSvcSendEmailResponse, FileSvcApi, FileSvcApiApiKeys, FileSvcDownload, FileSvcDownloadFileRequest, FileSvcDownloadsResponse, FileSvcErrorResponse, FileSvcGetDownloadResponse, FileSvcListUploadsRequest, FileSvcListUploadsResponse, FileSvcUpload, FileSvcUploadFileResponse, FirehoseSvcApi, FirehoseSvcApiApiKeys, FirehoseSvcErrorResponse, FirehoseSvcEvent, FirehoseSvcEventPublishRequest, HttpBasicAuth, HttpBearerAuth, HttpError, ModelSvcApi, ModelSvcApiApiKeys, ModelSvcArchitectures, ModelSvcAsset, ModelSvcContainer, ModelSvcCudaParameters, ModelSvcDefaultParameters, ModelSvcEnvVar, ModelSvcErrorResponse, ModelSvcGetModelResponse, ModelSvcKeep, ModelSvcListModelsResponse, ModelSvcListPlatformsResponse, ModelSvcModel, ModelSvcModelStatus, ModelSvcPlatform, ModelSvcStatusResponse, OAuth, ObjectSerializer, PolicySvcApi, PolicySvcApiApiKeys, PolicySvcBlocklistParameters, PolicySvcCheckRequest, PolicySvcCheckResponse, PolicySvcEntity, PolicySvcErrorResponse, PolicySvcInstance, PolicySvcParameters, PolicySvcRateLimitParameters, PolicySvcScope, PolicySvcTemplateId, PolicySvcUpsertInstanceRequest, PromptSvcApi, PromptSvcApiApiKeys, PromptSvcEngineParameters, PromptSvcErrorResponse, PromptSvcListPromptsRequest, PromptSvcListPromptsResponse, PromptSvcLlamaCppParameters, PromptSvcParameters, PromptSvcPrompt, PromptSvcPromptRequest, PromptSvcPromptResponse, PromptSvcPromptStatus, PromptSvcPromptType, PromptSvcRemovePromptRequest, PromptSvcStableDiffusionParameters, PromptSvcStreamChunk, PromptSvcStreamChunkType, PromptSvcTextToImageParameters, PromptSvcTextToTextParameters, PromptSvcTypesResponse, RegistrySvcAPISpec, RegistrySvcApi, RegistrySvcApiApiKeys, RegistrySvcClient, RegistrySvcDefinition, RegistrySvcEnvVar, RegistrySvcErrorResponse, RegistrySvcGPU, RegistrySvcImageSpec, RegistrySvcInstance, RegistrySvcInstanceStatus, RegistrySvcLanguage, RegistrySvcListDefinitionsResponse, RegistrySvcListInstancesResponse, RegistrySvcListNodesRequest, RegistrySvcListNodesResponse, RegistrySvcNode, RegistrySvcNodeSelfResponse, RegistrySvcPortMapping, RegistrySvcProcess, RegistrySvcRegisterInstanceRequest, RegistrySvcRepositorySpec, RegistrySvcResourceUsage, RegistrySvcSaveDefinitionRequest, RegistrySvcUsage, SecretSvcApi, SecretSvcApiApiKeys, SecretSvcChecksumAlgorithm, SecretSvcDecryptValueRequest, SecretSvcDecryptValueResponse, SecretSvcEncryptValueRequest, SecretSvcEncryptValueResponse, SecretSvcIsSecureResponse, SecretSvcListSecretsRequest, SecretSvcListSecretsResponse, SecretSvcRemoveSecretsRequest, SecretSvcSaveSecretsRequest, SecretSvcSecret, SourceSvcApi, SourceSvcApiApiKeys, SourceSvcCheckoutRepoRequest, SourceSvcCheckoutRepoResponse, SourceSvcErrorResponse, StableDiffusionTxt2ImgRequest, UserSvcApi, UserSvcApiApiKeys, UserSvcSaveGrantsRequest, UserSvcAuthToken, UserSvcChangePasswordRequest, UserSvcContact, UserSvcCreateUserRequest, UserSvcErrorResponse, UserSvcGetPublicKeyResponse, UserSvcGrant, UserSvcHasPermissionRequest, UserSvcHasPermissionResponse, UserSvcInvite, UserSvcListGrantsRequest, UserSvcListGrantsResponse, UserSvcListInvitesRequest, UserSvcListInvitesResponse, UserSvcListPermissionsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcNewInvite, UserSvcOrganization, UserSvcGrant, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveGrantsRequest, UserSvcSaveInvitesRequest, UserSvcSaveInvitesResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSaveProfileRequest, UserSvcUser, UserSvcUserRecord, VoidAuth };

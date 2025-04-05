@@ -165,7 +165,7 @@ export * from './sourceSvcCheckoutRepoRequest';
 export * from './sourceSvcCheckoutRepoResponse';
 export * from './sourceSvcErrorResponse';
 export * from './stableDiffusionTxt2ImgRequest';
-export * from './userSvcAssignPermissionsRequest';
+export * from './userSvcSaveGrantsRequest';
 export * from './userSvcAuthToken';
 export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';

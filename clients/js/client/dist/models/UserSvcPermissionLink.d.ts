@@ -12,27 +12,27 @@
 /**
  *
  * @export
- * @interface UserSvcPermissionLink
+ * @interface UserSvcGrant
  */
-export interface UserSvcPermissionLink {
+export interface UserSvcGrant {
     /**
      *
      * @type {string}
-     * @memberof UserSvcPermissionLink
+     * @memberof UserSvcGrant
      */
     permission: string;
     /**
      *
      * @type {string}
-     * @memberof UserSvcPermissionLink
+     * @memberof UserSvcGrant
      */
     role: string;
 }
 /**
- * Check if a given object implements the UserSvcPermissionLink interface.
+ * Check if a given object implements the UserSvcGrant interface.
  */
-export declare function instanceOfUserSvcPermissionLink(value: object): value is UserSvcPermissionLink;
-export declare function UserSvcPermissionLinkFromJSON(json: any): UserSvcPermissionLink;
-export declare function UserSvcPermissionLinkFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcPermissionLink;
-export declare function UserSvcPermissionLinkToJSON(json: any): UserSvcPermissionLink;
-export declare function UserSvcPermissionLinkToJSONTyped(value?: UserSvcPermissionLink | null, ignoreDiscriminator?: boolean): any;
+export declare function instanceOfUserSvcGrant(value: object): value is UserSvcGrant;
+export declare function UserSvcGrantFromJSON(json: any): UserSvcGrant;
+export declare function UserSvcGrantFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcGrant;
+export declare function UserSvcGrantToJSON(json: any): UserSvcGrant;
+export declare function UserSvcGrantToJSONTyped(value?: UserSvcGrant | null, ignoreDiscriminator?: boolean): any;

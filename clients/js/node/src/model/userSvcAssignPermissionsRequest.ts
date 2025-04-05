@@ -11,10 +11,10 @@
  */
 
 import { RequestFile } from './models';
-import { UserSvcPermissionLink } from './userSvcPermissionLink';
+import { UserSvcGrant } from './userSvcPermissionLink';
 
-export class UserSvcAssignPermissionsRequest {
-    'permissionLinks'?: Array<UserSvcPermissionLink>;
+export class UserSvcSaveGrantsRequest {
+    'permissionLinks'?: Array<UserSvcGrant>;
 
     static discriminator: string | undefined = undefined;
 
@@ -22,11 +22,11 @@ export class UserSvcAssignPermissionsRequest {
         {
             "name": "permissionLinks",
             "baseName": "permissionLinks",
-            "type": "Array<UserSvcPermissionLink>"
+            "type": "Array<UserSvcGrant>"
         }    ];
 
     static getAttributeTypeMap() {
-        return UserSvcAssignPermissionsRequest.attributeTypeMap;
+        return UserSvcSaveGrantsRequest.attributeTypeMap;
     }
 }
 

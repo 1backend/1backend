@@ -13,61 +13,61 @@
  */
 
 import { mapValues } from '../runtime';
-import type { UserSvcPermissionLink } from './UserSvcPermissionLink';
+import type { UserSvcGrant } from './UserSvcGrant';
 import {
-    UserSvcPermissionLinkFromJSON,
-    UserSvcPermissionLinkFromJSONTyped,
-    UserSvcPermissionLinkToJSON,
-    UserSvcPermissionLinkToJSONTyped,
-} from './UserSvcPermissionLink';
+    UserSvcGrantFromJSON,
+    UserSvcGrantFromJSONTyped,
+    UserSvcGrantToJSON,
+    UserSvcGrantToJSONTyped,
+} from './UserSvcGrant';
 
 /**
  * 
  * @export
- * @interface UserSvcAssignPermissionsRequest
+ * @interface UserSvcSaveGrantsRequest
  */
-export interface UserSvcAssignPermissionsRequest {
+export interface UserSvcSaveGrantsRequest {
     /**
      * 
-     * @type {Array<UserSvcPermissionLink>}
-     * @memberof UserSvcAssignPermissionsRequest
+     * @type {Array<UserSvcGrant>}
+     * @memberof UserSvcSaveGrantsRequest
      */
-    permissionLinks?: Array<UserSvcPermissionLink>;
+    permissionLinks?: Array<UserSvcGrant>;
 }
 
 /**
- * Check if a given object implements the UserSvcAssignPermissionsRequest interface.
+ * Check if a given object implements the UserSvcSaveGrantsRequest interface.
  */
-export function instanceOfUserSvcAssignPermissionsRequest(value: object): value is UserSvcAssignPermissionsRequest {
+export function instanceOfUserSvcSaveGrantsRequest(value: object): value is UserSvcSaveGrantsRequest {
     return true;
 }
 
-export function UserSvcAssignPermissionsRequestFromJSON(json: any): UserSvcAssignPermissionsRequest {
-    return UserSvcAssignPermissionsRequestFromJSONTyped(json, false);
+export function UserSvcSaveGrantsRequestFromJSON(json: any): UserSvcSaveGrantsRequest {
+    return UserSvcSaveGrantsRequestFromJSONTyped(json, false);
 }
 
-export function UserSvcAssignPermissionsRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcAssignPermissionsRequest {
+export function UserSvcSaveGrantsRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcSaveGrantsRequest {
     if (json == null) {
         return json;
     }
     return {
         
-        'permissionLinks': json['permissionLinks'] == null ? undefined : ((json['permissionLinks'] as Array<any>).map(UserSvcPermissionLinkFromJSON)),
+        'permissionLinks': json['permissionLinks'] == null ? undefined : ((json['permissionLinks'] as Array<any>).map(UserSvcGrantFromJSON)),
     };
 }
 
-export function UserSvcAssignPermissionsRequestToJSON(json: any): UserSvcAssignPermissionsRequest {
-    return UserSvcAssignPermissionsRequestToJSONTyped(json, false);
+export function UserSvcSaveGrantsRequestToJSON(json: any): UserSvcSaveGrantsRequest {
+    return UserSvcSaveGrantsRequestToJSONTyped(json, false);
 }
 
-export function UserSvcAssignPermissionsRequestToJSONTyped(value?: UserSvcAssignPermissionsRequest | null, ignoreDiscriminator: boolean = false): any {
+export function UserSvcSaveGrantsRequestToJSONTyped(value?: UserSvcSaveGrantsRequest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
 
     return {
         
-        'permissionLinks': value['permissionLinks'] == null ? undefined : ((value['permissionLinks'] as Array<any>).map(UserSvcPermissionLinkToJSON)),
+        'permissionLinks': value['permissionLinks'] == null ? undefined : ((value['permissionLinks'] as Array<any>).map(UserSvcGrantToJSON)),
     };
 }
 

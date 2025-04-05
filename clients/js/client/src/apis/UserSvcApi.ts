@@ -15,7 +15,7 @@
 
 import * as runtime from '../runtime';
 import type {
-  UserSvcAssignPermissionsRequest,
+  UserSvcSaveGrantsRequest,
   UserSvcChangePasswordRequest,
   UserSvcCreateUserRequest,
   UserSvcErrorResponse,
@@ -43,8 +43,8 @@ import type {
   UserSvcSaveProfileRequest,
 } from '../models/index';
 import {
-    UserSvcAssignPermissionsRequestFromJSON,
-    UserSvcAssignPermissionsRequestToJSON,
+    UserSvcSaveGrantsRequestFromJSON,
+    UserSvcSaveGrantsRequestToJSON,
     UserSvcChangePasswordRequestFromJSON,
     UserSvcChangePasswordRequestToJSON,
     UserSvcCreateUserRequestFromJSON,
@@ -103,8 +103,8 @@ export interface AddUserToOrganizationRequest {
     body?: object;
 }
 
-export interface AssignPermissionsRequest {
-    body: UserSvcAssignPermissionsRequest;
+export interface SaveGrantsRequest {
+    body: UserSvcSaveGrantsRequest;
 }
 
 export interface AssignRoleRequest {
@@ -245,7 +245,7 @@ export class UserSvcApi extends runtime.BaseAPI {
      * Assign permissions to roles.  Requires the `user-svc:permission:assign` permission.
      * Assign Permissions
      */
-    async assignPermissionsRaw(requestParameters: AssignPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async assignPermissionsRaw(requestParameters: SaveGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -268,7 +268,7 @@ export class UserSvcApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: UserSvcAssignPermissionsRequestToJSON(requestParameters['body']),
+            body: UserSvcSaveGrantsRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -278,7 +278,7 @@ export class UserSvcApi extends runtime.BaseAPI {
      * Assign permissions to roles.  Requires the `user-svc:permission:assign` permission.
      * Assign Permissions
      */
-    async assignPermissions(requestParameters: AssignPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async assignPermissions(requestParameters: SaveGrantsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.assignPermissionsRaw(requestParameters, initOverrides);
         return await response.value();
     }

@@ -21,7 +21,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as runtime from '../runtime';
-import { UserSvcAssignPermissionsRequestToJSON, UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionRequestToJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListGrantsRequestToJSON, UserSvcListGrantsResponseFromJSON, UserSvcListInvitesRequestToJSON, UserSvcListInvitesResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadUserByTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcSaveGrantsRequestToJSON, UserSvcSaveInvitesRequestToJSON, UserSvcSaveInvitesResponseFromJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSaveProfileRequestToJSON, } from '../models/index';
+import { UserSvcSaveGrantsRequestToJSON, UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionRequestToJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListGrantsRequestToJSON, UserSvcListGrantsResponseFromJSON, UserSvcListInvitesRequestToJSON, UserSvcListInvitesResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadUserByTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcSaveGrantsRequestToJSON, UserSvcSaveInvitesRequestToJSON, UserSvcSaveInvitesResponseFromJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSaveProfileRequestToJSON, } from '../models/index';
 /**
  *
  */
@@ -84,7 +84,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcAssignPermissionsRequestToJSON(requestParameters['body']),
+                body: UserSvcSaveGrantsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });

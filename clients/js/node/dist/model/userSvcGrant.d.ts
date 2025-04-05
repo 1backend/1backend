@@ -13,7 +13,7 @@ export declare class UserSvcGrant {
     'id'?: string;
     'permission': string;
     /**
-    * Role IDs that have been granted the specified permission.  Originally, grants were designed for slugs to facilitate service-to-service calls. Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.  Alternatively, permissions can be assigned to roles using UserSvc.AssignPermissions. Grants currently offer a more streamlined approach, though this may evolve over time.
+    * Role IDs that have been granted the specified permission.  Originally, grants were designed for slugs to facilitate service-to-service calls. Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.  Alternatively, permissions can be assigned to roles using UserSvc.SaveGrants. Grants currently offer a more streamlined approach, though this may evolve over time.
     */
     'roles'?: Array<string>;
     /**
