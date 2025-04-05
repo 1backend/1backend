@@ -1,7 +1,7 @@
-github.com/1backend/1backend/clients/go v0.0.0-20250404165232-c103e76467e1 h1:Gl+kMNdIZwUncr3AUle8Lwv8w7b8LtPeMpGYNo/H39M=
-github.com/1backend/1backend/clients/go v0.0.0-20250404165232-c103e76467e1/go.mod h1:45/FuAzVkH+2C2uGaKzkaOudwpl98fRR9GqqWVgn3u4=
-github.com/1backend/1backend/sdk/go v0.0.0-20250404165232-c103e76467e1 h1:OJNbCQ3nw9EfepqxNMjMrRDTRiCX+4WzEfeLmQ0J4qg=
-github.com/1backend/1backend/sdk/go v0.0.0-20250404165232-c103e76467e1/go.mod h1:FHqOOF0/h4Tme7pa0KlE5tsu+haZto20nJZ0PL1xAMk=
+github.com/1backend/1backend/clients/go v0.0.0-20250405122710-d7fb179088c5 h1:8QQU9nPa+seoiEiOY+wET0GeVm3jaOo8OyP1CA76Z6Y=
+github.com/1backend/1backend/clients/go v0.0.0-20250405122710-d7fb179088c5/go.mod h1:45/FuAzVkH+2C2uGaKzkaOudwpl98fRR9GqqWVgn3u4=
+github.com/1backend/1backend/sdk/go v0.0.0-20250405122710-d7fb179088c5 h1:MQO1R1Qi0xxJPYFfl1+7gtVhb/lGNYOJ+yVIOpL/3E4=
+github.com/1backend/1backend/sdk/go v0.0.0-20250405122710-d7fb179088c5/go.mod h1:FHqOOF0/h4Tme7pa0KlE5tsu+haZto20nJZ0PL1xAMk=
 github.com/cpuguy83/go-md2man/v2 v2.0.4/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
