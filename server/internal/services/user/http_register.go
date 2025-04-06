@@ -69,29 +69,6 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		user.RoleUser,
 	}
 
-	if req.Contact.Id != "" {
-		now := time.Now()
-		req.Contact.CreatedAt = now
-		req.Contact.UpdatedAt = now
-
-		invites, err := s.invitesStore.Query(
-			datastore.Equals(
-				datastore.Field("contactId"),
-				req.Contact.Id,
-			)).Find()
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(err.Error()))
-			return
-		}
-
-		if len(invites) > 0 {
-			for _, invite := range invites {
-				roles = append(roles, invite.(*user.Invite).Role)
-			}
-		}
-	}
-
 	var contacts []user.Contact
 	if req.Contact.Id != "" {
 		contacts = append(contacts, req.Contact)
@@ -130,6 +107,7 @@ func (s *UserService) register(
 	name string,
 	roles []string,
 ) (*user.AuthToken, error) {
+
 	_, alreadyExists, err := s.usersStore.Query(
 		datastore.Equals(datastore.Field("slug"), slug),
 	).FindOne()

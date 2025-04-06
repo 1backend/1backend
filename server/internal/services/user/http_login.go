@@ -18,6 +18,7 @@ import (
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/pkg/errors"
@@ -71,7 +72,6 @@ func (s *UserService) login(
 	request *user.LoginRequest,
 ) (*user.AuthToken, error) {
 	var usr *user.User
-
 	if request.Slug != "" {
 		userI, found, err := s.usersStore.Query(
 			datastore.Equals(datastore.Field("slug"), request.Slug),
@@ -124,7 +124,20 @@ func (s *UserService) login(
 	}
 
 	if found {
-		return tokenI.(*user.AuthToken), nil
+		tok := tokenI.(*user.AuthToken)
+		functional, err := s.isFunctional(tok.Token)
+		if err != nil {
+			return nil, errors.Wrap(err, "error checking token functionality")
+		}
+
+		if functional {
+			return tok, nil
+		}
+
+		err = s.inactivateToken(tok.Id)
+		if err != nil {
+			return nil, errors.Wrap(err, "could not inactivate token")
+		}
 	}
 
 	token, err := s.generateAuthToken(usr)
@@ -145,19 +158,38 @@ func checkPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
+// Changing the struct tags on the `auth.Claims` struct or other
+// unexpected shenanigans might cause tokens to become invalid.
+func (s *UserService) isFunctional(token string) (bool, error) {
+	authr := auth.AuthorizerImpl{}
+	claims, err := authr.ParseJWT(s.publicKeyPem, token)
+	if err != nil {
+		return false, err
+	}
+
+	if claims.UserId == "" || len(claims.Roles) == 0 || claims.Slug == "" {
+		return false, nil
+	}
+
+	return true, nil
+}
+
 func (s *UserService) generateAuthToken(
 	u *user.User,
 ) (*user.AuthToken, error) {
-	roleIds, err := s.getRolesByUserId(u.Id)
+	roles, err := s.getRolesByUserId(u.Id)
 	if err != nil {
 		return nil, errors.Wrap(err, "error listing roles")
+	}
+	if len(roles) == 0 {
+		return nil, errors.New("no roles found for user")
 	}
 	_, activeOrganizationId, err := s.getUserOrganizations(u.Id)
 	if err != nil {
 		return nil, errors.Wrap(err, "error listing organizations")
 	}
 
-	token, err := generateJWT(u, roleIds, activeOrganizationId, s.privateKey)
+	token, err := generateJWT(u, roles, activeOrganizationId, s.privateKey)
 	if err != nil {
 		return nil, err
 	}

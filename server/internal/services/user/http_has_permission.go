@@ -189,16 +189,30 @@ func (s *UserService) hasPermission(
 }
 
 func (s *UserService) getRolesByUserId(userId string) ([]string, error) {
-	roleLinks, err := s.invitesStore.Query(
+	contactIs, err := s.contactsStore.Query(
 		datastore.Equals(datastore.Field("userId"), userId),
+	).Find()
+	if err != nil {
+		return nil, err
+	}
+	contactIds := []any{}
+	for _, contactI := range contactIs {
+		contactIds = append(contactIds, contactI.(*user.Contact).Id)
+	}
+
+	invites, err := s.invitesStore.Query(
+		datastore.Or(
+			datastore.Equals(datastore.Field("userId"), userId),
+			datastore.IsInList(datastore.Field("contactId"), contactIds...),
+		),
 	).Find()
 	if err != nil {
 		return nil, err
 	}
 
 	roles := []string{}
-	for _, role := range roleLinks {
-		roles = append(roles, role.(*user.Invite).Role)
+	for _, invite := range invites {
+		roles = append(roles, invite.(*user.Invite).Role)
 	}
 
 	return roles, nil
