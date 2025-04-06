@@ -45,7 +45,7 @@ type Instance struct {
 	// To have a NodeURL the instance must either:
 	// - Be deployed by 1Backend
 	// - Declare the 1Backend server URL when registering its instance
-	NodeURL string `json:"nodeUrl,omitempty" example:"https://myserver.com:58231"`
+	NodeURL string `json:"nodeUrl,omitempty" example:"https://myserver.com:11337"`
 
 	// Last time the instance gave a sign of life
 	LastHeartbeat time.Time `json:"lastHeartbeat,omitempty"`

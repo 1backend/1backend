@@ -14,7 +14,8 @@ import { RequestFile } from './models';
 
 export class UserSvcListInvitesRequest {
     'contactId'?: string;
-    'roleId'?: string;
+    'role'?: string;
+    'userId'?: string;
 
     static discriminator: string | undefined = undefined;
 
@@ -25,8 +26,13 @@ export class UserSvcListInvitesRequest {
             "type": "string"
         },
         {
-            "name": "roleId",
-            "baseName": "roleId",
+            "name": "role",
+            "baseName": "role",
+            "type": "string"
+        },
+        {
+            "name": "userId",
+            "baseName": "userId",
             "type": "string"
         }    ];
 

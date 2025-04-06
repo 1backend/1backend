@@ -15,15 +15,13 @@
  * Check if a given object implements the UserSvcInvite interface.
  */
 export function instanceOfUserSvcInvite(value) {
-    if (!('contactId' in value) || value['contactId'] === undefined)
-        return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined)
         return false;
     if (!('id' in value) || value['id'] === undefined)
         return false;
     if (!('ownerIds' in value) || value['ownerIds'] === undefined)
         return false;
-    if (!('roleId' in value) || value['roleId'] === undefined)
+    if (!('role' in value) || value['role'] === undefined)
         return false;
     return true;
 }
@@ -36,14 +34,15 @@ export function UserSvcInviteFromJSONTyped(json, ignoreDiscriminator) {
     }
     return {
         'appliedAt': json['appliedAt'] == null ? undefined : json['appliedAt'],
-        'contactId': json['contactId'],
+        'contactId': json['contactId'] == null ? undefined : json['contactId'],
         'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'expiresAt': json['expiresAt'] == null ? undefined : json['expiresAt'],
         'id': json['id'],
         'ownerIds': json['ownerIds'],
-        'roleId': json['roleId'],
+        'role': json['role'],
         'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'userId': json['userId'] == null ? undefined : json['userId'],
     };
 }
 export function UserSvcInviteToJSON(json) {
@@ -61,7 +60,8 @@ export function UserSvcInviteToJSONTyped(value, ignoreDiscriminator = false) {
         'expiresAt': value['expiresAt'],
         'id': value['id'],
         'ownerIds': value['ownerIds'],
-        'roleId': value['roleId'],
+        'role': value['role'],
         'updatedAt': value['updatedAt'],
+        'userId': value['userId'],
     };
 }

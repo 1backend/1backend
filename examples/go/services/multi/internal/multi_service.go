@@ -45,7 +45,7 @@ func NewService(options *Options) (*MultiService, error) {
 		options.ServerUrl = os.Getenv("OB_SERVER_URL")
 	}
 	if options.ServerUrl == "" {
-		options.ServerUrl = "http://127.0.0.1:58231"
+		options.ServerUrl = "http://127.0.0.1:11337"
 	}
 	if options.SelfUrl == "" {
 		options.SelfUrl = os.Getenv("OB_SELF_URL")

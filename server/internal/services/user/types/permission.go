@@ -67,4 +67,6 @@ var AdminPermissions = []string{
 	PermissionOrganizationAddUser,
 	PermissionOrganizationRemoveUser,
 	PermissionGrantCreate,
+	PermissionInviteEdit,
+	PermissionInviteView,
 }

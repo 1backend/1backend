@@ -195,87 +195,6 @@ export class UserSvcApi {
         });
     }
     /**
-     * Assigns a role to a user. The caller can only assign roles they own. A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
-     * @summary Assign Role
-     * @param userId User ID
-     * @param role Role ID
-     * @param body Assign Role Request
-     */
-    public async assignRole (userId: string, role: string, body?: object, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: object;  }> {
-        const localVarPath = this.basePath + '/user-svc/user/{userId}/role/{role}'
-            .replace('{' + 'userId' + '}', encodeURIComponent(String(userId)))
-            .replace('{' + 'role' + '}', encodeURIComponent(String(role)));
-        let localVarQueryParameters: any = {};
-        let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
-        const produces = ['application/json'];
-        // give precedence to 'application/json'
-        if (produces.indexOf('application/json') >= 0) {
-            localVarHeaderParams.Accept = 'application/json';
-        } else {
-            localVarHeaderParams.Accept = produces.join(',');
-        }
-        let localVarFormParams: any = {};
-
-        // verify required parameter 'userId' is not null or undefined
-        if (userId === null || userId === undefined) {
-            throw new Error('Required parameter userId was null or undefined when calling assignRole.');
-        }
-
-        // verify required parameter 'role' is not null or undefined
-        if (role === null || role === undefined) {
-            throw new Error('Required parameter role was null or undefined when calling assignRole.');
-        }
-
-        (<any>Object).assign(localVarHeaderParams, options.headers);
-
-        let localVarUseFormData = false;
-
-        let localVarRequestOptions: localVarRequest.Options = {
-            method: 'PUT',
-            qs: localVarQueryParameters,
-            headers: localVarHeaderParams,
-            uri: localVarPath,
-            useQuerystring: this._useQuerystring,
-            json: true,
-            body: ObjectSerializer.serialize(body, "object")
-        };
-
-        let authenticationPromise = Promise.resolve();
-        if (this.authentications.BearerAuth.apiKey) {
-            authenticationPromise = authenticationPromise.then(() => this.authentications.BearerAuth.applyToRequest(localVarRequestOptions));
-        }
-        authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
-
-        let interceptorPromise = authenticationPromise;
-        for (const interceptor of this.interceptors) {
-            interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
-        }
-
-        return interceptorPromise.then(() => {
-            if (Object.keys(localVarFormParams).length) {
-                if (localVarUseFormData) {
-                    (<any>localVarRequestOptions).formData = localVarFormParams;
-                } else {
-                    localVarRequestOptions.form = localVarFormParams;
-                }
-            }
-            return new Promise<{ response: http.IncomingMessage; body: object;  }>((resolve, reject) => {
-                localVarRequest(localVarRequestOptions, (error, response, body) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
-                            body = ObjectSerializer.deserialize(body, "object");
-                            resolve({ response: response, body: body });
-                        } else {
-                            reject(new HttpError(response, body, response.statusCode));
-                        }
-                    }
-                });
-            });
-        });
-    }
-    /**
      * Allows an authenticated user to change their own password.
      * @summary Change User Password
      * @param body Change Password Request
@@ -1346,7 +1265,7 @@ export class UserSvcApi {
         });
     }
     /**
-     * Invite a list of users by contact ID to acquire a role. Works on future or current users. A user can only invite an other user to a role if the user owns that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
+     * Invite a list of users by contact or user Id to acquire a role. Works on future or current users.  A user can only invite an other user to a role if the user owns that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
      * @summary Save Invites
      * @param body Save Invites Request
      */

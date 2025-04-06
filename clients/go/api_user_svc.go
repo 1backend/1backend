@@ -265,7 +265,9 @@ Caller can only list permissions for roles they have.
 	/*
 	SaveInvites Save Invites
 
-	Invite a list of users by contact ID to acquire a role. Works on future or current users.
+	Invite a list of users by contact or user Id to acquire a role.
+Works on future or current users.
+
 A user can only invite an other user to a role if the user owns that role.
 
 A user "owns" a role in the following cases:
@@ -2762,7 +2764,9 @@ func (r ApiSaveInvitesRequest) Execute() (*UserSvcSaveInvitesResponse, *http.Res
 /*
 SaveInvites Save Invites
 
-Invite a list of users by contact ID to acquire a role. Works on future or current users.
+Invite a list of users by contact or user Id to acquire a role.
+Works on future or current users.
+
 A user can only invite an other user to a role if the user owns that role.
 
 A user "owns" a role in the following cases:
