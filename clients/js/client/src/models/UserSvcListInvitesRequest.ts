@@ -30,7 +30,13 @@ export interface UserSvcListInvitesRequest {
      * @type {string}
      * @memberof UserSvcListInvitesRequest
      */
-    roleId?: string;
+    role?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSvcListInvitesRequest
+     */
+    userId?: string;
 }
 
 /**
@@ -51,7 +57,8 @@ export function UserSvcListInvitesRequestFromJSONTyped(json: any, ignoreDiscrimi
     return {
         
         'contactId': json['contactId'] == null ? undefined : json['contactId'],
-        'roleId': json['roleId'] == null ? undefined : json['roleId'],
+        'role': json['role'] == null ? undefined : json['role'],
+        'userId': json['userId'] == null ? undefined : json['userId'],
     };
 }
 
@@ -67,7 +74,8 @@ export function UserSvcListInvitesRequestToJSONTyped(value?: UserSvcListInvitesR
     return {
         
         'contactId': value['contactId'],
-        'roleId': value['roleId'],
+        'role': value['role'],
+        'userId': value['userId'],
     };
 }
 

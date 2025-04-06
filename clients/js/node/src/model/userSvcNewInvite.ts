@@ -13,9 +13,16 @@
 import { RequestFile } from './models';
 
 export class UserSvcNewInvite {
-    'contactId': string;
+    /**
+    * ContactId is the the recipient of the invite. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
+    */
+    'contactId'?: string;
     'id'?: string;
-    'roleId': string;
+    'role': string;
+    /**
+    * UserId is the recipient of the invite. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
+    */
+    'userId'?: string;
 
     static discriminator: string | undefined = undefined;
 
@@ -31,8 +38,13 @@ export class UserSvcNewInvite {
             "type": "string"
         },
         {
-            "name": "roleId",
-            "baseName": "roleId",
+            "name": "role",
+            "baseName": "role",
+            "type": "string"
+        },
+        {
+            "name": "userId",
+            "baseName": "userId",
             "type": "string"
         }    ];
 

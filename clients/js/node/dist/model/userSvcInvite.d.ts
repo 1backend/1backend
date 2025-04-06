@@ -12,9 +12,9 @@
 export declare class UserSvcInvite {
     'appliedAt'?: string;
     /**
-    * ContactId represents the recipient of the invite. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
+    * ContactId is the the recipient of the invite. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
     */
-    'contactId': string;
+    'contactId'?: string;
     'createdAt': string;
     'deletedAt'?: string;
     'expiresAt'?: string;
@@ -24,10 +24,14 @@ export declare class UserSvcInvite {
     */
     'ownerIds': Array<string>;
     /**
-    * RoleId specifies the role to be assigned to the ContactId. Callers can only assign roles they own, identified by their service slug (e.g., if \"my-service\" creates an invite, the role must be \"my-service:admin\"). Dynamic organization roles can also be assigned (e.g., \"user-svc:org:{%orgId}:admin\" or \"user-svc:org:{%orgId}:user\"), but in this case, the caller must be an admin of the target organization.
+    * Role specifies the role to be assigned to the ContactId. Callers can only assign roles they own, identified by their service slug (e.g., if \"my-service\" creates an invite, the role must be \"my-service:admin\"). Dynamic organization roles can also be assigned (e.g., \"user-svc:org:{%orgId}:admin\" or \"user-svc:org:{%orgId}:user\"), but in this case, the caller must be an admin of the target organization.
     */
-    'roleId': string;
+    'role': string;
     'updatedAt'?: string;
+    /**
+    * UserId is the recipient of the invite. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
+    */
+    'userId'?: string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

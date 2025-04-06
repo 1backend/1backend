@@ -115,7 +115,7 @@ func StartService(options Options) (*ServiceProcess, error) {
 	}
 
 	if port == "" {
-		port = "58231"
+		port = "11337"
 	}
 
 	if options.Test {

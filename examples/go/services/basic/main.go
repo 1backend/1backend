@@ -21,7 +21,7 @@ import (
 
 // @license.name  Proprietary
 
-// @host      localhost:58231
+// @host      localhost:11337
 // @BasePath  /
 
 // @securityDefinitions.apikey BearerAuth

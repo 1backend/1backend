@@ -26,7 +26,8 @@ export function UserSvcListInvitesRequestFromJSONTyped(json, ignoreDiscriminator
     }
     return {
         'contactId': json['contactId'] == null ? undefined : json['contactId'],
-        'roleId': json['roleId'] == null ? undefined : json['roleId'],
+        'role': json['role'] == null ? undefined : json['role'],
+        'userId': json['userId'] == null ? undefined : json['userId'],
     };
 }
 export function UserSvcListInvitesRequestToJSON(json) {
@@ -38,6 +39,7 @@ export function UserSvcListInvitesRequestToJSONTyped(value, ignoreDiscriminator 
     }
     return {
         'contactId': value['contactId'],
-        'roleId': value['roleId'],
+        'role': value['role'],
+        'userId': value['userId'],
     };
 }

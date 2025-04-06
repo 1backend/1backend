@@ -65,7 +65,7 @@ func NewRegistryService(
 		if err != nil {
 			return nil, err
 		}
-		nodeUrl = fmt.Sprintf("%v:%v", nodeUrl, "58231")
+		nodeUrl = fmt.Sprintf("%v:%v", nodeUrl, "11337")
 	}
 
 	if !strings.HasPrefix(nodeUrl, "http") {

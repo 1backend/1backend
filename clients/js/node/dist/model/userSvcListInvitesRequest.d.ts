@@ -11,7 +11,8 @@
  */
 export declare class UserSvcListInvitesRequest {
     'contactId'?: string;
-    'roleId'?: string;
+    'role'?: string;
+    'userId'?: string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

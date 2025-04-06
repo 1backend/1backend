@@ -22,13 +22,13 @@ export interface UserSvcInvite {
      */
     appliedAt?: string;
     /**
-     * ContactId represents the recipient of the invite.
+     * ContactId is the the recipient of the invite.
      * If the user is already registered, the role is assigned immediately;
      * otherwise, it is applied upon registration.
      * @type {string}
      * @memberof UserSvcInvite
      */
-    contactId: string;
+    contactId?: string;
     /**
      *
      * @type {string}
@@ -62,7 +62,7 @@ export interface UserSvcInvite {
      */
     ownerIds: Array<string>;
     /**
-     * RoleId specifies the role to be assigned to the ContactId.
+     * Role specifies the role to be assigned to the ContactId.
      * Callers can only assign roles they own, identified by their service slug
      * (e.g., if "my-service" creates an invite, the role must be "my-service:admin").
      * Dynamic organization roles can also be assigned
@@ -71,13 +71,21 @@ export interface UserSvcInvite {
      * @type {string}
      * @memberof UserSvcInvite
      */
-    roleId: string;
+    role: string;
     /**
      *
      * @type {string}
      * @memberof UserSvcInvite
      */
     updatedAt?: string;
+    /**
+     * UserId is the recipient of the invite.
+     * If the user is already registered, the role is assigned immediately;
+     * otherwise, it is applied upon registration.
+     * @type {string}
+     * @memberof UserSvcInvite
+     */
+    userId?: string;
 }
 /**
  * Check if a given object implements the UserSvcInvite interface.

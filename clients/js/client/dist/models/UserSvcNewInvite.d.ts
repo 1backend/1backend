@@ -16,11 +16,13 @@
  */
 export interface UserSvcNewInvite {
     /**
-     *
+     * ContactId is the the recipient of the invite.
+     * If the user is already registered, the role is assigned immediately;
+     * otherwise, it is applied upon registration.
      * @type {string}
      * @memberof UserSvcNewInvite
      */
-    contactId: string;
+    contactId?: string;
     /**
      *
      * @type {string}
@@ -32,7 +34,15 @@ export interface UserSvcNewInvite {
      * @type {string}
      * @memberof UserSvcNewInvite
      */
-    roleId: string;
+    role: string;
+    /**
+     * UserId is the recipient of the invite.
+     * If the user is already registered, the role is assigned immediately;
+     * otherwise, it is applied upon registration.
+     * @type {string}
+     * @memberof UserSvcNewInvite
+     */
+    userId?: string;
 }
 /**
  * Check if a given object implements the UserSvcNewInvite interface.

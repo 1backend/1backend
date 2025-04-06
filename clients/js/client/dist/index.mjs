@@ -8822,15 +8822,13 @@ function UserSvcHasPermissionResponseToJSONTyped(value, ignoreDiscriminator = fa
  * Check if a given object implements the UserSvcInvite interface.
  */
 function instanceOfUserSvcInvite(value) {
-    if (!('contactId' in value) || value['contactId'] === undefined)
-        return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined)
         return false;
     if (!('id' in value) || value['id'] === undefined)
         return false;
     if (!('ownerIds' in value) || value['ownerIds'] === undefined)
         return false;
-    if (!('roleId' in value) || value['roleId'] === undefined)
+    if (!('role' in value) || value['role'] === undefined)
         return false;
     return true;
 }
@@ -8843,14 +8841,15 @@ function UserSvcInviteFromJSONTyped(json, ignoreDiscriminator) {
     }
     return {
         'appliedAt': json['appliedAt'] == null ? undefined : json['appliedAt'],
-        'contactId': json['contactId'],
+        'contactId': json['contactId'] == null ? undefined : json['contactId'],
         'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'expiresAt': json['expiresAt'] == null ? undefined : json['expiresAt'],
         'id': json['id'],
         'ownerIds': json['ownerIds'],
-        'roleId': json['roleId'],
+        'role': json['role'],
         'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'userId': json['userId'] == null ? undefined : json['userId'],
     };
 }
 function UserSvcInviteToJSON(json) {
@@ -8868,8 +8867,9 @@ function UserSvcInviteToJSONTyped(value, ignoreDiscriminator = false) {
         'expiresAt': value['expiresAt'],
         'id': value['id'],
         'ownerIds': value['ownerIds'],
-        'roleId': value['roleId'],
+        'role': value['role'],
         'updatedAt': value['updatedAt'],
+        'userId': value['userId'],
     };
 }
 
@@ -8987,7 +8987,8 @@ function UserSvcListInvitesRequestFromJSONTyped(json, ignoreDiscriminator) {
     }
     return {
         'contactId': json['contactId'] == null ? undefined : json['contactId'],
-        'roleId': json['roleId'] == null ? undefined : json['roleId'],
+        'role': json['role'] == null ? undefined : json['role'],
+        'userId': json['userId'] == null ? undefined : json['userId'],
     };
 }
 function UserSvcListInvitesRequestToJSON(json) {
@@ -8999,7 +9000,8 @@ function UserSvcListInvitesRequestToJSONTyped(value, ignoreDiscriminator = false
     }
     return {
         'contactId': value['contactId'],
-        'roleId': value['roleId'],
+        'role': value['role'],
+        'userId': value['userId'],
     };
 }
 
@@ -9344,9 +9346,7 @@ function UserSvcLoginResponseToJSONTyped(value, ignoreDiscriminator = false) {
  * Check if a given object implements the UserSvcNewInvite interface.
  */
 function instanceOfUserSvcNewInvite(value) {
-    if (!('contactId' in value) || value['contactId'] === undefined)
-        return false;
-    if (!('roleId' in value) || value['roleId'] === undefined)
+    if (!('role' in value) || value['role'] === undefined)
         return false;
     return true;
 }
@@ -9358,9 +9358,10 @@ function UserSvcNewInviteFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'contactId': json['contactId'],
+        'contactId': json['contactId'] == null ? undefined : json['contactId'],
         'id': json['id'] == null ? undefined : json['id'],
-        'roleId': json['roleId'],
+        'role': json['role'],
+        'userId': json['userId'] == null ? undefined : json['userId'],
     };
 }
 function UserSvcNewInviteToJSON(json) {
@@ -9373,7 +9374,8 @@ function UserSvcNewInviteToJSONTyped(value, ignoreDiscriminator = false) {
     return {
         'contactId': value['contactId'],
         'id': value['id'],
-        'roleId': value['roleId'],
+        'role': value['role'],
+        'userId': value['userId'],
     };
 }
 
@@ -12694,44 +12696,6 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Assigns a role to a user. The caller can only assign roles they own. A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
-     * Assign Role
-     */
-    assignRoleRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userId'] == null) {
-                throw new RequiredError('userId', 'Required parameter "userId" was null or undefined when calling assignRole().');
-            }
-            if (requestParameters['role'] == null) {
-                throw new RequiredError('role', 'Required parameter "role" was null or undefined when calling assignRole().');
-            }
-            const queryParameters = {};
-            const headerParameters = {};
-            headerParameters['Content-Type'] = 'application/json';
-            if (this.configuration && this.configuration.apiKey) {
-                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
-            }
-            const response = yield this.request({
-                path: `/user-svc/user/{userId}/role/{role}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))).replace(`{${"role"}}`, encodeURIComponent(String(requestParameters['role']))),
-                method: 'PUT',
-                headers: headerParameters,
-                query: queryParameters,
-                body: requestParameters['body'],
-            }, initOverrides);
-            return new JSONApiResponse(response);
-        });
-    }
-    /**
-     * Assigns a role to a user. The caller can only assign roles they own. A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
-     * Assign Role
-     */
-    assignRole(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.assignRoleRaw(requestParameters, initOverrides);
-            return yield response.value();
-        });
-    }
-    /**
      * Allows an authenticated user to change their own password.
      * Change User Password
      */
@@ -13237,7 +13201,7 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Invite a list of users by contact ID to acquire a role. Works on future or current users. A user can only invite an other user to a role if the user owns that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
+     * Invite a list of users by contact or user Id to acquire a role. Works on future or current users.  A user can only invite an other user to a role if the user owns that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
      * Save Invites
      */
     saveInvitesRaw(requestParameters, initOverrides) {
@@ -13262,7 +13226,7 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Invite a list of users by contact ID to acquire a role. Works on future or current users. A user can only invite an other user to a role if the user owns that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
+     * Invite a list of users by contact or user Id to acquire a role. Works on future or current users.  A user can only invite an other user to a role if the user owns that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin.  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".
      * Save Invites
      */
     saveInvites(requestParameters, initOverrides) {

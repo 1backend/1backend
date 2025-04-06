@@ -63,12 +63,14 @@ func TestListPets(t *testing.T) {
 	})
 
 	t.Run("admin assigns role to user", func(t *testing.T) {
+		require.NotEmpty(t, tokens[0].UserId)
+
 		_, rsp, err := serverAdminClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
 				Invites: []openapi.UserSvcNewInvite{
 					{
-						ContactId: openapi.PtrString(tokens[0].UserId),
-						Role:      basicservice.RolePetManager,
+						UserId: openapi.PtrString(tokens[0].UserId),
+						Role:   basicservice.RolePetManager,
 					},
 				},
 			}).Execute()

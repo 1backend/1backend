@@ -16,7 +16,7 @@ NVIDIA GeForce RTX 3090, 52, 0, 24576, 2600, 26.85, 350.00, 535.183.01, 00000000
 `
 
 func TestNvidiaSmiOutput(t *testing.T) {
-	ns := registryservice.RegistryService{URL: "testhost:58231"}
+	ns := registryservice.RegistryService{URL: "testhost:11337"}
 
 	gpus, err := ns.ParseNvidiaSmiOutput(nvidiaSmiOutput)
 	require.NoError(t, err)
@@ -24,7 +24,7 @@ func TestNvidiaSmiOutput(t *testing.T) {
 	require.Equal(t, 2, len(gpus))
 
 	gpu1 := gpus[0]
-	require.Equal(t, "testhost:58231:0", gpu1.Id)
+	require.Equal(t, "testhost:11337:0", gpu1.Id)
 	require.Equal(t, 0, gpu1.IntraNodeId)
 	require.Equal(t, "NVIDIA GeForce RTX 3090", gpu1.Name)
 	require.Equal(t, "00000000:04:00.0", gpu1.BusId)
@@ -38,7 +38,7 @@ func TestNvidiaSmiOutput(t *testing.T) {
 	require.Equal(t, "Default", gpu1.ComputeMode)
 
 	gpu2 := gpus[1]
-	require.Equal(t, "testhost:58231:1", gpu2.Id)
+	require.Equal(t, "testhost:11337:1", gpu2.Id)
 	require.Equal(t, 1, gpu2.IntraNodeId)
 	require.Equal(t, "NVIDIA GeForce RTX 3090", gpu2.Name)
 	require.Equal(t, "00000000:2B:00.0", gpu2.BusId)
@@ -59,7 +59,7 @@ some more lines
 `
 
 func TestNvidiaSmiQueryOutput(t *testing.T) {
-	ns := registryservice.RegistryService{URL: "testhost:58231"}
+	ns := registryservice.RegistryService{URL: "testhost:11337"}
 
 	cudaVersion, err := ns.ParseNvidiaSmiQueryOutput(nvidiaSmiQueryOutput)
 	require.NoError(t, err)

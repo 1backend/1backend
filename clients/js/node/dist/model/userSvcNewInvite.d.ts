@@ -10,9 +10,16 @@
  * Do not edit the class manually.
  */
 export declare class UserSvcNewInvite {
-    'contactId': string;
+    /**
+    * ContactId is the the recipient of the invite. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
+    */
+    'contactId'?: string;
     'id'?: string;
-    'roleId': string;
+    'role': string;
+    /**
+    * UserId is the recipient of the invite. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
+    */
+    'userId'?: string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

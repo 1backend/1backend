@@ -15,9 +15,7 @@
  * Check if a given object implements the UserSvcNewInvite interface.
  */
 export function instanceOfUserSvcNewInvite(value) {
-    if (!('contactId' in value) || value['contactId'] === undefined)
-        return false;
-    if (!('roleId' in value) || value['roleId'] === undefined)
+    if (!('role' in value) || value['role'] === undefined)
         return false;
     return true;
 }
@@ -29,9 +27,10 @@ export function UserSvcNewInviteFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'contactId': json['contactId'],
+        'contactId': json['contactId'] == null ? undefined : json['contactId'],
         'id': json['id'] == null ? undefined : json['id'],
-        'roleId': json['roleId'],
+        'role': json['role'],
+        'userId': json['userId'] == null ? undefined : json['userId'],
     };
 }
 export function UserSvcNewInviteToJSON(json) {
@@ -44,6 +43,7 @@ export function UserSvcNewInviteToJSONTyped(value, ignoreDiscriminator = false) 
     return {
         'contactId': value['contactId'],
         'id': value['id'],
-        'roleId': value['roleId'],
+        'role': value['role'],
+        'userId': value['userId'],
     };
 }

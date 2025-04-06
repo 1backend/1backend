@@ -20,11 +20,13 @@ import { mapValues } from '../runtime';
  */
 export interface UserSvcNewInvite {
     /**
-     * 
+     * ContactId is the the recipient of the invite.
+     * If the user is already registered, the role is assigned immediately;
+     * otherwise, it is applied upon registration.
      * @type {string}
      * @memberof UserSvcNewInvite
      */
-    contactId: string;
+    contactId?: string;
     /**
      * 
      * @type {string}
@@ -36,15 +38,22 @@ export interface UserSvcNewInvite {
      * @type {string}
      * @memberof UserSvcNewInvite
      */
-    roleId: string;
+    role: string;
+    /**
+     * UserId is the recipient of the invite.
+     * If the user is already registered, the role is assigned immediately;
+     * otherwise, it is applied upon registration.
+     * @type {string}
+     * @memberof UserSvcNewInvite
+     */
+    userId?: string;
 }
 
 /**
  * Check if a given object implements the UserSvcNewInvite interface.
  */
 export function instanceOfUserSvcNewInvite(value: object): value is UserSvcNewInvite {
-    if (!('contactId' in value) || value['contactId'] === undefined) return false;
-    if (!('roleId' in value) || value['roleId'] === undefined) return false;
+    if (!('role' in value) || value['role'] === undefined) return false;
     return true;
 }
 
@@ -58,9 +67,10 @@ export function UserSvcNewInviteFromJSONTyped(json: any, ignoreDiscriminator: bo
     }
     return {
         
-        'contactId': json['contactId'],
+        'contactId': json['contactId'] == null ? undefined : json['contactId'],
         'id': json['id'] == null ? undefined : json['id'],
-        'roleId': json['roleId'],
+        'role': json['role'],
+        'userId': json['userId'] == null ? undefined : json['userId'],
     };
 }
 
@@ -77,7 +87,8 @@ export function UserSvcNewInviteToJSONTyped(value?: UserSvcNewInvite | null, ign
         
         'contactId': value['contactId'],
         'id': value['id'],
-        'roleId': value['roleId'],
+        'role': value['role'],
+        'userId': value['userId'],
     };
 }
 

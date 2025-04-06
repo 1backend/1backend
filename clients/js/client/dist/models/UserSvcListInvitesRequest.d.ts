@@ -26,7 +26,13 @@ export interface UserSvcListInvitesRequest {
      * @type {string}
      * @memberof UserSvcListInvitesRequest
      */
-    roleId?: string;
+    role?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserSvcListInvitesRequest
+     */
+    userId?: string;
 }
 /**
  * Check if a given object implements the UserSvcListInvitesRequest interface.

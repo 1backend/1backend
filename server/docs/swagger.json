@@ -4155,7 +4155,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Invite a list of users by contact ID to acquire a role. Works on future or current users.\nA user can only invite an other user to a role if the user owns that role.\n\nA user \"owns\" a role in the following cases:\n- A static role where the role ID is prefixed with the caller's slug.\n- Any dynamic or static role where the caller is an admin.\n\nExamples:\n- A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\".\n- A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\".\n- A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".",
+                "description": "Invite a list of users by contact or user Id to acquire a role.\nWorks on future or current users.\n\nA user can only invite an other user to a role if the user owns that role.\n\nA user \"owns\" a role in the following cases:\n- A static role where the role ID is prefixed with the caller's slug.\n- Any dynamic or static role where the caller is an admin.\n\nExamples:\n- A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\".\n- A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\".\n- A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".",
                 "consumes": [
                     "application/json"
                 ],
@@ -7894,7 +7894,7 @@
                 "nodeUrl": {
                     "description": "NodeURL is the URL of the 1Backend server the instance is running on.\nTo have a NodeURL the instance must either:\n- Be deployed by 1Backend\n- Declare the 1Backend server URL when registering its instance",
                     "type": "string",
-                    "example": "https://myserver.com:58231"
+                    "example": "https://myserver.com:11337"
                 },
                 "path": {
                     "description": "Path of the instance address. Optional (e.g., \"/api\")",
