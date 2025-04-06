@@ -58,11 +58,15 @@ func TestCountPets(t *testing.T) {
 	require.NoError(t, err)
 
 	t.Run("admin assigns role to user so user can save a pet first", func(t *testing.T) {
-		_, rsp, err := serverAdminClient.UserSvcAPI.AssignRole(
-			context.Background(),
-			tokens[0].UserId,
-			"basic-svc:pet:manager",
-		).Execute()
+		_, rsp, err := serverAdminClient.UserSvcAPI.SaveInvites(context.Background()).
+			Body(openapi.UserSvcSaveInvitesRequest{
+				Invites: []openapi.UserSvcNewInvite{
+					{
+						UserId: openapi.PtrString(tokens[0].UserId),
+						Role:   "basic-svc:pet:manager",
+					},
+				},
+			}).Execute()
 
 		require.NoError(t, err, rsp)
 	})
