@@ -1,6 +1,7 @@
 name: "E2E: local Docker Compose + run JS/TS client example"
 
 on:
+  pull_request:
   push:
     branches:
       - "**"

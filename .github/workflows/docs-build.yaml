@@ -1,6 +1,7 @@
 name: Documentation build
 
 on:
+  pull_request:
   push:
     branches:
       - "**"

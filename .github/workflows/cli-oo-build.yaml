@@ -1,6 +1,7 @@
 name: CLI OO build
 
 on:
+  pull_request:
   push:
     branches:
       - "**"

@@ -1,6 +1,7 @@
 name: "Go SDK build"
 
 on:
+  pull_request:
   push:
 
 jobs:

@@ -1,6 +1,7 @@
 name: Go client build
 
 on:
+  pull_request:
   push:
     branches:
       - "**"

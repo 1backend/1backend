@@ -2,6 +2,7 @@ name: "1Backend backend tests"
 
 on:
   push:
+  pull_request:
 
 jobs:
   test:
