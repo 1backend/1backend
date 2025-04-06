@@ -89,7 +89,7 @@ func (g *DataService) Upsert(
 		return
 	}
 
-	identifiers := append(claims.RoleIds, isAuthRsp.User.Id)
+	identifiers := append(claims.Roles, isAuthRsp.User.Id)
 
 	objectId := mux.Vars(r)
 	req.Object.Id = objectId["objectId"]

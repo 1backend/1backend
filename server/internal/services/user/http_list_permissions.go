@@ -56,7 +56,7 @@ func (s *UserService) ListPermissions(
 		return
 	}
 	rolesIndex := map[string]bool{}
-	for _, role := range claim.RoleIds {
+	for _, role := range claim.Roles {
 		rolesIndex[role] = true
 	}
 	for _, role := range req.Roles {
@@ -88,8 +88,8 @@ func (s *UserService) listPermissions(
 		roles = append(roles, role)
 	}
 
-	permissionsI, err := s.permissionRoleLinksStore.Query(
-		datastore.IsInList([]string{"role"}, roles...),
+	permissionsI, err := s.grantsStore.Query(
+		datastore.Intersects([]string{"roles"}, roles),
 	).
 		OrderBy(
 			datastore.OrderByField("createdAt", false),
@@ -102,7 +102,7 @@ func (s *UserService) listPermissions(
 
 	permissions := []string{}
 	for _, permissionI := range permissionsI {
-		permissions = append(permissions, permissionI.(*user.PermissionRoleLink).Permission)
+		permissions = append(permissions, permissionI.(*user.Grant).Permission)
 	}
 
 	return permissions, nil

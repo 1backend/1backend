@@ -21,7 +21,8 @@ var _ MappedNullable = &UserSvcListInvitesRequest{}
 // UserSvcListInvitesRequest struct for UserSvcListInvitesRequest
 type UserSvcListInvitesRequest struct {
 	ContactId *string `json:"contactId,omitempty"`
-	RoleId *string `json:"roleId,omitempty"`
+	Role *string `json:"role,omitempty"`
+	UserId *string `json:"userId,omitempty"`
 }
 
 // NewUserSvcListInvitesRequest instantiates a new UserSvcListInvitesRequest object
@@ -73,36 +74,68 @@ func (o *UserSvcListInvitesRequest) SetContactId(v string) {
 	o.ContactId = &v
 }
 
-// GetRoleId returns the RoleId field value if set, zero value otherwise.
-func (o *UserSvcListInvitesRequest) GetRoleId() string {
-	if o == nil || IsNil(o.RoleId) {
+// GetRole returns the Role field value if set, zero value otherwise.
+func (o *UserSvcListInvitesRequest) GetRole() string {
+	if o == nil || IsNil(o.Role) {
 		var ret string
 		return ret
 	}
-	return *o.RoleId
+	return *o.Role
 }
 
-// GetRoleIdOk returns a tuple with the RoleId field value if set, nil otherwise
+// GetRoleOk returns a tuple with the Role field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcListInvitesRequest) GetRoleIdOk() (*string, bool) {
-	if o == nil || IsNil(o.RoleId) {
+func (o *UserSvcListInvitesRequest) GetRoleOk() (*string, bool) {
+	if o == nil || IsNil(o.Role) {
 		return nil, false
 	}
-	return o.RoleId, true
+	return o.Role, true
 }
 
-// HasRoleId returns a boolean if a field has been set.
-func (o *UserSvcListInvitesRequest) HasRoleId() bool {
-	if o != nil && !IsNil(o.RoleId) {
+// HasRole returns a boolean if a field has been set.
+func (o *UserSvcListInvitesRequest) HasRole() bool {
+	if o != nil && !IsNil(o.Role) {
 		return true
 	}
 
 	return false
 }
 
-// SetRoleId gets a reference to the given string and assigns it to the RoleId field.
-func (o *UserSvcListInvitesRequest) SetRoleId(v string) {
-	o.RoleId = &v
+// SetRole gets a reference to the given string and assigns it to the Role field.
+func (o *UserSvcListInvitesRequest) SetRole(v string) {
+	o.Role = &v
+}
+
+// GetUserId returns the UserId field value if set, zero value otherwise.
+func (o *UserSvcListInvitesRequest) GetUserId() string {
+	if o == nil || IsNil(o.UserId) {
+		var ret string
+		return ret
+	}
+	return *o.UserId
+}
+
+// GetUserIdOk returns a tuple with the UserId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListInvitesRequest) GetUserIdOk() (*string, bool) {
+	if o == nil || IsNil(o.UserId) {
+		return nil, false
+	}
+	return o.UserId, true
+}
+
+// HasUserId returns a boolean if a field has been set.
+func (o *UserSvcListInvitesRequest) HasUserId() bool {
+	if o != nil && !IsNil(o.UserId) {
+		return true
+	}
+
+	return false
+}
+
+// SetUserId gets a reference to the given string and assigns it to the UserId field.
+func (o *UserSvcListInvitesRequest) SetUserId(v string) {
+	o.UserId = &v
 }
 
 func (o UserSvcListInvitesRequest) MarshalJSON() ([]byte, error) {
@@ -118,8 +151,11 @@ func (o UserSvcListInvitesRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ContactId) {
 		toSerialize["contactId"] = o.ContactId
 	}
-	if !IsNil(o.RoleId) {
-		toSerialize["roleId"] = o.RoleId
+	if !IsNil(o.Role) {
+		toSerialize["role"] = o.Role
+	}
+	if !IsNil(o.UserId) {
+		toSerialize["userId"] = o.UserId
 	}
 	return toSerialize, nil
 }

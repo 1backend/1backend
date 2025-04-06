@@ -79,8 +79,8 @@ func (s *UserService) listInvites(
 	if req.ContactId != "" {
 		filters = append(filters, datastore.Equals([]string{"contactId"}, req.ContactId))
 	}
-	if req.RoleId != "" {
-		filters = append(filters, datastore.Equals([]string{"roleId"}, req.RoleId))
+	if req.Role != "" {
+		filters = append(filters, datastore.Equals([]string{"role"}, req.Role))
 	}
 
 	inviteIs, err := s.invitesStore.Query(filters...).Find()

@@ -5005,77 +5005,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/user-svc/user/{userId}/role/{role}": {
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Assigns a role to a user. The caller can only assign roles they own.\nA user \"owns\" a role in the following cases:\n- A static role where the role ID is prefixed with the caller's slug.\n- Any dynamic or static role where the caller is an admin.\n\nExamples:\n- A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\".\n- A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\".\n- A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User Svc"
-                ],
-                "summary": "Assign Role",
-                "operationId": "assignRole",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Role ID",
-                        "name": "role",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Assign Role Request",
-                        "name": "body",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.AssignRoleRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.AssignRoleResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid JSON",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Role not found",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/user-svc/users": {
             "post": {
                 "security": [
@@ -8840,12 +8769,6 @@ const docTemplate = `{
         "user_svc.AddUserToOrganizationResponse": {
             "type": "object"
         },
-        "user_svc.AssignRoleRequest": {
-            "type": "object"
-        },
-        "user_svc.AssignRoleResponse": {
-            "type": "object"
-        },
         "user_svc.AuthToken": {
             "type": "object",
             "required": [
@@ -9047,18 +8970,17 @@ const docTemplate = `{
         "user_svc.Invite": {
             "type": "object",
             "required": [
-                "contactId",
                 "createdAt",
                 "id",
                 "ownerIds",
-                "roleId"
+                "role"
             ],
             "properties": {
                 "appliedAt": {
                     "type": "string"
                 },
                 "contactId": {
-                    "description": "ContactId represents the recipient of the invite.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
+                    "description": "ContactId is the the recipient of the invite.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
                     "type": "string"
                 },
                 "createdAt": {
@@ -9081,11 +9003,15 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
-                "roleId": {
-                    "description": "RoleId specifies the role to be assigned to the ContactId.\nCallers can only assign roles they own, identified by their service slug\n(e.g., if \"my-service\" creates an invite, the role must be \"my-service:admin\").\nDynamic organization roles can also be assigned\n(e.g., \"user-svc:org:{%orgId}:admin\" or \"user-svc:org:{%orgId}:user\"),\nbut in this case, the caller must be an admin of the target organization.",
+                "role": {
+                    "description": "Role specifies the role to be assigned to the ContactId.\nCallers can only assign roles they own, identified by their service slug\n(e.g., if \"my-service\" creates an invite, the role must be \"my-service:admin\").\nDynamic organization roles can also be assigned\n(e.g., \"user-svc:org:{%orgId}:admin\" or \"user-svc:org:{%orgId}:user\"),\nbut in this case, the caller must be an admin of the target organization.",
                     "type": "string"
                 },
                 "updatedAt": {
+                    "type": "string"
+                },
+                "userId": {
+                    "description": "UserId is the recipient of the invite.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
                     "type": "string"
                 }
             }
@@ -9118,7 +9044,10 @@ const docTemplate = `{
                 "contactId": {
                     "type": "string"
                 },
-                "roleId": {
+                "role": {
+                    "type": "string"
+                },
+                "userId": {
                     "type": "string"
                 }
             }
@@ -9209,18 +9138,22 @@ const docTemplate = `{
         "user_svc.NewInvite": {
             "type": "object",
             "required": [
-                "contactId",
-                "roleId"
+                "role"
             ],
             "properties": {
                 "contactId": {
+                    "description": "ContactId is the the recipient of the invite.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
                     "type": "string"
                 },
                 "id": {
                     "type": "string",
                     "example": "inv_fIYPbMHIcI"
                 },
-                "roleId": {
+                "role": {
+                    "type": "string"
+                },
+                "userId": {
+                    "description": "UserId is the recipient of the invite.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
                     "type": "string"
                 }
             }

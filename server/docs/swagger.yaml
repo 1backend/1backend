@@ -2661,10 +2661,6 @@ definitions:
     type: object
   user_svc.AddUserToOrganizationResponse:
     type: object
-  user_svc.AssignRoleRequest:
-    type: object
-  user_svc.AssignRoleResponse:
-    type: object
   user_svc.AuthToken:
     properties:
       active:
@@ -2826,7 +2822,7 @@ definitions:
         type: string
       contactId:
         description: |-
-          ContactId represents the recipient of the invite.
+          ContactId is the the recipient of the invite.
           If the user is already registered, the role is assigned immediately;
           otherwise, it is applied upon registration.
         type: string
@@ -2847,9 +2843,9 @@ definitions:
         items:
           type: string
         type: array
-      roleId:
+      role:
         description: |-
-          RoleId specifies the role to be assigned to the ContactId.
+          Role specifies the role to be assigned to the ContactId.
           Callers can only assign roles they own, identified by their service slug
           (e.g., if "my-service" creates an invite, the role must be "my-service:admin").
           Dynamic organization roles can also be assigned
@@ -2858,12 +2854,17 @@ definitions:
         type: string
       updatedAt:
         type: string
+      userId:
+        description: |-
+          UserId is the recipient of the invite.
+          If the user is already registered, the role is assigned immediately;
+          otherwise, it is applied upon registration.
+        type: string
     required:
-    - contactId
     - createdAt
     - id
     - ownerIds
-    - roleId
+    - role
     type: object
   user_svc.ListGrantsRequest:
     properties:
@@ -2883,7 +2884,9 @@ definitions:
     properties:
       contactId:
         type: string
-      roleId:
+      role:
+        type: string
+      userId:
         type: string
     type: object
   user_svc.ListInvitesResponse:
@@ -2941,15 +2944,24 @@ definitions:
   user_svc.NewInvite:
     properties:
       contactId:
+        description: |-
+          ContactId is the the recipient of the invite.
+          If the user is already registered, the role is assigned immediately;
+          otherwise, it is applied upon registration.
         type: string
       id:
         example: inv_fIYPbMHIcI
         type: string
-      roleId:
+      role:
+        type: string
+      userId:
+        description: |-
+          UserId is the recipient of the invite.
+          If the user is already registered, the role is assigned immediately;
+          otherwise, it is applied upon registration.
         type: string
     required:
-    - contactId
-    - roleId
+    - role
     type: object
   user_svc.Organization:
     properties:
@@ -6508,61 +6520,6 @@ paths:
       security:
       - BearerAuth: []
       summary: Save User
-      tags:
-      - User Svc
-  /user-svc/user/{userId}/role/{role}:
-    put:
-      consumes:
-      - application/json
-      description: |-
-        Assigns a role to a user. The caller can only assign roles they own.
-        A user "owns" a role in the following cases:
-        - A static role where the role ID is prefixed with the caller's slug.
-        - Any dynamic or static role where the caller is an admin.
-
-        Examples:
-        - A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
-        - A user with any slug who has the role "my-service:admin" owns "my-service:user".
-        - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
-      operationId: assignRole
-      parameters:
-      - description: User ID
-        in: path
-        name: userId
-        required: true
-        type: string
-      - description: Role ID
-        in: path
-        name: role
-        required: true
-        type: string
-      - description: Assign Role Request
-        in: body
-        name: body
-        schema:
-          $ref: '#/definitions/user_svc.AssignRoleRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_svc.AssignRoleResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "500":
-          description: Role not found
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Assign Role
       tags:
       - User Svc
   /user-svc/user/by-token:

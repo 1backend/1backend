@@ -15,7 +15,6 @@ package userservice
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
@@ -97,8 +96,8 @@ func (s *UserService) deleteUser(userId string) error {
 	}
 
 	if isAdminUser {
-		adminUsers, err := s.userRoleLinksStore.Query(
-			datastore.Equals(datastore.Field("roleId"), usertypes.RoleAdmin),
+		adminUsers, err := s.invitesStore.Query(
+			datastore.Equals(datastore.Field("role"), usertypes.RoleAdmin),
 		).Find()
 		if err != nil {
 			return err
@@ -115,8 +114,9 @@ func (s *UserService) deleteUser(userId string) error {
 }
 
 func (s *UserService) isAdmin(userId string) (bool, error) {
-	_, isAdminUser, err := s.userRoleLinksStore.Query(
-		datastore.Id(fmt.Sprintf("%v:%v", userId, usertypes.RoleAdmin)),
+	_, isAdminUser, err := s.invitesStore.Query(
+		datastore.Equals([]string{"userId"}, userId),
+		datastore.Equals([]string{"role"}, usertypes.RoleAdmin),
 	).FindOne()
 	if err != nil {
 		return false, err

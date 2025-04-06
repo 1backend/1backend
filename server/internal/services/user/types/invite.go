@@ -35,18 +35,23 @@ type Invite struct {
 	ExpiresAt time.Time `json:"expiresAt,omitempty"`
 	AppliedAt time.Time `json:"appliedAt,omitempty"`
 
-	// ContactId represents the recipient of the invite.
+	// ContactId is the the recipient of the invite.
 	// If the user is already registered, the role is assigned immediately;
 	// otherwise, it is applied upon registration.
-	ContactId string `json:"contactId" binding:"required"`
+	ContactId string `json:"contactId,omitempty"`
 
-	// RoleId specifies the role to be assigned to the ContactId.
+	// UserId is the recipient of the invite.
+	// If the user is already registered, the role is assigned immediately;
+	// otherwise, it is applied upon registration.
+	UserId string `json:"userId,omitempty"`
+
+	// Role specifies the role to be assigned to the ContactId.
 	// Callers can only assign roles they own, identified by their service slug
 	// (e.g., if "my-service" creates an invite, the role must be "my-service:admin").
 	// Dynamic organization roles can also be assigned
 	// (e.g., "user-svc:org:{%orgId}:admin" or "user-svc:org:{%orgId}:user"),
 	// but in this case, the caller must be an admin of the target organization.
-	RoleId string `json:"roleId" binding:"required"`
+	Role string `json:"role" binding:"required"`
 
 	// OwnerIds specifies the users who created the invite.
 	// If you create an invite that already exists for a given role and contact ID,
@@ -61,9 +66,19 @@ func (i Invite) GetId() string {
 // NewInvite is used to create a new invite.
 // It is a subset of the Invite struct, as some fields are set automatically.
 type NewInvite struct {
-	Id        string `json:"id,omitempty" example:"inv_fIYPbMHIcI"`
-	ContactId string `json:"contactId" binding:"required"`
-	RoleId    string `json:"roleId" binding:"required"`
+	Id string `json:"id,omitempty" example:"inv_fIYPbMHIcI"`
+
+	// ContactId is the the recipient of the invite.
+	// If the user is already registered, the role is assigned immediately;
+	// otherwise, it is applied upon registration.
+	ContactId string `json:"contactId,omitempty"`
+
+	// UserId is the recipient of the invite.
+	// If the user is already registered, the role is assigned immediately;
+	// otherwise, it is applied upon registration.
+	UserId string `json:"userId,omitempty"`
+
+	Role string `json:"role" binding:"required"`
 }
 
 type SaveInvitesRequest struct {
@@ -75,8 +90,9 @@ type SaveInvitesResponse struct {
 }
 
 type ListInvitesRequest struct {
+	UserId    string `json:"userId,omitempty"`
 	ContactId string `json:"contactId,omitempty"`
-	RoleId    string `json:"roleId,omitempty"`
+	Role      string `json:"role,omitempty"`
 }
 
 type ListInvitesResponse struct {

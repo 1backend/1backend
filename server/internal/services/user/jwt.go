@@ -57,14 +57,14 @@ func privateKeyFromString(privateKeyPem string) (*rsa.PrivateKey, error) {
 
 func generateJWT(
 	user *usertypes.User,
-	roleIds []string,
+	roles []string,
 	activeOrganizationId string,
 	privateKey *rsa.PrivateKey,
 ) (string, error) {
 	claims := &auth.Claims{
 		UserId:               user.Id,
 		Slug:                 user.Slug,
-		RoleIds:              roleIds,
+		Roles:                roles,
 		ActiveOrganizationId: activeOrganizationId,
 		RegisteredClaims:     jwt.RegisteredClaims{},
 	}

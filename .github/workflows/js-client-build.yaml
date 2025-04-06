@@ -1,9 +1,7 @@
 name: JS/TS clients build
 
 on:
-  push:
-    branches:
-      - "**"
+  pull_request:
 
 jobs:
   build:

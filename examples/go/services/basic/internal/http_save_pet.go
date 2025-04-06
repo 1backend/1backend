@@ -41,7 +41,7 @@ func (s *BasicService) SavePet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !lo.Contains(token.RoleIds, RolePetManager) {
+	if !lo.Contains(token.Roles, RolePetManager) {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte("Unauthorized"))
 		return

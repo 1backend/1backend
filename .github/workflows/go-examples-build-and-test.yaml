@@ -1,7 +1,7 @@
 name: "E2E: Go examples work"
 
 on:
-  push:
+  pull_request:
 
 jobs:
   test:

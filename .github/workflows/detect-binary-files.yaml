@@ -1,12 +1,7 @@
 name: Detect binary files
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
 
 jobs:
   detect-binary-files:

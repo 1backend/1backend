@@ -53,8 +53,8 @@ func TestOwnsRole(t *testing.T) {
 
 	t.Run("org user does not own org user role", func(t *testing.T) {
 		owns := auth.OwnsRole(&auth.Claims{
-			RoleIds: []string{"user-svc:org:{abc}:user"},
-			Slug:    "some-svc",
+			Roles: []string{"user-svc:org:{abc}:user"},
+			Slug:  "some-svc",
 		}, "user-svc:org:{abc}:user")
 
 		require.Equal(t, false, owns)
@@ -62,8 +62,8 @@ func TestOwnsRole(t *testing.T) {
 
 	t.Run("org admin owns org user role", func(t *testing.T) {
 		owns := auth.OwnsRole(&auth.Claims{
-			RoleIds: []string{"user-svc:org:{abc}:admin"},
-			Slug:    "some-svc",
+			Roles: []string{"user-svc:org:{abc}:admin"},
+			Slug:  "some-svc",
 		}, "user-svc:org:{abc}:user")
 
 		require.Equal(t, true, owns)
@@ -71,8 +71,8 @@ func TestOwnsRole(t *testing.T) {
 
 	t.Run("test for prefix logic error", func(t *testing.T) {
 		owns := auth.OwnsRole(&auth.Claims{
-			RoleIds: []string{"user-svc:org:{abc}:admin"},
-			Slug:    "some-svc",
+			Roles: []string{"user-svc:org:{abc}:admin"},
+			Slug:  "some-svc",
 		}, "user-svc:org:{abcd}:user")
 
 		require.Equal(t, false, owns)
@@ -80,8 +80,8 @@ func TestOwnsRole(t *testing.T) {
 
 	t.Run("static admin should own", func(t *testing.T) {
 		owns := auth.OwnsRole(&auth.Claims{
-			RoleIds: []string{"a-role:admin"},
-			Slug:    "some-svc",
+			Roles: []string{"a-role:admin"},
+			Slug:  "some-svc",
 		}, "a-role:user")
 
 		require.Equal(t, true, owns)
@@ -89,8 +89,8 @@ func TestOwnsRole(t *testing.T) {
 
 	t.Run("static non-admin should not own", func(t *testing.T) {
 		owns := auth.OwnsRole(&auth.Claims{
-			RoleIds: []string{"a-role:user"},
-			Slug:    "some-svc",
+			Roles: []string{"a-role:user"},
+			Slug:  "some-svc",
 		}, "a-role:user")
 
 		require.Equal(t, false, owns)
@@ -98,8 +98,8 @@ func TestOwnsRole(t *testing.T) {
 
 	t.Run("admin owns any role", func(t *testing.T) {
 		owns := auth.OwnsRole(&auth.Claims{
-			Slug:    "does-not-matter",
-			RoleIds: []string{"user-svc:admin"},
+			Slug:  "does-not-matter",
+			Roles: []string{"user-svc:admin"},
 		}, "anything")
 
 		require.Equal(t, true, owns)

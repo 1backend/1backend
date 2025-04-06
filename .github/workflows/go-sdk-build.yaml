@@ -1,7 +1,7 @@
 name: "Go SDK build"
 
 on:
-  push:
+  pull_request:
 
 jobs:
   test:
@@ -32,7 +32,7 @@ jobs:
           until docker exec mypostgres pg_isready -U postgres -d mydatabase; do
             sleep 1
           done
-      
+
           echo "PostgreSQL is ready. Running tests..."      
 
           # Run tags with --tags=dist so Postgres based tests run too

@@ -107,7 +107,7 @@ func (s *UserService) hasPermission(
 	if slugGrant {
 		return usr, true, nil
 	}
-	roleLinks, err := s.userRoleLinksStore.Query(
+	invites, err := s.invitesStore.Query(
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 	).Find()
 	if err != nil {
@@ -116,23 +116,23 @@ func (s *UserService) hasPermission(
 	}
 
 	roleIds := []string{}
-	for _, role := range roleLinks {
-		roleIds = append(roleIds, role.(*user.UserRoleLink).RoleId)
+	for _, role := range invites {
+		roleIds = append(roleIds, role.(*user.Invite).Role)
 	}
 
 	roleIdAnys := []any{}
 	for _, roleId := range roleIds {
 		roleIdAnys = append(roleIdAnys, roleId)
 	}
-	permissionLinks, err := s.permissionRoleLinksStore.Query(
-		datastore.IsInList(datastore.Field("role"), roleIdAnys...),
+	grants, err := s.grantsStore.Query(
+		datastore.Intersects(datastore.Field("roles"), roleIdAnys),
 	).Find()
 	if err != nil {
 		return nil, false, err
 	}
 
-	for _, permissionLink := range permissionLinks {
-		if permissionLink.(*user.PermissionRoleLink).Permission == permission {
+	for _, permissionLink := range grants {
+		if permissionLink.(*user.Grant).Permission == permission {
 			return usr, true, nil
 		}
 
@@ -189,7 +189,7 @@ func (s *UserService) hasPermission(
 }
 
 func (s *UserService) getRolesByUserId(userId string) ([]string, error) {
-	roleLinks, err := s.userRoleLinksStore.Query(
+	roleLinks, err := s.invitesStore.Query(
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Find()
 	if err != nil {
@@ -198,7 +198,7 @@ func (s *UserService) getRolesByUserId(userId string) ([]string, error) {
 
 	roles := []string{}
 	for _, role := range roleLinks {
-		roles = append(roles, role.(*user.UserRoleLink).RoleId)
+		roles = append(roles, role.(*user.Invite).Role)
 	}
 
 	return roles, nil
