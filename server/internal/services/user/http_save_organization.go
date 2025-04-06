@@ -197,6 +197,16 @@ func (s *UserService) inactivateTokens(userId string) error {
 	})
 }
 
+func (s *UserService) inactivateToken(tokenId string) error {
+	return s.authTokensStore.Query(
+		datastore.Equals(
+			datastore.Fields("id"),
+			tokenId,
+		)).UpdateFields(map[string]any{
+		"active": false,
+	})
+}
+
 func (s *UserService) addDynamicRoleToUser(userId, role string) error {
 	userQ := s.usersStore.Query(
 		datastore.Id(userId),

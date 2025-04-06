@@ -25,7 +25,7 @@ func (s *UserService) createUser(
 	user *usertypes.User,
 	contacts []usertypes.Contact,
 	password string,
-	roleIds []string,
+	roles []string,
 ) error {
 	if len(contacts) > 0 {
 		_, contactExists, err := s.contactsStore.Query(
@@ -73,15 +73,8 @@ func (s *UserService) createUser(
 		return nil
 	}
 
-	for _, roleId := range roleIds {
-		err = s.assignRole(user.Id, roleId)
-		if err != nil {
-			return err
-		}
-	}
-
-	if len(roleIds) == 0 {
-		err = s.assignRole(user.Id, usertypes.RoleUser)
+	for _, role := range roles {
+		err = s.assignRole(user.Id, role)
 		if err != nil {
 			return err
 		}

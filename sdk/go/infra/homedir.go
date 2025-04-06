@@ -53,6 +53,7 @@ func HomeDir(options HomeDirOptions) (string, error) {
 			fold = options.ConfigFolder
 		}
 		homeDir = path.Join(homeDir, fold)
+
 	}
 
 	return homeDir, nil

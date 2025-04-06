@@ -57,7 +57,9 @@ type DataStoreConfig struct {
 
 func NewDataStoreFactory(options DataStoreConfig) (DataStoreFactory, error) {
 	if options.HomeDir == "" {
-		homeDir, err := HomeDir(HomeDirOptions{})
+		homeDir, err := HomeDir(HomeDirOptions{
+			Test: options.Test,
+		})
 		if err != nil {
 			return nil, err
 		}
@@ -129,7 +131,7 @@ func (df *DataStoreFactoryLocalImpl) Create(tableName string, instance any) (dat
 	defer df.mutex.Unlock()
 
 	if df.localStorePath == "" {
-		localStorePath := path.Join(df.options.HomeDir, onebackendFolder, "data")
+		localStorePath := path.Join(df.options.HomeDir, "data")
 		err := os.MkdirAll(localStorePath, 0755)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to create data folder")

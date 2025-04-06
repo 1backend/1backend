@@ -50,11 +50,12 @@ func (s *UserService) assignRole(userId string, role string) error {
 		return nil
 	}
 
-	err = s.invitesStore.Upsert(&usertypes.Invite{
+	inv := &usertypes.Invite{
 		Id:     sdk.Id("inv"),
 		Role:   role,
 		UserId: user.Id,
-	})
+	}
+	err = s.invitesStore.Upsert(inv)
 	if err != nil {
 		return errors.Wrap(err, "failed to add role to user")
 	}
