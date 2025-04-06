@@ -30,14 +30,15 @@ type UserService struct {
 
 	authorizer auth.Authorizer
 
-	usersStore         datastore.DataStore
-	credentialsStore   datastore.DataStore
-	authTokensStore    datastore.DataStore
-	keyPairsStore      datastore.DataStore
-	contactsStore      datastore.DataStore
-	organizationsStore datastore.DataStore
-	grantsStore        datastore.DataStore
-	invitesStore       datastore.DataStore
+	usersStore                 datastore.DataStore
+	credentialsStore           datastore.DataStore
+	authTokensStore            datastore.DataStore
+	keyPairsStore              datastore.DataStore
+	contactsStore              datastore.DataStore
+	organizationsStore         datastore.DataStore
+	organizationUserLinksStore datastore.DataStore
+	grantsStore                datastore.DataStore
+	invitesStore               datastore.DataStore
 
 	privateKey    *rsa.PrivateKey
 	publicKeyPem  string
