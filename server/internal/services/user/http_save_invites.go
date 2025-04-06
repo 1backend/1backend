@@ -73,6 +73,13 @@ func (s *UserService) SaveInvites(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	authr := auth.AuthorizerImpl{}
+	isAdmin, err := authr.IsAdminFromRequest(s.publicKeyPem, r)
+	if err != nil {
+		w.WriteHeader(http.StatusInsufficientStorage)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
 	claim, err := authr.ParseJWTFromRequest(s.publicKeyPem, r)
 	if err != nil || claim == nil {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -80,11 +87,13 @@ func (s *UserService) SaveInvites(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for _, invite := range req.Invites {
-		if !auth.OwnsRole(claim, invite.Role) {
-			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte("Unauthorized"))
-			return
+	if !isAdmin {
+		for _, invite := range req.Invites {
+			if !auth.OwnsRole(claim, invite.Role) {
+				w.WriteHeader(http.StatusUnauthorized)
+				w.Write([]byte("Unauthorized"))
+				return
+			}
 		}
 	}
 
