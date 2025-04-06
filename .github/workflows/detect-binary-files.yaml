@@ -1,7 +1,6 @@
 name: Detect binary files
 
 on:
-  push:
   pull_request:
 
 jobs:
