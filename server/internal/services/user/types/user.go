@@ -55,22 +55,6 @@ type UserRecord struct {
 	Roles      []string `json:"roles,omitempty"`
 }
 
-type UserRoleLink struct {
-	// userId:roleId
-	Id string `json:"id,omitempty"`
-
-	CreatedAt time.Time  `json:"createdAt,omitempty"`
-	UpdatedAt time.Time  `json:"updatedAt,omitempty"`
-	DeletedAt *time.Time `json:"deletedAt,omitempty"`
-
-	RoleId string `json:"roleId,omitempty"`
-	UserId string `json:"userId,omitempty"`
-}
-
-func (u *UserRoleLink) GetId() string {
-	return u.Id
-}
-
 func (c *User) GetId() string {
 	return c.Id
 }

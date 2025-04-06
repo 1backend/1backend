@@ -128,7 +128,7 @@ func (s *UserService) register(
 	slug,
 	password,
 	name string,
-	roleIds []string,
+	roles []string,
 ) (*user.AuthToken, error) {
 	_, alreadyExists, err := s.usersStore.Query(
 		datastore.Equals(datastore.Field("slug"), slug),
@@ -160,8 +160,8 @@ func (s *UserService) register(
 		return nil, err
 	}
 
-	for _, roleId := range roleIds {
-		err = s.assignRole(user.Id, roleId)
+	for _, role := range roles {
+		err = s.assignRole(user.Id, role)
 		if err != nil {
 			return nil, err
 		}

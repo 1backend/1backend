@@ -30,17 +30,14 @@ type UserService struct {
 
 	authorizer auth.Authorizer
 
-	usersStore                 datastore.DataStore
-	credentialsStore           datastore.DataStore
-	authTokensStore            datastore.DataStore
-	keyPairsStore              datastore.DataStore
-	contactsStore              datastore.DataStore
-	organizationsStore         datastore.DataStore
-	organizationUserLinksStore datastore.DataStore
-	userRoleLinksStore         datastore.DataStore
-	permissionRoleLinksStore   datastore.DataStore
-	grantsStore                datastore.DataStore
-	invitesStore               datastore.DataStore
+	usersStore         datastore.DataStore
+	credentialsStore   datastore.DataStore
+	authTokensStore    datastore.DataStore
+	keyPairsStore      datastore.DataStore
+	contactsStore      datastore.DataStore
+	organizationsStore datastore.DataStore
+	grantsStore        datastore.DataStore
+	invitesStore       datastore.DataStore
 
 	privateKey    *rsa.PrivateKey
 	publicKeyPem  string
@@ -116,22 +113,6 @@ func NewUserService(
 		return nil, err
 	}
 
-	userRoleLinksStore, err := datastoreFactory(
-		"userSvcRoleLinks",
-		&usertypes.UserRoleLink{},
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	permissionRoleLinksStore, err := datastoreFactory(
-		"userSvcPermissionRoleLinks",
-		&usertypes.PermissionRoleLink{},
-	)
-	if err != nil {
-		return nil, err
-	}
-
 	grantsStore, err := datastoreFactory(
 		"userSvcGrants",
 		&usertypes.Grant{},
@@ -150,8 +131,6 @@ func NewUserService(
 		contactsStore:              contactsStore,
 		organizationsStore:         organizationsStore,
 		organizationUserLinksStore: organizationUserLinksStore,
-		userRoleLinksStore:         userRoleLinksStore,
-		permissionRoleLinksStore:   permissionRoleLinksStore,
 		grantsStore:                grantsStore,
 		invitesStore:               invitesStore,
 		isTest:                     isTest,

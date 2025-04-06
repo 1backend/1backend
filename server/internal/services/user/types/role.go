@@ -7,37 +7,7 @@
  */
 package user_svc
 
-import "time"
-
 var (
 	RoleAdmin = "user-svc:admin"
 	RoleUser  = "user-svc:user"
 )
-
-type PermissionRoleLink struct {
-	// permissionId:roleId
-	Id        string    `json:"id,omitempty"`
-	CreatedAt time.Time `json:"createdAt,omitempty"`
-	UpdatedAt time.Time `json:"updatedAt,omitempty"`
-
-	Permission string `json:"permission,omitempty"`
-	Role       string `json:"role,omitempty"`
-}
-
-func (c *PermissionRoleLink) GetId() string {
-	return c.Id
-}
-
-type UnassignRoleRequest struct {
-	UserId string `json:"userId,omitempty"`
-	Role   string `json:"role,omitempty"`
-}
-
-type UnassignRoleResponse struct{}
-
-type ListRolesRequest struct {
-}
-
-type ListRolesResponse struct {
-	Roles []string `json:"roles,omitempty"`
-}

@@ -13,15 +13,14 @@
 package userservice
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-func (s *UserService) assignRole(userId string, roleId string) error {
+func (s *UserService) assignRole(userId string, role string) error {
 	q := s.usersStore.Query(
 		datastore.Id(userId),
 	)
@@ -34,7 +33,7 @@ func (s *UserService) assignRole(userId string, roleId string) error {
 	}
 	user := userI.(*usertypes.User)
 
-	roleLinks, err := s.userRoleLinksStore.Query(
+	invites, err := s.invitesStore.Query(
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Find()
 	if err != nil {
@@ -42,8 +41,8 @@ func (s *UserService) assignRole(userId string, roleId string) error {
 	}
 
 	alreadyHasRole := false
-	for _, v := range roleLinks {
-		if v.(*usertypes.UserRoleLink).RoleId == roleId {
+	for _, v := range invites {
+		if v.(*usertypes.Invite).Role == role {
 			alreadyHasRole = true
 		}
 	}
@@ -51,9 +50,9 @@ func (s *UserService) assignRole(userId string, roleId string) error {
 		return nil
 	}
 
-	err = s.userRoleLinksStore.Upsert(&usertypes.UserRoleLink{
-		Id:     fmt.Sprintf("%v:%v", userId, roleId),
-		RoleId: roleId,
+	err = s.invitesStore.Upsert(&usertypes.Invite{
+		Id:     sdk.Id("inv"),
+		Role:   role,
 		UserId: user.Id,
 	})
 	if err != nil {
@@ -67,16 +66,15 @@ func (s *UserService) removeRoleFromUser(userId string, roleId string) error {
 	q := s.usersStore.Query(
 		datastore.Id(userId),
 	)
-	userI, found, err := q.FindOne()
+	_, found, err := q.FindOne()
 	if err != nil {
 		return nil
 	}
 	if !found {
 		return errors.New("user not found")
 	}
-	user := userI.(*usertypes.User)
 
-	roleLinks, err := s.userRoleLinksStore.Query(
+	invites, err := s.invitesStore.Query(
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Find()
 	if err != nil {
@@ -84,17 +82,18 @@ func (s *UserService) removeRoleFromUser(userId string, roleId string) error {
 	}
 
 	alreadyHasRole := false
-	for _, v := range roleLinks {
-		if v.(*usertypes.UserRoleLink).RoleId == roleId {
+	inviteId := ""
+	for _, v := range invites {
+		if v.(*usertypes.Invite).Role == roleId {
 			alreadyHasRole = true
+			inviteId = v.GetId()
 		}
 	}
 	if !alreadyHasRole {
 		return nil
 	}
 
-	return s.userRoleLinksStore.Query(
-		datastore.Id(
-			fmt.Sprintf("%v:%v", user.Id, roleId))).Delete()
-
+	return s.invitesStore.Query(
+		datastore.Id(inviteId),
+	).Delete()
 }

@@ -197,24 +197,26 @@ func (s *UserService) inactivateTokens(userId string) error {
 	})
 }
 
-func (s *UserService) addDynamicRoleToUser(userId, roleId string) error {
+func (s *UserService) addDynamicRoleToUser(userId, role string) error {
 	userQ := s.usersStore.Query(
 		datastore.Id(userId),
 	)
-	userI, found, err := userQ.FindOne()
+	_, found, err := userQ.FindOne()
 	if err != nil {
 		return err
 	}
 	if !found {
 		return fmt.Errorf("cannot find user %v", userId)
 	}
-	u := userI.(*user.User)
 
-	return s.userRoleLinksStore.Upsert(&user.UserRoleLink{
-		Id:        fmt.Sprintf("%v:%v", u.Id, roleId),
-		CreatedAt: time.Now(),
+	now := time.Now()
 
-		RoleId: roleId,
+	return s.invitesStore.Upsert(&user.Invite{
+		Id:        sdk.Id("inv"),
+		CreatedAt: now,
+		UpdatedAt: now,
+
+		Role:   role,
 		UserId: userId,
 	})
 }
