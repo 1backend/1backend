@@ -17,6 +17,18 @@ The user service is at the heart of 1Backend, managing users, tokens, organizati
 
 > This page provides a high-level overview of `User Svc`. For detailed information, refer to the [User Svc API documentation](/docs/1backend/login).
 
+## Glossary
+
+**Token**: A JWT (JSON Web Token) issued and signed by the User Svc, used to authenticate both human and service accounts.
+
+**Role**: A simple string identifier like `user-svc:user` or `user-svc:org:{orgId}:admin` that represents a specific capability or access level. Roles are embedded in tokens.
+
+**Invite**: A way to assign roles to users—both current and future. Invites allow roles to be claimed later, once the user joins or logs in.
+
+**Permission**: A string such as `petstore-svc:read`, typically mapping to an API action or endpoint. Roles can bundle multiple permissions.
+
+**Grant**: A mechanism for assigning permissions to users or roles. Grants define who can access what by connecting users or roles with specific permissions.
+
 ## Overview
 
 The most important thing about the User Svc is that service (machine) and user (human) accounts look and function the same.
@@ -52,6 +64,22 @@ You can apply these grants with an administrator account in your CI workflow wit
 oo grant save user-prompter-grant.yaml
 ```
 
+## Auth patterns
+
+### Role-Based Access
+
+- **Role-Only Checks**: Authorize users based solely on their assigned roles. This is the simplest method—no need to check individual permissions.
+
+### Permission-Based Access
+
+- **API Permission Check**: Use the `Has Permission` endpoint with the user's authentication headers and a permission ID to verify access dynamically.
+
+- **Cached Role Permissions**: Store `Grant`s locally and check only the user's token for the required role. This is faster and avoids API calls but requires a bit more setup.
+  - An SDK can help simplify this.
+  - If you need to verify a token manually, refer to the `Get Public Key` endpoint.
+
+> If you are looking at restricting access to endpoints in other ways, you might be interested in: [Policy Svc](/docs/built-in-services/policy-svc).
+
 ## Tokens
 
 The User Svc produces a JWT ([JSON Web Token](https://en.wikipedia.org/wiki/JSON_Web_Token)) upon [/user-svc/login](/docs/1backend/login) in the `token.token` field (see the response documentation).
@@ -68,10 +96,15 @@ Use the JWT libraries that are available in your programming language to do that
 
 The structure of the JWT is the following:
 
-```js
-sui: usr_dC4K75Cbp6
-slu: test-user-slug-0
-sri:
+```yaml
+# User Id
+oui: usr_dC4K75Cbp6
+
+# Slug
+olu: test-user-slug-0
+
+# Roles
+oro:
   - user-svc:user
   - user-svc:org:{org_dC4K7NNDCG}:user
 ```
@@ -80,45 +113,28 @@ The field names are kept short to save space, so perhaps the Go definition is al
 
 ```go
 type Claims struct {
-	UserId  string   `json:"sui"` // `sui`: 1backend (previously singulatron) user ids
-	Slug    string   `json:"slu"` // `slu`: 1backend (previously singulatron) slug
-	RoleIds []string `json:"sri"` // `sri`: 1backend (previously singulatron) role ids
+	UserId  string   `json:"oui"` // `oui`: 1backend user ids
+	Slug    string   `json:"osl"` // `osl`: 1backend slug
+	Roles []string   `json:"oro"` // `oro`: 1backend roles
 	jwt.RegisteredClaims
 }
 ```
 
 ## Roles
 
-Every user has a role, and a user token (see more about tokens on this page) produced upon login contains all the roles a user has.
-
 Roles are simply strings. They are not a database record, they don't have an ID, name etc. They are simple strings, such as `user-svc:admin`.
 
-Usually such readable strings are slugs, but in the case of roles slugs were eliminated for simplicity.
+A user token produced upon login contains all the roles a user has.
 
-### Static roles
+> Efficiency Tip: JWT tokens are sent with every request. Keeping the number of roles minimal improves performance.
 
-Static roles, such as
+When checking if a user is authorized, there are a few common patterns to choose from:
 
-```sh
-user-svc:admin
-user-svc:user
-```
+### Roles without permissions
 
-are defined by User Svc and used for role-based access control. Each role comes with a set of permissions. When checking if a user is authorized, there are a few approaches:
+Roles are powerful, even without specific permissions attached. One common use case is managing product subscriptions.
 
-- **Role-Based Authorization**: Skip checking individual permissions and authorize users based solely on their roles.
-
-- **Permission Check via API**: Use the Is Authorized endpoint with the user's authentication headers and a permission ID to verify access.
-
-- **Cached Role Permissions**: Store role-permission mappings locally and check only the user's token for the required role. This method is faster but slightly more complex. (An SDK can simplify this.) If you need to verify a token yourself, see the Get Public Key endpoint.
-
-> If you are looking at restricting access to endpoints in other ways, you might be interested in: [Policy Svc](/docs/built-in-services/policy-svc).
-
-#### Custom static roles
-
-Static roles are powerful, even without specific permissions attached. One common use case is managing product subscriptions.
-
-For example, suppose you launch a new product called Funny Cats Newsletter with two subscription tiers: Pro and Ultra. You could create a service with the slug funny-cats-newsletter-svc and define custom static roles for each tier:
+Suppose you launch a new product called Funny Cats Newsletter with two subscription tiers: Pro and Ultra. You could create a service with the slug funny-cats-newsletter-svc and define custom static roles for each tier:
 
 ```yaml
 funny-cats-newsletter-svc:pro
@@ -127,43 +143,27 @@ funny-cats-newsletter-svc:ultra
 
 By checking if these roles exist in a user's token, you can authorize access to product-specific features. These roles can be created dynamically by calling the Create Role endpoint.
 
-### Dynamic roles
+### Roles containing dynamic data
 
-Dynamic roles are generated based on user-resource associations, allowing for more flexible permission management than static roles.
+You are free to make up your own roles which might even have dynamic data, just like the User Svc did with the organization ids.
 
-> While we use the terms static and dynamic roles, these aren't rigid categories—just different ways to structure access control.
-
-Example format:
+Example:
 
 ```sh
 user-svc:org:{org_dBZRCej3fo}:admin
 user-svc:org:{org_dBZRCej3fo}:user
 ```
 
-Dynamic values are enclosed in {}. In this example, roles are assigned per organization. For more details, see the Organizations section.
+By convention these dynamic values are enclosed in {}. In this example, roles are assigned per organization. For more details, see the Organizations section.
 
-#### Considerations
+### Owning roles vs. having roles
 
-Like static roles, dynamic roles are stored in JWT tokens. To keep token size manageable, it's best to limit their number. For example, consider how many organizations you belong to on platforms like GitHub or Google—typically only a handful, even at the high end.
-
-> Efficiency Tip: JWT tokens are sent with every request. Keeping dynamic roles minimal improves performance.
-
-### Owning Roles
-
-In many endpoints such as assignRole and saveInvites, the topic of "role ownership" comes up. The basic problem is simple: just because someone has a role, it doesn't mean they can also bestow that role upon other users. In simple terms, if an admin makes someone a user, that user should not be able to make others users, as that is the privilege of the admins.
-
-#### When Does a User "Own" a Role?
+In many endpoints such `SaveInvites`, the topic of "role ownership" comes up. The basic problem is simple: just because someone has a role, it doesn't mean they can also bestow that role upon other users. In simple terms, if an admin makes someone a user, that user should not be able to make others users, as that is the privilege of the admins.
 
 A user "owns" a role in the following cases:
 
-- Static Roles: The role ID is prefixed with the caller's slug.
-- Admin Privileges: The user is an admin and can assign both static and dynamic roles within their administrative scope.
-
-Examples of Role Ownership
-
-- A user with the slug joe-doe owns roles like joe-doe:any-custom-role.
-- A user with any slug who has the role my-service:admin owns my-service:user.
-- A user with any slug who has the role `user-svc:org:{orgId}:admin` owns `user-svc:org:{orgId}:user`.
+- The role is prefixed with the caller's slug. For example, a user with the slug `joe-doe` owns roles like `joe-doe:any-custom-role`.
+- User "owns" all roles that share a prefix if they hold the corresponding `:admin` role. For example, having `user-svc:org:{org_id}:admin` means the user owns roles like `user-svc:org:{org_id}:user` and `user-svc:org:{org_id}:viewer`.
 
 By enforcing role ownership rules, the system ensures that roles are only assigned by authorized users, preventing privilege escalation and maintaining security within the organization.
 
