@@ -91,6 +91,9 @@ func (s *UserService) saveOrganization(
 	if request.Slug == "" {
 		return nil, nil, errors.New("slug is required")
 	}
+	if request.Name == "" {
+		return nil, nil, errors.New("name is required")
+	}
 
 	orgI, exists, err := s.organizationsStore.Query(
 		datastore.Equals(datastore.Field("slug"), request.Slug),
@@ -100,6 +103,7 @@ func (s *UserService) saveOrganization(
 	}
 
 	var final *user.Organization
+	now := time.Now()
 
 	if exists {
 		final = orgI.(*user.Organization)
@@ -109,17 +113,19 @@ func (s *UserService) saveOrganization(
 		if request.ThumbnailFileId != "" {
 			final.ThumbnailFileId = request.ThumbnailFileId
 		}
+		final.UpdatedAt = now
 	} else {
-		final = &user.Organization{}
+		final = &user.Organization{
+			Name:      request.Name,
+			Slug:      request.Slug,
+			CreatedAt: now,
+			UpdatedAt: now,
+		}
 
 		if request.Id != "" {
 			final.Id = request.Id
 		} else {
 			final.Id = sdk.Id("org")
-		}
-
-		if request.Name == "" {
-			return nil, nil, errors.New("name is required")
 		}
 	}
 
