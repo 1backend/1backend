@@ -81,6 +81,32 @@ func TestSaveGrants(t *testing.T) {
 		require.NoError(t, err)
 	})
 
+	t.Run("saving the same grant again will not cause a duplicate", func(t *testing.T) {
+		rsp, _, err := userClient.UserSvcAPI.ListGrants(ctx).Body(
+			openapi.UserSvcListGrantsRequest{},
+		).Execute()
+		require.NoError(t, err)
+
+		count := len(rsp.Grants)
+
+		_, _, err = userClient.UserSvcAPI.SaveGrants(ctx).Body(openapi.UserSvcSaveGrantsRequest{
+			Grants: []openapi.UserSvcGrant{
+				{
+					Roles:      []string{"user-svc:user"},
+					Permission: "firstuser:myperm",
+				},
+			},
+		}).Execute()
+		require.NoError(t, err)
+
+		rsp, _, err = userClient.UserSvcAPI.ListGrants(ctx).Body(
+			openapi.UserSvcListGrantsRequest{},
+		).Execute()
+		require.NoError(t, err)
+
+		require.Equal(t, count, len(rsp.Grants))
+	})
+
 	t.Run("user 2 cannot assign role it does not own", func(t *testing.T) {
 		_, _, err = userClient2.UserSvcAPI.SaveGrants(ctx).Body(openapi.UserSvcSaveGrantsRequest{
 			Grants: []openapi.UserSvcGrant{
