@@ -179,6 +179,7 @@ Caller can only list permissions for roles they have.
 	ListUsers List Users
 
 	Fetches a list of users with optional query filters and pagination.
+Requires the `user-svc:user:view` permission that only admins have by default.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiListUsersRequest
@@ -1882,6 +1883,7 @@ func (r ApiListUsersRequest) Execute() (*UserSvcListUsersResponse, *http.Respons
 ListUsers List Users
 
 Fetches a list of users with optional query filters and pagination.
+Requires the `user-svc:user:view` permission that only admins have by default.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiListUsersRequest

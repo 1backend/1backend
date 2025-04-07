@@ -58,7 +58,6 @@ fi
 echo "Setting openapi-generator-cli to use the latest version..."
 openapi-generator-cli version-manager set latest
 
-
 # Run the generation scripts
 echo "Running Go client generation script..."
 bash clients/go/gen.sh

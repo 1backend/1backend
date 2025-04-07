@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 import * as runtime from '../runtime';
-import type { UserSvcChangePasswordRequest, UserSvcCreateUserRequest, UserSvcGetPublicKeyResponse, UserSvcHasPermissionRequest, UserSvcHasPermissionResponse, UserSvcListGrantsRequest, UserSvcListGrantsResponse, UserSvcListInvitesRequest, UserSvcListInvitesResponse, UserSvcListPermissionsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveGrantsRequest, UserSvcSaveInvitesRequest, UserSvcSaveInvitesResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSaveProfileRequest } from '../models/index';
+import type { UserSvcChangePasswordRequest, UserSvcCreateUserRequest, UserSvcGetPublicKeyResponse, UserSvcHasPermissionRequest, UserSvcHasPermissionResponse, UserSvcListGrantsRequest, UserSvcListGrantsResponse, UserSvcListInvitesRequest, UserSvcListInvitesResponse, UserSvcListOrganizationsRequest, UserSvcListOrganizationsResponse, UserSvcListPermissionsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveGrantsRequest, UserSvcSaveInvitesRequest, UserSvcSaveInvitesResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSaveProfileRequest } from '../models/index';
 export interface AddUserToOrganizationRequest {
     organizationId: string;
     userId: string;
@@ -34,6 +34,9 @@ export interface ListGrantsRequest {
 }
 export interface ListInvitesRequest {
     body: UserSvcListInvitesRequest;
+}
+export interface ListOrganizationsRequest {
+    body: UserSvcListOrganizationsRequest;
 }
 export interface ListPermissionsRequest {
     roleId: string;
@@ -158,6 +161,16 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      */
     listInvites(requestParameters: ListInvitesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListInvitesResponse>;
     /**
+     * Requires the `user-svc:organization:view` permission, that only admins have by default.
+     * List Organizations
+     */
+    listOrganizationsRaw(requestParameters: ListOrganizationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListOrganizationsResponse>>;
+    /**
+     * Requires the `user-svc:organization:view` permission, that only admins have by default.
+     * List Organizations
+     */
+    listOrganizations(requestParameters: ListOrganizationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListOrganizationsResponse>;
+    /**
      * List permissions by roles. Caller can only list permissions for roles they have.
      * List Permissions
      */
@@ -168,12 +181,12 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      */
     listPermissions(requestParameters: ListPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListPermissionsResponse>;
     /**
-     * Fetches a list of users with optional query filters and pagination.
+     * Fetches a list of users with optional query filters and pagination. Requires the `user-svc:user:view` permission that only admins have by default.
      * List Users
      */
     listUsersRaw(requestParameters: ListUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListUsersResponse>>;
     /**
-     * Fetches a list of users with optional query filters and pagination.
+     * Fetches a list of users with optional query filters and pagination. Requires the `user-svc:user:view` permission that only admins have by default.
      * List Users
      */
     listUsers(requestParameters?: ListUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListUsersResponse>;

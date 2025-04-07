@@ -21,7 +21,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as runtime from '../runtime';
-import { UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionRequestToJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListGrantsRequestToJSON, UserSvcListGrantsResponseFromJSON, UserSvcListInvitesRequestToJSON, UserSvcListInvitesResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadUserByTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcSaveGrantsRequestToJSON, UserSvcSaveInvitesRequestToJSON, UserSvcSaveInvitesResponseFromJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSaveProfileRequestToJSON, } from '../models/index';
+import { UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionRequestToJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListGrantsRequestToJSON, UserSvcListGrantsResponseFromJSON, UserSvcListInvitesRequestToJSON, UserSvcListInvitesResponseFromJSON, UserSvcListOrganizationsRequestToJSON, UserSvcListOrganizationsResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadUserByTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcSaveGrantsRequestToJSON, UserSvcSaveInvitesRequestToJSON, UserSvcSaveInvitesResponseFromJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSaveProfileRequestToJSON, } from '../models/index';
 /**
  *
  */
@@ -300,6 +300,41 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
+     * Requires the `user-svc:organization:view` permission, that only admins have by default.
+     * List Organizations
+     */
+    listOrganizationsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['body'] == null) {
+                throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling listOrganizations().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            const response = yield this.request({
+                path: `/user-svc/organizations`,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: UserSvcListOrganizationsRequestToJSON(requestParameters['body']),
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListOrganizationsResponseFromJSON(jsonValue));
+        });
+    }
+    /**
+     * Requires the `user-svc:organization:view` permission, that only admins have by default.
+     * List Organizations
+     */
+    listOrganizations(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.listOrganizationsRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
      * List permissions by roles. Caller can only list permissions for roles they have.
      * List Permissions
      */
@@ -333,7 +368,7 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Fetches a list of users with optional query filters and pagination.
+     * Fetches a list of users with optional query filters and pagination. Requires the `user-svc:user:view` permission that only admins have by default.
      * List Users
      */
     listUsersRaw(requestParameters, initOverrides) {
@@ -355,7 +390,7 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Fetches a list of users with optional query filters and pagination.
+     * Fetches a list of users with optional query filters and pagination. Requires the `user-svc:user:view` permission that only admins have by default.
      * List Users
      */
     listUsers() {

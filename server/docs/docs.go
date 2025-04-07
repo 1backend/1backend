@@ -5070,7 +5070,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Fetches a list of users with optional query filters and pagination.",
+                "description": "Fetches a list of users with optional query filters and pagination.\nRequires the ` + "`" + `user-svc:user:view` + "`" + ` permission that only admins have by default.",
                 "consumes": [
                     "application/json"
                 ],

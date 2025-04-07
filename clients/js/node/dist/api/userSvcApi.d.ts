@@ -19,6 +19,8 @@ import { UserSvcListGrantsRequest } from '../model/userSvcListGrantsRequest';
 import { UserSvcListGrantsResponse } from '../model/userSvcListGrantsResponse';
 import { UserSvcListInvitesRequest } from '../model/userSvcListInvitesRequest';
 import { UserSvcListInvitesResponse } from '../model/userSvcListInvitesResponse';
+import { UserSvcListOrganizationsRequest } from '../model/userSvcListOrganizationsRequest';
+import { UserSvcListOrganizationsResponse } from '../model/userSvcListOrganizationsResponse';
 import { UserSvcListPermissionsResponse } from '../model/userSvcListPermissionsResponse';
 import { UserSvcListUsersRequest } from '../model/userSvcListUsersRequest';
 import { UserSvcListUsersResponse } from '../model/userSvcListUsersResponse';
@@ -164,6 +166,19 @@ export declare class UserSvcApi {
         body: UserSvcListInvitesResponse;
     }>;
     /**
+     * Requires the `user-svc:organization:view` permission, that only admins have by default.
+     * @summary List Organizations
+     * @param body List Organizations Request
+     */
+    listOrganizations(body: UserSvcListOrganizationsRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: UserSvcListOrganizationsResponse;
+    }>;
+    /**
      * List permissions by roles. Caller can only list permissions for roles they have.
      * @summary List Permissions
      * @param roleId Role ID
@@ -177,7 +192,7 @@ export declare class UserSvcApi {
         body: UserSvcListPermissionsResponse;
     }>;
     /**
-     * Fetches a list of users with optional query filters and pagination.
+     * Fetches a list of users with optional query filters and pagination. Requires the `user-svc:user:view` permission that only admins have by default.
      * @summary List Users
      * @param body List Users Request
      */

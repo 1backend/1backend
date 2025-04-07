@@ -97,7 +97,7 @@ func (s *UserService) SaveInvites(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	invites, err := s.saveInvites(usr, &req)
+	invites, err := s.saveInvites(usr.Id, &req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -111,7 +111,7 @@ func (s *UserService) SaveInvites(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) saveInvites(
-	usr *user.User,
+	userId string,
 	req *user.SaveInvitesRequest,
 ) ([]user.Invite, error) {
 	// @todo lock here
@@ -212,11 +212,11 @@ func (s *UserService) saveInvites(
 		if existingInvite, ok := existingInvites[invite.Id]; ok {
 			i.CreatedAt = existingInvite.CreatedAt
 			i.UpdatedAt = now
-			i.OwnerIds = append(existingInvite.OwnerIds, usr.Id)
+			i.OwnerIds = append(existingInvite.OwnerIds, userId)
 		} else {
 			i.CreatedAt = now
 			i.UpdatedAt = now
-			i.OwnerIds = []string{usr.Id}
+			i.OwnerIds = []string{userId}
 		}
 
 		invites = append(invites, i)

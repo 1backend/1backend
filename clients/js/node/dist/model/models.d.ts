@@ -179,6 +179,8 @@ export * from './userSvcListGrantsRequest';
 export * from './userSvcListGrantsResponse';
 export * from './userSvcListInvitesRequest';
 export * from './userSvcListInvitesResponse';
+export * from './userSvcListOrganizationsRequest';
+export * from './userSvcListOrganizationsResponse';
 export * from './userSvcListPermissionsResponse';
 export * from './userSvcListUsersRequest';
 export * from './userSvcListUsersResponse';

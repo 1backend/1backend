@@ -180,6 +180,8 @@ export * from './userSvcListGrantsRequest';
 export * from './userSvcListGrantsResponse';
 export * from './userSvcListInvitesRequest';
 export * from './userSvcListInvitesResponse';
+export * from './userSvcListOrganizationsRequest';
+export * from './userSvcListOrganizationsResponse';
 export * from './userSvcListPermissionsResponse';
 export * from './userSvcListUsersRequest';
 export * from './userSvcListUsersResponse';
@@ -393,6 +395,8 @@ import { UserSvcListGrantsRequest } from './userSvcListGrantsRequest';
 import { UserSvcListGrantsResponse } from './userSvcListGrantsResponse';
 import { UserSvcListInvitesRequest } from './userSvcListInvitesRequest';
 import { UserSvcListInvitesResponse } from './userSvcListInvitesResponse';
+import { UserSvcListOrganizationsRequest } from './userSvcListOrganizationsRequest';
+import { UserSvcListOrganizationsResponse } from './userSvcListOrganizationsResponse';
 import { UserSvcListPermissionsResponse } from './userSvcListPermissionsResponse';
 import { UserSvcListUsersRequest } from './userSvcListUsersRequest';
 import { UserSvcListUsersResponse } from './userSvcListUsersResponse';
@@ -609,6 +613,8 @@ let typeMap: {[index: string]: any} = {
     "UserSvcListGrantsResponse": UserSvcListGrantsResponse,
     "UserSvcListInvitesRequest": UserSvcListInvitesRequest,
     "UserSvcListInvitesResponse": UserSvcListInvitesResponse,
+    "UserSvcListOrganizationsRequest": UserSvcListOrganizationsRequest,
+    "UserSvcListOrganizationsResponse": UserSvcListOrganizationsResponse,
     "UserSvcListPermissionsResponse": UserSvcListPermissionsResponse,
     "UserSvcListUsersRequest": UserSvcListUsersRequest,
     "UserSvcListUsersResponse": UserSvcListUsersResponse,

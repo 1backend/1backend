@@ -6615,7 +6615,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: Fetches a list of users with optional query filters and pagination.
+      description: |-
+        Fetches a list of users with optional query filters and pagination.
+        Requires the `user-svc:user:view` permission that only admins have by default.
       operationId: listUsers
       parameters:
       - description: List Users Request

@@ -2,10 +2,10 @@
 
 set -e
 
-bash include.sh
-
 # Get the directory of the current script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+bash "$SCRIPT_DIR/include.sh"
 
 # Define relevant paths
 OB_DIR="$SCRIPT_DIR/../server"

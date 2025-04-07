@@ -1,0 +1,71 @@
+---
+id: list-organizations
+title: "List Organizations"
+description: "Requires the `user-svc:organization:view` permission, that only admins have by default."
+sidebar_label: "List Organizations"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VlFv4zYM/iuCnjbAidP1hg1+Wnu7G7oVa69psYc2WBWJdngnSy4lJ80F/u8D7bh10rQPB+xeAkeixI8fP5LaSANBE1YRvZOZvIKHGgmCiAsQ93UAGoWlzjwVyuFXxVbZEmF1LyqgEkNA7xIRFyoK7+xaKFOiC2KhliDma2EgV7WNY5lIXwG158+MzKTFEC8GlwaZSIKHGkI89WYts43U3kVwkT9VVVnUrWH6OTDQjQx6AaXir4r47ogQWts8Al1jCfxnN7gdhwN4QvsSxFzpL8KTAQJz5/gkm9xrAhXBnMR7kSNYw7HEdQUykyESukI2iUTT+sYIZfvxwmC7oIjUmv9bLDEOLNFFKIBk82zr559BR9nw0m4c5xii2A3mquNuyyISGJlFqqHhhVB5Fzp2fppM3uZFcGbAiFBrDSHktbVrmXxrMvxOiocM7do9kXyQPAMWXt9Fc3DZqUMS+FhbK3hL+LzV+BChTCQ8qrKyfNOJLkG891R56jdf+Ai2Ll76uLk6H+WE4Ixdi9rhQw3iB3QBDbQup+iK2iryTlRWxdxT+aNAAy5ijkAi99SV3xDb/XgHndIljPTb6OKiLudOof2IFs5alp4vyNHCv/mn3x/r8M+vvjh0vq7Mq0lphkK75RxsGd+SMnsh4/0aOCT0JpHvDgn0zC2VRSP+nF78/e1iBCJPh2M5jOToQG6dquPCE34F892Q/HyYkwjklBVToCWQ+NDe+X0gsfRB14RxLbPbjTwFRUAndVzI7HbWcPJVEVgYNwFITJeaBVFCXHhu/pVvO1Wl2F6m/ZRJ/d5ACG1koXVRk2Xb1Hqt7MKHmB0dHR//ItlZj2XKsXXhDBHtM3e9rkDcbU3upMi9tX4Fhtu9EqFSGoRyRkT/BZxQupO5yMmXbV32MYlzX6AT4Ezl0bVDDvn+BSgD1BdEJk+2itkrVFXhX9AVAifn6nn6feirdGea9SnZTpvb/v/saZpMuBu63PfTU+lWBlAqZPKCshB+C133ieTdWPtyAPPyTEzrqvLEyen4XsRYZWl6xLMRnOEDqXwxj07ORk5FXIIoUZPntKGG8NTdmBmLGlxoY+r9/XF5LpbH48mOt5Cl6Wq1GheuHnsq0u25kKqisqPj8WS8iKVt2wlQGS7yaeftGWxYqaIAGqNPW5OUKcfYdr2j0y4QmUhWVgd/Mj4eT0akx8fv+F5WZ6ncAOnLeSv3KBi8Vv7HJ9RWOBEeY1pZha7t0kzdZltMt7L3xy+uHcSzRHLZsM1mM1cBbsg2DS8/1EBcx7NELhWhmjNVt7Mm6ZXM9fcF1jKT77soR1xCzKGydSflvUbTJP2JE62him/aDlvD5cX0WiZyvn0Dlt7wGVIrftmolcxk+5R8ek+0axtplStqVbBtdydXldpW/3O9MaSk/+Co+i23HiDcr9cuEP7lsA4e2Wy6am6aJ/tu69UTT02is+Zczpqm+Q8JEgVs
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List Organizations"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/user-svc/organizations"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Requires the `user-svc:organization:view` permission, that only admins have by default.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"afterTime":{"description":"Organizations by default come back ordered\ndesc by `createdAt` field.","type":"string"},"ids":{"items":{"type":"string"},"type":"array"},"limit":{"type":"integer"}},"type":"object"}}},"description":"List Organizations Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Organization listed successfully","content":{"application/json":{"schema":{"properties":{"organizations":{"items":{"properties":{"createdAt":{"type":"string"},"deletedAt":{"type":"string"},"id":{"type":"string"},"name":{"description":"Full name of the organization","example":"Acme Corporation","type":"string"},"slug":{"description":"URL-friendly unique (inside the Singularon platform) identifier for the `organization`.","example":"acme-corporation","type":"string"},"thumbnailFileId":{"example":"file_fQDxusW8og","type":"string"},"updatedAt":{"type":"string"}},"required":["id","name","slug"],"type":"object"},"type":"array"}},"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

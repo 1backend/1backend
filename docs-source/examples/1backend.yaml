@@ -2657,22 +2657,9 @@ definitions:
       width:
         type: integer
     type: object
-  user_svc.AddRoleToUserRequest:
-    type: object
-  user_svc.AddRoleToUserResponse:
-    type: object
   user_svc.AddUserToOrganizationRequest:
     type: object
   user_svc.AddUserToOrganizationResponse:
-    type: object
-  user_svc.SaveGrantsRequest:
-    properties:
-      permissionLinks:
-        items:
-          $ref: '#/definitions/user_svc.PermissionLink'
-        type: array
-    type: object
-  user_svc.SaveGrantsResponse:
     type: object
   user_svc.AuthToken:
     properties:
@@ -2717,6 +2704,16 @@ definitions:
         type: string
       deletedAt:
         type: string
+      handle:
+        description: |-
+          Handle is the platform local unique identifier.
+          Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`.
+          For email and phones the `id` and the `value` will be the same.
+          This field mostly exists for display purposes.
+
+          Example values: "joe12" (1backend username), "thejoe" (twitter username), "joe@joesdomain.com" (email)
+        example: thejoe
+        type: string
       id:
         description: |-
           The unique identifier, which can be a URL.
@@ -2735,71 +2732,21 @@ definitions:
         type: string
       userId:
         type: string
-      value:
-        description: |-
-          Value is the platform local unique identifier.
-          Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`.
-          For email and phones the `id` and the `value` will be the same.
-          This field mostly exists for display purposes.
-
-          Example values: "joe12" (1backend username), "thejoe" (twitter username), "joe@joesdomain.com" (email)
-        example: thejoe
-        type: string
       verified:
         description: Whether the contact is verified
         type: boolean
-    type: object
-  user_svc.CreateOrganizationRequest:
-    properties:
-      id:
-        type: string
-      name:
-        description: Full name of the organization.
-        type: string
-      slug:
-        description: URL-friendly unique (inside the Singularon platform) identifier
-          for the `organization`.
-        type: string
     required:
-    - name
-    - slug
-    type: object
-  user_svc.CreateOrganizationResponse:
-    properties:
-      organization:
-        $ref: '#/definitions/user_svc.Organization'
-      token:
-        allOf:
-        - $ref: '#/definitions/user_svc.AuthToken'
-        description: |-
-          Due to the nature of JWT tokens, the token must be refreshed after
-          creating an organization, as dynamic organization roles are embedded in it.
-    required:
-    - organization
-    - token
-    type: object
-  user_svc.CreateRoleRequest:
-    properties:
-      description:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      permissionIds:
-        items:
-          type: string
-        type: array
-    required:
+    - handle
     - id
-    type: object
-  user_svc.CreateRoleResponse:
-    properties:
-      role:
-        $ref: '#/definitions/user_svc.Role'
+    - platform
+    - userId
     type: object
   user_svc.CreateUserRequest:
     properties:
+      contacts:
+        items:
+          $ref: '#/definitions/user_svc.Contact'
+        type: array
       password:
         type: string
       roleIds:
@@ -2811,21 +2758,12 @@ definitions:
     type: object
   user_svc.CreateUserResponse:
     type: object
-  user_svc.DeleteRoleResponse:
-    type: object
   user_svc.DeleteUserResponse:
     type: object
   user_svc.ErrorResponse:
     properties:
       error:
         type: string
-    type: object
-  user_svc.GetPermissionsResponse:
-    properties:
-      permissions:
-        items:
-          $ref: '#/definitions/user_svc.Permission'
-        type: array
     type: object
   user_svc.GetPublicKeyResponse:
     properties:
@@ -2834,40 +2772,31 @@ definitions:
     required:
     - publicKey
     type: object
-  user_svc.GetRolesResponse:
-    properties:
-      roles:
-        items:
-          $ref: '#/definitions/user_svc.Role'
-        type: array
-    type: object
-  user_svc.GetUsersRequest:
-    properties:
-      query:
-        $ref: '#/definitions/datastore.Query'
-    type: object
-  user_svc.GetUsersResponse:
-    properties:
-      after:
-        type: string
-      count:
-        type: integer
-      users:
-        items:
-          $ref: '#/definitions/user_svc.User'
-        type: array
-    type: object
   user_svc.Grant:
     properties:
       id:
         type: string
-      permissionId:
+      permission:
         type: string
-      slugs:
-        description: Slugs who are granted the PermissionId
+      roles:
+        description: |-
+          Role IDs that have been granted the specified permission.
+
+          Originally, grants were designed for slugs to facilitate service-to-service calls.
+          Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.
+
+          Alternatively, permissions can be assigned to roles using UserSvc.AssignPermissions.
+          Grants currently offer a more streamlined approach, though this may evolve over time.
         items:
           type: string
         type: array
+      slugs:
+        description: Slugs that have been granted the specified permission.
+        items:
+          type: string
+        type: array
+    required:
+    - permission
     type: object
   user_svc.HasPermissionRequest:
     properties:
@@ -2887,9 +2816,61 @@ definitions:
       user:
         $ref: '#/definitions/user_svc.User'
     type: object
+  user_svc.Invite:
+    properties:
+      appliedAt:
+        type: string
+      contactId:
+        description: |-
+          ContactId is the the recipient of the invite.
+          If the user is already registered, the role is assigned immediately;
+          otherwise, it is applied upon registration.
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      expiresAt:
+        type: string
+      id:
+        example: inv_fIYPbMHIcI
+        type: string
+      ownerIds:
+        description: |-
+          OwnerIds specifies the users who created the invite.
+          If you create an invite that already exists for a given role and contact ID,
+          you get added to the list of owners.
+
+          @todo not sure if this makes sense. I don't think it does.
+        items:
+          type: string
+        type: array
+      role:
+        description: |-
+          Role specifies the role to be assigned to the ContactId.
+          Callers can only assign roles they own, identified by their service slug
+          (e.g., if "my-service" creates an invite, the role must be "my-service:admin").
+          Dynamic organization roles can also be assigned
+          (e.g., "user-svc:org:{%orgId}:admin" or "user-svc:org:{%orgId}:user"),
+          but in this case, the caller must be an admin of the target organization.
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        description: |-
+          UserId is the recipient of the invite.
+          If the user is already registered, the role is assigned immediately;
+          otherwise, it is applied upon registration.
+        type: string
+    required:
+    - createdAt
+    - id
+    - ownerIds
+    - role
+    type: object
   user_svc.ListGrantsRequest:
     properties:
-      permissionId:
+      permission:
         type: string
       slug:
         type: string
@@ -2899,6 +2880,74 @@ definitions:
       grants:
         items:
           $ref: '#/definitions/user_svc.Grant'
+        type: array
+    type: object
+  user_svc.ListInvitesRequest:
+    properties:
+      contactId:
+        type: string
+      role:
+        type: string
+      userId:
+        type: string
+    type: object
+  user_svc.ListInvitesResponse:
+    properties:
+      invites:
+        items:
+          $ref: '#/definitions/user_svc.Invite'
+        type: array
+    required:
+    - invites
+    type: object
+  user_svc.ListOrganizationsRequest:
+    properties:
+      afterTime:
+        description: |-
+          Organizations by default come back ordered
+          desc by `createdAt` field.
+        type: string
+      ids:
+        items:
+          type: string
+        type: array
+      limit:
+        type: integer
+    type: object
+  user_svc.ListOrganizationsResponse:
+    properties:
+      organizations:
+        items:
+          $ref: '#/definitions/user_svc.Organization'
+        type: array
+    type: object
+  user_svc.ListPermissionsResponse:
+    properties:
+      permissions:
+        items:
+          type: string
+        type: array
+    type: object
+  user_svc.ListUsersRequest:
+    properties:
+      contactId:
+        type: string
+      query:
+        allOf:
+        - $ref: '#/definitions/datastore.Query'
+        description: This should be used sparingly or not at all. Might deprecate.
+      userId:
+        type: string
+    type: object
+  user_svc.ListUsersResponse:
+    properties:
+      after:
+        type: string
+      count:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/user_svc.UserRecord'
         type: array
     type: object
   user_svc.LoginRequest:
@@ -2914,6 +2963,28 @@ definitions:
     properties:
       token:
         $ref: '#/definitions/user_svc.AuthToken'
+    type: object
+  user_svc.NewInvite:
+    properties:
+      contactId:
+        description: |-
+          ContactId is the the recipient of the invite.
+          If the user is already registered, the role is assigned immediately;
+          otherwise, it is applied upon registration.
+        type: string
+      id:
+        example: inv_fIYPbMHIcI
+        type: string
+      role:
+        type: string
+      userId:
+        description: |-
+          UserId is the recipient of the invite.
+          If the user is already registered, the role is assigned immediately;
+          otherwise, it is applied upon registration.
+        type: string
+    required:
+    - role
     type: object
   user_svc.Organization:
     properties:
@@ -2932,45 +3003,15 @@ definitions:
           for the `organization`.
         example: acme-corporation
         type: string
+      thumbnailFileId:
+        example: file_fQDxusW8og
+        type: string
       updatedAt:
         type: string
     required:
     - id
     - name
     - slug
-    type: object
-  user_svc.Permission:
-    properties:
-      createdAt:
-        type: string
-      description:
-        type: string
-      id:
-        description: eg. "user.viewer"
-        type: string
-      name:
-        description: eg. "User Viewer"
-        type: string
-      ownerId:
-        description: |-
-          Service who owns the permission
-
-          Uncertain if this aligns with the system's use of slugs.
-          Issue encountered: I renamed Docker Svc to Container Svc in two steps (by mistake).
-          The name/slug had already changed to "container-svc," but data was still being saved
-          in the "dockerSvcCredentials" table.
-          After renaming the tables as well, I hit a "cannot update unowned permission" error
-          because ownership relies on this field rather than the user slug. YMMV.
-        type: string
-      updatedAt:
-        type: string
-    type: object
-  user_svc.PermissionLink:
-    properties:
-      permissionId:
-        type: string
-      roleId:
-        type: string
     type: object
   user_svc.ReadUserByTokenResponse:
     properties:
@@ -2992,7 +3033,13 @@ definitions:
       password:
         type: string
       slug:
+        description: |-
+          Slug is a URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
+          Required due to its central role in the platform.
+          If your project has no use for a slug, just derive it from the email or similar.
         type: string
+    required:
+    - slug
     type: object
   user_svc.RegisterResponse:
     properties:
@@ -3012,21 +3059,6 @@ definitions:
     type: object
   user_svc.ResetPasswordResponse:
     type: object
-  user_svc.Role:
-    properties:
-      createdAt:
-        type: string
-      description:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      ownerId:
-        type: string
-      updatedAt:
-        type: string
-    type: object
   user_svc.SaveGrantsRequest:
     properties:
       grants:
@@ -3036,19 +3068,54 @@ definitions:
     type: object
   user_svc.SaveGrantsResponse:
     type: object
-  user_svc.SavePermissionsRequest:
+  user_svc.SaveInvitesRequest:
     properties:
-      permissions:
+      invites:
         items:
-          $ref: '#/definitions/user_svc.Permission'
+          $ref: '#/definitions/user_svc.NewInvite'
         type: array
+    required:
+    - invites
     type: object
-  user_svc.SavePermissionsResponse:
+  user_svc.SaveInvitesResponse:
     properties:
-      permissions:
+      invites:
         items:
-          $ref: '#/definitions/user_svc.Permission'
+          $ref: '#/definitions/user_svc.Invite'
         type: array
+    required:
+    - invites
+    type: object
+  user_svc.SaveOrganizationRequest:
+    properties:
+      id:
+        type: string
+      name:
+        description: Full name of the organization.
+        type: string
+      slug:
+        description: URL-friendly unique (inside the Singularon platform) identifier
+          for the `organization`.
+        type: string
+      thumbnailFileId:
+        example: file_fQDxusW8og
+        type: string
+    required:
+    - slug
+    type: object
+  user_svc.SaveOrganizationResponse:
+    properties:
+      organization:
+        $ref: '#/definitions/user_svc.Organization'
+      token:
+        allOf:
+        - $ref: '#/definitions/user_svc.AuthToken'
+        description: |-
+          Due to the nature of JWT tokens, the token must be refreshed after
+          creating an organization, as dynamic organization roles are embedded in it.
+    required:
+    - organization
+    - token
     type: object
   user_svc.SaveProfileRequest:
     properties:
@@ -3056,25 +3123,14 @@ definitions:
         type: string
       slug:
         type: string
+      thumbnailFileId:
+        example: file_fQDxusW8og
+        type: string
     type: object
   user_svc.SaveProfileResponse:
     type: object
-  user_svc.SetRolePermissionsRequest:
-    properties:
-      permissionIds:
-        items:
-          type: string
-        type: array
-    type: object
-  user_svc.SetRolePermissionsResponse:
-    type: object
   user_svc.User:
     properties:
-      contacts:
-        description: Contacts are used for login and identification purposes.
-        items:
-          $ref: '#/definitions/user_svc.Contact'
-        type: array
       createdAt:
         type: string
       deletedAt:
@@ -3082,13 +3138,45 @@ definitions:
       id:
         type: string
       name:
-        description: Full name of the organization.
+        description: Full name of the user.
         example: Jane Doe
         type: string
       passwordHash:
         type: string
       slug:
-        description: URL-friendly unique (inside the Singularon platform) identifier
+        description: URL-friendly unique (inside the 1Backend platform) identifier
+          for the `user`.
+        example: jane-doe
+        type: string
+      thumbnailFileId:
+        example: file_fQDyi1xdHK
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - id
+    - slug
+    type: object
+  user_svc.UserRecord:
+    properties:
+      contactIds:
+        items:
+          type: string
+        type: array
+      createdAt:
+        type: string
+      id:
+        type: string
+      name:
+        description: Full name of the user.
+        example: Jane Doe
+        type: string
+      roles:
+        items:
+          type: string
+        type: array
+      slug:
+        description: URL-friendly unique (inside the 1Backend platform) identifier
           for the `user`.
         example: jane-doe
         type: string
@@ -3113,7 +3201,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.3.0-rc.29
+  version: 0.3.0-rc.34
 paths:
   /chat-svc/events:
     get:
@@ -5838,11 +5926,9 @@ paths:
       consumes:
       - application/json
       description: |-
-        List grants.
-
-        Grants define which slugs are assigned specific permissions, overriding the default configuration.
-
-        Requires the `user-svc:grant:view` permission.
+        Grants give access to users with certain slugs and roles to permissions.
+        Users can list grants for permissions they have access to
+        but they will only see grants the grant refers to their slug or one of their roles.
       operationId: listGrants
       parameters:
       - description: List Grants Request
@@ -5874,12 +5960,8 @@ paths:
     put:
       consumes:
       - application/json
-      description: |-
-        Save grants.
-
-        Grants define which slugs are assigned specific permissions, overriding the default configuration.
-
-        Requires the `user-svc:grant:create` permission.
+      description: Save grants. // @Description Grants give access to users with certain
+        slugs and roles to permissions.
       operationId: saveGrants
       parameters:
       - description: Save Grants Request
@@ -5910,6 +5992,88 @@ paths:
       security:
       - BearerAuth: []
       summary: Save Grants
+      tags:
+      - User Svc
+  /user-svc/invites:
+    post:
+      consumes:
+      - application/json
+      description: List user invites stored in the database.
+      operationId: listInvites
+      parameters:
+      - description: List Invites Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.ListInvitesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Invites listed successfully
+          schema:
+            $ref: '#/definitions/user_svc.ListInvitesResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List Invites
+      tags:
+      - User Svc
+    put:
+      consumes:
+      - application/json
+      description: |-
+        Invite a list of users by contact or user Id to acquire a role.
+        Works on future or current users.
+
+        A user can only invite an other user to a role if the user owns that role.
+
+        A user "owns" a role in the following cases:
+        - A static role where the role ID is prefixed with the caller's slug.
+        - Any dynamic or static role where the caller is an admin.
+
+        Examples:
+        - A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
+        - A user with any slug who has the role "my-service:admin" owns "my-service:user".
+        - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
+      operationId: saveInvites
+      parameters:
+      - description: Save Invites Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.SaveInvitesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Invites saved successfully
+          schema:
+            $ref: '#/definitions/user_svc.SaveInvitesResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Save Invites
       tags:
       - User Svc
   /user-svc/login:
@@ -5944,28 +6108,28 @@ paths:
       tags:
       - User Svc
   /user-svc/organization:
-    post:
+    put:
       consumes:
       - application/json
       description: |-
-        Allows a logged-in user to create a new organization. The user initiating the request will be assigned the role of admin for that organization.
-        The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the created organization.
+        Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization.
+        The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the saved organization.
         Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
-      operationId: createOrganization
+      operationId: saveOrganization
       parameters:
-      - description: Create User Request
+      - description: Save User Request
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/user_svc.CreateOrganizationRequest'
+          $ref: '#/definitions/user_svc.SaveOrganizationRequest'
       produces:
       - application/json
       responses:
         "200":
-          description: User created successfully
+          description: User saved successfully
           schema:
-            $ref: '#/definitions/user_svc.CreateOrganizationResponse'
+            $ref: '#/definitions/user_svc.SaveOrganizationResponse'
         "400":
           description: Invalid JSON
           schema:
@@ -5980,7 +6144,7 @@ paths:
             $ref: '#/definitions/user_svc.ErrorResponse'
       security:
       - BearerAuth: []
-      summary: Create an Organization
+      summary: Save an Organization
       tags:
       - User Svc
   /user-svc/organization/{organizationId}/user/{userId}:
@@ -6092,75 +6256,67 @@ paths:
       summary: Add a User to an Organization
       tags:
       - User Svc
-  /user-svc/permission/{permissionId}/is-authorized:
+  /user-svc/organizations:
     post:
       consumes:
       - application/json
-      description: |-
-        Verify whether a user has a specific permission.
-        Ideally, this endpoint should rarely be used, as the JWT token
-        already includes all user roles. Caching the `Get Permissions by Role`
-        responses allows services to determine user authorization
-        without repeatedly calling this endpoint.
-      operationId: hasPermission
+      description: Requires the `user-svc:organization:view` permission, that only
+        admins have by default.
+      operationId: listOrganizations
       parameters:
-      - description: Permission ID
-        in: path
-        name: permissionId
-        required: true
-        type: string
-      - description: Is Authorized Request
+      - description: List Organizations Request
         in: body
         name: body
+        required: true
         schema:
-          $ref: '#/definitions/user_svc.HasPermissionRequest'
+          $ref: '#/definitions/user_svc.ListOrganizationsRequest'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Organization listed successfully
           schema:
-            $ref: '#/definitions/user_svc.HasPermissionResponse'
+            $ref: '#/definitions/user_svc.ListOrganizationsResponse'
         "400":
-          description: Invalid JSON or missing permission id
+          description: Invalid JSON
           schema:
             $ref: '#/definitions/user_svc.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
             $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
       security:
       - BearerAuth: []
-      summary: Is Authorized
+      summary: List Organizations
       tags:
       - User Svc
   /user-svc/permissions:
-    put:
+    post:
       consumes:
       - application/json
       description: |-
-        Creates or updates a list of permissions.
-        <b>The permission ID must be prefixed by the callers slug.</b>
-        Eg. if the owner's slug is `petstore-svc` the permission should look like `petstore-svc:pet:edit`.
-
-        Requires the `user-svc:permission:create` permission.
-      operationId: savePermissions
+        List permissions by roles.
+        Caller can only list permissions for roles they have.
+      operationId: listPermissions
       parameters:
-      - description: Permission Details
-        in: body
-        name: body
+      - description: Role ID
+        in: path
+        name: roleId
         required: true
-        schema:
-          $ref: '#/definitions/user_svc.SavePermissionsRequest'
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user_svc.SavePermissionsResponse'
+            $ref: '#/definitions/user_svc.ListPermissionsResponse'
         "400":
-          description: 'Bad Request: Invalid JSON or Bad Namespace'
+          description: Invalid JSON
           schema:
             type: string
         "401":
@@ -6173,7 +6329,7 @@ paths:
             type: string
       security:
       - BearerAuth: []
-      summary: Save Permissions
+      summary: List Permissions
       tags:
       - User Svc
   /user-svc/public-key:
@@ -6231,226 +6387,6 @@ paths:
       summary: Register
       tags:
       - User Svc
-  /user-svc/role:
-    post:
-      consumes:
-      - application/json
-      description: |-
-        Create a new role.
-        <b>The role ID must be prefixed by the caller's slug.</b>
-        Eg. if the caller's slug is `petstore-svc` the role should look like `petstore-svc:admin`.
-        The user account who creates the role will become the owner of that role, and only the owner will be able to edit the role.
-
-        Requires the `user-svc:role:create` permission.
-      operationId: createRole
-      parameters:
-      - description: Create Role Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/user_svc.CreateRoleRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Role created successfully
-          schema:
-            $ref: '#/definitions/user_svc.CreateRoleResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Create a New Role
-      tags:
-      - User Svc
-  /user-svc/role/{role}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a role based on the role ID.
-      operationId: deleteRole
-      parameters:
-      - description: Role ID
-        in: path
-        name: roleId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_svc.DeleteRoleResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            type: string
-        "401":
-          description: Unauthorized
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Delete a Role
-      tags:
-      - User Svc
-  /user-svc/role/{role}/permissions:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve permissions associated with a specific role ID.
-      operationId: getPermissionsByRole
-      parameters:
-      - description: Role ID
-        in: path
-        name: roleId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_svc.GetPermissionsResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            type: string
-        "401":
-          description: Unauthorized
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Get Permissions by Role
-      tags:
-      - User Svc
-    put:
-      consumes:
-      - application/json
-      description: |-
-        Set permissions for a specified role. The caller can add permissions it owns to any role.
-        If the caller tries to add a permission it doesn't own to a role, `StatusBadRequest` will be returned.
-      operationId: setRolePermission
-      parameters:
-      - description: Role ID
-        in: path
-        name: roleId
-        required: true
-        type: string
-      - description: Set Role Permissions Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/user_svc.SetRolePermissionsRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_svc.SetRolePermissionsResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Set Role Permissions
-      tags:
-      - User Svc
-  /user-svc/roles:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve all roles from the user service.
-      operationId: getRoles
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_svc.GetRolesResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Get all Roles
-      tags:
-      - User Svc
-  /user-svc/roles/permissions:
-    put:
-      consumes:
-      - application/json
-      description: |-
-        Assign permissions to roles.
-
-        Requires the `user-svc:permission:assign` permission.
-      operationId: assignPermissions
-      parameters:
-      - description: Assign Permissions Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/user_svc.SaveGrantsRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Assign Permissions successfully
-          schema:
-            $ref: '#/definitions/user_svc.SaveGrantsResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Assign Permissions
-      tags:
-      - User Svc
   /user-svc/self:
     put:
       consumes:
@@ -6491,6 +6427,48 @@ paths:
       security:
       - BearerAuth: []
       summary: Save User Profile
+      tags:
+      - User Svc
+  /user-svc/self/has/{permission}:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Check whether the caller user has a specific permission.
+        Ideally, this endpoint should rarely be used, as the JWT token
+        already includes all user roles. Caching the `List Permissions` and `List Grants`
+        responses allows services to determine user authorization
+        without repeatedly calling this endpoint.
+      operationId: hasPermission
+      parameters:
+      - description: Permission
+        in: path
+        name: permission
+        required: true
+        type: string
+      - description: Is Authorized Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/user_svc.HasPermissionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.HasPermissionResponse'
+        "400":
+          description: Invalid JSON or missing permission id
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Has Permission
       tags:
       - User Svc
   /user-svc/user:
@@ -6607,56 +6585,6 @@ paths:
       summary: Save User
       tags:
       - User Svc
-  /user-svc/user/{userId}/role/{role}:
-    put:
-      consumes:
-      - application/json
-      description: |-
-        Assign a role to a user. The caller can assign any roles it owns,
-        typically those prefixed with the caller’s identifier (e.g., `my-service:admin`).
-        One exception to this rule is dynamic organization roles: If the caller is an organization admin
-        (e.g., has a role like "user-svc:org:{%orgId}:admin"), they can also assign such roles.
-      operationId: addRoleToUser
-      parameters:
-      - description: User ID
-        in: path
-        name: userId
-        required: true
-        type: string
-      - description: Role ID
-        in: path
-        name: roleId
-        required: true
-        type: string
-      - description: Add Role to User Request
-        in: body
-        name: body
-        schema:
-          $ref: '#/definitions/user_svc.AddRoleToUserRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_svc.AddRoleToUserResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "500":
-          description: Role not found
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Assign Role to User
-      tags:
-      - User Svc
   /user-svc/user/by-token:
     post:
       consumes:
@@ -6687,21 +6615,23 @@ paths:
     post:
       consumes:
       - application/json
-      description: Fetches a list of users with optional query filters and pagination.
-      operationId: getUsers
+      description: |-
+        Fetches a list of users with optional query filters and pagination.
+        Requires the `user-svc:user:view` permission that only admins have by default.
+      operationId: listUsers
       parameters:
-      - description: Get Users Request
+      - description: List Users Request
         in: body
         name: body
         schema:
-          $ref: '#/definitions/user_svc.GetUsersRequest'
+          $ref: '#/definitions/user_svc.ListUsersRequest'
       produces:
       - application/json
       responses:
         "200":
           description: List of users retrieved successfully
           schema:
-            $ref: '#/definitions/user_svc.GetUsersResponse'
+            $ref: '#/definitions/user_svc.ListUsersResponse'
         "400":
           description: Invalid JSON
           schema:
