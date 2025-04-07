@@ -232,6 +232,8 @@ func TestOrganization(t *testing.T) {
 				openapi.PtrString(orgId1),
 				tokenRsp.ActiveOrganizationId,
 			)
+			require.NotEmpty(t, tokenRsp.Organizations[0].Slug)
+			require.NotEmpty(t, tokenRsp.Organizations[0].Name)
 		},
 	)
 
