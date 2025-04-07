@@ -29,7 +29,7 @@ type UserSvcInvite struct {
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	ExpiresAt *string `json:"expiresAt,omitempty"`
 	Id string `json:"id"`
-	// OwnerIds specifies the users who created the invite. If you create an invite that already exists for a given role and contact ID, you get added to the list of owners.
+	// OwnerIds specifies the users who created the invite. If you create an invite that already exists for a given role and contact ID, you get added to the list of owners.  @todo not sure if this makes sense. I don't think it does.
 	OwnerIds []string `json:"ownerIds"`
 	// Role specifies the role to be assigned to the ContactId. Callers can only assign roles they own, identified by their service slug (e.g., if \"my-service\" creates an invite, the role must be \"my-service:admin\"). Dynamic organization roles can also be assigned (e.g., \"user-svc:org:{%orgId}:admin\" or \"user-svc:org:{%orgId}:user\"), but in this case, the caller must be an admin of the target organization.
 	Role string `json:"role"`

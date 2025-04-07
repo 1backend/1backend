@@ -734,6 +734,10 @@ func BigBang(options *Options) (*Universe, error) {
 		userService.SaveOrganization(w, r)
 	})).
 		Methods("OPTIONS", "PUT")
+	router.HandleFunc("/user-svc/organizations", appl(func(w http.ResponseWriter, r *http.Request) {
+		userService.ListOrganizations(w, r)
+	})).
+		Methods("OPTIONS", "POST")
 	router.HandleFunc("/user-svc/organization/{organizationId}/user/{userId}", appl(func(w http.ResponseWriter, r *http.Request) {
 		userService.AddUserToOrganization(w, r)
 	})).

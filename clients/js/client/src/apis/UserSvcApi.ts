@@ -25,6 +25,8 @@ import type {
   UserSvcListGrantsResponse,
   UserSvcListInvitesRequest,
   UserSvcListInvitesResponse,
+  UserSvcListOrganizationsRequest,
+  UserSvcListOrganizationsResponse,
   UserSvcListPermissionsResponse,
   UserSvcListUsersRequest,
   UserSvcListUsersResponse,
@@ -62,6 +64,10 @@ import {
     UserSvcListInvitesRequestToJSON,
     UserSvcListInvitesResponseFromJSON,
     UserSvcListInvitesResponseToJSON,
+    UserSvcListOrganizationsRequestFromJSON,
+    UserSvcListOrganizationsRequestToJSON,
+    UserSvcListOrganizationsResponseFromJSON,
+    UserSvcListOrganizationsResponseToJSON,
     UserSvcListPermissionsResponseFromJSON,
     UserSvcListPermissionsResponseToJSON,
     UserSvcListUsersRequestFromJSON,
@@ -123,6 +129,10 @@ export interface ListGrantsRequest {
 
 export interface ListInvitesRequest {
     body: UserSvcListInvitesRequest;
+}
+
+export interface ListOrganizationsRequest {
+    body: UserSvcListOrganizationsRequest;
 }
 
 export interface ListPermissionsRequest {
@@ -506,6 +516,48 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
+     * Requires the `user-svc:organization:view` permission, that only admins have by default.
+     * List Organizations
+     */
+    async listOrganizationsRaw(requestParameters: ListOrganizationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListOrganizationsResponse>> {
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling listOrganizations().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/user-svc/organizations`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserSvcListOrganizationsRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListOrganizationsResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Requires the `user-svc:organization:view` permission, that only admins have by default.
+     * List Organizations
+     */
+    async listOrganizations(requestParameters: ListOrganizationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListOrganizationsResponse> {
+        const response = await this.listOrganizationsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * List permissions by roles. Caller can only list permissions for roles they have.
      * List Permissions
      */
@@ -545,7 +597,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Fetches a list of users with optional query filters and pagination.
+     * Fetches a list of users with optional query filters and pagination. Requires the `user-svc:user:view` permission that only admins have by default.
      * List Users
      */
     async listUsersRaw(requestParameters: ListUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListUsersResponse>> {
@@ -571,7 +623,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Fetches a list of users with optional query filters and pagination.
+     * Fetches a list of users with optional query filters and pagination. Requires the `user-svc:user:view` permission that only admins have by default.
      * List Users
      */
     async listUsers(requestParameters: ListUsersRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListUsersResponse> {

@@ -20,7 +20,7 @@ export declare class UserSvcInvite {
     'expiresAt'?: string;
     'id': string;
     /**
-    * OwnerIds specifies the users who created the invite. If you create an invite that already exists for a given role and contact ID, you get added to the list of owners.
+    * OwnerIds specifies the users who created the invite. If you create an invite that already exists for a given role and contact ID, you get added to the list of owners.  @todo not sure if this makes sense. I don\'t think it does.
     */
     'ownerIds': Array<string>;
     /**

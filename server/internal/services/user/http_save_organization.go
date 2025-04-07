@@ -127,28 +127,21 @@ func (s *UserService) saveOrganization(
 		} else {
 			final.Id = sdk.Id("org")
 		}
-	}
 
-	count, err := s.organizationUserLinksStore.Query(
-		datastore.Equals(
-			datastore.Field("userId"),
-			userId,
-		),
-	).Count()
-	if err != nil {
-		return nil, nil, err
-	}
+		// When creating a new org, the user switches to that org as the active one
+		link := &user.OrganizationUserLink{
+			Id:             sdk.Id("oul"),
+			UserId:         userId,
+			OrganizationId: final.Id,
+			// @todo null out the other active orgs for correctness
+			Active: true,
+		}
 
-	link := &user.OrganizationUserLink{
-		Id:             fmt.Sprintf("%v:%v", final.Id, userId),
-		UserId:         userId,
-		OrganizationId: final.Id,
-		Active:         count == 0, // make the first org active
-	}
+		err = s.organizationUserLinksStore.Upsert(link)
+		if err != nil {
+			return nil, nil, err
+		}
 
-	err = s.organizationUserLinksStore.Upsert(link)
-	if err != nil {
-		return nil, nil, err
 	}
 
 	err = s.organizationsStore.Upsert(final)
@@ -156,9 +149,16 @@ func (s *UserService) saveOrganization(
 		return nil, nil, err
 	}
 
-	err = s.addDynamicRoleToUser(
+	_, err = s.saveInvites(
 		userId,
-		fmt.Sprintf("user-svc:org:{%v}:admin", final.Id),
+		&user.SaveInvitesRequest{
+			Invites: []user.NewInvite{
+				{
+					UserId: userId,
+					Role:   fmt.Sprintf("user-svc:org:{%v}:admin", final.Id),
+				},
+			},
+		},
 	)
 	if err != nil {
 		return nil, nil, err
@@ -210,29 +210,5 @@ func (s *UserService) inactivateToken(tokenId string) error {
 			tokenId,
 		)).UpdateFields(map[string]any{
 		"active": false,
-	})
-}
-
-func (s *UserService) addDynamicRoleToUser(userId, role string) error {
-	userQ := s.usersStore.Query(
-		datastore.Id(userId),
-	)
-	_, found, err := userQ.FindOne()
-	if err != nil {
-		return err
-	}
-	if !found {
-		return fmt.Errorf("cannot find user %v", userId)
-	}
-
-	now := time.Now()
-
-	return s.invitesStore.Upsert(&user.Invite{
-		Id:        sdk.Id("inv"),
-		CreatedAt: now,
-		UpdatedAt: now,
-
-		Role:   role,
-		UserId: userId,
 	})
 }

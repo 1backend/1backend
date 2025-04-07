@@ -4531,6 +4531,64 @@ const docTemplate = `{
                 }
             }
         },
+        "/user-svc/organizations": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Requires the ` + "`" + `user-svc:organization:view` + "`" + ` permission, that only admins have by default.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Svc"
+                ],
+                "summary": "List Organizations",
+                "operationId": "listOrganizations",
+                "parameters": [
+                    {
+                        "description": "List Organizations Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ListOrganizationsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Organization listed successfully",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ListOrganizationsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user-svc/permissions": {
             "post": {
                 "security": [
@@ -5012,7 +5070,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Fetches a list of users with optional query filters and pagination.",
+                "description": "Fetches a list of users with optional query filters and pagination.\nRequires the ` + "`" + `user-svc:user:view` + "`" + ` permission that only admins have by default.",
                 "consumes": [
                     "application/json"
                 ],
@@ -8997,7 +9055,7 @@ const docTemplate = `{
                     "example": "inv_fIYPbMHIcI"
                 },
                 "ownerIds": {
-                    "description": "OwnerIds specifies the users who created the invite.\nIf you create an invite that already exists for a given role and contact ID,\nyou get added to the list of owners.",
+                    "description": "OwnerIds specifies the users who created the invite.\nIf you create an invite that already exists for a given role and contact ID,\nyou get added to the list of owners.\n\n@todo not sure if this makes sense. I don't think it does.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -9062,6 +9120,35 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/user_svc.Invite"
+                    }
+                }
+            }
+        },
+        "user_svc.ListOrganizationsRequest": {
+            "type": "object",
+            "properties": {
+                "afterTime": {
+                    "description": "Organizations by default come back ordered\ndesc by ` + "`" + `createdAt` + "`" + ` field.",
+                    "type": "string"
+                },
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                }
+            }
+        },
+        "user_svc.ListOrganizationsResponse": {
+            "type": "object",
+            "properties": {
+                "organizations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user_svc.Organization"
                     }
                 }
             }

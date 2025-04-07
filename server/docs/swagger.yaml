@@ -2840,6 +2840,8 @@ definitions:
           OwnerIds specifies the users who created the invite.
           If you create an invite that already exists for a given role and contact ID,
           you get added to the list of owners.
+
+          @todo not sure if this makes sense. I don't think it does.
         items:
           type: string
         type: array
@@ -2897,6 +2899,27 @@ definitions:
         type: array
     required:
     - invites
+    type: object
+  user_svc.ListOrganizationsRequest:
+    properties:
+      afterTime:
+        description: |-
+          Organizations by default come back ordered
+          desc by `createdAt` field.
+        type: string
+      ids:
+        items:
+          type: string
+        type: array
+      limit:
+        type: integer
+    type: object
+  user_svc.ListOrganizationsResponse:
+    properties:
+      organizations:
+        items:
+          $ref: '#/definitions/user_svc.Organization'
+        type: array
     type: object
   user_svc.ListPermissionsResponse:
     properties:
@@ -6233,6 +6256,44 @@ paths:
       summary: Add a User to an Organization
       tags:
       - User Svc
+  /user-svc/organizations:
+    post:
+      consumes:
+      - application/json
+      description: Requires the `user-svc:organization:view` permission, that only
+        admins have by default.
+      operationId: listOrganizations
+      parameters:
+      - description: List Organizations Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.ListOrganizationsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Organization listed successfully
+          schema:
+            $ref: '#/definitions/user_svc.ListOrganizationsResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List Organizations
+      tags:
+      - User Svc
   /user-svc/permissions:
     post:
       consumes:
@@ -6554,7 +6615,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: Fetches a list of users with optional query filters and pagination.
+      description: |-
+        Fetches a list of users with optional query filters and pagination.
+        Requires the `user-svc:user:view` permission that only admins have by default.
       operationId: listUsers
       parameters:
       - description: List Users Request

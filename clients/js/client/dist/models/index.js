@@ -180,6 +180,8 @@ export * from './UserSvcListGrantsRequest';
 export * from './UserSvcListGrantsResponse';
 export * from './UserSvcListInvitesRequest';
 export * from './UserSvcListInvitesResponse';
+export * from './UserSvcListOrganizationsRequest';
+export * from './UserSvcListOrganizationsResponse';
 export * from './UserSvcListPermissionsResponse';
 export * from './UserSvcListUsersRequest';
 export * from './UserSvcListUsersResponse';

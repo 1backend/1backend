@@ -279,6 +279,36 @@ func (mr *MockUserSvcAPIMockRecorder) ListInvitesExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListInvitesExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListInvitesExecute), r)
 }
 
+// ListOrganizations mocks base method.
+func (m *MockUserSvcAPI) ListOrganizations(ctx context.Context) ApiListOrganizationsRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListOrganizations", ctx)
+	ret0, _ := ret[0].(ApiListOrganizationsRequest)
+	return ret0
+}
+
+// ListOrganizations indicates an expected call of ListOrganizations.
+func (mr *MockUserSvcAPIMockRecorder) ListOrganizations(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListOrganizations", reflect.TypeOf((*MockUserSvcAPI)(nil).ListOrganizations), ctx)
+}
+
+// ListOrganizationsExecute mocks base method.
+func (m *MockUserSvcAPI) ListOrganizationsExecute(r ApiListOrganizationsRequest) (*UserSvcListOrganizationsResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListOrganizationsExecute", r)
+	ret0, _ := ret[0].(*UserSvcListOrganizationsResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListOrganizationsExecute indicates an expected call of ListOrganizationsExecute.
+func (mr *MockUserSvcAPIMockRecorder) ListOrganizationsExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListOrganizationsExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListOrganizationsExecute), r)
+}
+
 // ListPermissions mocks base method.
 func (m *MockUserSvcAPI) ListPermissions(ctx context.Context, roleId string) ApiListPermissionsRequest {
 	m.ctrl.T.Helper()

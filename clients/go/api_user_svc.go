@@ -146,6 +146,20 @@ but they will only see grants the grant refers to their slug or one of their rol
 	ListInvitesExecute(r ApiListInvitesRequest) (*UserSvcListInvitesResponse, *http.Response, error)
 
 	/*
+	ListOrganizations List Organizations
+
+	Requires the `user-svc:organization:view` permission, that only admins have by default.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiListOrganizationsRequest
+	*/
+	ListOrganizations(ctx context.Context) ApiListOrganizationsRequest
+
+	// ListOrganizationsExecute executes the request
+	//  @return UserSvcListOrganizationsResponse
+	ListOrganizationsExecute(r ApiListOrganizationsRequest) (*UserSvcListOrganizationsResponse, *http.Response, error)
+
+	/*
 	ListPermissions List Permissions
 
 	List permissions by roles.
@@ -165,6 +179,7 @@ Caller can only list permissions for roles they have.
 	ListUsers List Users
 
 	Fetches a list of users with optional query filters and pagination.
+Requires the `user-svc:user:view` permission that only admins have by default.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiListUsersRequest
@@ -1541,6 +1556,163 @@ func (a *UserSvcAPIService) ListInvitesExecute(r ApiListInvitesRequest) (*UserSv
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ApiListOrganizationsRequest struct {
+	ctx context.Context
+	ApiService UserSvcAPI
+	body *UserSvcListOrganizationsRequest
+}
+
+// List Organizations Request
+func (r ApiListOrganizationsRequest) Body(body UserSvcListOrganizationsRequest) ApiListOrganizationsRequest {
+	r.body = &body
+	return r
+}
+
+func (r ApiListOrganizationsRequest) Execute() (*UserSvcListOrganizationsResponse, *http.Response, error) {
+	return r.ApiService.ListOrganizationsExecute(r)
+}
+
+/*
+ListOrganizations List Organizations
+
+Requires the `user-svc:organization:view` permission, that only admins have by default.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiListOrganizationsRequest
+*/
+func (a *UserSvcAPIService) ListOrganizations(ctx context.Context) ApiListOrganizationsRequest {
+	return ApiListOrganizationsRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return UserSvcListOrganizationsResponse
+func (a *UserSvcAPIService) ListOrganizationsExecute(r ApiListOrganizationsRequest) (*UserSvcListOrganizationsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *UserSvcListOrganizationsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.ListOrganizations")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/user-svc/organizations"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.body == nil {
+		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.body
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["BearerAuth"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 500 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiListPermissionsRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
@@ -1711,6 +1883,7 @@ func (r ApiListUsersRequest) Execute() (*UserSvcListUsersResponse, *http.Respons
 ListUsers List Users
 
 Fetches a list of users with optional query filters and pagination.
+Requires the `user-svc:user:view` permission that only admins have by default.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiListUsersRequest

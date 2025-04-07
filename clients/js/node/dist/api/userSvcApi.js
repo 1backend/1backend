@@ -645,6 +645,77 @@ export class UserSvcApi {
         });
     }
     /**
+     * Requires the `user-svc:organization:view` permission, that only admins have by default.
+     * @summary List Organizations
+     * @param body List Organizations Request
+     */
+    listOrganizations(body_1) {
+        return __awaiter(this, arguments, void 0, function* (body, options = { headers: {} }) {
+            const localVarPath = this.basePath + '/user-svc/organizations';
+            let localVarQueryParameters = {};
+            let localVarHeaderParams = Object.assign({}, this._defaultHeaders);
+            const produces = ['application/json'];
+            // give precedence to 'application/json'
+            if (produces.indexOf('application/json') >= 0) {
+                localVarHeaderParams.Accept = 'application/json';
+            }
+            else {
+                localVarHeaderParams.Accept = produces.join(',');
+            }
+            let localVarFormParams = {};
+            // verify required parameter 'body' is not null or undefined
+            if (body === null || body === undefined) {
+                throw new Error('Required parameter body was null or undefined when calling listOrganizations.');
+            }
+            Object.assign(localVarHeaderParams, options.headers);
+            let localVarUseFormData = false;
+            let localVarRequestOptions = {
+                method: 'POST',
+                qs: localVarQueryParameters,
+                headers: localVarHeaderParams,
+                uri: localVarPath,
+                useQuerystring: this._useQuerystring,
+                json: true,
+                body: ObjectSerializer.serialize(body, "UserSvcListOrganizationsRequest")
+            };
+            let authenticationPromise = Promise.resolve();
+            if (this.authentications.BearerAuth.apiKey) {
+                authenticationPromise = authenticationPromise.then(() => this.authentications.BearerAuth.applyToRequest(localVarRequestOptions));
+            }
+            authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
+            let interceptorPromise = authenticationPromise;
+            for (const interceptor of this.interceptors) {
+                interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
+            }
+            return interceptorPromise.then(() => {
+                if (Object.keys(localVarFormParams).length) {
+                    if (localVarUseFormData) {
+                        localVarRequestOptions.formData = localVarFormParams;
+                    }
+                    else {
+                        localVarRequestOptions.form = localVarFormParams;
+                    }
+                }
+                return new Promise((resolve, reject) => {
+                    localVarRequest(localVarRequestOptions, (error, response, body) => {
+                        if (error) {
+                            reject(error);
+                        }
+                        else {
+                            if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
+                                body = ObjectSerializer.deserialize(body, "UserSvcListOrganizationsResponse");
+                                resolve({ response: response, body: body });
+                            }
+                            else {
+                                reject(new HttpError(response, body, response.statusCode));
+                            }
+                        }
+                    });
+                });
+            });
+        });
+    }
+    /**
      * List permissions by roles. Caller can only list permissions for roles they have.
      * @summary List Permissions
      * @param roleId Role ID
@@ -716,7 +787,7 @@ export class UserSvcApi {
         });
     }
     /**
-     * Fetches a list of users with optional query filters and pagination.
+     * Fetches a list of users with optional query filters and pagination. Requires the `user-svc:user:view` permission that only admins have by default.
      * @summary List Users
      * @param body List Users Request
      */
