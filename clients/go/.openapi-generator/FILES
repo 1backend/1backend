@@ -214,6 +214,8 @@ docs/UserSvcListGrantsRequest.md
 docs/UserSvcListGrantsResponse.md
 docs/UserSvcListInvitesRequest.md
 docs/UserSvcListInvitesResponse.md
+docs/UserSvcListOrganizationsRequest.md
+docs/UserSvcListOrganizationsResponse.md
 docs/UserSvcListPermissionsResponse.md
 docs/UserSvcListUsersRequest.md
 docs/UserSvcListUsersResponse.md
@@ -416,6 +418,8 @@ model_user_svc_list_grants_request.go
 model_user_svc_list_grants_response.go
 model_user_svc_list_invites_request.go
 model_user_svc_list_invites_response.go
+model_user_svc_list_organizations_request.go
+model_user_svc_list_organizations_response.go
 model_user_svc_list_permissions_response.go
 model_user_svc_list_users_request.go
 model_user_svc_list_users_response.go

@@ -75,6 +75,20 @@ type SaveOrganizationResponse struct {
 	Token AuthToken `json:"token" binding:"required"`
 }
 
+type ListOrganizationsRequest struct {
+	Ids []string `json:"ids"`
+
+	Limit int `json:"limit"`
+
+	// Organizations by default come back ordered
+	// desc by `createdAt` field.
+	AfterTime time.Time `json:"afterTime"`
+}
+
+type ListOrganizationsResponse struct {
+	Organizations []Organization `json:"organizations"`
+}
+
 type AddUserToOrganizationRequest struct {
 }
 

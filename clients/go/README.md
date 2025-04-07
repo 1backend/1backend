@@ -160,6 +160,7 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**HasPermission**](docs/UserSvcAPI.md#haspermission) | **Post** /user-svc/self/has/{permission} | Has Permission
 *UserSvcAPI* | [**ListGrants**](docs/UserSvcAPI.md#listgrants) | **Post** /user-svc/grants | List Grants
 *UserSvcAPI* | [**ListInvites**](docs/UserSvcAPI.md#listinvites) | **Post** /user-svc/invites | List Invites
+*UserSvcAPI* | [**ListOrganizations**](docs/UserSvcAPI.md#listorganizations) | **Post** /user-svc/organizations | List Organizations
 *UserSvcAPI* | [**ListPermissions**](docs/UserSvcAPI.md#listpermissions) | **Post** /user-svc/permissions | List Permissions
 *UserSvcAPI* | [**ListUsers**](docs/UserSvcAPI.md#listusers) | **Post** /user-svc/users | List Users
 *UserSvcAPI* | [**Login**](docs/UserSvcAPI.md#login) | **Post** /user-svc/login | Login
@@ -356,6 +357,8 @@ Class | Method | HTTP request | Description
  - [UserSvcListGrantsResponse](docs/UserSvcListGrantsResponse.md)
  - [UserSvcListInvitesRequest](docs/UserSvcListInvitesRequest.md)
  - [UserSvcListInvitesResponse](docs/UserSvcListInvitesResponse.md)
+ - [UserSvcListOrganizationsRequest](docs/UserSvcListOrganizationsRequest.md)
+ - [UserSvcListOrganizationsResponse](docs/UserSvcListOrganizationsResponse.md)
  - [UserSvcListPermissionsResponse](docs/UserSvcListPermissionsResponse.md)
  - [UserSvcListUsersRequest](docs/UserSvcListUsersRequest.md)
  - [UserSvcListUsersResponse](docs/UserSvcListUsersResponse.md)

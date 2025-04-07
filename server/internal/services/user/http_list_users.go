@@ -25,6 +25,7 @@ import (
 // @ID listUsers
 // @Summary List Users
 // @Description Fetches a list of users with optional query filters and pagination.
+// @Description Requires the `user-svc:user:view` permission that only admins have by default.
 // @Tags User Svc
 // @Accept json
 // @Produce json

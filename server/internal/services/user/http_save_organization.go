@@ -127,28 +127,21 @@ func (s *UserService) saveOrganization(
 		} else {
 			final.Id = sdk.Id("org")
 		}
-	}
 
-	count, err := s.organizationUserLinksStore.Query(
-		datastore.Equals(
-			datastore.Field("userId"),
-			userId,
-		),
-	).Count()
-	if err != nil {
-		return nil, nil, err
-	}
+		// When creating a new org, the user switches to that org as the active one
+		link := &user.OrganizationUserLink{
+			Id:             sdk.Id("oul"),
+			UserId:         userId,
+			OrganizationId: final.Id,
+			// @todo null out the other active orgs for correctness
+			Active: true,
+		}
 
-	link := &user.OrganizationUserLink{
-		Id:             fmt.Sprintf("%v:%v", final.Id, userId),
-		UserId:         userId,
-		OrganizationId: final.Id,
-		Active:         count == 0, // make the first org active
-	}
+		err = s.organizationUserLinksStore.Upsert(link)
+		if err != nil {
+			return nil, nil, err
+		}
 
-	err = s.organizationUserLinksStore.Upsert(link)
-	if err != nil {
-		return nil, nil, err
 	}
 
 	err = s.organizationsStore.Upsert(final)

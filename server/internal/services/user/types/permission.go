@@ -37,6 +37,7 @@ var (
 	PermissionOrganizationCreate     = "user-svc:organization:create"
 	PermissionOrganizationAddUser    = "user-svc:organization:add-user"
 	PermissionOrganizationRemoveUser = "user-svc:organization:remove-user"
+	PermissionOrganizationView       = "user-svc:organization:view"
 
 	// Grant Permissions
 	PermissionGrantCreate = "user-svc:grant:create"
@@ -66,6 +67,7 @@ var AdminPermissions = []string{
 	PermissionOrganizationCreate,
 	PermissionOrganizationAddUser,
 	PermissionOrganizationRemoveUser,
+	PermissionOrganizationView,
 	PermissionGrantCreate,
 	PermissionInviteEdit,
 	PermissionInviteView,
