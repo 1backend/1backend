@@ -20,6 +20,7 @@ import (
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/pkg/errors"
 )
@@ -89,9 +90,42 @@ func (cs *UserService) saveGrants(
 	ctx context.Context,
 	req *user.SaveGrantsRequest,
 ) error {
+	permissions := []any{}
+	for _, grant := range req.Grants {
+		permissions = append(permissions, grant.Permission)
+	}
+
+	grantIs, err := cs.grantsStore.Query(
+		datastore.IsInList([]string{"permission"}, permissions...),
+	).Find()
+	if err != nil {
+		return errors.Wrap(err, "failed to list grants by permission")
+	}
+
+	grantsByPermission := map[string][]*user.Grant{}
+	for _, grantI := range grantIs {
+		g := grantI.(*user.Grant)
+		grantsByPermission[g.Permission] = append(grantsByPermission[g.Permission], g)
+	}
+
 	for _, grant := range req.Grants {
 		if grant.Id == "" {
 			grant.Id = sdk.Id("grn")
+		}
+
+		existingGrants, ok := grantsByPermission[grant.Permission]
+		isDuplicate := false
+		if ok {
+			for _, existingGrant := range existingGrants {
+				if equalUnordered(existingGrant.Roles, grant.Roles) &&
+					equalUnordered(existingGrant.Slugs, grant.Slugs) {
+					isDuplicate = true
+					break
+				}
+			}
+		}
+		if isDuplicate {
+			continue
 		}
 
 		err := cs.grantsStore.Upsert(grant)
@@ -101,4 +135,26 @@ func (cs *UserService) saveGrants(
 	}
 
 	return nil
+}
+
+// equalUnordered checks if two slices contain the same elements regardless of order.
+// Assumes elements are comparable (e.g., int, string, etc.).
+func equalUnordered[T comparable](a, b []T) bool {
+	if len(a) != len(b) {
+		return false
+	}
+
+	counts := make(map[T]int)
+
+	for _, item := range a {
+		counts[item]++
+	}
+	for _, item := range b {
+		counts[item]--
+		if counts[item] < 0 {
+			return false
+		}
+	}
+
+	return true
 }
