@@ -132,35 +132,49 @@ func (s *UserService) saveInvites(
 		userIds = append(userIds, invite.UserId)
 	}
 
-	contacts, err := s.contactsStore.Query(
-		datastore.IsInList(
-			datastore.Field("id"),
-			contactIds...,
-		)).
-		Find()
-	if err != nil {
-		return nil, err
+	var (
+		err      error
+		contacts []datastore.Row
+		users    []datastore.Row
+		inviteIs []datastore.Row
+	)
+
+	if len(contactIds) > 0 {
+		contacts, err = s.contactsStore.Query(
+			datastore.IsInList(
+				datastore.Field("id"),
+				contactIds...,
+			)).
+			Find()
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	users, err := s.usersStore.Query(
-		datastore.IsInList(
-			datastore.Field("id"),
-			userIds...,
-		)).
-		Find()
-	if err != nil {
-		return nil, err
+	if len(userIds) > 0 {
+		users, err = s.usersStore.Query(
+			datastore.IsInList(
+				datastore.Field("id"),
+				userIds...,
+			)).
+			Find()
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	inviteIs, err := s.invitesStore.Query(
-		datastore.IsInList(
-			datastore.Field("id"),
-			inviteIds...,
-		)).
-		Find()
-	if err != nil {
-		return nil, err
+	if len(inviteIds) > 0 {
+		inviteIs, err = s.invitesStore.Query(
+			datastore.IsInList(
+				datastore.Field("id"),
+				inviteIds...,
+			)).
+			Find()
+		if err != nil {
+			return nil, err
+		}
 	}
+
 	existingInvites := map[string]*user.Invite{}
 	for _, inviteI := range inviteIs {
 		existingInvites[inviteI.GetId()] = inviteI.(*user.Invite)

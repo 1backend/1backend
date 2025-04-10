@@ -19,6 +19,7 @@ import (
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/pkg/errors"
 
 	onebackendapi "github.com/1backend/1backend/clients/go"
 )
@@ -59,13 +60,13 @@ func RegisterServiceAccount(userService onebackendapi.UserSvcAPI, serviceSlug, s
 	}).Execute()
 
 	if err != nil {
-		_, _, err = userService.Register(ctx).Body(onebackendapi.UserSvcRegisterRequest{
+		_, _, err := userService.Register(ctx).Body(onebackendapi.UserSvcRegisterRequest{
 			Slug:     slug,
-			Name:     onebackendapi.PtrString(serviceName),
+			Name:     onebackendapi.PtrString(slug),
 			Password: onebackendapi.PtrString(pw),
 		}).Execute()
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "error registering service account after login failure")
 		}
 
 		loginRsp, _, err = userService.Login(ctx).Body(onebackendapi.UserSvcLoginRequest{
@@ -73,7 +74,7 @@ func RegisterServiceAccount(userService onebackendapi.UserSvcAPI, serviceSlug, s
 			Password: onebackendapi.PtrString(pw),
 		}).Execute()
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "error logging in after registration")
 		}
 	}
 

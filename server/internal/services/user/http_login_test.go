@@ -268,6 +268,7 @@ func TestOrganization(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, claim)
 		require.Equal(t, 2, len(claim.Roles), claim.Roles)
+		require.Equal(t, orgId1, claim.ActiveOrganizationId)
 		require.Contains(
 			t,
 			claim.Roles,
