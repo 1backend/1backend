@@ -67,7 +67,7 @@ func TestListPets(t *testing.T) {
 
 		_, rsp, err := serverAdminClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcNewInvite{
+				Invites: []openapi.UserSvcInviteInput{
 					{
 						UserId: openapi.PtrString(tokens[0].UserId),
 						Role:   basicservice.RolePetManager,
