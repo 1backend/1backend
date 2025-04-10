@@ -44,7 +44,7 @@ func (s *UserService) ReadUserByToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	claim, err := s.authorizer.ParseJWTFromRequest(r)
+	claim, err := s.authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
