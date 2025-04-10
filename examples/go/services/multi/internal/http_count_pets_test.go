@@ -60,7 +60,7 @@ func TestCountPets(t *testing.T) {
 	t.Run("admin assigns role to user so user can save a pet first", func(t *testing.T) {
 		_, rsp, err := serverAdminClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcNewInvite{
+				Invites: []openapi.UserSvcInviteInput{
 					{
 						UserId: openapi.PtrString(tokens[0].UserId),
 						Role:   "basic-svc:pet:manager",
