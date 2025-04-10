@@ -27,6 +27,11 @@ UserSvcReadUserByTokenResponse.attributeTypeMap = [
         "type": "Array<UserSvcOrganization>"
     },
     {
+        "name": "roles",
+        "baseName": "roles",
+        "type": "Array<string>"
+    },
+    {
         "name": "user",
         "baseName": "user",
         "type": "UserSvcUser"

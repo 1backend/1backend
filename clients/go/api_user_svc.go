@@ -207,7 +207,10 @@ Requires the `user-svc:user:view` permission that only admins have by default.
 	/*
 	ReadUserByToken Read User by Token
 
-	Retrieve user information based on an authentication token.
+	Retrieves user information based on the authentication token in the request header.
+Typically called by single-page applications during the initial page load.
+While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,
+this endpoint returns additional data, including the full user object and associated organizations.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiReadUserByTokenRequest
@@ -2162,7 +2165,10 @@ func (r ApiReadUserByTokenRequest) Execute() (*UserSvcReadUserByTokenResponse, *
 /*
 ReadUserByToken Read User by Token
 
-Retrieve user information based on an authentication token.
+Retrieves user information based on the authentication token in the request header.
+Typically called by single-page applications during the initial page load.
+While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,
+this endpoint returns additional data, including the full user object and associated organizations.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiReadUserByTokenRequest

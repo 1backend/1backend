@@ -234,6 +234,7 @@ func TestOrganization(t *testing.T) {
 			)
 			require.NotEmpty(t, tokenRsp.Organizations[0].Slug)
 			require.NotEmpty(t, tokenRsp.Organizations[0].Name)
+			require.NotEmpty(t, tokenRsp.Roles)
 		},
 	)
 

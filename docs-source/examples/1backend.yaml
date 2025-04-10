@@ -3016,13 +3016,24 @@ definitions:
   user_svc.ReadUserByTokenResponse:
     properties:
       activeOrganizationId:
+        description: Active organization of the caller user, if it has any.
         type: string
       organizations:
+        description: Organizations of the caller user.
         items:
           $ref: '#/definitions/user_svc.Organization'
         type: array
+      roles:
+        description: Roles the token has that made this request.
+        items:
+          type: string
+        type: array
       user:
-        $ref: '#/definitions/user_svc.User'
+        allOf:
+        - $ref: '#/definitions/user_svc.User'
+        description: The user who made the request.
+    required:
+    - user
     type: object
   user_svc.RegisterRequest:
     properties:
@@ -6589,7 +6600,11 @@ paths:
     post:
       consumes:
       - application/json
-      description: Retrieve user information based on an authentication token.
+      description: |-
+        Retrieves user information based on the authentication token in the request header.
+        Typically called by single-page applications during the initial page load.
+        While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,
+        this endpoint returns additional data, including the full user object and associated organizations.
       operationId: readUserByToken
       produces:
       - application/json

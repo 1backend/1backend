@@ -23,7 +23,10 @@ import (
 
 // @ID readUserByToken
 // @Summary Read User by Token
-// @Description Retrieve user information based on an authentication token.
+// @Description Retrieves user information based on the authentication token in the request header.
+// @Description Typically called by single-page applications during the initial page load.
+// @Description While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,
+// @Description this endpoint returns additional data, including the full user object and associated organizations.
 // @Tags User Svc
 // @Accept json
 // @Produce json
@@ -38,6 +41,13 @@ func (s *UserService) ReadUserByToken(w http.ResponseWriter, r *http.Request) {
 	if !exists {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(`Token Missing`))
+		return
+	}
+
+	claim, err := s.authorizer.ParseJWTFromRequest(r)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
 		return
 	}
 
@@ -59,6 +69,7 @@ func (s *UserService) ReadUserByToken(w http.ResponseWriter, r *http.Request) {
 
 	bs, _ := json.Marshal(user.ReadUserByTokenResponse{
 		User:                 usr,
+		Roles:                claim.Roles,
 		Organizations:        orgs,
 		ActiveOrganizationId: activeOrgId,
 	})

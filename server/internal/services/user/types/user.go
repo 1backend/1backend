@@ -66,9 +66,17 @@ func (c *User) GetUpdatedAt() string {
 type ReadUserByTokenRequest struct{}
 
 type ReadUserByTokenResponse struct {
-	User                 *User           `json:"user,omitempty"`
-	Organizations        []*Organization `json:"organizations,omitempty"`
-	ActiveOrganizationId string          `json:"activeOrganizationId,omitempty"`
+	// The user who made the request.
+	User *User `json:"user" binding:"required"`
+
+	// Roles the token has that made this request.
+	Roles []string `json:"roles,omitempty"`
+
+	// Organizations of the caller user.
+	Organizations []*Organization `json:"organizations,omitempty"`
+
+	// Active organization of the caller user, if it has any.
+	ActiveOrganizationId string `json:"activeOrganizationId,omitempty"`
 }
 
 type RegisterRequest struct {

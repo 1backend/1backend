@@ -35,29 +35,36 @@ import {
  */
 export interface UserSvcReadUserByTokenResponse {
     /**
-     * 
+     * Active organization of the caller user, if it has any.
      * @type {string}
      * @memberof UserSvcReadUserByTokenResponse
      */
     activeOrganizationId?: string;
     /**
-     * 
+     * Organizations of the caller user.
      * @type {Array<UserSvcOrganization>}
      * @memberof UserSvcReadUserByTokenResponse
      */
     organizations?: Array<UserSvcOrganization>;
     /**
-     * 
+     * Roles the token has that made this request.
+     * @type {Array<string>}
+     * @memberof UserSvcReadUserByTokenResponse
+     */
+    roles?: Array<string>;
+    /**
+     * The user who made the request.
      * @type {UserSvcUser}
      * @memberof UserSvcReadUserByTokenResponse
      */
-    user?: UserSvcUser;
+    user: UserSvcUser;
 }
 
 /**
  * Check if a given object implements the UserSvcReadUserByTokenResponse interface.
  */
 export function instanceOfUserSvcReadUserByTokenResponse(value: object): value is UserSvcReadUserByTokenResponse {
+    if (!('user' in value) || value['user'] === undefined) return false;
     return true;
 }
 
@@ -73,7 +80,8 @@ export function UserSvcReadUserByTokenResponseFromJSONTyped(json: any, ignoreDis
         
         'activeOrganizationId': json['activeOrganizationId'] == null ? undefined : json['activeOrganizationId'],
         'organizations': json['organizations'] == null ? undefined : ((json['organizations'] as Array<any>).map(UserSvcOrganizationFromJSON)),
-        'user': json['user'] == null ? undefined : UserSvcUserFromJSON(json['user']),
+        'roles': json['roles'] == null ? undefined : json['roles'],
+        'user': UserSvcUserFromJSON(json['user']),
     };
 }
 
@@ -90,6 +98,7 @@ export function UserSvcReadUserByTokenResponseToJSONTyped(value?: UserSvcReadUse
         
         'activeOrganizationId': value['activeOrganizationId'],
         'organizations': value['organizations'] == null ? undefined : ((value['organizations'] as Array<any>).map(UserSvcOrganizationToJSON)),
+        'roles': value['roles'],
         'user': UserSvcUserToJSON(value['user']),
     };
 }
