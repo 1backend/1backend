@@ -12,27 +12,27 @@
 /**
  *
  * @export
- * @interface UserSvcNewInvite
+ * @interface UserSvcInviteInput
  */
-export interface UserSvcNewInvite {
+export interface UserSvcInviteInput {
     /**
      * ContactId is the the recipient of the invite.
      * If the user is already registered, the role is assigned immediately;
      * otherwise, it is applied upon registration.
      * @type {string}
-     * @memberof UserSvcNewInvite
+     * @memberof UserSvcInviteInput
      */
     contactId?: string;
     /**
      *
      * @type {string}
-     * @memberof UserSvcNewInvite
+     * @memberof UserSvcInviteInput
      */
     id?: string;
     /**
      *
      * @type {string}
-     * @memberof UserSvcNewInvite
+     * @memberof UserSvcInviteInput
      */
     role: string;
     /**
@@ -40,15 +40,15 @@ export interface UserSvcNewInvite {
      * If the user is already registered, the role is assigned immediately;
      * otherwise, it is applied upon registration.
      * @type {string}
-     * @memberof UserSvcNewInvite
+     * @memberof UserSvcInviteInput
      */
     userId?: string;
 }
 /**
- * Check if a given object implements the UserSvcNewInvite interface.
+ * Check if a given object implements the UserSvcInviteInput interface.
  */
-export declare function instanceOfUserSvcNewInvite(value: object): value is UserSvcNewInvite;
-export declare function UserSvcNewInviteFromJSON(json: any): UserSvcNewInvite;
-export declare function UserSvcNewInviteFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcNewInvite;
-export declare function UserSvcNewInviteToJSON(json: any): UserSvcNewInvite;
-export declare function UserSvcNewInviteToJSONTyped(value?: UserSvcNewInvite | null, ignoreDiscriminator?: boolean): any;
+export declare function instanceOfUserSvcInviteInput(value: object): value is UserSvcInviteInput;
+export declare function UserSvcInviteInputFromJSON(json: any): UserSvcInviteInput;
+export declare function UserSvcInviteInputFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcInviteInput;
+export declare function UserSvcInviteInputToJSON(json: any): UserSvcInviteInput;
+export declare function UserSvcInviteInputToJSONTyped(value?: UserSvcInviteInput | null, ignoreDiscriminator?: boolean): any;

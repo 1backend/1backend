@@ -73,9 +73,8 @@ func (s *UserService) listInvites(
 	callerId string,
 	req *user.ListInvitesRequest,
 ) ([]user.Invite, error) {
-	filters := []datastore.Filter{
-		datastore.Equals([]string{"ownerIds"}, callerId),
-	}
+	filters := []datastore.Filter{}
+
 	if req.ContactId != "" {
 		filters = append(filters, datastore.Equals([]string{"contactId"}, req.ContactId))
 	}

@@ -65,9 +65,8 @@ func (i Invite) GetId() string {
 	return i.Id
 }
 
-// NewInvite is used to create a new invite.
-// It is a subset of the Invite struct, as some fields are set automatically.
-type NewInvite struct {
+// InviteInput is the settable subset of Invite, excluding system-managed fields.
+type InviteInput struct {
 	Id string `json:"id,omitempty" example:"inv_fIYPbMHIcI"`
 
 	// ContactId is the the recipient of the invite.
@@ -84,7 +83,7 @@ type NewInvite struct {
 }
 
 type SaveInvitesRequest struct {
-	Invites []NewInvite `json:"invites" binding:"required"`
+	Invites []InviteInput `json:"invites" binding:"required"`
 }
 
 type SaveInvitesResponse struct {

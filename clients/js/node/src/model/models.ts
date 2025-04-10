@@ -176,6 +176,7 @@ export * from './userSvcGrant';
 export * from './userSvcHasPermissionRequest';
 export * from './userSvcHasPermissionResponse';
 export * from './userSvcInvite';
+export * from './userSvcInviteInput';
 export * from './userSvcListGrantsRequest';
 export * from './userSvcListGrantsResponse';
 export * from './userSvcListInvitesRequest';
@@ -187,7 +188,6 @@ export * from './userSvcListUsersRequest';
 export * from './userSvcListUsersResponse';
 export * from './userSvcLoginRequest';
 export * from './userSvcLoginResponse';
-export * from './userSvcNewInvite';
 export * from './userSvcOrganization';
 export * from './userSvcReadUserByTokenResponse';
 export * from './userSvcRegisterRequest';
@@ -391,6 +391,7 @@ import { UserSvcGrant } from './userSvcGrant';
 import { UserSvcHasPermissionRequest } from './userSvcHasPermissionRequest';
 import { UserSvcHasPermissionResponse } from './userSvcHasPermissionResponse';
 import { UserSvcInvite } from './userSvcInvite';
+import { UserSvcInviteInput } from './userSvcInviteInput';
 import { UserSvcListGrantsRequest } from './userSvcListGrantsRequest';
 import { UserSvcListGrantsResponse } from './userSvcListGrantsResponse';
 import { UserSvcListInvitesRequest } from './userSvcListInvitesRequest';
@@ -402,7 +403,6 @@ import { UserSvcListUsersRequest } from './userSvcListUsersRequest';
 import { UserSvcListUsersResponse } from './userSvcListUsersResponse';
 import { UserSvcLoginRequest } from './userSvcLoginRequest';
 import { UserSvcLoginResponse } from './userSvcLoginResponse';
-import { UserSvcNewInvite } from './userSvcNewInvite';
 import { UserSvcOrganization } from './userSvcOrganization';
 import { UserSvcReadUserByTokenResponse } from './userSvcReadUserByTokenResponse';
 import { UserSvcRegisterRequest } from './userSvcRegisterRequest';
@@ -609,6 +609,7 @@ let typeMap: {[index: string]: any} = {
     "UserSvcHasPermissionRequest": UserSvcHasPermissionRequest,
     "UserSvcHasPermissionResponse": UserSvcHasPermissionResponse,
     "UserSvcInvite": UserSvcInvite,
+    "UserSvcInviteInput": UserSvcInviteInput,
     "UserSvcListGrantsRequest": UserSvcListGrantsRequest,
     "UserSvcListGrantsResponse": UserSvcListGrantsResponse,
     "UserSvcListInvitesRequest": UserSvcListInvitesRequest,
@@ -620,7 +621,6 @@ let typeMap: {[index: string]: any} = {
     "UserSvcListUsersResponse": UserSvcListUsersResponse,
     "UserSvcLoginRequest": UserSvcLoginRequest,
     "UserSvcLoginResponse": UserSvcLoginResponse,
-    "UserSvcNewInvite": UserSvcNewInvite,
     "UserSvcOrganization": UserSvcOrganization,
     "UserSvcReadUserByTokenResponse": UserSvcReadUserByTokenResponse,
     "UserSvcRegisterRequest": UserSvcRegisterRequest,

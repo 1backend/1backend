@@ -9,13 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export class UserSvcNewInvite {
+export class UserSvcInviteInput {
     static getAttributeTypeMap() {
-        return UserSvcNewInvite.attributeTypeMap;
+        return UserSvcInviteInput.attributeTypeMap;
     }
 }
-UserSvcNewInvite.discriminator = undefined;
-UserSvcNewInvite.attributeTypeMap = [
+UserSvcInviteInput.discriminator = undefined;
+UserSvcInviteInput.attributeTypeMap = [
     {
         "name": "contactId",
         "baseName": "contactId",

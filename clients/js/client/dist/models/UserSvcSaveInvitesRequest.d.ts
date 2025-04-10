@@ -9,7 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import type { UserSvcNewInvite } from './UserSvcNewInvite';
+import type { UserSvcInviteInput } from './UserSvcInviteInput';
 /**
  *
  * @export
@@ -18,10 +18,10 @@ import type { UserSvcNewInvite } from './UserSvcNewInvite';
 export interface UserSvcSaveInvitesRequest {
     /**
      *
-     * @type {Array<UserSvcNewInvite>}
+     * @type {Array<UserSvcInviteInput>}
      * @memberof UserSvcSaveInvitesRequest
      */
-    invites: Array<UserSvcNewInvite>;
+    invites: Array<UserSvcInviteInput>;
 }
 /**
  * Check if a given object implements the UserSvcSaveInvitesRequest interface.

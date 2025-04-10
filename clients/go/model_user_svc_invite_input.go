@@ -17,11 +17,11 @@ import (
 	"fmt"
 )
 
-// checks if the UserSvcNewInvite type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &UserSvcNewInvite{}
+// checks if the UserSvcInviteInput type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &UserSvcInviteInput{}
 
-// UserSvcNewInvite struct for UserSvcNewInvite
-type UserSvcNewInvite struct {
+// UserSvcInviteInput struct for UserSvcInviteInput
+type UserSvcInviteInput struct {
 	// ContactId is the the recipient of the invite. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
 	ContactId *string `json:"contactId,omitempty"`
 	Id *string `json:"id,omitempty"`
@@ -30,28 +30,28 @@ type UserSvcNewInvite struct {
 	UserId *string `json:"userId,omitempty"`
 }
 
-type _UserSvcNewInvite UserSvcNewInvite
+type _UserSvcInviteInput UserSvcInviteInput
 
-// NewUserSvcNewInvite instantiates a new UserSvcNewInvite object
+// NewUserSvcInviteInput instantiates a new UserSvcInviteInput object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcNewInvite(role string) *UserSvcNewInvite {
-	this := UserSvcNewInvite{}
+func NewUserSvcInviteInput(role string) *UserSvcInviteInput {
+	this := UserSvcInviteInput{}
 	this.Role = role
 	return &this
 }
 
-// NewUserSvcNewInviteWithDefaults instantiates a new UserSvcNewInvite object
+// NewUserSvcInviteInputWithDefaults instantiates a new UserSvcInviteInput object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewUserSvcNewInviteWithDefaults() *UserSvcNewInvite {
-	this := UserSvcNewInvite{}
+func NewUserSvcInviteInputWithDefaults() *UserSvcInviteInput {
+	this := UserSvcInviteInput{}
 	return &this
 }
 
 // GetContactId returns the ContactId field value if set, zero value otherwise.
-func (o *UserSvcNewInvite) GetContactId() string {
+func (o *UserSvcInviteInput) GetContactId() string {
 	if o == nil || IsNil(o.ContactId) {
 		var ret string
 		return ret
@@ -61,7 +61,7 @@ func (o *UserSvcNewInvite) GetContactId() string {
 
 // GetContactIdOk returns a tuple with the ContactId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcNewInvite) GetContactIdOk() (*string, bool) {
+func (o *UserSvcInviteInput) GetContactIdOk() (*string, bool) {
 	if o == nil || IsNil(o.ContactId) {
 		return nil, false
 	}
@@ -69,7 +69,7 @@ func (o *UserSvcNewInvite) GetContactIdOk() (*string, bool) {
 }
 
 // HasContactId returns a boolean if a field has been set.
-func (o *UserSvcNewInvite) HasContactId() bool {
+func (o *UserSvcInviteInput) HasContactId() bool {
 	if o != nil && !IsNil(o.ContactId) {
 		return true
 	}
@@ -78,12 +78,12 @@ func (o *UserSvcNewInvite) HasContactId() bool {
 }
 
 // SetContactId gets a reference to the given string and assigns it to the ContactId field.
-func (o *UserSvcNewInvite) SetContactId(v string) {
+func (o *UserSvcInviteInput) SetContactId(v string) {
 	o.ContactId = &v
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
-func (o *UserSvcNewInvite) GetId() string {
+func (o *UserSvcInviteInput) GetId() string {
 	if o == nil || IsNil(o.Id) {
 		var ret string
 		return ret
@@ -93,7 +93,7 @@ func (o *UserSvcNewInvite) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcNewInvite) GetIdOk() (*string, bool) {
+func (o *UserSvcInviteInput) GetIdOk() (*string, bool) {
 	if o == nil || IsNil(o.Id) {
 		return nil, false
 	}
@@ -101,7 +101,7 @@ func (o *UserSvcNewInvite) GetIdOk() (*string, bool) {
 }
 
 // HasId returns a boolean if a field has been set.
-func (o *UserSvcNewInvite) HasId() bool {
+func (o *UserSvcInviteInput) HasId() bool {
 	if o != nil && !IsNil(o.Id) {
 		return true
 	}
@@ -110,12 +110,12 @@ func (o *UserSvcNewInvite) HasId() bool {
 }
 
 // SetId gets a reference to the given string and assigns it to the Id field.
-func (o *UserSvcNewInvite) SetId(v string) {
+func (o *UserSvcInviteInput) SetId(v string) {
 	o.Id = &v
 }
 
 // GetRole returns the Role field value
-func (o *UserSvcNewInvite) GetRole() string {
+func (o *UserSvcInviteInput) GetRole() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -126,7 +126,7 @@ func (o *UserSvcNewInvite) GetRole() string {
 
 // GetRoleOk returns a tuple with the Role field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcNewInvite) GetRoleOk() (*string, bool) {
+func (o *UserSvcInviteInput) GetRoleOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -134,12 +134,12 @@ func (o *UserSvcNewInvite) GetRoleOk() (*string, bool) {
 }
 
 // SetRole sets field value
-func (o *UserSvcNewInvite) SetRole(v string) {
+func (o *UserSvcInviteInput) SetRole(v string) {
 	o.Role = v
 }
 
 // GetUserId returns the UserId field value if set, zero value otherwise.
-func (o *UserSvcNewInvite) GetUserId() string {
+func (o *UserSvcInviteInput) GetUserId() string {
 	if o == nil || IsNil(o.UserId) {
 		var ret string
 		return ret
@@ -149,7 +149,7 @@ func (o *UserSvcNewInvite) GetUserId() string {
 
 // GetUserIdOk returns a tuple with the UserId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcNewInvite) GetUserIdOk() (*string, bool) {
+func (o *UserSvcInviteInput) GetUserIdOk() (*string, bool) {
 	if o == nil || IsNil(o.UserId) {
 		return nil, false
 	}
@@ -157,7 +157,7 @@ func (o *UserSvcNewInvite) GetUserIdOk() (*string, bool) {
 }
 
 // HasUserId returns a boolean if a field has been set.
-func (o *UserSvcNewInvite) HasUserId() bool {
+func (o *UserSvcInviteInput) HasUserId() bool {
 	if o != nil && !IsNil(o.UserId) {
 		return true
 	}
@@ -166,11 +166,11 @@ func (o *UserSvcNewInvite) HasUserId() bool {
 }
 
 // SetUserId gets a reference to the given string and assigns it to the UserId field.
-func (o *UserSvcNewInvite) SetUserId(v string) {
+func (o *UserSvcInviteInput) SetUserId(v string) {
 	o.UserId = &v
 }
 
-func (o UserSvcNewInvite) MarshalJSON() ([]byte, error) {
+func (o UserSvcInviteInput) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -178,7 +178,7 @@ func (o UserSvcNewInvite) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o UserSvcNewInvite) ToMap() (map[string]interface{}, error) {
+func (o UserSvcInviteInput) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.ContactId) {
 		toSerialize["contactId"] = o.ContactId
@@ -193,7 +193,7 @@ func (o UserSvcNewInvite) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-func (o *UserSvcNewInvite) UnmarshalJSON(data []byte) (err error) {
+func (o *UserSvcInviteInput) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
@@ -215,53 +215,53 @@ func (o *UserSvcNewInvite) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varUserSvcNewInvite := _UserSvcNewInvite{}
+	varUserSvcInviteInput := _UserSvcInviteInput{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varUserSvcNewInvite)
+	err = decoder.Decode(&varUserSvcInviteInput)
 
 	if err != nil {
 		return err
 	}
 
-	*o = UserSvcNewInvite(varUserSvcNewInvite)
+	*o = UserSvcInviteInput(varUserSvcInviteInput)
 
 	return err
 }
 
-type NullableUserSvcNewInvite struct {
-	value *UserSvcNewInvite
+type NullableUserSvcInviteInput struct {
+	value *UserSvcInviteInput
 	isSet bool
 }
 
-func (v NullableUserSvcNewInvite) Get() *UserSvcNewInvite {
+func (v NullableUserSvcInviteInput) Get() *UserSvcInviteInput {
 	return v.value
 }
 
-func (v *NullableUserSvcNewInvite) Set(val *UserSvcNewInvite) {
+func (v *NullableUserSvcInviteInput) Set(val *UserSvcInviteInput) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableUserSvcNewInvite) IsSet() bool {
+func (v NullableUserSvcInviteInput) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableUserSvcNewInvite) Unset() {
+func (v *NullableUserSvcInviteInput) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableUserSvcNewInvite(val *UserSvcNewInvite) *NullableUserSvcNewInvite {
-	return &NullableUserSvcNewInvite{value: val, isSet: true}
+func NewNullableUserSvcInviteInput(val *UserSvcInviteInput) *NullableUserSvcInviteInput {
+	return &NullableUserSvcInviteInput{value: val, isSet: true}
 }
 
-func (v NullableUserSvcNewInvite) MarshalJSON() ([]byte, error) {
+func (v NullableUserSvcInviteInput) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableUserSvcNewInvite) UnmarshalJSON(src []byte) error {
+func (v *NullableUserSvcInviteInput) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

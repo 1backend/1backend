@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { UserSvcNewInvite } from './UserSvcNewInvite';
+import type { UserSvcInviteInput } from './UserSvcInviteInput';
 import {
-    UserSvcNewInviteFromJSON,
-    UserSvcNewInviteFromJSONTyped,
-    UserSvcNewInviteToJSON,
-    UserSvcNewInviteToJSONTyped,
-} from './UserSvcNewInvite';
+    UserSvcInviteInputFromJSON,
+    UserSvcInviteInputFromJSONTyped,
+    UserSvcInviteInputToJSON,
+    UserSvcInviteInputToJSONTyped,
+} from './UserSvcInviteInput';
 
 /**
  * 
@@ -29,10 +29,10 @@ import {
 export interface UserSvcSaveInvitesRequest {
     /**
      * 
-     * @type {Array<UserSvcNewInvite>}
+     * @type {Array<UserSvcInviteInput>}
      * @memberof UserSvcSaveInvitesRequest
      */
-    invites: Array<UserSvcNewInvite>;
+    invites: Array<UserSvcInviteInput>;
 }
 
 /**
@@ -53,7 +53,7 @@ export function UserSvcSaveInvitesRequestFromJSONTyped(json: any, ignoreDiscrimi
     }
     return {
         
-        'invites': ((json['invites'] as Array<any>).map(UserSvcNewInviteFromJSON)),
+        'invites': ((json['invites'] as Array<any>).map(UserSvcInviteInputFromJSON)),
     };
 }
 
@@ -68,7 +68,7 @@ export function UserSvcSaveInvitesRequestToJSONTyped(value?: UserSvcSaveInvitesR
 
     return {
         
-        'invites': ((value['invites'] as Array<any>).map(UserSvcNewInviteToJSON)),
+        'invites': ((value['invites'] as Array<any>).map(UserSvcInviteInputToJSON)),
     };
 }
 

@@ -67,7 +67,7 @@ func (s *UserService) SaveInvites(w http.ResponseWriter, r *http.Request) {
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		w.Write([]byte(`Invalid JSON` + err.Error()))
 		return
 	}
 	defer r.Body.Close()

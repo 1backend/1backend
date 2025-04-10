@@ -32,7 +32,7 @@ func TestInviteForUnregistered(t *testing.T) {
 	t.Run("cannot create invite for unowned role", func(t *testing.T) {
 		_, rsp, err := userClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcNewInvite{
+				Invites: []openapi.UserSvcInviteInput{
 					{
 						ContactId: openapi.PtrString("test-user@email.com"),
 						Role:      "some-other-role",
@@ -46,7 +46,7 @@ func TestInviteForUnregistered(t *testing.T) {
 	t.Run("user creates invite for new user", func(t *testing.T) {
 		_, rsp, err := userClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcNewInvite{
+				Invites: []openapi.UserSvcInviteInput{
 					{
 						ContactId: openapi.PtrString("test-user@email.com"),
 						Role:      "test-user-slug-0:custom-role",
@@ -131,7 +131,7 @@ func TestInviteForRegisteredUser(t *testing.T) {
 	t.Run("invite already registered user - role should apply immediately", func(t *testing.T) {
 		_, _, err := userClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcNewInvite{
+				Invites: []openapi.UserSvcInviteInput{
 					{
 						ContactId: openapi.PtrString("test-user@email.com"),
 						Role:      "test-user-slug-0:custom-role",
@@ -190,7 +190,7 @@ func TestListInviteAuthorization(t *testing.T) {
 	t.Run("user adds role to second user so both can invite", func(t *testing.T) {
 		_, _, err := userClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcNewInvite{
+				Invites: []openapi.UserSvcInviteInput{
 					{
 						UserId: openapi.PtrString(tokens[1].UserId),
 						Role:   "test-user-slug-0:custom-role",
@@ -204,7 +204,7 @@ func TestListInviteAuthorization(t *testing.T) {
 	t.Run("first user invites", func(t *testing.T) {
 		_, _, err := userClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcNewInvite{
+				Invites: []openapi.UserSvcInviteInput{
 					{
 						ContactId: openapi.PtrString("test-user@email.com"),
 						Role:      "test-user-slug-0:custom-role",
@@ -228,7 +228,7 @@ func TestListInviteAuthorization(t *testing.T) {
 	t.Run("second user cannot invite as it has the role but does not own it", func(t *testing.T) {
 		_, _, err := secondUserClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcNewInvite{
+				Invites: []openapi.UserSvcInviteInput{
 					{
 						ContactId: openapi.PtrString("test-user@email.com"),
 						Role:      "test-user-slug-0:custom-role",
@@ -266,7 +266,7 @@ func TestSaveInvitesOldAssignTests(t *testing.T) {
 	t.Run("can add nonexistent role to user", func(t *testing.T) {
 		_, _, err := userClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcNewInvite{
+				Invites: []openapi.UserSvcInviteInput{
 					{
 						UserId: openapi.PtrString(tokens[1].UserId),
 						Role:   "test-user-slug-0:custom-role-nonexistent",
@@ -280,7 +280,7 @@ func TestSaveInvitesOldAssignTests(t *testing.T) {
 	t.Run("assign role", func(t *testing.T) {
 		_, _, err := userClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcNewInvite{
+				Invites: []openapi.UserSvcInviteInput{
 					{
 						UserId: openapi.PtrString(tokens[1].UserId),
 						Role:   "test-user-slug-0:custom-role",
@@ -315,7 +315,7 @@ func TestSaveInvitesOldAssignTests(t *testing.T) {
 	t.Run("nonexistent org role assignment", func(t *testing.T) {
 		_, _, err := userClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcNewInvite{
+				Invites: []openapi.UserSvcInviteInput{
 					{
 						UserId: openapi.PtrString(tokens[1].UserId),
 						Role:   "user-svc:org:{some-nonexistent-org-id}:user",
@@ -329,7 +329,7 @@ func TestSaveInvitesOldAssignTests(t *testing.T) {
 	t.Run("org role assignment", func(t *testing.T) {
 		_, _, err := userClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcNewInvite{
+				Invites: []openapi.UserSvcInviteInput{
 					{
 						UserId: openapi.PtrString(tokens[1].UserId),
 						Role:   fmt.Sprintf("user-svc:org:{%v}:user", orgId),
@@ -350,7 +350,7 @@ func TestSaveInvitesOldAssignTests(t *testing.T) {
 	t.Run("second user cannot give itself admin rights", func(t *testing.T) {
 		_, _, err := secondClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcNewInvite{
+				Invites: []openapi.UserSvcInviteInput{
 					{
 						UserId: openapi.PtrString(tokens[1].UserId),
 						Role:   fmt.Sprintf("user-svc:org:{%v}:user", orgId),
@@ -364,7 +364,7 @@ func TestSaveInvitesOldAssignTests(t *testing.T) {
 	t.Run("second user cannot give a third user admin or user rights", func(t *testing.T) {
 		_, _, err := secondClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcNewInvite{
+				Invites: []openapi.UserSvcInviteInput{
 					{
 						UserId: openapi.PtrString(tokens[1].UserId),
 						Role:   fmt.Sprintf("user-svc:org:{%v}:user", orgId),
@@ -376,7 +376,7 @@ func TestSaveInvitesOldAssignTests(t *testing.T) {
 
 		_, _, err = secondClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcNewInvite{
+				Invites: []openapi.UserSvcInviteInput{
 					{
 						UserId: openapi.PtrString(tokens[1].UserId),
 						Role:   fmt.Sprintf("user-svc:org:{%v}:admin", orgId),
@@ -391,7 +391,7 @@ func TestSaveInvitesOldAssignTests(t *testing.T) {
 
 	_, _, err = userClient.UserSvcAPI.SaveInvites(context.Background()).
 		Body(openapi.UserSvcSaveInvitesRequest{
-			Invites: []openapi.UserSvcNewInvite{
+			Invites: []openapi.UserSvcInviteInput{
 				{
 					UserId: openapi.PtrString(tokens[1].UserId),
 					Role:   fmt.Sprintf("user-svc:org:{%v}:admin", orgId),
@@ -411,7 +411,7 @@ func TestSaveInvitesOldAssignTests(t *testing.T) {
 	t.Run("second user now can give third user user rights", func(t *testing.T) {
 		_, _, err = secondClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcNewInvite{
+				Invites: []openapi.UserSvcInviteInput{
 					{
 						UserId: openapi.PtrString(tokens[2].UserId),
 						Role:   fmt.Sprintf("user-svc:org:{%v}:user", orgId),
@@ -425,7 +425,7 @@ func TestSaveInvitesOldAssignTests(t *testing.T) {
 	t.Run("second user now can give third user admin rights", func(t *testing.T) {
 		_, _, err = secondClient.UserSvcAPI.SaveInvites(context.Background()).
 			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcNewInvite{
+				Invites: []openapi.UserSvcInviteInput{
 					{
 						UserId: openapi.PtrString(tokens[2].UserId),
 						Role:   fmt.Sprintf("user-svc:org:{%v}:admin", orgId),

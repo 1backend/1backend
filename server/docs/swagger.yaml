@@ -2868,6 +2868,28 @@ definitions:
     - ownerIds
     - role
     type: object
+  user_svc.InviteInput:
+    properties:
+      contactId:
+        description: |-
+          ContactId is the the recipient of the invite.
+          If the user is already registered, the role is assigned immediately;
+          otherwise, it is applied upon registration.
+        type: string
+      id:
+        example: inv_fIYPbMHIcI
+        type: string
+      role:
+        type: string
+      userId:
+        description: |-
+          UserId is the recipient of the invite.
+          If the user is already registered, the role is assigned immediately;
+          otherwise, it is applied upon registration.
+        type: string
+    required:
+    - role
+    type: object
   user_svc.ListGrantsRequest:
     properties:
       permission:
@@ -2964,28 +2986,6 @@ definitions:
       token:
         $ref: '#/definitions/user_svc.AuthToken'
     type: object
-  user_svc.NewInvite:
-    properties:
-      contactId:
-        description: |-
-          ContactId is the the recipient of the invite.
-          If the user is already registered, the role is assigned immediately;
-          otherwise, it is applied upon registration.
-        type: string
-      id:
-        example: inv_fIYPbMHIcI
-        type: string
-      role:
-        type: string
-      userId:
-        description: |-
-          UserId is the recipient of the invite.
-          If the user is already registered, the role is assigned immediately;
-          otherwise, it is applied upon registration.
-        type: string
-    required:
-    - role
-    type: object
   user_svc.Organization:
     properties:
       createdAt:
@@ -3072,7 +3072,7 @@ definitions:
     properties:
       invites:
         items:
-          $ref: '#/definitions/user_svc.NewInvite'
+          $ref: '#/definitions/user_svc.InviteInput'
         type: array
     required:
     - invites

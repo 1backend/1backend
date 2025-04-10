@@ -9,9 +9,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UserSvcNewInvite } from './userSvcNewInvite';
+import { UserSvcInviteInput } from './userSvcInviteInput';
 export declare class UserSvcSaveInvitesRequest {
-    'invites': Array<UserSvcNewInvite>;
+    'invites': Array<UserSvcInviteInput>;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;
