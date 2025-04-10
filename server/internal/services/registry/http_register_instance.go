@@ -37,11 +37,13 @@ func (rs *RegistryService) RegisterInstance(
 			GrantedSlugs: []string{"deploy-svc"},
 		}).
 		Execute()
+
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
+
 	if !isAuthRsp.GetAuthorized() {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(`Unauthorized`))

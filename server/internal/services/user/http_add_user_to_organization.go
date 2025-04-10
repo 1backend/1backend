@@ -17,6 +17,7 @@ import (
 	"fmt"
 	"net/http"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/gorilla/mux"
@@ -87,12 +88,12 @@ func (s *UserService) AddUserToOrganization(
 func (s *UserService) addUserToOrganization(
 	callerId, userId, organizationId string,
 ) error {
-	roleIds, err := s.getRolesByUserId(callerId)
+	roles, err := s.getRolesByUserId(callerId)
 	if err != nil {
 		return err
 	}
 
-	org, found, err := s.organizationsStore.Query(datastore.Id(organizationId)).
+	orgI, found, err := s.organizationsStore.Query(datastore.Id(organizationId)).
 		FindOne()
 	if err != nil {
 		return err
@@ -101,17 +102,41 @@ func (s *UserService) addUserToOrganization(
 		return fmt.Errorf("organization not found")
 	}
 
+	org := orgI.(*user.Organization)
+
 	if !contains(
-		roleIds,
-		fmt.Sprintf("user-svc:org:{%v}:admin", org.(*user.Organization).Id),
+		roles,
+		fmt.Sprintf("user-svc:org:{%v}:admin", org.Id),
 	) {
 		return fmt.Errorf("not an admin of the organization")
 	}
 
+	newRole := fmt.Sprintf("user-svc:org:{%v}:user", org.Id)
+
+	for _, role := range roles {
+		if newRole == role {
+			return nil
+		}
+	}
+
 	err = s.assignRole(
 		userId,
-		fmt.Sprintf("user-svc:org:{%v}:user", org.(*user.Organization).Id),
+		newRole,
 	)
+	if err != nil {
+		return err
+	}
+
+	// When creating a new org, the user switches to that org as the active one
+	link := &user.OrganizationUserLink{
+		Id:             sdk.Id("oul"),
+		UserId:         userId,
+		OrganizationId: org.Id,
+		// @todo null out the other active orgs for correctness
+		Active: true,
+	}
+
+	err = s.organizationUserLinksStore.Upsert(link)
 	if err != nil {
 		return err
 	}

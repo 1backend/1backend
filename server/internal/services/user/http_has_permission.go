@@ -74,8 +74,8 @@ func (s *UserService) HasPermission(
 
 	usr, isAuth, err := s.hasPermission(r, permission, req.GrantedSlugs, nil)
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte("Unauthorized"))
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
 		return
 	}
 
