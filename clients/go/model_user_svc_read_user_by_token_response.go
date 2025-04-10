@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the UserSvcReadUserByTokenResponse type satisfies the MappedNullable interface at compile time
@@ -20,17 +22,25 @@ var _ MappedNullable = &UserSvcReadUserByTokenResponse{}
 
 // UserSvcReadUserByTokenResponse struct for UserSvcReadUserByTokenResponse
 type UserSvcReadUserByTokenResponse struct {
+	// Active organization of the caller user, if it has any.
 	ActiveOrganizationId *string `json:"activeOrganizationId,omitempty"`
+	// Organizations of the caller user.
 	Organizations []UserSvcOrganization `json:"organizations,omitempty"`
-	User *UserSvcUser `json:"user,omitempty"`
+	// Roles the token has that made this request.
+	Roles []string `json:"roles,omitempty"`
+	// The user who made the request.
+	User UserSvcUser `json:"user"`
 }
+
+type _UserSvcReadUserByTokenResponse UserSvcReadUserByTokenResponse
 
 // NewUserSvcReadUserByTokenResponse instantiates a new UserSvcReadUserByTokenResponse object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcReadUserByTokenResponse() *UserSvcReadUserByTokenResponse {
+func NewUserSvcReadUserByTokenResponse(user UserSvcUser) *UserSvcReadUserByTokenResponse {
 	this := UserSvcReadUserByTokenResponse{}
+	this.User = user
 	return &this
 }
 
@@ -106,36 +116,60 @@ func (o *UserSvcReadUserByTokenResponse) SetOrganizations(v []UserSvcOrganizatio
 	o.Organizations = v
 }
 
-// GetUser returns the User field value if set, zero value otherwise.
-func (o *UserSvcReadUserByTokenResponse) GetUser() UserSvcUser {
-	if o == nil || IsNil(o.User) {
-		var ret UserSvcUser
+// GetRoles returns the Roles field value if set, zero value otherwise.
+func (o *UserSvcReadUserByTokenResponse) GetRoles() []string {
+	if o == nil || IsNil(o.Roles) {
+		var ret []string
 		return ret
 	}
-	return *o.User
+	return o.Roles
 }
 
-// GetUserOk returns a tuple with the User field value if set, nil otherwise
+// GetRolesOk returns a tuple with the Roles field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcReadUserByTokenResponse) GetUserOk() (*UserSvcUser, bool) {
-	if o == nil || IsNil(o.User) {
+func (o *UserSvcReadUserByTokenResponse) GetRolesOk() ([]string, bool) {
+	if o == nil || IsNil(o.Roles) {
 		return nil, false
 	}
-	return o.User, true
+	return o.Roles, true
 }
 
-// HasUser returns a boolean if a field has been set.
-func (o *UserSvcReadUserByTokenResponse) HasUser() bool {
-	if o != nil && !IsNil(o.User) {
+// HasRoles returns a boolean if a field has been set.
+func (o *UserSvcReadUserByTokenResponse) HasRoles() bool {
+	if o != nil && !IsNil(o.Roles) {
 		return true
 	}
 
 	return false
 }
 
-// SetUser gets a reference to the given UserSvcUser and assigns it to the User field.
+// SetRoles gets a reference to the given []string and assigns it to the Roles field.
+func (o *UserSvcReadUserByTokenResponse) SetRoles(v []string) {
+	o.Roles = v
+}
+
+// GetUser returns the User field value
+func (o *UserSvcReadUserByTokenResponse) GetUser() UserSvcUser {
+	if o == nil {
+		var ret UserSvcUser
+		return ret
+	}
+
+	return o.User
+}
+
+// GetUserOk returns a tuple with the User field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcReadUserByTokenResponse) GetUserOk() (*UserSvcUser, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.User, true
+}
+
+// SetUser sets field value
 func (o *UserSvcReadUserByTokenResponse) SetUser(v UserSvcUser) {
-	o.User = &v
+	o.User = v
 }
 
 func (o UserSvcReadUserByTokenResponse) MarshalJSON() ([]byte, error) {
@@ -154,10 +188,48 @@ func (o UserSvcReadUserByTokenResponse) ToMap() (map[string]interface{}, error) 
 	if !IsNil(o.Organizations) {
 		toSerialize["organizations"] = o.Organizations
 	}
-	if !IsNil(o.User) {
-		toSerialize["user"] = o.User
+	if !IsNil(o.Roles) {
+		toSerialize["roles"] = o.Roles
 	}
+	toSerialize["user"] = o.User
 	return toSerialize, nil
+}
+
+func (o *UserSvcReadUserByTokenResponse) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"user",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varUserSvcReadUserByTokenResponse := _UserSvcReadUserByTokenResponse{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varUserSvcReadUserByTokenResponse)
+
+	if err != nil {
+		return err
+	}
+
+	*o = UserSvcReadUserByTokenResponse(varUserSvcReadUserByTokenResponse)
+
+	return err
 }
 
 type NullableUserSvcReadUserByTokenResponse struct {

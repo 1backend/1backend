@@ -17,6 +17,8 @@ import { UserSvcUserFromJSON, UserSvcUserToJSON, } from './UserSvcUser';
  * Check if a given object implements the UserSvcReadUserByTokenResponse interface.
  */
 export function instanceOfUserSvcReadUserByTokenResponse(value) {
+    if (!('user' in value) || value['user'] === undefined)
+        return false;
     return true;
 }
 export function UserSvcReadUserByTokenResponseFromJSON(json) {
@@ -29,7 +31,8 @@ export function UserSvcReadUserByTokenResponseFromJSONTyped(json, ignoreDiscrimi
     return {
         'activeOrganizationId': json['activeOrganizationId'] == null ? undefined : json['activeOrganizationId'],
         'organizations': json['organizations'] == null ? undefined : (json['organizations'].map(UserSvcOrganizationFromJSON)),
-        'user': json['user'] == null ? undefined : UserSvcUserFromJSON(json['user']),
+        'roles': json['roles'] == null ? undefined : json['roles'],
+        'user': UserSvcUserFromJSON(json['user']),
     };
 }
 export function UserSvcReadUserByTokenResponseToJSON(json) {
@@ -42,6 +45,7 @@ export function UserSvcReadUserByTokenResponseToJSONTyped(value, ignoreDiscrimin
     return {
         'activeOrganizationId': value['activeOrganizationId'],
         'organizations': value['organizations'] == null ? undefined : (value['organizations'].map(UserSvcOrganizationToJSON)),
+        'roles': value['roles'],
         'user': UserSvcUserToJSON(value['user']),
     };
 }

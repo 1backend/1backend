@@ -12,9 +12,22 @@
 import { UserSvcOrganization } from './userSvcOrganization';
 import { UserSvcUser } from './userSvcUser';
 export declare class UserSvcReadUserByTokenResponse {
+    /**
+    * Active organization of the caller user, if it has any.
+    */
     'activeOrganizationId'?: string;
+    /**
+    * Organizations of the caller user.
+    */
     'organizations'?: Array<UserSvcOrganization>;
-    'user'?: UserSvcUser;
+    /**
+    * Roles the token has that made this request.
+    */
+    'roles'?: Array<string>;
+    /**
+    * The user who made the request.
+    */
+    'user': UserSvcUser;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

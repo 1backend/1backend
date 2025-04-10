@@ -18,23 +18,29 @@ import type { UserSvcUser } from './UserSvcUser';
  */
 export interface UserSvcReadUserByTokenResponse {
     /**
-     *
+     * Active organization of the caller user, if it has any.
      * @type {string}
      * @memberof UserSvcReadUserByTokenResponse
      */
     activeOrganizationId?: string;
     /**
-     *
+     * Organizations of the caller user.
      * @type {Array<UserSvcOrganization>}
      * @memberof UserSvcReadUserByTokenResponse
      */
     organizations?: Array<UserSvcOrganization>;
     /**
-     *
+     * Roles the token has that made this request.
+     * @type {Array<string>}
+     * @memberof UserSvcReadUserByTokenResponse
+     */
+    roles?: Array<string>;
+    /**
+     * The user who made the request.
      * @type {UserSvcUser}
      * @memberof UserSvcReadUserByTokenResponse
      */
-    user?: UserSvcUser;
+    user: UserSvcUser;
 }
 /**
  * Check if a given object implements the UserSvcReadUserByTokenResponse interface.

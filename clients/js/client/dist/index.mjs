@@ -9544,6 +9544,8 @@ function UserSvcLoginResponseToJSONTyped(value, ignoreDiscriminator = false) {
  * Check if a given object implements the UserSvcReadUserByTokenResponse interface.
  */
 function instanceOfUserSvcReadUserByTokenResponse(value) {
+    if (!('user' in value) || value['user'] === undefined)
+        return false;
     return true;
 }
 function UserSvcReadUserByTokenResponseFromJSON(json) {
@@ -9556,7 +9558,8 @@ function UserSvcReadUserByTokenResponseFromJSONTyped(json, ignoreDiscriminator) 
     return {
         'activeOrganizationId': json['activeOrganizationId'] == null ? undefined : json['activeOrganizationId'],
         'organizations': json['organizations'] == null ? undefined : (json['organizations'].map(UserSvcOrganizationFromJSON)),
-        'user': json['user'] == null ? undefined : UserSvcUserFromJSON(json['user']),
+        'roles': json['roles'] == null ? undefined : json['roles'],
+        'user': UserSvcUserFromJSON(json['user']),
     };
 }
 function UserSvcReadUserByTokenResponseToJSON(json) {
@@ -9569,6 +9572,7 @@ function UserSvcReadUserByTokenResponseToJSONTyped(value, ignoreDiscriminator = 
     return {
         'activeOrganizationId': value['activeOrganizationId'],
         'organizations': value['organizations'] == null ? undefined : (value['organizations'].map(UserSvcOrganizationToJSON)),
+        'roles': value['roles'],
         'user': UserSvcUserToJSON(value['user']),
     };
 }
@@ -13151,7 +13155,7 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieve user information based on an authentication token.
+     * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
      * Read User by Token
      */
     readUserByTokenRaw(initOverrides) {
@@ -13171,7 +13175,7 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieve user information based on an authentication token.
+     * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
      * Read User by Token
      */
     readUserByToken(initOverrides) {

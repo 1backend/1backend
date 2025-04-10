@@ -218,7 +218,7 @@ export declare class UserSvcApi {
         body: UserSvcLoginResponse;
     }>;
     /**
-     * Retrieve user information based on an authentication token.
+     * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
      * @summary Read User by Token
      */
     readUserByToken(options?: {
