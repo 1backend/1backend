@@ -9,7 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export declare class UserSvcNewInvite {
+export declare class UserSvcInviteInput {
     /**
     * ContactId is the the recipient of the invite. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
     */

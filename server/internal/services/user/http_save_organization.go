@@ -152,7 +152,7 @@ func (s *UserService) saveOrganization(
 	_, err = s.saveInvites(
 		userId,
 		&user.SaveInvitesRequest{
-			Invites: []user.NewInvite{
+			Invites: []user.Invite{
 				{
 					UserId: userId,
 					Role:   fmt.Sprintf("user-svc:org:{%v}:admin", final.Id),

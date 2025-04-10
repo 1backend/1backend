@@ -11,6 +11,7 @@ import (
 	"github.com/1backend/1backend/cli/oo/commands/env"
 	"github.com/1backend/1backend/cli/oo/commands/grant"
 	instance "github.com/1backend/1backend/cli/oo/commands/instance"
+	"github.com/1backend/1backend/cli/oo/commands/invite"
 	"github.com/1backend/1backend/cli/oo/commands/node"
 	secret "github.com/1backend/1backend/cli/oo/commands/secret"
 	"github.com/1backend/1backend/cli/oo/commands/user"
@@ -35,6 +36,7 @@ func main() {
 	node.AddNodeCommands(rootCmd)
 	secret.AddSecretCommands(rootCmd)
 	grant.AddGrantCommands(rootCmd)
+	invite.AddInviteCommands(rootCmd)
 
 	addCallCommands(rootCmd)
 

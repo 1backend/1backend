@@ -11,7 +11,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UserSvcNewInviteFromJSON, UserSvcNewInviteToJSON, } from './UserSvcNewInvite';
+import { UserSvcInviteInputFromJSON, UserSvcInviteInputToJSON, } from './UserSvcInviteInput';
 /**
  * Check if a given object implements the UserSvcSaveInvitesRequest interface.
  */
@@ -28,7 +28,7 @@ export function UserSvcSaveInvitesRequestFromJSONTyped(json, ignoreDiscriminator
         return json;
     }
     return {
-        'invites': (json['invites'].map(UserSvcNewInviteFromJSON)),
+        'invites': (json['invites'].map(UserSvcInviteInputFromJSON)),
     };
 }
 export function UserSvcSaveInvitesRequestToJSON(json) {
@@ -39,6 +39,6 @@ export function UserSvcSaveInvitesRequestToJSONTyped(value, ignoreDiscriminator 
         return value;
     }
     return {
-        'invites': (value['invites'].map(UserSvcNewInviteToJSON)),
+        'invites': (value['invites'].map(UserSvcInviteInputToJSON)),
     };
 }

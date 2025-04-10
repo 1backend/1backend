@@ -12,7 +12,7 @@
 
 import { RequestFile } from './models';
 
-export class UserSvcNewInvite {
+export class UserSvcInviteInput {
     /**
     * ContactId is the the recipient of the invite. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
     */
@@ -49,7 +49,7 @@ export class UserSvcNewInvite {
         }    ];
 
     static getAttributeTypeMap() {
-        return UserSvcNewInvite.attributeTypeMap;
+        return UserSvcInviteInput.attributeTypeMap;
     }
 }
 

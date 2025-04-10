@@ -210,6 +210,7 @@ docs/UserSvcGrant.md
 docs/UserSvcHasPermissionRequest.md
 docs/UserSvcHasPermissionResponse.md
 docs/UserSvcInvite.md
+docs/UserSvcInviteInput.md
 docs/UserSvcListGrantsRequest.md
 docs/UserSvcListGrantsResponse.md
 docs/UserSvcListInvitesRequest.md
@@ -221,7 +222,6 @@ docs/UserSvcListUsersRequest.md
 docs/UserSvcListUsersResponse.md
 docs/UserSvcLoginRequest.md
 docs/UserSvcLoginResponse.md
-docs/UserSvcNewInvite.md
 docs/UserSvcOrganization.md
 docs/UserSvcReadUserByTokenResponse.md
 docs/UserSvcRegisterRequest.md
@@ -414,6 +414,7 @@ model_user_svc_grant.go
 model_user_svc_has_permission_request.go
 model_user_svc_has_permission_response.go
 model_user_svc_invite.go
+model_user_svc_invite_input.go
 model_user_svc_list_grants_request.go
 model_user_svc_list_grants_response.go
 model_user_svc_list_invites_request.go
@@ -425,7 +426,6 @@ model_user_svc_list_users_request.go
 model_user_svc_list_users_response.go
 model_user_svc_login_request.go
 model_user_svc_login_response.go
-model_user_svc_new_invite.go
 model_user_svc_organization.go
 model_user_svc_read_user_by_token_response.go
 model_user_svc_register_request.go

@@ -12,17 +12,17 @@
  * Do not edit the class manually.
  */
 /**
- * Check if a given object implements the UserSvcNewInvite interface.
+ * Check if a given object implements the UserSvcInviteInput interface.
  */
-export function instanceOfUserSvcNewInvite(value) {
+export function instanceOfUserSvcInviteInput(value) {
     if (!('role' in value) || value['role'] === undefined)
         return false;
     return true;
 }
-export function UserSvcNewInviteFromJSON(json) {
-    return UserSvcNewInviteFromJSONTyped(json, false);
+export function UserSvcInviteInputFromJSON(json) {
+    return UserSvcInviteInputFromJSONTyped(json, false);
 }
-export function UserSvcNewInviteFromJSONTyped(json, ignoreDiscriminator) {
+export function UserSvcInviteInputFromJSONTyped(json, ignoreDiscriminator) {
     if (json == null) {
         return json;
     }
@@ -33,10 +33,10 @@ export function UserSvcNewInviteFromJSONTyped(json, ignoreDiscriminator) {
         'userId': json['userId'] == null ? undefined : json['userId'],
     };
 }
-export function UserSvcNewInviteToJSON(json) {
-    return UserSvcNewInviteToJSONTyped(json, false);
+export function UserSvcInviteInputToJSON(json) {
+    return UserSvcInviteInputToJSONTyped(json, false);
 }
-export function UserSvcNewInviteToJSONTyped(value, ignoreDiscriminator = false) {
+export function UserSvcInviteInputToJSONTyped(value, ignoreDiscriminator = false) {
     if (value == null) {
         return value;
     }

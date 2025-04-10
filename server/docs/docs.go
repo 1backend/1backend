@@ -9074,6 +9074,29 @@ const docTemplate = `{
                 }
             }
         },
+        "user_svc.InviteInput": {
+            "type": "object",
+            "required": [
+                "role"
+            ],
+            "properties": {
+                "contactId": {
+                    "description": "ContactId is the the recipient of the invite.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "inv_fIYPbMHIcI"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "userId": {
+                    "description": "UserId is the recipient of the invite.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
+                    "type": "string"
+                }
+            }
+        },
         "user_svc.ListGrantsRequest": {
             "type": "object",
             "properties": {
@@ -9222,29 +9245,6 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.NewInvite": {
-            "type": "object",
-            "required": [
-                "role"
-            ],
-            "properties": {
-                "contactId": {
-                    "description": "ContactId is the the recipient of the invite.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string",
-                    "example": "inv_fIYPbMHIcI"
-                },
-                "role": {
-                    "type": "string"
-                },
-                "userId": {
-                    "description": "UserId is the recipient of the invite.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
-                    "type": "string"
-                }
-            }
-        },
         "user_svc.Organization": {
             "type": "object",
             "required": [
@@ -9370,7 +9370,7 @@ const docTemplate = `{
                 "invites": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user_svc.NewInvite"
+                        "$ref": "#/definitions/user_svc.InviteInput"
                     }
                 }
             }

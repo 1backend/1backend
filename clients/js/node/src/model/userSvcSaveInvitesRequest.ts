@@ -11,10 +11,10 @@
  */
 
 import { RequestFile } from './models';
-import { UserSvcNewInvite } from './userSvcNewInvite';
+import { UserSvcInviteInput } from './userSvcInviteInput';
 
 export class UserSvcSaveInvitesRequest {
-    'invites': Array<UserSvcNewInvite>;
+    'invites': Array<UserSvcInviteInput>;
 
     static discriminator: string | undefined = undefined;
 
@@ -22,7 +22,7 @@ export class UserSvcSaveInvitesRequest {
         {
             "name": "invites",
             "baseName": "invites",
-            "type": "Array<UserSvcNewInvite>"
+            "type": "Array<UserSvcInviteInput>"
         }    ];
 
     static getAttributeTypeMap() {

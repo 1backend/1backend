@@ -19,6 +19,6 @@ UserSvcSaveInvitesRequest.attributeTypeMap = [
     {
         "name": "invites",
         "baseName": "invites",
-        "type": "Array<UserSvcNewInvite>"
+        "type": "Array<UserSvcInviteInput>"
     }
 ];
