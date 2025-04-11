@@ -34,7 +34,7 @@ func main() {
 		selfUrl = "http://127.0.0.1:9211"
 	}
 
-	multiService, err := multi.NewService(&multi.Options{
+	multiService, err := multi.NewService(&boot.Options{
 		SelfUrl: selfUrl,
 	})
 	if err != nil {

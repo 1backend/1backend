@@ -51,7 +51,7 @@ func (s *UserService) assignRole(userId string, role string) error {
 	}
 
 	inv := &usertypes.Enroll{
-		Id:     sdk.Id("inv"),
+		Id:     sdk.Id("enr"),
 		Role:   role,
 		UserId: user.Id,
 	}

@@ -123,6 +123,7 @@ func StartService(options Options) (*ServiceProcess, error) {
 	}
 
 	envVars := map[string]string{
+		"OB_TEST":                 fmt.Sprintf("%v", options.Test),
 		"OB_SELF_URL":             options.Url,
 		"OB_SERVER_URL":           options.ServerUrl,
 		"OB_GPU_PLATFORM":         options.GpuPlatform,

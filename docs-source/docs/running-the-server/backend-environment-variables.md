@@ -20,6 +20,12 @@ This envar should be set only for microservices built on 1Backend. The 1Backend 
 
 Microservices use this to register themselves in the 1Backend registry. The 1Backend server uses this to address itself.
 
+## `OB_TEST`
+
+Microservices and the 1Backend server uses this envar to detect if they are running as part of a test.
+
+When set to true, subsystems act accordingly: for example the datastore will prefix tables with random numbers to provide a unique and clean environment for each test.
+
 ## `OB_NODE_ID`
 
 For information about this, please refer to the [Registry Svc Node section](/docs/built-in-services/registry-svc#node)

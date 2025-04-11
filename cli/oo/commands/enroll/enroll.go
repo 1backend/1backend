@@ -12,6 +12,7 @@ func AddEnrollCommands(rootCmd *cobra.Command) {
 	var (
 		userId    string
 		contactId string
+		role      string
 	)
 
 	var saveCmd = &cobra.Command{
@@ -60,8 +61,14 @@ save ./enrolls.yaml
 		Use:     "list",
 		Short:   "List enrolls",
 		Aliases: []string{"ls"},
-		RunE:    List,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return List(cmd, args, role, userId, contactId)
+		},
 	}
+
+	listCmd.Flags().StringVar(&contactId, "contactId", "", "Contact ID associated with the enrolls")
+	listCmd.Flags().StringVar(&userId, "userId", "", "User ID associated with the enrolls")
+	listCmd.Flags().StringVar(&role, "role", "", "Contact ID associated with the enrolls")
 
 	enrollCmd.AddCommand(saveCmd)
 	// enrollCmd.AddCommand(removeCmd)
