@@ -17,9 +17,11 @@
   </div>
 </p>
 
-1Backend started as a microservices PaaS and then evolved into a flexible and scalable platform designed for running AI models on private servers and handling high-concurrency workloads.
+1Backend began as an experimental serverless platform (FaaS/PaaS) in 2017, created by Janos Dobronszki—an expert in microservices—and his friends. The project initially sparked interest, but its development paused as Janos and his team pursued other ventures, including his work on Micro—an open-source microservices platform—between 2020 and 2022.
 
-Built by engineers who’ve spent over a decade building and scaling microservices in fast-moving startups, 1Backend provides both a ChatGPT-like interface for users and a network-accessible API for machines—while also serving as a general-purpose backend framework.
+In 2024, while developing an on-premise AI platform, Janos realized that there still wasn’t an open-source microservices platform that met his expectations. This insight led to the resurrection of 1Backend, reimagined to be the perfect platform: flexible, scalable, and designed to run AI models on private infrastructure while handling high-concurrency workloads.
+
+Today, 1Backend provides a ChatGPT-like interface for users along with a network-accessible API for machines, serving both as a general-purpose backend framework and as the foundational solution for private AI deployments.
 
 <img src="https://singulatron.com/assets/1b.png" />
 
