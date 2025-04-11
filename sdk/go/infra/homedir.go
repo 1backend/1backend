@@ -44,15 +44,17 @@ func HomeDir(options HomeDirOptions) (string, error) {
 			)
 		}
 	} else {
-		homeDir, err = os.UserHomeDir()
-		if err != nil {
-			return "", errors.Wrap(err, "homedir creation failed")
-		}
-		fold := onebackendFolder
 		if options.ConfigFolder != "" {
-			fold = options.ConfigFolder
+			homeDir = options.ConfigFolder
+		} else {
+			homeDir, err = os.UserHomeDir()
+			if err != nil {
+				return "", errors.Wrap(err, "homedir creation failed")
+			}
+			fold := onebackendFolder
+
+			homeDir = path.Join(homeDir, fold)
 		}
-		homeDir = path.Join(homeDir, fold)
 
 	}
 

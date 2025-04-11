@@ -29,6 +29,9 @@ type Options struct {
 	Region     string
 	LLMHost    string
 	VolumeName string
+
+	// Path of the config folder, configurable via the "OB_FOLDER" environment variable.
+	// If Test is true, this value is ignored and a random temporary folder is used instead.
 	ConfigPath string
 
 	// eg. mysql, postgres
@@ -125,6 +128,7 @@ func StartService(options Options) (*ServiceProcess, error) {
 	envVars := map[string]string{
 		"OB_TEST":                 fmt.Sprintf("%v", options.Test),
 		"OB_SELF_URL":             options.Url,
+		"OB_FOLDER":               options.ConfigPath,
 		"OB_SERVER_URL":           options.ServerUrl,
 		"OB_GPU_PLATFORM":         options.GpuPlatform,
 		"OB_NODE_ID":              options.NodeId,
