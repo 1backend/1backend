@@ -27,6 +27,8 @@ func TestListOrganizations(t *testing.T) {
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
+	adminClient, _, err := test.AdminClient(clientFactory)
+	require.NoError(t, err)
 
 	orgId := ""
 
@@ -49,8 +51,16 @@ func TestListOrganizations(t *testing.T) {
 		userClient = clientFactory.Client(client.WithToken(rsp.Token.Token))
 	})
 
+	t.Run("user cannot list all organizations", func(t *testing.T) {
+		_, _, err := userClient.UserSvcAPI.ListOrganizations(
+			context.Background(),
+		).Body(openapi.UserSvcListOrganizationsRequest{}).Execute()
+
+		require.Error(t, err)
+	})
+
 	t.Run("list all organizations", func(t *testing.T) {
-		rsp, _, err := userClient.UserSvcAPI.ListOrganizations(
+		rsp, _, err := adminClient.UserSvcAPI.ListOrganizations(
 			context.Background(),
 		).Body(openapi.UserSvcListOrganizationsRequest{}).Execute()
 
@@ -59,7 +69,7 @@ func TestListOrganizations(t *testing.T) {
 	})
 
 	t.Run("list existing by id", func(t *testing.T) {
-		rsp, _, err := userClient.UserSvcAPI.ListOrganizations(
+		rsp, _, err := adminClient.UserSvcAPI.ListOrganizations(
 			context.Background(),
 		).Body(openapi.UserSvcListOrganizationsRequest{
 			Ids: []string{orgId},
@@ -70,7 +80,7 @@ func TestListOrganizations(t *testing.T) {
 	})
 
 	t.Run("list non-existent by id", func(t *testing.T) {
-		rsp, _, err := userClient.UserSvcAPI.ListOrganizations(
+		rsp, _, err := adminClient.UserSvcAPI.ListOrganizations(
 			context.Background(),
 		).Body(openapi.UserSvcListOrganizationsRequest{
 			Ids: []string{"some random id"},

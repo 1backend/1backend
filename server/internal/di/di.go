@@ -56,6 +56,9 @@ type Options struct {
 	Region     string
 	LLMHost    string
 	VolumeName string
+
+	// Path of the config folder, configurable via the "OB_FOLDER" environment variable.
+	// If Test is true, this value is ignored and a random temporary folder is used instead.
 	ConfigPath string
 
 	// eg. mysql, postgres
@@ -185,15 +188,21 @@ func BigBang(options *Options) (*Universe, error) {
 		options.Test = true
 	}
 
+	if options.ConfigPath == "" {
+		options.ConfigPath = os.Getenv("OB_FOLDER")
+	}
+
 	homeDir, err := infra.HomeDir(infra.HomeDirOptions{
 		Test:         options.Test,
-		ConfigFolder: os.Getenv("OB_CONFIG_FOLDER"),
+		ConfigFolder: options.ConfigPath,
 	})
 	if err != nil {
 		return nil, err
 	}
 
 	options.HomeDir = homeDir
+
+	logger.Info("Using folder", slog.String("folder", options.HomeDir))
 
 	if options.Lock == nil {
 		options.Lock = distlock.NewLocalDistributedLock()
@@ -218,6 +227,7 @@ func BigBang(options *Options) (*Universe, error) {
 
 	if options.DataStoreFactory == nil {
 		dc, err := infra.NewDataStoreFactory(infra.DataStoreConfig{
+			HomeDir:            options.HomeDir,
 			Test:               options.Test,
 			TablePrefix:        options.DbPrefix,
 			Db:                 options.Db,
