@@ -21,20 +21,20 @@ func (p *ContainerService) registerPermissions() error {
 	ctx := context.Background()
 	userSvc := p.clientFactory.Client(client.WithToken(p.token)).UserSvcAPI
 
-	req := openapi.UserSvcSaveGrantsRequest{}
+	req := openapi.UserSvcSavePermitsRequest{}
 
 	for _, role := range []string{
 		usertypes.RoleAdmin,
 	} {
 		for _, permission := range dockertypes.AdminPermissions {
-			req.Grants = append(req.Grants, openapi.UserSvcGrant{
+			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				Roles:      []string{role},
 				Permission: permission,
 			})
 		}
 	}
 
-	_, _, err := userSvc.SaveGrants(ctx).
+	_, _, err := userSvc.SavePermits(ctx).
 		Body(req).
 		Execute()
 	if err != nil {

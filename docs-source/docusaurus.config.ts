@@ -120,7 +120,7 @@ const config: Config = {
           items: [
             {
               label: "Discord",
-              href: "https://discordapp.com/invite/eRXyzeXEvM",
+              href: "https://discordapp.com/enroll/eRXyzeXEvM",
             },
             {
               label: "Twitter",

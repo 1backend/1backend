@@ -219,64 +219,34 @@ func (mr *MockUserSvcAPIMockRecorder) HasPermissionExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasPermissionExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).HasPermissionExecute), r)
 }
 
-// ListGrants mocks base method.
-func (m *MockUserSvcAPI) ListGrants(ctx context.Context) ApiListGrantsRequest {
+// ListEnrolls mocks base method.
+func (m *MockUserSvcAPI) ListEnrolls(ctx context.Context) ApiListEnrollsRequest {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListGrants", ctx)
-	ret0, _ := ret[0].(ApiListGrantsRequest)
+	ret := m.ctrl.Call(m, "ListEnrolls", ctx)
+	ret0, _ := ret[0].(ApiListEnrollsRequest)
 	return ret0
 }
 
-// ListGrants indicates an expected call of ListGrants.
-func (mr *MockUserSvcAPIMockRecorder) ListGrants(ctx any) *gomock.Call {
+// ListEnrolls indicates an expected call of ListEnrolls.
+func (mr *MockUserSvcAPIMockRecorder) ListEnrolls(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGrants", reflect.TypeOf((*MockUserSvcAPI)(nil).ListGrants), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEnrolls", reflect.TypeOf((*MockUserSvcAPI)(nil).ListEnrolls), ctx)
 }
 
-// ListGrantsExecute mocks base method.
-func (m *MockUserSvcAPI) ListGrantsExecute(r ApiListGrantsRequest) (*UserSvcListGrantsResponse, *http.Response, error) {
+// ListEnrollsExecute mocks base method.
+func (m *MockUserSvcAPI) ListEnrollsExecute(r ApiListEnrollsRequest) (*UserSvcListEnrollsResponse, *http.Response, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListGrantsExecute", r)
-	ret0, _ := ret[0].(*UserSvcListGrantsResponse)
+	ret := m.ctrl.Call(m, "ListEnrollsExecute", r)
+	ret0, _ := ret[0].(*UserSvcListEnrollsResponse)
 	ret1, _ := ret[1].(*http.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
 
-// ListGrantsExecute indicates an expected call of ListGrantsExecute.
-func (mr *MockUserSvcAPIMockRecorder) ListGrantsExecute(r any) *gomock.Call {
+// ListEnrollsExecute indicates an expected call of ListEnrollsExecute.
+func (mr *MockUserSvcAPIMockRecorder) ListEnrollsExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListGrantsExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListGrantsExecute), r)
-}
-
-// ListInvites mocks base method.
-func (m *MockUserSvcAPI) ListInvites(ctx context.Context) ApiListInvitesRequest {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListInvites", ctx)
-	ret0, _ := ret[0].(ApiListInvitesRequest)
-	return ret0
-}
-
-// ListInvites indicates an expected call of ListInvites.
-func (mr *MockUserSvcAPIMockRecorder) ListInvites(ctx any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListInvites", reflect.TypeOf((*MockUserSvcAPI)(nil).ListInvites), ctx)
-}
-
-// ListInvitesExecute mocks base method.
-func (m *MockUserSvcAPI) ListInvitesExecute(r ApiListInvitesRequest) (*UserSvcListInvitesResponse, *http.Response, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListInvitesExecute", r)
-	ret0, _ := ret[0].(*UserSvcListInvitesResponse)
-	ret1, _ := ret[1].(*http.Response)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// ListInvitesExecute indicates an expected call of ListInvitesExecute.
-func (mr *MockUserSvcAPIMockRecorder) ListInvitesExecute(r any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListInvitesExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListInvitesExecute), r)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEnrollsExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListEnrollsExecute), r)
 }
 
 // ListOrganizations mocks base method.
@@ -337,6 +307,36 @@ func (m *MockUserSvcAPI) ListPermissionsExecute(r ApiListPermissionsRequest) (*U
 func (mr *MockUserSvcAPIMockRecorder) ListPermissionsExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPermissionsExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListPermissionsExecute), r)
+}
+
+// ListPermits mocks base method.
+func (m *MockUserSvcAPI) ListPermits(ctx context.Context) ApiListPermitsRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListPermits", ctx)
+	ret0, _ := ret[0].(ApiListPermitsRequest)
+	return ret0
+}
+
+// ListPermits indicates an expected call of ListPermits.
+func (mr *MockUserSvcAPIMockRecorder) ListPermits(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPermits", reflect.TypeOf((*MockUserSvcAPI)(nil).ListPermits), ctx)
+}
+
+// ListPermitsExecute mocks base method.
+func (m *MockUserSvcAPI) ListPermitsExecute(r ApiListPermitsRequest) (*UserSvcListPermitsResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListPermitsExecute", r)
+	ret0, _ := ret[0].(*UserSvcListPermitsResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListPermitsExecute indicates an expected call of ListPermitsExecute.
+func (mr *MockUserSvcAPIMockRecorder) ListPermitsExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListPermitsExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListPermitsExecute), r)
 }
 
 // ListUsers mocks base method.
@@ -519,64 +519,34 @@ func (mr *MockUserSvcAPIMockRecorder) ResetPasswordExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResetPasswordExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ResetPasswordExecute), r)
 }
 
-// SaveGrants mocks base method.
-func (m *MockUserSvcAPI) SaveGrants(ctx context.Context) ApiSaveGrantsRequest {
+// SaveEnrolls mocks base method.
+func (m *MockUserSvcAPI) SaveEnrolls(ctx context.Context) ApiSaveEnrollsRequest {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SaveGrants", ctx)
-	ret0, _ := ret[0].(ApiSaveGrantsRequest)
+	ret := m.ctrl.Call(m, "SaveEnrolls", ctx)
+	ret0, _ := ret[0].(ApiSaveEnrollsRequest)
 	return ret0
 }
 
-// SaveGrants indicates an expected call of SaveGrants.
-func (mr *MockUserSvcAPIMockRecorder) SaveGrants(ctx any) *gomock.Call {
+// SaveEnrolls indicates an expected call of SaveEnrolls.
+func (mr *MockUserSvcAPIMockRecorder) SaveEnrolls(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveGrants", reflect.TypeOf((*MockUserSvcAPI)(nil).SaveGrants), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveEnrolls", reflect.TypeOf((*MockUserSvcAPI)(nil).SaveEnrolls), ctx)
 }
 
-// SaveGrantsExecute mocks base method.
-func (m *MockUserSvcAPI) SaveGrantsExecute(r ApiSaveGrantsRequest) (map[string]any, *http.Response, error) {
+// SaveEnrollsExecute mocks base method.
+func (m *MockUserSvcAPI) SaveEnrollsExecute(r ApiSaveEnrollsRequest) (*UserSvcSaveEnrollsResponse, *http.Response, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SaveGrantsExecute", r)
-	ret0, _ := ret[0].(map[string]any)
+	ret := m.ctrl.Call(m, "SaveEnrollsExecute", r)
+	ret0, _ := ret[0].(*UserSvcSaveEnrollsResponse)
 	ret1, _ := ret[1].(*http.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
 
-// SaveGrantsExecute indicates an expected call of SaveGrantsExecute.
-func (mr *MockUserSvcAPIMockRecorder) SaveGrantsExecute(r any) *gomock.Call {
+// SaveEnrollsExecute indicates an expected call of SaveEnrollsExecute.
+func (mr *MockUserSvcAPIMockRecorder) SaveEnrollsExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveGrantsExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).SaveGrantsExecute), r)
-}
-
-// SaveInvites mocks base method.
-func (m *MockUserSvcAPI) SaveInvites(ctx context.Context) ApiSaveInvitesRequest {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SaveInvites", ctx)
-	ret0, _ := ret[0].(ApiSaveInvitesRequest)
-	return ret0
-}
-
-// SaveInvites indicates an expected call of SaveInvites.
-func (mr *MockUserSvcAPIMockRecorder) SaveInvites(ctx any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveInvites", reflect.TypeOf((*MockUserSvcAPI)(nil).SaveInvites), ctx)
-}
-
-// SaveInvitesExecute mocks base method.
-func (m *MockUserSvcAPI) SaveInvitesExecute(r ApiSaveInvitesRequest) (*UserSvcSaveInvitesResponse, *http.Response, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SaveInvitesExecute", r)
-	ret0, _ := ret[0].(*UserSvcSaveInvitesResponse)
-	ret1, _ := ret[1].(*http.Response)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// SaveInvitesExecute indicates an expected call of SaveInvitesExecute.
-func (mr *MockUserSvcAPIMockRecorder) SaveInvitesExecute(r any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveInvitesExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).SaveInvitesExecute), r)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveEnrollsExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).SaveEnrollsExecute), r)
 }
 
 // SaveOrganization mocks base method.
@@ -607,6 +577,36 @@ func (m *MockUserSvcAPI) SaveOrganizationExecute(r ApiSaveOrganizationRequest) (
 func (mr *MockUserSvcAPIMockRecorder) SaveOrganizationExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveOrganizationExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).SaveOrganizationExecute), r)
+}
+
+// SavePermits mocks base method.
+func (m *MockUserSvcAPI) SavePermits(ctx context.Context) ApiSavePermitsRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SavePermits", ctx)
+	ret0, _ := ret[0].(ApiSavePermitsRequest)
+	return ret0
+}
+
+// SavePermits indicates an expected call of SavePermits.
+func (mr *MockUserSvcAPIMockRecorder) SavePermits(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SavePermits", reflect.TypeOf((*MockUserSvcAPI)(nil).SavePermits), ctx)
+}
+
+// SavePermitsExecute mocks base method.
+func (m *MockUserSvcAPI) SavePermitsExecute(r ApiSavePermitsRequest) (map[string]any, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SavePermitsExecute", r)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// SavePermitsExecute indicates an expected call of SavePermitsExecute.
+func (mr *MockUserSvcAPIMockRecorder) SavePermitsExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SavePermitsExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).SavePermitsExecute), r)
 }
 
 // SaveSelf mocks base method.

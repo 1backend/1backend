@@ -168,34 +168,35 @@ export * from './userSvcAuthToken';
 export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';
 export * from './userSvcCreateUserRequest';
+export * from './userSvcEnroll';
+export * from './userSvcEnrollInput';
 export * from './userSvcErrorResponse';
 export * from './userSvcGetPublicKeyResponse';
-export * from './userSvcGrant';
 export * from './userSvcHasPermissionRequest';
 export * from './userSvcHasPermissionResponse';
-export * from './userSvcInvite';
-export * from './userSvcInviteInput';
-export * from './userSvcListGrantsRequest';
-export * from './userSvcListGrantsResponse';
-export * from './userSvcListInvitesRequest';
-export * from './userSvcListInvitesResponse';
+export * from './userSvcListEnrollsRequest';
+export * from './userSvcListEnrollsResponse';
 export * from './userSvcListOrganizationsRequest';
 export * from './userSvcListOrganizationsResponse';
 export * from './userSvcListPermissionsResponse';
+export * from './userSvcListPermitsRequest';
+export * from './userSvcListPermitsResponse';
 export * from './userSvcListUsersRequest';
 export * from './userSvcListUsersResponse';
 export * from './userSvcLoginRequest';
 export * from './userSvcLoginResponse';
 export * from './userSvcOrganization';
+export * from './userSvcPermit';
+export * from './userSvcPermitInput';
 export * from './userSvcReadUserByTokenResponse';
 export * from './userSvcRegisterRequest';
 export * from './userSvcRegisterResponse';
 export * from './userSvcResetPasswordRequest';
-export * from './userSvcSaveGrantsRequest';
-export * from './userSvcSaveInvitesRequest';
-export * from './userSvcSaveInvitesResponse';
+export * from './userSvcSaveEnrollsRequest';
+export * from './userSvcSaveEnrollsResponse';
 export * from './userSvcSaveOrganizationRequest';
 export * from './userSvcSaveOrganizationResponse';
+export * from './userSvcSavePermitsRequest';
 export * from './userSvcSaveProfileRequest';
 export * from './userSvcUser';
 export * from './userSvcUserRecord';
@@ -369,34 +370,35 @@ import { UserSvcAuthToken } from './userSvcAuthToken';
 import { UserSvcChangePasswordRequest } from './userSvcChangePasswordRequest';
 import { UserSvcContact } from './userSvcContact';
 import { UserSvcCreateUserRequest } from './userSvcCreateUserRequest';
+import { UserSvcEnroll } from './userSvcEnroll';
+import { UserSvcEnrollInput } from './userSvcEnrollInput';
 import { UserSvcErrorResponse } from './userSvcErrorResponse';
 import { UserSvcGetPublicKeyResponse } from './userSvcGetPublicKeyResponse';
-import { UserSvcGrant } from './userSvcGrant';
 import { UserSvcHasPermissionRequest } from './userSvcHasPermissionRequest';
 import { UserSvcHasPermissionResponse } from './userSvcHasPermissionResponse';
-import { UserSvcInvite } from './userSvcInvite';
-import { UserSvcInviteInput } from './userSvcInviteInput';
-import { UserSvcListGrantsRequest } from './userSvcListGrantsRequest';
-import { UserSvcListGrantsResponse } from './userSvcListGrantsResponse';
-import { UserSvcListInvitesRequest } from './userSvcListInvitesRequest';
-import { UserSvcListInvitesResponse } from './userSvcListInvitesResponse';
+import { UserSvcListEnrollsRequest } from './userSvcListEnrollsRequest';
+import { UserSvcListEnrollsResponse } from './userSvcListEnrollsResponse';
 import { UserSvcListOrganizationsRequest } from './userSvcListOrganizationsRequest';
 import { UserSvcListOrganizationsResponse } from './userSvcListOrganizationsResponse';
 import { UserSvcListPermissionsResponse } from './userSvcListPermissionsResponse';
+import { UserSvcListPermitsRequest } from './userSvcListPermitsRequest';
+import { UserSvcListPermitsResponse } from './userSvcListPermitsResponse';
 import { UserSvcListUsersRequest } from './userSvcListUsersRequest';
 import { UserSvcListUsersResponse } from './userSvcListUsersResponse';
 import { UserSvcLoginRequest } from './userSvcLoginRequest';
 import { UserSvcLoginResponse } from './userSvcLoginResponse';
 import { UserSvcOrganization } from './userSvcOrganization';
+import { UserSvcPermit } from './userSvcPermit';
+import { UserSvcPermitInput } from './userSvcPermitInput';
 import { UserSvcReadUserByTokenResponse } from './userSvcReadUserByTokenResponse';
 import { UserSvcRegisterRequest } from './userSvcRegisterRequest';
 import { UserSvcRegisterResponse } from './userSvcRegisterResponse';
 import { UserSvcResetPasswordRequest } from './userSvcResetPasswordRequest';
-import { UserSvcSaveGrantsRequest } from './userSvcSaveGrantsRequest';
-import { UserSvcSaveInvitesRequest } from './userSvcSaveInvitesRequest';
-import { UserSvcSaveInvitesResponse } from './userSvcSaveInvitesResponse';
+import { UserSvcSaveEnrollsRequest } from './userSvcSaveEnrollsRequest';
+import { UserSvcSaveEnrollsResponse } from './userSvcSaveEnrollsResponse';
 import { UserSvcSaveOrganizationRequest } from './userSvcSaveOrganizationRequest';
 import { UserSvcSaveOrganizationResponse } from './userSvcSaveOrganizationResponse';
+import { UserSvcSavePermitsRequest } from './userSvcSavePermitsRequest';
 import { UserSvcSaveProfileRequest } from './userSvcSaveProfileRequest';
 import { UserSvcUser } from './userSvcUser';
 import { UserSvcUserRecord } from './userSvcUserRecord';
@@ -584,34 +586,35 @@ let typeMap = {
     "UserSvcChangePasswordRequest": UserSvcChangePasswordRequest,
     "UserSvcContact": UserSvcContact,
     "UserSvcCreateUserRequest": UserSvcCreateUserRequest,
+    "UserSvcEnroll": UserSvcEnroll,
+    "UserSvcEnrollInput": UserSvcEnrollInput,
     "UserSvcErrorResponse": UserSvcErrorResponse,
     "UserSvcGetPublicKeyResponse": UserSvcGetPublicKeyResponse,
-    "UserSvcGrant": UserSvcGrant,
     "UserSvcHasPermissionRequest": UserSvcHasPermissionRequest,
     "UserSvcHasPermissionResponse": UserSvcHasPermissionResponse,
-    "UserSvcInvite": UserSvcInvite,
-    "UserSvcInviteInput": UserSvcInviteInput,
-    "UserSvcListGrantsRequest": UserSvcListGrantsRequest,
-    "UserSvcListGrantsResponse": UserSvcListGrantsResponse,
-    "UserSvcListInvitesRequest": UserSvcListInvitesRequest,
-    "UserSvcListInvitesResponse": UserSvcListInvitesResponse,
+    "UserSvcListEnrollsRequest": UserSvcListEnrollsRequest,
+    "UserSvcListEnrollsResponse": UserSvcListEnrollsResponse,
     "UserSvcListOrganizationsRequest": UserSvcListOrganizationsRequest,
     "UserSvcListOrganizationsResponse": UserSvcListOrganizationsResponse,
     "UserSvcListPermissionsResponse": UserSvcListPermissionsResponse,
+    "UserSvcListPermitsRequest": UserSvcListPermitsRequest,
+    "UserSvcListPermitsResponse": UserSvcListPermitsResponse,
     "UserSvcListUsersRequest": UserSvcListUsersRequest,
     "UserSvcListUsersResponse": UserSvcListUsersResponse,
     "UserSvcLoginRequest": UserSvcLoginRequest,
     "UserSvcLoginResponse": UserSvcLoginResponse,
     "UserSvcOrganization": UserSvcOrganization,
+    "UserSvcPermit": UserSvcPermit,
+    "UserSvcPermitInput": UserSvcPermitInput,
     "UserSvcReadUserByTokenResponse": UserSvcReadUserByTokenResponse,
     "UserSvcRegisterRequest": UserSvcRegisterRequest,
     "UserSvcRegisterResponse": UserSvcRegisterResponse,
     "UserSvcResetPasswordRequest": UserSvcResetPasswordRequest,
-    "UserSvcSaveGrantsRequest": UserSvcSaveGrantsRequest,
-    "UserSvcSaveInvitesRequest": UserSvcSaveInvitesRequest,
-    "UserSvcSaveInvitesResponse": UserSvcSaveInvitesResponse,
+    "UserSvcSaveEnrollsRequest": UserSvcSaveEnrollsRequest,
+    "UserSvcSaveEnrollsResponse": UserSvcSaveEnrollsResponse,
     "UserSvcSaveOrganizationRequest": UserSvcSaveOrganizationRequest,
     "UserSvcSaveOrganizationResponse": UserSvcSaveOrganizationResponse,
+    "UserSvcSavePermitsRequest": UserSvcSavePermitsRequest,
     "UserSvcSaveProfileRequest": UserSvcSaveProfileRequest,
     "UserSvcUser": UserSvcUser,
     "UserSvcUserRecord": UserSvcUserRecord,

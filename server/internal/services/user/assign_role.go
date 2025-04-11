@@ -33,7 +33,7 @@ func (s *UserService) assignRole(userId string, role string) error {
 	}
 	user := userI.(*usertypes.User)
 
-	invites, err := s.invitesStore.Query(
+	enrolls, err := s.enrollsStore.Query(
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Find()
 	if err != nil {
@@ -41,8 +41,8 @@ func (s *UserService) assignRole(userId string, role string) error {
 	}
 
 	alreadyHasRole := false
-	for _, v := range invites {
-		if v.(*usertypes.Invite).Role == role {
+	for _, v := range enrolls {
+		if v.(*usertypes.Enroll).Role == role {
 			alreadyHasRole = true
 		}
 	}
@@ -50,12 +50,12 @@ func (s *UserService) assignRole(userId string, role string) error {
 		return nil
 	}
 
-	inv := &usertypes.Invite{
+	inv := &usertypes.Enroll{
 		Id:     sdk.Id("inv"),
 		Role:   role,
 		UserId: user.Id,
 	}
-	err = s.invitesStore.Upsert(inv)
+	err = s.enrollsStore.Upsert(inv)
 	if err != nil {
 		return errors.Wrap(err, "failed to add role to user")
 	}
@@ -75,7 +75,7 @@ func (s *UserService) removeRoleFromUser(userId string, roleId string) error {
 		return errors.New("user not found")
 	}
 
-	invites, err := s.invitesStore.Query(
+	enrolls, err := s.enrollsStore.Query(
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Find()
 	if err != nil {
@@ -83,18 +83,18 @@ func (s *UserService) removeRoleFromUser(userId string, roleId string) error {
 	}
 
 	alreadyHasRole := false
-	inviteId := ""
-	for _, v := range invites {
-		if v.(*usertypes.Invite).Role == roleId {
+	enrollId := ""
+	for _, v := range enrolls {
+		if v.(*usertypes.Enroll).Role == roleId {
 			alreadyHasRole = true
-			inviteId = v.GetId()
+			enrollId = v.GetId()
 		}
 	}
 	if !alreadyHasRole {
 		return nil
 	}
 
-	return s.invitesStore.Query(
-		datastore.Id(inviteId),
+	return s.enrollsStore.Query(
+		datastore.Id(enrollId),
 	).Delete()
 }

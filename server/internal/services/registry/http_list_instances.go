@@ -11,7 +11,7 @@ import (
 	"github.com/samber/lo"
 )
 
-var grantedSlugs = []string{
+var permittedSlugs = []string{
 	"deploy-svc",
 	"proxy-svc",
 }
@@ -42,7 +42,7 @@ func (rs *RegistryService) ListInstances(
 	isAuthRsp, _, err := rs.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), registry.PermissionInstanceView).
 		Body(openapi.UserSvcHasPermissionRequest{
-			GrantedSlugs: grantedSlugs,
+			PermittedSlugs: permittedSlugs,
 		}).
 		Execute()
 	if err != nil {
@@ -122,7 +122,7 @@ func (rs *RegistryService) getInstances(
 	for _, v := range instances {
 		if !isAdmin &&
 			v.Slug != callerSlug &&
-			!lo.Contains(grantedSlugs, callerSlug) {
+			!lo.Contains(permittedSlugs, callerSlug) {
 			continue
 		}
 

@@ -1,4 +1,4 @@
-id: "grant-id-1"
+id: "permit-id-1"
 permissionId: "user-svc:role:read"
 slugs:
   - "service1"

@@ -32,7 +32,7 @@ func (dm *ContainerService) BuildImage(
 	isAuthRsp, _, err := dm.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), container.PermissionImageBuild).
 		Body(openapi.UserSvcHasPermissionRequest{
-			GrantedSlugs: []string{"deploy-svc"},
+			PermittedSlugs: []string{"deploy-svc"},
 		}).
 		Execute()
 	if err != nil {

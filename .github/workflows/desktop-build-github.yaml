@@ -139,7 +139,7 @@ jobs:
           Set-Content -Path $idRsaAutomationPath -Value $env:SSH_PRIVATE_KEY
 
           Write-Host "Adjust permissions for the key file"
-          icacls.exe $idRsaAutomationPath /inheritance:r /grant "${env:USERNAME}:R"
+          icacls.exe $idRsaAutomationPath /inheritance:r /permit "${env:USERNAME}:R"
 
           Write-Host "Add server to known hosts to prevent interactive prompt"
           ssh-keyscan $env:REMOTE_HOST | Out-File -Append -FilePath "$localSshDir\known_hosts"
@@ -187,7 +187,7 @@ jobs:
           Set-Content -Path $idRsaAutomationPath -Value $env:SSH_PRIVATE_KEY
 
           Write-Host "Adjust permissions for the key file"
-          icacls.exe $idRsaAutomationPath /inheritance:r /grant "${env:USERNAME}:R"
+          icacls.exe $idRsaAutomationPath /inheritance:r /permit "${env:USERNAME}:R"
 
           Write-Host "Add server to known hosts to prevent interactive prompt"
           ssh-keyscan $env:REMOTE_HOST | Out-File -Append -FilePath "$localSshDir\known_hosts"

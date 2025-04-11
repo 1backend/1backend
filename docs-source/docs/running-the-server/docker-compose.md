@@ -45,7 +45,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       # We mount a volume so data will be persisted
       - 1backend-data:/root/.1backend
-    # Grants 1Backend access to GPU metrics.
+    # Permits 1Backend access to GPU metrics.
     # Containers launched by 1Backend can still use GPU acceleration even if 1Backend lacks direct GPU access.
     # deploy:
     #   resources:

@@ -33,7 +33,7 @@ func (rs *RegistryService) DeleteNode(
 	isAuthRsp, _, err := rs.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), registry.PermissionNodeDelete).
 		Body(openapi.UserSvcHasPermissionRequest{
-			GrantedSlugs: []string{"deploy-svc"},
+			PermittedSlugs: []string{"deploy-svc"},
 		}).
 		Execute()
 	if err != nil {

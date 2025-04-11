@@ -8,8 +8,8 @@
 package user_svc
 
 type HasPermissionRequest struct {
-	GrantedSlugs    []string `json:"grantedSlugs,omitempty"`
-	ContactsGranted []string `json:"contactsGranted,omitempty"`
+	PermittedSlugs   []string `json:"permittedSlugs,omitempty"`
+	ContactsPermited []string `json:"contactsPermited,omitempty"`
 }
 
 type HasPermissionResponse struct {
@@ -39,12 +39,12 @@ var (
 	PermissionOrganizationRemoveUser = "user-svc:organization:remove-user"
 	PermissionOrganizationView       = "user-svc:organization:view"
 
-	// Grant Permissions
-	PermissionGrantCreate = "user-svc:grant:create"
+	// Permit Permissions
+	PermissionPermitCreate = "user-svc:permit:create"
 
-	// Invite Permissions
-	PermissionInviteEdit = "user-svc:invite:edit"
-	PermissionInviteView = "user-svc:invite:view"
+	// Enroll Permissions
+	PermissionEnrollEdit = "user-svc:enroll:edit"
+	PermissionEnrollView = "user-svc:enroll:view"
 )
 
 var UserPermissions = []string{
@@ -55,8 +55,8 @@ var UserPermissions = []string{
 	PermissionOrganizationAddUser,
 	PermissionOrganizationRemoveUser,
 
-	PermissionInviteEdit,
-	PermissionInviteView,
+	PermissionEnrollEdit,
+	PermissionEnrollView,
 }
 
 var AdminPermissions = []string{
@@ -68,7 +68,7 @@ var AdminPermissions = []string{
 	PermissionOrganizationAddUser,
 	PermissionOrganizationRemoveUser,
 	PermissionOrganizationView,
-	PermissionGrantCreate,
-	PermissionInviteEdit,
-	PermissionInviteView,
+	PermissionPermitCreate,
+	PermissionEnrollEdit,
+	PermissionEnrollView,
 }

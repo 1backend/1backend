@@ -43,7 +43,7 @@ func (ms *ModelService) ListModels(
 	isAuthRsp, _, err := ms.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), model.PermissionModelView).
 		Body(openapi.UserSvcHasPermissionRequest{
-			GrantedSlugs: []string{"prompt-svc"},
+			PermittedSlugs: []string{"prompt-svc"},
 		}).
 		Execute()
 	if err != nil {

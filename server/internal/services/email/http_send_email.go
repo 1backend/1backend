@@ -34,7 +34,7 @@ func (s *EmailService) SendEmail(w http.ResponseWriter, r *http.Request) {
 	isAuthRsp, _, err := s.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), email.PermissionSendEmail).Body(
 		openapi.UserSvcHasPermissionRequest{
-			GrantedSlugs: []string{"user-svc"},
+			PermittedSlugs: []string{"user-svc"},
 		}).
 		Execute()
 	if err != nil {

@@ -8,11 +8,11 @@ import (
 	call "github.com/1backend/1backend/cli/oo/commands/call"
 	definition "github.com/1backend/1backend/cli/oo/commands/definition"
 	deployment "github.com/1backend/1backend/cli/oo/commands/deployment"
+	"github.com/1backend/1backend/cli/oo/commands/enroll"
 	"github.com/1backend/1backend/cli/oo/commands/env"
-	"github.com/1backend/1backend/cli/oo/commands/grant"
 	instance "github.com/1backend/1backend/cli/oo/commands/instance"
-	"github.com/1backend/1backend/cli/oo/commands/invite"
 	"github.com/1backend/1backend/cli/oo/commands/node"
+	"github.com/1backend/1backend/cli/oo/commands/permit"
 	secret "github.com/1backend/1backend/cli/oo/commands/secret"
 	"github.com/1backend/1backend/cli/oo/commands/user"
 )
@@ -35,8 +35,8 @@ func main() {
 	deployment.AddDeploymentCommands(rootCmd)
 	node.AddNodeCommands(rootCmd)
 	secret.AddSecretCommands(rootCmd)
-	grant.AddGrantCommands(rootCmd)
-	invite.AddInviteCommands(rootCmd)
+	permit.AddPermitCommands(rootCmd)
+	enroll.AddEnrollCommands(rootCmd)
 
 	addCallCommands(rootCmd)
 

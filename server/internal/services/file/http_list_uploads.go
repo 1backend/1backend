@@ -35,7 +35,7 @@ func (fs *FileService) ListUploads(
 	isAuthRsp, _, err := fs.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), file.PermissionUploadCreate).
 		Body(openapi.UserSvcHasPermissionRequest{
-			GrantedSlugs: []string{},
+			PermittedSlugs: []string{},
 		}).
 		Execute()
 

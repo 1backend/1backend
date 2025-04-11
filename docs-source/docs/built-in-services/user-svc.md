@@ -23,11 +23,11 @@ The user service is at the heart of 1Backend, managing users, tokens, organizati
 
 **Role**: A simple string identifier like `user-svc:user` or `user-svc:org:{orgId}:admin` that represents a specific capability or access level. Roles are embedded in tokens.
 
-**Invite**: A way to assign roles to users—both current and future. Invites allow roles to be claimed later, once the user joins or logs in.
+**Enroll**: A way to assign roles to users—both current and future. Enrolls allow roles to be claimed later, once the user joins or logs in.
 
 **Permission**: A string such as `petstore-svc:read`, typically mapping to an API action or endpoint. Roles can bundle multiple permissions.
 
-**Grant**: A mechanism for assigning permissions to users or roles. Grants define who can access what by connecting users or roles with specific permissions.
+**Permit**: A mechanism for assigning permissions to users or roles. Permits define who can access what by connecting users or roles with specific permissions.
 
 ## Overview
 
@@ -49,19 +49,19 @@ If we look at the [Add Prompt endpoint API docs](/docs/1backend/prompt), we can 
 Requires the `prompt-svc:prompt:create` permission.
 ```
 
-To enable your service to call the Add Prompt endpoint, we need to create a grant with your service slug and the permission mentioned above:
+To enable your service to call the Add Prompt endpoint, we need to create a permit with your service slug and the permission mentioned above:
 
 ```yaml
-id: "user-prompter-grant"
+id: "user-prompter-permit"
 permissionId: "prompt-svc:prompt:create"
 slugs:
   - "user-prompter-svc"
 ```
 
-You can apply these grants with an administrator account in your CI workflow with the `oo` CLI:
+You can apply these permits with an administrator account in your CI workflow with the `oo` CLI:
 
 ```sh
-oo grant save user-prompter-grant.yaml
+oo permit save user-prompter-permit.yaml
 ```
 
 ## Auth patterns
@@ -74,7 +74,7 @@ oo grant save user-prompter-grant.yaml
 
 - **API Permission Check**: Use the `Has Permission` endpoint with the user's authentication headers and a permission ID to verify access dynamically.
 
-- **Cached Role Permissions**: Store `Grant`s locally and check only the user's token for the required role. This is faster and avoids API calls but requires a bit more setup.
+- **Cached Role Permissions**: Store `Permit`s locally and check only the user's token for the required role. This is faster and avoids API calls but requires a bit more setup.
   - An SDK can help simplify this.
   - If you need to verify a token manually, refer to the `Get Public Key` endpoint.
 
@@ -158,7 +158,7 @@ By convention these dynamic values are enclosed in {}. In this example, roles ar
 
 ### Owning roles vs. having roles
 
-In many endpoints such `SaveInvites`, the topic of "role ownership" comes up. The basic problem is simple: just because someone has a role, it doesn't mean they can also bestow that role upon other users. In simple terms, if an admin makes someone a user, that user should not be able to make others users, as that is the privilege of the admins.
+In many endpoints such `SaveEnrolls`, the topic of "role ownership" comes up. The basic problem is simple: just because someone has a role, it doesn't mean they can also bestow that role upon other users. In simple terms, if an admin makes someone a user, that user should not be able to make others users, as that is the privilege of the admins.
 
 A user "owns" a role in the following cases:
 

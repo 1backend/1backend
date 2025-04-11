@@ -25,7 +25,7 @@ import (
 	user_svc "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-func TestGrantsBySlug(t *testing.T) {
+func TestPermitsBySlug(t *testing.T) {
 	t.Parallel()
 
 	server, err := test.StartService(test.Options{
@@ -53,8 +53,8 @@ func TestGrantsBySlug(t *testing.T) {
 	adminClient, _, err := test.AdminClient(clientFactory)
 	require.NoError(t, err)
 
-	_, _, err = adminClient.UserSvcAPI.SaveGrants(ctx).Body(openapi.UserSvcSaveGrantsRequest{
-		Grants: []openapi.UserSvcGrant{
+	_, _, err = adminClient.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
+		Permits: []openapi.UserSvcPermitInput{
 			{
 				Slugs:      []string{"someuser"},
 				Permission: user_svc.PermissionUserView,
@@ -68,7 +68,7 @@ func TestGrantsBySlug(t *testing.T) {
 	require.NotEmpty(t, len(rsp.Users))
 }
 
-func TestGrantsByRoleId(t *testing.T) {
+func TestPermitsByRoleId(t *testing.T) {
 	t.Parallel()
 
 	server, err := test.StartService(test.Options{
@@ -96,8 +96,8 @@ func TestGrantsByRoleId(t *testing.T) {
 	adminClient, _, err := test.AdminClient(clientFactory)
 	require.NoError(t, err)
 
-	_, _, err = adminClient.UserSvcAPI.SaveGrants(ctx).Body(openapi.UserSvcSaveGrantsRequest{
-		Grants: []openapi.UserSvcGrant{
+	_, _, err = adminClient.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
+		Permits: []openapi.UserSvcPermitInput{
 			{
 				Roles:      []string{"user-svc:user"},
 				Permission: user_svc.PermissionUserView,

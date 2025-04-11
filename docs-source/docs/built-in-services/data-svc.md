@@ -61,7 +61,7 @@ authors:
 
 The `readers` field defines which users, organizations, or roles have permission to view an entry.
 
-- Users and organizations outside of your own can be granted access.
+- Users and organizations outside of your own can be permited access.
 - This field can be set by the author or writers to include user IDs, organization IDs, or roles they themselves do not belong to.
 
 ## Authors

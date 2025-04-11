@@ -44,7 +44,7 @@ func (dm *ContainerService) StopContainer(
 	isAuthRsp, _, err := dm.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), container.PermissionContainerStop).
 		Body(openapi.UserSvcHasPermissionRequest{
-			GrantedSlugs: []string{"model-svc", "deploy-svc"},
+			PermittedSlugs: []string{"model-svc", "deploy-svc"},
 		}).
 		Execute()
 	if err != nil {
