@@ -3,7 +3,6 @@ package basicservice
 import (
 	"context"
 	"net/http"
-	"os"
 
 	openapi "github.com/1backend/1backend/clients/go"
 	basic "github.com/1backend/1backend/examples/go/services/basic/internal/types"
@@ -21,7 +20,7 @@ import (
 const RolePetManager = "basic-svc:pet:manager"
 
 type BasicService struct {
-	Options *Options
+	Options *boot.Options
 
 	token            string
 	userSvcPublicKey string
@@ -40,16 +39,8 @@ type Options struct {
 	SelfUrl   string
 }
 
-func NewService(options *Options) (*BasicService, error) {
-	if options.ServerUrl == "" {
-		options.ServerUrl = os.Getenv("OB_SERVER_URL")
-	}
-	if options.ServerUrl == "" {
-		options.ServerUrl = "http://127.0.0.1:11337"
-	}
-	if options.SelfUrl == "" {
-		options.SelfUrl = os.Getenv("OB_SELF_URL")
-	}
+func NewService(options *boot.Options) (*BasicService, error) {
+	options.LoadEnvars()
 
 	dconf := infra.DataStoreConfig{}
 	if options.Test {

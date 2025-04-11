@@ -8,6 +8,7 @@ import (
 	basicservice "github.com/1backend/1backend/examples/go/services/basic/internal"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/stretchr/testify/assert"
@@ -27,7 +28,7 @@ func TestListPets(t *testing.T) {
 
 	selfUrl := test.NewSelfUrl(t)
 
-	service, err := basicservice.NewService(&basicservice.Options{
+	service, err := basicservice.NewService(&boot.Options{
 		Test:      true,
 		ServerUrl: server.Url,
 		SelfUrl:   selfUrl,

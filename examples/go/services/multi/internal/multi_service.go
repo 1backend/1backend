@@ -3,7 +3,6 @@ package multiservice
 import (
 	"context"
 	"net/http"
-	"os"
 
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
@@ -22,7 +21,7 @@ import (
 type MultiService struct {
 	basicSvcClient *basicclient.APIClient
 
-	Options *Options
+	Options *boot.Options
 
 	token            string
 	userSvcPublicKey string
@@ -40,16 +39,8 @@ type Options struct {
 	SelfUrl   string
 }
 
-func NewService(options *Options) (*MultiService, error) {
-	if options.ServerUrl == "" {
-		options.ServerUrl = os.Getenv("OB_SERVER_URL")
-	}
-	if options.ServerUrl == "" {
-		options.ServerUrl = "http://127.0.0.1:11337"
-	}
-	if options.SelfUrl == "" {
-		options.SelfUrl = os.Getenv("OB_SELF_URL")
-	}
+func NewService(options *boot.Options) (*MultiService, error) {
+	options.LoadEnvars()
 
 	dconf := infra.DataStoreConfig{}
 	if options.Test {
