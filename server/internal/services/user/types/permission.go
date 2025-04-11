@@ -41,6 +41,7 @@ var (
 
 	// Permit Permissions
 	PermissionPermitCreate = "user-svc:permit:create"
+	PermissionPermitView   = "user-svc:permit:view"
 
 	// Enroll Permissions
 	PermissionEnrollEdit = "user-svc:enroll:edit"
@@ -69,6 +70,7 @@ var AdminPermissions = []string{
 	PermissionOrganizationRemoveUser,
 	PermissionOrganizationView,
 	PermissionPermitCreate,
+	PermissionPermitView,
 	PermissionEnrollEdit,
 	PermissionEnrollView,
 }

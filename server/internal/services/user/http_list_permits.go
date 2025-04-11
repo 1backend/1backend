@@ -24,9 +24,7 @@ import (
 // @ID listPermits
 // @Summary List Permits
 // @Description
-// @Description Permits give access to users with certain slugs and roles to permissions.
-// @Description Users can list permits for permissions they have access to
-// @Description but they will only see permits the permit refers to their slug or one of their roles.
+// @Description List permits. Requires the `user-svc:permit:view` permission, which only admins have by default
 // @Tags User Svc
 // @Accept json
 // @Produce json
@@ -40,28 +38,26 @@ func (s *UserService) ListPermits(
 	w http.ResponseWriter,
 	r *http.Request) {
 
+	_, has, err := s.hasPermission(r, user.PermissionPermitView, nil, nil)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+	if !has {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte(`Unauthorized`))
+		return
+	}
+
 	req := &user.ListPermitsRequest{}
-	err := json.NewDecoder(r.Body).Decode(req)
+	err = json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(`Invalid JSON`))
 		return
 	}
 	defer r.Body.Close()
-
-	if req.Permission != "" {
-		_, has, err := s.hasPermission(r, req.Permission, nil, nil)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(err.Error()))
-			return
-		}
-		if !has {
-			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte(`Unauthorized`))
-			return
-		}
-	}
 
 	permits, err := s.listPermits(req)
 	if err != nil {
