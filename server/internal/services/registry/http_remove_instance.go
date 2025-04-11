@@ -32,7 +32,7 @@ func (rs *RegistryService) RemoveInstance(
 	isAuthRsp, _, err := rs.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), registry.PermissionInstanceDelete).
 		Body(openapi.UserSvcHasPermissionRequest{
-			GrantedSlugs: []string{"deploy-svc"},
+			PermittedSlugs: []string{"deploy-svc"},
 		}).
 		Execute()
 	if err != nil {

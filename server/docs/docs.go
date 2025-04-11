@@ -4046,14 +4046,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/user-svc/grants": {
+        "/user-svc/enrolls": {
             "put": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Save grants. // @Description Grants give access to users with certain slugs and roles to permissions.",
+                "description": "Enroll a list of users by contact or user Id to acquire a role.\nWorks on future or current users.\n\nA user can only enroll an other user to a role if the user owns that role.\n\nA user \"owns\" a role in the following cases:\n- A static role where the role ID is prefixed with the caller's slug.\n- Any dynamic or static role where the caller is an admin.\n\nExamples:\n- A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\".\n- A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\".\n- A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".",
                 "consumes": [
                     "application/json"
                 ],
@@ -4063,24 +4063,24 @@ const docTemplate = `{
                 "tags": [
                     "User Svc"
                 ],
-                "summary": "Save Grants",
-                "operationId": "saveGrants",
+                "summary": "Save Enrolls",
+                "operationId": "saveEnrolls",
                 "parameters": [
                     {
-                        "description": "Save Grants Request",
+                        "description": "Save Enrolls Request",
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user_svc.SaveGrantsRequest"
+                            "$ref": "#/definitions/user_svc.SaveEnrollsRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Grant saved successfully",
+                        "description": "Enrolls saved successfully",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.SaveGrantsResponse"
+                            "$ref": "#/definitions/user_svc.SaveEnrollsResponse"
                         }
                     },
                     "400": {
@@ -4109,7 +4109,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Grants give access to users with certain slugs and roles to permissions.\nUsers can list grants for permissions they have access to\nbut they will only see grants the grant refers to their slug or one of their roles.",
+                "description": "List enrolls. Role, user ID or contact ID must be specified.\nCaller can only list enrolls of roles they own.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4119,132 +4119,24 @@ const docTemplate = `{
                 "tags": [
                     "User Svc"
                 ],
-                "summary": "List Grants",
-                "operationId": "listGrants",
+                "summary": "List Enrolls",
+                "operationId": "listEnrolls",
                 "parameters": [
                     {
-                        "description": "List Grants Request",
+                        "description": "List Enrolls Request",
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user_svc.ListGrantsRequest"
+                            "$ref": "#/definitions/user_svc.ListEnrollsRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Enrolls listed successfully",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.ListGrantsResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-svc/invites": {
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Invite a list of users by contact or user Id to acquire a role.\nWorks on future or current users.\n\nA user can only invite an other user to a role if the user owns that role.\n\nA user \"owns\" a role in the following cases:\n- A static role where the role ID is prefixed with the caller's slug.\n- Any dynamic or static role where the caller is an admin.\n\nExamples:\n- A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\".\n- A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\".\n- A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User Svc"
-                ],
-                "summary": "Save Invites",
-                "operationId": "saveInvites",
-                "parameters": [
-                    {
-                        "description": "Save Invites Request",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.SaveInvitesRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Invites saved successfully",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.SaveInvitesResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid JSON",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "List user invites stored in the database.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User Svc"
-                ],
-                "summary": "List Invites",
-                "operationId": "listInvites",
-                "parameters": [
-                    {
-                        "description": "List Invites Request",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ListInvitesRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Invites listed successfully",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ListInvitesResponse"
+                            "$ref": "#/definitions/user_svc.ListEnrollsResponse"
                         }
                     },
                     "401": {
@@ -4645,6 +4537,114 @@ const docTemplate = `{
                 }
             }
         },
+        "/user-svc/permits": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Save permits. // @Description Permits give access to users with certain slugs and roles to permissions.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Svc"
+                ],
+                "summary": "Save Permits",
+                "operationId": "savePermits",
+                "parameters": [
+                    {
+                        "description": "Save Permits Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.SavePermitsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Permit saved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.SavePermitsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Permits give access to users with certain slugs and roles to permissions.\nUsers can list permits for permissions they have access to\nbut they will only see permits the permit refers to their slug or one of their roles.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Svc"
+                ],
+                "summary": "List Permits",
+                "operationId": "listPermits",
+                "parameters": [
+                    {
+                        "description": "List Permits Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ListPermitsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ListPermitsResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user-svc/public-key": {
             "get": {
                 "description": "Get the public key to parse and verify the JWT.",
@@ -4800,7 +4800,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Check whether the caller user has a specific permission.\nIdeally, this endpoint should rarely be used, as the JWT token\nalready includes all user roles. Caching the ` + "`" + `List Permissions` + "`" + ` and ` + "`" + `List Grants` + "`" + `\nresponses allows services to determine user authorization\nwithout repeatedly calling this endpoint.",
+                "description": "Check whether the caller user has a specific permission.\nIdeally, this endpoint should rarely be used, as the JWT token\nalready includes all user roles. Caching the ` + "`" + `List Permissions` + "`" + ` and ` + "`" + `List Permits` + "`" + `\nresponses allows services to determine user authorization\nwithout repeatedly calling this endpoint.",
                 "consumes": [
                     "application/json"
                 ],
@@ -8950,6 +8950,69 @@ const docTemplate = `{
         "user_svc.DeleteUserResponse": {
             "type": "object"
         },
+        "user_svc.Enroll": {
+            "type": "object",
+            "required": [
+                "createdAt",
+                "id",
+                "role",
+                "updatedAt"
+            ],
+            "properties": {
+                "contactId": {
+                    "description": "ContactId is the the recipient of the enroll.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "description": "CreatedBy contains the ID of the user who created the Enroll.",
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "inv_fIYPbMHIcI"
+                },
+                "role": {
+                    "description": "Role specifies the role to be assigned to the ContactId.\nCallers can only assign roles they own, identified by their service slug\n(e.g., if \"my-service\" creates an enroll, the role must be \"my-service:admin\").\nDynamic organization roles can also be assigned\n(e.g., \"user-svc:org:{%orgId}:admin\" or \"user-svc:org:{%orgId}:user\"),\nbut in this case, the caller must be an admin of the target organization.",
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "userId": {
+                    "description": "UserId is the recipient of the enroll.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
+                    "type": "string"
+                }
+            }
+        },
+        "user_svc.EnrollInput": {
+            "type": "object",
+            "required": [
+                "role"
+            ],
+            "properties": {
+                "contactId": {
+                    "description": "ContactId is the the recipient of the enroll.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "inv_fIYPbMHIcI"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "userId": {
+                    "description": "UserId is the recipient of the enroll.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
+                    "type": "string"
+                }
+            }
+        },
         "user_svc.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -8969,44 +9032,16 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.Grant": {
-            "type": "object",
-            "required": [
-                "permission"
-            ],
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "permission": {
-                    "type": "string"
-                },
-                "roles": {
-                    "description": "Role IDs that have been granted the specified permission.\n\nOriginally, grants were designed for slugs to facilitate service-to-service calls.\nDue to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.\n\nAlternatively, permissions can be assigned to roles using UserSvc.AssignPermissions.\nGrants currently offer a more streamlined approach, though this may evolve over time.",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "slugs": {
-                    "description": "Slugs that have been granted the specified permission.",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
         "user_svc.HasPermissionRequest": {
             "type": "object",
             "properties": {
-                "contactsGranted": {
+                "contactsPermited": {
                     "type": "array",
                     "items": {
                         "type": "string"
                     }
                 },
-                "grantedSlugs": {
+                "permittedSlugs": {
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -9025,101 +9060,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.Invite": {
-            "type": "object",
-            "required": [
-                "createdAt",
-                "id",
-                "ownerIds",
-                "role"
-            ],
-            "properties": {
-                "appliedAt": {
-                    "type": "string"
-                },
-                "contactId": {
-                    "description": "ContactId is the the recipient of the invite.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
-                },
-                "deletedAt": {
-                    "type": "string"
-                },
-                "expiresAt": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string",
-                    "example": "inv_fIYPbMHIcI"
-                },
-                "ownerIds": {
-                    "description": "OwnerIds specifies the users who created the invite.\nIf you create an invite that already exists for a given role and contact ID,\nyou get added to the list of owners.\n\n@todo not sure if this makes sense. I don't think it does.",
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "role": {
-                    "description": "Role specifies the role to be assigned to the ContactId.\nCallers can only assign roles they own, identified by their service slug\n(e.g., if \"my-service\" creates an invite, the role must be \"my-service:admin\").\nDynamic organization roles can also be assigned\n(e.g., \"user-svc:org:{%orgId}:admin\" or \"user-svc:org:{%orgId}:user\"),\nbut in this case, the caller must be an admin of the target organization.",
-                    "type": "string"
-                },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "userId": {
-                    "description": "UserId is the recipient of the invite.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
-                    "type": "string"
-                }
-            }
-        },
-        "user_svc.InviteInput": {
-            "type": "object",
-            "required": [
-                "role"
-            ],
-            "properties": {
-                "contactId": {
-                    "description": "ContactId is the the recipient of the invite.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string",
-                    "example": "inv_fIYPbMHIcI"
-                },
-                "role": {
-                    "type": "string"
-                },
-                "userId": {
-                    "description": "UserId is the recipient of the invite.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
-                    "type": "string"
-                }
-            }
-        },
-        "user_svc.ListGrantsRequest": {
-            "type": "object",
-            "properties": {
-                "permission": {
-                    "type": "string"
-                },
-                "slug": {
-                    "type": "string"
-                }
-            }
-        },
-        "user_svc.ListGrantsResponse": {
-            "type": "object",
-            "properties": {
-                "grants": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/user_svc.Grant"
-                    }
-                }
-            }
-        },
-        "user_svc.ListInvitesRequest": {
+        "user_svc.ListEnrollsRequest": {
             "type": "object",
             "properties": {
                 "contactId": {
@@ -9133,16 +9074,16 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.ListInvitesResponse": {
+        "user_svc.ListEnrollsResponse": {
             "type": "object",
             "required": [
-                "invites"
+                "enrolls"
             ],
             "properties": {
-                "invites": {
+                "enrolls": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user_svc.Invite"
+                        "$ref": "#/definitions/user_svc.Enroll"
                     }
                 }
             }
@@ -9183,6 +9124,28 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "type": "string"
+                    }
+                }
+            }
+        },
+        "user_svc.ListPermitsRequest": {
+            "type": "object",
+            "properties": {
+                "permission": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            }
+        },
+        "user_svc.ListPermitsResponse": {
+            "type": "object",
+            "properties": {
+                "permits": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user_svc.Permit"
                     }
                 }
             }
@@ -9281,6 +9244,76 @@ const docTemplate = `{
                 }
             }
         },
+        "user_svc.Permit": {
+            "type": "object",
+            "required": [
+                "createdAt",
+                "id",
+                "permission",
+                "updatedAt"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "inv_fIYPbMHIcI"
+                },
+                "permission": {
+                    "type": "string"
+                },
+                "roles": {
+                    "description": "Role IDs that have been permited the specified permission.\n\nOriginally, permits were designed for slugs to facilitate service-to-service calls.\nDue to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "slugs": {
+                    "description": "Slugs that have been permited the specified permission.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "user_svc.PermitInput": {
+            "type": "object",
+            "required": [
+                "permission"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "inv_fIYPbMHIcI"
+                },
+                "permission": {
+                    "type": "string"
+                },
+                "roles": {
+                    "description": "Role IDs that have been permited the specified permission.\n\nOriginally, permits were designed for slugs to facilitate service-to-service calls.\nDue to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "slugs": {
+                    "description": "Slugs that have been permited the specified permission.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "user_svc.ReadUserByTokenResponse": {
             "type": "object",
             "required": [
@@ -9364,44 +9397,30 @@ const docTemplate = `{
         "user_svc.ResetPasswordResponse": {
             "type": "object"
         },
-        "user_svc.SaveGrantsRequest": {
+        "user_svc.SaveEnrollsRequest": {
             "type": "object",
+            "required": [
+                "enrolls"
+            ],
             "properties": {
-                "grants": {
+                "enrolls": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user_svc.Grant"
+                        "$ref": "#/definitions/user_svc.EnrollInput"
                     }
                 }
             }
         },
-        "user_svc.SaveGrantsResponse": {
-            "type": "object"
-        },
-        "user_svc.SaveInvitesRequest": {
+        "user_svc.SaveEnrollsResponse": {
             "type": "object",
             "required": [
-                "invites"
+                "enrolls"
             ],
             "properties": {
-                "invites": {
+                "enrolls": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/user_svc.InviteInput"
-                    }
-                }
-            }
-        },
-        "user_svc.SaveInvitesResponse": {
-            "type": "object",
-            "required": [
-                "invites"
-            ],
-            "properties": {
-                "invites": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/user_svc.Invite"
+                        "$ref": "#/definitions/user_svc.Enroll"
                     }
                 }
             }
@@ -9448,6 +9467,20 @@ const docTemplate = `{
                     ]
                 }
             }
+        },
+        "user_svc.SavePermitsRequest": {
+            "type": "object",
+            "properties": {
+                "permits": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user_svc.PermitInput"
+                    }
+                }
+            }
+        },
+        "user_svc.SavePermitsResponse": {
+            "type": "object"
         },
         "user_svc.SaveProfileRequest": {
             "type": "object",
@@ -9562,7 +9595,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.3.0-rc.34",
+	Version:          "0.3.0-rc.35",
 	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},

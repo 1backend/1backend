@@ -42,7 +42,7 @@ func (ms *ModelService) ListPlatforms(
 	isAuthRsp, _, err := ms.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), model.PermissionPlatformView).
 		Body(openapi.UserSvcHasPermissionRequest{
-			GrantedSlugs: []string{"prompt-svc"},
+			PermittedSlugs: []string{"prompt-svc"},
 		}).
 		Execute()
 	if err != nil {

@@ -149,10 +149,10 @@ func (s *UserService) saveOrganization(
 		return nil, nil, err
 	}
 
-	_, err = s.saveInvites(
+	_, err = s.saveEnrolls(
 		userId,
-		&user.SaveInvitesRequest{
-			Invites: []user.InviteInput{
+		&user.SaveEnrollsRequest{
+			Enrolls: []user.EnrollInput{
 				{
 					UserId: userId,
 					Role:   fmt.Sprintf("user-svc:org:{%v}:admin", final.Id),

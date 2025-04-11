@@ -770,20 +770,20 @@ func BigBang(options *Options) (*Universe, error) {
 		userService.GetPublicKey(w, r)
 	})).
 		Methods("OPTIONS", "GET")
-	router.HandleFunc("/user-svc/grants", appl(func(w http.ResponseWriter, r *http.Request) {
-		userService.SaveGrants(w, r)
+	router.HandleFunc("/user-svc/permits", appl(func(w http.ResponseWriter, r *http.Request) {
+		userService.SavePermits(w, r)
 	})).
 		Methods("OPTIONS", "PUT")
-	router.HandleFunc("/user-svc/grants", appl(func(w http.ResponseWriter, r *http.Request) {
-		userService.ListGrants(w, r)
+	router.HandleFunc("/user-svc/permits", appl(func(w http.ResponseWriter, r *http.Request) {
+		userService.ListPermits(w, r)
 	})).
 		Methods("OPTIONS", "POST")
-	router.HandleFunc("/user-svc/invites", appl(func(w http.ResponseWriter, r *http.Request) {
-		userService.SaveInvites(w, r)
+	router.HandleFunc("/user-svc/enrolls", appl(func(w http.ResponseWriter, r *http.Request) {
+		userService.SaveEnrolls(w, r)
 	})).
 		Methods("OPTIONS", "PUT")
-	router.HandleFunc("/user-svc/invites", appl(func(w http.ResponseWriter, r *http.Request) {
-		userService.ListInvites(w, r)
+	router.HandleFunc("/user-svc/enrolls", appl(func(w http.ResponseWriter, r *http.Request) {
+		userService.ListEnrolls(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 

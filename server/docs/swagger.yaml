@@ -2760,6 +2760,69 @@ definitions:
     type: object
   user_svc.DeleteUserResponse:
     type: object
+  user_svc.Enroll:
+    properties:
+      contactId:
+        description: |-
+          ContactId is the the recipient of the enroll.
+          If the user is already registered, the role is assigned immediately;
+          otherwise, it is applied upon registration.
+        type: string
+      createdAt:
+        type: string
+      createdBy:
+        description: CreatedBy contains the ID of the user who created the Enroll.
+        type: string
+      deletedAt:
+        type: string
+      id:
+        example: inv_fIYPbMHIcI
+        type: string
+      role:
+        description: |-
+          Role specifies the role to be assigned to the ContactId.
+          Callers can only assign roles they own, identified by their service slug
+          (e.g., if "my-service" creates an enroll, the role must be "my-service:admin").
+          Dynamic organization roles can also be assigned
+          (e.g., "user-svc:org:{%orgId}:admin" or "user-svc:org:{%orgId}:user"),
+          but in this case, the caller must be an admin of the target organization.
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        description: |-
+          UserId is the recipient of the enroll.
+          If the user is already registered, the role is assigned immediately;
+          otherwise, it is applied upon registration.
+        type: string
+    required:
+    - createdAt
+    - id
+    - role
+    - updatedAt
+    type: object
+  user_svc.EnrollInput:
+    properties:
+      contactId:
+        description: |-
+          ContactId is the the recipient of the enroll.
+          If the user is already registered, the role is assigned immediately;
+          otherwise, it is applied upon registration.
+        type: string
+      id:
+        example: inv_fIYPbMHIcI
+        type: string
+      role:
+        type: string
+      userId:
+        description: |-
+          UserId is the recipient of the enroll.
+          If the user is already registered, the role is assigned immediately;
+          otherwise, it is applied upon registration.
+        type: string
+    required:
+    - role
+    type: object
   user_svc.ErrorResponse:
     properties:
       error:
@@ -2772,39 +2835,13 @@ definitions:
     required:
     - publicKey
     type: object
-  user_svc.Grant:
-    properties:
-      id:
-        type: string
-      permission:
-        type: string
-      roles:
-        description: |-
-          Role IDs that have been granted the specified permission.
-
-          Originally, grants were designed for slugs to facilitate service-to-service calls.
-          Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.
-
-          Alternatively, permissions can be assigned to roles using UserSvc.AssignPermissions.
-          Grants currently offer a more streamlined approach, though this may evolve over time.
-        items:
-          type: string
-        type: array
-      slugs:
-        description: Slugs that have been granted the specified permission.
-        items:
-          type: string
-        type: array
-    required:
-    - permission
-    type: object
   user_svc.HasPermissionRequest:
     properties:
-      contactsGranted:
+      contactsPermited:
         items:
           type: string
         type: array
-      grantedSlugs:
+      permittedSlugs:
         items:
           type: string
         type: array
@@ -2816,95 +2853,7 @@ definitions:
       user:
         $ref: '#/definitions/user_svc.User'
     type: object
-  user_svc.Invite:
-    properties:
-      appliedAt:
-        type: string
-      contactId:
-        description: |-
-          ContactId is the the recipient of the invite.
-          If the user is already registered, the role is assigned immediately;
-          otherwise, it is applied upon registration.
-        type: string
-      createdAt:
-        type: string
-      deletedAt:
-        type: string
-      expiresAt:
-        type: string
-      id:
-        example: inv_fIYPbMHIcI
-        type: string
-      ownerIds:
-        description: |-
-          OwnerIds specifies the users who created the invite.
-          If you create an invite that already exists for a given role and contact ID,
-          you get added to the list of owners.
-
-          @todo not sure if this makes sense. I don't think it does.
-        items:
-          type: string
-        type: array
-      role:
-        description: |-
-          Role specifies the role to be assigned to the ContactId.
-          Callers can only assign roles they own, identified by their service slug
-          (e.g., if "my-service" creates an invite, the role must be "my-service:admin").
-          Dynamic organization roles can also be assigned
-          (e.g., "user-svc:org:{%orgId}:admin" or "user-svc:org:{%orgId}:user"),
-          but in this case, the caller must be an admin of the target organization.
-        type: string
-      updatedAt:
-        type: string
-      userId:
-        description: |-
-          UserId is the recipient of the invite.
-          If the user is already registered, the role is assigned immediately;
-          otherwise, it is applied upon registration.
-        type: string
-    required:
-    - createdAt
-    - id
-    - ownerIds
-    - role
-    type: object
-  user_svc.InviteInput:
-    properties:
-      contactId:
-        description: |-
-          ContactId is the the recipient of the invite.
-          If the user is already registered, the role is assigned immediately;
-          otherwise, it is applied upon registration.
-        type: string
-      id:
-        example: inv_fIYPbMHIcI
-        type: string
-      role:
-        type: string
-      userId:
-        description: |-
-          UserId is the recipient of the invite.
-          If the user is already registered, the role is assigned immediately;
-          otherwise, it is applied upon registration.
-        type: string
-    required:
-    - role
-    type: object
-  user_svc.ListGrantsRequest:
-    properties:
-      permission:
-        type: string
-      slug:
-        type: string
-    type: object
-  user_svc.ListGrantsResponse:
-    properties:
-      grants:
-        items:
-          $ref: '#/definitions/user_svc.Grant'
-        type: array
-    type: object
-  user_svc.ListInvitesRequest:
+  user_svc.ListEnrollsRequest:
     properties:
       contactId:
         type: string
@@ -2913,14 +2862,14 @@ definitions:
       userId:
         type: string
     type: object
-  user_svc.ListInvitesResponse:
+  user_svc.ListEnrollsResponse:
     properties:
-      invites:
+      enrolls:
         items:
-          $ref: '#/definitions/user_svc.Invite'
+          $ref: '#/definitions/user_svc.Enroll'
         type: array
     required:
-    - invites
+    - enrolls
     type: object
   user_svc.ListOrganizationsRequest:
     properties:
@@ -2948,6 +2897,20 @@ definitions:
       permissions:
         items:
           type: string
+        type: array
+    type: object
+  user_svc.ListPermitsRequest:
+    properties:
+      permission:
+        type: string
+      slug:
+        type: string
+    type: object
+  user_svc.ListPermitsResponse:
+    properties:
+      permits:
+        items:
+          $ref: '#/definitions/user_svc.Permit'
         type: array
     type: object
   user_svc.ListUsersRequest:
@@ -3013,6 +2976,63 @@ definitions:
     - name
     - slug
     type: object
+  user_svc.Permit:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      id:
+        example: inv_fIYPbMHIcI
+        type: string
+      permission:
+        type: string
+      roles:
+        description: |-
+          Role IDs that have been permited the specified permission.
+
+          Originally, permits were designed for slugs to facilitate service-to-service calls.
+          Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.
+        items:
+          type: string
+        type: array
+      slugs:
+        description: Slugs that have been permited the specified permission.
+        items:
+          type: string
+        type: array
+      updatedAt:
+        type: string
+    required:
+    - createdAt
+    - id
+    - permission
+    - updatedAt
+    type: object
+  user_svc.PermitInput:
+    properties:
+      id:
+        example: inv_fIYPbMHIcI
+        type: string
+      permission:
+        type: string
+      roles:
+        description: |-
+          Role IDs that have been permited the specified permission.
+
+          Originally, permits were designed for slugs to facilitate service-to-service calls.
+          Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.
+        items:
+          type: string
+        type: array
+      slugs:
+        description: Slugs that have been permited the specified permission.
+        items:
+          type: string
+        type: array
+    required:
+    - permission
+    type: object
   user_svc.ReadUserByTokenResponse:
     properties:
       activeOrganizationId:
@@ -3070,32 +3090,23 @@ definitions:
     type: object
   user_svc.ResetPasswordResponse:
     type: object
-  user_svc.SaveGrantsRequest:
+  user_svc.SaveEnrollsRequest:
     properties:
-      grants:
+      enrolls:
         items:
-          $ref: '#/definitions/user_svc.Grant'
-        type: array
-    type: object
-  user_svc.SaveGrantsResponse:
-    type: object
-  user_svc.SaveInvitesRequest:
-    properties:
-      invites:
-        items:
-          $ref: '#/definitions/user_svc.InviteInput'
+          $ref: '#/definitions/user_svc.EnrollInput'
         type: array
     required:
-    - invites
+    - enrolls
     type: object
-  user_svc.SaveInvitesResponse:
+  user_svc.SaveEnrollsResponse:
     properties:
-      invites:
+      enrolls:
         items:
-          $ref: '#/definitions/user_svc.Invite'
+          $ref: '#/definitions/user_svc.Enroll'
         type: array
     required:
-    - invites
+    - enrolls
     type: object
   user_svc.SaveOrganizationRequest:
     properties:
@@ -3127,6 +3138,15 @@ definitions:
     required:
     - organization
     - token
+    type: object
+  user_svc.SavePermitsRequest:
+    properties:
+      permits:
+        items:
+          $ref: '#/definitions/user_svc.PermitInput'
+        type: array
+    type: object
+  user_svc.SavePermitsResponse:
     type: object
   user_svc.SaveProfileRequest:
     properties:
@@ -3212,7 +3232,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.3.0-rc.34
+  version: 0.3.0-rc.35
 paths:
   /chat-svc/events:
     get:
@@ -5932,29 +5952,28 @@ paths:
       summary: Change User Password
       tags:
       - User Svc
-  /user-svc/grants:
+  /user-svc/enrolls:
     post:
       consumes:
       - application/json
       description: |-
-        Grants give access to users with certain slugs and roles to permissions.
-        Users can list grants for permissions they have access to
-        but they will only see grants the grant refers to their slug or one of their roles.
-      operationId: listGrants
+        List enrolls. Role, user ID or contact ID must be specified.
+        Caller can only list enrolls of roles they own.
+      operationId: listEnrolls
       parameters:
-      - description: List Grants Request
+      - description: List Enrolls Request
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/user_svc.ListGrantsRequest'
+          $ref: '#/definitions/user_svc.ListEnrollsRequest'
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Enrolls listed successfully
           schema:
-            $ref: '#/definitions/user_svc.ListGrantsResponse'
+            $ref: '#/definitions/user_svc.ListEnrollsResponse'
         "401":
           description: Unauthorized
           schema:
@@ -5965,87 +5984,17 @@ paths:
             $ref: '#/definitions/user_svc.ErrorResponse'
       security:
       - BearerAuth: []
-      summary: List Grants
-      tags:
-      - User Svc
-    put:
-      consumes:
-      - application/json
-      description: Save grants. // @Description Grants give access to users with certain
-        slugs and roles to permissions.
-      operationId: saveGrants
-      parameters:
-      - description: Save Grants Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/user_svc.SaveGrantsRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Grant saved successfully
-          schema:
-            $ref: '#/definitions/user_svc.SaveGrantsResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Save Grants
-      tags:
-      - User Svc
-  /user-svc/invites:
-    post:
-      consumes:
-      - application/json
-      description: List user invites stored in the database.
-      operationId: listInvites
-      parameters:
-      - description: List Invites Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/user_svc.ListInvitesRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Invites listed successfully
-          schema:
-            $ref: '#/definitions/user_svc.ListInvitesResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: List Invites
+      summary: List Enrolls
       tags:
       - User Svc
     put:
       consumes:
       - application/json
       description: |-
-        Invite a list of users by contact or user Id to acquire a role.
+        Enroll a list of users by contact or user Id to acquire a role.
         Works on future or current users.
 
-        A user can only invite an other user to a role if the user owns that role.
+        A user can only enroll an other user to a role if the user owns that role.
 
         A user "owns" a role in the following cases:
         - A static role where the role ID is prefixed with the caller's slug.
@@ -6055,21 +6004,21 @@ paths:
         - A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
         - A user with any slug who has the role "my-service:admin" owns "my-service:user".
         - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
-      operationId: saveInvites
+      operationId: saveEnrolls
       parameters:
-      - description: Save Invites Request
+      - description: Save Enrolls Request
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/user_svc.SaveInvitesRequest'
+          $ref: '#/definitions/user_svc.SaveEnrollsRequest'
       produces:
       - application/json
       responses:
         "200":
-          description: Invites saved successfully
+          description: Enrolls saved successfully
           schema:
-            $ref: '#/definitions/user_svc.SaveInvitesResponse'
+            $ref: '#/definitions/user_svc.SaveEnrollsResponse'
         "400":
           description: Invalid JSON
           schema:
@@ -6084,7 +6033,7 @@ paths:
             $ref: '#/definitions/user_svc.ErrorResponse'
       security:
       - BearerAuth: []
-      summary: Save Invites
+      summary: Save Enrolls
       tags:
       - User Svc
   /user-svc/login:
@@ -6343,6 +6292,79 @@ paths:
       summary: List Permissions
       tags:
       - User Svc
+  /user-svc/permits:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Permits give access to users with certain slugs and roles to permissions.
+        Users can list permits for permissions they have access to
+        but they will only see permits the permit refers to their slug or one of their roles.
+      operationId: listPermits
+      parameters:
+      - description: List Permits Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.ListPermitsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.ListPermitsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List Permits
+      tags:
+      - User Svc
+    put:
+      consumes:
+      - application/json
+      description: Save permits. // @Description Permits give access to users with
+        certain slugs and roles to permissions.
+      operationId: savePermits
+      parameters:
+      - description: Save Permits Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.SavePermitsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Permit saved successfully
+          schema:
+            $ref: '#/definitions/user_svc.SavePermitsResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Save Permits
+      tags:
+      - User Svc
   /user-svc/public-key:
     get:
       consumes:
@@ -6447,7 +6469,7 @@ paths:
       description: |-
         Check whether the caller user has a specific permission.
         Ideally, this endpoint should rarely be used, as the JWT token
-        already includes all user roles. Caching the `List Permissions` and `List Grants`
+        already includes all user roles. Caching the `List Permissions` and `List Permits`
         responses allows services to determine user authorization
         without repeatedly calling this endpoint.
       operationId: hasPermission

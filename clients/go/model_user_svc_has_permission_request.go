@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.3.0-rc.34
+API version: 0.3.0-rc.35
 Contact: sales@singulatron.com
 */
 
@@ -20,8 +20,8 @@ var _ MappedNullable = &UserSvcHasPermissionRequest{}
 
 // UserSvcHasPermissionRequest struct for UserSvcHasPermissionRequest
 type UserSvcHasPermissionRequest struct {
-	ContactsGranted []string `json:"contactsGranted,omitempty"`
-	GrantedSlugs []string `json:"grantedSlugs,omitempty"`
+	ContactsPermited []string `json:"contactsPermited,omitempty"`
+	PermittedSlugs []string `json:"permittedSlugs,omitempty"`
 }
 
 // NewUserSvcHasPermissionRequest instantiates a new UserSvcHasPermissionRequest object
@@ -41,68 +41,68 @@ func NewUserSvcHasPermissionRequestWithDefaults() *UserSvcHasPermissionRequest {
 	return &this
 }
 
-// GetContactsGranted returns the ContactsGranted field value if set, zero value otherwise.
-func (o *UserSvcHasPermissionRequest) GetContactsGranted() []string {
-	if o == nil || IsNil(o.ContactsGranted) {
+// GetContactsPermited returns the ContactsPermited field value if set, zero value otherwise.
+func (o *UserSvcHasPermissionRequest) GetContactsPermited() []string {
+	if o == nil || IsNil(o.ContactsPermited) {
 		var ret []string
 		return ret
 	}
-	return o.ContactsGranted
+	return o.ContactsPermited
 }
 
-// GetContactsGrantedOk returns a tuple with the ContactsGranted field value if set, nil otherwise
+// GetContactsPermitedOk returns a tuple with the ContactsPermited field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcHasPermissionRequest) GetContactsGrantedOk() ([]string, bool) {
-	if o == nil || IsNil(o.ContactsGranted) {
+func (o *UserSvcHasPermissionRequest) GetContactsPermitedOk() ([]string, bool) {
+	if o == nil || IsNil(o.ContactsPermited) {
 		return nil, false
 	}
-	return o.ContactsGranted, true
+	return o.ContactsPermited, true
 }
 
-// HasContactsGranted returns a boolean if a field has been set.
-func (o *UserSvcHasPermissionRequest) HasContactsGranted() bool {
-	if o != nil && !IsNil(o.ContactsGranted) {
+// HasContactsPermited returns a boolean if a field has been set.
+func (o *UserSvcHasPermissionRequest) HasContactsPermited() bool {
+	if o != nil && !IsNil(o.ContactsPermited) {
 		return true
 	}
 
 	return false
 }
 
-// SetContactsGranted gets a reference to the given []string and assigns it to the ContactsGranted field.
-func (o *UserSvcHasPermissionRequest) SetContactsGranted(v []string) {
-	o.ContactsGranted = v
+// SetContactsPermited gets a reference to the given []string and assigns it to the ContactsPermited field.
+func (o *UserSvcHasPermissionRequest) SetContactsPermited(v []string) {
+	o.ContactsPermited = v
 }
 
-// GetGrantedSlugs returns the GrantedSlugs field value if set, zero value otherwise.
-func (o *UserSvcHasPermissionRequest) GetGrantedSlugs() []string {
-	if o == nil || IsNil(o.GrantedSlugs) {
+// GetPermittedSlugs returns the PermittedSlugs field value if set, zero value otherwise.
+func (o *UserSvcHasPermissionRequest) GetPermittedSlugs() []string {
+	if o == nil || IsNil(o.PermittedSlugs) {
 		var ret []string
 		return ret
 	}
-	return o.GrantedSlugs
+	return o.PermittedSlugs
 }
 
-// GetGrantedSlugsOk returns a tuple with the GrantedSlugs field value if set, nil otherwise
+// GetPermittedSlugsOk returns a tuple with the PermittedSlugs field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcHasPermissionRequest) GetGrantedSlugsOk() ([]string, bool) {
-	if o == nil || IsNil(o.GrantedSlugs) {
+func (o *UserSvcHasPermissionRequest) GetPermittedSlugsOk() ([]string, bool) {
+	if o == nil || IsNil(o.PermittedSlugs) {
 		return nil, false
 	}
-	return o.GrantedSlugs, true
+	return o.PermittedSlugs, true
 }
 
-// HasGrantedSlugs returns a boolean if a field has been set.
-func (o *UserSvcHasPermissionRequest) HasGrantedSlugs() bool {
-	if o != nil && !IsNil(o.GrantedSlugs) {
+// HasPermittedSlugs returns a boolean if a field has been set.
+func (o *UserSvcHasPermissionRequest) HasPermittedSlugs() bool {
+	if o != nil && !IsNil(o.PermittedSlugs) {
 		return true
 	}
 
 	return false
 }
 
-// SetGrantedSlugs gets a reference to the given []string and assigns it to the GrantedSlugs field.
-func (o *UserSvcHasPermissionRequest) SetGrantedSlugs(v []string) {
-	o.GrantedSlugs = v
+// SetPermittedSlugs gets a reference to the given []string and assigns it to the PermittedSlugs field.
+func (o *UserSvcHasPermissionRequest) SetPermittedSlugs(v []string) {
+	o.PermittedSlugs = v
 }
 
 func (o UserSvcHasPermissionRequest) MarshalJSON() ([]byte, error) {
@@ -115,11 +115,11 @@ func (o UserSvcHasPermissionRequest) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcHasPermissionRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.ContactsGranted) {
-		toSerialize["contactsGranted"] = o.ContactsGranted
+	if !IsNil(o.ContactsPermited) {
+		toSerialize["contactsPermited"] = o.ContactsPermited
 	}
-	if !IsNil(o.GrantedSlugs) {
-		toSerialize["grantedSlugs"] = o.GrantedSlugs
+	if !IsNil(o.PermittedSlugs) {
+		toSerialize["permittedSlugs"] = o.PermittedSlugs
 	}
 	return toSerialize, nil
 }

@@ -176,27 +176,26 @@ func StartService(options Options) (*ServiceProcess, error) {
 	waitChan := make(chan struct{})
 	started := false
 
-	readAndSignal := func(pipe io.ReadCloser, err bool) {
-		scanner := bufio.NewScanner(pipe)
-		for scanner.Scan() {
-			line := scanner.Bytes()
-			if err {
-				service.Stderr.Write(line)
-				service.Stderr.Write([]byte("\n"))
-			} else {
-				service.Stdout.Write(line)
-				service.Stderr.Write([]byte("\n"))
+	readAndSignal := func(pipe io.ReadCloser, isErr bool) {
+		reader := io.TeeReader(pipe, funcWriter(func(p []byte) (n int, err error) {
+			if isErr {
+				return service.Stderr.Write(p)
 			}
+			return service.Stdout.Write(p)
+		}))
+
+		scanner := bufio.NewScanner(reader)
+		for scanner.Scan() {
+			line := scanner.Text()
 
 			if started {
 				continue
 			}
 
-			l := string(line)
-			if strings.Contains(l, "Server started") ||
-				strings.Contains(l, "Service started") {
+			if strings.Contains(line, "Server started") ||
+				strings.Contains(line, "Service started") {
 				started = true
-				close(waitChan) // Signal that the service is up
+				close(waitChan)
 			}
 		}
 	}
@@ -230,6 +229,12 @@ func StartService(options Options) (*ServiceProcess, error) {
 	}()
 
 	return service, nil
+}
+
+type funcWriter func([]byte) (int, error)
+
+func (f funcWriter) Write(p []byte) (int, error) {
+	return f(p)
 }
 
 func (s *ServiceProcess) Stop() {

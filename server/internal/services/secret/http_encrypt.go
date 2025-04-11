@@ -41,7 +41,7 @@ func (cs *SecretService) Encrypt(
 	isAuthRsp, _, err := cs.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), secret.PermissionSecretSave).
 		Body(openapi.UserSvcHasPermissionRequest{
-			GrantedSlugs: []string{"model-svc"},
+			PermittedSlugs: []string{"model-svc"},
 		}).
 		Execute()
 	if err != nil {

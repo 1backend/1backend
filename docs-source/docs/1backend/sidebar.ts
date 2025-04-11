@@ -546,26 +546,14 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
-          id: "1backend/list-grants",
-          label: "List Grants",
+          id: "1backend/list-enrolls",
+          label: "List Enrolls",
           className: "api-method post",
         },
         {
           type: "doc",
-          id: "1backend/save-grants",
-          label: "Save Grants",
-          className: "api-method put",
-        },
-        {
-          type: "doc",
-          id: "1backend/list-invites",
-          label: "List Invites",
-          className: "api-method post",
-        },
-        {
-          type: "doc",
-          id: "1backend/save-invites",
-          label: "Save Invites",
+          id: "1backend/save-enrolls",
+          label: "Save Enrolls",
           className: "api-method put",
         },
         {
@@ -603,6 +591,18 @@ const sidebar: SidebarsConfig = {
           id: "1backend/list-permissions",
           label: "List Permissions",
           className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend/list-permits",
+          label: "List Permits",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend/save-permits",
+          label: "Save Permits",
+          className: "api-method put",
         },
         {
           type: "doc",

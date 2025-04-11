@@ -45,7 +45,7 @@ func (dm *ContainerService) ListContainers(
 	isAuthRsp, _, err := dm.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), container.PermissionLogView).
 		Body(openapi.UserSvcHasPermissionRequest{
-			GrantedSlugs: []string{"model-svc", "deploy-svc"},
+			PermittedSlugs: []string{"model-svc", "deploy-svc"},
 		}).
 		Execute()
 	if err != nil {

@@ -21,13 +21,13 @@ func (p *PolicyService) registerPermissions() error {
 	ctx := context.Background()
 	userSvc := p.clientFactory.Client(client.WithToken(p.token)).UserSvcAPI
 
-	req := openapi.UserSvcSaveGrantsRequest{}
+	req := openapi.UserSvcSavePermitsRequest{}
 
 	for _, role := range []string{
 		usertypes.RoleAdmin,
 	} {
 		for _, permission := range policytypes.AdminPermissions {
-			req.Grants = append(req.Grants, openapi.UserSvcGrant{
+			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				Roles:      []string{role},
 				Permission: permission,
 			})
@@ -38,14 +38,14 @@ func (p *PolicyService) registerPermissions() error {
 		usertypes.RoleUser,
 	} {
 		for _, permission := range policytypes.UserPermissions {
-			req.Grants = append(req.Grants, openapi.UserSvcGrant{
+			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				Roles:      []string{role},
 				Permission: permission,
 			})
 		}
 	}
 
-	_, _, err := userSvc.SaveGrants(ctx).
+	_, _, err := userSvc.SavePermits(ctx).
 		Body(req).
 		Execute()
 	if err != nil {

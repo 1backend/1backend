@@ -21,21 +21,21 @@ func (p *ChatService) registerPermissions() error {
 	ctx := context.Background()
 	userSvc := p.clientFactory.Client(client.WithToken(p.token)).UserSvcAPI
 
-	req := openapi.UserSvcSaveGrantsRequest{}
+	req := openapi.UserSvcSavePermitsRequest{}
 
 	for _, role := range []string{
 		usertypes.RoleAdmin,
 		usertypes.RoleUser,
 	} {
 		for _, permission := range append(chattypes.ThreadPermissions, chattypes.MessagePermissions...) {
-			req.Grants = append(req.Grants, openapi.UserSvcGrant{
+			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				Roles:      []string{role},
 				Permission: permission,
 			})
 		}
 	}
 
-	_, _, err := userSvc.SaveGrants(ctx).
+	_, _, err := userSvc.SavePermits(ctx).
 		Body(req).
 		Execute()
 	if err != nil {

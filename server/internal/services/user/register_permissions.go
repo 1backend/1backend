@@ -20,13 +20,13 @@ import (
 )
 
 func (us *UserService) registerPermissions() error {
-	grants := []*user.Grant{}
+	permits := []*user.PermitInput{}
 
 	for _, role := range []string{
 		usertypes.RoleAdmin,
 	} {
 		for _, permission := range usertypes.AdminPermissions {
-			grants = append(grants, &user.Grant{
+			permits = append(permits, &user.PermitInput{
 				Roles:      []string{role},
 				Permission: permission,
 			})
@@ -37,17 +37,17 @@ func (us *UserService) registerPermissions() error {
 		usertypes.RoleUser,
 	} {
 		for _, permission := range usertypes.UserPermissions {
-			grants = append(grants, &user.Grant{
+			permits = append(permits, &user.PermitInput{
 				Roles:      []string{role},
 				Permission: permission,
 			})
 		}
 	}
 
-	err := us.saveGrants(
+	err := us.savePermits(
 		context.Background(),
-		&usertypes.SaveGrantsRequest{
-			Grants: grants,
+		&usertypes.SavePermitsRequest{
+			Permits: permits,
 		},
 	)
 	if err != nil {

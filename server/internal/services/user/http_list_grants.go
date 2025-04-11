@@ -21,26 +21,26 @@ import (
 	"github.com/pkg/errors"
 )
 
-// @ID listGrants
-// @Summary List Grants
+// @ID listPermits
+// @Summary List Permits
 // @Description
-// @Description Grants give access to users with certain slugs and roles to permissions.
-// @Description Users can list grants for permissions they have access to
-// @Description but they will only see grants the grant refers to their slug or one of their roles.
+// @Description Permits give access to users with certain slugs and roles to permissions.
+// @Description Users can list permits for permissions they have access to
+// @Description but they will only see permits the permit refers to their slug or one of their roles.
 // @Tags User Svc
 // @Accept json
 // @Produce json
-// @Param body body user.ListGrantsRequest true "List Grants Request"
-// @Success 200 {object} user.ListGrantsResponse
+// @Param body body user.ListPermitsRequest true "List Permits Request"
+// @Success 200 {object} user.ListPermitsResponse
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
-// @Router /user-svc/grants [post]
-func (s *UserService) ListGrants(
+// @Router /user-svc/permits [post]
+func (s *UserService) ListPermits(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	req := &user.ListGrantsRequest{}
+	req := &user.ListPermitsRequest{}
 	err := json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -63,20 +63,20 @@ func (s *UserService) ListGrants(
 		}
 	}
 
-	grants, err := s.listGrants(req)
+	permits, err := s.listPermits(req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	bs, _ := json.Marshal(user.ListGrantsResponse{
-		Grants: grants,
+	bs, _ := json.Marshal(user.ListPermitsResponse{
+		Permits: permits,
 	})
 	w.Write(bs)
 }
 
-func (us *UserService) listGrants(req *user.ListGrantsRequest) ([]*user.Grant, error) {
+func (us *UserService) listPermits(req *user.ListPermitsRequest) ([]*user.Permit, error) {
 	filters := []datastore.Filter{}
 	if req.Permission != "" {
 		filters = append(filters, datastore.Equals([]string{"permission"}, req.Permission))
@@ -85,15 +85,15 @@ func (us *UserService) listGrants(req *user.ListGrantsRequest) ([]*user.Grant, e
 		filters = append(filters, datastore.Equals([]string{"slug"}, req.Slug))
 	}
 
-	grantIs, err := us.grantsStore.Query(filters...).Find()
+	permitIs, err := us.permitsStore.Query(filters...).Find()
 	if err != nil {
-		return nil, errors.Wrap(err, "error querying grants")
+		return nil, errors.Wrap(err, "error querying permits")
 	}
 
-	grants := []*user.Grant{}
-	for _, grantI := range grantIs {
-		grants = append(grants, grantI.(*user.Grant))
+	permits := []*user.Permit{}
+	for _, permitI := range permitIs {
+		permits = append(permits, permitI.(*user.Permit))
 	}
 
-	return grants, nil
+	return permits, nil
 }

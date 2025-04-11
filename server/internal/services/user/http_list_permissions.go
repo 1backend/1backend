@@ -88,7 +88,7 @@ func (s *UserService) listPermissions(
 		roles = append(roles, role)
 	}
 
-	permissionsI, err := s.grantsStore.Query(
+	permissionsI, err := s.permitsStore.Query(
 		datastore.Intersects([]string{"roles"}, roles),
 	).
 		OrderBy(
@@ -102,7 +102,7 @@ func (s *UserService) listPermissions(
 
 	permissions := []string{}
 	for _, permissionI := range permissionsI {
-		permissions = append(permissions, permissionI.(*user.Grant).Permission)
+		permissions = append(permissions, permissionI.(*user.Permit).Permission)
 	}
 
 	return permissions, nil

@@ -31,10 +31,10 @@ import (
 // @Summary Has Permission
 // @Description Check whether the caller user has a specific permission.
 // @Description Ideally, this endpoint should rarely be used, as the JWT token
-// @Description already includes all user roles. Caching the `List Permissions` and `List Grants`
+// @Description already includes all user roles. Caching the `List Permissions` and `List Permits`
 // @Description responses allows services to determine user authorization
 // @Description without repeatedly calling this endpoint.
-// @Desciption This endpoint also checks for grants.
+// @Desciption This endpoint also checks for permits.
 // @Tags User Svc
 // @Accept json
 // @Produce json
@@ -72,7 +72,7 @@ func (s *UserService) HasPermission(
 		req = &user.HasPermissionRequest{}
 	}
 
-	usr, isAuth, err := s.hasPermission(r, permission, req.GrantedSlugs, nil)
+	usr, isAuth, err := s.hasPermission(r, permission, req.PermittedSlugs, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -90,24 +90,24 @@ func (s *UserService) HasPermission(
 func (s *UserService) hasPermission(
 	r *http.Request,
 	permission string,
-	grantedSlugs,
-	contactsGranted []string,
+	permittedSlugs,
+	contactsPermited []string,
 ) (*user.User, bool, error) {
 	usr, err := s.getUserFromRequest(r)
 	if err != nil {
 		return nil, false, err
 	}
 
-	slugGrant := false
-	for _, v := range grantedSlugs {
+	slugPermit := false
+	for _, v := range permittedSlugs {
 		if usr.Slug == v {
-			slugGrant = true
+			slugPermit = true
 		}
 	}
-	if slugGrant {
+	if slugPermit {
 		return usr, true, nil
 	}
-	invites, err := s.invitesStore.Query(
+	enrolls, err := s.enrollsStore.Query(
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 	).Find()
 	if err != nil {
@@ -116,38 +116,38 @@ func (s *UserService) hasPermission(
 	}
 
 	roleIds := []string{}
-	for _, role := range invites {
-		roleIds = append(roleIds, role.(*user.Invite).Role)
+	for _, role := range enrolls {
+		roleIds = append(roleIds, role.(*user.Enroll).Role)
 	}
 
 	roleIdAnys := []any{}
 	for _, roleId := range roleIds {
 		roleIdAnys = append(roleIdAnys, roleId)
 	}
-	grants, err := s.grantsStore.Query(
+	permits, err := s.permitsStore.Query(
 		datastore.Intersects(datastore.Field("roles"), roleIdAnys),
 	).Find()
 	if err != nil {
 		return nil, false, err
 	}
 
-	for _, permissionLink := range grants {
-		if permissionLink.(*user.Grant).Permission == permission {
+	for _, permissionLink := range permits {
+		if permissionLink.(*user.Permit).Permission == permission {
 			return usr, true, nil
 		}
 
 	}
 
-	// check grants
+	// check permits
 
 	// @todo investigate why this doesn't work
 	//
-	// _, exists, err := s.grantsStore.Query(
+	// _, exists, err := s.permitsStore.Query(
 	// 	datastore.Equals([]string{"permission"}, permissionId),
 	// 	datastore.IsInList([]string{"slugs"}, usr.Slug),
 	// ).FindOne()
 
-	grantIs, err := s.grantsStore.Query(
+	permitIs, err := s.permitsStore.Query(
 		datastore.Equals([]string{"permission"}, permission),
 	).Find()
 	if err != nil {
@@ -155,12 +155,12 @@ func (s *UserService) hasPermission(
 	}
 
 	exists := false
-	for _, grantI := range grantIs {
+	for _, permitI := range permitIs {
 		if exists {
 			break
 		}
-		grant := grantI.(*user.Grant)
-		for _, slug := range grant.Slugs {
+		permit := permitI.(*user.Permit)
+		for _, slug := range permit.Slugs {
 			if slug == usr.Slug {
 				exists = true
 				break
@@ -168,9 +168,9 @@ func (s *UserService) hasPermission(
 		}
 
 		for _, userRoleId := range roleIds {
-			for _, grantRoleIds := range grant.Roles {
+			for _, permitRoleIds := range permit.Roles {
 
-				if userRoleId == grantRoleIds {
+				if userRoleId == permitRoleIds {
 					exists = true
 					break
 				}
@@ -200,7 +200,7 @@ func (s *UserService) getRolesByUserId(userId string) ([]string, error) {
 		contactIds = append(contactIds, contactI.(*user.Contact).Id)
 	}
 
-	invites, err := s.invitesStore.Query(
+	enrolls, err := s.enrollsStore.Query(
 		datastore.Or(
 			datastore.Equals(datastore.Field("userId"), userId),
 			datastore.IsInList(datastore.Field("contactId"), contactIds...),
@@ -211,8 +211,8 @@ func (s *UserService) getRolesByUserId(userId string) ([]string, error) {
 	}
 
 	roles := []string{}
-	for _, invite := range invites {
-		roles = append(roles, invite.(*user.Invite).Role)
+	for _, enroll := range enrolls {
+		roles = append(roles, enroll.(*user.Enroll).Role)
 	}
 
 	return roles, nil

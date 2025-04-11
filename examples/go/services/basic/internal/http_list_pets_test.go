@@ -65,9 +65,9 @@ func TestListPets(t *testing.T) {
 	t.Run("admin assigns role to user", func(t *testing.T) {
 		require.NotEmpty(t, tokens[0].UserId)
 
-		_, rsp, err := serverAdminClient.UserSvcAPI.SaveInvites(context.Background()).
-			Body(openapi.UserSvcSaveInvitesRequest{
-				Invites: []openapi.UserSvcInviteInput{
+		_, rsp, err := serverAdminClient.UserSvcAPI.SaveEnrolls(context.Background()).
+			Body(openapi.UserSvcSaveEnrollsRequest{
+				Enrolls: []openapi.UserSvcEnrollInput{
 					{
 						UserId: openapi.PtrString(tokens[0].UserId),
 						Role:   basicservice.RolePetManager,
