@@ -17,7 +17,7 @@
   </div>
 </p>
 
-1Backend began as an experimental serverless platform (FaaS/PaaS) in 2017, created by Janos Dobronszki—a veteran in microservices—and his friends. The project initially sparked interest, but its development paused as Janos and his team pursued other ventures, including his work on Micro—an open-source microservices platform—between 2020 and 2022.
+1Backend began as an experimental serverless platform (FaaS/PaaS) in 2017, created by Janos Dobronszki—a veteran in microservices—and his friends. The project initially sparked interest, but its development paused as Janos and his team pursued other ventures, including his work on [Micro](https://github.com/micro/micro)—an open-source microservices platform—between 2020 and 2022.
 
 In 2024, while developing an on-premise AI platform, Janos realized that there still wasn’t an open-source microservices platform that met his expectations. This insight led to the resurrection of 1Backend, reimagined to be the perfect platform: flexible, scalable, and designed to run AI models on private infrastructure while handling high-concurrency workloads.
 
