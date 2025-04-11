@@ -181,6 +181,10 @@ func BigBang(options *Options) (*Universe, error) {
 		}
 	}
 
+	if !options.Test && os.Getenv("OB_TEST") == "true" {
+		options.Test = true
+	}
+
 	homeDir, err := infra.HomeDir(infra.HomeDirOptions{
 		Test:         options.Test,
 		ConfigFolder: os.Getenv("OB_CONFIG_FOLDER"),
