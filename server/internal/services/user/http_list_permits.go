@@ -24,7 +24,8 @@ import (
 // @ID listPermits
 // @Summary List Permits
 // @Description
-// @Description List permits. Requires the `user-svc:permit:view` permission, which only admins have by default
+// @Description List permits. Requires the `user-svc:permit:view` permission, which only admins have by default.
+// @Description &todo Users should be able to list permits referring to them.
 // @Tags User Svc
 // @Accept json
 // @Produce json
