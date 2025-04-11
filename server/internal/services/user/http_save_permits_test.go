@@ -53,6 +53,9 @@ func TestSavePermits(t *testing.T) {
 	require.NoError(t, err)
 	userClient2 := clientFactory.Client(client.WithToken(token.Token))
 
+	adminClient, _, err := test.AdminClient(clientFactory)
+	require.NoError(t, err)
+
 	ctx := context.Background()
 
 	t.Run("user 1 cannot assign role it does not own", func(t *testing.T) {
@@ -82,7 +85,8 @@ func TestSavePermits(t *testing.T) {
 	})
 
 	t.Run("saving the same permit again will not cause a duplicate", func(t *testing.T) {
-		rsp, _, err := userClient.UserSvcAPI.ListPermits(ctx).Body(
+		// @todo At the moment only admins can list permits
+		rsp, _, err := adminClient.UserSvcAPI.ListPermits(ctx).Body(
 			openapi.UserSvcListPermitsRequest{},
 		).Execute()
 		require.NoError(t, err)
@@ -99,7 +103,8 @@ func TestSavePermits(t *testing.T) {
 		}).Execute()
 		require.NoError(t, err)
 
-		rsp, _, err = userClient.UserSvcAPI.ListPermits(ctx).Body(
+		// @todo At the moment only admins can list permits
+		rsp, _, err = adminClient.UserSvcAPI.ListPermits(ctx).Body(
 			openapi.UserSvcListPermitsRequest{},
 		).Execute()
 		require.NoError(t, err)
