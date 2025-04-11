@@ -26,6 +26,8 @@ Microservices and the 1Backend server uses this envar to detect if they are runn
 
 When set to true, subsystems act accordingly: for example the datastore will prefix tables with random numbers to provide a unique and clean environment for each test.
 
+First startup is also significantly faster when this flag is enabled, as 1Backend uses bcrypt.MinCost instead of bcrypt.DefaultCost for password generation, and sets the RSA key size to 512 bits in test mode instead of the default 4096.
+
 ## `OB_NODE_ID`
 
 For information about this, please refer to the [Registry Svc Node section](/docs/built-in-services/registry-svc#node)
