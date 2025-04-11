@@ -5,7 +5,7 @@ import "github.com/spf13/cobra"
 func AddPermitCommands(rootCmd *cobra.Command) {
 	var permitCmd = &cobra.Command{
 		Use:     "permit",
-		Aliases: []string{"g", "permits"},
+		Aliases: []string{"p", "permits"},
 		Short:   "Manage permits",
 	}
 

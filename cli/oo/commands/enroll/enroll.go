@@ -5,7 +5,7 @@ import "github.com/spf13/cobra"
 func AddEnrollCommands(rootCmd *cobra.Command) {
 	var enrollCmd = &cobra.Command{
 		Use:     "enroll",
-		Aliases: []string{"i", "enrolls"},
+		Aliases: []string{"e", "enrolls"},
 		Short:   "Manage enrolls",
 	}
 

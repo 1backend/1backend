@@ -115,7 +115,7 @@ func (cs *UserService) savePermits(
 	for _, permit := range req.Permits {
 		nu := false
 		if permit.Id == "" {
-			permit.Id = sdk.Id("grn")
+			permit.Id = sdk.Id("pmt")
 			nu = true
 		}
 
