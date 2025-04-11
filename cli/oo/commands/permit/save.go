@@ -32,7 +32,7 @@ func Save(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "error checking path")
 	}
 
-	var permits []openapi.UserSvcPermit
+	var permits []openapi.UserSvcPermitInput
 
 	fileCount := 0
 	if stat.IsDir() {
@@ -44,7 +44,7 @@ func Save(cmd *cobra.Command, args []string) error {
 			if !info.IsDir() {
 				// Collect permits from each file in the directory
 				fileCount++
-				var filePermits []openapi.UserSvcPermit
+				var filePermits []openapi.UserSvcPermitInput
 				err = util.ExtractFromFile(filePath, &filePermits)
 				if err != nil {
 					return err
@@ -59,7 +59,7 @@ func Save(cmd *cobra.Command, args []string) error {
 	} else {
 		// Handle single file
 		fileCount++
-		var filePermits []openapi.UserSvcPermit
+		var filePermits []openapi.UserSvcPermitInput
 		err = util.ExtractFromFile(path, &filePermits)
 		if err != nil {
 			return err

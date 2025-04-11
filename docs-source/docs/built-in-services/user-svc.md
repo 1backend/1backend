@@ -23,7 +23,7 @@ The user service is at the heart of 1Backend, managing users, tokens, organizati
 
 **Role**: A simple string identifier like `user-svc:user` or `user-svc:org:{orgId}:admin` that represents a specific capability or access level. Roles are embedded in tokens.
 
-**Enroll**: A way to assign roles to users—both current and future. Enrolls allow roles to be claimed later, once the user joins or logs in.
+**Enroll**: (Enrollment) A mechanism to assign roles to users—both current and future. Enrolls allow roles to be claimed later, once the user joins or logs in.
 
 **Permission**: A string such as `petstore-svc:read`, typically mapping to an API action or endpoint. Roles can bundle multiple permissions.
 

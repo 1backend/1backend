@@ -46,7 +46,7 @@ func List(cmd *cobra.Command, args []string) error {
 		fmt.Fprintf(
 			writer,
 			"%s\t%s\t%s\t%s\n",
-			*permit.Id,
+			permit.Id,
 			permit.Permission,
 			strings.Join(permit.Slugs, ", "),
 			strings.Join(permit.Roles, ", "),
