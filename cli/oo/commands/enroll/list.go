@@ -38,7 +38,7 @@ func List(cmd *cobra.Command, args []string) error {
 
 	fmt.Fprintln(
 		writer,
-		"INVITE ID\tROLE\tUSER ID\tCONTACT ID",
+		"ENROLL ID\tROLE\tUSER ID\tCONTACT ID",
 	)
 
 	for _, enroll := range rsp.Enrolls {

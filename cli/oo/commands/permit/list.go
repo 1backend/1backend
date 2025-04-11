@@ -39,7 +39,7 @@ func List(cmd *cobra.Command, args []string) error {
 
 	fmt.Fprintln(
 		writer,
-		"GRANT ID\tPERMISSION\tSLUGS\tROLES",
+		"PERMIT ID\tPERMISSION\tSLUGS\tROLES",
 	)
 
 	for _, permit := range rsp.Permits {
