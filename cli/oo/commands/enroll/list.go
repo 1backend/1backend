@@ -13,7 +13,7 @@ import (
 )
 
 // List
-func List(cmd *cobra.Command, args []string) error {
+func List(cmd *cobra.Command, args []string, role, userId, contactId string) error {
 	ctx := cmd.Context()
 
 	url, token, err := config.GetSelectedUrlAndToken()
@@ -24,6 +24,16 @@ func List(cmd *cobra.Command, args []string) error {
 	cf := client.NewApiClientFactory(url)
 
 	req := openapi.UserSvcListEnrollsRequest{}
+
+	if role != "" {
+		req.Role = &role
+	}
+	if userId != "" {
+		req.UserId = &userId
+	}
+	if contactId != "" {
+		req.ContactId = &contactId
+	}
 
 	rsp, _, err := cf.Client(client.WithToken(token)).
 		UserSvcAPI.ListEnrolls(ctx).

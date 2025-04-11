@@ -53,6 +53,7 @@ func NewService(options *Options) (*MultiService, error) {
 
 	dconf := infra.DataStoreConfig{}
 	if options.Test {
+		dconf.Test = true
 		dconf.TablePrefix = sdk.Id("t")
 	}
 
