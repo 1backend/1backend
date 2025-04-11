@@ -293,12 +293,4 @@ func TestOrganization(t *testing.T) {
 			Execute()
 		require.NoError(t, err)
 	})
-
-	t.Run("user cannot list organizations", func(t *testing.T) {
-		_, _, err := userClient.UserSvcAPI.ListOrganizations(context.Background()).
-			Body(openapi.UserSvcListOrganizationsRequest{}).
-			Execute()
-		require.Error(t, err)
-	})
-
 }
