@@ -27,12 +27,14 @@ import (
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
 	"github.com/gorilla/mux"
+	"github.com/pkg/errors"
 )
 
 type RegistryService struct {
-	publicKey     string
+	publicKey string
+	token     string
+
 	clientFactory client.ClientFactory
-	token         string
 
 	URL              string
 	AvailabilityZone string
@@ -172,28 +174,55 @@ func (ns *RegistryService) Start() error {
 	go ns.nodeHeartbeat()
 	go ns.instanceScan()
 
+	// Only to trigger registration of permissions
+	_, err := ns.getToken()
+	if err != nil {
+		return errors.Wrap(err, "failed to get token")
+	}
+
+	return nil
+}
+
+func (cs *RegistryService) getToken() (string, error) {
+	if cs.token != "" {
+		return cs.token, nil
+	}
+
 	ctx := context.Background()
-	ns.lock.Acquire(ctx, "registry-svc-start")
-	defer ns.lock.Release(ctx, "registry-svc-start")
+	cs.lock.Acquire(ctx, "registry-svc-start")
+	defer cs.lock.Release(ctx, "registry-svc-start")
 
 	token, err := boot.RegisterServiceAccount(
-		ns.clientFactory.Client().UserSvcAPI,
+		cs.clientFactory.Client().UserSvcAPI,
 		"registry-svc",
 		"Registry Svc",
-		ns.credentialStore,
+		cs.credentialStore,
 	)
 	if err != nil {
-		return err
+		return "", err
 	}
-	ns.token = token.Token
+	cs.token = token.Token
+
+	err = cs.registerPermissions()
+	if err != nil {
+		return "", errors.Wrap(err, "failed to register permissions")
+	}
+
+	return cs.token, nil
+}
+
+func (ns *RegistryService) getPublicKey() (string, error) {
+	if ns.publicKey != "" {
+		return ns.publicKey, nil
+	}
 
 	pk, _, err := ns.clientFactory.Client(client.WithToken(ns.token)).
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	if err != nil {
-		return err
+		return "", errors.Wrap(err, "failed to get public key")
 	}
 	ns.publicKey = pk.PublicKey
 
-	return ns.registerPermissions()
+	return ns.publicKey, nil
 }

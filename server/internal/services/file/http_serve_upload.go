@@ -138,8 +138,15 @@ func (fs *FileService) serveRemote(
 		nodeIds = append(nodeIds, upload.NodeId)
 	}
 
+	token, err := fs.getToken()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
 	nodesRsp, _, err := fs.clientFactory.
-		Client(client.WithToken(fs.token)).
+		Client(client.WithToken(token)).
 		RegistrySvcAPI.ListNodes(r.Context()).
 		Body(
 			openapi.RegistrySvcListNodesRequest{
@@ -163,7 +170,7 @@ func (fs *FileService) serveRemote(
 
 	// todo it would be probably better to stream this ourselves here but for now it will do
 	file, fileHttpRsp, err := fs.clientFactory.
-		Client(client.WithAddress(node.Url), client.WithToken(fs.token)).
+		Client(client.WithAddress(node.Url), client.WithToken(token)).
 		FileSvcAPI.
 		ServeUpload(r.Context(), uploads[0].FileId).
 		Execute()
@@ -255,8 +262,13 @@ func (fs *FileService) pickRemotes(
 }
 
 func (fs *FileService) getNodeId(ctx context.Context) error {
+	token, err := fs.getToken()
+	if err != nil {
+		return errors.Wrap(err, "cannot get token")
+	}
+
 	nodeRsp, _, err := fs.clientFactory.
-		Client(client.WithToken(fs.token)).
+		Client(client.WithToken(token)).
 		RegistrySvcAPI.SelfNode(ctx).
 		Execute()
 	if err != nil {

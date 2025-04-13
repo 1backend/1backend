@@ -23,6 +23,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/service"
 	"github.com/gorilla/mux"
 
 	policytypes "github.com/1backend/1backend/server/internal/services/policy/types"
@@ -63,18 +64,18 @@ func NewPolicyService(
 }
 
 func (ps *PolicyService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/policy-svc/check", middlewares.Lazy(ps, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/policy-svc/check", service.Lazy(ps, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ps.Check(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/policy-svc/instance/{instanceId}", middlewares.Lazy(ps, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/policy-svc/instance/{instanceId}", service.Lazy(ps, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ps.UpsertInstance(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 }
 
-func (cs *PolicyService) Start() error {
+func (cs *PolicyService) LazyStart() error {
 	if cs.started {
 		return cs.startupErr
 	}

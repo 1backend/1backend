@@ -27,6 +27,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/service"
 )
 
 type SecretService struct {
@@ -86,38 +87,38 @@ func NewSecretService(
 }
 
 func (ss *SecretService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/secret-svc/secrets", middlewares.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/secret-svc/secrets", service.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ss.ListSecrets(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/secret-svc/secrets", middlewares.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/secret-svc/secrets", service.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ss.SaveSecrets(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/secret-svc/encrypt", middlewares.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/secret-svc/encrypt", service.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ss.Encrypt(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/secret-svc/decrypt", middlewares.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/secret-svc/decrypt", service.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ss.Decrypt(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/secret-svc/secrets", middlewares.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/secret-svc/secrets", service.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ss.RemoveSecrets(w, r)
 	}))).
 		Methods("OPTIONS", "DELETE")
 
-	router.HandleFunc("/secret-svc/is-secure", middlewares.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/secret-svc/is-secure", service.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ss.Secure(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 }
 
-func (cs *SecretService) Start() error {
+func (cs *SecretService) LazyStart() error {
 	if cs.started {
 		return cs.startupErr
 	}

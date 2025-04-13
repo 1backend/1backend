@@ -25,6 +25,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/service"
 	"github.com/gorilla/mux"
 
 	dynamictypes "github.com/1backend/1backend/server/internal/services/data/types"
@@ -64,33 +65,33 @@ func NewDataService(
 }
 
 func (ds *DataService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/data-svc/object", middlewares.Lazy(ds, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/data-svc/object", service.Lazy(ds, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ds.Create(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/data-svc/objects/update", middlewares.Lazy(ds, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/data-svc/objects/update", service.Lazy(ds, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ds.UpdateObjects(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/data-svc/objects/delete", middlewares.Lazy(ds, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/data-svc/objects/delete", service.Lazy(ds, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ds.DeleteObjects(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/data-svc/objects", middlewares.Lazy(ds, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/data-svc/objects", service.Lazy(ds, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ds.Query(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/data-svc/object/{objectId}", middlewares.Lazy(ds, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/data-svc/object/{objectId}", service.Lazy(ds, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ds.Upsert(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 }
 
-func (cs *DataService) Start() error {
+func (cs *DataService) LazyStart() error {
 	if cs.started {
 		return cs.startupErr
 	}

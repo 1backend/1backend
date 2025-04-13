@@ -22,6 +22,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/service"
 	"github.com/gorilla/mux"
 
 	chattypes "github.com/1backend/1backend/server/internal/services/chat/types"
@@ -58,58 +59,58 @@ func NewChatService(
 }
 
 func (cs *ChatService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/chat-svc/thread/{threadId}/message", middlewares.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/chat-svc/thread/{threadId}/message", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		cs.AddMessage(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/chat-svc/message/{messageId}", middlewares.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/chat-svc/message/{messageId}", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		cs.GetMessage(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/chat-svc/message/{messageId}", middlewares.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/chat-svc/message/{messageId}", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		cs.DeleteMessage(w, r)
 	}))).
 		Methods("OPTIONS", "DELETE")
 
-	router.HandleFunc("/chat-svc/thread/{threadId}/messages", middlewares.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/chat-svc/thread/{threadId}/messages", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		cs.GetMessages(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/chat-svc/thread", middlewares.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/chat-svc/thread", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		cs.AddThread(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/chat-svc/thread/{threadId}", middlewares.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/chat-svc/thread/{threadId}", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		cs.DeleteThread(w, r)
 	}))).
 		Methods("OPTIONS", "DELETE")
 
-	router.HandleFunc("/chat-svc/threads", middlewares.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/chat-svc/threads", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		cs.GetThreads(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/chat-svc/thread/{threadId}", middlewares.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/chat-svc/thread/{threadId}", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		cs.GetThread(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/chat-svc/thread/{threadId}", middlewares.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/chat-svc/thread/{threadId}", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		cs.UpdateThread(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/chat-svc/evens", middlewares.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/chat-svc/evens", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		cs.Events(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 }
 
-func (cs *ChatService) Start() error {
+func (cs *ChatService) LazyStart() error {
 	if cs.started {
 		return cs.startupErr
 	}

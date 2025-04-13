@@ -22,6 +22,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/service"
 	"github.com/gorilla/mux"
 )
 
@@ -60,13 +61,13 @@ func NewSourceService(
 }
 
 func (ss *SourceService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/source-svc/repo/checkout", middlewares.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/source-svc/repo/checkout", service.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ss.CheckoutRepo(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 }
 
-func (cs *SourceService) Start() error {
+func (cs *SourceService) LazyStart() error {
 	if cs.started {
 		return cs.startupErr
 	}

@@ -133,6 +133,16 @@ func (cs *PromptService) Start() error {
 		return err
 	}
 
+	go cs.processPrompts()
+
+	return nil
+}
+
+func (cs *PromptService) getToken() (string, error) {
+	if cs.token != "" {
+		return cs.token, nil
+	}
+
 	ctx := context.Background()
 	cs.lock.Acquire(ctx, "prompt-svc-start")
 	defer cs.lock.Release(ctx, "prompt-svc-start")
@@ -144,15 +154,14 @@ func (cs *PromptService) Start() error {
 		cs.credentialStore,
 	)
 	if err != nil {
-		return err
+		return "", err
 	}
 	cs.token = token.Token
 
 	err = cs.registerPermissions()
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	go cs.processPrompts()
-	return nil
+	return cs.token, nil
 }

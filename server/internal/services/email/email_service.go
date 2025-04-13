@@ -22,6 +22,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/service"
 	email "github.com/1backend/1backend/server/internal/services/email/types"
 	"github.com/gorilla/mux"
 )
@@ -56,13 +57,13 @@ func NewEmailService(
 }
 
 func (es *EmailService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/email-svc/email", middlewares.Lazy(es, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/email-svc/email", service.Lazy(es, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		es.SendEmail(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 }
 
-func (es *EmailService) Start() error {
+func (es *EmailService) LazyStart() error {
 	if es.started {
 		return es.startupErr
 	}

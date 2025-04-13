@@ -25,9 +25,9 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/service"
 	types "github.com/1backend/1backend/server/internal/services/config/types"
 )
 
@@ -79,44 +79,29 @@ func (cs *ConfigService) SetDataStoreFactory(
 }
 
 func (cs *ConfigService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/config-svc/config", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
-		if cs.Start(w, r) {
-			return
-		}
+	router.HandleFunc("/config-svc/config", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		cs.Get(w, r)
-	})).
+	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/config-svc/config", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
-		if cs.Start(w, r) {
-			return
-		}
+	router.HandleFunc("/config-svc/config", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		cs.Save(w, r)
-	})).
+	}))).
 		Methods("OPTIONS", "PUT")
 }
 
-func (cs *ConfigService) Start(
-	w http.ResponseWriter,
-	r *http.Request,
-) bool {
+func (cs *ConfigService) LazyStart() error {
 	if cs.started {
-		if cs.startupErr != nil {
-			endpoint.WriteErr(w, http.StatusInternalServerError, cs.startupErr)
-			return true
-		}
-
-		return false
+		return cs.startupErr
 	}
 
 	cs.startupErr = cs.start()
 	if cs.startupErr != nil {
-		endpoint.WriteErr(w, http.StatusInternalServerError, cs.startupErr)
-		return true
+		return cs.startupErr
 	}
 
 	cs.started = true
-	return false
+	return nil
 }
 
 func (cs *ConfigService) start() error {

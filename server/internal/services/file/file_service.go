@@ -27,6 +27,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	types "github.com/1backend/1backend/server/internal/services/file/types"
 	"github.com/gorilla/mux"
+	"github.com/pkg/errors"
 )
 
 type FileService struct {
@@ -154,26 +155,6 @@ func (fs *FileService) Start() error {
 	}
 	fs.uploadStore = uploadStore
 
-	ctx := context.Background()
-	fs.dlock.Acquire(ctx, "file-svc-start")
-	defer fs.dlock.Release(ctx, "file-svc-start")
-
-	token, err := boot.RegisterServiceAccount(
-		fs.clientFactory.Client().UserSvcAPI,
-		"file-svc",
-		"File Svc",
-		fs.credentialStore,
-	)
-	if err != nil {
-		return err
-	}
-	fs.token = token.Token
-
-	err = fs.registerPermissions()
-	if err != nil {
-		return err
-	}
-
 	downloads, err := fs.downloadStore.Query(
 		datastore.Equals([]string{"status"},
 			types.DownloadStatusInProgress,
@@ -194,6 +175,34 @@ func (fs *FileService) Start() error {
 	}
 
 	return err
+}
+
+func (fs *FileService) getToken() (string, error) {
+	if fs.token != "" {
+		return fs.token, nil
+	}
+
+	ctx := context.Background()
+	fs.dlock.Acquire(ctx, "file-svc-start")
+	defer fs.dlock.Release(ctx, "file-svc-start")
+
+	token, err := boot.RegisterServiceAccount(
+		fs.clientFactory.Client().UserSvcAPI,
+		"file-svc",
+		"File Svc",
+		fs.credentialStore,
+	)
+	if err != nil {
+		return "", err
+	}
+	fs.token = token.Token
+
+	err = fs.registerPermissions()
+	if err != nil {
+		return "", errors.Wrap(err, "failed to register permissions")
+	}
+
+	return fs.token, nil
 }
 
 func (fs *FileService) getDownload(url string) (*types.InternalDownload, bool) {

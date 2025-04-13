@@ -7,6 +7,7 @@ import (
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
 	"github.com/samber/lo"
 )
@@ -64,7 +65,13 @@ func (rs *RegistryService) ListInstances(
 	path := q.Get("path")
 	slug := q.Get("slug")
 
-	isAdmin, err := auth.AuthorizerImpl{}.IsAdminFromRequest(rs.publicKey, r)
+	publicKey, err := rs.getPublicKey()
+	if err != nil {
+		endpoint.WriteErr(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	isAdmin, err := auth.AuthorizerImpl{}.IsAdminFromRequest(publicKey, r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

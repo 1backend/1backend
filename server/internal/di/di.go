@@ -267,14 +267,6 @@ func BigBang(options *Options) (*Universe, error) {
 	}
 	userService.RegisterRoutes(router)
 
-	if err != nil {
-		logger.Error(
-			"Config service start failed",
-			slog.String("error", err.Error()),
-		)
-		os.Exit(1)
-	}
-
 	firehoseService, err := firehoseservice.NewFirehoseService(
 		options.ClientFactory,
 		options.Lock,

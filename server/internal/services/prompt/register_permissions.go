@@ -15,11 +15,17 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	prompttypes "github.com/1backend/1backend/server/internal/services/prompt/types"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
+	"github.com/pkg/errors"
 )
 
 func (p *PromptService) registerPermissions() error {
+	token, err := p.getToken()
+	if err != nil {
+		return errors.Wrap(err, "failed to get token")
+	}
+
 	ctx := context.Background()
-	userSvc := p.clientFactory.Client(client.WithToken(p.token)).UserSvcAPI
+	userSvc := p.clientFactory.Client(client.WithToken(token)).UserSvcAPI
 
 	req := openapi.UserSvcSavePermitsRequest{}
 
@@ -34,7 +40,7 @@ func (p *PromptService) registerPermissions() error {
 		}
 	}
 
-	_, _, err := userSvc.SavePermits(ctx).
+	_, _, err = userSvc.SavePermits(ctx).
 		Body(req).
 		Execute()
 	if err != nil {

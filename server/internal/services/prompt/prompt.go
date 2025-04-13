@@ -74,7 +74,12 @@ func (p *PromptService) prompt(
 
 	threadId := prompt.ThreadId
 
-	getThreadRsp, _, err := p.clientFactory.Client(client.WithToken(p.token)).
+	token, err := p.getToken()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get token")
+	}
+
+	getThreadRsp, _, err := p.clientFactory.Client(client.WithToken(token)).
 		ChatSvcAPI.GetThread(ctx, threadId).
 		Execute()
 	if err != nil {
@@ -102,7 +107,7 @@ func (p *PromptService) prompt(
 			}
 		}
 
-		_, _, err := p.clientFactory.Client(client.WithToken(p.token)).
+		_, _, err := p.clientFactory.Client(client.WithToken(token)).
 			ChatSvcAPI.AddThread(ctx).
 			Body(openapi.ChatSvcAddThreadRequest{
 				Thread: &openapi.ChatSvcThread{
@@ -131,7 +136,7 @@ func (p *PromptService) prompt(
 	js, _ := json.Marshal(ev)
 	json.Unmarshal(js, &m)
 
-	_, err = p.clientFactory.Client(client.WithToken(p.token)).
+	_, err = p.clientFactory.Client(client.WithToken(token)).
 		FirehoseSvcAPI.PublishEvent(context.Background()).
 		Event(openapi.FirehoseSvcEventPublishRequest{
 			Event: &openapi.FirehoseSvcEvent{
@@ -161,7 +166,7 @@ func (p *PromptService) prompt(
 
 		for resp := range subscriber {
 			if resp.Type == streammanager.ChunkTypeDone {
-				r, _, err := p.clientFactory.Client(client.WithToken(p.token)).
+				r, _, err := p.clientFactory.Client(client.WithToken(token)).
 					ChatSvcAPI.
 					GetMessage(ctx, resp.MessageId).
 					Execute()

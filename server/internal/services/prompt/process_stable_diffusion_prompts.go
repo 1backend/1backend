@@ -110,7 +110,12 @@ func (p *PromptService) processStableDiffusion(
 	}
 	defer imageFile.Close()
 
-	uploadRsp, _, err := p.clientFactory.Client(client.WithToken(p.token)).
+	token, err := p.getToken()
+	if err != nil {
+		return errors.Wrap(err, "failed to get token")
+	}
+
+	uploadRsp, _, err := p.clientFactory.Client(client.WithToken(token)).
 		FileSvcAPI.UploadFile(context.Background()).
 		File(imageFile).
 		Execute()
@@ -120,7 +125,7 @@ func (p *PromptService) processStableDiffusion(
 
 	fileIds := []string{*uploadRsp.Upload.FileId}
 
-	_, _, err = p.clientFactory.Client(client.WithToken(p.token)).
+	_, _, err = p.clientFactory.Client(client.WithToken(token)).
 		ChatSvcAPI.AddMessage(context.Background(), currentPrompt.ThreadId).
 		Body(
 			openapi.ChatSvcAddMessageRequest{

@@ -34,16 +34,29 @@ var DefaultMiddlewares = []Middleware{
 
 var DefaultApplicator = Applicator(DefaultMiddlewares)
 
+// Starter is an interface for things that need to be started before use.
+// The Start() function should prepare anything that needs to be ready,
+// like setting up connections to databases or loading config.
+//
+// It's meant to be safe to call multiple times (idempotent), so calling
+// Start() again won't cause issues or repeat the setup unnecessarily.
+//
+// This is useful for services that don’t need to start background tasks right away,
+// but still require some setup before being used.
 type Starter interface {
-	// Idempotent start function
 	Start() error
 }
 
-// Lazy is a wrapper for services that can be lazy loaded.
-// Eg., services which don't have background process loops that need to be started immediately
-// can be started on demand; when the first request comes in.
+// Lazy is a wrapper that delays starting a service until it’s actually needed.
 //
-// This speeds up the startup time of the server.
+// Some services don’t need to start right when the app launches—especially if
+// they don’t run background processes. For these, we can wait to start them
+// until the first time they’re used (like when the first HTTP request comes in).
+//
+// This helps make the server start faster, because we skip setting up services
+// that might not even be used.
+//
+// If starting the service fails, we return a 500 Internal Server Error.
 func Lazy(s Starter, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := s.Start(); err != nil {
