@@ -25,6 +25,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/service"
 	types "github.com/1backend/1backend/server/internal/services/file/types"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -72,44 +73,44 @@ func NewFileService(
 }
 
 func (fs *FileService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/file-svc/download", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/file-svc/download", service.Lazy(fs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		fs.Download(w, r)
-	})).
+	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/file-svc/download/{url}/pause", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/file-svc/download/{url}/pause", service.Lazy(fs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		fs.PauseDownload(w, r)
-	})).
+	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/file-svc/download/{url}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/file-svc/download/{url}", service.Lazy(fs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		fs.GetDownload(w, r)
-	})).
+	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/file-svc/downloads", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/file-svc/downloads", service.Lazy(fs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		fs.ListDownloads(w, r)
-	})).
+	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/file-svc/upload", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/file-svc/upload", service.Lazy(fs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		fs.UploadFile(w, r)
-	})).
+	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/file-svc/uploads", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/file-svc/uploads", service.Lazy(fs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		fs.ListUploads(w, r)
-	})).
+	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/file-svc/serve/upload/{fileId}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/file-svc/serve/upload/{fileId}", service.Lazy(fs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		fs.ServeUpload(w, r)
-	})).
+	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/file-svc/serve/download/{url}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/file-svc/serve/download/{url}", service.Lazy(fs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		fs.ServeDownload(w, r)
-	})).
+	}))).
 		Methods("OPTIONS", "GET")
 }
 
@@ -175,6 +176,15 @@ func (fs *FileService) Start() error {
 	}
 
 	return err
+}
+
+func (fs *FileService) LazyStart() error {
+	_, err := fs.getToken()
+	if err != nil {
+		return errors.Wrap(err, "failed to get token")
+	}
+
+	return nil
 }
 
 func (fs *FileService) getToken() (string, error) {
