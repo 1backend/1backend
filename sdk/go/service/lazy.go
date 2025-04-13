@@ -18,14 +18,10 @@ import (
 	"github.com/1backend/1backend/sdk/go/endpoint"
 )
 
-// Lazy is a wrapper that delays starting a service until it’s actually needed.
+// Lazy is a wrapper for endpoints that delays service setup until it’s actually needed.
 //
-// Some services don’t need to start right when the app launches—especially if
-// they don’t run background processes. For these, we can wait to start them
-// until the first time they’re used (like when the first HTTP request comes in).
-//
-// This helps make the server start faster, because we skip setting up services
-// that might not even be used.
+// Some services dependencies don't need to be loaded right away, only when an endpoint is called.
+// Delaying the setup can help reduce startup time and resource usage.
 //
 // If starting the service fails, we return a 500 Internal Server Error.
 func Lazy(s LazyStarter, next http.HandlerFunc) http.HandlerFunc {
