@@ -15,7 +15,6 @@ package proxyservice
 import (
 	"context"
 	"net/http"
-	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -78,17 +77,6 @@ func (cs *ProxyService) Start() error {
 
 	cs.started = true
 	return nil
-}
-
-// gets service slug from http request path
-// eg. /my-svc/my-endpoint -> my-svc
-func getServiceSlug(r *http.Request) string {
-	cleanedPath := strings.Trim(r.URL.Path, "/")
-	parts := strings.Split(cleanedPath, "/")
-	if len(parts) > 0 && parts[0] != "" {
-		return parts[0]
-	}
-	return ""
 }
 
 func (cs *ProxyService) start() error {

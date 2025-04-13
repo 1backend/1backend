@@ -133,3 +133,14 @@ func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
 		flusher.Flush()
 	}
 }
+
+// gets service slug from http request path
+// eg. /my-svc/my-endpoint -> my-svc
+func getServiceSlug(r *http.Request) string {
+	cleanedPath := strings.Trim(r.URL.Path, "/")
+	parts := strings.Split(cleanedPath, "/")
+	if len(parts) > 0 && parts[0] != "" {
+		return parts[0]
+	}
+	return ""
+}

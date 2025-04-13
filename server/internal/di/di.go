@@ -342,12 +342,9 @@ func BigBang(options *Options) (*Universe, error) {
 		options.DataStoreFactory.Create,
 	)
 	if err != nil {
-		logger.Error(
-			"Prompt service creation failed",
-			slog.String("error", err.Error()),
-		)
-		os.Exit(1)
+		return nil, errors.Wrap(err, "failed to create prompt service")
 	}
+	promptService.RegisterRoutes(router)
 
 	dataService, err := dataservice.NewDataService(
 		options.ClientFactory,
@@ -457,13 +454,13 @@ func BigBang(options *Options) (*Universe, error) {
 			if err != nil {
 				return errors.Wrap(err, "prompt service start failed")
 			}
-			err = registryService.Start()
 
+			err = registryService.Start()
 			if err != nil {
 				return errors.Wrap(err, "registry service start failed")
 			}
-			err = fileService.Start()
 
+			err = fileService.Start()
 			if err != nil {
 				return errors.Wrap(err, "file service start failed")
 			}
