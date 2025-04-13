@@ -14,9 +14,11 @@ package modelservice
 
 import (
 	"context"
+	"net/http"
 	"sync"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 
 	"github.com/1backend/1backend/sdk/go/auth"
@@ -24,6 +26,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
+	"github.com/1backend/1backend/sdk/go/middlewares"
 
 	modeltypes "github.com/1backend/1backend/server/internal/services/model/types"
 )
@@ -31,8 +34,12 @@ import (
 const DefaultModelId = `huggingface/TheBloke/mistral-7b-instruct-v0.2.Q3_K_S.gguf`
 
 type ModelService struct {
-	clientFactory client.ClientFactory
-	token         string
+	started    bool
+	startupErr error
+
+	clientFactory    client.ClientFactory
+	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
+	token            string
 
 	modelStateMutex sync.Mutex
 	modelPortMap    map[int]*modeltypes.ModelState
@@ -60,44 +67,102 @@ func NewModelService(
 	datastoreFactory func(tableName string, insance any) (datastore.DataStore, error),
 ) (*ModelService, error) {
 	srv := &ModelService{
-		gpuPlatform:   gpuPlatform,
-		clientFactory: clientFactory,
-		lock:          lock,
-		modelPortMap:  map[int]*modeltypes.ModelState{},
-	}
-	modelStore, err := datastoreFactory("modelSvcModels", &modeltypes.Model{})
-	if err != nil {
-		return nil, err
-	}
-	srv.modelsStore = modelStore
-
-	platformsStore, err := datastoreFactory(
-		"modelSvcPlatforms",
-		&modeltypes.Platform{},
-	)
-	if err != nil {
-		return nil, err
-	}
-	srv.platformsStore = platformsStore
-
-	credentialStore, err := datastoreFactory(
-		"modelSvcCredentials",
-		&auth.Credential{},
-	)
-	if err != nil {
-		return nil, err
-	}
-	srv.credentialStore = credentialStore
-
-	err = srv.bootstrapModels()
-	if err != nil {
-		return nil, err
+		gpuPlatform:      gpuPlatform,
+		clientFactory:    clientFactory,
+		datastoreFactory: datastoreFactory,
+		lock:             lock,
+		modelPortMap:     map[int]*modeltypes.ModelState{},
 	}
 
 	return srv, nil
 }
 
-func (ms *ModelService) Start() error {
+func (ms *ModelService) RegisterRoutes(router *mux.Router) {
+	router.HandleFunc("/model-svc/default-model/status", middlewares.Lazy(ms, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ms.DefaultStatus(w, r)
+	}))).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/model-svc/model/{modelId}/status", middlewares.Lazy(ms, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ms.Status(w, r)
+	}))).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/model-svc/models", middlewares.Lazy(ms, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ms.ListModels(w, r)
+	}))).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/model-svc/platforms", middlewares.Lazy(ms, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ms.ListPlatforms(w, r)
+	}))).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/model-svc/model/{modelId}", middlewares.Lazy(ms, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ms.Get(w, r)
+	}))).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/model-svc/default-model/start", middlewares.Lazy(ms, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ms.StartDefault(w, r)
+	}))).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/model-svc/model/{modelId}/start", middlewares.Lazy(ms, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ms.StartSpecific(w, r)
+	}))).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/model-svc/model/{modelId}/make-default", middlewares.Lazy(ms, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ms.MakeDefault(w, r)
+	}))).
+		Methods("OPTIONS", "PUT")
+}
+
+func (cs *ModelService) Start() error {
+	if cs.started {
+		return cs.startupErr
+	}
+
+	cs.startupErr = cs.start()
+	if cs.startupErr != nil {
+		return cs.startupErr
+	}
+
+	cs.started = true
+	return nil
+}
+
+func (ms *ModelService) start() error {
+	modelStore, err := ms.datastoreFactory("modelSvcModels", &modeltypes.Model{})
+	if err != nil {
+		return err
+	}
+	ms.modelsStore = modelStore
+
+	platformsStore, err := ms.datastoreFactory(
+		"modelSvcPlatforms",
+		&modeltypes.Platform{},
+	)
+	if err != nil {
+		return err
+	}
+	ms.platformsStore = platformsStore
+
+	credentialStore, err := ms.datastoreFactory(
+		"modelSvcCredentials",
+		&auth.Credential{},
+	)
+	if err != nil {
+		return err
+	}
+	ms.credentialStore = credentialStore
+
+	err = ms.bootstrapModels()
+	if err != nil {
+		return err
+	}
+
 	ctx := context.Background()
 	ms.lock.Acquire(ctx, "model-svc-start")
 	defer ms.lock.Release(ctx, "model-svc-start")

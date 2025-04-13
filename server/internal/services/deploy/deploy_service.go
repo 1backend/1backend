@@ -14,13 +14,16 @@ package deployservice
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
+	"github.com/1backend/1backend/sdk/go/middlewares"
 	deploy "github.com/1backend/1backend/server/internal/services/deploy/types"
+	"github.com/gorilla/mux"
 )
 
 type DeployService struct {
@@ -71,6 +74,23 @@ func NewDeployService(
 	}
 
 	return service, nil
+}
+
+func (ds *DeployService) RegisterRoutes(router *mux.Router) {
+	router.HandleFunc("/deploy-svc/deployment", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ds.SaveDeployment(w, r)
+	})).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/deploy-svc/deployments", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ds.ListDeployments(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/deploy-svc/deployment", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ds.DeleteDeployment(w, r)
+	})).
+		Methods("OPTIONS", "DELETE")
 }
 
 func (ns *DeployService) Start() error {

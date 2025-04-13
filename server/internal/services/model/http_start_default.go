@@ -53,7 +53,7 @@ func (ms *ModelService) StartDefault(
 		return
 	}
 
-	err = ms.start("")
+	err = ms.startModel("")
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

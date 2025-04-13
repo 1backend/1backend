@@ -14,7 +14,9 @@ package secretservice
 
 import (
 	"context"
+	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 
 	secret "github.com/1backend/1backend/server/internal/services/secret/types"
@@ -24,9 +26,13 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
+	"github.com/1backend/1backend/sdk/go/middlewares"
 )
 
 type SecretService struct {
+	started    bool
+	startupErr error
+
 	clientFactory client.ClientFactory
 	token         string
 
@@ -79,7 +85,53 @@ func NewSecretService(
 	return cs, nil
 }
 
+func (ss *SecretService) RegisterRoutes(router *mux.Router) {
+	router.HandleFunc("/secret-svc/secrets", middlewares.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ss.ListSecrets(w, r)
+	}))).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/secret-svc/secrets", middlewares.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ss.SaveSecrets(w, r)
+	}))).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/secret-svc/encrypt", middlewares.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ss.Encrypt(w, r)
+	}))).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/secret-svc/decrypt", middlewares.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ss.Decrypt(w, r)
+	}))).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/secret-svc/secrets", middlewares.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ss.RemoveSecrets(w, r)
+	}))).
+		Methods("OPTIONS", "DELETE")
+
+	router.HandleFunc("/secret-svc/is-secure", middlewares.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ss.Secure(w, r)
+	}))).
+		Methods("OPTIONS", "GET")
+}
+
 func (cs *SecretService) Start() error {
+	if cs.started {
+		return cs.startupErr
+	}
+
+	cs.startupErr = cs.start()
+	if cs.startupErr != nil {
+		return cs.startupErr
+	}
+
+	cs.started = true
+	return nil
+}
+
+func (cs *SecretService) start() error {
 	if cs.datastoreFactory == nil {
 		return errors.New("no datastore factory")
 	}

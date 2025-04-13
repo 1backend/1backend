@@ -14,6 +14,7 @@ package promptservice
 
 import (
 	"context"
+	"net/http"
 	"sync"
 
 	"github.com/1backend/1backend/sdk/go/auth"
@@ -21,6 +22,8 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
+	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/gorilla/mux"
 
 	"github.com/1backend/1backend/server/internal/clients/llamacpp"
 	streammanager "github.com/1backend/1backend/server/internal/services/prompt/stream"
@@ -28,8 +31,9 @@ import (
 )
 
 type PromptService struct {
-	clientFactory client.ClientFactory
-	token         string
+	clientFactory    client.ClientFactory
+	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
+	token            string
 
 	llamaCppCLient llamacpp.ClientI
 	lock           lock.DistributedLock
@@ -49,65 +53,86 @@ func NewPromptService(
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 ) (*PromptService, error) {
-	promptsStore, err := datastoreFactory(
-		"promptSvcPrompts",
-		&prompttypes.Prompt{},
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	credentialStore, err := datastoreFactory(
-		"promptSvcCredentials",
-		&auth.Credential{},
-	)
-	if err != nil {
-		return nil, err
-	}
 
 	service := &PromptService{
-		clientFactory: clientFactory,
+		clientFactory:    clientFactory,
+		datastoreFactory: datastoreFactory,
 
 		llamaCppCLient: llamaCppClient,
 		lock:           lock,
 
 		streamManager: streammanager.NewStreamManager(),
 
-		promptsStore:    promptsStore,
-		credentialStore: credentialStore,
-
 		trigger: make(chan bool, 1),
 	}
 
-	promptIs, err := service.promptsStore.Query(
+	return service, nil
+}
+
+func (ps *PromptService) RegisterRoutes(router *mux.Router) {
+	router.HandleFunc("/prompt-svc/prompt", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ps.Prompt(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/prompt-svc/prompt/{promptId}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ps.RemovePrompt(w, r)
+	})).
+		Methods("OPTIONS", "DELETE")
+
+	router.HandleFunc("/prompt-svc/prompts/{threadId}/responses/subscribe", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ps.SubscribeToPromptResponses(w, r)
+	})).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/prompt-svc/prompts", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ps.ListPrompts(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+}
+
+func (cs *PromptService) Start() error {
+	promptsStore, err := cs.datastoreFactory(
+		"promptSvcPrompts",
+		&prompttypes.Prompt{},
+	)
+	if err != nil {
+		return err
+	}
+	cs.promptsStore = promptsStore
+
+	credentialStore, err := cs.datastoreFactory(
+		"promptSvcCredentials",
+		&auth.Credential{},
+	)
+	if err != nil {
+		return err
+	}
+	cs.credentialStore = credentialStore
+
+	promptIs, err := cs.promptsStore.Query(
 		datastore.Equals(
 			datastore.Field("status"),
 			prompttypes.PromptStatusRunning,
 		),
 	).Find()
 	if err != nil {
-		return nil, err
+		return err
 	}
 	promptIds := []string{}
 	for _, promptI := range promptIs {
 		promptIds = append(promptIds, promptI.(*prompttypes.Prompt).Id)
 	}
 
-	err = service.promptsStore.Query(
+	err = cs.promptsStore.Query(
 		datastore.Equals(datastore.Field("id"), promptIds),
 	).UpdateFields(map[string]any{
 		"status": prompttypes.PromptStatusScheduled,
 	})
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	go service.processPrompts()
-
-	return service, nil
-}
-
-func (cs *PromptService) Start() error {
 	ctx := context.Background()
 	cs.lock.Acquire(ctx, "prompt-svc-start")
 	defer cs.lock.Release(ctx, "prompt-svc-start")
@@ -123,5 +148,11 @@ func (cs *PromptService) Start() error {
 	}
 	cs.token = token.Token
 
-	return cs.registerPermissions()
+	err = cs.registerPermissions()
+	if err != nil {
+		return err
+	}
+
+	go cs.processPrompts()
+	return nil
 }

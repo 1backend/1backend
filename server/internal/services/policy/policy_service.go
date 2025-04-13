@@ -14,6 +14,7 @@ package policyservice
 
 import (
 	"context"
+	"net/http"
 	"sync"
 
 	"github.com/1backend/1backend/sdk/go/auth"
@@ -21,13 +22,19 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
+	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/gorilla/mux"
 
 	policytypes "github.com/1backend/1backend/server/internal/services/policy/types"
 )
 
 type PolicyService struct {
-	clientFactory client.ClientFactory
-	token         string
+	started    bool
+	startupErr error
+
+	clientFactory    client.ClientFactory
+	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
+	token            string
 
 	lock lock.DistributedLock
 
@@ -46,59 +53,84 @@ func NewPolicyService(
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 ) (*PolicyService, error) {
 
-	instancesStore, err := datastoreFactory(
-		"policySvcInstances",
-		&policytypes.Instance{},
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	credentialStore, err := datastoreFactory(
-		"policySvcCredentials",
-		&auth.Credential{},
-	)
-	if err != nil {
-		return nil, err
-	}
-
 	service := &PolicyService{
-		clientFactory: clientFactory,
-
-		lock: lock,
-
-		instancesStore:  instancesStore,
-		credentialStore: credentialStore,
+		clientFactory:    clientFactory,
+		datastoreFactory: datastoreFactory,
+		lock:             lock,
 	}
 
 	return service, nil
 }
 
-func (cs *PolicyService) Start() error {
-	ctx := context.Background()
-	cs.lock.Acquire(ctx, "policy-svc-start")
-	defer cs.lock.Release(ctx, "policy-svc-start")
+func (ps *PolicyService) RegisterRoutes(router *mux.Router) {
+	router.HandleFunc("/policy-svc/check", middlewares.Lazy(ps, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ps.Check(w, r)
+	}))).
+		Methods("OPTIONS", "POST")
 
-	instances, err := cs.instancesStore.Query().Find()
+	router.HandleFunc("/policy-svc/instance/{instanceId}", middlewares.Lazy(ps, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ps.UpsertInstance(w, r)
+	}))).
+		Methods("OPTIONS", "PUT")
+}
+
+func (cs *PolicyService) Start() error {
+	if cs.started {
+		return cs.startupErr
+	}
+
+	cs.startupErr = cs.start()
+	if cs.startupErr != nil {
+		return cs.startupErr
+	}
+
+	cs.started = true
+	return nil
+}
+
+func (ps *PolicyService) start() error {
+	instancesStore, err := ps.datastoreFactory(
+		"policySvcInstances",
+		&policytypes.Instance{},
+	)
+	if err != nil {
+		return err
+	}
+	ps.instancesStore = instancesStore
+
+	credentialStore, err := ps.datastoreFactory(
+		"policySvcCredentials",
+		&auth.Credential{},
+	)
+	if err != nil {
+		return err
+	}
+	ps.credentialStore = credentialStore
+
+	ctx := context.Background()
+	ps.lock.Acquire(ctx, "policy-svc-start")
+	defer ps.lock.Release(ctx, "policy-svc-start")
+
+	instances, err := ps.instancesStore.Query().Find()
 	if err != nil {
 		return err
 	}
 
 	for _, instanceI := range instances {
 		instance := instanceI.(*policytypes.Instance)
-		cs.instances = append(cs.instances, instance)
+		ps.instances = append(ps.instances, instance)
 	}
 
 	token, err := boot.RegisterServiceAccount(
-		cs.clientFactory.Client().UserSvcAPI,
+		ps.clientFactory.Client().UserSvcAPI,
 		"policy-svc",
 		"Policy Svc",
-		cs.credentialStore,
+		ps.credentialStore,
 	)
 	if err != nil {
 		return err
 	}
-	cs.token = token.Token
+	ps.token = token.Token
 
-	return cs.registerPermissions()
+	return ps.registerPermissions()
 }

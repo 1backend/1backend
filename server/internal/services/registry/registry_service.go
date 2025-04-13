@@ -15,6 +15,7 @@ package registryservice
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"strings"
 
@@ -23,7 +24,9 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
+	"github.com/1backend/1backend/sdk/go/middlewares"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
+	"github.com/gorilla/mux"
 )
 
 type RegistryService struct {
@@ -114,6 +117,53 @@ func NewRegistryService(
 	}
 
 	return service, nil
+}
+
+func (rs *RegistryService) RegisterRoutes(router *mux.Router) {
+	router.HandleFunc("/registry-svc/node/self", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.NodeSelf(w, r)
+	})).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/registry-svc/nodes", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.ListNodes(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/registry-svc/instances", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.ListInstances(w, r)
+	})).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/registry-svc/definitions", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.ListDefinitions(w, r)
+	})).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/registry-svc/instance", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.RegisterInstance(w, r)
+	})).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/registry-svc/definition", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.SaveDefinition(w, r)
+	})).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/registry-svc/instance/{id}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.RemoveInstance(w, r)
+	})).
+		Methods("OPTIONS", "DELETE")
+
+	router.HandleFunc("/registry-svc/definition/{id}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.DeleteDefinition(w, r)
+	})).
+		Methods("OPTIONS", "DELETE")
+
+	router.HandleFunc("/registry-svc/node/{url}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.DeleteNode(w, r)
+	})).
+		Methods("OPTIONS", "DELETE")
 }
 
 func (ns *RegistryService) Start() error {
