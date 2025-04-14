@@ -23,6 +23,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/service"
 	"github.com/gorilla/mux"
 
 	"github.com/1backend/1backend/server/internal/clients/llamacpp"
@@ -70,24 +71,24 @@ func NewPromptService(
 }
 
 func (ps *PromptService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/prompt-svc/prompt", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/prompt-svc/prompt", service.Lazy(ps, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ps.Prompt(w, r)
-	})).
+	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/prompt-svc/prompt/{promptId}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/prompt-svc/prompt/{promptId}", service.Lazy(ps, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ps.RemovePrompt(w, r)
-	})).
+	}))).
 		Methods("OPTIONS", "DELETE")
 
-	router.HandleFunc("/prompt-svc/prompts/{threadId}/responses/subscribe", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/prompt-svc/prompts/{threadId}/responses/subscribe", service.Lazy(ps, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ps.SubscribeToPromptResponses(w, r)
-	})).
+	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/prompt-svc/prompts", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/prompt-svc/prompts", service.Lazy(ps, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		ps.ListPrompts(w, r)
-	})).
+	}))).
 		Methods("OPTIONS", "POST")
 }
 
@@ -134,6 +135,15 @@ func (cs *PromptService) Start() error {
 	}
 
 	go cs.processPrompts()
+
+	return nil
+}
+
+func (cs *PromptService) LazyStart() error {
+	_, err := cs.getToken()
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

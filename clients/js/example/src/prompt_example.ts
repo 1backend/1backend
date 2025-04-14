@@ -72,22 +72,22 @@ export async function promptTest(apiKey: string) {
       }),
       timeout(60000),
     ]);
-  
+
     console.log("Prompt response:", promptRsp);
 
     console.log(promptRsp);
   } catch (error: any) {
     console.error("Prompt failed:", error);
-  
+
     if (error instanceof ResponseError && error.response) {
       const res = error.response;
       console.error("HTTP Status:", res.status);
       console.error("URL:", res.url);
-  
+
       try {
         const bodyText = await res.text();
         console.error("HTTP Response Body:", bodyText);
-  
+
         // Optional: try to parse as JSON if it might be structured
         try {
           const json = JSON.parse(bodyText);
@@ -99,9 +99,10 @@ export async function promptTest(apiKey: string) {
         console.error("Failed to read error response body:", readErr);
       }
     }
+
+    // Make test fail
+    throw error;
   }
-
-
 }
 
 const timeout = (ms: number) =>
