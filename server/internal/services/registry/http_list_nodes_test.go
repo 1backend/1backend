@@ -25,6 +25,7 @@ func TestNodeId(t *testing.T) {
 	dbprefix := sdk.Id("node_id")
 
 	opt1 := &di.Options{
+		Test:     true,
 		Db:       "postgres",
 		DbPrefix: dbprefix,
 		Url:      server.URL,
@@ -53,6 +54,7 @@ func TestNodeId(t *testing.T) {
 	defer server2.Close()
 
 	opt2 := &di.Options{
+		Test:     true,
 		NodeId:   "abc",
 		Db:       "postgres",
 		DbPrefix: dbprefix,
