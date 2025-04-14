@@ -24,6 +24,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/1backend/1backend/server/internal/clients/llamacpp"
+	"github.com/pkg/errors"
 
 	streammanager "github.com/1backend/1backend/server/internal/services/prompt/stream"
 	prompttypes "github.com/1backend/1backend/server/internal/services/prompt/types"
@@ -46,8 +47,14 @@ func (p *PromptService) processLlamaCpp(
 		template = currentPrompt.EngineParameters.LlamaCpp.Template
 	}
 
+	token, err := p.getToken()
+	if err != nil {
+		return errors.Wrap(err, "failed to get token")
+	}
+
 	if template == "" {
-		modelRsp, _, err := p.clientFactory.Client(client.WithToken(p.token)).
+
+		modelRsp, _, err := p.clientFactory.Client(client.WithToken(token)).
 			ModelSvcAPI.GetModel(context.Background(), currentPrompt.ModelId).
 			Execute()
 		if err != nil {
@@ -106,7 +113,7 @@ func (p *PromptService) processLlamaCpp(
 		}
 	}()
 
-	err := llamaCppClient.PostCompletionsStreamed(llamacpp.PostCompletionsRequest{
+	err = llamaCppClient.PostCompletionsStreamed(llamacpp.PostCompletionsRequest{
 		Prompt:    fullPrompt,
 		Stream:    true,
 		MaxTokens: 1000000,
@@ -122,7 +129,7 @@ func (p *PromptService) processLlamaCpp(
 
 			messageId := sdk.Id("msg")
 
-			_, _, err := p.clientFactory.Client(client.WithToken(p.token)).
+			_, _, err := p.clientFactory.Client(client.WithToken(token)).
 				ChatSvcAPI.AddMessage(context.Background(), currentPrompt.ThreadId).
 				Body(
 					openapi.ChatSvcAddMessageRequest{

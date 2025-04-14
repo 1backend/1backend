@@ -15,8 +15,10 @@ package configservice
 import (
 	"context"
 	"encoding/json"
+	"net/http"
 	"sync"
 
+	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 
 	"github.com/1backend/1backend/sdk/go/auth"
@@ -24,10 +26,15 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
+	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/service"
 	types "github.com/1backend/1backend/server/internal/services/config/types"
 )
 
 type ConfigService struct {
+	started    bool
+	startupErr error
+
 	clientFactory client.ClientFactory
 	token         string
 
@@ -71,7 +78,33 @@ func (cs *ConfigService) SetDataStoreFactory(
 	cs.datastoreFactory = datastoreFactory
 }
 
-func (cs *ConfigService) Start() error {
+func (cs *ConfigService) RegisterRoutes(router *mux.Router) {
+	router.HandleFunc("/config-svc/config", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		cs.Get(w, r)
+	}))).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/config-svc/config", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		cs.Save(w, r)
+	}))).
+		Methods("OPTIONS", "PUT")
+}
+
+func (cs *ConfigService) LazyStart() error {
+	if cs.started {
+		return cs.startupErr
+	}
+
+	cs.startupErr = cs.start()
+	if cs.startupErr != nil {
+		return cs.startupErr
+	}
+
+	cs.started = true
+	return nil
+}
+
+func (cs *ConfigService) start() error {
 	if cs.datastoreFactory == nil {
 		return errors.New("no datastore factory")
 	}

@@ -15,6 +15,7 @@ package registryservice
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"strings"
 
@@ -23,13 +24,17 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
+	"github.com/1backend/1backend/sdk/go/middlewares"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
+	"github.com/gorilla/mux"
+	"github.com/pkg/errors"
 )
 
 type RegistryService struct {
-	publicKey     string
+	publicKey string
+	token     string
+
 	clientFactory client.ClientFactory
-	token         string
 
 	URL              string
 	AvailabilityZone string
@@ -116,34 +121,108 @@ func NewRegistryService(
 	return service, nil
 }
 
+func (rs *RegistryService) RegisterRoutes(router *mux.Router) {
+	router.HandleFunc("/registry-svc/node/self", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.NodeSelf(w, r)
+	})).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/registry-svc/nodes", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.ListNodes(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/registry-svc/instances", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.ListInstances(w, r)
+	})).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/registry-svc/definitions", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.ListDefinitions(w, r)
+	})).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/registry-svc/instance", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.RegisterInstance(w, r)
+	})).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/registry-svc/definition", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.SaveDefinition(w, r)
+	})).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/registry-svc/instance/{id}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.RemoveInstance(w, r)
+	})).
+		Methods("OPTIONS", "DELETE")
+
+	router.HandleFunc("/registry-svc/definition/{id}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.DeleteDefinition(w, r)
+	})).
+		Methods("OPTIONS", "DELETE")
+
+	router.HandleFunc("/registry-svc/node/{url}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		rs.DeleteNode(w, r)
+	})).
+		Methods("OPTIONS", "DELETE")
+}
+
 func (ns *RegistryService) Start() error {
 	ns.heartbeatCycle()
 
 	go ns.nodeHeartbeat()
 	go ns.instanceScan()
 
+	// Only to trigger registration of permissions
+	_, err := ns.getToken()
+	if err != nil {
+		return errors.Wrap(err, "failed to get token")
+	}
+
+	return nil
+}
+
+func (cs *RegistryService) getToken() (string, error) {
+	if cs.token != "" {
+		return cs.token, nil
+	}
+
 	ctx := context.Background()
-	ns.lock.Acquire(ctx, "registry-svc-start")
-	defer ns.lock.Release(ctx, "registry-svc-start")
+	cs.lock.Acquire(ctx, "registry-svc-start")
+	defer cs.lock.Release(ctx, "registry-svc-start")
 
 	token, err := boot.RegisterServiceAccount(
-		ns.clientFactory.Client().UserSvcAPI,
+		cs.clientFactory.Client().UserSvcAPI,
 		"registry-svc",
 		"Registry Svc",
-		ns.credentialStore,
+		cs.credentialStore,
 	)
 	if err != nil {
-		return err
+		return "", err
 	}
-	ns.token = token.Token
+	cs.token = token.Token
+
+	err = cs.registerPermissions()
+	if err != nil {
+		return "", errors.Wrap(err, "failed to register permissions")
+	}
+
+	return cs.token, nil
+}
+
+func (ns *RegistryService) getPublicKey() (string, error) {
+	if ns.publicKey != "" {
+		return ns.publicKey, nil
+	}
 
 	pk, _, err := ns.clientFactory.Client(client.WithToken(ns.token)).
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	if err != nil {
-		return err
+		return "", errors.Wrap(err, "failed to get public key")
 	}
 	ns.publicKey = pk.PublicKey
 
-	return ns.registerPermissions()
+	return ns.publicKey, nil
 }

@@ -78,7 +78,7 @@ func (ms *ModelService) StartSpecific(
 		return
 	}
 
-	err = ms.start(modelId)
+	err = ms.startModel(modelId)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

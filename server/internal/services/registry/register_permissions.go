@@ -19,6 +19,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	registrytypes "github.com/1backend/1backend/server/internal/services/registry/types"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
+	"github.com/pkg/errors"
 )
 
 func app(permSlices ...[]string) []string {
@@ -68,7 +69,7 @@ func (ns *RegistryService) registerPermissions() error {
 		Body(req).
 		Execute()
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to save permits")
 	}
 
 	return nil

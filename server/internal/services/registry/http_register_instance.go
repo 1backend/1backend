@@ -10,6 +10,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +31,7 @@ func (rs *RegistryService) RegisterInstance(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-
+	spew.Dump("registering instance")
 	isAuthRsp, _, err := rs.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), registry.PermissionInstanceEdit).
 		Body(openapi.UserSvcHasPermissionRequest{

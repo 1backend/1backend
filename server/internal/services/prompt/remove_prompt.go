@@ -21,6 +21,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/pkg/errors"
 
 	prompttypes "github.com/1backend/1backend/server/internal/services/prompt/types"
 )
@@ -46,7 +47,12 @@ func (p *PromptService) removePrompt(promptId string) error {
 	js, _ := json.Marshal(ev)
 	json.Unmarshal(js, &m)
 
-	_, err = p.clientFactory.Client(client.WithToken(p.token)).
+	token, err := p.getToken()
+	if err != nil {
+		return errors.Wrap(err, "failed to get token")
+	}
+
+	_, err = p.clientFactory.Client(client.WithToken(token)).
 		FirehoseSvcAPI.PublishEvent(context.Background()).
 		Event(openapi.FirehoseSvcEventPublishRequest{
 			Event: &openapi.FirehoseSvcEvent{

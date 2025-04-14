@@ -19,6 +19,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	filetypes "github.com/1backend/1backend/server/internal/services/file/types"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
+	"github.com/pkg/errors"
 )
 
 func (fs *FileService) registerPermissions() error {
@@ -42,7 +43,7 @@ func (fs *FileService) registerPermissions() error {
 		Body(req).
 		Execute()
 	if err != nil {
-		return err
+		return errors.Wrap(err, "cannot save permits")
 	}
 
 	return nil

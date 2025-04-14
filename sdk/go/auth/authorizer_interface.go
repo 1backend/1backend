@@ -62,6 +62,14 @@ func (a AuthorizerImpl) ParseJWTFromRequest(userSvcPublicKey string, r *http.Req
 }
 
 func (a AuthorizerImpl) ParseJWT(userSvcPublicKey, token string) (*Claims, error) {
+	if userSvcPublicKey == "" {
+		return nil, fmt.Errorf("user service public key is empty")
+	}
+
+	if token == "" {
+		return nil, fmt.Errorf("token is empty")
+	}
+
 	publicKey, err := PublicKeyFromString(userSvcPublicKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get public key from string")

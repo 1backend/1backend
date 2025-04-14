@@ -15,6 +15,7 @@ package containerservice
 import (
 	"context"
 	"log/slog"
+	"net/http"
 	"sync"
 	"time"
 	"unicode/utf8"
@@ -26,19 +27,23 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/service"
+	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 
+	"github.com/1backend/1backend/server/internal/services/container/backends"
 	container "github.com/1backend/1backend/server/internal/services/container/types"
 	dockerclient "github.com/docker/docker/client"
 
-	"github.com/1backend/1backend/server/internal/services/container/backends"
 	dockerbackend "github.com/1backend/1backend/server/internal/services/container/backends/docker"
 	"github.com/1backend/1backend/server/internal/services/container/logaccumulator"
 )
 
 type ContainerService struct {
-	clientFactory client.ClientFactory
-	token         string
+	clientFactory    client.ClientFactory
+	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
+	token            string
 
 	lock lock.DistributedLock
 
@@ -64,75 +69,149 @@ func NewContainerService(
 		instance any,
 	) (datastore.DataStore, error),
 ) (*ContainerService, error) {
-	credentialStore, err := datastoreFactory(
-		"containerSvcCredentials",
-		&auth.Credential{},
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	containerStore, err := datastoreFactory(
-		"containerSvcContainers",
-		&container.Container{},
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	logStore, err := datastoreFactory(
-		"containerSvcLogs",
-		&container.Log{},
-	)
-	if err != nil {
-		return nil, err
-	}
 
 	service := &ContainerService{
-		clientFactory: clientFactory,
-		lock:          lock,
-
-		credentialStore: credentialStore,
-		containerStore:  containerStore,
-		logStore:        logStore,
-
-		volumeName: volumeName,
+		clientFactory:    clientFactory,
+		lock:             lock,
+		datastoreFactory: datastoreFactory,
+		volumeName:       volumeName,
 	}
 
 	return service, nil
 }
 
-func (ds *ContainerService) Start() error {
-	ctx := context.Background()
-	ds.lock.Acquire(ctx, "container-svc-start")
-	defer ds.lock.Release(ctx, "container-svc-start")
+func (cs *ContainerService) RegisterRoutes(router *mux.Router) {
+	router.HandleFunc("/container-svc/daemon/info", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		cs.DaemonInfo(w, r)
+	}))).
+		Methods("OPTIONS", "GET")
 
-	token, err := boot.RegisterServiceAccount(
-		ds.clientFactory.Client().UserSvcAPI,
-		"container-svc",
-		"Container Svc",
-		ds.credentialStore,
+	router.HandleFunc("/container-svc/image/{imageName}/pullable", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		cs.ImagePullable(w, r)
+	}))).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/container-svc/host", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		cs.Host(w, r)
+	}))).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/container-svc/logs", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		cs.ListLogs(w, r)
+	}))).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/container-svc/containers", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		cs.ListContainers(w, r)
+	}))).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/container-svc/container", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		cs.RunContainer(w, r)
+	}))).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/container-svc/image", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		cs.BuildImage(w, r)
+	}))).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/container-svc/container/stop", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		cs.StopContainer(w, r)
+	}))).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/container-svc/container/is-running", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		cs.ContainerIsRunning(w, r)
+	}))).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/container-svc/container/summary", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		cs.Summary(w, r)
+	}))).
+		Methods("OPTIONS", "GET")
+}
+
+func (cs *ContainerService) Start() error {
+	credentialStore, err := cs.datastoreFactory(
+		"containerSvcCredentials",
+		&auth.Credential{},
 	)
 	if err != nil {
 		return err
 	}
-	ds.token = token.Token
+	cs.credentialStore = credentialStore
+
+	containerStore, err := cs.datastoreFactory(
+		"containerSvcContainers",
+		&container.Container{},
+	)
+	if err != nil {
+		return err
+	}
+	cs.containerStore = containerStore
+
+	logStore, err := cs.datastoreFactory(
+		"containerSvcLogs",
+		&container.Log{},
+	)
+	if err != nil {
+		return err
+	}
+	cs.logStore = logStore
 
 	backend, err := dockerbackend.NewDockerBackend(
-		ds.volumeName,
-		ds.clientFactory,
-		ds.token,
+		cs.volumeName,
+		cs.clientFactory,
+		cs.token,
 	)
 	if err != nil {
 		return err
 	}
-	ds.backend = backend
+	cs.backend = backend
 
-	go ds.containerLoop()
-	go ds.logLoop()
-	go ds.containerLoop()
+	go cs.containerLoop()
+	go cs.logLoop()
+	go cs.containerLoop()
 
-	return ds.registerPermissions()
+	return nil
+}
+
+func (cs *ContainerService) LazyStart() error {
+	_, err := cs.getToken()
+	if err != nil {
+		return errors.Wrap(err, "failed to get token")
+	}
+
+	return nil
+}
+
+func (cs *ContainerService) getToken() (string, error) {
+	if cs.token != "" {
+		return cs.token, nil
+	}
+
+	ctx := context.Background()
+	cs.lock.Acquire(ctx, "container-svc-start")
+	defer cs.lock.Release(ctx, "container-svc-start")
+
+	token, err := boot.RegisterServiceAccount(
+		cs.clientFactory.Client().UserSvcAPI,
+		"container-svc",
+		"Container Svc",
+		cs.credentialStore,
+	)
+	if err != nil {
+		return "", err
+	}
+	cs.token = token.Token
+
+	err = cs.registerPermissions()
+	if err != nil {
+		return "", errors.Wrap(err, "failed to register permissions")
+	}
+
+	return cs.token, nil
 }
 
 func (ms *ContainerService) logLoop() {

@@ -41,7 +41,7 @@ const hostPortNum = 8001
 Starts the model which has the supplied modelId or the currently activated one of
 the modelId is empty.
 */
-func (ms *ModelService) start(modelId string) error {
+func (ms *ModelService) startModel(modelId string) error {
 	getConfigResponse, _, err := ms.clientFactory.Client().
 		ConfigSvcAPI.GetConfig(context.Background()).
 		Execute()

@@ -14,18 +14,26 @@ package emailservice
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
+	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/service"
 	email "github.com/1backend/1backend/server/internal/services/email/types"
+	"github.com/gorilla/mux"
 )
 
 type EmailService struct {
-	clientFactory client.ClientFactory
-	lock          lock.DistributedLock
+	started    bool
+	startupErr error
+
+	clientFactory    client.ClientFactory
+	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
+	lock             lock.DistributedLock
 
 	token string
 
@@ -38,32 +46,56 @@ func NewEmailService(
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 ) (*EmailService, error) {
-	credentialStore, err := datastoreFactory(
-		"emailSvcCredentials",
-		&auth.Credential{},
-	)
-	if err != nil {
-		return nil, err
-	}
-	emailStore, err := datastoreFactory(
-		"emailSvcEmails",
-		&email.Email{},
-	)
-	if err != nil {
-		return nil, err
-	}
 
 	service := &EmailService{
-		clientFactory:   clientFactory,
-		lock:            lock,
-		credentialStore: credentialStore,
-		emailStore:      emailStore,
+		clientFactory:    clientFactory,
+		datastoreFactory: datastoreFactory,
+		lock:             lock,
 	}
 
 	return service, nil
 }
 
-func (fs *EmailService) Start() error {
+func (es *EmailService) RegisterRoutes(router *mux.Router) {
+	router.HandleFunc("/email-svc/email", service.Lazy(es, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		es.SendEmail(w, r)
+	}))).
+		Methods("OPTIONS", "PUT")
+}
+
+func (es *EmailService) LazyStart() error {
+	if es.started {
+		return es.startupErr
+	}
+
+	es.startupErr = es.start()
+	if es.startupErr != nil {
+		return es.startupErr
+	}
+
+	es.started = true
+	return nil
+}
+
+func (fs *EmailService) start() error {
+	credentialStore, err := fs.datastoreFactory(
+		"emailSvcCredentials",
+		&auth.Credential{},
+	)
+	if err != nil {
+		return err
+	}
+	fs.credentialStore = credentialStore
+
+	emailStore, err := fs.datastoreFactory(
+		"emailSvcEmails",
+		&email.Email{},
+	)
+	if err != nil {
+		return err
+	}
+	fs.emailStore = emailStore
+
 	ctx := context.Background()
 
 	fs.lock.Acquire(ctx, "email-svc-start")

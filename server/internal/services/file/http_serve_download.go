@@ -142,8 +142,15 @@ func (fs *FileService) serveRemoteDownload(
 		nodeIds = append(nodeIds, download.NodeId)
 	}
 
+	token, err := fs.getToken()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
 	nodesRsp, _, err := fs.clientFactory.
-		Client(client.WithToken(fs.token)).
+		Client(client.WithToken(token)).
 		RegistrySvcAPI.ListNodes(r.Context()).
 		Body(
 			openapi.RegistrySvcListNodesRequest{
@@ -167,7 +174,7 @@ func (fs *FileService) serveRemoteDownload(
 
 	// todo it would be probably better to stream this ourselves here but for now it will do
 	file, fileHttpRsp, err := fs.clientFactory.
-		Client(client.WithAddress(node.Url), client.WithToken(fs.token)).
+		Client(client.WithAddress(node.Url), client.WithToken(token)).
 		FileSvcAPI.
 		ServeDownload(r.Context(), downloads[0].URL).
 		Execute()

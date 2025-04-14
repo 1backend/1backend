@@ -148,6 +148,11 @@ func (p *PromptService) processPrompt(
 		}
 	}
 
+	token, err := p.getToken()
+	if err != nil {
+		return errors.Wrap(err, "failed to get token")
+	}
+
 	defer func() {
 		if err != nil {
 			currentPrompt.Error = err.Error()
@@ -167,7 +172,7 @@ func (p *PromptService) processPrompt(
 		js, _ := json.Marshal(ev)
 		json.Unmarshal(js, &m)
 
-		_, err = p.clientFactory.Client(client.WithToken(p.token)).
+		_, err = p.clientFactory.Client(client.WithToken(token)).
 			FirehoseSvcAPI.PublishEvent(context.Background()).
 			Event(openapi.FirehoseSvcEventPublishRequest{
 				Event: &openapi.FirehoseSvcEvent{
@@ -206,7 +211,7 @@ func (p *PromptService) processPrompt(
 	js, _ := json.Marshal(ev)
 	json.Unmarshal(js, &m)
 
-	_, err = p.clientFactory.Client(client.WithToken(p.token)).
+	_, err = p.clientFactory.Client(client.WithToken(token)).
 		FirehoseSvcAPI.PublishEvent(context.Background()).
 		Event(openapi.FirehoseSvcEventPublishRequest{
 			Event: &openapi.FirehoseSvcEvent{
@@ -221,7 +226,7 @@ func (p *PromptService) processPrompt(
 
 	modelId := currentPrompt.ModelId
 	if modelId == "" {
-		getConfigRsp, _, err := p.clientFactory.Client(client.WithToken(p.token)).
+		getConfigRsp, _, err := p.clientFactory.Client(client.WithToken(token)).
 			ConfigSvcAPI.GetConfig(context.Background()).
 			Execute()
 		if err != nil {
@@ -239,13 +244,13 @@ func (p *PromptService) processPrompt(
 		currentPrompt.ModelId = modelId
 	}
 
-	getModelRsp, _, err := p.clientFactory.Client(client.WithToken(p.token)).
+	getModelRsp, _, err := p.clientFactory.Client(client.WithToken(token)).
 		ModelSvcAPI.GetModel(context.Background(), modelId).
 		Execute()
 	if err != nil {
 		return err
 	}
-	_, _, err = p.clientFactory.Client(client.WithToken(p.token)).
+	_, _, err = p.clientFactory.Client(client.WithToken(token)).
 		ChatSvcAPI.AddMessage(context.Background(), currentPrompt.ThreadId).
 		Body(openapi.ChatSvcAddMessageRequest{
 			Message: &openapi.ChatSvcMessage{
@@ -269,7 +274,7 @@ func (p *PromptService) processPrompt(
 		return err
 	}
 
-	statusRsp, _, err := p.clientFactory.Client(client.WithToken(p.token)).
+	statusRsp, _, err := p.clientFactory.Client(client.WithToken(token)).
 		ModelSvcAPI.GetModelStatus(context.Background(), modelId).
 		Execute()
 	if err != nil {

@@ -71,7 +71,7 @@ func (dm *FileService) download(ctx context.Context, url, downloadDir string) er
 		if !exists {
 			if fullFileExists {
 				download = &types.InternalDownload{
-					Id:             sdk.Id("upl"),
+					Id:             sdk.Id("dl"),
 					URL:            url,
 					NodeId:         dm.nodeId,
 					FilePath:       safeFullFilePath,
@@ -81,7 +81,7 @@ func (dm *FileService) download(ctx context.Context, url, downloadDir string) er
 				}
 			} else if partialFileExists {
 				download = &types.InternalDownload{
-					Id:             sdk.Id("upl"),
+					Id:             sdk.Id("dl"),
 					URL:            url,
 					NodeId:         dm.nodeId,
 					FilePath:       safeFullFilePath,
@@ -90,7 +90,7 @@ func (dm *FileService) download(ctx context.Context, url, downloadDir string) er
 				}
 			} else {
 				download = &types.InternalDownload{
-					Id:       sdk.Id("upl"),
+					Id:       sdk.Id("dl"),
 					URL:      url,
 					NodeId:   dm.nodeId,
 					FilePath: safeFullFilePath,
@@ -203,8 +203,13 @@ func (dm *FileService) downloadFile(d *types.InternalDownload) error {
 					return errors.Wrap(err, "failed to upsert download")
 				}
 
+				token, err := dm.getToken()
+				if err != nil {
+					return errors.Wrap(err, "cannot get token")
+				}
+
 				ev := types.EventDownloadStatusChange{}
-				_, err = dm.clientFactory.Client(client.WithToken(dm.token)).
+				_, err = dm.clientFactory.Client(client.WithToken(token)).
 					FirehoseSvcAPI.PublishEvent(context.Background()).
 					Event(openapi.FirehoseSvcEventPublishRequest{
 						Event: &openapi.FirehoseSvcEvent{
@@ -213,6 +218,13 @@ func (dm *FileService) downloadFile(d *types.InternalDownload) error {
 						},
 					}).
 					Execute()
+				if err != nil {
+					logger.Warn("Error publishing event",
+						slog.String("event", ev.Name()),
+						slog.String("error", err.Error()),
+					)
+					// Do not return here
+				}
 			}
 			if err == io.EOF {
 				break

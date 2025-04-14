@@ -14,15 +14,22 @@ package sourceservice
 
 import (
 	"context"
+	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
+	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/service"
+	"github.com/gorilla/mux"
 )
 
 type SourceService struct {
+	started    bool
+	startupErr error
+
 	clientFactory client.ClientFactory
 	lock          lock.DistributedLock
 
@@ -53,22 +60,43 @@ func NewSourceService(
 	return service, nil
 }
 
-func (fs *SourceService) Start() error {
+func (ss *SourceService) RegisterRoutes(router *mux.Router) {
+	router.HandleFunc("/source-svc/repo/checkout", service.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		ss.CheckoutRepo(w, r)
+	}))).
+		Methods("OPTIONS", "POST")
+}
+
+func (cs *SourceService) LazyStart() error {
+	if cs.started {
+		return cs.startupErr
+	}
+
+	cs.startupErr = cs.start()
+	if cs.startupErr != nil {
+		return cs.startupErr
+	}
+
+	cs.started = true
+	return nil
+}
+
+func (ss *SourceService) start() error {
 	ctx := context.Background()
-	fs.lock.Acquire(ctx, "source-svc-start")
-	defer fs.lock.Release(ctx, "source-svc-start")
+	ss.lock.Acquire(ctx, "source-svc-start")
+	defer ss.lock.Release(ctx, "source-svc-start")
 
 	token, err := boot.RegisterServiceAccount(
-		fs.clientFactory.Client().UserSvcAPI,
+		ss.clientFactory.Client().UserSvcAPI,
 		"source-svc",
 		"Source Svc",
-		fs.credentialStore,
+		ss.credentialStore,
 	)
 	if err != nil {
 		return err
 	}
 
-	fs.token = token.Token
+	ss.token = token.Token
 
-	return fs.registerPermissions()
+	return ss.registerPermissions()
 }

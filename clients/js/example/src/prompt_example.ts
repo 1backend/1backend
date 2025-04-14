@@ -4,6 +4,7 @@ import {
   ModelSvcApi,
   FileSvcApi,
 } from "@1backend/client";
+import { ResponseError } from "@1backend/client";
 
 const tinyLamaModelId = `huggingface/TheBloke/tinyllama-1.1b-chat-v1.0.Q4_K_S.gguf`;
 const tinyLamaAssetURL = `https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q4_K_S.gguf?download=true`;
@@ -61,18 +62,47 @@ export async function promptTest(apiKey: string) {
 
   console.log("Prompting");
 
-  const promptRsp = await Promise.race([
-    promptSvc.prompt({
-      body: {
-        sync: true,
-        prompt: "Is a cat an animal? Just answer with yes or no please.",
-      },
-    }),
-    // takes long mostly because the image has to be pulled
-    timeout(60000),
-  ]);
+  try {
+    const promptRsp = await Promise.race([
+      promptSvc.prompt({
+        body: {
+          sync: true,
+          prompt: "Is a cat an animal? Just answer with yes or no please.",
+        },
+      }),
+      timeout(60000),
+    ]);
 
-  console.log(promptRsp);
+    console.log("Prompt response:", promptRsp);
+
+    console.log(promptRsp);
+  } catch (error: any) {
+    console.error("Prompt failed:", error);
+
+    if (error instanceof ResponseError && error.response) {
+      const res = error.response;
+      console.error("HTTP Status:", res.status);
+      console.error("URL:", res.url);
+
+      try {
+        const bodyText = await res.text();
+        console.error("HTTP Response Body:", bodyText);
+
+        // Optional: try to parse as JSON if it might be structured
+        try {
+          const json = JSON.parse(bodyText);
+          console.error("Parsed JSON Error:", json);
+        } catch {
+          // Not JSON, just log as text
+        }
+      } catch (readErr) {
+        console.error("Failed to read error response body:", readErr);
+      }
+    }
+
+    // Make test fail
+    throw error;
+  }
 }
 
 const timeout = (ms: number) =>

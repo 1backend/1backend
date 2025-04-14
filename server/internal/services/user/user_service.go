@@ -14,12 +14,15 @@ package userservice
 
 import (
 	"crypto/rsa"
+	"net/http"
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/gorilla/mux"
 
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
@@ -148,6 +151,113 @@ func NewUserService(
 	}
 
 	return service, nil
+}
+
+func (us *UserService) RegisterRoutes(router *mux.Router) {
+	router.HandleFunc("/user-svc/login", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.Login(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/user/by-token", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.ReadUserByToken(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/users", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.ListUsers(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/user/{userId}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.SaveUser(w, r)
+	})).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/user-svc/self", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.SaveSelf(w, r)
+	})).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/user-svc/change-password", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.ChangePassword(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/{userId}/reset-password", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.ResetPassword(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/organization", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.SaveOrganization(w, r)
+	})).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/user-svc/organizations", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.ListOrganizations(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/organization/{organizationId}/user/{userId}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.AddUserToOrganization(w, r)
+	})).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/user-svc/organization/{organizationId}/user/{userId}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.RemoveUserFromOrganization(w, r)
+	})).
+		Methods("OPTIONS", "DELETE")
+
+	router.HandleFunc("/user-svc/user", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.CreateUser(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/user/{userId}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.DeleteUser(w, r)
+	})).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/user-svc/self/has/{permission}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.HasPermission(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/permissions", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.ListPermissions(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/register", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.Register(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/public-key", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.GetPublicKey(w, r)
+	})).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/user-svc/permits", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.SavePermits(w, r)
+	})).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/user-svc/permits", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.ListPermits(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/enrolls", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.SaveEnrolls(w, r)
+	})).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/user-svc/enrolls", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.ListEnrolls(w, r)
+	})).
+		Methods("OPTIONS", "POST")
 }
 
 func (s *UserService) bootstrap() error {

@@ -14,6 +14,7 @@ package fileservice
 
 import (
 	"context"
+	"net/http"
 	"os"
 	"path"
 	"sync"
@@ -23,12 +24,19 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
+	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/service"
 	types "github.com/1backend/1backend/server/internal/services/file/types"
+	"github.com/gorilla/mux"
+	"github.com/pkg/errors"
 )
 
 type FileService struct {
-	clientFactory client.ClientFactory
-	token         string
+	clientFactory    client.ClientFactory
+	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
+	homeDir          string
+
+	token string
 
 	dlock lock.DistributedLock
 
@@ -54,80 +62,101 @@ func NewFileService(
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 	homeDir string,
 ) (*FileService, error) {
-	credentialStore, err := datastoreFactory(
-		"fileSvcCredentials",
-		&auth.Credential{},
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	uploadFolder := path.Join(homeDir, "uploads")
-	err = os.MkdirAll(uploadFolder, 0700)
-	if err != nil {
-		return nil, err
-	}
-
-	downloadFolder := path.Join(homeDir, "downloads")
-	err = os.MkdirAll(downloadFolder, 0700)
-	if err != nil {
-		return nil, err
-	}
-
-	downloadStore, err := datastoreFactory(
-		"fileSvcDownloads",
-		&types.InternalDownload{},
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	uploadStore, err := datastoreFactory(
-		"fileSvcUploads",
-		&types.Upload{},
-	)
-	if err != nil {
-		return nil, err
-	}
-
 	ret := &FileService{
-		clientFactory: clientFactory,
-
-		credentialStore: credentialStore,
-		dlock:           lock,
-
-		uploadFolder:   uploadFolder,
-		downloadFolder: downloadFolder,
-
-		downloadStore: downloadStore,
-		uploadStore:   uploadStore,
+		clientFactory:    clientFactory,
+		homeDir:          homeDir,
+		datastoreFactory: datastoreFactory,
+		dlock:            lock,
 	}
 
 	return ret, nil
 }
 
-func (dm *FileService) Start() error {
-	ctx := context.Background()
-	dm.dlock.Acquire(ctx, "file-svc-start")
-	defer dm.dlock.Release(ctx, "file-svc-start")
+func (fs *FileService) RegisterRoutes(router *mux.Router) {
+	router.HandleFunc("/file-svc/download", service.Lazy(fs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		fs.Download(w, r)
+	}))).
+		Methods("OPTIONS", "PUT")
 
-	token, err := boot.RegisterServiceAccount(
-		dm.clientFactory.Client().UserSvcAPI,
-		"file-svc",
-		"File Svc",
-		dm.credentialStore,
+	router.HandleFunc("/file-svc/download/{url}/pause", service.Lazy(fs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		fs.PauseDownload(w, r)
+	}))).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/file-svc/download/{url}", service.Lazy(fs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		fs.GetDownload(w, r)
+	}))).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/file-svc/downloads", service.Lazy(fs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		fs.ListDownloads(w, r)
+	}))).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/file-svc/upload", service.Lazy(fs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		fs.UploadFile(w, r)
+	}))).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/file-svc/uploads", service.Lazy(fs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		fs.ListUploads(w, r)
+	}))).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/file-svc/serve/upload/{fileId}", service.Lazy(fs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		fs.ServeUpload(w, r)
+	}))).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/file-svc/serve/download/{url}", service.Lazy(fs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		fs.ServeDownload(w, r)
+	}))).
+		Methods("OPTIONS", "GET")
+}
+
+func (fs *FileService) Start() error {
+	credentialStore, err := fs.datastoreFactory(
+		"fileSvcCredentials",
+		&auth.Credential{},
 	)
 	if err != nil {
 		return err
 	}
-	dm.token = token.Token
+	fs.credentialStore = credentialStore
 
-	err = dm.registerPermissions()
+	uploadFolder := path.Join(fs.homeDir, "uploads")
+	err = os.MkdirAll(uploadFolder, 0700)
 	if err != nil {
 		return err
 	}
+	fs.uploadFolder = uploadFolder
 
-	downloads, err := dm.downloadStore.Query(
+	downloadFolder := path.Join(fs.homeDir, "downloads")
+	err = os.MkdirAll(downloadFolder, 0700)
+	if err != nil {
+		return err
+	}
+	fs.downloadFolder = downloadFolder
+
+	downloadStore, err := fs.datastoreFactory(
+		"fileSvcDownloads",
+		&types.InternalDownload{},
+	)
+	if err != nil {
+		return err
+	}
+	fs.downloadStore = downloadStore
+
+	uploadStore, err := fs.datastoreFactory(
+		"fileSvcUploads",
+		&types.Upload{},
+	)
+	if err != nil {
+		return err
+	}
+	fs.uploadStore = uploadStore
+
+	downloads, err := fs.downloadStore.Query(
 		datastore.Equals([]string{"status"},
 			types.DownloadStatusInProgress,
 		)).Find()
@@ -139,7 +168,7 @@ func (dm *FileService) Start() error {
 		download := downloadI.(*types.InternalDownload)
 
 		if download.Status == types.DownloadStatusInProgress {
-			err = dm.download(context.Background(), download.URL, path.Dir(download.FilePath))
+			err = fs.download(context.Background(), download.URL, path.Dir(download.FilePath))
 			if err != nil {
 				return err
 			}
@@ -149,11 +178,48 @@ func (dm *FileService) Start() error {
 	return err
 }
 
-func (dm *FileService) getDownload(url string) (*types.InternalDownload, bool) {
-	dm.lock.Lock()
-	defer dm.lock.Unlock()
+func (fs *FileService) LazyStart() error {
+	_, err := fs.getToken()
+	if err != nil {
+		return errors.Wrap(err, "failed to get token")
+	}
 
-	downloadIs, err := dm.downloadStore.Query(
+	return nil
+}
+
+func (fs *FileService) getToken() (string, error) {
+	if fs.token != "" {
+		return fs.token, nil
+	}
+
+	ctx := context.Background()
+	fs.dlock.Acquire(ctx, "file-svc-start")
+	defer fs.dlock.Release(ctx, "file-svc-start")
+
+	token, err := boot.RegisterServiceAccount(
+		fs.clientFactory.Client().UserSvcAPI,
+		"file-svc",
+		"File Svc",
+		fs.credentialStore,
+	)
+	if err != nil {
+		return "", err
+	}
+	fs.token = token.Token
+
+	err = fs.registerPermissions()
+	if err != nil {
+		return "", errors.Wrap(err, "failed to register permissions")
+	}
+
+	return fs.token, nil
+}
+
+func (fs *FileService) getDownload(url string) (*types.InternalDownload, bool) {
+	fs.lock.Lock()
+	defer fs.lock.Unlock()
+
+	downloadIs, err := fs.downloadStore.Query(
 		datastore.Equals([]string{"url"},
 			url,
 		)).Find()

@@ -90,7 +90,12 @@ func (ns *DeployService) cycle() error {
 	ns.lock.Acquire(ctx, "deploy-svc-deploy")
 	defer ns.lock.Release(ctx, "deploy-svc-deploy")
 
-	registry := ns.clientFactory.Client(client.WithToken(ns.token)).RegistrySvcAPI
+	token, err := ns.getToken()
+	if err != nil {
+		return errors.Wrap(err, "failed to get token")
+	}
+
+	registry := ns.clientFactory.Client(client.WithToken(token)).RegistrySvcAPI
 
 	deploymentIs, err := ns.deploymentStore.Query().Find()
 	if err != nil {
@@ -232,13 +237,19 @@ func (ns *DeployService) executeKillCommand(
 		"Executing deploy kill command",
 		slog.String("deploymentId", deployment.Id),
 	)
+
+	token, err := ns.getToken()
+	if err != nil {
+		return errors.Wrap(err, "failed to get token")
+	}
+
 	client := ns.clientFactory.Client(
 		client.WithAddress(command.NodeUrl),
-		client.WithToken(ns.token),
+		client.WithToken(token),
 	)
 
 	name := fmt.Sprintf("sup-%v", definition.Id)
-	_, _, err := client.ContainerSvcAPI.StopContainer(ctx).Body(
+	_, _, err = client.ContainerSvcAPI.StopContainer(ctx).Body(
 		openapi.ContainerSvcStopContainerRequest{
 			Name: &name,
 		},
@@ -258,12 +269,18 @@ func (ns *DeployService) executeStartCommand(
 		"Executing deploy start command",
 		slog.String("deploymentId", deployment.Id),
 	)
+
+	token, err := ns.getToken()
+	if err != nil {
+		return errors.Wrap(err, "failed to get token")
+	}
+
 	client := ns.clientFactory.Client(
 		client.WithAddress(command.NodeUrl),
-		client.WithToken(ns.token),
+		client.WithToken(token),
 	)
 
-	err := ns.makeSureItRuns(client, ctx, definition, deployment)
+	err = ns.makeSureItRuns(client, ctx, definition, deployment)
 
 	if err != nil {
 		logger.Warn("Error executing deploy start command",
