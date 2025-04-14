@@ -24,6 +24,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	deploy "github.com/1backend/1backend/server/internal/services/deploy/types"
 	"github.com/gorilla/mux"
+	"github.com/pkg/errors"
 )
 
 type DeployService struct {
@@ -94,23 +95,35 @@ func (ds *DeployService) RegisterRoutes(router *mux.Router) {
 }
 
 func (ns *DeployService) Start() error {
-	ctx := context.Background()
-	ns.lock.Acquire(ctx, "deploy-svc-start")
-	defer ns.lock.Release(ctx, "deploy-svc-start")
-
-	token, err := boot.RegisterServiceAccount(
-		ns.clientFactory.Client().UserSvcAPI,
-		"deploy-svc",
-		"Deploy Svc",
-		ns.credentialStore,
-	)
-	if err != nil {
-		return err
-	}
-
-	ns.token = token.Token
-
 	go ns.loop(ns.triggerOnly)
 
-	return ns.registerPermissions()
+	return nil
+}
+
+func (cs *DeployService) getToken() (string, error) {
+	if cs.token != "" {
+		return cs.token, nil
+	}
+
+	ctx := context.Background()
+	cs.lock.Acquire(ctx, "deploy-svc-start")
+	defer cs.lock.Release(ctx, "deploy-svc-start")
+
+	token, err := boot.RegisterServiceAccount(
+		cs.clientFactory.Client().UserSvcAPI,
+		"deploy-svc",
+		"Deploy Svc",
+		cs.credentialStore,
+	)
+	if err != nil {
+		return "", err
+	}
+	cs.token = token.Token
+
+	err = cs.registerPermissions()
+	if err != nil {
+		return "", errors.Wrap(err, "failed to register permissions")
+	}
+
+	return cs.token, nil
 }
