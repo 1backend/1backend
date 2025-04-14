@@ -71,7 +71,7 @@ func (dm *FileService) download(ctx context.Context, url, downloadDir string) er
 		if !exists {
 			if fullFileExists {
 				download = &types.InternalDownload{
-					Id:             sdk.Id("upl"),
+					Id:             sdk.Id("dl"),
 					URL:            url,
 					NodeId:         dm.nodeId,
 					FilePath:       safeFullFilePath,
@@ -81,7 +81,7 @@ func (dm *FileService) download(ctx context.Context, url, downloadDir string) er
 				}
 			} else if partialFileExists {
 				download = &types.InternalDownload{
-					Id:             sdk.Id("upl"),
+					Id:             sdk.Id("dl"),
 					URL:            url,
 					NodeId:         dm.nodeId,
 					FilePath:       safeFullFilePath,
@@ -90,7 +90,7 @@ func (dm *FileService) download(ctx context.Context, url, downloadDir string) er
 				}
 			} else {
 				download = &types.InternalDownload{
-					Id:       sdk.Id("upl"),
+					Id:       sdk.Id("dl"),
 					URL:      url,
 					NodeId:   dm.nodeId,
 					FilePath: safeFullFilePath,

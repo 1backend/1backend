@@ -19,7 +19,6 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	filetypes "github.com/1backend/1backend/server/internal/services/file/types"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 )
 
@@ -40,7 +39,6 @@ func (fs *FileService) registerPermissions() error {
 		}
 	}
 
-	spew.Dump("registering permits")
 	_, _, err := userSvc.SavePermits(ctx).
 		Body(req).
 		Execute()
