@@ -2,6 +2,8 @@ name: Documentation build and deploy
 
 on:
   push:
+    branches:
+      - "main"
 
 jobs:
   build-and-deploy:
