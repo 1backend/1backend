@@ -23,6 +23,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/gorilla/mux"
+	"github.com/pkg/errors"
 
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
@@ -265,14 +266,14 @@ func (s *UserService) bootstrap() error {
 
 	keyPairs, err := s.keyPairsStore.Query().Find()
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to query key pairs")
 	}
 
 	if len(keyPairs) > 0 {
 		kp := keyPairs[0].(*usertypes.KeyPair)
 		privKey, err := privateKeyFromString(kp.PrivateKey)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to parse private key")
 		}
 		s.privateKey = privKey
 		s.publicKeyPem = kp.PublicKey
@@ -284,7 +285,7 @@ func (s *UserService) bootstrap() error {
 		privKey, pubKey, err := generateRSAKeys(bits)
 
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to generate RSA keys")
 		}
 		now := time.Now()
 		kp := &usertypes.KeyPair{
@@ -296,12 +297,12 @@ func (s *UserService) bootstrap() error {
 		}
 		err = s.keyPairsStore.Upsert(kp)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to upsert key pair")
 		}
 
 		privKeyTyped, err := privateKeyFromString(kp.PrivateKey)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to parse private key")
 		}
 		s.privateKey = privKeyTyped
 		s.publicKeyPem = kp.PublicKey
@@ -316,7 +317,7 @@ func (s *UserService) bootstrap() error {
 		datastore.Equals([]string{"slug"}, "1backend"),
 	).Count()
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to count users")
 	}
 
 	if count == 0 {
@@ -324,7 +325,7 @@ func (s *UserService) bootstrap() error {
 			usertypes.RoleAdmin,
 		})
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to register admin user")
 		}
 	}
 
@@ -332,7 +333,7 @@ func (s *UserService) bootstrap() error {
 
 	credentials, err := s.credentialsStore.Query().Find()
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to query credentials")
 	}
 
 	slug := "user-svc"
@@ -349,7 +350,7 @@ func (s *UserService) bootstrap() error {
 			Password: pw,
 		})
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to upsert credential")
 		}
 	}
 
@@ -363,13 +364,13 @@ func (s *UserService) bootstrap() error {
 				usertypes.RoleUser,
 			})
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to register user-svc")
 		}
 		s.serviceUserId = usr.Id
 	} else {
 		usr, err := s.readUserByToken(tok.Token)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to read user by token")
 		}
 		s.serviceUserId = usr.Id
 	}
