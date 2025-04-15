@@ -124,8 +124,7 @@ type ChangePasswordRequest struct {
 type ChangePasswordResponse struct{}
 
 type ResetPasswordRequest struct {
-	Slug        string `json:"slug,omitempty"`
-	NewPassword string `json:"newPassword,omitempty"`
+	NewPassword string `json:"newPassword" binding:"required"`
 }
 
 type ResetPasswordResponse struct{}

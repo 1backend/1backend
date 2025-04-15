@@ -10,8 +10,7 @@
  * Do not edit the class manually.
  */
 export declare class UserSvcResetPasswordRequest {
-    'newPassword'?: string;
-    'slug'?: string;
+    'newPassword': string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

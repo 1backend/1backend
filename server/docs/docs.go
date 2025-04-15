@@ -4600,7 +4600,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Permits give access to users with certain slugs and roles to permissions.\nUsers can list permits for permissions they have access to\nbut they will only see permits the permit refers to their slug or one of their roles.",
+                "description": "List permits. Requires the ` + "`" + `user-svc:permit:view` + "`" + ` permission, which only admins have by default.\n\u0026todo Users should be able to list permits referring to them.",
                 "consumes": [
                     "application/json"
                 ],
@@ -9385,11 +9385,11 @@ const docTemplate = `{
         },
         "user_svc.ResetPasswordRequest": {
             "type": "object",
+            "required": [
+                "newPassword"
+            ],
             "properties": {
                 "newPassword": {
-                    "type": "string"
-                },
-                "slug": {
                     "type": "string"
                 }
             }

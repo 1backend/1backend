@@ -7046,11 +7046,6 @@ UserSvcResetPasswordRequest.attributeTypeMap = [
         "name": "newPassword",
         "baseName": "newPassword",
         "type": "string"
-    },
-    {
-        "name": "slug",
-        "baseName": "slug",
-        "type": "string"
     }
 ];
 
@@ -14218,7 +14213,7 @@ class UserSvcApi {
         });
     }
     /**
-     * Permits give access to users with certain slugs and roles to permissions. Users can list permits for permissions they have access to but they will only see permits the permit refers to their slug or one of their roles.
+     * List permits. Requires the `user-svc:permit:view` permission, which only admins have by default. &todo Users should be able to list permits referring to them.
      * @summary List Permits
      * @param body List Permits Request
      */

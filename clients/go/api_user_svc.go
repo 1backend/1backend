@@ -163,9 +163,8 @@ Caller can only list permissions for roles they have.
 	/*
 	ListPermits List Permits
 
-	Permits give access to users with certain slugs and roles to permissions.
-Users can list permits for permissions they have access to
-but they will only see permits the permit refers to their slug or one of their roles.
+	List permits. Requires the `user-svc:permit:view` permission, which only admins have by default.
+&todo Users should be able to list permits referring to them.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiListPermitsRequest
@@ -1739,9 +1738,8 @@ func (r ApiListPermitsRequest) Execute() (*UserSvcListPermitsResponse, *http.Res
 /*
 ListPermits List Permits
 
-Permits give access to users with certain slugs and roles to permissions.
-Users can list permits for permissions they have access to
-but they will only see permits the permit refers to their slug or one of their roles.
+List permits. Requires the `user-svc:permit:view` permission, which only admins have by default.
+&todo Users should be able to list permits referring to them.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiListPermitsRequest
