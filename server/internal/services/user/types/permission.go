@@ -74,5 +74,6 @@ var AdminPermissions = []string{
 	PermissionPermitView,
 	PermissionEnrollEdit,
 	PermissionEnrollView,
+	PermissionUserPasswordChange,
 	PermissionUserPasswordReset,
 }

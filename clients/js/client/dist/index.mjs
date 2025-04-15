@@ -8378,6 +8378,10 @@ function UserSvcAuthTokenToJSONTyped(value, ignoreDiscriminator = false) {
  * Check if a given object implements the UserSvcChangePasswordRequest interface.
  */
 function instanceOfUserSvcChangePasswordRequest(value) {
+    if (!('currentPassword' in value) || value['currentPassword'] === undefined)
+        return false;
+    if (!('newPassword' in value) || value['newPassword'] === undefined)
+        return false;
     return true;
 }
 function UserSvcChangePasswordRequestFromJSON(json) {
@@ -8388,9 +8392,8 @@ function UserSvcChangePasswordRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'currentPassword': json['currentPassword'] == null ? undefined : json['currentPassword'],
-        'newPassword': json['newPassword'] == null ? undefined : json['newPassword'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
+        'currentPassword': json['currentPassword'],
+        'newPassword': json['newPassword'],
     };
 }
 function UserSvcChangePasswordRequestToJSON(json) {
@@ -8403,7 +8406,6 @@ function UserSvcChangePasswordRequestToJSONTyped(value, ignoreDiscriminator = fa
     return {
         'currentPassword': value['currentPassword'],
         'newPassword': value['newPassword'],
-        'slug': value['slug'],
     };
 }
 

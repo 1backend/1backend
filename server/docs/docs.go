@@ -8860,14 +8860,15 @@ const docTemplate = `{
         },
         "user_svc.ChangePasswordRequest": {
             "type": "object",
+            "required": [
+                "currentPassword",
+                "newPassword"
+            ],
             "properties": {
                 "currentPassword": {
                     "type": "string"
                 },
                 "newPassword": {
-                    "type": "string"
-                },
-                "slug": {
                     "type": "string"
                 }
             }

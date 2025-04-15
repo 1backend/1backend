@@ -15,6 +15,10 @@
  * Check if a given object implements the UserSvcChangePasswordRequest interface.
  */
 export function instanceOfUserSvcChangePasswordRequest(value) {
+    if (!('currentPassword' in value) || value['currentPassword'] === undefined)
+        return false;
+    if (!('newPassword' in value) || value['newPassword'] === undefined)
+        return false;
     return true;
 }
 export function UserSvcChangePasswordRequestFromJSON(json) {
@@ -25,9 +29,8 @@ export function UserSvcChangePasswordRequestFromJSONTyped(json, ignoreDiscrimina
         return json;
     }
     return {
-        'currentPassword': json['currentPassword'] == null ? undefined : json['currentPassword'],
-        'newPassword': json['newPassword'] == null ? undefined : json['newPassword'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
+        'currentPassword': json['currentPassword'],
+        'newPassword': json['newPassword'],
     };
 }
 export function UserSvcChangePasswordRequestToJSON(json) {
@@ -40,6 +43,5 @@ export function UserSvcChangePasswordRequestToJSONTyped(value, ignoreDiscriminat
     return {
         'currentPassword': value['currentPassword'],
         'newPassword': value['newPassword'],
-        'slug': value['slug'],
     };
 }
