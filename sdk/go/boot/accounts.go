@@ -16,9 +16,9 @@ import (
 	"context"
 	"strings"
 
-	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
 
 	onebackendapi "github.com/1backend/1backend/clients/go"
@@ -32,17 +32,10 @@ func RegisterServiceAccount(userService onebackendapi.UserSvcAPI, serviceSlug, s
 		return nil, err
 	}
 
-	slug := serviceSlug
-	pw := ""
-
-	if len(res) > 0 {
-		cred := res[0].(*auth.Credential)
-		slug = cred.Slug
-		pw = cred.Password
-	} else {
-		pw = sdk.Id("cred")
+	if len(res) == 0 {
+		pw := uuid.NewString()
 		err = store.Upsert(&auth.Credential{
-			Slug:     slug,
+			Slug:     serviceSlug,
 			Password: pw,
 		})
 		if err != nil {
@@ -52,27 +45,28 @@ func RegisterServiceAccount(userService onebackendapi.UserSvcAPI, serviceSlug, s
 		if err != nil {
 			return nil, err
 		}
-	}
 
-	loginRsp, _, err := userService.Login(ctx).Body(onebackendapi.UserSvcLoginRequest{
-		Slug:     onebackendapi.PtrString(slug),
-		Password: onebackendapi.PtrString(pw),
-	}).Execute()
-
-	if err != nil {
-		_, _, err := userService.Register(ctx).Body(onebackendapi.UserSvcRegisterRequest{
-			Slug:     slug,
-			Name:     onebackendapi.PtrString(slug),
+		rsp, _, err := userService.Register(ctx).Body(onebackendapi.UserSvcRegisterRequest{
+			Slug:     serviceSlug,
+			Name:     onebackendapi.PtrString(serviceSlug),
 			Password: onebackendapi.PtrString(pw),
 		}).Execute()
 		if err != nil {
 			return nil, errors.Wrap(err, "error registering service account after login failure")
 		}
 
-		loginRsp, _, err = userService.Login(ctx).Body(onebackendapi.UserSvcLoginRequest{
-			Slug:     onebackendapi.PtrString(slug),
-			Password: onebackendapi.PtrString(pw),
-		}).Execute()
+		return rsp.Token, nil
+	}
+
+	cred := res[0].(*auth.Credential)
+	pw := cred.Password
+
+	loginRsp, _, err := userService.Login(ctx).Body(onebackendapi.UserSvcLoginRequest{
+		Slug:     onebackendapi.PtrString(serviceSlug),
+		Password: onebackendapi.PtrString(pw),
+	}).Execute()
+
+	if err != nil {
 		if err != nil {
 			return nil, errors.Wrap(err, "error logging in after registration")
 		}
