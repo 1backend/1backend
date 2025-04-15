@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the UserSvcResetPasswordRequest type satisfies the MappedNullable interface at compile time
@@ -20,16 +22,18 @@ var _ MappedNullable = &UserSvcResetPasswordRequest{}
 
 // UserSvcResetPasswordRequest struct for UserSvcResetPasswordRequest
 type UserSvcResetPasswordRequest struct {
-	NewPassword *string `json:"newPassword,omitempty"`
-	Slug *string `json:"slug,omitempty"`
+	NewPassword string `json:"newPassword"`
 }
+
+type _UserSvcResetPasswordRequest UserSvcResetPasswordRequest
 
 // NewUserSvcResetPasswordRequest instantiates a new UserSvcResetPasswordRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcResetPasswordRequest() *UserSvcResetPasswordRequest {
+func NewUserSvcResetPasswordRequest(newPassword string) *UserSvcResetPasswordRequest {
 	this := UserSvcResetPasswordRequest{}
+	this.NewPassword = newPassword
 	return &this
 }
 
@@ -41,68 +45,28 @@ func NewUserSvcResetPasswordRequestWithDefaults() *UserSvcResetPasswordRequest {
 	return &this
 }
 
-// GetNewPassword returns the NewPassword field value if set, zero value otherwise.
+// GetNewPassword returns the NewPassword field value
 func (o *UserSvcResetPasswordRequest) GetNewPassword() string {
-	if o == nil || IsNil(o.NewPassword) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.NewPassword
+
+	return o.NewPassword
 }
 
-// GetNewPasswordOk returns a tuple with the NewPassword field value if set, nil otherwise
+// GetNewPasswordOk returns a tuple with the NewPassword field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcResetPasswordRequest) GetNewPasswordOk() (*string, bool) {
-	if o == nil || IsNil(o.NewPassword) {
+	if o == nil {
 		return nil, false
 	}
-	return o.NewPassword, true
+	return &o.NewPassword, true
 }
 
-// HasNewPassword returns a boolean if a field has been set.
-func (o *UserSvcResetPasswordRequest) HasNewPassword() bool {
-	if o != nil && !IsNil(o.NewPassword) {
-		return true
-	}
-
-	return false
-}
-
-// SetNewPassword gets a reference to the given string and assigns it to the NewPassword field.
+// SetNewPassword sets field value
 func (o *UserSvcResetPasswordRequest) SetNewPassword(v string) {
-	o.NewPassword = &v
-}
-
-// GetSlug returns the Slug field value if set, zero value otherwise.
-func (o *UserSvcResetPasswordRequest) GetSlug() string {
-	if o == nil || IsNil(o.Slug) {
-		var ret string
-		return ret
-	}
-	return *o.Slug
-}
-
-// GetSlugOk returns a tuple with the Slug field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcResetPasswordRequest) GetSlugOk() (*string, bool) {
-	if o == nil || IsNil(o.Slug) {
-		return nil, false
-	}
-	return o.Slug, true
-}
-
-// HasSlug returns a boolean if a field has been set.
-func (o *UserSvcResetPasswordRequest) HasSlug() bool {
-	if o != nil && !IsNil(o.Slug) {
-		return true
-	}
-
-	return false
-}
-
-// SetSlug gets a reference to the given string and assigns it to the Slug field.
-func (o *UserSvcResetPasswordRequest) SetSlug(v string) {
-	o.Slug = &v
+	o.NewPassword = v
 }
 
 func (o UserSvcResetPasswordRequest) MarshalJSON() ([]byte, error) {
@@ -115,13 +79,45 @@ func (o UserSvcResetPasswordRequest) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcResetPasswordRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.NewPassword) {
-		toSerialize["newPassword"] = o.NewPassword
-	}
-	if !IsNil(o.Slug) {
-		toSerialize["slug"] = o.Slug
-	}
+	toSerialize["newPassword"] = o.NewPassword
 	return toSerialize, nil
+}
+
+func (o *UserSvcResetPasswordRequest) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"newPassword",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varUserSvcResetPasswordRequest := _UserSvcResetPasswordRequest{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varUserSvcResetPasswordRequest)
+
+	if err != nil {
+		return err
+	}
+
+	*o = UserSvcResetPasswordRequest(varUserSvcResetPasswordRequest)
+
+	return err
 }
 
 type NullableUserSvcResetPasswordRequest struct {

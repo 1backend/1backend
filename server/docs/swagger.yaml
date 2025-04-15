@@ -3085,8 +3085,8 @@ definitions:
     properties:
       newPassword:
         type: string
-      slug:
-        type: string
+    required:
+    - newPassword
     type: object
   user_svc.ResetPasswordResponse:
     type: object
@@ -6297,9 +6297,8 @@ paths:
       consumes:
       - application/json
       description: |-
-        Permits give access to users with certain slugs and roles to permissions.
-        Users can list permits for permissions they have access to
-        but they will only see permits the permit refers to their slug or one of their roles.
+        List permits. Requires the `user-svc:permit:view` permission, which only admins have by default.
+        &todo Users should be able to list permits referring to them.
       operationId: listPermits
       parameters:
       - description: List Permits Request

@@ -31,7 +31,8 @@ var (
 	PermissionUserView           = "user-svc:user:view"
 	PermissionUserEdit           = "user-svc:user:edit"
 	PermissionUserDelete         = "user-svc:user:delete"
-	PermissionUserPasswordChange = "user-svc:user:passwordChange"
+	PermissionUserPasswordChange = "user-svc:user:password-change"
+	PermissionUserPasswordReset  = "user-svc:user:password-reset"
 
 	// Organization Permissions
 	PermissionOrganizationCreate     = "user-svc:organization:create"
@@ -73,4 +74,5 @@ var AdminPermissions = []string{
 	PermissionPermitView,
 	PermissionEnrollEdit,
 	PermissionEnrollView,
+	PermissionUserPasswordReset,
 }
