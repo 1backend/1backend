@@ -57,7 +57,7 @@ func (s *UserService) SaveUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	userId := vars["userId"]
 
-	req := user.SaveProfileRequest{}
+	req := user.SaveUserRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -73,13 +73,13 @@ func (s *UserService) SaveUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bs, _ := json.Marshal(user.SaveProfileResponse{})
+	bs, _ := json.Marshal(user.SaveUserResponse{})
 	w.Write(bs)
 }
 
 func (s *UserService) saveUser(
 	userId string,
-	request *user.SaveProfileRequest,
+	request *user.SaveUserRequest,
 ) error {
 	query := s.usersStore.Query(
 		datastore.Equals(datastore.Field("id"), userId),
