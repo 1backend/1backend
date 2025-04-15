@@ -16,9 +16,9 @@ import (
 	"context"
 	"strings"
 
-	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
 
 	onebackendapi "github.com/1backend/1backend/clients/go"
@@ -29,53 +29,44 @@ func RegisterServiceAccount(userService onebackendapi.UserSvcAPI, serviceSlug, s
 
 	res, err := store.Query().Find()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error querying credentials")
 	}
 
-	slug := serviceSlug
-	pw := ""
-
-	if len(res) > 0 {
-		cred := res[0].(*auth.Credential)
-		slug = cred.Slug
-		pw = cred.Password
-	} else {
-		pw = sdk.Id("cred")
+	if len(res) == 0 {
+		pw := uuid.NewString()
 		err = store.Upsert(&auth.Credential{
-			Slug:     slug,
+			Slug:     serviceSlug,
 			Password: pw,
 		})
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "error upserting service account credential")
 		}
 		err = store.Refresh()
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "error refreshing credential store")
 		}
-	}
 
-	loginRsp, _, err := userService.Login(ctx).Body(onebackendapi.UserSvcLoginRequest{
-		Slug:     onebackendapi.PtrString(slug),
-		Password: onebackendapi.PtrString(pw),
-	}).Execute()
-
-	if err != nil {
-		_, _, err := userService.Register(ctx).Body(onebackendapi.UserSvcRegisterRequest{
-			Slug:     slug,
-			Name:     onebackendapi.PtrString(slug),
+		rsp, _, err := userService.Register(ctx).Body(onebackendapi.UserSvcRegisterRequest{
+			Slug:     serviceSlug,
+			Name:     onebackendapi.PtrString(serviceSlug),
 			Password: onebackendapi.PtrString(pw),
 		}).Execute()
 		if err != nil {
 			return nil, errors.Wrap(err, "error registering service account after login failure")
 		}
 
-		loginRsp, _, err = userService.Login(ctx).Body(onebackendapi.UserSvcLoginRequest{
-			Slug:     onebackendapi.PtrString(slug),
-			Password: onebackendapi.PtrString(pw),
-		}).Execute()
-		if err != nil {
-			return nil, errors.Wrap(err, "error logging in after registration")
-		}
+		return rsp.Token, nil
+	}
+
+	cred := res[0].(*auth.Credential)
+
+	loginRsp, _, err := userService.Login(ctx).Body(onebackendapi.UserSvcLoginRequest{
+		Slug:     onebackendapi.PtrString(serviceSlug),
+		Password: onebackendapi.PtrString(cred.Password),
+	}).Execute()
+
+	if err != nil {
+		return nil, errors.Wrap(err, "error logging in after registration")
 	}
 
 	return loginRsp.Token, nil

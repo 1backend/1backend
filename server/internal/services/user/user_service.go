@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
+
+	"github.com/google/uuid"
 )
 
 type UserService struct {
@@ -336,15 +338,10 @@ func (s *UserService) bootstrap() error {
 		return errors.Wrap(err, "failed to query credentials")
 	}
 
-	slug := "user-svc"
-	pw := ""
+	if len(credentials) == 0 {
+		slug := "user-svc"
+		pw := uuid.NewString()
 
-	if len(credentials) > 0 {
-		cred := credentials[0].(*auth.Credential)
-		slug = cred.Slug
-		pw = cred.Password
-	} else {
-		pw = sdk.Id("cred")
 		err = s.credentialsStore.Upsert(&auth.Credential{
 			Slug:     slug,
 			Password: pw,
@@ -352,13 +349,7 @@ func (s *UserService) bootstrap() error {
 		if err != nil {
 			return errors.Wrap(err, "failed to upsert credential")
 		}
-	}
 
-	tok, err := s.login(&usertypes.LoginRequest{
-		Slug:     slug,
-		Password: pw,
-	})
-	if err != nil {
 		usr, err := s.register(slug, pw,
 			"User Svc", []string{
 				usertypes.RoleUser,
@@ -368,6 +359,16 @@ func (s *UserService) bootstrap() error {
 		}
 		s.serviceUserId = usr.Id
 	} else {
+		cred := credentials[0].(*auth.Credential)
+
+		tok, err := s.login(&usertypes.LoginRequest{
+			Slug:     cred.Slug,
+			Password: cred.Password,
+		})
+		if err != nil {
+			return errors.Wrap(err, "failed to login user-svc")
+		}
+
 		usr, err := s.readUserByToken(tok.Token)
 		if err != nil {
 			return errors.Wrap(err, "failed to read user by token")
