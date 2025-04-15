@@ -62,11 +62,47 @@ func TestSaveSelf(t *testing.T) {
 	t.Run("user updates their meta", func(t *testing.T) {
 		_, _, err := client1.UserSvcAPI.SaveSelf(ctx).Body(
 			openapi.UserSvcSaveSelfRequest{
-				Meta: &openapi.UserMeta{
+				Labels: &map[string]string{
 					"key": "value",
 				},
 			}).Execute()
 
 		require.NoError(t, err)
+	})
+
+	t.Run("name has not changed, meta is saved", func(t *testing.T) {
+		selfRsp, _, err := client1.UserSvcAPI.ReadSelf(ctx).Execute()
+
+		require.NoError(t, err)
+		require.NotNil(t, selfRsp.User)
+		require.NotNil(t, selfRsp.User.Name)
+		require.Equal(t, "New Name", *selfRsp.User.Name)
+
+		require.NotNil(t, selfRsp.User.Labels)
+		require.Equal(t, "value", (*selfRsp.User.Labels)["key"])
+	})
+
+	t.Run("update meta with a new field", func(t *testing.T) {
+		_, _, err := client1.UserSvcAPI.SaveSelf(ctx).Body(
+			openapi.UserSvcSaveSelfRequest{
+				Labels: &map[string]string{
+					"key2": "value2",
+				},
+			}).Execute()
+
+		require.NoError(t, err)
+	})
+
+	t.Run("check if new meta fields are saved", func(t *testing.T) {
+		selfRsp, _, err := client1.UserSvcAPI.ReadSelf(ctx).Execute()
+
+		require.NoError(t, err)
+		require.NotNil(t, selfRsp.User)
+		require.NotNil(t, selfRsp.User.Name)
+		require.Equal(t, "New Name", *selfRsp.User.Name)
+
+		require.NotNil(t, selfRsp.User.Labels)
+		require.Equal(t, "value", (*selfRsp.User.Labels)["key"])
+		require.Equal(t, "value2", (*selfRsp.User.Labels)["key2"])
 	})
 }
