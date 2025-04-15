@@ -9744,6 +9744,8 @@ function UserSvcRegisterResponseToJSONTyped(value, ignoreDiscriminator = false) 
  * Check if a given object implements the UserSvcResetPasswordRequest interface.
  */
 function instanceOfUserSvcResetPasswordRequest(value) {
+    if (!('newPassword' in value) || value['newPassword'] === undefined)
+        return false;
     return true;
 }
 function UserSvcResetPasswordRequestFromJSON(json) {
@@ -9754,8 +9756,7 @@ function UserSvcResetPasswordRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'newPassword': json['newPassword'] == null ? undefined : json['newPassword'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
+        'newPassword': json['newPassword'],
     };
 }
 function UserSvcResetPasswordRequestToJSON(json) {
@@ -9767,7 +9768,6 @@ function UserSvcResetPasswordRequestToJSONTyped(value, ignoreDiscriminator = fal
     }
     return {
         'newPassword': value['newPassword'],
-        'slug': value['slug'],
     };
 }
 
@@ -13114,7 +13114,7 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Permits give access to users with certain slugs and roles to permissions. Users can list permits for permissions they have access to but they will only see permits the permit refers to their slug or one of their roles.
+     * List permits. Requires the `user-svc:permit:view` permission, which only admins have by default. &todo Users should be able to list permits referring to them.
      * List Permits
      */
     listPermitsRaw(requestParameters, initOverrides) {
@@ -13139,7 +13139,7 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Permits give access to users with certain slugs and roles to permissions. Users can list permits for permissions they have access to but they will only see permits the permit refers to their slug or one of their roles.
+     * List permits. Requires the `user-svc:permit:view` permission, which only admins have by default. &todo Users should be able to list permits referring to them.
      * List Permits
      */
     listPermits(requestParameters, initOverrides) {

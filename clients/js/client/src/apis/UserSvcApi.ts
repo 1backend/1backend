@@ -555,7 +555,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Permits give access to users with certain slugs and roles to permissions. Users can list permits for permissions they have access to but they will only see permits the permit refers to their slug or one of their roles.
+     * List permits. Requires the `user-svc:permit:view` permission, which only admins have by default. &todo Users should be able to list permits referring to them.
      * List Permits
      */
     async listPermitsRaw(requestParameters: ListPermitsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListPermitsResponse>> {
@@ -588,7 +588,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Permits give access to users with certain slugs and roles to permissions. Users can list permits for permissions they have access to but they will only see permits the permit refers to their slug or one of their roles.
+     * List permits. Requires the `user-svc:permit:view` permission, which only admins have by default. &todo Users should be able to list permits referring to them.
      * List Permits
      */
     async listPermits(requestParameters: ListPermitsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListPermitsResponse> {

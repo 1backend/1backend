@@ -13,8 +13,7 @@
 import { RequestFile } from './models';
 
 export class UserSvcResetPasswordRequest {
-    'newPassword'?: string;
-    'slug'?: string;
+    'newPassword': string;
 
     static discriminator: string | undefined = undefined;
 
@@ -22,11 +21,6 @@ export class UserSvcResetPasswordRequest {
         {
             "name": "newPassword",
             "baseName": "newPassword",
-            "type": "string"
-        },
-        {
-            "name": "slug",
-            "baseName": "slug",
             "type": "string"
         }    ];
 

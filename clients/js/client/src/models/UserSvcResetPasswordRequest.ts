@@ -24,19 +24,14 @@ export interface UserSvcResetPasswordRequest {
      * @type {string}
      * @memberof UserSvcResetPasswordRequest
      */
-    newPassword?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserSvcResetPasswordRequest
-     */
-    slug?: string;
+    newPassword: string;
 }
 
 /**
  * Check if a given object implements the UserSvcResetPasswordRequest interface.
  */
 export function instanceOfUserSvcResetPasswordRequest(value: object): value is UserSvcResetPasswordRequest {
+    if (!('newPassword' in value) || value['newPassword'] === undefined) return false;
     return true;
 }
 
@@ -50,8 +45,7 @@ export function UserSvcResetPasswordRequestFromJSONTyped(json: any, ignoreDiscri
     }
     return {
         
-        'newPassword': json['newPassword'] == null ? undefined : json['newPassword'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
+        'newPassword': json['newPassword'],
     };
 }
 
@@ -67,7 +61,6 @@ export function UserSvcResetPasswordRequestToJSONTyped(value?: UserSvcResetPassw
     return {
         
         'newPassword': value['newPassword'],
-        'slug': value['slug'],
     };
 }
 

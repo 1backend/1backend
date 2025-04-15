@@ -20,13 +20,7 @@ export interface UserSvcResetPasswordRequest {
      * @type {string}
      * @memberof UserSvcResetPasswordRequest
      */
-    newPassword?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof UserSvcResetPasswordRequest
-     */
-    slug?: string;
+    newPassword: string;
 }
 /**
  * Check if a given object implements the UserSvcResetPasswordRequest interface.

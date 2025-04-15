@@ -41,6 +41,15 @@ func TestResetPassword(t *testing.T) {
 		require.Error(t, err)
 	})
 
+	t.Run("user 1 cannot reset own password (password change should be used instead)", func(t *testing.T) {
+		_, _, err := client1.UserSvcAPI.ResetPassword(ctx, tokens[0].UserId).Body(
+			openapi.UserSvcResetPasswordRequest{
+				NewPassword: "testPass123",
+			}).Execute()
+
+		require.Error(t, err)
+	})
+
 	t.Run("admin can reset password of user 1", func(t *testing.T) {
 		_, _, err := adminClient.UserSvcAPI.ResetPassword(ctx, tokens[0].UserId).Body(
 			openapi.UserSvcResetPasswordRequest{
