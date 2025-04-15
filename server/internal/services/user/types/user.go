@@ -116,9 +116,8 @@ type SaveProfileResponse struct {
 }
 
 type ChangePasswordRequest struct {
-	Slug            string `json:"slug,omitempty"`
-	CurrentPassword string `json:"currentPassword,omitempty"`
-	NewPassword     string `json:"newPassword,omitempty"`
+	CurrentPassword string `json:"currentPassword" binding:"required"`
+	NewPassword     string `json:"newPassword" binding:"required"`
 }
 
 type ChangePasswordResponse struct{}

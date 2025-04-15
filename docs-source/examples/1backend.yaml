@@ -2693,8 +2693,9 @@ definitions:
         type: string
       newPassword:
         type: string
-      slug:
-        type: string
+    required:
+    - currentPassword
+    - newPassword
     type: object
   user_svc.ChangePasswordResponse:
     type: object

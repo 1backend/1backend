@@ -38,7 +38,7 @@ import (
 // @Router /user-svc/change-password [post]
 func (s *UserService) ChangePassword(w http.ResponseWriter, r *http.Request) {
 
-	_, hasPermission, err := s.hasPermission(r, user.PermissionUserPasswordChange, nil, nil)
+	usr, hasPermission, err := s.hasPermission(r, user.PermissionUserPasswordChange, nil, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -59,7 +59,7 @@ func (s *UserService) ChangePassword(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	err = s.changePassword(req.Slug, req.CurrentPassword, req.NewPassword)
+	err = s.changePassword(usr.Id, req.CurrentPassword, req.NewPassword)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -71,10 +71,10 @@ func (s *UserService) ChangePassword(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) changePassword(
-	slug, currentPassword, newPassword string,
+	userId, currentPassword, newPassword string,
 ) error {
 	q := s.usersStore.Query(
-		datastore.Equals(datastore.Field("slug"), slug),
+		datastore.Equals(datastore.Field("id"), userId),
 	)
 	userI, found, err := q.FindOne()
 	if err != nil {

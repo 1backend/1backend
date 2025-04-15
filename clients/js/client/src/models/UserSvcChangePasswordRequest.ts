@@ -24,25 +24,21 @@ export interface UserSvcChangePasswordRequest {
      * @type {string}
      * @memberof UserSvcChangePasswordRequest
      */
-    currentPassword?: string;
+    currentPassword: string;
     /**
      * 
      * @type {string}
      * @memberof UserSvcChangePasswordRequest
      */
-    newPassword?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserSvcChangePasswordRequest
-     */
-    slug?: string;
+    newPassword: string;
 }
 
 /**
  * Check if a given object implements the UserSvcChangePasswordRequest interface.
  */
 export function instanceOfUserSvcChangePasswordRequest(value: object): value is UserSvcChangePasswordRequest {
+    if (!('currentPassword' in value) || value['currentPassword'] === undefined) return false;
+    if (!('newPassword' in value) || value['newPassword'] === undefined) return false;
     return true;
 }
 
@@ -56,9 +52,8 @@ export function UserSvcChangePasswordRequestFromJSONTyped(json: any, ignoreDiscr
     }
     return {
         
-        'currentPassword': json['currentPassword'] == null ? undefined : json['currentPassword'],
-        'newPassword': json['newPassword'] == null ? undefined : json['newPassword'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
+        'currentPassword': json['currentPassword'],
+        'newPassword': json['newPassword'],
     };
 }
 
@@ -75,7 +70,6 @@ export function UserSvcChangePasswordRequestToJSONTyped(value?: UserSvcChangePas
         
         'currentPassword': value['currentPassword'],
         'newPassword': value['newPassword'],
-        'slug': value['slug'],
     };
 }
 

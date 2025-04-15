@@ -25,10 +25,5 @@ UserSvcChangePasswordRequest.attributeTypeMap = [
         "name": "newPassword",
         "baseName": "newPassword",
         "type": "string"
-    },
-    {
-        "name": "slug",
-        "baseName": "slug",
-        "type": "string"
     }
 ];
