@@ -233,8 +233,8 @@ docs/UserSvcSaveEnrollsResponse.md
 docs/UserSvcSaveOrganizationRequest.md
 docs/UserSvcSaveOrganizationResponse.md
 docs/UserSvcSavePermitsRequest.md
-docs/UserSvcSaveProfileRequest.md
 docs/UserSvcSaveSelfRequest.md
+docs/UserSvcSaveUserRequest.md
 docs/UserSvcUser.md
 docs/UserSvcUserRecord.md
 git_push.sh
@@ -439,8 +439,8 @@ model_user_svc_save_enrolls_response.go
 model_user_svc_save_organization_request.go
 model_user_svc_save_organization_response.go
 model_user_svc_save_permits_request.go
-model_user_svc_save_profile_request.go
 model_user_svc_save_self_request.go
+model_user_svc_save_user_request.go
 model_user_svc_user.go
 model_user_svc_user_record.go
 response.go

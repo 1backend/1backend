@@ -3149,16 +3149,6 @@ definitions:
     type: object
   user_svc.SavePermitsResponse:
     type: object
-  user_svc.SaveProfileRequest:
-    properties:
-      name:
-        type: string
-      thumbnailFileId:
-        example: file_fQDxusW8og
-        type: string
-    type: object
-  user_svc.SaveProfileResponse:
-    type: object
   user_svc.SaveSelfRequest:
     properties:
       labels:
@@ -3172,6 +3162,16 @@ definitions:
         type: string
     type: object
   user_svc.SaveSelfResponse:
+    type: object
+  user_svc.SaveUserRequest:
+    properties:
+      name:
+        type: string
+      thumbnailFileId:
+        example: file_fQDxusW8og
+        type: string
+    type: object
+  user_svc.SaveUserResponse:
     type: object
   user_svc.User:
     properties:
@@ -3249,7 +3249,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.3.0-rc.35
+  version: 0.3.0-rc.37
 paths:
   /chat-svc/events:
     get:
@@ -6619,8 +6619,8 @@ paths:
       - application/json
       description: |-
         Save user information based on the provided user ID.
-        It is intended for admins, because it uses the `user-svc:user:edit` permission which only admins have.
-        For a user to edit its own profile, see saveSelf.
+        Intended for admins. Requires the `user-svc:user:edit` permission.
+        For a user to edit their own profile, see `saveSelf`.
       operationId: saveUser
       parameters:
       - description: User ID
@@ -6633,14 +6633,14 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/user_svc.SaveProfileRequest'
+          $ref: '#/definitions/user_svc.SaveUserRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user_svc.SaveProfileResponse'
+            $ref: '#/definitions/user_svc.SaveUserResponse'
         "400":
           description: Invalid JSON
           schema:

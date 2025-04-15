@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.3.0-rc.35
+API version: 0.3.0-rc.37
 Contact: sales@singulatron.com
 */
 
@@ -340,8 +340,8 @@ Dynamic roles are generated based on specific user-resource associations (in thi
 	SaveUser Save User
 
 	Save user information based on the provided user ID.
-It is intended for admins, because it uses the `user-svc:user:edit` permission which only admins have.
-For a user to edit its own profile, see saveSelf.
+Intended for admins. Requires the `user-svc:user:edit` permission.
+For a user to edit their own profile, see `saveSelf`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param userId User ID
@@ -3412,11 +3412,11 @@ type ApiSaveUserRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
 	userId string
-	body *UserSvcSaveProfileRequest
+	body *UserSvcSaveUserRequest
 }
 
 // Save Profile Request
-func (r ApiSaveUserRequest) Body(body UserSvcSaveProfileRequest) ApiSaveUserRequest {
+func (r ApiSaveUserRequest) Body(body UserSvcSaveUserRequest) ApiSaveUserRequest {
 	r.body = &body
 	return r
 }
@@ -3429,8 +3429,8 @@ func (r ApiSaveUserRequest) Execute() (map[string]interface{}, *http.Response, e
 SaveUser Save User
 
 Save user information based on the provided user ID.
-It is intended for admins, because it uses the `user-svc:user:edit` permission which only admins have.
-For a user to edit its own profile, see saveSelf.
+Intended for admins. Requires the `user-svc:user:edit` permission.
+For a user to edit their own profile, see `saveSelf`.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param userId User ID

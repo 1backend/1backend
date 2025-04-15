@@ -199,7 +199,7 @@ export * from './UserSvcSaveEnrollsResponse';
 export * from './UserSvcSaveOrganizationRequest';
 export * from './UserSvcSaveOrganizationResponse';
 export * from './UserSvcSavePermitsRequest';
-export * from './UserSvcSaveProfileRequest';
 export * from './UserSvcSaveSelfRequest';
+export * from './UserSvcSaveUserRequest';
 export * from './UserSvcUser';
 export * from './UserSvcUserRecord';

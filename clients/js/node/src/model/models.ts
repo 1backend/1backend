@@ -199,8 +199,8 @@ export * from './userSvcSaveEnrollsResponse';
 export * from './userSvcSaveOrganizationRequest';
 export * from './userSvcSaveOrganizationResponse';
 export * from './userSvcSavePermitsRequest';
-export * from './userSvcSaveProfileRequest';
 export * from './userSvcSaveSelfRequest';
+export * from './userSvcSaveUserRequest';
 export * from './userSvcUser';
 export * from './userSvcUserRecord';
 
@@ -416,8 +416,8 @@ import { UserSvcSaveEnrollsResponse } from './userSvcSaveEnrollsResponse';
 import { UserSvcSaveOrganizationRequest } from './userSvcSaveOrganizationRequest';
 import { UserSvcSaveOrganizationResponse } from './userSvcSaveOrganizationResponse';
 import { UserSvcSavePermitsRequest } from './userSvcSavePermitsRequest';
-import { UserSvcSaveProfileRequest } from './userSvcSaveProfileRequest';
 import { UserSvcSaveSelfRequest } from './userSvcSaveSelfRequest';
+import { UserSvcSaveUserRequest } from './userSvcSaveUserRequest';
 import { UserSvcUser } from './userSvcUser';
 import { UserSvcUserRecord } from './userSvcUserRecord';
 
@@ -636,8 +636,8 @@ let typeMap: {[index: string]: any} = {
     "UserSvcSaveOrganizationRequest": UserSvcSaveOrganizationRequest,
     "UserSvcSaveOrganizationResponse": UserSvcSaveOrganizationResponse,
     "UserSvcSavePermitsRequest": UserSvcSavePermitsRequest,
-    "UserSvcSaveProfileRequest": UserSvcSaveProfileRequest,
     "UserSvcSaveSelfRequest": UserSvcSaveSelfRequest,
+    "UserSvcSaveUserRequest": UserSvcSaveUserRequest,
     "UserSvcUser": UserSvcUser,
     "UserSvcUserRecord": UserSvcUserRecord,
 }

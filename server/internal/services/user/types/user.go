@@ -108,12 +108,12 @@ type LoginResponse struct {
 	Token *AuthToken `json:"token,omitempty"`
 }
 
-type SaveProfileRequest struct {
+type SaveUserRequest struct {
 	Name            string `json:"name,omitempty"`
 	ThumbnailFileId string `json:"thumbnailFileId,omitempty" example:"file_fQDxusW8og"`
 }
 
-type SaveProfileResponse struct {
+type SaveUserResponse struct {
 }
 
 type SaveSelfRequest struct {

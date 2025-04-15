@@ -217,7 +217,7 @@ export class UsersComponent {
 			return;
 		}
 
-		const { name, slug, password, passwordConfirmation } = userForm.value;
+		const { name, password, passwordConfirmation } = userForm.value;
 
 		if (password && password !== passwordConfirmation) {
 			const toast = await this.toast.create({
@@ -233,7 +233,7 @@ export class UsersComponent {
 
 		try {
 			let toastMessage = `User '${name}' saved`;
-			await this.userService.saveProfile(userId, slug, name);
+			await this.userService.saveUser(userId, name);
 
 			if (password) {
 				toastMessage += ' and password changed';

@@ -13,7 +13,7 @@
             "name": "AGPL v3.0",
             "url": "https://www.gnu.org/licenses/agpl-3.0.html"
         },
-        "version": "0.3.0-rc.35"
+        "version": "0.3.0-rc.37"
     },
     "host": "localhost:11337",
     "basePath": "/",
@@ -4942,7 +4942,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Save user information based on the provided user ID.\nIt is intended for admins, because it uses the `user-svc:user:edit` permission which only admins have.\nFor a user to edit its own profile, see saveSelf.",
+                "description": "Save user information based on the provided user ID.\nIntended for admins. Requires the `user-svc:user:edit` permission.\nFor a user to edit their own profile, see `saveSelf`.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4968,7 +4968,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user_svc.SaveProfileRequest"
+                            "$ref": "#/definitions/user_svc.SaveUserRequest"
                         }
                     }
                 ],
@@ -4976,7 +4976,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.SaveProfileResponse"
+                            "$ref": "#/definitions/user_svc.SaveUserResponse"
                         }
                     },
                     "400": {
@@ -9468,21 +9468,6 @@
         "user_svc.SavePermitsResponse": {
             "type": "object"
         },
-        "user_svc.SaveProfileRequest": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "thumbnailFileId": {
-                    "type": "string",
-                    "example": "file_fQDxusW8og"
-                }
-            }
-        },
-        "user_svc.SaveProfileResponse": {
-            "type": "object"
-        },
         "user_svc.SaveSelfRequest": {
             "type": "object",
             "properties": {
@@ -9502,6 +9487,21 @@
             }
         },
         "user_svc.SaveSelfResponse": {
+            "type": "object"
+        },
+        "user_svc.SaveUserRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "thumbnailFileId": {
+                    "type": "string",
+                    "example": "file_fQDxusW8og"
+                }
+            }
+        },
+        "user_svc.SaveUserResponse": {
             "type": "object"
         },
         "user_svc.User": {

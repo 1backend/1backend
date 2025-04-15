@@ -4948,7 +4948,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Save user information based on the provided user ID.\nIt is intended for admins, because it uses the ` + "`" + `user-svc:user:edit` + "`" + ` permission which only admins have.\nFor a user to edit its own profile, see saveSelf.",
+                "description": "Save user information based on the provided user ID.\nIntended for admins. Requires the ` + "`" + `user-svc:user:edit` + "`" + ` permission.\nFor a user to edit their own profile, see ` + "`" + `saveSelf` + "`" + `.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4974,7 +4974,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user_svc.SaveProfileRequest"
+                            "$ref": "#/definitions/user_svc.SaveUserRequest"
                         }
                     }
                 ],
@@ -4982,7 +4982,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.SaveProfileResponse"
+                            "$ref": "#/definitions/user_svc.SaveUserResponse"
                         }
                     },
                     "400": {
@@ -9474,21 +9474,6 @@ const docTemplate = `{
         "user_svc.SavePermitsResponse": {
             "type": "object"
         },
-        "user_svc.SaveProfileRequest": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "thumbnailFileId": {
-                    "type": "string",
-                    "example": "file_fQDxusW8og"
-                }
-            }
-        },
-        "user_svc.SaveProfileResponse": {
-            "type": "object"
-        },
         "user_svc.SaveSelfRequest": {
             "type": "object",
             "properties": {
@@ -9508,6 +9493,21 @@ const docTemplate = `{
             }
         },
         "user_svc.SaveSelfResponse": {
+            "type": "object"
+        },
+        "user_svc.SaveUserRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "thumbnailFileId": {
+                    "type": "string",
+                    "example": "file_fQDxusW8og"
+                }
+            }
+        },
+        "user_svc.SaveUserResponse": {
             "type": "object"
         },
         "user_svc.User": {
@@ -9611,7 +9611,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.3.0-rc.35",
+	Version:          "0.3.0-rc.37",
 	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},

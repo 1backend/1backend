@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.3.0-rc.35
+API version: 0.3.0-rc.37
 Contact: sales@singulatron.com
 */
 
@@ -15,34 +15,34 @@ import (
 	"encoding/json"
 )
 
-// checks if the UserSvcSaveProfileRequest type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &UserSvcSaveProfileRequest{}
+// checks if the UserSvcSaveUserRequest type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &UserSvcSaveUserRequest{}
 
-// UserSvcSaveProfileRequest struct for UserSvcSaveProfileRequest
-type UserSvcSaveProfileRequest struct {
+// UserSvcSaveUserRequest struct for UserSvcSaveUserRequest
+type UserSvcSaveUserRequest struct {
 	Name *string `json:"name,omitempty"`
 	ThumbnailFileId *string `json:"thumbnailFileId,omitempty"`
 }
 
-// NewUserSvcSaveProfileRequest instantiates a new UserSvcSaveProfileRequest object
+// NewUserSvcSaveUserRequest instantiates a new UserSvcSaveUserRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcSaveProfileRequest() *UserSvcSaveProfileRequest {
-	this := UserSvcSaveProfileRequest{}
+func NewUserSvcSaveUserRequest() *UserSvcSaveUserRequest {
+	this := UserSvcSaveUserRequest{}
 	return &this
 }
 
-// NewUserSvcSaveProfileRequestWithDefaults instantiates a new UserSvcSaveProfileRequest object
+// NewUserSvcSaveUserRequestWithDefaults instantiates a new UserSvcSaveUserRequest object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewUserSvcSaveProfileRequestWithDefaults() *UserSvcSaveProfileRequest {
-	this := UserSvcSaveProfileRequest{}
+func NewUserSvcSaveUserRequestWithDefaults() *UserSvcSaveUserRequest {
+	this := UserSvcSaveUserRequest{}
 	return &this
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
-func (o *UserSvcSaveProfileRequest) GetName() string {
+func (o *UserSvcSaveUserRequest) GetName() string {
 	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
@@ -52,7 +52,7 @@ func (o *UserSvcSaveProfileRequest) GetName() string {
 
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcSaveProfileRequest) GetNameOk() (*string, bool) {
+func (o *UserSvcSaveUserRequest) GetNameOk() (*string, bool) {
 	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
@@ -60,7 +60,7 @@ func (o *UserSvcSaveProfileRequest) GetNameOk() (*string, bool) {
 }
 
 // HasName returns a boolean if a field has been set.
-func (o *UserSvcSaveProfileRequest) HasName() bool {
+func (o *UserSvcSaveUserRequest) HasName() bool {
 	if o != nil && !IsNil(o.Name) {
 		return true
 	}
@@ -69,12 +69,12 @@ func (o *UserSvcSaveProfileRequest) HasName() bool {
 }
 
 // SetName gets a reference to the given string and assigns it to the Name field.
-func (o *UserSvcSaveProfileRequest) SetName(v string) {
+func (o *UserSvcSaveUserRequest) SetName(v string) {
 	o.Name = &v
 }
 
 // GetThumbnailFileId returns the ThumbnailFileId field value if set, zero value otherwise.
-func (o *UserSvcSaveProfileRequest) GetThumbnailFileId() string {
+func (o *UserSvcSaveUserRequest) GetThumbnailFileId() string {
 	if o == nil || IsNil(o.ThumbnailFileId) {
 		var ret string
 		return ret
@@ -84,7 +84,7 @@ func (o *UserSvcSaveProfileRequest) GetThumbnailFileId() string {
 
 // GetThumbnailFileIdOk returns a tuple with the ThumbnailFileId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcSaveProfileRequest) GetThumbnailFileIdOk() (*string, bool) {
+func (o *UserSvcSaveUserRequest) GetThumbnailFileIdOk() (*string, bool) {
 	if o == nil || IsNil(o.ThumbnailFileId) {
 		return nil, false
 	}
@@ -92,7 +92,7 @@ func (o *UserSvcSaveProfileRequest) GetThumbnailFileIdOk() (*string, bool) {
 }
 
 // HasThumbnailFileId returns a boolean if a field has been set.
-func (o *UserSvcSaveProfileRequest) HasThumbnailFileId() bool {
+func (o *UserSvcSaveUserRequest) HasThumbnailFileId() bool {
 	if o != nil && !IsNil(o.ThumbnailFileId) {
 		return true
 	}
@@ -101,11 +101,11 @@ func (o *UserSvcSaveProfileRequest) HasThumbnailFileId() bool {
 }
 
 // SetThumbnailFileId gets a reference to the given string and assigns it to the ThumbnailFileId field.
-func (o *UserSvcSaveProfileRequest) SetThumbnailFileId(v string) {
+func (o *UserSvcSaveUserRequest) SetThumbnailFileId(v string) {
 	o.ThumbnailFileId = &v
 }
 
-func (o UserSvcSaveProfileRequest) MarshalJSON() ([]byte, error) {
+func (o UserSvcSaveUserRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -113,7 +113,7 @@ func (o UserSvcSaveProfileRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o UserSvcSaveProfileRequest) ToMap() (map[string]interface{}, error) {
+func (o UserSvcSaveUserRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
@@ -124,38 +124,38 @@ func (o UserSvcSaveProfileRequest) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-type NullableUserSvcSaveProfileRequest struct {
-	value *UserSvcSaveProfileRequest
+type NullableUserSvcSaveUserRequest struct {
+	value *UserSvcSaveUserRequest
 	isSet bool
 }
 
-func (v NullableUserSvcSaveProfileRequest) Get() *UserSvcSaveProfileRequest {
+func (v NullableUserSvcSaveUserRequest) Get() *UserSvcSaveUserRequest {
 	return v.value
 }
 
-func (v *NullableUserSvcSaveProfileRequest) Set(val *UserSvcSaveProfileRequest) {
+func (v *NullableUserSvcSaveUserRequest) Set(val *UserSvcSaveUserRequest) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableUserSvcSaveProfileRequest) IsSet() bool {
+func (v NullableUserSvcSaveUserRequest) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableUserSvcSaveProfileRequest) Unset() {
+func (v *NullableUserSvcSaveUserRequest) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableUserSvcSaveProfileRequest(val *UserSvcSaveProfileRequest) *NullableUserSvcSaveProfileRequest {
-	return &NullableUserSvcSaveProfileRequest{value: val, isSet: true}
+func NewNullableUserSvcSaveUserRequest(val *UserSvcSaveUserRequest) *NullableUserSvcSaveUserRequest {
+	return &NullableUserSvcSaveUserRequest{value: val, isSet: true}
 }
 
-func (v NullableUserSvcSaveProfileRequest) MarshalJSON() ([]byte, error) {
+func (v NullableUserSvcSaveUserRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableUserSvcSaveProfileRequest) UnmarshalJSON(src []byte) error {
+func (v *NullableUserSvcSaveUserRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

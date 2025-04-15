@@ -24,7 +24,7 @@ import {
 	UserSvcReadSelfResponse,
 	UserSvcUser,
 	UserSvcListUsersRequest,
-	UserSvcSaveProfileRequest,
+	UserSvcSaveUserRequest,
 	UserSvcChangePasswordRequest,
 	UserSvcResetPasswordRequest,
 } from '@1backend/client';
@@ -142,10 +142,9 @@ export class UserService {
 		});
 	}
 
-	/** Save profile on behalf of a user */
-	saveProfile(id: string, slug: string, name: string): Promise<object> {
-		const request: UserSvcSaveProfileRequest = {
-			slug: slug,
+	/** Save user. For admins. */
+	saveUser(id: string, name: string): Promise<object> {
+		const request: UserSvcSaveUserRequest = {
 			name: name,
 		};
 		return this.userService.saveUser({
@@ -155,12 +154,10 @@ export class UserService {
 	}
 
 	changePassword(
-		slug: string,
 		currentPassword: string,
 		newPassword: string
 	): Promise<object> {
 		const request: UserSvcChangePasswordRequest = {
-			slug: slug,
 			currentPassword: currentPassword,
 			newPassword: newPassword,
 		};
