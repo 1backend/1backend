@@ -618,6 +618,12 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "1backend/read-self",
+          label: "Read Self",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
           id: "1backend/save-self",
           label: "Save User Profile",
           className: "api-method put",
@@ -645,12 +651,6 @@ const sidebar: SidebarsConfig = {
           id: "1backend/save-user",
           label: "Save User",
           className: "api-method put",
-        },
-        {
-          type: "doc",
-          id: "1backend/read-user-by-token",
-          label: "Read User by Token",
-          className: "api-method post",
         },
         {
           type: "doc",

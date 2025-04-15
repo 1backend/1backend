@@ -27,14 +27,14 @@ import (
 // @ID saveUser
 // @Summary Save User
 // @Description Save user information based on the provided user ID.
-// @Description It is intended for admins, because it uses the `user-svc:user:edit` permission which only admins have.
-// @Description For a user to edit its own profile, see saveSelf.
+// @Description Intended for admins. Requires the `user-svc:user:edit` permission.
+// @Description For a user to edit their own profile, see `saveSelf`.
 // @Tags User Svc
 // @Accept json
 // @Produce json
 // @Param userId path string true "User ID"
-// @Param body body user.SaveProfileRequest true "Save Profile Request"
-// @Success 200 {object} user.SaveProfileResponse
+// @Param body body user.SaveUserRequest true "Save Profile Request"
+// @Success 200 {object} user.SaveUserResponse
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
@@ -57,7 +57,7 @@ func (s *UserService) SaveUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	userId := vars["userId"]
 
-	req := user.SaveProfileRequest{}
+	req := user.SaveUserRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -73,13 +73,13 @@ func (s *UserService) SaveUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bs, _ := json.Marshal(user.SaveProfileResponse{})
+	bs, _ := json.Marshal(user.SaveUserResponse{})
 	w.Write(bs)
 }
 
 func (s *UserService) saveUser(
 	userId string,
-	request *user.SaveProfileRequest,
+	request *user.SaveUserRequest,
 ) error {
 	query := s.usersStore.Query(
 		datastore.Equals(datastore.Field("id"), userId),

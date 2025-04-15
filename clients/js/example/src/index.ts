@@ -19,7 +19,7 @@ async function start() {
     })
   );
 
-  const readTokenResponse = await userService.readUserByToken();
+  const readTokenResponse = await userService.readSelf();
   if (readTokenResponse.user?.slug !== "1backend") {
     process.exit(1);
   }

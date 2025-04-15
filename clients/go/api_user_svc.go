@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.3.0-rc.35
+API version: 0.3.0-rc.37
 Contact: sales@singulatron.com
 */
 
@@ -205,7 +205,7 @@ Requires the `user-svc:user:view` permission that only admins have by default.
 	LoginExecute(r ApiLoginRequest) (*UserSvcLoginResponse, *http.Response, error)
 
 	/*
-	ReadUserByToken Read User by Token
+	ReadSelf Read Self
 
 	Retrieves user information based on the authentication token in the request header.
 Typically called by single-page applications during the initial page load.
@@ -213,13 +213,13 @@ While some details (such as roles, slug, user ID, and active organization ID) ca
 this endpoint returns additional data, including the full user object and associated organizations.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return ApiReadUserByTokenRequest
+	@return ApiReadSelfRequest
 	*/
-	ReadUserByToken(ctx context.Context) ApiReadUserByTokenRequest
+	ReadSelf(ctx context.Context) ApiReadSelfRequest
 
-	// ReadUserByTokenExecute executes the request
-	//  @return UserSvcReadUserByTokenResponse
-	ReadUserByTokenExecute(r ApiReadUserByTokenRequest) (*UserSvcReadUserByTokenResponse, *http.Response, error)
+	// ReadSelfExecute executes the request
+	//  @return UserSvcReadSelfResponse
+	ReadSelfExecute(r ApiReadSelfRequest) (*UserSvcReadSelfResponse, *http.Response, error)
 
 	/*
 	Register Register
@@ -328,10 +328,9 @@ Dynamic roles are generated based on specific user-resource associations (in thi
 	Save user's own profile information.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param userId User ID
 	@return ApiSaveSelfRequest
 	*/
-	SaveSelf(ctx context.Context, userId string) ApiSaveSelfRequest
+	SaveSelf(ctx context.Context) ApiSaveSelfRequest
 
 	// SaveSelfExecute executes the request
 	//  @return map[string]interface{}
@@ -341,8 +340,8 @@ Dynamic roles are generated based on specific user-resource associations (in thi
 	SaveUser Save User
 
 	Save user information based on the provided user ID.
-It is intended for admins, because it uses the `user-svc:user:edit` permission which only admins have.
-For a user to edit its own profile, see saveSelf.
+Intended for admins. Requires the `user-svc:user:edit` permission.
+For a user to edit their own profile, see `saveSelf`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param userId User ID
@@ -2153,17 +2152,17 @@ func (a *UserSvcAPIService) LoginExecute(r ApiLoginRequest) (*UserSvcLoginRespon
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiReadUserByTokenRequest struct {
+type ApiReadSelfRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
 }
 
-func (r ApiReadUserByTokenRequest) Execute() (*UserSvcReadUserByTokenResponse, *http.Response, error) {
-	return r.ApiService.ReadUserByTokenExecute(r)
+func (r ApiReadSelfRequest) Execute() (*UserSvcReadSelfResponse, *http.Response, error) {
+	return r.ApiService.ReadSelfExecute(r)
 }
 
 /*
-ReadUserByToken Read User by Token
+ReadSelf Read Self
 
 Retrieves user information based on the authentication token in the request header.
 Typically called by single-page applications during the initial page load.
@@ -2171,31 +2170,31 @@ While some details (such as roles, slug, user ID, and active organization ID) ca
 this endpoint returns additional data, including the full user object and associated organizations.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiReadUserByTokenRequest
+ @return ApiReadSelfRequest
 */
-func (a *UserSvcAPIService) ReadUserByToken(ctx context.Context) ApiReadUserByTokenRequest {
-	return ApiReadUserByTokenRequest{
+func (a *UserSvcAPIService) ReadSelf(ctx context.Context) ApiReadSelfRequest {
+	return ApiReadSelfRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-//  @return UserSvcReadUserByTokenResponse
-func (a *UserSvcAPIService) ReadUserByTokenExecute(r ApiReadUserByTokenRequest) (*UserSvcReadUserByTokenResponse, *http.Response, error) {
+//  @return UserSvcReadSelfResponse
+func (a *UserSvcAPIService) ReadSelfExecute(r ApiReadSelfRequest) (*UserSvcReadSelfResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *UserSvcReadUserByTokenResponse
+		localVarReturnValue  *UserSvcReadSelfResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.ReadUserByToken")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.ReadSelf")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/user-svc/user/by-token"
+	localVarPath := localBasePath + "/user-svc/self"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3255,12 +3254,11 @@ func (a *UserSvcAPIService) SavePermitsExecute(r ApiSavePermitsRequest) (map[str
 type ApiSaveSelfRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	userId string
-	body *UserSvcSaveProfileRequest
+	body *UserSvcSaveSelfRequest
 }
 
 // Save Profile Request
-func (r ApiSaveSelfRequest) Body(body UserSvcSaveProfileRequest) ApiSaveSelfRequest {
+func (r ApiSaveSelfRequest) Body(body UserSvcSaveSelfRequest) ApiSaveSelfRequest {
 	r.body = &body
 	return r
 }
@@ -3275,14 +3273,12 @@ SaveSelf Save User Profile
 Save user's own profile information.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param userId User ID
  @return ApiSaveSelfRequest
 */
-func (a *UserSvcAPIService) SaveSelf(ctx context.Context, userId string) ApiSaveSelfRequest {
+func (a *UserSvcAPIService) SaveSelf(ctx context.Context) ApiSaveSelfRequest {
 	return ApiSaveSelfRequest{
 		ApiService: a,
 		ctx: ctx,
-		userId: userId,
 	}
 }
 
@@ -3302,7 +3298,6 @@ func (a *UserSvcAPIService) SaveSelfExecute(r ApiSaveSelfRequest) (map[string]in
 	}
 
 	localVarPath := localBasePath + "/user-svc/self"
-	localVarPath = strings.Replace(localVarPath, "{"+"userId"+"}", url.PathEscape(parameterValueToString(r.userId, "userId")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3417,11 +3412,11 @@ type ApiSaveUserRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
 	userId string
-	body *UserSvcSaveProfileRequest
+	body *UserSvcSaveUserRequest
 }
 
 // Save Profile Request
-func (r ApiSaveUserRequest) Body(body UserSvcSaveProfileRequest) ApiSaveUserRequest {
+func (r ApiSaveUserRequest) Body(body UserSvcSaveUserRequest) ApiSaveUserRequest {
 	r.body = &body
 	return r
 }
@@ -3434,8 +3429,8 @@ func (r ApiSaveUserRequest) Execute() (map[string]interface{}, *http.Response, e
 SaveUser Save User
 
 Save user information based on the provided user ID.
-It is intended for admins, because it uses the `user-svc:user:edit` permission which only admins have.
-For a user to edit its own profile, see saveSelf.
+Intended for admins. Requires the `user-svc:user:edit` permission.
+For a user to edit their own profile, see `saveSelf`.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param userId User ID

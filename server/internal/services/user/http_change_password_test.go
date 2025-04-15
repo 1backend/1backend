@@ -127,14 +127,14 @@ func TestPasswordChange(t *testing.T) {
 		)
 		require.NoError(t, err)
 
-		byTokenRsp, _, err := userClient.UserSvcAPI.ReadUserByToken(context.Background()).
+		selfRsp, _, err := userClient.UserSvcAPI.ReadSelf(context.Background()).
 			Execute()
 		require.NoError(t, err)
 
-		require.Equal(t, "test-user-slug-0", byTokenRsp.User.Slug)
-		require.True(t, nil == byTokenRsp.User.PasswordHash)
+		require.Equal(t, "test-user-slug-0", selfRsp.User.Slug)
+		require.True(t, nil == selfRsp.User.PasswordHash)
 
-		require.Equal(t, claim.UserId, byTokenRsp.User.Id)
+		require.Equal(t, claim.UserId, selfRsp.User.Id)
 
 		changePassReq := openapi.UserSvcChangePasswordRequest{
 			CurrentPassword: "testUserPassword0",

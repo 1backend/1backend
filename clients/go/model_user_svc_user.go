@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.3.0-rc.35
+API version: 0.3.0-rc.37
 Contact: sales@singulatron.com
 */
 
@@ -25,6 +25,7 @@ type UserSvcUser struct {
 	CreatedAt *string `json:"createdAt,omitempty"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	Id string `json:"id"`
+	Labels *map[string]string `json:"labels,omitempty"`
 	// Full name of the user.
 	Name *string `json:"name,omitempty"`
 	PasswordHash *string `json:"passwordHash,omitempty"`
@@ -141,6 +142,38 @@ func (o *UserSvcUser) GetIdOk() (*string, bool) {
 // SetId sets field value
 func (o *UserSvcUser) SetId(v string) {
 	o.Id = v
+}
+
+// GetLabels returns the Labels field value if set, zero value otherwise.
+func (o *UserSvcUser) GetLabels() map[string]string {
+	if o == nil || IsNil(o.Labels) {
+		var ret map[string]string
+		return ret
+	}
+	return *o.Labels
+}
+
+// GetLabelsOk returns a tuple with the Labels field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcUser) GetLabelsOk() (*map[string]string, bool) {
+	if o == nil || IsNil(o.Labels) {
+		return nil, false
+	}
+	return o.Labels, true
+}
+
+// HasLabels returns a boolean if a field has been set.
+func (o *UserSvcUser) HasLabels() bool {
+	if o != nil && !IsNil(o.Labels) {
+		return true
+	}
+
+	return false
+}
+
+// SetLabels gets a reference to the given map[string]string and assigns it to the Labels field.
+func (o *UserSvcUser) SetLabels(v map[string]string) {
+	o.Labels = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -312,6 +345,9 @@ func (o UserSvcUser) ToMap() (map[string]interface{}, error) {
 		toSerialize["deletedAt"] = o.DeletedAt
 	}
 	toSerialize["id"] = o.Id
+	if !IsNil(o.Labels) {
+		toSerialize["labels"] = o.Labels
+	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}

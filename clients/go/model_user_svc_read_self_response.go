@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.3.0-rc.35
+API version: 0.3.0-rc.37
 Contact: sales@singulatron.com
 */
 
@@ -17,11 +17,11 @@ import (
 	"fmt"
 )
 
-// checks if the UserSvcReadUserByTokenResponse type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &UserSvcReadUserByTokenResponse{}
+// checks if the UserSvcReadSelfResponse type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &UserSvcReadSelfResponse{}
 
-// UserSvcReadUserByTokenResponse struct for UserSvcReadUserByTokenResponse
-type UserSvcReadUserByTokenResponse struct {
+// UserSvcReadSelfResponse struct for UserSvcReadSelfResponse
+type UserSvcReadSelfResponse struct {
 	// Active organization of the caller user, if it has any.
 	ActiveOrganizationId *string `json:"activeOrganizationId,omitempty"`
 	// Organizations of the caller user.
@@ -32,28 +32,28 @@ type UserSvcReadUserByTokenResponse struct {
 	User UserSvcUser `json:"user"`
 }
 
-type _UserSvcReadUserByTokenResponse UserSvcReadUserByTokenResponse
+type _UserSvcReadSelfResponse UserSvcReadSelfResponse
 
-// NewUserSvcReadUserByTokenResponse instantiates a new UserSvcReadUserByTokenResponse object
+// NewUserSvcReadSelfResponse instantiates a new UserSvcReadSelfResponse object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcReadUserByTokenResponse(user UserSvcUser) *UserSvcReadUserByTokenResponse {
-	this := UserSvcReadUserByTokenResponse{}
+func NewUserSvcReadSelfResponse(user UserSvcUser) *UserSvcReadSelfResponse {
+	this := UserSvcReadSelfResponse{}
 	this.User = user
 	return &this
 }
 
-// NewUserSvcReadUserByTokenResponseWithDefaults instantiates a new UserSvcReadUserByTokenResponse object
+// NewUserSvcReadSelfResponseWithDefaults instantiates a new UserSvcReadSelfResponse object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewUserSvcReadUserByTokenResponseWithDefaults() *UserSvcReadUserByTokenResponse {
-	this := UserSvcReadUserByTokenResponse{}
+func NewUserSvcReadSelfResponseWithDefaults() *UserSvcReadSelfResponse {
+	this := UserSvcReadSelfResponse{}
 	return &this
 }
 
 // GetActiveOrganizationId returns the ActiveOrganizationId field value if set, zero value otherwise.
-func (o *UserSvcReadUserByTokenResponse) GetActiveOrganizationId() string {
+func (o *UserSvcReadSelfResponse) GetActiveOrganizationId() string {
 	if o == nil || IsNil(o.ActiveOrganizationId) {
 		var ret string
 		return ret
@@ -63,7 +63,7 @@ func (o *UserSvcReadUserByTokenResponse) GetActiveOrganizationId() string {
 
 // GetActiveOrganizationIdOk returns a tuple with the ActiveOrganizationId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcReadUserByTokenResponse) GetActiveOrganizationIdOk() (*string, bool) {
+func (o *UserSvcReadSelfResponse) GetActiveOrganizationIdOk() (*string, bool) {
 	if o == nil || IsNil(o.ActiveOrganizationId) {
 		return nil, false
 	}
@@ -71,7 +71,7 @@ func (o *UserSvcReadUserByTokenResponse) GetActiveOrganizationIdOk() (*string, b
 }
 
 // HasActiveOrganizationId returns a boolean if a field has been set.
-func (o *UserSvcReadUserByTokenResponse) HasActiveOrganizationId() bool {
+func (o *UserSvcReadSelfResponse) HasActiveOrganizationId() bool {
 	if o != nil && !IsNil(o.ActiveOrganizationId) {
 		return true
 	}
@@ -80,12 +80,12 @@ func (o *UserSvcReadUserByTokenResponse) HasActiveOrganizationId() bool {
 }
 
 // SetActiveOrganizationId gets a reference to the given string and assigns it to the ActiveOrganizationId field.
-func (o *UserSvcReadUserByTokenResponse) SetActiveOrganizationId(v string) {
+func (o *UserSvcReadSelfResponse) SetActiveOrganizationId(v string) {
 	o.ActiveOrganizationId = &v
 }
 
 // GetOrganizations returns the Organizations field value if set, zero value otherwise.
-func (o *UserSvcReadUserByTokenResponse) GetOrganizations() []UserSvcOrganization {
+func (o *UserSvcReadSelfResponse) GetOrganizations() []UserSvcOrganization {
 	if o == nil || IsNil(o.Organizations) {
 		var ret []UserSvcOrganization
 		return ret
@@ -95,7 +95,7 @@ func (o *UserSvcReadUserByTokenResponse) GetOrganizations() []UserSvcOrganizatio
 
 // GetOrganizationsOk returns a tuple with the Organizations field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcReadUserByTokenResponse) GetOrganizationsOk() ([]UserSvcOrganization, bool) {
+func (o *UserSvcReadSelfResponse) GetOrganizationsOk() ([]UserSvcOrganization, bool) {
 	if o == nil || IsNil(o.Organizations) {
 		return nil, false
 	}
@@ -103,7 +103,7 @@ func (o *UserSvcReadUserByTokenResponse) GetOrganizationsOk() ([]UserSvcOrganiza
 }
 
 // HasOrganizations returns a boolean if a field has been set.
-func (o *UserSvcReadUserByTokenResponse) HasOrganizations() bool {
+func (o *UserSvcReadSelfResponse) HasOrganizations() bool {
 	if o != nil && !IsNil(o.Organizations) {
 		return true
 	}
@@ -112,12 +112,12 @@ func (o *UserSvcReadUserByTokenResponse) HasOrganizations() bool {
 }
 
 // SetOrganizations gets a reference to the given []UserSvcOrganization and assigns it to the Organizations field.
-func (o *UserSvcReadUserByTokenResponse) SetOrganizations(v []UserSvcOrganization) {
+func (o *UserSvcReadSelfResponse) SetOrganizations(v []UserSvcOrganization) {
 	o.Organizations = v
 }
 
 // GetRoles returns the Roles field value if set, zero value otherwise.
-func (o *UserSvcReadUserByTokenResponse) GetRoles() []string {
+func (o *UserSvcReadSelfResponse) GetRoles() []string {
 	if o == nil || IsNil(o.Roles) {
 		var ret []string
 		return ret
@@ -127,7 +127,7 @@ func (o *UserSvcReadUserByTokenResponse) GetRoles() []string {
 
 // GetRolesOk returns a tuple with the Roles field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcReadUserByTokenResponse) GetRolesOk() ([]string, bool) {
+func (o *UserSvcReadSelfResponse) GetRolesOk() ([]string, bool) {
 	if o == nil || IsNil(o.Roles) {
 		return nil, false
 	}
@@ -135,7 +135,7 @@ func (o *UserSvcReadUserByTokenResponse) GetRolesOk() ([]string, bool) {
 }
 
 // HasRoles returns a boolean if a field has been set.
-func (o *UserSvcReadUserByTokenResponse) HasRoles() bool {
+func (o *UserSvcReadSelfResponse) HasRoles() bool {
 	if o != nil && !IsNil(o.Roles) {
 		return true
 	}
@@ -144,12 +144,12 @@ func (o *UserSvcReadUserByTokenResponse) HasRoles() bool {
 }
 
 // SetRoles gets a reference to the given []string and assigns it to the Roles field.
-func (o *UserSvcReadUserByTokenResponse) SetRoles(v []string) {
+func (o *UserSvcReadSelfResponse) SetRoles(v []string) {
 	o.Roles = v
 }
 
 // GetUser returns the User field value
-func (o *UserSvcReadUserByTokenResponse) GetUser() UserSvcUser {
+func (o *UserSvcReadSelfResponse) GetUser() UserSvcUser {
 	if o == nil {
 		var ret UserSvcUser
 		return ret
@@ -160,7 +160,7 @@ func (o *UserSvcReadUserByTokenResponse) GetUser() UserSvcUser {
 
 // GetUserOk returns a tuple with the User field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcReadUserByTokenResponse) GetUserOk() (*UserSvcUser, bool) {
+func (o *UserSvcReadSelfResponse) GetUserOk() (*UserSvcUser, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -168,11 +168,11 @@ func (o *UserSvcReadUserByTokenResponse) GetUserOk() (*UserSvcUser, bool) {
 }
 
 // SetUser sets field value
-func (o *UserSvcReadUserByTokenResponse) SetUser(v UserSvcUser) {
+func (o *UserSvcReadSelfResponse) SetUser(v UserSvcUser) {
 	o.User = v
 }
 
-func (o UserSvcReadUserByTokenResponse) MarshalJSON() ([]byte, error) {
+func (o UserSvcReadSelfResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -180,7 +180,7 @@ func (o UserSvcReadUserByTokenResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o UserSvcReadUserByTokenResponse) ToMap() (map[string]interface{}, error) {
+func (o UserSvcReadSelfResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.ActiveOrganizationId) {
 		toSerialize["activeOrganizationId"] = o.ActiveOrganizationId
@@ -195,7 +195,7 @@ func (o UserSvcReadUserByTokenResponse) ToMap() (map[string]interface{}, error) 
 	return toSerialize, nil
 }
 
-func (o *UserSvcReadUserByTokenResponse) UnmarshalJSON(data []byte) (err error) {
+func (o *UserSvcReadSelfResponse) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
@@ -217,53 +217,53 @@ func (o *UserSvcReadUserByTokenResponse) UnmarshalJSON(data []byte) (err error) 
 		}
 	}
 
-	varUserSvcReadUserByTokenResponse := _UserSvcReadUserByTokenResponse{}
+	varUserSvcReadSelfResponse := _UserSvcReadSelfResponse{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varUserSvcReadUserByTokenResponse)
+	err = decoder.Decode(&varUserSvcReadSelfResponse)
 
 	if err != nil {
 		return err
 	}
 
-	*o = UserSvcReadUserByTokenResponse(varUserSvcReadUserByTokenResponse)
+	*o = UserSvcReadSelfResponse(varUserSvcReadSelfResponse)
 
 	return err
 }
 
-type NullableUserSvcReadUserByTokenResponse struct {
-	value *UserSvcReadUserByTokenResponse
+type NullableUserSvcReadSelfResponse struct {
+	value *UserSvcReadSelfResponse
 	isSet bool
 }
 
-func (v NullableUserSvcReadUserByTokenResponse) Get() *UserSvcReadUserByTokenResponse {
+func (v NullableUserSvcReadSelfResponse) Get() *UserSvcReadSelfResponse {
 	return v.value
 }
 
-func (v *NullableUserSvcReadUserByTokenResponse) Set(val *UserSvcReadUserByTokenResponse) {
+func (v *NullableUserSvcReadSelfResponse) Set(val *UserSvcReadSelfResponse) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableUserSvcReadUserByTokenResponse) IsSet() bool {
+func (v NullableUserSvcReadSelfResponse) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableUserSvcReadUserByTokenResponse) Unset() {
+func (v *NullableUserSvcReadSelfResponse) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableUserSvcReadUserByTokenResponse(val *UserSvcReadUserByTokenResponse) *NullableUserSvcReadUserByTokenResponse {
-	return &NullableUserSvcReadUserByTokenResponse{value: val, isSet: true}
+func NewNullableUserSvcReadSelfResponse(val *UserSvcReadSelfResponse) *NullableUserSvcReadSelfResponse {
+	return &NullableUserSvcReadSelfResponse{value: val, isSet: true}
 }
 
-func (v NullableUserSvcReadUserByTokenResponse) MarshalJSON() ([]byte, error) {
+func (v NullableUserSvcReadSelfResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableUserSvcReadUserByTokenResponse) UnmarshalJSON(src []byte) error {
+func (v *NullableUserSvcReadSelfResponse) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

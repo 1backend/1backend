@@ -19,7 +19,6 @@ import (
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
-	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/pkg/errors"
 )
 
@@ -29,9 +28,8 @@ import (
 // @Tags User Svc
 // @Accept json
 // @Produce json
-// @Param userId path string true "User ID"
-// @Param body body user.SaveProfileRequest true "Save Profile Request"
-// @Success 200 {object} user.SaveProfileResponse
+// @Param body body user.SaveSelfRequest true "Save Profile Request"
+// @Success 200 {object} user.SaveSelfResponse
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
@@ -45,14 +43,14 @@ func (s *UserService) SaveSelf(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	usr, err := s.readUserByToken(token)
+	usr, err := s.readSelf(token)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	req := user.SaveProfileRequest{}
+	req := user.SaveSelfRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -62,46 +60,47 @@ func (s *UserService) SaveSelf(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	// cannot change slug for now
-	err = s.saveSelf(usr.Id, &req)
+	err = s.saveSelf(usr, &req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	bs, _ := json.Marshal(user.SaveProfileResponse{})
+	bs, _ := json.Marshal(user.SaveSelfResponse{})
 	w.Write(bs)
 }
 
 func (s *UserService) saveSelf(
-	userId string,
-	request *user.SaveProfileRequest,
+	usr *user.User,
+	request *user.SaveSelfRequest,
 ) error {
-	query := s.usersStore.Query(
-		datastore.Equals(datastore.Field("id"), userId),
-	)
-
-	userI, found, err := query.FindOne()
-	if err != nil {
-		return err
-	}
-
-	if !found {
-		return errors.New("user not found")
-	}
-	user := userI.(*usertypes.User)
 
 	if request.Name != "" {
-		user.Name = request.Name
+		usr.Name = request.Name
 	}
 
 	if request.ThumbnailFileId != "" {
-		user.ThumbnailFileId = request.ThumbnailFileId
+		usr.ThumbnailFileId = request.ThumbnailFileId
 	}
 
-	user.UpdatedAt = time.Now()
+	if request.Labels != nil {
+		if usr.Labels == nil {
+			usr.Labels = map[string]string{}
+		}
+		for k, v := range *request.Labels {
+			usr.Labels[k] = v
+		}
+	}
 
-	query.Update(user)
+	usr.UpdatedAt = time.Now()
+
+	err := s.usersStore.Query(
+		datastore.Id(usr.Id),
+	).Update(usr)
+	if err != nil {
+		return errors.Wrap(err, "failed to update user")
+	}
 
 	return nil
 }

@@ -224,7 +224,7 @@ docs/UserSvcLoginResponse.md
 docs/UserSvcOrganization.md
 docs/UserSvcPermit.md
 docs/UserSvcPermitInput.md
-docs/UserSvcReadUserByTokenResponse.md
+docs/UserSvcReadSelfResponse.md
 docs/UserSvcRegisterRequest.md
 docs/UserSvcRegisterResponse.md
 docs/UserSvcResetPasswordRequest.md
@@ -233,7 +233,8 @@ docs/UserSvcSaveEnrollsResponse.md
 docs/UserSvcSaveOrganizationRequest.md
 docs/UserSvcSaveOrganizationResponse.md
 docs/UserSvcSavePermitsRequest.md
-docs/UserSvcSaveProfileRequest.md
+docs/UserSvcSaveSelfRequest.md
+docs/UserSvcSaveUserRequest.md
 docs/UserSvcUser.md
 docs/UserSvcUserRecord.md
 git_push.sh
@@ -429,7 +430,7 @@ model_user_svc_login_response.go
 model_user_svc_organization.go
 model_user_svc_permit.go
 model_user_svc_permit_input.go
-model_user_svc_read_user_by_token_response.go
+model_user_svc_read_self_response.go
 model_user_svc_register_request.go
 model_user_svc_register_response.go
 model_user_svc_reset_password_request.go
@@ -438,7 +439,8 @@ model_user_svc_save_enrolls_response.go
 model_user_svc_save_organization_request.go
 model_user_svc_save_organization_response.go
 model_user_svc_save_permits_request.go
-model_user_svc_save_profile_request.go
+model_user_svc_save_self_request.go
+model_user_svc_save_user_request.go
 model_user_svc_user.go
 model_user_svc_user_record.go
 response.go

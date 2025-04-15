@@ -216,11 +216,11 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 	})
 
-	t.Run("Test UserSvcAPIService ReadUserByToken", func(t *testing.T) {
+	t.Run("Test UserSvcAPIService ReadSelf", func(t *testing.T) {
 
 		t.Skip("skip test") // remove to run test
 
-		resp, httpRes, err := apiClient.UserSvcAPI.ReadUserByToken(context.Background()).Execute()
+		resp, httpRes, err := apiClient.UserSvcAPI.ReadSelft.Background()).Execute()
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)

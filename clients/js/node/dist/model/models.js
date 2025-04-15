@@ -188,7 +188,7 @@ export * from './userSvcLoginResponse';
 export * from './userSvcOrganization';
 export * from './userSvcPermit';
 export * from './userSvcPermitInput';
-export * from './userSvcReadUserByTokenResponse';
+export * from './userSvcReadSelfResponse';
 export * from './userSvcRegisterRequest';
 export * from './userSvcRegisterResponse';
 export * from './userSvcResetPasswordRequest';
@@ -197,7 +197,8 @@ export * from './userSvcSaveEnrollsResponse';
 export * from './userSvcSaveOrganizationRequest';
 export * from './userSvcSaveOrganizationResponse';
 export * from './userSvcSavePermitsRequest';
-export * from './userSvcSaveProfileRequest';
+export * from './userSvcSaveSelfRequest';
+export * from './userSvcSaveUserRequest';
 export * from './userSvcUser';
 export * from './userSvcUserRecord';
 import { ChatSvcAddMessageRequest } from './chatSvcAddMessageRequest';
@@ -390,7 +391,7 @@ import { UserSvcLoginResponse } from './userSvcLoginResponse';
 import { UserSvcOrganization } from './userSvcOrganization';
 import { UserSvcPermit } from './userSvcPermit';
 import { UserSvcPermitInput } from './userSvcPermitInput';
-import { UserSvcReadUserByTokenResponse } from './userSvcReadUserByTokenResponse';
+import { UserSvcReadSelfResponse } from './userSvcReadSelfResponse';
 import { UserSvcRegisterRequest } from './userSvcRegisterRequest';
 import { UserSvcRegisterResponse } from './userSvcRegisterResponse';
 import { UserSvcResetPasswordRequest } from './userSvcResetPasswordRequest';
@@ -399,7 +400,8 @@ import { UserSvcSaveEnrollsResponse } from './userSvcSaveEnrollsResponse';
 import { UserSvcSaveOrganizationRequest } from './userSvcSaveOrganizationRequest';
 import { UserSvcSaveOrganizationResponse } from './userSvcSaveOrganizationResponse';
 import { UserSvcSavePermitsRequest } from './userSvcSavePermitsRequest';
-import { UserSvcSaveProfileRequest } from './userSvcSaveProfileRequest';
+import { UserSvcSaveSelfRequest } from './userSvcSaveSelfRequest';
+import { UserSvcSaveUserRequest } from './userSvcSaveUserRequest';
 import { UserSvcUser } from './userSvcUser';
 import { UserSvcUserRecord } from './userSvcUserRecord';
 /* tslint:disable:no-unused-variable */
@@ -606,7 +608,7 @@ let typeMap = {
     "UserSvcOrganization": UserSvcOrganization,
     "UserSvcPermit": UserSvcPermit,
     "UserSvcPermitInput": UserSvcPermitInput,
-    "UserSvcReadUserByTokenResponse": UserSvcReadUserByTokenResponse,
+    "UserSvcReadSelfResponse": UserSvcReadSelfResponse,
     "UserSvcRegisterRequest": UserSvcRegisterRequest,
     "UserSvcRegisterResponse": UserSvcRegisterResponse,
     "UserSvcResetPasswordRequest": UserSvcResetPasswordRequest,
@@ -615,7 +617,8 @@ let typeMap = {
     "UserSvcSaveOrganizationRequest": UserSvcSaveOrganizationRequest,
     "UserSvcSaveOrganizationResponse": UserSvcSaveOrganizationResponse,
     "UserSvcSavePermitsRequest": UserSvcSavePermitsRequest,
-    "UserSvcSaveProfileRequest": UserSvcSaveProfileRequest,
+    "UserSvcSaveSelfRequest": UserSvcSaveSelfRequest,
+    "UserSvcSaveUserRequest": UserSvcSaveUserRequest,
     "UserSvcUser": UserSvcUser,
     "UserSvcUserRecord": UserSvcUserRecord,
 };

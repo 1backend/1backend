@@ -84,7 +84,7 @@ oo permit save user-prompter-permit.yaml
 
 The User Svc produces a JWT ([JSON Web Token](https://en.wikipedia.org/wiki/JSON_Web_Token)) upon [/user-svc/login](/docs/1backend/login) in the `token.token` field (see the response documentation).
 
-You can either use this token as a proper JWT - decode it and inspect the contents, or you can just use the token to read the user account that belongs to the token with the [/user-svc/user/by-token](/docs/1backend/read-user-by-token) endpoint.
+You can either use this token as a proper JWT - decode it and inspect the contents, or you can just use the token to read the user account that belongs to the token with the [/user-svc/self](/docs/1backend/read-self) endpoint.
 
 ### Decoding a token
 

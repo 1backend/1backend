@@ -21,10 +21,10 @@ import {
 	UserSvcApi,
 	UserSvcListUsersResponse,
 	UserSvcLoginResponse,
-	UserSvcReadUserByTokenResponse,
+	UserSvcReadSelfResponse,
 	UserSvcUser,
 	UserSvcListUsersRequest,
-	UserSvcSaveProfileRequest,
+	UserSvcSaveUserRequest,
 	UserSvcChangePasswordRequest,
 	UserSvcResetPasswordRequest,
 } from '@1backend/client';
@@ -82,7 +82,7 @@ export class UserService {
 		}
 
 		try {
-			const rsp = await this.readUserByToken();
+			const rsp = await this.readSelf();
 			this.userSubject.next(rsp.user!);
 		} catch (error) {
 			console.error('Cannot read user even with a token', error);
@@ -130,8 +130,8 @@ export class UserService {
 		});
 	}
 
-	readUserByToken(): Promise<UserSvcReadUserByTokenResponse> {
-		return this.userService.readUserByToken({});
+	readSelf(): Promise<UserSvcReadSelfResponse> {
+		return this.userService.readSelf({});
 	}
 
 	getUsers(
@@ -142,10 +142,9 @@ export class UserService {
 		});
 	}
 
-	/** Save profile on behalf of a user */
-	saveProfile(id: string, slug: string, name: string): Promise<object> {
-		const request: UserSvcSaveProfileRequest = {
-			slug: slug,
+	/** Save user. For admins. */
+	saveUser(id: string, name: string): Promise<object> {
+		const request: UserSvcSaveUserRequest = {
 			name: name,
 		};
 		return this.userService.saveUser({
@@ -155,12 +154,10 @@ export class UserService {
 	}
 
 	changePassword(
-		slug: string,
 		currentPassword: string,
 		newPassword: string
 	): Promise<object> {
 		const request: UserSvcChangePasswordRequest = {
-			slug: slug,
 			currentPassword: currentPassword,
 			newPassword: newPassword,
 		};

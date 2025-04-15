@@ -4749,19 +4749,12 @@ const docTemplate = `{
                 "operationId": "saveSelf",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
                         "description": "Save Profile Request",
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user_svc.SaveProfileRequest"
+                            "$ref": "#/definitions/user_svc.SaveSelfRequest"
                         }
                     }
                 ],
@@ -4769,7 +4762,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.SaveProfileResponse"
+                            "$ref": "#/definitions/user_svc.SaveSelfResponse"
                         }
                     },
                     "400": {
@@ -4780,6 +4773,45 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieves user information based on the authentication token in the request header.\nTypically called by single-page applications during the initial page load.\nWhile some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,\nthis endpoint returns additional data, including the full user object and associated organizations.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Svc"
+                ],
+                "summary": "Read Self",
+                "operationId": "readSelf",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ReadSelfResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Token Missing",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
                         }
@@ -4909,47 +4941,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/user-svc/user/by-token": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retrieves user information based on the authentication token in the request header.\nTypically called by single-page applications during the initial page load.\nWhile some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,\nthis endpoint returns additional data, including the full user object and associated organizations.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User Svc"
-                ],
-                "summary": "Read User by Token",
-                "operationId": "readUserByToken",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ReadUserByTokenResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Token Missing",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/user-svc/user/{userId}": {
             "put": {
                 "security": [
@@ -4957,7 +4948,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Save user information based on the provided user ID.\nIt is intended for admins, because it uses the ` + "`" + `user-svc:user:edit` + "`" + ` permission which only admins have.\nFor a user to edit its own profile, see saveSelf.",
+                "description": "Save user information based on the provided user ID.\nIntended for admins. Requires the ` + "`" + `user-svc:user:edit` + "`" + ` permission.\nFor a user to edit their own profile, see ` + "`" + `saveSelf` + "`" + `.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4983,7 +4974,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user_svc.SaveProfileRequest"
+                            "$ref": "#/definitions/user_svc.SaveUserRequest"
                         }
                     }
                 ],
@@ -4991,7 +4982,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.SaveProfileResponse"
+                            "$ref": "#/definitions/user_svc.SaveUserResponse"
                         }
                     },
                     "400": {
@@ -9315,7 +9306,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.ReadUserByTokenResponse": {
+        "user_svc.ReadSelfResponse": {
             "type": "object",
             "required": [
                 "user"
@@ -9483,13 +9474,16 @@ const docTemplate = `{
         "user_svc.SavePermitsResponse": {
             "type": "object"
         },
-        "user_svc.SaveProfileRequest": {
+        "user_svc.SaveSelfRequest": {
             "type": "object",
             "properties": {
-                "name": {
-                    "type": "string"
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 },
-                "slug": {
+                "name": {
                     "type": "string"
                 },
                 "thumbnailFileId": {
@@ -9498,7 +9492,22 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.SaveProfileResponse": {
+        "user_svc.SaveSelfResponse": {
+            "type": "object"
+        },
+        "user_svc.SaveUserRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "thumbnailFileId": {
+                    "type": "string",
+                    "example": "file_fQDxusW8og"
+                }
+            }
+        },
+        "user_svc.SaveUserResponse": {
             "type": "object"
         },
         "user_svc.User": {
@@ -9516,6 +9525,12 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "string"
+                },
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 },
                 "name": {
                     "description": "Full name of the user.",
@@ -9596,7 +9611,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.3.0-rc.35",
+	Version:          "0.3.0-rc.37",
 	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},

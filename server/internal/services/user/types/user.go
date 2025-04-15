@@ -38,6 +38,8 @@ type User struct {
 	PasswordHash string `json:"passwordHash,omitempty"`
 
 	ThumbnailFileId string `json:"thumbnailFileId,omitempty" example:"file_fQDyi1xdHK"`
+
+	Labels map[string]string `json:"labels,omitempty"`
 }
 
 type UserRecord struct {
@@ -63,9 +65,9 @@ func (c *User) GetUpdatedAt() string {
 	return c.Id
 }
 
-type ReadUserByTokenRequest struct{}
+type ReadSelfRequest struct{}
 
-type ReadUserByTokenResponse struct {
+type ReadSelfResponse struct {
 	// The user who made the request.
 	User *User `json:"user" binding:"required"`
 
@@ -106,13 +108,21 @@ type LoginResponse struct {
 	Token *AuthToken `json:"token,omitempty"`
 }
 
-type SaveProfileRequest struct {
-	Slug            string `json:"slug,omitempty"`
+type SaveUserRequest struct {
 	Name            string `json:"name,omitempty"`
 	ThumbnailFileId string `json:"thumbnailFileId,omitempty" example:"file_fQDxusW8og"`
 }
 
-type SaveProfileResponse struct {
+type SaveUserResponse struct {
+}
+
+type SaveSelfRequest struct {
+	Name            string             `json:"name,omitempty"`
+	ThumbnailFileId string             `json:"thumbnailFileId,omitempty" example:"file_fQDxusW8og"`
+	Labels          *map[string]string `json:"labels,omitempty"`
+}
+
+type SaveSelfResponse struct {
 }
 
 type ChangePasswordRequest struct {
