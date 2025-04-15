@@ -3151,7 +3151,6 @@ definitions:
     type: object
   user_svc.SaveProfileRequest:
     properties:
-      meta: {}
       name:
         type: string
       thumbnailFileId:
@@ -3162,9 +3161,11 @@ definitions:
     type: object
   user_svc.SaveSelfRequest:
     properties:
+      labels:
+        additionalProperties:
+          type: string
+        type: object
       name:
-        type: string
-      slug:
         type: string
       thumbnailFileId:
         example: file_fQDxusW8og
@@ -3180,8 +3181,9 @@ definitions:
         type: string
       id:
         type: string
-      meta:
-        additionalProperties: {}
+      labels:
+        additionalProperties:
+          type: string
         type: object
       name:
         description: Full name of the user.

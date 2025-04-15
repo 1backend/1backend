@@ -21,16 +21,16 @@ import { mapValues } from '../runtime';
 export interface UserSvcSaveSelfRequest {
     /**
      * 
-     * @type {string}
+     * @type {{ [key: string]: string; }}
      * @memberof UserSvcSaveSelfRequest
      */
-    name?: string;
+    labels?: { [key: string]: string; };
     /**
      * 
      * @type {string}
      * @memberof UserSvcSaveSelfRequest
      */
-    slug?: string;
+    name?: string;
     /**
      * 
      * @type {string}
@@ -56,8 +56,8 @@ export function UserSvcSaveSelfRequestFromJSONTyped(json: any, ignoreDiscriminat
     }
     return {
         
+        'labels': json['labels'] == null ? undefined : json['labels'],
         'name': json['name'] == null ? undefined : json['name'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
         'thumbnailFileId': json['thumbnailFileId'] == null ? undefined : json['thumbnailFileId'],
     };
 }
@@ -73,8 +73,8 @@ export function UserSvcSaveSelfRequestToJSONTyped(value?: UserSvcSaveSelfRequest
 
     return {
         
+        'labels': value['labels'],
         'name': value['name'],
-        'slug': value['slug'],
         'thumbnailFileId': value['thumbnailFileId'],
     };
 }

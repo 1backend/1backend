@@ -9477,7 +9477,6 @@ const docTemplate = `{
         "user_svc.SaveProfileRequest": {
             "type": "object",
             "properties": {
-                "meta": {},
                 "name": {
                     "type": "string"
                 },
@@ -9493,10 +9492,13 @@ const docTemplate = `{
         "user_svc.SaveSelfRequest": {
             "type": "object",
             "properties": {
-                "name": {
-                    "type": "string"
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 },
-                "slug": {
+                "name": {
                     "type": "string"
                 },
                 "thumbnailFileId": {
@@ -9524,9 +9526,11 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "meta": {
+                "labels": {
                     "type": "object",
-                    "additionalProperties": {}
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 },
                 "name": {
                     "description": "Full name of the user.",

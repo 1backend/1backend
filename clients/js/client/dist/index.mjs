@@ -8509,7 +8509,7 @@ function UserSvcUserFromJSONTyped(json, ignoreDiscriminator) {
         'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'id': json['id'],
-        'meta': json['meta'] == null ? undefined : json['meta'],
+        'labels': json['labels'] == null ? undefined : json['labels'],
         'name': json['name'] == null ? undefined : json['name'],
         'passwordHash': json['passwordHash'] == null ? undefined : json['passwordHash'],
         'slug': json['slug'],
@@ -8528,7 +8528,7 @@ function UserSvcUserToJSONTyped(value, ignoreDiscriminator = false) {
         'createdAt': value['createdAt'],
         'deletedAt': value['deletedAt'],
         'id': value['id'],
-        'meta': value['meta'],
+        'labels': value['labels'],
         'name': value['name'],
         'passwordHash': value['passwordHash'],
         'slug': value['slug'],
@@ -10030,7 +10030,6 @@ function UserSvcSaveProfileRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'meta': json['meta'] == null ? undefined : json['meta'],
         'name': json['name'] == null ? undefined : json['name'],
         'thumbnailFileId': json['thumbnailFileId'] == null ? undefined : json['thumbnailFileId'],
     };
@@ -10043,7 +10042,6 @@ function UserSvcSaveProfileRequestToJSONTyped(value, ignoreDiscriminator = false
         return value;
     }
     return {
-        'meta': value['meta'],
         'name': value['name'],
         'thumbnailFileId': value['thumbnailFileId'],
     };
@@ -10076,8 +10074,8 @@ function UserSvcSaveSelfRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'labels': json['labels'] == null ? undefined : json['labels'],
         'name': json['name'] == null ? undefined : json['name'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
         'thumbnailFileId': json['thumbnailFileId'] == null ? undefined : json['thumbnailFileId'],
     };
 }
@@ -10089,8 +10087,8 @@ function UserSvcSaveSelfRequestToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
+        'labels': value['labels'],
         'name': value['name'],
-        'slug': value['slug'],
         'thumbnailFileId': value['thumbnailFileId'],
     };
 }

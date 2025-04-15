@@ -96,7 +96,7 @@ func TestOrganization(t *testing.T) {
 			)
 			require.Equal(t, orgId1, claim.ActiveOrganizationId)
 
-			tokenRsp, _, err := userClient.UserSvcAPI.ReadUserByToken(context.Background()).
+			tokenRsp, _, err := userClient.UserSvcAPI.ReadSelf(context.Background()).
 				Execute()
 			require.NoError(t, err)
 			require.Equal(t, 1, len(tokenRsp.Organizations))
@@ -112,14 +112,14 @@ func TestOrganization(t *testing.T) {
 	)
 
 	t.Run("assign org to user", func(t *testing.T) {
-		byTokenRsp, _, err := otherClient.UserSvcAPI.ReadUserByToken(context.Background()).
+		readSelfRsp, _, err := otherClient.UserSvcAPI.ReadSelf(context.Background()).
 			Execute()
 		require.NoError(t, err)
 
 		_, _, err = userClient.UserSvcAPI.AddUserToOrganization(
 			context.Background(),
 			orgId1,
-			byTokenRsp.User.Id,
+			readSelfRsp.User.Id,
 		).
 			Execute()
 		require.NoError(t, err)
@@ -152,7 +152,7 @@ func TestOrganization(t *testing.T) {
 		_, _, err = thirdClient.UserSvcAPI.RemoveUserFromOrganization(
 			context.Background(),
 			orgId1,
-			byTokenRsp.User.Id,
+			readSelfRsp.User.Id,
 		).
 			Execute()
 		// third user cannot remove the second from the org of the first
@@ -161,7 +161,7 @@ func TestOrganization(t *testing.T) {
 		_, _, err = userClient.UserSvcAPI.RemoveUserFromOrganization(
 			context.Background(),
 			orgId1,
-			byTokenRsp.User.Id,
+			readSelfRsp.User.Id,
 		).
 			Execute()
 		require.NoError(t, err)

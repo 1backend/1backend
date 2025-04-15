@@ -39,10 +39,10 @@ export interface UserSvcUser {
     id: string;
     /**
      * 
-     * @type {{ [key: string]: object; }}
+     * @type {{ [key: string]: string; }}
      * @memberof UserSvcUser
      */
-    meta?: { [key: string]: object; };
+    labels?: { [key: string]: string; };
     /**
      * Full name of the user.
      * @type {string}
@@ -97,7 +97,7 @@ export function UserSvcUserFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'id': json['id'],
-        'meta': json['meta'] == null ? undefined : json['meta'],
+        'labels': json['labels'] == null ? undefined : json['labels'],
         'name': json['name'] == null ? undefined : json['name'],
         'passwordHash': json['passwordHash'] == null ? undefined : json['passwordHash'],
         'slug': json['slug'],
@@ -120,7 +120,7 @@ export function UserSvcUserToJSONTyped(value?: UserSvcUser | null, ignoreDiscrim
         'createdAt': value['createdAt'],
         'deletedAt': value['deletedAt'],
         'id': value['id'],
-        'meta': value['meta'],
+        'labels': value['labels'],
         'name': value['name'],
         'passwordHash': value['passwordHash'],
         'slug': value['slug'],

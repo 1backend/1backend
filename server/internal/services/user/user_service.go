@@ -162,8 +162,8 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 	})).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/user-svc/user/by-token", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
-		us.ReadUserByToken(w, r)
+	router.HandleFunc("/user-svc/self", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.ReadSelf(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 

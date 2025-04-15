@@ -25,7 +25,6 @@ export function UserSvcSaveProfileRequestFromJSONTyped(json, ignoreDiscriminator
         return json;
     }
     return {
-        'meta': json['meta'] == null ? undefined : json['meta'],
         'name': json['name'] == null ? undefined : json['name'],
         'thumbnailFileId': json['thumbnailFileId'] == null ? undefined : json['thumbnailFileId'],
     };
@@ -38,7 +37,6 @@ export function UserSvcSaveProfileRequestToJSONTyped(value, ignoreDiscriminator 
         return value;
     }
     return {
-        'meta': value['meta'],
         'name': value['name'],
         'thumbnailFileId': value['thumbnailFileId'],
     };

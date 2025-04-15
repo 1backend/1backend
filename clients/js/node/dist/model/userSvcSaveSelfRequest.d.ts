@@ -10,8 +10,10 @@
  * Do not edit the class manually.
  */
 export declare class UserSvcSaveSelfRequest {
+    'labels'?: {
+        [key: string]: string;
+    };
     'name'?: string;
-    'slug'?: string;
     'thumbnailFileId'?: string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{

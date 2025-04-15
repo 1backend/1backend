@@ -42,7 +42,7 @@ func TestCreate(t *testing.T) {
 		Execute()
 	require.NoError(t, err)
 
-	tokenReadRsp2, _, err := client2.UserSvcAPI.ReadSelft.Background()).
+	tokenReadRsp2, _, err := client2.UserSvcAPI.ReadSelf(context.Background()).
 		Execute()
 	require.NoError(t, err)
 

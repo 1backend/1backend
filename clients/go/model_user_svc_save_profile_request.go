@@ -20,7 +20,6 @@ var _ MappedNullable = &UserSvcSaveProfileRequest{}
 
 // UserSvcSaveProfileRequest struct for UserSvcSaveProfileRequest
 type UserSvcSaveProfileRequest struct {
-	Meta map[string]interface{} `json:"meta,omitempty"`
 	Name *string `json:"name,omitempty"`
 	ThumbnailFileId *string `json:"thumbnailFileId,omitempty"`
 }
@@ -40,38 +39,6 @@ func NewUserSvcSaveProfileRequest() *UserSvcSaveProfileRequest {
 func NewUserSvcSaveProfileRequestWithDefaults() *UserSvcSaveProfileRequest {
 	this := UserSvcSaveProfileRequest{}
 	return &this
-}
-
-// GetMeta returns the Meta field value if set, zero value otherwise.
-func (o *UserSvcSaveProfileRequest) GetMeta() map[string]interface{} {
-	if o == nil || IsNil(o.Meta) {
-		var ret map[string]interface{}
-		return ret
-	}
-	return o.Meta
-}
-
-// GetMetaOk returns a tuple with the Meta field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcSaveProfileRequest) GetMetaOk() (map[string]interface{}, bool) {
-	if o == nil || IsNil(o.Meta) {
-		return map[string]interface{}{}, false
-	}
-	return o.Meta, true
-}
-
-// HasMeta returns a boolean if a field has been set.
-func (o *UserSvcSaveProfileRequest) HasMeta() bool {
-	if o != nil && !IsNil(o.Meta) {
-		return true
-	}
-
-	return false
-}
-
-// SetMeta gets a reference to the given map[string]interface{} and assigns it to the Meta field.
-func (o *UserSvcSaveProfileRequest) SetMeta(v map[string]interface{}) {
-	o.Meta = v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -148,9 +115,6 @@ func (o UserSvcSaveProfileRequest) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcSaveProfileRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Meta) {
-		toSerialize["meta"] = o.Meta
-	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}

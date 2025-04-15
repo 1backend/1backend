@@ -35,11 +35,11 @@ export interface UserSvcUser {
     id: string;
     /**
      *
-     * @type {{ [key: string]: object; }}
+     * @type {{ [key: string]: string; }}
      * @memberof UserSvcUser
      */
-    meta?: {
-        [key: string]: object;
+    labels?: {
+        [key: string]: string;
     };
     /**
      * Full name of the user.

@@ -20,8 +20,8 @@ var _ MappedNullable = &UserSvcSaveSelfRequest{}
 
 // UserSvcSaveSelfRequest struct for UserSvcSaveSelfRequest
 type UserSvcSaveSelfRequest struct {
+	Labels *map[string]string `json:"labels,omitempty"`
 	Name *string `json:"name,omitempty"`
-	Slug *string `json:"slug,omitempty"`
 	ThumbnailFileId *string `json:"thumbnailFileId,omitempty"`
 }
 
@@ -40,6 +40,38 @@ func NewUserSvcSaveSelfRequest() *UserSvcSaveSelfRequest {
 func NewUserSvcSaveSelfRequestWithDefaults() *UserSvcSaveSelfRequest {
 	this := UserSvcSaveSelfRequest{}
 	return &this
+}
+
+// GetLabels returns the Labels field value if set, zero value otherwise.
+func (o *UserSvcSaveSelfRequest) GetLabels() map[string]string {
+	if o == nil || IsNil(o.Labels) {
+		var ret map[string]string
+		return ret
+	}
+	return *o.Labels
+}
+
+// GetLabelsOk returns a tuple with the Labels field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcSaveSelfRequest) GetLabelsOk() (*map[string]string, bool) {
+	if o == nil || IsNil(o.Labels) {
+		return nil, false
+	}
+	return o.Labels, true
+}
+
+// HasLabels returns a boolean if a field has been set.
+func (o *UserSvcSaveSelfRequest) HasLabels() bool {
+	if o != nil && !IsNil(o.Labels) {
+		return true
+	}
+
+	return false
+}
+
+// SetLabels gets a reference to the given map[string]string and assigns it to the Labels field.
+func (o *UserSvcSaveSelfRequest) SetLabels(v map[string]string) {
+	o.Labels = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -72,38 +104,6 @@ func (o *UserSvcSaveSelfRequest) HasName() bool {
 // SetName gets a reference to the given string and assigns it to the Name field.
 func (o *UserSvcSaveSelfRequest) SetName(v string) {
 	o.Name = &v
-}
-
-// GetSlug returns the Slug field value if set, zero value otherwise.
-func (o *UserSvcSaveSelfRequest) GetSlug() string {
-	if o == nil || IsNil(o.Slug) {
-		var ret string
-		return ret
-	}
-	return *o.Slug
-}
-
-// GetSlugOk returns a tuple with the Slug field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcSaveSelfRequest) GetSlugOk() (*string, bool) {
-	if o == nil || IsNil(o.Slug) {
-		return nil, false
-	}
-	return o.Slug, true
-}
-
-// HasSlug returns a boolean if a field has been set.
-func (o *UserSvcSaveSelfRequest) HasSlug() bool {
-	if o != nil && !IsNil(o.Slug) {
-		return true
-	}
-
-	return false
-}
-
-// SetSlug gets a reference to the given string and assigns it to the Slug field.
-func (o *UserSvcSaveSelfRequest) SetSlug(v string) {
-	o.Slug = &v
 }
 
 // GetThumbnailFileId returns the ThumbnailFileId field value if set, zero value otherwise.
@@ -148,11 +148,11 @@ func (o UserSvcSaveSelfRequest) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcSaveSelfRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Labels) {
+		toSerialize["labels"] = o.Labels
+	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
-	}
-	if !IsNil(o.Slug) {
-		toSerialize["slug"] = o.Slug
 	}
 	if !IsNil(o.ThumbnailFileId) {
 		toSerialize["thumbnailFileId"] = o.ThumbnailFileId

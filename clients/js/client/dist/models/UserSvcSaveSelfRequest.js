@@ -25,8 +25,8 @@ export function UserSvcSaveSelfRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'labels': json['labels'] == null ? undefined : json['labels'],
         'name': json['name'] == null ? undefined : json['name'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
         'thumbnailFileId': json['thumbnailFileId'] == null ? undefined : json['thumbnailFileId'],
     };
 }
@@ -38,8 +38,8 @@ export function UserSvcSaveSelfRequestToJSONTyped(value, ignoreDiscriminator = f
         return value;
     }
     return {
+        'labels': value['labels'],
         'name': value['name'],
-        'slug': value['slug'],
         'thumbnailFileId': value['thumbnailFileId'],
     };
 }

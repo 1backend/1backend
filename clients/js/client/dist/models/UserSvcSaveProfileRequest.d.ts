@@ -17,12 +17,6 @@
 export interface UserSvcSaveProfileRequest {
     /**
      *
-     * @type {object}
-     * @memberof UserSvcSaveProfileRequest
-     */
-    meta?: object;
-    /**
-     *
      * @type {string}
      * @memberof UserSvcSaveProfileRequest
      */

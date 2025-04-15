@@ -25,7 +25,7 @@ type UserSvcUser struct {
 	CreatedAt *string `json:"createdAt,omitempty"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	Id string `json:"id"`
-	Meta map[string]map[string]interface{} `json:"meta,omitempty"`
+	Labels *map[string]string `json:"labels,omitempty"`
 	// Full name of the user.
 	Name *string `json:"name,omitempty"`
 	PasswordHash *string `json:"passwordHash,omitempty"`
@@ -144,36 +144,36 @@ func (o *UserSvcUser) SetId(v string) {
 	o.Id = v
 }
 
-// GetMeta returns the Meta field value if set, zero value otherwise.
-func (o *UserSvcUser) GetMeta() map[string]map[string]interface{} {
-	if o == nil || IsNil(o.Meta) {
-		var ret map[string]map[string]interface{}
+// GetLabels returns the Labels field value if set, zero value otherwise.
+func (o *UserSvcUser) GetLabels() map[string]string {
+	if o == nil || IsNil(o.Labels) {
+		var ret map[string]string
 		return ret
 	}
-	return o.Meta
+	return *o.Labels
 }
 
-// GetMetaOk returns a tuple with the Meta field value if set, nil otherwise
+// GetLabelsOk returns a tuple with the Labels field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcUser) GetMetaOk() (map[string]map[string]interface{}, bool) {
-	if o == nil || IsNil(o.Meta) {
-		return map[string]map[string]interface{}{}, false
+func (o *UserSvcUser) GetLabelsOk() (*map[string]string, bool) {
+	if o == nil || IsNil(o.Labels) {
+		return nil, false
 	}
-	return o.Meta, true
+	return o.Labels, true
 }
 
-// HasMeta returns a boolean if a field has been set.
-func (o *UserSvcUser) HasMeta() bool {
-	if o != nil && !IsNil(o.Meta) {
+// HasLabels returns a boolean if a field has been set.
+func (o *UserSvcUser) HasLabels() bool {
+	if o != nil && !IsNil(o.Labels) {
 		return true
 	}
 
 	return false
 }
 
-// SetMeta gets a reference to the given map[string]map[string]interface{} and assigns it to the Meta field.
-func (o *UserSvcUser) SetMeta(v map[string]map[string]interface{}) {
-	o.Meta = v
+// SetLabels gets a reference to the given map[string]string and assigns it to the Labels field.
+func (o *UserSvcUser) SetLabels(v map[string]string) {
+	o.Labels = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -345,8 +345,8 @@ func (o UserSvcUser) ToMap() (map[string]interface{}, error) {
 		toSerialize["deletedAt"] = o.DeletedAt
 	}
 	toSerialize["id"] = o.Id
-	if !IsNil(o.Meta) {
-		toSerialize["meta"] = o.Meta
+	if !IsNil(o.Labels) {
+		toSerialize["labels"] = o.Labels
 	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name

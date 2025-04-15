@@ -13,21 +13,21 @@
 import { RequestFile } from './models';
 
 export class UserSvcSaveSelfRequest {
+    'labels'?: { [key: string]: string; };
     'name'?: string;
-    'slug'?: string;
     'thumbnailFileId'?: string;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "name",
-            "baseName": "name",
-            "type": "string"
+            "name": "labels",
+            "baseName": "labels",
+            "type": "{ [key: string]: string; }"
         },
         {
-            "name": "slug",
-            "baseName": "slug",
+            "name": "name",
+            "baseName": "name",
             "type": "string"
         },
         {

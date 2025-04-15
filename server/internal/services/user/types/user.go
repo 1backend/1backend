@@ -39,7 +39,7 @@ type User struct {
 
 	ThumbnailFileId string `json:"thumbnailFileId,omitempty" example:"file_fQDyi1xdHK"`
 
-	Meta map[string]any `json:"meta,omitempty"`
+	Labels map[string]string `json:"labels,omitempty"`
 }
 
 type UserRecord struct {
@@ -111,16 +111,15 @@ type LoginResponse struct {
 type SaveProfileRequest struct {
 	Name            string `json:"name,omitempty"`
 	ThumbnailFileId string `json:"thumbnailFileId,omitempty" example:"file_fQDxusW8og"`
-	Meta            any    `json:"meta,omitempty"`
 }
 
 type SaveProfileResponse struct {
 }
 
 type SaveSelfRequest struct {
-	Slug            string `json:"slug,omitempty"`
-	Name            string `json:"name,omitempty"`
-	ThumbnailFileId string `json:"thumbnailFileId,omitempty" example:"file_fQDxusW8og"`
+	Name            string            `json:"name,omitempty"`
+	ThumbnailFileId string            `json:"thumbnailFileId,omitempty" example:"file_fQDxusW8og"`
+	Labels          map[string]string `json:"labels,omitempty"`
 }
 
 type SaveSelfResponse struct {

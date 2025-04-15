@@ -17,16 +17,18 @@
 export interface UserSvcSaveSelfRequest {
     /**
      *
-     * @type {string}
+     * @type {{ [key: string]: string; }}
      * @memberof UserSvcSaveSelfRequest
      */
-    name?: string;
+    labels?: {
+        [key: string]: string;
+    };
     /**
      *
      * @type {string}
      * @memberof UserSvcSaveSelfRequest
      */
-    slug?: string;
+    name?: string;
     /**
      *
      * @type {string}

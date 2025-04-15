@@ -10,7 +10,6 @@
  * Do not edit the class manually.
  */
 export declare class UserSvcSaveProfileRequest {
-    'meta'?: object;
     'name'?: string;
     'thumbnailFileId'?: string;
     static discriminator: string | undefined;

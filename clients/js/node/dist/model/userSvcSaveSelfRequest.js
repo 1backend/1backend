@@ -17,13 +17,13 @@ export class UserSvcSaveSelfRequest {
 UserSvcSaveSelfRequest.discriminator = undefined;
 UserSvcSaveSelfRequest.attributeTypeMap = [
     {
-        "name": "name",
-        "baseName": "name",
-        "type": "string"
+        "name": "labels",
+        "baseName": "labels",
+        "type": "{ [key: string]: string; }"
     },
     {
-        "name": "slug",
-        "baseName": "slug",
+        "name": "name",
+        "baseName": "name",
         "type": "string"
     },
     {

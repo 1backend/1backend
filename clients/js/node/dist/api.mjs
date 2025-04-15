@@ -7208,11 +7208,6 @@ class UserSvcSaveProfileRequest {
 UserSvcSaveProfileRequest.discriminator = undefined;
 UserSvcSaveProfileRequest.attributeTypeMap = [
     {
-        "name": "meta",
-        "baseName": "meta",
-        "type": "object"
-    },
-    {
         "name": "name",
         "baseName": "name",
         "type": "string"
@@ -7243,13 +7238,13 @@ class UserSvcSaveSelfRequest {
 UserSvcSaveSelfRequest.discriminator = undefined;
 UserSvcSaveSelfRequest.attributeTypeMap = [
     {
-        "name": "name",
-        "baseName": "name",
-        "type": "string"
+        "name": "labels",
+        "baseName": "labels",
+        "type": "{ [key: string]: string; }"
     },
     {
-        "name": "slug",
-        "baseName": "slug",
+        "name": "name",
+        "baseName": "name",
         "type": "string"
     },
     {
@@ -7293,9 +7288,9 @@ UserSvcUser.attributeTypeMap = [
         "type": "string"
     },
     {
-        "name": "meta",
-        "baseName": "meta",
-        "type": "{ [key: string]: object; }"
+        "name": "labels",
+        "baseName": "labels",
+        "type": "{ [key: string]: string; }"
     },
     {
         "name": "name",

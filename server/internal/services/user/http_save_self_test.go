@@ -47,7 +47,26 @@ func TestSaveSelf(t *testing.T) {
 				Name: openapi.PtrString("New Name"),
 			}).Execute()
 
-		require.Error(t, err)
+		require.NoError(t, err)
 	})
 
+	t.Run("name has changed", func(t *testing.T) {
+		selfRsp, _, err := client1.UserSvcAPI.ReadSelf(ctx).Execute()
+
+		require.NoError(t, err)
+		require.NotNil(t, selfRsp.User)
+		require.NotNil(t, selfRsp.User.Name)
+		require.Equal(t, "New Name", *selfRsp.User.Name)
+	})
+
+	t.Run("user updates their meta", func(t *testing.T) {
+		_, _, err := client1.UserSvcAPI.SaveSelf(ctx).Body(
+			openapi.UserSvcSaveSelfRequest{
+				Meta: &openapi.UserMeta{
+					"key": "value",
+				},
+			}).Execute()
+
+		require.NoError(t, err)
+	})
 }

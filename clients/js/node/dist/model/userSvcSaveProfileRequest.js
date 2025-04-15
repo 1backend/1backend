@@ -17,11 +17,6 @@ export class UserSvcSaveProfileRequest {
 UserSvcSaveProfileRequest.discriminator = undefined;
 UserSvcSaveProfileRequest.attributeTypeMap = [
     {
-        "name": "meta",
-        "baseName": "meta",
-        "type": "object"
-    },
-    {
         "name": "name",
         "baseName": "name",
         "type": "string"
