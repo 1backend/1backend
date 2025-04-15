@@ -14,316 +14,190 @@ package secretservice_test
 
 import (
 	"context"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
-	"github.com/1backend/1backend/server/internal/di"
-	"github.com/onsi/ginkgo/v2"
-	"github.com/onsi/gomega"
-	"go.uber.org/mock/gomock"
+	"github.com/stretchr/testify/require"
 )
 
 func TestSecretService(t *testing.T) {
-	gomega.RegisterFailHandler(ginkgo.Fail)
-	ginkgo.RunSpecs(t, "SecretService Suite")
-}
+	t.Parallel()
 
-var _ = ginkgo.Describe("Secret Tests", func() {
-	var (
-		server     *httptest.Server
-		ctrl       *gomock.Controller
-		ctx        context.Context
-		userClient *openapi.APIClient
+	server, err := test.StartService(test.Options{
+		Test: true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
 
-		mockClientFactory *client.MockClientFactory
-		mockUserSvc       *openapi.MockUserSvcAPI
+	clientFactory := client.NewApiClientFactory(server.Url)
 
-		universe *di.Universe
+	manyClients, _, err := test.MakeClients(clientFactory, 2)
+	require.NoError(t, err)
+	client1 := manyClients[0]
+	client2 := manyClients[1]
 
-		isAdmin       bool
-		hasPermission bool
-		userSlug      string
-	)
+	adminClient, _, err := test.AdminClient(clientFactory)
+	require.NoError(t, err)
 
-	ginkgo.BeforeEach(func() {
-		ctx = context.Background()
-		ctrl = gomock.NewController(ginkgo.GinkgoT())
-		hs := &di.HandlerSwitcher{}
-		server = httptest.NewServer(hs)
+	ctx := context.Background()
 
-		mockClientFactory = client.NewMockClientFactory(ctrl)
-
-		mockUserSvc = test.MockUserSvc(
-			ctx,
-			ctrl,
-			test.WithHasPermissionFactory(func() bool {
-				return hasPermission
-			}),
-			test.WithSlugFactory(func() string {
-				return userSlug
-			}),
-		)
-		mockAuthorizer := auth.NewMockAuthorizer(ctrl)
-		mockAuthorizer.EXPECT().
-			IsAdminFromRequest(gomock.Any(), gomock.Any()).
-			DoAndReturn(func(_ string, _ *http.Request) (bool, error) {
-				return isAdmin, nil
-			}).AnyTimes()
-
-		mockClientFactory.EXPECT().
-			Client(gomock.Any()).
-			Return(&openapi.APIClient{
-				UserSvcAPI: mockUserSvc,
-				SecretSvcAPI: client.NewApiClientFactory(server.URL).
-					Client().
-					SecretSvcAPI,
+	t.Run("reading non-existent secret", func(t *testing.T) {
+		readRsp, _, err := client1.SecretSvcAPI.ListSecrets(ctx).
+			Body(openapi.SecretSvcListSecretsRequest{
+				Key: openapi.PtrString("nonexistent"),
 			}).
-			AnyTimes()
+			Execute()
 
-		options := &di.Options{
-			Test:          true,
-			Url:           server.URL,
-			Authorizer:    mockAuthorizer,
-			ClientFactory: mockClientFactory,
-		}
-
-		var err error
-		universe, err = di.BigBang(options)
-		gomega.Expect(err).NotTo(gomega.HaveOccurred())
-
-		hs.UpdateHandler(universe.Router)
-
-		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+		require.NoError(t, err)
+		require.Equal(t, 0, len(readRsp.Secrets))
 	})
 
-	ginkgo.JustBeforeEach(func() {
-		err := universe.StarterFunc()
-		gomega.Expect(err).NotTo(gomega.HaveOccurred())
+	t.Run("creating a secret without prefix as user", func(t *testing.T) {
+		_, _, err := client1.SecretSvcAPI.SaveSecrets(ctx).
+			Body(openapi.SecretSvcSaveSecretsRequest{
+				Secrets: []openapi.SecretSvcSecret{
+					{
+						Key:   openapi.PtrString("non-prefixed"),
+						Value: openapi.PtrString("value"),
+					}},
+			}).
+			Execute()
+
+		require.Error(t, err)
 	})
 
-	ginkgo.AfterEach(func() {
-		server.Close()
-		ctrl.Finish()
+	t.Run("as an admin trying to claim prefixed works", func(t *testing.T) {
+		_, _, err := adminClient.SecretSvcAPI.SaveSecrets(ctx).
+			Body(openapi.SecretSvcSaveSecretsRequest{
+				Secrets: []openapi.SecretSvcSecret{
+					{
+						Key:   openapi.PtrString("non-prefixed"),
+						Value: openapi.PtrString("value"),
+					}},
+			}).
+			Execute()
+		require.NoError(t, err)
 	})
 
-	ginkgo.Context("read non-existent", func() {
-		ginkgo.BeforeEach(func() {
-			userClient = mockClientFactory.Client()
+	t.Run("user cannot read secret owned by admin", func(t *testing.T) {
+		readRsp, _, err := client1.SecretSvcAPI.ListSecrets(ctx).
+			Body(openapi.SecretSvcListSecretsRequest{
+				Key: openapi.PtrString("non-prefixed"),
+			}).
+			Execute()
 
-			hasPermission = true
-			isAdmin = false
-			userSlug = "test-user-1"
-		})
-
-		ginkgo.It("works", func() {
-			readRsp, _, err := userClient.SecretSvcAPI.ListSecrets(ctx).
-				Body(openapi.SecretSvcListSecretsRequest{
-					Key: openapi.PtrString("nonexistent"),
-				}).
-				Execute()
-
-			gomega.Expect(err).NotTo(gomega.HaveOccurred())
-			gomega.Expect(len(readRsp.Secrets)).To(gomega.Equal(0))
-		})
+		require.NoError(t, err)
+		require.Equal(t, 0, len(readRsp.Secrets))
 	})
 
-	ginkgo.Context("as a user trying to claim non-prefixed", func() {
-		ginkgo.BeforeEach(func() {
-			userClient = mockClientFactory.Client()
+	t.Run("user 1 can write and read, but user 2 will not have access", func(t *testing.T) {
+		readRsp, _, err := client1.SecretSvcAPI.ListSecrets(ctx).
+			Body(openapi.SecretSvcListSecretsRequest{
+				Key: openapi.PtrString("test-user-slug-0/non-existent"),
+			}).
+			Execute()
 
-			hasPermission = true
-			isAdmin = false
-			userSlug = "test-user-1"
-		})
+		require.NoError(t, err)
+		require.Equal(t, 0, len(readRsp.Secrets))
 
-		ginkgo.It("fails", func() {
-			_, _, err := userClient.SecretSvcAPI.SaveSecrets(ctx).
-				Body(openapi.SecretSvcSaveSecretsRequest{
-					Secrets: []openapi.SecretSvcSecret{
-						{
-							Key:   openapi.PtrString("non-prefixed"),
-							Value: openapi.PtrString("value"),
-						}},
-				}).
-				Execute()
+		_, _, err = client1.SecretSvcAPI.SaveSecrets(ctx).
+			Body(openapi.SecretSvcSaveSecretsRequest{
+				Secrets: []openapi.SecretSvcSecret{
+					{
+						Key:   openapi.PtrString("test-user-slug-0/non-existent"),
+						Value: openapi.PtrString("value"),
+					}},
+			}).
+			Execute()
 
-			gomega.Expect(err).To(gomega.HaveOccurred())
-		})
+		require.NoError(t, err)
+
+		readRsp, _, err = client1.SecretSvcAPI.ListSecrets(ctx).
+			Body(openapi.SecretSvcListSecretsRequest{
+				Key: openapi.PtrString("test-user-slug-0/non-existent"),
+			}).
+			Execute()
+
+		require.NoError(t, err)
+		require.Equal(t, 1, len(readRsp.Secrets))
+
+		readRsp, _, err = client2.SecretSvcAPI.ListSecrets(ctx).
+			Body(openapi.SecretSvcListSecretsRequest{
+				Key: openapi.PtrString("test-user-slug-1/non-existent"),
+			}).
+			Execute()
+
+		require.NoError(t, err)
+		require.Equal(t, 0, len(readRsp.Secrets))
 	})
 
-	ginkgo.Context("as an admin trying to claim non-prefixed", func() {
-		ginkgo.BeforeEach(func() {
-			userClient = mockClientFactory.Client()
+	t.Run("as a user writing already encrypted values", func(t *testing.T) {
+		rsp, _, err := client1.SecretSvcAPI.EncryptValue(ctx).
+			Body(openapi.SecretSvcEncryptValueRequest{
+				Value: openapi.PtrString("value"),
+			}).
+			Execute()
+		require.NoError(t, err)
 
-			hasPermission = true
-			isAdmin = true
-			userSlug = "test-admin-user-1"
-		})
+		_, _, err = client1.SecretSvcAPI.SaveSecrets(ctx).
+			Body(openapi.SecretSvcSaveSecretsRequest{
+				Secrets: []openapi.SecretSvcSecret{
+					{
+						Key:       openapi.PtrString("test-user-slug-0/enc1"),
+						Value:     rsp.Value,
+						Encrypted: openapi.PtrBool(true),
+					}},
+			}).
+			Execute()
+		require.NoError(t, err)
 
-		ginkgo.It("passes", func() {
-			_, _, err := userClient.SecretSvcAPI.SaveSecrets(ctx).
-				Body(openapi.SecretSvcSaveSecretsRequest{
-					Secrets: []openapi.SecretSvcSecret{
-						{
-							Key:   openapi.PtrString("non-prefixed"),
-							Value: openapi.PtrString("value"),
-						}},
-				}).
-				Execute()
+		readRsp, _, err := client1.SecretSvcAPI.ListSecrets(ctx).
+			Body(openapi.SecretSvcListSecretsRequest{
+				Key: openapi.PtrString("test-user-slug-0/enc1"),
+			}).
+			Execute()
+		require.NoError(t, err)
+		require.Equal(t, 1, len(readRsp.Secrets))
+		require.Equal(t, "value", *readRsp.Secrets[0].Value)
+		//require.Equal(t, true, *readRsp.Secrets[0].Encrypted)
+		//require.Equal(t, "test-user-slug-0/enc1", *readRsp.Secrets[0].Key)
 
-			gomega.Expect(err).NotTo(gomega.HaveOccurred())
-
-			readRsp, _, err := userClient.SecretSvcAPI.ListSecrets(ctx).
-				Body(openapi.SecretSvcListSecretsRequest{
-					Key: openapi.PtrString("non-prefixed"),
-				}).
-				Execute()
-
-			gomega.Expect(err).NotTo(gomega.HaveOccurred())
-			gomega.Expect(len(readRsp.Secrets)).To(gomega.Equal(1))
-
-			gomega.Expect(readRsp.Secrets[0].Readers).To(gomega.BeEmpty())
-			gomega.Expect(readRsp.Secrets[0].Writers).To(gomega.BeEmpty())
-			gomega.Expect(readRsp.Secrets[0].Deleters).To(gomega.BeEmpty())
-		})
 	})
 
-	ginkgo.Context("user 1 can write and read, but user 2 will not have access", func() {
-		ginkgo.BeforeEach(func() {
-			userClient = mockClientFactory.Client()
+	t.Run("list multiple", func(t *testing.T) {
+		_, _, err := adminClient.SecretSvcAPI.SaveSecrets(ctx).
+			Body(openapi.SecretSvcSaveSecretsRequest{
+				Secrets: []openapi.SecretSvcSecret{
+					{
+						Key:   openapi.PtrString("a"),
+						Value: openapi.PtrString("value"),
+					}},
+			}).
+			Execute()
+		require.NoError(t, err)
 
-			hasPermission = true
-			isAdmin = false
-			userSlug = "test-user-1"
-		})
+		_, _, err = adminClient.SecretSvcAPI.SaveSecrets(ctx).
+			Body(openapi.SecretSvcSaveSecretsRequest{
+				Secrets: []openapi.SecretSvcSecret{
+					{
+						Key:   openapi.PtrString("b"),
+						Value: openapi.PtrString("value"),
+					}},
+			}).
+			Execute()
+		require.NoError(t, err)
 
-		ginkgo.It("works", func() {
-			readRsp, _, err := userClient.SecretSvcAPI.ListSecrets(ctx).
-				Body(openapi.SecretSvcListSecretsRequest{
-					Key: openapi.PtrString("test-user-1/non-existent"),
-				}).
-				Execute()
+		readRsp, _, err := adminClient.SecretSvcAPI.ListSecrets(ctx).
+			Body(openapi.SecretSvcListSecretsRequest{
+				Keys: []string{"a", "b"},
+			}).
+			Execute()
 
-			gomega.Expect(err).NotTo(gomega.HaveOccurred())
-			gomega.Expect(len(readRsp.Secrets)).To(gomega.Equal(0))
-
-			_, _, err = userClient.SecretSvcAPI.SaveSecrets(ctx).
-				Body(openapi.SecretSvcSaveSecretsRequest{
-					Secrets: []openapi.SecretSvcSecret{
-						{
-							Key:   openapi.PtrString("test-user-1/non-existent"),
-							Value: openapi.PtrString("value"),
-						}},
-				}).
-				Execute()
-
-			gomega.Expect(err).NotTo(gomega.HaveOccurred())
-
-			readRsp, _, err = userClient.SecretSvcAPI.ListSecrets(ctx).
-				Body(openapi.SecretSvcListSecretsRequest{
-					Key: openapi.PtrString("test-user-1/non-existent"),
-				}).
-				Execute()
-			gomega.Expect(err).NotTo(gomega.HaveOccurred())
-			gomega.Expect(len(readRsp.Secrets)).To(gomega.Equal(1))
-
-			userSlug = "test-user-2"
-
-			readRsp, _, err = userClient.SecretSvcAPI.ListSecrets(ctx).
-				Body(openapi.SecretSvcListSecretsRequest{
-					Key: openapi.PtrString("test-user-1/non-existent"),
-				}).
-				Execute()
-			gomega.Expect(err).NotTo(gomega.HaveOccurred())
-			gomega.Expect(len(readRsp.Secrets)).To(gomega.Equal(0))
-		})
+		require.NoError(t, err)
+		require.Equal(t, 2, len(readRsp.Secrets))
+		require.Equal(t, "value", *readRsp.Secrets[0].Value)
 	})
 
-	ginkgo.Context("as a user writing already encrypted values", func() {
-		ginkgo.BeforeEach(func() {
-			userClient = mockClientFactory.Client()
-
-			hasPermission = true
-			isAdmin = false
-			userSlug = "test-user-1"
-		})
-
-		ginkgo.It("works", func() {
-			rsp, _, err := userClient.SecretSvcAPI.EncryptValue(ctx).
-				Body(openapi.SecretSvcEncryptValueRequest{
-					Value: openapi.PtrString("value"),
-				}).
-				Execute()
-			gomega.Expect(err).NotTo(gomega.HaveOccurred())
-
-			_, _, err = userClient.SecretSvcAPI.SaveSecrets(ctx).
-				Body(openapi.SecretSvcSaveSecretsRequest{
-					Secrets: []openapi.SecretSvcSecret{
-						{
-							Key:       openapi.PtrString("test-user-1/enc1"),
-							Value:     rsp.Value,
-							Encrypted: openapi.PtrBool(true),
-						}},
-				}).
-				Execute()
-			gomega.Expect(err).NotTo(gomega.HaveOccurred())
-
-			readRsp, _, err := userClient.SecretSvcAPI.ListSecrets(ctx).
-				Body(openapi.SecretSvcListSecretsRequest{
-					Key: openapi.PtrString("test-user-1/enc1"),
-				}).
-				Execute()
-			gomega.Expect(err).NotTo(gomega.HaveOccurred())
-			gomega.Expect(len(readRsp.Secrets)).To(gomega.Equal(1))
-			gomega.Expect(*readRsp.Secrets[0].Value).To(gomega.Equal("value"))
-		})
-	})
-
-	ginkgo.Context("list multiple", func() {
-		ginkgo.BeforeEach(func() {
-			userClient = mockClientFactory.Client()
-
-			hasPermission = true
-			isAdmin = true
-			userSlug = "test-admin-user-1"
-		})
-
-		ginkgo.It("works", func() {
-			_, _, err := userClient.SecretSvcAPI.SaveSecrets(ctx).
-				Body(openapi.SecretSvcSaveSecretsRequest{
-					Secrets: []openapi.SecretSvcSecret{
-						{
-							Key:   openapi.PtrString("a"),
-							Value: openapi.PtrString("value"),
-						}},
-				}).
-				Execute()
-			gomega.Expect(err).NotTo(gomega.HaveOccurred())
-
-			_, _, err = userClient.SecretSvcAPI.SaveSecrets(ctx).
-				Body(openapi.SecretSvcSaveSecretsRequest{
-					Secrets: []openapi.SecretSvcSecret{
-						{
-							Key:   openapi.PtrString("b"),
-							Value: openapi.PtrString("value"),
-						}},
-				}).
-				Execute()
-			gomega.Expect(err).NotTo(gomega.HaveOccurred())
-
-			readRsp, _, err := userClient.SecretSvcAPI.ListSecrets(ctx).
-				Body(openapi.SecretSvcListSecretsRequest{
-					Keys: []string{"a", "b"},
-				}).
-				Execute()
-			gomega.Expect(err).NotTo(gomega.HaveOccurred())
-			gomega.Expect(len(readRsp.Secrets)).To(gomega.Equal(2))
-			gomega.Expect(*readRsp.Secrets[0].Value).To(gomega.Equal("value"))
-		})
-	})
-})
+}

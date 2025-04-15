@@ -114,6 +114,14 @@ func MockUserSvc(ctx context.Context, ctrl *gomock.Controller, options ...MockUs
 	mockLoginRequest := openapi.ApiLoginRequest{
 		ApiService: mockUserSvc,
 	}
+	mockRegisterRequest := openapi.ApiRegisterRequest{
+		ApiService: mockUserSvc,
+	}
+	expectedUserSvcRegisterResponse := &openapi.UserSvcRegisterResponse{
+		Token: &openapi.UserSvcAuthToken{
+			Token: "HELLO",
+		},
+	}
 	mockAddPermissionToRoleRequest := openapi.ApiSavePermitsRequest{
 		ApiService: mockUserSvc,
 	}
@@ -130,6 +138,8 @@ func MockUserSvc(ctx context.Context, ctrl *gomock.Controller, options ...MockUs
 		PublicKey: "",
 	}, nil, nil).AnyTimes()
 	mockUserSvc.EXPECT().Login(ctx).Return(mockLoginRequest).AnyTimes()
+	mockUserSvc.EXPECT().Register(ctx).Return(mockRegisterRequest).AnyTimes()
+	mockUserSvc.EXPECT().RegisterExecute(gomock.Any()).Return(expectedUserSvcRegisterResponse, nil, nil).AnyTimes()
 	mockUserSvc.EXPECT().LoginExecute(gomock.Any()).Return(expectedUserSvcLoginResponse, nil, nil).AnyTimes()
 	mockUserSvc.EXPECT().SavePermits(ctx).Return(mockAddPermissionToRoleRequest).AnyTimes()
 	mockUserSvc.EXPECT().SavePermitsExecute(gomock.Any()).Return(expectedUserSvcAddPermissionToRoleResponse, nil, nil).AnyTimes()

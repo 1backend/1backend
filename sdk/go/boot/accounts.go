@@ -29,7 +29,7 @@ func RegisterServiceAccount(userService onebackendapi.UserSvcAPI, serviceSlug, s
 
 	res, err := store.Query().Find()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error querying credentials")
 	}
 
 	if len(res) == 0 {
@@ -39,11 +39,11 @@ func RegisterServiceAccount(userService onebackendapi.UserSvcAPI, serviceSlug, s
 			Password: pw,
 		})
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "error upserting service account credential")
 		}
 		err = store.Refresh()
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "error refreshing credential store")
 		}
 
 		rsp, _, err := userService.Register(ctx).Body(onebackendapi.UserSvcRegisterRequest{
@@ -59,17 +59,14 @@ func RegisterServiceAccount(userService onebackendapi.UserSvcAPI, serviceSlug, s
 	}
 
 	cred := res[0].(*auth.Credential)
-	pw := cred.Password
 
 	loginRsp, _, err := userService.Login(ctx).Body(onebackendapi.UserSvcLoginRequest{
 		Slug:     onebackendapi.PtrString(serviceSlug),
-		Password: onebackendapi.PtrString(pw),
+		Password: onebackendapi.PtrString(cred.Password),
 	}).Execute()
 
 	if err != nil {
-		if err != nil {
-			return nil, errors.Wrap(err, "error logging in after registration")
-		}
+		return nil, errors.Wrap(err, "error logging in after registration")
 	}
 
 	return loginRsp.Token, nil
