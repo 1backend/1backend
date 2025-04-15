@@ -117,9 +117,9 @@ type SaveProfileResponse struct {
 }
 
 type SaveSelfRequest struct {
-	Name            string            `json:"name,omitempty"`
-	ThumbnailFileId string            `json:"thumbnailFileId,omitempty" example:"file_fQDxusW8og"`
-	Labels          map[string]string `json:"labels,omitempty"`
+	Name            string             `json:"name,omitempty"`
+	ThumbnailFileId string             `json:"thumbnailFileId,omitempty" example:"file_fQDxusW8og"`
+	Labels          *map[string]string `json:"labels,omitempty"`
 }
 
 type SaveSelfResponse struct {

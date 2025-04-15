@@ -51,7 +51,7 @@ func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	usr, err := s.readUserByToken(token)
+	usr, err := s.readSelf(token)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -76,7 +76,7 @@ func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 	w.Write(bs)
 }
 
-func (s *UserService) readUserByToken(token string) (*user.User, error) {
+func (s *UserService) readSelf(token string) (*user.User, error) {
 	authTokenI, found, err := s.authTokensStore.Query(
 		datastore.Equals(datastore.Field("token"), token),
 	).FindOne()
@@ -105,6 +105,7 @@ func (s *UserService) readUserByToken(token string) (*user.User, error) {
 		Id:        u.Id,
 		Name:      u.Name,
 		Slug:      u.Slug,
+		Labels:    u.Labels,
 		CreatedAt: u.CreatedAt,
 		UpdatedAt: u.UpdatedAt,
 	}

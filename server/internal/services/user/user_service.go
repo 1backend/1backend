@@ -369,7 +369,7 @@ func (s *UserService) bootstrap() error {
 			return errors.Wrap(err, "failed to login user-svc")
 		}
 
-		usr, err := s.readUserByToken(tok.Token)
+		usr, err := s.readSelf(tok.Token)
 		if err != nil {
 			return errors.Wrap(err, "failed to read user by token")
 		}
