@@ -9,13 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export class UserSvcReadUserByTokenResponse {
+export class UserSvcReadSelfResponse {
     static getAttributeTypeMap() {
-        return UserSvcReadUserByTokenResponse.attributeTypeMap;
+        return UserSvcReadSelfResponse.attributeTypeMap;
     }
 }
-UserSvcReadUserByTokenResponse.discriminator = undefined;
-UserSvcReadUserByTokenResponse.attributeTypeMap = [
+UserSvcReadSelfResponse.discriminator = undefined;
+UserSvcReadSelfResponse.attributeTypeMap = [
     {
         "name": "activeOrganizationId",
         "baseName": "activeOrganizationId",

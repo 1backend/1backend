@@ -14,7 +14,7 @@ import { RequestFile } from './models';
 import { UserSvcOrganization } from './userSvcOrganization';
 import { UserSvcUser } from './userSvcUser';
 
-export class UserSvcReadUserByTokenResponse {
+export class UserSvcReadSelfResponse {
     /**
     * Active organization of the caller user, if it has any.
     */
@@ -57,7 +57,7 @@ export class UserSvcReadUserByTokenResponse {
         }    ];
 
     static getAttributeTypeMap() {
-        return UserSvcReadUserByTokenResponse.attributeTypeMap;
+        return UserSvcReadSelfResponse.attributeTypeMap;
     }
 }
 

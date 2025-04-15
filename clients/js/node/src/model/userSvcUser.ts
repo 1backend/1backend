@@ -16,6 +16,7 @@ export class UserSvcUser {
     'createdAt'?: string;
     'deletedAt'?: string;
     'id': string;
+    'meta'?: { [key: string]: object; };
     /**
     * Full name of the user.
     */
@@ -45,6 +46,11 @@ export class UserSvcUser {
             "name": "id",
             "baseName": "id",
             "type": "string"
+        },
+        {
+            "name": "meta",
+            "baseName": "meta",
+            "type": "{ [key: string]: object; }"
         },
         {
             "name": "name",

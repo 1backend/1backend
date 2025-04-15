@@ -32,6 +32,11 @@ UserSvcUser.attributeTypeMap = [
         "type": "string"
     },
     {
+        "name": "meta",
+        "baseName": "meta",
+        "type": "{ [key: string]: object; }"
+    },
+    {
         "name": "name",
         "baseName": "name",
         "type": "string"

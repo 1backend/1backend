@@ -17,16 +17,16 @@
 export interface UserSvcSaveProfileRequest {
     /**
      *
-     * @type {string}
+     * @type {object}
      * @memberof UserSvcSaveProfileRequest
      */
-    name?: string;
+    meta?: object;
     /**
      *
      * @type {string}
      * @memberof UserSvcSaveProfileRequest
      */
-    slug?: string;
+    name?: string;
     /**
      *
      * @type {string}

@@ -1,0 +1,66 @@
+---
+id: read-self
+title: "Read Self"
+description: "Retrieves user information based on the authentication token in the request header."
+sidebar_label: "Read Self"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVk1v3DYQ/SsETwmgley6QYs9NambxkkKu14bOdhGM0uOJCYUKZPUrrcL/fdiyJX3020QFOmll/3QUDNvZt48zpJL9MKpNihr+JhfYnAKZ+hZ59ExZUrrGiAjm4JHyaxhoUYGXajRBCWSLdjPaJhKNof3HfrAagSJLr81V4tWCdB6wegTJZsumFem0jhqoUIGbatXnjyTnVOmio6UUUGBZvGQtiDzW/OhVhqZtw0yiQGU9uyZ70TNwDNnNfqMed1VWcJ/dpoxMJKBCGqGzLoKjPozYT47fc4EGDZFhg/BgQgoWelsE2O//XCV3ZpQK8/QyNYqE5jD0DnjGUipyAVoJiFAxpQRupMD7LLTOoW3008oQkLgvRUKKMYmCp/zjNsWXfx3JvmYOwQ5QV3yjDv0rTUePR8v+XdHR/S13a/zdzzjwpqAJpB1o5TFJ09HltyLGhugX62jUEElh6ko5xtoKP5uhJcHSmfLmGjspoupZkyVTAVWg2dgFpRVWLTIx9wH6ifvM76V94FUNs0HQpBPFbDx+5kIh1TZl7EEe3ElanzaquTBxwYa3Mf4mlpLpgHfZk484/gATasxlq1B9rN1rXWDcS8GEXU/xvXl+1HpFBqpF6wz6r5D9kwZryTGkBNlqk6Ds4a1GgIN6HOmJE1jqdCx0rp47uMmto/5FjoQDY7E36MLdddMDSj9WmlMzFg7KJXGP8rfTx86/+FHWx16v2vlk03pidv3nXIo+fiGerCq+Kood4/+0ghFPOkBOAcL+h+nfb98l/Q4FiCJEjEy1BBYA7GAyg8CtUWo/fR3whEF49RofV7y8c034GCDIY7tWm8uNkP2B4r0hbQd5mnd0LdgkJ1aPNTJFryfWyffgK8PAv06Ih+/AvEZjfwHGhPWHfp+AoMjeRjsF9F2oY4f5Jt3/wZtn+DrXbZTjatV2dm8tgMXcU3FXd+Rbvtuezr3/aGb4Cqy/Tfl6Wb9+ksBnbPucOqHoLw4BOXMBHR0O07QzdCxX6LPbwOJ2Iiicyos4pC+QnDoXnah5uObO2pLgMpTha+pGZOZoCo3GGpLl29rfeDEeDrPC+rCyM9E4dOF7GNCPnrunKYjhbYCdG19GB8fn5z8EFs/QJhQSimLTSB7vVu0yG5XR245K63Wdp4WJWC+BYFxiUiKBiLRZL2sDKmw97ZS5nFhiQJH/tMmNmjsmBMK69bX1qB1rXqHi1hYWvyiqlkTQMSWYQOKMvag0f/k0y0UnDW5sM2G74szNuna1joqZCpSHUI7LorjaRp4eqFIqri1aZyNDMRlo1HCWaq1Eugf5YHS0Uqg8VHihni/Xrxns5P8aCuaHxfFfD7PK9Pl1lXF6j1fQNXq0Ul+lNeh0VEv0DX+vJykaGuwfg5VhS5XtohHCqqTClFGBuXiGSc6JPhH+Ul+NHIiP3kRRdP60IDZQHqJINlqs9vKfLmejP8X8P9iAV/xP+BDKFoNysSLgMi0XElBEmSSgqgCuiTVoKEn03JJrbl2uu/p8X2HjsTnLuMzcAqmxJmbuz4b5pDU4zMu4pYosKU5mYHu0gju6GK/qU4X55MrnnFYich6bMlbNvwg94PJLDac7459wkCfffbEK8tlEoW+fzyfTE++8ag16TTV8q7v+78AAwYFLw==
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Read Self"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/user-svc/self"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Retrieves user information based on the authentication token in the request header.
+Typically called by single-page applications during the initial page load.
+While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,
+this endpoint returns additional data, including the full user object and associated organizations.
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"activeOrganizationId":{"description":"Active organization of the caller user, if it has any.","type":"string"},"organizations":{"description":"Organizations of the caller user.","items":{"properties":{"createdAt":{"type":"string"},"deletedAt":{"type":"string"},"id":{"type":"string"},"name":{"description":"Full name of the organization","example":"Acme Corporation","type":"string"},"slug":{"description":"URL-friendly unique (inside the Singularon platform) identifier for the `organization`.","example":"acme-corporation","type":"string"},"thumbnailFileId":{"example":"file_fQDxusW8og","type":"string"},"updatedAt":{"type":"string"}},"required":["id","name","slug"],"type":"object"},"type":"array"},"roles":{"description":"Roles the token has that made this request.","items":{"type":"string"},"type":"array"},"user":{"allOf":[{"properties":{"createdAt":{"type":"string"},"deletedAt":{"type":"string"},"id":{"type":"string"},"meta":{"additionalProperties":{},"type":"object"},"name":{"description":"Full name of the user.","example":"Jane Doe","type":"string"},"passwordHash":{"type":"string"},"slug":{"description":"URL-friendly unique (inside the 1Backend platform) identifier for the `user`.","example":"jane-doe","type":"string"},"thumbnailFileId":{"example":"file_fQDyi1xdHK","type":"string"},"updatedAt":{"type":"string"}},"required":["id","slug"],"type":"object"}],"description":"The user who made the request."}},"required":["user"],"type":"object"}}}},"400":{"description":"Token Missing","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

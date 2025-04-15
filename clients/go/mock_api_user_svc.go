@@ -399,34 +399,34 @@ func (mr *MockUserSvcAPIMockRecorder) LoginExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoginExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).LoginExecute), r)
 }
 
-// ReadUserByToken mocks base method.
-func (m *MockUserSvcAPI) ReadUserByToken(ctx context.Context) ApiReadUserByTokenRequest {
+// ReadSelf mocks base method.
+func (m *MockUserSvcAPI) ReadSelf(ctx context.Context) ApiReadSelfRequest {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ReadUserByToken", ctx)
-	ret0, _ := ret[0].(ApiReadUserByTokenRequest)
+	ret := m.ctrl.Call(m, "ReadSelf", ctx)
+	ret0, _ := ret[0].(ApiReadSelfRequest)
 	return ret0
 }
 
-// ReadUserByToken indicates an expected call of ReadUserByToken.
-func (mr *MockUserSvcAPIMockRecorder) ReadUserByToken(ctx any) *gomock.Call {
+// ReadSelf indicates an expected call of ReadSelf.
+func (mr *MockUserSvcAPIMockRecorder) ReadSelf(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadUserByToken", reflect.TypeOf((*MockUserSvcAPI)(nil).ReadUserByToken), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadSelf", reflect.TypeOf((*MockUserSvcAPI)(nil).ReadSelf), ctx)
 }
 
-// ReadUserByTokenExecute mocks base method.
-func (m *MockUserSvcAPI) ReadUserByTokenExecute(r ApiReadUserByTokenRequest) (*UserSvcReadUserByTokenResponse, *http.Response, error) {
+// ReadSelfExecute mocks base method.
+func (m *MockUserSvcAPI) ReadSelfExecute(r ApiReadSelfRequest) (*UserSvcReadSelfResponse, *http.Response, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ReadUserByTokenExecute", r)
-	ret0, _ := ret[0].(*UserSvcReadUserByTokenResponse)
+	ret := m.ctrl.Call(m, "ReadSelfExecute", r)
+	ret0, _ := ret[0].(*UserSvcReadSelfResponse)
 	ret1, _ := ret[1].(*http.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
 
-// ReadUserByTokenExecute indicates an expected call of ReadUserByTokenExecute.
-func (mr *MockUserSvcAPIMockRecorder) ReadUserByTokenExecute(r any) *gomock.Call {
+// ReadSelfExecute indicates an expected call of ReadSelfExecute.
+func (mr *MockUserSvcAPIMockRecorder) ReadSelfExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadUserByTokenExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ReadUserByTokenExecute), r)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadSelfExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ReadSelfExecute), r)
 }
 
 // Register mocks base method.
@@ -610,17 +610,17 @@ func (mr *MockUserSvcAPIMockRecorder) SavePermitsExecute(r any) *gomock.Call {
 }
 
 // SaveSelf mocks base method.
-func (m *MockUserSvcAPI) SaveSelf(ctx context.Context, userId string) ApiSaveSelfRequest {
+func (m *MockUserSvcAPI) SaveSelf(ctx context.Context) ApiSaveSelfRequest {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SaveSelf", ctx, userId)
+	ret := m.ctrl.Call(m, "SaveSelf", ctx)
 	ret0, _ := ret[0].(ApiSaveSelfRequest)
 	return ret0
 }
 
 // SaveSelf indicates an expected call of SaveSelf.
-func (mr *MockUserSvcAPIMockRecorder) SaveSelf(ctx, userId any) *gomock.Call {
+func (mr *MockUserSvcAPIMockRecorder) SaveSelf(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveSelf", reflect.TypeOf((*MockUserSvcAPI)(nil).SaveSelf), ctx, userId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveSelf", reflect.TypeOf((*MockUserSvcAPI)(nil).SaveSelf), ctx)
 }
 
 // SaveSelfExecute mocks base method.

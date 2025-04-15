@@ -11,7 +11,7 @@
  */
 import { UserSvcOrganization } from './userSvcOrganization';
 import { UserSvcUser } from './userSvcUser';
-export declare class UserSvcReadUserByTokenResponse {
+export declare class UserSvcReadSelfResponse {
     /**
     * Active organization of the caller user, if it has any.
     */

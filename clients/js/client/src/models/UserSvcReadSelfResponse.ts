@@ -31,48 +31,48 @@ import {
 /**
  * 
  * @export
- * @interface UserSvcReadUserByTokenResponse
+ * @interface UserSvcReadSelfResponse
  */
-export interface UserSvcReadUserByTokenResponse {
+export interface UserSvcReadSelfResponse {
     /**
      * Active organization of the caller user, if it has any.
      * @type {string}
-     * @memberof UserSvcReadUserByTokenResponse
+     * @memberof UserSvcReadSelfResponse
      */
     activeOrganizationId?: string;
     /**
      * Organizations of the caller user.
      * @type {Array<UserSvcOrganization>}
-     * @memberof UserSvcReadUserByTokenResponse
+     * @memberof UserSvcReadSelfResponse
      */
     organizations?: Array<UserSvcOrganization>;
     /**
      * Roles the token has that made this request.
      * @type {Array<string>}
-     * @memberof UserSvcReadUserByTokenResponse
+     * @memberof UserSvcReadSelfResponse
      */
     roles?: Array<string>;
     /**
      * The user who made the request.
      * @type {UserSvcUser}
-     * @memberof UserSvcReadUserByTokenResponse
+     * @memberof UserSvcReadSelfResponse
      */
     user: UserSvcUser;
 }
 
 /**
- * Check if a given object implements the UserSvcReadUserByTokenResponse interface.
+ * Check if a given object implements the UserSvcReadSelfResponse interface.
  */
-export function instanceOfUserSvcReadUserByTokenResponse(value: object): value is UserSvcReadUserByTokenResponse {
+export function instanceOfUserSvcReadSelfResponse(value: object): value is UserSvcReadSelfResponse {
     if (!('user' in value) || value['user'] === undefined) return false;
     return true;
 }
 
-export function UserSvcReadUserByTokenResponseFromJSON(json: any): UserSvcReadUserByTokenResponse {
-    return UserSvcReadUserByTokenResponseFromJSONTyped(json, false);
+export function UserSvcReadSelfResponseFromJSON(json: any): UserSvcReadSelfResponse {
+    return UserSvcReadSelfResponseFromJSONTyped(json, false);
 }
 
-export function UserSvcReadUserByTokenResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcReadUserByTokenResponse {
+export function UserSvcReadSelfResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcReadSelfResponse {
     if (json == null) {
         return json;
     }
@@ -85,11 +85,11 @@ export function UserSvcReadUserByTokenResponseFromJSONTyped(json: any, ignoreDis
     };
 }
 
-export function UserSvcReadUserByTokenResponseToJSON(json: any): UserSvcReadUserByTokenResponse {
-    return UserSvcReadUserByTokenResponseToJSONTyped(json, false);
+export function UserSvcReadSelfResponseToJSON(json: any): UserSvcReadSelfResponse {
+    return UserSvcReadSelfResponseToJSONTyped(json, false);
 }
 
-export function UserSvcReadUserByTokenResponseToJSONTyped(value?: UserSvcReadUserByTokenResponse | null, ignoreDiscriminator: boolean = false): any {
+export function UserSvcReadSelfResponseToJSONTyped(value?: UserSvcReadSelfResponse | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }

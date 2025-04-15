@@ -20,8 +20,8 @@ var _ MappedNullable = &UserSvcSaveProfileRequest{}
 
 // UserSvcSaveProfileRequest struct for UserSvcSaveProfileRequest
 type UserSvcSaveProfileRequest struct {
+	Meta map[string]interface{} `json:"meta,omitempty"`
 	Name *string `json:"name,omitempty"`
-	Slug *string `json:"slug,omitempty"`
 	ThumbnailFileId *string `json:"thumbnailFileId,omitempty"`
 }
 
@@ -40,6 +40,38 @@ func NewUserSvcSaveProfileRequest() *UserSvcSaveProfileRequest {
 func NewUserSvcSaveProfileRequestWithDefaults() *UserSvcSaveProfileRequest {
 	this := UserSvcSaveProfileRequest{}
 	return &this
+}
+
+// GetMeta returns the Meta field value if set, zero value otherwise.
+func (o *UserSvcSaveProfileRequest) GetMeta() map[string]interface{} {
+	if o == nil || IsNil(o.Meta) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.Meta
+}
+
+// GetMetaOk returns a tuple with the Meta field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcSaveProfileRequest) GetMetaOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.Meta) {
+		return map[string]interface{}{}, false
+	}
+	return o.Meta, true
+}
+
+// HasMeta returns a boolean if a field has been set.
+func (o *UserSvcSaveProfileRequest) HasMeta() bool {
+	if o != nil && !IsNil(o.Meta) {
+		return true
+	}
+
+	return false
+}
+
+// SetMeta gets a reference to the given map[string]interface{} and assigns it to the Meta field.
+func (o *UserSvcSaveProfileRequest) SetMeta(v map[string]interface{}) {
+	o.Meta = v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -72,38 +104,6 @@ func (o *UserSvcSaveProfileRequest) HasName() bool {
 // SetName gets a reference to the given string and assigns it to the Name field.
 func (o *UserSvcSaveProfileRequest) SetName(v string) {
 	o.Name = &v
-}
-
-// GetSlug returns the Slug field value if set, zero value otherwise.
-func (o *UserSvcSaveProfileRequest) GetSlug() string {
-	if o == nil || IsNil(o.Slug) {
-		var ret string
-		return ret
-	}
-	return *o.Slug
-}
-
-// GetSlugOk returns a tuple with the Slug field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcSaveProfileRequest) GetSlugOk() (*string, bool) {
-	if o == nil || IsNil(o.Slug) {
-		return nil, false
-	}
-	return o.Slug, true
-}
-
-// HasSlug returns a boolean if a field has been set.
-func (o *UserSvcSaveProfileRequest) HasSlug() bool {
-	if o != nil && !IsNil(o.Slug) {
-		return true
-	}
-
-	return false
-}
-
-// SetSlug gets a reference to the given string and assigns it to the Slug field.
-func (o *UserSvcSaveProfileRequest) SetSlug(v string) {
-	o.Slug = &v
 }
 
 // GetThumbnailFileId returns the ThumbnailFileId field value if set, zero value otherwise.
@@ -148,11 +148,11 @@ func (o UserSvcSaveProfileRequest) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcSaveProfileRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Meta) {
+		toSerialize["meta"] = o.Meta
+	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
-	}
-	if !IsNil(o.Slug) {
-		toSerialize["slug"] = o.Slug
 	}
 	if !IsNil(o.ThumbnailFileId) {
 		toSerialize["thumbnailFileId"] = o.ThumbnailFileId

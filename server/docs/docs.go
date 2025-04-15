@@ -4749,19 +4749,12 @@ const docTemplate = `{
                 "operationId": "saveSelf",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "userId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
                         "description": "Save Profile Request",
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/user_svc.SaveProfileRequest"
+                            "$ref": "#/definitions/user_svc.SaveSelfRequest"
                         }
                     }
                 ],
@@ -4769,7 +4762,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.SaveProfileResponse"
+                            "$ref": "#/definitions/user_svc.SaveSelfResponse"
                         }
                     },
                     "400": {
@@ -4780,6 +4773,45 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieves user information based on the authentication token in the request header.\nTypically called by single-page applications during the initial page load.\nWhile some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,\nthis endpoint returns additional data, including the full user object and associated organizations.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Svc"
+                ],
+                "summary": "Read Self",
+                "operationId": "readSelf",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ReadSelfResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Token Missing",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
                         }
@@ -4896,47 +4928,6 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/user-svc/user/by-token": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retrieves user information based on the authentication token in the request header.\nTypically called by single-page applications during the initial page load.\nWhile some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,\nthis endpoint returns additional data, including the full user object and associated organizations.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User Svc"
-                ],
-                "summary": "Read User by Token",
-                "operationId": "readUserByToken",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ReadUserByTokenResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Token Missing",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
                         }
@@ -9315,7 +9306,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.ReadUserByTokenResponse": {
+        "user_svc.ReadSelfResponse": {
             "type": "object",
             "required": [
                 "user"
@@ -9486,6 +9477,22 @@ const docTemplate = `{
         "user_svc.SaveProfileRequest": {
             "type": "object",
             "properties": {
+                "meta": {},
+                "name": {
+                    "type": "string"
+                },
+                "thumbnailFileId": {
+                    "type": "string",
+                    "example": "file_fQDxusW8og"
+                }
+            }
+        },
+        "user_svc.SaveProfileResponse": {
+            "type": "object"
+        },
+        "user_svc.SaveSelfRequest": {
+            "type": "object",
+            "properties": {
                 "name": {
                     "type": "string"
                 },
@@ -9498,7 +9505,7 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.SaveProfileResponse": {
+        "user_svc.SaveSelfResponse": {
             "type": "object"
         },
         "user_svc.User": {
@@ -9516,6 +9523,10 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "string"
+                },
+                "meta": {
+                    "type": "object",
+                    "additionalProperties": {}
                 },
                 "name": {
                     "description": "Full name of the user.",

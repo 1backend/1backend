@@ -26,7 +26,7 @@ import { UserSvcListUsersRequest } from '../model/userSvcListUsersRequest';
 import { UserSvcListUsersResponse } from '../model/userSvcListUsersResponse';
 import { UserSvcLoginRequest } from '../model/userSvcLoginRequest';
 import { UserSvcLoginResponse } from '../model/userSvcLoginResponse';
-import { UserSvcReadUserByTokenResponse } from '../model/userSvcReadUserByTokenResponse';
+import { UserSvcReadSelfResponse } from '../model/userSvcReadSelfResponse';
 import { UserSvcRegisterRequest } from '../model/userSvcRegisterRequest';
 import { UserSvcRegisterResponse } from '../model/userSvcRegisterResponse';
 import { UserSvcResetPasswordRequest } from '../model/userSvcResetPasswordRequest';
@@ -36,6 +36,7 @@ import { UserSvcSaveOrganizationRequest } from '../model/userSvcSaveOrganization
 import { UserSvcSaveOrganizationResponse } from '../model/userSvcSaveOrganizationResponse';
 import { UserSvcSavePermitsRequest } from '../model/userSvcSavePermitsRequest';
 import { UserSvcSaveProfileRequest } from '../model/userSvcSaveProfileRequest';
+import { UserSvcSaveSelfRequest } from '../model/userSvcSaveSelfRequest';
 import { Authentication, Interceptor } from '../model/models';
 import { ApiKeyAuth } from '../model/models';
 export declare enum UserSvcApiApiKeys {
@@ -219,15 +220,15 @@ export declare class UserSvcApi {
     }>;
     /**
      * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
-     * @summary Read User by Token
+     * @summary Read Self
      */
-    readUserByToken(options?: {
+    readSelf(options?: {
         headers: {
             [name: string]: string;
         };
     }): Promise<{
         response: http.IncomingMessage;
-        body: UserSvcReadUserByTokenResponse;
+        body: UserSvcReadSelfResponse;
     }>;
     /**
      * Register a new user with a name, email, and password.
@@ -313,10 +314,9 @@ export declare class UserSvcApi {
     /**
      * Save user\'s own profile information.
      * @summary Save User Profile
-     * @param userId User ID
      * @param body Save Profile Request
      */
-    saveSelf(userId: string, body: UserSvcSaveProfileRequest, options?: {
+    saveSelf(body: UserSvcSaveSelfRequest, options?: {
         headers: {
             [name: string]: string;
         };

@@ -21,16 +21,16 @@ import { mapValues } from '../runtime';
 export interface UserSvcSaveProfileRequest {
     /**
      * 
-     * @type {string}
+     * @type {object}
      * @memberof UserSvcSaveProfileRequest
      */
-    name?: string;
+    meta?: object;
     /**
      * 
      * @type {string}
      * @memberof UserSvcSaveProfileRequest
      */
-    slug?: string;
+    name?: string;
     /**
      * 
      * @type {string}
@@ -56,8 +56,8 @@ export function UserSvcSaveProfileRequestFromJSONTyped(json: any, ignoreDiscrimi
     }
     return {
         
+        'meta': json['meta'] == null ? undefined : json['meta'],
         'name': json['name'] == null ? undefined : json['name'],
-        'slug': json['slug'] == null ? undefined : json['slug'],
         'thumbnailFileId': json['thumbnailFileId'] == null ? undefined : json['thumbnailFileId'],
     };
 }
@@ -73,8 +73,8 @@ export function UserSvcSaveProfileRequestToJSONTyped(value?: UserSvcSaveProfileR
 
     return {
         
+        'meta': value['meta'],
         'name': value['name'],
-        'slug': value['slug'],
         'thumbnailFileId': value['thumbnailFileId'],
     };
 }

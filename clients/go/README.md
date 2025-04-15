@@ -164,7 +164,7 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**ListPermits**](docs/UserSvcAPI.md#listpermits) | **Post** /user-svc/permits | List Permits
 *UserSvcAPI* | [**ListUsers**](docs/UserSvcAPI.md#listusers) | **Post** /user-svc/users | List Users
 *UserSvcAPI* | [**Login**](docs/UserSvcAPI.md#login) | **Post** /user-svc/login | Login
-*UserSvcAPI* | [**ReadUserByToken**](docs/UserSvcAPI.md#readuserbytoken) | **Post** /user-svc/user/by-token | Read User by Token
+*UserSvcAPI* | [**ReadSelf**](docs/UserSvcAPI.md#readself) | **Post** /user-svc/self | Read Self
 *UserSvcAPI* | [**Register**](docs/UserSvcAPI.md#register) | **Post** /user-svc/register | Register
 *UserSvcAPI* | [**RemoveUserFromOrganization**](docs/UserSvcAPI.md#removeuserfromorganization) | **Delete** /user-svc/organization/{organizationId}/user/{userId} | Remove a User from an Organization
 *UserSvcAPI* | [**ResetPassword**](docs/UserSvcAPI.md#resetpassword) | **Post** /user-svc/{userId}/reset-password | Reset Password
@@ -367,7 +367,7 @@ Class | Method | HTTP request | Description
  - [UserSvcOrganization](docs/UserSvcOrganization.md)
  - [UserSvcPermit](docs/UserSvcPermit.md)
  - [UserSvcPermitInput](docs/UserSvcPermitInput.md)
- - [UserSvcReadUserByTokenResponse](docs/UserSvcReadUserByTokenResponse.md)
+ - [UserSvcReadSelfResponse](docs/UserSvcReadSelfResponse.md)
  - [UserSvcRegisterRequest](docs/UserSvcRegisterRequest.md)
  - [UserSvcRegisterResponse](docs/UserSvcRegisterResponse.md)
  - [UserSvcResetPasswordRequest](docs/UserSvcResetPasswordRequest.md)
@@ -377,6 +377,7 @@ Class | Method | HTTP request | Description
  - [UserSvcSaveOrganizationResponse](docs/UserSvcSaveOrganizationResponse.md)
  - [UserSvcSavePermitsRequest](docs/UserSvcSavePermitsRequest.md)
  - [UserSvcSaveProfileRequest](docs/UserSvcSaveProfileRequest.md)
+ - [UserSvcSaveSelfRequest](docs/UserSvcSaveSelfRequest.md)
  - [UserSvcUser](docs/UserSvcUser.md)
  - [UserSvcUserRecord](docs/UserSvcUserRecord.md)
 

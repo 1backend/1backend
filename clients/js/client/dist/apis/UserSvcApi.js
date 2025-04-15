@@ -21,7 +21,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as runtime from '../runtime';
-import { UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionRequestToJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListEnrollsRequestToJSON, UserSvcListEnrollsResponseFromJSON, UserSvcListOrganizationsRequestToJSON, UserSvcListOrganizationsResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListPermitsRequestToJSON, UserSvcListPermitsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadUserByTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcSaveEnrollsRequestToJSON, UserSvcSaveEnrollsResponseFromJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSavePermitsRequestToJSON, UserSvcSaveProfileRequestToJSON, } from '../models/index';
+import { UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionRequestToJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListEnrollsRequestToJSON, UserSvcListEnrollsResponseFromJSON, UserSvcListOrganizationsRequestToJSON, UserSvcListOrganizationsResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListPermitsRequestToJSON, UserSvcListPermitsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadSelfResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcSaveEnrollsRequestToJSON, UserSvcSaveEnrollsResponseFromJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSavePermitsRequestToJSON, UserSvcSaveProfileRequestToJSON, UserSvcSaveSelfRequestToJSON, } from '../models/index';
 /**
  *
  */
@@ -433,9 +433,9 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
     /**
      * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
-     * Read User by Token
+     * Read Self
      */
-    readUserByTokenRaw(initOverrides) {
+    readSelfRaw(initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -443,21 +443,21 @@ export class UserSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             const response = yield this.request({
-                path: `/user-svc/user/by-token`,
+                path: `/user-svc/self`,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
             }, initOverrides);
-            return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcReadUserByTokenResponseFromJSON(jsonValue));
+            return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcReadSelfResponseFromJSON(jsonValue));
         });
     }
     /**
      * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
-     * Read User by Token
+     * Read Self
      */
-    readUserByToken(initOverrides) {
+    readSelf(initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.readUserByTokenRaw(initOverrides);
+            const response = yield this.readSelfRaw(initOverrides);
             return yield response.value();
         });
     }
@@ -680,9 +680,6 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     saveSelfRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userId'] == null) {
-                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling saveSelf().');
-            }
             if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling saveSelf().');
             }
@@ -693,11 +690,11 @@ export class UserSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             const response = yield this.request({
-                path: `/user-svc/self`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+                path: `/user-svc/self`,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcSaveProfileRequestToJSON(requestParameters['body']),
+                body: UserSvcSaveSelfRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });

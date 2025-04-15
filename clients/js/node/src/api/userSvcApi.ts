@@ -32,7 +32,7 @@ import { UserSvcListUsersRequest } from '../model/userSvcListUsersRequest';
 import { UserSvcListUsersResponse } from '../model/userSvcListUsersResponse';
 import { UserSvcLoginRequest } from '../model/userSvcLoginRequest';
 import { UserSvcLoginResponse } from '../model/userSvcLoginResponse';
-import { UserSvcReadUserByTokenResponse } from '../model/userSvcReadUserByTokenResponse';
+import { UserSvcReadSelfResponse } from '../model/userSvcReadSelfResponse';
 import { UserSvcRegisterRequest } from '../model/userSvcRegisterRequest';
 import { UserSvcRegisterResponse } from '../model/userSvcRegisterResponse';
 import { UserSvcResetPasswordRequest } from '../model/userSvcResetPasswordRequest';
@@ -42,6 +42,7 @@ import { UserSvcSaveOrganizationRequest } from '../model/userSvcSaveOrganization
 import { UserSvcSaveOrganizationResponse } from '../model/userSvcSaveOrganizationResponse';
 import { UserSvcSavePermitsRequest } from '../model/userSvcSavePermitsRequest';
 import { UserSvcSaveProfileRequest } from '../model/userSvcSaveProfileRequest';
+import { UserSvcSaveSelfRequest } from '../model/userSvcSaveSelfRequest';
 
 import { ObjectSerializer, Authentication, VoidAuth, Interceptor } from '../model/models';
 import { HttpBasicAuth, HttpBearerAuth, ApiKeyAuth, OAuth } from '../model/models';
@@ -974,10 +975,10 @@ export class UserSvcApi {
     }
     /**
      * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
-     * @summary Read User by Token
+     * @summary Read Self
      */
-    public async readUserByToken (options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: UserSvcReadUserByTokenResponse;  }> {
-        const localVarPath = this.basePath + '/user-svc/user/by-token';
+    public async readSelf (options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: UserSvcReadSelfResponse;  }> {
+        const localVarPath = this.basePath + '/user-svc/self';
         let localVarQueryParameters: any = {};
         let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
         const produces = ['application/json'];
@@ -1021,13 +1022,13 @@ export class UserSvcApi {
                     localVarRequestOptions.form = localVarFormParams;
                 }
             }
-            return new Promise<{ response: http.IncomingMessage; body: UserSvcReadUserByTokenResponse;  }>((resolve, reject) => {
+            return new Promise<{ response: http.IncomingMessage; body: UserSvcReadSelfResponse;  }>((resolve, reject) => {
                 localVarRequest(localVarRequestOptions, (error, response, body) => {
                     if (error) {
                         reject(error);
                     } else {
                         if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
-                            body = ObjectSerializer.deserialize(body, "UserSvcReadUserByTokenResponse");
+                            body = ObjectSerializer.deserialize(body, "UserSvcReadSelfResponse");
                             resolve({ response: response, body: body });
                         } else {
                             reject(new HttpError(response, body, response.statusCode));
@@ -1485,12 +1486,10 @@ export class UserSvcApi {
     /**
      * Save user\'s own profile information.
      * @summary Save User Profile
-     * @param userId User ID
      * @param body Save Profile Request
      */
-    public async saveSelf (userId: string, body: UserSvcSaveProfileRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: object;  }> {
-        const localVarPath = this.basePath + '/user-svc/self'
-            .replace('{' + 'userId' + '}', encodeURIComponent(String(userId)));
+    public async saveSelf (body: UserSvcSaveSelfRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: object;  }> {
+        const localVarPath = this.basePath + '/user-svc/self';
         let localVarQueryParameters: any = {};
         let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
         const produces = ['application/json'];
@@ -1501,11 +1500,6 @@ export class UserSvcApi {
             localVarHeaderParams.Accept = produces.join(',');
         }
         let localVarFormParams: any = {};
-
-        // verify required parameter 'userId' is not null or undefined
-        if (userId === null || userId === undefined) {
-            throw new Error('Required parameter userId was null or undefined when calling saveSelf.');
-        }
 
         // verify required parameter 'body' is not null or undefined
         if (body === null || body === undefined) {
@@ -1523,7 +1517,7 @@ export class UserSvcApi {
             uri: localVarPath,
             useQuerystring: this._useQuerystring,
             json: true,
-            body: ObjectSerializer.serialize(body, "UserSvcSaveProfileRequest")
+            body: ObjectSerializer.serialize(body, "UserSvcSaveSelfRequest")
         };
 
         let authenticationPromise = Promise.resolve();

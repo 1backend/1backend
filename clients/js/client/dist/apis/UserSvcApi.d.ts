@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 import * as runtime from '../runtime';
-import type { UserSvcChangePasswordRequest, UserSvcCreateUserRequest, UserSvcGetPublicKeyResponse, UserSvcHasPermissionRequest, UserSvcHasPermissionResponse, UserSvcListEnrollsRequest, UserSvcListEnrollsResponse, UserSvcListOrganizationsRequest, UserSvcListOrganizationsResponse, UserSvcListPermissionsResponse, UserSvcListPermitsRequest, UserSvcListPermitsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadUserByTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveEnrollsRequest, UserSvcSaveEnrollsResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSavePermitsRequest, UserSvcSaveProfileRequest } from '../models/index';
+import type { UserSvcChangePasswordRequest, UserSvcCreateUserRequest, UserSvcGetPublicKeyResponse, UserSvcHasPermissionRequest, UserSvcHasPermissionResponse, UserSvcListEnrollsRequest, UserSvcListEnrollsResponse, UserSvcListOrganizationsRequest, UserSvcListOrganizationsResponse, UserSvcListPermissionsResponse, UserSvcListPermitsRequest, UserSvcListPermitsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadSelfResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveEnrollsRequest, UserSvcSaveEnrollsResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSavePermitsRequest, UserSvcSaveProfileRequest, UserSvcSaveSelfRequest } from '../models/index';
 export interface AddUserToOrganizationRequest {
     organizationId: string;
     userId: string;
@@ -69,8 +69,7 @@ export interface SavePermitsRequest {
     body: UserSvcSavePermitsRequest;
 }
 export interface SaveSelfRequest {
-    userId: string;
-    body: UserSvcSaveProfileRequest;
+    body: UserSvcSaveSelfRequest;
 }
 export interface SaveUserRequest {
     userId: string;
@@ -202,14 +201,14 @@ export declare class UserSvcApi extends runtime.BaseAPI {
     login(requestParameters: LoginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcLoginResponse>;
     /**
      * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
-     * Read User by Token
+     * Read Self
      */
-    readUserByTokenRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcReadUserByTokenResponse>>;
+    readSelfRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcReadSelfResponse>>;
     /**
      * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
-     * Read User by Token
+     * Read Self
      */
-    readUserByToken(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcReadUserByTokenResponse>;
+    readSelf(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcReadSelfResponse>;
     /**
      * Register a new user with a name, email, and password.
      * Register

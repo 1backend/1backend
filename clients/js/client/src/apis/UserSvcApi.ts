@@ -32,7 +32,7 @@ import type {
   UserSvcListUsersResponse,
   UserSvcLoginRequest,
   UserSvcLoginResponse,
-  UserSvcReadUserByTokenResponse,
+  UserSvcReadSelfResponse,
   UserSvcRegisterRequest,
   UserSvcRegisterResponse,
   UserSvcResetPasswordRequest,
@@ -42,6 +42,7 @@ import type {
   UserSvcSaveOrganizationResponse,
   UserSvcSavePermitsRequest,
   UserSvcSaveProfileRequest,
+  UserSvcSaveSelfRequest,
 } from '../models/index';
 import {
     UserSvcChangePasswordRequestFromJSON,
@@ -78,8 +79,8 @@ import {
     UserSvcLoginRequestToJSON,
     UserSvcLoginResponseFromJSON,
     UserSvcLoginResponseToJSON,
-    UserSvcReadUserByTokenResponseFromJSON,
-    UserSvcReadUserByTokenResponseToJSON,
+    UserSvcReadSelfResponseFromJSON,
+    UserSvcReadSelfResponseToJSON,
     UserSvcRegisterRequestFromJSON,
     UserSvcRegisterRequestToJSON,
     UserSvcRegisterResponseFromJSON,
@@ -98,6 +99,8 @@ import {
     UserSvcSavePermitsRequestToJSON,
     UserSvcSaveProfileRequestFromJSON,
     UserSvcSaveProfileRequestToJSON,
+    UserSvcSaveSelfRequestFromJSON,
+    UserSvcSaveSelfRequestToJSON,
 } from '../models/index';
 
 export interface AddUserToOrganizationRequest {
@@ -175,8 +178,7 @@ export interface SavePermitsRequest {
 }
 
 export interface SaveSelfRequest {
-    userId: string;
-    body: UserSvcSaveProfileRequest;
+    body: UserSvcSaveSelfRequest;
 }
 
 export interface SaveUserRequest {
@@ -671,9 +673,9 @@ export class UserSvcApi extends runtime.BaseAPI {
 
     /**
      * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
-     * Read User by Token
+     * Read Self
      */
-    async readUserByTokenRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcReadUserByTokenResponse>> {
+    async readSelfRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcReadSelfResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -683,21 +685,21 @@ export class UserSvcApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/user-svc/user/by-token`,
+            path: `/user-svc/self`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcReadUserByTokenResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcReadSelfResponseFromJSON(jsonValue));
     }
 
     /**
      * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
-     * Read User by Token
+     * Read Self
      */
-    async readUserByToken(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcReadUserByTokenResponse> {
-        const response = await this.readUserByTokenRaw(initOverrides);
+    async readSelf(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcReadSelfResponse> {
+        const response = await this.readSelfRaw(initOverrides);
         return await response.value();
     }
 
@@ -968,13 +970,6 @@ export class UserSvcApi extends runtime.BaseAPI {
      * Save User Profile
      */
     async saveSelfRaw(requestParameters: SaveSelfRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['userId'] == null) {
-            throw new runtime.RequiredError(
-                'userId',
-                'Required parameter "userId" was null or undefined when calling saveSelf().'
-            );
-        }
-
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -993,11 +988,11 @@ export class UserSvcApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/user-svc/self`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+            path: `/user-svc/self`,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: UserSvcSaveProfileRequestToJSON(requestParameters['body']),
+            body: UserSvcSaveSelfRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

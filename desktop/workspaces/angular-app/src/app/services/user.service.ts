@@ -21,7 +21,7 @@ import {
 	UserSvcApi,
 	UserSvcListUsersResponse,
 	UserSvcLoginResponse,
-	UserSvcReadUserByTokenResponse,
+	UserSvcReadSelfResponse,
 	UserSvcUser,
 	UserSvcListUsersRequest,
 	UserSvcSaveProfileRequest,
@@ -130,7 +130,7 @@ export class UserService {
 		});
 	}
 
-	readUserByToken(): Promise<UserSvcReadUserByTokenResponse> {
+	readUserByToken(): Promise<UserSvcReadSelfResponse> {
 		return this.userService.readUserByToken({});
 	}
 

@@ -3034,7 +3034,7 @@ definitions:
     required:
     - permission
     type: object
-  user_svc.ReadUserByTokenResponse:
+  user_svc.ReadSelfResponse:
     properties:
       activeOrganizationId:
         description: Active organization of the caller user, if it has any.
@@ -3151,6 +3151,17 @@ definitions:
     type: object
   user_svc.SaveProfileRequest:
     properties:
+      meta: {}
+      name:
+        type: string
+      thumbnailFileId:
+        example: file_fQDxusW8og
+        type: string
+    type: object
+  user_svc.SaveProfileResponse:
+    type: object
+  user_svc.SaveSelfRequest:
+    properties:
       name:
         type: string
       slug:
@@ -3159,7 +3170,7 @@ definitions:
         example: file_fQDxusW8og
         type: string
     type: object
-  user_svc.SaveProfileResponse:
+  user_svc.SaveSelfResponse:
     type: object
   user_svc.User:
     properties:
@@ -3169,6 +3180,9 @@ definitions:
         type: string
       id:
         type: string
+      meta:
+        additionalProperties: {}
+        type: object
       name:
         description: Full name of the user.
         example: Jane Doe
@@ -6421,30 +6435,54 @@ paths:
       tags:
       - User Svc
   /user-svc/self:
-    put:
+    post:
       consumes:
       - application/json
-      description: Save user's own profile information.
-      operationId: saveSelf
-      parameters:
-      - description: User ID
-        in: path
-        name: userId
-        required: true
-        type: string
-      - description: Save Profile Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/user_svc.SaveProfileRequest'
+      description: |-
+        Retrieves user information based on the authentication token in the request header.
+        Typically called by single-page applications during the initial page load.
+        While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,
+        this endpoint returns additional data, including the full user object and associated organizations.
+      operationId: readSelf
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user_svc.SaveProfileResponse'
+            $ref: '#/definitions/user_svc.ReadSelfResponse'
+        "400":
+          description: Token Missing
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Read Self
+      tags:
+      - User Svc
+    put:
+      consumes:
+      - application/json
+      description: Save user's own profile information.
+      operationId: saveSelf
+      parameters:
+      - description: Save Profile Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.SaveSelfRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.SaveSelfResponse'
         "400":
           description: Invalid JSON
           schema:
@@ -6616,36 +6654,6 @@ paths:
       security:
       - BearerAuth: []
       summary: Save User
-      tags:
-      - User Svc
-  /user-svc/user/by-token:
-    post:
-      consumes:
-      - application/json
-      description: |-
-        Retrieves user information based on the authentication token in the request header.
-        Typically called by single-page applications during the initial page load.
-        While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,
-        this endpoint returns additional data, including the full user object and associated organizations.
-      operationId: readUserByToken
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/user_svc.ReadUserByTokenResponse'
-        "400":
-          description: Token Missing
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Read User by Token
       tags:
       - User Svc
   /user-svc/users:

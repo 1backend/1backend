@@ -9,21 +9,21 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export class UserSvcSaveProfileRequest {
+export class UserSvcSaveSelfRequest {
     static getAttributeTypeMap() {
-        return UserSvcSaveProfileRequest.attributeTypeMap;
+        return UserSvcSaveSelfRequest.attributeTypeMap;
     }
 }
-UserSvcSaveProfileRequest.discriminator = undefined;
-UserSvcSaveProfileRequest.attributeTypeMap = [
-    {
-        "name": "meta",
-        "baseName": "meta",
-        "type": "object"
-    },
+UserSvcSaveSelfRequest.discriminator = undefined;
+UserSvcSaveSelfRequest.attributeTypeMap = [
     {
         "name": "name",
         "baseName": "name",
+        "type": "string"
+    },
+    {
+        "name": "slug",
+        "baseName": "slug",
         "type": "string"
     },
     {

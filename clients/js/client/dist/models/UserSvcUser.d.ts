@@ -34,6 +34,14 @@ export interface UserSvcUser {
      */
     id: string;
     /**
+     *
+     * @type {{ [key: string]: object; }}
+     * @memberof UserSvcUser
+     */
+    meta?: {
+        [key: string]: object;
+    };
+    /**
      * Full name of the user.
      * @type {string}
      * @memberof UserSvcUser

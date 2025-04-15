@@ -12,22 +12,22 @@
 
 import { RequestFile } from './models';
 
-export class UserSvcSaveProfileRequest {
-    'meta'?: object;
+export class UserSvcSaveSelfRequest {
     'name'?: string;
+    'slug'?: string;
     'thumbnailFileId'?: string;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "meta",
-            "baseName": "meta",
-            "type": "object"
-        },
-        {
             "name": "name",
             "baseName": "name",
+            "type": "string"
+        },
+        {
+            "name": "slug",
+            "baseName": "slug",
             "type": "string"
         },
         {
@@ -37,7 +37,7 @@ export class UserSvcSaveProfileRequest {
         }    ];
 
     static getAttributeTypeMap() {
-        return UserSvcSaveProfileRequest.attributeTypeMap;
+        return UserSvcSaveSelfRequest.attributeTypeMap;
     }
 }
 

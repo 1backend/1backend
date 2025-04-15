@@ -38,11 +38,11 @@ func TestCreate(t *testing.T) {
 	client1 := manyClients[0]
 	client2 := manyClients[1]
 
-	tokenReadRsp1, _, err := client1.UserSvcAPI.ReadUserByToken(context.Background()).
+	tokenReadRsp1, _, err := client1.UserSvcAPI.ReadSelf(context.Background()).
 		Execute()
 	require.NoError(t, err)
 
-	tokenReadRsp2, _, err := client2.UserSvcAPI.ReadUserByToken(context.Background()).
+	tokenReadRsp2, _, err := client2.UserSvcAPI.ReadSelft.Background()).
 		Execute()
 	require.NoError(t, err)
 

@@ -25,6 +25,7 @@ type UserSvcUser struct {
 	CreatedAt *string `json:"createdAt,omitempty"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	Id string `json:"id"`
+	Meta map[string]map[string]interface{} `json:"meta,omitempty"`
 	// Full name of the user.
 	Name *string `json:"name,omitempty"`
 	PasswordHash *string `json:"passwordHash,omitempty"`
@@ -141,6 +142,38 @@ func (o *UserSvcUser) GetIdOk() (*string, bool) {
 // SetId sets field value
 func (o *UserSvcUser) SetId(v string) {
 	o.Id = v
+}
+
+// GetMeta returns the Meta field value if set, zero value otherwise.
+func (o *UserSvcUser) GetMeta() map[string]map[string]interface{} {
+	if o == nil || IsNil(o.Meta) {
+		var ret map[string]map[string]interface{}
+		return ret
+	}
+	return o.Meta
+}
+
+// GetMetaOk returns a tuple with the Meta field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcUser) GetMetaOk() (map[string]map[string]interface{}, bool) {
+	if o == nil || IsNil(o.Meta) {
+		return map[string]map[string]interface{}{}, false
+	}
+	return o.Meta, true
+}
+
+// HasMeta returns a boolean if a field has been set.
+func (o *UserSvcUser) HasMeta() bool {
+	if o != nil && !IsNil(o.Meta) {
+		return true
+	}
+
+	return false
+}
+
+// SetMeta gets a reference to the given map[string]map[string]interface{} and assigns it to the Meta field.
+func (o *UserSvcUser) SetMeta(v map[string]map[string]interface{}) {
+	o.Meta = v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -312,6 +345,9 @@ func (o UserSvcUser) ToMap() (map[string]interface{}, error) {
 		toSerialize["deletedAt"] = o.DeletedAt
 	}
 	toSerialize["id"] = o.Id
+	if !IsNil(o.Meta) {
+		toSerialize["meta"] = o.Meta
+	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}

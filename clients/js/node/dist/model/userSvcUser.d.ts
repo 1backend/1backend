@@ -13,6 +13,9 @@ export declare class UserSvcUser {
     'createdAt'?: string;
     'deletedAt'?: string;
     'id': string;
+    'meta'?: {
+        [key: string]: object;
+    };
     /**
     * Full name of the user.
     */

@@ -29,9 +29,8 @@ import (
 // @Tags User Svc
 // @Accept json
 // @Produce json
-// @Param userId path string true "User ID"
-// @Param body body user.SaveProfileRequest true "Save Profile Request"
-// @Success 200 {object} user.SaveProfileResponse
+// @Param body body user.SaveSelfRequest true "Save Profile Request"
+// @Success 200 {object} user.SaveSelfResponse
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
@@ -52,7 +51,7 @@ func (s *UserService) SaveSelf(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	req := user.SaveProfileRequest{}
+	req := user.SaveSelfRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -69,13 +68,13 @@ func (s *UserService) SaveSelf(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bs, _ := json.Marshal(user.SaveProfileResponse{})
+	bs, _ := json.Marshal(user.SaveSelfResponse{})
 	w.Write(bs)
 }
 
 func (s *UserService) saveSelf(
 	userId string,
-	request *user.SaveProfileRequest,
+	request *user.SaveSelfRequest,
 ) error {
 	query := s.usersStore.Query(
 		datastore.Equals(datastore.Field("id"), userId),

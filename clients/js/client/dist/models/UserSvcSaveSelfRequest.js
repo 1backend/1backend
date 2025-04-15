@@ -12,34 +12,34 @@
  * Do not edit the class manually.
  */
 /**
- * Check if a given object implements the UserSvcSaveProfileRequest interface.
+ * Check if a given object implements the UserSvcSaveSelfRequest interface.
  */
-export function instanceOfUserSvcSaveProfileRequest(value) {
+export function instanceOfUserSvcSaveSelfRequest(value) {
     return true;
 }
-export function UserSvcSaveProfileRequestFromJSON(json) {
-    return UserSvcSaveProfileRequestFromJSONTyped(json, false);
+export function UserSvcSaveSelfRequestFromJSON(json) {
+    return UserSvcSaveSelfRequestFromJSONTyped(json, false);
 }
-export function UserSvcSaveProfileRequestFromJSONTyped(json, ignoreDiscriminator) {
+export function UserSvcSaveSelfRequestFromJSONTyped(json, ignoreDiscriminator) {
     if (json == null) {
         return json;
     }
     return {
-        'meta': json['meta'] == null ? undefined : json['meta'],
         'name': json['name'] == null ? undefined : json['name'],
+        'slug': json['slug'] == null ? undefined : json['slug'],
         'thumbnailFileId': json['thumbnailFileId'] == null ? undefined : json['thumbnailFileId'],
     };
 }
-export function UserSvcSaveProfileRequestToJSON(json) {
-    return UserSvcSaveProfileRequestToJSONTyped(json, false);
+export function UserSvcSaveSelfRequestToJSON(json) {
+    return UserSvcSaveSelfRequestToJSONTyped(json, false);
 }
-export function UserSvcSaveProfileRequestToJSONTyped(value, ignoreDiscriminator = false) {
+export function UserSvcSaveSelfRequestToJSONTyped(value, ignoreDiscriminator = false) {
     if (value == null) {
         return value;
     }
     return {
-        'meta': value['meta'],
         'name': value['name'],
+        'slug': value['slug'],
         'thumbnailFileId': value['thumbnailFileId'],
     };
 }

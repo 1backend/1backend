@@ -14,17 +14,17 @@
 import { UserSvcOrganizationFromJSON, UserSvcOrganizationToJSON, } from './UserSvcOrganization';
 import { UserSvcUserFromJSON, UserSvcUserToJSON, } from './UserSvcUser';
 /**
- * Check if a given object implements the UserSvcReadUserByTokenResponse interface.
+ * Check if a given object implements the UserSvcReadSelfResponse interface.
  */
-export function instanceOfUserSvcReadUserByTokenResponse(value) {
+export function instanceOfUserSvcReadSelfResponse(value) {
     if (!('user' in value) || value['user'] === undefined)
         return false;
     return true;
 }
-export function UserSvcReadUserByTokenResponseFromJSON(json) {
-    return UserSvcReadUserByTokenResponseFromJSONTyped(json, false);
+export function UserSvcReadSelfResponseFromJSON(json) {
+    return UserSvcReadSelfResponseFromJSONTyped(json, false);
 }
-export function UserSvcReadUserByTokenResponseFromJSONTyped(json, ignoreDiscriminator) {
+export function UserSvcReadSelfResponseFromJSONTyped(json, ignoreDiscriminator) {
     if (json == null) {
         return json;
     }
@@ -35,10 +35,10 @@ export function UserSvcReadUserByTokenResponseFromJSONTyped(json, ignoreDiscrimi
         'user': UserSvcUserFromJSON(json['user']),
     };
 }
-export function UserSvcReadUserByTokenResponseToJSON(json) {
-    return UserSvcReadUserByTokenResponseToJSONTyped(json, false);
+export function UserSvcReadSelfResponseToJSON(json) {
+    return UserSvcReadSelfResponseToJSONTyped(json, false);
 }
-export function UserSvcReadUserByTokenResponseToJSONTyped(value, ignoreDiscriminator = false) {
+export function UserSvcReadSelfResponseToJSONTyped(value, ignoreDiscriminator = false) {
     if (value == null) {
         return value;
     }

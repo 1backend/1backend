@@ -21,8 +21,8 @@ import (
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-// @ID readUserByToken
-// @Summary Read User by Token
+// @ID readSelf
+// @Summary Read Self
 // @Description Retrieves user information based on the authentication token in the request header.
 // @Description Typically called by single-page applications during the initial page load.
 // @Description While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,
@@ -30,12 +30,12 @@ import (
 // @Tags User Svc
 // @Accept json
 // @Produce json
-// @Success 200 {object} user.ReadUserByTokenResponse
+// @Success 200 {object} user.ReadSelfResponse
 // @Failure 400 {object} user.ErrorResponse "Token Missing"
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
-// @Router /user-svc/user/by-token [post]
-func (s *UserService) ReadUserByToken(w http.ResponseWriter, r *http.Request) {
+// @Router /user-svc/self [post]
+func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 
 	token, exists := s.authorizer.TokenFromRequest(r)
 	if !exists {
@@ -67,7 +67,7 @@ func (s *UserService) ReadUserByToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bs, _ := json.Marshal(user.ReadUserByTokenResponse{
+	bs, _ := json.Marshal(user.ReadSelfResponse{
 		User:                 usr,
 		Roles:                claim.Roles,
 		Organizations:        orgs,

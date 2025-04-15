@@ -9,9 +9,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export declare class UserSvcSaveProfileRequest {
-    'meta'?: object;
+export declare class UserSvcSaveSelfRequest {
     'name'?: string;
+    'slug'?: string;
     'thumbnailFileId'?: string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
