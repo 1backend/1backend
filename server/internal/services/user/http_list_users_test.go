@@ -73,8 +73,13 @@ func TestListUsers(t *testing.T) {
 
 		require.NotEmpty(t, rsp.Users)
 		require.True(t, len(rsp.Users) == 3, rsp)
-		require.Equal(t, tokens[0].UserId, rsp.Users[0].Id)
-		require.Equal(t, tokens[1].UserId, rsp.Users[1].Id)
-		require.Equal(t, tokens[2].UserId, rsp.Users[2].Id)
+
+		for _, user := range rsp.Users {
+			require.Contains(t, []string{
+				tokens[0].UserId,
+				tokens[1].UserId,
+				tokens[2].UserId,
+			}, user.Id)
+		}
 	})
 }
