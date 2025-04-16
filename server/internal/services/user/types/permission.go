@@ -50,14 +50,18 @@ var (
 )
 
 var UserPermissions = []string{
+	// Anyone can change their own password
 	PermissionUserPasswordChange,
 
-	// Anyone can create their own organizations and manage users there.
+	// Anyone can create their own organizations
+	// and manage users there.
 	PermissionOrganizationCreate,
 	PermissionOrganizationAddUser,
 	PermissionOrganizationRemoveUser,
 
+	// A User can edit their own enrolls
 	PermissionEnrollEdit,
+	// A User can view their own enrolls
 	PermissionEnrollView,
 }
 

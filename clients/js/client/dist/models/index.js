@@ -183,6 +183,7 @@ export * from './UserSvcListOrganizationsResponse';
 export * from './UserSvcListPermissionsResponse';
 export * from './UserSvcListPermitsRequest';
 export * from './UserSvcListPermitsResponse';
+export * from './UserSvcListUsersOrderByField';
 export * from './UserSvcListUsersRequest';
 export * from './UserSvcListUsersResponse';
 export * from './UserSvcLoginRequest';

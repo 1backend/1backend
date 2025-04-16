@@ -62,13 +62,6 @@ func (s *UserService) ListUsers(
 	}
 	defer r.Body.Close()
 
-	if req.Query == nil {
-		req.Query = &datastore.Query{}
-	}
-	if req.Query.Limit == 0 {
-		req.Query.Limit = 20
-	}
-
 	users, count, err := s.listUsers(&req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -87,11 +80,14 @@ func (s *UserService) listUsers(
 	request *user.ListUsersRequest,
 ) ([]*user.UserRecord, int64, error) {
 	filters := []datastore.Filter{}
-	filters = append(filters, request.Query.Filters...)
 
-	if request.UserId != "" {
-		filters = append(filters, datastore.Equals(
-			[]string{"id"}, request.UserId,
+	if request.Ids != nil {
+		ids := []any{}
+		for _, id := range request.Ids {
+			ids = append(ids, id)
+		}
+		filters = append(filters, datastore.IsInList(
+			[]string{"id"}, ids...,
 		))
 	}
 	if request.ContactId != "" {
@@ -113,21 +109,20 @@ func (s *UserService) listUsers(
 
 	q := s.usersStore.Query(
 		filters...,
-	).Limit(request.Query.Limit)
+	)
 
-	if len(request.Query.OrderBys) > 0 {
-		q = q.OrderBy(request.Query.OrderBys...)
-	} else {
-		q = q.OrderBy(datastore.OrderByField("createdAt", true))
+	if request.OrderByField != "" {
+		q = q.OrderBy(datastore.OrderByField(string(request.OrderByField), request.OrderByDesc))
 	}
 
-	if request.Query.JSONAfter != "" {
-		v := []any{}
-		err := json.Unmarshal([]byte(request.Query.JSONAfter), &v)
-		if err != nil {
-			return nil, 0, err
-		}
-		q = q.After(v...)
+	if !request.AfterTime.IsZero() {
+		q = q.After(request.AfterTime)
+	}
+
+	if request.Limit != 0 {
+		q = q.Limit(int64(request.Limit))
+	} else {
+		q = q.Limit(20)
 	}
 
 	res, err := q.Find()
@@ -136,7 +131,7 @@ func (s *UserService) listUsers(
 	}
 
 	var count int64
-	if request.Query.Count {
+	if request.Count {
 		var err error
 		count, err = q.Count()
 		if err != nil {

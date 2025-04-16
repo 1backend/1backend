@@ -9142,22 +9142,59 @@ const docTemplate = `{
                 }
             }
         },
+        "user_svc.ListUsersOrderByField": {
+            "type": "string",
+            "enum": [
+                "createdAt",
+                "updatedAt"
+            ],
+            "x-enum-varnames": [
+                "ListUsersOrderByFieldCreatedAt",
+                "ListUsersOrderByFieldUpdatedAt"
+            ]
+        },
         "user_svc.ListUsersRequest": {
             "type": "object",
             "properties": {
-                "contactId": {
+                "afterTime": {
+                    "description": "AfterTime is a time in RFC3339 format.\nIt is used to paginate the results when the ` + "`" + `orderByField` + "`" + ` is set to ` + "`" + `createdAt` + "`" + ` or ` + "`" + `updatedAt` + "`" + `.\nThe results will be returned after this time.",
                     "type": "string"
                 },
-                "query": {
-                    "description": "This should be used sparingly or not at all. Might deprecate.",
+                "contactId": {
+                    "description": "ContactId is the id of the contact the user is associated with.\nWill return a user list with one element if set.",
+                    "type": "string"
+                },
+                "count": {
+                    "description": "Count is a flag that indicates if the count of the users should be returned.",
+                    "type": "boolean",
+                    "example": false
+                },
+                "ids": {
+                    "description": "Ids of the users to list.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "limit": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "offset": {
+                    "type": "integer",
+                    "example": 0
+                },
+                "orderByDesc": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "orderByField": {
                     "allOf": [
                         {
-                            "$ref": "#/definitions/datastore.Query"
+                            "$ref": "#/definitions/user_svc.ListUsersOrderByField"
                         }
-                    ]
-                },
-                "userId": {
-                    "type": "string"
+                    ],
+                    "example": "createdAt"
                 }
             }
         },
@@ -9611,7 +9648,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.3.0-rc.37",
+	Version:          "0.3.0-rc.38",
 	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},

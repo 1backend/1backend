@@ -14,8 +14,6 @@ package user_svc
 
 import (
 	"time"
-
-	"github.com/1backend/1backend/sdk/go/datastore"
 )
 
 type ErrorResponse struct {
@@ -138,12 +136,34 @@ type ResetPasswordRequest struct {
 
 type ResetPasswordResponse struct{}
 
-type ListUsersRequest struct {
-	// This should be used sparingly or not at all. Might deprecate.
-	Query *datastore.Query `json:"query"`
+type ListUsersOrderByField string
 
-	UserId    string `json:"userId,omitempty"`
+const (
+	ListUsersOrderByFieldCreatedAt ListUsersOrderByField = "createdAt"
+	ListUsersOrderByFieldUpdatedAt ListUsersOrderByField = "updatedAt"
+)
+
+type ListUsersRequest struct {
+	// Ids of the users to list.
+	Ids []string `json:"ids,omitempty"`
+
+	// ContactId is the id of the contact the user is associated with.
+	// Will return a user list with one element if set.
 	ContactId string `json:"contactId,omitempty"`
+
+	Limit  int64 `json:"limit,omitempty" example:"10"`
+	Offset int64 `json:"offset,omitempty" example:"0"`
+
+	// AfterTime is a time in RFC3339 format.
+	// It is used to paginate the results when the `orderByField` is set to `createdAt` or `updatedAt`.
+	// The results will be returned after this time.
+	AfterTime time.Time `json:"afterTime,omitempty"`
+
+	OrderByDesc  bool                  `json:"orderByDesc,omitempty" example:"false"`
+	OrderByField ListUsersOrderByField `json:"orderByField,omitempty" example:"createdAt"`
+
+	// Count is a flag that indicates if the count of the users should be returned.
+	Count bool `json:"count,omitempty" example:"false"`
 }
 
 type ListUsersResponse struct {
