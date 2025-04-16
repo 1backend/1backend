@@ -143,10 +143,10 @@ func (s *UserService) listUsers(
 	for _, v := range res {
 		usr := v.(*user.User)
 
-		roles, err := s.getRolesByUserId(usr.Id)
-		if err != nil {
-			return nil, 0, err
-		}
+		// roles, err := s.getRolesByUserId(usr.Id)
+		// if err != nil {
+		// 	return nil, 0, err
+		// }
 
 		contactIds, err := s.getContactIdsByUserId(usr.Id)
 		if err != nil {
@@ -154,11 +154,12 @@ func (s *UserService) listUsers(
 		}
 
 		users = append(users, &user.UserRecord{
-			Id:         usr.Id,
-			Slug:       usr.Slug,
-			CreatedAt:  usr.CreatedAt,
-			UpdatedAt:  usr.UpdatedAt,
-			Roles:      roles,
+			Id:        usr.Id,
+			Slug:      usr.Slug,
+			Name:      usr.Name,
+			CreatedAt: usr.CreatedAt,
+			UpdatedAt: usr.UpdatedAt,
+			// Roles:      roles,
 			ContactIds: contactIds,
 		})
 	}

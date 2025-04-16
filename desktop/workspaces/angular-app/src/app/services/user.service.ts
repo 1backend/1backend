@@ -216,15 +216,7 @@ export class UserService {
 				undefined
 			);
 			this.getUsers({
-				query: {
-					filters: [
-						{
-							fields: ['id'],
-							jsonValues: JSON.stringify([id]),
-							op: 'equals',
-						},
-					],
-				},
+				ids: [id],
 			}).then((rsp) => {
 				this.userCache[id].next(rsp.users![0]);
 			});
