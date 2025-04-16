@@ -32,17 +32,14 @@ func ListUsers(
 
 	req := openapi.UserSvcListUsersRequest{}
 	if userId != "" {
-		req.UserId = openapi.PtrString(userId)
+		req.Ids = []string{userId}
 	}
 	if contactId != "" {
 		req.ContactId = openapi.PtrString(contactId)
 	}
 
-	if req.Query == nil {
-		req.Query = &openapi.DatastoreQuery{}
-	}
 	if limit != 0 {
-		req.Query.Limit = openapi.PtrInt32(int32(limit))
+		req.Limit = openapi.PtrInt32(int32(limit))
 	}
 
 	rsp, _, err := cf.Client(client.WithToken(token)).

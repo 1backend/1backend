@@ -164,12 +164,10 @@ export class UsersComponent {
 		query.count = true;
 		query.filters = query.filters || [];
 
-		const request: UserSvcListUsersRequest = {
-			query: query,
-		};
+		const request: UserSvcListUsersRequest = {};
 
 		if (this.after) {
-			request.query!.jsonAfter = JSON.stringify([this.after]);
+			request.afterTime = this.after;
 		}
 
 		const response = await this.userService.getUsers(request);

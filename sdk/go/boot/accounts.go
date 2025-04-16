@@ -48,7 +48,7 @@ func RegisterServiceAccount(userService onebackendapi.UserSvcAPI, serviceSlug, s
 
 		rsp, _, err := userService.Register(ctx).Body(onebackendapi.UserSvcRegisterRequest{
 			Slug:     serviceSlug,
-			Name:     onebackendapi.PtrString(serviceSlug),
+			Name:     onebackendapi.PtrString(serviceName),
 			Password: onebackendapi.PtrString(pw),
 		}).Execute()
 		if err != nil {
@@ -72,11 +72,11 @@ func RegisterServiceAccount(userService onebackendapi.UserSvcAPI, serviceSlug, s
 	return loginRsp.Token, nil
 }
 
-func RegisterUserAccount(userService onebackendapi.UserSvcAPI, slug, password, username string) (*onebackendapi.UserSvcAuthToken, error) {
+func RegisterUserAccount(userService onebackendapi.UserSvcAPI, slug, password, name string) (*onebackendapi.UserSvcAuthToken, error) {
 	_, _, err := userService.Register(context.Background()).Body(onebackendapi.UserSvcRegisterRequest{
 		Slug:     slug,
 		Password: onebackendapi.PtrString(password),
-		Name:     onebackendapi.PtrString(username),
+		Name:     onebackendapi.PtrString(name),
 	}).Execute()
 
 	if err != nil {

@@ -2914,16 +2914,50 @@ definitions:
           $ref: '#/definitions/user_svc.Permit'
         type: array
     type: object
+  user_svc.ListUsersOrderByField:
+    enum:
+    - createdAt
+    - updatedAt
+    type: string
+    x-enum-varnames:
+    - ListUsersOrderByFieldCreatedAt
+    - ListUsersOrderByFieldUpdatedAt
   user_svc.ListUsersRequest:
     properties:
+      afterTime:
+        description: |-
+          AfterTime is a time in RFC3339 format.
+          It is used to paginate the results when the `orderByField` is set to `createdAt` or `updatedAt`.
+          The results will be returned after this time.
+        type: string
       contactId:
+        description: |-
+          ContactId is the id of the contact the user is associated with.
+          Will return a user list with one element if set.
         type: string
-      query:
+      count:
+        description: Count is a flag that indicates if the count of the users should
+          be returned.
+        example: false
+        type: boolean
+      ids:
+        description: Ids of the users to list.
+        items:
+          type: string
+        type: array
+      limit:
+        example: 10
+        type: integer
+      offset:
+        example: 0
+        type: integer
+      orderByDesc:
+        example: false
+        type: boolean
+      orderByField:
         allOf:
-        - $ref: '#/definitions/datastore.Query'
-        description: This should be used sparingly or not at all. Might deprecate.
-      userId:
-        type: string
+        - $ref: '#/definitions/user_svc.ListUsersOrderByField'
+        example: createdAt
     type: object
   user_svc.ListUsersResponse:
     properties:
@@ -3249,7 +3283,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.3.0-rc.37
+  version: 0.3.0-rc.38
 paths:
   /chat-svc/events:
     get:

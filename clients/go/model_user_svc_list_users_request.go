@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.3.0-rc.37
+API version: 0.3.0-rc.38
 Contact: sales@singulatron.com
 */
 
@@ -20,10 +20,18 @@ var _ MappedNullable = &UserSvcListUsersRequest{}
 
 // UserSvcListUsersRequest struct for UserSvcListUsersRequest
 type UserSvcListUsersRequest struct {
+	// AfterTime is a time in RFC3339 format. It is used to paginate the results when the `orderByField` is set to `createdAt` or `updatedAt`. The results will be returned after this time.
+	AfterTime *string `json:"afterTime,omitempty"`
+	// ContactId is the id of the contact the user is associated with. Will return a user list with one element if set.
 	ContactId *string `json:"contactId,omitempty"`
-	// This should be used sparingly or not at all. Might deprecate.
-	Query *DatastoreQuery `json:"query,omitempty"`
-	UserId *string `json:"userId,omitempty"`
+	// Count is a flag that indicates if the count of the users should be returned.
+	Count *bool `json:"count,omitempty"`
+	// Ids of the users to list.
+	Ids []string `json:"ids,omitempty"`
+	Limit *int32 `json:"limit,omitempty"`
+	Offset *int32 `json:"offset,omitempty"`
+	OrderByDesc *bool `json:"orderByDesc,omitempty"`
+	OrderByField *UserSvcListUsersOrderByField `json:"orderByField,omitempty"`
 }
 
 // NewUserSvcListUsersRequest instantiates a new UserSvcListUsersRequest object
@@ -41,6 +49,38 @@ func NewUserSvcListUsersRequest() *UserSvcListUsersRequest {
 func NewUserSvcListUsersRequestWithDefaults() *UserSvcListUsersRequest {
 	this := UserSvcListUsersRequest{}
 	return &this
+}
+
+// GetAfterTime returns the AfterTime field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetAfterTime() string {
+	if o == nil || IsNil(o.AfterTime) {
+		var ret string
+		return ret
+	}
+	return *o.AfterTime
+}
+
+// GetAfterTimeOk returns a tuple with the AfterTime field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersRequest) GetAfterTimeOk() (*string, bool) {
+	if o == nil || IsNil(o.AfterTime) {
+		return nil, false
+	}
+	return o.AfterTime, true
+}
+
+// HasAfterTime returns a boolean if a field has been set.
+func (o *UserSvcListUsersRequest) HasAfterTime() bool {
+	if o != nil && !IsNil(o.AfterTime) {
+		return true
+	}
+
+	return false
+}
+
+// SetAfterTime gets a reference to the given string and assigns it to the AfterTime field.
+func (o *UserSvcListUsersRequest) SetAfterTime(v string) {
+	o.AfterTime = &v
 }
 
 // GetContactId returns the ContactId field value if set, zero value otherwise.
@@ -75,68 +115,196 @@ func (o *UserSvcListUsersRequest) SetContactId(v string) {
 	o.ContactId = &v
 }
 
-// GetQuery returns the Query field value if set, zero value otherwise.
-func (o *UserSvcListUsersRequest) GetQuery() DatastoreQuery {
-	if o == nil || IsNil(o.Query) {
-		var ret DatastoreQuery
+// GetCount returns the Count field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetCount() bool {
+	if o == nil || IsNil(o.Count) {
+		var ret bool
 		return ret
 	}
-	return *o.Query
+	return *o.Count
 }
 
-// GetQueryOk returns a tuple with the Query field value if set, nil otherwise
+// GetCountOk returns a tuple with the Count field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcListUsersRequest) GetQueryOk() (*DatastoreQuery, bool) {
-	if o == nil || IsNil(o.Query) {
+func (o *UserSvcListUsersRequest) GetCountOk() (*bool, bool) {
+	if o == nil || IsNil(o.Count) {
 		return nil, false
 	}
-	return o.Query, true
+	return o.Count, true
 }
 
-// HasQuery returns a boolean if a field has been set.
-func (o *UserSvcListUsersRequest) HasQuery() bool {
-	if o != nil && !IsNil(o.Query) {
+// HasCount returns a boolean if a field has been set.
+func (o *UserSvcListUsersRequest) HasCount() bool {
+	if o != nil && !IsNil(o.Count) {
 		return true
 	}
 
 	return false
 }
 
-// SetQuery gets a reference to the given DatastoreQuery and assigns it to the Query field.
-func (o *UserSvcListUsersRequest) SetQuery(v DatastoreQuery) {
-	o.Query = &v
+// SetCount gets a reference to the given bool and assigns it to the Count field.
+func (o *UserSvcListUsersRequest) SetCount(v bool) {
+	o.Count = &v
 }
 
-// GetUserId returns the UserId field value if set, zero value otherwise.
-func (o *UserSvcListUsersRequest) GetUserId() string {
-	if o == nil || IsNil(o.UserId) {
-		var ret string
+// GetIds returns the Ids field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetIds() []string {
+	if o == nil || IsNil(o.Ids) {
+		var ret []string
 		return ret
 	}
-	return *o.UserId
+	return o.Ids
 }
 
-// GetUserIdOk returns a tuple with the UserId field value if set, nil otherwise
+// GetIdsOk returns a tuple with the Ids field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcListUsersRequest) GetUserIdOk() (*string, bool) {
-	if o == nil || IsNil(o.UserId) {
+func (o *UserSvcListUsersRequest) GetIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Ids) {
 		return nil, false
 	}
-	return o.UserId, true
+	return o.Ids, true
 }
 
-// HasUserId returns a boolean if a field has been set.
-func (o *UserSvcListUsersRequest) HasUserId() bool {
-	if o != nil && !IsNil(o.UserId) {
+// HasIds returns a boolean if a field has been set.
+func (o *UserSvcListUsersRequest) HasIds() bool {
+	if o != nil && !IsNil(o.Ids) {
 		return true
 	}
 
 	return false
 }
 
-// SetUserId gets a reference to the given string and assigns it to the UserId field.
-func (o *UserSvcListUsersRequest) SetUserId(v string) {
-	o.UserId = &v
+// SetIds gets a reference to the given []string and assigns it to the Ids field.
+func (o *UserSvcListUsersRequest) SetIds(v []string) {
+	o.Ids = v
+}
+
+// GetLimit returns the Limit field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetLimit() int32 {
+	if o == nil || IsNil(o.Limit) {
+		var ret int32
+		return ret
+	}
+	return *o.Limit
+}
+
+// GetLimitOk returns a tuple with the Limit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersRequest) GetLimitOk() (*int32, bool) {
+	if o == nil || IsNil(o.Limit) {
+		return nil, false
+	}
+	return o.Limit, true
+}
+
+// HasLimit returns a boolean if a field has been set.
+func (o *UserSvcListUsersRequest) HasLimit() bool {
+	if o != nil && !IsNil(o.Limit) {
+		return true
+	}
+
+	return false
+}
+
+// SetLimit gets a reference to the given int32 and assigns it to the Limit field.
+func (o *UserSvcListUsersRequest) SetLimit(v int32) {
+	o.Limit = &v
+}
+
+// GetOffset returns the Offset field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetOffset() int32 {
+	if o == nil || IsNil(o.Offset) {
+		var ret int32
+		return ret
+	}
+	return *o.Offset
+}
+
+// GetOffsetOk returns a tuple with the Offset field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersRequest) GetOffsetOk() (*int32, bool) {
+	if o == nil || IsNil(o.Offset) {
+		return nil, false
+	}
+	return o.Offset, true
+}
+
+// HasOffset returns a boolean if a field has been set.
+func (o *UserSvcListUsersRequest) HasOffset() bool {
+	if o != nil && !IsNil(o.Offset) {
+		return true
+	}
+
+	return false
+}
+
+// SetOffset gets a reference to the given int32 and assigns it to the Offset field.
+func (o *UserSvcListUsersRequest) SetOffset(v int32) {
+	o.Offset = &v
+}
+
+// GetOrderByDesc returns the OrderByDesc field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetOrderByDesc() bool {
+	if o == nil || IsNil(o.OrderByDesc) {
+		var ret bool
+		return ret
+	}
+	return *o.OrderByDesc
+}
+
+// GetOrderByDescOk returns a tuple with the OrderByDesc field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersRequest) GetOrderByDescOk() (*bool, bool) {
+	if o == nil || IsNil(o.OrderByDesc) {
+		return nil, false
+	}
+	return o.OrderByDesc, true
+}
+
+// HasOrderByDesc returns a boolean if a field has been set.
+func (o *UserSvcListUsersRequest) HasOrderByDesc() bool {
+	if o != nil && !IsNil(o.OrderByDesc) {
+		return true
+	}
+
+	return false
+}
+
+// SetOrderByDesc gets a reference to the given bool and assigns it to the OrderByDesc field.
+func (o *UserSvcListUsersRequest) SetOrderByDesc(v bool) {
+	o.OrderByDesc = &v
+}
+
+// GetOrderByField returns the OrderByField field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetOrderByField() UserSvcListUsersOrderByField {
+	if o == nil || IsNil(o.OrderByField) {
+		var ret UserSvcListUsersOrderByField
+		return ret
+	}
+	return *o.OrderByField
+}
+
+// GetOrderByFieldOk returns a tuple with the OrderByField field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersRequest) GetOrderByFieldOk() (*UserSvcListUsersOrderByField, bool) {
+	if o == nil || IsNil(o.OrderByField) {
+		return nil, false
+	}
+	return o.OrderByField, true
+}
+
+// HasOrderByField returns a boolean if a field has been set.
+func (o *UserSvcListUsersRequest) HasOrderByField() bool {
+	if o != nil && !IsNil(o.OrderByField) {
+		return true
+	}
+
+	return false
+}
+
+// SetOrderByField gets a reference to the given UserSvcListUsersOrderByField and assigns it to the OrderByField field.
+func (o *UserSvcListUsersRequest) SetOrderByField(v UserSvcListUsersOrderByField) {
+	o.OrderByField = &v
 }
 
 func (o UserSvcListUsersRequest) MarshalJSON() ([]byte, error) {
@@ -149,14 +317,29 @@ func (o UserSvcListUsersRequest) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcListUsersRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.AfterTime) {
+		toSerialize["afterTime"] = o.AfterTime
+	}
 	if !IsNil(o.ContactId) {
 		toSerialize["contactId"] = o.ContactId
 	}
-	if !IsNil(o.Query) {
-		toSerialize["query"] = o.Query
+	if !IsNil(o.Count) {
+		toSerialize["count"] = o.Count
 	}
-	if !IsNil(o.UserId) {
-		toSerialize["userId"] = o.UserId
+	if !IsNil(o.Ids) {
+		toSerialize["ids"] = o.Ids
+	}
+	if !IsNil(o.Limit) {
+		toSerialize["limit"] = o.Limit
+	}
+	if !IsNil(o.Offset) {
+		toSerialize["offset"] = o.Offset
+	}
+	if !IsNil(o.OrderByDesc) {
+		toSerialize["orderByDesc"] = o.OrderByDesc
+	}
+	if !IsNil(o.OrderByField) {
+		toSerialize["orderByField"] = o.OrderByField
 	}
 	return toSerialize, nil
 }

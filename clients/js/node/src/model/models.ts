@@ -183,6 +183,7 @@ export * from './userSvcListOrganizationsResponse';
 export * from './userSvcListPermissionsResponse';
 export * from './userSvcListPermitsRequest';
 export * from './userSvcListPermitsResponse';
+export * from './userSvcListUsersOrderByField';
 export * from './userSvcListUsersRequest';
 export * from './userSvcListUsersResponse';
 export * from './userSvcLoginRequest';
@@ -400,6 +401,7 @@ import { UserSvcListOrganizationsResponse } from './userSvcListOrganizationsResp
 import { UserSvcListPermissionsResponse } from './userSvcListPermissionsResponse';
 import { UserSvcListPermitsRequest } from './userSvcListPermitsRequest';
 import { UserSvcListPermitsResponse } from './userSvcListPermitsResponse';
+import { UserSvcListUsersOrderByField } from './userSvcListUsersOrderByField';
 import { UserSvcListUsersRequest } from './userSvcListUsersRequest';
 import { UserSvcListUsersResponse } from './userSvcListUsersResponse';
 import { UserSvcLoginRequest } from './userSvcLoginRequest';
@@ -447,6 +449,7 @@ let enumsMap: {[index: string]: any} = {
         "RegistrySvcInstanceStatus": RegistrySvcInstanceStatus,
         "RegistrySvcLanguage": RegistrySvcLanguage,
         "SecretSvcChecksumAlgorithm": SecretSvcChecksumAlgorithm,
+        "UserSvcListUsersOrderByField": UserSvcListUsersOrderByField,
 }
 
 let typeMap: {[index: string]: any} = {
