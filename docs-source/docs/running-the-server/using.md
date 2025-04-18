@@ -21,6 +21,6 @@ See the [`oo CLI`](/docs/command-line/basics) page for more information about CL
 Unless you configured otherwise, you can log in with the following default credentials:
 
 ```sh
-username: singulatron
+username: 1backend
 password: changeme
 ```
