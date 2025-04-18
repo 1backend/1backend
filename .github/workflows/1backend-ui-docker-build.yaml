@@ -2,6 +2,9 @@ name: "1Backend UI Docker build"
 
 on:
   pull_request:
+  push:
+    branches:
+      - main
 
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
