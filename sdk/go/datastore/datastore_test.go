@@ -116,6 +116,7 @@ func TestAll(t *testing.T) {
 		"PointerRandomize":              datastore.TestPointerRandomize,
 		"PointerOrTest":                 datastore.TestPointerOr,
 		"PointerComplexOrTest":          datastore.TestPointerComplexOr,
+		"PointerTestNamedTypeArray":     datastore.TestPointerNamedTypeArray,
 	}
 
 	for testName, test := range tests {
