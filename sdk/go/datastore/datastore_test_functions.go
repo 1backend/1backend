@@ -804,7 +804,7 @@ func TestNamedTypeArray(t *testing.T, store DataStore) {
 	require.Contains(t, results, obj3)
 }
 
-func PointerTestNamedTypeArray(t *testing.T, store DataStore) {
+func TestPointerNamedTypeArray(t *testing.T, store DataStore) {
 	obj1 := &TestObject{Name: "Alice", NamedTypes: []NamedString{NamedStringOne, NamedStringTwo}}
 	obj2 := &TestObject{Name: "Bob", NamedTypes: []NamedString{NamedStringTwo, NamedStringThree}}
 	obj3 := &TestObject{Name: "Charlie", NamedTypes: []NamedString{NamedStringOne, NamedStringThree}}
