@@ -96,6 +96,7 @@ func TestAll(t *testing.T) {
 		"OrTest":                 datastore.TestOr,
 		"ComplexOrTest":          datastore.TestComplexOr,
 		"TestIndex":              datastore.TestIndex,
+		"TestNamedTypeArray":     datastore.TestNamedTypeArray,
 	}
 	pointerTests := map[string]func(t *testing.T, store datastore.DataStore){
 		"PointerCreate":                 datastore.TestPointerCreate,
@@ -115,6 +116,7 @@ func TestAll(t *testing.T) {
 		"PointerRandomize":              datastore.TestPointerRandomize,
 		"PointerOrTest":                 datastore.TestPointerOr,
 		"PointerComplexOrTest":          datastore.TestPointerComplexOr,
+		"PointerTestNamedTypeArray":     datastore.TestPointerNamedTypeArray,
 	}
 
 	for testName, test := range tests {

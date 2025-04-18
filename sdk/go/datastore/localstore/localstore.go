@@ -579,6 +579,7 @@ func evaluate(filter datastore.Filter, obj any) (bool, error) {
 		matchFunc := func(subject, test any) bool {
 			subject = toBaseType(subject)
 			test = toBaseType(test)
+
 			if subject == "dipper: field not found" {
 				panic("dipper")
 			}
@@ -606,7 +607,7 @@ func evaluate(filter datastore.Filter, obj any) (bool, error) {
 			fieldV := reflect.ValueOf(fieldValue)
 
 			if fieldV.Kind() == reflect.Slice {
-				return false, nil
+				return false, errors.New("OpIsInList should not test slices - use OpIntersects instead")
 			} else if queryValue.Kind() == reflect.Slice {
 				for i := 0; i < queryValue.Len(); i++ {
 					if reflect.ValueOf(queryValue.Index(i).Interface()).Kind() == reflect.Slice {
