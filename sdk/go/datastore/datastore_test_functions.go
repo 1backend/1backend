@@ -43,6 +43,7 @@ type TestObject struct {
 	FriendPointer     *Friend                 `json:"friendPointer"`
 	CreatedAt         time.Time               `json:"createdAt"`
 	NamedType         NamedString             `json:"namedType"`
+	NamedTypes        []NamedString           `json:"namedTypes"`
 }
 
 func (t TestObject) Indexes() []Index {
@@ -745,6 +746,26 @@ func TestPointerUpdate(t *testing.T, store DataStore) {
 	require.NoError(t, err)
 	require.Equal(t, 1, len(res))
 	require.Equal(t, res[0].(*TestObject).Value, 50)
+}
+
+func TestNamedTypeArray(t *testing.T, store DataStore) {
+	obj1 := TestObject{Name: "Alice", NamedTypes: []NamedString{NamedStringOne, NamedStringTwo}}
+	obj2 := TestObject{Name: "Bob", NamedTypes: []NamedString{NamedStringTwo, NamedStringThree}}
+	obj3 := TestObject{Name: "Charlie", NamedTypes: []NamedString{NamedStringOne, NamedStringThree}}
+
+	err := store.Create(obj1)
+	require.NoError(t, err)
+	err = store.Create(obj2)
+	require.NoError(t, err)
+	err = store.Create(obj3)
+	require.NoError(t, err)
+
+	// Test IN clause with string slice
+	results, err := store.Query(IsInList(Field("NameTypes"), NamedStringOne, NamedStringTwo)).Find()
+	require.NoError(t, err)
+	require.Len(t, results, 2)
+	require.Contains(t, results, obj1)
+	require.Contains(t, results, obj3)
 }
 
 func TestInClause(t *testing.T, store DataStore) {

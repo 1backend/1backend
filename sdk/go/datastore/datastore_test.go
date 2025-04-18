@@ -96,6 +96,7 @@ func TestAll(t *testing.T) {
 		"OrTest":                 datastore.TestOr,
 		"ComplexOrTest":          datastore.TestComplexOr,
 		"TestIndex":              datastore.TestIndex,
+		"TestNamedTypeArray":     datastore.TestNamedTypeArray,
 	}
 	pointerTests := map[string]func(t *testing.T, store datastore.DataStore){
 		"PointerCreate":                 datastore.TestPointerCreate,
