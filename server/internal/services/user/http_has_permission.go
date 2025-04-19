@@ -219,19 +219,33 @@ func (s *UserService) getRolesByUserId(userId string) ([]string, error) {
 }
 
 func (s *UserService) getContactIdsByUserId(userId string) ([]string, error) {
-	contacts, err := s.contactsStore.Query(
+	contacts, err := s.getContactsByUserId(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	contactIds := []string{}
+	for _, contact := range contacts {
+		contactIds = append(contactIds, contact.Id)
+	}
+
+	return contactIds, nil
+}
+
+func (s *UserService) getContactsByUserId(userId string) ([]user.Contact, error) {
+	contactIs, err := s.contactsStore.Query(
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Find()
 	if err != nil {
 		return nil, err
 	}
 
-	contactIds := []string{}
-	for _, role := range contacts {
-		contactIds = append(contactIds, role.(*user.Contact).Id)
+	contacts := []user.Contact{}
+	for _, contact := range contactIs {
+		contacts = append(contacts, *contact.(*user.Contact))
 	}
 
-	return contactIds, nil
+	return contacts, nil
 }
 
 func (s *UserService) getUserFromRequest(r *http.Request) (*user.User, error) {

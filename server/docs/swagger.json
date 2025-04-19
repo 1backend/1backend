@@ -13,7 +13,7 @@
             "name": "AGPL v3.0",
             "url": "https://www.gnu.org/licenses/agpl-3.0.html"
         },
-        "version": "0.3.0-rc.38"
+        "version": "0.3.0-rc.39"
     },
     "host": "localhost:11337",
     "basePath": "/",
@@ -9346,6 +9346,13 @@
                 "activeOrganizationId": {
                     "description": "Active organization of the caller user, if it has any.",
                     "type": "string"
+                },
+                "contacts": {
+                    "description": "Contacts of the caller user.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user_svc.Contact"
+                    }
                 },
                 "organizations": {
                     "description": "Organizations of the caller user.",

@@ -3073,6 +3073,11 @@ definitions:
       activeOrganizationId:
         description: Active organization of the caller user, if it has any.
         type: string
+      contacts:
+        description: Contacts of the caller user.
+        items:
+          $ref: '#/definitions/user_svc.Contact'
+        type: array
       organizations:
         description: Organizations of the caller user.
         items:
@@ -3283,7 +3288,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.3.0-rc.38
+  version: 0.3.0-rc.39
 paths:
   /chat-svc/events:
     get:

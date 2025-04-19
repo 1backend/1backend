@@ -9353,6 +9353,13 @@ const docTemplate = `{
                     "description": "Active organization of the caller user, if it has any.",
                     "type": "string"
                 },
+                "contacts": {
+                    "description": "Contacts of the caller user.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user_svc.Contact"
+                    }
+                },
                 "organizations": {
                     "description": "Organizations of the caller user.",
                     "type": "array",
@@ -9648,7 +9655,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.3.0-rc.38",
+	Version:          "0.3.0-rc.39",
 	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},
