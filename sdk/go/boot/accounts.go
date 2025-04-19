@@ -52,7 +52,7 @@ func RegisterServiceAccount(userService onebackendapi.UserSvcAPI, serviceSlug, s
 			Password: onebackendapi.PtrString(pw),
 		}).Execute()
 		if err != nil {
-			return nil, errors.Wrap(err, "error registering service account after login failure")
+			return nil, errors.Wrap(err, "error registering service account")
 		}
 
 		return rsp.Token, nil
@@ -66,7 +66,7 @@ func RegisterServiceAccount(userService onebackendapi.UserSvcAPI, serviceSlug, s
 	}).Execute()
 
 	if err != nil {
-		return nil, errors.Wrap(err, "error logging in after registration")
+		return nil, errors.Wrap(err, "error logging in with service account")
 	}
 
 	return loginRsp.Token, nil
