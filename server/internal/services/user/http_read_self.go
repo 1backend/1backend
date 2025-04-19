@@ -67,11 +67,19 @@ func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	contacts, err := s.getContactsByUserId(usr.Id)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
 	bs, _ := json.Marshal(user.ReadSelfResponse{
 		User:                 usr,
 		Roles:                claim.Roles,
 		Organizations:        orgs,
 		ActiveOrganizationId: activeOrgId,
+		Contacts:             contacts,
 	})
 	w.Write(bs)
 }

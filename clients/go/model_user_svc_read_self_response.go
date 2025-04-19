@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.3.0-rc.38
+API version: 0.3.0-rc.39
 Contact: sales@singulatron.com
 */
 
@@ -24,6 +24,8 @@ var _ MappedNullable = &UserSvcReadSelfResponse{}
 type UserSvcReadSelfResponse struct {
 	// Active organization of the caller user, if it has any.
 	ActiveOrganizationId *string `json:"activeOrganizationId,omitempty"`
+	// Contacts of the caller user.
+	Contacts []UserSvcContact `json:"contacts,omitempty"`
 	// Organizations of the caller user.
 	Organizations []UserSvcOrganization `json:"organizations,omitempty"`
 	// Roles the token has that made this request.
@@ -82,6 +84,38 @@ func (o *UserSvcReadSelfResponse) HasActiveOrganizationId() bool {
 // SetActiveOrganizationId gets a reference to the given string and assigns it to the ActiveOrganizationId field.
 func (o *UserSvcReadSelfResponse) SetActiveOrganizationId(v string) {
 	o.ActiveOrganizationId = &v
+}
+
+// GetContacts returns the Contacts field value if set, zero value otherwise.
+func (o *UserSvcReadSelfResponse) GetContacts() []UserSvcContact {
+	if o == nil || IsNil(o.Contacts) {
+		var ret []UserSvcContact
+		return ret
+	}
+	return o.Contacts
+}
+
+// GetContactsOk returns a tuple with the Contacts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcReadSelfResponse) GetContactsOk() ([]UserSvcContact, bool) {
+	if o == nil || IsNil(o.Contacts) {
+		return nil, false
+	}
+	return o.Contacts, true
+}
+
+// HasContacts returns a boolean if a field has been set.
+func (o *UserSvcReadSelfResponse) HasContacts() bool {
+	if o != nil && !IsNil(o.Contacts) {
+		return true
+	}
+
+	return false
+}
+
+// SetContacts gets a reference to the given []UserSvcContact and assigns it to the Contacts field.
+func (o *UserSvcReadSelfResponse) SetContacts(v []UserSvcContact) {
+	o.Contacts = v
 }
 
 // GetOrganizations returns the Organizations field value if set, zero value otherwise.
@@ -184,6 +218,9 @@ func (o UserSvcReadSelfResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.ActiveOrganizationId) {
 		toSerialize["activeOrganizationId"] = o.ActiveOrganizationId
+	}
+	if !IsNil(o.Contacts) {
+		toSerialize["contacts"] = o.Contacts
 	}
 	if !IsNil(o.Organizations) {
 		toSerialize["organizations"] = o.Organizations

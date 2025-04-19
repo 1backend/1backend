@@ -75,6 +75,9 @@ type ReadSelfResponse struct {
 	// Organizations of the caller user.
 	Organizations []*Organization `json:"organizations,omitempty"`
 
+	// Contacts of the caller user.
+	Contacts []Contact `json:"contacts,omitempty"`
+
 	// Active organization of the caller user, if it has any.
 	ActiveOrganizationId string `json:"activeOrganizationId,omitempty"`
 }
