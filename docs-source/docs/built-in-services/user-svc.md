@@ -29,6 +29,10 @@ The user service is at the heart of 1Backend, managing users, tokens, organizati
 
 **Permit**: A mechanism for assigning permissions to users or roles. Permits define who can access what by connecting users or roles with specific permissions.
 
+**Organization**: A way for users to freely associate with each other. Anyone can create organizations and grant membership to others to their organization.
+
+**Membership**: A formal record that links a user to an organization. Memberships determine which organizations a user belongs to and enable organization-scoped roles to take effect.
+
 ## Overview
 
 The most important thing about the User Svc is that service (machine) and user (human) accounts look and function the same.
