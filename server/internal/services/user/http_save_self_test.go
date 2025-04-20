@@ -105,4 +105,14 @@ func TestSaveSelf(t *testing.T) {
 		require.Equal(t, "value", (*selfRsp.User.Labels)["key"])
 		require.Equal(t, "value2", (*selfRsp.User.Labels)["key2"])
 	})
+
+	t.Run("make sure login still works after update", func(t *testing.T) {
+		_, _, err := client1.UserSvcAPI.Login(ctx).Body(
+			openapi.UserSvcLoginRequest{
+				Slug:     openapi.PtrString("test-user-slug-0"),
+				Password: openapi.PtrString("testUserPassword0"),
+			}).Execute()
+
+		require.NoError(t, err)
+	})
 }

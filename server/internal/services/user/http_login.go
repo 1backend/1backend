@@ -71,7 +71,9 @@ func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
 func (s *UserService) login(
 	request *user.LoginRequest,
 ) (*user.AuthToken, error) {
+
 	var usr *user.User
+
 	if request.Slug != "" {
 		userI, found, err := s.usersStore.Query(
 			datastore.Equals(datastore.Field("slug"), request.Slug),
@@ -108,6 +110,10 @@ func (s *UserService) login(
 		usr = userI.(*user.User)
 	} else {
 		return nil, errors.New("slug or contact required")
+	}
+
+	if usr.PasswordHash == "" {
+		return nil, errors.New("user account is corrupted: password hash is empty")
 	}
 
 	if !checkPasswordHash(request.Password, usr.PasswordHash) {

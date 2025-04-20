@@ -109,15 +109,7 @@ func (s *UserService) readSelf(token string) (*user.User, error) {
 
 	u := userI.(*user.User)
 
-	ret := &user.User{
-		Id:        u.Id,
-		Name:      u.Name,
-		Slug:      u.Slug,
-		Labels:    u.Labels,
-		CreatedAt: u.CreatedAt,
-		UpdatedAt: u.UpdatedAt,
-	}
-	return ret, nil
+	return u, nil
 }
 
 func (s *UserService) getUserOrganizations(
