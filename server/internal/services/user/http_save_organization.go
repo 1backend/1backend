@@ -129,7 +129,7 @@ func (s *UserService) saveOrganization(
 		}
 
 		// When creating a new org, the user switches to that org as the active one
-		link := &user.OrganizationUserLink{
+		link := &user.Membership{
 			Id:             sdk.Id("oul"),
 			UserId:         userId,
 			OrganizationId: final.Id,
@@ -137,7 +137,7 @@ func (s *UserService) saveOrganization(
 			Active: true,
 		}
 
-		err = s.organizationUserLinksStore.Upsert(link)
+		err = s.membershipsStore.Upsert(link)
 		if err != nil {
 			return nil, nil, err
 		}

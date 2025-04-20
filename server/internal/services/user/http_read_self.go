@@ -123,7 +123,7 @@ func (s *UserService) readSelf(token string) (*user.User, error) {
 func (s *UserService) getUserOrganizations(
 	userId string,
 ) ([]*user.Organization, string, error) {
-	links, err := s.organizationUserLinksStore.Query(
+	links, err := s.membershipsStore.Query(
 		datastore.Equals(
 			datastore.Field("userId"),
 			userId,
@@ -136,7 +136,7 @@ func (s *UserService) getUserOrganizations(
 	organizationIds := []any{}
 	activeOrganizationId := ""
 	for _, linkI := range links {
-		link := linkI.(*user.OrganizationUserLink)
+		link := linkI.(*user.Membership)
 		if link.Active {
 			activeOrganizationId = link.OrganizationId
 		}

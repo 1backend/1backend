@@ -17,30 +17,29 @@ import (
 	"fmt"
 	"net/http"
 
-	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/gorilla/mux"
 )
 
-// @ID addUserToOrganization
-// @Summary Add a User to an Organization
-// @Description Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
+// @ID deleteMembership
+// @Summary Delete Membership
+// @Description Allows an organization admin to remove a user from an organization.
 // @Tags User Svc
 // @Accept json
 // @Produce json
 // @Param organizationId path string true "Organization ID"
 // @Param userId path string true "User ID"
-// @Param body body user.AddUserToOrganizationRequest false "Add User to Organization Request"
-// @Success 200 {object} user.AddUserToOrganizationResponse "User added successfully"
+// @Param body body user.DeleteMembershipRequest false "Remove User From Organization Request"
+// @Success 200 {object} user.DeleteMembershipResponse "User added successfully"
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Failure 403 {object} user.ErrorResponse "Forbidden"
 // @Failure 404 {object} user.ErrorResponse "Organization/User not found"
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
-// @Router /user-svc/organization/{organizationId}/user/{userId} [put]
-func (s *UserService) AddUserToOrganization(
+// @Router /user-svc/organization/{organizationId}/user/{userId} [delete]
+func (s *UserService) DeleteMembership(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
@@ -50,7 +49,7 @@ func (s *UserService) AddUserToOrganization(
 
 	usr, hasPermission, err := s.hasPermission(
 		r,
-		user.PermissionOrganizationAddUser,
+		user.PermissionOrganizationCreate,
 		nil,
 		nil,
 	)
@@ -65,7 +64,7 @@ func (s *UserService) AddUserToOrganization(
 		return
 	}
 
-	req := user.AddUserToOrganizationRequest{}
+	req := user.DeleteMembershipRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -74,26 +73,26 @@ func (s *UserService) AddUserToOrganization(
 	}
 	defer r.Body.Close()
 
-	err = s.addUserToOrganization(usr.Id, userId, organizationId)
+	err = s.deleteMembership(usr.Id, userId, organizationId)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	bs, _ := json.Marshal(user.AddUserToOrganizationResponse{})
+	bs, _ := json.Marshal(user.DeleteMembershipResponse{})
 	w.Write(bs)
 }
 
-func (s *UserService) addUserToOrganization(
+func (s *UserService) deleteMembership(
 	callerId, userId, organizationId string,
 ) error {
-	roles, err := s.getRolesByUserId(callerId)
+	roleIds, err := s.getRolesByUserId(callerId)
 	if err != nil {
 		return err
 	}
 
-	orgI, found, err := s.organizationsStore.Query(datastore.Id(organizationId)).
+	org, found, err := s.organizationsStore.Query(datastore.Id(organizationId)).
 		FindOne()
 	if err != nil {
 		return err
@@ -102,54 +101,12 @@ func (s *UserService) addUserToOrganization(
 		return fmt.Errorf("organization not found")
 	}
 
-	org := orgI.(*user.Organization)
-
 	if !contains(
-		roles,
-		fmt.Sprintf("user-svc:org:{%v}:admin", org.Id),
+		roleIds,
+		fmt.Sprintf("user-svc:org:{%v}:admin", org.(*user.Organization).Id),
 	) {
-		return fmt.Errorf("not an admin of the organization")
+		return fmt.Errorf("unauthorized")
 	}
 
-	newRole := fmt.Sprintf("user-svc:org:{%v}:user", org.Id)
-
-	for _, role := range roles {
-		if newRole == role {
-			return nil
-		}
-	}
-
-	err = s.assignRole(
-		userId,
-		newRole,
-	)
-	if err != nil {
-		return err
-	}
-
-	// When creating a new org, the user switches to that org as the active one
-	link := &user.OrganizationUserLink{
-		Id:             sdk.Id("oul"),
-		UserId:         userId,
-		OrganizationId: org.Id,
-		// @todo null out the other active orgs for correctness
-		Active: true,
-	}
-
-	err = s.organizationUserLinksStore.Upsert(link)
-	if err != nil {
-		return err
-	}
-
-	return s.inactivateTokens(userId)
-}
-
-func contains(ss []string, s string) bool {
-	for _, v := range ss {
-		if s == v {
-			return true
-		}
-	}
-
-	return false
+	return s.removeRoleFromUser(userId, "user-svc:org:{%v}:user")
 }

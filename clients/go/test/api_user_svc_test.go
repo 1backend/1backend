@@ -38,13 +38,13 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 	})
 
-	t.Run("Test UserSvcAPIService AddUserToOrganization", func(t *testing.T) {
+	t.Run("Test UserSvcAPIService SaveMembership", func(t *testing.T) {
 
 		t.Skip("skip test") // remove to run test
 
 		var organizationId string
 
-		resp, httpRes, err := apiClient.UserSvcAPI.AddUserToOrganization(context.Background(), organizationId).Execute()
+		resp, httpRes, err := apiClient.UserSvcAPI.SaveMembership(context.Background(), organizationId).Execute()
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
@@ -240,14 +240,14 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 	})
 
-	t.Run("Test UserSvcAPIService RemoveUserFromOrganization", func(t *testing.T) {
+	t.Run("Test UserSvcAPIService DeleteMembership", func(t *testing.T) {
 
 		t.Skip("skip test") // remove to run test
 
 		var organizationId string
 		var userId string
 
-		resp, httpRes, err := apiClient.UserSvcAPI.RemoveUserFromOrganization(context.Background(), organizationId, userId).Execute()
+		resp, httpRes, err := apiClient.UserSvcAPI.DeleteMembership(context.Background(), organizationId, userId).Execute()
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)

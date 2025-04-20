@@ -570,14 +570,14 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
-          id: "1backend/remove-user-from-organization",
-          label: "Remove a User from an Organization",
+          id: "1backend/delete-membership",
+          label: "Delete Membership",
           className: "api-method delete",
         },
         {
           type: "doc",
-          id: "1backend/add-user-to-organization",
-          label: "Add a User to an Organization",
+          id: "1backend/save-membership",
+          label: "Save Membership",
           className: "api-method put",
         },
         {
