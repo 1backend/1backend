@@ -154,6 +154,7 @@ Class | Method | HTTP request | Description
 *SourceSvcAPI* | [**CheckoutRepo**](docs/SourceSvcAPI.md#checkoutrepo) | **Post** /source-svc/repo/checkout | Checkout a git repository
 *UserSvcAPI* | [**ChangePassword**](docs/UserSvcAPI.md#changepassword) | **Post** /user-svc/change-password | Change User Password
 *UserSvcAPI* | [**CreateUser**](docs/UserSvcAPI.md#createuser) | **Post** /user-svc/user | Create a New User
+*UserSvcAPI* | [**DeleteMembership**](docs/UserSvcAPI.md#deletemembership) | **Delete** /user-svc/organization/{organizationId}/user/{userId} | Delete Membership
 *UserSvcAPI* | [**DeleteUser**](docs/UserSvcAPI.md#deleteuser) | **Delete** /user-svc/user/{userId} | Delete a User
 *UserSvcAPI* | [**GetPublicKey**](docs/UserSvcAPI.md#getpublickey) | **Get** /user-svc/public-key | Get Public Key
 *UserSvcAPI* | [**HasPermission**](docs/UserSvcAPI.md#haspermission) | **Post** /user-svc/self/has/{permission} | Has Permission
@@ -165,7 +166,6 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**Login**](docs/UserSvcAPI.md#login) | **Post** /user-svc/login | Login
 *UserSvcAPI* | [**ReadSelf**](docs/UserSvcAPI.md#readself) | **Post** /user-svc/self | Read Self
 *UserSvcAPI* | [**Register**](docs/UserSvcAPI.md#register) | **Post** /user-svc/register | Register
-*UserSvcAPI* | [**RemoveUserFromOrganization**](docs/UserSvcAPI.md#removeuserfromorganization) | **Delete** /user-svc/organization/{organizationId}/user/{userId} | Remove a User from an Organization
 *UserSvcAPI* | [**ResetPassword**](docs/UserSvcAPI.md#resetpassword) | **Post** /user-svc/{userId}/reset-password | Reset Password
 *UserSvcAPI* | [**SaveEnrolls**](docs/UserSvcAPI.md#saveenrolls) | **Put** /user-svc/enrolls | Save Enrolls
 *UserSvcAPI* | [**SaveMembership**](docs/UserSvcAPI.md#savemembership) | **Put** /user-svc/organization/{organizationId}/user/{userId} | Save Membership

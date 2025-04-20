@@ -4347,7 +4347,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.",
+                "description": "Allows an organization admin to remove a user from an organization.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4357,8 +4357,8 @@ const docTemplate = `{
                 "tags": [
                     "User Svc"
                 ],
-                "summary": "Remove a User from an Organization",
-                "operationId": "removeUserFromOrganization",
+                "summary": "Delete Membership",
+                "operationId": "deleteMembership",
                 "parameters": [
                     {
                         "type": "string",
@@ -4379,7 +4379,7 @@ const docTemplate = `{
                         "name": "body",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.RemoveUserFromOrganizationRequest"
+                            "$ref": "#/definitions/user_svc.DeleteMembershipRequest"
                         }
                     }
                 ],
@@ -4387,7 +4387,7 @@ const docTemplate = `{
                     "200": {
                         "description": "User added successfully",
                         "schema": {
-                            "$ref": "#/definitions/user_svc.RemoveUserFromOrganizationResponse"
+                            "$ref": "#/definitions/user_svc.DeleteMembershipResponse"
                         }
                     },
                     "400": {
@@ -8933,6 +8933,12 @@ const docTemplate = `{
         "user_svc.CreateUserResponse": {
             "type": "object"
         },
+        "user_svc.DeleteMembershipRequest": {
+            "type": "object"
+        },
+        "user_svc.DeleteMembershipResponse": {
+            "type": "object"
+        },
         "user_svc.DeleteUserResponse": {
             "type": "object"
         },
@@ -9406,12 +9412,6 @@ const docTemplate = `{
                     "$ref": "#/definitions/user_svc.AuthToken"
                 }
             }
-        },
-        "user_svc.RemoveUserFromOrganizationRequest": {
-            "type": "object"
-        },
-        "user_svc.RemoveUserFromOrganizationResponse": {
-            "type": "object"
         },
         "user_svc.ResetPasswordRequest": {
             "type": "object",

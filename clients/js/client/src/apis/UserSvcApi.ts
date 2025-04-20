@@ -103,18 +103,18 @@ import {
     UserSvcSaveUserRequestToJSON,
 } from '../models/index';
 
-export interface SaveMembershipRequest {
-    organizationId: string;
-    userId: string;
-    body?: object;
-}
-
 export interface ChangePasswordRequest {
     body: UserSvcChangePasswordRequest;
 }
 
 export interface CreateUserRequest {
     body: UserSvcCreateUserRequest;
+}
+
+export interface DeleteMembershipRequest {
+    organizationId: string;
+    userId: string;
+    body?: object;
 }
 
 export interface DeleteUserRequest {
@@ -154,12 +154,6 @@ export interface RegisterRequest {
     body: UserSvcRegisterRequest;
 }
 
-export interface RemoveUserFromOrganizationRequest {
-    organizationId: string;
-    userId: string;
-    body?: object;
-}
-
 export interface ResetPasswordRequest {
     userId: string;
     body: UserSvcResetPasswordRequest;
@@ -167,6 +161,12 @@ export interface ResetPasswordRequest {
 
 export interface SaveEnrollsRequest {
     body: UserSvcSaveEnrollsRequest;
+}
+
+export interface SaveMembershipRequest {
+    organizationId: string;
+    userId: string;
+    body?: object;
 }
 
 export interface SaveOrganizationRequest {
@@ -190,55 +190,6 @@ export interface SaveUserRequest {
  * 
  */
 export class UserSvcApi extends runtime.BaseAPI {
-
-    /**
-     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
-     * Add a User to an Organization
-     */
-    async saveMembershipRaw(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['organizationId'] == null) {
-            throw new runtime.RequiredError(
-                'organizationId',
-                'Required parameter "organizationId" was null or undefined when calling saveMembership().'
-            );
-        }
-
-        if (requestParameters['userId'] == null) {
-            throw new runtime.RequiredError(
-                'userId',
-                'Required parameter "userId" was null or undefined when calling saveMembership().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
-        }
-
-        const response = await this.request({
-            path: `/user-svc/organization/{organizationId}/user/{userId}`.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId']))).replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
-            method: 'PUT',
-            headers: headerParameters,
-            query: queryParameters,
-            body: requestParameters['body'] as any,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse<any>(response);
-    }
-
-    /**
-     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
-     * Add a User to an Organization
-     */
-    async saveMembership(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.saveMembershipRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
 
     /**
      * Allows an authenticated user to change their own password.
@@ -321,6 +272,55 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     async createUser(requestParameters: CreateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.createUserRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Allows an organization admin to remove a user from an organization.
+     * Delete Membership
+     */
+    async deleteMembershipRaw(requestParameters: DeleteMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters['organizationId'] == null) {
+            throw new runtime.RequiredError(
+                'organizationId',
+                'Required parameter "organizationId" was null or undefined when calling deleteMembership().'
+            );
+        }
+
+        if (requestParameters['userId'] == null) {
+            throw new runtime.RequiredError(
+                'userId',
+                'Required parameter "userId" was null or undefined when calling deleteMembership().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/user-svc/organization/{organizationId}/user/{userId}`.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId']))).replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['body'] as any,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Allows an organization admin to remove a user from an organization.
+     * Delete Membership
+     */
+    async deleteMembership(requestParameters: DeleteMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+        const response = await this.deleteMembershipRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -742,55 +742,6 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
-     * Remove a User from an Organization
-     */
-    async removeUserFromOrganizationRaw(requestParameters: RemoveUserFromOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['organizationId'] == null) {
-            throw new runtime.RequiredError(
-                'organizationId',
-                'Required parameter "organizationId" was null or undefined when calling removeUserFromOrganization().'
-            );
-        }
-
-        if (requestParameters['userId'] == null) {
-            throw new runtime.RequiredError(
-                'userId',
-                'Required parameter "userId" was null or undefined when calling removeUserFromOrganization().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
-        }
-
-        const response = await this.request({
-            path: `/user-svc/organization/{organizationId}/user/{userId}`.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId']))).replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
-            method: 'DELETE',
-            headers: headerParameters,
-            query: queryParameters,
-            body: requestParameters['body'] as any,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse<any>(response);
-    }
-
-    /**
-     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
-     * Remove a User from an Organization
-     */
-    async removeUserFromOrganization(requestParameters: RemoveUserFromOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.removeUserFromOrganizationRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Allows an administrator to change a user\'s password.
      * Reset Password
      */
@@ -878,6 +829,55 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     async saveEnrolls(requestParameters: SaveEnrollsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcSaveEnrollsResponse> {
         const response = await this.saveEnrollsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Allows and organization admint to add a user to an organization.
+     * Save Membership
+     */
+    async saveMembershipRaw(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters['organizationId'] == null) {
+            throw new runtime.RequiredError(
+                'organizationId',
+                'Required parameter "organizationId" was null or undefined when calling saveMembership().'
+            );
+        }
+
+        if (requestParameters['userId'] == null) {
+            throw new runtime.RequiredError(
+                'userId',
+                'Required parameter "userId" was null or undefined when calling saveMembership().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/user-svc/organization/{organizationId}/user/{userId}`.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId']))).replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['body'] as any,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Allows and organization admint to add a user to an organization.
+     * Save Membership
+     */
+    async saveMembership(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+        const response = await this.saveMembershipRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

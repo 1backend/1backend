@@ -11,16 +11,16 @@
  */
 import * as runtime from '../runtime';
 import type { UserSvcChangePasswordRequest, UserSvcCreateUserRequest, UserSvcGetPublicKeyResponse, UserSvcHasPermissionRequest, UserSvcHasPermissionResponse, UserSvcListEnrollsRequest, UserSvcListEnrollsResponse, UserSvcListOrganizationsRequest, UserSvcListOrganizationsResponse, UserSvcListPermissionsResponse, UserSvcListPermitsRequest, UserSvcListPermitsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadSelfResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveEnrollsRequest, UserSvcSaveEnrollsResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSavePermitsRequest, UserSvcSaveSelfRequest, UserSvcSaveUserRequest } from '../models/index';
-export interface SaveMembershipRequest {
-    organizationId: string;
-    userId: string;
-    body?: object;
-}
 export interface ChangePasswordRequest {
     body: UserSvcChangePasswordRequest;
 }
 export interface CreateUserRequest {
     body: UserSvcCreateUserRequest;
+}
+export interface DeleteMembershipRequest {
+    organizationId: string;
+    userId: string;
+    body?: object;
 }
 export interface DeleteUserRequest {
     userId: string;
@@ -50,17 +50,17 @@ export interface LoginRequest {
 export interface RegisterRequest {
     body: UserSvcRegisterRequest;
 }
-export interface RemoveUserFromOrganizationRequest {
-    organizationId: string;
-    userId: string;
-    body?: object;
-}
 export interface ResetPasswordRequest {
     userId: string;
     body: UserSvcResetPasswordRequest;
 }
 export interface SaveEnrollsRequest {
     body: UserSvcSaveEnrollsRequest;
+}
+export interface SaveMembershipRequest {
+    organizationId: string;
+    userId: string;
+    body?: object;
 }
 export interface SaveOrganizationRequest {
     body: UserSvcSaveOrganizationRequest;
@@ -79,16 +79,6 @@ export interface SaveUserRequest {
  *
  */
 export declare class UserSvcApi extends runtime.BaseAPI {
-    /**
-     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
-     * Add a User to an Organization
-     */
-    saveMembershipRaw(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
-    /**
-     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
-     * Add a User to an Organization
-     */
-    saveMembership(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
      * Allows an authenticated user to change their own password.
      * Change User Password
@@ -109,6 +99,16 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      * Create a New User
      */
     createUser(requestParameters: CreateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+    /**
+     * Allows an organization admin to remove a user from an organization.
+     * Delete Membership
+     */
+    deleteMembershipRaw(requestParameters: DeleteMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+    /**
+     * Allows an organization admin to remove a user from an organization.
+     * Delete Membership
+     */
+    deleteMembership(requestParameters: DeleteMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
      * Delete a user based on the user ID.
      * Delete a User
@@ -220,16 +220,6 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      */
     register(requestParameters: RegisterRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcRegisterResponse>;
     /**
-     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
-     * Remove a User from an Organization
-     */
-    removeUserFromOrganizationRaw(requestParameters: RemoveUserFromOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
-    /**
-     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
-     * Remove a User from an Organization
-     */
-    removeUserFromOrganization(requestParameters: RemoveUserFromOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
-    /**
      * Allows an administrator to change a user\'s password.
      * Reset Password
      */
@@ -249,6 +239,16 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      * Save Enrolls
      */
     saveEnrolls(requestParameters: SaveEnrollsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcSaveEnrollsResponse>;
+    /**
+     * Allows and organization admint to add a user to an organization.
+     * Save Membership
+     */
+    saveMembershipRaw(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+    /**
+     * Allows and organization admint to add a user to an organization.
+     * Save Membership
+     */
+    saveMembership(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
      * Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization. The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the saved organization. Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
      * Save an Organization

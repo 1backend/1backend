@@ -27,44 +27,6 @@ import { UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, Use
  */
 export class UserSvcApi extends runtime.BaseAPI {
     /**
-     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
-     * Add a User to an Organization
-     */
-    saveMembershipRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['organizationId'] == null) {
-                throw new runtime.RequiredError('organizationId', 'Required parameter "organizationId" was null or undefined when calling saveMembership().');
-            }
-            if (requestParameters['userId'] == null) {
-                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling saveMembership().');
-            }
-            const queryParameters = {};
-            const headerParameters = {};
-            headerParameters['Content-Type'] = 'application/json';
-            if (this.configuration && this.configuration.apiKey) {
-                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
-            }
-            const response = yield this.request({
-                path: `/user-svc/organization/{organizationId}/user/{userId}`.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId']))).replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
-                method: 'PUT',
-                headers: headerParameters,
-                query: queryParameters,
-                body: requestParameters['body'],
-            }, initOverrides);
-            return new runtime.JSONApiResponse(response);
-        });
-    }
-    /**
-     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
-     * Add a User to an Organization
-     */
-    saveMembership(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.saveMembershipRaw(requestParameters, initOverrides);
-            return yield response.value();
-        });
-    }
-    /**
      * Allows an authenticated user to change their own password.
      * Change User Password
      */
@@ -131,6 +93,44 @@ export class UserSvcApi extends runtime.BaseAPI {
     createUser(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.createUserRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * Allows an organization admin to remove a user from an organization.
+     * Delete Membership
+     */
+    deleteMembershipRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['organizationId'] == null) {
+                throw new runtime.RequiredError('organizationId', 'Required parameter "organizationId" was null or undefined when calling deleteMembership().');
+            }
+            if (requestParameters['userId'] == null) {
+                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling deleteMembership().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            const response = yield this.request({
+                path: `/user-svc/organization/{organizationId}/user/{userId}`.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId']))).replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+                method: 'DELETE',
+                headers: headerParameters,
+                query: queryParameters,
+                body: requestParameters['body'],
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response);
+        });
+    }
+    /**
+     * Allows an organization admin to remove a user from an organization.
+     * Delete Membership
+     */
+    deleteMembership(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.deleteMembershipRaw(requestParameters, initOverrides);
             return yield response.value();
         });
     }
@@ -494,44 +494,6 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
-     * Remove a User from an Organization
-     */
-    removeUserFromOrganizationRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['organizationId'] == null) {
-                throw new runtime.RequiredError('organizationId', 'Required parameter "organizationId" was null or undefined when calling removeUserFromOrganization().');
-            }
-            if (requestParameters['userId'] == null) {
-                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling removeUserFromOrganization().');
-            }
-            const queryParameters = {};
-            const headerParameters = {};
-            headerParameters['Content-Type'] = 'application/json';
-            if (this.configuration && this.configuration.apiKey) {
-                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
-            }
-            const response = yield this.request({
-                path: `/user-svc/organization/{organizationId}/user/{userId}`.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId']))).replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
-                method: 'DELETE',
-                headers: headerParameters,
-                query: queryParameters,
-                body: requestParameters['body'],
-            }, initOverrides);
-            return new runtime.JSONApiResponse(response);
-        });
-    }
-    /**
-     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
-     * Remove a User from an Organization
-     */
-    removeUserFromOrganization(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.removeUserFromOrganizationRaw(requestParameters, initOverrides);
-            return yield response.value();
-        });
-    }
-    /**
      * Allows an administrator to change a user\'s password.
      * Reset Password
      */
@@ -601,6 +563,44 @@ export class UserSvcApi extends runtime.BaseAPI {
     saveEnrolls(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.saveEnrollsRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * Allows and organization admint to add a user to an organization.
+     * Save Membership
+     */
+    saveMembershipRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['organizationId'] == null) {
+                throw new runtime.RequiredError('organizationId', 'Required parameter "organizationId" was null or undefined when calling saveMembership().');
+            }
+            if (requestParameters['userId'] == null) {
+                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling saveMembership().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            const response = yield this.request({
+                path: `/user-svc/organization/{organizationId}/user/{userId}`.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId']))).replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+                method: 'PUT',
+                headers: headerParameters,
+                query: queryParameters,
+                body: requestParameters['body'],
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response);
+        });
+    }
+    /**
+     * Allows and organization admint to add a user to an organization.
+     * Save Membership
+     */
+    saveMembership(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.saveMembershipRaw(requestParameters, initOverrides);
             return yield response.value();
         });
     }

@@ -1,0 +1,71 @@
+---
+id: save-membership
+title: "Save Membership"
+description: "Allows and organization admint to add a user to an organization."
+sidebar_label: "Save Membership"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9Vk1v4zYQ/SvEnFpAkZx6i6I6NWm3hdttE8SbU9aHsTiWuKFILknZ6xX034uR7ESOnQX2A7nYkjgf7w05j9OCpFB45aKyBnK40NpugkAjhfUlGvUJeUWgrJWJIlqBUgoUTSDfv5kDuxQSsI58/zKTkEPANf1L9ZJ8qJSDBBx6rCmSD5DftU/SX41zzv6ABBR/dhgrSMBgTZDDOOFMQgKePjTKk4Q8+oYSCEVFNULeQtw69gjRK1NC1yVPE94yj+cSMckvTLAYjCnESyu3bFFYE8lEfkTntCp63Nn7wPnb41B2+Z6KCF3XJU/3Rkpxu6v7QaFuhozQcfLgrAkUOOJPkwn/nWCMUpIUoSkKCmHVaL2F5BuQdgm8OpVrZtaolRR/z6/++5IEzvMhimqgQd5bf3I3n0FyfoK1wSZW1qtPJF8QyfQYyZ/WL5WUZF4QxqtjGOMDlPVnwtgoVrYxL1efn0+fmUjeoBZz8mvy4nUf82UgdQkEKhqv4rYXp0tCT/6iiRXkdwtu7ogl69bQRfN1AYsEaoqVZa1zTewFjs0hY/U4C+siG+tV1h6qV9ebZe0gNR0wAKY9iGPjNUfKtC1QVzbE/Px8Ov0FGMke6JyJD1zHcJ+W9e3WkXi3M3kHYmVZ6UmK5VagCA4L6lU/2nsyAotB8MTK21rEisSesHhjS2UEGemsMjHdK2dFKMk/aufFrt16nvBQbHTqH9r25eedu3nUytcfsXaaIG87Drmye/HEot90qlHp/kLRFH4LypSNxuitSQtbj/Jez8S8cc563ouhgFWMLs+y8yUW92QkO2RwLK+zM4NRrUnUqvCW90EVFITTGFfW10xVq4JMYJAP+f66fiPW03RykC3kWbbZbNLSNKn1ZbbzCxmWTp9N00laxVozhki+Dler+ZDtEWzYYFmST5XNepOMa6giFwjOLwcikAAflQH+JJ2mkzNfpNNfOa6zIdZoRkjnuCZxcBUf8B/dVN9jCtjtd6SPMXMalWFQfYHaXYfcwb5DeGgYuUMC+dEdz7a8sLuTFwlwP3CUtl1ioFuvu44/f2jIc/cuElijV7jkkvGgoQI/S8hXqAN9hv0PN7vr/kdxPI+c5LU/3Iav0TXqht8ggXvaHs8r/RDyNWAeZ5WvALGrW7fokn2vclWGxd+HdGcsEiPnI51l6IPHRVGQi5+1HSvj9e1bSGC5G4lqK9nF44ZnK9wMOG3Pvhey/lsLGk3ZYMm2Q0iWDdzJ26OgMKJk/8CkTlbiqSANPPiXWZ10adtBrrruwX5YetbjQQUHa96YRdd1/wN4XO5M
+sidebar_class_name: "put api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Save Membership"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/user-svc/organization/{organizationId}/user/{userId}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Allows and organization admint to add a user to an organization.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Organization ID","in":"path","name":"organizationId","required":true,"schema":{"type":"string"}},{"description":"User ID","in":"path","name":"userId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"type":"object"}}},"description":"Add User to Organization Request"}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"User added successfully","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"403":{"description":"Forbidden","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"404":{"description":"Organization/User not found","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

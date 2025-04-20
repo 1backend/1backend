@@ -99,6 +99,36 @@ func (mr *MockUserSvcAPIMockRecorder) CreateUserExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUserExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).CreateUserExecute), r)
 }
 
+// DeleteMembership mocks base method.
+func (m *MockUserSvcAPI) DeleteMembership(ctx context.Context, organizationId, userId string) ApiDeleteMembershipRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteMembership", ctx, organizationId, userId)
+	ret0, _ := ret[0].(ApiDeleteMembershipRequest)
+	return ret0
+}
+
+// DeleteMembership indicates an expected call of DeleteMembership.
+func (mr *MockUserSvcAPIMockRecorder) DeleteMembership(ctx, organizationId, userId any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteMembership", reflect.TypeOf((*MockUserSvcAPI)(nil).DeleteMembership), ctx, organizationId, userId)
+}
+
+// DeleteMembershipExecute mocks base method.
+func (m *MockUserSvcAPI) DeleteMembershipExecute(r ApiDeleteMembershipRequest) (map[string]any, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteMembershipExecute", r)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// DeleteMembershipExecute indicates an expected call of DeleteMembershipExecute.
+func (mr *MockUserSvcAPIMockRecorder) DeleteMembershipExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteMembershipExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).DeleteMembershipExecute), r)
+}
+
 // DeleteUser mocks base method.
 func (m *MockUserSvcAPI) DeleteUser(ctx context.Context, userId string) ApiDeleteUserRequest {
 	m.ctrl.T.Helper()
@@ -427,36 +457,6 @@ func (m *MockUserSvcAPI) RegisterExecute(r ApiRegisterRequest) (*UserSvcRegister
 func (mr *MockUserSvcAPIMockRecorder) RegisterExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).RegisterExecute), r)
-}
-
-// RemoveUserFromOrganization mocks base method.
-func (m *MockUserSvcAPI) RemoveUserFromOrganization(ctx context.Context, organizationId, userId string) ApiRemoveUserFromOrganizationRequest {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RemoveUserFromOrganization", ctx, organizationId, userId)
-	ret0, _ := ret[0].(ApiRemoveUserFromOrganizationRequest)
-	return ret0
-}
-
-// RemoveUserFromOrganization indicates an expected call of RemoveUserFromOrganization.
-func (mr *MockUserSvcAPIMockRecorder) RemoveUserFromOrganization(ctx, organizationId, userId any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveUserFromOrganization", reflect.TypeOf((*MockUserSvcAPI)(nil).RemoveUserFromOrganization), ctx, organizationId, userId)
-}
-
-// RemoveUserFromOrganizationExecute mocks base method.
-func (m *MockUserSvcAPI) RemoveUserFromOrganizationExecute(r ApiRemoveUserFromOrganizationRequest) (map[string]any, *http.Response, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RemoveUserFromOrganizationExecute", r)
-	ret0, _ := ret[0].(map[string]any)
-	ret1, _ := ret[1].(*http.Response)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// RemoveUserFromOrganizationExecute indicates an expected call of RemoveUserFromOrganizationExecute.
-func (mr *MockUserSvcAPIMockRecorder) RemoveUserFromOrganizationExecute(r any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveUserFromOrganizationExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).RemoveUserFromOrganizationExecute), r)
 }
 
 // ResetPassword mocks base method.

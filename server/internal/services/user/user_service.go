@@ -208,7 +208,7 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 		Methods("OPTIONS", "PUT")
 
 	router.HandleFunc("/user-svc/organization/{organizationId}/user/{userId}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
-		us.RemoveUserFromOrganization(w, r)
+		us.DeleteMembership(w, r)
 	})).
 		Methods("OPTIONS", "DELETE")
 

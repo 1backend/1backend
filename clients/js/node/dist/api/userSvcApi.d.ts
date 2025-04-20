@@ -61,21 +61,6 @@ export declare class UserSvcApi {
     setApiKey(key: UserSvcApiApiKeys, value: string): void;
     addInterceptor(interceptor: Interceptor): void;
     /**
-     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
-     * @summary Add a User to an Organization
-     * @param organizationId Organization ID
-     * @param userId User ID
-     * @param body Add User to Organization Request
-     */
-    saveMembership(organizationId: string, userId: string, body?: object, options?: {
-        headers: {
-            [name: string]: string;
-        };
-    }): Promise<{
-        response: http.IncomingMessage;
-        body: object;
-    }>;
-    /**
      * Allows an authenticated user to change their own password.
      * @summary Change User Password
      * @param body Change Password Request
@@ -94,6 +79,21 @@ export declare class UserSvcApi {
      * @param body Create User Request
      */
     createUser(body: UserSvcCreateUserRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: object;
+    }>;
+    /**
+     * Allows an organization admin to remove a user from an organization.
+     * @summary Delete Membership
+     * @param organizationId Organization ID
+     * @param userId User ID
+     * @param body Remove User From Organization Request
+     */
+    deleteMembership(organizationId: string, userId: string, body?: object, options?: {
         headers: {
             [name: string]: string;
         };
@@ -244,21 +244,6 @@ export declare class UserSvcApi {
         body: UserSvcRegisterResponse;
     }>;
     /**
-     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
-     * @summary Remove a User from an Organization
-     * @param organizationId Organization ID
-     * @param userId User ID
-     * @param body Remove User From Organization Request
-     */
-    removeUserFromOrganization(organizationId: string, userId: string, body?: object, options?: {
-        headers: {
-            [name: string]: string;
-        };
-    }): Promise<{
-        response: http.IncomingMessage;
-        body: object;
-    }>;
-    /**
      * Allows an administrator to change a user\'s password.
      * @summary Reset Password
      * @param userId User ID
@@ -284,6 +269,21 @@ export declare class UserSvcApi {
     }): Promise<{
         response: http.IncomingMessage;
         body: UserSvcSaveEnrollsResponse;
+    }>;
+    /**
+     * Allows and organization admint to add a user to an organization.
+     * @summary Save Membership
+     * @param organizationId Organization ID
+     * @param userId User ID
+     * @param body Add User to Organization Request
+     */
+    saveMembership(organizationId: string, userId: string, body?: object, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: object;
     }>;
     /**
      * Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization. The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the saved organization. Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.

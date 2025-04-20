@@ -94,8 +94,8 @@ type SaveMembershipRequest struct {
 type SaveMembershipResponse struct {
 }
 
-type RemoveUserFromOrganizationRequest struct {
+type DeleteMembershipRequest struct {
 }
 
-type RemoveUserFromOrganizationResponse struct {
+type DeleteMembershipResponse struct {
 }

@@ -149,7 +149,7 @@ func TestOrganization(t *testing.T) {
 			fmt.Sprintf("user-svc:org:{%v}:user", orgId1),
 		)
 
-		_, _, err = thirdClient.UserSvcAPI.RemoveUserFromOrganization(
+		_, _, err = thirdClient.UserSvcAPI.DeleteMembership(
 			context.Background(),
 			orgId1,
 			readSelfRsp.User.Id,
@@ -158,7 +158,7 @@ func TestOrganization(t *testing.T) {
 		// third user cannot remove the second from the org of the first
 		require.Error(t, err)
 
-		_, _, err = userClient.UserSvcAPI.RemoveUserFromOrganization(
+		_, _, err = userClient.UserSvcAPI.DeleteMembership(
 			context.Background(),
 			orgId1,
 			readSelfRsp.User.Id,

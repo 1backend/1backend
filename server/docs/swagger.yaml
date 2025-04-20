@@ -2755,6 +2755,10 @@ definitions:
     type: object
   user_svc.CreateUserResponse:
     type: object
+  user_svc.DeleteMembershipRequest:
+    type: object
+  user_svc.DeleteMembershipResponse:
+    type: object
   user_svc.DeleteUserResponse:
     type: object
   user_svc.Enroll:
@@ -3112,10 +3116,6 @@ definitions:
     properties:
       token:
         $ref: '#/definitions/user_svc.AuthToken'
-    type: object
-  user_svc.RemoveUserFromOrganizationRequest:
-    type: object
-  user_svc.RemoveUserFromOrganizationResponse:
     type: object
   user_svc.ResetPasswordRequest:
     properties:
@@ -6167,9 +6167,8 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Allows an authorized user to add another user to a specific organization.
-        The user will be assigned a specific role within the organization.
-      operationId: removeUserFromOrganization
+      description: Allows an organization admin to remove a user from an organization.
+      operationId: deleteMembership
       parameters:
       - description: Organization ID
         in: path
@@ -6185,14 +6184,14 @@ paths:
         in: body
         name: body
         schema:
-          $ref: '#/definitions/user_svc.RemoveUserFromOrganizationRequest'
+          $ref: '#/definitions/user_svc.DeleteMembershipRequest'
       produces:
       - application/json
       responses:
         "200":
           description: User added successfully
           schema:
-            $ref: '#/definitions/user_svc.RemoveUserFromOrganizationResponse'
+            $ref: '#/definitions/user_svc.DeleteMembershipResponse'
         "400":
           description: Invalid JSON
           schema:
@@ -6215,7 +6214,7 @@ paths:
             $ref: '#/definitions/user_svc.ErrorResponse'
       security:
       - BearerAuth: []
-      summary: Remove a User from an Organization
+      summary: Delete Membership
       tags:
       - User Svc
     put:

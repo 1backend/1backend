@@ -13688,81 +13688,6 @@ class UserSvcApi {
         this.interceptors.push(interceptor);
     }
     /**
-     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
-     * @summary Add a User to an Organization
-     * @param organizationId Organization ID
-     * @param userId User ID
-     * @param body Add User to Organization Request
-     */
-    saveMembership(organizationId_1, userId_1, body_1) {
-        return __awaiter(this, arguments, void 0, function* (organizationId, userId, body, options = { headers: {} }) {
-            const localVarPath = this.basePath + '/user-svc/organization/{organizationId}/user/{userId}'
-                .replace('{' + 'organizationId' + '}', encodeURIComponent(String(organizationId)))
-                .replace('{' + 'userId' + '}', encodeURIComponent(String(userId)));
-            let localVarQueryParameters = {};
-            let localVarHeaderParams = Object.assign({}, this._defaultHeaders);
-            const produces = ['application/json'];
-            // give precedence to 'application/json'
-            if (produces.indexOf('application/json') >= 0) {
-                localVarHeaderParams.Accept = 'application/json';
-            }
-            else {
-                localVarHeaderParams.Accept = produces.join(',');
-            }
-            let localVarFormParams = {};
-            // verify required parameter 'organizationId' is not null or undefined
-            if (organizationId === null || organizationId === undefined) {
-                throw new Error('Required parameter organizationId was null or undefined when calling saveMembership.');
-            }
-            // verify required parameter 'userId' is not null or undefined
-            if (userId === null || userId === undefined) {
-                throw new Error('Required parameter userId was null or undefined when calling saveMembership.');
-            }
-            Object.assign(localVarHeaderParams, options.headers);
-            let localVarRequestOptions = {
-                method: 'PUT',
-                qs: localVarQueryParameters,
-                headers: localVarHeaderParams,
-                uri: localVarPath,
-                useQuerystring: this._useQuerystring,
-                json: true,
-                body: ObjectSerializer.serialize(body, "object")
-            };
-            let authenticationPromise = Promise.resolve();
-            if (this.authentications.BearerAuth.apiKey) {
-                authenticationPromise = authenticationPromise.then(() => this.authentications.BearerAuth.applyToRequest(localVarRequestOptions));
-            }
-            authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
-            let interceptorPromise = authenticationPromise;
-            for (const interceptor of this.interceptors) {
-                interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
-            }
-            return interceptorPromise.then(() => {
-                if (Object.keys(localVarFormParams).length) {
-                    {
-                        localVarRequestOptions.form = localVarFormParams;
-                    }
-                }
-                return new Promise((resolve, reject) => {
-                    localVarRequest(localVarRequestOptions, (error, response, body) => {
-                        if (error) {
-                            reject(error);
-                        }
-                        else {
-                            if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
-                                body = ObjectSerializer.deserialize(body, "object");
-                                resolve({ response: response, body: body });
-                            }
-                            else {
-                                reject(new HttpError(response, body, response.statusCode));
-                            }
-                        }
-                    });
-                });
-            });
-        });
-    }
-    /**
      * Allows an authenticated user to change their own password.
      * @summary Change User Password
      * @param body Change Password Request
@@ -13861,6 +13786,81 @@ class UserSvcApi {
                 useQuerystring: this._useQuerystring,
                 json: true,
                 body: ObjectSerializer.serialize(body, "UserSvcCreateUserRequest")
+            };
+            let authenticationPromise = Promise.resolve();
+            if (this.authentications.BearerAuth.apiKey) {
+                authenticationPromise = authenticationPromise.then(() => this.authentications.BearerAuth.applyToRequest(localVarRequestOptions));
+            }
+            authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
+            let interceptorPromise = authenticationPromise;
+            for (const interceptor of this.interceptors) {
+                interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
+            }
+            return interceptorPromise.then(() => {
+                if (Object.keys(localVarFormParams).length) {
+                    {
+                        localVarRequestOptions.form = localVarFormParams;
+                    }
+                }
+                return new Promise((resolve, reject) => {
+                    localVarRequest(localVarRequestOptions, (error, response, body) => {
+                        if (error) {
+                            reject(error);
+                        }
+                        else {
+                            if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
+                                body = ObjectSerializer.deserialize(body, "object");
+                                resolve({ response: response, body: body });
+                            }
+                            else {
+                                reject(new HttpError(response, body, response.statusCode));
+                            }
+                        }
+                    });
+                });
+            });
+        });
+    }
+    /**
+     * Allows an organization admin to remove a user from an organization.
+     * @summary Delete Membership
+     * @param organizationId Organization ID
+     * @param userId User ID
+     * @param body Remove User From Organization Request
+     */
+    deleteMembership(organizationId_1, userId_1, body_1) {
+        return __awaiter(this, arguments, void 0, function* (organizationId, userId, body, options = { headers: {} }) {
+            const localVarPath = this.basePath + '/user-svc/organization/{organizationId}/user/{userId}'
+                .replace('{' + 'organizationId' + '}', encodeURIComponent(String(organizationId)))
+                .replace('{' + 'userId' + '}', encodeURIComponent(String(userId)));
+            let localVarQueryParameters = {};
+            let localVarHeaderParams = Object.assign({}, this._defaultHeaders);
+            const produces = ['application/json'];
+            // give precedence to 'application/json'
+            if (produces.indexOf('application/json') >= 0) {
+                localVarHeaderParams.Accept = 'application/json';
+            }
+            else {
+                localVarHeaderParams.Accept = produces.join(',');
+            }
+            let localVarFormParams = {};
+            // verify required parameter 'organizationId' is not null or undefined
+            if (organizationId === null || organizationId === undefined) {
+                throw new Error('Required parameter organizationId was null or undefined when calling deleteMembership.');
+            }
+            // verify required parameter 'userId' is not null or undefined
+            if (userId === null || userId === undefined) {
+                throw new Error('Required parameter userId was null or undefined when calling deleteMembership.');
+            }
+            Object.assign(localVarHeaderParams, options.headers);
+            let localVarRequestOptions = {
+                method: 'DELETE',
+                qs: localVarQueryParameters,
+                headers: localVarHeaderParams,
+                uri: localVarPath,
+                useQuerystring: this._useQuerystring,
+                json: true,
+                body: ObjectSerializer.serialize(body, "object")
             };
             let authenticationPromise = Promise.resolve();
             if (this.authentications.BearerAuth.apiKey) {
@@ -14611,81 +14611,6 @@ class UserSvcApi {
         });
     }
     /**
-     * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
-     * @summary Remove a User from an Organization
-     * @param organizationId Organization ID
-     * @param userId User ID
-     * @param body Remove User From Organization Request
-     */
-    removeUserFromOrganization(organizationId_1, userId_1, body_1) {
-        return __awaiter(this, arguments, void 0, function* (organizationId, userId, body, options = { headers: {} }) {
-            const localVarPath = this.basePath + '/user-svc/organization/{organizationId}/user/{userId}'
-                .replace('{' + 'organizationId' + '}', encodeURIComponent(String(organizationId)))
-                .replace('{' + 'userId' + '}', encodeURIComponent(String(userId)));
-            let localVarQueryParameters = {};
-            let localVarHeaderParams = Object.assign({}, this._defaultHeaders);
-            const produces = ['application/json'];
-            // give precedence to 'application/json'
-            if (produces.indexOf('application/json') >= 0) {
-                localVarHeaderParams.Accept = 'application/json';
-            }
-            else {
-                localVarHeaderParams.Accept = produces.join(',');
-            }
-            let localVarFormParams = {};
-            // verify required parameter 'organizationId' is not null or undefined
-            if (organizationId === null || organizationId === undefined) {
-                throw new Error('Required parameter organizationId was null or undefined when calling removeUserFromOrganization.');
-            }
-            // verify required parameter 'userId' is not null or undefined
-            if (userId === null || userId === undefined) {
-                throw new Error('Required parameter userId was null or undefined when calling removeUserFromOrganization.');
-            }
-            Object.assign(localVarHeaderParams, options.headers);
-            let localVarRequestOptions = {
-                method: 'DELETE',
-                qs: localVarQueryParameters,
-                headers: localVarHeaderParams,
-                uri: localVarPath,
-                useQuerystring: this._useQuerystring,
-                json: true,
-                body: ObjectSerializer.serialize(body, "object")
-            };
-            let authenticationPromise = Promise.resolve();
-            if (this.authentications.BearerAuth.apiKey) {
-                authenticationPromise = authenticationPromise.then(() => this.authentications.BearerAuth.applyToRequest(localVarRequestOptions));
-            }
-            authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
-            let interceptorPromise = authenticationPromise;
-            for (const interceptor of this.interceptors) {
-                interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
-            }
-            return interceptorPromise.then(() => {
-                if (Object.keys(localVarFormParams).length) {
-                    {
-                        localVarRequestOptions.form = localVarFormParams;
-                    }
-                }
-                return new Promise((resolve, reject) => {
-                    localVarRequest(localVarRequestOptions, (error, response, body) => {
-                        if (error) {
-                            reject(error);
-                        }
-                        else {
-                            if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
-                                body = ObjectSerializer.deserialize(body, "object");
-                                resolve({ response: response, body: body });
-                            }
-                            else {
-                                reject(new HttpError(response, body, response.statusCode));
-                            }
-                        }
-                    });
-                });
-            });
-        });
-    }
-    /**
      * Allows an administrator to change a user\'s password.
      * @summary Reset Password
      * @param userId User ID
@@ -14814,6 +14739,81 @@ class UserSvcApi {
                         else {
                             if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
                                 body = ObjectSerializer.deserialize(body, "UserSvcSaveEnrollsResponse");
+                                resolve({ response: response, body: body });
+                            }
+                            else {
+                                reject(new HttpError(response, body, response.statusCode));
+                            }
+                        }
+                    });
+                });
+            });
+        });
+    }
+    /**
+     * Allows and organization admint to add a user to an organization.
+     * @summary Save Membership
+     * @param organizationId Organization ID
+     * @param userId User ID
+     * @param body Add User to Organization Request
+     */
+    saveMembership(organizationId_1, userId_1, body_1) {
+        return __awaiter(this, arguments, void 0, function* (organizationId, userId, body, options = { headers: {} }) {
+            const localVarPath = this.basePath + '/user-svc/organization/{organizationId}/user/{userId}'
+                .replace('{' + 'organizationId' + '}', encodeURIComponent(String(organizationId)))
+                .replace('{' + 'userId' + '}', encodeURIComponent(String(userId)));
+            let localVarQueryParameters = {};
+            let localVarHeaderParams = Object.assign({}, this._defaultHeaders);
+            const produces = ['application/json'];
+            // give precedence to 'application/json'
+            if (produces.indexOf('application/json') >= 0) {
+                localVarHeaderParams.Accept = 'application/json';
+            }
+            else {
+                localVarHeaderParams.Accept = produces.join(',');
+            }
+            let localVarFormParams = {};
+            // verify required parameter 'organizationId' is not null or undefined
+            if (organizationId === null || organizationId === undefined) {
+                throw new Error('Required parameter organizationId was null or undefined when calling saveMembership.');
+            }
+            // verify required parameter 'userId' is not null or undefined
+            if (userId === null || userId === undefined) {
+                throw new Error('Required parameter userId was null or undefined when calling saveMembership.');
+            }
+            Object.assign(localVarHeaderParams, options.headers);
+            let localVarRequestOptions = {
+                method: 'PUT',
+                qs: localVarQueryParameters,
+                headers: localVarHeaderParams,
+                uri: localVarPath,
+                useQuerystring: this._useQuerystring,
+                json: true,
+                body: ObjectSerializer.serialize(body, "object")
+            };
+            let authenticationPromise = Promise.resolve();
+            if (this.authentications.BearerAuth.apiKey) {
+                authenticationPromise = authenticationPromise.then(() => this.authentications.BearerAuth.applyToRequest(localVarRequestOptions));
+            }
+            authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
+            let interceptorPromise = authenticationPromise;
+            for (const interceptor of this.interceptors) {
+                interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
+            }
+            return interceptorPromise.then(() => {
+                if (Object.keys(localVarFormParams).length) {
+                    {
+                        localVarRequestOptions.form = localVarFormParams;
+                    }
+                }
+                return new Promise((resolve, reject) => {
+                    localVarRequest(localVarRequestOptions, (error, response, body) => {
+                        if (error) {
+                            reject(error);
+                        }
+                        else {
+                            if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
+                                body = ObjectSerializer.deserialize(body, "object");
                                 resolve({ response: response, body: body });
                             }
                             else {
