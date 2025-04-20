@@ -82,7 +82,7 @@ export class UserSvcApi {
      * @param userId User ID
      * @param body Add User to Organization Request
      */
-    addUserToOrganization(organizationId_1, userId_1, body_1) {
+    saveMembership(organizationId_1, userId_1, body_1) {
         return __awaiter(this, arguments, void 0, function* (organizationId, userId, body, options = { headers: {} }) {
             const localVarPath = this.basePath + '/user-svc/organization/{organizationId}/user/{userId}'
                 .replace('{' + 'organizationId' + '}', encodeURIComponent(String(organizationId)))
@@ -100,11 +100,11 @@ export class UserSvcApi {
             let localVarFormParams = {};
             // verify required parameter 'organizationId' is not null or undefined
             if (organizationId === null || organizationId === undefined) {
-                throw new Error('Required parameter organizationId was null or undefined when calling addUserToOrganization.');
+                throw new Error('Required parameter organizationId was null or undefined when calling saveMembership.');
             }
             // verify required parameter 'userId' is not null or undefined
             if (userId === null || userId === undefined) {
-                throw new Error('Required parameter userId was null or undefined when calling addUserToOrganization.');
+                throw new Error('Required parameter userId was null or undefined when calling saveMembership.');
             }
             Object.assign(localVarHeaderParams, options.headers);
             let localVarUseFormData = false;

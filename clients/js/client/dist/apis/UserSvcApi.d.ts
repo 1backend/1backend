@@ -11,7 +11,7 @@
  */
 import * as runtime from '../runtime';
 import type { UserSvcChangePasswordRequest, UserSvcCreateUserRequest, UserSvcGetPublicKeyResponse, UserSvcHasPermissionRequest, UserSvcHasPermissionResponse, UserSvcListEnrollsRequest, UserSvcListEnrollsResponse, UserSvcListOrganizationsRequest, UserSvcListOrganizationsResponse, UserSvcListPermissionsResponse, UserSvcListPermitsRequest, UserSvcListPermitsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadSelfResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcSaveEnrollsRequest, UserSvcSaveEnrollsResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSavePermitsRequest, UserSvcSaveSelfRequest, UserSvcSaveUserRequest } from '../models/index';
-export interface AddUserToOrganizationRequest {
+export interface SaveMembershipRequest {
     organizationId: string;
     userId: string;
     body?: object;
@@ -83,12 +83,12 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
      * Add a User to an Organization
      */
-    addUserToOrganizationRaw(requestParameters: AddUserToOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+    saveMembershipRaw(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
     /**
      * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
      * Add a User to an Organization
      */
-    addUserToOrganization(requestParameters: AddUserToOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+    saveMembership(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
      * Allows an authenticated user to change their own password.
      * Change User Password

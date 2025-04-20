@@ -152,7 +152,6 @@ Class | Method | HTTP request | Description
 *SecretSvcAPI* | [**RemoveSecrets**](docs/SecretSvcAPI.md#removesecrets) | **Delete** /secret-svc/secrets | Remove Secrets
 *SecretSvcAPI* | [**SaveSecrets**](docs/SecretSvcAPI.md#savesecrets) | **Put** /secret-svc/secrets | Save Secrets
 *SourceSvcAPI* | [**CheckoutRepo**](docs/SourceSvcAPI.md#checkoutrepo) | **Post** /source-svc/repo/checkout | Checkout a git repository
-*UserSvcAPI* | [**AddUserToOrganization**](docs/UserSvcAPI.md#addusertoorganization) | **Put** /user-svc/organization/{organizationId}/user/{userId} | Add a User to an Organization
 *UserSvcAPI* | [**ChangePassword**](docs/UserSvcAPI.md#changepassword) | **Post** /user-svc/change-password | Change User Password
 *UserSvcAPI* | [**CreateUser**](docs/UserSvcAPI.md#createuser) | **Post** /user-svc/user | Create a New User
 *UserSvcAPI* | [**DeleteUser**](docs/UserSvcAPI.md#deleteuser) | **Delete** /user-svc/user/{userId} | Delete a User
@@ -169,6 +168,7 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**RemoveUserFromOrganization**](docs/UserSvcAPI.md#removeuserfromorganization) | **Delete** /user-svc/organization/{organizationId}/user/{userId} | Remove a User from an Organization
 *UserSvcAPI* | [**ResetPassword**](docs/UserSvcAPI.md#resetpassword) | **Post** /user-svc/{userId}/reset-password | Reset Password
 *UserSvcAPI* | [**SaveEnrolls**](docs/UserSvcAPI.md#saveenrolls) | **Put** /user-svc/enrolls | Save Enrolls
+*UserSvcAPI* | [**SaveMembership**](docs/UserSvcAPI.md#savemembership) | **Put** /user-svc/organization/{organizationId}/user/{userId} | Save Membership
 *UserSvcAPI* | [**SaveOrganization**](docs/UserSvcAPI.md#saveorganization) | **Put** /user-svc/organization | Save an Organization
 *UserSvcAPI* | [**SavePermits**](docs/UserSvcAPI.md#savepermits) | **Put** /user-svc/permits | Save Permits
 *UserSvcAPI* | [**SaveSelf**](docs/UserSvcAPI.md#saveself) | **Put** /user-svc/self | Save User Profile

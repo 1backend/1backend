@@ -36,15 +36,15 @@ type UserService struct {
 
 	authorizer auth.Authorizer
 
-	usersStore                 datastore.DataStore
-	credentialsStore           datastore.DataStore
-	authTokensStore            datastore.DataStore
-	keyPairsStore              datastore.DataStore
-	contactsStore              datastore.DataStore
-	organizationsStore         datastore.DataStore
-	organizationUserLinksStore datastore.DataStore
-	permitsStore               datastore.DataStore
-	enrollsStore               datastore.DataStore
+	usersStore         datastore.DataStore
+	credentialsStore   datastore.DataStore
+	authTokensStore    datastore.DataStore
+	keyPairsStore      datastore.DataStore
+	contactsStore      datastore.DataStore
+	organizationsStore datastore.DataStore
+	membershipsStore   datastore.DataStore
+	permitsStore       datastore.DataStore
+	enrollsStore       datastore.DataStore
 
 	privateKey    *rsa.PrivateKey
 	publicKeyPem  string
@@ -112,9 +112,9 @@ func NewUserService(
 		return nil, err
 	}
 
-	organizationUserLinksStore, err := datastoreFactory(
-		"userSvcOrganizationUserLinks",
-		&usertypes.OrganizationUserLink{},
+	membershipsStore, err := datastoreFactory(
+		"userSvcMemberships",
+		&usertypes.Membership{},
 	)
 	if err != nil {
 		return nil, err
@@ -129,18 +129,18 @@ func NewUserService(
 	}
 
 	service := &UserService{
-		authorizer:                 authorizer,
-		clientFactory:              clientFactory,
-		usersStore:                 usersStore,
-		authTokensStore:            authTokensStore,
-		credentialsStore:           credentialsStore,
-		keyPairsStore:              keyPairsStore,
-		contactsStore:              contactsStore,
-		organizationsStore:         organizationsStore,
-		organizationUserLinksStore: organizationUserLinksStore,
-		permitsStore:               permitsStore,
-		enrollsStore:               enrollsStore,
-		isTest:                     isTest,
+		authorizer:         authorizer,
+		clientFactory:      clientFactory,
+		usersStore:         usersStore,
+		authTokensStore:    authTokensStore,
+		credentialsStore:   credentialsStore,
+		keyPairsStore:      keyPairsStore,
+		contactsStore:      contactsStore,
+		organizationsStore: organizationsStore,
+		membershipsStore:   membershipsStore,
+		permitsStore:       permitsStore,
+		enrollsStore:       enrollsStore,
+		isTest:             isTest,
 	}
 
 	err = service.registerPermissions()
@@ -203,7 +203,7 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 		Methods("OPTIONS", "POST")
 
 	router.HandleFunc("/user-svc/organization/{organizationId}/user/{userId}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
-		us.AddUserToOrganization(w, r)
+		us.SaveMembership(w, r)
 	})).
 		Methods("OPTIONS", "PUT")
 

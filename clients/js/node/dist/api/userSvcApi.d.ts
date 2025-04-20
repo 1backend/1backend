@@ -67,7 +67,7 @@ export declare class UserSvcApi {
      * @param userId User ID
      * @param body Add User to Organization Request
      */
-    addUserToOrganization(organizationId: string, userId: string, body?: object, options?: {
+    saveMembership(organizationId: string, userId: string, body?: object, options?: {
         headers: {
             [name: string]: string;
         };

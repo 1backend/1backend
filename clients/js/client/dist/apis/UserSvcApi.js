@@ -30,13 +30,13 @@ export class UserSvcApi extends runtime.BaseAPI {
      * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
      * Add a User to an Organization
      */
-    addUserToOrganizationRaw(requestParameters, initOverrides) {
+    saveMembershipRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['organizationId'] == null) {
-                throw new runtime.RequiredError('organizationId', 'Required parameter "organizationId" was null or undefined when calling addUserToOrganization().');
+                throw new runtime.RequiredError('organizationId', 'Required parameter "organizationId" was null or undefined when calling saveMembership().');
             }
             if (requestParameters['userId'] == null) {
-                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling addUserToOrganization().');
+                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling saveMembership().');
             }
             const queryParameters = {};
             const headerParameters = {};
@@ -58,9 +58,9 @@ export class UserSvcApi extends runtime.BaseAPI {
      * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
      * Add a User to an Organization
      */
-    addUserToOrganization(requestParameters, initOverrides) {
+    saveMembership(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.addUserToOrganizationRaw(requestParameters, initOverrides);
+            const response = yield this.saveMembershipRaw(requestParameters, initOverrides);
             return yield response.value();
         });
     }

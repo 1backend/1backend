@@ -116,7 +116,7 @@ func TestOrganization(t *testing.T) {
 			Execute()
 		require.NoError(t, err)
 
-		_, _, err = userClient.UserSvcAPI.AddUserToOrganization(
+		_, _, err = userClient.UserSvcAPI.SaveMembership(
 			context.Background(),
 			orgId1,
 			readSelfRsp.User.Id,

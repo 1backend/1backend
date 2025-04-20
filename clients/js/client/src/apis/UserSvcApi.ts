@@ -103,7 +103,7 @@ import {
     UserSvcSaveUserRequestToJSON,
 } from '../models/index';
 
-export interface AddUserToOrganizationRequest {
+export interface SaveMembershipRequest {
     organizationId: string;
     userId: string;
     body?: object;
@@ -195,18 +195,18 @@ export class UserSvcApi extends runtime.BaseAPI {
      * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
      * Add a User to an Organization
      */
-    async addUserToOrganizationRaw(requestParameters: AddUserToOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async saveMembershipRaw(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['organizationId'] == null) {
             throw new runtime.RequiredError(
                 'organizationId',
-                'Required parameter "organizationId" was null or undefined when calling addUserToOrganization().'
+                'Required parameter "organizationId" was null or undefined when calling saveMembership().'
             );
         }
 
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
-                'Required parameter "userId" was null or undefined when calling addUserToOrganization().'
+                'Required parameter "userId" was null or undefined when calling saveMembership().'
             );
         }
 
@@ -235,8 +235,8 @@ export class UserSvcApi extends runtime.BaseAPI {
      * Allows an authorized user to add another user to a specific organization. The user will be assigned a specific role within the organization.
      * Add a User to an Organization
      */
-    async addUserToOrganization(requestParameters: AddUserToOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.addUserToOrganizationRaw(requestParameters, initOverrides);
+    async saveMembership(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+        const response = await this.saveMembershipRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

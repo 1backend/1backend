@@ -16,8 +16,7 @@ import (
 	"time"
 )
 
-type OrganizationUserLink struct {
-	// organizationId:userId
+type Membership struct {
 	Id string `json:"id,omitempty"`
 
 	CreatedAt time.Time  `json:"createdAt,omitempty"`
@@ -32,7 +31,7 @@ type OrganizationUserLink struct {
 	Active bool `json:"active,omitempty"`
 }
 
-func (o *OrganizationUserLink) GetId() string {
+func (o *Membership) GetId() string {
 	return o.Id
 }
 
@@ -89,10 +88,10 @@ type ListOrganizationsResponse struct {
 	Organizations []Organization `json:"organizations"`
 }
 
-type AddUserToOrganizationRequest struct {
+type SaveMembershipRequest struct {
 }
 
-type AddUserToOrganizationResponse struct {
+type SaveMembershipResponse struct {
 }
 
 type RemoveUserFromOrganizationRequest struct {

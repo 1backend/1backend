@@ -2657,9 +2657,9 @@ definitions:
       width:
         type: integer
     type: object
-  user_svc.AddUserToOrganizationRequest:
+  user_svc.SaveMembershipRequest:
     type: object
-  user_svc.AddUserToOrganizationResponse:
+  user_svc.SaveMembershipResponse:
     type: object
   user_svc.AuthToken:
     properties:
@@ -6223,7 +6223,7 @@ paths:
       - application/json
       description: Allows an authorized user to add another user to a specific organization.
         The user will be assigned a specific role within the organization.
-      operationId: addUserToOrganization
+      operationId: saveMembership
       parameters:
       - description: Organization ID
         in: path
@@ -6239,14 +6239,14 @@ paths:
         in: body
         name: body
         schema:
-          $ref: '#/definitions/user_svc.AddUserToOrganizationRequest'
+          $ref: '#/definitions/user_svc.SaveMembershipRequest'
       produces:
       - application/json
       responses:
         "200":
           description: User added successfully
           schema:
-            $ref: '#/definitions/user_svc.AddUserToOrganizationResponse'
+            $ref: '#/definitions/user_svc.SaveMembershipResponse'
         "400":
           description: Invalid JSON
           schema:
