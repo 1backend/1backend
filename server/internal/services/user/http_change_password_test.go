@@ -47,6 +47,25 @@ func TestChangePassword(t *testing.T) {
 
 	ctx := context.Background()
 
+	t.Run("without current password, change password should fail", func(t *testing.T) {
+		newPw := "a test that should not work"
+
+		_, hrsp, err := client1.UserSvcAPI.ChangePassword(ctx).Body(
+			openapi.UserSvcChangePasswordRequest{
+				NewPassword: newPw,
+			}).Execute()
+
+		require.Error(t, err, hrsp)
+
+		_, _, err = client1.UserSvcAPI.Login(ctx).Body(
+			openapi.UserSvcLoginRequest{
+				Slug:     openapi.PtrString("test-user-slug-0"),
+				Password: openapi.PtrString(newPw),
+			}).Execute()
+
+		require.Error(t, err)
+	})
+
 	t.Run("user 1 cannot 'use' password of user 2", func(t *testing.T) {
 		_, hrsp, err := client1.UserSvcAPI.ChangePassword(ctx).Body(
 			openapi.UserSvcChangePasswordRequest{
