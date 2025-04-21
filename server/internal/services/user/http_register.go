@@ -14,9 +14,10 @@ package userservice
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 	"time"
+
+	"github.com/pkg/errors"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
@@ -124,28 +125,37 @@ func (s *UserService) register(
 	}
 
 	now := time.Now()
-	user := &user.User{
-		Id:           sdk.Id("usr"),
-		CreatedAt:    now,
-		UpdatedAt:    now,
-		Name:         name,
-		Slug:         slug,
-		PasswordHash: passwordHash,
+	usr := &user.User{
+		Id:        sdk.Id("usr"),
+		CreatedAt: now,
+		UpdatedAt: now,
+		Name:      name,
+		Slug:      slug,
 	}
 
-	err = s.usersStore.Create(user)
+	err = s.passwordsStore.Upsert(&user.Password{
+		Id:           sdk.Id("pw"),
+		PasswordHash: passwordHash,
+		UserId:       usr.Id,
+		CreatedAt:    now,
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to save password")
+	}
+
+	err = s.usersStore.Create(usr)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, role := range roles {
-		err = s.assignRole(user.Id, role)
+		err = s.assignRole(usr.Id, role)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	token, err := s.generateAuthToken(user)
+	token, err := s.generateAuthToken(usr)
 	if err != nil {
 		return nil, err
 	}

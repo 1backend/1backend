@@ -58,8 +58,6 @@ func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	usr.PasswordHash = ""
-
 	orgs, activeOrgId, err := s.getUserOrganizations(usr.Id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

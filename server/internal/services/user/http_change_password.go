@@ -14,9 +14,10 @@ package userservice
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 	"time"
+
+	"github.com/pkg/errors"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
@@ -73,19 +74,22 @@ func (s *UserService) ChangePassword(w http.ResponseWriter, r *http.Request) {
 func (s *UserService) changePassword(
 	userId, currentPassword, newPassword string,
 ) error {
-	q := s.usersStore.Query(
-		datastore.Equals(datastore.Field("id"), userId),
-	)
-	userI, found, err := q.FindOne()
+	q := s.passwordsStore.Query(
+		datastore.Equals(datastore.Field("userId"), userId),
+	).OrderBy(
+		datastore.OrderByField("createdAt", true),
+	).Limit(1)
+
+	passwordI, found, err := q.FindOne()
 	if err != nil {
 		return err
 	}
 	if !found {
 		return errors.New("user not found")
 	}
-	user := userI.(*usertypes.User)
+	password := passwordI.(*usertypes.Password)
 
-	if !checkPasswordHash(currentPassword, user.PasswordHash) {
+	if !checkPasswordHash(currentPassword, password.PasswordHash) {
 		return errors.New("current password is incorrect")
 	}
 
@@ -93,8 +97,16 @@ func (s *UserService) changePassword(
 	if err != nil {
 		return err
 	}
-	user.PasswordHash = newPasswordHash
-	user.UpdatedAt = time.Now()
 
-	return q.Update(user)
+	err = s.passwordsStore.Upsert(&usertypes.Password{
+		Id:           password.Id,
+		PasswordHash: newPasswordHash,
+		UserId:       password.UserId,
+		CreatedAt:    time.Now(),
+	})
+	if err != nil {
+		return errors.Wrap(err, "failed to save password")
+	}
+
+	return nil
 }

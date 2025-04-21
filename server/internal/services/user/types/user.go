@@ -33,11 +33,24 @@ type User struct {
 	// URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
 	Slug string `json:"slug" example:"jane-doe" binding:"required"`
 
-	PasswordHash string `json:"passwordHash,omitempty"`
-
 	ThumbnailFileId string `json:"thumbnailFileId,omitempty" example:"file_fQDyi1xdHK"`
 
 	Labels map[string]string `json:"labels,omitempty"`
+}
+
+// Password (password hash), is separate from the user record
+// so that we avoid accidentally exposing or overwriting the password.
+type Password struct {
+	Id        string    `json:"id" binding:"required"`
+	CreatedAt time.Time `json:"createdAt,omitempty"`
+	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+
+	UserId       string `json:"userId" binding:"required"`
+	PasswordHash string `json:"passwordHash,omitempty"`
+}
+
+func (p *Password) GetId() string {
+	return p.Id
 }
 
 type UserRecord struct {
