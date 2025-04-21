@@ -10,9 +10,10 @@ func AddPermitCommands(rootCmd *cobra.Command) {
 	}
 
 	var saveCmd = &cobra.Command{
-		Use:   "save [filePath | dirPath]",
-		Args:  cobra.MaximumNArgs(2),
-		Short: "Save permits from files",
+		Use:     "save [filePath | dirPath]",
+		Aliases: []string{"s"},
+		Args:    cobra.MaximumNArgs(2),
+		Short:   "Save permits from files",
 		Long: `The 'save' command allows you to save permits in two ways:
 	
 	1. A single permit from a YAML file.
