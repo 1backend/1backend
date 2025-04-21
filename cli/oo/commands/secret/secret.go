@@ -10,9 +10,10 @@ func AddSecretCommands(rootCmd *cobra.Command) {
 	}
 
 	var saveCmd = &cobra.Command{
-		Use:   "save [key] [value] | [filePath]",
-		Args:  cobra.MaximumNArgs(2),
-		Short: "Save secrets as key-value pairs or from a file",
+		Use:     "save [key] [value] | [filePath]",
+		Aliases: []string{"s"},
+		Args:    cobra.MaximumNArgs(2),
+		Short:   "Save secrets as key-value pairs or from a file",
 		Long: `The 'save' command allows you to save secrets in two ways:
 	
 	1. A single key-value pair directly.

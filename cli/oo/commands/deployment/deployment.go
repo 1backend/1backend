@@ -10,10 +10,11 @@ func AddDeploymentCommands(rootCmd *cobra.Command) {
 	}
 
 	var saveCmd = &cobra.Command{
-		Use:   "save [filePath]",
-		Args:  cobra.ExactArgs(1),
-		Short: "Save deployment(s) found in a JSON or YAML file",
-		RunE:  Save,
+		Use:     "save [filePath]",
+		Aliases: []string{"s"},
+		Args:    cobra.ExactArgs(1),
+		Short:   "Save deployment(s) found in a JSON or YAML file",
+		RunE:    Save,
 	}
 
 	var deleteCmd = &cobra.Command{
