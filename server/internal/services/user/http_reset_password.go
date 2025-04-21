@@ -14,10 +14,12 @@ package userservice
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 	"time"
 
+	"github.com/pkg/errors"
+
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
@@ -96,8 +98,28 @@ func (s *UserService) resetPassword(userId, newPassword string) error {
 		return err
 	}
 
-	user.PasswordHash = newPasswordHash
-	user.UpdatedAt = time.Now()
+	passwordIs, err := s.passwordsStore.Query(
+		datastore.Equals(
+			datastore.Field("userId"), user.Id),
+	).OrderBy(
+		datastore.OrderByField("createdAt", true),
+	).Limit(1).Find()
+	if err != nil {
+		return errors.Wrap(err, "failed to get password")
+	}
+	if len(passwordIs) == 0 {
+		return errors.New("user password not found to update")
+	}
 
-	return q.Update(user)
+	err = s.passwordsStore.Upsert(&usertypes.Password{
+		Id:           sdk.Id("pw"),
+		PasswordHash: newPasswordHash,
+		UserId:       user.Id,
+		CreatedAt:    time.Now(),
+	})
+	if err != nil {
+		return errors.Wrap(err, "failed to save password")
+	}
+
+	return nil
 }

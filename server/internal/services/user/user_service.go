@@ -38,6 +38,7 @@ type UserService struct {
 
 	usersStore         datastore.DataStore
 	credentialsStore   datastore.DataStore
+	passwordsStore     datastore.DataStore
 	authTokensStore    datastore.DataStore
 	keyPairsStore      datastore.DataStore
 	contactsStore      datastore.DataStore
@@ -128,12 +129,18 @@ func NewUserService(
 		return nil, err
 	}
 
+	passwordsStore, err := datastoreFactory(
+		"userSvcPasswords",
+		&usertypes.Password{},
+	)
+
 	service := &UserService{
 		authorizer:         authorizer,
 		clientFactory:      clientFactory,
 		usersStore:         usersStore,
 		authTokensStore:    authTokensStore,
 		credentialsStore:   credentialsStore,
+		passwordsStore:     passwordsStore,
 		keyPairsStore:      keyPairsStore,
 		contactsStore:      contactsStore,
 		organizationsStore: organizationsStore,

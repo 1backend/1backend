@@ -13,8 +13,9 @@
 package userservice
 
 import (
-	"errors"
 	"time"
+
+	"github.com/pkg/errors"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
@@ -59,12 +60,23 @@ func (s *UserService) createUser(
 		return err
 	}
 
-	user.PasswordHash = passwordHash
 	if user.Id == "" {
 		user.Id = sdk.Id("usr")
+
 	}
 
 	now := time.Now()
+
+	err = s.passwordsStore.Upsert(&usertypes.Password{
+		Id:           sdk.Id("pw"),
+		PasswordHash: passwordHash,
+		UserId:       user.Id,
+		CreatedAt:    now,
+	})
+	if err != nil {
+		return errors.Wrap(err, "failed to save password")
+	}
+
 	user.UpdatedAt = now
 	user.CreatedAt = now
 

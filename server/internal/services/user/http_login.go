@@ -112,11 +112,22 @@ func (s *UserService) login(
 		return nil, errors.New("slug or contact required")
 	}
 
-	if usr.PasswordHash == "" {
-		return nil, errors.New("user account is corrupted: password hash is empty")
+	passwordIs, err := s.passwordsStore.Query(
+		datastore.Equals(
+			datastore.Field("userId"), usr.Id),
+	).OrderBy(
+		datastore.OrderByField("createdAt", true),
+	).Limit(1).Find()
+	if err != nil {
+		return nil, errors.Wrap(err, "error listing passwords for user")
+	}
+	if len(passwordIs) == 0 {
+		return nil, errors.New("password not found for user")
 	}
 
-	if !checkPasswordHash(request.Password, usr.PasswordHash) {
+	password := passwordIs[0].(*user.Password)
+
+	if !checkPasswordHash(request.Password, password.PasswordHash) {
 		return nil, errors.New("unauthorized")
 	}
 
