@@ -607,6 +607,23 @@ func (q *SQLQueryBuilder) Find() ([]datastore.Row, error) {
 				}
 			case fieldType.Kind() == reflect.Pointer:
 				str, ok := fields[i].(*sql.NullString)
+
+				// Handle *time.Time specifically
+				// @todo move this below where we handle time
+				if fieldType.Elem() == reflect.TypeOf(time.Time{}) {
+					str, ok := fields[i].(*sql.NullString)
+					if ok && str.Valid {
+						t, err := time.Parse(time.RFC3339Nano, str.String)
+						if err != nil {
+							return nil, errors.Wrap(err, "parsing time.Time from string")
+						}
+						field.Set(reflect.ValueOf(&t))
+					} else {
+						field.Set(reflect.Zero(fieldType))
+					}
+					break
+				}
+
 				if ok && str.Valid {
 					newField := reflect.New(fieldType.Elem()).Interface()
 					err := json.Unmarshal([]byte(str.String), newField)
