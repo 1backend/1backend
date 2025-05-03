@@ -42,8 +42,8 @@ type Object struct {
 
 	Data map[string]interface{} `json:"data,omitempty" binding:"required"`
 
-	CreatedAt time.Time `json:"createdAt,omitempty"`
-	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	CreatedAt time.Time `json:"createdAt" binding:"required"`
+	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
 }
 
 func (g Object) GetId() string {

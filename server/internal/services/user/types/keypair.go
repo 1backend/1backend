@@ -18,8 +18,8 @@ import (
 
 type KeyPair struct {
 	Id        string    `json:"id" binding:"required"`
-	CreatedAt time.Time `json:"createdAt,omitempty"`
-	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	CreatedAt time.Time `json:"createdAt" binding:"required"`
+	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
 
 	PrivateKey string `json:"privateKey" binding:"required"`
 	PublicKey  string `json:"publicKey" binding:"required"`

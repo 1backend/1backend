@@ -24,7 +24,7 @@ var _ MappedNullable = &DataSvcObject{}
 type DataSvcObject struct {
 	// Authors is a list of user ID and organization ID who created the object. The authors field tracks which users or organizations created an entry, helping to prevent spam. If an organization ID is not provided, the currently active organization will be queried from the User Svc.
 	Authors []string `json:"authors,omitempty"`
-	CreatedAt *string `json:"createdAt,omitempty"`
+	CreatedAt string `json:"createdAt"`
 	Data map[string]interface{} `json:"data"`
 	// Deleters is a list of user IDs and role IDs that can delete the object. `_self` can be used to refer to the caller user's userId and `_org` can be used to refer to the user's currently active organization (if exists).
 	Deleters []string `json:"deleters,omitempty"`
@@ -32,7 +32,7 @@ type DataSvcObject struct {
 	// Readers is a list of user IDs and role IDs that can read the object. `_self` can be used to refer to the caller user's userId and `_org` can be used to refer to the user's currently active organization (if exists).
 	Readers []string `json:"readers,omitempty"`
 	Table string `json:"table"`
-	UpdatedAt *string `json:"updatedAt,omitempty"`
+	UpdatedAt string `json:"updatedAt"`
 	// Writers is a list of user IDs and role IDs that can write the object. `_self` can be used to refer to the caller user's userId and `_org` can be used to refer to the user's currently active organization (if exists).
 	Writers []string `json:"writers,omitempty"`
 }
@@ -43,10 +43,12 @@ type _DataSvcObject DataSvcObject
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDataSvcObject(data map[string]interface{}, table string) *DataSvcObject {
+func NewDataSvcObject(createdAt string, data map[string]interface{}, table string, updatedAt string) *DataSvcObject {
 	this := DataSvcObject{}
+	this.CreatedAt = createdAt
 	this.Data = data
 	this.Table = table
+	this.UpdatedAt = updatedAt
 	return &this
 }
 
@@ -90,36 +92,28 @@ func (o *DataSvcObject) SetAuthors(v []string) {
 	o.Authors = v
 }
 
-// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
+// GetCreatedAt returns the CreatedAt field value
 func (o *DataSvcObject) GetCreatedAt() string {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.CreatedAt
+
+	return o.CreatedAt
 }
 
-// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
 // and a boolean to check if the value has been set.
 func (o *DataSvcObject) GetCreatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.CreatedAt, true
+	return &o.CreatedAt, true
 }
 
-// HasCreatedAt returns a boolean if a field has been set.
-func (o *DataSvcObject) HasCreatedAt() bool {
-	if o != nil && !IsNil(o.CreatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
+// SetCreatedAt sets field value
 func (o *DataSvcObject) SetCreatedAt(v string) {
-	o.CreatedAt = &v
+	o.CreatedAt = v
 }
 
 // GetData returns the Data field value
@@ -266,36 +260,28 @@ func (o *DataSvcObject) SetTable(v string) {
 	o.Table = v
 }
 
-// GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
+// GetUpdatedAt returns the UpdatedAt field value
 func (o *DataSvcObject) GetUpdatedAt() string {
-	if o == nil || IsNil(o.UpdatedAt) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.UpdatedAt
+
+	return o.UpdatedAt
 }
 
-// GetUpdatedAtOk returns a tuple with the UpdatedAt field value if set, nil otherwise
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
 // and a boolean to check if the value has been set.
 func (o *DataSvcObject) GetUpdatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.UpdatedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.UpdatedAt, true
+	return &o.UpdatedAt, true
 }
 
-// HasUpdatedAt returns a boolean if a field has been set.
-func (o *DataSvcObject) HasUpdatedAt() bool {
-	if o != nil && !IsNil(o.UpdatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetUpdatedAt gets a reference to the given string and assigns it to the UpdatedAt field.
+// SetUpdatedAt sets field value
 func (o *DataSvcObject) SetUpdatedAt(v string) {
-	o.UpdatedAt = &v
+	o.UpdatedAt = v
 }
 
 // GetWriters returns the Writers field value if set, zero value otherwise.
@@ -343,9 +329,7 @@ func (o DataSvcObject) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Authors) {
 		toSerialize["authors"] = o.Authors
 	}
-	if !IsNil(o.CreatedAt) {
-		toSerialize["createdAt"] = o.CreatedAt
-	}
+	toSerialize["createdAt"] = o.CreatedAt
 	toSerialize["data"] = o.Data
 	if !IsNil(o.Deleters) {
 		toSerialize["deleters"] = o.Deleters
@@ -357,9 +341,7 @@ func (o DataSvcObject) ToMap() (map[string]interface{}, error) {
 		toSerialize["readers"] = o.Readers
 	}
 	toSerialize["table"] = o.Table
-	if !IsNil(o.UpdatedAt) {
-		toSerialize["updatedAt"] = o.UpdatedAt
-	}
+	toSerialize["updatedAt"] = o.UpdatedAt
 	if !IsNil(o.Writers) {
 		toSerialize["writers"] = o.Writers
 	}
@@ -371,8 +353,10 @@ func (o *DataSvcObject) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"createdAt",
 		"data",
 		"table",
+		"updatedAt",
 	}
 
 	allProperties := make(map[string]interface{})

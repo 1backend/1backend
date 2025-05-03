@@ -90,8 +90,10 @@ definitions:
           For AI messages this field is empty.
         type: string
     required:
+    - createdAt
     - id
     - threadId
+    - updatedAt
     type: object
   chat_svc.Thread:
     properties:
@@ -118,7 +120,9 @@ definitions:
           type: string
         type: array
     required:
+    - createdAt
     - id
+    - updatedAt
     type: object
   chat_svc.UpdateThreadRequest:
     properties:
@@ -401,6 +405,8 @@ definitions:
           Node Id
           Please see the documentation for the envar OB_NODE_ID
         type: string
+    required:
+    - createdAt
     type: object
   container_svc.Network:
     properties:
@@ -652,8 +658,10 @@ definitions:
           type: string
         type: array
     required:
+    - createdAt
     - data
     - table
+    - updatedAt
     type: object
   data_svc.QueryRequest:
     properties:
@@ -1070,6 +1078,9 @@ definitions:
         type: string
       url:
         type: string
+    required:
+    - createdAt
+    - updatedAt
     type: object
   file_svc.DownloadFileRequest:
     properties:
@@ -1145,7 +1156,9 @@ definitions:
       userId:
         type: string
     required:
+    - createdAt
     - fileSize
+    - updatedAt
     type: object
   file_svc.UploadFileResponse:
     properties:
@@ -2690,8 +2703,10 @@ definitions:
       userId:
         type: string
     required:
+    - createdAt
     - id
     - token
+    - updatedAt
     - userId
     type: object
   user_svc.ChangePasswordRequest:
@@ -2744,9 +2759,11 @@ definitions:
         description: Whether the contact is verified
         type: boolean
     required:
+    - createdAt
     - handle
     - id
     - platform
+    - updatedAt
     - userId
     type: object
   user_svc.CreateUserRequest:
@@ -3015,9 +3032,11 @@ definitions:
       updatedAt:
         type: string
     required:
+    - createdAt
     - id
     - name
     - slug
+    - updatedAt
     type: object
   user_svc.Permit:
     properties:
@@ -3247,8 +3266,10 @@ definitions:
       updatedAt:
         type: string
     required:
+    - createdAt
     - id
     - slug
+    - updatedAt
     type: object
   user_svc.UserRecord:
     properties:
@@ -3276,8 +3297,10 @@ definitions:
       updatedAt:
         type: string
     required:
+    - createdAt
     - id
     - slug
+    - updatedAt
     type: object
 externalDocs:
   description: 1Backend API
@@ -6428,7 +6451,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get the public key to parse and verify the JWT.
+      description: Get the public key to verify the JWT signature.
       operationId: getPublicKey
       produces:
       - application/json

@@ -39,66 +39,6 @@ func (m *MockChatSvcAPI) EXPECT() *MockChatSvcAPIMockRecorder {
 	return m.recorder
 }
 
-// AddMessage mocks base method.
-func (m *MockChatSvcAPI) AddMessage(ctx context.Context, threadId string) ApiAddMessageRequest {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddMessage", ctx, threadId)
-	ret0, _ := ret[0].(ApiAddMessageRequest)
-	return ret0
-}
-
-// AddMessage indicates an expected call of AddMessage.
-func (mr *MockChatSvcAPIMockRecorder) AddMessage(ctx, threadId any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddMessage", reflect.TypeOf((*MockChatSvcAPI)(nil).AddMessage), ctx, threadId)
-}
-
-// AddMessageExecute mocks base method.
-func (m *MockChatSvcAPI) AddMessageExecute(r ApiAddMessageRequest) (map[string]any, *http.Response, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddMessageExecute", r)
-	ret0, _ := ret[0].(map[string]any)
-	ret1, _ := ret[1].(*http.Response)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// AddMessageExecute indicates an expected call of AddMessageExecute.
-func (mr *MockChatSvcAPIMockRecorder) AddMessageExecute(r any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddMessageExecute", reflect.TypeOf((*MockChatSvcAPI)(nil).AddMessageExecute), r)
-}
-
-// AddThread mocks base method.
-func (m *MockChatSvcAPI) AddThread(ctx context.Context) ApiAddThreadRequest {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddThread", ctx)
-	ret0, _ := ret[0].(ApiAddThreadRequest)
-	return ret0
-}
-
-// AddThread indicates an expected call of AddThread.
-func (mr *MockChatSvcAPIMockRecorder) AddThread(ctx any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddThread", reflect.TypeOf((*MockChatSvcAPI)(nil).AddThread), ctx)
-}
-
-// AddThreadExecute mocks base method.
-func (m *MockChatSvcAPI) AddThreadExecute(r ApiAddThreadRequest) (*ChatSvcAddThreadResponse, *http.Response, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddThreadExecute", r)
-	ret0, _ := ret[0].(*ChatSvcAddThreadResponse)
-	ret1, _ := ret[1].(*http.Response)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// AddThreadExecute indicates an expected call of AddThreadExecute.
-func (mr *MockChatSvcAPIMockRecorder) AddThreadExecute(r any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddThreadExecute", reflect.TypeOf((*MockChatSvcAPI)(nil).AddThreadExecute), r)
-}
-
 // DeleteMessage mocks base method.
 func (m *MockChatSvcAPI) DeleteMessage(ctx context.Context, messageId string) ApiDeleteMessageRequest {
 	m.ctrl.T.Helper()
@@ -189,152 +129,182 @@ func (mr *MockChatSvcAPIMockRecorder) EventsExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EventsExecute", reflect.TypeOf((*MockChatSvcAPI)(nil).EventsExecute), r)
 }
 
-// GetMessage mocks base method.
-func (m *MockChatSvcAPI) GetMessage(ctx context.Context, messageId string) ApiGetMessageRequest {
+// ListMessages mocks base method.
+func (m *MockChatSvcAPI) ListMessages(ctx context.Context, threadId string) ApiListMessagesRequest {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetMessage", ctx, messageId)
-	ret0, _ := ret[0].(ApiGetMessageRequest)
+	ret := m.ctrl.Call(m, "ListMessages", ctx, threadId)
+	ret0, _ := ret[0].(ApiListMessagesRequest)
 	return ret0
 }
 
-// GetMessage indicates an expected call of GetMessage.
-func (mr *MockChatSvcAPIMockRecorder) GetMessage(ctx, messageId any) *gomock.Call {
+// ListMessages indicates an expected call of ListMessages.
+func (mr *MockChatSvcAPIMockRecorder) ListMessages(ctx, threadId any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMessage", reflect.TypeOf((*MockChatSvcAPI)(nil).GetMessage), ctx, messageId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMessages", reflect.TypeOf((*MockChatSvcAPI)(nil).ListMessages), ctx, threadId)
 }
 
-// GetMessageExecute mocks base method.
-func (m *MockChatSvcAPI) GetMessageExecute(r ApiGetMessageRequest) (*ChatSvcGetMessageResponse, *http.Response, error) {
+// ListMessagesExecute mocks base method.
+func (m *MockChatSvcAPI) ListMessagesExecute(r ApiListMessagesRequest) (*ChatSvcListMessagesResponse, *http.Response, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetMessageExecute", r)
-	ret0, _ := ret[0].(*ChatSvcGetMessageResponse)
+	ret := m.ctrl.Call(m, "ListMessagesExecute", r)
+	ret0, _ := ret[0].(*ChatSvcListMessagesResponse)
 	ret1, _ := ret[1].(*http.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
 
-// GetMessageExecute indicates an expected call of GetMessageExecute.
-func (mr *MockChatSvcAPIMockRecorder) GetMessageExecute(r any) *gomock.Call {
+// ListMessagesExecute indicates an expected call of ListMessagesExecute.
+func (mr *MockChatSvcAPIMockRecorder) ListMessagesExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMessageExecute", reflect.TypeOf((*MockChatSvcAPI)(nil).GetMessageExecute), r)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMessagesExecute", reflect.TypeOf((*MockChatSvcAPI)(nil).ListMessagesExecute), r)
 }
 
-// GetMessages mocks base method.
-func (m *MockChatSvcAPI) GetMessages(ctx context.Context, threadId string) ApiGetMessagesRequest {
+// ListThreads mocks base method.
+func (m *MockChatSvcAPI) ListThreads(ctx context.Context) ApiListThreadsRequest {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetMessages", ctx, threadId)
-	ret0, _ := ret[0].(ApiGetMessagesRequest)
+	ret := m.ctrl.Call(m, "ListThreads", ctx)
+	ret0, _ := ret[0].(ApiListThreadsRequest)
 	return ret0
 }
 
-// GetMessages indicates an expected call of GetMessages.
-func (mr *MockChatSvcAPIMockRecorder) GetMessages(ctx, threadId any) *gomock.Call {
+// ListThreads indicates an expected call of ListThreads.
+func (mr *MockChatSvcAPIMockRecorder) ListThreads(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMessages", reflect.TypeOf((*MockChatSvcAPI)(nil).GetMessages), ctx, threadId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListThreads", reflect.TypeOf((*MockChatSvcAPI)(nil).ListThreads), ctx)
 }
 
-// GetMessagesExecute mocks base method.
-func (m *MockChatSvcAPI) GetMessagesExecute(r ApiGetMessagesRequest) (*ChatSvcGetMessagesResponse, *http.Response, error) {
+// ListThreadsExecute mocks base method.
+func (m *MockChatSvcAPI) ListThreadsExecute(r ApiListThreadsRequest) (*ChatSvcListThreadsResponse, *http.Response, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetMessagesExecute", r)
-	ret0, _ := ret[0].(*ChatSvcGetMessagesResponse)
+	ret := m.ctrl.Call(m, "ListThreadsExecute", r)
+	ret0, _ := ret[0].(*ChatSvcListThreadsResponse)
 	ret1, _ := ret[1].(*http.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
 
-// GetMessagesExecute indicates an expected call of GetMessagesExecute.
-func (mr *MockChatSvcAPIMockRecorder) GetMessagesExecute(r any) *gomock.Call {
+// ListThreadsExecute indicates an expected call of ListThreadsExecute.
+func (mr *MockChatSvcAPIMockRecorder) ListThreadsExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMessagesExecute", reflect.TypeOf((*MockChatSvcAPI)(nil).GetMessagesExecute), r)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListThreadsExecute", reflect.TypeOf((*MockChatSvcAPI)(nil).ListThreadsExecute), r)
 }
 
-// GetThread mocks base method.
-func (m *MockChatSvcAPI) GetThread(ctx context.Context, threadId string) ApiGetThreadRequest {
+// ReadMessage mocks base method.
+func (m *MockChatSvcAPI) ReadMessage(ctx context.Context, messageId string) ApiReadMessageRequest {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetThread", ctx, threadId)
-	ret0, _ := ret[0].(ApiGetThreadRequest)
+	ret := m.ctrl.Call(m, "ReadMessage", ctx, messageId)
+	ret0, _ := ret[0].(ApiReadMessageRequest)
 	return ret0
 }
 
-// GetThread indicates an expected call of GetThread.
-func (mr *MockChatSvcAPIMockRecorder) GetThread(ctx, threadId any) *gomock.Call {
+// ReadMessage indicates an expected call of ReadMessage.
+func (mr *MockChatSvcAPIMockRecorder) ReadMessage(ctx, messageId any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetThread", reflect.TypeOf((*MockChatSvcAPI)(nil).GetThread), ctx, threadId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadMessage", reflect.TypeOf((*MockChatSvcAPI)(nil).ReadMessage), ctx, messageId)
 }
 
-// GetThreadExecute mocks base method.
-func (m *MockChatSvcAPI) GetThreadExecute(r ApiGetThreadRequest) (*ChatSvcGetThreadResponse, *http.Response, error) {
+// ReadMessageExecute mocks base method.
+func (m *MockChatSvcAPI) ReadMessageExecute(r ApiReadMessageRequest) (*ChatSvcReadMessageResponse, *http.Response, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetThreadExecute", r)
-	ret0, _ := ret[0].(*ChatSvcGetThreadResponse)
+	ret := m.ctrl.Call(m, "ReadMessageExecute", r)
+	ret0, _ := ret[0].(*ChatSvcReadMessageResponse)
 	ret1, _ := ret[1].(*http.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
 
-// GetThreadExecute indicates an expected call of GetThreadExecute.
-func (mr *MockChatSvcAPIMockRecorder) GetThreadExecute(r any) *gomock.Call {
+// ReadMessageExecute indicates an expected call of ReadMessageExecute.
+func (mr *MockChatSvcAPIMockRecorder) ReadMessageExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetThreadExecute", reflect.TypeOf((*MockChatSvcAPI)(nil).GetThreadExecute), r)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadMessageExecute", reflect.TypeOf((*MockChatSvcAPI)(nil).ReadMessageExecute), r)
 }
 
-// GetThreads mocks base method.
-func (m *MockChatSvcAPI) GetThreads(ctx context.Context) ApiGetThreadsRequest {
+// ReadThread mocks base method.
+func (m *MockChatSvcAPI) ReadThread(ctx context.Context, threadId string) ApiReadThreadRequest {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetThreads", ctx)
-	ret0, _ := ret[0].(ApiGetThreadsRequest)
+	ret := m.ctrl.Call(m, "ReadThread", ctx, threadId)
+	ret0, _ := ret[0].(ApiReadThreadRequest)
 	return ret0
 }
 
-// GetThreads indicates an expected call of GetThreads.
-func (mr *MockChatSvcAPIMockRecorder) GetThreads(ctx any) *gomock.Call {
+// ReadThread indicates an expected call of ReadThread.
+func (mr *MockChatSvcAPIMockRecorder) ReadThread(ctx, threadId any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetThreads", reflect.TypeOf((*MockChatSvcAPI)(nil).GetThreads), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadThread", reflect.TypeOf((*MockChatSvcAPI)(nil).ReadThread), ctx, threadId)
 }
 
-// GetThreadsExecute mocks base method.
-func (m *MockChatSvcAPI) GetThreadsExecute(r ApiGetThreadsRequest) (*ChatSvcGetThreadsResponse, *http.Response, error) {
+// ReadThreadExecute mocks base method.
+func (m *MockChatSvcAPI) ReadThreadExecute(r ApiReadThreadRequest) (*ChatSvcReadThreadResponse, *http.Response, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetThreadsExecute", r)
-	ret0, _ := ret[0].(*ChatSvcGetThreadsResponse)
+	ret := m.ctrl.Call(m, "ReadThreadExecute", r)
+	ret0, _ := ret[0].(*ChatSvcReadThreadResponse)
 	ret1, _ := ret[1].(*http.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
 
-// GetThreadsExecute indicates an expected call of GetThreadsExecute.
-func (mr *MockChatSvcAPIMockRecorder) GetThreadsExecute(r any) *gomock.Call {
+// ReadThreadExecute indicates an expected call of ReadThreadExecute.
+func (mr *MockChatSvcAPIMockRecorder) ReadThreadExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetThreadsExecute", reflect.TypeOf((*MockChatSvcAPI)(nil).GetThreadsExecute), r)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadThreadExecute", reflect.TypeOf((*MockChatSvcAPI)(nil).ReadThreadExecute), r)
 }
 
-// UpdateThread mocks base method.
-func (m *MockChatSvcAPI) UpdateThread(ctx context.Context, threadId string) ApiUpdateThreadRequest {
+// SaveMessage mocks base method.
+func (m *MockChatSvcAPI) SaveMessage(ctx context.Context, threadId string) ApiSaveMessageRequest {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateThread", ctx, threadId)
-	ret0, _ := ret[0].(ApiUpdateThreadRequest)
+	ret := m.ctrl.Call(m, "SaveMessage", ctx, threadId)
+	ret0, _ := ret[0].(ApiSaveMessageRequest)
 	return ret0
 }
 
-// UpdateThread indicates an expected call of UpdateThread.
-func (mr *MockChatSvcAPIMockRecorder) UpdateThread(ctx, threadId any) *gomock.Call {
+// SaveMessage indicates an expected call of SaveMessage.
+func (mr *MockChatSvcAPIMockRecorder) SaveMessage(ctx, threadId any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateThread", reflect.TypeOf((*MockChatSvcAPI)(nil).UpdateThread), ctx, threadId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveMessage", reflect.TypeOf((*MockChatSvcAPI)(nil).SaveMessage), ctx, threadId)
 }
 
-// UpdateThreadExecute mocks base method.
-func (m *MockChatSvcAPI) UpdateThreadExecute(r ApiUpdateThreadRequest) (*ChatSvcAddThreadResponse, *http.Response, error) {
+// SaveMessageExecute mocks base method.
+func (m *MockChatSvcAPI) SaveMessageExecute(r ApiSaveMessageRequest) (map[string]any, *http.Response, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateThreadExecute", r)
-	ret0, _ := ret[0].(*ChatSvcAddThreadResponse)
+	ret := m.ctrl.Call(m, "SaveMessageExecute", r)
+	ret0, _ := ret[0].(map[string]any)
 	ret1, _ := ret[1].(*http.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
 
-// UpdateThreadExecute indicates an expected call of UpdateThreadExecute.
-func (mr *MockChatSvcAPIMockRecorder) UpdateThreadExecute(r any) *gomock.Call {
+// SaveMessageExecute indicates an expected call of SaveMessageExecute.
+func (mr *MockChatSvcAPIMockRecorder) SaveMessageExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateThreadExecute", reflect.TypeOf((*MockChatSvcAPI)(nil).UpdateThreadExecute), r)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveMessageExecute", reflect.TypeOf((*MockChatSvcAPI)(nil).SaveMessageExecute), r)
+}
+
+// SaveThread mocks base method.
+func (m *MockChatSvcAPI) SaveThread(ctx context.Context) ApiSaveThreadRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveThread", ctx)
+	ret0, _ := ret[0].(ApiSaveThreadRequest)
+	return ret0
+}
+
+// SaveThread indicates an expected call of SaveThread.
+func (mr *MockChatSvcAPIMockRecorder) SaveThread(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveThread", reflect.TypeOf((*MockChatSvcAPI)(nil).SaveThread), ctx)
+}
+
+// SaveThreadExecute mocks base method.
+func (m *MockChatSvcAPI) SaveThreadExecute(r ApiSaveThreadRequest) (*ChatSvcSaveThreadResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveThreadExecute", r)
+	ret0, _ := ret[0].(*ChatSvcSaveThreadResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// SaveThreadExecute indicates an expected call of SaveThreadExecute.
+func (mr *MockChatSvcAPIMockRecorder) SaveThreadExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveThreadExecute", reflect.TypeOf((*MockChatSvcAPI)(nil).SaveThreadExecute), r)
 }

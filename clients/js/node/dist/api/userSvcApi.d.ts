@@ -115,7 +115,7 @@ export declare class UserSvcApi {
         body: object;
     }>;
     /**
-     * Get the public key to parse and verify the JWT.
+     * Get the public key to verify the JWT signature.
      * @summary Get Public Key
      */
     getPublicKey(options?: {

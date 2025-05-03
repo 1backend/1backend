@@ -20,7 +20,7 @@ export interface UserSvcOrganization {
      * @type {string}
      * @memberof UserSvcOrganization
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      *
      * @type {string}
@@ -56,7 +56,7 @@ export interface UserSvcOrganization {
      * @type {string}
      * @memberof UserSvcOrganization
      */
-    updatedAt?: string;
+    updatedAt: string;
 }
 /**
  * Check if a given object implements the UserSvcOrganization interface.

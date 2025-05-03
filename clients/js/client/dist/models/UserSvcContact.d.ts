@@ -20,7 +20,7 @@ export interface UserSvcContact {
      * @type {string}
      * @memberof UserSvcContact
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      *
      * @type {string}
@@ -63,7 +63,7 @@ export interface UserSvcContact {
      * @type {string}
      * @memberof UserSvcContact
      */
-    updatedAt?: string;
+    updatedAt: string;
     /**
      *
      * @type {string}

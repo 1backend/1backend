@@ -22,26 +22,26 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// @ID getMessage
-// @Summary Get Message
-// @Description Fetch information about a specific chat message by its ID
+// @ID listMessages
+// @Summary List Messages
+// @Description Fetch messages (and associated assets) for a specific chat thread.
 // @Tags Chat Svc
 // @Accept json
 // @Produce json
-// @Param messageId path string true "Message ID"
-// @Success 200 {object} chat.GetMessageResponse "Message details successfully retrieved"
+// @Param threadId path string true "Thread ID"
+// @Success 200 {object} chat.ListMessagesResponse "Messages and assets successfully retrieved"
 // @Failure 400 {string} string "Invalid JSON"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 500 {string} string "Internal Server Error"
 // @Security BearerAuth
-// @Router /chat-svc/message/{messageId} [get]
-func (a *ChatService) GetMessage(
+// @Router /chat-svc/thread/{threadId}/messages [post]
+func (a *ChatService) ListMessages(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
 
 	isAuthRsp, _, err := a.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), chat.PermissionMessageCreate).
+		UserSvcAPI.HasPermission(r.Context(), chat.PermissionMessageView).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -54,35 +54,35 @@ func (a *ChatService) GetMessage(
 		return
 	}
 
-	vars := mux.Vars(r)
-	messageId := vars["messageId"]
+	threadId := mux.Vars(r)["threadId"]
 
-	message, found, err := a.getMessage(messageId)
+	messages, err := a.getMessages(threadId)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	jsonData, _ := json.Marshal(chat.GetMessageResponse{
-		Exists:  found,
-		Message: message,
+	jsonData, _ := json.Marshal(chat.ListMessagesResponse{
+		Messages: messages,
 	})
 	w.Write(jsonData)
 }
 
-func (a *ChatService) getMessage(
-	messageId string,
-) (*chat.Message, bool, error) {
-	messageI, found, err := a.messagesStore.Query(
-		datastore.Equals(datastore.Field("id"), messageId),
-	).FindOne()
+func (a *ChatService) getMessages(
+	threadId string,
+) ([]*chat.Message, error) {
+	messageIs, err := a.messagesStore.Query(
+		datastore.Equals(datastore.Field("threadId"), threadId),
+	).OrderBy(datastore.OrderByField("createdAt", false)).Find()
 	if err != nil {
-		return nil, false, err
-	}
-	if !found {
-		return nil, false, nil
+		return nil, err
 	}
 
-	return messageI.(*chat.Message), true, nil
+	messages := []*chat.Message{}
+	for _, messageI := range messageIs {
+		messages = append(messages, messageI.(*chat.Message))
+	}
+
+	return messages, nil
 }

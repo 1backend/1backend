@@ -23,33 +23,33 @@ import (
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
-	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 	chat "github.com/1backend/1backend/server/internal/services/chat/types"
-	"github.com/gorilla/mux"
 )
 
-// @ID addMessage
-// @Summary Add Message
-// @Description Add a new message to a specific thread.
+// @ID saveThread
+// @Summary Save Thread
+// @Description Create or update a chat thread.
+// @Decription
+// @Description Requires the `chat-svc:thread:edit` permission.
 // @Tags Chat Svc
 // @Accept json
 // @Produce json
-// @Param threadId path string true "Thread ID"
-// @Param body body chat.AddMessageRequest true "Add Message Request"
-// @Success 200 {object} map[string]any "Message successfully added"
+// @Param body body chat.SaveThreadRequest true "Save Thread Request"
+// @Success 200 {object} chat.SaveThreadResponse "Thread successfully created"
 // @Failure 400 {string} string "Invalid JSON"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 500 {string} string "Internal Server Error"
 // @Security BearerAuth
-// @Router /chat-svc/thread/{threadId}/message [post]
-func (a *ChatService) AddMessage(
+// @Router /chat-svc/thread [post]
+func (a *ChatService) SaveThread(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
 
 	isAuthRsp, _, err := a.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), chat.PermissionMessageCreate).
+		UserSvcAPI.HasPermission(r.Context(), chat.PermissionThreadEdit).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -62,7 +62,7 @@ func (a *ChatService) AddMessage(
 		return
 	}
 
-	req := chat.AddMessageRequest{}
+	req := chat.SaveThreadRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -71,52 +71,75 @@ func (a *ChatService) AddMessage(
 	}
 	defer r.Body.Close()
 
-	vars := mux.Vars(r)
-	threadId := vars["threadId"]
-	req.Message.ThreadId = threadId
+	if req.Id != "" {
+		thread, found, err := a.getThread(req.Id)
+		if err != nil {
+			endpoint.WriteErr(w, http.StatusInternalServerError, err)
+			return
+		}
+		if found {
+			thread, err := a.updateThread(isAuthRsp.User.Id, thread, &req)
+			if err != nil {
+				endpoint.WriteErr(w, http.StatusInternalServerError, err)
+				return
+			}
+			jsonData, _ := json.Marshal(chat.SaveThreadResponse{
+				Thread: thread,
+			})
 
-	err = a.addMessage(r.Context(), req.Message)
+			w.Write(jsonData)
+			return
+		}
+
+	}
+
+	req.UserIds = append(req.UserIds, isAuthRsp.User.Id)
+
+	thread, err := a.addThread(r.Context(), &req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	jsonData, _ := json.Marshal(map[string]any{})
+	jsonData, _ := json.Marshal(chat.SaveThreadResponse{
+		Thread: thread,
+	})
 	w.Write(jsonData)
 }
 
-func (a *ChatService) addMessage(
+func (a *ChatService) addThread(
 	ctx context.Context,
-	chatMessage *chat.Message,
-) error {
-	if chatMessage.ThreadId == "" {
-		return errors.New("empty chat message thread id")
+	chatThread *chat.SaveThreadRequest,
+) (*chat.Thread, error) {
+	if chatThread.Id == "" {
+		chatThread.Id = sdk.Id("thr")
 	}
-	if chatMessage.Id == "" {
-		chatMessage.Id = sdk.Id("msg")
-	}
-	if chatMessage.CreatedAt.IsZero() {
-		chatMessage.CreatedAt = time.Now()
+	if chatThread.Title == "" {
+		chatThread.Title = "New chat"
 	}
 
-	threads, err := a.threadsStore.Query(
-		datastore.Equals(datastore.Field("id"), chatMessage.ThreadId),
-	).Find()
+	if len(chatThread.UserIds) == 0 {
+		return nil, errors.New("no user ids")
+	}
+
+	now := time.Now()
+
+	thread := &chat.Thread{
+		Id:        chatThread.Id,
+		Title:     chatThread.Title,
+		CreatedAt: now,
+		UpdatedAt: now,
+		UserIds:   chatThread.UserIds,
+	}
+
+	err := a.threadsStore.Create(thread)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	if len(threads) == 0 {
-		return errors.New("thread does not exist")
-	}
-
-	logger.Info("Saving chat message",
-		slog.String("messageId", chatMessage.Id),
-	)
-
-	ev := chat.EventMessageAdded{
-		ThreadId: chatMessage.ThreadId,
+	ev := chat.EventThreadAdded{
+		ThreadId: chatThread.Id,
 	}
 
 	var m map[string]interface{}
@@ -136,7 +159,5 @@ func (a *ChatService) addMessage(
 		logger.Error("Failed to publish firehose event", slog.Any("error", err))
 	}
 
-	return a.messagesStore.Query(
-		datastore.Equals(datastore.Field("id"), chatMessage.Id),
-	).Upsert(chatMessage)
+	return thread, nil
 }

@@ -11,8 +11,8 @@ import "time"
 
 type AuthToken struct {
 	Id        string     `json:"id" binding:"required"`
-	CreatedAt time.Time  `json:"createdAt,omitempty"`
-	UpdatedAt time.Time  `json:"updatedAt,omitempty"`
+	CreatedAt time.Time  `json:"createdAt" binding:"required"`
+	UpdatedAt time.Time  `json:"updatedAt" binding:"required"`
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`
 
 	UserId string `json:"userId,omitempty" binding:"required"`

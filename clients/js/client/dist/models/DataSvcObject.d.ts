@@ -29,7 +29,7 @@ export interface DataSvcObject {
      * @type {string}
      * @memberof DataSvcObject
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      *
      * @type {{ [key: string]: any; }}
@@ -71,7 +71,7 @@ export interface DataSvcObject {
      * @type {string}
      * @memberof DataSvcObject
      */
-    updatedAt?: string;
+    updatedAt: string;
     /**
      * Writers is a list of user IDs and role IDs that can write the object.
      * `_self` can be used to refer to the caller user's userId and

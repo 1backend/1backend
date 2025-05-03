@@ -24,7 +24,7 @@ export interface UserSvcContact {
      * @type {string}
      * @memberof UserSvcContact
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      * 
      * @type {string}
@@ -67,7 +67,7 @@ export interface UserSvcContact {
      * @type {string}
      * @memberof UserSvcContact
      */
-    updatedAt?: string;
+    updatedAt: string;
     /**
      * 
      * @type {string}
@@ -86,9 +86,11 @@ export interface UserSvcContact {
  * Check if a given object implements the UserSvcContact interface.
  */
 export function instanceOfUserSvcContact(value: object): value is UserSvcContact {
+    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('handle' in value) || value['handle'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('platform' in value) || value['platform'] === undefined) return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     if (!('userId' in value) || value['userId'] === undefined) return false;
     return true;
 }
@@ -103,13 +105,13 @@ export function UserSvcContactFromJSONTyped(json: any, ignoreDiscriminator: bool
     }
     return {
         
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'handle': json['handle'],
         'id': json['id'],
         'isPrimary': json['isPrimary'] == null ? undefined : json['isPrimary'],
         'platform': json['platform'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
         'userId': json['userId'],
         'verified': json['verified'] == null ? undefined : json['verified'],
     };

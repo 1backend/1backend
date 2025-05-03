@@ -364,7 +364,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get the public key to parse and verify the JWT.
+     * Get the public key to verify the JWT signature.
      * Get Public Key
      */
     async getPublicKeyRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcGetPublicKeyResponse>> {
@@ -383,7 +383,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get the public key to parse and verify the JWT.
+     * Get the public key to verify the JWT signature.
      * Get Public Key
      */
     async getPublicKey(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcGetPublicKeyResponse> {

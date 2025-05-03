@@ -168,7 +168,7 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Get the public key to parse and verify the JWT.
+     * Get the public key to verify the JWT signature.
      * Get Public Key
      */
     getPublicKeyRaw(initOverrides) {
@@ -185,7 +185,7 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Get the public key to parse and verify the JWT.
+     * Get the public key to verify the JWT signature.
      * Get Public Key
      */
     getPublicKey(initOverrides) {

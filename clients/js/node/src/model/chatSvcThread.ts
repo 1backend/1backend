@@ -13,7 +13,7 @@
 import { RequestFile } from './models';
 
 export class ChatSvcThread {
-    'createdAt'?: string;
+    'createdAt': string;
     'id': string;
     /**
     * Title of the thread.
@@ -23,7 +23,7 @@ export class ChatSvcThread {
     * TopicIds defines which topics the thread belongs to. Topics can roughly be thought of as tags for threads.
     */
     'topicIds'?: Array<string>;
-    'updatedAt'?: string;
+    'updatedAt': string;
     /**
     * UserIds the ids of the users who can see this thread.
     */

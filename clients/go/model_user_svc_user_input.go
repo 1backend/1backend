@@ -17,13 +17,11 @@ import (
 	"fmt"
 )
 
-// checks if the UserSvcUser type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &UserSvcUser{}
+// checks if the UserSvcUserInput type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &UserSvcUserInput{}
 
-// UserSvcUser struct for UserSvcUser
-type UserSvcUser struct {
-	CreatedAt string `json:"createdAt"`
-	DeletedAt *string `json:"deletedAt,omitempty"`
+// UserSvcUserInput struct for UserSvcUserInput
+type UserSvcUserInput struct {
 	Id string `json:"id"`
 	Labels *map[string]string `json:"labels,omitempty"`
 	// Full name of the user.
@@ -31,90 +29,31 @@ type UserSvcUser struct {
 	// URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
 	Slug string `json:"slug"`
 	ThumbnailFileId *string `json:"thumbnailFileId,omitempty"`
-	UpdatedAt string `json:"updatedAt"`
 }
 
-type _UserSvcUser UserSvcUser
+type _UserSvcUserInput UserSvcUserInput
 
-// NewUserSvcUser instantiates a new UserSvcUser object
+// NewUserSvcUserInput instantiates a new UserSvcUserInput object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcUser(createdAt string, id string, slug string, updatedAt string) *UserSvcUser {
-	this := UserSvcUser{}
-	this.CreatedAt = createdAt
+func NewUserSvcUserInput(id string, slug string) *UserSvcUserInput {
+	this := UserSvcUserInput{}
 	this.Id = id
 	this.Slug = slug
-	this.UpdatedAt = updatedAt
 	return &this
 }
 
-// NewUserSvcUserWithDefaults instantiates a new UserSvcUser object
+// NewUserSvcUserInputWithDefaults instantiates a new UserSvcUserInput object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewUserSvcUserWithDefaults() *UserSvcUser {
-	this := UserSvcUser{}
+func NewUserSvcUserInputWithDefaults() *UserSvcUserInput {
+	this := UserSvcUserInput{}
 	return &this
-}
-
-// GetCreatedAt returns the CreatedAt field value
-func (o *UserSvcUser) GetCreatedAt() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.CreatedAt
-}
-
-// GetCreatedAtOk returns a tuple with the CreatedAt field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcUser) GetCreatedAtOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.CreatedAt, true
-}
-
-// SetCreatedAt sets field value
-func (o *UserSvcUser) SetCreatedAt(v string) {
-	o.CreatedAt = v
-}
-
-// GetDeletedAt returns the DeletedAt field value if set, zero value otherwise.
-func (o *UserSvcUser) GetDeletedAt() string {
-	if o == nil || IsNil(o.DeletedAt) {
-		var ret string
-		return ret
-	}
-	return *o.DeletedAt
-}
-
-// GetDeletedAtOk returns a tuple with the DeletedAt field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcUser) GetDeletedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.DeletedAt) {
-		return nil, false
-	}
-	return o.DeletedAt, true
-}
-
-// HasDeletedAt returns a boolean if a field has been set.
-func (o *UserSvcUser) HasDeletedAt() bool {
-	if o != nil && !IsNil(o.DeletedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetDeletedAt gets a reference to the given string and assigns it to the DeletedAt field.
-func (o *UserSvcUser) SetDeletedAt(v string) {
-	o.DeletedAt = &v
 }
 
 // GetId returns the Id field value
-func (o *UserSvcUser) GetId() string {
+func (o *UserSvcUserInput) GetId() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -125,7 +64,7 @@ func (o *UserSvcUser) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcUser) GetIdOk() (*string, bool) {
+func (o *UserSvcUserInput) GetIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -133,12 +72,12 @@ func (o *UserSvcUser) GetIdOk() (*string, bool) {
 }
 
 // SetId sets field value
-func (o *UserSvcUser) SetId(v string) {
+func (o *UserSvcUserInput) SetId(v string) {
 	o.Id = v
 }
 
 // GetLabels returns the Labels field value if set, zero value otherwise.
-func (o *UserSvcUser) GetLabels() map[string]string {
+func (o *UserSvcUserInput) GetLabels() map[string]string {
 	if o == nil || IsNil(o.Labels) {
 		var ret map[string]string
 		return ret
@@ -148,7 +87,7 @@ func (o *UserSvcUser) GetLabels() map[string]string {
 
 // GetLabelsOk returns a tuple with the Labels field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcUser) GetLabelsOk() (*map[string]string, bool) {
+func (o *UserSvcUserInput) GetLabelsOk() (*map[string]string, bool) {
 	if o == nil || IsNil(o.Labels) {
 		return nil, false
 	}
@@ -156,7 +95,7 @@ func (o *UserSvcUser) GetLabelsOk() (*map[string]string, bool) {
 }
 
 // HasLabels returns a boolean if a field has been set.
-func (o *UserSvcUser) HasLabels() bool {
+func (o *UserSvcUserInput) HasLabels() bool {
 	if o != nil && !IsNil(o.Labels) {
 		return true
 	}
@@ -165,12 +104,12 @@ func (o *UserSvcUser) HasLabels() bool {
 }
 
 // SetLabels gets a reference to the given map[string]string and assigns it to the Labels field.
-func (o *UserSvcUser) SetLabels(v map[string]string) {
+func (o *UserSvcUserInput) SetLabels(v map[string]string) {
 	o.Labels = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
-func (o *UserSvcUser) GetName() string {
+func (o *UserSvcUserInput) GetName() string {
 	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
@@ -180,7 +119,7 @@ func (o *UserSvcUser) GetName() string {
 
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcUser) GetNameOk() (*string, bool) {
+func (o *UserSvcUserInput) GetNameOk() (*string, bool) {
 	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
@@ -188,7 +127,7 @@ func (o *UserSvcUser) GetNameOk() (*string, bool) {
 }
 
 // HasName returns a boolean if a field has been set.
-func (o *UserSvcUser) HasName() bool {
+func (o *UserSvcUserInput) HasName() bool {
 	if o != nil && !IsNil(o.Name) {
 		return true
 	}
@@ -197,12 +136,12 @@ func (o *UserSvcUser) HasName() bool {
 }
 
 // SetName gets a reference to the given string and assigns it to the Name field.
-func (o *UserSvcUser) SetName(v string) {
+func (o *UserSvcUserInput) SetName(v string) {
 	o.Name = &v
 }
 
 // GetSlug returns the Slug field value
-func (o *UserSvcUser) GetSlug() string {
+func (o *UserSvcUserInput) GetSlug() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -213,7 +152,7 @@ func (o *UserSvcUser) GetSlug() string {
 
 // GetSlugOk returns a tuple with the Slug field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcUser) GetSlugOk() (*string, bool) {
+func (o *UserSvcUserInput) GetSlugOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -221,12 +160,12 @@ func (o *UserSvcUser) GetSlugOk() (*string, bool) {
 }
 
 // SetSlug sets field value
-func (o *UserSvcUser) SetSlug(v string) {
+func (o *UserSvcUserInput) SetSlug(v string) {
 	o.Slug = v
 }
 
 // GetThumbnailFileId returns the ThumbnailFileId field value if set, zero value otherwise.
-func (o *UserSvcUser) GetThumbnailFileId() string {
+func (o *UserSvcUserInput) GetThumbnailFileId() string {
 	if o == nil || IsNil(o.ThumbnailFileId) {
 		var ret string
 		return ret
@@ -236,7 +175,7 @@ func (o *UserSvcUser) GetThumbnailFileId() string {
 
 // GetThumbnailFileIdOk returns a tuple with the ThumbnailFileId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcUser) GetThumbnailFileIdOk() (*string, bool) {
+func (o *UserSvcUserInput) GetThumbnailFileIdOk() (*string, bool) {
 	if o == nil || IsNil(o.ThumbnailFileId) {
 		return nil, false
 	}
@@ -244,7 +183,7 @@ func (o *UserSvcUser) GetThumbnailFileIdOk() (*string, bool) {
 }
 
 // HasThumbnailFileId returns a boolean if a field has been set.
-func (o *UserSvcUser) HasThumbnailFileId() bool {
+func (o *UserSvcUserInput) HasThumbnailFileId() bool {
 	if o != nil && !IsNil(o.ThumbnailFileId) {
 		return true
 	}
@@ -253,35 +192,11 @@ func (o *UserSvcUser) HasThumbnailFileId() bool {
 }
 
 // SetThumbnailFileId gets a reference to the given string and assigns it to the ThumbnailFileId field.
-func (o *UserSvcUser) SetThumbnailFileId(v string) {
+func (o *UserSvcUserInput) SetThumbnailFileId(v string) {
 	o.ThumbnailFileId = &v
 }
 
-// GetUpdatedAt returns the UpdatedAt field value
-func (o *UserSvcUser) GetUpdatedAt() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.UpdatedAt
-}
-
-// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcUser) GetUpdatedAtOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.UpdatedAt, true
-}
-
-// SetUpdatedAt sets field value
-func (o *UserSvcUser) SetUpdatedAt(v string) {
-	o.UpdatedAt = v
-}
-
-func (o UserSvcUser) MarshalJSON() ([]byte, error) {
+func (o UserSvcUserInput) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -289,12 +204,8 @@ func (o UserSvcUser) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o UserSvcUser) ToMap() (map[string]interface{}, error) {
+func (o UserSvcUserInput) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["createdAt"] = o.CreatedAt
-	if !IsNil(o.DeletedAt) {
-		toSerialize["deletedAt"] = o.DeletedAt
-	}
 	toSerialize["id"] = o.Id
 	if !IsNil(o.Labels) {
 		toSerialize["labels"] = o.Labels
@@ -306,19 +217,16 @@ func (o UserSvcUser) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.ThumbnailFileId) {
 		toSerialize["thumbnailFileId"] = o.ThumbnailFileId
 	}
-	toSerialize["updatedAt"] = o.UpdatedAt
 	return toSerialize, nil
 }
 
-func (o *UserSvcUser) UnmarshalJSON(data []byte) (err error) {
+func (o *UserSvcUserInput) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"createdAt",
 		"id",
 		"slug",
-		"updatedAt",
 	}
 
 	allProperties := make(map[string]interface{})
@@ -335,53 +243,53 @@ func (o *UserSvcUser) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varUserSvcUser := _UserSvcUser{}
+	varUserSvcUserInput := _UserSvcUserInput{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varUserSvcUser)
+	err = decoder.Decode(&varUserSvcUserInput)
 
 	if err != nil {
 		return err
 	}
 
-	*o = UserSvcUser(varUserSvcUser)
+	*o = UserSvcUserInput(varUserSvcUserInput)
 
 	return err
 }
 
-type NullableUserSvcUser struct {
-	value *UserSvcUser
+type NullableUserSvcUserInput struct {
+	value *UserSvcUserInput
 	isSet bool
 }
 
-func (v NullableUserSvcUser) Get() *UserSvcUser {
+func (v NullableUserSvcUserInput) Get() *UserSvcUserInput {
 	return v.value
 }
 
-func (v *NullableUserSvcUser) Set(val *UserSvcUser) {
+func (v *NullableUserSvcUserInput) Set(val *UserSvcUserInput) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableUserSvcUser) IsSet() bool {
+func (v NullableUserSvcUserInput) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableUserSvcUser) Unset() {
+func (v *NullableUserSvcUserInput) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableUserSvcUser(val *UserSvcUser) *NullableUserSvcUser {
-	return &NullableUserSvcUser{value: val, isSet: true}
+func NewNullableUserSvcUserInput(val *UserSvcUserInput) *NullableUserSvcUserInput {
+	return &NullableUserSvcUserInput{value: val, isSet: true}
 }
 
-func (v NullableUserSvcUser) MarshalJSON() ([]byte, error) {
+func (v NullableUserSvcUserInput) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableUserSvcUser) UnmarshalJSON(src []byte) error {
+func (v *NullableUserSvcUserInput) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

@@ -23,7 +23,7 @@ type UserSvcCreateUserRequest struct {
 	Contacts []UserSvcContact `json:"contacts,omitempty"`
 	Password *string `json:"password,omitempty"`
 	RoleIds []string `json:"roleIds,omitempty"`
-	User *UserSvcUser `json:"user,omitempty"`
+	User *UserSvcUserInput `json:"user,omitempty"`
 }
 
 // NewUserSvcCreateUserRequest instantiates a new UserSvcCreateUserRequest object
@@ -140,9 +140,9 @@ func (o *UserSvcCreateUserRequest) SetRoleIds(v []string) {
 }
 
 // GetUser returns the User field value if set, zero value otherwise.
-func (o *UserSvcCreateUserRequest) GetUser() UserSvcUser {
+func (o *UserSvcCreateUserRequest) GetUser() UserSvcUserInput {
 	if o == nil || IsNil(o.User) {
-		var ret UserSvcUser
+		var ret UserSvcUserInput
 		return ret
 	}
 	return *o.User
@@ -150,7 +150,7 @@ func (o *UserSvcCreateUserRequest) GetUser() UserSvcUser {
 
 // GetUserOk returns a tuple with the User field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcCreateUserRequest) GetUserOk() (*UserSvcUser, bool) {
+func (o *UserSvcCreateUserRequest) GetUserOk() (*UserSvcUserInput, bool) {
 	if o == nil || IsNil(o.User) {
 		return nil, false
 	}
@@ -166,8 +166,8 @@ func (o *UserSvcCreateUserRequest) HasUser() bool {
 	return false
 }
 
-// SetUser gets a reference to the given UserSvcUser and assigns it to the User field.
-func (o *UserSvcCreateUserRequest) SetUser(v UserSvcUser) {
+// SetUser gets a reference to the given UserSvcUserInput and assigns it to the User field.
+func (o *UserSvcCreateUserRequest) SetUser(v UserSvcUserInput) {
 	o.User = &v
 }
 

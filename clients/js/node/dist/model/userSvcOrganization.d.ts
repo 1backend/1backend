@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 export declare class UserSvcOrganization {
-    'createdAt'?: string;
+    'createdAt': string;
     'deletedAt'?: string;
     'id': string;
     /**
@@ -22,7 +22,7 @@ export declare class UserSvcOrganization {
     */
     'slug': string;
     'thumbnailFileId'?: string;
-    'updatedAt'?: string;
+    'updatedAt': string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

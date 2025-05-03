@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the FileSvcDownload type satisfies the MappedNullable interface at compile time
@@ -20,7 +22,7 @@ var _ MappedNullable = &FileSvcDownload{}
 
 // FileSvcDownload struct for FileSvcDownload
 type FileSvcDownload struct {
-	CreatedAt *string `json:"createdAt,omitempty"`
+	CreatedAt string `json:"createdAt"`
 	// DownloadedBytes exists to show the download progress in terms of the number of bytes already downloaded.
 	DownloadedBytes *int64 `json:"downloadedBytes,omitempty"`
 	Error *string `json:"error,omitempty"`
@@ -31,16 +33,20 @@ type FileSvcDownload struct {
 	Id *string `json:"id,omitempty"`
 	Progress *float32 `json:"progress,omitempty"`
 	Status *string `json:"status,omitempty"`
-	UpdatedAt *string `json:"updatedAt,omitempty"`
+	UpdatedAt string `json:"updatedAt"`
 	Url *string `json:"url,omitempty"`
 }
+
+type _FileSvcDownload FileSvcDownload
 
 // NewFileSvcDownload instantiates a new FileSvcDownload object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewFileSvcDownload() *FileSvcDownload {
+func NewFileSvcDownload(createdAt string, updatedAt string) *FileSvcDownload {
 	this := FileSvcDownload{}
+	this.CreatedAt = createdAt
+	this.UpdatedAt = updatedAt
 	return &this
 }
 
@@ -52,36 +58,28 @@ func NewFileSvcDownloadWithDefaults() *FileSvcDownload {
 	return &this
 }
 
-// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
+// GetCreatedAt returns the CreatedAt field value
 func (o *FileSvcDownload) GetCreatedAt() string {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.CreatedAt
+
+	return o.CreatedAt
 }
 
-// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
 // and a boolean to check if the value has been set.
 func (o *FileSvcDownload) GetCreatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.CreatedAt, true
+	return &o.CreatedAt, true
 }
 
-// HasCreatedAt returns a boolean if a field has been set.
-func (o *FileSvcDownload) HasCreatedAt() bool {
-	if o != nil && !IsNil(o.CreatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
+// SetCreatedAt sets field value
 func (o *FileSvcDownload) SetCreatedAt(v string) {
-	o.CreatedAt = &v
+	o.CreatedAt = v
 }
 
 // GetDownloadedBytes returns the DownloadedBytes field value if set, zero value otherwise.
@@ -340,36 +338,28 @@ func (o *FileSvcDownload) SetStatus(v string) {
 	o.Status = &v
 }
 
-// GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
+// GetUpdatedAt returns the UpdatedAt field value
 func (o *FileSvcDownload) GetUpdatedAt() string {
-	if o == nil || IsNil(o.UpdatedAt) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.UpdatedAt
+
+	return o.UpdatedAt
 }
 
-// GetUpdatedAtOk returns a tuple with the UpdatedAt field value if set, nil otherwise
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
 // and a boolean to check if the value has been set.
 func (o *FileSvcDownload) GetUpdatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.UpdatedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.UpdatedAt, true
+	return &o.UpdatedAt, true
 }
 
-// HasUpdatedAt returns a boolean if a field has been set.
-func (o *FileSvcDownload) HasUpdatedAt() bool {
-	if o != nil && !IsNil(o.UpdatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetUpdatedAt gets a reference to the given string and assigns it to the UpdatedAt field.
+// SetUpdatedAt sets field value
 func (o *FileSvcDownload) SetUpdatedAt(v string) {
-	o.UpdatedAt = &v
+	o.UpdatedAt = v
 }
 
 // GetUrl returns the Url field value if set, zero value otherwise.
@@ -414,9 +404,7 @@ func (o FileSvcDownload) MarshalJSON() ([]byte, error) {
 
 func (o FileSvcDownload) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.CreatedAt) {
-		toSerialize["createdAt"] = o.CreatedAt
-	}
+	toSerialize["createdAt"] = o.CreatedAt
 	if !IsNil(o.DownloadedBytes) {
 		toSerialize["downloadedBytes"] = o.DownloadedBytes
 	}
@@ -441,13 +429,49 @@ func (o FileSvcDownload) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Status) {
 		toSerialize["status"] = o.Status
 	}
-	if !IsNil(o.UpdatedAt) {
-		toSerialize["updatedAt"] = o.UpdatedAt
-	}
+	toSerialize["updatedAt"] = o.UpdatedAt
 	if !IsNil(o.Url) {
 		toSerialize["url"] = o.Url
 	}
 	return toSerialize, nil
+}
+
+func (o *FileSvcDownload) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"createdAt",
+		"updatedAt",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varFileSvcDownload := _FileSvcDownload{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varFileSvcDownload)
+
+	if err != nil {
+		return err
+	}
+
+	*o = FileSvcDownload(varFileSvcDownload)
+
+	return err
 }
 
 type NullableFileSvcDownload struct {

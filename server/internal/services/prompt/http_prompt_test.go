@@ -157,26 +157,26 @@ var _ = ginkgo.Describe("Prompt Processing Loop", func() {
 			}, nil, nil).AnyTimes()
 
 		mockChatSvc.EXPECT().
-			GetThread(gomock.Any(), gomock.Any()).
-			Return(openapi.ApiGetThreadRequest{
+			ReadThread(gomock.Any(), gomock.Any()).
+			Return(openapi.ApiReadThreadRequest{
 				ApiService: mockChatSvc,
 			})
 		mockChatSvc.EXPECT().
-			GetThreadExecute(gomock.Any()).
-			Return(&openapi.ChatSvcGetThreadResponse{
+			ReadThreadExecute(gomock.Any()).
+			Return(&openapi.ChatSvcReadThreadResponse{
 				Exists: openapi.PtrBool(true),
 				Thread: &openapi.ChatSvcThread{
 					Id: "thread-1",
 				},
 			}, nil, nil)
 		mockChatSvc.EXPECT().
-			GetMessage(gomock.Any(), gomock.Any()).
-			Return(openapi.ApiGetMessageRequest{
+			ReadMessage(gomock.Any(), gomock.Any()).
+			Return(openapi.ApiReadMessageRequest{
 				ApiService: mockChatSvc,
 			})
 		mockChatSvc.EXPECT().
-			GetMessageExecute(gomock.Any()).
-			Return(&openapi.ChatSvcGetMessageResponse{
+			ReadMessageExecute(gomock.Any()).
+			Return(&openapi.ChatSvcReadMessageResponse{
 				Exists: openapi.PtrBool(true),
 				Message: &openapi.ChatSvcMessage{
 					Id:   "message-1",
@@ -184,12 +184,12 @@ var _ = ginkgo.Describe("Prompt Processing Loop", func() {
 				},
 			}, nil, nil)
 		mockChatSvc.EXPECT().
-			AddMessage(gomock.Any(), gomock.Any()).
-			Return(openapi.ApiAddMessageRequest{
+			SaveMessage(gomock.Any(), gomock.Any()).
+			Return(openapi.ApiSaveMessageRequest{
 				ApiService: mockChatSvc,
 			}).AnyTimes()
 		mockChatSvc.EXPECT().
-			AddMessageExecute(gomock.Any()).
+			SaveMessageExecute(gomock.Any()).
 			Return(nil, nil, nil).AnyTimes()
 
 		mockModelSvc.EXPECT().

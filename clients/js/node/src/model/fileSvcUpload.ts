@@ -13,7 +13,7 @@
 import { RequestFile } from './models';
 
 export class FileSvcUpload {
-    'createdAt'?: string;
+    'createdAt': string;
     /**
     * Logical file ID spanning all replicas
     */
@@ -35,7 +35,7 @@ export class FileSvcUpload {
     * ID of the node storing this replica
     */
     'nodeId'?: string;
-    'updatedAt'?: string;
+    'updatedAt': string;
     'userId'?: string;
 
     static discriminator: string | undefined = undefined;

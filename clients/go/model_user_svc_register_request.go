@@ -22,7 +22,7 @@ var _ MappedNullable = &UserSvcRegisterRequest{}
 
 // UserSvcRegisterRequest struct for UserSvcRegisterRequest
 type UserSvcRegisterRequest struct {
-	Contact *UserSvcContact `json:"contact,omitempty"`
+	Contact *UserSvcContactInput `json:"contact,omitempty"`
 	Name *string `json:"name,omitempty"`
 	Password *string `json:"password,omitempty"`
 	// Slug is a URL-friendly unique (inside the 1Backend platform) identifier for the `user`. Required due to its central role in the platform. If your project has no use for a slug, just derive it from the email or similar.
@@ -50,9 +50,9 @@ func NewUserSvcRegisterRequestWithDefaults() *UserSvcRegisterRequest {
 }
 
 // GetContact returns the Contact field value if set, zero value otherwise.
-func (o *UserSvcRegisterRequest) GetContact() UserSvcContact {
+func (o *UserSvcRegisterRequest) GetContact() UserSvcContactInput {
 	if o == nil || IsNil(o.Contact) {
-		var ret UserSvcContact
+		var ret UserSvcContactInput
 		return ret
 	}
 	return *o.Contact
@@ -60,7 +60,7 @@ func (o *UserSvcRegisterRequest) GetContact() UserSvcContact {
 
 // GetContactOk returns a tuple with the Contact field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcRegisterRequest) GetContactOk() (*UserSvcContact, bool) {
+func (o *UserSvcRegisterRequest) GetContactOk() (*UserSvcContactInput, bool) {
 	if o == nil || IsNil(o.Contact) {
 		return nil, false
 	}
@@ -76,8 +76,8 @@ func (o *UserSvcRegisterRequest) HasContact() bool {
 	return false
 }
 
-// SetContact gets a reference to the given UserSvcContact and assigns it to the Contact field.
-func (o *UserSvcRegisterRequest) SetContact(v UserSvcContact) {
+// SetContact gets a reference to the given UserSvcContactInput and assigns it to the Contact field.
+func (o *UserSvcRegisterRequest) SetContact(v UserSvcContactInput) {
 	o.Contact = &v
 }
 

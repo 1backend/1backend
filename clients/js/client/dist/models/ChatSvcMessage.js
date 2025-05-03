@@ -15,9 +15,13 @@
  * Check if a given object implements the ChatSvcMessage interface.
  */
 export function instanceOfChatSvcMessage(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
     if (!('id' in value) || value['id'] === undefined)
         return false;
     if (!('threadId' in value) || value['threadId'] === undefined)
+        return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined)
         return false;
     return true;
 }
@@ -29,13 +33,13 @@ export function ChatSvcMessageFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'fileIds': json['fileIds'] == null ? undefined : json['fileIds'],
         'id': json['id'],
         'meta': json['meta'] == null ? undefined : json['meta'],
         'text': json['text'] == null ? undefined : json['text'],
         'threadId': json['threadId'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
         'userId': json['userId'] == null ? undefined : json['userId'],
     };
 }

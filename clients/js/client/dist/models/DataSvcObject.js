@@ -15,9 +15,13 @@
  * Check if a given object implements the DataSvcObject interface.
  */
 export function instanceOfDataSvcObject(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
     if (!('data' in value) || value['data'] === undefined)
         return false;
     if (!('table' in value) || value['table'] === undefined)
+        return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined)
         return false;
     return true;
 }
@@ -30,13 +34,13 @@ export function DataSvcObjectFromJSONTyped(json, ignoreDiscriminator) {
     }
     return {
         'authors': json['authors'] == null ? undefined : json['authors'],
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'data': json['data'],
         'deleters': json['deleters'] == null ? undefined : json['deleters'],
         'id': json['id'] == null ? undefined : json['id'],
         'readers': json['readers'] == null ? undefined : json['readers'],
         'table': json['table'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
         'writers': json['writers'] == null ? undefined : json['writers'],
     };
 }

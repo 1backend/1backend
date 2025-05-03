@@ -22,10 +22,10 @@ var _ MappedNullable = &BasicSvcPet{}
 
 // BasicSvcPet struct for BasicSvcPet
 type BasicSvcPet struct {
-	CreatedAt *string `json:"createdAt,omitempty"`
+	CreatedAt *string `json:"createdAt" binding:"required"`
 	Id string `json:"id"`
 	Name *string `json:"name,omitempty"`
-	UpdatedAt *string `json:"updatedAt,omitempty"`
+	UpdatedAt *string `json:"updatedAt" binding:"required"`
 }
 
 type _BasicSvcPet BasicSvcPet

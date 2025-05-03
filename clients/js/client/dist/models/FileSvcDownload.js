@@ -15,6 +15,10 @@
  * Check if a given object implements the FileSvcDownload interface.
  */
 export function instanceOfFileSvcDownload(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined)
+        return false;
     return true;
 }
 export function FileSvcDownloadFromJSON(json) {
@@ -25,7 +29,7 @@ export function FileSvcDownloadFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'downloadedBytes': json['downloadedBytes'] == null ? undefined : json['downloadedBytes'],
         'error': json['error'] == null ? undefined : json['error'],
         'fileName': json['fileName'] == null ? undefined : json['fileName'],
@@ -34,7 +38,7 @@ export function FileSvcDownloadFromJSONTyped(json, ignoreDiscriminator) {
         'id': json['id'] == null ? undefined : json['id'],
         'progress': json['progress'] == null ? undefined : json['progress'],
         'status': json['status'] == null ? undefined : json['status'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
         'url': json['url'] == null ? undefined : json['url'],
     };
 }

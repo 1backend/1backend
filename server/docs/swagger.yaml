@@ -1,20 +1,5 @@
 basePath: /
 definitions:
-  chat_svc.AddMessageRequest:
-    properties:
-      message:
-        $ref: '#/definitions/chat_svc.Message'
-    type: object
-  chat_svc.AddThreadRequest:
-    properties:
-      thread:
-        $ref: '#/definitions/chat_svc.Thread'
-    type: object
-  chat_svc.AddThreadResponse:
-    properties:
-      thread:
-        $ref: '#/definitions/chat_svc.Thread'
-    type: object
   chat_svc.EventMessageAdded:
     properties:
       threadId:
@@ -30,30 +15,16 @@ definitions:
       threadId:
         type: string
     type: object
-  chat_svc.GetMessageResponse:
-    properties:
-      exists:
-        type: boolean
-      message:
-        $ref: '#/definitions/chat_svc.Message'
-    type: object
-  chat_svc.GetMessagesResponse:
+  chat_svc.ListMessagesResponse:
     properties:
       messages:
         items:
           $ref: '#/definitions/chat_svc.Message'
         type: array
     type: object
-  chat_svc.GetThreadResponse:
-    properties:
-      exists:
-        type: boolean
-      thread:
-        $ref: '#/definitions/chat_svc.Thread'
+  chat_svc.ListThreadsRequest:
     type: object
-  chat_svc.GetThreadsRequest:
-    type: object
-  chat_svc.GetThreadsResponse:
+  chat_svc.ListThreadsResponse:
     properties:
       threads:
         items:
@@ -90,8 +61,76 @@ definitions:
           For AI messages this field is empty.
         type: string
     required:
+    - createdAt
     - id
     - threadId
+    - updatedAt
+    type: object
+  chat_svc.ReadMessageResponse:
+    properties:
+      exists:
+        type: boolean
+      message:
+        $ref: '#/definitions/chat_svc.Message'
+    type: object
+  chat_svc.ReadThreadResponse:
+    properties:
+      exists:
+        type: boolean
+      thread:
+        $ref: '#/definitions/chat_svc.Thread'
+    type: object
+  chat_svc.SaveMessageRequest:
+    properties:
+      fileIds:
+        description: FileIds defines the file attachments the message has.
+        items:
+          type: string
+        type: array
+      id:
+        example: msg_emSOPlW58o
+        type: string
+      meta:
+        additionalProperties: true
+        type: object
+      text:
+        description: Text content of the message eg. "Hi, what's up?"
+        type: string
+      threadId:
+        description: ThreadId of the message.
+        example: thr_emSOeEUWAg
+        type: string
+      userId:
+        description: |-
+          UserId is the id of the user who wrote the message.
+          For AI messages this field is empty.
+        type: string
+    type: object
+  chat_svc.SaveThreadRequest:
+    properties:
+      id:
+        example: thr_emSQnpJbhG
+        type: string
+      title:
+        description: Title of the thread.
+        type: string
+      topicIds:
+        description: |-
+          TopicIds defines which topics the thread belongs to.
+          Topics can roughly be thought of as tags for threads.
+        items:
+          type: string
+        type: array
+      userIds:
+        description: UserIds the ids of the users who can see this thread.
+        items:
+          type: string
+        type: array
+    type: object
+  chat_svc.SaveThreadResponse:
+    properties:
+      thread:
+        $ref: '#/definitions/chat_svc.Thread'
     type: object
   chat_svc.Thread:
     properties:
@@ -118,12 +157,9 @@ definitions:
           type: string
         type: array
     required:
+    - createdAt
     - id
-    type: object
-  chat_svc.UpdateThreadRequest:
-    properties:
-      thread:
-        $ref: '#/definitions/chat_svc.Thread'
+    - updatedAt
     type: object
   config_svc.Config:
     properties:
@@ -401,6 +437,8 @@ definitions:
           Node Id
           Please see the documentation for the envar OB_NODE_ID
         type: string
+    required:
+    - createdAt
     type: object
   container_svc.Network:
     properties:
@@ -652,8 +690,10 @@ definitions:
           type: string
         type: array
     required:
+    - createdAt
     - data
     - table
+    - updatedAt
     type: object
   data_svc.QueryRequest:
     properties:
@@ -1070,6 +1110,9 @@ definitions:
         type: string
       url:
         type: string
+    required:
+    - createdAt
+    - updatedAt
     type: object
   file_svc.DownloadFileRequest:
     properties:
@@ -1145,7 +1188,9 @@ definitions:
       userId:
         type: string
     required:
+    - createdAt
     - fileSize
+    - updatedAt
     type: object
   file_svc.UploadFileResponse:
     properties:
@@ -2690,8 +2735,10 @@ definitions:
       userId:
         type: string
     required:
+    - createdAt
     - id
     - token
+    - updatedAt
     - userId
     type: object
   user_svc.ChangePasswordRequest:
@@ -2744,10 +2791,39 @@ definitions:
         description: Whether the contact is verified
         type: boolean
     required:
+    - createdAt
     - handle
     - id
     - platform
+    - updatedAt
     - userId
+    type: object
+  user_svc.ContactInput:
+    properties:
+      handle:
+        description: |-
+          Handle is the platform local unique identifier.
+          Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`.
+          For email and phones the `id` and the `value` will be the same.
+          This field mostly exists for display purposes.
+
+          Example values: "joe12" (1backend username), "thejoe" (twitter username), "joe@joesdomain.com" (email)
+        example: thejoe
+        type: string
+      id:
+        description: |-
+          The unique identifier, which can be a URL.
+
+          Example values: "joe12" (1backend username), "twitter.com/thejoe" (twitter url), "joe@joesdomain.com" (email)
+        example: twitter.com/thejoe
+        type: string
+      platform:
+        description: Platform of the contact (e.g., "email", "phone", "twitter")
+        example: twitter
+        type: string
+    required:
+    - id
+    - platform
     type: object
   user_svc.CreateUserRequest:
     properties:
@@ -2762,7 +2838,7 @@ definitions:
           type: string
         type: array
       user:
-        $ref: '#/definitions/user_svc.User'
+        $ref: '#/definitions/user_svc.UserInput'
     type: object
   user_svc.CreateUserResponse:
     type: object
@@ -3015,9 +3091,11 @@ definitions:
       updatedAt:
         type: string
     required:
+    - createdAt
     - id
     - name
     - slug
+    - updatedAt
     type: object
   user_svc.Permit:
     properties:
@@ -3106,7 +3184,7 @@ definitions:
   user_svc.RegisterRequest:
     properties:
       contact:
-        $ref: '#/definitions/user_svc.Contact'
+        $ref: '#/definitions/user_svc.ContactInput'
       name:
         type: string
       password:
@@ -3247,6 +3325,32 @@ definitions:
       updatedAt:
         type: string
     required:
+    - createdAt
+    - id
+    - slug
+    - updatedAt
+    type: object
+  user_svc.UserInput:
+    properties:
+      id:
+        type: string
+      labels:
+        additionalProperties:
+          type: string
+        type: object
+      name:
+        description: Full name of the user.
+        example: Jane Doe
+        type: string
+      slug:
+        description: URL-friendly unique (inside the 1Backend platform) identifier
+          for the `user`.
+        example: jane-doe
+        type: string
+      thumbnailFileId:
+        example: file_fQDyi1xdHK
+        type: string
+    required:
     - id
     - slug
     type: object
@@ -3276,8 +3380,10 @@ definitions:
       updatedAt:
         type: string
     required:
+    - createdAt
     - id
     - slug
+    - updatedAt
     type: object
 externalDocs:
   description: 1Backend API
@@ -3354,7 +3460,7 @@ paths:
       consumes:
       - application/json
       description: Fetch information about a specific chat message by its ID
-      operationId: getMessage
+      operationId: readMessage
       parameters:
       - description: Message ID
         in: path
@@ -3367,7 +3473,7 @@ paths:
         "200":
           description: Message details successfully retrieved
           schema:
-            $ref: '#/definitions/chat_svc.GetMessageResponse'
+            $ref: '#/definitions/chat_svc.ReadMessageResponse'
         "400":
           description: Invalid JSON
           schema:
@@ -3382,7 +3488,7 @@ paths:
             type: string
       security:
       - BearerAuth: []
-      summary: Get Message
+      summary: Read Message
       tags:
       - Chat Svc
   /chat-svc/thread:
@@ -3390,23 +3496,23 @@ paths:
       consumes:
       - application/json
       description: |-
-        Create a new chat thread and add the requesting user to it.
-        Requires the `chat-svc:thread:create` permission.
-      operationId: addThread
+        Create or update a chat thread.
+        Requires the `chat-svc:thread:edit` permission.
+      operationId: saveThread
       parameters:
-      - description: Add Thread Request
+      - description: Save Thread Request
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/chat_svc.AddThreadRequest'
+          $ref: '#/definitions/chat_svc.SaveThreadRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Thread successfully created
           schema:
-            $ref: '#/definitions/chat_svc.AddThreadResponse'
+            $ref: '#/definitions/chat_svc.SaveThreadResponse'
         "400":
           description: Invalid JSON
           schema:
@@ -3421,7 +3527,7 @@ paths:
             type: string
       security:
       - BearerAuth: []
-      summary: Add Thread
+      summary: Save Thread
       tags:
       - Chat Svc
   /chat-svc/thread/{threadId}:
@@ -3465,7 +3571,7 @@ paths:
       consumes:
       - application/json
       description: Fetch information about a specific chat thread by its ID
-      operationId: getThread
+      operationId: readThread
       parameters:
       - description: Thread ID
         in: path
@@ -3478,7 +3584,7 @@ paths:
         "200":
           description: Thread details successfully retrieved
           schema:
-            $ref: '#/definitions/chat_svc.GetThreadResponse'
+            $ref: '#/definitions/chat_svc.ReadThreadResponse'
         "400":
           description: Invalid JSON
           schema:
@@ -3493,68 +3599,27 @@ paths:
             type: string
       security:
       - BearerAuth: []
-      summary: Get Thread
-      tags:
-      - Chat Svc
-    put:
-      consumes:
-      - application/json
-      description: Modify the details of a specific chat thread
-      operationId: updateThread
-      parameters:
-      - description: Thread ID
-        in: path
-        name: threadId
-        required: true
-        type: string
-      - description: Update Thread Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/chat_svc.UpdateThreadRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Thread successfully updated
-          schema:
-            $ref: '#/definitions/chat_svc.AddThreadResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            type: string
-        "401":
-          description: Unauthorized
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Update Thread
+      summary: Read Thread
       tags:
       - Chat Svc
   /chat-svc/thread/{threadId}/message:
     post:
       consumes:
       - application/json
-      description: Add a new message to a specific thread.
-      operationId: addMessage
+      description: Save a new message to a specific thread.
+      operationId: saveMessage
       parameters:
       - description: Thread ID
         in: path
         name: threadId
         required: true
         type: string
-      - description: Add Message Request
+      - description: Save Message Request
         in: body
         name: body
         required: true
         schema:
-          $ref: '#/definitions/chat_svc.AddMessageRequest'
+          $ref: '#/definitions/chat_svc.SaveMessageRequest'
       produces:
       - application/json
       responses:
@@ -3577,7 +3642,7 @@ paths:
             type: string
       security:
       - BearerAuth: []
-      summary: Add Message
+      summary: Save Message
       tags:
       - Chat Svc
   /chat-svc/thread/{threadId}/messages:
@@ -3585,7 +3650,7 @@ paths:
       consumes:
       - application/json
       description: Fetch messages (and associated assets) for a specific chat thread.
-      operationId: getMessages
+      operationId: listMessages
       parameters:
       - description: Thread ID
         in: path
@@ -3598,7 +3663,7 @@ paths:
         "200":
           description: Messages and assets successfully retrieved
           schema:
-            $ref: '#/definitions/chat_svc.GetMessagesResponse'
+            $ref: '#/definitions/chat_svc.ListMessagesResponse'
         "400":
           description: Invalid JSON
           schema:
@@ -3621,20 +3686,20 @@ paths:
       consumes:
       - application/json
       description: Fetch all chat threads associated with a specific user
-      operationId: getThreads
+      operationId: listThreads
       parameters:
-      - description: Get Threads Request
+      - description: List Threads Request
         in: body
         name: body
         schema:
-          $ref: '#/definitions/chat_svc.GetThreadsRequest'
+          $ref: '#/definitions/chat_svc.ListThreadsRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Threads successfully retrieved
           schema:
-            $ref: '#/definitions/chat_svc.GetThreadsResponse'
+            $ref: '#/definitions/chat_svc.ListThreadsResponse'
         "400":
           description: Invalid JSON
           schema:
@@ -3649,7 +3714,7 @@ paths:
             type: string
       security:
       - BearerAuth: []
-      summary: Get Threads
+      summary: List Threads
       tags:
       - Chat Svc
   /config-svc/config:
@@ -6428,7 +6493,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get the public key to parse and verify the JWT.
+      description: Get the public key to verify the JWT signature.
       operationId: getPublicKey
       produces:
       - application/json

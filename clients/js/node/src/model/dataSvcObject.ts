@@ -17,7 +17,7 @@ export class DataSvcObject {
     * Authors is a list of user ID and organization ID who created the object. The authors field tracks which users or organizations created an entry, helping to prevent spam. If an organization ID is not provided, the currently active organization will be queried from the User Svc.
     */
     'authors'?: Array<string>;
-    'createdAt'?: string;
+    'createdAt': string;
     'data': { [key: string]: any; };
     /**
     * Deleters is a list of user IDs and role IDs that can delete the object. `_self` can be used to refer to the caller user\'s userId and `_org` can be used to refer to the user\'s currently active organization (if exists).
@@ -29,7 +29,7 @@ export class DataSvcObject {
     */
     'readers'?: Array<string>;
     'table': string;
-    'updatedAt'?: string;
+    'updatedAt': string;
     /**
     * Writers is a list of user IDs and role IDs that can write the object. `_self` can be used to refer to the caller user\'s userId and `_org` can be used to refer to the user\'s currently active organization (if exists).
     */

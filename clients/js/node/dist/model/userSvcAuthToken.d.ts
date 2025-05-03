@@ -14,14 +14,14 @@ export declare class UserSvcAuthToken {
     * Active tokens contain the most up-to-date information. When a user\'s role changes—due to role assignment, organization creation/assignment, etc.—all existing tokens are marked inactive. Active tokens are reused during login, while inactive tokens are retained for historical reference.
     */
     'active'?: boolean;
-    'createdAt'?: string;
+    'createdAt': string;
     'deletedAt'?: string;
     'id': string;
     /**
     * Token is a signed JWT used to authenticate the user without querying the User Svc. You can verify it using the public key at `/user-svc/public-key`.  The token is just a JSON object with fields like: - \"oui\": the user ID (e.g., \"usr_dC4K75Cbp6\") - \"olu\": the user slug (e.g., \"test-user-slug-0\") - \"oro\": a list of roles, such as:   - \"user-svc:user\"   - \"user-svc:org:{org_dC4K7NNDCG}:user\"
     */
     'token': string;
-    'updatedAt'?: string;
+    'updatedAt': string;
     'userId': string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{

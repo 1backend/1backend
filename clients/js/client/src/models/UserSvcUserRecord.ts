@@ -30,7 +30,7 @@ export interface UserSvcUserRecord {
      * @type {string}
      * @memberof UserSvcUserRecord
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      * 
      * @type {string}
@@ -60,15 +60,17 @@ export interface UserSvcUserRecord {
      * @type {string}
      * @memberof UserSvcUserRecord
      */
-    updatedAt?: string;
+    updatedAt: string;
 }
 
 /**
  * Check if a given object implements the UserSvcUserRecord interface.
  */
 export function instanceOfUserSvcUserRecord(value: object): value is UserSvcUserRecord {
+    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('slug' in value) || value['slug'] === undefined) return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
 }
 
@@ -83,12 +85,12 @@ export function UserSvcUserRecordFromJSONTyped(json: any, ignoreDiscriminator: b
     return {
         
         'contactIds': json['contactIds'] == null ? undefined : json['contactIds'],
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'id': json['id'],
         'name': json['name'] == null ? undefined : json['name'],
         'roles': json['roles'] == null ? undefined : json['roles'],
         'slug': json['slug'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
     };
 }
 

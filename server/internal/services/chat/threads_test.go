@@ -42,20 +42,16 @@ func TestMessageCreatesThread(t *testing.T) {
 	userClient := options.ClientFactory.Client(client.WithToken(token.Token))
 
 	t.Run("no thread id", func(t *testing.T) {
-		req := &chattypes.AddMessageRequest{
-			Message: &chattypes.Message{
-				Id:   sdk.Id("msg"),
-				Text: "hi there",
-			},
+		req := &chattypes.SaveMessageRequest{
+			Id:   sdk.Id("msg"),
+			Text: "hi there",
 		}
 
-		_, _, err := userClient.ChatSvcAPI.AddMessage(context.Background(), "-").
+		_, _, err := userClient.ChatSvcAPI.SaveMessage(context.Background(), "-").
 			Body(
-				openapi.ChatSvcAddMessageRequest{
-					Message: &openapi.ChatSvcMessage{
-						Id:   req.Message.Id,
-						Text: openapi.PtrString(req.Message.Text),
-					},
+				openapi.ChatSvcSaveMessageRequest{
+					Id:   &req.Id,
+					Text: openapi.PtrString(req.Text),
 				},
 			).
 			Execute()
@@ -63,23 +59,19 @@ func TestMessageCreatesThread(t *testing.T) {
 	})
 
 	t.Run("thread does not exist", func(t *testing.T) {
-		req := &chattypes.AddMessageRequest{
-			Message: &chattypes.Message{
-				Id:       sdk.Id("msg"),
-				ThreadId: "1",
-				Text:     "hi there",
-			},
+		req := &chattypes.SaveMessageRequest{
+			Id:       sdk.Id("msg"),
+			ThreadId: "1",
+			Text:     "hi there",
 		}
 
-		require.NotEmpty(t, req.Message.ThreadId)
+		require.NotEmpty(t, req.ThreadId)
 
-		_, _, err := userClient.ChatSvcAPI.AddMessage(context.Background(), req.Message.ThreadId).
+		_, _, err := userClient.ChatSvcAPI.SaveMessage(context.Background(), req.ThreadId).
 			Body(
-				openapi.ChatSvcAddMessageRequest{
-					Message: &openapi.ChatSvcMessage{
-						Id:   req.Message.Id,
-						Text: openapi.PtrString(req.Message.Text),
-					},
+				openapi.ChatSvcSaveMessageRequest{
+					Id:   &req.Id,
+					Text: openapi.PtrString(req.Text),
 				},
 			).
 			Execute()
@@ -90,20 +82,16 @@ func TestMessageCreatesThread(t *testing.T) {
 		tid := sdk.Id("thr")
 		title := "Test Thread Title"
 
-		req := &chattypes.AddThreadRequest{
-			Thread: &chattypes.Thread{
-				Id:    tid,
-				Title: title,
-			},
+		req := &chattypes.SaveThreadRequest{
+			Id:    tid,
+			Title: title,
 		}
 
-		_, rsp, err := userClient.ChatSvcAPI.AddThread(context.Background()).
+		_, rsp, err := userClient.ChatSvcAPI.SaveThread(context.Background()).
 			Body(
-				openapi.ChatSvcAddThreadRequest{
-					Thread: &openapi.ChatSvcThread{
-						Id:    req.Thread.Id,
-						Title: openapi.PtrString(req.Thread.Title),
-					},
+				openapi.ChatSvcSaveThreadRequest{
+					Id:    &req.Id,
+					Title: openapi.PtrString(req.Title),
 				},
 			).
 			Execute()
@@ -117,22 +105,18 @@ func TestMessageCreatesThread(t *testing.T) {
 		tid := sdk.Id("thr")
 		title := "Test Thread Title"
 
-		req := &chattypes.AddThreadRequest{
-			Thread: &chattypes.Thread{
-				Id:      tid,
-				Title:   title,
-				UserIds: []string{userId},
-			},
+		req := &chattypes.SaveThreadRequest{
+			Id:      tid,
+			Title:   title,
+			UserIds: []string{userId},
 		}
 
-		rsp, _, err := userClient.ChatSvcAPI.AddThread(context.Background()).
+		rsp, _, err := userClient.ChatSvcAPI.SaveThread(context.Background()).
 			Body(
-				openapi.ChatSvcAddThreadRequest{
-					Thread: &openapi.ChatSvcThread{
-						Id:      req.Thread.Id,
-						Title:   openapi.PtrString(req.Thread.Title),
-						UserIds: []string{userId},
-					},
+				openapi.ChatSvcSaveThreadRequest{
+					Id:      &req.Id,
+					Title:   &req.Title,
+					UserIds: []string{userId},
 				},
 			).
 			Execute()
@@ -142,25 +126,22 @@ func TestMessageCreatesThread(t *testing.T) {
 
 		require.Equal(t, tid, thread.Id)
 		require.Equal(t, title, *thread.Title)
-		threadId = req.Thread.Id
+		threadId = req.Id
 	})
 
 	t.Run("no user id", func(t *testing.T) {
-		req := chattypes.AddMessageRequest{
-			Message: &chattypes.Message{
-				Id:       sdk.Id("msg"),
-				ThreadId: threadId,
-				Text:     "hi there",
-			}}
+		req := chattypes.SaveMessageRequest{
+			Id:       sdk.Id("msg"),
+			ThreadId: threadId,
+			Text:     "hi there",
+		}
 
-		require.NotEmpty(t, req.Message.ThreadId)
-		_, _, err := userClient.ChatSvcAPI.AddMessage(context.Background(), req.Message.ThreadId).
+		require.NotEmpty(t, req.ThreadId)
+		_, _, err := userClient.ChatSvcAPI.SaveMessage(context.Background(), req.ThreadId).
 			Body(
-				openapi.ChatSvcAddMessageRequest{
-					Message: &openapi.ChatSvcMessage{
-						Id:   req.Message.Id,
-						Text: openapi.PtrString(req.Message.Text),
-					},
+				openapi.ChatSvcSaveMessageRequest{
+					Id:   &req.Id,
+					Text: &req.Text,
 				},
 			).
 			Execute()

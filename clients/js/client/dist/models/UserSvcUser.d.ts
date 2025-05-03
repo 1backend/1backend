@@ -20,7 +20,7 @@ export interface UserSvcUser {
      * @type {string}
      * @memberof UserSvcUser
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      *
      * @type {string}
@@ -64,7 +64,7 @@ export interface UserSvcUser {
      * @type {string}
      * @memberof UserSvcUser
      */
-    updatedAt?: string;
+    updatedAt: string;
 }
 /**
  * Check if a given object implements the UserSvcUser interface.

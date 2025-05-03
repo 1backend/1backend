@@ -22,7 +22,7 @@ var _ MappedNullable = &FileSvcUpload{}
 
 // FileSvcUpload struct for FileSvcUpload
 type FileSvcUpload struct {
-	CreatedAt *string `json:"createdAt,omitempty"`
+	CreatedAt string `json:"createdAt"`
 	// Logical file ID spanning all replicas
 	FileId *string `json:"fileId,omitempty"`
 	// Filename is the original name of the file
@@ -34,7 +34,7 @@ type FileSvcUpload struct {
 	Id *string `json:"id,omitempty"`
 	// ID of the node storing this replica
 	NodeId *string `json:"nodeId,omitempty"`
-	UpdatedAt *string `json:"updatedAt,omitempty"`
+	UpdatedAt string `json:"updatedAt"`
 	UserId *string `json:"userId,omitempty"`
 }
 
@@ -44,9 +44,11 @@ type _FileSvcUpload FileSvcUpload
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewFileSvcUpload(fileSize int64) *FileSvcUpload {
+func NewFileSvcUpload(createdAt string, fileSize int64, updatedAt string) *FileSvcUpload {
 	this := FileSvcUpload{}
+	this.CreatedAt = createdAt
 	this.FileSize = fileSize
+	this.UpdatedAt = updatedAt
 	return &this
 }
 
@@ -58,36 +60,28 @@ func NewFileSvcUploadWithDefaults() *FileSvcUpload {
 	return &this
 }
 
-// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
+// GetCreatedAt returns the CreatedAt field value
 func (o *FileSvcUpload) GetCreatedAt() string {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.CreatedAt
+
+	return o.CreatedAt
 }
 
-// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
 // and a boolean to check if the value has been set.
 func (o *FileSvcUpload) GetCreatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.CreatedAt, true
+	return &o.CreatedAt, true
 }
 
-// HasCreatedAt returns a boolean if a field has been set.
-func (o *FileSvcUpload) HasCreatedAt() bool {
-	if o != nil && !IsNil(o.CreatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
+// SetCreatedAt sets field value
 func (o *FileSvcUpload) SetCreatedAt(v string) {
-	o.CreatedAt = &v
+	o.CreatedAt = v
 }
 
 // GetFileId returns the FileId field value if set, zero value otherwise.
@@ -274,36 +268,28 @@ func (o *FileSvcUpload) SetNodeId(v string) {
 	o.NodeId = &v
 }
 
-// GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
+// GetUpdatedAt returns the UpdatedAt field value
 func (o *FileSvcUpload) GetUpdatedAt() string {
-	if o == nil || IsNil(o.UpdatedAt) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.UpdatedAt
+
+	return o.UpdatedAt
 }
 
-// GetUpdatedAtOk returns a tuple with the UpdatedAt field value if set, nil otherwise
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
 // and a boolean to check if the value has been set.
 func (o *FileSvcUpload) GetUpdatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.UpdatedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.UpdatedAt, true
+	return &o.UpdatedAt, true
 }
 
-// HasUpdatedAt returns a boolean if a field has been set.
-func (o *FileSvcUpload) HasUpdatedAt() bool {
-	if o != nil && !IsNil(o.UpdatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetUpdatedAt gets a reference to the given string and assigns it to the UpdatedAt field.
+// SetUpdatedAt sets field value
 func (o *FileSvcUpload) SetUpdatedAt(v string) {
-	o.UpdatedAt = &v
+	o.UpdatedAt = v
 }
 
 // GetUserId returns the UserId field value if set, zero value otherwise.
@@ -348,9 +334,7 @@ func (o FileSvcUpload) MarshalJSON() ([]byte, error) {
 
 func (o FileSvcUpload) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.CreatedAt) {
-		toSerialize["createdAt"] = o.CreatedAt
-	}
+	toSerialize["createdAt"] = o.CreatedAt
 	if !IsNil(o.FileId) {
 		toSerialize["fileId"] = o.FileId
 	}
@@ -367,9 +351,7 @@ func (o FileSvcUpload) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.NodeId) {
 		toSerialize["nodeId"] = o.NodeId
 	}
-	if !IsNil(o.UpdatedAt) {
-		toSerialize["updatedAt"] = o.UpdatedAt
-	}
+	toSerialize["updatedAt"] = o.UpdatedAt
 	if !IsNil(o.UserId) {
 		toSerialize["userId"] = o.UserId
 	}
@@ -381,7 +363,9 @@ func (o *FileSvcUpload) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"createdAt",
 		"fileSize",
+		"updatedAt",
 	}
 
 	allProperties := make(map[string]interface{})

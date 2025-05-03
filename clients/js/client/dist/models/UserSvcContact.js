@@ -15,11 +15,15 @@
  * Check if a given object implements the UserSvcContact interface.
  */
 export function instanceOfUserSvcContact(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
     if (!('handle' in value) || value['handle'] === undefined)
         return false;
     if (!('id' in value) || value['id'] === undefined)
         return false;
     if (!('platform' in value) || value['platform'] === undefined)
+        return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined)
         return false;
     if (!('userId' in value) || value['userId'] === undefined)
         return false;
@@ -33,13 +37,13 @@ export function UserSvcContactFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'handle': json['handle'],
         'id': json['id'],
         'isPrimary': json['isPrimary'] == null ? undefined : json['isPrimary'],
         'platform': json['platform'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
         'userId': json['userId'],
         'verified': json['verified'] == null ? undefined : json['verified'],
     };

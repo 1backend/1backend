@@ -23,7 +23,7 @@ import (
 )
 
 func (s *UserService) createUser(
-	user *usertypes.User,
+	userInput *usertypes.UserInput,
 	contacts []usertypes.Contact,
 	password string,
 	roles []string,
@@ -45,7 +45,7 @@ func (s *UserService) createUser(
 	}
 
 	_, slugExists, err := s.usersStore.Query(
-		datastore.Equals(datastore.Field("slug"), user.Slug),
+		datastore.Equals(datastore.Field("slug"), userInput.Slug),
 	).FindOne()
 	if err != nil {
 		return err
@@ -60,9 +60,8 @@ func (s *UserService) createUser(
 		return err
 	}
 
-	if user.Id == "" {
-		user.Id = sdk.Id("usr")
-
+	if userInput.Id == "" {
+		userInput.Id = sdk.Id("usr")
 	}
 
 	now := time.Now()
@@ -70,15 +69,22 @@ func (s *UserService) createUser(
 	err = s.passwordsStore.Upsert(&usertypes.Password{
 		Id:           sdk.Id("pw"),
 		PasswordHash: passwordHash,
-		UserId:       user.Id,
+		UserId:       userInput.Id,
 		CreatedAt:    now,
 	})
 	if err != nil {
 		return errors.Wrap(err, "failed to save password")
 	}
 
-	user.UpdatedAt = now
-	user.CreatedAt = now
+	user := &usertypes.User{
+		Id:        userInput.Id,
+		CreatedAt: now,
+		UpdatedAt: now,
+		Name:      userInput.Name,
+		Slug:      userInput.Slug,
+		Labels:    userInput.Labels,
+		ThumbnailFileId: userInput.ThumbnailFileId,
+	}
 
 	err = s.usersStore.Create(user)
 	if err != nil {

@@ -18,7 +18,7 @@ export class ContainerSvcLog {
     */
     'containerId'?: string;
     'content'?: string;
-    'createdAt'?: string;
+    'createdAt': string;
     'id'?: string;
     /**
     * Node Id Please see the documentation for the envar OB_NODE_ID

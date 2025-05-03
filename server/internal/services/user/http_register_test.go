@@ -86,17 +86,17 @@ func TestRegistration(t *testing.T) {
 	require.NoError(t, err)
 
 	userSvc := options.ClientFactory.Client().UserSvcAPI
-	_, _, err = userSvc.Register(context.Background()).Body(
+	_, hrsp, err := userSvc.Register(context.Background()).Body(
 		openapi.UserSvcRegisterRequest{
 			Slug: "test-1",
-			Contact: &openapi.UserSvcContact{
+			Contact: &openapi.UserSvcContactInput{
 				Id:       "test1@test.comm",
 				Platform: "email",
 			},
 			Password: openapi.PtrString("test"),
 		},
 	).Execute()
-	require.NoError(t, err)
+	require.NoError(t, err, hrsp)
 
 	t.Run("slug login works", func(t *testing.T) {
 		loginReq := openapi.UserSvcLoginRequest{

@@ -37,7 +37,7 @@ export interface ContainerSvcLog {
      * @type {string}
      * @memberof ContainerSvcLog
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      * 
      * @type {string}
@@ -57,6 +57,7 @@ export interface ContainerSvcLog {
  * Check if a given object implements the ContainerSvcLog interface.
  */
 export function instanceOfContainerSvcLog(value: object): value is ContainerSvcLog {
+    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     return true;
 }
 
@@ -72,7 +73,7 @@ export function ContainerSvcLogFromJSONTyped(json: any, ignoreDiscriminator: boo
         
         'containerId': json['containerId'] == null ? undefined : json['containerId'],
         'content': json['content'] == null ? undefined : json['content'],
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'id': json['id'] == null ? undefined : json['id'],
         'nodeId': json['nodeId'] == null ? undefined : json['nodeId'],
     };

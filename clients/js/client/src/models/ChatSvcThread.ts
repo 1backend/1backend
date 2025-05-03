@@ -24,7 +24,7 @@ export interface ChatSvcThread {
      * @type {string}
      * @memberof ChatSvcThread
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      * 
      * @type {string}
@@ -49,7 +49,7 @@ export interface ChatSvcThread {
      * @type {string}
      * @memberof ChatSvcThread
      */
-    updatedAt?: string;
+    updatedAt: string;
     /**
      * UserIds the ids of the users who can see this thread.
      * @type {Array<string>}
@@ -62,7 +62,9 @@ export interface ChatSvcThread {
  * Check if a given object implements the ChatSvcThread interface.
  */
 export function instanceOfChatSvcThread(value: object): value is ChatSvcThread {
+    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
 }
 
@@ -76,11 +78,11 @@ export function ChatSvcThreadFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'id': json['id'],
         'title': json['title'] == null ? undefined : json['title'],
         'topicIds': json['topicIds'] == null ? undefined : json['topicIds'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
         'userIds': json['userIds'] == null ? undefined : json['userIds'],
     };
 }

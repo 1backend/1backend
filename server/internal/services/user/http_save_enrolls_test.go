@@ -78,7 +78,7 @@ func TestEnrollForUnregistered(t *testing.T) {
 		rsp, _, err := userClient.UserSvcAPI.Register(context.Background()).
 			Body(openapi.UserSvcRegisterRequest{
 				Slug: "test-user-slug-1",
-				Contact: &openapi.UserSvcContact{
+				Contact: &openapi.UserSvcContactInput{
 					Id: "test-user@email.com",
 				},
 				Password: openapi.PtrString("yo"),
@@ -128,7 +128,7 @@ func TestEnrollForRegisteredUser(t *testing.T) {
 		_, _, err := userClient.UserSvcAPI.Register(context.Background()).
 			Body(openapi.UserSvcRegisterRequest{
 				Slug: "test-user-slug-1",
-				Contact: &openapi.UserSvcContact{
+				Contact: &openapi.UserSvcContactInput{
 					Id: "test-user@email.com",
 				},
 				Password: openapi.PtrString("yo"),

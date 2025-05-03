@@ -21,20 +21,20 @@ import (
 	chat "github.com/1backend/1backend/server/internal/services/chat/types"
 )
 
-// @ID getThreads
-// @Summary Get Threads
+// @ID listThreads
+// @Summary List Threads
 // @Description Fetch all chat threads associated with a specific user
 // @Tags Chat Svc
 // @Accept json
 // @Produce json
-// @Param body body chat.GetThreadsRequest false "Get Threads Request"
-// @Success 200 {object} chat.GetThreadsResponse "Threads successfully retrieved"
+// @Param body body chat.ListThreadsRequest false "List Threads Request"
+// @Success 200 {object} chat.ListThreadsResponse "Threads successfully retrieved"
 // @Failure 400 {string} string "Invalid JSON"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 500 {string} string "Internal Server Error"
 // @Security BearerAuth
 // @Router /chat-svc/threads [post]
-func (a *ChatService) GetThreads(
+func (a *ChatService) ListThreads(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
@@ -60,7 +60,7 @@ func (a *ChatService) GetThreads(
 		return
 	}
 
-	jsonData, _ := json.Marshal(chat.GetThreadsResponse{
+	jsonData, _ := json.Marshal(chat.ListThreadsResponse{
 		Threads: threads,
 	})
 	w.Write(jsonData)

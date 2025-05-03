@@ -22,7 +22,7 @@ type Log struct {
 	// Eg. Docker container id. Node local.
 	ContainerId string `json:"containerId"`
 
-	CreatedAt time.Time `json:"createdAt,omitempty"`
+	CreatedAt time.Time `json:"createdAt" binding:"required"`
 
 	Content string `json:"content"`
 }

@@ -17,31 +17,31 @@ import (
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/datastore"
 	chat "github.com/1backend/1backend/server/internal/services/chat/types"
 	"github.com/gorilla/mux"
 )
 
-// @ID updateThread
-// @Summary Update Thread
-// @Description Modify the details of a specific chat thread
+// @ID readMessage
+// @Summary Read Message
+// @Description Fetch information about a specific chat message by its ID
 // @Tags Chat Svc
 // @Accept json
 // @Produce json
-// @Param threadId path string true "Thread ID"
-// @Param body body chat.UpdateThreadRequest true "Update Thread Request"
-// @Success 200 {object} chat.AddThreadResponse "Thread successfully updated"
+// @Param messageId path string true "Message ID"
+// @Success 200 {object} chat.ReadMessageResponse "Message details successfully retrieved"
 // @Failure 400 {string} string "Invalid JSON"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 500 {string} string "Internal Server Error"
 // @Security BearerAuth
-// @Router /chat-svc/thread/{threadId} [put]
-func (a *ChatService) UpdateThread(
+// @Router /chat-svc/message/{messageId} [get]
+func (a *ChatService) ReadMessage(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
 
 	isAuthRsp, _, err := a.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), chat.PermissionThreadCreate).
+		UserSvcAPI.HasPermission(r.Context(), chat.PermissionMessageCreate).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -54,26 +54,35 @@ func (a *ChatService) UpdateThread(
 		return
 	}
 
-	req := chat.UpdateThreadRequest{}
-	err = json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
-		return
-	}
-	defer r.Body.Close()
+	vars := mux.Vars(r)
+	messageId := vars["messageId"]
 
-	req.Thread.Id = mux.Vars(r)["threadId"]
-
-	thread, err := a.updateThread(req.Thread)
+	message, found, err := a.getMessage(messageId)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	jsonData, _ := json.Marshal(chat.AddThreadResponse{
-		Thread: thread,
+	jsonData, _ := json.Marshal(chat.ReadMessageResponse{
+		Exists:  found,
+		Message: message,
 	})
 	w.Write(jsonData)
+}
+
+func (a *ChatService) getMessage(
+	messageId string,
+) (*chat.Message, bool, error) {
+	messageI, found, err := a.messagesStore.Query(
+		datastore.Equals(datastore.Field("id"), messageId),
+	).FindOne()
+	if err != nil {
+		return nil, false, err
+	}
+	if !found {
+		return nil, false, nil
+	}
+
+	return messageI.(*chat.Message), true, nil
 }

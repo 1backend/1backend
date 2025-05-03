@@ -338,9 +338,13 @@ class TextApiResponse {
  * Check if a given object implements the ChatSvcMessage interface.
  */
 function instanceOfChatSvcMessage(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
     if (!('id' in value) || value['id'] === undefined)
         return false;
     if (!('threadId' in value) || value['threadId'] === undefined)
+        return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined)
         return false;
     return true;
 }
@@ -352,13 +356,13 @@ function ChatSvcMessageFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'fileIds': json['fileIds'] == null ? undefined : json['fileIds'],
         'id': json['id'],
         'meta': json['meta'] == null ? undefined : json['meta'],
         'text': json['text'] == null ? undefined : json['text'],
         'threadId': json['threadId'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
         'userId': json['userId'] == null ? undefined : json['userId'],
     };
 }
@@ -440,7 +444,11 @@ function ChatSvcAddMessageRequestToJSONTyped(value, ignoreDiscriminator = false)
  * Check if a given object implements the ChatSvcThread interface.
  */
 function instanceOfChatSvcThread(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
     if (!('id' in value) || value['id'] === undefined)
+        return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined)
         return false;
     return true;
 }
@@ -452,11 +460,11 @@ function ChatSvcThreadFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'id': json['id'],
         'title': json['title'] == null ? undefined : json['title'],
         'topicIds': json['topicIds'] == null ? undefined : json['topicIds'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
         'userIds': json['userIds'] == null ? undefined : json['userIds'],
     };
 }
@@ -2000,6 +2008,8 @@ function ContainerSvcListLogsRequestToJSONTyped(value, ignoreDiscriminator = fal
  * Check if a given object implements the ContainerSvcLog interface.
  */
 function instanceOfContainerSvcLog(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
     return true;
 }
 function ContainerSvcLogFromJSON(json) {
@@ -2012,7 +2022,7 @@ function ContainerSvcLogFromJSONTyped(json, ignoreDiscriminator) {
     return {
         'containerId': json['containerId'] == null ? undefined : json['containerId'],
         'content': json['content'] == null ? undefined : json['content'],
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'id': json['id'] == null ? undefined : json['id'],
         'nodeId': json['nodeId'] == null ? undefined : json['nodeId'],
     };
@@ -2340,9 +2350,13 @@ function DataSvcCreateObjectRequestToJSONTyped(value, ignoreDiscriminator = fals
  * Check if a given object implements the DataSvcObject interface.
  */
 function instanceOfDataSvcObject(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
     if (!('data' in value) || value['data'] === undefined)
         return false;
     if (!('table' in value) || value['table'] === undefined)
+        return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined)
         return false;
     return true;
 }
@@ -2355,13 +2369,13 @@ function DataSvcObjectFromJSONTyped(json, ignoreDiscriminator) {
     }
     return {
         'authors': json['authors'] == null ? undefined : json['authors'],
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'data': json['data'],
         'deleters': json['deleters'] == null ? undefined : json['deleters'],
         'id': json['id'] == null ? undefined : json['id'],
         'readers': json['readers'] == null ? undefined : json['readers'],
         'table': json['table'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
         'writers': json['writers'] == null ? undefined : json['writers'],
     };
 }
@@ -3703,6 +3717,10 @@ function EmailSvcSendEmailResponseToJSONTyped(value, ignoreDiscriminator = false
  * Check if a given object implements the FileSvcDownload interface.
  */
 function instanceOfFileSvcDownload(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined)
+        return false;
     return true;
 }
 function FileSvcDownloadFromJSON(json) {
@@ -3713,7 +3731,7 @@ function FileSvcDownloadFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'downloadedBytes': json['downloadedBytes'] == null ? undefined : json['downloadedBytes'],
         'error': json['error'] == null ? undefined : json['error'],
         'fileName': json['fileName'] == null ? undefined : json['fileName'],
@@ -3722,7 +3740,7 @@ function FileSvcDownloadFromJSONTyped(json, ignoreDiscriminator) {
         'id': json['id'] == null ? undefined : json['id'],
         'progress': json['progress'] == null ? undefined : json['progress'],
         'status': json['status'] == null ? undefined : json['status'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
         'url': json['url'] == null ? undefined : json['url'],
     };
 }
@@ -3987,7 +4005,11 @@ function FileSvcListUploadsRequestToJSONTyped(value, ignoreDiscriminator = false
  * Check if a given object implements the FileSvcUpload interface.
  */
 function instanceOfFileSvcUpload(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
     if (!('fileSize' in value) || value['fileSize'] === undefined)
+        return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined)
         return false;
     return true;
 }
@@ -3999,14 +4021,14 @@ function FileSvcUploadFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'fileId': json['fileId'] == null ? undefined : json['fileId'],
         'fileName': json['fileName'] == null ? undefined : json['fileName'],
         'filePath': json['filePath'] == null ? undefined : json['filePath'],
         'fileSize': json['fileSize'],
         'id': json['id'] == null ? undefined : json['id'],
         'nodeId': json['nodeId'] == null ? undefined : json['nodeId'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
         'userId': json['userId'] == null ? undefined : json['userId'],
     };
 }
@@ -8320,9 +8342,13 @@ function SourceSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
  * Check if a given object implements the UserSvcAuthToken interface.
  */
 function instanceOfUserSvcAuthToken(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
     if (!('id' in value) || value['id'] === undefined)
         return false;
     if (!('token' in value) || value['token'] === undefined)
+        return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined)
         return false;
     if (!('userId' in value) || value['userId'] === undefined)
         return false;
@@ -8337,11 +8363,11 @@ function UserSvcAuthTokenFromJSONTyped(json, ignoreDiscriminator) {
     }
     return {
         'active': json['active'] == null ? undefined : json['active'],
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'id': json['id'],
         'token': json['token'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
         'userId': json['userId'],
     };
 }
@@ -8428,11 +8454,15 @@ function UserSvcChangePasswordRequestToJSONTyped(value, ignoreDiscriminator = fa
  * Check if a given object implements the UserSvcContact interface.
  */
 function instanceOfUserSvcContact(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
     if (!('handle' in value) || value['handle'] === undefined)
         return false;
     if (!('id' in value) || value['id'] === undefined)
         return false;
     if (!('platform' in value) || value['platform'] === undefined)
+        return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined)
         return false;
     if (!('userId' in value) || value['userId'] === undefined)
         return false;
@@ -8446,13 +8476,13 @@ function UserSvcContactFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'handle': json['handle'],
         'id': json['id'],
         'isPrimary': json['isPrimary'] == null ? undefined : json['isPrimary'],
         'platform': json['platform'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
         'userId': json['userId'],
         'verified': json['verified'] == null ? undefined : json['verified'],
     };
@@ -8494,9 +8524,13 @@ function UserSvcContactToJSONTyped(value, ignoreDiscriminator = false) {
  * Check if a given object implements the UserSvcUser interface.
  */
 function instanceOfUserSvcUser(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
     if (!('id' in value) || value['id'] === undefined)
         return false;
     if (!('slug' in value) || value['slug'] === undefined)
+        return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined)
         return false;
     return true;
 }
@@ -8508,14 +8542,14 @@ function UserSvcUserFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'id': json['id'],
         'labels': json['labels'] == null ? undefined : json['labels'],
         'name': json['name'] == null ? undefined : json['name'],
         'slug': json['slug'],
         'thumbnailFileId': json['thumbnailFileId'] == null ? undefined : json['thumbnailFileId'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
     };
 }
 function UserSvcUserToJSON(json) {
@@ -9026,11 +9060,15 @@ function UserSvcListOrganizationsRequestToJSONTyped(value, ignoreDiscriminator =
  * Check if a given object implements the UserSvcOrganization interface.
  */
 function instanceOfUserSvcOrganization(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
     if (!('id' in value) || value['id'] === undefined)
         return false;
     if (!('name' in value) || value['name'] === undefined)
         return false;
     if (!('slug' in value) || value['slug'] === undefined)
+        return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined)
         return false;
     return true;
 }
@@ -9042,13 +9080,13 @@ function UserSvcOrganizationFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'id': json['id'],
         'name': json['name'],
         'slug': json['slug'],
         'thumbnailFileId': json['thumbnailFileId'] == null ? undefined : json['thumbnailFileId'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
     };
 }
 function UserSvcOrganizationToJSON(json) {
@@ -9416,9 +9454,13 @@ function UserSvcListUsersRequestToJSONTyped(value, ignoreDiscriminator = false) 
  * Check if a given object implements the UserSvcUserRecord interface.
  */
 function instanceOfUserSvcUserRecord(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
     if (!('id' in value) || value['id'] === undefined)
         return false;
     if (!('slug' in value) || value['slug'] === undefined)
+        return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined)
         return false;
     return true;
 }
@@ -9431,12 +9473,12 @@ function UserSvcUserRecordFromJSONTyped(json, ignoreDiscriminator) {
     }
     return {
         'contactIds': json['contactIds'] == null ? undefined : json['contactIds'],
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'id': json['id'],
         'name': json['name'] == null ? undefined : json['name'],
         'roles': json['roles'] == null ? undefined : json['roles'],
         'slug': json['slug'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
     };
 }
 function UserSvcUserRecordToJSON(json) {
@@ -13051,7 +13093,7 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Get the public key to parse and verify the JWT.
+     * Get the public key to verify the JWT signature.
      * Get Public Key
      */
     getPublicKeyRaw(initOverrides) {
@@ -13068,7 +13110,7 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Get the public key to parse and verify the JWT.
+     * Get the public key to verify the JWT signature.
      * Get Public Key
      */
     getPublicKey(initOverrides) {

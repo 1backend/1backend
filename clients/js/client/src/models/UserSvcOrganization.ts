@@ -24,7 +24,7 @@ export interface UserSvcOrganization {
      * @type {string}
      * @memberof UserSvcOrganization
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      * 
      * @type {string}
@@ -60,16 +60,18 @@ export interface UserSvcOrganization {
      * @type {string}
      * @memberof UserSvcOrganization
      */
-    updatedAt?: string;
+    updatedAt: string;
 }
 
 /**
  * Check if a given object implements the UserSvcOrganization interface.
  */
 export function instanceOfUserSvcOrganization(value: object): value is UserSvcOrganization {
+    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('slug' in value) || value['slug'] === undefined) return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
 }
 
@@ -83,13 +85,13 @@ export function UserSvcOrganizationFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'id': json['id'],
         'name': json['name'],
         'slug': json['slug'],
         'thumbnailFileId': json['thumbnailFileId'] == null ? undefined : json['thumbnailFileId'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
     };
 }
 

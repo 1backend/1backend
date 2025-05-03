@@ -20,7 +20,7 @@ export interface ChatSvcMessage {
      * @type {string}
      * @memberof ChatSvcMessage
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      * FileIds defines the file attachments the message has.
      * @type {Array<string>}
@@ -58,7 +58,7 @@ export interface ChatSvcMessage {
      * @type {string}
      * @memberof ChatSvcMessage
      */
-    updatedAt?: string;
+    updatedAt: string;
     /**
      * UserId is the id of the user who wrote the message.
      * For AI messages this field is empty.

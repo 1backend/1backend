@@ -80,7 +80,7 @@ func (p *PromptService) prompt(
 	}
 
 	getThreadRsp, _, err := p.clientFactory.Client(client.WithToken(token)).
-		ChatSvcAPI.GetThread(ctx, threadId).
+		ChatSvcAPI.ReadThread(ctx, threadId).
 		Execute()
 	if err != nil {
 		return nil, err
@@ -108,19 +108,11 @@ func (p *PromptService) prompt(
 		}
 
 		_, _, err := p.clientFactory.Client(client.WithToken(token)).
-			ChatSvcAPI.AddThread(ctx).
-			Body(openapi.ChatSvcAddThreadRequest{
-				Thread: &openapi.ChatSvcThread{
-					Id:      thread.Id,
-					Title:   openapi.PtrString(thread.Title),
-					UserIds: thread.UserIds,
-					CreatedAt: openapi.PtrString(
-						thread.CreatedAt.Format(time.RFC3339Nano),
-					),
-					UpdatedAt: openapi.PtrString(
-						thread.UpdatedAt.Format(time.RFC3339Nano),
-					),
-				},
+			ChatSvcAPI.SaveThread(ctx).
+			Body(openapi.ChatSvcSaveThreadRequest{
+				Id:      &thread.Id,
+				Title:   openapi.PtrString(thread.Title),
+				UserIds: thread.UserIds,
 			}).
 			Execute()
 		if err != nil {
@@ -168,7 +160,7 @@ func (p *PromptService) prompt(
 			if resp.Type == streammanager.ChunkTypeDone {
 				r, _, err := p.clientFactory.Client(client.WithToken(token)).
 					ChatSvcAPI.
-					GetMessage(ctx, resp.MessageId).
+					ReadMessage(ctx, resp.MessageId).
 					Execute()
 				if err != nil {
 					return nil, errors.Wrap(err, "error reading message")

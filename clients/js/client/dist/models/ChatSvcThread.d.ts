@@ -20,7 +20,7 @@ export interface ChatSvcThread {
      * @type {string}
      * @memberof ChatSvcThread
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      *
      * @type {string}
@@ -45,7 +45,7 @@ export interface ChatSvcThread {
      * @type {string}
      * @memberof ChatSvcThread
      */
-    updatedAt?: string;
+    updatedAt: string;
     /**
      * UserIds the ids of the users who can see this thread.
      * @type {Array<string>}

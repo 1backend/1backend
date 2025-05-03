@@ -17,6 +17,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 
 	sdk "github.com/1backend/1backend/sdk/go"
@@ -37,13 +38,12 @@ import (
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Router /user-svc/register [post]
 func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	req := user.RegisterRequest{}
 
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		spew.Dump(err)
 		w.Write([]byte(`Invalid JSON`))
 		return
 	}
@@ -61,7 +61,7 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newUser := &user.User{
+	newUser := &user.UserInput{
 		Name: req.Name,
 		Slug: req.Slug,
 	}
@@ -71,8 +71,15 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var contacts []user.Contact
+	now := time.Now()
 	if req.Contact.Id != "" {
-		contacts = append(contacts, req.Contact)
+		contacts = append(contacts, user.Contact{
+			Id:        req.Contact.Id,
+			CreatedAt: now,
+			UpdatedAt: now,
+			Platform:  req.Contact.Platform,
+			Handle:    req.Contact.Handle,
+		})
 	}
 	err = s.createUser(
 		newUser,

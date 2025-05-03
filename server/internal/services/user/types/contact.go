@@ -31,8 +31,8 @@ type Contact struct {
 	// Example values: "joe12" (1backend username), "twitter.com/thejoe" (twitter url), "joe@joesdomain.com" (email)
 	Id string `json:"id" example:"twitter.com/thejoe" binding:"required"`
 
-	CreatedAt time.Time  `json:"createdAt,omitempty"`
-	UpdatedAt time.Time  `json:"updatedAt,omitempty"`
+	CreatedAt time.Time  `json:"createdAt" binding:"required"`
+	UpdatedAt time.Time  `json:"updatedAt" binding:"required"`
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`
 
 	UserId string `json:"userId,omitempty" binding:"required"`
@@ -55,14 +55,14 @@ type Contact struct {
 	IsPrimary bool `json:"isPrimary,omitempty"`
 }
 
-type NewContact struct {
+type ContactInput struct {
 	// The unique identifier, which can be a URL.
 	//
 	// Example values: "joe12" (1backend username), "twitter.com/thejoe" (twitter url), "joe@joesdomain.com" (email)
 	Id string `json:"id" example:"twitter.com/thejoe" binding:"required"`
 
 	// Platform of the contact (e.g., "email", "phone", "twitter")
-	Platform string `json:"platform,omitempty" example:"twitter"`
+	Platform string `json:"platform" example:"twitter" binding:"required"`
 
 	// Handle is the platform local unique identifier.
 	// Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`.

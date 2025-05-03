@@ -15,34 +15,34 @@ import (
 	"encoding/json"
 )
 
-// checks if the ChatSvcGetMessageResponse type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &ChatSvcGetMessageResponse{}
+// checks if the ChatSvcReadMessageResponse type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ChatSvcReadMessageResponse{}
 
-// ChatSvcGetMessageResponse struct for ChatSvcGetMessageResponse
-type ChatSvcGetMessageResponse struct {
+// ChatSvcReadMessageResponse struct for ChatSvcReadMessageResponse
+type ChatSvcReadMessageResponse struct {
 	Exists *bool `json:"exists,omitempty"`
 	Message *ChatSvcMessage `json:"message,omitempty"`
 }
 
-// NewChatSvcGetMessageResponse instantiates a new ChatSvcGetMessageResponse object
+// NewChatSvcReadMessageResponse instantiates a new ChatSvcReadMessageResponse object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewChatSvcGetMessageResponse() *ChatSvcGetMessageResponse {
-	this := ChatSvcGetMessageResponse{}
+func NewChatSvcReadMessageResponse() *ChatSvcReadMessageResponse {
+	this := ChatSvcReadMessageResponse{}
 	return &this
 }
 
-// NewChatSvcGetMessageResponseWithDefaults instantiates a new ChatSvcGetMessageResponse object
+// NewChatSvcReadMessageResponseWithDefaults instantiates a new ChatSvcReadMessageResponse object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewChatSvcGetMessageResponseWithDefaults() *ChatSvcGetMessageResponse {
-	this := ChatSvcGetMessageResponse{}
+func NewChatSvcReadMessageResponseWithDefaults() *ChatSvcReadMessageResponse {
+	this := ChatSvcReadMessageResponse{}
 	return &this
 }
 
 // GetExists returns the Exists field value if set, zero value otherwise.
-func (o *ChatSvcGetMessageResponse) GetExists() bool {
+func (o *ChatSvcReadMessageResponse) GetExists() bool {
 	if o == nil || IsNil(o.Exists) {
 		var ret bool
 		return ret
@@ -52,7 +52,7 @@ func (o *ChatSvcGetMessageResponse) GetExists() bool {
 
 // GetExistsOk returns a tuple with the Exists field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ChatSvcGetMessageResponse) GetExistsOk() (*bool, bool) {
+func (o *ChatSvcReadMessageResponse) GetExistsOk() (*bool, bool) {
 	if o == nil || IsNil(o.Exists) {
 		return nil, false
 	}
@@ -60,7 +60,7 @@ func (o *ChatSvcGetMessageResponse) GetExistsOk() (*bool, bool) {
 }
 
 // HasExists returns a boolean if a field has been set.
-func (o *ChatSvcGetMessageResponse) HasExists() bool {
+func (o *ChatSvcReadMessageResponse) HasExists() bool {
 	if o != nil && !IsNil(o.Exists) {
 		return true
 	}
@@ -69,12 +69,12 @@ func (o *ChatSvcGetMessageResponse) HasExists() bool {
 }
 
 // SetExists gets a reference to the given bool and assigns it to the Exists field.
-func (o *ChatSvcGetMessageResponse) SetExists(v bool) {
+func (o *ChatSvcReadMessageResponse) SetExists(v bool) {
 	o.Exists = &v
 }
 
 // GetMessage returns the Message field value if set, zero value otherwise.
-func (o *ChatSvcGetMessageResponse) GetMessage() ChatSvcMessage {
+func (o *ChatSvcReadMessageResponse) GetMessage() ChatSvcMessage {
 	if o == nil || IsNil(o.Message) {
 		var ret ChatSvcMessage
 		return ret
@@ -84,7 +84,7 @@ func (o *ChatSvcGetMessageResponse) GetMessage() ChatSvcMessage {
 
 // GetMessageOk returns a tuple with the Message field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ChatSvcGetMessageResponse) GetMessageOk() (*ChatSvcMessage, bool) {
+func (o *ChatSvcReadMessageResponse) GetMessageOk() (*ChatSvcMessage, bool) {
 	if o == nil || IsNil(o.Message) {
 		return nil, false
 	}
@@ -92,7 +92,7 @@ func (o *ChatSvcGetMessageResponse) GetMessageOk() (*ChatSvcMessage, bool) {
 }
 
 // HasMessage returns a boolean if a field has been set.
-func (o *ChatSvcGetMessageResponse) HasMessage() bool {
+func (o *ChatSvcReadMessageResponse) HasMessage() bool {
 	if o != nil && !IsNil(o.Message) {
 		return true
 	}
@@ -101,11 +101,11 @@ func (o *ChatSvcGetMessageResponse) HasMessage() bool {
 }
 
 // SetMessage gets a reference to the given ChatSvcMessage and assigns it to the Message field.
-func (o *ChatSvcGetMessageResponse) SetMessage(v ChatSvcMessage) {
+func (o *ChatSvcReadMessageResponse) SetMessage(v ChatSvcMessage) {
 	o.Message = &v
 }
 
-func (o ChatSvcGetMessageResponse) MarshalJSON() ([]byte, error) {
+func (o ChatSvcReadMessageResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -113,7 +113,7 @@ func (o ChatSvcGetMessageResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o ChatSvcGetMessageResponse) ToMap() (map[string]interface{}, error) {
+func (o ChatSvcReadMessageResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Exists) {
 		toSerialize["exists"] = o.Exists
@@ -124,38 +124,38 @@ func (o ChatSvcGetMessageResponse) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-type NullableChatSvcGetMessageResponse struct {
-	value *ChatSvcGetMessageResponse
+type NullableChatSvcReadMessageResponse struct {
+	value *ChatSvcReadMessageResponse
 	isSet bool
 }
 
-func (v NullableChatSvcGetMessageResponse) Get() *ChatSvcGetMessageResponse {
+func (v NullableChatSvcReadMessageResponse) Get() *ChatSvcReadMessageResponse {
 	return v.value
 }
 
-func (v *NullableChatSvcGetMessageResponse) Set(val *ChatSvcGetMessageResponse) {
+func (v *NullableChatSvcReadMessageResponse) Set(val *ChatSvcReadMessageResponse) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableChatSvcGetMessageResponse) IsSet() bool {
+func (v NullableChatSvcReadMessageResponse) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableChatSvcGetMessageResponse) Unset() {
+func (v *NullableChatSvcReadMessageResponse) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableChatSvcGetMessageResponse(val *ChatSvcGetMessageResponse) *NullableChatSvcGetMessageResponse {
-	return &NullableChatSvcGetMessageResponse{value: val, isSet: true}
+func NewNullableChatSvcReadMessageResponse(val *ChatSvcReadMessageResponse) *NullableChatSvcReadMessageResponse {
+	return &NullableChatSvcReadMessageResponse{value: val, isSet: true}
 }
 
-func (v NullableChatSvcGetMessageResponse) MarshalJSON() ([]byte, error) {
+func (v NullableChatSvcReadMessageResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableChatSvcGetMessageResponse) UnmarshalJSON(src []byte) error {
+func (v *NullableChatSvcReadMessageResponse) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

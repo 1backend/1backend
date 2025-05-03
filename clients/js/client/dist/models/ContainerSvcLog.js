@@ -15,6 +15,8 @@
  * Check if a given object implements the ContainerSvcLog interface.
  */
 export function instanceOfContainerSvcLog(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
     return true;
 }
 export function ContainerSvcLogFromJSON(json) {
@@ -27,7 +29,7 @@ export function ContainerSvcLogFromJSONTyped(json, ignoreDiscriminator) {
     return {
         'containerId': json['containerId'] == null ? undefined : json['containerId'],
         'content': json['content'] == null ? undefined : json['content'],
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'id': json['id'] == null ? undefined : json['id'],
         'nodeId': json['nodeId'] == null ? undefined : json['nodeId'],
     };

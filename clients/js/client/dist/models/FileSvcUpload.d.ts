@@ -20,7 +20,7 @@ export interface FileSvcUpload {
      * @type {string}
      * @memberof FileSvcUpload
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      * Logical file ID spanning all replicas
      * @type {string}
@@ -62,7 +62,7 @@ export interface FileSvcUpload {
      * @type {string}
      * @memberof FileSvcUpload
      */
-    updatedAt?: string;
+    updatedAt: string;
     /**
      *
      * @type {string}

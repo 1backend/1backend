@@ -15,33 +15,33 @@ import (
 	"encoding/json"
 )
 
-// checks if the ChatSvcAddThreadResponse type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &ChatSvcAddThreadResponse{}
+// checks if the ChatSvcSaveThreadResponse type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ChatSvcSaveThreadResponse{}
 
-// ChatSvcAddThreadResponse struct for ChatSvcAddThreadResponse
-type ChatSvcAddThreadResponse struct {
+// ChatSvcSaveThreadResponse struct for ChatSvcSaveThreadResponse
+type ChatSvcSaveThreadResponse struct {
 	Thread *ChatSvcThread `json:"thread,omitempty"`
 }
 
-// NewChatSvcAddThreadResponse instantiates a new ChatSvcAddThreadResponse object
+// NewChatSvcSaveThreadResponse instantiates a new ChatSvcSaveThreadResponse object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewChatSvcAddThreadResponse() *ChatSvcAddThreadResponse {
-	this := ChatSvcAddThreadResponse{}
+func NewChatSvcSaveThreadResponse() *ChatSvcSaveThreadResponse {
+	this := ChatSvcSaveThreadResponse{}
 	return &this
 }
 
-// NewChatSvcAddThreadResponseWithDefaults instantiates a new ChatSvcAddThreadResponse object
+// NewChatSvcSaveThreadResponseWithDefaults instantiates a new ChatSvcSaveThreadResponse object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewChatSvcAddThreadResponseWithDefaults() *ChatSvcAddThreadResponse {
-	this := ChatSvcAddThreadResponse{}
+func NewChatSvcSaveThreadResponseWithDefaults() *ChatSvcSaveThreadResponse {
+	this := ChatSvcSaveThreadResponse{}
 	return &this
 }
 
 // GetThread returns the Thread field value if set, zero value otherwise.
-func (o *ChatSvcAddThreadResponse) GetThread() ChatSvcThread {
+func (o *ChatSvcSaveThreadResponse) GetThread() ChatSvcThread {
 	if o == nil || IsNil(o.Thread) {
 		var ret ChatSvcThread
 		return ret
@@ -51,7 +51,7 @@ func (o *ChatSvcAddThreadResponse) GetThread() ChatSvcThread {
 
 // GetThreadOk returns a tuple with the Thread field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ChatSvcAddThreadResponse) GetThreadOk() (*ChatSvcThread, bool) {
+func (o *ChatSvcSaveThreadResponse) GetThreadOk() (*ChatSvcThread, bool) {
 	if o == nil || IsNil(o.Thread) {
 		return nil, false
 	}
@@ -59,7 +59,7 @@ func (o *ChatSvcAddThreadResponse) GetThreadOk() (*ChatSvcThread, bool) {
 }
 
 // HasThread returns a boolean if a field has been set.
-func (o *ChatSvcAddThreadResponse) HasThread() bool {
+func (o *ChatSvcSaveThreadResponse) HasThread() bool {
 	if o != nil && !IsNil(o.Thread) {
 		return true
 	}
@@ -68,11 +68,11 @@ func (o *ChatSvcAddThreadResponse) HasThread() bool {
 }
 
 // SetThread gets a reference to the given ChatSvcThread and assigns it to the Thread field.
-func (o *ChatSvcAddThreadResponse) SetThread(v ChatSvcThread) {
+func (o *ChatSvcSaveThreadResponse) SetThread(v ChatSvcThread) {
 	o.Thread = &v
 }
 
-func (o ChatSvcAddThreadResponse) MarshalJSON() ([]byte, error) {
+func (o ChatSvcSaveThreadResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -80,7 +80,7 @@ func (o ChatSvcAddThreadResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o ChatSvcAddThreadResponse) ToMap() (map[string]interface{}, error) {
+func (o ChatSvcSaveThreadResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Thread) {
 		toSerialize["thread"] = o.Thread
@@ -88,38 +88,38 @@ func (o ChatSvcAddThreadResponse) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-type NullableChatSvcAddThreadResponse struct {
-	value *ChatSvcAddThreadResponse
+type NullableChatSvcSaveThreadResponse struct {
+	value *ChatSvcSaveThreadResponse
 	isSet bool
 }
 
-func (v NullableChatSvcAddThreadResponse) Get() *ChatSvcAddThreadResponse {
+func (v NullableChatSvcSaveThreadResponse) Get() *ChatSvcSaveThreadResponse {
 	return v.value
 }
 
-func (v *NullableChatSvcAddThreadResponse) Set(val *ChatSvcAddThreadResponse) {
+func (v *NullableChatSvcSaveThreadResponse) Set(val *ChatSvcSaveThreadResponse) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableChatSvcAddThreadResponse) IsSet() bool {
+func (v NullableChatSvcSaveThreadResponse) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableChatSvcAddThreadResponse) Unset() {
+func (v *NullableChatSvcSaveThreadResponse) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableChatSvcAddThreadResponse(val *ChatSvcAddThreadResponse) *NullableChatSvcAddThreadResponse {
-	return &NullableChatSvcAddThreadResponse{value: val, isSet: true}
+func NewNullableChatSvcSaveThreadResponse(val *ChatSvcSaveThreadResponse) *NullableChatSvcSaveThreadResponse {
+	return &NullableChatSvcSaveThreadResponse{value: val, isSet: true}
 }
 
-func (v NullableChatSvcAddThreadResponse) MarshalJSON() ([]byte, error) {
+func (v NullableChatSvcSaveThreadResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableChatSvcAddThreadResponse) UnmarshalJSON(src []byte) error {
+func (v *NullableChatSvcSaveThreadResponse) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

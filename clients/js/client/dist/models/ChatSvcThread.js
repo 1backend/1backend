@@ -15,7 +15,11 @@
  * Check if a given object implements the ChatSvcThread interface.
  */
 export function instanceOfChatSvcThread(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
     if (!('id' in value) || value['id'] === undefined)
+        return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined)
         return false;
     return true;
 }
@@ -27,11 +31,11 @@ export function ChatSvcThreadFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'id': json['id'],
         'title': json['title'] == null ? undefined : json['title'],
         'topicIds': json['topicIds'] == null ? undefined : json['topicIds'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
         'userIds': json['userIds'] == null ? undefined : json['userIds'],
     };
 }

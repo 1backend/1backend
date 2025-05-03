@@ -85,7 +85,7 @@ type UserSvcAPI interface {
 	/*
 	GetPublicKey Get Public Key
 
-	Get the public key to parse and verify the JWT.
+	Get the public key to verify the JWT signature.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiGetPublicKeyRequest
@@ -1005,7 +1005,7 @@ func (r ApiGetPublicKeyRequest) Execute() (*UserSvcGetPublicKeyResponse, *http.R
 /*
 GetPublicKey Get Public Key
 
-Get the public key to parse and verify the JWT.
+Get the public key to verify the JWT signature.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiGetPublicKeyRequest

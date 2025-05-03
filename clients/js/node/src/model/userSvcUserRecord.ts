@@ -14,7 +14,7 @@ import { RequestFile } from './models';
 
 export class UserSvcUserRecord {
     'contactIds'?: Array<string>;
-    'createdAt'?: string;
+    'createdAt': string;
     'id': string;
     /**
     * Full name of the user.
@@ -25,7 +25,7 @@ export class UserSvcUserRecord {
     * URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
     */
     'slug': string;
-    'updatedAt'?: string;
+    'updatedAt': string;
 
     static discriminator: string | undefined = undefined;
 

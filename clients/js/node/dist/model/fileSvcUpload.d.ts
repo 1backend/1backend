@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 export declare class FileSvcUpload {
-    'createdAt'?: string;
+    'createdAt': string;
     /**
     * Logical file ID spanning all replicas
     */
@@ -32,7 +32,7 @@ export declare class FileSvcUpload {
     * ID of the node storing this replica
     */
     'nodeId'?: string;
-    'updatedAt'?: string;
+    'updatedAt': string;
     'userId'?: string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{

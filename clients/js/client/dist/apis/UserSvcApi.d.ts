@@ -120,12 +120,12 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      */
     deleteUser(requestParameters: DeleteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
-     * Get the public key to parse and verify the JWT.
+     * Get the public key to verify the JWT signature.
      * Get Public Key
      */
     getPublicKeyRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcGetPublicKeyResponse>>;
     /**
-     * Get the public key to parse and verify the JWT.
+     * Get the public key to verify the JWT signature.
      * Get Public Key
      */
     getPublicKey(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcGetPublicKeyResponse>;

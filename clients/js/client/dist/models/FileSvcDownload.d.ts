@@ -20,7 +20,7 @@ export interface FileSvcDownload {
      * @type {string}
      * @memberof FileSvcDownload
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      * DownloadedBytes exists to show the download progress in terms of the number of bytes already downloaded.
      * @type {number}
@@ -74,7 +74,7 @@ export interface FileSvcDownload {
      * @type {string}
      * @memberof FileSvcDownload
      */
-    updatedAt?: string;
+    updatedAt: string;
     /**
      *
      * @type {string}

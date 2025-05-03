@@ -13,7 +13,7 @@
 import { RequestFile } from './models';
 
 export class FileSvcDownload {
-    'createdAt'?: string;
+    'createdAt': string;
     /**
     * DownloadedBytes exists to show the download progress in terms of the number of bytes already downloaded.
     */
@@ -28,7 +28,7 @@ export class FileSvcDownload {
     'id'?: string;
     'progress'?: number;
     'status'?: string;
-    'updatedAt'?: string;
+    'updatedAt': string;
     'url'?: string;
 
     static discriminator: string | undefined = undefined;

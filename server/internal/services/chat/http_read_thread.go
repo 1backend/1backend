@@ -22,20 +22,20 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// @ID getThread
-// @Summary Get Thread
+// @ID readThread
+// @Summary Read Thread
 // @Description Fetch information about a specific chat thread by its ID
 // @Tags Chat Svc
 // @Accept json
 // @Produce json
 // @Param threadId path string true "Thread ID"
-// @Success 200 {object} chat.GetThreadResponse "Thread details successfully retrieved"
+// @Success 200 {object} chat.ReadThreadResponse "Thread details successfully retrieved"
 // @Failure 400 {string} string "Invalid JSON"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 500 {string} string "Internal Server Error"
 // @Security BearerAuth
 // @Router /chat-svc/thread/{threadId} [get]
-func (a *ChatService) GetThread(
+func (a *ChatService) ReadThread(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
@@ -64,7 +64,7 @@ func (a *ChatService) GetThread(
 		return
 	}
 
-	jsonData, _ := json.Marshal(chat.GetThreadResponse{
+	jsonData, _ := json.Marshal(chat.ReadThreadResponse{
 		Exists: found,
 		Thread: thread,
 	})

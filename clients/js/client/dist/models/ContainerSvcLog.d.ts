@@ -33,7 +33,7 @@ export interface ContainerSvcLog {
      * @type {string}
      * @memberof ContainerSvcLog
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      *
      * @type {string}

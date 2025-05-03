@@ -33,8 +33,8 @@ type Message struct {
 	// For AI messages this field is empty.
 	UserId string `json:"userId,omitempty"`
 
-	CreatedAt time.Time `json:"createdAt,omitempty"`
-	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	CreatedAt time.Time `json:"createdAt" binding:"required"`
+	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
 
 	// FileIds defines the file attachments the message has.
 	FileIds []string `json:"fileIds,omitempty"`
@@ -62,17 +62,32 @@ func (a ByTime) Less(i, j int) bool {
 	return ti.Before(tj)
 }
 
-type AddMessageRequest struct {
-	Message *Message `json:"message"`
+type SaveMessageRequest struct {
+	Id string `json:"id" example:"msg_emSOPlW58o"`
+
+	// ThreadId of the message.
+	ThreadId string `json:"threadId" example:"thr_emSOeEUWAg"`
+
+	// Text content of the message eg. "Hi, what's up?"
+	Text string `json:"text,omitempty"`
+
+	// UserId is the id of the user who wrote the message.
+	// For AI messages this field is empty.
+	UserId string `json:"userId,omitempty"`
+
+	// FileIds defines the file attachments the message has.
+	FileIds []string `json:"fileIds,omitempty"`
+
+	Meta map[string]interface{} `json:"meta,omitempty"`
 }
 
-type AddMessageResponse struct{}
+type SaveMessageResponse struct{}
 
-type GetMessagesRequest struct {
+type ListMessagesRequest struct {
 	ThreadId string `json:"threadId"`
 }
 
-type GetMessagesResponse struct {
+type ListMessagesResponse struct {
 	Messages []*Message `json:"messages"`
 }
 
@@ -80,7 +95,7 @@ type DeleteMessageRequest struct {
 	MessageId string `json:"messageId"`
 }
 
-type GetMessageResponse struct {
+type ReadMessageResponse struct {
 	Exists  bool     `json:"exists"`
 	Message *Message `json:"message"`
 }

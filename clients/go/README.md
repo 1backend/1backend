@@ -79,16 +79,15 @@ All URIs are relative to *http://localhost:11337*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*ChatSvcAPI* | [**AddMessage**](docs/ChatSvcAPI.md#addmessage) | **Post** /chat-svc/thread/{threadId}/message | Add Message
-*ChatSvcAPI* | [**AddThread**](docs/ChatSvcAPI.md#addthread) | **Post** /chat-svc/thread | Add Thread
 *ChatSvcAPI* | [**DeleteMessage**](docs/ChatSvcAPI.md#deletemessage) | **Delete** /chat-svc/message/{messageId} | Delete a Message
 *ChatSvcAPI* | [**DeleteThread**](docs/ChatSvcAPI.md#deletethread) | **Delete** /chat-svc/thread/{threadId} | Delete a Thread
 *ChatSvcAPI* | [**Events**](docs/ChatSvcAPI.md#events) | **Get** /chat-svc/events | Events
-*ChatSvcAPI* | [**GetMessage**](docs/ChatSvcAPI.md#getmessage) | **Get** /chat-svc/message/{messageId} | Get Message
-*ChatSvcAPI* | [**GetMessages**](docs/ChatSvcAPI.md#getmessages) | **Post** /chat-svc/thread/{threadId}/messages | List Messages
-*ChatSvcAPI* | [**GetThread**](docs/ChatSvcAPI.md#getthread) | **Get** /chat-svc/thread/{threadId} | Get Thread
-*ChatSvcAPI* | [**GetThreads**](docs/ChatSvcAPI.md#getthreads) | **Post** /chat-svc/threads | Get Threads
-*ChatSvcAPI* | [**UpdateThread**](docs/ChatSvcAPI.md#updatethread) | **Put** /chat-svc/thread/{threadId} | Update Thread
+*ChatSvcAPI* | [**ListMessages**](docs/ChatSvcAPI.md#listmessages) | **Post** /chat-svc/thread/{threadId}/messages | List Messages
+*ChatSvcAPI* | [**ListThreads**](docs/ChatSvcAPI.md#listthreads) | **Post** /chat-svc/threads | List Threads
+*ChatSvcAPI* | [**ReadMessage**](docs/ChatSvcAPI.md#readmessage) | **Get** /chat-svc/message/{messageId} | Read Message
+*ChatSvcAPI* | [**ReadThread**](docs/ChatSvcAPI.md#readthread) | **Get** /chat-svc/thread/{threadId} | Read Thread
+*ChatSvcAPI* | [**SaveMessage**](docs/ChatSvcAPI.md#savemessage) | **Post** /chat-svc/thread/{threadId}/message | Save Message
+*ChatSvcAPI* | [**SaveThread**](docs/ChatSvcAPI.md#savethread) | **Post** /chat-svc/thread | Save Thread
 *ConfigSvcAPI* | [**GetConfig**](docs/ConfigSvcAPI.md#getconfig) | **Get** /config-svc/config | Get Config
 *ConfigSvcAPI* | [**SaveConfig**](docs/ConfigSvcAPI.md#saveconfig) | **Put** /config-svc/config | Save Config
 *ContainerSvcAPI* | [**BuildImage**](docs/ContainerSvcAPI.md#buildimage) | **Put** /container-svc/image | Build an Image
@@ -177,19 +176,18 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
- - [ChatSvcAddMessageRequest](docs/ChatSvcAddMessageRequest.md)
- - [ChatSvcAddThreadRequest](docs/ChatSvcAddThreadRequest.md)
- - [ChatSvcAddThreadResponse](docs/ChatSvcAddThreadResponse.md)
  - [ChatSvcEventMessageAdded](docs/ChatSvcEventMessageAdded.md)
  - [ChatSvcEventThreadAdded](docs/ChatSvcEventThreadAdded.md)
  - [ChatSvcEventThreadUpdate](docs/ChatSvcEventThreadUpdate.md)
- - [ChatSvcGetMessageResponse](docs/ChatSvcGetMessageResponse.md)
- - [ChatSvcGetMessagesResponse](docs/ChatSvcGetMessagesResponse.md)
- - [ChatSvcGetThreadResponse](docs/ChatSvcGetThreadResponse.md)
- - [ChatSvcGetThreadsResponse](docs/ChatSvcGetThreadsResponse.md)
+ - [ChatSvcListMessagesResponse](docs/ChatSvcListMessagesResponse.md)
+ - [ChatSvcListThreadsResponse](docs/ChatSvcListThreadsResponse.md)
  - [ChatSvcMessage](docs/ChatSvcMessage.md)
+ - [ChatSvcReadMessageResponse](docs/ChatSvcReadMessageResponse.md)
+ - [ChatSvcReadThreadResponse](docs/ChatSvcReadThreadResponse.md)
+ - [ChatSvcSaveMessageRequest](docs/ChatSvcSaveMessageRequest.md)
+ - [ChatSvcSaveThreadRequest](docs/ChatSvcSaveThreadRequest.md)
+ - [ChatSvcSaveThreadResponse](docs/ChatSvcSaveThreadResponse.md)
  - [ChatSvcThread](docs/ChatSvcThread.md)
- - [ChatSvcUpdateThreadRequest](docs/ChatSvcUpdateThreadRequest.md)
  - [ConfigSvcConfig](docs/ConfigSvcConfig.md)
  - [ConfigSvcGetConfigResponse](docs/ConfigSvcGetConfigResponse.md)
  - [ConfigSvcSaveConfigRequest](docs/ConfigSvcSaveConfigRequest.md)
@@ -346,6 +344,7 @@ Class | Method | HTTP request | Description
  - [UserSvcAuthToken](docs/UserSvcAuthToken.md)
  - [UserSvcChangePasswordRequest](docs/UserSvcChangePasswordRequest.md)
  - [UserSvcContact](docs/UserSvcContact.md)
+ - [UserSvcContactInput](docs/UserSvcContactInput.md)
  - [UserSvcCreateUserRequest](docs/UserSvcCreateUserRequest.md)
  - [UserSvcEnroll](docs/UserSvcEnroll.md)
  - [UserSvcEnrollInput](docs/UserSvcEnrollInput.md)
@@ -380,6 +379,7 @@ Class | Method | HTTP request | Description
  - [UserSvcSaveSelfRequest](docs/UserSvcSaveSelfRequest.md)
  - [UserSvcSaveUserRequest](docs/UserSvcSaveUserRequest.md)
  - [UserSvcUser](docs/UserSvcUser.md)
+ - [UserSvcUserInput](docs/UserSvcUserInput.md)
  - [UserSvcUserRecord](docs/UserSvcUserRecord.md)
 
 

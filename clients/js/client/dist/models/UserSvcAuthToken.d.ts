@@ -30,7 +30,7 @@ export interface UserSvcAuthToken {
      * @type {string}
      * @memberof UserSvcAuthToken
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      *
      * @type {string}
@@ -62,7 +62,7 @@ export interface UserSvcAuthToken {
      * @type {string}
      * @memberof UserSvcAuthToken
      */
-    updatedAt?: string;
+    updatedAt: string;
     /**
      *
      * @type {string}

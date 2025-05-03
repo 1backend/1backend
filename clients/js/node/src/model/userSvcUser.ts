@@ -13,7 +13,7 @@
 import { RequestFile } from './models';
 
 export class UserSvcUser {
-    'createdAt'?: string;
+    'createdAt': string;
     'deletedAt'?: string;
     'id': string;
     'labels'?: { [key: string]: string; };
@@ -26,7 +26,7 @@ export class UserSvcUser {
     */
     'slug': string;
     'thumbnailFileId'?: string;
-    'updatedAt'?: string;
+    'updatedAt': string;
 
     static discriminator: string | undefined = undefined;
 

@@ -24,7 +24,7 @@ export interface FileSvcUpload {
      * @type {string}
      * @memberof FileSvcUpload
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      * Logical file ID spanning all replicas
      * @type {string}
@@ -66,7 +66,7 @@ export interface FileSvcUpload {
      * @type {string}
      * @memberof FileSvcUpload
      */
-    updatedAt?: string;
+    updatedAt: string;
     /**
      * 
      * @type {string}
@@ -79,7 +79,9 @@ export interface FileSvcUpload {
  * Check if a given object implements the FileSvcUpload interface.
  */
 export function instanceOfFileSvcUpload(value: object): value is FileSvcUpload {
+    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('fileSize' in value) || value['fileSize'] === undefined) return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
 }
 
@@ -93,14 +95,14 @@ export function FileSvcUploadFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'fileId': json['fileId'] == null ? undefined : json['fileId'],
         'fileName': json['fileName'] == null ? undefined : json['fileName'],
         'filePath': json['filePath'] == null ? undefined : json['filePath'],
         'fileSize': json['fileSize'],
         'id': json['id'] == null ? undefined : json['id'],
         'nodeId': json['nodeId'] == null ? undefined : json['nodeId'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
         'userId': json['userId'] == null ? undefined : json['userId'],
     };
 }
