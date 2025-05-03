@@ -50,12 +50,6 @@ export interface UserSvcUser {
      */
     name?: string;
     /**
-     * 
-     * @type {string}
-     * @memberof UserSvcUser
-     */
-    passwordHash?: string;
-    /**
      * URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
      * @type {string}
      * @memberof UserSvcUser
@@ -99,7 +93,6 @@ export function UserSvcUserFromJSONTyped(json: any, ignoreDiscriminator: boolean
         'id': json['id'],
         'labels': json['labels'] == null ? undefined : json['labels'],
         'name': json['name'] == null ? undefined : json['name'],
-        'passwordHash': json['passwordHash'] == null ? undefined : json['passwordHash'],
         'slug': json['slug'],
         'thumbnailFileId': json['thumbnailFileId'] == null ? undefined : json['thumbnailFileId'],
         'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
@@ -122,7 +115,6 @@ export function UserSvcUserToJSONTyped(value?: UserSvcUser | null, ignoreDiscrim
         'id': value['id'],
         'labels': value['labels'],
         'name': value['name'],
-        'passwordHash': value['passwordHash'],
         'slug': value['slug'],
         'thumbnailFileId': value['thumbnailFileId'],
         'updatedAt': value['updatedAt'],

@@ -151,7 +151,6 @@ func TestPasswordChange(t *testing.T) {
 		require.NoError(t, err)
 
 		require.Equal(t, "test-user-slug-0", selfRsp.User.Slug)
-		require.True(t, nil == selfRsp.User.PasswordHash)
 
 		require.Equal(t, claim.UserId, selfRsp.User.Id)
 

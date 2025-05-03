@@ -42,9 +42,17 @@ export interface UserSvcAuthToken {
      * @type {string}
      * @memberof UserSvcAuthToken
      */
-    id?: string;
+    id: string;
     /**
+     * Token is a signed JWT used to authenticate the user without querying the User Svc.
+     * You can verify it using the public key at `/user-svc/public-key`.
      *
+     * The token is just a JSON object with fields like:
+     * - "oui": the user ID (e.g., "usr_dC4K75Cbp6")
+     * - "olu": the user slug (e.g., "test-user-slug-0")
+     * - "oro": a list of roles, such as:
+     *   - "user-svc:user"
+     *   - "user-svc:org:{org_dC4K7NNDCG}:user"
      * @type {string}
      * @memberof UserSvcAuthToken
      */

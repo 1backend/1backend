@@ -28,7 +28,6 @@ type UserSvcUser struct {
 	Labels *map[string]string `json:"labels,omitempty"`
 	// Full name of the user.
 	Name *string `json:"name,omitempty"`
-	PasswordHash *string `json:"passwordHash,omitempty"`
 	// URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
 	Slug string `json:"slug"`
 	ThumbnailFileId *string `json:"thumbnailFileId,omitempty"`
@@ -208,38 +207,6 @@ func (o *UserSvcUser) SetName(v string) {
 	o.Name = &v
 }
 
-// GetPasswordHash returns the PasswordHash field value if set, zero value otherwise.
-func (o *UserSvcUser) GetPasswordHash() string {
-	if o == nil || IsNil(o.PasswordHash) {
-		var ret string
-		return ret
-	}
-	return *o.PasswordHash
-}
-
-// GetPasswordHashOk returns a tuple with the PasswordHash field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcUser) GetPasswordHashOk() (*string, bool) {
-	if o == nil || IsNil(o.PasswordHash) {
-		return nil, false
-	}
-	return o.PasswordHash, true
-}
-
-// HasPasswordHash returns a boolean if a field has been set.
-func (o *UserSvcUser) HasPasswordHash() bool {
-	if o != nil && !IsNil(o.PasswordHash) {
-		return true
-	}
-
-	return false
-}
-
-// SetPasswordHash gets a reference to the given string and assigns it to the PasswordHash field.
-func (o *UserSvcUser) SetPasswordHash(v string) {
-	o.PasswordHash = &v
-}
-
 // GetSlug returns the Slug field value
 func (o *UserSvcUser) GetSlug() string {
 	if o == nil {
@@ -350,9 +317,6 @@ func (o UserSvcUser) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
-	}
-	if !IsNil(o.PasswordHash) {
-		toSerialize["passwordHash"] = o.PasswordHash
 	}
 	toSerialize["slug"] = o.Slug
 	if !IsNil(o.ThumbnailFileId) {

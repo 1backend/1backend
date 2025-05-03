@@ -42,11 +42,6 @@ UserSvcListUsersRequest.attributeTypeMap = [
         "type": "number"
     },
     {
-        "name": "offset",
-        "baseName": "offset",
-        "type": "number"
-    },
-    {
         "name": "orderByDesc",
         "baseName": "orderByDesc",
         "type": "boolean"

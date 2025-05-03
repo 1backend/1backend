@@ -28,7 +28,7 @@ import { UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, Use
 export class UserSvcApi extends runtime.BaseAPI {
     /**
      * Allows an authenticated user to change their own password.
-     * Change User Password
+     * Change Password
      */
     changePasswordRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -53,7 +53,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
     /**
      * Allows an authenticated user to change their own password.
-     * Change User Password
+     * Change Password
      */
     changePassword(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {

@@ -48,12 +48,6 @@ export interface UserSvcUser {
      */
     name?: string;
     /**
-     *
-     * @type {string}
-     * @memberof UserSvcUser
-     */
-    passwordHash?: string;
-    /**
      * URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
      * @type {string}
      * @memberof UserSvcUser

@@ -118,7 +118,7 @@ export class UserSvcApi {
 
     /**
      * Allows an authenticated user to change their own password.
-     * @summary Change User Password
+     * @summary Change Password
      * @param body Change Password Request
      */
     public async changePassword (body: UserSvcChangePasswordRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: object;  }> {

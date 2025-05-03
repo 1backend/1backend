@@ -193,7 +193,7 @@ export class UserSvcApi extends runtime.BaseAPI {
 
     /**
      * Allows an authenticated user to change their own password.
-     * Change User Password
+     * Change Password
      */
     async changePasswordRaw(requestParameters: ChangePasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['body'] == null) {
@@ -226,7 +226,7 @@ export class UserSvcApi extends runtime.BaseAPI {
 
     /**
      * Allows an authenticated user to change their own password.
-     * Change User Password
+     * Change Password
      */
     async changePassword(requestParameters: ChangePasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.changePasswordRaw(requestParameters, initOverrides);

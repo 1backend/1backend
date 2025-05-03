@@ -51,12 +51,6 @@ export interface UserSvcListUsersRequest {
     limit?: number;
     /**
      *
-     * @type {number}
-     * @memberof UserSvcListUsersRequest
-     */
-    offset?: number;
-    /**
-     *
      * @type {boolean}
      * @memberof UserSvcListUsersRequest
      */

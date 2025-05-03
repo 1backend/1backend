@@ -62,7 +62,7 @@ export declare class UserSvcApi {
     addInterceptor(interceptor: Interceptor): void;
     /**
      * Allows an authenticated user to change their own password.
-     * @summary Change User Password
+     * @summary Change Password
      * @param body Change Password Request
      */
     changePassword(body: UserSvcChangePasswordRequest, options?: {

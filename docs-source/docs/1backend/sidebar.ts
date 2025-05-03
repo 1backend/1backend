@@ -541,7 +541,7 @@ const sidebar: SidebarsConfig = {
         {
           type: "doc",
           id: "1backend/change-password",
-          label: "Change User Password",
+          label: "Change Password",
           className: "api-method post",
         },
         {

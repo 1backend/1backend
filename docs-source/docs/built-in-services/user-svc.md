@@ -105,7 +105,7 @@ The structure of the JWT is the following:
 oui: usr_dC4K75Cbp6
 
 # Slug
-olu: test-user-slug-0
+osl: test-user-slug-0
 
 # Roles
 oro:

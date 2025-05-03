@@ -81,12 +81,12 @@ export interface SaveUserRequest {
 export declare class UserSvcApi extends runtime.BaseAPI {
     /**
      * Allows an authenticated user to change their own password.
-     * Change User Password
+     * Change Password
      */
     changePasswordRaw(requestParameters: ChangePasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
     /**
      * Allows an authenticated user to change their own password.
-     * Change User Password
+     * Change Password
      */
     changePassword(requestParameters: ChangePasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**

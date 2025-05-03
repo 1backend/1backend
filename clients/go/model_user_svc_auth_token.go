@@ -26,7 +26,8 @@ type UserSvcAuthToken struct {
 	Active *bool `json:"active,omitempty"`
 	CreatedAt *string `json:"createdAt,omitempty"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
-	Id *string `json:"id,omitempty"`
+	Id string `json:"id"`
+	// Token is a signed JWT used to authenticate the user without querying the User Svc. You can verify it using the public key at `/user-svc/public-key`.  The token is just a JSON object with fields like: - \"oui\": the user ID (e.g., \"usr_dC4K75Cbp6\") - \"olu\": the user slug (e.g., \"test-user-slug-0\") - \"oro\": a list of roles, such as:   - \"user-svc:user\"   - \"user-svc:org:{org_dC4K7NNDCG}:user\"
 	Token string `json:"token"`
 	UpdatedAt *string `json:"updatedAt,omitempty"`
 	UserId string `json:"userId"`
@@ -38,8 +39,9 @@ type _UserSvcAuthToken UserSvcAuthToken
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcAuthToken(token string, userId string) *UserSvcAuthToken {
+func NewUserSvcAuthToken(id string, token string, userId string) *UserSvcAuthToken {
 	this := UserSvcAuthToken{}
+	this.Id = id
 	this.Token = token
 	this.UserId = userId
 	return &this
@@ -149,36 +151,28 @@ func (o *UserSvcAuthToken) SetDeletedAt(v string) {
 	o.DeletedAt = &v
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value
 func (o *UserSvcAuthToken) GetId() string {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Id
+
+	return o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcAuthToken) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Id, true
+	return &o.Id, true
 }
 
-// HasId returns a boolean if a field has been set.
-func (o *UserSvcAuthToken) HasId() bool {
-	if o != nil && !IsNil(o.Id) {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
+// SetId sets field value
 func (o *UserSvcAuthToken) SetId(v string) {
-	o.Id = &v
+	o.Id = v
 }
 
 // GetToken returns the Token field value
@@ -280,9 +274,7 @@ func (o UserSvcAuthToken) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.DeletedAt) {
 		toSerialize["deletedAt"] = o.DeletedAt
 	}
-	if !IsNil(o.Id) {
-		toSerialize["id"] = o.Id
-	}
+	toSerialize["id"] = o.Id
 	toSerialize["token"] = o.Token
 	if !IsNil(o.UpdatedAt) {
 		toSerialize["updatedAt"] = o.UpdatedAt
@@ -296,6 +288,7 @@ func (o *UserSvcAuthToken) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"id",
 		"token",
 		"userId",
 	}

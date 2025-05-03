@@ -6695,11 +6695,6 @@ UserSvcListUsersRequest.attributeTypeMap = [
         "type": "number"
     },
     {
-        "name": "offset",
-        "baseName": "offset",
-        "type": "number"
-    },
-    {
         "name": "orderByDesc",
         "baseName": "orderByDesc",
         "type": "boolean"
@@ -7342,11 +7337,6 @@ UserSvcUser.attributeTypeMap = [
     {
         "name": "name",
         "baseName": "name",
-        "type": "string"
-    },
-    {
-        "name": "passwordHash",
-        "baseName": "passwordHash",
         "type": "string"
     },
     {
@@ -13689,7 +13679,7 @@ class UserSvcApi {
     }
     /**
      * Allows an authenticated user to change their own password.
-     * @summary Change User Password
+     * @summary Change Password
      * @param body Change Password Request
      */
     changePassword(body_1) {

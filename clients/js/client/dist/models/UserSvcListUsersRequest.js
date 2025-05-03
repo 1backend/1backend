@@ -31,7 +31,6 @@ export function UserSvcListUsersRequestFromJSONTyped(json, ignoreDiscriminator) 
         'count': json['count'] == null ? undefined : json['count'],
         'ids': json['ids'] == null ? undefined : json['ids'],
         'limit': json['limit'] == null ? undefined : json['limit'],
-        'offset': json['offset'] == null ? undefined : json['offset'],
         'orderByDesc': json['orderByDesc'] == null ? undefined : json['orderByDesc'],
         'orderByField': json['orderByField'] == null ? undefined : UserSvcListUsersOrderByFieldFromJSON(json['orderByField']),
     };
@@ -49,7 +48,6 @@ export function UserSvcListUsersRequestToJSONTyped(value, ignoreDiscriminator = 
         'count': value['count'],
         'ids': value['ids'],
         'limit': value['limit'],
-        'offset': value['offset'],
         'orderByDesc': value['orderByDesc'],
         'orderByField': UserSvcListUsersOrderByFieldToJSON(value['orderByField']),
     };

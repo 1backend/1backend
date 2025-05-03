@@ -46,9 +46,17 @@ export interface UserSvcAuthToken {
      * @type {string}
      * @memberof UserSvcAuthToken
      */
-    id?: string;
+    id: string;
     /**
+     * Token is a signed JWT used to authenticate the user without querying the User Svc.
+     * You can verify it using the public key at `/user-svc/public-key`.
      * 
+     * The token is just a JSON object with fields like:
+     * - "oui": the user ID (e.g., "usr_dC4K75Cbp6")
+     * - "olu": the user slug (e.g., "test-user-slug-0")
+     * - "oro": a list of roles, such as:
+     *   - "user-svc:user"
+     *   - "user-svc:org:{org_dC4K7NNDCG}:user"
      * @type {string}
      * @memberof UserSvcAuthToken
      */
@@ -71,6 +79,7 @@ export interface UserSvcAuthToken {
  * Check if a given object implements the UserSvcAuthToken interface.
  */
 export function instanceOfUserSvcAuthToken(value: object): value is UserSvcAuthToken {
+    if (!('id' in value) || value['id'] === undefined) return false;
     if (!('token' in value) || value['token'] === undefined) return false;
     if (!('userId' in value) || value['userId'] === undefined) return false;
     return true;
@@ -89,7 +98,7 @@ export function UserSvcAuthTokenFromJSONTyped(json: any, ignoreDiscriminator: bo
         'active': json['active'] == null ? undefined : json['active'],
         'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
-        'id': json['id'] == null ? undefined : json['id'],
+        'id': json['id'],
         'token': json['token'],
         'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
         'userId': json['userId'],

@@ -8320,6 +8320,8 @@ function SourceSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
  * Check if a given object implements the UserSvcAuthToken interface.
  */
 function instanceOfUserSvcAuthToken(value) {
+    if (!('id' in value) || value['id'] === undefined)
+        return false;
     if (!('token' in value) || value['token'] === undefined)
         return false;
     if (!('userId' in value) || value['userId'] === undefined)
@@ -8337,7 +8339,7 @@ function UserSvcAuthTokenFromJSONTyped(json, ignoreDiscriminator) {
         'active': json['active'] == null ? undefined : json['active'],
         'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
-        'id': json['id'] == null ? undefined : json['id'],
+        'id': json['id'],
         'token': json['token'],
         'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
         'userId': json['userId'],
@@ -8511,7 +8513,6 @@ function UserSvcUserFromJSONTyped(json, ignoreDiscriminator) {
         'id': json['id'],
         'labels': json['labels'] == null ? undefined : json['labels'],
         'name': json['name'] == null ? undefined : json['name'],
-        'passwordHash': json['passwordHash'] == null ? undefined : json['passwordHash'],
         'slug': json['slug'],
         'thumbnailFileId': json['thumbnailFileId'] == null ? undefined : json['thumbnailFileId'],
         'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
@@ -8530,7 +8531,6 @@ function UserSvcUserToJSONTyped(value, ignoreDiscriminator = false) {
         'id': value['id'],
         'labels': value['labels'],
         'name': value['name'],
-        'passwordHash': value['passwordHash'],
         'slug': value['slug'],
         'thumbnailFileId': value['thumbnailFileId'],
         'updatedAt': value['updatedAt'],
@@ -9377,7 +9377,6 @@ function UserSvcListUsersRequestFromJSONTyped(json, ignoreDiscriminator) {
         'count': json['count'] == null ? undefined : json['count'],
         'ids': json['ids'] == null ? undefined : json['ids'],
         'limit': json['limit'] == null ? undefined : json['limit'],
-        'offset': json['offset'] == null ? undefined : json['offset'],
         'orderByDesc': json['orderByDesc'] == null ? undefined : json['orderByDesc'],
         'orderByField': json['orderByField'] == null ? undefined : UserSvcListUsersOrderByFieldFromJSON(json['orderByField']),
     };
@@ -9395,7 +9394,6 @@ function UserSvcListUsersRequestToJSONTyped(value, ignoreDiscriminator = false) 
         'count': value['count'],
         'ids': value['ids'],
         'limit': value['limit'],
-        'offset': value['offset'],
         'orderByDesc': value['orderByDesc'],
         'orderByField': UserSvcListUsersOrderByFieldToJSON(value['orderByField']),
     };
@@ -12913,7 +12911,7 @@ class SourceSvcApi extends BaseAPI {
 class UserSvcApi extends BaseAPI {
     /**
      * Allows an authenticated user to change their own password.
-     * Change User Password
+     * Change Password
      */
     changePasswordRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -12938,7 +12936,7 @@ class UserSvcApi extends BaseAPI {
     }
     /**
      * Allows an authenticated user to change their own password.
-     * Change User Password
+     * Change Password
      */
     changePassword(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {

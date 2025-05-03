@@ -31,7 +31,6 @@ export class UserSvcListUsersRequest {
     */
     'ids'?: Array<string>;
     'limit'?: number;
-    'offset'?: number;
     'orderByDesc'?: boolean;
     'orderByField'?: UserSvcListUsersOrderByField;
 
@@ -61,11 +60,6 @@ export class UserSvcListUsersRequest {
         {
             "name": "limit",
             "baseName": "limit",
-            "type": "number"
-        },
-        {
-            "name": "offset",
-            "baseName": "offset",
             "type": "number"
         },
         {
