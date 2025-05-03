@@ -12,13 +12,13 @@
 
 import { RequestFile } from './models';
 import { UserSvcContact } from './userSvcContact';
-import { UserSvcUser } from './userSvcUser';
+import { UserSvcUserInput } from './userSvcUserInput';
 
 export class UserSvcCreateUserRequest {
     'contacts'?: Array<UserSvcContact>;
     'password'?: string;
     'roleIds'?: Array<string>;
-    'user'?: UserSvcUser;
+    'user'?: UserSvcUserInput;
 
     static discriminator: string | undefined = undefined;
 
@@ -41,7 +41,7 @@ export class UserSvcCreateUserRequest {
         {
             "name": "user",
             "baseName": "user",
-            "type": "UserSvcUser"
+            "type": "UserSvcUserInput"
         }    ];
 
     static getAttributeTypeMap() {

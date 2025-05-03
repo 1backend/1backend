@@ -84,7 +84,9 @@ type ReadThreadResponse struct {
 	Thread *Thread `json:"thread"`
 }
 
-type ListThreadsRequest struct{}
+type ListThreadsRequest struct {
+	Ids []string `json:"ids,omitempty"`
+}
 
 type ListThreadsResponse struct {
 	Threads []*Thread `json:"threads"`

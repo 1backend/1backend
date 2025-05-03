@@ -23,11 +23,11 @@ docs/ChatSvcAPI.md
 docs/ChatSvcEventMessageAdded.md
 docs/ChatSvcEventThreadAdded.md
 docs/ChatSvcEventThreadUpdate.md
+docs/ChatSvcListMessagesRequest.md
 docs/ChatSvcListMessagesResponse.md
+docs/ChatSvcListThreadsRequest.md
 docs/ChatSvcListThreadsResponse.md
 docs/ChatSvcMessage.md
-docs/ChatSvcReadMessageResponse.md
-docs/ChatSvcReadThreadResponse.md
 docs/ChatSvcSaveMessageRequest.md
 docs/ChatSvcSaveThreadRequest.md
 docs/ChatSvcSaveThreadResponse.md
@@ -245,11 +245,11 @@ go.sum
 model_chat_svc_event_message_added.go
 model_chat_svc_event_thread_added.go
 model_chat_svc_event_thread_update.go
+model_chat_svc_list_messages_request.go
 model_chat_svc_list_messages_response.go
+model_chat_svc_list_threads_request.go
 model_chat_svc_list_threads_response.go
 model_chat_svc_message.go
-model_chat_svc_read_message_response.go
-model_chat_svc_read_thread_response.go
 model_chat_svc_save_message_request.go
 model_chat_svc_save_thread_request.go
 model_chat_svc_save_thread_response.go

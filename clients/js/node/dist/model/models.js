@@ -1,16 +1,15 @@
-export * from './chatSvcAddMessageRequest';
-export * from './chatSvcAddThreadRequest';
-export * from './chatSvcAddThreadResponse';
 export * from './chatSvcEventMessageAdded';
 export * from './chatSvcEventThreadAdded';
 export * from './chatSvcEventThreadUpdate';
-export * from './chatSvcGetMessageResponse';
-export * from './chatSvcGetMessagesResponse';
-export * from './chatSvcGetThreadResponse';
-export * from './chatSvcGetThreadsResponse';
+export * from './chatSvcListMessagesRequest';
+export * from './chatSvcListMessagesResponse';
+export * from './chatSvcListThreadsRequest';
+export * from './chatSvcListThreadsResponse';
 export * from './chatSvcMessage';
+export * from './chatSvcSaveMessageRequest';
+export * from './chatSvcSaveThreadRequest';
+export * from './chatSvcSaveThreadResponse';
 export * from './chatSvcThread';
-export * from './chatSvcUpdateThreadRequest';
 export * from './configSvcConfig';
 export * from './configSvcGetConfigResponse';
 export * from './configSvcSaveConfigRequest';
@@ -167,6 +166,7 @@ export * from './stableDiffusionTxt2ImgRequest';
 export * from './userSvcAuthToken';
 export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';
+export * from './userSvcContactInput';
 export * from './userSvcCreateUserRequest';
 export * from './userSvcEnroll';
 export * from './userSvcEnrollInput';
@@ -201,20 +201,20 @@ export * from './userSvcSavePermitsRequest';
 export * from './userSvcSaveSelfRequest';
 export * from './userSvcSaveUserRequest';
 export * from './userSvcUser';
+export * from './userSvcUserInput';
 export * from './userSvcUserRecord';
-import { ChatSvcAddMessageRequest } from './chatSvcAddMessageRequest';
-import { ChatSvcAddThreadRequest } from './chatSvcAddThreadRequest';
-import { ChatSvcAddThreadResponse } from './chatSvcAddThreadResponse';
 import { ChatSvcEventMessageAdded } from './chatSvcEventMessageAdded';
 import { ChatSvcEventThreadAdded } from './chatSvcEventThreadAdded';
 import { ChatSvcEventThreadUpdate } from './chatSvcEventThreadUpdate';
-import { ChatSvcGetMessageResponse } from './chatSvcGetMessageResponse';
-import { ChatSvcGetMessagesResponse } from './chatSvcGetMessagesResponse';
-import { ChatSvcGetThreadResponse } from './chatSvcGetThreadResponse';
-import { ChatSvcGetThreadsResponse } from './chatSvcGetThreadsResponse';
+import { ChatSvcListMessagesRequest } from './chatSvcListMessagesRequest';
+import { ChatSvcListMessagesResponse } from './chatSvcListMessagesResponse';
+import { ChatSvcListThreadsRequest } from './chatSvcListThreadsRequest';
+import { ChatSvcListThreadsResponse } from './chatSvcListThreadsResponse';
 import { ChatSvcMessage } from './chatSvcMessage';
+import { ChatSvcSaveMessageRequest } from './chatSvcSaveMessageRequest';
+import { ChatSvcSaveThreadRequest } from './chatSvcSaveThreadRequest';
+import { ChatSvcSaveThreadResponse } from './chatSvcSaveThreadResponse';
 import { ChatSvcThread } from './chatSvcThread';
-import { ChatSvcUpdateThreadRequest } from './chatSvcUpdateThreadRequest';
 import { ConfigSvcConfig } from './configSvcConfig';
 import { ConfigSvcGetConfigResponse } from './configSvcGetConfigResponse';
 import { ConfigSvcSaveConfigRequest } from './configSvcSaveConfigRequest';
@@ -371,6 +371,7 @@ import { StableDiffusionTxt2ImgRequest } from './stableDiffusionTxt2ImgRequest';
 import { UserSvcAuthToken } from './userSvcAuthToken';
 import { UserSvcChangePasswordRequest } from './userSvcChangePasswordRequest';
 import { UserSvcContact } from './userSvcContact';
+import { UserSvcContactInput } from './userSvcContactInput';
 import { UserSvcCreateUserRequest } from './userSvcCreateUserRequest';
 import { UserSvcEnroll } from './userSvcEnroll';
 import { UserSvcEnrollInput } from './userSvcEnrollInput';
@@ -405,6 +406,7 @@ import { UserSvcSavePermitsRequest } from './userSvcSavePermitsRequest';
 import { UserSvcSaveSelfRequest } from './userSvcSaveSelfRequest';
 import { UserSvcSaveUserRequest } from './userSvcSaveUserRequest';
 import { UserSvcUser } from './userSvcUser';
+import { UserSvcUserInput } from './userSvcUserInput';
 import { UserSvcUserRecord } from './userSvcUserRecord';
 /* tslint:disable:no-unused-variable */
 let primitives = [
@@ -434,19 +436,18 @@ let enumsMap = {
     "UserSvcListUsersOrderByField": UserSvcListUsersOrderByField,
 };
 let typeMap = {
-    "ChatSvcAddMessageRequest": ChatSvcAddMessageRequest,
-    "ChatSvcAddThreadRequest": ChatSvcAddThreadRequest,
-    "ChatSvcAddThreadResponse": ChatSvcAddThreadResponse,
     "ChatSvcEventMessageAdded": ChatSvcEventMessageAdded,
     "ChatSvcEventThreadAdded": ChatSvcEventThreadAdded,
     "ChatSvcEventThreadUpdate": ChatSvcEventThreadUpdate,
-    "ChatSvcGetMessageResponse": ChatSvcGetMessageResponse,
-    "ChatSvcGetMessagesResponse": ChatSvcGetMessagesResponse,
-    "ChatSvcGetThreadResponse": ChatSvcGetThreadResponse,
-    "ChatSvcGetThreadsResponse": ChatSvcGetThreadsResponse,
+    "ChatSvcListMessagesRequest": ChatSvcListMessagesRequest,
+    "ChatSvcListMessagesResponse": ChatSvcListMessagesResponse,
+    "ChatSvcListThreadsRequest": ChatSvcListThreadsRequest,
+    "ChatSvcListThreadsResponse": ChatSvcListThreadsResponse,
     "ChatSvcMessage": ChatSvcMessage,
+    "ChatSvcSaveMessageRequest": ChatSvcSaveMessageRequest,
+    "ChatSvcSaveThreadRequest": ChatSvcSaveThreadRequest,
+    "ChatSvcSaveThreadResponse": ChatSvcSaveThreadResponse,
     "ChatSvcThread": ChatSvcThread,
-    "ChatSvcUpdateThreadRequest": ChatSvcUpdateThreadRequest,
     "ConfigSvcConfig": ConfigSvcConfig,
     "ConfigSvcGetConfigResponse": ConfigSvcGetConfigResponse,
     "ConfigSvcSaveConfigRequest": ConfigSvcSaveConfigRequest,
@@ -590,6 +591,7 @@ let typeMap = {
     "UserSvcAuthToken": UserSvcAuthToken,
     "UserSvcChangePasswordRequest": UserSvcChangePasswordRequest,
     "UserSvcContact": UserSvcContact,
+    "UserSvcContactInput": UserSvcContactInput,
     "UserSvcCreateUserRequest": UserSvcCreateUserRequest,
     "UserSvcEnroll": UserSvcEnroll,
     "UserSvcEnrollInput": UserSvcEnrollInput,
@@ -623,6 +625,7 @@ let typeMap = {
     "UserSvcSaveSelfRequest": UserSvcSaveSelfRequest,
     "UserSvcSaveUserRequest": UserSvcSaveUserRequest,
     "UserSvcUser": UserSvcUser,
+    "UserSvcUserInput": UserSvcUserInput,
     "UserSvcUserRecord": UserSvcUserRecord,
 };
 // Check if a string starts with another string without using es6 features

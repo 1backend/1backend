@@ -19,7 +19,6 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	chat "github.com/1backend/1backend/server/internal/services/chat/types"
-	"github.com/gorilla/mux"
 )
 
 // @ID listMessages
@@ -28,13 +27,13 @@ import (
 // @Tags Chat Svc
 // @Accept json
 // @Produce json
-// @Param threadId path string true "Thread ID"
+// @Param body body chat.ListMessagesRequest true "List Messages Request"
 // @Success 200 {object} chat.ListMessagesResponse "Messages and assets successfully retrieved"
 // @Failure 400 {string} string "Invalid JSON"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 500 {string} string "Internal Server Error"
 // @Security BearerAuth
-// @Router /chat-svc/thread/{threadId}/messages [post]
+// @Router /chat-svc/messages [post]
 func (a *ChatService) ListMessages(
 	w http.ResponseWriter,
 	r *http.Request,
@@ -54,9 +53,16 @@ func (a *ChatService) ListMessages(
 		return
 	}
 
-	threadId := mux.Vars(r)["threadId"]
+	req := chat.ListMessagesRequest{}
+	err = json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(`Invalid JSON`))
+		return
+	}
+	defer r.Body.Close()
 
-	messages, err := a.getMessages(threadId)
+	messages, err := a.listMessages(&req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -69,11 +75,34 @@ func (a *ChatService) ListMessages(
 	w.Write(jsonData)
 }
 
-func (a *ChatService) getMessages(
-	threadId string,
+func (a *ChatService) listMessages(
+	req *chat.ListMessagesRequest,
 ) ([]*chat.Message, error) {
+	filters := []datastore.Filter{}
+
+	if req.ThreadId != "" {
+		filters = append(filters,
+			datastore.Equals(
+				datastore.Field("threadId"),
+				req.ThreadId),
+		)
+	}
+
+	if req.Ids != nil {
+		ids := []any{}
+		for _, id := range req.Ids {
+			ids = append(ids, id)
+		}
+
+		filters = append(filters,
+			datastore.IsInList(
+				datastore.Field("id"),
+				ids...),
+		)
+	}
+
 	messageIs, err := a.messagesStore.Query(
-		datastore.Equals(datastore.Field("threadId"), threadId),
+		filters...,
 	).OrderBy(datastore.OrderByField("createdAt", false)).Find()
 	if err != nil {
 		return nil, err

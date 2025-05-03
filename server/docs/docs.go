@@ -49,60 +49,6 @@ const docTemplate = `{
             }
         },
         "/chat-svc/message/{messageId}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Fetch information about a specific chat message by its ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Chat Svc"
-                ],
-                "summary": "Read Message",
-                "operationId": "readMessage",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Message ID",
-                        "name": "messageId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Message details successfully retrieved",
-                        "schema": {
-                            "$ref": "#/definitions/chat_svc.ReadMessageResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid JSON",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
             "delete": {
                 "security": [
                     {
@@ -136,6 +82,64 @@ const docTemplate = `{
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/chat-svc/messages": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Fetch messages (and associated assets) for a specific chat thread.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Chat Svc"
+                ],
+                "summary": "List Messages",
+                "operationId": "listMessages",
+                "parameters": [
+                    {
+                        "description": "List Messages Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/chat_svc.ListMessagesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Messages and assets successfully retrieved",
+                        "schema": {
+                            "$ref": "#/definitions/chat_svc.ListMessagesResponse"
                         }
                     },
                     "400": {
@@ -218,60 +222,6 @@ const docTemplate = `{
             }
         },
         "/chat-svc/thread/{threadId}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Fetch information about a specific chat thread by its ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Chat Svc"
-                ],
-                "summary": "Read Thread",
-                "operationId": "readThread",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Thread ID",
-                        "name": "threadId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Thread details successfully retrieved",
-                        "schema": {
-                            "$ref": "#/definitions/chat_svc.ReadThreadResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid JSON",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
             "delete": {
                 "security": [
                     {
@@ -394,62 +344,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/chat-svc/thread/{threadId}/messages": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Fetch messages (and associated assets) for a specific chat thread.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Chat Svc"
-                ],
-                "summary": "List Messages",
-                "operationId": "listMessages",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Thread ID",
-                        "name": "threadId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Messages and assets successfully retrieved",
-                        "schema": {
-                            "$ref": "#/definitions/chat_svc.ListMessagesResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid JSON",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/chat-svc/threads": {
             "post": {
                 "security": [
@@ -474,6 +368,7 @@ const docTemplate = `{
                         "description": "List Threads Request",
                         "name": "body",
                         "in": "body",
+                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/chat_svc.ListThreadsRequest"
                         }
@@ -5139,6 +5034,20 @@ const docTemplate = `{
                 }
             }
         },
+        "chat_svc.ListMessagesRequest": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "threadId": {
+                    "type": "string"
+                }
+            }
+        },
         "chat_svc.ListMessagesResponse": {
             "type": "object",
             "properties": {
@@ -5151,7 +5060,15 @@ const docTemplate = `{
             }
         },
         "chat_svc.ListThreadsRequest": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
         },
         "chat_svc.ListThreadsResponse": {
             "type": "object",
@@ -5206,28 +5123,6 @@ const docTemplate = `{
                 "userId": {
                     "description": "UserId is the id of the user who wrote the message.\nFor AI messages this field is empty.",
                     "type": "string"
-                }
-            }
-        },
-        "chat_svc.ReadMessageResponse": {
-            "type": "object",
-            "properties": {
-                "exists": {
-                    "type": "boolean"
-                },
-                "message": {
-                    "$ref": "#/definitions/chat_svc.Message"
-                }
-            }
-        },
-        "chat_svc.ReadThreadResponse": {
-            "type": "object",
-            "properties": {
-                "exists": {
-                    "type": "boolean"
-                },
-                "thread": {
-                    "$ref": "#/definitions/chat_svc.Thread"
                 }
             }
         },

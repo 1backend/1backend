@@ -11,10 +11,10 @@
  */
 
 import { RequestFile } from './models';
-import { UserSvcContact } from './userSvcContact';
+import { UserSvcContactInput } from './userSvcContactInput';
 
 export class UserSvcRegisterRequest {
-    'contact'?: UserSvcContact;
+    'contact'?: UserSvcContactInput;
     'name'?: string;
     'password'?: string;
     /**
@@ -28,7 +28,7 @@ export class UserSvcRegisterRequest {
         {
             "name": "contact",
             "baseName": "contact",
-            "type": "UserSvcContact"
+            "type": "UserSvcContactInput"
         },
         {
             "name": "name",

@@ -34,6 +34,6 @@ UserSvcCreateUserRequest.attributeTypeMap = [
     {
         "name": "user",
         "baseName": "user",
-        "type": "UserSvcUser"
+        "type": "UserSvcUserInput"
     }
 ];

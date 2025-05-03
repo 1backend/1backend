@@ -27,7 +27,7 @@ import (
 // @Tags Chat Svc
 // @Accept json
 // @Produce json
-// @Param body body chat.ListThreadsRequest false "List Threads Request"
+// @Param body body chat.ListThreadsRequest true "List Threads Request"
 // @Success 200 {object} chat.ListThreadsResponse "Threads successfully retrieved"
 // @Failure 400 {string} string "Invalid JSON"
 // @Failure 401 {string} string "Unauthorized"
@@ -53,7 +53,16 @@ func (a *ChatService) ListThreads(
 		return
 	}
 
-	threads, err := a.getThreads(isAuthRsp.User.Id)
+	req := chat.ListThreadsRequest{}
+	err = json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(`Invalid JSON`))
+		return
+	}
+	defer r.Body.Close()
+
+	threads, err := a.listThreads(isAuthRsp.User.Id, &req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -66,10 +75,33 @@ func (a *ChatService) ListThreads(
 	w.Write(jsonData)
 }
 
-func (a *ChatService) getThreads(userId string) ([]*chat.Thread, error) {
+func (a *ChatService) listThreads(
+	callerUserId string,
+	req *chat.ListThreadsRequest,
+) ([]*chat.Thread, error) {
+	filters := []datastore.Filter{
+		datastore.Equals(datastore.Field("userIds"), callerUserId),
+	}
+
+	if req.Ids != nil {
+		ids := []any{}
+		for _, id := range req.Ids {
+			ids = append(ids, id)
+		}
+		filters = append(filters,
+			datastore.IsInList(
+				datastore.Field("id"),
+				ids...,
+			),
+		)
+	}
+
 	threadIs, err := a.threadsStore.Query(
-		datastore.Equals(datastore.Field("userIds"), userId),
-	).OrderBy(datastore.OrderByField("createdAt", true)).Find()
+		filters...,
+	).
+		OrderBy(
+			datastore.OrderByField("createdAt", true),
+		).Find()
 	if err != nil {
 		return nil, err
 	}

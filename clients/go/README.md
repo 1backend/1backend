@@ -82,10 +82,8 @@ Class | Method | HTTP request | Description
 *ChatSvcAPI* | [**DeleteMessage**](docs/ChatSvcAPI.md#deletemessage) | **Delete** /chat-svc/message/{messageId} | Delete a Message
 *ChatSvcAPI* | [**DeleteThread**](docs/ChatSvcAPI.md#deletethread) | **Delete** /chat-svc/thread/{threadId} | Delete a Thread
 *ChatSvcAPI* | [**Events**](docs/ChatSvcAPI.md#events) | **Get** /chat-svc/events | Events
-*ChatSvcAPI* | [**ListMessages**](docs/ChatSvcAPI.md#listmessages) | **Post** /chat-svc/thread/{threadId}/messages | List Messages
+*ChatSvcAPI* | [**ListMessages**](docs/ChatSvcAPI.md#listmessages) | **Post** /chat-svc/messages | List Messages
 *ChatSvcAPI* | [**ListThreads**](docs/ChatSvcAPI.md#listthreads) | **Post** /chat-svc/threads | List Threads
-*ChatSvcAPI* | [**ReadMessage**](docs/ChatSvcAPI.md#readmessage) | **Get** /chat-svc/message/{messageId} | Read Message
-*ChatSvcAPI* | [**ReadThread**](docs/ChatSvcAPI.md#readthread) | **Get** /chat-svc/thread/{threadId} | Read Thread
 *ChatSvcAPI* | [**SaveMessage**](docs/ChatSvcAPI.md#savemessage) | **Post** /chat-svc/thread/{threadId}/message | Save Message
 *ChatSvcAPI* | [**SaveThread**](docs/ChatSvcAPI.md#savethread) | **Post** /chat-svc/thread | Save Thread
 *ConfigSvcAPI* | [**GetConfig**](docs/ConfigSvcAPI.md#getconfig) | **Get** /config-svc/config | Get Config
@@ -179,11 +177,11 @@ Class | Method | HTTP request | Description
  - [ChatSvcEventMessageAdded](docs/ChatSvcEventMessageAdded.md)
  - [ChatSvcEventThreadAdded](docs/ChatSvcEventThreadAdded.md)
  - [ChatSvcEventThreadUpdate](docs/ChatSvcEventThreadUpdate.md)
+ - [ChatSvcListMessagesRequest](docs/ChatSvcListMessagesRequest.md)
  - [ChatSvcListMessagesResponse](docs/ChatSvcListMessagesResponse.md)
+ - [ChatSvcListThreadsRequest](docs/ChatSvcListThreadsRequest.md)
  - [ChatSvcListThreadsResponse](docs/ChatSvcListThreadsResponse.md)
  - [ChatSvcMessage](docs/ChatSvcMessage.md)
- - [ChatSvcReadMessageResponse](docs/ChatSvcReadMessageResponse.md)
- - [ChatSvcReadThreadResponse](docs/ChatSvcReadThreadResponse.md)
  - [ChatSvcSaveMessageRequest](docs/ChatSvcSaveMessageRequest.md)
  - [ChatSvcSaveThreadRequest](docs/ChatSvcSaveThreadRequest.md)
  - [ChatSvcSaveThreadResponse](docs/ChatSvcSaveThreadResponse.md)

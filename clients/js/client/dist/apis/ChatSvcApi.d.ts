@@ -10,64 +10,30 @@
  * Do not edit the class manually.
  */
 import * as runtime from '../runtime';
-import type { ChatSvcAddMessageRequest, ChatSvcAddThreadRequest, ChatSvcAddThreadResponse, ChatSvcEventThreadUpdate, ChatSvcGetMessageResponse, ChatSvcGetMessagesResponse, ChatSvcGetThreadResponse, ChatSvcGetThreadsResponse, ChatSvcUpdateThreadRequest } from '../models/index';
-export interface AddMessageRequest {
-    threadId: string;
-    body: ChatSvcAddMessageRequest;
-}
-export interface AddThreadRequest {
-    body: ChatSvcAddThreadRequest;
-}
+import type { ChatSvcEventThreadUpdate, ChatSvcListMessagesRequest, ChatSvcListMessagesResponse, ChatSvcListThreadsRequest, ChatSvcListThreadsResponse, ChatSvcSaveMessageRequest, ChatSvcSaveThreadRequest, ChatSvcSaveThreadResponse } from '../models/index';
 export interface DeleteMessageRequest {
     messageId: string;
 }
 export interface DeleteThreadRequest {
     threadId: string;
 }
-export interface GetMessageRequest {
-    messageId: string;
+export interface ListMessagesRequest {
+    body: ChatSvcListMessagesRequest;
 }
-export interface GetMessagesRequest {
+export interface ListThreadsRequest {
+    body: ChatSvcListThreadsRequest;
+}
+export interface SaveMessageRequest {
     threadId: string;
+    body: ChatSvcSaveMessageRequest;
 }
-export interface GetThreadRequest {
-    threadId: string;
-}
-export interface GetThreadsRequest {
-    body?: object;
-}
-export interface UpdateThreadRequest {
-    threadId: string;
-    body: ChatSvcUpdateThreadRequest;
+export interface SaveThreadRequest {
+    body: ChatSvcSaveThreadRequest;
 }
 /**
  *
  */
 export declare class ChatSvcApi extends runtime.BaseAPI {
-    /**
-     * Add a new message to a specific thread.
-     * Add Message
-     */
-    addMessageRaw(requestParameters: AddMessageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{
-        [key: string]: any;
-    }>>;
-    /**
-     * Add a new message to a specific thread.
-     * Add Message
-     */
-    addMessage(requestParameters: AddMessageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{
-        [key: string]: any;
-    }>;
-    /**
-     * Create a new chat thread and add the requesting user to it. Requires the `chat-svc:thread:create` permission.
-     * Add Thread
-     */
-    addThreadRaw(requestParameters: AddThreadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcAddThreadResponse>>;
-    /**
-     * Create a new chat thread and add the requesting user to it. Requires the `chat-svc:thread:create` permission.
-     * Add Thread
-     */
-    addThread(requestParameters: AddThreadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcAddThreadResponse>;
     /**
      * Delete a specific message from a chat thread by its ID
      * Delete a Message
@@ -107,53 +73,47 @@ export declare class ChatSvcApi extends runtime.BaseAPI {
      */
     events(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcEventThreadUpdate>;
     /**
-     * Fetch information about a specific chat message by its ID
-     * Get Message
+     * Fetch messages (and associated assets) for a specific chat thread.
+     * List Messages
      */
-    getMessageRaw(requestParameters: GetMessageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcGetMessageResponse>>;
-    /**
-     * Fetch information about a specific chat message by its ID
-     * Get Message
-     */
-    getMessage(requestParameters: GetMessageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcGetMessageResponse>;
+    listMessagesRaw(requestParameters: ListMessagesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcListMessagesResponse>>;
     /**
      * Fetch messages (and associated assets) for a specific chat thread.
      * List Messages
      */
-    getMessagesRaw(requestParameters: GetMessagesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcGetMessagesResponse>>;
-    /**
-     * Fetch messages (and associated assets) for a specific chat thread.
-     * List Messages
-     */
-    getMessages(requestParameters: GetMessagesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcGetMessagesResponse>;
-    /**
-     * Fetch information about a specific chat thread by its ID
-     * Get Thread
-     */
-    getThreadRaw(requestParameters: GetThreadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcGetThreadResponse>>;
-    /**
-     * Fetch information about a specific chat thread by its ID
-     * Get Thread
-     */
-    getThread(requestParameters: GetThreadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcGetThreadResponse>;
+    listMessages(requestParameters: ListMessagesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcListMessagesResponse>;
     /**
      * Fetch all chat threads associated with a specific user
-     * Get Threads
+     * List Threads
      */
-    getThreadsRaw(requestParameters: GetThreadsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcGetThreadsResponse>>;
+    listThreadsRaw(requestParameters: ListThreadsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcListThreadsResponse>>;
     /**
      * Fetch all chat threads associated with a specific user
-     * Get Threads
+     * List Threads
      */
-    getThreads(requestParameters?: GetThreadsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcGetThreadsResponse>;
+    listThreads(requestParameters: ListThreadsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcListThreadsResponse>;
     /**
-     * Modify the details of a specific chat thread
-     * Update Thread
+     * Save a new message to a specific thread.
+     * Save Message
      */
-    updateThreadRaw(requestParameters: UpdateThreadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcAddThreadResponse>>;
+    saveMessageRaw(requestParameters: SaveMessageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{
+        [key: string]: any;
+    }>>;
     /**
-     * Modify the details of a specific chat thread
-     * Update Thread
+     * Save a new message to a specific thread.
+     * Save Message
      */
-    updateThread(requestParameters: UpdateThreadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcAddThreadResponse>;
+    saveMessage(requestParameters: SaveMessageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{
+        [key: string]: any;
+    }>;
+    /**
+     * Create or update a chat thread. Requires the `chat-svc:thread:edit` permission.
+     * Save Thread
+     */
+    saveThreadRaw(requestParameters: SaveThreadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcSaveThreadResponse>>;
+    /**
+     * Create or update a chat thread. Requires the `chat-svc:thread:edit` permission.
+     * Save Thread
+     */
+    saveThread(requestParameters: SaveThreadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcSaveThreadResponse>;
 }

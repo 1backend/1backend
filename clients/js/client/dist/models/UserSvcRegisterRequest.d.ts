@@ -9,7 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import type { UserSvcContact } from './UserSvcContact';
+import type { UserSvcContactInput } from './UserSvcContactInput';
 /**
  *
  * @export
@@ -18,10 +18,10 @@ import type { UserSvcContact } from './UserSvcContact';
 export interface UserSvcRegisterRequest {
     /**
      *
-     * @type {UserSvcContact}
+     * @type {UserSvcContactInput}
      * @memberof UserSvcRegisterRequest
      */
-    contact?: UserSvcContact;
+    contact?: UserSvcContactInput;
     /**
      *
      * @type {string}

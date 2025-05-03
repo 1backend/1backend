@@ -15,45 +15,33 @@
 
 import * as runtime from '../runtime';
 import type {
-  ChatSvcAddMessageRequest,
-  ChatSvcAddThreadRequest,
-  ChatSvcAddThreadResponse,
   ChatSvcEventThreadUpdate,
-  ChatSvcGetMessageResponse,
-  ChatSvcGetMessagesResponse,
-  ChatSvcGetThreadResponse,
-  ChatSvcGetThreadsResponse,
-  ChatSvcUpdateThreadRequest,
+  ChatSvcListMessagesRequest,
+  ChatSvcListMessagesResponse,
+  ChatSvcListThreadsRequest,
+  ChatSvcListThreadsResponse,
+  ChatSvcSaveMessageRequest,
+  ChatSvcSaveThreadRequest,
+  ChatSvcSaveThreadResponse,
 } from '../models/index';
 import {
-    ChatSvcAddMessageRequestFromJSON,
-    ChatSvcAddMessageRequestToJSON,
-    ChatSvcAddThreadRequestFromJSON,
-    ChatSvcAddThreadRequestToJSON,
-    ChatSvcAddThreadResponseFromJSON,
-    ChatSvcAddThreadResponseToJSON,
     ChatSvcEventThreadUpdateFromJSON,
     ChatSvcEventThreadUpdateToJSON,
-    ChatSvcGetMessageResponseFromJSON,
-    ChatSvcGetMessageResponseToJSON,
-    ChatSvcGetMessagesResponseFromJSON,
-    ChatSvcGetMessagesResponseToJSON,
-    ChatSvcGetThreadResponseFromJSON,
-    ChatSvcGetThreadResponseToJSON,
-    ChatSvcGetThreadsResponseFromJSON,
-    ChatSvcGetThreadsResponseToJSON,
-    ChatSvcUpdateThreadRequestFromJSON,
-    ChatSvcUpdateThreadRequestToJSON,
+    ChatSvcListMessagesRequestFromJSON,
+    ChatSvcListMessagesRequestToJSON,
+    ChatSvcListMessagesResponseFromJSON,
+    ChatSvcListMessagesResponseToJSON,
+    ChatSvcListThreadsRequestFromJSON,
+    ChatSvcListThreadsRequestToJSON,
+    ChatSvcListThreadsResponseFromJSON,
+    ChatSvcListThreadsResponseToJSON,
+    ChatSvcSaveMessageRequestFromJSON,
+    ChatSvcSaveMessageRequestToJSON,
+    ChatSvcSaveThreadRequestFromJSON,
+    ChatSvcSaveThreadRequestToJSON,
+    ChatSvcSaveThreadResponseFromJSON,
+    ChatSvcSaveThreadResponseToJSON,
 } from '../models/index';
-
-export interface AddMessageRequest {
-    threadId: string;
-    body: ChatSvcAddMessageRequest;
-}
-
-export interface AddThreadRequest {
-    body: ChatSvcAddThreadRequest;
-}
 
 export interface DeleteMessageRequest {
     messageId: string;
@@ -63,122 +51,27 @@ export interface DeleteThreadRequest {
     threadId: string;
 }
 
-export interface GetMessageRequest {
-    messageId: string;
+export interface ListMessagesRequest {
+    body: ChatSvcListMessagesRequest;
 }
 
-export interface GetMessagesRequest {
+export interface ListThreadsRequest {
+    body: ChatSvcListThreadsRequest;
+}
+
+export interface SaveMessageRequest {
     threadId: string;
+    body: ChatSvcSaveMessageRequest;
 }
 
-export interface GetThreadRequest {
-    threadId: string;
-}
-
-export interface GetThreadsRequest {
-    body?: object;
-}
-
-export interface UpdateThreadRequest {
-    threadId: string;
-    body: ChatSvcUpdateThreadRequest;
+export interface SaveThreadRequest {
+    body: ChatSvcSaveThreadRequest;
 }
 
 /**
  * 
  */
 export class ChatSvcApi extends runtime.BaseAPI {
-
-    /**
-     * Add a new message to a specific thread.
-     * Add Message
-     */
-    async addMessageRaw(requestParameters: AddMessageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: any; }>> {
-        if (requestParameters['threadId'] == null) {
-            throw new runtime.RequiredError(
-                'threadId',
-                'Required parameter "threadId" was null or undefined when calling addMessage().'
-            );
-        }
-
-        if (requestParameters['body'] == null) {
-            throw new runtime.RequiredError(
-                'body',
-                'Required parameter "body" was null or undefined when calling addMessage().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
-        }
-
-        const response = await this.request({
-            path: `/chat-svc/thread/{threadId}/message`.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId']))),
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: ChatSvcAddMessageRequestToJSON(requestParameters['body']),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse<any>(response);
-    }
-
-    /**
-     * Add a new message to a specific thread.
-     * Add Message
-     */
-    async addMessage(requestParameters: AddMessageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: any; }> {
-        const response = await this.addMessageRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Create a new chat thread and add the requesting user to it. Requires the `chat-svc:thread:create` permission.
-     * Add Thread
-     */
-    async addThreadRaw(requestParameters: AddThreadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcAddThreadResponse>> {
-        if (requestParameters['body'] == null) {
-            throw new runtime.RequiredError(
-                'body',
-                'Required parameter "body" was null or undefined when calling addThread().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
-        }
-
-        const response = await this.request({
-            path: `/chat-svc/thread`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: ChatSvcAddThreadRequestToJSON(requestParameters['body']),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => ChatSvcAddThreadResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * Create a new chat thread and add the requesting user to it. Requires the `chat-svc:thread:create` permission.
-     * Add Thread
-     */
-    async addThread(requestParameters: AddThreadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcAddThreadResponse> {
-        const response = await this.addThreadRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
 
     /**
      * Delete a specific message from a chat thread by its ID
@@ -287,53 +180,14 @@ export class ChatSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Fetch information about a specific chat message by its ID
-     * Get Message
-     */
-    async getMessageRaw(requestParameters: GetMessageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcGetMessageResponse>> {
-        if (requestParameters['messageId'] == null) {
-            throw new runtime.RequiredError(
-                'messageId',
-                'Required parameter "messageId" was null or undefined when calling getMessage().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
-        }
-
-        const response = await this.request({
-            path: `/chat-svc/message/{messageId}`.replace(`{${"messageId"}}`, encodeURIComponent(String(requestParameters['messageId']))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => ChatSvcGetMessageResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * Fetch information about a specific chat message by its ID
-     * Get Message
-     */
-    async getMessage(requestParameters: GetMessageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcGetMessageResponse> {
-        const response = await this.getMessageRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
      * Fetch messages (and associated assets) for a specific chat thread.
      * List Messages
      */
-    async getMessagesRaw(requestParameters: GetMessagesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcGetMessagesResponse>> {
-        if (requestParameters['threadId'] == null) {
+    async listMessagesRaw(requestParameters: ListMessagesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcListMessagesResponse>> {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
-                'threadId',
-                'Required parameter "threadId" was null or undefined when calling getMessages().'
+                'body',
+                'Required parameter "body" was null or undefined when calling listMessages().'
             );
         }
 
@@ -341,73 +195,44 @@ export class ChatSvcApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        headerParameters['Content-Type'] = 'application/json';
+
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
         const response = await this.request({
-            path: `/chat-svc/thread/{threadId}/messages`.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId']))),
+            path: `/chat-svc/messages`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
+            body: ChatSvcListMessagesRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ChatSvcGetMessagesResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ChatSvcListMessagesResponseFromJSON(jsonValue));
     }
 
     /**
      * Fetch messages (and associated assets) for a specific chat thread.
      * List Messages
      */
-    async getMessages(requestParameters: GetMessagesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcGetMessagesResponse> {
-        const response = await this.getMessagesRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Fetch information about a specific chat thread by its ID
-     * Get Thread
-     */
-    async getThreadRaw(requestParameters: GetThreadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcGetThreadResponse>> {
-        if (requestParameters['threadId'] == null) {
-            throw new runtime.RequiredError(
-                'threadId',
-                'Required parameter "threadId" was null or undefined when calling getThread().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
-        }
-
-        const response = await this.request({
-            path: `/chat-svc/thread/{threadId}`.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId']))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => ChatSvcGetThreadResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * Fetch information about a specific chat thread by its ID
-     * Get Thread
-     */
-    async getThread(requestParameters: GetThreadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcGetThreadResponse> {
-        const response = await this.getThreadRaw(requestParameters, initOverrides);
+    async listMessages(requestParameters: ListMessagesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcListMessagesResponse> {
+        const response = await this.listMessagesRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      * Fetch all chat threads associated with a specific user
-     * Get Threads
+     * List Threads
      */
-    async getThreadsRaw(requestParameters: GetThreadsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcGetThreadsResponse>> {
+    async listThreadsRaw(requestParameters: ListThreadsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcListThreadsResponse>> {
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling listThreads().'
+            );
+        }
+
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -423,37 +248,37 @@ export class ChatSvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters['body'] as any,
+            body: ChatSvcListThreadsRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ChatSvcGetThreadsResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ChatSvcListThreadsResponseFromJSON(jsonValue));
     }
 
     /**
      * Fetch all chat threads associated with a specific user
-     * Get Threads
+     * List Threads
      */
-    async getThreads(requestParameters: GetThreadsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcGetThreadsResponse> {
-        const response = await this.getThreadsRaw(requestParameters, initOverrides);
+    async listThreads(requestParameters: ListThreadsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcListThreadsResponse> {
+        const response = await this.listThreadsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
-     * Modify the details of a specific chat thread
-     * Update Thread
+     * Save a new message to a specific thread.
+     * Save Message
      */
-    async updateThreadRaw(requestParameters: UpdateThreadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcAddThreadResponse>> {
+    async saveMessageRaw(requestParameters: SaveMessageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: any; }>> {
         if (requestParameters['threadId'] == null) {
             throw new runtime.RequiredError(
                 'threadId',
-                'Required parameter "threadId" was null or undefined when calling updateThread().'
+                'Required parameter "threadId" was null or undefined when calling saveMessage().'
             );
         }
 
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
-                'Required parameter "body" was null or undefined when calling updateThread().'
+                'Required parameter "body" was null or undefined when calling saveMessage().'
             );
         }
 
@@ -468,22 +293,64 @@ export class ChatSvcApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/chat-svc/thread/{threadId}`.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId']))),
-            method: 'PUT',
+            path: `/chat-svc/thread/{threadId}/message`.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId']))),
+            method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: ChatSvcUpdateThreadRequestToJSON(requestParameters['body']),
+            body: ChatSvcSaveMessageRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ChatSvcAddThreadResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse<any>(response);
     }
 
     /**
-     * Modify the details of a specific chat thread
-     * Update Thread
+     * Save a new message to a specific thread.
+     * Save Message
      */
-    async updateThread(requestParameters: UpdateThreadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcAddThreadResponse> {
-        const response = await this.updateThreadRaw(requestParameters, initOverrides);
+    async saveMessage(requestParameters: SaveMessageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: any; }> {
+        const response = await this.saveMessageRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Create or update a chat thread. Requires the `chat-svc:thread:edit` permission.
+     * Save Thread
+     */
+    async saveThreadRaw(requestParameters: SaveThreadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ChatSvcSaveThreadResponse>> {
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling saveThread().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/chat-svc/thread`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ChatSvcSaveThreadRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ChatSvcSaveThreadResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Create or update a chat thread. Requires the `chat-svc:thread:edit` permission.
+     * Save Thread
+     */
+    async saveThread(requestParameters: SaveThreadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ChatSvcSaveThreadResponse> {
+        const response = await this.saveThreadRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

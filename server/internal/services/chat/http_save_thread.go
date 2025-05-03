@@ -72,13 +72,18 @@ func (a *ChatService) SaveThread(
 	defer r.Body.Close()
 
 	if req.Id != "" {
-		thread, found, err := a.getThread(req.Id)
+		threads, err := a.listThreads(
+			isAuthRsp.User.Id,
+			&chat.ListThreadsRequest{
+				Ids: []string{req.Id},
+			},
+		)
 		if err != nil {
 			endpoint.WriteErr(w, http.StatusInternalServerError, err)
 			return
 		}
-		if found {
-			thread, err := a.updateThread(isAuthRsp.User.Id, thread, &req)
+		if len(threads) > 0 {
+			thread, err := a.updateThread(isAuthRsp.User.Id, threads[0], &req)
 			if err != nil {
 				endpoint.WriteErr(w, http.StatusInternalServerError, err)
 				return

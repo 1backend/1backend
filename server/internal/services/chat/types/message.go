@@ -84,7 +84,8 @@ type SaveMessageRequest struct {
 type SaveMessageResponse struct{}
 
 type ListMessagesRequest struct {
-	ThreadId string `json:"threadId"`
+	Ids      []string `json:"ids,omitempty"`
+	ThreadId string   `json:"threadId,omitempty"`
 }
 
 type ListMessagesResponse struct {
@@ -93,9 +94,4 @@ type ListMessagesResponse struct {
 
 type DeleteMessageRequest struct {
 	MessageId string `json:"messageId"`
-}
-
-type ReadMessageResponse struct {
-	Exists  bool     `json:"exists"`
-	Message *Message `json:"message"`
 }

@@ -65,11 +65,6 @@ func (cs *ChatService) RegisterRoutes(router *mux.Router) {
 		Methods("OPTIONS", "POST")
 
 	router.HandleFunc("/chat-svc/message/{messageId}", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
-		cs.ReadMessage(w, r)
-	}))).
-		Methods("OPTIONS", "GET")
-
-	router.HandleFunc("/chat-svc/message/{messageId}", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		cs.DeleteMessage(w, r)
 	}))).
 		Methods("OPTIONS", "DELETE")
@@ -93,11 +88,6 @@ func (cs *ChatService) RegisterRoutes(router *mux.Router) {
 		cs.ListThreads(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
-
-	router.HandleFunc("/chat-svc/thread/{threadId}", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
-		cs.ReadThread(w, r)
-	}))).
-		Methods("OPTIONS", "GET")
 
 	router.HandleFunc("/chat-svc/evens", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		cs.Events(w, r)

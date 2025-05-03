@@ -9,9 +9,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UserSvcContact } from './userSvcContact';
+import { UserSvcContactInput } from './userSvcContactInput';
 export declare class UserSvcRegisterRequest {
-    'contact'?: UserSvcContact;
+    'contact'?: UserSvcContactInput;
     'name'?: string;
     'password'?: string;
     /**

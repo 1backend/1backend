@@ -15,6 +15,15 @@ definitions:
       threadId:
         type: string
     type: object
+  chat_svc.ListMessagesRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+      threadId:
+        type: string
+    type: object
   chat_svc.ListMessagesResponse:
     properties:
       messages:
@@ -23,6 +32,11 @@ definitions:
         type: array
     type: object
   chat_svc.ListThreadsRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
     type: object
   chat_svc.ListThreadsResponse:
     properties:
@@ -65,20 +79,6 @@ definitions:
     - id
     - threadId
     - updatedAt
-    type: object
-  chat_svc.ReadMessageResponse:
-    properties:
-      exists:
-        type: boolean
-      message:
-        $ref: '#/definitions/chat_svc.Message'
-    type: object
-  chat_svc.ReadThreadResponse:
-    properties:
-      exists:
-        type: boolean
-      thread:
-        $ref: '#/definitions/chat_svc.Thread'
     type: object
   chat_svc.SaveMessageRequest:
     properties:
@@ -3456,24 +3456,26 @@ paths:
       summary: Delete a Message
       tags:
       - Chat Svc
-    get:
+  /chat-svc/messages:
+    post:
       consumes:
       - application/json
-      description: Fetch information about a specific chat message by its ID
-      operationId: readMessage
+      description: Fetch messages (and associated assets) for a specific chat thread.
+      operationId: listMessages
       parameters:
-      - description: Message ID
-        in: path
-        name: messageId
+      - description: List Messages Request
+        in: body
+        name: body
         required: true
-        type: string
+        schema:
+          $ref: '#/definitions/chat_svc.ListMessagesRequest'
       produces:
       - application/json
       responses:
         "200":
-          description: Message details successfully retrieved
+          description: Messages and assets successfully retrieved
           schema:
-            $ref: '#/definitions/chat_svc.ReadMessageResponse'
+            $ref: '#/definitions/chat_svc.ListMessagesResponse'
         "400":
           description: Invalid JSON
           schema:
@@ -3488,7 +3490,7 @@ paths:
             type: string
       security:
       - BearerAuth: []
-      summary: Read Message
+      summary: List Messages
       tags:
       - Chat Svc
   /chat-svc/thread:
@@ -3567,41 +3569,6 @@ paths:
       summary: Delete a Thread
       tags:
       - Chat Svc
-    get:
-      consumes:
-      - application/json
-      description: Fetch information about a specific chat thread by its ID
-      operationId: readThread
-      parameters:
-      - description: Thread ID
-        in: path
-        name: threadId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Thread details successfully retrieved
-          schema:
-            $ref: '#/definitions/chat_svc.ReadThreadResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            type: string
-        "401":
-          description: Unauthorized
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: Read Thread
-      tags:
-      - Chat Svc
   /chat-svc/thread/{threadId}/message:
     post:
       consumes:
@@ -3645,42 +3612,6 @@ paths:
       summary: Save Message
       tags:
       - Chat Svc
-  /chat-svc/thread/{threadId}/messages:
-    post:
-      consumes:
-      - application/json
-      description: Fetch messages (and associated assets) for a specific chat thread.
-      operationId: listMessages
-      parameters:
-      - description: Thread ID
-        in: path
-        name: threadId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Messages and assets successfully retrieved
-          schema:
-            $ref: '#/definitions/chat_svc.ListMessagesResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            type: string
-        "401":
-          description: Unauthorized
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      security:
-      - BearerAuth: []
-      summary: List Messages
-      tags:
-      - Chat Svc
   /chat-svc/threads:
     post:
       consumes:
@@ -3691,6 +3622,7 @@ paths:
       - description: List Threads Request
         in: body
         name: body
+        required: true
         schema:
           $ref: '#/definitions/chat_svc.ListThreadsRequest'
       produces:

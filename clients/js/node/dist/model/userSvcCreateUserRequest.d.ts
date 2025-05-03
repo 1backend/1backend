@@ -10,12 +10,12 @@
  * Do not edit the class manually.
  */
 import { UserSvcContact } from './userSvcContact';
-import { UserSvcUser } from './userSvcUser';
+import { UserSvcUserInput } from './userSvcUserInput';
 export declare class UserSvcCreateUserRequest {
     'contacts'?: Array<UserSvcContact>;
     'password'?: string;
     'roleIds'?: Array<string>;
-    'user'?: UserSvcUser;
+    'user'?: UserSvcUserInput;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

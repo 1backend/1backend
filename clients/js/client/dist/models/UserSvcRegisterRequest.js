@@ -11,7 +11,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UserSvcContactFromJSON, UserSvcContactToJSON, } from './UserSvcContact';
+import { UserSvcContactInputFromJSON, UserSvcContactInputToJSON, } from './UserSvcContactInput';
 /**
  * Check if a given object implements the UserSvcRegisterRequest interface.
  */
@@ -28,7 +28,7 @@ export function UserSvcRegisterRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'contact': json['contact'] == null ? undefined : UserSvcContactFromJSON(json['contact']),
+        'contact': json['contact'] == null ? undefined : UserSvcContactInputFromJSON(json['contact']),
         'name': json['name'] == null ? undefined : json['name'],
         'password': json['password'] == null ? undefined : json['password'],
         'slug': json['slug'],
@@ -42,7 +42,7 @@ export function UserSvcRegisterRequestToJSONTyped(value, ignoreDiscriminator = f
         return value;
     }
     return {
-        'contact': UserSvcContactToJSON(value['contact']),
+        'contact': UserSvcContactInputToJSON(value['contact']),
         'name': value['name'],
         'password': value['password'],
         'slug': value['slug'],

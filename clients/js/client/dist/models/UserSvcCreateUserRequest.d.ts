@@ -9,8 +9,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import type { UserSvcUserInput } from './UserSvcUserInput';
 import type { UserSvcContact } from './UserSvcContact';
-import type { UserSvcUser } from './UserSvcUser';
 /**
  *
  * @export
@@ -37,10 +37,10 @@ export interface UserSvcCreateUserRequest {
     roleIds?: Array<string>;
     /**
      *
-     * @type {UserSvcUser}
+     * @type {UserSvcUserInput}
      * @memberof UserSvcCreateUserRequest
      */
-    user?: UserSvcUser;
+    user?: UserSvcUserInput;
 }
 /**
  * Check if a given object implements the UserSvcCreateUserRequest interface.

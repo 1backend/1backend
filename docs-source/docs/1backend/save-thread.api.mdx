@@ -1,0 +1,72 @@
+---
+id: save-thread
+title: "Save Thread"
+description: "Create or update a chat thread."
+sidebar_label: "Save Thread"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVlFv2zYQ/isEnxUpmTcM09OSoijSFUtWp0+OsZ6ps8SGIhmSsusZ+u/DkVKtJuq2bhj2shdDPt4dv7v77o5HXqEXTtogjeYlf+EQAjLjWGcr+gImGggsNA6hyu/1W3zspEPPQoPsPZ2d+Z0o03mJlQzvmUXXSu+l0TnPuLHogNxfV7zkHnZ4F5V5xh0+dujDlakOvDxyYXRAHegTrFVSRLPigydoR+5Fgy3Ql3XkNEj09E9W9IsfobUKeclD437FdvmLtq83zSue8XCwJPfBSV3zPuNBBtI8Pgn+jsTMbGNsQ8Sz5sZKcV35GQ/DCatwKzV6tm+kaFg08BO3bIPK6NqzYPJ7fZeOBWjmTFc36sA2pEnfgfCAZwFqz7bGDQ48AZMB2wjiOcIkAOfgQP87j24W8Lt0EKHJyo/Bkz6BNxGUR0Ij/SQnf/Xqk8BsPqAIvCfR5xiWsEOWOMHeJkYM3JAOK14G12FPAm+N9qnm35yfz2Q/+fCdEOj9tlPqwEQkNJHtb7IrxfxcPji+DLNZ+J+Tf87JOGC+lMD/krEn6q0mZY5FncJeP+f2DNv7jH87R9ZrvQMlK/Z6efPz17DzCfzhgouZRGnoQmOc/O3r6D93wXfzEQR0GhRbotuhYy+dM+6f3dRn3KPonAwHXq6O/ArBobvsQsPL1bqnjEPtqS4vaCstd4Kq0GJoDC0Xa+LosED6vBi3UxHGheMjUh99d06RUqGMANUYH8qLi8Xie063jCCWhDX1+xTKsxY7WGT3g8o9Z1ujlNljxTYHBsxbEMhAVyyYB9QMRKIX2zrTRvISpykY9sbUUjPUlTVSh0hb8t8gVEip1dBSxi6HwsbEnqYBWPkTJgpTst+etuvLcRClbTkzjtL0GWsxnSerUbiedOVJSMNOb824v0HEwmMLUsV1r9D/6KWuOwXBGZ0L004Cub1my85a46huqSJNCLYsiosNiAfUFRkU/NnSuLw+0xDkDlkrhTNUWCnQM6sgbI1rKXdKCtQ+Rj3e9+r2Ddst8vPPbvNlUez3+7zWXW5cXQx2voDaqrNFfp43oVVxVKBr/c12mW47gfV7qGt0uTRFVCkmKb24SoHwjBP3EvzzfJGfnzmRL34gv0TcFvQE6WQp8iexTx5K/8Z7bSBTwI+hsAqkjuOYknUcOmvFRz+knjCuM049RIfH4wY8vnOq70n82KGjbl5nfAdOwoaysiLeDLSmZnzAA0WT4jqjfqJ0geoSr59MkT4bLS6FQBv+UHc6IG5vlnc845vhwdmaimwc7OnBAXte8vhgJevY9FF25Ap03UFNuskntRgMo+DUfAQpGz8oqvFIHyYInzZvCoR+KaxZk+MxtXbff9JPR1+0+DQxkjYVcd33/e/Rcx4M
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Save Thread"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/chat-svc/thread"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Create or update a chat thread.
+Requires the `chat-svc:thread:edit` permission.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"id":{"example":"thr_emSQnpJbhG","type":"string"},"title":{"description":"Title of the thread.","type":"string"},"topicIds":{"description":"TopicIds defines which topics the thread belongs to.\nTopics can roughly be thought of as tags for threads.","items":{"type":"string"},"type":"array"},"userIds":{"description":"UserIds the ids of the users who can see this thread.","items":{"type":"string"},"type":"array"}},"type":"object"}}},"description":"Save Thread Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Thread successfully created","content":{"application/json":{"schema":{"properties":{"thread":{"properties":{"createdAt":{"type":"string"},"id":{"example":"thr_emSQnpJbhG","type":"string"},"title":{"description":"Title of the thread.","type":"string"},"topicIds":{"description":"TopicIds defines which topics the thread belongs to.\nTopics can roughly be thought of as tags for threads.","items":{"type":"string"},"type":"array"},"updatedAt":{"type":"string"},"userIds":{"description":"UserIds the ids of the users who can see this thread.","items":{"type":"string"},"type":"array"}},"required":["createdAt","id","updatedAt"],"type":"object"}},"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"type":"string"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"string"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      
