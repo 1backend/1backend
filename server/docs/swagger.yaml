@@ -2674,12 +2674,23 @@ definitions:
       id:
         type: string
       token:
+        description: |-
+          Token is a signed JWT used to authenticate the user without querying the User Svc.
+          You can verify it using the public key at `/user-svc/public-key`.
+
+          The token is just a JSON object with fields like:
+          - "oui": the user ID (e.g., "usr_dC4K75Cbp6")
+          - "olu": the user slug (e.g., "test-user-slug-0")
+          - "oro": a list of roles, such as:
+            - "user-svc:user"
+            - "user-svc:org:{org_dC4K7NNDCG}:user"
         type: string
       updatedAt:
         type: string
       userId:
         type: string
     required:
+    - id
     - token
     - userId
     type: object
@@ -2947,9 +2958,6 @@ definitions:
         type: array
       limit:
         example: 10
-        type: integer
-      offset:
-        example: 0
         type: integer
       orderByDesc:
         example: false
@@ -3227,8 +3235,6 @@ definitions:
       name:
         description: Full name of the user.
         example: Jane Doe
-        type: string
-      passwordHash:
         type: string
       slug:
         description: URL-friendly unique (inside the 1Backend platform) identifier
@@ -6005,7 +6011,7 @@ paths:
             $ref: '#/definitions/user_svc.ErrorResponse'
       security:
       - BearerAuth: []
-      summary: Change User Password
+      summary: Change Password
       tags:
       - User Svc
   /user-svc/enrolls:

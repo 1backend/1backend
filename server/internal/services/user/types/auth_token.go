@@ -10,13 +10,23 @@ package user_svc
 import "time"
 
 type AuthToken struct {
-	Id        string     `json:"id,omitempty"`
+	Id        string     `json:"id" binding:"required"`
 	CreatedAt time.Time  `json:"createdAt,omitempty"`
 	UpdatedAt time.Time  `json:"updatedAt,omitempty"`
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`
 
 	UserId string `json:"userId,omitempty" binding:"required"`
-	Token  string `json:"token,omitempty" binding:"required"`
+
+	// Token is a signed JWT used to authenticate the user without querying the User Svc.
+	// You can verify it using the public key at `/user-svc/public-key`.
+	//
+	// The token is just a JSON object with fields like:
+	// - "oui": the user ID (e.g., "usr_dC4K75Cbp6")
+	// - "olu": the user slug (e.g., "test-user-slug-0")
+	// - "oro": a list of roles, such as:
+	//   - "user-svc:user"
+	//   - "user-svc:org:{org_dC4K7NNDCG}:user"
+	Token string `json:"token,omitempty" binding:"required"`
 
 	// Active tokens contain the most up-to-date information.
 	// When a user's role changes—due to role assignment, organization

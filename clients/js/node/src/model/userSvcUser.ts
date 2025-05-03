@@ -21,7 +21,6 @@ export class UserSvcUser {
     * Full name of the user.
     */
     'name'?: string;
-    'passwordHash'?: string;
     /**
     * URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
     */
@@ -55,11 +54,6 @@ export class UserSvcUser {
         {
             "name": "name",
             "baseName": "name",
-            "type": "string"
-        },
-        {
-            "name": "passwordHash",
-            "baseName": "passwordHash",
             "type": "string"
         },
         {

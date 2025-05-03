@@ -29,7 +29,6 @@ type UserSvcListUsersRequest struct {
 	// Ids of the users to list.
 	Ids []string `json:"ids,omitempty"`
 	Limit *int32 `json:"limit,omitempty"`
-	Offset *int32 `json:"offset,omitempty"`
 	OrderByDesc *bool `json:"orderByDesc,omitempty"`
 	OrderByField *UserSvcListUsersOrderByField `json:"orderByField,omitempty"`
 }
@@ -211,38 +210,6 @@ func (o *UserSvcListUsersRequest) SetLimit(v int32) {
 	o.Limit = &v
 }
 
-// GetOffset returns the Offset field value if set, zero value otherwise.
-func (o *UserSvcListUsersRequest) GetOffset() int32 {
-	if o == nil || IsNil(o.Offset) {
-		var ret int32
-		return ret
-	}
-	return *o.Offset
-}
-
-// GetOffsetOk returns a tuple with the Offset field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcListUsersRequest) GetOffsetOk() (*int32, bool) {
-	if o == nil || IsNil(o.Offset) {
-		return nil, false
-	}
-	return o.Offset, true
-}
-
-// HasOffset returns a boolean if a field has been set.
-func (o *UserSvcListUsersRequest) HasOffset() bool {
-	if o != nil && !IsNil(o.Offset) {
-		return true
-	}
-
-	return false
-}
-
-// SetOffset gets a reference to the given int32 and assigns it to the Offset field.
-func (o *UserSvcListUsersRequest) SetOffset(v int32) {
-	o.Offset = &v
-}
-
 // GetOrderByDesc returns the OrderByDesc field value if set, zero value otherwise.
 func (o *UserSvcListUsersRequest) GetOrderByDesc() bool {
 	if o == nil || IsNil(o.OrderByDesc) {
@@ -331,9 +298,6 @@ func (o UserSvcListUsersRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Limit) {
 		toSerialize["limit"] = o.Limit
-	}
-	if !IsNil(o.Offset) {
-		toSerialize["offset"] = o.Offset
 	}
 	if !IsNil(o.OrderByDesc) {
 		toSerialize["orderByDesc"] = o.OrderByDesc

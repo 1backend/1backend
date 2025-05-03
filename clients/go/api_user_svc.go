@@ -24,7 +24,7 @@ import (
 type UserSvcAPI interface {
 
 	/*
-	ChangePassword Change User Password
+	ChangePassword Change Password
 
 	Allows an authenticated user to change their own password.
 
@@ -374,7 +374,7 @@ func (r ApiChangePasswordRequest) Execute() (map[string]interface{}, *http.Respo
 }
 
 /*
-ChangePassword Change User Password
+ChangePassword Change Password
 
 Allows an authenticated user to change their own password.
 

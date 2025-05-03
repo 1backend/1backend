@@ -15,6 +15,8 @@
  * Check if a given object implements the UserSvcAuthToken interface.
  */
 export function instanceOfUserSvcAuthToken(value) {
+    if (!('id' in value) || value['id'] === undefined)
+        return false;
     if (!('token' in value) || value['token'] === undefined)
         return false;
     if (!('userId' in value) || value['userId'] === undefined)
@@ -32,7 +34,7 @@ export function UserSvcAuthTokenFromJSONTyped(json, ignoreDiscriminator) {
         'active': json['active'] == null ? undefined : json['active'],
         'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
-        'id': json['id'] == null ? undefined : json['id'],
+        'id': json['id'],
         'token': json['token'],
         'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
         'userId': json['userId'],

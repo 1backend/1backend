@@ -20,7 +20,6 @@ export declare class UserSvcUser {
     * Full name of the user.
     */
     'name'?: string;
-    'passwordHash'?: string;
     /**
     * URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
     */

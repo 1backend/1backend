@@ -4005,7 +4005,7 @@ const docTemplate = `{
                 "tags": [
                     "User Svc"
                 ],
-                "summary": "Change User Password",
+                "summary": "Change Password",
                 "operationId": "changePassword",
                 "parameters": [
                     {
@@ -8815,6 +8815,7 @@ const docTemplate = `{
         "user_svc.AuthToken": {
             "type": "object",
             "required": [
+                "id",
                 "token",
                 "userId"
             ],
@@ -8833,6 +8834,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "token": {
+                    "description": "Token is a signed JWT used to authenticate the user without querying the User Svc.\nYou can verify it using the public key at ` + "`" + `/user-svc/public-key` + "`" + `.\n\nThe token is just a JSON object with fields like:\n- \"oui\": the user ID (e.g., \"usr_dC4K75Cbp6\")\n- \"olu\": the user slug (e.g., \"test-user-slug-0\")\n- \"oro\": a list of roles, such as:\n  - \"user-svc:user\"\n  - \"user-svc:org:{org_dC4K7NNDCG}:user\"",
                     "type": "string"
                 },
                 "updatedAt": {
@@ -9179,10 +9181,6 @@ const docTemplate = `{
                 "limit": {
                     "type": "integer",
                     "example": 10
-                },
-                "offset": {
-                    "type": "integer",
-                    "example": 0
                 },
                 "orderByDesc": {
                     "type": "boolean",
@@ -9580,9 +9578,6 @@ const docTemplate = `{
                     "description": "Full name of the user.",
                     "type": "string",
                     "example": "Jane Doe"
-                },
-                "passwordHash": {
-                    "type": "string"
                 },
                 "slug": {
                     "description": "URL-friendly unique (inside the 1Backend platform) identifier for the ` + "`" + `user` + "`" + `.",

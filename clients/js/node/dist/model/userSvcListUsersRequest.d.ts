@@ -28,7 +28,6 @@ export declare class UserSvcListUsersRequest {
     */
     'ids'?: Array<string>;
     'limit'?: number;
-    'offset'?: number;
     'orderByDesc'?: boolean;
     'orderByField'?: UserSvcListUsersOrderByField;
     static discriminator: string | undefined;

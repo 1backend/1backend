@@ -44,7 +44,6 @@ func TestReadSelf(t *testing.T) {
 		require.NoError(t, err)
 
 		require.Equal(t, rsp.User.Slug, "some-slug")
-		require.Empty(t, rsp.User.PasswordHash)
 		require.NotEmpty(t, rsp.Contacts)
 		require.Equal(t, rsp.Contacts[0].Id, "xyz")
 		require.Equal(t, rsp.Contacts[0].Platform, "email")

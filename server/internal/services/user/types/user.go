@@ -167,8 +167,7 @@ type ListUsersRequest struct {
 	// Will return a user list with one element if set.
 	ContactId string `json:"contactId,omitempty"`
 
-	Limit  int64 `json:"limit,omitempty" example:"10"`
-	Offset int64 `json:"offset,omitempty" example:"0"`
+	Limit int64 `json:"limit,omitempty" example:"10"`
 
 	// AfterTime is a time in RFC3339 format.
 	// It is used to paginate the results when the `orderByField` is set to `createdAt` or `updatedAt`.

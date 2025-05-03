@@ -42,7 +42,7 @@ func TestRegister(t *testing.T) {
 		).Execute()
 		require.NoError(t, err)
 
-		tokenId = *rsp.Token.Id
+		tokenId = rsp.Token.Id
 	})
 
 	t.Run("cannot re-register", func(t *testing.T) {
@@ -64,7 +64,7 @@ func TestRegister(t *testing.T) {
 			},
 		).Execute()
 		require.NoError(t, err)
-		require.Equal(t, true, *rsp.Token.Id == tokenId)
+		require.Equal(t, true, rsp.Token.Id == tokenId)
 	})
 }
 

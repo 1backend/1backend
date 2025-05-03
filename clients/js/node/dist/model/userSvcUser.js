@@ -42,11 +42,6 @@ UserSvcUser.attributeTypeMap = [
         "type": "string"
     },
     {
-        "name": "passwordHash",
-        "baseName": "passwordHash",
-        "type": "string"
-    },
-    {
         "name": "slug",
         "baseName": "slug",
         "type": "string"

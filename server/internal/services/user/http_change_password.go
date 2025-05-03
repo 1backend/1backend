@@ -25,7 +25,7 @@ import (
 )
 
 // @ID changePassword
-// @Summary Change User Password
+// @Summary Change Password
 // @Description Allows an authenticated user to change their own password.
 // @Tags User Svc
 // @Accept json
