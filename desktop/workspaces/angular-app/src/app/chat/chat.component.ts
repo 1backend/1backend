@@ -104,7 +104,7 @@ export class ChatComponent implements OnInit {
 		if (!this.activeThread) {
 			this.activeThread = {
 				id: this.server.id('thr'),
-			};
+			} as any;
 		}
 
 		this.models = await this.modelService.getModels();
@@ -161,9 +161,9 @@ export class ChatComponent implements OnInit {
 	public async openNewThread() {
 		this.activeThread = {
 			id: this.server.id('thr'),
-		};
+		} as any;
 		console.debug('Opened empty thread', {
-			threadId: this.activeThread.id,
+			threadId: this.activeThread?.id,
 		});
 	}
 
