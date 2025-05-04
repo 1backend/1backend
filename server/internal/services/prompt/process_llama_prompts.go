@@ -130,19 +130,17 @@ func (p *PromptService) processLlamaCpp(
 			messageId := sdk.Id("msg")
 
 			_, _, err := p.clientFactory.Client(client.WithToken(token)).
-				ChatSvcAPI.AddMessage(context.Background(), currentPrompt.ThreadId).
+				ChatSvcAPI.SaveMessage(context.Background(), currentPrompt.ThreadId).
 				Body(
-					openapi.ChatSvcAddMessageRequest{
-						Message: &openapi.ChatSvcMessage{
-							Id:       messageId,
-							ThreadId: currentPrompt.ThreadId,
-							Text: openapi.PtrString(
-								p.streamManager.ConcatHistoryText(currentPrompt.ThreadId),
-							),
-							Meta: map[string]interface{}{
-								"modelId":    model.Model.Id,
-								"platformId": model.Platform.Id,
-							},
+					openapi.ChatSvcSaveMessageRequest{
+						Id:       &messageId,
+						ThreadId: &currentPrompt.ThreadId,
+						Text: openapi.PtrString(
+							p.streamManager.ConcatHistoryText(currentPrompt.ThreadId),
+						),
+						Meta: map[string]interface{}{
+							"modelId":    model.Model.Id,
+							"platformId": model.Platform.Id,
 						},
 					},
 				).

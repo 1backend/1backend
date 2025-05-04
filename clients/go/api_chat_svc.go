@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.3.0-rc.39
+API version: 0.4.0
 Contact: sales@singulatron.com
 */
 
@@ -22,36 +22,6 @@ import (
 
 
 type ChatSvcAPI interface {
-
-	/*
-	AddMessage Add Message
-
-	Add a new message to a specific thread.
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param threadId Thread ID
-	@return ApiAddMessageRequest
-	*/
-	AddMessage(ctx context.Context, threadId string) ApiAddMessageRequest
-
-	// AddMessageExecute executes the request
-	//  @return map[string]interface{}
-	AddMessageExecute(r ApiAddMessageRequest) (map[string]interface{}, *http.Response, error)
-
-	/*
-	AddThread Add Thread
-
-	Create a new chat thread and add the requesting user to it.
-Requires the `chat-svc:thread:create` permission.
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return ApiAddThreadRequest
-	*/
-	AddThread(ctx context.Context) ApiAddThreadRequest
-
-	// AddThreadExecute executes the request
-	//  @return ChatSvcAddThreadResponse
-	AddThreadExecute(r ApiAddThreadRequest) (*ChatSvcAddThreadResponse, *http.Response, error)
 
 	/*
 	DeleteMessage Delete a Message
@@ -98,401 +68,66 @@ Requires the `chat-svc:thread:create` permission.
 	EventsExecute(r ApiEventsRequest) (*ChatSvcEventThreadUpdate, *http.Response, error)
 
 	/*
-	GetMessage Get Message
-
-	Fetch information about a specific chat message by its ID
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param messageId Message ID
-	@return ApiGetMessageRequest
-	*/
-	GetMessage(ctx context.Context, messageId string) ApiGetMessageRequest
-
-	// GetMessageExecute executes the request
-	//  @return ChatSvcGetMessageResponse
-	GetMessageExecute(r ApiGetMessageRequest) (*ChatSvcGetMessageResponse, *http.Response, error)
-
-	/*
-	GetMessages List Messages
+	ListMessages List Messages
 
 	Fetch messages (and associated assets) for a specific chat thread.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param threadId Thread ID
-	@return ApiGetMessagesRequest
+	@return ApiListMessagesRequest
 	*/
-	GetMessages(ctx context.Context, threadId string) ApiGetMessagesRequest
+	ListMessages(ctx context.Context) ApiListMessagesRequest
 
-	// GetMessagesExecute executes the request
-	//  @return ChatSvcGetMessagesResponse
-	GetMessagesExecute(r ApiGetMessagesRequest) (*ChatSvcGetMessagesResponse, *http.Response, error)
+	// ListMessagesExecute executes the request
+	//  @return ChatSvcListMessagesResponse
+	ListMessagesExecute(r ApiListMessagesRequest) (*ChatSvcListMessagesResponse, *http.Response, error)
 
 	/*
-	GetThread Get Thread
-
-	Fetch information about a specific chat thread by its ID
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param threadId Thread ID
-	@return ApiGetThreadRequest
-	*/
-	GetThread(ctx context.Context, threadId string) ApiGetThreadRequest
-
-	// GetThreadExecute executes the request
-	//  @return ChatSvcGetThreadResponse
-	GetThreadExecute(r ApiGetThreadRequest) (*ChatSvcGetThreadResponse, *http.Response, error)
-
-	/*
-	GetThreads Get Threads
+	ListThreads List Threads
 
 	Fetch all chat threads associated with a specific user
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return ApiGetThreadsRequest
+	@return ApiListThreadsRequest
 	*/
-	GetThreads(ctx context.Context) ApiGetThreadsRequest
+	ListThreads(ctx context.Context) ApiListThreadsRequest
 
-	// GetThreadsExecute executes the request
-	//  @return ChatSvcGetThreadsResponse
-	GetThreadsExecute(r ApiGetThreadsRequest) (*ChatSvcGetThreadsResponse, *http.Response, error)
+	// ListThreadsExecute executes the request
+	//  @return ChatSvcListThreadsResponse
+	ListThreadsExecute(r ApiListThreadsRequest) (*ChatSvcListThreadsResponse, *http.Response, error)
 
 	/*
-	UpdateThread Update Thread
+	SaveMessage Save Message
 
-	Modify the details of a specific chat thread
+	Save a new message to a specific thread.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param threadId Thread ID
-	@return ApiUpdateThreadRequest
+	@return ApiSaveMessageRequest
 	*/
-	UpdateThread(ctx context.Context, threadId string) ApiUpdateThreadRequest
+	SaveMessage(ctx context.Context, threadId string) ApiSaveMessageRequest
 
-	// UpdateThreadExecute executes the request
-	//  @return ChatSvcAddThreadResponse
-	UpdateThreadExecute(r ApiUpdateThreadRequest) (*ChatSvcAddThreadResponse, *http.Response, error)
+	// SaveMessageExecute executes the request
+	//  @return map[string]interface{}
+	SaveMessageExecute(r ApiSaveMessageRequest) (map[string]interface{}, *http.Response, error)
+
+	/*
+	SaveThread Save Thread
+
+	Create or update a chat thread.
+Requires the `chat-svc:thread:edit` permission.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiSaveThreadRequest
+	*/
+	SaveThread(ctx context.Context) ApiSaveThreadRequest
+
+	// SaveThreadExecute executes the request
+	//  @return ChatSvcSaveThreadResponse
+	SaveThreadExecute(r ApiSaveThreadRequest) (*ChatSvcSaveThreadResponse, *http.Response, error)
 }
 
 // ChatSvcAPIService ChatSvcAPI service
 type ChatSvcAPIService service
-
-type ApiAddMessageRequest struct {
-	ctx context.Context
-	ApiService ChatSvcAPI
-	threadId string
-	body *ChatSvcAddMessageRequest
-}
-
-// Add Message Request
-func (r ApiAddMessageRequest) Body(body ChatSvcAddMessageRequest) ApiAddMessageRequest {
-	r.body = &body
-	return r
-}
-
-func (r ApiAddMessageRequest) Execute() (map[string]interface{}, *http.Response, error) {
-	return r.ApiService.AddMessageExecute(r)
-}
-
-/*
-AddMessage Add Message
-
-Add a new message to a specific thread.
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param threadId Thread ID
- @return ApiAddMessageRequest
-*/
-func (a *ChatSvcAPIService) AddMessage(ctx context.Context, threadId string) ApiAddMessageRequest {
-	return ApiAddMessageRequest{
-		ApiService: a,
-		ctx: ctx,
-		threadId: threadId,
-	}
-}
-
-// Execute executes the request
-//  @return map[string]interface{}
-func (a *ChatSvcAPIService) AddMessageExecute(r ApiAddMessageRequest) (map[string]interface{}, *http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  map[string]interface{}
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ChatSvcAPIService.AddMessage")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/chat-svc/thread/{threadId}/message"
-	localVarPath = strings.Replace(localVarPath, "{"+"threadId"+"}", url.PathEscape(parameterValueToString(r.threadId, "threadId")), -1)
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
-	}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	// body params
-	localVarPostBody = r.body
-	if r.ctx != nil {
-		// API Key Authentication
-		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["BearerAuth"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
-				}
-				localVarHeaderParams["Authorization"] = key
-			}
-		}
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-type ApiAddThreadRequest struct {
-	ctx context.Context
-	ApiService ChatSvcAPI
-	body *ChatSvcAddThreadRequest
-}
-
-// Add Thread Request
-func (r ApiAddThreadRequest) Body(body ChatSvcAddThreadRequest) ApiAddThreadRequest {
-	r.body = &body
-	return r
-}
-
-func (r ApiAddThreadRequest) Execute() (*ChatSvcAddThreadResponse, *http.Response, error) {
-	return r.ApiService.AddThreadExecute(r)
-}
-
-/*
-AddThread Add Thread
-
-Create a new chat thread and add the requesting user to it.
-Requires the `chat-svc:thread:create` permission.
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiAddThreadRequest
-*/
-func (a *ChatSvcAPIService) AddThread(ctx context.Context) ApiAddThreadRequest {
-	return ApiAddThreadRequest{
-		ApiService: a,
-		ctx: ctx,
-	}
-}
-
-// Execute executes the request
-//  @return ChatSvcAddThreadResponse
-func (a *ChatSvcAPIService) AddThreadExecute(r ApiAddThreadRequest) (*ChatSvcAddThreadResponse, *http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ChatSvcAddThreadResponse
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ChatSvcAPIService.AddThread")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/chat-svc/thread"
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
-	}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	// body params
-	localVarPostBody = r.body
-	if r.ctx != nil {
-		// API Key Authentication
-		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["BearerAuth"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
-				}
-				localVarHeaderParams["Authorization"] = key
-			}
-		}
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
 
 type ApiDeleteMessageRequest struct {
 	ctx context.Context
@@ -891,504 +526,60 @@ func (a *ChatSvcAPIService) EventsExecute(r ApiEventsRequest) (*ChatSvcEventThre
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiGetMessageRequest struct {
+type ApiListMessagesRequest struct {
 	ctx context.Context
 	ApiService ChatSvcAPI
-	messageId string
+	body *ChatSvcListMessagesRequest
 }
 
-func (r ApiGetMessageRequest) Execute() (*ChatSvcGetMessageResponse, *http.Response, error) {
-	return r.ApiService.GetMessageExecute(r)
-}
-
-/*
-GetMessage Get Message
-
-Fetch information about a specific chat message by its ID
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param messageId Message ID
- @return ApiGetMessageRequest
-*/
-func (a *ChatSvcAPIService) GetMessage(ctx context.Context, messageId string) ApiGetMessageRequest {
-	return ApiGetMessageRequest{
-		ApiService: a,
-		ctx: ctx,
-		messageId: messageId,
-	}
-}
-
-// Execute executes the request
-//  @return ChatSvcGetMessageResponse
-func (a *ChatSvcAPIService) GetMessageExecute(r ApiGetMessageRequest) (*ChatSvcGetMessageResponse, *http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ChatSvcGetMessageResponse
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ChatSvcAPIService.GetMessage")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/chat-svc/message/{messageId}"
-	localVarPath = strings.Replace(localVarPath, "{"+"messageId"+"}", url.PathEscape(parameterValueToString(r.messageId, "messageId")), -1)
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	if r.ctx != nil {
-		// API Key Authentication
-		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["BearerAuth"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
-				}
-				localVarHeaderParams["Authorization"] = key
-			}
-		}
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-type ApiGetMessagesRequest struct {
-	ctx context.Context
-	ApiService ChatSvcAPI
-	threadId string
-}
-
-func (r ApiGetMessagesRequest) Execute() (*ChatSvcGetMessagesResponse, *http.Response, error) {
-	return r.ApiService.GetMessagesExecute(r)
-}
-
-/*
-GetMessages List Messages
-
-Fetch messages (and associated assets) for a specific chat thread.
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param threadId Thread ID
- @return ApiGetMessagesRequest
-*/
-func (a *ChatSvcAPIService) GetMessages(ctx context.Context, threadId string) ApiGetMessagesRequest {
-	return ApiGetMessagesRequest{
-		ApiService: a,
-		ctx: ctx,
-		threadId: threadId,
-	}
-}
-
-// Execute executes the request
-//  @return ChatSvcGetMessagesResponse
-func (a *ChatSvcAPIService) GetMessagesExecute(r ApiGetMessagesRequest) (*ChatSvcGetMessagesResponse, *http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ChatSvcGetMessagesResponse
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ChatSvcAPIService.GetMessages")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/chat-svc/thread/{threadId}/messages"
-	localVarPath = strings.Replace(localVarPath, "{"+"threadId"+"}", url.PathEscape(parameterValueToString(r.threadId, "threadId")), -1)
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	if r.ctx != nil {
-		// API Key Authentication
-		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["BearerAuth"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
-				}
-				localVarHeaderParams["Authorization"] = key
-			}
-		}
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-type ApiGetThreadRequest struct {
-	ctx context.Context
-	ApiService ChatSvcAPI
-	threadId string
-}
-
-func (r ApiGetThreadRequest) Execute() (*ChatSvcGetThreadResponse, *http.Response, error) {
-	return r.ApiService.GetThreadExecute(r)
-}
-
-/*
-GetThread Get Thread
-
-Fetch information about a specific chat thread by its ID
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param threadId Thread ID
- @return ApiGetThreadRequest
-*/
-func (a *ChatSvcAPIService) GetThread(ctx context.Context, threadId string) ApiGetThreadRequest {
-	return ApiGetThreadRequest{
-		ApiService: a,
-		ctx: ctx,
-		threadId: threadId,
-	}
-}
-
-// Execute executes the request
-//  @return ChatSvcGetThreadResponse
-func (a *ChatSvcAPIService) GetThreadExecute(r ApiGetThreadRequest) (*ChatSvcGetThreadResponse, *http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *ChatSvcGetThreadResponse
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ChatSvcAPIService.GetThread")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/chat-svc/thread/{threadId}"
-	localVarPath = strings.Replace(localVarPath, "{"+"threadId"+"}", url.PathEscape(parameterValueToString(r.threadId, "threadId")), -1)
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	if r.ctx != nil {
-		// API Key Authentication
-		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["BearerAuth"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
-				}
-				localVarHeaderParams["Authorization"] = key
-			}
-		}
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 400 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-type ApiGetThreadsRequest struct {
-	ctx context.Context
-	ApiService ChatSvcAPI
-	body *map[string]interface{}
-}
-
-// Get Threads Request
-func (r ApiGetThreadsRequest) Body(body map[string]interface{}) ApiGetThreadsRequest {
+// List Messages Request
+func (r ApiListMessagesRequest) Body(body ChatSvcListMessagesRequest) ApiListMessagesRequest {
 	r.body = &body
 	return r
 }
 
-func (r ApiGetThreadsRequest) Execute() (*ChatSvcGetThreadsResponse, *http.Response, error) {
-	return r.ApiService.GetThreadsExecute(r)
+func (r ApiListMessagesRequest) Execute() (*ChatSvcListMessagesResponse, *http.Response, error) {
+	return r.ApiService.ListMessagesExecute(r)
 }
 
 /*
-GetThreads Get Threads
+ListMessages List Messages
 
-Fetch all chat threads associated with a specific user
+Fetch messages (and associated assets) for a specific chat thread.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetThreadsRequest
+ @return ApiListMessagesRequest
 */
-func (a *ChatSvcAPIService) GetThreads(ctx context.Context) ApiGetThreadsRequest {
-	return ApiGetThreadsRequest{
+func (a *ChatSvcAPIService) ListMessages(ctx context.Context) ApiListMessagesRequest {
+	return ApiListMessagesRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-//  @return ChatSvcGetThreadsResponse
-func (a *ChatSvcAPIService) GetThreadsExecute(r ApiGetThreadsRequest) (*ChatSvcGetThreadsResponse, *http.Response, error) {
+//  @return ChatSvcListMessagesResponse
+func (a *ChatSvcAPIService) ListMessagesExecute(r ApiListMessagesRequest) (*ChatSvcListMessagesResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *ChatSvcGetThreadsResponse
+		localVarReturnValue  *ChatSvcListMessagesResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ChatSvcAPIService.GetThreads")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ChatSvcAPIService.ListMessages")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/chat-svc/threads"
+	localVarPath := localBasePath + "/chat-svc/messages"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
+	if r.body == nil {
+		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/json"}
@@ -1492,34 +683,191 @@ func (a *ChatSvcAPIService) GetThreadsExecute(r ApiGetThreadsRequest) (*ChatSvcG
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiUpdateThreadRequest struct {
+type ApiListThreadsRequest struct {
 	ctx context.Context
 	ApiService ChatSvcAPI
-	threadId string
-	body *ChatSvcUpdateThreadRequest
+	body *ChatSvcListThreadsRequest
 }
 
-// Update Thread Request
-func (r ApiUpdateThreadRequest) Body(body ChatSvcUpdateThreadRequest) ApiUpdateThreadRequest {
+// List Threads Request
+func (r ApiListThreadsRequest) Body(body ChatSvcListThreadsRequest) ApiListThreadsRequest {
 	r.body = &body
 	return r
 }
 
-func (r ApiUpdateThreadRequest) Execute() (*ChatSvcAddThreadResponse, *http.Response, error) {
-	return r.ApiService.UpdateThreadExecute(r)
+func (r ApiListThreadsRequest) Execute() (*ChatSvcListThreadsResponse, *http.Response, error) {
+	return r.ApiService.ListThreadsExecute(r)
 }
 
 /*
-UpdateThread Update Thread
+ListThreads List Threads
 
-Modify the details of a specific chat thread
+Fetch all chat threads associated with a specific user
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiListThreadsRequest
+*/
+func (a *ChatSvcAPIService) ListThreads(ctx context.Context) ApiListThreadsRequest {
+	return ApiListThreadsRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return ChatSvcListThreadsResponse
+func (a *ChatSvcAPIService) ListThreadsExecute(r ApiListThreadsRequest) (*ChatSvcListThreadsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ChatSvcListThreadsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ChatSvcAPIService.ListThreads")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/chat-svc/threads"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.body == nil {
+		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.body
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["BearerAuth"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v string
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v string
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 500 {
+			var v string
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiSaveMessageRequest struct {
+	ctx context.Context
+	ApiService ChatSvcAPI
+	threadId string
+	body *ChatSvcSaveMessageRequest
+}
+
+// Save Message Request
+func (r ApiSaveMessageRequest) Body(body ChatSvcSaveMessageRequest) ApiSaveMessageRequest {
+	r.body = &body
+	return r
+}
+
+func (r ApiSaveMessageRequest) Execute() (map[string]interface{}, *http.Response, error) {
+	return r.ApiService.SaveMessageExecute(r)
+}
+
+/*
+SaveMessage Save Message
+
+Save a new message to a specific thread.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param threadId Thread ID
- @return ApiUpdateThreadRequest
+ @return ApiSaveMessageRequest
 */
-func (a *ChatSvcAPIService) UpdateThread(ctx context.Context, threadId string) ApiUpdateThreadRequest {
-	return ApiUpdateThreadRequest{
+func (a *ChatSvcAPIService) SaveMessage(ctx context.Context, threadId string) ApiSaveMessageRequest {
+	return ApiSaveMessageRequest{
 		ApiService: a,
 		ctx: ctx,
 		threadId: threadId,
@@ -1527,22 +875,180 @@ func (a *ChatSvcAPIService) UpdateThread(ctx context.Context, threadId string) A
 }
 
 // Execute executes the request
-//  @return ChatSvcAddThreadResponse
-func (a *ChatSvcAPIService) UpdateThreadExecute(r ApiUpdateThreadRequest) (*ChatSvcAddThreadResponse, *http.Response, error) {
+//  @return map[string]interface{}
+func (a *ChatSvcAPIService) SaveMessageExecute(r ApiSaveMessageRequest) (map[string]interface{}, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodPut
+		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *ChatSvcAddThreadResponse
+		localVarReturnValue  map[string]interface{}
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ChatSvcAPIService.UpdateThread")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ChatSvcAPIService.SaveMessage")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/chat-svc/thread/{threadId}"
+	localVarPath := localBasePath + "/chat-svc/thread/{threadId}/message"
 	localVarPath = strings.Replace(localVarPath, "{"+"threadId"+"}", url.PathEscape(parameterValueToString(r.threadId, "threadId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.body == nil {
+		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.body
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["BearerAuth"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v string
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v string
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 500 {
+			var v string
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiSaveThreadRequest struct {
+	ctx context.Context
+	ApiService ChatSvcAPI
+	body *ChatSvcSaveThreadRequest
+}
+
+// Save Thread Request
+func (r ApiSaveThreadRequest) Body(body ChatSvcSaveThreadRequest) ApiSaveThreadRequest {
+	r.body = &body
+	return r
+}
+
+func (r ApiSaveThreadRequest) Execute() (*ChatSvcSaveThreadResponse, *http.Response, error) {
+	return r.ApiService.SaveThreadExecute(r)
+}
+
+/*
+SaveThread Save Thread
+
+Create or update a chat thread.
+Requires the `chat-svc:thread:edit` permission.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiSaveThreadRequest
+*/
+func (a *ChatSvcAPIService) SaveThread(ctx context.Context) ApiSaveThreadRequest {
+	return ApiSaveThreadRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return ChatSvcSaveThreadResponse
+func (a *ChatSvcAPIService) SaveThreadExecute(r ApiSaveThreadRequest) (*ChatSvcSaveThreadResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ChatSvcSaveThreadResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ChatSvcAPIService.SaveThread")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/chat-svc/thread"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}

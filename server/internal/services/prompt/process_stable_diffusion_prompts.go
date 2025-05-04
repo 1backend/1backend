@@ -126,18 +126,16 @@ func (p *PromptService) processStableDiffusion(
 	fileIds := []string{*uploadRsp.Upload.FileId}
 
 	_, _, err = p.clientFactory.Client(client.WithToken(token)).
-		ChatSvcAPI.AddMessage(context.Background(), currentPrompt.ThreadId).
+		ChatSvcAPI.SaveMessage(context.Background(), currentPrompt.ThreadId).
 		Body(
-			openapi.ChatSvcAddMessageRequest{
-				Message: &openapi.ChatSvcMessage{
-					Id:       sdk.Id("msg"),
-					ThreadId: currentPrompt.ThreadId,
-					Text:     openapi.PtrString("Sure, here is your image"),
-					FileIds:  fileIds,
-					Meta: map[string]interface{}{
-						"modelId":    model.Model.Id,
-						"platformId": model.Platform.Id,
-					},
+			openapi.ChatSvcSaveMessageRequest{
+				Id:       openapi.PtrString(sdk.Id("msg")),
+				ThreadId: &currentPrompt.ThreadId,
+				Text:     openapi.PtrString("Sure, here is your image"),
+				FileIds:  fileIds,
+				Meta: map[string]interface{}{
+					"modelId":    model.Model.Id,
+					"platformId": model.Platform.Id,
 				},
 			},
 		).

@@ -27,6 +27,7 @@ import {
 	UserSvcSaveUserRequest,
 	UserSvcChangePasswordRequest,
 	UserSvcResetPasswordRequest,
+	UserSvcUserInput,
 } from '@1backend/client';
 
 @Injectable({
@@ -181,7 +182,7 @@ export class UserService {
 	/** Create a user - alternative to registration
 	 */
 	createUser(
-		user: UserSvcUser,
+		user: UserSvcUserInput,
 		password: string,
 		roleIds: string[]
 	): Promise<object> {

@@ -40,8 +40,8 @@ func (d InternalDownload) GetId() string {
 // Download record
 type Download struct {
 	Id        string    `json:"id"`
-	CreatedAt time.Time `json:"createdAt,omitempty"`
-	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	CreatedAt time.Time `json:"createdAt" binding:"required"`
+	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
 
 	URL      string  `json:"url"`
 	FileName string  `json:"fileName"`

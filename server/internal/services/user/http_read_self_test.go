@@ -29,7 +29,7 @@ func TestReadSelf(t *testing.T) {
 			Body(openapi.UserSvcRegisterRequest{
 				Slug:     "some-slug",
 				Password: openapi.PtrString("some password"),
-				Contact: &openapi.UserSvcContact{
+				Contact: &openapi.UserSvcContactInput{
 					Id:       "xyz",
 					Platform: "email",
 				},

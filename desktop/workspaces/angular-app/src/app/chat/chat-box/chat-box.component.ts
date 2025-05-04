@@ -259,7 +259,7 @@ export class ChatBoxComponent implements OnChanges, AfterViewInit, OnDestroy {
 			} else {
 				this.thread = {
 					id: this.server.id('thr'),
-				};
+				} as any;
 				threadId = this.thread.id as string;
 			}
 

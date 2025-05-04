@@ -12,11 +12,10 @@ import { FirehoseService } from './firehose.service';
 import { UserService } from './user.service';
 import { first } from 'rxjs';
 import {
-	ChatSvcAddThreadResponse,
+	ChatSvcSaveThreadResponse,
 	ChatSvcApi,
-	ChatSvcGetMessagesResponse,
-	ChatSvcGetThreadResponse,
-	ChatSvcGetThreadsResponse,
+	ChatSvcListMessagesResponse,
+	ChatSvcListThreadsResponse,
 	Configuration,
 	ChatSvcThread as Thread,
 	ChatSvcEventMessageAdded,
@@ -87,28 +86,31 @@ export class ChatService {
 		});
 	}
 
-	async chatMessages(threadId: string): Promise<ChatSvcGetMessagesResponse> {
-		return this.chatService.getMessages({
-			threadId: threadId,
+	async chatMessages(threadId: string): Promise<ChatSvcListMessagesResponse> {
+		return this.chatService.listMessages({
+			body: {
+				threadId: threadId,
+			},
 		});
 	}
 
-	async chatThread(threadId: string): Promise<ChatSvcGetThreadResponse> {
-		return this.chatService.getThread({
-			threadId: threadId,
+	async chatThread(threadId: string): Promise<ChatSvcListThreadsResponse> {
+		return this.chatService.listThreads({
+			body: {
+				ids: [threadId],
+			},
 		});
 	}
 
-	async chatThreadAdd(thread: Thread): Promise<ChatSvcAddThreadResponse> {
-		return this.chatService.addThread({
-			body: { thread: thread },
+	async chatThreadAdd(thread: Thread): Promise<ChatSvcSaveThreadResponse> {
+		return this.chatService.saveThread({
+			body: thread,
 		});
 	}
 
 	async chatThreadUpdate(thread: Thread): Promise<object> {
-		return this.chatService.updateThread({
-			threadId: thread.id!,
-			body: { thread: thread },
+		return this.chatService.saveThread({
+			body: thread,
 		});
 	}
 
@@ -119,8 +121,10 @@ export class ChatService {
 		return;
 	}
 
-	async chatThreads(): Promise<ChatSvcGetThreadsResponse> {
-		return this.chatService.getThreads();
+	async chatThreads(): Promise<ChatSvcListThreadsResponse> {
+		return this.chatService.listThreads({
+			body: {},
+		});
 	}
 
 	setActiveThreadId(id: string) {

@@ -22,10 +22,24 @@ type ErrorResponse struct {
 
 type User struct {
 	Id        string    `json:"id" binding:"required"`
-	CreatedAt time.Time `json:"createdAt,omitempty"`
-	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	CreatedAt time.Time `json:"createdAt" binding:"required"`
+	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
 
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`
+
+	// Full name of the user.
+	Name string `json:"name,omitempty" example:"Jane Doe"`
+
+	// URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
+	Slug string `json:"slug" example:"jane-doe" binding:"required"`
+
+	ThumbnailFileId string `json:"thumbnailFileId,omitempty" example:"file_fQDyi1xdHK"`
+
+	Labels map[string]string `json:"labels,omitempty"`
+}
+
+type UserInput struct {
+	Id string `json:"id" binding:"required"`
 
 	// Full name of the user.
 	Name string `json:"name,omitempty" example:"Jane Doe"`
@@ -42,8 +56,8 @@ type User struct {
 // so that we avoid accidentally exposing or overwriting the password.
 type Password struct {
 	Id        string    `json:"id" binding:"required"`
-	CreatedAt time.Time `json:"createdAt,omitempty"`
-	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	CreatedAt time.Time `json:"createdAt" binding:"required"`
+	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
 
 	UserId       string `json:"userId" binding:"required"`
 	PasswordHash string `json:"passwordHash,omitempty"`
@@ -55,8 +69,8 @@ func (p *Password) GetId() string {
 
 type UserRecord struct {
 	Id        string    `json:"id" binding:"required"`
-	CreatedAt time.Time `json:"createdAt,omitempty"`
-	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	CreatedAt time.Time `json:"createdAt" binding:"required"`
+	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
 
 	// Full name of the user.
 	Name string `json:"name,omitempty" example:"Jane Doe"`
@@ -103,7 +117,7 @@ type RegisterRequest struct {
 	// If your project has no use for a slug, just derive it from the email or similar.
 	Slug string `json:"slug" binding:"required"`
 
-	Contact Contact `json:"contact,omitempty"`
+	Contact ContactInput `json:"contact,omitempty"`
 
 	Password string `json:"password,omitempty"`
 }
@@ -188,10 +202,10 @@ type ListUsersResponse struct {
 }
 
 type CreateUserRequest struct {
-	User     *User     `json:"user,omitempty"`
-	Contacts []Contact `json:"contacts,omitempty"`
-	Password string    `json:"password,omitempty"`
-	RoleIds  []string  `json:"roleIds,omitempty"`
+	User     *UserInput `json:"user,omitempty"`
+	Contacts []Contact  `json:"contacts,omitempty"`
+	Password string     `json:"password,omitempty"`
+	RoleIds  []string   `json:"roleIds,omitempty"`
 }
 
 type CreateUserResponse struct {

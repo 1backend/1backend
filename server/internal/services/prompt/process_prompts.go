@@ -251,22 +251,17 @@ func (p *PromptService) processPrompt(
 		return err
 	}
 	_, _, err = p.clientFactory.Client(client.WithToken(token)).
-		ChatSvcAPI.AddMessage(context.Background(), currentPrompt.ThreadId).
-		Body(openapi.ChatSvcAddMessageRequest{
-			Message: &openapi.ChatSvcMessage{
-				// not a fan of taking the prompt id but at least it makes this idempotent
-				// in case prompts get retried over and over again
-				Id:       currentPrompt.Id,
-				ThreadId: currentPrompt.ThreadId,
-				UserId:   openapi.PtrString(currentPrompt.UserId),
-				Text:     openapi.PtrString(currentPrompt.Prompt),
-				CreatedAt: openapi.PtrString(
-					time.Now().Format(time.RFC3339Nano),
-				),
-				Meta: map[string]interface{}{
-					"modelId":    getModelRsp.Model.Id,
-					"platformId": getModelRsp.Platform.Id,
-				},
+		ChatSvcAPI.SaveMessage(context.Background(), currentPrompt.ThreadId).
+		Body(openapi.ChatSvcSaveMessageRequest{
+			// not a fan of taking the prompt id but at least it makes this idempotent
+			// in case prompts get retried over and over again
+			Id:       &currentPrompt.Id,
+			ThreadId: &currentPrompt.ThreadId,
+			UserId:   openapi.PtrString(currentPrompt.UserId),
+			Text:     openapi.PtrString(currentPrompt.Prompt),
+			Meta: map[string]interface{}{
+				"modelId":    getModelRsp.Model.Id,
+				"platformId": getModelRsp.Platform.Id,
 			},
 		}).
 		Execute()

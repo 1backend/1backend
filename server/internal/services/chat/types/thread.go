@@ -19,8 +19,8 @@ import (
 type Thread struct {
 	Id string `json:"id" example:"thr_emSQnpJbhG" binding:"required"`
 
-	CreatedAt time.Time `json:"createdAt,omitempty"`
-	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	CreatedAt time.Time `json:"createdAt" binding:"required"`
+	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
 
 	// TopicIds defines which topics the thread belongs to.
 	// Topics can roughly be thought of as tags for threads.
@@ -53,15 +53,21 @@ func (a ThreadByTime) Less(i, j int) bool {
 	return ti.After(tj)
 }
 
-type AddThreadRequest struct {
-	Thread *Thread `json:"thread"`
+type SaveThreadRequest struct {
+	Id string `json:"id" example:"thr_emSQnpJbhG"`
+
+	// TopicIds defines which topics the thread belongs to.
+	// Topics can roughly be thought of as tags for threads.
+	TopicIds []string `json:"topicIds,omitempty"`
+
+	// UserIds the ids of the users who can see this thread.
+	UserIds []string `json:"userIds,omitempty"`
+
+	// Title of the thread.
+	Title string `json:"title,omitempty"`
 }
 
-type UpdateThreadRequest struct {
-	Thread *Thread `json:"thread"`
-}
-
-type AddThreadResponse struct {
+type SaveThreadResponse struct {
 	Thread *Thread `json:"thread"`
 }
 
@@ -69,17 +75,19 @@ type DeleteThreadRequest struct {
 	ThreadId string `json:"threadId"`
 }
 
-type GetThreadRequest struct {
+type ReadThreadRequest struct {
 	ThreadId string `json:"threadId"`
 }
 
-type GetThreadResponse struct {
+type ReadThreadResponse struct {
 	Exists bool    `json:"exists"`
 	Thread *Thread `json:"thread"`
 }
 
-type GetThreadsRequest struct{}
+type ListThreadsRequest struct {
+	Ids []string `json:"ids,omitempty"`
+}
 
-type GetThreadsResponse struct {
+type ListThreadsResponse struct {
 	Threads []*Thread `json:"threads"`
 }

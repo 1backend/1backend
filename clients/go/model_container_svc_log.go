@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.3.0-rc.39
+API version: 0.4.0
 Contact: sales@singulatron.com
 */
 
@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the ContainerSvcLog type satisfies the MappedNullable interface at compile time
@@ -23,18 +25,21 @@ type ContainerSvcLog struct {
 	// ContainerId is the raw underlying container ID. Eg. Docker container id. Node local.
 	ContainerId *string `json:"containerId,omitempty"`
 	Content *string `json:"content,omitempty"`
-	CreatedAt *string `json:"createdAt,omitempty"`
+	CreatedAt string `json:"createdAt"`
 	Id *string `json:"id,omitempty"`
 	// Node Id Please see the documentation for the envar OB_NODE_ID
 	NodeId *string `json:"nodeId,omitempty"`
 }
 
+type _ContainerSvcLog ContainerSvcLog
+
 // NewContainerSvcLog instantiates a new ContainerSvcLog object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewContainerSvcLog() *ContainerSvcLog {
+func NewContainerSvcLog(createdAt string) *ContainerSvcLog {
 	this := ContainerSvcLog{}
+	this.CreatedAt = createdAt
 	return &this
 }
 
@@ -110,36 +115,28 @@ func (o *ContainerSvcLog) SetContent(v string) {
 	o.Content = &v
 }
 
-// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
+// GetCreatedAt returns the CreatedAt field value
 func (o *ContainerSvcLog) GetCreatedAt() string {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.CreatedAt
+
+	return o.CreatedAt
 }
 
-// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
 // and a boolean to check if the value has been set.
 func (o *ContainerSvcLog) GetCreatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.CreatedAt, true
+	return &o.CreatedAt, true
 }
 
-// HasCreatedAt returns a boolean if a field has been set.
-func (o *ContainerSvcLog) HasCreatedAt() bool {
-	if o != nil && !IsNil(o.CreatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
+// SetCreatedAt sets field value
 func (o *ContainerSvcLog) SetCreatedAt(v string) {
-	o.CreatedAt = &v
+	o.CreatedAt = v
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
@@ -222,9 +219,7 @@ func (o ContainerSvcLog) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Content) {
 		toSerialize["content"] = o.Content
 	}
-	if !IsNil(o.CreatedAt) {
-		toSerialize["createdAt"] = o.CreatedAt
-	}
+	toSerialize["createdAt"] = o.CreatedAt
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}
@@ -232,6 +227,43 @@ func (o ContainerSvcLog) ToMap() (map[string]interface{}, error) {
 		toSerialize["nodeId"] = o.NodeId
 	}
 	return toSerialize, nil
+}
+
+func (o *ContainerSvcLog) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"createdAt",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varContainerSvcLog := _ContainerSvcLog{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varContainerSvcLog)
+
+	if err != nil {
+		return err
+	}
+
+	*o = ContainerSvcLog(varContainerSvcLog)
+
+	return err
 }
 
 type NullableContainerSvcLog struct {

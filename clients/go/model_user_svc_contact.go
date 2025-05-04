@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.3.0-rc.39
+API version: 0.4.0
 Contact: sales@singulatron.com
 */
 
@@ -22,7 +22,7 @@ var _ MappedNullable = &UserSvcContact{}
 
 // UserSvcContact struct for UserSvcContact
 type UserSvcContact struct {
-	CreatedAt *string `json:"createdAt,omitempty"`
+	CreatedAt string `json:"createdAt"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	// Handle is the platform local unique identifier. Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`. For email and phones the `id` and the `value` will be the same. This field mostly exists for display purposes.  Example values: \"joe12\" (1backend username), \"thejoe\" (twitter username), \"joe@joesdomain.com\" (email)
 	Handle string `json:"handle"`
@@ -32,7 +32,7 @@ type UserSvcContact struct {
 	IsPrimary *bool `json:"isPrimary,omitempty"`
 	// Platform of the contact (e.g., \"email\", \"phone\", \"twitter\")
 	Platform string `json:"platform"`
-	UpdatedAt *string `json:"updatedAt,omitempty"`
+	UpdatedAt string `json:"updatedAt"`
 	UserId string `json:"userId"`
 	// Whether the contact is verified
 	Verified *bool `json:"verified,omitempty"`
@@ -44,11 +44,13 @@ type _UserSvcContact UserSvcContact
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcContact(handle string, id string, platform string, userId string) *UserSvcContact {
+func NewUserSvcContact(createdAt string, handle string, id string, platform string, updatedAt string, userId string) *UserSvcContact {
 	this := UserSvcContact{}
+	this.CreatedAt = createdAt
 	this.Handle = handle
 	this.Id = id
 	this.Platform = platform
+	this.UpdatedAt = updatedAt
 	this.UserId = userId
 	return &this
 }
@@ -61,36 +63,28 @@ func NewUserSvcContactWithDefaults() *UserSvcContact {
 	return &this
 }
 
-// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
+// GetCreatedAt returns the CreatedAt field value
 func (o *UserSvcContact) GetCreatedAt() string {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.CreatedAt
+
+	return o.CreatedAt
 }
 
-// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcContact) GetCreatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.CreatedAt, true
+	return &o.CreatedAt, true
 }
 
-// HasCreatedAt returns a boolean if a field has been set.
-func (o *UserSvcContact) HasCreatedAt() bool {
-	if o != nil && !IsNil(o.CreatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
+// SetCreatedAt sets field value
 func (o *UserSvcContact) SetCreatedAt(v string) {
-	o.CreatedAt = &v
+	o.CreatedAt = v
 }
 
 // GetDeletedAt returns the DeletedAt field value if set, zero value otherwise.
@@ -229,36 +223,28 @@ func (o *UserSvcContact) SetPlatform(v string) {
 	o.Platform = v
 }
 
-// GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
+// GetUpdatedAt returns the UpdatedAt field value
 func (o *UserSvcContact) GetUpdatedAt() string {
-	if o == nil || IsNil(o.UpdatedAt) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.UpdatedAt
+
+	return o.UpdatedAt
 }
 
-// GetUpdatedAtOk returns a tuple with the UpdatedAt field value if set, nil otherwise
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcContact) GetUpdatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.UpdatedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.UpdatedAt, true
+	return &o.UpdatedAt, true
 }
 
-// HasUpdatedAt returns a boolean if a field has been set.
-func (o *UserSvcContact) HasUpdatedAt() bool {
-	if o != nil && !IsNil(o.UpdatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetUpdatedAt gets a reference to the given string and assigns it to the UpdatedAt field.
+// SetUpdatedAt sets field value
 func (o *UserSvcContact) SetUpdatedAt(v string) {
-	o.UpdatedAt = &v
+	o.UpdatedAt = v
 }
 
 // GetUserId returns the UserId field value
@@ -327,9 +313,7 @@ func (o UserSvcContact) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcContact) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.CreatedAt) {
-		toSerialize["createdAt"] = o.CreatedAt
-	}
+	toSerialize["createdAt"] = o.CreatedAt
 	if !IsNil(o.DeletedAt) {
 		toSerialize["deletedAt"] = o.DeletedAt
 	}
@@ -339,9 +323,7 @@ func (o UserSvcContact) ToMap() (map[string]interface{}, error) {
 		toSerialize["isPrimary"] = o.IsPrimary
 	}
 	toSerialize["platform"] = o.Platform
-	if !IsNil(o.UpdatedAt) {
-		toSerialize["updatedAt"] = o.UpdatedAt
-	}
+	toSerialize["updatedAt"] = o.UpdatedAt
 	toSerialize["userId"] = o.UserId
 	if !IsNil(o.Verified) {
 		toSerialize["verified"] = o.Verified
@@ -354,9 +336,11 @@ func (o *UserSvcContact) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"createdAt",
 		"handle",
 		"id",
 		"platform",
+		"updatedAt",
 		"userId",
 	}
 

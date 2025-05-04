@@ -79,14 +79,17 @@ func (p *PromptService) prompt(
 		return nil, errors.Wrap(err, "failed to get token")
 	}
 
-	getThreadRsp, _, err := p.clientFactory.Client(client.WithToken(token)).
-		ChatSvcAPI.GetThread(ctx, threadId).
+	listThreadsRsp, _, err := p.clientFactory.Client(client.WithToken(token)).
+		ChatSvcAPI.ListThreads(ctx).
+		Body(openapi.ChatSvcListThreadsRequest{
+			Ids: []string{threadId},
+		}).
 		Execute()
 	if err != nil {
 		return nil, err
 	}
 
-	if !*getThreadRsp.Exists {
+	if len(listThreadsRsp.Threads) == 0 {
 		logger.Info("Creating thread", slog.String("threadId", threadId))
 
 		// threads can be created when a message is sent
@@ -108,19 +111,11 @@ func (p *PromptService) prompt(
 		}
 
 		_, _, err := p.clientFactory.Client(client.WithToken(token)).
-			ChatSvcAPI.AddThread(ctx).
-			Body(openapi.ChatSvcAddThreadRequest{
-				Thread: &openapi.ChatSvcThread{
-					Id:      thread.Id,
-					Title:   openapi.PtrString(thread.Title),
-					UserIds: thread.UserIds,
-					CreatedAt: openapi.PtrString(
-						thread.CreatedAt.Format(time.RFC3339Nano),
-					),
-					UpdatedAt: openapi.PtrString(
-						thread.UpdatedAt.Format(time.RFC3339Nano),
-					),
-				},
+			ChatSvcAPI.SaveThread(ctx).
+			Body(openapi.ChatSvcSaveThreadRequest{
+				Id:      &thread.Id,
+				Title:   openapi.PtrString(thread.Title),
+				UserIds: thread.UserIds,
 			}).
 			Execute()
 		if err != nil {
@@ -168,13 +163,16 @@ func (p *PromptService) prompt(
 			if resp.Type == streammanager.ChunkTypeDone {
 				r, _, err := p.clientFactory.Client(client.WithToken(token)).
 					ChatSvcAPI.
-					GetMessage(ctx, resp.MessageId).
+					ListMessages(ctx).
+					Body(openapi.ChatSvcListMessagesRequest{
+						Ids: []string{resp.MessageId},
+					}).
 					Execute()
 				if err != nil {
 					return nil, errors.Wrap(err, "error reading message")
 				}
 
-				m := r.Message
+				m := r.Messages[0]
 
 				// @todo should use openapi type here but there are issues
 				// with the generation

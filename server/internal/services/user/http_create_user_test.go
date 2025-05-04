@@ -27,7 +27,7 @@ func TestCreateUser(t *testing.T) {
 	t.Run("non-admins cannot create users", func(t *testing.T) {
 		_, _, err = clientFactory.Client().UserSvcAPI.CreateUser(ctx).Body(
 			openapi.UserSvcCreateUserRequest{
-				User: &openapi.UserSvcUser{
+				User: &openapi.UserSvcUserInput{
 					Slug: "test-slug-1",
 					Name: openapi.PtrString("Test Name"),
 				},
@@ -42,7 +42,7 @@ func TestCreateUser(t *testing.T) {
 	t.Run("admins can create users", func(t *testing.T) {
 		_, httpRsp, err := adminClient.UserSvcAPI.CreateUser(ctx).Body(
 			openapi.UserSvcCreateUserRequest{
-				User: &openapi.UserSvcUser{
+				User: &openapi.UserSvcUserInput{
 					Slug: "test-slug-1",
 					Name: openapi.PtrString("Test Name"),
 				},
@@ -54,7 +54,7 @@ func TestCreateUser(t *testing.T) {
 	t.Run("slug is taken", func(t *testing.T) {
 		_, _, err = adminClient.UserSvcAPI.CreateUser(ctx).Body(
 			openapi.UserSvcCreateUserRequest{
-				User: &openapi.UserSvcUser{
+				User: &openapi.UserSvcUserInput{
 					Slug: "test-slug-1",
 					Name: openapi.PtrString("Test Name"),
 				},

@@ -14,7 +14,7 @@ import {
 	ReactiveFormsModule,
 } from '@angular/forms';
 import { UserService } from '../../services/user.service';
-import { UserSvcUser as User } from '@1backend/client';
+import {  UserSvcUserInput } from '@1backend/client';
 import { first } from 'rxjs';
 import {
 	ToastController,
@@ -92,7 +92,7 @@ export class AddUserComponent implements OnInit {
 			return;
 		}
 
-		const user: User = { id: '', slug, name };
+		const user: UserSvcUserInput = { id: '', slug, name };
 
 		try {
 			await this.userService.createUser(user, password, roles);

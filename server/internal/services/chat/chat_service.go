@@ -60,27 +60,22 @@ func NewChatService(
 
 func (cs *ChatService) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/chat-svc/thread/{threadId}/message", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
-		cs.AddMessage(w, r)
+		cs.SaveMessage(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
-
-	router.HandleFunc("/chat-svc/message/{messageId}", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
-		cs.GetMessage(w, r)
-	}))).
-		Methods("OPTIONS", "GET")
 
 	router.HandleFunc("/chat-svc/message/{messageId}", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		cs.DeleteMessage(w, r)
 	}))).
 		Methods("OPTIONS", "DELETE")
 
-	router.HandleFunc("/chat-svc/thread/{threadId}/messages", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
-		cs.GetMessages(w, r)
+	router.HandleFunc("/chat-svc/messages", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		cs.ListMessages(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
 	router.HandleFunc("/chat-svc/thread", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
-		cs.AddThread(w, r)
+		cs.SaveThread(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
@@ -90,19 +85,9 @@ func (cs *ChatService) RegisterRoutes(router *mux.Router) {
 		Methods("OPTIONS", "DELETE")
 
 	router.HandleFunc("/chat-svc/threads", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
-		cs.GetThreads(w, r)
+		cs.ListThreads(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
-
-	router.HandleFunc("/chat-svc/thread/{threadId}", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
-		cs.GetThread(w, r)
-	}))).
-		Methods("OPTIONS", "GET")
-
-	router.HandleFunc("/chat-svc/thread/{threadId}", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
-		cs.UpdateThread(w, r)
-	}))).
-		Methods("OPTIONS", "PUT")
 
 	router.HandleFunc("/chat-svc/evens", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
 		cs.Events(w, r)

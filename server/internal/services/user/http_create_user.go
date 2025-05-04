@@ -76,7 +76,7 @@ func (s *UserService) CreateUser(
 	w.Write(bs)
 }
 
-func validateUser(u *user.User, contacts []user.Contact) error {
+func validateUser(u *user.UserInput, contacts []user.Contact) error {
 	if u == nil {
 		return errors.New("user is required")
 	}

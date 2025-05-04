@@ -19,8 +19,8 @@ import (
 type Membership struct {
 	Id string `json:"id,omitempty"`
 
-	CreatedAt time.Time  `json:"createdAt,omitempty"`
-	UpdatedAt time.Time  `json:"updatedAt,omitempty"`
+	CreatedAt time.Time  `json:"createdAt" binding:"required"`
+	UpdatedAt time.Time  `json:"updatedAt" binding:"required"`
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`
 
 	OrganizationId string `json:"organizationId,omitempty"`
@@ -37,8 +37,8 @@ func (o *Membership) GetId() string {
 
 type Organization struct {
 	Id        string     `json:"id" binding:"required"`
-	CreatedAt time.Time  `json:"createdAt,omitempty"`
-	UpdatedAt time.Time  `json:"updatedAt,omitempty"`
+	CreatedAt time.Time  `json:"createdAt" binding:"required"`
+	UpdatedAt time.Time  `json:"updatedAt" binding:"required"`
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`
 
 	// Full name of the organization

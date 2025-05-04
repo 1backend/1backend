@@ -17,8 +17,8 @@ type Upload struct {
 	// Unique ID for this replica
 	Id string `json:"id"`
 
-	CreatedAt time.Time `json:"createdAt,omitempty"`
-	UpdatedAt time.Time `json:"updatedAt,omitempty"`
+	CreatedAt time.Time `json:"createdAt" binding:"required"`
+	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
 
 	// ID of the node storing this replica
 	NodeId string `json:"nodeId"`

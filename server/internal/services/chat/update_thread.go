@@ -21,22 +21,34 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/logger"
-	chattypes "github.com/1backend/1backend/server/internal/services/chat/types"
+	chat "github.com/1backend/1backend/server/internal/services/chat/types"
 )
 
 func (a *ChatService) updateThread(
-	chatThread *chattypes.Thread,
-) (*chattypes.Thread, error) {
+	callerUserId string,
+	thread *chat.Thread,
+	req *chat.SaveThreadRequest,
+) (*chat.Thread, error) {
+	if req.Title != "" {
+		thread.Title = req.Title
+	}
+	if req.TopicIds != nil {
+		thread.TopicIds = req.TopicIds
+	}
+	if req.UserIds != nil {
+		thread.UserIds = req.UserIds
+	}
+
 	err := a.threadsStore.Query(
-		datastore.Equals(datastore.Field("id"), chatThread.Id),
-	).Update(chatThread)
+		datastore.Equals(datastore.Field("id"), req.Id),
+	).Update(thread)
 
 	if err != nil {
 		return nil, err
 	}
 
-	ev := chattypes.EventThreadUpdate{
-		ThreadId: chatThread.Id,
+	ev := chat.EventThreadUpdate{
+		ThreadId: req.Id,
 	}
 
 	var m map[string]interface{}
@@ -56,5 +68,5 @@ func (a *ChatService) updateThread(
 		logger.Error("Failed to publish firehose event", slog.Any("error", err))
 	}
 
-	return chatThread, nil
+	return thread, nil
 }

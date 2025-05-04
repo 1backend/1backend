@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.3.0-rc.39
+API version: 0.4.0
 Contact: sales@singulatron.com
 */
 
@@ -24,12 +24,12 @@ var _ MappedNullable = &UserSvcAuthToken{}
 type UserSvcAuthToken struct {
 	// Active tokens contain the most up-to-date information. When a user's role changes—due to role assignment, organization creation/assignment, etc.—all existing tokens are marked inactive. Active tokens are reused during login, while inactive tokens are retained for historical reference.
 	Active *bool `json:"active,omitempty"`
-	CreatedAt *string `json:"createdAt,omitempty"`
+	CreatedAt string `json:"createdAt"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	Id string `json:"id"`
 	// Token is a signed JWT used to authenticate the user without querying the User Svc. You can verify it using the public key at `/user-svc/public-key`.  The token is just a JSON object with fields like: - \"oui\": the user ID (e.g., \"usr_dC4K75Cbp6\") - \"olu\": the user slug (e.g., \"test-user-slug-0\") - \"oro\": a list of roles, such as:   - \"user-svc:user\"   - \"user-svc:org:{org_dC4K7NNDCG}:user\"
 	Token string `json:"token"`
-	UpdatedAt *string `json:"updatedAt,omitempty"`
+	UpdatedAt string `json:"updatedAt"`
 	UserId string `json:"userId"`
 }
 
@@ -39,10 +39,12 @@ type _UserSvcAuthToken UserSvcAuthToken
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcAuthToken(id string, token string, userId string) *UserSvcAuthToken {
+func NewUserSvcAuthToken(createdAt string, id string, token string, updatedAt string, userId string) *UserSvcAuthToken {
 	this := UserSvcAuthToken{}
+	this.CreatedAt = createdAt
 	this.Id = id
 	this.Token = token
+	this.UpdatedAt = updatedAt
 	this.UserId = userId
 	return &this
 }
@@ -87,36 +89,28 @@ func (o *UserSvcAuthToken) SetActive(v bool) {
 	o.Active = &v
 }
 
-// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
+// GetCreatedAt returns the CreatedAt field value
 func (o *UserSvcAuthToken) GetCreatedAt() string {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.CreatedAt
+
+	return o.CreatedAt
 }
 
-// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcAuthToken) GetCreatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.CreatedAt, true
+	return &o.CreatedAt, true
 }
 
-// HasCreatedAt returns a boolean if a field has been set.
-func (o *UserSvcAuthToken) HasCreatedAt() bool {
-	if o != nil && !IsNil(o.CreatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
+// SetCreatedAt sets field value
 func (o *UserSvcAuthToken) SetCreatedAt(v string) {
-	o.CreatedAt = &v
+	o.CreatedAt = v
 }
 
 // GetDeletedAt returns the DeletedAt field value if set, zero value otherwise.
@@ -199,36 +193,28 @@ func (o *UserSvcAuthToken) SetToken(v string) {
 	o.Token = v
 }
 
-// GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
+// GetUpdatedAt returns the UpdatedAt field value
 func (o *UserSvcAuthToken) GetUpdatedAt() string {
-	if o == nil || IsNil(o.UpdatedAt) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.UpdatedAt
+
+	return o.UpdatedAt
 }
 
-// GetUpdatedAtOk returns a tuple with the UpdatedAt field value if set, nil otherwise
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcAuthToken) GetUpdatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.UpdatedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.UpdatedAt, true
+	return &o.UpdatedAt, true
 }
 
-// HasUpdatedAt returns a boolean if a field has been set.
-func (o *UserSvcAuthToken) HasUpdatedAt() bool {
-	if o != nil && !IsNil(o.UpdatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetUpdatedAt gets a reference to the given string and assigns it to the UpdatedAt field.
+// SetUpdatedAt sets field value
 func (o *UserSvcAuthToken) SetUpdatedAt(v string) {
-	o.UpdatedAt = &v
+	o.UpdatedAt = v
 }
 
 // GetUserId returns the UserId field value
@@ -268,17 +254,13 @@ func (o UserSvcAuthToken) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Active) {
 		toSerialize["active"] = o.Active
 	}
-	if !IsNil(o.CreatedAt) {
-		toSerialize["createdAt"] = o.CreatedAt
-	}
+	toSerialize["createdAt"] = o.CreatedAt
 	if !IsNil(o.DeletedAt) {
 		toSerialize["deletedAt"] = o.DeletedAt
 	}
 	toSerialize["id"] = o.Id
 	toSerialize["token"] = o.Token
-	if !IsNil(o.UpdatedAt) {
-		toSerialize["updatedAt"] = o.UpdatedAt
-	}
+	toSerialize["updatedAt"] = o.UpdatedAt
 	toSerialize["userId"] = o.UserId
 	return toSerialize, nil
 }
@@ -288,8 +270,10 @@ func (o *UserSvcAuthToken) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"createdAt",
 		"id",
 		"token",
+		"updatedAt",
 		"userId",
 	}
 

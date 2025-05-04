@@ -49,60 +49,6 @@ const docTemplate = `{
             }
         },
         "/chat-svc/message/{messageId}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Fetch information about a specific chat message by its ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Chat Svc"
-                ],
-                "summary": "Get Message",
-                "operationId": "getMessage",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Message ID",
-                        "name": "messageId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Message details successfully retrieved",
-                        "schema": {
-                            "$ref": "#/definitions/chat_svc.GetMessageResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid JSON",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
             "delete": {
                 "security": [
                     {
@@ -159,14 +105,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/chat-svc/thread": {
+        "/chat-svc/messages": {
             "post": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Create a new chat thread and add the requesting user to it.\nRequires the ` + "`" + `chat-svc:thread:create` + "`" + ` permission.",
+                "description": "Fetch messages (and associated assets) for a specific chat thread.",
                 "consumes": [
                     "application/json"
                 ],
@@ -176,16 +122,74 @@ const docTemplate = `{
                 "tags": [
                     "Chat Svc"
                 ],
-                "summary": "Add Thread",
-                "operationId": "addThread",
+                "summary": "List Messages",
+                "operationId": "listMessages",
                 "parameters": [
                     {
-                        "description": "Add Thread Request",
+                        "description": "List Messages Request",
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/chat_svc.AddThreadRequest"
+                            "$ref": "#/definitions/chat_svc.ListMessagesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Messages and assets successfully retrieved",
+                        "schema": {
+                            "$ref": "#/definitions/chat_svc.ListMessagesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/chat-svc/thread": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create or update a chat thread.\nRequires the ` + "`" + `chat-svc:thread:edit` + "`" + ` permission.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Chat Svc"
+                ],
+                "summary": "Save Thread",
+                "operationId": "saveThread",
+                "parameters": [
+                    {
+                        "description": "Save Thread Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/chat_svc.SaveThreadRequest"
                         }
                     }
                 ],
@@ -193,7 +197,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Thread successfully created",
                         "schema": {
-                            "$ref": "#/definitions/chat_svc.AddThreadResponse"
+                            "$ref": "#/definitions/chat_svc.SaveThreadResponse"
                         }
                     },
                     "400": {
@@ -218,123 +222,6 @@ const docTemplate = `{
             }
         },
         "/chat-svc/thread/{threadId}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Fetch information about a specific chat thread by its ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Chat Svc"
-                ],
-                "summary": "Get Thread",
-                "operationId": "getThread",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Thread ID",
-                        "name": "threadId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Thread details successfully retrieved",
-                        "schema": {
-                            "$ref": "#/definitions/chat_svc.GetThreadResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid JSON",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Modify the details of a specific chat thread",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Chat Svc"
-                ],
-                "summary": "Update Thread",
-                "operationId": "updateThread",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Thread ID",
-                        "name": "threadId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Update Thread Request",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/chat_svc.UpdateThreadRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Thread successfully updated",
-                        "schema": {
-                            "$ref": "#/definitions/chat_svc.AddThreadResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid JSON",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
             "delete": {
                 "security": [
                     {
@@ -398,7 +285,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Add a new message to a specific thread.",
+                "description": "Save a new message to a specific thread.",
                 "consumes": [
                     "application/json"
                 ],
@@ -408,8 +295,8 @@ const docTemplate = `{
                 "tags": [
                     "Chat Svc"
                 ],
-                "summary": "Add Message",
-                "operationId": "addMessage",
+                "summary": "Save Message",
+                "operationId": "saveMessage",
                 "parameters": [
                     {
                         "type": "string",
@@ -419,12 +306,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Add Message Request",
+                        "description": "Save Message Request",
                         "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/chat_svc.AddMessageRequest"
+                            "$ref": "#/definitions/chat_svc.SaveMessageRequest"
                         }
                     }
                 ],
@@ -434,62 +321,6 @@ const docTemplate = `{
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid JSON",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/chat-svc/thread/{threadId}/messages": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Fetch messages (and associated assets) for a specific chat thread.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Chat Svc"
-                ],
-                "summary": "List Messages",
-                "operationId": "getMessages",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Thread ID",
-                        "name": "threadId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Messages and assets successfully retrieved",
-                        "schema": {
-                            "$ref": "#/definitions/chat_svc.GetMessagesResponse"
                         }
                     },
                     "400": {
@@ -530,15 +361,16 @@ const docTemplate = `{
                 "tags": [
                     "Chat Svc"
                 ],
-                "summary": "Get Threads",
-                "operationId": "getThreads",
+                "summary": "List Threads",
+                "operationId": "listThreads",
                 "parameters": [
                     {
-                        "description": "Get Threads Request",
+                        "description": "List Threads Request",
                         "name": "body",
                         "in": "body",
+                        "required": true,
                         "schema": {
-                            "$ref": "#/definitions/chat_svc.GetThreadsRequest"
+                            "$ref": "#/definitions/chat_svc.ListThreadsRequest"
                         }
                     }
                 ],
@@ -546,7 +378,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Threads successfully retrieved",
                         "schema": {
-                            "$ref": "#/definitions/chat_svc.GetThreadsResponse"
+                            "$ref": "#/definitions/chat_svc.ListThreadsResponse"
                         }
                     },
                     "400": {
@@ -4647,7 +4479,7 @@ const docTemplate = `{
         },
         "/user-svc/public-key": {
             "get": {
-                "description": "Get the public key to parse and verify the JWT.",
+                "description": "Get the public key to verify the JWT signature.",
                 "consumes": [
                     "application/json"
                 ],
@@ -5178,30 +5010,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "chat_svc.AddMessageRequest": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "$ref": "#/definitions/chat_svc.Message"
-                }
-            }
-        },
-        "chat_svc.AddThreadRequest": {
-            "type": "object",
-            "properties": {
-                "thread": {
-                    "$ref": "#/definitions/chat_svc.Thread"
-                }
-            }
-        },
-        "chat_svc.AddThreadResponse": {
-            "type": "object",
-            "properties": {
-                "thread": {
-                    "$ref": "#/definitions/chat_svc.Thread"
-                }
-            }
-        },
         "chat_svc.EventMessageAdded": {
             "type": "object",
             "properties": {
@@ -5226,18 +5034,21 @@ const docTemplate = `{
                 }
             }
         },
-        "chat_svc.GetMessageResponse": {
+        "chat_svc.ListMessagesRequest": {
             "type": "object",
             "properties": {
-                "exists": {
-                    "type": "boolean"
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
-                "message": {
-                    "$ref": "#/definitions/chat_svc.Message"
+                "threadId": {
+                    "type": "string"
                 }
             }
         },
-        "chat_svc.GetMessagesResponse": {
+        "chat_svc.ListMessagesResponse": {
             "type": "object",
             "properties": {
                 "messages": {
@@ -5248,21 +5059,18 @@ const docTemplate = `{
                 }
             }
         },
-        "chat_svc.GetThreadResponse": {
+        "chat_svc.ListThreadsRequest": {
             "type": "object",
             "properties": {
-                "exists": {
-                    "type": "boolean"
-                },
-                "thread": {
-                    "$ref": "#/definitions/chat_svc.Thread"
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
-        "chat_svc.GetThreadsRequest": {
-            "type": "object"
-        },
-        "chat_svc.GetThreadsResponse": {
+        "chat_svc.ListThreadsResponse": {
             "type": "object",
             "properties": {
                 "threads": {
@@ -5276,8 +5084,10 @@ const docTemplate = `{
         "chat_svc.Message": {
             "type": "object",
             "required": [
+                "createdAt",
                 "id",
-                "threadId"
+                "threadId",
+                "updatedAt"
             ],
             "properties": {
                 "createdAt": {
@@ -5316,10 +5126,80 @@ const docTemplate = `{
                 }
             }
         },
+        "chat_svc.SaveMessageRequest": {
+            "type": "object",
+            "properties": {
+                "fileIds": {
+                    "description": "FileIds defines the file attachments the message has.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "type": "string",
+                    "example": "msg_emSOPlW58o"
+                },
+                "meta": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "text": {
+                    "description": "Text content of the message eg. \"Hi, what's up?\"",
+                    "type": "string"
+                },
+                "threadId": {
+                    "description": "ThreadId of the message.",
+                    "type": "string",
+                    "example": "thr_emSOeEUWAg"
+                },
+                "userId": {
+                    "description": "UserId is the id of the user who wrote the message.\nFor AI messages this field is empty.",
+                    "type": "string"
+                }
+            }
+        },
+        "chat_svc.SaveThreadRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "thr_emSQnpJbhG"
+                },
+                "title": {
+                    "description": "Title of the thread.",
+                    "type": "string"
+                },
+                "topicIds": {
+                    "description": "TopicIds defines which topics the thread belongs to.\nTopics can roughly be thought of as tags for threads.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "userIds": {
+                    "description": "UserIds the ids of the users who can see this thread.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "chat_svc.SaveThreadResponse": {
+            "type": "object",
+            "properties": {
+                "thread": {
+                    "$ref": "#/definitions/chat_svc.Thread"
+                }
+            }
+        },
         "chat_svc.Thread": {
             "type": "object",
             "required": [
-                "id"
+                "createdAt",
+                "id",
+                "updatedAt"
             ],
             "properties": {
                 "createdAt": {
@@ -5349,14 +5229,6 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
-                }
-            }
-        },
-        "chat_svc.UpdateThreadRequest": {
-            "type": "object",
-            "properties": {
-                "thread": {
-                    "$ref": "#/definitions/chat_svc.Thread"
                 }
             }
         },
@@ -5731,6 +5603,9 @@ const docTemplate = `{
         },
         "container_svc.Log": {
             "type": "object",
+            "required": [
+                "createdAt"
+            ],
             "properties": {
                 "containerId": {
                     "description": "ContainerId is the raw underlying container ID.\nEg. Docker container id. Node local.",
@@ -6009,8 +5884,10 @@ const docTemplate = `{
         "data_svc.Object": {
             "type": "object",
             "required": [
+                "createdAt",
                 "data",
-                "table"
+                "table",
+                "updatedAt"
             ],
             "properties": {
                 "authors": {
@@ -6588,6 +6465,10 @@ const docTemplate = `{
         },
         "file_svc.Download": {
             "type": "object",
+            "required": [
+                "createdAt",
+                "updatedAt"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"
@@ -6704,7 +6585,9 @@ const docTemplate = `{
         "file_svc.Upload": {
             "type": "object",
             "required": [
-                "fileSize"
+                "createdAt",
+                "fileSize",
+                "updatedAt"
             ],
             "properties": {
                 "createdAt": {
@@ -8815,8 +8698,10 @@ const docTemplate = `{
         "user_svc.AuthToken": {
             "type": "object",
             "required": [
+                "createdAt",
                 "id",
                 "token",
+                "updatedAt",
                 "userId"
             ],
             "properties": {
@@ -8866,9 +8751,11 @@ const docTemplate = `{
         "user_svc.Contact": {
             "type": "object",
             "required": [
+                "createdAt",
                 "handle",
                 "id",
                 "platform",
+                "updatedAt",
                 "userId"
             ],
             "properties": {
@@ -8909,6 +8796,30 @@ const docTemplate = `{
                 }
             }
         },
+        "user_svc.ContactInput": {
+            "type": "object",
+            "required": [
+                "id",
+                "platform"
+            ],
+            "properties": {
+                "handle": {
+                    "description": "Handle is the platform local unique identifier.\nIe. while the ` + "`" + `id` + "`" + ` of a Twitter contact is ` + "`" + `twitter.com/thejoe` + "`" + `, the value will be only ` + "`" + `thejoe` + "`" + `.\nFor email and phones the ` + "`" + `id` + "`" + ` and the ` + "`" + `value` + "`" + ` will be the same.\nThis field mostly exists for display purposes.\n\nExample values: \"joe12\" (1backend username), \"thejoe\" (twitter username), \"joe@joesdomain.com\" (email)",
+                    "type": "string",
+                    "example": "thejoe"
+                },
+                "id": {
+                    "description": "The unique identifier, which can be a URL.\n\nExample values: \"joe12\" (1backend username), \"twitter.com/thejoe\" (twitter url), \"joe@joesdomain.com\" (email)",
+                    "type": "string",
+                    "example": "twitter.com/thejoe"
+                },
+                "platform": {
+                    "description": "Platform of the contact (e.g., \"email\", \"phone\", \"twitter\")",
+                    "type": "string",
+                    "example": "twitter"
+                }
+            }
+        },
         "user_svc.CreateUserRequest": {
             "type": "object",
             "properties": {
@@ -8928,7 +8839,7 @@ const docTemplate = `{
                     }
                 },
                 "user": {
-                    "$ref": "#/definitions/user_svc.User"
+                    "$ref": "#/definitions/user_svc.UserInput"
                 }
             }
         },
@@ -9238,9 +9149,11 @@ const docTemplate = `{
         "user_svc.Organization": {
             "type": "object",
             "required": [
+                "createdAt",
                 "id",
                 "name",
-                "slug"
+                "slug",
+                "updatedAt"
             ],
             "properties": {
                 "createdAt": {
@@ -9389,7 +9302,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "contact": {
-                    "$ref": "#/definitions/user_svc.Contact"
+                    "$ref": "#/definitions/user_svc.ContactInput"
                 },
                 "name": {
                     "type": "string"
@@ -9555,8 +9468,10 @@ const docTemplate = `{
         "user_svc.User": {
             "type": "object",
             "required": [
+                "createdAt",
                 "id",
-                "slug"
+                "slug",
+                "updatedAt"
             ],
             "properties": {
                 "createdAt": {
@@ -9593,11 +9508,45 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.UserRecord": {
+        "user_svc.UserInput": {
             "type": "object",
             "required": [
                 "id",
                 "slug"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "description": "Full name of the user.",
+                    "type": "string",
+                    "example": "Jane Doe"
+                },
+                "slug": {
+                    "description": "URL-friendly unique (inside the 1Backend platform) identifier for the ` + "`" + `user` + "`" + `.",
+                    "type": "string",
+                    "example": "jane-doe"
+                },
+                "thumbnailFileId": {
+                    "type": "string",
+                    "example": "file_fQDyi1xdHK"
+                }
+            }
+        },
+        "user_svc.UserRecord": {
+            "type": "object",
+            "required": [
+                "createdAt",
+                "id",
+                "slug",
+                "updatedAt"
             ],
             "properties": {
                 "contactIds": {
@@ -9650,7 +9599,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.3.0-rc.39",
+	Version:          "0.4.0",
 	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},

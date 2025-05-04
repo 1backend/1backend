@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.3.0-rc.39
+API version: 0.4.0
 Contact: sales@singulatron.com
 */
 
@@ -22,13 +22,13 @@ var _ MappedNullable = &ChatSvcThread{}
 
 // ChatSvcThread struct for ChatSvcThread
 type ChatSvcThread struct {
-	CreatedAt *string `json:"createdAt,omitempty"`
+	CreatedAt string `json:"createdAt"`
 	Id string `json:"id"`
 	// Title of the thread.
 	Title *string `json:"title,omitempty"`
 	// TopicIds defines which topics the thread belongs to. Topics can roughly be thought of as tags for threads.
 	TopicIds []string `json:"topicIds,omitempty"`
-	UpdatedAt *string `json:"updatedAt,omitempty"`
+	UpdatedAt string `json:"updatedAt"`
 	// UserIds the ids of the users who can see this thread.
 	UserIds []string `json:"userIds,omitempty"`
 }
@@ -39,9 +39,11 @@ type _ChatSvcThread ChatSvcThread
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewChatSvcThread(id string) *ChatSvcThread {
+func NewChatSvcThread(createdAt string, id string, updatedAt string) *ChatSvcThread {
 	this := ChatSvcThread{}
+	this.CreatedAt = createdAt
 	this.Id = id
+	this.UpdatedAt = updatedAt
 	return &this
 }
 
@@ -53,36 +55,28 @@ func NewChatSvcThreadWithDefaults() *ChatSvcThread {
 	return &this
 }
 
-// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
+// GetCreatedAt returns the CreatedAt field value
 func (o *ChatSvcThread) GetCreatedAt() string {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.CreatedAt
+
+	return o.CreatedAt
 }
 
-// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
 // and a boolean to check if the value has been set.
 func (o *ChatSvcThread) GetCreatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.CreatedAt, true
+	return &o.CreatedAt, true
 }
 
-// HasCreatedAt returns a boolean if a field has been set.
-func (o *ChatSvcThread) HasCreatedAt() bool {
-	if o != nil && !IsNil(o.CreatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
+// SetCreatedAt sets field value
 func (o *ChatSvcThread) SetCreatedAt(v string) {
-	o.CreatedAt = &v
+	o.CreatedAt = v
 }
 
 // GetId returns the Id field value
@@ -173,36 +167,28 @@ func (o *ChatSvcThread) SetTopicIds(v []string) {
 	o.TopicIds = v
 }
 
-// GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
+// GetUpdatedAt returns the UpdatedAt field value
 func (o *ChatSvcThread) GetUpdatedAt() string {
-	if o == nil || IsNil(o.UpdatedAt) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.UpdatedAt
+
+	return o.UpdatedAt
 }
 
-// GetUpdatedAtOk returns a tuple with the UpdatedAt field value if set, nil otherwise
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
 // and a boolean to check if the value has been set.
 func (o *ChatSvcThread) GetUpdatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.UpdatedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.UpdatedAt, true
+	return &o.UpdatedAt, true
 }
 
-// HasUpdatedAt returns a boolean if a field has been set.
-func (o *ChatSvcThread) HasUpdatedAt() bool {
-	if o != nil && !IsNil(o.UpdatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetUpdatedAt gets a reference to the given string and assigns it to the UpdatedAt field.
+// SetUpdatedAt sets field value
 func (o *ChatSvcThread) SetUpdatedAt(v string) {
-	o.UpdatedAt = &v
+	o.UpdatedAt = v
 }
 
 // GetUserIds returns the UserIds field value if set, zero value otherwise.
@@ -247,9 +233,7 @@ func (o ChatSvcThread) MarshalJSON() ([]byte, error) {
 
 func (o ChatSvcThread) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.CreatedAt) {
-		toSerialize["createdAt"] = o.CreatedAt
-	}
+	toSerialize["createdAt"] = o.CreatedAt
 	toSerialize["id"] = o.Id
 	if !IsNil(o.Title) {
 		toSerialize["title"] = o.Title
@@ -257,9 +241,7 @@ func (o ChatSvcThread) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.TopicIds) {
 		toSerialize["topicIds"] = o.TopicIds
 	}
-	if !IsNil(o.UpdatedAt) {
-		toSerialize["updatedAt"] = o.UpdatedAt
-	}
+	toSerialize["updatedAt"] = o.UpdatedAt
 	if !IsNil(o.UserIds) {
 		toSerialize["userIds"] = o.UserIds
 	}
@@ -271,7 +253,9 @@ func (o *ChatSvcThread) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"createdAt",
 		"id",
+		"updatedAt",
 	}
 
 	allProperties := make(map[string]interface{})
