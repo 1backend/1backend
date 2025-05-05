@@ -26,6 +26,11 @@ import (
 // If starting the service fails, we return a 500 Internal Server Error.
 func Lazy(s LazyStarter, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodOptions {
+			next(w, r)
+			return
+		}
+
 		if err := s.LazyStart(); err != nil {
 			endpoint.WriteErr(w, http.StatusInternalServerError, err)
 			return
