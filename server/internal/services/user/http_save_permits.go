@@ -148,6 +148,10 @@ func (cs *UserService) savePermits(
 		permits = append(permits, permit)
 	}
 
+	if len(permits) == 0 {
+		return nil
+	}
+
 	err = cs.permitsStore.UpsertMany(permits)
 	if err != nil {
 		return errors.Wrap(err, "error saving permits")
