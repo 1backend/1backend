@@ -65,27 +65,27 @@ func NewDataService(
 }
 
 func (ds *DataService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/data-svc/object", service.Lazy(ds, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/data-svc/object", middlewares.DefaultApplicator(service.Lazy(ds, func(w http.ResponseWriter, r *http.Request) {
 		ds.Create(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/data-svc/objects/update", service.Lazy(ds, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/data-svc/objects/update", middlewares.DefaultApplicator(service.Lazy(ds, func(w http.ResponseWriter, r *http.Request) {
 		ds.UpdateObjects(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/data-svc/objects/delete", service.Lazy(ds, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/data-svc/objects/delete", middlewares.DefaultApplicator(service.Lazy(ds, func(w http.ResponseWriter, r *http.Request) {
 		ds.DeleteObjects(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/data-svc/objects", service.Lazy(ds, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/data-svc/objects", middlewares.DefaultApplicator(service.Lazy(ds, func(w http.ResponseWriter, r *http.Request) {
 		ds.Query(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/data-svc/object/{objectId}", service.Lazy(ds, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/data-svc/object/{objectId}", middlewares.DefaultApplicator(service.Lazy(ds, func(w http.ResponseWriter, r *http.Request) {
 		ds.Upsert(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")

@@ -71,22 +71,22 @@ func NewPromptService(
 }
 
 func (ps *PromptService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/prompt-svc/prompt", service.Lazy(ps, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/prompt-svc/prompt", middlewares.DefaultApplicator(service.Lazy(ps, func(w http.ResponseWriter, r *http.Request) {
 		ps.Prompt(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/prompt-svc/prompt/{promptId}", service.Lazy(ps, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/prompt-svc/prompt/{promptId}", middlewares.DefaultApplicator(service.Lazy(ps, func(w http.ResponseWriter, r *http.Request) {
 		ps.RemovePrompt(w, r)
 	}))).
 		Methods("OPTIONS", "DELETE")
 
-	router.HandleFunc("/prompt-svc/prompts/{threadId}/responses/subscribe", service.Lazy(ps, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/prompt-svc/prompts/{threadId}/responses/subscribe", middlewares.DefaultApplicator(service.Lazy(ps, func(w http.ResponseWriter, r *http.Request) {
 		ps.SubscribeToPromptResponses(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/prompt-svc/prompts", service.Lazy(ps, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/prompt-svc/prompts", middlewares.DefaultApplicator(service.Lazy(ps, func(w http.ResponseWriter, r *http.Request) {
 		ps.ListPrompts(w, r)
 	}))).
 		Methods("OPTIONS", "POST")

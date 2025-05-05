@@ -61,7 +61,7 @@ func NewSourceService(
 }
 
 func (ss *SourceService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/source-svc/repo/checkout", service.Lazy(ss, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/source-svc/repo/checkout", middlewares.DefaultApplicator(service.Lazy(ss, func(w http.ResponseWriter, r *http.Request) {
 		ss.CheckoutRepo(w, r)
 	}))).
 		Methods("OPTIONS", "POST")

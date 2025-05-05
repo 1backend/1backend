@@ -79,42 +79,42 @@ func NewModelService(
 }
 
 func (ms *ModelService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/model-svc/default-model/status", service.Lazy(ms, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/model-svc/default-model/status", middlewares.DefaultApplicator(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
 		ms.DefaultStatus(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/model-svc/model/{modelId}/status", service.Lazy(ms, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/model-svc/model/{modelId}/status", middlewares.DefaultApplicator(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
 		ms.Status(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/model-svc/models", service.Lazy(ms, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/model-svc/models", middlewares.DefaultApplicator(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
 		ms.ListModels(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/model-svc/platforms", service.Lazy(ms, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/model-svc/platforms", middlewares.DefaultApplicator(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
 		ms.ListPlatforms(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/model-svc/model/{modelId}", service.Lazy(ms, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/model-svc/model/{modelId}", middlewares.DefaultApplicator(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
 		ms.Get(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/model-svc/default-model/start", service.Lazy(ms, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/model-svc/default-model/start", middlewares.DefaultApplicator(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
 		ms.StartDefault(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/model-svc/model/{modelId}/start", service.Lazy(ms, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/model-svc/model/{modelId}/start", middlewares.DefaultApplicator(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
 		ms.StartSpecific(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/model-svc/model/{modelId}/make-default", service.Lazy(ms, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/model-svc/model/{modelId}/make-default", middlewares.DefaultApplicator(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
 		ms.MakeDefault(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
