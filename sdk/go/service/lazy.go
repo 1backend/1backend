@@ -27,6 +27,8 @@ import (
 func Lazy(s LazyStarter, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodOptions {
+			// We don't want to throw errors on OPTIONS requests
+			// because the response won't be visible in the chrome dev tools.
 			next(w, r)
 			return
 		}

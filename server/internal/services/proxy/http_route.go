@@ -28,10 +28,39 @@ import (
 )
 
 func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
+	statusCode, err := cs.route(w, r)
+
+	if err != nil {
+		if r.Method == http.MethodOptions {
+			// We don't want to write errors to response on OPTIONS requests
+			// because the response won't be visible in the chrome dev tools.
+			// We log it instead.
+			logger.Error("Error proxying OPTIONS request",
+				slog.String("path", r.URL.Path),
+				slog.String("error", err.Error()),
+			)
+			return
+		}
+
+		w.WriteHeader(statusCode)
+		w.Write([]byte(err.Error()))
+		return
+	}
+}
+
+func (cs *ProxyService) route(w http.ResponseWriter, r *http.Request) (int, error) {
 	logger.Debug("Proxying",
 		slog.String("path", r.URL.Path),
 		slog.String("method", r.Method),
 	)
+
+	// The proxy service's LazyStart() must be called here because OPTIONS requests
+	// are not handled the standard Lazy logic. Unlike other services, the Proxy does handle
+	// OPTIONS requests and requires initialization (including token acquisition) to do so.
+	err := cs.LazyStart()
+	if err != nil && r.Method != http.MethodOptions {
+		return http.StatusInternalServerError, errors.Wrap(err, "error starting proxy service")
+	}
 
 	// @todo cache?
 
@@ -42,15 +71,11 @@ func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
 		Slug(serviceSlug).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(errors.Wrap(err, "error listing instances").Error()))
-		return
+		return http.StatusInternalServerError, errors.Wrap(err, "error listing instances")
 	}
 
 	if len(rsp.Instances) == 0 {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("not found"))
-		return
+		return http.StatusNotFound, errors.New("no instances found")
 	}
 
 	// Prioritize healthy instances
@@ -73,9 +98,7 @@ func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
 
 	req, err := http.NewRequest(r.Method, uri, r.Body)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(errors.Wrap(err, "error creating proxy request").Error()))
-		return
+		return http.StatusInternalServerError, errors.Wrap(err, "error creating proxy request")
 	}
 
 	req.Header = r.Header
@@ -83,9 +106,7 @@ func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
 	client := http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(errors.Wrap(err, "error proxying request").Error()))
-		return
+		return http.StatusInternalServerError, errors.Wrap(err, "error proxying request")
 	}
 
 	defer resp.Body.Close()
@@ -119,9 +140,7 @@ func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(errors.Wrap(err, "failed to read body while proxying").Error()))
-		return
+		return http.StatusInternalServerError, errors.Wrap(err, "failed to read body while proxying")
 	}
 
 	_, err = w.Write(body)
@@ -132,6 +151,8 @@ func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
 	if flusher, ok := w.(http.Flusher); ok {
 		flusher.Flush()
 	}
+
+	return http.StatusOK, nil
 }
 
 // gets service slug from http request path

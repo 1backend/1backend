@@ -24,7 +24,6 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/lock"
-	"github.com/1backend/1backend/sdk/go/service"
 )
 
 type ProxyService struct {
@@ -60,9 +59,9 @@ func NewProxyService(
 }
 
 func (cs *ProxyService) RegisterRoutes(router *mux.Router) {
-	router.PathPrefix("/").HandlerFunc(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		cs.Route(w, r)
-	}))
+	})
 }
 
 func (cs *ProxyService) LazyStart() error {
