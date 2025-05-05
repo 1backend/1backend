@@ -81,52 +81,52 @@ func NewContainerService(
 }
 
 func (cs *ContainerService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/container-svc/daemon/info", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/daemon/info", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.DaemonInfo(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/container-svc/image/{imageName}/pullable", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/image/{imageName}/pullable", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.ImagePullable(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/container-svc/host", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/host", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.Host(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/container-svc/logs", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/logs", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.ListLogs(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/container-svc/containers", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/containers", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.ListContainers(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/container-svc/container", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/container", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.RunContainer(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/container-svc/image", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/image", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.BuildImage(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/container-svc/container/stop", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/container/stop", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.StopContainer(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/container-svc/container/is-running", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/container/is-running", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.ContainerIsRunning(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/container-svc/container/summary", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/container/summary", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.Summary(w, r)
 	}))).
 		Methods("OPTIONS", "GET")

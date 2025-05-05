@@ -17,7 +17,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 
 	sdk "github.com/1backend/1backend/sdk/go"
@@ -43,7 +42,6 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		spew.Dump(err)
 		w.Write([]byte(`Invalid JSON`))
 		return
 	}

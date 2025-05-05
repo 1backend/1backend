@@ -57,7 +57,7 @@ func NewEmailService(
 }
 
 func (es *EmailService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/email-svc/email", service.Lazy(es, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/email-svc/email", middlewares.DefaultApplicator(service.Lazy(es, func(w http.ResponseWriter, r *http.Request) {
 		es.SendEmail(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")

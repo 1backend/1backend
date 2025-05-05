@@ -64,12 +64,12 @@ func NewPolicyService(
 }
 
 func (ps *PolicyService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/policy-svc/check", service.Lazy(ps, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/policy-svc/check", middlewares.DefaultApplicator(service.Lazy(ps, func(w http.ResponseWriter, r *http.Request) {
 		ps.Check(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/policy-svc/instance/{instanceId}", service.Lazy(ps, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/policy-svc/instance/{instanceId}", middlewares.DefaultApplicator(service.Lazy(ps, func(w http.ResponseWriter, r *http.Request) {
 		ps.UpsertInstance(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")

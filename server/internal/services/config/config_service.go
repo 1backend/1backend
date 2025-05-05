@@ -79,12 +79,12 @@ func (cs *ConfigService) SetDataStoreFactory(
 }
 
 func (cs *ConfigService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/config-svc/config", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/config-svc/config", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.Get(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/config-svc/config", service.Lazy(cs, middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/config-svc/config", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.Save(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
