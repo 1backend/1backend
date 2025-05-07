@@ -20,8 +20,8 @@ import (
 )
 
 func (ds *FileService) list() ([]types.Download, error) {
-	ds.lock.Lock()
-	defer ds.lock.Unlock()
+	ds.mutex.Lock()
+	defer ds.mutex.Unlock()
 
 	downloadIs, err := ds.downloadStore.Query().Find()
 	if err != nil {

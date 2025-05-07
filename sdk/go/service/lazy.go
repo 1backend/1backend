@@ -14,8 +14,15 @@ package service
 
 import (
 	"net/http"
+	"strings"
+	"sync"
 
 	"github.com/1backend/1backend/sdk/go/endpoint"
+)
+
+var (
+	muMap   = map[string]*sync.Mutex{}
+	muGuard sync.Mutex // protects muMap
 )
 
 // Lazy is a wrapper for endpoints that delays service setup until it’s actually needed.
@@ -32,6 +39,12 @@ func Lazy(s LazyStarter, next http.HandlerFunc) http.HandlerFunc {
 			next(w, r)
 			return
 		}
+
+		firstSegment := getFirstSegment(r.URL.Path)
+		mutex := getMutexForPathSegment(firstSegment)
+
+		mutex.Lock()
+		defer mutex.Unlock()
 
 		if err := s.LazyStart(); err != nil {
 			endpoint.WriteErr(w, http.StatusInternalServerError, err)
@@ -53,4 +66,25 @@ func Lazy(s LazyStarter, next http.HandlerFunc) http.HandlerFunc {
 // but still require some setup before being used.
 type LazyStarter interface {
 	LazyStart() error
+}
+
+func getMutexForPathSegment(segment string) *sync.Mutex {
+	muGuard.Lock()
+	defer muGuard.Unlock()
+
+	if m, exists := muMap[segment]; exists {
+		return m
+	}
+	m := &sync.Mutex{}
+	muMap[segment] = m
+	return m
+}
+
+func getFirstSegment(path string) string {
+	path = strings.TrimPrefix(path, "/")
+	segments := strings.SplitN(path, "/", 2)
+	if len(segments) > 0 {
+		return segments[0]
+	}
+	return ""
 }
