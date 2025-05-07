@@ -1189,8 +1189,14 @@ definitions:
         type: string
     required:
     - createdAt
+    - fileId
+    - fileName
+    - filePath
     - fileSize
+    - id
+    - nodeId
     - updatedAt
+    - userId
     type: object
   file_svc.UploadFileResponse:
     properties:

@@ -87,7 +87,7 @@ outer:
 			files, err := os.ReadDir(filepath.Join(options.HomeDir, "uploads"))
 			require.NoError(t, err)
 			for _, f := range files {
-				if f.Name() == filepath.Base(file2.Name()) {
+				if f.Name() == uplRsp.Upload.FileId {
 					uploaded = true
 					break outer
 				}
@@ -102,7 +102,7 @@ outer:
 	require.Equal(t, 1, len(rsp.Uploads))
 	require.Equal(t, int64(17), rsp.Uploads[0].FileSize)
 
-	fileRsp, fileHttpRsp, err := userClient.FileSvcAPI.ServeUpload(ctx, *rsp.Uploads[0].FileId).
+	fileRsp, fileHttpRsp, err := userClient.FileSvcAPI.ServeUpload(ctx, rsp.Uploads[0].FileId).
 		Execute()
 	require.NoError(t, err)
 	require.Equal(t, true, fileRsp != nil)

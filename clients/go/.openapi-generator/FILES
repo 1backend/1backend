@@ -452,5 +452,4 @@ model_user_svc_user.go
 model_user_svc_user_input.go
 model_user_svc_user_record.go
 response.go
-test/api_image_svc_test.go
 utils.go

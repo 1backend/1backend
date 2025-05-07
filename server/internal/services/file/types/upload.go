@@ -15,24 +15,24 @@ import "time"
 // replica of the file on a particular node.
 type Upload struct {
 	// Unique ID for this replica
-	Id string `json:"id"`
+	Id string `json:"id" binding:"required"`
 
 	CreatedAt time.Time `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
 
 	// ID of the node storing this replica
-	NodeId string `json:"nodeId"`
+	NodeId string `json:"nodeId" binding:"required"`
 
 	// Logical file ID spanning all replicas
-	FileId string `json:"fileId"`
+	FileId string `json:"fileId" binding:"required"`
 
 	// FilePath is the full node local path of the file
-	FilePath string `json:"filePath"`
+	FilePath string `json:"filePath" binding:"required"`
 
 	// Filename is the original name of the file
-	FileName string `json:"fileName"`
+	FileName string `json:"fileName" binding:"required"`
 
-	UserId   string `json:"userId,omitempty"`
+	UserId   string `json:"userId" binding:"required"`
 	FileSize int64  `json:"fileSize"         binding:"required" format:"int64"`
 }
 

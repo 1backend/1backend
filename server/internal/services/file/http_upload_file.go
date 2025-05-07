@@ -2,16 +2,19 @@ package fileservice
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
+	"github.com/google/uuid"
 )
 
 // @ID uploadFile
@@ -80,7 +83,11 @@ func (fs *FileService) UploadFile(
 			continue
 		}
 
-		fileId := sdk.Id("file")
+		// File IDs should not use the sdk.Id as they must be more unique to
+		// prevent enumeration, as there is no concept of file ownership.
+		fileId := fmt.Sprintf("file_%v",
+			strings.Replace(uuid.New().String(), "-", "_", -1),
+		)
 
 		destinationFilePath := filepath.Join(fs.uploadFolder, fileId)
 		dstFile, err := os.Create(destinationFilePath)

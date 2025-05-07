@@ -6649,8 +6649,14 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "createdAt",
+                "fileId",
+                "fileName",
+                "filePath",
                 "fileSize",
-                "updatedAt"
+                "id",
+                "nodeId",
+                "updatedAt",
+                "userId"
             ],
             "properties": {
                 "createdAt": {
