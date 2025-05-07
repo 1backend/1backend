@@ -26,19 +26,19 @@ export interface FileSvcUpload {
      * @type {string}
      * @memberof FileSvcUpload
      */
-    fileId?: string;
+    fileId: string;
     /**
      * Filename is the original name of the file
      * @type {string}
      * @memberof FileSvcUpload
      */
-    fileName?: string;
+    fileName: string;
     /**
      * FilePath is the full node local path of the file
      * @type {string}
      * @memberof FileSvcUpload
      */
-    filePath?: string;
+    filePath: string;
     /**
      *
      * @type {number}
@@ -50,13 +50,13 @@ export interface FileSvcUpload {
      * @type {string}
      * @memberof FileSvcUpload
      */
-    id?: string;
+    id: string;
     /**
      * ID of the node storing this replica
      * @type {string}
      * @memberof FileSvcUpload
      */
-    nodeId?: string;
+    nodeId: string;
     /**
      *
      * @type {string}
@@ -68,7 +68,7 @@ export interface FileSvcUpload {
      * @type {string}
      * @memberof FileSvcUpload
      */
-    userId?: string;
+    userId: string;
 }
 /**
  * Check if a given object implements the FileSvcUpload interface.

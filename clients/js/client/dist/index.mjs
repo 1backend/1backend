@@ -3979,9 +3979,21 @@ function FileSvcListUploadsRequestToJSONTyped(value, ignoreDiscriminator = false
 function instanceOfFileSvcUpload(value) {
     if (!('createdAt' in value) || value['createdAt'] === undefined)
         return false;
+    if (!('fileId' in value) || value['fileId'] === undefined)
+        return false;
+    if (!('fileName' in value) || value['fileName'] === undefined)
+        return false;
+    if (!('filePath' in value) || value['filePath'] === undefined)
+        return false;
     if (!('fileSize' in value) || value['fileSize'] === undefined)
         return false;
+    if (!('id' in value) || value['id'] === undefined)
+        return false;
+    if (!('nodeId' in value) || value['nodeId'] === undefined)
+        return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined)
+        return false;
+    if (!('userId' in value) || value['userId'] === undefined)
         return false;
     return true;
 }
@@ -3994,14 +4006,14 @@ function FileSvcUploadFromJSONTyped(json, ignoreDiscriminator) {
     }
     return {
         'createdAt': json['createdAt'],
-        'fileId': json['fileId'] == null ? undefined : json['fileId'],
-        'fileName': json['fileName'] == null ? undefined : json['fileName'],
-        'filePath': json['filePath'] == null ? undefined : json['filePath'],
+        'fileId': json['fileId'],
+        'fileName': json['fileName'],
+        'filePath': json['filePath'],
         'fileSize': json['fileSize'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'nodeId': json['nodeId'] == null ? undefined : json['nodeId'],
+        'id': json['id'],
+        'nodeId': json['nodeId'],
         'updatedAt': json['updatedAt'],
-        'userId': json['userId'] == null ? undefined : json['userId'],
+        'userId': json['userId'],
     };
 }
 function FileSvcUploadToJSON(json) {
