@@ -27,6 +27,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/anthonynsimon/bild/transform"
 	"github.com/gorilla/mux"
@@ -74,6 +75,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 
 	var err error
 	if widthStr != "" {
+		widthStr = strings.TrimSuffix(widthStr, "px")
 		width, err = strconv.Atoi(widthStr)
 		if err != nil {
 			endpoint.WriteErr(w, http.StatusBadRequest, errors.New("invalid width"))
@@ -81,6 +83,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		}
 	}
 	if heightStr != "" {
+		heightStr = strings.TrimSuffix(heightStr, "px")
 		height, err = strconv.Atoi(heightStr)
 		if err != nil {
 			endpoint.WriteErr(w, http.StatusBadRequest, errors.New("invalid height"))
@@ -108,7 +111,17 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		contentType = hrsp.Header.Get("Content-Type")
 	}
 
-	cacheKeyData := fmt.Sprintf("%s-%d-%d-%d-%s", fileId, width, height, quality, contentType)
+	resampleFilter := transform.Lanczos
+
+	cacheKeyData := fmt.Sprintf("%s-%d-%d-%d-%s-%v",
+		fileId,
+		width,
+		height,
+		quality,
+		contentType,
+		resampleFilter,
+	)
+
 	h := sha1.New()
 	h.Write([]byte(cacheKeyData))
 	hash := hex.EncodeToString(h.Sum(nil))
@@ -170,7 +183,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 			slog.String("contentType", contentType),
 			slog.Int("quality", quality),
 		)
-		img = transform.Resize(img, targetWidth, targetHeight, transform.Linear)
+		img = transform.Resize(img, targetWidth, targetHeight, resampleFilter)
 	}
 
 	outFile, err := os.Create(cachePath)
