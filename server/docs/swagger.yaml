@@ -1213,6 +1213,11 @@ definitions:
       event:
         $ref: '#/definitions/firehose_svc.Event'
     type: object
+  image_svc.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
   model_svc.Architectures:
     properties:
       cuda:
@@ -4816,6 +4821,50 @@ paths:
       summary: Subscribe to the Event Stream
       tags:
       - Firehose Svc
+  /image-svc/serve/upload/{fileId}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves and serves a previously uploaded image file using its
+        File ID.
+      operationId: serveUploadedImage
+      parameters:
+      - description: FileID uniquely identifies the file itself (not an ID, which
+          represents a specific replica)
+        in: path
+        name: fileId
+        required: true
+        type: string
+      - description: Optional width to resize the image to
+        in: query
+        name: width
+        type: integer
+      - description: Optional height to resize the image to
+        in: query
+        name: height
+        type: integer
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: File served successfully
+          schema:
+            type: file
+        "400":
+          description: Missing file ID
+          schema:
+            $ref: '#/definitions/image_svc.ErrorResponse'
+        "404":
+          description: File not found
+          schema:
+            $ref: '#/definitions/image_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/image_svc.ErrorResponse'
+      summary: Serve Uploaded Image
+      tags:
+      - Image Svc
   /model-svc/default-model/start:
     put:
       consumes:

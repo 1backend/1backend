@@ -2135,6 +2135,69 @@ const docTemplate = `{
                 }
             }
         },
+        "/image-svc/serve/upload/{fileId}": {
+            "get": {
+                "description": "Retrieves and serves a previously uploaded image file using its File ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "Image Svc"
+                ],
+                "summary": "Serve Uploaded Image",
+                "operationId": "serveUploadedImage",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "FileID uniquely identifies the file itself (not an ID, which represents a specific replica)",
+                        "name": "fileId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Optional width to resize the image to",
+                        "name": "width",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Optional height to resize the image to",
+                        "name": "height",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File served successfully",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "400": {
+                        "description": "Missing file ID",
+                        "schema": {
+                            "$ref": "#/definitions/image_svc.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "File not found",
+                        "schema": {
+                            "$ref": "#/definitions/image_svc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/image_svc.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/model-svc/default-model/start": {
             "put": {
                 "security": [
@@ -6655,6 +6718,14 @@ const docTemplate = `{
             "properties": {
                 "event": {
                     "$ref": "#/definitions/firehose_svc.Event"
+                }
+            }
+        },
+        "image_svc.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
                 }
             }
         },

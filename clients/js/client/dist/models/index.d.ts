@@ -81,6 +81,7 @@ export * from './FileSvcUploadFileResponse';
 export * from './FirehoseSvcErrorResponse';
 export * from './FirehoseSvcEvent';
 export * from './FirehoseSvcEventPublishRequest';
+export * from './ImageSvcErrorResponse';
 export * from './ModelSvcArchitectures';
 export * from './ModelSvcAsset';
 export * from './ModelSvcContainer';

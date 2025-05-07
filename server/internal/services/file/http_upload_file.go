@@ -80,8 +80,9 @@ func (fs *FileService) UploadFile(
 			continue
 		}
 
-		cleanFilename := sanitizeFilename(part.FileName())
-		destinationFilePath := filepath.Join(fs.uploadFolder, cleanFilename)
+		fileId := sdk.Id("file")
+
+		destinationFilePath := filepath.Join(fs.uploadFolder, fileId)
 		dstFile, err := os.Create(destinationFilePath)
 		if err != nil {
 			handleError(err, http.StatusInternalServerError, "Failed to create destination file")
@@ -106,7 +107,7 @@ func (fs *FileService) UploadFile(
 		// @todo this is fairly weird that we process multiple files but only a single one is returned
 		uploadRecord = file.Upload{
 			Id:        sdk.Id("upl"),
-			FileId:    sdk.Id("file"),
+			FileId:    fileId,
 			NodeId:    fs.nodeId,
 			FileName:  part.FileName(),
 			FilePath:  destinationFilePath,

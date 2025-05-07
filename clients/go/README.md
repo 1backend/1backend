@@ -118,6 +118,7 @@ Class | Method | HTTP request | Description
 *FileSvcAPI* | [**UploadFile**](docs/FileSvcAPI.md#uploadfile) | **Put** /file-svc/upload | Upload a File
 *FirehoseSvcAPI* | [**PublishEvent**](docs/FirehoseSvcAPI.md#publishevent) | **Post** /firehose-svc/event | Publish an Event
 *FirehoseSvcAPI* | [**SubscribeToEvents**](docs/FirehoseSvcAPI.md#subscribetoevents) | **Get** /firehose-svc/events/subscribe | Subscribe to the Event Stream
+*ImageSvcAPI* | [**ServeUploadedImage**](docs/ImageSvcAPI.md#serveuploadedimage) | **Get** /image-svc/serve/upload/{fileId} | Serve Uploaded Image
 *ModelSvcAPI* | [**GetDefaultModelStatus**](docs/ModelSvcAPI.md#getdefaultmodelstatus) | **Get** /model-svc/default-model/status | Get Default Model Status
 *ModelSvcAPI* | [**GetModel**](docs/ModelSvcAPI.md#getmodel) | **Get** /model-svc/model/{modelId} | Get a Model
 *ModelSvcAPI* | [**GetModelStatus**](docs/ModelSvcAPI.md#getmodelstatus) | **Get** /model-svc/model/{modelId}/status | Get Model Status
@@ -257,6 +258,7 @@ Class | Method | HTTP request | Description
  - [FirehoseSvcErrorResponse](docs/FirehoseSvcErrorResponse.md)
  - [FirehoseSvcEvent](docs/FirehoseSvcEvent.md)
  - [FirehoseSvcEventPublishRequest](docs/FirehoseSvcEventPublishRequest.md)
+ - [ImageSvcErrorResponse](docs/ImageSvcErrorResponse.md)
  - [ModelSvcArchitectures](docs/ModelSvcArchitectures.md)
  - [ModelSvcAsset](docs/ModelSvcAsset.md)
  - [ModelSvcContainer](docs/ModelSvcContainer.md)
