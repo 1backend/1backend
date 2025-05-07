@@ -10,6 +10,7 @@ api_deploy_svc.go
 api_email_svc.go
 api_file_svc.go
 api_firehose_svc.go
+api_image_svc.go
 api_model_svc.go
 api_policy_svc.go
 api_prompt_svc.go
@@ -110,6 +111,8 @@ docs/FirehoseSvcAPI.md
 docs/FirehoseSvcErrorResponse.md
 docs/FirehoseSvcEvent.md
 docs/FirehoseSvcEventPublishRequest.md
+docs/ImageSvcAPI.md
+docs/ImageSvcErrorResponse.md
 docs/ModelSvcAPI.md
 docs/ModelSvcArchitectures.md
 docs/ModelSvcAsset.md
@@ -325,6 +328,7 @@ model_file_svc_upload_file_response.go
 model_firehose_svc_error_response.go
 model_firehose_svc_event.go
 model_firehose_svc_event_publish_request.go
+model_image_svc_error_response.go
 model_model_svc_architectures.go
 model_model_svc_asset.go
 model_model_svc_container.go

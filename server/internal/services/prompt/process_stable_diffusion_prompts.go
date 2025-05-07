@@ -123,7 +123,7 @@ func (p *PromptService) processStableDiffusion(
 		return errors.Wrap(err, "error uploading image")
 	}
 
-	fileIds := []string{*uploadRsp.Upload.FileId}
+	fileIds := []string{uploadRsp.Upload.FileId}
 
 	_, _, err = p.clientFactory.Client(client.WithToken(token)).
 		ChatSvcAPI.SaveMessage(context.Background(), currentPrompt.ThreadId).

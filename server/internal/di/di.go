@@ -37,6 +37,7 @@ import (
 	emailservice "github.com/1backend/1backend/server/internal/services/email"
 	fileservice "github.com/1backend/1backend/server/internal/services/file"
 	firehoseservice "github.com/1backend/1backend/server/internal/services/firehose"
+	imageservice "github.com/1backend/1backend/server/internal/services/image"
 	modelservice "github.com/1backend/1backend/server/internal/services/model"
 	policyservice "github.com/1backend/1backend/server/internal/services/policy"
 	promptservice "github.com/1backend/1backend/server/internal/services/prompt"
@@ -292,6 +293,17 @@ func BigBang(options *Options) (*Universe, error) {
 		return nil, errors.Wrap(err, "failed to create file service")
 	}
 	fileService.RegisterRoutes(router)
+
+	imageService, err := imageservice.NewImageService(
+		options.ClientFactory,
+		options.HomeDir,
+		options.DataStoreFactory.Create,
+		options.Lock,
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to create image service")
+	}
+	imageService.RegisterRoutes(router)
 
 	containerService, err := containerservice.NewContainerService(
 		options.VolumeName,

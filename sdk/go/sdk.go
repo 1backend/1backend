@@ -16,8 +16,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	onebackendapi "github.com/1backend/1backend/clients/go"
+	"github.com/google/uuid"
 
 	"github.com/sony/sonyflake"
 )
@@ -33,6 +35,12 @@ func init() {
 
 const base62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
+// Id generates a short, human-readable unique ID with a prefix using Sonyflake.
+// Example: Id("usr") might return "usr_fm7lcQnPni".
+// This format is compact and memorable, making it ideal for user-friendly identifiers.
+// However, because Sonyflake is time-based and IDs can be guessed or enumerated,
+// this ID type is not suitable for exposing sensitive resources without authentication.
+// For scenarios requiring non-enumerable, opaque identifiers, use OpaqueId instead.
 func Id(prefix string) string {
 	number, err := sonyFlake.NextID()
 	if err != nil {
@@ -51,6 +59,17 @@ func Id(prefix string) string {
 	}
 
 	return prefix + "_" + string(b)
+}
+
+// OpaqueId generates a non-enumerable, opaque ID with a prefix using UUID v4.
+// Example: OpaqueId("file") might return "file_5f906bb0_10e8_4066_a032_a9ad0eae1fdb".
+// These IDs are suitable for public exposure and access control scenarios
+// where predictability or enumeration must be avoided.
+func OpaqueId(prefix string) string {
+	return fmt.Sprintf("%v_%v",
+		prefix,
+		strings.Replace(uuid.New().String(), "-", "_", -1),
+	)
 }
 
 // OneBackendAPIError checks if an error is a GenericOpenAPIError and returns a meaningful error.

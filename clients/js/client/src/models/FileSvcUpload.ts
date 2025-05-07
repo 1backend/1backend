@@ -30,19 +30,19 @@ export interface FileSvcUpload {
      * @type {string}
      * @memberof FileSvcUpload
      */
-    fileId?: string;
+    fileId: string;
     /**
      * Filename is the original name of the file
      * @type {string}
      * @memberof FileSvcUpload
      */
-    fileName?: string;
+    fileName: string;
     /**
      * FilePath is the full node local path of the file
      * @type {string}
      * @memberof FileSvcUpload
      */
-    filePath?: string;
+    filePath: string;
     /**
      * 
      * @type {number}
@@ -54,13 +54,13 @@ export interface FileSvcUpload {
      * @type {string}
      * @memberof FileSvcUpload
      */
-    id?: string;
+    id: string;
     /**
      * ID of the node storing this replica
      * @type {string}
      * @memberof FileSvcUpload
      */
-    nodeId?: string;
+    nodeId: string;
     /**
      * 
      * @type {string}
@@ -72,7 +72,7 @@ export interface FileSvcUpload {
      * @type {string}
      * @memberof FileSvcUpload
      */
-    userId?: string;
+    userId: string;
 }
 
 /**
@@ -80,8 +80,14 @@ export interface FileSvcUpload {
  */
 export function instanceOfFileSvcUpload(value: object): value is FileSvcUpload {
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('fileId' in value) || value['fileId'] === undefined) return false;
+    if (!('fileName' in value) || value['fileName'] === undefined) return false;
+    if (!('filePath' in value) || value['filePath'] === undefined) return false;
     if (!('fileSize' in value) || value['fileSize'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('nodeId' in value) || value['nodeId'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
+    if (!('userId' in value) || value['userId'] === undefined) return false;
     return true;
 }
 
@@ -96,14 +102,14 @@ export function FileSvcUploadFromJSONTyped(json: any, ignoreDiscriminator: boole
     return {
         
         'createdAt': json['createdAt'],
-        'fileId': json['fileId'] == null ? undefined : json['fileId'],
-        'fileName': json['fileName'] == null ? undefined : json['fileName'],
-        'filePath': json['filePath'] == null ? undefined : json['filePath'],
+        'fileId': json['fileId'],
+        'fileName': json['fileName'],
+        'filePath': json['filePath'],
         'fileSize': json['fileSize'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'nodeId': json['nodeId'] == null ? undefined : json['nodeId'],
+        'id': json['id'],
+        'nodeId': json['nodeId'],
         'updatedAt': json['updatedAt'],
-        'userId': json['userId'] == null ? undefined : json['userId'],
+        'userId': json['userId'],
     };
 }
 

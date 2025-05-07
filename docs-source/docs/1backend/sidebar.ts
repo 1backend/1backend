@@ -290,6 +290,18 @@ const sidebar: SidebarsConfig = {
     },
     {
       type: "category",
+      label: "Image Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend/serve-uploaded-image",
+          label: "Serve Uploaded Image",
+          className: "api-method get",
+        },
+      ],
+    },
+    {
+      type: "category",
       label: "Model Svc",
       items: [
         {

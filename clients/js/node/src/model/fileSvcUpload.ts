@@ -17,26 +17,26 @@ export class FileSvcUpload {
     /**
     * Logical file ID spanning all replicas
     */
-    'fileId'?: string;
+    'fileId': string;
     /**
     * Filename is the original name of the file
     */
-    'fileName'?: string;
+    'fileName': string;
     /**
     * FilePath is the full node local path of the file
     */
-    'filePath'?: string;
+    'filePath': string;
     'fileSize': number;
     /**
     * Unique ID for this replica
     */
-    'id'?: string;
+    'id': string;
     /**
     * ID of the node storing this replica
     */
-    'nodeId'?: string;
+    'nodeId': string;
     'updatedAt': string;
-    'userId'?: string;
+    'userId': string;
 
     static discriminator: string | undefined = undefined;
 

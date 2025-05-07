@@ -83,6 +83,7 @@ export * from './fileSvcUploadFileResponse';
 export * from './firehoseSvcErrorResponse';
 export * from './firehoseSvcEvent';
 export * from './firehoseSvcEventPublishRequest';
+export * from './imageSvcErrorResponse';
 export * from './modelSvcArchitectures';
 export * from './modelSvcAsset';
 export * from './modelSvcContainer';
@@ -302,6 +303,7 @@ import { FileSvcUploadFileResponse } from './fileSvcUploadFileResponse';
 import { FirehoseSvcErrorResponse } from './firehoseSvcErrorResponse';
 import { FirehoseSvcEvent } from './firehoseSvcEvent';
 import { FirehoseSvcEventPublishRequest } from './firehoseSvcEventPublishRequest';
+import { ImageSvcErrorResponse } from './imageSvcErrorResponse';
 import { ModelSvcArchitectures } from './modelSvcArchitectures';
 import { ModelSvcAsset } from './modelSvcAsset';
 import { ModelSvcContainer } from './modelSvcContainer';
@@ -534,6 +536,7 @@ let typeMap: {[index: string]: any} = {
     "FirehoseSvcErrorResponse": FirehoseSvcErrorResponse,
     "FirehoseSvcEvent": FirehoseSvcEvent,
     "FirehoseSvcEventPublishRequest": FirehoseSvcEventPublishRequest,
+    "ImageSvcErrorResponse": ImageSvcErrorResponse,
     "ModelSvcArchitectures": ModelSvcArchitectures,
     "ModelSvcAsset": ModelSvcAsset,
     "ModelSvcContainer": ModelSvcContainer,

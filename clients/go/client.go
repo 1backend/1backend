@@ -66,6 +66,8 @@ type APIClient struct {
 
 	FirehoseSvcAPI FirehoseSvcAPI
 
+	ImageSvcAPI ImageSvcAPI
+
 	ModelSvcAPI ModelSvcAPI
 
 	PolicySvcAPI PolicySvcAPI
@@ -105,6 +107,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.EmailSvcAPI = (*EmailSvcAPIService)(&c.common)
 	c.FileSvcAPI = (*FileSvcAPIService)(&c.common)
 	c.FirehoseSvcAPI = (*FirehoseSvcAPIService)(&c.common)
+	c.ImageSvcAPI = (*ImageSvcAPIService)(&c.common)
 	c.ModelSvcAPI = (*ModelSvcAPIService)(&c.common)
 	c.PolicySvcAPI = (*PolicySvcAPIService)(&c.common)
 	c.PromptSvcAPI = (*PromptSvcAPIService)(&c.common)

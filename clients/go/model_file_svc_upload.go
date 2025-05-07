@@ -24,18 +24,18 @@ var _ MappedNullable = &FileSvcUpload{}
 type FileSvcUpload struct {
 	CreatedAt string `json:"createdAt"`
 	// Logical file ID spanning all replicas
-	FileId *string `json:"fileId,omitempty"`
+	FileId string `json:"fileId"`
 	// Filename is the original name of the file
-	FileName *string `json:"fileName,omitempty"`
+	FileName string `json:"fileName"`
 	// FilePath is the full node local path of the file
-	FilePath *string `json:"filePath,omitempty"`
+	FilePath string `json:"filePath"`
 	FileSize int64 `json:"fileSize"`
 	// Unique ID for this replica
-	Id *string `json:"id,omitempty"`
+	Id string `json:"id"`
 	// ID of the node storing this replica
-	NodeId *string `json:"nodeId,omitempty"`
+	NodeId string `json:"nodeId"`
 	UpdatedAt string `json:"updatedAt"`
-	UserId *string `json:"userId,omitempty"`
+	UserId string `json:"userId"`
 }
 
 type _FileSvcUpload FileSvcUpload
@@ -44,11 +44,17 @@ type _FileSvcUpload FileSvcUpload
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewFileSvcUpload(createdAt string, fileSize int64, updatedAt string) *FileSvcUpload {
+func NewFileSvcUpload(createdAt string, fileId string, fileName string, filePath string, fileSize int64, id string, nodeId string, updatedAt string, userId string) *FileSvcUpload {
 	this := FileSvcUpload{}
 	this.CreatedAt = createdAt
+	this.FileId = fileId
+	this.FileName = fileName
+	this.FilePath = filePath
 	this.FileSize = fileSize
+	this.Id = id
+	this.NodeId = nodeId
 	this.UpdatedAt = updatedAt
+	this.UserId = userId
 	return &this
 }
 
@@ -84,100 +90,76 @@ func (o *FileSvcUpload) SetCreatedAt(v string) {
 	o.CreatedAt = v
 }
 
-// GetFileId returns the FileId field value if set, zero value otherwise.
+// GetFileId returns the FileId field value
 func (o *FileSvcUpload) GetFileId() string {
-	if o == nil || IsNil(o.FileId) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.FileId
+
+	return o.FileId
 }
 
-// GetFileIdOk returns a tuple with the FileId field value if set, nil otherwise
+// GetFileIdOk returns a tuple with the FileId field value
 // and a boolean to check if the value has been set.
 func (o *FileSvcUpload) GetFileIdOk() (*string, bool) {
-	if o == nil || IsNil(o.FileId) {
+	if o == nil {
 		return nil, false
 	}
-	return o.FileId, true
+	return &o.FileId, true
 }
 
-// HasFileId returns a boolean if a field has been set.
-func (o *FileSvcUpload) HasFileId() bool {
-	if o != nil && !IsNil(o.FileId) {
-		return true
-	}
-
-	return false
-}
-
-// SetFileId gets a reference to the given string and assigns it to the FileId field.
+// SetFileId sets field value
 func (o *FileSvcUpload) SetFileId(v string) {
-	o.FileId = &v
+	o.FileId = v
 }
 
-// GetFileName returns the FileName field value if set, zero value otherwise.
+// GetFileName returns the FileName field value
 func (o *FileSvcUpload) GetFileName() string {
-	if o == nil || IsNil(o.FileName) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.FileName
+
+	return o.FileName
 }
 
-// GetFileNameOk returns a tuple with the FileName field value if set, nil otherwise
+// GetFileNameOk returns a tuple with the FileName field value
 // and a boolean to check if the value has been set.
 func (o *FileSvcUpload) GetFileNameOk() (*string, bool) {
-	if o == nil || IsNil(o.FileName) {
+	if o == nil {
 		return nil, false
 	}
-	return o.FileName, true
+	return &o.FileName, true
 }
 
-// HasFileName returns a boolean if a field has been set.
-func (o *FileSvcUpload) HasFileName() bool {
-	if o != nil && !IsNil(o.FileName) {
-		return true
-	}
-
-	return false
-}
-
-// SetFileName gets a reference to the given string and assigns it to the FileName field.
+// SetFileName sets field value
 func (o *FileSvcUpload) SetFileName(v string) {
-	o.FileName = &v
+	o.FileName = v
 }
 
-// GetFilePath returns the FilePath field value if set, zero value otherwise.
+// GetFilePath returns the FilePath field value
 func (o *FileSvcUpload) GetFilePath() string {
-	if o == nil || IsNil(o.FilePath) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.FilePath
+
+	return o.FilePath
 }
 
-// GetFilePathOk returns a tuple with the FilePath field value if set, nil otherwise
+// GetFilePathOk returns a tuple with the FilePath field value
 // and a boolean to check if the value has been set.
 func (o *FileSvcUpload) GetFilePathOk() (*string, bool) {
-	if o == nil || IsNil(o.FilePath) {
+	if o == nil {
 		return nil, false
 	}
-	return o.FilePath, true
+	return &o.FilePath, true
 }
 
-// HasFilePath returns a boolean if a field has been set.
-func (o *FileSvcUpload) HasFilePath() bool {
-	if o != nil && !IsNil(o.FilePath) {
-		return true
-	}
-
-	return false
-}
-
-// SetFilePath gets a reference to the given string and assigns it to the FilePath field.
+// SetFilePath sets field value
 func (o *FileSvcUpload) SetFilePath(v string) {
-	o.FilePath = &v
+	o.FilePath = v
 }
 
 // GetFileSize returns the FileSize field value
@@ -204,68 +186,52 @@ func (o *FileSvcUpload) SetFileSize(v int64) {
 	o.FileSize = v
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value
 func (o *FileSvcUpload) GetId() string {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Id
+
+	return o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *FileSvcUpload) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Id, true
+	return &o.Id, true
 }
 
-// HasId returns a boolean if a field has been set.
-func (o *FileSvcUpload) HasId() bool {
-	if o != nil && !IsNil(o.Id) {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
+// SetId sets field value
 func (o *FileSvcUpload) SetId(v string) {
-	o.Id = &v
+	o.Id = v
 }
 
-// GetNodeId returns the NodeId field value if set, zero value otherwise.
+// GetNodeId returns the NodeId field value
 func (o *FileSvcUpload) GetNodeId() string {
-	if o == nil || IsNil(o.NodeId) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.NodeId
+
+	return o.NodeId
 }
 
-// GetNodeIdOk returns a tuple with the NodeId field value if set, nil otherwise
+// GetNodeIdOk returns a tuple with the NodeId field value
 // and a boolean to check if the value has been set.
 func (o *FileSvcUpload) GetNodeIdOk() (*string, bool) {
-	if o == nil || IsNil(o.NodeId) {
+	if o == nil {
 		return nil, false
 	}
-	return o.NodeId, true
+	return &o.NodeId, true
 }
 
-// HasNodeId returns a boolean if a field has been set.
-func (o *FileSvcUpload) HasNodeId() bool {
-	if o != nil && !IsNil(o.NodeId) {
-		return true
-	}
-
-	return false
-}
-
-// SetNodeId gets a reference to the given string and assigns it to the NodeId field.
+// SetNodeId sets field value
 func (o *FileSvcUpload) SetNodeId(v string) {
-	o.NodeId = &v
+	o.NodeId = v
 }
 
 // GetUpdatedAt returns the UpdatedAt field value
@@ -292,36 +258,28 @@ func (o *FileSvcUpload) SetUpdatedAt(v string) {
 	o.UpdatedAt = v
 }
 
-// GetUserId returns the UserId field value if set, zero value otherwise.
+// GetUserId returns the UserId field value
 func (o *FileSvcUpload) GetUserId() string {
-	if o == nil || IsNil(o.UserId) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.UserId
+
+	return o.UserId
 }
 
-// GetUserIdOk returns a tuple with the UserId field value if set, nil otherwise
+// GetUserIdOk returns a tuple with the UserId field value
 // and a boolean to check if the value has been set.
 func (o *FileSvcUpload) GetUserIdOk() (*string, bool) {
-	if o == nil || IsNil(o.UserId) {
+	if o == nil {
 		return nil, false
 	}
-	return o.UserId, true
+	return &o.UserId, true
 }
 
-// HasUserId returns a boolean if a field has been set.
-func (o *FileSvcUpload) HasUserId() bool {
-	if o != nil && !IsNil(o.UserId) {
-		return true
-	}
-
-	return false
-}
-
-// SetUserId gets a reference to the given string and assigns it to the UserId field.
+// SetUserId sets field value
 func (o *FileSvcUpload) SetUserId(v string) {
-	o.UserId = &v
+	o.UserId = v
 }
 
 func (o FileSvcUpload) MarshalJSON() ([]byte, error) {
@@ -335,26 +293,14 @@ func (o FileSvcUpload) MarshalJSON() ([]byte, error) {
 func (o FileSvcUpload) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["createdAt"] = o.CreatedAt
-	if !IsNil(o.FileId) {
-		toSerialize["fileId"] = o.FileId
-	}
-	if !IsNil(o.FileName) {
-		toSerialize["fileName"] = o.FileName
-	}
-	if !IsNil(o.FilePath) {
-		toSerialize["filePath"] = o.FilePath
-	}
+	toSerialize["fileId"] = o.FileId
+	toSerialize["fileName"] = o.FileName
+	toSerialize["filePath"] = o.FilePath
 	toSerialize["fileSize"] = o.FileSize
-	if !IsNil(o.Id) {
-		toSerialize["id"] = o.Id
-	}
-	if !IsNil(o.NodeId) {
-		toSerialize["nodeId"] = o.NodeId
-	}
+	toSerialize["id"] = o.Id
+	toSerialize["nodeId"] = o.NodeId
 	toSerialize["updatedAt"] = o.UpdatedAt
-	if !IsNil(o.UserId) {
-		toSerialize["userId"] = o.UserId
-	}
+	toSerialize["userId"] = o.UserId
 	return toSerialize, nil
 }
 
@@ -364,8 +310,14 @@ func (o *FileSvcUpload) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"createdAt",
+		"fileId",
+		"fileName",
+		"filePath",
 		"fileSize",
+		"id",
+		"nodeId",
 		"updatedAt",
+		"userId",
 	}
 
 	allProperties := make(map[string]interface{})
