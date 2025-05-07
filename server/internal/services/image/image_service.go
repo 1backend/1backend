@@ -37,7 +37,7 @@ type ImageService struct {
 	started    bool
 	startupErr error
 
-	dlock lock.DistributedLock
+	lock lock.DistributedLock
 
 	token string
 
@@ -58,7 +58,7 @@ func NewImageService(
 	cs := &ImageService{
 		homeDir:          homeDir,
 		datastoreFactory: datastoreFactory,
-		dlock:            lock,
+		lock:             lock,
 		clientFactory:    clientFactory,
 	}
 
@@ -111,8 +111,8 @@ func (cs *ImageService) start() error {
 	cs.imageCacheFolder = imageCacheFolder
 
 	ctx := context.Background()
-	cs.dlock.Acquire(ctx, "image-svc-start")
-	defer cs.dlock.Release(ctx, "image-svc-start")
+	cs.lock.Acquire(ctx, "image-svc-start")
+	defer cs.lock.Release(ctx, "image-svc-start")
 
 	pk, _, err := cs.clientFactory.Client(client.WithToken(cs.token)).
 		UserSvcAPI.GetPublicKey(context.Background()).

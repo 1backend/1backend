@@ -38,12 +38,12 @@ type FileService struct {
 
 	token string
 
-	dlock lock.DistributedLock
+	lock lock.DistributedLock
 
 	uploadFolder   string
 	downloadFolder string
 
-	lock sync.Mutex
+	mutex sync.Mutex
 
 	downloadStore datastore.DataStore
 	uploadStore   datastore.DataStore
@@ -66,7 +66,7 @@ func NewFileService(
 		clientFactory:    clientFactory,
 		homeDir:          homeDir,
 		datastoreFactory: datastoreFactory,
-		dlock:            lock,
+		lock:             lock,
 	}
 
 	return ret, nil
@@ -193,8 +193,8 @@ func (fs *FileService) getToken() (string, error) {
 	}
 
 	ctx := context.Background()
-	fs.dlock.Acquire(ctx, "file-svc-start")
-	defer fs.dlock.Release(ctx, "file-svc-start")
+	fs.lock.Acquire(ctx, "file-svc-start")
+	defer fs.lock.Release(ctx, "file-svc-start")
 
 	token, err := boot.RegisterServiceAccount(
 		fs.clientFactory.Client().UserSvcAPI,
@@ -216,8 +216,8 @@ func (fs *FileService) getToken() (string, error) {
 }
 
 func (fs *FileService) getDownload(url string) (*types.InternalDownload, bool) {
-	fs.lock.Lock()
-	defer fs.lock.Unlock()
+	fs.mutex.Lock()
+	defer fs.mutex.Unlock()
 
 	downloadIs, err := fs.downloadStore.Query(
 		datastore.Equals([]string{"url"},
