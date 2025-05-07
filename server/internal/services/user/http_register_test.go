@@ -9,6 +9,7 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/server/internal/di"
+	userservice "github.com/1backend/1backend/server/internal/services/user"
 )
 
 func TestRegister(t *testing.T) {
@@ -43,6 +44,17 @@ func TestRegister(t *testing.T) {
 		require.NoError(t, err)
 
 		tokenId = rsp.Token.Id
+	})
+
+	t.Run("uppercase fails so ui must be forced to deal with it", func(t *testing.T) {
+		_, _, err := options.ClientFactory.Client().UserSvcAPI.Register(ctx).Body(
+			openapi.UserSvcRegisterRequest{
+				Slug:     "Test-slug-1",
+				Name:     openapi.PtrString("Test Name"),
+				Password: openapi.PtrString("testPass123"),
+			},
+		).Execute()
+		require.Error(t, err)
 	})
 
 	t.Run("cannot re-register", func(t *testing.T) {
@@ -119,4 +131,41 @@ func TestRegistration(t *testing.T) {
 			Execute()
 		require.NoError(t, err)
 	})
+}
+
+func TestSlugRegexp(t *testing.T) {
+	shouldWork := []string{
+		"1backend",
+		"test-slug",
+		"backend1",
+		"test-1-slug",
+	}
+
+	shouldNotWork := []string{
+		"Test-Slug",
+		"-test-slug",
+		"test-slug-",
+		"test slug",
+		"test_slug",
+		"test@slug",
+		"test#slug",
+		"test$slug",
+		"test%slug",
+		"test^slug",
+		"test&slug",
+		"test*slug",
+		"test(slug)",
+	}
+
+	for _, slug := range shouldWork {
+		if !userservice.SlugRegexp.MatchString(slug) {
+			t.Errorf("Expected %s to be valid", slug)
+		}
+	}
+
+	for _, slug := range shouldNotWork {
+		if userservice.SlugRegexp.MatchString(slug) {
+			t.Errorf("Expected %s to be invalid", slug)
+		}
+	}
 }

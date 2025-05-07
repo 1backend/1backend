@@ -15,15 +15,19 @@ package userservice
 import (
 	"encoding/json"
 	"net/http"
+	"regexp"
 	"time"
 
 	"github.com/pkg/errors"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	"golang.org/x/crypto/bcrypt"
 )
+
+var SlugRegexp = regexp.MustCompile(`^[a-z0-9]+(?:-[a-z0-9]+)*$`)
 
 // @ID register
 // @Summary Register
@@ -41,21 +45,25 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		endpoint.WriteErr(w, http.StatusBadRequest, errors.New(`Invalid JSON`))
 		return
 	}
 	defer r.Body.Close()
 
 	if req.Password == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Password missing`))
+		endpoint.WriteErr(w, http.StatusBadRequest, errors.New(`Password missing`))
 		return
 	}
 
 	if req.Slug == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Slug missing`))
+		endpoint.WriteErr(w, http.StatusBadRequest, errors.New(`Slug missing`))
+		return
+	}
+
+	if !SlugRegexp.MatchString(req.Slug) {
+		endpoint.WriteErr(w, http.StatusBadRequest,
+			errors.New(`Slug must be lowercase and can only contain letters, numbers, and dashes`),
+		)
 		return
 	}
 
