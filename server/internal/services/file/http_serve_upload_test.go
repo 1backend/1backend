@@ -82,7 +82,7 @@ func TestServeUploadProxy(t *testing.T) {
 		require.Equal(t, 1, len(rsp.Uploads))
 		require.Equal(t, int64(16), rsp.Uploads[0].FileSize)
 
-		fileId = *rsp.Uploads[0].FileId
+		fileId = rsp.Uploads[0].FileId
 
 		fileRsp, fileHttpRsp, err := adminClient2.FileSvcAPI.ServeUpload(ctx, fileId).Execute()
 		require.NoError(t, err)
