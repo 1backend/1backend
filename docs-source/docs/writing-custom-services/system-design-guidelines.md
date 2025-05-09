@@ -30,10 +30,10 @@ Pagination should happen with these fields in the top level of the List request:
   "__comment_limit": "Limit is the maximum number of users to return.",
 
   "afterTime": "2023-01-01T00:00:00Z",
-  "__comment_afterTime": "AfterTime is a time in RFC3339 format. It is used to paginate the results when the `orderByField` is set to `createdAt` or `updatedAt`. The results will be returned after this time.",
+  "__comment_afterTime": "AfterTime is a time in RFC3339 format. It is used to paginate the results when the `orderBy` is set to `createdAt` or `updatedAt`. The results will be returned after this time.",
 
-  "orderByDesc": false,
-  "orderByField": "createdAt",
+  "order": "desc",
+  "orderBy": "createdAt",
 
   "count": false,
   "__comment_count": "Count is a flag that indicates if the count of the users should be returned."

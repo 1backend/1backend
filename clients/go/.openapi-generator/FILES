@@ -220,11 +220,12 @@ docs/UserSvcListOrganizationsResponse.md
 docs/UserSvcListPermissionsResponse.md
 docs/UserSvcListPermitsRequest.md
 docs/UserSvcListPermitsResponse.md
-docs/UserSvcListUsersOrderByField.md
+docs/UserSvcListUsersOrderBy.md
 docs/UserSvcListUsersRequest.md
 docs/UserSvcListUsersResponse.md
 docs/UserSvcLoginRequest.md
 docs/UserSvcLoginResponse.md
+docs/UserSvcOrderDirection.md
 docs/UserSvcOrganization.md
 docs/UserSvcPermit.md
 docs/UserSvcPermitInput.md
@@ -429,11 +430,12 @@ model_user_svc_list_organizations_response.go
 model_user_svc_list_permissions_response.go
 model_user_svc_list_permits_request.go
 model_user_svc_list_permits_response.go
-model_user_svc_list_users_order_by_field.go
+model_user_svc_list_users_order_by.go
 model_user_svc_list_users_request.go
 model_user_svc_list_users_response.go
 model_user_svc_login_request.go
 model_user_svc_login_response.go
+model_user_svc_order_direction.go
 model_user_svc_organization.go
 model_user_svc_permit.go
 model_user_svc_permit_input.go

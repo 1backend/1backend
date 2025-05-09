@@ -166,11 +166,18 @@ type ResetPasswordRequest struct {
 
 type ResetPasswordResponse struct{}
 
-type ListUsersOrderByField string
+type ListUsersOrderBy string
 
 const (
-	ListUsersOrderByFieldCreatedAt ListUsersOrderByField = "createdAt"
-	ListUsersOrderByFieldUpdatedAt ListUsersOrderByField = "updatedAt"
+	ListUsersOrderByCreatedAt ListUsersOrderBy = "createdAt"
+	ListUsersOrderByUpdatedAt ListUsersOrderBy = "updatedAt"
+)
+
+type OrderDirection string
+
+const (
+	OrderDirectionAsc  OrderDirection = "asc"
+	OrderDirectionDesc OrderDirection = "desc"
 )
 
 type ListUsersRequest struct {
@@ -191,8 +198,8 @@ type ListUsersRequest struct {
 	// The results will be returned after this time.
 	AfterTime time.Time `json:"afterTime,omitempty"`
 
-	OrderByDesc  bool                  `json:"orderByDesc,omitempty" example:"false"`
-	OrderByField ListUsersOrderByField `json:"orderByField,omitempty" example:"createdAt"`
+	Order   OrderDirection   `json:"order,omitempty" example:"desc"`
+	OrderBy ListUsersOrderBy `json:"orderBy,omitempty" example:"createdAt"`
 
 	// Count is a flag that indicates if the count of the users should be returned.
 	Count bool `json:"count,omitempty" example:"false"`
