@@ -66,7 +66,6 @@ func (fs *FileService) ServeDownload(
 		w.Write([]byte(err.Error()))
 		return
 	}
-
 	if isLocal {
 		fs.serveLocalDownload(downloadReplicas, w, r)
 	} else {

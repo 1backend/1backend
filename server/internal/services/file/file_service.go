@@ -103,14 +103,20 @@ func (fs *FileService) RegisterRoutes(router *mux.Router) {
 	}))).
 		Methods("OPTIONS", "POST")
 
+	// @todo
+	// Investigate why SkipLock is needed here.
+	// I placed it here because the serve proxy tests were deadlocking.
+	// Not sure why though as they are not routing to the same node (themselves),
+	// but to an other node.
+
 	router.HandleFunc("/file-svc/serve/upload/{fileId}", middlewares.DefaultApplicator(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
 		fs.ServeUpload(w, r)
-	}))).
+	}, service.WithSkipLock()))).
 		Methods("OPTIONS", "GET")
 
 	router.HandleFunc("/file-svc/serve/download/{url}", middlewares.DefaultApplicator(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
 		fs.ServeDownload(w, r)
-	}))).
+	}, service.WithSkipLock()))).
 		Methods("OPTIONS", "GET")
 }
 

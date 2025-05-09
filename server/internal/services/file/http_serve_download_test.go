@@ -85,6 +85,7 @@ func TestServeDownloadProxy(t *testing.T) {
 		DbPrefix: dbPrefix,
 		Url:      server2.URL,
 	}
+
 	nodeInfo2, err := di.BigBang(opt2)
 	hs2.UpdateHandler(nodeInfo2.Router)
 	require.NoError(t, nodeInfo2.StarterFunc())
@@ -105,6 +106,7 @@ func TestServeDownloadProxy(t *testing.T) {
 			Execute()
 		require.NoError(t, err)
 		require.Equal(t, true, fileRsp != nil)
+
 		bs, err := ioutil.ReadAll(fileRsp)
 		require.NoError(t, err)
 		require.Equal(t, "Hello world", string(bs))
