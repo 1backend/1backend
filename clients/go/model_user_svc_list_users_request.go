@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.4.1
+API version: 0.4.2
 Contact: sales@singulatron.com
 */
 
@@ -29,8 +29,8 @@ type UserSvcListUsersRequest struct {
 	// Ids of the users to list.
 	Ids []string `json:"ids,omitempty"`
 	Limit *int32 `json:"limit,omitempty"`
-	OrderByDesc *bool `json:"orderByDesc,omitempty"`
-	OrderByField *UserSvcListUsersOrderByField `json:"orderByField,omitempty"`
+	Order *UserSvcOrderDirection `json:"order,omitempty"`
+	OrderBy *UserSvcListUsersOrderBy `json:"orderBy,omitempty"`
 	// Search term used to find users. Returns users whose slug, username, or contact ID exactly matches the term.
 	Search *string `json:"search,omitempty"`
 }
@@ -212,68 +212,68 @@ func (o *UserSvcListUsersRequest) SetLimit(v int32) {
 	o.Limit = &v
 }
 
-// GetOrderByDesc returns the OrderByDesc field value if set, zero value otherwise.
-func (o *UserSvcListUsersRequest) GetOrderByDesc() bool {
-	if o == nil || IsNil(o.OrderByDesc) {
-		var ret bool
+// GetOrder returns the Order field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetOrder() UserSvcOrderDirection {
+	if o == nil || IsNil(o.Order) {
+		var ret UserSvcOrderDirection
 		return ret
 	}
-	return *o.OrderByDesc
+	return *o.Order
 }
 
-// GetOrderByDescOk returns a tuple with the OrderByDesc field value if set, nil otherwise
+// GetOrderOk returns a tuple with the Order field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcListUsersRequest) GetOrderByDescOk() (*bool, bool) {
-	if o == nil || IsNil(o.OrderByDesc) {
+func (o *UserSvcListUsersRequest) GetOrderOk() (*UserSvcOrderDirection, bool) {
+	if o == nil || IsNil(o.Order) {
 		return nil, false
 	}
-	return o.OrderByDesc, true
+	return o.Order, true
 }
 
-// HasOrderByDesc returns a boolean if a field has been set.
-func (o *UserSvcListUsersRequest) HasOrderByDesc() bool {
-	if o != nil && !IsNil(o.OrderByDesc) {
+// HasOrder returns a boolean if a field has been set.
+func (o *UserSvcListUsersRequest) HasOrder() bool {
+	if o != nil && !IsNil(o.Order) {
 		return true
 	}
 
 	return false
 }
 
-// SetOrderByDesc gets a reference to the given bool and assigns it to the OrderByDesc field.
-func (o *UserSvcListUsersRequest) SetOrderByDesc(v bool) {
-	o.OrderByDesc = &v
+// SetOrder gets a reference to the given UserSvcOrderDirection and assigns it to the Order field.
+func (o *UserSvcListUsersRequest) SetOrder(v UserSvcOrderDirection) {
+	o.Order = &v
 }
 
-// GetOrderByField returns the OrderByField field value if set, zero value otherwise.
-func (o *UserSvcListUsersRequest) GetOrderByField() UserSvcListUsersOrderByField {
-	if o == nil || IsNil(o.OrderByField) {
-		var ret UserSvcListUsersOrderByField
+// GetOrderBy returns the OrderBy field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetOrderBy() UserSvcListUsersOrderBy {
+	if o == nil || IsNil(o.OrderBy) {
+		var ret UserSvcListUsersOrderBy
 		return ret
 	}
-	return *o.OrderByField
+	return *o.OrderBy
 }
 
-// GetOrderByFieldOk returns a tuple with the OrderByField field value if set, nil otherwise
+// GetOrderByOk returns a tuple with the OrderBy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcListUsersRequest) GetOrderByFieldOk() (*UserSvcListUsersOrderByField, bool) {
-	if o == nil || IsNil(o.OrderByField) {
+func (o *UserSvcListUsersRequest) GetOrderByOk() (*UserSvcListUsersOrderBy, bool) {
+	if o == nil || IsNil(o.OrderBy) {
 		return nil, false
 	}
-	return o.OrderByField, true
+	return o.OrderBy, true
 }
 
-// HasOrderByField returns a boolean if a field has been set.
-func (o *UserSvcListUsersRequest) HasOrderByField() bool {
-	if o != nil && !IsNil(o.OrderByField) {
+// HasOrderBy returns a boolean if a field has been set.
+func (o *UserSvcListUsersRequest) HasOrderBy() bool {
+	if o != nil && !IsNil(o.OrderBy) {
 		return true
 	}
 
 	return false
 }
 
-// SetOrderByField gets a reference to the given UserSvcListUsersOrderByField and assigns it to the OrderByField field.
-func (o *UserSvcListUsersRequest) SetOrderByField(v UserSvcListUsersOrderByField) {
-	o.OrderByField = &v
+// SetOrderBy gets a reference to the given UserSvcListUsersOrderBy and assigns it to the OrderBy field.
+func (o *UserSvcListUsersRequest) SetOrderBy(v UserSvcListUsersOrderBy) {
+	o.OrderBy = &v
 }
 
 // GetSearch returns the Search field value if set, zero value otherwise.
@@ -333,11 +333,11 @@ func (o UserSvcListUsersRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Limit) {
 		toSerialize["limit"] = o.Limit
 	}
-	if !IsNil(o.OrderByDesc) {
-		toSerialize["orderByDesc"] = o.OrderByDesc
+	if !IsNil(o.Order) {
+		toSerialize["order"] = o.Order
 	}
-	if !IsNil(o.OrderByField) {
-		toSerialize["orderByField"] = o.OrderByField
+	if !IsNil(o.OrderBy) {
+		toSerialize["orderBy"] = o.OrderBy
 	}
 	if !IsNil(o.Search) {
 		toSerialize["search"] = o.Search

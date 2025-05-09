@@ -25,13 +25,39 @@ var (
 	muGuard sync.Mutex // protects muMap
 )
 
+type LazyOptions struct {
+	// SkipLock turns off mutex locking.
+	// In some scenarios, for example when a service endpoint calls itself on the same
+	// node, can cause a deadlock.
+	SkipLock bool
+}
+
+// LazyOption modifies LazyOptions.
+type LazyOption func(*LazyOptions)
+
+// WithSkipLock returns a LazyOption that sets SkipLock to true.
+func WithSkipLock() LazyOption {
+	return func(lo *LazyOptions) {
+		lo.SkipLock = true
+	}
+}
+
 // Lazy is a wrapper for endpoints that delays service setup until it’s actually needed.
 //
 // Some services dependencies don't need to be loaded right away, only when an endpoint is called.
 // Delaying the setup can help reduce startup time and resource usage.
 //
 // If starting the service fails, we return a 500 Internal Server Error.
-func Lazy(s LazyStarter, next http.HandlerFunc) http.HandlerFunc {
+func Lazy(
+	s LazyStarter,
+	next http.HandlerFunc,
+	opts ...LazyOption,
+) http.HandlerFunc {
+	var options LazyOptions
+	for _, opt := range opts {
+		opt(&options)
+	}
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodOptions {
 			// We don't want to throw errors on OPTIONS requests
@@ -43,8 +69,10 @@ func Lazy(s LazyStarter, next http.HandlerFunc) http.HandlerFunc {
 		firstSegment := getFirstSegment(r.URL.Path)
 		mutex := getMutexForPathSegment(firstSegment)
 
-		mutex.Lock()
-		defer mutex.Unlock()
+		if !options.SkipLock {
+			mutex.Lock()
+			defer mutex.Unlock()
+		}
 
 		if err := s.LazyStart(); err != nil {
 			endpoint.WriteErr(w, http.StatusInternalServerError, err)

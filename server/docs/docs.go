@@ -9132,15 +9132,15 @@ const docTemplate = `{
                 }
             }
         },
-        "user_svc.ListUsersOrderByField": {
+        "user_svc.ListUsersOrderBy": {
             "type": "string",
             "enum": [
                 "createdAt",
                 "updatedAt"
             ],
             "x-enum-varnames": [
-                "ListUsersOrderByFieldCreatedAt",
-                "ListUsersOrderByFieldUpdatedAt"
+                "ListUsersOrderByCreatedAt",
+                "ListUsersOrderByUpdatedAt"
             ]
         },
         "user_svc.ListUsersRequest": {
@@ -9170,14 +9170,18 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 10
                 },
-                "orderByDesc": {
-                    "type": "boolean",
-                    "example": false
-                },
-                "orderByField": {
+                "order": {
                     "allOf": [
                         {
-                            "$ref": "#/definitions/user_svc.ListUsersOrderByField"
+                            "$ref": "#/definitions/user_svc.OrderDirection"
+                        }
+                    ],
+                    "example": "desc"
+                },
+                "orderBy": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/user_svc.ListUsersOrderBy"
                         }
                     ],
                     "example": "createdAt"
@@ -9226,6 +9230,17 @@ const docTemplate = `{
                     "$ref": "#/definitions/user_svc.AuthToken"
                 }
             }
+        },
+        "user_svc.OrderDirection": {
+            "type": "string",
+            "enum": [
+                "asc",
+                "desc"
+            ],
+            "x-enum-varnames": [
+                "OrderDirectionAsc",
+                "OrderDirectionDesc"
+            ]
         },
         "user_svc.Organization": {
             "type": "object",
@@ -9680,7 +9695,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.4.1",
+	Version:          "0.4.2",
 	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},

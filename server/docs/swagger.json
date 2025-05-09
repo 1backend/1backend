@@ -13,7 +13,7 @@
             "name": "AGPL v3.0",
             "url": "https://www.gnu.org/licenses/agpl-3.0.html"
         },
-        "version": "0.4.1"
+        "version": "0.4.2"
     },
     "host": "localhost:11337",
     "basePath": "/",
@@ -9126,15 +9126,15 @@
                 }
             }
         },
-        "user_svc.ListUsersOrderByField": {
+        "user_svc.ListUsersOrderBy": {
             "type": "string",
             "enum": [
                 "createdAt",
                 "updatedAt"
             ],
             "x-enum-varnames": [
-                "ListUsersOrderByFieldCreatedAt",
-                "ListUsersOrderByFieldUpdatedAt"
+                "ListUsersOrderByCreatedAt",
+                "ListUsersOrderByUpdatedAt"
             ]
         },
         "user_svc.ListUsersRequest": {
@@ -9164,14 +9164,18 @@
                     "type": "integer",
                     "example": 10
                 },
-                "orderByDesc": {
-                    "type": "boolean",
-                    "example": false
-                },
-                "orderByField": {
+                "order": {
                     "allOf": [
                         {
-                            "$ref": "#/definitions/user_svc.ListUsersOrderByField"
+                            "$ref": "#/definitions/user_svc.OrderDirection"
+                        }
+                    ],
+                    "example": "desc"
+                },
+                "orderBy": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/user_svc.ListUsersOrderBy"
                         }
                     ],
                     "example": "createdAt"
@@ -9220,6 +9224,17 @@
                     "$ref": "#/definitions/user_svc.AuthToken"
                 }
             }
+        },
+        "user_svc.OrderDirection": {
+            "type": "string",
+            "enum": [
+                "asc",
+                "desc"
+            ],
+            "x-enum-varnames": [
+                "OrderDirectionAsc",
+                "OrderDirectionDesc"
+            ]
         },
         "user_svc.Organization": {
             "type": "object",

@@ -3012,14 +3012,14 @@ definitions:
           $ref: '#/definitions/user_svc.Permit'
         type: array
     type: object
-  user_svc.ListUsersOrderByField:
+  user_svc.ListUsersOrderBy:
     enum:
     - createdAt
     - updatedAt
     type: string
     x-enum-varnames:
-    - ListUsersOrderByFieldCreatedAt
-    - ListUsersOrderByFieldUpdatedAt
+    - ListUsersOrderByCreatedAt
+    - ListUsersOrderByUpdatedAt
   user_svc.ListUsersRequest:
     properties:
       afterTime:
@@ -3046,12 +3046,13 @@ definitions:
       limit:
         example: 10
         type: integer
-      orderByDesc:
-        example: false
-        type: boolean
-      orderByField:
+      order:
         allOf:
-        - $ref: '#/definitions/user_svc.ListUsersOrderByField'
+        - $ref: '#/definitions/user_svc.OrderDirection'
+        example: desc
+      orderBy:
+        allOf:
+        - $ref: '#/definitions/user_svc.ListUsersOrderBy'
         example: createdAt
       search:
         description: Search term used to find users. Returns users whose slug, username,
@@ -3083,6 +3084,14 @@ definitions:
       token:
         $ref: '#/definitions/user_svc.AuthToken'
     type: object
+  user_svc.OrderDirection:
+    enum:
+    - asc
+    - desc
+    type: string
+    x-enum-varnames:
+    - OrderDirectionAsc
+    - OrderDirectionDesc
   user_svc.Organization:
     properties:
       createdAt:
@@ -3415,7 +3424,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.4.1
+  version: 0.4.2
 paths:
   /chat-svc/events:
     get:

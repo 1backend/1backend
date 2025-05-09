@@ -138,14 +138,18 @@ func (s *UserService) listUsers(
 		filters...,
 	)
 
-	if request.OrderByField == "" {
-		request.OrderByField = user.ListUsersOrderByFieldCreatedAt
+	if request.OrderBy == "" {
+		request.OrderBy = user.ListUsersOrderByCreatedAt
+	}
+
+	if request.Order == "" {
+		request.Order = user.OrderDirectionDesc
 	}
 
 	q = q.OrderBy(
 		datastore.OrderByField(
-			string(request.OrderByField),
-			request.OrderByDesc),
+			string(request.OrderBy),
+			request.Order == user.OrderDirectionDesc),
 	)
 
 	if !request.AfterTime.IsZero() {
