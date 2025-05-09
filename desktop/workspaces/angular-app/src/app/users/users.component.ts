@@ -34,13 +34,7 @@ import { ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { PageComponent } from '../components/page/page.component';
 import { IconMenuComponent } from '../components/icon-menu/icon-menu.component';
 import { Router, ActivatedRoute } from '@angular/router';
-import { QueryParser } from '../services/query.service';
-import {
-	DatastoreFilter,
-	UserSvcUser,
-	DatastoreOp,
-	UserSvcListUsersRequest,
-} from '@1backend/client';
+import { UserSvcUser, UserSvcListUsersRequest } from '@1backend/client';
 
 interface UserVisible extends UserSvcUser {
 	visible?: boolean;
@@ -79,7 +73,6 @@ export class UsersComponent {
 
 	count = 0;
 	searchTerm = '';
-	queryParser: QueryParser;
 
 	constructor(
 		private fb: FormBuilder,
@@ -91,15 +84,6 @@ export class UsersComponent {
 	) {
 		this.userForms = new Map();
 
-		this.queryParser = new QueryParser();
-		this.queryParser.defaultConditionFunc = (value: any): DatastoreFilter => {
-			return {
-				fields: ['name', 'slug'],
-				jsonValues: JSON.stringify([value]),
-				op: 'containsSubstring' as DatastoreOp,
-			};
-		};
-
 		this.userService.user$.pipe(first()).subscribe(() => {
 			this.initializeOnLogin();
 		});
@@ -107,8 +91,7 @@ export class UsersComponent {
 
 	private async initializeOnLogin() {
 		this.activatedRoute.queryParams.subscribe(async (parameters) => {
-			this.searchTerm =
-				this.queryParser.convertQueryParamsToSearchTerm(parameters);
+			this.searchTerm = parameters['search'] || this.searchTerm;
 
 			await this.fetchUsers();
 			this.cd.markForCheck();
@@ -121,33 +104,11 @@ export class UsersComponent {
 		});
 	}
 
-	public redirect() {
-		const query = this.queryParser.parse(this.searchTerm);
-
-		const kv = filtersToKeyValue(
-			query.filters
-				? query.filters.filter((v) => {
-						return !v.fields?.includes('name') && v.fields?.includes('slug');
-					})
-				: []
-		);
-
-		if (Object.keys(kv)?.length) {
-			this.router.navigate([], {
-				queryParams: kv,
-			});
-			return;
-		}
-
-		if (this.searchTerm) {
-			this.router.navigate([], {
-				queryParams: { search: this.searchTerm },
-			});
-			return;
-		}
-
+	public redirect(value: string) {
 		this.router.navigate([], {
-			queryParams: {},
+			queryParams: {
+				search: value,
+			},
 		});
 	}
 
@@ -160,15 +121,16 @@ export class UsersComponent {
 	}
 
 	public async fetchUsers() {
-		const query = this.queryParser.parse(this.searchTerm);
-		query.count = true;
-		query.filters = query.filters || [];
-
-		const request: UserSvcListUsersRequest = {};
+		const request: UserSvcListUsersRequest = {
+			orderByDesc: true,
+		};
 
 		if (this.after) {
 			request.afterTime = this.after;
 		}
+
+		request.limit = 100;
+		request.search = this.searchTerm;
 
 		const response = await this.userService.getUsers(request);
 
@@ -309,19 +271,4 @@ export class UsersComponent {
 		}
 		await this.fetchUsers();
 	}
-}
-
-function filtersToKeyValue(filters: DatastoreFilter[]): {
-	[key: string]: any;
-} {
-	if (!filters) {
-		return {};
-	}
-	const object: { [key: string]: any } = {};
-
-	for (const filter of filters) {
-		object[filter.fields![0]] = JSON.parse(filter.jsonValues!)[0];
-	}
-
-	return object;
 }

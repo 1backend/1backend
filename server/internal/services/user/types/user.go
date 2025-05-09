@@ -177,6 +177,9 @@ type ListUsersRequest struct {
 	// Ids of the users to list.
 	Ids []string `json:"ids,omitempty"`
 
+	// Search term used to find users. Returns users whose slug, username, or contact ID exactly matches the term.
+	Search string `json:"search,omitempty"`
+
 	// ContactId is the id of the contact the user is associated with.
 	// Will return a user list with one element if set.
 	ContactId string `json:"contactId,omitempty"`
