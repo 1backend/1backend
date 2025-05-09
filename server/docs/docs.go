@@ -9181,6 +9181,10 @@ const docTemplate = `{
                         }
                     ],
                     "example": "createdAt"
+                },
+                "search": {
+                    "description": "Search term used to find users. Returns users whose slug, username, or contact ID exactly matches the term.",
+                    "type": "string"
                 }
             }
         },
@@ -9676,7 +9680,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.4.0",
+	Version:          "0.4.1",
 	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},

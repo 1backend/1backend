@@ -13,7 +13,7 @@
             "name": "AGPL v3.0",
             "url": "https://www.gnu.org/licenses/agpl-3.0.html"
         },
-        "version": "0.4.0"
+        "version": "0.4.1"
     },
     "host": "localhost:11337",
     "basePath": "/",
@@ -9175,6 +9175,10 @@
                         }
                     ],
                     "example": "createdAt"
+                },
+                "search": {
+                    "description": "Search term used to find users. Returns users whose slug, username, or contact ID exactly matches the term.",
+                    "type": "string"
                 }
             }
         },

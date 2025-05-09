@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.4.0
+API version: 0.4.1
 Contact: sales@singulatron.com
 */
 
@@ -31,6 +31,8 @@ type UserSvcListUsersRequest struct {
 	Limit *int32 `json:"limit,omitempty"`
 	OrderByDesc *bool `json:"orderByDesc,omitempty"`
 	OrderByField *UserSvcListUsersOrderByField `json:"orderByField,omitempty"`
+	// Search term used to find users. Returns users whose slug, username, or contact ID exactly matches the term.
+	Search *string `json:"search,omitempty"`
 }
 
 // NewUserSvcListUsersRequest instantiates a new UserSvcListUsersRequest object
@@ -274,6 +276,38 @@ func (o *UserSvcListUsersRequest) SetOrderByField(v UserSvcListUsersOrderByField
 	o.OrderByField = &v
 }
 
+// GetSearch returns the Search field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetSearch() string {
+	if o == nil || IsNil(o.Search) {
+		var ret string
+		return ret
+	}
+	return *o.Search
+}
+
+// GetSearchOk returns a tuple with the Search field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersRequest) GetSearchOk() (*string, bool) {
+	if o == nil || IsNil(o.Search) {
+		return nil, false
+	}
+	return o.Search, true
+}
+
+// HasSearch returns a boolean if a field has been set.
+func (o *UserSvcListUsersRequest) HasSearch() bool {
+	if o != nil && !IsNil(o.Search) {
+		return true
+	}
+
+	return false
+}
+
+// SetSearch gets a reference to the given string and assigns it to the Search field.
+func (o *UserSvcListUsersRequest) SetSearch(v string) {
+	o.Search = &v
+}
+
 func (o UserSvcListUsersRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -304,6 +338,9 @@ func (o UserSvcListUsersRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.OrderByField) {
 		toSerialize["orderByField"] = o.OrderByField
+	}
+	if !IsNil(o.Search) {
+		toSerialize["search"] = o.Search
 	}
 	return toSerialize, nil
 }

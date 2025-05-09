@@ -21,7 +21,7 @@
 					</span>
 				</h2>
 				<ion-searchbar
-					(ionInput)="redirect()"
+					(ngModelChange)="redirect($event)"
 					placeholder="Search users by name or slug"
 					name="searchTerm"
 					ngDefaultControl
@@ -40,7 +40,9 @@
 							>
 								<ion-label>
 									{{ users[i].slug }}
-									<span *ngIf="users[i].name" style="color: #666">({{ users[i].name }})</span>
+									<span *ngIf="users[i].name" style="color: #666"
+										>({{ users[i].name }})</span
+									>
 								</ion-label>
 								<ion-icon
 									(click)="deleteUser($event, users[i].id || '')"

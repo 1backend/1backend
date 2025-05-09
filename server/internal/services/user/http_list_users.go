@@ -81,6 +81,32 @@ func (s *UserService) listUsers(
 ) ([]*user.UserRecord, int64, error) {
 	filters := []datastore.Filter{}
 
+	if request.Search != "" {
+		ors := []datastore.Filter{
+			datastore.Equals(
+				[]string{"slug"}, request.Search,
+			),
+			datastore.Equals(
+				[]string{"name"}, request.Search,
+			),
+		}
+
+		contact, found, err := s.contactsStore.Query(
+			datastore.Id(request.Search),
+		).FindOne()
+		if err != nil {
+			return nil, 0, errors.Wrap(err, "error getting contact")
+		}
+
+		if found {
+			ors = append(ors, datastore.Equals(
+				[]string{"id"}, contact.(*user.Contact).UserId,
+			))
+		}
+
+		filters = append(filters, datastore.Or(ors...))
+	}
+
 	if request.Ids != nil {
 		ids := []any{}
 		for _, id := range request.Ids {
@@ -90,6 +116,7 @@ func (s *UserService) listUsers(
 			[]string{"id"}, ids...,
 		))
 	}
+
 	if request.ContactId != "" {
 		contactIs, err := s.contactsStore.Query(
 			datastore.Id(request.ContactId),
@@ -111,9 +138,15 @@ func (s *UserService) listUsers(
 		filters...,
 	)
 
-	if request.OrderByField != "" {
-		q = q.OrderBy(datastore.OrderByField(string(request.OrderByField), request.OrderByDesc))
+	if request.OrderByField == "" {
+		request.OrderByField = user.ListUsersOrderByFieldCreatedAt
 	}
+
+	q = q.OrderBy(
+		datastore.OrderByField(
+			string(request.OrderByField),
+			request.OrderByDesc),
+	)
 
 	if !request.AfterTime.IsZero() {
 		q = q.After(request.AfterTime)
