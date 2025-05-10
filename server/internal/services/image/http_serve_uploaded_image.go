@@ -52,9 +52,9 @@ type ErrorResponse image.ErrorResponse
 // @Param width query int false "Optional width to resize the image to"
 // @Param height query int false "Optional height to resize the image to"
 // @Success 200 {file} binary "File served successfully"
-// @Failure 400 {object} image.ErrorResponse "Missing file ID"
-// @Failure 404 {object} image.ErrorResponse "File not found"
-// @Failure 500 {object} image.ErrorResponse "Internal Server Error"
+// @Failure 400 {object} image.ErrorResponse "missing file ID"
+// @Failure 404 {object} image.ErrorResponse "file not found"
+// @Failure 500 {object} image.ErrorResponse "internal server error"
 // @Router /image-svc/serve/upload/{fileId} [get]
 func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

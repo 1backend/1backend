@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 	"mime"
 	"net/http"
 	"os"
@@ -13,6 +14,8 @@ import (
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -31,9 +34,9 @@ import (
 // @Produce application/octet-stream
 // @Param fileId path string true "FileID uniquely identifies the file itself (not an ID, which represents a specific replica)"
 // @Success 200 {file} binary "File served successfully"
-// @Failure 400 {object} file.ErrorResponse "Missing upload ID"
-// @Failure 404 {object} file.ErrorResponse "File not found"
-// @Failure 500 {object} file.ErrorResponse "Internal Server Error"
+// @Failure 400 {object} file.ErrorResponse "missing upload ID"
+// @Failure 404 {object} file.ErrorResponse "file not found"
+// @Failure 500 {object} file.ErrorResponse "internal server error"
 // @Router /file-svc/serve/upload/{fileId} [get]
 func (fs *FileService) ServeUpload(
 	w http.ResponseWriter,
@@ -42,8 +45,7 @@ func (fs *FileService) ServeUpload(
 	vars := mux.Vars(r)
 	fileId := vars["fileId"]
 	if fileId == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Missing upload ID"))
+		endpoint.WriteString(w, http.StatusBadRequest, "missing upload ID")
 		return
 	}
 
@@ -52,21 +54,20 @@ func (fs *FileService) ServeUpload(
 		fileId,
 	)).Find()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Error querying upload"))
+		logger.Error("Error querying upload", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 	if len(uploadReplicaIs) == 0 {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("File not found"))
+		endpoint.WriteString(w, http.StatusNotFound, "File not found")
 		return
 	}
 
 	uploadReplicas := toUploads(uploadReplicaIs)
 	isLocal, err := fs.isLocal(r.Context(), uploadReplicas)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Error checking if upload is local", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 
@@ -84,15 +85,14 @@ func (fs *FileService) serveLocal(
 ) {
 	upload, err := fs.pickLocal(r.Context(), uploadReplicas)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to pick local upload", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 
 	fileInfo, err := os.Stat(upload.FilePath)
 	if err != nil || fileInfo.IsDir() {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("File not found"))
+		endpoint.WriteString(w, http.StatusNotFound, "file not found")
 		return
 	}
 
@@ -107,16 +107,16 @@ func (fs *FileService) serveLocal(
 
 	srcFile, err := os.Open(upload.FilePath)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Failed to open file"))
+		logger.Error("Failed to open file", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 	defer srcFile.Close()
 
 	_, err = io.Copy(w, srcFile)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Failed to write file to response"))
+		logger.Error("Failed to write file to response", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 }
@@ -128,8 +128,8 @@ func (fs *FileService) serveRemote(
 ) {
 	uploads, err := fs.pickRemotes(r.Context(), uploadReplicas)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to pick remote upload", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 
@@ -140,8 +140,8 @@ func (fs *FileService) serveRemote(
 
 	token, err := fs.getToken()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to get token", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 
@@ -154,8 +154,8 @@ func (fs *FileService) serveRemote(
 			},
 		).Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to list nodes", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 	nodes := nodesRsp.Nodes
@@ -175,8 +175,8 @@ func (fs *FileService) serveRemote(
 		ServeUpload(r.Context(), uploads[0].FileId).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to serve upload", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 
@@ -188,8 +188,8 @@ func (fs *FileService) serveRemote(
 
 	_, err = io.Copy(w, file)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Failed to write file to response"))
+		logger.Error("Failed to write file to response", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 }
