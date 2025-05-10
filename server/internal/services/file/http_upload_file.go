@@ -3,6 +3,7 @@ package fileservice
 import (
 	"encoding/json"
 	"io"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -10,7 +11,8 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
 )
 
@@ -27,41 +29,35 @@ import (
 // @Produce json
 // @Param file formData file true "File to upload"
 // @Success 200 {object} file.UploadFileResponse "File uploaded successfully"
-// @Failure 400 {object} file.ErrorResponse "Invalid request"
-// @Failure 401 {object} file.ErrorResponse "Unauthorized"
-// @Failure 500 {object} file.ErrorResponse "Internal Server Error"
+// @Failure 400 {object} file.ErrorResponse "invalid request"
+// @Failure 401 {object} file.ErrorResponse "unauthorized"
+// @Failure 500 {object} file.ErrorResponse "internal server error"
 // @Security BearerAuth
 // @Router /file-svc/upload [put]
 func (fs *FileService) UploadFile(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	isAuthRsp, isAuthHttpRsp, err := fs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), file.PermissionUploadCreate).
-		Body(openapi.UserSvcHasPermissionRequest{
+	isAuthRsp, statusCode, err := fs.permissionChecker.HasPermission(
+		r,
+		file.PermissionUploadCreate,
+		&openapi.UserSvcHasPermissionRequest{
 			PermittedSlugs: []string{"prompt-svc"},
-		}).
-		Execute()
-
+		},
+	)
 	if err != nil {
-		w.WriteHeader(isAuthHttpRsp.StatusCode)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.WriteString(w, http.StatusUnauthorized, "Unauthorized")
 		return
-	}
-
-	handleError := func(err error, statusCode int, message string) {
-		w.WriteHeader(statusCode)
-		w.Write([]byte(message + ": " + err.Error()))
 	}
 
 	reader, err := r.MultipartReader()
 	if err != nil {
-		handleError(err, http.StatusBadRequest, "Invalid request")
+		logger.Error("Failed to create multipart reader", slog.Any("error", err))
+		endpoint.WriteString(w, http.StatusBadRequest, "invalid request")
 		return
 	}
 
@@ -72,7 +68,8 @@ func (fs *FileService) UploadFile(
 			break
 		}
 		if err != nil {
-			handleError(err, http.StatusInternalServerError, "Failed to read multipart data")
+			logger.Error("Failed to read multipart data", slog.Any("error", err))
+			endpoint.InternalServerError(w)
 			return
 		}
 
@@ -87,21 +84,24 @@ func (fs *FileService) UploadFile(
 		destinationFilePath := filepath.Join(fs.uploadFolder, fileId)
 		dstFile, err := os.Create(destinationFilePath)
 		if err != nil {
-			handleError(err, http.StatusInternalServerError, "Failed to create destination file")
+			logger.Error("Failed to create destination file", slog.Any("error", err))
+			endpoint.InternalServerError(w)
 			return
 		}
 		defer dstFile.Close()
 
 		written, err := io.Copy(dstFile, part)
 		if err != nil {
-			handleError(err, http.StatusInternalServerError, "Failed to save file")
+			logger.Error("Failed to copy file data", slog.Any("error", err))
+			endpoint.InternalServerError(w)
 			return
 		}
 
 		if fs.nodeId == "" {
 			err := fs.getNodeId(r.Context())
 			if err != nil {
-				handleError(err, http.StatusInternalServerError, "Failed to get node ID")
+				logger.Error("Failed to get node ID", slog.Any("error", err))
+				endpoint.InternalServerError(w)
 				return
 			}
 		}
@@ -119,7 +119,8 @@ func (fs *FileService) UploadFile(
 		}
 		err = fs.uploadStore.Upsert(uploadRecord)
 		if err != nil {
-			handleError(err, http.StatusInternalServerError, "Failed to save upload record")
+			logger.Error("Failed to save upload record", slog.Any("error", err))
+			endpoint.InternalServerError(w)
 			return
 		}
 	}

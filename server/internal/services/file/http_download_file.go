@@ -17,7 +17,7 @@ import (
 	"net/http"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
 )
 
@@ -33,44 +33,40 @@ import (
 // @Success 200 {object} map[string]any "Download initiated successfully"
 // @Failure 400 {object} file.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} file.ErrorResponse "Unauthorized"
-// @Failure 500 {object} file.ErrorResponse "Internal Server Error"
+// @Failure 500 {object} file.ErrorResponse "Failed to download file"
 // @Security BearerAuth
 // @Router /file-svc/download [put]
 func (ds *FileService) Download(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-
-	isAuthRsp, isAuthHttpRsp, err := ds.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), file.PermissionDownloadCreate).
-		Body(openapi.UserSvcHasPermissionRequest{
+	isAuthRsp, statusCode, err := ds.permissionChecker.HasPermission(
+		r,
+		file.PermissionDownloadCreate,
+		&openapi.UserSvcHasPermissionRequest{
 			PermittedSlugs: []string{"model-svc"},
-		}).
-		Execute()
+		},
+	)
 	if err != nil {
-		w.WriteHeader(isAuthHttpRsp.StatusCode)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.WriteString(w, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
 	req := file.DownloadFileRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
 
 	err = ds.download(r.Context(), req.URL, req.FolderPath)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteString(w, http.StatusInternalServerError, "Failed to download file")
 		return
 	}
 

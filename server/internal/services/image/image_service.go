@@ -25,6 +25,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
@@ -45,8 +46,9 @@ type ImageService struct {
 
 	publicKey string
 
-	credentialStore  datastore.DataStore
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
+	credentialStore   datastore.DataStore
+	datastoreFactory  func(tableName string, instance any) (datastore.DataStore, error)
+	permissionChecker endpoint.PermissionChecker
 }
 
 func NewImageService(
