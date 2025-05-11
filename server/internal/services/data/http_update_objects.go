@@ -17,8 +17,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	data "github.com/1backend/1backend/server/internal/services/data/types"
 	dynamictypes "github.com/1backend/1backend/server/internal/services/data/types"
 )
@@ -42,17 +42,16 @@ func (g *DataService) UpdateObjects(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := g.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), data.PermissionObjectEdit).
-		Execute()
+	isAuthRsp, statusCode, err := g.permissionChecker.HasPermission(
+		r,
+		data.PermissionObjectEdit,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 

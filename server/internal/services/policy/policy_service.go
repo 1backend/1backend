@@ -21,6 +21,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
@@ -44,8 +45,9 @@ type PolicyService struct {
 
 	instances []*policytypes.Instance
 
-	rateLimiters sync.Map // Map to store rate limiters
-	mutex        sync.Mutex
+	rateLimiters      sync.Map // Map to store rate limiters
+	mutex             sync.Mutex
+	permissionChecker endpoint.PermissionChecker
 }
 
 func NewPolicyService(
@@ -55,9 +57,10 @@ func NewPolicyService(
 ) (*PolicyService, error) {
 
 	service := &PolicyService{
-		clientFactory:    clientFactory,
-		datastoreFactory: datastoreFactory,
-		lock:             lock,
+		clientFactory:     clientFactory,
+		datastoreFactory:  datastoreFactory,
+		lock:              lock,
+		permissionChecker: endpoint.NewPermissionChecker(clientFactory),
 	}
 
 	return service, nil

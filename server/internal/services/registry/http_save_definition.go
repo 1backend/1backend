@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
 )
 
@@ -27,17 +27,16 @@ func (rs *RegistryService) SaveDefinition(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := rs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), registry.PermissionNodeView).
-		Execute()
+	isAuthRsp, statusCode, err := rs.permissionChecker.HasPermission(
+		r,
+		registry.PermissionNodeView,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 

@@ -23,6 +23,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
@@ -42,9 +43,10 @@ type DataService struct {
 	lock       lock.DistributedLock
 	authorizer auth.Authorizer
 
-	store           datastore.DataStore
-	credentialStore datastore.DataStore
-	publicKey       string
+	store             datastore.DataStore
+	credentialStore   datastore.DataStore
+	publicKey         string
+	permissionChecker endpoint.PermissionChecker
 }
 
 func NewDataService(
@@ -55,10 +57,11 @@ func NewDataService(
 ) (*DataService, error) {
 
 	service := &DataService{
-		clientFactory:    clientFactory,
-		datastoreFactory: datastoreFactory,
-		authorizer:       authorizer,
-		lock:             lock,
+		clientFactory:     clientFactory,
+		datastoreFactory:  datastoreFactory,
+		authorizer:        authorizer,
+		lock:              lock,
+		permissionChecker: endpoint.NewPermissionChecker(clientFactory),
 	}
 
 	return service, nil

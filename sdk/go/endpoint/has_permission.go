@@ -70,17 +70,16 @@ func (pc *permissionChecker) HasPermission(
 	request *http.Request,
 	permission string,
 ) (*openapi.UserSvcHasPermissionResponse, int, error) {
+	key := ""
 	jwt := request.Header.Get("Authorization")
-	if jwt == "" {
-		return nil, http.StatusUnauthorized, errors.New("Missing Authorization Header")
-	}
+	if jwt != "" {
+		hash := sha256.Sum256([]byte(jwt))
+		key = fmt.Sprintf("%s:%s", hex.EncodeToString(hash[:]), permission)
 
-	hash := sha256.Sum256([]byte(jwt))
-	key := fmt.Sprintf("%s:%s", hex.EncodeToString(hash[:]), permission)
-
-	if value, found := pc.permissionCache.Get(key); found {
-		if cachedResp, ok := value.(*HasPermissionResponse); ok {
-			return cachedResp.Response, cachedResp.StatusCode, nil
+		if value, found := pc.permissionCache.Get(key); found {
+			if cachedResp, ok := value.(*HasPermissionResponse); ok {
+				return cachedResp.Response, cachedResp.StatusCode, nil
+			}
 		}
 	}
 
@@ -96,10 +95,16 @@ func (pc *permissionChecker) HasPermission(
 		return nil, httpResponse.StatusCode, err
 	}
 
-	pc.permissionCache.SetWithTTL(key, &HasPermissionResponse{
-		Response:   isAuthRsp,
-		StatusCode: httpResponse.StatusCode,
-	}, 1, 5*time.Minute)
+	if key != "" {
+		pc.permissionCache.SetWithTTL(key, &HasPermissionResponse{
+			Response:   isAuthRsp,
+			StatusCode: httpResponse.StatusCode,
+		}, 1, 5*time.Minute)
+	}
+	code := 0
+	if httpResponse != nil {
+		code = httpResponse.StatusCode
+	}
 
-	return isAuthRsp, httpResponse.StatusCode, nil
+	return isAuthRsp, code, nil
 }

@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	sdk "github.com/1backend/1backend/sdk/go"
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	policy "github.com/1backend/1backend/server/internal/services/policy/types"
 	"github.com/gorilla/mux"
 )
@@ -29,17 +29,16 @@ func (s *PolicyService) UpsertInstance(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := s.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), policy.PermissionInstanceEdit).
-		Execute()
+	isAuthRsp, statusCode, err := s.permissionChecker.HasPermission(
+		r,
+		policy.PermissionInstanceEdit,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
