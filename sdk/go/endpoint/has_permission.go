@@ -72,7 +72,7 @@ func (pc *permissionChecker) HasPermission(
 ) (*openapi.UserSvcHasPermissionResponse, int, error) {
 	jwt := request.Header.Get("Authorization")
 	if jwt == "" {
-		return nil, 0, errors.New("missing Authorization header")
+		return nil, http.StatusUnauthorized, errors.New("Missing Authorization Header")
 	}
 
 	hash := sha256.Sum256([]byte(jwt))
@@ -80,7 +80,7 @@ func (pc *permissionChecker) HasPermission(
 
 	if value, found := pc.permissionCache.Get(key); found {
 		if cachedResp, ok := value.(*HasPermissionResponse); ok {
-			return cachedResp.Response, 0, nil
+			return cachedResp.Response, cachedResp.StatusCode, nil
 		}
 	}
 
@@ -93,7 +93,7 @@ func (pc *permissionChecker) HasPermission(
 	).
 		Execute()
 	if err != nil {
-		return nil, 0, errors.Wrap(err, "failed to call has permission endpoint")
+		return nil, httpResponse.StatusCode, err
 	}
 
 	pc.permissionCache.SetWithTTL(key, &HasPermissionResponse{
