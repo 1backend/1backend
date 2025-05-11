@@ -14,11 +14,12 @@ package modelservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"net/url"
 
-	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	model "github.com/1backend/1backend/server/internal/services/model/types"
 	"github.com/gorilla/mux"
 )
@@ -42,35 +43,34 @@ func (ms *ModelService) Status(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := ms.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), model.PermissionModelView).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"prompt-svc"},
-		}).
-		Execute()
+	isAuthRsp, statusCode, err := ms.permissionChecker.HasPermission(
+		r,
+		model.PermissionModelView,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	modelId := mux.Vars(r)["id"]
 	unesc, err := url.PathUnescape(modelId)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
+		logger.Error("Error unescaping model ID", slog.String("error", err.Error()))
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid Model ID")
 		return
 	}
 
 	status, err := ms.status(unesc)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Error getting model status",
+			slog.String("modelId", unesc),
+			slog.String("error", err.Error()),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 

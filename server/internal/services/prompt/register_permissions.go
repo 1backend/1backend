@@ -18,7 +18,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (p *PromptService) registerPermissions() error {
+func (p *PromptService) registerPermits() error {
 	token, err := p.getToken()
 	if err != nil {
 		return errors.Wrap(err, "failed to get token")

@@ -45,7 +45,7 @@ func (s *UserService) ResetPassword(
 	r *http.Request,
 ) {
 
-	_, hasPermission, err := s.hasPermission(r, user.PermissionUserPasswordReset, nil, nil)
+	_, hasPermission, err := s.hasPermission(r, user.PermissionUserPasswordReset)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

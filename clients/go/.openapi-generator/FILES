@@ -211,7 +211,6 @@ docs/UserSvcEnroll.md
 docs/UserSvcEnrollInput.md
 docs/UserSvcErrorResponse.md
 docs/UserSvcGetPublicKeyResponse.md
-docs/UserSvcHasPermissionRequest.md
 docs/UserSvcHasPermissionResponse.md
 docs/UserSvcListEnrollsRequest.md
 docs/UserSvcListEnrollsResponse.md
@@ -421,7 +420,6 @@ model_user_svc_enroll.go
 model_user_svc_enroll_input.go
 model_user_svc_error_response.go
 model_user_svc_get_public_key_response.go
-model_user_svc_has_permission_request.go
 model_user_svc_has_permission_response.go
 model_user_svc_list_enrolls_request.go
 model_user_svc_list_enrolls_response.go

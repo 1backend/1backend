@@ -17,21 +17,36 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
-	filetypes "github.com/1backend/1backend/server/internal/services/file/types"
+	file "github.com/1backend/1backend/server/internal/services/file/types"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/pkg/errors"
 )
 
-func (fs *FileService) registerPermissions() error {
+func (fs *FileService) registerPermits() error {
 	ctx := context.Background()
 	userSvc := fs.clientFactory.Client(client.WithToken(fs.token)).UserSvcAPI
 
-	req := openapi.UserSvcSavePermitsRequest{}
+	req := openapi.UserSvcSavePermitsRequest{
+		Permits: []openapi.UserSvcPermitInput{
+			{
+				Slugs:      []string{"docker-svc", "model-svc"},
+				Permission: file.PermissionDownloadView,
+			},
+			{
+				Slugs:      []string{"model-svc"},
+				Permission: file.PermissionDownloadCreate,
+			},
+			{
+				Slugs:      []string{"prompt-svc"},
+				Permission: file.PermissionUploadCreate,
+			},
+		},
+	}
 
 	for _, role := range []string{
 		usertypes.RoleAdmin,
 	} {
-		for _, permission := range filetypes.AdminPermissions {
+		for _, permission := range file.AdminPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				Roles:      []string{role},
 				Permission: permission,

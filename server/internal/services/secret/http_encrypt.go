@@ -14,10 +14,11 @@ package secretservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
-	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	secret "github.com/1backend/1backend/server/internal/services/secret/types"
 )
 
@@ -29,7 +30,8 @@ import (
 // @Produce json
 // @Param body body secret.EncryptValueRequest true "Encrypt Value Request"
 // @Success 200 {object} secret.EncryptValueResponse "Encrypt Value Response"
-// @Failure 400 {string} string "Bad Request"
+// @Failure 400 {string} string "Invalid JSON"
+// @Failure 400 {string} string "Missing Data"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 500 {string} string "Internal Server Error"
 // @Security BearerAuth
@@ -38,42 +40,43 @@ func (cs *SecretService) Encrypt(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	isAuthRsp, _, err := cs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), secret.PermissionSecretSave).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"model-svc"},
-		}).
-		Execute()
+	isAuthRsp, statusCode, err := cs.permissionChecker.HasPermission(
+		r,
+		secret.PermissionSecretSave,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	req := &secret.EncryptValueRequest{}
 	err = json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		logger.Error(
+			"Failed to decode request body",
+			slog.String("error", err.Error()),
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
 
 	if req.Value == "" && req.Values == nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`No data to encrypt`))
+		endpoint.WriteString(w, http.StatusBadRequest, "Missing Data")
 		return
 	}
 
 	encryptedValue, err := encrypt(req.Value, cs.encryptionKey)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to encrypt value",
+			slog.String("error", err.Error()),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 

@@ -20,6 +20,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
@@ -39,6 +40,8 @@ type EmailService struct {
 
 	credentialStore datastore.DataStore
 	emailStore      datastore.DataStore
+
+	permissionChecker endpoint.PermissionChecker
 }
 
 func NewEmailService(
@@ -48,9 +51,10 @@ func NewEmailService(
 ) (*EmailService, error) {
 
 	service := &EmailService{
-		clientFactory:    clientFactory,
-		datastoreFactory: datastoreFactory,
-		lock:             lock,
+		clientFactory:     clientFactory,
+		datastoreFactory:  datastoreFactory,
+		lock:              lock,
+		permissionChecker: endpoint.NewPermissionChecker(clientFactory),
 	}
 
 	return service, nil
@@ -113,5 +117,5 @@ func (fs *EmailService) start() error {
 
 	fs.token = token.Token
 
-	return fs.registerPermissions()
+	return fs.registerPermits()
 }

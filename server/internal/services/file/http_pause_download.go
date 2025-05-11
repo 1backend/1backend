@@ -14,10 +14,12 @@ package fileservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"net/url"
 
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
 	"github.com/gorilla/mux"
 )
@@ -32,7 +34,7 @@ import (
 // @Produce json
 // @Param url path string true "Download URL"
 // @Success 200 {object} map[string]any "Success response"
-// @Failure 400 {string} string "Invalid JSON"
+// @Failure 400 {string} string "Download ID in path is not URL encoded"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 500 {string} string "Internal Server Error"
 // @Security BearerAuth
@@ -41,32 +43,30 @@ func (ds *FileService) PauseDownload(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-
-	isAuthRsp, _, err := ds.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), file.PermissionDownloadEdit).
-		Execute()
+	isAuthRsp, statusCode, err := ds.permissionChecker.HasPermission(
+		r,
+		file.PermissionDownloadEdit,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.WriteString(w, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
 	ur, err := url.PathUnescape(mux.Vars(r)["url"])
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Download ID in path is not URL encoded"))
+		logger.Error("Failed to unescape URL", slog.Any("error", err))
+		endpoint.WriteString(w, http.StatusBadRequest, "Download ID in path is not URL encoded")
 		return
 	}
 
 	err = ds.pause(ur)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to pause download", slog.Any("error", err))
+		endpoint.WriteString(w, http.StatusInternalServerError, "Failed to pause download")
 		return
 	}
 

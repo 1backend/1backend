@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
-	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
 	"github.com/pkg/errors"
 )
@@ -30,22 +29,17 @@ func (rs *RegistryService) RegisterInstance(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	isAuthRsp, _, err := rs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), registry.PermissionInstanceEdit).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"deploy-svc"},
-		}).
-		Execute()
 
+	isAuthRsp, statusCode, err := rs.permissionChecker.HasPermission(
+		r,
+		registry.PermissionInstanceEdit,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
-
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 

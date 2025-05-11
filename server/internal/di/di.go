@@ -217,6 +217,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.Lock,
 		options.Authorizer,
 		options.HomeDir,
+		options.ClientFactory,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create config service")

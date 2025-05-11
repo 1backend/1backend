@@ -17,11 +17,18 @@ import (
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-func (p *SecretService) registerPermissions() error {
+func (p *SecretService) registerPermits() error {
 	ctx := context.Background()
 	userSvc := p.clientFactory.Client(client.WithToken(p.token)).UserSvcAPI
 
-	req := openapi.UserSvcSavePermitsRequest{}
+	req := openapi.UserSvcSavePermitsRequest{
+		Permits: []openapi.UserSvcPermitInput{
+			{
+				Slugs:      []string{"model-svc"},
+				Permission: secrettypes.PermissionSecretSave,
+			},
+		},
+	}
 
 	for _, role := range []string{
 		usertypes.RoleAdmin,

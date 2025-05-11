@@ -17,9 +17,8 @@ import (
 	"fmt"
 	"net/http"
 
-	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
 )
 
@@ -41,23 +40,16 @@ func (ns *RegistryService) NodeSelf(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := ns.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), registry.PermissionNodeView).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{
-				"file-svc",
-				"model-svc",
-			},
-		}).
-		Execute()
+	isAuthRsp, statusCode, err := ns.permissionChecker.HasPermission(
+		r,
+		registry.PermissionNodeView,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 

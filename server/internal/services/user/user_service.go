@@ -133,6 +133,9 @@ func NewUserService(
 		"userSvcPasswords",
 		&usertypes.Password{},
 	)
+	if err != nil {
+		return nil, err
+	}
 
 	service := &UserService{
 		authorizer:         authorizer,
@@ -150,7 +153,7 @@ func NewUserService(
 		isTest:             isTest,
 	}
 
-	err = service.registerPermissions()
+	err = service.registerPermits()
 	if err != nil {
 		return nil, err
 	}

@@ -20,6 +20,7 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 	config "github.com/1backend/1backend/server/internal/services/config/types"
 	types "github.com/1backend/1backend/server/internal/services/config/types"
@@ -42,20 +43,17 @@ func (cs *ConfigService) Save(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	isAuthRsp, _, err := cs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), config.PermissionConfigEdit).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"model-svc"},
-		}).
-		Execute()
+
+	isAuthRsp, statusCode, err := cs.permissionChecker.HasPermission(
+		r,
+		config.PermissionConfigEdit,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 

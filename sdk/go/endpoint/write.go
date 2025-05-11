@@ -15,6 +15,10 @@ package endpoint
 
 import "net/http"
 
+// WriteErr writes an error message to the response writer with the specified status code.
+// It should only be used when "proxying" errors from other endpoints as
+// internal errors should not be indiscriminately returned to the client.
+// Usually you should use WriteString instead, unless proxying.
 func WriteErr(w http.ResponseWriter, statusCode int, err error) {
 	errMsg := "error is missing"
 	if err != nil {
@@ -23,4 +27,18 @@ func WriteErr(w http.ResponseWriter, statusCode int, err error) {
 
 	w.WriteHeader(statusCode)
 	w.Write([]byte(errMsg))
+}
+
+func WriteString(w http.ResponseWriter, statusCode int, str string) {
+	w.WriteHeader(statusCode)
+	w.Write([]byte(str))
+}
+
+// InternalServerError is used frequently, so we define it here for convenience.
+func InternalServerError(w http.ResponseWriter) {
+	WriteString(w, http.StatusInternalServerError, "Internal Server Error")
+}
+
+func Unauthorized(w http.ResponseWriter) {
+	WriteString(w, http.StatusUnauthorized, "Unauthorized")
 }

@@ -34,12 +34,14 @@ import (
 // @Description already includes all user roles. Caching the `List Permissions` and `List Permits`
 // @Description responses allows services to determine user authorization
 // @Description without repeatedly calling this endpoint.
+// @Description
+// @Description This endpoint should have no other parameters apart from the caller and the permission
+// @Description so it can be cached easily.
 // @Desciption This endpoint also checks for permits.
 // @Tags User Svc
 // @Accept json
 // @Produce json
 // @Param permission path string true "Permission"
-// @Param body body user.HasPermissionRequest false "Is Authorized Request"
 // @Success 200 {object} user.HasPermissionResponse
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON or missing permission id"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
@@ -49,16 +51,6 @@ func (s *UserService) HasPermission(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-
-	req := &user.HasPermissionRequest{}
-	err := json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
-		return
-	}
-	defer r.Body.Close()
-
 	vars := mux.Vars(r)
 	permission := vars["permission"]
 
@@ -68,11 +60,7 @@ func (s *UserService) HasPermission(
 		return
 	}
 
-	if req == nil {
-		req = &user.HasPermissionRequest{}
-	}
-
-	usr, isAuth, err := s.hasPermission(r, permission, req.PermittedSlugs, nil)
+	usr, isAuth, err := s.hasPermission(r, permission)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -90,23 +78,12 @@ func (s *UserService) HasPermission(
 func (s *UserService) hasPermission(
 	r *http.Request,
 	permission string,
-	permittedSlugs,
-	contactsPermited []string,
 ) (*user.User, bool, error) {
 	usr, err := s.getUserFromRequest(r)
 	if err != nil {
 		return nil, false, err
 	}
 
-	slugPermit := false
-	for _, v := range permittedSlugs {
-		if usr.Slug == v {
-			slugPermit = true
-		}
-	}
-	if slugPermit {
-		return usr, true, nil
-	}
 	enrolls, err := s.enrollsStore.Query(
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 	).Find()

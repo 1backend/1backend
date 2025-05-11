@@ -7,11 +7,6 @@
  */
 package user_svc
 
-type HasPermissionRequest struct {
-	PermittedSlugs   []string `json:"permittedSlugs,omitempty"`
-	ContactsPermited []string `json:"contactsPermited,omitempty"`
-}
-
 type HasPermissionResponse struct {
 	Authorized bool  `json:"authorized,omitempty"`
 	User       *User `json:"user,omitempty"`

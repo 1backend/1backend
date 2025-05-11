@@ -40,8 +40,6 @@ func (s *UserService) ListOrganizations(
 	_, hasPermission, err := s.hasPermission(
 		r,
 		user.PermissionOrganizationView,
-		nil,
-		nil,
 	)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

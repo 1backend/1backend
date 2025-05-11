@@ -39,7 +39,7 @@ import (
 // @Router /user-svc/change-password [post]
 func (s *UserService) ChangePassword(w http.ResponseWriter, r *http.Request) {
 
-	usr, hasPermission, err := s.hasPermission(r, user.PermissionUserPasswordChange, nil, nil)
+	usr, hasPermission, err := s.hasPermission(r, user.PermissionUserPasswordChange)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

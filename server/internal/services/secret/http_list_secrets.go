@@ -16,8 +16,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	secret "github.com/1backend/1backend/server/internal/services/secret/types"
 	"github.com/pkg/errors"
 )
@@ -38,17 +38,17 @@ func (cs *SecretService) ListSecrets(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	isAuthRsp, _, err := cs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), secret.PermissionSecretList).
-		Execute()
+
+	isAuthRsp, statusCode, err := cs.permissionChecker.HasPermission(
+		r,
+		secret.PermissionSecretList,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 

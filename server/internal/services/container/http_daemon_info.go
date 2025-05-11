@@ -16,8 +16,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	container "github.com/1backend/1backend/server/internal/services/container/types"
 )
 
@@ -28,34 +28,31 @@ import (
 // @Accept       json
 // @Produce      json
 // @Success      200   {object} container.DaemonInfoResponse "Service Information"
-// @Failure      401   {object} container.ErrorResponse  "Unauthorized"
-// @Failure      500   {object} container.ErrorResponse  "Internal Server Error"
+// @Failure      401   {object} container.ErrorResponse  "unauthorized"
+// @Failure      500   {object} container.ErrorResponse  "internal server error"
 // @Security BearerAuth
 // @Router       /container-svc/daemon/info [get]
 func (dm *ContainerService) DaemonInfo(
 	w http.ResponseWriter,
 	req *http.Request,
 ) {
-
-	isAuthRsp, _, err := dm.clientFactory.Client(client.WithTokenFromRequest(req)).
-		UserSvcAPI.HasPermission(req.Context(), container.PermissionContainerView).
-		Body(openapi.UserSvcHasPermissionRequest{}).
-		Execute()
+	isAuthRsp, statusCode, err := dm.permissionChecker.HasPermission(
+		req,
+		container.PermissionContainerView,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	di, err := dm.backend.DaemonInfo(container.DaemonInfoRequest{})
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("DaemonInfo", "error", err)
+		endpoint.InternalServerError(w)
 		return
 	}
 

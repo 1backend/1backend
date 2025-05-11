@@ -39,7 +39,7 @@ func (s *UserService) ListPermits(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	_, has, err := s.hasPermission(r, user.PermissionPermitView, nil, nil)
+	_, has, err := s.hasPermission(r, user.PermissionPermitView)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

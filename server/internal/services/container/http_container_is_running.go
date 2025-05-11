@@ -14,10 +14,11 @@ package containerservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
-	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	container "github.com/1backend/1backend/server/internal/services/container/types"
 )
 
@@ -30,7 +31,8 @@ import (
 // @Param        hash  query     string  false  "Container Hash"
 // @Param        name  query     string  false  "Container Name"
 // @Success      200   {object}  container.ContainerIsRunningResponse
-// @Failure      400   {object}  container.ErrorResponse  "Invalid JSON or Missing Parameters"
+// @Failure      400   {object}  container.ErrorResponse  "Invalid JSON"
+// @Failure      400   {object}  container.ErrorResponse  "missing parameters"
 // @Failure      401   {object}  container.ErrorResponse  "Unauthorized"
 // @Failure      500   {object}  container.ErrorResponse  "Internal Server Error"
 // @SecurityDefinitions.bearerAuth BearerAuth
@@ -40,21 +42,16 @@ func (dm *ContainerService) ContainerIsRunning(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-
-	isAuthRsp, _, err := dm.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), container.PermissionContainerView).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"model-svc"},
-		}).
-		Execute()
+	isAuthRsp, statusCode, err := dm.permissionChecker.HasPermission(
+		r,
+		container.PermissionContainerView,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
@@ -64,14 +61,12 @@ func (dm *ContainerService) ContainerIsRunning(
 	name := q.Get("name")
 
 	if hash == "" && name == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Missing Parameters`))
+		endpoint.WriteString(w, http.StatusBadRequest, "missing parameters")
 		return
 	}
 
 	if name != "" {
-		w.WriteHeader(http.StatusNotImplemented)
-		w.Write([]byte(`Not Implemented`))
+		endpoint.WriteString(w, http.StatusNotImplemented, "not implemented")
 		return
 	}
 
@@ -81,8 +76,12 @@ func (dm *ContainerService) ContainerIsRunning(
 	})
 
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to check if container is running",
+			slog.String("hash", hash),
+			slog.String("name", name),
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 

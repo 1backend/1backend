@@ -37,7 +37,7 @@ import (
 // @Router /user-svc/user/{userId} [delete]
 func (s *UserService) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
-	usr, hasPermission, err := s.hasPermission(r, user.PermissionUserDelete, nil, nil)
+	usr, hasPermission, err := s.hasPermission(r, user.PermissionUserDelete)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

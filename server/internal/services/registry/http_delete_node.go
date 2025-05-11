@@ -1,12 +1,13 @@
 package registryservice
 
 import (
+	"log/slog"
 	"net/http"
 	"net/url"
 
-	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
 	"github.com/gorilla/mux"
 )
@@ -30,44 +31,36 @@ func (rs *RegistryService) DeleteNode(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := rs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), registry.PermissionNodeDelete).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"deploy-svc"},
-		}).
-		Execute()
+	isAuthRsp, statusCode, err := rs.permissionChecker.HasPermission(
+		r,
+		registry.PermissionNodeDelete,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	vars := mux.Vars(r)
 	nodeURL, err := url.PathUnescape(vars["url"])
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
-		return
-	}
-	if nodeURL == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid node ID`))
+	if err != nil || nodeURL == "" {
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid URL")
 		return
 	}
 
 	err = rs.deleteNodeByURL(nodeURL)
 	if err != nil {
 		if err == registry.ErrNotFound {
-			w.WriteHeader(http.StatusNotFound)
-			w.Write([]byte(`Service not found`))
+			endpoint.WriteString(w, http.StatusNotFound, "Not Found")
 		} else {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(err.Error()))
+			logger.Error("Error deleting node",
+				slog.String("url", nodeURL),
+				slog.Any("error", err),
+			)
+			endpoint.InternalServerError(w)
 		}
 		return
 	}

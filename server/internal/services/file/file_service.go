@@ -23,6 +23,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
@@ -53,7 +54,8 @@ type FileService struct {
 
 	credentialStore datastore.DataStore
 
-	nodeId string
+	nodeId            string
+	permissionChecker endpoint.PermissionChecker
 }
 
 func NewFileService(
@@ -63,10 +65,11 @@ func NewFileService(
 	homeDir string,
 ) (*FileService, error) {
 	ret := &FileService{
-		clientFactory:    clientFactory,
-		homeDir:          homeDir,
-		datastoreFactory: datastoreFactory,
-		lock:             lock,
+		clientFactory:     clientFactory,
+		homeDir:           homeDir,
+		datastoreFactory:  datastoreFactory,
+		lock:              lock,
+		permissionChecker: endpoint.NewPermissionChecker(clientFactory),
 	}
 
 	return ret, nil
@@ -213,7 +216,7 @@ func (fs *FileService) getToken() (string, error) {
 	}
 	fs.token = token.Token
 
-	err = fs.registerPermissions()
+	err = fs.registerPermits()
 	if err != nil {
 		return "", errors.Wrap(err, "failed to register permissions")
 	}

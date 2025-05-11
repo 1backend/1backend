@@ -14,9 +14,11 @@ package modelservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	model "github.com/1backend/1backend/server/internal/services/model/types"
 )
 
@@ -29,7 +31,6 @@ import (
 // @Accept json
 // @Produce json
 // @Success 200 {object} model.StartResponse
-// @Failure 400 {object} model.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} model.ErrorResponse "Unauthorized"
 // @Failure 500 {object} model.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
@@ -39,24 +40,23 @@ func (ms *ModelService) StartDefault(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := ms.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), model.PermissionModelCreate).
-		Execute()
+	isAuthRsp, statusCode, err := ms.permissionChecker.HasPermission(
+		r,
+		model.PermissionModelCreate,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	err = ms.startModel("")
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Error starting default model", slog.String("error", err.Error()))
+		endpoint.InternalServerError(w)
 		return
 	}
 

@@ -2,10 +2,11 @@ package containerservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
-	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	container "github.com/1backend/1backend/server/internal/services/container/types"
 )
 
@@ -29,36 +30,35 @@ func (dm *ContainerService) BuildImage(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := dm.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), container.PermissionImageBuild).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"deploy-svc"},
-		}).
-		Execute()
+	isAuthRsp, statusCode, err := dm.permissionChecker.HasPermission(
+		r,
+		container.PermissionImageBuild,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	req := &container.BuildImageRequest{}
 	err = json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(container.ErrorResponse{Error: "Invalid JSON"})
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
 
 	_, err = dm.backend.BuildImage(*req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to build image",
+			slog.String("dockerfilePath", req.DockerfilePath),
+			slog.String("contextPath", req.ContextPath),
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 

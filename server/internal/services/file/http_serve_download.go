@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 	"mime"
 	"net/http"
 	"net/url"
@@ -18,6 +19,8 @@ import (
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
 )
 
@@ -28,8 +31,9 @@ import (
 // @Produce application/octet-stream
 // @Param url path string true "URL of the file. Even after downloading, the file is still referenced by its original internet URL."
 // @Success 200 {file} binary "File served successfully"
-// @Failure 400 {object} file.ErrorResponse "Invalid download URL"
-// @Failure 404 {object} file.ErrorResponse "File not found"
+// @Failure 400 {object} file.ErrorResponse "invalid download URL"
+// @Failure 400 {object} file.ErrorResponse "error parsing download URL"
+// @Failure 404 {object} file.ErrorResponse "file not found"
 // @Failure 500 {object} file.ErrorResponse "Internal Server Error"
 // @Router /file-svc/serve/download/{url} [get]
 func (fs *FileService) ServeDownload(
@@ -39,8 +43,7 @@ func (fs *FileService) ServeDownload(
 	vars := mux.Vars(r)
 	ur, err := url.PathUnescape(vars["url"])
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Invalid download URL"))
+		endpoint.WriteString(w, http.StatusBadRequest, "invalid download URL")
 		return
 	}
 
@@ -49,21 +52,20 @@ func (fs *FileService) ServeDownload(
 		ur,
 	)).Find()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Error querying download"))
+		logger.Error("Error Querying Download", slog.Any("error", err))
+		endpoint.WriteString(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 	if len(downloadReplicaIs) == 0 {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("File not found"))
+		endpoint.WriteString(w, http.StatusNotFound, "file not found")
 		return
 	}
 
 	downloadReplicas := toDownloads(downloadReplicaIs)
 	isLocal, err := fs.isLocalDownload(r.Context(), downloadReplicas)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Error checking if download is local", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 	if isLocal {
@@ -80,22 +82,20 @@ func (fs *FileService) serveLocalDownload(
 ) {
 	download, err := fs.pickLocalDownload(r.Context(), downloadReplicas)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to pick local download", slog.Any("error", err))
+		endpoint.WriteString(w, http.StatusInternalServerError, "Failed to pick local download")
 		return
 	}
 
 	fileInfo, err := os.Stat(download.FilePath)
 	if err != nil || fileInfo.IsDir() {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("File not found"))
+		endpoint.WriteString(w, http.StatusNotFound, "file not found")
 		return
 	}
 
 	parsedURL, err := url.Parse(download.URL)
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("Error parsing download URL"))
+		endpoint.WriteString(w, http.StatusBadRequest, "error parsing download URL")
 		return
 	}
 
@@ -110,16 +110,15 @@ func (fs *FileService) serveLocalDownload(
 
 	srcFile, err := os.Open(download.FilePath)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Failed to open file"))
+		endpoint.WriteString(w, http.StatusInternalServerError, "Failed to open file")
 		return
 	}
 	defer srcFile.Close()
 
 	_, err = io.Copy(w, srcFile)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Failed to write file to response"))
+		logger.Error("Failed to write file to response", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 }
@@ -131,8 +130,8 @@ func (fs *FileService) serveRemoteDownload(
 ) {
 	downloads, err := fs.pickRemoteDownloads(r.Context(), downloadReplicas)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to pick remote download", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 
@@ -143,8 +142,8 @@ func (fs *FileService) serveRemoteDownload(
 
 	token, err := fs.getToken()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to get token", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 
@@ -157,8 +156,8 @@ func (fs *FileService) serveRemoteDownload(
 			},
 		).Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to list nodes", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 	nodes := nodesRsp.Nodes
@@ -178,8 +177,8 @@ func (fs *FileService) serveRemoteDownload(
 		ServeDownload(r.Context(), downloads[0].URL).
 		Execute()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to serve download", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 
@@ -191,8 +190,8 @@ func (fs *FileService) serveRemoteDownload(
 
 	_, err = io.Copy(w, file)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Failed to write file to response"))
+		logger.Error("Failed to write file to response", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 }

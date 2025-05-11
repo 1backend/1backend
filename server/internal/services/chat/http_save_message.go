@@ -24,6 +24,7 @@ import (
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 	chat "github.com/1backend/1backend/server/internal/services/chat/types"
 	"github.com/gorilla/mux"
@@ -48,17 +49,16 @@ func (a *ChatService) SaveMessage(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := a.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), chat.PermissionMessageCreate).
-		Execute()
+	isAuthRsp, statusCode, err := a.permissionChecker.HasPermission(
+		r,
+		chat.PermissionMessageCreate,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 

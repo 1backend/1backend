@@ -16,8 +16,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	chat "github.com/1backend/1backend/server/internal/services/chat/types"
 )
 
@@ -39,17 +39,16 @@ func (a *ChatService) ListThreads(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := a.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), chat.PermissionThreadView).
-		Execute()
+	isAuthRsp, statusCode, err := a.permissionChecker.HasPermission(
+		r,
+		chat.PermissionThreadView,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 

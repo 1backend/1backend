@@ -47,8 +47,6 @@ func (s *UserService) SaveOrganization(
 	usr, hasPermission, err := s.hasPermission(
 		r,
 		user.PermissionOrganizationCreate,
-		nil,
-		nil,
 	)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

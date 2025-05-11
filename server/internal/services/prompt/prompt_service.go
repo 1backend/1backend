@@ -21,6 +21,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
@@ -46,6 +47,8 @@ type PromptService struct {
 
 	runMutex sync.Mutex
 	trigger  chan bool
+
+	permissionChecker endpoint.PermissionChecker
 }
 
 func NewPromptService(
@@ -65,6 +68,9 @@ func NewPromptService(
 		streamManager: streammanager.NewStreamManager(),
 
 		trigger: make(chan bool, 1),
+		permissionChecker: endpoint.NewPermissionChecker(
+			clientFactory,
+		),
 	}
 
 	return service, nil
@@ -168,7 +174,7 @@ func (cs *PromptService) getToken() (string, error) {
 	}
 	cs.token = token.Token
 
-	err = cs.registerPermissions()
+	err = cs.registerPermits()
 	if err != nil {
 		return "", err
 	}

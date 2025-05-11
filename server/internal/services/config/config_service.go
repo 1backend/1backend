@@ -25,6 +25,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
@@ -51,12 +52,15 @@ type ConfigService struct {
 	publicKey  string
 	authorizer auth.Authorizer
 	homeDir    string
+
+	permissionChecker endpoint.PermissionChecker
 }
 
 func NewConfigService(
 	lock lock.DistributedLock,
 	authorizer auth.Authorizer,
 	homeDir string,
+	clientFactory client.ClientFactory,
 ) (*ConfigService, error) {
 	cs := &ConfigService{
 		lock:       lock,
@@ -70,6 +74,7 @@ func NewConfigService(
 
 func (cs *ConfigService) SetClientFactory(clientFactory client.ClientFactory) {
 	cs.clientFactory = clientFactory
+	cs.permissionChecker = endpoint.NewPermissionChecker(clientFactory)
 }
 
 func (cs *ConfigService) SetDataStoreFactory(
@@ -153,7 +158,7 @@ func (cs *ConfigService) start() error {
 	}
 	cs.token = token.Token
 
-	err = cs.registerPermissions()
+	err = cs.registerPermits()
 	if err != nil {
 		return err
 	}

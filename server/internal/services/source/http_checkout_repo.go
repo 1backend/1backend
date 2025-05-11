@@ -3,13 +3,14 @@ package sourceservice
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"os"
 	"path"
 	"strings"
 
-	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	source "github.com/1backend/1backend/server/internal/services/source/types"
 	git "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
@@ -36,35 +37,37 @@ import (
 func (s *SourceService) CheckoutRepo(w http.ResponseWriter,
 	r *http.Request) {
 
-	isAuthRsp, _, err := s.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), source.PermissionSourceRepoCheckout).Body(
-		openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"deploy-svc"},
-		}).
-		Execute()
+	isAuthRsp, statusCode, err := s.permissionChecker.HasPermission(
+		r,
+		source.PermissionSourceRepoCheckout,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	req := &source.CheckoutRepoRequest{}
 	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		logger.Error(
+			"Failed to decode request body",
+			slog.Any("error", err),
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
 
 	dir, err := s.checkoutRepo(*req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to checkout repo",
+			slog.String("repo", req.URL),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 

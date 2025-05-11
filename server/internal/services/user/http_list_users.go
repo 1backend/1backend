@@ -41,7 +41,7 @@ func (s *UserService) ListUsers(
 	r *http.Request,
 ) {
 
-	_, hasPermission, err := s.hasPermission(r, user.PermissionUserView, nil, nil)
+	_, hasPermission, err := s.hasPermission(r, user.PermissionUserView)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

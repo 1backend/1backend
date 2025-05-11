@@ -45,6 +45,8 @@ type FirehoseService struct {
 	nextID      int
 
 	credentialStore datastore.DataStore
+
+	permissionChecker endpoint.PermissionChecker
 }
 
 func NewFirehoseService(
@@ -58,6 +60,9 @@ func NewFirehoseService(
 		datastoreFactory: datastoreFactory,
 		lock:             lock,
 		subscribers:      make(map[int]func(events []*firehosetypes.Event)),
+		permissionChecker: endpoint.NewPermissionChecker(
+			clientFactory,
+		),
 	}
 
 	return service, nil
@@ -129,7 +134,7 @@ func (fs *FirehoseService) start() error {
 	}
 	fs.token = token.Token
 
-	return fs.registerPermissions()
+	return fs.registerPermits()
 }
 
 func (fs *FirehoseService) publishMany(events ...*firehosetypes.Event) {

@@ -14,10 +14,12 @@ package modelservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"net/url"
 
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	model "github.com/1backend/1backend/server/internal/services/model/types"
 	"github.com/gorilla/mux"
 )
@@ -30,7 +32,7 @@ import (
 // @Produce json
 // @Param modelId path string true "Model ID"
 // @Success 200 {object} model.StartResponse
-// @Failure 400 {object} model.ErrorResponse "Invalid JSON"
+// @Failure 401 {object} model.ErrorResponse "Missing Parameter"
 // @Failure 401 {object} model.ErrorResponse "Unauthorized"
 // @Failure 500 {object} model.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
@@ -42,30 +44,28 @@ func (ms *ModelService) StartSpecific(
 
 	v := mux.Vars(r)
 	if v["id"] == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Missing model ID in request path"))
+		endpoint.WriteString(w, http.StatusBadRequest, "Missing Parameter")
 		return
 	}
 
-	isAuthRsp, _, err := ms.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), model.PermissionModelCreate).
-		Execute()
+	isAuthRsp, statusCode, err := ms.permissionChecker.HasPermission(
+		r,
+		model.PermissionModelCreate,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	req := model.StartRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		logger.Error("Error decoding JSON", slog.String("error", err.Error()))
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 
@@ -73,15 +73,18 @@ func (ms *ModelService) StartSpecific(
 
 	modelId, err := url.PathUnescape(v["modelId"])
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
+		logger.Error("Model ID in path is not URL encoded", slog.String("error", err.Error()))
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid Model ID")
 		return
 	}
 
 	err = ms.startModel(modelId)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to start model",
+			slog.String("modelId", modelId),
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 

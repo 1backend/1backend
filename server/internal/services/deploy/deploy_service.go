@@ -20,6 +20,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	deploy "github.com/1backend/1backend/server/internal/services/deploy/types"
@@ -36,8 +37,9 @@ type DeployService struct {
 	credentialStore datastore.DataStore
 	deploymentStore datastore.DataStore
 
-	triggerChan chan struct{}
-	triggerOnly bool
+	triggerChan       chan struct{}
+	triggerOnly       bool
+	permissionChecker endpoint.PermissionChecker
 }
 
 func NewDeployService(
@@ -72,6 +74,9 @@ func NewDeployService(
 		triggerChan: make(chan struct{}),
 
 		triggerOnly: triggerOnly,
+		permissionChecker: endpoint.NewPermissionChecker(
+			clientFactory,
+		),
 	}
 
 	return service, nil
@@ -120,7 +125,7 @@ func (cs *DeployService) getToken() (string, error) {
 	}
 	cs.token = token.Token
 
-	err = cs.registerPermissions()
+	err = cs.registerPermits()
 	if err != nil {
 		return "", errors.Wrap(err, "failed to register permissions")
 	}
