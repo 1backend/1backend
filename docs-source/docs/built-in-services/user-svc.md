@@ -76,13 +76,7 @@ oo permit save user-prompter-permit.yaml
 
 ### Permission-Based Access
 
-- **API Permission Check**: Use the `Has Permission` endpoint with the user's authentication headers and a permission ID to verify access dynamically.
-
-- **Cached Role Permissions**: Store `Permit`s locally and check only the user's token for the required role. This is faster and avoids API calls but requires a bit more setup.
-  - An SDK can help simplify this.
-  - If you need to verify a token manually, refer to the `Get Public Key` endpoint.
-
-> If you are looking at restricting access to endpoints in other ways, you might be interested in: [Policy Svc](/docs/built-in-services/policy-svc).
+- **API Permission Check**: Use the `Has Permission` endpoint with the user's authentication headers and a permission ID to verify access dynamically. This endpoint is designed to be easy to cache (it has no other params apart from the caller header and a permission).
 
 ## Tokens
 
