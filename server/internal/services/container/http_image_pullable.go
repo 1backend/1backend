@@ -19,8 +19,8 @@ import (
 	"net/url"
 	"strings"
 
-	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	container "github.com/1backend/1backend/server/internal/services/container/types"
 	"github.com/gorilla/mux"
 )
@@ -33,8 +33,9 @@ import (
 // @Produce      json
 // @Param imageName path string true "Image name"
 // @Success      200   {object}  container.ImagePullableResponse
-// @Failure      401   {object}  container.ErrorResponse  "Unauthorized"
-// @Failure      500   {object}  container.ErrorResponse  "Internal Server Error"
+// @Failure      400   {object}  container.ErrorResponse  "model ID in path is not URL encoded"
+// @Failure      401   {object}  container.ErrorResponse  "unauthorized"
+// @Failure      500   {object}  container.ErrorResponse  "internal server error"
 // @Security BearerAuth
 // @Router       /container-svc/image/{imageName}/pullable [get]
 func (dm *ContainerService) ImagePullable(
@@ -42,35 +43,39 @@ func (dm *ContainerService) ImagePullable(
 	req *http.Request,
 ) {
 
-	isAuthRsp, _, err := dm.clientFactory.Client(client.WithTokenFromRequest(req)).
-		UserSvcAPI.HasPermission(req.Context(), container.PermissionContainerView).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"model-svc"},
-		}).
-		Execute()
+	isAuthRsp, statusCode, err := dm.permissionChecker.HasPermission(
+		req,
+		container.PermissionContainerView,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	vars := mux.Vars(req)
 	imageName, err := url.PathUnescape(vars["imageName"])
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Model ID in path is not URL encoded"))
+		logger.Error(
+			"Failed to unescape image name",
+			"error", err,
+			"imageName", vars["imageName"],
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "model ID in path is not URL encoded")
 		return
 	}
 
 	pullable, err := dm.imagePullable(imageName)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to check if image is pullable",
+			"error", err,
+			"imageName", imageName,
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 

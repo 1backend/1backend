@@ -36,7 +36,7 @@ import (
 // @Success 200 {file} binary "File served successfully"
 // @Failure 400 {object} file.ErrorResponse "missing upload ID"
 // @Failure 404 {object} file.ErrorResponse "file not found"
-// @Failure 500 {object} file.ErrorResponse "internal server error"
+// @Failure 500 {object} file.ErrorResponse "Internal Server Error"
 // @Router /file-svc/serve/upload/{fileId} [get]
 func (fs *FileService) ServeUpload(
 	w http.ResponseWriter,

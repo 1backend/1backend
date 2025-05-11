@@ -36,5 +36,9 @@ func WriteString(w http.ResponseWriter, statusCode int, str string) {
 
 // InternalServerError is used frequently, so we define it here for convenience.
 func InternalServerError(w http.ResponseWriter) {
-	WriteString(w, http.StatusInternalServerError, "internal server error")
+	WriteString(w, http.StatusInternalServerError, "Internal Server Error")
+}
+
+func Unauthorized(w http.ResponseWriter) {
+	WriteString(w, http.StatusUnauthorized, "Unauthorized")
 }

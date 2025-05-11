@@ -14,10 +14,12 @@ package chatservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	chat "github.com/1backend/1backend/server/internal/services/chat/types"
 )
 
@@ -30,42 +32,43 @@ import (
 // @Param body body chat.ListMessagesRequest true "List Messages Request"
 // @Success 200 {object} chat.ListMessagesResponse "Messages and assets successfully retrieved"
 // @Failure 400 {string} string "Invalid JSON"
-// @Failure 401 {string} string "Unauthorized"
-// @Failure 500 {string} string "Internal Server Error"
+// @Failure 401 {string} string "unauthorized"
+// @Failure 500 {string} string "internal server error"
 // @Security BearerAuth
 // @Router /chat-svc/messages [post]
 func (a *ChatService) ListMessages(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-
-	isAuthRsp, _, err := a.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), chat.PermissionMessageView).
-		Execute()
+	isAuthRsp, statusCode, err := a.permissionChecker.HasPermission(
+		r,
+		chat.PermissionMessageView,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	req := chat.ListMessagesRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
 
 	messages, err := a.listMessages(&req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to list messages",
+			slog.String("threadId", req.ThreadId),
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 

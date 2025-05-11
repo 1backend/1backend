@@ -15,19 +15,26 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 
-	emailtypes "github.com/1backend/1backend/server/internal/services/email/types"
+	email "github.com/1backend/1backend/server/internal/services/email/types"
 )
 
-func (ns *EmailService) registerPermissions() error {
+func (ns *EmailService) registerPermits() error {
 	ctx := context.Background()
 	userSvc := ns.clientFactory.Client(client.WithToken(ns.token)).UserSvcAPI
 
-	req := openapi.UserSvcSavePermitsRequest{}
+	req := openapi.UserSvcSavePermitsRequest{
+		Permits: []openapi.UserSvcPermitInput{
+			{
+				Slugs:      []string{"user-svc"},
+				Permission: email.PermissionSendEmail,
+			},
+		},
+	}
 
 	for _, role := range []string{
 		usertypes.RoleAdmin,
 	} {
-		for _, permission := range emailtypes.AdminPermissions {
+		for _, permission := range email.AdminPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				Roles:      []string{role},
 				Permission: permission,

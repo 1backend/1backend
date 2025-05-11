@@ -14,10 +14,11 @@ package secretservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
-	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	secret "github.com/1backend/1backend/server/internal/services/secret/types"
 )
 
@@ -38,36 +39,39 @@ func (cs *SecretService) Decrypt(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	isAuthRsp, _, err := cs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), secret.PermissionSecretSave).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"model-svc"},
-		}).
-		Execute()
+	isAuthRsp, statusCode, err := cs.permissionChecker.HasPermission(
+		r,
+		secret.PermissionSecretSave,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	req := &secret.DecryptValueRequest{}
 	err = json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		logger.Error(
+			"Failed to decode request body",
+			slog.String("error", err.Error()),
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
 
 	decryptedValue, err := decrypt(req.Value, cs.encryptionKey)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to decrypt value",
+			slog.String("error", err.Error()),
+			slog.String("value", req.Value),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 

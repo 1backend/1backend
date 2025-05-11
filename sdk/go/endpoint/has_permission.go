@@ -41,7 +41,6 @@ type PermissionChecker interface {
 	HasPermission(
 		request *http.Request,
 		permission string,
-		body *openapi.UserSvcHasPermissionRequest,
 	) (*openapi.UserSvcHasPermissionResponse, int, error)
 }
 
@@ -70,7 +69,6 @@ func NewPermissionChecker(clientFactory client.ClientFactory) PermissionChecker 
 func (pc *permissionChecker) HasPermission(
 	request *http.Request,
 	permission string,
-	body *openapi.UserSvcHasPermissionRequest,
 ) (*openapi.UserSvcHasPermissionResponse, int, error) {
 	jwt := request.Header.Get("Authorization")
 	if jwt == "" {

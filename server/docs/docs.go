@@ -149,13 +149,13 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Unauthorized",
+                        "description": "unauthorized",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "internal server error",
                         "schema": {
                             "type": "string"
                         }
@@ -1683,7 +1683,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Failed to download file",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
@@ -1778,7 +1778,7 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid JSON",
+                        "description": "Download ID in path is not URL encoded",
                         "schema": {
                             "type": "string"
                         }
@@ -1867,19 +1867,19 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid download URL",
+                        "description": "error parsing download URL",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
                     },
                     "404": {
-                        "description": "File not found",
+                        "description": "file not found",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "internal server error",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
@@ -1918,19 +1918,19 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Missing upload ID",
+                        "description": "missing upload ID",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
                     },
                     "404": {
-                        "description": "File not found",
+                        "description": "file not found",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "internal server error",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
@@ -1974,19 +1974,19 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid request",
+                        "description": "invalid request",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
                     },
                     "401": {
-                        "description": "Unauthorized",
+                        "description": "unauthorized",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "internal server error",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
@@ -2178,19 +2178,19 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Missing file ID",
+                        "description": "missing file ID",
                         "schema": {
                             "$ref": "#/definitions/image_svc.ErrorResponse"
                         }
                     },
                     "404": {
-                        "description": "File not found",
+                        "description": "file not found",
                         "schema": {
                             "$ref": "#/definitions/image_svc.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "internal server error",
                         "schema": {
                             "$ref": "#/definitions/image_svc.ErrorResponse"
                         }
@@ -4727,7 +4727,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Check whether the caller user has a specific permission.\nIdeally, this endpoint should rarely be used, as the JWT token\nalready includes all user roles. Caching the ` + "`" + `List Permissions` + "`" + ` and ` + "`" + `List Permits` + "`" + `\nresponses allows services to determine user authorization\nwithout repeatedly calling this endpoint.",
+                "description": "Check whether the caller user has a specific permission.\nIdeally, this endpoint should rarely be used, as the JWT token\nalready includes all user roles. Caching the ` + "`" + `List Permissions` + "`" + ` and ` + "`" + `List Permits` + "`" + `\nresponses allows services to determine user authorization\nwithout repeatedly calling this endpoint.\n\nThis endpoint should have no other parameters apart from the caller and the permission\nso it can be cached easily.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4746,14 +4746,6 @@ const docTemplate = `{
                         "name": "permission",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "description": "Is Authorized Request",
-                        "name": "body",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.HasPermissionRequest"
-                        }
                     }
                 ],
                 "responses": {
@@ -4992,13 +4984,13 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Unauthorized",
+                        "description": "unauthorized",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "internal server error",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
                         }
@@ -9011,23 +9003,6 @@ const docTemplate = `{
             "properties": {
                 "publicKey": {
                     "type": "string"
-                }
-            }
-        },
-        "user_svc.HasPermissionRequest": {
-            "type": "object",
-            "properties": {
-                "contactsPermited": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "permittedSlugs": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             }
         },

@@ -153,7 +153,7 @@ func NewUserService(
 		isTest:             isTest,
 	}
 
-	err = service.registerPermissions()
+	err = service.registerPermits()
 	if err != nil {
 		return nil, err
 	}

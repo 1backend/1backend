@@ -25,6 +25,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/1backend/1backend/sdk/go/middlewares"
@@ -58,6 +59,8 @@ type ContainerService struct {
 
 	volumeName           string
 	containerLoopTrigger chan bool
+
+	permissionChecker endpoint.PermissionChecker
 }
 
 func NewContainerService(
@@ -71,10 +74,11 @@ func NewContainerService(
 ) (*ContainerService, error) {
 
 	service := &ContainerService{
-		clientFactory:    clientFactory,
-		lock:             lock,
-		datastoreFactory: datastoreFactory,
-		volumeName:       volumeName,
+		clientFactory:     clientFactory,
+		lock:              lock,
+		datastoreFactory:  datastoreFactory,
+		volumeName:        volumeName,
+		permissionChecker: endpoint.NewPermissionChecker(clientFactory),
 	}
 
 	return service, nil
@@ -206,7 +210,7 @@ func (cs *ContainerService) getToken() (string, error) {
 	}
 	cs.token = token.Token
 
-	err = cs.registerPermissions()
+	err = cs.registerPermits()
 	if err != nil {
 		return "", errors.Wrap(err, "failed to register permissions")
 	}

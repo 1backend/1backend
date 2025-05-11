@@ -38,6 +38,11 @@ func (a *ChatService) ListThreads(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
+	//isAuthRsp, statusCode, err := a.permissionChecker.HasPermission(
+	//	r,
+	//	chat.PermissionThreadView,
+	//	nil,
+	//)
 
 	isAuthRsp, _, err := a.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), chat.PermissionThreadView).

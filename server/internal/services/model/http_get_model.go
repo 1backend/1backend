@@ -14,12 +14,13 @@ package modelservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"net/url"
 
-	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	model "github.com/1backend/1backend/server/internal/services/model/types"
 	"github.com/gorilla/mux"
 )
@@ -34,7 +35,10 @@ import (
 // @Produce json
 // @Param modelId path string true "Model ID"
 // @Success 200 {object} model.GetModelResponse
+// @Failure 400 {object} model.ErrorResponse "Missing Parameter"
+// @Failure 400 {object} model.ErrorResponse "Invalid Model ID"
 // @Failure 401 {object} model.ErrorResponse "Unauthorized"
+// @Failure 404 {object} model.ErrorResponse "Model Not Found"
 // @Failure 500 {object} model.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
 // @Router /model-svc/model/{modelId} [get]
@@ -43,53 +47,56 @@ func (ms *ModelService) Get(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := ms.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), model.PermissionModelView).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"prompt-svc"},
-		}).
-		Execute()
+	isAuthRsp, statusCode, err := ms.permissionChecker.HasPermission(
+		r,
+		model.PermissionModelView,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	vars := mux.Vars(r)
 	if vars["modelId"] == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("no model id"))
+		endpoint.WriteString(w, http.StatusBadRequest, "Missing Parameter")
 		return
 	}
 
 	mid, err := url.PathUnescape(vars["modelId"])
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to unescape model ID",
+			slog.String("modelId", vars["modelId"]),
+			slog.Any("error", err),
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid model ID")
 		return
 	}
 
 	mod, found, err := ms.getModel(mid)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to get model",
+			slog.String("modelId", mid),
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 	if !found {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("model not found"))
+		endpoint.WriteString(w, http.StatusNotFound, "Model Not Found")
 		return
 	}
 
 	platform, _, err := ms.getPlatform(mod.PlatformId)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to get platform",
+			slog.String("platformId", mod.PlatformId),
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 

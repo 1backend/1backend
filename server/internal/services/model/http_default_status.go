@@ -14,10 +14,11 @@ package modelservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
-	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	model "github.com/1backend/1backend/server/internal/services/model/types"
 )
 
@@ -39,27 +40,23 @@ func (ms *ModelService) DefaultStatus(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := ms.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), model.PermissionModelView).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"prompt-svc"},
-		}).
-		Execute()
+	isAuthRsp, statusCode, err := ms.permissionChecker.HasPermission(
+		r,
+		model.PermissionModelView,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	status, err := ms.status("")
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Error getting default model status", slog.String("error", err.Error()))
+		endpoint.InternalServerError(w)
 		return
 	}
 

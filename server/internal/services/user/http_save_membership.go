@@ -51,8 +51,6 @@ func (s *UserService) SaveMembership(
 	usr, hasPermission, err := s.hasPermission(
 		r,
 		user.PermissionOrganizationAddUser,
-		nil,
-		nil,
 	)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

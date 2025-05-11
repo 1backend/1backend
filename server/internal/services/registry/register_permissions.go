@@ -17,6 +17,7 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
+	registry "github.com/1backend/1backend/server/internal/services/registry/types"
 	registrytypes "github.com/1backend/1backend/server/internal/services/registry/types"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/pkg/errors"
@@ -30,11 +31,42 @@ func app(permSlices ...[]string) []string {
 	return ret
 }
 
-func (ns *RegistryService) registerPermissions() error {
+func (ns *RegistryService) registerPermits() error {
 	ctx := context.Background()
 	userSvc := ns.clientFactory.Client(client.WithToken(ns.token)).UserSvcAPI
 
-	req := openapi.UserSvcSavePermitsRequest{}
+	req := openapi.UserSvcSavePermitsRequest{
+		Permits: []openapi.UserSvcPermitInput{
+			{
+				Slugs:      []string{"deploy-svc"},
+				Permission: registry.PermissionDefinitionDelete,
+			},
+			{
+				Slugs:      []string{"deploy-svc"},
+				Permission: registry.PermissionNodeDelete,
+			},
+			{
+				Slugs:      []string{"deploy-svc"},
+				Permission: registry.PermissionDefinitionView,
+			},
+			{
+				Slugs:      []string{"deploy-svc", "proxy-svc"},
+				Permission: registry.PermissionInstanceView,
+			},
+			{
+				Slugs:      []string{"deploy-svc", "file-svc", "model-svc"},
+				Permission: registry.PermissionNodeView,
+			},
+			{
+				Slugs:      []string{"deploy-svc"},
+				Permission: registry.PermissionInstanceEdit,
+			},
+			{
+				Slugs:      []string{"deploy-svc"},
+				Permission: registry.PermissionInstanceDelete,
+			},
+		},
+	}
 
 	for _, role := range []string{
 		usertypes.RoleAdmin,

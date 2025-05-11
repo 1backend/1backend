@@ -13,20 +13,27 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
-	configtypes "github.com/1backend/1backend/server/internal/services/config/types"
+	config "github.com/1backend/1backend/server/internal/services/config/types"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-func (p *ConfigService) registerPermissions() error {
+func (p *ConfigService) registerPermits() error {
 	ctx := context.Background()
 	userSvc := p.clientFactory.Client(client.WithToken(p.token)).UserSvcAPI
 
-	req := openapi.UserSvcSavePermitsRequest{}
+	req := openapi.UserSvcSavePermitsRequest{
+		Permits: []openapi.UserSvcPermitInput{
+			{
+				Slugs:      []string{"model-svc"},
+				Permission: config.PermissionConfigEdit,
+			},
+		},
+	}
 
 	for _, role := range []string{
 		usertypes.RoleAdmin,
 	} {
-		for _, permission := range configtypes.AdminPermissions {
+		for _, permission := range config.AdminPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				Roles:      []string{role},
 				Permission: permission,

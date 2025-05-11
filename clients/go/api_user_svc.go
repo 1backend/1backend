@@ -105,6 +105,9 @@ already includes all user roles. Caching the `List Permissions` and `List Permit
 responses allows services to determine user authorization
 without repeatedly calling this endpoint.
 
+This endpoint should have no other parameters apart from the caller and the permission
+so it can be cached easily.
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param permission Permission
 	@return ApiHasPermissionRequest
@@ -1117,13 +1120,6 @@ type ApiHasPermissionRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
 	permission string
-	body *UserSvcHasPermissionRequest
-}
-
-// Is Authorized Request
-func (r ApiHasPermissionRequest) Body(body UserSvcHasPermissionRequest) ApiHasPermissionRequest {
-	r.body = &body
-	return r
 }
 
 func (r ApiHasPermissionRequest) Execute() (*UserSvcHasPermissionResponse, *http.Response, error) {
@@ -1138,6 +1134,9 @@ Ideally, this endpoint should rarely be used, as the JWT token
 already includes all user roles. Caching the `List Permissions` and `List Permits`
 responses allows services to determine user authorization
 without repeatedly calling this endpoint.
+
+This endpoint should have no other parameters apart from the caller and the permission
+so it can be cached easily.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param permission Permission
@@ -1174,7 +1173,7 @@ func (a *UserSvcAPIService) HasPermissionExecute(r ApiHasPermissionRequest) (*Us
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{"application/json"}
+	localVarHTTPContentTypes := []string{}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -1190,8 +1189,6 @@ func (a *UserSvcAPIService) HasPermissionExecute(r ApiHasPermissionRequest) (*Us
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
-	// body params
-	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {

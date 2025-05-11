@@ -12,8 +12,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	firehose "github.com/1backend/1backend/server/internal/services/firehose/types"
 )
 
@@ -32,34 +32,27 @@ import (
 func (p *FirehoseService) Publish(w http.ResponseWriter,
 	r *http.Request) {
 
-	isAuthRsp, _, err := p.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), firehose.PermissionEventPublish).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{
-				"config-svc",
-				"file-svc",
-				"prompt-svc",
-				"chat-svc",
-				"model-svc",
-			},
-		}).
-		Execute()
+	isAuthRsp, statusCode, err := p.permissionChecker.HasPermission(
+		r,
+		firehose.PermissionEventPublish,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	req := firehose.EventPublishRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		logger.Error(
+			"Failed to decode request body",
+			"error", err,
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()

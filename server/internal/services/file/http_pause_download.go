@@ -46,7 +46,6 @@ func (ds *FileService) PauseDownload(
 	isAuthRsp, statusCode, err := ds.permissionChecker.HasPermission(
 		r,
 		file.PermissionDownloadEdit,
-		nil,
 	)
 	if err != nil {
 		endpoint.WriteErr(w, statusCode, err)

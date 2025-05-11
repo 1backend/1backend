@@ -120,7 +120,7 @@ func (cs *DeployService) getToken() (string, error) {
 	}
 	cs.token = token.Token
 
-	err = cs.registerPermissions()
+	err = cs.registerPermits()
 	if err != nil {
 		return "", errors.Wrap(err, "failed to register permissions")
 	}

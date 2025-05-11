@@ -34,7 +34,7 @@ import (
 // @Failure 400 {object} file.ErrorResponse "invalid download URL"
 // @Failure 400 {object} file.ErrorResponse "error parsing download URL"
 // @Failure 404 {object} file.ErrorResponse "file not found"
-// @Failure 500 {object} file.ErrorResponse "internal server error"
+// @Failure 500 {object} file.ErrorResponse "Internal Server Error"
 // @Router /file-svc/serve/download/{url} [get]
 func (fs *FileService) ServeDownload(
 	w http.ResponseWriter,

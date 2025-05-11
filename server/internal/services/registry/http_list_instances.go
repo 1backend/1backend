@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/endpoint"
@@ -42,9 +41,6 @@ func (rs *RegistryService) ListInstances(
 
 	isAuthRsp, _, err := rs.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), registry.PermissionInstanceView).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: permittedSlugs,
-		}).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

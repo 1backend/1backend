@@ -17,7 +17,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	firehose "github.com/1backend/1backend/server/internal/services/firehose/types"
 )
 
@@ -37,17 +37,16 @@ func (p *FirehoseService) Subscribe(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := p.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), firehose.PermissionFirehoseStream).
-		Execute()
+	isAuthRsp, statusCode, err := p.permissionChecker.HasPermission(
+		r,
+		firehose.PermissionFirehoseStream,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 

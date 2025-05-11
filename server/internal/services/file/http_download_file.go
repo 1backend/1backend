@@ -16,7 +16,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
 )
@@ -43,9 +42,6 @@ func (ds *FileService) Download(
 	isAuthRsp, statusCode, err := ds.permissionChecker.HasPermission(
 		r,
 		file.PermissionDownloadCreate,
-		&openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"model-svc"},
-		},
 	)
 	if err != nil {
 		endpoint.WriteErr(w, statusCode, err)

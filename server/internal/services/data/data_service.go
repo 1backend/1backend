@@ -144,7 +144,7 @@ func (g *DataService) start() error {
 	}
 	g.token = token.Token
 
-	return g.registerPermissions()
+	return g.registerPermits()
 }
 
 func (g *DataService) createMany(

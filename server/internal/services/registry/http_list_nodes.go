@@ -16,7 +16,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
 )
@@ -41,12 +40,6 @@ func (ns *RegistryService) ListNodes(
 
 	isAuthRsp, _, err := ns.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), registry.PermissionNodeView).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{
-				"deploy-svc",
-				"file-svc",
-			},
-		}).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

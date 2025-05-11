@@ -14,10 +14,12 @@ package modelservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"net/url"
 
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	model "github.com/1backend/1backend/server/internal/services/model/types"
 	"github.com/gorilla/mux"
 )
@@ -30,7 +32,7 @@ import (
 // @Produce json
 // @Param modelId path string true "Model ID"
 // @Success 200 {object} model.MakeDefaultResponse
-// @Failure 400 {object} model.ErrorResponse "Invalid JSON"
+// @Failure 400 {object} model.ErrorResponse "Invalid Model ID"
 // @Failure 401 {object} model.ErrorResponse "Unauthorized"
 // @Failure 500 {object} model.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
@@ -40,32 +42,34 @@ func (ms *ModelService) MakeDefault(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := ms.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), model.PermissionModelEdit).
-		Execute()
+	isAuthRsp, statusCode, err := ms.permissionChecker.HasPermission(
+		r,
+		model.PermissionModelEdit,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	vars := mux.Vars(r)
 	modelId, err := url.PathUnescape(vars["modelId"])
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Model ID in path is not URL encoded"))
+		logger.Error("Model ID in path is not URL encoded", slog.String("error", err.Error()))
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid Model ID")
 		return
 	}
 
 	err = ms.makeDefault(r.Context(), modelId)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to make model default",
+			slog.String("modelId", modelId),
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 

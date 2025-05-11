@@ -14,13 +14,12 @@ package promptservice
 
 import (
 	"encoding/json"
-	"log"
+	"log/slog"
 	"net/http"
 
 	"github.com/gorilla/mux"
 
-	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 
 	streammanager "github.com/1backend/1backend/server/internal/services/prompt/stream"
@@ -35,7 +34,7 @@ import (
 // @Tags Prompt Svc
 // @Param threadId path string true "Thread ID"
 // @Success 200 {string} string "Streaming response"
-// @Failure 400 {object} prompt.ErrorResponse "Missing threadId parameter"
+// @Failure 400 {object} prompt.ErrorResponse "Missing Parameter"
 // @Failure 401 {object} prompt.ErrorResponse "Unauthorized"
 // @Security BearerAuth
 // @Router /prompt-svc/prompts/{threadId}/responses/subscribe [get]
@@ -44,26 +43,23 @@ func (p *PromptService) SubscribeToPromptResponses(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := p.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), prompt.PermissionPromptStream).
-		Body(openapi.UserSvcHasPermissionRequest{}).
-		Execute()
+	isAuthRsp, statusCode, err := p.permissionChecker.HasPermission(
+		r,
+		prompt.PermissionPromptStream,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	vars := mux.Vars(r)
 
 	if vars["threadId"] == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Missing threadId path parameter`))
+		endpoint.WriteString(w, http.StatusBadRequest, "Missing Parameter")
 		return
 	}
 	threadId := vars["threadId"]
@@ -84,12 +80,16 @@ func (p *PromptService) SubscribeToPromptResponses(
 	for resp := range subscriber {
 		jsonResp, err := json.Marshal(resp)
 		if err != nil {
-			log.Printf("Failed to marshal JSON: %v", err)
+			logger.Error("Failed to marshal JSON",
+				slog.Any("error", err),
+			)
 			continue
 		}
 
 		if _, writeErr := w.Write([]byte("data: " + string(jsonResp) + "\n")); writeErr != nil {
-			log.Printf("Failed to write streaming response: %v", writeErr)
+			logger.Error("Failed to write streaming response",
+				slog.Any("error", writeErr),
+			)
 			break // Exit the loop on write errors
 		}
 

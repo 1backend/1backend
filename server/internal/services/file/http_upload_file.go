@@ -9,7 +9,6 @@ import (
 	"path/filepath"
 	"time"
 
-	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
@@ -30,8 +29,8 @@ import (
 // @Param file formData file true "File to upload"
 // @Success 200 {object} file.UploadFileResponse "File uploaded successfully"
 // @Failure 400 {object} file.ErrorResponse "invalid request"
-// @Failure 401 {object} file.ErrorResponse "unauthorized"
-// @Failure 500 {object} file.ErrorResponse "internal server error"
+// @Failure 401 {object} file.ErrorResponse "Unauthorized"
+// @Failure 500 {object} file.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
 // @Router /file-svc/upload [put]
 func (fs *FileService) UploadFile(
@@ -41,9 +40,6 @@ func (fs *FileService) UploadFile(
 	isAuthRsp, statusCode, err := fs.permissionChecker.HasPermission(
 		r,
 		file.PermissionUploadCreate,
-		&openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"prompt-svc"},
-		},
 	)
 	if err != nil {
 		endpoint.WriteErr(w, statusCode, err)

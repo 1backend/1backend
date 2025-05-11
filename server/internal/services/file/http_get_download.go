@@ -17,7 +17,6 @@ import (
 	"net/http"
 	"net/url"
 
-	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
 	"github.com/gorilla/mux"
@@ -44,9 +43,6 @@ func (fs *FileService) GetDownload(
 
 	isAuthRsp, _, err := fs.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), file.PermissionDownloadView).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"docker-svc", "model-svc"},
-		}).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

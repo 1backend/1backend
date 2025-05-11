@@ -25,6 +25,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
@@ -57,6 +58,8 @@ type ModelService struct {
 
 	selfNode      *openapi.RegistrySvcNode
 	selfNodeMutex sync.Mutex
+
+	permissionChecker endpoint.PermissionChecker
 }
 
 func NewModelService(
@@ -68,11 +71,12 @@ func NewModelService(
 	datastoreFactory func(tableName string, insance any) (datastore.DataStore, error),
 ) (*ModelService, error) {
 	srv := &ModelService{
-		gpuPlatform:      gpuPlatform,
-		clientFactory:    clientFactory,
-		datastoreFactory: datastoreFactory,
-		lock:             lock,
-		modelPortMap:     map[int]*modeltypes.ModelState{},
+		gpuPlatform:       gpuPlatform,
+		clientFactory:     clientFactory,
+		datastoreFactory:  datastoreFactory,
+		lock:              lock,
+		modelPortMap:      map[int]*modeltypes.ModelState{},
+		permissionChecker: endpoint.NewPermissionChecker(clientFactory),
 	}
 
 	return srv, nil
@@ -179,7 +183,7 @@ func (ms *ModelService) start() error {
 	}
 	ms.token = token.Token
 
-	return ms.registerPermissions()
+	return ms.registerPermits()
 }
 
 func (ms *ModelService) getNode() (*openapi.RegistrySvcNode, error) {

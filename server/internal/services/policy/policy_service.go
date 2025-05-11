@@ -133,5 +133,5 @@ func (ps *PolicyService) start() error {
 	}
 	ps.token = token.Token
 
-	return ps.registerPermissions()
+	return ps.registerPermits()
 }

@@ -44,9 +44,6 @@ func (cs *ConfigService) Save(
 ) {
 	isAuthRsp, _, err := cs.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), config.PermissionConfigEdit).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"model-svc"},
-		}).
 		Execute()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

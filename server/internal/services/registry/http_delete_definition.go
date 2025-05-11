@@ -1,11 +1,12 @@
 package registryservice
 
 import (
+	"log/slog"
 	"net/http"
 
-	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
 	"github.com/gorilla/mux"
 )
@@ -20,7 +21,7 @@ import (
 // @Success 204 "No Content"
 // @Failure 400 {object} registry.ErrorResponse "Invalid ID"
 // @Failure 401 {object} registry.ErrorResponse "Unauthorized"
-// @Failure 404 {object} registry.ErrorResponse "Service not found"
+// @Failure 404 {object} registry.ErrorResponse "Not Found"
 // @Failure 500 {object} registry.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
 // @Router /registry-svc/definition/{id} [delete]
@@ -29,39 +30,36 @@ func (rs *RegistryService) DeleteDefinition(
 	r *http.Request,
 ) {
 
-	isAuthRsp, _, err := rs.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), registry.PermissionDefinitionDelete).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"deploy-svc"},
-		}).
-		Execute()
+	isAuthRsp, statusCode, err := rs.permissionChecker.HasPermission(
+		r,
+		registry.PermissionDefinitionDelete,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	vars := mux.Vars(r)
 	serviceID := vars["id"]
 	if serviceID == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid definition ID`))
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid ID")
 		return
 	}
 
 	err = rs.deleteDefinitionByID(serviceID)
 	if err != nil {
 		if err == registry.ErrNotFound {
-			w.WriteHeader(http.StatusNotFound)
-			w.Write([]byte(`Definition not found`))
+			endpoint.WriteString(w, http.StatusNotFound, "Not Found")
 		} else {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(err.Error()))
+			logger.Error("Error deleting definition",
+				slog.String("id", serviceID),
+				slog.Any("error", err),
+			)
+			endpoint.InternalServerError(w)
 		}
 		return
 	}

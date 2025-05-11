@@ -14,11 +14,12 @@ package containerservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"strconv"
 
-	openapi "github.com/1backend/1backend/clients/go"
-	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	container "github.com/1backend/1backend/server/internal/services/container/types"
 )
 
@@ -32,30 +33,25 @@ import (
 // @Param        name           query    string  false  "Container Name"
 // @Param        lines          query    int     false  "Number of Lines"
 // @Success      200            {object} container.GetContainerSummaryResponse
-// @Failure      400            {object} container.ErrorResponse  "Invalid JSON or Missing Parameters"
-// @Failure      401            {object} container.ErrorResponse  "Unauthorized"
-// @Failure      500            {object} container.ErrorResponse  "Internal Server Error"
+// @Failure      400            {object} container.ErrorResponse  "missing parameters"
+// @Failure      401            {object} container.ErrorResponse  "unauthorized"
+// @Failure      500            {object} container.ErrorResponse  "internal server error"
 // @Security     BearerAuth
 // @Router       /container-svc/container/summary [get]
 func (dm *ContainerService) Summary(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-
-	isAuthRsp, _, err := dm.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), container.PermissionContainerView).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"model-svc"},
-		}).
-		Execute()
+	isAuthRsp, statusCode, err := dm.permissionChecker.HasPermission(
+		r,
+		container.PermissionContainerView,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
@@ -65,15 +61,17 @@ func (dm *ContainerService) Summary(
 
 	name := q.Get("name")
 	if name == "" {
-		w.WriteHeader(http.StatusNotImplemented)
-		w.Write([]byte(`Not Implemented`))
+		endpoint.WriteString(w, http.StatusNotImplemented, "not implemented")
 		return
 	}
 
 	lines, err := strconv.ParseInt(numberOfLines, 10, 64)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to parse lines",
+			slog.String("numberOfLines", numberOfLines),
+			slog.String("error", err.Error()),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
@@ -82,8 +80,13 @@ func (dm *ContainerService) Summary(
 		Lines: int(lines),
 	})
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to get container summary",
+			slog.String("hash", hash),
+			slog.String("name", name),
+			slog.Int("lines", int(lines)),
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 

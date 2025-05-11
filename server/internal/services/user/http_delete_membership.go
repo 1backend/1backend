@@ -50,8 +50,6 @@ func (s *UserService) DeleteMembership(
 	usr, hasPermission, err := s.hasPermission(
 		r,
 		user.PermissionOrganizationCreate,
-		nil,
-		nil,
 	)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

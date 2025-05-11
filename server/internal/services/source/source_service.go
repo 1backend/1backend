@@ -20,6 +20,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
@@ -36,6 +37,8 @@ type SourceService struct {
 	token string
 
 	credentialStore datastore.DataStore
+
+	permissionChecker endpoint.PermissionChecker
 }
 
 func NewSourceService(
@@ -55,6 +58,9 @@ func NewSourceService(
 		clientFactory:   clientFactory,
 		lock:            lock,
 		credentialStore: credentialStore,
+		permissionChecker: endpoint.NewPermissionChecker(
+			clientFactory,
+		),
 	}
 
 	return service, nil
@@ -98,5 +104,5 @@ func (ss *SourceService) start() error {
 
 	ss.token = token.Token
 
-	return ss.registerPermissions()
+	return ss.registerPermits()
 }

@@ -350,7 +350,6 @@ Class | Method | HTTP request | Description
  - [UserSvcEnrollInput](docs/UserSvcEnrollInput.md)
  - [UserSvcErrorResponse](docs/UserSvcErrorResponse.md)
  - [UserSvcGetPublicKeyResponse](docs/UserSvcGetPublicKeyResponse.md)
- - [UserSvcHasPermissionRequest](docs/UserSvcHasPermissionRequest.md)
  - [UserSvcHasPermissionResponse](docs/UserSvcHasPermissionResponse.md)
  - [UserSvcListEnrollsRequest](docs/UserSvcListEnrollsRequest.md)
  - [UserSvcListEnrollsResponse](docs/UserSvcListEnrollsResponse.md)

@@ -51,7 +51,7 @@ import (
 // @Router /user-svc/enrolls [put]
 func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 
-	usr, hasPermission, err := s.hasPermission(r, user.PermissionEnrollEdit, nil, nil)
+	usr, hasPermission, err := s.hasPermission(r, user.PermissionEnrollEdit)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

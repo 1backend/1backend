@@ -31,9 +31,9 @@ import (
 // @Produce json
 // @Param body body user.ListUsersRequest false "List Users Request"
 // @Success 200 {object} user.ListUsersResponse "List of users retrieved successfully"
-// @Failure 400 {object} user.ErrorResponse "invalid JSON"
-// @Failure 401 {object} user.ErrorResponse "unauthorized"
-// @Failure 500 {object} user.ErrorResponse "internal server error"
+// @Failure 400 {object} user.ErrorResponse "Invalid JSON"
+// @Failure 401 {object} user.ErrorResponse "Unauthorized"
+// @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
 // @Router /user-svc/users [post]
 func (s *UserService) ListUsers(
@@ -41,7 +41,7 @@ func (s *UserService) ListUsers(
 	r *http.Request,
 ) {
 
-	_, hasPermission, err := s.hasPermission(r, user.PermissionUserView, nil, nil)
+	_, hasPermission, err := s.hasPermission(r, user.PermissionUserView)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

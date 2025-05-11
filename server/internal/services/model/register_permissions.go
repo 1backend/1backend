@@ -14,20 +14,31 @@ import (
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	modeltypes "github.com/1backend/1backend/server/internal/services/model/types"
+	model "github.com/1backend/1backend/server/internal/services/model/types"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-func (p *ModelService) registerPermissions() error {
+func (p *ModelService) registerPermits() error {
 	ctx := context.Background()
 	userSvc := p.clientFactory.Client(client.WithToken(p.token)).UserSvcAPI
 
-	req := openapi.UserSvcSavePermitsRequest{}
+	req := openapi.UserSvcSavePermitsRequest{
+		Permits: []openapi.UserSvcPermitInput{
+			{
+				Slugs:      []string{"prompt-svc"},
+				Permission: model.PermissionModelView,
+			},
+			{
+				Slugs:      []string{"prompt-svc"},
+				Permission: model.PermissionPlatformView,
+			},
+		},
+	}
 
 	for _, role := range []string{
 		usertypes.RoleAdmin,
 	} {
-		for _, permission := range modeltypes.AdminPermissions {
+		for _, permission := range model.AdminPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				Roles:      []string{role},
 				Permission: permission,
@@ -47,7 +58,7 @@ func (p *ModelService) registerPermissions() error {
 
 func (p *ModelService) bootstrapModels() error {
 	platformRows := []datastore.Row{}
-	for _, v := range modeltypes.Platforms {
+	for _, v := range model.Platforms {
 		platformRows = append(platformRows, v)
 	}
 	err := p.platformsStore.UpsertMany(platformRows)
@@ -56,7 +67,7 @@ func (p *ModelService) bootstrapModels() error {
 	}
 
 	modelRows := []datastore.Row{}
-	for _, v := range modeltypes.Models {
+	for _, v := range model.Models {
 		modelRows = append(modelRows, v)
 	}
 

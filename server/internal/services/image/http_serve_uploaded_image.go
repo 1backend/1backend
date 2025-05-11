@@ -54,7 +54,7 @@ type ErrorResponse image.ErrorResponse
 // @Success 200 {file} binary "File served successfully"
 // @Failure 400 {object} image.ErrorResponse "missing file ID"
 // @Failure 404 {object} image.ErrorResponse "file not found"
-// @Failure 500 {object} image.ErrorResponse "internal server error"
+// @Failure 500 {object} image.ErrorResponse "Internal Server Error"
 // @Router /image-svc/serve/upload/{fileId} [get]
 func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

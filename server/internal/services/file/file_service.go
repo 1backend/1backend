@@ -216,7 +216,7 @@ func (fs *FileService) getToken() (string, error) {
 	}
 	fs.token = token.Token
 
-	err = fs.registerPermissions()
+	err = fs.registerPermits()
 	if err != nil {
 		return "", errors.Wrap(err, "failed to register permissions")
 	}

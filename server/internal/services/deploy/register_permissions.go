@@ -21,7 +21,7 @@ import (
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-func (ns *DeployService) registerPermissions() error {
+func (ns *DeployService) registerPermits() error {
 	ctx := context.Background()
 	userSvc := ns.clientFactory.Client(client.WithToken(ns.token)).UserSvcAPI
 

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 
-	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
@@ -32,9 +31,6 @@ func (rs *RegistryService) RegisterInstance(
 ) {
 	isAuthRsp, _, err := rs.clientFactory.Client(client.WithTokenFromRequest(r)).
 		UserSvcAPI.HasPermission(r.Context(), registry.PermissionInstanceEdit).
-		Body(openapi.UserSvcHasPermissionRequest{
-			PermittedSlugs: []string{"deploy-svc"},
-		}).
 		Execute()
 
 	if err != nil {

@@ -37,7 +37,7 @@ func (s *UserService) CreateUser(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	_, hasPermission, err := s.hasPermission(r, user.PermissionUserCreate, nil, nil)
+	_, hasPermission, err := s.hasPermission(r, user.PermissionUserCreate)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

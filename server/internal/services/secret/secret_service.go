@@ -25,6 +25,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
@@ -47,6 +48,8 @@ type SecretService struct {
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
 
 	encryptionKey string
+
+	permissionChecker endpoint.PermissionChecker
 }
 
 func NewSecretService(
@@ -63,6 +66,9 @@ func NewSecretService(
 		clientFactory:    clientFactory,
 		authorizer:       authorizer,
 		encryptionKey:    secretEncryptionKey,
+		permissionChecker: endpoint.NewPermissionChecker(
+			clientFactory,
+		),
 	}
 
 	credentialStore, err := cs.datastoreFactory(
@@ -162,7 +168,7 @@ func (cs *SecretService) start() error {
 	}
 	cs.token = token.Token
 
-	err = cs.registerPermissions()
+	err = cs.registerPermits()
 	if err != nil {
 		return err
 	}

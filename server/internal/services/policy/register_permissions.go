@@ -17,7 +17,7 @@ import (
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-func (p *PolicyService) registerPermissions() error {
+func (p *PolicyService) registerPermits() error {
 	ctx := context.Background()
 	userSvc := p.clientFactory.Client(client.WithToken(p.token)).UserSvcAPI
 

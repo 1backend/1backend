@@ -14,10 +14,12 @@ package chatservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	chattypes "github.com/1backend/1backend/server/internal/services/chat/types"
 	"github.com/gorilla/mux"
 )
@@ -39,18 +41,16 @@ func (a *ChatService) DeleteThread(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-
-	isAuthRsp, _, err := a.clientFactory.Client(client.WithTokenFromRequest(r)).
-		UserSvcAPI.HasPermission(r.Context(), chattypes.PermissionThreadCreate).
-		Execute()
+	isAuthRsp, statusCode, err := a.permissionChecker.HasPermission(
+		r,
+		chattypes.PermissionThreadDelete,
+	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 	if !isAuthRsp.GetAuthorized() {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
@@ -58,8 +58,12 @@ func (a *ChatService) DeleteThread(
 
 	err = a.deleteThread(vars["threadId"])
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to delete thread",
+			slog.String("threadId", vars["threadId"]),
+			slog.String("error", err.Error()),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 

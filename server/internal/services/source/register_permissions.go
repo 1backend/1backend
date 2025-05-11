@@ -18,11 +18,18 @@ import (
 	sourcetypes "github.com/1backend/1backend/server/internal/services/source/types"
 )
 
-func (ns *SourceService) registerPermissions() error {
+func (ns *SourceService) registerPermits() error {
 	ctx := context.Background()
 	userSvc := ns.clientFactory.Client(client.WithToken(ns.token)).UserSvcAPI
 
-	req := openapi.UserSvcSavePermitsRequest{}
+	req := openapi.UserSvcSavePermitsRequest{
+		Permits: []openapi.UserSvcPermitInput{
+			{
+				Slugs:      []string{"deploy-svc"},
+				Permission: sourcetypes.PermissionSourceRepoCheckout,
+			},
+		},
+	}
 
 	for _, role := range []string{
 		usertypes.RoleAdmin,

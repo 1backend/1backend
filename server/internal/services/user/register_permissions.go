@@ -19,7 +19,7 @@ import (
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-func (us *UserService) registerPermissions() error {
+func (us *UserService) registerPermits() error {
 	permits := []*user.PermitInput{}
 
 	for _, role := range []string{

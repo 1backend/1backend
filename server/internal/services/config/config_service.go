@@ -153,7 +153,7 @@ func (cs *ConfigService) start() error {
 	}
 	cs.token = token.Token
 
-	err = cs.registerPermissions()
+	err = cs.registerPermits()
 	if err != nil {
 		return err
 	}

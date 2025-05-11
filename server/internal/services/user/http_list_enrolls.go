@@ -38,7 +38,7 @@ import (
 // @Router /user-svc/enrolls [post]
 func (s *UserService) ListEnrolls(w http.ResponseWriter, r *http.Request) {
 
-	_, hasPermission, err := s.hasPermission(r, user.PermissionEnrollView, nil, nil)
+	_, hasPermission, err := s.hasPermission(r, user.PermissionEnrollView)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
