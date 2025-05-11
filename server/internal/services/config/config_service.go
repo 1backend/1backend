@@ -63,11 +63,10 @@ func NewConfigService(
 	clientFactory client.ClientFactory,
 ) (*ConfigService, error) {
 	cs := &ConfigService{
-		lock:              lock,
-		configs:           map[string]map[string]any{},
-		authorizer:        authorizer,
-		homeDir:           homeDir,
-		permissionChecker: endpoint.NewPermissionChecker(clientFactory),
+		lock:       lock,
+		configs:    map[string]map[string]any{},
+		authorizer: authorizer,
+		homeDir:    homeDir,
 	}
 
 	return cs, nil
@@ -75,6 +74,7 @@ func NewConfigService(
 
 func (cs *ConfigService) SetClientFactory(clientFactory client.ClientFactory) {
 	cs.clientFactory = clientFactory
+	cs.permissionChecker = endpoint.NewPermissionChecker(clientFactory)
 }
 
 func (cs *ConfigService) SetDataStoreFactory(
