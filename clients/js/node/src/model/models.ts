@@ -175,7 +175,6 @@ export * from './userSvcEnroll';
 export * from './userSvcEnrollInput';
 export * from './userSvcErrorResponse';
 export * from './userSvcGetPublicKeyResponse';
-export * from './userSvcHasPermissionRequest';
 export * from './userSvcHasPermissionResponse';
 export * from './userSvcListEnrollsRequest';
 export * from './userSvcListEnrollsResponse';
@@ -396,7 +395,6 @@ import { UserSvcEnroll } from './userSvcEnroll';
 import { UserSvcEnrollInput } from './userSvcEnrollInput';
 import { UserSvcErrorResponse } from './userSvcErrorResponse';
 import { UserSvcGetPublicKeyResponse } from './userSvcGetPublicKeyResponse';
-import { UserSvcHasPermissionRequest } from './userSvcHasPermissionRequest';
 import { UserSvcHasPermissionResponse } from './userSvcHasPermissionResponse';
 import { UserSvcListEnrollsRequest } from './userSvcListEnrollsRequest';
 import { UserSvcListEnrollsResponse } from './userSvcListEnrollsResponse';
@@ -622,7 +620,6 @@ let typeMap: {[index: string]: any} = {
     "UserSvcEnrollInput": UserSvcEnrollInput,
     "UserSvcErrorResponse": UserSvcErrorResponse,
     "UserSvcGetPublicKeyResponse": UserSvcGetPublicKeyResponse,
-    "UserSvcHasPermissionRequest": UserSvcHasPermissionRequest,
     "UserSvcHasPermissionResponse": UserSvcHasPermissionResponse,
     "UserSvcListEnrollsRequest": UserSvcListEnrollsRequest,
     "UserSvcListEnrollsResponse": UserSvcListEnrollsResponse,

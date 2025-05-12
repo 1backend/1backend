@@ -22,8 +22,9 @@
 				</h2>
 				<ion-searchbar
 					(ngModelChange)="redirect($event)"
-					placeholder="Search users by name or slug"
+					placeholder="Search users by name, slug or contact id"
 					name="searchTerm"
+					title="Search users by name, slug or contact id. Ordered by creation date descending"
 					ngDefaultControl
 					[(ngModel)]="searchTerm"
 				></ion-searchbar>

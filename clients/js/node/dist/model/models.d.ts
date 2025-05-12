@@ -174,7 +174,6 @@ export * from './userSvcEnroll';
 export * from './userSvcEnrollInput';
 export * from './userSvcErrorResponse';
 export * from './userSvcGetPublicKeyResponse';
-export * from './userSvcHasPermissionRequest';
 export * from './userSvcHasPermissionResponse';
 export * from './userSvcListEnrollsRequest';
 export * from './userSvcListEnrollsResponse';
