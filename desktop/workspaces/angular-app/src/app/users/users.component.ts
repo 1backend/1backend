@@ -113,7 +113,7 @@ export class UsersComponent {
 	}
 
 	public redirect(value: string) {
-		this.after = null;
+		this.after = undefined;
 		this.router.navigate([], {
 			queryParams: {
 				search: value,
@@ -152,7 +152,7 @@ export class UsersComponent {
 			}
 
 			this.users = [...this.users, ...response.users];
-			this.after = this.users[this.users.length - 1].createdAt;
+			this.after = this.users.at(-1)!.createdAt;
 			if (this.users.length == limit) {
 				this.loadMore = true;
 			}
