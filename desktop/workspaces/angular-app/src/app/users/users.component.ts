@@ -45,6 +45,8 @@ interface UserVisible extends UserSvcUser {
 	visible?: boolean;
 }
 
+const limit = 100;
+
 @Component({
 	selector: 'app-users',
 	templateUrl: './users.component.html',
@@ -78,6 +80,7 @@ export class UsersComponent {
 
 	count = 0;
 	searchTerm = '';
+	loadMore = false;
 
 	constructor(
 		private fb: FormBuilder,
@@ -110,6 +113,7 @@ export class UsersComponent {
 	}
 
 	public redirect(value: string) {
+		this.after = undefined;
 		this.router.navigate([], {
 			queryParams: {
 				search: value,
@@ -135,28 +139,28 @@ export class UsersComponent {
 			request.afterTime = this.after;
 		}
 
-		request.limit = 100;
+		request.limit = limit;
 		request.search = this.searchTerm;
 
 		const response = await this.userService.getUsers(request);
 
-		// eslint-disable-next-line
-		if (response.users && this.after) {
-			this.users = [...this.users, ...response.users];
-		} else if (response.users) {
-			this.users = response.users;
-		} else {
+		if (!this.after && !response.users?.length) {
 			this.users = [];
+		} else if (response.users?.length && response.users?.length > 0) {
+			for (const user of response.users) {
+				this.userForms.set(user.id!, this.createUserForm(user));
+			}
+
+			this.users = [...this.users, ...response.users];
+			this.after = this.users.at(-1)!.createdAt;
+			if (this.users.length == limit) {
+				this.loadMore = true;
+			}
+		} else {
+			this.loadMore = false;
 		}
 
 		this.count = response.count || 0;
-
-		// eslint-disable-next-line
-		if (response.after && response.after != `0001-01-01T00:00:00Z`) {
-			this.after = response.after;
-		} else {
-			this.after = undefined;
-		}
 
 		this.cd.markForCheck();
 	}
