@@ -600,7 +600,7 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid JSON or Missing Parameters",
+                        "description": "missing parameters",
                         "schema": {
                             "$ref": "#/definitions/container_svc.ErrorResponse"
                         }
@@ -725,19 +725,19 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid JSON or Missing Parameters",
+                        "description": "missing parameters",
                         "schema": {
                             "$ref": "#/definitions/container_svc.ErrorResponse"
                         }
                     },
                     "401": {
-                        "description": "Unauthorized",
+                        "description": "unauthorized",
                         "schema": {
                             "$ref": "#/definitions/container_svc.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "internal server error",
                         "schema": {
                             "$ref": "#/definitions/container_svc.ErrorResponse"
                         }
@@ -830,13 +830,13 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Unauthorized",
+                        "description": "unauthorized",
                         "schema": {
                             "$ref": "#/definitions/container_svc.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "internal server error",
                         "schema": {
                             "$ref": "#/definitions/container_svc.ErrorResponse"
                         }
@@ -871,13 +871,13 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "Unauthorized",
+                        "description": "unauthorized",
                         "schema": {
                             "$ref": "#/definitions/container_svc.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "internal server error",
                         "schema": {
                             "$ref": "#/definitions/container_svc.ErrorResponse"
                         }
@@ -978,14 +978,20 @@ const docTemplate = `{
                             "$ref": "#/definitions/container_svc.ImagePullableResponse"
                         }
                     },
+                    "400": {
+                        "description": "model ID in path is not URL encoded",
+                        "schema": {
+                            "$ref": "#/definitions/container_svc.ErrorResponse"
+                        }
+                    },
                     "401": {
-                        "description": "Unauthorized",
+                        "description": "unauthorized",
                         "schema": {
                             "$ref": "#/definitions/container_svc.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "internal server error",
                         "schema": {
                             "$ref": "#/definitions/container_svc.ErrorResponse"
                         }
@@ -1879,7 +1885,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "internal server error",
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
@@ -1930,7 +1936,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "internal server error",
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
@@ -1980,13 +1986,13 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "unauthorized",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "internal server error",
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
@@ -2190,7 +2196,7 @@ const docTemplate = `{
                         }
                     },
                     "500": {
-                        "description": "internal server error",
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/image_svc.ErrorResponse"
                         }
@@ -2222,12 +2228,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model_svc.StartResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid JSON",
-                        "schema": {
-                            "$ref": "#/definitions/model_svc.ErrorResponse"
                         }
                     },
                     "401": {
@@ -2321,8 +2321,20 @@ const docTemplate = `{
                             "$ref": "#/definitions/model_svc.GetModelResponse"
                         }
                     },
+                    "400": {
+                        "description": "Invalid Model ID",
+                        "schema": {
+                            "$ref": "#/definitions/model_svc.ErrorResponse"
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/model_svc.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Model Not Found",
                         "schema": {
                             "$ref": "#/definitions/model_svc.ErrorResponse"
                         }
@@ -2372,7 +2384,7 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid JSON",
+                        "description": "Invalid Model ID",
                         "schema": {
                             "$ref": "#/definitions/model_svc.ErrorResponse"
                         }
@@ -2425,12 +2437,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model_svc.StartResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Invalid JSON",
-                        "schema": {
-                            "$ref": "#/definitions/model_svc.ErrorResponse"
                         }
                     },
                     "401": {
@@ -2848,7 +2854,7 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Missing threadId parameter",
+                        "description": "Missing Parameter",
                         "schema": {
                             "$ref": "#/definitions/prompt_svc.ErrorResponse"
                         }
@@ -3081,7 +3087,7 @@ const docTemplate = `{
                         }
                     },
                     "404": {
-                        "description": "Service not found",
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/registry_svc.ErrorResponse"
                         }
@@ -3607,7 +3613,7 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "Missing Data",
                         "schema": {
                             "type": "string"
                         }
@@ -4984,13 +4990,13 @@ const docTemplate = `{
                         }
                     },
                     "401": {
-                        "description": "unauthorized",
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "internal server error",
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
                         }
@@ -9670,7 +9676,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.4.2",
+	Version:          "0.4.3",
 	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},

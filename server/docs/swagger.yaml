@@ -3413,7 +3413,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.4.2
+  version: 0.4.3
 paths:
   /chat-svc/events:
     get:
@@ -3490,7 +3490,7 @@ paths:
           schema:
             $ref: '#/definitions/chat_svc.ListMessagesResponse'
         "400":
-          description: invalid JSON
+          description: Invalid JSON
           schema:
             type: string
         "401":
@@ -3788,7 +3788,7 @@ paths:
           schema:
             $ref: '#/definitions/container_svc.ContainerIsRunningResponse'
         "400":
-          description: Invalid JSON or Missing Parameters
+          description: missing parameters
           schema:
             $ref: '#/definitions/container_svc.ErrorResponse'
         "401":
@@ -3872,15 +3872,15 @@ paths:
           schema:
             $ref: '#/definitions/container_svc.GetContainerSummaryResponse'
         "400":
-          description: Invalid JSON or Missing Parameters
+          description: missing parameters
           schema:
             $ref: '#/definitions/container_svc.ErrorResponse'
         "401":
-          description: Unauthorized
+          description: unauthorized
           schema:
             $ref: '#/definitions/container_svc.ErrorResponse'
         "500":
-          description: Internal Server Error
+          description: internal server error
           schema:
             $ref: '#/definitions/container_svc.ErrorResponse'
       security:
@@ -3943,11 +3943,11 @@ paths:
           schema:
             $ref: '#/definitions/container_svc.DaemonInfoResponse'
         "401":
-          description: Unauthorized
+          description: unauthorized
           schema:
             $ref: '#/definitions/container_svc.ErrorResponse'
         "500":
-          description: Internal Server Error
+          description: internal server error
           schema:
             $ref: '#/definitions/container_svc.ErrorResponse'
       security:
@@ -3969,11 +3969,11 @@ paths:
           schema:
             $ref: '#/definitions/container_svc.GetHostResponse'
         "401":
-          description: Unauthorized
+          description: unauthorized
           schema:
             $ref: '#/definitions/container_svc.ErrorResponse'
         "500":
-          description: Internal Server Error
+          description: internal server error
           schema:
             $ref: '#/definitions/container_svc.ErrorResponse'
       security:
@@ -4040,12 +4040,16 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/container_svc.ImagePullableResponse'
+        "400":
+          description: model ID in path is not URL encoded
+          schema:
+            $ref: '#/definitions/container_svc.ErrorResponse'
         "401":
-          description: Unauthorized
+          description: unauthorized
           schema:
             $ref: '#/definitions/container_svc.ErrorResponse'
         "500":
-          description: Internal Server Error
+          description: internal server error
           schema:
             $ref: '#/definitions/container_svc.ErrorResponse'
       security:
@@ -4644,7 +4648,7 @@ paths:
           schema:
             $ref: '#/definitions/file_svc.ErrorResponse'
         "500":
-          description: internal server error
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/file_svc.ErrorResponse'
       summary: Serve a Downloaded file
@@ -4685,7 +4689,7 @@ paths:
           schema:
             $ref: '#/definitions/file_svc.ErrorResponse'
         "500":
-          description: internal server error
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/file_svc.ErrorResponse'
       summary: Serve an Uploaded File
@@ -4721,11 +4725,11 @@ paths:
           schema:
             $ref: '#/definitions/file_svc.ErrorResponse'
         "401":
-          description: unauthorized
+          description: Unauthorized
           schema:
             $ref: '#/definitions/file_svc.ErrorResponse'
         "500":
-          description: internal server error
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/file_svc.ErrorResponse'
       security:
@@ -4867,7 +4871,7 @@ paths:
           schema:
             $ref: '#/definitions/image_svc.ErrorResponse'
         "500":
-          description: internal server error
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/image_svc.ErrorResponse'
       summary: Serve Uploaded Image
@@ -4889,10 +4893,6 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model_svc.StartResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            $ref: '#/definitions/model_svc.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
@@ -4957,8 +4957,16 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model_svc.GetModelResponse'
+        "400":
+          description: Invalid Model ID
+          schema:
+            $ref: '#/definitions/model_svc.ErrorResponse'
         "401":
           description: Unauthorized
+          schema:
+            $ref: '#/definitions/model_svc.ErrorResponse'
+        "404":
+          description: Model Not Found
           schema:
             $ref: '#/definitions/model_svc.ErrorResponse'
         "500":
@@ -4991,7 +4999,7 @@ paths:
           schema:
             $ref: '#/definitions/model_svc.MakeDefaultResponse'
         "400":
-          description: Invalid JSON
+          description: Invalid Model ID
           schema:
             $ref: '#/definitions/model_svc.ErrorResponse'
         "401":
@@ -5026,10 +5034,6 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/model_svc.StartResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            $ref: '#/definitions/model_svc.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
@@ -5317,7 +5321,7 @@ paths:
           schema:
             type: string
         "400":
-          description: Missing threadId parameter
+          description: Missing Parameter
           schema:
             $ref: '#/definitions/prompt_svc.ErrorResponse'
         "401":
@@ -5469,7 +5473,7 @@ paths:
           schema:
             $ref: '#/definitions/registry_svc.ErrorResponse'
         "404":
-          description: Service not found
+          description: Not Found
           schema:
             $ref: '#/definitions/registry_svc.ErrorResponse'
         "500":
@@ -5808,7 +5812,7 @@ paths:
           schema:
             $ref: '#/definitions/secret_svc.EncryptValueResponse'
         "400":
-          description: Bad Request
+          description: Missing Data
           schema:
             type: string
         "401":
@@ -6775,15 +6779,15 @@ paths:
           schema:
             $ref: '#/definitions/user_svc.ListUsersResponse'
         "400":
-          description: invalid JSON
+          description: Invalid JSON
           schema:
             $ref: '#/definitions/user_svc.ErrorResponse'
         "401":
-          description: unauthorized
+          description: Unauthorized
           schema:
             $ref: '#/definitions/user_svc.ErrorResponse'
         "500":
-          description: internal server error
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/user_svc.ErrorResponse'
       security:
