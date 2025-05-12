@@ -28,7 +28,7 @@
 					ngDefaultControl
 					[(ngModel)]="searchTerm"
 				></ion-searchbar>
-				<ion-list>
+				<ion-list *ngIf="users.length > 0; else noUsers">
 					<ng-container
 						*ngFor="let user of users; let i = index; trackBy: trackById"
 					>
@@ -139,6 +139,17 @@
 						</form>
 					</ng-container>
 				</ion-list>
+				<ion-button
+					*ngIf="loadMore"
+					style="margin-bottom: 1rem"
+					(click)="loadMoreData()"
+					>Load more</ion-button
+				>
+				<ng-template #noUsers>
+					<div style="padding: 1rem">
+						{{ 'No users found' | translate }}
+					</div>
+				</ng-template>
 			</div>
 		</app-centered>
 	</ng-template>
