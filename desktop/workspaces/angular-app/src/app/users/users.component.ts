@@ -25,6 +25,7 @@ import {
 	IonRow,
 	IonCol,
 	IonButton,
+	IonChip,
 } from '@ionic/angular/standalone';
 import { TranslatePipe } from '../translate.pipe';
 import { TranslateModule } from '@ngx-translate/core';
@@ -35,13 +36,13 @@ import { PageComponent } from '../components/page/page.component';
 import { IconMenuComponent } from '../components/icon-menu/icon-menu.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import {
-	UserSvcUser,
+	UserSvcUserRecord,
 	UserSvcListUsersRequest,
 	UserSvcListUsersOrderBy,
 	UserSvcOrderDirection,
 } from '@1backend/client';
 
-interface UserVisible extends UserSvcUser {
+interface UserVisible extends UserSvcUserRecord {
 	visible?: boolean;
 }
 
@@ -70,6 +71,7 @@ const limit = 100;
 		NgIf,
 		TranslateModule,
 		TranslatePipe,
+		IonChip,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })

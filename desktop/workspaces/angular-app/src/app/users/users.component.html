@@ -44,6 +44,14 @@
 									<span *ngIf="users[i].name" style="color: #666"
 										>({{ users[i].name }})</span
 									>
+									<span class="contacts">
+										<ion-chip
+											class="contact-id"
+											*ngFor="let contactId of users[i].contactIds"
+										>
+											{{ contactId }}
+										</ion-chip>
+									</span>
 								</ion-label>
 								<ion-icon
 									(click)="deleteUser($event, users[i].id || '')"
