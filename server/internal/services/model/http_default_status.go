@@ -63,5 +63,9 @@ func (ms *ModelService) DefaultStatus(
 	jsonData, _ := json.Marshal(model.StatusResponse{
 		Status: status,
 	})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }

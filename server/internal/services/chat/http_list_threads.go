@@ -76,7 +76,11 @@ func (a *ChatService) ListThreads(
 	jsonData, _ := json.Marshal(chat.ListThreadsResponse{
 		Threads: threads,
 	})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (a *ChatService) listThreads(

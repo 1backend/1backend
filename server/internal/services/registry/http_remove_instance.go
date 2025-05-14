@@ -46,8 +46,7 @@ func (rs *RegistryService) RemoveInstance(
 	vars := mux.Vars(r)
 	instanceID := vars["id"]
 	if instanceID == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid ID`))
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid ID")
 		return
 	}
 

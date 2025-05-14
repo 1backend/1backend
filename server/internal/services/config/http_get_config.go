@@ -61,7 +61,11 @@ func (cs *ConfigService) Get(
 	jsonData, _ := json.Marshal(config.GetConfigResponse{
 		Config: conf,
 	})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (cs *ConfigService) getConfig(namespace string) (*types.Config, error) {

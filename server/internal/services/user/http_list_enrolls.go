@@ -94,7 +94,11 @@ func (s *UserService) ListEnrolls(w http.ResponseWriter, r *http.Request) {
 	bs, _ := json.Marshal(user.ListEnrollsResponse{
 		Enrolls: enrolls,
 	})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (s *UserService) listEnrolls(

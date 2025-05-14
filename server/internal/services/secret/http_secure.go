@@ -14,9 +14,11 @@ package secretservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	secret "github.com/1backend/1backend/server/internal/services/secret/types"
 )
 
@@ -52,5 +54,9 @@ func (cs *SecretService) Secure(
 	jsonData, _ := json.Marshal(secret.IsSecureResponse{
 		IsSecure: cs.encryptionKey != "changeMeToSomethingSecureForReal",
 	})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }

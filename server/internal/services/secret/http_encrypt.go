@@ -83,5 +83,9 @@ func (cs *SecretService) Encrypt(
 	jsonData, _ := json.Marshal(secret.EncryptValueResponse{
 		Value: encryptedValue,
 	})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }

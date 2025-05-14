@@ -94,7 +94,11 @@ func (a *ChatService) SaveThread(
 				Thread: thread,
 			})
 
-			w.Write(jsonData)
+			_, err = w.Write([]byte(jsonData))
+			if err != nil {
+				logger.Error("Error writing response", slog.Any("error", err))
+				return
+			}
 			return
 		}
 
@@ -112,7 +116,11 @@ func (a *ChatService) SaveThread(
 	jsonData, _ := json.Marshal(chat.SaveThreadResponse{
 		Thread: thread,
 	})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (a *ChatService) addThread(

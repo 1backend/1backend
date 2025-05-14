@@ -86,5 +86,9 @@ func (p *PromptService) Prompt(
 	}
 
 	bs, _ := json.Marshal(prsp)
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }

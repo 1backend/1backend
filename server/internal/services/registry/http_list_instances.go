@@ -98,7 +98,11 @@ func (rs *RegistryService) ListInstances(
 	bs, _ := json.Marshal(registry.ListInstancesResponse{
 		Instances: instances,
 	})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 type List struct {

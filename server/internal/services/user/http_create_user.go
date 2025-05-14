@@ -88,7 +88,11 @@ func (s *UserService) CreateUser(
 	}
 
 	bs, _ := json.Marshal(user.CreateUserResponse{})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func validateUser(u *user.UserInput, contacts []user.Contact) error {

@@ -89,5 +89,9 @@ func (ms *ModelService) StartSpecific(
 	}
 
 	jsonData, _ := json.Marshal(model.StartResponse{})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }

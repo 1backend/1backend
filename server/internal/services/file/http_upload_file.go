@@ -124,5 +124,9 @@ func (fs *FileService) UploadFile(
 	jsonData, _ := json.Marshal(file.UploadFileResponse{
 		Upload: uploadRecord,
 	})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }

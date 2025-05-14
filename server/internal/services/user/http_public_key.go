@@ -14,8 +14,10 @@ package userservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
+	"github.com/1backend/1backend/sdk/go/logger"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
@@ -36,5 +38,9 @@ func (s *UserService) GetPublicKey(
 	bs, _ := json.Marshal(user.GetPublicKeyResponse{
 		PublicKey: s.publicKeyPem,
 	})
-	w.Write(bs)
+	_, err := w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }

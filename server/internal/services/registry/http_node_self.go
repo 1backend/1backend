@@ -70,7 +70,11 @@ func (ns *RegistryService) NodeSelf(
 	}
 
 	bs, _ := json.Marshal(response)
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (ns *RegistryService) thisNode() (*registry.Node, error) {

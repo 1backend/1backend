@@ -81,7 +81,11 @@ func (ns *DeployService) SaveDeployment(
 		ns.triggerChan <- struct{}{}
 	}()
 
-	w.Write([]byte(`{}`))
+	_, err = w.Write([]byte(`{}`))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 // This method is designed to be called frm the API endpoint, if you want to modify internal

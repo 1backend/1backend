@@ -13,8 +13,10 @@
 package promptservice
 
 import (
+	"log/slog"
 	"net/http"
 
+	"github.com/1backend/1backend/sdk/go/logger"
 	prompt "github.com/1backend/1backend/server/internal/services/prompt/types"
 )
 
@@ -40,5 +42,11 @@ func (p *PromptService) Types(
 	// only here so the prompt package is not unimported by the tooling
 	dummy := prompt.ErrorResponse{}
 
-	w.Write([]byte(`{}` + dummy.Error))
+	_, err := w.Write([]byte(`{}` + dummy.Error))
+	if err != nil {
+		logger.Error(
+			"Failed to write response",
+			slog.Any("error", err),
+		)
+	}
 }

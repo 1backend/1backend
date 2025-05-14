@@ -99,7 +99,11 @@ func (g *DataService) Create(
 			Data:  req.Object.Data,
 		},
 	})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (g *DataService) createObject(

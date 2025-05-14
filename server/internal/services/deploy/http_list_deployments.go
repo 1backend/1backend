@@ -80,7 +80,11 @@ func (ns *DeployService) ListDeployments(
 	}
 
 	bs, _ := json.Marshal(response)
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (ns *DeployService) listDeployments() ([]*deploy.Deployment, error) {

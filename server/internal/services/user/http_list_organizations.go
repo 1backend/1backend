@@ -80,7 +80,11 @@ func (s *UserService) ListOrganizations(
 	}
 
 	bs, _ := json.Marshal(rsp)
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (s *UserService) listOrganizations(

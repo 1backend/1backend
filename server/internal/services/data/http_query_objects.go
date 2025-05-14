@@ -112,7 +112,11 @@ func (g *DataService) Query(
 	bs, _ := json.Marshal(data.QueryResponse{
 		Objects: objects,
 	})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (g *DataService) query(

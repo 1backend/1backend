@@ -81,7 +81,11 @@ func (s *UserService) ListPermits(
 	bs, _ := json.Marshal(user.ListPermitsResponse{
 		Permits: permits,
 	})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (us *UserService) listPermits(req *user.ListPermitsRequest) ([]*user.Permit, error) {

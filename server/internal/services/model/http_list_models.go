@@ -64,7 +64,11 @@ func (ms *ModelService) ListModels(
 	jsonData, _ := json.Marshal(model.ListModelsResponse{
 		Models: models,
 	})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (ms *ModelService) listModels() ([]*model.Model, error) {

@@ -21,7 +21,8 @@ func createTestFile(t *testing.T, content string) (*os.File, func()) {
 	require.NoError(t, err)
 	_, err = file.WriteString(content)
 	require.NoError(t, err)
-	file.Seek(0, 0)
+	_, err = file.Seek(0, 0)
+	require.NoError(t, err)
 	return file, func() { os.Remove(file.Name()) }
 }
 

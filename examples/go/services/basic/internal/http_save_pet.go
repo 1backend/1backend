@@ -3,11 +3,13 @@ package basicservice
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/samber/lo"
 
 	basic "github.com/1backend/1backend/examples/go/services/basic/internal/types"
@@ -65,7 +67,11 @@ func (s *BasicService) SavePet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte(`{}`))
+	_, err = w.Write([]byte(`{}`))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (s *BasicService) savePet(pet basic.Pet) error {

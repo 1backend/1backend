@@ -79,7 +79,11 @@ func (s *UserService) ChangePassword(w http.ResponseWriter, r *http.Request) {
 	}
 
 	bs, _ := json.Marshal(user.ChangePasswordResponse{})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (s *UserService) changePassword(

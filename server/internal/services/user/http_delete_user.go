@@ -89,7 +89,11 @@ func (s *UserService) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	bs, _ := json.Marshal(user.DeleteUserResponse{})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (s *UserService) deleteUser(userId string) error {

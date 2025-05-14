@@ -91,7 +91,11 @@ func (s *UserService) SaveMembership(
 	}
 
 	bs, _ := json.Marshal(user.SaveMembershipResponse{})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (s *UserService) saveMembership(

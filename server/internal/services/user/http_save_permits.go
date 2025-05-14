@@ -79,8 +79,7 @@ func (s *UserService) SavePermits(w http.ResponseWriter, r *http.Request) {
 	if !isAdmin {
 		for _, permit := range req.Permits {
 			if !strings.HasPrefix(permit.Permission, usr.Slug) {
-				w.WriteHeader(http.StatusUnauthorized)
-				w.Write([]byte("Unauthorized"))
+				endpoint.Unauthorized(w)
 				return
 			}
 		}
@@ -100,7 +99,11 @@ func (s *UserService) SavePermits(w http.ResponseWriter, r *http.Request) {
 	}
 
 	bs, _ := json.Marshal(user.SavePermitsResponse{})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (cs *UserService) savePermits(

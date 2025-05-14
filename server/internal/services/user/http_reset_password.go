@@ -88,7 +88,11 @@ func (s *UserService) ResetPassword(
 	}
 
 	bs, _ := json.Marshal(user.ResetPasswordResponse{})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (s *UserService) resetPassword(userId, newPassword string) error {

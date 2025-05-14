@@ -100,8 +100,7 @@ func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 	if !isAdmin {
 		for _, enroll := range req.Enrolls {
 			if !auth.OwnsRole(claim, enroll.Role) {
-				w.WriteHeader(http.StatusUnauthorized)
-				w.Write([]byte("Unauthorized"))
+				endpoint.Unauthorized(w)
 				return
 			}
 		}
@@ -120,7 +119,11 @@ func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 	bs, _ := json.Marshal(user.SaveEnrollsResponse{
 		Enrolls: enrolls,
 	})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (s *UserService) saveEnrolls(

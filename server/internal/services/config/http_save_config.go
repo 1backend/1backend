@@ -81,7 +81,11 @@ func (cs *ConfigService) Save(
 	}
 
 	jsonData, _ := json.Marshal(config.SaveConfigResponse{})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (cs *ConfigService) saveConfig(isAdmin bool, callerSlug string, newConfig types.Config) error {

@@ -66,8 +66,7 @@ func (s *UserService) ListPermissions(
 	}
 	for _, role := range req.Roles {
 		if !rolesIndex[role] {
-			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte("Unauthorized"))
+			endpoint.WriteString(w, http.StatusUnauthorized, "Unauthorized")
 			return
 		}
 	}
@@ -85,7 +84,11 @@ func (s *UserService) ListPermissions(
 	bs, _ := json.Marshal(user.ListPermissionsResponse{
 		Permissions: permissions,
 	})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (s *UserService) listPermissions(

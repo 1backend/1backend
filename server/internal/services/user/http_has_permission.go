@@ -38,7 +38,7 @@ import (
 // @Produce json
 // @Param permission path string true "Permission"
 // @Success 200 {object} user.HasPermissionResponse
-// @Failure 400 {object} user.ErrorResponse "Invalid JSON or missing permission id"
+// @Failure 400 {object} user.ErrorResponse "Missing Permission"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Security BearerAuth
 // @Router /user-svc/self/has/{permission} [post]
@@ -50,8 +50,7 @@ func (s *UserService) HasPermission(
 	permission := vars["permission"]
 
 	if permission == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`missing permission id`))
+		endpoint.WriteString(w, http.StatusBadRequest, "Missing Permission")
 		return
 	}
 
@@ -74,7 +73,11 @@ func (s *UserService) HasPermission(
 		User:       usr,
 	})
 
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (s *UserService) hasPermission(

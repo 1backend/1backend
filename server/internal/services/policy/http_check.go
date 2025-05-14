@@ -69,7 +69,11 @@ func (s *PolicyService) Check(
 	bs, _ := json.Marshal(policy.CheckResponse{
 		Allowed: allowed,
 	})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (s *PolicyService) check(request *policy.CheckRequest) (bool, error) {

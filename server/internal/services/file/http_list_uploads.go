@@ -64,8 +64,11 @@ func (fs *FileService) ListUploads(
 	}
 	uploadIs, err := fs.uploadStore.Query(filters...).Find()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`Cannot query uploads`))
+		logger.Error(
+			"Error querying uploads",
+			slog.Any("error", err),
+		)
+		endpoint.WriteString(w, http.StatusInternalServerError, "Cannot query uploads")
 		return
 	}
 
@@ -76,7 +79,11 @@ func (fs *FileService) ListUploads(
 	}
 
 	jsonData, _ := json.Marshal(rsp)
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func sanitizeFilename(name string) string {

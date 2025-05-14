@@ -42,8 +42,7 @@ func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 
 	token, exists := s.authorizer.TokenFromRequest(r)
 	if !exists {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Token Missing`))
+		endpoint.WriteString(w, http.StatusBadRequest, "Token Missing")
 		return
 	}
 
@@ -96,7 +95,11 @@ func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 		ActiveOrganizationId: activeOrgId,
 		Contacts:             contacts,
 	})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (s *UserService) readSelf(token string) (*user.User, error) {

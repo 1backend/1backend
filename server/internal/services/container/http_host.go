@@ -14,6 +14,7 @@ package containerservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/endpoint"
@@ -62,5 +63,9 @@ func (dm *ContainerService) Host(
 	jsonData, _ := json.Marshal(container.GetHostResponse{
 		Host: host,
 	})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }

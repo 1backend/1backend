@@ -71,5 +71,9 @@ func (fs *FileService) GetDownload(
 		Exists:   exists,
 		Download: downloadToDownloadDetails(dl),
 	})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }

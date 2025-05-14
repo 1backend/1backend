@@ -34,8 +34,8 @@ import (
 // @Produce application/octet-stream
 // @Param fileId path string true "FileID uniquely identifies the file itself (not an ID, which represents a specific replica)"
 // @Success 200 {file} binary "File served successfully"
-// @Failure 400 {object} file.ErrorResponse "missing upload ID"
-// @Failure 404 {object} file.ErrorResponse "file not found"
+// @Failure 400 {object} file.ErrorResponse "Missing Upload ID"
+// @Failure 404 {object} file.ErrorResponse "File Not Found"
 // @Failure 500 {object} file.ErrorResponse "Internal Server Error"
 // @Router /file-svc/serve/upload/{fileId} [get]
 func (fs *FileService) ServeUpload(
@@ -161,8 +161,7 @@ func (fs *FileService) serveRemote(
 	nodes := nodesRsp.Nodes
 
 	if len(nodes) == 0 {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("not found"))
+		endpoint.WriteString(w, http.StatusNotFound, "Not Found")
 		return
 	}
 
