@@ -1732,6 +1732,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/file_svc.GetDownloadResponse"
                         }
                     },
+                    "400": {
+                        "description": "Invalid URL",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
@@ -3245,7 +3251,7 @@ const docTemplate = `{
                         }
                     },
                     "404": {
-                        "description": "Service not found",
+                        "description": "Service Not Found",
                         "schema": {
                             "$ref": "#/definitions/registry_svc.ErrorResponse"
                         }
@@ -4167,7 +4173,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Allows and organization admint to add a user to an organization.",
+                "description": "Allows an organization admin to add a user to the organization.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4814,7 +4820,7 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid JSON",
+                        "description": "Invalid User",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
                         }
@@ -9676,7 +9682,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.5.0",
+	Version:          "0.5.1",
 	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},

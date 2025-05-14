@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.5.0
+API version: 0.5.1
 Contact: sales@singulatron.com
 */
 
@@ -99,14 +99,9 @@ type UserSvcAPI interface {
 	/*
 	HasPermission Has Permission
 
-	Check whether the caller user has a specific permission.
-Ideally, this endpoint should rarely be used, as the JWT token
-already includes all user roles. Caching the `List Permissions` and `List Permits`
-responses allows services to determine user authorization
-without repeatedly calling this endpoint.
-
-This endpoint should have no other parameters apart from the caller and the permission
-so it can be cached easily.
+	Checks if the caller has a specific permission.
+This endpoint is optimized for caching, as it only takes the caller and the permission to check.
+To grant a user or role a permission, use the `Save Permits` endpoint.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param permission Permission
@@ -282,7 +277,7 @@ Examples:
 	/*
 	SaveMembership Save Membership
 
-	Allows and organization admint to add a user to an organization.
+	Allows an organization admin to add a user to the organization.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param organizationId Organization ID
@@ -314,7 +309,8 @@ Dynamic roles are generated based on specific user-resource associations (in thi
 	/*
 	SavePermits Save Permits
 
-	Save permits. // @Description Permits give access to users with certain slugs and roles to permissions.
+	Save permits.
+Permits give access to users with certain slugs and roles to permissions.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiSavePermitsRequest
@@ -1129,14 +1125,9 @@ func (r ApiHasPermissionRequest) Execute() (*UserSvcHasPermissionResponse, *http
 /*
 HasPermission Has Permission
 
-Check whether the caller user has a specific permission.
-Ideally, this endpoint should rarely be used, as the JWT token
-already includes all user roles. Caching the `List Permissions` and `List Permits`
-responses allows services to determine user authorization
-without repeatedly calling this endpoint.
-
-This endpoint should have no other parameters apart from the caller and the permission
-so it can be cached easily.
+Checks if the caller has a specific permission.
+This endpoint is optimized for caching, as it only takes the caller and the permission to check.
+To grant a user or role a permission, use the `Save Permits` endpoint.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param permission Permission
@@ -2769,7 +2760,7 @@ func (r ApiSaveMembershipRequest) Execute() (map[string]interface{}, *http.Respo
 /*
 SaveMembership Save Membership
 
-Allows and organization admint to add a user to an organization.
+Allows an organization admin to add a user to the organization.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param organizationId Organization ID
@@ -3110,7 +3101,8 @@ func (r ApiSavePermitsRequest) Execute() (map[string]interface{}, *http.Response
 /*
 SavePermits Save Permits
 
-Save permits. // @Description Permits give access to users with certain slugs and roles to permissions.
+Save permits.
+Permits give access to users with certain slugs and roles to permissions.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiSavePermitsRequest

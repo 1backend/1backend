@@ -13,7 +13,7 @@
             "name": "AGPL v3.0",
             "url": "https://www.gnu.org/licenses/agpl-3.0.html"
         },
-        "version": "0.5.0"
+        "version": "0.5.1"
     },
     "host": "localhost:11337",
     "basePath": "/",
@@ -1726,6 +1726,12 @@
                             "$ref": "#/definitions/file_svc.GetDownloadResponse"
                         }
                     },
+                    "400": {
+                        "description": "Invalid URL",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
@@ -3239,7 +3245,7 @@
                         }
                     },
                     "404": {
-                        "description": "Service not found",
+                        "description": "Service Not Found",
                         "schema": {
                             "$ref": "#/definitions/registry_svc.ErrorResponse"
                         }
@@ -4161,7 +4167,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Allows and organization admint to add a user to an organization.",
+                "description": "Allows an organization admin to add a user to the organization.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4808,7 +4814,7 @@
                         }
                     },
                     "400": {
-                        "description": "Invalid JSON",
+                        "description": "Invalid User",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
                         }

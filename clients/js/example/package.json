@@ -15,6 +15,6 @@
     "typescript": "^5.5.3"
   },
   "dependencies": {
-    "@1backend/client": "0.5.0"
+    "@1backend/client": "0.5.1"
   }
 }

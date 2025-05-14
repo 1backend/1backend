@@ -26,7 +26,7 @@ import (
 )
 
 // @title           1Backend
-// @version         0.5.0
+// @version         0.5.1
 // @description     AI-native microservices platform.
 // @termsOfService  http://swagger.io/terms/
 
