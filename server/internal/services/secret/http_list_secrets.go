@@ -14,10 +14,12 @@ package secretservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	secret "github.com/1backend/1backend/server/internal/services/secret/types"
 	"github.com/pkg/errors"
 )
@@ -55,30 +57,42 @@ func (cs *SecretService) ListSecrets(
 	req := secret.ListSecretsRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		logger.Error(
+			"Failed to decode request",
+			slog.Any("error", err),
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
 
 	isAdmin, err := cs.authorizer.IsAdminFromRequest(cs.publicKey, r)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to check if user is admin",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
 	ss, err := cs.getSecrets(req, isAdmin, isAuthRsp.User.Slug)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Error listing secrets",
+			slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 
 	jsonData, _ := json.Marshal(secret.ListSecretsResponse{
 		Secrets: ss,
 	})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (cs *SecretService) getSecrets(

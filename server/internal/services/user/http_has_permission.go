@@ -21,6 +21,7 @@ import (
 	"strings"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/gorilla/mux"
 
@@ -29,21 +30,15 @@ import (
 
 // @ID hasPermission
 // @Summary Has Permission
-// @Description Check whether the caller user has a specific permission.
-// @Description Ideally, this endpoint should rarely be used, as the JWT token
-// @Description already includes all user roles. Caching the `List Permissions` and `List Permits`
-// @Description responses allows services to determine user authorization
-// @Description without repeatedly calling this endpoint.
-// @Description
-// @Description This endpoint should have no other parameters apart from the caller and the permission
-// @Description so it can be cached easily.
-// @Desciption This endpoint also checks for permits.
+// @Description Checks if the caller has a specific permission.
+// @Description This endpoint is optimized for caching, as it only takes the caller and the permission to check.
+// @Description To grant a user or role a permission, use the `Save Permits` endpoint.
 // @Tags User Svc
 // @Accept json
 // @Produce json
 // @Param permission path string true "Permission"
 // @Success 200 {object} user.HasPermissionResponse
-// @Failure 400 {object} user.ErrorResponse "Invalid JSON or missing permission id"
+// @Failure 400 {object} user.ErrorResponse "Missing Permission"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Security BearerAuth
 // @Router /user-svc/self/has/{permission} [post]
@@ -55,24 +50,34 @@ func (s *UserService) HasPermission(
 	permission := vars["permission"]
 
 	if permission == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`missing permission id`))
+		endpoint.WriteString(w, http.StatusBadRequest, "Missing Permission")
 		return
 	}
 
-	usr, isAuth, err := s.hasPermission(r, permission)
+	usr, hasPermission, err := s.hasPermission(r, permission)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to check permission",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
+		return
+	}
+	if !hasPermission {
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	bs, _ := json.Marshal(&user.HasPermissionResponse{
-		Authorized: isAuth,
+		Authorized: hasPermission,
 		User:       usr,
 	})
 
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (s *UserService) hasPermission(

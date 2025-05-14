@@ -170,7 +170,12 @@ func (p *PromptService) processPrompt(
 
 		var m map[string]interface{}
 		js, _ := json.Marshal(ev)
-		json.Unmarshal(js, &m)
+		err = json.Unmarshal(js, &m)
+		if err != nil {
+			logger.Error("Failed to unmarshal event",
+				slog.Any("error", err),
+			)
+		}
 
 		_, err = p.clientFactory.Client(client.WithToken(token)).
 			FirehoseSvcAPI.PublishEvent(context.Background()).

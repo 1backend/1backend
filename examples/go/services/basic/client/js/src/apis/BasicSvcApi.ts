@@ -15,10 +15,13 @@
 
 import * as runtime from '../runtime';
 import type {
+  BasicSvcErrorResponse,
   BasicSvcListPetsResponse,
   BasicSvcSavePetRequest,
 } from '../models/index';
 import {
+    BasicSvcErrorResponseFromJSON,
+    BasicSvcErrorResponseToJSON,
     BasicSvcListPetsResponseFromJSON,
     BasicSvcListPetsResponseToJSON,
     BasicSvcSavePetRequestFromJSON,
@@ -37,6 +40,33 @@ export interface SavePetRequest {
  * 
  */
 export class BasicSvcApi extends runtime.BaseAPI {
+
+    /**
+     * This endpoint simply errors. Useful for testing the proxy.
+     * Error
+     */
+    async errorRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/basic-svc/error`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * This endpoint simply errors. Useful for testing the proxy.
+     * Error
+     */
+    async error(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.errorRaw(initOverrides);
+    }
 
     /**
      * List pets.

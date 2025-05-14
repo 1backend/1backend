@@ -24,7 +24,7 @@ export interface BasicSvcPet {
      * @type {string}
      * @memberof BasicSvcPet
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      * 
      * @type {string}
@@ -42,14 +42,16 @@ export interface BasicSvcPet {
      * @type {string}
      * @memberof BasicSvcPet
      */
-    updatedAt?: string;
+    updatedAt: string;
 }
 
 /**
  * Check if a given object implements the BasicSvcPet interface.
  */
 export function instanceOfBasicSvcPet(value: object): value is BasicSvcPet {
+    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
 }
 
@@ -63,10 +65,10 @@ export function BasicSvcPetFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'id': json['id'],
         'name': json['name'] == null ? undefined : json['name'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
     };
 }
 

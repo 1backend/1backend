@@ -14,10 +14,13 @@ package userservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"time"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/gorilla/mux"
@@ -44,13 +47,15 @@ func (s *UserService) SaveUser(w http.ResponseWriter, r *http.Request) {
 
 	_, hasPermission, err := s.hasPermission(r, user.PermissionUserEdit)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to check permission",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 	if !hasPermission {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte("Unauthorized"))
+		endpoint.Unauthorized(w)
 		return
 	}
 
@@ -60,21 +65,31 @@ func (s *UserService) SaveUser(w http.ResponseWriter, r *http.Request) {
 	req := user.SaveUserRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		logger.Error(
+			"Failed to decode request",
+			slog.Any("error", err),
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
 
 	err = s.saveUser(userId, &req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to save user",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
 	bs, _ := json.Marshal(user.SaveUserResponse{})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (s *UserService) saveUser(

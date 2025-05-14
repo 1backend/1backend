@@ -2,9 +2,11 @@ package registryservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
 )
 
@@ -39,8 +41,11 @@ func (rs *RegistryService) ListDefinitions(
 
 	definitions, err := rs.getDefinitions(DefinitionList{})
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Error listing definitions",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
@@ -48,7 +53,11 @@ func (rs *RegistryService) ListDefinitions(
 	bs, _ := json.Marshal(registry.ListDefinitionsResponse{
 		Definitions: definitions,
 	})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 type DefinitionList struct {

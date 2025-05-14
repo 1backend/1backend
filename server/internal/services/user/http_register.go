@@ -14,6 +14,7 @@ package userservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"regexp"
 	"time"
@@ -23,6 +24,7 @@ import (
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -94,8 +96,11 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		roles,
 	)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to create user",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
@@ -104,15 +109,22 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		Password: req.Password,
 	})
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to login",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
 	bs, _ := json.Marshal(user.RegisterResponse{
 		Token: token,
 	})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (s *UserService) register(

@@ -14,9 +14,11 @@ package fileservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
 )
 
@@ -67,5 +69,9 @@ func (ds *FileService) Download(
 	}
 
 	jsonData, _ := json.Marshal(map[string]any{})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }

@@ -22,10 +22,10 @@ var _ MappedNullable = &BasicSvcPet{}
 
 // BasicSvcPet struct for BasicSvcPet
 type BasicSvcPet struct {
-	CreatedAt *string `json:"createdAt" binding:"required"`
+	CreatedAt string `json:"createdAt"`
 	Id string `json:"id"`
 	Name *string `json:"name,omitempty"`
-	UpdatedAt *string `json:"updatedAt" binding:"required"`
+	UpdatedAt string `json:"updatedAt"`
 }
 
 type _BasicSvcPet BasicSvcPet
@@ -34,9 +34,11 @@ type _BasicSvcPet BasicSvcPet
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewBasicSvcPet(id string) *BasicSvcPet {
+func NewBasicSvcPet(createdAt string, id string, updatedAt string) *BasicSvcPet {
 	this := BasicSvcPet{}
+	this.CreatedAt = createdAt
 	this.Id = id
+	this.UpdatedAt = updatedAt
 	return &this
 }
 
@@ -48,36 +50,28 @@ func NewBasicSvcPetWithDefaults() *BasicSvcPet {
 	return &this
 }
 
-// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
+// GetCreatedAt returns the CreatedAt field value
 func (o *BasicSvcPet) GetCreatedAt() string {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.CreatedAt
+
+	return o.CreatedAt
 }
 
-// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
 // and a boolean to check if the value has been set.
 func (o *BasicSvcPet) GetCreatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.CreatedAt, true
+	return &o.CreatedAt, true
 }
 
-// HasCreatedAt returns a boolean if a field has been set.
-func (o *BasicSvcPet) HasCreatedAt() bool {
-	if o != nil && !IsNil(o.CreatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
+// SetCreatedAt sets field value
 func (o *BasicSvcPet) SetCreatedAt(v string) {
-	o.CreatedAt = &v
+	o.CreatedAt = v
 }
 
 // GetId returns the Id field value
@@ -136,36 +130,28 @@ func (o *BasicSvcPet) SetName(v string) {
 	o.Name = &v
 }
 
-// GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
+// GetUpdatedAt returns the UpdatedAt field value
 func (o *BasicSvcPet) GetUpdatedAt() string {
-	if o == nil || IsNil(o.UpdatedAt) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.UpdatedAt
+
+	return o.UpdatedAt
 }
 
-// GetUpdatedAtOk returns a tuple with the UpdatedAt field value if set, nil otherwise
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
 // and a boolean to check if the value has been set.
 func (o *BasicSvcPet) GetUpdatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.UpdatedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.UpdatedAt, true
+	return &o.UpdatedAt, true
 }
 
-// HasUpdatedAt returns a boolean if a field has been set.
-func (o *BasicSvcPet) HasUpdatedAt() bool {
-	if o != nil && !IsNil(o.UpdatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetUpdatedAt gets a reference to the given string and assigns it to the UpdatedAt field.
+// SetUpdatedAt sets field value
 func (o *BasicSvcPet) SetUpdatedAt(v string) {
-	o.UpdatedAt = &v
+	o.UpdatedAt = v
 }
 
 func (o BasicSvcPet) MarshalJSON() ([]byte, error) {
@@ -178,16 +164,12 @@ func (o BasicSvcPet) MarshalJSON() ([]byte, error) {
 
 func (o BasicSvcPet) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.CreatedAt) {
-		toSerialize["createdAt"] = o.CreatedAt
-	}
+	toSerialize["createdAt"] = o.CreatedAt
 	toSerialize["id"] = o.Id
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name
 	}
-	if !IsNil(o.UpdatedAt) {
-		toSerialize["updatedAt"] = o.UpdatedAt
-	}
+	toSerialize["updatedAt"] = o.UpdatedAt
 	return toSerialize, nil
 }
 
@@ -196,7 +178,9 @@ func (o *BasicSvcPet) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"createdAt",
 		"id",
+		"updatedAt",
 	}
 
 	allProperties := make(map[string]interface{})

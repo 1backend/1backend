@@ -76,5 +76,9 @@ func (p *PromptService) RemovePrompt(
 		return
 	}
 
-	w.Write([]byte(`{}`))
+	_, err = w.Write([]byte(`{}`))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }

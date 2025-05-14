@@ -1732,6 +1732,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/file_svc.GetDownloadResponse"
                         }
                     },
+                    "400": {
+                        "description": "Invalid URL",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
@@ -3245,7 +3251,7 @@ const docTemplate = `{
                         }
                     },
                     "404": {
-                        "description": "Service not found",
+                        "description": "Service Not Found",
                         "schema": {
                             "$ref": "#/definitions/registry_svc.ErrorResponse"
                         }
@@ -4167,7 +4173,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Allows and organization admint to add a user to an organization.",
+                "description": "Allows an organization admin to add a user to the organization.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4445,7 +4451,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Save permits. // @Description Permits give access to users with certain slugs and roles to permissions.",
+                "description": "Save permits.\nPermits give access to users with certain slugs and roles to permissions.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4733,7 +4739,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Check whether the caller user has a specific permission.\nIdeally, this endpoint should rarely be used, as the JWT token\nalready includes all user roles. Caching the ` + "`" + `List Permissions` + "`" + ` and ` + "`" + `List Permits` + "`" + `\nresponses allows services to determine user authorization\nwithout repeatedly calling this endpoint.\n\nThis endpoint should have no other parameters apart from the caller and the permission\nso it can be cached easily.",
+                "description": "Checks if the caller has a specific permission.\nThis endpoint is optimized for caching, as it only takes the caller and the permission to check.\nTo grant a user or role a permission, use the ` + "`" + `Save Permits` + "`" + ` endpoint.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4814,7 +4820,7 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid JSON",
+                        "description": "Invalid User",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
                         }
@@ -9676,7 +9682,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.5.0",
+	Version:          "0.5.1",
 	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},

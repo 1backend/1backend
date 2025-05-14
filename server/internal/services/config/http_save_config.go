@@ -60,28 +60,32 @@ func (cs *ConfigService) Save(
 	req := &config.SaveConfigRequest{}
 	err = json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		logger.Error("Failed to decode request body", slog.Any("error", err))
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
 
 	isAdmin, err := cs.authorizer.IsAdminFromRequest(cs.publicKey, r)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to check admin status", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 
 	err = cs.saveConfig(isAdmin, isAuthRsp.User.Slug, *req.Config)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to save config", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 
 	jsonData, _ := json.Marshal(config.SaveConfigResponse{})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (cs *ConfigService) saveConfig(isAdmin bool, callerSlug string, newConfig types.Config) error {

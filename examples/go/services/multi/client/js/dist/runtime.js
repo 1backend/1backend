@@ -275,7 +275,11 @@ export function exists(json, key) {
     return value !== null && value !== undefined;
 }
 export function mapValues(data, fn) {
-    return Object.keys(data).reduce((acc, key) => (Object.assign(Object.assign({}, acc), { [key]: fn(data[key]) })), {});
+    const result = {};
+    for (const key of Object.keys(data)) {
+        result[key] = fn(data[key]);
+    }
+    return result;
 }
 export function canConsumeForm(consumes) {
     for (const consume of consumes) {

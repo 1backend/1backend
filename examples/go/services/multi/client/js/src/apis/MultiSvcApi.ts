@@ -16,10 +16,13 @@
 import * as runtime from '../runtime';
 import type {
   MultiSvcCountPetsResponse,
+  MultiSvcErrorResponse,
 } from '../models/index';
 import {
     MultiSvcCountPetsResponseFromJSON,
     MultiSvcCountPetsResponseToJSON,
+    MultiSvcErrorResponseFromJSON,
+    MultiSvcErrorResponseToJSON,
 } from '../models/index';
 
 export interface CountPetsRequest {

@@ -14,6 +14,7 @@ package containerservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/endpoint"
@@ -75,5 +76,9 @@ func (dm *ContainerService) StopContainer(
 	}
 
 	jsonData, _ := json.Marshal(rsp)
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }

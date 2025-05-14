@@ -13,6 +13,20 @@ info:
 servers:
 - url: //localhost:11337/
 paths:
+  /basic-svc/error:
+    post:
+      description: This endpoint simply errors. Useful for testing the proxy.
+      operationId: error
+      responses:
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/basic_svc.ErrorResponse'
+          description: Error
+      summary: Error
+      tags:
+      - Basic Svc
   /basic-svc/pet:
     put:
       description: Save a pet for a user and an organization.
@@ -35,8 +49,14 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-          description: Invalid JSON
+                $ref: '#/components/schemas/basic_svc.ErrorResponse'
+          description: Invalid Pet
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/basic_svc.ErrorResponse'
+          description: Internal Server Error
       summary: Save Pet
       tags:
       - Basic Svc
@@ -63,13 +83,13 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/basic_svc.ErrorResponse'
           description: Invalid JSON
         "500":
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/basic_svc.ErrorResponse'
           description: Error Listing Pets
       summary: List Pets
       tags:
@@ -77,6 +97,13 @@ paths:
       x-codegen-request-body-name: body
 components:
   schemas:
+    basic_svc.ErrorResponse:
+      example:
+        error: error
+      properties:
+        error:
+          type: string
+      type: object
     basic_svc.ListPetsRequest:
       type: object
     basic_svc.ListPetsResponse:
@@ -112,7 +139,9 @@ components:
         updatedAt:
           type: string
       required:
+      - createdAt
       - id
+      - updatedAt
       type: object
     basic_svc.SavePetRequest:
       properties:

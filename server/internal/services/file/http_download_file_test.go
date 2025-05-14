@@ -40,10 +40,12 @@ func TestDownloadFile(t *testing.T) {
 			if rangeHeader != "" {
 				w.Header().Set("Content-Range", "bytes 0-10/11")
 				w.WriteHeader(http.StatusPartialContent)
-				io.WriteString(w, "Hello world")
+				_, err := io.WriteString(w, "Hello world")
+				require.NoError(t, err)
 			} else {
 				w.WriteHeader(http.StatusOK)
-				io.WriteString(w, "Hello world")
+				_, err := io.WriteString(w, "Hello world")
+				require.NoError(t, err)
 			}
 		}),
 	)
@@ -146,7 +148,8 @@ func TestDownloadFileWithPartFile(t *testing.T) {
 
 			w.Header().Set("Content-Range", "bytes 5-10/11")
 			w.WriteHeader(http.StatusPartialContent)
-			io.WriteString(w, " world")
+			_, err := io.WriteString(w, " world")
+			require.NoError(t, err)
 		}),
 	)
 	defer fileHostServer.Close()

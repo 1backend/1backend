@@ -4,16 +4,16 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**CreatedAt** | Pointer to **string** |  | [optional] 
+**CreatedAt** | **string** |  | 
 **Id** | **string** |  | 
 **Name** | Pointer to **string** |  | [optional] 
-**UpdatedAt** | Pointer to **string** |  | [optional] 
+**UpdatedAt** | **string** |  | 
 
 ## Methods
 
 ### NewBasicSvcPet
 
-`func NewBasicSvcPet(id string, ) *BasicSvcPet`
+`func NewBasicSvcPet(createdAt string, id string, updatedAt string, ) *BasicSvcPet`
 
 NewBasicSvcPet instantiates a new BasicSvcPet object
 This constructor will assign default values to properties that have it defined,
@@ -47,11 +47,6 @@ and a boolean to check if the value has been set.
 
 SetCreatedAt sets CreatedAt field to given value.
 
-### HasCreatedAt
-
-`func (o *BasicSvcPet) HasCreatedAt() bool`
-
-HasCreatedAt returns a boolean if a field has been set.
 
 ### GetId
 
@@ -117,11 +112,6 @@ and a boolean to check if the value has been set.
 
 SetUpdatedAt sets UpdatedAt field to given value.
 
-### HasUpdatedAt
-
-`func (o *BasicSvcPet) HasUpdatedAt() bool`
-
-HasUpdatedAt returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

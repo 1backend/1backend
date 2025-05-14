@@ -23,6 +23,30 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/basic-svc/error": {
+            "post": {
+                "description": "This endpoint simply errors. Useful for testing the proxy.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Basic Svc"
+                ],
+                "summary": "Error",
+                "operationId": "error",
+                "responses": {
+                    "500": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/basic_svc.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/basic-svc/pet": {
             "put": {
                 "description": "Save a pet for a user and an organization.",
@@ -56,9 +80,15 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid JSON",
+                        "description": "Invalid Pet",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/basic_svc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/basic_svc.ErrorResponse"
                         }
                     }
                 }
@@ -98,13 +128,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid JSON",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/basic_svc.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Error Listing Pets",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/basic_svc.ErrorResponse"
                         }
                     }
                 }
@@ -112,6 +142,14 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "basic_svc.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
         "basic_svc.ListPetsRequest": {
             "type": "object"
         },
@@ -129,7 +167,9 @@ const docTemplate = `{
         "basic_svc.Pet": {
             "type": "object",
             "required": [
-                "id"
+                "createdAt",
+                "id",
+                "updatedAt"
             ],
             "properties": {
                 "createdAt": {

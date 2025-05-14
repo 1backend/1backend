@@ -4,9 +4,69 @@ All URIs are relative to *http://localhost:11337*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**CallError**](BasicSvcAPI.md#CallError) | **Post** /basic-svc/error | Error
 [**ListPets**](BasicSvcAPI.md#ListPets) | **Post** /basic-svc/pets | List Pets
 [**SavePet**](BasicSvcAPI.md#SavePet) | **Put** /basic-svc/pet | Save Pet
 
+
+
+## CallError
+
+> CallError(ctx).Execute()
+
+Error
+
+
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/1backend/1backend/examples/go/services/basic/client"
+)
+
+func main() {
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	r, err := apiClient.BasicSvcAPI.CallError(context.Background()).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `BasicSvcAPI.CallError``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+}
+```
+
+### Path Parameters
+
+This endpoint does not need any parameter.
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiCallErrorRequest struct via the builder pattern
+
+
+### Return type
+
+ (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
 
 
 ## ListPets

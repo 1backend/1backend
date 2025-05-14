@@ -10,6 +10,7 @@ package firehoseservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/endpoint"
@@ -59,5 +60,9 @@ func (p *FirehoseService) Publish(w http.ResponseWriter,
 
 	p.publish(req.Event)
 
-	w.Write([]byte(`{}`))
+	_, err = w.Write([]byte(`{}`))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }

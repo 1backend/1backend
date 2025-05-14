@@ -3,10 +3,12 @@ package policyservice
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"time"
 
 	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	policy "github.com/1backend/1backend/server/internal/services/policy/types"
 	"golang.org/x/time/rate"
 )
@@ -45,23 +47,33 @@ func (s *PolicyService) Check(
 	req := policy.CheckRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		logger.Error(
+			"Error decoding request",
+			slog.Any("error", err),
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
 
 	allowed, err := s.check(&req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Error checking policy",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
 	bs, _ := json.Marshal(policy.CheckResponse{
 		Allowed: allowed,
 	})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (s *PolicyService) check(request *policy.CheckRequest) (bool, error) {

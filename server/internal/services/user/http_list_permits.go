@@ -14,9 +14,12 @@ package userservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/pkg/errors"
 )
@@ -41,36 +44,48 @@ func (s *UserService) ListPermits(
 
 	_, has, err := s.hasPermission(r, user.PermissionPermitView)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to check permission",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 	if !has {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	req := &user.ListPermitsRequest{}
 	err = json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		logger.Error(
+			"Failed to decode request",
+			slog.Any("error", err),
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
 
 	permits, err := s.listPermits(req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to list permits",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
 	bs, _ := json.Marshal(user.ListPermitsResponse{
 		Permits: permits,
 	})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (us *UserService) listPermits(req *user.ListPermitsRequest) ([]*user.Permit, error) {

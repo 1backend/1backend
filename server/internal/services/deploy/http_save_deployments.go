@@ -14,11 +14,13 @@ package deployservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	deploy "github.com/1backend/1backend/server/internal/services/deploy/types"
 )
 
@@ -56,16 +58,22 @@ func (ns *DeployService) SaveDeployment(
 	req := deploy.SaveDeploymentRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		logger.Error(
+			"Error decoding request body",
+			slog.Any("error", err),
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
 
 	err = ns.saveDeployment(req.Deployment)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Error saving deployment",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
@@ -73,7 +81,11 @@ func (ns *DeployService) SaveDeployment(
 		ns.triggerChan <- struct{}{}
 	}()
 
-	w.Write([]byte(`{}`))
+	_, err = w.Write([]byte(`{}`))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 // This method is designed to be called frm the API endpoint, if you want to modify internal

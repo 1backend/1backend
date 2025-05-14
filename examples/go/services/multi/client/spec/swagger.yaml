@@ -9,6 +9,11 @@ definitions:
     required:
     - petCount
     type: object
+  multi_svc.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
 host: localhost:11337
 info:
   contact:
@@ -44,7 +49,7 @@ paths:
         "400":
           description: Invalid JSON
           schema:
-            type: string
+            $ref: '#/definitions/multi_svc.ErrorResponse'
       summary: Count Pets
       tags:
       - Multi Svc

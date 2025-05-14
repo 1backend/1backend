@@ -31,9 +31,9 @@ import (
 // @Produce application/octet-stream
 // @Param url path string true "URL of the file. Even after downloading, the file is still referenced by its original internet URL."
 // @Success 200 {file} binary "File served successfully"
-// @Failure 400 {object} file.ErrorResponse "invalid download URL"
-// @Failure 400 {object} file.ErrorResponse "error parsing download URL"
-// @Failure 404 {object} file.ErrorResponse "file not found"
+// @Failure 400 {object} file.ErrorResponse "Invalid Download URL"
+// @Failure 400 {object} file.ErrorResponse "Error Parsing Download URL"
+// @Failure 404 {object} file.ErrorResponse "File Not Found"
 // @Failure 500 {object} file.ErrorResponse "Internal Server Error"
 // @Router /file-svc/serve/download/{url} [get]
 func (fs *FileService) ServeDownload(
@@ -43,7 +43,7 @@ func (fs *FileService) ServeDownload(
 	vars := mux.Vars(r)
 	ur, err := url.PathUnescape(vars["url"])
 	if err != nil {
-		endpoint.WriteString(w, http.StatusBadRequest, "invalid download URL")
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid Download URL")
 		return
 	}
 
@@ -57,14 +57,16 @@ func (fs *FileService) ServeDownload(
 		return
 	}
 	if len(downloadReplicaIs) == 0 {
-		endpoint.WriteString(w, http.StatusNotFound, "file not found")
+		endpoint.WriteString(w, http.StatusNotFound, "File Not Found")
 		return
 	}
 
 	downloadReplicas := toDownloads(downloadReplicaIs)
 	isLocal, err := fs.isLocalDownload(r.Context(), downloadReplicas)
 	if err != nil {
-		logger.Error("Error checking if download is local", slog.Any("error", err))
+		logger.Error("Error checking if download is local",
+			slog.Any("error", err),
+		)
 		endpoint.InternalServerError(w)
 		return
 	}
@@ -163,8 +165,7 @@ func (fs *FileService) serveRemoteDownload(
 	nodes := nodesRsp.Nodes
 
 	if len(nodes) == 0 {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("not found"))
+		endpoint.WriteString(w, http.StatusNotFound, "Not Found")
 		return
 	}
 

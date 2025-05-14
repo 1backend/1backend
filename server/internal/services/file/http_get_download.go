@@ -14,10 +14,12 @@ package fileservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"net/url"
 
 	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
 	"github.com/gorilla/mux"
 )
@@ -32,6 +34,7 @@ import (
 // @Produce json
 // @Param url path string true "url"
 // @Success 200 {object} file.GetDownloadResponse
+// @Failure 400 {string} string "Invalid URL"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 500 {string} string "Internal Server Error"
 // @Security BearerAuth
@@ -57,8 +60,8 @@ func (fs *FileService) GetDownload(
 	vars := mux.Vars(r)
 	ur, err := url.PathUnescape(vars["url"])
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to unescape URL", slog.String("url", vars["url"]), slog.Any("error", err))
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid URL")
 		return
 	}
 
@@ -68,5 +71,9 @@ func (fs *FileService) GetDownload(
 		Exists:   exists,
 		Download: downloadToDownloadDetails(dl),
 	})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }

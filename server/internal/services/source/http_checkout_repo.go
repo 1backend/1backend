@@ -76,7 +76,11 @@ func (s *SourceService) CheckoutRepo(w http.ResponseWriter,
 	}
 
 	bs, _ := json.Marshal(response)
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 // checkoutRepo checks out a repository at a specified version using the given auth method.

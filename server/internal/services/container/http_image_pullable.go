@@ -15,6 +15,7 @@ package containerservice
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
@@ -82,7 +83,11 @@ func (dm *ContainerService) ImagePullable(
 	jsonData, _ := json.Marshal(container.ImagePullableResponse{
 		Pullable: pullable,
 	})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 type DockerHubResponse struct {

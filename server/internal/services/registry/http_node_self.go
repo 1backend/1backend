@@ -15,10 +15,12 @@ package registryservice
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
 )
 
@@ -55,8 +57,11 @@ func (ns *RegistryService) NodeSelf(
 
 	node, err := ns.thisNode()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Cannot find node",
+			slog.String("error", err.Error()),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
@@ -65,7 +70,11 @@ func (ns *RegistryService) NodeSelf(
 	}
 
 	bs, _ := json.Marshal(response)
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (ns *RegistryService) thisNode() (*registry.Node, error) {

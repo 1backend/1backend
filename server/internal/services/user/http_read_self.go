@@ -15,9 +15,12 @@ package userservice
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
@@ -39,36 +42,49 @@ func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 
 	token, exists := s.authorizer.TokenFromRequest(r)
 	if !exists {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Token Missing`))
+		endpoint.WriteString(w, http.StatusBadRequest, "Token Missing")
 		return
 	}
 
 	claim, err := s.authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to parse JWT",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
 	usr, err := s.readSelf(token)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to read self",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
 	orgs, activeOrgId, err := s.getUserOrganizations(usr.Id)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to get organizations",
+			slog.String("userId", usr.Id),
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
 	contacts, err := s.getContactsByUserId(usr.Id)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to get contacts",
+			slog.String("userId", usr.Id),
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
@@ -79,7 +95,11 @@ func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 		ActiveOrganizationId: activeOrgId,
 		Contacts:             contacts,
 	})
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (s *UserService) readSelf(token string) (*user.User, error) {

@@ -68,7 +68,11 @@ func (a *ChatService) DeleteThread(
 	}
 
 	jsonData, _ := json.Marshal(map[string]any{})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (a *ChatService) deleteThread(id string) error {

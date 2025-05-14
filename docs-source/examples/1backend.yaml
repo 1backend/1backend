@@ -3413,7 +3413,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.5.0
+  version: 0.5.1
 paths:
   /chat-svc/events:
     get:
@@ -4539,6 +4539,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/file_svc.GetDownloadResponse'
+        "400":
+          description: Invalid URL
+          schema:
+            type: string
         "401":
           description: Unauthorized
           schema:
@@ -5575,7 +5579,7 @@ paths:
           schema:
             $ref: '#/definitions/registry_svc.ErrorResponse'
         "404":
-          description: Service not found
+          description: Service Not Found
           schema:
             $ref: '#/definitions/registry_svc.ErrorResponse'
         "500":
@@ -6284,7 +6288,7 @@ paths:
     put:
       consumes:
       - application/json
-      description: Allows and organization admint to add a user to an organization.
+      description: Allows an organization admin to add a user to the organization.
       operationId: saveMembership
       parameters:
       - description: Organization ID
@@ -6448,8 +6452,9 @@ paths:
     put:
       consumes:
       - application/json
-      description: Save permits. // @Description Permits give access to users with
-        certain slugs and roles to permissions.
+      description: |-
+        Save permits.
+        Permits give access to users with certain slugs and roles to permissions.
       operationId: savePermits
       parameters:
       - description: Save Permits Request
@@ -6608,14 +6613,9 @@ paths:
       consumes:
       - application/json
       description: |-
-        Check whether the caller user has a specific permission.
-        Ideally, this endpoint should rarely be used, as the JWT token
-        already includes all user roles. Caching the `List Permissions` and `List Permits`
-        responses allows services to determine user authorization
-        without repeatedly calling this endpoint.
-
-        This endpoint should have no other parameters apart from the caller and the permission
-        so it can be cached easily.
+        Checks if the caller has a specific permission.
+        This endpoint is optimized for caching, as it only takes the caller and the permission to check.
+        To grant a user or role a permission, use the `Save Permits` endpoint.
       operationId: hasPermission
       parameters:
       - description: Permission
@@ -6665,7 +6665,7 @@ paths:
           schema:
             $ref: '#/definitions/user_svc.CreateUserResponse'
         "400":
-          description: Invalid JSON
+          description: Invalid User
           schema:
             $ref: '#/definitions/user_svc.ErrorResponse'
         "401":

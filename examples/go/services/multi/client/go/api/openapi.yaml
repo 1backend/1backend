@@ -35,7 +35,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/multi_svc.ErrorResponse'
           description: Invalid JSON
       summary: Count Pets
       tags:
@@ -53,6 +53,13 @@ components:
           type: integer
       required:
       - petCount
+      type: object
+    multi_svc.ErrorResponse:
+      example:
+        error: error
+      properties:
+        error:
+          type: string
       type: object
   securitySchemes:
     BearerAuth:

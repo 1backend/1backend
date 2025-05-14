@@ -14,9 +14,11 @@ package registryservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
 )
 
@@ -55,8 +57,11 @@ func (ns *RegistryService) ListNodes(
 	if r.ContentLength != 0 {
 		err = json.NewDecoder(r.Body).Decode(req)
 		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte(`Invalid JSON`))
+			logger.Error(
+				"Error decoding request body",
+				slog.Any("error", err),
+			)
+			endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 			return
 		}
 		defer r.Body.Close()
@@ -64,8 +69,11 @@ func (ns *RegistryService) ListNodes(
 
 	nodes, err := ns.listNodes(req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Error listing nodes",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
@@ -74,7 +82,11 @@ func (ns *RegistryService) ListNodes(
 	}
 
 	bs, _ := json.Marshal(response)
-	w.Write(bs)
+	_, err = w.Write(bs)
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (ns *RegistryService) listNodes(req *registry.ListNodesRequest) ([]*registry.Node, error) {

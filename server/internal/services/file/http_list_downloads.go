@@ -14,9 +14,11 @@ package fileservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
 )
 
@@ -53,13 +55,20 @@ func (ds *FileService) ListDownloads(
 
 	details, err := ds.list()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Error listing downloads",
+			slog.String("error", err.Error()),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
 	jsonData, _ := json.Marshal(file.DownloadsResponse{
 		Downloads: details,
 	})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }

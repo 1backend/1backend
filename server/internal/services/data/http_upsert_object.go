@@ -15,12 +15,14 @@ package dynamicservice
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 
 	"github.com/gorilla/mux"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	data "github.com/1backend/1backend/server/internal/services/data/types"
 )
 
@@ -59,8 +61,11 @@ func (g *DataService) Upsert(
 	req := &data.UpsertObjectRequest{}
 	err = json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		logger.Error(
+			"Failed to decode request",
+			slog.Any("error", err),
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
@@ -83,8 +88,11 @@ func (g *DataService) Upsert(
 
 	claims, err := g.authorizer.ParseJWTFromRequest(g.publicKey, r)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Error parsing JWT",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
@@ -95,12 +103,19 @@ func (g *DataService) Upsert(
 
 	err = g.upsertObject(identifiers, req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Error upserting object",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
-	w.Write([]byte(`{}`))
+	_, err = w.Write([]byte(`{}`))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (g *DataService) upsertObject(

@@ -13,12 +13,18 @@
 
 package endpoint
 
-import "net/http"
+import (
+	"log/slog"
+	"net/http"
+
+	"github.com/1backend/1backend/sdk/go/logger"
+)
 
 // WriteErr writes an error message to the response writer with the specified status code.
 // It should only be used when "proxying" errors from other endpoints as
 // internal errors should not be indiscriminately returned to the client.
 // Usually you should use WriteString instead, unless proxying.
+// It logs any errors that occur during the write operation.
 func WriteErr(w http.ResponseWriter, statusCode int, err error) {
 	errMsg := "error is missing"
 	if err != nil {
@@ -26,12 +32,24 @@ func WriteErr(w http.ResponseWriter, statusCode int, err error) {
 	}
 
 	w.WriteHeader(statusCode)
-	w.Write([]byte(errMsg))
+	_, err = w.Write([]byte(errMsg))
+	if err != nil {
+		logger.Error("Error writing response",
+			slog.Any("error", err),
+		)
+	}
 }
 
+// WriteString writes a string to the response writer with the specified status code.
+// It logs any errors that occur during the write operation.
 func WriteString(w http.ResponseWriter, statusCode int, str string) {
 	w.WriteHeader(statusCode)
-	w.Write([]byte(str))
+	_, err := w.Write([]byte(str))
+	if err != nil {
+		logger.Error("Error writing response",
+			slog.Any("error", err),
+		)
+	}
 }
 
 // InternalServerError is used frequently, so we define it here for convenience.
@@ -39,6 +57,7 @@ func InternalServerError(w http.ResponseWriter) {
 	WriteString(w, http.StatusInternalServerError, "Internal Server Error")
 }
 
+// Unauthorized is used frequently, so we define it here for convenience.
 func Unauthorized(w http.ResponseWriter) {
 	WriteString(w, http.StatusUnauthorized, "Unauthorized")
 }

@@ -43,7 +43,12 @@ func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.WriteHeader(statusCode)
-		w.Write([]byte(err.Error()))
+		_, err = w.Write([]byte(err.Error()))
+		if err != nil {
+			logger.Error("Error writing response",
+				slog.String("error", err.Error()),
+			)
+		}
 		return
 	}
 }

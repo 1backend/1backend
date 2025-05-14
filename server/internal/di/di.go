@@ -435,7 +435,12 @@ func BigBang(options *Options) (*Universe, error) {
 	router.NotFoundHandler = http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusNotFound)
-			w.Write([]byte("404 page not found"))
+			_, err := w.Write([]byte("404 page not found"))
+			if err != nil {
+				logger.Error("Error writing response",
+					slog.String("error", err.Error()),
+				)
+			}
 		},
 	)
 

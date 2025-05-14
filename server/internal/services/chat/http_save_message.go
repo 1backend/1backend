@@ -65,8 +65,11 @@ func (a *ChatService) SaveMessage(
 	req := chat.SaveMessageRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		logger.Error(
+			"Failed to decode request",
+			slog.Any("error", err),
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
@@ -77,13 +80,17 @@ func (a *ChatService) SaveMessage(
 
 	err = a.addMessage(r.Context(), &req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Error saving message", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 
 	jsonData, _ := json.Marshal(map[string]any{})
-	w.Write(jsonData)
+	_, err = w.Write([]byte(jsonData))
+	if err != nil {
+		logger.Error("Error writing response", slog.Any("error", err))
+		return
+	}
 }
 
 func (a *ChatService) addMessage(
