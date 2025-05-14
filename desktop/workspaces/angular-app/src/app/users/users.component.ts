@@ -150,7 +150,6 @@ export class UsersComponent {
 			this.users = [];
 		} else if (response.users?.length && response.users?.length > 0) {
 			for (const user of response.users) {
-				user.contactIds = ["test1", "test2"];
 				this.userForms.set(user.id!, this.createUserForm(user));
 			}
 
