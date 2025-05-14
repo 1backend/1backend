@@ -15,9 +15,12 @@ package userservice
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/gorilla/mux"
@@ -39,26 +42,30 @@ func (s *UserService) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	usr, hasPermission, err := s.hasPermission(r, user.PermissionUserDelete)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to check permission",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 	if !hasPermission {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte("Unauthorized"))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	callerUserId := usr.Id
 	isAdmin, err := s.isAdmin(callerUserId)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to check if user is admin",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 	if !isAdmin {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`Unauthorized`))
+		endpoint.Unauthorized(w)
 		return
 	}
 
@@ -66,8 +73,18 @@ func (s *UserService) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	err = s.deleteUser(userId)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		if err != nil {
+			logger.Error(
+				"Failed to delete user",
+				slog.Any("error", err),
+			)
+			endpoint.InternalServerError(w)
+			return
+		}
+		if !hasPermission {
+			endpoint.Unauthorized(w)
+			return
+		}
 		return
 	}
 

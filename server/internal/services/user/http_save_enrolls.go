@@ -15,12 +15,15 @@ package userservice
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
@@ -53,21 +56,26 @@ func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 
 	usr, hasPermission, err := s.hasPermission(r, user.PermissionEnrollEdit)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to check permission",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 	if !hasPermission {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte("Unauthorized"))
+		endpoint.Unauthorized(w)
 		return
 	}
 
 	req := user.SaveEnrollsRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON` + err.Error()))
+		logger.Error(
+			"Failed to decode request",
+			slog.Any("error", err),
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
@@ -75,15 +83,17 @@ func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 	authr := auth.AuthorizerImpl{}
 	isAdmin, err := authr.IsAdminFromRequest(s.publicKeyPem, r)
 	if err != nil {
-		w.WriteHeader(http.StatusInsufficientStorage)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to check if user is admin",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
 	claim, err := authr.ParseJWTFromRequest(s.publicKeyPem, r)
 	if err != nil || claim == nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte("Unauthorized"))
+		endpoint.Unauthorized(w)
 		return
 	}
 
@@ -99,8 +109,11 @@ func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 
 	enrolls, err := s.saveEnrolls(usr.Id, &req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to save enrolls",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 

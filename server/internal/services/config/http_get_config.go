@@ -14,9 +14,12 @@ package configservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"path"
 
+	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	config "github.com/1backend/1backend/server/internal/services/config/types"
 	types "github.com/1backend/1backend/server/internal/services/config/types"
 	modelservice "github.com/1backend/1backend/server/internal/services/model"
@@ -50,8 +53,8 @@ func (cs *ConfigService) Get(
 
 	conf, err := cs.getConfig(namespace)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to get config", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 

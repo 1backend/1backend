@@ -15,10 +15,12 @@ package dynamicservice
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	data "github.com/1backend/1backend/server/internal/services/data/types"
 	dynamictypes "github.com/1backend/1backend/server/internal/services/data/types"
 )
@@ -58,16 +60,22 @@ func (g *DataService) UpdateObjects(
 	req := &data.UpdateObjectsRequest{}
 	err = json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		logger.Error(
+			"Error decoding request",
+			slog.Any("error", err),
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
 
 	err = g.updateObjects(req.Table, isAuthRsp.User.Id, req.Filters, req.Object)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Error updating objects",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 

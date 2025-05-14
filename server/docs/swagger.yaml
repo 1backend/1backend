@@ -6448,8 +6448,9 @@ paths:
     put:
       consumes:
       - application/json
-      description: Save permits. // @Description Permits give access to users with
-        certain slugs and roles to permissions.
+      description: |-
+        Save permits.
+        Permits give access to users with certain slugs and roles to permissions.
       operationId: savePermits
       parameters:
       - description: Save Permits Request
@@ -6608,14 +6609,9 @@ paths:
       consumes:
       - application/json
       description: |-
-        Check whether the caller user has a specific permission.
-        Ideally, this endpoint should rarely be used, as the JWT token
-        already includes all user roles. Caching the `List Permissions` and `List Permits`
-        responses allows services to determine user authorization
-        without repeatedly calling this endpoint.
-
-        This endpoint should have no other parameters apart from the caller and the permission
-        so it can be cached easily.
+        Checks if the caller has a specific permission.
+        This endpoint is optimized for caching, as it only takes the caller and the permission to check.
+        To grant a user or role a permission, use the `Save Permits` endpoint.
       operationId: hasPermission
       parameters:
       - description: Permission

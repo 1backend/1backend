@@ -15,11 +15,13 @@ package dynamicservice
 import (
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 	"strings"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 
 	data "github.com/1backend/1backend/server/internal/services/data/types"
 )
@@ -58,8 +60,11 @@ func (g *DataService) Create(
 	req := &data.CreateObjectRequest{}
 	err = json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		logger.Error(
+			"Failed to decode request",
+			slog.Any("error", err),
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
@@ -82,8 +87,8 @@ func (g *DataService) Create(
 
 	err = g.createObject(req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Failed to create object", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 

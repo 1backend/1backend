@@ -4439,7 +4439,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Save permits. // @Description Permits give access to users with certain slugs and roles to permissions.",
+                "description": "Save permits.\nPermits give access to users with certain slugs and roles to permissions.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4727,7 +4727,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Check whether the caller user has a specific permission.\nIdeally, this endpoint should rarely be used, as the JWT token\nalready includes all user roles. Caching the `List Permissions` and `List Permits`\nresponses allows services to determine user authorization\nwithout repeatedly calling this endpoint.\n\nThis endpoint should have no other parameters apart from the caller and the permission\nso it can be cached easily.",
+                "description": "Checks if the caller has a specific permission.\nThis endpoint is optimized for caching, as it only takes the caller and the permission to check.\nTo grant a user or role a permission, use the `Save Permits` endpoint.",
                 "consumes": [
                     "application/json"
                 ],

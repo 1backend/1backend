@@ -14,10 +14,12 @@ package chatservice
 
 import (
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 	chat "github.com/1backend/1backend/server/internal/services/chat/types"
 )
 
@@ -55,16 +57,19 @@ func (a *ChatService) ListThreads(
 	req := chat.ListThreadsRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		logger.Error(
+			"Failed to decode request",
+			slog.Any("error", err),
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
 
 	threads, err := a.listThreads(isAuthRsp.User.Id, &req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error("Error listing threads", slog.Any("error", err))
+		endpoint.InternalServerError(w)
 		return
 	}
 
