@@ -27,3 +27,7 @@ type ListPetsRequest struct {
 type ListPetsResponse struct {
 	Pets []Pet `json:"pets,omitempty"`
 }
+
+type ErrorResponse struct {
+	Error string `json:"error"`
+}

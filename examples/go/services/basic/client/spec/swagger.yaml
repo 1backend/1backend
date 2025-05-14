@@ -1,5 +1,10 @@
 basePath: /
 definitions:
+  basic_svc.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
   basic_svc.ListPetsRequest:
     type: object
   basic_svc.ListPetsResponse:
@@ -20,7 +25,9 @@ definitions:
       updatedAt:
         type: string
     required:
+    - createdAt
     - id
+    - updatedAt
     type: object
   basic_svc.SavePetRequest:
     properties:
@@ -46,6 +53,22 @@ info:
   title: Basic Svc
   version: 0.3.0-rc.8
 paths:
+  /basic-svc/error:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint simply errors. Useful for testing the proxy.
+      operationId: error
+      produces:
+      - application/json
+      responses:
+        "500":
+          description: Error
+          schema:
+            $ref: '#/definitions/basic_svc.ErrorResponse'
+      summary: Error
+      tags:
+      - Basic Svc
   /basic-svc/pet:
     put:
       consumes:
@@ -67,9 +90,13 @@ paths:
           schema:
             $ref: '#/definitions/basic_svc.SavePetResponse'
         "400":
-          description: Invalid JSON
+          description: Invalid Pet
           schema:
-            type: string
+            $ref: '#/definitions/basic_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/basic_svc.ErrorResponse'
       summary: Save Pet
       tags:
       - Basic Svc
@@ -95,11 +122,11 @@ paths:
         "400":
           description: Invalid JSON
           schema:
-            type: string
+            $ref: '#/definitions/basic_svc.ErrorResponse'
         "500":
           description: Error Listing Pets
           schema:
-            type: string
+            $ref: '#/definitions/basic_svc.ErrorResponse'
       summary: List Pets
       tags:
       - Basic Svc

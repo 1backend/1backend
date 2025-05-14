@@ -9,6 +9,7 @@ import (
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/samber/lo"
 
@@ -23,14 +24,15 @@ import (
 // @Produce json
 // @Param body body basic.SavePetRequest true "Registration Tracking Request"
 // @Success 200 {object} basic.SavePetResponse "{}"
-// @Failure 400 {string} string "Invalid JSON"
+// @Failure 400 {object} basic.ErrorResponse "Invalid JSON"
+// @Failure 400 {object} basic.ErrorResponse "Invalid Pet"
+// @Failure 500 {object} basic.ErrorResponse "Internal Server Error"
 // @Router /basic-svc/pet [put]
 func (s *BasicService) SavePet(w http.ResponseWriter, r *http.Request) {
 	var request basic.SavePetRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`Invalid JSON`))
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
 	defer r.Body.Close()
@@ -38,14 +40,16 @@ func (s *BasicService) SavePet(w http.ResponseWriter, r *http.Request) {
 	var authorizer auth.Authorizer = auth.AuthorizerImpl{}
 	token, err := authorizer.ParseJWTFromRequest(s.userSvcPublicKey, r)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to parse JWT from request",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
 	if !lo.Contains(token.Roles, RolePetManager) {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte("Unauthorized"))
+		endpoint.Unauthorized(w)
 		return
 	}
 
@@ -55,15 +59,21 @@ func (s *BasicService) SavePet(w http.ResponseWriter, r *http.Request) {
 
 	err = validatePet(pet)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Invalid pet",
+			slog.Any("error", err),
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid Pet")
 		return
 	}
 
 	err = s.savePet(pet)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		logger.Error(
+			"Failed to save pet",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 

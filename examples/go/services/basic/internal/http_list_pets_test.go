@@ -2,6 +2,7 @@ package basicservice_test
 
 import (
 	"context"
+	"io/ioutil"
 	"net/http/httptest"
 	"testing"
 
@@ -49,9 +50,16 @@ func TestListPets(t *testing.T) {
 	serverClients, tokens, err := test.MakeClients(clientFactory, 1)
 	require.NoError(t, err)
 
-	//basicminClient := newClient(server.Url, basicminToken)
 	client1 := newClient(server.Url, tokens[0].Token)
-	//client2 := newClient(server.Url, tokens[1].Token)
+
+	t.Run("text proxy", func(t *testing.T) {
+		rsp, err := client1.BasicSvcAPI.CallError(context.Background()).Execute()
+		require.Error(t, err, rsp)
+		require.Equal(t, rsp.StatusCode, 500)
+		body, err := ioutil.ReadAll(rsp.Body)
+		require.NoError(t, err)
+		require.Equal(t, `{"error": "Internal Server Error"}`, string(body))
+	})
 
 	t.Run("users cannot create pets", func(t *testing.T) {
 		_, rsp, err := client1.BasicSvcAPI.SavePet(context.Background()).Body(

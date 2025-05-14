@@ -6,12 +6,14 @@ api_basic_svc.go
 client.go
 configuration.go
 docs/BasicSvcAPI.md
+docs/BasicSvcErrorResponse.md
 docs/BasicSvcListPetsResponse.md
 docs/BasicSvcPet.md
 docs/BasicSvcSavePetRequest.md
 git_push.sh
 go.mod
 go.sum
+model_basic_svc_error_response.go
 model_basic_svc_list_pets_response.go
 model_basic_svc_pet.go
 model_basic_svc_save_pet_request.go

@@ -57,7 +57,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid JSON",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/multi_svc.ErrorResponse"
                         }
                     }
                 }
@@ -76,6 +76,14 @@ const docTemplate = `{
             "properties": {
                 "petCount": {
                     "type": "integer"
+                }
+            }
+        },
+        "multi_svc.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
                 }
             }
         }

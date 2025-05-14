@@ -148,6 +148,11 @@ func (service *BasicService) registerRoutes() {
 		service.ListPets(w, r)
 	})).
 		Methods("OPTIONS", "POST")
+
+	service.Router.HandleFunc("/basic-svc/error", appl(func(w http.ResponseWriter, r *http.Request) {
+		service.Error(w, r)
+	})).
+		Methods("OPTIONS", "POST")
 }
 
 func applicator(

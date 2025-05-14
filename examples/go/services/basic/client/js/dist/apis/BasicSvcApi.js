@@ -27,6 +27,32 @@ import { BasicSvcListPetsResponseFromJSON, BasicSvcSavePetRequestToJSON, } from 
  */
 export class BasicSvcApi extends runtime.BaseAPI {
     /**
+     * This endpoint simply errors. Useful for testing the proxy.
+     * Error
+     */
+    errorRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            const response = yield this.request({
+                path: `/basic-svc/error`,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * This endpoint simply errors. Useful for testing the proxy.
+     * Error
+     */
+    error(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.errorRaw(initOverrides);
+        });
+    }
+    /**
      * List pets.
      * List Pets
      */

@@ -7,9 +7,11 @@ client.go
 configuration.go
 docs/MultiSvcAPI.md
 docs/MultiSvcCountPetsResponse.md
+docs/MultiSvcErrorResponse.md
 git_push.sh
 go.mod
 go.sum
 model_multi_svc_count_pets_response.go
+model_multi_svc_error_response.go
 response.go
 utils.go

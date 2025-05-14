@@ -134,7 +134,7 @@ func (a *MultiSvcAPIService) CountPetsExecute(r ApiCountPetsRequest) (*MultiSvcC
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v string
+			var v MultiSvcErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
 				newErr.error = err.Error()

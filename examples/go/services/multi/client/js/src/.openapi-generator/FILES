@@ -2,5 +2,6 @@ apis/MultiSvcApi.ts
 apis/index.ts
 index.ts
 models/MultiSvcCountPetsResponse.ts
+models/MultiSvcErrorResponse.ts
 models/index.ts
 runtime.ts

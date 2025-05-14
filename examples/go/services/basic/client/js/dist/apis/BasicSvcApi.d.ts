@@ -22,6 +22,16 @@ export interface SavePetRequest {
  */
 export declare class BasicSvcApi extends runtime.BaseAPI {
     /**
+     * This endpoint simply errors. Useful for testing the proxy.
+     * Error
+     */
+    errorRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+    /**
+     * This endpoint simply errors. Useful for testing the proxy.
+     * Error
+     */
+    error(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+    /**
      * List pets.
      * List Pets
      */

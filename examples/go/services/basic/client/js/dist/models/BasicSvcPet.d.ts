@@ -20,7 +20,7 @@ export interface BasicSvcPet {
      * @type {string}
      * @memberof BasicSvcPet
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      *
      * @type {string}
@@ -38,7 +38,7 @@ export interface BasicSvcPet {
      * @type {string}
      * @memberof BasicSvcPet
      */
-    updatedAt?: string;
+    updatedAt: string;
 }
 /**
  * Check if a given object implements the BasicSvcPet interface.
