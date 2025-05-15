@@ -50,13 +50,23 @@ type PermissionChecker interface {
 
 type permissionChecker struct {
 	clientFactory        client.ClientFactory
+	parser               JWTParser
 	permissionCache      *ristretto.Cache
 	userServicePublicKey string
 	mutex                sync.Mutex
+
+	// currentTime is used to mock the current time in tests.
+	currentTime time.Time
+}
+
+// Subset of teh auth.Authorizer interface.
+type JWTParser interface {
+	ParseJWT(userSvcPublicKey, token string) (*auth.Claims, error)
 }
 
 func NewPermissionChecker(
 	clientFactory client.ClientFactory,
+	parser JWTParser,
 ) PermissionChecker {
 	permissionCache, err := ristretto.NewCache(&ristretto.Config{
 		NumCounters: 1e5,     // number of keys to track frequency (10x max items)
@@ -71,6 +81,7 @@ func NewPermissionChecker(
 	return &permissionChecker{
 		clientFactory:   clientFactory,
 		permissionCache: permissionCache,
+		parser:          parser,
 	}
 }
 
@@ -115,7 +126,7 @@ func (pc *permissionChecker) HasPermission(
 		// First we check if the JWT is expired or not as that aspect cannot be cached.
 		// If the JWT is expired, we consider it a cache miss
 		// and let the request go through to the user service
-		claims, err := (auth.AuthorizerImpl{}).ParseJWT(
+		claims, err := pc.parser.ParseJWT(
 			userServicePublicKey,
 			strings.Replace(jwt, "Bearer ", "", -1),
 		)
@@ -123,19 +134,27 @@ func (pc *permissionChecker) HasPermission(
 			return nil, http.StatusUnauthorized, errors.Wrap(err, "failed to parse JWT")
 		}
 
+		currentTime := pc.currentTime
+		if currentTime.IsZero() {
+			currentTime = time.Now()
+		}
+
 		// Handle nil expiresAt for backwards compatibility.
 		// Can be removed later.
 		if claims.ExpiresAt == nil ||
-			claims.ExpiresAt.Time.Before(time.Now().Add(5*time.Second)) {
+			claims.ExpiresAt.Time.Before(currentTime.Add(5*time.Second)) {
 			expired = true
+
 		}
 	}
 
 	key := ""
 
 	if jwt != "" && !expired {
-		hash := sha256.Sum256([]byte(jwt))
-		key = fmt.Sprintf("%s:%s", hex.EncodeToString(hash[:]), permission)
+		key = generateCacheKey(
+			jwt,
+			permission,
+		)
 
 		if value, found := pc.permissionCache.Get(key); found {
 			if cachedResp, ok := value.(*HasPermissionResponse); ok {
@@ -168,4 +187,9 @@ func (pc *permissionChecker) HasPermission(
 	}
 
 	return isAuthRsp, code, nil
+}
+
+func generateCacheKey(token, permission string) string {
+	hash := sha256.Sum256([]byte(token))
+	return fmt.Sprintf("%s:%s", hex.EncodeToString(hash[:]), permission)
 }

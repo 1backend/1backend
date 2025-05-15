@@ -45,6 +45,7 @@ func NewSourceService(
 	clientFactory client.ClientFactory,
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
+	authorizer auth.Authorizer,
 ) (*SourceService, error) {
 	credentialStore, err := datastoreFactory(
 		"sourceSvcCredentials",
@@ -60,6 +61,7 @@ func NewSourceService(
 		credentialStore: credentialStore,
 		permissionChecker: endpoint.NewPermissionChecker(
 			clientFactory,
+			authorizer,
 		),
 	}
 

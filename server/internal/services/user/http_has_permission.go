@@ -72,7 +72,7 @@ func (s *UserService) HasPermission(
 
 	bs, _ := json.Marshal(&user.HasPermissionResponse{
 		Authorized: hasPermission,
-		User:       usr,
+		User:       *usr,
 	})
 
 	_, err = w.Write(bs)

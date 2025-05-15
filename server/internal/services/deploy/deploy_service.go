@@ -47,6 +47,7 @@ func NewDeployService(
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 	triggerOnly bool,
+	authorizer auth.Authorizer,
 ) (*DeployService, error) {
 
 	credentialStore, err := datastoreFactory(
@@ -76,6 +77,7 @@ func NewDeployService(
 		triggerOnly: triggerOnly,
 		permissionChecker: endpoint.NewPermissionChecker(
 			clientFactory,
+			authorizer,
 		),
 	}
 

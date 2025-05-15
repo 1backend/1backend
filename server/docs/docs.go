@@ -9056,6 +9056,10 @@ const docTemplate = `{
         },
         "user_svc.HasPermissionResponse": {
             "type": "object",
+            "required": [
+                "authorized",
+                "user"
+            ],
             "properties": {
                 "authorized": {
                     "type": "boolean"

@@ -69,14 +69,18 @@ func NewModelService(
 	clientFactory client.ClientFactory,
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, insance any) (datastore.DataStore, error),
+	authorizer auth.Authorizer,
 ) (*ModelService, error) {
 	srv := &ModelService{
-		gpuPlatform:       gpuPlatform,
-		clientFactory:     clientFactory,
-		datastoreFactory:  datastoreFactory,
-		lock:              lock,
-		modelPortMap:      map[int]*modeltypes.ModelState{},
-		permissionChecker: endpoint.NewPermissionChecker(clientFactory),
+		gpuPlatform:      gpuPlatform,
+		clientFactory:    clientFactory,
+		datastoreFactory: datastoreFactory,
+		lock:             lock,
+		modelPortMap:     map[int]*modeltypes.ModelState{},
+		permissionChecker: endpoint.NewPermissionChecker(
+			clientFactory,
+			authorizer,
+		),
 	}
 
 	return srv, nil

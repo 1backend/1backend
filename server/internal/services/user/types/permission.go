@@ -8,8 +8,8 @@
 package user_svc
 
 type HasPermissionResponse struct {
-	Authorized bool  `json:"authorized,omitempty"`
-	User       *User `json:"user,omitempty"`
+	Authorized bool `json:"authorized" binding:"required"`
+	User       User `json:"user" binding:"required"`
 }
 
 type ListPermissionsRequest struct {

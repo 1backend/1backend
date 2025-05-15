@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the UserSvcHasPermissionResponse type satisfies the MappedNullable interface at compile time
@@ -20,16 +22,20 @@ var _ MappedNullable = &UserSvcHasPermissionResponse{}
 
 // UserSvcHasPermissionResponse struct for UserSvcHasPermissionResponse
 type UserSvcHasPermissionResponse struct {
-	Authorized *bool `json:"authorized,omitempty"`
-	User *UserSvcUser `json:"user,omitempty"`
+	Authorized bool `json:"authorized"`
+	User UserSvcUser `json:"user"`
 }
+
+type _UserSvcHasPermissionResponse UserSvcHasPermissionResponse
 
 // NewUserSvcHasPermissionResponse instantiates a new UserSvcHasPermissionResponse object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcHasPermissionResponse() *UserSvcHasPermissionResponse {
+func NewUserSvcHasPermissionResponse(authorized bool, user UserSvcUser) *UserSvcHasPermissionResponse {
 	this := UserSvcHasPermissionResponse{}
+	this.Authorized = authorized
+	this.User = user
 	return &this
 }
 
@@ -41,68 +47,52 @@ func NewUserSvcHasPermissionResponseWithDefaults() *UserSvcHasPermissionResponse
 	return &this
 }
 
-// GetAuthorized returns the Authorized field value if set, zero value otherwise.
+// GetAuthorized returns the Authorized field value
 func (o *UserSvcHasPermissionResponse) GetAuthorized() bool {
-	if o == nil || IsNil(o.Authorized) {
+	if o == nil {
 		var ret bool
 		return ret
 	}
-	return *o.Authorized
+
+	return o.Authorized
 }
 
-// GetAuthorizedOk returns a tuple with the Authorized field value if set, nil otherwise
+// GetAuthorizedOk returns a tuple with the Authorized field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcHasPermissionResponse) GetAuthorizedOk() (*bool, bool) {
-	if o == nil || IsNil(o.Authorized) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Authorized, true
+	return &o.Authorized, true
 }
 
-// HasAuthorized returns a boolean if a field has been set.
-func (o *UserSvcHasPermissionResponse) HasAuthorized() bool {
-	if o != nil && !IsNil(o.Authorized) {
-		return true
-	}
-
-	return false
-}
-
-// SetAuthorized gets a reference to the given bool and assigns it to the Authorized field.
+// SetAuthorized sets field value
 func (o *UserSvcHasPermissionResponse) SetAuthorized(v bool) {
-	o.Authorized = &v
+	o.Authorized = v
 }
 
-// GetUser returns the User field value if set, zero value otherwise.
+// GetUser returns the User field value
 func (o *UserSvcHasPermissionResponse) GetUser() UserSvcUser {
-	if o == nil || IsNil(o.User) {
+	if o == nil {
 		var ret UserSvcUser
 		return ret
 	}
-	return *o.User
+
+	return o.User
 }
 
-// GetUserOk returns a tuple with the User field value if set, nil otherwise
+// GetUserOk returns a tuple with the User field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcHasPermissionResponse) GetUserOk() (*UserSvcUser, bool) {
-	if o == nil || IsNil(o.User) {
+	if o == nil {
 		return nil, false
 	}
-	return o.User, true
+	return &o.User, true
 }
 
-// HasUser returns a boolean if a field has been set.
-func (o *UserSvcHasPermissionResponse) HasUser() bool {
-	if o != nil && !IsNil(o.User) {
-		return true
-	}
-
-	return false
-}
-
-// SetUser gets a reference to the given UserSvcUser and assigns it to the User field.
+// SetUser sets field value
 func (o *UserSvcHasPermissionResponse) SetUser(v UserSvcUser) {
-	o.User = &v
+	o.User = v
 }
 
 func (o UserSvcHasPermissionResponse) MarshalJSON() ([]byte, error) {
@@ -115,13 +105,47 @@ func (o UserSvcHasPermissionResponse) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcHasPermissionResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Authorized) {
-		toSerialize["authorized"] = o.Authorized
-	}
-	if !IsNil(o.User) {
-		toSerialize["user"] = o.User
-	}
+	toSerialize["authorized"] = o.Authorized
+	toSerialize["user"] = o.User
 	return toSerialize, nil
+}
+
+func (o *UserSvcHasPermissionResponse) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"authorized",
+		"user",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varUserSvcHasPermissionResponse := _UserSvcHasPermissionResponse{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varUserSvcHasPermissionResponse)
+
+	if err != nil {
+		return err
+	}
+
+	*o = UserSvcHasPermissionResponse(varUserSvcHasPermissionResponse)
+
+	return err
 }
 
 type NullableUserSvcHasPermissionResponse struct {

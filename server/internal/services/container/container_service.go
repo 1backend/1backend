@@ -71,14 +71,18 @@ func NewContainerService(
 		tableName string,
 		instance any,
 	) (datastore.DataStore, error),
+	authorizer auth.Authorizer,
 ) (*ContainerService, error) {
 
 	service := &ContainerService{
-		clientFactory:     clientFactory,
-		lock:              lock,
-		datastoreFactory:  datastoreFactory,
-		volumeName:        volumeName,
-		permissionChecker: endpoint.NewPermissionChecker(clientFactory),
+		clientFactory:    clientFactory,
+		lock:             lock,
+		datastoreFactory: datastoreFactory,
+		volumeName:       volumeName,
+		permissionChecker: endpoint.NewPermissionChecker(
+			clientFactory,
+			authorizer,
+		),
 	}
 
 	return service, nil

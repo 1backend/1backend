@@ -48,13 +48,17 @@ func NewEmailService(
 	clientFactory client.ClientFactory,
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
+	authorizer auth.Authorizer,
 ) (*EmailService, error) {
 
 	service := &EmailService{
-		clientFactory:     clientFactory,
-		datastoreFactory:  datastoreFactory,
-		lock:              lock,
-		permissionChecker: endpoint.NewPermissionChecker(clientFactory),
+		clientFactory:    clientFactory,
+		datastoreFactory: datastoreFactory,
+		lock:             lock,
+		permissionChecker: endpoint.NewPermissionChecker(
+			clientFactory,
+			authorizer,
+		),
 	}
 
 	return service, nil

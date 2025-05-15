@@ -68,6 +68,7 @@ func NewSecretService(
 		encryptionKey:    secretEncryptionKey,
 		permissionChecker: endpoint.NewPermissionChecker(
 			clientFactory,
+			authorizer,
 		),
 	}
 

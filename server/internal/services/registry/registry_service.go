@@ -62,6 +62,7 @@ func NewRegistryService(
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 	nodeId string,
+	authorizer auth.Authorizer,
 ) (*RegistryService, error) {
 
 	nodeUrl := address
@@ -121,6 +122,7 @@ func NewRegistryService(
 		triggerChan: make(chan struct{}),
 		permissionChecker: endpoint.NewPermissionChecker(
 			clientFactory,
+			authorizer,
 		),
 	}
 

@@ -273,6 +273,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.ClientFactory,
 		options.Lock,
 		options.DataStoreFactory.Create,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create firehose service")
@@ -289,6 +290,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.Lock,
 		options.DataStoreFactory.Create,
 		options.HomeDir,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create file service")
@@ -311,6 +313,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.ClientFactory,
 		options.Lock,
 		options.DataStoreFactory.Create,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create container service")
@@ -324,6 +327,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.ClientFactory,
 		options.Lock,
 		options.DataStoreFactory.Create,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create model service")
@@ -334,6 +338,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.ClientFactory,
 		options.Lock,
 		options.DataStoreFactory.Create,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create chat service")
@@ -345,6 +350,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.LLamaCppClient,
 		options.Lock,
 		options.DataStoreFactory.Create,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create prompt service")
@@ -366,6 +372,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.ClientFactory,
 		options.Lock,
 		options.DataStoreFactory.Create,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create policy service")
@@ -380,6 +387,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.Lock,
 		options.DataStoreFactory.Create,
 		options.NodeId,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create registry service")
@@ -391,6 +399,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.Lock,
 		options.DataStoreFactory.Create,
 		options.Test,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create deploy service")
@@ -401,6 +410,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.ClientFactory,
 		options.Lock,
 		options.DataStoreFactory.Create,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create source service")
@@ -426,6 +436,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.ClientFactory,
 		options.Lock,
 		options.DataStoreFactory.Create,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create email service")

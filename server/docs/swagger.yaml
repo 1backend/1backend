@@ -2943,6 +2943,9 @@ definitions:
         type: boolean
       user:
         $ref: '#/definitions/user_svc.User'
+    required:
+    - authorized
+    - user
     type: object
   user_svc.ListEnrollsRequest:
     properties:

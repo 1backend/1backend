@@ -56,6 +56,7 @@ func NewPromptService(
 	llamaCppClient llamacpp.ClientI,
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
+	authorizer auth.Authorizer,
 ) (*PromptService, error) {
 
 	service := &PromptService{
@@ -70,6 +71,7 @@ func NewPromptService(
 		trigger: make(chan bool, 1),
 		permissionChecker: endpoint.NewPermissionChecker(
 			clientFactory,
+			authorizer,
 		),
 	}
 
