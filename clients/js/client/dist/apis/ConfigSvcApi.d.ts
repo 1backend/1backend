@@ -22,12 +22,12 @@ export interface SaveConfigRequest {
  */
 export declare class ConfigSvcApi extends runtime.BaseAPI {
     /**
-     * Fetch the current configuration from the server
+     * Fetch the current configuration from the server.
      * Get Config
      */
     getConfigRaw(requestParameters: GetConfigRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ConfigSvcGetConfigResponse>>;
     /**
-     * Fetch the current configuration from the server
+     * Fetch the current configuration from the server.
      * Get Config
      */
     getConfig(requestParameters?: GetConfigRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ConfigSvcGetConfigResponse>;

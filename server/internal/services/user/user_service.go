@@ -278,6 +278,11 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 		us.ListEnrolls(w, r)
 	})).
 		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/refresh-token", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.RefreshToken(w, r)
+	})).
+		Methods("OPTIONS", "POST")
 }
 
 func (s *UserService) bootstrap() error {

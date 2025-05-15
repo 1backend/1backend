@@ -26,6 +26,7 @@ import { UserSvcListUsersResponse } from '../model/userSvcListUsersResponse';
 import { UserSvcLoginRequest } from '../model/userSvcLoginRequest';
 import { UserSvcLoginResponse } from '../model/userSvcLoginResponse';
 import { UserSvcReadSelfResponse } from '../model/userSvcReadSelfResponse';
+import { UserSvcRefreshTokenResponse } from '../model/userSvcRefreshTokenResponse';
 import { UserSvcRegisterRequest } from '../model/userSvcRegisterRequest';
 import { UserSvcRegisterResponse } from '../model/userSvcRegisterResponse';
 import { UserSvcResetPasswordRequest } from '../model/userSvcResetPasswordRequest';
@@ -227,6 +228,18 @@ export declare class UserSvcApi {
     }): Promise<{
         response: http.IncomingMessage;
         body: UserSvcReadSelfResponse;
+    }>;
+    /**
+     * Refreshes an existing token, including inactive ones. The old token becomes inactive (if not already inactive), and a new, active token is issued. This allows continued verification of user roles without requiring a new login. Inactive tokens are refreshable unless explicitly revoked (no mechanism for this yet). Leaked tokens should be handled separately, via a revocation flag or deletion.
+     * @summary Refresh Token
+     */
+    refreshToken(options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: UserSvcRefreshTokenResponse;
     }>;
     /**
      * Register a new user with a name, email, and password.

@@ -220,6 +220,24 @@ this endpoint returns additional data, including the full user object and associ
 	ReadSelfExecute(r ApiReadSelfRequest) (*UserSvcReadSelfResponse, *http.Response, error)
 
 	/*
+	RefreshToken Refresh Token
+
+	Refreshes an existing token, including inactive ones.
+The old token becomes inactive (if not already inactive), and a new, active token is issued.
+This allows continued verification of user roles without requiring a new login.
+Inactive tokens are refreshable unless explicitly revoked (no mechanism for this yet).
+Leaked tokens should be handled separately, via a revocation flag or deletion.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiRefreshTokenRequest
+	*/
+	RefreshToken(ctx context.Context) ApiRefreshTokenRequest
+
+	// RefreshTokenExecute executes the request
+	//  @return UserSvcRefreshTokenResponse
+	RefreshTokenExecute(r ApiRefreshTokenRequest) (*UserSvcRefreshTokenResponse, *http.Response, error)
+
+	/*
 	Register Register
 
 	Register a new user with a name, email, and password.
@@ -2242,6 +2260,130 @@ func (a *UserSvcAPIService) ReadSelfExecute(r ApiReadSelfRequest) (*UserSvcReadS
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 500 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiRefreshTokenRequest struct {
+	ctx context.Context
+	ApiService UserSvcAPI
+}
+
+func (r ApiRefreshTokenRequest) Execute() (*UserSvcRefreshTokenResponse, *http.Response, error) {
+	return r.ApiService.RefreshTokenExecute(r)
+}
+
+/*
+RefreshToken Refresh Token
+
+Refreshes an existing token, including inactive ones.
+The old token becomes inactive (if not already inactive), and a new, active token is issued.
+This allows continued verification of user roles without requiring a new login.
+Inactive tokens are refreshable unless explicitly revoked (no mechanism for this yet).
+Leaked tokens should be handled separately, via a revocation flag or deletion.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiRefreshTokenRequest
+*/
+func (a *UserSvcAPIService) RefreshToken(ctx context.Context) ApiRefreshTokenRequest {
+	return ApiRefreshTokenRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return UserSvcRefreshTokenResponse
+func (a *UserSvcAPIService) RefreshTokenExecute(r ApiRefreshTokenRequest) (*UserSvcRefreshTokenResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *UserSvcRefreshTokenResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.RefreshToken")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/user-svc/refresh-token"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
 			var v UserSvcErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

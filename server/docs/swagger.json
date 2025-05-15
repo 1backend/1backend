@@ -403,7 +403,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "description": "Fetch the current configuration from the server",
+                "description": "Fetch the current configuration from the server.",
                 "consumes": [
                     "application/json"
                 ],
@@ -1873,13 +1873,13 @@
                         }
                     },
                     "400": {
-                        "description": "error parsing download URL",
+                        "description": "Error Parsing Download URL",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
                     },
                     "404": {
-                        "description": "file not found",
+                        "description": "File Not Found",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
@@ -1924,13 +1924,13 @@
                         }
                     },
                     "400": {
-                        "description": "missing upload ID",
+                        "description": "Missing Upload ID",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
                     },
                     "404": {
-                        "description": "file not found",
+                        "description": "File Not Found",
                         "schema": {
                             "$ref": "#/definitions/file_svc.ErrorResponse"
                         }
@@ -2184,13 +2184,13 @@
                         }
                     },
                     "400": {
-                        "description": "missing file ID",
+                        "description": "Missing File ID",
                         "schema": {
                             "$ref": "#/definitions/image_svc.ErrorResponse"
                         }
                     },
                     "404": {
-                        "description": "file not found",
+                        "description": "File Not Found",
                         "schema": {
                             "$ref": "#/definitions/image_svc.ErrorResponse"
                         }
@@ -4582,6 +4582,42 @@
                 }
             }
         },
+        "/user-svc/refresh-token": {
+            "post": {
+                "description": "Refreshes an existing token, including inactive ones.\nThe old token becomes inactive (if not already inactive), and a new, active token is issued.\nThis allows continued verification of user roles without requiring a new login.\nInactive tokens are refreshable unless explicitly revoked (no mechanism for this yet).\nLeaked tokens should be handled separately, via a revocation flag or deletion.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Svc"
+                ],
+                "summary": "Refresh Token",
+                "operationId": "refreshToken",
+                "responses": {
+                    "200": {
+                        "description": "Refresh Token successful",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.RefreshTokenResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user-svc/register": {
             "post": {
                 "description": "Register a new user with a name, email, and password.",
@@ -4762,7 +4798,7 @@
                         }
                     },
                     "400": {
-                        "description": "Invalid JSON or missing permission id",
+                        "description": "Missing Permission",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
                         }
@@ -8781,7 +8817,7 @@
             ],
             "properties": {
                 "active": {
-                    "description": "Active tokens contain the most up-to-date information.\nWhen a user's role changes—due to role assignment, organization\ncreation/assignment, etc.—all existing tokens are marked inactive.\nActive tokens are reused during login, while inactive tokens\nare retained for historical reference.",
+                    "description": "Active tokens contain the most up-to-date information.\nWhen a user's role changes—due to role assignment, organization\ncreation/assignment, etc.—all existing tokens are marked inactive.\nActive tokens are reused during login, while inactive tokens\nare retained for historical reference.\n\nInactive tokens can still be refreshed to create a new active token.\nA separate mechanism for leaked tokens must be implemented (a different flag or outright deletion).",
                     "type": "boolean"
                 },
                 "createdAt": {
@@ -9369,6 +9405,17 @@
                             "$ref": "#/definitions/user_svc.User"
                         }
                     ]
+                }
+            }
+        },
+        "user_svc.RefreshTokenResponse": {
+            "type": "object",
+            "required": [
+                "token"
+            ],
+            "properties": {
+                "token": {
+                    "$ref": "#/definitions/user_svc.AuthToken"
                 }
             }
         },

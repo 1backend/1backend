@@ -1,0 +1,67 @@
+---
+id: refresh-token
+title: "Refresh Token"
+description: "Refreshes an existing token, including inactive ones."
+sidebar_label: "Refresh Token"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVttuGzcQ/ZUBXxoDq5VdJw2gpzpJETgJkqB2EBRZoxmRo13GXHLLixRFEJCPyBfmS4rhrm622oc+FH3ok1bkXM7MHB5yJRQF6XUXtbNiIn6lmafQUAC0QJ91iNrWEN0t2QK0lSYpXtAWZdRzAmcplJW9bgicUb0hTEm6lsLO6oGegXUR0HhCtdxunBSAVgGCpUUBg3EfQwfQISRSOboOgMa4RQDpbNQ2kYI5eT3TEhk5uBmkQB68MxRgoWPjUgRPfyTtGXBOAcbV2paVvbT7uQKgJ/B95Tg1BMkaCgHoc2e01NEswdPc3ZKCB9ZBS7JBq0MLM+chMrglxZOysq8I2WiIGhqXjIIpQYNWGVIQqEOPkcyygLlGwBx3KGFmsAbnQZEhXihFIVxHPu9eKjERA8RrDi8K4Sl0zgYKYrISP56e8s/RaUL2gJCkpBBmyYhCcB/JRvbBjsvMacafAjuuRJANtchfnWcQUfdpcmn3l/t23gdwcdBmzonaQmwIWhcipG4U3UhhJNB25nybQZSVfd+QBcwj/SHkoQL3vKbw/es3lThiv4oh6Nq2ZGMBztdo9Zcco7LSU1/SvglFWX7/+g2NuUPungMtep7fhp5lZS+O8CQFUqBS5lVmVAGLRhva8b03r2xvzzWTymRpdIjOa4mG+UaerOQs9xkp0UKI2himzzD3zCzIddFA6H0nRrtl2B2SmgNitilEjqvbzhA3homNoPQsQ4pbKroUva6buOXkCZMyLjsSEzF1zhBasS5Ej0ldZDoN2yFyg3g3O//lrlZHl7dEOyTU9UYcEHiqpODF+2vIE4kOMMWGbGQyU2ZZ1oSNGvyRyC/zxBuCd7xzNZdlZX9zKfc7C8oSdIQUNmZdmhot4ZaWgBE+jjngKMzluN8Y3dLyYx4gK+BWuT5xgxFeXL15DW76iWTMIGCmyagARt/SpLIjqIRLuhKTHdbLZ/CAyrosoBIp+N/V04cvHz96Ou1+qsTJ4GLSgUswqd45RQpx1KM0qR6d7ty8YzcEo0NkvcxSWbAqNIBhUlmAUc7aVzjhj0rcW3a+nqycr3tor18/e/p8PdjuuLGbY+rU31CD/S6PEWDN8sbiTUpMPuwRLBNmQ4/98NtgN1sUfevvBet9j5ix4cPTs/use2eZWc7rL6T+uXaS984fr/UYkkfHFP3SRvIWDVyRn5OHX3LMfwcSL2IduIWb08NdbCk2jq+nzgUeQ4exEROxOyqDfI02MwsZOsdZieQN246Nk2gaF+Lk7Oz8/LFY37CdTF7H5RWD7/E+IfTkLxJnuCcNy46gGkwqATPHLwZSMF2yWnQoKb82+lOKsicEzLxrDxQBXrGmA1nVOW0jK57m+A2hIu61xZY7czFQInd6R33s9Eta5hbyncY4870n83CoRc0VBzQUfmaZSQajd7aUrt2L/fYSrlLXOZ+JnZvUxNhNxuOzKcpbsoodxr28Hty4lyOL+VJotfSOe60lBegMRr5huRyjJdmQr+tNvudvX8H8vDw9yBYm4/FisShrm0rn6/HgF8ZYd2Z0Xp6WTWxNVmvybXgzu+qz7cCGBdY1+VK7cTYZc590NGxy9qQvRBSC6dDDPy0flWcckcnUot3DePCYEXfqXu1OwP9v2P/WG3Y4F5E+x3FnUOcXQybZatCKD9vbJb9q99XiphCsCmyzWk0x0Dtv1mtezre5mHy4KcQcveaa+d+62BxUlpdbWuZXqKSOD9IcTerP6B2JXO/r2Ns3V9divf4TXJSgeQ==
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Refresh Token"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/user-svc/refresh-token"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Refreshes an existing token, including inactive ones.
+The old token becomes inactive (if not already inactive), and a new, active token is issued.
+This allows continued verification of user roles without requiring a new login.
+Inactive tokens are refreshable unless explicitly revoked (no mechanism for this yet).
+Leaked tokens should be handled separately, via a revocation flag or deletion.
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Refresh Token successful","content":{"application/json":{"schema":{"properties":{"token":{"properties":{"active":{"description":"Active tokens contain the most up-to-date information.\nWhen a user's role changes—due to role assignment, organization\ncreation/assignment, etc.—all existing tokens are marked inactive.\nActive tokens are reused during login, while inactive tokens\nare retained for historical reference.\n\nInactive tokens can still be refreshed to create a new active token.\nA separate mechanism for leaked tokens must be implemented (a different flag or outright deletion).","type":"boolean"},"createdAt":{"type":"string"},"deletedAt":{"type":"string"},"id":{"type":"string"},"token":{"description":"Token is a signed JWT used to authenticate the user without querying the User Svc.\nYou can verify it using the public key at `/user-svc/public-key`.\n\nThe token is just a JSON object with fields like:\n- \"oui\": the user ID (e.g., \"usr_dC4K75Cbp6\")\n- \"olu\": the user slug (e.g., \"test-user-slug-0\")\n- \"oro\": a list of roles, such as:\n  - \"user-svc:user\"\n  - \"user-svc:org:{org_dC4K7NNDCG}:user\"","type":"string"},"updatedAt":{"type":"string"},"userId":{"type":"string"}},"required":["createdAt","id","token","updatedAt","userId"],"type":"object"}},"required":["token"],"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

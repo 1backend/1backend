@@ -606,6 +606,12 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "1backend/refresh-token",
+          label: "Refresh Token",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
           id: "1backend/register",
           label: "Register",
           className: "api-method post",

@@ -97,11 +97,7 @@ func (pc *permissionChecker) getUserServicePublicKey() (string, error) {
 // If not, it makes a request to the user service to check the permission.
 //
 // It also handles JWT expiration.
-// If the JWT is expired, it does not use the cache and directly calls the user service.
-//
-// Without this caching logic, the system could accept an old token and internally map it to
-// a refreshed one when checking permissions. However, because we cache per JWT and reject
-// expired tokens up front, clients are required to refresh and use up-to-date tokens themselves.
+// If the JWT is expired, it refreshes the token and maps the old request to the new one.
 func (pc *permissionChecker) HasPermission(
 	request *http.Request,
 	permission string,
@@ -127,7 +123,10 @@ func (pc *permissionChecker) HasPermission(
 			return nil, http.StatusUnauthorized, errors.Wrap(err, "failed to parse JWT")
 		}
 
-		if claims.ExpiresAt.Time.Before(time.Now().Add(5 * time.Second)) {
+		// Handle nil expiresAt for backwards compatibility.
+		// Can be removed later.
+		if claims.ExpiresAt == nil ||
+			claims.ExpiresAt.Time.Before(time.Now().Add(5*time.Second)) {
 			expired = true
 		}
 	}

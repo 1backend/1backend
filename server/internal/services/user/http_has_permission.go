@@ -240,25 +240,34 @@ func (s *UserService) getUserFromRequest(r *http.Request) (*user.User, error) {
 		return nil, fmt.Errorf("no auth header")
 	}
 
+	var token *user.AuthToken
+
 	t, err := s.authorizer.ParseJWT(s.publicKeyPem, authHeader)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to parse JWT")
 	}
-	if t.ExpiresAt.Time.Before(time.Now()) {
-		return nil, errors.New("token expired")
-	}
 
-	tokenI, found, err := s.authTokensStore.Query(
-		datastore.Equals(datastore.Field("token"), authHeader),
-	).FindOne()
-	if err != nil {
-		return nil, err
-	}
+	// Handle nil expiresAt for backwards compatibility.
+	// Can be removed later.
+	if t.ExpiresAt == nil || t.ExpiresAt.Time.Before(time.Now()) {
+		token, err = s.refreshToken(authHeader)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to refresh token")
+		}
+	} else {
+		tokenI, found, err := s.authTokensStore.Query(
+			datastore.Equals(datastore.Field("token"), authHeader),
+		).FindOne()
+		if err != nil {
+			return nil, err
+		}
 
-	if !found {
-		return nil, errors.New("token not found")
+		if !found {
+			return nil, errors.New("token not found")
+		}
+
+		token = tokenI.(*user.AuthToken)
 	}
-	token := tokenI.(*user.AuthToken)
 
 	userI, found, err := s.usersStore.Query(
 		datastore.Id(token.UserId),

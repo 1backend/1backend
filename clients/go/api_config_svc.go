@@ -25,7 +25,7 @@ type ConfigSvcAPI interface {
 	/*
 	GetConfig Get Config
 
-	Fetch the current configuration from the server
+	Fetch the current configuration from the server.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiGetConfigRequest
@@ -73,7 +73,7 @@ func (r ApiGetConfigRequest) Execute() (*ConfigSvcGetConfigResponse, *http.Respo
 /*
 GetConfig Get Config
 
-Fetch the current configuration from the server
+Fetch the current configuration from the server.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiGetConfigRequest

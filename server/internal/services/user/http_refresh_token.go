@@ -26,7 +26,11 @@ import (
 
 // @ID refreshToken
 // @Summary Refresh Token
-// @Description Refreshes a token.
+// @Description Refreshes an existing token, including inactive ones.
+// @Description The old token becomes inactive (if not already inactive), and a new, active token is issued.
+// @Description This allows continued verification of user roles without requiring a new login.
+// @Description Inactive tokens are refreshable unless explicitly revoked (no mechanism for this yet).
+// @Description Leaked tokens should be handled separately, via a revocation flag or deletion.
 // @Tags User Svc
 // @Accept json
 // @Produce json
@@ -35,30 +39,26 @@ import (
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Router /user-svc/refresh-token [post]
 func (s *UserService) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	token, exists := s.authorizer.TokenFromRequest(r)
+	stringToken, exists := s.authorizer.TokenFromRequest(r)
 	if !exists {
 		endpoint.Unauthorized(w)
 		return
 	}
 
-	_, err := s.refreshToken(token)
+	token, err := s.refreshToken(stringToken)
 	if err != nil {
-		switch err.Error() {
-		case "unauthorized":
-			endpoint.WriteString(w, http.StatusUnauthorized, "Invalid Password")
-		case "not found":
-			endpoint.WriteString(w, http.StatusBadRequest, "Not Found")
-		default:
-			logger.Error(
-				"Failed to login",
-				slog.Any("error", err),
-			)
-			endpoint.InternalServerError(w)
-		}
+		logger.Error(
+			"Failed to login",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
+
 		return
 	}
 
-	bs, _ := json.Marshal(user.LoginResponse{})
+	bs, _ := json.Marshal(user.RefreshTokenResponse{
+		Token: token,
+	})
 	_, err = w.Write(bs)
 	if err != nil {
 		logger.Error("Error writing response", slog.Any("error", err))
@@ -67,11 +67,11 @@ func (s *UserService) RefreshToken(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) refreshToken(
-	token string,
+	stringToken string,
 ) (*user.AuthToken, error) {
 
-	authTokenI, found, err := s.authTokensStore.Query(
-		datastore.Equals(datastore.Field("token"), token),
+	tokenToBeRefreshedI, found, err := s.authTokensStore.Query(
+		datastore.Equals(datastore.Field("token"), stringToken),
 	).FindOne()
 	if err != nil {
 		return nil, err
@@ -80,8 +80,55 @@ func (s *UserService) refreshToken(
 		return nil, errors.New("token not found")
 	}
 
-	logger.Info("authTokenI", slog.Any("authTokenI", authTokenI))
-	//return token.(*user.AuthToken), nil
+	tokenToBeRefreshed := tokenToBeRefreshedI.(*user.AuthToken)
 
-	return nil, nil
+	userI, found, err := s.usersStore.Query(
+		datastore.Equals(datastore.Field("id"), tokenToBeRefreshed.UserId),
+	).FindOne()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query user")
+	}
+	if !found {
+		return nil, errors.New("user not found")
+	}
+	usr := userI.(*user.User)
+
+	activeTokenI, found, err := s.authTokensStore.Query(
+		datastore.Equals(datastore.Field("userId"), usr.Id),
+		datastore.Equals(datastore.Field("active"), true),
+	).FindOne()
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, errors.New("active token not found")
+	}
+
+	activeToken := activeTokenI.(*user.AuthToken)
+
+	if tokenToBeRefreshed.Active {
+		err = s.inactivateToken(tokenToBeRefreshed.Id)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to inactivate token")
+		}
+	}
+
+	if activeToken.Id != tokenToBeRefreshed.Id {
+		err = s.inactivateToken(activeToken.Id)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to inactivate token")
+		}
+	}
+
+	token, err := s.generateAuthToken(usr)
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.authTokensStore.Create(token)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating token")
+	}
+
+	return token, nil
 }
