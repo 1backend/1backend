@@ -40,6 +40,9 @@ func (c *AuthToken) GetId() string {
 	return c.Id
 }
 
-func (c *AuthToken) GetUpdatedAt() string {
-	return c.Id
+type RefreshTokenRequest struct {
+}
+
+type RefreshTokenResponse struct {
+	Token *AuthToken `json:"token" binding:"required"`
 }

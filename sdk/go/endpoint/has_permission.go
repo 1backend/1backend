@@ -14,15 +14,19 @@
 package endpoint
 
 import (
+	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"net/http"
+	"strings"
+	"sync"
 	"time"
 
 	"github.com/pkg/errors"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/dgraph-io/ristretto"
 )
@@ -45,11 +49,15 @@ type PermissionChecker interface {
 }
 
 type permissionChecker struct {
-	clientFactory   client.ClientFactory
-	permissionCache *ristretto.Cache
+	clientFactory        client.ClientFactory
+	permissionCache      *ristretto.Cache
+	userServicePublicKey string
+	mutex                sync.Mutex
 }
 
-func NewPermissionChecker(clientFactory client.ClientFactory) PermissionChecker {
+func NewPermissionChecker(
+	clientFactory client.ClientFactory,
+) PermissionChecker {
 	permissionCache, err := ristretto.NewCache(&ristretto.Config{
 		NumCounters: 1e5,     // number of keys to track frequency (10x max items)
 		MaxCost:     1 << 20, // max cost in bytes (~1 MiB)
@@ -66,13 +74,67 @@ func NewPermissionChecker(clientFactory client.ClientFactory) PermissionChecker 
 	}
 }
 
+func (pc *permissionChecker) getUserServicePublicKey() (string, error) {
+	pc.mutex.Lock()
+	defer pc.mutex.Unlock()
+
+	if pc.userServicePublicKey == "" {
+		userServicePublicKey, _, err := pc.clientFactory.Client().
+			UserSvcAPI.GetPublicKey(context.Background()).Execute()
+
+		if err != nil {
+			return "", errors.Wrap(err, "user service get public key endpoint failed")
+		}
+		pc.userServicePublicKey = userServicePublicKey.PublicKey
+	}
+
+	return pc.userServicePublicKey, nil
+}
+
+// HasPermission checks if the user has the specified permission.
+// It first checks the cache for a cached response.
+// If a cached response is found, it returns that.
+// If not, it makes a request to the user service to check the permission.
+//
+// It also handles JWT expiration.
+// If the JWT is expired, it does not use the cache and directly calls the user service.
+//
+// Without this caching logic, the system could accept an old token and internally map it to
+// a refreshed one when checking permissions. However, because we cache per JWT and reject
+// expired tokens up front, clients are required to refresh and use up-to-date tokens themselves.
 func (pc *permissionChecker) HasPermission(
 	request *http.Request,
 	permission string,
 ) (*openapi.UserSvcHasPermissionResponse, int, error) {
-	key := ""
+	userServicePublicKey, err := pc.getUserServicePublicKey()
+	if err != nil {
+		return nil, http.StatusInternalServerError, errors.Wrap(err, "failed to get user service public key")
+	}
+
+	expired := false
+
 	jwt := request.Header.Get("Authorization")
+
 	if jwt != "" {
+		// First we check if the JWT is expired or not as that aspect cannot be cached.
+		// If the JWT is expired, we consider it a cache miss
+		// and let the request go through to the user service
+		claims, err := (auth.AuthorizerImpl{}).ParseJWT(
+			userServicePublicKey,
+			strings.Replace(jwt, "Bearer ", "", -1),
+		)
+		if err != nil {
+			return nil, http.StatusUnauthorized, errors.Wrap(err, "failed to parse JWT")
+		}
+
+		if claims.ExpiresAt.Time.Before(time.Now().Add(5 * time.Second)) {
+			expired = true
+		}
+	}
+
+	key := ""
+
+	if jwt != "" && !expired {
 		hash := sha256.Sum256([]byte(jwt))
 		key = fmt.Sprintf("%s:%s", hex.EncodeToString(hash[:]), permission)
 

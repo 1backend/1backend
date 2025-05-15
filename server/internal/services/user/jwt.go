@@ -7,6 +7,7 @@ import (
 	"encoding/pem"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 
@@ -55,18 +56,41 @@ func privateKeyFromString(privateKeyPem string) (*rsa.PrivateKey, error) {
 	return privateKey, nil
 }
 
-func generateJWT(
+func (s *UserService) generateJWT(
 	user *usertypes.User,
 	roles []string,
 	activeOrganizationId string,
 	privateKey *rsa.PrivateKey,
 ) (string, error) {
+	// config, err := s.getConfig()
+	// if err != nil {
+	// 	return "", errors.Wrap(err, "failed to get config")
+	// }
+	//
+	// expiration := tokenExpiration
+	// if config["user-svc"] != nil &&
+	// 	config["user-svc"].(map[string]any)["token-expiration"] != nil {
+	// 	dur, err := time.ParseDuration(
+	// 		config["user-svc"].(map[string]any)["token-expiration"].(string),
+	// 	)
+	// 	if err == nil {
+	// 		expiration = dur
+	// 	} else {
+	// 		logger.Error(
+	// 			"Failed to parse token expiration",
+	// 			slog.Any("error", err),
+	// 		)
+	// 	}
+	// }
+
 	claims := &auth.Claims{
 		UserId:               user.Id,
 		Slug:                 user.Slug,
 		Roles:                roles,
 		ActiveOrganizationId: activeOrganizationId,
-		RegisteredClaims:     jwt.RegisteredClaims{},
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(tokenExpiration)),
+		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)

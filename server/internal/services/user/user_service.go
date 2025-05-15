@@ -13,7 +13,9 @@
 package userservice
 
 import (
+	"context"
 	"crypto/rsa"
+	"encoding/json"
 	"net/http"
 	"time"
 
@@ -47,9 +49,10 @@ type UserService struct {
 	permitsStore       datastore.DataStore
 	enrollsStore       datastore.DataStore
 
-	privateKey    *rsa.PrivateKey
-	publicKeyPem  string
-	serviceUserId string
+	privateKey   *rsa.PrivateKey
+	publicKeyPem string
+
+	configCache map[string]any
 
 	isTest bool
 }
@@ -153,17 +156,21 @@ func NewUserService(
 		isTest:             isTest,
 	}
 
-	err = service.registerPermits()
-	if err != nil {
-		return nil, err
-	}
-
-	err = service.bootstrap()
-	if err != nil {
-		return nil, err
-	}
-
 	return service, nil
+}
+
+func (us *UserService) Start() error {
+	err := us.registerPermits()
+	if err != nil {
+		return err
+	}
+
+	err = us.bootstrap()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (us *UserService) RegisterRoutes(router *mux.Router) {
@@ -360,14 +367,14 @@ func (s *UserService) bootstrap() error {
 			return errors.Wrap(err, "failed to upsert credential")
 		}
 
-		usr, err := s.register(slug, pw,
+		tok, err := s.register(slug, pw,
 			"User Svc", []string{
 				usertypes.RoleUser,
 			})
 		if err != nil {
 			return errors.Wrap(err, "failed to register user-svc")
 		}
-		s.serviceUserId = usr.Id
+		s.token = tok.Token
 	} else {
 		cred := credentials[0].(*auth.Credential)
 
@@ -379,12 +386,34 @@ func (s *UserService) bootstrap() error {
 			return errors.Wrap(err, "failed to login user-svc")
 		}
 
-		usr, err := s.readSelf(tok.Token)
-		if err != nil {
-			return errors.Wrap(err, "failed to read user by token")
-		}
-		s.serviceUserId = usr.Id
+		s.token = tok.Token
 	}
 
 	return nil
+}
+
+// This is not used yet because of a circular dependency issue.
+func (s *UserService) getConfig() (map[string]any, error) {
+	if s.configCache != nil {
+		return s.configCache, nil
+	}
+
+	rsp, _, err := s.clientFactory.Client().
+		ConfigSvcAPI.GetConfig(context.Background()).
+		Execute()
+	if err != nil {
+		return nil, err
+	}
+
+	if rsp.Config.DataJson != nil {
+		jsonBytes := *rsp.Config.DataJson
+		var m map[string]any
+		err = json.Unmarshal([]byte(jsonBytes), &m)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to unmarshal config")
+		}
+		s.configCache = m
+	}
+
+	return s.configCache, nil
 }

@@ -460,6 +460,11 @@ func BigBang(options *Options) (*Universe, error) {
 	return &Universe{
 		Router: router,
 		StarterFunc: func() error {
+			err = userService.Start()
+			if err != nil {
+				return errors.Wrap(err, "user service start failed")
+			}
+
 			err = promptService.Start()
 			if err != nil {
 				return errors.Wrap(err, "prompt service start failed")

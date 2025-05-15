@@ -14,11 +14,13 @@ package userservice
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"strings"
+	"time"
+
+	"github.com/pkg/errors"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
@@ -236,6 +238,14 @@ func (s *UserService) getUserFromRequest(r *http.Request) (*user.User, error) {
 
 	if authHeader == "" || authHeader == "Bearer" {
 		return nil, fmt.Errorf("no auth header")
+	}
+
+	t, err := s.authorizer.ParseJWT(s.publicKeyPem, authHeader)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to parse JWT")
+	}
+	if t.ExpiresAt.Time.Before(time.Now()) {
+		return nil, errors.New("token expired")
 	}
 
 	tokenI, found, err := s.authTokensStore.Query(
