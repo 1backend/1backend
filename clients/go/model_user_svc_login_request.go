@@ -21,6 +21,7 @@ var _ MappedNullable = &UserSvcLoginRequest{}
 // UserSvcLoginRequest struct for UserSvcLoginRequest
 type UserSvcLoginRequest struct {
 	Contact *string `json:"contact,omitempty"`
+	Device *string `json:"device,omitempty"`
 	Password *string `json:"password,omitempty"`
 	Slug *string `json:"slug,omitempty"`
 }
@@ -72,6 +73,38 @@ func (o *UserSvcLoginRequest) HasContact() bool {
 // SetContact gets a reference to the given string and assigns it to the Contact field.
 func (o *UserSvcLoginRequest) SetContact(v string) {
 	o.Contact = &v
+}
+
+// GetDevice returns the Device field value if set, zero value otherwise.
+func (o *UserSvcLoginRequest) GetDevice() string {
+	if o == nil || IsNil(o.Device) {
+		var ret string
+		return ret
+	}
+	return *o.Device
+}
+
+// GetDeviceOk returns a tuple with the Device field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcLoginRequest) GetDeviceOk() (*string, bool) {
+	if o == nil || IsNil(o.Device) {
+		return nil, false
+	}
+	return o.Device, true
+}
+
+// HasDevice returns a boolean if a field has been set.
+func (o *UserSvcLoginRequest) HasDevice() bool {
+	if o != nil && !IsNil(o.Device) {
+		return true
+	}
+
+	return false
+}
+
+// SetDevice gets a reference to the given string and assigns it to the Device field.
+func (o *UserSvcLoginRequest) SetDevice(v string) {
+	o.Device = &v
 }
 
 // GetPassword returns the Password field value if set, zero value otherwise.
@@ -150,6 +183,9 @@ func (o UserSvcLoginRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Contact) {
 		toSerialize["contact"] = o.Contact
+	}
+	if !IsNil(o.Device) {
+		toSerialize["device"] = o.Device
 	}
 	if !IsNil(o.Password) {
 		toSerialize["password"] = o.Password

@@ -48,7 +48,7 @@ func (s *UserService) SaveSelf(w http.ResponseWriter, r *http.Request) {
 	token, err := s.refreshToken(stringToken)
 	if err != nil {
 		logger.Error(
-			"Failed to login",
+			"Failed to refresh token",
 			slog.Any("error", err),
 		)
 		endpoint.InternalServerError(w)

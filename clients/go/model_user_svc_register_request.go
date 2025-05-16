@@ -23,6 +23,7 @@ var _ MappedNullable = &UserSvcRegisterRequest{}
 // UserSvcRegisterRequest struct for UserSvcRegisterRequest
 type UserSvcRegisterRequest struct {
 	Contact *UserSvcContactInput `json:"contact,omitempty"`
+	Device *string `json:"device,omitempty"`
 	Name *string `json:"name,omitempty"`
 	Password *string `json:"password,omitempty"`
 	// Slug is a URL-friendly unique (inside the 1Backend platform) identifier for the `user`. Required due to its central role in the platform. If your project has no use for a slug, just derive it from the email or similar.
@@ -79,6 +80,38 @@ func (o *UserSvcRegisterRequest) HasContact() bool {
 // SetContact gets a reference to the given UserSvcContactInput and assigns it to the Contact field.
 func (o *UserSvcRegisterRequest) SetContact(v UserSvcContactInput) {
 	o.Contact = &v
+}
+
+// GetDevice returns the Device field value if set, zero value otherwise.
+func (o *UserSvcRegisterRequest) GetDevice() string {
+	if o == nil || IsNil(o.Device) {
+		var ret string
+		return ret
+	}
+	return *o.Device
+}
+
+// GetDeviceOk returns a tuple with the Device field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcRegisterRequest) GetDeviceOk() (*string, bool) {
+	if o == nil || IsNil(o.Device) {
+		return nil, false
+	}
+	return o.Device, true
+}
+
+// HasDevice returns a boolean if a field has been set.
+func (o *UserSvcRegisterRequest) HasDevice() bool {
+	if o != nil && !IsNil(o.Device) {
+		return true
+	}
+
+	return false
+}
+
+// SetDevice gets a reference to the given string and assigns it to the Device field.
+func (o *UserSvcRegisterRequest) SetDevice(v string) {
+	o.Device = &v
 }
 
 // GetName returns the Name field value if set, zero value otherwise.
@@ -181,6 +214,9 @@ func (o UserSvcRegisterRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Contact) {
 		toSerialize["contact"] = o.Contact
+	}
+	if !IsNil(o.Device) {
+		toSerialize["device"] = o.Device
 	}
 	if !IsNil(o.Name) {
 		toSerialize["name"] = o.Name

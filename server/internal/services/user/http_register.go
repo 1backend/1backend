@@ -107,6 +107,7 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	token, err := s.login(&user.LoginRequest{
 		Slug:     req.Slug,
 		Password: req.Password,
+		Device:   req.Device,
 	})
 	if err != nil {
 		logger.Error(

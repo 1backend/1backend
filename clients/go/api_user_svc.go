@@ -2161,6 +2161,13 @@ func (a *UserSvcAPIService) LoginExecute(r ApiLoginRequest) (*UserSvcLoginRespon
 type ApiReadSelfRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
+	body *UserSvcReadSelfRequest
+}
+
+// Read Self Request
+func (r ApiReadSelfRequest) Body(body UserSvcReadSelfRequest) ApiReadSelfRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiReadSelfRequest) Execute() (*UserSvcReadSelfResponse, *http.Response, error) {
@@ -2207,7 +2214,7 @@ func (a *UserSvcAPIService) ReadSelfExecute(r ApiReadSelfRequest) (*UserSvcReadS
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -2223,6 +2230,8 @@ func (a *UserSvcAPIService) ReadSelfExecute(r ApiReadSelfRequest) (*UserSvcReadS
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {

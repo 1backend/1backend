@@ -368,6 +368,7 @@ Class | Method | HTTP request | Description
  - [UserSvcOrganization](docs/UserSvcOrganization.md)
  - [UserSvcPermit](docs/UserSvcPermit.md)
  - [UserSvcPermitInput](docs/UserSvcPermitInput.md)
+ - [UserSvcReadSelfRequest](docs/UserSvcReadSelfRequest.md)
  - [UserSvcReadSelfResponse](docs/UserSvcReadSelfResponse.md)
  - [UserSvcRefreshTokenResponse](docs/UserSvcRefreshTokenResponse.md)
  - [UserSvcRegisterRequest](docs/UserSvcRegisterRequest.md)

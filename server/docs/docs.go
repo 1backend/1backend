@@ -4746,6 +4746,16 @@ const docTemplate = `{
                 ],
                 "summary": "Read Self",
                 "operationId": "readSelf",
+                "parameters": [
+                    {
+                        "description": "Read Self Request",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ReadSelfRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -8832,7 +8842,15 @@ const docTemplate = `{
                 "deletedAt": {
                     "type": "string"
                 },
+                "device": {
+                    "description": "The device the token is associated with.\nThis in combination with LastRefreshedAt can be used to\ndetermine if the token is still in use, and lets us prune unused tokens.",
+                    "type": "string"
+                },
                 "id": {
+                    "type": "string"
+                },
+                "lastRefreshedAt": {
+                    "description": "The last time the token was refreshed.\nThis is used to determine if the token is still in use.",
                     "type": "string"
                 },
                 "token": {
@@ -9242,6 +9260,9 @@ const docTemplate = `{
                 "contact": {
                     "type": "string"
                 },
+                "device": {
+                    "type": "string"
+                },
                 "password": {
                     "type": "string"
                 },
@@ -9377,9 +9398,18 @@ const docTemplate = `{
                 }
             }
         },
+        "user_svc.ReadSelfRequest": {
+            "type": "object",
+            "properties": {
+                "countTokens": {
+                    "type": "boolean"
+                }
+            }
+        },
         "user_svc.ReadSelfResponse": {
             "type": "object",
             "required": [
+                "tokenCount",
                 "user"
             ],
             "properties": {
@@ -9407,6 +9437,9 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
+                },
+                "tokenCount": {
+                    "type": "integer"
                 },
                 "user": {
                     "description": "The user who made the request.",
@@ -9437,6 +9470,9 @@ const docTemplate = `{
             "properties": {
                 "contact": {
                     "$ref": "#/definitions/user_svc.ContactInput"
+                },
+                "device": {
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"

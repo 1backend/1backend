@@ -90,7 +90,9 @@ func (c *User) GetUpdatedAt() string {
 	return c.Id
 }
 
-type ReadSelfRequest struct{}
+type ReadSelfRequest struct {
+	CountTokens bool `json:"countTokens,omitempty"`
+}
 
 type ReadSelfResponse struct {
 	// The user who made the request.
@@ -107,6 +109,8 @@ type ReadSelfResponse struct {
 
 	// Active organization of the caller user, if it has any.
 	ActiveOrganizationId string `json:"activeOrganizationId,omitempty"`
+
+	TokenCount int64 `json:"tokenCount" binding:"required"`
 }
 
 type RegisterRequest struct {
@@ -120,6 +124,8 @@ type RegisterRequest struct {
 	Contact ContactInput `json:"contact,omitempty"`
 
 	Password string `json:"password,omitempty"`
+
+	Device string `json:"device,omitempty"`
 }
 
 type RegisterResponse struct {
@@ -130,6 +136,7 @@ type LoginRequest struct {
 	Slug     string `json:"slug,omitempty"`
 	Contact  string `json:"contact,omitempty"`
 	Password string `json:"password"`
+	Device   string `json:"device,omitempty"`
 }
 
 type LoginResponse struct {

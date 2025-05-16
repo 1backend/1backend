@@ -28,6 +28,14 @@ type AuthToken struct {
 	//   - "user-svc:org:{org_dC4K7NNDCG}:user"
 	Token string `json:"token,omitempty" binding:"required"`
 
+	// The device the token is associated with.
+	// This in combination with LastRefreshedAt can be used to
+	// determine if the token is still in use, and lets us prune unused tokens.
+	Device string `json:"device,omitempty"`
+	// The last time the token was refreshed.
+	// This is used to determine if the token is still in use.
+	LastRefreshedAt *time.Time `json:"lastRefreshedAt,omitempty"`
+
 	// Active tokens contain the most up-to-date information.
 	// When a user's role changes—due to role assignment, organization
 	// creation/assignment, etc.—all existing tokens are marked inactive.
