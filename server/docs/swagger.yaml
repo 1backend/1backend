@@ -2730,7 +2730,18 @@ definitions:
         type: string
       deletedAt:
         type: string
+      device:
+        description: |-
+          The device the token is associated with.
+          This in combination with LastRefreshedAt can be used to
+          determine if the token is still in use, and lets us prune unused tokens.
+        type: string
       id:
+        type: string
+      lastRefreshedAt:
+        description: |-
+          The last time the token was refreshed.
+          This is used to determine if the token is still in use.
         type: string
       token:
         description: |-
@@ -3069,6 +3080,8 @@ definitions:
     properties:
       contact:
         type: string
+      device:
+        type: string
       password:
         type: string
       slug:
@@ -3173,6 +3186,11 @@ definitions:
     required:
     - permission
     type: object
+  user_svc.ReadSelfRequest:
+    properties:
+      countTokens:
+        type: boolean
+    type: object
   user_svc.ReadSelfResponse:
     properties:
       activeOrganizationId:
@@ -3193,11 +3211,14 @@ definitions:
         items:
           type: string
         type: array
+      tokenCount:
+        type: integer
       user:
         allOf:
         - $ref: '#/definitions/user_svc.User'
         description: The user who made the request.
     required:
+    - tokenCount
     - user
     type: object
   user_svc.RefreshTokenResponse:
@@ -3211,6 +3232,8 @@ definitions:
     properties:
       contact:
         $ref: '#/definitions/user_svc.ContactInput'
+      device:
+        type: string
       name:
         type: string
       password:
@@ -6594,6 +6617,12 @@ paths:
         While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,
         this endpoint returns additional data, including the full user object and associated organizations.
       operationId: readSelf
+      parameters:
+      - description: Read Self Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/user_svc.ReadSelfRequest'
       produces:
       - application/json
       responses:

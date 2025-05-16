@@ -45,11 +45,26 @@ export interface UserSvcAuthToken {
      */
     deletedAt?: string;
     /**
+     * The device the token is associated with.
+     * This in combination with LastRefreshedAt can be used to
+     * determine if the token is still in use, and lets us prune unused tokens.
+     * @type {string}
+     * @memberof UserSvcAuthToken
+     */
+    device?: string;
+    /**
      * 
      * @type {string}
      * @memberof UserSvcAuthToken
      */
     id: string;
+    /**
+     * The last time the token was refreshed.
+     * This is used to determine if the token is still in use.
+     * @type {string}
+     * @memberof UserSvcAuthToken
+     */
+    lastRefreshedAt?: string;
     /**
      * Token is a signed JWT used to authenticate the user without querying the User Svc.
      * You can verify it using the public key at `/user-svc/public-key`.
@@ -103,7 +118,9 @@ export function UserSvcAuthTokenFromJSONTyped(json: any, ignoreDiscriminator: bo
         'active': json['active'] == null ? undefined : json['active'],
         'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
+        'device': json['device'] == null ? undefined : json['device'],
         'id': json['id'],
+        'lastRefreshedAt': json['lastRefreshedAt'] == null ? undefined : json['lastRefreshedAt'],
         'token': json['token'],
         'updatedAt': json['updatedAt'],
         'userId': json['userId'],
@@ -124,7 +141,9 @@ export function UserSvcAuthTokenToJSONTyped(value?: UserSvcAuthToken | null, ign
         'active': value['active'],
         'createdAt': value['createdAt'],
         'deletedAt': value['deletedAt'],
+        'device': value['device'],
         'id': value['id'],
+        'lastRefreshedAt': value['lastRefreshedAt'],
         'token': value['token'],
         'updatedAt': value['updatedAt'],
         'userId': value['userId'],

@@ -9,11 +9,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export declare class UserSvcLoginRequest {
-    'contact'?: string;
-    'device'?: string;
-    'password'?: string;
-    'slug'?: string;
+export declare class UserSvcReadSelfRequest {
+    'countTokens'?: boolean;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

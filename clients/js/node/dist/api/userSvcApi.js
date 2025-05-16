@@ -922,9 +922,10 @@ export class UserSvcApi {
     /**
      * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
      * @summary Read Self
+     * @param body Read Self Request
      */
-    readSelf() {
-        return __awaiter(this, arguments, void 0, function* (options = { headers: {} }) {
+    readSelf(body_1) {
+        return __awaiter(this, arguments, void 0, function* (body, options = { headers: {} }) {
             const localVarPath = this.basePath + '/user-svc/self';
             let localVarQueryParameters = {};
             let localVarHeaderParams = Object.assign({}, this._defaultHeaders);
@@ -946,6 +947,7 @@ export class UserSvcApi {
                 uri: localVarPath,
                 useQuerystring: this._useQuerystring,
                 json: true,
+                body: ObjectSerializer.serialize(body, "UserSvcReadSelfRequest")
             };
             let authenticationPromise = Promise.resolve();
             if (this.authentications.BearerAuth.apiKey) {

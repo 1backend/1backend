@@ -32,8 +32,18 @@ UserSvcAuthToken.attributeTypeMap = [
         "type": "string"
     },
     {
+        "name": "device",
+        "baseName": "device",
+        "type": "string"
+    },
+    {
         "name": "id",
         "baseName": "id",
+        "type": "string"
+    },
+    {
+        "name": "lastRefreshedAt",
+        "baseName": "lastRefreshedAt",
         "type": "string"
     },
     {

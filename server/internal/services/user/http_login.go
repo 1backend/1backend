@@ -142,10 +142,15 @@ func (s *UserService) login(
 		return nil, errors.New("unauthorized")
 	}
 
+	if request.Device == "" {
+		request.Device = defaultDevice
+	}
+
 	// Let's see if there is an active token we can reuse
 	tokenI, found, err := s.authTokensStore.Query(
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 		datastore.Equals(datastore.Field("active"), true),
+		datastore.Equals(datastore.Field("device"), request.Device),
 	).FindOne()
 	if err != nil {
 		return nil, err
@@ -172,6 +177,8 @@ func (s *UserService) login(
 	if err != nil {
 		return nil, err
 	}
+
+	token.Device = request.Device
 
 	err = s.authTokensStore.Create(token)
 	if err != nil {

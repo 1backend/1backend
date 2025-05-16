@@ -27,6 +27,12 @@ export interface UserSvcRegisterRequest {
      * @type {string}
      * @memberof UserSvcRegisterRequest
      */
+    device?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserSvcRegisterRequest
+     */
     name?: string;
     /**
      *

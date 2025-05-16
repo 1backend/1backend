@@ -190,6 +190,7 @@ export * from './userSvcOrderDirection';
 export * from './userSvcOrganization';
 export * from './userSvcPermit';
 export * from './userSvcPermitInput';
+export * from './userSvcReadSelfRequest';
 export * from './userSvcReadSelfResponse';
 export * from './userSvcRefreshTokenResponse';
 export * from './userSvcRegisterRequest';
@@ -397,6 +398,7 @@ import { UserSvcOrderDirection } from './userSvcOrderDirection';
 import { UserSvcOrganization } from './userSvcOrganization';
 import { UserSvcPermit } from './userSvcPermit';
 import { UserSvcPermitInput } from './userSvcPermitInput';
+import { UserSvcReadSelfRequest } from './userSvcReadSelfRequest';
 import { UserSvcReadSelfResponse } from './userSvcReadSelfResponse';
 import { UserSvcRefreshTokenResponse } from './userSvcRefreshTokenResponse';
 import { UserSvcRegisterRequest } from './userSvcRegisterRequest';
@@ -618,6 +620,7 @@ let typeMap = {
     "UserSvcOrganization": UserSvcOrganization,
     "UserSvcPermit": UserSvcPermit,
     "UserSvcPermitInput": UserSvcPermitInput,
+    "UserSvcReadSelfRequest": UserSvcReadSelfRequest,
     "UserSvcReadSelfResponse": UserSvcReadSelfResponse,
     "UserSvcRefreshTokenResponse": UserSvcRefreshTokenResponse,
     "UserSvcRegisterRequest": UserSvcRegisterRequest,

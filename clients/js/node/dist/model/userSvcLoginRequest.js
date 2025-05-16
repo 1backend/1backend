@@ -22,6 +22,11 @@ UserSvcLoginRequest.attributeTypeMap = [
         "type": "string"
     },
     {
+        "name": "device",
+        "baseName": "device",
+        "type": "string"
+    },
+    {
         "name": "password",
         "baseName": "password",
         "type": "string"

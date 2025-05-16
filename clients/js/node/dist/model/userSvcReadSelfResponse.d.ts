@@ -29,6 +29,7 @@ export declare class UserSvcReadSelfResponse {
     * Roles the token has that made this request.
     */
     'roles'?: Array<string>;
+    'tokenCount': number;
     /**
     * The user who made the request.
     */

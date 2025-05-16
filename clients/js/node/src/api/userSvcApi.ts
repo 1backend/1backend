@@ -31,6 +31,7 @@ import { UserSvcListUsersRequest } from '../model/userSvcListUsersRequest';
 import { UserSvcListUsersResponse } from '../model/userSvcListUsersResponse';
 import { UserSvcLoginRequest } from '../model/userSvcLoginRequest';
 import { UserSvcLoginResponse } from '../model/userSvcLoginResponse';
+import { UserSvcReadSelfRequest } from '../model/userSvcReadSelfRequest';
 import { UserSvcReadSelfResponse } from '../model/userSvcReadSelfResponse';
 import { UserSvcRefreshTokenResponse } from '../model/userSvcRefreshTokenResponse';
 import { UserSvcRegisterRequest } from '../model/userSvcRegisterRequest';
@@ -974,8 +975,9 @@ export class UserSvcApi {
     /**
      * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
      * @summary Read Self
+     * @param body Read Self Request
      */
-    public async readSelf (options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: UserSvcReadSelfResponse;  }> {
+    public async readSelf (body?: UserSvcReadSelfRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: UserSvcReadSelfResponse;  }> {
         const localVarPath = this.basePath + '/user-svc/self';
         let localVarQueryParameters: any = {};
         let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
@@ -999,6 +1001,7 @@ export class UserSvcApi {
             uri: localVarPath,
             useQuerystring: this._useQuerystring,
             json: true,
+            body: ObjectSerializer.serialize(body, "UserSvcReadSelfRequest")
         };
 
         let authenticationPromise = Promise.resolve();

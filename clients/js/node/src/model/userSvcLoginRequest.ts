@@ -14,6 +14,7 @@ import { RequestFile } from './models';
 
 export class UserSvcLoginRequest {
     'contact'?: string;
+    'device'?: string;
     'password'?: string;
     'slug'?: string;
 
@@ -23,6 +24,11 @@ export class UserSvcLoginRequest {
         {
             "name": "contact",
             "baseName": "contact",
+            "type": "string"
+        },
+        {
+            "name": "device",
+            "baseName": "device",
             "type": "string"
         },
         {

@@ -33,12 +33,26 @@ import (
 // @Tags User Svc
 // @Accept json
 // @Produce json
+// @Param body body user.ReadSelfRequest false "Read Self Request"
 // @Success 200 {object} user.ReadSelfResponse
 // @Failure 400 {object} user.ErrorResponse "Token Missing"
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
 // @Router /user-svc/self [post]
 func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
+	request := user.ReadSelfRequest{}
+	if r.ContentLength != 0 {
+		err := json.NewDecoder(r.Body).Decode(&request)
+		if err != nil {
+			logger.Error(
+				"Failed to decode request",
+				slog.Any("error", err),
+			)
+			endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
+			return
+		}
+		defer r.Body.Close()
+	}
 
 	claim, err := s.parseJWTFromRequest(r)
 	if err != nil {
@@ -82,13 +96,29 @@ func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bs, _ := json.Marshal(user.ReadSelfResponse{
+	rsp := user.ReadSelfResponse{
 		User:                 usr,
 		Roles:                claim.Roles,
 		Organizations:        orgs,
 		ActiveOrganizationId: activeOrgId,
 		Contacts:             contacts,
-	})
+	}
+
+	if request.CountTokens {
+		tokenCount, err := s.countTokens(usr.Id)
+		if err != nil {
+			logger.Error(
+				"Failed to count tokens",
+				slog.String("userId", usr.Id),
+				slog.Any("error", err),
+			)
+			endpoint.InternalServerError(w)
+			return
+		}
+		rsp.TokenCount = tokenCount
+	}
+
+	bs, _ := json.Marshal(rsp)
 	_, err = w.Write(bs)
 	if err != nil {
 		logger.Error("Error writing response", slog.Any("error", err))
@@ -164,4 +194,15 @@ func (s *UserService) getUserOrganizations(
 	}
 
 	return orgs, activeOrganizationId, nil
+}
+
+func (s *UserService) countTokens(userId string) (int64, error) {
+	tokenCount, err := s.authTokensStore.Query(
+		datastore.Equals(datastore.Field("userId"), userId),
+	).Count()
+	if err != nil {
+		return 0, err
+	}
+
+	return tokenCount, nil
 }

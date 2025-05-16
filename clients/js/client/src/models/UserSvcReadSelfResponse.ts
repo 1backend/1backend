@@ -66,6 +66,12 @@ export interface UserSvcReadSelfResponse {
      */
     roles?: Array<string>;
     /**
+     * 
+     * @type {number}
+     * @memberof UserSvcReadSelfResponse
+     */
+    tokenCount: number;
+    /**
      * The user who made the request.
      * @type {UserSvcUser}
      * @memberof UserSvcReadSelfResponse
@@ -77,6 +83,7 @@ export interface UserSvcReadSelfResponse {
  * Check if a given object implements the UserSvcReadSelfResponse interface.
  */
 export function instanceOfUserSvcReadSelfResponse(value: object): value is UserSvcReadSelfResponse {
+    if (!('tokenCount' in value) || value['tokenCount'] === undefined) return false;
     if (!('user' in value) || value['user'] === undefined) return false;
     return true;
 }
@@ -95,6 +102,7 @@ export function UserSvcReadSelfResponseFromJSONTyped(json: any, ignoreDiscrimina
         'contacts': json['contacts'] == null ? undefined : ((json['contacts'] as Array<any>).map(UserSvcContactFromJSON)),
         'organizations': json['organizations'] == null ? undefined : ((json['organizations'] as Array<any>).map(UserSvcOrganizationFromJSON)),
         'roles': json['roles'] == null ? undefined : json['roles'],
+        'tokenCount': json['tokenCount'],
         'user': UserSvcUserFromJSON(json['user']),
     };
 }
@@ -114,6 +122,7 @@ export function UserSvcReadSelfResponseToJSONTyped(value?: UserSvcReadSelfRespon
         'contacts': value['contacts'] == null ? undefined : ((value['contacts'] as Array<any>).map(UserSvcContactToJSON)),
         'organizations': value['organizations'] == null ? undefined : ((value['organizations'] as Array<any>).map(UserSvcOrganizationToJSON)),
         'roles': value['roles'],
+        'tokenCount': value['tokenCount'],
         'user': UserSvcUserToJSON(value['user']),
     };
 }

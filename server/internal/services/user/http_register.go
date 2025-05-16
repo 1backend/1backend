@@ -69,6 +69,10 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if req.Device == "" {
+		req.Device = defaultDevice
+	}
+
 	newUser := &user.UserInput{
 		Name: req.Name,
 		Slug: req.Slug,
@@ -107,6 +111,7 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	token, err := s.login(&user.LoginRequest{
 		Slug:     req.Slug,
 		Password: req.Password,
+		Device:   req.Device,
 	})
 	if err != nil {
 		logger.Error(
@@ -184,6 +189,7 @@ func (s *UserService) register(
 	if err != nil {
 		return nil, err
 	}
+	token.Device = defaultDevice
 
 	return token, s.authTokensStore.Create(token)
 }

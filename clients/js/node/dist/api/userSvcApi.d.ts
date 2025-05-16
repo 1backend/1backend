@@ -25,6 +25,7 @@ import { UserSvcListUsersRequest } from '../model/userSvcListUsersRequest';
 import { UserSvcListUsersResponse } from '../model/userSvcListUsersResponse';
 import { UserSvcLoginRequest } from '../model/userSvcLoginRequest';
 import { UserSvcLoginResponse } from '../model/userSvcLoginResponse';
+import { UserSvcReadSelfRequest } from '../model/userSvcReadSelfRequest';
 import { UserSvcReadSelfResponse } from '../model/userSvcReadSelfResponse';
 import { UserSvcRefreshTokenResponse } from '../model/userSvcRefreshTokenResponse';
 import { UserSvcRegisterRequest } from '../model/userSvcRegisterRequest';
@@ -220,8 +221,9 @@ export declare class UserSvcApi {
     /**
      * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
      * @summary Read Self
+     * @param body Read Self Request
      */
-    readSelf(options?: {
+    readSelf(body?: UserSvcReadSelfRequest, options?: {
         headers: {
             [name: string]: string;
         };

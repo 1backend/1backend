@@ -30,6 +30,7 @@ type UserSvcReadSelfResponse struct {
 	Organizations []UserSvcOrganization `json:"organizations,omitempty"`
 	// Roles the token has that made this request.
 	Roles []string `json:"roles,omitempty"`
+	TokenCount int32 `json:"tokenCount"`
 	// The user who made the request.
 	User UserSvcUser `json:"user"`
 }
@@ -40,8 +41,9 @@ type _UserSvcReadSelfResponse UserSvcReadSelfResponse
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcReadSelfResponse(user UserSvcUser) *UserSvcReadSelfResponse {
+func NewUserSvcReadSelfResponse(tokenCount int32, user UserSvcUser) *UserSvcReadSelfResponse {
 	this := UserSvcReadSelfResponse{}
+	this.TokenCount = tokenCount
 	this.User = user
 	return &this
 }
@@ -182,6 +184,30 @@ func (o *UserSvcReadSelfResponse) SetRoles(v []string) {
 	o.Roles = v
 }
 
+// GetTokenCount returns the TokenCount field value
+func (o *UserSvcReadSelfResponse) GetTokenCount() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
+
+	return o.TokenCount
+}
+
+// GetTokenCountOk returns a tuple with the TokenCount field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcReadSelfResponse) GetTokenCountOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.TokenCount, true
+}
+
+// SetTokenCount sets field value
+func (o *UserSvcReadSelfResponse) SetTokenCount(v int32) {
+	o.TokenCount = v
+}
+
 // GetUser returns the User field value
 func (o *UserSvcReadSelfResponse) GetUser() UserSvcUser {
 	if o == nil {
@@ -228,6 +254,7 @@ func (o UserSvcReadSelfResponse) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Roles) {
 		toSerialize["roles"] = o.Roles
 	}
+	toSerialize["tokenCount"] = o.TokenCount
 	toSerialize["user"] = o.User
 	return toSerialize, nil
 }
@@ -237,6 +264,7 @@ func (o *UserSvcReadSelfResponse) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"tokenCount",
 		"user",
 	}
 

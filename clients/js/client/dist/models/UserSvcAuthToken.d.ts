@@ -41,11 +41,26 @@ export interface UserSvcAuthToken {
      */
     deletedAt?: string;
     /**
+     * The device the token is associated with.
+     * This in combination with LastRefreshedAt can be used to
+     * determine if the token is still in use, and lets us prune unused tokens.
+     * @type {string}
+     * @memberof UserSvcAuthToken
+     */
+    device?: string;
+    /**
      *
      * @type {string}
      * @memberof UserSvcAuthToken
      */
     id: string;
+    /**
+     * The last time the token was refreshed.
+     * This is used to determine if the token is still in use.
+     * @type {string}
+     * @memberof UserSvcAuthToken
+     */
+    lastRefreshedAt?: string;
     /**
      * Token is a signed JWT used to authenticate the user without querying the User Svc.
      * You can verify it using the public key at `/user-svc/public-key`.

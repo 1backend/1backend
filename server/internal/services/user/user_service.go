@@ -31,6 +31,10 @@ import (
 	"github.com/google/uuid"
 )
 
+// Each auth token belongs to a device. When a device is not specified at login or registration
+// the default device is used.
+const defaultDevice = "default"
+
 type UserService struct {
 	clientFactory client.ClientFactory
 	token         string
