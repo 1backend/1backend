@@ -49,11 +49,12 @@ type PermissionChecker interface {
 }
 
 type permissionChecker struct {
-	clientFactory        client.ClientFactory
-	parser               JWTParser
-	permissionCache      *ristretto.Cache
-	userServicePublicKey string
-	mutex                sync.Mutex
+	clientFactory         client.ClientFactory
+	parser                JWTParser
+	permissionCache       *ristretto.Cache
+	tokenReplacementCache *ristretto.Cache
+	userServicePublicKey  string
+	mutex                 sync.Mutex
 
 	// currentTime is used to mock the current time in tests.
 	currentTime time.Time
@@ -78,10 +79,20 @@ func NewPermissionChecker(
 		panic(errors.Wrap(err, "failed to create ristretto cache").Error())
 	}
 
+	tokenReplacementCache, err := ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1e5,
+		MaxCost:     1 << 20,
+		BufferItems: 64,
+	})
+	if err != nil {
+		panic(errors.Wrap(err, "failed to create token replacement cache").Error())
+	}
+
 	return &permissionChecker{
-		clientFactory:   clientFactory,
-		permissionCache: permissionCache,
-		parser:          parser,
+		clientFactory:         clientFactory,
+		permissionCache:       permissionCache,
+		tokenReplacementCache: tokenReplacementCache,
+		parser:                parser,
 	}
 }
 
@@ -113,49 +124,73 @@ func (pc *permissionChecker) HasPermission(
 	request *http.Request,
 	permission string,
 ) (*openapi.UserSvcHasPermissionResponse, int, error) {
-	userServicePublicKey, err := pc.getUserServicePublicKey()
+	publicKey, err := pc.getUserServicePublicKey()
 	if err != nil {
 		return nil, http.StatusInternalServerError, errors.Wrap(err, "failed to get user service public key")
 	}
 
-	expired := false
+	isExpired := false
 
-	jwt := request.Header.Get("Authorization")
+	jwt := strings.TrimPrefix(request.Header.Get("Authorization"), "Bearer ")
+
+	now := pc.currentTime
+	if now.IsZero() {
+		now = time.Now()
+	}
 
 	if jwt != "" {
 		// First we check if the JWT is expired or not as that aspect cannot be cached.
 		// If the JWT is expired, we consider it a cache miss
 		// and let the request go through to the user service
 		claims, err := pc.parser.ParseJWT(
-			userServicePublicKey,
-			strings.Replace(jwt, "Bearer ", "", -1),
+			publicKey,
+			jwt,
 		)
 		if err != nil {
 			return nil, http.StatusUnauthorized, errors.Wrap(err, "failed to parse JWT")
 		}
 
-		currentTime := pc.currentTime
-		if currentTime.IsZero() {
-			currentTime = time.Now()
-		}
-
-		// Handle nil expiresAt for backwards compatibility.
+		// Handle missing expiresAt for backwards compatibility.
 		// Can be removed later.
 		if claims.ExpiresAt == nil ||
-			claims.ExpiresAt.Time.Before(currentTime.Add(5*time.Second)) {
-			expired = true
-
+			claims.ExpiresAt.Time.Before(now.Add(5*time.Second)) {
+			isExpired = true
 		}
 	}
 
-	key := ""
+	key := generateCacheKey(
+		jwt,
+		permission,
+	)
 
-	if jwt != "" && !expired {
-		key = generateCacheKey(
-			jwt,
-			permission,
-		)
+	if isExpired {
+		if val, found := pc.tokenReplacementCache.Get(key); found {
+			if replacementToken, ok := val.(string); ok {
+				newClaims, err := pc.parser.ParseJWT(publicKey, replacementToken)
+				if err == nil &&
+					newClaims.ExpiresAt != nil &&
+					newClaims.ExpiresAt.Time.After(now.Add(5*time.Second)) {
+					jwt = replacementToken
+					request.Header.Set("Authorization", jwt)
+					isExpired = false
+				}
+			}
+		}
 
+		if isExpired {
+			newJwtResp, _, err := pc.clientFactory.Client(client.WithTokenFromRequest(request)).
+				UserSvcAPI.RefreshToken(request.Context()).Execute()
+			if err != nil {
+				return nil, http.StatusUnauthorized, errors.Wrap(err, "token refresh failed")
+			}
+
+			jwt = newJwtResp.Token.Token
+			request.Header.Set("Authorization", jwt)
+			pc.tokenReplacementCache.SetWithTTL(key, jwt, 1, 5*time.Minute)
+		}
+	}
+
+	if jwt != "" && !isExpired {
 		if value, found := pc.permissionCache.Get(key); found {
 			if cachedResp, ok := value.(*HasPermissionResponse); ok {
 				return cachedResp.Response, cachedResp.StatusCode, nil
@@ -181,6 +216,7 @@ func (pc *permissionChecker) HasPermission(
 			StatusCode: httpResponse.StatusCode,
 		}, 1, 5*time.Minute)
 	}
+
 	code := 0
 	if httpResponse != nil {
 		code = httpResponse.StatusCode
