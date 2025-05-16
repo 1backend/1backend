@@ -16,6 +16,10 @@ import { UserSvcUserFromJSON, UserSvcUserToJSON, } from './UserSvcUser';
  * Check if a given object implements the UserSvcHasPermissionResponse interface.
  */
 export function instanceOfUserSvcHasPermissionResponse(value) {
+    if (!('authorized' in value) || value['authorized'] === undefined)
+        return false;
+    if (!('user' in value) || value['user'] === undefined)
+        return false;
     return true;
 }
 export function UserSvcHasPermissionResponseFromJSON(json) {
@@ -26,8 +30,8 @@ export function UserSvcHasPermissionResponseFromJSONTyped(json, ignoreDiscrimina
         return json;
     }
     return {
-        'authorized': json['authorized'] == null ? undefined : json['authorized'],
-        'user': json['user'] == null ? undefined : UserSvcUserFromJSON(json['user']),
+        'authorized': json['authorized'],
+        'user': UserSvcUserFromJSON(json['user']),
     };
 }
 export function UserSvcHasPermissionResponseToJSON(json) {

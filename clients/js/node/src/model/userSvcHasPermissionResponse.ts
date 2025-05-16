@@ -14,8 +14,8 @@ import { RequestFile } from './models';
 import { UserSvcUser } from './userSvcUser';
 
 export class UserSvcHasPermissionResponse {
-    'authorized'?: boolean;
-    'user'?: UserSvcUser;
+    'authorized': boolean;
+    'user': UserSvcUser;
 
     static discriminator: string | undefined = undefined;
 

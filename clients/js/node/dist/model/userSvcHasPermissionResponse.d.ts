@@ -11,8 +11,8 @@
  */
 import { UserSvcUser } from './userSvcUser';
 export declare class UserSvcHasPermissionResponse {
-    'authorized'?: boolean;
-    'user'?: UserSvcUser;
+    'authorized': boolean;
+    'user': UserSvcUser;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

@@ -8966,6 +8966,10 @@ function UserSvcUserToJSONTyped(value, ignoreDiscriminator = false) {
  * Check if a given object implements the UserSvcHasPermissionResponse interface.
  */
 function instanceOfUserSvcHasPermissionResponse(value) {
+    if (!('authorized' in value) || value['authorized'] === undefined)
+        return false;
+    if (!('user' in value) || value['user'] === undefined)
+        return false;
     return true;
 }
 function UserSvcHasPermissionResponseFromJSON(json) {
@@ -8976,8 +8980,8 @@ function UserSvcHasPermissionResponseFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'authorized': json['authorized'] == null ? undefined : json['authorized'],
-        'user': json['user'] == null ? undefined : UserSvcUserFromJSON(json['user']),
+        'authorized': json['authorized'],
+        'user': UserSvcUserFromJSON(json['user']),
     };
 }
 function UserSvcHasPermissionResponseToJSON(json) {
