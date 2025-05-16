@@ -65,6 +65,7 @@ func (s *UserService) HasPermission(
 		endpoint.InternalServerError(w)
 		return
 	}
+
 	if !hasPermission {
 		endpoint.Unauthorized(w)
 		return
@@ -88,6 +89,9 @@ func (s *UserService) hasPermission(
 ) (*user.User, bool, error) {
 	usr, err := s.getUserFromRequest(r)
 	if err != nil {
+		if strings.Contains(err.Error(), "token is expired") {
+			return nil, false, nil
+		}
 		return nil, false, err
 	}
 
@@ -95,7 +99,6 @@ func (s *UserService) hasPermission(
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 	).Find()
 	if err != nil {
-
 		return nil, false, err
 	}
 
@@ -242,15 +245,25 @@ func (s *UserService) getUserFromRequest(r *http.Request) (*user.User, error) {
 
 	var token *user.AuthToken
 
+	expired := false
 	t, err := s.authorizer.ParseJWT(s.publicKeyPem, authHeader)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse JWT")
+		if strings.Contains(err.Error(), "token is expired") {
+			expired = true
+		} else {
+			return nil, errors.Wrap(err, "failed to parse JWT")
+		}
 	}
 
 	// Handle nil expiresAt for backwards compatibility.
 	// Can be removed later.
-	if (t.ExpiresAt == nil || t.ExpiresAt.Time.Before(time.Now())) &&
-		!s.tokenAutoRefreshOff {
+	if expired ||
+		t.ExpiresAt == nil ||
+		t.ExpiresAt.Time.Before(time.Now()) {
+		if s.tokenAutoRefreshOff {
+			return nil, errors.New("token is expired")
+		}
+
 		token, err = s.refreshToken(authHeader)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to refresh token")
@@ -283,7 +296,9 @@ func (s *UserService) getUserFromRequest(r *http.Request) (*user.User, error) {
 		)
 		return nil, errors.New("token user does not exist")
 	}
+
 	user := userI.(*user.User)
+
 	return user, nil
 }
 

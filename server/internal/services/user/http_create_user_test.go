@@ -16,9 +16,7 @@ func TestCreateUser(t *testing.T) {
 	t.Parallel()
 
 	server, err := test.StartService(test.Options{
-		Test:                true,
-		TokenAutoRefreshOff: true,
-		TokenExpiration:     1 * time.Second,
+		Test: true,
 	})
 	require.NoError(t, err)
 	defer server.Cleanup(t)
@@ -65,10 +63,29 @@ func TestCreateUser(t *testing.T) {
 		).Execute()
 		require.Error(t, err)
 	})
+}
+
+func TestCreateUserAutoRefreshOff(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{
+		Test:                true,
+		TokenAutoRefreshOff: true,
+		TokenExpiration:     1 * time.Second,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	adminClient, _, err := test.AdminClient(clientFactory)
+	require.NoError(t, err)
+
+	ctx := context.Background()
 
 	time.Sleep(1 * time.Second)
 
-	t.Run("admins token expired", func(t *testing.T) {
+	t.Run("admins can create users", func(t *testing.T) {
 		_, httpRsp, err := adminClient.UserSvcAPI.CreateUser(ctx).Body(
 			openapi.UserSvcCreateUserRequest{
 				User: &openapi.UserSvcUserInput{
@@ -77,6 +94,41 @@ func TestCreateUser(t *testing.T) {
 				},
 			},
 		).Execute()
+
 		require.Error(t, err, httpRsp)
+		require.Equal(t, 401, httpRsp.StatusCode, httpRsp)
+	})
+}
+
+func TestCreateUserAutoRefreshOn(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{
+		Test:            true,
+		TokenExpiration: time.Second,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	adminClient, _, err := test.AdminClient(clientFactory)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+
+	time.Sleep(1 * time.Second)
+
+	t.Run("admins can create users", func(t *testing.T) {
+		_, httpRsp, err := adminClient.UserSvcAPI.CreateUser(ctx).Body(
+			openapi.UserSvcCreateUserRequest{
+				User: &openapi.UserSvcUserInput{
+					Slug: "test-slug-1",
+					Name: openapi.PtrString("Test Name"),
+				},
+			},
+		).Execute()
+
+		require.NoError(t, err, httpRsp)
 	})
 }
