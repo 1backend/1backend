@@ -7,8 +7,8 @@ go 1.23
 //replace github.com/1backend/1backend/sdk/go => ../../sdk/go
 
 require (
-	github.com/1backend/1backend/clients/go v0.0.0-20250416164135-fdb04bcfad2d
-	github.com/1backend/1backend/sdk/go v0.0.0-20250416164135-fdb04bcfad2d
+	github.com/1backend/1backend/clients/go v0.0.0-20250516134107-1c764d3e3e20
+	github.com/1backend/1backend/sdk/go v0.0.0-20250516134107-1c764d3e3e20
 	github.com/ghodss/yaml v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v1.8.1
@@ -21,6 +21,7 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/golang-jwt/jwt/v5 v5.2.2 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/samber/lo v1.49.1 // indirect
