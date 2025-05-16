@@ -140,6 +140,11 @@ func (s *UserService) refreshToken(
 	}
 	token.Device = tokenToBeRefreshed.Device
 
+	// for backwards compatibility
+	if token.Device == "" {
+		token.Device = defaultDevice
+	}
+
 	err = s.authTokensStore.Create(token)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating token")

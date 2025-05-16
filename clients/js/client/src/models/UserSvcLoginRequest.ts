@@ -30,6 +30,12 @@ export interface UserSvcLoginRequest {
      * @type {string}
      * @memberof UserSvcLoginRequest
      */
+    device?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSvcLoginRequest
+     */
     password?: string;
     /**
      * 
@@ -57,6 +63,7 @@ export function UserSvcLoginRequestFromJSONTyped(json: any, ignoreDiscriminator:
     return {
         
         'contact': json['contact'] == null ? undefined : json['contact'],
+        'device': json['device'] == null ? undefined : json['device'],
         'password': json['password'] == null ? undefined : json['password'],
         'slug': json['slug'] == null ? undefined : json['slug'],
     };
@@ -74,6 +81,7 @@ export function UserSvcLoginRequestToJSONTyped(value?: UserSvcLoginRequest | nul
     return {
         
         'contact': value['contact'],
+        'device': value['device'],
         'password': value['password'],
         'slug': value['slug'],
     };

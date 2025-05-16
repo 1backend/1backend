@@ -22,6 +22,11 @@ UserSvcRegisterRequest.attributeTypeMap = [
         "type": "UserSvcContactInput"
     },
     {
+        "name": "device",
+        "baseName": "device",
+        "type": "string"
+    },
+    {
         "name": "name",
         "baseName": "name",
         "type": "string"

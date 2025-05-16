@@ -18,6 +18,8 @@ import { UserSvcUserFromJSON, UserSvcUserToJSON, } from './UserSvcUser';
  * Check if a given object implements the UserSvcReadSelfResponse interface.
  */
 export function instanceOfUserSvcReadSelfResponse(value) {
+    if (!('tokenCount' in value) || value['tokenCount'] === undefined)
+        return false;
     if (!('user' in value) || value['user'] === undefined)
         return false;
     return true;
@@ -34,6 +36,7 @@ export function UserSvcReadSelfResponseFromJSONTyped(json, ignoreDiscriminator) 
         'contacts': json['contacts'] == null ? undefined : (json['contacts'].map(UserSvcContactFromJSON)),
         'organizations': json['organizations'] == null ? undefined : (json['organizations'].map(UserSvcOrganizationFromJSON)),
         'roles': json['roles'] == null ? undefined : json['roles'],
+        'tokenCount': json['tokenCount'],
         'user': UserSvcUserFromJSON(json['user']),
     };
 }
@@ -49,6 +52,7 @@ export function UserSvcReadSelfResponseToJSONTyped(value, ignoreDiscriminator = 
         'contacts': value['contacts'] == null ? undefined : (value['contacts'].map(UserSvcContactToJSON)),
         'organizations': value['organizations'] == null ? undefined : (value['organizations'].map(UserSvcOrganizationToJSON)),
         'roles': value['roles'],
+        'tokenCount': value['tokenCount'],
         'user': UserSvcUserToJSON(value['user']),
     };
 }

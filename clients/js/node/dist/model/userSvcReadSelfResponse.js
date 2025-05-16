@@ -37,6 +37,11 @@ UserSvcReadSelfResponse.attributeTypeMap = [
         "type": "Array<string>"
     },
     {
+        "name": "tokenCount",
+        "baseName": "tokenCount",
+        "type": "number"
+    },
+    {
         "name": "user",
         "baseName": "user",
         "type": "UserSvcUser"

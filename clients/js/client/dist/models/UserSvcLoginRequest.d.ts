@@ -26,6 +26,12 @@ export interface UserSvcLoginRequest {
      * @type {string}
      * @memberof UserSvcLoginRequest
      */
+    device?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserSvcLoginRequest
+     */
     password?: string;
     /**
      *

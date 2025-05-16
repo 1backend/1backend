@@ -19,7 +19,15 @@ export class UserSvcAuthToken {
     'active'?: boolean;
     'createdAt': string;
     'deletedAt'?: string;
+    /**
+    * The device the token is associated with. This in combination with LastRefreshedAt can be used to determine if the token is still in use, and lets us prune unused tokens.
+    */
+    'device'?: string;
     'id': string;
+    /**
+    * The last time the token was refreshed. This is used to determine if the token is still in use.
+    */
+    'lastRefreshedAt'?: string;
     /**
     * Token is a signed JWT used to authenticate the user without querying the User Svc. You can verify it using the public key at `/user-svc/public-key`.  The token is just a JSON object with fields like: - \"oui\": the user ID (e.g., \"usr_dC4K75Cbp6\") - \"olu\": the user slug (e.g., \"test-user-slug-0\") - \"oro\": a list of roles, such as:   - \"user-svc:user\"   - \"user-svc:org:{org_dC4K7NNDCG}:user\"
     */
@@ -46,8 +54,18 @@ export class UserSvcAuthToken {
             "type": "string"
         },
         {
+            "name": "device",
+            "baseName": "device",
+            "type": "string"
+        },
+        {
             "name": "id",
             "baseName": "id",
+            "type": "string"
+        },
+        {
+            "name": "lastRefreshedAt",
+            "baseName": "lastRefreshedAt",
             "type": "string"
         },
         {

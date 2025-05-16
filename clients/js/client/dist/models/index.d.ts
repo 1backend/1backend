@@ -190,6 +190,7 @@ export * from './UserSvcOrderDirection';
 export * from './UserSvcOrganization';
 export * from './UserSvcPermit';
 export * from './UserSvcPermitInput';
+export * from './UserSvcReadSelfRequest';
 export * from './UserSvcReadSelfResponse';
 export * from './UserSvcRefreshTokenResponse';
 export * from './UserSvcRegisterRequest';

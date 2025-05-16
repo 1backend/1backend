@@ -12,6 +12,7 @@
 import { UserSvcContactInput } from './userSvcContactInput';
 export declare class UserSvcRegisterRequest {
     'contact'?: UserSvcContactInput;
+    'device'?: string;
     'name'?: string;
     'password'?: string;
     /**

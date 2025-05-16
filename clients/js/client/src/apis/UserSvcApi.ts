@@ -31,6 +31,7 @@ import type {
   UserSvcListUsersResponse,
   UserSvcLoginRequest,
   UserSvcLoginResponse,
+  UserSvcReadSelfRequest,
   UserSvcReadSelfResponse,
   UserSvcRefreshTokenResponse,
   UserSvcRegisterRequest,
@@ -77,6 +78,8 @@ import {
     UserSvcLoginRequestToJSON,
     UserSvcLoginResponseFromJSON,
     UserSvcLoginResponseToJSON,
+    UserSvcReadSelfRequestFromJSON,
+    UserSvcReadSelfRequestToJSON,
     UserSvcReadSelfResponseFromJSON,
     UserSvcReadSelfResponseToJSON,
     UserSvcRefreshTokenResponseFromJSON,
@@ -147,6 +150,10 @@ export interface ListUsersRequest {
 
 export interface LoginRequest {
     body: UserSvcLoginRequest;
+}
+
+export interface ReadSelfRequest {
+    body?: UserSvcReadSelfRequest;
 }
 
 export interface RegisterRequest {
@@ -671,10 +678,12 @@ export class UserSvcApi extends runtime.BaseAPI {
      * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
      * Read Self
      */
-    async readSelfRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcReadSelfResponse>> {
+    async readSelfRaw(requestParameters: ReadSelfRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcReadSelfResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.apiKey) {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
@@ -685,6 +694,7 @@ export class UserSvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
+            body: UserSvcReadSelfRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcReadSelfResponseFromJSON(jsonValue));
@@ -694,8 +704,8 @@ export class UserSvcApi extends runtime.BaseAPI {
      * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
      * Read Self
      */
-    async readSelf(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcReadSelfResponse> {
-        const response = await this.readSelfRaw(initOverrides);
+    async readSelf(requestParameters: ReadSelfRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcReadSelfResponse> {
+        const response = await this.readSelfRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

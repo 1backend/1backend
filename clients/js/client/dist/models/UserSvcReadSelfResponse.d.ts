@@ -43,6 +43,12 @@ export interface UserSvcReadSelfResponse {
      */
     roles?: Array<string>;
     /**
+     *
+     * @type {number}
+     * @memberof UserSvcReadSelfResponse
+     */
+    tokenCount: number;
+    /**
      * The user who made the request.
      * @type {UserSvcUser}
      * @memberof UserSvcReadSelfResponse
