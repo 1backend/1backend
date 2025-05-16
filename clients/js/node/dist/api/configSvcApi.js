@@ -76,7 +76,7 @@ export class ConfigSvcApi {
         this.interceptors.push(interceptor);
     }
     /**
-     * Fetch the current configuration from the server
+     * Fetch the current configuration from the server.
      * @summary Get Config
      * @param namespace Namespace
      */

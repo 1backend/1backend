@@ -161,12 +161,14 @@ func MockUserSvc(ctx context.Context, ctrl *gomock.Controller, options ...MockUs
 		}
 
 		return &openapi.UserSvcHasPermissionResponse{
-			Authorized: openapi.PtrBool(hasPermission), // Dynamically evaluate
-			User: &openapi.UserSvcUser{
-				Id:   id,   // Dynamically evaluate
-				Slug: slug, // Dynamically evaluate
-			},
-		}, nil, nil
+				Authorized: hasPermission, // Dynamically evaluate
+				User: openapi.UserSvcUser{
+					Id:   id,   // Dynamically evaluate
+					Slug: slug, // Dynamically evaluate
+				},
+			}, &http.Response{
+				StatusCode: 200,
+			}, nil
 	}).
 		AnyTimes()
 

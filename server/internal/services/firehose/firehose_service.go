@@ -53,6 +53,7 @@ func NewFirehoseService(
 	clientFactory client.ClientFactory,
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
+	authorizer auth.Authorizer,
 ) (*FirehoseService, error) {
 
 	service := &FirehoseService{
@@ -62,6 +63,7 @@ func NewFirehoseService(
 		subscribers:      make(map[int]func(events []*firehosetypes.Event)),
 		permissionChecker: endpoint.NewPermissionChecker(
 			clientFactory,
+			authorizer,
 		),
 	}
 

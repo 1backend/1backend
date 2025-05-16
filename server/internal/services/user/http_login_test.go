@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 
@@ -71,6 +72,10 @@ func TestOrganization(t *testing.T) {
 			require.NoError(t, err)
 			require.NotNil(t, claim)
 			require.Equal(t, 1, len(claim.Roles), claim.Roles)
+			require.NotEmpty(t, claim.ExpiresAt)
+			// ~  5minutes
+			require.Equal(t, claim.ExpiresAt.Time.After(time.Now().Add(298*time.Second)), true)
+			require.Equal(t, claim.ExpiresAt.Time.Before(time.Now().Add(302*time.Second)), true)
 
 			loginReq := openapi.UserSvcLoginRequest{
 				Slug:     openapi.PtrString("test-user-slug-0"),

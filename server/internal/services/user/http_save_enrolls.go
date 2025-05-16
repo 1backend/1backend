@@ -91,7 +91,7 @@ func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	claim, err := authr.ParseJWTFromRequest(s.publicKeyPem, r)
+	claim, err := s.parseJWTFromRequest(r)
 	if err != nil || claim == nil {
 		endpoint.Unauthorized(w)
 		return

@@ -57,11 +57,14 @@ func NewDataService(
 ) (*DataService, error) {
 
 	service := &DataService{
-		clientFactory:     clientFactory,
-		datastoreFactory:  datastoreFactory,
-		authorizer:        authorizer,
-		lock:              lock,
-		permissionChecker: endpoint.NewPermissionChecker(clientFactory),
+		clientFactory:    clientFactory,
+		datastoreFactory: datastoreFactory,
+		authorizer:       authorizer,
+		lock:             lock,
+		permissionChecker: endpoint.NewPermissionChecker(
+			clientFactory,
+			authorizer,
+		),
 	}
 
 	return service, nil

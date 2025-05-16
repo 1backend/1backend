@@ -11,28 +11,22 @@
  */
 
 import { RequestFile } from './models';
-import { UserSvcUser } from './userSvcUser';
+import { UserSvcAuthToken } from './userSvcAuthToken';
 
-export class UserSvcHasPermissionResponse {
-    'authorized': boolean;
-    'user': UserSvcUser;
+export class UserSvcRefreshTokenResponse {
+    'token': UserSvcAuthToken;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "authorized",
-            "baseName": "authorized",
-            "type": "boolean"
-        },
-        {
-            "name": "user",
-            "baseName": "user",
-            "type": "UserSvcUser"
+            "name": "token",
+            "baseName": "token",
+            "type": "UserSvcAuthToken"
         }    ];
 
     static getAttributeTypeMap() {
-        return UserSvcHasPermissionResponse.attributeTypeMap;
+        return UserSvcRefreshTokenResponse.attributeTypeMap;
     }
 }
 

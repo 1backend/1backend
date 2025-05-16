@@ -229,6 +229,7 @@ docs/UserSvcOrganization.md
 docs/UserSvcPermit.md
 docs/UserSvcPermitInput.md
 docs/UserSvcReadSelfResponse.md
+docs/UserSvcRefreshTokenResponse.md
 docs/UserSvcRegisterRequest.md
 docs/UserSvcRegisterResponse.md
 docs/UserSvcResetPasswordRequest.md
@@ -438,6 +439,7 @@ model_user_svc_organization.go
 model_user_svc_permit.go
 model_user_svc_permit_input.go
 model_user_svc_read_self_response.go
+model_user_svc_refresh_token_response.go
 model_user_svc_register_request.go
 model_user_svc_register_response.go
 model_user_svc_reset_password_request.go

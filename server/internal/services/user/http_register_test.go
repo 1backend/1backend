@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 
@@ -32,6 +33,10 @@ func TestRegister(t *testing.T) {
 	ctx := context.Background()
 
 	tokenId := ""
+	publicKeyRsp, _, err := options.ClientFactory.Client().
+		UserSvcAPI.GetPublicKey(context.Background()).
+		Execute()
+	require.NoError(t, err)
 
 	t.Run("anyone can register", func(t *testing.T) {
 		rsp, _, err := options.ClientFactory.Client().UserSvcAPI.Register(ctx).Body(
@@ -44,6 +49,17 @@ func TestRegister(t *testing.T) {
 		require.NoError(t, err)
 
 		tokenId = rsp.Token.Id
+
+		claim, err := options.Authorizer.ParseJWT(
+			publicKeyRsp.PublicKey,
+			rsp.Token.Token,
+		)
+		require.NoError(t, err)
+		require.Equal(t, 1, len(claim.Roles), claim.Roles)
+		require.NotEmpty(t, claim.ExpiresAt)
+		// ~  5minutes
+		require.Equal(t, claim.ExpiresAt.Time.After(time.Now().Add(298*time.Second)), true)
+		require.Equal(t, claim.ExpiresAt.Time.Before(time.Now().Add(302*time.Second)), true)
 	})
 
 	t.Run("uppercase fails so ui must be forced to deal with it", func(t *testing.T) {

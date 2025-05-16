@@ -63,13 +63,17 @@ func NewFileService(
 	lock lock.DistributedLock,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
 	homeDir string,
+	authorizer auth.Authorizer,
 ) (*FileService, error) {
 	ret := &FileService{
-		clientFactory:     clientFactory,
-		homeDir:           homeDir,
-		datastoreFactory:  datastoreFactory,
-		lock:              lock,
-		permissionChecker: endpoint.NewPermissionChecker(clientFactory),
+		clientFactory:    clientFactory,
+		homeDir:          homeDir,
+		datastoreFactory: datastoreFactory,
+		lock:             lock,
+		permissionChecker: endpoint.NewPermissionChecker(
+			clientFactory,
+			authorizer,
+		),
 	}
 
 	return ret, nil

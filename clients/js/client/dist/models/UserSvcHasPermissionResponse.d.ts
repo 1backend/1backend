@@ -21,13 +21,13 @@ export interface UserSvcHasPermissionResponse {
      * @type {boolean}
      * @memberof UserSvcHasPermissionResponse
      */
-    authorized?: boolean;
+    authorized: boolean;
     /**
      *
      * @type {UserSvcUser}
      * @memberof UserSvcHasPermissionResponse
      */
-    user?: UserSvcUser;
+    user: UserSvcUser;
 }
 /**
  * Check if a given object implements the UserSvcHasPermissionResponse interface.

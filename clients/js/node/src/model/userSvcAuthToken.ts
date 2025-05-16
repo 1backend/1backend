@@ -14,7 +14,7 @@ import { RequestFile } from './models';
 
 export class UserSvcAuthToken {
     /**
-    * Active tokens contain the most up-to-date information. When a user\'s role changes—due to role assignment, organization creation/assignment, etc.—all existing tokens are marked inactive. Active tokens are reused during login, while inactive tokens are retained for historical reference.
+    * Active tokens contain the most up-to-date information. When a user\'s role changes—due to role assignment, organization creation/assignment, etc.—all existing tokens are marked inactive. Active tokens are reused during login, while inactive tokens are retained for historical reference.  Inactive tokens can still be refreshed to create a new active token. A separate mechanism for leaked tokens must be implemented (a different flag or outright deletion).
     */
     'active'?: boolean;
     'createdAt': string;

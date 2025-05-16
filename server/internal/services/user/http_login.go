@@ -217,7 +217,7 @@ func (s *UserService) generateAuthToken(
 		return nil, errors.Wrap(err, "error listing organizations")
 	}
 
-	token, err := generateJWT(u, roles, activeOrganizationId, s.privateKey)
+	token, err := s.generateJWT(u, roles, activeOrganizationId, s.privateKey)
 	if err != nil {
 		return nil, err
 	}

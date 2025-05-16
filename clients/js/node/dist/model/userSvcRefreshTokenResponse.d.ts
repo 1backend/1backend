@@ -9,10 +9,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UserSvcUser } from './userSvcUser';
-export declare class UserSvcHasPermissionResponse {
-    'authorized': boolean;
-    'user': UserSvcUser;
+import { UserSvcAuthToken } from './userSvcAuthToken';
+export declare class UserSvcRefreshTokenResponse {
+    'token': UserSvcAuthToken;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

@@ -36,7 +36,7 @@ export declare class ConfigSvcApi {
     setApiKey(key: ConfigSvcApiApiKeys, value: string): void;
     addInterceptor(interceptor: Interceptor): void;
     /**
-     * Fetch the current configuration from the server
+     * Fetch the current configuration from the server.
      * @summary Get Config
      * @param namespace Namespace
      */

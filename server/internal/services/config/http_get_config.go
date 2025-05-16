@@ -28,7 +28,7 @@ import (
 
 // @Id getConfig
 // @Summary Get Config
-// @Description Fetch the current configuration from the server
+// @Description Fetch the current configuration from the server.
 // @Tags Config Svc
 // @Accept json
 // @Produce json

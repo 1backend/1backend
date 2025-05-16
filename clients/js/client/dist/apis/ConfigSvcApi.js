@@ -27,7 +27,7 @@ import { ConfigSvcGetConfigResponseFromJSON, ConfigSvcSaveConfigRequestToJSON, }
  */
 export class ConfigSvcApi extends runtime.BaseAPI {
     /**
-     * Fetch the current configuration from the server
+     * Fetch the current configuration from the server.
      * Get Config
      */
     getConfigRaw(requestParameters, initOverrides) {
@@ -50,7 +50,7 @@ export class ConfigSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Fetch the current configuration from the server
+     * Fetch the current configuration from the server.
      * Get Config
      */
     getConfig() {

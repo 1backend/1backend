@@ -193,6 +193,7 @@ export * from './userSvcOrganization';
 export * from './userSvcPermit';
 export * from './userSvcPermitInput';
 export * from './userSvcReadSelfResponse';
+export * from './userSvcRefreshTokenResponse';
 export * from './userSvcRegisterRequest';
 export * from './userSvcRegisterResponse';
 export * from './userSvcResetPasswordRequest';
@@ -413,6 +414,7 @@ import { UserSvcOrganization } from './userSvcOrganization';
 import { UserSvcPermit } from './userSvcPermit';
 import { UserSvcPermitInput } from './userSvcPermitInput';
 import { UserSvcReadSelfResponse } from './userSvcReadSelfResponse';
+import { UserSvcRefreshTokenResponse } from './userSvcRefreshTokenResponse';
 import { UserSvcRegisterRequest } from './userSvcRegisterRequest';
 import { UserSvcRegisterResponse } from './userSvcRegisterResponse';
 import { UserSvcResetPasswordRequest } from './userSvcResetPasswordRequest';
@@ -636,6 +638,7 @@ let typeMap: {[index: string]: any} = {
     "UserSvcPermit": UserSvcPermit,
     "UserSvcPermitInput": UserSvcPermitInput,
     "UserSvcReadSelfResponse": UserSvcReadSelfResponse,
+    "UserSvcRefreshTokenResponse": UserSvcRefreshTokenResponse,
     "UserSvcRegisterRequest": UserSvcRegisterRequest,
     "UserSvcRegisterResponse": UserSvcRegisterResponse,
     "UserSvcResetPasswordRequest": UserSvcResetPasswordRequest,

@@ -74,7 +74,10 @@ func NewConfigService(
 
 func (cs *ConfigService) SetClientFactory(clientFactory client.ClientFactory) {
 	cs.clientFactory = clientFactory
-	cs.permissionChecker = endpoint.NewPermissionChecker(clientFactory)
+	cs.permissionChecker = endpoint.NewPermissionChecker(
+		clientFactory,
+		cs.authorizer,
+	)
 }
 
 func (cs *ConfigService) SetDataStoreFactory(

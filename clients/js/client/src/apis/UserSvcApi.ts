@@ -32,6 +32,7 @@ import type {
   UserSvcLoginRequest,
   UserSvcLoginResponse,
   UserSvcReadSelfResponse,
+  UserSvcRefreshTokenResponse,
   UserSvcRegisterRequest,
   UserSvcRegisterResponse,
   UserSvcResetPasswordRequest,
@@ -78,6 +79,8 @@ import {
     UserSvcLoginResponseToJSON,
     UserSvcReadSelfResponseFromJSON,
     UserSvcReadSelfResponseToJSON,
+    UserSvcRefreshTokenResponseFromJSON,
+    UserSvcRefreshTokenResponseToJSON,
     UserSvcRegisterRequestFromJSON,
     UserSvcRegisterRequestToJSON,
     UserSvcRegisterResponseFromJSON,
@@ -693,6 +696,34 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     async readSelf(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcReadSelfResponse> {
         const response = await this.readSelfRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Refreshes an existing token, including inactive ones. The old token becomes inactive (if not already inactive), and a new, active token is issued. This allows continued verification of user roles without requiring a new login. Inactive tokens are refreshable unless explicitly revoked (no mechanism for this yet). Leaked tokens should be handled separately, via a revocation flag or deletion.
+     * Refresh Token
+     */
+    async refreshTokenRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcRefreshTokenResponse>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/user-svc/refresh-token`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcRefreshTokenResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Refreshes an existing token, including inactive ones. The old token becomes inactive (if not already inactive), and a new, active token is issued. This allows continued verification of user roles without requiring a new login. Inactive tokens are refreshable unless explicitly revoked (no mechanism for this yet). Leaked tokens should be handled separately, via a revocation flag or deletion.
+     * Refresh Token
+     */
+    async refreshToken(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcRefreshTokenResponse> {
+        const response = await this.refreshTokenRaw(initOverrides);
         return await response.value();
     }
 

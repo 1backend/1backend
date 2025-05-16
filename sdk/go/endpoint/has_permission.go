@@ -14,15 +14,19 @@
 package endpoint
 
 import (
+	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"net/http"
+	"strings"
+	"sync"
 	"time"
 
 	"github.com/pkg/errors"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/dgraph-io/ristretto"
 )
@@ -45,11 +49,26 @@ type PermissionChecker interface {
 }
 
 type permissionChecker struct {
-	clientFactory   client.ClientFactory
-	permissionCache *ristretto.Cache
+	clientFactory         client.ClientFactory
+	parser                JWTParser
+	permissionCache       *ristretto.Cache
+	tokenReplacementCache *ristretto.Cache
+	userServicePublicKey  string
+	mutex                 sync.Mutex
+
+	// currentTime is used to mock the current time in tests.
+	currentTime time.Time
 }
 
-func NewPermissionChecker(clientFactory client.ClientFactory) PermissionChecker {
+// Subset of teh auth.Authorizer interface.
+type JWTParser interface {
+	ParseJWT(userSvcPublicKey, token string) (*auth.Claims, error)
+}
+
+func NewPermissionChecker(
+	clientFactory client.ClientFactory,
+	parser JWTParser,
+) PermissionChecker {
 	permissionCache, err := ristretto.NewCache(&ristretto.Config{
 		NumCounters: 1e5,     // number of keys to track frequency (10x max items)
 		MaxCost:     1 << 20, // max cost in bytes (~1 MiB)
@@ -60,22 +79,118 @@ func NewPermissionChecker(clientFactory client.ClientFactory) PermissionChecker 
 		panic(errors.Wrap(err, "failed to create ristretto cache").Error())
 	}
 
+	tokenReplacementCache, err := ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1e5,
+		MaxCost:     1 << 20,
+		BufferItems: 64,
+	})
+	if err != nil {
+		panic(errors.Wrap(err, "failed to create token replacement cache").Error())
+	}
+
 	return &permissionChecker{
-		clientFactory:   clientFactory,
-		permissionCache: permissionCache,
+		clientFactory:         clientFactory,
+		permissionCache:       permissionCache,
+		tokenReplacementCache: tokenReplacementCache,
+		parser:                parser,
 	}
 }
 
+func (pc *permissionChecker) getUserServicePublicKey() (string, error) {
+	pc.mutex.Lock()
+	defer pc.mutex.Unlock()
+
+	if pc.userServicePublicKey == "" {
+		userServicePublicKey, _, err := pc.clientFactory.Client().
+			UserSvcAPI.GetPublicKey(context.Background()).Execute()
+
+		if err != nil {
+			return "", errors.Wrap(err, "user service get public key endpoint failed")
+		}
+		pc.userServicePublicKey = userServicePublicKey.PublicKey
+	}
+
+	return pc.userServicePublicKey, nil
+}
+
+// HasPermission checks if the user has the specified permission.
+// It first checks the cache for a cached response.
+// If a cached response is found, it returns that.
+// If not, it makes a request to the user service to check the permission.
+//
+// It also handles JWT expiration.
+// If the JWT is expired, it refreshes the token and maps the old request to the new one.
 func (pc *permissionChecker) HasPermission(
 	request *http.Request,
 	permission string,
 ) (*openapi.UserSvcHasPermissionResponse, int, error) {
-	key := ""
-	jwt := request.Header.Get("Authorization")
-	if jwt != "" {
-		hash := sha256.Sum256([]byte(jwt))
-		key = fmt.Sprintf("%s:%s", hex.EncodeToString(hash[:]), permission)
+	publicKey, err := pc.getUserServicePublicKey()
+	if err != nil {
+		return nil, http.StatusInternalServerError, errors.Wrap(err, "failed to get user service public key")
+	}
 
+	isExpired := false
+
+	jwt := strings.TrimPrefix(request.Header.Get("Authorization"), "Bearer ")
+
+	now := pc.currentTime
+	if now.IsZero() {
+		now = time.Now()
+	}
+
+	if jwt != "" {
+		// First we check if the JWT is expired or not as that aspect cannot be cached.
+		// If the JWT is expired, we consider it a cache miss
+		// and let the request go through to the user service
+		claims, err := pc.parser.ParseJWT(
+			publicKey,
+			jwt,
+		)
+		if err != nil {
+			return nil, http.StatusUnauthorized, errors.Wrap(err, "failed to parse JWT")
+		}
+
+		// Handle missing expiresAt for backwards compatibility.
+		// Can be removed later.
+		if claims.ExpiresAt == nil ||
+			claims.ExpiresAt.Time.Before(now.Add(5*time.Second)) {
+			isExpired = true
+		}
+	}
+
+	key := generateCacheKey(
+		jwt,
+		permission,
+	)
+
+	if isExpired {
+		if val, found := pc.tokenReplacementCache.Get(key); found {
+			if replacementToken, ok := val.(string); ok {
+				newClaims, err := pc.parser.ParseJWT(publicKey, replacementToken)
+				if err == nil &&
+					newClaims.ExpiresAt != nil &&
+					newClaims.ExpiresAt.Time.After(now.Add(5*time.Second)) {
+					jwt = replacementToken
+					request.Header.Set("Authorization", jwt)
+					isExpired = false
+				}
+			}
+		}
+
+		if isExpired {
+			newJwtResp, _, err := pc.clientFactory.Client(client.WithTokenFromRequest(request)).
+				UserSvcAPI.RefreshToken(request.Context()).Execute()
+			if err != nil {
+				return nil, http.StatusUnauthorized, errors.Wrap(err, "token refresh failed")
+			}
+
+			jwt = newJwtResp.Token.Token
+			request.Header.Set("Authorization", jwt)
+			pc.tokenReplacementCache.SetWithTTL(key, jwt, 1, 5*time.Minute)
+		}
+	}
+
+	if jwt != "" && !isExpired {
 		if value, found := pc.permissionCache.Get(key); found {
 			if cachedResp, ok := value.(*HasPermissionResponse); ok {
 				return cachedResp.Response, cachedResp.StatusCode, nil
@@ -101,10 +216,16 @@ func (pc *permissionChecker) HasPermission(
 			StatusCode: httpResponse.StatusCode,
 		}, 1, 5*time.Minute)
 	}
+
 	code := 0
 	if httpResponse != nil {
 		code = httpResponse.StatusCode
 	}
 
 	return isAuthRsp, code, nil
+}
+
+func generateCacheKey(token, permission string) string {
+	hash := sha256.Sum256([]byte(token))
+	return fmt.Sprintf("%s:%s", hex.EncodeToString(hash[:]), permission)
 }

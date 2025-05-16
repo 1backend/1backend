@@ -14,11 +14,13 @@ package userservice
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"strings"
+	"time"
+
+	"github.com/pkg/errors"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
@@ -63,6 +65,7 @@ func (s *UserService) HasPermission(
 		endpoint.InternalServerError(w)
 		return
 	}
+
 	if !hasPermission {
 		endpoint.Unauthorized(w)
 		return
@@ -70,7 +73,7 @@ func (s *UserService) HasPermission(
 
 	bs, _ := json.Marshal(&user.HasPermissionResponse{
 		Authorized: hasPermission,
-		User:       usr,
+		User:       *usr,
 	})
 
 	_, err = w.Write(bs)
@@ -86,6 +89,9 @@ func (s *UserService) hasPermission(
 ) (*user.User, bool, error) {
 	usr, err := s.getUserFromRequest(r)
 	if err != nil {
+		if strings.Contains(err.Error(), "token is expired") {
+			return nil, false, nil
+		}
 		return nil, false, err
 	}
 
@@ -93,7 +99,6 @@ func (s *UserService) hasPermission(
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 	).Find()
 	if err != nil {
-
 		return nil, false, err
 	}
 
@@ -238,17 +243,45 @@ func (s *UserService) getUserFromRequest(r *http.Request) (*user.User, error) {
 		return nil, fmt.Errorf("no auth header")
 	}
 
-	tokenI, found, err := s.authTokensStore.Query(
-		datastore.Equals(datastore.Field("token"), authHeader),
-	).FindOne()
+	var token *user.AuthToken
+
+	expired := false
+	t, err := s.authorizer.ParseJWT(s.publicKeyPem, authHeader)
 	if err != nil {
-		return nil, err
+		if strings.Contains(err.Error(), "token is expired") {
+			expired = true
+		} else {
+			return nil, errors.Wrap(err, "failed to parse JWT")
+		}
 	}
 
-	if !found {
-		return nil, errors.New("token not found")
+	// Handle nil expiresAt for backwards compatibility.
+	// Can be removed later.
+	if expired ||
+		t.ExpiresAt == nil ||
+		t.ExpiresAt.Time.Before(time.Now()) {
+		if s.tokenAutoRefreshOff {
+			return nil, errors.New("token is expired")
+		}
+
+		token, err = s.refreshToken(authHeader)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to refresh token")
+		}
+	} else {
+		tokenI, found, err := s.authTokensStore.Query(
+			datastore.Equals(datastore.Field("token"), authHeader),
+		).FindOne()
+		if err != nil {
+			return nil, err
+		}
+
+		if !found {
+			return nil, errors.New("token not found")
+		}
+
+		token = tokenI.(*user.AuthToken)
 	}
-	token := tokenI.(*user.AuthToken)
 
 	userI, found, err := s.usersStore.Query(
 		datastore.Id(token.UserId),
@@ -263,7 +296,9 @@ func (s *UserService) getUserFromRequest(r *http.Request) (*user.User, error) {
 		)
 		return nil, errors.New("token user does not exist")
 	}
+
 	user := userI.(*user.User)
+
 	return user, nil
 }
 

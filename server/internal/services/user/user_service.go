@@ -15,6 +15,7 @@ package userservice
 import (
 	"crypto/rsa"
 	"net/http"
+	"strings"
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
@@ -47,9 +48,12 @@ type UserService struct {
 	permitsStore       datastore.DataStore
 	enrollsStore       datastore.DataStore
 
-	privateKey    *rsa.PrivateKey
-	publicKeyPem  string
-	serviceUserId string
+	privateKey   *rsa.PrivateKey
+	publicKeyPem string
+
+	configCache         map[string]any
+	tokenExpiration     time.Duration
+	tokenAutoRefreshOff bool
 
 	isTest bool
 }
@@ -58,6 +62,8 @@ func NewUserService(
 	clientFactory client.ClientFactory,
 	authorizer auth.Authorizer,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
+	tokenExpiration time.Duration,
+	tokenAutoRefreshOff bool,
 	isTest bool,
 ) (*UserService, error) {
 	usersStore, err := datastoreFactory("userSvcUsers", &usertypes.User{})
@@ -138,32 +144,38 @@ func NewUserService(
 	}
 
 	service := &UserService{
-		authorizer:         authorizer,
-		clientFactory:      clientFactory,
-		usersStore:         usersStore,
-		authTokensStore:    authTokensStore,
-		credentialsStore:   credentialsStore,
-		passwordsStore:     passwordsStore,
-		keyPairsStore:      keyPairsStore,
-		contactsStore:      contactsStore,
-		organizationsStore: organizationsStore,
-		membershipsStore:   membershipsStore,
-		permitsStore:       permitsStore,
-		enrollsStore:       enrollsStore,
-		isTest:             isTest,
-	}
-
-	err = service.registerPermits()
-	if err != nil {
-		return nil, err
-	}
-
-	err = service.bootstrap()
-	if err != nil {
-		return nil, err
+		authorizer:          authorizer,
+		clientFactory:       clientFactory,
+		usersStore:          usersStore,
+		authTokensStore:     authTokensStore,
+		credentialsStore:    credentialsStore,
+		passwordsStore:      passwordsStore,
+		keyPairsStore:       keyPairsStore,
+		contactsStore:       contactsStore,
+		organizationsStore:  organizationsStore,
+		membershipsStore:    membershipsStore,
+		permitsStore:        permitsStore,
+		enrollsStore:        enrollsStore,
+		tokenExpiration:     tokenExpiration,
+		tokenAutoRefreshOff: tokenAutoRefreshOff,
+		isTest:              isTest,
 	}
 
 	return service, nil
+}
+
+func (us *UserService) Start() error {
+	err := us.registerPermits()
+	if err != nil {
+		return err
+	}
+
+	err = us.bootstrap()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (us *UserService) RegisterRoutes(router *mux.Router) {
@@ -271,6 +283,11 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 		us.ListEnrolls(w, r)
 	})).
 		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/refresh-token", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+		us.RefreshToken(w, r)
+	})).
+		Methods("OPTIONS", "POST")
 }
 
 func (s *UserService) bootstrap() error {
@@ -360,14 +377,14 @@ func (s *UserService) bootstrap() error {
 			return errors.Wrap(err, "failed to upsert credential")
 		}
 
-		usr, err := s.register(slug, pw,
+		tok, err := s.register(slug, pw,
 			"User Svc", []string{
 				usertypes.RoleUser,
 			})
 		if err != nil {
 			return errors.Wrap(err, "failed to register user-svc")
 		}
-		s.serviceUserId = usr.Id
+		s.token = tok.Token
 	} else {
 		cred := credentials[0].(*auth.Credential)
 
@@ -379,12 +396,50 @@ func (s *UserService) bootstrap() error {
 			return errors.Wrap(err, "failed to login user-svc")
 		}
 
-		usr, err := s.readSelf(tok.Token)
-		if err != nil {
-			return errors.Wrap(err, "failed to read user by token")
-		}
-		s.serviceUserId = usr.Id
+		s.token = tok.Token
 	}
 
 	return nil
+}
+
+// parseJwtFromRequest parses the JWT from the request and refreshes it if necessary and if the server
+// is enabled to do so. Drop in replacement for `authorizer.ParseJWTFromRequest`.
+func (s *UserService) parseJWTFromRequest(r *http.Request) (*auth.Claims, error) {
+	expired := false
+	claims, err := s.authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
+	if err != nil {
+		if strings.Contains(err.Error(), "expired") {
+			expired = true
+		} else {
+			return nil, err
+		}
+	}
+
+	if s.tokenAutoRefreshOff {
+		return claims, err
+	}
+
+	if !expired && claims != nil && claims.ExpiresAt != nil &&
+		claims.ExpiresAt.Time.After(
+			time.Now().Add(5*time.Second),
+		) {
+		return claims, nil
+	}
+
+	header := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+	if header == "" {
+		return nil, errors.New("no token found in request")
+	}
+
+	token, err := s.refreshToken(header)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to refresh token")
+	}
+
+	claims, err = s.authorizer.ParseJWT(s.publicKeyPem, token.Token)
+	if err != nil {
+		return nil, err
+	}
+
+	return claims, nil
 }

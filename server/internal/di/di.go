@@ -14,6 +14,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
@@ -109,6 +110,12 @@ type Options struct {
 	// Authorizer is a helper interface that contains
 	// auth related utility functions
 	Authorizer auth.Authorizer
+
+	TokenExpiration time.Duration
+
+	// If set to true, expired tokens won't be autorefreshed by
+	// the server.
+	TokenAutoRefreshOff bool
 }
 
 type Universe struct {
@@ -181,6 +188,23 @@ func BigBang(options *Options) (*Universe, error) {
 		if options.SecretEncryptionKey == "" {
 			options.SecretEncryptionKey = "changeMeToSomethingSecureForReal"
 		}
+	}
+	if options.TokenExpiration == 0 {
+		tokenExpiration := os.Getenv("OB_TOKEN_EXPIRATION")
+		if tokenExpiration != "" {
+			tokenExpiration, err := time.ParseDuration(tokenExpiration)
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to parse token expiration")
+			}
+			options.TokenExpiration = tokenExpiration
+		}
+	}
+	if options.TokenExpiration == 0 {
+		options.TokenExpiration = 5 * time.Minute
+	}
+
+	if os.Getenv("OB_TOKEN_AUTO_REFRESH_OFF") == "true" {
+		options.TokenAutoRefreshOff = true
 	}
 
 	if !options.Test && os.Getenv("OB_TEST") == "true" {
@@ -262,6 +286,8 @@ func BigBang(options *Options) (*Universe, error) {
 		options.ClientFactory,
 		options.Authorizer,
 		options.DataStoreFactory.Create,
+		options.TokenExpiration,
+		options.TokenAutoRefreshOff,
 		options.Test,
 	)
 	if err != nil {
@@ -273,6 +299,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.ClientFactory,
 		options.Lock,
 		options.DataStoreFactory.Create,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create firehose service")
@@ -289,6 +316,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.Lock,
 		options.DataStoreFactory.Create,
 		options.HomeDir,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create file service")
@@ -311,6 +339,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.ClientFactory,
 		options.Lock,
 		options.DataStoreFactory.Create,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create container service")
@@ -324,6 +353,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.ClientFactory,
 		options.Lock,
 		options.DataStoreFactory.Create,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create model service")
@@ -334,6 +364,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.ClientFactory,
 		options.Lock,
 		options.DataStoreFactory.Create,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create chat service")
@@ -345,6 +376,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.LLamaCppClient,
 		options.Lock,
 		options.DataStoreFactory.Create,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create prompt service")
@@ -366,6 +398,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.ClientFactory,
 		options.Lock,
 		options.DataStoreFactory.Create,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create policy service")
@@ -380,6 +413,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.Lock,
 		options.DataStoreFactory.Create,
 		options.NodeId,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create registry service")
@@ -391,6 +425,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.Lock,
 		options.DataStoreFactory.Create,
 		options.Test,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create deploy service")
@@ -401,6 +436,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.ClientFactory,
 		options.Lock,
 		options.DataStoreFactory.Create,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create source service")
@@ -426,6 +462,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.ClientFactory,
 		options.Lock,
 		options.DataStoreFactory.Create,
+		options.Authorizer,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create email service")
@@ -460,6 +497,11 @@ func BigBang(options *Options) (*Universe, error) {
 	return &Universe{
 		Router: router,
 		StarterFunc: func() error {
+			err = userService.Start()
+			if err != nil {
+				return errors.Wrap(err, "user service start failed")
+			}
+
 			err = promptService.Start()
 			if err != nil {
 				return errors.Wrap(err, "prompt service start failed")

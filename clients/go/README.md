@@ -163,6 +163,7 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**ListUsers**](docs/UserSvcAPI.md#listusers) | **Post** /user-svc/users | List Users
 *UserSvcAPI* | [**Login**](docs/UserSvcAPI.md#login) | **Post** /user-svc/login | Login
 *UserSvcAPI* | [**ReadSelf**](docs/UserSvcAPI.md#readself) | **Post** /user-svc/self | Read Self
+*UserSvcAPI* | [**RefreshToken**](docs/UserSvcAPI.md#refreshtoken) | **Post** /user-svc/refresh-token | Refresh Token
 *UserSvcAPI* | [**Register**](docs/UserSvcAPI.md#register) | **Post** /user-svc/register | Register
 *UserSvcAPI* | [**ResetPassword**](docs/UserSvcAPI.md#resetpassword) | **Post** /user-svc/{userId}/reset-password | Reset Password
 *UserSvcAPI* | [**SaveEnrolls**](docs/UserSvcAPI.md#saveenrolls) | **Put** /user-svc/enrolls | Save Enrolls
@@ -368,6 +369,7 @@ Class | Method | HTTP request | Description
  - [UserSvcPermit](docs/UserSvcPermit.md)
  - [UserSvcPermitInput](docs/UserSvcPermitInput.md)
  - [UserSvcReadSelfResponse](docs/UserSvcReadSelfResponse.md)
+ - [UserSvcRefreshTokenResponse](docs/UserSvcRefreshTokenResponse.md)
  - [UserSvcRegisterRequest](docs/UserSvcRegisterRequest.md)
  - [UserSvcRegisterResponse](docs/UserSvcRegisterResponse.md)
  - [UserSvcResetPasswordRequest](docs/UserSvcResetPasswordRequest.md)

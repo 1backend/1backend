@@ -40,13 +40,7 @@ import (
 // @Router /user-svc/self [post]
 func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 
-	token, exists := s.authorizer.TokenFromRequest(r)
-	if !exists {
-		endpoint.WriteString(w, http.StatusBadRequest, "Token Missing")
-		return
-	}
-
-	claim, err := s.authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
+	claim, err := s.parseJWTFromRequest(r)
 	if err != nil {
 		logger.Error(
 			"Failed to parse JWT",
@@ -56,7 +50,7 @@ func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	usr, err := s.readSelf(token)
+	usr, err := s.readSelf(claim.UserId)
 	if err != nil {
 		logger.Error(
 			"Failed to read self",
@@ -102,9 +96,9 @@ func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (s *UserService) readSelf(token string) (*user.User, error) {
+func (s *UserService) readSelf(userId string) (*user.User, error) {
 	authTokenI, found, err := s.authTokensStore.Query(
-		datastore.Equals(datastore.Field("token"), token),
+		datastore.Equals(datastore.Field("userId"), userId),
 	).FindOne()
 	if err != nil {
 		return nil, err

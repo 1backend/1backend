@@ -2722,6 +2722,9 @@ definitions:
           creation/assignment, etc.—all existing tokens are marked inactive.
           Active tokens are reused during login, while inactive tokens
           are retained for historical reference.
+
+          Inactive tokens can still be refreshed to create a new active token.
+          A separate mechanism for leaked tokens must be implemented (a different flag or outright deletion).
         type: boolean
       createdAt:
         type: string
@@ -2940,6 +2943,9 @@ definitions:
         type: boolean
       user:
         $ref: '#/definitions/user_svc.User'
+    required:
+    - authorized
+    - user
     type: object
   user_svc.ListEnrollsRequest:
     properties:
@@ -3193,6 +3199,13 @@ definitions:
         description: The user who made the request.
     required:
     - user
+    type: object
+  user_svc.RefreshTokenResponse:
+    properties:
+      token:
+        $ref: '#/definitions/user_svc.AuthToken'
+    required:
+    - token
     type: object
   user_svc.RegisterRequest:
     properties:
@@ -3666,7 +3679,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Fetch the current configuration from the server
+      description: Fetch the current configuration from the server.
       operationId: getConfig
       parameters:
       - description: Namespace
@@ -4644,11 +4657,11 @@ paths:
           schema:
             type: file
         "400":
-          description: error parsing download URL
+          description: Error Parsing Download URL
           schema:
             $ref: '#/definitions/file_svc.ErrorResponse'
         "404":
-          description: file not found
+          description: File Not Found
           schema:
             $ref: '#/definitions/file_svc.ErrorResponse'
         "500":
@@ -4685,11 +4698,11 @@ paths:
           schema:
             type: file
         "400":
-          description: missing upload ID
+          description: Missing Upload ID
           schema:
             $ref: '#/definitions/file_svc.ErrorResponse'
         "404":
-          description: file not found
+          description: File Not Found
           schema:
             $ref: '#/definitions/file_svc.ErrorResponse'
         "500":
@@ -4867,11 +4880,11 @@ paths:
           schema:
             type: file
         "400":
-          description: missing file ID
+          description: Missing File ID
           schema:
             $ref: '#/definitions/image_svc.ErrorResponse'
         "404":
-          description: file not found
+          description: File Not Found
           schema:
             $ref: '#/definitions/image_svc.ErrorResponse'
         "500":
@@ -6511,6 +6524,35 @@ paths:
       summary: Get Public Key
       tags:
       - User Svc
+  /user-svc/refresh-token:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Refreshes an existing token, including inactive ones.
+        The old token becomes inactive (if not already inactive), and a new, active token is issued.
+        This allows continued verification of user roles without requiring a new login.
+        Inactive tokens are refreshable unless explicitly revoked (no mechanism for this yet).
+        Leaked tokens should be handled separately, via a revocation flag or deletion.
+      operationId: refreshToken
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Refresh Token successful
+          schema:
+            $ref: '#/definitions/user_svc.RefreshTokenResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      summary: Refresh Token
+      tags:
+      - User Svc
   /user-svc/register:
     post:
       consumes:
@@ -6631,7 +6673,7 @@ paths:
           schema:
             $ref: '#/definitions/user_svc.HasPermissionResponse'
         "400":
-          description: Invalid JSON or missing permission id
+          description: Missing Permission
           schema:
             $ref: '#/definitions/user_svc.ErrorResponse'
         "401":

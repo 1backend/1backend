@@ -17,7 +17,6 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
@@ -54,8 +53,7 @@ func (s *UserService) ListPermissions(
 	}
 	defer r.Body.Close()
 
-	authr := auth.AuthorizerImpl{}
-	claim, err := authr.ParseJWTFromRequest(s.publicKeyPem, r)
+	claim, err := s.parseJWTFromRequest(r)
 	if err != nil || claim == nil {
 		endpoint.Unauthorized(w)
 		return

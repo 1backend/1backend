@@ -7,6 +7,7 @@ import (
 	"encoding/pem"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 
@@ -55,7 +56,7 @@ func privateKeyFromString(privateKeyPem string) (*rsa.PrivateKey, error) {
 	return privateKey, nil
 }
 
-func generateJWT(
+func (s *UserService) generateJWT(
 	user *usertypes.User,
 	roles []string,
 	activeOrganizationId string,
@@ -66,7 +67,9 @@ func generateJWT(
 		Slug:                 user.Slug,
 		Roles:                roles,
 		ActiveOrganizationId: activeOrganizationId,
-		RegisteredClaims:     jwt.RegisteredClaims{},
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(s.tokenExpiration)),
+		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)

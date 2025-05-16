@@ -429,6 +429,36 @@ func (mr *MockUserSvcAPIMockRecorder) ReadSelfExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadSelfExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ReadSelfExecute), r)
 }
 
+// RefreshToken mocks base method.
+func (m *MockUserSvcAPI) RefreshToken(ctx context.Context) ApiRefreshTokenRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RefreshToken", ctx)
+	ret0, _ := ret[0].(ApiRefreshTokenRequest)
+	return ret0
+}
+
+// RefreshToken indicates an expected call of RefreshToken.
+func (mr *MockUserSvcAPIMockRecorder) RefreshToken(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshToken", reflect.TypeOf((*MockUserSvcAPI)(nil).RefreshToken), ctx)
+}
+
+// RefreshTokenExecute mocks base method.
+func (m *MockUserSvcAPI) RefreshTokenExecute(r ApiRefreshTokenRequest) (*UserSvcRefreshTokenResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RefreshTokenExecute", r)
+	ret0, _ := ret[0].(*UserSvcRefreshTokenResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// RefreshTokenExecute indicates an expected call of RefreshTokenExecute.
+func (mr *MockUserSvcAPIMockRecorder) RefreshTokenExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshTokenExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).RefreshTokenExecute), r)
+}
+
 // Register mocks base method.
 func (m *MockUserSvcAPI) Register(ctx context.Context) ApiRegisterRequest {
 	m.ctrl.T.Helper()

@@ -10,27 +10,31 @@ tags:
 
 # Backend Environment Variables
 
-## `OB_SERVER_URL`
+## `OB_DB`
 
-The OB_SERVER_URL is the internally addressable (non-public-facing) URL of an 1Backend server. It should point to the local 1Backend instance on each physical node. Ideally, every node should have its own 1Backend instance.
+You can use this envar to make 1Backend actually use a database instead of local file storage to store data.
 
-This envar should be set only for microservices built on 1Backend. The 1Backend server itself should use `OB_SELF_URL`.
+## `OB_DB_PREFIX`
 
-## `OB_SELF_URL`
+When specified, all tables in the database will be prefixed by this strings. Mostly useful for testing.
 
-Microservices use this to register themselves in the 1Backend registry. The 1Backend server uses this to address itself.
+### PostgreSQL
 
-## `OB_TEST`
+```sh
+OB_DB=postgres
+OB_DB_DRIVER="postgres" # or "mysql"
+OB_DB_CONNECTION_STRING="postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
+```
 
-Microservices and the 1Backend server uses this envar to detect if they are running as part of a test.
+Naturally, you should change the details of the connection string to reflect your environment.
 
-When set to true, subsystems act accordingly: for example the datastore will prefix tables with random numbers to provide a unique and clean environment for each test.
+## `OB_ENCRYPTION_KEY`
 
-First startup is also significantly faster when this flag is enabled, as 1Backend uses bcrypt.MinCost instead of bcrypt.DefaultCost for password generation, and sets the RSA key size to 512 bits in test mode instead of the default 4096.
+This key is used in the Secret Svc so secrets are encrypted at rest.
 
-## `OB_NODE_ID`
+## `OB_FOLDER`
 
-For information about this, please refer to the [Registry Svc Node section](/docs/built-in-services/registry-svc#node)
+When specified, all data (uploads, downloads, image resize caches, models etc.) will be stored in this folder. Defaults to `~/.1backend`.
 
 ## `OB_GPU_PLATFORM`
 
@@ -40,28 +44,6 @@ Supported platforms:
 - `cuda`
 
 Do not set this if your card doesn't support the given architecture or things will break.
-
-## `OB_VOLUME_NAME`
-
-**This flag is typically unnecessary since 1Backend automatically detects the volume that is bound to `/root/.1backend`. Use it only as a corrective action.**
-
-This envar is needed when 1Backend runs as a container next to containers it starts:
-
-```sh
-Host
- |
- |-> 1Backend Container
- |-> Container Launched By 1Backend
-```
-
-For the containers like `llama-cpp` to be able to read the models downloaded by 1Backend we they must both mount the same docker volume.
-
-An example of this can be seen in the root `docker-compose.yaml` file: `OB_VOLUME_NAME=singulatron-data`.
-
-So cycle goes like this:
-
-- 1Backend container writes to `/root/.1backend`, which is mounted to the volume `singulatron-data`
-- Assets (which are basically downloaded files) will be passed to containers created by 1Backend by mounting files in `singulatron-data`.
 
 ## `OB_LLM_HOST`
 
@@ -91,16 +73,54 @@ Host With 1Backend
  |-> Container Launched By 1Backend
 ```
 
-## `OB_DB`
+## `OB_NODE_ID`
 
-You can use this envar to make 1Backend actually use a database instead of local file storage to store data.
+For information about this, please refer to the [Registry Svc Node section](/docs/built-in-services/registry-svc#node)
 
-### PostgreSQL
+## `OB_SERVER_URL`
+
+The OB_SERVER_URL is the internally addressable (non-public-facing) URL of an 1Backend server. It should point to the local 1Backend instance on each physical node. Ideally, every node should have its own 1Backend instance.
+
+This envar should be set only for microservices built on 1Backend. The 1Backend server itself should use `OB_SELF_URL`.
+
+## `OB_SELF_URL`
+
+Microservices use this to register themselves in the 1Backend registry. The 1Backend server uses this to address itself.
+
+## `OB_TEST`
+
+Microservices and the 1Backend server uses this envar to detect if they are running as part of a test.
+
+When set to true, subsystems act accordingly: for example the datastore will prefix tables with random numbers to provide a unique and clean environment for each test.
+
+First startup is also significantly faster when this flag is enabled, as 1Backend uses bcrypt.MinCost instead of bcrypt.DefaultCost for password generation, and sets the RSA key size to 512 bits in test mode instead of the default 4096.
+
+## `OB_TOKEN_AUTO_REFRESH_OFF`
+
+When set to true, clients are responsible for handling the refresh of expired tokens themselves. This overrides the default behavior, where expired tokens are automatically accepted and refreshed by the system.
+
+## `OB_TOKEN_EXPIRATION`
+
+Specifies the duration before a token expires. Use formats like 5m for five minutes, 10h for ten hours, etc.
+
+## `OB_VOLUME_NAME`
+
+**This flag is typically unnecessary since 1Backend automatically detects the volume that is bound to `/root/.1backend`. Use it only as a corrective action.**
+
+This envar is needed when 1Backend runs as a container next to containers it starts:
 
 ```sh
-OB_DB=postgres
-OB_DB_DRIVER="postgres" # or "mysql"
-OB_DB_CONNECTION_STRING="postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
+Host
+ |
+ |-> 1Backend Container
+ |-> Container Launched By 1Backend
 ```
 
-Naturally, you should change the details of the connection string to reflect your environment.
+For the containers like `llama-cpp` to be able to read the models downloaded by 1Backend we they must both mount the same docker volume.
+
+An example of this can be seen in the root `docker-compose.yaml` file: `OB_VOLUME_NAME=singulatron-data`.
+
+So cycle goes like this:
+
+- 1Backend container writes to `/root/.1backend`, which is mounted to the volume `singulatron-data`
+- Assets (which are basically downloaded files) will be passed to containers created by 1Backend by mounting files in `singulatron-data`.

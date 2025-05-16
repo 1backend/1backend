@@ -32,19 +32,21 @@ export interface UserSvcHasPermissionResponse {
      * @type {boolean}
      * @memberof UserSvcHasPermissionResponse
      */
-    authorized?: boolean;
+    authorized: boolean;
     /**
      * 
      * @type {UserSvcUser}
      * @memberof UserSvcHasPermissionResponse
      */
-    user?: UserSvcUser;
+    user: UserSvcUser;
 }
 
 /**
  * Check if a given object implements the UserSvcHasPermissionResponse interface.
  */
 export function instanceOfUserSvcHasPermissionResponse(value: object): value is UserSvcHasPermissionResponse {
+    if (!('authorized' in value) || value['authorized'] === undefined) return false;
+    if (!('user' in value) || value['user'] === undefined) return false;
     return true;
 }
 
@@ -58,8 +60,8 @@ export function UserSvcHasPermissionResponseFromJSONTyped(json: any, ignoreDiscr
     }
     return {
         
-        'authorized': json['authorized'] == null ? undefined : json['authorized'],
-        'user': json['user'] == null ? undefined : UserSvcUserFromJSON(json['user']),
+        'authorized': json['authorized'],
+        'user': UserSvcUserFromJSON(json['user']),
     };
 }
 

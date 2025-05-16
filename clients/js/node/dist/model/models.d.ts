@@ -192,6 +192,7 @@ export * from './userSvcOrganization';
 export * from './userSvcPermit';
 export * from './userSvcPermitInput';
 export * from './userSvcReadSelfResponse';
+export * from './userSvcRefreshTokenResponse';
 export * from './userSvcRegisterRequest';
 export * from './userSvcRegisterResponse';
 export * from './userSvcResetPasswordRequest';
