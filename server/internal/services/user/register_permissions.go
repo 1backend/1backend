@@ -14,13 +14,10 @@ package userservice
 
 import (
 	"context"
-	"time"
 
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
-
-const tokenExpiration = 5 * time.Minute
 
 func (us *UserService) registerPermits() error {
 	permits := []*user.PermitInput{}

@@ -249,7 +249,8 @@ func (s *UserService) getUserFromRequest(r *http.Request) (*user.User, error) {
 
 	// Handle nil expiresAt for backwards compatibility.
 	// Can be removed later.
-	if t.ExpiresAt == nil || t.ExpiresAt.Time.Before(time.Now()) {
+	if (t.ExpiresAt == nil || t.ExpiresAt.Time.Before(time.Now())) &&
+		!s.tokenAutoRefreshOff {
 		token, err = s.refreshToken(authHeader)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to refresh token")

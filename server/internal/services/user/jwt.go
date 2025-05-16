@@ -62,34 +62,13 @@ func (s *UserService) generateJWT(
 	activeOrganizationId string,
 	privateKey *rsa.PrivateKey,
 ) (string, error) {
-	// config, err := s.getConfig()
-	// if err != nil {
-	// 	return "", errors.Wrap(err, "failed to get config")
-	// }
-	//
-	// expiration := tokenExpiration
-	// if config["user-svc"] != nil &&
-	// 	config["user-svc"].(map[string]any)["token-expiration"] != nil {
-	// 	dur, err := time.ParseDuration(
-	// 		config["user-svc"].(map[string]any)["token-expiration"].(string),
-	// 	)
-	// 	if err == nil {
-	// 		expiration = dur
-	// 	} else {
-	// 		logger.Error(
-	// 			"Failed to parse token expiration",
-	// 			slog.Any("error", err),
-	// 		)
-	// 	}
-	// }
-
 	claims := &auth.Claims{
 		UserId:               user.Id,
 		Slug:                 user.Slug,
 		Roles:                roles,
 		ActiveOrganizationId: activeOrganizationId,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(tokenExpiration)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(s.tokenExpiration)),
 		},
 	}
 

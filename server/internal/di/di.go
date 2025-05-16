@@ -14,6 +14,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
@@ -109,6 +110,12 @@ type Options struct {
 	// Authorizer is a helper interface that contains
 	// auth related utility functions
 	Authorizer auth.Authorizer
+
+	TokenExpiration time.Duration
+
+	// If set to true, expired tokens won't be autorefreshed by
+	// the server.
+	TokenAutoRefreshOff bool
 }
 
 type Universe struct {
@@ -181,6 +188,23 @@ func BigBang(options *Options) (*Universe, error) {
 		if options.SecretEncryptionKey == "" {
 			options.SecretEncryptionKey = "changeMeToSomethingSecureForReal"
 		}
+	}
+	if options.TokenExpiration == 0 {
+		tokenExpiration := os.Getenv("OB_TOKEN_EXPIRATION")
+		if tokenExpiration != "" {
+			tokenExpiration, err := time.ParseDuration(tokenExpiration)
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to parse token expiration")
+			}
+			options.TokenExpiration = tokenExpiration
+		}
+	}
+	if options.TokenExpiration == 0 {
+		options.TokenExpiration = 5 * time.Minute
+	}
+
+	if os.Getenv("OB_TOKEN_AUTO_REFRESH_OFF") == "true" {
+		options.TokenAutoRefreshOff = true
 	}
 
 	if !options.Test && os.Getenv("OB_TEST") == "true" {
@@ -262,6 +286,8 @@ func BigBang(options *Options) (*Universe, error) {
 		options.ClientFactory,
 		options.Authorizer,
 		options.DataStoreFactory.Create,
+		options.TokenExpiration,
+		options.TokenAutoRefreshOff,
 		options.Test,
 	)
 	if err != nil {

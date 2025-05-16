@@ -15,6 +15,7 @@ package userservice_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 
@@ -109,4 +110,74 @@ func TestPermitsByRoleId(t *testing.T) {
 	rsp, _, err := userClient.UserSvcAPI.ListUsers(ctx).Execute()
 	require.NoError(t, err)
 	require.NotEmpty(t, len(rsp.Users))
+}
+
+func TestAutoRefresh(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{
+		// JWT expiration is only second granular
+		TokenExpiration: time.Second,
+		Test:            true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	token, err := boot.RegisterUserAccount(
+		clientFactory.Client().UserSvcAPI,
+		"someuser",
+		"pw123",
+		"Some name",
+	)
+	require.NoError(t, err)
+	userClient := clientFactory.Client(client.WithToken(token.Token))
+
+	ctx := context.Background()
+
+	rsp, _, err := userClient.UserSvcAPI.ReadSelf(ctx).Execute()
+	require.NoError(t, err)
+	require.Equal(t, "someuser", rsp.User.Slug)
+
+	time.Sleep(2 * time.Second)
+
+	rsp, _, err = userClient.UserSvcAPI.ReadSelf(ctx).Execute()
+	require.NoError(t, err)
+	require.Equal(t, "someuser", rsp.User.Slug)
+}
+
+func TestAutoRefreshOff(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{
+		// JWT expiration is only second granular
+		TokenExpiration:     time.Second,
+		TokenAutoRefreshOff: true,
+		Test:                true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	token, err := boot.RegisterUserAccount(
+		clientFactory.Client().UserSvcAPI,
+		"someuser",
+		"pw123",
+		"Some name",
+	)
+	require.NoError(t, err)
+	userClient := clientFactory.Client(client.WithToken(token.Token))
+
+	ctx := context.Background()
+
+	rsp, _, err := userClient.UserSvcAPI.ReadSelf(ctx).Execute()
+	require.NoError(t, err)
+	require.Equal(t, "someuser", rsp.User.Slug)
+
+	time.Sleep(2 * time.Second)
+
+	_, _, err = userClient.UserSvcAPI.ReadSelf(ctx).Execute()
+	require.Error(t, err)
 }

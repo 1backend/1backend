@@ -39,13 +39,24 @@ import (
 // @Security BearerAuth
 // @Router /user-svc/self [put]
 func (s *UserService) SaveSelf(w http.ResponseWriter, r *http.Request) {
-	token, exists := s.authorizer.TokenFromRequest(r)
+	stringToken, exists := s.authorizer.TokenFromRequest(r)
 	if !exists {
 		endpoint.WriteString(w, http.StatusBadRequest, "Token Missing")
 		return
 	}
 
-	usr, err := s.readSelf(token)
+	token, err := s.refreshToken(stringToken)
+	if err != nil {
+		logger.Error(
+			"Failed to login",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
+
+		return
+	}
+
+	usr, err := s.readSelf(token.UserId)
 	if err != nil {
 		logger.Error(
 			"Failed to read self",

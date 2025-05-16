@@ -3,6 +3,7 @@ package userservice_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 
@@ -15,7 +16,9 @@ func TestCreateUser(t *testing.T) {
 	t.Parallel()
 
 	server, err := test.StartService(test.Options{
-		Test: true,
+		Test:                true,
+		TokenAutoRefreshOff: true,
+		TokenExpiration:     1 * time.Second,
 	})
 	require.NoError(t, err)
 	defer server.Cleanup(t)
@@ -61,5 +64,19 @@ func TestCreateUser(t *testing.T) {
 			},
 		).Execute()
 		require.Error(t, err)
+	})
+
+	time.Sleep(1 * time.Second)
+
+	t.Run("admins token expired", func(t *testing.T) {
+		_, httpRsp, err := adminClient.UserSvcAPI.CreateUser(ctx).Body(
+			openapi.UserSvcCreateUserRequest{
+				User: &openapi.UserSvcUserInput{
+					Slug: "test-slug-1",
+					Name: openapi.PtrString("Test Name"),
+				},
+			},
+		).Execute()
+		require.Error(t, err, httpRsp)
 	})
 }

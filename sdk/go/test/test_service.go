@@ -67,6 +67,10 @@ type Options struct {
 	// For tests it's something like /tmp/1backend-2698538720/
 	// For live it's /home/youruser/.1backend
 	HomeDir string
+
+	// Defaults to 5m
+	TokenExpiration     time.Duration
+	TokenAutoRefreshOff bool
 }
 
 type ServiceProcess struct {
@@ -126,20 +130,22 @@ func StartService(options Options) (*ServiceProcess, error) {
 	}
 
 	envVars := map[string]string{
-		"OB_TEST":                 fmt.Sprintf("%v", options.Test),
-		"OB_SELF_URL":             options.Url,
-		"OB_FOLDER":               options.ConfigPath,
-		"OB_SERVER_URL":           options.ServerUrl,
-		"OB_GPU_PLATFORM":         options.GpuPlatform,
-		"OB_NODE_ID":              options.NodeId,
-		"OB_AZ":                   options.Az,
-		"OB_REGION":               options.Region,
-		"OB_LLM_HOST":             options.LLMHost,
-		"OB_VOLUME_NAME":          options.VolumeName,
-		"OB_DB_PREFIX":            options.DbPrefix,
-		"OB_DB":                   options.Db,
-		"OB_DB_CONNECTION_STRING": options.DbConnectionString,
-		"OB_ENCRYPTION_KEY":       options.SecretEncryptionKey,
+		"OB_TEST":                   fmt.Sprintf("%v", options.Test),
+		"OB_SELF_URL":               options.Url,
+		"OB_FOLDER":                 options.ConfigPath,
+		"OB_SERVER_URL":             options.ServerUrl,
+		"OB_GPU_PLATFORM":           options.GpuPlatform,
+		"OB_NODE_ID":                options.NodeId,
+		"OB_AZ":                     options.Az,
+		"OB_REGION":                 options.Region,
+		"OB_LLM_HOST":               options.LLMHost,
+		"OB_VOLUME_NAME":            options.VolumeName,
+		"OB_DB_PREFIX":              options.DbPrefix,
+		"OB_DB":                     options.Db,
+		"OB_DB_CONNECTION_STRING":   options.DbConnectionString,
+		"OB_ENCRYPTION_KEY":         options.SecretEncryptionKey,
+		"OB_TOKEN_EXPIRATION":       fmt.Sprintf("%v", options.TokenExpiration),
+		"OB_TOKEN_AUTO_REFRESH_OFF": fmt.Sprintf("%v", options.TokenAutoRefreshOff),
 	}
 
 	for key, value := range envVars {

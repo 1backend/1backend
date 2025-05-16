@@ -13,10 +13,9 @@
 package userservice
 
 import (
-	"context"
 	"crypto/rsa"
-	"encoding/json"
 	"net/http"
+	"strings"
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
@@ -52,7 +51,9 @@ type UserService struct {
 	privateKey   *rsa.PrivateKey
 	publicKeyPem string
 
-	configCache map[string]any
+	configCache         map[string]any
+	tokenExpiration     time.Duration
+	tokenAutoRefreshOff bool
 
 	isTest bool
 }
@@ -61,6 +62,8 @@ func NewUserService(
 	clientFactory client.ClientFactory,
 	authorizer auth.Authorizer,
 	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
+	tokenExpiration time.Duration,
+	tokenAutoRefreshOff bool,
 	isTest bool,
 ) (*UserService, error) {
 	usersStore, err := datastoreFactory("userSvcUsers", &usertypes.User{})
@@ -141,19 +144,21 @@ func NewUserService(
 	}
 
 	service := &UserService{
-		authorizer:         authorizer,
-		clientFactory:      clientFactory,
-		usersStore:         usersStore,
-		authTokensStore:    authTokensStore,
-		credentialsStore:   credentialsStore,
-		passwordsStore:     passwordsStore,
-		keyPairsStore:      keyPairsStore,
-		contactsStore:      contactsStore,
-		organizationsStore: organizationsStore,
-		membershipsStore:   membershipsStore,
-		permitsStore:       permitsStore,
-		enrollsStore:       enrollsStore,
-		isTest:             isTest,
+		authorizer:          authorizer,
+		clientFactory:       clientFactory,
+		usersStore:          usersStore,
+		authTokensStore:     authTokensStore,
+		credentialsStore:    credentialsStore,
+		passwordsStore:      passwordsStore,
+		keyPairsStore:       keyPairsStore,
+		contactsStore:       contactsStore,
+		organizationsStore:  organizationsStore,
+		membershipsStore:    membershipsStore,
+		permitsStore:        permitsStore,
+		enrollsStore:        enrollsStore,
+		tokenExpiration:     tokenExpiration,
+		tokenAutoRefreshOff: tokenAutoRefreshOff,
+		isTest:              isTest,
 	}
 
 	return service, nil
@@ -397,28 +402,44 @@ func (s *UserService) bootstrap() error {
 	return nil
 }
 
-// This is not used yet because of a circular dependency issue.
-func (s *UserService) getConfig() (map[string]any, error) {
-	if s.configCache != nil {
-		return s.configCache, nil
+// parseJwtFromRequest parses the JWT from the request and refreshes it if necessary and if the server
+// is enabled to do so. Drop in replacement for `authorizer.ParseJWTFromRequest`.
+func (s *UserService) parseJWTFromRequest(r *http.Request) (*auth.Claims, error) {
+	expired := false
+	claims, err := s.authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
+	if err != nil {
+		if strings.Contains(err.Error(), "expired") {
+			expired = true
+		} else {
+			return nil, err
+		}
 	}
 
-	rsp, _, err := s.clientFactory.Client().
-		ConfigSvcAPI.GetConfig(context.Background()).
-		Execute()
+	if s.tokenAutoRefreshOff {
+		return claims, err
+	}
+
+	if !expired && claims != nil && claims.ExpiresAt != nil &&
+		claims.ExpiresAt.Time.After(
+			time.Now().Add(5*time.Second),
+		) {
+		return claims, nil
+	}
+
+	header := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+	if header == "" {
+		return nil, errors.New("no token found in request")
+	}
+
+	token, err := s.refreshToken(header)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to refresh token")
+	}
+
+	claims, err = s.authorizer.ParseJWT(s.publicKeyPem, token.Token)
 	if err != nil {
 		return nil, err
 	}
 
-	if rsp.Config.DataJson != nil {
-		jsonBytes := *rsp.Config.DataJson
-		var m map[string]any
-		err = json.Unmarshal([]byte(jsonBytes), &m)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to unmarshal config")
-		}
-		s.configCache = m
-	}
-
-	return s.configCache, nil
+	return claims, nil
 }
