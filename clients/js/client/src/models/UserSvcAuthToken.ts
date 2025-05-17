@@ -48,10 +48,11 @@ export interface UserSvcAuthToken {
      * The device the token is associated with.
      * This in combination with LastRefreshedAt can be used to
      * determine if the token is still in use, and lets us prune unused tokens.
+     * @default default
      * @type {string}
      * @memberof UserSvcAuthToken
      */
-    device?: string;
+    device: string;
     /**
      * 
      * @type {string}
@@ -98,6 +99,7 @@ export interface UserSvcAuthToken {
  */
 export function instanceOfUserSvcAuthToken(value: object): value is UserSvcAuthToken {
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('device' in value) || value['device'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('token' in value) || value['token'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
@@ -118,7 +120,7 @@ export function UserSvcAuthTokenFromJSONTyped(json: any, ignoreDiscriminator: bo
         'active': json['active'] == null ? undefined : json['active'],
         'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
-        'device': json['device'] == null ? undefined : json['device'],
+        'device': json['device'],
         'id': json['id'],
         'lastRefreshedAt': json['lastRefreshedAt'] == null ? undefined : json['lastRefreshedAt'],
         'token': json['token'],

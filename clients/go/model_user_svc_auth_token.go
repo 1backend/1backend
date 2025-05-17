@@ -26,8 +26,8 @@ type UserSvcAuthToken struct {
 	Active *bool `json:"active,omitempty"`
 	CreatedAt string `json:"createdAt"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
-	// The device the token is associated with. This in combination with LastRefreshedAt can be used to determine if the token is still in use, and lets us prune unused tokens.
-	Device *string `json:"device,omitempty"`
+	// The device the token is associated with. This in combination with LastRefreshedAt can be used to determine if the token is still in use, and lets us prune unused tokens. @default default
+	Device string `json:"device"`
 	Id string `json:"id"`
 	// The last time the token was refreshed. This is used to determine if the token is still in use.
 	LastRefreshedAt *string `json:"lastRefreshedAt,omitempty"`
@@ -43,9 +43,10 @@ type _UserSvcAuthToken UserSvcAuthToken
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcAuthToken(createdAt string, id string, token string, updatedAt string, userId string) *UserSvcAuthToken {
+func NewUserSvcAuthToken(createdAt string, device string, id string, token string, updatedAt string, userId string) *UserSvcAuthToken {
 	this := UserSvcAuthToken{}
 	this.CreatedAt = createdAt
+	this.Device = device
 	this.Id = id
 	this.Token = token
 	this.UpdatedAt = updatedAt
@@ -149,36 +150,28 @@ func (o *UserSvcAuthToken) SetDeletedAt(v string) {
 	o.DeletedAt = &v
 }
 
-// GetDevice returns the Device field value if set, zero value otherwise.
+// GetDevice returns the Device field value
 func (o *UserSvcAuthToken) GetDevice() string {
-	if o == nil || IsNil(o.Device) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Device
+
+	return o.Device
 }
 
-// GetDeviceOk returns a tuple with the Device field value if set, nil otherwise
+// GetDeviceOk returns a tuple with the Device field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcAuthToken) GetDeviceOk() (*string, bool) {
-	if o == nil || IsNil(o.Device) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Device, true
+	return &o.Device, true
 }
 
-// HasDevice returns a boolean if a field has been set.
-func (o *UserSvcAuthToken) HasDevice() bool {
-	if o != nil && !IsNil(o.Device) {
-		return true
-	}
-
-	return false
-}
-
-// SetDevice gets a reference to the given string and assigns it to the Device field.
+// SetDevice sets field value
 func (o *UserSvcAuthToken) SetDevice(v string) {
-	o.Device = &v
+	o.Device = v
 }
 
 // GetId returns the Id field value
@@ -326,9 +319,7 @@ func (o UserSvcAuthToken) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.DeletedAt) {
 		toSerialize["deletedAt"] = o.DeletedAt
 	}
-	if !IsNil(o.Device) {
-		toSerialize["device"] = o.Device
-	}
+	toSerialize["device"] = o.Device
 	toSerialize["id"] = o.Id
 	if !IsNil(o.LastRefreshedAt) {
 		toSerialize["lastRefreshedAt"] = o.LastRefreshedAt
@@ -345,6 +336,7 @@ func (o *UserSvcAuthToken) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"createdAt",
+		"device",
 		"id",
 		"token",
 		"updatedAt",

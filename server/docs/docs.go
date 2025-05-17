@@ -8826,6 +8826,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "createdAt",
+                "device",
                 "id",
                 "token",
                 "updatedAt",
@@ -8843,7 +8844,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "device": {
-                    "description": "The device the token is associated with.\nThis in combination with LastRefreshedAt can be used to\ndetermine if the token is still in use, and lets us prune unused tokens.",
+                    "description": "The device the token is associated with.\nThis in combination with LastRefreshedAt can be used to\ndetermine if the token is still in use, and lets us prune unused tokens.\n@default default",
                     "type": "string"
                 },
                 "id": {

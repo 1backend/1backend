@@ -31,7 +31,8 @@ type AuthToken struct {
 	// The device the token is associated with.
 	// This in combination with LastRefreshedAt can be used to
 	// determine if the token is still in use, and lets us prune unused tokens.
-	Device string `json:"device,omitempty"`
+	Device string `json:"device" binding:"required"`
+
 	// The last time the token was refreshed.
 	// This is used to determine if the token is still in use.
 	LastRefreshedAt *time.Time `json:"lastRefreshedAt,omitempty"`

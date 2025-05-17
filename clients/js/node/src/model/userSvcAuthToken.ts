@@ -20,9 +20,9 @@ export class UserSvcAuthToken {
     'createdAt': string;
     'deletedAt'?: string;
     /**
-    * The device the token is associated with. This in combination with LastRefreshedAt can be used to determine if the token is still in use, and lets us prune unused tokens.
+    * The device the token is associated with. This in combination with LastRefreshedAt can be used to determine if the token is still in use, and lets us prune unused tokens. @default default
     */
-    'device'?: string;
+    'device': string;
     'id': string;
     /**
     * The last time the token was refreshed. This is used to determine if the token is still in use.

@@ -152,7 +152,7 @@ func TestRefreshTokenCountIsBounded(t *testing.T) {
 			},
 		).Execute()
 		require.NoError(t, err)
-		require.LessOrEqual(t, int32(3), self.TokenCount)
+		require.LessOrEqual(t, self.TokenCount, int32(3))
 	})
 }
 
@@ -219,5 +219,5 @@ func TestRefreshTokenCountIsBoundedPerDevice(t *testing.T) {
 		Body(openapi.UserSvcReadSelfRequest{CountTokens: openapi.PtrBool(true)}).
 		Execute()
 	require.NoError(t, err)
-	require.LessOrEqual(t, int32(6), finalA.TokenCount, "test ended with wrong count")
+	require.LessOrEqual(t, finalA.TokenCount, int32(6), "test ended with wrong count")
 }
