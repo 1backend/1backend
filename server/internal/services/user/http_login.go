@@ -16,6 +16,7 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
@@ -160,6 +161,16 @@ func (s *UserService) login(
 		tok := tokenI.(*user.AuthToken)
 		functional, err := s.isFunctional(tok.Token)
 		if err != nil {
+			if strings.Contains(err.Error(), "token is expired") {
+				// @todo no test for this case
+				// add test for logging in with an expired active token
+				tok, err := s.refreshToken(tok.Token)
+				if err != nil {
+					return nil, errors.Wrap(err, "error refreshing token")
+				}
+
+				return tok, nil
+			}
 			return nil, errors.Wrap(err, "error checking token functionality")
 		}
 
