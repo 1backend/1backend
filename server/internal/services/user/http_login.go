@@ -162,8 +162,7 @@ func (s *UserService) login(
 		functional, err := s.isFunctional(tok.Token)
 		if err != nil {
 			if strings.Contains(err.Error(), "token is expired") {
-				// @todo no test for this case
-				// add test for logging in with an expired active token
+				// @todo this feels pretty crufty
 				tok, err := s.refreshToken(tok.Token)
 				if err != nil {
 					return nil, errors.Wrap(err, "error refreshing token")
@@ -240,11 +239,14 @@ func (s *UserService) generateAuthToken(
 		return nil, err
 	}
 
+	now := time.Now()
+
 	return &user.AuthToken{
 		Id:        sdk.Id("tok"),
 		UserId:    u.Id,
 		Token:     token,
 		Active:    true,
-		CreatedAt: time.Now(),
+		ExpiresAt: now.Add(s.tokenExpiration),
+		CreatedAt: now,
 	}, nil
 }
