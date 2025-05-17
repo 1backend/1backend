@@ -122,7 +122,7 @@ func TestRefreshTokenCountIsBounded(t *testing.T) {
 			},
 		).Execute()
 		require.NoError(t, err)
-		require.LessOrEqual(t, int32(3), self.TokenCount)
+		require.LessOrEqual(t, self.TokenCount, int32(3))
 	})
 
 	t.Run("refresh token again", func(t *testing.T) {
