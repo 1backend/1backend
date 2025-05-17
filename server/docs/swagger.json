@@ -13,7 +13,7 @@
             "name": "AGPL v3.0",
             "url": "https://www.gnu.org/licenses/agpl-3.0.html"
         },
-        "version": "0.5.1"
+        "version": "0.5.2"
     },
     "host": "localhost:11337",
     "basePath": "/",
@@ -8820,6 +8820,7 @@
             "type": "object",
             "required": [
                 "createdAt",
+                "device",
                 "id",
                 "token",
                 "updatedAt",
@@ -8837,7 +8838,7 @@
                     "type": "string"
                 },
                 "device": {
-                    "description": "The device the token is associated with.\nThis in combination with LastRefreshedAt can be used to\ndetermine if the token is still in use, and lets us prune unused tokens.",
+                    "description": "The device the token is associated with.\nThis in combination with LastRefreshedAt can be used to\ndetermine if the token is still in use, and lets us prune unused tokens.\n@default default",
                     "type": "string"
                 },
                 "id": {
