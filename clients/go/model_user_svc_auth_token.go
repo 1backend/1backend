@@ -26,7 +26,7 @@ type UserSvcAuthToken struct {
 	Active *bool `json:"active,omitempty"`
 	CreatedAt string `json:"createdAt"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
-	// The device the token is associated with. This in combination with LastRefreshedAt can be used to determine if the token is still in use, and lets us prune unused tokens. @default default
+	// The device the token is associated with. This in combination with LastRefreshedAt can be used to determine if the token is still in use, and lets us prune unused tokens.
 	Device string `json:"device"`
 	Id string `json:"id"`
 	// The last time the token was refreshed. This is used to determine if the token is still in use.

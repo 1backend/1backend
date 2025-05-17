@@ -44,7 +44,6 @@ export interface UserSvcAuthToken {
      * The device the token is associated with.
      * This in combination with LastRefreshedAt can be used to
      * determine if the token is still in use, and lets us prune unused tokens.
-     * @default default
      * @type {string}
      * @memberof UserSvcAuthToken
      */
