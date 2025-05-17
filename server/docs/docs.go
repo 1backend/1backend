@@ -8834,7 +8834,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "active": {
-                    "description": "Active tokens contain the most up-to-date information.\nWhen a user's role changes—due to role assignment, organization\ncreation/assignment, etc.—all existing tokens are marked inactive.\nActive tokens are reused during login, while inactive tokens\nare retained for historical reference.\n\nInactive tokens can still be refreshed to create a new active token.\nA separate mechanism for leaked tokens must be implemented (a different flag or outright deletion).",
+                    "description": "Active tokens contain the most up-to-date information.\nWhen a user's role changes—due to role assignment, organization\ncreation/assignment, etc.—all existing tokens are marked inactive.\nActive tokens are reused during login, while inactive tokens\nthat have been recently refreshed (being used still) are kept for further refreshing\n(unless ` + "`" + `OB_TOKEN_AUTO_REFRESH_OFF` + "`" + ` is set to true, old tokens can be refreshed indefinitely.)\n\nActive tokens contain the most up-to-date information.\nWhen a user's role changes—due to role assignment, organization\ncreation/assignment, etc.—all existing tokens are marked inactive.\nActive tokens are reused during login, while inactive tokens\nthat have been recently refreshed (see ` + "`" + `lastRefreshedAt` + "`" + ` field) and are still in use are retained for further refreshing.\n(Unless ` + "`" + `OB_TOKEN_AUTO_REFRESH_OFF` + "`" + ` is set to true, in which case old tokens can be refreshed indefinitely.)",
                     "type": "boolean"
                 },
                 "createdAt": {

@@ -88,6 +88,12 @@ The User Svc produces a JWT ([JSON Web Token](https://en.wikipedia.org/wiki/JSON
 
 You can either use this token as a proper JWT - parse it and inspect the contents, or you can just use the token to read the user account that belongs to the token with the [/user-svc/self](/docs/1backend/read-self) endpoint.
 
+### Verifying a token
+
+The [`/user-svc/public-key`](/docs/1backend/get-public-key) will return you the public key of the User Svc which then you can use that to verify the token.
+
+Use the JWT libraries that are available in your programming language to do that, or use the Singularon [SDK](https://github.com/1backend/1backend/tree/main/sdk) if your language is supported.
+
 ### Automatic token refresh
 
 1Backend tokens are valid for a limited time (see `OB_TOKEN_EXPIRATION`). Once a token expires, 1Backend can either automatically refresh it (this is the default behaviour) or reject it based on configuration (see `OB_TOKEN_AUTO_REFRESH_OFF`).
@@ -117,12 +123,6 @@ While a new token is issued on each refresh, the system keeps track of which tok
 - The two most recently refreshed tokens (kept as a buffer to handle clock drift or retries)
 
 All other older tokens are pruned to avoid unbounded growth.
-
-### Verifying a token
-
-The [`/user-svc/public-key`](/docs/1backend/get-public-key) will return you the public key of the User Svc which then you can use that to verify the token.
-
-Use the JWT libraries that are available in your programming language to do that, or use the Singularon [SDK](https://github.com/1backend/1backend/tree/main/sdk) if your language is supported.
 
 ### Token structure
 
