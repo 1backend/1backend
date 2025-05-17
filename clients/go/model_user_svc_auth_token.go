@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.5.2
+API version: 0.5.3
 Contact: sales@singulatron.com
 */
 
@@ -28,6 +28,7 @@ type UserSvcAuthToken struct {
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	// The device the token is associated with. This in combination with LastRefreshedAt can be used to determine if the token is still in use, and lets us prune unused tokens.
 	Device string `json:"device"`
+	ExpiresAt string `json:"expiresAt"`
 	Id string `json:"id"`
 	// The last time the token was refreshed. This is used to determine if the token is still in use.
 	LastRefreshedAt *string `json:"lastRefreshedAt,omitempty"`
@@ -43,10 +44,11 @@ type _UserSvcAuthToken UserSvcAuthToken
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcAuthToken(createdAt string, device string, id string, token string, updatedAt string, userId string) *UserSvcAuthToken {
+func NewUserSvcAuthToken(createdAt string, device string, expiresAt string, id string, token string, updatedAt string, userId string) *UserSvcAuthToken {
 	this := UserSvcAuthToken{}
 	this.CreatedAt = createdAt
 	this.Device = device
+	this.ExpiresAt = expiresAt
 	this.Id = id
 	this.Token = token
 	this.UpdatedAt = updatedAt
@@ -172,6 +174,30 @@ func (o *UserSvcAuthToken) GetDeviceOk() (*string, bool) {
 // SetDevice sets field value
 func (o *UserSvcAuthToken) SetDevice(v string) {
 	o.Device = v
+}
+
+// GetExpiresAt returns the ExpiresAt field value
+func (o *UserSvcAuthToken) GetExpiresAt() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.ExpiresAt
+}
+
+// GetExpiresAtOk returns a tuple with the ExpiresAt field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcAuthToken) GetExpiresAtOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.ExpiresAt, true
+}
+
+// SetExpiresAt sets field value
+func (o *UserSvcAuthToken) SetExpiresAt(v string) {
+	o.ExpiresAt = v
 }
 
 // GetId returns the Id field value
@@ -320,6 +346,7 @@ func (o UserSvcAuthToken) ToMap() (map[string]interface{}, error) {
 		toSerialize["deletedAt"] = o.DeletedAt
 	}
 	toSerialize["device"] = o.Device
+	toSerialize["expiresAt"] = o.ExpiresAt
 	toSerialize["id"] = o.Id
 	if !IsNil(o.LastRefreshedAt) {
 		toSerialize["lastRefreshedAt"] = o.LastRefreshedAt
@@ -337,6 +364,7 @@ func (o *UserSvcAuthToken) UnmarshalJSON(data []byte) (err error) {
 	requiredProperties := []string{
 		"createdAt",
 		"device",
+		"expiresAt",
 		"id",
 		"token",
 		"updatedAt",

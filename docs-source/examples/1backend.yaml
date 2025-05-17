@@ -2741,6 +2741,8 @@ definitions:
           This in combination with LastRefreshedAt can be used to
           determine if the token is still in use, and lets us prune unused tokens.
         type: string
+      expiresAt:
+        type: string
       id:
         type: string
       lastRefreshedAt:
@@ -2767,6 +2769,7 @@ definitions:
     required:
     - createdAt
     - device
+    - expiresAt
     - id
     - token
     - updatedAt
@@ -3455,7 +3458,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.5.2
+  version: 0.5.3
 paths:
   /chat-svc/events:
     get:

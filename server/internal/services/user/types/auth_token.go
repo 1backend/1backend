@@ -37,6 +37,8 @@ type AuthToken struct {
 	// This is used to determine if the token is still in use.
 	LastRefreshedAt *time.Time `json:"lastRefreshedAt,omitempty"`
 
+	ExpiresAt time.Time `json:"expiresAt" binding:"required"`
+
 	// Active tokens contain the most up-to-date information.
 	// When a user's role changes—due to role assignment, organization
 	// creation/assignment, etc.—all existing tokens are marked inactive.

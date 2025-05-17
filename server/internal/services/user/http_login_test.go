@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
 
@@ -171,4 +172,35 @@ func TestOrganization(t *testing.T) {
 			Execute()
 		require.NoError(t, err)
 	})
+}
+
+func TestLoginAfterTokenExpiry(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{
+		TokenExpiration: time.Second,
+		Test:            true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	ctx := context.Background()
+	_, _, err = test.MakeClients(clientFactory, 1)
+	require.NoError(t, err)
+
+	time.Sleep(1 * time.Second)
+
+	rsp, _, err := clientFactory.Client().UserSvcAPI.Login(ctx).Body(
+		openapi.UserSvcLoginRequest{
+			Slug:     openapi.PtrString("test-user-slug-0"),
+			Password: openapi.PtrString("testUserPassword0"),
+		},
+	).Execute()
+	require.NoError(t, err)
+	require.NotEmpty(t, rsp.Token.Token)
+	expiresAt, err := time.Parse(time.RFC3339, rsp.Token.ExpiresAt)
+	require.NoError(t, err)
+	require.True(t, expiresAt.After(time.Now().Add(900*time.Millisecond)))
 }

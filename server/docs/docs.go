@@ -8827,6 +8827,7 @@ const docTemplate = `{
             "required": [
                 "createdAt",
                 "device",
+                "expiresAt",
                 "id",
                 "token",
                 "updatedAt",
@@ -8845,6 +8846,9 @@ const docTemplate = `{
                 },
                 "device": {
                     "description": "The device the token is associated with.\nThis in combination with LastRefreshedAt can be used to\ndetermine if the token is still in use, and lets us prune unused tokens.",
+                    "type": "string"
+                },
+                "expiresAt": {
                     "type": "string"
                 },
                 "id": {
@@ -9770,7 +9774,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.5.2",
+	Version:          "0.5.3",
 	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},
