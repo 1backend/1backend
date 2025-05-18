@@ -68,6 +68,20 @@ func (mr *MockAuthorizerMockRecorder) IsAdminFromRequest(userSvcPublicKey, r any
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsAdminFromRequest", reflect.TypeOf((*MockAuthorizer)(nil).IsAdminFromRequest), userSvcPublicKey, r)
 }
 
+// IsAdminToken mocks base method.
+func (m *MockAuthorizer) IsAdminToken(arg0 *Claims) bool {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IsAdminToken", arg0)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+// IsAdminToken indicates an expected call of IsAdminToken.
+func (mr *MockAuthorizerMockRecorder) IsAdminToken(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsAdminToken", reflect.TypeOf((*MockAuthorizer)(nil).IsAdminToken), arg0)
+}
+
 // Organizations mocks base method.
 func (m *MockAuthorizer) Organizations(userSvcPublicKey, token string) (map[string][]string, error) {
 	m.ctrl.T.Helper()

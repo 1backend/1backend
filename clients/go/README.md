@@ -166,6 +166,7 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**RefreshToken**](docs/UserSvcAPI.md#refreshtoken) | **Post** /user-svc/refresh-token | Refresh Token
 *UserSvcAPI* | [**Register**](docs/UserSvcAPI.md#register) | **Post** /user-svc/register | Register
 *UserSvcAPI* | [**ResetPassword**](docs/UserSvcAPI.md#resetpassword) | **Post** /user-svc/{userId}/reset-password | Reset Password
+*UserSvcAPI* | [**RevokeTokens**](docs/UserSvcAPI.md#revoketokens) | **Delete** /user-svc/tokens | Revoke Tokens
 *UserSvcAPI* | [**SaveEnrolls**](docs/UserSvcAPI.md#saveenrolls) | **Put** /user-svc/enrolls | Save Enrolls
 *UserSvcAPI* | [**SaveMembership**](docs/UserSvcAPI.md#savemembership) | **Put** /user-svc/organization/{organizationId}/user/{userId} | Save Membership
 *UserSvcAPI* | [**SaveOrganization**](docs/UserSvcAPI.md#saveorganization) | **Put** /user-svc/organization | Save an Organization
@@ -374,6 +375,7 @@ Class | Method | HTTP request | Description
  - [UserSvcRegisterRequest](docs/UserSvcRegisterRequest.md)
  - [UserSvcRegisterResponse](docs/UserSvcRegisterResponse.md)
  - [UserSvcResetPasswordRequest](docs/UserSvcResetPasswordRequest.md)
+ - [UserSvcRevokeTokensRequest](docs/UserSvcRevokeTokensRequest.md)
  - [UserSvcSaveEnrollsRequest](docs/UserSvcSaveEnrollsRequest.md)
  - [UserSvcSaveEnrollsResponse](docs/UserSvcSaveEnrollsResponse.md)
  - [UserSvcSaveOrganizationRequest](docs/UserSvcSaveOrganizationRequest.md)

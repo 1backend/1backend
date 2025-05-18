@@ -4828,6 +4828,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/user-svc/tokens": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Revoke tokens in one of the following scenarios:\n- For the current user.\n- For another user (see ` + "`" + `userId` + "`" + ` field), if permitted (` + "`" + `user-svc:token:revoke` + "`" + ` permission, typically by admins).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Svc"
+                ],
+                "summary": "Revoke Tokens",
+                "operationId": "revokeTokens",
+                "parameters": [
+                    {
+                        "description": "Revoke Tokens Request",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.RevokeTokensRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.RevokeTokensResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Mutually Exclusive Parameters",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user-svc/user": {
             "post": {
                 "security": [
@@ -9511,6 +9562,25 @@ const docTemplate = `{
             }
         },
         "user_svc.ResetPasswordResponse": {
+            "type": "object"
+        },
+        "user_svc.RevokeTokensRequest": {
+            "type": "object",
+            "properties": {
+                "allTokens": {
+                    "description": "If true, all tokens for the user will be revoked.",
+                    "type": "boolean"
+                },
+                "device": {
+                    "type": "string"
+                },
+                "userId": {
+                    "description": "Only used by admins (or whoever has the ` + "`" + `user-svc:token:revoke` + "`" + ` permission\nrevoke tokens for other users",
+                    "type": "string"
+                }
+            }
+        },
+        "user_svc.RevokeTokensResponse": {
             "type": "object"
         },
         "user_svc.SaveEnrollsRequest": {

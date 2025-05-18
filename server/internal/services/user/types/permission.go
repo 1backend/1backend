@@ -42,6 +42,8 @@ var (
 	// Enroll Permissions
 	PermissionEnrollEdit = "user-svc:enroll:edit"
 	PermissionEnrollView = "user-svc:enroll:view"
+
+	PermissionTokenRevoke = "user-svc:token:revoke"
 )
 
 var UserPermissions = []string{
@@ -75,4 +77,5 @@ var AdminPermissions = []string{
 	PermissionEnrollView,
 	PermissionUserPasswordChange,
 	PermissionUserPasswordReset,
+	PermissionTokenRevoke,
 }

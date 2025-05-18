@@ -127,20 +127,8 @@ func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) readSelf(userId string) (*user.User, error) {
-	authTokenI, found, err := s.authTokensStore.Query(
-		datastore.Equals(datastore.Field("userId"), userId),
-	).FindOne()
-	if err != nil {
-		return nil, err
-	}
-
-	if !found {
-		return nil, errors.New("token not found")
-	}
-	authToken := authTokenI.(*user.AuthToken)
-
 	userI, found, err := s.usersStore.Query(
-		datastore.Equals(datastore.Field("id"), authToken.UserId),
+		datastore.Equals(datastore.Field("id"), userId),
 	).FindOne()
 	if err != nil {
 		return nil, err
