@@ -25,6 +25,8 @@ import (
 
 	"github.com/pkg/errors"
 
+	jwtlib "github.com/golang-jwt/jwt/v5"
+
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
@@ -190,23 +192,28 @@ func (pc *permissionChecker) HasPermission(
 		}
 
 		if isExpired {
-			newJwtResp, _, err := pc.clientFactory.Client(client.WithTokenFromRequest(request)).
+			newTokenResp, _, err := pc.clientFactory.Client(client.WithTokenFromRequest(request)).
 				UserSvcAPI.RefreshToken(request.Context()).Execute()
 			if err != nil {
 				return nil, http.StatusUnauthorized, errors.Wrap(err, "token refresh failed")
 			}
 
-			jwt = newJwtResp.Token.Token
+			jwt = newTokenResp.Token.Token
 
-			// claims wull later be used to calculate the cache ttl
-			claims, err = pc.parser.ParseJWT(publicKey, jwt)
+			expiresAt, err := time.Parse(time.RFC3339, newTokenResp.Token.ExpiresAt)
 			if err != nil {
-				return nil, http.StatusUnauthorized, errors.Wrap(err, "failed to parse new JWT")
+				return nil, http.StatusInternalServerError, errors.Wrap(err, "failed to parse token expiresAt")
+			}
+
+			claims = &auth.Claims{
+				RegisteredClaims: jwtlib.RegisteredClaims{
+					ExpiresAt: jwtlib.NewNumericDate(expiresAt),
+				},
 			}
 
 			request.Header.Set("Authorization", "Bearer "+jwt)
 
-			ttl, err := calculateTokenTtl(newJwtResp.Token)
+			ttl, err := calculateTokenTtl(newTokenResp.Token)
 			if err != nil {
 				return nil, http.StatusInternalServerError, errors.Wrap(err, "failed to calculate token ttl")
 			}
