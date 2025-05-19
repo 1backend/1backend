@@ -519,6 +519,36 @@ func (mr *MockUserSvcAPIMockRecorder) ResetPasswordExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResetPasswordExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ResetPasswordExecute), r)
 }
 
+// RevokeTokens mocks base method.
+func (m *MockUserSvcAPI) RevokeTokens(ctx context.Context) ApiRevokeTokensRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RevokeTokens", ctx)
+	ret0, _ := ret[0].(ApiRevokeTokensRequest)
+	return ret0
+}
+
+// RevokeTokens indicates an expected call of RevokeTokens.
+func (mr *MockUserSvcAPIMockRecorder) RevokeTokens(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RevokeTokens", reflect.TypeOf((*MockUserSvcAPI)(nil).RevokeTokens), ctx)
+}
+
+// RevokeTokensExecute mocks base method.
+func (m *MockUserSvcAPI) RevokeTokensExecute(r ApiRevokeTokensRequest) (map[string]any, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RevokeTokensExecute", r)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// RevokeTokensExecute indicates an expected call of RevokeTokensExecute.
+func (mr *MockUserSvcAPIMockRecorder) RevokeTokensExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RevokeTokensExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).RevokeTokensExecute), r)
+}
+
 // SaveEnrolls mocks base method.
 func (m *MockUserSvcAPI) SaveEnrolls(ctx context.Context) ApiSaveEnrollsRequest {
 	m.ctrl.T.Helper()

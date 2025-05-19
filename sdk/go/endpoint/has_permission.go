@@ -147,12 +147,17 @@ func (pc *permissionChecker) HasPermission(
 			jwt,
 		)
 		if err != nil {
-			return nil, http.StatusUnauthorized, errors.Wrap(err, "failed to parse JWT")
+			if strings.Contains(err.Error(), "token is expired") {
+				isExpired = true
+			} else {
+				return nil, http.StatusUnauthorized, errors.Wrap(err, "failed to parse JWT")
+			}
 		}
 
 		// Handle missing expiresAt for backwards compatibility.
 		// Can be removed later.
-		if claims.ExpiresAt == nil ||
+		if claims == nil ||
+			claims.ExpiresAt == nil ||
 			claims.ExpiresAt.Time.Before(now.Add(5*time.Second)) {
 			isExpired = true
 		}

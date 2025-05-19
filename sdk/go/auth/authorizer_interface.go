@@ -35,6 +35,8 @@ type Authorizer interface {
 	// the `user-svc:admin` role.
 	IsAdmin(userSvcPublicKey string, token string) (bool, error)
 
+	IsAdminToken(*Claims) bool
+
 	// IsAdminFromRequest returns true if the user has
 	// the `user-svc:admin` role.
 	IsAdminFromRequest(userSvcPublicKey string, r *http.Request) (bool, error)
@@ -102,6 +104,22 @@ func (a AuthorizerImpl) TokenFromRequest(r *http.Request) (string, bool) {
 	}
 
 	return authHeader, true
+}
+
+func (a AuthorizerImpl) IsAdminToken(claim *Claims) bool {
+	if claim == nil {
+		return false
+	}
+	if claim.Roles == nil {
+		return false
+	}
+	for _, roleId := range claim.Roles {
+		// @todo remove constant
+		if roleId == "user-svc:admin" {
+			return true
+		}
+	}
+	return false
 }
 
 func (a AuthorizerImpl) IsAdminFromRequest(userSvcPublicKey string, r *http.Request) (bool, error) {

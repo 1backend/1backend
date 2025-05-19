@@ -3270,6 +3270,21 @@ definitions:
     type: object
   user_svc.ResetPasswordResponse:
     type: object
+  user_svc.RevokeTokensRequest:
+    properties:
+      allTokens:
+        description: If true, all tokens for the user will be revoked.
+        type: boolean
+      device:
+        type: string
+      userId:
+        description: |-
+          Only used by admins (or whoever has the `user-svc:token:revoke` permission
+          revoke tokens for other users
+        type: string
+    type: object
+  user_svc.RevokeTokensResponse:
+    type: object
   user_svc.SaveEnrollsRequest:
     properties:
       enrolls:
@@ -6721,6 +6736,41 @@ paths:
       security:
       - BearerAuth: []
       summary: Has Permission
+      tags:
+      - User Svc
+  /user-svc/tokens:
+    delete:
+      consumes:
+      - application/json
+      description: |-
+        Revoke tokens in one of the following scenarios:
+        - For the current user.
+        - For another user (see `userId` field), if permitted (`user-svc:token:revoke` permission, typically by admins).
+      operationId: revokeTokens
+      parameters:
+      - description: Revoke Tokens Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/user_svc.RevokeTokensRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.RevokeTokensResponse'
+        "400":
+          description: Mutually Exclusive Parameters
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Revoke Tokens
       tags:
       - User Svc
   /user-svc/user:

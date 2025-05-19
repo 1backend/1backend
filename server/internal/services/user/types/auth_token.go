@@ -65,3 +65,16 @@ type RefreshTokenRequest struct {
 type RefreshTokenResponse struct {
 	Token *AuthToken `json:"token" binding:"required"`
 }
+
+type RevokeTokensRequest struct {
+	Device string `json:"device,omitempty"`
+
+	// Only used by admins (or whoever has the `user-svc:token:revoke` permission
+	// revoke tokens for other users
+	UserId string `json:"userId,omitempty"`
+
+	// If true, all tokens for the user will be revoked.
+	AllTokens bool `json:"allTokens,omitempty"`
+}
+
+type RevokeTokensResponse struct{}

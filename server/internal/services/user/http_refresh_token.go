@@ -13,6 +13,8 @@
 package userservice
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"log/slog"
 	"net/http"
@@ -71,6 +73,10 @@ func (s *UserService) RefreshToken(w http.ResponseWriter, r *http.Request) {
 func (s *UserService) refreshToken(
 	stringToken string,
 ) (*user.AuthToken, error) {
+	cacheKey := generateCacheKey(stringToken)
+	if cachedToken, found := s.tokenReplacementCache.Get(cacheKey); found {
+		return cachedToken.(*user.AuthToken), nil
+	}
 
 	tokenToBeRefreshedI, found, err := s.authTokensStore.Query(
 		datastore.Equals(datastore.Field("token"), stringToken),
@@ -192,5 +198,17 @@ func (s *UserService) refreshToken(
 		}
 	}
 
+	s.tokenReplacementCache.SetWithTTL(
+		cacheKey,
+		token,
+		1,
+		s.tokenExpiration,
+	)
+
 	return token, nil
+}
+
+func generateCacheKey(token string) string {
+	hash := sha256.Sum256([]byte(token))
+	return hex.EncodeToString(hash[:])
 }
