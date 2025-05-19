@@ -122,7 +122,8 @@ func TestHasPermission(t *testing.T) {
 		mockUserSvc.EXPECT().RefreshTokenExecute(gomock.Any()).
 			Return(&openapi.UserSvcRefreshTokenResponse{
 				Token: openapi.UserSvcAuthToken{
-					Token: "Hello 2",
+					Token:     "Hello 2",
+					ExpiresAt: time.Now().Add(5 * time.Second).Format(time.RFC3339),
 				},
 			}, nil, nil).Times(2)
 

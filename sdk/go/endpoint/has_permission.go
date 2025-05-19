@@ -257,6 +257,10 @@ func generateCacheKey(token, permission string) string {
 }
 
 func calculateTokenTtl(token openapi.UserSvcAuthToken) (time.Duration, error) {
+	if token.ExpiresAt == "" {
+		return 0, errors.New("token expiresAt is empty")
+	}
+
 	expiresAt, err := time.Parse(time.RFC3339, token.ExpiresAt)
 	if err != nil {
 		return 0, errors.Wrap(err, "failed to parse token expiresAt")
