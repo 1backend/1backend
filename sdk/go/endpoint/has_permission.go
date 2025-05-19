@@ -197,6 +197,13 @@ func (pc *permissionChecker) HasPermission(
 			}
 
 			jwt = newJwtResp.Token.Token
+
+			// claims wull later be used to calculate the cache ttl
+			claims, err = pc.parser.ParseJWT(publicKey, jwt)
+			if err != nil {
+				return nil, http.StatusUnauthorized, errors.Wrap(err, "failed to parse new JWT")
+			}
+
 			request.Header.Set("Authorization", "Bearer "+jwt)
 
 			ttl, err := calculateTokenTtl(newJwtResp.Token)
@@ -233,7 +240,7 @@ func (pc *permissionChecker) HasPermission(
 	if jwt != "" {
 		ttl, err = calculateClaimsTtl(claims)
 		if err != nil {
-			return nil, http.StatusInternalServerError, errors.Wrap(err, "failed to calculate token ttl")
+			return nil, http.StatusInternalServerError, errors.Wrap(err, "failed to calculate claims ttl")
 		}
 	}
 
@@ -276,8 +283,11 @@ func calculateTokenTtl(token openapi.UserSvcAuthToken) (time.Duration, error) {
 }
 
 func calculateClaimsTtl(claims *auth.Claims) (time.Duration, error) {
-	if claims == nil || claims.ExpiresAt == nil {
-		return 0, errors.New("claims or expiresAt is nil")
+	if claims == nil {
+		return 0, errors.New("claims is nil")
+	}
+	if claims.ExpiresAt == nil {
+		return 0, errors.New("expiresAt is nil")
 	}
 
 	ttl := time.Until(claims.ExpiresAt.Time)
