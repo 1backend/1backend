@@ -184,6 +184,7 @@ func (pc *permissionChecker) HasPermission(
 					jwt = replacementToken
 					request.Header.Set("Authorization", "Bearer "+jwt)
 					isExpired = false
+					claims = newClaims
 				}
 			}
 		}
