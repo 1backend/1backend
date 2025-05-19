@@ -25,6 +25,8 @@ import (
 
 	"github.com/pkg/errors"
 
+	jwtlib "github.com/golang-jwt/jwt/v5"
+
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
@@ -138,11 +140,17 @@ func (pc *permissionChecker) HasPermission(
 		now = time.Now()
 	}
 
+	var (
+		claims *auth.Claims
+	)
+
 	if jwt != "" {
+		var err error
+
 		// First we check if the JWT is expired or not as that aspect cannot be cached.
 		// If the JWT is expired, we consider it a cache miss
 		// and let the request go through to the user service
-		claims, err := pc.parser.ParseJWT(
+		claims, err = pc.parser.ParseJWT(
 			publicKey,
 			jwt,
 		)
@@ -176,22 +184,44 @@ func (pc *permissionChecker) HasPermission(
 					newClaims.ExpiresAt != nil &&
 					newClaims.ExpiresAt.Time.After(now.Add(5*time.Second)) {
 					jwt = replacementToken
-					request.Header.Set("Authorization", jwt)
+					request.Header.Set("Authorization", "Bearer "+jwt)
 					isExpired = false
+
+					// Claims will be used to calculate the TTL for the cache.
+					claims = newClaims
 				}
 			}
 		}
 
 		if isExpired {
-			newJwtResp, _, err := pc.clientFactory.Client(client.WithTokenFromRequest(request)).
+			newTokenResp, _, err := pc.clientFactory.Client(client.WithTokenFromRequest(request)).
 				UserSvcAPI.RefreshToken(request.Context()).Execute()
 			if err != nil {
 				return nil, http.StatusUnauthorized, errors.Wrap(err, "token refresh failed")
 			}
 
-			jwt = newJwtResp.Token.Token
-			request.Header.Set("Authorization", jwt)
-			pc.tokenReplacementCache.SetWithTTL(key, jwt, 1, 5*time.Minute)
+			jwt = newTokenResp.Token.Token
+
+			expiresAt, err := time.Parse(time.RFC3339, newTokenResp.Token.ExpiresAt)
+			if err != nil {
+				return nil, http.StatusInternalServerError, errors.Wrap(err, "failed to parse token expiresAt")
+			}
+
+			// Claims will be used to calculate the TTL for the cache.
+			claims = &auth.Claims{
+				RegisteredClaims: jwtlib.RegisteredClaims{
+					ExpiresAt: jwtlib.NewNumericDate(expiresAt),
+				},
+			}
+
+			request.Header.Set("Authorization", "Bearer "+jwt)
+
+			ttl, err := calculateTokenTtl(newTokenResp.Token)
+			if err != nil {
+				return nil, http.StatusInternalServerError, errors.Wrap(err, "failed to calculate token ttl")
+			}
+
+			pc.tokenReplacementCache.SetWithTTL(key, jwt, 1, ttl)
 		}
 	}
 
@@ -203,6 +233,10 @@ func (pc *permissionChecker) HasPermission(
 		}
 	}
 
+	// At this point we either don't have a JWT or we have a refreshed one.
+	// @todo is the whole refreshing logic above unnecessary because HasPermission
+	// can do its own refreshing? Probably not because we don't return the Token itself
+	// in HasPermission.
 	isAuthRsp, httpResponse, err := pc.clientFactory.Client(
 		client.WithTokenFromRequest(request),
 	).
@@ -215,11 +249,21 @@ func (pc *permissionChecker) HasPermission(
 		return nil, httpResponse.StatusCode, err
 	}
 
+	ttl := 5 * time.Minute
+
+	// JWT is not present when the user is not logged in.
+	if jwt != "" {
+		ttl, err = calculateClaimsTtl(claims)
+		if err != nil {
+			return nil, http.StatusInternalServerError, errors.Wrap(err, "failed to calculate claims ttl")
+		}
+	}
+
 	if key != "" {
 		pc.permissionCache.SetWithTTL(key, &HasPermissionResponse{
 			Response:   isAuthRsp,
 			StatusCode: httpResponse.StatusCode,
-		}, 1, 5*time.Minute)
+		}, 1, ttl)
 	}
 
 	code := 0
@@ -233,4 +277,38 @@ func (pc *permissionChecker) HasPermission(
 func generateCacheKey(token, permission string) string {
 	hash := sha256.Sum256([]byte(token))
 	return fmt.Sprintf("%s:%s", hex.EncodeToString(hash[:]), permission)
+}
+
+func calculateTokenTtl(token openapi.UserSvcAuthToken) (time.Duration, error) {
+	if token.ExpiresAt == "" {
+		return 0, errors.New("token expiresAt is empty")
+	}
+
+	expiresAt, err := time.Parse(time.RFC3339, token.ExpiresAt)
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to parse token expiresAt")
+	}
+
+	ttl := time.Until(expiresAt)
+	if ttl < time.Second {
+		ttl = time.Second
+	}
+
+	return ttl, nil
+}
+
+func calculateClaimsTtl(claims *auth.Claims) (time.Duration, error) {
+	if claims == nil {
+		return 0, errors.New("claims is nil")
+	}
+	if claims.ExpiresAt == nil {
+		return 0, errors.New("expiresAt is nil")
+	}
+
+	ttl := time.Until(claims.ExpiresAt.Time)
+	if ttl < time.Second {
+		ttl = time.Second
+	}
+
+	return ttl, nil
 }

@@ -90,6 +90,7 @@ func TestProxyService_Route(t *testing.T) {
 
 		t.Run("proxying works after token expiration", func(t *testing.T) {
 			time.Sleep(1 * time.Second)
+
 			req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/test-user-slug-0/endpoint", server.Url), nil)
 			require.NoError(t, err)
 			resp, err := proxyClient.Do(req)
