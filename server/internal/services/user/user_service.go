@@ -23,6 +23,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/dgraph-io/ristretto"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 
@@ -58,6 +59,8 @@ type UserService struct {
 	configCache         map[string]any
 	tokenExpiration     time.Duration
 	tokenAutoRefreshOff bool
+
+	tokenReplacementCache *ristretto.Cache
 
 	isTest bool
 }
@@ -147,22 +150,32 @@ func NewUserService(
 		return nil, err
 	}
 
+	tokenReplacementCache, err := ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1e5,     // number of keys to track frequency (10x max items)
+		MaxCost:     1 << 20, // max cost in bytes (~1 MiB)
+		BufferItems: 64,      // recommended
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to create token replacement cache")
+	}
+
 	service := &UserService{
-		authorizer:          authorizer,
-		clientFactory:       clientFactory,
-		usersStore:          usersStore,
-		authTokensStore:     authTokensStore,
-		credentialsStore:    credentialsStore,
-		passwordsStore:      passwordsStore,
-		keyPairsStore:       keyPairsStore,
-		contactsStore:       contactsStore,
-		organizationsStore:  organizationsStore,
-		membershipsStore:    membershipsStore,
-		permitsStore:        permitsStore,
-		enrollsStore:        enrollsStore,
-		tokenExpiration:     tokenExpiration,
-		tokenAutoRefreshOff: tokenAutoRefreshOff,
-		isTest:              isTest,
+		authorizer:            authorizer,
+		clientFactory:         clientFactory,
+		usersStore:            usersStore,
+		authTokensStore:       authTokensStore,
+		credentialsStore:      credentialsStore,
+		passwordsStore:        passwordsStore,
+		keyPairsStore:         keyPairsStore,
+		contactsStore:         contactsStore,
+		organizationsStore:    organizationsStore,
+		membershipsStore:      membershipsStore,
+		permitsStore:          permitsStore,
+		enrollsStore:          enrollsStore,
+		tokenExpiration:       tokenExpiration,
+		tokenAutoRefreshOff:   tokenAutoRefreshOff,
+		tokenReplacementCache: tokenReplacementCache,
+		isTest:                isTest,
 	}
 
 	return service, nil

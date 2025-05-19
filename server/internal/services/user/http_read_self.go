@@ -30,6 +30,10 @@ import (
 // @Description Typically called by single-page applications during the initial page load.
 // @Description While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,
 // @Description this endpoint returns additional data, including the full user object and associated organizations.
+// @Description
+// @Description ReadSelf intentionally still works after token revocation until the token expires.
+// @Description This is to ensure that the user is not notified of token revocation (though some information is
+// @Description leaked by the count token functionality @todo).
 // @Tags User Svc
 // @Accept json
 // @Produce json

@@ -68,13 +68,15 @@ func (s *UserService) RevokeTokens(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if request.UserId == "" && request.Device == "" && !request.AllTokens ||
-		(request.UserId != "" || request.Device != "") && request.AllTokens {
+	if !s.authorizer.IsAdminToken(claim) {
+		request.UserId = claim.UserId
+	}
+
+	if request.UserId == "" && !request.AllTokens ||
+		request.UserId != "" && request.AllTokens {
 		endpoint.WriteString(w, http.StatusBadRequest, "Mutually Exclusive Parameters")
 		return
 	}
-
-	request.UserId = claim.UserId
 
 	err = s.revokeTokens(&request)
 	if err != nil {
