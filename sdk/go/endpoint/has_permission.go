@@ -186,6 +186,8 @@ func (pc *permissionChecker) HasPermission(
 					jwt = replacementToken
 					request.Header.Set("Authorization", "Bearer "+jwt)
 					isExpired = false
+
+					// Claims will be used to calculate the TTL for the cache.
 					claims = newClaims
 				}
 			}
@@ -205,6 +207,7 @@ func (pc *permissionChecker) HasPermission(
 				return nil, http.StatusInternalServerError, errors.Wrap(err, "failed to parse token expiresAt")
 			}
 
+			// Claims will be used to calculate the TTL for the cache.
 			claims = &auth.Claims{
 				RegisteredClaims: jwtlib.RegisteredClaims{
 					ExpiresAt: jwtlib.NewNumericDate(expiresAt),
@@ -230,6 +233,10 @@ func (pc *permissionChecker) HasPermission(
 		}
 	}
 
+	// At this point we either don't have a JWT or we have a refreshed one.
+	// @todo is the whole refreshing logic above unnecessary because HasPermission
+	// can do its own refreshing? Probably not because we don't return the Token itself
+	// in HasPermission.
 	isAuthRsp, httpResponse, err := pc.clientFactory.Client(
 		client.WithTokenFromRequest(request),
 	).
@@ -244,6 +251,7 @@ func (pc *permissionChecker) HasPermission(
 
 	ttl := 5 * time.Minute
 
+	// JWT is not present when the user is not logged in.
 	if jwt != "" {
 		ttl, err = calculateClaimsTtl(claims)
 		if err != nil {
