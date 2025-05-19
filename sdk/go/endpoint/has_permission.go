@@ -138,11 +138,17 @@ func (pc *permissionChecker) HasPermission(
 		now = time.Now()
 	}
 
+	var (
+		claims *auth.Claims
+	)
+
 	if jwt != "" {
+		var err error
+
 		// First we check if the JWT is expired or not as that aspect cannot be cached.
 		// If the JWT is expired, we consider it a cache miss
 		// and let the request go through to the user service
-		claims, err := pc.parser.ParseJWT(
+		claims, err = pc.parser.ParseJWT(
 			publicKey,
 			jwt,
 		)
@@ -176,7 +182,7 @@ func (pc *permissionChecker) HasPermission(
 					newClaims.ExpiresAt != nil &&
 					newClaims.ExpiresAt.Time.After(now.Add(5*time.Second)) {
 					jwt = replacementToken
-					request.Header.Set("Authorization", jwt)
+					request.Header.Set("Authorization", "Bearer "+jwt)
 					isExpired = false
 				}
 			}
@@ -190,8 +196,14 @@ func (pc *permissionChecker) HasPermission(
 			}
 
 			jwt = newJwtResp.Token.Token
-			request.Header.Set("Authorization", jwt)
-			pc.tokenReplacementCache.SetWithTTL(key, jwt, 1, 5*time.Minute)
+			request.Header.Set("Authorization", "Bearer "+jwt)
+
+			ttl, err := calculateTokenTtl(newJwtResp.Token)
+			if err != nil {
+				return nil, http.StatusInternalServerError, errors.Wrap(err, "failed to calculate token ttl")
+			}
+
+			pc.tokenReplacementCache.SetWithTTL(key, jwt, 1, ttl)
 		}
 	}
 
@@ -215,11 +227,20 @@ func (pc *permissionChecker) HasPermission(
 		return nil, httpResponse.StatusCode, err
 	}
 
+	ttl := 5 * time.Minute
+
+	if jwt != "" {
+		ttl, err = calculateClaimsTtl(claims)
+		if err != nil {
+			return nil, http.StatusInternalServerError, errors.Wrap(err, "failed to calculate token ttl")
+		}
+	}
+
 	if key != "" {
 		pc.permissionCache.SetWithTTL(key, &HasPermissionResponse{
 			Response:   isAuthRsp,
 			StatusCode: httpResponse.StatusCode,
-		}, 1, 5*time.Minute)
+		}, 1, ttl)
 	}
 
 	code := 0
@@ -233,4 +254,31 @@ func (pc *permissionChecker) HasPermission(
 func generateCacheKey(token, permission string) string {
 	hash := sha256.Sum256([]byte(token))
 	return fmt.Sprintf("%s:%s", hex.EncodeToString(hash[:]), permission)
+}
+
+func calculateTokenTtl(token openapi.UserSvcAuthToken) (time.Duration, error) {
+	expiresAt, err := time.Parse(time.RFC3339, token.ExpiresAt)
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to parse token expiresAt")
+	}
+
+	ttl := time.Until(expiresAt)
+	if ttl < time.Second {
+		ttl = time.Second
+	}
+
+	return ttl, nil
+}
+
+func calculateClaimsTtl(claims *auth.Claims) (time.Duration, error) {
+	if claims == nil || claims.ExpiresAt == nil {
+		return 0, errors.New("claims or expiresAt is nil")
+	}
+
+	ttl := time.Until(claims.ExpiresAt.Time)
+	if ttl < time.Second {
+		ttl = time.Second
+	}
+
+	return ttl, nil
 }
