@@ -99,7 +99,12 @@ func (cs *ProxyService) route(w http.ResponseWriter, r *http.Request) (int, erro
 	randomIndex := rand.Intn(len(selectedInstances))
 	instance := selectedInstances[randomIndex]
 
-	uri := strings.TrimSuffix(instance.Url, "/") + "/" + strings.TrimLeft(r.URL.Path, "/")
+	uri := strings.TrimSuffix(instance.Url, "/") +
+		"/" +
+		strings.TrimLeft(r.URL.Path, "/")
+	if r.URL.RawQuery != "" {
+		uri += "?" + r.URL.RawQuery
+	}
 
 	req, err := http.NewRequest(r.Method, uri, r.Body)
 	if err != nil {
