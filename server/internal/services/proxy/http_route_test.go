@@ -31,8 +31,15 @@ func TestProxyService_Route(t *testing.T) {
 		w.WriteHeader(http.StatusOK)
 
 		if r.URL.Path == "/test-user-slug-0/endpoint" {
-
 			w.Write([]byte(`{"success": true}`))
+		} else if r.URL.Path == "/test-user-slug-0/echo-params" {
+			query := r.URL.Query()
+			response := fmt.Sprintf(`{"success": true, "query": "%s"}`, query.Encode())
+			w.Write([]byte(response))
+		} else if r.URL.Path == "/test-user-slug-0/echo-headers" {
+			headers := r.Header
+			response := fmt.Sprintf(`{"success": true, "headers": "%s"}`, headers)
+			w.Write([]byte(response))
 		} else {
 			fmt.Fprintf(w, "proxied %s", r.URL.Path)
 		}
@@ -135,5 +142,42 @@ func TestProxyService_Route(t *testing.T) {
 		defer resp.Body.Close()
 
 		require.Equal(t, http.StatusOK, resp.StatusCode)
+	})
+
+	t.Run("should preserve query parameters", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/test-user-slug-0/echo-params?foo=bar&baz=qux", server.Url), nil)
+		require.NoError(t, err)
+
+		resp, err := proxyClient.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+
+		body, err := ioutil.ReadAll(resp.Body)
+		require.NoError(t, err)
+
+		require.Contains(t, string(body), "foo=bar")
+		require.Contains(t, string(body), "baz=qux")
+	})
+
+	t.Run("should preserve headers", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/test-user-slug-0/echo-headers", server.Url), nil)
+		require.NoError(t, err)
+
+		req.Header.Set("X-Custom-Header", "hello-world")
+		req.Header.Set("X-Multi-Value", "one")
+		req.Header.Add("X-Multi-Value", "two")
+
+		resp, err := proxyClient.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+
+		require.Equal(t, http.StatusOK, resp.StatusCode)
+		body, err := ioutil.ReadAll(resp.Body)
+		require.NoError(t, err)
+		require.Contains(t, string(body), "X-Custom-Header")
+		require.Contains(t, string(body), "hello-world")
+		require.Contains(t, string(body), "X-Multi-Value")
+		require.Contains(t, string(body), "one")
+		require.Contains(t, string(body), "two")
 	})
 }
