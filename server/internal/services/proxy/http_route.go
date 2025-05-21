@@ -31,14 +31,15 @@ func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
 	statusCode, err := cs.route(w, r)
 
 	if err != nil {
+		logger.Error("Error proxying OPTIONS request",
+			slog.String("path", r.URL.Path),
+			slog.String("error", err.Error()),
+		)
 		if r.Method == http.MethodOptions {
 			// We don't want to write errors to response on OPTIONS requests
 			// because the response won't be visible in the chrome dev tools.
 			// We log it instead.
-			logger.Error("Error proxying OPTIONS request",
-				slog.String("path", r.URL.Path),
-				slog.String("error", err.Error()),
-			)
+
 			return
 		}
 

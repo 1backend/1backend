@@ -87,8 +87,8 @@ func (ns *DeployService) runCycle() {
 func (ns *DeployService) cycle() error {
 	ctx := context.Background()
 
-	ns.lock.Acquire(ctx, "deploy-svc-deploy")
-	defer ns.lock.Release(ctx, "deploy-svc-deploy")
+	ns.options.Lock.Acquire(ctx, "deploy-svc-deploy")
+	defer ns.options.Lock.Release(ctx, "deploy-svc-deploy")
 
 	token, err := ns.getToken()
 	if err != nil {

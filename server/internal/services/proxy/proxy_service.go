@@ -97,7 +97,7 @@ func (cs *ProxyService) start() error {
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to get public key")
 	}
 	cs.publicKey = pk.PublicKey
 
@@ -110,7 +110,7 @@ func (cs *ProxyService) start() error {
 		cs.credentialStore,
 	)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to register service account")
 	}
 	cs.token = token.Token
 

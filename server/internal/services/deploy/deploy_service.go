@@ -19,7 +19,6 @@ import (
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/lock"
 	deploy "github.com/1backend/1backend/server/internal/services/deploy/types"
 	"github.com/1backend/1backend/server/internal/universe"
 	"github.com/gorilla/mux"
@@ -29,8 +28,6 @@ import (
 type DeployService struct {
 	options *universe.Options
 	token   string
-
-	lock lock.DistributedLock
 
 	credentialStore datastore.DataStore
 	deploymentStore datastore.DataStore
@@ -99,8 +96,8 @@ func (cs *DeployService) getToken() (string, error) {
 	}
 
 	ctx := context.Background()
-	cs.lock.Acquire(ctx, "deploy-svc-start")
-	defer cs.lock.Release(ctx, "deploy-svc-start")
+	cs.options.Lock.Acquire(ctx, "deploy-svc-start")
+	defer cs.options.Lock.Release(ctx, "deploy-svc-start")
 
 	token, err := boot.RegisterServiceAccount(
 		cs.options.ClientFactory.Client().UserSvcAPI,
