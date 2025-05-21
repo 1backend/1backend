@@ -32,8 +32,9 @@ import (
 )
 
 type RegistryService struct {
-	publicKey string
-	token     string
+	publicKey  string
+	token      string
+	authorizer auth.Authorizer
 
 	clientFactory client.ClientFactory
 
@@ -118,6 +119,7 @@ func NewRegistryService(
 		AvailabilityZone: az,
 		Region:           region,
 		nodeId:           nodeId,
+		authorizer:       authorizer,
 
 		triggerChan: make(chan struct{}),
 		permissionChecker: endpoint.NewPermissionChecker(

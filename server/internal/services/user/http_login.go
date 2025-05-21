@@ -20,7 +20,6 @@ import (
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
-	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
@@ -206,8 +205,7 @@ func checkPasswordHash(password, hash string) bool {
 // Changing the struct tags on the `auth.Claims` struct or other
 // unexpected shenanigans might cause tokens to become invalid.
 func (s *UserService) isFunctional(token string) (bool, error) {
-	authr := auth.AuthorizerImpl{}
-	claims, err := authr.ParseJWT(s.publicKeyPem, token)
+	claims, err := s.authorizer.ParseJWT(s.publicKeyPem, token)
 	if err != nil {
 		return false, err
 	}
