@@ -127,7 +127,7 @@ func (pc *permissionChecker) HasPermission(
 		pc.permissionCache.SetWithTTL(key, &HasPermissionResponse{
 			Response:   isAuthRsp,
 			StatusCode: code,
-		}, 1, expiresAt.Sub(time.Now()))
+		}, 1, time.Until(expiresAt))
 		if pc.testing {
 			pc.permissionCache.Wait()
 		}

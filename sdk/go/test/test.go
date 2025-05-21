@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/boot"
@@ -72,9 +73,11 @@ func LoggedInClient(
 }
 
 type MockUserOptions struct {
-	IdFactory            func() string
-	SlugFactory          func() string
-	HasPermissionFactory func() bool
+	IdFactory                 func() string
+	SlugFactory               func() string
+	HasPermissionFactory      func() bool
+	HasPermissionTimesFactory func() int
+	UntilFactory              func() time.Time
 }
 
 type MockUserOption func(*MockUserOptions)
@@ -94,6 +97,18 @@ func WithSlugFactory(slugFactory func() string) MockUserOption {
 func WithHasPermissionFactory(hasPermissionFactory func() bool) MockUserOption {
 	return func(o *MockUserOptions) {
 		o.HasPermissionFactory = hasPermissionFactory
+	}
+}
+
+func WithHasPermissionTimesFactory(hasPermissionTimesFactory func() int) MockUserOption {
+	return func(o *MockUserOptions) {
+		o.HasPermissionTimesFactory = hasPermissionTimesFactory
+	}
+}
+
+func WithUntilFactory(untilFactory func() time.Time) MockUserOption {
+	return func(o *MockUserOptions) {
+		o.UntilFactory = untilFactory
 	}
 }
 
@@ -143,8 +158,20 @@ func MockUserSvc(ctx context.Context, ctrl *gomock.Controller, options ...MockUs
 	mockUserSvc.EXPECT().LoginExecute(gomock.Any()).Return(expectedUserSvcLoginResponse, nil, nil).AnyTimes()
 	mockUserSvc.EXPECT().SavePermits(ctx).Return(mockAddPermissionToRoleRequest).AnyTimes()
 	mockUserSvc.EXPECT().SavePermitsExecute(gomock.Any()).Return(expectedUserSvcAddPermissionToRoleResponse, nil, nil).AnyTimes()
-	mockUserSvc.EXPECT().HasPermission(gomock.Any(), gomock.Any()).Return(mockHasPermissionRequest).AnyTimes()
-	mockUserSvc.EXPECT().HasPermissionExecute(gomock.Any()).DoAndReturn(func(req openapi.ApiHasPermissionRequest) (*openapi.UserSvcHasPermissionResponse, *http.Response, error) {
+
+	var hasPermissionTimes int
+	if opts.HasPermissionTimesFactory != nil {
+		hasPermissionTimes = opts.HasPermissionTimesFactory()
+	}
+
+	hp := mockUserSvc.EXPECT().HasPermission(gomock.Any(), gomock.Any()).Return(mockHasPermissionRequest)
+	if hasPermissionTimes > 0 {
+		hp.Times(hasPermissionTimes)
+	} else {
+		hp.AnyTimes()
+	}
+
+	hpe := mockUserSvc.EXPECT().HasPermissionExecute(gomock.Any()).DoAndReturn(func(req openapi.ApiHasPermissionRequest) (*openapi.UserSvcHasPermissionResponse, *http.Response, error) {
 		var hasPermission bool
 		if opts.HasPermissionFactory != nil {
 			hasPermission = opts.HasPermissionFactory()
@@ -160,8 +187,14 @@ func MockUserSvc(ctx context.Context, ctrl *gomock.Controller, options ...MockUs
 			slug = opts.SlugFactory()
 		}
 
+		var until time.Time
+		if opts.UntilFactory != nil {
+			until = opts.UntilFactory()
+		}
+
 		return &openapi.UserSvcHasPermissionResponse{
-				Authorized: hasPermission, // Dynamically evaluate
+				Authorized: hasPermission,              // Dynamically evaluate
+				Until:      until.Format(time.RFC3339), // Dynamically evaluate
 				User: openapi.UserSvcUser{
 					Id:   id,   // Dynamically evaluate
 					Slug: slug, // Dynamically evaluate
@@ -169,8 +202,12 @@ func MockUserSvc(ctx context.Context, ctrl *gomock.Controller, options ...MockUs
 			}, &http.Response{
 				StatusCode: 200,
 			}, nil
-	}).
-		AnyTimes()
+	})
+	if hasPermissionTimes > 0 {
+		hpe.Times(hasPermissionTimes)
+	} else {
+		hpe.AnyTimes()
+	}
 
 	return mockUserSvc
 }

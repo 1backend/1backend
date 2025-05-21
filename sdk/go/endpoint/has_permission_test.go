@@ -2,7 +2,6 @@ package endpoint
 
 import (
 	"context"
-	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
@@ -22,20 +21,11 @@ func TestHasPermissionCaching(t *testing.T) {
 
 	mockUserSvc := test.MockUserSvc(context.Background(), ctrl, test.WithHasPermissionFactory(func() bool {
 		return true
+	}), test.WithUntilFactory(func() time.Time {
+		return time.Now().Add(1 * time.Second)
+	}), test.WithHasPermissionTimesFactory(func() int {
+		return 2
 	}))
-
-	mockUserSvc.EXPECT().HasPermission(gomock.Any(), gomock.Any()).
-		Return(openapi.ApiHasPermissionRequest{
-			ApiService: mockUserSvc,
-		}).Times(2)
-
-	mockUserSvc.EXPECT().HasPermissionExecute(gomock.Any()).
-		Return(&openapi.UserSvcHasPermissionResponse{
-			Authorized: true,
-			Until:      time.Now().Add(50 * time.Millisecond).Format(time.RFC3339),
-		}, &http.Response{
-			StatusCode: http.StatusOK,
-		}, nil).Times(2)
 
 	mockClientFactory.EXPECT().
 		Client(gomock.Any()).
@@ -63,7 +53,7 @@ func TestHasPermissionCaching(t *testing.T) {
 	assert.True(t, resp2.Authorized)
 
 	// Wait for cache to expire
-	time.Sleep(60 * time.Millisecond)
+	time.Sleep(time.Second)
 
 	// Third call - should hit service again
 	resp3, code3, err3 := pc.HasPermission(req, "perm")
