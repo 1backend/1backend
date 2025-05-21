@@ -39,7 +39,7 @@ func (rs *RegistryService) ListInstances(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := rs.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := rs.options.PermissionChecker.HasPermission(
 		r,
 		registry.PermissionInstanceView,
 	)
@@ -66,7 +66,7 @@ func (rs *RegistryService) ListInstances(
 		return
 	}
 
-	isAdmin, err := rs.authorizer.IsAdminFromRequest(publicKey, r)
+	isAdmin, err := rs.options.Authorizer.IsAdminFromRequest(publicKey, r)
 	if err != nil {
 		logger.Error(
 			"Error checking if user is admin",

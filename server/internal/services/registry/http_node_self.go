@@ -42,7 +42,7 @@ func (ns *RegistryService) NodeSelf(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := ns.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := ns.options.PermissionChecker.HasPermission(
 		r,
 		registry.PermissionNodeView,
 	)
@@ -79,14 +79,14 @@ func (ns *RegistryService) NodeSelf(
 
 func (ns *RegistryService) thisNode() (*registry.Node, error) {
 	nodeIs, err := ns.nodeStore.Query(
-		datastore.Equals([]string{"url"}, ns.URL),
+		datastore.Equals([]string{"url"}, ns.options.Url),
 	).Find()
 	if err != nil {
 		return nil, err
 	}
 
 	if len(nodeIs) == 0 {
-		return nil, fmt.Errorf("cannot find node with url '%v'", ns.URL)
+		return nil, fmt.Errorf("cannot find node with url '%v'", ns.options.Url)
 	}
 
 	ret := nodeIs[0].(*registry.Node)

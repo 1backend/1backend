@@ -23,6 +23,7 @@ import (
 	_ "github.com/1backend/1backend/server/docs"
 	"github.com/1backend/1backend/server/internal/di"
 	"github.com/1backend/1backend/server/internal/router"
+	"github.com/1backend/1backend/server/internal/universe"
 )
 
 // @title           1Backend
@@ -50,7 +51,7 @@ import (
 func main() {
 	logger.Info("Starting...")
 
-	universe, err := di.BigBang(&di.Options{})
+	universe, err := di.BigBang(&universe.Options{})
 	if err != nil {
 		logger.Error("Cannot start node", slog.Any("error", err))
 		os.Exit(1)

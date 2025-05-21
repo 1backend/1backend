@@ -26,50 +26,29 @@ import (
 // Authorizer can extract roles from tokens.
 // This interface is not the only thing that does authorization, however.
 // Authorization also happens by calling the User Svc to check if a user has a specific permission to call an endpoint.
-//
-// Most methods in this interface parse the JWT and do not handle refresh for expired tokens.
-// It is recommended to refresh the token beforehand (see `HasPermission`, etc.) before calling these methods.
 type Authorizer interface {
 	TokenFromRequest(r *http.Request) (string, bool)
-
-	// This method parses the JWT and does not handle refresh for expired tokens.
-	// It is recommended to refresh the token beforehand (see `HasPermission`, etc.) before calling this method.
 	ParseJWT(userSvcPublicKey, token string) (*Claims, error)
-
-	// This method parses the JWT and does not handle refresh for expired tokens.
-	// It is recommended to refresh the token beforehand (see `HasPermission`, etc.) before calling this method.
 	ParseJWTFromRequest(userSvcPublicKey string, r *http.Request) (*Claims, error)
 
 	// IsAdmin returns true if the user has
 	// the `user-svc:admin` role.
-	//
-	// This method parses the JWT and does not handle refresh for expired tokens.
-	// It is recommended to refresh the token beforehand (see `HasPermission`, etc.) before calling this method.
 	IsAdmin(userSvcPublicKey string, token string) (bool, error)
 
 	IsAdminToken(*Claims) bool
 
 	// IsAdminFromRequest returns true if the user has
 	// the `user-svc:admin` role.
-	//
-	// This method parses the JWT and does not handle refresh for expired tokens.
-	// It is recommended to refresh the token beforehand (see `HasPermission`, etc.) before calling this method.
 	IsAdminFromRequest(userSvcPublicKey string, r *http.Request) (bool, error)
 
 	// Organizations extracts organizations and organization-internal roles
 	// from a request. Given a role string like
 	// `user-svc:org:{org_dBZRCej3fo}:admin`, it returns `{"org_dBZRCej3fo": ["admin"]}`.
-	//
-	// This method parses the JWT and does not handle refresh for expired tokens.
-	// It is recommended to refresh the token beforehand (see `HasPermission`, etc.) before calling this method.
 	Organizations(userSvcPublicKey string, token string) (map[string][]string, error)
 
 	// OrganizationsFromRequest extracts organizations and organization-internal roles
 	// from a request. Given a role string like
 	// `user-svc:org:{org_dBZRCej3fo}:admin`, it returns `{"org_dBZRCej3fo": ["admin"]}`.
-	//
-	// This method parses the JWT and does not handle refresh for expired tokens.
-	// It is recommended to refresh the token beforehand (see `HasPermission`, etc.) before calling this method.
 	OrganizationsFromRequest(userSvcPublicKey string, r *http.Request) (map[string][]string, error)
 }
 

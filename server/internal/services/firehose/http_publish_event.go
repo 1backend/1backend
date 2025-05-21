@@ -33,7 +33,7 @@ import (
 func (p *FirehoseService) Publish(w http.ResponseWriter,
 	r *http.Request) {
 
-	isAuthRsp, statusCode, err := p.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := p.options.PermissionChecker.HasPermission(
 		r,
 		firehose.PermissionEventPublish,
 	)

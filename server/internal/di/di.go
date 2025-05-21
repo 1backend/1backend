@@ -18,17 +18,17 @@ import (
 
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	pglock "github.com/1backend/1backend/sdk/go/lock/pg"
+	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	httpSwagger "github.com/swaggo/http-swagger"
 
 	"github.com/1backend/1backend/sdk/go/infra"
-	"github.com/1backend/1backend/sdk/go/lock"
 	distlock "github.com/1backend/1backend/sdk/go/lock/local"
 	"github.com/1backend/1backend/sdk/go/logger"
 
-	"github.com/1backend/1backend/server/internal/clients/llamacpp"
 	"github.com/1backend/1backend/server/internal/router"
 	chatservice "github.com/1backend/1backend/server/internal/services/chat"
 	configservice "github.com/1backend/1backend/server/internal/services/config"
@@ -47,85 +47,17 @@ import (
 	secretservice "github.com/1backend/1backend/server/internal/services/secret"
 	sourceservice "github.com/1backend/1backend/server/internal/services/source"
 	userservice "github.com/1backend/1backend/server/internal/services/user"
+	"github.com/1backend/1backend/server/internal/universe"
 )
 
-type Options struct {
-	Port        int
-	GpuPlatform string
-
-	Az         string
-	Region     string
-	LLMHost    string
-	VolumeName string
-
-	// Path of the config folder, configurable via the "OB_FOLDER" environment variable.
-	// If Test is true, this value is ignored and a random temporary folder is used instead.
-	ConfigPath string
-
-	// eg. mysql, postgres
-	Db string
-
-	// Connection string eg.
-	// "postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
-	DbConnectionString string
-
-	// Crucial for distributed features.
-	// Please see the documentation for the envar OB_NODE_ID
-	NodeId string
-
-	// DbPrefix allows us to have isolated envs for different test cases
-	// but still make multiple nodes in those test cases use the same
-	// shard of the db.
-	DbPrefix string
-
-	SourceControlToken  string
-	SecretEncryptionKey string
-
-	// URL of the local 1Backend server instance
-	Url string
-
-	// Test mode if true will cause the localstore to
-	// save data into random temporary folders.
-	Test bool
-
-	// Lock is a distributed lock. Use this when you want to synronize
-	// across service instances/nodes.
-	// eg: leader election
-	Lock lock.DistributedLock
-
-	LLamaCppClient llamacpp.ClientI
-
-	// DataStoreFactory can create database tables
-	DataStoreFactory infra.DataStoreFactory
-
-	// HomeDir is the 1Backend config/data/uploads/downloads directory.
-	// For tests it's something like /tmp/1backend-2698538720/
-	// For live it's /home/youruser/.1backend
-	HomeDir string
-
-	// ClientFactory is used for service to service communication
-	// ie. this is how services call each other
-	ClientFactory client.ClientFactory
-
-	// Authorizer is a helper interface that contains
-	// auth related utility functions
-	Authorizer auth.Authorizer
-
-	TokenExpiration time.Duration
-
-	// If set to true, expired tokens won't be autorefreshed by
-	// the server.
-	TokenAutoRefreshOff bool
-}
-
 type Universe struct {
-	Options       Options
+	Options       universe.Options
 	Router        *mux.Router
 	StarterFunc   func() error
 	ClientFactory client.ClientFactory
 }
 
-func BigBang(options *Options) (*Universe, error) {
+func BigBang(options *universe.Options) (*Universe, error) {
 	defer func() {
 		if r := recover(); r != nil {
 			logger.Error("Panic in BigBang",
@@ -238,15 +170,11 @@ func BigBang(options *Options) (*Universe, error) {
 	router := mux.NewRouter().SkipClean(true).UseEncodedPath()
 
 	configService, err := configservice.NewConfigService(
-		options.Lock,
-		options.Authorizer,
-		options.HomeDir,
-		options.ClientFactory,
+		options,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create config service")
 	}
-	configService.RegisterRoutes(router)
 
 	if options.DataStoreFactory == nil {
 		dc, err := infra.NewDataStoreFactory(infra.DataStoreConfig{
@@ -278,17 +206,35 @@ func BigBang(options *Options) (*Universe, error) {
 		options.ClientFactory = client.NewApiClientFactory(options.Url)
 	}
 
-	configService.SetDataStoreFactory(options.DataStoreFactory.Create)
+	if options.TokenRefresher == nil {
+		tokenRefresher, err := endpoint.NewTokenRefresher(
+			options.ClientFactory,
+			options.Authorizer,
+		)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to create token refresher")
+		}
+		options.TokenRefresher = tokenRefresher
+	}
 
-	configService.SetClientFactory(options.ClientFactory)
+	if options.Middlewares == nil {
+		mws := middlewares.Applicator(
+			options.TokenRefresher,
+			options.TokenAutoRefreshOff,
+		)
+		options.Middlewares = mws
+	}
+
+	if options.PermissionChecker == nil {
+		options.PermissionChecker = endpoint.NewPermissionChecker(
+			options.ClientFactory,
+		)
+	}
+
+	configService.RegisterRoutes(router)
 
 	userService, err := userservice.NewUserService(
-		options.ClientFactory,
-		options.Authorizer,
-		options.DataStoreFactory.Create,
-		options.TokenExpiration,
-		options.TokenAutoRefreshOff,
-		options.Test,
+		options,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create user service")
@@ -296,10 +242,7 @@ func BigBang(options *Options) (*Universe, error) {
 	userService.RegisterRoutes(router)
 
 	firehoseService, err := firehoseservice.NewFirehoseService(
-		options.ClientFactory,
-		options.Lock,
-		options.DataStoreFactory.Create,
-		options.Authorizer,
+		options,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create firehose service")
@@ -312,11 +255,7 @@ func BigBang(options *Options) (*Universe, error) {
 	}
 
 	fileService, err := fileservice.NewFileService(
-		options.ClientFactory,
-		options.Lock,
-		options.DataStoreFactory.Create,
-		options.HomeDir,
-		options.Authorizer,
+		options,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create file service")
@@ -324,10 +263,7 @@ func BigBang(options *Options) (*Universe, error) {
 	fileService.RegisterRoutes(router)
 
 	imageService, err := imageservice.NewImageService(
-		options.ClientFactory,
-		options.HomeDir,
-		options.DataStoreFactory.Create,
-		options.Lock,
+		options,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create image service")
@@ -335,11 +271,7 @@ func BigBang(options *Options) (*Universe, error) {
 	imageService.RegisterRoutes(router)
 
 	containerService, err := containerservice.NewContainerService(
-		options.VolumeName,
-		options.ClientFactory,
-		options.Lock,
-		options.DataStoreFactory.Create,
-		options.Authorizer,
+		options,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create container service")
@@ -347,13 +279,7 @@ func BigBang(options *Options) (*Universe, error) {
 	containerService.RegisterRoutes(router)
 
 	modelService, err := modelservice.NewModelService(
-		// @todo GPU platform maybe this could be autodetected
-		options.GpuPlatform,
-		options.LLMHost,
-		options.ClientFactory,
-		options.Lock,
-		options.DataStoreFactory.Create,
-		options.Authorizer,
+		options,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create model service")
@@ -361,10 +287,7 @@ func BigBang(options *Options) (*Universe, error) {
 	modelService.RegisterRoutes(router)
 
 	chatService, err := chatservice.NewChatService(
-		options.ClientFactory,
-		options.Lock,
-		options.DataStoreFactory.Create,
-		options.Authorizer,
+		options,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create chat service")
@@ -372,11 +295,7 @@ func BigBang(options *Options) (*Universe, error) {
 	chatService.RegisterRoutes(router)
 
 	promptService, err := promptservice.NewPromptService(
-		options.ClientFactory,
-		options.LLamaCppClient,
-		options.Lock,
-		options.DataStoreFactory.Create,
-		options.Authorizer,
+		options,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create prompt service")
@@ -384,10 +303,7 @@ func BigBang(options *Options) (*Universe, error) {
 	promptService.RegisterRoutes(router)
 
 	dataService, err := dataservice.NewDataService(
-		options.ClientFactory,
-		options.Lock,
-		options.Authorizer,
-		options.DataStoreFactory.Create,
+		options,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create data service")
@@ -395,10 +311,7 @@ func BigBang(options *Options) (*Universe, error) {
 	dataService.RegisterRoutes(router)
 
 	policyService, err := policyservice.NewPolicyService(
-		options.ClientFactory,
-		options.Lock,
-		options.DataStoreFactory.Create,
-		options.Authorizer,
+		options,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create policy service")
@@ -406,14 +319,7 @@ func BigBang(options *Options) (*Universe, error) {
 	policyService.RegisterRoutes(router)
 
 	registryService, err := registryservice.NewRegistryService(
-		options.Url,
-		options.Az,
-		options.Region,
-		options.ClientFactory,
-		options.Lock,
-		options.DataStoreFactory.Create,
-		options.NodeId,
-		options.Authorizer,
+		options,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create registry service")
@@ -421,11 +327,7 @@ func BigBang(options *Options) (*Universe, error) {
 	registryService.RegisterRoutes(router)
 
 	deployService, err := deployservice.NewDeployService(
-		options.ClientFactory,
-		options.Lock,
-		options.DataStoreFactory.Create,
-		options.Test,
-		options.Authorizer,
+		options,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create deploy service")
@@ -433,10 +335,7 @@ func BigBang(options *Options) (*Universe, error) {
 	deployService.RegisterRoutes(router)
 
 	sourceService, err := sourceservice.NewSourceService(
-		options.ClientFactory,
-		options.Lock,
-		options.DataStoreFactory.Create,
-		options.Authorizer,
+		options,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create source service")
@@ -447,11 +346,7 @@ func BigBang(options *Options) (*Universe, error) {
 		options.SecretEncryptionKey = "changeMeToSomethingSecureForReal"
 	}
 	secretService, err := secretservice.NewSecretService(
-		options.ClientFactory,
-		options.Authorizer,
-		options.Lock,
-		options.DataStoreFactory.Create,
-		options.SecretEncryptionKey,
+		options,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create secret service")
@@ -459,10 +354,7 @@ func BigBang(options *Options) (*Universe, error) {
 	secretService.RegisterRoutes(router)
 
 	emailService, err := emailservice.NewEmailService(
-		options.ClientFactory,
-		options.Lock,
-		options.DataStoreFactory.Create,
-		options.Authorizer,
+		options,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create email service")
@@ -482,10 +374,7 @@ func BigBang(options *Options) (*Universe, error) {
 	)
 
 	proxyService, err := proxyservice.NewProxyService(
-		options.ClientFactory,
-		options.Authorizer,
-		options.Lock,
-		options.DataStoreFactory.Create,
+		options,
 	)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create proxy service")

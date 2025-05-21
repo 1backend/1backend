@@ -85,7 +85,7 @@ func TestCreateUserAutoRefreshOff(t *testing.T) {
 
 	time.Sleep(1 * time.Second)
 
-	t.Run("admins can create users", func(t *testing.T) {
+	t.Run("admins cannot create users with expired token", func(t *testing.T) {
 		_, httpRsp, err := adminClient.UserSvcAPI.CreateUser(ctx).Body(
 			openapi.UserSvcCreateUserRequest{
 				User: &openapi.UserSvcUserInput{

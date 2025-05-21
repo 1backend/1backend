@@ -18,36 +18,27 @@ import (
 
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/endpoint"
-	"github.com/1backend/1backend/sdk/go/lock"
-	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
+	"github.com/1backend/1backend/server/internal/universe"
 	"github.com/gorilla/mux"
 )
 
 type SourceService struct {
+	options *universe.Options
+
 	started    bool
 	startupErr error
-
-	clientFactory client.ClientFactory
-	lock          lock.DistributedLock
 
 	token string
 
 	credentialStore datastore.DataStore
-
-	permissionChecker endpoint.PermissionChecker
 }
 
 func NewSourceService(
-	clientFactory client.ClientFactory,
-	lock lock.DistributedLock,
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
-	authorizer auth.Authorizer,
+	options *universe.Options,
 ) (*SourceService, error) {
-	credentialStore, err := datastoreFactory(
+	credentialStore, err := options.DataStoreFactory.Create(
 		"sourceSvcCredentials",
 		&auth.Credential{},
 	)
@@ -56,20 +47,17 @@ func NewSourceService(
 	}
 
 	service := &SourceService{
-		clientFactory:   clientFactory,
-		lock:            lock,
+		options:         options,
 		credentialStore: credentialStore,
-		permissionChecker: endpoint.NewPermissionChecker(
-			clientFactory,
-			authorizer,
-		),
 	}
 
 	return service, nil
 }
 
 func (ss *SourceService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/source-svc/repo/checkout", middlewares.DefaultApplicator(service.Lazy(ss, func(w http.ResponseWriter, r *http.Request) {
+	appl := ss.options.Middlewares
+
+	router.HandleFunc("/source-svc/repo/checkout", appl(service.Lazy(ss, func(w http.ResponseWriter, r *http.Request) {
 		ss.CheckoutRepo(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
@@ -91,11 +79,11 @@ func (cs *SourceService) LazyStart() error {
 
 func (ss *SourceService) start() error {
 	ctx := context.Background()
-	ss.lock.Acquire(ctx, "source-svc-start")
-	defer ss.lock.Release(ctx, "source-svc-start")
+	ss.options.Lock.Acquire(ctx, "source-svc-start")
+	defer ss.options.Lock.Release(ctx, "source-svc-start")
 
 	token, err := boot.RegisterServiceAccount(
-		ss.clientFactory.Client().UserSvcAPI,
+		ss.options.ClientFactory.Client().UserSvcAPI,
 		"source-svc",
 		"Source Svc",
 		ss.credentialStore,

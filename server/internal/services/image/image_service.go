@@ -25,20 +25,15 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/endpoint"
-	"github.com/1backend/1backend/sdk/go/lock"
-	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
+	"github.com/1backend/1backend/server/internal/universe"
 )
 
 type ImageService struct {
-	homeDir       string
-	clientFactory client.ClientFactory
+	options *universe.Options
 
 	started    bool
 	startupErr error
-
-	lock lock.DistributedLock
 
 	token string
 
@@ -46,29 +41,24 @@ type ImageService struct {
 
 	publicKey string
 
-	credentialStore   datastore.DataStore
-	datastoreFactory  func(tableName string, instance any) (datastore.DataStore, error)
-	permissionChecker endpoint.PermissionChecker
+	credentialStore  datastore.DataStore
+	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
 }
 
 func NewImageService(
-	clientFactory client.ClientFactory,
-	homeDir string,
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
-	lock lock.DistributedLock,
+	options *universe.Options,
 ) (*ImageService, error) {
 	cs := &ImageService{
-		homeDir:          homeDir,
-		datastoreFactory: datastoreFactory,
-		lock:             lock,
-		clientFactory:    clientFactory,
+		options: options,
 	}
 
 	return cs, nil
 }
 
 func (cs *ImageService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/image-svc/serve/upload/{fileId}", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	appl := cs.options.Middlewares
+
+	router.HandleFunc("/image-svc/serve/upload/{fileId}", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.ServeUploadedImage(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
@@ -92,11 +82,11 @@ func (cs *ImageService) start() error {
 	if cs.datastoreFactory == nil {
 		return errors.New("no datastore factory")
 	}
-	if cs.homeDir == "" {
+	if cs.options.HomeDir == "" {
 		return errors.New("no home dir")
 	}
 
-	credentialStore, err := cs.datastoreFactory(
+	credentialStore, err := cs.options.DataStoreFactory.Create(
 		"imageSvcCredentials",
 		&auth.Credential{},
 	)
@@ -105,7 +95,7 @@ func (cs *ImageService) start() error {
 	}
 	cs.credentialStore = credentialStore
 
-	imageCacheFolder := path.Join(cs.homeDir, "image-cache")
+	imageCacheFolder := path.Join(cs.options.HomeDir, "image-cache")
 	err = os.MkdirAll(imageCacheFolder, 0700)
 	if err != nil {
 		return err
@@ -113,10 +103,10 @@ func (cs *ImageService) start() error {
 	cs.imageCacheFolder = imageCacheFolder
 
 	ctx := context.Background()
-	cs.lock.Acquire(ctx, "image-svc-start")
-	defer cs.lock.Release(ctx, "image-svc-start")
+	cs.options.Lock.Acquire(ctx, "image-svc-start")
+	defer cs.options.Lock.Release(ctx, "image-svc-start")
 
-	pk, _, err := cs.clientFactory.Client(client.WithToken(cs.token)).
+	pk, _, err := cs.options.ClientFactory.Client(client.WithToken(cs.token)).
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	if err != nil {
@@ -124,7 +114,7 @@ func (cs *ImageService) start() error {
 	}
 	cs.publicKey = pk.PublicKey
 
-	client := cs.clientFactory.Client()
+	client := cs.options.ClientFactory.Client()
 
 	token, err := boot.RegisterServiceAccount(
 		client.UserSvcAPI,

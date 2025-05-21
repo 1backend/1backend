@@ -23,45 +23,42 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/lock"
+	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/server/internal/universe"
 )
 
 type ProxyService struct {
+	options *universe.Options
+
 	started    bool
 	startupErr error
 
-	clientFactory client.ClientFactory
-	token         string
+	token string
 
-	authorizer auth.Authorizer
-
-	lock      lock.DistributedLock
 	publicKey string
 
-	credentialStore  datastore.DataStore
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
+	credentialStore datastore.DataStore
 }
 
 func NewProxyService(
-	clientFactory client.ClientFactory,
-	authorizer auth.Authorizer,
-	lock lock.DistributedLock,
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
+	options *universe.Options,
 ) (*ProxyService, error) {
 	cs := &ProxyService{
-		lock:             lock,
-		datastoreFactory: datastoreFactory,
-		clientFactory:    clientFactory,
-		authorizer:       authorizer,
+		options: options,
 	}
 
 	return cs, nil
 }
 
 func (cs *ProxyService) RegisterRoutes(router *mux.Router) {
-	router.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	tokenRefresherMiddleware := middlewares.TokenRefreshMiddleware(
+		cs.options.TokenRefresher,
+		cs.options.TokenAutoRefreshOff,
+	)
+
+	router.PathPrefix("/").HandlerFunc(tokenRefresherMiddleware(func(w http.ResponseWriter, r *http.Request) {
 		cs.Route(w, r)
-	})
+	}))
 }
 
 func (cs *ProxyService) LazyStart() error {
@@ -79,11 +76,11 @@ func (cs *ProxyService) LazyStart() error {
 }
 
 func (cs *ProxyService) start() error {
-	if cs.datastoreFactory == nil {
+	if cs.options.DataStoreFactory == nil {
 		return errors.New("no datastore factory")
 	}
 
-	credentialStore, err := cs.datastoreFactory(
+	credentialStore, err := cs.options.DataStoreFactory.Create(
 		"proxySvcCredentials",
 		&auth.Credential{},
 	)
@@ -93,10 +90,10 @@ func (cs *ProxyService) start() error {
 	cs.credentialStore = credentialStore
 
 	ctx := context.Background()
-	cs.lock.Acquire(ctx, "proxy-svc-start")
-	defer cs.lock.Release(ctx, "proxy-svc-start")
+	cs.options.Lock.Acquire(ctx, "proxy-svc-start")
+	defer cs.options.Lock.Release(ctx, "proxy-svc-start")
 
-	pk, _, err := cs.clientFactory.Client(client.WithToken(cs.token)).
+	pk, _, err := cs.options.ClientFactory.Client(client.WithToken(cs.token)).
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	if err != nil {
@@ -104,7 +101,7 @@ func (cs *ProxyService) start() error {
 	}
 	cs.publicKey = pk.PublicKey
 
-	client := cs.clientFactory.Client()
+	client := cs.options.ClientFactory.Client()
 
 	token, err := boot.RegisterServiceAccount(
 		client.UserSvcAPI,

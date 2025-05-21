@@ -205,7 +205,7 @@ func checkPasswordHash(password, hash string) bool {
 // Changing the struct tags on the `auth.Claims` struct or other
 // unexpected shenanigans might cause tokens to become invalid.
 func (s *UserService) isFunctional(token string) (bool, error) {
-	claims, err := s.authorizer.ParseJWT(s.publicKeyPem, token)
+	claims, err := s.options.Authorizer.ParseJWT(s.publicKeyPem, token)
 	if err != nil {
 		return false, err
 	}
@@ -244,7 +244,7 @@ func (s *UserService) generateAuthToken(
 		UserId:    u.Id,
 		Token:     token,
 		Active:    true,
-		ExpiresAt: now.Add(s.tokenExpiration),
+		ExpiresAt: now.Add(s.options.TokenExpiration),
 		CreatedAt: now,
 	}, nil
 }

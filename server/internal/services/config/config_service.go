@@ -27,12 +27,13 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/lock"
-	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
 	types "github.com/1backend/1backend/server/internal/services/config/types"
+	"github.com/1backend/1backend/server/internal/universe"
 )
 
 type ConfigService struct {
+	options    *universe.Options
 	started    bool
 	startupErr error
 
@@ -54,45 +55,31 @@ type ConfigService struct {
 	homeDir    string
 
 	permissionChecker endpoint.PermissionChecker
+	tokenRefresher    endpoint.TokenRefresher
 }
 
 func NewConfigService(
-	lock lock.DistributedLock,
-	authorizer auth.Authorizer,
-	homeDir string,
-	clientFactory client.ClientFactory,
+	options *universe.Options,
 ) (*ConfigService, error) {
+
 	cs := &ConfigService{
-		lock:       lock,
+		options:    options,
 		configs:    map[string]map[string]any{},
-		authorizer: authorizer,
-		homeDir:    homeDir,
+		authorizer: options.Authorizer,
 	}
 
 	return cs, nil
 }
 
-func (cs *ConfigService) SetClientFactory(clientFactory client.ClientFactory) {
-	cs.clientFactory = clientFactory
-	cs.permissionChecker = endpoint.NewPermissionChecker(
-		clientFactory,
-		cs.authorizer,
-	)
-}
-
-func (cs *ConfigService) SetDataStoreFactory(
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
-) {
-	cs.datastoreFactory = datastoreFactory
-}
-
 func (cs *ConfigService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/config-svc/config", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	appl := cs.options.Middlewares
+
+	router.HandleFunc("/config-svc/config", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.Get(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/config-svc/config", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/config-svc/config", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.Save(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
@@ -117,7 +104,7 @@ func (cs *ConfigService) start() error {
 		return errors.New("no datastore factory")
 	}
 
-	credentialStore, err := cs.datastoreFactory(
+	credentialStore, err := cs.options.DataStoreFactory.Create(
 		"configSvcCredentials",
 		&auth.Credential{},
 	)
@@ -134,7 +121,7 @@ func (cs *ConfigService) start() error {
 	}
 	cs.publicKey = pk.PublicKey
 
-	configStore, err := cs.datastoreFactory(
+	configStore, err := cs.options.DataStoreFactory.Create(
 		"configSvcConfig",
 		&types.Config{},
 	)

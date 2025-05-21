@@ -71,8 +71,19 @@ func (s *UserService) HasPermission(
 		return
 	}
 
+	claims, err := s.options.Authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
+	if err != nil {
+		logger.Error(
+			"Failed to parse JWT",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
+		return
+	}
+
 	bs, _ := json.Marshal(&user.HasPermissionResponse{
 		Authorized: hasPermission,
+		Until:      claims.ExpiresAt.Time,
 		User:       *usr,
 	})
 
@@ -246,7 +257,7 @@ func (s *UserService) getUserFromRequest(r *http.Request) (*user.User, error) {
 	var token *user.AuthToken
 
 	expired := false
-	t, err := s.authorizer.ParseJWT(s.publicKeyPem, authHeader)
+	t, err := s.options.Authorizer.ParseJWT(s.publicKeyPem, authHeader)
 	if err != nil {
 		if strings.Contains(err.Error(), "token is expired") {
 			expired = true
@@ -260,7 +271,7 @@ func (s *UserService) getUserFromRequest(r *http.Request) (*user.User, error) {
 	if expired ||
 		t.ExpiresAt == nil ||
 		t.ExpiresAt.Time.Before(time.Now()) {
-		if s.tokenAutoRefreshOff {
+		if s.options.TokenAutoRefreshOff {
 			return nil, errors.New("token is expired")
 		}
 

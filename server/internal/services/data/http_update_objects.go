@@ -44,7 +44,7 @@ func (g *DataService) UpdateObjects(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := g.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := g.options.PermissionChecker.HasPermission(
 		r,
 		data.PermissionObjectEdit,
 	)

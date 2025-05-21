@@ -27,7 +27,7 @@ func (g *DataService) CreateMany(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := g.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := g.options.PermissionChecker.HasPermission(
 		r,
 		dynamictypes.PermissionObjectCreate,
 	)

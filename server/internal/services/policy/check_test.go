@@ -10,6 +10,7 @@ import (
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/server/internal/di"
 	policytypes "github.com/1backend/1backend/server/internal/services/policy/types"
+	"github.com/1backend/1backend/server/internal/universe"
 )
 
 func TestRateLimiting(t *testing.T) {
@@ -17,7 +18,7 @@ func TestRateLimiting(t *testing.T) {
 	server := httptest.NewServer(hs)
 	defer server.Close()
 
-	options := &di.Options{
+	options := &universe.Options{
 		Test: true,
 		Url:  server.URL,
 	}

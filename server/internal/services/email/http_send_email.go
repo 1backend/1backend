@@ -33,7 +33,7 @@ import (
 // @Security BearerAuth
 // @Router /email-svc/email [post]
 func (s *EmailService) SendEmail(w http.ResponseWriter, r *http.Request) {
-	isAuthRsp, statusCode, err := s.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := s.options.PermissionChecker.HasPermission(
 		r,
 		email.PermissionSendEmail,
 	)
@@ -77,7 +77,7 @@ func (s *EmailService) SendEmail(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *EmailService) sendgridSendEmail(req email.SendEmailRequest) error {
-	secretClient := s.clientFactory.Client(client.WithToken(s.token)).SecretSvcAPI
+	secretClient := s.options.ClientFactory.Client(client.WithToken(s.token)).SecretSvcAPI
 	secretResp, _, err := secretClient.ListSecrets(context.Background()).Body(
 		openapi.SecretSvcListSecretsRequest{
 			Keys: []string{

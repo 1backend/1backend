@@ -21,25 +21,17 @@ import (
 
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/endpoint"
-	"github.com/1backend/1backend/sdk/go/lock"
-	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
 	types "github.com/1backend/1backend/server/internal/services/file/types"
+	"github.com/1backend/1backend/server/internal/universe"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 )
 
 type FileService struct {
-	clientFactory    client.ClientFactory
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
-	homeDir          string
-
-	token string
-
-	lock lock.DistributedLock
+	options *universe.Options
+	token   string
 
 	uploadFolder   string
 	downloadFolder string
@@ -54,58 +46,48 @@ type FileService struct {
 
 	credentialStore datastore.DataStore
 
-	nodeId            string
-	permissionChecker endpoint.PermissionChecker
+	nodeId string
 }
 
 func NewFileService(
-	clientFactory client.ClientFactory,
-	lock lock.DistributedLock,
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
-	homeDir string,
-	authorizer auth.Authorizer,
+	options *universe.Options,
 ) (*FileService, error) {
 	ret := &FileService{
-		clientFactory:    clientFactory,
-		homeDir:          homeDir,
-		datastoreFactory: datastoreFactory,
-		lock:             lock,
-		permissionChecker: endpoint.NewPermissionChecker(
-			clientFactory,
-			authorizer,
-		),
+		options: options,
 	}
 
 	return ret, nil
 }
 
 func (fs *FileService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/file-svc/download", middlewares.DefaultApplicator(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
+	appl := fs.options.Middlewares
+
+	router.HandleFunc("/file-svc/download", appl(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
 		fs.Download(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/file-svc/download/{url}/pause", middlewares.DefaultApplicator(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/file-svc/download/{url}/pause", appl(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
 		fs.PauseDownload(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/file-svc/download/{url}", middlewares.DefaultApplicator(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/file-svc/download/{url}", appl(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
 		fs.GetDownload(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/file-svc/downloads", middlewares.DefaultApplicator(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/file-svc/downloads", appl(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
 		fs.ListDownloads(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/file-svc/upload", middlewares.DefaultApplicator(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/file-svc/upload", appl(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
 		fs.UploadFile(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/file-svc/uploads", middlewares.DefaultApplicator(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/file-svc/uploads", appl(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
 		fs.ListUploads(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
@@ -116,19 +98,19 @@ func (fs *FileService) RegisterRoutes(router *mux.Router) {
 	// Not sure why though as they are not routing to the same node (themselves),
 	// but to an other node.
 
-	router.HandleFunc("/file-svc/serve/upload/{fileId}", middlewares.DefaultApplicator(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/file-svc/serve/upload/{fileId}", appl(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
 		fs.ServeUpload(w, r)
 	}, service.WithSkipLock()))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/file-svc/serve/download/{url}", middlewares.DefaultApplicator(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/file-svc/serve/download/{url}", appl(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
 		fs.ServeDownload(w, r)
 	}, service.WithSkipLock()))).
 		Methods("OPTIONS", "GET")
 }
 
 func (fs *FileService) Start() error {
-	credentialStore, err := fs.datastoreFactory(
+	credentialStore, err := fs.options.DataStoreFactory.Create(
 		"fileSvcCredentials",
 		&auth.Credential{},
 	)
@@ -137,21 +119,21 @@ func (fs *FileService) Start() error {
 	}
 	fs.credentialStore = credentialStore
 
-	uploadFolder := path.Join(fs.homeDir, "uploads")
+	uploadFolder := path.Join(fs.options.HomeDir, "uploads")
 	err = os.MkdirAll(uploadFolder, 0700)
 	if err != nil {
 		return err
 	}
 	fs.uploadFolder = uploadFolder
 
-	downloadFolder := path.Join(fs.homeDir, "downloads")
+	downloadFolder := path.Join(fs.options.HomeDir, "downloads")
 	err = os.MkdirAll(downloadFolder, 0700)
 	if err != nil {
 		return err
 	}
 	fs.downloadFolder = downloadFolder
 
-	downloadStore, err := fs.datastoreFactory(
+	downloadStore, err := fs.options.DataStoreFactory.Create(
 		"fileSvcDownloads",
 		&types.InternalDownload{},
 	)
@@ -160,7 +142,7 @@ func (fs *FileService) Start() error {
 	}
 	fs.downloadStore = downloadStore
 
-	uploadStore, err := fs.datastoreFactory(
+	uploadStore, err := fs.options.DataStoreFactory.Create(
 		"fileSvcUploads",
 		&types.Upload{},
 	)
@@ -206,11 +188,11 @@ func (fs *FileService) getToken() (string, error) {
 	}
 
 	ctx := context.Background()
-	fs.lock.Acquire(ctx, "file-svc-start")
-	defer fs.lock.Release(ctx, "file-svc-start")
+	fs.options.Lock.Acquire(ctx, "file-svc-start")
+	defer fs.options.Lock.Release(ctx, "file-svc-start")
 
 	token, err := boot.RegisterServiceAccount(
-		fs.clientFactory.Client().UserSvcAPI,
+		fs.options.ClientFactory.Client().UserSvcAPI,
 		"file-svc",
 		"File Svc",
 		fs.credentialStore,

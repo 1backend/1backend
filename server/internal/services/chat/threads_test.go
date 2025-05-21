@@ -13,6 +13,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/server/internal/di"
 	chattypes "github.com/1backend/1backend/server/internal/services/chat/types"
+	"github.com/1backend/1backend/server/internal/universe"
 )
 
 func TestMessageCreatesThread(t *testing.T) {
@@ -20,7 +21,7 @@ func TestMessageCreatesThread(t *testing.T) {
 	server := httptest.NewServer(hs)
 	defer server.Close()
 
-	options := &di.Options{
+	options := &universe.Options{
 		Test: true,
 		Url:  server.URL,
 	}

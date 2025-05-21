@@ -40,7 +40,7 @@ func (ds *FileService) ListDownloads(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := ds.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := ds.options.PermissionChecker.HasPermission(
 		r,
 		file.PermissionDownloadView,
 	)

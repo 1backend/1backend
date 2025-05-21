@@ -37,7 +37,7 @@ func (p *FirehoseService) Subscribe(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := p.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := p.options.PermissionChecker.HasPermission(
 		r,
 		firehose.PermissionFirehoseStream,
 	)

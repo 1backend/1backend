@@ -48,7 +48,7 @@ func (g *DataService) Query(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := g.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := g.options.PermissionChecker.HasPermission(
 		r,
 		data.PermissionObjectView,
 	)
@@ -73,7 +73,7 @@ func (g *DataService) Query(
 	}
 	defer r.Body.Close()
 
-	claims, err := g.authorizer.ParseJWTFromRequest(g.publicKey, r)
+	claims, err := g.options.Authorizer.ParseJWTFromRequest(g.publicKey, r)
 	if err != nil {
 		logger.Error(
 			"Error parsing JWT", slog.Any("error", err))

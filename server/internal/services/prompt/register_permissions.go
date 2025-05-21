@@ -25,7 +25,7 @@ func (p *PromptService) registerPermits() error {
 	}
 
 	ctx := context.Background()
-	userSvc := p.clientFactory.Client(client.WithToken(token)).UserSvcAPI
+	userSvc := p.options.ClientFactory.Client(client.WithToken(token)).UserSvcAPI
 
 	req := openapi.UserSvcSavePermitsRequest{}
 

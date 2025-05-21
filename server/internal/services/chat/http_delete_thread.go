@@ -41,7 +41,7 @@ func (a *ChatService) DeleteThread(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	isAuthRsp, statusCode, err := a.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := a.options.PermissionChecker.HasPermission(
 		r,
 		chattypes.PermissionThreadDelete,
 	)

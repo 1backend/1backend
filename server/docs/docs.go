@@ -4734,7 +4734,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Retrieves user information based on the authentication token in the request header.\nTypically called by single-page applications during the initial page load.\nWhile some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,\nthis endpoint returns additional data, including the full user object and associated organizations.",
+                "description": "Retrieves user information based on the authentication token in the request header.\nTypically called by single-page applications during the initial page load.\nWhile some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,\nthis endpoint returns additional data, including the full user object and associated organizations.\n\nReadSelf intentionally still works after token revocation until the token expires.\nThis is to ensure that the user is not notified of token revocation (though some information is\nleaked by the count token functionality @todo).",
                 "consumes": [
                     "application/json"
                 ],
@@ -9132,11 +9132,15 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "authorized",
+                "until",
                 "user"
             ],
             "properties": {
                 "authorized": {
                     "type": "boolean"
+                },
+                "until": {
+                    "type": "string"
                 },
                 "user": {
                     "$ref": "#/definitions/user_svc.User"

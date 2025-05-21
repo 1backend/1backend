@@ -63,12 +63,12 @@ func (s *UserService) RevokeTokens(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !s.authorizer.IsAdminToken(claim) && request.UserId != "" {
+	if !s.options.Authorizer.IsAdminToken(claim) && request.UserId != "" {
 		endpoint.Unauthorized(w)
 		return
 	}
 
-	if !s.authorizer.IsAdminToken(claim) {
+	if !s.options.Authorizer.IsAdminToken(claim) {
 		request.UserId = claim.UserId
 	}
 

@@ -20,23 +20,19 @@ import (
 
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
-	"github.com/1backend/1backend/sdk/go/lock"
-	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/gorilla/mux"
 
 	firehosetypes "github.com/1backend/1backend/server/internal/services/firehose/types"
+	"github.com/1backend/1backend/server/internal/universe"
 )
 
 type FirehoseService struct {
+	options *universe.Options
+
 	started    bool
 	startupErr error
-
-	clientFactory    client.ClientFactory
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
-	lock             lock.DistributedLock
 
 	token string
 
@@ -45,33 +41,24 @@ type FirehoseService struct {
 	nextID      int
 
 	credentialStore datastore.DataStore
-
-	permissionChecker endpoint.PermissionChecker
 }
 
 func NewFirehoseService(
-	clientFactory client.ClientFactory,
-	lock lock.DistributedLock,
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
-	authorizer auth.Authorizer,
+	options *universe.Options,
 ) (*FirehoseService, error) {
 
 	service := &FirehoseService{
-		clientFactory:    clientFactory,
-		datastoreFactory: datastoreFactory,
-		lock:             lock,
-		subscribers:      make(map[int]func(events []*firehosetypes.Event)),
-		permissionChecker: endpoint.NewPermissionChecker(
-			clientFactory,
-			authorizer,
-		),
+		options:     options,
+		subscribers: make(map[int]func(events []*firehosetypes.Event)),
 	}
 
 	return service, nil
 }
 
 func (fs *FirehoseService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/firehose-svc/events/subscribe", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	appl := fs.options.Middlewares
+
+	router.HandleFunc("/firehose-svc/events/subscribe", appl(func(w http.ResponseWriter, r *http.Request) {
 		if fs.Start(w, r) {
 			return
 		}
@@ -79,7 +66,7 @@ func (fs *FirehoseService) RegisterRoutes(router *mux.Router) {
 	})).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/firehose-svc/event", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/firehose-svc/event", appl(func(w http.ResponseWriter, r *http.Request) {
 		if fs.Start(w, r) {
 			return
 		}
@@ -112,7 +99,7 @@ func (fs *FirehoseService) Start(
 }
 
 func (fs *FirehoseService) start() error {
-	credentialStore, err := fs.datastoreFactory(
+	credentialStore, err := fs.options.DataStoreFactory.Create(
 		"firehoseSvcCredentials",
 		&auth.Credential{},
 	)
@@ -122,11 +109,11 @@ func (fs *FirehoseService) start() error {
 	fs.credentialStore = credentialStore
 
 	ctx := context.Background()
-	fs.lock.Acquire(ctx, "firehose-svc-start")
-	defer fs.lock.Release(ctx, "firehose-svc-start")
+	fs.options.Lock.Acquire(ctx, "firehose-svc-start")
+	defer fs.options.Lock.Release(ctx, "firehose-svc-start")
 
 	token, err := boot.RegisterServiceAccount(
-		fs.clientFactory.Client().UserSvcAPI,
+		fs.options.ClientFactory.Client().UserSvcAPI,
 		"firehose-svc",
 		"Firehose Svc",
 		fs.credentialStore,

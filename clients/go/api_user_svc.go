@@ -210,6 +210,10 @@ Typically called by single-page applications during the initial page load.
 While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,
 this endpoint returns additional data, including the full user object and associated organizations.
 
+ReadSelf intentionally still works after token revocation until the token expires.
+This is to ensure that the user is not notified of token revocation (though some information is
+leaked by the count token functionality @todo).
+
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiReadSelfRequest
 	*/
@@ -2197,6 +2201,10 @@ Retrieves user information based on the authentication token in the request head
 Typically called by single-page applications during the initial page load.
 While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,
 this endpoint returns additional data, including the full user object and associated organizations.
+
+ReadSelf intentionally still works after token revocation until the token expires.
+This is to ensure that the user is not notified of token revocation (though some information is
+leaked by the count token functionality @todo).
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiReadSelfRequest

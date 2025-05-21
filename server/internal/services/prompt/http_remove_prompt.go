@@ -40,7 +40,7 @@ func (p *PromptService) RemovePrompt(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := p.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := p.options.PermissionChecker.HasPermission(
 		r,
 		prompt.PermissionPromptCreate,
 	)

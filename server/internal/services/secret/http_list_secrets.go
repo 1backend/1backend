@@ -41,7 +41,7 @@ func (cs *SecretService) ListSecrets(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := cs.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := cs.options.PermissionChecker.HasPermission(
 		r,
 		secret.PermissionSecretList,
 	)
@@ -66,7 +66,7 @@ func (cs *SecretService) ListSecrets(
 	}
 	defer r.Body.Close()
 
-	isAdmin, err := cs.authorizer.IsAdminFromRequest(cs.publicKey, r)
+	isAdmin, err := cs.options.Authorizer.IsAdminFromRequest(cs.publicKey, r)
 	if err != nil {
 		logger.Error(
 			"Failed to check if user is admin",
@@ -138,7 +138,7 @@ func (cs *SecretService) getSecrets(
 			continue
 		}
 
-		s.Value, err = decrypt(s.Value, cs.encryptionKey)
+		s.Value, err = decrypt(s.Value, cs.options.SecretEncryptionKey)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to decrypt secret")
 		}

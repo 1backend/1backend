@@ -14,84 +14,70 @@ package dynamicservice
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strings"
+
+	"github.com/pkg/errors"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/endpoint"
-	"github.com/1backend/1backend/sdk/go/lock"
-	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
 	"github.com/gorilla/mux"
 
 	dynamictypes "github.com/1backend/1backend/server/internal/services/data/types"
+	"github.com/1backend/1backend/server/internal/universe"
 )
 
 type DataService struct {
+	options    *universe.Options
 	started    bool
 	startupErr error
 
-	clientFactory    client.ClientFactory
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
-	token            string
+	token string
 
-	lock       lock.DistributedLock
-	authorizer auth.Authorizer
-
-	store             datastore.DataStore
-	credentialStore   datastore.DataStore
-	publicKey         string
-	permissionChecker endpoint.PermissionChecker
+	store           datastore.DataStore
+	credentialStore datastore.DataStore
+	publicKey       string
 }
 
 func NewDataService(
-	clientFactory client.ClientFactory,
-	lock lock.DistributedLock,
-	authorizer auth.Authorizer,
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
+	options *universe.Options,
 ) (*DataService, error) {
 
 	service := &DataService{
-		clientFactory:    clientFactory,
-		datastoreFactory: datastoreFactory,
-		authorizer:       authorizer,
-		lock:             lock,
-		permissionChecker: endpoint.NewPermissionChecker(
-			clientFactory,
-			authorizer,
-		),
+		options: options,
 	}
 
 	return service, nil
 }
 
 func (ds *DataService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/data-svc/object", middlewares.DefaultApplicator(service.Lazy(ds, func(w http.ResponseWriter, r *http.Request) {
+	appl := ds.options.Middlewares
+
+	router.HandleFunc("/data-svc/object", appl(service.Lazy(ds, func(w http.ResponseWriter, r *http.Request) {
 		ds.Create(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/data-svc/objects/update", middlewares.DefaultApplicator(service.Lazy(ds, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/data-svc/objects/update", appl(service.Lazy(ds, func(w http.ResponseWriter, r *http.Request) {
 		ds.UpdateObjects(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/data-svc/objects/delete", middlewares.DefaultApplicator(service.Lazy(ds, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/data-svc/objects/delete", appl(service.Lazy(ds, func(w http.ResponseWriter, r *http.Request) {
 		ds.DeleteObjects(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/data-svc/objects", middlewares.DefaultApplicator(service.Lazy(ds, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/data-svc/objects", appl(service.Lazy(ds, func(w http.ResponseWriter, r *http.Request) {
 		ds.Query(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/data-svc/object/{objectId}", middlewares.DefaultApplicator(service.Lazy(ds, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/data-svc/object/{objectId}", appl(service.Lazy(ds, func(w http.ResponseWriter, r *http.Request) {
 		ds.Upsert(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
@@ -112,13 +98,13 @@ func (cs *DataService) LazyStart() error {
 }
 
 func (g *DataService) start() error {
-	store, err := g.datastoreFactory("dataSvcObjects", &dynamictypes.Object{})
+	store, err := g.options.DataStoreFactory.Create("dataSvcObjects", &dynamictypes.Object{})
 	if err != nil {
 		return err
 	}
 	g.store = store
 
-	credentialStore, err := g.datastoreFactory(
+	credentialStore, err := g.options.DataStoreFactory.Create(
 		"dataSvcCredentials",
 		&auth.Credential{},
 	)
@@ -128,10 +114,10 @@ func (g *DataService) start() error {
 	g.credentialStore = credentialStore
 
 	ctx := context.Background()
-	g.lock.Acquire(ctx, "data-svc-start")
-	defer g.lock.Release(ctx, "data-svc-start")
+	g.options.Lock.Acquire(ctx, "data-svc-start")
+	defer g.options.Lock.Release(ctx, "data-svc-start")
 
-	pk, _, err := g.clientFactory.Client(client.WithToken(g.token)).
+	pk, _, err := g.options.ClientFactory.Client(client.WithToken(g.token)).
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	if err != nil {
@@ -140,7 +126,7 @@ func (g *DataService) start() error {
 	g.publicKey = pk.PublicKey
 
 	token, err := boot.RegisterServiceAccount(
-		g.clientFactory.Client().UserSvcAPI,
+		g.options.ClientFactory.Client().UserSvcAPI,
 		"data-svc",
 		"Data Svc",
 		g.credentialStore,

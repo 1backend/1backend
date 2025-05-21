@@ -196,7 +196,7 @@ func (s *UserService) register(
 
 func (s *UserService) hashPassword(password string) (string, error) {
 	cost := bcrypt.DefaultCost
-	if s.isTest {
+	if s.options.Test {
 		cost = bcrypt.MinCost
 	}
 

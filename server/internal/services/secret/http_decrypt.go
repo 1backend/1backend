@@ -39,7 +39,7 @@ func (cs *SecretService) Decrypt(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	isAuthRsp, statusCode, err := cs.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := cs.options.PermissionChecker.HasPermission(
 		r,
 		secret.PermissionSecretSave,
 	)
@@ -64,7 +64,7 @@ func (cs *SecretService) Decrypt(
 	}
 	defer r.Body.Close()
 
-	decryptedValue, err := decrypt(req.Value, cs.encryptionKey)
+	decryptedValue, err := decrypt(req.Value, cs.options.SecretEncryptionKey)
 	if err != nil {
 		logger.Error(
 			"Failed to decrypt value",

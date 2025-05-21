@@ -44,7 +44,7 @@ func (cs *ConfigService) Save(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := cs.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := cs.options.PermissionChecker.HasPermission(
 		r,
 		config.PermissionConfigEdit,
 	)

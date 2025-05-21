@@ -1,11 +1,11 @@
-package registryservice_test
+package registryservice
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
-	registryservice "github.com/1backend/1backend/server/internal/services/registry"
+	"github.com/1backend/1backend/server/internal/universe"
 )
 
 // output for
@@ -16,7 +16,11 @@ NVIDIA GeForce RTX 3090, 52, 0, 24576, 2600, 26.85, 350.00, 535.183.01, 00000000
 `
 
 func TestNvidiaSmiOutput(t *testing.T) {
-	ns := registryservice.RegistryService{URL: "testhost:11337"}
+	ns := RegistryService{
+		options: &universe.Options{
+			Url: "testhost:11337",
+		},
+	}
 
 	gpus, err := ns.ParseNvidiaSmiOutput(nvidiaSmiOutput)
 	require.NoError(t, err)
@@ -59,7 +63,11 @@ some more lines
 `
 
 func TestNvidiaSmiQueryOutput(t *testing.T) {
-	ns := registryservice.RegistryService{URL: "testhost:11337"}
+	ns := RegistryService{
+		options: &universe.Options{
+			Url: "testhost:11337",
+		},
+	}
 
 	cudaVersion, err := ns.ParseNvidiaSmiQueryOutput(nvidiaSmiQueryOutput)
 	require.NoError(t, err)

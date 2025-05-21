@@ -44,7 +44,7 @@ func (dm *ContainerService) ImagePullable(
 	req *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := dm.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := dm.options.PermissionChecker.HasPermission(
 		req,
 		container.PermissionContainerView,
 	)

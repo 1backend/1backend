@@ -32,7 +32,7 @@ func (rs *RegistryService) RegisterInstance(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := rs.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := rs.options.PermissionChecker.HasPermission(
 		r,
 		registry.PermissionInstanceEdit,
 	)

@@ -23,6 +23,7 @@ var _ MappedNullable = &UserSvcHasPermissionResponse{}
 // UserSvcHasPermissionResponse struct for UserSvcHasPermissionResponse
 type UserSvcHasPermissionResponse struct {
 	Authorized bool `json:"authorized"`
+	Until string `json:"until"`
 	User UserSvcUser `json:"user"`
 }
 
@@ -32,9 +33,10 @@ type _UserSvcHasPermissionResponse UserSvcHasPermissionResponse
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcHasPermissionResponse(authorized bool, user UserSvcUser) *UserSvcHasPermissionResponse {
+func NewUserSvcHasPermissionResponse(authorized bool, until string, user UserSvcUser) *UserSvcHasPermissionResponse {
 	this := UserSvcHasPermissionResponse{}
 	this.Authorized = authorized
+	this.Until = until
 	this.User = user
 	return &this
 }
@@ -69,6 +71,30 @@ func (o *UserSvcHasPermissionResponse) GetAuthorizedOk() (*bool, bool) {
 // SetAuthorized sets field value
 func (o *UserSvcHasPermissionResponse) SetAuthorized(v bool) {
 	o.Authorized = v
+}
+
+// GetUntil returns the Until field value
+func (o *UserSvcHasPermissionResponse) GetUntil() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Until
+}
+
+// GetUntilOk returns a tuple with the Until field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcHasPermissionResponse) GetUntilOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Until, true
+}
+
+// SetUntil sets field value
+func (o *UserSvcHasPermissionResponse) SetUntil(v string) {
+	o.Until = v
 }
 
 // GetUser returns the User field value
@@ -106,6 +132,7 @@ func (o UserSvcHasPermissionResponse) MarshalJSON() ([]byte, error) {
 func (o UserSvcHasPermissionResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["authorized"] = o.Authorized
+	toSerialize["until"] = o.Until
 	toSerialize["user"] = o.User
 	return toSerialize, nil
 }
@@ -116,6 +143,7 @@ func (o *UserSvcHasPermissionResponse) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"authorized",
+		"until",
 		"user",
 	}
 

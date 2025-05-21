@@ -45,7 +45,7 @@ func (g *DataService) Upsert(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := g.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := g.options.PermissionChecker.HasPermission(
 		r,
 		data.PermissionObjectCreate,
 	)
@@ -86,7 +86,7 @@ func (g *DataService) Upsert(
 		}
 	}
 
-	claims, err := g.authorizer.ParseJWTFromRequest(g.publicKey, r)
+	claims, err := g.options.Authorizer.ParseJWTFromRequest(g.publicKey, r)
 	if err != nil {
 		logger.Error(
 			"Error parsing JWT",

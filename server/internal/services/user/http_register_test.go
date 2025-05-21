@@ -11,6 +11,7 @@ import (
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/server/internal/di"
 	userservice "github.com/1backend/1backend/server/internal/services/user"
+	"github.com/1backend/1backend/server/internal/universe"
 )
 
 func TestRegister(t *testing.T) {
@@ -18,7 +19,7 @@ func TestRegister(t *testing.T) {
 	server := httptest.NewServer(hs)
 	defer server.Close()
 
-	options := &di.Options{
+	options := &universe.Options{
 		Test: true,
 		Url:  server.URL,
 	}
@@ -101,7 +102,7 @@ func TestRegistration(t *testing.T) {
 	server := httptest.NewServer(hs)
 	defer server.Close()
 
-	options := &di.Options{
+	options := &universe.Options{
 		Test: true,
 		Url:  server.URL,
 	}

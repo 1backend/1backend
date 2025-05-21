@@ -48,7 +48,7 @@ func (a *ChatService) SaveThread(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := a.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := a.options.PermissionChecker.HasPermission(
 		r,
 		chat.PermissionThreadEdit,
 	)
@@ -161,7 +161,7 @@ func (a *ChatService) addThread(
 	js, _ := json.Marshal(ev)
 	json.Unmarshal(js, &m)
 
-	_, err = a.clientFactory.Client(client.WithToken(a.token)).
+	_, err = a.options.ClientFactory.Client(client.WithToken(a.token)).
 		FirehoseSvcAPI.PublishEvent(context.Background()).
 		Event(openapi.FirehoseSvcEventPublishRequest{
 			Event: &openapi.FirehoseSvcEvent{

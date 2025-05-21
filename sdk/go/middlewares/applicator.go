@@ -9,9 +9,11 @@ package middlewares
 
 import (
 	"net/http"
+
+	"github.com/1backend/1backend/sdk/go/endpoint"
 )
 
-func Applicator(
+func applicator(
 	mws []Middleware,
 ) func(http.HandlerFunc) http.HandlerFunc {
 	return func(h http.HandlerFunc) http.HandlerFunc {
@@ -23,11 +25,17 @@ func Applicator(
 	}
 }
 
-var DefaultMiddlewares = []Middleware{
-	ThrottledLogger,
-	Recover,
-	CORS,
-	GzipDecodeMiddleware,
-}
+func Applicator(
+	tr endpoint.TokenRefresher,
+	autorefreshOff bool,
+) func(http.HandlerFunc) http.HandlerFunc {
+	middlewares := []Middleware{
+		TokenRefreshMiddleware(tr, autorefreshOff),
+		ThrottledLogger,
+		Recover,
+		CORS,
+		GzipDecodeMiddleware,
+	}
 
-var DefaultApplicator = Applicator(DefaultMiddlewares)
+	return applicator(middlewares)
+}

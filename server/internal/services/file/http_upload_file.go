@@ -37,7 +37,7 @@ func (fs *FileService) UploadFile(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	isAuthRsp, statusCode, err := fs.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := fs.options.PermissionChecker.HasPermission(
 		r,
 		file.PermissionUploadCreate,
 	)

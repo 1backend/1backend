@@ -29,7 +29,7 @@ import (
 func (ms *ModelService) status(
 	modelId string,
 ) (*modeltypes.ModelStatus, error) {
-	hostRsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
+	hostRsp, _, err := ms.options.ClientFactory.Client(client.WithToken(ms.token)).
 		ContainerSvcAPI.GetHost(context.Background()).
 		Execute()
 	if err != nil {
@@ -38,14 +38,14 @@ func (ms *ModelService) status(
 
 	dockerHost := hostRsp.Host
 
-	if ms.llmHost != "" {
-		dockerHost = ms.llmHost
+	if ms.options.LLMHost != "" {
+		dockerHost = ms.options.LLMHost
 	}
 
 	modelAddress := fmt.Sprintf("%v:%v", dockerHost, hostPortNum)
 
 	if modelId == "" {
-		rsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
+		rsp, _, err := ms.options.ClientFactory.Client(client.WithToken(ms.token)).
 			ConfigSvcAPI.GetConfig(context.Background()).
 			Execute()
 		if err != nil {
@@ -72,7 +72,7 @@ func (ms *ModelService) status(
 	model := modelI.(*modeltypes.Model)
 
 	for _, asset := range model.Assets {
-		rsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
+		rsp, _, err := ms.options.ClientFactory.Client(client.WithToken(ms.token)).
 			FileSvcAPI.GetDownload(context.Background(), asset.Url).
 			Execute()
 		if err != nil {
@@ -107,7 +107,7 @@ func (ms *ModelService) status(
 
 	isRunning := false
 
-	hashRsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
+	hashRsp, _, err := ms.options.ClientFactory.Client(client.WithToken(ms.token)).
 		ContainerSvcAPI.ContainerIsRunning(context.Background()).
 		Hash(hash).
 		Execute()

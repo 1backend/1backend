@@ -71,7 +71,7 @@ func (cs *ProxyService) route(w http.ResponseWriter, r *http.Request) (int, erro
 
 	serviceSlug := getServiceSlug(r)
 
-	rsp, _, err := cs.clientFactory.Client(client.WithToken(cs.token)).
+	rsp, _, err := cs.options.ClientFactory.Client(client.WithToken(cs.token)).
 		RegistrySvcAPI.ListInstances(context.Background()).
 		Slug(serviceSlug).
 		Execute()

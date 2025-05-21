@@ -23,6 +23,8 @@ import (
 	"testing"
 	"time"
 
+	univ "github.com/1backend/1backend/server/internal/universe"
+
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
@@ -55,7 +57,7 @@ func TestDownloadFile(t *testing.T) {
 	server := httptest.NewServer(hs)
 	defer server.Close()
 
-	options := &di.Options{
+	options := &univ.Options{
 		Test: true,
 		Url:  server.URL,
 	}
@@ -158,7 +160,7 @@ func TestDownloadFileWithPartFile(t *testing.T) {
 	server := httptest.NewServer(hs)
 	defer server.Close()
 
-	options := &di.Options{
+	options := &univ.Options{
 		Test: true,
 		Url:  server.URL,
 	}
@@ -247,7 +249,7 @@ func TestDownloadFileWithFullFile(t *testing.T) {
 	server := httptest.NewServer(hs)
 	defer server.Close()
 
-	options := &di.Options{
+	options := &univ.Options{
 		Test: true,
 		Url:  server.URL,
 	}
