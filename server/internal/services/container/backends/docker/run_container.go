@@ -65,7 +65,7 @@ func (d *DockerBackend) RunContainer(
 		req.Keeps,
 	)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error getting additional envs and host binds")
 	}
 
 	for _, env := range req.Envs {
@@ -231,7 +231,7 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 				FileSvcAPI.ServeDownload(context.Background(), asset.Url).
 				Execute()
 			if err != nil {
-				return nil, nil, err
+				return nil, nil, errors.Wrap(err, "failed to download asset")
 			}
 			defer rspFile.Close()
 
@@ -270,7 +270,7 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 		if isRunningInDocker() {
 			currentContainerId, err := getContainerID()
 			if err != nil {
-				return nil, nil, err
+				return nil, nil, errors.Wrap(err, "failed to get container ID")
 			}
 
 			mountedVolume, err := d.getMountedVolume(
@@ -278,7 +278,7 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 				"/root/.1backend",
 			)
 			if err != nil {
-				return nil, nil, err
+				return nil, nil, errors.Wrap(err, "failed to get mounted volume")
 			}
 
 			volumeName = mountedVolume
@@ -289,7 +289,7 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 				ConfigSvcAPI.GetConfig(context.Background()).
 				Execute()
 			if err != nil {
-				return nil, nil, err
+				return nil, nil, errors.Wrap(err, "failed to get config")
 			}
 
 			configFolderPathI := dipper.Get(getConfigResponse.Config.Data, "$.config-svc.configFolderPath")

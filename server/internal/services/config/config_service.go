@@ -25,8 +25,6 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/endpoint"
-	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/service"
 	types "github.com/1backend/1backend/server/internal/services/config/types"
 	"github.com/1backend/1backend/server/internal/universe"
@@ -37,25 +35,15 @@ type ConfigService struct {
 	started    bool
 	startupErr error
 
-	clientFactory client.ClientFactory
-	token         string
-
-	lock lock.DistributedLock
+	token string
 
 	credentialStore datastore.DataStore
 	configStore     datastore.DataStore
 
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
-
 	configMutex sync.Mutex
 	configs     map[string]map[string]any
 
-	publicKey  string
-	authorizer auth.Authorizer
-	homeDir    string
-
-	permissionChecker endpoint.PermissionChecker
-	tokenRefresher    endpoint.TokenRefresher
+	publicKey string
 }
 
 func NewConfigService(
@@ -63,9 +51,8 @@ func NewConfigService(
 ) (*ConfigService, error) {
 
 	cs := &ConfigService{
-		options:    options,
-		configs:    map[string]map[string]any{},
-		authorizer: options.Authorizer,
+		options: options,
+		configs: map[string]map[string]any{},
 	}
 
 	return cs, nil
@@ -100,7 +87,7 @@ func (cs *ConfigService) LazyStart() error {
 }
 
 func (cs *ConfigService) start() error {
-	if cs.datastoreFactory == nil {
+	if cs.options.DataStoreFactory == nil {
 		return errors.New("no datastore factory")
 	}
 
@@ -113,7 +100,7 @@ func (cs *ConfigService) start() error {
 	}
 	cs.credentialStore = credentialStore
 
-	pk, _, err := cs.clientFactory.Client(client.WithToken(cs.token)).
+	pk, _, err := cs.options.ClientFactory.Client(client.WithToken(cs.token)).
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	if err != nil {
@@ -132,10 +119,10 @@ func (cs *ConfigService) start() error {
 
 	ctx := context.Background()
 
-	cs.lock.Acquire(ctx, "config-svc-start")
-	defer cs.lock.Release(ctx, "config-svc-start")
+	cs.options.Lock.Acquire(ctx, "config-svc-start")
+	defer cs.options.Lock.Release(ctx, "config-svc-start")
 
-	client := cs.clientFactory.Client()
+	client := cs.options.ClientFactory.Client()
 
 	token, err := boot.RegisterServiceAccount(
 		client.UserSvcAPI,

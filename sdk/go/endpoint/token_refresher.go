@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/dgraph-io/ristretto"
 	jwtlib "github.com/golang-jwt/jwt/v5"
 	"github.com/pkg/errors"
@@ -72,14 +73,14 @@ func (tr *tokenRefresher) getUserServicePublicKey() (string, error) {
 }
 
 func (tr *tokenRefresher) EnsureValidToken(request *http.Request) (string, *auth.Claims, error) {
+	jwt := strings.TrimSpace(strings.TrimPrefix(request.Header.Get("Authorization"), "Bearer"))
+	if jwt == "" {
+		return "", nil, nil
+	}
+
 	now := tr.currentTime
 	if now.IsZero() {
 		now = time.Now()
-	}
-
-	jwt := strings.TrimPrefix(request.Header.Get("Authorization"), "Bearer ")
-	if jwt == "" {
-		return "", nil, nil
 	}
 
 	publicKey, err := tr.getUserServicePublicKey()
@@ -94,6 +95,7 @@ func (tr *tokenRefresher) EnsureValidToken(request *http.Request) (string, *auth
 		if strings.Contains(err.Error(), "token is expired") {
 			isExpired = true
 		} else {
+			spew.Dump("errored", request.Header.Get("Authorization"))
 			return "", nil, errors.Wrap(err, "failed to parse JWT")
 		}
 	}

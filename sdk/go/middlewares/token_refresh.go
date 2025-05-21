@@ -8,9 +8,11 @@
 package middlewares
 
 import (
+	"log/slog"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/logger"
 )
 
 // TokenRefreshMiddleware ensures the JWT token is valid.
@@ -26,6 +28,9 @@ func TokenRefreshMiddleware(tr endpoint.TokenRefresher, autorefreshOff bool) fun
 				}
 				_, _, err := tr.EnsureValidToken(r)
 				if err != nil {
+					logger.Error("Token refresh middleware error",
+						slog.Any("error", err),
+					)
 					http.Error(w, "Unauthorized: "+err.Error(), http.StatusUnauthorized)
 					return
 				}

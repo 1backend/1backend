@@ -66,7 +66,7 @@ func (cs *ConfigService) Save(
 	}
 	defer r.Body.Close()
 
-	isAdmin, err := cs.authorizer.IsAdminFromRequest(cs.publicKey, r)
+	isAdmin, err := cs.options.Authorizer.IsAdminFromRequest(cs.publicKey, r)
 	if err != nil {
 		logger.Error("Failed to check admin status", slog.Any("error", err))
 		endpoint.InternalServerError(w)
@@ -123,7 +123,7 @@ func (cs *ConfigService) saveConfig(isAdmin bool, callerSlug string, newConfig t
 	}
 
 	ev := types.EventConfigUpdate{}
-	_, err = cs.clientFactory.Client(client.WithToken(cs.token)).
+	_, err = cs.options.ClientFactory.Client(client.WithToken(cs.token)).
 		FirehoseSvcAPI.PublishEvent(context.Background()).
 		Event(openapi.FirehoseSvcEventPublishRequest{
 			Event: &openapi.FirehoseSvcEvent{
