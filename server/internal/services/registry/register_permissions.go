@@ -33,7 +33,7 @@ func app(permSlices ...[]string) []string {
 
 func (ns *RegistryService) registerPermits() error {
 	ctx := context.Background()
-	userSvc := ns.clientFactory.Client(client.WithToken(ns.token)).UserSvcAPI
+	userSvc := ns.options.ClientFactory.Client(client.WithToken(ns.token)).UserSvcAPI
 
 	req := openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{

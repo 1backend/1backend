@@ -50,7 +50,7 @@ func (ns *DeployService) loop(triggerOnly bool) {
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 
-	if !ns.triggerOnly {
+	if !ns.options.Test {
 		go func() {
 			ns.triggerChan <- struct{}{}
 		}()
@@ -87,15 +87,15 @@ func (ns *DeployService) runCycle() {
 func (ns *DeployService) cycle() error {
 	ctx := context.Background()
 
-	ns.lock.Acquire(ctx, "deploy-svc-deploy")
-	defer ns.lock.Release(ctx, "deploy-svc-deploy")
+	ns.options.Lock.Acquire(ctx, "deploy-svc-deploy")
+	defer ns.options.Lock.Release(ctx, "deploy-svc-deploy")
 
 	token, err := ns.getToken()
 	if err != nil {
 		return errors.Wrap(err, "failed to get token")
 	}
 
-	registry := ns.clientFactory.Client(client.WithToken(token)).RegistrySvcAPI
+	registry := ns.options.ClientFactory.Client(client.WithToken(token)).RegistrySvcAPI
 
 	deploymentIs, err := ns.deploymentStore.Query().Find()
 	if err != nil {
@@ -243,7 +243,7 @@ func (ns *DeployService) executeKillCommand(
 		return errors.Wrap(err, "failed to get token")
 	}
 
-	client := ns.clientFactory.Client(
+	client := ns.options.ClientFactory.Client(
 		client.WithAddress(command.NodeUrl),
 		client.WithToken(token),
 	)
@@ -275,7 +275,7 @@ func (ns *DeployService) executeStartCommand(
 		return errors.Wrap(err, "failed to get token")
 	}
 
-	client := ns.clientFactory.Client(
+	client := ns.options.ClientFactory.Client(
 		client.WithAddress(command.NodeUrl),
 		client.WithToken(token),
 	)

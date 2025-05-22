@@ -145,7 +145,7 @@ func (fs *FileService) serveRemote(
 		return
 	}
 
-	nodesRsp, _, err := fs.clientFactory.
+	nodesRsp, _, err := fs.options.ClientFactory.
 		Client(client.WithToken(token)).
 		RegistrySvcAPI.ListNodes(r.Context()).
 		Body(
@@ -168,7 +168,7 @@ func (fs *FileService) serveRemote(
 	node := nodes[0]
 
 	// todo it would be probably better to stream this ourselves here but for now it will do
-	file, fileHttpRsp, err := fs.clientFactory.
+	file, fileHttpRsp, err := fs.options.ClientFactory.
 		Client(client.WithAddress(node.Url), client.WithToken(token)).
 		FileSvcAPI.
 		ServeUpload(r.Context(), uploads[0].FileId).
@@ -266,7 +266,7 @@ func (fs *FileService) getNodeId(ctx context.Context) error {
 		return errors.Wrap(err, "cannot get token")
 	}
 
-	nodeRsp, _, err := fs.clientFactory.
+	nodeRsp, _, err := fs.options.ClientFactory.
 		Client(client.WithToken(token)).
 		RegistrySvcAPI.SelfNode(ctx).
 		Execute()

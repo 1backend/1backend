@@ -25,16 +25,14 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/endpoint"
-	"github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/logger"
-	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 
 	"github.com/1backend/1backend/server/internal/services/container/backends"
 	container "github.com/1backend/1backend/server/internal/services/container/types"
+	"github.com/1backend/1backend/server/internal/universe"
 	dockerclient "github.com/docker/docker/client"
 
 	dockerbackend "github.com/1backend/1backend/server/internal/services/container/backends/docker"
@@ -42,11 +40,9 @@ import (
 )
 
 type ContainerService struct {
-	clientFactory    client.ClientFactory
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
-	token            string
+	options *universe.Options
 
-	lock lock.DistributedLock
+	token string
 
 	backend backends.ContainerBackend
 
@@ -57,91 +53,76 @@ type ContainerService struct {
 	selfNode      *openapi.RegistrySvcNode
 	selfNodeMutex sync.Mutex
 
-	volumeName           string
 	containerLoopTrigger chan bool
-
-	permissionChecker endpoint.PermissionChecker
 }
 
 func NewContainerService(
-	volumeName string,
-	clientFactory client.ClientFactory,
-	lock lock.DistributedLock,
-	datastoreFactory func(
-		tableName string,
-		instance any,
-	) (datastore.DataStore, error),
-	authorizer auth.Authorizer,
+	options *universe.Options,
 ) (*ContainerService, error) {
 
 	service := &ContainerService{
-		clientFactory:    clientFactory,
-		lock:             lock,
-		datastoreFactory: datastoreFactory,
-		volumeName:       volumeName,
-		permissionChecker: endpoint.NewPermissionChecker(
-			clientFactory,
-			authorizer,
-		),
+		options: options,
 	}
 
 	return service, nil
 }
 
 func (cs *ContainerService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/container-svc/daemon/info", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	appl := cs.options.Middlewares
+
+	router.HandleFunc("/container-svc/daemon/info", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.DaemonInfo(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/container-svc/image/{imageName}/pullable", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/image/{imageName}/pullable", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.ImagePullable(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/container-svc/host", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/host", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.Host(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/container-svc/logs", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/logs", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.ListLogs(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/container-svc/containers", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/containers", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.ListContainers(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/container-svc/container", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/container", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.RunContainer(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/container-svc/image", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/image", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.BuildImage(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/container-svc/container/stop", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/container/stop", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.StopContainer(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/container-svc/container/is-running", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/container/is-running", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.ContainerIsRunning(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/container-svc/container/summary", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/container-svc/container/summary", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.Summary(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 }
 
 func (cs *ContainerService) Start() error {
-	credentialStore, err := cs.datastoreFactory(
+	credentialStore, err := cs.options.DataStoreFactory.Create(
 		"containerSvcCredentials",
 		&auth.Credential{},
 	)
@@ -150,7 +131,7 @@ func (cs *ContainerService) Start() error {
 	}
 	cs.credentialStore = credentialStore
 
-	containerStore, err := cs.datastoreFactory(
+	containerStore, err := cs.options.DataStoreFactory.Create(
 		"containerSvcContainers",
 		&container.Container{},
 	)
@@ -159,7 +140,7 @@ func (cs *ContainerService) Start() error {
 	}
 	cs.containerStore = containerStore
 
-	logStore, err := cs.datastoreFactory(
+	logStore, err := cs.options.DataStoreFactory.Create(
 		"containerSvcLogs",
 		&container.Log{},
 	)
@@ -169,8 +150,8 @@ func (cs *ContainerService) Start() error {
 	cs.logStore = logStore
 
 	backend, err := dockerbackend.NewDockerBackend(
-		cs.volumeName,
-		cs.clientFactory,
+		cs.options.VolumeName,
+		cs.options.ClientFactory,
 		cs.token,
 	)
 	if err != nil {
@@ -200,11 +181,11 @@ func (cs *ContainerService) getToken() (string, error) {
 	}
 
 	ctx := context.Background()
-	cs.lock.Acquire(ctx, "container-svc-start")
-	defer cs.lock.Release(ctx, "container-svc-start")
+	cs.options.Lock.Acquire(ctx, "container-svc-start")
+	defer cs.options.Lock.Release(ctx, "container-svc-start")
 
 	token, err := boot.RegisterServiceAccount(
-		cs.clientFactory.Client().UserSvcAPI,
+		cs.options.ClientFactory.Client().UserSvcAPI,
 		"container-svc",
 		"Container Svc",
 		cs.credentialStore,
@@ -336,7 +317,7 @@ func (ms *ContainerService) getNode() (*openapi.RegistrySvcNode, error) {
 		return ms.selfNode, nil
 	}
 
-	rsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
+	rsp, _, err := ms.options.ClientFactory.Client(client.WithToken(ms.token)).
 		RegistrySvcAPI.SelfNode(context.Background()).
 		Execute()
 

@@ -41,7 +41,7 @@ func (a *ChatService) DeleteMessage(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	isAuthResp, statusCode, err := a.permissionChecker.HasPermission(
+	isAuthResp, statusCode, err := a.options.PermissionChecker.HasPermission(
 		r,
 		chat.PermissionMessageDelete,
 	)

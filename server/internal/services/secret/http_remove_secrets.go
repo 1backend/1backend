@@ -42,7 +42,7 @@ func (cs *SecretService) RemoveSecrets(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := cs.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := cs.options.PermissionChecker.HasPermission(
 		r,
 		secret.PermissionSecretRemove,
 	)
@@ -64,7 +64,7 @@ func (cs *SecretService) RemoveSecrets(
 	}
 	defer r.Body.Close()
 
-	isAdmin, err := cs.authorizer.IsAdminFromRequest(cs.publicKey, r)
+	isAdmin, err := cs.options.Authorizer.IsAdminFromRequest(cs.publicKey, r)
 	if err != nil {
 		logger.Error(
 			"Failed to check if user is admin",
@@ -104,8 +104,8 @@ func (cs *SecretService) removeSecrets(
 	isAdmin bool,
 	userSlug string,
 ) error {
-	cs.lock.Acquire(ctx, "secret-svc-save")
-	defer cs.lock.Release(ctx, "secret-svc-save")
+	cs.options.Lock.Acquire(ctx, "secret-svc-save")
+	defer cs.options.Lock.Release(ctx, "secret-svc-save")
 
 	keys := []any{}
 	for _, key := range req.Keys {

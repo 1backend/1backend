@@ -41,7 +41,7 @@ func (ds *FileService) Download(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	isAuthRsp, statusCode, err := ds.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := ds.options.PermissionChecker.HasPermission(
 		r,
 		file.PermissionDownloadCreate,
 	)

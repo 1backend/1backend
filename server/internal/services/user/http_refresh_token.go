@@ -43,7 +43,7 @@ import (
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Router /user-svc/refresh-token [post]
 func (s *UserService) RefreshToken(w http.ResponseWriter, r *http.Request) {
-	stringToken, exists := s.authorizer.TokenFromRequest(r)
+	stringToken, exists := s.options.Authorizer.TokenFromRequest(r)
 	if !exists {
 		endpoint.Unauthorized(w)
 		return
@@ -202,7 +202,7 @@ func (s *UserService) refreshToken(
 		cacheKey,
 		token,
 		1,
-		s.tokenExpiration,
+		s.options.TokenExpiration,
 	)
 
 	return token, nil

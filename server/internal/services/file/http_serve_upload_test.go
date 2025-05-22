@@ -14,6 +14,7 @@ import (
 
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
+	"github.com/1backend/1backend/server/internal/universe"
 
 	"github.com/stretchr/testify/require"
 )
@@ -30,7 +31,7 @@ func TestServeUploadProxy(t *testing.T) {
 
 	dbprefix := sdk.Id("node_id")
 
-	opt1 := &di.Options{
+	opt1 := &universe.Options{
 		Test:     true,
 		NodeId:   "node1",
 		Db:       "postgres",
@@ -59,7 +60,7 @@ func TestServeUploadProxy(t *testing.T) {
 	server2 := httptest.NewServer(hs2)
 	defer server2.Close()
 
-	opt2 := &di.Options{
+	opt2 := &universe.Options{
 		Test:     true,
 		NodeId:   "node2",
 		Db:       "postgres",

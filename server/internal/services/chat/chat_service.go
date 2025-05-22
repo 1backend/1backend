@@ -18,86 +18,72 @@ import (
 
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/endpoint"
-	"github.com/1backend/1backend/sdk/go/lock"
-	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
 	"github.com/gorilla/mux"
 
 	chattypes "github.com/1backend/1backend/server/internal/services/chat/types"
+	"github.com/1backend/1backend/server/internal/universe"
 )
 
 type ChatService struct {
+	options *universe.Options
+
 	started    bool
 	startupErr error
 
-	clientFactory    client.ClientFactory
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
-	token            string
-
-	lock lock.DistributedLock
+	token string
 
 	messagesStore   datastore.DataStore
 	threadsStore    datastore.DataStore
 	credentialStore datastore.DataStore
-
-	permissionChecker endpoint.PermissionChecker
 }
 
 func NewChatService(
-	clientFactory client.ClientFactory,
-	lock lock.DistributedLock,
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
-	authorizer auth.Authorizer,
+	options *universe.Options,
 ) (*ChatService, error) {
 
 	service := &ChatService{
-		clientFactory:    clientFactory,
-		datastoreFactory: datastoreFactory,
-		lock:             lock,
-		permissionChecker: endpoint.NewPermissionChecker(
-			clientFactory,
-			authorizer,
-		),
+		options: options,
 	}
 
 	return service, nil
 }
 
 func (cs *ChatService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/chat-svc/thread/{threadId}/message", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	appl := cs.options.Middlewares
+
+	router.HandleFunc("/chat-svc/thread/{threadId}/message", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.SaveMessage(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/chat-svc/message/{messageId}", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/chat-svc/message/{messageId}", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.DeleteMessage(w, r)
 	}))).
 		Methods("OPTIONS", "DELETE")
 
-	router.HandleFunc("/chat-svc/messages", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/chat-svc/messages", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.ListMessages(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/chat-svc/thread", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/chat-svc/thread", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.SaveThread(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/chat-svc/thread/{threadId}", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/chat-svc/thread/{threadId}", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.DeleteThread(w, r)
 	}))).
 		Methods("OPTIONS", "DELETE")
 
-	router.HandleFunc("/chat-svc/threads", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/chat-svc/threads", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.ListThreads(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/chat-svc/evens", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/chat-svc/evens", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.Events(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
@@ -118,13 +104,13 @@ func (cs *ChatService) LazyStart() error {
 }
 
 func (cs *ChatService) start() error {
-	threadsStore, err := cs.datastoreFactory("chatSvcThreads", &chattypes.Thread{})
+	threadsStore, err := cs.options.DataStoreFactory.Create("chatSvcThreads", &chattypes.Thread{})
 	if err != nil {
 		return err
 	}
 	cs.threadsStore = threadsStore
 
-	messagesStore, err := cs.datastoreFactory(
+	messagesStore, err := cs.options.DataStoreFactory.Create(
 		"chatSvcMessages",
 		&chattypes.Message{},
 	)
@@ -133,7 +119,7 @@ func (cs *ChatService) start() error {
 	}
 	cs.messagesStore = messagesStore
 
-	credentialStore, err := cs.datastoreFactory(
+	credentialStore, err := cs.options.DataStoreFactory.Create(
 		"chatSvcCredentials",
 		&auth.Credential{},
 	)
@@ -143,11 +129,11 @@ func (cs *ChatService) start() error {
 	cs.credentialStore = credentialStore
 
 	ctx := context.Background()
-	cs.lock.Acquire(ctx, "chat-svc-start")
-	defer cs.lock.Release(ctx, "chat-svc-start")
+	cs.options.Lock.Acquire(ctx, "chat-svc-start")
+	defer cs.options.Lock.Release(ctx, "chat-svc-start")
 
 	token, err := boot.RegisterServiceAccount(
-		cs.clientFactory.Client().UserSvcAPI,
+		cs.options.ClientFactory.Client().UserSvcAPI,
 		"chat-svc",
 		"Chat Svc",
 		cs.credentialStore,

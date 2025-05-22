@@ -14,6 +14,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
+	"github.com/1backend/1backend/server/internal/universe"
 
 	openapi "github.com/1backend/1backend/clients/go"
 )
@@ -23,7 +24,7 @@ func TestOrganization(t *testing.T) {
 	server := httptest.NewServer(hs)
 	defer server.Close()
 
-	options := &di.Options{
+	options := &universe.Options{
 		Test: true,
 		Url:  server.URL,
 	}

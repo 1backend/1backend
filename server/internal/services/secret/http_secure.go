@@ -38,7 +38,7 @@ func (cs *SecretService) Secure(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	isAuthRsp, statusCode, err := cs.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := cs.options.PermissionChecker.HasPermission(
 		r,
 		secret.PermissionSecretSave,
 	)
@@ -52,7 +52,7 @@ func (cs *SecretService) Secure(
 	}
 
 	jsonData, _ := json.Marshal(secret.IsSecureResponse{
-		IsSecure: cs.encryptionKey != "changeMeToSomethingSecureForReal",
+		IsSecure: cs.options.SecretEncryptionKey != "changeMeToSomethingSecureForReal",
 	})
 	_, err = w.Write([]byte(jsonData))
 	if err != nil {

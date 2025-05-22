@@ -19,26 +19,19 @@ import (
 
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/endpoint"
-	"github.com/1backend/1backend/sdk/go/lock"
-	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
 	"github.com/gorilla/mux"
 
-	"github.com/1backend/1backend/server/internal/clients/llamacpp"
 	streammanager "github.com/1backend/1backend/server/internal/services/prompt/stream"
 	prompttypes "github.com/1backend/1backend/server/internal/services/prompt/types"
+	"github.com/1backend/1backend/server/internal/universe"
 )
 
 type PromptService struct {
-	clientFactory    client.ClientFactory
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
-	token            string
+	options *universe.Options
 
-	llamaCppCLient llamacpp.ClientI
-	lock           lock.DistributedLock
+	token string
 
 	streamManager *streammanager.StreamManager
 
@@ -47,61 +40,46 @@ type PromptService struct {
 
 	runMutex sync.Mutex
 	trigger  chan bool
-
-	permissionChecker endpoint.PermissionChecker
 }
 
 func NewPromptService(
-	clientFactory client.ClientFactory,
-	llamaCppClient llamacpp.ClientI,
-	lock lock.DistributedLock,
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
-	authorizer auth.Authorizer,
+	options *universe.Options,
 ) (*PromptService, error) {
-
 	service := &PromptService{
-		clientFactory:    clientFactory,
-		datastoreFactory: datastoreFactory,
-
-		llamaCppCLient: llamaCppClient,
-		lock:           lock,
-
+		options:       options,
 		streamManager: streammanager.NewStreamManager(),
-
-		trigger: make(chan bool, 1),
-		permissionChecker: endpoint.NewPermissionChecker(
-			clientFactory,
-			authorizer,
-		),
+		trigger:       make(chan bool, 1),
 	}
 
 	return service, nil
 }
 
 func (ps *PromptService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/prompt-svc/prompt", middlewares.DefaultApplicator(service.Lazy(ps, func(w http.ResponseWriter, r *http.Request) {
+	appl := ps.options.Middlewares
+
+	router.HandleFunc("/prompt-svc/prompt", appl(service.Lazy(ps, func(w http.ResponseWriter, r *http.Request) {
 		ps.Prompt(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/prompt-svc/prompt/{promptId}", middlewares.DefaultApplicator(service.Lazy(ps, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/prompt-svc/prompt/{promptId}", appl(service.Lazy(ps, func(w http.ResponseWriter, r *http.Request) {
 		ps.RemovePrompt(w, r)
 	}))).
 		Methods("OPTIONS", "DELETE")
 
-	router.HandleFunc("/prompt-svc/prompts/{threadId}/responses/subscribe", middlewares.DefaultApplicator(service.Lazy(ps, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/prompt-svc/prompts/{threadId}/responses/subscribe", appl(service.Lazy(ps, func(w http.ResponseWriter, r *http.Request) {
 		ps.SubscribeToPromptResponses(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/prompt-svc/prompts", middlewares.DefaultApplicator(service.Lazy(ps, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/prompt-svc/prompts", appl(service.Lazy(ps, func(w http.ResponseWriter, r *http.Request) {
 		ps.ListPrompts(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 }
 
 func (cs *PromptService) Start() error {
-	promptsStore, err := cs.datastoreFactory(
+	promptsStore, err := cs.options.DataStoreFactory.Create(
 		"promptSvcPrompts",
 		&prompttypes.Prompt{},
 	)
@@ -110,7 +88,7 @@ func (cs *PromptService) Start() error {
 	}
 	cs.promptsStore = promptsStore
 
-	credentialStore, err := cs.datastoreFactory(
+	credentialStore, err := cs.options.DataStoreFactory.Create(
 		"promptSvcCredentials",
 		&auth.Credential{},
 	)
@@ -162,11 +140,11 @@ func (cs *PromptService) getToken() (string, error) {
 	}
 
 	ctx := context.Background()
-	cs.lock.Acquire(ctx, "prompt-svc-start")
-	defer cs.lock.Release(ctx, "prompt-svc-start")
+	cs.options.Lock.Acquire(ctx, "prompt-svc-start")
+	defer cs.options.Lock.Release(ctx, "prompt-svc-start")
 
 	token, err := boot.RegisterServiceAccount(
-		cs.clientFactory.Client().UserSvcAPI,
+		cs.options.ClientFactory.Client().UserSvcAPI,
 		"prompt-svc",
 		"Prompt Svc",
 		cs.credentialStore,

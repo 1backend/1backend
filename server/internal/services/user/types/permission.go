@@ -7,9 +7,12 @@
  */
 package user_svc
 
+import "time"
+
 type HasPermissionResponse struct {
-	Authorized bool `json:"authorized" binding:"required"`
-	User       User `json:"user" binding:"required"`
+	Authorized bool      `json:"authorized" binding:"required"`
+	Until      time.Time `json:"until" binding:"required"`
+	User       User      `json:"user" binding:"required"`
 }
 
 type ListPermissionsRequest struct {

@@ -31,7 +31,7 @@ func (s *PolicyService) UpsertInstance(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := s.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := s.options.PermissionChecker.HasPermission(
 		r,
 		policy.PermissionInstanceEdit,
 	)

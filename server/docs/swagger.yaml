@@ -2961,10 +2961,13 @@ definitions:
     properties:
       authorized:
         type: boolean
+      until:
+        type: string
       user:
         $ref: '#/definitions/user_svc.User'
     required:
     - authorized
+    - until
     - user
     type: object
   user_svc.ListEnrollsRequest:
@@ -6640,6 +6643,10 @@ paths:
         Typically called by single-page applications during the initial page load.
         While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,
         this endpoint returns additional data, including the full user object and associated organizations.
+
+        ReadSelf intentionally still works after token revocation until the token expires.
+        This is to ensure that the user is not notified of token revocation (though some information is
+        leaked by the count token functionality @todo).
       operationId: readSelf
       parameters:
       - description: Read Self Request

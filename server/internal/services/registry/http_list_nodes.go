@@ -40,7 +40,7 @@ func (ns *RegistryService) ListNodes(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := ns.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := ns.options.PermissionChecker.HasPermission(
 		r,
 		registry.PermissionNodeView,
 	)

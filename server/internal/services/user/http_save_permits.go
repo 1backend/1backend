@@ -21,7 +21,6 @@ import (
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
-	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
@@ -66,7 +65,7 @@ func (s *UserService) SavePermits(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	isAdmin, err := auth.AuthorizerImpl{}.IsAdminFromRequest(s.publicKeyPem, r)
+	isAdmin, err := s.options.Authorizer.IsAdminFromRequest(s.publicKeyPem, r)
 	if err != nil {
 		logger.Error(
 			"Failed to check if user is admin",

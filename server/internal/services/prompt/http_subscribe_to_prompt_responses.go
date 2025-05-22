@@ -43,7 +43,7 @@ func (p *PromptService) SubscribeToPromptResponses(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := p.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := p.options.PermissionChecker.HasPermission(
 		r,
 		prompt.PermissionPromptStream,
 	)

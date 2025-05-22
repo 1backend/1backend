@@ -39,7 +39,7 @@ import (
 // @Security BearerAuth
 // @Router /user-svc/self [put]
 func (s *UserService) SaveSelf(w http.ResponseWriter, r *http.Request) {
-	stringToken, exists := s.authorizer.TokenFromRequest(r)
+	stringToken, exists := s.options.Authorizer.TokenFromRequest(r)
 	if !exists {
 		endpoint.WriteString(w, http.StatusBadRequest, "Token Missing")
 		return

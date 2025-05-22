@@ -30,7 +30,7 @@ func (dm *ContainerService) BuildImage(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := dm.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := dm.options.PermissionChecker.HasPermission(
 		r,
 		container.PermissionImageBuild,
 	)

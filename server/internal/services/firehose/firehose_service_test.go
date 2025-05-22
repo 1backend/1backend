@@ -11,6 +11,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
 	firehose "github.com/1backend/1backend/server/internal/services/firehose/types"
+	"github.com/1backend/1backend/server/internal/universe"
 	"github.com/r3labs/sse"
 	"github.com/stretchr/testify/require"
 )
@@ -24,7 +25,7 @@ func TestFirehoseSubscription(t *testing.T) {
 	server := httptest.NewServer(hs)
 	defer server.Close()
 
-	options := &di.Options{
+	options := &universe.Options{
 		Test: true,
 		Url:  server.URL,
 	}

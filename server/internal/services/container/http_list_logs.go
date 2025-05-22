@@ -43,7 +43,7 @@ func (dm *ContainerService) ListLogs(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := dm.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := dm.options.PermissionChecker.HasPermission(
 		r,
 		container.PermissionContainerCreate,
 	)

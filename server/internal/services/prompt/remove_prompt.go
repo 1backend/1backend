@@ -52,7 +52,7 @@ func (p *PromptService) removePrompt(promptId string) error {
 		return errors.Wrap(err, "failed to get token")
 	}
 
-	_, err = p.clientFactory.Client(client.WithToken(token)).
+	_, err = p.options.ClientFactory.Client(client.WithToken(token)).
 		FirehoseSvcAPI.PublishEvent(context.Background()).
 		Event(openapi.FirehoseSvcEventPublishRequest{
 			Event: &openapi.FirehoseSvcEvent{

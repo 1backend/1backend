@@ -5,7 +5,6 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 	registry "github.com/1backend/1backend/server/internal/services/registry/types"
@@ -40,7 +39,7 @@ func (rs *RegistryService) ListInstances(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := rs.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := rs.options.PermissionChecker.HasPermission(
 		r,
 		registry.PermissionInstanceView,
 	)
@@ -67,7 +66,7 @@ func (rs *RegistryService) ListInstances(
 		return
 	}
 
-	isAdmin, err := auth.AuthorizerImpl{}.IsAdminFromRequest(publicKey, r)
+	isAdmin, err := rs.options.Authorizer.IsAdminFromRequest(publicKey, r)
 	if err != nil {
 		logger.Error(
 			"Error checking if user is admin",

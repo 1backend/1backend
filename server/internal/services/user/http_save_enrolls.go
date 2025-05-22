@@ -80,8 +80,7 @@ func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	authr := auth.AuthorizerImpl{}
-	isAdmin, err := authr.IsAdminFromRequest(s.publicKeyPem, r)
+	isAdmin, err := s.options.Authorizer.IsAdminFromRequest(s.publicKeyPem, r)
 	if err != nil {
 		logger.Error(
 			"Failed to check if user is admin",

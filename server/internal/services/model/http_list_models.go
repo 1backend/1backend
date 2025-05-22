@@ -41,7 +41,7 @@ func (ms *ModelService) ListModels(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := ms.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := ms.options.PermissionChecker.HasPermission(
 		r,
 		model.PermissionModelView,
 	)

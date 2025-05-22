@@ -11,7 +11,6 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/infra"
-	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 
@@ -122,13 +121,7 @@ func (service *MultiService) registerAccount() error {
 }
 
 func (service *MultiService) registerRoutes() {
-	mws := []middlewares.Middleware{
-		middlewares.ThrottledLogger,
-		middlewares.Recover,
-		middlewares.CORS,
-		middlewares.GzipDecodeMiddleware,
-	}
-	appl := applicator(mws)
+	appl := service.Options.Middlewares
 
 	service.Router = mux.NewRouter()
 
@@ -136,18 +129,6 @@ func (service *MultiService) registerRoutes() {
 		service.CountPets(w, r)
 	})).
 		Methods("OPTIONS", "GET")
-}
-
-func applicator(
-	mws []middlewares.Middleware,
-) func(http.HandlerFunc) http.HandlerFunc {
-	return func(h http.HandlerFunc) http.HandlerFunc {
-		for _, middleware := range mws {
-			h = middleware(h)
-		}
-
-		return h
-	}
 }
 
 func newBasicSvcClient(url, token string) *basicclient.APIClient {

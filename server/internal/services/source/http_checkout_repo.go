@@ -37,7 +37,7 @@ import (
 func (s *SourceService) CheckoutRepo(w http.ResponseWriter,
 	r *http.Request) {
 
-	isAuthRsp, statusCode, err := s.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := s.options.PermissionChecker.HasPermission(
 		r,
 		source.PermissionSourceRepoCheckout,
 	)

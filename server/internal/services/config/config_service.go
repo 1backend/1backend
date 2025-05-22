@@ -25,74 +25,48 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/endpoint"
-	"github.com/1backend/1backend/sdk/go/lock"
-	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
 	types "github.com/1backend/1backend/server/internal/services/config/types"
+	"github.com/1backend/1backend/server/internal/universe"
 )
 
 type ConfigService struct {
+	options    *universe.Options
 	started    bool
 	startupErr error
 
-	clientFactory client.ClientFactory
-	token         string
-
-	lock lock.DistributedLock
+	token string
 
 	credentialStore datastore.DataStore
 	configStore     datastore.DataStore
 
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
-
 	configMutex sync.Mutex
 	configs     map[string]map[string]any
 
-	publicKey  string
-	authorizer auth.Authorizer
-	homeDir    string
-
-	permissionChecker endpoint.PermissionChecker
+	publicKey string
 }
 
 func NewConfigService(
-	lock lock.DistributedLock,
-	authorizer auth.Authorizer,
-	homeDir string,
-	clientFactory client.ClientFactory,
+	options *universe.Options,
 ) (*ConfigService, error) {
+
 	cs := &ConfigService{
-		lock:       lock,
-		configs:    map[string]map[string]any{},
-		authorizer: authorizer,
-		homeDir:    homeDir,
+		options: options,
+		configs: map[string]map[string]any{},
 	}
 
 	return cs, nil
 }
 
-func (cs *ConfigService) SetClientFactory(clientFactory client.ClientFactory) {
-	cs.clientFactory = clientFactory
-	cs.permissionChecker = endpoint.NewPermissionChecker(
-		clientFactory,
-		cs.authorizer,
-	)
-}
-
-func (cs *ConfigService) SetDataStoreFactory(
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
-) {
-	cs.datastoreFactory = datastoreFactory
-}
-
 func (cs *ConfigService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/config-svc/config", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	appl := cs.options.Middlewares
+
+	router.HandleFunc("/config-svc/config", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.Get(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/config-svc/config", middlewares.DefaultApplicator(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/config-svc/config", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.Save(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
@@ -113,11 +87,11 @@ func (cs *ConfigService) LazyStart() error {
 }
 
 func (cs *ConfigService) start() error {
-	if cs.datastoreFactory == nil {
+	if cs.options.DataStoreFactory == nil {
 		return errors.New("no datastore factory")
 	}
 
-	credentialStore, err := cs.datastoreFactory(
+	credentialStore, err := cs.options.DataStoreFactory.Create(
 		"configSvcCredentials",
 		&auth.Credential{},
 	)
@@ -126,7 +100,7 @@ func (cs *ConfigService) start() error {
 	}
 	cs.credentialStore = credentialStore
 
-	pk, _, err := cs.clientFactory.Client(client.WithToken(cs.token)).
+	pk, _, err := cs.options.ClientFactory.Client(client.WithToken(cs.token)).
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	if err != nil {
@@ -134,7 +108,7 @@ func (cs *ConfigService) start() error {
 	}
 	cs.publicKey = pk.PublicKey
 
-	configStore, err := cs.datastoreFactory(
+	configStore, err := cs.options.DataStoreFactory.Create(
 		"configSvcConfig",
 		&types.Config{},
 	)
@@ -145,10 +119,10 @@ func (cs *ConfigService) start() error {
 
 	ctx := context.Background()
 
-	cs.lock.Acquire(ctx, "config-svc-start")
-	defer cs.lock.Release(ctx, "config-svc-start")
+	cs.options.Lock.Acquire(ctx, "config-svc-start")
+	defer cs.options.Lock.Release(ctx, "config-svc-start")
 
-	client := cs.clientFactory.Client()
+	client := cs.options.ClientFactory.Client()
 
 	token, err := boot.RegisterServiceAccount(
 		client.UserSvcAPI,

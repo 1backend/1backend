@@ -64,7 +64,7 @@ func (ns *RegistryService) nodeHeartbeat() {
 func (ns *RegistryService) heartbeatCycle() error {
 	nodeId := ns.nodeId
 	if nodeId == "" {
-		nodes, err := ns.nodeStore.Query(datastore.Equals([]string{"url"}, ns.URL)).
+		nodes, err := ns.nodeStore.Query(datastore.Equals([]string{"url"}, ns.options.Url)).
 			Find()
 		if err != nil {
 			return errors.Wrap(err, "Failed to query nodes")
@@ -81,9 +81,9 @@ func (ns *RegistryService) heartbeatCycle() error {
 
 	node := registry.Node{
 		Id:               nodeId,
-		URL:              ns.URL,
-		AvailabilityZone: ns.AvailabilityZone,
-		Region:           ns.Region,
+		URL:              ns.options.Url,
+		AvailabilityZone: ns.options.Az,
+		Region:           ns.options.Region,
 		LastHeartbeat:    time.Now(),
 	}
 
@@ -182,7 +182,7 @@ func (ns *RegistryService) ParseNvidiaSmiOutput(
 		}
 
 		gpu := registry.GPU{
-			Id:               fmt.Sprintf("%v:%v", ns.URL, strconv.Itoa(i)),
+			Id:               fmt.Sprintf("%v:%v", ns.options.Url, strconv.Itoa(i)),
 			IntraNodeId:      i,
 			Name:             record[0],
 			BusId:            record[8],

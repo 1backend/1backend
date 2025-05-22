@@ -59,6 +59,7 @@ func NewDockerBackend(
 
 	return &DockerBackend{
 		client: c,
+		token:  token,
 
 		imagePullMutexes: make(map[string]*sync.Mutex),
 		imagesCache:      make(map[string]bool),

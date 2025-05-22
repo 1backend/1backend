@@ -49,7 +49,7 @@ func (cs *SecretService) SaveSecrets(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	isAuthRsp, statusCode, err := cs.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := cs.options.PermissionChecker.HasPermission(
 		r,
 		secret.PermissionSecretSave,
 	)
@@ -74,7 +74,7 @@ func (cs *SecretService) SaveSecrets(
 	}
 	defer r.Body.Close()
 
-	isAdmin, err := cs.authorizer.IsAdminFromRequest(cs.publicKey, r)
+	isAdmin, err := cs.options.Authorizer.IsAdminFromRequest(cs.publicKey, r)
 	if err != nil {
 		logger.Error(
 			"Failed to check if user is admin",
@@ -114,8 +114,8 @@ func (cs *SecretService) saveSecrets(
 	isAdmin bool,
 	userSlug string,
 ) error {
-	cs.lock.Acquire(ctx, "secret-svc-save")
-	defer cs.lock.Release(ctx, "secret-svc-save")
+	cs.options.Lock.Acquire(ctx, "secret-svc-save")
+	defer cs.options.Lock.Release(ctx, "secret-svc-save")
 
 	for _, s := range ss {
 		if s.Namespace == "" {
@@ -163,7 +163,7 @@ func (cs *SecretService) saveSecrets(
 				}
 			}
 			if !s.Encrypted {
-				s.Value, err = encrypt(s.Value, cs.encryptionKey)
+				s.Value, err = encrypt(s.Value, cs.options.SecretEncryptionKey)
 				if err != nil {
 					return errors.Wrap(err, "failed to encrypt secret")
 				}
@@ -194,7 +194,7 @@ func (cs *SecretService) saveSecrets(
 		}
 
 		if !s.Encrypted {
-			s.Value, err = encrypt(s.Value, cs.encryptionKey)
+			s.Value, err = encrypt(s.Value, cs.options.SecretEncryptionKey)
 			if err != nil {
 				return errors.Wrap(err, "failed to encrypt secret")
 			}
@@ -216,7 +216,7 @@ func (cs *SecretService) saveSecrets(
 
 func (cs SecretService) checkSum(s *secret.Secret) error {
 	if s.Encrypted && s.Checksum != "" {
-		val, err := decrypt(s.Value, cs.encryptionKey)
+		val, err := decrypt(s.Value, cs.options.SecretEncryptionKey)
 		if err != nil {
 			return errors.Wrap(err, "failed to decrypt to compare checksum")
 		}

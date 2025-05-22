@@ -18,46 +18,35 @@ import (
 
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/endpoint"
-	"github.com/1backend/1backend/sdk/go/lock"
-	"github.com/1backend/1backend/sdk/go/middlewares"
 	deploy "github.com/1backend/1backend/server/internal/services/deploy/types"
+	"github.com/1backend/1backend/server/internal/universe"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 )
 
 type DeployService struct {
-	clientFactory client.ClientFactory
-	token         string
-
-	lock lock.DistributedLock
+	options *universe.Options
+	token   string
 
 	credentialStore datastore.DataStore
 	deploymentStore datastore.DataStore
 
-	triggerChan       chan struct{}
-	triggerOnly       bool
-	permissionChecker endpoint.PermissionChecker
+	triggerChan chan struct{}
 }
 
 func NewDeployService(
-	clientFactory client.ClientFactory,
-	lock lock.DistributedLock,
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
-	triggerOnly bool,
-	authorizer auth.Authorizer,
+	options *universe.Options,
 ) (*DeployService, error) {
 
-	credentialStore, err := datastoreFactory(
+	credentialStore, err := options.DataStoreFactory.Create(
 		"deploySvcCredentials",
 		&auth.Credential{},
 	)
 	if err != nil {
 		return nil, err
 	}
-	deploymentStore, err := datastoreFactory(
+	deploymentStore, err := options.DataStoreFactory.Create(
 		"deploySvcDeployments",
 		&deploy.Deployment{},
 	)
@@ -66,43 +55,37 @@ func NewDeployService(
 	}
 
 	service := &DeployService{
-		clientFactory: clientFactory,
-
-		lock:            lock,
+		options:         options,
 		credentialStore: credentialStore,
 		deploymentStore: deploymentStore,
 
 		triggerChan: make(chan struct{}),
-
-		triggerOnly: triggerOnly,
-		permissionChecker: endpoint.NewPermissionChecker(
-			clientFactory,
-			authorizer,
-		),
 	}
 
 	return service, nil
 }
 
 func (ds *DeployService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/deploy-svc/deployment", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	appl := ds.options.Middlewares
+
+	router.HandleFunc("/deploy-svc/deployment", appl(func(w http.ResponseWriter, r *http.Request) {
 		ds.SaveDeployment(w, r)
 	})).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/deploy-svc/deployments", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/deploy-svc/deployments", appl(func(w http.ResponseWriter, r *http.Request) {
 		ds.ListDeployments(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/deploy-svc/deployment", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/deploy-svc/deployment", appl(func(w http.ResponseWriter, r *http.Request) {
 		ds.DeleteDeployment(w, r)
 	})).
 		Methods("OPTIONS", "DELETE")
 }
 
 func (ns *DeployService) Start() error {
-	go ns.loop(ns.triggerOnly)
+	go ns.loop(ns.options.Test)
 
 	return nil
 }
@@ -113,11 +96,11 @@ func (cs *DeployService) getToken() (string, error) {
 	}
 
 	ctx := context.Background()
-	cs.lock.Acquire(ctx, "deploy-svc-start")
-	defer cs.lock.Release(ctx, "deploy-svc-start")
+	cs.options.Lock.Acquire(ctx, "deploy-svc-start")
+	defer cs.options.Lock.Release(ctx, "deploy-svc-start")
 
 	token, err := boot.RegisterServiceAccount(
-		cs.clientFactory.Client().UserSvcAPI,
+		cs.options.ClientFactory.Client().UserSvcAPI,
 		"deploy-svc",
 		"Deploy Svc",
 		cs.credentialStore,

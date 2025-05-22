@@ -177,7 +177,7 @@ func (p *PromptService) processPrompt(
 			)
 		}
 
-		_, err = p.clientFactory.Client(client.WithToken(token)).
+		_, err = p.options.ClientFactory.Client(client.WithToken(token)).
 			FirehoseSvcAPI.PublishEvent(context.Background()).
 			Event(openapi.FirehoseSvcEventPublishRequest{
 				Event: &openapi.FirehoseSvcEvent{
@@ -216,7 +216,7 @@ func (p *PromptService) processPrompt(
 	js, _ := json.Marshal(ev)
 	json.Unmarshal(js, &m)
 
-	_, err = p.clientFactory.Client(client.WithToken(token)).
+	_, err = p.options.ClientFactory.Client(client.WithToken(token)).
 		FirehoseSvcAPI.PublishEvent(context.Background()).
 		Event(openapi.FirehoseSvcEventPublishRequest{
 			Event: &openapi.FirehoseSvcEvent{
@@ -231,7 +231,7 @@ func (p *PromptService) processPrompt(
 
 	modelId := currentPrompt.ModelId
 	if modelId == "" {
-		getConfigRsp, _, err := p.clientFactory.Client(client.WithToken(token)).
+		getConfigRsp, _, err := p.options.ClientFactory.Client(client.WithToken(token)).
 			ConfigSvcAPI.GetConfig(context.Background()).
 			Execute()
 		if err != nil {
@@ -249,13 +249,13 @@ func (p *PromptService) processPrompt(
 		currentPrompt.ModelId = modelId
 	}
 
-	getModelRsp, _, err := p.clientFactory.Client(client.WithToken(token)).
+	getModelRsp, _, err := p.options.ClientFactory.Client(client.WithToken(token)).
 		ModelSvcAPI.GetModel(context.Background(), modelId).
 		Execute()
 	if err != nil {
 		return err
 	}
-	_, _, err = p.clientFactory.Client(client.WithToken(token)).
+	_, _, err = p.options.ClientFactory.Client(client.WithToken(token)).
 		ChatSvcAPI.SaveMessage(context.Background(), currentPrompt.ThreadId).
 		Body(openapi.ChatSvcSaveMessageRequest{
 			// not a fan of taking the prompt id but at least it makes this idempotent
@@ -274,7 +274,7 @@ func (p *PromptService) processPrompt(
 		return err
 	}
 
-	statusRsp, _, err := p.clientFactory.Client(client.WithToken(token)).
+	statusRsp, _, err := p.options.ClientFactory.Client(client.WithToken(token)).
 		ModelSvcAPI.GetModelStatus(context.Background(), modelId).
 		Execute()
 	if err != nil {

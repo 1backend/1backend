@@ -31,14 +31,15 @@ func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
 	statusCode, err := cs.route(w, r)
 
 	if err != nil {
+		logger.Error("Error proxying OPTIONS request",
+			slog.String("path", r.URL.Path),
+			slog.String("error", err.Error()),
+		)
 		if r.Method == http.MethodOptions {
 			// We don't want to write errors to response on OPTIONS requests
 			// because the response won't be visible in the chrome dev tools.
 			// We log it instead.
-			logger.Error("Error proxying OPTIONS request",
-				slog.String("path", r.URL.Path),
-				slog.String("error", err.Error()),
-			)
+
 			return
 		}
 
@@ -71,7 +72,7 @@ func (cs *ProxyService) route(w http.ResponseWriter, r *http.Request) (int, erro
 
 	serviceSlug := getServiceSlug(r)
 
-	rsp, _, err := cs.clientFactory.Client(client.WithToken(cs.token)).
+	rsp, _, err := cs.options.ClientFactory.Client(client.WithToken(cs.token)).
 		RegistrySvcAPI.ListInstances(context.Background()).
 		Slug(serviceSlug).
 		Execute()

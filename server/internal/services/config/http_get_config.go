@@ -104,7 +104,7 @@ func (cs ConfigService) mod(ret *types.Config) {
 	if ret.Data["file-svc"] == nil {
 		ret.Data["file-svc"] = map[string]interface{}{
 			"downloadFolder": path.Join(
-				cs.homeDir,
+				cs.options.HomeDir,
 				"downloads",
 			),
 		}
@@ -118,7 +118,7 @@ func (cs ConfigService) mod(ret *types.Config) {
 
 	if ret.Data["config-svc"] == nil {
 		ret.Data["config-svc"] = map[string]interface{}{
-			"directory": cs.homeDir,
+			"directory": cs.options.HomeDir,
 		}
 	}
 }

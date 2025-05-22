@@ -41,7 +41,7 @@ func (a *ChatService) ListThreads(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := a.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := a.options.PermissionChecker.HasPermission(
 		r,
 		chat.PermissionThreadView,
 	)

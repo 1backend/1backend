@@ -97,7 +97,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		}
 	}
 
-	rsp, hrsp, err := cs.clientFactory.Client(client.WithToken(cs.token)).
+	rsp, hrsp, err := cs.options.ClientFactory.Client(client.WithToken(cs.token)).
 		FileSvcAPI.ServeUpload(context.Background(), fileId).
 		Execute()
 	if err != nil {

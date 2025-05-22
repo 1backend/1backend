@@ -19,7 +19,7 @@ import (
 
 func (p *ConfigService) registerPermits() error {
 	ctx := context.Background()
-	userSvc := p.clientFactory.Client(client.WithToken(p.token)).UserSvcAPI
+	userSvc := p.options.ClientFactory.Client(client.WithToken(p.token)).UserSvcAPI
 
 	req := openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{

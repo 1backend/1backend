@@ -20,14 +20,13 @@ import (
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/dgraph-io/ristretto"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
+	"github.com/1backend/1backend/server/internal/universe"
 
 	"github.com/google/uuid"
 )
@@ -37,10 +36,9 @@ import (
 const defaultDevice = "default"
 
 type UserService struct {
-	clientFactory client.ClientFactory
-	token         string
+	options *universe.Options
 
-	authorizer auth.Authorizer
+	token string
 
 	usersStore         datastore.DataStore
 	credentialsStore   datastore.DataStore
@@ -56,29 +54,20 @@ type UserService struct {
 	privateKey   *rsa.PrivateKey
 	publicKeyPem string
 
-	configCache         map[string]any
-	tokenExpiration     time.Duration
-	tokenAutoRefreshOff bool
+	configCache map[string]any
 
 	tokenReplacementCache *ristretto.Cache
-
-	isTest bool
 }
 
 func NewUserService(
-	clientFactory client.ClientFactory,
-	authorizer auth.Authorizer,
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
-	tokenExpiration time.Duration,
-	tokenAutoRefreshOff bool,
-	isTest bool,
+	options *universe.Options,
 ) (*UserService, error) {
-	usersStore, err := datastoreFactory("userSvcUsers", &usertypes.User{})
+	usersStore, err := options.DataStoreFactory.Create("userSvcUsers", &usertypes.User{})
 	if err != nil {
 		return nil, err
 	}
 
-	authTokensStore, err := datastoreFactory(
+	authTokensStore, err := options.DataStoreFactory.Create(
 		"userSvcAuthTokens",
 		&usertypes.AuthToken{},
 	)
@@ -86,7 +75,7 @@ func NewUserService(
 		return nil, err
 	}
 
-	credentialsStore, err := datastoreFactory(
+	credentialsStore, err := options.DataStoreFactory.Create(
 		"userSvcCredetentials",
 		&auth.Credential{},
 	)
@@ -94,7 +83,7 @@ func NewUserService(
 		return nil, err
 	}
 
-	keyPairsStore, err := datastoreFactory(
+	keyPairsStore, err := options.DataStoreFactory.Create(
 		"userSvcKeyPairs",
 		&usertypes.KeyPair{},
 	)
@@ -102,7 +91,7 @@ func NewUserService(
 		return nil, err
 	}
 
-	contactsStore, err := datastoreFactory(
+	contactsStore, err := options.DataStoreFactory.Create(
 		"userSvcContacts",
 		&usertypes.Contact{},
 	)
@@ -110,7 +99,7 @@ func NewUserService(
 		return nil, err
 	}
 
-	enrollsStore, err := datastoreFactory(
+	enrollsStore, err := options.DataStoreFactory.Create(
 		"userSvcEnrolls",
 		&usertypes.Enroll{},
 	)
@@ -118,7 +107,7 @@ func NewUserService(
 		return nil, err
 	}
 
-	organizationsStore, err := datastoreFactory(
+	organizationsStore, err := options.DataStoreFactory.Create(
 		"userSvcOrganizations",
 		&usertypes.Organization{},
 	)
@@ -126,7 +115,7 @@ func NewUserService(
 		return nil, err
 	}
 
-	membershipsStore, err := datastoreFactory(
+	membershipsStore, err := options.DataStoreFactory.Create(
 		"userSvcMemberships",
 		&usertypes.Membership{},
 	)
@@ -134,7 +123,7 @@ func NewUserService(
 		return nil, err
 	}
 
-	permitsStore, err := datastoreFactory(
+	permitsStore, err := options.DataStoreFactory.Create(
 		"userSvcPermits",
 		&usertypes.Permit{},
 	)
@@ -142,7 +131,7 @@ func NewUserService(
 		return nil, err
 	}
 
-	passwordsStore, err := datastoreFactory(
+	passwordsStore, err := options.DataStoreFactory.Create(
 		"userSvcPasswords",
 		&usertypes.Password{},
 	)
@@ -160,8 +149,7 @@ func NewUserService(
 	}
 
 	service := &UserService{
-		authorizer:            authorizer,
-		clientFactory:         clientFactory,
+		options:               options,
 		usersStore:            usersStore,
 		authTokensStore:       authTokensStore,
 		credentialsStore:      credentialsStore,
@@ -172,10 +160,7 @@ func NewUserService(
 		membershipsStore:      membershipsStore,
 		permitsStore:          permitsStore,
 		enrollsStore:          enrollsStore,
-		tokenExpiration:       tokenExpiration,
-		tokenAutoRefreshOff:   tokenAutoRefreshOff,
 		tokenReplacementCache: tokenReplacementCache,
-		isTest:                isTest,
 	}
 
 	return service, nil
@@ -196,117 +181,119 @@ func (us *UserService) Start() error {
 }
 
 func (us *UserService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/user-svc/login", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	appl := us.options.Middlewares
+
+	router.HandleFunc("/user-svc/login", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.Login(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/user-svc/self", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/self", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.ReadSelf(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/user-svc/users", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/users", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.ListUsers(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/user-svc/user/{userId}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/user/{userId}", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.SaveUser(w, r)
 	})).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/user-svc/self", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/self", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.SaveSelf(w, r)
 	})).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/user-svc/change-password", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/change-password", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.ChangePassword(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/user-svc/{userId}/reset-password", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/{userId}/reset-password", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.ResetPassword(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/user-svc/organization", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/organization", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.SaveOrganization(w, r)
 	})).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/user-svc/organizations", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/organizations", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.ListOrganizations(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/user-svc/organization/{organizationId}/user/{userId}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/organization/{organizationId}/user/{userId}", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.SaveMembership(w, r)
 	})).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/user-svc/organization/{organizationId}/user/{userId}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/organization/{organizationId}/user/{userId}", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.DeleteMembership(w, r)
 	})).
 		Methods("OPTIONS", "DELETE")
 
-	router.HandleFunc("/user-svc/user", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/user", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.CreateUser(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/user-svc/user/{userId}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/user/{userId}", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.DeleteUser(w, r)
 	})).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/user-svc/self/has/{permission}", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/self/has/{permission}", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.HasPermission(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/user-svc/permissions", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/permissions", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.ListPermissions(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/user-svc/register", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/register", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.Register(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/user-svc/public-key", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/public-key", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.GetPublicKey(w, r)
 	})).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/user-svc/permits", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/permits", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.SavePermits(w, r)
 	})).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/user-svc/permits", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/permits", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.ListPermits(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/user-svc/enrolls", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/enrolls", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.SaveEnrolls(w, r)
 	})).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/user-svc/enrolls", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/enrolls", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.ListEnrolls(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/user-svc/refresh-token", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/refresh-token", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.RefreshToken(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/user-svc/tokens", middlewares.DefaultApplicator(func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user-svc/tokens", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.RevokeTokens(w, r)
 	})).
 		Methods("OPTIONS", "DELETE")
@@ -330,7 +317,7 @@ func (s *UserService) bootstrap() error {
 		s.publicKeyPem = kp.PublicKey
 	} else {
 		bits := 4096
-		if s.isTest {
+		if s.options.Test {
 			bits = 512
 		}
 		privKey, pubKey, err := generateRSAKeys(bits)
@@ -428,7 +415,7 @@ func (s *UserService) bootstrap() error {
 // is enabled to do so. Drop in replacement for `authorizer.ParseJWTFromRequest`.
 func (s *UserService) parseJWTFromRequest(r *http.Request) (*auth.Claims, error) {
 	expired := false
-	claims, err := s.authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
+	claims, err := s.options.Authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
 	if err != nil {
 		if strings.Contains(err.Error(), "expired") {
 			expired = true
@@ -437,7 +424,7 @@ func (s *UserService) parseJWTFromRequest(r *http.Request) (*auth.Claims, error)
 		}
 	}
 
-	if s.tokenAutoRefreshOff {
+	if s.options.TokenAutoRefreshOff {
 		return claims, err
 	}
 
@@ -458,7 +445,7 @@ func (s *UserService) parseJWTFromRequest(r *http.Request) (*auth.Claims, error)
 		return nil, errors.Wrap(err, "failed to refresh token")
 	}
 
-	claims, err = s.authorizer.ParseJWT(s.publicKeyPem, token.Token)
+	claims, err = s.options.Authorizer.ParseJWT(s.publicKeyPem, token.Token)
 	if err != nil {
 		return nil, err
 	}

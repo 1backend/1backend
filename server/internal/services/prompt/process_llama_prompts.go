@@ -54,7 +54,7 @@ func (p *PromptService) processLlamaCpp(
 
 	if template == "" {
 
-		modelRsp, _, err := p.clientFactory.Client(client.WithToken(token)).
+		modelRsp, _, err := p.options.ClientFactory.Client(client.WithToken(token)).
 			ModelSvcAPI.GetModel(context.Background(), currentPrompt.ModelId).
 			Execute()
 		if err != nil {
@@ -76,8 +76,8 @@ func (p *PromptService) processLlamaCpp(
 	}
 
 	var llamaCppClient llamacpp.ClientI
-	if p.llamaCppCLient != nil {
-		llamaCppClient = p.llamaCppCLient
+	if p.options.LLamaCppClient != nil {
+		llamaCppClient = p.options.LLamaCppClient
 	} else {
 		llamaCppClient = &llamacpp.Client{
 			LLamaCppAddress: address,
@@ -129,7 +129,7 @@ func (p *PromptService) processLlamaCpp(
 
 			messageId := sdk.Id("msg")
 
-			_, _, err := p.clientFactory.Client(client.WithToken(token)).
+			_, _, err := p.options.ClientFactory.Client(client.WithToken(token)).
 				ChatSvcAPI.SaveMessage(context.Background(), currentPrompt.ThreadId).
 				Body(
 					openapi.ChatSvcSaveMessageRequest{

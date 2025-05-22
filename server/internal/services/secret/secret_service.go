@@ -20,59 +20,38 @@ import (
 	"github.com/pkg/errors"
 
 	secret "github.com/1backend/1backend/server/internal/services/secret/types"
+	"github.com/1backend/1backend/server/internal/universe"
 
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/endpoint"
-	"github.com/1backend/1backend/sdk/go/lock"
-	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
 )
 
 type SecretService struct {
+	options *universe.Options
+
 	started    bool
 	startupErr error
 
-	clientFactory client.ClientFactory
-	token         string
+	token string
 
-	authorizer auth.Authorizer
-
-	lock      lock.DistributedLock
 	publicKey string
 
-	credentialStore  datastore.DataStore
-	secretStore      datastore.DataStore
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
-
-	encryptionKey string
-
-	permissionChecker endpoint.PermissionChecker
+	credentialStore datastore.DataStore
+	secretStore     datastore.DataStore
 }
 
 func NewSecretService(
-	clientFactory client.ClientFactory,
-	authorizer auth.Authorizer,
-	lock lock.DistributedLock,
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
-	secretEncryptionKey string,
+	options *universe.Options,
 ) (*SecretService, error) {
 
 	cs := &SecretService{
-		lock:             lock,
-		datastoreFactory: datastoreFactory,
-		clientFactory:    clientFactory,
-		authorizer:       authorizer,
-		encryptionKey:    secretEncryptionKey,
-		permissionChecker: endpoint.NewPermissionChecker(
-			clientFactory,
-			authorizer,
-		),
+		options: options,
 	}
 
-	credentialStore, err := cs.datastoreFactory(
+	credentialStore, err := cs.options.DataStoreFactory.Create(
 		"secretSvcCredentials",
 		&auth.Credential{},
 	)
@@ -81,7 +60,7 @@ func NewSecretService(
 	}
 	cs.credentialStore = credentialStore
 
-	secretStore, err := cs.datastoreFactory(
+	secretStore, err := cs.options.DataStoreFactory.Create(
 		"secretSvcSecrets",
 		&secret.Secret{},
 	)
@@ -94,32 +73,34 @@ func NewSecretService(
 }
 
 func (ss *SecretService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/secret-svc/secrets", middlewares.DefaultApplicator(service.Lazy(ss, func(w http.ResponseWriter, r *http.Request) {
+	appl := ss.options.Middlewares
+
+	router.HandleFunc("/secret-svc/secrets", appl(service.Lazy(ss, func(w http.ResponseWriter, r *http.Request) {
 		ss.ListSecrets(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/secret-svc/secrets", middlewares.DefaultApplicator(service.Lazy(ss, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/secret-svc/secrets", appl(service.Lazy(ss, func(w http.ResponseWriter, r *http.Request) {
 		ss.SaveSecrets(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/secret-svc/encrypt", middlewares.DefaultApplicator(service.Lazy(ss, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/secret-svc/encrypt", appl(service.Lazy(ss, func(w http.ResponseWriter, r *http.Request) {
 		ss.Encrypt(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/secret-svc/decrypt", middlewares.DefaultApplicator(service.Lazy(ss, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/secret-svc/decrypt", appl(service.Lazy(ss, func(w http.ResponseWriter, r *http.Request) {
 		ss.Decrypt(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/secret-svc/secrets", middlewares.DefaultApplicator(service.Lazy(ss, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/secret-svc/secrets", appl(service.Lazy(ss, func(w http.ResponseWriter, r *http.Request) {
 		ss.RemoveSecrets(w, r)
 	}))).
 		Methods("OPTIONS", "DELETE")
 
-	router.HandleFunc("/secret-svc/is-secure", middlewares.DefaultApplicator(service.Lazy(ss, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/secret-svc/is-secure", appl(service.Lazy(ss, func(w http.ResponseWriter, r *http.Request) {
 		ss.Secure(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
@@ -140,15 +121,15 @@ func (cs *SecretService) LazyStart() error {
 }
 
 func (cs *SecretService) start() error {
-	if cs.datastoreFactory == nil {
+	if cs.options.DataStoreFactory == nil {
 		return errors.New("no datastore factory")
 	}
 
 	ctx := context.Background()
-	cs.lock.Acquire(ctx, "secret-svc-start")
-	defer cs.lock.Release(ctx, "secret-svc-start")
+	cs.options.Lock.Acquire(ctx, "secret-svc-start")
+	defer cs.options.Lock.Release(ctx, "secret-svc-start")
 
-	pk, _, err := cs.clientFactory.Client(client.WithToken(cs.token)).
+	pk, _, err := cs.options.ClientFactory.Client(client.WithToken(cs.token)).
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	if err != nil {
@@ -156,7 +137,7 @@ func (cs *SecretService) start() error {
 	}
 	cs.publicKey = pk.PublicKey
 
-	client := cs.clientFactory.Client()
+	client := cs.options.ClientFactory.Client()
 
 	token, err := boot.RegisterServiceAccount(
 		client.UserSvcAPI,

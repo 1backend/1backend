@@ -68,7 +68,7 @@ func (s *UserService) generateJWT(
 		Roles:                roles,
 		ActiveOrganizationId: activeOrganizationId,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(s.tokenExpiration)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(s.options.TokenExpiration)),
 		},
 	}
 

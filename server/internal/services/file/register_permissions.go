@@ -24,7 +24,7 @@ import (
 
 func (fs *FileService) registerPermits() error {
 	ctx := context.Background()
-	userSvc := fs.clientFactory.Client(client.WithToken(fs.token)).UserSvcAPI
+	userSvc := fs.options.ClientFactory.Client(client.WithToken(fs.token)).UserSvcAPI
 
 	req := openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{

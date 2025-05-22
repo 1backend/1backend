@@ -40,7 +40,7 @@ func (ns *DeployService) ListDeployments(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := ns.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := ns.options.PermissionChecker.HasPermission(
 		r,
 		deploy.PermissionDeploymentView,
 	)

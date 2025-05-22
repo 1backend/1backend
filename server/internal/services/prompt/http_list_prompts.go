@@ -41,7 +41,7 @@ func (p *PromptService) ListPrompts(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := p.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := p.options.PermissionChecker.HasPermission(
 		r,
 		prompt.PermissionPromptView,
 	)

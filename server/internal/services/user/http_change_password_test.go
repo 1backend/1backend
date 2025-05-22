@@ -24,6 +24,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
+	"github.com/1backend/1backend/server/internal/universe"
 )
 
 func TestChangePassword(t *testing.T) {
@@ -113,7 +114,7 @@ func TestPasswordChange(t *testing.T) {
 	server := httptest.NewServer(hs)
 	defer server.Close()
 
-	options := &di.Options{
+	options := &universe.Options{
 		Test: true,
 		Url:  server.URL,
 	}

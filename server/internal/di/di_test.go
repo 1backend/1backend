@@ -14,6 +14,7 @@ import (
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
+	"github.com/1backend/1backend/server/internal/universe"
 	"github.com/stretchr/testify/require"
 )
 
@@ -24,7 +25,7 @@ func TestStart(t *testing.T) {
 
 	dbprefix := sdk.Id("node_start")
 
-	options1 := &di.Options{
+	options1 := &universe.Options{
 		Test:     true,
 		Db:       "postgres",
 		DbPrefix: dbprefix,
@@ -45,7 +46,7 @@ func TestStart(t *testing.T) {
 	server2 := httptest.NewServer(hs1)
 	defer server1.Close()
 
-	options2 := &di.Options{
+	options2 := &universe.Options{
 		Test:     true,
 		Db:       "postgres",
 		DbPrefix: dbprefix,

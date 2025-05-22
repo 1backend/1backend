@@ -42,7 +42,7 @@ func (dm *ContainerService) ContainerIsRunning(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-	isAuthRsp, statusCode, err := dm.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := dm.options.PermissionChecker.HasPermission(
 		r,
 		container.PermissionContainerView,
 	)

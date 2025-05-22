@@ -55,7 +55,7 @@ func (a *ChatService) updateThread(
 	js, _ := json.Marshal(ev)
 	json.Unmarshal(js, &m)
 
-	_, err = a.clientFactory.Client(client.WithToken(a.token)).
+	_, err = a.options.ClientFactory.Client(client.WithToken(a.token)).
 		FirehoseSvcAPI.PublishEvent(context.Background()).
 		Event(openapi.FirehoseSvcEventPublishRequest{
 			Event: &openapi.FirehoseSvcEvent{

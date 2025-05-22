@@ -42,7 +42,7 @@ Starts the model which has the supplied modelId or the currently activated one o
 the modelId is empty.
 */
 func (ms *ModelService) startModel(modelId string) error {
-	getConfigResponse, _, err := ms.clientFactory.Client().
+	getConfigResponse, _, err := ms.options.ClientFactory.Client().
 		ConfigSvcAPI.GetConfig(context.Background()).
 		Execute()
 	if err != nil {
@@ -98,7 +98,7 @@ func (ms *ModelService) startWithDocker(
 	req.Keeps = toContainerKeeps(platform.Architectures.Default.Container.Keeps)
 	req.Assets = toContainerAssets(model.Assets)
 
-	switch ms.gpuPlatform {
+	switch ms.options.GpuPlatform {
 	case "cuda":
 		req.Capabilities.GpuEnabled = openapi.PtrBool(true)
 
@@ -126,7 +126,7 @@ func (ms *ModelService) startWithDocker(
 				-1,
 			)
 
-			systemMatchingImagePullableRsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
+			systemMatchingImagePullableRsp, _, err := ms.options.ClientFactory.Client(client.WithToken(ms.token)).
 				ContainerSvcAPI.
 				ImagePullable(context.Background(), systemMatchingImage).
 				Execute()
@@ -174,7 +174,7 @@ func (ms *ModelService) startWithDocker(
 		},
 	}
 
-	runRsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
+	runRsp, _, err := ms.options.ClientFactory.Client(client.WithToken(ms.token)).
 		ContainerSvcAPI.RunContainer(context.Background()).
 		Body(*req).
 		Execute()
@@ -327,7 +327,7 @@ func (ms *ModelService) checkIfAnswers(
 
 		logger.Debug("Checking for answer started", slog.Int("port", port))
 
-		isRunningRsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
+		isRunningRsp, _, err := ms.options.ClientFactory.Client(client.WithToken(ms.token)).
 			ContainerSvcAPI.ContainerIsRunning(context.Background()).
 			Hash(hash).
 			Execute()
@@ -344,7 +344,7 @@ func (ms *ModelService) checkIfAnswers(
 			continue
 		}
 
-		hostRsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
+		hostRsp, _, err := ms.options.ClientFactory.Client(client.WithToken(ms.token)).
 			ContainerSvcAPI.GetHost(context.Background()).
 			Execute()
 		if err != nil {
@@ -355,8 +355,8 @@ func (ms *ModelService) checkIfAnswers(
 		}
 		dockerHost := hostRsp.Host
 
-		if ms.llmHost != "" {
-			dockerHost = ms.llmHost
+		if ms.options.LLMHost != "" {
+			dockerHost = ms.options.LLMHost
 		}
 
 		if !strings.HasPrefix(dockerHost, "http") {
@@ -385,7 +385,7 @@ func (ms *ModelService) checkIfAnswers(
 }
 
 func (ms *ModelService) printContainerLogs(modelId, hash string) {
-	summaryRsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
+	summaryRsp, _, err := ms.options.ClientFactory.Client(client.WithToken(ms.token)).
 		ContainerSvcAPI.ContainerSummary(context.Background()).
 		Hash(hash).
 		Lines(10).

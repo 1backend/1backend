@@ -79,7 +79,7 @@ func (p *PromptService) prompt(
 		return nil, errors.Wrap(err, "failed to get token")
 	}
 
-	listThreadsRsp, _, err := p.clientFactory.Client(client.WithToken(token)).
+	listThreadsRsp, _, err := p.options.ClientFactory.Client(client.WithToken(token)).
 		ChatSvcAPI.ListThreads(ctx).
 		Body(openapi.ChatSvcListThreadsRequest{
 			Ids: []string{threadId},
@@ -110,7 +110,7 @@ func (p *PromptService) prompt(
 			}
 		}
 
-		_, _, err := p.clientFactory.Client(client.WithToken(token)).
+		_, _, err := p.options.ClientFactory.Client(client.WithToken(token)).
 			ChatSvcAPI.SaveThread(ctx).
 			Body(openapi.ChatSvcSaveThreadRequest{
 				Id:      &thread.Id,
@@ -131,7 +131,7 @@ func (p *PromptService) prompt(
 	js, _ := json.Marshal(ev)
 	json.Unmarshal(js, &m)
 
-	_, err = p.clientFactory.Client(client.WithToken(token)).
+	_, err = p.options.ClientFactory.Client(client.WithToken(token)).
 		FirehoseSvcAPI.PublishEvent(context.Background()).
 		Event(openapi.FirehoseSvcEventPublishRequest{
 			Event: &openapi.FirehoseSvcEvent{
@@ -161,7 +161,7 @@ func (p *PromptService) prompt(
 
 		for resp := range subscriber {
 			if resp.Type == streammanager.ChunkTypeDone {
-				r, _, err := p.clientFactory.Client(client.WithToken(token)).
+				r, _, err := p.options.ClientFactory.Client(client.WithToken(token)).
 					ChatSvcAPI.
 					ListMessages(ctx).
 					Body(openapi.ChatSvcListMessagesRequest{

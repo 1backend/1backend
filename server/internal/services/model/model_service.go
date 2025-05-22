@@ -25,104 +25,85 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/endpoint"
-	"github.com/1backend/1backend/sdk/go/lock"
-	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
 
 	modeltypes "github.com/1backend/1backend/server/internal/services/model/types"
+	"github.com/1backend/1backend/server/internal/universe"
 )
 
 const DefaultModelId = `huggingface/TheBloke/mistral-7b-instruct-v0.2.Q3_K_S.gguf`
 
 type ModelService struct {
+	options *universe.Options
+
 	started    bool
 	startupErr error
 
-	clientFactory    client.ClientFactory
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
-	token            string
+	token string
 
 	modelStateMutex sync.Mutex
 	modelPortMap    map[int]*modeltypes.ModelState
-
-	lock lock.DistributedLock
 
 	modelsStore    datastore.DataStore
 	platformsStore datastore.DataStore
 
 	credentialStore datastore.DataStore
 
-	gpuPlatform string
-	llmHost     string
-
 	selfNode      *openapi.RegistrySvcNode
 	selfNodeMutex sync.Mutex
-
-	permissionChecker endpoint.PermissionChecker
 }
 
 func NewModelService(
-	// @todo GPU platform maybe this could be autodetected
-	gpuPlatform string,
-	llmHost string,
-	clientFactory client.ClientFactory,
-	lock lock.DistributedLock,
-	datastoreFactory func(tableName string, insance any) (datastore.DataStore, error),
-	authorizer auth.Authorizer,
+	options *universe.Options,
 ) (*ModelService, error) {
+
 	srv := &ModelService{
-		gpuPlatform:      gpuPlatform,
-		clientFactory:    clientFactory,
-		datastoreFactory: datastoreFactory,
-		lock:             lock,
-		modelPortMap:     map[int]*modeltypes.ModelState{},
-		permissionChecker: endpoint.NewPermissionChecker(
-			clientFactory,
-			authorizer,
-		),
+		options:      options,
+		modelPortMap: map[int]*modeltypes.ModelState{},
 	}
 
 	return srv, nil
 }
 
 func (ms *ModelService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/model-svc/default-model/status", middlewares.DefaultApplicator(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
+	appl := ms.options.Middlewares
+
+	router.HandleFunc("/model-svc/default-model/status", appl(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
 		ms.DefaultStatus(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/model-svc/model/{modelId}/status", middlewares.DefaultApplicator(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/model-svc/model/{modelId}/status", appl(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
 		ms.Status(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/model-svc/models", middlewares.DefaultApplicator(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/model-svc/models", appl(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
 		ms.ListModels(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/model-svc/platforms", middlewares.DefaultApplicator(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/model-svc/platforms", appl(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
 		ms.ListPlatforms(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
-	router.HandleFunc("/model-svc/model/{modelId}", middlewares.DefaultApplicator(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/model-svc/model/{modelId}", appl(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
 		ms.Get(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/model-svc/default-model/start", middlewares.DefaultApplicator(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/model-svc/default-model/start", appl(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
 		ms.StartDefault(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/model-svc/model/{modelId}/start", middlewares.DefaultApplicator(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/model-svc/model/{modelId}/start", appl(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
 		ms.StartSpecific(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/model-svc/model/{modelId}/make-default", middlewares.DefaultApplicator(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/model-svc/model/{modelId}/make-default", appl(service.Lazy(ms, func(w http.ResponseWriter, r *http.Request) {
 		ms.MakeDefault(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
@@ -143,13 +124,13 @@ func (cs *ModelService) LazyStart() error {
 }
 
 func (ms *ModelService) start() error {
-	modelStore, err := ms.datastoreFactory("modelSvcModels", &modeltypes.Model{})
+	modelStore, err := ms.options.DataStoreFactory.Create("modelSvcModels", &modeltypes.Model{})
 	if err != nil {
 		return err
 	}
 	ms.modelsStore = modelStore
 
-	platformsStore, err := ms.datastoreFactory(
+	platformsStore, err := ms.options.DataStoreFactory.Create(
 		"modelSvcPlatforms",
 		&modeltypes.Platform{},
 	)
@@ -158,7 +139,7 @@ func (ms *ModelService) start() error {
 	}
 	ms.platformsStore = platformsStore
 
-	credentialStore, err := ms.datastoreFactory(
+	credentialStore, err := ms.options.DataStoreFactory.Create(
 		"modelSvcCredentials",
 		&auth.Credential{},
 	)
@@ -173,11 +154,11 @@ func (ms *ModelService) start() error {
 	}
 
 	ctx := context.Background()
-	ms.lock.Acquire(ctx, "model-svc-start")
-	defer ms.lock.Release(ctx, "model-svc-start")
+	ms.options.Lock.Acquire(ctx, "model-svc-start")
+	defer ms.options.Lock.Release(ctx, "model-svc-start")
 
 	token, err := boot.RegisterServiceAccount(
-		ms.clientFactory.Client().UserSvcAPI,
+		ms.options.ClientFactory.Client().UserSvcAPI,
 		"model-svc",
 		"Model Svc",
 		ms.credentialStore,
@@ -198,7 +179,7 @@ func (ms *ModelService) getNode() (*openapi.RegistrySvcNode, error) {
 		return ms.selfNode, nil
 	}
 
-	rsp, _, err := ms.clientFactory.Client(client.WithToken(ms.token)).
+	rsp, _, err := ms.options.ClientFactory.Client(client.WithToken(ms.token)).
 		RegistrySvcAPI.SelfNode(context.Background()).
 		Execute()
 

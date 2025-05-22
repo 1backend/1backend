@@ -18,54 +18,40 @@ import (
 
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/endpoint"
-	"github.com/1backend/1backend/sdk/go/lock"
-	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/service"
 	email "github.com/1backend/1backend/server/internal/services/email/types"
+	"github.com/1backend/1backend/server/internal/universe"
 	"github.com/gorilla/mux"
 )
 
 type EmailService struct {
+	options *universe.Options
+
 	started    bool
 	startupErr error
-
-	clientFactory    client.ClientFactory
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
-	lock             lock.DistributedLock
 
 	token string
 
 	credentialStore datastore.DataStore
 	emailStore      datastore.DataStore
-
-	permissionChecker endpoint.PermissionChecker
 }
 
 func NewEmailService(
-	clientFactory client.ClientFactory,
-	lock lock.DistributedLock,
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error),
-	authorizer auth.Authorizer,
+	options *universe.Options,
 ) (*EmailService, error) {
 
 	service := &EmailService{
-		clientFactory:    clientFactory,
-		datastoreFactory: datastoreFactory,
-		lock:             lock,
-		permissionChecker: endpoint.NewPermissionChecker(
-			clientFactory,
-			authorizer,
-		),
+		options: options,
 	}
 
 	return service, nil
 }
 
 func (es *EmailService) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/email-svc/email", middlewares.DefaultApplicator(service.Lazy(es, func(w http.ResponseWriter, r *http.Request) {
+	appl := es.options.Middlewares
+
+	router.HandleFunc("/email-svc/email", appl(service.Lazy(es, func(w http.ResponseWriter, r *http.Request) {
 		es.SendEmail(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
@@ -86,7 +72,7 @@ func (es *EmailService) LazyStart() error {
 }
 
 func (fs *EmailService) start() error {
-	credentialStore, err := fs.datastoreFactory(
+	credentialStore, err := fs.options.DataStoreFactory.Create(
 		"emailSvcCredentials",
 		&auth.Credential{},
 	)
@@ -95,7 +81,7 @@ func (fs *EmailService) start() error {
 	}
 	fs.credentialStore = credentialStore
 
-	emailStore, err := fs.datastoreFactory(
+	emailStore, err := fs.options.DataStoreFactory.Create(
 		"emailSvcEmails",
 		&email.Email{},
 	)
@@ -106,11 +92,11 @@ func (fs *EmailService) start() error {
 
 	ctx := context.Background()
 
-	fs.lock.Acquire(ctx, "email-svc-start")
-	defer fs.lock.Release(ctx, "email-svc-start")
+	fs.options.Lock.Acquire(ctx, "email-svc-start")
+	defer fs.options.Lock.Release(ctx, "email-svc-start")
 
 	token, err := boot.RegisterServiceAccount(
-		fs.clientFactory.Client().UserSvcAPI,
+		fs.options.ClientFactory.Client().UserSvcAPI,
 		"email-svc",
 		"Email Svc",
 		fs.credentialStore,

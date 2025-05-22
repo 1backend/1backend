@@ -48,7 +48,7 @@ func (ms *ModelService) StartSpecific(
 		return
 	}
 
-	isAuthRsp, statusCode, err := ms.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := ms.options.PermissionChecker.HasPermission(
 		r,
 		model.PermissionModelCreate,
 	)

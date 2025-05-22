@@ -30,7 +30,7 @@ func (rs *RegistryService) RemoveInstance(
 	r *http.Request,
 ) {
 
-	isAuthRsp, statusCode, err := rs.permissionChecker.HasPermission(
+	isAuthRsp, statusCode, err := rs.options.PermissionChecker.HasPermission(
 		r,
 		registry.PermissionInstanceDelete,
 	)
