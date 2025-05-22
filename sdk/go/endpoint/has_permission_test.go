@@ -1,4 +1,4 @@
-package endpoint
+package endpoint_test
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
@@ -34,8 +35,8 @@ func TestHasPermissionCaching(t *testing.T) {
 		}).Times(2)
 
 	// Use a very short cache duration to test expiry
-	pc := NewPermissionChecker(mockClientFactory)
-	pc.(*permissionChecker).testing = true
+	pc := endpoint.NewPermissionChecker(mockClientFactory)
+	pc.(*endpoint.PermissionCheckerImpl).Testing = true
 
 	req := httptest.NewRequest("GET", "/", nil)
 	req.Header.Set("Authorization", "Bearer token")

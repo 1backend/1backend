@@ -45,8 +45,8 @@ type PermissionChecker interface {
 	) (*openapi.UserSvcHasPermissionResponse, int, error)
 }
 
-type permissionChecker struct {
-	testing         bool
+type PermissionCheckerImpl struct {
+	Testing         bool
 	clientFactory   client.ClientFactory
 	permissionCache *ristretto.Cache
 }
@@ -64,7 +64,7 @@ func NewPermissionChecker(
 		panic(errors.Wrap(err, "failed to create ristretto cache").Error())
 	}
 
-	return &permissionChecker{
+	return &PermissionCheckerImpl{
 		clientFactory:   clientFactory,
 		permissionCache: permissionCache,
 	}
@@ -77,7 +77,7 @@ func NewPermissionChecker(
 //
 // It also handles JWT expiration.
 // If the JWT is expired, it refreshes the token and maps the old request to the new one.
-func (pc *permissionChecker) HasPermission(
+func (pc *PermissionCheckerImpl) HasPermission(
 	request *http.Request,
 	permission string,
 ) (*openapi.UserSvcHasPermissionResponse, int, error) {
@@ -128,7 +128,7 @@ func (pc *permissionChecker) HasPermission(
 			Response:   isAuthRsp,
 			StatusCode: code,
 		}, 1, time.Until(expiresAt))
-		if pc.testing {
+		if pc.Testing {
 			pc.permissionCache.Wait()
 		}
 	}
