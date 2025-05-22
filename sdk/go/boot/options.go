@@ -24,15 +24,29 @@ import (
 )
 
 type Options struct {
-	Test      bool
-	ServerUrl string
-	SelfUrl   string
+	Test bool
 
+	// ServerUrl is the URL of the 1Backend server.
+	ServerUrl string
+
+	// SelfUrl is the URL of the service itself.
+	// Used for service registration.
+	SelfUrl string
+
+	// If set to true, expired tokens won't be autorefreshed by
+	// the server.
 	TokenAutoRefreshOff bool
-	ClientFactory       client.ClientFactory
-	TokenRefresher      endpoint.TokenRefresher
-	Middlewares         func(http.HandlerFunc) http.HandlerFunc
-	Authorizer          auth.Authorizer
+
+	// ClientFactory is used for service to service communication
+	// ie. this is how services call each other
+	ClientFactory client.ClientFactory
+
+	TokenRefresher endpoint.TokenRefresher
+	Middlewares    func(http.HandlerFunc) http.HandlerFunc
+
+	// Authorizer is a helper interface that contains
+	// auth related utility functions
+	Authorizer auth.Authorizer
 }
 
 func (o *Options) LoadEnvars() error {

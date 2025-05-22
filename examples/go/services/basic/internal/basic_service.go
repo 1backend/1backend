@@ -12,7 +12,6 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/infra"
-	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 )
@@ -129,13 +128,7 @@ func (service *BasicService) registerAccount() error {
 }
 
 func (service *BasicService) registerRoutes() {
-	mws := []middlewares.Middleware{
-		middlewares.ThrottledLogger,
-		middlewares.Recover,
-		middlewares.CORS,
-		middlewares.GzipDecodeMiddleware,
-	}
-	appl := applicator(mws)
+	appl := service.Options.Middlewares
 
 	service.Router = mux.NewRouter()
 
@@ -153,16 +146,4 @@ func (service *BasicService) registerRoutes() {
 		service.Error(w, r)
 	})).
 		Methods("OPTIONS", "POST")
-}
-
-func applicator(
-	mws []middlewares.Middleware,
-) func(http.HandlerFunc) http.HandlerFunc {
-	return func(h http.HandlerFunc) http.HandlerFunc {
-		for _, middleware := range mws {
-			h = middleware(h)
-		}
-
-		return h
-	}
 }
