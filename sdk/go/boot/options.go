@@ -67,7 +67,7 @@ func (o *Options) LoadEnvars() error {
 	}
 
 	if o.ClientFactory == nil {
-		o.ClientFactory = client.NewApiClientFactory(o.SelfUrl)
+		o.ClientFactory = client.NewApiClientFactory(o.ServerUrl)
 	}
 
 	if o.Authorizer == nil {
