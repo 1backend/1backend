@@ -48,7 +48,6 @@ func (p *PromptService) Prompt(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-
 	isAuthRsp, statusCode, err := p.options.PermissionChecker.HasPermission(
 		r,
 		prompt.PermissionPromptCreate,

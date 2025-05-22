@@ -26,6 +26,7 @@ func TokenRefreshMiddleware(tr endpoint.TokenRefresher, autorefreshOff bool) fun
 				if tr == nil {
 					panic("token refresher is nil" + r.URL.Path)
 				}
+
 				_, _, err := tr.EnsureValidToken(r)
 				if err != nil {
 					logger.Error("Token refresh middleware error",
