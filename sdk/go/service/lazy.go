@@ -69,13 +69,25 @@ func Lazy(
 		firstSegment := getFirstSegment(r.URL.Path)
 		mutex := getMutexForPathSegment(firstSegment)
 
-		if !options.SkipLock {
-			mutex.Lock()
-			defer mutex.Unlock()
-		}
+		returnWithoutNext := false
 
-		if err := s.LazyStart(); err != nil {
-			endpoint.WriteErr(w, http.StatusInternalServerError, err)
+		// Only lock during LazyStart to avoid blocking other requests to the same service.
+		// Some endpoints (like prompt or firehose subscribe) are long-lived or streaming,
+		// so holding the lock during those would prevent concurrent access to the service.
+		// This design ensures only service initialization is serialized, not the full request.
+		func() {
+			if !options.SkipLock {
+				mutex.Lock()
+				defer mutex.Unlock()
+			}
+
+			if err := s.LazyStart(); err != nil {
+				endpoint.WriteErr(w, http.StatusInternalServerError, err)
+				returnWithoutNext = true
+			}
+		}()
+
+		if returnWithoutNext {
 			return
 		}
 
