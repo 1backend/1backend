@@ -91,8 +91,8 @@ func NewRegistryService(
 	}
 
 	service := &RegistryService{
-		options: options,
-
+		options:         options,
+		nodeId:          options.NodeId,
 		credentialStore: credentialStore,
 		definitionStore: definitionStore,
 		instanceStore:   instanceStore,

@@ -90,6 +90,6 @@ func TestNodeId(t *testing.T) {
 				break
 			}
 		}
-		require.True(t, found, "Node with URL and ID 'abc' not found")
+		require.True(t, found, "Node with URL and ID 'abc' not found", nodesRsp2.Nodes)
 	})
 }
