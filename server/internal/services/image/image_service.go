@@ -41,8 +41,7 @@ type ImageService struct {
 
 	publicKey string
 
-	credentialStore  datastore.DataStore
-	datastoreFactory func(tableName string, instance any) (datastore.DataStore, error)
+	credentialStore datastore.DataStore
 }
 
 func NewImageService(
@@ -79,9 +78,6 @@ func (cs *ImageService) LazyStart() error {
 }
 
 func (cs *ImageService) start() error {
-	if cs.datastoreFactory == nil {
-		return errors.New("no datastore factory")
-	}
 	if cs.options.HomeDir == "" {
 		return errors.New("no home dir")
 	}
