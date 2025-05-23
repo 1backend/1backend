@@ -25,6 +25,7 @@ type Claims struct {
 	UserId string   `json:"oui,omitempty"` // `oui`: 1backend user ids
 	Slug   string   `json:"osl,omitempty"` // `osl`: 1backend slug
 	Roles  []string `json:"oro,omitempty"` // `oro`: 1backend role ids
+	Device string   `json:"odi,omitempty"` // `device`: 1backend device
 
 	// Organization ids are already included within role ids
 	// (e.g., `user-svc:org:{org_dBZRCej3fo}:admin`).

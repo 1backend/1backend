@@ -61,14 +61,19 @@ func (s *UserService) generateJWT(
 	roles []string,
 	activeOrganizationId string,
 	privateKey *rsa.PrivateKey,
+	device string,
 ) (string, error) {
+	now := time.Now()
+
 	claims := &auth.Claims{
 		UserId:               user.Id,
 		Slug:                 user.Slug,
 		Roles:                roles,
+		Device:               device,
 		ActiveOrganizationId: activeOrganizationId,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(s.options.TokenExpiration)),
+			IssuedAt:  jwt.NewNumericDate(now),
+			ExpiresAt: jwt.NewNumericDate(now.Add(s.options.TokenExpiration)),
 		},
 	}
 

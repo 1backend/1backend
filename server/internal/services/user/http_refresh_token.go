@@ -140,13 +140,11 @@ func (s *UserService) refreshToken(
 		}
 	}
 
-	token, err := s.generateAuthToken(usr)
+	token, err := s.generateAuthToken(usr, tokenToBeRefreshed.Device)
 	if err != nil {
 		return nil, err
 	}
-	token.Device = tokenToBeRefreshed.Device
 
-	// for backwards compatibility
 	if token.Device == "" {
 		token.Device = defaultDevice
 	}

@@ -5,7 +5,7 @@ import "github.com/spf13/cobra"
 func AddEnrollCommands(rootCmd *cobra.Command) {
 	var enrollCmd = &cobra.Command{
 		Use:     "enroll",
-		Aliases: []string{"e", "enrolls"},
+		Aliases: []string{"enr", "enrolls"},
 		Short:   "Manage enrolls",
 	}
 
@@ -16,7 +16,7 @@ func AddEnrollCommands(rootCmd *cobra.Command) {
 	)
 
 	var saveCmd = &cobra.Command{
-		Use:     "save [filePath | dirPath]",
+		Use:     "save [role | filePath | dirPath]",
 		Aliases: []string{"s"},
 		Args:    cobra.MaximumNArgs(2),
 		Short:   "Save enrolls from files",
@@ -25,8 +25,11 @@ func AddEnrollCommands(rootCmd *cobra.Command) {
 	1. Save enroll to role by user id or contact id.
 	2. A single enroll from a YAML file.
 	3. Multiple enrolls from a YAML file.`,
-		Example: `# Save a single enroll from a file
-save ./enrollA.yaml
+		Example: `# Enroll with flags
+oo enroll save any-svc:admin --userId=user_id_1
+
+# Save a single enroll from a file
+oo enroll save ./enrollA.yaml
 
 # Example contents of 'enrollA.yaml':
 id: "enroll-id-1"
@@ -34,7 +37,7 @@ role: "user-svc:admin"
 contactId: "user1@user1.com"
 
 # Save multiple enrolls from a file
-save ./enrolls.yaml
+oo enroll save ./enrolls.yaml
 
 # Example contents of 'enrolls.yaml':
 - id: "enroll-id-1"

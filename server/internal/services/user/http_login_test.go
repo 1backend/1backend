@@ -3,7 +3,6 @@ package userservice_test
 import (
 	"context"
 	"fmt"
-	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
@@ -11,31 +10,25 @@ import (
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
-	"github.com/1backend/1backend/server/internal/di"
-	"github.com/1backend/1backend/server/internal/universe"
 
 	openapi "github.com/1backend/1backend/clients/go"
 )
 
 func TestOrganization(t *testing.T) {
-	hs := &di.HandlerSwitcher{}
-	server := httptest.NewServer(hs)
-	defer server.Close()
+	t.Parallel()
 
-	options := &universe.Options{
+	server, err := test.StartService(test.Options{
 		Test: true,
-		Url:  server.URL,
-	}
-	universe, err := di.BigBang(options)
+	})
 	require.NoError(t, err)
+	defer server.Cleanup(t)
 
-	hs.UpdateHandler(universe.Router)
-	err = universe.StarterFunc()
-	require.NoError(t, err)
+	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, _, err := test.MakeClients(options.ClientFactory, 3)
+	manyClients, _, err := test.MakeClients(clientFactory, 3)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -47,7 +40,7 @@ func TestOrganization(t *testing.T) {
 	otherClient := manyClients[1]
 	thirdClient := manyClients[2]
 
-	publicKeyRsp, _, err := options.ClientFactory.Client().
+	publicKeyRsp, _, err := clientFactory.Client().
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	require.NoError(t, err)
@@ -67,7 +60,15 @@ func TestOrganization(t *testing.T) {
 				Execute()
 			require.NoError(t, err, rsp)
 
-			claim, err := options.Authorizer.ParseJWT(
+			t.Run("token refresh still works", func(t *testing.T) {
+				// Creating an org mints a new token.
+				// We've had an issue in the past where the token minted during org save could not be refreshed.
+				_, hrsp, err := userClient.UserSvcAPI.RefreshToken(context.Background()).
+					Execute()
+				require.NoError(t, err, hrsp)
+			})
+
+			claim, err := auth.AuthorizerImpl{}.ParseJWT(
 				publicKeyRsp.PublicKey,
 				userToken,
 			)
@@ -88,7 +89,7 @@ func TestOrganization(t *testing.T) {
 				Execute()
 			require.NoError(t, err)
 
-			claim, err = options.Authorizer.ParseJWT(
+			claim, err = auth.AuthorizerImpl{}.ParseJWT(
 				publicKeyRsp.PublicKey,
 				loginRsp.Token.Token,
 			)
@@ -141,7 +142,7 @@ func TestOrganization(t *testing.T) {
 			Execute()
 		require.NoError(t, err)
 
-		claim, err := options.Authorizer.ParseJWT(
+		claim, err := auth.AuthorizerImpl{}.ParseJWT(
 			publicKeyRsp.PublicKey,
 			loginRsp.Token.Token,
 		)

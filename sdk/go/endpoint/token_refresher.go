@@ -7,7 +7,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/dgraph-io/ristretto"
 	jwtlib "github.com/golang-jwt/jwt/v5"
 	"github.com/pkg/errors"
@@ -95,7 +94,6 @@ func (tr *tokenRefresher) EnsureValidToken(request *http.Request) (string, *auth
 		if strings.Contains(err.Error(), "token is expired") {
 			isExpired = true
 		} else {
-			spew.Dump("errored", request.Header.Get("Authorization"))
 			return "", nil, errors.Wrap(err, "failed to parse JWT")
 		}
 	}
