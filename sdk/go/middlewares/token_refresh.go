@@ -21,8 +21,10 @@ func TokenRefreshMiddleware(tr endpoint.TokenRefresher, autorefreshOff bool) fun
 	return func(next http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			if !autorefreshOff &&
+				// @todo this is cruft, this list should be provided by options
 				r.URL.Path != "/user-svc/refresh-token" &&
-				r.URL.Path != "/user-svc/public-key" {
+				r.URL.Path != "/user-svc/public-key" &&
+				r.URL.Path != "/user-svc/login" {
 				if tr == nil {
 					panic("token refresher is nil" + r.URL.Path)
 				}
