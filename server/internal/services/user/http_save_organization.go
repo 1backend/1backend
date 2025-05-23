@@ -22,6 +22,7 @@ import (
 	"github.com/pkg/errors"
 
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
@@ -76,7 +77,17 @@ func (s *UserService) SaveOrganization(
 	}
 	defer r.Body.Close()
 
-	org, token, err := s.saveOrganization(usr.Id, &req)
+	claims, err := s.options.Authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
+	if err != nil {
+		logger.Error(
+			"Failed to parse JWT",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
+		return
+	}
+
+	org, token, err := s.saveOrganization(usr.Id, &req, claims)
 	if err != nil {
 		logger.Error(
 			"Failed to save organization",
@@ -100,6 +111,7 @@ func (s *UserService) SaveOrganization(
 func (s *UserService) saveOrganization(
 	userId string,
 	request *user.SaveOrganizationRequest,
+	claims *auth.Claims,
 ) (*user.Organization, *user.AuthToken, error) {
 	if request.Slug == "" {
 		return nil, nil, errors.New("slug is required")
@@ -193,7 +205,7 @@ func (s *UserService) saveOrganization(
 	}
 	u := userI.(*user.User)
 
-	token, err := s.generateAuthToken(u)
+	token, err := s.generateAuthToken(u, claims.Device)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "error generating token")
 	}

@@ -182,12 +182,14 @@ func (s *UserService) login(
 		}
 	}
 
-	token, err := s.generateAuthToken(usr)
+	token, err := s.generateAuthToken(usr, request.Device)
 	if err != nil {
 		return nil, err
 	}
 
-	token.Device = request.Device
+	if token.Device == "" {
+		token.Device = defaultDevice
+	}
 
 	err = s.authTokensStore.Create(token)
 	if err != nil {
@@ -219,6 +221,7 @@ func (s *UserService) isFunctional(token string) (bool, error) {
 
 func (s *UserService) generateAuthToken(
 	u *user.User,
+	device string,
 ) (*user.AuthToken, error) {
 	roles, err := s.getRolesByUserId(u.Id)
 	if err != nil {
@@ -232,7 +235,7 @@ func (s *UserService) generateAuthToken(
 		return nil, errors.Wrap(err, "error listing organizations")
 	}
 
-	token, err := s.generateJWT(u, roles, activeOrganizationId, s.privateKey)
+	token, err := s.generateJWT(u, roles, activeOrganizationId, s.privateKey, device)
 	if err != nil {
 		return nil, err
 	}
@@ -243,6 +246,7 @@ func (s *UserService) generateAuthToken(
 		Id:        sdk.Id("tok"),
 		UserId:    u.Id,
 		Token:     token,
+		Device:    device,
 		Active:    true,
 		ExpiresAt: now.Add(s.options.TokenExpiration),
 		CreatedAt: now,

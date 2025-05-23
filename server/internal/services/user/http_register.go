@@ -185,11 +185,10 @@ func (s *UserService) register(
 		}
 	}
 
-	token, err := s.generateAuthToken(usr)
+	token, err := s.generateAuthToken(usr, defaultDevice)
 	if err != nil {
 		return nil, err
 	}
-	token.Device = defaultDevice
 
 	return token, s.authTokensStore.Create(token)
 }
