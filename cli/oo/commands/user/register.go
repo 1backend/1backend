@@ -67,6 +67,7 @@ func Register(cmd *cobra.Command, args []string) error {
 	rsp, _, err := cf.Client().
 		UserSvcAPI.Register(cmd.Context()).
 		Body(openapi.UserSvcRegisterRequest{
+			Device:   openapi.PtrString("cli"),
 			Slug:     slug,
 			Password: &password,
 		}).

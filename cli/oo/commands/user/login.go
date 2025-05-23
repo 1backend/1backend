@@ -67,6 +67,7 @@ func Login(cmd *cobra.Command, args []string) error {
 	rsp, _, err := cf.Client().
 		UserSvcAPI.Login(cmd.Context()).
 		Body(openapi.UserSvcLoginRequest{
+			Device:   openapi.PtrString("cli"),
 			Slug:     &slug,
 			Password: &password,
 		}).
