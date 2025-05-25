@@ -146,7 +146,7 @@ func (s *UserService) refreshToken(
 	}
 
 	if token.Device == "" {
-		token.Device = defaultDevice
+		token.Device = unknownDevice
 	}
 
 	err = s.authTokensStore.Create(token)

@@ -143,7 +143,7 @@ func (s *UserService) login(
 	}
 
 	if request.Device == "" {
-		request.Device = defaultDevice
+		request.Device = unknownDevice
 	}
 
 	// Let's see if there is an active token we can reuse
@@ -188,7 +188,7 @@ func (s *UserService) login(
 	}
 
 	if token.Device == "" {
-		token.Device = defaultDevice
+		token.Device = unknownDevice
 	}
 
 	err = s.authTokensStore.Create(token)

@@ -70,7 +70,7 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if req.Device == "" {
-		req.Device = defaultDevice
+		req.Device = unknownDevice
 	}
 
 	newUser := &user.UserInput{
@@ -185,7 +185,7 @@ func (s *UserService) register(
 		}
 	}
 
-	token, err := s.generateAuthToken(usr, defaultDevice)
+	token, err := s.generateAuthToken(usr, unknownDevice)
 	if err != nil {
 		return nil, err
 	}
