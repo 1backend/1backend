@@ -14,6 +14,7 @@
 package endpoint
 
 import (
+	"encoding/json"
 	"log/slog"
 	"net/http"
 
@@ -49,6 +50,32 @@ func WriteString(w http.ResponseWriter, statusCode int, str string) {
 		logger.Error("Error writing response",
 			slog.Any("error", err),
 		)
+	}
+}
+
+// WriteJSON writes a JSON response to the response writer with the specified status code.
+func WriteJSON(w http.ResponseWriter, statusCode int, v interface{}) {
+	if v == nil {
+		return
+	}
+
+	jsonData, err := json.Marshal(v)
+	if err != nil {
+		logger.Error("Error marshalling JSON",
+			slog.Any("error", err),
+		)
+		WriteErr(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	w.WriteHeader(statusCode)
+	_, err = w.Write(jsonData)
+	if err != nil {
+		logger.Error("Error writing JSON response",
+			slog.Any("error", err),
+		)
+
+		return
 	}
 }
 
