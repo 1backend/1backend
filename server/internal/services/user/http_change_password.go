@@ -42,7 +42,7 @@ import (
 // @Router /user-svc/change-password [post]
 func (s *UserService) ChangePassword(w http.ResponseWriter, r *http.Request) {
 
-	usr, hasPermission, err := s.hasPermission(r, user.PermissionUserPasswordChange)
+	usr, hasPermission, _, err := s.hasPermission(r, user.PermissionUserPasswordChange)
 	if err != nil {
 		logger.Error(
 			"Failed to check permission",
@@ -78,12 +78,7 @@ func (s *UserService) ChangePassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bs, _ := json.Marshal(user.ChangePasswordResponse{})
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
-	}
+	endpoint.WriteJSON(w, http.StatusOK, user.ChangePasswordResponse{})
 }
 
 func (s *UserService) changePassword(

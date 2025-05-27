@@ -39,6 +39,19 @@ import (
 // @Security BearerAuth
 // @Router /user-svc/tokens [delete]
 func (s *UserService) RevokeTokens(w http.ResponseWriter, r *http.Request) {
+	_, hasTokenRevokePermission, claims, err := s.hasPermission(
+		r,
+		user.PermissionTokenRevoke,
+	)
+	if err != nil {
+		logger.Error(
+			"Failed to check permission",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
+		return
+	}
+
 	request := user.RevokeTokensRequest{}
 	if r.ContentLength != 0 {
 		err := json.NewDecoder(r.Body).Decode(&request)
@@ -53,23 +66,13 @@ func (s *UserService) RevokeTokens(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
 	}
 
-	claim, err := s.parseJWTFromRequest(r)
-	if err != nil {
-		logger.Error(
-			"Failed to parse JWT",
-			slog.Any("error", err),
-		)
-		endpoint.InternalServerError(w)
-		return
-	}
-
-	if !s.options.Authorizer.IsAdminToken(claim) && request.UserId != "" {
+	if !hasTokenRevokePermission && request.UserId != "" {
 		endpoint.Unauthorized(w)
 		return
 	}
 
-	if !s.options.Authorizer.IsAdminToken(claim) {
-		request.UserId = claim.UserId
+	if !hasTokenRevokePermission {
+		request.UserId = claims.UserId
 	}
 
 	if request.UserId == "" && !request.AllTokens ||
@@ -90,12 +93,7 @@ func (s *UserService) RevokeTokens(w http.ResponseWriter, r *http.Request) {
 
 	rsp := user.RevokeTokensResponse{}
 
-	bs, _ := json.Marshal(rsp)
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
-	}
+	endpoint.WriteJSON(w, http.StatusOK, rsp)
 }
 
 func (s *UserService) revokeTokens(request *user.RevokeTokensRequest) error {

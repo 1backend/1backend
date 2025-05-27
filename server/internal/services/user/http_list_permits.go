@@ -42,7 +42,7 @@ func (s *UserService) ListPermits(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	_, has, err := s.hasPermission(r, user.PermissionPermitView)
+	_, has, _, err := s.hasPermission(r, user.PermissionPermitView)
 	if err != nil {
 		logger.Error(
 			"Failed to check permission",
@@ -78,14 +78,10 @@ func (s *UserService) ListPermits(
 		return
 	}
 
-	bs, _ := json.Marshal(user.ListPermitsResponse{
+	rsp := user.ListPermitsResponse{
 		Permits: permits,
-	})
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
 	}
+	endpoint.WriteJSON(w, http.StatusOK, rsp)
 }
 
 func (us *UserService) listPermits(req *user.ListPermitsRequest) ([]*user.Permit, error) {

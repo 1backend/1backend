@@ -40,7 +40,7 @@ func (s *UserService) ListOrganizations(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	_, hasPermission, err := s.hasPermission(
+	_, hasPermission, _, err := s.hasPermission(
 		r,
 		user.PermissionOrganizationView,
 	)
@@ -79,12 +79,7 @@ func (s *UserService) ListOrganizations(
 		return
 	}
 
-	bs, _ := json.Marshal(rsp)
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
-	}
+	endpoint.WriteJSON(w, http.StatusOK, rsp)
 }
 
 func (s *UserService) listOrganizations(

@@ -51,7 +51,7 @@ func (s *UserService) SaveMembership(
 	organizationId := mux.Vars(r)["organizationId"]
 	userId := mux.Vars(r)["userId"]
 
-	usr, hasPermission, err := s.hasPermission(
+	usr, hasPermission, _, err := s.hasPermission(
 		r,
 		user.PermissionOrganizationAddUser,
 	)
@@ -90,12 +90,7 @@ func (s *UserService) SaveMembership(
 		return
 	}
 
-	bs, _ := json.Marshal(user.SaveMembershipResponse{})
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
-	}
+	endpoint.WriteJSON(w, http.StatusOK, user.SaveMembershipResponse{})
 }
 
 func (s *UserService) saveMembership(

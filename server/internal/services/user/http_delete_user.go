@@ -13,7 +13,6 @@
 package userservice
 
 import (
-	"encoding/json"
 	"errors"
 	"log/slog"
 	"net/http"
@@ -40,7 +39,7 @@ import (
 // @Router /user-svc/user/{userId} [delete]
 func (s *UserService) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
-	usr, hasPermission, err := s.hasPermission(r, user.PermissionUserDelete)
+	usr, hasPermission, _, err := s.hasPermission(r, user.PermissionUserDelete)
 	if err != nil {
 		logger.Error(
 			"Failed to check permission",
@@ -73,27 +72,15 @@ func (s *UserService) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	err = s.deleteUser(userId)
 	if err != nil {
-		if err != nil {
-			logger.Error(
-				"Failed to delete user",
-				slog.Any("error", err),
-			)
-			endpoint.InternalServerError(w)
-			return
-		}
-		if !hasPermission {
-			endpoint.Unauthorized(w)
-			return
-		}
+		logger.Error(
+			"Failed to delete user",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
-	bs, _ := json.Marshal(user.DeleteUserResponse{})
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
-	}
+	endpoint.WriteJSON(w, http.StatusOK, user.DeleteUserResponse{})
 }
 
 func (s *UserService) deleteUser(userId string) error {

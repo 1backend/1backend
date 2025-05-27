@@ -50,7 +50,7 @@ func (s *UserService) DeleteMembership(
 	organizationId := mux.Vars(r)["organizationId"]
 	userId := mux.Vars(r)["userId"]
 
-	usr, hasPermission, err := s.hasPermission(
+	usr, hasPermission, _, err := s.hasPermission(
 		r,
 		user.PermissionOrganizationCreate,
 	)
@@ -89,12 +89,7 @@ func (s *UserService) DeleteMembership(
 		return
 	}
 
-	bs, _ := json.Marshal(user.DeleteMembershipResponse{})
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
-	}
+	endpoint.WriteJSON(w, http.StatusOK, user.DeleteMembershipResponse{})
 }
 
 func (s *UserService) deleteMembership(

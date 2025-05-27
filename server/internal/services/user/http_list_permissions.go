@@ -53,7 +53,7 @@ func (s *UserService) ListPermissions(
 	}
 	defer r.Body.Close()
 
-	claim, err := s.parseJWTFromRequest(r)
+	claim, err := s.options.Authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
 	if err != nil || claim == nil {
 		endpoint.Unauthorized(w)
 		return
@@ -79,14 +79,10 @@ func (s *UserService) ListPermissions(
 		return
 	}
 
-	bs, _ := json.Marshal(user.ListPermissionsResponse{
+	rsp := user.ListPermissionsResponse{
 		Permissions: permissions,
-	})
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
 	}
+	endpoint.WriteJSON(w, http.StatusOK, rsp)
 }
 
 func (s *UserService) listPermissions(
