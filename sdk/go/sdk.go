@@ -72,6 +72,31 @@ func OpaqueId(prefix string) string {
 	)
 }
 
+// DeterministicId generates a deterministic, human-readable ID from a prefix and a source identifier.
+// It is designed for use cases where consistent derived IDs are required—especially in eventually consistent systems.
+//
+// Use cases include:
+//   - Idempotent operations (e.g., same insert won't duplicate data)
+//   - Derived records (e.g., credit/debit entries from a transaction ID)
+//   - Stable keys in distributed writes
+//
+// The resulting ID is formatted as: <prefix>_<cleaned source ID>
+// Hyphens in either component are replaced with underscores for consistency.
+//
+// Example:
+//
+//	DeterministicId("txn_debit", "order123")   → "txn_debit_order123"
+//	DeterministicId("txn_credit", "order123")  → "txn_credit_order123"
+//
+// This avoids clashing with auto-generated IDs while remaining readable and traceable.
+func DeterministicId(prefix, id string) string {
+	prefix = strings.TrimSuffix(prefix, "_")
+	prefix = strings.ReplaceAll(prefix, "-", "_")
+	id = strings.ReplaceAll(id, "-", "_")
+
+	return fmt.Sprintf("%s_%s", prefix, id)
+}
+
 // OneBackendAPIError checks if an error is a GenericOpenAPIError and returns a meaningful error.
 func OneBackendAPIError(err error) error {
 	if err == nil {
