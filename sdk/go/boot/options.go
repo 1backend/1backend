@@ -41,8 +41,9 @@ type Options struct {
 	// ie. this is how services call each other
 	ClientFactory client.ClientFactory
 
-	TokenRefresher endpoint.TokenRefresher
-	Middlewares    func(http.HandlerFunc) http.HandlerFunc
+	TokenRefresher    endpoint.TokenRefresher
+	PermissionChecker endpoint.PermissionChecker
+	Middlewares       func(http.HandlerFunc) http.HandlerFunc
 
 	// Authorizer is a helper interface that contains
 	// auth related utility functions
@@ -83,6 +84,12 @@ func (o *Options) LoadEnvars() error {
 		if err != nil {
 			return errors.Wrap(err, "failed to create token refresher")
 		}
+	}
+
+	if o.PermissionChecker == nil {
+		o.PermissionChecker = endpoint.NewPermissionChecker(
+			o.ClientFactory,
+		)
 	}
 
 	if os.Getenv("OB_TOKEN_AUTO_REFRESH_OFF") == "true" {
