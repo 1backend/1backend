@@ -26,6 +26,36 @@ import (
 	user_svc "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
+func TestUnauthorizedShouldNotReturnError(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{
+		Test: true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	token, err := boot.RegisterUserAccount(
+		clientFactory.Client().UserSvcAPI,
+		"someuser",
+		"pw123",
+		"Some name",
+	)
+	require.NoError(t, err)
+	userClient := clientFactory.Client(client.WithToken(token.Token))
+
+	ctx := context.Background()
+
+	rsp, _, err := userClient.UserSvcAPI.
+		HasPermission(ctx, "user.view").
+		Execute()
+	require.NoError(t, err)
+	require.False(t, rsp.Authorized)
+	require.NotEmpty(t, rsp.User)
+}
+
 func TestPermitsBySlug(t *testing.T) {
 	t.Parallel()
 

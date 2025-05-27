@@ -58,7 +58,7 @@ func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
 	}
 
-	claim, err := s.parseJWTFromRequest(r)
+	claim, err := s.options.Authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
 	if err != nil {
 		logger.Error(
 			"Failed to parse JWT",

@@ -41,7 +41,7 @@ import (
 // @Router /user-svc/enrolls [post]
 func (s *UserService) ListEnrolls(w http.ResponseWriter, r *http.Request) {
 
-	_, hasPermission, err := s.hasPermission(r, user.PermissionEnrollView)
+	_, hasPermission, claims, err := s.hasPermission(r, user.PermissionEnrollView)
 	if err != nil {
 		logger.Error(
 			"Failed to check permission",
@@ -51,12 +51,6 @@ func (s *UserService) ListEnrolls(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if !hasPermission {
-		endpoint.Unauthorized(w)
-		return
-	}
-
-	claim, err := s.parseJWTFromRequest(r)
-	if err != nil || claim == nil {
 		endpoint.Unauthorized(w)
 		return
 	}
@@ -73,7 +67,7 @@ func (s *UserService) ListEnrolls(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	enrolls, err := s.listEnrolls(claim, req)
+	enrolls, err := s.listEnrolls(claims, req)
 	if err != nil {
 		if err != nil {
 			logger.Error(
@@ -90,14 +84,10 @@ func (s *UserService) ListEnrolls(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bs, _ := json.Marshal(user.ListEnrollsResponse{
+	rsp := user.ListEnrollsResponse{
 		Enrolls: enrolls,
-	})
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
 	}
+	endpoint.WriteJSON(w, http.StatusOK, rsp)
 }
 
 func (s *UserService) listEnrolls(

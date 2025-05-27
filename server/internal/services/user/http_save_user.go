@@ -45,7 +45,7 @@ import (
 // @Router /user-svc/user/{userId} [put]
 func (s *UserService) SaveUser(w http.ResponseWriter, r *http.Request) {
 
-	_, hasPermission, err := s.hasPermission(r, user.PermissionUserEdit)
+	_, hasPermission, _, err := s.hasPermission(r, user.PermissionUserEdit)
 	if err != nil {
 		logger.Error(
 			"Failed to check permission",
@@ -84,12 +84,7 @@ func (s *UserService) SaveUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bs, _ := json.Marshal(user.SaveUserResponse{})
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
-	}
+	endpoint.WriteJSON(w, http.StatusOK, user.SaveUserResponse{})
 }
 
 func (s *UserService) saveUser(

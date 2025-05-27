@@ -13,15 +13,14 @@
 package userservice
 
 import (
-	"encoding/json"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/pkg/errors"
 
+	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
@@ -32,16 +31,19 @@ import (
 
 // @ID hasPermission
 // @Summary Has Permission
-// @Description Checks if the caller has a specific permission.
-// @Description This endpoint is optimized for caching, as it only takes the caller and the permission to check.
-// @Description To grant a user or role a permission, use the `Save Permits` endpoint.
+// @Description Checks whether the caller has a specific permission.
+// @Description Optimized for caching — only the caller and the permission are required.
+// @Description To assign a permission to a user or role, use the `Save Permits` endpoint.
+// @Description
+// @Description This endpoint does not return 401 Unauthorized if access is denied.
+// @Description Instead, it always returns 200 OK with `Authorized: false` if the permission is missing.
+// @Description The response will still include the caller’s user information if not authorized.
 // @Tags User Svc
 // @Accept json
 // @Produce json
 // @Param permission path string true "Permission"
 // @Success 200 {object} user.HasPermissionResponse
 // @Failure 400 {object} user.ErrorResponse "Missing Permission"
-// @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Security BearerAuth
 // @Router /user-svc/self/has/{permission} [post]
 func (s *UserService) HasPermission(
@@ -56,7 +58,7 @@ func (s *UserService) HasPermission(
 		return
 	}
 
-	usr, hasPermission, err := s.hasPermission(r, permission)
+	usr, hasPermission, claims, err := s.hasPermission(r, permission)
 	if err != nil {
 		logger.Error(
 			"Failed to check permission",
@@ -66,51 +68,32 @@ func (s *UserService) HasPermission(
 		return
 	}
 
-	if !hasPermission {
-		endpoint.Unauthorized(w)
-		return
-	}
-
-	claims, err := s.options.Authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
-	if err != nil {
-		logger.Error(
-			"Failed to parse JWT",
-			slog.Any("error", err),
-		)
-		endpoint.InternalServerError(w)
-		return
-	}
-
-	bs, _ := json.Marshal(&user.HasPermissionResponse{
+	rsp := &user.HasPermissionResponse{
 		Authorized: hasPermission,
 		Until:      claims.ExpiresAt.Time,
 		User:       *usr,
-	})
-
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
 	}
+
+	endpoint.WriteJSON(w, http.StatusOK, rsp)
 }
 
 func (s *UserService) hasPermission(
 	r *http.Request,
 	permission string,
-) (*user.User, bool, error) {
-	usr, err := s.getUserFromRequest(r)
+) (*user.User, bool, *auth.Claims, error) {
+	usr, claims, err := s.getUserFromRequest(r)
 	if err != nil {
 		if strings.Contains(err.Error(), "token is expired") {
-			return nil, false, nil
+			return nil, false, claims, nil
 		}
-		return nil, false, err
+		return nil, false, claims, errors.Wrap(err, "failed to get user from request")
 	}
 
 	enrolls, err := s.enrollsStore.Query(
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 	).Find()
 	if err != nil {
-		return nil, false, err
+		return usr, false, claims, errors.Wrap(err, "failed to query enrolls")
 	}
 
 	roleIds := []string{}
@@ -126,12 +109,12 @@ func (s *UserService) hasPermission(
 		datastore.Intersects(datastore.Field("roles"), roleIdAnys),
 	).Find()
 	if err != nil {
-		return nil, false, err
+		return usr, false, claims, err
 	}
 
 	for _, permissionLink := range permits {
 		if permissionLink.(*user.Permit).Permission == permission {
-			return usr, true, nil
+			return usr, true, claims, nil
 		}
 
 	}
@@ -149,7 +132,7 @@ func (s *UserService) hasPermission(
 		datastore.Equals([]string{"permission"}, permission),
 	).Find()
 	if err != nil {
-		return nil, false, err
+		return usr, false, claims, err
 	}
 
 	exists := false
@@ -180,10 +163,10 @@ func (s *UserService) hasPermission(
 	}
 
 	if exists {
-		return usr, true, nil
+		return usr, true, claims, nil
 	}
 
-	return nil, false, nil
+	return usr, false, claims, nil
 }
 
 func (s *UserService) getRolesByUserId(userId string) ([]string, error) {
@@ -246,71 +229,53 @@ func (s *UserService) getContactsByUserId(userId string) ([]user.Contact, error)
 	return contacts, nil
 }
 
-func (s *UserService) getUserFromRequest(r *http.Request) (*user.User, error) {
+func (s *UserService) getUserFromRequest(r *http.Request) (
+	*user.User,
+	*auth.Claims,
+	error,
+) {
 	authHeader := r.Header.Get("Authorization")
 	authHeader = strings.Replace(authHeader, "Bearer ", "", 1)
 
 	if authHeader == "" || authHeader == "Bearer" {
-		return nil, fmt.Errorf("no auth header")
+		return nil, nil, fmt.Errorf("no auth header")
 	}
 
-	var token *user.AuthToken
-
-	expired := false
-	t, err := s.options.Authorizer.ParseJWT(s.publicKeyPem, authHeader)
+	claims, err := s.options.Authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
 	if err != nil {
-		if strings.Contains(err.Error(), "token is expired") {
-			expired = true
-		} else {
-			return nil, errors.Wrap(err, "failed to parse JWT")
-		}
+		return nil, nil, errors.Wrap(err, "failed to parse JWT from request")
 	}
 
-	// Handle nil expiresAt for backwards compatibility.
-	// Can be removed later.
-	if expired ||
-		t.ExpiresAt == nil ||
-		t.ExpiresAt.Time.Before(time.Now()) {
-		if s.options.TokenAutoRefreshOff {
-			return nil, errors.New("token is expired")
-		}
-
-		token, err = s.refreshToken(authHeader)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to refresh token")
-		}
-	} else {
-		tokenI, found, err := s.authTokensStore.Query(
-			datastore.Equals(datastore.Field("token"), authHeader),
-		).FindOne()
-		if err != nil {
-			return nil, err
-		}
-
-		if !found {
-			return nil, errors.New("token not found")
-		}
-
-		token = tokenI.(*user.AuthToken)
+	tokenI, found, err := s.authTokensStore.Query(
+		datastore.Equals(datastore.Field("token"), authHeader),
+	).FindOne()
+	if err != nil {
+		return nil, claims, err
 	}
+
+	if !found {
+		return nil, claims, errors.New("token not found")
+	}
+
+	token := tokenI.(*user.AuthToken)
 
 	userI, found, err := s.usersStore.Query(
 		datastore.Id(token.UserId),
 	).FindOne()
 	if err != nil {
-		return nil, err
+		return nil, claims, err
 	}
 	if !found {
 		logger.Error("Token refers to nonexistent user",
 			slog.String("userId", token.UserId),
 			slog.String("tokenId", token.Id),
 		)
-		return nil, errors.New("token user does not exist")
+		return nil, claims, errors.New("token user does not exist")
 	}
 
-	user := userI.(*user.User)
+	usr := userI.(*user.User)
 
-	return user, nil
+	return usr, claims, nil
 }
 
 func (s *UserService) GetUserFromRequest(

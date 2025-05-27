@@ -54,7 +54,7 @@ import (
 // @Router /user-svc/enrolls [put]
 func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 
-	usr, hasPermission, err := s.hasPermission(r, user.PermissionEnrollEdit)
+	usr, hasPermission, claims, err := s.hasPermission(r, user.PermissionEnrollEdit)
 	if err != nil {
 		logger.Error(
 			"Failed to check permission",
@@ -80,25 +80,17 @@ func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	isAdmin, err := s.options.Authorizer.IsAdminFromRequest(s.publicKeyPem, r)
-	if err != nil {
-		logger.Error(
-			"Failed to check if user is admin",
-			slog.Any("error", err),
-		)
-		endpoint.InternalServerError(w)
-		return
-	}
-
-	claim, err := s.parseJWTFromRequest(r)
-	if err != nil || claim == nil {
-		endpoint.Unauthorized(w)
-		return
+	isAdmin := false
+	for _, role := range claims.Roles {
+		if role == user.RoleAdmin {
+			isAdmin = true
+			break
+		}
 	}
 
 	if !isAdmin {
 		for _, enroll := range req.Enrolls {
-			if !auth.OwnsRole(claim, enroll.Role) {
+			if !auth.OwnsRole(claims, enroll.Role) {
 				endpoint.Unauthorized(w)
 				return
 			}

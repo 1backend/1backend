@@ -48,7 +48,7 @@ func (s *UserService) SaveOrganization(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	usr, hasPermission, err := s.hasPermission(
+	usr, hasPermission, claims, err := s.hasPermission(
 		r,
 		user.PermissionOrganizationCreate,
 	)
@@ -77,16 +77,6 @@ func (s *UserService) SaveOrganization(
 	}
 	defer r.Body.Close()
 
-	claims, err := s.options.Authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
-	if err != nil {
-		logger.Error(
-			"Failed to parse JWT",
-			slog.Any("error", err),
-		)
-		endpoint.InternalServerError(w)
-		return
-	}
-
 	org, token, err := s.saveOrganization(usr.Id, &req, claims)
 	if err != nil {
 		logger.Error(
@@ -97,15 +87,11 @@ func (s *UserService) SaveOrganization(
 		return
 	}
 
-	bs, _ := json.Marshal(user.SaveOrganizationResponse{
+	rsp := user.SaveOrganizationResponse{
 		Organization: *org,
 		Token:        *token,
-	})
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
 	}
+	endpoint.WriteJSON(w, http.StatusOK, rsp)
 }
 
 func (s *UserService) saveOrganization(

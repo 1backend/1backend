@@ -41,7 +41,7 @@ func (s *UserService) CreateUser(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	_, hasPermission, err := s.hasPermission(r, user.PermissionUserCreate)
+	_, hasPermission, _, err := s.hasPermission(r, user.PermissionUserCreate)
 	if err != nil {
 		logger.Error(
 			"Failed to check permission",
@@ -87,12 +87,7 @@ func (s *UserService) CreateUser(
 		return
 	}
 
-	bs, _ := json.Marshal(user.CreateUserResponse{})
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
-	}
+	endpoint.WriteJSON(w, http.StatusOK, user.CreateUserResponse{})
 }
 
 func validateUser(u *user.UserInput, contacts []user.Contact) error {

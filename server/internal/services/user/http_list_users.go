@@ -44,7 +44,7 @@ func (s *UserService) ListUsers(
 	r *http.Request,
 ) {
 
-	_, hasPermission, err := s.hasPermission(r, user.PermissionUserView)
+	_, hasPermission, _, err := s.hasPermission(r, user.PermissionUserView)
 	if err != nil {
 		logger.Error(
 			"Failed to check permission",

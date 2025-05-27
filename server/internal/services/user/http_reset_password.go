@@ -48,7 +48,7 @@ func (s *UserService) ResetPassword(
 	r *http.Request,
 ) {
 
-	_, hasPermission, err := s.hasPermission(r, user.PermissionUserPasswordReset)
+	_, hasPermission, _, err := s.hasPermission(r, user.PermissionUserPasswordReset)
 	if err != nil {
 		logger.Error(
 			"Failed to check permission",
@@ -87,12 +87,7 @@ func (s *UserService) ResetPassword(
 		return
 	}
 
-	bs, _ := json.Marshal(user.ResetPasswordResponse{})
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
-	}
+	endpoint.WriteJSON(w, http.StatusOK, user.ResetPasswordResponse{})
 }
 
 func (s *UserService) resetPassword(userId, newPassword string) error {

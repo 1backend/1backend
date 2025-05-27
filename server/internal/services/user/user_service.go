@@ -15,7 +15,6 @@ package userservice
 import (
 	"crypto/rsa"
 	"net/http"
-	"strings"
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
@@ -410,46 +409,4 @@ func (s *UserService) bootstrap() error {
 	}
 
 	return nil
-}
-
-// parseJwtFromRequest parses the JWT from the request and refreshes it if necessary and if the server
-// is enabled to do so. Drop in replacement for `authorizer.ParseJWTFromRequest`.
-func (s *UserService) parseJWTFromRequest(r *http.Request) (*auth.Claims, error) {
-	expired := false
-	claims, err := s.options.Authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
-	if err != nil {
-		if strings.Contains(err.Error(), "expired") {
-			expired = true
-		} else {
-			return nil, err
-		}
-	}
-
-	if s.options.TokenAutoRefreshOff {
-		return claims, err
-	}
-
-	if !expired && claims != nil && claims.ExpiresAt != nil &&
-		claims.ExpiresAt.Time.After(
-			time.Now().Add(5*time.Second),
-		) {
-		return claims, nil
-	}
-
-	header := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
-	if header == "" {
-		return nil, errors.New("no token found in request")
-	}
-
-	token, err := s.refreshToken(header)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to refresh token")
-	}
-
-	claims, err = s.options.Authorizer.ParseJWT(s.publicKeyPem, token.Token)
-	if err != nil {
-		return nil, err
-	}
-
-	return claims, nil
 }

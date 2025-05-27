@@ -56,7 +56,7 @@ func TestRevokeTokens(t *testing.T) {
 				context.Background(),
 			).Body(
 				openapi.UserSvcRevokeTokensRequest{
-					Device: openapi.PtrString("default"),
+					Device: openapi.PtrString("unknown"),
 				},
 			).Execute()
 			require.NoError(t, err, hrsp)

@@ -43,7 +43,7 @@ import (
 // @Security BearerAuth
 // @Router /user-svc/permits [put]
 func (s *UserService) SavePermits(w http.ResponseWriter, r *http.Request) {
-	usr, err := s.getUserFromRequest(r)
+	usr, claims, err := s.getUserFromRequest(r)
 	if err != nil {
 		logger.Error(
 			"Failed to get user from request",
@@ -65,14 +65,12 @@ func (s *UserService) SavePermits(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	isAdmin, err := s.options.Authorizer.IsAdminFromRequest(s.publicKeyPem, r)
-	if err != nil {
-		logger.Error(
-			"Failed to check if user is admin",
-			slog.Any("error", err),
-		)
-		endpoint.InternalServerError(w)
-		return
+	isAdmin := false
+	for _, role := range claims.Roles {
+		if role == user.RoleAdmin {
+			isAdmin = true
+			break
+		}
 	}
 
 	if !isAdmin {
