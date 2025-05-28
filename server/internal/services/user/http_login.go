@@ -37,6 +37,7 @@ import (
 // @Param body body user.LoginRequest true "Login Request"
 // @Success 200 {object} user.LoginResponse "Login successful"
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON"
+// @Failure 404 {object} user.ErrorResponse "User Not Found"
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Router /user-svc/login [post]
 func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
@@ -56,9 +57,20 @@ func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		switch err.Error() {
 		case "unauthorized":
+			logger.Error(
+				"Invalid password",
+				slog.Any("slug", request.Slug),
+				slog.Any("contact", request.Contact),
+			)
 			endpoint.WriteString(w, http.StatusUnauthorized, "Invalid Password")
 		case "not found":
-			endpoint.WriteString(w, http.StatusBadRequest, "Not Found")
+			logger.Error(
+				"Cannot find user",
+				slog.Any("slug", request.Slug),
+				slog.Any("contact", request.Contact),
+				slog.Any("error", err),
+			)
+			endpoint.WriteString(w, http.StatusNotFound, "Not Found")
 		default:
 			logger.Error(
 				"Failed to login",

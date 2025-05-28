@@ -24,7 +24,18 @@ import (
 	onebackendapi "github.com/1backend/1backend/clients/go"
 )
 
-func RegisterServiceAccount(userService onebackendapi.UserSvcAPI, serviceSlug, serviceName string, store datastore.DataStore) (*onebackendapi.UserSvcAuthToken, error) {
+// RegisterServiceAccount is used during service startup to ensure the service is
+// properly registered and authenticated with the user service.
+// It first attempts to load existing credentials from the store.
+// If none are found, it generates new ones and attempts to register the service.
+// If login fails because the account doesn’t exist (e.g. registration was interrupted),
+// it retries registration using the saved credentials.
+func RegisterServiceAccount(
+	userService onebackendapi.UserSvcAPI,
+	serviceSlug,
+	serviceName string,
+	store datastore.DataStore,
+) (*onebackendapi.UserSvcAuthToken, error) {
 	ctx := context.Background()
 
 	res, err := store.Query().Find()
@@ -60,18 +71,34 @@ func RegisterServiceAccount(userService onebackendapi.UserSvcAPI, serviceSlug, s
 
 	cred := res[0].(*auth.Credential)
 
-	loginRsp, _, err := userService.Login(ctx).Body(onebackendapi.UserSvcLoginRequest{
+	loginRsp, loginHttpRsp, err := userService.Login(ctx).Body(onebackendapi.UserSvcLoginRequest{
 		Slug:     onebackendapi.PtrString(serviceSlug),
 		Password: onebackendapi.PtrString(cred.Password),
 	}).Execute()
 
 	if err != nil {
+		if loginHttpRsp != nil && loginHttpRsp.StatusCode == 404 {
+			// We'll try to register as maybe registration failed or did not
+			// happen after saving the credential.
+			rsp, _, err := userService.Register(ctx).Body(onebackendapi.UserSvcRegisterRequest{
+				Slug:     serviceSlug,
+				Name:     onebackendapi.PtrString(serviceName),
+				Password: onebackendapi.PtrString(cred.Password),
+			}).Execute()
+			if err != nil {
+				return nil, errors.Wrap(err, "error registering while recovering service account")
+			}
+
+			return rsp.Token, nil
+		}
 		return nil, errors.Wrap(err, "error logging in with service account")
 	}
 
 	return loginRsp.Token, nil
 }
 
+// RegisterUserAccount is primarily used in tests.
+// @todo Move to a test package.
 func RegisterUserAccount(userService onebackendapi.UserSvcAPI, slug, password, name string) (*onebackendapi.UserSvcAuthToken, error) {
 	_, _, err := userService.Register(context.Background()).Body(onebackendapi.UserSvcRegisterRequest{
 		Slug:     slug,
