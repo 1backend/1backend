@@ -20,6 +20,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"hash/crc32"
+	"log/slog"
 	"net/http"
 	"strings"
 
@@ -30,7 +31,6 @@ import (
 	secret "github.com/1backend/1backend/server/internal/services/secret/types"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/blake2b"
-	"golang.org/x/exp/slog"
 )
 
 // @Id saveSecrets
