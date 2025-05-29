@@ -16,11 +16,11 @@ import (
 	"context"
 	"io"
 	"log/slog"
+	"math/rand/v2"
 	"net/http"
 	"strings"
 
 	"github.com/pkg/errors"
-	"golang.org/x/exp/rand"
 
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
@@ -97,7 +97,7 @@ func (cs *ProxyService) route(w http.ResponseWriter, r *http.Request) (int, erro
 		selectedInstances = rsp.Instances
 	}
 
-	randomIndex := rand.Intn(len(selectedInstances))
+	randomIndex := rand.IntN(len(selectedInstances))
 	instance := selectedInstances[randomIndex]
 
 	uri := strings.TrimSuffix(instance.Url, "/") +

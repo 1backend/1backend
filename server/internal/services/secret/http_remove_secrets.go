@@ -15,6 +15,7 @@ package secretservice
 import (
 	"context"
 	"encoding/json"
+	"log/slog"
 	"net/http"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
@@ -22,7 +23,6 @@ import (
 	"github.com/1backend/1backend/sdk/go/logger"
 	secret "github.com/1backend/1backend/server/internal/services/secret/types"
 	"github.com/pkg/errors"
-	"golang.org/x/exp/slog"
 )
 
 // @Id removeSecrets
