@@ -3476,7 +3476,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.5.3
+  version: 0.6.0
 paths:
   /chat-svc/events:
     get:
@@ -6247,6 +6247,10 @@ paths:
           description: Invalid JSON
           schema:
             $ref: '#/definitions/user_svc.ErrorResponse'
+        "404":
+          description: User Not Found
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -6715,9 +6719,13 @@ paths:
       consumes:
       - application/json
       description: |-
-        Checks if the caller has a specific permission.
-        This endpoint is optimized for caching, as it only takes the caller and the permission to check.
-        To grant a user or role a permission, use the `Save Permits` endpoint.
+        Checks whether the caller has a specific permission.
+        Optimized for caching — only the caller and the permission are required.
+        To assign a permission to a user or role, use the `Save Permits` endpoint.
+
+        This endpoint does not return 401 Unauthorized if access is denied.
+        Instead, it always returns 200 OK with `Authorized: false` if the permission is missing.
+        The response will still include the caller’s user information if not authorized.
       operationId: hasPermission
       parameters:
       - description: Permission
@@ -6734,10 +6742,6 @@ paths:
             $ref: '#/definitions/user_svc.HasPermissionResponse'
         "400":
           description: Missing Permission
-          schema:
-            $ref: '#/definitions/user_svc.ErrorResponse'
-        "401":
-          description: Unauthorized
           schema:
             $ref: '#/definitions/user_svc.ErrorResponse'
       security:
