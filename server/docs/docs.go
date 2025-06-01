@@ -4099,6 +4099,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/user_svc.ErrorResponse"
                         }
                     },
+                    "404": {
+                        "description": "User Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -4785,7 +4791,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Checks if the caller has a specific permission.\nThis endpoint is optimized for caching, as it only takes the caller and the permission to check.\nTo grant a user or role a permission, use the ` + "`" + `Save Permits` + "`" + ` endpoint.",
+                "description": "Checks whether the caller has a specific permission.\nOptimized for caching — only the caller and the permission are required.\nTo assign a permission to a user or role, use the ` + "`" + `Save Permits` + "`" + ` endpoint.\n\nThis endpoint does not return 401 Unauthorized if access is denied.\nInstead, it always returns 200 OK with ` + "`" + `Authorized: false` + "`" + ` if the permission is missing.\nThe response will still include the caller’s user information if not authorized.",
                 "consumes": [
                     "application/json"
                 ],
@@ -4815,12 +4821,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Missing Permission",
-                        "schema": {
-                            "$ref": "#/definitions/user_svc.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/user_svc.ErrorResponse"
                         }
@@ -9848,7 +9848,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.5.3",
+	Version:          "0.6.0",
 	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},

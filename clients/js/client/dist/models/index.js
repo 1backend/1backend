@@ -198,6 +198,7 @@ export * from './UserSvcRefreshTokenResponse';
 export * from './UserSvcRegisterRequest';
 export * from './UserSvcRegisterResponse';
 export * from './UserSvcResetPasswordRequest';
+export * from './UserSvcRevokeTokensRequest';
 export * from './UserSvcSaveEnrollsRequest';
 export * from './UserSvcSaveEnrollsResponse';
 export * from './UserSvcSaveOrganizationRequest';

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.5.3
+API version: 0.6.0
 Contact: sales@singulatron.com
 */
 
@@ -99,9 +99,13 @@ type UserSvcAPI interface {
 	/*
 	HasPermission Has Permission
 
-	Checks if the caller has a specific permission.
-This endpoint is optimized for caching, as it only takes the caller and the permission to check.
-To grant a user or role a permission, use the `Save Permits` endpoint.
+	Checks whether the caller has a specific permission.
+Optimized for caching — only the caller and the permission are required.
+To assign a permission to a user or role, use the `Save Permits` endpoint.
+
+This endpoint does not return 401 Unauthorized if access is denied.
+Instead, it always returns 200 OK with `Authorized: false` if the permission is missing.
+The response will still include the caller’s user information if not authorized.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param permission Permission
@@ -1163,9 +1167,13 @@ func (r ApiHasPermissionRequest) Execute() (*UserSvcHasPermissionResponse, *http
 /*
 HasPermission Has Permission
 
-Checks if the caller has a specific permission.
-This endpoint is optimized for caching, as it only takes the caller and the permission to check.
-To grant a user or role a permission, use the `Save Permits` endpoint.
+Checks whether the caller has a specific permission.
+Optimized for caching — only the caller and the permission are required.
+To assign a permission to a user or role, use the `Save Permits` endpoint.
+
+This endpoint does not return 401 Unauthorized if access is denied.
+Instead, it always returns 200 OK with `Authorized: false` if the permission is missing.
+The response will still include the caller’s user information if not authorized.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param permission Permission
@@ -1255,17 +1263,6 @@ func (a *UserSvcAPIService) HasPermissionExecute(r ApiHasPermissionRequest) (*Us
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
-			var v UserSvcErrorResponse
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
 			var v UserSvcErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -2143,6 +2140,17 @@ func (a *UserSvcAPIService) LoginExecute(r ApiLoginRequest) (*UserSvcLoginRespon
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
 			var v UserSvcErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

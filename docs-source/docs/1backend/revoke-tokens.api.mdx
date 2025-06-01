@@ -1,0 +1,73 @@
+---
+id: revoke-tokens
+title: "Revoke Tokens"
+description: "Revoke tokens in one of the following scenarios:"
+sidebar_label: "Revoke Tokens"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVk1v4zYQ/SvEnLKAIjlNPwCdmrRuYWyKDZLsKTEQmhpL3FAkQ1J2VEH/vRhKih3Huy16KNCLQWg++ObNvKE7KNALJ22QRkMON7gxT8iCeULtmdTMaGRmzUKFbG2UMlupS+YFau6k8fmDPmW/GRftonEOdWCNR5dOBq5NqNDFj+zEI7JHOi6KR7aWqIoPCZNrZtHVMgQs2Ek0n/qNyCOI3EVEj4OL99LohIXWSsGVatmqZbyopfYfUkjAWHScKlkUkMMQeRdLgQQcPjfow6UpWsg7EEYH1IGO3FolRQzMvnjioQMvKqw5nayjtEGij75KjRnz7oC7xZoF12DCuFITg+uRm1j+VirFVsgGYAUhDq1FyGFljEKuoU+gwI0USNlHmw9O6pJMA3HvL/6kVUs3FDs62IlxbFsZ3KBjFfcRxN9T+6DdmwEg+Lv++R3gCVT/+sWsvqAI0PexhiMzNdDGboY2UD0OvTXaD8R+N5sdqewjJP+8U++Q9Al8fyztH01o4vjMX4RqvNwgu+aO1xiGIv/lbKBzxh3p3DGS+gR+OAZtoQM6zRW7RUe9m8ec/w2kPgGPonEytJDfd3CJ3KG7aEIF+f2yXyYQeOkhv4fPNM63GwHLBGoMlSG9FagwICRgOUVANo1bFiYN+liUj9kbp8gpU0ZwVRkf8rOz8/OfgO6ZYNxSWUMl+2AOSbtrLbKH0eUBxk016oF5ywUyrothqhkXz410WLC1M3UUxlQOuzKl1Ax1YY3UgQQqKX+FvEDqguY1cUYojJN/xh7sRMGt/IhtJJf6crNbOPMXXluFBwskbotXwU+92el8T/pSr820tbiIY4A1l8Sg5wr9z17qslE8OKNTYeo9rNcLdttYa1yg1JH0KgSbZ9nZiosn1AUFZPBOtxeLU80DiaOWwhnqnRTomVU8rI2riR4lBWofC5vu+/36im3O09mb23yeZdvtNi11kxpXZmOcz3hp1el5OkurUCvCENDV/tP6drhtB9ZveVmiS6XJoktGvMtApMLZ5VAIJEDjNcCfpT+mM8pojQ8113sY32wkOKh772n4nz+H41gGfAmZVVzG9yX2pBs1eg9TenIf6FgmQGokY9etuMfPTvU9fX5u0NFmWCaw4U7yFZF/v+yTSSAk6ydsIYdfBgpPSZnUFa6aQSEHq6tPpogLIdCGb/ruL5tf51fzuzkksBrf89oUFOX4lt56voUc4j8Cio8LJH7rQHFdNrwk3yEryZWPa2UnZAKVTAeqazLpdg/j4SIYSqFfKuxoSNcNa6LvX/0H01cjXrfP4E1tXPZ9/xeF6mC3
+sidebar_class_name: "delete api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Revoke Tokens"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/user-svc/tokens"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Revoke tokens in one of the following scenarios:
+- For the current user.
+- For another user (see `userId` field), if permitted (`user-svc:token:revoke` permission, typically by admins).
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"allTokens":{"description":"If true, all tokens for the user will be revoked.","type":"boolean"},"device":{"type":"string"},"userId":{"description":"Only used by admins (or whoever has the `user-svc:token:revoke` permission\nrevoke tokens for other users","type":"string"}},"type":"object"}}},"description":"Revoke Tokens Request"}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Mutually Exclusive Parameters","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

@@ -636,6 +636,12 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "1backend/revoke-tokens",
+          label: "Revoke Tokens",
+          className: "api-method delete",
+        },
+        {
+          type: "doc",
           id: "1backend/create-user",
           label: "Create a New User",
           className: "api-method post",
