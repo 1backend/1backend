@@ -22,6 +22,7 @@ var _ MappedNullable = &UserSvcOrganization{}
 
 // UserSvcOrganization struct for UserSvcOrganization
 type UserSvcOrganization struct {
+	App *string `json:"app,omitempty"`
 	CreatedAt string `json:"createdAt"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	Id string `json:"id"`
@@ -55,6 +56,38 @@ func NewUserSvcOrganization(createdAt string, id string, name string, slug strin
 func NewUserSvcOrganizationWithDefaults() *UserSvcOrganization {
 	this := UserSvcOrganization{}
 	return &this
+}
+
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *UserSvcOrganization) GetApp() string {
+	if o == nil || IsNil(o.App) {
+		var ret string
+		return ret
+	}
+	return *o.App
+}
+
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcOrganization) GetAppOk() (*string, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
+
+// HasApp returns a boolean if a field has been set.
+func (o *UserSvcOrganization) HasApp() bool {
+	if o != nil && !IsNil(o.App) {
+		return true
+	}
+
+	return false
+}
+
+// SetApp gets a reference to the given string and assigns it to the App field.
+func (o *UserSvcOrganization) SetApp(v string) {
+	o.App = &v
 }
 
 // GetCreatedAt returns the CreatedAt field value
@@ -251,6 +284,9 @@ func (o UserSvcOrganization) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcOrganization) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.App) {
+		toSerialize["app"] = o.App
+	}
 	toSerialize["createdAt"] = o.CreatedAt
 	if !IsNil(o.DeletedAt) {
 		toSerialize["deletedAt"] = o.DeletedAt

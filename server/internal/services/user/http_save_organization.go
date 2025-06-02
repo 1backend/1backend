@@ -72,12 +72,8 @@ func (s *UserService) SaveOrganization(
 	}
 	defer r.Body.Close()
 
-	if req.App == "" {
-		req.App = user.DefaultApp
-	}
-
 	org, token, err := s.saveOrganization(
-		req.App,
+		claims.App,
 		usr.Id,
 		&req,
 		claims,
@@ -112,6 +108,7 @@ func (s *UserService) saveOrganization(
 	}
 
 	orgI, exists, err := s.organizationsStore.Query(
+		datastore.Equals(datastore.Field("app"), app),
 		datastore.Equals(datastore.Field("slug"), request.Slug),
 	).FindOne()
 	if err != nil {
@@ -132,6 +129,7 @@ func (s *UserService) saveOrganization(
 		final.UpdatedAt = now
 	} else {
 		final = &user.Organization{
+			App:       app,
 			Name:      request.Name,
 			Slug:      request.Slug,
 			CreatedAt: now,
@@ -147,6 +145,7 @@ func (s *UserService) saveOrganization(
 		// When creating a new org, the user switches to that org as the active one
 		link := &user.Membership{
 			Id:             sdk.Id("oul"),
+			App:            app,
 			UserId:         userId,
 			OrganizationId: final.Id,
 			// @todo null out the other active orgs for correctness
@@ -166,10 +165,12 @@ func (s *UserService) saveOrganization(
 	}
 
 	_, err = s.saveEnrolls(
+		claims.App,
 		userId,
 		&user.SaveEnrollsRequest{
 			Enrolls: []user.EnrollInput{
 				{
+					App:    app,
 					UserId: userId,
 					Role:   fmt.Sprintf("user-svc:org:{%v}:admin", final.Id),
 				},
@@ -180,7 +181,7 @@ func (s *UserService) saveOrganization(
 		return nil, nil, err
 	}
 
-	err = s.inactivateTokens(userId)
+	err = s.inactivateTokens(claims.App, userId)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "error inactivating tokens")
 	}
@@ -213,8 +214,12 @@ func (s *UserService) saveOrganization(
 	return final, token, nil
 }
 
-func (s *UserService) inactivateTokens(userId string) error {
+func (s *UserService) inactivateTokens(app string, userId string) error {
 	return s.authTokensStore.Query(
+		datastore.Equals(
+			datastore.Fields("app"),
+			app,
+		),
 		datastore.Equals(
 			datastore.Fields("userId"),
 			userId,

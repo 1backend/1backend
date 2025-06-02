@@ -97,14 +97,13 @@ func (s *UserService) login(
 
 	if request.Slug != "" {
 		userI, found, err := s.usersStore.Query(
-			datastore.Equals(datastore.Field("app"), request.App),
 			datastore.Equals(datastore.Field("slug"), request.Slug),
 		).FindOne()
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "error querying user by slug")
 		}
 		if !found {
-			return nil, errors.New("not found")
+			return nil, errors.New("user not found by slug")
 		}
 
 		usr = userI.(*user.User)
@@ -120,14 +119,13 @@ func (s *UserService) login(
 		}
 
 		userI, found, err := s.usersStore.Query(
-			datastore.Equals(datastore.Field("app"), request.App),
 			datastore.Equals(datastore.Field("id"), contactI.(*user.Contact).UserId),
 		).FindOne()
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "error querying user by contact")
 		}
 		if !found {
-			return nil, errors.New("not found")
+			return nil, errors.New("user not found by contact")
 		}
 
 		usr = userI.(*user.User)
@@ -136,7 +134,6 @@ func (s *UserService) login(
 	}
 
 	passwordIs, err := s.passwordsStore.Query(
-		datastore.Equals(datastore.Field("app"), request.App),
 		datastore.Equals(
 			datastore.Field("userId"), usr.Id),
 	).OrderBy(
@@ -196,10 +193,6 @@ func (s *UserService) login(
 		}
 	}
 
-	if request.App == "" {
-		request.App = "unnamed"
-	}
-
 	token, err := s.generateAuthToken(
 		request.App,
 		usr,
@@ -246,19 +239,19 @@ func (s *UserService) generateAuthToken(
 	u *user.User,
 	device string,
 ) (*user.AuthToken, error) {
-	roles, err := s.getRolesByUserId(u.Id)
+	roles, err := s.getRolesByUserId(app, u.Id)
 	if err != nil {
 		return nil, errors.Wrap(err, "error listing roles")
 	}
-	if len(roles) == 0 {
-		return nil, errors.New("no roles found for user")
-	}
-	_, activeOrganizationId, err := s.getUserOrganizations(u.Id)
+
+	_, activeOrganizationId, err := s.getUserOrganizations(app, u.Id)
 	if err != nil {
 		return nil, errors.Wrap(err, "error listing organizations")
 	}
 
-	token, err := s.generateJWT(u, roles, activeOrganizationId, s.privateKey, device)
+	token, err := s.generateJWT(
+		app, u, roles, activeOrganizationId,
+		s.privateKey, device)
 	if err != nil {
 		return nil, err
 	}

@@ -33,30 +33,37 @@ func (ns *RegistryService) registerPermits() error {
 	req := openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
 				Permission: registry.PermissionDefinitionDelete,
 			},
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
 				Permission: registry.PermissionNodeDelete,
 			},
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
 				Permission: registry.PermissionDefinitionView,
 			},
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc", "proxy-svc"},
 				Permission: registry.PermissionInstanceView,
 			},
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc", "file-svc", "model-svc"},
 				Permission: registry.PermissionNodeView,
 			},
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
 				Permission: registry.PermissionInstanceEdit,
 			},
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
 				Permission: registry.PermissionInstanceDelete,
 			},
@@ -72,6 +79,7 @@ func (ns *RegistryService) registerPermits() error {
 			registrytypes.DefinitionAdminPermissions,
 		) {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
+				App:        openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})
@@ -86,6 +94,7 @@ func (ns *RegistryService) registerPermits() error {
 			registrytypes.DefinitionUserPermissions,
 		) {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
+				App:        openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})

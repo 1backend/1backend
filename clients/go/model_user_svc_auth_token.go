@@ -24,6 +24,7 @@ var _ MappedNullable = &UserSvcAuthToken{}
 type UserSvcAuthToken struct {
 	// Active tokens contain the most up-to-date information. When a user's role changes—due to role assignment, organization creation/assignment, etc.—all existing tokens are marked inactive. Active tokens are reused during login, while inactive tokens that have been recently refreshed (being used still) are kept for further refreshing (unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, old tokens can be refreshed indefinitely.)  Active tokens contain the most up-to-date information. When a user's role changes—due to role assignment, organization creation/assignment, etc.—all existing tokens are marked inactive. Active tokens are reused during login, while inactive tokens that have been recently refreshed (see `lastRefreshedAt` field) and are still in use are retained for further refreshing. (Unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, in which case old tokens can be refreshed indefinitely.)
 	Active *bool `json:"active,omitempty"`
+	App *string `json:"app,omitempty"`
 	CreatedAt string `json:"createdAt"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	// The device the token is associated with. This in combination with LastRefreshedAt can be used to determine if the token is still in use, and lets us prune unused tokens.
@@ -94,6 +95,38 @@ func (o *UserSvcAuthToken) HasActive() bool {
 // SetActive gets a reference to the given bool and assigns it to the Active field.
 func (o *UserSvcAuthToken) SetActive(v bool) {
 	o.Active = &v
+}
+
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *UserSvcAuthToken) GetApp() string {
+	if o == nil || IsNil(o.App) {
+		var ret string
+		return ret
+	}
+	return *o.App
+}
+
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcAuthToken) GetAppOk() (*string, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
+
+// HasApp returns a boolean if a field has been set.
+func (o *UserSvcAuthToken) HasApp() bool {
+	if o != nil && !IsNil(o.App) {
+		return true
+	}
+
+	return false
+}
+
+// SetApp gets a reference to the given string and assigns it to the App field.
+func (o *UserSvcAuthToken) SetApp(v string) {
+	o.App = &v
 }
 
 // GetCreatedAt returns the CreatedAt field value
@@ -340,6 +373,9 @@ func (o UserSvcAuthToken) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Active) {
 		toSerialize["active"] = o.Active
+	}
+	if !IsNil(o.App) {
+		toSerialize["app"] = o.App
 	}
 	toSerialize["createdAt"] = o.CreatedAt
 	if !IsNil(o.DeletedAt) {

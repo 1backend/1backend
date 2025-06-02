@@ -88,7 +88,7 @@ func (s *UserService) createUser(
 	}
 
 	for _, role := range roles {
-		err = s.assignRole(user.Id, role)
+		err = s.assignRole(app, user.Id, role)
 		if err != nil {
 			return err
 		}

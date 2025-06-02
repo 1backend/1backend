@@ -22,6 +22,7 @@ var _ MappedNullable = &UserSvcEnrollInput{}
 
 // UserSvcEnrollInput struct for UserSvcEnrollInput
 type UserSvcEnrollInput struct {
+	App *string `json:"app,omitempty"`
 	// ContactId is the the recipient of the enroll. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
 	ContactId *string `json:"contactId,omitempty"`
 	Id *string `json:"id,omitempty"`
@@ -48,6 +49,38 @@ func NewUserSvcEnrollInput(role string) *UserSvcEnrollInput {
 func NewUserSvcEnrollInputWithDefaults() *UserSvcEnrollInput {
 	this := UserSvcEnrollInput{}
 	return &this
+}
+
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *UserSvcEnrollInput) GetApp() string {
+	if o == nil || IsNil(o.App) {
+		var ret string
+		return ret
+	}
+	return *o.App
+}
+
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcEnrollInput) GetAppOk() (*string, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
+
+// HasApp returns a boolean if a field has been set.
+func (o *UserSvcEnrollInput) HasApp() bool {
+	if o != nil && !IsNil(o.App) {
+		return true
+	}
+
+	return false
+}
+
+// SetApp gets a reference to the given string and assigns it to the App field.
+func (o *UserSvcEnrollInput) SetApp(v string) {
+	o.App = &v
 }
 
 // GetContactId returns the ContactId field value if set, zero value otherwise.
@@ -180,6 +213,9 @@ func (o UserSvcEnrollInput) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcEnrollInput) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.App) {
+		toSerialize["app"] = o.App
+	}
 	if !IsNil(o.ContactId) {
 		toSerialize["contactId"] = o.ContactId
 	}

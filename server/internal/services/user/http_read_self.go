@@ -73,7 +73,7 @@ func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	orgs, activeOrgId, err := s.getUserOrganizations(usr.Id)
+	orgs, activeOrgId, err := s.getUserOrganizations(claim.App, usr.Id)
 	if err != nil {
 		logger.Error(
 			"Failed to get organizations",
@@ -142,9 +142,14 @@ func (s *UserService) readSelf(userId string) (*user.User, error) {
 }
 
 func (s *UserService) getUserOrganizations(
+	app string,
 	userId string,
 ) ([]*user.Organization, string, error) {
 	links, err := s.membershipsStore.Query(
+		datastore.Equals(
+			datastore.Field("app"),
+			app,
+		),
 		datastore.Equals(
 			datastore.Field("userId"),
 			userId,

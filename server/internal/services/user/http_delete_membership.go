@@ -45,7 +45,7 @@ func (s *UserService) DeleteMembership(
 	organizationId := mux.Vars(r)["organizationId"]
 	userId := mux.Vars(r)["userId"]
 
-	usr, hasPermission, _, err := s.hasPermission(
+	usr, hasPermission, claims, err := s.hasPermission(
 		r,
 		user.PermissionOrganizationCreate,
 	)
@@ -74,7 +74,7 @@ func (s *UserService) DeleteMembership(
 	}
 	defer r.Body.Close()
 
-	err = s.deleteMembership(usr.Id, userId, organizationId)
+	err = s.deleteMembership(claims.App, usr.Id, userId, organizationId)
 	if err != nil {
 		logger.Error(
 			"Failed to delete membership",
@@ -88,9 +88,9 @@ func (s *UserService) DeleteMembership(
 }
 
 func (s *UserService) deleteMembership(
-	callerId, userId, organizationId string,
+	app, callerId, userId, organizationId string,
 ) error {
-	roleIds, err := s.getRolesByUserId(callerId)
+	roleIds, err := s.getRolesByUserId(app, callerId)
 	if err != nil {
 		return err
 	}

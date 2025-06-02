@@ -20,6 +20,8 @@ var _ MappedNullable = &SecretSvcSecret{}
 
 // SecretSvcSecret struct for SecretSvcSecret
 type SecretSvcSecret struct {
+	// App of the secret
+	App *string `json:"app,omitempty"`
 	// Slugs of services/users who can change the deleters list
 	CanChangeDeleters []string `json:"canChangeDeleters,omitempty"`
 	// Slugs of services/users who can change the readers list
@@ -38,8 +40,6 @@ type SecretSvcSecret struct {
 	Id *string `json:"id,omitempty"`
 	// Envar or slug-like key of the secret
 	Key *string `json:"key,omitempty"`
-	// Namespace of the secret
-	Namespace *string `json:"namespace,omitempty"`
 	// Slugs of services/users who can read the secret
 	Readers []string `json:"readers,omitempty"`
 	// Secret Value
@@ -63,6 +63,38 @@ func NewSecretSvcSecret() *SecretSvcSecret {
 func NewSecretSvcSecretWithDefaults() *SecretSvcSecret {
 	this := SecretSvcSecret{}
 	return &this
+}
+
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *SecretSvcSecret) GetApp() string {
+	if o == nil || IsNil(o.App) {
+		var ret string
+		return ret
+	}
+	return *o.App
+}
+
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecretSvcSecret) GetAppOk() (*string, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
+
+// HasApp returns a boolean if a field has been set.
+func (o *SecretSvcSecret) HasApp() bool {
+	if o != nil && !IsNil(o.App) {
+		return true
+	}
+
+	return false
+}
+
+// SetApp gets a reference to the given string and assigns it to the App field.
+func (o *SecretSvcSecret) SetApp(v string) {
+	o.App = &v
 }
 
 // GetCanChangeDeleters returns the CanChangeDeleters field value if set, zero value otherwise.
@@ -353,38 +385,6 @@ func (o *SecretSvcSecret) SetKey(v string) {
 	o.Key = &v
 }
 
-// GetNamespace returns the Namespace field value if set, zero value otherwise.
-func (o *SecretSvcSecret) GetNamespace() string {
-	if o == nil || IsNil(o.Namespace) {
-		var ret string
-		return ret
-	}
-	return *o.Namespace
-}
-
-// GetNamespaceOk returns a tuple with the Namespace field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SecretSvcSecret) GetNamespaceOk() (*string, bool) {
-	if o == nil || IsNil(o.Namespace) {
-		return nil, false
-	}
-	return o.Namespace, true
-}
-
-// HasNamespace returns a boolean if a field has been set.
-func (o *SecretSvcSecret) HasNamespace() bool {
-	if o != nil && !IsNil(o.Namespace) {
-		return true
-	}
-
-	return false
-}
-
-// SetNamespace gets a reference to the given string and assigns it to the Namespace field.
-func (o *SecretSvcSecret) SetNamespace(v string) {
-	o.Namespace = &v
-}
-
 // GetReaders returns the Readers field value if set, zero value otherwise.
 func (o *SecretSvcSecret) GetReaders() []string {
 	if o == nil || IsNil(o.Readers) {
@@ -491,6 +491,9 @@ func (o SecretSvcSecret) MarshalJSON() ([]byte, error) {
 
 func (o SecretSvcSecret) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.App) {
+		toSerialize["app"] = o.App
+	}
 	if !IsNil(o.CanChangeDeleters) {
 		toSerialize["canChangeDeleters"] = o.CanChangeDeleters
 	}
@@ -517,9 +520,6 @@ func (o SecretSvcSecret) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Key) {
 		toSerialize["key"] = o.Key
-	}
-	if !IsNil(o.Namespace) {
-		toSerialize["namespace"] = o.Namespace
 	}
 	if !IsNil(o.Readers) {
 		toSerialize["readers"] = o.Readers

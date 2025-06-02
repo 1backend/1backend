@@ -24,6 +24,7 @@ func (p *FirehoseService) registerPermits() error {
 	req := openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{
 			{
+				App: openapi.PtrString("*"),
 				Slugs: []string{
 					"firehose-svc",
 					"config-svc",
@@ -42,6 +43,7 @@ func (p *FirehoseService) registerPermits() error {
 	} {
 		for _, permission := range firehosetypes.AdminPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
+				App:        openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})

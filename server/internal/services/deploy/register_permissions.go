@@ -27,6 +27,7 @@ func (ns *DeployService) registerPermits() error {
 	} {
 		for _, permission := range deploytypes.AdminPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
+				App:        openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})

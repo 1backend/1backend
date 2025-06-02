@@ -24,14 +24,17 @@ func (fs *FileService) registerPermits() error {
 	req := openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"docker-svc", "model-svc"},
 				Permission: file.PermissionDownloadView,
 			},
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"model-svc"},
 				Permission: file.PermissionDownloadCreate,
 			},
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"prompt-svc"},
 				Permission: file.PermissionUploadCreate,
 			},
@@ -43,6 +46,7 @@ func (fs *FileService) registerPermits() error {
 	} {
 		for _, permission := range file.AdminPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
+				App:        openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})

@@ -77,10 +77,6 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		Slug: req.Slug,
 	}
 
-	roles := []string{
-		user.RoleUser,
-	}
-
 	var contacts []user.Contact
 	now := time.Now()
 	if req.Contact.Id != "" {
@@ -97,7 +93,7 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		newUser,
 		contacts,
 		req.Password,
-		roles,
+		nil,
 	)
 	if err != nil {
 		logger.Error(
@@ -109,13 +105,14 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token, err := s.login(&user.LoginRequest{
+		App:      req.App,
 		Slug:     req.Slug,
 		Password: req.Password,
 		Device:   req.Device,
 	})
 	if err != nil {
 		logger.Error(
-			"Failed to login",
+			"Failed to login after registration",
 			slog.Any("error", err),
 		)
 		endpoint.InternalServerError(w)
@@ -180,7 +177,7 @@ func (s *UserService) register(
 	}
 
 	for _, role := range roles {
-		err = s.assignRole(usr.Id, role)
+		err = s.assignRole(app, usr.Id, role)
 		if err != nil {
 			return nil, err
 		}

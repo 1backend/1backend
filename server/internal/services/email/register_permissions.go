@@ -25,6 +25,7 @@ func (ns *EmailService) registerPermits() error {
 	req := openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"user-svc"},
 				Permission: email.PermissionSendEmail,
 			},
@@ -36,6 +37,7 @@ func (ns *EmailService) registerPermits() error {
 	} {
 		for _, permission := range email.AdminPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
+				App:        openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})

@@ -92,7 +92,7 @@ func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	enrolls, err := s.saveEnrolls(usr.Id, &req)
+	enrolls, err := s.saveEnrolls(claims.App, usr.Id, &req)
 	if err != nil {
 		logger.Error(
 			"Failed to save enrolls",
@@ -113,6 +113,7 @@ func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) saveEnrolls(
+	app string,
 	callerUserId string,
 	req *user.SaveEnrollsRequest,
 ) ([]user.Enroll, error) {
@@ -201,7 +202,7 @@ func (s *UserService) saveEnrolls(
 
 		// Already registered users get applied the role immediately
 		if callerUserId, ok := existingContact[enroll.ContactId]; ok {
-			err = s.assignRole(callerUserId, enroll.Role)
+			err = s.assignRole(app, callerUserId, enroll.Role)
 			if err != nil {
 				return nil, err
 			}
@@ -209,7 +210,7 @@ func (s *UserService) saveEnrolls(
 		}
 
 		if _, ok := existingUser[enroll.UserId]; ok {
-			err = s.assignRole(enroll.UserId, enroll.Role)
+			err = s.assignRole(app, enroll.UserId, enroll.Role)
 			if err != nil {
 				return nil, err
 			}
@@ -222,6 +223,7 @@ func (s *UserService) saveEnrolls(
 
 		i := user.Enroll{
 			Id:        enroll.Id,
+			App:       app,
 			ContactId: enroll.ContactId,
 			Role:      enroll.Role,
 			CreatedBy: callerUserId,

@@ -12,7 +12,8 @@ import (
 )
 
 type Membership struct {
-	Id string `json:"id,omitempty"`
+	Id  string `json:"id,omitempty"`
+	App string `json:"app,omitempty" example:"unnamed"`
 
 	CreatedAt time.Time  `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time  `json:"updatedAt" binding:"required"`
@@ -31,7 +32,9 @@ func (o *Membership) GetId() string {
 }
 
 type Organization struct {
-	Id        string     `json:"id" binding:"required"`
+	Id  string `json:"id" binding:"required"`
+	App string `json:"app,omitempty" example:"unnamed"`
+
 	CreatedAt time.Time  `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time  `json:"updatedAt" binding:"required"`
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`
@@ -50,8 +53,6 @@ func (o *Organization) GetId() string {
 }
 
 type SaveOrganizationRequest struct {
-	App string `json:"app,omitempty" example:"unnamed"`
-
 	Id string `json:"id"`
 
 	// URL-friendly unique (inside the Singularon platform) identifier for the `organization`.

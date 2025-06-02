@@ -78,6 +78,7 @@ func (s *UserService) SavePermits(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = s.savePermits(
+		claims.App,
 		r.Context(),
 		&req,
 	)
@@ -99,6 +100,7 @@ func (s *UserService) SavePermits(w http.ResponseWriter, r *http.Request) {
 }
 
 func (cs *UserService) savePermits(
+	app string,
 	ctx context.Context,
 	req *user.SavePermitsRequest,
 ) error {
@@ -129,13 +131,15 @@ func (cs *UserService) savePermits(
 			permit.Id = sdk.Id("pmt")
 			nu = true
 		}
+		permit.App = app
 
 		existingPermits, ok := permitsByPermission[permit.Permission]
 		isDuplicate := false
 		if ok {
 			for _, existingPermit := range existingPermits {
 				if equalUnordered(existingPermit.Roles, permit.Roles) &&
-					equalUnordered(existingPermit.Slugs, permit.Slugs) {
+					equalUnordered(existingPermit.Slugs, permit.Slugs) &&
+					existingPermit.App == permit.App {
 					isDuplicate = true
 					break
 				}
@@ -147,6 +151,7 @@ func (cs *UserService) savePermits(
 
 		permit := &user.Permit{
 			Id:         permit.Id,
+			App:        permit.App,
 			Permission: permit.Permission,
 			Slugs:      permit.Slugs,
 			Roles:      permit.Roles,

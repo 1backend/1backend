@@ -11,17 +11,17 @@ import (
 	"context"
 
 	user "github.com/1backend/1backend/server/internal/services/user/types"
-	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 func (us *UserService) registerPermits() error {
 	permits := []*user.PermitInput{}
 
 	for _, role := range []string{
-		usertypes.RoleAdmin,
+		user.RoleAdmin,
 	} {
-		for _, permission := range usertypes.AdminPermissions {
+		for _, permission := range user.AdminPermissions {
 			permits = append(permits, &user.PermitInput{
+				App:        "*",
 				Roles:      []string{role},
 				Permission: permission,
 			})
@@ -29,10 +29,11 @@ func (us *UserService) registerPermits() error {
 	}
 
 	for _, role := range []string{
-		usertypes.RoleUser,
+		user.RoleUser,
 	} {
-		for _, permission := range usertypes.UserPermissions {
+		for _, permission := range user.UserPermissions {
 			permits = append(permits, &user.PermitInput{
+				App:        "*",
 				Roles:      []string{role},
 				Permission: permission,
 			})
@@ -40,8 +41,9 @@ func (us *UserService) registerPermits() error {
 	}
 
 	err := us.savePermits(
+		"*",
 		context.Background(),
-		&usertypes.SavePermitsRequest{
+		&user.SavePermitsRequest{
 			Permits: permits,
 		},
 	)
