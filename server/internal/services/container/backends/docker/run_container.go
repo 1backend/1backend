@@ -226,7 +226,7 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 				FileSvcAPI.ServeDownload(context.Background(), asset.Url).
 				Execute()
 			if err != nil {
-				return nil, nil, errors.Wrap(err, "failed to download asset")
+				return nil, nil, errors.Wrapf(err, "failed to download asset with url '%v'", asset.Url)
 			}
 			defer rspFile.Close()
 
