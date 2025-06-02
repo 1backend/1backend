@@ -48,6 +48,8 @@ func TestUnauthorizedShouldNotReturnError(t *testing.T) {
 		Execute()
 	require.NoError(t, err)
 	require.False(t, rsp.Authorized)
+	require.NotNil(t, rsp.App)
+	require.Equal(t, "unnamed", *rsp.App)
 	require.NotEmpty(t, rsp.User)
 }
 

@@ -2458,8 +2458,6 @@ definitions:
         items:
           type: string
         type: array
-      namespace:
-        type: string
     type: object
   secret_svc.ListSecretsResponse:
     properties:
@@ -2975,6 +2973,8 @@ definitions:
     type: object
   user_svc.HasPermissionResponse:
     properties:
+      app:
+        type: string
       authorized:
         type: boolean
       until:

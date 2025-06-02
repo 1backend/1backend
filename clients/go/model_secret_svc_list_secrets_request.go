@@ -22,7 +22,6 @@ var _ MappedNullable = &SecretSvcListSecretsRequest{}
 type SecretSvcListSecretsRequest struct {
 	Key *string `json:"key,omitempty"`
 	Keys []string `json:"keys,omitempty"`
-	Namespace *string `json:"namespace,omitempty"`
 }
 
 // NewSecretSvcListSecretsRequest instantiates a new SecretSvcListSecretsRequest object
@@ -106,38 +105,6 @@ func (o *SecretSvcListSecretsRequest) SetKeys(v []string) {
 	o.Keys = v
 }
 
-// GetNamespace returns the Namespace field value if set, zero value otherwise.
-func (o *SecretSvcListSecretsRequest) GetNamespace() string {
-	if o == nil || IsNil(o.Namespace) {
-		var ret string
-		return ret
-	}
-	return *o.Namespace
-}
-
-// GetNamespaceOk returns a tuple with the Namespace field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SecretSvcListSecretsRequest) GetNamespaceOk() (*string, bool) {
-	if o == nil || IsNil(o.Namespace) {
-		return nil, false
-	}
-	return o.Namespace, true
-}
-
-// HasNamespace returns a boolean if a field has been set.
-func (o *SecretSvcListSecretsRequest) HasNamespace() bool {
-	if o != nil && !IsNil(o.Namespace) {
-		return true
-	}
-
-	return false
-}
-
-// SetNamespace gets a reference to the given string and assigns it to the Namespace field.
-func (o *SecretSvcListSecretsRequest) SetNamespace(v string) {
-	o.Namespace = &v
-}
-
 func (o SecretSvcListSecretsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -153,9 +120,6 @@ func (o SecretSvcListSecretsRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Keys) {
 		toSerialize["keys"] = o.Keys
-	}
-	if !IsNil(o.Namespace) {
-		toSerialize["namespace"] = o.Namespace
 	}
 	return toSerialize, nil
 }

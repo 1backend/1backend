@@ -65,6 +65,7 @@ func (s *UserService) HasPermission(
 
 	rsp := &user.HasPermissionResponse{
 		Authorized: hasPermission,
+		App:        claims.App,
 		Until:      claims.ExpiresAt.Time,
 		User:       *usr,
 	}

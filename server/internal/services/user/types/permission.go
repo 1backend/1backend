@@ -13,6 +13,7 @@ const DefaultApp = "unnamed"
 
 type HasPermissionResponse struct {
 	Authorized bool      `json:"authorized" binding:"required"`
+	App        string    `json:"app,omitempty"`
 	Until      time.Time `json:"until" binding:"required"`
 	User       User      `json:"user" binding:"required"`
 }

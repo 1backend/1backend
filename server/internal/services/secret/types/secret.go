@@ -52,9 +52,8 @@ func (s *Secret) GetId() string {
 }
 
 type ListSecretsRequest struct {
-	Namespace string   `json:"namespace"`
-	Key       string   `json:"key"`
-	Keys      []string `json:"keys"`
+	Key  string   `json:"key"`
+	Keys []string `json:"keys"`
 }
 
 type ListSecretsResponse struct {

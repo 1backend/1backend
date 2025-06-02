@@ -71,7 +71,7 @@ func (cs *SecretService) ListSecrets(
 		return
 	}
 
-	ss, err := cs.getSecrets(req, isAdmin, isAuthRsp.User.Slug)
+	ss, err := cs.getSecrets(*isAuthRsp.App, req, isAdmin, isAuthRsp.User.Slug)
 	if err != nil {
 		logger.Error(
 			"Error listing secrets",
@@ -91,13 +91,12 @@ func (cs *SecretService) ListSecrets(
 }
 
 func (cs *SecretService) getSecrets(
+	app string,
 	req secret.ListSecretsRequest, isAdmin bool, userSlug string,
 ) ([]*secret.Secret, error) {
-	filters := []datastore.Filter{}
-	if req.Namespace == "" {
-		req.Namespace = "default"
+	filters := []datastore.Filter{
+		datastore.Equals([]string{"app"}, app),
 	}
-	filters = append(filters, datastore.Equals([]string{"namespace"}, req.Namespace))
 
 	if req.Key != "" {
 		filters = append(filters, datastore.Equals([]string{"key"}, req.Key))

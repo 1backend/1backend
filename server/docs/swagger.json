@@ -8495,9 +8495,6 @@
                     "items": {
                         "type": "string"
                     }
-                },
-                "namespace": {
-                    "type": "string"
                 }
             }
         },
@@ -9147,6 +9144,9 @@
                 "user"
             ],
             "properties": {
+                "app": {
+                    "type": "string"
+                },
                 "authorized": {
                     "type": "boolean"
                 },

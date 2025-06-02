@@ -8501,9 +8501,6 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
-                },
-                "namespace": {
-                    "type": "string"
                 }
             }
         },
@@ -9153,6 +9150,9 @@ const docTemplate = `{
                 "user"
             ],
             "properties": {
+                "app": {
+                    "type": "string"
+                },
                 "authorized": {
                     "type": "boolean"
                 },
