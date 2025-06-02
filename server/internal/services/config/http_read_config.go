@@ -21,17 +21,21 @@ import (
 	"github.com/pkg/errors"
 )
 
-// @Id getConfig
-// @Summary Get Config
-// @Description Fetch the current configuration from the server.
+// @Id readConfig
+// @Summary Read Config
+// @Description Retrieves the current configuration for a specified app.
+// @Description If no app is specified, the default "unnamed" app is used.
+// @Description This is a public endpoint and does not require authentication.
+// @Description Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
+// @Description
+// @Description Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
 // @Tags Config Svc
 // @Accept json
 // @Produce json
 // @Param app query string false "App"
-// @Success 200 {object} config.GetConfigResponse "Current configuration retrieved successfully"
+// @Success 200 {object} config.GetConfigResponse "Current configuration"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 500 {string} string "Internal Server Error"
-// @Security BearerAuth
 // @Router /config-svc/config [get]
 func (cs *ConfigService) Get(
 	w http.ResponseWriter,
@@ -46,7 +50,7 @@ func (cs *ConfigService) Get(
 		app = defaultApp
 	}
 
-	conf, err := cs.getConfig(app)
+	conf, err := cs.readConfig(app)
 	if err != nil {
 		logger.Error("Failed to get config", slog.Any("error", err))
 		endpoint.InternalServerError(w)
@@ -63,7 +67,7 @@ func (cs *ConfigService) Get(
 	}
 }
 
-func (cs *ConfigService) getConfig(app string) (*types.Config, error) {
+func (cs *ConfigService) readConfig(app string) (*types.Config, error) {
 	data, ok := cs.configs[app]
 	if !ok {
 		conf := &types.Config{
@@ -102,8 +106,8 @@ func (cs ConfigService) mod(ret *types.Config) {
 		}
 	}
 
-	if ret.Data["model-svc"] == nil {
-		ret.Data["model-svc"] = map[string]interface{}{
+	if ret.Data["modelSvc"] == nil {
+		ret.Data["modelSvc"] = map[string]interface{}{
 			"currentModelId": modelservice.DefaultModelId,
 		}
 	}

@@ -8732,12 +8732,12 @@ class ConfigSvcApi {
         this.interceptors.push(interceptor);
     }
     /**
-     * Fetch the current configuration from the server.
-     * @summary Get Config
-     * @param namespace Namespace
+     * Retrieves the current configuration for a specified app. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+     * @summary Read Config
+     * @param app App
      */
-    getConfig(namespace_1) {
-        return __awaiter(this, arguments, void 0, function* (namespace, options = { headers: {} }) {
+    readConfig(app_1) {
+        return __awaiter(this, arguments, void 0, function* (app, options = { headers: {} }) {
             const localVarPath = this.basePath + '/config-svc/config';
             let localVarQueryParameters = {};
             let localVarHeaderParams = Object.assign({}, this._defaultHeaders);
@@ -8750,8 +8750,8 @@ class ConfigSvcApi {
                 localVarHeaderParams.Accept = produces.join(',');
             }
             let localVarFormParams = {};
-            if (namespace !== undefined) {
-                localVarQueryParameters['namespace'] = ObjectSerializer.serialize(namespace, "string");
+            if (app !== undefined) {
+                localVarQueryParameters['app'] = ObjectSerializer.serialize(app, "string");
             }
             Object.assign(localVarHeaderParams, options.headers);
             let localVarRequestOptions = {
@@ -8763,9 +8763,6 @@ class ConfigSvcApi {
                 json: true,
             };
             let authenticationPromise = Promise.resolve();
-            if (this.authentications.BearerAuth.apiKey) {
-                authenticationPromise = authenticationPromise.then(() => this.authentications.BearerAuth.applyToRequest(localVarRequestOptions));
-            }
             authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
             let interceptorPromise = authenticationPromise;
             for (const interceptor of this.interceptors) {

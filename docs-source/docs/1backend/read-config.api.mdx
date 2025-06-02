@@ -1,0 +1,76 @@
+---
+id: read-config
+title: "Read Config"
+description: "Retrieves the current configuration for a specified app."
+sidebar_label: "Read Config"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVU1v4zYQ/SsEz4rkNP0AdGqy2C7SLtBgk5ziHMbUSOKGIrnDkVPX8H8vhpITOw4KFL300JNlcj7ezLx53OoGkyEb2Qava/0FmSyuMSnuUZmRCD0rE3xru5FArFQbSIFKEY1tLTYKYiyX/rpVPsi3sun1sshxGmxhdKyWevQeBmyWem85JmzKpb/rbZK/oOK4ctYo9E0M1rMC36gmYFI+sCL8NlpCBSP36NmajKhc+g9HCBtgkGg++LOEPlm2ayzVL4HUy99sVCjCFklxyDhv0RCyukVaW4Pl0r8JnBQQZsjiYYJnCk61FDyjb9QKe1jbQIW6rK4UY2Lru0K1CDwSqtZBl4pcUOAe6RieSshin0pd6BBxynjd6FoTQjPh0IWOQDAgIyVdP2zfjO8yRl1oK5/fRqSNLrT0W9ca8k0yPQ6g663mTZTjxGR9p3e7x0ITphh8wiT33y0W8nMc/sN7fNCFNrkBLA4Qo5vHUn1N4rU9yBpJKmM75ZjCnJ4L1lOIhZaJ5fumsZIA3M2BH9OIxd4prL6i4b3TrzOQk4i2ea8X0orMs0bXD1PWx5PIu9MTOft+cX7at3svhA1k/8Tmn7TrLTBJ8MN7g7n2jOTBZeoiqY9Egf5dJqkPOiGZnrinbtdG+jAg90Fo2SFnPnKva11NwzxLazN/Ct0ymomoIzkxq1ww4PqQuD4/v7j4SQvzEpqRLG9uBc/EgSsEQrocJfjbau82EdVyNllq1QbnwjM2arXJwgQG85ZxeEKvwEyzlD0d8prfJySpRn0OnfUvUlPuV6dHaJBed+dyHt6e7nOzINrfcJOZYH0bZkYzmNxvHMBKxQkcpp+T9d3ogCn40oThIPbNtbodYwwkzZya1DPHuqrOV2Ce0DfiUGUqH+/69ZmHrByDNRTSJFpJRQfcBhqkHGcN+oSCZ5/v081ntb4oF0fZUl1Vz8/PZefHMlBXzX6pgi66s4tyUfY8OMHASEP6vZ0l8hVseoauQyptqLJJJX2y7MTk/GoqRBda6DDBX5Q/lguJGEPiAfwBxi8IjXoRvKOqt6+U/v+t+m+8VfM2MP7BVXRgvQw1U2s7i8ODfhWHSZRkso+FFhmQ6+12BQnvye12cjw9Xfl1swlWTnS4BZfwb8gwvXzvYnnCzcsDuAY3ikWWnTWQlfC6fnjcFfu1l7yTy6UxGPnA60RDd4d6+Onjnd7t/gLv4EJT
+sidebar_class_name: "get api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Read Config"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/config-svc/config"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Retrieves the current configuration for a specified app.
+If no app is specified, the default "unnamed" app is used.
+This is a public endpoint and does not require authentication.
+Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
+
+Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"App","in":"query","name":"app","schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Current configuration","content":{"application/json":{"schema":{"properties":{"config":{"properties":{"app":{"type":"string"},"data":{"additionalProperties":true,"type":"object"},"dataJson":{"type":"string"},"id":{"type":"string"}},"required":["data"],"type":"object"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"string"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

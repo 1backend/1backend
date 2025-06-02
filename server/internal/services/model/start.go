@@ -37,15 +37,15 @@ Starts the model which has the supplied modelId or the currently activated one o
 the modelId is empty.
 */
 func (ms *ModelService) startModel(modelId string) error {
-	getConfigResponse, _, err := ms.options.ClientFactory.Client().
-		ConfigSvcAPI.GetConfig(context.Background()).
+	readConfigResponse, _, err := ms.options.ClientFactory.Client().
+		ConfigSvcAPI.ReadConfig(context.Background()).
 		Execute()
 	if err != nil {
 		return err
 	}
 
 	if modelId == "" {
-		modelIdI := dipper.Get(getConfigResponse.Config.Data, "model-svc.currentModelId")
+		modelIdI := dipper.Get(readConfigResponse.Config.Data, "modelSvc.currentModelId")
 		var ok bool
 		modelId, ok = modelIdI.(string)
 		if !ok {

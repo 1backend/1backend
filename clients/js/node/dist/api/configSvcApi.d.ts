@@ -36,11 +36,11 @@ export declare class ConfigSvcApi {
     setApiKey(key: ConfigSvcApiApiKeys, value: string): void;
     addInterceptor(interceptor: Interceptor): void;
     /**
-     * Fetch the current configuration from the server.
-     * @summary Get Config
-     * @param namespace Namespace
+     * Retrieves the current configuration for a specified app. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+     * @summary Read Config
+     * @param app App
      */
-    getConfig(namespace?: string, options?: {
+    readConfig(app?: string, options?: {
         headers: {
             [name: string]: string;
         };

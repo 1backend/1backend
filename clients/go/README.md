@@ -86,7 +86,7 @@ Class | Method | HTTP request | Description
 *ChatSvcAPI* | [**ListThreads**](docs/ChatSvcAPI.md#listthreads) | **Post** /chat-svc/threads | List Threads
 *ChatSvcAPI* | [**SaveMessage**](docs/ChatSvcAPI.md#savemessage) | **Post** /chat-svc/thread/{threadId}/message | Save Message
 *ChatSvcAPI* | [**SaveThread**](docs/ChatSvcAPI.md#savethread) | **Post** /chat-svc/thread | Save Thread
-*ConfigSvcAPI* | [**GetConfig**](docs/ConfigSvcAPI.md#getconfig) | **Get** /config-svc/config | Get Config
+*ConfigSvcAPI* | [**ReadConfig**](docs/ConfigSvcAPI.md#readconfig) | **Get** /config-svc/config | Read Config
 *ConfigSvcAPI* | [**SaveConfig**](docs/ConfigSvcAPI.md#saveconfig) | **Put** /config-svc/config | Save Config
 *ContainerSvcAPI* | [**BuildImage**](docs/ContainerSvcAPI.md#buildimage) | **Put** /container-svc/image | Build an Image
 *ContainerSvcAPI* | [**ContainerDaemonInfo**](docs/ContainerSvcAPI.md#containerdaemoninfo) | **Get** /container-svc/daemon/info | Get Container Daemon Information

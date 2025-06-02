@@ -11,8 +11,8 @@
  */
 import * as runtime from '../runtime';
 import type { ConfigSvcGetConfigResponse, ConfigSvcSaveConfigRequest } from '../models/index';
-export interface GetConfigRequest {
-    namespace?: string;
+export interface ReadConfigRequest {
+    app?: string;
 }
 export interface SaveConfigRequest {
     body: ConfigSvcSaveConfigRequest;
@@ -22,15 +22,15 @@ export interface SaveConfigRequest {
  */
 export declare class ConfigSvcApi extends runtime.BaseAPI {
     /**
-     * Fetch the current configuration from the server.
-     * Get Config
+     * Retrieves the current configuration for a specified app. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+     * Read Config
      */
-    getConfigRaw(requestParameters: GetConfigRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ConfigSvcGetConfigResponse>>;
+    readConfigRaw(requestParameters: ReadConfigRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ConfigSvcGetConfigResponse>>;
     /**
-     * Fetch the current configuration from the server.
-     * Get Config
+     * Retrieves the current configuration for a specified app. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+     * Read Config
      */
-    getConfig(requestParameters?: GetConfigRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ConfigSvcGetConfigResponse>;
+    readConfig(requestParameters?: ReadConfigRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ConfigSvcGetConfigResponse>;
     /**
      * Save the provided configuration to the server
      * Save Config

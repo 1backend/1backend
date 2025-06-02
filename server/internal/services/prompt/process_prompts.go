@@ -226,14 +226,14 @@ func (p *PromptService) processPrompt(
 
 	modelId := currentPrompt.ModelId
 	if modelId == "" {
-		getConfigRsp, _, err := p.options.ClientFactory.Client(client.WithToken(token)).
-			ConfigSvcAPI.GetConfig(context.Background()).
+		readConfigRsp, _, err := p.options.ClientFactory.Client(client.WithToken(token)).
+			ConfigSvcAPI.ReadConfig(context.Background()).
 			Execute()
 		if err != nil {
 			return err
 		}
 
-		modelIdI := dipper.Get(getConfigRsp.Config.Data, "model-svc.currentModelId")
+		modelIdI := dipper.Get(readConfigRsp.Config.Data, "modelSvc.currentModelId")
 		var ok bool
 		modelId, ok = modelIdI.(string)
 		if !ok {

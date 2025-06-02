@@ -76,7 +76,7 @@ func TestModel(t *testing.T) {
 		// require.Equal(
 		// 	t,
 		// 	modelservice.DefaultModelId,
-		// 	dipper.Get(getConfigRsp.Config.Data, "model-svc.currentModelId"),
+		// 	dipper.Get(getConfigRsp.Config.Data, "modelSvc.currentModelId"),
 		// )
 
 		_, _, err = userClient.ModelSvcAPI.MakeDefault(context.Background(), "huggingface/TheBloke/mistral-7b-instruct-v0.2.Q2_K.gguf").
@@ -91,7 +91,7 @@ func TestModel(t *testing.T) {
 		// require.Equal(
 		// 	t,
 		// 	modelservice.DefaultModelId,
-		// 	dipper.Get(getConfigRsp.Config.Data, "model-svc.currentModelId"),
+		// 	dipper.Get(getConfigRsp.Config.Data, "modelSvc.currentModelId"),
 		// )
 	})
 }

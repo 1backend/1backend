@@ -280,14 +280,14 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 		} else {
 			// If we are not running in Docker, we will ask the Config Svc about the config directory and we mount that.
 			// If that's not set, we will just default to `~/.1backend`.
-			getConfigResponse, _, err := d.clientFactory.Client(client.WithToken(d.token)).
-				ConfigSvcAPI.GetConfig(context.Background()).
+			readConfigResponse, _, err := d.clientFactory.Client(client.WithToken(d.token)).
+				ConfigSvcAPI.ReadConfig(context.Background()).
 				Execute()
 			if err != nil {
 				return nil, nil, errors.Wrap(err, "failed to get config")
 			}
 
-			configFolderPathI := dipper.Get(getConfigResponse.Config.Data, "$.config-svc.configFolderPath")
+			configFolderPathI := dipper.Get(readConfigResponse.Config.Data, "$.config-svc.configFolderPath")
 			configFolderPath, ok := configFolderPathI.(string)
 			if !ok {
 				homeDir, _ := os.UserHomeDir()

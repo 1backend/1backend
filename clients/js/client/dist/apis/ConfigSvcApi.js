@@ -27,19 +27,16 @@ import { ConfigSvcGetConfigResponseFromJSON, ConfigSvcSaveConfigRequestToJSON, }
  */
 export class ConfigSvcApi extends runtime.BaseAPI {
     /**
-     * Fetch the current configuration from the server.
-     * Get Config
+     * Retrieves the current configuration for a specified app. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+     * Read Config
      */
-    getConfigRaw(requestParameters, initOverrides) {
+    readConfigRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
-            if (requestParameters['namespace'] != null) {
-                queryParameters['namespace'] = requestParameters['namespace'];
+            if (requestParameters['app'] != null) {
+                queryParameters['app'] = requestParameters['app'];
             }
             const headerParameters = {};
-            if (this.configuration && this.configuration.apiKey) {
-                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
-            }
             const response = yield this.request({
                 path: `/config-svc/config`,
                 method: 'GET',
@@ -50,12 +47,12 @@ export class ConfigSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Fetch the current configuration from the server.
-     * Get Config
+     * Retrieves the current configuration for a specified app. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+     * Read Config
      */
-    getConfig() {
+    readConfig() {
         return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
-            const response = yield this.getConfigRaw(requestParameters, initOverrides);
+            const response = yield this.readConfigRaw(requestParameters, initOverrides);
             return yield response.value();
         });
     }

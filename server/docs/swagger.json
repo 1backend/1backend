@@ -398,12 +398,7 @@
         },
         "/config-svc/config": {
             "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Fetch the current configuration from the server.",
+                "description": "Retrieves the current configuration for a specified app.\nIf no app is specified, the default \"unnamed\" app is used.\nThis is a public endpoint and does not require authentication.\nConfiguration data is non-sensitive. For sensitive data, refer to the Secret Service.\n\nConfigurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.",
                 "consumes": [
                     "application/json"
                 ],
@@ -413,19 +408,19 @@
                 "tags": [
                     "Config Svc"
                 ],
-                "summary": "Get Config",
-                "operationId": "getConfig",
+                "summary": "Read Config",
+                "operationId": "readConfig",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Namespace",
-                        "name": "namespace",
+                        "description": "App",
+                        "name": "app",
                         "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Current configuration retrieved successfully",
+                        "description": "Current configuration",
                         "schema": {
                             "$ref": "#/definitions/config_svc.GetConfigResponse"
                         }

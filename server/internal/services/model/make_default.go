@@ -25,19 +25,19 @@ func (ms *ModelService) makeDefault(ctx context.Context, modelId string) error {
 	}
 
 	rsp, _, err := ms.options.ClientFactory.Client(client.WithToken(ms.token)).
-		ConfigSvcAPI.GetConfig(ctx).
+		ConfigSvcAPI.ReadConfig(ctx).
 		Execute()
 
 	if err != nil {
 		return err
 	}
 
-	_, ok := rsp.Config.Data["model-svc"].(map[string]any)
+	_, ok := rsp.Config.Data["modelSvc"].(map[string]any)
 	if !ok {
-		rsp.Config.Data["model-svc"] = map[string]any{}
+		rsp.Config.Data["modelSvc"] = map[string]any{}
 	}
 
-	m := rsp.Config.Data["model-svc"].(map[string]any)
+	m := rsp.Config.Data["modelSvc"].(map[string]any)
 
 	m["currentModelId"] = modelId
 

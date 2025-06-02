@@ -23,18 +23,23 @@ import (
 type ConfigSvcAPI interface {
 
 	/*
-	GetConfig Get Config
+	ReadConfig Read Config
 
-	Fetch the current configuration from the server.
+	Retrieves the current configuration for a specified app.
+If no app is specified, the default "unnamed" app is used.
+This is a public endpoint and does not require authentication.
+Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
+
+Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return ApiGetConfigRequest
+	@return ApiReadConfigRequest
 	*/
-	GetConfig(ctx context.Context) ApiGetConfigRequest
+	ReadConfig(ctx context.Context) ApiReadConfigRequest
 
-	// GetConfigExecute executes the request
+	// ReadConfigExecute executes the request
 	//  @return ConfigSvcGetConfigResponse
-	GetConfigExecute(r ApiGetConfigRequest) (*ConfigSvcGetConfigResponse, *http.Response, error)
+	ReadConfigExecute(r ApiReadConfigRequest) (*ConfigSvcGetConfigResponse, *http.Response, error)
 
 	/*
 	SaveConfig Save Config
@@ -54,32 +59,37 @@ type ConfigSvcAPI interface {
 // ConfigSvcAPIService ConfigSvcAPI service
 type ConfigSvcAPIService service
 
-type ApiGetConfigRequest struct {
+type ApiReadConfigRequest struct {
 	ctx context.Context
 	ApiService ConfigSvcAPI
-	namespace *string
+	app *string
 }
 
-// Namespace
-func (r ApiGetConfigRequest) Namespace(namespace string) ApiGetConfigRequest {
-	r.namespace = &namespace
+// App
+func (r ApiReadConfigRequest) App(app string) ApiReadConfigRequest {
+	r.app = &app
 	return r
 }
 
-func (r ApiGetConfigRequest) Execute() (*ConfigSvcGetConfigResponse, *http.Response, error) {
-	return r.ApiService.GetConfigExecute(r)
+func (r ApiReadConfigRequest) Execute() (*ConfigSvcGetConfigResponse, *http.Response, error) {
+	return r.ApiService.ReadConfigExecute(r)
 }
 
 /*
-GetConfig Get Config
+ReadConfig Read Config
 
-Fetch the current configuration from the server.
+Retrieves the current configuration for a specified app.
+If no app is specified, the default "unnamed" app is used.
+This is a public endpoint and does not require authentication.
+Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
+
+Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetConfigRequest
+ @return ApiReadConfigRequest
 */
-func (a *ConfigSvcAPIService) GetConfig(ctx context.Context) ApiGetConfigRequest {
-	return ApiGetConfigRequest{
+func (a *ConfigSvcAPIService) ReadConfig(ctx context.Context) ApiReadConfigRequest {
+	return ApiReadConfigRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
@@ -87,7 +97,7 @@ func (a *ConfigSvcAPIService) GetConfig(ctx context.Context) ApiGetConfigRequest
 
 // Execute executes the request
 //  @return ConfigSvcGetConfigResponse
-func (a *ConfigSvcAPIService) GetConfigExecute(r ApiGetConfigRequest) (*ConfigSvcGetConfigResponse, *http.Response, error) {
+func (a *ConfigSvcAPIService) ReadConfigExecute(r ApiReadConfigRequest) (*ConfigSvcGetConfigResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -95,7 +105,7 @@ func (a *ConfigSvcAPIService) GetConfigExecute(r ApiGetConfigRequest) (*ConfigSv
 		localVarReturnValue  *ConfigSvcGetConfigResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConfigSvcAPIService.GetConfig")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConfigSvcAPIService.ReadConfig")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
@@ -106,8 +116,8 @@ func (a *ConfigSvcAPIService) GetConfigExecute(r ApiGetConfigRequest) (*ConfigSv
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.namespace != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "namespace", r.namespace, "", "")
+	if r.app != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "app", r.app, "", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -125,20 +135,6 @@ func (a *ConfigSvcAPIService) GetConfigExecute(r ApiGetConfigRequest) (*ConfigSv
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	if r.ctx != nil {
-		// API Key Authentication
-		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["BearerAuth"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
-				}
-				localVarHeaderParams["Authorization"] = key
-			}
-		}
 	}
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {

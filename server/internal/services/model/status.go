@@ -41,13 +41,13 @@ func (ms *ModelService) status(
 
 	if modelId == "" {
 		rsp, _, err := ms.options.ClientFactory.Client(client.WithToken(ms.token)).
-			ConfigSvcAPI.GetConfig(context.Background()).
+			ConfigSvcAPI.ReadConfig(context.Background()).
 			Execute()
 		if err != nil {
 			return nil, err
 		}
 
-		modelIdI := dipper.Get(rsp.Config.Data, "model-svc.currentModelId")
+		modelIdI := dipper.Get(rsp.Config.Data, "modelSvc.currentModelId")
 		var ok bool
 		modelId, ok = modelIdI.(string)
 		if !ok {
