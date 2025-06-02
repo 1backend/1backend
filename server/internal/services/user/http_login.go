@@ -89,11 +89,15 @@ func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
 func (s *UserService) login(
 	request *user.LoginRequest,
 ) (*user.AuthToken, error) {
+	if request.App == "" {
+		request.App = "unnamed"
+	}
 
 	var usr *user.User
 
 	if request.Slug != "" {
 		userI, found, err := s.usersStore.Query(
+			datastore.Equals(datastore.Field("app"), request.App),
 			datastore.Equals(datastore.Field("slug"), request.Slug),
 		).FindOne()
 		if err != nil {
@@ -116,6 +120,7 @@ func (s *UserService) login(
 		}
 
 		userI, found, err := s.usersStore.Query(
+			datastore.Equals(datastore.Field("app"), request.App),
 			datastore.Equals(datastore.Field("id"), contactI.(*user.Contact).UserId),
 		).FindOne()
 		if err != nil {
@@ -131,6 +136,7 @@ func (s *UserService) login(
 	}
 
 	passwordIs, err := s.passwordsStore.Query(
+		datastore.Equals(datastore.Field("app"), request.App),
 		datastore.Equals(
 			datastore.Field("userId"), usr.Id),
 	).OrderBy(
@@ -155,6 +161,7 @@ func (s *UserService) login(
 
 	// Let's see if there is an active token we can reuse
 	tokenI, found, err := s.authTokensStore.Query(
+		datastore.Equals(datastore.Field("app"), request.App),
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 		datastore.Equals(datastore.Field("active"), true),
 		datastore.Equals(datastore.Field("device"), request.Device),
@@ -189,7 +196,15 @@ func (s *UserService) login(
 		}
 	}
 
-	token, err := s.generateAuthToken(usr, request.Device)
+	if request.App == "" {
+		request.App = "unnamed"
+	}
+
+	token, err := s.generateAuthToken(
+		request.App,
+		usr,
+		request.Device,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -227,6 +242,7 @@ func (s *UserService) isFunctional(token string) (bool, error) {
 }
 
 func (s *UserService) generateAuthToken(
+	app string,
 	u *user.User,
 	device string,
 ) (*user.AuthToken, error) {
@@ -251,6 +267,7 @@ func (s *UserService) generateAuthToken(
 
 	return &user.AuthToken{
 		Id:        sdk.Id("tok"),
+		App:       app,
 		UserId:    u.Id,
 		Token:     token,
 		Device:    device,

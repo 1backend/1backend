@@ -11,7 +11,8 @@ import "time"
 
 // Permit is a mechanism to give users or roles permissions to perform actions defined by the `Permission` field.
 type Permit struct {
-	Id string `json:"id" example:"inv_fIYPbMHIcI" binding:"required"`
+	Id  string `json:"id" example:"inv_fIYPbMHIcI" binding:"required"`
+	App string `json:"app" example:"unnamed,omitempty"`
 
 	CreatedAt time.Time `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time `json:"updatedAt" binding:"required"`

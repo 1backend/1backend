@@ -18,6 +18,7 @@ import (
 )
 
 func (s *UserService) createUser(
+	app string,
 	userInput *usertypes.UserInput,
 	contacts []usertypes.Contact,
 	password string,

@@ -9,6 +9,8 @@ package user_svc
 
 import "time"
 
+const DefaultApp = "unnamed"
+
 type HasPermissionResponse struct {
 	Authorized bool      `json:"authorized" binding:"required"`
 	Until      time.Time `json:"until" binding:"required"`

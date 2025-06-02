@@ -72,7 +72,16 @@ func (s *UserService) SaveOrganization(
 	}
 	defer r.Body.Close()
 
-	org, token, err := s.saveOrganization(usr.Id, &req, claims)
+	if req.App == "" {
+		req.App = user.DefaultApp
+	}
+
+	org, token, err := s.saveOrganization(
+		req.App,
+		usr.Id,
+		&req,
+		claims,
+	)
 	if err != nil {
 		logger.Error(
 			"Failed to save organization",
@@ -90,6 +99,7 @@ func (s *UserService) SaveOrganization(
 }
 
 func (s *UserService) saveOrganization(
+	app string,
 	userId string,
 	request *user.SaveOrganizationRequest,
 	claims *auth.Claims,
@@ -186,7 +196,11 @@ func (s *UserService) saveOrganization(
 	}
 	u := userI.(*user.User)
 
-	token, err := s.generateAuthToken(u, claims.Device)
+	token, err := s.generateAuthToken(
+		app,
+		u,
+		claims.Device,
+	)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "error generating token")
 	}

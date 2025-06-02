@@ -13,7 +13,8 @@ import (
 
 // Enroll (enrollment) is a mechanism to give registered or not yet registered roles.
 type Enroll struct {
-	Id string `json:"id" example:"inv_fIYPbMHIcI" binding:"required"`
+	Id  string `json:"id" example:"inv_fIYPbMHIcI" binding:"required"`
+	App string `json:"app" example:"unnamed,omitempty"`
 
 	CreatedAt time.Time `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time `json:"updatedAt" binding:"required"`

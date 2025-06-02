@@ -72,7 +72,17 @@ func (s *UserService) CreateUser(
 		return
 	}
 
-	err = s.createUser(req.User, req.Contacts, req.Password, req.RoleIds)
+	if req.App == "" {
+		req.App = user.DefaultApp
+	}
+
+	err = s.createUser(
+		req.App,
+		req.User,
+		req.Contacts,
+		req.Password,
+		req.RoleIds,
+	)
 	if err != nil {
 		logger.Error(
 			"Failed to create user",

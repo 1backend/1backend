@@ -113,12 +113,12 @@ func (cs *SecretService) saveSecrets(
 	defer cs.options.Lock.Release(ctx, "secret-svc-save")
 
 	for _, s := range ss {
-		if s.Namespace == "" {
-			s.Namespace = "default"
+		if s.App == "" {
+			s.App = defaultApp
 		}
 
 		secretI, found, err := cs.secretStore.Query(
-			datastore.Equals([]string{"namespace"}, s.Namespace),
+			datastore.Equals([]string{"app"}, s.App),
 			datastore.Equals([]string{"key"}, s.Key),
 		).
 			FindOne()

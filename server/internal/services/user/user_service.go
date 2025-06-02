@@ -354,9 +354,13 @@ func (s *UserService) bootstrap() error {
 	}
 
 	if count == 0 {
-		_, err = s.register("1backend", "changeme", "Admin", []string{
-			usertypes.RoleAdmin,
-		})
+		_, err = s.register(
+			usertypes.DefaultApp,
+			"1backend",
+			"changeme",
+			"Admin", []string{
+				usertypes.RoleAdmin,
+			})
 		if err != nil {
 			return errors.Wrap(err, "failed to register admin user")
 		}
@@ -381,7 +385,10 @@ func (s *UserService) bootstrap() error {
 			return errors.Wrap(err, "failed to upsert credential")
 		}
 
-		tok, err := s.register(slug, pw,
+		tok, err := s.register(
+			usertypes.DefaultApp,
+			slug,
+			pw,
 			"User Svc", []string{
 				usertypes.RoleUser,
 			})

@@ -25,6 +25,9 @@ import (
 	"github.com/1backend/1backend/server/internal/universe"
 )
 
+// @todo this should come from the user service
+const defaultApp = "unnamed"
+
 type ConfigService struct {
 	options    *universe.Options
 	started    bool
@@ -160,7 +163,7 @@ func (cs *ConfigService) loadConfigs() error {
 			return errors.Wrap(err, "failed to parse config data")
 		}
 
-		cs.configs[config.Namespace] = v
+		cs.configs[config.App] = v
 	}
 
 	return nil

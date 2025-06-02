@@ -63,11 +63,11 @@ func (cs *ConfigService) Get(
 	}
 }
 
-func (cs *ConfigService) getConfig(namespace string) (*types.Config, error) {
-	if namespace == "" {
-		namespace = "default"
+func (cs *ConfigService) getConfig(app string) (*types.Config, error) {
+	if app == "" {
+		app = defaultApp
 	}
-	data, ok := cs.configs[namespace]
+	data, ok := cs.configs[app]
 	if !ok {
 		conf := &types.Config{
 			Data: map[string]interface{}{},

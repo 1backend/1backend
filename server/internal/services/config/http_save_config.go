@@ -83,18 +83,22 @@ func (cs *ConfigService) Save(
 	}
 }
 
-func (cs *ConfigService) saveConfig(isAdmin bool, callerSlug string, newConfig types.Config) error {
-	if newConfig.Namespace == "" {
-		newConfig.Namespace = "default"
+func (cs *ConfigService) saveConfig(
+	isAdmin bool,
+	callerSlug string,
+	newConfig types.Config,
+) error {
+	if newConfig.App == "" {
+		newConfig.App = defaultApp
 	}
 
 	cs.configMutex.Lock()
 	defer cs.configMutex.Unlock()
 
-	oldConfigData := cs.configs[newConfig.Namespace]
+	oldConfigData := cs.configs[newConfig.App]
 	if oldConfigData == nil {
 		oldConfigData = map[string]interface{}{}
-		cs.configs[newConfig.Namespace] = oldConfigData
+		cs.configs[newConfig.App] = oldConfigData
 	}
 
 	if isAdmin {

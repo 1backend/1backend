@@ -64,6 +64,10 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if req.App == "" {
+		req.App = user.DefaultApp
+	}
+
 	if req.Device == "" {
 		req.Device = unknownDevice
 	}
@@ -89,6 +93,7 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 	err = s.createUser(
+		req.App,
 		newUser,
 		contacts,
 		req.Password,
@@ -128,6 +133,7 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) register(
+	app string,
 	slug,
 	password,
 	name string,
@@ -180,7 +186,11 @@ func (s *UserService) register(
 		}
 	}
 
-	token, err := s.generateAuthToken(usr, unknownDevice)
+	token, err := s.generateAuthToken(
+		app,
+		usr,
+		unknownDevice,
+	)
 	if err != nil {
 		return nil, err
 	}

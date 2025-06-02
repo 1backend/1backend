@@ -24,6 +24,9 @@ import (
 	"github.com/1backend/1backend/sdk/go/service"
 )
 
+// @todo this should come from the user service
+const defaultApp = "unnamed"
+
 type SecretService struct {
 	options *universe.Options
 

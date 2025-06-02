@@ -17,7 +17,8 @@ import (
 )
 
 type Claims struct {
-	UserId string   `json:"oui,omitempty"` // `oui`: 1backend user ids
+	UserId string   `json:"oui,omitempty"` // `oui`: 1backend user id
+	App    string   `json:"oap,omitempty"` // `oap`: 1backend app
 	Slug   string   `json:"osl,omitempty"` // `osl`: 1backend slug
 	Roles  []string `json:"oro,omitempty"` // `oro`: 1backend role ids
 	Device string   `json:"odi,omitempty"` // `device`: 1backend device

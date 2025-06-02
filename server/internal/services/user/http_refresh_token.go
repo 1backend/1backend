@@ -97,6 +97,7 @@ func (s *UserService) refreshToken(
 	usr := userI.(*user.User)
 
 	activeTokenI, found, err := s.authTokensStore.Query(
+		datastore.Equals(datastore.Field("app"), tokenToBeRefreshed.App),
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 		datastore.Equals(datastore.Field("active"), true),
 		datastore.Equals(datastore.Field("device"), tokenToBeRefreshed.Device),
@@ -135,7 +136,11 @@ func (s *UserService) refreshToken(
 		}
 	}
 
-	token, err := s.generateAuthToken(usr, tokenToBeRefreshed.Device)
+	token, err := s.generateAuthToken(
+		tokenToBeRefreshed.App,
+		usr,
+		tokenToBeRefreshed.Device,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -151,6 +156,7 @@ func (s *UserService) refreshToken(
 
 	// Prune old tokens for the same device
 	tokens, err := s.authTokensStore.Query(
+		datastore.Equals(datastore.Field("app"), token.App),
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 		datastore.Equals(datastore.Field("device"), tokenToBeRefreshed.Device),
 	).Find()
@@ -185,6 +191,7 @@ func (s *UserService) refreshToken(
 		err := s.authTokensStore.Query(datastore.Id(t.Id)).Delete()
 		if err != nil {
 			logger.Error("Failed to delete old token",
+				slog.String("app", t.App),
 				slog.String("tokenId", t.Id),
 				slog.Any("error", err),
 			)

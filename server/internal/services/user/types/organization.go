@@ -50,6 +50,8 @@ func (o *Organization) GetId() string {
 }
 
 type SaveOrganizationRequest struct {
+	App string `json:"app,omitempty" example:"unnamed"`
+
 	Id string `json:"id"`
 
 	// URL-friendly unique (inside the Singularon platform) identifier for the `organization`.
