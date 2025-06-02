@@ -27,7 +27,7 @@ import (
 // @Tags Config Svc
 // @Accept json
 // @Produce json
-// @Param namespace query string false "Namespace"
+// @Param app query string false "App"
 // @Success 200 {object} config.GetConfigResponse "Current configuration retrieved successfully"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 500 {string} string "Internal Server Error"
@@ -41,12 +41,12 @@ func (cs *ConfigService) Get(
 	// Think about app config, A/B tests and such.
 
 	q := r.URL.Query()
-	namespace := q.Get("namespace")
-	if namespace == "" {
-		namespace = "default"
+	app := q.Get("app")
+	if app == "" {
+		app = defaultApp
 	}
 
-	conf, err := cs.getConfig(namespace)
+	conf, err := cs.getConfig(app)
 	if err != nil {
 		logger.Error("Failed to get config", slog.Any("error", err))
 		endpoint.InternalServerError(w)
@@ -64,9 +64,6 @@ func (cs *ConfigService) Get(
 }
 
 func (cs *ConfigService) getConfig(app string) (*types.Config, error) {
-	if app == "" {
-		app = defaultApp
-	}
 	data, ok := cs.configs[app]
 	if !ok {
 		conf := &types.Config{
