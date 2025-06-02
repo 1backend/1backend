@@ -20,7 +20,7 @@ The user service is at the heart of 1Backend, managing users, tokens, organizati
 
 User Svc supports multitenancy: while users are shared globally, tokens, organizations, permits, enrollments, and memberships are isolated by an "app" field. This approach allows a single 1Backend instance to securely support multiple web applications.
 
-> Note: Not all services included with 1Backend may support multitenancy. Please refer to the documentation for details.
+> Note: Not all services included with 1Backend may support multitenancy. Please refer to the documentation for details and look for the tag `multitenant`.
 
 ## Glossary
 

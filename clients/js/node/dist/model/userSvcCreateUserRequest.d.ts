@@ -12,6 +12,7 @@
 import { UserSvcContact } from './userSvcContact';
 import { UserSvcUserInput } from './userSvcUserInput';
 export declare class UserSvcCreateUserRequest {
+    'app'?: string;
     'contacts'?: Array<UserSvcContact>;
     'password'?: string;
     'roleIds'?: Array<string>;

@@ -22,6 +22,11 @@ UserSvcAuthToken.attributeTypeMap = [
         "type": "boolean"
     },
     {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
         "name": "createdAt",
         "baseName": "createdAt",
         "type": "string"

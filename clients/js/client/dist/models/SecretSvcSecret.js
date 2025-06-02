@@ -26,6 +26,7 @@ export function SecretSvcSecretFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'canChangeDeleters': json['canChangeDeleters'] == null ? undefined : json['canChangeDeleters'],
         'canChangeReaders': json['canChangeReaders'] == null ? undefined : json['canChangeReaders'],
         'canChangeWriters': json['canChangeWriters'] == null ? undefined : json['canChangeWriters'],
@@ -35,7 +36,6 @@ export function SecretSvcSecretFromJSONTyped(json, ignoreDiscriminator) {
         'encrypted': json['encrypted'] == null ? undefined : json['encrypted'],
         'id': json['id'] == null ? undefined : json['id'],
         'key': json['key'] == null ? undefined : json['key'],
-        'namespace': json['namespace'] == null ? undefined : json['namespace'],
         'readers': json['readers'] == null ? undefined : json['readers'],
         'value': json['value'] == null ? undefined : json['value'],
         'writers': json['writers'] == null ? undefined : json['writers'],
@@ -49,6 +49,7 @@ export function SecretSvcSecretToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
+        'app': value['app'],
         'canChangeDeleters': value['canChangeDeleters'],
         'canChangeReaders': value['canChangeReaders'],
         'canChangeWriters': value['canChangeWriters'],
@@ -58,7 +59,6 @@ export function SecretSvcSecretToJSONTyped(value, ignoreDiscriminator = false) {
         'encrypted': value['encrypted'],
         'id': value['id'],
         'key': value['key'],
-        'namespace': value['namespace'],
         'readers': value['readers'],
         'value': value['value'],
         'writers': value['writers'],

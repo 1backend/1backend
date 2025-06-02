@@ -17,6 +17,11 @@ export class UserSvcHasPermissionResponse {
 UserSvcHasPermissionResponse.discriminator = undefined;
 UserSvcHasPermissionResponse.attributeTypeMap = [
     {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
         "name": "authorized",
         "baseName": "authorized",
         "type": "boolean"

@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 export declare class UserSvcOrganization {
+    'app'?: string;
     'createdAt': string;
     'deletedAt'?: string;
     'id': string;

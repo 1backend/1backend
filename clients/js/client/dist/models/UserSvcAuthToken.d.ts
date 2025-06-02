@@ -38,6 +38,12 @@ export interface UserSvcAuthToken {
      * @type {string}
      * @memberof UserSvcAuthToken
      */
+    app?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserSvcAuthToken
+     */
     createdAt: string;
     /**
      *

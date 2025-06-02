@@ -14,9 +14,13 @@ import { RequestFile } from './models';
 import { UserSvcContactInput } from './userSvcContactInput';
 
 export class UserSvcRegisterRequest {
+    'app'?: string;
     'contact'?: UserSvcContactInput;
     'device'?: string;
     'name'?: string;
+    /**
+    * Password of the user.
+    */
     'password'?: string;
     /**
     * Slug is a URL-friendly unique (inside the 1Backend platform) identifier for the `user`. Required due to its central role in the platform. If your project has no use for a slug, just derive it from the email or similar.
@@ -26,6 +30,11 @@ export class UserSvcRegisterRequest {
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
+        {
+            "name": "app",
+            "baseName": "app",
+            "type": "string"
+        },
         {
             "name": "contact",
             "baseName": "contact",

@@ -14,6 +14,10 @@ import { RequestFile } from './models';
 
 export class UserSvcEnroll {
     /**
+    * App of the enroll. Use `*` to match all apps, such as when bootstrapping in services.
+    */
+    'app'?: string;
+    /**
     * ContactId is the the recipient of the enroll. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
     */
     'contactId'?: string;
@@ -37,6 +41,11 @@ export class UserSvcEnroll {
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
+        {
+            "name": "app",
+            "baseName": "app",
+            "type": "string"
+        },
         {
             "name": "contactId",
             "baseName": "contactId",

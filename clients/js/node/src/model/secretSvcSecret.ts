@@ -15,6 +15,10 @@ import { SecretSvcChecksumAlgorithm } from './secretSvcChecksumAlgorithm';
 
 export class SecretSvcSecret {
     /**
+    * App of the secret
+    */
+    'app'?: string;
+    /**
     * Slugs of services/users who can change the deleters list
     */
     'canChangeDeleters'?: Array<string>;
@@ -51,10 +55,6 @@ export class SecretSvcSecret {
     */
     'key'?: string;
     /**
-    * Namespace of the secret
-    */
-    'namespace'?: string;
-    /**
     * Slugs of services/users who can read the secret
     */
     'readers'?: Array<string>;
@@ -70,6 +70,11 @@ export class SecretSvcSecret {
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
+        {
+            "name": "app",
+            "baseName": "app",
+            "type": "string"
+        },
         {
             "name": "canChangeDeleters",
             "baseName": "canChangeDeleters",
@@ -113,11 +118,6 @@ export class SecretSvcSecret {
         {
             "name": "key",
             "baseName": "key",
-            "type": "string"
-        },
-        {
-            "name": "namespace",
-            "baseName": "namespace",
             "type": "string"
         },
         {

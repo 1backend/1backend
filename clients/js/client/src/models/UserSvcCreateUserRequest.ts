@@ -36,6 +36,12 @@ import {
 export interface UserSvcCreateUserRequest {
     /**
      * 
+     * @type {string}
+     * @memberof UserSvcCreateUserRequest
+     */
+    app?: string;
+    /**
+     * 
      * @type {Array<UserSvcContact>}
      * @memberof UserSvcCreateUserRequest
      */
@@ -77,6 +83,7 @@ export function UserSvcCreateUserRequestFromJSONTyped(json: any, ignoreDiscrimin
     }
     return {
         
+        'app': json['app'] == null ? undefined : json['app'],
         'contacts': json['contacts'] == null ? undefined : ((json['contacts'] as Array<any>).map(UserSvcContactFromJSON)),
         'password': json['password'] == null ? undefined : json['password'],
         'roleIds': json['roleIds'] == null ? undefined : json['roleIds'],
@@ -95,6 +102,7 @@ export function UserSvcCreateUserRequestToJSONTyped(value?: UserSvcCreateUserReq
 
     return {
         
+        'app': value['app'],
         'contacts': value['contacts'] == null ? undefined : ((value['contacts'] as Array<any>).map(UserSvcContactToJSON)),
         'password': value['password'],
         'roleIds': value['roleIds'],

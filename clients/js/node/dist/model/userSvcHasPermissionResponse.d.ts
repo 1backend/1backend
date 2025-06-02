@@ -11,6 +11,7 @@
  */
 import { UserSvcUser } from './userSvcUser';
 export declare class UserSvcHasPermissionResponse {
+    'app'?: string;
     'authorized': boolean;
     'until': string;
     'user': UserSvcUser;

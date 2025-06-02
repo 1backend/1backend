@@ -18,6 +18,12 @@ import type { UserSvcContactInput } from './UserSvcContactInput';
 export interface UserSvcRegisterRequest {
     /**
      *
+     * @type {string}
+     * @memberof UserSvcRegisterRequest
+     */
+    app?: string;
+    /**
+     *
      * @type {UserSvcContactInput}
      * @memberof UserSvcRegisterRequest
      */
@@ -35,7 +41,7 @@ export interface UserSvcRegisterRequest {
      */
     name?: string;
     /**
-     *
+     * Password of the user.
      * @type {string}
      * @memberof UserSvcRegisterRequest
      */

@@ -100,7 +100,7 @@ func TestAppRoles(t *testing.T) {
 		require.Equal(t, 1, len(selfRsp.Roles), selfRsp.Roles)
 	})
 
-	t.Run("admin logs in to new other app", func(t *testing.T) {
+	t.Run("admin logs in to an other app", func(t *testing.T) {
 		rsp, _, err := adminClient.UserSvcAPI.Login(ctx).Body(
 			openapi.UserSvcLoginRequest{
 				App:      openapi.PtrString("helloapp"),

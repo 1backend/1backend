@@ -17,6 +17,12 @@
 export interface ConfigSvcConfig {
     /**
      *
+     * @type {string}
+     * @memberof ConfigSvcConfig
+     */
+    app?: string;
+    /**
+     *
      * @type {{ [key: string]: any; }}
      * @memberof ConfigSvcConfig
      */
@@ -35,12 +41,6 @@ export interface ConfigSvcConfig {
      * @memberof ConfigSvcConfig
      */
     id?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ConfigSvcConfig
-     */
-    namespace?: string;
 }
 /**
  * Check if a given object implements the ConfigSvcConfig interface.

@@ -910,10 +910,10 @@ function ConfigSvcConfigFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'data': json['data'],
         'dataJson': json['dataJson'] == null ? undefined : json['dataJson'],
         'id': json['id'] == null ? undefined : json['id'],
-        'namespace': json['namespace'] == null ? undefined : json['namespace'],
     };
 }
 function ConfigSvcConfigToJSON(json) {
@@ -924,10 +924,10 @@ function ConfigSvcConfigToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
+        'app': value['app'],
         'data': value['data'],
         'dataJson': value['dataJson'],
         'id': value['id'],
-        'namespace': value['namespace'],
     };
 }
 
@@ -7998,7 +7998,6 @@ function SecretSvcListSecretsRequestFromJSONTyped(json, ignoreDiscriminator) {
     return {
         'key': json['key'] == null ? undefined : json['key'],
         'keys': json['keys'] == null ? undefined : json['keys'],
-        'namespace': json['namespace'] == null ? undefined : json['namespace'],
     };
 }
 function SecretSvcListSecretsRequestToJSON(json) {
@@ -8011,7 +8010,6 @@ function SecretSvcListSecretsRequestToJSONTyped(value, ignoreDiscriminator = fal
     return {
         'key': value['key'],
         'keys': value['keys'],
-        'namespace': value['namespace'],
     };
 }
 
@@ -8042,6 +8040,7 @@ function SecretSvcSecretFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'canChangeDeleters': json['canChangeDeleters'] == null ? undefined : json['canChangeDeleters'],
         'canChangeReaders': json['canChangeReaders'] == null ? undefined : json['canChangeReaders'],
         'canChangeWriters': json['canChangeWriters'] == null ? undefined : json['canChangeWriters'],
@@ -8051,7 +8050,6 @@ function SecretSvcSecretFromJSONTyped(json, ignoreDiscriminator) {
         'encrypted': json['encrypted'] == null ? undefined : json['encrypted'],
         'id': json['id'] == null ? undefined : json['id'],
         'key': json['key'] == null ? undefined : json['key'],
-        'namespace': json['namespace'] == null ? undefined : json['namespace'],
         'readers': json['readers'] == null ? undefined : json['readers'],
         'value': json['value'] == null ? undefined : json['value'],
         'writers': json['writers'] == null ? undefined : json['writers'],
@@ -8065,6 +8063,7 @@ function SecretSvcSecretToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
+        'app': value['app'],
         'canChangeDeleters': value['canChangeDeleters'],
         'canChangeReaders': value['canChangeReaders'],
         'canChangeWriters': value['canChangeWriters'],
@@ -8074,7 +8073,6 @@ function SecretSvcSecretToJSONTyped(value, ignoreDiscriminator = false) {
         'encrypted': value['encrypted'],
         'id': value['id'],
         'key': value['key'],
-        'namespace': value['namespace'],
         'readers': value['readers'],
         'value': value['value'],
         'writers': value['writers'],
@@ -8393,6 +8391,7 @@ function UserSvcAuthTokenFromJSONTyped(json, ignoreDiscriminator) {
     }
     return {
         'active': json['active'] == null ? undefined : json['active'],
+        'app': json['app'] == null ? undefined : json['app'],
         'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'device': json['device'],
@@ -8413,6 +8412,7 @@ function UserSvcAuthTokenToJSONTyped(value, ignoreDiscriminator = false) {
     }
     return {
         'active': value['active'],
+        'app': value['app'],
         'createdAt': value['createdAt'],
         'deletedAt': value['deletedAt'],
         'device': value['device'],
@@ -8674,6 +8674,7 @@ function UserSvcCreateUserRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'contacts': json['contacts'] == null ? undefined : (json['contacts'].map(UserSvcContactFromJSON)),
         'password': json['password'] == null ? undefined : json['password'],
         'roleIds': json['roleIds'] == null ? undefined : json['roleIds'],
@@ -8688,6 +8689,7 @@ function UserSvcCreateUserRequestToJSONTyped(value, ignoreDiscriminator = false)
         return value;
     }
     return {
+        'app': value['app'],
         'contacts': value['contacts'] == null ? undefined : (value['contacts'].map(UserSvcContactToJSON)),
         'password': value['password'],
         'roleIds': value['roleIds'],
@@ -8730,6 +8732,7 @@ function UserSvcEnrollFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'contactId': json['contactId'] == null ? undefined : json['contactId'],
         'createdAt': json['createdAt'],
         'createdBy': json['createdBy'] == null ? undefined : json['createdBy'],
@@ -8748,6 +8751,7 @@ function UserSvcEnrollToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
+        'app': value['app'],
         'contactId': value['contactId'],
         'createdAt': value['createdAt'],
         'createdBy': value['createdBy'],
@@ -8788,6 +8792,7 @@ function UserSvcEnrollInputFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'contactId': json['contactId'] == null ? undefined : json['contactId'],
         'id': json['id'] == null ? undefined : json['id'],
         'role': json['role'],
@@ -8802,6 +8807,7 @@ function UserSvcEnrollInputToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
+        'app': value['app'],
         'contactId': value['contactId'],
         'id': value['id'],
         'role': value['role'],
@@ -8992,6 +8998,7 @@ function UserSvcHasPermissionResponseFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'authorized': json['authorized'],
         'until': json['until'],
         'user': UserSvcUserFromJSON(json['user']),
@@ -9005,6 +9012,7 @@ function UserSvcHasPermissionResponseToJSONTyped(value, ignoreDiscriminator = fa
         return value;
     }
     return {
+        'app': value['app'],
         'authorized': value['authorized'],
         'until': value['until'],
         'user': UserSvcUserToJSON(value['user']),
@@ -9184,6 +9192,7 @@ function UserSvcOrganizationFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'id': json['id'],
@@ -9201,6 +9210,7 @@ function UserSvcOrganizationToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
+        'app': value['app'],
         'createdAt': value['createdAt'],
         'deletedAt': value['deletedAt'],
         'id': value['id'],
@@ -9374,6 +9384,7 @@ function UserSvcPermitFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'id': json['id'],
@@ -9391,6 +9402,7 @@ function UserSvcPermitToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
+        'app': value['app'],
         'createdAt': value['createdAt'],
         'deletedAt': value['deletedAt'],
         'id': value['id'],
@@ -9722,6 +9734,7 @@ function UserSvcLoginRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'contact': json['contact'] == null ? undefined : json['contact'],
         'device': json['device'] == null ? undefined : json['device'],
         'password': json['password'] == null ? undefined : json['password'],
@@ -9736,6 +9749,7 @@ function UserSvcLoginRequestToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
+        'app': value['app'],
         'contact': value['contact'],
         'device': value['device'],
         'password': value['password'],
@@ -9814,6 +9828,7 @@ function UserSvcPermitInputFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'id': json['id'] == null ? undefined : json['id'],
         'permission': json['permission'],
         'roles': json['roles'] == null ? undefined : json['roles'],
@@ -9828,6 +9843,7 @@ function UserSvcPermitInputToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
+        'app': value['app'],
         'id': value['id'],
         'permission': value['permission'],
         'roles': value['roles'],
@@ -10006,6 +10022,7 @@ function UserSvcRegisterRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'contact': json['contact'] == null ? undefined : UserSvcContactInputFromJSON(json['contact']),
         'device': json['device'] == null ? undefined : json['device'],
         'name': json['name'] == null ? undefined : json['name'],
@@ -10021,6 +10038,7 @@ function UserSvcRegisterRequestToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
+        'app': value['app'],
         'contact': UserSvcContactInputToJSON(value['contact']),
         'device': value['device'],
         'name': value['name'],

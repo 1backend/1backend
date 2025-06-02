@@ -20,6 +20,12 @@ import { mapValues } from '../runtime';
  */
 export interface UserSvcEnrollInput {
     /**
+     * 
+     * @type {string}
+     * @memberof UserSvcEnrollInput
+     */
+    app?: string;
+    /**
      * ContactId is the the recipient of the enroll.
      * If the user is already registered, the role is assigned immediately;
      * otherwise, it is applied upon registration.
@@ -67,6 +73,7 @@ export function UserSvcEnrollInputFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
+        'app': json['app'] == null ? undefined : json['app'],
         'contactId': json['contactId'] == null ? undefined : json['contactId'],
         'id': json['id'] == null ? undefined : json['id'],
         'role': json['role'],
@@ -85,6 +92,7 @@ export function UserSvcEnrollInputToJSONTyped(value?: UserSvcEnrollInput | null,
 
     return {
         
+        'app': value['app'],
         'contactId': value['contactId'],
         'id': value['id'],
         'role': value['role'],

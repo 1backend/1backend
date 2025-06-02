@@ -20,6 +20,12 @@ export interface UserSvcOrganization {
      * @type {string}
      * @memberof UserSvcOrganization
      */
+    app?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserSvcOrganization
+     */
     createdAt: string;
     /**
      *

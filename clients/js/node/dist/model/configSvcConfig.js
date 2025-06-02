@@ -17,6 +17,11 @@ export class ConfigSvcConfig {
 ConfigSvcConfig.discriminator = undefined;
 ConfigSvcConfig.attributeTypeMap = [
     {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
         "name": "data",
         "baseName": "data",
         "type": "{ [key: string]: any; }"
@@ -29,11 +34,6 @@ ConfigSvcConfig.attributeTypeMap = [
     {
         "name": "id",
         "baseName": "id",
-        "type": "string"
-    },
-    {
-        "name": "namespace",
-        "baseName": "namespace",
         "type": "string"
     }
 ];

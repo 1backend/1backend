@@ -27,6 +27,7 @@ export function UserSvcEnrollInputFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'contactId': json['contactId'] == null ? undefined : json['contactId'],
         'id': json['id'] == null ? undefined : json['id'],
         'role': json['role'],
@@ -41,6 +42,7 @@ export function UserSvcEnrollInputToJSONTyped(value, ignoreDiscriminator = false
         return value;
     }
     return {
+        'app': value['app'],
         'contactId': value['contactId'],
         'id': value['id'],
         'role': value['role'],

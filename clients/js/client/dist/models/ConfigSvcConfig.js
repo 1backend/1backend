@@ -27,10 +27,10 @@ export function ConfigSvcConfigFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'data': json['data'],
         'dataJson': json['dataJson'] == null ? undefined : json['dataJson'],
         'id': json['id'] == null ? undefined : json['id'],
-        'namespace': json['namespace'] == null ? undefined : json['namespace'],
     };
 }
 export function ConfigSvcConfigToJSON(json) {
@@ -41,9 +41,9 @@ export function ConfigSvcConfigToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
+        'app': value['app'],
         'data': value['data'],
         'dataJson': value['dataJson'],
         'id': value['id'],
-        'namespace': value['namespace'],
     };
 }

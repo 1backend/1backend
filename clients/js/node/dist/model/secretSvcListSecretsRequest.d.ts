@@ -12,7 +12,6 @@
 export declare class SecretSvcListSecretsRequest {
     'key'?: string;
     'keys'?: Array<string>;
-    'namespace'?: string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

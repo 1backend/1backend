@@ -28,6 +28,7 @@ export function UserSvcRegisterRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'contact': json['contact'] == null ? undefined : UserSvcContactInputFromJSON(json['contact']),
         'device': json['device'] == null ? undefined : json['device'],
         'name': json['name'] == null ? undefined : json['name'],
@@ -43,6 +44,7 @@ export function UserSvcRegisterRequestToJSONTyped(value, ignoreDiscriminator = f
         return value;
     }
     return {
+        'app': value['app'],
         'contact': UserSvcContactInputToJSON(value['contact']),
         'device': value['device'],
         'name': value['name'],

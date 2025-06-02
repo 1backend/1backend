@@ -42,6 +42,12 @@ export interface UserSvcAuthToken {
      * @type {string}
      * @memberof UserSvcAuthToken
      */
+    app?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSvcAuthToken
+     */
     createdAt: string;
     /**
      * 
@@ -129,6 +135,7 @@ export function UserSvcAuthTokenFromJSONTyped(json: any, ignoreDiscriminator: bo
     return {
         
         'active': json['active'] == null ? undefined : json['active'],
+        'app': json['app'] == null ? undefined : json['app'],
         'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'device': json['device'],
@@ -153,6 +160,7 @@ export function UserSvcAuthTokenToJSONTyped(value?: UserSvcAuthToken | null, ign
     return {
         
         'active': value['active'],
+        'app': value['app'],
         'createdAt': value['createdAt'],
         'deletedAt': value['deletedAt'],
         'device': value['device'],

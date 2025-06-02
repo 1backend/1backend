@@ -20,6 +20,14 @@ import { mapValues } from '../runtime';
  */
 export interface UserSvcPermitInput {
     /**
+     * App of the permit.
+     * Use `*` to match all apps, such as when bootstrapping
+     * in services.
+     * @type {string}
+     * @memberof UserSvcPermitInput
+     */
+    app?: string;
+    /**
      * 
      * @type {string}
      * @memberof UserSvcPermitInput
@@ -66,6 +74,7 @@ export function UserSvcPermitInputFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
+        'app': json['app'] == null ? undefined : json['app'],
         'id': json['id'] == null ? undefined : json['id'],
         'permission': json['permission'],
         'roles': json['roles'] == null ? undefined : json['roles'],
@@ -84,6 +93,7 @@ export function UserSvcPermitInputToJSONTyped(value?: UserSvcPermitInput | null,
 
     return {
         
+        'app': value['app'],
         'id': value['id'],
         'permission': value['permission'],
         'roles': value['roles'],

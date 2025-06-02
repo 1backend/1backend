@@ -15,6 +15,7 @@ import { UserSvcContact } from './userSvcContact';
 import { UserSvcUserInput } from './userSvcUserInput';
 
 export class UserSvcCreateUserRequest {
+    'app'?: string;
     'contacts'?: Array<UserSvcContact>;
     'password'?: string;
     'roleIds'?: Array<string>;
@@ -23,6 +24,11 @@ export class UserSvcCreateUserRequest {
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
+        {
+            "name": "app",
+            "baseName": "app",
+            "type": "string"
+        },
         {
             "name": "contacts",
             "baseName": "contacts",

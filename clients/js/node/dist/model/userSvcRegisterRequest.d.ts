@@ -11,9 +11,13 @@
  */
 import { UserSvcContactInput } from './userSvcContactInput';
 export declare class UserSvcRegisterRequest {
+    'app'?: string;
     'contact'?: UserSvcContactInput;
     'device'?: string;
     'name'?: string;
+    /**
+    * Password of the user.
+    */
     'password'?: string;
     /**
     * Slug is a URL-friendly unique (inside the 1Backend platform) identifier for the `user`. Required due to its central role in the platform. If your project has no use for a slug, just derive it from the email or similar.

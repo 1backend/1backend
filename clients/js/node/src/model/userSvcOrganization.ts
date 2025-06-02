@@ -13,6 +13,7 @@
 import { RequestFile } from './models';
 
 export class UserSvcOrganization {
+    'app'?: string;
     'createdAt': string;
     'deletedAt'?: string;
     'id': string;
@@ -30,6 +31,11 @@ export class UserSvcOrganization {
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
+        {
+            "name": "app",
+            "baseName": "app",
+            "type": "string"
+        },
         {
             "name": "createdAt",
             "baseName": "createdAt",

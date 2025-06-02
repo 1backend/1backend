@@ -17,6 +17,11 @@ export class UserSvcPermitInput {
 UserSvcPermitInput.discriminator = undefined;
 UserSvcPermitInput.attributeTypeMap = [
     {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
         "name": "id",
         "baseName": "id",
         "type": "string"

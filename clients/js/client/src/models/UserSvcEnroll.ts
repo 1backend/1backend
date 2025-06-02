@@ -20,6 +20,14 @@ import { mapValues } from '../runtime';
  */
 export interface UserSvcEnroll {
     /**
+     * App of the enroll.
+     * Use `*` to match all apps, such as when bootstrapping
+     * in services.
+     * @type {string}
+     * @memberof UserSvcEnroll
+     */
+    app?: string;
+    /**
      * ContactId is the the recipient of the enroll.
      * If the user is already registered, the role is assigned immediately;
      * otherwise, it is applied upon registration.
@@ -99,6 +107,7 @@ export function UserSvcEnrollFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
+        'app': json['app'] == null ? undefined : json['app'],
         'contactId': json['contactId'] == null ? undefined : json['contactId'],
         'createdAt': json['createdAt'],
         'createdBy': json['createdBy'] == null ? undefined : json['createdBy'],
@@ -121,6 +130,7 @@ export function UserSvcEnrollToJSONTyped(value?: UserSvcEnroll | null, ignoreDis
 
     return {
         
+        'app': value['app'],
         'contactId': value['contactId'],
         'createdAt': value['createdAt'],
         'createdBy': value['createdBy'],

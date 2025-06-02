@@ -31,12 +31,6 @@ export interface SecretSvcListSecretsRequest {
      * @memberof SecretSvcListSecretsRequest
      */
     keys?: Array<string>;
-    /**
-     * 
-     * @type {string}
-     * @memberof SecretSvcListSecretsRequest
-     */
-    namespace?: string;
 }
 
 /**
@@ -58,7 +52,6 @@ export function SecretSvcListSecretsRequestFromJSONTyped(json: any, ignoreDiscri
         
         'key': json['key'] == null ? undefined : json['key'],
         'keys': json['keys'] == null ? undefined : json['keys'],
-        'namespace': json['namespace'] == null ? undefined : json['namespace'],
     };
 }
 
@@ -75,7 +68,6 @@ export function SecretSvcListSecretsRequestToJSONTyped(value?: SecretSvcListSecr
         
         'key': value['key'],
         'keys': value['keys'],
-        'namespace': value['namespace'],
     };
 }
 

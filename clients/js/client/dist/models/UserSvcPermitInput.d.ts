@@ -16,6 +16,14 @@
  */
 export interface UserSvcPermitInput {
     /**
+     * App of the permit.
+     * Use `*` to match all apps, such as when bootstrapping
+     * in services.
+     * @type {string}
+     * @memberof UserSvcPermitInput
+     */
+    app?: string;
+    /**
      *
      * @type {string}
      * @memberof UserSvcPermitInput

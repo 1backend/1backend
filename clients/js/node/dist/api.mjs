@@ -425,6 +425,11 @@ class ConfigSvcConfig {
 ConfigSvcConfig.discriminator = undefined;
 ConfigSvcConfig.attributeTypeMap = [
     {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
         "name": "data",
         "baseName": "data",
         "type": "{ [key: string]: any; }"
@@ -437,11 +442,6 @@ ConfigSvcConfig.attributeTypeMap = [
     {
         "name": "id",
         "baseName": "id",
-        "type": "string"
-    },
-    {
-        "name": "namespace",
-        "baseName": "namespace",
         "type": "string"
     }
 ];
@@ -5486,11 +5486,6 @@ SecretSvcListSecretsRequest.attributeTypeMap = [
         "name": "keys",
         "baseName": "keys",
         "type": "Array<string>"
-    },
-    {
-        "name": "namespace",
-        "baseName": "namespace",
-        "type": "string"
     }
 ];
 
@@ -5603,6 +5598,11 @@ class SecretSvcSecret {
 SecretSvcSecret.discriminator = undefined;
 SecretSvcSecret.attributeTypeMap = [
     {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
         "name": "canChangeDeleters",
         "baseName": "canChangeDeleters",
         "type": "Array<string>"
@@ -5645,11 +5645,6 @@ SecretSvcSecret.attributeTypeMap = [
     {
         "name": "key",
         "baseName": "key",
-        "type": "string"
-    },
-    {
-        "name": "namespace",
-        "baseName": "namespace",
         "type": "string"
     },
     {
@@ -6093,6 +6088,11 @@ UserSvcAuthToken.attributeTypeMap = [
         "type": "boolean"
     },
     {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
         "name": "createdAt",
         "baseName": "createdAt",
         "type": "string"
@@ -6288,6 +6288,11 @@ class UserSvcCreateUserRequest {
 UserSvcCreateUserRequest.discriminator = undefined;
 UserSvcCreateUserRequest.attributeTypeMap = [
     {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
         "name": "contacts",
         "baseName": "contacts",
         "type": "Array<UserSvcContact>"
@@ -6327,6 +6332,11 @@ class UserSvcEnroll {
 }
 UserSvcEnroll.discriminator = undefined;
 UserSvcEnroll.attributeTypeMap = [
+    {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
     {
         "name": "contactId",
         "baseName": "contactId",
@@ -6387,6 +6397,11 @@ class UserSvcEnrollInput {
 }
 UserSvcEnrollInput.discriminator = undefined;
 UserSvcEnrollInput.attributeTypeMap = [
+    {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
     {
         "name": "contactId",
         "baseName": "contactId",
@@ -6477,6 +6492,11 @@ class UserSvcHasPermissionResponse {
 }
 UserSvcHasPermissionResponse.discriminator = undefined;
 UserSvcHasPermissionResponse.attributeTypeMap = [
+    {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
     {
         "name": "authorized",
         "baseName": "authorized",
@@ -6825,6 +6845,11 @@ class UserSvcLoginRequest {
 UserSvcLoginRequest.discriminator = undefined;
 UserSvcLoginRequest.attributeTypeMap = [
     {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
         "name": "contact",
         "baseName": "contact",
         "type": "string"
@@ -6907,6 +6932,11 @@ class UserSvcOrganization {
 UserSvcOrganization.discriminator = undefined;
 UserSvcOrganization.attributeTypeMap = [
     {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
         "name": "createdAt",
         "baseName": "createdAt",
         "type": "string"
@@ -6962,6 +6992,11 @@ class UserSvcPermit {
 UserSvcPermit.discriminator = undefined;
 UserSvcPermit.attributeTypeMap = [
     {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
         "name": "createdAt",
         "baseName": "createdAt",
         "type": "string"
@@ -7016,6 +7051,11 @@ class UserSvcPermitInput {
 }
 UserSvcPermitInput.discriminator = undefined;
 UserSvcPermitInput.attributeTypeMap = [
+    {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
     {
         "name": "id",
         "baseName": "id",
@@ -7156,6 +7196,11 @@ class UserSvcRegisterRequest {
 }
 UserSvcRegisterRequest.discriminator = undefined;
 UserSvcRegisterRequest.attributeTypeMap = [
+    {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
     {
         "name": "contact",
         "baseName": "contact",

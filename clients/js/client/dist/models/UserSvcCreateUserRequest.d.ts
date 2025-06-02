@@ -19,6 +19,12 @@ import type { UserSvcContact } from './UserSvcContact';
 export interface UserSvcCreateUserRequest {
     /**
      *
+     * @type {string}
+     * @memberof UserSvcCreateUserRequest
+     */
+    app?: string;
+    /**
+     *
      * @type {Array<UserSvcContact>}
      * @memberof UserSvcCreateUserRequest
      */

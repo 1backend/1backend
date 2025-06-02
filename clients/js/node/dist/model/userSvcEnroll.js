@@ -17,6 +17,11 @@ export class UserSvcEnroll {
 UserSvcEnroll.discriminator = undefined;
 UserSvcEnroll.attributeTypeMap = [
     {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
         "name": "contactId",
         "baseName": "contactId",
         "type": "string"

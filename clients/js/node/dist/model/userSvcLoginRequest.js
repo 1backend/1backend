@@ -17,6 +17,11 @@ export class UserSvcLoginRequest {
 UserSvcLoginRequest.discriminator = undefined;
 UserSvcLoginRequest.attributeTypeMap = [
     {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
         "name": "contact",
         "baseName": "contact",
         "type": "string"

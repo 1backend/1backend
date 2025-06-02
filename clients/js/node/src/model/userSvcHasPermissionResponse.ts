@@ -14,6 +14,7 @@ import { RequestFile } from './models';
 import { UserSvcUser } from './userSvcUser';
 
 export class UserSvcHasPermissionResponse {
+    'app'?: string;
     'authorized': boolean;
     'until': string;
     'user': UserSvcUser;
@@ -21,6 +22,11 @@ export class UserSvcHasPermissionResponse {
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
+        {
+            "name": "app",
+            "baseName": "app",
+            "type": "string"
+        },
         {
             "name": "authorized",
             "baseName": "authorized",

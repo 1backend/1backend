@@ -17,6 +17,11 @@ export class SecretSvcSecret {
 SecretSvcSecret.discriminator = undefined;
 SecretSvcSecret.attributeTypeMap = [
     {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
         "name": "canChangeDeleters",
         "baseName": "canChangeDeleters",
         "type": "Array<string>"
@@ -59,11 +64,6 @@ SecretSvcSecret.attributeTypeMap = [
     {
         "name": "key",
         "baseName": "key",
-        "type": "string"
-    },
-    {
-        "name": "namespace",
-        "baseName": "namespace",
         "type": "string"
     },
     {

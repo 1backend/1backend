@@ -29,6 +29,12 @@ import {
 export interface UserSvcRegisterRequest {
     /**
      * 
+     * @type {string}
+     * @memberof UserSvcRegisterRequest
+     */
+    app?: string;
+    /**
+     * 
      * @type {UserSvcContactInput}
      * @memberof UserSvcRegisterRequest
      */
@@ -46,7 +52,7 @@ export interface UserSvcRegisterRequest {
      */
     name?: string;
     /**
-     * 
+     * Password of the user.
      * @type {string}
      * @memberof UserSvcRegisterRequest
      */
@@ -79,6 +85,7 @@ export function UserSvcRegisterRequestFromJSONTyped(json: any, ignoreDiscriminat
     }
     return {
         
+        'app': json['app'] == null ? undefined : json['app'],
         'contact': json['contact'] == null ? undefined : UserSvcContactInputFromJSON(json['contact']),
         'device': json['device'] == null ? undefined : json['device'],
         'name': json['name'] == null ? undefined : json['name'],
@@ -98,6 +105,7 @@ export function UserSvcRegisterRequestToJSONTyped(value?: UserSvcRegisterRequest
 
     return {
         
+        'app': value['app'],
         'contact': UserSvcContactInputToJSON(value['contact']),
         'device': value['device'],
         'name': value['name'],

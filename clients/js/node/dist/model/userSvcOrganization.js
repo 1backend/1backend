@@ -17,6 +17,11 @@ export class UserSvcOrganization {
 UserSvcOrganization.discriminator = undefined;
 UserSvcOrganization.attributeTypeMap = [
     {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
         "name": "createdAt",
         "baseName": "createdAt",
         "type": "string"

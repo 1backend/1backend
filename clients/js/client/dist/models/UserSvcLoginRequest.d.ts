@@ -20,6 +20,12 @@ export interface UserSvcLoginRequest {
      * @type {string}
      * @memberof UserSvcLoginRequest
      */
+    app?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserSvcLoginRequest
+     */
     contact?: string;
     /**
      *

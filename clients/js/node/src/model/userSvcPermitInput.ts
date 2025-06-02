@@ -13,6 +13,10 @@
 import { RequestFile } from './models';
 
 export class UserSvcPermitInput {
+    /**
+    * App of the permit. Use `*` to match all apps, such as when bootstrapping in services.
+    */
+    'app'?: string;
     'id'?: string;
     'permission': string;
     /**
@@ -27,6 +31,11 @@ export class UserSvcPermitInput {
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
+        {
+            "name": "app",
+            "baseName": "app",
+            "type": "string"
+        },
         {
             "name": "id",
             "baseName": "id",

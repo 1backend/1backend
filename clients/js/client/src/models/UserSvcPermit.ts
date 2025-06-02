@@ -20,6 +20,14 @@ import { mapValues } from '../runtime';
  */
 export interface UserSvcPermit {
     /**
+     * App of the permit.
+     * Use `*` to match all apps, such as when bootstrapping
+     * in services.
+     * @type {string}
+     * @memberof UserSvcPermit
+     */
+    app?: string;
+    /**
      * 
      * @type {string}
      * @memberof UserSvcPermit
@@ -87,6 +95,7 @@ export function UserSvcPermitFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
+        'app': json['app'] == null ? undefined : json['app'],
         'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'id': json['id'],
@@ -108,6 +117,7 @@ export function UserSvcPermitToJSONTyped(value?: UserSvcPermit | null, ignoreDis
 
     return {
         
+        'app': value['app'],
         'createdAt': value['createdAt'],
         'deletedAt': value['deletedAt'],
         'id': value['id'],

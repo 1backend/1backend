@@ -17,6 +17,11 @@ export class UserSvcRegisterRequest {
 UserSvcRegisterRequest.discriminator = undefined;
 UserSvcRegisterRequest.attributeTypeMap = [
     {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
         "name": "contact",
         "baseName": "contact",
         "type": "UserSvcContactInput"

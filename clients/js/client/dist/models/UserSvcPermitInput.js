@@ -27,6 +27,7 @@ export function UserSvcPermitInputFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'id': json['id'] == null ? undefined : json['id'],
         'permission': json['permission'],
         'roles': json['roles'] == null ? undefined : json['roles'],
@@ -41,6 +42,7 @@ export function UserSvcPermitInputToJSONTyped(value, ignoreDiscriminator = false
         return value;
     }
     return {
+        'app': value['app'],
         'id': value['id'],
         'permission': value['permission'],
         'roles': value['roles'],

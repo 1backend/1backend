@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 export declare class UserSvcEnrollInput {
+    'app'?: string;
     /**
     * ContactId is the the recipient of the enroll. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
     */

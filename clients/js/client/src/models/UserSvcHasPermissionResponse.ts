@@ -29,6 +29,12 @@ import {
 export interface UserSvcHasPermissionResponse {
     /**
      * 
+     * @type {string}
+     * @memberof UserSvcHasPermissionResponse
+     */
+    app?: string;
+    /**
+     * 
      * @type {boolean}
      * @memberof UserSvcHasPermissionResponse
      */
@@ -67,6 +73,7 @@ export function UserSvcHasPermissionResponseFromJSONTyped(json: any, ignoreDiscr
     }
     return {
         
+        'app': json['app'] == null ? undefined : json['app'],
         'authorized': json['authorized'],
         'until': json['until'],
         'user': UserSvcUserFromJSON(json['user']),
@@ -84,6 +91,7 @@ export function UserSvcHasPermissionResponseToJSONTyped(value?: UserSvcHasPermis
 
     return {
         
+        'app': value['app'],
         'authorized': value['authorized'],
         'until': value['until'],
         'user': UserSvcUserToJSON(value['user']),

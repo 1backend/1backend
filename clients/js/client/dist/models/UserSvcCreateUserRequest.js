@@ -27,6 +27,7 @@ export function UserSvcCreateUserRequestFromJSONTyped(json, ignoreDiscriminator)
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'contacts': json['contacts'] == null ? undefined : (json['contacts'].map(UserSvcContactFromJSON)),
         'password': json['password'] == null ? undefined : json['password'],
         'roleIds': json['roleIds'] == null ? undefined : json['roleIds'],
@@ -41,6 +42,7 @@ export function UserSvcCreateUserRequestToJSONTyped(value, ignoreDiscriminator =
         return value;
     }
     return {
+        'app': value['app'],
         'contacts': value['contacts'] == null ? undefined : (value['contacts'].map(UserSvcContactToJSON)),
         'password': value['password'],
         'roleIds': value['roleIds'],

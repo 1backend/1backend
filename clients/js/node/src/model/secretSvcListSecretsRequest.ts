@@ -15,7 +15,6 @@ import { RequestFile } from './models';
 export class SecretSvcListSecretsRequest {
     'key'?: string;
     'keys'?: Array<string>;
-    'namespace'?: string;
 
     static discriminator: string | undefined = undefined;
 
@@ -29,11 +28,6 @@ export class SecretSvcListSecretsRequest {
             "name": "keys",
             "baseName": "keys",
             "type": "Array<string>"
-        },
-        {
-            "name": "namespace",
-            "baseName": "namespace",
-            "type": "string"
         }    ];
 
     static getAttributeTypeMap() {

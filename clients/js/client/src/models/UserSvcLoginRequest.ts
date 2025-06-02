@@ -24,6 +24,12 @@ export interface UserSvcLoginRequest {
      * @type {string}
      * @memberof UserSvcLoginRequest
      */
+    app?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSvcLoginRequest
+     */
     contact?: string;
     /**
      * 
@@ -62,6 +68,7 @@ export function UserSvcLoginRequestFromJSONTyped(json: any, ignoreDiscriminator:
     }
     return {
         
+        'app': json['app'] == null ? undefined : json['app'],
         'contact': json['contact'] == null ? undefined : json['contact'],
         'device': json['device'] == null ? undefined : json['device'],
         'password': json['password'] == null ? undefined : json['password'],
@@ -80,6 +87,7 @@ export function UserSvcLoginRequestToJSONTyped(value?: UserSvcLoginRequest | nul
 
     return {
         
+        'app': value['app'],
         'contact': value['contact'],
         'device': value['device'],
         'password': value['password'],

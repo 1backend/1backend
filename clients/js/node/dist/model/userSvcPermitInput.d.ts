@@ -10,6 +10,10 @@
  * Do not edit the class manually.
  */
 export declare class UserSvcPermitInput {
+    /**
+    * App of the permit. Use `*` to match all apps, such as when bootstrapping in services.
+    */
+    'app'?: string;
     'id'?: string;
     'permission': string;
     /**

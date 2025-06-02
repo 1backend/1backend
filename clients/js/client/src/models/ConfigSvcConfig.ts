@@ -21,6 +21,12 @@ import { mapValues } from '../runtime';
 export interface ConfigSvcConfig {
     /**
      * 
+     * @type {string}
+     * @memberof ConfigSvcConfig
+     */
+    app?: string;
+    /**
+     * 
      * @type {{ [key: string]: any; }}
      * @memberof ConfigSvcConfig
      */
@@ -37,12 +43,6 @@ export interface ConfigSvcConfig {
      * @memberof ConfigSvcConfig
      */
     id?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ConfigSvcConfig
-     */
-    namespace?: string;
 }
 
 /**
@@ -63,10 +63,10 @@ export function ConfigSvcConfigFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
+        'app': json['app'] == null ? undefined : json['app'],
         'data': json['data'],
         'dataJson': json['dataJson'] == null ? undefined : json['dataJson'],
         'id': json['id'] == null ? undefined : json['id'],
-        'namespace': json['namespace'] == null ? undefined : json['namespace'],
     };
 }
 
@@ -81,10 +81,10 @@ export function ConfigSvcConfigToJSONTyped(value?: ConfigSvcConfig | null, ignor
 
     return {
         
+        'app': value['app'],
         'data': value['data'],
         'dataJson': value['dataJson'],
         'id': value['id'],
-        'namespace': value['namespace'],
     };
 }
 

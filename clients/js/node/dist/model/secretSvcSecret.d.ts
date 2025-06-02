@@ -12,6 +12,10 @@
 import { SecretSvcChecksumAlgorithm } from './secretSvcChecksumAlgorithm';
 export declare class SecretSvcSecret {
     /**
+    * App of the secret
+    */
+    'app'?: string;
+    /**
     * Slugs of services/users who can change the deleters list
     */
     'canChangeDeleters'?: Array<string>;
@@ -47,10 +51,6 @@ export declare class SecretSvcSecret {
     * Envar or slug-like key of the secret
     */
     'key'?: string;
-    /**
-    * Namespace of the secret
-    */
-    'namespace'?: string;
     /**
     * Slugs of services/users who can read the secret
     */

@@ -25,6 +25,7 @@ export function UserSvcLoginRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'contact': json['contact'] == null ? undefined : json['contact'],
         'device': json['device'] == null ? undefined : json['device'],
         'password': json['password'] == null ? undefined : json['password'],
@@ -39,6 +40,7 @@ export function UserSvcLoginRequestToJSONTyped(value, ignoreDiscriminator = fals
         return value;
     }
     return {
+        'app': value['app'],
         'contact': value['contact'],
         'device': value['device'],
         'password': value['password'],

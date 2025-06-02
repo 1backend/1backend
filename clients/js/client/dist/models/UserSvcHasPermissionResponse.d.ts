@@ -18,6 +18,12 @@ import type { UserSvcUser } from './UserSvcUser';
 export interface UserSvcHasPermissionResponse {
     /**
      *
+     * @type {string}
+     * @memberof UserSvcHasPermissionResponse
+     */
+    app?: string;
+    /**
+     *
      * @type {boolean}
      * @memberof UserSvcHasPermissionResponse
      */

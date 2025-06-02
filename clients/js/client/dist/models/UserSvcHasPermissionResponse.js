@@ -32,6 +32,7 @@ export function UserSvcHasPermissionResponseFromJSONTyped(json, ignoreDiscrimina
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'authorized': json['authorized'],
         'until': json['until'],
         'user': UserSvcUserFromJSON(json['user']),
@@ -45,6 +46,7 @@ export function UserSvcHasPermissionResponseToJSONTyped(value, ignoreDiscriminat
         return value;
     }
     return {
+        'app': value['app'],
         'authorized': value['authorized'],
         'until': value['until'],
         'user': UserSvcUserToJSON(value['user']),

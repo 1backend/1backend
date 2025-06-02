@@ -28,6 +28,12 @@ import {
  */
 export interface SecretSvcSecret {
     /**
+     * App of the secret
+     * @type {string}
+     * @memberof SecretSvcSecret
+     */
+    app?: string;
+    /**
      * Slugs of services/users who can change the deleters list
      * @type {Array<string>}
      * @memberof SecretSvcSecret
@@ -86,12 +92,6 @@ export interface SecretSvcSecret {
      */
     key?: string;
     /**
-     * Namespace of the secret
-     * @type {string}
-     * @memberof SecretSvcSecret
-     */
-    namespace?: string;
-    /**
      * Slugs of services/users who can read the secret
      * @type {Array<string>}
      * @memberof SecretSvcSecret
@@ -130,6 +130,7 @@ export function SecretSvcSecretFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
+        'app': json['app'] == null ? undefined : json['app'],
         'canChangeDeleters': json['canChangeDeleters'] == null ? undefined : json['canChangeDeleters'],
         'canChangeReaders': json['canChangeReaders'] == null ? undefined : json['canChangeReaders'],
         'canChangeWriters': json['canChangeWriters'] == null ? undefined : json['canChangeWriters'],
@@ -139,7 +140,6 @@ export function SecretSvcSecretFromJSONTyped(json: any, ignoreDiscriminator: boo
         'encrypted': json['encrypted'] == null ? undefined : json['encrypted'],
         'id': json['id'] == null ? undefined : json['id'],
         'key': json['key'] == null ? undefined : json['key'],
-        'namespace': json['namespace'] == null ? undefined : json['namespace'],
         'readers': json['readers'] == null ? undefined : json['readers'],
         'value': json['value'] == null ? undefined : json['value'],
         'writers': json['writers'] == null ? undefined : json['writers'],
@@ -157,6 +157,7 @@ export function SecretSvcSecretToJSONTyped(value?: SecretSvcSecret | null, ignor
 
     return {
         
+        'app': value['app'],
         'canChangeDeleters': value['canChangeDeleters'],
         'canChangeReaders': value['canChangeReaders'],
         'canChangeWriters': value['canChangeWriters'],
@@ -166,7 +167,6 @@ export function SecretSvcSecretToJSONTyped(value?: SecretSvcSecret | null, ignor
         'encrypted': value['encrypted'],
         'id': value['id'],
         'key': value['key'],
-        'namespace': value['namespace'],
         'readers': value['readers'],
         'value': value['value'],
         'writers': value['writers'],
