@@ -12,6 +12,7 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
+	"strings"
 
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
@@ -89,6 +90,8 @@ func (cs *ConfigService) saveConfig(
 	callerSlug string,
 	newConfig types.Config,
 ) error {
+	callerSlug = kebabToCamel(callerSlug)
+
 	cs.configMutex.Lock()
 	defer cs.configMutex.Unlock()
 
@@ -136,4 +139,14 @@ func (cs *ConfigService) saveConfig(
 	}
 
 	return nil
+}
+
+func kebabToCamel(s string) string {
+	parts := strings.Split(s, "-")
+	for i := 1; i < len(parts); i++ {
+		if len(parts[i]) > 0 {
+			parts[i] = strings.ToUpper(parts[i][:1]) + parts[i][1:]
+		}
+	}
+	return strings.Join(parts, "")
 }
