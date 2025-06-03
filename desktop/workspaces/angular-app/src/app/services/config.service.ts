@@ -52,7 +52,7 @@ export class ConfigService {
 		this.firehoseService.firehoseEvent$.subscribe(async (event) => {
 			switch (event.name) {
 				case 'configUpdate': {
-					const rsp = await this.configGet();
+					const rsp = await this.readConfig();
 					this.configSubject.next(rsp.config!);
 					break;
 				}
@@ -62,7 +62,7 @@ export class ConfigService {
 
 	async loggedInInit() {
 		try {
-			const rsp = await this.configGet();
+			const rsp = await this.readConfig();
 			console.log('Config loaded', rsp);
 			this.lastConfig = rsp?.config?.data
 				? rsp?.config
@@ -79,7 +79,7 @@ export class ConfigService {
 		}
 	}
 
-	async configGet(): Promise<ConfigSvcGetConfigResponse> {
-		return await this.configService.getConfig();
+	async readConfig(): Promise<ConfigSvcGetConfigResponse> {
+		return await this.configService.readConfig();
 	}
 }

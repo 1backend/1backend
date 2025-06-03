@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.6.0
+API version: 0.6.1
 Contact: sales@singulatron.com
 */
 
@@ -22,6 +22,8 @@ var _ MappedNullable = &UserSvcPermit{}
 
 // UserSvcPermit struct for UserSvcPermit
 type UserSvcPermit struct {
+	// App of the permit. Use `*` to match all apps, such as when bootstrapping in services.
+	App *string `json:"app,omitempty"`
 	CreatedAt string `json:"createdAt"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	Id string `json:"id"`
@@ -54,6 +56,38 @@ func NewUserSvcPermit(createdAt string, id string, permission string, updatedAt 
 func NewUserSvcPermitWithDefaults() *UserSvcPermit {
 	this := UserSvcPermit{}
 	return &this
+}
+
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *UserSvcPermit) GetApp() string {
+	if o == nil || IsNil(o.App) {
+		var ret string
+		return ret
+	}
+	return *o.App
+}
+
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcPermit) GetAppOk() (*string, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
+
+// HasApp returns a boolean if a field has been set.
+func (o *UserSvcPermit) HasApp() bool {
+	if o != nil && !IsNil(o.App) {
+		return true
+	}
+
+	return false
+}
+
+// SetApp gets a reference to the given string and assigns it to the App field.
+func (o *UserSvcPermit) SetApp(v string) {
+	o.App = &v
 }
 
 // GetCreatedAt returns the CreatedAt field value
@@ -258,6 +292,9 @@ func (o UserSvcPermit) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcPermit) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.App) {
+		toSerialize["app"] = o.App
+	}
 	toSerialize["createdAt"] = o.CreatedAt
 	if !IsNil(o.DeletedAt) {
 		toSerialize["deletedAt"] = o.DeletedAt

@@ -10,7 +10,9 @@ package user_svc
 import "time"
 
 type AuthToken struct {
-	Id        string     `json:"id" binding:"required"`
+	Id  string `json:"id" binding:"required"`
+	App string `json:"app" example:"unnamed,omitempty"`
+
 	CreatedAt time.Time  `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time  `json:"updatedAt" binding:"required"`
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`

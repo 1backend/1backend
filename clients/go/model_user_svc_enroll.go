@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.6.0
+API version: 0.6.1
 Contact: sales@singulatron.com
 */
 
@@ -22,6 +22,8 @@ var _ MappedNullable = &UserSvcEnroll{}
 
 // UserSvcEnroll struct for UserSvcEnroll
 type UserSvcEnroll struct {
+	// App of the enroll. Use `*` to match all apps, such as when bootstrapping in services.
+	App *string `json:"app,omitempty"`
 	// ContactId is the the recipient of the enroll. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
 	ContactId *string `json:"contactId,omitempty"`
 	CreatedAt string `json:"createdAt"`
@@ -57,6 +59,38 @@ func NewUserSvcEnroll(createdAt string, id string, role string, updatedAt string
 func NewUserSvcEnrollWithDefaults() *UserSvcEnroll {
 	this := UserSvcEnroll{}
 	return &this
+}
+
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *UserSvcEnroll) GetApp() string {
+	if o == nil || IsNil(o.App) {
+		var ret string
+		return ret
+	}
+	return *o.App
+}
+
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcEnroll) GetAppOk() (*string, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
+
+// HasApp returns a boolean if a field has been set.
+func (o *UserSvcEnroll) HasApp() bool {
+	if o != nil && !IsNil(o.App) {
+		return true
+	}
+
+	return false
+}
+
+// SetApp gets a reference to the given string and assigns it to the App field.
+func (o *UserSvcEnroll) SetApp(v string) {
+	o.App = &v
 }
 
 // GetContactId returns the ContactId field value if set, zero value otherwise.
@@ -293,6 +327,9 @@ func (o UserSvcEnroll) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcEnroll) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.App) {
+		toSerialize["app"] = o.App
+	}
 	if !IsNil(o.ContactId) {
 		toSerialize["contactId"] = o.ContactId
 	}

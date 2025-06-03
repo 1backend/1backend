@@ -404,12 +404,7 @@ const docTemplate = `{
         },
         "/config-svc/config": {
             "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Fetch the current configuration from the server.",
+                "description": "Retrieves the current configuration for a specified app.\nIf no app is specified, the default \"unnamed\" app is used.\nThis is a public endpoint and does not require authentication.\nConfiguration data is non-sensitive. For sensitive data, refer to the Secret Service.\n\nConfigurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.",
                 "consumes": [
                     "application/json"
                 ],
@@ -419,19 +414,19 @@ const docTemplate = `{
                 "tags": [
                     "Config Svc"
                 ],
-                "summary": "Get Config",
-                "operationId": "getConfig",
+                "summary": "Read Config",
+                "operationId": "readConfig",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Namespace",
-                        "name": "namespace",
+                        "description": "App",
+                        "name": "app",
                         "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Current configuration retrieved successfully",
+                        "description": "Current configuration",
                         "schema": {
                             "$ref": "#/definitions/config_svc.GetConfigResponse"
                         }
@@ -5402,6 +5397,9 @@ const docTemplate = `{
                 "data"
             ],
             "properties": {
+                "app": {
+                    "type": "string"
+                },
                 "data": {
                     "type": "object",
                     "additionalProperties": true
@@ -5410,9 +5408,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
-                    "type": "string"
-                },
-                "namespace": {
                     "type": "string"
                 }
             }
@@ -8501,9 +8496,6 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
-                },
-                "namespace": {
-                    "type": "string"
                 }
             }
         },
@@ -8561,6 +8553,10 @@ const docTemplate = `{
         "secret_svc.Secret": {
             "type": "object",
             "properties": {
+                "app": {
+                    "description": "App of the secret",
+                    "type": "string"
+                },
                 "canChangeDeleters": {
                     "description": "Slugs of services/users who can change the deleters list",
                     "type": "array",
@@ -8612,10 +8608,6 @@ const docTemplate = `{
                 },
                 "key": {
                     "description": "Envar or slug-like key of the secret",
-                    "type": "string"
-                },
-                "namespace": {
-                    "description": "Namespace of the secret",
                     "type": "string"
                 },
                 "readers": {
@@ -8889,6 +8881,10 @@ const docTemplate = `{
                     "description": "Active tokens contain the most up-to-date information.\nWhen a user's role changes—due to role assignment, organization\ncreation/assignment, etc.—all existing tokens are marked inactive.\nActive tokens are reused during login, while inactive tokens\nthat have been recently refreshed (being used still) are kept for further refreshing\n(unless ` + "`" + `OB_TOKEN_AUTO_REFRESH_OFF` + "`" + ` is set to true, old tokens can be refreshed indefinitely.)\n\nActive tokens contain the most up-to-date information.\nWhen a user's role changes—due to role assignment, organization\ncreation/assignment, etc.—all existing tokens are marked inactive.\nActive tokens are reused during login, while inactive tokens\nthat have been recently refreshed (see ` + "`" + `lastRefreshedAt` + "`" + ` field) and are still in use are retained for further refreshing.\n(Unless ` + "`" + `OB_TOKEN_AUTO_REFRESH_OFF` + "`" + ` is set to true, in which case old tokens can be refreshed indefinitely.)",
                     "type": "boolean"
                 },
+                "app": {
+                    "type": "string",
+                    "example": "unnamed,omitempty"
+                },
                 "createdAt": {
                     "type": "string"
                 },
@@ -9014,6 +9010,10 @@ const docTemplate = `{
         "user_svc.CreateUserRequest": {
             "type": "object",
             "properties": {
+                "app": {
+                    "type": "string",
+                    "example": "unnamed"
+                },
                 "contacts": {
                     "type": "array",
                     "items": {
@@ -9055,6 +9055,11 @@ const docTemplate = `{
                 "updatedAt"
             ],
             "properties": {
+                "app": {
+                    "description": "App of the enroll.\nUse ` + "`" + `*` + "`" + ` to match all apps, such as when bootstrapping\nin services.",
+                    "type": "string",
+                    "example": "unnamed,omitempty"
+                },
                 "contactId": {
                     "description": "ContactId is the the recipient of the enroll.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
                     "type": "string"
@@ -9092,6 +9097,10 @@ const docTemplate = `{
                 "role"
             ],
             "properties": {
+                "app": {
+                    "type": "string",
+                    "example": "unnamed,omitempty"
+                },
                 "contactId": {
                     "description": "ContactId is the the recipient of the enroll.\nIf the user is already registered, the role is assigned immediately;\notherwise, it is applied upon registration.",
                     "type": "string"
@@ -9136,6 +9145,9 @@ const docTemplate = `{
                 "user"
             ],
             "properties": {
+                "app": {
+                    "type": "string"
+                },
                 "authorized": {
                     "type": "boolean"
                 },
@@ -9317,6 +9329,10 @@ const docTemplate = `{
         "user_svc.LoginRequest": {
             "type": "object",
             "properties": {
+                "app": {
+                    "type": "string",
+                    "example": "unnamed"
+                },
                 "contact": {
                     "type": "string"
                 },
@@ -9360,6 +9376,10 @@ const docTemplate = `{
                 "updatedAt"
             ],
             "properties": {
+                "app": {
+                    "type": "string",
+                    "example": "unnamed"
+                },
                 "createdAt": {
                     "type": "string"
                 },
@@ -9397,6 +9417,11 @@ const docTemplate = `{
                 "updatedAt"
             ],
             "properties": {
+                "app": {
+                    "description": "App of the permit.\nUse ` + "`" + `*` + "`" + ` to match all apps, such as when bootstrapping\nin services.",
+                    "type": "string",
+                    "example": "unnamed,omitempty"
+                },
                 "createdAt": {
                     "type": "string"
                 },
@@ -9435,6 +9460,11 @@ const docTemplate = `{
                 "permission"
             ],
             "properties": {
+                "app": {
+                    "description": "App of the permit.\nUse ` + "`" + `*` + "`" + ` to match all apps, such as when bootstrapping\nin services.",
+                    "type": "string",
+                    "example": "unnamed,omitempty"
+                },
                 "id": {
                     "type": "string",
                     "example": "inv_fIYPbMHIcI"
@@ -9528,6 +9558,10 @@ const docTemplate = `{
                 "slug"
             ],
             "properties": {
+                "app": {
+                    "type": "string",
+                    "example": "unnamed"
+                },
                 "contact": {
                     "$ref": "#/definitions/user_svc.ContactInput"
                 },
@@ -9538,6 +9572,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "description": "Password of the user.",
                     "type": "string"
                 },
                 "slug": {
@@ -9848,7 +9883,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.6.0",
+	Version:          "0.6.1",
 	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},

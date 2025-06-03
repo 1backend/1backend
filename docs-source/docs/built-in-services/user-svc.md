@@ -9,6 +9,7 @@ tags:
   - service
   - service to service calls
   - s2s calls
+  - multitenant
 ---
 
 # User Svc
@@ -16,6 +17,10 @@ tags:
 The user service is at the heart of 1Backend, managing users, tokens, organizations, permissions and more. Each service and human on an 1Backend network has an account in the `User Svc`.
 
 > This page provides a high-level overview of `User Svc`. For detailed information, refer to the [User Svc API documentation](/docs/1backend/login).
+
+User Svc supports multitenancy: while users are shared globally, tokens, organizations, permits, enrollments, and memberships are isolated by an "app" field. This approach allows a single 1Backend instance to securely support multiple web applications.
+
+> Note: Not all services included with 1Backend may support multitenancy. Please refer to the documentation for details and look for the tag `multitenant`.
 
 ## Glossary
 

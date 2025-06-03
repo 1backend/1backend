@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.6.0
+API version: 0.6.1
 Contact: sales@singulatron.com
 */
 
@@ -22,10 +22,10 @@ var _ MappedNullable = &ConfigSvcConfig{}
 
 // ConfigSvcConfig struct for ConfigSvcConfig
 type ConfigSvcConfig struct {
+	App *string `json:"app,omitempty"`
 	Data map[string]interface{} `json:"data"`
 	DataJson *string `json:"dataJson,omitempty"`
 	Id *string `json:"id,omitempty"`
-	Namespace *string `json:"namespace,omitempty"`
 }
 
 type _ConfigSvcConfig ConfigSvcConfig
@@ -46,6 +46,38 @@ func NewConfigSvcConfig(data map[string]interface{}) *ConfigSvcConfig {
 func NewConfigSvcConfigWithDefaults() *ConfigSvcConfig {
 	this := ConfigSvcConfig{}
 	return &this
+}
+
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *ConfigSvcConfig) GetApp() string {
+	if o == nil || IsNil(o.App) {
+		var ret string
+		return ret
+	}
+	return *o.App
+}
+
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcConfig) GetAppOk() (*string, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
+
+// HasApp returns a boolean if a field has been set.
+func (o *ConfigSvcConfig) HasApp() bool {
+	if o != nil && !IsNil(o.App) {
+		return true
+	}
+
+	return false
+}
+
+// SetApp gets a reference to the given string and assigns it to the App field.
+func (o *ConfigSvcConfig) SetApp(v string) {
+	o.App = &v
 }
 
 // GetData returns the Data field value
@@ -136,38 +168,6 @@ func (o *ConfigSvcConfig) SetId(v string) {
 	o.Id = &v
 }
 
-// GetNamespace returns the Namespace field value if set, zero value otherwise.
-func (o *ConfigSvcConfig) GetNamespace() string {
-	if o == nil || IsNil(o.Namespace) {
-		var ret string
-		return ret
-	}
-	return *o.Namespace
-}
-
-// GetNamespaceOk returns a tuple with the Namespace field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigSvcConfig) GetNamespaceOk() (*string, bool) {
-	if o == nil || IsNil(o.Namespace) {
-		return nil, false
-	}
-	return o.Namespace, true
-}
-
-// HasNamespace returns a boolean if a field has been set.
-func (o *ConfigSvcConfig) HasNamespace() bool {
-	if o != nil && !IsNil(o.Namespace) {
-		return true
-	}
-
-	return false
-}
-
-// SetNamespace gets a reference to the given string and assigns it to the Namespace field.
-func (o *ConfigSvcConfig) SetNamespace(v string) {
-	o.Namespace = &v
-}
-
 func (o ConfigSvcConfig) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -178,15 +178,15 @@ func (o ConfigSvcConfig) MarshalJSON() ([]byte, error) {
 
 func (o ConfigSvcConfig) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.App) {
+		toSerialize["app"] = o.App
+	}
 	toSerialize["data"] = o.Data
 	if !IsNil(o.DataJson) {
 		toSerialize["dataJson"] = o.DataJson
 	}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
-	}
-	if !IsNil(o.Namespace) {
-		toSerialize["namespace"] = o.Namespace
 	}
 	return toSerialize, nil
 }

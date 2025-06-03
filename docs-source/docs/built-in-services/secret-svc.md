@@ -5,6 +5,7 @@ tags:
   - secrets
   - configuration
   - services
+  - multitenant
 ---
 
 # Secret Svc

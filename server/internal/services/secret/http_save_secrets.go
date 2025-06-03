@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package secretservice
 
 import (
@@ -118,12 +113,12 @@ func (cs *SecretService) saveSecrets(
 	defer cs.options.Lock.Release(ctx, "secret-svc-save")
 
 	for _, s := range ss {
-		if s.Namespace == "" {
-			s.Namespace = "default"
+		if s.App == "" {
+			s.App = defaultApp
 		}
 
 		secretI, found, err := cs.secretStore.Query(
-			datastore.Equals([]string{"namespace"}, s.Namespace),
+			datastore.Equals([]string{"app"}, s.App),
 			datastore.Equals([]string{"key"}, s.Key),
 		).
 			FindOne()

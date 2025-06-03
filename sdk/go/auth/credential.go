@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package auth
 
 import (
@@ -22,7 +17,8 @@ import (
 )
 
 type Claims struct {
-	UserId string   `json:"oui,omitempty"` // `oui`: 1backend user ids
+	UserId string   `json:"oui,omitempty"` // `oui`: 1backend user id
+	App    string   `json:"oap,omitempty"` // `oap`: 1backend app
 	Slug   string   `json:"osl,omitempty"` // `osl`: 1backend slug
 	Roles  []string `json:"oro,omitempty"` // `oro`: 1backend role ids
 	Device string   `json:"odi,omitempty"` // `device`: 1backend device

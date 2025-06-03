@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package userservice
 
 import (
@@ -102,6 +97,7 @@ func (s *UserService) refreshToken(
 	usr := userI.(*user.User)
 
 	activeTokenI, found, err := s.authTokensStore.Query(
+		datastore.Equals(datastore.Field("app"), tokenToBeRefreshed.App),
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 		datastore.Equals(datastore.Field("active"), true),
 		datastore.Equals(datastore.Field("device"), tokenToBeRefreshed.Device),
@@ -140,7 +136,11 @@ func (s *UserService) refreshToken(
 		}
 	}
 
-	token, err := s.generateAuthToken(usr, tokenToBeRefreshed.Device)
+	token, err := s.generateAuthToken(
+		tokenToBeRefreshed.App,
+		usr,
+		tokenToBeRefreshed.Device,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -156,6 +156,7 @@ func (s *UserService) refreshToken(
 
 	// Prune old tokens for the same device
 	tokens, err := s.authTokensStore.Query(
+		datastore.Equals(datastore.Field("app"), token.App),
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 		datastore.Equals(datastore.Field("device"), tokenToBeRefreshed.Device),
 	).Find()
@@ -190,6 +191,7 @@ func (s *UserService) refreshToken(
 		err := s.authTokensStore.Query(datastore.Id(t.Id)).Delete()
 		if err != nil {
 			logger.Error("Failed to delete old token",
+				slog.String("app", t.App),
 				slog.String("tokenId", t.Id),
 				slog.Any("error", err),
 			)

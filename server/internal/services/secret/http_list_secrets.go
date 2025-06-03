@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package secretservice
 
 import (
@@ -76,7 +71,7 @@ func (cs *SecretService) ListSecrets(
 		return
 	}
 
-	ss, err := cs.getSecrets(req, isAdmin, isAuthRsp.User.Slug)
+	ss, err := cs.getSecrets(*isAuthRsp.App, req, isAdmin, isAuthRsp.User.Slug)
 	if err != nil {
 		logger.Error(
 			"Error listing secrets",
@@ -96,13 +91,12 @@ func (cs *SecretService) ListSecrets(
 }
 
 func (cs *SecretService) getSecrets(
+	app string,
 	req secret.ListSecretsRequest, isAdmin bool, userSlug string,
 ) ([]*secret.Secret, error) {
-	filters := []datastore.Filter{}
-	if req.Namespace == "" {
-		req.Namespace = "default"
+	filters := []datastore.Filter{
+		datastore.Equals([]string{"app"}, app),
 	}
-	filters = append(filters, datastore.Equals([]string{"namespace"}, req.Namespace))
 
 	if req.Key != "" {
 		filters = append(filters, datastore.Equals([]string{"key"}, req.Key))

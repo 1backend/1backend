@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package modelservice
 
 import (
@@ -46,13 +41,13 @@ func (ms *ModelService) status(
 
 	if modelId == "" {
 		rsp, _, err := ms.options.ClientFactory.Client(client.WithToken(ms.token)).
-			ConfigSvcAPI.GetConfig(context.Background()).
+			ConfigSvcAPI.ReadConfig(context.Background()).
 			Execute()
 		if err != nil {
 			return nil, err
 		}
 
-		modelIdI := dipper.Get(rsp.Config.Data, "model-svc.currentModelId")
+		modelIdI := dipper.Get(rsp.Config.Data, "modelSvc.currentModelId")
 		var ok bool
 		modelId, ok = modelIdI.(string)
 		if !ok {

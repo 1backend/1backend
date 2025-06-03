@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package promptservice
 
 import (
@@ -231,14 +226,14 @@ func (p *PromptService) processPrompt(
 
 	modelId := currentPrompt.ModelId
 	if modelId == "" {
-		getConfigRsp, _, err := p.options.ClientFactory.Client(client.WithToken(token)).
-			ConfigSvcAPI.GetConfig(context.Background()).
+		readConfigRsp, _, err := p.options.ClientFactory.Client(client.WithToken(token)).
+			ConfigSvcAPI.ReadConfig(context.Background()).
 			Execute()
 		if err != nil {
 			return err
 		}
 
-		modelIdI := dipper.Get(getConfigRsp.Config.Data, "model-svc.currentModelId")
+		modelIdI := dipper.Get(readConfigRsp.Config.Data, "modelSvc.currentModelId")
 		var ok bool
 		modelId, ok = modelIdI.(string)
 		if !ok {

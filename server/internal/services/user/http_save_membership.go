@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package userservice
 
 import (
@@ -51,7 +46,7 @@ func (s *UserService) SaveMembership(
 	organizationId := mux.Vars(r)["organizationId"]
 	userId := mux.Vars(r)["userId"]
 
-	usr, hasPermission, _, err := s.hasPermission(
+	usr, hasPermission, claims, err := s.hasPermission(
 		r,
 		user.PermissionOrganizationAddUser,
 	)
@@ -80,7 +75,7 @@ func (s *UserService) SaveMembership(
 	}
 	defer r.Body.Close()
 
-	err = s.saveMembership(usr.Id, userId, organizationId)
+	err = s.saveMembership(claims.App, usr.Id, userId, organizationId)
 	if err != nil {
 		logger.Error(
 			"Failed to save membership",
@@ -94,14 +89,20 @@ func (s *UserService) SaveMembership(
 }
 
 func (s *UserService) saveMembership(
-	callerId, userId, organizationId string,
+	app string,
+	callerId,
+	userId,
+	organizationId string,
 ) error {
-	roles, err := s.getRolesByUserId(callerId)
+	roles, err := s.getRolesByUserId(app, callerId)
 	if err != nil {
 		return err
 	}
 
-	orgI, found, err := s.organizationsStore.Query(datastore.Id(organizationId)).
+	orgI, found, err := s.organizationsStore.Query(
+		datastore.Equals(datastore.Field("app"), app),
+		datastore.Id(organizationId),
+	).
 		FindOne()
 	if err != nil {
 		return err
@@ -128,6 +129,7 @@ func (s *UserService) saveMembership(
 	}
 
 	err = s.assignRole(
+		app,
 		userId,
 		newRole,
 	)
@@ -138,6 +140,7 @@ func (s *UserService) saveMembership(
 	// When creating a new org, the user switches to that org as the active one
 	link := &user.Membership{
 		Id:             sdk.Id("memb"),
+		App:            app,
 		UserId:         userId,
 		OrganizationId: org.Id,
 		// @todo null out the other active orgs for correctness
@@ -149,7 +152,7 @@ func (s *UserService) saveMembership(
 		return err
 	}
 
-	return s.inactivateTokens(userId)
+	return s.inactivateTokens(app, userId)
 }
 
 func contains(ss []string, s string) bool {

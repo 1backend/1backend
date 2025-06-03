@@ -46,7 +46,7 @@ Let's make a GET call:
 
 ```sh
 $ oo get /config-svc/config
-{"config":{"namespace":"","data":{"config-svc":{"directory":"/root"},"download-svc":{"downloadFolder":"/root/downloads"},"model-svc":{"currentModelId":"huggingface/TheBloke/mistral-7b-instruct-v0.2.Q3_K_S.gguf"}}}}
+{"config":{"app":"unnamed","data":{"configSvc":{"directory":"/root"},"downloadSvc":{"downloadFolder":"/root/downloads"},"modelSvc":{"currentModelId":"huggingface/TheBloke/mistral-7b-instruct-v0.2.Q3_K_S.gguf"}}}}
 ```
 
 Or a POST call:

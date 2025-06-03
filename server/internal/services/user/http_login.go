@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package userservice
 
 import (
@@ -94,6 +89,9 @@ func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
 func (s *UserService) login(
 	request *user.LoginRequest,
 ) (*user.AuthToken, error) {
+	if request.App == "" {
+		request.App = "unnamed"
+	}
 
 	var usr *user.User
 
@@ -102,10 +100,10 @@ func (s *UserService) login(
 			datastore.Equals(datastore.Field("slug"), request.Slug),
 		).FindOne()
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "error querying user by slug")
 		}
 		if !found {
-			return nil, errors.New("not found")
+			return nil, errors.New("user not found by slug")
 		}
 
 		usr = userI.(*user.User)
@@ -124,10 +122,10 @@ func (s *UserService) login(
 			datastore.Equals(datastore.Field("id"), contactI.(*user.Contact).UserId),
 		).FindOne()
 		if err != nil {
-			return nil, err
+			return nil, errors.Wrap(err, "error querying user by contact")
 		}
 		if !found {
-			return nil, errors.New("not found")
+			return nil, errors.New("user not found by contact")
 		}
 
 		usr = userI.(*user.User)
@@ -160,6 +158,7 @@ func (s *UserService) login(
 
 	// Let's see if there is an active token we can reuse
 	tokenI, found, err := s.authTokensStore.Query(
+		datastore.Equals(datastore.Field("app"), request.App),
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 		datastore.Equals(datastore.Field("active"), true),
 		datastore.Equals(datastore.Field("device"), request.Device),
@@ -194,7 +193,11 @@ func (s *UserService) login(
 		}
 	}
 
-	token, err := s.generateAuthToken(usr, request.Device)
+	token, err := s.generateAuthToken(
+		request.App,
+		usr,
+		request.Device,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -232,22 +235,23 @@ func (s *UserService) isFunctional(token string) (bool, error) {
 }
 
 func (s *UserService) generateAuthToken(
+	app string,
 	u *user.User,
 	device string,
 ) (*user.AuthToken, error) {
-	roles, err := s.getRolesByUserId(u.Id)
+	roles, err := s.getRolesByUserId(app, u.Id)
 	if err != nil {
 		return nil, errors.Wrap(err, "error listing roles")
 	}
-	if len(roles) == 0 {
-		return nil, errors.New("no roles found for user")
-	}
-	_, activeOrganizationId, err := s.getUserOrganizations(u.Id)
+
+	_, activeOrganizationId, err := s.getUserOrganizations(app, u.Id)
 	if err != nil {
 		return nil, errors.Wrap(err, "error listing organizations")
 	}
 
-	token, err := s.generateJWT(u, roles, activeOrganizationId, s.privateKey, device)
+	token, err := s.generateJWT(
+		app, u, roles, activeOrganizationId,
+		s.privateKey, device)
 	if err != nil {
 		return nil, err
 	}
@@ -256,6 +260,7 @@ func (s *UserService) generateAuthToken(
 
 	return &user.AuthToken{
 		Id:        sdk.Id("tok"),
+		App:       app,
 		UserId:    u.Id,
 		Token:     token,
 		Device:    device,

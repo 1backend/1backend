@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package user_svc
 
 import (
@@ -19,6 +14,11 @@ import (
 // Enroll (enrollment) is a mechanism to give registered or not yet registered roles.
 type Enroll struct {
 	Id string `json:"id" example:"inv_fIYPbMHIcI" binding:"required"`
+
+	// App of the enroll.
+	// Use `*` to match all apps, such as when bootstrapping
+	// in services.
+	App string `json:"app" example:"unnamed,omitempty"`
 
 	CreatedAt time.Time `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
@@ -52,7 +52,8 @@ func (i Enroll) GetId() string {
 
 // EnrollInput is the settable subset of Enroll, excluding system-managed fields.
 type EnrollInput struct {
-	Id string `json:"id,omitempty" example:"inv_fIYPbMHIcI"`
+	Id  string `json:"id,omitempty" example:"inv_fIYPbMHIcI"`
+	App string `json:"app" example:"unnamed,omitempty"`
 
 	// ContactId is the the recipient of the enroll.
 	// If the user is already registered, the role is assigned immediately;

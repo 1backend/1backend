@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package configservice
 
 import (
@@ -17,6 +12,7 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
+	"strings"
 
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
@@ -73,7 +69,7 @@ func (cs *ConfigService) Save(
 		return
 	}
 
-	err = cs.saveConfig(isAdmin, isAuthRsp.User.Slug, *req.Config)
+	err = cs.saveConfig(*isAuthRsp.App, isAdmin, isAuthRsp.User.Slug, *req.Config)
 	if err != nil {
 		logger.Error("Failed to save config", slog.Any("error", err))
 		endpoint.InternalServerError(w)
@@ -88,18 +84,23 @@ func (cs *ConfigService) Save(
 	}
 }
 
-func (cs *ConfigService) saveConfig(isAdmin bool, callerSlug string, newConfig types.Config) error {
-	if newConfig.Namespace == "" {
-		newConfig.Namespace = "default"
-	}
+func (cs *ConfigService) saveConfig(
+	app string,
+	isAdmin bool,
+	callerSlug string,
+	newConfig types.Config,
+) error {
+	callerSlug = kebabToCamel(callerSlug)
 
 	cs.configMutex.Lock()
 	defer cs.configMutex.Unlock()
 
-	oldConfigData := cs.configs[newConfig.Namespace]
+	newConfig.App = app
+
+	oldConfigData := cs.configs[app]
 	if oldConfigData == nil {
 		oldConfigData = map[string]interface{}{}
-		cs.configs[newConfig.Namespace] = oldConfigData
+		cs.configs[app] = oldConfigData
 	}
 
 	if isAdmin {
@@ -138,4 +139,14 @@ func (cs *ConfigService) saveConfig(isAdmin bool, callerSlug string, newConfig t
 	}
 
 	return nil
+}
+
+func kebabToCamel(s string) string {
+	parts := strings.Split(s, "-")
+	for i := 1; i < len(parts); i++ {
+		if len(parts[i]) > 0 {
+			parts[i] = strings.ToUpper(parts[i][:1]) + parts[i][1:]
+		}
+	}
+	return strings.Join(parts, "")
 }

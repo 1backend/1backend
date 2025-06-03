@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.6.0
+API version: 0.6.1
 Contact: sales@singulatron.com
 */
 
@@ -22,6 +22,7 @@ var _ MappedNullable = &UserSvcHasPermissionResponse{}
 
 // UserSvcHasPermissionResponse struct for UserSvcHasPermissionResponse
 type UserSvcHasPermissionResponse struct {
+	App *string `json:"app,omitempty"`
 	Authorized bool `json:"authorized"`
 	Until string `json:"until"`
 	User UserSvcUser `json:"user"`
@@ -47,6 +48,38 @@ func NewUserSvcHasPermissionResponse(authorized bool, until string, user UserSvc
 func NewUserSvcHasPermissionResponseWithDefaults() *UserSvcHasPermissionResponse {
 	this := UserSvcHasPermissionResponse{}
 	return &this
+}
+
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *UserSvcHasPermissionResponse) GetApp() string {
+	if o == nil || IsNil(o.App) {
+		var ret string
+		return ret
+	}
+	return *o.App
+}
+
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcHasPermissionResponse) GetAppOk() (*string, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
+
+// HasApp returns a boolean if a field has been set.
+func (o *UserSvcHasPermissionResponse) HasApp() bool {
+	if o != nil && !IsNil(o.App) {
+		return true
+	}
+
+	return false
+}
+
+// SetApp gets a reference to the given string and assigns it to the App field.
+func (o *UserSvcHasPermissionResponse) SetApp(v string) {
+	o.App = &v
 }
 
 // GetAuthorized returns the Authorized field value
@@ -131,6 +164,9 @@ func (o UserSvcHasPermissionResponse) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcHasPermissionResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.App) {
+		toSerialize["app"] = o.App
+	}
 	toSerialize["authorized"] = o.Authorized
 	toSerialize["until"] = o.Until
 	toSerialize["user"] = o.User

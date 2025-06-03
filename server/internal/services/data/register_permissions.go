@@ -29,6 +29,7 @@ func (p *DataService) registerPermits() error {
 	} {
 		for _, permission := range data.Permissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
+				App:        openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})

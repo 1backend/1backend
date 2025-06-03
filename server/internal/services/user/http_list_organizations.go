@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package userservice
 
 import (
@@ -40,7 +35,7 @@ func (s *UserService) ListOrganizations(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	_, hasPermission, _, err := s.hasPermission(
+	_, hasPermission, claims, err := s.hasPermission(
 		r,
 		user.PermissionOrganizationView,
 	)
@@ -69,7 +64,7 @@ func (s *UserService) ListOrganizations(
 	}
 	defer r.Body.Close()
 
-	rsp, err := s.listOrganizations(&req)
+	rsp, err := s.listOrganizations(claims.App, &req)
 	if err != nil {
 		logger.Error(
 			"Failed to list organizations",
@@ -83,9 +78,12 @@ func (s *UserService) ListOrganizations(
 }
 
 func (s *UserService) listOrganizations(
+	app string,
 	request *user.ListOrganizationsRequest,
 ) (*user.ListOrganizationsResponse, error) {
-	filters := []datastore.Filter{}
+	filters := []datastore.Filter{
+		datastore.Equals(datastore.Field("app"), app),
+	}
 
 	if request.Ids != nil {
 		ids := []any{}

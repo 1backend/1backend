@@ -163,14 +163,14 @@ definitions:
     type: object
   config_svc.Config:
     properties:
+      app:
+        type: string
       data:
         additionalProperties: true
         type: object
       dataJson:
         type: string
       id:
-        type: string
-      namespace:
         type: string
     required:
     - data
@@ -2458,8 +2458,6 @@ definitions:
         items:
           type: string
         type: array
-      namespace:
-        type: string
     type: object
   secret_svc.ListSecretsResponse:
     properties:
@@ -2496,6 +2494,9 @@ definitions:
     type: object
   secret_svc.Secret:
     properties:
+      app:
+        description: App of the secret
+        type: string
       canChangeDeleters:
         description: Slugs of services/users who can change the deleters list
         items:
@@ -2537,9 +2538,6 @@ definitions:
         type: string
       key:
         description: Envar or slug-like key of the secret
-        type: string
-      namespace:
-        description: Namespace of the secret
         type: string
       readers:
         description: Slugs of services/users who can read the secret
@@ -2731,6 +2729,9 @@ definitions:
           that have been recently refreshed (see `lastRefreshedAt` field) and are still in use are retained for further refreshing.
           (Unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, in which case old tokens can be refreshed indefinitely.)
         type: boolean
+      app:
+        example: unnamed,omitempty
+        type: string
       createdAt:
         type: string
       deletedAt:
@@ -2861,6 +2862,9 @@ definitions:
     type: object
   user_svc.CreateUserRequest:
     properties:
+      app:
+        example: unnamed
+        type: string
       contacts:
         items:
           $ref: '#/definitions/user_svc.Contact'
@@ -2884,6 +2888,13 @@ definitions:
     type: object
   user_svc.Enroll:
     properties:
+      app:
+        description: |-
+          App of the enroll.
+          Use `*` to match all apps, such as when bootstrapping
+          in services.
+        example: unnamed,omitempty
+        type: string
       contactId:
         description: |-
           ContactId is the the recipient of the enroll.
@@ -2925,6 +2936,9 @@ definitions:
     type: object
   user_svc.EnrollInput:
     properties:
+      app:
+        example: unnamed,omitempty
+        type: string
       contactId:
         description: |-
           ContactId is the the recipient of the enroll.
@@ -2959,6 +2973,8 @@ definitions:
     type: object
   user_svc.HasPermissionResponse:
     properties:
+      app:
+        type: string
       authorized:
         type: boolean
       until:
@@ -3090,6 +3106,9 @@ definitions:
     type: object
   user_svc.LoginRequest:
     properties:
+      app:
+        example: unnamed
+        type: string
       contact:
         type: string
       device:
@@ -3114,6 +3133,9 @@ definitions:
     - OrderDirectionDesc
   user_svc.Organization:
     properties:
+      app:
+        example: unnamed
+        type: string
       createdAt:
         type: string
       deletedAt:
@@ -3143,6 +3165,13 @@ definitions:
     type: object
   user_svc.Permit:
     properties:
+      app:
+        description: |-
+          App of the permit.
+          Use `*` to match all apps, such as when bootstrapping
+          in services.
+        example: unnamed,omitempty
+        type: string
       createdAt:
         type: string
       deletedAt:
@@ -3176,6 +3205,13 @@ definitions:
     type: object
   user_svc.PermitInput:
     properties:
+      app:
+        description: |-
+          App of the permit.
+          Use `*` to match all apps, such as when bootstrapping
+          in services.
+        example: unnamed,omitempty
+        type: string
       id:
         example: inv_fIYPbMHIcI
         type: string
@@ -3242,6 +3278,9 @@ definitions:
     type: object
   user_svc.RegisterRequest:
     properties:
+      app:
+        example: unnamed
+        type: string
       contact:
         $ref: '#/definitions/user_svc.ContactInput'
       device:
@@ -3249,6 +3288,7 @@ definitions:
       name:
         type: string
       password:
+        description: Password of the user.
         type: string
       slug:
         description: |-
@@ -3476,7 +3516,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.6.0
+  version: 0.6.1
 paths:
   /chat-svc/events:
     get:
@@ -3729,18 +3769,24 @@ paths:
     get:
       consumes:
       - application/json
-      description: Fetch the current configuration from the server.
-      operationId: getConfig
+      description: |-
+        Retrieves the current configuration for a specified app.
+        If no app is specified, the default "unnamed" app is used.
+        This is a public endpoint and does not require authentication.
+        Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
+
+        Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+      operationId: readConfig
       parameters:
-      - description: Namespace
+      - description: App
         in: query
-        name: namespace
+        name: app
         type: string
       produces:
       - application/json
       responses:
         "200":
-          description: Current configuration retrieved successfully
+          description: Current configuration
           schema:
             $ref: '#/definitions/config_svc.GetConfigResponse'
         "401":
@@ -3751,9 +3797,7 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      security:
-      - BearerAuth: []
-      summary: Get Config
+      summary: Read Config
       tags:
       - Config Svc
     put:

@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package registryservice
 
 import (
@@ -38,30 +33,37 @@ func (ns *RegistryService) registerPermits() error {
 	req := openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
 				Permission: registry.PermissionDefinitionDelete,
 			},
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
 				Permission: registry.PermissionNodeDelete,
 			},
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
 				Permission: registry.PermissionDefinitionView,
 			},
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc", "proxy-svc"},
 				Permission: registry.PermissionInstanceView,
 			},
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc", "file-svc", "model-svc"},
 				Permission: registry.PermissionNodeView,
 			},
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
 				Permission: registry.PermissionInstanceEdit,
 			},
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
 				Permission: registry.PermissionInstanceDelete,
 			},
@@ -77,6 +79,7 @@ func (ns *RegistryService) registerPermits() error {
 			registrytypes.DefinitionAdminPermissions,
 		) {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
+				App:        openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})
@@ -91,6 +94,7 @@ func (ns *RegistryService) registerPermits() error {
 			registrytypes.DefinitionUserPermissions,
 		) {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
+				App:        openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})

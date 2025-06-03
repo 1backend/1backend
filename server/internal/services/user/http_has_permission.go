@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package userservice
 
 import (
@@ -70,6 +65,7 @@ func (s *UserService) HasPermission(
 
 	rsp := &user.HasPermissionResponse{
 		Authorized: hasPermission,
+		App:        claims.App,
 		Until:      claims.ExpiresAt.Time,
 		User:       *usr,
 	}
@@ -90,13 +86,16 @@ func (s *UserService) hasPermission(
 	}
 
 	enrolls, err := s.enrollsStore.Query(
+		datastore.Equals(datastore.Field("app"), claims.App),
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 	).Find()
 	if err != nil {
 		return usr, false, claims, errors.Wrap(err, "failed to query enrolls")
 	}
 
-	roleIds := []string{}
+	roleIds := []string{
+		"user-svc:user", // Default role for all users
+	}
 	for _, role := range enrolls {
 		roleIds = append(roleIds, role.(*user.Enroll).Role)
 	}
@@ -106,14 +105,19 @@ func (s *UserService) hasPermission(
 		roleIdAnys = append(roleIdAnys, roleId)
 	}
 	permits, err := s.permitsStore.Query(
+		//datastore.Or(
+		//	datastore.Equals(datastore.Field("app"), claims.App),
+		//	datastore.Equals(datastore.Field("app"), "*"),
+		//),
 		datastore.Intersects(datastore.Field("roles"), roleIdAnys),
 	).Find()
 	if err != nil {
 		return usr, false, claims, err
 	}
 
-	for _, permissionLink := range permits {
-		if permissionLink.(*user.Permit).Permission == permission {
+	for _, permit := range permits {
+		p := permit.(*user.Permit)
+		if (p.App == claims.App || p.App == "*") && p.Permission == permission {
 			return usr, true, claims, nil
 		}
 
@@ -129,6 +133,10 @@ func (s *UserService) hasPermission(
 	// ).FindOne()
 
 	permitIs, err := s.permitsStore.Query(
+		datastore.Or(
+			datastore.Equals(datastore.Field("app"), claims.App),
+			datastore.Equals(datastore.Field("app"), "*"),
+		),
 		datastore.Equals([]string{"permission"}, permission),
 	).Find()
 	if err != nil {
@@ -169,7 +177,7 @@ func (s *UserService) hasPermission(
 	return usr, false, claims, nil
 }
 
-func (s *UserService) getRolesByUserId(userId string) ([]string, error) {
+func (s *UserService) getRolesByUserId(app, userId string) ([]string, error) {
 	contactIs, err := s.contactsStore.Query(
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Find()
@@ -181,7 +189,20 @@ func (s *UserService) getRolesByUserId(userId string) ([]string, error) {
 		contactIds = append(contactIds, contactI.(*user.Contact).Id)
 	}
 
+	// An admin should be an admin in all apps
+	// `user-svc:admin`s are platform admins, not app admins.
+	// This is mostly to avoid bootstrapping issues.
+
+	adminEnrolls, err := s.enrollsStore.Query(
+		datastore.Equals(datastore.Field("role"), "user-svc:admin"),
+		datastore.Equals(datastore.Field("userId"), userId),
+	).Find()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query admin enrolls")
+	}
+
 	enrolls, err := s.enrollsStore.Query(
+		datastore.Equals(datastore.Field("app"), app),
 		datastore.Or(
 			datastore.Equals(datastore.Field("userId"), userId),
 			datastore.IsInList(datastore.Field("contactId"), contactIds...),
@@ -191,9 +212,14 @@ func (s *UserService) getRolesByUserId(userId string) ([]string, error) {
 		return nil, err
 	}
 
-	roles := []string{}
-	for _, enroll := range enrolls {
-		roles = append(roles, enroll.(*user.Enroll).Role)
+	rolesIndex := map[string]struct{}{}
+	for _, enroll := range append(enrolls, adminEnrolls...) {
+		rolesIndex[enroll.(*user.Enroll).Role] = struct{}{}
+	}
+
+	roles := []string{"user-svc:user"}
+	for role := range rolesIndex {
+		roles = append(roles, role)
 	}
 
 	return roles, nil

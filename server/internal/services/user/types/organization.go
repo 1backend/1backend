@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package user_svc
 
 import (
@@ -17,7 +12,8 @@ import (
 )
 
 type Membership struct {
-	Id string `json:"id,omitempty"`
+	Id  string `json:"id,omitempty"`
+	App string `json:"app,omitempty" example:"unnamed"`
 
 	CreatedAt time.Time  `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time  `json:"updatedAt" binding:"required"`
@@ -36,7 +32,9 @@ func (o *Membership) GetId() string {
 }
 
 type Organization struct {
-	Id        string     `json:"id" binding:"required"`
+	Id  string `json:"id" binding:"required"`
+	App string `json:"app,omitempty" example:"unnamed"`
+
 	CreatedAt time.Time  `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time  `json:"updatedAt" binding:"required"`
 	DeletedAt *time.Time `json:"deletedAt,omitempty"`

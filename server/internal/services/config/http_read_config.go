@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package configservice
 
 import (
@@ -26,17 +21,21 @@ import (
 	"github.com/pkg/errors"
 )
 
-// @Id getConfig
-// @Summary Get Config
-// @Description Fetch the current configuration from the server.
+// @Id readConfig
+// @Summary Read Config
+// @Description Retrieves the current configuration for a specified app.
+// @Description If no app is specified, the default "unnamed" app is used.
+// @Description This is a public endpoint and does not require authentication.
+// @Description Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
+// @Description
+// @Description Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
 // @Tags Config Svc
 // @Accept json
 // @Produce json
-// @Param namespace query string false "Namespace"
-// @Success 200 {object} config.GetConfigResponse "Current configuration retrieved successfully"
+// @Param app query string false "App"
+// @Success 200 {object} config.GetConfigResponse "Current configuration"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 500 {string} string "Internal Server Error"
-// @Security BearerAuth
 // @Router /config-svc/config [get]
 func (cs *ConfigService) Get(
 	w http.ResponseWriter,
@@ -46,12 +45,12 @@ func (cs *ConfigService) Get(
 	// Think about app config, A/B tests and such.
 
 	q := r.URL.Query()
-	namespace := q.Get("namespace")
-	if namespace == "" {
-		namespace = "default"
+	app := q.Get("app")
+	if app == "" {
+		app = defaultApp
 	}
 
-	conf, err := cs.getConfig(namespace)
+	conf, err := cs.readConfig(app)
 	if err != nil {
 		logger.Error("Failed to get config", slog.Any("error", err))
 		endpoint.InternalServerError(w)
@@ -68,11 +67,8 @@ func (cs *ConfigService) Get(
 	}
 }
 
-func (cs *ConfigService) getConfig(namespace string) (*types.Config, error) {
-	if namespace == "" {
-		namespace = "default"
-	}
-	data, ok := cs.configs[namespace]
+func (cs *ConfigService) readConfig(app string) (*types.Config, error) {
+	data, ok := cs.configs[app]
 	if !ok {
 		conf := &types.Config{
 			Data: map[string]interface{}{},
@@ -110,8 +106,8 @@ func (cs ConfigService) mod(ret *types.Config) {
 		}
 	}
 
-	if ret.Data["model-svc"] == nil {
-		ret.Data["model-svc"] = map[string]interface{}{
+	if ret.Data["modelSvc"] == nil {
+		ret.Data["modelSvc"] = map[string]interface{}{
 			"currentModelId": modelservice.DefaultModelId,
 		}
 	}

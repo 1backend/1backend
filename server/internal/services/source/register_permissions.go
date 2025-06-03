@@ -25,6 +25,7 @@ func (ns *SourceService) registerPermits() error {
 	req := openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
 				Permission: sourcetypes.PermissionSourceRepoCheckout,
 			},
@@ -36,6 +37,7 @@ func (ns *SourceService) registerPermits() error {
 	} {
 		for _, permission := range sourcetypes.AdminPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
+				App:        openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})

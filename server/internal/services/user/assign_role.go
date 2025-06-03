@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package userservice
 
 import (
@@ -20,7 +15,7 @@ import (
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-func (s *UserService) assignRole(userId string, role string) error {
+func (s *UserService) assignRole(app string, userId string, role string) error {
 	q := s.usersStore.Query(
 		datastore.Id(userId),
 	)
@@ -34,15 +29,17 @@ func (s *UserService) assignRole(userId string, role string) error {
 	user := userI.(*usertypes.User)
 
 	enrolls, err := s.enrollsStore.Query(
+		datastore.Equals(datastore.Field("app"), app),
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Find()
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to query enrolls")
 	}
 
 	alreadyHasRole := false
 	for _, v := range enrolls {
-		if v.(*usertypes.Enroll).Role == role {
+		enroll := v.(*usertypes.Enroll)
+		if enroll.Role == role && enroll.App == app {
 			alreadyHasRole = true
 		}
 	}
@@ -52,6 +49,7 @@ func (s *UserService) assignRole(userId string, role string) error {
 
 	inv := &usertypes.Enroll{
 		Id:     sdk.Id("enr"),
+		App:    app,
 		Role:   role,
 		UserId: user.Id,
 	}
@@ -60,7 +58,7 @@ func (s *UserService) assignRole(userId string, role string) error {
 		return errors.Wrap(err, "failed to add role to user")
 	}
 
-	return s.inactivateTokens(userId)
+	return s.inactivateTokens(app, userId)
 }
 
 func (s *UserService) removeRoleFromUser(userId string, roleId string) error {

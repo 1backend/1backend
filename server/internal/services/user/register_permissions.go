@@ -1,32 +1,27 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package userservice
 
 import (
 	"context"
 
 	user "github.com/1backend/1backend/server/internal/services/user/types"
-	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 func (us *UserService) registerPermits() error {
 	permits := []*user.PermitInput{}
 
 	for _, role := range []string{
-		usertypes.RoleAdmin,
+		user.RoleAdmin,
 	} {
-		for _, permission := range usertypes.AdminPermissions {
+		for _, permission := range user.AdminPermissions {
 			permits = append(permits, &user.PermitInput{
+				App:        "*",
 				Roles:      []string{role},
 				Permission: permission,
 			})
@@ -34,10 +29,11 @@ func (us *UserService) registerPermits() error {
 	}
 
 	for _, role := range []string{
-		usertypes.RoleUser,
+		user.RoleUser,
 	} {
-		for _, permission := range usertypes.UserPermissions {
+		for _, permission := range user.UserPermissions {
 			permits = append(permits, &user.PermitInput{
+				App:        "*",
 				Roles:      []string{role},
 				Permission: permission,
 			})
@@ -45,8 +41,9 @@ func (us *UserService) registerPermits() error {
 	}
 
 	err := us.savePermits(
+		"*",
 		context.Background(),
-		&usertypes.SavePermitsRequest{
+		&user.SavePermitsRequest{
 			Permits: permits,
 		},
 	)

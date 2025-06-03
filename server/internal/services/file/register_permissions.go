@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package fileservice
 
 import (
@@ -29,14 +24,17 @@ func (fs *FileService) registerPermits() error {
 	req := openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"docker-svc", "model-svc"},
 				Permission: file.PermissionDownloadView,
 			},
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"model-svc"},
 				Permission: file.PermissionDownloadCreate,
 			},
 			{
+				App:        openapi.PtrString("*"),
 				Slugs:      []string{"prompt-svc"},
 				Permission: file.PermissionUploadCreate,
 			},
@@ -48,6 +46,7 @@ func (fs *FileService) registerPermits() error {
 	} {
 		for _, permission := range file.AdminPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
+				App:        openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})

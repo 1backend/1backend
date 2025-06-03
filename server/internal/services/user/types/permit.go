@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package user_svc
 
 import "time"
@@ -17,6 +12,11 @@ import "time"
 // Permit is a mechanism to give users or roles permissions to perform actions defined by the `Permission` field.
 type Permit struct {
 	Id string `json:"id" example:"inv_fIYPbMHIcI" binding:"required"`
+
+	// App of the permit.
+	// Use `*` to match all apps, such as when bootstrapping
+	// in services.
+	App string `json:"app" example:"unnamed,omitempty"`
 
 	CreatedAt time.Time `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
@@ -37,6 +37,11 @@ type Permit struct {
 // PermitInput is the settable subset of Enroll, excluding system-managed fields.
 type PermitInput struct {
 	Id string `json:"id,omitempty" example:"inv_fIYPbMHIcI"`
+
+	// App of the permit.
+	// Use `*` to match all apps, such as when bootstrapping
+	// in services.
+	App string `json:"app" example:"unnamed,omitempty"`
 
 	Permission string `json:"permission" binding:"required"`
 

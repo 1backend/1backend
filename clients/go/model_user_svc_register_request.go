@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.6.0
+API version: 0.6.1
 Contact: sales@singulatron.com
 */
 
@@ -22,9 +22,11 @@ var _ MappedNullable = &UserSvcRegisterRequest{}
 
 // UserSvcRegisterRequest struct for UserSvcRegisterRequest
 type UserSvcRegisterRequest struct {
+	App *string `json:"app,omitempty"`
 	Contact *UserSvcContactInput `json:"contact,omitempty"`
 	Device *string `json:"device,omitempty"`
 	Name *string `json:"name,omitempty"`
+	// Password of the user.
 	Password *string `json:"password,omitempty"`
 	// Slug is a URL-friendly unique (inside the 1Backend platform) identifier for the `user`. Required due to its central role in the platform. If your project has no use for a slug, just derive it from the email or similar.
 	Slug string `json:"slug"`
@@ -48,6 +50,38 @@ func NewUserSvcRegisterRequest(slug string) *UserSvcRegisterRequest {
 func NewUserSvcRegisterRequestWithDefaults() *UserSvcRegisterRequest {
 	this := UserSvcRegisterRequest{}
 	return &this
+}
+
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *UserSvcRegisterRequest) GetApp() string {
+	if o == nil || IsNil(o.App) {
+		var ret string
+		return ret
+	}
+	return *o.App
+}
+
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcRegisterRequest) GetAppOk() (*string, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
+
+// HasApp returns a boolean if a field has been set.
+func (o *UserSvcRegisterRequest) HasApp() bool {
+	if o != nil && !IsNil(o.App) {
+		return true
+	}
+
+	return false
+}
+
+// SetApp gets a reference to the given string and assigns it to the App field.
+func (o *UserSvcRegisterRequest) SetApp(v string) {
+	o.App = &v
 }
 
 // GetContact returns the Contact field value if set, zero value otherwise.
@@ -212,6 +246,9 @@ func (o UserSvcRegisterRequest) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcRegisterRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.App) {
+		toSerialize["app"] = o.App
+	}
 	if !IsNil(o.Contact) {
 		toSerialize["contact"] = o.Contact
 	}

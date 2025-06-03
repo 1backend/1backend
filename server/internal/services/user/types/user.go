@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package user_svc
 
 import (
@@ -21,7 +16,8 @@ type ErrorResponse struct {
 }
 
 type User struct {
-	Id        string    `json:"id" binding:"required"`
+	Id string `json:"id" binding:"required"`
+
 	CreatedAt time.Time `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
 
@@ -55,7 +51,8 @@ type UserInput struct {
 // Password (password hash), is separate from the user record
 // so that we avoid accidentally exposing or overwriting the password.
 type Password struct {
-	Id        string    `json:"id" binding:"required"`
+	Id string `json:"id" binding:"required"`
+
 	CreatedAt time.Time `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
 
@@ -68,7 +65,8 @@ func (p *Password) GetId() string {
 }
 
 type UserRecord struct {
-	Id        string    `json:"id" binding:"required"`
+	Id string `json:"id" binding:"required"`
+
 	CreatedAt time.Time `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
 
@@ -114,6 +112,8 @@ type ReadSelfResponse struct {
 }
 
 type RegisterRequest struct {
+	App string `json:"app,omitempty" example:"unnamed"`
+
 	Name string `json:"name,omitempty"`
 
 	// Slug is a URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
@@ -123,6 +123,7 @@ type RegisterRequest struct {
 
 	Contact ContactInput `json:"contact,omitempty"`
 
+	// Password of the user.
 	Password string `json:"password,omitempty"`
 
 	Device string `json:"device,omitempty"`
@@ -133,6 +134,7 @@ type RegisterResponse struct {
 }
 
 type LoginRequest struct {
+	App      string `json:"app,omitempty" example:"unnamed"`
 	Slug     string `json:"slug,omitempty"`
 	Contact  string `json:"contact,omitempty"`
 	Password string `json:"password"`
@@ -219,6 +221,7 @@ type ListUsersResponse struct {
 }
 
 type CreateUserRequest struct {
+	App      string     `json:"app,omitempty" example:"unnamed"`
 	User     *UserInput `json:"user,omitempty"`
 	Contacts []Contact  `json:"contacts,omitempty"`
 	Password string     `json:"password,omitempty"`

@@ -28,6 +28,7 @@ func (p *PolicyService) registerPermits() error {
 	} {
 		for _, permission := range policytypes.AdminPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
+				App:        openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})
@@ -39,6 +40,7 @@ func (p *PolicyService) registerPermits() error {
 	} {
 		for _, permission := range policytypes.UserPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
+				App:        openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})

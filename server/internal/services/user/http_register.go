@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package userservice
 
 import (
@@ -69,6 +64,10 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if req.App == "" {
+		req.App = user.DefaultApp
+	}
+
 	if req.Device == "" {
 		req.Device = unknownDevice
 	}
@@ -76,10 +75,6 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	newUser := &user.UserInput{
 		Name: req.Name,
 		Slug: req.Slug,
-	}
-
-	roles := []string{
-		user.RoleUser,
 	}
 
 	var contacts []user.Contact
@@ -94,10 +89,11 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 	err = s.createUser(
+		req.App,
 		newUser,
 		contacts,
 		req.Password,
-		roles,
+		nil,
 	)
 	if err != nil {
 		logger.Error(
@@ -109,13 +105,14 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token, err := s.login(&user.LoginRequest{
+		App:      req.App,
 		Slug:     req.Slug,
 		Password: req.Password,
 		Device:   req.Device,
 	})
 	if err != nil {
 		logger.Error(
-			"Failed to login",
+			"Failed to login after registration",
 			slog.Any("error", err),
 		)
 		endpoint.InternalServerError(w)
@@ -133,6 +130,7 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) register(
+	app string,
 	slug,
 	password,
 	name string,
@@ -179,13 +177,17 @@ func (s *UserService) register(
 	}
 
 	for _, role := range roles {
-		err = s.assignRole(usr.Id, role)
+		err = s.assignRole(app, usr.Id, role)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	token, err := s.generateAuthToken(usr, unknownDevice)
+	token, err := s.generateAuthToken(
+		app,
+		usr,
+		unknownDevice,
+	)
 	if err != nil {
 		return nil, err
 	}

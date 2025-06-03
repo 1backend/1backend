@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package modelservice
 
 import (
@@ -42,15 +37,15 @@ Starts the model which has the supplied modelId or the currently activated one o
 the modelId is empty.
 */
 func (ms *ModelService) startModel(modelId string) error {
-	getConfigResponse, _, err := ms.options.ClientFactory.Client().
-		ConfigSvcAPI.GetConfig(context.Background()).
+	readConfigResponse, _, err := ms.options.ClientFactory.Client().
+		ConfigSvcAPI.ReadConfig(context.Background()).
 		Execute()
 	if err != nil {
 		return err
 	}
 
 	if modelId == "" {
-		modelIdI := dipper.Get(getConfigResponse.Config.Data, "model-svc.currentModelId")
+		modelIdI := dipper.Get(readConfigResponse.Config.Data, "modelSvc.currentModelId")
 		var ok bool
 		modelId, ok = modelIdI.(string)
 		if !ok {

@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package userservice
 
 import (
@@ -78,7 +73,7 @@ func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	orgs, activeOrgId, err := s.getUserOrganizations(usr.Id)
+	orgs, activeOrgId, err := s.getUserOrganizations(claim.App, usr.Id)
 	if err != nil {
 		logger.Error(
 			"Failed to get organizations",
@@ -147,9 +142,14 @@ func (s *UserService) readSelf(userId string) (*user.User, error) {
 }
 
 func (s *UserService) getUserOrganizations(
+	app string,
 	userId string,
 ) ([]*user.Organization, string, error) {
 	links, err := s.membershipsStore.Query(
+		datastore.Equals(
+			datastore.Field("app"),
+			app,
+		),
 		datastore.Equals(
 			datastore.Field("userId"),
 			userId,

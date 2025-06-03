@@ -1,15 +1,10 @@
-/*
-*
-
-  - @license
-
-  - Copyright (c) The Authors (see the AUTHORS file)
-    *
-
-  - This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
-
-  - You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
-*/
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package userservice
 
 import (
@@ -77,7 +72,12 @@ func (s *UserService) SaveOrganization(
 	}
 	defer r.Body.Close()
 
-	org, token, err := s.saveOrganization(usr.Id, &req, claims)
+	org, token, err := s.saveOrganization(
+		claims.App,
+		usr.Id,
+		&req,
+		claims,
+	)
 	if err != nil {
 		logger.Error(
 			"Failed to save organization",
@@ -95,6 +95,7 @@ func (s *UserService) SaveOrganization(
 }
 
 func (s *UserService) saveOrganization(
+	app string,
 	userId string,
 	request *user.SaveOrganizationRequest,
 	claims *auth.Claims,
@@ -107,6 +108,7 @@ func (s *UserService) saveOrganization(
 	}
 
 	orgI, exists, err := s.organizationsStore.Query(
+		datastore.Equals(datastore.Field("app"), app),
 		datastore.Equals(datastore.Field("slug"), request.Slug),
 	).FindOne()
 	if err != nil {
@@ -127,6 +129,7 @@ func (s *UserService) saveOrganization(
 		final.UpdatedAt = now
 	} else {
 		final = &user.Organization{
+			App:       app,
 			Name:      request.Name,
 			Slug:      request.Slug,
 			CreatedAt: now,
@@ -142,6 +145,7 @@ func (s *UserService) saveOrganization(
 		// When creating a new org, the user switches to that org as the active one
 		link := &user.Membership{
 			Id:             sdk.Id("oul"),
+			App:            app,
 			UserId:         userId,
 			OrganizationId: final.Id,
 			// @todo null out the other active orgs for correctness
@@ -161,10 +165,12 @@ func (s *UserService) saveOrganization(
 	}
 
 	_, err = s.saveEnrolls(
+		claims.App,
 		userId,
 		&user.SaveEnrollsRequest{
 			Enrolls: []user.EnrollInput{
 				{
+					App:    app,
 					UserId: userId,
 					Role:   fmt.Sprintf("user-svc:org:{%v}:admin", final.Id),
 				},
@@ -175,7 +181,7 @@ func (s *UserService) saveOrganization(
 		return nil, nil, err
 	}
 
-	err = s.inactivateTokens(userId)
+	err = s.inactivateTokens(claims.App, userId)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "error inactivating tokens")
 	}
@@ -191,7 +197,11 @@ func (s *UserService) saveOrganization(
 	}
 	u := userI.(*user.User)
 
-	token, err := s.generateAuthToken(u, claims.Device)
+	token, err := s.generateAuthToken(
+		app,
+		u,
+		claims.Device,
+	)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "error generating token")
 	}
@@ -204,8 +214,12 @@ func (s *UserService) saveOrganization(
 	return final, token, nil
 }
 
-func (s *UserService) inactivateTokens(userId string) error {
+func (s *UserService) inactivateTokens(app string, userId string) error {
 	return s.authTokensStore.Query(
+		datastore.Equals(
+			datastore.Fields("app"),
+			app,
+		),
 		datastore.Equals(
 			datastore.Fields("userId"),
 			userId,

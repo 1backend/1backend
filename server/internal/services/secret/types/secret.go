@@ -22,10 +22,11 @@ const (
 )
 
 type Secret struct {
-	Id        string `json:"id"`        // Id of the secret
-	Namespace string `json:"namespace"` // Namespace of the secret
-	Key       string `json:"key"`       // Envar or slug-like key of the secret
-	Value     string `json:"value"`     // Secret Value
+	Id  string `json:"id"`  // Id of the secret
+	App string `json:"app"` // App of the secret
+
+	Key   string `json:"key"`   // Envar or slug-like key of the secret
+	Value string `json:"value"` // Secret Value
 
 	Readers  []string `json:"readers"`  // Slugs of services/users who can read the secret
 	Writers  []string `json:"writers"`  // Slugs of services/users who can modify the secret
@@ -51,9 +52,8 @@ func (s *Secret) GetId() string {
 }
 
 type ListSecretsRequest struct {
-	Namespace string   `json:"namespace"`
-	Key       string   `json:"key"`
-	Keys      []string `json:"keys"`
+	Key  string   `json:"key"`
+	Keys []string `json:"keys"`
 }
 
 type ListSecretsResponse struct {
