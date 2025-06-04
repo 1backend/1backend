@@ -28,6 +28,32 @@ OB_DB_CONNECTION_STRING="postgres://postgres:mysecretpassword@localhost:5432/myd
 
 Naturally, you should change the details of the connection string to reflect your environment.
 
+## `OB_EDGE_PROXY`
+
+When set to true, 1Backend will enable the edge proxy feature. This feature configures the system to listen for incoming HTTP and HTTPS traffic on ports 80 and 443, respectively.
+
+The edge proxy acts as a public-facing reverse proxy, handling domain-based routing and TLS termination for external requests. It is typically used to:
+
+- Serve ACME HTTP-01 challenges (for automated TLS certificates, e.g., via Let's Encrypt) on port 80.
+- Handle public HTTPS traffic on port 443, routing incoming domain-based requests to appropriate backends or services based on their domain.
+
+When `OB_EDGE_PROXY` is not set to true, 1Backend will not start these public-facing routers. Only the internal API server on the `OB_SERVER_URL` port (default: 11337) will be active.
+
+## `OB_EDGE_PROXY_HTTP_PORT`
+
+This is really only used in tests, otherwise.
+
+##  `OB_EDGE_PROXY_HTTPS_PORT`
+This is really only used in tests, otherwise.
+
+**Typical Use Case**:
+
+Use this flag when 1Backend is running as a publicly accessible server that needs to:
+
+- Terminate TLS (HTTPS) at the edge.
+- Serve automated certificates via ACME.
+- Route external requests based on domain names.
+
 ## `OB_ENCRYPTION_KEY`
 
 This key is used in the Secret Svc so secrets are encrypted at rest.

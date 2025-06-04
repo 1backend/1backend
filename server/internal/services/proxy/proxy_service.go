@@ -52,7 +52,32 @@ func (cs *ProxyService) RegisterRoutes(router *mux.Router) {
 	)
 
 	router.PathPrefix("/").HandlerFunc(tokenRefresherMiddleware(func(w http.ResponseWriter, r *http.Request) {
-		cs.Route(w, r)
+		cs.RouteBackend(w, r)
+	}))
+}
+
+// RegisterFrontendRoutes is a special method for the proxy service. Unlike typical `RegisterRoutes`
+// implementations that register internal service-specific routes, this method dynamically loads
+// a list of frontend routes from the datastore and configures them here.
+//
+// It is only used if `OB_EDGE_PROXY` is set to `true`.
+//
+// A "frontend route" refers to traffic that will be forwarded to another port on the same machine
+// or to another host altogether. This enables the proxy to handle external domain-based routing.
+//
+// The `RegisterRoutes` method is intended for the internal HTTP server (typically on port 11337, or
+// as defined by `OB_SERVER_URL`). In contrast, `RegisterFrontendRoutes` is meant for the external
+// HTTP server that listens on ports 80 (to handle ACME/Let's Encrypt challenges) and 443 (to handle
+// HTTPS requests and act as the front-facing smart proxy).
+func (cs *ProxyService) RegisterFrontendRoutes(router *mux.Router) {
+	// @todo load routes
+	tokenRefresherMiddleware := middlewares.TokenRefreshMiddleware(
+		cs.options.TokenRefresher,
+		cs.options.TokenAutoRefreshOff,
+	)
+
+	router.PathPrefix("/").HandlerFunc(tokenRefresherMiddleware(func(w http.ResponseWriter, r *http.Request) {
+		cs.RouteBackend(w, r)
 	}))
 }
 

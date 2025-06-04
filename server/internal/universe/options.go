@@ -47,6 +47,11 @@ type Options struct {
 	// URL of the local 1Backend server instance
 	Url string
 
+	// Only used in tests
+	EdgeProxyHttpPort int
+	// Only used in tests
+	EdgeProxyHttpsPort int
+
 	// Test mode if true will cause the localstore to
 	// save data into random temporary folders.
 	Test bool
