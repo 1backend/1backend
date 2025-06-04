@@ -39,13 +39,6 @@ The edge proxy acts as a public-facing reverse proxy, handling domain-based rout
 
 When `OB_EDGE_PROXY` is not set to true, 1Backend will not start these public-facing routers. Only the internal API server on the `OB_SERVER_URL` port (default: 11337) will be active.
 
-## `OB_EDGE_PROXY_HTTP_PORT`
-
-This is really only used in tests, otherwise.
-
-##  `OB_EDGE_PROXY_HTTPS_PORT`
-This is really only used in tests, otherwise.
-
 **Typical Use Case**:
 
 Use this flag when 1Backend is running as a publicly accessible server that needs to:
@@ -53,6 +46,22 @@ Use this flag when 1Backend is running as a publicly accessible server that need
 - Terminate TLS (HTTPS) at the edge.
 - Serve automated certificates via ACME.
 - Route external requests based on domain names.
+
+## `OB_EDGE_PROXY_AUTOCERT_OFF`
+
+Disables automatic TLS certificate management via autocert.
+By default, autocert runs in production to handle HTTPS certificates.
+Use this flag in testing environments or when managing certificates externally.
+
+## `OB_EDGE_PROXY_HTTP_PORT`
+
+Sets the HTTP port for the edge proxy.
+In production, this must be `80`. Any other value is only for testing purposes.
+
+## `OB_EDGE_PROXY_HTTPS_PORT`
+
+Sets the HTTPS port for the edge proxy.
+In production, this must be `443`. Any other value is only useful in testing.
 
 ## `OB_ENCRYPTION_KEY`
 

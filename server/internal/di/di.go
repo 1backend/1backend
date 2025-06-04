@@ -6,6 +6,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 	"log/slog"
 	"net/http"
 	"net/url"
@@ -431,52 +432,80 @@ func BigBang(options *universe.Options) (*Universe, error) {
 	router.HandleFunc("/swagger/", httpSwagger.WrapHandler)
 
 	univ := &Universe{
-		Router: router,
-		StarterFunc: func() error {
-			err = userService.Start()
-			if err != nil {
-				return errors.Wrap(err, "user service start failed")
-			}
-
-			err = promptService.Start()
-			if err != nil {
-				return errors.Wrap(err, "prompt service start failed")
-			}
-
-			err = registryService.Start()
-			if err != nil {
-				return errors.Wrap(err, "registry service start failed")
-			}
-
-			err = fileService.Start()
-			if err != nil {
-				return errors.Wrap(err, "file service start failed")
-			}
-
-			err = containerService.Start()
-			if err != nil {
-				return errors.Wrap(err, "container service start failed")
-			}
-
-			err = deployService.Start()
-			if err != nil {
-				return errors.Wrap(err, "deploy service start failed")
-			}
-
-			return nil
-		},
+		Router:  router,
 		Options: *options,
 	}
 
-	if options.EdgeProxy {
-		certManager := &autocert.Manager{
-			Prompt:     autocert.AcceptTOS,
-			HostPolicy: proxyService.HostPolicy,
-			Cache:      proxyService,
+	univ.StarterFunc = func() error {
+		err = userService.Start()
+		if err != nil {
+			return errors.Wrap(err, "user service start failed")
 		}
 
-		univ.EdgeProxyHttpRouter = mux.NewRouter().SkipClean(true).UseEncodedPath()
-		proxyService.RegisterFrontendRoutes(univ.EdgeProxyHttpRouter)
+		err = promptService.Start()
+		if err != nil {
+			return errors.Wrap(err, "prompt service start failed")
+		}
+
+		err = registryService.Start()
+		if err != nil {
+			return errors.Wrap(err, "registry service start failed")
+		}
+
+		err = fileService.Start()
+		if err != nil {
+			return errors.Wrap(err, "file service start failed")
+		}
+
+		err = containerService.Start()
+		if err != nil {
+			return errors.Wrap(err, "container service start failed")
+		}
+
+		err = deployService.Start()
+		if err != nil {
+			return errors.Wrap(err, "deploy service start failed")
+		}
+
+		if options.EdgeProxy {
+			univ.EdgeProxyHttpsRouter = mux.NewRouter().SkipClean(true).UseEncodedPath()
+			proxyService.RegisterFrontendRoutes(univ.EdgeProxyHttpsRouter)
+
+			if !options.EdgeProxyAutocertOff {
+				// Only start autocert if it's enabled.
+				// In tests, we want to initialize frontend routing without actually launching HTTPS servers.
+				certManager := &autocert.Manager{
+					Prompt:     autocert.AcceptTOS,
+					HostPolicy: proxyService.HostPolicy,
+					Cache:      proxyService,
+				}
+
+				// HTTPS server with autocert
+				go func() {
+					s := &http.Server{
+						Addr:      fmt.Sprintf(":%v", options.EdgeProxyHttpsPort),
+						TLSConfig: certManager.TLSConfig(),
+						Handler:   univ.EdgeProxyHttpsRouter,
+					}
+					if err := s.ListenAndServeTLS("", ""); err != nil && err != http.ErrServerClosed {
+						log.Fatalf("HTTPS server failed: %v", err)
+					}
+				}()
+
+				// HTTP server to handle ACME HTTP-01 challenge and redirect all other traffic to HTTPS
+				go func() {
+					h := certManager.HTTPHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+						http.Redirect(w, r, "https://"+r.Host+r.RequestURI, http.StatusMovedPermanently)
+					}))
+					if err := http.ListenAndServe(fmt.Sprintf(":%v", options.EdgeProxyHttpPort), h); err != nil && err != http.ErrServerClosed {
+						log.Fatalf("HTTP server failed: %v", err)
+					}
+				}()
+			}
+
+		}
+
+		return nil
 	}
 
 	return univ, nil

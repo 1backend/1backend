@@ -50,6 +50,11 @@ type Options struct {
 	// OB_EDGE_PROXY is used to enable the edge proxy.
 	EdgeProxy bool
 
+	// If true, the edge proxy will not use autocert to get TLS certificates.
+	// This is useful for testing purposes, where you might not want to deal with
+	// TLS certificates and just want to use HTTP.
+	EdgeProxyAutocertOff bool
+
 	// Only used in tests
 	EdgeProxyHttpPort int
 	// Only used in tests
