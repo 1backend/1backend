@@ -19,6 +19,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 	"github.com/1backend/1backend/server/internal/universe"
 )
 
@@ -33,6 +34,7 @@ type ProxyService struct {
 	publicKey string
 
 	credentialStore datastore.DataStore
+	certStore       datastore.DataStore
 }
 
 func NewProxyService(
@@ -105,9 +107,18 @@ func (cs *ProxyService) start() error {
 		&auth.Credential{},
 	)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to create credential store")
 	}
 	cs.credentialStore = credentialStore
+
+	certStore, err := cs.options.DataStoreFactory.Create(
+		"proxySvcCerts",
+		&proxy.Cert{},
+	)
+	if err != nil {
+		return errors.Wrap(err, "failed to create cert store")
+	}
+	cs.certStore = certStore
 
 	ctx := context.Background()
 	cs.options.Lock.Acquire(ctx, "proxy-svc-start")

@@ -24,6 +24,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	httpSwagger "github.com/swaggo/http-swagger"
+	"golang.org/x/crypto/acme/autocert"
 
 	"github.com/1backend/1backend/sdk/go/infra"
 	distlock "github.com/1backend/1backend/sdk/go/lock/local"
@@ -159,6 +160,10 @@ func BigBang(options *universe.Options) (*Universe, error) {
 
 	if options.ConfigPath == "" {
 		options.ConfigPath = os.Getenv("OB_FOLDER")
+	}
+
+	if !options.EdgeProxy && os.Getenv("OB_EDGE_PROXY") == "true" {
+		options.EdgeProxy = true
 	}
 
 	if options.EdgeProxyHttpPort == 0 {
@@ -425,7 +430,7 @@ func BigBang(options *universe.Options) (*Universe, error) {
 
 	router.HandleFunc("/swagger/", httpSwagger.WrapHandler)
 
-	return &Universe{
+	univ := &Universe{
 		Router: router,
 		StarterFunc: func() error {
 			err = userService.Start()
@@ -461,7 +466,20 @@ func BigBang(options *universe.Options) (*Universe, error) {
 			return nil
 		},
 		Options: *options,
-	}, nil
+	}
+
+	if options.EdgeProxy {
+		certManager := &autocert.Manager{
+			Prompt:     autocert.AcceptTOS,
+			HostPolicy: proxyService.HostPolicy,
+			Cache:      proxyService,
+		}
+
+		univ.EdgeProxyHttpRouter = mux.NewRouter().SkipClean(true).UseEncodedPath()
+		proxyService.RegisterFrontendRoutes(univ.EdgeProxyHttpRouter)
+	}
+
+	return univ, nil
 }
 
 type HandlerSwitcher struct {
