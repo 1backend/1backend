@@ -32,10 +32,6 @@ func List(cmd *cobra.Command, args []string, show bool) error {
 	req := openapi.SecretSvcListSecretsRequest{
 		Key: openapi.PtrString(key),
 	}
-	namespaceFlag, _ := cmd.Flags().GetString("namespace")
-	if namespaceFlag != "" {
-		req.Namespace = openapi.PtrString(namespaceFlag)
-	}
 
 	rsp, _, err := cf.Client(client.WithToken(token)).
 		SecretSvcAPI.ListSecrets(ctx).
@@ -61,17 +57,11 @@ func List(cmd *cobra.Command, args []string, show bool) error {
 			value = *secret.Value
 		}
 
-		namespace := ""
-		if secret.Namespace != nil {
-			namespace = *secret.Namespace
-		}
-
 		fmt.Fprintf(
 			writer,
-			"%s\t%s\t%s\t%d\t%s\n",
+			"%s\t%s\t%d\t%s\n",
 			*secret.Id,
 			*secret.Key,
-			namespace,
 			length,
 			value,
 		)
