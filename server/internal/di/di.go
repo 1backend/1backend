@@ -51,8 +51,22 @@ import (
 )
 
 type Universe struct {
-	Options       universe.Options
-	Router        *mux.Router
+	Options universe.Options
+
+	// Router is the main internal router for 1Backend. It handles requests
+	// to built-in or custom services via internal reverse proxying.
+	Router *mux.Router
+
+	// EdgeProxyHttpRouter handles port 80 traffic for ACME HTTP-01 challenges.
+	// This router is only initialized when `OB_EDGE_PROXY` is set to true.
+	EdgeProxyHttpRouter *mux.Router
+
+	// EdgeProxyHttpsRouter handles public-facing HTTPS traffic. It acts as an
+	// edge proxy that routes external domain-based requests to appropriate
+	// backends or services. This router is only initialized when
+	// `OB_EDGE_PROXY` is set to true.
+	EdgeProxyHttpsRouter *mux.Router
+
 	StarterFunc   func() error
 	ClientFactory client.ClientFactory
 }
@@ -145,6 +159,34 @@ func BigBang(options *universe.Options) (*Universe, error) {
 
 	if options.ConfigPath == "" {
 		options.ConfigPath = os.Getenv("OB_FOLDER")
+	}
+
+	if options.EdgeProxyHttpPort == 0 {
+		edgeProxyHttpPort := os.Getenv("OB_EDGE_PROXY_HTTP_PORT")
+		if edgeProxyHttpPort != "" {
+			port, err := strconv.Atoi(edgeProxyHttpPort)
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to parse OB_EDGE_PROXY_HTTP_PORT")
+			}
+			options.EdgeProxyHttpPort = port
+		}
+	}
+	if options.EdgeProxyHttpPort == 0 {
+		options.EdgeProxyHttpPort = 80
+	}
+
+	if options.EdgeProxyHttpsPort == 0 {
+		edgeProxyHttpsPort := os.Getenv("OB_EDGE_PROXY_HTTPS_PORT")
+		if edgeProxyHttpsPort != "" {
+			port, err := strconv.Atoi(edgeProxyHttpsPort)
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to parse OB_EDGE_PROXY_HTTPS_PORT")
+			}
+			options.EdgeProxyHttpsPort = port
+		}
+	}
+	if options.EdgeProxyHttpsPort == 0 {
+		options.EdgeProxyHttpsPort = 443
 	}
 
 	homeDir, err := infra.HomeDir(infra.HomeDirOptions{

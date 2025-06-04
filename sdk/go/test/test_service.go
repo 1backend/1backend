@@ -56,6 +56,11 @@ type Options struct {
 	// Url of the 1Backend server
 	ServerUrl string
 
+	// Only used in tests
+	EdgeProxyHttpPort int
+	// Only used in tests
+	EdgeProxyHttpsPort int
+
 	// Self url
 	Url string
 
@@ -146,6 +151,8 @@ func StartService(options Options) (*ServiceProcess, error) {
 		"OB_ENCRYPTION_KEY":         options.SecretEncryptionKey,
 		"OB_TOKEN_EXPIRATION":       fmt.Sprintf("%v", options.TokenExpiration),
 		"OB_TOKEN_AUTO_REFRESH_OFF": fmt.Sprintf("%v", options.TokenAutoRefreshOff),
+		"OB_EDGE_PROXY_HTTP_PORT":   fmt.Sprintf("%v", options.EdgeProxyHttpPort),
+		"OB_EDGE_PROXY_HTTPS_PORT":  fmt.Sprintf("%v", options.EdgeProxyHttpsPort),
 	}
 
 	for key, value := range envVars {
