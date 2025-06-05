@@ -1914,6 +1914,20 @@ definitions:
       error:
         type: string
     type: object
+  proxy_svc.ListRoutesRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
+  proxy_svc.ListRoutesResponse:
+    properties:
+      routes:
+        items:
+          $ref: '#/definitions/proxy_svc.Route'
+        type: array
+    type: object
   proxy_svc.Route:
     properties:
       createdAt:
@@ -5560,6 +5574,41 @@ paths:
       tags:
       - Prompt Svc
   /proxy-svc/routes:
+    post:
+      consumes:
+      - application/json
+      description: List routes that the edge proxy will use to route requests.
+      operationId: listRoutes
+      parameters:
+      - description: List Routes Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/proxy_svc.ListRoutesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Routes listd successfully
+          schema:
+            $ref: '#/definitions/proxy_svc.ListRoutesResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List Routes
+      tags:
+      - Proxy Svc
     put:
       consumes:
       - application/json

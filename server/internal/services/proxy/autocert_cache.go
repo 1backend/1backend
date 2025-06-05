@@ -12,14 +12,32 @@ import (
 	"context"
 	"encoding/base64"
 	"io"
+	"log/slog"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/logger"
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 
 	"github.com/pkg/errors"
 )
 
+//
+// We log errors in these methods because we're not sure how autocert logs the errors.
+//
+
 func (cs *ProxyService) Get(ctx context.Context, key string) ([]byte, error) {
+	var err error
+
+	defer func() {
+		if err != nil {
+			logger.Error(
+				"Failed to get cert from store",
+				slog.String("key", key),
+				slog.Any("error", err),
+			)
+		}
+	}()
+
 	certI, found, err := cs.certStore.Query(
 		datastore.Id(key),
 	).FindOne()
@@ -39,6 +57,7 @@ func (cs *ProxyService) Get(ctx context.Context, key string) ([]byte, error) {
 	decoder := base64.NewDecoder(base64.StdEncoding, bytes.NewReader([]byte(cert.Cert)))
 	data, err := io.ReadAll(decoder)
 	if err != nil && err != io.EOF {
+
 		return nil, errors.Wrap(err, "failed to decode cert data")
 	}
 
@@ -50,6 +69,18 @@ func (cs *ProxyService) Get(ctx context.Context, key string) ([]byte, error) {
 }
 
 func (cs *ProxyService) Put(ctx context.Context, key string, data []byte) error {
+	var err error
+
+	defer func() {
+		if err != nil {
+			logger.Error(
+				"Failed to put cert to store",
+				slog.String("key", key),
+				slog.Any("error", err),
+			)
+		}
+	}()
+
 	encoded := base64.StdEncoding.EncodeToString(data)
 
 	cert := &proxy.Cert{
@@ -57,8 +88,13 @@ func (cs *ProxyService) Put(ctx context.Context, key string, data []byte) error 
 		Cert: encoded,
 	}
 
-	err := cs.certStore.Upsert(cert)
+	err = cs.certStore.Upsert(cert)
 	if err != nil {
+		logger.Error(
+			"Failed to upsert cert in store",
+			slog.String("key", key),
+			slog.Any("error", err),
+		)
 		return errors.Wrap(err, "failed to upsert cert in store")
 	}
 
@@ -66,7 +102,19 @@ func (cs *ProxyService) Put(ctx context.Context, key string, data []byte) error 
 }
 
 func (cs *ProxyService) Delete(ctx context.Context, key string) error {
-	err := cs.certStore.Query(datastore.Id(key)).Delete()
+	var err error
+
+	defer func() {
+		if err != nil {
+			logger.Error(
+				"Failed to delete cert from store",
+				slog.String("key", key),
+				slog.Any("error", err),
+			)
+		}
+	}()
+
+	err = cs.certStore.Query(datastore.Id(key)).Delete()
 	if err != nil {
 		return errors.Wrap(err, "failed to delete cert from store")
 	}

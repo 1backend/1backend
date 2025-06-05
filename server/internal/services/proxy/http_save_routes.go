@@ -15,6 +15,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/pkg/errors"
 
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 )
@@ -58,45 +59,7 @@ func (cs *ProxyService) SaveRoutes(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	if len(req.Routes) == 0 {
-		logger.Error(
-			"No routes provided",
-			slog.Any("request", req),
-		)
-		endpoint.WriteString(w, http.StatusBadRequest, "No routes provided")
-		return
-	}
-
-	rows := make([]datastore.Row, 0, len(req.Routes))
-	routes := make([]proxy.Route, 0, len(req.Routes))
-
-	for _, route := range req.Routes {
-		if route.Id == "" {
-			logger.Error(
-				"Route ID is required",
-				slog.Any("route", route),
-			)
-			endpoint.WriteString(w, http.StatusBadRequest, "Route ID is required")
-			return
-		}
-		if route.Target == "" {
-			logger.Error(
-				"Route target is required",
-				slog.Any("route", route),
-			)
-			endpoint.WriteString(w, http.StatusBadRequest, "Route target is required")
-			return
-		}
-
-		r := proxy.Route{
-			Id:     route.Id,
-			Target: route.Target,
-		}
-		routes = append(routes, r)
-		rows = append(rows, &r)
-	}
-
-	err = cs.routeStore.UpsertMany(rows)
+	routes, err := cs.saveRoutes(req)
 	if err != nil {
 		logger.Error(
 			"Failed to save routes",
@@ -109,4 +72,36 @@ func (cs *ProxyService) SaveRoutes(w http.ResponseWriter, r *http.Request) {
 	endpoint.WriteJSON(w, http.StatusOK, &proxy.SaveRoutesResponse{
 		Routes: routes,
 	})
+}
+
+func (cs *ProxyService) saveRoutes(req *proxy.SaveRoutesRequest) ([]proxy.Route, error) {
+	if len(req.Routes) == 0 {
+		return nil, errors.New("No routes provided")
+	}
+
+	rows := make([]datastore.Row, 0, len(req.Routes))
+	routes := make([]proxy.Route, 0, len(req.Routes))
+
+	for _, route := range req.Routes {
+		if route.Id == "" {
+			return nil, errors.New("Route ID is required")
+		}
+		if route.Target == "" {
+			return nil, errors.New("Route target is required")
+		}
+
+		r := proxy.Route{
+			Id:     route.Id,
+			Target: route.Target,
+		}
+		routes = append(routes, r)
+		rows = append(rows, &r)
+	}
+
+	err := cs.routeStore.UpsertMany(rows)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to save routes")
+	}
+
+	return routes, nil
 }

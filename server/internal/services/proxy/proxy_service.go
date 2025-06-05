@@ -50,17 +50,22 @@ func NewProxyService(
 }
 
 func (cs *ProxyService) RegisterRoutes(router *mux.Router) {
-	tokenRefresherMiddleware := middlewares.TokenRefreshMiddleware(
-		cs.options.TokenRefresher,
-		cs.options.TokenAutoRefreshOff,
-	)
-
 	appl := cs.options.Middlewares
 
 	router.HandleFunc("/proxy-svc/routes", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.SaveRoutes(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/proxy-svc/routes", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+		cs.ListRoutes(w, r)
+	}))).
+		Methods("OPTIONS", "POST")
+
+	tokenRefresherMiddleware := middlewares.TokenRefreshMiddleware(
+		cs.options.TokenRefresher,
+		cs.options.TokenAutoRefreshOff,
+	)
 
 	router.PathPrefix("/").HandlerFunc(tokenRefresherMiddleware(func(w http.ResponseWriter, r *http.Request) {
 		cs.RouteBackend(w, r)

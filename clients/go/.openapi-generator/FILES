@@ -163,6 +163,8 @@ docs/PromptSvcTextToTextParameters.md
 docs/PromptSvcTypesResponse.md
 docs/ProxySvcAPI.md
 docs/ProxySvcErrorResponse.md
+docs/ProxySvcListRoutesRequest.md
+docs/ProxySvcListRoutesResponse.md
 docs/ProxySvcRoute.md
 docs/ProxySvcRouteInput.md
 docs/ProxySvcSaveRoutesRequest.md
@@ -384,6 +386,8 @@ model_prompt_svc_text_to_image_parameters.go
 model_prompt_svc_text_to_text_parameters.go
 model_prompt_svc_types_response.go
 model_proxy_svc_error_response.go
+model_proxy_svc_list_routes_request.go
+model_proxy_svc_list_routes_response.go
 model_proxy_svc_route.go
 model_proxy_svc_route_input.go
 model_proxy_svc_save_routes_request.go
@@ -470,5 +474,4 @@ model_user_svc_user.go
 model_user_svc_user_input.go
 model_user_svc_user_record.go
 response.go
-test/api_proxy_svc_test.go
 utils.go

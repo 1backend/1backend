@@ -38,3 +38,11 @@ type SaveRoutesRequest struct {
 type SaveRoutesResponse struct {
 	Routes []Route `json:"routes"`
 }
+
+type ListRoutesRequest struct {
+	Ids []string `json:"ids,omitempty"`
+}
+
+type ListRoutesResponse struct {
+	Routes []Route `json:"routes"`
+}
