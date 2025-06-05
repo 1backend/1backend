@@ -60,7 +60,7 @@ func (cs *ProxyService) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/proxy-svc/routes", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.SaveRoutes(w, r)
 	}))).
-		Methods("OPTIONS", "GET")
+		Methods("OPTIONS", "PUT")
 
 	router.PathPrefix("/").HandlerFunc(tokenRefresherMiddleware(func(w http.ResponseWriter, r *http.Request) {
 		cs.RouteBackend(w, r)
@@ -83,7 +83,7 @@ func (cs *ProxyService) RegisterRoutes(router *mux.Router) {
 func (cs *ProxyService) RegisterFrontendRoutes(router *mux.Router) {
 
 	router.PathPrefix("/").HandlerFunc((func(w http.ResponseWriter, r *http.Request) {
-		cs.RouteBackend(w, r)
+		cs.RouteFrontend(w, r)
 	}))
 }
 
@@ -123,6 +123,15 @@ func (cs *ProxyService) start() error {
 		return errors.Wrap(err, "failed to create cert store")
 	}
 	cs.certStore = certStore
+
+	routeStore, err := cs.options.DataStoreFactory.Create(
+		"proxySvcRoutes",
+		&proxy.Route{},
+	)
+	if err != nil {
+		return errors.Wrap(err, "failed to create route store")
+	}
+	cs.routeStore = routeStore
 
 	ctx := context.Background()
 	cs.options.Lock.Acquire(ctx, "proxy-svc-start")

@@ -17,6 +17,9 @@ import (
 	openapi "github.com/1backend/1backend/clients/go"
 )
 
+// @todo Here we should test more things, like file uplods etc.
+// The edge proxy should be fairly simple, transparent and reliable.
+
 func TestProxyService_FrontendRoute(t *testing.T) {
 	t.Parallel()
 
@@ -47,6 +50,8 @@ func TestProxyService_FrontendRoute(t *testing.T) {
 	adminClient, _, err := test.AdminClient(clientFactory)
 	require.NoError(t, err)
 
+	edgeProxyUrl := fmt.Sprintf("http://localhost:%d", port)
+
 	routeReq := openapi.ProxySvcSaveRoutesRequest{
 		Routes: []openapi.ProxySvcRouteInput{
 			{
@@ -67,7 +72,7 @@ func TestProxyService_FrontendRoute(t *testing.T) {
 	proxyClient := &http.Client{}
 
 	t.Run("proxies GET request to /hello", func(t *testing.T) {
-		req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/hello", server.Url), nil)
+		req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/hello", edgeProxyUrl), nil)
 		require.NoError(t, err)
 		req.Host = "test.localhost"
 
@@ -82,7 +87,7 @@ func TestProxyService_FrontendRoute(t *testing.T) {
 	})
 
 	t.Run("proxies POST request to /echo", func(t *testing.T) {
-		req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/echo", server.Url), strings.NewReader("echo me"))
+		req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/echo", edgeProxyUrl), strings.NewReader("echo me"))
 		require.NoError(t, err)
 		req.Host = "test.localhost"
 
@@ -97,7 +102,7 @@ func TestProxyService_FrontendRoute(t *testing.T) {
 	})
 
 	t.Run("returns 404 if no matching route", func(t *testing.T) {
-		req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/hello", server.Url), nil)
+		req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/hello", edgeProxyUrl), nil)
 		require.NoError(t, err)
 		req.Host = "unknown.localhost"
 

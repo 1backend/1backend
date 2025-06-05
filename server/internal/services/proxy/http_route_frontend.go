@@ -20,7 +20,7 @@ import (
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 )
 
-func (cs *ProxyService) RouteBackendFrontend(w http.ResponseWriter, r *http.Request) {
+func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 	logger.Debug("Frontend proxy request",
 		slog.String("host", r.Host),
 		slog.String("path", r.URL.Path),
