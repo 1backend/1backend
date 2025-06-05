@@ -24,7 +24,6 @@ func List(cmd *cobra.Command, args []string) error {
 	cf := client.NewApiClientFactory(url)
 
 	req := openapi.ProxySvcListRoutesRequest{}
-
 	rsp, _, err := cf.Client(client.WithToken(token)).
 		ProxySvcAPI.ListRoutes(ctx).
 		Body(req).
@@ -45,7 +44,7 @@ func List(cmd *cobra.Command, args []string) error {
 
 		fmt.Fprintf(
 			writer,
-			"%s\t%s\t%d\t%s\n",
+			"%s\t%s\n",
 			*route.Id,
 			*route.Target,
 		)

@@ -21,6 +21,10 @@ type Options struct {
 	LLMHost    string
 	VolumeName string
 
+	// Specifies the system-wide contact email address for operational and administrative use.
+	// Eg. ACME TLS certificate registration etc.
+	ContactEmail string
+
 	// Path of the config folder, configurable via the "OB_FOLDER" environment variable.
 	// If Test is true, this value is ignored and a random temporary folder is used instead.
 	ConfigPath string

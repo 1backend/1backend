@@ -2,6 +2,7 @@ package user
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/1backend/1backend/cli/oo/config"
 	"github.com/1backend/1backend/cli/oo/types"
@@ -55,7 +56,13 @@ func Whoami(cmd *cobra.Command, args []string, all bool) error {
 	if all {
 		fmt.Println("# Selected user: " + selectedUser.Slug)
 	}
-	err = displayUser(cmd, publicKeyRsp.PublicKey, true, selectedUser)
+	err = displayUser(
+		cmd,
+		publicKeyRsp.PublicKey,
+		true,
+		selectedUser,
+		cf,
+	)
 	if err != nil {
 		return errors.Wrap(err, "failed to display selected user")
 	}
@@ -67,7 +74,13 @@ func Whoami(cmd *cobra.Command, args []string, all bool) error {
 			}
 
 			fmt.Println("")
-			err = displayUser(cmd, publicKeyRsp.PublicKey, false, usr)
+			err = displayUser(
+				cmd,
+				publicKeyRsp.PublicKey,
+				false,
+				usr,
+				cf,
+			)
 			if err != nil {
 				return errors.Wrap(err, "failed to display user")
 			}
@@ -83,10 +96,27 @@ func displayUser(
 	publicKey string,
 	active bool,
 	usr *types.User,
+	cf *client.APIClientFactory,
 ) error {
 	claims, err := auth.AuthorizerImpl{}.ParseJWT(publicKey, usr.Token)
 	if err != nil {
-		return errors.Wrap(err, "failed to decode JWT. it is possible that the public key of the server has changed. try logging in again")
+		if strings.Contains(err.Error(), "token is expired") {
+			rsp, _, err := cf.Client(client.WithToken(usr.Token)).
+				UserSvcAPI.RefreshToken(cmd.Context()).
+				Execute()
+			if err != nil {
+				return errors.Wrap(err, "failed to refresh token")
+			}
+
+			claims, err = auth.AuthorizerImpl{}.ParseJWT(publicKey, rsp.Token.Token)
+			if err != nil {
+				return errors.Wrap(err, "failed to decode JWT after refreshing token")
+			}
+
+			// @todo should save the new token
+		} else {
+			return errors.Wrap(err, "failed to decode JWT. it is possible that the public key of the server has changed. try logging in again")
+		}
 	}
 
 	userInfo := UserInfo{

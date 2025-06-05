@@ -36,8 +36,9 @@ import (
 func (cs *ProxyService) ListRoutes(w http.ResponseWriter, r *http.Request) {
 	isAuthRsp, statusCode, err := cs.options.PermissionChecker.HasPermission(
 		r,
-		proxy.PermissionRouteEdit,
+		proxy.PermissionRouteView,
 	)
+
 	if err != nil {
 		endpoint.WriteErr(w, statusCode, err)
 		return

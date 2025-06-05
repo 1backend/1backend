@@ -37,7 +37,7 @@ func AddRouteCommands(rootCmd *cobra.Command) {
 	}
 
 	listCmd.Flags().
-		StringArrayP("namespace", "ids", nil, "Ids to filter on.")
+		StringArrayP("ids", "i", nil, "Ids to filter on.")
 
 	routeCmd.AddCommand(saveCmd)
 	//routeCmd.AddCommand(removeCmd)
