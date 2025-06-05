@@ -59,10 +59,7 @@ type Options struct {
 	// OB_EDGE_PROXY is used to enable the edge proxy.
 	EdgeProxy bool
 
-	// If true, the edge proxy will not use autocert to get TLS certificates.
-	// This is useful for testing purposes, where you might not want to deal with
-	// TLS certificates and just want to use HTTP.
-	EdgeProxyAutocertOff bool
+	EdgeProxyTestMode bool
 
 	// Only used in tests
 	EdgeProxyHttpPort int
@@ -97,16 +94,16 @@ type ServiceProcess struct {
 	Stderr     bytes.Buffer
 	cancel     context.CancelFunc
 	wg         sync.WaitGroup
-	Port       string
+	Port       int
 }
 
-func findAvailablePort() (string, error) {
+func FindAvailablePort() (int, error) {
 	listener, err := net.Listen("tcp", ":0")
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 	defer listener.Close()
-	return fmt.Sprintf("%v", listener.Addr().(*net.TCPAddr).Port), nil
+	return listener.Addr().(*net.TCPAddr).Port, nil
 }
 
 // Start either the 1Backend server (if no `Name` is specified)
@@ -121,12 +118,12 @@ func StartService(options Options) (*ServiceProcess, error) {
 	}
 
 	var (
-		port string
+		port int
 		err  error
 	)
 
 	if options.Url == "" {
-		port, err = findAvailablePort()
+		port, err = FindAvailablePort()
 		if err != nil {
 			return nil, err
 		}
@@ -134,8 +131,8 @@ func StartService(options Options) (*ServiceProcess, error) {
 		options.Url = fmt.Sprintf("http://127.0.0.1:%v", port)
 	}
 
-	if port == "" {
-		port = "11337"
+	if port == 0 {
+		port = 11337
 	}
 
 	if options.Test {
@@ -143,26 +140,26 @@ func StartService(options Options) (*ServiceProcess, error) {
 	}
 
 	envVars := map[string]string{
-		"OB_TEST":                    fmt.Sprintf("%v", options.Test),
-		"OB_SELF_URL":                options.Url,
-		"OB_FOLDER":                  options.ConfigPath,
-		"OB_SERVER_URL":              options.ServerUrl,
-		"OB_GPU_PLATFORM":            options.GpuPlatform,
-		"OB_NODE_ID":                 options.NodeId,
-		"OB_AZ":                      options.Az,
-		"OB_REGION":                  options.Region,
-		"OB_LLM_HOST":                options.LLMHost,
-		"OB_VOLUME_NAME":             options.VolumeName,
-		"OB_DB_PREFIX":               options.DbPrefix,
-		"OB_DB":                      options.Db,
-		"OB_DB_CONNECTION_STRING":    options.DbConnectionString,
-		"OB_ENCRYPTION_KEY":          options.SecretEncryptionKey,
-		"OB_TOKEN_EXPIRATION":        fmt.Sprintf("%v", options.TokenExpiration),
-		"OB_TOKEN_AUTO_REFRESH_OFF":  fmt.Sprintf("%v", options.TokenAutoRefreshOff),
-		"OB_EDGE_PROXY":              fmt.Sprintf("%v", options.EdgeProxy),
-		"OB_EDGE_PROXY_AUTOCERT_OFF": fmt.Sprintf("%v", options.EdgeProxy),
-		"OB_EDGE_PROXY_HTTP_PORT":    fmt.Sprintf("%v", options.EdgeProxyHttpPort),
-		"OB_EDGE_PROXY_HTTPS_PORT":   fmt.Sprintf("%v", options.EdgeProxyHttpsPort),
+		"OB_TEST":                   fmt.Sprintf("%v", options.Test),
+		"OB_SELF_URL":               options.Url,
+		"OB_FOLDER":                 options.ConfigPath,
+		"OB_SERVER_URL":             options.ServerUrl,
+		"OB_GPU_PLATFORM":           options.GpuPlatform,
+		"OB_NODE_ID":                options.NodeId,
+		"OB_AZ":                     options.Az,
+		"OB_REGION":                 options.Region,
+		"OB_LLM_HOST":               options.LLMHost,
+		"OB_VOLUME_NAME":            options.VolumeName,
+		"OB_DB_PREFIX":              options.DbPrefix,
+		"OB_DB":                     options.Db,
+		"OB_DB_CONNECTION_STRING":   options.DbConnectionString,
+		"OB_ENCRYPTION_KEY":         options.SecretEncryptionKey,
+		"OB_TOKEN_EXPIRATION":       fmt.Sprintf("%v", options.TokenExpiration),
+		"OB_TOKEN_AUTO_REFRESH_OFF": fmt.Sprintf("%v", options.TokenAutoRefreshOff),
+		"OB_EDGE_PROXY":             fmt.Sprintf("%v", options.EdgeProxy),
+		"OB_EDGE_PROXY_TEST_MODE":   fmt.Sprintf("%v", options.EdgeProxyTestMode),
+		"OB_EDGE_PROXY_HTTP_PORT":   fmt.Sprintf("%v", options.EdgeProxyHttpPort),
+		"OB_EDGE_PROXY_HTTPS_PORT":  fmt.Sprintf("%v", options.EdgeProxyHttpsPort),
 	}
 
 	for key, value := range envVars {

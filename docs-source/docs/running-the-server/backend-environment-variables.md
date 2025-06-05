@@ -47,11 +47,12 @@ Use this flag when 1Backend is running as a publicly accessible server that need
 - Serve automated certificates via ACME.
 - Route external requests based on domain names.
 
-## `OB_EDGE_PROXY_AUTOCERT_OFF`
+## `OB_EDGE_PROXY_TEST_MODE`
 
-Disables automatic TLS certificate management via autocert.
-By default, autocert runs in production to handle HTTPS certificates.
-Use this flag in testing environments or when managing certificates externally.
+Enables test mode for the edge proxy:
+
+- Turns off autocert.
+- Uses HTTP for both the HTTP and HTTPS port.
 
 ## `OB_EDGE_PROXY_HTTP_PORT`
 

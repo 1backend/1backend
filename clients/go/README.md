@@ -134,6 +134,7 @@ Class | Method | HTTP request | Description
 *PromptSvcAPI* | [**PromptTypes**](docs/PromptSvcAPI.md#prompttypes) | **Post** /prompt-svc/types | Prompt Types
 *PromptSvcAPI* | [**RemovePrompt**](docs/PromptSvcAPI.md#removeprompt) | **Post** /prompt-svc/remove | Remove Prompt
 *PromptSvcAPI* | [**SubscribeToPromptResponses**](docs/PromptSvcAPI.md#subscribetopromptresponses) | **Get** /prompt-svc/prompts/{threadId}/responses/subscribe | Subscribe to Prompt Responses by Thread
+*ProxySvcAPI* | [**SaveRoutes**](docs/ProxySvcAPI.md#saveroutes) | **Put** /proxy-svc/routes | Save Routes
 *RegistrySvcAPI* | [**DeleteDefinition**](docs/RegistrySvcAPI.md#deletedefinition) | **Delete** /registry-svc/definition/{id} | Delete Definition
 *RegistrySvcAPI* | [**DeleteNode**](docs/RegistrySvcAPI.md#deletenode) | **Delete** /registry-svc/node/{url} | Delete Node
 *RegistrySvcAPI* | [**ListDefinitions**](docs/RegistrySvcAPI.md#listdefinitions) | **Get** /registry-svc/definitions | List Definitions
@@ -305,6 +306,11 @@ Class | Method | HTTP request | Description
  - [PromptSvcTextToImageParameters](docs/PromptSvcTextToImageParameters.md)
  - [PromptSvcTextToTextParameters](docs/PromptSvcTextToTextParameters.md)
  - [PromptSvcTypesResponse](docs/PromptSvcTypesResponse.md)
+ - [ProxySvcErrorResponse](docs/ProxySvcErrorResponse.md)
+ - [ProxySvcRoute](docs/ProxySvcRoute.md)
+ - [ProxySvcRouteInput](docs/ProxySvcRouteInput.md)
+ - [ProxySvcSaveRoutesRequest](docs/ProxySvcSaveRoutesRequest.md)
+ - [ProxySvcSaveRoutesResponse](docs/ProxySvcSaveRoutesResponse.md)
  - [RegistrySvcAPISpec](docs/RegistrySvcAPISpec.md)
  - [RegistrySvcClient](docs/RegistrySvcClient.md)
  - [RegistrySvcDefinition](docs/RegistrySvcDefinition.md)

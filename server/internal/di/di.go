@@ -167,6 +167,10 @@ func BigBang(options *universe.Options) (*Universe, error) {
 		options.EdgeProxy = true
 	}
 
+	if !options.EdgeProxyTestMode && os.Getenv("OB_EDGE_PROXY_TEST_MODE") == "true" {
+		options.EdgeProxyTestMode = true
+	}
+
 	if options.EdgeProxyHttpPort == 0 {
 		edgeProxyHttpPort := os.Getenv("OB_EDGE_PROXY_HTTP_PORT")
 		if edgeProxyHttpPort != "" {
@@ -471,9 +475,19 @@ func BigBang(options *universe.Options) (*Universe, error) {
 			univ.EdgeProxyHttpsRouter = mux.NewRouter().SkipClean(true).UseEncodedPath()
 			proxyService.RegisterFrontendRoutes(univ.EdgeProxyHttpsRouter)
 
-			if !options.EdgeProxyAutocertOff {
-				// Only start autocert if it's enabled.
-				// In tests, we want to initialize frontend routing without actually launching HTTPS servers.
+			if options.EdgeProxyTestMode {
+				go func() {
+					// Only launch the "HTTPS" server... but in HTTP mode for testing.
+					// The point is to be able to test the edge proxy routing functionality.
+					s := &http.Server{
+						Addr:    fmt.Sprintf(":%v", options.EdgeProxyHttpsPort),
+						Handler: univ.EdgeProxyHttpsRouter,
+					}
+					if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+						log.Fatalf("HTTPS server failed: %v", err)
+					}
+				}()
+			} else {
 				certManager := &autocert.Manager{
 					Prompt:     autocert.AcceptTOS,
 					HostPolicy: proxyService.HostPolicy,

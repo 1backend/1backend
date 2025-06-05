@@ -74,6 +74,8 @@ type APIClient struct {
 
 	PromptSvcAPI PromptSvcAPI
 
+	ProxySvcAPI ProxySvcAPI
+
 	RegistrySvcAPI RegistrySvcAPI
 
 	SecretSvcAPI SecretSvcAPI
@@ -111,6 +113,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.ModelSvcAPI = (*ModelSvcAPIService)(&c.common)
 	c.PolicySvcAPI = (*PolicySvcAPIService)(&c.common)
 	c.PromptSvcAPI = (*PromptSvcAPIService)(&c.common)
+	c.ProxySvcAPI = (*ProxySvcAPIService)(&c.common)
 	c.RegistrySvcAPI = (*RegistrySvcAPIService)(&c.common)
 	c.SecretSvcAPI = (*SecretSvcAPIService)(&c.common)
 	c.SourceSvcAPI = (*SourceSvcAPIService)(&c.common)

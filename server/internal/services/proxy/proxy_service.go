@@ -19,6 +19,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/service"
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 	"github.com/1backend/1backend/server/internal/universe"
 )
@@ -35,6 +36,7 @@ type ProxyService struct {
 
 	credentialStore datastore.DataStore
 	certStore       datastore.DataStore
+	routeStore      datastore.DataStore
 }
 
 func NewProxyService(
@@ -52,6 +54,13 @@ func (cs *ProxyService) RegisterRoutes(router *mux.Router) {
 		cs.options.TokenRefresher,
 		cs.options.TokenAutoRefreshOff,
 	)
+
+	appl := cs.options.Middlewares
+
+	router.HandleFunc("/proxy-svc/routes", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+		cs.SaveRoutes(w, r)
+	}))).
+		Methods("OPTIONS", "GET")
 
 	router.PathPrefix("/").HandlerFunc(tokenRefresherMiddleware(func(w http.ResponseWriter, r *http.Request) {
 		cs.RouteBackend(w, r)
@@ -72,13 +81,8 @@ func (cs *ProxyService) RegisterRoutes(router *mux.Router) {
 // HTTP server that listens on ports 80 (to handle ACME/Let's Encrypt challenges) and 443 (to handle
 // HTTPS requests and act as the front-facing smart proxy).
 func (cs *ProxyService) RegisterFrontendRoutes(router *mux.Router) {
-	// @todo load routes
-	tokenRefresherMiddleware := middlewares.TokenRefreshMiddleware(
-		cs.options.TokenRefresher,
-		cs.options.TokenAutoRefreshOff,
-	)
 
-	router.PathPrefix("/").HandlerFunc(tokenRefresherMiddleware(func(w http.ResponseWriter, r *http.Request) {
+	router.PathPrefix("/").HandlerFunc((func(w http.ResponseWriter, r *http.Request) {
 		cs.RouteBackend(w, r)
 	}))
 }
@@ -144,6 +148,10 @@ func (cs *ProxyService) start() error {
 		return errors.Wrap(err, "failed to register service account")
 	}
 	cs.token = token.Token
+
+	if err := cs.registerPermits(); err != nil {
+		return errors.Wrap(err, "failed to register permits")
+	}
 
 	return nil
 }
