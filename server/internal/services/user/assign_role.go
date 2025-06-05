@@ -15,7 +15,11 @@ import (
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-func (s *UserService) assignRole(app string, userId string, role string) error {
+func (s *UserService) assignRole(
+	app string,
+	userId string,
+	role string,
+) error {
 	q := s.usersStore.Query(
 		datastore.Id(userId),
 	)

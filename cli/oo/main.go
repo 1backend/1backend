@@ -13,6 +13,7 @@ import (
 	instance "github.com/1backend/1backend/cli/oo/commands/instance"
 	"github.com/1backend/1backend/cli/oo/commands/node"
 	"github.com/1backend/1backend/cli/oo/commands/permit"
+	"github.com/1backend/1backend/cli/oo/commands/route"
 	secret "github.com/1backend/1backend/cli/oo/commands/secret"
 	"github.com/1backend/1backend/cli/oo/commands/user"
 )
@@ -37,6 +38,7 @@ func main() {
 	secret.AddSecretCommands(rootCmd)
 	permit.AddPermitCommands(rootCmd)
 	enroll.AddEnrollCommands(rootCmd)
+	route.AddRouteCommands(rootCmd)
 
 	addCallCommands(rootCmd)
 

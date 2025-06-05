@@ -10,8 +10,10 @@ package proxy_svc
 
 var (
 	PermissionRouteEdit = "proxy-svc:route:edit"
+	PermissionRouteView = "proxy-svc:route:view"
 
-	Permissions = []string{
+	AdminPermissions = []string{
 		PermissionRouteEdit,
+		PermissionRouteView,
 	}
 )

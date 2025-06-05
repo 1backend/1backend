@@ -10,6 +10,24 @@ tags:
 
 # Backend Environment Variables
 
+## `OB_CONTACT_EMAIL`
+
+Specifies the system-wide contact email address for operational and administrative use.
+
+This email is used in various backend components, including:
+
+- ACME TLS certificate registration (e.g., Let's Encrypt)
+- System notifications or future alerting mechanisms
+- Recovery options for certain services that require a fallback contact
+
+While optional, it is strongly recommended to set this in production environments so you can receive:
+
+- Expiration or renewal notices for HTTPS certificates
+- Warnings about rate limits or configuration issues
+- Future administrative alerts from the system
+
+This address will not be used for login or user account purposes.
+
 ## `OB_DB`
 
 You can use this envar to make 1Backend actually use a database instead of local file storage to store data.

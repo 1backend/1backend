@@ -3,6 +3,7 @@ package proxyservice_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 
@@ -16,7 +17,8 @@ func TestListRoutes(t *testing.T) {
 	t.Parallel()
 
 	server, err := test.StartService(test.Options{
-		Test: true,
+		TokenExpiration: 1 * time.Second,
+		Test:            true,
 	})
 	require.NoError(t, err)
 	defer server.Cleanup(t)
@@ -24,6 +26,12 @@ func TestListRoutes(t *testing.T) {
 	clientFactory := client.NewApiClientFactory(server.Url)
 	adminClient, _, err := test.AdminClient(clientFactory)
 	require.NoError(t, err)
+
+	clients, _, err := test.MakeClients(
+		clientFactory, 1)
+	require.NoError(t, err)
+
+	client := clients[0]
 
 	t.Run("save routes", func(t *testing.T) {
 		req := openapi.ProxySvcSaveRoutesRequest{
@@ -46,10 +54,18 @@ func TestListRoutes(t *testing.T) {
 		require.NoError(t, err, hrsp)
 	})
 
+	t.Run("unauthorized cannot list routes", func(t *testing.T) {
+		_, _, err := client.ProxySvcAPI.ListRoutes(
+			context.Background(),
+		).Execute()
+
+		require.Error(t, err)
+	})
+
 	t.Run("list all routes", func(t *testing.T) {
 		rsp, hrsp, err := adminClient.ProxySvcAPI.ListRoutes(
 			context.Background(),
-		).Body(openapi.ProxySvcListRoutesRequest{}).Execute()
+		).Execute()
 
 		require.NoError(t, err, hrsp)
 		require.NotNil(t, rsp)
@@ -63,7 +79,33 @@ func TestListRoutes(t *testing.T) {
 
 		require.NoError(t, err, hrsp)
 		require.NotNil(t, rsp)
-		require.Equal(t, "test.localhost", *rsp.Routes[0].Id)
-		require.Equal(t, "some-backend-url", *rsp.Routes[0].Target)
+
+		var routeIDs []string
+		var routeTargets []string
+		for _, route := range rsp.Routes {
+			if route.Id != nil {
+				routeIDs = append(routeIDs, *route.Id)
+			}
+			if route.Target != nil {
+				routeTargets = append(routeTargets, *route.Target)
+			}
+		}
+
+		require.Contains(t, routeIDs, "test.localhost")
+		require.Contains(t, routeIDs, "test.localhost2")
+		require.Contains(t, routeTargets, "some-backend-url")
+		require.Contains(t, routeTargets, "some-backend-url2")
+	})
+
+	t.Run("list routes with expired token", func(t *testing.T) {
+		time.Sleep(1200 * time.Millisecond)
+
+		rsp, hrsp, err := adminClient.ProxySvcAPI.ListRoutes(
+			context.Background(),
+		).Execute()
+
+		require.NoError(t, err, hrsp)
+		require.NotNil(t, rsp)
+		require.Len(t, rsp.Routes, 2)
 	})
 }

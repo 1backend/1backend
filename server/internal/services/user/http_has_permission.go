@@ -80,8 +80,10 @@ func (s *UserService) hasPermission(
 	usr, claims, err := s.getUserFromRequest(r)
 	if err != nil {
 		if strings.Contains(err.Error(), "token is expired") {
+
 			return nil, false, claims, nil
 		}
+
 		return nil, false, claims, errors.Wrap(err, "failed to get user from request")
 	}
 
@@ -104,6 +106,7 @@ func (s *UserService) hasPermission(
 	for _, roleId := range roleIds {
 		roleIdAnys = append(roleIdAnys, roleId)
 	}
+
 	permits, err := s.permitsStore.Query(
 		//datastore.Or(
 		//	datastore.Equals(datastore.Field("app"), claims.App),
@@ -117,6 +120,7 @@ func (s *UserService) hasPermission(
 
 	for _, permit := range permits {
 		p := permit.(*user.Permit)
+
 		if (p.App == claims.App || p.App == "*") && p.Permission == permission {
 			return usr, true, claims, nil
 		}
@@ -182,7 +186,7 @@ func (s *UserService) getRolesByUserId(app, userId string) ([]string, error) {
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Find()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to query contacts")
 	}
 	contactIds := []any{}
 	for _, contactI := range contactIs {
@@ -209,7 +213,7 @@ func (s *UserService) getRolesByUserId(app, userId string) ([]string, error) {
 		),
 	).Find()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to query enrolls")
 	}
 
 	rolesIndex := map[string]struct{}{}

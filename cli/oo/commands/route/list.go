@@ -1,9 +1,8 @@
-package secret
+package route
 
 import (
 	"fmt"
 	"os"
-	"strings"
 	"text/tabwriter"
 
 	"github.com/1backend/1backend/cli/oo/config"
@@ -14,13 +13,8 @@ import (
 )
 
 // List
-func List(cmd *cobra.Command, args []string, show bool) error {
+func List(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
-
-	var key string
-	if len(args) > 0 {
-		key = args[0]
-	}
 
 	url, token, err := config.GetSelectedUrlAndToken()
 	if err != nil {
@@ -29,16 +23,13 @@ func List(cmd *cobra.Command, args []string, show bool) error {
 
 	cf := client.NewApiClientFactory(url)
 
-	req := openapi.SecretSvcListSecretsRequest{
-		Key: openapi.PtrString(key),
-	}
-
+	req := openapi.ProxySvcListRoutesRequest{}
 	rsp, _, err := cf.Client(client.WithToken(token)).
-		SecretSvcAPI.ListSecrets(ctx).
+		ProxySvcAPI.ListRoutes(ctx).
 		Body(req).
 		Execute()
 	if err != nil {
-		return errors.Wrap(err, "failed to list secrets")
+		return errors.Wrap(err, "failed to list routes")
 	}
 
 	writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
@@ -46,24 +37,16 @@ func List(cmd *cobra.Command, args []string, show bool) error {
 
 	fmt.Fprintln(
 		writer,
-		"SECRET ID\tKEY\tLENGTH\tVALUE",
+		"ROUTE ID\tTARGET",
 	)
 
-	for _, secret := range rsp.Secrets {
-		length := len(*secret.Value)
-
-		value := strings.Repeat("*", length)
-		if show {
-			value = *secret.Value
-		}
+	for _, route := range rsp.Routes {
 
 		fmt.Fprintf(
 			writer,
-			"%s\t%s\t%d\t%s\n",
-			*secret.Id,
-			*secret.Key,
-			length,
-			value,
+			"%s\t%s\n",
+			*route.Id,
+			*route.Target,
 		)
 	}
 

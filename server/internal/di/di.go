@@ -199,6 +199,10 @@ func BigBang(options *universe.Options) (*Universe, error) {
 		options.EdgeProxyHttpsPort = 443
 	}
 
+	if options.ContactEmail == "" {
+		options.ContactEmail = os.Getenv("OB_CONTACT_EMAIL")
+	}
+
 	homeDir, err := infra.HomeDir(infra.HomeDirOptions{
 		Test:         options.Test,
 		ConfigFolder: options.ConfigPath,
@@ -492,6 +496,10 @@ func BigBang(options *universe.Options) (*Universe, error) {
 					Prompt:     autocert.AcceptTOS,
 					HostPolicy: proxyService.HostPolicy,
 					Cache:      proxyService,
+				}
+
+				if options.ContactEmail != "" {
+					certManager.Email = options.ContactEmail
 				}
 
 				// HTTPS server with autocert
