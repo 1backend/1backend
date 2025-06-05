@@ -19,6 +19,8 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/service"
+	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 	"github.com/1backend/1backend/server/internal/universe"
 )
 
@@ -33,6 +35,8 @@ type ProxyService struct {
 	publicKey string
 
 	credentialStore datastore.DataStore
+	certStore       datastore.DataStore
+	routeStore      datastore.DataStore
 }
 
 func NewProxyService(
@@ -46,13 +50,45 @@ func NewProxyService(
 }
 
 func (cs *ProxyService) RegisterRoutes(router *mux.Router) {
+	appl := cs.options.Middlewares
+
+	router.HandleFunc("/proxy-svc/routes", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+		cs.SaveRoutes(w, r)
+	}))).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/proxy-svc/routes", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+		cs.ListRoutes(w, r)
+	}))).
+		Methods("OPTIONS", "POST")
+
 	tokenRefresherMiddleware := middlewares.TokenRefreshMiddleware(
 		cs.options.TokenRefresher,
 		cs.options.TokenAutoRefreshOff,
 	)
 
 	router.PathPrefix("/").HandlerFunc(tokenRefresherMiddleware(func(w http.ResponseWriter, r *http.Request) {
-		cs.Route(w, r)
+		cs.RouteBackend(w, r)
+	}))
+}
+
+// RegisterFrontendRoutes is a special method for the proxy service. Unlike typical `RegisterRoutes`
+// implementations that register internal service-specific routes, this method dynamically loads
+// a list of frontend routes from the datastore and configures them here.
+//
+// It is only used if `OB_EDGE_PROXY` is set to `true`.
+//
+// A "frontend route" refers to traffic that will be forwarded to another port on the same machine
+// or to another host altogether. This enables the proxy to handle external domain-based routing.
+//
+// The `RegisterRoutes` method is intended for the internal HTTP server (typically on port 11337, or
+// as defined by `OB_SERVER_URL`). In contrast, `RegisterFrontendRoutes` is meant for the external
+// HTTP server that listens on ports 80 (to handle ACME/Let's Encrypt challenges) and 443 (to handle
+// HTTPS requests and act as the front-facing smart proxy).
+func (cs *ProxyService) RegisterFrontendRoutes(router *mux.Router) {
+
+	router.PathPrefix("/").HandlerFunc((func(w http.ResponseWriter, r *http.Request) {
+		cs.RouteFrontend(w, r)
 	}))
 }
 
@@ -80,9 +116,27 @@ func (cs *ProxyService) start() error {
 		&auth.Credential{},
 	)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to create credential store")
 	}
 	cs.credentialStore = credentialStore
+
+	certStore, err := cs.options.DataStoreFactory.Create(
+		"proxySvcCerts",
+		&proxy.Cert{},
+	)
+	if err != nil {
+		return errors.Wrap(err, "failed to create cert store")
+	}
+	cs.certStore = certStore
+
+	routeStore, err := cs.options.DataStoreFactory.Create(
+		"proxySvcRoutes",
+		&proxy.Route{},
+	)
+	if err != nil {
+		return errors.Wrap(err, "failed to create route store")
+	}
+	cs.routeStore = routeStore
 
 	ctx := context.Background()
 	cs.options.Lock.Acquire(ctx, "proxy-svc-start")
@@ -108,6 +162,10 @@ func (cs *ProxyService) start() error {
 		return errors.Wrap(err, "failed to register service account")
 	}
 	cs.token = token.Token
+
+	if err := cs.registerPermits(); err != nil {
+		return errors.Wrap(err, "failed to register permits")
+	}
 
 	return nil
 }

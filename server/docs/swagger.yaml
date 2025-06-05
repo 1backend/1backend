@@ -1909,6 +1909,59 @@ definitions:
     x-enum-varnames:
     - ChunkTypeProgress
     - ChunkTypeDone
+  proxy_svc.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  proxy_svc.ListRoutesRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
+  proxy_svc.ListRoutesResponse:
+    properties:
+      routes:
+        items:
+          $ref: '#/definitions/proxy_svc.Route'
+        type: array
+    type: object
+  proxy_svc.Route:
+    properties:
+      createdAt:
+        type: string
+      id:
+        description: Id is the host itself, e.g. "test.localhost"
+        type: string
+      target:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  proxy_svc.RouteInput:
+    properties:
+      id:
+        description: Id is the host itself, e.g. "test.localhost"
+        type: string
+      target:
+        type: string
+    type: object
+  proxy_svc.SaveRoutesRequest:
+    properties:
+      routes:
+        items:
+          $ref: '#/definitions/proxy_svc.RouteInput'
+        type: array
+    type: object
+  proxy_svc.SaveRoutesResponse:
+    properties:
+      routes:
+        items:
+          $ref: '#/definitions/proxy_svc.Route'
+        type: array
+    type: object
   registry_svc.APISpec:
     properties:
       metadata:
@@ -5520,6 +5573,78 @@ paths:
       summary: Prompt Types
       tags:
       - Prompt Svc
+  /proxy-svc/routes:
+    post:
+      consumes:
+      - application/json
+      description: List routes that the edge proxy will use to route requests.
+      operationId: listRoutes
+      parameters:
+      - description: List Routes Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/proxy_svc.ListRoutesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Routes listd successfully
+          schema:
+            $ref: '#/definitions/proxy_svc.ListRoutesResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List Routes
+      tags:
+      - Proxy Svc
+    put:
+      consumes:
+      - application/json
+      description: Save routes that the edge proxy will use to route requests.
+      operationId: saveRoutes
+      parameters:
+      - description: Save Routes Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/proxy_svc.SaveRoutesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Routes saved successfully
+          schema:
+            $ref: '#/definitions/proxy_svc.SaveRoutesResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Save Routes
+      tags:
+      - Proxy Svc
   /registry-svc/definition:
     put:
       consumes:

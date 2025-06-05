@@ -56,6 +56,16 @@ type Options struct {
 	// Url of the 1Backend server
 	ServerUrl string
 
+	// OB_EDGE_PROXY is used to enable the edge proxy.
+	EdgeProxy bool
+
+	EdgeProxyTestMode bool
+
+	// Only used in tests
+	EdgeProxyHttpPort int
+	// Only used in tests
+	EdgeProxyHttpsPort int
+
 	// Self url
 	Url string
 
@@ -84,16 +94,16 @@ type ServiceProcess struct {
 	Stderr     bytes.Buffer
 	cancel     context.CancelFunc
 	wg         sync.WaitGroup
-	Port       string
+	Port       int
 }
 
-func findAvailablePort() (string, error) {
+func FindAvailablePort() (int, error) {
 	listener, err := net.Listen("tcp", ":0")
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 	defer listener.Close()
-	return fmt.Sprintf("%v", listener.Addr().(*net.TCPAddr).Port), nil
+	return listener.Addr().(*net.TCPAddr).Port, nil
 }
 
 // Start either the 1Backend server (if no `Name` is specified)
@@ -108,12 +118,12 @@ func StartService(options Options) (*ServiceProcess, error) {
 	}
 
 	var (
-		port string
+		port int
 		err  error
 	)
 
 	if options.Url == "" {
-		port, err = findAvailablePort()
+		port, err = FindAvailablePort()
 		if err != nil {
 			return nil, err
 		}
@@ -121,8 +131,8 @@ func StartService(options Options) (*ServiceProcess, error) {
 		options.Url = fmt.Sprintf("http://127.0.0.1:%v", port)
 	}
 
-	if port == "" {
-		port = "11337"
+	if port == 0 {
+		port = 11337
 	}
 
 	if options.Test {
@@ -146,6 +156,10 @@ func StartService(options Options) (*ServiceProcess, error) {
 		"OB_ENCRYPTION_KEY":         options.SecretEncryptionKey,
 		"OB_TOKEN_EXPIRATION":       fmt.Sprintf("%v", options.TokenExpiration),
 		"OB_TOKEN_AUTO_REFRESH_OFF": fmt.Sprintf("%v", options.TokenAutoRefreshOff),
+		"OB_EDGE_PROXY":             fmt.Sprintf("%v", options.EdgeProxy),
+		"OB_EDGE_PROXY_TEST_MODE":   fmt.Sprintf("%v", options.EdgeProxyTestMode),
+		"OB_EDGE_PROXY_HTTP_PORT":   fmt.Sprintf("%v", options.EdgeProxyHttpPort),
+		"OB_EDGE_PROXY_HTTPS_PORT":  fmt.Sprintf("%v", options.EdgeProxyHttpsPort),
 	}
 
 	for key, value := range envVars {

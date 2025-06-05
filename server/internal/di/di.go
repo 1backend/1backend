@@ -6,6 +6,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 	"log/slog"
 	"net/http"
 	"net/url"
@@ -24,6 +25,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	httpSwagger "github.com/swaggo/http-swagger"
+	"golang.org/x/crypto/acme/autocert"
 
 	"github.com/1backend/1backend/sdk/go/infra"
 	distlock "github.com/1backend/1backend/sdk/go/lock/local"
@@ -51,8 +53,22 @@ import (
 )
 
 type Universe struct {
-	Options       universe.Options
-	Router        *mux.Router
+	Options universe.Options
+
+	// Router is the main internal router for 1Backend. It handles requests
+	// to built-in or custom services via internal reverse proxying.
+	Router *mux.Router
+
+	// EdgeProxyHttpRouter handles port 80 traffic for ACME HTTP-01 challenges.
+	// This router is only initialized when `OB_EDGE_PROXY` is set to true.
+	EdgeProxyHttpRouter *mux.Router
+
+	// EdgeProxyHttpsRouter handles public-facing HTTPS traffic. It acts as an
+	// edge proxy that routes external domain-based requests to appropriate
+	// backends or services. This router is only initialized when
+	// `OB_EDGE_PROXY` is set to true.
+	EdgeProxyHttpsRouter *mux.Router
+
 	StarterFunc   func() error
 	ClientFactory client.ClientFactory
 }
@@ -145,6 +161,42 @@ func BigBang(options *universe.Options) (*Universe, error) {
 
 	if options.ConfigPath == "" {
 		options.ConfigPath = os.Getenv("OB_FOLDER")
+	}
+
+	if !options.EdgeProxy && os.Getenv("OB_EDGE_PROXY") == "true" {
+		options.EdgeProxy = true
+	}
+
+	if !options.EdgeProxyTestMode && os.Getenv("OB_EDGE_PROXY_TEST_MODE") == "true" {
+		options.EdgeProxyTestMode = true
+	}
+
+	if options.EdgeProxyHttpPort == 0 {
+		edgeProxyHttpPort := os.Getenv("OB_EDGE_PROXY_HTTP_PORT")
+		if edgeProxyHttpPort != "" {
+			port, err := strconv.Atoi(edgeProxyHttpPort)
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to parse OB_EDGE_PROXY_HTTP_PORT")
+			}
+			options.EdgeProxyHttpPort = port
+		}
+	}
+	if options.EdgeProxyHttpPort == 0 {
+		options.EdgeProxyHttpPort = 80
+	}
+
+	if options.EdgeProxyHttpsPort == 0 {
+		edgeProxyHttpsPort := os.Getenv("OB_EDGE_PROXY_HTTPS_PORT")
+		if edgeProxyHttpsPort != "" {
+			port, err := strconv.Atoi(edgeProxyHttpsPort)
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to parse OB_EDGE_PROXY_HTTPS_PORT")
+			}
+			options.EdgeProxyHttpsPort = port
+		}
+	}
+	if options.EdgeProxyHttpsPort == 0 {
+		options.EdgeProxyHttpsPort = 443
 	}
 
 	homeDir, err := infra.HomeDir(infra.HomeDirOptions{
@@ -383,43 +435,94 @@ func BigBang(options *universe.Options) (*Universe, error) {
 
 	router.HandleFunc("/swagger/", httpSwagger.WrapHandler)
 
-	return &Universe{
-		Router: router,
-		StarterFunc: func() error {
-			err = userService.Start()
-			if err != nil {
-				return errors.Wrap(err, "user service start failed")
-			}
-
-			err = promptService.Start()
-			if err != nil {
-				return errors.Wrap(err, "prompt service start failed")
-			}
-
-			err = registryService.Start()
-			if err != nil {
-				return errors.Wrap(err, "registry service start failed")
-			}
-
-			err = fileService.Start()
-			if err != nil {
-				return errors.Wrap(err, "file service start failed")
-			}
-
-			err = containerService.Start()
-			if err != nil {
-				return errors.Wrap(err, "container service start failed")
-			}
-
-			err = deployService.Start()
-			if err != nil {
-				return errors.Wrap(err, "deploy service start failed")
-			}
-
-			return nil
-		},
+	univ := &Universe{
+		Router:  router,
 		Options: *options,
-	}, nil
+	}
+
+	univ.StarterFunc = func() error {
+		err = userService.Start()
+		if err != nil {
+			return errors.Wrap(err, "user service start failed")
+		}
+
+		err = promptService.Start()
+		if err != nil {
+			return errors.Wrap(err, "prompt service start failed")
+		}
+
+		err = registryService.Start()
+		if err != nil {
+			return errors.Wrap(err, "registry service start failed")
+		}
+
+		err = fileService.Start()
+		if err != nil {
+			return errors.Wrap(err, "file service start failed")
+		}
+
+		err = containerService.Start()
+		if err != nil {
+			return errors.Wrap(err, "container service start failed")
+		}
+
+		err = deployService.Start()
+		if err != nil {
+			return errors.Wrap(err, "deploy service start failed")
+		}
+
+		if options.EdgeProxy {
+			univ.EdgeProxyHttpsRouter = mux.NewRouter().SkipClean(true).UseEncodedPath()
+			proxyService.RegisterFrontendRoutes(univ.EdgeProxyHttpsRouter)
+
+			if options.EdgeProxyTestMode {
+				go func() {
+					// Only launch the "HTTPS" server... but in HTTP mode for testing.
+					// The point is to be able to test the edge proxy routing functionality.
+					s := &http.Server{
+						Addr:    fmt.Sprintf(":%v", options.EdgeProxyHttpsPort),
+						Handler: univ.EdgeProxyHttpsRouter,
+					}
+					if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+						log.Fatalf("HTTPS server failed: %v", err)
+					}
+				}()
+			} else {
+				certManager := &autocert.Manager{
+					Prompt:     autocert.AcceptTOS,
+					HostPolicy: proxyService.HostPolicy,
+					Cache:      proxyService,
+				}
+
+				// HTTPS server with autocert
+				go func() {
+					s := &http.Server{
+						Addr:      fmt.Sprintf(":%v", options.EdgeProxyHttpsPort),
+						TLSConfig: certManager.TLSConfig(),
+						Handler:   univ.EdgeProxyHttpsRouter,
+					}
+					if err := s.ListenAndServeTLS("", ""); err != nil && err != http.ErrServerClosed {
+						log.Fatalf("HTTPS server failed: %v", err)
+					}
+				}()
+
+				// HTTP server to handle ACME HTTP-01 challenge and redirect all other traffic to HTTPS
+				go func() {
+					h := certManager.HTTPHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+						http.Redirect(w, r, "https://"+r.Host+r.RequestURI, http.StatusMovedPermanently)
+					}))
+					if err := http.ListenAndServe(fmt.Sprintf(":%v", options.EdgeProxyHttpPort), h); err != nil && err != http.ErrServerClosed {
+						log.Fatalf("HTTP server failed: %v", err)
+					}
+				}()
+			}
+
+		}
+
+		return nil
+	}
+
+	return univ, nil
 }
 
 type HandlerSwitcher struct {

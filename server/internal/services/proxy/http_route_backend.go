@@ -22,8 +22,13 @@ import (
 	"github.com/1backend/1backend/sdk/go/logger"
 )
 
-func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
-	statusCode, err := cs.route(w, r)
+// RouteBackend routes requests that look just like the builtin 1Backend service paths:
+// - /my-svc/my-endpoint -> my-svc
+// - /my-svc/my-other-endpoint?query=param -> my-svc
+// It uses the service slug (the first part of the path) to find the service instance.
+// It then proxies the request to an instance of that service.
+func (cs *ProxyService) RouteBackend(w http.ResponseWriter, r *http.Request) {
+	statusCode, err := cs.routeBackend(w, r)
 
 	if err != nil {
 		logger.Error("Error proxying OPTIONS request",
@@ -49,7 +54,7 @@ func (cs *ProxyService) Route(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (cs *ProxyService) route(w http.ResponseWriter, r *http.Request) (int, error) {
+func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (int, error) {
 	logger.Debug("Proxying",
 		slog.String("path", r.URL.Path),
 		slog.String("method", r.Method),
