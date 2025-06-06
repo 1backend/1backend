@@ -23,6 +23,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/logger"
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
+	"golang.org/x/crypto/acme/autocert"
 
 	"github.com/pkg/errors"
 )
@@ -56,7 +57,7 @@ func (cs *CertStore) Get(ctx context.Context, key string) ([]byte, error) {
 	}
 
 	if !found {
-		return nil, errors.Errorf("cert not found for key '%s'", key)
+		return nil, autocert.ErrCacheMiss
 	}
 
 	cert, ok := certI.(*proxy.Cert)
