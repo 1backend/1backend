@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"text/tabwriter"
+	"time"
 
 	"github.com/1backend/1backend/cli/oo/config"
 	openapi "github.com/1backend/1backend/clients/go"
@@ -37,18 +38,46 @@ func List(cmd *cobra.Command, args []string) error {
 
 	fmt.Fprintln(
 		writer,
-		"ROUTE ID\tTARGET",
+		"ID\tCOMMON NAME\tISSUER\tNOT BEFORE\tNOT AFTER\tSERIAL",
 	)
 
 	for _, cert := range rsp.Certs {
-
 		fmt.Fprintf(
 			writer,
-			"%s\t%s\n",
-			*cert.Id,
-			*cert.Target,
+			"%s\t%s\t%s\t%s\t%s\t%s\n",
+			safeStr(cert.Id),
+			safeStr(cert.CommonName),
+			safeStr(cert.Issuer),
+			safeDate(cert.NotBefore),
+			safeDate(cert.NotAfter),
+			truncateSerial(safeStr(cert.SerialNumber), 8),
 		)
 	}
 
 	return nil
+}
+
+func safeStr(s *string) string {
+	if s == nil {
+		return "-"
+	}
+	return *s
+}
+
+func safeDate(s *string) string {
+	if s == nil {
+		return "-"
+	}
+	t, err := time.Parse(time.RFC3339, *s)
+	if err != nil {
+		return *s // fallback to raw string if parsing fails
+	}
+	return t.Format("2006-01-02") // or use any layout you prefer
+}
+
+func truncateSerial(s string, n int) string {
+	if len(s) <= n {
+		return s
+	}
+	return s[:n] + "…"
 }
