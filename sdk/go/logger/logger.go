@@ -40,14 +40,19 @@ type logProxyWriter struct{}
 func (w *logProxyWriter) Write(p []byte) (n int, err error) {
 	msg := strings.TrimSpace(string(p))
 
+	// Trim stdlib log timestamp prefix: "YYYY/MM/DD HH:MM:SS "
+	if len(msg) > 20 && msg[4] == '/' && msg[7] == '/' && msg[10] == ' ' {
+		msg = msg[20:] // Drop the first 20 characters
+	}
+
 	lower := strings.ToLower(msg)
 
 	// Heuristics: look for keywords
 	switch {
 	case strings.Contains(lower, "error"), strings.Contains(lower, "fail"):
-		Logger.Error("stdlog", "msg", msg)
+		Logger.Error(msg)
 	default:
-		Logger.Info("stdlog", "msg", msg)
+		Logger.Info(msg)
 	}
 
 	return len(p), nil
