@@ -78,6 +78,11 @@ func (cs *ProxyService) RegisterRoutes(router *mux.Router) {
 	}))).
 		Methods("OPTIONS", "POST")
 
+	router.HandleFunc("/proxy-svc/certs", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+		cs.ListCerts(w, r)
+	}))).
+		Methods("OPTIONS", "POST")
+
 	tokenRefresherMiddleware := middlewares.TokenRefreshMiddleware(
 		cs.options.TokenRefresher,
 		cs.options.TokenAutoRefreshOff,

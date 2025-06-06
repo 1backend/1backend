@@ -7873,11 +7873,97 @@
                 "ChunkTypeDone"
             ]
         },
+        "proxy_svc.Cert": {
+            "type": "object",
+            "properties": {
+                "cert": {
+                    "description": "Base64 encoded PEM certificate",
+                    "type": "string"
+                },
+                "commonName": {
+                    "description": "Subject Common Name (typically domain)",
+                    "type": "string"
+                },
+                "createdAt": {
+                    "description": "When cert record was created",
+                    "type": "string"
+                },
+                "dnsNames": {
+                    "description": "Subject Alternative Names (covered domains)",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "description": "Unique cert ID",
+                    "type": "string"
+                },
+                "isCA": {
+                    "description": "Whether cert is a CA (usually false for LE certs)",
+                    "type": "boolean"
+                },
+                "issuer": {
+                    "description": "Certificate issuer name (e.g., Let's Encrypt)",
+                    "type": "string"
+                },
+                "notAfter": {
+                    "description": "Cert validity end time",
+                    "type": "string"
+                },
+                "notBefore": {
+                    "description": "Cert validity start time",
+                    "type": "string"
+                },
+                "publicKeyAlgorithm": {
+                    "description": "Public key algorithm (e.g., RSA, ECDSA)",
+                    "type": "string"
+                },
+                "publicKeyBitLength": {
+                    "description": "Bit length of the public key",
+                    "type": "integer"
+                },
+                "serialNumber": {
+                    "description": "Unique certificate serial number",
+                    "type": "string"
+                },
+                "signatureAlgorithm": {
+                    "description": "Algorithm used to sign the cert (e.g., SHA256-RSA)",
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "description": "When cert record was last updated",
+                    "type": "string"
+                }
+            }
+        },
         "proxy_svc.ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
                     "type": "string"
+                }
+            }
+        },
+        "proxy_svc.ListCertsRequest": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "proxy_svc.ListCertsResponse": {
+            "type": "object",
+            "properties": {
+                "certs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proxy_svc.Cert"
+                    }
                 }
             }
         },

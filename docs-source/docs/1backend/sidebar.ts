@@ -410,6 +410,24 @@ const sidebar: SidebarsConfig = {
     },
     {
       type: "category",
+      label: "Proxy Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend/list-routes",
+          label: "List Routes",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend/save-routes",
+          label: "Save Routes",
+          className: "api-method put",
+        },
+      ],
+    },
+    {
+      type: "category",
       label: "Registry Svc",
       items: [
         {

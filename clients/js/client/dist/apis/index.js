@@ -12,6 +12,7 @@ export * from './ImageSvcApi';
 export * from './ModelSvcApi';
 export * from './PolicySvcApi';
 export * from './PromptSvcApi';
+export * from './ProxySvcApi';
 export * from './RegistrySvcApi';
 export * from './SecretSvcApi';
 export * from './SourceSvcApi';
