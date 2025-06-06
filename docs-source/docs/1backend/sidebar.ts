@@ -414,6 +414,12 @@ const sidebar: SidebarsConfig = {
       items: [
         {
           type: "doc",
+          id: "1backend/list-certs",
+          label: "List Certs",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
           id: "1backend/list-routes",
           label: "List Routes",
           className: "api-method post",

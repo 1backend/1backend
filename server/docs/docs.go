@@ -2985,6 +2985,63 @@ const docTemplate = `{
                 }
             }
         },
+        "/proxy-svc/certs": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "List certs that the edge proxy will use to cert requests.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Proxy Svc"
+                ],
+                "summary": "List Certs",
+                "operationId": "listCerts",
+                "parameters": [
+                    {
+                        "description": "List Certs Request",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/proxy_svc.ListCertsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Certs listed successfully",
+                        "schema": {
+                            "$ref": "#/definitions/proxy_svc.ListCertsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON",
+                        "schema": {
+                            "$ref": "#/definitions/proxy_svc.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/proxy_svc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/proxy_svc.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/proxy-svc/routes": {
             "put": {
                 "security": [

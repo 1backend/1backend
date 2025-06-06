@@ -5634,6 +5634,42 @@ paths:
       summary: Prompt Types
       tags:
       - Prompt Svc
+  /proxy-svc/certs:
+    post:
+      consumes:
+      - application/json
+      description: List certs that the edge proxy will use to cert requests.
+      operationId: listCerts
+      parameters:
+      - description: List Certs Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/proxy_svc.ListCertsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Certs listed successfully
+          schema:
+            $ref: '#/definitions/proxy_svc.ListCertsResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List Certs
+      tags:
+      - Proxy Svc
   /proxy-svc/routes:
     post:
       consumes:

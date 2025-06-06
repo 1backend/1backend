@@ -10,7 +10,10 @@
  * Do not edit the class manually.
  */
 import * as runtime from '../runtime';
-import type { ProxySvcListRoutesRequest, ProxySvcListRoutesResponse, ProxySvcSaveRoutesRequest, ProxySvcSaveRoutesResponse } from '../models/index';
+import type { ProxySvcListCertsRequest, ProxySvcListCertsResponse, ProxySvcListRoutesRequest, ProxySvcListRoutesResponse, ProxySvcSaveRoutesRequest, ProxySvcSaveRoutesResponse } from '../models/index';
+export interface ListCertsRequest {
+    body?: ProxySvcListCertsRequest;
+}
 export interface ListRoutesRequest {
     body?: ProxySvcListRoutesRequest;
 }
@@ -21,6 +24,16 @@ export interface SaveRoutesRequest {
  *
  */
 export declare class ProxySvcApi extends runtime.BaseAPI {
+    /**
+     * List certs that the edge proxy will use to cert requests.
+     * List Certs
+     */
+    listCertsRaw(requestParameters: ListCertsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProxySvcListCertsResponse>>;
+    /**
+     * List certs that the edge proxy will use to cert requests.
+     * List Certs
+     */
+    listCerts(requestParameters?: ListCertsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProxySvcListCertsResponse>;
     /**
      * List routes that the edge proxy will use to route requests.
      * List Routes

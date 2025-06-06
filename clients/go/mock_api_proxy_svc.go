@@ -39,6 +39,36 @@ func (m *MockProxySvcAPI) EXPECT() *MockProxySvcAPIMockRecorder {
 	return m.recorder
 }
 
+// ListCerts mocks base method.
+func (m *MockProxySvcAPI) ListCerts(ctx context.Context) ApiListCertsRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListCerts", ctx)
+	ret0, _ := ret[0].(ApiListCertsRequest)
+	return ret0
+}
+
+// ListCerts indicates an expected call of ListCerts.
+func (mr *MockProxySvcAPIMockRecorder) ListCerts(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCerts", reflect.TypeOf((*MockProxySvcAPI)(nil).ListCerts), ctx)
+}
+
+// ListCertsExecute mocks base method.
+func (m *MockProxySvcAPI) ListCertsExecute(r ApiListCertsRequest) (*ProxySvcListCertsResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListCertsExecute", r)
+	ret0, _ := ret[0].(*ProxySvcListCertsResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListCertsExecute indicates an expected call of ListCertsExecute.
+func (mr *MockProxySvcAPIMockRecorder) ListCertsExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCertsExecute", reflect.TypeOf((*MockProxySvcAPI)(nil).ListCertsExecute), r)
+}
+
 // ListRoutes mocks base method.
 func (m *MockProxySvcAPI) ListRoutes(ctx context.Context) ApiListRoutesRequest {
 	m.ctrl.T.Helper()

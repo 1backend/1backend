@@ -134,6 +134,7 @@ Class | Method | HTTP request | Description
 *PromptSvcAPI* | [**PromptTypes**](docs/PromptSvcAPI.md#prompttypes) | **Post** /prompt-svc/types | Prompt Types
 *PromptSvcAPI* | [**RemovePrompt**](docs/PromptSvcAPI.md#removeprompt) | **Post** /prompt-svc/remove | Remove Prompt
 *PromptSvcAPI* | [**SubscribeToPromptResponses**](docs/PromptSvcAPI.md#subscribetopromptresponses) | **Get** /prompt-svc/prompts/{threadId}/responses/subscribe | Subscribe to Prompt Responses by Thread
+*ProxySvcAPI* | [**ListCerts**](docs/ProxySvcAPI.md#listcerts) | **Post** /proxy-svc/certs | List Certs
 *ProxySvcAPI* | [**ListRoutes**](docs/ProxySvcAPI.md#listroutes) | **Post** /proxy-svc/routes | List Routes
 *ProxySvcAPI* | [**SaveRoutes**](docs/ProxySvcAPI.md#saveroutes) | **Put** /proxy-svc/routes | Save Routes
 *RegistrySvcAPI* | [**DeleteDefinition**](docs/RegistrySvcAPI.md#deletedefinition) | **Delete** /registry-svc/definition/{id} | Delete Definition

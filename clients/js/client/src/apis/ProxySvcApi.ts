@@ -16,6 +16,8 @@
 import * as runtime from '../runtime';
 import type {
   ProxySvcErrorResponse,
+  ProxySvcListCertsRequest,
+  ProxySvcListCertsResponse,
   ProxySvcListRoutesRequest,
   ProxySvcListRoutesResponse,
   ProxySvcSaveRoutesRequest,
@@ -24,6 +26,10 @@ import type {
 import {
     ProxySvcErrorResponseFromJSON,
     ProxySvcErrorResponseToJSON,
+    ProxySvcListCertsRequestFromJSON,
+    ProxySvcListCertsRequestToJSON,
+    ProxySvcListCertsResponseFromJSON,
+    ProxySvcListCertsResponseToJSON,
     ProxySvcListRoutesRequestFromJSON,
     ProxySvcListRoutesRequestToJSON,
     ProxySvcListRoutesResponseFromJSON,
@@ -33,6 +39,10 @@ import {
     ProxySvcSaveRoutesResponseFromJSON,
     ProxySvcSaveRoutesResponseToJSON,
 } from '../models/index';
+
+export interface ListCertsRequest {
+    body?: ProxySvcListCertsRequest;
+}
 
 export interface ListRoutesRequest {
     body?: ProxySvcListRoutesRequest;
@@ -46,6 +56,41 @@ export interface SaveRoutesRequest {
  * 
  */
 export class ProxySvcApi extends runtime.BaseAPI {
+
+    /**
+     * List certs that the edge proxy will use to cert requests.
+     * List Certs
+     */
+    async listCertsRaw(requestParameters: ListCertsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProxySvcListCertsResponse>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/proxy-svc/certs`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ProxySvcListCertsRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ProxySvcListCertsResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * List certs that the edge proxy will use to cert requests.
+     * List Certs
+     */
+    async listCerts(requestParameters: ListCertsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProxySvcListCertsResponse> {
+        const response = await this.listCertsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * List routes that the edge proxy will use to route requests.
