@@ -22,6 +22,8 @@ export * from './policySvcApi';
 import { PolicySvcApi } from './policySvcApi';
 export * from './promptSvcApi';
 import { PromptSvcApi } from './promptSvcApi';
+export * from './proxySvcApi';
+import { ProxySvcApi } from './proxySvcApi';
 export * from './registrySvcApi';
 import { RegistrySvcApi } from './registrySvcApi';
 export * from './secretSvcApi';
@@ -41,4 +43,4 @@ export class HttpError extends Error {
 
 export { RequestFile } from '../model/models';
 
-export const APIS = [ChatSvcApi, ConfigSvcApi, ContainerSvcApi, DataSvcApi, DeploySvcApi, EmailSvcApi, FileSvcApi, FirehoseSvcApi, ImageSvcApi, ModelSvcApi, PolicySvcApi, PromptSvcApi, RegistrySvcApi, SecretSvcApi, SourceSvcApi, UserSvcApi];
+export const APIS = [ChatSvcApi, ConfigSvcApi, ContainerSvcApi, DataSvcApi, DeploySvcApi, EmailSvcApi, FileSvcApi, FirehoseSvcApi, ImageSvcApi, ModelSvcApi, PolicySvcApi, PromptSvcApi, ProxySvcApi, RegistrySvcApi, SecretSvcApi, SourceSvcApi, UserSvcApi];

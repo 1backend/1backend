@@ -495,7 +495,7 @@ func BigBang(options *universe.Options) (*Universe, error) {
 				certManager := &autocert.Manager{
 					Prompt:     autocert.AcceptTOS,
 					HostPolicy: proxyService.HostPolicy,
-					Cache:      proxyService,
+					Cache:      proxyService.CertStore,
 				}
 
 				if options.ContactEmail != "" {

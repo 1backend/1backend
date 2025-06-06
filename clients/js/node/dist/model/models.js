@@ -126,6 +126,16 @@ export * from './promptSvcStreamChunkType';
 export * from './promptSvcTextToImageParameters';
 export * from './promptSvcTextToTextParameters';
 export * from './promptSvcTypesResponse';
+export * from './proxySvcCert';
+export * from './proxySvcErrorResponse';
+export * from './proxySvcListCertsRequest';
+export * from './proxySvcListCertsResponse';
+export * from './proxySvcListRoutesRequest';
+export * from './proxySvcListRoutesResponse';
+export * from './proxySvcRoute';
+export * from './proxySvcRouteInput';
+export * from './proxySvcSaveRoutesRequest';
+export * from './proxySvcSaveRoutesResponse';
 export * from './registrySvcAPISpec';
 export * from './registrySvcClient';
 export * from './registrySvcDefinition';
@@ -335,6 +345,16 @@ import { PromptSvcStreamChunkType } from './promptSvcStreamChunkType';
 import { PromptSvcTextToImageParameters } from './promptSvcTextToImageParameters';
 import { PromptSvcTextToTextParameters } from './promptSvcTextToTextParameters';
 import { PromptSvcTypesResponse } from './promptSvcTypesResponse';
+import { ProxySvcCert } from './proxySvcCert';
+import { ProxySvcErrorResponse } from './proxySvcErrorResponse';
+import { ProxySvcListCertsRequest } from './proxySvcListCertsRequest';
+import { ProxySvcListCertsResponse } from './proxySvcListCertsResponse';
+import { ProxySvcListRoutesRequest } from './proxySvcListRoutesRequest';
+import { ProxySvcListRoutesResponse } from './proxySvcListRoutesResponse';
+import { ProxySvcRoute } from './proxySvcRoute';
+import { ProxySvcRouteInput } from './proxySvcRouteInput';
+import { ProxySvcSaveRoutesRequest } from './proxySvcSaveRoutesRequest';
+import { ProxySvcSaveRoutesResponse } from './proxySvcSaveRoutesResponse';
 import { RegistrySvcAPISpec } from './registrySvcAPISpec';
 import { RegistrySvcClient } from './registrySvcClient';
 import { RegistrySvcDefinition } from './registrySvcDefinition';
@@ -563,6 +583,16 @@ let typeMap = {
     "PromptSvcTextToImageParameters": PromptSvcTextToImageParameters,
     "PromptSvcTextToTextParameters": PromptSvcTextToTextParameters,
     "PromptSvcTypesResponse": PromptSvcTypesResponse,
+    "ProxySvcCert": ProxySvcCert,
+    "ProxySvcErrorResponse": ProxySvcErrorResponse,
+    "ProxySvcListCertsRequest": ProxySvcListCertsRequest,
+    "ProxySvcListCertsResponse": ProxySvcListCertsResponse,
+    "ProxySvcListRoutesRequest": ProxySvcListRoutesRequest,
+    "ProxySvcListRoutesResponse": ProxySvcListRoutesResponse,
+    "ProxySvcRoute": ProxySvcRoute,
+    "ProxySvcRouteInput": ProxySvcRouteInput,
+    "ProxySvcSaveRoutesRequest": ProxySvcSaveRoutesRequest,
+    "ProxySvcSaveRoutesResponse": ProxySvcSaveRoutesResponse,
     "RegistrySvcAPISpec": RegistrySvcAPISpec,
     "RegistrySvcClient": RegistrySvcClient,
     "RegistrySvcDefinition": RegistrySvcDefinition,

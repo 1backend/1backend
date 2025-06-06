@@ -37,13 +37,29 @@ type ProxyService struct {
 	credentialStore datastore.DataStore
 	certStore       datastore.DataStore
 	routeStore      datastore.DataStore
+
+	CertStore *CertStore
 }
 
 func NewProxyService(
 	options *universe.Options,
 ) (*ProxyService, error) {
+	// It's best to acquire the cert store here instead of in Lazy Load.
+	// Simpler to reason about instead of thinking if the frontend proxy runs LazyLoad or not.
+
+	certStore, err := options.DataStoreFactory.Create(
+		"proxySvcCerts",
+		&proxy.Cert{},
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to create cert store")
+	}
+
 	cs := &ProxyService{
 		options: options,
+		CertStore: &CertStore{
+			Db: certStore,
+		},
 	}
 
 	return cs, nil
@@ -59,6 +75,11 @@ func (cs *ProxyService) RegisterRoutes(router *mux.Router) {
 
 	router.HandleFunc("/proxy-svc/routes", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.ListRoutes(w, r)
+	}))).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/proxy-svc/certs", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+		cs.ListCerts(w, r)
 	}))).
 		Methods("OPTIONS", "POST")
 
@@ -119,15 +140,6 @@ func (cs *ProxyService) start() error {
 		return errors.Wrap(err, "failed to create credential store")
 	}
 	cs.credentialStore = credentialStore
-
-	certStore, err := cs.options.DataStoreFactory.Create(
-		"proxySvcCerts",
-		&proxy.Cert{},
-	)
-	if err != nil {
-		return errors.Wrap(err, "failed to create cert store")
-	}
-	cs.certStore = certStore
 
 	routeStore, err := cs.options.DataStoreFactory.Create(
 		"proxySvcRoutes",
