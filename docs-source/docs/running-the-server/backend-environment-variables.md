@@ -50,6 +50,10 @@ Naturally, you should change the details of the connection string to reflect you
 
 When set to true, 1Backend will enable the edge proxy feature. This feature configures the system to listen for incoming HTTP and HTTPS traffic on ports 80 and 443, respectively.
 
+```sh
+OB_EDGE_PROXY=true
+```
+
 The edge proxy acts as a public-facing reverse proxy, handling domain-based routing and TLS termination for external requests. It is typically used to:
 
 - Serve ACME HTTP-01 challenges (for automated TLS certificates, e.g., via Let's Encrypt) on port 80.
