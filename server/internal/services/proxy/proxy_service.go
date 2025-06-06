@@ -55,9 +55,18 @@ func NewProxyService(
 		return nil, errors.Wrap(err, "failed to create cert store")
 	}
 
+	routeStore, err := options.DataStoreFactory.Create(
+		"proxySvcRoutes",
+		&proxy.Route{},
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to create route store")
+	}
+
 	cs := &ProxyService{
-		options:   options,
-		certStore: certStore,
+		options:    options,
+		routeStore: routeStore,
+		certStore:  certStore,
 		CertStore: &CertStore{
 			Db: certStore,
 		},
@@ -141,15 +150,6 @@ func (cs *ProxyService) start() error {
 		return errors.Wrap(err, "failed to create credential store")
 	}
 	cs.credentialStore = credentialStore
-
-	routeStore, err := cs.options.DataStoreFactory.Create(
-		"proxySvcRoutes",
-		&proxy.Route{},
-	)
-	if err != nil {
-		return errors.Wrap(err, "failed to create route store")
-	}
-	cs.routeStore = routeStore
 
 	ctx := context.Background()
 	cs.options.Lock.Acquire(ctx, "proxy-svc-start")
