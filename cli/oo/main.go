@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	call "github.com/1backend/1backend/cli/oo/commands/call"
+	"github.com/1backend/1backend/cli/oo/commands/cert"
 	definition "github.com/1backend/1backend/cli/oo/commands/definition"
 	deployment "github.com/1backend/1backend/cli/oo/commands/deployment"
 	"github.com/1backend/1backend/cli/oo/commands/enroll"
@@ -39,6 +40,7 @@ func main() {
 	permit.AddPermitCommands(rootCmd)
 	enroll.AddEnrollCommands(rootCmd)
 	route.AddRouteCommands(rootCmd)
+	cert.AddCertCommands(rootCmd)
 
 	addCallCommands(rootCmd)
 

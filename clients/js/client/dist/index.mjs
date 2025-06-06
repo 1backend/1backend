@@ -13062,6 +13062,38 @@ class PromptSvcApi extends BaseAPI {
  */
 class ProxySvcApi extends BaseAPI {
     /**
+     * List certs that the edge proxy will use to cert requests.
+     * List Certs
+     */
+    listCertsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            const response = yield this.request({
+                path: `/proxy-svc/certs`,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: ProxySvcListCertsRequestToJSON(requestParameters['body']),
+            }, initOverrides);
+            return new JSONApiResponse(response, (jsonValue) => ProxySvcListCertsResponseFromJSON(jsonValue));
+        });
+    }
+    /**
+     * List certs that the edge proxy will use to cert requests.
+     * List Certs
+     */
+    listCerts() {
+        return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
+            const response = yield this.listCertsRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
      * List routes that the edge proxy will use to route requests.
      * List Routes
      */

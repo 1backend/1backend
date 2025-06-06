@@ -27,12 +27,12 @@ import (
 // @Accept json
 // @Produce json
 // @Param body body proxy.ListCertsRequest false "List Certs Request"
-// @Success 200 {object} proxy.ListCertsResponse "Certs listd successfully"
+// @Success 200 {object} proxy.ListCertsResponse "Certs listed successfully"
 // @Failure 400 {object} proxy.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} proxy.ErrorResponse "Unauthorized"
 // @Failure 500 {object} proxy.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
-// @Certr /proxy-svc/certs [post]
+// @Router /proxy-svc/certs [post]
 func (cs *ProxyService) ListCerts(w http.ResponseWriter, r *http.Request) {
 	isAuthRsp, statusCode, err := cs.options.PermissionChecker.HasPermission(
 		r,

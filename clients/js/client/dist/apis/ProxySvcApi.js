@@ -21,11 +21,43 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as runtime from '../runtime';
-import { ProxySvcListRoutesRequestToJSON, ProxySvcListRoutesResponseFromJSON, ProxySvcSaveRoutesRequestToJSON, ProxySvcSaveRoutesResponseFromJSON, } from '../models/index';
+import { ProxySvcListCertsRequestToJSON, ProxySvcListCertsResponseFromJSON, ProxySvcListRoutesRequestToJSON, ProxySvcListRoutesResponseFromJSON, ProxySvcSaveRoutesRequestToJSON, ProxySvcSaveRoutesResponseFromJSON, } from '../models/index';
 /**
  *
  */
 export class ProxySvcApi extends runtime.BaseAPI {
+    /**
+     * List certs that the edge proxy will use to cert requests.
+     * List Certs
+     */
+    listCertsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            const response = yield this.request({
+                path: `/proxy-svc/certs`,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: ProxySvcListCertsRequestToJSON(requestParameters['body']),
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => ProxySvcListCertsResponseFromJSON(jsonValue));
+        });
+    }
+    /**
+     * List certs that the edge proxy will use to cert requests.
+     * List Certs
+     */
+    listCerts() {
+        return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
+            const response = yield this.listCertsRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
     /**
      * List routes that the edge proxy will use to route requests.
      * List Routes

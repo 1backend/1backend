@@ -10,6 +10,8 @@
  * Do not edit the class manually.
  */
 import http from 'http';
+import { ProxySvcListCertsRequest } from '../model/proxySvcListCertsRequest';
+import { ProxySvcListCertsResponse } from '../model/proxySvcListCertsResponse';
 import { ProxySvcListRoutesRequest } from '../model/proxySvcListRoutesRequest';
 import { ProxySvcListRoutesResponse } from '../model/proxySvcListRoutesResponse';
 import { ProxySvcSaveRoutesRequest } from '../model/proxySvcSaveRoutesRequest';
@@ -37,6 +39,19 @@ export declare class ProxySvcApi {
     setDefaultAuthentication(auth: Authentication): void;
     setApiKey(key: ProxySvcApiApiKeys, value: string): void;
     addInterceptor(interceptor: Interceptor): void;
+    /**
+     * List certs that the edge proxy will use to cert requests.
+     * @summary List Certs
+     * @param body List Certs Request
+     */
+    listCerts(body?: ProxySvcListCertsRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: ProxySvcListCertsResponse;
+    }>;
     /**
      * List routes that the edge proxy will use to route requests.
      * @summary List Routes
