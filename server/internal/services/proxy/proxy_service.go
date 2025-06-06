@@ -56,7 +56,8 @@ func NewProxyService(
 	}
 
 	cs := &ProxyService{
-		options: options,
+		options:   options,
+		certStore: certStore,
 		CertStore: &CertStore{
 			Db: certStore,
 		},
