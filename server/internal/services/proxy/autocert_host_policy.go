@@ -9,8 +9,22 @@ package proxyservice
 
 import (
 	"context"
+
+	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/pkg/errors"
 )
 
 func (cs *ProxyService) HostPolicy(ctx context.Context, host string) error {
+	_, found, err := cs.routeStore.Query(
+		datastore.Id(host),
+	).FindOne()
+	if err != nil {
+		return errors.Wrap(err, "failed to query route by host")
+	}
+
+	if !found {
+		return errors.New("host not found in routes")
+	}
+
 	return nil
 }
