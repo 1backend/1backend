@@ -8,7 +8,10 @@
 package proxyservice
 
 import (
+	"bytes"
+	"encoding/base64"
 	"encoding/json"
+	"io"
 	"log/slog"
 	"net/http"
 
@@ -100,8 +103,51 @@ func (cs *ProxyService) listCerts(req *proxy.ListCertsRequest) ([]proxy.Cert, er
 		if !ok {
 			return nil, errors.Errorf("expected cert type, got %T", certI)
 		}
+
+		if cert.CommonName == "" {
+			err = amendCertInfo(cert)
+			if err != nil {
+				// Only log, do not error.
+				logger.Error(
+					"Failed to amend cert info",
+					slog.String("certId", cert.Id),
+					slog.Any("error", err),
+				)
+			}
+		}
+
 		certs = append(certs, *cert)
 	}
 
 	return certs, nil
+}
+
+func amendCertInfo(cert *proxy.Cert) error {
+	decoder := base64.NewDecoder(base64.StdEncoding, bytes.NewReader([]byte(cert.Cert)))
+	data, err := io.ReadAll(decoder)
+	if err != nil && err != io.EOF {
+		return errors.Wrap(err, "failed to decode cert data")
+	}
+
+	if len(data) == 0 {
+		return errors.Errorf("cert data is empty for key '%s'", cert.Id)
+	}
+
+	info, err := parseCertInfo(data)
+	if err != nil {
+		return errors.Wrapf(err, "failed to parse cert info for key '%s'", cert.Id)
+	}
+
+	cert.CommonName = info.CommonName
+	cert.Issuer = info.Issuer
+	cert.NotBefore = info.NotBefore
+	cert.NotAfter = info.NotAfter
+	cert.SerialNumber = info.SerialNumber
+	cert.DNSNames = info.DNSNames
+	cert.SerialNumber = info.SerialNumber
+	cert.SignatureAlgorithm = info.SignatureAlgorithm
+	cert.PublicKeyAlgorithm = info.PublicKeyAlgorithm
+	cert.PublicKeyBitLength = info.PublicKeyBitLength
+
+	return nil
 }

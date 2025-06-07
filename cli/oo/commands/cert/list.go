@@ -38,14 +38,16 @@ func List(cmd *cobra.Command, args []string) error {
 
 	fmt.Fprintln(
 		writer,
-		"ID\tCOMMON NAME\tISSUER\tNOT BEFORE\tNOT AFTER\tSERIAL",
+		"CERT ID\tCREATED AT\tUPDATED AT\tCOMMON NAME\tISSUER\tNOT BEFORE\tNOT AFTER\tSERIAL",
 	)
 
 	for _, cert := range rsp.Certs {
 		fmt.Fprintf(
 			writer,
-			"%s\t%s\t%s\t%s\t%s\t%s\n",
+			"%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
 			safeStr(cert.Id),
+			safeDate(cert.CreatedAt),
+			safeDate(cert.UpdatedAt),
 			safeStr(cert.CommonName),
 			safeStr(cert.Issuer),
 			safeDate(cert.NotBefore),
@@ -72,7 +74,11 @@ func safeDate(s *string) string {
 	if err != nil {
 		return *s // fallback to raw string if parsing fails
 	}
-	return t.Format("2006-01-02") // or use any layout you prefer
+	d := t.Format("2006-01-02") // or use any layout you prefer
+	if d == "0001-01-01" {
+		return ""
+	}
+	return d
 }
 
 func truncateSerial(s string, n int) string {

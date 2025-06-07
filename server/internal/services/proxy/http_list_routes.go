@@ -100,6 +100,7 @@ func (cs *ProxyService) listRoutes(req *proxy.ListRoutesRequest) ([]proxy.Route,
 		if !ok {
 			return nil, errors.Errorf("expected route type, got %T", routeI)
 		}
+
 		routes = append(routes, *route)
 	}
 
