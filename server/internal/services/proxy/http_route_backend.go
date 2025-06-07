@@ -55,7 +55,7 @@ func (cs *ProxyService) RouteBackend(w http.ResponseWriter, r *http.Request) {
 }
 
 func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (int, error) {
-	logger.Debug("Proxying",
+	logger.Debug("Service proxying",
 		slog.String("path", r.URL.Path),
 		slog.String("method", r.Method),
 	)

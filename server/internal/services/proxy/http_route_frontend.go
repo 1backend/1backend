@@ -21,7 +21,7 @@ import (
 )
 
 func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
-	logger.Debug("Frontend proxy request",
+	logger.Debug("Edge proxying",
 		slog.String("host", r.Host),
 		slog.String("path", r.URL.Path),
 	)
