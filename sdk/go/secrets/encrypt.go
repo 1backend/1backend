@@ -1,4 +1,4 @@
-package secretservice
+package secrets
 
 import (
 	"bytes"
@@ -10,7 +10,7 @@ import (
 )
 
 // encrypt function encrypts the plaintext using the AES-256 algorithm
-func encrypt(plaintext string, key string) (string, error) {
+func Encrypt(plaintext string, key string) (string, error) {
 	// Ensure the key length is 32 bytes for AES-256
 	if len(key) != 32 {
 		return "", fmt.Errorf("key must be 32 bytes")
@@ -43,7 +43,7 @@ func encrypt(plaintext string, key string) (string, error) {
 }
 
 // decrypt function decrypts the ciphertext using the AES-256 algorithm
-func decrypt(ciphertext string, key string) (string, error) {
+func Decrypt(ciphertext string, key string) (string, error) {
 	// Ensure the key length is 32 bytes for AES-256
 	if len(key) != 32 {
 		return "", fmt.Errorf("key must be 32 bytes")

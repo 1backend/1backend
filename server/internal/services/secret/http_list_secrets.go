@@ -15,6 +15,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
+	secretssdk "github.com/1backend/1backend/sdk/go/secrets"
 	secret "github.com/1backend/1backend/server/internal/services/secret/types"
 	"github.com/pkg/errors"
 )
@@ -132,7 +133,7 @@ func (cs *SecretService) getSecrets(
 			continue
 		}
 
-		s.Value, err = decrypt(s.Value, cs.options.SecretEncryptionKey)
+		s.Value, err = secretssdk.Decrypt(s.Value, cs.options.SecretEncryptionKey)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to decrypt secret")
 		}

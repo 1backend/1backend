@@ -8,15 +8,12 @@
 package proxyservice
 
 import (
-	"bytes"
 	"context"
 	"crypto/ecdsa"
 	"crypto/ed25519"
 	"crypto/rsa"
 	"crypto/x509"
-	"encoding/base64"
 	"encoding/pem"
-	"io"
 	"log/slog"
 	"time"
 
@@ -29,7 +26,8 @@ import (
 )
 
 type CertStore struct {
-	Db datastore.DataStore
+	EncryptionKey string
+	Db            datastore.DataStore
 }
 
 //
@@ -37,6 +35,10 @@ type CertStore struct {
 //
 
 func (cs *CertStore) Get(ctx context.Context, key string) ([]byte, error) {
+	if cs.EncryptionKey == "" {
+		return nil, errors.New("encryption key is not set")
+	}
+
 	var err error
 
 	defer func() {
@@ -65,12 +67,7 @@ func (cs *CertStore) Get(ctx context.Context, key string) ([]byte, error) {
 		return nil, errors.Errorf("expected cert type, got %T", certI)
 	}
 
-	decoder := base64.NewDecoder(base64.StdEncoding, bytes.NewReader([]byte(cert.Cert)))
-	data, err := io.ReadAll(decoder)
-	if err != nil && err != io.EOF {
-
-		return nil, errors.Wrap(err, "failed to decode cert data")
-	}
+	data := []byte(cert.Cert)
 
 	if len(data) == 0 {
 		return nil, errors.Errorf("cert data is empty for key '%s'", key)
@@ -80,6 +77,10 @@ func (cs *CertStore) Get(ctx context.Context, key string) ([]byte, error) {
 }
 
 func (cs *CertStore) Put(ctx context.Context, key string, data []byte) error {
+	if cs.EncryptionKey == "" {
+		return errors.New("encryption key is not set")
+	}
+
 	var err error
 
 	defer func() {
@@ -107,11 +108,9 @@ func (cs *CertStore) Put(ctx context.Context, key string, data []byte) error {
 		existingCert = *c
 	}
 
-	encoded := base64.StdEncoding.EncodeToString(data)
-
 	cert := &proxy.Cert{
 		Id:   key,
-		Cert: encoded,
+		Cert: string(data),
 	}
 
 	now := time.Now()

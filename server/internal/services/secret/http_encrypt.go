@@ -14,6 +14,7 @@ import (
 
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/1backend/1backend/sdk/go/secrets"
 	secret "github.com/1backend/1backend/server/internal/services/secret/types"
 )
 
@@ -65,7 +66,7 @@ func (cs *SecretService) Encrypt(
 		return
 	}
 
-	encryptedValue, err := encrypt(req.Value, cs.options.SecretEncryptionKey)
+	encryptedValue, err := secrets.Encrypt(req.Value, cs.options.SecretEncryptionKey)
 	if err != nil {
 		logger.Error(
 			"Failed to encrypt value",

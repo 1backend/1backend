@@ -23,6 +23,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/1backend/1backend/sdk/go/secrets"
 	secret "github.com/1backend/1backend/server/internal/services/secret/types"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/blake2b"
@@ -158,7 +159,7 @@ func (cs *SecretService) saveSecrets(
 				}
 			}
 			if !s.Encrypted {
-				s.Value, err = encrypt(s.Value, cs.options.SecretEncryptionKey)
+				s.Value, err = secrets.Encrypt(s.Value, cs.options.SecretEncryptionKey)
 				if err != nil {
 					return errors.Wrap(err, "failed to encrypt secret")
 				}
@@ -189,7 +190,7 @@ func (cs *SecretService) saveSecrets(
 		}
 
 		if !s.Encrypted {
-			s.Value, err = encrypt(s.Value, cs.options.SecretEncryptionKey)
+			s.Value, err = secrets.Encrypt(s.Value, cs.options.SecretEncryptionKey)
 			if err != nil {
 				return errors.Wrap(err, "failed to encrypt secret")
 			}
@@ -211,7 +212,7 @@ func (cs *SecretService) saveSecrets(
 
 func (cs SecretService) checkSum(s *secret.Secret) error {
 	if s.Encrypted && s.Checksum != "" {
-		val, err := decrypt(s.Value, cs.options.SecretEncryptionKey)
+		val, err := secrets.Decrypt(s.Value, cs.options.SecretEncryptionKey)
 		if err != nil {
 			return errors.Wrap(err, "failed to decrypt to compare checksum")
 		}
