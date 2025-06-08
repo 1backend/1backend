@@ -90,6 +90,9 @@ func (cs *ProxyService) listCerts(req *proxy.ListCertsRequest) ([]proxy.Cert, er
 	}
 
 	certIs, err := cs.certStore.Query(filters...).
+		OrderBy(
+			datastore.OrderByField("updatedAt", true),
+		).
 		Find()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to query certs")
