@@ -55,7 +55,8 @@ func TestAutocertCache(t *testing.T) {
 	require.NoError(t, err)
 
 	cache := &proxyservice.CertStore{
-		Db: localstore,
+		EncryptionKey: "testEncryptionKeytestEncryptionK",
+		Db:            localstore,
 	}
 
 	key := "test-cert"

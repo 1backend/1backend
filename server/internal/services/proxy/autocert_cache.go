@@ -93,6 +93,12 @@ func (cs *CertStore) Put(ctx context.Context, key string, data []byte) error {
 		}
 	}()
 
+	logger.Info(
+		"Storing cert",
+		slog.String("key", key),
+		slog.Int("data_length", len(data)),
+	)
+
 	var existingCert proxy.Cert
 	certI, existingCertFound, err := cs.Db.Query(
 		datastore.Id(key),
