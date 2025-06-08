@@ -102,6 +102,8 @@ func (cs *ProxyService) listCerts(req *proxy.ListCertsRequest) ([]proxy.Cert, er
 		}
 
 		if cert.CommonName == "" {
+			// @todo: These entries appear are private keys rather than certificates.
+			// Investigate why certificates are not being stored properly.
 			err = amendCertInfo(cert)
 			if err != nil {
 				// Only log, do not error.

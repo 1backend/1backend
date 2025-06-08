@@ -492,7 +492,6 @@ func BigBang(options *universe.Options) (*Universe, error) {
 					}
 				}()
 			} else {
-				autocert.DirCache
 				certManager := &autocert.Manager{
 					Prompt:     autocert.AcceptTOS,
 					HostPolicy: proxyService.HostPolicy,
