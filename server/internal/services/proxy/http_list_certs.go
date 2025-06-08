@@ -8,10 +8,7 @@
 package proxyservice
 
 import (
-	"bytes"
-	"encoding/base64"
 	"encoding/json"
-	"io"
 	"log/slog"
 	"net/http"
 
@@ -105,6 +102,8 @@ func (cs *ProxyService) listCerts(req *proxy.ListCertsRequest) ([]proxy.Cert, er
 		}
 
 		if cert.CommonName == "" {
+			// @todo: These entries appear are private keys rather than certificates.
+			// Investigate why certificates are not being stored properly.
 			err = amendCertInfo(cert)
 			if err != nil {
 				// Only log, do not error.
@@ -123,17 +122,7 @@ func (cs *ProxyService) listCerts(req *proxy.ListCertsRequest) ([]proxy.Cert, er
 }
 
 func amendCertInfo(cert *proxy.Cert) error {
-	decoder := base64.NewDecoder(base64.StdEncoding, bytes.NewReader([]byte(cert.Cert)))
-	data, err := io.ReadAll(decoder)
-	if err != nil && err != io.EOF {
-		return errors.Wrap(err, "failed to decode cert data")
-	}
-
-	if len(data) == 0 {
-		return errors.Errorf("cert data is empty for key '%s'", cert.Id)
-	}
-
-	info, err := parseCertInfo(data)
+	info, err := parseCertInfo([]byte(cert.Cert))
 	if err != nil {
 		return errors.Wrapf(err, "failed to parse cert info for key '%s'", cert.Id)
 	}

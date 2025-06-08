@@ -14,6 +14,7 @@ import (
 
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/1backend/1backend/sdk/go/secrets"
 	secret "github.com/1backend/1backend/server/internal/services/secret/types"
 )
 
@@ -59,7 +60,7 @@ func (cs *SecretService) Decrypt(
 	}
 	defer r.Body.Close()
 
-	decryptedValue, err := decrypt(req.Value, cs.options.SecretEncryptionKey)
+	decryptedValue, err := secrets.Decrypt(req.Value, cs.options.SecretEncryptionKey)
 	if err != nil {
 		logger.Error(
 			"Failed to decrypt value",

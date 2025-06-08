@@ -68,7 +68,8 @@ func NewProxyService(
 		routeStore: routeStore,
 		certStore:  certStore,
 		CertStore: &CertStore{
-			Db: certStore,
+			EncryptionKey: options.SecretEncryptionKey,
+			Db:            certStore,
 		},
 	}
 

@@ -18,10 +18,21 @@ func AddCertCommands(rootCmd *cobra.Command) {
 		},
 	}
 
+	var rawCmd = &cobra.Command{
+		Use:     "raw [key]",
+		Short:   "Get raw cert by key",
+		Aliases: []string{"r"},
+		Args:    cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return Raw(cmd, args)
+		},
+	}
+
 	listCmd.Flags().
 		StringArrayP("ids", "i", nil, "Ids to filter on.")
 
 	certCmd.AddCommand(listCmd)
+	certCmd.AddCommand(rawCmd)
 
 	rootCmd.AddCommand(certCmd)
 }
