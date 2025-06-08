@@ -19,6 +19,7 @@ import (
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/1backend/1backend/sdk/go/secrets"
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 	"golang.org/x/crypto/acme/autocert"
 
@@ -67,7 +68,12 @@ func (cs *CertStore) Get(ctx context.Context, key string) ([]byte, error) {
 		return nil, errors.Errorf("expected cert type, got %T", certI)
 	}
 
-	data := []byte(cert.Cert)
+	decryptedData, err := secrets.Decrypt(cert.Cert, cs.EncryptionKey)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to decrypt cert data for key '%s'", key)
+	}
+
+	data := []byte(decryptedData)
 
 	if len(data) == 0 {
 		return nil, errors.Errorf("cert data is empty for key '%s'", key)
@@ -114,9 +120,14 @@ func (cs *CertStore) Put(ctx context.Context, key string, data []byte) error {
 		existingCert = *c
 	}
 
+	encryptedData, err := secrets.Encrypt(string(data), cs.EncryptionKey)
+	if err != nil {
+		return errors.Wrapf(err, "failed to encrypt cert data for key '%s'", key)
+	}
+
 	cert := &proxy.Cert{
 		Id:   key,
-		Cert: string(data),
+		Cert: encryptedData,
 	}
 
 	now := time.Now()
@@ -200,38 +211,52 @@ type certInfo struct {
 func parseCertInfo(certPEM []byte) (*certInfo, error) {
 	info := &certInfo{}
 
-	block, _ := pem.Decode(certPEM)
-	if block == nil {
-		return info, errors.New("failed to parse PEM block")
+	rest := certPEM
+	for {
+		var block *pem.Block
+		block, rest = pem.Decode(rest)
+		if block == nil {
+			break // No more PEM blocks
+		}
+
+		if block.Type != "CERTIFICATE" {
+			continue // Skip non-certificate blocks (e.g., private keys)
+		}
+
+		cert, err := x509.ParseCertificate(block.Bytes)
+		if err != nil {
+			return info, errors.Wrap(err, "failed to parse x509 certificate")
+		}
+
+		// Fill info from the first certificate we find
+		info.NotBefore = cert.NotBefore
+		info.NotAfter = cert.NotAfter
+		info.CommonName = cert.Subject.CommonName
+		info.DNSNames = cert.DNSNames
+		info.Issuer = cert.Issuer.CommonName
+		if cert.SerialNumber != nil {
+			info.SerialNumber = cert.SerialNumber.String()
+		}
+		info.IsCA = cert.IsCA
+		info.SignatureAlgorithm = cert.SignatureAlgorithm.String()
+		info.PublicKeyAlgorithm = cert.PublicKeyAlgorithm.String()
+
+		switch pub := cert.PublicKey.(type) {
+		case *rsa.PublicKey:
+			info.PublicKeyBitLength = pub.N.BitLen()
+		case *ecdsa.PublicKey:
+			info.PublicKeyBitLength = pub.Curve.Params().BitSize
+		case ed25519.PublicKey:
+			info.PublicKeyBitLength = len(pub) * 8
+		default:
+			info.PublicKeyBitLength = 0
+		}
+
+		break // Stop after processing the first certificate
 	}
 
-	cert, err := x509.ParseCertificate(block.Bytes)
-	if err != nil {
-		return info, errors.Wrap(err, "failed to parse x509 certificate")
-	}
-
-	info.NotBefore = cert.NotBefore
-	info.NotAfter = cert.NotAfter
-	info.CommonName = cert.Subject.CommonName
-	info.DNSNames = cert.DNSNames
-	info.Issuer = cert.Issuer.CommonName
-	if cert.SerialNumber != nil {
-		info.SerialNumber = cert.SerialNumber.String()
-	}
-	info.IsCA = cert.IsCA
-	info.SignatureAlgorithm = cert.SignatureAlgorithm.String()
-	info.PublicKeyAlgorithm = cert.PublicKeyAlgorithm.String()
-
-	// PublicKey length (best-effort)
-	switch pub := cert.PublicKey.(type) {
-	case *rsa.PublicKey:
-		info.PublicKeyBitLength = pub.N.BitLen()
-	case *ecdsa.PublicKey:
-		info.PublicKeyBitLength = pub.Curve.Params().BitSize
-	case ed25519.PublicKey:
-		info.PublicKeyBitLength = len(pub) * 8
-	default:
-		info.PublicKeyBitLength = 0
+	if info.CommonName == "" {
+		return info, errors.New("no valid certificate found in PEM")
 	}
 
 	return info, nil

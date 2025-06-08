@@ -15,6 +15,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/1backend/1backend/sdk/go/secrets"
 	"github.com/pkg/errors"
 
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
@@ -102,8 +103,6 @@ func (cs *ProxyService) listCerts(req *proxy.ListCertsRequest) ([]proxy.Cert, er
 		}
 
 		if cert.CommonName == "" {
-			// @todo: These entries appear are private keys rather than certificates.
-			// Investigate why certificates are not being stored properly.
 			err = amendCertInfo(cert)
 			if err != nil {
 				// Only log, do not error.
@@ -113,6 +112,11 @@ func (cs *ProxyService) listCerts(req *proxy.ListCertsRequest) ([]proxy.Cert, er
 					slog.Any("error", err),
 				)
 			}
+		}
+
+		cert.Cert, err = secrets.Decrypt(cert.Cert, cs.options.SecretEncryptionKey)
+		if err != nil {
+			return nil, errors.Wrapf(err, "failed to decrypt cert '%s'", cert.Id)
 		}
 
 		certs = append(certs, *cert)
