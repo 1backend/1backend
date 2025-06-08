@@ -13,6 +13,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const (
+	shortTimeFormat = "2006-01-02"
+	timeFormat      = "2006-01-02 15:04:05"
+)
+
 // List
 func List(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
@@ -46,12 +51,12 @@ func List(cmd *cobra.Command, args []string) error {
 			writer,
 			"%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
 			safeStr(cert.Id),
-			safeDate(cert.CreatedAt),
-			safeDate(cert.UpdatedAt),
+			safeDate(cert.CreatedAt, shortTimeFormat),
+			safeDate(cert.UpdatedAt, timeFormat),
 			safeStr(cert.CommonName),
 			safeStr(cert.Issuer),
-			safeDate(cert.NotBefore),
-			safeDate(cert.NotAfter),
+			safeDate(cert.NotBefore, shortTimeFormat),
+			safeDate(cert.NotAfter, shortTimeFormat),
 			truncateSerial(safeStr(cert.SerialNumber), 8),
 		)
 	}
@@ -66,15 +71,15 @@ func safeStr(s *string) string {
 	return *s
 }
 
-func safeDate(s *string) string {
+func safeDate(s *string, format string) string {
 	if s == nil {
-		return "-"
+		return ""
 	}
 	t, err := time.Parse(time.RFC3339, *s)
 	if err != nil {
 		return *s // fallback to raw string if parsing fails
 	}
-	d := t.Format("2006-01-02") // or use any layout you prefer
+	d := t.Format(format) // or use any layout you prefer
 	if d == "0001-01-01" {
 		return ""
 	}
