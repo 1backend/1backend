@@ -38,6 +38,10 @@ func Raw(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "failed to list certs")
 	}
 
+	if len(rsp.Certs) > 0 {
+		return errors.New("more than one cert returned")
+	}
+
 	fmt.Print(*rsp.Certs[0].Cert)
 
 	return nil
