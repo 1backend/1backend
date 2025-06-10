@@ -24,7 +24,9 @@ import (
 // @ID listEnrolls
 // @Summary List Enrolls
 // @Description List enrolls. Role, user ID or contact ID must be specified.
-// @Description Caller can only list enrolls of roles they own.
+// @Description
+// @Description Requires the `user-svc:enroll:view` permission, which by default all users have.
+// @Description Caller can only list enrolls of roles they own (unless they are an admin).
 // @Tags User Svc
 // @Accept json
 // @Produce json
