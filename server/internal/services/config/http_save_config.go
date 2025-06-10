@@ -69,7 +69,12 @@ func (cs *ConfigService) Save(
 		return
 	}
 
-	err = cs.saveConfig(*isAuthRsp.App, isAdmin, isAuthRsp.User.Slug, *req.Config)
+	err = cs.saveConfig(
+		*isAuthRsp.App,
+		isAdmin,
+		isAuthRsp.User.Slug,
+		*req.Config,
+	)
 	if err != nil {
 		logger.Error("Failed to save config", slog.Any("error", err))
 		endpoint.InternalServerError(w)

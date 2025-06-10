@@ -4,6 +4,7 @@ tags:
   - config-svc
   - configuration
   - services
+  - multitenant
 ---
 
 # Config Svc
