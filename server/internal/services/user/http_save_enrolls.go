@@ -27,16 +27,17 @@ import (
 // @Description Enroll a list of users by contact or user Id to acquire a role.
 // @Description Works on future or current users.
 // @Description
-// @Description A user can only enroll an other user to a role if the user owns that role.
+// @Description Requires the `user-svc:enroll:edit` permission, which by default all users have.
+// @Description A user can only enroll an other user to a role if the user "owns" that role.
 // @Description
 // @Description A user "owns" a role in the following cases:
 // @Description - A static role where the role ID is prefixed with the caller's slug.
-// @Description - Any dynamic or static role where the caller is an admin.
+// @Description - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).
 // @Description
 // @Description Examples:
-// @Description - A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
-// @Description - A user with any slug who has the role "my-service:admin" owns "my-service:user".
-// @Description - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
+// @Description - A user with the slug "joe-doe" owns roles like "joe-doe:*" such as "joe-doe:any-custom-role".
+// @Description - A user with any slug who has the role "my-service:admin" owns "my-service:*" roles such as "my-service:user".
+// @Description - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:*" such as "user-svc:org:{%orgId}:user".
 // @Tags User Svc
 // @Accept json
 // @Produce json
