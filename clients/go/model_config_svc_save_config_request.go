@@ -20,10 +20,8 @@ var _ MappedNullable = &ConfigSvcSaveConfigRequest{}
 
 // ConfigSvcSaveConfigRequest struct for ConfigSvcSaveConfigRequest
 type ConfigSvcSaveConfigRequest struct {
-	App *string `json:"app,omitempty"`
 	Data map[string]interface{} `json:"data,omitempty"`
 	DataJson *string `json:"dataJson,omitempty"`
-	Id *string `json:"id,omitempty"`
 }
 
 // NewConfigSvcSaveConfigRequest instantiates a new ConfigSvcSaveConfigRequest object
@@ -41,38 +39,6 @@ func NewConfigSvcSaveConfigRequest() *ConfigSvcSaveConfigRequest {
 func NewConfigSvcSaveConfigRequestWithDefaults() *ConfigSvcSaveConfigRequest {
 	this := ConfigSvcSaveConfigRequest{}
 	return &this
-}
-
-// GetApp returns the App field value if set, zero value otherwise.
-func (o *ConfigSvcSaveConfigRequest) GetApp() string {
-	if o == nil || IsNil(o.App) {
-		var ret string
-		return ret
-	}
-	return *o.App
-}
-
-// GetAppOk returns a tuple with the App field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigSvcSaveConfigRequest) GetAppOk() (*string, bool) {
-	if o == nil || IsNil(o.App) {
-		return nil, false
-	}
-	return o.App, true
-}
-
-// HasApp returns a boolean if a field has been set.
-func (o *ConfigSvcSaveConfigRequest) HasApp() bool {
-	if o != nil && !IsNil(o.App) {
-		return true
-	}
-
-	return false
-}
-
-// SetApp gets a reference to the given string and assigns it to the App field.
-func (o *ConfigSvcSaveConfigRequest) SetApp(v string) {
-	o.App = &v
 }
 
 // GetData returns the Data field value if set, zero value otherwise.
@@ -139,38 +105,6 @@ func (o *ConfigSvcSaveConfigRequest) SetDataJson(v string) {
 	o.DataJson = &v
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
-func (o *ConfigSvcSaveConfigRequest) GetId() string {
-	if o == nil || IsNil(o.Id) {
-		var ret string
-		return ret
-	}
-	return *o.Id
-}
-
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigSvcSaveConfigRequest) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
-		return nil, false
-	}
-	return o.Id, true
-}
-
-// HasId returns a boolean if a field has been set.
-func (o *ConfigSvcSaveConfigRequest) HasId() bool {
-	if o != nil && !IsNil(o.Id) {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
-func (o *ConfigSvcSaveConfigRequest) SetId(v string) {
-	o.Id = &v
-}
-
 func (o ConfigSvcSaveConfigRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -181,17 +115,11 @@ func (o ConfigSvcSaveConfigRequest) MarshalJSON() ([]byte, error) {
 
 func (o ConfigSvcSaveConfigRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.App) {
-		toSerialize["app"] = o.App
-	}
 	if !IsNil(o.Data) {
 		toSerialize["data"] = o.Data
 	}
 	if !IsNil(o.DataJson) {
 		toSerialize["dataJson"] = o.DataJson
-	}
-	if !IsNil(o.Id) {
-		toSerialize["id"] = o.Id
 	}
 	return toSerialize, nil
 }

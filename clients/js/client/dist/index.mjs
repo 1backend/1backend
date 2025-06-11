@@ -898,11 +898,15 @@ function ChatSvcSaveThreadResponseToJSONTyped(value, ignoreDiscriminator = false
  * Check if a given object implements the ConfigSvcConfig interface.
  */
 function instanceOfConfigSvcConfig(value) {
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
     if (!('data' in value) || value['data'] === undefined)
         return false;
     if (!('dataJson' in value) || value['dataJson'] === undefined)
         return false;
     if (!('id' in value) || value['id'] === undefined)
+        return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined)
         return false;
     return true;
 }
@@ -914,10 +918,11 @@ function ConfigSvcConfigFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'app': json['app'] == null ? undefined : json['app'],
+        'createdAt': json['createdAt'],
         'data': json['data'],
         'dataJson': json['dataJson'],
         'id': json['id'],
+        'updatedAt': json['updatedAt'],
     };
 }
 function ConfigSvcConfigToJSON(json) {
@@ -928,10 +933,11 @@ function ConfigSvcConfigToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
-        'app': value['app'],
+        'createdAt': value['createdAt'],
         'data': value['data'],
         'dataJson': value['dataJson'],
         'id': value['id'],
+        'updatedAt': value['updatedAt'],
     };
 }
 
@@ -1004,10 +1010,8 @@ function ConfigSvcSaveConfigRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'app': json['app'] == null ? undefined : json['app'],
         'data': json['data'] == null ? undefined : json['data'],
         'dataJson': json['dataJson'] == null ? undefined : json['dataJson'],
-        'id': json['id'] == null ? undefined : json['id'],
     };
 }
 function ConfigSvcSaveConfigRequestToJSON(json) {
@@ -1018,10 +1022,8 @@ function ConfigSvcSaveConfigRequestToJSONTyped(value, ignoreDiscriminator = fals
         return value;
     }
     return {
-        'app': value['app'],
         'data': value['data'],
         'dataJson': value['dataJson'],
-        'id': value['id'],
     };
 }
 

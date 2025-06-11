@@ -425,8 +425,8 @@ class ConfigSvcConfig {
 ConfigSvcConfig.discriminator = undefined;
 ConfigSvcConfig.attributeTypeMap = [
     {
-        "name": "app",
-        "baseName": "app",
+        "name": "createdAt",
+        "baseName": "createdAt",
         "type": "string"
     },
     {
@@ -442,6 +442,11 @@ ConfigSvcConfig.attributeTypeMap = [
     {
         "name": "id",
         "baseName": "id",
+        "type": "string"
+    },
+    {
+        "name": "updatedAt",
+        "baseName": "updatedAt",
         "type": "string"
     }
 ];
@@ -490,11 +495,6 @@ class ConfigSvcSaveConfigRequest {
 ConfigSvcSaveConfigRequest.discriminator = undefined;
 ConfigSvcSaveConfigRequest.attributeTypeMap = [
     {
-        "name": "app",
-        "baseName": "app",
-        "type": "string"
-    },
-    {
         "name": "data",
         "baseName": "data",
         "type": "{ [key: string]: any; }"
@@ -502,11 +502,6 @@ ConfigSvcSaveConfigRequest.attributeTypeMap = [
     {
         "name": "dataJson",
         "baseName": "dataJson",
-        "type": "string"
-    },
-    {
-        "name": "id",
-        "baseName": "id",
         "type": "string"
     }
 ];

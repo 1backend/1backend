@@ -17,12 +17,6 @@
 export interface ConfigSvcSaveConfigRequest {
     /**
      *
-     * @type {string}
-     * @memberof ConfigSvcSaveConfigRequest
-     */
-    app?: string;
-    /**
-     *
      * @type {{ [key: string]: any; }}
      * @memberof ConfigSvcSaveConfigRequest
      */
@@ -35,12 +29,6 @@ export interface ConfigSvcSaveConfigRequest {
      * @memberof ConfigSvcSaveConfigRequest
      */
     dataJson?: string;
-    /**
-     *
-     * @type {string}
-     * @memberof ConfigSvcSaveConfigRequest
-     */
-    id?: string;
 }
 /**
  * Check if a given object implements the ConfigSvcSaveConfigRequest interface.

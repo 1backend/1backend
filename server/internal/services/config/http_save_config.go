@@ -13,9 +13,11 @@ import (
 	"log/slog"
 	"net/http"
 	"strings"
+	"time"
 
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 	config "github.com/1backend/1backend/server/internal/services/config/types"
@@ -76,17 +78,14 @@ func (cs *ConfigService) Save(
 		req,
 	)
 	if err != nil {
-		logger.Error("Failed to save config", slog.Any("error", err))
+		logger.Error("Failed to save config",
+			slog.Any("error", err),
+		)
 		endpoint.InternalServerError(w)
 		return
 	}
 
-	jsonData, _ := json.Marshal(config.SaveConfigResponse{})
-	_, err = w.Write([]byte(jsonData))
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
-	}
+	endpoint.WriteJSON(w, http.StatusOK, config.SaveConfigResponse{})
 }
 
 func (cs *ConfigService) saveConfig(
@@ -100,35 +99,47 @@ func (cs *ConfigService) saveConfig(
 	cs.configMutex.Lock()
 	defer cs.configMutex.Unlock()
 
-	newConfig.App = app
+	now := time.Now()
 
-	oldConfigData := cs.configs[app]
-	if oldConfigData == nil {
-		oldConfigData = map[string]interface{}{}
-		cs.configs[app] = oldConfigData
+	existing, found, err := cs.configStore.Query(
+		datastore.Id(app),
+	).FindOne()
+	if err != nil {
+		return errors.Wrap(err, "failed to query config")
+	}
+
+	entry := &types.Config{}
+
+	if !found {
+		entry.Id = app
+		entry.Data = map[string]interface{}{}
+		entry.DataJSON = "{}"
+		entry.CreatedAt = now
+		entry.UpdatedAt = now
+	} else {
+		entry = existing.(*types.Config)
+		err = json.Unmarshal([]byte(entry.DataJSON), &entry.Data)
+		if err != nil {
+			return errors.Wrap(err, "failed to unmarshal existing config data")
+		}
 	}
 
 	if isAdmin {
-		oldConfigData = newConfig.Data
+		// Admins can overwrite the entire config
+		entry.Data = newConfig.Data
 	} else {
-		oldConfigData[callerSlug] = newConfig.Data[callerSlug]
+		entry.Data[callerSlug] = newConfig.Data
 	}
 
-	newConfig.Data = oldConfigData
-
-	newJson, err := json.Marshal(newConfig.Data)
+	newJson, err := json.Marshal(entry.Data)
 	if err != nil {
 		return errors.Wrap(err, "failed to marshal config")
 	}
-	newConfig.DataJSON = string(newJson)
-	newConfig.Data = nil
 
-	err = cs.configStore.Upsert(&types.Config{
-		Id:       newConfig.Id,
-		App:      newConfig.App,
-		DataJSON: newConfig.DataJSON,
-		Data:     newConfig.Data,
-	})
+	entry.DataJSON = string(newJson)
+	entry.Data = nil
+
+	err = cs.configStore.Upsert(entry)
 	if err != nil {
 		return errors.Wrap(err, "failed to save config")
 	}

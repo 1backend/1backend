@@ -13,19 +13,12 @@
 import { RequestFile } from './models';
 
 export class ConfigSvcSaveConfigRequest {
-    'app'?: string;
     'data'?: { [key: string]: any; };
     'dataJson'?: string;
-    'id'?: string;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
-        {
-            "name": "app",
-            "baseName": "app",
-            "type": "string"
-        },
         {
             "name": "data",
             "baseName": "data",
@@ -34,11 +27,6 @@ export class ConfigSvcSaveConfigRequest {
         {
             "name": "dataJson",
             "baseName": "dataJson",
-            "type": "string"
-        },
-        {
-            "name": "id",
-            "baseName": "id",
             "type": "string"
         }    ];
 

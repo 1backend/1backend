@@ -20,7 +20,7 @@ export interface ConfigSvcConfig {
      * @type {string}
      * @memberof ConfigSvcConfig
      */
-    app?: string;
+    createdAt: string;
     /**
      *
      * @type {{ [key: string]: any; }}
@@ -36,11 +36,17 @@ export interface ConfigSvcConfig {
      */
     dataJson: string;
     /**
-     *
+     * Id is simply the app of the config.
      * @type {string}
      * @memberof ConfigSvcConfig
      */
     id: string;
+    /**
+     *
+     * @type {string}
+     * @memberof ConfigSvcConfig
+     */
+    updatedAt: string;
 }
 /**
  * Check if a given object implements the ConfigSvcConfig interface.

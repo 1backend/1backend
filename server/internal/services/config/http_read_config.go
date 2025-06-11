@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"path"
 
+	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 	config "github.com/1backend/1backend/server/internal/services/config/types"
@@ -68,37 +69,47 @@ func (cs *ConfigService) Get(
 }
 
 func (cs *ConfigService) readConfig(app string) (*types.Config, error) {
-	data, ok := cs.configs[app]
-	if !ok {
-		conf := &types.Config{
+	configI, found, err := cs.configStore.Query(
+		datastore.Id(app),
+	).FindOne()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query config")
+	}
+
+	var ret *types.Config
+	if found {
+		ret = configI.(*types.Config)
+	} else {
+		ret = &types.Config{
 			Data: map[string]interface{}{},
 		}
-		cs.mod(conf)
-		return conf, nil
-	}
-	v, err := json.Marshal(data)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to marshal config")
 	}
 
-	ret := &types.Config{}
-	err = json.Unmarshal(v, &ret.Data)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to unmarshal config")
+	if ret.DataJSON != "" {
+		err = json.Unmarshal([]byte(ret.DataJSON), &ret.Data)
+		if err != nil {
+			logger.Error("Failed to unmarshal config data",
+				slog.Any("error", err),
+				slog.String("dataJson", ret.DataJSON),
+			)
+			return nil, errors.Wrap(err, "failed to unmarshal config")
+		}
 	}
 
-	cs.mod(ret)
+	ret.DataJSON = ""
+
+	cs.defaults(ret)
 
 	return ret, nil
 }
 
-func (cs ConfigService) mod(ret *types.Config) {
+func (cs ConfigService) defaults(ret *types.Config) {
 	if ret.Data == nil {
 		ret.Data = map[string]interface{}{}
 	}
 
-	if ret.Data["file-svc"] == nil {
-		ret.Data["file-svc"] = map[string]interface{}{
+	if ret.Data["fileSvc"] == nil {
+		ret.Data["fileSvc"] = map[string]interface{}{
 			"downloadFolder": path.Join(
 				cs.options.HomeDir,
 				"downloads",
@@ -112,8 +123,8 @@ func (cs ConfigService) mod(ret *types.Config) {
 		}
 	}
 
-	if ret.Data["config-svc"] == nil {
-		ret.Data["config-svc"] = map[string]interface{}{
+	if ret.Data["configSvc"] == nil {
+		ret.Data["configSvc"] = map[string]interface{}{
 			"directory": cs.options.HomeDir,
 		}
 	}

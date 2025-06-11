@@ -5618,12 +5618,14 @@ const docTemplate = `{
         "config_svc.Config": {
             "type": "object",
             "required": [
+                "createdAt",
                 "data",
                 "dataJson",
-                "id"
+                "id",
+                "updatedAt"
             ],
             "properties": {
-                "app": {
+                "createdAt": {
                     "type": "string"
                 },
                 "data": {
@@ -5634,6 +5636,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
+                    "description": "Id is simply the app of the config.",
+                    "type": "string"
+                },
+                "updatedAt": {
                     "type": "string"
                 }
             }
@@ -5649,17 +5655,11 @@ const docTemplate = `{
         "config_svc.SaveConfigRequest": {
             "type": "object",
             "properties": {
-                "app": {
-                    "type": "string"
-                },
                 "data": {
                     "type": "object",
                     "additionalProperties": true
                 },
                 "dataJson": {
-                    "type": "string"
-                },
-                "id": {
                     "type": "string"
                 }
             }

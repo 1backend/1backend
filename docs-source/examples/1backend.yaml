@@ -163,7 +163,7 @@ definitions:
     type: object
   config_svc.Config:
     properties:
-      app:
+      createdAt:
         type: string
       data:
         additionalProperties: true
@@ -171,11 +171,16 @@ definitions:
       dataJson:
         type: string
       id:
+        description: Id is simply the app of the config.
+        type: string
+      updatedAt:
         type: string
     required:
+    - createdAt
     - data
     - dataJson
     - id
+    - updatedAt
     type: object
   config_svc.GetConfigResponse:
     properties:
@@ -184,14 +189,10 @@ definitions:
     type: object
   config_svc.SaveConfigRequest:
     properties:
-      app:
-        type: string
       data:
         additionalProperties: true
         type: object
       dataJson:
-        type: string
-      id:
         type: string
     type: object
   config_svc.SaveConfigResponse:

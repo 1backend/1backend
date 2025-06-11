@@ -21,12 +21,6 @@ import { mapValues } from '../runtime';
 export interface ConfigSvcSaveConfigRequest {
     /**
      * 
-     * @type {string}
-     * @memberof ConfigSvcSaveConfigRequest
-     */
-    app?: string;
-    /**
-     * 
      * @type {{ [key: string]: any; }}
      * @memberof ConfigSvcSaveConfigRequest
      */
@@ -37,12 +31,6 @@ export interface ConfigSvcSaveConfigRequest {
      * @memberof ConfigSvcSaveConfigRequest
      */
     dataJson?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ConfigSvcSaveConfigRequest
-     */
-    id?: string;
 }
 
 /**
@@ -62,10 +50,8 @@ export function ConfigSvcSaveConfigRequestFromJSONTyped(json: any, ignoreDiscrim
     }
     return {
         
-        'app': json['app'] == null ? undefined : json['app'],
         'data': json['data'] == null ? undefined : json['data'],
         'dataJson': json['dataJson'] == null ? undefined : json['dataJson'],
-        'id': json['id'] == null ? undefined : json['id'],
     };
 }
 
@@ -80,10 +66,8 @@ export function ConfigSvcSaveConfigRequestToJSONTyped(value?: ConfigSvcSaveConfi
 
     return {
         
-        'app': value['app'],
         'data': value['data'],
         'dataJson': value['dataJson'],
-        'id': value['id'],
     };
 }
 

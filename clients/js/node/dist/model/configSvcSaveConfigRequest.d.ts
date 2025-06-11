@@ -10,12 +10,10 @@
  * Do not edit the class manually.
  */
 export declare class ConfigSvcSaveConfigRequest {
-    'app'?: string;
     'data'?: {
         [key: string]: any;
     };
     'dataJson'?: string;
-    'id'?: string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

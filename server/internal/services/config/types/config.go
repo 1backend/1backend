@@ -7,13 +7,18 @@
  */
 package config_svc
 
+import "time"
+
 type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
 type Config struct {
-	Id       string                 `json:"id" binding:"required"`
-	App      string                 `json:"app" swagger:"default=unnamed"`
+	// Id is simply the app of the config.
+	Id        string    `json:"id" binding:"required"`
+	CreatedAt time.Time `json:"createdAt" binding:"required"`
+	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
+
 	DataJSON string                 `json:"dataJson" binding:"required"`
 	Data     map[string]interface{} `json:"data" binding:"required"`
 }
@@ -31,8 +36,6 @@ type GetConfigResponse struct {
 }
 
 type SaveConfigRequest struct {
-	Id       string                 `json:"id,omitempty"`
-	App      string                 `json:"app" swagger:"default=unnamed"`
 	DataJSON string                 `json:"dataJson,omitempty"`
 	Data     map[string]interface{} `json:"data,omitempty"`
 }

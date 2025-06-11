@@ -24,7 +24,7 @@ export interface ConfigSvcConfig {
      * @type {string}
      * @memberof ConfigSvcConfig
      */
-    app?: string;
+    createdAt: string;
     /**
      * 
      * @type {{ [key: string]: any; }}
@@ -38,20 +38,28 @@ export interface ConfigSvcConfig {
      */
     dataJson: string;
     /**
-     * 
+     * Id is simply the app of the config.
      * @type {string}
      * @memberof ConfigSvcConfig
      */
     id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ConfigSvcConfig
+     */
+    updatedAt: string;
 }
 
 /**
  * Check if a given object implements the ConfigSvcConfig interface.
  */
 export function instanceOfConfigSvcConfig(value: object): value is ConfigSvcConfig {
+    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('data' in value) || value['data'] === undefined) return false;
     if (!('dataJson' in value) || value['dataJson'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
 }
 
@@ -65,10 +73,11 @@ export function ConfigSvcConfigFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'app': json['app'] == null ? undefined : json['app'],
+        'createdAt': json['createdAt'],
         'data': json['data'],
         'dataJson': json['dataJson'],
         'id': json['id'],
+        'updatedAt': json['updatedAt'],
     };
 }
 
@@ -83,10 +92,11 @@ export function ConfigSvcConfigToJSONTyped(value?: ConfigSvcConfig | null, ignor
 
     return {
         
-        'app': value['app'],
+        'createdAt': value['createdAt'],
         'data': value['data'],
         'dataJson': value['dataJson'],
         'id': value['id'],
+        'updatedAt': value['updatedAt'],
     };
 }
 

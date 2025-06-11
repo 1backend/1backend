@@ -10,12 +10,16 @@
  * Do not edit the class manually.
  */
 export declare class ConfigSvcConfig {
-    'app'?: string;
+    'createdAt': string;
     'data': {
         [key: string]: any;
     };
     'dataJson': string;
+    /**
+    * Id is simply the app of the config.
+    */
     'id': string;
+    'updatedAt': string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

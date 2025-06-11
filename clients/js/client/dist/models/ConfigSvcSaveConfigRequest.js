@@ -25,10 +25,8 @@ export function ConfigSvcSaveConfigRequestFromJSONTyped(json, ignoreDiscriminato
         return json;
     }
     return {
-        'app': json['app'] == null ? undefined : json['app'],
         'data': json['data'] == null ? undefined : json['data'],
         'dataJson': json['dataJson'] == null ? undefined : json['dataJson'],
-        'id': json['id'] == null ? undefined : json['id'],
     };
 }
 export function ConfigSvcSaveConfigRequestToJSON(json) {
@@ -39,9 +37,7 @@ export function ConfigSvcSaveConfigRequestToJSONTyped(value, ignoreDiscriminator
         return value;
     }
     return {
-        'app': value['app'],
         'data': value['data'],
         'dataJson': value['dataJson'],
-        'id': value['id'],
     };
 }
