@@ -18,6 +18,8 @@ import type {
   UserSvcChangePasswordRequest,
   UserSvcCreateUserRequest,
   UserSvcErrorResponse,
+  UserSvcExchangeTokenRequest,
+  UserSvcExchangeTokenResponse,
   UserSvcGetPublicKeyResponse,
   UserSvcHasPermissionResponse,
   UserSvcListEnrollsRequest,
@@ -53,6 +55,10 @@ import {
     UserSvcCreateUserRequestToJSON,
     UserSvcErrorResponseFromJSON,
     UserSvcErrorResponseToJSON,
+    UserSvcExchangeTokenRequestFromJSON,
+    UserSvcExchangeTokenRequestToJSON,
+    UserSvcExchangeTokenResponseFromJSON,
+    UserSvcExchangeTokenResponseToJSON,
     UserSvcGetPublicKeyResponseFromJSON,
     UserSvcGetPublicKeyResponseToJSON,
     UserSvcHasPermissionResponseFromJSON,
@@ -125,6 +131,14 @@ export interface DeleteMembershipRequest {
 
 export interface DeleteUserRequest {
     userId: string;
+}
+
+export interface ExchangeTokenRequest {
+    body: UserSvcExchangeTokenRequest;
+}
+
+export interface ExchangeToken0Request {
+    body: UserSvcExchangeTokenRequest;
 }
 
 export interface HasPermissionRequest {
@@ -373,6 +387,82 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     async deleteUser(requestParameters: DeleteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.deleteUserRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
+     * Exchange Token
+     */
+    async exchangeTokenRaw(requestParameters: ExchangeTokenRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcExchangeTokenResponse>> {
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling exchangeToken().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/user-svc/token/exchange`,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserSvcExchangeTokenRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcExchangeTokenResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
+     * Exchange Token
+     */
+    async exchangeToken(requestParameters: ExchangeTokenRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcExchangeTokenResponse> {
+        const response = await this.exchangeTokenRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
+     * Exchange Token
+     */
+    async exchangeToken_1Raw(requestParameters: ExchangeToken0Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcExchangeTokenResponse>> {
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling exchangeToken_1().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/user-svc/token/exchange`,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserSvcExchangeTokenRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcExchangeTokenResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
+     * Exchange Token
+     */
+    async exchangeToken_1(requestParameters: ExchangeToken0Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcExchangeTokenResponse> {
+        const response = await this.exchangeToken_1Raw(requestParameters, initOverrides);
         return await response.value();
     }
 

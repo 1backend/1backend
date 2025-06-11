@@ -184,6 +184,8 @@ export * from './userSvcCreateUserRequest';
 export * from './userSvcEnroll';
 export * from './userSvcEnrollInput';
 export * from './userSvcErrorResponse';
+export * from './userSvcExchangeTokenRequest';
+export * from './userSvcExchangeTokenResponse';
 export * from './userSvcGetPublicKeyResponse';
 export * from './userSvcHasPermissionResponse';
 export * from './userSvcListEnrollsRequest';
@@ -417,6 +419,8 @@ import { UserSvcCreateUserRequest } from './userSvcCreateUserRequest';
 import { UserSvcEnroll } from './userSvcEnroll';
 import { UserSvcEnrollInput } from './userSvcEnrollInput';
 import { UserSvcErrorResponse } from './userSvcErrorResponse';
+import { UserSvcExchangeTokenRequest } from './userSvcExchangeTokenRequest';
+import { UserSvcExchangeTokenResponse } from './userSvcExchangeTokenResponse';
 import { UserSvcGetPublicKeyResponse } from './userSvcGetPublicKeyResponse';
 import { UserSvcHasPermissionResponse } from './userSvcHasPermissionResponse';
 import { UserSvcListEnrollsRequest } from './userSvcListEnrollsRequest';
@@ -655,6 +659,8 @@ let typeMap: {[index: string]: any} = {
     "UserSvcEnroll": UserSvcEnroll,
     "UserSvcEnrollInput": UserSvcEnrollInput,
     "UserSvcErrorResponse": UserSvcErrorResponse,
+    "UserSvcExchangeTokenRequest": UserSvcExchangeTokenRequest,
+    "UserSvcExchangeTokenResponse": UserSvcExchangeTokenResponse,
     "UserSvcGetPublicKeyResponse": UserSvcGetPublicKeyResponse,
     "UserSvcHasPermissionResponse": UserSvcHasPermissionResponse,
     "UserSvcListEnrollsRequest": UserSvcListEnrollsRequest,

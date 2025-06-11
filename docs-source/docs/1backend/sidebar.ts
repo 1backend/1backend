@@ -660,6 +660,12 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "1backend/exchange-token",
+          label: "Exchange Token",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
           id: "1backend/revoke-tokens",
           label: "Revoke Tokens",
           className: "api-method delete",

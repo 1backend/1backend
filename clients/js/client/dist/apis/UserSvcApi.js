@@ -21,7 +21,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as runtime from '../runtime';
-import { UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListEnrollsRequestToJSON, UserSvcListEnrollsResponseFromJSON, UserSvcListOrganizationsRequestToJSON, UserSvcListOrganizationsResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListPermitsRequestToJSON, UserSvcListPermitsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadSelfRequestToJSON, UserSvcReadSelfResponseFromJSON, UserSvcRefreshTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcRevokeTokensRequestToJSON, UserSvcSaveEnrollsRequestToJSON, UserSvcSaveEnrollsResponseFromJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSavePermitsRequestToJSON, UserSvcSaveSelfRequestToJSON, UserSvcSaveUserRequestToJSON, } from '../models/index';
+import { UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, UserSvcExchangeTokenRequestToJSON, UserSvcExchangeTokenResponseFromJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListEnrollsRequestToJSON, UserSvcListEnrollsResponseFromJSON, UserSvcListOrganizationsRequestToJSON, UserSvcListOrganizationsResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListPermitsRequestToJSON, UserSvcListPermitsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadSelfRequestToJSON, UserSvcReadSelfResponseFromJSON, UserSvcRefreshTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcRevokeTokensRequestToJSON, UserSvcSaveEnrollsRequestToJSON, UserSvcSaveEnrollsResponseFromJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSavePermitsRequestToJSON, UserSvcSaveSelfRequestToJSON, UserSvcSaveUserRequestToJSON, } from '../models/index';
 /**
  *
  */
@@ -164,6 +164,70 @@ export class UserSvcApi extends runtime.BaseAPI {
     deleteUser(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.deleteUserRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
+     * Exchange Token
+     */
+    exchangeTokenRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['body'] == null) {
+                throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling exchangeToken().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            const response = yield this.request({
+                path: `/user-svc/token/exchange`,
+                method: 'PUT',
+                headers: headerParameters,
+                query: queryParameters,
+                body: UserSvcExchangeTokenRequestToJSON(requestParameters['body']),
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcExchangeTokenResponseFromJSON(jsonValue));
+        });
+    }
+    /**
+     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
+     * Exchange Token
+     */
+    exchangeToken(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.exchangeTokenRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
+     * Exchange Token
+     */
+    exchangeToken_1Raw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['body'] == null) {
+                throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling exchangeToken_1().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            const response = yield this.request({
+                path: `/user-svc/token/exchange`,
+                method: 'PUT',
+                headers: headerParameters,
+                query: queryParameters,
+                body: UserSvcExchangeTokenRequestToJSON(requestParameters['body']),
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcExchangeTokenResponseFromJSON(jsonValue));
+        });
+    }
+    /**
+     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
+     * Exchange Token
+     */
+    exchangeToken_1(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.exchangeToken_1Raw(requestParameters, initOverrides);
             return yield response.value();
         });
     }

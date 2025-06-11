@@ -157,6 +157,8 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**CreateUser**](docs/UserSvcAPI.md#createuser) | **Post** /user-svc/user | Create a New User
 *UserSvcAPI* | [**DeleteMembership**](docs/UserSvcAPI.md#deletemembership) | **Delete** /user-svc/organization/{organizationId}/user/{userId} | Delete Membership
 *UserSvcAPI* | [**DeleteUser**](docs/UserSvcAPI.md#deleteuser) | **Delete** /user-svc/user/{userId} | Delete a User
+*UserSvcAPI* | [**ExchangeToken**](docs/UserSvcAPI.md#exchangetoken) | **Put** /user-svc/token/exchange | Exchange Token
+*UserSvcAPI* | [**ExchangeToken_0**](docs/UserSvcAPI.md#exchangetoken_0) | **Put** /user-svc/token/exchange | Exchange Token
 *UserSvcAPI* | [**GetPublicKey**](docs/UserSvcAPI.md#getpublickey) | **Get** /user-svc/public-key | Get Public Key
 *UserSvcAPI* | [**HasPermission**](docs/UserSvcAPI.md#haspermission) | **Post** /user-svc/self/has/{permission} | Has Permission
 *UserSvcAPI* | [**ListEnrolls**](docs/UserSvcAPI.md#listenrolls) | **Post** /user-svc/enrolls | List Enrolls
@@ -364,6 +366,8 @@ Class | Method | HTTP request | Description
  - [UserSvcEnroll](docs/UserSvcEnroll.md)
  - [UserSvcEnrollInput](docs/UserSvcEnrollInput.md)
  - [UserSvcErrorResponse](docs/UserSvcErrorResponse.md)
+ - [UserSvcExchangeTokenRequest](docs/UserSvcExchangeTokenRequest.md)
+ - [UserSvcExchangeTokenResponse](docs/UserSvcExchangeTokenResponse.md)
  - [UserSvcGetPublicKeyResponse](docs/UserSvcGetPublicKeyResponse.md)
  - [UserSvcHasPermissionResponse](docs/UserSvcHasPermissionResponse.md)
  - [UserSvcListEnrollsRequest](docs/UserSvcListEnrollsRequest.md)
