@@ -9,9 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ConfigSvcConfig } from './configSvcConfig';
 export declare class ConfigSvcSaveConfigRequest {
-    'config'?: ConfigSvcConfig;
+    'app'?: string;
+    'data'?: {
+        [key: string]: any;
+    };
+    'dataJson'?: string;
+    'id'?: string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

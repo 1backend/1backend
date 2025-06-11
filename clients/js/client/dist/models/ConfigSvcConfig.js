@@ -17,6 +17,10 @@
 export function instanceOfConfigSvcConfig(value) {
     if (!('data' in value) || value['data'] === undefined)
         return false;
+    if (!('dataJson' in value) || value['dataJson'] === undefined)
+        return false;
+    if (!('id' in value) || value['id'] === undefined)
+        return false;
     return true;
 }
 export function ConfigSvcConfigFromJSON(json) {
@@ -29,8 +33,8 @@ export function ConfigSvcConfigFromJSONTyped(json, ignoreDiscriminator) {
     return {
         'app': json['app'] == null ? undefined : json['app'],
         'data': json['data'],
-        'dataJson': json['dataJson'] == null ? undefined : json['dataJson'],
-        'id': json['id'] == null ? undefined : json['id'],
+        'dataJson': json['dataJson'],
+        'id': json['id'],
     };
 }
 export function ConfigSvcConfigToJSON(json) {

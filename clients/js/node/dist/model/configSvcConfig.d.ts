@@ -14,8 +14,8 @@ export declare class ConfigSvcConfig {
     'data': {
         [key: string]: any;
     };
-    'dataJson'?: string;
-    'id'?: string;
+    'dataJson': string;
+    'id': string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

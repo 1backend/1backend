@@ -900,6 +900,10 @@ function ChatSvcSaveThreadResponseToJSONTyped(value, ignoreDiscriminator = false
 function instanceOfConfigSvcConfig(value) {
     if (!('data' in value) || value['data'] === undefined)
         return false;
+    if (!('dataJson' in value) || value['dataJson'] === undefined)
+        return false;
+    if (!('id' in value) || value['id'] === undefined)
+        return false;
     return true;
 }
 function ConfigSvcConfigFromJSON(json) {
@@ -912,8 +916,8 @@ function ConfigSvcConfigFromJSONTyped(json, ignoreDiscriminator) {
     return {
         'app': json['app'] == null ? undefined : json['app'],
         'data': json['data'],
-        'dataJson': json['dataJson'] == null ? undefined : json['dataJson'],
-        'id': json['id'] == null ? undefined : json['id'],
+        'dataJson': json['dataJson'],
+        'id': json['id'],
     };
 }
 function ConfigSvcConfigToJSON(json) {
@@ -1000,7 +1004,10 @@ function ConfigSvcSaveConfigRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'config': json['config'] == null ? undefined : ConfigSvcConfigFromJSON(json['config']),
+        'app': json['app'] == null ? undefined : json['app'],
+        'data': json['data'] == null ? undefined : json['data'],
+        'dataJson': json['dataJson'] == null ? undefined : json['dataJson'],
+        'id': json['id'] == null ? undefined : json['id'],
     };
 }
 function ConfigSvcSaveConfigRequestToJSON(json) {
@@ -1011,7 +1018,10 @@ function ConfigSvcSaveConfigRequestToJSONTyped(value, ignoreDiscriminator = fals
         return value;
     }
     return {
-        'config': ConfigSvcConfigToJSON(value['config']),
+        'app': value['app'],
+        'data': value['data'],
+        'dataJson': value['dataJson'],
+        'id': value['id'],
     };
 }
 

@@ -36,13 +36,13 @@ export interface ConfigSvcConfig {
      * @type {string}
      * @memberof ConfigSvcConfig
      */
-    dataJson?: string;
+    dataJson: string;
     /**
      * 
      * @type {string}
      * @memberof ConfigSvcConfig
      */
-    id?: string;
+    id: string;
 }
 
 /**
@@ -50,6 +50,8 @@ export interface ConfigSvcConfig {
  */
 export function instanceOfConfigSvcConfig(value: object): value is ConfigSvcConfig {
     if (!('data' in value) || value['data'] === undefined) return false;
+    if (!('dataJson' in value) || value['dataJson'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
     return true;
 }
 
@@ -65,8 +67,8 @@ export function ConfigSvcConfigFromJSONTyped(json: any, ignoreDiscriminator: boo
         
         'app': json['app'] == null ? undefined : json['app'],
         'data': json['data'],
-        'dataJson': json['dataJson'] == null ? undefined : json['dataJson'],
-        'id': json['id'] == null ? undefined : json['id'],
+        'dataJson': json['dataJson'],
+        'id': json['id'],
     };
 }
 

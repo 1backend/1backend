@@ -13,14 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { ConfigSvcConfig } from './ConfigSvcConfig';
-import {
-    ConfigSvcConfigFromJSON,
-    ConfigSvcConfigFromJSONTyped,
-    ConfigSvcConfigToJSON,
-    ConfigSvcConfigToJSONTyped,
-} from './ConfigSvcConfig';
-
 /**
  * 
  * @export
@@ -29,10 +21,28 @@ import {
 export interface ConfigSvcSaveConfigRequest {
     /**
      * 
-     * @type {ConfigSvcConfig}
+     * @type {string}
      * @memberof ConfigSvcSaveConfigRequest
      */
-    config?: ConfigSvcConfig;
+    app?: string;
+    /**
+     * 
+     * @type {{ [key: string]: any; }}
+     * @memberof ConfigSvcSaveConfigRequest
+     */
+    data?: { [key: string]: any; };
+    /**
+     * 
+     * @type {string}
+     * @memberof ConfigSvcSaveConfigRequest
+     */
+    dataJson?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ConfigSvcSaveConfigRequest
+     */
+    id?: string;
 }
 
 /**
@@ -52,7 +62,10 @@ export function ConfigSvcSaveConfigRequestFromJSONTyped(json: any, ignoreDiscrim
     }
     return {
         
-        'config': json['config'] == null ? undefined : ConfigSvcConfigFromJSON(json['config']),
+        'app': json['app'] == null ? undefined : json['app'],
+        'data': json['data'] == null ? undefined : json['data'],
+        'dataJson': json['dataJson'] == null ? undefined : json['dataJson'],
+        'id': json['id'] == null ? undefined : json['id'],
     };
 }
 
@@ -67,7 +80,10 @@ export function ConfigSvcSaveConfigRequestToJSONTyped(value?: ConfigSvcSaveConfi
 
     return {
         
-        'config': ConfigSvcConfigToJSON(value['config']),
+        'app': value['app'],
+        'data': value['data'],
+        'dataJson': value['dataJson'],
+        'id': value['id'],
     };
 }
 

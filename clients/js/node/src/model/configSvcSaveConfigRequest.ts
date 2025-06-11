@@ -11,18 +11,35 @@
  */
 
 import { RequestFile } from './models';
-import { ConfigSvcConfig } from './configSvcConfig';
 
 export class ConfigSvcSaveConfigRequest {
-    'config'?: ConfigSvcConfig;
+    'app'?: string;
+    'data'?: { [key: string]: any; };
+    'dataJson'?: string;
+    'id'?: string;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "config",
-            "baseName": "config",
-            "type": "ConfigSvcConfig"
+            "name": "app",
+            "baseName": "app",
+            "type": "string"
+        },
+        {
+            "name": "data",
+            "baseName": "data",
+            "type": "{ [key: string]: any; }"
+        },
+        {
+            "name": "dataJson",
+            "baseName": "dataJson",
+            "type": "string"
+        },
+        {
+            "name": "id",
+            "baseName": "id",
+            "type": "string"
         }    ];
 
     static getAttributeTypeMap() {

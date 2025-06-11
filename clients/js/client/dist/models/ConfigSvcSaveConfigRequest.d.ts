@@ -9,7 +9,6 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import type { ConfigSvcConfig } from './ConfigSvcConfig';
 /**
  *
  * @export
@@ -18,10 +17,30 @@ import type { ConfigSvcConfig } from './ConfigSvcConfig';
 export interface ConfigSvcSaveConfigRequest {
     /**
      *
-     * @type {ConfigSvcConfig}
+     * @type {string}
      * @memberof ConfigSvcSaveConfigRequest
      */
-    config?: ConfigSvcConfig;
+    app?: string;
+    /**
+     *
+     * @type {{ [key: string]: any; }}
+     * @memberof ConfigSvcSaveConfigRequest
+     */
+    data?: {
+        [key: string]: any;
+    };
+    /**
+     *
+     * @type {string}
+     * @memberof ConfigSvcSaveConfigRequest
+     */
+    dataJson?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof ConfigSvcSaveConfigRequest
+     */
+    id?: string;
 }
 /**
  * Check if a given object implements the ConfigSvcSaveConfigRequest interface.

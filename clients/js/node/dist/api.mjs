@@ -490,9 +490,24 @@ class ConfigSvcSaveConfigRequest {
 ConfigSvcSaveConfigRequest.discriminator = undefined;
 ConfigSvcSaveConfigRequest.attributeTypeMap = [
     {
-        "name": "config",
-        "baseName": "config",
-        "type": "ConfigSvcConfig"
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
+        "name": "data",
+        "baseName": "data",
+        "type": "{ [key: string]: any; }"
+    },
+    {
+        "name": "dataJson",
+        "baseName": "dataJson",
+        "type": "string"
+    },
+    {
+        "name": "id",
+        "baseName": "id",
+        "type": "string"
     }
 ];
 

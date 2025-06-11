@@ -12,10 +12,10 @@ type ErrorResponse struct {
 }
 
 type Config struct {
-	Id       string                 `json:"id,omitempty"`
-	App      string                 `json:"app"          swagger:"default=default"`
-	DataJSON string                 `json:"dataJson,omitempty"`
-	Data     map[string]interface{} `json:"data"                                         binding:"required"`
+	Id       string                 `json:"id" binding:"required"`
+	App      string                 `json:"app" swagger:"default=unnamed"`
+	DataJSON string                 `json:"dataJson" binding:"required"`
+	Data     map[string]interface{} `json:"data" binding:"required"`
 }
 
 func (c Config) GetId() string {
@@ -31,7 +31,10 @@ type GetConfigResponse struct {
 }
 
 type SaveConfigRequest struct {
-	Config *Config `json:"config"`
+	Id       string                 `json:"id,omitempty"`
+	App      string                 `json:"app" swagger:"default=unnamed"`
+	DataJSON string                 `json:"dataJson,omitempty"`
+	Data     map[string]interface{} `json:"data,omitempty"`
 }
 
 type SaveConfigResponse struct {

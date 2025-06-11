@@ -73,7 +73,7 @@ func (cs *ConfigService) Save(
 		*isAuthRsp.App,
 		isAdmin,
 		isAuthRsp.User.Slug,
-		*req.Config,
+		req,
 	)
 	if err != nil {
 		logger.Error("Failed to save config", slog.Any("error", err))
@@ -93,7 +93,7 @@ func (cs *ConfigService) saveConfig(
 	app string,
 	isAdmin bool,
 	callerSlug string,
-	newConfig types.Config,
+	newConfig *types.SaveConfigRequest,
 ) error {
 	callerSlug = kebabToCamel(callerSlug)
 
@@ -123,7 +123,12 @@ func (cs *ConfigService) saveConfig(
 	newConfig.DataJSON = string(newJson)
 	newConfig.Data = nil
 
-	err = cs.configStore.Upsert(newConfig)
+	err = cs.configStore.Upsert(&types.Config{
+		Id:       newConfig.Id,
+		App:      newConfig.App,
+		DataJSON: newConfig.DataJSON,
+		Data:     newConfig.Data,
+	})
 	if err != nil {
 		return errors.Wrap(err, "failed to save config")
 	}

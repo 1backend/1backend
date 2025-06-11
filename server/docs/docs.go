@@ -5618,7 +5618,9 @@ const docTemplate = `{
         "config_svc.Config": {
             "type": "object",
             "required": [
-                "data"
+                "data",
+                "dataJson",
+                "id"
             ],
             "properties": {
                 "app": {
@@ -5647,8 +5649,18 @@ const docTemplate = `{
         "config_svc.SaveConfigRequest": {
             "type": "object",
             "properties": {
-                "config": {
-                    "$ref": "#/definitions/config_svc.Config"
+                "app": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "dataJson": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
                 }
             }
         },

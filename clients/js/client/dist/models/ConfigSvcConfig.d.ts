@@ -34,13 +34,13 @@ export interface ConfigSvcConfig {
      * @type {string}
      * @memberof ConfigSvcConfig
      */
-    dataJson?: string;
+    dataJson: string;
     /**
      *
      * @type {string}
      * @memberof ConfigSvcConfig
      */
-    id?: string;
+    id: string;
 }
 /**
  * Check if a given object implements the ConfigSvcConfig interface.

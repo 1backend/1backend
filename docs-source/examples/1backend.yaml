@@ -174,6 +174,8 @@ definitions:
         type: string
     required:
     - data
+    - dataJson
+    - id
     type: object
   config_svc.GetConfigResponse:
     properties:
@@ -182,8 +184,15 @@ definitions:
     type: object
   config_svc.SaveConfigRequest:
     properties:
-      config:
-        $ref: '#/definitions/config_svc.Config'
+      app:
+        type: string
+      data:
+        additionalProperties: true
+        type: object
+      dataJson:
+        type: string
+      id:
+        type: string
     type: object
   config_svc.SaveConfigResponse:
     type: object

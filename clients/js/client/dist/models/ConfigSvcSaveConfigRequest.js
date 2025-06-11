@@ -11,7 +11,6 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ConfigSvcConfigFromJSON, ConfigSvcConfigToJSON, } from './ConfigSvcConfig';
 /**
  * Check if a given object implements the ConfigSvcSaveConfigRequest interface.
  */
@@ -26,7 +25,10 @@ export function ConfigSvcSaveConfigRequestFromJSONTyped(json, ignoreDiscriminato
         return json;
     }
     return {
-        'config': json['config'] == null ? undefined : ConfigSvcConfigFromJSON(json['config']),
+        'app': json['app'] == null ? undefined : json['app'],
+        'data': json['data'] == null ? undefined : json['data'],
+        'dataJson': json['dataJson'] == null ? undefined : json['dataJson'],
+        'id': json['id'] == null ? undefined : json['id'],
     };
 }
 export function ConfigSvcSaveConfigRequestToJSON(json) {
@@ -37,6 +39,9 @@ export function ConfigSvcSaveConfigRequestToJSONTyped(value, ignoreDiscriminator
         return value;
     }
     return {
-        'config': ConfigSvcConfigToJSON(value['config']),
+        'app': value['app'],
+        'data': value['data'],
+        'dataJson': value['dataJson'],
+        'id': value['id'],
     };
 }

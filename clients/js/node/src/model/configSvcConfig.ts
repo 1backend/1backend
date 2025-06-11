@@ -15,8 +15,8 @@ import { RequestFile } from './models';
 export class ConfigSvcConfig {
     'app'?: string;
     'data': { [key: string]: any; };
-    'dataJson'?: string;
-    'id'?: string;
+    'dataJson': string;
+    'id': string;
 
     static discriminator: string | undefined = undefined;
 

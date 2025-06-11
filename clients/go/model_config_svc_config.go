@@ -24,8 +24,8 @@ var _ MappedNullable = &ConfigSvcConfig{}
 type ConfigSvcConfig struct {
 	App *string `json:"app,omitempty"`
 	Data map[string]interface{} `json:"data"`
-	DataJson *string `json:"dataJson,omitempty"`
-	Id *string `json:"id,omitempty"`
+	DataJson string `json:"dataJson"`
+	Id string `json:"id"`
 }
 
 type _ConfigSvcConfig ConfigSvcConfig
@@ -34,9 +34,11 @@ type _ConfigSvcConfig ConfigSvcConfig
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewConfigSvcConfig(data map[string]interface{}) *ConfigSvcConfig {
+func NewConfigSvcConfig(data map[string]interface{}, dataJson string, id string) *ConfigSvcConfig {
 	this := ConfigSvcConfig{}
 	this.Data = data
+	this.DataJson = dataJson
+	this.Id = id
 	return &this
 }
 
@@ -104,68 +106,52 @@ func (o *ConfigSvcConfig) SetData(v map[string]interface{}) {
 	o.Data = v
 }
 
-// GetDataJson returns the DataJson field value if set, zero value otherwise.
+// GetDataJson returns the DataJson field value
 func (o *ConfigSvcConfig) GetDataJson() string {
-	if o == nil || IsNil(o.DataJson) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.DataJson
+
+	return o.DataJson
 }
 
-// GetDataJsonOk returns a tuple with the DataJson field value if set, nil otherwise
+// GetDataJsonOk returns a tuple with the DataJson field value
 // and a boolean to check if the value has been set.
 func (o *ConfigSvcConfig) GetDataJsonOk() (*string, bool) {
-	if o == nil || IsNil(o.DataJson) {
+	if o == nil {
 		return nil, false
 	}
-	return o.DataJson, true
+	return &o.DataJson, true
 }
 
-// HasDataJson returns a boolean if a field has been set.
-func (o *ConfigSvcConfig) HasDataJson() bool {
-	if o != nil && !IsNil(o.DataJson) {
-		return true
-	}
-
-	return false
-}
-
-// SetDataJson gets a reference to the given string and assigns it to the DataJson field.
+// SetDataJson sets field value
 func (o *ConfigSvcConfig) SetDataJson(v string) {
-	o.DataJson = &v
+	o.DataJson = v
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value
 func (o *ConfigSvcConfig) GetId() string {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Id
+
+	return o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *ConfigSvcConfig) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Id, true
+	return &o.Id, true
 }
 
-// HasId returns a boolean if a field has been set.
-func (o *ConfigSvcConfig) HasId() bool {
-	if o != nil && !IsNil(o.Id) {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
+// SetId sets field value
 func (o *ConfigSvcConfig) SetId(v string) {
-	o.Id = &v
+	o.Id = v
 }
 
 func (o ConfigSvcConfig) MarshalJSON() ([]byte, error) {
@@ -182,12 +168,8 @@ func (o ConfigSvcConfig) ToMap() (map[string]interface{}, error) {
 		toSerialize["app"] = o.App
 	}
 	toSerialize["data"] = o.Data
-	if !IsNil(o.DataJson) {
-		toSerialize["dataJson"] = o.DataJson
-	}
-	if !IsNil(o.Id) {
-		toSerialize["id"] = o.Id
-	}
+	toSerialize["dataJson"] = o.DataJson
+	toSerialize["id"] = o.Id
 	return toSerialize, nil
 }
 
@@ -197,6 +179,8 @@ func (o *ConfigSvcConfig) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"data",
+		"dataJson",
+		"id",
 	}
 
 	allProperties := make(map[string]interface{})
