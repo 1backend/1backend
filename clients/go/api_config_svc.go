@@ -23,9 +23,11 @@ import (
 type ConfigSvcAPI interface {
 
 	/*
-	ReadConfig Read Config
+	ListConfigs List Configs
 
-	Retrieves the current configuration for a specified app.
+	Retrieves the current configurations for a specified app.
+Since any user can save configurations, it is strongly advised that you supply a list of
+owners to filter on.
 If no app is specified, the default "unnamed" app is used.
 This is a public endpoint and does not require authentication.
 Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
@@ -33,13 +35,13 @@ Configuration data is non-sensitive. For sensitive data, refer to the Secret Ser
 Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return ApiReadConfigRequest
+	@return ApiListConfigsRequest
 	*/
-	ReadConfig(ctx context.Context) ApiReadConfigRequest
+	ListConfigs(ctx context.Context) ApiListConfigsRequest
 
-	// ReadConfigExecute executes the request
-	//  @return ConfigSvcGetConfigResponse
-	ReadConfigExecute(r ApiReadConfigRequest) (*ConfigSvcGetConfigResponse, *http.Response, error)
+	// ListConfigsExecute executes the request
+	//  @return ConfigSvcListConfigsResponse
+	ListConfigsExecute(r ApiListConfigsRequest) (*ConfigSvcListConfigsResponse, *http.Response, error)
 
 	/*
 	SaveConfig Save Config
@@ -59,26 +61,28 @@ Configurations are used to control frontend behavior, A/B testing, feature flags
 // ConfigSvcAPIService ConfigSvcAPI service
 type ConfigSvcAPIService service
 
-type ApiReadConfigRequest struct {
+type ApiListConfigsRequest struct {
 	ctx context.Context
 	ApiService ConfigSvcAPI
-	app *string
+	body *ConfigSvcListConfigsRequest
 }
 
-// App
-func (r ApiReadConfigRequest) App(app string) ApiReadConfigRequest {
-	r.app = &app
+// List Configs Request
+func (r ApiListConfigsRequest) Body(body ConfigSvcListConfigsRequest) ApiListConfigsRequest {
+	r.body = &body
 	return r
 }
 
-func (r ApiReadConfigRequest) Execute() (*ConfigSvcGetConfigResponse, *http.Response, error) {
-	return r.ApiService.ReadConfigExecute(r)
+func (r ApiListConfigsRequest) Execute() (*ConfigSvcListConfigsResponse, *http.Response, error) {
+	return r.ApiService.ListConfigsExecute(r)
 }
 
 /*
-ReadConfig Read Config
+ListConfigs List Configs
 
-Retrieves the current configuration for a specified app.
+Retrieves the current configurations for a specified app.
+Since any user can save configurations, it is strongly advised that you supply a list of
+owners to filter on.
 If no app is specified, the default "unnamed" app is used.
 This is a public endpoint and does not require authentication.
 Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
@@ -86,41 +90,38 @@ Configuration data is non-sensitive. For sensitive data, refer to the Secret Ser
 Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiReadConfigRequest
+ @return ApiListConfigsRequest
 */
-func (a *ConfigSvcAPIService) ReadConfig(ctx context.Context) ApiReadConfigRequest {
-	return ApiReadConfigRequest{
+func (a *ConfigSvcAPIService) ListConfigs(ctx context.Context) ApiListConfigsRequest {
+	return ApiListConfigsRequest{
 		ApiService: a,
 		ctx: ctx,
 	}
 }
 
 // Execute executes the request
-//  @return ConfigSvcGetConfigResponse
-func (a *ConfigSvcAPIService) ReadConfigExecute(r ApiReadConfigRequest) (*ConfigSvcGetConfigResponse, *http.Response, error) {
+//  @return ConfigSvcListConfigsResponse
+func (a *ConfigSvcAPIService) ListConfigsExecute(r ApiListConfigsRequest) (*ConfigSvcListConfigsResponse, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
+		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *ConfigSvcGetConfigResponse
+		localVarReturnValue  *ConfigSvcListConfigsResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConfigSvcAPIService.ReadConfig")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConfigSvcAPIService.ListConfigs")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/config-svc/config"
+	localVarPath := localBasePath + "/config-svc/configs"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if r.app != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "app", r.app, "", "")
-	}
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -136,6 +137,8 @@ func (a *ConfigSvcAPIService) ReadConfigExecute(r ApiReadConfigRequest) (*Config
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

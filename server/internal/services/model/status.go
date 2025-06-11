@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"log/slog"
 
+	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/logger"
@@ -41,13 +42,16 @@ func (ms *ModelService) status(
 
 	if modelId == "" {
 		rsp, _, err := ms.options.ClientFactory.Client(client.WithToken(ms.token)).
-			ConfigSvcAPI.ReadConfig(context.Background()).
+			ConfigSvcAPI.ListConfigs(context.Background()).
+			Body(openapi.ConfigSvcListConfigsRequest{
+				Slugs: []string{"modelSvc"},
+			}).
 			Execute()
 		if err != nil {
 			return nil, err
 		}
 
-		modelIdI := dipper.Get(rsp.Config.Data, "modelSvc.currentModelId")
+		modelIdI := dipper.Get(rsp.Configs["modelSvc"].Data, "currentModelId")
 		var ok bool
 		modelId, ok = modelIdI.(string)
 		if !ok {

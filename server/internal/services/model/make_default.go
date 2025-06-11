@@ -24,27 +24,12 @@ func (ms *ModelService) makeDefault(ctx context.Context, modelId string) error {
 		return fmt.Errorf("cannot set model as it is not downloaded yet")
 	}
 
-	rsp, _, err := ms.options.ClientFactory.Client(client.WithToken(ms.token)).
-		ConfigSvcAPI.ReadConfig(ctx).
-		Execute()
-
-	if err != nil {
-		return err
-	}
-
-	_, ok := rsp.Config.Data["modelSvc"].(map[string]any)
-	if !ok {
-		rsp.Config.Data["modelSvc"] = map[string]any{}
-	}
-
-	m := rsp.Config.Data["modelSvc"].(map[string]any)
-
-	m["currentModelId"] = modelId
-
 	_, _, err = ms.options.ClientFactory.Client(client.WithToken(ms.token)).
 		ConfigSvcAPI.SaveConfig(ctx).
 		Body(openapi.ConfigSvcSaveConfigRequest{
-			Data: m,
+			Data: map[string]any{
+				"currentModelId": modelId,
+			},
 		}).
 		Execute()
 

@@ -9,16 +9,16 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export class ConfigSvcGetConfigResponse {
+export class ConfigSvcListConfigsResponse {
     static getAttributeTypeMap() {
-        return ConfigSvcGetConfigResponse.attributeTypeMap;
+        return ConfigSvcListConfigsResponse.attributeTypeMap;
     }
 }
-ConfigSvcGetConfigResponse.discriminator = undefined;
-ConfigSvcGetConfigResponse.attributeTypeMap = [
+ConfigSvcListConfigsResponse.discriminator = undefined;
+ConfigSvcListConfigsResponse.attributeTypeMap = [
     {
-        "name": "config",
-        "baseName": "config",
-        "type": "ConfigSvcConfig"
+        "name": "configs",
+        "baseName": "configs",
+        "type": "{ [key: string]: ConfigSvcConfig; }"
     }
 ];

@@ -27,12 +27,26 @@ func (c Config) GetId() string {
 	return c.Id
 }
 
-type GetConfigRequest struct {
+type ListConfigsRequest struct {
 	App string `json:"app" swagger:"default=default"`
+
+	// Slugs or camelCased slugs of the owners to list configs for.
+	Slugs []string `json:"slugs,omitempty" swagger:"default=[]"`
 }
 
-type GetConfigResponse struct {
-	Config *Config `json:"config"`
+type ListConfigsResponse struct {
+	// Configs is a map of camelcase owner slug to Config.
+	// Eg.
+	// {
+	// 	"testUserSlug0": {
+	//   "id": "testUserSlug0",
+	//   "data": {
+	//     "key1": "value1",
+	//     "key2": "value2"
+	//   }
+	// 	}
+	// }
+	Configs map[string]*Config `json:"configs" binding:"required"`
 }
 
 type SaveConfigRequest struct {

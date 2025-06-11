@@ -10,7 +10,8 @@
  * Do not edit the class manually.
  */
 import http from 'http';
-import { ConfigSvcGetConfigResponse } from '../model/configSvcGetConfigResponse';
+import { ConfigSvcListConfigsRequest } from '../model/configSvcListConfigsRequest';
+import { ConfigSvcListConfigsResponse } from '../model/configSvcListConfigsResponse';
 import { ConfigSvcSaveConfigRequest } from '../model/configSvcSaveConfigRequest';
 import { Authentication, Interceptor } from '../model/models';
 import { ApiKeyAuth } from '../model/models';
@@ -36,17 +37,17 @@ export declare class ConfigSvcApi {
     setApiKey(key: ConfigSvcApiApiKeys, value: string): void;
     addInterceptor(interceptor: Interceptor): void;
     /**
-     * Retrieves the current configuration for a specified app. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
-     * @summary Read Config
-     * @param app App
+     * Retrieves the current configurations for a specified app. Since any user can save configurations, it is strongly advised that you supply a list of owners to filter on. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+     * @summary List Configs
+     * @param body List Configs Request
      */
-    readConfig(app?: string, options?: {
+    listConfigs(body: ConfigSvcListConfigsRequest, options?: {
         headers: {
             [name: string]: string;
         };
     }): Promise<{
         response: http.IncomingMessage;
-        body: ConfigSvcGetConfigResponse;
+        body: ConfigSvcListConfigsResponse;
     }>;
     /**
      * Save the provided configuration to the server

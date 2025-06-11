@@ -11,22 +11,27 @@
  */
 
 import { RequestFile } from './models';
-import { ConfigSvcConfig } from './configSvcConfig';
 
-export class ConfigSvcGetConfigResponse {
-    'config'?: ConfigSvcConfig;
+export class ConfigSvcListConfigsRequest {
+    'app'?: string;
+    'slugs'?: Array<string>;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "config",
-            "baseName": "config",
-            "type": "ConfigSvcConfig"
+            "name": "app",
+            "baseName": "app",
+            "type": "string"
+        },
+        {
+            "name": "slugs",
+            "baseName": "slugs",
+            "type": "Array<string>"
         }    ];
 
     static getAttributeTypeMap() {
-        return ConfigSvcGetConfigResponse.attributeTypeMap;
+        return ConfigSvcListConfigsRequest.attributeTypeMap;
     }
 }
 

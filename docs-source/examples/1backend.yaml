@@ -182,10 +182,24 @@ definitions:
     - id
     - updatedAt
     type: object
-  config_svc.GetConfigResponse:
+  config_svc.ListConfigsRequest:
     properties:
-      config:
-        $ref: '#/definitions/config_svc.Config'
+      app:
+        type: string
+      slugs:
+        items:
+          type: string
+        type: array
+    type: object
+  config_svc.ListConfigsResponse:
+    properties:
+      configs:
+        additionalProperties:
+          $ref: '#/definitions/config_svc.Config'
+        description: "Configs is a map of camelcase owner slug to Config.\nEg.\n{\n\t\"testUserSlug0\":
+          {\n  \"id\": \"testUserSlug0\",\n  \"data\": {\n    \"key1\": \"value1\",\n
+          \   \"key2\": \"value2\"\n  }\n\t}\n}"
+        type: object
     type: object
   config_svc.SaveConfigRequest:
     properties:
@@ -3912,40 +3926,6 @@ paths:
       tags:
       - Chat Svc
   /config-svc/config:
-    get:
-      consumes:
-      - application/json
-      description: |-
-        Retrieves the current configuration for a specified app.
-        If no app is specified, the default "unnamed" app is used.
-        This is a public endpoint and does not require authentication.
-        Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
-
-        Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
-      operationId: readConfig
-      parameters:
-      - description: App
-        in: query
-        name: app
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Current configuration
-          schema:
-            $ref: '#/definitions/config_svc.GetConfigResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Read Config
-      tags:
-      - Config Svc
     put:
       consumes:
       - application/json
@@ -3976,6 +3956,45 @@ paths:
       security:
       - BearerAuth: []
       summary: Save Config
+      tags:
+      - Config Svc
+  /config-svc/configs:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Retrieves the current configurations for a specified app.
+        Since any user can save configurations, it is strongly advised that you supply a list of
+        owners to filter on.
+        If no app is specified, the default "unnamed" app is used.
+        This is a public endpoint and does not require authentication.
+        Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
+
+        Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+      operationId: listConfigs
+      parameters:
+      - description: List Configs Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/config_svc.ListConfigsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Current configuration
+          schema:
+            $ref: '#/definitions/config_svc.ListConfigsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: List Configs
       tags:
       - Config Svc
   /container-svc/container:

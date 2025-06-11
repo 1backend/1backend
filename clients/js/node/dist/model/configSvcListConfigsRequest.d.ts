@@ -9,9 +9,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ConfigSvcConfig } from './configSvcConfig';
-export declare class ConfigSvcGetConfigResponse {
-    'config'?: ConfigSvcConfig;
+export declare class ConfigSvcListConfigsRequest {
+    'app'?: string;
+    'slugs'?: Array<string>;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

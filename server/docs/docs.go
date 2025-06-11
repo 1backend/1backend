@@ -403,48 +403,6 @@ const docTemplate = `{
             }
         },
         "/config-svc/config": {
-            "get": {
-                "description": "Retrieves the current configuration for a specified app.\nIf no app is specified, the default \"unnamed\" app is used.\nThis is a public endpoint and does not require authentication.\nConfiguration data is non-sensitive. For sensitive data, refer to the Secret Service.\n\nConfigurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Config Svc"
-                ],
-                "summary": "Read Config",
-                "operationId": "readConfig",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "App",
-                        "name": "app",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Current configuration",
-                        "schema": {
-                            "$ref": "#/definitions/config_svc.GetConfigResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
             "put": {
                 "security": [
                     {
@@ -479,6 +437,52 @@ const docTemplate = `{
                         "description": "Save Config Response",
                         "schema": {
                             "$ref": "#/definitions/config_svc.SaveConfigResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/config-svc/configs": {
+            "post": {
+                "description": "Retrieves the current configurations for a specified app.\nSince any user can save configurations, it is strongly advised that you supply a list of\nowners to filter on.\nIf no app is specified, the default \"unnamed\" app is used.\nThis is a public endpoint and does not require authentication.\nConfiguration data is non-sensitive. For sensitive data, refer to the Secret Service.\n\nConfigurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Config Svc"
+                ],
+                "summary": "List Configs",
+                "operationId": "listConfigs",
+                "parameters": [
+                    {
+                        "description": "List Configs Request",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/config_svc.ListConfigsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Current configuration",
+                        "schema": {
+                            "$ref": "#/definitions/config_svc.ListConfigsResponse"
                         }
                     },
                     "401": {
@@ -5644,11 +5648,33 @@ const docTemplate = `{
                 }
             }
         },
-        "config_svc.GetConfigResponse": {
+        "config_svc.ListConfigsRequest": {
             "type": "object",
             "properties": {
-                "config": {
-                    "$ref": "#/definitions/config_svc.Config"
+                "app": {
+                    "type": "string"
+                },
+                "slugs": {
+                    "description": "Slugs or camelCased slugs of the owners to list configs for.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "config_svc.ListConfigsResponse": {
+            "type": "object",
+            "required": [
+                "configs"
+            ],
+            "properties": {
+                "configs": {
+                    "description": "Configs is a map of camelcase owner slug to Config.\nEg.\n{\n\t\"testUserSlug0\": {\n  \"id\": \"testUserSlug0\",\n  \"data\": {\n    \"key1\": \"value1\",\n    \"key2\": \"value2\"\n  }\n\t}\n}",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/config_svc.Config"
+                    }
                 }
             }
         },

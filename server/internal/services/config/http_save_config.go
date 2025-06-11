@@ -10,6 +10,7 @@ package configservice
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -37,7 +38,7 @@ import (
 // @Failure 500 {string} string "Internal Server Error"
 // @Security BearerAuth
 // @Router /config-svc/config [put]
-func (cs *ConfigService) Save(
+func (cs *ConfigService) SaveConfig(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
@@ -111,7 +112,7 @@ func (cs *ConfigService) saveConfig(
 	entry := &types.Config{}
 
 	if !found {
-		entry.Id = app
+		entry.Id = fmt.Sprintf("%s_%s", app, callerSlug)
 		entry.Data = map[string]interface{}{}
 		entry.DataJSON = "{}"
 		entry.CreatedAt = now
@@ -124,12 +125,7 @@ func (cs *ConfigService) saveConfig(
 		}
 	}
 
-	if isAdmin {
-		// Admins can overwrite the entire config
-		entry.Data = newConfig.Data
-	} else {
-		entry.Data[callerSlug] = newConfig.Data
-	}
+	entry.Data = newConfig.Data
 
 	newJson, err := json.Marshal(entry.Data)
 	if err != nil {

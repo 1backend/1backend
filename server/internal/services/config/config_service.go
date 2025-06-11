@@ -56,13 +56,13 @@ func NewConfigService(
 func (cs *ConfigService) RegisterRoutes(router *mux.Router) {
 	appl := cs.options.Middlewares
 
-	router.HandleFunc("/config-svc/config", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
-		cs.Get(w, r)
+	router.HandleFunc("/config-svc/configs", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+		cs.ListConfigs(w, r)
 	}))).
-		Methods("OPTIONS", "GET")
+		Methods("OPTIONS", "POST")
 
 	router.HandleFunc("/config-svc/config", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
-		cs.Save(w, r)
+		cs.SaveConfig(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 }

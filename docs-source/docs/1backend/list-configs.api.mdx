@@ -1,0 +1,78 @@
+---
+id: list-configs
+title: "List Configs"
+description: "Retrieves the current configurations for a specified app."
+sidebar_label: "List Configs"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVlFv2zYQ/isHPiuSnWwo4KclRTdkK9Cgbp+iPJzJk8SGIlmSsusZ/u/DUXLi2GmBbY+bH2yLvDt+d/zuO+2EoiiD9kk7KxbiI6WgaU0RUkcghxDIJpDONrodArJVhMYFQIiepG40KUDvy9outZUEaLcwRAog0ULENZ04F6AT6AgxBWdbswVUax1JQeowwdYNEAfveR2MjglcU1u3sRQiJAeNNokCOFvW9rYB6/jsHO4ApsjAFTU4mAS1GKzFnlQtDpZDJFXW9lOnIz8i+GFltASyyjttE6BVoBxFsC5BoK+DDgQ4pI5s0jJnUdb27XFWoDAhR7POXkSyUSe9phJ+dQGeHrNRAYEaCpwL41ySDJRgSWGtJZW1PQkcAQNlyOwhnU3BGWiCs4msghV1uNYuFHBd3UCimLRtC2gI0xAIGoNtLHJCLnUUXsKDSIntYykK4TyNJ94qsRBc+RFHFIXgGlBMN05txWInZD488V/03kwlqb5EJtBORNlRj/zPB46aNMXJln/S1pNYiJiCtq3YFyKaoc0GOlEfXzWZFjAE3Ir984JbfSGZxJ6XXtL4PVNnygA+jvinTHQgJRYpDLTnheidjSPCy9mMf15GevtaC4jin1ZBTlVlN6U0+6C5e2Fy4hAIE6nr9GplmFLfj8VJnhVrdPp9wnkWUavzGtyq3GK6575k2nIruWaUiJwQU+gs1ODVd6Hvjy/j/ijLKacjlBnTcbSH13J6eWnTzef+7jGDldiTkRgJspwA846barQta/uOv3a1rVMtuJU+RwpLM7SzWixgV1uAWmjFD2f7xbjLkJ+MeeGRtvPRYY1moPlkOW1dHm1d1oJ39nz8vrZ7cU7yV2i/L8RPs/n5hX22rFcu6D9J/R2unl4SH/Dza11xaxMFiyYrFwV4F4IL/+4kzg+5M+6n64PlWvJd95Q6x6rkXW5ij6kTC1GNzLuIa1nJJ62KGQ9H2YkhGLarjJNoOhfTYj6/unoj9g9sJ4eg03bJiMZOuyEMFK4Hjn6a76etJ6gnk1pA44xxG1Kw2uZJiHnysUg/kgWUI7NZqPvcJcwVzgfeu1bbp1nDbaM5fkeoiAvIw0osxPV0fQe1OSig13/QKIFc0o/PwvzuG/be0JPQHir7pK/3h5UHbnLbuIOUo8zXRT1qLldEQ/GXqG07GOQZXUrXHwG7u4Xl4L0LfBVjhbuU/KKq5iuUj2QVO1TnPXl9e2Exz51ey+DiOPIieIOpcaHnWhgtycacxeG83+7ew/qqnL04LS6qarPZlK0dShfaavKLFbbeXFyVs7JLvcmjg0IfPzTTgH0GGzfYthRK7apsUnGRdeIKivnNmIgoBHNphD8r35SXHJFZ2KM9wng8bMRJ2kfj8v93q//ou9XUvIm+pcob1DYPRybzbhKze/EsZqOKZi49FIJli/d3uxVG+hzMfs/LXwcKW7G4fyjEGoPGFRP3nlt7UhLWv0fajrOQ+XfBEsaM5mmTpeREnvfFweNaSvLph7bHsnz3YflJFGI1vR72TrFPwA2/cOFGLER+v8wlZ4O8thMGbTtgy7ZjTP78BRRhZwE=
+sidebar_class_name: "post api-method"
+info_path: docs/1backend/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List Configs"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/config-svc/configs"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Retrieves the current configurations for a specified app.
+Since any user can save configurations, it is strongly advised that you supply a list of
+owners to filter on.
+If no app is specified, the default "unnamed" app is used.
+This is a public endpoint and does not require authentication.
+Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
+
+Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"app":{"type":"string"},"slugs":{"items":{"type":"string"},"type":"array"}},"type":"object"}}},"description":"List Configs Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Current configuration","content":{"application/json":{"schema":{"properties":{"configs":{"additionalProperties":{"properties":{"createdAt":{"type":"string"},"data":{"additionalProperties":true,"type":"object"},"dataJson":{"type":"string"},"id":{"description":"Id is simply the app of the config.","type":"string"},"updatedAt":{"type":"string"}},"required":["createdAt","data","dataJson","id","updatedAt"],"type":"object"},"description":"Configs is a map of camelcase owner slug to Config.\nEg.\n{\n\t\"testUserSlug0\": {\n  \"id\": \"testUserSlug0\",\n  \"data\": {\n    \"key1\": \"value1\",\n    \"key2\": \"value2\"\n  }\n\t}\n}","type":"object"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"string"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

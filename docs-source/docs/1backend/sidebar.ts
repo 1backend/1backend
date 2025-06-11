@@ -60,15 +60,15 @@ const sidebar: SidebarsConfig = {
       items: [
         {
           type: "doc",
-          id: "1backend/read-config",
-          label: "Read Config",
-          className: "api-method get",
-        },
-        {
-          type: "doc",
           id: "1backend/save-config",
           label: "Save Config",
           className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend/list-configs",
+          label: "List Configs",
+          className: "api-method post",
         },
       ],
     },

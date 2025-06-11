@@ -21,38 +21,40 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as runtime from '../runtime';
-import { ConfigSvcGetConfigResponseFromJSON, ConfigSvcSaveConfigRequestToJSON, } from '../models/index';
+import { ConfigSvcListConfigsRequestToJSON, ConfigSvcListConfigsResponseFromJSON, ConfigSvcSaveConfigRequestToJSON, } from '../models/index';
 /**
  *
  */
 export class ConfigSvcApi extends runtime.BaseAPI {
     /**
-     * Retrieves the current configuration for a specified app. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
-     * Read Config
+     * Retrieves the current configurations for a specified app. Since any user can save configurations, it is strongly advised that you supply a list of owners to filter on. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+     * List Configs
      */
-    readConfigRaw(requestParameters, initOverrides) {
+    listConfigsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            const queryParameters = {};
-            if (requestParameters['app'] != null) {
-                queryParameters['app'] = requestParameters['app'];
+            if (requestParameters['body'] == null) {
+                throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling listConfigs().');
             }
+            const queryParameters = {};
             const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
             const response = yield this.request({
-                path: `/config-svc/config`,
-                method: 'GET',
+                path: `/config-svc/configs`,
+                method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
+                body: ConfigSvcListConfigsRequestToJSON(requestParameters['body']),
             }, initOverrides);
-            return new runtime.JSONApiResponse(response, (jsonValue) => ConfigSvcGetConfigResponseFromJSON(jsonValue));
+            return new runtime.JSONApiResponse(response, (jsonValue) => ConfigSvcListConfigsResponseFromJSON(jsonValue));
         });
     }
     /**
-     * Retrieves the current configuration for a specified app. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
-     * Read Config
+     * Retrieves the current configurations for a specified app. Since any user can save configurations, it is strongly advised that you supply a list of owners to filter on. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+     * List Configs
      */
-    readConfig() {
-        return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
-            const response = yield this.readConfigRaw(requestParameters, initOverrides);
+    listConfigs(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.listConfigsRaw(requestParameters, initOverrides);
             return yield response.value();
         });
     }

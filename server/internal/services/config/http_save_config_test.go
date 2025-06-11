@@ -49,14 +49,14 @@ func TestConfigService(t *testing.T) {
 	})
 
 	t.Run("read config client 1", func(t *testing.T) {
-		rsp, _, err := client1.ConfigSvcAPI.ReadConfig(ctx).
+		rsp, _, err := client1.ConfigSvcAPI.ListConfigs(ctx).
 			Execute()
 
 		require.NoError(t, err)
-		require.NotNil(t, rsp.Config)
-		require.NotNil(t, rsp.Config.Data["testUserSlug0"])
-		require.Equal(t, "value1", rsp.Config.Data["testUserSlug0"].(map[string]any)["key1"])
-		require.Equal(t, "value2", rsp.Config.Data["testUserSlug0"].(map[string]any)["key2"])
+		require.NotNil(t, rsp.Configs)
+		require.NotNil(t, rsp.Configs["testUserSlug0"])
+		require.Equal(t, "value1", rsp.Configs["testUserSlug0"].Data["key1"], rsp)
+		require.Equal(t, "value2", rsp.Configs["testUserSlug0"].Data["key2"], rsp)
 	})
 
 	t.Run("save config client 2", func(t *testing.T) {
@@ -73,12 +73,12 @@ func TestConfigService(t *testing.T) {
 	})
 
 	t.Run("read config client 2", func(t *testing.T) {
-		rsp, _, err := client2.ConfigSvcAPI.ReadConfig(ctx).
+		rsp, _, err := client2.ConfigSvcAPI.ListConfigs(ctx).
 			Execute()
 		require.NoError(t, err)
-		require.NotNil(t, rsp.Config)
-		require.NotNil(t, rsp.Config.Data["testUserSlug1"])
-		require.Equal(t, "newValue1", rsp.Config.Data["testUserSlug1"].(map[string]any)["key1"])
-		require.Equal(t, "newValue2", rsp.Config.Data["testUserSlug1"].(map[string]any)["key2"])
+		require.NotNil(t, rsp.Configs)
+		require.NotNil(t, rsp.Configs["testUserSlug1"])
+		require.Equal(t, "newValue1", rsp.Configs["testUserSlug1"].Data["key1"], rsp)
+		require.Equal(t, "newValue2", rsp.Configs["testUserSlug1"].Data["key2"], rsp)
 	})
 }

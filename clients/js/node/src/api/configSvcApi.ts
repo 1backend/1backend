@@ -15,7 +15,8 @@ import localVarRequest from 'request';
 import http from 'http';
 
 /* tslint:disable:no-unused-locals */
-import { ConfigSvcGetConfigResponse } from '../model/configSvcGetConfigResponse';
+import { ConfigSvcListConfigsRequest } from '../model/configSvcListConfigsRequest';
+import { ConfigSvcListConfigsResponse } from '../model/configSvcListConfigsResponse';
 import { ConfigSvcSaveConfigRequest } from '../model/configSvcSaveConfigRequest';
 
 import { ObjectSerializer, Authentication, VoidAuth, Interceptor } from '../model/models';
@@ -91,12 +92,12 @@ export class ConfigSvcApi {
     }
 
     /**
-     * Retrieves the current configuration for a specified app. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
-     * @summary Read Config
-     * @param app App
+     * Retrieves the current configurations for a specified app. Since any user can save configurations, it is strongly advised that you supply a list of owners to filter on. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+     * @summary List Configs
+     * @param body List Configs Request
      */
-    public async readConfig (app?: string, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: ConfigSvcGetConfigResponse;  }> {
-        const localVarPath = this.basePath + '/config-svc/config';
+    public async listConfigs (body: ConfigSvcListConfigsRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: ConfigSvcListConfigsResponse;  }> {
+        const localVarPath = this.basePath + '/config-svc/configs';
         let localVarQueryParameters: any = {};
         let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
         const produces = ['application/json'];
@@ -108,8 +109,9 @@ export class ConfigSvcApi {
         }
         let localVarFormParams: any = {};
 
-        if (app !== undefined) {
-            localVarQueryParameters['app'] = ObjectSerializer.serialize(app, "string");
+        // verify required parameter 'body' is not null or undefined
+        if (body === null || body === undefined) {
+            throw new Error('Required parameter body was null or undefined when calling listConfigs.');
         }
 
         (<any>Object).assign(localVarHeaderParams, options.headers);
@@ -117,12 +119,13 @@ export class ConfigSvcApi {
         let localVarUseFormData = false;
 
         let localVarRequestOptions: localVarRequest.Options = {
-            method: 'GET',
+            method: 'POST',
             qs: localVarQueryParameters,
             headers: localVarHeaderParams,
             uri: localVarPath,
             useQuerystring: this._useQuerystring,
             json: true,
+            body: ObjectSerializer.serialize(body, "ConfigSvcListConfigsRequest")
         };
 
         let authenticationPromise = Promise.resolve();
@@ -141,13 +144,13 @@ export class ConfigSvcApi {
                     localVarRequestOptions.form = localVarFormParams;
                 }
             }
-            return new Promise<{ response: http.IncomingMessage; body: ConfigSvcGetConfigResponse;  }>((resolve, reject) => {
+            return new Promise<{ response: http.IncomingMessage; body: ConfigSvcListConfigsResponse;  }>((resolve, reject) => {
                 localVarRequest(localVarRequestOptions, (error, response, body) => {
                     if (error) {
                         reject(error);
                     } else {
                         if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
-                            body = ObjectSerializer.deserialize(body, "ConfigSvcGetConfigResponse");
+                            body = ObjectSerializer.deserialize(body, "ConfigSvcListConfigsResponse");
                             resolve({ response: response, body: body });
                         } else {
                             reject(new HttpError(response, body, response.statusCode));
