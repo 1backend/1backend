@@ -159,6 +159,66 @@ func (mr *MockUserSvcAPIMockRecorder) DeleteUserExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUserExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).DeleteUserExecute), r)
 }
 
+// ExchangeToken mocks base method.
+func (m *MockUserSvcAPI) ExchangeToken(ctx context.Context) ApiExchangeTokenRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ExchangeToken", ctx)
+	ret0, _ := ret[0].(ApiExchangeTokenRequest)
+	return ret0
+}
+
+// ExchangeToken indicates an expected call of ExchangeToken.
+func (mr *MockUserSvcAPIMockRecorder) ExchangeToken(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExchangeToken", reflect.TypeOf((*MockUserSvcAPI)(nil).ExchangeToken), ctx)
+}
+
+// ExchangeTokenExecute mocks base method.
+func (m *MockUserSvcAPI) ExchangeTokenExecute(r ApiExchangeTokenRequest) (*UserSvcExchangeTokenResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ExchangeTokenExecute", r)
+	ret0, _ := ret[0].(*UserSvcExchangeTokenResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ExchangeTokenExecute indicates an expected call of ExchangeTokenExecute.
+func (mr *MockUserSvcAPIMockRecorder) ExchangeTokenExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExchangeTokenExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ExchangeTokenExecute), r)
+}
+
+// ExchangeToken_1 mocks base method.
+func (m *MockUserSvcAPI) ExchangeToken_1(ctx context.Context) ApiExchangeToken_0Request {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ExchangeToken_1", ctx)
+	ret0, _ := ret[0].(ApiExchangeToken_0Request)
+	return ret0
+}
+
+// ExchangeToken_1 indicates an expected call of ExchangeToken_1.
+func (mr *MockUserSvcAPIMockRecorder) ExchangeToken_1(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExchangeToken_1", reflect.TypeOf((*MockUserSvcAPI)(nil).ExchangeToken_1), ctx)
+}
+
+// ExchangeToken_1Execute mocks base method.
+func (m *MockUserSvcAPI) ExchangeToken_1Execute(r ApiExchangeToken_0Request) (*UserSvcExchangeTokenResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ExchangeToken_1Execute", r)
+	ret0, _ := ret[0].(*UserSvcExchangeTokenResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ExchangeToken_1Execute indicates an expected call of ExchangeToken_1Execute.
+func (mr *MockUserSvcAPIMockRecorder) ExchangeToken_1Execute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExchangeToken_1Execute", reflect.TypeOf((*MockUserSvcAPI)(nil).ExchangeToken_1Execute), r)
+}
+
 // GetPublicKey mocks base method.
 func (m *MockUserSvcAPI) GetPublicKey(ctx context.Context) ApiGetPublicKeyRequest {
 	m.ctrl.T.Helper()

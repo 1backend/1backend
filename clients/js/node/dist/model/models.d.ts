@@ -183,6 +183,8 @@ export * from './userSvcCreateUserRequest';
 export * from './userSvcEnroll';
 export * from './userSvcEnrollInput';
 export * from './userSvcErrorResponse';
+export * from './userSvcExchangeTokenRequest';
+export * from './userSvcExchangeTokenResponse';
 export * from './userSvcGetPublicKeyResponse';
 export * from './userSvcHasPermissionResponse';
 export * from './userSvcListEnrollsRequest';

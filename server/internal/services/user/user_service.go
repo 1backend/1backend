@@ -288,6 +288,11 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 	})).
 		Methods("OPTIONS", "POST")
 
+	router.HandleFunc("/user-svc/token/exchange", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.ExchangeToken(w, r)
+	})).
+		Methods("OPTIONS", "PUT")
+
 	router.HandleFunc("/user-svc/tokens", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.RevokeTokens(w, r)
 	})).

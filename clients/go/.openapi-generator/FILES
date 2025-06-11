@@ -222,6 +222,8 @@ docs/UserSvcCreateUserRequest.md
 docs/UserSvcEnroll.md
 docs/UserSvcEnrollInput.md
 docs/UserSvcErrorResponse.md
+docs/UserSvcExchangeTokenRequest.md
+docs/UserSvcExchangeTokenResponse.md
 docs/UserSvcGetPublicKeyResponse.md
 docs/UserSvcHasPermissionResponse.md
 docs/UserSvcListEnrollsRequest.md
@@ -444,6 +446,8 @@ model_user_svc_create_user_request.go
 model_user_svc_enroll.go
 model_user_svc_enroll_input.go
 model_user_svc_error_response.go
+model_user_svc_exchange_token_request.go
+model_user_svc_exchange_token_response.go
 model_user_svc_get_public_key_response.go
 model_user_svc_has_permission_response.go
 model_user_svc_list_enrolls_request.go

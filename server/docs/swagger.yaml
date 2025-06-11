@@ -3078,6 +3078,28 @@ definitions:
       error:
         type: string
     type: object
+  user_svc.ExchangeTokenRequest:
+    properties:
+      newApp:
+        description: NewApp is the app of the new token that will be returned by this
+          endpoint.
+        type: string
+      newDevice:
+        description: NewDevice. If not provided, the device of the original token
+          will be used.
+        type: string
+    required:
+    - newApp
+    type: object
+  user_svc.ExchangeTokenResponse:
+    properties:
+      token:
+        allOf:
+        - $ref: '#/definitions/user_svc.AuthToken'
+        description: Token is the new token that will be returned by this endpoint.
+    required:
+    - token
+    type: object
   user_svc.GetPublicKeyResponse:
     properties:
       publicKey:
@@ -7017,6 +7039,50 @@ paths:
       - BearerAuth: []
       summary: Has Permission
       tags:
+      - User Svc
+  /user-svc/token/exchange:
+    put:
+      consumes:
+      - application/json
+      description: |-
+        Exchange an existing token for a new token scoped to a different app (namespace).
+        The new token represents the same user but contains roles specific to the target app.
+
+        The original token remains valid.
+        The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.
+
+        For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time.
+        This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
+      operationId: exchangeToken
+      parameters:
+      - description: ExchangeToken Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.ExchangeTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ExchangeToken successful
+          schema:
+            $ref: '#/definitions/user_svc.ExchangeTokenResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "404":
+          description: User Not Found
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      summary: Exchange Token
+      tags:
+      - User Svc
       - User Svc
   /user-svc/tokens:
     delete:

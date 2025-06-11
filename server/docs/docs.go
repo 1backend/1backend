@@ -4993,6 +4993,60 @@ const docTemplate = `{
                 }
             }
         },
+        "/user-svc/token/exchange": {
+            "put": {
+                "description": "Exchange an existing token for a new token scoped to a different app (namespace).\nThe new token represents the same user but contains roles specific to the target app.\n\nThe original token remains valid.\nThe minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.\n\nFor now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time.\nThis introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User Svc",
+                    "User Svc"
+                ],
+                "summary": "Exchange Token",
+                "operationId": "exchangeToken",
+                "parameters": [
+                    {
+                        "description": "ExchangeToken Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ExchangeTokenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ExchangeToken successful",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ExchangeTokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "User Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/user_svc.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user-svc/tokens": {
             "delete": {
                 "security": [
@@ -9461,6 +9515,38 @@ const docTemplate = `{
             "properties": {
                 "error": {
                     "type": "string"
+                }
+            }
+        },
+        "user_svc.ExchangeTokenRequest": {
+            "type": "object",
+            "required": [
+                "newApp"
+            ],
+            "properties": {
+                "newApp": {
+                    "description": "NewApp is the app of the new token that will be returned by this endpoint.",
+                    "type": "string"
+                },
+                "newDevice": {
+                    "description": "NewDevice. If not provided, the device of the original token will be used.",
+                    "type": "string"
+                }
+            }
+        },
+        "user_svc.ExchangeTokenResponse": {
+            "type": "object",
+            "required": [
+                "token"
+            ],
+            "properties": {
+                "token": {
+                    "description": "Token is the new token that will be returned by this endpoint.",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/user_svc.AuthToken"
+                        }
+                    ]
                 }
             }
         },

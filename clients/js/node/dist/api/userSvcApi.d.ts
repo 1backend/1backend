@@ -12,6 +12,8 @@
 import http from 'http';
 import { UserSvcChangePasswordRequest } from '../model/userSvcChangePasswordRequest';
 import { UserSvcCreateUserRequest } from '../model/userSvcCreateUserRequest';
+import { UserSvcExchangeTokenRequest } from '../model/userSvcExchangeTokenRequest';
+import { UserSvcExchangeTokenResponse } from '../model/userSvcExchangeTokenResponse';
 import { UserSvcGetPublicKeyResponse } from '../model/userSvcGetPublicKeyResponse';
 import { UserSvcHasPermissionResponse } from '../model/userSvcHasPermissionResponse';
 import { UserSvcListEnrollsRequest } from '../model/userSvcListEnrollsRequest';
@@ -115,6 +117,32 @@ export declare class UserSvcApi {
     }): Promise<{
         response: http.IncomingMessage;
         body: object;
+    }>;
+    /**
+     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
+     * @summary Exchange Token
+     * @param body ExchangeToken Request
+     */
+    exchangeToken(body: UserSvcExchangeTokenRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: UserSvcExchangeTokenResponse;
+    }>;
+    /**
+     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
+     * @summary Exchange Token
+     * @param body ExchangeToken Request
+     */
+    exchangeToken_1(body: UserSvcExchangeTokenRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: UserSvcExchangeTokenResponse;
     }>;
     /**
      * Get the public key to verify the JWT signature.

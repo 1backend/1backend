@@ -184,6 +184,8 @@ export * from './UserSvcCreateUserRequest';
 export * from './UserSvcEnroll';
 export * from './UserSvcEnrollInput';
 export * from './UserSvcErrorResponse';
+export * from './UserSvcExchangeTokenRequest';
+export * from './UserSvcExchangeTokenResponse';
 export * from './UserSvcGetPublicKeyResponse';
 export * from './UserSvcHasPermissionResponse';
 export * from './UserSvcListEnrollsRequest';

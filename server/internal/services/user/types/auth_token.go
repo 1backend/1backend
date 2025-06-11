@@ -80,3 +80,16 @@ type RevokeTokensRequest struct {
 }
 
 type RevokeTokensResponse struct{}
+
+type ExchangeTokenRequest struct {
+	// NewApp is the app of the new token that will be returned by this endpoint.
+	NewApp string `json:"newApp" binding:"required"`
+
+	// NewDevice. If not provided, the device of the original token will be used.
+	NewDevice string `json:"newDevice,omitempty"`
+}
+
+type ExchangeTokenResponse struct {
+	// Token is the new token that will be returned by this endpoint.
+	Token *AuthToken `json:"token" binding:"required"`
+}
