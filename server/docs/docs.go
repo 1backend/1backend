@@ -4125,7 +4125,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Enroll a list of users by contact or user Id to acquire a role.\nWorks on future or current users.\n\nA user can only enroll an other user to a role if the user owns that role.\n\nA user \"owns\" a role in the following cases:\n- A static role where the role ID is prefixed with the caller's slug.\n- Any dynamic or static role where the caller is an admin.\n\nExamples:\n- A user with the slug \"joe-doe\" owns roles like \"joe-doe:any-custom-role\".\n- A user with any slug who has the role \"my-service:admin\" owns \"my-service:user\".\n- A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:user\".",
+                "description": "Enroll a list of users by contact or user Id to acquire a role.\nWorks on future or current users.\n\nRequires the ` + "`" + `user-svc:enroll:edit` + "`" + ` permission, which by default all users have.\nA user can only enroll an other user to a role if the user \"owns\" that role.\n\nA user \"owns\" a role in the following cases:\n- A static role where the role ID is prefixed with the caller's slug.\n- Any dynamic or static role where the caller is an admin (has ` + "`" + `*:admin` + "`" + ` postfix of that role).\n\nExamples:\n- A user with the slug \"joe-doe\" owns roles like \"joe-doe:*\" such as \"joe-doe:any-custom-role\".\n- A user with any slug who has the role \"my-service:admin\" owns \"my-service:*\" roles such as \"my-service:user\".\n- A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:*\" such as \"user-svc:org:{%orgId}:user\".",
                 "consumes": [
                     "application/json"
                 ],
@@ -4181,7 +4181,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "List enrolls. Role, user ID or contact ID must be specified.\nCaller can only list enrolls of roles they own.",
+                "description": "List enrolls. Role, user ID or contact ID must be specified.\n\nRequires the ` + "`" + `user-svc:enroll:view` + "`" + ` permission, which by default all users have.\nCaller can only list enrolls of roles they own (unless they are an admin).",
                 "consumes": [
                     "application/json"
                 ],
@@ -10221,7 +10221,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.6.1",
+	Version:          "0.7.0",
 	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},

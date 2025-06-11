@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.6.1
+API version: 0.7.0
 Contact: sales@singulatron.com
 */
 
@@ -121,7 +121,9 @@ The response will still include the caller’s user information if not authorize
 	ListEnrolls List Enrolls
 
 	List enrolls. Role, user ID or contact ID must be specified.
-Caller can only list enrolls of roles they own.
+
+Requires the `user-svc:enroll:view` permission, which by default all users have.
+Caller can only list enrolls of roles they own (unless they are an admin).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiListEnrollsRequest
@@ -296,16 +298,17 @@ Leaked tokens should be handled separately, via a revocation flag or deletion.
 	Enroll a list of users by contact or user Id to acquire a role.
 Works on future or current users.
 
-A user can only enroll an other user to a role if the user owns that role.
+Requires the `user-svc:enroll:edit` permission, which by default all users have.
+A user can only enroll an other user to a role if the user "owns" that role.
 
 A user "owns" a role in the following cases:
 - A static role where the role ID is prefixed with the caller's slug.
-- Any dynamic or static role where the caller is an admin.
+- Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).
 
 Examples:
-- A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
-- A user with any slug who has the role "my-service:admin" owns "my-service:user".
-- A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
+- A user with the slug "joe-doe" owns roles like "joe-doe:*" such as "joe-doe:any-custom-role".
+- A user with any slug who has the role "my-service:admin" owns "my-service:*" roles such as "my-service:user".
+- A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:*" such as "user-svc:org:{%orgId}:user".
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiSaveEnrollsRequest
@@ -1307,7 +1310,9 @@ func (r ApiListEnrollsRequest) Execute() (*UserSvcListEnrollsResponse, *http.Res
 ListEnrolls List Enrolls
 
 List enrolls. Role, user ID or contact ID must be specified.
-Caller can only list enrolls of roles they own.
+
+Requires the `user-svc:enroll:view` permission, which by default all users have.
+Caller can only list enrolls of roles they own (unless they are an admin).
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiListEnrollsRequest
@@ -2920,16 +2925,17 @@ SaveEnrolls Save Enrolls
 Enroll a list of users by contact or user Id to acquire a role.
 Works on future or current users.
 
-A user can only enroll an other user to a role if the user owns that role.
+Requires the `user-svc:enroll:edit` permission, which by default all users have.
+A user can only enroll an other user to a role if the user "owns" that role.
 
 A user "owns" a role in the following cases:
 - A static role where the role ID is prefixed with the caller's slug.
-- Any dynamic or static role where the caller is an admin.
+- Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).
 
 Examples:
-- A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
-- A user with any slug who has the role "my-service:admin" owns "my-service:user".
-- A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
+- A user with the slug "joe-doe" owns roles like "joe-doe:*" such as "joe-doe:any-custom-role".
+- A user with any slug who has the role "my-service:admin" owns "my-service:*" roles such as "my-service:user".
+- A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:*" such as "user-svc:org:{%orgId}:user".
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiSaveEnrollsRequest
