@@ -10,12 +10,15 @@ package configservice
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"strings"
+	"time"
 
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 	config "github.com/1backend/1backend/server/internal/services/config/types"
@@ -35,7 +38,7 @@ import (
 // @Failure 500 {string} string "Internal Server Error"
 // @Security BearerAuth
 // @Router /config-svc/config [put]
-func (cs *ConfigService) Save(
+func (cs *ConfigService) SaveConfig(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
@@ -62,68 +65,68 @@ func (cs *ConfigService) Save(
 	}
 	defer r.Body.Close()
 
-	isAdmin, err := cs.options.Authorizer.IsAdminFromRequest(cs.publicKey, r)
-	if err != nil {
-		logger.Error("Failed to check admin status", slog.Any("error", err))
-		endpoint.InternalServerError(w)
-		return
-	}
-
 	err = cs.saveConfig(
 		*isAuthRsp.App,
-		isAdmin,
 		isAuthRsp.User.Slug,
-		*req.Config,
+		req,
 	)
 	if err != nil {
-		logger.Error("Failed to save config", slog.Any("error", err))
+		logger.Error("Failed to save config",
+			slog.Any("error", err),
+		)
 		endpoint.InternalServerError(w)
 		return
 	}
 
-	jsonData, _ := json.Marshal(config.SaveConfigResponse{})
-	_, err = w.Write([]byte(jsonData))
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
-	}
+	endpoint.WriteJSON(w, http.StatusOK, config.SaveConfigResponse{})
 }
 
 func (cs *ConfigService) saveConfig(
 	app string,
-	isAdmin bool,
 	callerSlug string,
-	newConfig types.Config,
+	newConfig *types.SaveConfigRequest,
 ) error {
 	callerSlug = kebabToCamel(callerSlug)
 
 	cs.configMutex.Lock()
 	defer cs.configMutex.Unlock()
 
-	newConfig.App = app
+	now := time.Now()
 
-	oldConfigData := cs.configs[app]
-	if oldConfigData == nil {
-		oldConfigData = map[string]interface{}{}
-		cs.configs[app] = oldConfigData
+	existing, found, err := cs.configStore.Query(
+		datastore.Id(app),
+	).FindOne()
+	if err != nil {
+		return errors.Wrap(err, "failed to query config")
 	}
 
-	if isAdmin {
-		oldConfigData = newConfig.Data
+	entry := &types.Config{}
+
+	if !found {
+		entry.Id = fmt.Sprintf("%s_%s", app, callerSlug)
+		entry.Data = map[string]interface{}{}
+		entry.DataJSON = "{}"
+		entry.CreatedAt = now
+		entry.UpdatedAt = now
 	} else {
-		oldConfigData[callerSlug] = newConfig.Data[callerSlug]
+		entry = existing.(*types.Config)
+		err = json.Unmarshal([]byte(entry.DataJSON), &entry.Data)
+		if err != nil {
+			return errors.Wrap(err, "failed to unmarshal existing config data")
+		}
 	}
 
-	newConfig.Data = oldConfigData
+	entry.Data = newConfig.Data
 
-	newJson, err := json.Marshal(newConfig.Data)
+	newJson, err := json.Marshal(entry.Data)
 	if err != nil {
 		return errors.Wrap(err, "failed to marshal config")
 	}
-	newConfig.DataJSON = string(newJson)
-	newConfig.Data = nil
 
-	err = cs.configStore.Upsert(newConfig)
+	entry.DataJSON = string(newJson)
+	entry.Data = nil
+
+	err = cs.configStore.Upsert(entry)
 	if err != nil {
 		return errors.Wrap(err, "failed to save config")
 	}

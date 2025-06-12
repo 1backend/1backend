@@ -9,7 +9,6 @@ package configservice
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"sync"
 
@@ -39,7 +38,6 @@ type ConfigService struct {
 	configStore     datastore.DataStore
 
 	configMutex sync.Mutex
-	configs     map[string]map[string]any
 
 	publicKey string
 }
@@ -50,7 +48,6 @@ func NewConfigService(
 
 	cs := &ConfigService{
 		options: options,
-		configs: map[string]map[string]any{},
 	}
 
 	return cs, nil
@@ -59,13 +56,13 @@ func NewConfigService(
 func (cs *ConfigService) RegisterRoutes(router *mux.Router) {
 	appl := cs.options.Middlewares
 
-	router.HandleFunc("/config-svc/config", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
-		cs.Get(w, r)
+	router.HandleFunc("/config-svc/configs", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+		cs.ListConfigs(w, r)
 	}))).
-		Methods("OPTIONS", "GET")
+		Methods("OPTIONS", "POST")
 
 	router.HandleFunc("/config-svc/config", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
-		cs.Save(w, r)
+		cs.SaveConfig(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
 }
@@ -94,7 +91,7 @@ func (cs *ConfigService) start() error {
 		&auth.Credential{},
 	)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to create credential store")
 	}
 	cs.credentialStore = credentialStore
 
@@ -102,7 +99,7 @@ func (cs *ConfigService) start() error {
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to get public key")
 	}
 	cs.publicKey = pk.PublicKey
 
@@ -111,7 +108,7 @@ func (cs *ConfigService) start() error {
 		&types.Config{},
 	)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to create config store")
 	}
 	cs.configStore = configStore
 
@@ -129,41 +126,13 @@ func (cs *ConfigService) start() error {
 		cs.credentialStore,
 	)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to register service account")
 	}
 	cs.token = token.Token
 
 	err = cs.registerPermits()
 	if err != nil {
-		return err
-	}
-
-	err = cs.loadConfigs()
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (cs *ConfigService) loadConfigs() error {
-	cs.configMutex.Lock()
-	defer cs.configMutex.Unlock()
-
-	configIs, err := cs.configStore.Query().Find()
-	if err != nil {
-		return err
-	}
-
-	for _, configI := range configIs {
-		config := configI.(*types.Config)
-
-		v := map[string]any{}
-		err := json.Unmarshal([]byte(config.DataJSON), &v)
-		if err != nil {
-			return errors.Wrap(err, "failed to parse config data")
-		}
-
-		cs.configs[config.App] = v
+		return errors.Wrap(err, "failed to register permits")
 	}
 
 	return nil

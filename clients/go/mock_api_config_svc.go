@@ -39,34 +39,34 @@ func (m *MockConfigSvcAPI) EXPECT() *MockConfigSvcAPIMockRecorder {
 	return m.recorder
 }
 
-// ReadConfig mocks base method.
-func (m *MockConfigSvcAPI) ReadConfig(ctx context.Context) ApiReadConfigRequest {
+// ListConfigs mocks base method.
+func (m *MockConfigSvcAPI) ListConfigs(ctx context.Context) ApiListConfigsRequest {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ReadConfig", ctx)
-	ret0, _ := ret[0].(ApiReadConfigRequest)
+	ret := m.ctrl.Call(m, "ListConfigs", ctx)
+	ret0, _ := ret[0].(ApiListConfigsRequest)
 	return ret0
 }
 
-// ReadConfig indicates an expected call of ReadConfig.
-func (mr *MockConfigSvcAPIMockRecorder) ReadConfig(ctx any) *gomock.Call {
+// ListConfigs indicates an expected call of ListConfigs.
+func (mr *MockConfigSvcAPIMockRecorder) ListConfigs(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadConfig", reflect.TypeOf((*MockConfigSvcAPI)(nil).ReadConfig), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListConfigs", reflect.TypeOf((*MockConfigSvcAPI)(nil).ListConfigs), ctx)
 }
 
-// ReadConfigExecute mocks base method.
-func (m *MockConfigSvcAPI) ReadConfigExecute(r ApiReadConfigRequest) (*ConfigSvcGetConfigResponse, *http.Response, error) {
+// ListConfigsExecute mocks base method.
+func (m *MockConfigSvcAPI) ListConfigsExecute(r ApiListConfigsRequest) (*ConfigSvcListConfigsResponse, *http.Response, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ReadConfigExecute", r)
-	ret0, _ := ret[0].(*ConfigSvcGetConfigResponse)
+	ret := m.ctrl.Call(m, "ListConfigsExecute", r)
+	ret0, _ := ret[0].(*ConfigSvcListConfigsResponse)
 	ret1, _ := ret[1].(*http.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
 
-// ReadConfigExecute indicates an expected call of ReadConfigExecute.
-func (mr *MockConfigSvcAPIMockRecorder) ReadConfigExecute(r any) *gomock.Call {
+// ListConfigsExecute indicates an expected call of ListConfigsExecute.
+func (mr *MockConfigSvcAPIMockRecorder) ListConfigsExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadConfigExecute", reflect.TypeOf((*MockConfigSvcAPI)(nil).ReadConfigExecute), r)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListConfigsExecute", reflect.TypeOf((*MockConfigSvcAPI)(nil).ListConfigsExecute), r)
 }
 
 // SaveConfig mocks base method.

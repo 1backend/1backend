@@ -7,31 +7,51 @@
  */
 package config_svc
 
+import "time"
+
 type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
 type Config struct {
-	Id       string                 `json:"id,omitempty"`
-	App      string                 `json:"app"          swagger:"default=default"`
-	DataJSON string                 `json:"dataJson,omitempty"`
-	Data     map[string]interface{} `json:"data"                                         binding:"required"`
+	// Id is simply the app of the config.
+	Id        string    `json:"id" binding:"required"`
+	CreatedAt time.Time `json:"createdAt" binding:"required"`
+	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
+
+	DataJSON string                 `json:"dataJson" binding:"required"`
+	Data     map[string]interface{} `json:"data" binding:"required"`
 }
 
 func (c Config) GetId() string {
 	return c.Id
 }
 
-type GetConfigRequest struct {
+type ListConfigsRequest struct {
 	App string `json:"app" swagger:"default=default"`
+
+	// Slugs or camelCased slugs of the owners to list configs for.
+	Slugs []string `json:"slugs,omitempty" swagger:"default=[]"`
 }
 
-type GetConfigResponse struct {
-	Config *Config `json:"config"`
+type ListConfigsResponse struct {
+	// Configs is a map of camelcase owner slug to Config.
+	// Eg.
+	// {
+	// 	"testUserSlug0": {
+	//   "id": "testUserSlug0",
+	//   "data": {
+	//     "key1": "value1",
+	//     "key2": "value2"
+	//   }
+	// 	}
+	// }
+	Configs map[string]*Config `json:"configs" binding:"required"`
 }
 
 type SaveConfigRequest struct {
-	Config *Config `json:"config"`
+	DataJSON string                 `json:"dataJson,omitempty"`
+	Data     map[string]interface{} `json:"data,omitempty"`
 }
 
 type SaveConfigResponse struct {

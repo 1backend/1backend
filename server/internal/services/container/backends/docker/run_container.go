@@ -23,6 +23,7 @@ import (
 	"regexp"
 	"strings"
 
+	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/docker/docker/api/types"
 	dockercontainer "github.com/docker/docker/api/types/container"
 	"github.com/docker/go-connections/nat"
@@ -281,13 +282,16 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 			// If we are not running in Docker, we will ask the Config Svc about the config directory and we mount that.
 			// If that's not set, we will just default to `~/.1backend`.
 			readConfigResponse, _, err := d.clientFactory.Client(client.WithToken(d.token)).
-				ConfigSvcAPI.ReadConfig(context.Background()).
+				ConfigSvcAPI.ListConfigs(context.Background()).
+				Body(openapi.ConfigSvcListConfigsRequest{
+					Slugs: []string{"configSvc"},
+				}).
 				Execute()
 			if err != nil {
 				return nil, nil, errors.Wrap(err, "failed to get config")
 			}
 
-			configFolderPathI := dipper.Get(readConfigResponse.Config.Data, "$.config-svc.configFolderPath")
+			configFolderPathI := dipper.Get(readConfigResponse.Configs["configSvc"].Data, "configFolderPath")
 			configFolderPath, ok := configFolderPathI.(string)
 			if !ok {
 				homeDir, _ := os.UserHomeDir()

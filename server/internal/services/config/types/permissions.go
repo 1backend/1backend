@@ -15,6 +15,10 @@ var (
 	PermissionConfigDelete = "config-svc:config:delete"
 	PermissionConfigStream = "config-svc:config:stream"
 
+	UserPermissions = []string{
+		PermissionConfigEdit,
+	}
+
 	// Admin Permission Group
 	AdminPermissions = []string{
 		PermissionConfigCreate,

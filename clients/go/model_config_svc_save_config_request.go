@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.0
+API version: 0.7.3
 Contact: sales@singulatron.com
 */
 
@@ -20,7 +20,8 @@ var _ MappedNullable = &ConfigSvcSaveConfigRequest{}
 
 // ConfigSvcSaveConfigRequest struct for ConfigSvcSaveConfigRequest
 type ConfigSvcSaveConfigRequest struct {
-	Config *ConfigSvcConfig `json:"config,omitempty"`
+	Data map[string]interface{} `json:"data,omitempty"`
+	DataJson *string `json:"dataJson,omitempty"`
 }
 
 // NewConfigSvcSaveConfigRequest instantiates a new ConfigSvcSaveConfigRequest object
@@ -40,36 +41,68 @@ func NewConfigSvcSaveConfigRequestWithDefaults() *ConfigSvcSaveConfigRequest {
 	return &this
 }
 
-// GetConfig returns the Config field value if set, zero value otherwise.
-func (o *ConfigSvcSaveConfigRequest) GetConfig() ConfigSvcConfig {
-	if o == nil || IsNil(o.Config) {
-		var ret ConfigSvcConfig
+// GetData returns the Data field value if set, zero value otherwise.
+func (o *ConfigSvcSaveConfigRequest) GetData() map[string]interface{} {
+	if o == nil || IsNil(o.Data) {
+		var ret map[string]interface{}
 		return ret
 	}
-	return *o.Config
+	return o.Data
 }
 
-// GetConfigOk returns a tuple with the Config field value if set, nil otherwise
+// GetDataOk returns a tuple with the Data field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigSvcSaveConfigRequest) GetConfigOk() (*ConfigSvcConfig, bool) {
-	if o == nil || IsNil(o.Config) {
-		return nil, false
+func (o *ConfigSvcSaveConfigRequest) GetDataOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.Data) {
+		return map[string]interface{}{}, false
 	}
-	return o.Config, true
+	return o.Data, true
 }
 
-// HasConfig returns a boolean if a field has been set.
-func (o *ConfigSvcSaveConfigRequest) HasConfig() bool {
-	if o != nil && !IsNil(o.Config) {
+// HasData returns a boolean if a field has been set.
+func (o *ConfigSvcSaveConfigRequest) HasData() bool {
+	if o != nil && !IsNil(o.Data) {
 		return true
 	}
 
 	return false
 }
 
-// SetConfig gets a reference to the given ConfigSvcConfig and assigns it to the Config field.
-func (o *ConfigSvcSaveConfigRequest) SetConfig(v ConfigSvcConfig) {
-	o.Config = &v
+// SetData gets a reference to the given map[string]interface{} and assigns it to the Data field.
+func (o *ConfigSvcSaveConfigRequest) SetData(v map[string]interface{}) {
+	o.Data = v
+}
+
+// GetDataJson returns the DataJson field value if set, zero value otherwise.
+func (o *ConfigSvcSaveConfigRequest) GetDataJson() string {
+	if o == nil || IsNil(o.DataJson) {
+		var ret string
+		return ret
+	}
+	return *o.DataJson
+}
+
+// GetDataJsonOk returns a tuple with the DataJson field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcSaveConfigRequest) GetDataJsonOk() (*string, bool) {
+	if o == nil || IsNil(o.DataJson) {
+		return nil, false
+	}
+	return o.DataJson, true
+}
+
+// HasDataJson returns a boolean if a field has been set.
+func (o *ConfigSvcSaveConfigRequest) HasDataJson() bool {
+	if o != nil && !IsNil(o.DataJson) {
+		return true
+	}
+
+	return false
+}
+
+// SetDataJson gets a reference to the given string and assigns it to the DataJson field.
+func (o *ConfigSvcSaveConfigRequest) SetDataJson(v string) {
+	o.DataJson = &v
 }
 
 func (o ConfigSvcSaveConfigRequest) MarshalJSON() ([]byte, error) {
@@ -82,8 +115,11 @@ func (o ConfigSvcSaveConfigRequest) MarshalJSON() ([]byte, error) {
 
 func (o ConfigSvcSaveConfigRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Config) {
-		toSerialize["config"] = o.Config
+	if !IsNil(o.Data) {
+		toSerialize["data"] = o.Data
+	}
+	if !IsNil(o.DataJson) {
+		toSerialize["dataJson"] = o.DataJson
 	}
 	return toSerialize, nil
 }

@@ -13,9 +13,10 @@ import { UserService } from './user.service';
 import { first } from 'rxjs';
 import {
 	ConfigSvcApi,
-	ConfigSvcGetConfigResponse,
+	ConfigSvcListConfigsResponse,
 	Configuration,
 	ConfigSvcConfig,
+	ListConfigsRequest,
 } from '@1backend/client';
 
 @Injectable({
@@ -24,12 +25,12 @@ import {
 export class ConfigService {
 	private configService!: ConfigSvcApi;
 
-	lastConfig!: ConfigSvcConfig;
+	lastConfigs!: { [key: string]: ConfigSvcConfig };
 
-	configSubject = new ReplaySubject<ConfigSvcConfig>(1);
+	configsSubject = new ReplaySubject<{ [key: string]: ConfigSvcConfig }>(1);
 
 	/** Config emitted whenever it's loaded (on startup) or saved */
-	config$ = this.configSubject.asObservable();
+	configs$ = this.configsSubject.asObservable();
 
 	constructor(
 		private server: ServerService,
@@ -52,8 +53,8 @@ export class ConfigService {
 		this.firehoseService.firehoseEvent$.subscribe(async (event) => {
 			switch (event.name) {
 				case 'configUpdate': {
-					const rsp = await this.readConfig();
-					this.configSubject.next(rsp.config!);
+					const rsp = await this.listConfigs();
+					this.configsSubject.next(rsp.configs);
 					break;
 				}
 			}
@@ -62,15 +63,10 @@ export class ConfigService {
 
 	async loggedInInit() {
 		try {
-			const rsp = await this.readConfig();
-			console.log('Config loaded', rsp);
-			this.lastConfig = rsp?.config?.data
-				? rsp?.config
-				: {
-						data: {},
-					};
+			const rsp = await this.listConfigs();
+			this.lastConfigs = rsp?.configs || {};
 
-			this.configSubject.next(this.lastConfig as ConfigSvcConfig);
+			this.configsSubject.next(this.lastConfigs);
 		} catch (error) {
 			console.log(error);
 			console.error('Error in pollConfig', {
@@ -79,7 +75,9 @@ export class ConfigService {
 		}
 	}
 
-	async readConfig(): Promise<ConfigSvcGetConfigResponse> {
-		return await this.configService.readConfig();
+	async listConfigs(
+		req?: ListConfigsRequest
+	): Promise<ConfigSvcListConfigsResponse> {
+		return await this.configService.listConfigs(req);
 	}
 }

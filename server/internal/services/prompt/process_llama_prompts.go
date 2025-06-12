@@ -48,7 +48,6 @@ func (p *PromptService) processLlamaCpp(
 	}
 
 	if template == "" {
-
 		modelRsp, _, err := p.options.ClientFactory.Client(client.WithToken(token)).
 			ModelSvcAPI.GetModel(context.Background(), currentPrompt.ModelId).
 			Execute()

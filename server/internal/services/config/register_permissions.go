@@ -43,6 +43,18 @@ func (p *ConfigService) registerPermits() error {
 		}
 	}
 
+	for _, role := range []string{
+		usertypes.RoleUser,
+	} {
+		for _, permission := range config.UserPermissions {
+			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
+				App:        openapi.PtrString("*"),
+				Roles:      []string{role},
+				Permission: permission,
+			})
+		}
+	}
+
 	_, _, err := userSvc.SavePermits(ctx).
 		Body(req).
 		Execute()
