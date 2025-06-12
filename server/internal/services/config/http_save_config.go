@@ -93,8 +93,10 @@ func (cs *ConfigService) saveConfig(
 
 	now := time.Now()
 
+	id := fmt.Sprintf("%s_%s", app, callerSlug)
+
 	existing, found, err := cs.configStore.Query(
-		datastore.Id(app),
+		datastore.Id(id),
 	).FindOne()
 	if err != nil {
 		return errors.Wrap(err, "failed to query config")
@@ -103,7 +105,7 @@ func (cs *ConfigService) saveConfig(
 	entry := &types.Config{}
 
 	if !found {
-		entry.Id = fmt.Sprintf("%s_%s", app, callerSlug)
+		entry.Id = id
 		entry.Data = map[string]interface{}{}
 		entry.DataJSON = "{}"
 		entry.CreatedAt = now
@@ -116,7 +118,7 @@ func (cs *ConfigService) saveConfig(
 		}
 	}
 
-	entry.Data = newConfig.Data
+	entry.Data = DeepMerge(entry.Data, newConfig.Data)
 
 	newJson, err := json.Marshal(entry.Data)
 	if err != nil {
