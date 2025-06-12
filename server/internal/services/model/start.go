@@ -32,10 +32,8 @@ import (
 // This obviously means there is a single container that can be active at the moment on a node.
 const hostPortNum = 8001
 
-/*
-Starts the model which has the supplied modelId or the currently activated one of
-the modelId is empty.
-*/
+// Starts the model which has the supplied modelId
+// or the currently activated one if the modelId is empty.
 func (ms *ModelService) startModel(modelId string) error {
 	readConfigResponse, _, err := ms.options.ClientFactory.Client().
 		ConfigSvcAPI.ListConfigs(context.Background()).

@@ -86,9 +86,9 @@ func (cs *ConfigService) listConfigs(req *types.ListConfigsRequest) (map[string]
 	ids := []any{}
 	for _, slug := range req.Slugs {
 		slug = kebabToCamel(slug)
-		ids = append(ids, datastore.Id(
+		ids = append(ids,
 			fmt.Sprintf("%s_%s", req.App, slug),
-		))
+		)
 	}
 
 	filters := []datastore.Filter{}
@@ -132,7 +132,7 @@ func (cs *ConfigService) listConfigs(req *types.ListConfigsRequest) (map[string]
 	return ret, nil
 }
 
-func (cs ConfigService) defaults(
+func (cs *ConfigService) defaults(
 	req *types.ListConfigsRequest,
 	ret map[string]*types.Config,
 ) {

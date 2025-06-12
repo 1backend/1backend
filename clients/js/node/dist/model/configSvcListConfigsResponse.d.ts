@@ -14,7 +14,7 @@ export declare class ConfigSvcListConfigsResponse {
     /**
     * Configs is a map of camelcase owner slug to Config. Eg. {  \"testUserSlug0\": {   \"id\": \"testUserSlug0\",   \"data\": {     \"key1\": \"value1\",     \"key2\": \"value2\"   }  } }
     */
-    'configs'?: {
+    'configs': {
         [key: string]: ConfigSvcConfig;
     };
     static discriminator: string | undefined;

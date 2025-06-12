@@ -1002,6 +1002,8 @@ function ConfigSvcListConfigsRequestToJSONTyped(value, ignoreDiscriminator = fal
  * Check if a given object implements the ConfigSvcListConfigsResponse interface.
  */
 function instanceOfConfigSvcListConfigsResponse(value) {
+    if (!('configs' in value) || value['configs'] === undefined)
+        return false;
     return true;
 }
 function ConfigSvcListConfigsResponseFromJSON(json) {
@@ -1012,7 +1014,7 @@ function ConfigSvcListConfigsResponseFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'configs': json['configs'] == null ? undefined : (mapValues(json['configs'], ConfigSvcConfigFromJSON)),
+        'configs': (mapValues(json['configs'], ConfigSvcConfigFromJSON)),
     };
 }
 function ConfigSvcListConfigsResponseToJSON(json) {
@@ -1023,7 +1025,7 @@ function ConfigSvcListConfigsResponseToJSONTyped(value, ignoreDiscriminator = fa
         return value;
     }
     return {
-        'configs': value['configs'] == null ? undefined : (mapValues(value['configs'], ConfigSvcConfigToJSON)),
+        'configs': (mapValues(value['configs'], ConfigSvcConfigToJSON)),
     };
 }
 
@@ -11375,9 +11377,6 @@ class ConfigSvcApi extends BaseAPI {
      */
     listConfigsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['body'] == null) {
-                throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling listConfigs().');
-            }
             const queryParameters = {};
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
@@ -11395,8 +11394,8 @@ class ConfigSvcApi extends BaseAPI {
      * Retrieves the current configurations for a specified app. Since any user can save configurations, it is strongly advised that you supply a list of owners to filter on. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
      * List Configs
      */
-    listConfigs(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
+    listConfigs() {
+        return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
             const response = yield this.listConfigsRaw(requestParameters, initOverrides);
             return yield response.value();
         });

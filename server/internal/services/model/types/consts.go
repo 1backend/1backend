@@ -92,6 +92,17 @@ const llamaChatUncensoredPrompt = `### HUMAN:
 `
 
 var Models = []*Model{
+	{
+		Id: "dummy",
+		Assets: []Asset{
+			{
+				EnvVarKey: "MODEL",
+				Url:       "https://raw.githubusercontent.com/github/gitignore/main/README.md",
+			},
+		},
+		PlatformId: PlatformLlamaCpp.Id,
+		Name:       "Dummy Model",
+	},
 	//
 	// MISTRAL 7B
 	//

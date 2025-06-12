@@ -17,6 +17,8 @@ import { ConfigSvcConfigFromJSON, ConfigSvcConfigToJSON, } from './ConfigSvcConf
  * Check if a given object implements the ConfigSvcListConfigsResponse interface.
  */
 export function instanceOfConfigSvcListConfigsResponse(value) {
+    if (!('configs' in value) || value['configs'] === undefined)
+        return false;
     return true;
 }
 export function ConfigSvcListConfigsResponseFromJSON(json) {
@@ -27,7 +29,7 @@ export function ConfigSvcListConfigsResponseFromJSONTyped(json, ignoreDiscrimina
         return json;
     }
     return {
-        'configs': json['configs'] == null ? undefined : (mapValues(json['configs'], ConfigSvcConfigFromJSON)),
+        'configs': (mapValues(json['configs'], ConfigSvcConfigFromJSON)),
     };
 }
 export function ConfigSvcListConfigsResponseToJSON(json) {
@@ -38,6 +40,6 @@ export function ConfigSvcListConfigsResponseToJSONTyped(value, ignoreDiscriminat
         return value;
     }
     return {
-        'configs': value['configs'] == null ? undefined : (mapValues(value['configs'], ConfigSvcConfigToJSON)),
+        'configs': (mapValues(value['configs'], ConfigSvcConfigToJSON)),
     };
 }

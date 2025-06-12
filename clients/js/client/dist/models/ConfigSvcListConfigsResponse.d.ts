@@ -31,7 +31,7 @@ export interface ConfigSvcListConfigsResponse {
      * @type {{ [key: string]: ConfigSvcConfig; }}
      * @memberof ConfigSvcListConfigsResponse
      */
-    configs?: {
+    configs: {
         [key: string]: ConfigSvcConfig;
     };
 }

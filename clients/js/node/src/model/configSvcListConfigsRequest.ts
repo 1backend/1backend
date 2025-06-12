@@ -14,6 +14,9 @@ import { RequestFile } from './models';
 
 export class ConfigSvcListConfigsRequest {
     'app'?: string;
+    /**
+    * Slugs or camelCased slugs of the owners to list configs for.
+    */
     'slugs'?: Array<string>;
 
     static discriminator: string | undefined = undefined;

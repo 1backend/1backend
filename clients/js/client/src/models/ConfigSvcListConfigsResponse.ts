@@ -42,13 +42,14 @@ export interface ConfigSvcListConfigsResponse {
      * @type {{ [key: string]: ConfigSvcConfig; }}
      * @memberof ConfigSvcListConfigsResponse
      */
-    configs?: { [key: string]: ConfigSvcConfig; };
+    configs: { [key: string]: ConfigSvcConfig; };
 }
 
 /**
  * Check if a given object implements the ConfigSvcListConfigsResponse interface.
  */
 export function instanceOfConfigSvcListConfigsResponse(value: object): value is ConfigSvcListConfigsResponse {
+    if (!('configs' in value) || value['configs'] === undefined) return false;
     return true;
 }
 
@@ -62,7 +63,7 @@ export function ConfigSvcListConfigsResponseFromJSONTyped(json: any, ignoreDiscr
     }
     return {
         
-        'configs': json['configs'] == null ? undefined : (mapValues(json['configs'], ConfigSvcConfigFromJSON)),
+        'configs': (mapValues(json['configs'], ConfigSvcConfigFromJSON)),
     };
 }
 
@@ -77,7 +78,7 @@ export function ConfigSvcListConfigsResponseToJSONTyped(value?: ConfigSvcListCon
 
     return {
         
-        'configs': value['configs'] == null ? undefined : (mapValues(value['configs'], ConfigSvcConfigToJSON)),
+        'configs': (mapValues(value['configs'], ConfigSvcConfigToJSON)),
     };
 }
 

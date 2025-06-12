@@ -29,7 +29,7 @@ import {
 } from '../models/index';
 
 export interface ListConfigsRequest {
-    body: ConfigSvcListConfigsRequest;
+    body?: ConfigSvcListConfigsRequest;
 }
 
 export interface SaveConfigRequest {
@@ -46,13 +46,6 @@ export class ConfigSvcApi extends runtime.BaseAPI {
      * List Configs
      */
     async listConfigsRaw(requestParameters: ListConfigsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ConfigSvcListConfigsResponse>> {
-        if (requestParameters['body'] == null) {
-            throw new runtime.RequiredError(
-                'body',
-                'Required parameter "body" was null or undefined when calling listConfigs().'
-            );
-        }
-
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -74,7 +67,7 @@ export class ConfigSvcApi extends runtime.BaseAPI {
      * Retrieves the current configurations for a specified app. Since any user can save configurations, it is strongly advised that you supply a list of owners to filter on. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
      * List Configs
      */
-    async listConfigs(requestParameters: ListConfigsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ConfigSvcListConfigsResponse> {
+    async listConfigs(requestParameters: ListConfigsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ConfigSvcListConfigsResponse> {
         const response = await this.listConfigsRaw(requestParameters, initOverrides);
         return await response.value();
     }

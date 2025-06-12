@@ -41,7 +41,7 @@ export declare class ConfigSvcApi {
      * @summary List Configs
      * @param body List Configs Request
      */
-    listConfigs(body: ConfigSvcListConfigsRequest, options?: {
+    listConfigs(body?: ConfigSvcListConfigsRequest, options?: {
         headers: {
             [name: string]: string;
         };

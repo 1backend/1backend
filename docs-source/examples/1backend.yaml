@@ -187,6 +187,7 @@ definitions:
       app:
         type: string
       slugs:
+        description: Slugs or camelCased slugs of the owners to list configs for.
         items:
           type: string
         type: array
@@ -200,6 +201,8 @@ definitions:
           {\n  \"id\": \"testUserSlug0\",\n  \"data\": {\n    \"key1\": \"value1\",\n
           \   \"key2\": \"value2\"\n  }\n\t}\n}"
         type: object
+    required:
+    - configs
     type: object
   config_svc.SaveConfigRequest:
     properties:
@@ -3976,7 +3979,6 @@ paths:
       - description: List Configs Request
         in: body
         name: body
-        required: true
         schema:
           $ref: '#/definitions/config_svc.ListConfigsRequest'
       produces:

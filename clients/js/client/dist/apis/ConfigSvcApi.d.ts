@@ -12,7 +12,7 @@
 import * as runtime from '../runtime';
 import type { ConfigSvcListConfigsRequest, ConfigSvcListConfigsResponse, ConfigSvcSaveConfigRequest } from '../models/index';
 export interface ListConfigsRequest {
-    body: ConfigSvcListConfigsRequest;
+    body?: ConfigSvcListConfigsRequest;
 }
 export interface SaveConfigRequest {
     body: ConfigSvcSaveConfigRequest;
@@ -30,7 +30,7 @@ export declare class ConfigSvcApi extends runtime.BaseAPI {
      * Retrieves the current configurations for a specified app. Since any user can save configurations, it is strongly advised that you supply a list of owners to filter on. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
      * List Configs
      */
-    listConfigs(requestParameters: ListConfigsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ConfigSvcListConfigsResponse>;
+    listConfigs(requestParameters?: ListConfigsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ConfigSvcListConfigsResponse>;
     /**
      * Save the provided configuration to the server
      * Save Config

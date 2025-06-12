@@ -81,4 +81,17 @@ func TestConfigService(t *testing.T) {
 		require.Equal(t, "newValue1", rsp.Configs["testUserSlug1"].Data["key1"], rsp)
 		require.Equal(t, "newValue2", rsp.Configs["testUserSlug1"].Data["key2"], rsp)
 	})
+
+	t.Run("list configs by id", func(t *testing.T) {
+		rsp, _, err := client2.ConfigSvcAPI.ListConfigs(ctx).
+			Body(openapi.ConfigSvcListConfigsRequest{
+				Slugs: []string{"testUserSlug1"},
+			}).
+			Execute()
+		require.NoError(t, err)
+		require.NotNil(t, rsp.Configs)
+		require.NotNil(t, rsp.Configs["testUserSlug1"])
+		require.Equal(t, "newValue1", rsp.Configs["testUserSlug1"].Data["key1"], rsp)
+		require.Equal(t, "newValue2", rsp.Configs["testUserSlug1"].Data["key2"], rsp)
+	})
 }

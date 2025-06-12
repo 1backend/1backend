@@ -65,16 +65,8 @@ func (cs *ConfigService) SaveConfig(
 	}
 	defer r.Body.Close()
 
-	isAdmin, err := cs.options.Authorizer.IsAdminFromRequest(cs.publicKey, r)
-	if err != nil {
-		logger.Error("Failed to check admin status", slog.Any("error", err))
-		endpoint.InternalServerError(w)
-		return
-	}
-
 	err = cs.saveConfig(
 		*isAuthRsp.App,
-		isAdmin,
 		isAuthRsp.User.Slug,
 		req,
 	)
@@ -91,7 +83,6 @@ func (cs *ConfigService) SaveConfig(
 
 func (cs *ConfigService) saveConfig(
 	app string,
-	isAdmin bool,
 	callerSlug string,
 	newConfig *types.SaveConfigRequest,
 ) error {

@@ -26,7 +26,7 @@ export interface ConfigSvcListConfigsRequest {
      */
     app?: string;
     /**
-     * 
+     * Slugs or camelCased slugs of the owners to list configs for.
      * @type {Array<string>}
      * @memberof ConfigSvcListConfigsRequest
      */
