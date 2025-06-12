@@ -10,7 +10,7 @@ import { ElectronIpcService } from '../services/electron-ipc.service';
 import { WindowApiConst } from 'shared-lib';
 import { ElectronAppService } from '../services/electron-app.service';
 import { combineLatest, Subscription } from 'rxjs';
-import { DownloadService, FileSvcConfig } from '../services/download.service';
+import { DownloadService } from '../services/download.service';
 import { ModelService, ModelSvcConfig } from '../services/model.service';
 import { ModelSvcModel } from '@1backend/client';
 import { ContainerService } from '../services/container.service';
@@ -119,24 +119,26 @@ export class StartupComponent implements OnInit {
 		this.downloaded = data.status == 'completed';
 	}
 
-	selectedModelName(cu: Config | null): string {
+	selectedModelName(cu: { [key: string]: Config } | null): string {
 		if (!cu) {
 			return '';
 		}
 
 		const model = this.models?.find(
-			(v) => v.id == (cu?.data['model-svc'] as ModelSvcConfig)?.currentModelId
+			(v) => v.id == (cu['modelSvc'].data as ModelSvcConfig)?.currentModelId
 		);
 		const displayName = [model?.name, model?.flavour, model?.version].join(' ');
 		return displayName;
 	}
 
-	selectedModel(cu: Config | null): ModelSvcModel | undefined {
+	selectedModel(
+		cu: { [key: string]: Config } | null
+	): ModelSvcModel | undefined {
 		if (!cu) {
 			return;
 		}
 		return this.models?.find(
-			(v) => v.id == (cu?.data['model-svc'] as ModelSvcConfig)?.currentModelId
+			(v) => v.id == (cu['modelSvc'].data as ModelSvcConfig)?.currentModelId
 		);
 	}
 
@@ -226,9 +228,8 @@ export class StartupComponent implements OnInit {
 	}
 
 	async download() {
-		const config = this.configService.lastConfig;
-		const modelId = (config as unknown as ConfigData).data['model-svc']
-			.currentModelId;
+		const configs = this.configService.lastConfigs;
+		const modelId = configs['modelSvc'].data.currentModelId;
 		if (!modelId) {
 			throw 'Model id is empty';
 		}
@@ -255,11 +256,4 @@ export class StartupComponent implements OnInit {
 	modelAssetUrl(model?: ModelSvcModel): string {
 		return model?.assets?.find((a) => a.envVarKey == 'MODEL')?.url || '';
 	}
-}
-
-interface ConfigData {
-	data: {
-		'model-svc': ModelSvcConfig;
-		'file-svc': FileSvcConfig;
-	};
 }

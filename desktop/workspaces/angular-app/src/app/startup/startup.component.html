@@ -69,8 +69,8 @@
 									>
 										<span
 											*ngIf="
-												!(configService.config$ | async)!.data['config-svc']
-													.isRuntimeInstalled
+												!(configService.configs$ | async)!.configSvc!.data
+													?.isRuntimeInstalled
 											"
 											style="color: white"
 											class="sng-test-runtime-button"
@@ -78,8 +78,8 @@
 										>
 										<span
 											*ngIf="
-												(configService.config$ | async)!.data['config-svc']
-													.isRuntimeInstalled
+												(configService.configs$ | async)!.configSvc!.data
+													?.isRuntimeInstalled
 											"
 											style="color: white"
 											class="sng-test-runtime-button"
@@ -142,7 +142,7 @@
 											{{ 'Your selected model is' | translate }}:
 											<strong
 												>{{
-													selectedModelName(configService.config$ | async)
+													selectedModelName(configService.configs$ | async)
 												}}.</strong
 											>
 										</p>
@@ -157,7 +157,7 @@
 											{{ 'This operation will consume' | translate }}
 											<strong
 												>{{
-													selectedModel(configService.config$ | async)?.size
+													selectedModel(configService.configs$ | async)?.size
 												}}
 												GB</strong
 											>
@@ -187,7 +187,7 @@
 											>
 												{{ 'Download folder' | translate }}:&nbsp;
 												<span style="color: #666">{{
-													(configService.config$ | async)!.data['download-svc']
+													(configService.configs$ | async)?.downloadSvc?.data
 														?.downloadFolder
 												}}</span>
 											</div>
@@ -206,12 +206,12 @@
 										<app-downloading
 											*ngIf="
 												hasModelAsset(
-													selectedModel(configService.config$ | async)
+													selectedModel(configService.configs$ | async)
 												)
 											"
 											[url]="
 												modelAssetUrl(
-													selectedModel(configService.config$ | async)
+													selectedModel(configService.configs$ | async)
 												)
 											"
 											(downloadStatusChange)="handleDownloadStatus($event)"

@@ -103,7 +103,7 @@ export class ChatInputComponent implements OnInit, AfterViewInit {
   "stableDiffusion": {
     "txt2Img": {}
   }
-}`
+}`;
 	parsedJson: any;
 
 	async ngOnInit() {
@@ -111,9 +111,9 @@ export class ChatInputComponent implements OnInit, AfterViewInit {
 		this.cd.markForCheck();
 
 		this.subscriptions.push(
-			this.configService.config$.subscribe(async (config) => {
+			this.configService.configs$.subscribe(async (config) => {
 				this.model = this.models?.find(
-					(m) => m.id == config?.data['model-svc']?.currentModelId
+					(m) => m.id == config?.modelSvc.data?.currentModelId
 				);
 			})
 		);
@@ -129,7 +129,7 @@ export class ChatInputComponent implements OnInit, AfterViewInit {
 	}
 
 	toggleAdvancedConfig() {
-		this.isAdvancedConfigVisible = !this.isAdvancedConfigVisible
+		this.isAdvancedConfigVisible = !this.isAdvancedConfigVisible;
 	}
 
 	getPanelHeight() {
@@ -220,7 +220,7 @@ export class ChatInputComponent implements OnInit, AfterViewInit {
 			characterId: character?.id || '',
 			message: message,
 			modelId: this.model?.id || '',
-			engineParameters: engineParameters
+			engineParameters: engineParameters,
 		});
 	}
 
