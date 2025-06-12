@@ -73,7 +73,7 @@ export class ConfigSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Save the provided configuration to the server
+     * Save the provided configuration to the server. The app from the caller\'s token is used to determine which app the config belongs to. The caller\'s camelCased slug (e.g., \"test-user-slug\" becomes \"testUserSlug\") is used as the config key automatically.  The save performs a deep merge, that is: - Nested objects are recursively merged rather than replaced. - If a field exists in both the existing and the incoming config and both values are objects, their contents are merged. - If a field exists in both but one or both values are not objects (e.g., string, number, array), the incoming value replaces the existing one. - Fields present only in the incoming config are added. - Fields present only in the existing config are preserved. - Top-level and nested merges follow the same rules.
      * Save Config
      */
     async saveConfigRaw(requestParameters: SaveConfigRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
@@ -106,7 +106,7 @@ export class ConfigSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Save the provided configuration to the server
+     * Save the provided configuration to the server. The app from the caller\'s token is used to determine which app the config belongs to. The caller\'s camelCased slug (e.g., \"test-user-slug\" becomes \"testUserSlug\") is used as the config key automatically.  The save performs a deep merge, that is: - Nested objects are recursively merged rather than replaced. - If a field exists in both the existing and the incoming config and both values are objects, their contents are merged. - If a field exists in both but one or both values are not objects (e.g., string, number, array), the incoming value replaces the existing one. - Fields present only in the incoming config are added. - Fields present only in the existing config are preserved. - Top-level and nested merges follow the same rules.
      * Save Config
      */
     async saveConfig(requestParameters: SaveConfigRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
