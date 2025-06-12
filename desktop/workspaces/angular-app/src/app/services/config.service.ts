@@ -16,6 +16,7 @@ import {
 	ConfigSvcListConfigsResponse,
 	Configuration,
 	ConfigSvcConfig,
+	ListConfigsRequest,
 } from '@1backend/client';
 
 @Injectable({
@@ -52,7 +53,7 @@ export class ConfigService {
 		this.firehoseService.firehoseEvent$.subscribe(async (event) => {
 			switch (event.name) {
 				case 'configUpdate': {
-					const rsp = await this.listConfigs('', []);
+					const rsp = await this.listConfigs();
 					this.configsSubject.next(rsp.configs);
 					break;
 				}
@@ -62,7 +63,7 @@ export class ConfigService {
 
 	async loggedInInit() {
 		try {
-			const rsp = await this.listConfigs('', []);
+			const rsp = await this.listConfigs();
 			this.lastConfigs = rsp?.configs || {};
 
 			this.configsSubject.next(this.lastConfigs);
@@ -75,14 +76,8 @@ export class ConfigService {
 	}
 
 	async listConfigs(
-		app: string,
-		slugs: string[]
+		req?: ListConfigsRequest
 	): Promise<ConfigSvcListConfigsResponse> {
-		return await this.configService.listConfigs({
-			body: {
-				app,
-				slugs,
-			},
-		});
+		return await this.configService.listConfigs(req);
 	}
 }
