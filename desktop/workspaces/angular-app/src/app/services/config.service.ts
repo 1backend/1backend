@@ -63,8 +63,7 @@ export class ConfigService {
 	async loggedInInit() {
 		try {
 			const rsp = await this.listConfigs('', []);
-			console.log('Config loaded', rsp);
-			this.lastConfigs = rsp?.configs ? rsp?.configs : {};
+			this.lastConfigs = rsp?.configs || {};
 
 			this.configsSubject.next(this.lastConfigs);
 		} catch (error) {
