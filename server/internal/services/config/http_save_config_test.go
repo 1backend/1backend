@@ -94,4 +94,58 @@ func TestConfigService(t *testing.T) {
 		require.Equal(t, "newValue1", rsp.Configs["testUserSlug1"].Data["key1"], rsp)
 		require.Equal(t, "newValue2", rsp.Configs["testUserSlug1"].Data["key2"], rsp)
 	})
+
+	t.Run("test deep merge functionality", func(t *testing.T) {
+		t.Run("save nested", func(t *testing.T) {
+			_, _, err := client1.ConfigSvcAPI.SaveConfig(ctx).
+				Body(openapi.ConfigSvcSaveConfigRequest{
+					Data: map[string]any{
+						"key3": map[string]any{
+							"nested1": "n1",
+							"nested2": "n2",
+						},
+					},
+				}).
+				Execute()
+			require.NoError(t, err)
+		})
+
+		t.Run("updated nested", func(t *testing.T) {
+			_, _, err = client1.ConfigSvcAPI.SaveConfig(ctx).
+				Body(openapi.ConfigSvcSaveConfigRequest{
+					Data: map[string]any{
+						"key3": map[string]any{
+							"nested1": "n1-updated",
+							"nested3": "n3",
+						},
+					},
+				}).
+				Execute()
+			require.NoError(t, err)
+		})
+
+		t.Run("verify deep merge result", func(t *testing.T) {
+			rsp, _, err := client1.ConfigSvcAPI.
+				ListConfigs(ctx).
+				Body(openapi.ConfigSvcListConfigsRequest{
+					Slugs: []string{"testUserSlug0"},
+				}).
+				Execute()
+			require.NoError(t, err)
+
+			config := rsp.Configs["testUserSlug0"]
+			require.NotNil(t, config)
+
+			require.NotNil(t, config.Data["key1"])
+			require.NotNil(t, config.Data["key2"])
+
+			key3, ok := config.Data["key3"].(map[string]any)
+			require.True(t, ok, "key3 should be a nested map")
+
+			require.Equal(t, "n1-updated", key3["nested1"], rsp)
+			require.Equal(t, "n2", key3["nested2"], rsp)
+			require.Equal(t, "n3", key3["nested3"], rsp)
+		})
+	})
+
 }

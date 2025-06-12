@@ -28,7 +28,17 @@ import (
 
 // @Id saveConfig
 // @Summary Save Config
-// @Description Save the provided configuration to the server
+// @Description Save the provided configuration to the server.
+// @Description The app from the caller's token is used to determine which app the config belongs to.
+// @Description The caller's camelCased slug (e.g., "test-user-slug" becomes "testUserSlug") is used as the config key automatically.
+// @Description
+// @Description The save performs a deep merge, that is:
+// @Description - Nested objects are recursively merged rather than replaced.
+// @Description - If a field exists in both the existing and the incoming config and both values are objects, their contents are merged.
+// @Description - If a field exists in both but one or both values are not objects (e.g., string, number, array), the incoming value replaces the existing one.
+// @Description - Fields present only in the incoming config are added.
+// @Description - Fields present only in the existing config are preserved.
+// @Description - Top-level and nested merges follow the same rules.
 // @Tags Config Svc
 // @Accept json
 // @Produce json
@@ -93,8 +103,10 @@ func (cs *ConfigService) saveConfig(
 
 	now := time.Now()
 
+	id := fmt.Sprintf("%s_%s", app, callerSlug)
+
 	existing, found, err := cs.configStore.Query(
-		datastore.Id(app),
+		datastore.Id(id),
 	).FindOne()
 	if err != nil {
 		return errors.Wrap(err, "failed to query config")
@@ -103,7 +115,7 @@ func (cs *ConfigService) saveConfig(
 	entry := &types.Config{}
 
 	if !found {
-		entry.Id = fmt.Sprintf("%s_%s", app, callerSlug)
+		entry.Id = id
 		entry.Data = map[string]interface{}{}
 		entry.DataJSON = "{}"
 		entry.CreatedAt = now
@@ -116,7 +128,7 @@ func (cs *ConfigService) saveConfig(
 		}
 	}
 
-	entry.Data = newConfig.Data
+	entry.Data = DeepMerge(entry.Data, newConfig.Data)
 
 	newJson, err := json.Marshal(entry.Data)
 	if err != nil {
