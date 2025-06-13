@@ -19,11 +19,11 @@ func (cs *ProxyService) HostPolicy(ctx context.Context, host string) error {
 		datastore.Id(host),
 	).FindOne()
 	if err != nil {
-		return errors.Wrap(err, "failed to query route by host")
+		return errors.Wrapf(err, "failed to query route by host '%v'", host)
 	}
 
 	if !found {
-		return errors.New("host not found in routes")
+		return errors.Errorf("host '%v' not found in routes", host)
 	}
 
 	return nil
