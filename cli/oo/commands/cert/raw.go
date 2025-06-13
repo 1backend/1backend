@@ -30,6 +30,7 @@ func Raw(cmd *cobra.Command, args []string) error {
 	req := openapi.ProxySvcListCertsRequest{
 		Ids: []string{key},
 	}
+
 	rsp, _, err := cf.Client(client.WithToken(token)).
 		ProxySvcAPI.ListCerts(ctx).
 		Body(req).

@@ -105,21 +105,21 @@ func (cs *ProxyService) listCerts(req *proxy.ListCertsRequest) ([]proxy.Cert, er
 			return nil, errors.Errorf("expected cert type, got %T", certI)
 		}
 
+		cert.Cert, err = secrets.Decrypt(cert.Cert, cs.options.SecretEncryptionKey)
+		if err != nil {
+			return nil, errors.Wrapf(err, "failed to decrypt cert '%s'", cert.Id)
+		}
+
 		if cert.CommonName == "" {
 			err = amendCertInfo(cert)
 			if err != nil {
 				// Only log, do not error.
-				logger.Error(
+				logger.Warn(
 					"Failed to amend cert info",
 					slog.String("certId", cert.Id),
 					slog.Any("error", err),
 				)
 			}
-		}
-
-		cert.Cert, err = secrets.Decrypt(cert.Cert, cs.options.SecretEncryptionKey)
-		if err != nil {
-			return nil, errors.Wrapf(err, "failed to decrypt cert '%s'", cert.Id)
 		}
 
 		certs = append(certs, *cert)
