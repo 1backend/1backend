@@ -111,4 +111,94 @@ func TestProxyService_FrontendRoute(t *testing.T) {
 		defer resp.Body.Close()
 		require.Equal(t, http.StatusNotFound, resp.StatusCode)
 	})
+
+	t.Run("preserves Authorization header", func(t *testing.T) {
+		mockBackend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			auth := r.Header.Get("Authorization")
+			fmt.Fprintf(w, "auth: %s", auth)
+		}))
+		defer mockBackend.Close()
+
+		// Save route again for new backend (or mock different one if needed)
+		routeReq.Routes[0].Target = openapi.PtrString(mockBackend.URL)
+		_, _, err := adminClient.ProxySvcAPI.SaveRoutes(context.Background()).Body(routeReq).Execute()
+		require.NoError(t, err)
+
+		req, err := http.NewRequest(http.MethodGet, edgeProxyUrl+"/", nil)
+		require.NoError(t, err)
+		req.Host = "test.localhost"
+		req.Header.Set("Authorization", "Bearer secret-token")
+
+		resp, err := proxyClient.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+
+		body, _ := io.ReadAll(resp.Body)
+		require.Contains(t, string(body), "Bearer secret-token")
+	})
+
+	t.Run("proxies file upload", func(t *testing.T) {
+		mockBackend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			err := r.ParseMultipartForm(10 << 20) // 10MB
+			if err != nil {
+				http.Error(w, "Failed to parse multipart form", http.StatusBadRequest)
+				return
+			}
+			file, _, err := r.FormFile("file")
+			if err != nil {
+				http.Error(w, "File not found", http.StatusBadRequest)
+				return
+			}
+			defer file.Close()
+			content, _ := io.ReadAll(file)
+			w.Write(content)
+		}))
+		defer mockBackend.Close()
+
+		routeReq.Routes[0].Target = openapi.PtrString(mockBackend.URL)
+		_, _, err := adminClient.ProxySvcAPI.SaveRoutes(context.Background()).Body(routeReq).Execute()
+		require.NoError(t, err)
+
+		var bodyBuf strings.Builder
+		bodyBuf.WriteString("--boundary\r\n")
+		bodyBuf.WriteString(`Content-Disposition: form-data; name="file"; filename="test.txt"` + "\r\n")
+		bodyBuf.WriteString("Content-Type: text/plain\r\n\r\n")
+		bodyBuf.WriteString("file contents here\r\n")
+		bodyBuf.WriteString("--boundary--\r\n")
+
+		req, err := http.NewRequest(http.MethodPost, edgeProxyUrl+"/upload", strings.NewReader(bodyBuf.String()))
+		require.NoError(t, err)
+		req.Host = "test.localhost"
+		req.Header.Set("Content-Type", "multipart/form-data; boundary=boundary")
+
+		resp, err := proxyClient.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+
+		respBody, _ := io.ReadAll(resp.Body)
+		require.Equal(t, "file contents here", string(respBody))
+	})
+
+	t.Run("preserves query parameters", func(t *testing.T) {
+		mockBackend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprintf(w, "query: %s", r.URL.RawQuery)
+		}))
+		defer mockBackend.Close()
+
+		routeReq.Routes[0].Target = openapi.PtrString(mockBackend.URL)
+		_, _, err := adminClient.ProxySvcAPI.SaveRoutes(context.Background()).Body(routeReq).Execute()
+		require.NoError(t, err)
+
+		req, err := http.NewRequest(http.MethodGet, edgeProxyUrl+"/search?q=test&sort=desc", nil)
+		require.NoError(t, err)
+		req.Host = "test.localhost"
+
+		resp, err := proxyClient.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+
+		body, _ := io.ReadAll(resp.Body)
+		require.Contains(t, string(body), "q=test")
+		require.Contains(t, string(body), "sort=desc")
+	})
 }
