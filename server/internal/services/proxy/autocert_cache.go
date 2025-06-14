@@ -15,6 +15,8 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"log/slog"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
@@ -260,4 +262,85 @@ func parseCertInfo(certPEM []byte) (*certInfo, error) {
 	}
 
 	return info, nil
+}
+
+func writeCertKeyChainToFilesWithHost(
+	outputDir string,
+	fallbackHost string,
+	pemData string,
+) error {
+	var certBlock *pem.Block
+	var keyBlock *pem.Block
+	var chainPEM []byte
+	var hostname string
+
+	rest := []byte(pemData)
+
+	for {
+		var block *pem.Block
+		block, rest = pem.Decode(rest)
+		if block == nil {
+			break
+		}
+
+		switch block.Type {
+		case "CERTIFICATE":
+			if certBlock == nil {
+				certBlock = block
+
+				cert, err := x509.ParseCertificate(block.Bytes)
+				if err == nil {
+					if cert.Subject.CommonName != "" {
+						hostname = cert.Subject.CommonName
+					} else if len(cert.DNSNames) > 0 {
+						hostname = cert.DNSNames[0]
+					}
+				}
+			} else {
+				chainPEM = append(chainPEM, pem.EncodeToMemory(block)...)
+			}
+
+		case "PRIVATE KEY", "RSA PRIVATE KEY", "EC PRIVATE KEY", "ED25519 PRIVATE KEY":
+			if keyBlock == nil {
+				keyBlock = block
+			}
+		}
+	}
+
+	if certBlock == nil {
+		return errors.New("no certificate found in PEM")
+	}
+	if hostname == "" {
+		if fallbackHost != "" {
+			hostname = fallbackHost
+		} else {
+			return errors.New("no hostname found in certificate and no fallback provided")
+		}
+	}
+
+	if err := os.MkdirAll(outputDir, 0755); err != nil {
+		return errors.Wrap(err, "failed to create output directory")
+	}
+
+	certPath := filepath.Join(outputDir, hostname+".cert.pem")
+	keyPath := filepath.Join(outputDir, hostname+".key.pem")
+	chainPath := filepath.Join(outputDir, hostname+".chain.pem")
+
+	if err := os.WriteFile(certPath, pem.EncodeToMemory(certBlock), 0644); err != nil {
+		return errors.Wrap(err, "failed to write cert file")
+	}
+
+	if keyBlock != nil {
+		if err := os.WriteFile(keyPath, pem.EncodeToMemory(keyBlock), 0600); err != nil {
+			return errors.Wrap(err, "failed to write key file")
+		}
+	}
+
+	if len(chainPEM) > 0 {
+		if err := os.WriteFile(chainPath, chainPEM, 0644); err != nil {
+			return errors.Wrap(err, "failed to write chain file")
+		}
+	}
+
+	return nil
 }

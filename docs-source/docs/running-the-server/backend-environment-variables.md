@@ -145,6 +145,14 @@ This envar should be set only for microservices built on 1Backend. The 1Backend 
 
 Microservices use this to register themselves in the 1Backend registry. The 1Backend server uses this to address itself.
 
+## `OB_SYNC_CERTS_TO_FILES`
+
+Also save certificates to disk.
+
+By default, certificates are stored in the internal datastore managed by the proxy service. However, in some cases — for example, when other containers need to access the certificates — it's useful to have them available on the filesystem as well.
+
+When this flag is set to true, the server will write certificates to the `OB_FOLDER/certs` directory (by default, `~/.1backend/certs`).
+
 ## `OB_TEST`
 
 Microservices and the 1Backend server uses this envar to detect if they are running as part of a test.
