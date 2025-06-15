@@ -50,9 +50,9 @@ func List(cmd *cobra.Command, args []string) error {
 		fmt.Fprintf(
 			writer,
 			"%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
-			safeStr(cert.Id),
-			safeDate(cert.CreatedAt, shortTimeFormat),
-			safeDate(cert.UpdatedAt, timeFormat),
+			cert.Id,
+			date(cert.CreatedAt, shortTimeFormat),
+			date(cert.UpdatedAt, timeFormat),
 			safeStr(cert.CommonName),
 			safeStr(cert.Issuer),
 			safeDate(cert.NotBefore, shortTimeFormat),
@@ -69,6 +69,21 @@ func safeStr(s *string) string {
 		return "-"
 	}
 	return *s
+}
+
+func date(s string, format string) string {
+	if s == "" {
+		return ""
+	}
+	t, err := time.Parse(time.RFC3339, s)
+	if err != nil {
+		return s // fallback to raw string if parsing fails
+	}
+	d := t.Format(format) // or use any layout you prefer
+	if d == "0001-01-01" {
+		return ""
+	}
+	return d
 }
 
 func safeDate(s *string, format string) string {
