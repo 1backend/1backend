@@ -420,6 +420,12 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "1backend/save-certs",
+          label: "Save Certs",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
           id: "1backend/list-routes",
           label: "List Routes",
           className: "api-method post",

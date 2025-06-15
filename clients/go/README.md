@@ -136,6 +136,7 @@ Class | Method | HTTP request | Description
 *PromptSvcAPI* | [**SubscribeToPromptResponses**](docs/PromptSvcAPI.md#subscribetopromptresponses) | **Get** /prompt-svc/prompts/{threadId}/responses/subscribe | Subscribe to Prompt Responses by Thread
 *ProxySvcAPI* | [**ListCerts**](docs/ProxySvcAPI.md#listcerts) | **Post** /proxy-svc/certs | List Certs
 *ProxySvcAPI* | [**ListRoutes**](docs/ProxySvcAPI.md#listroutes) | **Post** /proxy-svc/routes | List Routes
+*ProxySvcAPI* | [**SaveCerts**](docs/ProxySvcAPI.md#savecerts) | **Put** /proxy-svc/certs | Save Certs
 *ProxySvcAPI* | [**SaveRoutes**](docs/ProxySvcAPI.md#saveroutes) | **Put** /proxy-svc/routes | Save Routes
 *RegistrySvcAPI* | [**DeleteDefinition**](docs/RegistrySvcAPI.md#deletedefinition) | **Delete** /registry-svc/definition/{id} | Delete Definition
 *RegistrySvcAPI* | [**DeleteNode**](docs/RegistrySvcAPI.md#deletenode) | **Delete** /registry-svc/node/{url} | Delete Node
@@ -312,6 +313,7 @@ Class | Method | HTTP request | Description
  - [PromptSvcTextToTextParameters](docs/PromptSvcTextToTextParameters.md)
  - [PromptSvcTypesResponse](docs/PromptSvcTypesResponse.md)
  - [ProxySvcCert](docs/ProxySvcCert.md)
+ - [ProxySvcCertInput](docs/ProxySvcCertInput.md)
  - [ProxySvcErrorResponse](docs/ProxySvcErrorResponse.md)
  - [ProxySvcListCertsRequest](docs/ProxySvcListCertsRequest.md)
  - [ProxySvcListCertsResponse](docs/ProxySvcListCertsResponse.md)
@@ -319,6 +321,7 @@ Class | Method | HTTP request | Description
  - [ProxySvcListRoutesResponse](docs/ProxySvcListRoutesResponse.md)
  - [ProxySvcRoute](docs/ProxySvcRoute.md)
  - [ProxySvcRouteInput](docs/ProxySvcRouteInput.md)
+ - [ProxySvcSaveCertsRequest](docs/ProxySvcSaveCertsRequest.md)
  - [ProxySvcSaveRoutesRequest](docs/ProxySvcSaveRoutesRequest.md)
  - [ProxySvcSaveRoutesResponse](docs/ProxySvcSaveRoutesResponse.md)
  - [RegistrySvcAPISpec](docs/RegistrySvcAPISpec.md)

@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the ProxySvcCert type satisfies the MappedNullable interface at compile time
@@ -20,16 +22,16 @@ var _ MappedNullable = &ProxySvcCert{}
 
 // ProxySvcCert struct for ProxySvcCert
 type ProxySvcCert struct {
-	// Base64 encoded PEM certificate
-	Cert *string `json:"cert,omitempty"`
+	// PEM-encoded certificate bundle   -----BEGIN EC PARAMETERS-----  BggqhkjOPQMBBw==  -----END EC PARAMETERS-----  -----BEGIN EC PRIVATE KEY-----  MHcCAQEEIDC3+7pySTQl6WRBuef...  -----END EC PRIVATE KEY-----  -----BEGIN CERTIFICATE-----  MIIBhTCCASugAwIBAgIUQYwE...  -----END CERTIFICATE-----
+	Cert string `json:"cert"`
 	// Subject Common Name (typically domain)
 	CommonName *string `json:"commonName,omitempty"`
 	// When cert record was created
-	CreatedAt *string `json:"createdAt,omitempty"`
+	CreatedAt string `json:"createdAt"`
 	// Subject Alternative Names (covered domains)
 	DnsNames []string `json:"dnsNames,omitempty"`
-	// Unique cert ID
-	Id *string `json:"id,omitempty"`
+	// Id is the host which this cert is for, e.g., \"example.com\" or \"www.example.com\"
+	Id string `json:"id"`
 	// Whether cert is a CA (usually false for LE certs)
 	IsCA *bool `json:"isCA,omitempty"`
 	// Certificate issuer name (e.g., Let's Encrypt)
@@ -47,15 +49,21 @@ type ProxySvcCert struct {
 	// Algorithm used to sign the cert (e.g., SHA256-RSA)
 	SignatureAlgorithm *string `json:"signatureAlgorithm,omitempty"`
 	// When cert record was last updated
-	UpdatedAt *string `json:"updatedAt,omitempty"`
+	UpdatedAt string `json:"updatedAt"`
 }
+
+type _ProxySvcCert ProxySvcCert
 
 // NewProxySvcCert instantiates a new ProxySvcCert object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewProxySvcCert() *ProxySvcCert {
+func NewProxySvcCert(cert string, createdAt string, id string, updatedAt string) *ProxySvcCert {
 	this := ProxySvcCert{}
+	this.Cert = cert
+	this.CreatedAt = createdAt
+	this.Id = id
+	this.UpdatedAt = updatedAt
 	return &this
 }
 
@@ -67,36 +75,28 @@ func NewProxySvcCertWithDefaults() *ProxySvcCert {
 	return &this
 }
 
-// GetCert returns the Cert field value if set, zero value otherwise.
+// GetCert returns the Cert field value
 func (o *ProxySvcCert) GetCert() string {
-	if o == nil || IsNil(o.Cert) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Cert
+
+	return o.Cert
 }
 
-// GetCertOk returns a tuple with the Cert field value if set, nil otherwise
+// GetCertOk returns a tuple with the Cert field value
 // and a boolean to check if the value has been set.
 func (o *ProxySvcCert) GetCertOk() (*string, bool) {
-	if o == nil || IsNil(o.Cert) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Cert, true
+	return &o.Cert, true
 }
 
-// HasCert returns a boolean if a field has been set.
-func (o *ProxySvcCert) HasCert() bool {
-	if o != nil && !IsNil(o.Cert) {
-		return true
-	}
-
-	return false
-}
-
-// SetCert gets a reference to the given string and assigns it to the Cert field.
+// SetCert sets field value
 func (o *ProxySvcCert) SetCert(v string) {
-	o.Cert = &v
+	o.Cert = v
 }
 
 // GetCommonName returns the CommonName field value if set, zero value otherwise.
@@ -131,36 +131,28 @@ func (o *ProxySvcCert) SetCommonName(v string) {
 	o.CommonName = &v
 }
 
-// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
+// GetCreatedAt returns the CreatedAt field value
 func (o *ProxySvcCert) GetCreatedAt() string {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.CreatedAt
+
+	return o.CreatedAt
 }
 
-// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
 // and a boolean to check if the value has been set.
 func (o *ProxySvcCert) GetCreatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.CreatedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.CreatedAt, true
+	return &o.CreatedAt, true
 }
 
-// HasCreatedAt returns a boolean if a field has been set.
-func (o *ProxySvcCert) HasCreatedAt() bool {
-	if o != nil && !IsNil(o.CreatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
+// SetCreatedAt sets field value
 func (o *ProxySvcCert) SetCreatedAt(v string) {
-	o.CreatedAt = &v
+	o.CreatedAt = v
 }
 
 // GetDnsNames returns the DnsNames field value if set, zero value otherwise.
@@ -195,36 +187,28 @@ func (o *ProxySvcCert) SetDnsNames(v []string) {
 	o.DnsNames = v
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value
 func (o *ProxySvcCert) GetId() string {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Id
+
+	return o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *ProxySvcCert) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Id, true
+	return &o.Id, true
 }
 
-// HasId returns a boolean if a field has been set.
-func (o *ProxySvcCert) HasId() bool {
-	if o != nil && !IsNil(o.Id) {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
+// SetId sets field value
 func (o *ProxySvcCert) SetId(v string) {
-	o.Id = &v
+	o.Id = v
 }
 
 // GetIsCA returns the IsCA field value if set, zero value otherwise.
@@ -483,36 +467,28 @@ func (o *ProxySvcCert) SetSignatureAlgorithm(v string) {
 	o.SignatureAlgorithm = &v
 }
 
-// GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
+// GetUpdatedAt returns the UpdatedAt field value
 func (o *ProxySvcCert) GetUpdatedAt() string {
-	if o == nil || IsNil(o.UpdatedAt) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.UpdatedAt
+
+	return o.UpdatedAt
 }
 
-// GetUpdatedAtOk returns a tuple with the UpdatedAt field value if set, nil otherwise
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
 // and a boolean to check if the value has been set.
 func (o *ProxySvcCert) GetUpdatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.UpdatedAt) {
+	if o == nil {
 		return nil, false
 	}
-	return o.UpdatedAt, true
+	return &o.UpdatedAt, true
 }
 
-// HasUpdatedAt returns a boolean if a field has been set.
-func (o *ProxySvcCert) HasUpdatedAt() bool {
-	if o != nil && !IsNil(o.UpdatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetUpdatedAt gets a reference to the given string and assigns it to the UpdatedAt field.
+// SetUpdatedAt sets field value
 func (o *ProxySvcCert) SetUpdatedAt(v string) {
-	o.UpdatedAt = &v
+	o.UpdatedAt = v
 }
 
 func (o ProxySvcCert) MarshalJSON() ([]byte, error) {
@@ -525,21 +501,15 @@ func (o ProxySvcCert) MarshalJSON() ([]byte, error) {
 
 func (o ProxySvcCert) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Cert) {
-		toSerialize["cert"] = o.Cert
-	}
+	toSerialize["cert"] = o.Cert
 	if !IsNil(o.CommonName) {
 		toSerialize["commonName"] = o.CommonName
 	}
-	if !IsNil(o.CreatedAt) {
-		toSerialize["createdAt"] = o.CreatedAt
-	}
+	toSerialize["createdAt"] = o.CreatedAt
 	if !IsNil(o.DnsNames) {
 		toSerialize["dnsNames"] = o.DnsNames
 	}
-	if !IsNil(o.Id) {
-		toSerialize["id"] = o.Id
-	}
+	toSerialize["id"] = o.Id
 	if !IsNil(o.IsCA) {
 		toSerialize["isCA"] = o.IsCA
 	}
@@ -564,10 +534,48 @@ func (o ProxySvcCert) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.SignatureAlgorithm) {
 		toSerialize["signatureAlgorithm"] = o.SignatureAlgorithm
 	}
-	if !IsNil(o.UpdatedAt) {
-		toSerialize["updatedAt"] = o.UpdatedAt
-	}
+	toSerialize["updatedAt"] = o.UpdatedAt
 	return toSerialize, nil
+}
+
+func (o *ProxySvcCert) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"cert",
+		"createdAt",
+		"id",
+		"updatedAt",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varProxySvcCert := _ProxySvcCert{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varProxySvcCert)
+
+	if err != nil {
+		return err
+	}
+
+	*o = ProxySvcCert(varProxySvcCert)
+
+	return err
 }
 
 type NullableProxySvcCert struct {

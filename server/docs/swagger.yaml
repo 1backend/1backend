@@ -1939,7 +1939,18 @@ definitions:
   proxy_svc.Cert:
     properties:
       cert:
-        description: Base64 encoded PEM certificate
+        description: |-
+          PEM-encoded certificate bundle
+
+           -----BEGIN EC PARAMETERS-----
+           BggqhkjOPQMBBw==
+           -----END EC PARAMETERS-----
+           -----BEGIN EC PRIVATE KEY-----
+           MHcCAQEEIDC3+7pySTQl6WRBuef...
+           -----END EC PRIVATE KEY-----
+           -----BEGIN CERTIFICATE-----
+           MIIBhTCCASugAwIBAgIUQYwE...
+           -----END CERTIFICATE-----
         type: string
       commonName:
         description: Subject Common Name (typically domain)
@@ -1953,7 +1964,9 @@ definitions:
           type: string
         type: array
       id:
-        description: Unique cert ID
+        description: Id is the host which this cert is for, e.g., "example.com" or
+          "www.example.com"
+        example: example.com
         type: string
       isCA:
         description: Whether cert is a CA (usually false for LE certs)
@@ -1982,6 +1995,36 @@ definitions:
       updatedAt:
         description: When cert record was last updated
         type: string
+    required:
+    - cert
+    - createdAt
+    - id
+    - updatedAt
+    type: object
+  proxy_svc.CertInput:
+    properties:
+      cert:
+        description: |-
+          PEM-encoded certificate bundle
+
+           -----BEGIN EC PARAMETERS-----
+           BggqhkjOPQMBBw==
+           -----END EC PARAMETERS-----
+           -----BEGIN EC PRIVATE KEY-----
+           MHcCAQEEIDC3+7pySTQl6WRBuef...
+           -----END EC PRIVATE KEY-----
+           -----BEGIN CERTIFICATE-----
+           MIIBhTCCASugAwIBAgIUQYwE...
+           -----END CERTIFICATE-----
+        type: string
+      id:
+        description: Id is the host which this cert is for, e.g., "example.com" or
+          "www.example.com"
+        example: example.com
+        type: string
+    required:
+    - cert
+    - id
     type: object
   proxy_svc.ErrorResponse:
     properties:
@@ -2035,6 +2078,15 @@ definitions:
         type: string
       target:
         type: string
+    type: object
+  proxy_svc.SaveCertsRequest:
+    properties:
+      certs:
+        items:
+          $ref: '#/definitions/proxy_svc.CertInput'
+        type: array
+    type: object
+  proxy_svc.SaveCertsResponse:
     type: object
   proxy_svc.SaveRoutesRequest:
     properties:
@@ -5732,6 +5784,45 @@ paths:
       security:
       - BearerAuth: []
       summary: List Certs
+      tags:
+      - Proxy Svc
+    put:
+      consumes:
+      - application/json
+      description: |-
+        This endpoint only exist for testing purposes. Only callable by admins
+        Certs should be saved by the Proxy Svc and its edge proxying functionality internally,
+        not through this endpoint.
+      operationId: saveCerts
+      parameters:
+      - description: Save Certs Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/proxy_svc.SaveCertsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Certs saved successfully
+          schema:
+            $ref: '#/definitions/proxy_svc.SaveCertsResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Save Certs
       tags:
       - Proxy Svc
   /proxy-svc/routes:

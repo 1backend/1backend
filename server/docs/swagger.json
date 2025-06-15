@@ -2984,6 +2984,62 @@
             }
         },
         "/proxy-svc/certs": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "This endpoint only exist for testing purposes. Only callable by admins\nCerts should be saved by the Proxy Svc and its edge proxying functionality internally,\nnot through this endpoint.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Proxy Svc"
+                ],
+                "summary": "Save Certs",
+                "operationId": "saveCerts",
+                "parameters": [
+                    {
+                        "description": "Save Certs Request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/proxy_svc.SaveCertsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Certs saved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/proxy_svc.SaveCertsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON",
+                        "schema": {
+                            "$ref": "#/definitions/proxy_svc.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/proxy_svc.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/proxy_svc.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -8024,9 +8080,15 @@
         },
         "proxy_svc.Cert": {
             "type": "object",
+            "required": [
+                "cert",
+                "createdAt",
+                "id",
+                "updatedAt"
+            ],
             "properties": {
                 "cert": {
-                    "description": "Base64 encoded PEM certificate",
+                    "description": "PEM-encoded certificate bundle\n\n -----BEGIN EC PARAMETERS-----\n BggqhkjOPQMBBw==\n -----END EC PARAMETERS-----\n -----BEGIN EC PRIVATE KEY-----\n MHcCAQEEIDC3+7pySTQl6WRBuef...\n -----END EC PRIVATE KEY-----\n -----BEGIN CERTIFICATE-----\n MIIBhTCCASugAwIBAgIUQYwE...\n -----END CERTIFICATE-----",
                     "type": "string"
                 },
                 "commonName": {
@@ -8045,8 +8107,9 @@
                     }
                 },
                 "id": {
-                    "description": "Unique cert ID",
-                    "type": "string"
+                    "description": "Id is the host which this cert is for, e.g., \"example.com\" or \"www.example.com\"",
+                    "type": "string",
+                    "example": "example.com"
                 },
                 "isCA": {
                     "description": "Whether cert is a CA (usually false for LE certs)",
@@ -8083,6 +8146,24 @@
                 "updatedAt": {
                     "description": "When cert record was last updated",
                     "type": "string"
+                }
+            }
+        },
+        "proxy_svc.CertInput": {
+            "type": "object",
+            "required": [
+                "cert",
+                "id"
+            ],
+            "properties": {
+                "cert": {
+                    "description": "PEM-encoded certificate bundle\n\n -----BEGIN EC PARAMETERS-----\n BggqhkjOPQMBBw==\n -----END EC PARAMETERS-----\n -----BEGIN EC PRIVATE KEY-----\n MHcCAQEEIDC3+7pySTQl6WRBuef...\n -----END EC PRIVATE KEY-----\n -----BEGIN CERTIFICATE-----\n MIIBhTCCASugAwIBAgIUQYwE...\n -----END CERTIFICATE-----",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "Id is the host which this cert is for, e.g., \"example.com\" or \"www.example.com\"",
+                    "type": "string",
+                    "example": "example.com"
                 }
             }
         },
@@ -8167,6 +8248,20 @@
                     "type": "string"
                 }
             }
+        },
+        "proxy_svc.SaveCertsRequest": {
+            "type": "object",
+            "properties": {
+                "certs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/proxy_svc.CertInput"
+                    }
+                }
+            }
+        },
+        "proxy_svc.SaveCertsResponse": {
+            "type": "object"
         },
         "proxy_svc.SaveRoutesRequest": {
             "type": "object",

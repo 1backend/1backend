@@ -10,12 +10,15 @@
  * Do not edit the class manually.
  */
 import * as runtime from '../runtime';
-import type { ProxySvcListCertsRequest, ProxySvcListCertsResponse, ProxySvcListRoutesRequest, ProxySvcListRoutesResponse, ProxySvcSaveRoutesRequest, ProxySvcSaveRoutesResponse } from '../models/index';
+import type { ProxySvcListCertsRequest, ProxySvcListCertsResponse, ProxySvcListRoutesRequest, ProxySvcListRoutesResponse, ProxySvcSaveCertsRequest, ProxySvcSaveRoutesRequest, ProxySvcSaveRoutesResponse } from '../models/index';
 export interface ListCertsRequest {
     body?: ProxySvcListCertsRequest;
 }
 export interface ListRoutesRequest {
     body?: ProxySvcListRoutesRequest;
+}
+export interface SaveCertsRequest {
+    body: ProxySvcSaveCertsRequest;
 }
 export interface SaveRoutesRequest {
     body: ProxySvcSaveRoutesRequest;
@@ -44,6 +47,16 @@ export declare class ProxySvcApi extends runtime.BaseAPI {
      * List Routes
      */
     listRoutes(requestParameters?: ListRoutesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProxySvcListRoutesResponse>;
+    /**
+     * This endpoint only exist for testing purposes. Only callable by admins Certs should be saved by the Proxy Svc and its edge proxying functionality internally, not through this endpoint.
+     * Save Certs
+     */
+    saveCertsRaw(requestParameters: SaveCertsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+    /**
+     * This endpoint only exist for testing purposes. Only callable by admins Certs should be saved by the Proxy Svc and its edge proxying functionality internally, not through this endpoint.
+     * Save Certs
+     */
+    saveCerts(requestParameters: SaveCertsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
      * Save routes that the edge proxy will use to route requests.
      * Save Routes

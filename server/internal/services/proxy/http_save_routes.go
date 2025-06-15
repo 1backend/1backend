@@ -76,7 +76,7 @@ func (cs *ProxyService) SaveRoutes(w http.ResponseWriter, r *http.Request) {
 
 func (cs *ProxyService) saveRoutes(req *proxy.SaveRoutesRequest) ([]proxy.Route, error) {
 	if len(req.Routes) == 0 {
-		return nil, errors.New("No routes provided")
+		return nil, errors.New("no routes provided")
 	}
 
 	rows := make([]datastore.Row, 0, len(req.Routes))
@@ -84,10 +84,10 @@ func (cs *ProxyService) saveRoutes(req *proxy.SaveRoutesRequest) ([]proxy.Route,
 
 	for _, route := range req.Routes {
 		if route.Id == "" {
-			return nil, errors.New("Route ID is required")
+			return nil, errors.New("route ID is required")
 		}
 		if route.Target == "" {
-			return nil, errors.New("Route target is required")
+			return nil, errors.New("route target is required")
 		}
 
 		r := proxy.Route{

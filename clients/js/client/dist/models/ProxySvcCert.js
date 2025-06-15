@@ -15,6 +15,14 @@
  * Check if a given object implements the ProxySvcCert interface.
  */
 export function instanceOfProxySvcCert(value) {
+    if (!('cert' in value) || value['cert'] === undefined)
+        return false;
+    if (!('createdAt' in value) || value['createdAt'] === undefined)
+        return false;
+    if (!('id' in value) || value['id'] === undefined)
+        return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined)
+        return false;
     return true;
 }
 export function ProxySvcCertFromJSON(json) {
@@ -25,11 +33,11 @@ export function ProxySvcCertFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'cert': json['cert'] == null ? undefined : json['cert'],
+        'cert': json['cert'],
         'commonName': json['commonName'] == null ? undefined : json['commonName'],
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'dnsNames': json['dnsNames'] == null ? undefined : json['dnsNames'],
-        'id': json['id'] == null ? undefined : json['id'],
+        'id': json['id'],
         'isCA': json['isCA'] == null ? undefined : json['isCA'],
         'issuer': json['issuer'] == null ? undefined : json['issuer'],
         'notAfter': json['notAfter'] == null ? undefined : json['notAfter'],
@@ -38,7 +46,7 @@ export function ProxySvcCertFromJSONTyped(json, ignoreDiscriminator) {
         'publicKeyBitLength': json['publicKeyBitLength'] == null ? undefined : json['publicKeyBitLength'],
         'serialNumber': json['serialNumber'] == null ? undefined : json['serialNumber'],
         'signatureAlgorithm': json['signatureAlgorithm'] == null ? undefined : json['signatureAlgorithm'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
     };
 }
 export function ProxySvcCertToJSON(json) {

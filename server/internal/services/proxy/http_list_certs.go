@@ -71,6 +71,7 @@ func (cs *ProxyService) ListCerts(w http.ResponseWriter, r *http.Request) {
 			slog.Any("error", err),
 		)
 		endpoint.InternalServerError(w)
+		return
 	}
 
 	endpoint.WriteJSON(w, http.StatusOK, &proxy.ListCertsResponse{

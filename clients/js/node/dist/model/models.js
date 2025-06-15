@@ -128,6 +128,7 @@ export * from './promptSvcTextToImageParameters';
 export * from './promptSvcTextToTextParameters';
 export * from './promptSvcTypesResponse';
 export * from './proxySvcCert';
+export * from './proxySvcCertInput';
 export * from './proxySvcErrorResponse';
 export * from './proxySvcListCertsRequest';
 export * from './proxySvcListCertsResponse';
@@ -135,6 +136,7 @@ export * from './proxySvcListRoutesRequest';
 export * from './proxySvcListRoutesResponse';
 export * from './proxySvcRoute';
 export * from './proxySvcRouteInput';
+export * from './proxySvcSaveCertsRequest';
 export * from './proxySvcSaveRoutesRequest';
 export * from './proxySvcSaveRoutesResponse';
 export * from './registrySvcAPISpec';
@@ -350,6 +352,7 @@ import { PromptSvcTextToImageParameters } from './promptSvcTextToImageParameters
 import { PromptSvcTextToTextParameters } from './promptSvcTextToTextParameters';
 import { PromptSvcTypesResponse } from './promptSvcTypesResponse';
 import { ProxySvcCert } from './proxySvcCert';
+import { ProxySvcCertInput } from './proxySvcCertInput';
 import { ProxySvcErrorResponse } from './proxySvcErrorResponse';
 import { ProxySvcListCertsRequest } from './proxySvcListCertsRequest';
 import { ProxySvcListCertsResponse } from './proxySvcListCertsResponse';
@@ -357,6 +360,7 @@ import { ProxySvcListRoutesRequest } from './proxySvcListRoutesRequest';
 import { ProxySvcListRoutesResponse } from './proxySvcListRoutesResponse';
 import { ProxySvcRoute } from './proxySvcRoute';
 import { ProxySvcRouteInput } from './proxySvcRouteInput';
+import { ProxySvcSaveCertsRequest } from './proxySvcSaveCertsRequest';
 import { ProxySvcSaveRoutesRequest } from './proxySvcSaveRoutesRequest';
 import { ProxySvcSaveRoutesResponse } from './proxySvcSaveRoutesResponse';
 import { RegistrySvcAPISpec } from './registrySvcAPISpec';
@@ -591,6 +595,7 @@ let typeMap = {
     "PromptSvcTextToTextParameters": PromptSvcTextToTextParameters,
     "PromptSvcTypesResponse": PromptSvcTypesResponse,
     "ProxySvcCert": ProxySvcCert,
+    "ProxySvcCertInput": ProxySvcCertInput,
     "ProxySvcErrorResponse": ProxySvcErrorResponse,
     "ProxySvcListCertsRequest": ProxySvcListCertsRequest,
     "ProxySvcListCertsResponse": ProxySvcListCertsResponse,
@@ -598,6 +603,7 @@ let typeMap = {
     "ProxySvcListRoutesResponse": ProxySvcListRoutesResponse,
     "ProxySvcRoute": ProxySvcRoute,
     "ProxySvcRouteInput": ProxySvcRouteInput,
+    "ProxySvcSaveCertsRequest": ProxySvcSaveCertsRequest,
     "ProxySvcSaveRoutesRequest": ProxySvcSaveRoutesRequest,
     "ProxySvcSaveRoutesResponse": ProxySvcSaveRoutesResponse,
     "RegistrySvcAPISpec": RegistrySvcAPISpec,
