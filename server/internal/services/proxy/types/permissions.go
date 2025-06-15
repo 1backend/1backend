@@ -12,10 +12,12 @@ var (
 	PermissionRouteEdit = "proxy-svc:route:edit"
 	PermissionRouteView = "proxy-svc:route:view"
 	PermissionCertView  = "proxy-svc:cert:view"
+	PermissionCertEdit  = "proxy-svc:cert:edit"
 
 	AdminPermissions = []string{
 		PermissionRouteEdit,
 		PermissionRouteView,
 		PermissionCertView,
+		PermissionCertEdit,
 	}
 )

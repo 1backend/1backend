@@ -16,11 +16,21 @@
  */
 export interface ProxySvcCert {
     /**
-     * Base64 encoded PEM certificate
+     * PEM-encoded certificate bundle
+     *
+     *  -----BEGIN EC PARAMETERS-----
+     *  BggqhkjOPQMBBw==
+     *  -----END EC PARAMETERS-----
+     *  -----BEGIN EC PRIVATE KEY-----
+     *  MHcCAQEEIDC3+7pySTQl6WRBuef...
+     *  -----END EC PRIVATE KEY-----
+     *  -----BEGIN CERTIFICATE-----
+     *  MIIBhTCCASugAwIBAgIUQYwE...
+     *  -----END CERTIFICATE-----
      * @type {string}
      * @memberof ProxySvcCert
      */
-    cert?: string;
+    cert: string;
     /**
      * Subject Common Name (typically domain)
      * @type {string}
@@ -32,7 +42,7 @@ export interface ProxySvcCert {
      * @type {string}
      * @memberof ProxySvcCert
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      * Subject Alternative Names (covered domains)
      * @type {Array<string>}
@@ -40,11 +50,11 @@ export interface ProxySvcCert {
      */
     dnsNames?: Array<string>;
     /**
-     * Unique cert ID
+     * Id is the host which this cert is for, e.g., "example.com" or "www.example.com"
      * @type {string}
      * @memberof ProxySvcCert
      */
-    id?: string;
+    id: string;
     /**
      * Whether cert is a CA (usually false for LE certs)
      * @type {boolean}
@@ -98,7 +108,7 @@ export interface ProxySvcCert {
      * @type {string}
      * @memberof ProxySvcCert
      */
-    updatedAt?: string;
+    updatedAt: string;
 }
 /**
  * Check if a given object implements the ProxySvcCert interface.

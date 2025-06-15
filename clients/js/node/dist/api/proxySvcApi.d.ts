@@ -14,6 +14,7 @@ import { ProxySvcListCertsRequest } from '../model/proxySvcListCertsRequest';
 import { ProxySvcListCertsResponse } from '../model/proxySvcListCertsResponse';
 import { ProxySvcListRoutesRequest } from '../model/proxySvcListRoutesRequest';
 import { ProxySvcListRoutesResponse } from '../model/proxySvcListRoutesResponse';
+import { ProxySvcSaveCertsRequest } from '../model/proxySvcSaveCertsRequest';
 import { ProxySvcSaveRoutesRequest } from '../model/proxySvcSaveRoutesRequest';
 import { ProxySvcSaveRoutesResponse } from '../model/proxySvcSaveRoutesResponse';
 import { Authentication, Interceptor } from '../model/models';
@@ -64,6 +65,19 @@ export declare class ProxySvcApi {
     }): Promise<{
         response: http.IncomingMessage;
         body: ProxySvcListRoutesResponse;
+    }>;
+    /**
+     * This endpoint only exist for testing purposes. Only callable by admins Certs should be saved by the Proxy Svc and its edge proxying functionality internally, not through this endpoint.
+     * @summary Save Certs
+     * @param body Save Certs Request
+     */
+    saveCerts(body: ProxySvcSaveCertsRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: object;
     }>;
     /**
      * Save routes that the edge proxy will use to route requests.

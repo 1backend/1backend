@@ -20,6 +20,7 @@ import type {
   ProxySvcListCertsResponse,
   ProxySvcListRoutesRequest,
   ProxySvcListRoutesResponse,
+  ProxySvcSaveCertsRequest,
   ProxySvcSaveRoutesRequest,
   ProxySvcSaveRoutesResponse,
 } from '../models/index';
@@ -34,6 +35,8 @@ import {
     ProxySvcListRoutesRequestToJSON,
     ProxySvcListRoutesResponseFromJSON,
     ProxySvcListRoutesResponseToJSON,
+    ProxySvcSaveCertsRequestFromJSON,
+    ProxySvcSaveCertsRequestToJSON,
     ProxySvcSaveRoutesRequestFromJSON,
     ProxySvcSaveRoutesRequestToJSON,
     ProxySvcSaveRoutesResponseFromJSON,
@@ -46,6 +49,10 @@ export interface ListCertsRequest {
 
 export interface ListRoutesRequest {
     body?: ProxySvcListRoutesRequest;
+}
+
+export interface SaveCertsRequest {
+    body: ProxySvcSaveCertsRequest;
 }
 
 export interface SaveRoutesRequest {
@@ -124,6 +131,48 @@ export class ProxySvcApi extends runtime.BaseAPI {
      */
     async listRoutes(requestParameters: ListRoutesRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProxySvcListRoutesResponse> {
         const response = await this.listRoutesRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * This endpoint only exist for testing purposes. Only callable by admins Certs should be saved by the Proxy Svc and its edge proxying functionality internally, not through this endpoint.
+     * Save Certs
+     */
+    async saveCertsRaw(requestParameters: SaveCertsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling saveCerts().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/proxy-svc/certs`,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ProxySvcSaveCertsRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * This endpoint only exist for testing purposes. Only callable by admins Certs should be saved by the Proxy Svc and its edge proxying functionality internally, not through this endpoint.
+     * Save Certs
+     */
+    async saveCerts(requestParameters: SaveCertsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+        const response = await this.saveCertsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

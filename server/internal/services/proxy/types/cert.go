@@ -10,17 +10,27 @@ package proxy_svc
 import "time"
 
 type Cert struct {
-	// Unique cert ID
-	Id string `json:"id"`
+	// Id is the host which this cert is for, e.g., "example.com" or "www.example.com"
+	Id string `json:"id" binding:"required" example:"example.com"`
 
 	// When cert record was created
-	CreatedAt time.Time `json:"createdAt"`
+	CreatedAt time.Time `json:"createdAt" binding:"required"`
 
 	// When cert record was last updated
-	UpdatedAt time.Time `json:"updatedAt"`
+	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
 
-	// Base64 encoded PEM certificate
-	Cert string `json:"cert"`
+	// PEM-encoded certificate bundle
+	//
+	//  -----BEGIN EC PARAMETERS-----
+	//  BggqhkjOPQMBBw==
+	//  -----END EC PARAMETERS-----
+	//  -----BEGIN EC PRIVATE KEY-----
+	//  MHcCAQEEIDC3+7pySTQl6WRBuef...
+	//  -----END EC PRIVATE KEY-----
+	//  -----BEGIN CERTIFICATE-----
+	//  MIIBhTCCASugAwIBAgIUQYwE...
+	//  -----END CERTIFICATE-----
+	Cert string `json:"cert" binding:"required"`
 
 	// Cert validity start time
 	NotBefore time.Time `json:"notBefore"`
@@ -57,10 +67,35 @@ func (c *Cert) GetId() string {
 	return c.Id
 }
 
+type CertInput struct {
+	// Id is the host which this cert is for, e.g., "example.com" or "www.example.com"
+	Id string `json:"id" binding:"required" example:"example.com"`
+
+	// PEM-encoded certificate bundle
+	//
+	//  -----BEGIN EC PARAMETERS-----
+	//  BggqhkjOPQMBBw==
+	//  -----END EC PARAMETERS-----
+	//  -----BEGIN EC PRIVATE KEY-----
+	//  MHcCAQEEIDC3+7pySTQl6WRBuef...
+	//  -----END EC PRIVATE KEY-----
+	//  -----BEGIN CERTIFICATE-----
+	//  MIIBhTCCASugAwIBAgIUQYwE...
+	//  -----END CERTIFICATE-----
+	Cert string `json:"cert" binding:"required"`
+}
+
 type ListCertsRequest struct {
 	Ids []string `json:"ids,omitempty"`
 }
 
 type ListCertsResponse struct {
 	Certs []Cert `json:"certs"`
+}
+
+type SaveCertsRequest struct {
+	Certs []CertInput `json:"certs"`
+}
+
+type SaveCertsResponse struct {
 }

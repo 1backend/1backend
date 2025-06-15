@@ -130,12 +130,9 @@ type certTestCase struct {
 	ExpectChain  bool // Whether we expect chain.pem to be created
 }
 
-var certCases = []certTestCase{
-	{
-		Cert:
-		// openssl ecparam -genkey -name prime256v1 -out ec.key
-		// openssl req -new -x509 -key ec.key -out ec.crt -days 365 -subj "/CN=test-ec.local"
-		`-----BEGIN EC PARAMETERS-----
+// openssl ecparam -genkey -name prime256v1 -out ec.key
+// openssl req -new -x509 -key ec.key -out ec.crt -days 365 -subj "/CN=test-ec.local"
+var certString1 = `-----BEGIN EC PARAMETERS-----
 BggqhkjOPQMBBw==
 -----END EC PARAMETERS-----
 -----BEGIN EC PRIVATE KEY-----
@@ -153,7 +150,11 @@ p+KiZB12SYsm3y6vi5bNcTPSuzOnH6SQoLQ7nArVo1MwUTAdBgNVHQ4EFgQUgcgn
 UTwwDwYDVR0TAQH/BAUwAwEB/zAKBggqhkjOPQQDAgNIADBFAiA6llltovI3Gt8w
 z8CriygJzZdjwRQxeTTUyYTxpZb43gIhAJqAMTOb00C5QiNZZji04AyACQX1z6Dq
 ODVqQ2xusrR7
------END CERTIFICATE-----`,
+-----END CERTIFICATE-----`
+
+var certCases = []certTestCase{
+	{
+		Cert:         certString1,
 		ExpectedHost: "test-ec.local",
 		ExpectChain:  false,
 	},

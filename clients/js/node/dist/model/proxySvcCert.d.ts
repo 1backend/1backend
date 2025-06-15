@@ -11,9 +11,9 @@
  */
 export declare class ProxySvcCert {
     /**
-    * Base64 encoded PEM certificate
+    * PEM-encoded certificate bundle   -----BEGIN EC PARAMETERS-----  BggqhkjOPQMBBw==  -----END EC PARAMETERS-----  -----BEGIN EC PRIVATE KEY-----  MHcCAQEEIDC3+7pySTQl6WRBuef...  -----END EC PRIVATE KEY-----  -----BEGIN CERTIFICATE-----  MIIBhTCCASugAwIBAgIUQYwE...  -----END CERTIFICATE-----
     */
-    'cert'?: string;
+    'cert': string;
     /**
     * Subject Common Name (typically domain)
     */
@@ -21,15 +21,15 @@ export declare class ProxySvcCert {
     /**
     * When cert record was created
     */
-    'createdAt'?: string;
+    'createdAt': string;
     /**
     * Subject Alternative Names (covered domains)
     */
     'dnsNames'?: Array<string>;
     /**
-    * Unique cert ID
+    * Id is the host which this cert is for, e.g., \"example.com\" or \"www.example.com\"
     */
-    'id'?: string;
+    'id': string;
     /**
     * Whether cert is a CA (usually false for LE certs)
     */
@@ -65,7 +65,7 @@ export declare class ProxySvcCert {
     /**
     * When cert record was last updated
     */
-    'updatedAt'?: string;
+    'updatedAt': string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

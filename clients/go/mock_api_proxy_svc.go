@@ -99,6 +99,36 @@ func (mr *MockProxySvcAPIMockRecorder) ListRoutesExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRoutesExecute", reflect.TypeOf((*MockProxySvcAPI)(nil).ListRoutesExecute), r)
 }
 
+// SaveCerts mocks base method.
+func (m *MockProxySvcAPI) SaveCerts(ctx context.Context) ApiSaveCertsRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveCerts", ctx)
+	ret0, _ := ret[0].(ApiSaveCertsRequest)
+	return ret0
+}
+
+// SaveCerts indicates an expected call of SaveCerts.
+func (mr *MockProxySvcAPIMockRecorder) SaveCerts(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveCerts", reflect.TypeOf((*MockProxySvcAPI)(nil).SaveCerts), ctx)
+}
+
+// SaveCertsExecute mocks base method.
+func (m *MockProxySvcAPI) SaveCertsExecute(r ApiSaveCertsRequest) (map[string]any, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveCertsExecute", r)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// SaveCertsExecute indicates an expected call of SaveCertsExecute.
+func (mr *MockProxySvcAPIMockRecorder) SaveCertsExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveCertsExecute", reflect.TypeOf((*MockProxySvcAPI)(nil).SaveCertsExecute), r)
+}
+
 // SaveRoutes mocks base method.
 func (m *MockProxySvcAPI) SaveRoutes(ctx context.Context) ApiSaveRoutesRequest {
 	m.ctrl.T.Helper()

@@ -20,11 +20,21 @@ import { mapValues } from '../runtime';
  */
 export interface ProxySvcCert {
     /**
-     * Base64 encoded PEM certificate
+     * PEM-encoded certificate bundle
+     * 
+     *  -----BEGIN EC PARAMETERS-----
+     *  BggqhkjOPQMBBw==
+     *  -----END EC PARAMETERS-----
+     *  -----BEGIN EC PRIVATE KEY-----
+     *  MHcCAQEEIDC3+7pySTQl6WRBuef...
+     *  -----END EC PRIVATE KEY-----
+     *  -----BEGIN CERTIFICATE-----
+     *  MIIBhTCCASugAwIBAgIUQYwE...
+     *  -----END CERTIFICATE-----
      * @type {string}
      * @memberof ProxySvcCert
      */
-    cert?: string;
+    cert: string;
     /**
      * Subject Common Name (typically domain)
      * @type {string}
@@ -36,7 +46,7 @@ export interface ProxySvcCert {
      * @type {string}
      * @memberof ProxySvcCert
      */
-    createdAt?: string;
+    createdAt: string;
     /**
      * Subject Alternative Names (covered domains)
      * @type {Array<string>}
@@ -44,11 +54,11 @@ export interface ProxySvcCert {
      */
     dnsNames?: Array<string>;
     /**
-     * Unique cert ID
+     * Id is the host which this cert is for, e.g., "example.com" or "www.example.com"
      * @type {string}
      * @memberof ProxySvcCert
      */
-    id?: string;
+    id: string;
     /**
      * Whether cert is a CA (usually false for LE certs)
      * @type {boolean}
@@ -102,13 +112,17 @@ export interface ProxySvcCert {
      * @type {string}
      * @memberof ProxySvcCert
      */
-    updatedAt?: string;
+    updatedAt: string;
 }
 
 /**
  * Check if a given object implements the ProxySvcCert interface.
  */
 export function instanceOfProxySvcCert(value: object): value is ProxySvcCert {
+    if (!('cert' in value) || value['cert'] === undefined) return false;
+    if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     return true;
 }
 
@@ -122,11 +136,11 @@ export function ProxySvcCertFromJSONTyped(json: any, ignoreDiscriminator: boolea
     }
     return {
         
-        'cert': json['cert'] == null ? undefined : json['cert'],
+        'cert': json['cert'],
         'commonName': json['commonName'] == null ? undefined : json['commonName'],
-        'createdAt': json['createdAt'] == null ? undefined : json['createdAt'],
+        'createdAt': json['createdAt'],
         'dnsNames': json['dnsNames'] == null ? undefined : json['dnsNames'],
-        'id': json['id'] == null ? undefined : json['id'],
+        'id': json['id'],
         'isCA': json['isCA'] == null ? undefined : json['isCA'],
         'issuer': json['issuer'] == null ? undefined : json['issuer'],
         'notAfter': json['notAfter'] == null ? undefined : json['notAfter'],
@@ -135,7 +149,7 @@ export function ProxySvcCertFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'publicKeyBitLength': json['publicKeyBitLength'] == null ? undefined : json['publicKeyBitLength'],
         'serialNumber': json['serialNumber'] == null ? undefined : json['serialNumber'],
         'signatureAlgorithm': json['signatureAlgorithm'] == null ? undefined : json['signatureAlgorithm'],
-        'updatedAt': json['updatedAt'] == null ? undefined : json['updatedAt'],
+        'updatedAt': json['updatedAt'],
     };
 }
 
