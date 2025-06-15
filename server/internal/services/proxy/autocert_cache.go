@@ -29,8 +29,10 @@ import (
 )
 
 type CertStore struct {
-	EncryptionKey string
-	Db            datastore.DataStore
+	EncryptionKey    string
+	SyncCertsToFiles bool
+	CertFolder       string
+	Db               datastore.DataStore
 }
 
 //
@@ -130,6 +132,21 @@ func (cs *CertStore) Put(ctx context.Context, key string, data []byte) error {
 	cert := &proxy.Cert{
 		Id:   key,
 		Cert: encryptedData,
+	}
+
+	if cs.SyncCertsToFiles {
+		err := WriteCertKeyChainToFilesWithHost(
+			cs.CertFolder,
+			key,
+			string(data),
+		)
+		if err != nil {
+			logger.Error(
+				"Failed to write cert to files",
+				slog.String("key", key),
+				slog.Any("error", err),
+			)
+		}
 	}
 
 	now := time.Now()

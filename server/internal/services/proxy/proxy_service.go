@@ -73,17 +73,21 @@ func NewProxyService(
 		routeStore: routeStore,
 		certStore:  certStore,
 		CertStore: &CertStore{
-			EncryptionKey: options.SecretEncryptionKey,
-			Db:            certStore,
+			SyncCertsToFiles: options.SyncCertsToFiles,
+			CertFolder:       filepath.Join(options.ConfigPath, "certs"),
+			EncryptionKey:    options.SecretEncryptionKey,
+			Db:               certStore,
 		},
 	}
 
-	cs.syncCertsToDisk()
+	if cs.options.SyncCertsToFiles {
+		cs.syncCertsToFiles()
+	}
 
 	return cs, nil
 }
 
-func (cs *ProxyService) syncCertsToDisk() error {
+func (cs *ProxyService) syncCertsToFiles() error {
 	certFolder := filepath.Join(cs.options.ConfigPath, "certs")
 
 	err := os.MkdirAll(certFolder, 0755)
@@ -101,7 +105,7 @@ func (cs *ProxyService) syncCertsToDisk() error {
 	}
 
 	for _, certI := range certs {
-		err := cs.syncCertToDisk(certFolder, certI)
+		err := cs.syncCertToFiles(certFolder, certI)
 		if err != nil {
 			logger.Error(
 				"Failed to sync cert to disk",
@@ -114,7 +118,7 @@ func (cs *ProxyService) syncCertsToDisk() error {
 	return nil
 }
 
-func (cs *ProxyService) syncCertToDisk(
+func (cs *ProxyService) syncCertToFiles(
 	certFolder string,
 	certI datastore.Row,
 ) error {
