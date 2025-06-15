@@ -40,6 +40,10 @@ func TestListCerts(t *testing.T) {
 					Id:   "test.localhost",
 					Cert: certString1,
 				},
+				{
+					Id:   "test.localhost2",
+					Cert: certString1,
+				},
 			},
 		}
 
@@ -71,16 +75,21 @@ func TestListCerts(t *testing.T) {
 
 		require.NoError(t, err, hrsp)
 		require.NotNil(t, rsp)
-		require.Len(t, rsp.Certs, 1)
+		require.Len(t, rsp.Certs, 2)
 	})
 
 	t.Run("list cert by id", func(t *testing.T) {
 		rsp, hrsp, err := adminClient.ProxySvcAPI.ListCerts(
 			context.Background(),
+		).Body(
+			openapi.ProxySvcListCertsRequest{
+				Ids: []string{"test.localhost"},
+			},
 		).Execute()
 
 		require.NoError(t, err, hrsp)
 		require.NotNil(t, rsp)
+		require.Len(t, rsp.Certs, 1)
 
 		var certIDs []string
 		for _, cert := range rsp.Certs {
