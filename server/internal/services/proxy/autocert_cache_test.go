@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"math/big"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -126,6 +127,7 @@ func TestAutocertCache(t *testing.T) {
 type certTestCase struct {
 	Cert         string
 	ExpectedHost string
+	ExpectChain  bool // Whether we expect chain.pem to be created
 }
 
 var certCases = []certTestCase{
@@ -153,6 +155,7 @@ z8CriygJzZdjwRQxeTTUyYTxpZb43gIhAJqAMTOb00C5QiNZZji04AyACQX1z6Dq
 ODVqQ2xusrR7
 -----END CERTIFICATE-----`,
 		ExpectedHost: "test-ec.local",
+		ExpectChain:  false,
 	},
 }
 
@@ -175,14 +178,26 @@ func TestWriteCertKeyChainToFilesWithHost(t *testing.T) {
 				expectedHost = fallbackHost
 			}
 
-			certFilePath := certFolder + "/" + expectedHost + ".cert.pem"
-			keyFilePath := certFolder + "/" + expectedHost + ".key.pem"
+			basePath := filepath.Join(certFolder, "live", expectedHost)
+
+			certFilePath := filepath.Join(basePath, "cert.pem")
+			keyFilePath := filepath.Join(basePath, "privkey.pem")
+			chainFilePath := filepath.Join(basePath, "chain.pem")
+			fullchainFilePath := filepath.Join(basePath, "fullchain.pem")
 
 			_, err = os.Stat(certFilePath)
 			require.NoError(t, err)
 
 			_, err = os.Stat(keyFilePath)
 			require.NoError(t, err)
+
+			_, err = os.Stat(fullchainFilePath)
+			require.NoError(t, err)
+
+			if cas.ExpectChain {
+				_, err = os.Stat(chainFilePath)
+				require.NoError(t, err)
+			}
 		})
 	}
 }

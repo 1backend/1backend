@@ -287,7 +287,6 @@ func WriteCertKeyChainToFilesWithHost(
 		case "CERTIFICATE":
 			if certBlock == nil {
 				certBlock = block
-
 				cert, err := x509.ParseCertificate(block.Bytes)
 				if err == nil {
 					if cert.Subject.CommonName != "" {
@@ -299,7 +298,6 @@ func WriteCertKeyChainToFilesWithHost(
 			} else {
 				chainPEM = append(chainPEM, pem.EncodeToMemory(block)...)
 			}
-
 		case "PRIVATE KEY", "RSA PRIVATE KEY", "EC PRIVATE KEY", "ED25519 PRIVATE KEY":
 			if keyBlock == nil {
 				keyBlock = block
@@ -318,27 +316,39 @@ func WriteCertKeyChainToFilesWithHost(
 		}
 	}
 
-	if err := os.MkdirAll(outputDir, 0755); err != nil {
-		return errors.Wrap(err, "failed to create output directory")
+	liveDir := filepath.Join(outputDir, "live", hostname)
+	if err := os.MkdirAll(liveDir, 0755); err != nil {
+		return errors.Wrap(err, "failed to create live directory")
 	}
 
-	certPath := filepath.Join(outputDir, hostname+".cert.pem")
-	keyPath := filepath.Join(outputDir, hostname+".key.pem")
-	chainPath := filepath.Join(outputDir, hostname+".chain.pem")
+	certPath := filepath.Join(liveDir, "cert.pem")
+	keyPath := filepath.Join(liveDir, "privkey.pem")
+	chainPath := filepath.Join(liveDir, "chain.pem")
+	fullchainPath := filepath.Join(liveDir, "fullchain.pem")
 
 	if err := os.WriteFile(certPath, pem.EncodeToMemory(certBlock), 0644); err != nil {
-		return errors.Wrap(err, "failed to write cert file")
+		return errors.Wrap(err, "failed to write cert.pem")
 	}
 
 	if keyBlock != nil {
 		if err := os.WriteFile(keyPath, pem.EncodeToMemory(keyBlock), 0600); err != nil {
-			return errors.Wrap(err, "failed to write key file")
+			return errors.Wrap(err, "failed to write privkey.pem")
 		}
 	}
 
 	if len(chainPEM) > 0 {
 		if err := os.WriteFile(chainPath, chainPEM, 0644); err != nil {
-			return errors.Wrap(err, "failed to write chain file")
+			return errors.Wrap(err, "failed to write chain.pem")
+		}
+
+		fullchain := append(pem.EncodeToMemory(certBlock), chainPEM...)
+		if err := os.WriteFile(fullchainPath, fullchain, 0644); err != nil {
+			return errors.Wrap(err, "failed to write fullchain.pem")
+		}
+	} else {
+		// If no chain, fullchain == cert only
+		if err := os.WriteFile(fullchainPath, pem.EncodeToMemory(certBlock), 0644); err != nil {
+			return errors.Wrap(err, "failed to write fullchain.pem")
 		}
 	}
 
