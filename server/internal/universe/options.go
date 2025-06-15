@@ -61,6 +61,9 @@ type Options struct {
 	// Only used in tests
 	EdgeProxyHttpsPort int
 
+	// See `OB_SYNC_CERTS_TO_FILES` environment variable documentation.
+	SyncCertsToFiles bool
+
 	// Test mode if true will cause the localstore to
 	// save data into random temporary folders.
 	Test bool

@@ -9,7 +9,10 @@ package proxyservice
 
 import (
 	"context"
+	"log/slog"
 	"net/http"
+	"os"
+	"path/filepath"
 
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -18,7 +21,9 @@ import (
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/secrets"
 	"github.com/1backend/1backend/sdk/go/service"
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 	"github.com/1backend/1backend/server/internal/universe"
@@ -68,12 +73,74 @@ func NewProxyService(
 		routeStore: routeStore,
 		certStore:  certStore,
 		CertStore: &CertStore{
-			EncryptionKey: options.SecretEncryptionKey,
-			Db:            certStore,
+			SyncCertsToFiles: options.SyncCertsToFiles,
+			CertFolder:       filepath.Join(options.ConfigPath, "certs"),
+			EncryptionKey:    options.SecretEncryptionKey,
+			Db:               certStore,
 		},
 	}
 
+	if cs.options.SyncCertsToFiles {
+		cs.syncCertsToFiles()
+	}
+
 	return cs, nil
+}
+
+func (cs *ProxyService) syncCertsToFiles() error {
+	certFolder := filepath.Join(cs.options.ConfigPath, "certs")
+
+	err := os.MkdirAll(certFolder, 0755)
+	if err != nil {
+		return errors.Wrap(err, "failed to create config directory")
+	}
+
+	if cs.CertStore == nil || cs.CertStore.Db == nil {
+		return errors.New("cert store is not initialized")
+	}
+
+	certs, err := cs.CertStore.Db.Query().Find()
+	if err != nil {
+		return errors.Wrap(err, "failed to query certs")
+	}
+
+	for _, certI := range certs {
+		err := cs.syncCertToFiles(certFolder, certI)
+		if err != nil {
+			logger.Error(
+				"Failed to sync cert to disk",
+				slog.String("certId", certI.GetId()),
+				slog.Any("error", err),
+			)
+		}
+	}
+
+	return nil
+}
+
+func (cs *ProxyService) syncCertToFiles(
+	certFolder string,
+	certI datastore.Row,
+) error {
+	cert, ok := certI.(*proxy.Cert)
+	if !ok {
+		return errors.Errorf("expected cert type, got %T", certI)
+	}
+
+	decrypted, err := secrets.Decrypt(cert.Cert, cs.options.SecretEncryptionKey)
+	if err != nil {
+		return errors.Wrapf(err, "failed to decrypt cert '%s'", cert.Id)
+	}
+
+	if err := WriteCertKeyChainToFilesWithHost(
+		certFolder,
+		cert.Id,
+		decrypted,
+	); err != nil {
+		return errors.Wrapf(err, "failed to write cert '%s' to disk", cert.Id)
+	}
+
+	return nil
 }
 
 func (cs *ProxyService) RegisterRoutes(router *mux.Router) {
