@@ -7,7 +7,9 @@ import (
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
+	"fmt"
 	"math/big"
+	"os"
 	"testing"
 	"time"
 
@@ -119,4 +121,68 @@ func TestAutocertCache(t *testing.T) {
 		_, err = cache.Get(ctx, key)
 		require.Error(t, err)
 	})
+}
+
+type certTestCase struct {
+	Cert         string
+	ExpectedHost string
+}
+
+var certCases = []certTestCase{
+	{
+		Cert:
+		// openssl ecparam -genkey -name prime256v1 -out ec.key
+		// openssl req -new -x509 -key ec.key -out ec.crt -days 365 -subj "/CN=test-ec.local"
+		`-----BEGIN EC PARAMETERS-----
+BggqhkjOPQMBBw==
+-----END EC PARAMETERS-----
+-----BEGIN EC PRIVATE KEY-----
+MHcCAQEEIDC3+7pySTQl6WRBuefZdxg/t5Zec6BSlGww+w1z/6N5oAoGCCqGSM49
+AwEHoUQDQgAEowxQJ66sxQUzPmWsUWtHHVsNaysH3ytAqlwWk1OmqeaiTqfiomQd
+dkmLJt8ur4uWzXEz0rszpx+kkKC0O5wK1Q==
+-----END EC PRIVATE KEY-----
+-----BEGIN CERTIFICATE-----
+MIIBhTCCASugAwIBAgIUQYwEd3SCWKXIQpi1LmyH5NmfLUMwCgYIKoZIzj0EAwIw
+GDEWMBQGA1UEAwwNdGVzdC1lYy5sb2NhbDAeFw0yNTA2MTUxMTM5NDhaFw0yNjA2
+MTUxMTM5NDhaMBgxFjAUBgNVBAMMDXRlc3QtZWMubG9jYWwwWTATBgcqhkjOPQIB
+BggqhkjOPQMBBwNCAASjDFAnrqzFBTM+ZaxRa0cdWw1rKwffK0CqXBaTU6ap5qJO
+p+KiZB12SYsm3y6vi5bNcTPSuzOnH6SQoLQ7nArVo1MwUTAdBgNVHQ4EFgQUgcgn
+5D79ptSUBKu3TFrfTljdUTwwHwYDVR0jBBgwFoAUgcgn5D79ptSUBKu3TFrfTljd
+UTwwDwYDVR0TAQH/BAUwAwEB/zAKBggqhkjOPQQDAgNIADBFAiA6llltovI3Gt8w
+z8CriygJzZdjwRQxeTTUyYTxpZb43gIhAJqAMTOb00C5QiNZZji04AyACQX1z6Dq
+ODVqQ2xusrR7
+-----END CERTIFICATE-----`,
+		ExpectedHost: "test-ec.local",
+	},
+}
+
+func TestWriteCertKeyChainToFilesWithHost(t *testing.T) {
+	for i, cas := range certCases {
+		fallbackHost := fmt.Sprintf("test-cert-%v", i)
+
+		t.Run(fallbackHost, func(t *testing.T) {
+			certFolder := t.TempDir()
+
+			err := proxyservice.WriteCertKeyChainToFilesWithHost(
+				certFolder,
+				fallbackHost,
+				cas.Cert,
+			)
+			require.NoError(t, err)
+
+			expectedHost := cas.ExpectedHost
+			if expectedHost == "" {
+				expectedHost = fallbackHost
+			}
+
+			certFilePath := certFolder + "/" + expectedHost + ".cert.pem"
+			keyFilePath := certFolder + "/" + expectedHost + ".key.pem"
+
+			_, err = os.Stat(certFilePath)
+			require.NoError(t, err)
+
+			_, err = os.Stat(keyFilePath)
+			require.NoError(t, err)
+		})
+	}
 }

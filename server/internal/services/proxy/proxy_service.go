@@ -128,7 +128,7 @@ func (cs *ProxyService) syncCertToDisk(
 		return errors.Wrapf(err, "failed to decrypt cert '%s'", cert.Id)
 	}
 
-	if err := writeCertKeyChainToFilesWithHost(
+	if err := WriteCertKeyChainToFilesWithHost(
 		certFolder,
 		cert.Id,
 		decrypted,

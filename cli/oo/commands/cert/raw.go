@@ -6,7 +6,6 @@ import (
 	"github.com/1backend/1backend/cli/oo/config"
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -40,7 +39,6 @@ func Raw(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "failed to list certs")
 	}
 
-	spew.Dump(rsp)
 	if len(rsp.Certs) > 0 {
 		return errors.New("more than one cert returned")
 	}

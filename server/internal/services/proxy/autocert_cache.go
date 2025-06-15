@@ -264,7 +264,7 @@ func parseCertInfo(certPEM []byte) (*certInfo, error) {
 	return info, nil
 }
 
-func writeCertKeyChainToFilesWithHost(
+func WriteCertKeyChainToFilesWithHost(
 	outputDir string,
 	fallbackHost string,
 	pemData string,
