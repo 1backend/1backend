@@ -43,7 +43,7 @@ func Raw(cmd *cobra.Command, args []string) error {
 		return errors.New("more than one cert returned")
 	}
 
-	fmt.Print(*rsp.Certs[0].Cert)
+	fmt.Print(rsp.Certs[0].Cert)
 
 	return nil
 }
