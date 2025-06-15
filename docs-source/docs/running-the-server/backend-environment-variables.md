@@ -151,7 +151,37 @@ Also save certificates to disk.
 
 By default, certificates are stored in the internal datastore managed by the proxy service. However, in some cases — for example, when other containers need to access the certificates — it's useful to have them available on the filesystem as well.
 
-When this flag is set to true, the server will write certificates to the `OB_FOLDER/certs` directory (by default, `~/.1backend/certs`).
+When this flag is set to true, the server will write certificates to the `OB_FOLDER/certs` directory (by default, `~/.1backend/certs`) using a standard directory layout compatible with common infrastructure software like Let's Encrypt (Certbot), NGINX, and Apache.
+
+### Directory Structure
+
+Certificates are organized under:
+
+```sh
+<OB_FOLDER>/certs/live/<domain>/
+```
+
+Within each domain directory, files are saved as:
+
+- `cert.pem` — the domain’s public certificate
+- `privkey.pem` — the private key corresponding to the certificate
+- `chain.pem` — intermediate certificates forming the chain (if any)
+- `fullchain.pem` — concatenation of cert.pem and chain.pem
+
+This structure aligns with what many TLS tools and web servers expect, making it easy to integrate with existing systems that rely on file-based certificates.
+
+### Example
+
+For the domain `singulatron.com`, files will be saved as:
+
+```
+~/.1backend/certs/live/singulatron.com/cert.pem
+~/.1backend/certs/live/singulatron.com/privkey.pem
+~/.1backend/certs/live/singulatron.com/chain.pem
+~/.1backend/certs/live/singulatron.com/fullchain.pem
+```
+
+This standard layout ensures compatibility with web servers like NGINX and Apache, as well as automation tools like Certbot, enabling easy mounting of certificates into containers or configuring HTTPS endpoints.
 
 ## `OB_TEST`
 
