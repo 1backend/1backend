@@ -54,7 +54,7 @@ func (es *EmailService) RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/email-svc/email", appl(service.Lazy(es, func(w http.ResponseWriter, r *http.Request) {
 		es.SendEmail(w, r)
 	}))).
-		Methods("OPTIONS", "PUT")
+		Methods("OPTIONS", "POST")
 }
 
 func (es *EmailService) LazyStart() error {
