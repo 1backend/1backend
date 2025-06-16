@@ -36,7 +36,7 @@ export declare class EmailSvcApi {
     setApiKey(key: EmailSvcApiApiKeys, value: string): void;
     addInterceptor(interceptor: Interceptor): void;
     /**
-     * Send an email with attachments.
+     * Sends an email with optional attachments via a supported email provider.  Currently, only SendGrid is supported. Additional providers may be added in the future.  Required secrets from the Secret Svc for SendGrid: - `sender-email`: Sender\'s email address. - `sender-name`: Sender\'s display name. - `sendgrid-api-key`: API key for SendGrid.
      * @summary Send an Email
      * @param body Send Email Request
      */

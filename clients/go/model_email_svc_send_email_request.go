@@ -31,9 +31,9 @@ type EmailSvcSendEmailRequest struct {
 	// List of CC recipient email addresses (optional)
 	Cc []string `json:"cc,omitempty"`
 	// Content type: \"text/plain\" or \"text/html\"
-	ContentType string `json:"contentType"`
+	ContentType *string `json:"contentType,omitempty"`
 	// Unique identifier
-	Id string `json:"id"`
+	Id *string `json:"id,omitempty"`
 	// Email subject line
 	Subject string `json:"subject"`
 	// List of recipient email addresses
@@ -46,11 +46,9 @@ type _EmailSvcSendEmailRequest EmailSvcSendEmailRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewEmailSvcSendEmailRequest(body string, contentType string, id string, subject string, to []string) *EmailSvcSendEmailRequest {
+func NewEmailSvcSendEmailRequest(body string, subject string, to []string) *EmailSvcSendEmailRequest {
 	this := EmailSvcSendEmailRequest{}
 	this.Body = body
-	this.ContentType = contentType
-	this.Id = id
 	this.Subject = subject
 	this.To = to
 	return &this
@@ -184,52 +182,68 @@ func (o *EmailSvcSendEmailRequest) SetCc(v []string) {
 	o.Cc = v
 }
 
-// GetContentType returns the ContentType field value
+// GetContentType returns the ContentType field value if set, zero value otherwise.
 func (o *EmailSvcSendEmailRequest) GetContentType() string {
-	if o == nil {
+	if o == nil || IsNil(o.ContentType) {
 		var ret string
 		return ret
 	}
-
-	return o.ContentType
+	return *o.ContentType
 }
 
-// GetContentTypeOk returns a tuple with the ContentType field value
+// GetContentTypeOk returns a tuple with the ContentType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EmailSvcSendEmailRequest) GetContentTypeOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.ContentType) {
 		return nil, false
 	}
-	return &o.ContentType, true
+	return o.ContentType, true
 }
 
-// SetContentType sets field value
+// HasContentType returns a boolean if a field has been set.
+func (o *EmailSvcSendEmailRequest) HasContentType() bool {
+	if o != nil && !IsNil(o.ContentType) {
+		return true
+	}
+
+	return false
+}
+
+// SetContentType gets a reference to the given string and assigns it to the ContentType field.
 func (o *EmailSvcSendEmailRequest) SetContentType(v string) {
-	o.ContentType = v
+	o.ContentType = &v
 }
 
-// GetId returns the Id field value
+// GetId returns the Id field value if set, zero value otherwise.
 func (o *EmailSvcSendEmailRequest) GetId() string {
-	if o == nil {
+	if o == nil || IsNil(o.Id) {
 		var ret string
 		return ret
 	}
-
-	return o.Id
+	return *o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EmailSvcSendEmailRequest) GetIdOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Id) {
 		return nil, false
 	}
-	return &o.Id, true
+	return o.Id, true
 }
 
-// SetId sets field value
+// HasId returns a boolean if a field has been set.
+func (o *EmailSvcSendEmailRequest) HasId() bool {
+	if o != nil && !IsNil(o.Id) {
+		return true
+	}
+
+	return false
+}
+
+// SetId gets a reference to the given string and assigns it to the Id field.
 func (o *EmailSvcSendEmailRequest) SetId(v string) {
-	o.Id = v
+	o.Id = &v
 }
 
 // GetSubject returns the Subject field value
@@ -300,8 +314,12 @@ func (o EmailSvcSendEmailRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Cc) {
 		toSerialize["cc"] = o.Cc
 	}
-	toSerialize["contentType"] = o.ContentType
-	toSerialize["id"] = o.Id
+	if !IsNil(o.ContentType) {
+		toSerialize["contentType"] = o.ContentType
+	}
+	if !IsNil(o.Id) {
+		toSerialize["id"] = o.Id
+	}
 	toSerialize["subject"] = o.Subject
 	toSerialize["to"] = o.To
 	return toSerialize, nil
@@ -313,8 +331,6 @@ func (o *EmailSvcSendEmailRequest) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"body",
-		"contentType",
-		"id",
 		"subject",
 		"to",
 	}

@@ -45,13 +45,13 @@ export interface EmailSvcSendEmailRequest {
      * @type {string}
      * @memberof EmailSvcSendEmailRequest
      */
-    contentType: string;
+    contentType?: string;
     /**
      * Unique identifier
      * @type {string}
      * @memberof EmailSvcSendEmailRequest
      */
-    id: string;
+    id?: string;
     /**
      * Email subject line
      * @type {string}

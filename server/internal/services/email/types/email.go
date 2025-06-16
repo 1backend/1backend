@@ -46,7 +46,7 @@ type Email struct {
 
 type SendEmailRequest struct {
 	// Unique identifier
-	Id string `json:"id" binding:"required"`
+	Id string `json:"id,omitempty"`
 
 	// List of recipient email addresses
 	To []string `json:"to" binding:"required"`
@@ -64,7 +64,7 @@ type SendEmailRequest struct {
 	Body string `json:"body" binding:"required"`
 
 	// Content type: "text/plain" or "text/html"
-	ContentType string `json:"contentType" binding:"required"`
+	ContentType string `json:"contentType,omitempty"`
 
 	// List of file attachments (optional)
 	Attachments []Attachment `json:"attachments"`

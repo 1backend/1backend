@@ -56,13 +56,13 @@ export interface EmailSvcSendEmailRequest {
      * @type {string}
      * @memberof EmailSvcSendEmailRequest
      */
-    contentType: string;
+    contentType?: string;
     /**
      * Unique identifier
      * @type {string}
      * @memberof EmailSvcSendEmailRequest
      */
-    id: string;
+    id?: string;
     /**
      * Email subject line
      * @type {string}
@@ -82,8 +82,6 @@ export interface EmailSvcSendEmailRequest {
  */
 export function instanceOfEmailSvcSendEmailRequest(value: object): value is EmailSvcSendEmailRequest {
     if (!('body' in value) || value['body'] === undefined) return false;
-    if (!('contentType' in value) || value['contentType'] === undefined) return false;
-    if (!('id' in value) || value['id'] === undefined) return false;
     if (!('subject' in value) || value['subject'] === undefined) return false;
     if (!('to' in value) || value['to'] === undefined) return false;
     return true;
@@ -103,8 +101,8 @@ export function EmailSvcSendEmailRequestFromJSONTyped(json: any, ignoreDiscrimin
         'bcc': json['bcc'] == null ? undefined : json['bcc'],
         'body': json['body'],
         'cc': json['cc'] == null ? undefined : json['cc'],
-        'contentType': json['contentType'],
-        'id': json['id'],
+        'contentType': json['contentType'] == null ? undefined : json['contentType'],
+        'id': json['id'] == null ? undefined : json['id'],
         'subject': json['subject'],
         'to': json['to'],
     };

@@ -21,7 +21,14 @@ import (
 
 // @ID sendEmail
 // @Summary Send an Email
-// @Description Send an email with attachments.
+// @Description Sends an email with optional attachments via a supported email provider.
+// @Description
+// @Description Currently, only SendGrid is supported. Additional providers may be added in the future.
+// @Description
+// @Description Required secrets from the Secret Svc for SendGrid:
+// @Description - `sender-email`: Sender's email address.
+// @Description - `sender-name`: Sender's display name.
+// @Description - `sendgrid-api-key`: API key for SendGrid.
 // @Tags Email Svc
 // @Accept json
 // @Produce json
@@ -54,6 +61,12 @@ func (s *EmailService) SendEmail(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
+	if len(req.To) == 0 {
+		logger.Error("No recipients specified", slog.Any("request", req))
+		endpoint.WriteString(w, http.StatusBadRequest, "At least one recipient is required")
+		return
+	}
+
 	err = s.sendgridSendEmail(*req)
 	if err != nil {
 		logger.Error(
@@ -68,12 +81,7 @@ func (s *EmailService) SendEmail(w http.ResponseWriter, r *http.Request) {
 		Status: "sent",
 	}
 
-	bs, _ := json.Marshal(response)
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
-	}
+	endpoint.WriteJSON(w, http.StatusOK, response)
 }
 
 func (s *EmailService) sendgridSendEmail(req email.SendEmailRequest) error {
@@ -102,6 +110,11 @@ func (s *EmailService) sendgridSendEmail(req email.SendEmailRequest) error {
 	)
 
 	for _, secret := range secretResp.Secrets {
+		if secret.Key == nil || secret.Value == nil {
+			logger.Error("Secret key or value is nil", slog.Any("secret", secret))
+			continue
+		}
+
 		switch *secret.Key {
 		case "sender-email":
 			senderEmail = *secret.Value

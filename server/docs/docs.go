@@ -1586,7 +1586,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Send an email with attachments.",
+                "description": "Sends an email with optional attachments via a supported email provider.\n\nCurrently, only SendGrid is supported. Additional providers may be added in the future.\n\nRequired secrets from the Secret Svc for SendGrid:\n- ` + "`" + `sender-email` + "`" + `: Sender's email address.\n- ` + "`" + `sender-name` + "`" + `: Sender's display name.\n- ` + "`" + `sendgrid-api-key` + "`" + `: API key for SendGrid.",
                 "consumes": [
                     "application/json"
                 ],
@@ -6875,8 +6875,6 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "body",
-                "contentType",
-                "id",
                 "subject",
                 "to"
             ],
