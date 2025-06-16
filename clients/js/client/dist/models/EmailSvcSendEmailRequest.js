@@ -18,10 +18,6 @@ import { EmailSvcAttachmentFromJSON, EmailSvcAttachmentToJSON, } from './EmailSv
 export function instanceOfEmailSvcSendEmailRequest(value) {
     if (!('body' in value) || value['body'] === undefined)
         return false;
-    if (!('contentType' in value) || value['contentType'] === undefined)
-        return false;
-    if (!('id' in value) || value['id'] === undefined)
-        return false;
     if (!('subject' in value) || value['subject'] === undefined)
         return false;
     if (!('to' in value) || value['to'] === undefined)
@@ -40,8 +36,8 @@ export function EmailSvcSendEmailRequestFromJSONTyped(json, ignoreDiscriminator)
         'bcc': json['bcc'] == null ? undefined : json['bcc'],
         'body': json['body'],
         'cc': json['cc'] == null ? undefined : json['cc'],
-        'contentType': json['contentType'],
-        'id': json['id'],
+        'contentType': json['contentType'] == null ? undefined : json['contentType'],
+        'id': json['id'] == null ? undefined : json['id'],
         'subject': json['subject'],
         'to': json['to'],
     };

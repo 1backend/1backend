@@ -30,11 +30,11 @@ export declare class EmailSvcSendEmailRequest {
     /**
     * Content type: \"text/plain\" or \"text/html\"
     */
-    'contentType': string;
+    'contentType'?: string;
     /**
     * Unique identifier
     */
-    'id': string;
+    'id'?: string;
     /**
     * Email subject line
     */

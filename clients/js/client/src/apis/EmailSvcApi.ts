@@ -38,7 +38,7 @@ export interface SendEmailRequest {
 export class EmailSvcApi extends runtime.BaseAPI {
 
     /**
-     * Send an email with attachments.
+     * Sends an email with optional attachments via a supported email provider.  Currently, only SendGrid is supported. Additional providers may be added in the future.  Required secrets from the Secret Svc for SendGrid: - `sender-email`: Sender\'s email address. - `sender-name`: Sender\'s display name. - `sendgrid-api-key`: API key for SendGrid.
      * Send an Email
      */
     async sendEmailRaw(requestParameters: SendEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmailSvcSendEmailResponse>> {
@@ -71,7 +71,7 @@ export class EmailSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Send an email with attachments.
+     * Sends an email with optional attachments via a supported email provider.  Currently, only SendGrid is supported. Additional providers may be added in the future.  Required secrets from the Secret Svc for SendGrid: - `sender-email`: Sender\'s email address. - `sender-name`: Sender\'s display name. - `sendgrid-api-key`: API key for SendGrid.
      * Send an Email
      */
     async sendEmail(requestParameters: SendEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmailSvcSendEmailResponse> {

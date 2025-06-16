@@ -25,7 +25,14 @@ type EmailSvcAPI interface {
 	/*
 	SendEmail Send an Email
 
-	Send an email with attachments.
+	Sends an email with optional attachments via a supported email provider.
+
+Currently, only SendGrid is supported. Additional providers may be added in the future.
+
+Required secrets from the Secret Svc for SendGrid:
+- `sender-email`: Sender's email address.
+- `sender-name`: Sender's display name.
+- `sendgrid-api-key`: API key for SendGrid.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiSendEmailRequest
@@ -59,7 +66,14 @@ func (r ApiSendEmailRequest) Execute() (*EmailSvcSendEmailResponse, *http.Respon
 /*
 SendEmail Send an Email
 
-Send an email with attachments.
+Sends an email with optional attachments via a supported email provider.
+
+Currently, only SendGrid is supported. Additional providers may be added in the future.
+
+Required secrets from the Secret Svc for SendGrid:
+- `sender-email`: Sender's email address.
+- `sender-name`: Sender's display name.
+- `sendgrid-api-key`: API key for SendGrid.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiSendEmailRequest
