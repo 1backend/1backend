@@ -38,6 +38,7 @@ type Options struct {
 
 	TokenRefresher    endpoint.TokenRefresher
 	PermissionChecker endpoint.PermissionChecker
+	TokenExchanger    endpoint.TokenExchanger
 	Middlewares       func(http.HandlerFunc) http.HandlerFunc
 
 	// Authorizer is a helper interface that contains
@@ -83,6 +84,12 @@ func (o *Options) LoadEnvars() error {
 
 	if o.PermissionChecker == nil {
 		o.PermissionChecker = endpoint.NewPermissionChecker(
+			o.ClientFactory,
+		)
+	}
+
+	if o.TokenExchanger == nil {
+		o.TokenExchanger = endpoint.NewTokenExchanger(
 			o.ClientFactory,
 		)
 	}

@@ -30,6 +30,8 @@ type HasPermissionResponse struct {
 	// Not caching the full http response here to avoid unnecessary memory usage.
 }
 
+// PermissionChecker is an interface for checking user permissions.
+// It caches the results of permission checks to avoid unnecessary calls to the user service.
 type PermissionChecker interface {
 	// HasPermission caches the result of the has-permission endpoint calls.
 	// Uses a SHA-256 hash of the JWT and permission string as the cache key.
