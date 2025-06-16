@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"net"
 	"net/http"
 	"strings"
 
@@ -57,7 +58,15 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to create proxy request", http.StatusInternalServerError)
 		return
 	}
-	req.Header = r.Header
+
+	req.Header = make(http.Header)
+	for k, vv := range r.Header {
+		for _, v := range vv {
+			req.Header.Add(k, v)
+		}
+	}
+
+	req.Host = r.Host
 
 	proto := r.Header.Get("X-Forwarded-Proto")
 	if proto == "" {
@@ -75,12 +84,25 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 	}
 	req.Header.Set("X-Forwarded-For", clientIP)
 	req.Header.Set("X-Forwarded-Host", r.Host)
-	req.Header.Set("X-Forwarded-Port", r.URL.Port())
 
-	req.Header.Set("X-Real-IP", r.RemoteAddr)
+	host, port, err := net.SplitHostPort(r.Host)
+	if err != nil || port == "" {
+		if r.TLS != nil {
+			port = "443"
+		} else {
+			port = "80"
+		}
+	}
+	req.Header.Set("X-Forwarded-Port", port)
+
+	req.Header.Set("X-Real-IP", host)
 
 	forwarded := fmt.Sprintf("for=%q;host=%q;proto=%q", r.RemoteAddr, r.Host, proto)
 	req.Header.Set("Forwarded", forwarded)
+
+	if req.Header.Get("User-Agent") == "" {
+		req.Header.Set("User-Agent", "1backend-proxy")
+	}
 
 	client := http.Client{}
 	resp, err := client.Do(req)
