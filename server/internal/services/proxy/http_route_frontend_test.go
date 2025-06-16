@@ -201,4 +201,96 @@ func TestProxyService_FrontendRoute(t *testing.T) {
 		require.Contains(t, string(body), "q=test")
 		require.Contains(t, string(body), "sort=desc")
 	})
+
+	t.Run("appends to X-Forwarded-For", func(t *testing.T) {
+		mockBackend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprint(w, r.Header.Get("X-Forwarded-For"))
+		}))
+		defer mockBackend.Close()
+
+		routeReq.Routes[0].Target = openapi.PtrString(mockBackend.URL)
+		_, _, err := adminClient.ProxySvcAPI.SaveRoutes(context.Background()).Body(routeReq).Execute()
+		require.NoError(t, err)
+
+		req, err := http.NewRequest(http.MethodGet, edgeProxyUrl+"/", nil)
+		require.NoError(t, err)
+		req.Host = "test.localhost"
+		req.Header.Set("X-Forwarded-For", "1.2.3.4")
+
+		resp, err := proxyClient.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+
+		body, _ := io.ReadAll(resp.Body)
+		require.Contains(t, string(body), "1.2.3.4")
+		require.Contains(t, string(body), "127.0.0.1") // or localhost equivalent
+	})
+
+	t.Run("preserves X-Forwarded-Proto if set", func(t *testing.T) {
+		mockBackend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprint(w, r.Header.Get("X-Forwarded-Proto"))
+		}))
+		defer mockBackend.Close()
+
+		routeReq.Routes[0].Target = openapi.PtrString(mockBackend.URL)
+		_, _, err := adminClient.ProxySvcAPI.SaveRoutes(context.Background()).Body(routeReq).Execute()
+		require.NoError(t, err)
+
+		req, err := http.NewRequest(http.MethodGet, edgeProxyUrl+"/", nil)
+		require.NoError(t, err)
+		req.Host = "test.localhost"
+		req.Header.Set("X-Forwarded-Proto", "customproto")
+
+		resp, err := proxyClient.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+
+		body, _ := io.ReadAll(resp.Body)
+		require.Equal(t, "customproto", string(body))
+	})
+
+	t.Run("sets X-Real-IP correctly", func(t *testing.T) {
+		mockBackend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprint(w, r.Header.Get("X-Real-IP"))
+		}))
+		defer mockBackend.Close()
+
+		routeReq.Routes[0].Target = openapi.PtrString(mockBackend.URL)
+		_, _, err := adminClient.ProxySvcAPI.SaveRoutes(context.Background()).Body(routeReq).Execute()
+		require.NoError(t, err)
+
+		req, err := http.NewRequest(http.MethodGet, edgeProxyUrl+"/", nil)
+		require.NoError(t, err)
+		req.Host = "test.localhost"
+
+		resp, err := proxyClient.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+
+		body, _ := io.ReadAll(resp.Body)
+		require.NotEmpty(t, string(body))
+	})
+
+	t.Run("sets RFC 7239 Forwarded header", func(t *testing.T) {
+		mockBackend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprint(w, r.Header.Get("Forwarded"))
+		}))
+		defer mockBackend.Close()
+
+		routeReq.Routes[0].Target = openapi.PtrString(mockBackend.URL)
+		_, _, err := adminClient.ProxySvcAPI.SaveRoutes(context.Background()).Body(routeReq).Execute()
+		require.NoError(t, err)
+
+		req, err := http.NewRequest(http.MethodGet, edgeProxyUrl+"/", nil)
+		require.NoError(t, err)
+		req.Host = "test.localhost"
+
+		resp, err := proxyClient.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+
+		body, _ := io.ReadAll(resp.Body)
+		require.Contains(t, string(body), "for=")
+		require.Contains(t, string(body), "proto=")
+	})
 }

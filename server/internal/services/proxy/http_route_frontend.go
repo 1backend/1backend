@@ -59,6 +59,29 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 	}
 	req.Header = r.Header
 
+	proto := r.Header.Get("X-Forwarded-Proto")
+	if proto == "" {
+		if r.TLS != nil {
+			proto = "https"
+		} else {
+			proto = "http"
+		}
+	}
+	req.Header.Set("X-Forwarded-Proto", proto)
+
+	clientIP := r.RemoteAddr
+	if prior, ok := r.Header["X-Forwarded-For"]; ok && len(prior) > 0 {
+		clientIP = prior[0] + ", " + clientIP
+	}
+	req.Header.Set("X-Forwarded-For", clientIP)
+	req.Header.Set("X-Forwarded-Host", r.Host)
+	req.Header.Set("X-Forwarded-Port", r.URL.Port())
+
+	req.Header.Set("X-Real-IP", r.RemoteAddr)
+
+	forwarded := fmt.Sprintf("for=%q;host=%q;proto=%q", r.RemoteAddr, r.Host, proto)
+	req.Header.Set("Forwarded", forwarded)
+
 	client := http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
