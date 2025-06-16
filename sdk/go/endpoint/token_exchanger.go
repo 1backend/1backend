@@ -1,11 +1,12 @@
 package endpoint
 
 import (
+	"context"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"net"
 	"net/http"
-	"strings"
 	"time"
 
 	openapi "github.com/1backend/1backend/clients/go"
@@ -22,13 +23,15 @@ type TokenExchangeResponse struct {
 // TokenExchanger is an interface for exchanging tokens between different apps or devices.
 // It caches the exchanged tokens to avoid unnecessary calls to the user service.
 type TokenExchanger interface {
-	// ExchangeToken exchanges the original token for a new token for a different app or device.
-	// It caches the response using a key derived from the original token, new app, and new device.
+	// ExchangeToken exchanges the original token for a new token for a different app.
+	// It caches the exchanged tokens to avoid unnecessary calls to the user service.
 	ExchangeToken(
-		request *http.Request,
+		ctx context.Context,
+		token string,
 		newApp string,
-		newDevice *string,
 	) (string, error)
+
+	AppFromRequestHost(request *http.Request) (string, error)
 }
 
 type TokenExchangerImpl struct {
@@ -56,16 +59,12 @@ func NewTokenExchanger(
 }
 
 func (te *TokenExchangerImpl) ExchangeToken(
-	request *http.Request,
+	ctx context.Context,
+	token string,
 	newApp string,
-	newDevice *string,
 ) (string, error) {
-	originalToken := strings.TrimPrefix(request.Header.Get("Authorization"), "Bearer ")
-	if originalToken == "" {
-		return "", errors.New("missing original Authorization token")
-	}
 
-	cacheKey := generateTokenExchangeKey(originalToken, newApp, newDevice)
+	cacheKey := generateTokenExchangeKey(token, newApp)
 	if value, found := te.cache.Get(cacheKey); found {
 		if cached, ok := value.(*TokenExchangeResponse); ok {
 			return cached.Token, nil
@@ -73,15 +72,14 @@ func (te *TokenExchangerImpl) ExchangeToken(
 	}
 
 	req := openapi.UserSvcExchangeTokenRequest{
-		NewApp:    newApp,
-		NewDevice: newDevice,
+		NewApp: newApp,
 	}
 
 	rsp, _, err := te.clientFactory.Client(
-		client.WithTokenFromRequest(request),
+		client.WithToken(token),
 	).
 		UserSvcAPI.
-		ExchangeToken(request.Context()).
+		ExchangeToken(ctx).
 		Body(req).
 		Execute()
 	if err != nil {
@@ -106,12 +104,25 @@ func (te *TokenExchangerImpl) ExchangeToken(
 	return rsp.Token.Token, nil
 }
 
-func generateTokenExchangeKey(token, newApp string, newDevice *string) string {
-	device := "unknown"
-	if newDevice != nil && *newDevice != "" {
-		device = *newDevice
+func (te *TokenExchangerImpl) AppFromRequestHost(request *http.Request) (
+	string, error,
+) {
+	if request == nil || request.Host == "" {
+		return "", errors.New("request or request host is empty")
 	}
 
+	host, _, err := net.SplitHostPort(request.Host)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to split host and port from request host")
+	}
+	if host == "" {
+		return "", errors.New("host is empty")
+	}
+
+	return host, nil
+}
+
+func generateTokenExchangeKey(token, newApp string) string {
 	hash := sha256.Sum256([]byte(token))
-	return fmt.Sprintf("%s:%s:%s", hex.EncodeToString(hash[:]), newApp, device)
+	return fmt.Sprintf("%s:%s:%s", hex.EncodeToString(hash[:]), newApp)
 }
