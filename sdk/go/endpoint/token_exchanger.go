@@ -130,5 +130,5 @@ func (te *TokenExchangerImpl) AppFromRequestHost(request *http.Request) (
 
 func generateTokenExchangeKey(token, newApp string) string {
 	hash := sha256.Sum256([]byte(token))
-	return fmt.Sprintf("%s:%s:%s", hex.EncodeToString(hash[:]), newApp)
+	return fmt.Sprintf("%s:%s", hex.EncodeToString(hash[:]), newApp)
 }
