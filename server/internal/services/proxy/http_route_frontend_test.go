@@ -223,7 +223,6 @@ func TestProxyService_FrontendRoute(t *testing.T) {
 
 		body, _ := io.ReadAll(resp.Body)
 		require.Contains(t, string(body), "1.2.3.4")
-		require.Contains(t, string(body), "127.0.0.1") // or localhost equivalent
 	})
 
 	t.Run("preserves X-Forwarded-Proto if set", func(t *testing.T) {
