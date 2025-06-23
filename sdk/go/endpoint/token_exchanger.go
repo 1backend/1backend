@@ -32,11 +32,9 @@ type TokenExchanger interface {
 	) (string, error)
 
 	// AppFromRequestHost extracts the app name from the request host.
-	// This is useful for example when you want to exchange a service token from the default "unnamed" app
-	// to a specific app based on the request host.
 	//
-	// Especially useful when the request doesn't contain a token (eg. the endpoint is public).
-	// When the endpoint is authenticated, the token is usuallly used to determine the app.
+	// This is useful for public endpoints when the request doesn't contain a token.
+	// When the endpoint is authenticated, the token is usually used to determine the app.
 	AppFromRequestHost(request *http.Request) (string, error)
 }
 
