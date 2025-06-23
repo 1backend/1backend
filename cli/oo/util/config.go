@@ -52,16 +52,16 @@ func LoadConfig() (types.Config, error) {
 		}
 	}
 
-	if len(util.Environments) == 0 {
-		util.Environments = map[string]*types.Environment{}
+	if len(config.Environments) == 0 {
+		config.Environments = map[string]*types.Environment{}
 
 		shortName := "local"
-		util.Environments["local"] = &types.Environment{
+		config.Environments["local"] = &types.Environment{
 			ShortName: shortName,
 			// @todo make this come from somewhere else
 			URL: "http://127.0.0.1:11337",
 		}
-		util.SelectedEnvironment = shortName
+		config.SelectedEnvironment = shortName
 
 		err = SaveConfig(config)
 		if err != nil {
