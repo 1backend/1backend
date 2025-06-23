@@ -409,7 +409,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Save the provided configuration to the server.\nThe app from the caller's token is used to determine which app the config belongs to.\nThe caller's camelCased slug (e.g., \"test-user-slug\" becomes \"testUserSlug\") is used as the config key automatically.\n\nThe save performs a deep merge, that is:\n- Nested objects are recursively merged rather than replaced.\n- If a field exists in both the existing and the incoming config and both values are objects, their contents are merged.\n- If a field exists in both but one or both values are not objects (e.g., string, number, array), the incoming value replaces the existing one.\n- Fields present only in the incoming config are added.\n- Fields present only in the existing config are preserved.\n- Top-level and nested merges follow the same rules.",
+                "description": "Save the provided configuration to the server.\nThe app from the caller's token is used to determine which app the config belongs to.\nThe caller's camelCased slug (e.g., \"test-user-slug\" becomes \"testUserSlug\") is used as the config key automatically,\nexcept for users who have the \"config-svc:config:edit-on-behalf\" permission (admins), who can specify any key they want.\nAdmins (users with the \"config-svc:config:edit-on-behalf\" permission) can also provide an \"app\" field in the request body to specify which app the config belongs to, while\nnon-admin users cannot specify the \"app\" field, the app associated with their token will be used.\n\nThe save performs a deep merge, that is:\n- Nested objects are recursively merged rather than replaced.\n- If a field exists in both the existing and the incoming config and both values are objects, their contents are merged.\n- If a field exists in both but one or both values are not objects (e.g., string, number, array), the incoming value replaces the existing one.\n- Fields present only in the incoming config are added.\n- Fields present only in the existing config are preserved.\n- Top-level and nested merges follow the same rules.",
                 "consumes": [
                     "application/json"
                 ],
@@ -5696,7 +5696,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
-                    "description": "Id is simply the app of the config.",
+                    "description": "Id is simply the app of the util.",
                     "type": "string"
                 },
                 "updatedAt": {
@@ -5737,6 +5737,10 @@ const docTemplate = `{
         "config_svc.SaveConfigRequest": {
             "type": "object",
             "properties": {
+                "app": {
+                    "description": "App can only be specified by users who have the\n` + "`" + `config-svc:config:edit-on-behalf` + "`" + ` permission, who are typically admins.",
+                    "type": "string"
+                },
                 "data": {
                     "type": "object",
                     "additionalProperties": true

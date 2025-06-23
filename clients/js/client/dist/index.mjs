@@ -1056,6 +1056,7 @@ function ConfigSvcSaveConfigRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'data': json['data'] == null ? undefined : json['data'],
         'dataJson': json['dataJson'] == null ? undefined : json['dataJson'],
     };
@@ -1068,6 +1069,7 @@ function ConfigSvcSaveConfigRequestToJSONTyped(value, ignoreDiscriminator = fals
         return value;
     }
     return {
+        'app': value['app'],
         'data': value['data'],
         'dataJson': value['dataJson'],
     };
@@ -11495,7 +11497,7 @@ class ConfigSvcApi extends BaseAPI {
         });
     }
     /**
-     * Save the provided configuration to the server. The app from the caller\'s token is used to determine which app the config belongs to. The caller\'s camelCased slug (e.g., \"test-user-slug\" becomes \"testUserSlug\") is used as the config key automatically.  The save performs a deep merge, that is: - Nested objects are recursively merged rather than replaced. - If a field exists in both the existing and the incoming config and both values are objects, their contents are merged. - If a field exists in both but one or both values are not objects (e.g., string, number, array), the incoming value replaces the existing one. - Fields present only in the incoming config are added. - Fields present only in the existing config are preserved. - Top-level and nested merges follow the same rules.
+     * Save the provided configuration to the server. The app from the caller\'s token is used to determine which app the config belongs to. The caller\'s camelCased slug (e.g., \"test-user-slug\" becomes \"testUserSlug\") is used as the config key automatically, except for users who have the \"config-svc:config:edit-on-behalf\" permission (admins), who can specify any key they want. Admins (users with the \"config-svc:config:edit-on-behalf\" permission) can also provide an \"app\" field in the request body to specify which app the config belongs to, while non-admin users cannot specify the \"app\" field, the app associated with their token will be used.  The save performs a deep merge, that is: - Nested objects are recursively merged rather than replaced. - If a field exists in both the existing and the incoming config and both values are objects, their contents are merged. - If a field exists in both but one or both values are not objects (e.g., string, number, array), the incoming value replaces the existing one. - Fields present only in the incoming config are added. - Fields present only in the existing config are preserved. - Top-level and nested merges follow the same rules.
      * Save Config
      */
     saveConfigRaw(requestParameters, initOverrides) {
@@ -11520,7 +11522,7 @@ class ConfigSvcApi extends BaseAPI {
         });
     }
     /**
-     * Save the provided configuration to the server. The app from the caller\'s token is used to determine which app the config belongs to. The caller\'s camelCased slug (e.g., \"test-user-slug\" becomes \"testUserSlug\") is used as the config key automatically.  The save performs a deep merge, that is: - Nested objects are recursively merged rather than replaced. - If a field exists in both the existing and the incoming config and both values are objects, their contents are merged. - If a field exists in both but one or both values are not objects (e.g., string, number, array), the incoming value replaces the existing one. - Fields present only in the incoming config are added. - Fields present only in the existing config are preserved. - Top-level and nested merges follow the same rules.
+     * Save the provided configuration to the server. The app from the caller\'s token is used to determine which app the config belongs to. The caller\'s camelCased slug (e.g., \"test-user-slug\" becomes \"testUserSlug\") is used as the config key automatically, except for users who have the \"config-svc:config:edit-on-behalf\" permission (admins), who can specify any key they want. Admins (users with the \"config-svc:config:edit-on-behalf\" permission) can also provide an \"app\" field in the request body to specify which app the config belongs to, while non-admin users cannot specify the \"app\" field, the app associated with their token will be used.  The save performs a deep merge, that is: - Nested objects are recursively merged rather than replaced. - If a field exists in both the existing and the incoming config and both values are objects, their contents are merged. - If a field exists in both but one or both values are not objects (e.g., string, number, array), the incoming value replaces the existing one. - Fields present only in the incoming config are added. - Fields present only in the existing config are preserved. - Top-level and nested merges follow the same rules.
      * Save Config
      */
     saveConfig(requestParameters, initOverrides) {

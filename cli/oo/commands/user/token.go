@@ -3,14 +3,14 @@ package user
 import (
 	"fmt"
 
-	"github.com/1backend/1backend/cli/oo/config"
+	"github.com/1backend/1backend/cli/oo/util"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
 // Token
 func Token(cmd *cobra.Command, args []string) error {
-	conf, err := config.LoadConfig()
+	conf, err := util.LoadConfig()
 	if err != nil {
 		return errors.Wrap(err, "failed to load config")
 	}

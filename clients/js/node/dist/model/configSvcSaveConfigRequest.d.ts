@@ -10,6 +10,10 @@
  * Do not edit the class manually.
  */
 export declare class ConfigSvcSaveConfigRequest {
+    /**
+    * App can only be specified by users who have the `config-svc:config:edit-on-behalf` permission, who are typically admins.
+    */
+    'app'?: string;
     'data'?: {
         [key: string]: any;
     };

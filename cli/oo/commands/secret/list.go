@@ -6,7 +6,7 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/1backend/1backend/cli/oo/config"
+	"github.com/1backend/1backend/cli/oo/util"
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/pkg/errors"
@@ -22,7 +22,7 @@ func List(cmd *cobra.Command, args []string, show bool) error {
 		key = args[0]
 	}
 
-	url, token, err := config.GetSelectedUrlAndToken()
+	url, token, err := util.GetSelectedUrlAndToken()
 	if err != nil {
 		return errors.Wrap(err, "cannot get env url and token")
 	}

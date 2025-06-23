@@ -171,7 +171,7 @@ definitions:
       dataJson:
         type: string
       id:
-        description: Id is simply the app of the config.
+        description: Id is simply the app of the util.
         type: string
       updatedAt:
         type: string
@@ -206,6 +206,11 @@ definitions:
     type: object
   config_svc.SaveConfigRequest:
     properties:
+      app:
+        description: |-
+          App can only be specified by users who have the
+          `config-svc:config:edit-on-behalf` permission, who are typically admins.
+        type: string
       data:
         additionalProperties: true
         type: object
@@ -3985,7 +3990,10 @@ paths:
       description: |-
         Save the provided configuration to the server.
         The app from the caller's token is used to determine which app the config belongs to.
-        The caller's camelCased slug (e.g., "test-user-slug" becomes "testUserSlug") is used as the config key automatically.
+        The caller's camelCased slug (e.g., "test-user-slug" becomes "testUserSlug") is used as the config key automatically,
+        except for users who have the "config-svc:config:edit-on-behalf" permission (admins), who can specify any key they want.
+        Admins (users with the "config-svc:config:edit-on-behalf" permission) can also provide an "app" field in the request body to specify which app the config belongs to, while
+        non-admin users cannot specify the "app" field, the app associated with their token will be used.
 
         The save performs a deep merge, that is:
         - Nested objects are recursively merged rather than replaced.

@@ -20,6 +20,13 @@ import { mapValues } from '../runtime';
  */
 export interface ConfigSvcSaveConfigRequest {
     /**
+     * App can only be specified by users who have the
+     * `config-svc:config:edit-on-behalf` permission, who are typically admins.
+     * @type {string}
+     * @memberof ConfigSvcSaveConfigRequest
+     */
+    app?: string;
+    /**
      * 
      * @type {{ [key: string]: any; }}
      * @memberof ConfigSvcSaveConfigRequest
@@ -50,6 +57,7 @@ export function ConfigSvcSaveConfigRequestFromJSONTyped(json: any, ignoreDiscrim
     }
     return {
         
+        'app': json['app'] == null ? undefined : json['app'],
         'data': json['data'] == null ? undefined : json['data'],
         'dataJson': json['dataJson'] == null ? undefined : json['dataJson'],
     };
@@ -66,6 +74,7 @@ export function ConfigSvcSaveConfigRequestToJSONTyped(value?: ConfigSvcSaveConfi
 
     return {
         
+        'app': value['app'],
         'data': value['data'],
         'dataJson': value['dataJson'],
     };

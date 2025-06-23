@@ -25,7 +25,7 @@ type ConfigSvcConfig struct {
 	CreatedAt string `json:"createdAt"`
 	Data map[string]interface{} `json:"data"`
 	DataJson string `json:"dataJson"`
-	// Id is simply the app of the config.
+	// Id is simply the app of the util.
 	Id string `json:"id"`
 	UpdatedAt string `json:"updatedAt"`
 }

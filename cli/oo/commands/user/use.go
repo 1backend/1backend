@@ -3,14 +3,14 @@ package user
 import (
 	"fmt"
 
-	"github.com/1backend/1backend/cli/oo/config"
+	"github.com/1backend/1backend/cli/oo/util"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
 // Use [slug]
 func Use(cmd *cobra.Command, args []string) error {
-	conf, err := config.LoadConfig()
+	conf, err := util.LoadConfig()
 	if err != nil {
 		return errors.Wrap(err, "failed to load config")
 	}
@@ -31,5 +31,5 @@ func Use(cmd *cobra.Command, args []string) error {
 
 	env.SelectedUser = slug
 
-	return config.SaveConfig(conf)
+	return util.SaveConfig(conf)
 }

@@ -1,4 +1,4 @@
-package route
+package config
 
 import (
 	"fmt"
@@ -24,7 +24,6 @@ func Save(cmd *cobra.Command, args []string) error {
 
 	cf := client.NewApiClientFactory(url)
 
-	// Case 2: File or directory-based routes
 	path := args[0]
 
 	stat, err := os.Stat(path)
@@ -34,23 +33,22 @@ func Save(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "error checking path")
 	}
 
-	var routes []openapi.ProxySvcRouteInput
+	var configs []openapi.ConfigSvcSaveConfigRequest
 	fileCount := 0
-
 	if stat.IsDir() {
-		// Handle directory: Iterate over files and collect routes
+		// Handle directory: Iterate over files and collect configs
 		err = filepath.Walk(path, func(filePath string, info os.FileInfo, err error) error {
 			if err != nil {
 				return errors.Wrap(err, fmt.Sprintf("error accessing file '%v'", filePath))
 			}
 			if !info.IsDir() {
-				// Collect routes from each file in the directory
+				// Collect configs from each file in the directory
 				fileCount++
-				fileRoutes, err := extractRoutesFromFile(filePath)
+				fileConfigs, err := extractConfigsFromFile(filePath)
 				if err != nil {
 					return err
 				}
-				routes = append(routes, fileRoutes...)
+				configs = append(configs, fileConfigs...)
 			}
 			return nil
 		})
@@ -60,52 +58,52 @@ func Save(cmd *cobra.Command, args []string) error {
 	} else {
 		// Handle single file
 		fileCount++
-		fileRoutes, err := extractRoutesFromFile(path)
+		fileConfigs, err := extractConfigsFromFile(path)
 		if err != nil {
 			return err
 		}
-		routes = append(routes, fileRoutes...)
+		configs = append(configs, fileConfigs...)
 	}
 
-	// Make a single API call to save all routes
-	_, _, err = cf.Client(client.WithToken(token)).
-		ProxySvcAPI.SaveRoutes(ctx).
-		Body(openapi.ProxySvcSaveRoutesRequest{
-			Routes: routes,
-		}).
-		Execute()
-	if err != nil {
-		return errors.Wrap(err, "failed to save routes")
+	for _, configRequest := range configs {
+		_, _, err = cf.Client(client.WithToken(token)).
+			ConfigSvcAPI.SaveConfig(ctx).
+			Body(configRequest).
+			Execute()
+		if err != nil {
+			return errors.Wrap(err, "failed to save configs")
+		}
 	}
 
 	return nil
+
 }
 
-// extract one or more routes from a file
-func extractRoutesFromFile(filePath string) ([]openapi.ProxySvcRouteInput, error) {
+// extract one or more configs from a file
+func extractConfigsFromFile(filePath string) ([]openapi.ConfigSvcSaveConfigRequest, error) {
 	data, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("failed to read file at '%v'", filePath))
 	}
 
-	// Determine whether the file contains single or multiple routes
-	var routes []openapi.ProxySvcRouteInput
+	// Determine whether the file contains single or multiple configs
+	var configs []openapi.ConfigSvcSaveConfigRequest
 
-	// Unmarshal as list first (multiple routes)
-	if err := yaml.Unmarshal(data, &routes); err != nil {
-		// If unmarshalling to list fails, attempt unmarshalling as single route
-		var singleRoute openapi.ProxySvcRouteInput
-		if err := yaml.Unmarshal(data, &singleRoute); err != nil {
+	// Unmarshal as list first (multiple configs)
+	if err := yaml.Unmarshal(data, &configs); err != nil {
+		// If unmarshalling to list fails, attempt unmarshalling as single config
+		var singleConfig openapi.ConfigSvcSaveConfigRequest
+		if err := yaml.Unmarshal(data, &singleConfig); err != nil {
 			return nil, errors.Wrap(
 				err,
 				fmt.Sprintf(
-					"failed to parse routes file at '%v' as single or multiple routes",
+					"failed to parse configs file at '%v' as single or multiple configs",
 					filePath,
 				),
 			)
 		}
-		routes = append(routes, singleRoute)
+		configs = append(configs, singleConfig)
 	}
 
-	return routes, nil
+	return configs, nil
 }

@@ -1,7 +1,7 @@
 package node
 
 import (
-	"github.com/1backend/1backend/cli/oo/config"
+	"github.com/1backend/1backend/cli/oo/util"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -12,7 +12,7 @@ func Delete(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
 	nodeUrl := args[0]
 
-	ur, token, err := config.GetSelectedUrlAndToken()
+	ur, token, err := util.GetSelectedUrlAndToken()
 	if err != nil {
 		return errors.Wrap(err, "cannot get env url")
 	}
