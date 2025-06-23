@@ -98,6 +98,7 @@ type Options struct {
 	TokenAutoRefreshOff bool
 
 	PermissionChecker endpoint.PermissionChecker
+	TokenExchanger    endpoint.TokenExchanger
 	TokenRefresher    endpoint.TokenRefresher
 	Middlewares       func(http.HandlerFunc) http.HandlerFunc
 }

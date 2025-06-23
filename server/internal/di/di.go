@@ -291,6 +291,12 @@ func BigBang(options *universe.Options) (*Universe, error) {
 		)
 	}
 
+	if options.TokenExchanger == nil {
+		options.TokenExchanger = endpoint.NewTokenExchanger(
+			options.ClientFactory,
+		)
+	}
+
 	configService.RegisterRoutes(router)
 
 	userService, err := userservice.NewUserService(

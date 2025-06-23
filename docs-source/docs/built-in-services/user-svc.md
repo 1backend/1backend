@@ -18,7 +18,7 @@ The user service is at the heart of 1Backend, managing users, tokens, organizati
 
 > This page provides a high-level overview of `User Svc`. For detailed information, refer to the [User Svc API documentation](/docs/1backend/login).
 
-User Svc supports multitenancy: while users are shared globally, tokens, organizations, permits, enrollments, and memberships are isolated by an "app" field. This approach allows a single 1Backend instance to securely support multiple web applications.
+User Svc supports multitenancy: while users are shared globally, tokens, organizations, permits, enrollments, and memberships are isolated by an "app" field (see `Apps` section on this page). This approach allows a single 1Backend instance to securely support multiple web applications.
 
 > Note: Not all services included with 1Backend may support multitenancy. Please refer to the documentation for details and look for the tag `multitenant`.
 
@@ -250,3 +250,13 @@ You might now wonder what happens when a service has multiple instances/nodes. W
 This is possible because the platform is designed with services having a "Shared Database Access".
 
 Let's say you have a Cassandra network that spans multiple Availability Zones/Regions. Your nodes will also span multiple AZs/Regions and each instance of them will log in as `X Svc`.
+
+## Apps
+
+Apps are the foundation of multitenancy in 1Backend. They act as namespaces that allow you to serve multiple clients, projects, or websites using the same set of microservices.
+
+It’s recommended to use the website's hostname (e.g., `socks.com`, `shoes.com`) as the app name. This helps clearly separate environments while remaining easy to manage.
+
+The current app is typically inferred from the authentication token. For public endpoints, it’s derived from the request host. As a result, even if a service API doesn’t explicitly mention "App" in its endpoints, it might still support multitenancy.
+
+On this documentation page, services marked with the `multitenancy` tag—such as **User Svc**, **Config Svc**, and **Secret Svc**—support apps. These services provide the essential building blocks for building robust, multi-tenant applications.
