@@ -96,9 +96,14 @@ func (cs *ConfigService) SaveConfig(
 		return
 	}
 
+	app := req.App
+	if app == "" {
+		app = *isAuthRsp.App
+	}
+
 	err = cs.saveConfig(
 		canActonBehalf,
-		*isAuthRsp.App,
+		app,
 		isAuthRsp.User.Slug,
 		req,
 	)
@@ -120,6 +125,7 @@ func (cs *ConfigService) saveConfig(
 	newConfig *types.SaveConfigRequest,
 ) error {
 	callerSlug = kebabToCamel(callerSlug)
+
 	if canActonBehalf {
 		// If the caller can act on behalf of others, we allow them to use any
 		// slug as the config key.

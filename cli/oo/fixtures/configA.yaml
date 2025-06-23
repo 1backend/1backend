@@ -1,0 +1,10 @@
+app: "test-1"
+data:
+  # Limitation: only a single top level key can be saved,
+  # even by admins.
+  key1:
+    subkey1: "subvalue1"
+    subkey2:
+      subsubkey1: "subsubvalue1"
+      subsubkey2:
+        deepkey: "deepvalue"

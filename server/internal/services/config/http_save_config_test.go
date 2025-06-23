@@ -181,14 +181,42 @@ func TestConfigService(t *testing.T) {
 
 		rsp, _, err := adminClient.ConfigSvcAPI.ListConfigs(ctx).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				Slugs: []string{"otherSvc"},
+				Slugs: []string{"otherSvc", "anotherSvc"},
 			}).
 			Execute()
 		require.NoError(t, err)
 		require.NotNil(t, rsp.Configs)
+
 		require.NotNil(t, rsp.Configs["otherSvc"])
+		require.Equal(t, "unnamed_otherSvc", rsp.Configs["otherSvc"].Id, rsp)
 		require.Equal(t, "adminValue1", rsp.Configs["otherSvc"].Data["key1"], rsp)
 		require.Equal(t, "adminValue2", rsp.Configs["otherSvc"].Data["key2"], rsp)
+
+		_, _, err = adminClient.ConfigSvcAPI.SaveConfig(ctx).
+			Body(openapi.ConfigSvcSaveConfigRequest{
+				App: openapi.PtrString("otherApp"),
+				Data: map[string]any{
+					"anotherSvc": map[string]any{
+						"key1": "adminValue3",
+						"key2": "adminValue4",
+					},
+				},
+			}).
+			Execute()
+		require.NoError(t, err)
+
+		rsp, _, err = adminClient.ConfigSvcAPI.ListConfigs(ctx).
+			Body(openapi.ConfigSvcListConfigsRequest{
+				App:   openapi.PtrString("otherApp"),
+				Slugs: []string{"anotherSvc"},
+			}).
+			Execute()
+		require.NoError(t, err)
+		require.NotNil(t, rsp.Configs)
+
+		require.NotNil(t, rsp.Configs["anotherSvc"])
+		require.Equal(t, "adminValue3", rsp.Configs["anotherSvc"].Data["key1"], rsp)
+		require.Equal(t, "adminValue4", rsp.Configs["anotherSvc"].Data["key2"], rsp)
 	})
 
 	t.Run("users cannot specify other app", func(t *testing.T) {

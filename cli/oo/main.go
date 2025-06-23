@@ -17,6 +17,7 @@ import (
 	"github.com/1backend/1backend/cli/oo/commands/route"
 	secret "github.com/1backend/1backend/cli/oo/commands/secret"
 	"github.com/1backend/1backend/cli/oo/commands/user"
+	"github.com/1backend/1backend/cli/oo/config"
 )
 
 func main() {
@@ -41,6 +42,7 @@ func main() {
 	enroll.AddEnrollCommands(rootCmd)
 	route.AddRouteCommands(rootCmd)
 	cert.AddCertCommands(rootCmd)
+	config.AddConfigCommands(rootCmd)
 
 	addCallCommands(rootCmd)
 
