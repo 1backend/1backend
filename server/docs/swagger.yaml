@@ -3991,7 +3991,9 @@ paths:
         Save the provided configuration to the server.
         The app from the caller's token is used to determine which app the config belongs to.
         The caller's camelCased slug (e.g., "test-user-slug" becomes "testUserSlug") is used as the config key automatically,
-        except for admins, who can specify any key they want.
+        except for users who have the "config-svc:config:edit-on-behalf" permission (admins), who can specify any key they want.
+        Admins (users with the "config-svc:config:edit-on-behalf" permission) can also provide an "app" field in the request body to specify which app the config belongs to, while
+        non-admin users cannot specify the "app" field, the app associated with their token will be used.
 
         The save performs a deep merge, that is:
         - Nested objects are recursively merged rather than replaced.

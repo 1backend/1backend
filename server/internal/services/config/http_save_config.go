@@ -31,7 +31,9 @@ import (
 // @Description Save the provided configuration to the server.
 // @Description The app from the caller's token is used to determine which app the config belongs to.
 // @Description The caller's camelCased slug (e.g., "test-user-slug" becomes "testUserSlug") is used as the config key automatically,
-// @Description except for admins, who can specify any key they want.
+// @Description except for users who have the "config-svc:config:edit-on-behalf" permission (admins), who can specify any key they want.
+// @Description Admins (users with the "config-svc:config:edit-on-behalf" permission) can also provide an "app" field in the request body to specify which app the config belongs to, while
+// @Description non-admin users cannot specify the "app" field, the app associated with their token will be used.
 // @Description
 // @Description The save performs a deep merge, that is:
 // @Description - Nested objects are recursively merged rather than replaced.
