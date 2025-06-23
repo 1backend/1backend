@@ -32,18 +32,14 @@ save ./config.yaml
 # Example contents of 'config.yaml':
 app: "my-app"
 data:
-  key1: "value1"
-  key2:
+  # Limitation: only a single top level key can be saved,
+  # even by admins.
+  key1:
     subkey1: "subvalue1"
     subkey2:
       subsubkey1: "subsubvalue1"
       subsubkey2:
         deepkey: "deepvalue"
-  key3:
-    - listitem1
-    - listitem2
-    - sublist:
-        nestedkey: "nestedvalue"
 `,
 		RunE: Save,
 	}
