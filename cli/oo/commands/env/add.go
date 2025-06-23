@@ -3,14 +3,14 @@ package env
 import (
 	"fmt"
 
-	"github.com/1backend/1backend/cli/oo/config"
 	"github.com/1backend/1backend/cli/oo/types"
+	"github.com/1backend/1backend/cli/oo/util"
 	"github.com/spf13/cobra"
 )
 
 // Add prod http://someaddress.com:8090 "A description"
 func Add(cmd *cobra.Command, args []string) error {
-	conf, err := config.LoadConfig()
+	conf, err := util.LoadConfig()
 	if err != nil {
 		return fmt.Errorf("failed to load config: %w", err)
 	}
@@ -33,11 +33,11 @@ func Add(cmd *cobra.Command, args []string) error {
 			Description: longDesc,
 		}
 		conf.SelectedEnvironment = shortName
-		return config.SaveConfig(conf)
+		return util.SaveConfig(conf)
 	}
 
 	env.URL = url
 	env.Description = longDesc
 
-	return config.SaveConfig(conf)
+	return util.SaveConfig(conf)
 }

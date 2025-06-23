@@ -1,8 +1,6 @@
 package util
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"reflect"
@@ -10,16 +8,6 @@ import (
 	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 )
-
-func PrettyJSON(rawJSON []byte) (string, error) {
-	var prettyJSON bytes.Buffer
-	err := json.Indent(&prettyJSON, rawJSON, "", "  ")
-	if err != nil {
-		return "", nil
-	}
-
-	return prettyJSON.String(), nil
-}
 
 // ExtractFromFile extracts one or more entities from a YAML file into a slice.
 func ExtractFromFile(filePath string, entitySlice any) error {

@@ -10,10 +10,11 @@ package config_svc
 
 var (
 	// Config Service - Config Permissions
-	PermissionConfigCreate = "config-svc:config:create"
-	PermissionConfigEdit   = "config-svc:config:edit"
-	PermissionConfigDelete = "config-svc:config:delete"
-	PermissionConfigStream = "config-svc:config:stream"
+	PermissionConfigCreate       = "config-svc:config:create"
+	PermissionConfigEdit         = "config-svc:config:edit"
+	PermissionConfigEditOnBehalf = "config-svc:config:edit-on-behalf"
+	PermissionConfigDelete       = "config-svc:config:delete"
+	PermissionConfigStream       = "config-svc:config:stream"
 
 	UserPermissions = []string{
 		PermissionConfigEdit,
@@ -25,5 +26,6 @@ var (
 		PermissionConfigEdit,
 		PermissionConfigDelete,
 		PermissionConfigStream,
+		PermissionConfigEditOnBehalf,
 	}
 )

@@ -36,7 +36,7 @@ export interface ConfigSvcConfig {
      */
     dataJson: string;
     /**
-     * Id is simply the app of the config.
+     * Id is simply the app of the util.
      * @type {string}
      * @memberof ConfigSvcConfig
      */

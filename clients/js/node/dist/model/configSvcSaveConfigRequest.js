@@ -17,6 +17,11 @@ export class ConfigSvcSaveConfigRequest {
 ConfigSvcSaveConfigRequest.discriminator = undefined;
 ConfigSvcSaveConfigRequest.attributeTypeMap = [
     {
+        "name": "app",
+        "baseName": "app",
+        "type": "string"
+    },
+    {
         "name": "data",
         "baseName": "data",
         "type": "{ [key: string]: any; }"

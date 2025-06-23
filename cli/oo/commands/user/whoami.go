@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/1backend/1backend/cli/oo/config"
 	"github.com/1backend/1backend/cli/oo/types"
+	"github.com/1backend/1backend/cli/oo/util"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/pkg/errors"
@@ -16,7 +16,7 @@ import (
 
 // Whoami
 func Whoami(cmd *cobra.Command, args []string, all bool) error {
-	conf, err := config.LoadConfig()
+	conf, err := util.LoadConfig()
 	if err != nil {
 		return fmt.Errorf("failed to load config: %w", err)
 	}

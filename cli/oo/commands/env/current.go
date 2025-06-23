@@ -5,13 +5,13 @@ import (
 	"os"
 	"text/tabwriter"
 
-	"github.com/1backend/1backend/cli/oo/config"
+	"github.com/1backend/1backend/cli/oo/util"
 	"github.com/spf13/cobra"
 )
 
 // Current
 func Current(cmd *cobra.Command, args []string) error {
-	conf, err := config.LoadConfig()
+	conf, err := util.LoadConfig()
 	if err != nil {
 		return fmt.Errorf("failed to load config: %w", err)
 	}

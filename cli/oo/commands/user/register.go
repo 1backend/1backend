@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/1backend/1backend/cli/oo/config"
 	"github.com/1backend/1backend/cli/oo/types"
+	"github.com/1backend/1backend/cli/oo/util"
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/pkg/errors"
@@ -16,7 +16,7 @@ import (
 
 // Register [slug] [password]
 func Register(cmd *cobra.Command, args []string) error {
-	conf, err := config.LoadConfig()
+	conf, err := util.LoadConfig()
 	if err != nil {
 		return errors.Wrap(err, "failed to load config")
 	}
@@ -90,5 +90,5 @@ func Register(cmd *cobra.Command, args []string) error {
 
 	conf.Environments[env.ShortName] = env
 
-	return config.SaveConfig(conf)
+	return util.SaveConfig(conf)
 }

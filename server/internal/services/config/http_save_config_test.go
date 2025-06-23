@@ -33,6 +33,9 @@ func TestConfigService(t *testing.T) {
 	client1 := manyClients[0]
 	client2 := manyClients[1]
 
+	adminClient, _, err := test.AdminClient(clientFactory)
+	require.NoError(t, err)
+
 	ctx := context.Background()
 
 	t.Run("save config client 1", func(t *testing.T) {
@@ -148,4 +151,43 @@ func TestConfigService(t *testing.T) {
 		})
 	})
 
+	t.Run("admins can save any slug config", func(t *testing.T) {
+		// Admin saves are taken at face value and the slug
+		// will not be used at top level.
+
+		t.Run("no top level object errors for admin", func(t *testing.T) {
+			_, _, err := adminClient.ConfigSvcAPI.SaveConfig(ctx).
+				Body(openapi.ConfigSvcSaveConfigRequest{
+					Data: map[string]any{
+						"otherSvc": "adminValue1",
+					},
+				}).
+				Execute()
+
+			require.Error(t, err)
+		})
+
+		_, _, err := adminClient.ConfigSvcAPI.SaveConfig(ctx).
+			Body(openapi.ConfigSvcSaveConfigRequest{
+				Data: map[string]any{
+					"otherSvc": map[string]any{
+						"key1": "adminValue1",
+						"key2": "adminValue2",
+					},
+				},
+			}).
+			Execute()
+		require.NoError(t, err)
+
+		rsp, _, err := adminClient.ConfigSvcAPI.ListConfigs(ctx).
+			Body(openapi.ConfigSvcListConfigsRequest{
+				Slugs: []string{"otherSvc"},
+			}).
+			Execute()
+		require.NoError(t, err)
+		require.NotNil(t, rsp.Configs)
+		require.NotNil(t, rsp.Configs["otherSvc"])
+		require.Equal(t, "adminValue1", rsp.Configs["otherSvc"].Data["key1"], rsp)
+		require.Equal(t, "adminValue2", rsp.Configs["otherSvc"].Data["key2"], rsp)
+	})
 }

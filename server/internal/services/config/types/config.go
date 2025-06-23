@@ -14,7 +14,7 @@ type ErrorResponse struct {
 }
 
 type Config struct {
-	// Id is simply the app of the config.
+	// Id is simply the app of the util.
 	Id        string    `json:"id" binding:"required"`
 	CreatedAt time.Time `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
@@ -50,6 +50,10 @@ type ListConfigsResponse struct {
 }
 
 type SaveConfigRequest struct {
+	// App can only be specified by users who have the
+	// `config-svc:config:edit-on-behalf` permission, who are typically admins.
+	App string `json:"app,omitempty"`
+
 	DataJSON string                 `json:"dataJson,omitempty"`
 	Data     map[string]interface{} `json:"data,omitempty"`
 }

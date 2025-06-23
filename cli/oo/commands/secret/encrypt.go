@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/1backend/1backend/cli/oo/config"
+	"github.com/1backend/1backend/cli/oo/util"
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
@@ -36,7 +36,7 @@ func Encrypt(cmd *cobra.Command, args []string) error {
 		fmt.Println() // Move to the next line after password input
 	}
 
-	url, token, err := config.GetSelectedUrlAndToken()
+	url, token, err := util.GetSelectedUrlAndToken()
 	if err != nil {
 		return errors.Wrap(err, "cannot get env url")
 	}

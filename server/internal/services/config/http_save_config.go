@@ -23,6 +23,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/logger"
 	config "github.com/1backend/1backend/server/internal/services/config/types"
 	types "github.com/1backend/1backend/server/internal/services/config/types"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 )
 
@@ -30,7 +31,8 @@ import (
 // @Summary Save Config
 // @Description Save the provided configuration to the server.
 // @Description The app from the caller's token is used to determine which app the config belongs to.
-// @Description The caller's camelCased slug (e.g., "test-user-slug" becomes "testUserSlug") is used as the config key automatically.
+// @Description The caller's camelCased slug (e.g., "test-user-slug" becomes "testUserSlug") is used as the config key automatically,
+// @Description except for admins, who can specify any key they want.
 // @Description
 // @Description The save performs a deep merge, that is:
 // @Description - Nested objects are recursively merged rather than replaced.
@@ -75,7 +77,22 @@ func (cs *ConfigService) SaveConfig(
 	}
 	defer r.Body.Close()
 
+	canActonBehalf := false
+	isAuthRsp, _, err = cs.options.PermissionChecker.HasPermission(
+		r,
+		config.PermissionConfigEditOnBehalf,
+	)
+
+	if err == nil && isAuthRsp.GetAuthorized() {
+		canActonBehalf = true
+	}
+
+	if !canActonBehalf {
+		req.App = *isAuthRsp.App
+	}
+
 	err = cs.saveConfig(
+		canActonBehalf,
 		*isAuthRsp.App,
 		isAuthRsp.User.Slug,
 		req,
@@ -92,11 +109,30 @@ func (cs *ConfigService) SaveConfig(
 }
 
 func (cs *ConfigService) saveConfig(
+	canActonBehalf bool,
 	app string,
 	callerSlug string,
 	newConfig *types.SaveConfigRequest,
 ) error {
 	callerSlug = kebabToCamel(callerSlug)
+	if canActonBehalf {
+		// If the caller can act on behalf of others, we allow them to use any
+		// slug as the config key.
+		// The slug is simply the top level key in the config data.
+		if len(newConfig.Data) > 1 {
+			return errors.New("saving config on behalf of others requires a single top-level key in the data")
+		}
+		for key := range newConfig.Data {
+			callerSlug = key
+			break
+		}
+		spew.Dump("hi", callerSlug)
+		data, ok := newConfig.Data[callerSlug].(map[string]interface{})
+		if !ok {
+			return errors.New("the provided data does not contain the expected top-level key")
+		}
+		newConfig.Data = data
+	}
 
 	cs.configMutex.Lock()
 	defer cs.configMutex.Unlock()

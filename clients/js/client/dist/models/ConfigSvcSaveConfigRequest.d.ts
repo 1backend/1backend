@@ -16,6 +16,13 @@
  */
 export interface ConfigSvcSaveConfigRequest {
     /**
+     * App can only be specified by users who have the
+     * `config-svc:config:edit-on-behalf` permission, who are typically admins.
+     * @type {string}
+     * @memberof ConfigSvcSaveConfigRequest
+     */
+    app?: string;
+    /**
      *
      * @type {{ [key: string]: any; }}
      * @memberof ConfigSvcSaveConfigRequest

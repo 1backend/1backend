@@ -13,12 +13,21 @@
 import { RequestFile } from './models';
 
 export class ConfigSvcSaveConfigRequest {
+    /**
+    * App can only be specified by users who have the `config-svc:config:edit-on-behalf` permission, who are typically admins.
+    */
+    'app'?: string;
     'data'?: { [key: string]: any; };
     'dataJson'?: string;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
+        {
+            "name": "app",
+            "baseName": "app",
+            "type": "string"
+        },
         {
             "name": "data",
             "baseName": "data",

@@ -3,7 +3,7 @@ package secret
 import (
 	"fmt"
 
-	"github.com/1backend/1backend/cli/oo/config"
+	"github.com/1backend/1backend/cli/oo/util"
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/pkg/errors"
@@ -23,7 +23,7 @@ func Remove(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("at least one --key or --id must be specified")
 	}
 
-	url, token, err := config.GetSelectedUrlAndToken()
+	url, token, err := util.GetSelectedUrlAndToken()
 	if err != nil {
 		return errors.Wrap(err, "cannot get env URL")
 	}

@@ -48,7 +48,8 @@ Configurations are used to control frontend behavior, A/B testing, feature flags
 
 	Save the provided configuration to the server.
 The app from the caller's token is used to determine which app the config belongs to.
-The caller's camelCased slug (e.g., "test-user-slug" becomes "testUserSlug") is used as the config key automatically.
+The caller's camelCased slug (e.g., "test-user-slug" becomes "testUserSlug") is used as the config key automatically,
+except for admins, who can specify any key they want.
 
 The save performs a deep merge, that is:
 - Nested objects are recursively merged rather than replaced.
@@ -228,7 +229,8 @@ SaveConfig Save Config
 
 Save the provided configuration to the server.
 The app from the caller's token is used to determine which app the config belongs to.
-The caller's camelCased slug (e.g., "test-user-slug" becomes "testUserSlug") is used as the config key automatically.
+The caller's camelCased slug (e.g., "test-user-slug" becomes "testUserSlug") is used as the config key automatically,
+except for admins, who can specify any key they want.
 
 The save performs a deep merge, that is:
 - Nested objects are recursively merged rather than replaced.

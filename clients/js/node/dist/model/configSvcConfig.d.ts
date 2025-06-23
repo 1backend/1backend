@@ -16,7 +16,7 @@ export declare class ConfigSvcConfig {
     };
     'dataJson': string;
     /**
-    * Id is simply the app of the config.
+    * Id is simply the app of the util.
     */
     'id': string;
     'updatedAt': string;

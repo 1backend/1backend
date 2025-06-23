@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/1backend/1backend/cli/oo/config"
+	"github.com/1backend/1backend/cli/oo/util"
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/ghodss/yaml"
@@ -17,7 +17,7 @@ import (
 // Save [key] [value] | [filePath | dirPath]
 func Save(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
-	url, token, err := config.GetSelectedUrlAndToken()
+	url, token, err := util.GetSelectedUrlAndToken()
 	if err != nil {
 		return errors.Wrap(err, "cannot get env url")
 	}
