@@ -190,4 +190,19 @@ func TestConfigService(t *testing.T) {
 		require.Equal(t, "adminValue1", rsp.Configs["otherSvc"].Data["key1"], rsp)
 		require.Equal(t, "adminValue2", rsp.Configs["otherSvc"].Data["key2"], rsp)
 	})
+
+	t.Run("users cannot specify other app", func(t *testing.T) {
+		_, _, err := client1.ConfigSvcAPI.SaveConfig(ctx).
+			Body(openapi.ConfigSvcSaveConfigRequest{
+				App: openapi.PtrString("otherApp"),
+				Data: map[string]any{
+					"otherSvc": map[string]any{
+						"key1": "userValue1",
+						"key2": "userValue2",
+					},
+				},
+			}).
+			Execute()
+		require.Error(t, err, "users should not be able to save configs for other apps")
+	})
 }

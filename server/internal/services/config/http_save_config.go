@@ -23,7 +23,6 @@ import (
 	"github.com/1backend/1backend/sdk/go/logger"
 	config "github.com/1backend/1backend/server/internal/services/config/types"
 	types "github.com/1backend/1backend/server/internal/services/config/types"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 )
 
@@ -87,8 +86,12 @@ func (cs *ConfigService) SaveConfig(
 		canActonBehalf = true
 	}
 
-	if !canActonBehalf {
-		req.App = *isAuthRsp.App
+	if !canActonBehalf && req.App != "" {
+		logger.Error("Unauthorized attempt to save config with app specified",
+			slog.String("app", req.App),
+		)
+		endpoint.Unauthorized(w)
+		return
 	}
 
 	err = cs.saveConfig(
@@ -126,7 +129,7 @@ func (cs *ConfigService) saveConfig(
 			callerSlug = key
 			break
 		}
-		spew.Dump("hi", callerSlug)
+
 		data, ok := newConfig.Data[callerSlug].(map[string]interface{})
 		if !ok {
 			return errors.New("the provided data does not contain the expected top-level key")
