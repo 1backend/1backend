@@ -918,10 +918,12 @@ function ConfigSvcConfigFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'app': json['app'] == null ? undefined : json['app'],
         'createdAt': json['createdAt'],
         'data': json['data'],
         'dataJson': json['dataJson'],
         'id': json['id'],
+        'key': json['key'] == null ? undefined : json['key'],
         'updatedAt': json['updatedAt'],
     };
 }
@@ -933,10 +935,12 @@ function ConfigSvcConfigToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
+        'app': value['app'],
         'createdAt': value['createdAt'],
         'data': value['data'],
         'dataJson': value['dataJson'],
         'id': value['id'],
+        'key': value['key'],
         'updatedAt': value['updatedAt'],
     };
 }
@@ -969,7 +973,7 @@ function ConfigSvcListConfigsRequestFromJSONTyped(json, ignoreDiscriminator) {
     }
     return {
         'app': json['app'] == null ? undefined : json['app'],
-        'slugs': json['slugs'] == null ? undefined : json['slugs'],
+        'keys': json['keys'] == null ? undefined : json['keys'],
     };
 }
 function ConfigSvcListConfigsRequestToJSON(json) {
@@ -981,7 +985,7 @@ function ConfigSvcListConfigsRequestToJSONTyped(value, ignoreDiscriminator = fal
     }
     return {
         'app': value['app'],
-        'slugs': value['slugs'],
+        'keys': value['keys'],
     };
 }
 
@@ -1059,6 +1063,7 @@ function ConfigSvcSaveConfigRequestFromJSONTyped(json, ignoreDiscriminator) {
         'app': json['app'] == null ? undefined : json['app'],
         'data': json['data'] == null ? undefined : json['data'],
         'dataJson': json['dataJson'] == null ? undefined : json['dataJson'],
+        'key': json['key'] == null ? undefined : json['key'],
     };
 }
 function ConfigSvcSaveConfigRequestToJSON(json) {
@@ -1072,6 +1077,7 @@ function ConfigSvcSaveConfigRequestToJSONTyped(value, ignoreDiscriminator = fals
         'app': value['app'],
         'data': value['data'],
         'dataJson': value['dataJson'],
+        'key': value['key'],
     };
 }
 

@@ -46,7 +46,7 @@ func List(cmd *cobra.Command, args []string, show bool) error {
 
 	fmt.Fprintln(
 		writer,
-		"SECRET ID\tKEY\tLENGTH\tVALUE",
+		"SECRET ID\tAPP\tKEY\tLENGTH\tVALUE",
 	)
 
 	for _, secret := range rsp.Secrets {
@@ -57,10 +57,16 @@ func List(cmd *cobra.Command, args []string, show bool) error {
 			value = *secret.Value
 		}
 
+		app := "unnamed"
+		if secret.App != nil {
+			app = *secret.App
+		}
+
 		fmt.Fprintf(
 			writer,
-			"%s\t%s\t%d\t%s\n",
+			"%s\t%s\t%s\t%d\t%s\n",
 			*secret.Id,
+			app,
 			*secret.Key,
 			length,
 			value,

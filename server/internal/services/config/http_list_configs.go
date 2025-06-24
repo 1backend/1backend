@@ -84,7 +84,7 @@ func (cs *ConfigService) listConfigs(req *types.ListConfigsRequest) (map[string]
 	}
 
 	ids := []any{}
-	for _, slug := range req.Slugs {
+	for _, slug := range req.Keys {
 		slug = kebabToCamel(slug)
 		ids = append(ids,
 			fmt.Sprintf("%s_%s", req.App, slug),
@@ -137,7 +137,7 @@ func (cs *ConfigService) defaults(
 	ret map[string]*types.Config,
 ) {
 	slugMap := map[string]bool{}
-	for _, slug := range req.Slugs {
+	for _, slug := range req.Keys {
 		slug = kebabToCamel(slug)
 		slugMap[slug] = true
 	}

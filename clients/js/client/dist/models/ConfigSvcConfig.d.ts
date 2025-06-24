@@ -20,6 +20,12 @@ export interface ConfigSvcConfig {
      * @type {string}
      * @memberof ConfigSvcConfig
      */
+    app?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof ConfigSvcConfig
+     */
     createdAt: string;
     /**
      *
@@ -36,11 +42,18 @@ export interface ConfigSvcConfig {
      */
     dataJson: string;
     /**
-     * Id is simply the app of the util.
+     * Id of the config.
+     * It is deterministically created from the app and the key.
      * @type {string}
      * @memberof ConfigSvcConfig
      */
     id: string;
+    /**
+     *
+     * @type {string}
+     * @memberof ConfigSvcConfig
+     */
+    key?: string;
     /**
      *
      * @type {string}

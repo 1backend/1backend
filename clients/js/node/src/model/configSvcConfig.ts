@@ -13,18 +13,25 @@
 import { RequestFile } from './models';
 
 export class ConfigSvcConfig {
+    'app'?: string;
     'createdAt': string;
     'data': { [key: string]: any; };
     'dataJson': string;
     /**
-    * Id is simply the app of the util.
+    * Id of the config. It is deterministically created from the app and the key.
     */
     'id': string;
+    'key'?: string;
     'updatedAt': string;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
+        {
+            "name": "app",
+            "baseName": "app",
+            "type": "string"
+        },
         {
             "name": "createdAt",
             "baseName": "createdAt",
@@ -43,6 +50,11 @@ export class ConfigSvcConfig {
         {
             "name": "id",
             "baseName": "id",
+            "type": "string"
+        },
+        {
+            "name": "key",
+            "baseName": "key",
             "type": "string"
         },
         {

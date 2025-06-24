@@ -12,9 +12,9 @@
 export declare class ConfigSvcListConfigsRequest {
     'app'?: string;
     /**
-    * Slugs or camelCased slugs of the owners to list configs for.
+    * Keys are camelCased slugs of the config owners.
     */
-    'slugs'?: Array<string>;
+    'keys'?: Array<string>;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

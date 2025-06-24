@@ -30,5 +30,10 @@ ConfigSvcSaveConfigRequest.attributeTypeMap = [
         "name": "dataJson",
         "baseName": "dataJson",
         "type": "string"
+    },
+    {
+        "name": "key",
+        "baseName": "key",
+        "type": "string"
     }
 ];

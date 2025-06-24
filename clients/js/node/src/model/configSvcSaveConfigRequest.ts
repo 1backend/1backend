@@ -14,11 +14,15 @@ import { RequestFile } from './models';
 
 export class ConfigSvcSaveConfigRequest {
     /**
-    * App can only be specified by users who have the `config-svc:config:edit-on-behalf` permission, who are typically admins.
+    * App can only be specified by users who have the `config-svc:config:edit-on-behalf` permission, who are typically admins.  If not specified, the config will be saved for the current app of the user\'s token.
     */
     'app'?: string;
     'data'?: { [key: string]: any; };
     'dataJson'?: string;
+    /**
+    * Key is the slug of the owner to save the config for. Only user with the `config-svc:config:edit-on-behalf` can specify this. For everyone else, it is automatically set to the slug of the caller user.
+    */
+    'key'?: string;
 
     static discriminator: string | undefined = undefined;
 
@@ -36,6 +40,11 @@ export class ConfigSvcSaveConfigRequest {
         {
             "name": "dataJson",
             "baseName": "dataJson",
+            "type": "string"
+        },
+        {
+            "name": "key",
+            "baseName": "key",
             "type": "string"
         }    ];
 

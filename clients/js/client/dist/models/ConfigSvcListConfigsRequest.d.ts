@@ -22,11 +22,11 @@ export interface ConfigSvcListConfigsRequest {
      */
     app?: string;
     /**
-     * Slugs or camelCased slugs of the owners to list configs for.
+     * Keys are camelCased slugs of the config owners.
      * @type {Array<string>}
      * @memberof ConfigSvcListConfigsRequest
      */
-    slugs?: Array<string>;
+    keys?: Array<string>;
 }
 /**
  * Check if a given object implements the ConfigSvcListConfigsRequest interface.

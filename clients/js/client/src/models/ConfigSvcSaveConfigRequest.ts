@@ -22,6 +22,8 @@ export interface ConfigSvcSaveConfigRequest {
     /**
      * App can only be specified by users who have the
      * `config-svc:config:edit-on-behalf` permission, who are typically admins.
+     * 
+     * If not specified, the config will be saved for the current app of the user's token.
      * @type {string}
      * @memberof ConfigSvcSaveConfigRequest
      */
@@ -38,6 +40,14 @@ export interface ConfigSvcSaveConfigRequest {
      * @memberof ConfigSvcSaveConfigRequest
      */
     dataJson?: string;
+    /**
+     * Key is the slug of the owner to save the config for.
+     * Only user with the `config-svc:config:edit-on-behalf` can specify this.
+     * For everyone else, it is automatically set to the slug of the caller user.
+     * @type {string}
+     * @memberof ConfigSvcSaveConfigRequest
+     */
+    key?: string;
 }
 
 /**
@@ -60,6 +70,7 @@ export function ConfigSvcSaveConfigRequestFromJSONTyped(json: any, ignoreDiscrim
         'app': json['app'] == null ? undefined : json['app'],
         'data': json['data'] == null ? undefined : json['data'],
         'dataJson': json['dataJson'] == null ? undefined : json['dataJson'],
+        'key': json['key'] == null ? undefined : json['key'],
     };
 }
 
@@ -77,6 +88,7 @@ export function ConfigSvcSaveConfigRequestToJSONTyped(value?: ConfigSvcSaveConfi
         'app': value['app'],
         'data': value['data'],
         'dataJson': value['dataJson'],
+        'key': value['key'],
     };
 }
 

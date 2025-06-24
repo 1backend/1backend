@@ -284,7 +284,7 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 			readConfigResponse, _, err := d.clientFactory.Client(client.WithToken(d.token)).
 				ConfigSvcAPI.ListConfigs(context.Background()).
 				Body(openapi.ConfigSvcListConfigsRequest{
-					Slugs: []string{"configSvc"},
+					Keys: []string{"configSvc"},
 				}).
 				Execute()
 			if err != nil {

@@ -88,7 +88,7 @@ func TestConfigService(t *testing.T) {
 	t.Run("list configs by id", func(t *testing.T) {
 		rsp, _, err := client2.ConfigSvcAPI.ListConfigs(ctx).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				Slugs: []string{"testUserSlug1"},
+				Keys: []string{"testUserSlug1"},
 			}).
 			Execute()
 		require.NoError(t, err)
@@ -131,7 +131,7 @@ func TestConfigService(t *testing.T) {
 			rsp, _, err := client1.ConfigSvcAPI.
 				ListConfigs(ctx).
 				Body(openapi.ConfigSvcListConfigsRequest{
-					Slugs: []string{"testUserSlug0"},
+					Keys: []string{"testUserSlug0"},
 				}).
 				Execute()
 			require.NoError(t, err)
@@ -155,25 +155,12 @@ func TestConfigService(t *testing.T) {
 		// Admin saves are taken at face value and the slug
 		// will not be used at top level.
 
-		t.Run("no top level object errors for admin", func(t *testing.T) {
-			_, _, err := adminClient.ConfigSvcAPI.SaveConfig(ctx).
-				Body(openapi.ConfigSvcSaveConfigRequest{
-					Data: map[string]any{
-						"otherSvc": "adminValue1",
-					},
-				}).
-				Execute()
-
-			require.Error(t, err)
-		})
-
 		_, _, err := adminClient.ConfigSvcAPI.SaveConfig(ctx).
 			Body(openapi.ConfigSvcSaveConfigRequest{
+				Key: openapi.PtrString("otherSvc"),
 				Data: map[string]any{
-					"otherSvc": map[string]any{
-						"key1": "adminValue1",
-						"key2": "adminValue2",
-					},
+					"key1": "adminValue1",
+					"key2": "adminValue2",
 				},
 			}).
 			Execute()
@@ -181,7 +168,7 @@ func TestConfigService(t *testing.T) {
 
 		rsp, _, err := adminClient.ConfigSvcAPI.ListConfigs(ctx).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				Slugs: []string{"otherSvc", "anotherSvc"},
+				Keys: []string{"otherSvc", "anotherSvc"},
 			}).
 			Execute()
 		require.NoError(t, err)
@@ -195,11 +182,10 @@ func TestConfigService(t *testing.T) {
 		_, _, err = adminClient.ConfigSvcAPI.SaveConfig(ctx).
 			Body(openapi.ConfigSvcSaveConfigRequest{
 				App: openapi.PtrString("otherApp"),
+				Key: openapi.PtrString("anotherSvc"),
 				Data: map[string]any{
-					"anotherSvc": map[string]any{
-						"key1": "adminValue3",
-						"key2": "adminValue4",
-					},
+					"key1": "adminValue3",
+					"key2": "adminValue4",
 				},
 			}).
 			Execute()
@@ -207,8 +193,8 @@ func TestConfigService(t *testing.T) {
 
 		rsp, _, err = adminClient.ConfigSvcAPI.ListConfigs(ctx).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				App:   openapi.PtrString("otherApp"),
-				Slugs: []string{"anotherSvc"},
+				App:  openapi.PtrString("otherApp"),
+				Keys: []string{"anotherSvc"},
 			}).
 			Execute()
 		require.NoError(t, err)
