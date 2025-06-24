@@ -21,8 +21,8 @@ var _ MappedNullable = &ConfigSvcListConfigsRequest{}
 // ConfigSvcListConfigsRequest struct for ConfigSvcListConfigsRequest
 type ConfigSvcListConfigsRequest struct {
 	App *string `json:"app,omitempty"`
-	// Slugs or camelCased slugs of the owners to list configs for.
-	Slugs []string `json:"slugs,omitempty"`
+	// Keys are camelCased slugs of the config owners.
+	Keys []string `json:"keys,omitempty"`
 }
 
 // NewConfigSvcListConfigsRequest instantiates a new ConfigSvcListConfigsRequest object
@@ -74,36 +74,36 @@ func (o *ConfigSvcListConfigsRequest) SetApp(v string) {
 	o.App = &v
 }
 
-// GetSlugs returns the Slugs field value if set, zero value otherwise.
-func (o *ConfigSvcListConfigsRequest) GetSlugs() []string {
-	if o == nil || IsNil(o.Slugs) {
+// GetKeys returns the Keys field value if set, zero value otherwise.
+func (o *ConfigSvcListConfigsRequest) GetKeys() []string {
+	if o == nil || IsNil(o.Keys) {
 		var ret []string
 		return ret
 	}
-	return o.Slugs
+	return o.Keys
 }
 
-// GetSlugsOk returns a tuple with the Slugs field value if set, nil otherwise
+// GetKeysOk returns a tuple with the Keys field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigSvcListConfigsRequest) GetSlugsOk() ([]string, bool) {
-	if o == nil || IsNil(o.Slugs) {
+func (o *ConfigSvcListConfigsRequest) GetKeysOk() ([]string, bool) {
+	if o == nil || IsNil(o.Keys) {
 		return nil, false
 	}
-	return o.Slugs, true
+	return o.Keys, true
 }
 
-// HasSlugs returns a boolean if a field has been set.
-func (o *ConfigSvcListConfigsRequest) HasSlugs() bool {
-	if o != nil && !IsNil(o.Slugs) {
+// HasKeys returns a boolean if a field has been set.
+func (o *ConfigSvcListConfigsRequest) HasKeys() bool {
+	if o != nil && !IsNil(o.Keys) {
 		return true
 	}
 
 	return false
 }
 
-// SetSlugs gets a reference to the given []string and assigns it to the Slugs field.
-func (o *ConfigSvcListConfigsRequest) SetSlugs(v []string) {
-	o.Slugs = v
+// SetKeys gets a reference to the given []string and assigns it to the Keys field.
+func (o *ConfigSvcListConfigsRequest) SetKeys(v []string) {
+	o.Keys = v
 }
 
 func (o ConfigSvcListConfigsRequest) MarshalJSON() ([]byte, error) {
@@ -119,8 +119,8 @@ func (o ConfigSvcListConfigsRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.App) {
 		toSerialize["app"] = o.App
 	}
-	if !IsNil(o.Slugs) {
-		toSerialize["slugs"] = o.Slugs
+	if !IsNil(o.Keys) {
+		toSerialize["keys"] = o.Keys
 	}
 	return toSerialize, nil
 }

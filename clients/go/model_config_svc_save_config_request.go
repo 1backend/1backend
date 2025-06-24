@@ -20,10 +20,12 @@ var _ MappedNullable = &ConfigSvcSaveConfigRequest{}
 
 // ConfigSvcSaveConfigRequest struct for ConfigSvcSaveConfigRequest
 type ConfigSvcSaveConfigRequest struct {
-	// App can only be specified by users who have the `config-svc:config:edit-on-behalf` permission, who are typically admins.
+	// App can only be specified by users who have the `config-svc:config:edit-on-behalf` permission, who are typically admins.  If not specified, the config will be saved for the current app of the user's token.
 	App *string `json:"app,omitempty"`
 	Data map[string]interface{} `json:"data,omitempty"`
 	DataJson *string `json:"dataJson,omitempty"`
+	// Key is the slug of the owner to save the config for. Only user with the `config-svc:config:edit-on-behalf` can specify this. For everyone else, it is automatically set to the slug of the caller user.
+	Key *string `json:"key,omitempty"`
 }
 
 // NewConfigSvcSaveConfigRequest instantiates a new ConfigSvcSaveConfigRequest object
@@ -139,6 +141,38 @@ func (o *ConfigSvcSaveConfigRequest) SetDataJson(v string) {
 	o.DataJson = &v
 }
 
+// GetKey returns the Key field value if set, zero value otherwise.
+func (o *ConfigSvcSaveConfigRequest) GetKey() string {
+	if o == nil || IsNil(o.Key) {
+		var ret string
+		return ret
+	}
+	return *o.Key
+}
+
+// GetKeyOk returns a tuple with the Key field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcSaveConfigRequest) GetKeyOk() (*string, bool) {
+	if o == nil || IsNil(o.Key) {
+		return nil, false
+	}
+	return o.Key, true
+}
+
+// HasKey returns a boolean if a field has been set.
+func (o *ConfigSvcSaveConfigRequest) HasKey() bool {
+	if o != nil && !IsNil(o.Key) {
+		return true
+	}
+
+	return false
+}
+
+// SetKey gets a reference to the given string and assigns it to the Key field.
+func (o *ConfigSvcSaveConfigRequest) SetKey(v string) {
+	o.Key = &v
+}
+
 func (o ConfigSvcSaveConfigRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -157,6 +191,9 @@ func (o ConfigSvcSaveConfigRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.DataJson) {
 		toSerialize["dataJson"] = o.DataJson
+	}
+	if !IsNil(o.Key) {
+		toSerialize["key"] = o.Key
 	}
 	return toSerialize, nil
 }

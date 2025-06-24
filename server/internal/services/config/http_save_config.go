@@ -127,22 +127,10 @@ func (cs *ConfigService) saveConfig(
 	callerSlug = kebabToCamel(callerSlug)
 
 	if canActonBehalf {
-		// If the caller can act on behalf of others, we allow them to use any
-		// slug as the config key.
-		// The slug is simply the top level key in the config data.
-		if len(newConfig.Data) > 1 {
-			return errors.New("saving config on behalf of others requires a single top-level key in the data")
+		if newConfig.Key == "" {
+			return errors.New("key must be provided when editing on behalf of another user")
 		}
-		for key := range newConfig.Data {
-			callerSlug = key
-			break
-		}
-
-		data, ok := newConfig.Data[callerSlug].(map[string]interface{})
-		if !ok {
-			return errors.New("the provided data does not contain the expected top-level key")
-		}
-		newConfig.Data = data
+		callerSlug = kebabToCamel(newConfig.Key)
 	}
 
 	cs.configMutex.Lock()

@@ -5685,6 +5685,9 @@ const docTemplate = `{
                 "updatedAt"
             ],
             "properties": {
+                "app": {
+                    "type": "string"
+                },
                 "createdAt": {
                     "type": "string"
                 },
@@ -5696,7 +5699,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
-                    "description": "Id is simply the app of the util.",
+                    "description": "Id of the config.\nIt is deterministically created from the app and the key.",
+                    "type": "string"
+                },
+                "key": {
                     "type": "string"
                 },
                 "updatedAt": {
@@ -5710,8 +5716,8 @@ const docTemplate = `{
                 "app": {
                     "type": "string"
                 },
-                "slugs": {
-                    "description": "Slugs or camelCased slugs of the owners to list configs for.",
+                "keys": {
+                    "description": "Keys are camelCased slugs of the config owners.",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -5738,7 +5744,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "app": {
-                    "description": "App can only be specified by users who have the\n` + "`" + `config-svc:config:edit-on-behalf` + "`" + ` permission, who are typically admins.",
+                    "description": "App can only be specified by users who have the\n` + "`" + `config-svc:config:edit-on-behalf` + "`" + ` permission, who are typically admins.\n\nIf not specified, the config will be saved for the current app of the user's token.",
                     "type": "string"
                 },
                 "data": {
@@ -5746,6 +5752,10 @@ const docTemplate = `{
                     "additionalProperties": true
                 },
                 "dataJson": {
+                    "type": "string"
+                },
+                "key": {
+                    "description": "Key is the slug of the owner to save the config for.\nOnly user with the ` + "`" + `config-svc:config:edit-on-behalf` + "`" + ` can specify this.\nFor everyone else, it is automatically set to the slug of the caller user.",
                     "type": "string"
                 }
             }

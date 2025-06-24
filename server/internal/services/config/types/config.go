@@ -14,10 +14,14 @@ type ErrorResponse struct {
 }
 
 type Config struct {
-	// Id is simply the app of the util.
+	// Id of the config.
+	// It is deterministically created from the app and the key.
 	Id        string    `json:"id" binding:"required"`
 	CreatedAt time.Time `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
+
+	App string `json:"app,omitempty"`
+	Key string `json:"key,omitempty"`
 
 	DataJSON string                 `json:"dataJson" binding:"required"`
 	Data     map[string]interface{} `json:"data" binding:"required"`
@@ -30,8 +34,8 @@ func (c Config) GetId() string {
 type ListConfigsRequest struct {
 	App string `json:"app" swagger:"default=default"`
 
-	// Slugs or camelCased slugs of the owners to list configs for.
-	Slugs []string `json:"slugs,omitempty" swagger:"default=[]"`
+	// Keys are camelCased slugs of the config owners.
+	Keys []string `json:"keys,omitempty" swagger:"default=[]"`
 }
 
 type ListConfigsResponse struct {
@@ -52,7 +56,14 @@ type ListConfigsResponse struct {
 type SaveConfigRequest struct {
 	// App can only be specified by users who have the
 	// `config-svc:config:edit-on-behalf` permission, who are typically admins.
+	//
+	// If not specified, the config will be saved for the current app of the user's token.
 	App string `json:"app,omitempty"`
+
+	// Key is the slug of the owner to save the config for.
+	// Only user with the `config-svc:config:edit-on-behalf` can specify this.
+	// For everyone else, it is automatically set to the slug of the caller user.
+	Key string `json:"key,omitempty"`
 
 	DataJSON string                 `json:"dataJson,omitempty"`
 	Data     map[string]interface{} `json:"data,omitempty"`

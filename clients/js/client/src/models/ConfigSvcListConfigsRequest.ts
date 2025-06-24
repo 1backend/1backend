@@ -26,11 +26,11 @@ export interface ConfigSvcListConfigsRequest {
      */
     app?: string;
     /**
-     * Slugs or camelCased slugs of the owners to list configs for.
+     * Keys are camelCased slugs of the config owners.
      * @type {Array<string>}
      * @memberof ConfigSvcListConfigsRequest
      */
-    slugs?: Array<string>;
+    keys?: Array<string>;
 }
 
 /**
@@ -51,7 +51,7 @@ export function ConfigSvcListConfigsRequestFromJSONTyped(json: any, ignoreDiscri
     return {
         
         'app': json['app'] == null ? undefined : json['app'],
-        'slugs': json['slugs'] == null ? undefined : json['slugs'],
+        'keys': json['keys'] == null ? undefined : json['keys'],
     };
 }
 
@@ -67,7 +67,7 @@ export function ConfigSvcListConfigsRequestToJSONTyped(value?: ConfigSvcListConf
     return {
         
         'app': value['app'],
-        'slugs': value['slugs'],
+        'keys': value['keys'],
     };
 }
 

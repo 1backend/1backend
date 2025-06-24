@@ -15,9 +15,9 @@ import { RequestFile } from './models';
 export class ConfigSvcListConfigsRequest {
     'app'?: string;
     /**
-    * Slugs or camelCased slugs of the owners to list configs for.
+    * Keys are camelCased slugs of the config owners.
     */
-    'slugs'?: Array<string>;
+    'keys'?: Array<string>;
 
     static discriminator: string | undefined = undefined;
 
@@ -28,8 +28,8 @@ export class ConfigSvcListConfigsRequest {
             "type": "string"
         },
         {
-            "name": "slugs",
-            "baseName": "slugs",
+            "name": "keys",
+            "baseName": "keys",
             "type": "Array<string>"
         }    ];
 

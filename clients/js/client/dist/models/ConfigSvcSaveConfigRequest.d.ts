@@ -18,6 +18,8 @@ export interface ConfigSvcSaveConfigRequest {
     /**
      * App can only be specified by users who have the
      * `config-svc:config:edit-on-behalf` permission, who are typically admins.
+     *
+     * If not specified, the config will be saved for the current app of the user's token.
      * @type {string}
      * @memberof ConfigSvcSaveConfigRequest
      */
@@ -36,6 +38,14 @@ export interface ConfigSvcSaveConfigRequest {
      * @memberof ConfigSvcSaveConfigRequest
      */
     dataJson?: string;
+    /**
+     * Key is the slug of the owner to save the config for.
+     * Only user with the `config-svc:config:edit-on-behalf` can specify this.
+     * For everyone else, it is automatically set to the slug of the caller user.
+     * @type {string}
+     * @memberof ConfigSvcSaveConfigRequest
+     */
+    key?: string;
 }
 /**
  * Check if a given object implements the ConfigSvcSaveConfigRequest interface.

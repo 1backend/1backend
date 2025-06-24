@@ -163,6 +163,8 @@ definitions:
     type: object
   config_svc.Config:
     properties:
+      app:
+        type: string
       createdAt:
         type: string
       data:
@@ -171,7 +173,11 @@ definitions:
       dataJson:
         type: string
       id:
-        description: Id is simply the app of the util.
+        description: |-
+          Id of the config.
+          It is deterministically created from the app and the key.
+        type: string
+      key:
         type: string
       updatedAt:
         type: string
@@ -186,8 +192,8 @@ definitions:
     properties:
       app:
         type: string
-      slugs:
-        description: Slugs or camelCased slugs of the owners to list configs for.
+      keys:
+        description: Keys are camelCased slugs of the config owners.
         items:
           type: string
         type: array
@@ -210,11 +216,19 @@ definitions:
         description: |-
           App can only be specified by users who have the
           `config-svc:config:edit-on-behalf` permission, who are typically admins.
+
+          If not specified, the config will be saved for the current app of the user's token.
         type: string
       data:
         additionalProperties: true
         type: object
       dataJson:
+        type: string
+      key:
+        description: |-
+          Key is the slug of the owner to save the config for.
+          Only user with the `config-svc:config:edit-on-behalf` can specify this.
+          For everyone else, it is automatically set to the slug of the caller user.
         type: string
     type: object
   config_svc.SaveConfigResponse:
