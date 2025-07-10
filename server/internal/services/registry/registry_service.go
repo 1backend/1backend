@@ -146,6 +146,21 @@ func (rs *RegistryService) RegisterRoutes(router *mux.Router) {
 		rs.DeleteNode(w, r)
 	})).
 		Methods("OPTIONS", "DELETE")
+
+	router.HandleFunc("/registry-svc/echo", appl(func(w http.ResponseWriter, r *http.Request) {
+		rs.EchoPut(w, r)
+	})).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/registry-svc/echo", appl(func(w http.ResponseWriter, r *http.Request) {
+		rs.EchoPost(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/registry-svc/echo", appl(func(w http.ResponseWriter, r *http.Request) {
+		rs.EchoGet(w, r)
+	})).
+		Methods("OPTIONS", "GET")
 }
 
 func (ns *RegistryService) Start() error {

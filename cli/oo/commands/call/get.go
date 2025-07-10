@@ -2,7 +2,7 @@ package call
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -73,7 +73,7 @@ func Get(cmd *cobra.Command, args []string) error {
 	}
 	defer resp.Body.Close()
 
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return errors.Wrap(err, "failed to read response body")
 	}
@@ -86,7 +86,12 @@ func Get(cmd *cobra.Command, args []string) error {
 		)
 	}
 
-	fmt.Println(string(respBody))
+	prettyJSON, err := util.PrettyJSON(respBody)
+	if err != nil {
+		return errors.Wrap(err, "failed to prettify JSON")
+	}
+
+	fmt.Println(string(prettyJSON))
 
 	return nil
 }

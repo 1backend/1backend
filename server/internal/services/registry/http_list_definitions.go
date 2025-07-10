@@ -8,7 +8,6 @@
 package registryservice
 
 import (
-	"encoding/json"
 	"log/slog"
 	"net/http"
 
@@ -56,15 +55,9 @@ func (rs *RegistryService) ListDefinitions(
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	bs, _ := json.Marshal(registry.ListDefinitionsResponse{
+	endpoint.WriteJSON(w, http.StatusOK, registry.ListDefinitionsResponse{
 		Definitions: definitions,
 	})
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
-	}
 }
 
 type DefinitionList struct {
