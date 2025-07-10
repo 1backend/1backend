@@ -49,8 +49,8 @@ data:
 
 func addListCommand(rootCmd *cobra.Command) {
 	var listCmd = &cobra.Command{
-		Use:     "ls",
-		Aliases: []string{"l", "ls"},
+		Use:     "list",
+		Aliases: []string{"ls"},
 		Args:    cobra.MaximumNArgs(1),
 		Short:   "List configs for an app",
 		RunE:    List,

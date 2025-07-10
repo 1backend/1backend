@@ -1,5 +1,5 @@
 app: "test-1"
-slug: "someServiceSvc"
+key: "someServiceSvc"
 data:
   # Limitation: only a single top level key can be saved,
   # even by admins.
