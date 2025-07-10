@@ -14,7 +14,7 @@ tags:
 
 The Data Service (Data Svc) is designed to facilitate backendless applications, allowing data to be saved and queried directly from the frontend, similar to Firebase.
 
-> This page provides a high-level overview of `Data Svc`. For detailed information, refer to the [Data Svc API documentation](/docs/1backend/query-objects).
+> This page provides a high-level overview of `Data Svc`. For detailed information, refer to the [Data Svc API documentation](/docs/1backend-api/query-objects).
 
 ## Purpose
 
@@ -123,7 +123,7 @@ Request
 
 You might wonder what sorting type is. It is essentially a clutch for some systems like PostgreSQL, where the Data Svc and its ORM stores the dynamic fields of Objects in a `JSONB` field.
 
-Unfortunately ordering on JSONB fields defaults to string sorting. The `sortingType` field helps the system force the correct ordering. For possible ordering values, see the [queryObjects endpoint API](/docs/1backend/query-objects)
+Unfortunately ordering on JSONB fields defaults to string sorting. The `sortingType` field helps the system force the correct ordering. For possible ordering values, see the [queryObjects endpoint API](/docs/1backend-api/query-objects)
 
 Response:
 

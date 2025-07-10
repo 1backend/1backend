@@ -1,0 +1,71 @@
+---
+id: login
+title: "Login"
+description: "Authenticates a user and returns a token."
+sidebar_label: "Login"
+hide_title: true
+hide_table_of_contents: true
+api: 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
+sidebar_class_name: "post api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Login"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/user-svc/login"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Authenticates a user and returns a token.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"app":{"example":"unnamed","type":"string"},"contact":{"type":"string"},"device":{"type":"string"},"password":{"type":"string"},"slug":{"type":"string"}},"type":"object"}}},"description":"Login Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Login successful","content":{"application/json":{"schema":{"properties":{"token":{"properties":{"active":{"description":"Active tokens contain the most up-to-date information.\nWhen a user's role changes—due to role assignment, organization\ncreation/assignment, etc.—all existing tokens are marked inactive.\nActive tokens are reused during login, while inactive tokens\nthat have been recently refreshed (being used still) are kept for further refreshing\n(unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, old tokens can be refreshed indefinitely.)\n\nActive tokens contain the most up-to-date information.\nWhen a user's role changes—due to role assignment, organization\ncreation/assignment, etc.—all existing tokens are marked inactive.\nActive tokens are reused during login, while inactive tokens\nthat have been recently refreshed (see `lastRefreshedAt` field) and are still in use are retained for further refreshing.\n(Unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, in which case old tokens can be refreshed indefinitely.)","type":"boolean"},"app":{"example":"unnamed,omitempty","type":"string"},"createdAt":{"type":"string"},"deletedAt":{"type":"string"},"device":{"description":"The device the token is associated with.\nThis in combination with LastRefreshedAt can be used to\ndetermine if the token is still in use, and lets us prune unused tokens.","type":"string"},"expiresAt":{"type":"string"},"id":{"type":"string"},"lastRefreshedAt":{"description":"The last time the token was refreshed.\nThis is used to determine if the token is still in use.","type":"string"},"token":{"description":"Token is a signed JWT used to authenticate the user without querying the User Svc.\nYou can verify it using the public key at `/user-svc/public-key`.\n\nThe token is just a JSON object with fields like:\n- \"oui\": the user ID (e.g., \"usr_dC4K75Cbp6\")\n- \"olu\": the user slug (e.g., \"test-user-slug-0\")\n- \"oro\": a list of roles, such as:\n  - \"user-svc:user\"\n  - \"user-svc:org:{org_dC4K7NNDCG}:user\"","type":"string"},"updatedAt":{"type":"string"},"userId":{"type":"string"}},"required":["createdAt","device","expiresAt","id","token","updatedAt","userId"],"type":"object"}},"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"404":{"description":"User Not Found","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

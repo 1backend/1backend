@@ -19,7 +19,7 @@ The Proxy Service in 1Backend handles various forms of proxying:
 - **Service proxying**: Proxies requests to custom services registered in the registry.
 - **Edge proxying**: When `OB_EDGE_PROXY` is set to true and the appropriate Routes are configured, the proxy service can handle HTTPS requests and perform TLS termination.
 
-> This page provides a high-level overview of `Proxy Svc`. For detailed information, refer to the [Proxy Svc API documentation](/docs/1backend/list-routes).
+> This page provides a high-level overview of `Proxy Svc`. For detailed information, refer to the [Proxy Svc API documentation](/docs/1backend-api/list-routes).
 
 ## Service proxying
 

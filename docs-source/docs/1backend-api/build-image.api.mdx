@@ -1,0 +1,73 @@
+---
+id: build-image
+title: "Build an Image"
+description: "Builds a Docker image with the specified parameters."
+sidebar_label: "Build an Image"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9Vk1v2zgQ/SsEz4rkbHZRQKdN2mLhbdEEcXNKDHRMjWU2FMmQlB2vof9eDCnFVuwu2ksuAUPNzHvz9egdr9ALJ22QRvOSX7VSVZ4B+2DEIzomG6iRbWRYsbBC5i0KuZRYMQsOGgzofP6gH/QtPrXSoY9W34TRAaRGd+bXoowxygVF/sYsukZ6L43OecaNRQcEPa14yaPJlKx5xh0+tejDlam2vNxxCok60BGsVVJEt+K7J9o77sUKG6CTdRQ0SPQvbs/hBsKK/h0n+37/kclEXRkBilm6CSbeRFKsj8Mzjs/QWIW85JRA2Fo6+uCkrnmX8SrWbSkVnsb8MPr+c9i93QhzdH0ErqHBY8gv0OAARBbMLOM59TaYlOIIRtdSP5cKAvpwDNSl7kiHFS/vRzXuOcxffMziO4rAO3I6MWostpvdpmbzw8DBtRiRvDXap3b+MZkc53f9iWe/Ph9HvLqM/3kq7FSvQcmK/Tu7/vI7AOMBROeMO8A9qOFpJufHTO40tGFlnPwPqzdj8tfpmgR0GhSboVujYx9jzLeh1GXco2idDFte3u/4FYJDd9nSlt3POxo5qD0N5PtBfthsLWgWGwwrQwpjW5oxGzeTFyOZKmQvPD6m5iNG6xQZFnE/V8aH8vz84uIdJ7SBzIySS/kcUnpduq9bi+yhN3ngbGmUMhus2GLLgHkLAhnoigXziJqBSGvAls40cVvvfMqHfTa11Ax1ZY3UgURIUvwVQoVuWMCSX/YjEzux32Gw8hNuY4mpO7d7lf04bP8r1Yw691rWxkLUQ45UoyNeSzOEAxGnAxuQVFIPCv3fXuq6VRCc0bkwzQH5mymbtdYaR/1KXViFYMuiOF+AeERdkUPBj1TlcnqmIcg1skYKZ6iZUqBnVkFYGtdQMkoK1D5mOuD9c/OZrS/yyQjNl0Wx2WzyWre5cXXR+/kCaqvOLvJJvgqNIg4BXeOvl7OEtifrN1DX6HJpimhSUCNkiBp7fpUS4RmneUv0J/m7/IIiWuNDA/qAY9JL0Gx4IUeJH7yQb/2I95NFE1NYBVIT/1jFXb9q6Y14CUYjG3OYZ5yWigx2uwV4vHOq6+j6qUVHaz7P+BqchAWV7H7eZcOc03Y+4nZ4xXU4owWjWoJq06C/0qEuGzwuhUAb/tf2UDRu7r7yjC/6HyKNqcjFwYZeK9jwkscfMuQcRSDe7bgCXbeUZMlTSFo56KVhv4zEKBsOlNTwSW8PCL5e5pQH/aWsTrrsdmnVu+7FPn36qceLgiRr6uO867ofOKWBtg==
+sidebar_class_name: "put api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Build an Image"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/container-svc/image"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Builds a Docker image with the specified parameters.
+
+Requires the `container-svc:image:build` permission.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"contextPath":{"description":"ContextPath is the local path to the build context","example":".","type":"string"},"dockerfilePath":{"description":"DockerfilePath is the local path to the Dockerfile","example":"Dockerfile","type":"string"},"name":{"description":"Name is the name of the image to build","example":"nginx:latest","type":"string"}},"required":["contextPath","name"],"type":"object"}}},"description":"Build Image Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

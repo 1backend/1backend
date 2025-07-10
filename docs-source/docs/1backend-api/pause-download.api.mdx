@@ -1,0 +1,73 @@
+---
+id: pause-download
+title: "Pause a Download"
+description: "Pause a download that is currently in progress."
+sidebar_label: "Pause a Download"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VU2P2zYQ/SvEnFpAK9l1iwA6dYO0hdEFasTxaddAxtRYYpYiGZKy6wr678How/Y6mwJFgF5s2RzOezPz3qiFgoL0ykVlDeSwwiaQQFHYo9EWCxErjEIFIRvvyUR9EsoI523pKYT0yTyZ9/S5UZ6CiBWJj3ul6S4cZD5lyKlQ8aNw5GsVgrImhQSsI48MuSwgB8eg78Z4SMChx5oi+QD5Y3vDcIoTm/cPkIAyfYJYQQIGa4IcGq8hAT/QKiCPvqEEgqyoRshbiCfHYSF6ZUroui0HB2dNoMDnP81m/PUSdt1ISSGIKRISkNZEMpFj0TmtZF9R9inwhfYKEItC8RHqlefKo2KggdZIxu4+kYzQdV2XwM+vETjXvXzXjwBjxXMxNnInBBlpCyr+C63bPgzQ86+hNwabWFmv/vl+gF9eq21pInmDWqzJH8iL37y3/vuQugQCycareOpF9JbQk79vYgX545ZnHrFkfcHvSpNYHyRsE6gpVraXZBN7IXI4ZJOos0nUWdt43WW9cIGRmPagVlZfDlmmrURd2RDz+XyxeAMMOTFaM/FBbNe8btvy4eRIPI0hTyD2Vmt7pELsTgJFcChJoClEtM9kBMpB8GLvbd2bcRPIc2XiwZbKCDKFs8rEdLJNRViQvxjnfpxy32U4axOd+pNOwC1VZm+ZJw8GZT8YqlFxxQE1hV+DMmWjMXprUmnrq9yrpVg3zlnPjR2aVMXo8iyb71A+kyn4QgZdctOF++WdwagOJGolveVeK0lBOI1xb33N5WgliU2Zt2e8P1YP4rBIZy/QQp5lx+MxLU2TWl9m472QYen03SKdpVWsNXOI5Ovw1349oF3IhiOWJflU2awPybhPKmoOmb8dCoEEWA4D/Vn6Jl1wRmdDrNFccZyW7dXqe1F6ezHA/7WYx5FH+jtmTqMyzLzvXzu64RGmTEz3wjwf1u5giW0CLH2ObtsdBtp43XX89+eGPDtym8ABvcIdd46XvAr8XEC+Rx3oXzrxw1hX8aO4eRe8Sn4SsTnxWFA3/AsSeKbT+K7otl0yeYGpDCf3UpKLV3e+2kDd9cJYbT5AAjj6+OIcTpZMD5z9VT63zhso8GeXfONK2w6+7Lpz/HD0zRtnuw/R3J5t13VfAEKewcY=
+sidebar_class_name: "put api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Pause a Download"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/file-svc/download/{url}/pause"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Pause a download that is currently in progress.
+
+Requires the `file-svc:download:edit` permission.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Download URL","in":"path","name":"url","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Success response","content":{"application/json":{"schema":{"additionalProperties":true,"type":"object"}}}},"400":{"description":"Download ID in path is not URL encoded","content":{"application/json":{"schema":{"type":"string"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"string"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

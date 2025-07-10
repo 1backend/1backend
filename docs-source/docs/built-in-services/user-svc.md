@@ -16,7 +16,7 @@ tags:
 
 The user service is at the heart of 1Backend, managing users, tokens, organizations, permissions and more. Each service and human on an 1Backend network has an account in the `User Svc`.
 
-> This page provides a high-level overview of `User Svc`. For detailed information, refer to the [User Svc API documentation](/docs/1backend/login).
+> This page provides a high-level overview of `User Svc`. For detailed information, refer to the [User Svc API documentation](/docs/1backend-api/login).
 
 User Svc supports multitenancy: while users are shared globally, tokens, organizations, permits, enrollments, and memberships are isolated by an "app" field (see `Apps` section on this page). This approach allows a single 1Backend instance to securely support multiple web applications.
 
@@ -42,7 +42,7 @@ User Svc supports multitenancy: while users are shared globally, tokens, organiz
 
 The most important thing about the User Svc is that service (machine) and user (human) accounts look and function the same.
 
-Every service you write needs to [register](/docs/1backend/register) at startup, or [log in](/docs/1backend/login) with the credentials it saves and manages if it's already registered. Just like a human.
+Every service you write needs to [register](/docs/1backend-api/register) at startup, or [log in](/docs/1backend-api/login) with the credentials it saves and manages if it's already registered. Just like a human.
 
 A service account is not an admin account, it's a simple user level account. You might wonder how service-to-service calls work then.
 
@@ -52,7 +52,7 @@ Most endpoints on 1Backend can only be called by administrators by default.
 
 Let's take prompting. If you want to let your users prompt AIs you might write a wrapper service called `User Prompter Svc` with the slug `user-prompter-svc`.
 
-If we look at the [Add Prompt endpoint API docs](/docs/1backend/prompt), we can see that it mentions
+If we look at the [Add Prompt endpoint API docs](/docs/1backend-api/prompt), we can see that it mentions
 
 ```
 Requires the `prompt-svc:prompt:create` permission.
@@ -89,13 +89,13 @@ Permission-based checks offer more nuanced control than simple role-only checksâ
 
 ## Tokens
 
-The User Svc produces a JWT ([JSON Web Token](https://en.wikipedia.org/wiki/JSON_Web_Token)) upon [/user-svc/login](/docs/1backend/login) in the `token.token` field (see the response documentation).
+The User Svc produces a JWT ([JSON Web Token](https://en.wikipedia.org/wiki/JSON_Web_Token)) upon [/user-svc/login](/docs/1backend-api/login) in the `token.token` field (see the response documentation).
 
-You can either use this token as a proper JWT - parse it and inspect the contents, or you can just use the token to read the user account that belongs to the token with the [/user-svc/self](/docs/1backend/read-self) endpoint.
+You can either use this token as a proper JWT - parse it and inspect the contents, or you can just use the token to read the user account that belongs to the token with the [/user-svc/self](/docs/1backend-api/read-self) endpoint.
 
 ### Verifying a token
 
-The [`/user-svc/public-key`](/docs/1backend/get-public-key) will return you the public key of the User Svc which then you can use that to verify the token.
+The [`/user-svc/public-key`](/docs/1backend-api/get-public-key) will return you the public key of the User Svc which then you can use that to verify the token.
 
 Use the JWT libraries that are available in your programming language to do that, or use the Singularon [SDK](https://github.com/1backend/1backend/tree/main/sdk) if your language is supported.
 

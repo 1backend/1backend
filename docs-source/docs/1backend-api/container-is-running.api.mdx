@@ -1,0 +1,71 @@
+---
+id: container-is-running
+title: "Check If a Container Is Running"
+description: "Check if a Docker container is running, identified by hash or name."
+sidebar_label: "Check If a Container Is Running"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VU1v2zgQ/SsEz4pk17sooFPT3aJrtNgW6+aU+EBTY4k1RbJDyl5X0H8vRpQtxXVyCIpeLEucjzeP82ZaXoCXqFxQ1vCc/1WB3DG1ZYL9beUOkElrglAGkCnPsDFGmTJhqgAT1FZBwTZHVglfMYvMiBpSnnDrAAVFXBY85+cIS/9f9OcJdwJFDQHQ8/y+vURxzvmP8BVPuKKv3xrAI084ZeE5r+KRlxXUguctD0dH331AStF1ydNh/6UQ18OaePR02HXCEbyzxoOn81ezGT0ep/r0gSd94WACnQrntJI9J9lXTybtJIVDYiyoGFCdaRqzb6zVIAxVxRG+NQqh4Pn9xHadnGzt5ivIwLuOjP+4hq5W3itTssklvBgtIFq8Sv8TeOY/47kzogmVRfUdit+G5M9rzCxNADRCsxXgHpC962P+Hkhdwj3IBlU49pp4CwIBb5tQ8fx+TX0XRElymTTyai/p5msIlSWtlRB6cZEPz87Ku/F7Ob5lyt/gWYm+rzTKsEFNfpm2UujK+pDP54vFa07JT9hWVGssb4rwkskvRwfsYTB54GxrtbaHOC8E805IYMIULNgdGCZk7Gm2RVuzUAG787E89tGWyjAwhbPKhPQk2wpEATjq9nbooP5i+Jlf4dQHOPaMK7O1hLPnQfZ3CbVQVLEXGvwb0kSjRUBrUmnrSezPS7ZqnLNI7EaSqhBcnmXzjZA7MAU5ZLxLLli4Xd4YEdQeWK0kWuJaSfDMaRG2FmsqRysJxgPhOeV7//kj2y/S2aNsPs+yw+GQlqZJLZbZ4OczUTp9s0hnaRVqTRgCYO0/bVcx2wjWH0RZAqbKZr1JRjypoMlk/jYWwhNO7RDhz9LX6YIiOutDLcwEY9wUS9oUYzsuPRtH/CMm2lFCv2jJDBcc4P+QOS2UIZw9W+0ggHv+SACDjPt36qJRBOuEU7OTR9tuhIc71F1Hn+Ny6DeU8mKjaepuhfbwXHmX2+sq0h0cxyW2F7ohE94vrRdkGhbaM5mGvTZmWtMLKkrVz5fkJCmqNvrcSgkuTLx+mn3ddPi8f/eFJ1wM42AUIAVLTn8o+unIHCexLwUcIdAvkXLVpW2jvLvubB+PnvQ4T41oTQStu677AV9VGI8=
+sidebar_class_name: "get api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Check If a Container Is Running"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/container-svc/container/is-running"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Check if a Docker container is running, identified by hash or name.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Container Hash","in":"query","name":"hash","schema":{"type":"string"}},{"description":"Container Name","in":"query","name":"name","schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"isRunning":{"type":"boolean"}},"required":["isRunning"],"type":"object"}}}},"400":{"description":"missing parameters","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

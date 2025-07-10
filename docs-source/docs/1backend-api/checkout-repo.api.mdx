@@ -1,0 +1,72 @@
+---
+id: checkout-repo
+title: "Checkout a git repository"
+description: "Checkout a git repository over https or ssh at a specific version into a temporary directory."
+sidebar_label: "Checkout a git repository"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVt9v2zYQ/lcIPnWAIiXLhgJ+WtJ1S7ZgDaLkKTGKM3WW2FAkS1J2NUP/+3CUZCuxEwR9KLAXQz7effeDd99xwwv0wkkbpNF8xj9UKB5NExiwUgbm0Bovg3EtMyt0rArBemYc875iQFreopBLKdgKnZdGM6mDYcAC1tY4cC0rpENBEOmDvka3NK72ZFiBUmbNhDIa2VqGitVSyxoUq6SPLpfGsSX4gI6JIa6UJ9xYdEDxXhZ8xseTG7SGJ9zh1wZ9ODdFy2cbLowOqAN9grVKimiYffGU7YZ7UWEN9GUdwQaJPv4D79fGFfT9tEDXwwkVIZhH1DHKi9vb65xBEyqe8NBa5DPug5O65F3Cva8+P2K7D5bnF8w6uYKA7BFb9s7EE1ARlE6F0RoFCX96BfmzXb8W6gg2dSWXDLVwrQ1Y7PwedBLT3Ie/PZD9fgYHERun9vH+aJSaNtzdzRV7h2mZJn3bzbKslKFqFqkwddZ4dBlpH3bg0Wmocd/L3XAyCXyoDtm8Mf6h1/fRzx1oUSUsQJkQrjB1LQPLL872YbqtxCy+oAi8I9EL40jdzW763h66XDos+Cy4BjsSeGu077v35+PjA73WCIHeLxul2n6csGAEHSqclJ0n3zszhXT7Xn8fh5+tK3T4zBlbg5/G8rYidQn/5VCGl3oFShbsr/zTP9+fBjpnYiJvjeTkQJNpGgbj5L9Y/LBIfj1ck0D9rliOjgj8Y8T8MSERP6FonAwtn91v+DmCQ3dGJDm7n3fzhAcoPZ/d89w0TiDLV4LPE15jqAxRuzWx2S2QBc981DryKxEHPxuZn5Mfys5HN5FceJYpI0BVxofZycnp6XtODsd4csqvT2ka1R7FtRbZw6DywNnS0MrCgi3auPpAIANdDIsARD+UbOlMHTudyIayYlemlJqhLqyROi4xSfgVQoF0HT1X8bOha+Jl7IYBrPwb21hluqCb3Yr7+A1qq/DpyhpvZbJ49kT9xtiJB47fCfoq7v5uCXUn27LghBmlXppx74KI/YU1yIgFCv1vXuqyURCc0cTjk9yvL1neWGtc2Lon3p9l2ckCxCPqIhI/3yPJs8sjDUGukNVSOEO9IAV6ZhUEem1QuZUUqH0s1Ojvz+srtjpNj594oy2zXq/TUjepcWU22PkMSquOTtPjtAq1ilsRXe0/LfPe2y5Yv4ayRJdKk0WVjKorA10SPznvE3lSvOP0fXpKiNTuNehJjC++xvizGkweOv+LJ9zQ2AG/hcwqkHryKujH/Z7vxj0uvPi62478POE02qS32SzA451TXUfirw064pt5wlfgJCyo8vfzLhmnjTiiH4oPfc2OaMzpSkA1/bg9I8QuGS3OhEAbXtWdEtj1p/yWJ3wxPEZrU5CNgzVlBGs+4/E5S9aRi6JswxXosoGSdHtMmnwYGGrHCRRSMn5QVuORbicRPueUPhH6pbQOmmw2PeN03Va/P3rRYktkvTbd57zruv8AFJpN4Q==
+sidebar_class_name: "post api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Checkout a git repository"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/source-svc/repo/checkout"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Checkout a git repository over https or ssh at a specific version into a temporary directory.
+Performs a shallow clone with minimal history for faster checkout.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"password":{"description":"Password or token for HTTPS auth","type":"string"},"ssh_key":{"description":"SSH private key (optional for SSH connection)","type":"string"},"ssh_key_pwd":{"description":"Password for SSH private key if encrypted (optional)","type":"string"},"token":{"description":"Token for HTTPS auth (optional for SSH)","type":"string"},"url":{"description":"Full repository URL (e.g., https://github.com/user/repo)","type":"string"},"username":{"description":"Username for HTTPS or SSH user (optional for SSH)","type":"string"},"version":{"description":"Branch, tag, or commit SHA","type":"string"}},"type":"object"}}},"description":"Checkout Repo Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Successfully checked out the repository","content":{"application/json":{"schema":{"properties":{"dir":{"description":"Directory where the repository was checked out","type":"string"}},"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      
