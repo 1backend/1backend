@@ -3367,6 +3367,107 @@
                 }
             }
         },
+        "/registry-svc/echo": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "This endpoint is used to test the server's response to a GET request.\nIt echoes back the query parameters as a JSON object.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Registry Svc"
+                ],
+                "summary": "Echo the query parameters in the response body.",
+                "operationId": "echoGet",
+                "responses": {
+                    "200": {
+                        "description": "Echoed query parameters",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "This endpoint is used to test the server's response to a request.\nIt simply echoes back the request body as a JSON response.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Registry Svc"
+                ],
+                "summary": "Echo the request body in the response body.",
+                "operationId": "echoPut",
+                "responses": {
+                    "200": {
+                        "description": "Echoed response",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "This endpoint is used to test the server's response to a request.\nIt simply echoes back the request body as a JSON response.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Registry Svc"
+                ],
+                "summary": "Echo the request body in the response body.",
+                "operationId": "echoPost",
+                "responses": {
+                    "200": {
+                        "description": "Echoed response",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid JSON",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/registry-svc/instance": {
             "put": {
                 "security": [

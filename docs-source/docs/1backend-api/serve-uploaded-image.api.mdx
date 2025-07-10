@@ -1,0 +1,71 @@
+---
+id: serve-uploaded-image
+title: "Serve Uploaded Image"
+description: "Retrieves and serves a previously uploaded image file using its File ID."
+sidebar_label: "Serve Uploaded Image"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VlFv2zYQ/ivEPbWAYiVLhwJ6Woq0hbFuLZrmqc0DTZ2lWyiSIU/2VEP/vTjKTtzMyZZh65Nlisfvu4/f3WkDNSYTKTB5BxV8RI6EK0xKu1oljPlRhYgr8n2yg+qD9brGWlGnG1RLsqj6RK5RxEm9kb/z8xkU4ANGLcfOa6ggH3W5jZ1LKBQQdNQdMsYE1efNPSpy1Pxc9Y5uerSDohod05IwKW63wMQJ7VI9c56Vdmp+Xqh1S6ZVEUPEhI6FfQpoaElGVi0Z/RwKIIEImlsowOkOoQI5cV5DARFveopYQ8WxxwKSabHTUG2AhyA7E0dyDYxjcZ/0+/ygrVpTza1iryIm+oqZ8qQY+x38TY9xuMPPIXAAjhxjg/FRvBapaflpgFPM44hXIkcK3iVMsuGn42P5+etVTWapVeqNwZSWvbUCZbxjdCwxOmT1Jab0hpGPEkfUnbx7SOIClj52mqGCBTkdBxjHcSzgxSEav1HKRtya8N+ghyi2ZZqSxRh9PHjvuxW/+AMN35J68YA2v3tWb3zv6h/O6edDQs0dYxTXXMidRfU6n/ljqcmibqTwIbcDdbEycFVAh9x66RgNcm4R3EIFZbbyUVqZMvusnNpQuZmKdhQT51ymTtJHK0Gl9Ubb1ieuTk5OT1+C2Dmh6SPxcCFZTMRfoY4Yz3qBuq/VpyGg+rLd8gXU0lvr11irxZBbizaYeyX7a3RKm6l1qGX0Xa7By4RRclPvfENOoauDJ8ezXU22qGuMd0UpLHykr1l6uFVOB/oVh6wluaUXnnJb2uTbwk6TZJy0xfSLFEFvNUfvZsZ3e2d/mKuLPgQfRdpJpJY5VGV5stDmGl0tASWMxT0VzuZHTjOtUHVkohetyWBSwWqWCpV0LBl0CYXPDu/th3dqdTo7/g4tVWW5Xq9njetnPjblNi6Vugn26HR2PGu5s8KBMXbp/fJiQrsjm9a6aTDOyJd5Syk6EVvZcvJqSgQKEDtM9I9nL2encmLwiTvt9jjmElC7yaR2o+m79Dd3lfFfTsjt1TL+yWWwmpwwzDpttr7/DLe+3zlcpMwAUEC1HVlXBYjJZf9ms9AJL6MdR1meOn4erpT0wspQW2qb8JEM/+kMO0j/Goe9UbbStpc9kCfX0xn83VR7hMLtcLvjcCV/IgmJJ0ry7OP2k+C5+n8/Sw4mtGsBbthPZ5fo1gPj1VjsmokkN708MwbDvgoP9vVxv/e+ff0JxvEbeBN9vA==
+sidebar_class_name: "get api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Serve Uploaded Image"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/image-svc/serve/upload/{fileId}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Retrieves and serves a previously uploaded image file using its File ID.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"FileID uniquely identifies the file itself (not an ID, which represents a specific replica)","in":"path","name":"fileId","required":true,"schema":{"type":"string"}},{"description":"Optional width to resize the image to","in":"query","name":"width","schema":{"type":"integer"}},{"description":"Optional height to resize the image to","in":"query","name":"height","schema":{"type":"integer"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"File served successfully","content":{"application/octet-stream":{"schema":{"type":"string","format":"binary"}}}},"400":{"description":"Missing File ID","content":{"application/octet-stream":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"404":{"description":"File Not Found","content":{"application/octet-stream":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/octet-stream":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

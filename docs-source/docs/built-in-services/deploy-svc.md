@@ -11,7 +11,7 @@ tags:
 
 The deploy service is responsible of launching containers on whatever infrastructure the 1Backend is running on (eg. [Docker Svc](/docs/built-in-services/container-svc)) and registering them into the [Registry Svc](/docs/built-in-services/container-svc).
 
-> This page provides a high-level overview of `Deploy Svc`. For detailed information, refer to the [Deploy Svc API documentation](/docs/1backend/save-deployment).
+> This page provides a high-level overview of `Deploy Svc`. For detailed information, refer to the [Deploy Svc API documentation](/docs/1backend-api/save-deployment).
 
 ## Warning
 

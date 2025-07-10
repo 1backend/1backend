@@ -1,0 +1,726 @@
+import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
+
+const sidebar: SidebarsConfig = {
+  apisidebar: [
+    {
+      type: "doc",
+      id: "1backend-api/1-backend",
+    },
+    {
+      type: "category",
+      label: "Chat Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend-api/events",
+          label: "Events",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/delete-message",
+          label: "Delete a Message",
+          className: "api-method delete",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-messages",
+          label: "List Messages",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/save-thread",
+          label: "Save Thread",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/delete-thread",
+          label: "Delete a Thread",
+          className: "api-method delete",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/save-message",
+          label: "Save Message",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-threads",
+          label: "List Threads",
+          className: "api-method post",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "Config Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend-api/save-config",
+          label: "Save Config",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-configs",
+          label: "List Configs",
+          className: "api-method post",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "Container Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend-api/run-container",
+          label: "Run a Container",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/container-is-running",
+          label: "Check If a Container Is Running",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/stop-container",
+          label: "Stop a Container",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/container-summary",
+          label: "Get Container Summary",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-containers",
+          label: "List Containers",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/container-daemon-info",
+          label: "Get Container Daemon Information",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/get-host",
+          label: "Get Container Host",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/build-image",
+          label: "Build an Image",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/image-pullable",
+          label: "Check if Container Image is Pullable",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-container-logs",
+          label: "List Logs",
+          className: "api-method post",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "Data Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend-api/create-object",
+          label: "Create a Generic Object",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/upsert-object",
+          label: "Upsert a Generic Object",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/query-objects",
+          label: "Query Objects",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/delete-objects",
+          label: "Delete Objects",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/update-objects",
+          label: "Update Objects",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/upsert-objects",
+          label: "Upsert Objects",
+          className: "api-method put",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "Deploy Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend-api/delete-deployment",
+          label: "Delete Deployment",
+          className: "api-method delete",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/save-deployment",
+          label: "Save Deployment",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-deployments",
+          label: "List Deployments",
+          className: "api-method post",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "Email Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend-api/send-email",
+          label: "Send an Email",
+          className: "api-method post",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "File Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend-api/download-file",
+          label: "Download a File",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/get-download",
+          label: "Get a Download",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/pause-download",
+          label: "Pause a Download",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-downloads",
+          label: "List Downloads",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/serve-download",
+          label: "Serve a Downloaded file",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/serve-upload",
+          label: "Serve an Uploaded File",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/upload-file",
+          label: "Upload a File",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-uploads",
+          label: "List Uploads",
+          className: "api-method post",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "Firehose Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend-api/publish-event",
+          label: "Publish an Event",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/subscribe-to-events",
+          label: "Subscribe to the Event Stream",
+          className: "api-method get",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "Image Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend-api/serve-uploaded-image",
+          label: "Serve Uploaded Image",
+          className: "api-method get",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "Model Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend-api/start-default-model",
+          label: "Start the Default Model",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/get-default-model-status",
+          label: "Get Default Model Status",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/get-model",
+          label: "Get a Model",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/make-default",
+          label: "Make a Model Default",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/start-model",
+          label: "Start a Model",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/get-model-status",
+          label: "Get Model Status",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-models",
+          label: "List Models",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-platforms",
+          label: "List Platforms",
+          className: "api-method post",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "Policy Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend-api/check",
+          label: "Check",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/upsert-instance",
+          label: "Upsert an Instance",
+          className: "api-method put",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "Prompt Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend-api/prompt",
+          label: "Prompt an AI",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-prompts",
+          label: "List Prompts",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/subscribe-to-prompt-responses",
+          label: "Subscribe to Prompt Responses by Thread",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/remove-prompt",
+          label: "Remove Prompt",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/prompt-types",
+          label: "Prompt Types",
+          className: "api-method post",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "Proxy Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend-api/list-certs",
+          label: "List Certs",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/save-certs",
+          label: "Save Certs",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-routes",
+          label: "List Routes",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/save-routes",
+          label: "Save Routes",
+          className: "api-method put",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "Registry Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend-api/save-definition",
+          label: "Register a Definition",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/delete-definition",
+          label: "Delete Definition",
+          className: "api-method delete",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-definitions",
+          label: "List Definitions",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/echo-get",
+          label: "Echo the query parameters in the response body.",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/echo-post",
+          label: "Echo the request body in the response body.",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/echo-put",
+          label: "Echo the request body in the response body.",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/register-instance",
+          label: "Register Instance",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/remove-instance",
+          label: "Remove Instance",
+          className: "api-method delete",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-instances",
+          label: "List Service Instances",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/delete-node",
+          label: "Delete Node",
+          className: "api-method delete",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/self-node",
+          label: "View Self Node",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-nodes",
+          label: "List Nodes",
+          className: "api-method post",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "Secret Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend-api/decrypt-value",
+          label: "Decrypt a Value",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/encrypt-value",
+          label: "Encrypt a Value",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/is-secure",
+          label: "Check Security Status",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/remove-secrets",
+          label: "Remove Secrets",
+          className: "api-method delete",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-secrets",
+          label: "List Secrets",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/save-secrets",
+          label: "Save Secrets",
+          className: "api-method put",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "Source Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend-api/checkout-repo",
+          label: "Checkout a git repository",
+          className: "api-method post",
+        },
+      ],
+    },
+    {
+      type: "category",
+      label: "User Svc",
+      items: [
+        {
+          type: "doc",
+          id: "1backend-api/reset-password",
+          label: "Reset Password",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/change-password",
+          label: "Change Password",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-enrolls",
+          label: "List Enrolls",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/save-enrolls",
+          label: "Save Enrolls",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/login",
+          label: "Login",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/save-organization",
+          label: "Save an Organization",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/delete-membership",
+          label: "Delete Membership",
+          className: "api-method delete",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/save-membership",
+          label: "Save Membership",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-organizations",
+          label: "List Organizations",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-permissions",
+          label: "List Permissions",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-permits",
+          label: "List Permits",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/save-permits",
+          label: "Save Permits",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/get-public-key",
+          label: "Get Public Key",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/refresh-token",
+          label: "Refresh Token",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/register",
+          label: "Register",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/read-self",
+          label: "Read Self",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/save-self",
+          label: "Save User Profile",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/has-permission",
+          label: "Has Permission",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/exchange-token",
+          label: "Exchange Token",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/revoke-tokens",
+          label: "Revoke Tokens",
+          className: "api-method delete",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/create-user",
+          label: "Create a New User",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/delete-user",
+          label: "Delete a User",
+          className: "api-method delete",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/save-user",
+          label: "Save User",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-users",
+          label: "List Users",
+          className: "api-method post",
+        },
+      ],
+    },
+  ],
+};
+
+export default sidebar.apisidebar;

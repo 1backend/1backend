@@ -211,7 +211,7 @@ inst_eHFTNvAlk9   http://127.0.0.1:9111   Healthy   basic-svc     10s ago
 
 ### Instance registration
 
-Like most other things on the platform, service instances are owned by a user account slug. When the basic service calls [RegisterInstance](/docs/1backend/register-instance), the host will be associated with the `basic-svc` slug.
+Like most other things on the platform, service instances are owned by a user account slug. When the basic service calls [RegisterInstance](/docs/1backend-api/register-instance), the host will be associated with the `basic-svc` slug.
 
 Updates to this host won’t be possible unless the caller is the basic service itself or an admin. In essence, the service becomes the owner of that URL.
 

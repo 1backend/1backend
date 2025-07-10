@@ -12,7 +12,7 @@ tags:
 
 The registry service is designed to maintain a database of service definitions, service instances and nodes.
 
-> This page provides a high-level overview of `Registry Svc`. For detailed information, refer to the [Registry Svc API documentation](/docs/1backend/register-instance).
+> This page provides a high-level overview of `Registry Svc`. For detailed information, refer to the [Registry Svc API documentation](/docs/1backend-api/register-instance).
 
 ## Entities
 

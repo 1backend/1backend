@@ -1,0 +1,71 @@
+---
+id: save-self
+title: "Save User Profile"
+description: "Save user's own profile information."
+sidebar_label: "Save User Profile"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VU2P2zYQ/SvEXHrRWnbdIoVO3W3TYpug68ZZ5OAYwVgaS8xSJENS9rqC/nsxlLTrtd0iveRiS9R8vHkzb9hCQT530gZpNGSwxB2JxpP7zguz18I6s5WKhNRb42pkqwkkYCy5+HJbQAYed7QktYUEHH1pyIcbUxwgayE3OpAO/IjWKplHp/Sz52Qt+LyiGvnJOg4ZJHl+U7ghFZ+wKCS7oFq8sAgHS5w5OKlL6JLxwGw+Ux74QGNNly2rpt5olOo3qYjxt0CPWFvFZlzsp+1fvz42/sNPpoTk1P88FR9dIHExMPeuZ2TgRjoqIAuuoY4PvDXa9xV9P53y38tId28g+XoSz4B1CfxwKeyt3qGShfhjeffn/0nwskvknHEXKL5EUUQyO0dyr7EJlXHybyq+GZIfL3MSyGlUYkluR068jjG/DaQuAU9542Q4QLZq4YbQkbtuQgXZat2tEwhYeshWcO/JieUuh3UCNYXKsP5sw+Nlkc0hZfVe+V2e+l6SPtbjY+DGKTZJlclRVcaHbDabz18BpxgRLLmivohjHKd8vT9YEh8Hk48gtkYps6dCbA4ChbeYk0BdiGAeSAvM+9kXW2dqESoSYyXirSmlFqQLa6QOvF0kx68IC+IG9EKG62FOIv3PukQr39Ah8sotefe8f16Poj7aJ097YezHhXVwtgM6RrQ14z7DPA4D1ShVXH6K/M9e6rJRGJzRk9zUR7AXt2LZWGsc96jnvwrBZmk622D+QLpghxTOtsj17ZXGIHckapk7w22UOXlhFQZexsyUkjlpH2sc8/2+eCt288n0RTafpel+v5+UupkYV6aDn0+xtOpqPplOqlCruB3J1f5uu+yzPYP1eyxLchNp0miSMnUyxKU5u+kLgQR40nr408mryZwjWuNDjfoIY9yPsf/DkoST2o8ujq+9kYZxCPQYUqtQak4dCWgHZaxgVEYUhdqyhlgD/KltN+jp3qmu4+MvDTmW4jqBHTqJG65zte6ScSxZTA90gAx+6ZFesR6YAFRNP5cnu6JLRo/rPCcb/tP2WN2L+/eQwGa4UWtTsIvDPd8ouIcM4n3MzlGz8YxHXpcNlmzbh2SF4KDkZ+0womR84KLGT/pwBPBUe30d/MtVXXRp216ZXfdk33/6V48nwffW3MF113X/AC1497g=
+sidebar_class_name: "put api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Save User Profile"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/user-svc/self"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Save user's own profile information.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"labels":{"additionalProperties":{"type":"string"},"type":"object"},"name":{"type":"string"},"thumbnailFileId":{"example":"file_fQDxusW8og","type":"string"}},"type":"object"}}},"description":"Save Profile Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

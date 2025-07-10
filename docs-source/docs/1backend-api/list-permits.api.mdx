@@ -1,0 +1,72 @@
+---
+id: list-permits
+title: "List Permits"
+description: "List permits. Requires the `user-svc:permit:view` permission, which only admins have by default."
+sidebar_label: "List Permits"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVs1uGzcQfhWChx6K1a5dtwiwpzo/aIW4sBHFh8Iy6hF3pGXCJRlyVrIqLJCHyBPmSYrh7tqyrbRNCxToxV6RQ87MN983w52sMKqgPWlnZSnPdCThMTSaYi7e4IdWB4yCahQ3bcQwiWtV9vvlWuPmpjeOUTubiU2tVS2cNVsBVaNtFDWsUSy2osIltIbyuf2GXOXEZcQQRaxdayqxQAELg4KcMHv+RcAlhqDtineoxiaXmXQeA3C000qWku0venOZyYAfWoz03FVbWe6kcpbQEn+C90ardK54FznVnYyqxgb4ywe+lTTG9OsuI/5FW4+ylJE4ENllMpp2dWCjy8YVt3iHimTHSwfQHcJN4GKkIWwdsJIlhRY7Xoje2diH893REf97eNP5a5n9q/wofWrCJj61AO+fujz1XrhlokJ/Qz63lxHFzbc3XJ8GSNUCjBHgfcxEbPlnFJsarVg4R5ECeK/tam61FRHDWiuMXFK8hcYbhq61FhqsMtdwZJ62MntaABUQCKtTOlieCg1+eVdXvHzvUNv1b8vprxeLX36equkhb3/BhuBMj9lDsN44g2L6kpUDNKgA0Q7IYZVgjB6VXmqs9kSUz+3cnge90haM2WZ3YthgQFFh1CuLlVi6IJiIkaFfgtJGExCOsE7ITYZPocCYmM/tyxYHHekglLNrtBqtws8fP2GKhP2JjaZavDibCrCV0HYZIFJoFbUBJxAnylUoYuu9C/T54yeqcdtHZoAwCLwltBWn50RChst7R7In4A0LEAJsR2kdAHPWJ/q1SH6V69ZXXyRVty/Rqz3+JT49oMj+RddPOsJjt4d6RpfJ74+On4JwaaGl2gX9O1b/XPsYggt/s3t1mfzhUO+ZWsJgwYgZhjUG8Srd+d+ExCRB1QZNW1le7eRzhIDhtKVallfXHUMOTKEryRNGzNaKy9Ag1Y7HhXep4Xpge1mME63wdyMkppxiurwNhq0K4xSY2kUqj49PTp5JdjNGMeOs+kT2Y3mM2dutRzEfTOZSLJ0xboMVz0YQ0YPCpDhy79EKUD3bxDK4JhF8zEacuZW2Am3lnbaUOM731wgVchG4f3KzHriSSnDf1sDr19gTj8vy5n5evhpb4sP5N1ZjHHv7rdQu3ThlQaWyYwOaIYtgMP4YtV21Big4myvX7AV3MRWzvoewYBLKNZEvi+J4Aeo92ooPFPLJAD2dTiyQXqNotApuHCLCG6ClC+mBYLRCG1Mmo7+fLs7E+iQ/euAtlkWx2WzylW1zF1bFcC4WsPJmcpIf5TU1JokWQxPPl7Pe232wcQOrFYZcuyKZFAy0pjRYjp/3ichMMp/68I/yZ/lJGiouUgN2L8b9p4F8lPbeS+Z/8EAbqEZ4S4U3oG1qrwz7bhDelRwjHZsnRZYpS4x3d7sFRLwMput4+UOLgdV+nck1BM2RJLFnI+tZq+9xK0v5osdpwnJj5MG0Pe0ftaMuG0+cKoWe/tR2v4FcnM/eykwuhhdm4yo+E2DDzzjYyFKmJyqfTj0hre2kAbtqYcW2/Z2sQBg6xb02OaRs/OCsxi273Yvwsbb7RPgvp3XwyG7XK7/r7uz7rS+euGsovTVX8brruj8ADqpDfg==
+sidebar_class_name: "post api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List Permits"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/user-svc/permits"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+List permits. Requires the `user-svc:permit:view` permission, which only admins have by default.
+&todo Users should be able to list permits referring to them.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"permission":{"type":"string"},"slug":{"type":"string"}},"type":"object"}}},"description":"List Permits Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"permits":{"items":{"properties":{"app":{"description":"App of the permit.\nUse `*` to match all apps, such as when bootstrapping\nin services.","example":"unnamed,omitempty","type":"string"},"createdAt":{"type":"string"},"deletedAt":{"type":"string"},"id":{"example":"inv_fIYPbMHIcI","type":"string"},"permission":{"type":"string"},"roles":{"description":"Role IDs that have been permited the specified permission.\n\nOriginally, permits were designed for slugs to facilitate service-to-service calls.\nDue to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.","items":{"type":"string"},"type":"array"},"slugs":{"description":"Slugs that have been permited the specified permission.","items":{"type":"string"},"type":"array"},"updatedAt":{"type":"string"}},"required":["createdAt","id","permission","updatedAt"],"type":"object"},"type":"array"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

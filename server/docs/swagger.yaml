@@ -6028,6 +6028,77 @@ paths:
       summary: List Definitions
       tags:
       - Registry Svc
+  /registry-svc/echo:
+    get:
+      description: |-
+        This endpoint is used to test the server's response to a GET request.
+        It echoes back the query parameters as a JSON object.
+      operationId: echoGet
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Echoed query parameters
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Echo the query parameters in the response body.
+      tags:
+      - Registry Svc
+    post:
+      consumes:
+      - application/json
+      description: |-
+        This endpoint is used to test the server's response to a request.
+        It simply echoes back the request body as a JSON response.
+      operationId: echoPost
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Echoed response
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid JSON
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Echo the request body in the response body.
+      tags:
+      - Registry Svc
+    put:
+      consumes:
+      - application/json
+      description: |-
+        This endpoint is used to test the server's response to a request.
+        It simply echoes back the request body as a JSON response.
+      operationId: echoPut
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Echoed response
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid JSON
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Echo the request body in the response body.
+      tags:
+      - Registry Svc
   /registry-svc/instance:
     put:
       consumes:

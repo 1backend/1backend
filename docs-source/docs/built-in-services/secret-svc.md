@@ -12,7 +12,7 @@ tags:
 
 The Secret Svc stores sensitive or internal (non-end-user-facing) configuration. Aims to store all configuration not required at bootstrap, both for internal and external services.
 
-> This page provides a high-level overview of `Secret Svc`. For detailed information, refer to the [Secret Svc API documentation](/docs/1backend/list-secrets).
+> This page provides a high-level overview of `Secret Svc`. For detailed information, refer to the [Secret Svc API documentation](/docs/1backend-api/list-secrets).
 
 ## Access rules
 

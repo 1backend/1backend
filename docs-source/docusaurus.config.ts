@@ -213,7 +213,7 @@ const config: Config = {
         config: {
           "1backend": {
             specPath: "examples/1backend.yaml",
-            outputDir: "docs/1backend",
+            outputDir: "docs/1backend-api",
             downloadUrl:
               "https://raw.githubusercontent.com/1backend/1backend/main/server/docs/swagger.yaml",
             sidebarOptions: {

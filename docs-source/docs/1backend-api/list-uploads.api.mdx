@@ -1,0 +1,75 @@
+---
+id: list-uploads
+title: "List Uploads"
+description: "Lists uploaded files, returning only metadata about each upload."
+sidebar_label: "List Uploads"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVk1v2zgQ/SsEz4rkbLpbQKd1tt1FsEUbxMkpNpCxNJbYUCRDUnZdQ/+9GFKyVdsN9uu4F8Mg5+PNzOMb7XiJrrDCeKEVz/kH4bxjrZEaSizZSkh0CbPoW6uEqphWcssa9FCCBwZL3XqGUNS9SzpX95rMrcA1BndWaOVR+YS1DpmvkT3N0K6RgWIPQ57fhcQnhqo0WpDpphZFzRzZOQbMCVXJPpxByyy+tOh8Olcftcec3cWEBJAS9Bkd0yvWtNIL0zs7JtQhXB+FCceU9sy1xmjrsWRFay0qL7fpXM3VHb60wqKL2CnMhVsXeSw4XwvcPBGoRjgntEp5wrVBC9TQm5LnXArnY6GOJ7xPeq3LLc93vIdKf8EYKYrgl312NI0dd0WNDdA/YymqF+iC7cqjpT/fT29Kx8yLBtkaZIs84X5rkOfceStUxbuES9GIkK+/EcpjhZauWoeWIO+Ovbp9HL38jIXnHR2dMqcfqGN3sUoKatEZrVzE/dNkcoo6eOpVTyFq0j/syhAg33HhsXGnFoVF8FhO/ZkiE06zjfUfAdSVKEBG/t28Y86ACq8BpGQWA0B3rtfk8BEaPA1JhFfQIJGPeKWtqIQCycKhXoVDcv9R2Fvw9fmwdDOEXbVSMqVLZFJTBYbu/kL0mfgaQK+0bcBHlvzy5mA9Io0407AHJV7a0KqVtszXwg1tOpeQ8J1r+827AWqowHlt4wt/PVxryldm/BrHbXzpJc8fR0zZ82I0z9EMRg0LzdjXM0ayz7s4eUn7A7AWtuffWpfwN5PLc32G1tfaiq9Y/p1nc1w6Jfj53NO8UR4t0TJItmXvrdX232XqEu6waK3wW54/7vg1gkU7bYnOj4uOGgSVoxEQmdlsXVDTGvS1JjU12lE7TaA/zwY5zg7iEbaGdSF4ayVZZYH9tXY+v7y8unrLKc2AYkZgozyMsRy34n5rkM17kzlnKy2l3mDJlltaKQYKWmkl8/oZFYMiUomtrG4Chx8cWqqGkZqo/a6jfSEofo1QIvVWBcHg036yobMHnoMRf2KkCXX77rBO3n+BxkgcrYeh7XvRnxz4P3oSQq30sIugCEPFBgR1zoFE9yvty1aCt1qlhW5GGG9v2CyuTaJ4aHbtvcmz7HIJxTOqkhwyfrItpjcXCrxYI2tEYTXNTBTomJHgSXTSALpA5UJBQ74/bj+w9VU6+S6by7Nss9mklWpTbaus93MZVEZeXKWTtPaNDC8NbeM+rWYx2wGs20BVoU2FzoJJRv0WnprJL69jITzhRKsIf5K+Ta8oItGxATXCON6D/Kjs0b7//0vrv/jS6h+Fxy8+MxKEChJPzNj1EvHIhzhBkONYFgknMaDb3W4JDh+s7Do6fmnRki4tEr4GK2BJHHhcdMnwPklVnnHLc/5brP2ChIHIET648lM97JLBY1oUaPyrtmOpu/00u+cJX/afio0uycfChj4jYcNzHr41yTuoVzjbcQmqaqEi2xiTtAJ6TTuoCEFKhj9U1XCltiOExyoUC6FfKuusy24XNarr9vbx6ocee+mL1jTFRdd13wBMK2Jr
+sidebar_class_name: "post api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List Uploads"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/file-svc/uploads"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Lists uploaded files, returning only metadata about each upload.
+To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request.
+Note: Retrieving the contents of multiple files in a single request is not supported currently.
+
+Requires the `file-svc:upload:view` permission.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"after":{"description":"After time value","type":"string"},"limit":{"type":"integer"},"userId":{"type":"string"}},"type":"object"}}},"description":"List Uploads Request"}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"List of uploads","content":{"application/json":{"schema":{"properties":{"uploads":{"items":{"properties":{"createdAt":{"type":"string"},"fileId":{"description":"Logical file ID spanning all replicas","type":"string"},"fileName":{"description":"Filename is the original name of the file","type":"string"},"filePath":{"description":"FilePath is the full node local path of the file","type":"string"},"fileSize":{"format":"int64","type":"integer"},"id":{"description":"Unique ID for this replica","type":"string"},"nodeId":{"description":"ID of the node storing this replica","type":"string"},"updatedAt":{"type":"string"},"userId":{"type":"string"}},"required":["createdAt","fileId","fileName","filePath","fileSize","id","nodeId","updatedAt","userId"],"type":"object"},"type":"array"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"type":"string"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

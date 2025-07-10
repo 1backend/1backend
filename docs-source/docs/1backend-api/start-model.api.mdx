@@ -1,0 +1,71 @@
+---
+id: start-model
+title: "Start a Model"
+description: "Starts a model by ID"
+sidebar_label: "Start a Model"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VMFu4zYQ/RViTi3ASHbdYgGdmkWLwtgtNqg3p6wPY2oscUORXJKy6wr898VIduwkToFeerFp83HmvZk3M0BNUQXtk3YWKlglDCkKFJ2ryYjNQSx/AwnOU0CGLGuoIDLoTwaABI8BO0oUIlQPw4twI2gKofm3x9SCBIsdQQVjjmUNEgJ963WgGqoUepIQVUsdQjVAOngaUwZtG8h5zeDonY0U+f6n2Yy/nqf99AEkKGcT2cS36L3RahRQfo0MGV6ncJuvpBLknLOEn2fz12HvLfapdUH/Q/V/SeAD1y/piTGF4MI1afIqk1+uCVzaRMGiESsKOwri9zHm/0MpS4ik+qDTYez4e8JA4bZPLVQPa25QwobNcOz+aqdgLaGj1Dp2j+/TaBvGQzl64Cbu1HQqh6Mpcjm6DDgZS5zc1QfDj0rjFJrWxVTN54vFO+CsJ1IrFjnpuqT2soSfD57ElyPkC4itM8btqWbPo4geFQm0tUjukaxANRlUbIPrRGpJ3EcKrE18dI22gmztnbapOFm9JawpnM1+e7TO2BF4Kix6/YEOY6m13TrmyU1ENTaROtSsOKKh+GvUtukNpuBsoVx3EftuKVa9924s2FSkNiVfleV8g+qRbM0PSsjyRRVulzcWk96R6LQKjmutFUXhDaatCx3LMVqRjcR8Tvn+uPsodoti9ixbrMpyv98Xje0LF5ry+C6W2HhzsyhmRZs6wxwShS5+2q6mbGeycY9NQ6HQrhwhJddJJ8OQ+ftJCEhgO0z0Z8W7YsERvYupQ3vBcdxkAsVpTz3TPZwn5a2Vd+xPor9T6Q1qy2lGscPRvA/wZF6Q0xkkVOetNjl4LYGdyvhh2GCk+2By5r+/9RR4htYSdhg0blgo71Ad+VxDtUUT6V+4//DXcXH+KC5W7VXqJ7/ZA1cQTc+/QMIjHS5WcV5nebIuU5lub5Uiny7evVou+XLC7+4/gwQ8jt3Z6BxMng4c/Sqnl4MyUeDPLN94MgzTGOX8hJ+u3nzxNJ0Tmku0zjl/B676ZPg=
+sidebar_class_name: "put api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Start a Model"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"put"}
+  path={"/model-svc/model/{modelId}/start"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Starts a model by ID
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Model ID","in":"path","name":"modelId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

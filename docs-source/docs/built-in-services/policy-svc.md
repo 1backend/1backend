@@ -13,7 +13,7 @@ tags:
 
 The policy service provides features such as rate limiting of endpoint calls by user ip, user id, organization id and more.
 
-> This page provides a high-level overview of `Policy Svc`. For detailed information, refer to the [Policy Svc API documentation](/docs/1backend/upsert-instance).
+> This page provides a high-level overview of `Policy Svc`. For detailed information, refer to the [Policy Svc API documentation](/docs/1backend-api/upsert-instance).
 
 ## Responsibilities
 
@@ -21,14 +21,14 @@ The policy service provides features such as rate limiting of endpoint calls by 
 
 ## How It Works
 
-The Policy Svc requires you to explicitly call the [/policy-svc/check](/docs/1backend/check) endpoint in every service endpoint you are building. There is no magic or framework feature involved.
+The Policy Svc requires you to explicitly call the [/policy-svc/check](/docs/1backend-api/check) endpoint in every service endpoint you are building. There is no magic or framework feature involved.
 
 ## Usage
 
 The policy service has two endpoint:
 
-- You can create policy instances with [/policy-svc/upsert-instance](/docs/1backend/upsert-instance) - use this to define rate limits, block IPs etc.
-- A [/policy-svc/check](/docs/1backend/check) endpoint that you should call for every request in your endpoint you want to rate limit.
+- You can create policy instances with [/policy-svc/upsert-instance](/docs/1backend-api/upsert-instance) - use this to define rate limits, block IPs etc.
+- A [/policy-svc/check](/docs/1backend-api/check) endpoint that you should call for every request in your endpoint you want to rate limit.
 
 While the documentation should be
 thorough, it might be not be the easiest to understand at first glance due to the presence of `*Parameters` fields which are specific to `Policy Templates`.
@@ -41,11 +41,11 @@ thorough, it might be not be the easiest to understand at first glance due to th
 
 #### Rate Limit
 
-Rate Limit (templateId: `rate-limit`) provides rate limiting various entities and scopes, see the `rateLimitParameters` in the [api doc](/docs/1backend/upsert-instance)).
+Rate Limit (templateId: `rate-limit`) provides rate limiting various entities and scopes, see the `rateLimitParameters` in the [api doc](/docs/1backend-api/upsert-instance)).
 
 #### Blocklist
 
-Blocklist provides blocking of access by `ip` addresses, see the `blocklistParameters` in the [api doc](/docs/1backend/upsert-instance)).
+Blocklist provides blocking of access by `ip` addresses, see the `blocklistParameters` in the [api doc](/docs/1backend-api/upsert-instance)).
 
 ### Policy Instance
 
@@ -55,7 +55,7 @@ A policy instance is a specific application of a policy template to certain data
 
 ### Rate Limit
 
-The following [`/policy-svc/upsert-instance`](/docs/1backend/upsert-instance) payload rate limits calls to the `register` endpoint by caller IP: maximum 5 calls are permitted per IP per day:
+The following [`/policy-svc/upsert-instance`](/docs/1backend-api/upsert-instance) payload rate limits calls to the `register` endpoint by caller IP: maximum 5 calls are permitted per IP per day:
 
 ```js
 {
@@ -75,7 +75,7 @@ The following [`/policy-svc/upsert-instance`](/docs/1backend/upsert-instance) pa
 
 ### Block by IP
 
-The following [`/policy-svc/upsert-instance`](/docs/1backend/upsert-instance) payload blocks access to the register endpoint by ip address.
+The following [`/policy-svc/upsert-instance`](/docs/1backend-api/upsert-instance) payload blocks access to the register endpoint by ip address.
 
 ```js
 {

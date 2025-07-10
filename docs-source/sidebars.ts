@@ -27,7 +27,7 @@ const sidebars: SidebarsConfig = {
         slug: "/category/1backend-api",
       },
       // @ts-ignore
-      items: require("./docs/1backend/sidebar.js"),
+      items: require("./docs/1backend-api/sidebar.js"),
     },
   ],
 

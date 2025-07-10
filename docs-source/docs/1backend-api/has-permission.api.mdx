@@ -1,0 +1,77 @@
+---
+id: has-permission
+title: "Has Permission"
+description: "Checks whether the caller has a specific permission."
+sidebar_label: "Has Permission"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVs1uGzcQfpUBTwmw1spxgAA61WmQxnUKu7F9so16xJ3V0uaSDMmVrAgL5CF66evlSYrhaq2VJffQY9GLtCTn75ufj1yJgoL0ykVljZiInyuSDwEWFcWKPMSKQKLW5KHCAAjBkVSlkuDI1yoEZc3oxpy5qGr1jQoorQeJslJmBj++/wnW6OXQCpoiLTfqgJ7A09dGeSpGN+bSAoagZgZwKBUtIDSBPFgP3mrKeJVs3V3gnOCcZWO4AzKFs8rE0Y25MZeVCk87UFgKYGwET7HxBt6OD+HKYBMr61P4qgSUkkIAFaAgo1JIJyZEwiIDFQH1ApdhbSDAm/EYzk5hoWIFd8dPhiZQog50xwafwVUB0qeZMdiKsQdnTSBYKK0hRP5VRuqmoEHmfnz/K3T4lSmtrzEmY2WCs0EwEpmwjnw6PinERFQYzp+8i0w49FhTJB/E5Hr1rPxbkop3HMZKZMJgTbwanvdFE5PoG8pEkBXVKCYrEZeOpUP0ysxE296ycIcy8Pmb8Zj/tn2fnYpMSGsimcin6JxWMgHJ7wOLrAYunGeYUXUG0bk9fjOxSczgeGqtJjR83pio9F5NTvWuH+kJIxXHca9OQZpePlXF3m2NU9IdiKJQjBb1+ZbTHZX1hp3ek4y80VXneUI/NloDH4HtupAxcYPQI9ZOs4lf0RB8sCSyXS9BN7Ndo1dfPh+UXpEp9BIao742BK+UCWrdrYfvUT6QKcBpjNyor0EVZKIqFflED2lkOZS77Vju0dBBsT+WWDX11KDSH5Wmk5TIjWKpNP1R/v5hqQ4fi0+n+/QbV7xYt3bYydeDEqeSrfMwNHG7U4FnJgZd17fYuqH2qLLy233z8FvHErA1k/9yPsh76/dj342Ha0+y8SouE0W8J/TkmdzE5PqWhznijNlDXDEfXcwl46opVpYJx9kQE8+wvMgZ90GYyzyQLvMKQ77asEjL+SU/79mo8Zp1cm0l6sqGODk8PDp6J9hpH9MFY+xgDSN7nr7LpSO4WYvcCCit1nZBBUyX6R5DSd1tZB/IAMqufFB6W6cW7bHBZztTZnOr9MRYERbkN9TYk38qyKYH0alTWqZMM3EnErEmokw1pBqZf0RATeEnLnejMXprRtLWA9vnJ3DROGc9Z7ZLUhWjm+T54bSbN1bIOxIaZuH45MBgVHOCWklvOddKUniaToajlSQTEoH0/n45/wzzo9F4y1uY5PlisRjNTDOyfpav9UKOM6cPjkbjURVrncaVfB3OyovO2ybYsMDZjPxI2TyJ5JwnFdMU98QhMsHt0IU/Hr0bHbFFbqoazSDGTxi2R2ML+GozKf+/af4Db5r1NEV6jLnTqLrb26e7u2Oaa9EzTeIUXYqM3z4iE5PBq+U2E0wrLL5aTTHQlddty9tfG/LMd7eZmKNXOOWu5AeSCvxdiEmC/w999urLuuKvtxtzb+w9PZglNzzqhlciEw+03H5ntbdt1pMNx9MJHEtJLg5Ud26DdsjJ52cXl6J7Dg1uAXSKrWX9B5vfG9dzbuti4N82e0FlteqYr22f5LujFzWeCLWTVgl62/4N201p/A==
+sidebar_class_name: "post api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Has Permission"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/user-svc/self/has/{permission}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Checks whether the caller has a specific permission.
+Optimized for caching — only the caller and the permission are required.
+To assign a permission to a user or role, use the `Save Permits` endpoint.
+
+This endpoint does not return 401 Unauthorized if access is denied.
+Instead, it always returns 200 OK with `Authorized: false` if the permission is missing.
+The response will still include the caller’s user information if not authorized.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Permission","in":"path","name":"permission","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"app":{"type":"string"},"authorized":{"type":"boolean"},"until":{"type":"string"},"user":{"properties":{"createdAt":{"type":"string"},"deletedAt":{"type":"string"},"id":{"type":"string"},"labels":{"additionalProperties":{"type":"string"},"type":"object"},"name":{"description":"Full name of the user.","example":"Jane Doe","type":"string"},"slug":{"description":"URL-friendly unique (inside the 1Backend platform) identifier for the `user`.","example":"jane-doe","type":"string"},"thumbnailFileId":{"example":"file_fQDyi1xdHK","type":"string"},"updatedAt":{"type":"string"}},"required":["createdAt","id","slug","updatedAt"],"type":"object"}},"required":["authorized","until","user"],"type":"object"}}}},"400":{"description":"Missing Permission","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      
