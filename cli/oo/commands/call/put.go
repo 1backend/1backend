@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -81,6 +82,18 @@ func Put(cmd *cobra.Command, args []string) error {
 			string(body),
 		)
 	}
+
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return errors.Wrap(err, "failed to read response body")
+	}
+
+	prettyJSON, err := util.PrettyJSON(respBody)
+	if err != nil {
+		return errors.Wrap(err, "failed to prettify JSON")
+	}
+
+	fmt.Println(prettyJSON)
 
 	return nil
 }

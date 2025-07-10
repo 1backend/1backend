@@ -76,12 +76,7 @@ func (ns *RegistryService) ListNodes(
 		Nodes: nodes,
 	}
 
-	bs, _ := json.Marshal(response)
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
-	}
+	endpoint.WriteJSON(w, http.StatusOK, response)
 }
 
 func (ns *RegistryService) listNodes(req *registry.ListNodesRequest) ([]*registry.Node, error) {

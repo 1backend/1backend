@@ -8,7 +8,6 @@
 package registryservice
 
 import (
-	"encoding/json"
 	"log/slog"
 	"net/http"
 
@@ -100,15 +99,9 @@ func (rs *RegistryService) ListInstances(
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	bs, _ := json.Marshal(registry.ListInstancesResponse{
+	endpoint.WriteJSON(w, http.StatusOK, registry.ListInstancesResponse{
 		Instances: instances,
 	})
-	_, err = w.Write(bs)
-	if err != nil {
-		logger.Error("Error writing response", slog.Any("error", err))
-		return
-	}
 }
 
 type List struct {

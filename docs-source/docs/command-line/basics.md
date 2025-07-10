@@ -8,7 +8,7 @@ tags:
 
 ## CLI installation
 
-At the moment you need Go to install the 1Backend CLI:
+Currently you need Go to install the 1Backend CLI:
 
 ```sh
 go install github.com/1backend/1backend/cli/oo@latest
@@ -45,8 +45,10 @@ roles:
 Let's make a GET call:
 
 ```sh
-$ oo get /config-svc/config
-{"config":{"app":"unnamed","data":{"configSvc":{"directory":"/root"},"downloadSvc":{"downloadFolder":"/root/downloads"},"modelSvc":{"currentModelId":"huggingface/TheBloke/mistral-7b-instruct-v0.2.Q3_K_S.gguf"}}}}
+$ oo get /secret-svc/is-secure
+{
+  "isSecure":false
+}
 ```
 
 Or a POST call:
@@ -55,21 +57,17 @@ Or a POST call:
 $ oo post /user-svc/users
 {
   "users": [
-
-    {
-      "id": "usr_e9WSYwjRuL",
-      "createdAt": "2024-12-06T20:51:38.062985Z",
-      "updatedAt": "2024-12-06T20:51:38.062985Z",
-      "name": "Proxy Service",
-      "slug": "proxy-svc",
-      "contacts": [
-        {
-          "createdAt": "0001-01-01T00:00:00Z",
-          "updatedAt": "0001-01-01T00:00:00Z"
-        }
-      ]
-    },
-...
+   {
+      "id": "usr_g5WbJXmxuQ",
+      "createdAt": "2025-06-05T16:58:15.674576217+02:00",
+      "updatedAt": "2025-06-05T16:58:15.674576217+02:00",
+      "name": "Admin",
+      "slug": "1backend"
+    }
+  ],
+  # Some other fields might be included such as for
+  # pagination or count.
+}
 ```
 
 Or a POST call with some request body parameters:
@@ -88,19 +86,19 @@ Here we should talk a bit about how CLI flags get mapped to request bodies.
 When doing `POST`, `PUT` and `DELETE` queries, CLI flags can be turned into multilevel JSON request bodies, such as this:
 
 ```sh
-$ oo post /secret-svc/encrypt --value=hey
+$ oo post /registry-svc/echo --value=hey
 ```
 
 Is roughly equivalent to the pseudocurl
 
 ```sh
-curl -XPOST -H "Auth..." $ADDR/secret-svc/encrypt -d '{"value": "hey"}'
+curl -XPOST -H "Auth..." $ADDR/registry-svc/echo -d '{"value": "hey"}'
 ```
 
 Similarly, dot `.` and dash `-` delimiters get turned into a multidimensional JSON:
 
 ```sh
-$ oo post /secret-svc/encrypt --value-text=hey
+$ oo post /registry-svc/echo --value-text=hey
 # turns into
 {
   "value": {
@@ -110,7 +108,7 @@ $ oo post /secret-svc/encrypt --value-text=hey
 ```
 
 ```sh
-$ oo post /secret-svc/encrypt --value.text=hey
+$ oo post /registry-svc/echo --value.text=hey
 # turns into
 {
   "value": {
@@ -120,7 +118,7 @@ $ oo post /secret-svc/encrypt --value.text=hey
 ```
 
 ```sh
-$ oo post /secret-svc/encrypt --valueText=hey
+$ oo post /registry-svc/echo --valueText=hey
 # turns into
 {
   "valueText": "hey"
