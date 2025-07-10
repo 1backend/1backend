@@ -18,16 +18,7 @@ go install github.com/1backend/1backend/cli/oo@latest
 
 Assuming the daemon is running already (see [this section about that](/docs/running-the-server/using#default-credentials)), you can interact with it through the CLI.
 
-Let's add the local environment first:
-
-```sh
-$ oo env add local http://127.0.0.1:11337
-$ oo env ls
-SELECTED   NAME    URL                           DESCRIPTION
-*          local   http://127.0.0.1:11337
-```
-
-After this you you need to log in:
+## Logging in
 
 ```sh
 $ oo login 1backend
@@ -41,6 +32,42 @@ id: usr_eH9mXKgmb0
 roles:
 - user-svc:admin
 ```
+
+## Environments
+
+### Local
+
+The local environment is included by default in the env list:
+
+```
+$ oo env ls
+ENV NAME   SELECTED   URL                           DESCRIPTION   REACHABLE
+local      *          http://127.0.0.1:11337                      false
+```
+
+### Custom environments
+
+Adding your non-local (prod etc.) environment is very easy:
+
+```sh
+$ oo env add prod https://yourdomain.com
+$ oo env ls
+ENV NAME   SELECTED   URL                           DESCRIPTION   REACHABLE
+local      *          http://127.0.0.1:11337                      false
+prod                  https://yourdomain.com                      true
+```
+
+Then you can select your new environment:
+
+```sh
+$ oo env select prod
+$ oo env ls
+ENV NAME   SELECTED   URL                           DESCRIPTION   REACHABLE
+local                 http://127.0.0.1:11337                      false
+prod       *          https://yourdomain.com                      true
+```
+
+## Endpoint calls
 
 Let's make a GET call:
 
