@@ -8,261 +8,457 @@ tags:
   - authentication
   - authorization
   - services
+  - firebase
+  - backendless
 ---
 
 # Data Svc
 
-The Data Service (Data Svc) is designed to facilitate backendless applications, allowing data to be saved and queried directly from the frontend, similar to Firebase.
+The Data Svc is a Firebase-inspired backendless database service that allows direct data operations from frontends, eliminating the need for basic CRUD microservices.
 
-> This page provides a high-level overview of `Data Svc`. For detailed information, refer to the [Data Svc API documentation](/docs/1backend-api/query-objects).
+> This page provides a comprehensive overview of `Data Svc`. For detailed API information, refer to the [Data Svc API documentation](/docs/1backend-api/query-objects).
 
-## Purpose
+## Architecture & Purpose
 
-Data Svc serves as a lightweight database abstraction designed for rapid prototyping. It allows direct reading, writing, and deletion from the frontend, eliminating the need for basic CRUD microservices that merely handle routine database operations.
+Data Svc serves as a **lightweight database abstraction** designed for rapid prototyping and backendless applications. It provides:
 
-## Data types
+- **Direct frontend access** to database operations
+- **Multi-tenant data isolation** through permissions
+- **Firebase-like flexibility** with schemaless JSON objects
+- **Comprehensive permission system** for fine-grained access control
 
-Currently, Data Svc supports only untyped, dynamic, and schemaless entries known as `Object`s.
+### Key Features
 
-## Objects
+- **Tables & Objects**: Store schemaless JSON data in named tables
+- **Permission-Based Access**: Control who can read, write, and delete data
+- **Advanced Querying**: Filter, sort, and paginate results
+- **Real-time Capabilities**: Integration with Firehose Svc for live updates
+- **CLI & API Access**: Use both command-line and programmatic interfaces
 
-### Data model
+### Creating Objects
 
-Multiple tenants (users or services) write to shared tables. Access is governed by the permission model outlined below.
+```bash
+# Create a single object
+oo post /data-svc/object \
+  --object.table="user_profiles" \
+  --object.readers="_self" \
+  --object.writers="_self" \
+  --object.deleters="_self" \
+  --object.data.name="John Doe" \
+  --object.data.email="john@example.com" \
+  --object.data.preferences.theme="dark"
 
-### Permission model
-
-The `Data Svc` `Object` permission model is designed with two primary goals:
-
-- Simplicity – Easy to understand and implement
-- Flexibility – Versatile while maintaining simplicity
-
-To illustrate the model, consider the following example entry:
-
-```yaml
-table: "pet"
-id: "pet_67890"
-data:
-  yourCustomKey1: "yourCustomValue1"
-  yourCustomKey2: 42
-readers:
-  - "usr_12345"
-  - "org_67890"
-writers:
-  - "org_67890"
-deleters:
-  - "usr_12345"
-authors:
-  - "usr_99999"
-  - "org_99999"
+# Create a pet object with specific ID
+oo post /data-svc/object \
+  --object.id="pet_fluffy123" \
+  --object.table="pet" \
+  --object.readers="_self" \
+  --object.writers="_self" \
+  --object.deleters="_self" \
+  --object.data.name="Fluffy" \
+  --object.data.species="cat" \
+  --object.data.age=3
 ```
 
-## Readers
+### Querying Objects
 
-The `readers` field defines which users, organizations, or roles have permission to view an entry.
+```bash
+# Query all objects in a table
+oo post /data-svc/objects \
+  --table="user_profiles" \
+  --readers="_self"
 
-- Users and organizations outside of your own can be permited access.
-- This field can be set by the author or writers to include user IDs, organization IDs, or roles they themselves do not belong to.
+# Query with filtering
+oo post /data-svc/objects \
+  --table="pet" \
+  --readers="_self" \
+  --query.filters='[{"fields":["data.species"],"op":"equals","jsonValues":"[\"cat\"]"}]'
 
-## Authors
+# Query with sorting and pagination
+oo post /data-svc/objects \
+  --table="pet" \
+  --readers="_self" \
+  --query.orderBys='[{"field":"data.age","desc":true,"sortingType":"numeric"}]' \
+  --query.limit=10
 
-The `authors` field identifies the original creators of an entry. Unlike `readers`, `writers`, and `deleters`, which are user-defined, this field is system-assigned. It can only include the author's user ID, organization IDs they belong to, or roles they hold. This ensures it cannot be altered or spoofed, helping to prevent spam.
-
-- In multi-tenant applications, spam can occur because anyone can "offer" a record to be read by another user or organization they are not part of. This can be problematic—for example, in a chat application where strangers could send unsolicited messages simply by knowing a company ID.
-- The `authors` field helps prevent such abuse limiting the list to resources the author has.
-
-## Writers
-
-The `writers` field specifies which users, organizations, or roles have permission to modify an entry.
-
-- This field can be set by the author or existing writers to include user IDs, organization IDs, or roles they themselves do not belong to.
-
-## Deleters
-
-The `deleters` field defines which users, organizations, or roles are authorized to delete an entry.
-
-- This field can be set by the author or existing writers to include user IDs, organization IDs, or roles they themselves do not belong to.
-
-### Conventions
-
-#### Table name and object ID
-
-Each object ID must be prefixed with the table name. Whenever possible, use singular table names.
-
-```yaml
-table: "pet"
-id: "pet_67890"
+# Query with pagination using after
+oo post /data-svc/objects \
+  --table="pet" \
+  --readers="_self" \
+  --query.orderBys='[{"field":"data.age","desc":true,"sortingType":"numeric"}]' \
+  --query.limit=10 \
+  --query.jsonAfter='[5]'
 ```
 
-#### `_self`
+### Updating Objects
 
-You can specify the reserved string `_self` in the `readers`, `writers` or `deleters` lists. It will be extrapolated to your user ID.
+```bash
+# Update objects by filter
+oo post /data-svc/objects/update \
+  --table="pet" \
+  --filters='[{"fields":["data.species"],"op":"equals","jsonValues":"[\"cat\"]"}]' \
+  --object.data.vaccinated=true
 
-## Querying
+# Upsert specific object by ID
+oo put /data-svc/object/pet_fluffy123 \
+  --object.data.name="Fluffy Updated" \
+  --object.data.age=4
+```
 
-Data Svc allows querying objects with flexible filtering, sorting, and pagination options.
+### Deleting Objects
 
-### Ordering by descending value
+```bash
+# Delete objects by filter
+oo post /data-svc/objects/delete \
+  --table="pet" \
+  --filters='[{"fields":["data.species"],"op":"equals","jsonValues":"[\"dog\"]"}]'
+```
 
-Request
+## Object Structure & Data Model
 
-```js
+### Basic Object Format
+
+```json
 {
+  "id": "pet_fluffy123",
   "table": "pet",
-  "query": {
-    "orderBys": [
-      {
-        "field": "age",
-        "desc": true,
-        "sortingType": "numeric"
-      }
-    ]
-  }
+  "readers": ["usr_12345", "org_67890"],
+  "writers": ["usr_12345"],
+  "deleters": ["usr_12345"],
+  "authors": ["usr_12345"],
+  "data": {
+    "name": "Fluffy",
+    "species": "cat",
+    "age": 3,
+    "preferences": {
+      "food": "salmon",
+      "toys": ["ball", "mouse"]
+    }
+  },
+  "createdAt": "2023-01-01T10:00:00Z",
+  "updatedAt": "2023-01-01T10:00:00Z"
 }
 ```
 
-You might wonder what sorting type is. It is essentially a clutch for some systems like PostgreSQL, where the Data Svc and its ORM stores the dynamic fields of Objects in a `JSONB` field.
+### Table Naming & Object IDs
 
-Unfortunately ordering on JSONB fields defaults to string sorting. The `sortingType` field helps the system force the correct ordering. For possible ordering values, see the [queryObjects endpoint API](/docs/1backend-api/query-objects)
+- **Table names**: Use singular form (e.g., `pet`, `user_profile`)
+- **Object IDs**: Must be prefixed with table name (e.g., `pet_fluffy123`)
+- **Auto-generated IDs**: Leave empty for automatic generation
 
-Response:
+```bash
+# Auto-generated ID
+oo post /data-svc/object \
+  --object.table="pet" \
+  --object.data.name="Auto Pet"
 
-```js
+# Custom ID (must match table prefix)
+oo post /data-svc/object \
+  --object.id="pet_custom123" \
+  --object.table="pet" \
+  --object.data.name="Custom Pet"
+```
+
+## Permission System
+
+The Data Svc permission model provides **fine-grained access control** with four permission types:
+
+### Permission Types
+
+#### **Readers**
+
+Users/roles who can **view** objects:
+
+```json
 {
-  "objects": [
-    { "table": "pet", "id": "pet_19", "data": { "age": 19 } },
-    { "table": "pet", "id": "pet_18", "data": { "age": 18 } },
-    { "table": "pet", "id": "pet_17", "data": { "age": 17 } }
-  ]
+  "readers": ["usr_12345", "org_67890", "role_managers"]
 }
 ```
 
-### Ordering by ascending value
+#### **Writers**
 
-```js
+Users/roles who can **modify** objects:
+
+```json
 {
-  "table": "pet",
-  "query": {
-    "orderBys": [
-      {
-        "field": "age",
-        "sortingType": "numeric"
-      }
-    ]
-  }
+  "writers": ["usr_12345", "org_67890"]
 }
 ```
 
-Response:
+#### **Deleters**
 
-```js
+Users/roles who can **delete** objects:
+
+```json
 {
-  "objects": [
-    { "table": "pet", "id": "pet_0", "data": { "age": 0 } },
-    { "table": "pet", "id": "pet_1", "data": { "age": 1 } },
-    { "table": "pet", "id": "pet_2", "data": { "age": 2 } }
-  ]
+  "deleters": ["usr_12345"]
 }
 ```
 
-### Limiting results
+#### **Authors**
 
-```js
+**System-assigned** creators (cannot be spoofed):
+
+```json
 {
-  "table": "pet",
-  "query": {
-    "orderBys": [
-      {
-        "field": "age",
-        "sortingType": "numeric"
-      }
-    ],
-    "limit": 5
-  }
+  "authors": ["usr_12345", "org_67890"]
 }
 ```
 
-Response:
+### Permission Shortcuts
 
-```js
-{
-  "objects": [
-    { "table": "pet", "id": "pet_0", "data": { "age": 0 } },
-    { "table": "pet", "id": "pet_1", "data": { "age": 1 } },
-    { "table": "pet", "id": "pet_2", "data": { "age": 2 } },
-    { "table": "pet", "id": "pet_3", "data": { "age": 3 } },
-    { "table": "pet", "id": "pet_4", "data": { "age": 4 } }
-  ]
-}
+- **`_self`**: Refers to the current user's ID
+- **`_org`**: Refers to the current user's active organization
+
+```bash
+# Using permission shortcuts
+oo post /data-svc/object \
+  --object.table="private_note" \
+  --object.readers="_self" \
+  --object.writers="_self" \
+  --object.deleters="_self" \
+  --object.data.content="My private note"
 ```
 
-### Paginating with after
+### Multi-Tenant Access Control
 
-Request:
+Data Svc supports **shared tables** where multiple users store data with isolation:
 
-```js
-{
-  "table": "pet",
-  "query": {
-    "orderBys": [
-      {
-        "field": "age",
-        "sortingType": "numeric"
-      }
-    ],
-    "limit": 5,
-    "jsonAfter": "[4]"
-  }
-}
+```bash
+# User A creates a profile
+oo post /data-svc/object \
+  --object.table="user_profile" \
+  --object.readers="_self" \
+  --object.writers="_self" \
+  --object.data.name="Alice"
+
+# User B creates a separate profile in same table
+oo post /data-svc/object \
+  --object.table="user_profile" \
+  --object.readers="_self" \
+  --object.writers="_self" \
+  --object.data.name="Bob"
 ```
 
-The `after` field is named `jsonAfter` and is a string-marshalled array to address limitations in Swaggo. Specifically, Swaggo converts []interface{} to []map[string]interface{}, and there is no way to define a type that resolves to an any/interface{} during the `go -> openapi -> go` generation process. Therefore, `jsonAfter` is a JSON-encoded string representing an array, e.g., `[42]`.
+### Cross-User Permissions
 
-Response:
+Grant access to specific users or organizations:
 
-```js
-{
-  "objects": [
-    { "table:" "pet", "id": "pet_5", "data": { "age": 5 } },
-    { "table:" "pet", "id": "pet_6", "data": { "age": 6 } },
-    { "table:" "pet", "id": "pet_7", "data": { "age": 7 } },
-    { "table:" "pet", "id": "pet_8", "data": { "age": 8 } },
-    { "table:" "pet", "id": "pet_9", "data": { "age": 9 } }
-  ]
-}
+```bash
+# Share data with specific user
+oo post /data-svc/object \
+  --object.table="shared_document" \
+  --object.readers='["usr_alice123", "usr_bob456"]' \
+  --object.writers='["usr_alice123"]' \
+  --object.deleters='["usr_alice123"]' \
+  --object.data.title="Shared Project Plan"
+
+# Share with organization
+oo post /data-svc/object \
+  --object.table="team_resource" \
+  --object.readers='["org_company123"]' \
+  --object.writers='["org_company123"]' \
+  --object.data.resource="Team Guidelines"
 ```
 
-### Paginating with after in descending order
+## Advanced Querying
 
-Request:
+### Filter Operations
 
-```js
-{
-  "table": "pet",
-  "query": {
-    "orderBys": [
-      {
-        "field": "age",
-        "desc": true,
-        "sortingType": "numeric"
-      }
-    ],
-    "limit": 5,
-    "jsonAfter": "[15]"
-  }
-}
+Data Svc supports comprehensive filtering with various operators:
+
+```bash
+# Equals filter
+oo post /data-svc/objects \
+  --table="pet" \
+  --readers="_self" \
+  --query.filters='[{"fields":["data.species"],"op":"equals","jsonValues":"[\"cat\"]"}]'
+
+# Contains filter (for strings)
+oo post /data-svc/objects \
+  --table="pet" \
+  --readers="_self" \
+  --query.filters='[{"fields":["data.name"],"op":"contains","jsonValues":"[\"flu\"]"}]'
+
+# Greater than filter (for numbers)
+oo post /data-svc/objects \
+  --table="pet" \
+  --readers="_self" \
+  --query.filters='[{"fields":["data.age"],"op":"greaterThan","jsonValues":"[5]"}]'
+
+# Multiple filters (AND logic)
+oo post /data-svc/objects \
+  --table="pet" \
+  --readers="_self" \
+  --query.filters='[
+    {"fields":["data.species"],"op":"equals","jsonValues":"[\"cat\"]"},
+    {"fields":["data.age"],"op":"greaterThan","jsonValues":"[2]"}
+  ]'
 ```
 
-Response:
+### Sorting & Ordering
 
-```js
-{
-  "objects": [
-    { "id": "pet_14", "data": { "age": 14 } },
-    { "id": "pet_13", "data": { "age": 13 } },
-    { "id": "pet_12", "data": { "age": 12 } },
-    { "id": "pet_11", "data": { "age": 11 } },
-    { "id": "pet_10", "data": { "age": 10 } }
-  ]
-}
+```bash
+# Sort by age (ascending)
+oo post /data-svc/objects \
+  --table="pet" \
+  --readers="_self" \
+  --query.orderBys='[{"field":"data.age","sortingType":"numeric"}]'
+
+# Sort by age (descending)
+oo post /data-svc/objects \
+  --table="pet" \
+  --readers="_self" \
+  --query.orderBys='[{"field":"data.age","desc":true,"sortingType":"numeric"}]'
+
+# Sort by name (string)
+oo post /data-svc/objects \
+  --table="pet" \
+  --readers="_self" \
+  --query.orderBys='[{"field":"data.name","sortingType":"string"}]'
 ```
+
+### Pagination
+
+```bash
+# First page (limit 5)
+oo post /data-svc/objects \
+  --table="pet" \
+  --readers="_self" \
+  --query.orderBys='[{"field":"data.age","sortingType":"numeric"}]' \
+  --query.limit=5
+
+# Next page (after age 3)
+oo post /data-svc/objects \
+  --table="pet" \
+  --readers="_self" \
+  --query.orderBys='[{"field":"data.age","sortingType":"numeric"}]' \
+  --query.limit=5 \
+  --query.jsonAfter='[3]'
+```
+
+## Real-World Usage Examples
+
+### 1. User Profile Management
+
+```bash
+# Create user profile
+oo post /data-svc/object \
+  --object.table="user_profile" \
+  --object.readers="_self" \
+  --object.writers="_self" \
+  --object.deleters="_self" \
+  --object.data.name="John Doe" \
+  --object.data.email="john@example.com" \
+  --object.data.preferences.theme="dark" \
+  --object.data.preferences.notifications=true
+
+# Update profile preferences
+oo post /data-svc/objects/update \
+  --table="user_profile" \
+  --filters='[{"fields":["authors"],"op":"intersects","jsonValues":"[\"usr_currentuser\"]"}]' \
+  --object.data.preferences.theme="light"
+
+# Query own profile
+oo post /data-svc/objects \
+  --table="user_profile" \
+  --readers="_self"
+```
+
+### 2. Todo List Application
+
+```bash
+# Create todo item
+oo post /data-svc/object \
+  --object.table="todo" \
+  --object.readers="_self" \
+  --object.writers="_self" \
+  --object.deleters="_self" \
+  --object.data.title="Learn Data Svc" \
+  --object.data.completed=false \
+  --object.data.priority="high" \
+  --object.data.dueDate="2023-12-31"
+
+# Mark todo as completed
+oo post /data-svc/objects/update \
+  --table="todo" \
+  --filters='[{"fields":["data.title"],"op":"equals","jsonValues":"[\"Learn Data Svc\"]"}]' \
+  --object.data.completed=true
+
+# Get pending todos
+oo post /data-svc/objects \
+  --table="todo" \
+  --readers="_self" \
+  --query.filters='[{"fields":["data.completed"],"op":"equals","jsonValues":"[false]"}]' \
+  --query.orderBys='[{"field":"data.priority","sortingType":"string"}]'
+```
+
+### 3. Team Collaboration
+
+```bash
+# Create shared team document
+oo post /data-svc/object \
+  --object.table="team_document" \
+  --object.readers='["org_team123"]' \
+  --object.writers='["org_team123"]' \
+  --object.deleters='["usr_teamlead456"]' \
+  --object.data.title="Project Specs" \
+  --object.data.content="Initial project specifications..." \
+  --object.data.status="draft"
+
+# Add team member comments
+oo post /data-svc/object \
+  --object.table="document_comment" \
+  --object.readers='["org_team123"]' \
+  --object.writers='["org_team123"]' \
+  --object.data.documentId="team_document_proj123" \
+  --object.data.author="Alice Smith" \
+  --object.data.comment="Looks good, needs timeline"
+
+# Query team documents
+oo post /data-svc/objects \
+  --table="team_document" \
+  --readers='["org_team123"]' \
+  --query.filters='[{"fields":["data.status"],"op":"equals","jsonValues":"[\"draft\"]"}]'
+```
+
+### 4. E-commerce Product Catalog
+
+```bash
+# Create product
+oo post /data-svc/object \
+  --object.table="product" \
+  --object.readers='["any"]' \
+  --object.writers='["role_admin"]' \
+  --object.deleters='["role_admin"]' \
+  --object.data.name="Premium Headphones" \
+  --object.data.price=199.99 \
+  --object.data.category="electronics" \
+  --object.data.inStock=true \
+  --object.data.tags='["wireless", "premium", "audio"]'
+
+# Search products by category
+oo post /data-svc/objects \
+  --table="product" \
+  --readers='["any"]' \
+  --query.filters='[{"fields":["data.category"],"op":"equals","jsonValues":"[\"electronics\"]"}]' \
+  --query.orderBys='[{"field":"data.price","sortingType":"numeric"}]'
+
+# Filter by price range
+oo post /data-svc/objects \
+  --table="product" \
+  --readers='["any"]' \
+  --query.filters='[
+    {"fields":["data.price"],"op":"greaterThanOrEqual","jsonValues":"[100]"},
+    {"fields":["data.price"],"op":"lessThanOrEqual","jsonValues":"[300]"}
+  ]'
+```
+
+## Related Services
+
+- **[Secret Svc](/docs/built-in-services/secret-svc)**: Store sensitive data securely
+- **[Firehose Svc](/docs/built-in-services/firehose-svc)**: Real-time event streaming
+- **[File Svc](/docs/built-in-services/file-svc)**: File storage and management
+- **[User Svc](/docs/built-in-services/user-svc)**: User authentication and roles
+
+For production applications requiring complex data relationships, consider using dedicated databases alongside Data Svc for specific use cases.

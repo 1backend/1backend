@@ -17,25 +17,191 @@ The Config Svc is less critical than it might seem—most configuration happens 
 
 At the moment, it functions more like a minimal feature-flag service.
 
-## Access Rules
+## CLI Usage
 
-### Read
+### Saving Configs
 
-All configs are publicly readable even without a user account.
+Use the `config save` command to save configuration data from YAML files:
 
-### Write
+```bash
+# Save a single config file
+oo config save ./my-config.yaml
 
-Any logged in user can write to the config, but only to the key that matches their slug, ie. if a user's slug is `jane-doe`:
+# Save multiple config files from a directory
+oo config save ./configs/
 
+# Using aliases
+oo co s ./my-config.yaml
+oo configs save ./my-config.yaml
 ```
+
+#### Config File Structure
+
+Config files should be in YAML format with the following structure:
+
+```yaml
+app: "my-app"           # Optional: specify target app (admin only)
+key: "user-slug"        # Optional: specify config owner (admin only)
+data:
+  # Your configuration data here
+  featureFlags:
+    enableNewUI: true
+    maxUsers: 100
+  settings:
+    theme: "dark"
+    language: "en"
+    notifications:
+      email: true
+      push: false
+```
+
+#### Multiple Configs in One File
+
+You can also define multiple configs in a single YAML file as an array:
+
+```yaml
+- app: "my-app"
+  key: "user1"
+  data:
+    preferences:
+      theme: "light"
+- app: "my-app"
+  key: "user2"
+  data:
+    preferences:
+      theme: "dark"
+```
+
+### Querying Configs
+
+Use the `config list` command to retrieve and view configurations:
+
+```bash
+# List all configs for the current app
+oo config list
+
+# Using aliases
+oo co ls
+oo configs list
+```
+
+The output shows configs in a tabular format:
+```
+CONFIG KEY    APP      JSON
+user1         my-app   {"preferences":{"theme":"light"}}
+user2         my-app   {"preferences":{"theme":"dark"}}
+```
+
+## Data Structure & Behavior
+
+### Deep Merge
+
+The Config Svc performs **deep merging** when saving configurations:
+
+- **Nested objects** are recursively merged rather than replaced
+- **Conflicting primitive values** (strings, numbers, booleans) are replaced by incoming values  
+- **New fields** are added to existing configs
+- **Existing fields** not present in the incoming config are preserved
+
+#### Deep Merge Example
+
+Existing config:
+```json
 {
-  "jane-doe": {"janesConfig": 5},
-  "someOtherKey": "hi"
+  "ui": {
+    "theme": "light",
+    "sidebar": {
+      "collapsed": false,
+      "width": 250
+    }
+  },
+  "features": {
+    "notifications": true
+  }
 }
 ```
 
-Only the key `jane-doe` will be written to the `Config`, all other keys (such as `someOtherKey`) will be ignored.
+Incoming config:
+```yaml
+data:
+  ui:
+    theme: "dark"     # This will replace "light"
+    sidebar:
+      width: 300      # This will replace 250, collapsed: false is preserved
+  newFeature: true    # This will be added
+```
+
+Result after merge:
+```json
+{
+  "ui": {
+    "theme": "dark",        # Updated
+    "sidebar": {
+      "collapsed": false,   # Preserved
+      "width": 300          # Updated
+    }
+  },
+  "features": {
+    "notifications": true   # Preserved
+  },
+  "newFeature": true        # Added
+}
+```
+
+### Config Identification
+
+Configs are uniquely identified by:
+- **App**: The application name (automatically determined from user's token)
+- **Key**: The camelCased user slug (e.g., `jane-doe` becomes `janeDoе`)
+
+The internal ID format is: `{app}_{camelCasedSlug}`
+
+## Access Rules
+
+### Read Access
+
+All configs are **publicly readable** even without a user account.
+
+### Write Access
+
+#### Regular Users
+- Can only write to configs under their own slug
+- The `key` field is automatically set to their camelCased slug
+- The `app` field is automatically set from their token
+- Cannot specify custom `app` or `key` values
+
+#### Administrators
+- Have the `config-svc:config:edit-on-behalf` permission
+- Can specify any `key` value to edit configs for other users
+- Can specify any `app` value to target different applications
+- **Must** provide a `key` when editing on behalf of others
+
+#### Permission-Based Access Example
+
+Regular user with slug `jane-doe`:
+```yaml
+# This file will automatically save under key "janeDoe"
+data:
+  preferences:
+    theme: "dark"
+```
+
+Admin user:
+```yaml
+app: "production-app"    # Can specify target app
+key: "john-smith"        # Can specify target user
+data:
+  adminSettings:
+    maxFileSize: "10MB"
+```
+
+## Limitations
+
+- Only **one top-level key** can be saved per config operation, even by administrators
+- Configuration data should be non-sensitive (use [Secret Svc](/docs/built-in-services/secret-svc) for sensitive data)
+- All configs are publicly readable
 
 ## Related
 
 - [Secret Svc](/docs/built-in-services/secret-svc) to store sensitive data like internal configuration and secrets
+- [Config Svc API documentation](/docs/1backend-api/list-configs) for programmatic access
