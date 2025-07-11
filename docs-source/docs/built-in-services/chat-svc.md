@@ -20,6 +20,7 @@ The Chat Svc manages conversational threads and messages, serving as the primary
 ## Architecture & Design
 
 The Chat Svc follows a **thread-based conversation model** where:
+
 - **Threads** represent conversation sessions or topics
 - **Messages** are individual pieces of content within threads
 - **Users** can participate in multiple threads
@@ -28,16 +29,20 @@ The Chat Svc follows a **thread-based conversation model** where:
 ### Core Concepts
 
 #### Threads
+
 Conversation containers that group related messages together. Think of them as chat rooms or conversation sessions.
 
 #### Messages  
+
 Individual pieces of content within threads, supporting:
+
 - Text content
 - File attachments
 - Metadata for extensibility
 - User attribution (or AI-generated content)
 
 #### Topics
+
 Tag-like categorization system for organizing threads by subject or purpose.
 
 ## API Endpoints
@@ -45,12 +50,15 @@ Tag-like categorization system for organizing threads by subject or purpose.
 ### Thread Management
 
 #### Create/Update Thread
+
 ```bash
 POST /chat-svc/thread
 ```
+
 Creates a new thread or updates an existing one.
 
 **Request Body:**
+
 ```json
 {
   "id": "thr_abc123",
@@ -61,6 +69,7 @@ Creates a new thread or updates an existing one.
 ```
 
 **Response:**
+
 ```json
 {
   "thread": {
@@ -75,12 +84,15 @@ Creates a new thread or updates an existing one.
 ```
 
 #### List Threads
+
 ```bash
 POST /chat-svc/threads
 ```
+
 Retrieves threads accessible to the authenticated user.
 
 **Request Body:**
+
 ```json
 {
   "ids": ["thr_abc123", "thr_def456"]
@@ -88,20 +100,25 @@ Retrieves threads accessible to the authenticated user.
 ```
 
 #### Delete Thread
+
 ```bash
 DELETE /chat-svc/thread/{threadId}
 ```
+
 Permanently removes a thread and all its messages.
 
 ### Message Management
 
 #### Add Message
+
 ```bash
 POST /chat-svc/thread/{threadId}/message
 ```
+
 Adds a new message to an existing thread.
 
 **Request Body:**
+
 ```json
 {
   "id": "msg_xyz789",
@@ -116,12 +133,15 @@ Adds a new message to an existing thread.
 ```
 
 #### List Messages
+
 ```bash
 POST /chat-svc/messages
 ```
+
 Retrieves messages from threads, with optional filtering.
 
 **Request Body:**
+
 ```json
 {
   "threadId": "thr_abc123",
@@ -130,6 +150,7 @@ Retrieves messages from threads, with optional filtering.
 ```
 
 **Response:**
+
 ```json
 {
   "messages": [
@@ -148,31 +169,38 @@ Retrieves messages from threads, with optional filtering.
 ```
 
 #### Delete Message
+
 ```bash
 DELETE /chat-svc/message/{messageId}
 ```
+
 Removes a specific message from its thread.
 
 ### Events Endpoint
+
 ```bash
 GET /chat-svc/events
 ```
+
 Documentation endpoint showing available real-time events.
 
 ## Real-Time Features
 
-Chat Svc publishes events through [Firehose Svc](/docs/built-in-services/firehose-svc) for real-time applications:
+Chat Svc publishes events through Firehose Svc for real-time applications:
 
 ### Event Types
 
 #### Thread Events
+
 - **`chatThreadAdded`** - New thread created
 - **`chatThreadUpdate`** - Thread modified (title, users, topics)
 
 #### Message Events  
+
 - **`chatMessageAdded`** - New message posted to thread
 
 ### Event Structure
+
 ```json
 {
   "name": "chatMessageAdded",
@@ -189,7 +217,7 @@ Chat Svc publishes events through [Firehose Svc](/docs/built-in-services/firehos
 Chat Svc seamlessly integrates with [Prompt Svc](/docs/built-in-services/prompt-svc) for AI-powered conversations:
 
 1. **User sends message** → Chat Svc stores user message
-2. **AI processing** → Prompt Svc processes via LLM 
+2. **AI processing** → Prompt Svc processes via LLM
 3. **AI response** → Chat Svc receives and stores AI message
 4. **Real-time delivery** → Events notify clients of new messages
 
@@ -218,6 +246,7 @@ sequenceDiagram
 ### Streaming AI Responses
 
 For real-time AI interactions, Chat Svc supports:
+
 - **Progressive responses** via streaming chunks
 - **Real-time updates** as AI generates content
 - **Completion events** when AI finishes responding
@@ -238,6 +267,7 @@ Messages support file attachments through integration with [File Svc](/docs/buil
 ```
 
 File attachments enable:
+
 - **Document sharing** in conversations
 - **Image/media** support for rich interactions
 - **AI analysis** of uploaded content
@@ -248,6 +278,7 @@ File attachments enable:
 ### Creating a Chat Application
 
 #### 1. Start a New Conversation
+
 ```bash
 # Create a thread for AI assistance
 curl -X POST "http://localhost:11337/chat-svc/thread" \
@@ -260,6 +291,7 @@ curl -X POST "http://localhost:11337/chat-svc/thread" \
 ```
 
 #### 2. Send User Message
+
 ```bash
 # Add user message to thread
 curl -X POST "http://localhost:11337/chat-svc/thread/thr_abc123/message" \
@@ -272,6 +304,7 @@ curl -X POST "http://localhost:11337/chat-svc/thread/thr_abc123/message" \
 ```
 
 #### 3. List Conversation History
+
 ```bash
 # Get all messages in the thread
 curl -X POST "http://localhost:11337/chat-svc/messages" \
@@ -357,6 +390,7 @@ curl -X POST "http://localhost:11337/chat-svc/thread" \
 Chat Svc uses comprehensive permission-based access control:
 
 ### Thread Permissions
+
 - **`chat-svc:thread:create`** - Create new threads
 - **`chat-svc:thread:view`** - View thread information
 - **`chat-svc:thread:edit`** - Modify thread properties
@@ -364,6 +398,7 @@ Chat Svc uses comprehensive permission-based access control:
 - **`chat-svc:thread:stream`** - Subscribe to thread events
 
 ### Message Permissions
+
 - **`chat-svc:message:create`** - Add messages to threads
 - **`chat-svc:message:view`** - Read messages
 - **`chat-svc:message:edit`** - Modify messages
@@ -371,11 +406,14 @@ Chat Svc uses comprehensive permission-based access control:
 - **`chat-svc:message:stream`** - Subscribe to message events
 
 ### Default Access
+
 By default, permissions are granted to:
+
 - **Administrators** - Full access to all operations
 - **Regular Users** - Access to threads they participate in
 
 ### User-Based Filtering
+
 - Users can only see threads where they are listed in `userIds`
 - Message access is controlled by thread membership
 - Thread creators automatically gain access
@@ -383,6 +421,7 @@ By default, permissions are granted to:
 ## Data Models
 
 ### Thread Structure
+
 ```json
 {
   "id": "thr_emSQnpJbhG",
@@ -395,6 +434,7 @@ By default, permissions are granted to:
 ```
 
 ### Message Structure
+
 ```json
 {
   "id": "msg_emSOPlW58o",
@@ -412,9 +452,12 @@ By default, permissions are granted to:
 ```
 
 ### AI Messages
+
 AI-generated messages have specific characteristics:
+
 - **`userId`** is empty (indicates AI origin)
 - **`meta`** contains model information:
+
   ```json
   {
     "modelId": "huggingface/llama-model",
@@ -425,18 +468,21 @@ AI-generated messages have specific characteristics:
 ## Integration Patterns
 
 ### Frontend Applications
+
 - **Real-time chat interfaces** using WebSocket events
 - **Progressive AI responses** with streaming updates  
 - **File sharing** within conversations
 - **Thread organization** by topics
 
 ### Backend Services
+
 - **AI model integration** via Prompt Svc
 - **Automated responses** to user messages
 - **Content analysis** of uploaded files
 - **Conversation analytics** and insights
 
 ### Mobile Applications
+
 - **Push notifications** for new messages
 - **Offline message queuing** with eventual consistency
 - **Rich media support** for attachments
@@ -445,12 +491,14 @@ AI-generated messages have specific characteristics:
 ## Performance & Scalability
 
 ### Optimizations
+
 - **Pagination** for large message lists
 - **Indexing** on threadId and userId for fast queries
 - **Caching** of frequently accessed threads
 - **Event batching** for high-volume scenarios
 
 ### Best Practices
+
 - **Limit message size** for optimal performance
 - **Use topics** for efficient thread organization
 - **Implement pagination** for message history
@@ -461,21 +509,25 @@ AI-generated messages have specific characteristics:
 ### Common Issues
 
 **Messages Not Appearing**
+
 - Verify thread exists before adding messages
 - Check user permissions for thread access
 - Ensure proper event subscription setup
 
 **AI Responses Not Generated**
+
 - Confirm Prompt Svc integration is active
 - Verify AI model is running and accessible
 - Check message format matches AI expectations
 
 **Real-time Events Missing**
+
 - Validate Firehose Svc connectivity
 - Ensure proper event subscription to correct thread
 - Check authentication tokens for event access
 
 **File Attachments Not Loading**
+
 - Verify File Svc integration and file existence
 - Check file permissions and access rights
 - Confirm fileIds are valid references
