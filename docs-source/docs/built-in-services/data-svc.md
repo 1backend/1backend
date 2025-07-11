@@ -457,7 +457,7 @@ oo post /data-svc/objects \
 ## Related Services
 
 - **[Secret Svc](/docs/built-in-services/secret-svc)**: Store sensitive data securely
-- **[Firehose Svc](/docs/built-in-services/firehose-svc)**: Real-time event streaming
+- **Firehose Svc**: Real-time event streaming
 - **[File Svc](/docs/built-in-services/file-svc)**: File storage and management
 - **[User Svc](/docs/built-in-services/user-svc)**: User authentication and roles
 
