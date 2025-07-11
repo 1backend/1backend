@@ -536,5 +536,5 @@ AI-generated messages have specific characteristics:
 
 - **[Prompt Svc](/docs/built-in-services/prompt-svc)** - AI conversation processing
 - **[File Svc](/docs/built-in-services/file-svc)** - File attachment management
-- **[Firehose Svc](/docs/built-in-services/firehose-svc)** - Real-time event streaming
+- **Firehose Svc** - Real-time event streaming
 - **[User Svc](/docs/built-in-services/user-svc)** - User authentication and authorization
