@@ -20,19 +20,6 @@ The Deploy Svc is a container orchestration service that automates the deploymen
 
 Deploy Svc serves as the **orchestration layer** that bridges service definitions and running containers:
 
-- **Automated Deployment**: Launches containers based on service definitions
-- **Intelligent Scaling**: Manages replica counts and resource allocation
-- **Health Monitoring**: Tracks service health and restarts failed instances
-- **Load Distribution**: Distributes services across available nodes
-- **Lifecycle Management**: Handles deployments, updates, and rollbacks
-
-### Key Components
-
-- **Deployments**: Desired state specifications for running services
-- **Allocator**: Smart scheduling engine for optimal resource distribution
-- **Deploy Loop**: Continuous reconciliation between desired and actual state
-- **Integration Layer**: Seamless coordination with Container Svc and Registry Svc
-
 ## Status Warning
 
 **🚧 Deployment capabilities are currently in development. This documentation is for contributors and advanced users. For production use, deploy services manually for now.**
@@ -108,11 +95,12 @@ oo deployments list --full
 ```
 
 Example output:
+
 ```
 ID                DEFINITION ID    STATUS      DETAILS
-depl_dbOdi5eLQK   test-a          OK          
-depl_dy2PDIkzqf   test-b          Error       build failed: COPY failed: file not found...
-depl_user123      def_user456     Deploying   Starting container instances...
+depl_dbOdi5eLQK   test-a           OK          
+depl_dy2PDIkzqf   test-b           Error       build failed: COPY failed: file not found...
+depl_user123      def_user456      Deploying   Starting container instances...
 ```
 
 ### Deleting Deployments
@@ -216,6 +204,7 @@ strategy:
 ```
 
 Rolling updates ensure **zero-downtime deployments** by:
+
 1. Starting new instances alongside old ones
 2. Gradually shifting traffic to new instances
 3. Removing old instances once new ones are healthy
@@ -228,6 +217,7 @@ strategy:
 ```
 
 Recreate strategy **stops all instances** before starting new ones:
+
 - Simpler but causes downtime
 - Useful for stateful services requiring exclusive access
 - Faster for development environments
@@ -488,6 +478,7 @@ strategy:
 ### Common Issues
 
 #### **Deployment Stuck in "Deploying"**
+
 ```bash
 # Check node availability
 oo node list
@@ -500,6 +491,7 @@ oo get /container-svc/container/summary?name=my-service
 ```
 
 #### **"Error" Status with Build Failures**
+
 ```bash
 # Check definition for correct paths
 cat my-definition.yaml
@@ -509,6 +501,7 @@ oo get /source-svc/checkout --url="https://github.com/user/repo.git"
 ```
 
 #### **Resource Allocation Failures**
+
 ```yaml
 # Reduce resource requirements
 resources:
@@ -549,12 +542,14 @@ oo deployment list --full
 The Deploy Svc is actively evolving with planned features:
 
 ### Near-term Enhancements
+
 - **Blue-Green Deployments**: Zero-downtime deployment strategy
 - **Canary Releases**: Gradual traffic shifting
 - **Resource Quotas**: Per-service resource limits
 - **Health Check Configuration**: Custom health check endpoints
 
 ### Long-term Vision
+
 - **Multi-Cloud Support**: Deploy across cloud providers
 - **Advanced Scheduling**: Affinity and anti-affinity rules
 - **Persistent Volumes**: Stateful service support

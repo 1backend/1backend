@@ -115,6 +115,7 @@ graph TB
 ### Node-Local Folders
 
 Each File Svc node maintains:
+
 ```
 ~/.1backend/
 ├── uploads/          # User uploaded files
@@ -138,6 +139,7 @@ oo get /file-svc/download/https%3A%2F%2Fhuggingface.co%2Fmicrosoft%2FDialoGPT-me
 ```
 
 **Response Example:**
+
 ```json
 {
   "exists": true,
@@ -165,6 +167,7 @@ oo post /file-svc/uploads \
 ```
 
 **Response Example:**
+
 ```json
 {
   "uploads": [
@@ -200,6 +203,7 @@ File Svc automatically integrates with [Container Svc](/docs/built-in-services/c
 ```
 
 **Flow:**
+
 1. Container Svc requests the model file from File Svc
 2. File Svc downloads and caches the model if not present
 3. File is served to Container Svc and mounted in the container
@@ -450,6 +454,7 @@ oo post /file-svc/downloads
 ```
 
 **Status Values:**
+
 - `Pending`: Download queued but not started
 - `InProgress`: Currently downloading
 - `Completed`: Download finished successfully
@@ -482,6 +487,7 @@ oo post /file-svc/downloads | jq '.downloads | group_by(.nodeId // "unknown")'
 ### Common Issues
 
 #### **Download Failures**
+
 ```bash
 # Check download status
 oo get /file-svc/download/https%3A%2F%2Fexample.com%2Ffile.zip
@@ -493,6 +499,7 @@ oo put /file-svc/download \
 ```
 
 #### **File Not Found Errors**
+
 ```bash
 # Verify file exists across nodes
 oo post /file-svc/uploads | grep "file_abc123"
@@ -502,6 +509,7 @@ oo post /file-svc/downloads | grep "example.com/file.zip"
 ```
 
 #### **Upload Permission Errors**
+
 ```bash
 # Verify user permissions
 oo get /user-svc/permits | grep "file-svc:upload"
@@ -571,6 +579,7 @@ find ~/.1backend/downloads/ -mtime +30 -delete
 ## Future Enhancements
 
 ### Planned Features
+
 - **Automatic Cleanup**: Configurable retention policies for cached files
 - **Compression**: Automatic compression for large files
 - **Deduplication**: Avoid storing duplicate files across nodes
@@ -578,6 +587,7 @@ find ~/.1backend/downloads/ -mtime +30 -delete
 - **Virus Scanning**: Optional malware detection for uploads
 
 ### Integration Roadmap
+
 - **CDN Integration**: Direct integration with external CDNs
 - **Cloud Storage**: Support for S3, Google Cloud, Azure blob storage
 - **WebRTC**: Peer-to-peer file transfer for large files

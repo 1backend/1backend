@@ -80,9 +80,6 @@ Use the `config list` command to retrieve and view configurations:
 # List all configs for the current app
 oo config list
 
-# List configs for specific keys (user slugs)
-oo config list user1 user2
-
 # Using aliases
 oo co ls
 oo configs list
