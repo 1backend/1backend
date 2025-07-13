@@ -153,6 +153,21 @@ Install `oo` to get started (at the moment you need Go to install it):
 go install github.com/1backend/1backend/cli/oo@latest
 ```
 
+To make the installed binary available on your system:
+
+```sh
+$ go env | grep GOPATH
+GOPATH='/home/crufter/go' # this will be different for you
+
+# Open your bashrc file with any editor
+vim ~/.bashrc
+
+# And place your go bin folder there
+export PATH=$PATH:/home/crufter/go/bin
+
+# Please keep in mind your username won't be crufter probably, change it to yours :)
+```
+
 ```sh
 $ oo env ls
 ENV NAME   SELECTED   URL                           DESCRIPTION   REACHABLE
