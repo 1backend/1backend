@@ -31,7 +31,10 @@ import (
 
 // @Id saveSecrets
 // @Summary Save Secrets
-// @Description Save secrets if authorized to do so
+// @Description Save secrets if authorized to do so.
+// @Description Requires the `secret-svc:secret:save` permission.
+// @Description Users can only save secrets prefixed with their user slug unless they also have the
+// @Description `secret-svc:secret:save-unprefixed` permission, which allows them to save a secret without a slug prefix.
 // @Tags Secret Svc
 // @Accept json
 // @Produce json
@@ -70,20 +73,19 @@ func (cs *SecretService) SaveSecrets(
 	}
 	defer r.Body.Close()
 
-	isAdmin, err := cs.options.Authorizer.IsAdminFromRequest(cs.publicKey, r)
+	isAuthRsp, statusCode, err = cs.options.PermissionChecker.HasPermission(
+		r,
+		secret.PermissionSecretSaveUnprefixed,
+	)
 	if err != nil {
-		logger.Error(
-			"Failed to check if user is admin",
-			slog.Any("error", err),
-		)
-		endpoint.InternalServerError(w)
+		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
 
 	err = cs.saveSecrets(
 		r.Context(),
 		req.Secrets,
-		isAdmin,
+		isAuthRsp.GetAuthorized(),
 		isAuthRsp.User.Slug,
 	)
 	if err != nil {
@@ -104,10 +106,11 @@ func (cs *SecretService) SaveSecrets(
 	}
 }
 
+// @todo here canSaveUnprefixed is an approximation of whether the user is an admin or not.
 func (cs *SecretService) saveSecrets(
 	ctx context.Context,
 	ss []*secret.Secret,
-	isAdmin bool,
+	canSaveUnprefixed bool,
 	userSlug string,
 ) error {
 	cs.options.Lock.Acquire(ctx, "secret-svc-save")
@@ -129,7 +132,7 @@ func (cs *SecretService) saveSecrets(
 		if !found {
 			// When secret key does not exist, it can be "claimed" by any authorized user
 			// but non admins can only claim keys prefixed with their user slug
-			if !isAdmin && !strings.HasPrefix(s.Key, userSlug) {
+			if !canSaveUnprefixed && !strings.HasPrefix(s.Key, userSlug) {
 				return errors.New("users can only claim secrets prefixed with their user slug")
 			}
 			if s.Id == "" {
@@ -138,7 +141,7 @@ func (cs *SecretService) saveSecrets(
 
 			// Admin slugs don't need to be saved the writers, readers and deleters blocks
 			// as they can read write and anything.
-			if !isAdmin {
+			if !canSaveUnprefixed {
 				if s.Writers == nil {
 					s.Writers = []string{userSlug}
 				}
@@ -175,7 +178,7 @@ func (cs *SecretService) saveSecrets(
 		secret := secretI.(*secret.Secret)
 
 		// When a secret is found, it can only be modified by authorized users
-		canSave := isAdmin
+		canSave := canSaveUnprefixed
 		if !canSave {
 			for _, writer := range secret.Writers {
 				if writer == userSlug {

@@ -4,8 +4,10 @@ import (
 	"bufio"
 	"context"
 	"log"
+	"log/slog"
 	"sync"
 
+	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/1backend/1backend/server/internal/services/container/logaccumulator"
 	"github.com/docker/docker/api/types/container"
 	dockercontainer "github.com/docker/docker/api/types/container"
@@ -23,7 +25,10 @@ func StartDockerLogListener(cli *client.Client, la *logaccumulator.LogAccumulato
 
 	containers, err := cli.ContainerList(ctx, dockercontainer.ListOptions{})
 	if err != nil {
-		log.Fatal("Error listing containers:", err)
+		logger.Error("Error listing containers",
+			slog.Any("error", err),
+		)
+		return
 	}
 	for _, container := range containers {
 		go streamLogs(cli, la, container.ID, &mu, activeContainers)

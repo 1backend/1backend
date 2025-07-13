@@ -86,5 +86,9 @@ func Encrypt(cmd *cobra.Command, args []string) error {
 
 	fmt.Print(string(bs))
 
-	return returnErr
+	if returnErr != nil {
+		fmt.Println("# " + returnErr.Error())
+	}
+
+	return nil
 }
