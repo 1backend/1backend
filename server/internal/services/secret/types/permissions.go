@@ -10,14 +10,20 @@ package secret_svc
 
 var (
 	// Secret Service - Secret Permissions
-	PermissionSecretList   = "secret-svc:secret:list"
-	PermissionSecretSave   = "secret-svc:secret:save"
-	PermissionSecretRemove = "secret-svc:secret:remove"
+
+	PermissionSecretList           = "secret-svc:secret:list"
+	PermissionSecretSave           = "secret-svc:secret:save"
+	PermissionSecretSaveUnprefixed = "secret-svc:secret:save-unprefixed"
+	PermissionSecretRemove         = "secret-svc:secret:remove"
 
 	// Secret Permissions Group
-	Permissions = []string{
+	UserPermissions = []string{
 		PermissionSecretList,
 		PermissionSecretSave,
 		PermissionSecretRemove,
+	}
+
+	AdminPermissions = []string{
+		PermissionSecretSaveUnprefixed,
 	}
 )

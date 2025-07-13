@@ -3,10 +3,12 @@ package dockerbackend
 import (
 	"context"
 	"log"
+	"log/slog"
 	"strconv"
 	"strings"
 	"sync"
 
+	"github.com/1backend/1backend/sdk/go/logger"
 	container "github.com/1backend/1backend/server/internal/services/container/types"
 	"github.com/docker/docker/api/types"
 	dockerapitypes "github.com/docker/docker/api/types"
@@ -34,7 +36,10 @@ func StartDockerContainerTracker(cli *client.Client, tracker *ContainerTracker) 
 	// Initialize active container list
 	containers, err := cli.ContainerList(ctx, dockercontainer.ListOptions{All: true})
 	if err != nil {
-		log.Fatal("Error listing containers:", err)
+		logger.Error("Error listing containers",
+			slog.Any("error", err),
+		)
+		return
 	}
 	for _, c := range containers {
 		tracker.AddContainerFromList(c)

@@ -39,7 +39,19 @@ func (p *SecretService) registerPermits() error {
 		// list of a secret.
 		usertypes.RoleUser,
 	} {
-		for _, permission := range secrettypes.Permissions {
+		for _, permission := range secrettypes.UserPermissions {
+			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
+				App:        openapi.PtrString("*"),
+				Roles:      []string{role},
+				Permission: permission,
+			})
+		}
+	}
+
+	for _, role := range []string{
+		usertypes.RoleAdmin,
+	} {
+		for _, permission := range secrettypes.AdminPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				App:        openapi.PtrString("*"),
 				Roles:      []string{role},
