@@ -40,8 +40,14 @@ oo configs save ./my-config.yaml
 Config files should be in YAML format with the following structure:
 
 ```yaml
-app: "my-app"           # Optional: specify target app (admin only)
-key: "user-slug"        # Optional: specify config owner (admin only)
+# Optional: specify target app.
+# Only users with the permission "config-svc:config:edit-on-behalf" (typically admins) can specify this.
+# For other users the app from the token will be used.
+app: "my-app"
+# Optional: specify target app.
+# Only users with the permission "config-svc:config:edit-on-behalf" (typically admins) can specify this.
+# For other users the slug of the user will be used.
+key: "user-slug"
 data:
   # Your configuration data here
   featureFlags:
@@ -86,6 +92,7 @@ oo configs list
 ```
 
 The output shows configs in a tabular format:
+
 ```
 CONFIG KEY    APP      JSON
 user1         my-app   {"preferences":{"theme":"light"}}
@@ -99,13 +106,14 @@ user2         my-app   {"preferences":{"theme":"dark"}}
 The Config Svc performs **deep merging** when saving configurations:
 
 - **Nested objects** are recursively merged rather than replaced
-- **Conflicting primitive values** (strings, numbers, booleans) are replaced by incoming values  
+- **Conflicting primitive values** (strings, numbers, booleans) are replaced by incoming values
 - **New fields** are added to existing configs
 - **Existing fields** not present in the incoming config are preserved
 
 #### Deep Merge Example
 
 Existing config:
+
 ```json
 {
   "ui": {
@@ -122,16 +130,18 @@ Existing config:
 ```
 
 Incoming config:
+
 ```yaml
 data:
   ui:
-    theme: "dark"     # This will replace "light"
+    theme: "dark" # This will replace "light"
     sidebar:
-      width: 300      # This will replace 250, collapsed: false is preserved
-  newFeature: true    # This will be added
+      width: 300 # This will replace 250, collapsed: false is preserved
+  newFeature: true # This will be added
 ```
 
 Result after merge:
+
 ```json
 {
   "ui": {
@@ -151,8 +161,9 @@ Result after merge:
 ### Config Identification
 
 Configs are uniquely identified by:
-- **App**: The application name (automatically determined from user's token)
-- **Key**: The camelCased user slug (e.g., `jane-doe` becomes `janeDoе`)
+
+- **App**: The application name. Automatically determined from user's token unless the caller has the `"config-svc:config:edit-on-behalf"` permission - in that case the caller can specify this field.
+- **Key**: The camelCased user slug (e.g., `jane-doe` becomes `janeDoе`). Automatically determined from the user's slug unless the caller has the `"config-svc:config:edit-on-behalf"` permission - in that case the caller can specify this field.
 
 The internal ID format is: `{app}_{camelCasedSlug}`
 
@@ -165,12 +176,14 @@ All configs are **publicly readable** even without a user account.
 ### Write Access
 
 #### Regular Users
+
 - Can only write to configs under their own slug
 - The `key` field is automatically set to their camelCased slug
 - The `app` field is automatically set from their token
 - Cannot specify custom `app` or `key` values
 
 #### Administrators
+
 - Have the `config-svc:config:edit-on-behalf` permission
 - Can specify any `key` value to edit configs for other users
 - Can specify any `app` value to target different applications
@@ -179,6 +192,7 @@ All configs are **publicly readable** even without a user account.
 #### Permission-Based Access Example
 
 Regular user with slug `jane-doe`:
+
 ```yaml
 # This file will automatically save under key "janeDoe"
 data:
@@ -186,20 +200,15 @@ data:
     theme: "dark"
 ```
 
-Admin user:
+User with the `config-svc:config:edit-on-behalf` permission (e.g., admin):
+
 ```yaml
-app: "production-app"    # Can specify target app
-key: "john-smith"        # Can specify target user
+app: "production-app" # Can specify target app
+key: "john-smith" # Can specify target user
 data:
   adminSettings:
     maxFileSize: "10MB"
 ```
-
-## Limitations
-
-- Only **one top-level key** can be saved per config operation, even by administrators
-- Configuration data should be non-sensitive (use [Secret Svc](/docs/built-in-services/secret-svc) for sensitive data)
-- All configs are publicly readable
 
 ## Related
 
