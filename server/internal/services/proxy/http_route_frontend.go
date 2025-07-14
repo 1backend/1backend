@@ -107,6 +107,12 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 	client := http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
+		logger.Error("Error proxying request",
+			slog.String("host", r.Host),
+			slog.String("path", r.URL.Path),
+			slog.Any("error", err),
+		)
+
 		http.Error(w, "Failed to proxy request", http.StatusBadGateway)
 		return
 	}
