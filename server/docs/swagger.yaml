@@ -3748,7 +3748,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.7.3
+  version: 0.7.6
 paths:
   /chat-svc/events:
     get:
@@ -6512,7 +6512,11 @@ paths:
     put:
       consumes:
       - application/json
-      description: Save secrets if authorized to do so
+      description: |-
+        Save secrets if authorized to do so.
+        Requires the `secret-svc:secret:save` permission.
+        Users can only save secrets prefixed with their user slug unless they also have the
+        `secret-svc:secret:save-unprefixed` permission, which allows them to save a secret without a slug prefix.
       operationId: saveSecrets
       parameters:
       - description: Save Secret Request

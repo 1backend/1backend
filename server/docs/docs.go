@@ -4019,7 +4019,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Save secrets if authorized to do so",
+                "description": "Save secrets if authorized to do so.\nRequires the ` + "`" + `secret-svc:secret:save` + "`" + ` permission.\nUsers can only save secrets prefixed with their user slug unless they also have the\n` + "`" + `secret-svc:secret:save-unprefixed` + "`" + ` permission, which allows them to save a secret without a slug prefix.",
                 "consumes": [
                     "application/json"
                 ],
@@ -10553,7 +10553,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.7.3",
+	Version:          "0.7.6",
 	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},
