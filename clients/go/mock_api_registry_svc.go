@@ -97,6 +97,96 @@ func (mr *MockRegistrySvcAPIMockRecorder) DeleteNodeExecute(r any) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteNodeExecute", reflect.TypeOf((*MockRegistrySvcAPI)(nil).DeleteNodeExecute), r)
 }
 
+// EchoGet mocks base method.
+func (m *MockRegistrySvcAPI) EchoGet(ctx context.Context) ApiEchoGetRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EchoGet", ctx)
+	ret0, _ := ret[0].(ApiEchoGetRequest)
+	return ret0
+}
+
+// EchoGet indicates an expected call of EchoGet.
+func (mr *MockRegistrySvcAPIMockRecorder) EchoGet(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EchoGet", reflect.TypeOf((*MockRegistrySvcAPI)(nil).EchoGet), ctx)
+}
+
+// EchoGetExecute mocks base method.
+func (m *MockRegistrySvcAPI) EchoGetExecute(r ApiEchoGetRequest) (map[string]any, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EchoGetExecute", r)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// EchoGetExecute indicates an expected call of EchoGetExecute.
+func (mr *MockRegistrySvcAPIMockRecorder) EchoGetExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EchoGetExecute", reflect.TypeOf((*MockRegistrySvcAPI)(nil).EchoGetExecute), r)
+}
+
+// EchoPost mocks base method.
+func (m *MockRegistrySvcAPI) EchoPost(ctx context.Context) ApiEchoPostRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EchoPost", ctx)
+	ret0, _ := ret[0].(ApiEchoPostRequest)
+	return ret0
+}
+
+// EchoPost indicates an expected call of EchoPost.
+func (mr *MockRegistrySvcAPIMockRecorder) EchoPost(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EchoPost", reflect.TypeOf((*MockRegistrySvcAPI)(nil).EchoPost), ctx)
+}
+
+// EchoPostExecute mocks base method.
+func (m *MockRegistrySvcAPI) EchoPostExecute(r ApiEchoPostRequest) (map[string]any, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EchoPostExecute", r)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// EchoPostExecute indicates an expected call of EchoPostExecute.
+func (mr *MockRegistrySvcAPIMockRecorder) EchoPostExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EchoPostExecute", reflect.TypeOf((*MockRegistrySvcAPI)(nil).EchoPostExecute), r)
+}
+
+// EchoPut mocks base method.
+func (m *MockRegistrySvcAPI) EchoPut(ctx context.Context) ApiEchoPutRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EchoPut", ctx)
+	ret0, _ := ret[0].(ApiEchoPutRequest)
+	return ret0
+}
+
+// EchoPut indicates an expected call of EchoPut.
+func (mr *MockRegistrySvcAPIMockRecorder) EchoPut(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EchoPut", reflect.TypeOf((*MockRegistrySvcAPI)(nil).EchoPut), ctx)
+}
+
+// EchoPutExecute mocks base method.
+func (m *MockRegistrySvcAPI) EchoPutExecute(r ApiEchoPutRequest) (map[string]any, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EchoPutExecute", r)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// EchoPutExecute indicates an expected call of EchoPutExecute.
+func (mr *MockRegistrySvcAPIMockRecorder) EchoPutExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EchoPutExecute", reflect.TypeOf((*MockRegistrySvcAPI)(nil).EchoPutExecute), r)
+}
+
 // ListDefinitions mocks base method.
 func (m *MockRegistrySvcAPI) ListDefinitions(ctx context.Context) ApiListDefinitionsRequest {
 	m.ctrl.T.Helper()

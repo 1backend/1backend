@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.3
+API version: 0.7.6
 Contact: sales@singulatron.com
 */
 
@@ -95,7 +95,10 @@ type SecretSvcAPI interface {
 	/*
 	SaveSecrets Save Secrets
 
-	Save secrets if authorized to do so
+	Save secrets if authorized to do so.
+Requires the `secret-svc:secret:save` permission.
+Users can only save secrets prefixed with their user slug unless they also have the
+`secret-svc:secret:save-unprefixed` permission, which allows them to save a secret without a slug prefix.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiSaveSecretsRequest
@@ -877,7 +880,10 @@ func (r ApiSaveSecretsRequest) Execute() (map[string]interface{}, *http.Response
 /*
 SaveSecrets Save Secrets
 
-Save secrets if authorized to do so
+Save secrets if authorized to do so.
+Requires the `secret-svc:secret:save` permission.
+Users can only save secrets prefixed with their user slug unless they also have the
+`secret-svc:secret:save-unprefixed` permission, which allows them to save a secret without a slug prefix.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiSaveSecretsRequest
