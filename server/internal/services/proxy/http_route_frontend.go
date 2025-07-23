@@ -107,7 +107,7 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 	client := http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		logger.Error("Error proxying request",
+		logger.Error("Error edge proxying",
 			slog.String("host", r.Host),
 			slog.String("path", r.URL.Path),
 			slog.Any("error", err),
@@ -131,12 +131,12 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		logger.Error("Error reading response body", slog.String("error", err.Error()))
+		logger.Error("Error reading edge proxy response body", slog.String("error", err.Error()))
 		return
 	}
 	_, err = w.Write(body)
 	if err != nil {
-		logger.Error("Error writing response body", slog.String("error", err.Error()))
+		logger.Error("Error writing edge proxy response body", slog.String("error", err.Error()))
 		return
 	}
 
