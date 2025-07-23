@@ -31,7 +31,8 @@ func (cs *ProxyService) RouteBackend(w http.ResponseWriter, r *http.Request) {
 	statusCode, err := cs.routeBackend(w, r)
 
 	if err != nil {
-		logger.Error("Error proxying OPTIONS request",
+		logger.Error("Error service proxying",
+			slog.String("method", r.Method),
 			slog.String("path", r.URL.Path),
 			slog.String("error", err.Error()),
 		)
@@ -46,7 +47,7 @@ func (cs *ProxyService) RouteBackend(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(statusCode)
 		_, err = w.Write([]byte(err.Error()))
 		if err != nil {
-			logger.Error("Error writing response",
+			logger.Error("Error writing service proxy response",
 				slog.String("error", err.Error()),
 			)
 		}
