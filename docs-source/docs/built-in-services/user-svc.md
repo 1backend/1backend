@@ -193,16 +193,60 @@ user-svc:org:{org_dBZRCej3fo}:user
 
 By convention these dynamic values are enclosed in {}. In this example, roles are assigned per organization. For more details, see the Organizations section.
 
-### Owning roles vs. having roles
+### Owning roles vs. just having them
 
-In many endpoints such `SaveEnrolls`, the topic of "role ownership" comes up. The basic problem is simple: just because someone has a role, it doesn't mean they can also bestow that role upon other users. In simple terms, if an admin makes someone a user, that user should not be able to make others users, as that is the privilege of the admins.
+When managing roles in 1Backend (especially through actions like `SaveEnrolls`), it's important to understand a key distinction:
 
-A user "owns" a role in the following cases:
+> **Just because you *have* a role doesn’t mean you can *assign* that role to others.**
 
-- The role is prefixed with the caller's slug. For example, a user with the slug `joe-doe` owns roles like `joe-doe:any-custom-role`.
-- User "owns" all roles that share a prefix if they hold the corresponding `:admin` role. For example, having `user-svc:org:{org_id}:admin` means the user owns roles like `user-svc:org:{org_id}:user` and `user-svc:org:{org_id}:viewer`.
+For example, if an admin gives you the role `user-svc:org:acme:user`, that doesn’t mean you can turn around and give it to someone else. Only certain users or services can assign roles—they need to **own** them.
 
-By enforcing role ownership rules, the system ensures that roles are only assigned by authorized users, preventing privilege escalation and maintaining security within the organization.
+---
+
+#### What does it nean to own a role?
+
+A user (or service) *owns* a role if **either** of the following is true:
+
+#### ✅ 1. You created it (slug-based ownership)
+
+If a role starts with your slug, you automatically own it.
+
+**Example:**
+
+If your slug is `funny-cats-svc`, then you own roles like:
+
+- `funny-cats-svc:pro`
+- `funny-cats-svc:ultra`
+- `funny-cats-svc:admin`
+
+These roles are yours — you can assign them, modify them, or revoke them.
+
+---
+
+#### ✅ 2. You’re an admin of that role family
+
+If you hold a role like `user-svc:org:{org_id}:admin`, then you also **own** other roles that share the same prefix.
+
+**Example:**
+
+If you have:
+
+```
+user-svc:org:org_xyz123:admin
+```
+
+Then you also own:
+
+- `user-svc:org:org_xyz123:user`
+- `user-svc:org:org_xyz123:viewer`
+
+That means you're authorized to assign those roles to others.
+
+### Why this matters
+
+This ownership rule prevents **privilege escalation**.
+
+Without this rule, anyone with a role could assign it to others — even roles they shouldn’t control. Enforcing ownership ensures only trusted users or services can delegate access.
 
 ### Conventions
 
