@@ -2361,6 +2361,12 @@ definitions:
       InstanceStatusUnknown: Default state when the instance status is not yet determined
       InstanceStatusUnreachable: Instance is not reachable, possibly down or with
         network issues
+    x-enum-descriptions:
+    - Default state when the instance status is not yet determined
+    - Instance is fully operational and responding as expected
+    - Instance is responding but with performance issues or partial failures
+    - Instance is not reachable, possibly down or with network issues
+    - Instance encountered errors or failed multiple health checks
     x-enum-varnames:
     - InstanceStatusUnknown
     - InstanceStatusHealthy
@@ -6715,9 +6721,9 @@ paths:
         - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).
 
         Examples:
-        - A user with the slug "joe-doe" owns roles like "joe-doe:*" such as "joe-doe:any-custom-role".
-        - A user with any slug who has the role "my-service:admin" owns "my-service:*" roles such as "my-service:user".
-        - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:*" such as "user-svc:org:{%orgId}:user".
+        - A user with the slug `joe-doe` owns roles like `joe-doe:*` such as `joe-doe:any-custom-role`.
+        - A user with any slug who has the role `my-service:admin` owns `my-service:*` roles such as `my-service:user`.
+        - A user with any slug who has the role `user-svc:org:{%orgId}:admin` owns `user-svc:org:{%orgId}:*` such as `user-svc:org:{%orgId}:user`.
       operationId: saveEnrolls
       parameters:
       - description: Save Enrolls Request

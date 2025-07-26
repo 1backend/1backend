@@ -59,8 +59,11 @@ export class EmailSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/email-svc/email`;
+
         const response = await this.request({
-            path: `/email-svc/email`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,

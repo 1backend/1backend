@@ -42,8 +42,10 @@ export class ImageSvcApi extends runtime.BaseAPI {
                 queryParameters['height'] = requestParameters['height'];
             }
             const headerParameters = {};
+            let urlPath = `/image-svc/serve/upload/{fileId}`;
+            urlPath = urlPath.replace(`{${"fileId"}}`, encodeURIComponent(String(requestParameters['fileId'])));
             const response = yield this.request({
-                path: `/image-svc/serve/upload/{fileId}`.replace(`{${"fileId"}}`, encodeURIComponent(String(requestParameters['fileId']))),
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,

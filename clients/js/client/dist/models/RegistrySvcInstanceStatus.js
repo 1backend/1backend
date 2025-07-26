@@ -16,10 +16,25 @@
  * @export
  */
 export const RegistrySvcInstanceStatus = {
+    /**
+    * Default state when the instance status is not yet determined
+    */
     InstanceStatusUnknown: 'Unknown',
+    /**
+    * Instance is fully operational and responding as expected
+    */
     InstanceStatusHealthy: 'Healthy',
+    /**
+    * Instance is responding but with performance issues or partial failures
+    */
     InstanceStatusDegraded: 'Degraded',
+    /**
+    * Instance is not reachable, possibly down or with network issues
+    */
     InstanceStatusUnreachable: 'Unreachable',
+    /**
+    * Instance encountered errors or failed multiple health checks
+    */
     InstanceStatusError: 'Error'
 };
 export function instanceOfRegistrySvcInstanceStatus(value) {

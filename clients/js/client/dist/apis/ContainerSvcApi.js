@@ -41,8 +41,9 @@ export class ContainerSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/image`;
             const response = yield this.request({
-                path: `/container-svc/image`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -72,8 +73,9 @@ export class ContainerSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/daemon/info`;
             const response = yield this.request({
-                path: `/container-svc/daemon/info`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -108,8 +110,9 @@ export class ContainerSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/container/is-running`;
             const response = yield this.request({
-                path: `/container-svc/container/is-running`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -147,8 +150,9 @@ export class ContainerSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/container/summary`;
             const response = yield this.request({
-                path: `/container-svc/container/summary`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -177,8 +181,9 @@ export class ContainerSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/host`;
             const response = yield this.request({
-                path: `/container-svc/host`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -210,8 +215,10 @@ export class ContainerSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/image/{imageName}/pullable`;
+            urlPath = urlPath.replace(`{${"imageName"}}`, encodeURIComponent(String(requestParameters['imageName'])));
             const response = yield this.request({
-                path: `/container-svc/image/{imageName}/pullable`.replace(`{${"imageName"}}`, encodeURIComponent(String(requestParameters['imageName']))),
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -244,8 +251,9 @@ export class ContainerSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/logs`;
             const response = yield this.request({
-                path: `/container-svc/logs`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -279,8 +287,9 @@ export class ContainerSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/containers`;
             const response = yield this.request({
-                path: `/container-svc/containers`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -314,8 +323,9 @@ export class ContainerSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/container`;
             const response = yield this.request({
-                path: `/container-svc/container`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -349,8 +359,9 @@ export class ContainerSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/container/stop`;
             const response = yield this.request({
-                path: `/container-svc/container/stop`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,

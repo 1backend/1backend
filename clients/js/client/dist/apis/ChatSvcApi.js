@@ -40,8 +40,10 @@ export class ChatSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/chat-svc/message/{messageId}`;
+            urlPath = urlPath.replace(`{${"messageId"}}`, encodeURIComponent(String(requestParameters['messageId'])));
             const response = yield this.request({
-                path: `/chat-svc/message/{messageId}`.replace(`{${"messageId"}}`, encodeURIComponent(String(requestParameters['messageId']))),
+                path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
@@ -73,8 +75,10 @@ export class ChatSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/chat-svc/thread/{threadId}`;
+            urlPath = urlPath.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId'])));
             const response = yield this.request({
-                path: `/chat-svc/thread/{threadId}`.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId']))),
+                path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
@@ -100,8 +104,9 @@ export class ChatSvcApi extends runtime.BaseAPI {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
+            let urlPath = `/chat-svc/events`;
             const response = yield this.request({
-                path: `/chat-svc/events`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -134,8 +139,9 @@ export class ChatSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/chat-svc/messages`;
             const response = yield this.request({
-                path: `/chat-svc/messages`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -169,8 +175,9 @@ export class ChatSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/chat-svc/threads`;
             const response = yield this.request({
-                path: `/chat-svc/threads`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -207,8 +214,10 @@ export class ChatSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/chat-svc/thread/{threadId}/message`;
+            urlPath = urlPath.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId'])));
             const response = yield this.request({
-                path: `/chat-svc/thread/{threadId}/message`.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId']))),
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -242,8 +251,9 @@ export class ChatSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/chat-svc/thread`;
             const response = yield this.request({
-                path: `/chat-svc/thread`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,

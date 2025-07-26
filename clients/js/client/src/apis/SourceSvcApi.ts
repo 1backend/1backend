@@ -59,8 +59,11 @@ export class SourceSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/source-svc/repo/checkout`;
+
         const response = await this.request({
-            path: `/source-svc/repo/checkout`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,

@@ -14,10 +14,25 @@
  * @export
  */
 export declare const RegistrySvcInstanceStatus: {
+    /**
+    * Default state when the instance status is not yet determined
+    */
     readonly InstanceStatusUnknown: "Unknown";
+    /**
+    * Instance is fully operational and responding as expected
+    */
     readonly InstanceStatusHealthy: "Healthy";
+    /**
+    * Instance is responding but with performance issues or partial failures
+    */
     readonly InstanceStatusDegraded: "Degraded";
+    /**
+    * Instance is not reachable, possibly down or with network issues
+    */
     readonly InstanceStatusUnreachable: "Unreachable";
+    /**
+    * Instance encountered errors or failed multiple health checks
+    */
     readonly InstanceStatusError: "Error";
 };
 export type RegistrySvcInstanceStatus = typeof RegistrySvcInstanceStatus[keyof typeof RegistrySvcInstanceStatus];

@@ -56,8 +56,11 @@ export class FirehoseSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/firehose-svc/event`;
+
         const response = await this.request({
-            path: `/firehose-svc/event`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -88,8 +91,11 @@ export class FirehoseSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/firehose-svc/events/subscribe`;
+
         const response = await this.request({
-            path: `/firehose-svc/events/subscribe`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

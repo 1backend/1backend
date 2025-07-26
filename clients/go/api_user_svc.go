@@ -348,9 +348,9 @@ A user "owns" a role in the following cases:
 - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).
 
 Examples:
-- A user with the slug "joe-doe" owns roles like "joe-doe:*" such as "joe-doe:any-custom-role".
-- A user with any slug who has the role "my-service:admin" owns "my-service:*" roles such as "my-service:user".
-- A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:*" such as "user-svc:org:{%orgId}:user".
+- A user with the slug `joe-doe` owns roles like `joe-doe:*` such as `joe-doe:any-custom-role`.
+- A user with any slug who has the role `my-service:admin` owns `my-service:*` roles such as `my-service:user`.
+- A user with any slug who has the role `user-svc:org:{%orgId}:admin` owns `user-svc:org:{%orgId}:*` such as `user-svc:org:{%orgId}:user`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiSaveEnrollsRequest
@@ -3275,9 +3275,9 @@ A user "owns" a role in the following cases:
 - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).
 
 Examples:
-- A user with the slug "joe-doe" owns roles like "joe-doe:*" such as "joe-doe:any-custom-role".
-- A user with any slug who has the role "my-service:admin" owns "my-service:*" roles such as "my-service:user".
-- A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:*" such as "user-svc:org:{%orgId}:user".
+- A user with the slug `joe-doe` owns roles like `joe-doe:*` such as `joe-doe:any-custom-role`.
+- A user with any slug who has the role `my-service:admin` owns `my-service:*` roles such as `my-service:user`.
+- A user with any slug who has the role `user-svc:org:{%orgId}:admin` owns `user-svc:org:{%orgId}:*` such as `user-svc:org:{%orgId}:user`.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiSaveEnrollsRequest

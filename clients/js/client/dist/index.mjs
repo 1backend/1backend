@@ -267,7 +267,11 @@ function exists(json, key) {
     return value !== null && value !== undefined;
 }
 function mapValues(data, fn) {
-    return Object.keys(data).reduce((acc, key) => (Object.assign(Object.assign({}, acc), { [key]: fn(data[key]) })), {});
+    const result = {};
+    for (const key of Object.keys(data)) {
+        result[key] = fn(data[key]);
+    }
+    return result;
 }
 function canConsumeForm(consumes) {
     for (const consume of consumes) {
@@ -7751,10 +7755,25 @@ function RegistrySvcGPUToJSONTyped(value, ignoreDiscriminator = false) {
  * @export
  */
 const RegistrySvcInstanceStatus = {
+    /**
+    * Default state when the instance status is not yet determined
+    */
     InstanceStatusUnknown: 'Unknown',
+    /**
+    * Instance is fully operational and responding as expected
+    */
     InstanceStatusHealthy: 'Healthy',
+    /**
+    * Instance is responding but with performance issues or partial failures
+    */
     InstanceStatusDegraded: 'Degraded',
+    /**
+    * Instance is not reachable, possibly down or with network issues
+    */
     InstanceStatusUnreachable: 'Unreachable',
+    /**
+    * Instance encountered errors or failed multiple health checks
+    */
     InstanceStatusError: 'Error'
 };
 function instanceOfRegistrySvcInstanceStatus(value) {
@@ -11232,8 +11251,10 @@ class ChatSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/chat-svc/message/{messageId}`;
+            urlPath = urlPath.replace(`{${"messageId"}}`, encodeURIComponent(String(requestParameters['messageId'])));
             const response = yield this.request({
-                path: `/chat-svc/message/{messageId}`.replace(`{${"messageId"}}`, encodeURIComponent(String(requestParameters['messageId']))),
+                path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11265,8 +11286,10 @@ class ChatSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/chat-svc/thread/{threadId}`;
+            urlPath = urlPath.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId'])));
             const response = yield this.request({
-                path: `/chat-svc/thread/{threadId}`.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId']))),
+                path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11292,8 +11315,9 @@ class ChatSvcApi extends BaseAPI {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
+            let urlPath = `/chat-svc/events`;
             const response = yield this.request({
-                path: `/chat-svc/events`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11326,8 +11350,9 @@ class ChatSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/chat-svc/messages`;
             const response = yield this.request({
-                path: `/chat-svc/messages`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11361,8 +11386,9 @@ class ChatSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/chat-svc/threads`;
             const response = yield this.request({
-                path: `/chat-svc/threads`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11399,8 +11425,10 @@ class ChatSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/chat-svc/thread/{threadId}/message`;
+            urlPath = urlPath.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId'])));
             const response = yield this.request({
-                path: `/chat-svc/thread/{threadId}/message`.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId']))),
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11434,8 +11462,9 @@ class ChatSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/chat-svc/thread`;
             const response = yield this.request({
-                path: `/chat-svc/thread`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11482,8 +11511,9 @@ class ConfigSvcApi extends BaseAPI {
             const queryParameters = {};
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
+            let urlPath = `/config-svc/configs`;
             const response = yield this.request({
-                path: `/config-svc/configs`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11517,8 +11547,9 @@ class ConfigSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/config-svc/config`;
             const response = yield this.request({
-                path: `/config-svc/config`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11571,8 +11602,9 @@ class ContainerSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/image`;
             const response = yield this.request({
-                path: `/container-svc/image`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11602,8 +11634,9 @@ class ContainerSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/daemon/info`;
             const response = yield this.request({
-                path: `/container-svc/daemon/info`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11638,8 +11671,9 @@ class ContainerSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/container/is-running`;
             const response = yield this.request({
-                path: `/container-svc/container/is-running`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11677,8 +11711,9 @@ class ContainerSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/container/summary`;
             const response = yield this.request({
-                path: `/container-svc/container/summary`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11707,8 +11742,9 @@ class ContainerSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/host`;
             const response = yield this.request({
-                path: `/container-svc/host`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11740,8 +11776,10 @@ class ContainerSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/image/{imageName}/pullable`;
+            urlPath = urlPath.replace(`{${"imageName"}}`, encodeURIComponent(String(requestParameters['imageName'])));
             const response = yield this.request({
-                path: `/container-svc/image/{imageName}/pullable`.replace(`{${"imageName"}}`, encodeURIComponent(String(requestParameters['imageName']))),
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11774,8 +11812,9 @@ class ContainerSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/logs`;
             const response = yield this.request({
-                path: `/container-svc/logs`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11809,8 +11848,9 @@ class ContainerSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/containers`;
             const response = yield this.request({
-                path: `/container-svc/containers`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11844,8 +11884,9 @@ class ContainerSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/container`;
             const response = yield this.request({
-                path: `/container-svc/container`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11879,8 +11920,9 @@ class ContainerSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/container-svc/container/stop`;
             const response = yield this.request({
-                path: `/container-svc/container/stop`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11933,8 +11975,9 @@ class DataSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/data-svc/object`;
             const response = yield this.request({
-                path: `/data-svc/object`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -11968,8 +12011,9 @@ class DataSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/data-svc/objects/delete`;
             const response = yield this.request({
-                path: `/data-svc/objects/delete`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12000,8 +12044,9 @@ class DataSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/data-svc/objects`;
             const response = yield this.request({
-                path: `/data-svc/objects`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12035,8 +12080,9 @@ class DataSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/data-svc/objects/update`;
             const response = yield this.request({
-                path: `/data-svc/objects/update`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12073,8 +12119,10 @@ class DataSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/data-svc/object/{objectId}`;
+            urlPath = urlPath.replace(`{${"objectId"}}`, encodeURIComponent(String(requestParameters['objectId'])));
             const response = yield this.request({
-                path: `/data-svc/object/{objectId}`.replace(`{${"objectId"}}`, encodeURIComponent(String(requestParameters['objectId']))),
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12108,8 +12156,9 @@ class DataSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/data-svc/objects/upsert`;
             const response = yield this.request({
-                path: `/data-svc/objects/upsert`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12159,8 +12208,9 @@ class DeploySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/deploy-svc/deployment`;
             const response = yield this.request({
-                path: `/deploy-svc/deployment`,
+                path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12191,8 +12241,9 @@ class DeploySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/deploy-svc/deployments`;
             const response = yield this.request({
-                path: `/deploy-svc/deployments`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12223,8 +12274,9 @@ class DeploySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/deploy-svc/deployment`;
             const response = yield this.request({
-                path: `/deploy-svc/deployment`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12277,8 +12329,9 @@ class EmailSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/email-svc/email`;
             const response = yield this.request({
-                path: `/email-svc/email`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12331,8 +12384,9 @@ class FileSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/file-svc/download`;
             const response = yield this.request({
-                path: `/file-svc/download`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12365,8 +12419,10 @@ class FileSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/file-svc/download/{url}`;
+            urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
             const response = yield this.request({
-                path: `/file-svc/download/{url}`.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url']))),
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12395,8 +12451,9 @@ class FileSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/file-svc/downloads`;
             const response = yield this.request({
-                path: `/file-svc/downloads`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12426,8 +12483,9 @@ class FileSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/file-svc/uploads`;
             const response = yield this.request({
-                path: `/file-svc/uploads`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12460,8 +12518,10 @@ class FileSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/file-svc/download/{url}/pause`;
+            urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
             const response = yield this.request({
-                path: `/file-svc/download/{url}/pause`.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url']))),
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12490,8 +12550,10 @@ class FileSvcApi extends BaseAPI {
             }
             const queryParameters = {};
             const headerParameters = {};
+            let urlPath = `/file-svc/serve/download/{url}`;
+            urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
             const response = yield this.request({
-                path: `/file-svc/serve/download/{url}`.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url']))),
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12520,8 +12582,10 @@ class FileSvcApi extends BaseAPI {
             }
             const queryParameters = {};
             const headerParameters = {};
+            let urlPath = `/file-svc/serve/upload/{fileId}`;
+            urlPath = urlPath.replace(`{${"fileId"}}`, encodeURIComponent(String(requestParameters['fileId'])));
             const response = yield this.request({
-                path: `/file-svc/serve/upload/{fileId}`.replace(`{${"fileId"}}`, encodeURIComponent(String(requestParameters['fileId']))),
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12571,8 +12635,9 @@ class FileSvcApi extends BaseAPI {
             if (requestParameters['file'] != null) {
                 formParams.append('file', requestParameters['file']);
             }
+            let urlPath = `/file-svc/upload`;
             const response = yield this.request({
-                path: `/file-svc/upload`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12625,8 +12690,9 @@ class FirehoseSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/firehose-svc/event`;
             const response = yield this.request({
-                path: `/firehose-svc/event`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12655,8 +12721,9 @@ class FirehoseSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/firehose-svc/events/subscribe`;
             const response = yield this.request({
-                path: `/firehose-svc/events/subscribe`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12715,8 +12782,10 @@ class ImageSvcApi extends BaseAPI {
                 queryParameters['height'] = requestParameters['height'];
             }
             const headerParameters = {};
+            let urlPath = `/image-svc/serve/upload/{fileId}`;
+            urlPath = urlPath.replace(`{${"fileId"}}`, encodeURIComponent(String(requestParameters['fileId'])));
             const response = yield this.request({
-                path: `/image-svc/serve/upload/{fileId}`.replace(`{${"fileId"}}`, encodeURIComponent(String(requestParameters['fileId']))),
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12764,8 +12833,9 @@ class ModelSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/model-svc/default-model/status`;
             const response = yield this.request({
-                path: `/model-svc/default-model/status`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12797,8 +12867,10 @@ class ModelSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/model-svc/model/{modelId}`;
+            urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
             const response = yield this.request({
-                path: `/model-svc/model/{modelId}`.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId']))),
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12830,8 +12902,10 @@ class ModelSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/model-svc/model/{modelId}/status`;
+            urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
             const response = yield this.request({
-                path: `/model-svc/model/{modelId}/status`.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId']))),
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12860,8 +12934,9 @@ class ModelSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/model-svc/models`;
             const response = yield this.request({
-                path: `/model-svc/models`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12890,8 +12965,9 @@ class ModelSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/model-svc/platforms`;
             const response = yield this.request({
-                path: `/model-svc/platforms`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12923,8 +12999,10 @@ class ModelSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/model-svc/model/{modelId}/make-default`;
+            urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
             const response = yield this.request({
-                path: `/model-svc/model/{modelId}/make-default`.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId']))),
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12953,8 +13031,9 @@ class ModelSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/model-svc/default-model/start`;
             const response = yield this.request({
-                path: `/model-svc/default-model/start`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -12986,8 +13065,10 @@ class ModelSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/model-svc/model/{modelId}/start`;
+            urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
             const response = yield this.request({
-                path: `/model-svc/model/{modelId}/start`.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId']))),
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13039,8 +13120,9 @@ class PolicySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/policy-svc/check`;
             const response = yield this.request({
-                path: `/policy-svc/check`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13077,8 +13159,10 @@ class PolicySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/policy-svc/instance/{instanceId}`;
+            urlPath = urlPath.replace(`{${"instanceId"}}`, encodeURIComponent(String(requestParameters['instanceId'])));
             const response = yield this.request({
-                path: `/policy-svc/instance/{instanceId}`.replace(`{${"instanceId"}}`, encodeURIComponent(String(requestParameters['instanceId']))),
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13128,8 +13212,9 @@ class PromptSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/prompt-svc/prompts`;
             const response = yield this.request({
-                path: `/prompt-svc/prompts`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13163,8 +13248,9 @@ class PromptSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/prompt-svc/prompt`;
             const response = yield this.request({
-                path: `/prompt-svc/prompt`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13198,8 +13284,9 @@ class PromptSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/prompt-svc/types`;
             const response = yield this.request({
-                path: `/prompt-svc/types`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13233,8 +13320,9 @@ class PromptSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/prompt-svc/remove`;
             const response = yield this.request({
-                path: `/prompt-svc/remove`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13267,8 +13355,10 @@ class PromptSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/prompt-svc/prompts/{threadId}/responses/subscribe`;
+            urlPath = urlPath.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId'])));
             const response = yield this.request({
-                path: `/prompt-svc/prompts/{threadId}/responses/subscribe`.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId']))),
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13322,8 +13412,9 @@ class ProxySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/proxy-svc/certs`;
             const response = yield this.request({
-                path: `/proxy-svc/certs`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13354,8 +13445,9 @@ class ProxySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/proxy-svc/routes`;
             const response = yield this.request({
-                path: `/proxy-svc/routes`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13389,8 +13481,9 @@ class ProxySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/proxy-svc/certs`;
             const response = yield this.request({
-                path: `/proxy-svc/certs`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13424,8 +13517,9 @@ class ProxySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/proxy-svc/routes`;
             const response = yield this.request({
-                path: `/proxy-svc/routes`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13477,8 +13571,10 @@ class RegistrySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/registry-svc/definition/{id}`;
+            urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
             const response = yield this.request({
-                path: `/registry-svc/definition/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+                path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13509,8 +13605,10 @@ class RegistrySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/registry-svc/node/{url}`;
+            urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
             const response = yield this.request({
-                path: `/registry-svc/node/{url}`.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url']))),
+                path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13538,8 +13636,9 @@ class RegistrySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/registry-svc/echo`;
             const response = yield this.request({
-                path: `/registry-svc/echo`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13568,8 +13667,9 @@ class RegistrySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/registry-svc/echo`;
             const response = yield this.request({
-                path: `/registry-svc/echo`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13598,8 +13698,9 @@ class RegistrySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/registry-svc/echo`;
             const response = yield this.request({
-                path: `/registry-svc/echo`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13628,8 +13729,9 @@ class RegistrySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/registry-svc/definitions`;
             const response = yield this.request({
-                path: `/registry-svc/definitions`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13679,8 +13781,9 @@ class RegistrySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/registry-svc/instances`;
             const response = yield this.request({
-                path: `/registry-svc/instances`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13710,8 +13813,9 @@ class RegistrySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/registry-svc/nodes`;
             const response = yield this.request({
-                path: `/registry-svc/nodes`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13745,8 +13849,9 @@ class RegistrySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/registry-svc/instance`;
             const response = yield this.request({
-                path: `/registry-svc/instance`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13779,8 +13884,10 @@ class RegistrySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/registry-svc/instance/{id}`;
+            urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
             const response = yield this.request({
-                path: `/registry-svc/instance/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+                path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13812,8 +13919,9 @@ class RegistrySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/registry-svc/definition`;
             const response = yield this.request({
-                path: `/registry-svc/definition`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13844,8 +13952,9 @@ class RegistrySvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/registry-svc/node/self`;
             const response = yield this.request({
-                path: `/registry-svc/node/self`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13898,8 +14007,9 @@ class SecretSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/secret-svc/decrypt`;
             const response = yield this.request({
-                path: `/secret-svc/decrypt`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13933,8 +14043,9 @@ class SecretSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/secret-svc/encrypt`;
             const response = yield this.request({
-                path: `/secret-svc/encrypt`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13964,8 +14075,9 @@ class SecretSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/secret-svc/is-secure`;
             const response = yield this.request({
-                path: `/secret-svc/is-secure`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -13995,8 +14107,9 @@ class SecretSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/secret-svc/secrets`;
             const response = yield this.request({
-                path: `/secret-svc/secrets`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14030,8 +14143,9 @@ class SecretSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/secret-svc/secrets`;
             const response = yield this.request({
-                path: `/secret-svc/secrets`,
+                path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14065,8 +14179,9 @@ class SecretSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/secret-svc/secrets`;
             const response = yield this.request({
-                path: `/secret-svc/secrets`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14119,8 +14234,9 @@ class SourceSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/source-svc/repo/checkout`;
             const response = yield this.request({
-                path: `/source-svc/repo/checkout`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14173,8 +14289,9 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/change-password`;
             const response = yield this.request({
-                path: `/user-svc/change-password`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14208,8 +14325,9 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/user`;
             const response = yield this.request({
-                path: `/user-svc/user`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14246,8 +14364,11 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/organization/{organizationId}/user/{userId}`;
+            urlPath = urlPath.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId'])));
+            urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
             const response = yield this.request({
-                path: `/user-svc/organization/{organizationId}/user/{userId}`.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId']))).replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+                path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14280,8 +14401,10 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/user/{userId}`;
+            urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
             const response = yield this.request({
-                path: `/user-svc/user/{userId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+                path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14311,8 +14434,9 @@ class UserSvcApi extends BaseAPI {
             const queryParameters = {};
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
+            let urlPath = `/user-svc/token/exchange`;
             const response = yield this.request({
-                path: `/user-svc/token/exchange`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14343,8 +14467,9 @@ class UserSvcApi extends BaseAPI {
             const queryParameters = {};
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
+            let urlPath = `/user-svc/token/exchange`;
             const response = yield this.request({
-                path: `/user-svc/token/exchange`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14371,8 +14496,9 @@ class UserSvcApi extends BaseAPI {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
+            let urlPath = `/user-svc/public-key`;
             const response = yield this.request({
-                path: `/user-svc/public-key`,
+                path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14404,8 +14530,10 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/self/has/{permission}`;
+            urlPath = urlPath.replace(`{${"permission"}}`, encodeURIComponent(String(requestParameters['permission'])));
             const response = yield this.request({
-                path: `/user-svc/self/has/{permission}`.replace(`{${"permission"}}`, encodeURIComponent(String(requestParameters['permission']))),
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14438,8 +14566,9 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/enrolls`;
             const response = yield this.request({
-                path: `/user-svc/enrolls`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14473,8 +14602,9 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/organizations`;
             const response = yield this.request({
-                path: `/user-svc/organizations`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14507,8 +14637,10 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/permissions`;
+            urlPath = urlPath.replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId'])));
             const response = yield this.request({
-                path: `/user-svc/permissions`.replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14541,8 +14673,9 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/permits`;
             const response = yield this.request({
-                path: `/user-svc/permits`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14573,8 +14706,9 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/users`;
             const response = yield this.request({
-                path: `/user-svc/users`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14605,8 +14739,9 @@ class UserSvcApi extends BaseAPI {
             const queryParameters = {};
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
+            let urlPath = `/user-svc/login`;
             const response = yield this.request({
-                path: `/user-svc/login`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14637,8 +14772,9 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/self`;
             const response = yield this.request({
-                path: `/user-svc/self`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14665,8 +14801,9 @@ class UserSvcApi extends BaseAPI {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
+            let urlPath = `/user-svc/refresh-token`;
             const response = yield this.request({
-                path: `/user-svc/refresh-token`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14696,8 +14833,9 @@ class UserSvcApi extends BaseAPI {
             const queryParameters = {};
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
+            let urlPath = `/user-svc/register`;
             const response = yield this.request({
-                path: `/user-svc/register`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14734,8 +14872,10 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/{userId}/reset-password`;
+            urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
             const response = yield this.request({
-                path: `/user-svc/{userId}/reset-password`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14766,8 +14906,9 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/tokens`;
             const response = yield this.request({
-                path: `/user-svc/tokens`,
+                path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14787,7 +14928,7 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Enroll a list of users by contact or user Id to acquire a role. Works on future or current users.  Requires the `user-svc:enroll:edit` permission, which by default all users have. A user can only enroll an other user to a role if the user \"owns\" that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:*\" such as \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:*\" roles such as \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:*\" such as \"user-svc:org:{%orgId}:user\".
+     * Enroll a list of users by contact or user Id to acquire a role. Works on future or current users.  Requires the `user-svc:enroll:edit` permission, which by default all users have. A user can only enroll an other user to a role if the user \"owns\" that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).  Examples: - A user with the slug `joe-doe` owns roles like `joe-doe:*` such as `joe-doe:any-custom-role`. - A user with any slug who has the role `my-service:admin` owns `my-service:*` roles such as `my-service:user`. - A user with any slug who has the role `user-svc:org:{%orgId}:admin` owns `user-svc:org:{%orgId}:*` such as `user-svc:org:{%orgId}:user`.
      * Save Enrolls
      */
     saveEnrollsRaw(requestParameters, initOverrides) {
@@ -14801,8 +14942,9 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/enrolls`;
             const response = yield this.request({
-                path: `/user-svc/enrolls`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14812,7 +14954,7 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Enroll a list of users by contact or user Id to acquire a role. Works on future or current users.  Requires the `user-svc:enroll:edit` permission, which by default all users have. A user can only enroll an other user to a role if the user \"owns\" that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:*\" such as \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:*\" roles such as \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:*\" such as \"user-svc:org:{%orgId}:user\".
+     * Enroll a list of users by contact or user Id to acquire a role. Works on future or current users.  Requires the `user-svc:enroll:edit` permission, which by default all users have. A user can only enroll an other user to a role if the user \"owns\" that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).  Examples: - A user with the slug `joe-doe` owns roles like `joe-doe:*` such as `joe-doe:any-custom-role`. - A user with any slug who has the role `my-service:admin` owns `my-service:*` roles such as `my-service:user`. - A user with any slug who has the role `user-svc:org:{%orgId}:admin` owns `user-svc:org:{%orgId}:*` such as `user-svc:org:{%orgId}:user`.
      * Save Enrolls
      */
     saveEnrolls(requestParameters, initOverrides) {
@@ -14839,8 +14981,11 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/organization/{organizationId}/user/{userId}`;
+            urlPath = urlPath.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId'])));
+            urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
             const response = yield this.request({
-                path: `/user-svc/organization/{organizationId}/user/{userId}`.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId']))).replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14874,8 +15019,9 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/organization`;
             const response = yield this.request({
-                path: `/user-svc/organization`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14909,8 +15055,9 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/permits`;
             const response = yield this.request({
-                path: `/user-svc/permits`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14944,8 +15091,9 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/self`;
             const response = yield this.request({
-                path: `/user-svc/self`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -14982,8 +15130,10 @@ class UserSvcApi extends BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/user-svc/user/{userId}`;
+            urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
             const response = yield this.request({
-                path: `/user-svc/user/{userId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
