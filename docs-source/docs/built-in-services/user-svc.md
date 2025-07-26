@@ -171,12 +171,6 @@ A user token produced upon login contains all the roles a user has.
 
 When checking if a user is authorized, there are a few common patterns to choose from:
 
-## Enrolls
-
-Enrollments are a flexible way to assign roles to users, whether they already exist in the system or will be joining later. They enable role pre-assignment, which means users receive roles as soon as they register or log in, based on matching criteria like email.
-
-For CLI usage see [this section](#role-enrollment).
-
 ### Roles without permissions
 
 Roles are powerful, even without specific permissions attached. One common use case is managing product subscriptions.
@@ -213,7 +207,7 @@ For example, if an admin gives you the role `user-svc:org:acme:user`, that doesn
 
 ---
 
-#### What does it nean to own a role?
+#### What does it mean to own a role?
 
 A user (or service) _owns_ a role if **either** of the following is true:
 
@@ -252,11 +246,31 @@ Then you also own:
 
 That means you're authorized to assign those roles to others.
 
-### Why this matters
+#### Why role ownership matters
 
 This ownership rule prevents **privilege escalation**.
 
 Without this rule, anyone with a role could assign it to others — even roles they shouldn’t control. Enforcing ownership ensures only trusted users or services can delegate access.
+
+## Enrolls
+
+Enrollments are a flexible way to assign roles to users, whether they already exist in the system or will be joining later. They enable role pre-assignment, which means users receive roles as soon as they register or log in, based on matching criteria like email.
+
+```yaml
+# Enrollment through contact ID
+id: "admin-enrollment-1"
+role: "user-svc:admin"
+contactId: "admin@company.com"
+```
+
+```yaml
+# Enrollment through user ID
+id: "payment-processor-enrollment"
+role: "payment-svc:processor"
+userId: "usr_abc123"
+```
+
+For CLI usage see [this section](#enrollment).
 
 ## Organizations
 
@@ -576,7 +590,7 @@ oo permit list
 # chat-read-permit   chat-svc:message:read   frontend-app
 ```
 
-### Role Enrollment
+### Enrollment
 
 #### `oo enroll save` - Assign Roles
 
