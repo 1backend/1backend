@@ -240,8 +240,11 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/change-password`;
+
         const response = await this.request({
-            path: `/user-svc/change-password`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -282,8 +285,11 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/user`;
+
         const response = await this.request({
-            path: `/user-svc/user`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -331,8 +337,13 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/organization/{organizationId}/user/{userId}`;
+        urlPath = urlPath.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId'])));
+        urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
+
         const response = await this.request({
-            path: `/user-svc/organization/{organizationId}/user/{userId}`.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId']))).replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -371,8 +382,12 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/user/{userId}`;
+        urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
+
         const response = await this.request({
-            path: `/user-svc/user/{userId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -408,8 +423,11 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/user-svc/token/exchange`;
+
         const response = await this.request({
-            path: `/user-svc/token/exchange`,
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
@@ -446,8 +464,11 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/user-svc/token/exchange`;
+
         const response = await this.request({
-            path: `/user-svc/token/exchange`,
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
@@ -475,8 +496,11 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/user-svc/public-key`;
+
         const response = await this.request({
-            path: `/user-svc/public-key`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -514,8 +538,12 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/self/has/{permission}`;
+        urlPath = urlPath.replace(`{${"permission"}}`, encodeURIComponent(String(requestParameters['permission'])));
+
         const response = await this.request({
-            path: `/user-svc/self/has/{permission}`.replace(`{${"permission"}}`, encodeURIComponent(String(requestParameters['permission']))),
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -555,8 +583,11 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/enrolls`;
+
         const response = await this.request({
-            path: `/user-svc/enrolls`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -597,8 +628,11 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/organizations`;
+
         const response = await this.request({
-            path: `/user-svc/organizations`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -637,8 +671,12 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/permissions`;
+        urlPath = urlPath.replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId'])));
+
         const response = await this.request({
-            path: `/user-svc/permissions`.replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId']))),
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -678,8 +716,11 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/permits`;
+
         const response = await this.request({
-            path: `/user-svc/permits`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -713,8 +754,11 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/users`;
+
         const response = await this.request({
-            path: `/user-svc/users`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -751,8 +795,11 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/user-svc/login`;
+
         const response = await this.request({
-            path: `/user-svc/login`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -786,8 +833,11 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/self`;
+
         const response = await this.request({
-            path: `/user-svc/self`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -815,8 +865,11 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/user-svc/refresh-token`;
+
         const response = await this.request({
-            path: `/user-svc/refresh-token`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -852,8 +905,11 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+
+        let urlPath = `/user-svc/register`;
+
         const response = await this.request({
-            path: `/user-svc/register`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -901,8 +957,12 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/{userId}/reset-password`;
+        urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
+
         const response = await this.request({
-            path: `/user-svc/{userId}/reset-password`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -936,8 +996,11 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/tokens`;
+
         const response = await this.request({
-            path: `/user-svc/tokens`,
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -957,7 +1020,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Enroll a list of users by contact or user Id to acquire a role. Works on future or current users.  Requires the `user-svc:enroll:edit` permission, which by default all users have. A user can only enroll an other user to a role if the user \"owns\" that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:*\" such as \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:*\" roles such as \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:*\" such as \"user-svc:org:{%orgId}:user\".
+     * Enroll a list of users by contact or user Id to acquire a role. Works on future or current users.  Requires the `user-svc:enroll:edit` permission, which by default all users have. A user can only enroll an other user to a role if the user \"owns\" that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).  Examples: - A user with the slug `joe-doe` owns roles like `joe-doe:*` such as `joe-doe:any-custom-role`. - A user with any slug who has the role `my-service:admin` owns `my-service:*` roles such as `my-service:user`. - A user with any slug who has the role `user-svc:org:{%orgId}:admin` owns `user-svc:org:{%orgId}:*` such as `user-svc:org:{%orgId}:user`.
      * Save Enrolls
      */
     async saveEnrollsRaw(requestParameters: SaveEnrollsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcSaveEnrollsResponse>> {
@@ -978,8 +1041,11 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/enrolls`;
+
         const response = await this.request({
-            path: `/user-svc/enrolls`,
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
@@ -990,7 +1056,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Enroll a list of users by contact or user Id to acquire a role. Works on future or current users.  Requires the `user-svc:enroll:edit` permission, which by default all users have. A user can only enroll an other user to a role if the user \"owns\" that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).  Examples: - A user with the slug \"joe-doe\" owns roles like \"joe-doe:*\" such as \"joe-doe:any-custom-role\". - A user with any slug who has the role \"my-service:admin\" owns \"my-service:*\" roles such as \"my-service:user\". - A user with any slug who has the role \"user-svc:org:{%orgId}:admin\" owns \"user-svc:org:{%orgId}:*\" such as \"user-svc:org:{%orgId}:user\".
+     * Enroll a list of users by contact or user Id to acquire a role. Works on future or current users.  Requires the `user-svc:enroll:edit` permission, which by default all users have. A user can only enroll an other user to a role if the user \"owns\" that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).  Examples: - A user with the slug `joe-doe` owns roles like `joe-doe:*` such as `joe-doe:any-custom-role`. - A user with any slug who has the role `my-service:admin` owns `my-service:*` roles such as `my-service:user`. - A user with any slug who has the role `user-svc:org:{%orgId}:admin` owns `user-svc:org:{%orgId}:*` such as `user-svc:org:{%orgId}:user`.
      * Save Enrolls
      */
     async saveEnrolls(requestParameters: SaveEnrollsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcSaveEnrollsResponse> {
@@ -1027,8 +1093,13 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/organization/{organizationId}/user/{userId}`;
+        urlPath = urlPath.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId'])));
+        urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
+
         const response = await this.request({
-            path: `/user-svc/organization/{organizationId}/user/{userId}`.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId']))).replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
@@ -1069,8 +1140,11 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/organization`;
+
         const response = await this.request({
-            path: `/user-svc/organization`,
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
@@ -1111,8 +1185,11 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/permits`;
+
         const response = await this.request({
-            path: `/user-svc/permits`,
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
@@ -1153,8 +1230,11 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/self`;
+
         const response = await this.request({
-            path: `/user-svc/self`,
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
@@ -1202,8 +1282,12 @@ export class UserSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/user-svc/user/{userId}`;
+        urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
+
         const response = await this.request({
-            path: `/user-svc/user/{userId}`.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId']))),
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,

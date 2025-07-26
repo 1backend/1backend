@@ -93,8 +93,11 @@ export class SecretSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/secret-svc/decrypt`;
+
         const response = await this.request({
-            path: `/secret-svc/decrypt`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -135,8 +138,11 @@ export class SecretSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/secret-svc/encrypt`;
+
         const response = await this.request({
-            path: `/secret-svc/encrypt`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -168,8 +174,11 @@ export class SecretSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/secret-svc/is-secure`;
+
         const response = await this.request({
-            path: `/secret-svc/is-secure`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -202,8 +211,11 @@ export class SecretSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/secret-svc/secrets`;
+
         const response = await this.request({
-            path: `/secret-svc/secrets`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -244,8 +256,11 @@ export class SecretSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/secret-svc/secrets`;
+
         const response = await this.request({
-            path: `/secret-svc/secrets`,
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -286,8 +301,11 @@ export class SecretSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/secret-svc/secrets`;
+
         const response = await this.request({
-            path: `/secret-svc/secrets`,
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,

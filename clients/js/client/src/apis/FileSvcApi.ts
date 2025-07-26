@@ -95,8 +95,11 @@ export class FileSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/file-svc/download`;
+
         const response = await this.request({
-            path: `/file-svc/download`,
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
@@ -135,8 +138,12 @@ export class FileSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/file-svc/download/{url}`;
+        urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
+
         const response = await this.request({
-            path: `/file-svc/download/{url}`.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -167,8 +174,11 @@ export class FileSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/file-svc/downloads`;
+
         const response = await this.request({
-            path: `/file-svc/downloads`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -201,8 +211,11 @@ export class FileSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/file-svc/uploads`;
+
         const response = await this.request({
-            path: `/file-svc/uploads`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -241,8 +254,12 @@ export class FileSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/file-svc/download/{url}/pause`;
+        urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
+
         const response = await this.request({
-            path: `/file-svc/download/{url}/pause`.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url']))),
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
@@ -276,8 +293,12 @@ export class FileSvcApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/file-svc/serve/download/{url}`;
+        urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
+
         const response = await this.request({
-            path: `/file-svc/serve/download/{url}`.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -311,8 +332,12 @@ export class FileSvcApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+
+        let urlPath = `/file-svc/serve/upload/{fileId}`;
+        urlPath = urlPath.replace(`{${"fileId"}}`, encodeURIComponent(String(requestParameters['fileId'])));
+
         const response = await this.request({
-            path: `/file-svc/serve/upload/{fileId}`.replace(`{${"fileId"}}`, encodeURIComponent(String(requestParameters['fileId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -370,8 +395,11 @@ export class FileSvcApi extends runtime.BaseAPI {
             formParams.append('file', requestParameters['file'] as any);
         }
 
+
+        let urlPath = `/file-svc/upload`;
+
         const response = await this.request({
-            path: `/file-svc/upload`,
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,

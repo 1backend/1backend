@@ -106,8 +106,12 @@ export class RegistrySvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/registry-svc/definition/{id}`;
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+
         const response = await this.request({
-            path: `/registry-svc/definition/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -144,8 +148,12 @@ export class RegistrySvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/registry-svc/node/{url}`;
+        urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
+
         const response = await this.request({
-            path: `/registry-svc/node/{url}`.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url']))),
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -175,8 +183,11 @@ export class RegistrySvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/registry-svc/echo`;
+
         const response = await this.request({
-            path: `/registry-svc/echo`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -207,8 +218,11 @@ export class RegistrySvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/registry-svc/echo`;
+
         const response = await this.request({
-            path: `/registry-svc/echo`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -239,8 +253,11 @@ export class RegistrySvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/registry-svc/echo`;
+
         const response = await this.request({
-            path: `/registry-svc/echo`,
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
@@ -271,8 +288,11 @@ export class RegistrySvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/registry-svc/definitions`;
+
         const response = await this.request({
-            path: `/registry-svc/definitions`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -331,8 +351,11 @@ export class RegistrySvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/registry-svc/instances`;
+
         const response = await this.request({
-            path: `/registry-svc/instances`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -365,8 +388,11 @@ export class RegistrySvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/registry-svc/nodes`;
+
         const response = await this.request({
-            path: `/registry-svc/nodes`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -407,8 +433,11 @@ export class RegistrySvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/registry-svc/instance`;
+
         const response = await this.request({
-            path: `/registry-svc/instance`,
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
@@ -447,8 +476,12 @@ export class RegistrySvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/registry-svc/instance/{id}`;
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+
         const response = await this.request({
-            path: `/registry-svc/instance/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id']))),
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -487,8 +520,11 @@ export class RegistrySvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/registry-svc/definition`;
+
         const response = await this.request({
-            path: `/registry-svc/definition`,
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
@@ -522,8 +558,11 @@ export class RegistrySvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/registry-svc/node/self`;
+
         const response = await this.request({
-            path: `/registry-svc/node/self`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,

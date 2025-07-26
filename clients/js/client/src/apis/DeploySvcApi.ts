@@ -63,8 +63,11 @@ export class DeploySvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/deploy-svc/deployment`;
+
         const response = await this.request({
-            path: `/deploy-svc/deployment`,
+            path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
@@ -98,8 +101,11 @@ export class DeploySvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/deploy-svc/deployments`;
+
         const response = await this.request({
-            path: `/deploy-svc/deployments`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -133,8 +139,11 @@ export class DeploySvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/deploy-svc/deployment`;
+
         const response = await this.request({
-            path: `/deploy-svc/deployment`,
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,

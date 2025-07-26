@@ -35,8 +35,9 @@ export class ConfigSvcApi extends runtime.BaseAPI {
             const queryParameters = {};
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
+            let urlPath = `/config-svc/configs`;
             const response = yield this.request({
-                path: `/config-svc/configs`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -70,8 +71,9 @@ export class ConfigSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/config-svc/config`;
             const response = yield this.request({
-                path: `/config-svc/config`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,

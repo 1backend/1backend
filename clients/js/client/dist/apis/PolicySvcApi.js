@@ -41,8 +41,9 @@ export class PolicySvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/policy-svc/check`;
             const response = yield this.request({
-                path: `/policy-svc/check`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -79,8 +80,10 @@ export class PolicySvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/policy-svc/instance/{instanceId}`;
+            urlPath = urlPath.replace(`{${"instanceId"}}`, encodeURIComponent(String(requestParameters['instanceId'])));
             const response = yield this.request({
-                path: `/policy-svc/instance/{instanceId}`.replace(`{${"instanceId"}}`, encodeURIComponent(String(requestParameters['instanceId']))),
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,

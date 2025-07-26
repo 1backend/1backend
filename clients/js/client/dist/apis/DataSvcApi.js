@@ -41,8 +41,9 @@ export class DataSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/data-svc/object`;
             const response = yield this.request({
-                path: `/data-svc/object`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -76,8 +77,9 @@ export class DataSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/data-svc/objects/delete`;
             const response = yield this.request({
-                path: `/data-svc/objects/delete`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -108,8 +110,9 @@ export class DataSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/data-svc/objects`;
             const response = yield this.request({
-                path: `/data-svc/objects`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -143,8 +146,9 @@ export class DataSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/data-svc/objects/update`;
             const response = yield this.request({
-                path: `/data-svc/objects/update`,
+                path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
@@ -181,8 +185,10 @@ export class DataSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/data-svc/object/{objectId}`;
+            urlPath = urlPath.replace(`{${"objectId"}}`, encodeURIComponent(String(requestParameters['objectId'])));
             const response = yield this.request({
-                path: `/data-svc/object/{objectId}`.replace(`{${"objectId"}}`, encodeURIComponent(String(requestParameters['objectId']))),
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
@@ -216,8 +222,9 @@ export class DataSvcApi extends runtime.BaseAPI {
             if (this.configuration && this.configuration.apiKey) {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
+            let urlPath = `/data-svc/objects/upsert`;
             const response = yield this.request({
-                path: `/data-svc/objects/upsert`,
+                path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,

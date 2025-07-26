@@ -24,19 +24,19 @@ User Svc supports multitenancy: while users are shared globally, tokens, organiz
 
 ## Glossary
 
-**Token**: A JWT (JSON Web Token) issued and signed by the User Svc, used to authenticate both human and service accounts.
+**[Token](#tokens)**: A JWT (JSON Web Token) issued and signed by the User Svc, used to authenticate both human and service accounts.
 
-**Role**: A simple string identifier like `user-svc:user` or `user-svc:org:{orgId}:admin` that represents a specific capability or access level. Roles are embedded in tokens.
+**[Role](#roles)**: A simple string identifier like `user-svc:user` or `user-svc:org:{orgId}:admin` that represents a specific capability or access level. Roles are embedded in tokens.
 
-**Enroll**: (Enrollment) A mechanism to assign roles to users—both current and future. Enrolls allow roles to be claimed later, once the user joins or logs in.
+**[Enroll](#enrolls)**: (Enrollment) A mechanism to assign roles to users—both current and future. Enrolls allow roles to be claimed later, once the user joins or logs in.
 
-**Permission**: A string such as `petstore-svc:read`, typically mapping to an API action or endpoint. Roles can bundle multiple permissions.
+**[Permission](#permissions)**: A string such as `petstore-svc:read`, typically mapping to an API action or endpoint. Roles can bundle multiple permissions.
 
-**Permit**: A mechanism for assigning permissions to users or roles. Permits define who can access what by connecting users or roles with specific permissions.
+**[Permit](#permits)**: A mechanism for assigning permissions to users or roles. Permits define who can access what by connecting users or roles with specific permissions.
 
-**Organization**: A way for users to freely associate with each other. Anyone can create organizations and grant membership to others to their organization.
+**[Organization](#organizations)**: A way for users to freely associate with each other. Anyone can create organizations and grant membership to others to their organization.
 
-**Membership**: A formal record that links a user to an organization. Memberships determine which organizations a user belongs to and enable organization-scoped roles to take effect.
+**[Membership](#membership)**: A formal record that links a user to an organization. Memberships determine which organizations a user belongs to and enable organization-scoped roles to take effect.
 
 ## Overview
 
@@ -44,9 +44,9 @@ The most important thing about the User Svc is that service (machine) and user (
 
 Every service you write needs to [register](/docs/1backend-api/register) at startup, or [log in](/docs/1backend-api/login) with the credentials it saves and manages if it's already registered. Just like a human.
 
-A service account is not an admin account, it's a simple user level account. You might wonder how service-to-service calls work then.
+A service account is not an admin account, it's a simple user level account. You might wonder how service-to-service calls work then. The answer is permits.
 
-## Service to service calls
+## Permits
 
 Most endpoints on 1Backend can only be called by administrators by default.
 
@@ -161,11 +161,21 @@ type Claims struct {
 
 Roles are simply strings. They are not a database record, they don't have an ID, name etc. They are simple strings, such as `user-svc:admin`.
 
+```yaml
+# Roles are not a database entity.
+```
+
 A user token produced upon login contains all the roles a user has.
 
 > Efficiency Tip: JWT tokens are sent with every request. Keeping the number of roles minimal improves performance.
 
 When checking if a user is authorized, there are a few common patterns to choose from:
+
+## Enrolls
+
+Enrollments are a flexible way to assign roles to users, whether they already exist in the system or will be joining later. They enable role pre-assignment, which means users receive roles as soon as they register or log in, based on matching criteria like email.
+
+For CLI usage see [this section](#role-enrollment).
 
 ### Roles without permissions
 
@@ -197,7 +207,7 @@ By convention these dynamic values are enclosed in {}. In this example, roles ar
 
 When managing roles in 1Backend (especially through actions like `SaveEnrolls`), it's important to understand a key distinction:
 
-> **Just because you *have* a role doesn’t mean you can *assign* that role to others.**
+> **Just because you _have_ a role doesn’t mean you can _assign_ that role to others.**
 
 For example, if an admin gives you the role `user-svc:org:acme:user`, that doesn’t mean you can turn around and give it to someone else. Only certain users or services can assign roles—they need to **own** them.
 
@@ -205,7 +215,7 @@ For example, if an admin gives you the role `user-svc:org:acme:user`, that doesn
 
 #### What does it nean to own a role?
 
-A user (or service) *owns* a role if **either** of the following is true:
+A user (or service) _owns_ a role if **either** of the following is true:
 
 #### ✅ 1. You created it (slug-based ownership)
 
@@ -248,13 +258,9 @@ This ownership rule prevents **privilege escalation**.
 
 Without this rule, anyone with a role could assign it to others — even roles they shouldn’t control. Enforcing ownership ensures only trusted users or services can delegate access.
 
-### Conventions
-
-Each role created must by prefixed by the slug of the account that created it. Said account becomes the owner of the role and only that account can edit the role.
-
 ## Organizations
 
-In the dynamic roles section we already talked about organizations, lets elaborate on them here a bit.
+Organizations provide a way for users to group together and collaborate. Think of them as user-defined domains of trust—similar to GitHub organizations, Slack workspaces, or Discord servers. They enable structured permissioning and scoped roles within a 1Backend application.
 
 ```yaml
 id: "org_eZqC0BbdG2"
@@ -263,29 +269,80 @@ slug: "acme-corporation" # URL-friendly unique identifier for the organization
 createdAt: "2025-01-15T12:00:00Z" # Example ISO 8601 timestamp
 ```
 
+### Organizations and apps
+
+Organizations belong to a specific app. Even if the same user is part of multiple apps, their roles and memberships in one app don’t carry over to another. This ensures that each app has its own separate set of organizations, users, and permissions—cleanly isolated and secure.
+
+```
+                                 +-------------------+
+                                 |     User Svc      |
+                                 |  (Shared Users)   |
+                                 +---------+---------+
+                                           |
+                   +-----------------------+----------------------+
+                   |                                              |
+            +------+-------+                              +-------+------+
+            |     App A     |                              |     App B    |
+            |  (socks.com)  |                              |  (shoes.com) |
+            +------+--------+                              +-------+------+
+                   |                                                |
+        +----------+----------+                        +------------+-----------+
+        |                     |                        |                        |
++-------+-------+     +-------+-------+        +-------+--------+      +--------+-------+
+|  Org A1       |     |  Org A2       |        |  Org B1        |      |  Org B2        |
++-------+-------+     +-------+-------+        +--------+--------+      +--------+-------+
+```
+
+Notes:
+
+- All users are stored centrally in **User Svc**, but each **App** provides isolated "worlds".
+- Each **App** contains independent **Organizations**, **Memberships**, and **Roles**.
+- A **User** can belong to multiple **Apps** and **Organizations**.
+- **Authentication logic** respect app boundaries via the `app` field in the token.
+
 ### Access rules
 
 #### Create
 
 Any logged in user can create an organization, provided the `Organization` slug is not taken yet. The creator becomes the first admin of the organization, acquiring the role of `user-svc:org:{orgId}:admin` role.
 
-#### Membership
+## Membership
 
-Admins can assign other users member (`user-svc:org:{orgId}:user`) or admin roles (`user-svc:org:{orgId}:admin`) for the organizations they administer.
+A membership is a formal link between a user and an organization. It determines what organizations a user belongs to and enables organization-scoped roles to take effect (such as `user-svc:org:{orgId}:user` or `user-svc:org:{orgId}:admin`).
 
-### Use cases
-
-Organizations let users to freely associate with each other and create groups. Think about Discord servers, Slack workspaces, Github organizations etc.
+Similarly how [`Enrolls`](#enrolls) add roles to users, Memberships add users to organizations. Memberships are created by the [`SaveEnrolls`](/docs/1backend-api/save-enrolls) endpoint, which allows you to assign roles to users based on their organization membership.
 
 ## Permissions
 
-### Conventions
+A permission is a simple string that represents a specific capability or access right within your service—e.g., `petstore-svc:pet:create`, `payment-svc:process`, or `chat-svc:message:read`. Permissions are purely convention-based and aren't backed by a database entity. They are just strings—but they become powerful when combined with permits.
+
+```yaml
+# Permissions are not a database entity.
+```
+
+> Permissions typically correspond to protected API actions. They're meant to be human-readable and composable.
+
+Permissions alone don’t do anything. To make a permission meaningful, you must grant it to someone—either a user or a role. This is done by creating a [`Permit`](#permits).
+
+Permits are the glue between permissions, roles, and service slugs.
+
+### Permission access rules
 
 Each permission created must by prefixed by the slug of the account that created it. Said account becomes the owner of the permission and only that account can add the permission to a role.
 
 > Once you (your service) own a permission (by creating it, and it being prefixed by your account slug), you can add it to any role, not just roles owned by you.
 
-Example; let's say your service is `petstore-svc`. 1Backend prefers fine-grained access control, so you are free to define your own permissions, such as `petstore-svc:read` or `petstore-svc:pet:read`.
+#### Permission examples
+
+| Permission                        | Purpose                     |
+| --------------------------------- | --------------------------- |
+| `petstore-svc:pet:read`           | View pet data               |
+| `petstore-svc:pet:create`         | Add new pets                |
+| `petstore-svc:pet:delete`         | Remove pets from the system |
+| `petstore-svc:appointment:book`   | Book appointments for pets  |
+| `petstore-svc:appointment:cancel` | Cancel appointments         |
+
+---
 
 ## Services with multiple nodes
 
@@ -484,11 +541,11 @@ roles:
 - id: "chat-read-permit"
   permissionId: "chat-svc:message:read"
   slugs: ["frontend-app", "mobile-app"]
-  
+
 - id: "chat-write-permit"
   permissionId: "chat-svc:message:create"
   roles: ["chat-svc:user"]
-  
+
 - id: "admin-chat-permit"
   permissionId: "chat-svc:admin"
   roles: ["user-svc:admin"]
@@ -516,7 +573,7 @@ oo permit list
 # Example output:
 # PERMIT ID          PERMISSION              SLUGS               ROLES
 # payment-api-access payment-svc:process     order-service       payment-svc:processor
-# chat-read-permit   chat-svc:message:read   frontend-app        
+# chat-read-permit   chat-svc:message:read   frontend-app
 ```
 
 ### Role Enrollment

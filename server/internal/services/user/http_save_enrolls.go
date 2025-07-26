@@ -35,9 +35,9 @@ import (
 // @Description - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).
 // @Description
 // @Description Examples:
-// @Description - A user with the slug "joe-doe" owns roles like "joe-doe:*" such as "joe-doe:any-custom-role".
-// @Description - A user with any slug who has the role "my-service:admin" owns "my-service:*" roles such as "my-service:user".
-// @Description - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:*" such as "user-svc:org:{%orgId}:user".
+// @Description - A user with the slug `joe-doe` owns roles like `joe-doe:*` such as `joe-doe:any-custom-role`.
+// @Description - A user with any slug who has the role `my-service:admin` owns `my-service:*` roles such as `my-service:user`.
+// @Description - A user with any slug who has the role `user-svc:org:{%orgId}:admin` owns `user-svc:org:{%orgId}:*` such as `user-svc:org:{%orgId}:user`.
 // @Tags User Svc
 // @Accept json
 // @Produce json

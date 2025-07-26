@@ -68,8 +68,11 @@ export class ModelSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/model-svc/default-model/status`;
+
         const response = await this.request({
-            path: `/model-svc/default-model/status`,
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -107,8 +110,12 @@ export class ModelSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/model-svc/model/{modelId}`;
+        urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
+
         const response = await this.request({
-            path: `/model-svc/model/{modelId}`.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -146,8 +153,12 @@ export class ModelSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/model-svc/model/{modelId}/status`;
+        urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
+
         const response = await this.request({
-            path: `/model-svc/model/{modelId}/status`.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId']))),
+            path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -178,8 +189,11 @@ export class ModelSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/model-svc/models`;
+
         const response = await this.request({
-            path: `/model-svc/models`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -210,8 +224,11 @@ export class ModelSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/model-svc/platforms`;
+
         const response = await this.request({
-            path: `/model-svc/platforms`,
+            path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -249,8 +266,12 @@ export class ModelSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/model-svc/model/{modelId}/make-default`;
+        urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
+
         const response = await this.request({
-            path: `/model-svc/model/{modelId}/make-default`.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId']))),
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
@@ -281,8 +302,11 @@ export class ModelSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/model-svc/default-model/start`;
+
         const response = await this.request({
-            path: `/model-svc/default-model/start`,
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
@@ -320,8 +344,12 @@ export class ModelSvcApi extends runtime.BaseAPI {
             headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
         }
 
+
+        let urlPath = `/model-svc/model/{modelId}/start`;
+        urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
+
         const response = await this.request({
-            path: `/model-svc/model/{modelId}/start`.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId']))),
+            path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
