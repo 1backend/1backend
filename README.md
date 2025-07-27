@@ -19,19 +19,9 @@
 
 ## Overview
 
-Although web frameworks are abundant and sophisticated, they’re not built with microservices architectures in mind and often struggle to scale across large fleets of servers. As a result, many startups and enterprise teams hand‑roll their own distributed platforms—there simply isn’t a clear winner in this space. Unlike the more unified JavaScript ecosystem, the backend world remains highly fragmented by a multitude of languages and tools.
+Most web frameworks are built for single, monolithic apps—not for systems made up of many services. But as teams grow and apps become more complex, splitting things into smaller services becomes a practical need—often more about managing people than scaling servers. That shift brings a lot of infrastructure overhead.
 
-When organizations venture into this territory, they can suffer—and even endure a 100×—productivity drop. At first, they may shrug it off—after all, they can hire more expensive engineers—but in practice, lengthy rewrites or “next‑generation platforms” can grind an entire company to a halt, costing market leaders their competitive edge.
-
-Conceived in the author’s mind for over ten years, 1Backend aspires to be the operating system for distributed backend applications—offering a unified, scalable foundation that finally brings cohesion and efficiency to a fragmented landscape.
-
-## Context
-
-1Backend was originally an experimental serverless platform, built by a microservices veteran and his friends. It gained interest back in 2017, but development paused as the team moved on to other ventures.
-
-Years later, while building an on-premise AI platform, the original creator realized there was still no microservices backend that fully matched their vision.
-
-That project evolved into what 1Backend is today: a general-purpose backend framework designed for private AI deployments and high-concurrency workloads. It also includes a ChatGPT-inspired interface for user interaction, along with a network-accessible API for machines—but at its core, 1Backend is built to be a robust, flexible foundation for modern backend systems.
+1Backend is a framework and runtime for building distributed web apps from the start. It comes with the basics—like service orchestration, APIs, and tooling to run and interact with your services—so you don’t need to stitch together a dozen systems just to get moving. And when you outgrow the built-ins, it plays well with standard tools in the ecosystem.
 
 <img src="https://singulatron.com/assets/1b.png" />
 
@@ -198,10 +188,6 @@ roles:
 $ oo post /prompt-svc/prompt --sync=true --prompt="Is a cat an animal? Just answer with yes or no please."
 # see example response above...
 ```
-
-## Context
-
-1Backend is a microservices-based AI platform, the seeds of which began taking shape in 2013 while I was at Hailo, an Uber competitor. The idea stuck with me and kept evolving over the years – including during my time at [Micro](https://github.com/micro/micro), a microservices platform company. I assumed someone else would eventually build it, but with the AI boom and the wave of AI apps we’re rolling out, I’ve realized it’s time to build it myself.
 
 ## Run On Your Servers
 
