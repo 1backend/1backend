@@ -21,7 +21,7 @@
 
 Most web frameworks are built for single, monolithic apps—not for systems made up of many services. But as teams grow and apps become more complex, splitting things into smaller services becomes a practical need—often more about managing people than scaling servers. That shift brings a lot of infrastructure overhead.
 
-1Backend is a framework and runtime for building distributed web apps from the start. It comes with the basics—like service orchestration, APIs, and tooling to run and interact with your services—so you don’t need to stitch together a dozen systems just to get moving. And when you outgrow the built-ins, it plays well with standard tools in the ecosystem.
+**1Backend** is a framework and runtime for building distributed web apps from the start. It comes with the basics—like service orchestration, APIs, and tooling to run and interact with your services—so you don’t need to stitch together a dozen systems just to get moving. And when you outgrow the built-ins, it plays well with standard tools in the ecosystem.
 
 <img src="https://singulatron.com/assets/1b.png" />
 
