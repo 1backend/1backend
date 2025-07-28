@@ -19,9 +19,11 @@
 
 ## Overview
 
-Most web frameworks are built for single, monolithic apps—not for systems made up of many services. But as teams grow and apps become more complex, splitting things into smaller services becomes a practical need—often more about managing people than scaling servers. That shift brings a lot of infrastructure overhead.
+The story of 1Backend began in 2017, but the current incarnation emerged when a seasoned microservices platform architect set out to build an on-premise ChatGPT alternative. What started as a focused AI project quickly grew in complexity—naturally demanding a microservices approach.
 
-**1Backend** is a framework and runtime for building distributed web apps from the start. It comes with handy features—like user management, config, secrets, tooling to run and interact with your services and many more—so you don’t need to stitch together a dozen systems just to get moving. And when you outgrow the built-ins, it plays well with standard tools in the ecosystem.
+With over a decade of experience and ideas in building scalable systems, the author saw an opportunity to merge two passions: modern AI and battle-tested microservice design.
+
+1Backend is the result—a framework and runtime for building distributed web applications from day one. It includes everything you need to get started—running AI models, user management, config, secrets, request routing, proxying, and more—so you don’t need to duct-tape a dozen tools together. And when your needs evolve, it integrates cleanly with standard tools from the broader ecosystem.
 
 <img src="https://singulatron.com/assets/1b.png" />
 
