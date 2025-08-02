@@ -8,19 +8,7 @@ tags:
 
 1Backend doesn't force you to use any particular patterns, languages, stacks, databases, or even conventions. 1Backend services themselves however follow some light conventions.
 
-## API naming guidelines
-
-### List\* endpoints
-
-It is advised that endpoints returning entities are called `ListEntities`, eg. `ListMessages`. Do not create read/query endpoints that return a single entity unless you have good reasons to do so.
-
-The list endpoints should have a few standard filters ideally:
-
-#### `ids` field
-
-The field `ids` should enable single and multiread by ID queries in list endpoints.
-
-#### Pagination
+## Pagination
 
 Pagination should happen with these fields in the top level of the List request:
 
@@ -40,17 +28,49 @@ Pagination should happen with these fields in the top level of the List request:
 }
 ```
 
-#### createdAt & updatedAt ordering
+### `createdAt` & `updatedAt` ordering
 
-Extracting data from microservices into external systems (like BigQuery) must respect service boundaries. Since each service owns its data, the only supported way to access it is through its API—making efficient pagination essential.
+When exporting data from microservices into external systems (such as BigQuery), it’s important to respect **service boundaries**.  
+Each service owns its own data, and the only supported way to access it is through that service’s API.  
+This makes **efficient pagination** critical for both performance and reliability.
 
-Traditional offset-based pagination can be inefficient in distributed systems, so 1Backend services use cursor-based pagination via the afterTime field.
+Offset-based pagination (e.g., `offset=100&limit=50`) can be slow and unreliable in distributed systems, especially as datasets grow or records change during retrieval.  
+Instead, 1Backend services use **cursor-based pagination**, where the client provides a “bookmark” that tells the API where to resume.  
+For time-based pagination, this bookmark is expressed through the `afterTime` field.
 
-- Pagination using createdAt allows clients to perform a full scan of all records. This is typically done in ascending order, starting from the earliest entry.
+### Common ordering strategies
 
-- Pagination using updatedAt is ideal for retrieving recently modified records. When sorted in descending order, it helps clients fetch the latest updates efficiently.
+- **Pagination by `createdAt`**  
+  Use when you need to retrieve _all_ records from the beginning, such as during a full export.  
+  Typically ordered **ascending**, starting with the oldest entries and moving forward in time.
 
-## Save\* endpoints
+- **Pagination by `updatedAt`**  
+  Use when you need to retrieve _recently changed_ records, such as for an incremental sync.  
+  Typically ordered **descending**, returning the most recent changes first.
+
+---
+
+### `after` and `afterTime` Fields
+
+In theory, a pagination cursor could be named simply `after` and accept any type of value (or an array of values).  
+However, when the cursor represents a timestamp, using a generic `after` field would require extra parsing logic to convert it into a `time.Time` object in Go.
+
+To avoid this and allow **automatic unmarshaling** into `time.Time`, the convention for time-based pagination is to name the field **`afterTime`**.  
+This makes the expected format explicit (RFC3339 timestamp) and removes the need for custom parsing.
+
+## API naming guidelines
+
+### List\* endpoints
+
+It is advised that endpoints returning entities are called `ListEntities`, eg. `ListMessages`. Do not create read/query endpoints that return a single entity unless you have good reasons to do so.
+
+The list endpoints should have a few standard filters ideally:
+
+#### `ids` field
+
+The field `ids` should enable single and multiread by ID queries in list endpoints.
+
+### Save\* endpoints
 
 For endpoints that create or update entities, it’s recommended to use a unified SaveEntities naming convention (e.g., SaveMessages).
 

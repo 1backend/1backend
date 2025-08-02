@@ -2361,6 +2361,12 @@ definitions:
       InstanceStatusUnknown: Default state when the instance status is not yet determined
       InstanceStatusUnreachable: Instance is not reachable, possibly down or with
         network issues
+    x-enum-descriptions:
+    - Default state when the instance status is not yet determined
+    - Instance is fully operational and responding as expected
+    - Instance is responding but with performance issues or partial failures
+    - Instance is not reachable, possibly down or with network issues
+    - Instance encountered errors or failed multiple health checks
     x-enum-varnames:
     - InstanceStatusUnknown
     - InstanceStatusHealthy
