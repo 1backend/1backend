@@ -133,7 +133,7 @@ Host With 1Backend
 
 ## `OB_NODE_ID`
 
-For information about this, please refer to the [Registry Svc Node section](/docs/built-in-services/registry-svc#node)
+For information about this, please refer to the [Registry Svc Node section](/docs/built-in-services/registry-svc#node-management--cluster-topology)
 
 ## `OB_SERVER_URL`
 
