@@ -1,5 +1,5 @@
 ---
-sidebar_position: 80
+sidebar_position: 30
 tags:
   - config-svc
   - configuration

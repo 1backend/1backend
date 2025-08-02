@@ -1,5 +1,5 @@
 ---
-sidebar_position: 50
+sidebar_position: 80
 tags:
   - deploy-svc
   - deploy
@@ -45,7 +45,7 @@ Deployment files should be in YAML format with the following structure:
 
 ```yaml
 id: "depl_myservice123"
-definitionId: "def_myservice456"  # Links to Registry Svc Definition
+definitionId: "def_myservice456" # Links to Registry Svc Definition
 name: "user-service-v2"
 description: "Handles user service requests"
 replicas: 3
@@ -54,13 +54,13 @@ strategy:
   maxUnavailable: 1
   maxSurge: 2
 resources:
-  cpu: "500m"       # 0.5 CPU cores
-  memory: "256Mi"   # 256 MB RAM
-  vram: "24GB"      # GPU memory (optional)
+  cpu: "500m" # 0.5 CPU cores
+  memory: "256Mi" # 256 MB RAM
+  vram: "24GB" # GPU memory (optional)
 autoScaling:
   minReplicas: 2
   maxReplicas: 10
-  cpuThreshold: 80  # Scale up at 80% CPU
+  cpuThreshold: 80 # Scale up at 80% CPU
 targetRegions:
   - cluster: "us-west1"
     zone: "us-west1-b"
@@ -98,7 +98,7 @@ Example output:
 
 ```
 ID                DEFINITION ID    STATUS      DETAILS
-depl_dbOdi5eLQK   test-a           OK          
+depl_dbOdi5eLQK   test-a           OK
 depl_dy2PDIkzqf   test-b           Error       build failed: COPY failed: file not found...
 depl_user123      def_user456      Deploying   Starting container instances...
 ```
@@ -162,16 +162,16 @@ replicas: 5
 autoScaling:
   minReplicas: 2
   maxReplicas: 20
-  cpuThreshold: 75  # Scale up when average CPU > 75%
+  cpuThreshold: 75 # Scale up when average CPU > 75%
 ```
 
 ### Resource Allocation
 
 ```yaml
 resources:
-  cpu: "2"          # 2 CPU cores
-  memory: "4Gi"     # 4 GB RAM
-  vram: "48GB"      # GPU memory for AI workloads
+  cpu: "2" # 2 CPU cores
+  memory: "4Gi" # 4 GB RAM
+  vram: "48GB" # GPU memory for AI workloads
 ```
 
 #### Resource Format Examples
@@ -199,8 +199,8 @@ vram: "48GB"     # High-memory GPU
 ```yaml
 strategy:
   type: "RollingUpdate"
-  maxUnavailable: 1     # Max instances down during update
-  maxSurge: 2          # Max extra instances during update
+  maxUnavailable: 1 # Max instances down during update
+  maxSurge: 2 # Max extra instances during update
 ```
 
 Rolling updates ensure **zero-downtime deployments** by:
@@ -264,7 +264,7 @@ replicas: 2
 resources:
   cpu: "8"
   memory: "32Gi"
-  vram: "80GB"    # High-end GPU requirement
+  vram: "80GB" # High-end GPU requirement
 autoScaling:
   minReplicas: 1
   maxReplicas: 4
@@ -289,7 +289,7 @@ description: "User management microservice"
 replicas: 3
 strategy:
   type: "RollingUpdate"
-  maxUnavailable: 0    # Zero downtime
+  maxUnavailable: 0 # Zero downtime
   maxSurge: 1
 resources:
   cpu: "500m"
@@ -313,11 +313,11 @@ id: "depl_dev_api"
 definitionId: "def_api_dev"
 name: "api-development"
 description: "Development API server"
-replicas: 1          # Single instance for dev
+replicas: 1 # Single instance for dev
 strategy:
-  type: "Recreate"   # Simpler for development
+  type: "Recreate" # Simpler for development
 resources:
-  cpu: "250m"        # Minimal resources
+  cpu: "250m" # Minimal resources
   memory: "128Mi"
 envars:
   NODE_ENV: "development"
@@ -334,8 +334,8 @@ envars:
 targetRegions:
   - cluster: "production-cluster"
     zone: "zone-a"
-  - cluster: "gpu-cluster"      # For GPU workloads
-  - cluster: "local-docker"     # For local development
+  - cluster: "gpu-cluster" # For GPU workloads
+  - cluster: "local-docker" # For local development
 ```
 
 ### Allocation Algorithm
@@ -360,7 +360,7 @@ sequenceDiagram
     participant RS as Registry Svc
     participant CS as Container Svc
     participant Node as Node
-    
+
     DS->>RS: List available nodes
     DS->>RS: Get service definitions
     DS->>CS: Start container on node
@@ -409,7 +409,7 @@ envars:
   # Reference secrets (when Secret Svc integration available)
   DATABASE_PASSWORD: "{{secret:db-password}}"
   API_KEY: "{{secret:external-api-key}}"
-  
+
   # Environment-specific values
   ENVIRONMENT: "{{env:DEPLOY_ENV}}"
   BUILD_VERSION: "{{env:BUILD_NUMBER}}"
@@ -453,14 +453,14 @@ When services fail, Deploy Svc automatically:
 ```yaml
 # Optimize resource allocation
 resources:
-  cpu: "500m"        # Right-size CPU allocation
-  memory: "256Mi"    # Prevent memory waste
-  
+  cpu: "500m" # Right-size CPU allocation
+  memory: "256Mi" # Prevent memory waste
+
 # Configure appropriate scaling
 autoScaling:
-  minReplicas: 2     # Maintain minimum availability
-  maxReplicas: 8     # Cap maximum resources
-  cpuThreshold: 70   # Scale before hitting limits
+  minReplicas: 2 # Maintain minimum availability
+  maxReplicas: 8 # Cap maximum resources
+  cpuThreshold: 70 # Scale before hitting limits
 ```
 
 ### Deployment Speed
@@ -469,8 +469,8 @@ autoScaling:
 # Fast deployment strategy
 strategy:
   type: "RollingUpdate"
-  maxUnavailable: 0   # Zero downtime
-  maxSurge: 3         # Parallel deployments
+  maxUnavailable: 0 # Zero downtime
+  maxSurge: 3 # Parallel deployments
 ```
 
 ## Troubleshooting
@@ -505,8 +505,8 @@ oo get /source-svc/checkout --url="https://github.com/user/repo.git"
 ```yaml
 # Reduce resource requirements
 resources:
-  cpu: "250m"      # Reduced from "1"
-  memory: "128Mi"  # Reduced from "512Mi"
+  cpu: "250m" # Reduced from "1"
+  memory: "128Mi" # Reduced from "512Mi"
 ```
 
 ### Debug Commands
@@ -524,11 +524,11 @@ oo deployment list --full
 
 ## API Reference Summary
 
-| Endpoint | Method | Purpose |
-|----------|---------|---------|
-| `/deploy-svc/deployment` | PUT | Save/update deployment |
-| `/deploy-svc/deployments` | POST | List deployments |
-| `/deploy-svc/deployment` | DELETE | Delete deployment |
+| Endpoint                  | Method | Purpose                |
+| ------------------------- | ------ | ---------------------- |
+| `/deploy-svc/deployment`  | PUT    | Save/update deployment |
+| `/deploy-svc/deployments` | POST   | List deployments       |
+| `/deploy-svc/deployment`  | DELETE | Delete deployment      |
 
 ## Related Services
 
