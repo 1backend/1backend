@@ -195,7 +195,7 @@ user-svc:org:{org_dBZRCej3fo}:admin
 user-svc:org:{org_dBZRCej3fo}:user
 ```
 
-By convention these dynamic values are enclosed in {}. In this example, roles are assigned per organization. For more details, see the Organizations section.
+By convention these dynamic values are enclosed in `{}`. In this example, roles are assigned per organization. For more details, see the [Organizations](#organizations) section.
 
 ### Owning roles vs. just having them
 
