@@ -1,0 +1,1 @@
+(self.webpackChunksingulatron_api_docs=self.webpackChunksingulatron_api_docs||[]).push([[6473],{15340:()=>{},20217:()=>{},28202:()=>{},42634:()=>{},49730:()=>{},50477:()=>{},79838:()=>{},96452:()=>{}}]);

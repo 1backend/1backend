@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunksingulatron_api_docs=self.webpackChunksingulatron_api_docs||[]).push([[2589],{72589:(s,a,n)=>{n.r(a)}}]);
