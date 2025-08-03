@@ -10,7 +10,57 @@ tags:
 
 ## Pagination
 
-Pagination should happen with these fields in the top level of the List request:
+### Offset vs. cursor pagination in distributed systems
+
+In distributed systems—especially when dealing with large datasets or high write volumes—**OFFSET-based pagination** is inefficient and unstable because:
+
+- **Performance:** The database still has to scan through all skipped rows before returning results.
+- **Consistency:** New inserts or deletes between requests can cause missing or duplicated results.
+
+---
+
+### Cursor-based pagination
+
+Cursor-based pagination solves these problems by:
+
+1. Using a **cursor** (often an encoded value, like a timestamp or an ID) that marks your position in the result set.
+2. Querying for results **"after"** that cursor instead of skipping rows.
+3. Returning a new cursor in each response for the client to use for the next page.
+
+---
+
+#### Example
+
+**Request 1:**
+
+```http
+GET /items?limit=10
+```
+
+**Response 1:**
+
+```json
+{
+  "items": [...],
+  "next_cursor": "2023-08-01T12:00:00Z"
+}
+```
+
+**Request 2:**
+
+```http
+GET /items?limit=10&after=2023-08-01T12:00:00Z
+```
+
+**Common names for cursor-bbased pagination**:
+
+- Cursor pagination (common in APIs like GraphQL and Twitter API)
+- Keyset pagination (common in SQL performance discussions)
+- Sometimes just "after-based pagination" (naming it after the query parameter)
+
+### Field name conventions
+
+Pagination should happen with these fields in the top level of a `List` request:
 
 ```json
 {
