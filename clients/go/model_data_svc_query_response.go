@@ -40,23 +40,7 @@ func NewDataSvcQueryResponseWithDefaults() *DataSvcQueryResponse {
 	return &this
 }
 
-// GetObjects returns the Objects field value if set, zero value otherwise.
-func (o *DataSvcQueryResponse) GetObjects() []DataSvcObject {
-	if o == nil || IsNil(o.Objects) {
-		var ret []DataSvcObject
-		return ret
-	}
-	return o.Objects
-}
 
-// GetObjectsOk returns a tuple with the Objects field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DataSvcQueryResponse) GetObjectsOk() ([]DataSvcObject, bool) {
-	if o == nil || IsNil(o.Objects) {
-		return nil, false
-	}
-	return o.Objects, true
-}
 
 // HasObjects returns a boolean if a field has been set.
 func (o *DataSvcQueryResponse) HasObjects() bool {
@@ -67,10 +51,6 @@ func (o *DataSvcQueryResponse) HasObjects() bool {
 	return false
 }
 
-// SetObjects gets a reference to the given []DataSvcObject and assigns it to the Objects field.
-func (o *DataSvcQueryResponse) SetObjects(v []DataSvcObject) {
-	o.Objects = v
-}
 
 func (o DataSvcQueryResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

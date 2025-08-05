@@ -45,29 +45,8 @@ func NewUserSvcSaveEnrollsRequestWithDefaults() *UserSvcSaveEnrollsRequest {
 	return &this
 }
 
-// GetEnrolls returns the Enrolls field value
-func (o *UserSvcSaveEnrollsRequest) GetEnrolls() []UserSvcEnrollInput {
-	if o == nil {
-		var ret []UserSvcEnrollInput
-		return ret
-	}
 
-	return o.Enrolls
-}
 
-// GetEnrollsOk returns a tuple with the Enrolls field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcSaveEnrollsRequest) GetEnrollsOk() ([]UserSvcEnrollInput, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.Enrolls, true
-}
-
-// SetEnrolls sets field value
-func (o *UserSvcSaveEnrollsRequest) SetEnrolls(v []UserSvcEnrollInput) {
-	o.Enrolls = v
-}
 
 func (o UserSvcSaveEnrollsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

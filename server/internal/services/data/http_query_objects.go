@@ -51,7 +51,7 @@ func (g *DataService) Query(
 		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
-	if !isAuthRsp.GetAuthorized() {
+	if !isAuthRsp.Authorized {
 		endpoint.Unauthorized(w)
 		return
 	}
@@ -152,13 +152,8 @@ func (g *DataService) query(
 			q.Limit(options.Query.Limit)
 		}
 
-		if options.Query.JSONAfter != "" {
-			v := []any{}
-			err := json.Unmarshal([]byte(options.Query.JSONAfter), &v)
-			if err != nil {
-				return nil, err
-			}
-			q = q.After(v...)
+		if len(options.Query.After) != 0 {
+			q = q.After(options.Query.After...)
 		}
 	}
 

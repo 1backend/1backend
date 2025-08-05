@@ -550,11 +550,7 @@ func evaluate(filter datastore.Filter, obj any) (bool, error) {
 				continue
 			}
 
-			values := []any{}
-			err := json.Unmarshal([]byte(filter.JSONValues), &values)
-			if err != nil {
-				return false, err
-			}
+			values := filter.Values
 
 			value := values[0]
 			queryValue := reflect.ValueOf(value)
@@ -597,11 +593,7 @@ func evaluate(filter datastore.Filter, obj any) (bool, error) {
 				continue
 			}
 
-			value := []any{}
-			err := json.Unmarshal([]byte(filter.JSONValues), &value)
-			if err != nil {
-				return false, err
-			}
+			value := filter.Values
 
 			queryValue := reflect.ValueOf(value)
 			fieldV := reflect.ValueOf(fieldValue)
@@ -643,11 +635,7 @@ func evaluate(filter datastore.Filter, obj any) (bool, error) {
 				continue
 			}
 
-			value := []any{}
-			err := json.Unmarshal([]byte(filter.JSONValues), &value)
-			if err != nil {
-				return false, err
-			}
+			value := filter.Values
 
 			queryValue := reflect.ValueOf(value)
 			fieldV := reflect.ValueOf(fieldValue)
@@ -688,11 +676,7 @@ func evaluate(filter datastore.Filter, obj any) (bool, error) {
 				continue
 			}
 
-			values := []any{}
-			err := json.Unmarshal([]byte(filter.JSONValues), &values)
-			if err != nil {
-				return false, err
-			}
+			values :=  filter.Values
 			value := values[0]
 
 			queryValue := reflect.ValueOf(value)
@@ -734,11 +718,7 @@ func evaluate(filter datastore.Filter, obj any) (bool, error) {
 				continue
 			}
 
-			values := []any{}
-			err := json.Unmarshal([]byte(filter.JSONValues), &values)
-			if err != nil {
-				return false, err
-			}
+			values := filter.Values
 
 			value := values
 			queryValue := reflect.ValueOf(value)

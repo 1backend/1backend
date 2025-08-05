@@ -45,7 +45,7 @@ func (fs *FileService) UploadFile(
 		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
-	if !isAuthRsp.GetAuthorized() {
+	if !isAuthRsp.Authorized {
 		endpoint.WriteString(w, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
@@ -109,7 +109,7 @@ func (fs *FileService) UploadFile(
 			NodeId:    fs.nodeId,
 			FileName:  part.FileName(),
 			FilePath:  destinationFilePath,
-			UserId:    isAuthRsp.GetUser().Id,
+			UserId:    isAuthRsp.User.Id,
 			FileSize:  written,
 			CreatedAt: time.Now(),
 		}

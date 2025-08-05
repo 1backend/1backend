@@ -48,47 +48,10 @@ func NewUserSvcExchangeTokenRequestWithDefaults() *UserSvcExchangeTokenRequest {
 	return &this
 }
 
-// GetNewApp returns the NewApp field value
-func (o *UserSvcExchangeTokenRequest) GetNewApp() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.NewApp
-}
 
-// GetNewAppOk returns a tuple with the NewApp field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcExchangeTokenRequest) GetNewAppOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.NewApp, true
-}
 
-// SetNewApp sets field value
-func (o *UserSvcExchangeTokenRequest) SetNewApp(v string) {
-	o.NewApp = v
-}
 
-// GetNewDevice returns the NewDevice field value if set, zero value otherwise.
-func (o *UserSvcExchangeTokenRequest) GetNewDevice() string {
-	if o == nil || IsNil(o.NewDevice) {
-		var ret string
-		return ret
-	}
-	return *o.NewDevice
-}
-
-// GetNewDeviceOk returns a tuple with the NewDevice field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcExchangeTokenRequest) GetNewDeviceOk() (*string, bool) {
-	if o == nil || IsNil(o.NewDevice) {
-		return nil, false
-	}
-	return o.NewDevice, true
-}
 
 // HasNewDevice returns a boolean if a field has been set.
 func (o *UserSvcExchangeTokenRequest) HasNewDevice() bool {
@@ -99,10 +62,6 @@ func (o *UserSvcExchangeTokenRequest) HasNewDevice() bool {
 	return false
 }
 
-// SetNewDevice gets a reference to the given string and assigns it to the NewDevice field.
-func (o *UserSvcExchangeTokenRequest) SetNewDevice(v string) {
-	o.NewDevice = &v
-}
 
 func (o UserSvcExchangeTokenRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

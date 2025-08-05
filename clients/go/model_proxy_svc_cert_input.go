@@ -49,53 +49,11 @@ func NewProxySvcCertInputWithDefaults() *ProxySvcCertInput {
 	return &this
 }
 
-// GetCert returns the Cert field value
-func (o *ProxySvcCertInput) GetCert() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Cert
-}
 
-// GetCertOk returns a tuple with the Cert field value
-// and a boolean to check if the value has been set.
-func (o *ProxySvcCertInput) GetCertOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Cert, true
-}
 
-// SetCert sets field value
-func (o *ProxySvcCertInput) SetCert(v string) {
-	o.Cert = v
-}
 
-// GetId returns the Id field value
-func (o *ProxySvcCertInput) GetId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Id
-}
-
-// GetIdOk returns a tuple with the Id field value
-// and a boolean to check if the value has been set.
-func (o *ProxySvcCertInput) GetIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Id, true
-}
-
-// SetId sets field value
-func (o *ProxySvcCertInput) SetId(v string) {
-	o.Id = v
-}
 
 func (o ProxySvcCertInput) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

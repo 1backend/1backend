@@ -40,23 +40,7 @@ func NewProxySvcSaveCertsRequestWithDefaults() *ProxySvcSaveCertsRequest {
 	return &this
 }
 
-// GetCerts returns the Certs field value if set, zero value otherwise.
-func (o *ProxySvcSaveCertsRequest) GetCerts() []ProxySvcCertInput {
-	if o == nil || IsNil(o.Certs) {
-		var ret []ProxySvcCertInput
-		return ret
-	}
-	return o.Certs
-}
 
-// GetCertsOk returns a tuple with the Certs field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProxySvcSaveCertsRequest) GetCertsOk() ([]ProxySvcCertInput, bool) {
-	if o == nil || IsNil(o.Certs) {
-		return nil, false
-	}
-	return o.Certs, true
-}
 
 // HasCerts returns a boolean if a field has been set.
 func (o *ProxySvcSaveCertsRequest) HasCerts() bool {
@@ -67,10 +51,6 @@ func (o *ProxySvcSaveCertsRequest) HasCerts() bool {
 	return false
 }
 
-// SetCerts gets a reference to the given []ProxySvcCertInput and assigns it to the Certs field.
-func (o *ProxySvcSaveCertsRequest) SetCerts(v []ProxySvcCertInput) {
-	o.Certs = v
-}
 
 func (o ProxySvcSaveCertsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

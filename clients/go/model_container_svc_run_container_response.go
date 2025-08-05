@@ -42,23 +42,7 @@ func NewContainerSvcRunContainerResponseWithDefaults() *ContainerSvcRunContainer
 	return &this
 }
 
-// GetPorts returns the Ports field value if set, zero value otherwise.
-func (o *ContainerSvcRunContainerResponse) GetPorts() []ContainerSvcPortMapping {
-	if o == nil || IsNil(o.Ports) {
-		var ret []ContainerSvcPortMapping
-		return ret
-	}
-	return o.Ports
-}
 
-// GetPortsOk returns a tuple with the Ports field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ContainerSvcRunContainerResponse) GetPortsOk() ([]ContainerSvcPortMapping, bool) {
-	if o == nil || IsNil(o.Ports) {
-		return nil, false
-	}
-	return o.Ports, true
-}
 
 // HasPorts returns a boolean if a field has been set.
 func (o *ContainerSvcRunContainerResponse) HasPorts() bool {
@@ -69,28 +53,8 @@ func (o *ContainerSvcRunContainerResponse) HasPorts() bool {
 	return false
 }
 
-// SetPorts gets a reference to the given []ContainerSvcPortMapping and assigns it to the Ports field.
-func (o *ContainerSvcRunContainerResponse) SetPorts(v []ContainerSvcPortMapping) {
-	o.Ports = v
-}
 
-// GetStarted returns the Started field value if set, zero value otherwise.
-func (o *ContainerSvcRunContainerResponse) GetStarted() bool {
-	if o == nil || IsNil(o.Started) {
-		var ret bool
-		return ret
-	}
-	return *o.Started
-}
 
-// GetStartedOk returns a tuple with the Started field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ContainerSvcRunContainerResponse) GetStartedOk() (*bool, bool) {
-	if o == nil || IsNil(o.Started) {
-		return nil, false
-	}
-	return o.Started, true
-}
 
 // HasStarted returns a boolean if a field has been set.
 func (o *ContainerSvcRunContainerResponse) HasStarted() bool {
@@ -101,10 +65,6 @@ func (o *ContainerSvcRunContainerResponse) HasStarted() bool {
 	return false
 }
 
-// SetStarted gets a reference to the given bool and assigns it to the Started field.
-func (o *ContainerSvcRunContainerResponse) SetStarted(v bool) {
-	o.Started = &v
-}
 
 func (o ContainerSvcRunContainerResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

@@ -48,53 +48,11 @@ func NewUserSvcSaveOrganizationResponseWithDefaults() *UserSvcSaveOrganizationRe
 	return &this
 }
 
-// GetOrganization returns the Organization field value
-func (o *UserSvcSaveOrganizationResponse) GetOrganization() UserSvcOrganization {
-	if o == nil {
-		var ret UserSvcOrganization
-		return ret
-	}
 
-	return o.Organization
-}
 
-// GetOrganizationOk returns a tuple with the Organization field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcSaveOrganizationResponse) GetOrganizationOk() (*UserSvcOrganization, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Organization, true
-}
 
-// SetOrganization sets field value
-func (o *UserSvcSaveOrganizationResponse) SetOrganization(v UserSvcOrganization) {
-	o.Organization = v
-}
 
-// GetToken returns the Token field value
-func (o *UserSvcSaveOrganizationResponse) GetToken() UserSvcAuthToken {
-	if o == nil {
-		var ret UserSvcAuthToken
-		return ret
-	}
 
-	return o.Token
-}
-
-// GetTokenOk returns a tuple with the Token field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcSaveOrganizationResponse) GetTokenOk() (*UserSvcAuthToken, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Token, true
-}
-
-// SetToken sets field value
-func (o *UserSvcSaveOrganizationResponse) SetToken(v UserSvcAuthToken) {
-	o.Token = v
-}
 
 func (o UserSvcSaveOrganizationResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

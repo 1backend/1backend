@@ -40,23 +40,7 @@ func NewModelSvcErrorResponseWithDefaults() *ModelSvcErrorResponse {
 	return &this
 }
 
-// GetError returns the Error field value if set, zero value otherwise.
-func (o *ModelSvcErrorResponse) GetError() string {
-	if o == nil || IsNil(o.Error) {
-		var ret string
-		return ret
-	}
-	return *o.Error
-}
 
-// GetErrorOk returns a tuple with the Error field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcErrorResponse) GetErrorOk() (*string, bool) {
-	if o == nil || IsNil(o.Error) {
-		return nil, false
-	}
-	return o.Error, true
-}
 
 // HasError returns a boolean if a field has been set.
 func (o *ModelSvcErrorResponse) HasError() bool {
@@ -67,10 +51,6 @@ func (o *ModelSvcErrorResponse) HasError() bool {
 	return false
 }
 
-// SetError gets a reference to the given string and assigns it to the Error field.
-func (o *ModelSvcErrorResponse) SetError(v string) {
-	o.Error = &v
-}
 
 func (o ModelSvcErrorResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

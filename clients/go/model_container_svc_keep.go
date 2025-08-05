@@ -48,47 +48,10 @@ func NewContainerSvcKeepWithDefaults() *ContainerSvcKeep {
 	return &this
 }
 
-// GetPath returns the Path field value
-func (o *ContainerSvcKeep) GetPath() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Path
-}
 
-// GetPathOk returns a tuple with the Path field value
-// and a boolean to check if the value has been set.
-func (o *ContainerSvcKeep) GetPathOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Path, true
-}
 
-// SetPath sets field value
-func (o *ContainerSvcKeep) SetPath(v string) {
-	o.Path = v
-}
 
-// GetReadOnly returns the ReadOnly field value if set, zero value otherwise.
-func (o *ContainerSvcKeep) GetReadOnly() bool {
-	if o == nil || IsNil(o.ReadOnly) {
-		var ret bool
-		return ret
-	}
-	return *o.ReadOnly
-}
-
-// GetReadOnlyOk returns a tuple with the ReadOnly field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ContainerSvcKeep) GetReadOnlyOk() (*bool, bool) {
-	if o == nil || IsNil(o.ReadOnly) {
-		return nil, false
-	}
-	return o.ReadOnly, true
-}
 
 // HasReadOnly returns a boolean if a field has been set.
 func (o *ContainerSvcKeep) HasReadOnly() bool {
@@ -99,10 +62,6 @@ func (o *ContainerSvcKeep) HasReadOnly() bool {
 	return false
 }
 
-// SetReadOnly gets a reference to the given bool and assigns it to the ReadOnly field.
-func (o *ContainerSvcKeep) SetReadOnly(v bool) {
-	o.ReadOnly = &v
-}
 
 func (o ContainerSvcKeep) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

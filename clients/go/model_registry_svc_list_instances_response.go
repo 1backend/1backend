@@ -40,23 +40,7 @@ func NewRegistrySvcListInstancesResponseWithDefaults() *RegistrySvcListInstances
 	return &this
 }
 
-// GetInstances returns the Instances field value if set, zero value otherwise.
-func (o *RegistrySvcListInstancesResponse) GetInstances() []RegistrySvcInstance {
-	if o == nil || IsNil(o.Instances) {
-		var ret []RegistrySvcInstance
-		return ret
-	}
-	return o.Instances
-}
 
-// GetInstancesOk returns a tuple with the Instances field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcListInstancesResponse) GetInstancesOk() ([]RegistrySvcInstance, bool) {
-	if o == nil || IsNil(o.Instances) {
-		return nil, false
-	}
-	return o.Instances, true
-}
 
 // HasInstances returns a boolean if a field has been set.
 func (o *RegistrySvcListInstancesResponse) HasInstances() bool {
@@ -67,10 +51,6 @@ func (o *RegistrySvcListInstancesResponse) HasInstances() bool {
 	return false
 }
 
-// SetInstances gets a reference to the given []RegistrySvcInstance and assigns it to the Instances field.
-func (o *RegistrySvcListInstancesResponse) SetInstances(v []RegistrySvcInstance) {
-	o.Instances = v
-}
 
 func (o RegistrySvcListInstancesResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

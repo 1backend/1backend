@@ -75,47 +75,10 @@ func NewProxySvcCertWithDefaults() *ProxySvcCert {
 	return &this
 }
 
-// GetCert returns the Cert field value
-func (o *ProxySvcCert) GetCert() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Cert
-}
 
-// GetCertOk returns a tuple with the Cert field value
-// and a boolean to check if the value has been set.
-func (o *ProxySvcCert) GetCertOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Cert, true
-}
 
-// SetCert sets field value
-func (o *ProxySvcCert) SetCert(v string) {
-	o.Cert = v
-}
 
-// GetCommonName returns the CommonName field value if set, zero value otherwise.
-func (o *ProxySvcCert) GetCommonName() string {
-	if o == nil || IsNil(o.CommonName) {
-		var ret string
-		return ret
-	}
-	return *o.CommonName
-}
-
-// GetCommonNameOk returns a tuple with the CommonName field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProxySvcCert) GetCommonNameOk() (*string, bool) {
-	if o == nil || IsNil(o.CommonName) {
-		return nil, false
-	}
-	return o.CommonName, true
-}
 
 // HasCommonName returns a boolean if a field has been set.
 func (o *ProxySvcCert) HasCommonName() bool {
@@ -126,52 +89,11 @@ func (o *ProxySvcCert) HasCommonName() bool {
 	return false
 }
 
-// SetCommonName gets a reference to the given string and assigns it to the CommonName field.
-func (o *ProxySvcCert) SetCommonName(v string) {
-	o.CommonName = &v
-}
 
-// GetCreatedAt returns the CreatedAt field value
-func (o *ProxySvcCert) GetCreatedAt() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.CreatedAt
-}
 
-// GetCreatedAtOk returns a tuple with the CreatedAt field value
-// and a boolean to check if the value has been set.
-func (o *ProxySvcCert) GetCreatedAtOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.CreatedAt, true
-}
 
-// SetCreatedAt sets field value
-func (o *ProxySvcCert) SetCreatedAt(v string) {
-	o.CreatedAt = v
-}
 
-// GetDnsNames returns the DnsNames field value if set, zero value otherwise.
-func (o *ProxySvcCert) GetDnsNames() []string {
-	if o == nil || IsNil(o.DnsNames) {
-		var ret []string
-		return ret
-	}
-	return o.DnsNames
-}
-
-// GetDnsNamesOk returns a tuple with the DnsNames field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProxySvcCert) GetDnsNamesOk() ([]string, bool) {
-	if o == nil || IsNil(o.DnsNames) {
-		return nil, false
-	}
-	return o.DnsNames, true
-}
 
 // HasDnsNames returns a boolean if a field has been set.
 func (o *ProxySvcCert) HasDnsNames() bool {
@@ -182,52 +104,11 @@ func (o *ProxySvcCert) HasDnsNames() bool {
 	return false
 }
 
-// SetDnsNames gets a reference to the given []string and assigns it to the DnsNames field.
-func (o *ProxySvcCert) SetDnsNames(v []string) {
-	o.DnsNames = v
-}
 
-// GetId returns the Id field value
-func (o *ProxySvcCert) GetId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Id
-}
 
-// GetIdOk returns a tuple with the Id field value
-// and a boolean to check if the value has been set.
-func (o *ProxySvcCert) GetIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Id, true
-}
 
-// SetId sets field value
-func (o *ProxySvcCert) SetId(v string) {
-	o.Id = v
-}
 
-// GetIsCA returns the IsCA field value if set, zero value otherwise.
-func (o *ProxySvcCert) GetIsCA() bool {
-	if o == nil || IsNil(o.IsCA) {
-		var ret bool
-		return ret
-	}
-	return *o.IsCA
-}
-
-// GetIsCAOk returns a tuple with the IsCA field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProxySvcCert) GetIsCAOk() (*bool, bool) {
-	if o == nil || IsNil(o.IsCA) {
-		return nil, false
-	}
-	return o.IsCA, true
-}
 
 // HasIsCA returns a boolean if a field has been set.
 func (o *ProxySvcCert) HasIsCA() bool {
@@ -238,28 +119,8 @@ func (o *ProxySvcCert) HasIsCA() bool {
 	return false
 }
 
-// SetIsCA gets a reference to the given bool and assigns it to the IsCA field.
-func (o *ProxySvcCert) SetIsCA(v bool) {
-	o.IsCA = &v
-}
 
-// GetIssuer returns the Issuer field value if set, zero value otherwise.
-func (o *ProxySvcCert) GetIssuer() string {
-	if o == nil || IsNil(o.Issuer) {
-		var ret string
-		return ret
-	}
-	return *o.Issuer
-}
 
-// GetIssuerOk returns a tuple with the Issuer field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProxySvcCert) GetIssuerOk() (*string, bool) {
-	if o == nil || IsNil(o.Issuer) {
-		return nil, false
-	}
-	return o.Issuer, true
-}
 
 // HasIssuer returns a boolean if a field has been set.
 func (o *ProxySvcCert) HasIssuer() bool {
@@ -270,28 +131,8 @@ func (o *ProxySvcCert) HasIssuer() bool {
 	return false
 }
 
-// SetIssuer gets a reference to the given string and assigns it to the Issuer field.
-func (o *ProxySvcCert) SetIssuer(v string) {
-	o.Issuer = &v
-}
 
-// GetNotAfter returns the NotAfter field value if set, zero value otherwise.
-func (o *ProxySvcCert) GetNotAfter() string {
-	if o == nil || IsNil(o.NotAfter) {
-		var ret string
-		return ret
-	}
-	return *o.NotAfter
-}
 
-// GetNotAfterOk returns a tuple with the NotAfter field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProxySvcCert) GetNotAfterOk() (*string, bool) {
-	if o == nil || IsNil(o.NotAfter) {
-		return nil, false
-	}
-	return o.NotAfter, true
-}
 
 // HasNotAfter returns a boolean if a field has been set.
 func (o *ProxySvcCert) HasNotAfter() bool {
@@ -302,28 +143,8 @@ func (o *ProxySvcCert) HasNotAfter() bool {
 	return false
 }
 
-// SetNotAfter gets a reference to the given string and assigns it to the NotAfter field.
-func (o *ProxySvcCert) SetNotAfter(v string) {
-	o.NotAfter = &v
-}
 
-// GetNotBefore returns the NotBefore field value if set, zero value otherwise.
-func (o *ProxySvcCert) GetNotBefore() string {
-	if o == nil || IsNil(o.NotBefore) {
-		var ret string
-		return ret
-	}
-	return *o.NotBefore
-}
 
-// GetNotBeforeOk returns a tuple with the NotBefore field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProxySvcCert) GetNotBeforeOk() (*string, bool) {
-	if o == nil || IsNil(o.NotBefore) {
-		return nil, false
-	}
-	return o.NotBefore, true
-}
 
 // HasNotBefore returns a boolean if a field has been set.
 func (o *ProxySvcCert) HasNotBefore() bool {
@@ -334,28 +155,8 @@ func (o *ProxySvcCert) HasNotBefore() bool {
 	return false
 }
 
-// SetNotBefore gets a reference to the given string and assigns it to the NotBefore field.
-func (o *ProxySvcCert) SetNotBefore(v string) {
-	o.NotBefore = &v
-}
 
-// GetPublicKeyAlgorithm returns the PublicKeyAlgorithm field value if set, zero value otherwise.
-func (o *ProxySvcCert) GetPublicKeyAlgorithm() string {
-	if o == nil || IsNil(o.PublicKeyAlgorithm) {
-		var ret string
-		return ret
-	}
-	return *o.PublicKeyAlgorithm
-}
 
-// GetPublicKeyAlgorithmOk returns a tuple with the PublicKeyAlgorithm field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProxySvcCert) GetPublicKeyAlgorithmOk() (*string, bool) {
-	if o == nil || IsNil(o.PublicKeyAlgorithm) {
-		return nil, false
-	}
-	return o.PublicKeyAlgorithm, true
-}
 
 // HasPublicKeyAlgorithm returns a boolean if a field has been set.
 func (o *ProxySvcCert) HasPublicKeyAlgorithm() bool {
@@ -366,28 +167,8 @@ func (o *ProxySvcCert) HasPublicKeyAlgorithm() bool {
 	return false
 }
 
-// SetPublicKeyAlgorithm gets a reference to the given string and assigns it to the PublicKeyAlgorithm field.
-func (o *ProxySvcCert) SetPublicKeyAlgorithm(v string) {
-	o.PublicKeyAlgorithm = &v
-}
 
-// GetPublicKeyBitLength returns the PublicKeyBitLength field value if set, zero value otherwise.
-func (o *ProxySvcCert) GetPublicKeyBitLength() int32 {
-	if o == nil || IsNil(o.PublicKeyBitLength) {
-		var ret int32
-		return ret
-	}
-	return *o.PublicKeyBitLength
-}
 
-// GetPublicKeyBitLengthOk returns a tuple with the PublicKeyBitLength field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProxySvcCert) GetPublicKeyBitLengthOk() (*int32, bool) {
-	if o == nil || IsNil(o.PublicKeyBitLength) {
-		return nil, false
-	}
-	return o.PublicKeyBitLength, true
-}
 
 // HasPublicKeyBitLength returns a boolean if a field has been set.
 func (o *ProxySvcCert) HasPublicKeyBitLength() bool {
@@ -398,28 +179,8 @@ func (o *ProxySvcCert) HasPublicKeyBitLength() bool {
 	return false
 }
 
-// SetPublicKeyBitLength gets a reference to the given int32 and assigns it to the PublicKeyBitLength field.
-func (o *ProxySvcCert) SetPublicKeyBitLength(v int32) {
-	o.PublicKeyBitLength = &v
-}
 
-// GetSerialNumber returns the SerialNumber field value if set, zero value otherwise.
-func (o *ProxySvcCert) GetSerialNumber() string {
-	if o == nil || IsNil(o.SerialNumber) {
-		var ret string
-		return ret
-	}
-	return *o.SerialNumber
-}
 
-// GetSerialNumberOk returns a tuple with the SerialNumber field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProxySvcCert) GetSerialNumberOk() (*string, bool) {
-	if o == nil || IsNil(o.SerialNumber) {
-		return nil, false
-	}
-	return o.SerialNumber, true
-}
 
 // HasSerialNumber returns a boolean if a field has been set.
 func (o *ProxySvcCert) HasSerialNumber() bool {
@@ -430,28 +191,8 @@ func (o *ProxySvcCert) HasSerialNumber() bool {
 	return false
 }
 
-// SetSerialNumber gets a reference to the given string and assigns it to the SerialNumber field.
-func (o *ProxySvcCert) SetSerialNumber(v string) {
-	o.SerialNumber = &v
-}
 
-// GetSignatureAlgorithm returns the SignatureAlgorithm field value if set, zero value otherwise.
-func (o *ProxySvcCert) GetSignatureAlgorithm() string {
-	if o == nil || IsNil(o.SignatureAlgorithm) {
-		var ret string
-		return ret
-	}
-	return *o.SignatureAlgorithm
-}
 
-// GetSignatureAlgorithmOk returns a tuple with the SignatureAlgorithm field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProxySvcCert) GetSignatureAlgorithmOk() (*string, bool) {
-	if o == nil || IsNil(o.SignatureAlgorithm) {
-		return nil, false
-	}
-	return o.SignatureAlgorithm, true
-}
 
 // HasSignatureAlgorithm returns a boolean if a field has been set.
 func (o *ProxySvcCert) HasSignatureAlgorithm() bool {
@@ -462,34 +203,9 @@ func (o *ProxySvcCert) HasSignatureAlgorithm() bool {
 	return false
 }
 
-// SetSignatureAlgorithm gets a reference to the given string and assigns it to the SignatureAlgorithm field.
-func (o *ProxySvcCert) SetSignatureAlgorithm(v string) {
-	o.SignatureAlgorithm = &v
-}
 
-// GetUpdatedAt returns the UpdatedAt field value
-func (o *ProxySvcCert) GetUpdatedAt() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.UpdatedAt
-}
 
-// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
-// and a boolean to check if the value has been set.
-func (o *ProxySvcCert) GetUpdatedAtOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.UpdatedAt, true
-}
-
-// SetUpdatedAt sets field value
-func (o *ProxySvcCert) SetUpdatedAt(v string) {
-	o.UpdatedAt = v
-}
 
 func (o ProxySvcCert) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

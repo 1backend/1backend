@@ -8,7 +8,6 @@
 package sqlstore
 
 import (
-	"encoding/json"
 	"fmt"
 	"reflect"
 	"strings"
@@ -52,11 +51,7 @@ func (q *SQLQueryBuilder) evaluateFilters(
 	} else if filter.Op == datastore.OpEquals {
 		orFilters := []string{}
 
-		var values []any
-		err = json.Unmarshal([]byte(filter.JSONValues), &values)
-		if err != nil {
-			return err
-		}
+		values := filter.Values
 
 		for _, field := range fieldNames {
 			fieldName := q.store.fieldName(field)
@@ -88,11 +83,7 @@ func (q *SQLQueryBuilder) evaluateFilters(
 	} else if filter.Op == datastore.OpContainsSubstring {
 		orFilters := []string{}
 
-		var values []any
-		err = json.Unmarshal([]byte(filter.JSONValues), &values)
-		if err != nil {
-			return err
-		}
+		values := filter.Values
 		if len(values) > 1 {
 			panic("OpContainsSubstring does not support multiple values")
 		}
@@ -116,11 +107,8 @@ func (q *SQLQueryBuilder) evaluateFilters(
 	} else if filter.Op == datastore.OpStartsWith {
 		orFilters := []string{}
 
-		var values []any
-		err = json.Unmarshal([]byte(filter.JSONValues), &values)
-		if err != nil {
-			return err
-		}
+		values := filter.Values
+
 		if len(values) > 1 {
 			panic("OpStartsWith does not support multiple values")
 		}
@@ -144,11 +132,7 @@ func (q *SQLQueryBuilder) evaluateFilters(
 	} else if filter.Op == datastore.OpIsInList {
 		orFilters := []string{}
 
-		var values []any
-		err = json.Unmarshal([]byte(filter.JSONValues), &values)
-		if err != nil {
-			return err
-		}
+		values := filter.Values
 
 		for _, field := range fieldNames {
 			fieldName := q.store.fieldName(field)
@@ -178,11 +162,7 @@ func (q *SQLQueryBuilder) evaluateFilters(
 	} else if filter.Op == datastore.OpIntersects {
 		orFilters := []string{}
 
-		var values []any
-		err = json.Unmarshal([]byte(filter.JSONValues), &values)
-		if err != nil {
-			return err
-		}
+		values := filter.Values
 
 		for _, field := range fieldNames {
 			fieldName := q.store.fieldName(field)

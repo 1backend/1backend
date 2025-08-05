@@ -41,23 +41,7 @@ func NewContainerSvcStopContainerRequestWithDefaults() *ContainerSvcStopContaine
 	return &this
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
-func (o *ContainerSvcStopContainerRequest) GetId() string {
-	if o == nil || IsNil(o.Id) {
-		var ret string
-		return ret
-	}
-	return *o.Id
-}
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ContainerSvcStopContainerRequest) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
-		return nil, false
-	}
-	return o.Id, true
-}
 
 // HasId returns a boolean if a field has been set.
 func (o *ContainerSvcStopContainerRequest) HasId() bool {
@@ -68,28 +52,8 @@ func (o *ContainerSvcStopContainerRequest) HasId() bool {
 	return false
 }
 
-// SetId gets a reference to the given string and assigns it to the Id field.
-func (o *ContainerSvcStopContainerRequest) SetId(v string) {
-	o.Id = &v
-}
 
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *ContainerSvcStopContainerRequest) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ContainerSvcStopContainerRequest) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
 
 // HasName returns a boolean if a field has been set.
 func (o *ContainerSvcStopContainerRequest) HasName() bool {
@@ -100,10 +64,6 @@ func (o *ContainerSvcStopContainerRequest) HasName() bool {
 	return false
 }
 
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *ContainerSvcStopContainerRequest) SetName(v string) {
-	o.Name = &v
-}
 
 func (o ContainerSvcStopContainerRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

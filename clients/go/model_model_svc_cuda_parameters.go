@@ -47,23 +47,7 @@ func NewModelSvcCudaParametersWithDefaults() *ModelSvcCudaParameters {
 	return &this
 }
 
-// GetContainer returns the Container field value if set, zero value otherwise.
-func (o *ModelSvcCudaParameters) GetContainer() ModelSvcContainer {
-	if o == nil || IsNil(o.Container) {
-		var ret ModelSvcContainer
-		return ret
-	}
-	return *o.Container
-}
 
-// GetContainerOk returns a tuple with the Container field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcCudaParameters) GetContainerOk() (*ModelSvcContainer, bool) {
-	if o == nil || IsNil(o.Container) {
-		return nil, false
-	}
-	return o.Container, true
-}
 
 // HasContainer returns a boolean if a field has been set.
 func (o *ModelSvcCudaParameters) HasContainer() bool {
@@ -74,28 +58,8 @@ func (o *ModelSvcCudaParameters) HasContainer() bool {
 	return false
 }
 
-// SetContainer gets a reference to the given ModelSvcContainer and assigns it to the Container field.
-func (o *ModelSvcCudaParameters) SetContainer(v ModelSvcContainer) {
-	o.Container = &v
-}
 
-// GetCudaVersionPrecision returns the CudaVersionPrecision field value if set, zero value otherwise.
-func (o *ModelSvcCudaParameters) GetCudaVersionPrecision() int32 {
-	if o == nil || IsNil(o.CudaVersionPrecision) {
-		var ret int32
-		return ret
-	}
-	return *o.CudaVersionPrecision
-}
 
-// GetCudaVersionPrecisionOk returns a tuple with the CudaVersionPrecision field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcCudaParameters) GetCudaVersionPrecisionOk() (*int32, bool) {
-	if o == nil || IsNil(o.CudaVersionPrecision) {
-		return nil, false
-	}
-	return o.CudaVersionPrecision, true
-}
 
 // HasCudaVersionPrecision returns a boolean if a field has been set.
 func (o *ModelSvcCudaParameters) HasCudaVersionPrecision() bool {
@@ -106,28 +70,8 @@ func (o *ModelSvcCudaParameters) HasCudaVersionPrecision() bool {
 	return false
 }
 
-// SetCudaVersionPrecision gets a reference to the given int32 and assigns it to the CudaVersionPrecision field.
-func (o *ModelSvcCudaParameters) SetCudaVersionPrecision(v int32) {
-	o.CudaVersionPrecision = &v
-}
 
-// GetDefaultCudaVersion returns the DefaultCudaVersion field value if set, zero value otherwise.
-func (o *ModelSvcCudaParameters) GetDefaultCudaVersion() string {
-	if o == nil || IsNil(o.DefaultCudaVersion) {
-		var ret string
-		return ret
-	}
-	return *o.DefaultCudaVersion
-}
 
-// GetDefaultCudaVersionOk returns a tuple with the DefaultCudaVersion field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcCudaParameters) GetDefaultCudaVersionOk() (*string, bool) {
-	if o == nil || IsNil(o.DefaultCudaVersion) {
-		return nil, false
-	}
-	return o.DefaultCudaVersion, true
-}
 
 // HasDefaultCudaVersion returns a boolean if a field has been set.
 func (o *ModelSvcCudaParameters) HasDefaultCudaVersion() bool {
@@ -138,28 +82,8 @@ func (o *ModelSvcCudaParameters) HasDefaultCudaVersion() bool {
 	return false
 }
 
-// SetDefaultCudaVersion gets a reference to the given string and assigns it to the DefaultCudaVersion field.
-func (o *ModelSvcCudaParameters) SetDefaultCudaVersion(v string) {
-	o.DefaultCudaVersion = &v
-}
 
-// GetDefaultCudnnVersion returns the DefaultCudnnVersion field value if set, zero value otherwise.
-func (o *ModelSvcCudaParameters) GetDefaultCudnnVersion() string {
-	if o == nil || IsNil(o.DefaultCudnnVersion) {
-		var ret string
-		return ret
-	}
-	return *o.DefaultCudnnVersion
-}
 
-// GetDefaultCudnnVersionOk returns a tuple with the DefaultCudnnVersion field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcCudaParameters) GetDefaultCudnnVersionOk() (*string, bool) {
-	if o == nil || IsNil(o.DefaultCudnnVersion) {
-		return nil, false
-	}
-	return o.DefaultCudnnVersion, true
-}
 
 // HasDefaultCudnnVersion returns a boolean if a field has been set.
 func (o *ModelSvcCudaParameters) HasDefaultCudnnVersion() bool {
@@ -170,10 +94,6 @@ func (o *ModelSvcCudaParameters) HasDefaultCudnnVersion() bool {
 	return false
 }
 
-// SetDefaultCudnnVersion gets a reference to the given string and assigns it to the DefaultCudnnVersion field.
-func (o *ModelSvcCudaParameters) SetDefaultCudnnVersion(v string) {
-	o.DefaultCudnnVersion = &v
-}
 
 func (o ModelSvcCudaParameters) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

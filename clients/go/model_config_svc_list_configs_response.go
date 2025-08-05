@@ -46,29 +46,8 @@ func NewConfigSvcListConfigsResponseWithDefaults() *ConfigSvcListConfigsResponse
 	return &this
 }
 
-// GetConfigs returns the Configs field value
-func (o *ConfigSvcListConfigsResponse) GetConfigs() map[string]ConfigSvcConfig {
-	if o == nil {
-		var ret map[string]ConfigSvcConfig
-		return ret
-	}
 
-	return o.Configs
-}
 
-// GetConfigsOk returns a tuple with the Configs field value
-// and a boolean to check if the value has been set.
-func (o *ConfigSvcListConfigsResponse) GetConfigsOk() (*map[string]ConfigSvcConfig, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Configs, true
-}
-
-// SetConfigs sets field value
-func (o *ConfigSvcListConfigsResponse) SetConfigs(v map[string]ConfigSvcConfig) {
-	o.Configs = v
-}
 
 func (o ConfigSvcListConfigsResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

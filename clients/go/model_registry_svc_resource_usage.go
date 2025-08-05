@@ -45,23 +45,7 @@ func NewRegistrySvcResourceUsageWithDefaults() *RegistrySvcResourceUsage {
 	return &this
 }
 
-// GetCpu returns the Cpu field value if set, zero value otherwise.
-func (o *RegistrySvcResourceUsage) GetCpu() RegistrySvcUsage {
-	if o == nil || IsNil(o.Cpu) {
-		var ret RegistrySvcUsage
-		return ret
-	}
-	return *o.Cpu
-}
 
-// GetCpuOk returns a tuple with the Cpu field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcResourceUsage) GetCpuOk() (*RegistrySvcUsage, bool) {
-	if o == nil || IsNil(o.Cpu) {
-		return nil, false
-	}
-	return o.Cpu, true
-}
 
 // HasCpu returns a boolean if a field has been set.
 func (o *RegistrySvcResourceUsage) HasCpu() bool {
@@ -72,28 +56,8 @@ func (o *RegistrySvcResourceUsage) HasCpu() bool {
 	return false
 }
 
-// SetCpu gets a reference to the given RegistrySvcUsage and assigns it to the Cpu field.
-func (o *RegistrySvcResourceUsage) SetCpu(v RegistrySvcUsage) {
-	o.Cpu = &v
-}
 
-// GetDisk returns the Disk field value if set, zero value otherwise.
-func (o *RegistrySvcResourceUsage) GetDisk() RegistrySvcUsage {
-	if o == nil || IsNil(o.Disk) {
-		var ret RegistrySvcUsage
-		return ret
-	}
-	return *o.Disk
-}
 
-// GetDiskOk returns a tuple with the Disk field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcResourceUsage) GetDiskOk() (*RegistrySvcUsage, bool) {
-	if o == nil || IsNil(o.Disk) {
-		return nil, false
-	}
-	return o.Disk, true
-}
 
 // HasDisk returns a boolean if a field has been set.
 func (o *RegistrySvcResourceUsage) HasDisk() bool {
@@ -104,28 +68,8 @@ func (o *RegistrySvcResourceUsage) HasDisk() bool {
 	return false
 }
 
-// SetDisk gets a reference to the given RegistrySvcUsage and assigns it to the Disk field.
-func (o *RegistrySvcResourceUsage) SetDisk(v RegistrySvcUsage) {
-	o.Disk = &v
-}
 
-// GetMemory returns the Memory field value if set, zero value otherwise.
-func (o *RegistrySvcResourceUsage) GetMemory() RegistrySvcUsage {
-	if o == nil || IsNil(o.Memory) {
-		var ret RegistrySvcUsage
-		return ret
-	}
-	return *o.Memory
-}
 
-// GetMemoryOk returns a tuple with the Memory field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcResourceUsage) GetMemoryOk() (*RegistrySvcUsage, bool) {
-	if o == nil || IsNil(o.Memory) {
-		return nil, false
-	}
-	return o.Memory, true
-}
 
 // HasMemory returns a boolean if a field has been set.
 func (o *RegistrySvcResourceUsage) HasMemory() bool {
@@ -136,10 +80,6 @@ func (o *RegistrySvcResourceUsage) HasMemory() bool {
 	return false
 }
 
-// SetMemory gets a reference to the given RegistrySvcUsage and assigns it to the Memory field.
-func (o *RegistrySvcResourceUsage) SetMemory(v RegistrySvcUsage) {
-	o.Memory = &v
-}
 
 func (o RegistrySvcResourceUsage) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

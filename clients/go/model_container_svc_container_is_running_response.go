@@ -45,29 +45,8 @@ func NewContainerSvcContainerIsRunningResponseWithDefaults() *ContainerSvcContai
 	return &this
 }
 
-// GetIsRunning returns the IsRunning field value
-func (o *ContainerSvcContainerIsRunningResponse) GetIsRunning() bool {
-	if o == nil {
-		var ret bool
-		return ret
-	}
 
-	return o.IsRunning
-}
 
-// GetIsRunningOk returns a tuple with the IsRunning field value
-// and a boolean to check if the value has been set.
-func (o *ContainerSvcContainerIsRunningResponse) GetIsRunningOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.IsRunning, true
-}
-
-// SetIsRunning sets field value
-func (o *ContainerSvcContainerIsRunningResponse) SetIsRunning(v bool) {
-	o.IsRunning = v
-}
 
 func (o ContainerSvcContainerIsRunningResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

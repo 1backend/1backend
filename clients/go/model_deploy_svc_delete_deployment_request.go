@@ -45,29 +45,8 @@ func NewDeploySvcDeleteDeploymentRequestWithDefaults() *DeploySvcDeleteDeploymen
 	return &this
 }
 
-// GetDeploymentId returns the DeploymentId field value
-func (o *DeploySvcDeleteDeploymentRequest) GetDeploymentId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.DeploymentId
-}
 
-// GetDeploymentIdOk returns a tuple with the DeploymentId field value
-// and a boolean to check if the value has been set.
-func (o *DeploySvcDeleteDeploymentRequest) GetDeploymentIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.DeploymentId, true
-}
-
-// SetDeploymentId sets field value
-func (o *DeploySvcDeleteDeploymentRequest) SetDeploymentId(v string) {
-	o.DeploymentId = v
-}
 
 func (o DeploySvcDeleteDeploymentRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

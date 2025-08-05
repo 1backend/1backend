@@ -49,23 +49,7 @@ func NewChatSvcSaveMessageRequestWithDefaults() *ChatSvcSaveMessageRequest {
 	return &this
 }
 
-// GetFileIds returns the FileIds field value if set, zero value otherwise.
-func (o *ChatSvcSaveMessageRequest) GetFileIds() []string {
-	if o == nil || IsNil(o.FileIds) {
-		var ret []string
-		return ret
-	}
-	return o.FileIds
-}
 
-// GetFileIdsOk returns a tuple with the FileIds field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ChatSvcSaveMessageRequest) GetFileIdsOk() ([]string, bool) {
-	if o == nil || IsNil(o.FileIds) {
-		return nil, false
-	}
-	return o.FileIds, true
-}
 
 // HasFileIds returns a boolean if a field has been set.
 func (o *ChatSvcSaveMessageRequest) HasFileIds() bool {
@@ -76,28 +60,8 @@ func (o *ChatSvcSaveMessageRequest) HasFileIds() bool {
 	return false
 }
 
-// SetFileIds gets a reference to the given []string and assigns it to the FileIds field.
-func (o *ChatSvcSaveMessageRequest) SetFileIds(v []string) {
-	o.FileIds = v
-}
 
-// GetId returns the Id field value if set, zero value otherwise.
-func (o *ChatSvcSaveMessageRequest) GetId() string {
-	if o == nil || IsNil(o.Id) {
-		var ret string
-		return ret
-	}
-	return *o.Id
-}
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ChatSvcSaveMessageRequest) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
-		return nil, false
-	}
-	return o.Id, true
-}
 
 // HasId returns a boolean if a field has been set.
 func (o *ChatSvcSaveMessageRequest) HasId() bool {
@@ -108,28 +72,8 @@ func (o *ChatSvcSaveMessageRequest) HasId() bool {
 	return false
 }
 
-// SetId gets a reference to the given string and assigns it to the Id field.
-func (o *ChatSvcSaveMessageRequest) SetId(v string) {
-	o.Id = &v
-}
 
-// GetMeta returns the Meta field value if set, zero value otherwise.
-func (o *ChatSvcSaveMessageRequest) GetMeta() map[string]interface{} {
-	if o == nil || IsNil(o.Meta) {
-		var ret map[string]interface{}
-		return ret
-	}
-	return o.Meta
-}
 
-// GetMetaOk returns a tuple with the Meta field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ChatSvcSaveMessageRequest) GetMetaOk() (map[string]interface{}, bool) {
-	if o == nil || IsNil(o.Meta) {
-		return map[string]interface{}{}, false
-	}
-	return o.Meta, true
-}
 
 // HasMeta returns a boolean if a field has been set.
 func (o *ChatSvcSaveMessageRequest) HasMeta() bool {
@@ -140,28 +84,8 @@ func (o *ChatSvcSaveMessageRequest) HasMeta() bool {
 	return false
 }
 
-// SetMeta gets a reference to the given map[string]interface{} and assigns it to the Meta field.
-func (o *ChatSvcSaveMessageRequest) SetMeta(v map[string]interface{}) {
-	o.Meta = v
-}
 
-// GetText returns the Text field value if set, zero value otherwise.
-func (o *ChatSvcSaveMessageRequest) GetText() string {
-	if o == nil || IsNil(o.Text) {
-		var ret string
-		return ret
-	}
-	return *o.Text
-}
 
-// GetTextOk returns a tuple with the Text field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ChatSvcSaveMessageRequest) GetTextOk() (*string, bool) {
-	if o == nil || IsNil(o.Text) {
-		return nil, false
-	}
-	return o.Text, true
-}
 
 // HasText returns a boolean if a field has been set.
 func (o *ChatSvcSaveMessageRequest) HasText() bool {
@@ -172,28 +96,8 @@ func (o *ChatSvcSaveMessageRequest) HasText() bool {
 	return false
 }
 
-// SetText gets a reference to the given string and assigns it to the Text field.
-func (o *ChatSvcSaveMessageRequest) SetText(v string) {
-	o.Text = &v
-}
 
-// GetThreadId returns the ThreadId field value if set, zero value otherwise.
-func (o *ChatSvcSaveMessageRequest) GetThreadId() string {
-	if o == nil || IsNil(o.ThreadId) {
-		var ret string
-		return ret
-	}
-	return *o.ThreadId
-}
 
-// GetThreadIdOk returns a tuple with the ThreadId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ChatSvcSaveMessageRequest) GetThreadIdOk() (*string, bool) {
-	if o == nil || IsNil(o.ThreadId) {
-		return nil, false
-	}
-	return o.ThreadId, true
-}
 
 // HasThreadId returns a boolean if a field has been set.
 func (o *ChatSvcSaveMessageRequest) HasThreadId() bool {
@@ -204,28 +108,8 @@ func (o *ChatSvcSaveMessageRequest) HasThreadId() bool {
 	return false
 }
 
-// SetThreadId gets a reference to the given string and assigns it to the ThreadId field.
-func (o *ChatSvcSaveMessageRequest) SetThreadId(v string) {
-	o.ThreadId = &v
-}
 
-// GetUserId returns the UserId field value if set, zero value otherwise.
-func (o *ChatSvcSaveMessageRequest) GetUserId() string {
-	if o == nil || IsNil(o.UserId) {
-		var ret string
-		return ret
-	}
-	return *o.UserId
-}
 
-// GetUserIdOk returns a tuple with the UserId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ChatSvcSaveMessageRequest) GetUserIdOk() (*string, bool) {
-	if o == nil || IsNil(o.UserId) {
-		return nil, false
-	}
-	return o.UserId, true
-}
 
 // HasUserId returns a boolean if a field has been set.
 func (o *ChatSvcSaveMessageRequest) HasUserId() bool {
@@ -236,10 +120,6 @@ func (o *ChatSvcSaveMessageRequest) HasUserId() bool {
 	return false
 }
 
-// SetUserId gets a reference to the given string and assigns it to the UserId field.
-func (o *ChatSvcSaveMessageRequest) SetUserId(v string) {
-	o.UserId = &v
-}
 
 func (o ChatSvcSaveMessageRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

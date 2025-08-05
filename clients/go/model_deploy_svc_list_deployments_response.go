@@ -40,23 +40,7 @@ func NewDeploySvcListDeploymentsResponseWithDefaults() *DeploySvcListDeployments
 	return &this
 }
 
-// GetDeployments returns the Deployments field value if set, zero value otherwise.
-func (o *DeploySvcListDeploymentsResponse) GetDeployments() []DeploySvcDeployment {
-	if o == nil || IsNil(o.Deployments) {
-		var ret []DeploySvcDeployment
-		return ret
-	}
-	return o.Deployments
-}
 
-// GetDeploymentsOk returns a tuple with the Deployments field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DeploySvcListDeploymentsResponse) GetDeploymentsOk() ([]DeploySvcDeployment, bool) {
-	if o == nil || IsNil(o.Deployments) {
-		return nil, false
-	}
-	return o.Deployments, true
-}
 
 // HasDeployments returns a boolean if a field has been set.
 func (o *DeploySvcListDeploymentsResponse) HasDeployments() bool {
@@ -67,10 +51,6 @@ func (o *DeploySvcListDeploymentsResponse) HasDeployments() bool {
 	return false
 }
 
-// SetDeployments gets a reference to the given []DeploySvcDeployment and assigns it to the Deployments field.
-func (o *DeploySvcListDeploymentsResponse) SetDeployments(v []DeploySvcDeployment) {
-	o.Deployments = v
-}
 
 func (o DeploySvcListDeploymentsResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

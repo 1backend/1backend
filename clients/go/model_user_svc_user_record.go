@@ -56,23 +56,7 @@ func NewUserSvcUserRecordWithDefaults() *UserSvcUserRecord {
 	return &this
 }
 
-// GetContactIds returns the ContactIds field value if set, zero value otherwise.
-func (o *UserSvcUserRecord) GetContactIds() []string {
-	if o == nil || IsNil(o.ContactIds) {
-		var ret []string
-		return ret
-	}
-	return o.ContactIds
-}
 
-// GetContactIdsOk returns a tuple with the ContactIds field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcUserRecord) GetContactIdsOk() ([]string, bool) {
-	if o == nil || IsNil(o.ContactIds) {
-		return nil, false
-	}
-	return o.ContactIds, true
-}
 
 // HasContactIds returns a boolean if a field has been set.
 func (o *UserSvcUserRecord) HasContactIds() bool {
@@ -83,76 +67,14 @@ func (o *UserSvcUserRecord) HasContactIds() bool {
 	return false
 }
 
-// SetContactIds gets a reference to the given []string and assigns it to the ContactIds field.
-func (o *UserSvcUserRecord) SetContactIds(v []string) {
-	o.ContactIds = v
-}
 
-// GetCreatedAt returns the CreatedAt field value
-func (o *UserSvcUserRecord) GetCreatedAt() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.CreatedAt
-}
 
-// GetCreatedAtOk returns a tuple with the CreatedAt field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcUserRecord) GetCreatedAtOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.CreatedAt, true
-}
 
-// SetCreatedAt sets field value
-func (o *UserSvcUserRecord) SetCreatedAt(v string) {
-	o.CreatedAt = v
-}
 
-// GetId returns the Id field value
-func (o *UserSvcUserRecord) GetId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Id
-}
 
-// GetIdOk returns a tuple with the Id field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcUserRecord) GetIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Id, true
-}
 
-// SetId sets field value
-func (o *UserSvcUserRecord) SetId(v string) {
-	o.Id = v
-}
-
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *UserSvcUserRecord) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
-
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcUserRecord) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
 
 // HasName returns a boolean if a field has been set.
 func (o *UserSvcUserRecord) HasName() bool {
@@ -163,28 +85,8 @@ func (o *UserSvcUserRecord) HasName() bool {
 	return false
 }
 
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *UserSvcUserRecord) SetName(v string) {
-	o.Name = &v
-}
 
-// GetRoles returns the Roles field value if set, zero value otherwise.
-func (o *UserSvcUserRecord) GetRoles() []string {
-	if o == nil || IsNil(o.Roles) {
-		var ret []string
-		return ret
-	}
-	return o.Roles
-}
 
-// GetRolesOk returns a tuple with the Roles field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcUserRecord) GetRolesOk() ([]string, bool) {
-	if o == nil || IsNil(o.Roles) {
-		return nil, false
-	}
-	return o.Roles, true
-}
 
 // HasRoles returns a boolean if a field has been set.
 func (o *UserSvcUserRecord) HasRoles() bool {
@@ -195,58 +97,12 @@ func (o *UserSvcUserRecord) HasRoles() bool {
 	return false
 }
 
-// SetRoles gets a reference to the given []string and assigns it to the Roles field.
-func (o *UserSvcUserRecord) SetRoles(v []string) {
-	o.Roles = v
-}
 
-// GetSlug returns the Slug field value
-func (o *UserSvcUserRecord) GetSlug() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Slug
-}
 
-// GetSlugOk returns a tuple with the Slug field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcUserRecord) GetSlugOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Slug, true
-}
 
-// SetSlug sets field value
-func (o *UserSvcUserRecord) SetSlug(v string) {
-	o.Slug = v
-}
 
-// GetUpdatedAt returns the UpdatedAt field value
-func (o *UserSvcUserRecord) GetUpdatedAt() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.UpdatedAt
-}
-
-// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcUserRecord) GetUpdatedAtOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.UpdatedAt, true
-}
-
-// SetUpdatedAt sets field value
-func (o *UserSvcUserRecord) SetUpdatedAt(v string) {
-	o.UpdatedAt = v
-}
 
 func (o UserSvcUserRecord) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

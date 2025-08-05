@@ -40,23 +40,7 @@ func NewUserSvcListPermitsResponseWithDefaults() *UserSvcListPermitsResponse {
 	return &this
 }
 
-// GetPermits returns the Permits field value if set, zero value otherwise.
-func (o *UserSvcListPermitsResponse) GetPermits() []UserSvcPermit {
-	if o == nil || IsNil(o.Permits) {
-		var ret []UserSvcPermit
-		return ret
-	}
-	return o.Permits
-}
 
-// GetPermitsOk returns a tuple with the Permits field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcListPermitsResponse) GetPermitsOk() ([]UserSvcPermit, bool) {
-	if o == nil || IsNil(o.Permits) {
-		return nil, false
-	}
-	return o.Permits, true
-}
 
 // HasPermits returns a boolean if a field has been set.
 func (o *UserSvcListPermitsResponse) HasPermits() bool {
@@ -67,10 +51,6 @@ func (o *UserSvcListPermitsResponse) HasPermits() bool {
 	return false
 }
 
-// SetPermits gets a reference to the given []UserSvcPermit and assigns it to the Permits field.
-func (o *UserSvcListPermitsResponse) SetPermits(v []UserSvcPermit) {
-	o.Permits = v
-}
 
 func (o UserSvcListPermitsResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

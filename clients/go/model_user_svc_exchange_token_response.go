@@ -46,29 +46,8 @@ func NewUserSvcExchangeTokenResponseWithDefaults() *UserSvcExchangeTokenResponse
 	return &this
 }
 
-// GetToken returns the Token field value
-func (o *UserSvcExchangeTokenResponse) GetToken() UserSvcAuthToken {
-	if o == nil {
-		var ret UserSvcAuthToken
-		return ret
-	}
 
-	return o.Token
-}
 
-// GetTokenOk returns a tuple with the Token field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcExchangeTokenResponse) GetTokenOk() (*UserSvcAuthToken, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Token, true
-}
-
-// SetToken sets field value
-func (o *UserSvcExchangeTokenResponse) SetToken(v UserSvcAuthToken) {
-	o.Token = v
-}
 
 func (o UserSvcExchangeTokenResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

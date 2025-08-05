@@ -47,23 +47,7 @@ func NewContainerSvcDaemonInfoResponseWithDefaults() *ContainerSvcDaemonInfoResp
 	return &this
 }
 
-// GetAddress returns the Address field value if set, zero value otherwise.
-func (o *ContainerSvcDaemonInfoResponse) GetAddress() string {
-	if o == nil || IsNil(o.Address) {
-		var ret string
-		return ret
-	}
-	return *o.Address
-}
 
-// GetAddressOk returns a tuple with the Address field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ContainerSvcDaemonInfoResponse) GetAddressOk() (*string, bool) {
-	if o == nil || IsNil(o.Address) {
-		return nil, false
-	}
-	return o.Address, true
-}
 
 // HasAddress returns a boolean if a field has been set.
 func (o *ContainerSvcDaemonInfoResponse) HasAddress() bool {
@@ -74,52 +58,11 @@ func (o *ContainerSvcDaemonInfoResponse) HasAddress() bool {
 	return false
 }
 
-// SetAddress gets a reference to the given string and assigns it to the Address field.
-func (o *ContainerSvcDaemonInfoResponse) SetAddress(v string) {
-	o.Address = &v
-}
 
-// GetAvailable returns the Available field value
-func (o *ContainerSvcDaemonInfoResponse) GetAvailable() bool {
-	if o == nil {
-		var ret bool
-		return ret
-	}
 
-	return o.Available
-}
 
-// GetAvailableOk returns a tuple with the Available field value
-// and a boolean to check if the value has been set.
-func (o *ContainerSvcDaemonInfoResponse) GetAvailableOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Available, true
-}
 
-// SetAvailable sets field value
-func (o *ContainerSvcDaemonInfoResponse) SetAvailable(v bool) {
-	o.Available = v
-}
 
-// GetError returns the Error field value if set, zero value otherwise.
-func (o *ContainerSvcDaemonInfoResponse) GetError() string {
-	if o == nil || IsNil(o.Error) {
-		var ret string
-		return ret
-	}
-	return *o.Error
-}
-
-// GetErrorOk returns a tuple with the Error field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ContainerSvcDaemonInfoResponse) GetErrorOk() (*string, bool) {
-	if o == nil || IsNil(o.Error) {
-		return nil, false
-	}
-	return o.Error, true
-}
 
 // HasError returns a boolean if a field has been set.
 func (o *ContainerSvcDaemonInfoResponse) HasError() bool {
@@ -130,10 +73,6 @@ func (o *ContainerSvcDaemonInfoResponse) HasError() bool {
 	return false
 }
 
-// SetError gets a reference to the given string and assigns it to the Error field.
-func (o *ContainerSvcDaemonInfoResponse) SetError(v string) {
-	o.Error = &v
-}
 
 func (o ContainerSvcDaemonInfoResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

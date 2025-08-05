@@ -45,29 +45,8 @@ func NewUserSvcResetPasswordRequestWithDefaults() *UserSvcResetPasswordRequest {
 	return &this
 }
 
-// GetNewPassword returns the NewPassword field value
-func (o *UserSvcResetPasswordRequest) GetNewPassword() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.NewPassword
-}
 
-// GetNewPasswordOk returns a tuple with the NewPassword field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcResetPasswordRequest) GetNewPasswordOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.NewPassword, true
-}
-
-// SetNewPassword sets field value
-func (o *UserSvcResetPasswordRequest) SetNewPassword(v string) {
-	o.NewPassword = v
-}
 
 func (o UserSvcResetPasswordRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

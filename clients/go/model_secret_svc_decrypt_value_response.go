@@ -41,23 +41,7 @@ func NewSecretSvcDecryptValueResponseWithDefaults() *SecretSvcDecryptValueRespon
 	return &this
 }
 
-// GetValue returns the Value field value if set, zero value otherwise.
-func (o *SecretSvcDecryptValueResponse) GetValue() string {
-	if o == nil || IsNil(o.Value) {
-		var ret string
-		return ret
-	}
-	return *o.Value
-}
 
-// GetValueOk returns a tuple with the Value field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SecretSvcDecryptValueResponse) GetValueOk() (*string, bool) {
-	if o == nil || IsNil(o.Value) {
-		return nil, false
-	}
-	return o.Value, true
-}
 
 // HasValue returns a boolean if a field has been set.
 func (o *SecretSvcDecryptValueResponse) HasValue() bool {
@@ -68,28 +52,8 @@ func (o *SecretSvcDecryptValueResponse) HasValue() bool {
 	return false
 }
 
-// SetValue gets a reference to the given string and assigns it to the Value field.
-func (o *SecretSvcDecryptValueResponse) SetValue(v string) {
-	o.Value = &v
-}
 
-// GetValues returns the Values field value if set, zero value otherwise.
-func (o *SecretSvcDecryptValueResponse) GetValues() []string {
-	if o == nil || IsNil(o.Values) {
-		var ret []string
-		return ret
-	}
-	return o.Values
-}
 
-// GetValuesOk returns a tuple with the Values field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SecretSvcDecryptValueResponse) GetValuesOk() ([]string, bool) {
-	if o == nil || IsNil(o.Values) {
-		return nil, false
-	}
-	return o.Values, true
-}
 
 // HasValues returns a boolean if a field has been set.
 func (o *SecretSvcDecryptValueResponse) HasValues() bool {
@@ -100,10 +64,6 @@ func (o *SecretSvcDecryptValueResponse) HasValues() bool {
 	return false
 }
 
-// SetValues gets a reference to the given []string and assigns it to the Values field.
-func (o *SecretSvcDecryptValueResponse) SetValues(v []string) {
-	o.Values = v
-}
 
 func (o SecretSvcDecryptValueResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

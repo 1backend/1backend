@@ -44,23 +44,7 @@ func NewDataSvcUpdateObjectsRequestWithDefaults() *DataSvcUpdateObjectsRequest {
 	return &this
 }
 
-// GetFilters returns the Filters field value if set, zero value otherwise.
-func (o *DataSvcUpdateObjectsRequest) GetFilters() []DatastoreFilter {
-	if o == nil || IsNil(o.Filters) {
-		var ret []DatastoreFilter
-		return ret
-	}
-	return o.Filters
-}
 
-// GetFiltersOk returns a tuple with the Filters field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DataSvcUpdateObjectsRequest) GetFiltersOk() ([]DatastoreFilter, bool) {
-	if o == nil || IsNil(o.Filters) {
-		return nil, false
-	}
-	return o.Filters, true
-}
 
 // HasFilters returns a boolean if a field has been set.
 func (o *DataSvcUpdateObjectsRequest) HasFilters() bool {
@@ -71,28 +55,8 @@ func (o *DataSvcUpdateObjectsRequest) HasFilters() bool {
 	return false
 }
 
-// SetFilters gets a reference to the given []DatastoreFilter and assigns it to the Filters field.
-func (o *DataSvcUpdateObjectsRequest) SetFilters(v []DatastoreFilter) {
-	o.Filters = v
-}
 
-// GetObject returns the Object field value if set, zero value otherwise.
-func (o *DataSvcUpdateObjectsRequest) GetObject() DataSvcObject {
-	if o == nil || IsNil(o.Object) {
-		var ret DataSvcObject
-		return ret
-	}
-	return *o.Object
-}
 
-// GetObjectOk returns a tuple with the Object field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DataSvcUpdateObjectsRequest) GetObjectOk() (*DataSvcObject, bool) {
-	if o == nil || IsNil(o.Object) {
-		return nil, false
-	}
-	return o.Object, true
-}
 
 // HasObject returns a boolean if a field has been set.
 func (o *DataSvcUpdateObjectsRequest) HasObject() bool {
@@ -103,28 +67,8 @@ func (o *DataSvcUpdateObjectsRequest) HasObject() bool {
 	return false
 }
 
-// SetObject gets a reference to the given DataSvcObject and assigns it to the Object field.
-func (o *DataSvcUpdateObjectsRequest) SetObject(v DataSvcObject) {
-	o.Object = &v
-}
 
-// GetTable returns the Table field value if set, zero value otherwise.
-func (o *DataSvcUpdateObjectsRequest) GetTable() string {
-	if o == nil || IsNil(o.Table) {
-		var ret string
-		return ret
-	}
-	return *o.Table
-}
 
-// GetTableOk returns a tuple with the Table field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DataSvcUpdateObjectsRequest) GetTableOk() (*string, bool) {
-	if o == nil || IsNil(o.Table) {
-		return nil, false
-	}
-	return o.Table, true
-}
 
 // HasTable returns a boolean if a field has been set.
 func (o *DataSvcUpdateObjectsRequest) HasTable() bool {
@@ -135,10 +79,6 @@ func (o *DataSvcUpdateObjectsRequest) HasTable() bool {
 	return false
 }
 
-// SetTable gets a reference to the given string and assigns it to the Table field.
-func (o *DataSvcUpdateObjectsRequest) SetTable(v string) {
-	o.Table = &v
-}
 
 func (o DataSvcUpdateObjectsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

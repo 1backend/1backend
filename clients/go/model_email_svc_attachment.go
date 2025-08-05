@@ -53,23 +53,7 @@ func NewEmailSvcAttachmentWithDefaults() *EmailSvcAttachment {
 	return &this
 }
 
-// GetContent returns the Content field value if set, zero value otherwise.
-func (o *EmailSvcAttachment) GetContent() string {
-	if o == nil || IsNil(o.Content) {
-		var ret string
-		return ret
-	}
-	return *o.Content
-}
 
-// GetContentOk returns a tuple with the Content field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EmailSvcAttachment) GetContentOk() (*string, bool) {
-	if o == nil || IsNil(o.Content) {
-		return nil, false
-	}
-	return o.Content, true
-}
 
 // HasContent returns a boolean if a field has been set.
 func (o *EmailSvcAttachment) HasContent() bool {
@@ -80,52 +64,11 @@ func (o *EmailSvcAttachment) HasContent() bool {
 	return false
 }
 
-// SetContent gets a reference to the given string and assigns it to the Content field.
-func (o *EmailSvcAttachment) SetContent(v string) {
-	o.Content = &v
-}
 
-// GetContentType returns the ContentType field value
-func (o *EmailSvcAttachment) GetContentType() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.ContentType
-}
 
-// GetContentTypeOk returns a tuple with the ContentType field value
-// and a boolean to check if the value has been set.
-func (o *EmailSvcAttachment) GetContentTypeOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.ContentType, true
-}
 
-// SetContentType sets field value
-func (o *EmailSvcAttachment) SetContentType(v string) {
-	o.ContentType = v
-}
 
-// GetFileId returns the FileId field value if set, zero value otherwise.
-func (o *EmailSvcAttachment) GetFileId() string {
-	if o == nil || IsNil(o.FileId) {
-		var ret string
-		return ret
-	}
-	return *o.FileId
-}
-
-// GetFileIdOk returns a tuple with the FileId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EmailSvcAttachment) GetFileIdOk() (*string, bool) {
-	if o == nil || IsNil(o.FileId) {
-		return nil, false
-	}
-	return o.FileId, true
-}
 
 // HasFileId returns a boolean if a field has been set.
 func (o *EmailSvcAttachment) HasFileId() bool {
@@ -136,34 +79,9 @@ func (o *EmailSvcAttachment) HasFileId() bool {
 	return false
 }
 
-// SetFileId gets a reference to the given string and assigns it to the FileId field.
-func (o *EmailSvcAttachment) SetFileId(v string) {
-	o.FileId = &v
-}
 
-// GetFilename returns the Filename field value
-func (o *EmailSvcAttachment) GetFilename() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Filename
-}
 
-// GetFilenameOk returns a tuple with the Filename field value
-// and a boolean to check if the value has been set.
-func (o *EmailSvcAttachment) GetFilenameOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Filename, true
-}
-
-// SetFilename sets field value
-func (o *EmailSvcAttachment) SetFilename(v string) {
-	o.Filename = v
-}
 
 func (o EmailSvcAttachment) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

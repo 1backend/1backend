@@ -43,23 +43,7 @@ func NewPromptSvcPromptResponseWithDefaults() *PromptSvcPromptResponse {
 	return &this
 }
 
-// GetPrompt returns the Prompt field value if set, zero value otherwise.
-func (o *PromptSvcPromptResponse) GetPrompt() PromptSvcPrompt {
-	if o == nil || IsNil(o.Prompt) {
-		var ret PromptSvcPrompt
-		return ret
-	}
-	return *o.Prompt
-}
 
-// GetPromptOk returns a tuple with the Prompt field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PromptSvcPromptResponse) GetPromptOk() (*PromptSvcPrompt, bool) {
-	if o == nil || IsNil(o.Prompt) {
-		return nil, false
-	}
-	return o.Prompt, true
-}
 
 // HasPrompt returns a boolean if a field has been set.
 func (o *PromptSvcPromptResponse) HasPrompt() bool {
@@ -70,28 +54,8 @@ func (o *PromptSvcPromptResponse) HasPrompt() bool {
 	return false
 }
 
-// SetPrompt gets a reference to the given PromptSvcPrompt and assigns it to the Prompt field.
-func (o *PromptSvcPromptResponse) SetPrompt(v PromptSvcPrompt) {
-	o.Prompt = &v
-}
 
-// GetResponseMessage returns the ResponseMessage field value if set, zero value otherwise.
-func (o *PromptSvcPromptResponse) GetResponseMessage() ChatSvcMessage {
-	if o == nil || IsNil(o.ResponseMessage) {
-		var ret ChatSvcMessage
-		return ret
-	}
-	return *o.ResponseMessage
-}
 
-// GetResponseMessageOk returns a tuple with the ResponseMessage field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PromptSvcPromptResponse) GetResponseMessageOk() (*ChatSvcMessage, bool) {
-	if o == nil || IsNil(o.ResponseMessage) {
-		return nil, false
-	}
-	return o.ResponseMessage, true
-}
 
 // HasResponseMessage returns a boolean if a field has been set.
 func (o *PromptSvcPromptResponse) HasResponseMessage() bool {
@@ -102,10 +66,6 @@ func (o *PromptSvcPromptResponse) HasResponseMessage() bool {
 	return false
 }
 
-// SetResponseMessage gets a reference to the given ChatSvcMessage and assigns it to the ResponseMessage field.
-func (o *PromptSvcPromptResponse) SetResponseMessage(v ChatSvcMessage) {
-	o.ResponseMessage = &v
-}
 
 func (o PromptSvcPromptResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

@@ -40,23 +40,7 @@ func NewModelSvcStatusResponseWithDefaults() *ModelSvcStatusResponse {
 	return &this
 }
 
-// GetStatus returns the Status field value if set, zero value otherwise.
-func (o *ModelSvcStatusResponse) GetStatus() ModelSvcModelStatus {
-	if o == nil || IsNil(o.Status) {
-		var ret ModelSvcModelStatus
-		return ret
-	}
-	return *o.Status
-}
 
-// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcStatusResponse) GetStatusOk() (*ModelSvcModelStatus, bool) {
-	if o == nil || IsNil(o.Status) {
-		return nil, false
-	}
-	return o.Status, true
-}
 
 // HasStatus returns a boolean if a field has been set.
 func (o *ModelSvcStatusResponse) HasStatus() bool {
@@ -67,10 +51,6 @@ func (o *ModelSvcStatusResponse) HasStatus() bool {
 	return false
 }
 
-// SetStatus gets a reference to the given ModelSvcModelStatus and assigns it to the Status field.
-func (o *ModelSvcStatusResponse) SetStatus(v ModelSvcModelStatus) {
-	o.Status = &v
-}
 
 func (o ModelSvcStatusResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

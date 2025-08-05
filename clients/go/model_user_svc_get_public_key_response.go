@@ -45,29 +45,8 @@ func NewUserSvcGetPublicKeyResponseWithDefaults() *UserSvcGetPublicKeyResponse {
 	return &this
 }
 
-// GetPublicKey returns the PublicKey field value
-func (o *UserSvcGetPublicKeyResponse) GetPublicKey() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.PublicKey
-}
 
-// GetPublicKeyOk returns a tuple with the PublicKey field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcGetPublicKeyResponse) GetPublicKeyOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.PublicKey, true
-}
-
-// SetPublicKey sets field value
-func (o *UserSvcGetPublicKeyResponse) SetPublicKey(v string) {
-	o.PublicKey = v
-}
 
 func (o UserSvcGetPublicKeyResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

@@ -64,7 +64,7 @@ func (cs *ConfigService) SaveConfig(
 		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
-	if !isAuthRsp.GetAuthorized() {
+	if !isAuthRsp.Authorized {
 		endpoint.Unauthorized(w)
 		return
 	}
@@ -84,7 +84,7 @@ func (cs *ConfigService) SaveConfig(
 		config.PermissionConfigEditOnBehalf,
 	)
 
-	if err == nil && isAuthRsp.GetAuthorized() {
+	if err == nil && isAuthRsp.Authorized {
 		canActonBehalf = true
 	}
 

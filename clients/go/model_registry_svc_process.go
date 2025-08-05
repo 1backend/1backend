@@ -42,23 +42,7 @@ func NewRegistrySvcProcessWithDefaults() *RegistrySvcProcess {
 	return &this
 }
 
-// GetMemoryUsage returns the MemoryUsage field value if set, zero value otherwise.
-func (o *RegistrySvcProcess) GetMemoryUsage() int32 {
-	if o == nil || IsNil(o.MemoryUsage) {
-		var ret int32
-		return ret
-	}
-	return *o.MemoryUsage
-}
 
-// GetMemoryUsageOk returns a tuple with the MemoryUsage field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcProcess) GetMemoryUsageOk() (*int32, bool) {
-	if o == nil || IsNil(o.MemoryUsage) {
-		return nil, false
-	}
-	return o.MemoryUsage, true
-}
 
 // HasMemoryUsage returns a boolean if a field has been set.
 func (o *RegistrySvcProcess) HasMemoryUsage() bool {
@@ -69,28 +53,8 @@ func (o *RegistrySvcProcess) HasMemoryUsage() bool {
 	return false
 }
 
-// SetMemoryUsage gets a reference to the given int32 and assigns it to the MemoryUsage field.
-func (o *RegistrySvcProcess) SetMemoryUsage(v int32) {
-	o.MemoryUsage = &v
-}
 
-// GetPid returns the Pid field value if set, zero value otherwise.
-func (o *RegistrySvcProcess) GetPid() int32 {
-	if o == nil || IsNil(o.Pid) {
-		var ret int32
-		return ret
-	}
-	return *o.Pid
-}
 
-// GetPidOk returns a tuple with the Pid field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcProcess) GetPidOk() (*int32, bool) {
-	if o == nil || IsNil(o.Pid) {
-		return nil, false
-	}
-	return o.Pid, true
-}
 
 // HasPid returns a boolean if a field has been set.
 func (o *RegistrySvcProcess) HasPid() bool {
@@ -101,28 +65,8 @@ func (o *RegistrySvcProcess) HasPid() bool {
 	return false
 }
 
-// SetPid gets a reference to the given int32 and assigns it to the Pid field.
-func (o *RegistrySvcProcess) SetPid(v int32) {
-	o.Pid = &v
-}
 
-// GetProcessName returns the ProcessName field value if set, zero value otherwise.
-func (o *RegistrySvcProcess) GetProcessName() string {
-	if o == nil || IsNil(o.ProcessName) {
-		var ret string
-		return ret
-	}
-	return *o.ProcessName
-}
 
-// GetProcessNameOk returns a tuple with the ProcessName field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcProcess) GetProcessNameOk() (*string, bool) {
-	if o == nil || IsNil(o.ProcessName) {
-		return nil, false
-	}
-	return o.ProcessName, true
-}
 
 // HasProcessName returns a boolean if a field has been set.
 func (o *RegistrySvcProcess) HasProcessName() bool {
@@ -133,10 +77,6 @@ func (o *RegistrySvcProcess) HasProcessName() bool {
 	return false
 }
 
-// SetProcessName gets a reference to the given string and assigns it to the ProcessName field.
-func (o *RegistrySvcProcess) SetProcessName(v string) {
-	o.ProcessName = &v
-}
 
 func (o RegistrySvcProcess) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

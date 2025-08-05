@@ -40,23 +40,7 @@ func NewDataSvcUpsertObjectResponseWithDefaults() *DataSvcUpsertObjectResponse {
 	return &this
 }
 
-// GetObject returns the Object field value if set, zero value otherwise.
-func (o *DataSvcUpsertObjectResponse) GetObject() DataSvcObject {
-	if o == nil || IsNil(o.Object) {
-		var ret DataSvcObject
-		return ret
-	}
-	return *o.Object
-}
 
-// GetObjectOk returns a tuple with the Object field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DataSvcUpsertObjectResponse) GetObjectOk() (*DataSvcObject, bool) {
-	if o == nil || IsNil(o.Object) {
-		return nil, false
-	}
-	return o.Object, true
-}
 
 // HasObject returns a boolean if a field has been set.
 func (o *DataSvcUpsertObjectResponse) HasObject() bool {
@@ -67,10 +51,6 @@ func (o *DataSvcUpsertObjectResponse) HasObject() bool {
 	return false
 }
 
-// SetObject gets a reference to the given DataSvcObject and assigns it to the Object field.
-func (o *DataSvcUpsertObjectResponse) SetObject(v DataSvcObject) {
-	o.Object = &v
-}
 
 func (o DataSvcUpsertObjectResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

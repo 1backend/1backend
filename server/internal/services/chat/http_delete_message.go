@@ -44,7 +44,7 @@ func (a *ChatService) DeleteMessage(
 		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
-	if !isAuthResp.GetAuthorized() {
+	if !isAuthResp.Authorized {
 		endpoint.Unauthorized(w)
 		return
 	}
