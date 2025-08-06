@@ -613,7 +613,7 @@ func TestPointerPaginationMultipleKeys(t *testing.T, store DataStore) {
 			require.NoError(t, err)
 			require.Len(t, results, 4)
 
-			require.Equal(t, "B3", results[0].(TestObject).Name, "Pagination did not respect second sort key")
+			require.Equal(t, "B3", results[0].(*TestObject).Name, "Pagination did not respect second sort key")
 		})
 
 		t.Run("after with string time", func(t *testing.T) {

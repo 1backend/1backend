@@ -206,6 +206,7 @@ func (q *SQLQueryBuilder) buildFilters(start ...int) ([]string, []interface{}, e
 	}
 	var filters []string
 
+	// Regular filters first
 	for _, filter := range q.filters {
 		err := q.evaluateFilters(filter, &filters, &params, &paramCounter)
 		if err != nil {
@@ -213,18 +214,42 @@ func (q *SQLQueryBuilder) buildFilters(start ...int) ([]string, []interface{}, e
 		}
 	}
 
-	if len(q.after) > 0 {
-		fieldName := q.store.fieldName(q.orderField, castType(q.after[0]))
+	// Multi-field after pagination (always chain)
+	if len(q.after) > 0 && len(q.orderFields) > 0 {
+		var orParts []string
 
-		placeHolder := q.store.placeholder(paramCounter)
-		if q.orderDesc {
-			filters = append(filters, fmt.Sprintf("%s < %s", fieldName, placeHolder))
-		} else {
-			filters = append(filters, fmt.Sprintf("%s > %s", fieldName, placeHolder))
+		for i := range q.orderFields {
+			var andParts []string
+
+			// All previous fields must match
+			for j := 0; j < i; j++ {
+				andParts = append(andParts,
+					fmt.Sprintf("%s = %s",
+						q.store.fieldName(q.orderFields[j], castType(q.after[j])),
+						q.store.placeholder(paramCounter)))
+				params = append(params, q.after[j])
+				paramCounter++
+			}
+
+			// Current field comparison
+			op := ">"
+			if q.orderDescs[i] {
+				op = "<"
+			}
+			andParts = append(andParts,
+				fmt.Sprintf("%s %s %s",
+					q.store.fieldName(q.orderFields[i], castType(q.after[i])),
+					op,
+					q.store.placeholder(paramCounter)))
+			params = append(params, q.after[i])
+			paramCounter++
+
+			// Combine the AND parts
+			orParts = append(orParts, "("+strings.Join(andParts, " AND ")+")")
 		}
-		params = append(params, q.after[0])
-		paramCounter++
 
+		// Add OR chain to filters
+		filters = append(filters, "("+strings.Join(orParts, " OR ")+")")
 	}
 
 	return filters, params, nil

@@ -228,6 +228,7 @@ const (
 	SortingTypeNumeric SortingType = "numeric"
 	SortingTypeText    SortingType = "text"
 	SortingTypeDate    SortingType = "date"
+	SortingTypeRandom  SortingType = "random"
 )
 
 type OrderBy struct {
@@ -237,9 +238,6 @@ type OrderBy struct {
 	// Desc indicates whether the sorting should be in descending order.
 	Desc bool `json:"desc,omitempty"`
 
-	// Randomize indicates that the results should be randomized instead of ordered by the `field` and `desc` criteria
-	Randomize bool `json:"randomize,omitempty"`
-
 	// Defines the type of sorting to apply (numeric, text, date, etc.)
 	SortingType SortingType `json:"sortingType,omitempty"`
 }
@@ -248,7 +246,7 @@ type OrderBy struct {
 // in a distributed setting
 func OrderByRandom() OrderBy {
 	return OrderBy{
-		Randomize: true,
+		SortingType: SortingTypeRandom,
 	}
 }
 

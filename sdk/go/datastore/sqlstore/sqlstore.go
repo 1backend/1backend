@@ -446,24 +446,30 @@ func (s *SQLStore) buildUpsertQuery(obj datastore.Row) (string, []interface{}, e
 }
 
 type SQLQueryBuilder struct {
-	store            *SQLStore
-	filters          []datastore.Filter
-	orderField       string
-	orderDesc        bool
-	orderSortingType datastore.SortingType
-	limit            int64
-	after            []any
-	selectFields     []string
+	store             *SQLStore
+	filters           []datastore.Filter
+	orderFields       []string
+	orderDescs        []bool
+	orderSortingTypes []datastore.SortingType
+	limit             int64
+	after             []any
+	selectFields      []string
 }
 
-func (q *SQLQueryBuilder) OrderBy(orderbys ...datastore.OrderBy) datastore.QueryBuilder {
-	if len(orderbys) == 0 {
+func (q *SQLQueryBuilder) OrderBy(orderBys ...datastore.OrderBy) datastore.QueryBuilder {
+	if len(orderBys) == 0 {
 		return q
 	}
 
-	q.orderField = orderbys[0].Field
-	q.orderDesc = orderbys[0].Desc
-	q.orderSortingType = orderbys[0].SortingType
+	q.orderFields = make([]string, len(orderBys))
+	q.orderDescs = make([]bool, len(orderBys))
+	q.orderSortingTypes = make([]datastore.SortingType, len(orderBys))
+
+	for i, option := range orderBys {
+		q.orderFields[i] = option.Field
+		q.orderDescs[i] = option.Desc
+		q.orderSortingTypes[i] = option.SortingType
+	}
 
 	return q
 }
@@ -766,15 +772,13 @@ func (q *SQLQueryBuilder) buildSelectQuery() (string, []interface{}, error) {
 
 	var query string
 	if len(q.selectFields) > 0 {
-		selectFields := []string{}
-		for _, selectField := range q.selectFields {
-			selectFields = append(selectFields, q.store.fieldName(selectField))
+		selectFields := make([]string, len(q.selectFields))
+		for i, f := range q.selectFields {
+			selectFields[i] = q.store.fieldName(f)
 		}
-		// @todo I suspect there is a massive bug here and select fields doesn't even work at all
 		query = fmt.Sprintf("SELECT %s FROM %s", strings.Join(selectFields, ", "), q.store.db.Tablename())
 	} else {
 		instanceType := reflect.TypeOf(q.store.instance)
-
 		if instanceType.Kind() == reflect.Pointer {
 			instanceType = instanceType.Elem()
 		}
@@ -782,18 +786,15 @@ func (q *SQLQueryBuilder) buildSelectQuery() (string, []interface{}, error) {
 			return "", nil, errors.New("q.store.instance must be a struct or pointer to a struct")
 		}
 
-		// Build the column list dynamically using reflection
 		var columns []string
 		for i := 0; i < instanceType.NumField(); i++ {
 			field := instanceType.Field(i)
-			// Optionally, use struct tags to get the column names (if present)
-			columnName := field.Name // default to the field name
+			columnName := field.Name
 			if jsonTag := field.Tag.Get("json"); jsonTag != "" {
 				columnName = strings.Split(jsonTag, ",")[0]
 			}
 			columns = append(columns, q.store.fieldName(columnName))
 		}
-
 		query = fmt.Sprintf("SELECT %s FROM %s", strings.Join(columns, ", "), strings.ToLower(q.store.db.Tablename()))
 	}
 
@@ -801,18 +802,26 @@ func (q *SQLQueryBuilder) buildSelectQuery() (string, []interface{}, error) {
 		query += " WHERE " + strings.Join(filters, " AND ")
 	}
 
-	if q.orderField != "" {
-		orderField := q.orderField
-		orderDesc := q.orderDesc
-		cast := ""
-		if q.orderSortingType == datastore.SortingTypeNumeric {
-			cast = "numeric"
-		}
+	// ORDER BY multi-field
+	if len(q.orderFields) > 0 {
+		var orderParts []string
+		for i, field := range q.orderFields {
+			if q.orderSortingTypes[i] == datastore.SortingTypeRandom {
+				orderParts = append(orderParts, "RANDOM()")
+				continue
+			}
 
-		query += fmt.Sprintf(" ORDER BY %s", q.store.fieldName(orderField, cast))
-		if orderDesc {
-			query += " DESC"
+			cast := ""
+			if i < len(q.orderSortingTypes) && q.orderSortingTypes[i] == datastore.SortingTypeNumeric {
+				cast = "numeric"
+			}
+			orderPart := q.store.fieldName(field, cast)
+			if i < len(q.orderDescs) && q.orderDescs[i] {
+				orderPart += " DESC"
+			}
+			orderParts = append(orderParts, orderPart)
 		}
+		query += " ORDER BY " + strings.Join(orderParts, ", ")
 	}
 
 	if q.limit > 0 {

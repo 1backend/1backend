@@ -253,8 +253,8 @@ func (s *LocalStore) IsInTransaction() bool {
 type QueryBuilder struct {
 	store        *LocalStore
 	filters      []datastore.Filter
-	orderField   string
-	orderDesc    bool
+	orderFields  []string
+	orderDescs   []bool
 	orderByRand  bool
 	limit        int64
 	after        []any
@@ -266,13 +266,12 @@ func (q *QueryBuilder) OrderBy(options ...datastore.OrderBy) datastore.QueryBuil
 		return q
 	}
 
-	option := options[0]
+	q.orderFields = make([]string, len(options))
+	q.orderDescs = make([]bool, len(options))
 
-	if option.Field != "" {
-		q.orderField = option.Field
-		q.orderDesc = option.Desc
-	} else {
-		q.orderByRand = true
+	for i, option := range options {
+		q.orderFields[i] = option.Field
+		q.orderDescs[i] = option.Desc
 	}
 
 	return q
@@ -321,50 +320,99 @@ func (q *QueryBuilder) Find() ([]datastore.Row, error) {
 	for _, obj := range q.store.data {
 		matched, err := q.match(obj)
 		if err != nil {
-			return nil,
-				err
+			return nil, err
 		}
 		if matched {
 			result = append(result, obj)
 		}
 	}
 
-	if q.orderField != "" {
+	// Sorting using all order fields
+	if len(q.orderFields) > 0 {
 		sort.Slice(result, func(i, j int) bool {
-			vi, vj := getField(result[i], q.orderField), getField(result[j], q.orderField)
-			return compare(vi, vj, q.orderDesc)
+			for idx, field := range q.orderFields {
+				if field == "" {
+					// Happens for random order
+					continue
+				}
+
+				vi := getField(result[i], field)
+				vj := getField(result[j], field)
+
+				desc := false
+				if idx < len(q.orderDescs) {
+					desc = q.orderDescs[idx]
+				}
+
+				if compare(vi, vj, desc) {
+					return true // i < j
+				}
+				if compare(vj, vi, desc) {
+					return false // j < i
+				}
+				// otherwise equal, check next field
+			}
+			return false
 		})
 	}
 
-	if len(q.after) > 0 {
+	// Multi-field "after" pagination
+	if len(q.after) > 0 && len(q.orderFields) > 0 {
 		startIndex := -1
 		for i, obj := range result {
-			vi := getField(obj, q.orderField)
+			isAfter := false
+			equalSoFar := true
+			for k, field := range q.orderFields {
+				if k >= len(q.after) {
+					break
+				}
 
-			if compare(toBaseType(q.after[0]), toBaseType(vi), q.orderDesc) {
+				v := getField(obj, field)
+				desc := false
+				if k < len(q.orderDescs) {
+					desc = q.orderDescs[k]
+				}
+
+				// If still equal so far, check if current field is strictly after
+				if equalSoFar && compare(toBaseType(q.after[k]), toBaseType(v), desc) {
+					isAfter = true
+					break
+				}
+
+				// If not equal, stop equal tracking
+				if !reflect.DeepEqual(toBaseType(v), toBaseType(q.after[k])) {
+					equalSoFar = false
+					break
+				}
+			}
+
+			if isAfter {
 				startIndex = i
 				break
 			}
 		}
+
 		if startIndex != -1 {
 			result = result[startIndex:]
 		} else {
-			result = []any{} // No matching "after" value found
+			result = []any{}
 		}
 	}
 
+	// Limit
 	if q.limit > 0 && q.limit < int64(len(result)) {
 		result = result[:q.limit]
 	}
 
+	// Deep copy into correct type
 	sliceCopy, err := reflector.DeepCopySliceIntoType(result, q.store.instance)
 	if err != nil {
 		return nil, err
 	}
 
-	ret := []datastore.Row{}
-	for _, v := range sliceCopy {
-		ret = append(ret, v.(datastore.Row))
+	ret := make([]datastore.Row, len(sliceCopy))
+	for i, v := range sliceCopy {
+		ret[i] = v.(datastore.Row)
 	}
 
 	return ret, nil
@@ -676,7 +724,7 @@ func evaluate(filter datastore.Filter, obj any) (bool, error) {
 				continue
 			}
 
-			values :=  filter.Values
+			values := filter.Values
 			value := values[0]
 
 			queryValue := reflect.ValueOf(value)
