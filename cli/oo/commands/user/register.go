@@ -76,7 +76,7 @@ func Register(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	token := rsp.Token.GetToken()
+	token := rsp.Token.Token
 
 	if env.Users == nil {
 		env.Users = map[string]*types.User{}
