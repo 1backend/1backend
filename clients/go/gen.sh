@@ -56,7 +56,7 @@ done
 
 # Delete getter methods because they are still using []map[string]interface{}
 # What a cruft.
-find ./ "model_*.go" | while read -r file; do
+find ./ -name "model_*.go" | while read -r file; do
   echo "Cleaning methods in: $file"
   
   awk '
