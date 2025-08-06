@@ -857,10 +857,25 @@ func compare(vi, vj interface{}, desc bool) bool {
 		}
 		return viVal.Float() < vjVal.Float()
 	case reflect.String:
-		if desc {
-			return viVal.String() > vjVal.String()
+		viStr := viVal.String()
+		vjStr := vjVal.String()
+
+		// Try to parse both strings as time
+		viTime, viErr := datastore.ParseAnyDate(viStr)
+		vjTime, vjErr := datastore.ParseAnyDate(vjStr)
+
+		if viErr == nil && vjErr == nil {
+			if desc {
+				return viTime.After(vjTime)
+			}
+			return viTime.Before(vjTime)
 		}
-		return viVal.String() < vjVal.String()
+
+		// Fallback to string comparison if time parsing fails
+		if desc {
+			return viStr > vjStr
+		}
+		return viStr < vjStr
 	case reflect.Struct:
 		if viVal.Type() == reflect.TypeOf(time.Time{}) {
 			viTime := viVal.Interface().(time.Time)
