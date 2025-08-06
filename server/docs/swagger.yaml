@@ -830,10 +830,6 @@ definitions:
       field:
         description: The field by which to order the results
         type: string
-      randomize:
-        description: Randomize indicates that the results should be randomized instead
-          of ordered by the `field` and `desc` criteria
-        type: boolean
       sortingType:
         allOf:
         - $ref: '#/definitions/datastore.SortingType'
@@ -846,6 +842,7 @@ definitions:
           After is used for cursor-based pagination, which is more
           effective in scalable and distributed environments compared
           to offset-based pagination.
+          @openapi-any-array
         items: {}
         type: array
       count:
@@ -875,12 +872,14 @@ definitions:
     - numeric
     - text
     - date
+    - random
     type: string
     x-enum-varnames:
     - SortingTypeDefault
     - SortingTypeNumeric
     - SortingTypeText
     - SortingTypeDate
+    - SortingTypeRandom
   deploy_svc.AutoScalingConfig:
     properties:
       cpuThreshold:

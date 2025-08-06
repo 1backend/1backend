@@ -24,8 +24,6 @@ type DatastoreOrderBy struct {
 	Desc *bool `json:"desc,omitempty"`
 	// The field by which to order the results
 	Field *string `json:"field,omitempty"`
-	// Randomize indicates that the results should be randomized instead of ordered by the `field` and `desc` criteria
-	Randomize *bool `json:"randomize,omitempty"`
 	// Defines the type of sorting to apply (numeric, text, date, etc.)
 	SortingType *DatastoreSortingType `json:"sortingType,omitempty"`
 }
@@ -73,18 +71,6 @@ func (o *DatastoreOrderBy) HasField() bool {
 
 
 
-// HasRandomize returns a boolean if a field has been set.
-func (o *DatastoreOrderBy) HasRandomize() bool {
-	if o != nil && !IsNil(o.Randomize) {
-		return true
-	}
-
-	return false
-}
-
-
-
-
 // HasSortingType returns a boolean if a field has been set.
 func (o *DatastoreOrderBy) HasSortingType() bool {
 	if o != nil && !IsNil(o.SortingType) {
@@ -110,9 +96,6 @@ func (o DatastoreOrderBy) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Field) {
 		toSerialize["field"] = o.Field
-	}
-	if !IsNil(o.Randomize) {
-		toSerialize["randomize"] = o.Randomize
 	}
 	if !IsNil(o.SortingType) {
 		toSerialize["sortingType"] = o.SortingType

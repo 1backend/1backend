@@ -25,6 +25,7 @@ const (
 	SortingTypeNumeric DatastoreSortingType = "numeric"
 	SortingTypeText DatastoreSortingType = "text"
 	SortingTypeDate DatastoreSortingType = "date"
+	SortingTypeRandom DatastoreSortingType = "random"
 )
 
 // All allowed values of DatastoreSortingType enum
@@ -33,6 +34,7 @@ var AllowedDatastoreSortingTypeEnumValues = []DatastoreSortingType{
 	"numeric",
 	"text",
 	"date",
+	"random",
 }
 
 func (v *DatastoreSortingType) UnmarshalJSON(src []byte) error {

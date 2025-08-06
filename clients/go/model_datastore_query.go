@@ -20,8 +20,8 @@ var _ MappedNullable = &DatastoreQuery{}
 
 // DatastoreQuery struct for DatastoreQuery
 type DatastoreQuery struct {
-	// After is used for cursor-based pagination, which is more effective in scalable and distributed environments compared to offset-based pagination.
-	After []map[string]interface{} `json:"after,omitempty"`
+	// After is used for cursor-based pagination, which is more effective in scalable and distributed environments compared to offset-based pagination. @openapi-any-array
+	After []any `json:"after,omitempty"`
 	// Count true means return the count of the dataset filtered by Filters without after or limit.
 	Count *bool `json:"count,omitempty"`
 	// Filters are filtering options of a query. It is advised to use It's advised to use helper functions in your respective client library such as filter constructors (`all`, `equal`, `contains`, `startsWith`) and field selectors (`field`, `fields`, `id`) for easier access.

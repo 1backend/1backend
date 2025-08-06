@@ -198,6 +198,7 @@ type Query struct {
 	// After is used for cursor-based pagination, which is more
 	// effective in scalable and distributed environments compared
 	// to offset-based pagination.
+	// @openapi-any-array
 	After []any `json:"after,omitempty"`
 
 	// Limit the number of records in the result set.

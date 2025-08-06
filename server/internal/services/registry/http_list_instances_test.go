@@ -53,8 +53,8 @@ func TestListInstances(t *testing.T) {
 		).Execute()
 		require.NoError(t, err)
 
-		require.Len(t, resp.GetInstances(), 1)
-		require.Equal(t, mockBackend.URL, resp.GetInstances()[0].GetUrl())
+		require.Len(t, resp.Instances, 1)
+		require.Equal(t, mockBackend.URL, resp.Instances[0].Url)
 	})
 
 	t.Run("list instances works after the token expires", func(t *testing.T) {
@@ -65,7 +65,7 @@ func TestListInstances(t *testing.T) {
 		).Execute()
 		require.NoError(t, err)
 
-		require.Len(t, resp.GetInstances(), 1)
-		require.Equal(t, mockBackend.URL, resp.GetInstances()[0].GetUrl())
+		require.Len(t, resp.Instances, 1)
+		require.Equal(t, mockBackend.URL, resp.Instances[0].Url)
 	})
 }

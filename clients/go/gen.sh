@@ -51,8 +51,7 @@ find ./ -name "*.go" | while read -r file; do
 
       print
     }
-  ' "$file" > "$file.tmp"
-  mv "$file.tmp" "$file" || true
+  ' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
 done
 
 # Delete getter methods because they are still using []map[string]interface{}
@@ -72,8 +71,7 @@ find ./ "model_*.go" | while read -r file; do
     skip { next }
     # Keep all other lines
     { print }
-  ' "$file" > "$file.tmp"
-  mv "$file.tmp" "$file" || true
+  ' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
 done
 
 bash "$SERVER_DIR/mock_go.sh"
