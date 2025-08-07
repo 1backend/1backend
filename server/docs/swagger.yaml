@@ -2355,6 +2355,12 @@ definitions:
       InstanceStatusUnknown: Default state when the instance status is not yet determined
       InstanceStatusUnreachable: Instance is not reachable, possibly down or with
         network issues
+    x-enum-descriptions:
+    - Default state when the instance status is not yet determined
+    - Instance is fully operational and responding as expected
+    - Instance is responding but with performance issues or partial failures
+    - Instance is not reachable, possibly down or with network issues
+    - Instance encountered errors or failed multiple health checks
     x-enum-varnames:
     - InstanceStatusUnknown
     - InstanceStatusHealthy
@@ -3742,7 +3748,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.7.6
+  version: 0.8.0-rc1
 paths:
   /chat-svc/events:
     get:

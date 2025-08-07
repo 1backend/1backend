@@ -793,12 +793,6 @@ definitions:
         items:
           type: string
         type: array
-      jsonValues:
-        description: |-
-          JSONValues is a JSON marshalled array of values.
-          It's JSON marhalled due to the limitations of the
-          Swaggo -> OpenAPI 2.0 -> OpenAPI Go generator toolchain.
-        type: string
       op:
         $ref: '#/definitions/datastore.Op'
       subFilters:
@@ -806,6 +800,10 @@ definitions:
           are combined.
         items:
           $ref: '#/definitions/datastore.Filter'
+        type: array
+      values:
+        description: '@openapi-any-array'
+        items: {}
         type: array
     type: object
   datastore.Op:
@@ -832,10 +830,6 @@ definitions:
       field:
         description: The field by which to order the results
         type: string
-      randomize:
-        description: Randomize indicates that the results should be randomized instead
-          of ordered by the `field` and `desc` criteria
-        type: boolean
       sortingType:
         allOf:
         - $ref: '#/definitions/datastore.SortingType'
@@ -843,6 +837,14 @@ definitions:
     type: object
   datastore.Query:
     properties:
+      after:
+        description: |-
+          After is used for cursor-based pagination, which is more
+          effective in scalable and distributed environments compared
+          to offset-based pagination.
+          @openapi-any-array
+        items: {}
+        type: array
       count:
         description: |-
           Count true means return the count of the dataset filtered by Filters
@@ -855,16 +857,6 @@ definitions:
         items:
           $ref: '#/definitions/datastore.Filter'
         type: array
-      jsonAfter:
-        description: |-
-          JSONAfter is used for cursor-based pagination, which is more
-          effective in scalable and distributed environments compared
-          to offset-based pagination.
-
-          JSONAfter is a JSON-encoded string due to limitations in Swaggo (e.g., []interface{} gets converted to []map[string]interface{}).
-          There is no way to specify a type that results in an any/interface{} type in the `go -> openapi -> go` generation process.
-          As a result, JSONAfter is a JSON-marshalled string representing an array, e.g., `[42]`.
-        type: string
       limit:
         description: Limit the number of records in the result set.
         type: integer
@@ -880,12 +872,14 @@ definitions:
     - numeric
     - text
     - date
+    - random
     type: string
     x-enum-varnames:
     - SortingTypeDefault
     - SortingTypeNumeric
     - SortingTypeText
     - SortingTypeDate
+    - SortingTypeRandom
   deploy_svc.AutoScalingConfig:
     properties:
       cpuThreshold:
@@ -3754,7 +3748,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.7.6
+  version: 0.8.0-rc1
 paths:
   /chat-svc/events:
     get:
