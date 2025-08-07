@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -20,9 +20,7 @@ var _ MappedNullable = &ModelSvcArchitectures{}
 
 // ModelSvcArchitectures struct for ModelSvcArchitectures
 type ModelSvcArchitectures struct {
-	// CUDA-specific container parameters, if applicable.
 	Cuda *ModelSvcCudaParameters `json:"cuda,omitempty"`
-	// Default container configuration for non-GPU environments.
 	Default *ModelSvcDefaultParameters `json:"default,omitempty"`
 }
 
@@ -43,7 +41,23 @@ func NewModelSvcArchitecturesWithDefaults() *ModelSvcArchitectures {
 	return &this
 }
 
+// GetCuda returns the Cuda field value if set, zero value otherwise.
+func (o *ModelSvcArchitectures) GetCuda() ModelSvcCudaParameters {
+	if o == nil || IsNil(o.Cuda) {
+		var ret ModelSvcCudaParameters
+		return ret
+	}
+	return *o.Cuda
+}
 
+// GetCudaOk returns a tuple with the Cuda field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ModelSvcArchitectures) GetCudaOk() (*ModelSvcCudaParameters, bool) {
+	if o == nil || IsNil(o.Cuda) {
+		return nil, false
+	}
+	return o.Cuda, true
+}
 
 // HasCuda returns a boolean if a field has been set.
 func (o *ModelSvcArchitectures) HasCuda() bool {
@@ -54,8 +68,28 @@ func (o *ModelSvcArchitectures) HasCuda() bool {
 	return false
 }
 
+// SetCuda gets a reference to the given ModelSvcCudaParameters and assigns it to the Cuda field.
+func (o *ModelSvcArchitectures) SetCuda(v ModelSvcCudaParameters) {
+	o.Cuda = &v
+}
 
+// GetDefault returns the Default field value if set, zero value otherwise.
+func (o *ModelSvcArchitectures) GetDefault() ModelSvcDefaultParameters {
+	if o == nil || IsNil(o.Default) {
+		var ret ModelSvcDefaultParameters
+		return ret
+	}
+	return *o.Default
+}
 
+// GetDefaultOk returns a tuple with the Default field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ModelSvcArchitectures) GetDefaultOk() (*ModelSvcDefaultParameters, bool) {
+	if o == nil || IsNil(o.Default) {
+		return nil, false
+	}
+	return o.Default, true
+}
 
 // HasDefault returns a boolean if a field has been set.
 func (o *ModelSvcArchitectures) HasDefault() bool {
@@ -66,6 +100,10 @@ func (o *ModelSvcArchitectures) HasDefault() bool {
 	return false
 }
 
+// SetDefault gets a reference to the given ModelSvcDefaultParameters and assigns it to the Default field.
+func (o *ModelSvcArchitectures) SetDefault(v ModelSvcDefaultParameters) {
+	o.Default = &v
+}
 
 func (o ModelSvcArchitectures) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

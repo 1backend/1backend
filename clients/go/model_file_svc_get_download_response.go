@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -46,7 +46,23 @@ func NewFileSvcGetDownloadResponseWithDefaults() *FileSvcGetDownloadResponse {
 	return &this
 }
 
+// GetDownload returns the Download field value if set, zero value otherwise.
+func (o *FileSvcGetDownloadResponse) GetDownload() FileSvcDownload {
+	if o == nil || IsNil(o.Download) {
+		var ret FileSvcDownload
+		return ret
+	}
+	return *o.Download
+}
 
+// GetDownloadOk returns a tuple with the Download field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FileSvcGetDownloadResponse) GetDownloadOk() (*FileSvcDownload, bool) {
+	if o == nil || IsNil(o.Download) {
+		return nil, false
+	}
+	return o.Download, true
+}
 
 // HasDownload returns a boolean if a field has been set.
 func (o *FileSvcGetDownloadResponse) HasDownload() bool {
@@ -57,9 +73,34 @@ func (o *FileSvcGetDownloadResponse) HasDownload() bool {
 	return false
 }
 
+// SetDownload gets a reference to the given FileSvcDownload and assigns it to the Download field.
+func (o *FileSvcGetDownloadResponse) SetDownload(v FileSvcDownload) {
+	o.Download = &v
+}
 
+// GetExists returns the Exists field value
+func (o *FileSvcGetDownloadResponse) GetExists() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
 
+	return o.Exists
+}
 
+// GetExistsOk returns a tuple with the Exists field value
+// and a boolean to check if the value has been set.
+func (o *FileSvcGetDownloadResponse) GetExistsOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Exists, true
+}
+
+// SetExists sets field value
+func (o *FileSvcGetDownloadResponse) SetExists(v bool) {
+	o.Exists = v
+}
 
 func (o FileSvcGetDownloadResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

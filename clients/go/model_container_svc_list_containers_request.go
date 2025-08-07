@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -42,7 +42,23 @@ func NewContainerSvcListContainersRequestWithDefaults() *ContainerSvcListContain
 	return &this
 }
 
+// GetContainerId returns the ContainerId field value if set, zero value otherwise.
+func (o *ContainerSvcListContainersRequest) GetContainerId() string {
+	if o == nil || IsNil(o.ContainerId) {
+		var ret string
+		return ret
+	}
+	return *o.ContainerId
+}
 
+// GetContainerIdOk returns a tuple with the ContainerId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcListContainersRequest) GetContainerIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ContainerId) {
+		return nil, false
+	}
+	return o.ContainerId, true
+}
 
 // HasContainerId returns a boolean if a field has been set.
 func (o *ContainerSvcListContainersRequest) HasContainerId() bool {
@@ -53,8 +69,28 @@ func (o *ContainerSvcListContainersRequest) HasContainerId() bool {
 	return false
 }
 
+// SetContainerId gets a reference to the given string and assigns it to the ContainerId field.
+func (o *ContainerSvcListContainersRequest) SetContainerId(v string) {
+	o.ContainerId = &v
+}
 
+// GetLimit returns the Limit field value if set, zero value otherwise.
+func (o *ContainerSvcListContainersRequest) GetLimit() int32 {
+	if o == nil || IsNil(o.Limit) {
+		var ret int32
+		return ret
+	}
+	return *o.Limit
+}
 
+// GetLimitOk returns a tuple with the Limit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcListContainersRequest) GetLimitOk() (*int32, bool) {
+	if o == nil || IsNil(o.Limit) {
+		return nil, false
+	}
+	return o.Limit, true
+}
 
 // HasLimit returns a boolean if a field has been set.
 func (o *ContainerSvcListContainersRequest) HasLimit() bool {
@@ -65,8 +101,28 @@ func (o *ContainerSvcListContainersRequest) HasLimit() bool {
 	return false
 }
 
+// SetLimit gets a reference to the given int32 and assigns it to the Limit field.
+func (o *ContainerSvcListContainersRequest) SetLimit(v int32) {
+	o.Limit = &v
+}
 
+// GetNodeId returns the NodeId field value if set, zero value otherwise.
+func (o *ContainerSvcListContainersRequest) GetNodeId() string {
+	if o == nil || IsNil(o.NodeId) {
+		var ret string
+		return ret
+	}
+	return *o.NodeId
+}
 
+// GetNodeIdOk returns a tuple with the NodeId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcListContainersRequest) GetNodeIdOk() (*string, bool) {
+	if o == nil || IsNil(o.NodeId) {
+		return nil, false
+	}
+	return o.NodeId, true
+}
 
 // HasNodeId returns a boolean if a field has been set.
 func (o *ContainerSvcListContainersRequest) HasNodeId() bool {
@@ -77,6 +133,10 @@ func (o *ContainerSvcListContainersRequest) HasNodeId() bool {
 	return false
 }
 
+// SetNodeId gets a reference to the given string and assigns it to the NodeId field.
+func (o *ContainerSvcListContainersRequest) SetNodeId(v string) {
+	o.NodeId = &v
+}
 
 func (o ContainerSvcListContainersRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

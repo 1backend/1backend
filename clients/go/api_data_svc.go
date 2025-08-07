@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -120,12 +120,12 @@ type DataSvcAPIService service
 type ApiCreateObjectRequest struct {
 	ctx context.Context
 	ApiService DataSvcAPI
-	body *DataSvcCreateObjectRequest
+	dataSvcCreateObjectRequest *DataSvcCreateObjectRequest
 }
 
 // Create request payload
-func (r ApiCreateObjectRequest) Body(body DataSvcCreateObjectRequest) ApiCreateObjectRequest {
-	r.body = &body
+func (r ApiCreateObjectRequest) DataSvcCreateObjectRequest(dataSvcCreateObjectRequest DataSvcCreateObjectRequest) ApiCreateObjectRequest {
+	r.dataSvcCreateObjectRequest = &dataSvcCreateObjectRequest
 	return r
 }
 
@@ -168,8 +168,8 @@ func (a *DataSvcAPIService) CreateObjectExecute(r ApiCreateObjectRequest) (*Data
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.dataSvcCreateObjectRequest == nil {
+		return localVarReturnValue, nil, reportError("dataSvcCreateObjectRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -190,7 +190,7 @@ func (a *DataSvcAPIService) CreateObjectExecute(r ApiCreateObjectRequest) (*Data
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.dataSvcCreateObjectRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -277,12 +277,12 @@ func (a *DataSvcAPIService) CreateObjectExecute(r ApiCreateObjectRequest) (*Data
 type ApiDeleteObjectsRequest struct {
 	ctx context.Context
 	ApiService DataSvcAPI
-	body *DataSvcDeleteObjectRequest
+	dataSvcDeleteObjectRequest *DataSvcDeleteObjectRequest
 }
 
 // Delete request payload
-func (r ApiDeleteObjectsRequest) Body(body DataSvcDeleteObjectRequest) ApiDeleteObjectsRequest {
-	r.body = &body
+func (r ApiDeleteObjectsRequest) DataSvcDeleteObjectRequest(dataSvcDeleteObjectRequest DataSvcDeleteObjectRequest) ApiDeleteObjectsRequest {
+	r.dataSvcDeleteObjectRequest = &dataSvcDeleteObjectRequest
 	return r
 }
 
@@ -325,8 +325,8 @@ func (a *DataSvcAPIService) DeleteObjectsExecute(r ApiDeleteObjectsRequest) (map
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.dataSvcDeleteObjectRequest == nil {
+		return localVarReturnValue, nil, reportError("dataSvcDeleteObjectRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -347,7 +347,7 @@ func (a *DataSvcAPIService) DeleteObjectsExecute(r ApiDeleteObjectsRequest) (map
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.dataSvcDeleteObjectRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -434,12 +434,12 @@ func (a *DataSvcAPIService) DeleteObjectsExecute(r ApiDeleteObjectsRequest) (map
 type ApiQueryObjectsRequest struct {
 	ctx context.Context
 	ApiService DataSvcAPI
-	body *DataSvcQueryRequest
+	dataSvcQueryRequest *DataSvcQueryRequest
 }
 
 // Query Request
-func (r ApiQueryObjectsRequest) Body(body DataSvcQueryRequest) ApiQueryObjectsRequest {
-	r.body = &body
+func (r ApiQueryObjectsRequest) DataSvcQueryRequest(dataSvcQueryRequest DataSvcQueryRequest) ApiQueryObjectsRequest {
+	r.dataSvcQueryRequest = &dataSvcQueryRequest
 	return r
 }
 
@@ -505,7 +505,7 @@ func (a *DataSvcAPIService) QueryObjectsExecute(r ApiQueryObjectsRequest) (*Data
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.dataSvcQueryRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -592,12 +592,12 @@ func (a *DataSvcAPIService) QueryObjectsExecute(r ApiQueryObjectsRequest) (*Data
 type ApiUpdateObjectsRequest struct {
 	ctx context.Context
 	ApiService DataSvcAPI
-	body *DataSvcUpdateObjectsRequest
+	dataSvcUpdateObjectsRequest *DataSvcUpdateObjectsRequest
 }
 
 // Update request payload
-func (r ApiUpdateObjectsRequest) Body(body DataSvcUpdateObjectsRequest) ApiUpdateObjectsRequest {
-	r.body = &body
+func (r ApiUpdateObjectsRequest) DataSvcUpdateObjectsRequest(dataSvcUpdateObjectsRequest DataSvcUpdateObjectsRequest) ApiUpdateObjectsRequest {
+	r.dataSvcUpdateObjectsRequest = &dataSvcUpdateObjectsRequest
 	return r
 }
 
@@ -641,8 +641,8 @@ func (a *DataSvcAPIService) UpdateObjectsExecute(r ApiUpdateObjectsRequest) (map
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.dataSvcUpdateObjectsRequest == nil {
+		return localVarReturnValue, nil, reportError("dataSvcUpdateObjectsRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -663,7 +663,7 @@ func (a *DataSvcAPIService) UpdateObjectsExecute(r ApiUpdateObjectsRequest) (map
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.dataSvcUpdateObjectsRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -751,12 +751,12 @@ type ApiUpsertObjectRequest struct {
 	ctx context.Context
 	ApiService DataSvcAPI
 	objectId string
-	body *DataSvcUpsertObjectRequest
+	dataSvcUpsertObjectRequest *DataSvcUpsertObjectRequest
 }
 
 // Upsert request payload
-func (r ApiUpsertObjectRequest) Body(body DataSvcUpsertObjectRequest) ApiUpsertObjectRequest {
-	r.body = &body
+func (r ApiUpsertObjectRequest) DataSvcUpsertObjectRequest(dataSvcUpsertObjectRequest DataSvcUpsertObjectRequest) ApiUpsertObjectRequest {
+	r.dataSvcUpsertObjectRequest = &dataSvcUpsertObjectRequest
 	return r
 }
 
@@ -802,8 +802,8 @@ func (a *DataSvcAPIService) UpsertObjectExecute(r ApiUpsertObjectRequest) (*Data
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.dataSvcUpsertObjectRequest == nil {
+		return localVarReturnValue, nil, reportError("dataSvcUpsertObjectRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -824,7 +824,7 @@ func (a *DataSvcAPIService) UpsertObjectExecute(r ApiUpsertObjectRequest) (*Data
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.dataSvcUpsertObjectRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -911,12 +911,12 @@ func (a *DataSvcAPIService) UpsertObjectExecute(r ApiUpsertObjectRequest) (*Data
 type ApiUpsertObjectsRequest struct {
 	ctx context.Context
 	ApiService DataSvcAPI
-	body *DataSvcUpsertObjectRequest
+	dataSvcUpsertObjectRequest *DataSvcUpsertObjectRequest
 }
 
 // Upsert request payload
-func (r ApiUpsertObjectsRequest) Body(body DataSvcUpsertObjectRequest) ApiUpsertObjectsRequest {
-	r.body = &body
+func (r ApiUpsertObjectsRequest) DataSvcUpsertObjectRequest(dataSvcUpsertObjectRequest DataSvcUpsertObjectRequest) ApiUpsertObjectsRequest {
+	r.dataSvcUpsertObjectRequest = &dataSvcUpsertObjectRequest
 	return r
 }
 
@@ -959,8 +959,8 @@ func (a *DataSvcAPIService) UpsertObjectsExecute(r ApiUpsertObjectsRequest) (*Da
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.dataSvcUpsertObjectRequest == nil {
+		return localVarReturnValue, nil, reportError("dataSvcUpsertObjectRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -981,7 +981,7 @@ func (a *DataSvcAPIService) UpsertObjectsExecute(r ApiUpsertObjectsRequest) (*Da
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.dataSvcUpsertObjectRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {

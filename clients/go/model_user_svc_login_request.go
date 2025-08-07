@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -44,7 +44,23 @@ func NewUserSvcLoginRequestWithDefaults() *UserSvcLoginRequest {
 	return &this
 }
 
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *UserSvcLoginRequest) GetApp() string {
+	if o == nil || IsNil(o.App) {
+		var ret string
+		return ret
+	}
+	return *o.App
+}
 
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcLoginRequest) GetAppOk() (*string, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
 
 // HasApp returns a boolean if a field has been set.
 func (o *UserSvcLoginRequest) HasApp() bool {
@@ -55,8 +71,28 @@ func (o *UserSvcLoginRequest) HasApp() bool {
 	return false
 }
 
+// SetApp gets a reference to the given string and assigns it to the App field.
+func (o *UserSvcLoginRequest) SetApp(v string) {
+	o.App = &v
+}
 
+// GetContact returns the Contact field value if set, zero value otherwise.
+func (o *UserSvcLoginRequest) GetContact() string {
+	if o == nil || IsNil(o.Contact) {
+		var ret string
+		return ret
+	}
+	return *o.Contact
+}
 
+// GetContactOk returns a tuple with the Contact field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcLoginRequest) GetContactOk() (*string, bool) {
+	if o == nil || IsNil(o.Contact) {
+		return nil, false
+	}
+	return o.Contact, true
+}
 
 // HasContact returns a boolean if a field has been set.
 func (o *UserSvcLoginRequest) HasContact() bool {
@@ -67,8 +103,28 @@ func (o *UserSvcLoginRequest) HasContact() bool {
 	return false
 }
 
+// SetContact gets a reference to the given string and assigns it to the Contact field.
+func (o *UserSvcLoginRequest) SetContact(v string) {
+	o.Contact = &v
+}
 
+// GetDevice returns the Device field value if set, zero value otherwise.
+func (o *UserSvcLoginRequest) GetDevice() string {
+	if o == nil || IsNil(o.Device) {
+		var ret string
+		return ret
+	}
+	return *o.Device
+}
 
+// GetDeviceOk returns a tuple with the Device field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcLoginRequest) GetDeviceOk() (*string, bool) {
+	if o == nil || IsNil(o.Device) {
+		return nil, false
+	}
+	return o.Device, true
+}
 
 // HasDevice returns a boolean if a field has been set.
 func (o *UserSvcLoginRequest) HasDevice() bool {
@@ -79,8 +135,28 @@ func (o *UserSvcLoginRequest) HasDevice() bool {
 	return false
 }
 
+// SetDevice gets a reference to the given string and assigns it to the Device field.
+func (o *UserSvcLoginRequest) SetDevice(v string) {
+	o.Device = &v
+}
 
+// GetPassword returns the Password field value if set, zero value otherwise.
+func (o *UserSvcLoginRequest) GetPassword() string {
+	if o == nil || IsNil(o.Password) {
+		var ret string
+		return ret
+	}
+	return *o.Password
+}
 
+// GetPasswordOk returns a tuple with the Password field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcLoginRequest) GetPasswordOk() (*string, bool) {
+	if o == nil || IsNil(o.Password) {
+		return nil, false
+	}
+	return o.Password, true
+}
 
 // HasPassword returns a boolean if a field has been set.
 func (o *UserSvcLoginRequest) HasPassword() bool {
@@ -91,8 +167,28 @@ func (o *UserSvcLoginRequest) HasPassword() bool {
 	return false
 }
 
+// SetPassword gets a reference to the given string and assigns it to the Password field.
+func (o *UserSvcLoginRequest) SetPassword(v string) {
+	o.Password = &v
+}
 
+// GetSlug returns the Slug field value if set, zero value otherwise.
+func (o *UserSvcLoginRequest) GetSlug() string {
+	if o == nil || IsNil(o.Slug) {
+		var ret string
+		return ret
+	}
+	return *o.Slug
+}
 
+// GetSlugOk returns a tuple with the Slug field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcLoginRequest) GetSlugOk() (*string, bool) {
+	if o == nil || IsNil(o.Slug) {
+		return nil, false
+	}
+	return o.Slug, true
+}
 
 // HasSlug returns a boolean if a field has been set.
 func (o *UserSvcLoginRequest) HasSlug() bool {
@@ -103,6 +199,10 @@ func (o *UserSvcLoginRequest) HasSlug() bool {
 	return false
 }
 
+// SetSlug gets a reference to the given string and assigns it to the Slug field.
+func (o *UserSvcLoginRequest) SetSlug(v string) {
+	o.Slug = &v
+}
 
 func (o UserSvcLoginRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

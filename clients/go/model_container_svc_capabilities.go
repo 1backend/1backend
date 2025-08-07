@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the ContainerSvcCapabilities type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &ContainerSvcCapabilities{}
 
-// ContainerSvcCapabilities struct for ContainerSvcCapabilities
+// ContainerSvcCapabilities Capabilities define additional runtime features, such as GPU support.
 type ContainerSvcCapabilities struct {
 	// GPUEnabled specifies whether GPU support is enabled for the container.
 	GpuEnabled *bool `json:"gpuEnabled,omitempty"`
@@ -41,7 +41,23 @@ func NewContainerSvcCapabilitiesWithDefaults() *ContainerSvcCapabilities {
 	return &this
 }
 
+// GetGpuEnabled returns the GpuEnabled field value if set, zero value otherwise.
+func (o *ContainerSvcCapabilities) GetGpuEnabled() bool {
+	if o == nil || IsNil(o.GpuEnabled) {
+		var ret bool
+		return ret
+	}
+	return *o.GpuEnabled
+}
 
+// GetGpuEnabledOk returns a tuple with the GpuEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcCapabilities) GetGpuEnabledOk() (*bool, bool) {
+	if o == nil || IsNil(o.GpuEnabled) {
+		return nil, false
+	}
+	return o.GpuEnabled, true
+}
 
 // HasGpuEnabled returns a boolean if a field has been set.
 func (o *ContainerSvcCapabilities) HasGpuEnabled() bool {
@@ -52,6 +68,10 @@ func (o *ContainerSvcCapabilities) HasGpuEnabled() bool {
 	return false
 }
 
+// SetGpuEnabled gets a reference to the given bool and assigns it to the GpuEnabled field.
+func (o *ContainerSvcCapabilities) SetGpuEnabled(v bool) {
+	o.GpuEnabled = &v
+}
 
 func (o ContainerSvcCapabilities) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

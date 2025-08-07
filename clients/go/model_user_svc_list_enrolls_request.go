@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -42,7 +42,23 @@ func NewUserSvcListEnrollsRequestWithDefaults() *UserSvcListEnrollsRequest {
 	return &this
 }
 
+// GetContactId returns the ContactId field value if set, zero value otherwise.
+func (o *UserSvcListEnrollsRequest) GetContactId() string {
+	if o == nil || IsNil(o.ContactId) {
+		var ret string
+		return ret
+	}
+	return *o.ContactId
+}
 
+// GetContactIdOk returns a tuple with the ContactId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListEnrollsRequest) GetContactIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ContactId) {
+		return nil, false
+	}
+	return o.ContactId, true
+}
 
 // HasContactId returns a boolean if a field has been set.
 func (o *UserSvcListEnrollsRequest) HasContactId() bool {
@@ -53,8 +69,28 @@ func (o *UserSvcListEnrollsRequest) HasContactId() bool {
 	return false
 }
 
+// SetContactId gets a reference to the given string and assigns it to the ContactId field.
+func (o *UserSvcListEnrollsRequest) SetContactId(v string) {
+	o.ContactId = &v
+}
 
+// GetRole returns the Role field value if set, zero value otherwise.
+func (o *UserSvcListEnrollsRequest) GetRole() string {
+	if o == nil || IsNil(o.Role) {
+		var ret string
+		return ret
+	}
+	return *o.Role
+}
 
+// GetRoleOk returns a tuple with the Role field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListEnrollsRequest) GetRoleOk() (*string, bool) {
+	if o == nil || IsNil(o.Role) {
+		return nil, false
+	}
+	return o.Role, true
+}
 
 // HasRole returns a boolean if a field has been set.
 func (o *UserSvcListEnrollsRequest) HasRole() bool {
@@ -65,8 +101,28 @@ func (o *UserSvcListEnrollsRequest) HasRole() bool {
 	return false
 }
 
+// SetRole gets a reference to the given string and assigns it to the Role field.
+func (o *UserSvcListEnrollsRequest) SetRole(v string) {
+	o.Role = &v
+}
 
+// GetUserId returns the UserId field value if set, zero value otherwise.
+func (o *UserSvcListEnrollsRequest) GetUserId() string {
+	if o == nil || IsNil(o.UserId) {
+		var ret string
+		return ret
+	}
+	return *o.UserId
+}
 
+// GetUserIdOk returns a tuple with the UserId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListEnrollsRequest) GetUserIdOk() (*string, bool) {
+	if o == nil || IsNil(o.UserId) {
+		return nil, false
+	}
+	return o.UserId, true
+}
 
 // HasUserId returns a boolean if a field has been set.
 func (o *UserSvcListEnrollsRequest) HasUserId() bool {
@@ -77,6 +133,10 @@ func (o *UserSvcListEnrollsRequest) HasUserId() bool {
 	return false
 }
 
+// SetUserId gets a reference to the given string and assigns it to the UserId field.
+func (o *UserSvcListEnrollsRequest) SetUserId(v string) {
+	o.UserId = &v
+}
 
 func (o UserSvcListEnrollsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

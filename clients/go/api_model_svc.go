@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -158,6 +158,12 @@ type ModelSvcAPIService service
 type ApiGetDefaultModelStatusRequest struct {
 	ctx context.Context
 	ApiService ModelSvcAPI
+	body *map[string]interface{}
+}
+
+func (r ApiGetDefaultModelStatusRequest) Body(body map[string]interface{}) ApiGetDefaultModelStatusRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiGetDefaultModelStatusRequest) Execute() (*ModelSvcStatusResponse, *http.Response, error) {
@@ -203,7 +209,7 @@ func (a *ModelSvcAPIService) GetDefaultModelStatusExecute(r ApiGetDefaultModelSt
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -219,6 +225,8 @@ func (a *ModelSvcAPIService) GetDefaultModelStatusExecute(r ApiGetDefaultModelSt
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -295,6 +303,12 @@ type ApiGetModelRequest struct {
 	ctx context.Context
 	ApiService ModelSvcAPI
 	modelId string
+	body *map[string]interface{}
+}
+
+func (r ApiGetModelRequest) Body(body map[string]interface{}) ApiGetModelRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiGetModelRequest) Execute() (*ModelSvcGetModelResponse, *http.Response, error) {
@@ -343,7 +357,7 @@ func (a *ModelSvcAPIService) GetModelExecute(r ApiGetModelRequest) (*ModelSvcGet
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -359,6 +373,8 @@ func (a *ModelSvcAPIService) GetModelExecute(r ApiGetModelRequest) (*ModelSvcGet
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -457,6 +473,12 @@ type ApiGetModelStatusRequest struct {
 	ctx context.Context
 	ApiService ModelSvcAPI
 	modelId string
+	body *map[string]interface{}
+}
+
+func (r ApiGetModelStatusRequest) Body(body map[string]interface{}) ApiGetModelStatusRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiGetModelStatusRequest) Execute() (*ModelSvcStatusResponse, *http.Response, error) {
@@ -505,7 +527,7 @@ func (a *ModelSvcAPIService) GetModelStatusExecute(r ApiGetModelStatusRequest) (
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -521,6 +543,8 @@ func (a *ModelSvcAPIService) GetModelStatusExecute(r ApiGetModelStatusRequest) (
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -596,6 +620,12 @@ func (a *ModelSvcAPIService) GetModelStatusExecute(r ApiGetModelStatusRequest) (
 type ApiListModelsRequest struct {
 	ctx context.Context
 	ApiService ModelSvcAPI
+	body *map[string]interface{}
+}
+
+func (r ApiListModelsRequest) Body(body map[string]interface{}) ApiListModelsRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiListModelsRequest) Execute() (*ModelSvcListModelsResponse, *http.Response, error) {
@@ -641,7 +671,7 @@ func (a *ModelSvcAPIService) ListModelsExecute(r ApiListModelsRequest) (*ModelSv
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -657,6 +687,8 @@ func (a *ModelSvcAPIService) ListModelsExecute(r ApiListModelsRequest) (*ModelSv
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -732,6 +764,12 @@ func (a *ModelSvcAPIService) ListModelsExecute(r ApiListModelsRequest) (*ModelSv
 type ApiListPlatformsRequest struct {
 	ctx context.Context
 	ApiService ModelSvcAPI
+	body *map[string]interface{}
+}
+
+func (r ApiListPlatformsRequest) Body(body map[string]interface{}) ApiListPlatformsRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiListPlatformsRequest) Execute() (*ModelSvcListPlatformsResponse, *http.Response, error) {
@@ -777,7 +815,7 @@ func (a *ModelSvcAPIService) ListPlatformsExecute(r ApiListPlatformsRequest) (*M
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -793,6 +831,8 @@ func (a *ModelSvcAPIService) ListPlatformsExecute(r ApiListPlatformsRequest) (*M
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -869,6 +909,12 @@ type ApiMakeDefaultRequest struct {
 	ctx context.Context
 	ApiService ModelSvcAPI
 	modelId string
+	body *map[string]interface{}
+}
+
+func (r ApiMakeDefaultRequest) Body(body map[string]interface{}) ApiMakeDefaultRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiMakeDefaultRequest) Execute() (map[string]interface{}, *http.Response, error) {
@@ -915,7 +961,7 @@ func (a *ModelSvcAPIService) MakeDefaultExecute(r ApiMakeDefaultRequest) (map[st
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -931,6 +977,8 @@ func (a *ModelSvcAPIService) MakeDefaultExecute(r ApiMakeDefaultRequest) (map[st
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -1017,6 +1065,12 @@ func (a *ModelSvcAPIService) MakeDefaultExecute(r ApiMakeDefaultRequest) (map[st
 type ApiStartDefaultModelRequest struct {
 	ctx context.Context
 	ApiService ModelSvcAPI
+	body *map[string]interface{}
+}
+
+func (r ApiStartDefaultModelRequest) Body(body map[string]interface{}) ApiStartDefaultModelRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiStartDefaultModelRequest) Execute() (map[string]interface{}, *http.Response, error) {
@@ -1062,7 +1116,7 @@ func (a *ModelSvcAPIService) StartDefaultModelExecute(r ApiStartDefaultModelRequ
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -1078,6 +1132,8 @@ func (a *ModelSvcAPIService) StartDefaultModelExecute(r ApiStartDefaultModelRequ
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -1154,6 +1210,12 @@ type ApiStartModelRequest struct {
 	ctx context.Context
 	ApiService ModelSvcAPI
 	modelId string
+	body *map[string]interface{}
+}
+
+func (r ApiStartModelRequest) Body(body map[string]interface{}) ApiStartModelRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiStartModelRequest) Execute() (map[string]interface{}, *http.Response, error) {
@@ -1200,7 +1262,7 @@ func (a *ModelSvcAPIService) StartModelExecute(r ApiStartModelRequest) (map[stri
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -1216,6 +1278,8 @@ func (a *ModelSvcAPIService) StartModelExecute(r ApiStartModelRequest) (map[stri
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {

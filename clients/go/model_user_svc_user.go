@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -20,12 +20,12 @@ import (
 // checks if the UserSvcUser type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &UserSvcUser{}
 
-// UserSvcUser struct for UserSvcUser
+// UserSvcUser The user who made the request.
 type UserSvcUser struct {
 	CreatedAt string `json:"createdAt"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	Id string `json:"id"`
-	Labels *map[string]string `json:"labels,omitempty"`
+	Labels map[string]string `json:"labels,omitempty"`
 	// Full name of the user.
 	Name *string `json:"name,omitempty"`
 	// URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
@@ -57,10 +57,47 @@ func NewUserSvcUserWithDefaults() *UserSvcUser {
 	return &this
 }
 
+// GetCreatedAt returns the CreatedAt field value
+func (o *UserSvcUser) GetCreatedAt() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.CreatedAt
+}
 
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcUser) GetCreatedAtOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CreatedAt, true
+}
 
+// SetCreatedAt sets field value
+func (o *UserSvcUser) SetCreatedAt(v string) {
+	o.CreatedAt = v
+}
 
+// GetDeletedAt returns the DeletedAt field value if set, zero value otherwise.
+func (o *UserSvcUser) GetDeletedAt() string {
+	if o == nil || IsNil(o.DeletedAt) {
+		var ret string
+		return ret
+	}
+	return *o.DeletedAt
+}
+
+// GetDeletedAtOk returns a tuple with the DeletedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcUser) GetDeletedAtOk() (*string, bool) {
+	if o == nil || IsNil(o.DeletedAt) {
+		return nil, false
+	}
+	return o.DeletedAt, true
+}
 
 // HasDeletedAt returns a boolean if a field has been set.
 func (o *UserSvcUser) HasDeletedAt() bool {
@@ -71,11 +108,52 @@ func (o *UserSvcUser) HasDeletedAt() bool {
 	return false
 }
 
+// SetDeletedAt gets a reference to the given string and assigns it to the DeletedAt field.
+func (o *UserSvcUser) SetDeletedAt(v string) {
+	o.DeletedAt = &v
+}
 
+// GetId returns the Id field value
+func (o *UserSvcUser) GetId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Id
+}
 
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcUser) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Id, true
+}
 
+// SetId sets field value
+func (o *UserSvcUser) SetId(v string) {
+	o.Id = v
+}
 
+// GetLabels returns the Labels field value if set, zero value otherwise.
+func (o *UserSvcUser) GetLabels() map[string]string {
+	if o == nil || IsNil(o.Labels) {
+		var ret map[string]string
+		return ret
+	}
+	return o.Labels
+}
+
+// GetLabelsOk returns a tuple with the Labels field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcUser) GetLabelsOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.Labels) {
+		return map[string]string{}, false
+	}
+	return o.Labels, true
+}
 
 // HasLabels returns a boolean if a field has been set.
 func (o *UserSvcUser) HasLabels() bool {
@@ -86,8 +164,28 @@ func (o *UserSvcUser) HasLabels() bool {
 	return false
 }
 
+// SetLabels gets a reference to the given map[string]string and assigns it to the Labels field.
+func (o *UserSvcUser) SetLabels(v map[string]string) {
+	o.Labels = v
+}
 
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *UserSvcUser) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
 
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcUser) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
 
 // HasName returns a boolean if a field has been set.
 func (o *UserSvcUser) HasName() bool {
@@ -98,11 +196,52 @@ func (o *UserSvcUser) HasName() bool {
 	return false
 }
 
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *UserSvcUser) SetName(v string) {
+	o.Name = &v
+}
 
+// GetSlug returns the Slug field value
+func (o *UserSvcUser) GetSlug() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Slug
+}
 
+// GetSlugOk returns a tuple with the Slug field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcUser) GetSlugOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Slug, true
+}
 
+// SetSlug sets field value
+func (o *UserSvcUser) SetSlug(v string) {
+	o.Slug = v
+}
 
+// GetThumbnailFileId returns the ThumbnailFileId field value if set, zero value otherwise.
+func (o *UserSvcUser) GetThumbnailFileId() string {
+	if o == nil || IsNil(o.ThumbnailFileId) {
+		var ret string
+		return ret
+	}
+	return *o.ThumbnailFileId
+}
+
+// GetThumbnailFileIdOk returns a tuple with the ThumbnailFileId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcUser) GetThumbnailFileIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ThumbnailFileId) {
+		return nil, false
+	}
+	return o.ThumbnailFileId, true
+}
 
 // HasThumbnailFileId returns a boolean if a field has been set.
 func (o *UserSvcUser) HasThumbnailFileId() bool {
@@ -113,9 +252,34 @@ func (o *UserSvcUser) HasThumbnailFileId() bool {
 	return false
 }
 
+// SetThumbnailFileId gets a reference to the given string and assigns it to the ThumbnailFileId field.
+func (o *UserSvcUser) SetThumbnailFileId(v string) {
+	o.ThumbnailFileId = &v
+}
 
+// GetUpdatedAt returns the UpdatedAt field value
+func (o *UserSvcUser) GetUpdatedAt() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.UpdatedAt
+}
 
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcUser) GetUpdatedAtOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.UpdatedAt, true
+}
+
+// SetUpdatedAt sets field value
+func (o *UserSvcUser) SetUpdatedAt(v string) {
+	o.UpdatedAt = v
+}
 
 func (o UserSvcUser) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

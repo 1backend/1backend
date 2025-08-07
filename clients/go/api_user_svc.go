@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -446,12 +446,12 @@ type UserSvcAPIService service
 type ApiChangePasswordRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	body *UserSvcChangePasswordRequest
+	userSvcChangePasswordRequest *UserSvcChangePasswordRequest
 }
 
 // Change Password Request
-func (r ApiChangePasswordRequest) Body(body UserSvcChangePasswordRequest) ApiChangePasswordRequest {
-	r.body = &body
+func (r ApiChangePasswordRequest) UserSvcChangePasswordRequest(userSvcChangePasswordRequest UserSvcChangePasswordRequest) ApiChangePasswordRequest {
+	r.userSvcChangePasswordRequest = &userSvcChangePasswordRequest
 	return r
 }
 
@@ -494,8 +494,8 @@ func (a *UserSvcAPIService) ChangePasswordExecute(r ApiChangePasswordRequest) (m
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.userSvcChangePasswordRequest == nil {
+		return localVarReturnValue, nil, reportError("userSvcChangePasswordRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -516,7 +516,7 @@ func (a *UserSvcAPIService) ChangePasswordExecute(r ApiChangePasswordRequest) (m
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcChangePasswordRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -603,12 +603,12 @@ func (a *UserSvcAPIService) ChangePasswordExecute(r ApiChangePasswordRequest) (m
 type ApiCreateUserRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	body *UserSvcCreateUserRequest
+	userSvcCreateUserRequest *UserSvcCreateUserRequest
 }
 
 // Create User Request
-func (r ApiCreateUserRequest) Body(body UserSvcCreateUserRequest) ApiCreateUserRequest {
-	r.body = &body
+func (r ApiCreateUserRequest) UserSvcCreateUserRequest(userSvcCreateUserRequest UserSvcCreateUserRequest) ApiCreateUserRequest {
+	r.userSvcCreateUserRequest = &userSvcCreateUserRequest
 	return r
 }
 
@@ -651,8 +651,8 @@ func (a *UserSvcAPIService) CreateUserExecute(r ApiCreateUserRequest) (map[strin
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.userSvcCreateUserRequest == nil {
+		return localVarReturnValue, nil, reportError("userSvcCreateUserRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -673,7 +673,7 @@ func (a *UserSvcAPIService) CreateUserExecute(r ApiCreateUserRequest) (map[strin
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcCreateUserRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -945,6 +945,12 @@ type ApiDeleteUserRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
 	userId string
+	body *map[string]interface{}
+}
+
+func (r ApiDeleteUserRequest) Body(body map[string]interface{}) ApiDeleteUserRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiDeleteUserRequest) Execute() (map[string]interface{}, *http.Response, error) {
@@ -991,7 +997,7 @@ func (a *UserSvcAPIService) DeleteUserExecute(r ApiDeleteUserRequest) (map[strin
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -1007,6 +1013,8 @@ func (a *UserSvcAPIService) DeleteUserExecute(r ApiDeleteUserRequest) (map[strin
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -1082,12 +1090,12 @@ func (a *UserSvcAPIService) DeleteUserExecute(r ApiDeleteUserRequest) (map[strin
 type ApiExchangeTokenRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	body *UserSvcExchangeTokenRequest
+	userSvcExchangeTokenRequest *UserSvcExchangeTokenRequest
 }
 
 // ExchangeToken Request
-func (r ApiExchangeTokenRequest) Body(body UserSvcExchangeTokenRequest) ApiExchangeTokenRequest {
-	r.body = &body
+func (r ApiExchangeTokenRequest) UserSvcExchangeTokenRequest(userSvcExchangeTokenRequest UserSvcExchangeTokenRequest) ApiExchangeTokenRequest {
+	r.userSvcExchangeTokenRequest = &userSvcExchangeTokenRequest
 	return r
 }
 
@@ -1137,8 +1145,8 @@ func (a *UserSvcAPIService) ExchangeTokenExecute(r ApiExchangeTokenRequest) (*Us
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.userSvcExchangeTokenRequest == nil {
+		return localVarReturnValue, nil, reportError("userSvcExchangeTokenRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1159,7 +1167,7 @@ func (a *UserSvcAPIService) ExchangeTokenExecute(r ApiExchangeTokenRequest) (*Us
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcExchangeTokenRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -1232,12 +1240,12 @@ func (a *UserSvcAPIService) ExchangeTokenExecute(r ApiExchangeTokenRequest) (*Us
 type ApiExchangeToken_0Request struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	body *UserSvcExchangeTokenRequest
+	userSvcExchangeTokenRequest *UserSvcExchangeTokenRequest
 }
 
 // ExchangeToken Request
-func (r ApiExchangeToken_0Request) Body(body UserSvcExchangeTokenRequest) ApiExchangeToken_0Request {
-	r.body = &body
+func (r ApiExchangeToken_0Request) UserSvcExchangeTokenRequest(userSvcExchangeTokenRequest UserSvcExchangeTokenRequest) ApiExchangeToken_0Request {
+	r.userSvcExchangeTokenRequest = &userSvcExchangeTokenRequest
 	return r
 }
 
@@ -1287,8 +1295,8 @@ func (a *UserSvcAPIService) ExchangeToken_1Execute(r ApiExchangeToken_0Request) 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.userSvcExchangeTokenRequest == nil {
+		return localVarReturnValue, nil, reportError("userSvcExchangeTokenRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1309,7 +1317,7 @@ func (a *UserSvcAPIService) ExchangeToken_1Execute(r ApiExchangeToken_0Request) 
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcExchangeTokenRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -1382,6 +1390,12 @@ func (a *UserSvcAPIService) ExchangeToken_1Execute(r ApiExchangeToken_0Request) 
 type ApiGetPublicKeyRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
+	body *map[string]interface{}
+}
+
+func (r ApiGetPublicKeyRequest) Body(body map[string]interface{}) ApiGetPublicKeyRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiGetPublicKeyRequest) Execute() (*UserSvcGetPublicKeyResponse, *http.Response, error) {
@@ -1425,7 +1439,7 @@ func (a *UserSvcAPIService) GetPublicKeyExecute(r ApiGetPublicKeyRequest) (*User
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -1441,6 +1455,8 @@ func (a *UserSvcAPIService) GetPublicKeyExecute(r ApiGetPublicKeyRequest) (*User
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -1503,6 +1519,12 @@ type ApiHasPermissionRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
 	permission string
+	body *map[string]interface{}
+}
+
+func (r ApiHasPermissionRequest) Body(body map[string]interface{}) ApiHasPermissionRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiHasPermissionRequest) Execute() (*UserSvcHasPermissionResponse, *http.Response, error) {
@@ -1555,7 +1577,7 @@ func (a *UserSvcAPIService) HasPermissionExecute(r ApiHasPermissionRequest) (*Us
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -1571,6 +1593,8 @@ func (a *UserSvcAPIService) HasPermissionExecute(r ApiHasPermissionRequest) (*Us
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -1635,12 +1659,12 @@ func (a *UserSvcAPIService) HasPermissionExecute(r ApiHasPermissionRequest) (*Us
 type ApiListEnrollsRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	body *UserSvcListEnrollsRequest
+	userSvcListEnrollsRequest *UserSvcListEnrollsRequest
 }
 
 // List Enrolls Request
-func (r ApiListEnrollsRequest) Body(body UserSvcListEnrollsRequest) ApiListEnrollsRequest {
-	r.body = &body
+func (r ApiListEnrollsRequest) UserSvcListEnrollsRequest(userSvcListEnrollsRequest UserSvcListEnrollsRequest) ApiListEnrollsRequest {
+	r.userSvcListEnrollsRequest = &userSvcListEnrollsRequest
 	return r
 }
 
@@ -1686,8 +1710,8 @@ func (a *UserSvcAPIService) ListEnrollsExecute(r ApiListEnrollsRequest) (*UserSv
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.userSvcListEnrollsRequest == nil {
+		return localVarReturnValue, nil, reportError("userSvcListEnrollsRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1708,7 +1732,7 @@ func (a *UserSvcAPIService) ListEnrollsExecute(r ApiListEnrollsRequest) (*UserSv
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcListEnrollsRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -1784,12 +1808,12 @@ func (a *UserSvcAPIService) ListEnrollsExecute(r ApiListEnrollsRequest) (*UserSv
 type ApiListOrganizationsRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	body *UserSvcListOrganizationsRequest
+	userSvcListOrganizationsRequest *UserSvcListOrganizationsRequest
 }
 
 // List Organizations Request
-func (r ApiListOrganizationsRequest) Body(body UserSvcListOrganizationsRequest) ApiListOrganizationsRequest {
-	r.body = &body
+func (r ApiListOrganizationsRequest) UserSvcListOrganizationsRequest(userSvcListOrganizationsRequest UserSvcListOrganizationsRequest) ApiListOrganizationsRequest {
+	r.userSvcListOrganizationsRequest = &userSvcListOrganizationsRequest
 	return r
 }
 
@@ -1832,8 +1856,8 @@ func (a *UserSvcAPIService) ListOrganizationsExecute(r ApiListOrganizationsReque
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.userSvcListOrganizationsRequest == nil {
+		return localVarReturnValue, nil, reportError("userSvcListOrganizationsRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1854,7 +1878,7 @@ func (a *UserSvcAPIService) ListOrganizationsExecute(r ApiListOrganizationsReque
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcListOrganizationsRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -1942,6 +1966,12 @@ type ApiListPermissionsRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
 	roleId string
+	body *map[string]interface{}
+}
+
+func (r ApiListPermissionsRequest) Body(body map[string]interface{}) ApiListPermissionsRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiListPermissionsRequest) Execute() (*UserSvcListPermissionsResponse, *http.Response, error) {
@@ -1989,7 +2019,7 @@ func (a *UserSvcAPIService) ListPermissionsExecute(r ApiListPermissionsRequest) 
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -2005,6 +2035,8 @@ func (a *UserSvcAPIService) ListPermissionsExecute(r ApiListPermissionsRequest) 
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -2091,12 +2123,12 @@ func (a *UserSvcAPIService) ListPermissionsExecute(r ApiListPermissionsRequest) 
 type ApiListPermitsRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	body *UserSvcListPermitsRequest
+	userSvcListPermitsRequest *UserSvcListPermitsRequest
 }
 
 // List Permits Request
-func (r ApiListPermitsRequest) Body(body UserSvcListPermitsRequest) ApiListPermitsRequest {
-	r.body = &body
+func (r ApiListPermitsRequest) UserSvcListPermitsRequest(userSvcListPermitsRequest UserSvcListPermitsRequest) ApiListPermitsRequest {
+	r.userSvcListPermitsRequest = &userSvcListPermitsRequest
 	return r
 }
 
@@ -2140,8 +2172,8 @@ func (a *UserSvcAPIService) ListPermitsExecute(r ApiListPermitsRequest) (*UserSv
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.userSvcListPermitsRequest == nil {
+		return localVarReturnValue, nil, reportError("userSvcListPermitsRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -2162,7 +2194,7 @@ func (a *UserSvcAPIService) ListPermitsExecute(r ApiListPermitsRequest) (*UserSv
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcListPermitsRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -2238,12 +2270,12 @@ func (a *UserSvcAPIService) ListPermitsExecute(r ApiListPermitsRequest) (*UserSv
 type ApiListUsersRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	body *UserSvcListUsersRequest
+	userSvcListUsersRequest *UserSvcListUsersRequest
 }
 
 // List Users Request
-func (r ApiListUsersRequest) Body(body UserSvcListUsersRequest) ApiListUsersRequest {
-	r.body = &body
+func (r ApiListUsersRequest) UserSvcListUsersRequest(userSvcListUsersRequest UserSvcListUsersRequest) ApiListUsersRequest {
+	r.userSvcListUsersRequest = &userSvcListUsersRequest
 	return r
 }
 
@@ -2306,7 +2338,7 @@ func (a *UserSvcAPIService) ListUsersExecute(r ApiListUsersRequest) (*UserSvcLis
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcListUsersRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -2393,12 +2425,12 @@ func (a *UserSvcAPIService) ListUsersExecute(r ApiListUsersRequest) (*UserSvcLis
 type ApiLoginRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	body *UserSvcLoginRequest
+	userSvcLoginRequest *UserSvcLoginRequest
 }
 
 // Login Request
-func (r ApiLoginRequest) Body(body UserSvcLoginRequest) ApiLoginRequest {
-	r.body = &body
+func (r ApiLoginRequest) UserSvcLoginRequest(userSvcLoginRequest UserSvcLoginRequest) ApiLoginRequest {
+	r.userSvcLoginRequest = &userSvcLoginRequest
 	return r
 }
 
@@ -2441,8 +2473,8 @@ func (a *UserSvcAPIService) LoginExecute(r ApiLoginRequest) (*UserSvcLoginRespon
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.userSvcLoginRequest == nil {
+		return localVarReturnValue, nil, reportError("userSvcLoginRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -2463,7 +2495,7 @@ func (a *UserSvcAPIService) LoginExecute(r ApiLoginRequest) (*UserSvcLoginRespon
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcLoginRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -2536,12 +2568,12 @@ func (a *UserSvcAPIService) LoginExecute(r ApiLoginRequest) (*UserSvcLoginRespon
 type ApiReadSelfRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	body *UserSvcReadSelfRequest
+	userSvcReadSelfRequest *UserSvcReadSelfRequest
 }
 
 // Read Self Request
-func (r ApiReadSelfRequest) Body(body UserSvcReadSelfRequest) ApiReadSelfRequest {
-	r.body = &body
+func (r ApiReadSelfRequest) UserSvcReadSelfRequest(userSvcReadSelfRequest UserSvcReadSelfRequest) ApiReadSelfRequest {
+	r.userSvcReadSelfRequest = &userSvcReadSelfRequest
 	return r
 }
 
@@ -2610,7 +2642,7 @@ func (a *UserSvcAPIService) ReadSelfExecute(r ApiReadSelfRequest) (*UserSvcReadS
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcReadSelfRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -2686,6 +2718,12 @@ func (a *UserSvcAPIService) ReadSelfExecute(r ApiReadSelfRequest) (*UserSvcReadS
 type ApiRefreshTokenRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
+	body *map[string]interface{}
+}
+
+func (r ApiRefreshTokenRequest) Body(body map[string]interface{}) ApiRefreshTokenRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiRefreshTokenRequest) Execute() (*UserSvcRefreshTokenResponse, *http.Response, error) {
@@ -2733,7 +2771,7 @@ func (a *UserSvcAPIService) RefreshTokenExecute(r ApiRefreshTokenRequest) (*User
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -2749,6 +2787,8 @@ func (a *UserSvcAPIService) RefreshTokenExecute(r ApiRefreshTokenRequest) (*User
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -2810,12 +2850,12 @@ func (a *UserSvcAPIService) RefreshTokenExecute(r ApiRefreshTokenRequest) (*User
 type ApiRegisterRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	body *UserSvcRegisterRequest
+	userSvcRegisterRequest *UserSvcRegisterRequest
 }
 
 // Register Request
-func (r ApiRegisterRequest) Body(body UserSvcRegisterRequest) ApiRegisterRequest {
-	r.body = &body
+func (r ApiRegisterRequest) UserSvcRegisterRequest(userSvcRegisterRequest UserSvcRegisterRequest) ApiRegisterRequest {
+	r.userSvcRegisterRequest = &userSvcRegisterRequest
 	return r
 }
 
@@ -2858,8 +2898,8 @@ func (a *UserSvcAPIService) RegisterExecute(r ApiRegisterRequest) (*UserSvcRegis
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.userSvcRegisterRequest == nil {
+		return localVarReturnValue, nil, reportError("userSvcRegisterRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -2880,7 +2920,7 @@ func (a *UserSvcAPIService) RegisterExecute(r ApiRegisterRequest) (*UserSvcRegis
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcRegisterRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -2943,12 +2983,12 @@ type ApiResetPasswordRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
 	userId string
-	body *UserSvcResetPasswordRequest
+	userSvcResetPasswordRequest *UserSvcResetPasswordRequest
 }
 
 // Change Password Request
-func (r ApiResetPasswordRequest) Body(body UserSvcResetPasswordRequest) ApiResetPasswordRequest {
-	r.body = &body
+func (r ApiResetPasswordRequest) UserSvcResetPasswordRequest(userSvcResetPasswordRequest UserSvcResetPasswordRequest) ApiResetPasswordRequest {
+	r.userSvcResetPasswordRequest = &userSvcResetPasswordRequest
 	return r
 }
 
@@ -2994,8 +3034,8 @@ func (a *UserSvcAPIService) ResetPasswordExecute(r ApiResetPasswordRequest) (map
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.userSvcResetPasswordRequest == nil {
+		return localVarReturnValue, nil, reportError("userSvcResetPasswordRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -3016,7 +3056,7 @@ func (a *UserSvcAPIService) ResetPasswordExecute(r ApiResetPasswordRequest) (map
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcResetPasswordRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -3103,12 +3143,12 @@ func (a *UserSvcAPIService) ResetPasswordExecute(r ApiResetPasswordRequest) (map
 type ApiRevokeTokensRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	body *UserSvcRevokeTokensRequest
+	userSvcRevokeTokensRequest *UserSvcRevokeTokensRequest
 }
 
 // Revoke Tokens Request
-func (r ApiRevokeTokensRequest) Body(body UserSvcRevokeTokensRequest) ApiRevokeTokensRequest {
-	r.body = &body
+func (r ApiRevokeTokensRequest) UserSvcRevokeTokensRequest(userSvcRevokeTokensRequest UserSvcRevokeTokensRequest) ApiRevokeTokensRequest {
+	r.userSvcRevokeTokensRequest = &userSvcRevokeTokensRequest
 	return r
 }
 
@@ -3172,7 +3212,7 @@ func (a *UserSvcAPIService) RevokeTokensExecute(r ApiRevokeTokensRequest) (map[s
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcRevokeTokensRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -3248,12 +3288,12 @@ func (a *UserSvcAPIService) RevokeTokensExecute(r ApiRevokeTokensRequest) (map[s
 type ApiSaveEnrollsRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	body *UserSvcSaveEnrollsRequest
+	userSvcSaveEnrollsRequest *UserSvcSaveEnrollsRequest
 }
 
 // Save Enrolls Request
-func (r ApiSaveEnrollsRequest) Body(body UserSvcSaveEnrollsRequest) ApiSaveEnrollsRequest {
-	r.body = &body
+func (r ApiSaveEnrollsRequest) UserSvcSaveEnrollsRequest(userSvcSaveEnrollsRequest UserSvcSaveEnrollsRequest) ApiSaveEnrollsRequest {
+	r.userSvcSaveEnrollsRequest = &userSvcSaveEnrollsRequest
 	return r
 }
 
@@ -3309,8 +3349,8 @@ func (a *UserSvcAPIService) SaveEnrollsExecute(r ApiSaveEnrollsRequest) (*UserSv
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.userSvcSaveEnrollsRequest == nil {
+		return localVarReturnValue, nil, reportError("userSvcSaveEnrollsRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -3331,7 +3371,7 @@ func (a *UserSvcAPIService) SaveEnrollsExecute(r ApiSaveEnrollsRequest) (*UserSv
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcSaveEnrollsRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -3602,12 +3642,12 @@ func (a *UserSvcAPIService) SaveMembershipExecute(r ApiSaveMembershipRequest) (m
 type ApiSaveOrganizationRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	body *UserSvcSaveOrganizationRequest
+	userSvcSaveOrganizationRequest *UserSvcSaveOrganizationRequest
 }
 
 // Save User Request
-func (r ApiSaveOrganizationRequest) Body(body UserSvcSaveOrganizationRequest) ApiSaveOrganizationRequest {
-	r.body = &body
+func (r ApiSaveOrganizationRequest) UserSvcSaveOrganizationRequest(userSvcSaveOrganizationRequest UserSvcSaveOrganizationRequest) ApiSaveOrganizationRequest {
+	r.userSvcSaveOrganizationRequest = &userSvcSaveOrganizationRequest
 	return r
 }
 
@@ -3652,8 +3692,8 @@ func (a *UserSvcAPIService) SaveOrganizationExecute(r ApiSaveOrganizationRequest
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.userSvcSaveOrganizationRequest == nil {
+		return localVarReturnValue, nil, reportError("userSvcSaveOrganizationRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -3674,7 +3714,7 @@ func (a *UserSvcAPIService) SaveOrganizationExecute(r ApiSaveOrganizationRequest
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcSaveOrganizationRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -3761,12 +3801,12 @@ func (a *UserSvcAPIService) SaveOrganizationExecute(r ApiSaveOrganizationRequest
 type ApiSavePermitsRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	body *UserSvcSavePermitsRequest
+	userSvcSavePermitsRequest *UserSvcSavePermitsRequest
 }
 
 // Save Permits Request
-func (r ApiSavePermitsRequest) Body(body UserSvcSavePermitsRequest) ApiSavePermitsRequest {
-	r.body = &body
+func (r ApiSavePermitsRequest) UserSvcSavePermitsRequest(userSvcSavePermitsRequest UserSvcSavePermitsRequest) ApiSavePermitsRequest {
+	r.userSvcSavePermitsRequest = &userSvcSavePermitsRequest
 	return r
 }
 
@@ -3810,8 +3850,8 @@ func (a *UserSvcAPIService) SavePermitsExecute(r ApiSavePermitsRequest) (map[str
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.userSvcSavePermitsRequest == nil {
+		return localVarReturnValue, nil, reportError("userSvcSavePermitsRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -3832,7 +3872,7 @@ func (a *UserSvcAPIService) SavePermitsExecute(r ApiSavePermitsRequest) (map[str
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcSavePermitsRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -3919,12 +3959,12 @@ func (a *UserSvcAPIService) SavePermitsExecute(r ApiSavePermitsRequest) (map[str
 type ApiSaveSelfRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	body *UserSvcSaveSelfRequest
+	userSvcSaveSelfRequest *UserSvcSaveSelfRequest
 }
 
 // Save Profile Request
-func (r ApiSaveSelfRequest) Body(body UserSvcSaveSelfRequest) ApiSaveSelfRequest {
-	r.body = &body
+func (r ApiSaveSelfRequest) UserSvcSaveSelfRequest(userSvcSaveSelfRequest UserSvcSaveSelfRequest) ApiSaveSelfRequest {
+	r.userSvcSaveSelfRequest = &userSvcSaveSelfRequest
 	return r
 }
 
@@ -3967,8 +4007,8 @@ func (a *UserSvcAPIService) SaveSelfExecute(r ApiSaveSelfRequest) (map[string]in
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.userSvcSaveSelfRequest == nil {
+		return localVarReturnValue, nil, reportError("userSvcSaveSelfRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -3989,7 +4029,7 @@ func (a *UserSvcAPIService) SaveSelfExecute(r ApiSaveSelfRequest) (map[string]in
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcSaveSelfRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -4077,12 +4117,12 @@ type ApiSaveUserRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
 	userId string
-	body *UserSvcSaveUserRequest
+	userSvcSaveUserRequest *UserSvcSaveUserRequest
 }
 
 // Save Profile Request
-func (r ApiSaveUserRequest) Body(body UserSvcSaveUserRequest) ApiSaveUserRequest {
-	r.body = &body
+func (r ApiSaveUserRequest) UserSvcSaveUserRequest(userSvcSaveUserRequest UserSvcSaveUserRequest) ApiSaveUserRequest {
+	r.userSvcSaveUserRequest = &userSvcSaveUserRequest
 	return r
 }
 
@@ -4130,8 +4170,8 @@ func (a *UserSvcAPIService) SaveUserExecute(r ApiSaveUserRequest) (map[string]in
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.userSvcSaveUserRequest == nil {
+		return localVarReturnValue, nil, reportError("userSvcSaveUserRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -4152,7 +4192,7 @@ func (a *UserSvcAPIService) SaveUserExecute(r ApiSaveUserRequest) (map[string]in
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.userSvcSaveUserRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {

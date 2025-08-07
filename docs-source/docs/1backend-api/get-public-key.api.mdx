@@ -5,7 +5,7 @@ description: "Get the public key to verify the JWT signature."
 sidebar_label: "Get Public Key"
 hide_title: true
 hide_table_of_contents: true
-api: eJy9VE1v2zAM/SsCz46drAM2+LQUGIq0xVogLXZoc1BkxlYrSxolO/MM//eBdtKv9dTDThasR/Lx8VE9FBgUaR+1s5DDGUYRKxS+2RqtxCN2IjrRIuldN16c/7wRQZdWxoYwhQScR5IcvSoghxLj9Rh6gR0kQBi8swED5D18ms/587rg1QUkoJyNaCPfSu+NVmPC7CEwpIegKqwlnzxxuainhP6pUt5D7DxCDiGStiUMAxf/1WjCAvK7F9BNcoS67QOqCMPA4M/vkVvZVhpdiPP11Q/hSNQ6BG1L4ZHGo7NCFx/nj0SO3uf+PsXFvxRvrWxi5Uj/wf/FhH/KMrCstwFJrFvFqtYYK3fwACTgZawgh6wJSLPQqmwawexxNEZAapE4Rw8NGQZmxilpKhdivlicnHyBYcM41ZCO3ZqJT1xPURLSsuH0b9W46TyK+wPkHsTOGeP2WIhtJ6QIXioU0hYiuke0QqrJIGJHrh7dfexHXLpSW4G28E7byD7XnL9CWSBBAlbWrMryoP2oMjyJJb1mq7FS2u4c8+TBSDUOBmupueMgDYZvbKjGyEjOpsrVL3Jfr8S68d4RyzmJVMXo8yxbbKV6RFtwQAZD8kaF5WpmZdQtilorcqy1VhiENzLuHNXcjtEKbUDmc6x3dn0p2pN0/qpayLNsv9+npW1SR2V2iAuZLL2ZnaTztIq1YQ4RqQ5Xu/VU7Zls2MuyREq1y0ZIxjrpaBiyOJ0agQTYDhP9efo1nc9ILTirdyHW0r7gyU/U9MaI6ZF51Xz/vAIfeMwO84v4O2beSG2ZwihGfzD0HRwNzR5/tvQmAbYuA/p+KwPekhkG/v2rQeogv9sk0ErScsud322G5Ogm3gFOkcNSKfQ87VaaZjLSmx0eXi7a2fcbGIa/t6X5wA==
+api: eJzNVU1v4zYQ/SvEnGXJ3hRooVOTIgiyu2iCdYIeskYxpsYyNxTJDCl5XUH/fTGSnThpsUXbS30i5Pl4780bsoeKomYTkvEOSriipNKWVGjX1mj1SHuVvOqIzWY//vH+tzsVTe0wtUw5ZOADMUr2dQUl1JRux9QPtIcMmJ5aiunCV3soe9DeJXJJjhiCNXpMLL5E6d1D1FtqUE5pHwhK8OsvpBMMwzBIrRi8ixQl4N18/o8KBhacyUzZ4RniS6+Y2Lgapk5PrWGqoHw4CV1lb2BlkEyy8qGNxL/HTudXJ/Q/HfDCiP61zDcfYMjgh/9Egpg9/zWBv8V5KbnfA3jtOrSmUu+XN78qz6oxMRpXq0A8Hr1Tppo4LP6vHO4dtmnr2fxB1VQS6ygzvY/EatlpGWlDaesPzoUMAqYtlFBIl1nsdDHNf/Y42jkSd8RSo4eWLZRgvUa79TGVi8XZ2Y8FDCsJ0y2btF8K64noBSETn7dSvX+D824fSH0+hHwGtfHW+h1Var1XqGJATQpdpZJ/JKdQT+ZUG/bNuJJHOuqjr41T5KrgjUuynEbqbwkrYsjAYSMKnh9UGUcEz0pjMGJzEUrG9ulldS+/YhNE/H6Qkht/nDjqceLUoBExIlqKP4tPWouJvcu1b0763l6rZRuCZ1F60m+bUiiLYrFG/UiukoQC/jTJ8+uZw2Q6Uo3R7GUMRlNUwWLaeG6EqjWaxAhl/9zv6vaj6s7y+atusSyK3W6X167NPdfFIS8WWAc7O8vn+TY1VjAk4ibebJZTtxewcYd1TZwbX4whxYk7FxcTEchAnDLBn+c/5fMZ63dSNfiYGnQnOOXOnW4NNd2ar8if7Na/uJ0Ps030NRXBonECYRSjP3j9AY5eF/u/uH2VgfhaAvp+jZHu2Q6DfH5qifdQPqwy6JANroX5w2rIjk6T9ZASJfwyQZ+JxUUStO1ktTdXxJAdM861ppC+G3u6tVeXd5DB+vC+NL6SFMadvD24gxLGF0qSxzUcv/Vg0dUt1hI7lZTfN33Cbig=
 sidebar_class_name: "get api-method"
 info_path: docs/1backend-api/1-backend
 custom_edit_url: null
@@ -38,6 +38,14 @@ import Heading from "@theme/Heading";
 
 Get the public key to verify the JWT signature.
 
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
 <ParamsDetails
   parameters={undefined}
 >
@@ -46,7 +54,7 @@ Get the public key to verify the JWT signature.
 
 <RequestSchema
   title={"Body"}
-  body={undefined}
+  body={{"content":{"application/json":{"schema":{"type":"object"}}}}}
 >
   
 </RequestSchema>
@@ -54,7 +62,7 @@ Get the public key to verify the JWT signature.
 <StatusCodes
   id={undefined}
   label={undefined}
-  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"publicKey":{"type":"string"}},"required":["publicKey"],"type":"object"}}}},"400":{"description":"Invalid JSON or missing permission id","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+  responses={{"200":{"content":{"application/json":{"schema":{"properties":{"publicKey":{"type":"string"}},"required":["publicKey"],"type":"object","title":"user_svc.GetPublicKeyResponse"}}},"description":"OK"},"400":{"content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object","title":"user_svc.ErrorResponse"}}},"description":"Invalid JSON or missing permission id"},"401":{"content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object","title":"user_svc.ErrorResponse"}}},"description":"Unauthorized"}}}
 >
   
 </StatusCodes>

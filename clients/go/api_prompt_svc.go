@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -113,12 +113,12 @@ type PromptSvcAPIService service
 type ApiListPromptsRequest struct {
 	ctx context.Context
 	ApiService PromptSvcAPI
-	body *PromptSvcListPromptsRequest
+	promptSvcListPromptsRequest *PromptSvcListPromptsRequest
 }
 
 // List Prompts Request
-func (r ApiListPromptsRequest) Body(body PromptSvcListPromptsRequest) ApiListPromptsRequest {
-	r.body = &body
+func (r ApiListPromptsRequest) PromptSvcListPromptsRequest(promptSvcListPromptsRequest PromptSvcListPromptsRequest) ApiListPromptsRequest {
+	r.promptSvcListPromptsRequest = &promptSvcListPromptsRequest
 	return r
 }
 
@@ -180,7 +180,7 @@ func (a *PromptSvcAPIService) ListPromptsExecute(r ApiListPromptsRequest) (*Prom
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.promptSvcListPromptsRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -267,12 +267,12 @@ func (a *PromptSvcAPIService) ListPromptsExecute(r ApiListPromptsRequest) (*Prom
 type ApiPromptRequest struct {
 	ctx context.Context
 	ApiService PromptSvcAPI
-	body *PromptSvcPromptRequest
+	promptSvcPromptRequest *PromptSvcPromptRequest
 }
 
 // Add Prompt Request
-func (r ApiPromptRequest) Body(body PromptSvcPromptRequest) ApiPromptRequest {
-	r.body = &body
+func (r ApiPromptRequest) PromptSvcPromptRequest(promptSvcPromptRequest PromptSvcPromptRequest) ApiPromptRequest {
+	r.promptSvcPromptRequest = &promptSvcPromptRequest
 	return r
 }
 
@@ -324,8 +324,8 @@ func (a *PromptSvcAPIService) PromptExecute(r ApiPromptRequest) (*PromptSvcPromp
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.promptSvcPromptRequest == nil {
+		return localVarReturnValue, nil, reportError("promptSvcPromptRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -346,7 +346,7 @@ func (a *PromptSvcAPIService) PromptExecute(r ApiPromptRequest) (*PromptSvcPromp
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.promptSvcPromptRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -591,12 +591,12 @@ func (a *PromptSvcAPIService) PromptTypesExecute(r ApiPromptTypesRequest) (*Prom
 type ApiRemovePromptRequest struct {
 	ctx context.Context
 	ApiService PromptSvcAPI
-	body *PromptSvcRemovePromptRequest
+	promptSvcRemovePromptRequest *PromptSvcRemovePromptRequest
 }
 
 // Remove Prompt Request
-func (r ApiRemovePromptRequest) Body(body PromptSvcRemovePromptRequest) ApiRemovePromptRequest {
-	r.body = &body
+func (r ApiRemovePromptRequest) PromptSvcRemovePromptRequest(promptSvcRemovePromptRequest PromptSvcRemovePromptRequest) ApiRemovePromptRequest {
+	r.promptSvcRemovePromptRequest = &promptSvcRemovePromptRequest
 	return r
 }
 
@@ -639,8 +639,8 @@ func (a *PromptSvcAPIService) RemovePromptExecute(r ApiRemovePromptRequest) (map
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.promptSvcRemovePromptRequest == nil {
+		return localVarReturnValue, nil, reportError("promptSvcRemovePromptRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -661,7 +661,7 @@ func (a *PromptSvcAPIService) RemovePromptExecute(r ApiRemovePromptRequest) (map
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.promptSvcRemovePromptRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -806,7 +806,7 @@ func (a *PromptSvcAPIService) SubscribeToPromptResponsesExecute(r ApiSubscribeTo
 	}
 
 	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"*/*"}
+	localVarHTTPHeaderAccepts := []string{"application/json"}
 
 	// set Accept header
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)

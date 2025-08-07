@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -71,12 +71,12 @@ type DeploySvcAPIService service
 type ApiDeleteDeploymentRequest struct {
 	ctx context.Context
 	ApiService DeploySvcAPI
-	body *DeploySvcDeleteDeploymentRequest
+	deploySvcDeleteDeploymentRequest *DeploySvcDeleteDeploymentRequest
 }
 
 // Delete Deploys Request
-func (r ApiDeleteDeploymentRequest) Body(body DeploySvcDeleteDeploymentRequest) ApiDeleteDeploymentRequest {
-	r.body = &body
+func (r ApiDeleteDeploymentRequest) DeploySvcDeleteDeploymentRequest(deploySvcDeleteDeploymentRequest DeploySvcDeleteDeploymentRequest) ApiDeleteDeploymentRequest {
+	r.deploySvcDeleteDeploymentRequest = &deploySvcDeleteDeploymentRequest
 	return r
 }
 
@@ -138,7 +138,7 @@ func (a *DeploySvcAPIService) DeleteDeploymentExecute(r ApiDeleteDeploymentReque
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.deploySvcDeleteDeploymentRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -379,12 +379,12 @@ func (a *DeploySvcAPIService) ListDeploymentsExecute(r ApiListDeploymentsRequest
 type ApiSaveDeploymentRequest struct {
 	ctx context.Context
 	ApiService DeploySvcAPI
-	body *DeploySvcSaveDeploymentRequest
+	deploySvcSaveDeploymentRequest *DeploySvcSaveDeploymentRequest
 }
 
 // Save Deploys Request
-func (r ApiSaveDeploymentRequest) Body(body DeploySvcSaveDeploymentRequest) ApiSaveDeploymentRequest {
-	r.body = &body
+func (r ApiSaveDeploymentRequest) DeploySvcSaveDeploymentRequest(deploySvcSaveDeploymentRequest DeploySvcSaveDeploymentRequest) ApiSaveDeploymentRequest {
+	r.deploySvcSaveDeploymentRequest = &deploySvcSaveDeploymentRequest
 	return r
 }
 
@@ -446,7 +446,7 @@ func (a *DeploySvcAPIService) SaveDeploymentExecute(r ApiSaveDeploymentRequest) 
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.deploySvcSaveDeploymentRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {

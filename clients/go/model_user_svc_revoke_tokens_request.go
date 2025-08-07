@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -44,7 +44,23 @@ func NewUserSvcRevokeTokensRequestWithDefaults() *UserSvcRevokeTokensRequest {
 	return &this
 }
 
+// GetAllTokens returns the AllTokens field value if set, zero value otherwise.
+func (o *UserSvcRevokeTokensRequest) GetAllTokens() bool {
+	if o == nil || IsNil(o.AllTokens) {
+		var ret bool
+		return ret
+	}
+	return *o.AllTokens
+}
 
+// GetAllTokensOk returns a tuple with the AllTokens field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcRevokeTokensRequest) GetAllTokensOk() (*bool, bool) {
+	if o == nil || IsNil(o.AllTokens) {
+		return nil, false
+	}
+	return o.AllTokens, true
+}
 
 // HasAllTokens returns a boolean if a field has been set.
 func (o *UserSvcRevokeTokensRequest) HasAllTokens() bool {
@@ -55,8 +71,28 @@ func (o *UserSvcRevokeTokensRequest) HasAllTokens() bool {
 	return false
 }
 
+// SetAllTokens gets a reference to the given bool and assigns it to the AllTokens field.
+func (o *UserSvcRevokeTokensRequest) SetAllTokens(v bool) {
+	o.AllTokens = &v
+}
 
+// GetDevice returns the Device field value if set, zero value otherwise.
+func (o *UserSvcRevokeTokensRequest) GetDevice() string {
+	if o == nil || IsNil(o.Device) {
+		var ret string
+		return ret
+	}
+	return *o.Device
+}
 
+// GetDeviceOk returns a tuple with the Device field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcRevokeTokensRequest) GetDeviceOk() (*string, bool) {
+	if o == nil || IsNil(o.Device) {
+		return nil, false
+	}
+	return o.Device, true
+}
 
 // HasDevice returns a boolean if a field has been set.
 func (o *UserSvcRevokeTokensRequest) HasDevice() bool {
@@ -67,8 +103,28 @@ func (o *UserSvcRevokeTokensRequest) HasDevice() bool {
 	return false
 }
 
+// SetDevice gets a reference to the given string and assigns it to the Device field.
+func (o *UserSvcRevokeTokensRequest) SetDevice(v string) {
+	o.Device = &v
+}
 
+// GetUserId returns the UserId field value if set, zero value otherwise.
+func (o *UserSvcRevokeTokensRequest) GetUserId() string {
+	if o == nil || IsNil(o.UserId) {
+		var ret string
+		return ret
+	}
+	return *o.UserId
+}
 
+// GetUserIdOk returns a tuple with the UserId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcRevokeTokensRequest) GetUserIdOk() (*string, bool) {
+	if o == nil || IsNil(o.UserId) {
+		return nil, false
+	}
+	return o.UserId, true
+}
 
 // HasUserId returns a boolean if a field has been set.
 func (o *UserSvcRevokeTokensRequest) HasUserId() bool {
@@ -79,6 +135,10 @@ func (o *UserSvcRevokeTokensRequest) HasUserId() bool {
 	return false
 }
 
+// SetUserId gets a reference to the given string and assigns it to the UserId field.
+func (o *UserSvcRevokeTokensRequest) SetUserId(v string) {
+	o.UserId = &v
+}
 
 func (o UserSvcRevokeTokensRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

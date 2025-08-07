@@ -53,25 +53,22 @@ export * from './dataSvcUpdateObjectsRequest';
 export * from './dataSvcUpsertObjectRequest';
 export * from './dataSvcUpsertObjectResponse';
 export * from './datastoreFilter';
-export * from './datastoreOp';
 export * from './datastoreOrderBy';
 export * from './datastoreQuery';
-export * from './datastoreSortingType';
 export * from './deploySvcAutoScalingConfig';
 export * from './deploySvcDeleteDeploymentRequest';
 export * from './deploySvcDeployment';
-export * from './deploySvcDeploymentStatus';
 export * from './deploySvcDeploymentStrategy';
 export * from './deploySvcErrorResponse';
 export * from './deploySvcListDeploymentsResponse';
 export * from './deploySvcResourceLimits';
 export * from './deploySvcSaveDeploymentRequest';
-export * from './deploySvcStrategyType';
 export * from './deploySvcTargetRegion';
 export * from './emailSvcAttachment';
 export * from './emailSvcErrorResponse';
 export * from './emailSvcSendEmailRequest';
 export * from './emailSvcSendEmailResponse';
+export * from './events200Response';
 export * from './fileSvcDownload';
 export * from './fileSvcDownloadFileRequest';
 export * from './fileSvcDownloadsResponse';
@@ -103,13 +100,10 @@ export * from './modelSvcStatusResponse';
 export * from './policySvcBlocklistParameters';
 export * from './policySvcCheckRequest';
 export * from './policySvcCheckResponse';
-export * from './policySvcEntity';
 export * from './policySvcErrorResponse';
 export * from './policySvcInstance';
 export * from './policySvcParameters';
 export * from './policySvcRateLimitParameters';
-export * from './policySvcScope';
-export * from './policySvcTemplateId';
 export * from './policySvcUpsertInstanceRequest';
 export * from './promptSvcEngineParameters';
 export * from './promptSvcErrorResponse';
@@ -120,12 +114,9 @@ export * from './promptSvcParameters';
 export * from './promptSvcPrompt';
 export * from './promptSvcPromptRequest';
 export * from './promptSvcPromptResponse';
-export * from './promptSvcPromptStatus';
-export * from './promptSvcPromptType';
 export * from './promptSvcRemovePromptRequest';
 export * from './promptSvcStableDiffusionParameters';
 export * from './promptSvcStreamChunk';
-export * from './promptSvcStreamChunkType';
 export * from './promptSvcTextToImageParameters';
 export * from './promptSvcTextToTextParameters';
 export * from './promptSvcTypesResponse';
@@ -149,8 +140,6 @@ export * from './registrySvcErrorResponse';
 export * from './registrySvcGPU';
 export * from './registrySvcImageSpec';
 export * from './registrySvcInstance';
-export * from './registrySvcInstanceStatus';
-export * from './registrySvcLanguage';
 export * from './registrySvcListDefinitionsResponse';
 export * from './registrySvcListInstancesResponse';
 export * from './registrySvcListNodesRequest';
@@ -164,7 +153,6 @@ export * from './registrySvcRepositorySpec';
 export * from './registrySvcResourceUsage';
 export * from './registrySvcSaveDefinitionRequest';
 export * from './registrySvcUsage';
-export * from './secretSvcChecksumAlgorithm';
 export * from './secretSvcDecryptValueRequest';
 export * from './secretSvcDecryptValueResponse';
 export * from './secretSvcEncryptValueRequest';
@@ -198,12 +186,10 @@ export * from './userSvcListOrganizationsResponse';
 export * from './userSvcListPermissionsResponse';
 export * from './userSvcListPermitsRequest';
 export * from './userSvcListPermitsResponse';
-export * from './userSvcListUsersOrderBy';
 export * from './userSvcListUsersRequest';
 export * from './userSvcListUsersResponse';
 export * from './userSvcLoginRequest';
 export * from './userSvcLoginResponse';
-export * from './userSvcOrderDirection';
 export * from './userSvcOrganization';
 export * from './userSvcPermit';
 export * from './userSvcPermitInput';
@@ -291,25 +277,22 @@ import { DataSvcUpdateObjectsRequest } from './dataSvcUpdateObjectsRequest';
 import { DataSvcUpsertObjectRequest } from './dataSvcUpsertObjectRequest';
 import { DataSvcUpsertObjectResponse } from './dataSvcUpsertObjectResponse';
 import { DatastoreFilter } from './datastoreFilter';
-import { DatastoreOp } from './datastoreOp';
 import { DatastoreOrderBy } from './datastoreOrderBy';
 import { DatastoreQuery } from './datastoreQuery';
-import { DatastoreSortingType } from './datastoreSortingType';
 import { DeploySvcAutoScalingConfig } from './deploySvcAutoScalingConfig';
 import { DeploySvcDeleteDeploymentRequest } from './deploySvcDeleteDeploymentRequest';
 import { DeploySvcDeployment } from './deploySvcDeployment';
-import { DeploySvcDeploymentStatus } from './deploySvcDeploymentStatus';
 import { DeploySvcDeploymentStrategy } from './deploySvcDeploymentStrategy';
 import { DeploySvcErrorResponse } from './deploySvcErrorResponse';
 import { DeploySvcListDeploymentsResponse } from './deploySvcListDeploymentsResponse';
 import { DeploySvcResourceLimits } from './deploySvcResourceLimits';
 import { DeploySvcSaveDeploymentRequest } from './deploySvcSaveDeploymentRequest';
-import { DeploySvcStrategyType } from './deploySvcStrategyType';
 import { DeploySvcTargetRegion } from './deploySvcTargetRegion';
 import { EmailSvcAttachment } from './emailSvcAttachment';
 import { EmailSvcErrorResponse } from './emailSvcErrorResponse';
 import { EmailSvcSendEmailRequest } from './emailSvcSendEmailRequest';
 import { EmailSvcSendEmailResponse } from './emailSvcSendEmailResponse';
+import { Events200Response } from './events200Response';
 import { FileSvcDownload } from './fileSvcDownload';
 import { FileSvcDownloadFileRequest } from './fileSvcDownloadFileRequest';
 import { FileSvcDownloadsResponse } from './fileSvcDownloadsResponse';
@@ -341,13 +324,10 @@ import { ModelSvcStatusResponse } from './modelSvcStatusResponse';
 import { PolicySvcBlocklistParameters } from './policySvcBlocklistParameters';
 import { PolicySvcCheckRequest } from './policySvcCheckRequest';
 import { PolicySvcCheckResponse } from './policySvcCheckResponse';
-import { PolicySvcEntity } from './policySvcEntity';
 import { PolicySvcErrorResponse } from './policySvcErrorResponse';
 import { PolicySvcInstance } from './policySvcInstance';
 import { PolicySvcParameters } from './policySvcParameters';
 import { PolicySvcRateLimitParameters } from './policySvcRateLimitParameters';
-import { PolicySvcScope } from './policySvcScope';
-import { PolicySvcTemplateId } from './policySvcTemplateId';
 import { PolicySvcUpsertInstanceRequest } from './policySvcUpsertInstanceRequest';
 import { PromptSvcEngineParameters } from './promptSvcEngineParameters';
 import { PromptSvcErrorResponse } from './promptSvcErrorResponse';
@@ -358,12 +338,9 @@ import { PromptSvcParameters } from './promptSvcParameters';
 import { PromptSvcPrompt } from './promptSvcPrompt';
 import { PromptSvcPromptRequest } from './promptSvcPromptRequest';
 import { PromptSvcPromptResponse } from './promptSvcPromptResponse';
-import { PromptSvcPromptStatus } from './promptSvcPromptStatus';
-import { PromptSvcPromptType } from './promptSvcPromptType';
 import { PromptSvcRemovePromptRequest } from './promptSvcRemovePromptRequest';
 import { PromptSvcStableDiffusionParameters } from './promptSvcStableDiffusionParameters';
 import { PromptSvcStreamChunk } from './promptSvcStreamChunk';
-import { PromptSvcStreamChunkType } from './promptSvcStreamChunkType';
 import { PromptSvcTextToImageParameters } from './promptSvcTextToImageParameters';
 import { PromptSvcTextToTextParameters } from './promptSvcTextToTextParameters';
 import { PromptSvcTypesResponse } from './promptSvcTypesResponse';
@@ -387,8 +364,6 @@ import { RegistrySvcErrorResponse } from './registrySvcErrorResponse';
 import { RegistrySvcGPU } from './registrySvcGPU';
 import { RegistrySvcImageSpec } from './registrySvcImageSpec';
 import { RegistrySvcInstance } from './registrySvcInstance';
-import { RegistrySvcInstanceStatus } from './registrySvcInstanceStatus';
-import { RegistrySvcLanguage } from './registrySvcLanguage';
 import { RegistrySvcListDefinitionsResponse } from './registrySvcListDefinitionsResponse';
 import { RegistrySvcListInstancesResponse } from './registrySvcListInstancesResponse';
 import { RegistrySvcListNodesRequest } from './registrySvcListNodesRequest';
@@ -402,7 +377,6 @@ import { RegistrySvcRepositorySpec } from './registrySvcRepositorySpec';
 import { RegistrySvcResourceUsage } from './registrySvcResourceUsage';
 import { RegistrySvcSaveDefinitionRequest } from './registrySvcSaveDefinitionRequest';
 import { RegistrySvcUsage } from './registrySvcUsage';
-import { SecretSvcChecksumAlgorithm } from './secretSvcChecksumAlgorithm';
 import { SecretSvcDecryptValueRequest } from './secretSvcDecryptValueRequest';
 import { SecretSvcDecryptValueResponse } from './secretSvcDecryptValueResponse';
 import { SecretSvcEncryptValueRequest } from './secretSvcEncryptValueRequest';
@@ -436,12 +410,10 @@ import { UserSvcListOrganizationsResponse } from './userSvcListOrganizationsResp
 import { UserSvcListPermissionsResponse } from './userSvcListPermissionsResponse';
 import { UserSvcListPermitsRequest } from './userSvcListPermitsRequest';
 import { UserSvcListPermitsResponse } from './userSvcListPermitsResponse';
-import { UserSvcListUsersOrderBy } from './userSvcListUsersOrderBy';
 import { UserSvcListUsersRequest } from './userSvcListUsersRequest';
 import { UserSvcListUsersResponse } from './userSvcListUsersResponse';
 import { UserSvcLoginRequest } from './userSvcLoginRequest';
 import { UserSvcLoginResponse } from './userSvcLoginResponse';
-import { UserSvcOrderDirection } from './userSvcOrderDirection';
 import { UserSvcOrganization } from './userSvcOrganization';
 import { UserSvcPermit } from './userSvcPermit';
 import { UserSvcPermitInput } from './userSvcPermitInput';
@@ -476,21 +448,6 @@ let primitives = [
                  ];
 
 let enumsMap: {[index: string]: any} = {
-        "DatastoreOp": DatastoreOp,
-        "DatastoreSortingType": DatastoreSortingType,
-        "DeploySvcDeploymentStatus": DeploySvcDeploymentStatus,
-        "DeploySvcStrategyType": DeploySvcStrategyType,
-        "PolicySvcEntity": PolicySvcEntity,
-        "PolicySvcScope": PolicySvcScope,
-        "PolicySvcTemplateId": PolicySvcTemplateId,
-        "PromptSvcPromptStatus": PromptSvcPromptStatus,
-        "PromptSvcPromptType": PromptSvcPromptType,
-        "PromptSvcStreamChunkType": PromptSvcStreamChunkType,
-        "RegistrySvcInstanceStatus": RegistrySvcInstanceStatus,
-        "RegistrySvcLanguage": RegistrySvcLanguage,
-        "SecretSvcChecksumAlgorithm": SecretSvcChecksumAlgorithm,
-        "UserSvcListUsersOrderBy": UserSvcListUsersOrderBy,
-        "UserSvcOrderDirection": UserSvcOrderDirection,
 }
 
 let typeMap: {[index: string]: any} = {
@@ -562,6 +519,7 @@ let typeMap: {[index: string]: any} = {
     "EmailSvcErrorResponse": EmailSvcErrorResponse,
     "EmailSvcSendEmailRequest": EmailSvcSendEmailRequest,
     "EmailSvcSendEmailResponse": EmailSvcSendEmailResponse,
+    "Events200Response": Events200Response,
     "FileSvcDownload": FileSvcDownload,
     "FileSvcDownloadFileRequest": FileSvcDownloadFileRequest,
     "FileSvcDownloadsResponse": FileSvcDownloadsResponse,

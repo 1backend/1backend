@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -21,11 +21,10 @@ var _ MappedNullable = &DatastoreFilter{}
 // DatastoreFilter struct for DatastoreFilter
 type DatastoreFilter struct {
 	Fields []string `json:"fields,omitempty"`
-	Op *DatastoreOp `json:"op,omitempty"`
+	Op *string `json:"op,omitempty"`
 	// SubFilters is used for operations like OR where multiple filters are combined.
 	SubFilters []DatastoreFilter `json:"subFilters,omitempty"`
-	// @openapi-any-array
-	Values []any `json:"values,omitempty"`
+	Values []interface{} `json:"values,omitempty"`
 }
 
 // NewDatastoreFilter instantiates a new DatastoreFilter object
@@ -45,7 +44,23 @@ func NewDatastoreFilterWithDefaults() *DatastoreFilter {
 	return &this
 }
 
+// GetFields returns the Fields field value if set, zero value otherwise.
+func (o *DatastoreFilter) GetFields() []string {
+	if o == nil || IsNil(o.Fields) {
+		var ret []string
+		return ret
+	}
+	return o.Fields
+}
 
+// GetFieldsOk returns a tuple with the Fields field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DatastoreFilter) GetFieldsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Fields) {
+		return nil, false
+	}
+	return o.Fields, true
+}
 
 // HasFields returns a boolean if a field has been set.
 func (o *DatastoreFilter) HasFields() bool {
@@ -56,8 +71,28 @@ func (o *DatastoreFilter) HasFields() bool {
 	return false
 }
 
+// SetFields gets a reference to the given []string and assigns it to the Fields field.
+func (o *DatastoreFilter) SetFields(v []string) {
+	o.Fields = v
+}
 
+// GetOp returns the Op field value if set, zero value otherwise.
+func (o *DatastoreFilter) GetOp() string {
+	if o == nil || IsNil(o.Op) {
+		var ret string
+		return ret
+	}
+	return *o.Op
+}
 
+// GetOpOk returns a tuple with the Op field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DatastoreFilter) GetOpOk() (*string, bool) {
+	if o == nil || IsNil(o.Op) {
+		return nil, false
+	}
+	return o.Op, true
+}
 
 // HasOp returns a boolean if a field has been set.
 func (o *DatastoreFilter) HasOp() bool {
@@ -68,8 +103,28 @@ func (o *DatastoreFilter) HasOp() bool {
 	return false
 }
 
+// SetOp gets a reference to the given string and assigns it to the Op field.
+func (o *DatastoreFilter) SetOp(v string) {
+	o.Op = &v
+}
 
+// GetSubFilters returns the SubFilters field value if set, zero value otherwise.
+func (o *DatastoreFilter) GetSubFilters() []DatastoreFilter {
+	if o == nil || IsNil(o.SubFilters) {
+		var ret []DatastoreFilter
+		return ret
+	}
+	return o.SubFilters
+}
 
+// GetSubFiltersOk returns a tuple with the SubFilters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DatastoreFilter) GetSubFiltersOk() ([]DatastoreFilter, bool) {
+	if o == nil || IsNil(o.SubFilters) {
+		return nil, false
+	}
+	return o.SubFilters, true
+}
 
 // HasSubFilters returns a boolean if a field has been set.
 func (o *DatastoreFilter) HasSubFilters() bool {
@@ -80,8 +135,28 @@ func (o *DatastoreFilter) HasSubFilters() bool {
 	return false
 }
 
+// SetSubFilters gets a reference to the given []DatastoreFilter and assigns it to the SubFilters field.
+func (o *DatastoreFilter) SetSubFilters(v []DatastoreFilter) {
+	o.SubFilters = v
+}
 
+// GetValues returns the Values field value if set, zero value otherwise.
+func (o *DatastoreFilter) GetValues() []interface{} {
+	if o == nil || IsNil(o.Values) {
+		var ret []interface{}
+		return ret
+	}
+	return o.Values
+}
 
+// GetValuesOk returns a tuple with the Values field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DatastoreFilter) GetValuesOk() ([]interface{}, bool) {
+	if o == nil || IsNil(o.Values) {
+		return nil, false
+	}
+	return o.Values, true
+}
 
 // HasValues returns a boolean if a field has been set.
 func (o *DatastoreFilter) HasValues() bool {
@@ -92,6 +167,10 @@ func (o *DatastoreFilter) HasValues() bool {
 	return false
 }
 
+// SetValues gets a reference to the given []interface{} and assigns it to the Values field.
+func (o *DatastoreFilter) SetValues(v []interface{}) {
+	o.Values = v
+}
 
 func (o DatastoreFilter) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -29,8 +29,8 @@ type UserSvcListUsersRequest struct {
 	// Ids of the users to list.
 	Ids []string `json:"ids,omitempty"`
 	Limit *int32 `json:"limit,omitempty"`
-	Order *UserSvcOrderDirection `json:"order,omitempty"`
-	OrderBy *UserSvcListUsersOrderBy `json:"orderBy,omitempty"`
+	Order *string `json:"order,omitempty"`
+	OrderBy *string `json:"orderBy,omitempty"`
 	// Search term used to find users. Returns users whose slug, username, or contact ID exactly matches the term.
 	Search *string `json:"search,omitempty"`
 }
@@ -52,7 +52,23 @@ func NewUserSvcListUsersRequestWithDefaults() *UserSvcListUsersRequest {
 	return &this
 }
 
+// GetAfterTime returns the AfterTime field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetAfterTime() string {
+	if o == nil || IsNil(o.AfterTime) {
+		var ret string
+		return ret
+	}
+	return *o.AfterTime
+}
 
+// GetAfterTimeOk returns a tuple with the AfterTime field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersRequest) GetAfterTimeOk() (*string, bool) {
+	if o == nil || IsNil(o.AfterTime) {
+		return nil, false
+	}
+	return o.AfterTime, true
+}
 
 // HasAfterTime returns a boolean if a field has been set.
 func (o *UserSvcListUsersRequest) HasAfterTime() bool {
@@ -63,8 +79,28 @@ func (o *UserSvcListUsersRequest) HasAfterTime() bool {
 	return false
 }
 
+// SetAfterTime gets a reference to the given string and assigns it to the AfterTime field.
+func (o *UserSvcListUsersRequest) SetAfterTime(v string) {
+	o.AfterTime = &v
+}
 
+// GetContactId returns the ContactId field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetContactId() string {
+	if o == nil || IsNil(o.ContactId) {
+		var ret string
+		return ret
+	}
+	return *o.ContactId
+}
 
+// GetContactIdOk returns a tuple with the ContactId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersRequest) GetContactIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ContactId) {
+		return nil, false
+	}
+	return o.ContactId, true
+}
 
 // HasContactId returns a boolean if a field has been set.
 func (o *UserSvcListUsersRequest) HasContactId() bool {
@@ -75,8 +111,28 @@ func (o *UserSvcListUsersRequest) HasContactId() bool {
 	return false
 }
 
+// SetContactId gets a reference to the given string and assigns it to the ContactId field.
+func (o *UserSvcListUsersRequest) SetContactId(v string) {
+	o.ContactId = &v
+}
 
+// GetCount returns the Count field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetCount() bool {
+	if o == nil || IsNil(o.Count) {
+		var ret bool
+		return ret
+	}
+	return *o.Count
+}
 
+// GetCountOk returns a tuple with the Count field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersRequest) GetCountOk() (*bool, bool) {
+	if o == nil || IsNil(o.Count) {
+		return nil, false
+	}
+	return o.Count, true
+}
 
 // HasCount returns a boolean if a field has been set.
 func (o *UserSvcListUsersRequest) HasCount() bool {
@@ -87,8 +143,28 @@ func (o *UserSvcListUsersRequest) HasCount() bool {
 	return false
 }
 
+// SetCount gets a reference to the given bool and assigns it to the Count field.
+func (o *UserSvcListUsersRequest) SetCount(v bool) {
+	o.Count = &v
+}
 
+// GetIds returns the Ids field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetIds() []string {
+	if o == nil || IsNil(o.Ids) {
+		var ret []string
+		return ret
+	}
+	return o.Ids
+}
 
+// GetIdsOk returns a tuple with the Ids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersRequest) GetIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Ids) {
+		return nil, false
+	}
+	return o.Ids, true
+}
 
 // HasIds returns a boolean if a field has been set.
 func (o *UserSvcListUsersRequest) HasIds() bool {
@@ -99,8 +175,28 @@ func (o *UserSvcListUsersRequest) HasIds() bool {
 	return false
 }
 
+// SetIds gets a reference to the given []string and assigns it to the Ids field.
+func (o *UserSvcListUsersRequest) SetIds(v []string) {
+	o.Ids = v
+}
 
+// GetLimit returns the Limit field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetLimit() int32 {
+	if o == nil || IsNil(o.Limit) {
+		var ret int32
+		return ret
+	}
+	return *o.Limit
+}
 
+// GetLimitOk returns a tuple with the Limit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersRequest) GetLimitOk() (*int32, bool) {
+	if o == nil || IsNil(o.Limit) {
+		return nil, false
+	}
+	return o.Limit, true
+}
 
 // HasLimit returns a boolean if a field has been set.
 func (o *UserSvcListUsersRequest) HasLimit() bool {
@@ -111,8 +207,28 @@ func (o *UserSvcListUsersRequest) HasLimit() bool {
 	return false
 }
 
+// SetLimit gets a reference to the given int32 and assigns it to the Limit field.
+func (o *UserSvcListUsersRequest) SetLimit(v int32) {
+	o.Limit = &v
+}
 
+// GetOrder returns the Order field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetOrder() string {
+	if o == nil || IsNil(o.Order) {
+		var ret string
+		return ret
+	}
+	return *o.Order
+}
 
+// GetOrderOk returns a tuple with the Order field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersRequest) GetOrderOk() (*string, bool) {
+	if o == nil || IsNil(o.Order) {
+		return nil, false
+	}
+	return o.Order, true
+}
 
 // HasOrder returns a boolean if a field has been set.
 func (o *UserSvcListUsersRequest) HasOrder() bool {
@@ -123,8 +239,28 @@ func (o *UserSvcListUsersRequest) HasOrder() bool {
 	return false
 }
 
+// SetOrder gets a reference to the given string and assigns it to the Order field.
+func (o *UserSvcListUsersRequest) SetOrder(v string) {
+	o.Order = &v
+}
 
+// GetOrderBy returns the OrderBy field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetOrderBy() string {
+	if o == nil || IsNil(o.OrderBy) {
+		var ret string
+		return ret
+	}
+	return *o.OrderBy
+}
 
+// GetOrderByOk returns a tuple with the OrderBy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersRequest) GetOrderByOk() (*string, bool) {
+	if o == nil || IsNil(o.OrderBy) {
+		return nil, false
+	}
+	return o.OrderBy, true
+}
 
 // HasOrderBy returns a boolean if a field has been set.
 func (o *UserSvcListUsersRequest) HasOrderBy() bool {
@@ -135,8 +271,28 @@ func (o *UserSvcListUsersRequest) HasOrderBy() bool {
 	return false
 }
 
+// SetOrderBy gets a reference to the given string and assigns it to the OrderBy field.
+func (o *UserSvcListUsersRequest) SetOrderBy(v string) {
+	o.OrderBy = &v
+}
 
+// GetSearch returns the Search field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetSearch() string {
+	if o == nil || IsNil(o.Search) {
+		var ret string
+		return ret
+	}
+	return *o.Search
+}
 
+// GetSearchOk returns a tuple with the Search field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersRequest) GetSearchOk() (*string, bool) {
+	if o == nil || IsNil(o.Search) {
+		return nil, false
+	}
+	return o.Search, true
+}
 
 // HasSearch returns a boolean if a field has been set.
 func (o *UserSvcListUsersRequest) HasSearch() bool {
@@ -147,6 +303,10 @@ func (o *UserSvcListUsersRequest) HasSearch() bool {
 	return false
 }
 
+// SetSearch gets a reference to the given string and assigns it to the Search field.
+func (o *UserSvcListUsersRequest) SetSearch(v string) {
+	o.Search = &v
+}
 
 func (o UserSvcListUsersRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

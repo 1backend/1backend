@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -66,32 +66,221 @@ func NewFileSvcUploadWithDefaults() *FileSvcUpload {
 	return &this
 }
 
+// GetCreatedAt returns the CreatedAt field value
+func (o *FileSvcUpload) GetCreatedAt() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.CreatedAt
+}
 
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
+// and a boolean to check if the value has been set.
+func (o *FileSvcUpload) GetCreatedAtOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CreatedAt, true
+}
 
+// SetCreatedAt sets field value
+func (o *FileSvcUpload) SetCreatedAt(v string) {
+	o.CreatedAt = v
+}
 
+// GetFileId returns the FileId field value
+func (o *FileSvcUpload) GetFileId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.FileId
+}
 
+// GetFileIdOk returns a tuple with the FileId field value
+// and a boolean to check if the value has been set.
+func (o *FileSvcUpload) GetFileIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.FileId, true
+}
 
+// SetFileId sets field value
+func (o *FileSvcUpload) SetFileId(v string) {
+	o.FileId = v
+}
 
+// GetFileName returns the FileName field value
+func (o *FileSvcUpload) GetFileName() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.FileName
+}
 
+// GetFileNameOk returns a tuple with the FileName field value
+// and a boolean to check if the value has been set.
+func (o *FileSvcUpload) GetFileNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.FileName, true
+}
 
+// SetFileName sets field value
+func (o *FileSvcUpload) SetFileName(v string) {
+	o.FileName = v
+}
 
+// GetFilePath returns the FilePath field value
+func (o *FileSvcUpload) GetFilePath() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.FilePath
+}
 
+// GetFilePathOk returns a tuple with the FilePath field value
+// and a boolean to check if the value has been set.
+func (o *FileSvcUpload) GetFilePathOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.FilePath, true
+}
 
+// SetFilePath sets field value
+func (o *FileSvcUpload) SetFilePath(v string) {
+	o.FilePath = v
+}
 
+// GetFileSize returns the FileSize field value
+func (o *FileSvcUpload) GetFileSize() int64 {
+	if o == nil {
+		var ret int64
+		return ret
+	}
 
+	return o.FileSize
+}
 
+// GetFileSizeOk returns a tuple with the FileSize field value
+// and a boolean to check if the value has been set.
+func (o *FileSvcUpload) GetFileSizeOk() (*int64, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.FileSize, true
+}
 
+// SetFileSize sets field value
+func (o *FileSvcUpload) SetFileSize(v int64) {
+	o.FileSize = v
+}
 
+// GetId returns the Id field value
+func (o *FileSvcUpload) GetId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Id
+}
 
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+func (o *FileSvcUpload) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Id, true
+}
 
+// SetId sets field value
+func (o *FileSvcUpload) SetId(v string) {
+	o.Id = v
+}
 
+// GetNodeId returns the NodeId field value
+func (o *FileSvcUpload) GetNodeId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.NodeId
+}
 
+// GetNodeIdOk returns a tuple with the NodeId field value
+// and a boolean to check if the value has been set.
+func (o *FileSvcUpload) GetNodeIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.NodeId, true
+}
+
+// SetNodeId sets field value
+func (o *FileSvcUpload) SetNodeId(v string) {
+	o.NodeId = v
+}
+
+// GetUpdatedAt returns the UpdatedAt field value
+func (o *FileSvcUpload) GetUpdatedAt() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.UpdatedAt
+}
+
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
+// and a boolean to check if the value has been set.
+func (o *FileSvcUpload) GetUpdatedAtOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.UpdatedAt, true
+}
+
+// SetUpdatedAt sets field value
+func (o *FileSvcUpload) SetUpdatedAt(v string) {
+	o.UpdatedAt = v
+}
+
+// GetUserId returns the UserId field value
+func (o *FileSvcUpload) GetUserId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.UserId
+}
+
+// GetUserIdOk returns a tuple with the UserId field value
+// and a boolean to check if the value has been set.
+func (o *FileSvcUpload) GetUserIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.UserId, true
+}
+
+// SetUserId sets field value
+func (o *FileSvcUpload) SetUserId(v string) {
+	o.UserId = v
+}
 
 func (o FileSvcUpload) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

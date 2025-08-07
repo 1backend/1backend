@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewDataSvcCreateObjectRequestWithDefaults() *DataSvcCreateObjectRequest {
 	return &this
 }
 
+// GetObject returns the Object field value if set, zero value otherwise.
+func (o *DataSvcCreateObjectRequest) GetObject() DataSvcCreateObjectFields {
+	if o == nil || IsNil(o.Object) {
+		var ret DataSvcCreateObjectFields
+		return ret
+	}
+	return *o.Object
+}
 
+// GetObjectOk returns a tuple with the Object field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DataSvcCreateObjectRequest) GetObjectOk() (*DataSvcCreateObjectFields, bool) {
+	if o == nil || IsNil(o.Object) {
+		return nil, false
+	}
+	return o.Object, true
+}
 
 // HasObject returns a boolean if a field has been set.
 func (o *DataSvcCreateObjectRequest) HasObject() bool {
@@ -51,6 +67,10 @@ func (o *DataSvcCreateObjectRequest) HasObject() bool {
 	return false
 }
 
+// SetObject gets a reference to the given DataSvcCreateObjectFields and assigns it to the Object field.
+func (o *DataSvcCreateObjectRequest) SetObject(v DataSvcCreateObjectFields) {
+	o.Object = &v
+}
 
 func (o DataSvcCreateObjectRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

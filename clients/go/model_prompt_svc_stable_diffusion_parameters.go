@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -20,7 +20,6 @@ var _ MappedNullable = &PromptSvcStableDiffusionParameters{}
 
 // PromptSvcStableDiffusionParameters struct for PromptSvcStableDiffusionParameters
 type PromptSvcStableDiffusionParameters struct {
-	// Text to image parameters
 	Txt2Img *StableDiffusionTxt2ImgRequest `json:"txt2Img,omitempty"`
 }
 
@@ -41,7 +40,23 @@ func NewPromptSvcStableDiffusionParametersWithDefaults() *PromptSvcStableDiffusi
 	return &this
 }
 
+// GetTxt2Img returns the Txt2Img field value if set, zero value otherwise.
+func (o *PromptSvcStableDiffusionParameters) GetTxt2Img() StableDiffusionTxt2ImgRequest {
+	if o == nil || IsNil(o.Txt2Img) {
+		var ret StableDiffusionTxt2ImgRequest
+		return ret
+	}
+	return *o.Txt2Img
+}
 
+// GetTxt2ImgOk returns a tuple with the Txt2Img field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcStableDiffusionParameters) GetTxt2ImgOk() (*StableDiffusionTxt2ImgRequest, bool) {
+	if o == nil || IsNil(o.Txt2Img) {
+		return nil, false
+	}
+	return o.Txt2Img, true
+}
 
 // HasTxt2Img returns a boolean if a field has been set.
 func (o *PromptSvcStableDiffusionParameters) HasTxt2Img() bool {
@@ -52,6 +67,10 @@ func (o *PromptSvcStableDiffusionParameters) HasTxt2Img() bool {
 	return false
 }
 
+// SetTxt2Img gets a reference to the given StableDiffusionTxt2ImgRequest and assigns it to the Txt2Img field.
+func (o *PromptSvcStableDiffusionParameters) SetTxt2Img(v StableDiffusionTxt2ImgRequest) {
+	o.Txt2Img = &v
+}
 
 func (o PromptSvcStableDiffusionParameters) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

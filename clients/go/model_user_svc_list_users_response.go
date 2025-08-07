@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -42,7 +42,23 @@ func NewUserSvcListUsersResponseWithDefaults() *UserSvcListUsersResponse {
 	return &this
 }
 
+// GetAfter returns the After field value if set, zero value otherwise.
+func (o *UserSvcListUsersResponse) GetAfter() string {
+	if o == nil || IsNil(o.After) {
+		var ret string
+		return ret
+	}
+	return *o.After
+}
 
+// GetAfterOk returns a tuple with the After field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersResponse) GetAfterOk() (*string, bool) {
+	if o == nil || IsNil(o.After) {
+		return nil, false
+	}
+	return o.After, true
+}
 
 // HasAfter returns a boolean if a field has been set.
 func (o *UserSvcListUsersResponse) HasAfter() bool {
@@ -53,8 +69,28 @@ func (o *UserSvcListUsersResponse) HasAfter() bool {
 	return false
 }
 
+// SetAfter gets a reference to the given string and assigns it to the After field.
+func (o *UserSvcListUsersResponse) SetAfter(v string) {
+	o.After = &v
+}
 
+// GetCount returns the Count field value if set, zero value otherwise.
+func (o *UserSvcListUsersResponse) GetCount() int32 {
+	if o == nil || IsNil(o.Count) {
+		var ret int32
+		return ret
+	}
+	return *o.Count
+}
 
+// GetCountOk returns a tuple with the Count field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersResponse) GetCountOk() (*int32, bool) {
+	if o == nil || IsNil(o.Count) {
+		return nil, false
+	}
+	return o.Count, true
+}
 
 // HasCount returns a boolean if a field has been set.
 func (o *UserSvcListUsersResponse) HasCount() bool {
@@ -65,8 +101,28 @@ func (o *UserSvcListUsersResponse) HasCount() bool {
 	return false
 }
 
+// SetCount gets a reference to the given int32 and assigns it to the Count field.
+func (o *UserSvcListUsersResponse) SetCount(v int32) {
+	o.Count = &v
+}
 
+// GetUsers returns the Users field value if set, zero value otherwise.
+func (o *UserSvcListUsersResponse) GetUsers() []UserSvcUserRecord {
+	if o == nil || IsNil(o.Users) {
+		var ret []UserSvcUserRecord
+		return ret
+	}
+	return o.Users
+}
 
+// GetUsersOk returns a tuple with the Users field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersResponse) GetUsersOk() ([]UserSvcUserRecord, bool) {
+	if o == nil || IsNil(o.Users) {
+		return nil, false
+	}
+	return o.Users, true
+}
 
 // HasUsers returns a boolean if a field has been set.
 func (o *UserSvcListUsersResponse) HasUsers() bool {
@@ -77,6 +133,10 @@ func (o *UserSvcListUsersResponse) HasUsers() bool {
 	return false
 }
 
+// SetUsers gets a reference to the given []UserSvcUserRecord and assigns it to the Users field.
+func (o *UserSvcListUsersResponse) SetUsers(v []UserSvcUserRecord) {
+	o.Users = v
+}
 
 func (o UserSvcListUsersResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

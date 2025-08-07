@@ -24,7 +24,7 @@ trap 'echo "Error occurred in script at line $LINENO"; exit 1' ERR
 # Initialize Swagger in server
 echo "Initializing Swagger in $OB_DIR"
 cd "$OB_DIR"
-swag init --parseDependency
+swag init --parseDependency --v3.1
 
 # Copy Swagger file to docs-source examples
 echo "Copying Swagger file to $EXAMPLES_DIR"

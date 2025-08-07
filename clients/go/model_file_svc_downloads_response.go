@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewFileSvcDownloadsResponseWithDefaults() *FileSvcDownloadsResponse {
 	return &this
 }
 
+// GetDownloads returns the Downloads field value if set, zero value otherwise.
+func (o *FileSvcDownloadsResponse) GetDownloads() []FileSvcDownload {
+	if o == nil || IsNil(o.Downloads) {
+		var ret []FileSvcDownload
+		return ret
+	}
+	return o.Downloads
+}
 
+// GetDownloadsOk returns a tuple with the Downloads field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FileSvcDownloadsResponse) GetDownloadsOk() ([]FileSvcDownload, bool) {
+	if o == nil || IsNil(o.Downloads) {
+		return nil, false
+	}
+	return o.Downloads, true
+}
 
 // HasDownloads returns a boolean if a field has been set.
 func (o *FileSvcDownloadsResponse) HasDownloads() bool {
@@ -51,6 +67,10 @@ func (o *FileSvcDownloadsResponse) HasDownloads() bool {
 	return false
 }
 
+// SetDownloads gets a reference to the given []FileSvcDownload and assigns it to the Downloads field.
+func (o *FileSvcDownloadsResponse) SetDownloads(v []FileSvcDownload) {
+	o.Downloads = v
+}
 
 func (o FileSvcDownloadsResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

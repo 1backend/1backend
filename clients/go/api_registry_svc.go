@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -202,6 +202,12 @@ type ApiDeleteDefinitionRequest struct {
 	ctx context.Context
 	ApiService RegistrySvcAPI
 	id string
+	body *map[string]interface{}
+}
+
+func (r ApiDeleteDefinitionRequest) Body(body map[string]interface{}) ApiDeleteDefinitionRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiDeleteDefinitionRequest) Execute() (*http.Response, error) {
@@ -246,7 +252,7 @@ func (a *RegistrySvcAPIService) DeleteDefinitionExecute(r ApiDeleteDefinitionReq
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -262,6 +268,8 @@ func (a *RegistrySvcAPIService) DeleteDefinitionExecute(r ApiDeleteDefinitionReq
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -351,6 +359,12 @@ type ApiDeleteNodeRequest struct {
 	ctx context.Context
 	ApiService RegistrySvcAPI
 	url string
+	body *map[string]interface{}
+}
+
+func (r ApiDeleteNodeRequest) Body(body map[string]interface{}) ApiDeleteNodeRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiDeleteNodeRequest) Execute() (*http.Response, error) {
@@ -395,7 +409,7 @@ func (a *RegistrySvcAPIService) DeleteNodeExecute(r ApiDeleteNodeRequest) (*http
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -411,6 +425,8 @@ func (a *RegistrySvcAPIService) DeleteNodeExecute(r ApiDeleteNodeRequest) (*http
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -613,6 +629,12 @@ func (a *RegistrySvcAPIService) EchoGetExecute(r ApiEchoGetRequest) (map[string]
 type ApiEchoPostRequest struct {
 	ctx context.Context
 	ApiService RegistrySvcAPI
+	body *map[string]interface{}
+}
+
+func (r ApiEchoPostRequest) Body(body map[string]interface{}) ApiEchoPostRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiEchoPostRequest) Execute() (map[string]interface{}, *http.Response, error) {
@@ -657,7 +679,7 @@ func (a *RegistrySvcAPIService) EchoPostExecute(r ApiEchoPostRequest) (map[strin
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -673,6 +695,8 @@ func (a *RegistrySvcAPIService) EchoPostExecute(r ApiEchoPostRequest) (map[strin
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -737,6 +761,12 @@ func (a *RegistrySvcAPIService) EchoPostExecute(r ApiEchoPostRequest) (map[strin
 type ApiEchoPutRequest struct {
 	ctx context.Context
 	ApiService RegistrySvcAPI
+	body *map[string]interface{}
+}
+
+func (r ApiEchoPutRequest) Body(body map[string]interface{}) ApiEchoPutRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiEchoPutRequest) Execute() (map[string]interface{}, *http.Response, error) {
@@ -781,7 +811,7 @@ func (a *RegistrySvcAPIService) EchoPutExecute(r ApiEchoPutRequest) (map[string]
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -797,6 +827,8 @@ func (a *RegistrySvcAPIService) EchoPutExecute(r ApiEchoPutRequest) (map[string]
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -861,6 +893,12 @@ func (a *RegistrySvcAPIService) EchoPutExecute(r ApiEchoPutRequest) (map[string]
 type ApiListDefinitionsRequest struct {
 	ctx context.Context
 	ApiService RegistrySvcAPI
+	body *map[string]interface{}
+}
+
+func (r ApiListDefinitionsRequest) Body(body map[string]interface{}) ApiListDefinitionsRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiListDefinitionsRequest) Execute() (*RegistrySvcListDefinitionsResponse, *http.Response, error) {
@@ -904,7 +942,7 @@ func (a *RegistrySvcAPIService) ListDefinitionsExecute(r ApiListDefinitionsReque
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -920,6 +958,8 @@ func (a *RegistrySvcAPIService) ListDefinitionsExecute(r ApiListDefinitionsReque
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -999,9 +1039,9 @@ type ApiListInstancesRequest struct {
 	ip *string
 	deploymentId *string
 	host *string
-	ip2 *string
 	id *string
 	slug *string
+	body *map[string]interface{}
 }
 
 // Scheme to filter by
@@ -1028,12 +1068,6 @@ func (r ApiListInstancesRequest) Host(host string) ApiListInstancesRequest {
 	return r
 }
 
-// IP to filter by
-func (r ApiListInstancesRequest) Ip2(ip2 string) ApiListInstancesRequest {
-	r.ip2 = &ip2
-	return r
-}
-
 // Id to filter by
 func (r ApiListInstancesRequest) Id(id string) ApiListInstancesRequest {
 	r.id = &id
@@ -1043,6 +1077,11 @@ func (r ApiListInstancesRequest) Id(id string) ApiListInstancesRequest {
 // Slug to filter by
 func (r ApiListInstancesRequest) Slug(slug string) ApiListInstancesRequest {
 	r.slug = &slug
+	return r
+}
+
+func (r ApiListInstancesRequest) Body(body map[string]interface{}) ApiListInstancesRequest {
+	r.body = &body
 	return r
 }
 
@@ -1087,28 +1126,25 @@ func (a *RegistrySvcAPIService) ListInstancesExecute(r ApiListInstancesRequest) 
 	localVarFormParams := url.Values{}
 
 	if r.scheme != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "scheme", r.scheme, "", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "scheme", r.scheme, "form", "")
 	}
 	if r.ip != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "ip", r.ip, "", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "ip", r.ip, "form", "")
 	}
 	if r.deploymentId != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "deploymentId", r.deploymentId, "", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "deploymentId", r.deploymentId, "form", "")
 	}
 	if r.host != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "host", r.host, "", "")
-	}
-	if r.ip2 != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "ip", r.ip2, "", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "host", r.host, "form", "")
 	}
 	if r.id != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "id", r.id, "", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "id", r.id, "form", "")
 	}
 	if r.slug != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "slug", r.slug, "", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "slug", r.slug, "form", "")
 	}
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -1124,6 +1160,8 @@ func (a *RegistrySvcAPIService) ListInstancesExecute(r ApiListInstancesRequest) 
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -1199,12 +1237,12 @@ func (a *RegistrySvcAPIService) ListInstancesExecute(r ApiListInstancesRequest) 
 type ApiListNodesRequest struct {
 	ctx context.Context
 	ApiService RegistrySvcAPI
-	body *RegistrySvcListNodesRequest
+	registrySvcListNodesRequest *RegistrySvcListNodesRequest
 }
 
 // List Nodes Request
-func (r ApiListNodesRequest) Body(body RegistrySvcListNodesRequest) ApiListNodesRequest {
-	r.body = &body
+func (r ApiListNodesRequest) RegistrySvcListNodesRequest(registrySvcListNodesRequest RegistrySvcListNodesRequest) ApiListNodesRequest {
+	r.registrySvcListNodesRequest = &registrySvcListNodesRequest
 	return r
 }
 
@@ -1266,7 +1304,7 @@ func (a *RegistrySvcAPIService) ListNodesExecute(r ApiListNodesRequest) (*Regist
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.registrySvcListNodesRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -1353,12 +1391,12 @@ func (a *RegistrySvcAPIService) ListNodesExecute(r ApiListNodesRequest) (*Regist
 type ApiRegisterInstanceRequest struct {
 	ctx context.Context
 	ApiService RegistrySvcAPI
-	body *RegistrySvcRegisterInstanceRequest
+	registrySvcRegisterInstanceRequest *RegistrySvcRegisterInstanceRequest
 }
 
 // Register Instance Request
-func (r ApiRegisterInstanceRequest) Body(body RegistrySvcRegisterInstanceRequest) ApiRegisterInstanceRequest {
-	r.body = &body
+func (r ApiRegisterInstanceRequest) RegistrySvcRegisterInstanceRequest(registrySvcRegisterInstanceRequest RegistrySvcRegisterInstanceRequest) ApiRegisterInstanceRequest {
+	r.registrySvcRegisterInstanceRequest = &registrySvcRegisterInstanceRequest
 	return r
 }
 
@@ -1401,8 +1439,8 @@ func (a *RegistrySvcAPIService) RegisterInstanceExecute(r ApiRegisterInstanceReq
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.registrySvcRegisterInstanceRequest == nil {
+		return localVarReturnValue, nil, reportError("registrySvcRegisterInstanceRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1423,7 +1461,7 @@ func (a *RegistrySvcAPIService) RegisterInstanceExecute(r ApiRegisterInstanceReq
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.registrySvcRegisterInstanceRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -1511,6 +1549,12 @@ type ApiRemoveInstanceRequest struct {
 	ctx context.Context
 	ApiService RegistrySvcAPI
 	id string
+	body *map[string]interface{}
+}
+
+func (r ApiRemoveInstanceRequest) Body(body map[string]interface{}) ApiRemoveInstanceRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiRemoveInstanceRequest) Execute() (*http.Response, error) {
@@ -1555,7 +1599,7 @@ func (a *RegistrySvcAPIService) RemoveInstanceExecute(r ApiRemoveInstanceRequest
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -1571,6 +1615,8 @@ func (a *RegistrySvcAPIService) RemoveInstanceExecute(r ApiRemoveInstanceRequest
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -1659,12 +1705,12 @@ func (a *RegistrySvcAPIService) RemoveInstanceExecute(r ApiRemoveInstanceRequest
 type ApiSaveDefinitionRequest struct {
 	ctx context.Context
 	ApiService RegistrySvcAPI
-	body *RegistrySvcSaveDefinitionRequest
+	registrySvcSaveDefinitionRequest *RegistrySvcSaveDefinitionRequest
 }
 
 // Register Service Definition Request
-func (r ApiSaveDefinitionRequest) Body(body RegistrySvcSaveDefinitionRequest) ApiSaveDefinitionRequest {
-	r.body = &body
+func (r ApiSaveDefinitionRequest) RegistrySvcSaveDefinitionRequest(registrySvcSaveDefinitionRequest RegistrySvcSaveDefinitionRequest) ApiSaveDefinitionRequest {
+	r.registrySvcSaveDefinitionRequest = &registrySvcSaveDefinitionRequest
 	return r
 }
 
@@ -1707,8 +1753,8 @@ func (a *RegistrySvcAPIService) SaveDefinitionExecute(r ApiSaveDefinitionRequest
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.registrySvcSaveDefinitionRequest == nil {
+		return localVarReturnValue, nil, reportError("registrySvcSaveDefinitionRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1729,7 +1775,7 @@ func (a *RegistrySvcAPIService) SaveDefinitionExecute(r ApiSaveDefinitionRequest
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.registrySvcSaveDefinitionRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {

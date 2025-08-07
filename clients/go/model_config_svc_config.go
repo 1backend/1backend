@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -56,7 +56,23 @@ func NewConfigSvcConfigWithDefaults() *ConfigSvcConfig {
 	return &this
 }
 
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *ConfigSvcConfig) GetApp() string {
+	if o == nil || IsNil(o.App) {
+		var ret string
+		return ret
+	}
+	return *o.App
+}
 
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcConfig) GetAppOk() (*string, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
 
 // HasApp returns a boolean if a field has been set.
 func (o *ConfigSvcConfig) HasApp() bool {
@@ -67,20 +83,124 @@ func (o *ConfigSvcConfig) HasApp() bool {
 	return false
 }
 
+// SetApp gets a reference to the given string and assigns it to the App field.
+func (o *ConfigSvcConfig) SetApp(v string) {
+	o.App = &v
+}
 
+// GetCreatedAt returns the CreatedAt field value
+func (o *ConfigSvcConfig) GetCreatedAt() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.CreatedAt
+}
 
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcConfig) GetCreatedAtOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CreatedAt, true
+}
 
+// SetCreatedAt sets field value
+func (o *ConfigSvcConfig) SetCreatedAt(v string) {
+	o.CreatedAt = v
+}
 
+// GetData returns the Data field value
+func (o *ConfigSvcConfig) GetData() map[string]interface{} {
+	if o == nil {
+		var ret map[string]interface{}
+		return ret
+	}
 
+	return o.Data
+}
 
+// GetDataOk returns a tuple with the Data field value
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcConfig) GetDataOk() (map[string]interface{}, bool) {
+	if o == nil {
+		return map[string]interface{}{}, false
+	}
+	return o.Data, true
+}
 
+// SetData sets field value
+func (o *ConfigSvcConfig) SetData(v map[string]interface{}) {
+	o.Data = v
+}
 
+// GetDataJson returns the DataJson field value
+func (o *ConfigSvcConfig) GetDataJson() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.DataJson
+}
 
+// GetDataJsonOk returns a tuple with the DataJson field value
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcConfig) GetDataJsonOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.DataJson, true
+}
 
+// SetDataJson sets field value
+func (o *ConfigSvcConfig) SetDataJson(v string) {
+	o.DataJson = v
+}
 
+// GetId returns the Id field value
+func (o *ConfigSvcConfig) GetId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcConfig) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Id, true
+}
+
+// SetId sets field value
+func (o *ConfigSvcConfig) SetId(v string) {
+	o.Id = v
+}
+
+// GetKey returns the Key field value if set, zero value otherwise.
+func (o *ConfigSvcConfig) GetKey() string {
+	if o == nil || IsNil(o.Key) {
+		var ret string
+		return ret
+	}
+	return *o.Key
+}
+
+// GetKeyOk returns a tuple with the Key field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcConfig) GetKeyOk() (*string, bool) {
+	if o == nil || IsNil(o.Key) {
+		return nil, false
+	}
+	return o.Key, true
+}
 
 // HasKey returns a boolean if a field has been set.
 func (o *ConfigSvcConfig) HasKey() bool {
@@ -91,9 +211,34 @@ func (o *ConfigSvcConfig) HasKey() bool {
 	return false
 }
 
+// SetKey gets a reference to the given string and assigns it to the Key field.
+func (o *ConfigSvcConfig) SetKey(v string) {
+	o.Key = &v
+}
 
+// GetUpdatedAt returns the UpdatedAt field value
+func (o *ConfigSvcConfig) GetUpdatedAt() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.UpdatedAt
+}
 
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcConfig) GetUpdatedAtOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.UpdatedAt, true
+}
+
+// SetUpdatedAt sets field value
+func (o *ConfigSvcConfig) SetUpdatedAt(v string) {
+	o.UpdatedAt = v
+}
 
 func (o ConfigSvcConfig) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

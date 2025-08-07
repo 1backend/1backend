@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -50,7 +50,23 @@ func NewUserSvcHasPermissionResponseWithDefaults() *UserSvcHasPermissionResponse
 	return &this
 }
 
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *UserSvcHasPermissionResponse) GetApp() string {
+	if o == nil || IsNil(o.App) {
+		var ret string
+		return ret
+	}
+	return *o.App
+}
 
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcHasPermissionResponse) GetAppOk() (*string, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
 
 // HasApp returns a boolean if a field has been set.
 func (o *UserSvcHasPermissionResponse) HasApp() bool {
@@ -61,15 +77,82 @@ func (o *UserSvcHasPermissionResponse) HasApp() bool {
 	return false
 }
 
+// SetApp gets a reference to the given string and assigns it to the App field.
+func (o *UserSvcHasPermissionResponse) SetApp(v string) {
+	o.App = &v
+}
 
+// GetAuthorized returns the Authorized field value
+func (o *UserSvcHasPermissionResponse) GetAuthorized() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
 
+	return o.Authorized
+}
 
+// GetAuthorizedOk returns a tuple with the Authorized field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcHasPermissionResponse) GetAuthorizedOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Authorized, true
+}
 
+// SetAuthorized sets field value
+func (o *UserSvcHasPermissionResponse) SetAuthorized(v bool) {
+	o.Authorized = v
+}
 
+// GetUntil returns the Until field value
+func (o *UserSvcHasPermissionResponse) GetUntil() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Until
+}
 
+// GetUntilOk returns a tuple with the Until field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcHasPermissionResponse) GetUntilOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Until, true
+}
 
+// SetUntil sets field value
+func (o *UserSvcHasPermissionResponse) SetUntil(v string) {
+	o.Until = v
+}
 
+// GetUser returns the User field value
+func (o *UserSvcHasPermissionResponse) GetUser() UserSvcUser {
+	if o == nil {
+		var ret UserSvcUser
+		return ret
+	}
+
+	return o.User
+}
+
+// GetUserOk returns a tuple with the User field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcHasPermissionResponse) GetUserOk() (*UserSvcUser, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.User, true
+}
+
+// SetUser sets field value
+func (o *UserSvcHasPermissionResponse) SetUser(v UserSvcUser) {
+	o.User = v
+}
 
 func (o UserSvcHasPermissionResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

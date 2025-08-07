@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -23,7 +23,7 @@ var _ MappedNullable = &RegistrySvcClient{}
 // RegistrySvcClient struct for RegistrySvcClient
 type RegistrySvcClient struct {
 	// Programming language.
-	Language RegistrySvcLanguage `json:"language"`
+	Language string `json:"language"`
 	// The URL of the client.
 	Url string `json:"url"`
 }
@@ -34,7 +34,7 @@ type _RegistrySvcClient RegistrySvcClient
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRegistrySvcClient(language RegistrySvcLanguage, url string) *RegistrySvcClient {
+func NewRegistrySvcClient(language string, url string) *RegistrySvcClient {
 	this := RegistrySvcClient{}
 	this.Language = language
 	this.Url = url
@@ -49,11 +49,53 @@ func NewRegistrySvcClientWithDefaults() *RegistrySvcClient {
 	return &this
 }
 
+// GetLanguage returns the Language field value
+func (o *RegistrySvcClient) GetLanguage() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Language
+}
 
+// GetLanguageOk returns a tuple with the Language field value
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcClient) GetLanguageOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Language, true
+}
 
+// SetLanguage sets field value
+func (o *RegistrySvcClient) SetLanguage(v string) {
+	o.Language = v
+}
 
+// GetUrl returns the Url field value
+func (o *RegistrySvcClient) GetUrl() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Url
+}
+
+// GetUrlOk returns a tuple with the Url field value
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcClient) GetUrlOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Url, true
+}
+
+// SetUrl sets field value
+func (o *RegistrySvcClient) SetUrl(v string) {
+	o.Url = v
+}
 
 func (o RegistrySvcClient) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

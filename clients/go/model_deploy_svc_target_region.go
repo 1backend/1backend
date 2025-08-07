@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -43,7 +43,23 @@ func NewDeploySvcTargetRegionWithDefaults() *DeploySvcTargetRegion {
 	return &this
 }
 
+// GetCluster returns the Cluster field value if set, zero value otherwise.
+func (o *DeploySvcTargetRegion) GetCluster() string {
+	if o == nil || IsNil(o.Cluster) {
+		var ret string
+		return ret
+	}
+	return *o.Cluster
+}
 
+// GetClusterOk returns a tuple with the Cluster field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DeploySvcTargetRegion) GetClusterOk() (*string, bool) {
+	if o == nil || IsNil(o.Cluster) {
+		return nil, false
+	}
+	return o.Cluster, true
+}
 
 // HasCluster returns a boolean if a field has been set.
 func (o *DeploySvcTargetRegion) HasCluster() bool {
@@ -54,8 +70,28 @@ func (o *DeploySvcTargetRegion) HasCluster() bool {
 	return false
 }
 
+// SetCluster gets a reference to the given string and assigns it to the Cluster field.
+func (o *DeploySvcTargetRegion) SetCluster(v string) {
+	o.Cluster = &v
+}
 
+// GetZone returns the Zone field value if set, zero value otherwise.
+func (o *DeploySvcTargetRegion) GetZone() string {
+	if o == nil || IsNil(o.Zone) {
+		var ret string
+		return ret
+	}
+	return *o.Zone
+}
 
+// GetZoneOk returns a tuple with the Zone field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DeploySvcTargetRegion) GetZoneOk() (*string, bool) {
+	if o == nil || IsNil(o.Zone) {
+		return nil, false
+	}
+	return o.Zone, true
+}
 
 // HasZone returns a boolean if a field has been set.
 func (o *DeploySvcTargetRegion) HasZone() bool {
@@ -66,6 +102,10 @@ func (o *DeploySvcTargetRegion) HasZone() bool {
 	return false
 }
 
+// SetZone gets a reference to the given string and assigns it to the Zone field.
+func (o *DeploySvcTargetRegion) SetZone(v string) {
+	o.Zone = &v
+}
 
 func (o DeploySvcTargetRegion) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

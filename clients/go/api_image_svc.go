@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -37,7 +37,7 @@ type ImageSvcAPI interface {
 
 	// ServeUploadedImageExecute executes the request
 	//  @return *os.File
-	ServeUploadedImageExecute(r ApiServeUploadedImageRequest) (*os.File, *http.Response, error)
+	ServeUploadedImageExecute(r ApiServeUploadedImageRequest) (**os.File, *http.Response, error)
 }
 
 // ImageSvcAPIService ImageSvcAPI service
@@ -49,6 +49,7 @@ type ApiServeUploadedImageRequest struct {
 	fileId string
 	width *int32
 	height *int32
+	body *map[string]interface{}
 }
 
 // Optional width to resize the image to
@@ -63,7 +64,12 @@ func (r ApiServeUploadedImageRequest) Height(height int32) ApiServeUploadedImage
 	return r
 }
 
-func (r ApiServeUploadedImageRequest) Execute() (*os.File, *http.Response, error) {
+func (r ApiServeUploadedImageRequest) Body(body map[string]interface{}) ApiServeUploadedImageRequest {
+	r.body = &body
+	return r
+}
+
+func (r ApiServeUploadedImageRequest) Execute() (**os.File, *http.Response, error) {
 	return r.ApiService.ServeUploadedImageExecute(r)
 }
 
@@ -86,12 +92,12 @@ func (a *ImageSvcAPIService) ServeUploadedImage(ctx context.Context, fileId stri
 
 // Execute executes the request
 //  @return *os.File
-func (a *ImageSvcAPIService) ServeUploadedImageExecute(r ApiServeUploadedImageRequest) (*os.File, *http.Response, error) {
+func (a *ImageSvcAPIService) ServeUploadedImageExecute(r ApiServeUploadedImageRequest) (**os.File, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *os.File
+		localVarReturnValue  **os.File
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ImageSvcAPIService.ServeUploadedImage")
@@ -107,13 +113,13 @@ func (a *ImageSvcAPIService) ServeUploadedImageExecute(r ApiServeUploadedImageRe
 	localVarFormParams := url.Values{}
 
 	if r.width != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "width", r.width, "", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "width", r.width, "form", "")
 	}
 	if r.height != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "height", r.height, "", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "height", r.height, "form", "")
 	}
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -122,13 +128,15 @@ func (a *ImageSvcAPIService) ServeUploadedImageExecute(r ApiServeUploadedImageRe
 	}
 
 	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/octet-stream"}
+	localVarHTTPHeaderAccepts := []string{"application/json", "application/octet-stream"}
 
 	// set Accept header
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err

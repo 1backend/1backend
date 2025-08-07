@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -46,7 +46,23 @@ func NewFileSvcDownloadFileRequestWithDefaults() *FileSvcDownloadFileRequest {
 	return &this
 }
 
+// GetFolderPath returns the FolderPath field value if set, zero value otherwise.
+func (o *FileSvcDownloadFileRequest) GetFolderPath() string {
+	if o == nil || IsNil(o.FolderPath) {
+		var ret string
+		return ret
+	}
+	return *o.FolderPath
+}
 
+// GetFolderPathOk returns a tuple with the FolderPath field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FileSvcDownloadFileRequest) GetFolderPathOk() (*string, bool) {
+	if o == nil || IsNil(o.FolderPath) {
+		return nil, false
+	}
+	return o.FolderPath, true
+}
 
 // HasFolderPath returns a boolean if a field has been set.
 func (o *FileSvcDownloadFileRequest) HasFolderPath() bool {
@@ -57,9 +73,34 @@ func (o *FileSvcDownloadFileRequest) HasFolderPath() bool {
 	return false
 }
 
+// SetFolderPath gets a reference to the given string and assigns it to the FolderPath field.
+func (o *FileSvcDownloadFileRequest) SetFolderPath(v string) {
+	o.FolderPath = &v
+}
 
+// GetUrl returns the Url field value
+func (o *FileSvcDownloadFileRequest) GetUrl() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Url
+}
 
+// GetUrlOk returns a tuple with the Url field value
+// and a boolean to check if the value has been set.
+func (o *FileSvcDownloadFileRequest) GetUrlOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Url, true
+}
+
+// SetUrl sets field value
+func (o *FileSvcDownloadFileRequest) SetUrl(v string) {
+	o.Url = v
+}
 
 func (o FileSvcDownloadFileRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

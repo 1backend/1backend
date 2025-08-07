@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewPolicySvcBlocklistParametersWithDefaults() *PolicySvcBlocklistParameters
 	return &this
 }
 
+// GetBlockedIPs returns the BlockedIPs field value if set, zero value otherwise.
+func (o *PolicySvcBlocklistParameters) GetBlockedIPs() []string {
+	if o == nil || IsNil(o.BlockedIPs) {
+		var ret []string
+		return ret
+	}
+	return o.BlockedIPs
+}
 
+// GetBlockedIPsOk returns a tuple with the BlockedIPs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PolicySvcBlocklistParameters) GetBlockedIPsOk() ([]string, bool) {
+	if o == nil || IsNil(o.BlockedIPs) {
+		return nil, false
+	}
+	return o.BlockedIPs, true
+}
 
 // HasBlockedIPs returns a boolean if a field has been set.
 func (o *PolicySvcBlocklistParameters) HasBlockedIPs() bool {
@@ -51,6 +67,10 @@ func (o *PolicySvcBlocklistParameters) HasBlockedIPs() bool {
 	return false
 }
 
+// SetBlockedIPs gets a reference to the given []string and assigns it to the BlockedIPs field.
+func (o *PolicySvcBlocklistParameters) SetBlockedIPs(v []string) {
+	o.BlockedIPs = v
+}
 
 func (o PolicySvcBlocklistParameters) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewChatSvcEventThreadUpdateWithDefaults() *ChatSvcEventThreadUpdate {
 	return &this
 }
 
+// GetThreadId returns the ThreadId field value if set, zero value otherwise.
+func (o *ChatSvcEventThreadUpdate) GetThreadId() string {
+	if o == nil || IsNil(o.ThreadId) {
+		var ret string
+		return ret
+	}
+	return *o.ThreadId
+}
 
+// GetThreadIdOk returns a tuple with the ThreadId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ChatSvcEventThreadUpdate) GetThreadIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ThreadId) {
+		return nil, false
+	}
+	return o.ThreadId, true
+}
 
 // HasThreadId returns a boolean if a field has been set.
 func (o *ChatSvcEventThreadUpdate) HasThreadId() bool {
@@ -51,6 +67,10 @@ func (o *ChatSvcEventThreadUpdate) HasThreadId() bool {
 	return false
 }
 
+// SetThreadId gets a reference to the given string and assigns it to the ThreadId field.
+func (o *ChatSvcEventThreadUpdate) SetThreadId(v string) {
+	o.ThreadId = &v
+}
 
 func (o ChatSvcEventThreadUpdate) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

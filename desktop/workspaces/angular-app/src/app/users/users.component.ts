@@ -35,12 +35,7 @@ import { ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { PageComponent } from '../components/page/page.component';
 import { IconMenuComponent } from '../components/icon-menu/icon-menu.component';
 import { Router, ActivatedRoute } from '@angular/router';
-import {
-	UserSvcUserRecord,
-	UserSvcListUsersRequest,
-	UserSvcListUsersOrderBy,
-	UserSvcOrderDirection,
-} from '@1backend/client';
+import { UserSvcUserRecord, UserSvcListUsersRequest } from '@1backend/client';
 
 interface UserVisible extends UserSvcUserRecord {
 	visible?: boolean;
@@ -133,8 +128,8 @@ export class UsersComponent {
 
 	public async fetchUsers() {
 		const request: UserSvcListUsersRequest = {
-			order: UserSvcOrderDirection.OrderDirectionDesc,
-			orderBy: UserSvcListUsersOrderBy.ListUsersOrderByCreatedAt,
+			order: "desc",
+			orderBy: "createdAt",
 		};
 
 		if (this.after) {

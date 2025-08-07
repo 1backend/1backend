@@ -205,10 +205,10 @@ func (mr *MockFileSvcAPIMockRecorder) ServeDownload(ctx, url any) *gomock.Call {
 }
 
 // ServeDownloadExecute mocks base method.
-func (m *MockFileSvcAPI) ServeDownloadExecute(r ApiServeDownloadRequest) (*os.File, *http.Response, error) {
+func (m *MockFileSvcAPI) ServeDownloadExecute(r ApiServeDownloadRequest) (**os.File, *http.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ServeDownloadExecute", r)
-	ret0, _ := ret[0].(*os.File)
+	ret0, _ := ret[0].(**os.File)
 	ret1, _ := ret[1].(*http.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
@@ -235,10 +235,10 @@ func (mr *MockFileSvcAPIMockRecorder) ServeUpload(ctx, fileId any) *gomock.Call 
 }
 
 // ServeUploadExecute mocks base method.
-func (m *MockFileSvcAPI) ServeUploadExecute(r ApiServeUploadRequest) (*os.File, *http.Response, error) {
+func (m *MockFileSvcAPI) ServeUploadExecute(r ApiServeUploadRequest) (**os.File, *http.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ServeUploadExecute", r)
-	ret0, _ := ret[0].(*os.File)
+	ret0, _ := ret[0].(**os.File)
 	ret1, _ := ret[1].(*http.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2

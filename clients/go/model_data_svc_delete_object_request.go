@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -41,7 +41,23 @@ func NewDataSvcDeleteObjectRequestWithDefaults() *DataSvcDeleteObjectRequest {
 	return &this
 }
 
+// GetFilters returns the Filters field value if set, zero value otherwise.
+func (o *DataSvcDeleteObjectRequest) GetFilters() []DatastoreFilter {
+	if o == nil || IsNil(o.Filters) {
+		var ret []DatastoreFilter
+		return ret
+	}
+	return o.Filters
+}
 
+// GetFiltersOk returns a tuple with the Filters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DataSvcDeleteObjectRequest) GetFiltersOk() ([]DatastoreFilter, bool) {
+	if o == nil || IsNil(o.Filters) {
+		return nil, false
+	}
+	return o.Filters, true
+}
 
 // HasFilters returns a boolean if a field has been set.
 func (o *DataSvcDeleteObjectRequest) HasFilters() bool {
@@ -52,8 +68,28 @@ func (o *DataSvcDeleteObjectRequest) HasFilters() bool {
 	return false
 }
 
+// SetFilters gets a reference to the given []DatastoreFilter and assigns it to the Filters field.
+func (o *DataSvcDeleteObjectRequest) SetFilters(v []DatastoreFilter) {
+	o.Filters = v
+}
 
+// GetTable returns the Table field value if set, zero value otherwise.
+func (o *DataSvcDeleteObjectRequest) GetTable() string {
+	if o == nil || IsNil(o.Table) {
+		var ret string
+		return ret
+	}
+	return *o.Table
+}
 
+// GetTableOk returns a tuple with the Table field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DataSvcDeleteObjectRequest) GetTableOk() (*string, bool) {
+	if o == nil || IsNil(o.Table) {
+		return nil, false
+	}
+	return o.Table, true
+}
 
 // HasTable returns a boolean if a field has been set.
 func (o *DataSvcDeleteObjectRequest) HasTable() bool {
@@ -64,6 +100,10 @@ func (o *DataSvcDeleteObjectRequest) HasTable() bool {
 	return false
 }
 
+// SetTable gets a reference to the given string and assigns it to the Table field.
+func (o *DataSvcDeleteObjectRequest) SetTable(v string) {
+	o.Table = &v
+}
 
 func (o DataSvcDeleteObjectRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

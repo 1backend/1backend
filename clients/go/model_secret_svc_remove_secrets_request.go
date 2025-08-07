@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -43,7 +43,23 @@ func NewSecretSvcRemoveSecretsRequestWithDefaults() *SecretSvcRemoveSecretsReque
 	return &this
 }
 
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *SecretSvcRemoveSecretsRequest) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
 
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecretSvcRemoveSecretsRequest) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
 
 // HasId returns a boolean if a field has been set.
 func (o *SecretSvcRemoveSecretsRequest) HasId() bool {
@@ -54,8 +70,28 @@ func (o *SecretSvcRemoveSecretsRequest) HasId() bool {
 	return false
 }
 
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *SecretSvcRemoveSecretsRequest) SetId(v string) {
+	o.Id = &v
+}
 
+// GetIds returns the Ids field value if set, zero value otherwise.
+func (o *SecretSvcRemoveSecretsRequest) GetIds() []string {
+	if o == nil || IsNil(o.Ids) {
+		var ret []string
+		return ret
+	}
+	return o.Ids
+}
 
+// GetIdsOk returns a tuple with the Ids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecretSvcRemoveSecretsRequest) GetIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Ids) {
+		return nil, false
+	}
+	return o.Ids, true
+}
 
 // HasIds returns a boolean if a field has been set.
 func (o *SecretSvcRemoveSecretsRequest) HasIds() bool {
@@ -66,8 +102,28 @@ func (o *SecretSvcRemoveSecretsRequest) HasIds() bool {
 	return false
 }
 
+// SetIds gets a reference to the given []string and assigns it to the Ids field.
+func (o *SecretSvcRemoveSecretsRequest) SetIds(v []string) {
+	o.Ids = v
+}
 
+// GetKey returns the Key field value if set, zero value otherwise.
+func (o *SecretSvcRemoveSecretsRequest) GetKey() string {
+	if o == nil || IsNil(o.Key) {
+		var ret string
+		return ret
+	}
+	return *o.Key
+}
 
+// GetKeyOk returns a tuple with the Key field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecretSvcRemoveSecretsRequest) GetKeyOk() (*string, bool) {
+	if o == nil || IsNil(o.Key) {
+		return nil, false
+	}
+	return o.Key, true
+}
 
 // HasKey returns a boolean if a field has been set.
 func (o *SecretSvcRemoveSecretsRequest) HasKey() bool {
@@ -78,8 +134,28 @@ func (o *SecretSvcRemoveSecretsRequest) HasKey() bool {
 	return false
 }
 
+// SetKey gets a reference to the given string and assigns it to the Key field.
+func (o *SecretSvcRemoveSecretsRequest) SetKey(v string) {
+	o.Key = &v
+}
 
+// GetKeys returns the Keys field value if set, zero value otherwise.
+func (o *SecretSvcRemoveSecretsRequest) GetKeys() []string {
+	if o == nil || IsNil(o.Keys) {
+		var ret []string
+		return ret
+	}
+	return o.Keys
+}
 
+// GetKeysOk returns a tuple with the Keys field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecretSvcRemoveSecretsRequest) GetKeysOk() ([]string, bool) {
+	if o == nil || IsNil(o.Keys) {
+		return nil, false
+	}
+	return o.Keys, true
+}
 
 // HasKeys returns a boolean if a field has been set.
 func (o *SecretSvcRemoveSecretsRequest) HasKeys() bool {
@@ -90,6 +166,10 @@ func (o *SecretSvcRemoveSecretsRequest) HasKeys() bool {
 	return false
 }
 
+// SetKeys gets a reference to the given []string and assigns it to the Keys field.
+func (o *SecretSvcRemoveSecretsRequest) SetKeys(v []string) {
+	o.Keys = v
+}
 
 func (o SecretSvcRemoveSecretsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

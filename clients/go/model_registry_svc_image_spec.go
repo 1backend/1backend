@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the RegistrySvcImageSpec type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &RegistrySvcImageSpec{}
 
-// RegistrySvcImageSpec struct for RegistrySvcImageSpec
+// RegistrySvcImageSpec Container specifications for Docker, K8s, etc. Use this to deploy already built images.
 type RegistrySvcImageSpec struct {
 	// InternalPorts are the ports the container will listen on internally
 	InternalPorts []int32 `json:"internalPorts"`
@@ -49,11 +49,53 @@ func NewRegistrySvcImageSpecWithDefaults() *RegistrySvcImageSpec {
 	return &this
 }
 
+// GetInternalPorts returns the InternalPorts field value
+func (o *RegistrySvcImageSpec) GetInternalPorts() []int32 {
+	if o == nil {
+		var ret []int32
+		return ret
+	}
 
+	return o.InternalPorts
+}
 
+// GetInternalPortsOk returns a tuple with the InternalPorts field value
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcImageSpec) GetInternalPortsOk() ([]int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.InternalPorts, true
+}
 
+// SetInternalPorts sets field value
+func (o *RegistrySvcImageSpec) SetInternalPorts(v []int32) {
+	o.InternalPorts = v
+}
 
+// GetName returns the Name field value
+func (o *RegistrySvcImageSpec) GetName() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcImageSpec) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Name, true
+}
+
+// SetName sets field value
+func (o *RegistrySvcImageSpec) SetName(v string) {
+	o.Name = v
+}
 
 func (o RegistrySvcImageSpec) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

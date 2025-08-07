@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewProxySvcListCertsResponseWithDefaults() *ProxySvcListCertsResponse {
 	return &this
 }
 
+// GetCerts returns the Certs field value if set, zero value otherwise.
+func (o *ProxySvcListCertsResponse) GetCerts() []ProxySvcCert {
+	if o == nil || IsNil(o.Certs) {
+		var ret []ProxySvcCert
+		return ret
+	}
+	return o.Certs
+}
 
+// GetCertsOk returns a tuple with the Certs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ProxySvcListCertsResponse) GetCertsOk() ([]ProxySvcCert, bool) {
+	if o == nil || IsNil(o.Certs) {
+		return nil, false
+	}
+	return o.Certs, true
+}
 
 // HasCerts returns a boolean if a field has been set.
 func (o *ProxySvcListCertsResponse) HasCerts() bool {
@@ -51,6 +67,10 @@ func (o *ProxySvcListCertsResponse) HasCerts() bool {
 	return false
 }
 
+// SetCerts gets a reference to the given []ProxySvcCert and assigns it to the Certs field.
+func (o *ProxySvcListCertsResponse) SetCerts(v []ProxySvcCert) {
+	o.Certs = v
+}
 
 func (o ProxySvcListCertsResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

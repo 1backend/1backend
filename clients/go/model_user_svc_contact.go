@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -63,10 +63,47 @@ func NewUserSvcContactWithDefaults() *UserSvcContact {
 	return &this
 }
 
+// GetCreatedAt returns the CreatedAt field value
+func (o *UserSvcContact) GetCreatedAt() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.CreatedAt
+}
 
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcContact) GetCreatedAtOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CreatedAt, true
+}
 
+// SetCreatedAt sets field value
+func (o *UserSvcContact) SetCreatedAt(v string) {
+	o.CreatedAt = v
+}
 
+// GetDeletedAt returns the DeletedAt field value if set, zero value otherwise.
+func (o *UserSvcContact) GetDeletedAt() string {
+	if o == nil || IsNil(o.DeletedAt) {
+		var ret string
+		return ret
+	}
+	return *o.DeletedAt
+}
+
+// GetDeletedAtOk returns a tuple with the DeletedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcContact) GetDeletedAtOk() (*string, bool) {
+	if o == nil || IsNil(o.DeletedAt) {
+		return nil, false
+	}
+	return o.DeletedAt, true
+}
 
 // HasDeletedAt returns a boolean if a field has been set.
 func (o *UserSvcContact) HasDeletedAt() bool {
@@ -77,14 +114,76 @@ func (o *UserSvcContact) HasDeletedAt() bool {
 	return false
 }
 
+// SetDeletedAt gets a reference to the given string and assigns it to the DeletedAt field.
+func (o *UserSvcContact) SetDeletedAt(v string) {
+	o.DeletedAt = &v
+}
 
+// GetHandle returns the Handle field value
+func (o *UserSvcContact) GetHandle() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Handle
+}
 
+// GetHandleOk returns a tuple with the Handle field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcContact) GetHandleOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Handle, true
+}
 
+// SetHandle sets field value
+func (o *UserSvcContact) SetHandle(v string) {
+	o.Handle = v
+}
 
+// GetId returns the Id field value
+func (o *UserSvcContact) GetId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Id
+}
 
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcContact) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Id, true
+}
 
+// SetId sets field value
+func (o *UserSvcContact) SetId(v string) {
+	o.Id = v
+}
+
+// GetIsPrimary returns the IsPrimary field value if set, zero value otherwise.
+func (o *UserSvcContact) GetIsPrimary() bool {
+	if o == nil || IsNil(o.IsPrimary) {
+		var ret bool
+		return ret
+	}
+	return *o.IsPrimary
+}
+
+// GetIsPrimaryOk returns a tuple with the IsPrimary field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcContact) GetIsPrimaryOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsPrimary) {
+		return nil, false
+	}
+	return o.IsPrimary, true
+}
 
 // HasIsPrimary returns a boolean if a field has been set.
 func (o *UserSvcContact) HasIsPrimary() bool {
@@ -95,17 +194,100 @@ func (o *UserSvcContact) HasIsPrimary() bool {
 	return false
 }
 
+// SetIsPrimary gets a reference to the given bool and assigns it to the IsPrimary field.
+func (o *UserSvcContact) SetIsPrimary(v bool) {
+	o.IsPrimary = &v
+}
 
+// GetPlatform returns the Platform field value
+func (o *UserSvcContact) GetPlatform() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Platform
+}
 
+// GetPlatformOk returns a tuple with the Platform field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcContact) GetPlatformOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Platform, true
+}
 
+// SetPlatform sets field value
+func (o *UserSvcContact) SetPlatform(v string) {
+	o.Platform = v
+}
 
+// GetUpdatedAt returns the UpdatedAt field value
+func (o *UserSvcContact) GetUpdatedAt() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.UpdatedAt
+}
 
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcContact) GetUpdatedAtOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.UpdatedAt, true
+}
 
+// SetUpdatedAt sets field value
+func (o *UserSvcContact) SetUpdatedAt(v string) {
+	o.UpdatedAt = v
+}
 
+// GetUserId returns the UserId field value
+func (o *UserSvcContact) GetUserId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.UserId
+}
 
+// GetUserIdOk returns a tuple with the UserId field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcContact) GetUserIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.UserId, true
+}
+
+// SetUserId sets field value
+func (o *UserSvcContact) SetUserId(v string) {
+	o.UserId = v
+}
+
+// GetVerified returns the Verified field value if set, zero value otherwise.
+func (o *UserSvcContact) GetVerified() bool {
+	if o == nil || IsNil(o.Verified) {
+		var ret bool
+		return ret
+	}
+	return *o.Verified
+}
+
+// GetVerifiedOk returns a tuple with the Verified field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcContact) GetVerifiedOk() (*bool, bool) {
+	if o == nil || IsNil(o.Verified) {
+		return nil, false
+	}
+	return o.Verified, true
+}
 
 // HasVerified returns a boolean if a field has been set.
 func (o *UserSvcContact) HasVerified() bool {
@@ -116,6 +298,10 @@ func (o *UserSvcContact) HasVerified() bool {
 	return false
 }
 
+// SetVerified gets a reference to the given bool and assigns it to the Verified field.
+func (o *UserSvcContact) SetVerified(v bool) {
+	o.Verified = &v
+}
 
 func (o UserSvcContact) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

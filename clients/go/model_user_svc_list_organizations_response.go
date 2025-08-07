@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewUserSvcListOrganizationsResponseWithDefaults() *UserSvcListOrganizations
 	return &this
 }
 
+// GetOrganizations returns the Organizations field value if set, zero value otherwise.
+func (o *UserSvcListOrganizationsResponse) GetOrganizations() []UserSvcOrganization {
+	if o == nil || IsNil(o.Organizations) {
+		var ret []UserSvcOrganization
+		return ret
+	}
+	return o.Organizations
+}
 
+// GetOrganizationsOk returns a tuple with the Organizations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListOrganizationsResponse) GetOrganizationsOk() ([]UserSvcOrganization, bool) {
+	if o == nil || IsNil(o.Organizations) {
+		return nil, false
+	}
+	return o.Organizations, true
+}
 
 // HasOrganizations returns a boolean if a field has been set.
 func (o *UserSvcListOrganizationsResponse) HasOrganizations() bool {
@@ -51,6 +67,10 @@ func (o *UserSvcListOrganizationsResponse) HasOrganizations() bool {
 	return false
 }
 
+// SetOrganizations gets a reference to the given []UserSvcOrganization and assigns it to the Organizations field.
+func (o *UserSvcListOrganizationsResponse) SetOrganizations(v []UserSvcOrganization) {
+	o.Organizations = v
+}
 
 func (o UserSvcListOrganizationsResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

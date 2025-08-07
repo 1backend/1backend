@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -49,11 +49,53 @@ func NewContainerSvcEnvVarWithDefaults() *ContainerSvcEnvVar {
 	return &this
 }
 
+// GetKey returns the Key field value
+func (o *ContainerSvcEnvVar) GetKey() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Key
+}
 
+// GetKeyOk returns a tuple with the Key field value
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcEnvVar) GetKeyOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Key, true
+}
 
+// SetKey sets field value
+func (o *ContainerSvcEnvVar) SetKey(v string) {
+	o.Key = v
+}
 
+// GetValue returns the Value field value
+func (o *ContainerSvcEnvVar) GetValue() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Value
+}
+
+// GetValueOk returns a tuple with the Value field value
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcEnvVar) GetValueOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Value, true
+}
+
+// SetValue sets field value
+func (o *ContainerSvcEnvVar) SetValue(v string) {
+	o.Value = v
+}
 
 func (o ContainerSvcEnvVar) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

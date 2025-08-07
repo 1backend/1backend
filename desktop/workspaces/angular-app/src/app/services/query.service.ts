@@ -102,13 +102,13 @@ export class QueryParser {
 		if (value.startsWith('~')) {
 			return {
 				fields: [fieldName],
-				jsonValues: JSON.stringify([value.slice(1)]),
+				values: [value.slice(1)],
 				op: 'containsSubstring',
 			};
 		} else if (value.startsWith('^')) {
 			return {
 				fields: [fieldName],
-				jsonValues: JSON.stringify([value.slice(1)]),
+				values: [value.slice(1)],
 				op: 'containsSubstring',
 			};
 		} else {
@@ -116,10 +116,7 @@ export class QueryParser {
 
 			return {
 				fields: [fieldName],
-				jsonValues: JSON.stringify([
-					Number.isNaN(numericValue) ? value : numericValue
-				]
-				),
+				values: [Number.isNaN(numericValue) ? value : numericValue],
 				op: 'equals',
 			};
 		}

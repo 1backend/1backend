@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -77,12 +77,12 @@ type ConfigSvcAPIService service
 type ApiListConfigsRequest struct {
 	ctx context.Context
 	ApiService ConfigSvcAPI
-	body *ConfigSvcListConfigsRequest
+	configSvcListConfigsRequest *ConfigSvcListConfigsRequest
 }
 
 // List Configs Request
-func (r ApiListConfigsRequest) Body(body ConfigSvcListConfigsRequest) ApiListConfigsRequest {
-	r.body = &body
+func (r ApiListConfigsRequest) ConfigSvcListConfigsRequest(configSvcListConfigsRequest ConfigSvcListConfigsRequest) ApiListConfigsRequest {
+	r.configSvcListConfigsRequest = &configSvcListConfigsRequest
 	return r
 }
 
@@ -151,7 +151,7 @@ func (a *ConfigSvcAPIService) ListConfigsExecute(r ApiListConfigsRequest) (*Conf
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.configSvcListConfigsRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -213,12 +213,12 @@ func (a *ConfigSvcAPIService) ListConfigsExecute(r ApiListConfigsRequest) (*Conf
 type ApiSaveConfigRequest struct {
 	ctx context.Context
 	ApiService ConfigSvcAPI
-	body *ConfigSvcSaveConfigRequest
+	configSvcSaveConfigRequest *ConfigSvcSaveConfigRequest
 }
 
 // Save Config Request
-func (r ApiSaveConfigRequest) Body(body ConfigSvcSaveConfigRequest) ApiSaveConfigRequest {
-	r.body = &body
+func (r ApiSaveConfigRequest) ConfigSvcSaveConfigRequest(configSvcSaveConfigRequest ConfigSvcSaveConfigRequest) ApiSaveConfigRequest {
+	r.configSvcSaveConfigRequest = &configSvcSaveConfigRequest
 	return r
 }
 
@@ -274,8 +274,8 @@ func (a *ConfigSvcAPIService) SaveConfigExecute(r ApiSaveConfigRequest) (map[str
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.configSvcSaveConfigRequest == nil {
+		return localVarReturnValue, nil, reportError("configSvcSaveConfigRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -296,7 +296,7 @@ func (a *ConfigSvcAPIService) SaveConfigExecute(r ApiSaveConfigRequest) (map[str
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.configSvcSaveConfigRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {

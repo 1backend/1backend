@@ -5,7 +5,7 @@ description: "Retrieve information about the Container host"
 sidebar_label: "Get Container Host"
 hide_title: true
 hide_table_of_contents: true
-api: eJy9VMFu1DAQ/RVrzmmyS0GgnCgIlQokEIXTsodZZ5q4dWxjO7sskf8dTZxtt6U9wIHLbmQ/z7x582ZGaChIr1xU1kANXyh6RVsSylxZ3yMfC9zYIYrYkXhrTURlyIvOhggFWEd+Al00UENL8X0+9xScNYEC1CM8Wyz4736mTx+gAGlNJBP5Fp3TSk6xquvAkBGC7KhH/nKeM0WVA07J6xHi3hHUEKJXpoWUOO+PQXlqoF5l1Lo4oOzmmmSElBj3fLH8k9JgcIid9eoXNf9Ojry3/nF2jzF58Zg4ykTyBrUI5LfkRY75fyilAgLJwau4h3o1whtCT/5siB3Uq3ViQbENLPCdGy63kpXuKXZ2NgIU4JDfQCUPuJOwldXsnFxZmFIMXjOu0lai5vt6uTw9fQmc7MDlkmvL5Rwzeqjc170j8X2GfAdxZbW2O2rEZi9QBIeSBJpGRHtDRqDMdhFX3vaTw7+FXI74aFtlBJnGWWViCQUojt8RNsStMNizcGezY6ZGwK2e6NQH2k8K8yQxz0kFOfWOelRccUBN4XVQph00Rm9NKW1/FPvzhbgcnLOeBcsidTG6uqqWG5Q3ZBp+UEEqHqhwdnFiMKotiV5Jb1lrJSkIpzHyXHM5WkkygZjPId/5549ie1ou7mULdVXtdruyNUNpfVvN70KFrdMnp+Wi7GKvmUMk34dPV5c52x3ZsMO2JV8qW02QinVSUTNk+SYXAgWwHTL9RfmqXJx4ueSozobYoznieU7xaBPNG+eeAOPdpPz1Sps7GOlnrJxGZZjEJMc4O3oF9xwNxe2qyYtpBeO4wUDfvE6Jj38M5HmY1gVs0SvccOmrdSoOduIhuKE990BKckxji3rITnow5+l40M7ffYUCcB6FO/NxsOLwwdEPV2Z/FPuheTMF/k3FE0/GMVs7pVt8vnryxe3EZDTruU4p/QavkDk4
+api: eJy1Vdtu2zgQ/RVinmXJblp0oadNiiANWqBF0j65xmJMjSU2FMmQlF2voH9fjChfku0WWxR9EQRyLmfOnBn2UFGQXrmorIES7ih6RVsSymysb5GPBa5tF0VsSLyxJqIy5EVjQ4QMrCM/Gt1WUEJN8W069/TYUYhXttpD2YO0JpKJ/IvOaSVHn+Jr4KQ9BNlQi/wX946gBLv+SjLCMAwDxwrOmkCBDV7M5z8V0HmGGFXyHlGf0oTolakhJXnslKcKymWyWmXPwGQQVdR8IA8s/BW2Mr9JRd9NKGHE/JTVD+9gyODlfPEL0Ml767+P/f/hvOYAP0LZGexiY736myrG++qXqP79eJWJ5A1qEchvyYuUke0Cyc6ruIdy2cMVoSd/2cUGyuVq4L5iHbjPJzXfbyU3vKXY2EnIkIFD9oHiiGsWtrKYlJ+ShjFF5zWUoK1EzbflYnFx8boAznWAcs80JWbOAfXPavq0dyS+TCZfQGys1nZHlVjvBYrgUJJAU4loH8gIlEm0YuNtOw7o55CqEe9trYwgUzmrTMwhA8XxG8KKPGRgsGXKL6eOjz2FY2vQqXe0H7nkPt+dpvn6G7aOu9UPHHJjDxJBOUqEWlRMRkBN4c+gTN1pjN6aXNr2LO/HW3HfOWc9c5n4a2J0ZVEs1igfyFTsUMC/un55OzMY1ZZEq6S33AYlKQinMfLK4lK1ksSiKftjvpuP78X2Ip8/yRbKotjtdnltutz6upj8QoG107OLfJ43sdWMIZJvw4fNfcp2Aht2WNfkc2WL0aQ4k/PiKhUCGbBSEvx5/kc+n3n5gqM6G2KL5gznDcWzJTst0ycEnA3kT2/rqbuRvsXCaVSGQYx09JPYl/BE7JAdl2FanUvo+zUG+uz1MPDxY0ee52yVwRa9wjWXvlwN2UFqPB8PtIdyHDcyccYaZ05Qd0lrz5bKkB08LqUkF39oez61N9efIIP19Oa0tmIXjzt+j3AHJYwPFjuPczie9aDR1B3WbJtCsupxms7TPDCi7PDDRR2uzP4M4PN5SnXwl6v6rkvfp2kbhqN9uvpPj+MQJ2tu42oYhn8Ax1qxsw==
 sidebar_class_name: "get api-method"
 info_path: docs/1backend-api/1-backend
 custom_edit_url: null
@@ -38,6 +38,14 @@ import Heading from "@theme/Heading";
 
 Retrieve information about the Container host
 
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
 <ParamsDetails
   parameters={undefined}
 >
@@ -46,7 +54,7 @@ Retrieve information about the Container host
 
 <RequestSchema
   title={"Body"}
-  body={undefined}
+  body={{"content":{"application/json":{"schema":{"type":"object"}}}}}
 >
   
 </RequestSchema>
@@ -54,7 +62,7 @@ Retrieve information about the Container host
 <StatusCodes
   id={undefined}
   label={undefined}
-  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"host":{"type":"string"}},"required":["host"],"type":"object"}}}},"401":{"description":"unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"internal server error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+  responses={{"200":{"content":{"application/json":{"schema":{"properties":{"host":{"type":"string"}},"required":["host"],"type":"object","title":"container_svc.GetHostResponse"}}},"description":"OK"},"401":{"content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object","title":"container_svc.ErrorResponse"}}},"description":"unauthorized"},"500":{"content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object","title":"container_svc.ErrorResponse"}}},"description":"internal server error"}}}
 >
   
 </StatusCodes>

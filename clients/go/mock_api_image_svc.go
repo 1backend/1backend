@@ -55,10 +55,10 @@ func (mr *MockImageSvcAPIMockRecorder) ServeUploadedImage(ctx, fileId any) *gomo
 }
 
 // ServeUploadedImageExecute mocks base method.
-func (m *MockImageSvcAPI) ServeUploadedImageExecute(r ApiServeUploadedImageRequest) (*os.File, *http.Response, error) {
+func (m *MockImageSvcAPI) ServeUploadedImageExecute(r ApiServeUploadedImageRequest) (**os.File, *http.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ServeUploadedImageExecute", r)
-	ret0, _ := ret[0].(*os.File)
+	ret0, _ := ret[0].(**os.File)
 	ret1, _ := ret[1].(*http.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2

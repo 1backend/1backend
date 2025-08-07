@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -181,12 +181,12 @@ type ContainerSvcAPIService service
 type ApiBuildImageRequest struct {
 	ctx context.Context
 	ApiService ContainerSvcAPI
-	body *ContainerSvcBuildImageRequest
+	containerSvcBuildImageRequest *ContainerSvcBuildImageRequest
 }
 
 // Build Image Request
-func (r ApiBuildImageRequest) Body(body ContainerSvcBuildImageRequest) ApiBuildImageRequest {
-	r.body = &body
+func (r ApiBuildImageRequest) ContainerSvcBuildImageRequest(containerSvcBuildImageRequest ContainerSvcBuildImageRequest) ApiBuildImageRequest {
+	r.containerSvcBuildImageRequest = &containerSvcBuildImageRequest
 	return r
 }
 
@@ -231,8 +231,8 @@ func (a *ContainerSvcAPIService) BuildImageExecute(r ApiBuildImageRequest) (map[
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.containerSvcBuildImageRequest == nil {
+		return localVarReturnValue, nil, reportError("containerSvcBuildImageRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -253,7 +253,7 @@ func (a *ContainerSvcAPIService) BuildImageExecute(r ApiBuildImageRequest) (map[
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.containerSvcBuildImageRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -340,6 +340,12 @@ func (a *ContainerSvcAPIService) BuildImageExecute(r ApiBuildImageRequest) (map[
 type ApiContainerDaemonInfoRequest struct {
 	ctx context.Context
 	ApiService ContainerSvcAPI
+	body *map[string]interface{}
+}
+
+func (r ApiContainerDaemonInfoRequest) Body(body map[string]interface{}) ApiContainerDaemonInfoRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiContainerDaemonInfoRequest) Execute() (*ContainerSvcDaemonInfoResponse, *http.Response, error) {
@@ -383,7 +389,7 @@ func (a *ContainerSvcAPIService) ContainerDaemonInfoExecute(r ApiContainerDaemon
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -399,6 +405,8 @@ func (a *ContainerSvcAPIService) ContainerDaemonInfoExecute(r ApiContainerDaemon
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -476,6 +484,7 @@ type ApiContainerIsRunningRequest struct {
 	ApiService ContainerSvcAPI
 	hash *string
 	name *string
+	body *map[string]interface{}
 }
 
 // Container Hash
@@ -487,6 +496,11 @@ func (r ApiContainerIsRunningRequest) Hash(hash string) ApiContainerIsRunningReq
 // Container Name
 func (r ApiContainerIsRunningRequest) Name(name string) ApiContainerIsRunningRequest {
 	r.name = &name
+	return r
+}
+
+func (r ApiContainerIsRunningRequest) Body(body map[string]interface{}) ApiContainerIsRunningRequest {
+	r.body = &body
 	return r
 }
 
@@ -531,13 +545,13 @@ func (a *ContainerSvcAPIService) ContainerIsRunningExecute(r ApiContainerIsRunni
 	localVarFormParams := url.Values{}
 
 	if r.hash != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "hash", r.hash, "", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "hash", r.hash, "form", "")
 	}
 	if r.name != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "name", r.name, "", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "name", r.name, "form", "")
 	}
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -553,6 +567,8 @@ func (a *ContainerSvcAPIService) ContainerIsRunningExecute(r ApiContainerIsRunni
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -642,6 +658,7 @@ type ApiContainerSummaryRequest struct {
 	hash *string
 	name *string
 	lines *int32
+	body *map[string]interface{}
 }
 
 // Container Hash
@@ -659,6 +676,11 @@ func (r ApiContainerSummaryRequest) Name(name string) ApiContainerSummaryRequest
 // Number of Lines
 func (r ApiContainerSummaryRequest) Lines(lines int32) ApiContainerSummaryRequest {
 	r.lines = &lines
+	return r
+}
+
+func (r ApiContainerSummaryRequest) Body(body map[string]interface{}) ApiContainerSummaryRequest {
+	r.body = &body
 	return r
 }
 
@@ -703,16 +725,16 @@ func (a *ContainerSvcAPIService) ContainerSummaryExecute(r ApiContainerSummaryRe
 	localVarFormParams := url.Values{}
 
 	if r.hash != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "hash", r.hash, "", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "hash", r.hash, "form", "")
 	}
 	if r.name != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "name", r.name, "", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "name", r.name, "form", "")
 	}
 	if r.lines != nil {
-		parameterAddToHeaderOrQuery(localVarQueryParams, "lines", r.lines, "", "")
+		parameterAddToHeaderOrQuery(localVarQueryParams, "lines", r.lines, "form", "")
 	}
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -728,6 +750,8 @@ func (a *ContainerSvcAPIService) ContainerSummaryExecute(r ApiContainerSummaryRe
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -814,6 +838,12 @@ func (a *ContainerSvcAPIService) ContainerSummaryExecute(r ApiContainerSummaryRe
 type ApiGetHostRequest struct {
 	ctx context.Context
 	ApiService ContainerSvcAPI
+	body *map[string]interface{}
+}
+
+func (r ApiGetHostRequest) Body(body map[string]interface{}) ApiGetHostRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiGetHostRequest) Execute() (*ContainerSvcGetHostResponse, *http.Response, error) {
@@ -857,7 +887,7 @@ func (a *ContainerSvcAPIService) GetHostExecute(r ApiGetHostRequest) (*Container
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -873,6 +903,8 @@ func (a *ContainerSvcAPIService) GetHostExecute(r ApiGetHostRequest) (*Container
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -949,6 +981,12 @@ type ApiImagePullableRequest struct {
 	ctx context.Context
 	ApiService ContainerSvcAPI
 	imageName string
+	body *map[string]interface{}
+}
+
+func (r ApiImagePullableRequest) Body(body map[string]interface{}) ApiImagePullableRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiImagePullableRequest) Execute() (*ContainerSvcImagePullableResponse, *http.Response, error) {
@@ -995,7 +1033,7 @@ func (a *ContainerSvcAPIService) ImagePullableExecute(r ApiImagePullableRequest)
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -1011,6 +1049,8 @@ func (a *ContainerSvcAPIService) ImagePullableExecute(r ApiImagePullableRequest)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -1097,12 +1137,12 @@ func (a *ContainerSvcAPIService) ImagePullableExecute(r ApiImagePullableRequest)
 type ApiListContainerLogsRequest struct {
 	ctx context.Context
 	ApiService ContainerSvcAPI
-	body *ContainerSvcListLogsRequest
+	containerSvcListLogsRequest *ContainerSvcListLogsRequest
 }
 
 // List Logs Request
-func (r ApiListContainerLogsRequest) Body(body ContainerSvcListLogsRequest) ApiListContainerLogsRequest {
-	r.body = &body
+func (r ApiListContainerLogsRequest) ContainerSvcListLogsRequest(containerSvcListLogsRequest ContainerSvcListLogsRequest) ApiListContainerLogsRequest {
+	r.containerSvcListLogsRequest = &containerSvcListLogsRequest
 	return r
 }
 
@@ -1147,8 +1187,8 @@ func (a *ContainerSvcAPIService) ListContainerLogsExecute(r ApiListContainerLogs
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.containerSvcListLogsRequest == nil {
+		return localVarReturnValue, nil, reportError("containerSvcListLogsRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1169,7 +1209,7 @@ func (a *ContainerSvcAPIService) ListContainerLogsExecute(r ApiListContainerLogs
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.containerSvcListLogsRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -1256,12 +1296,12 @@ func (a *ContainerSvcAPIService) ListContainerLogsExecute(r ApiListContainerLogs
 type ApiListContainersRequest struct {
 	ctx context.Context
 	ApiService ContainerSvcAPI
-	body *ContainerSvcListContainersRequest
+	containerSvcListContainersRequest *ContainerSvcListContainersRequest
 }
 
 // List Containers Request
-func (r ApiListContainersRequest) Body(body ContainerSvcListContainersRequest) ApiListContainersRequest {
-	r.body = &body
+func (r ApiListContainersRequest) ContainerSvcListContainersRequest(containerSvcListContainersRequest ContainerSvcListContainersRequest) ApiListContainersRequest {
+	r.containerSvcListContainersRequest = &containerSvcListContainersRequest
 	return r
 }
 
@@ -1306,8 +1346,8 @@ func (a *ContainerSvcAPIService) ListContainersExecute(r ApiListContainersReques
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.containerSvcListContainersRequest == nil {
+		return localVarReturnValue, nil, reportError("containerSvcListContainersRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1328,7 +1368,7 @@ func (a *ContainerSvcAPIService) ListContainersExecute(r ApiListContainersReques
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.containerSvcListContainersRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -1415,12 +1455,12 @@ func (a *ContainerSvcAPIService) ListContainersExecute(r ApiListContainersReques
 type ApiRunContainerRequest struct {
 	ctx context.Context
 	ApiService ContainerSvcAPI
-	body *ContainerSvcRunContainerRequest
+	containerSvcRunContainerRequest *ContainerSvcRunContainerRequest
 }
 
 // Run Container Request
-func (r ApiRunContainerRequest) Body(body ContainerSvcRunContainerRequest) ApiRunContainerRequest {
-	r.body = &body
+func (r ApiRunContainerRequest) ContainerSvcRunContainerRequest(containerSvcRunContainerRequest ContainerSvcRunContainerRequest) ApiRunContainerRequest {
+	r.containerSvcRunContainerRequest = &containerSvcRunContainerRequest
 	return r
 }
 
@@ -1465,8 +1505,8 @@ func (a *ContainerSvcAPIService) RunContainerExecute(r ApiRunContainerRequest) (
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.containerSvcRunContainerRequest == nil {
+		return localVarReturnValue, nil, reportError("containerSvcRunContainerRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1487,7 +1527,7 @@ func (a *ContainerSvcAPIService) RunContainerExecute(r ApiRunContainerRequest) (
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.containerSvcRunContainerRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -1574,12 +1614,12 @@ func (a *ContainerSvcAPIService) RunContainerExecute(r ApiRunContainerRequest) (
 type ApiStopContainerRequest struct {
 	ctx context.Context
 	ApiService ContainerSvcAPI
-	body *ContainerSvcStopContainerRequest
+	containerSvcStopContainerRequest *ContainerSvcStopContainerRequest
 }
 
 // Stop Container Request
-func (r ApiStopContainerRequest) Body(body ContainerSvcStopContainerRequest) ApiStopContainerRequest {
-	r.body = &body
+func (r ApiStopContainerRequest) ContainerSvcStopContainerRequest(containerSvcStopContainerRequest ContainerSvcStopContainerRequest) ApiStopContainerRequest {
+	r.containerSvcStopContainerRequest = &containerSvcStopContainerRequest
 	return r
 }
 
@@ -1624,8 +1664,8 @@ func (a *ContainerSvcAPIService) StopContainerExecute(r ApiStopContainerRequest)
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.containerSvcStopContainerRequest == nil {
+		return localVarReturnValue, nil, reportError("containerSvcStopContainerRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1646,7 +1686,7 @@ func (a *ContainerSvcAPIService) StopContainerExecute(r ApiStopContainerRequest)
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.containerSvcStopContainerRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {

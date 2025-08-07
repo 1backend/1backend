@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewUserSvcSavePermitsRequestWithDefaults() *UserSvcSavePermitsRequest {
 	return &this
 }
 
+// GetPermits returns the Permits field value if set, zero value otherwise.
+func (o *UserSvcSavePermitsRequest) GetPermits() []UserSvcPermitInput {
+	if o == nil || IsNil(o.Permits) {
+		var ret []UserSvcPermitInput
+		return ret
+	}
+	return o.Permits
+}
 
+// GetPermitsOk returns a tuple with the Permits field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcSavePermitsRequest) GetPermitsOk() ([]UserSvcPermitInput, bool) {
+	if o == nil || IsNil(o.Permits) {
+		return nil, false
+	}
+	return o.Permits, true
+}
 
 // HasPermits returns a boolean if a field has been set.
 func (o *UserSvcSavePermitsRequest) HasPermits() bool {
@@ -51,6 +67,10 @@ func (o *UserSvcSavePermitsRequest) HasPermits() bool {
 	return false
 }
 
+// SetPermits gets a reference to the given []UserSvcPermitInput and assigns it to the Permits field.
+func (o *UserSvcSavePermitsRequest) SetPermits(v []UserSvcPermitInput) {
+	o.Permits = v
+}
 
 func (o UserSvcSavePermitsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

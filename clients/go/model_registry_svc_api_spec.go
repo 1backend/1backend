@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -21,7 +21,7 @@ var _ MappedNullable = &RegistrySvcAPISpec{}
 // RegistrySvcAPISpec struct for RegistrySvcAPISpec
 type RegistrySvcAPISpec struct {
 	// Additional metadata about the API (e.g., author, license, etc.)
-	Metadata *map[string]string `json:"metadata,omitempty"`
+	Metadata map[string]string `json:"metadata,omitempty"`
 	// Protocol type (e.g., OpenAPI, Swagger, etc.)
 	ProtocolType *string `json:"protocolType,omitempty"`
 	// URL to the OpenAPI file or other API definition
@@ -47,7 +47,23 @@ func NewRegistrySvcAPISpecWithDefaults() *RegistrySvcAPISpec {
 	return &this
 }
 
+// GetMetadata returns the Metadata field value if set, zero value otherwise.
+func (o *RegistrySvcAPISpec) GetMetadata() map[string]string {
+	if o == nil || IsNil(o.Metadata) {
+		var ret map[string]string
+		return ret
+	}
+	return o.Metadata
+}
 
+// GetMetadataOk returns a tuple with the Metadata field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcAPISpec) GetMetadataOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.Metadata) {
+		return map[string]string{}, false
+	}
+	return o.Metadata, true
+}
 
 // HasMetadata returns a boolean if a field has been set.
 func (o *RegistrySvcAPISpec) HasMetadata() bool {
@@ -58,8 +74,28 @@ func (o *RegistrySvcAPISpec) HasMetadata() bool {
 	return false
 }
 
+// SetMetadata gets a reference to the given map[string]string and assigns it to the Metadata field.
+func (o *RegistrySvcAPISpec) SetMetadata(v map[string]string) {
+	o.Metadata = v
+}
 
+// GetProtocolType returns the ProtocolType field value if set, zero value otherwise.
+func (o *RegistrySvcAPISpec) GetProtocolType() string {
+	if o == nil || IsNil(o.ProtocolType) {
+		var ret string
+		return ret
+	}
+	return *o.ProtocolType
+}
 
+// GetProtocolTypeOk returns a tuple with the ProtocolType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcAPISpec) GetProtocolTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.ProtocolType) {
+		return nil, false
+	}
+	return o.ProtocolType, true
+}
 
 // HasProtocolType returns a boolean if a field has been set.
 func (o *RegistrySvcAPISpec) HasProtocolType() bool {
@@ -70,8 +106,28 @@ func (o *RegistrySvcAPISpec) HasProtocolType() bool {
 	return false
 }
 
+// SetProtocolType gets a reference to the given string and assigns it to the ProtocolType field.
+func (o *RegistrySvcAPISpec) SetProtocolType(v string) {
+	o.ProtocolType = &v
+}
 
+// GetUrl returns the Url field value if set, zero value otherwise.
+func (o *RegistrySvcAPISpec) GetUrl() string {
+	if o == nil || IsNil(o.Url) {
+		var ret string
+		return ret
+	}
+	return *o.Url
+}
 
+// GetUrlOk returns a tuple with the Url field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcAPISpec) GetUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.Url) {
+		return nil, false
+	}
+	return o.Url, true
+}
 
 // HasUrl returns a boolean if a field has been set.
 func (o *RegistrySvcAPISpec) HasUrl() bool {
@@ -82,8 +138,28 @@ func (o *RegistrySvcAPISpec) HasUrl() bool {
 	return false
 }
 
+// SetUrl gets a reference to the given string and assigns it to the Url field.
+func (o *RegistrySvcAPISpec) SetUrl(v string) {
+	o.Url = &v
+}
 
+// GetVersion returns the Version field value if set, zero value otherwise.
+func (o *RegistrySvcAPISpec) GetVersion() string {
+	if o == nil || IsNil(o.Version) {
+		var ret string
+		return ret
+	}
+	return *o.Version
+}
 
+// GetVersionOk returns a tuple with the Version field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcAPISpec) GetVersionOk() (*string, bool) {
+	if o == nil || IsNil(o.Version) {
+		return nil, false
+	}
+	return o.Version, true
+}
 
 // HasVersion returns a boolean if a field has been set.
 func (o *RegistrySvcAPISpec) HasVersion() bool {
@@ -94,6 +170,10 @@ func (o *RegistrySvcAPISpec) HasVersion() bool {
 	return false
 }
 
+// SetVersion gets a reference to the given string and assigns it to the Version field.
+func (o *RegistrySvcAPISpec) SetVersion(v string) {
+	o.Version = &v
+}
 
 func (o RegistrySvcAPISpec) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

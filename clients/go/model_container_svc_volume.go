@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -45,7 +45,23 @@ func NewContainerSvcVolumeWithDefaults() *ContainerSvcVolume {
 	return &this
 }
 
+// GetDestination returns the Destination field value if set, zero value otherwise.
+func (o *ContainerSvcVolume) GetDestination() string {
+	if o == nil || IsNil(o.Destination) {
+		var ret string
+		return ret
+	}
+	return *o.Destination
+}
 
+// GetDestinationOk returns a tuple with the Destination field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcVolume) GetDestinationOk() (*string, bool) {
+	if o == nil || IsNil(o.Destination) {
+		return nil, false
+	}
+	return o.Destination, true
+}
 
 // HasDestination returns a boolean if a field has been set.
 func (o *ContainerSvcVolume) HasDestination() bool {
@@ -56,8 +72,28 @@ func (o *ContainerSvcVolume) HasDestination() bool {
 	return false
 }
 
+// SetDestination gets a reference to the given string and assigns it to the Destination field.
+func (o *ContainerSvcVolume) SetDestination(v string) {
+	o.Destination = &v
+}
 
+// GetReadOnly returns the ReadOnly field value if set, zero value otherwise.
+func (o *ContainerSvcVolume) GetReadOnly() bool {
+	if o == nil || IsNil(o.ReadOnly) {
+		var ret bool
+		return ret
+	}
+	return *o.ReadOnly
+}
 
+// GetReadOnlyOk returns a tuple with the ReadOnly field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcVolume) GetReadOnlyOk() (*bool, bool) {
+	if o == nil || IsNil(o.ReadOnly) {
+		return nil, false
+	}
+	return o.ReadOnly, true
+}
 
 // HasReadOnly returns a boolean if a field has been set.
 func (o *ContainerSvcVolume) HasReadOnly() bool {
@@ -68,8 +104,28 @@ func (o *ContainerSvcVolume) HasReadOnly() bool {
 	return false
 }
 
+// SetReadOnly gets a reference to the given bool and assigns it to the ReadOnly field.
+func (o *ContainerSvcVolume) SetReadOnly(v bool) {
+	o.ReadOnly = &v
+}
 
+// GetSource returns the Source field value if set, zero value otherwise.
+func (o *ContainerSvcVolume) GetSource() string {
+	if o == nil || IsNil(o.Source) {
+		var ret string
+		return ret
+	}
+	return *o.Source
+}
 
+// GetSourceOk returns a tuple with the Source field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcVolume) GetSourceOk() (*string, bool) {
+	if o == nil || IsNil(o.Source) {
+		return nil, false
+	}
+	return o.Source, true
+}
 
 // HasSource returns a boolean if a field has been set.
 func (o *ContainerSvcVolume) HasSource() bool {
@@ -80,6 +136,10 @@ func (o *ContainerSvcVolume) HasSource() bool {
 	return false
 }
 
+// SetSource gets a reference to the given string and assigns it to the Source field.
+func (o *ContainerSvcVolume) SetSource(v string) {
+	o.Source = &v
+}
 
 func (o ContainerSvcVolume) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

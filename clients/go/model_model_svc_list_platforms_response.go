@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -45,8 +45,29 @@ func NewModelSvcListPlatformsResponseWithDefaults() *ModelSvcListPlatformsRespon
 	return &this
 }
 
+// GetPlatforms returns the Platforms field value
+func (o *ModelSvcListPlatformsResponse) GetPlatforms() []ModelSvcPlatform {
+	if o == nil {
+		var ret []ModelSvcPlatform
+		return ret
+	}
 
+	return o.Platforms
+}
 
+// GetPlatformsOk returns a tuple with the Platforms field value
+// and a boolean to check if the value has been set.
+func (o *ModelSvcListPlatformsResponse) GetPlatformsOk() ([]ModelSvcPlatform, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Platforms, true
+}
+
+// SetPlatforms sets field value
+func (o *ModelSvcListPlatformsResponse) SetPlatforms(v []ModelSvcPlatform) {
+	o.Platforms = v
+}
 
 func (o ModelSvcListPlatformsResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

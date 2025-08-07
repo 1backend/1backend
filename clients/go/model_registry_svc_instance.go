@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -45,7 +45,7 @@ type RegistrySvcInstance struct {
 	// Slug of the account that owns this instance Services that want to be proxied by their slug are advised to self register their instance at startup. Keep in mind, instances might be deployed by 1Backend yet they still won't be 1Backend services and they won't have slugs. Think NGINX, MySQL, etc.
 	Slug *string `json:"slug,omitempty"`
 	// Status
-	Status RegistrySvcInstanceStatus `json:"status"`
+	Status string `json:"status"`
 	// Tags are used to filter instances
 	Tags []string `json:"tags,omitempty"`
 	// Full address URL of the instance.
@@ -58,7 +58,7 @@ type _RegistrySvcInstance RegistrySvcInstance
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRegistrySvcInstance(id string, status RegistrySvcInstanceStatus, url string) *RegistrySvcInstance {
+func NewRegistrySvcInstance(id string, status string, url string) *RegistrySvcInstance {
 	this := RegistrySvcInstance{}
 	this.Id = id
 	this.Status = status
@@ -74,7 +74,23 @@ func NewRegistrySvcInstanceWithDefaults() *RegistrySvcInstance {
 	return &this
 }
 
+// GetDeploymentId returns the DeploymentId field value if set, zero value otherwise.
+func (o *RegistrySvcInstance) GetDeploymentId() string {
+	if o == nil || IsNil(o.DeploymentId) {
+		var ret string
+		return ret
+	}
+	return *o.DeploymentId
+}
 
+// GetDeploymentIdOk returns a tuple with the DeploymentId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcInstance) GetDeploymentIdOk() (*string, bool) {
+	if o == nil || IsNil(o.DeploymentId) {
+		return nil, false
+	}
+	return o.DeploymentId, true
+}
 
 // HasDeploymentId returns a boolean if a field has been set.
 func (o *RegistrySvcInstance) HasDeploymentId() bool {
@@ -85,8 +101,28 @@ func (o *RegistrySvcInstance) HasDeploymentId() bool {
 	return false
 }
 
+// SetDeploymentId gets a reference to the given string and assigns it to the DeploymentId field.
+func (o *RegistrySvcInstance) SetDeploymentId(v string) {
+	o.DeploymentId = &v
+}
 
+// GetDetails returns the Details field value if set, zero value otherwise.
+func (o *RegistrySvcInstance) GetDetails() string {
+	if o == nil || IsNil(o.Details) {
+		var ret string
+		return ret
+	}
+	return *o.Details
+}
 
+// GetDetailsOk returns a tuple with the Details field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcInstance) GetDetailsOk() (*string, bool) {
+	if o == nil || IsNil(o.Details) {
+		return nil, false
+	}
+	return o.Details, true
+}
 
 // HasDetails returns a boolean if a field has been set.
 func (o *RegistrySvcInstance) HasDetails() bool {
@@ -97,8 +133,28 @@ func (o *RegistrySvcInstance) HasDetails() bool {
 	return false
 }
 
+// SetDetails gets a reference to the given string and assigns it to the Details field.
+func (o *RegistrySvcInstance) SetDetails(v string) {
+	o.Details = &v
+}
 
+// GetHost returns the Host field value if set, zero value otherwise.
+func (o *RegistrySvcInstance) GetHost() string {
+	if o == nil || IsNil(o.Host) {
+		var ret string
+		return ret
+	}
+	return *o.Host
+}
 
+// GetHostOk returns a tuple with the Host field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcInstance) GetHostOk() (*string, bool) {
+	if o == nil || IsNil(o.Host) {
+		return nil, false
+	}
+	return o.Host, true
+}
 
 // HasHost returns a boolean if a field has been set.
 func (o *RegistrySvcInstance) HasHost() bool {
@@ -109,11 +165,52 @@ func (o *RegistrySvcInstance) HasHost() bool {
 	return false
 }
 
+// SetHost gets a reference to the given string and assigns it to the Host field.
+func (o *RegistrySvcInstance) SetHost(v string) {
+	o.Host = &v
+}
 
+// GetId returns the Id field value
+func (o *RegistrySvcInstance) GetId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Id
+}
 
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcInstance) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Id, true
+}
 
+// SetId sets field value
+func (o *RegistrySvcInstance) SetId(v string) {
+	o.Id = v
+}
 
+// GetIp returns the Ip field value if set, zero value otherwise.
+func (o *RegistrySvcInstance) GetIp() string {
+	if o == nil || IsNil(o.Ip) {
+		var ret string
+		return ret
+	}
+	return *o.Ip
+}
+
+// GetIpOk returns a tuple with the Ip field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcInstance) GetIpOk() (*string, bool) {
+	if o == nil || IsNil(o.Ip) {
+		return nil, false
+	}
+	return o.Ip, true
+}
 
 // HasIp returns a boolean if a field has been set.
 func (o *RegistrySvcInstance) HasIp() bool {
@@ -124,8 +221,28 @@ func (o *RegistrySvcInstance) HasIp() bool {
 	return false
 }
 
+// SetIp gets a reference to the given string and assigns it to the Ip field.
+func (o *RegistrySvcInstance) SetIp(v string) {
+	o.Ip = &v
+}
 
+// GetLastHeartbeat returns the LastHeartbeat field value if set, zero value otherwise.
+func (o *RegistrySvcInstance) GetLastHeartbeat() string {
+	if o == nil || IsNil(o.LastHeartbeat) {
+		var ret string
+		return ret
+	}
+	return *o.LastHeartbeat
+}
 
+// GetLastHeartbeatOk returns a tuple with the LastHeartbeat field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcInstance) GetLastHeartbeatOk() (*string, bool) {
+	if o == nil || IsNil(o.LastHeartbeat) {
+		return nil, false
+	}
+	return o.LastHeartbeat, true
+}
 
 // HasLastHeartbeat returns a boolean if a field has been set.
 func (o *RegistrySvcInstance) HasLastHeartbeat() bool {
@@ -136,8 +253,28 @@ func (o *RegistrySvcInstance) HasLastHeartbeat() bool {
 	return false
 }
 
+// SetLastHeartbeat gets a reference to the given string and assigns it to the LastHeartbeat field.
+func (o *RegistrySvcInstance) SetLastHeartbeat(v string) {
+	o.LastHeartbeat = &v
+}
 
+// GetNodeUrl returns the NodeUrl field value if set, zero value otherwise.
+func (o *RegistrySvcInstance) GetNodeUrl() string {
+	if o == nil || IsNil(o.NodeUrl) {
+		var ret string
+		return ret
+	}
+	return *o.NodeUrl
+}
 
+// GetNodeUrlOk returns a tuple with the NodeUrl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcInstance) GetNodeUrlOk() (*string, bool) {
+	if o == nil || IsNil(o.NodeUrl) {
+		return nil, false
+	}
+	return o.NodeUrl, true
+}
 
 // HasNodeUrl returns a boolean if a field has been set.
 func (o *RegistrySvcInstance) HasNodeUrl() bool {
@@ -148,8 +285,28 @@ func (o *RegistrySvcInstance) HasNodeUrl() bool {
 	return false
 }
 
+// SetNodeUrl gets a reference to the given string and assigns it to the NodeUrl field.
+func (o *RegistrySvcInstance) SetNodeUrl(v string) {
+	o.NodeUrl = &v
+}
 
+// GetPath returns the Path field value if set, zero value otherwise.
+func (o *RegistrySvcInstance) GetPath() string {
+	if o == nil || IsNil(o.Path) {
+		var ret string
+		return ret
+	}
+	return *o.Path
+}
 
+// GetPathOk returns a tuple with the Path field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcInstance) GetPathOk() (*string, bool) {
+	if o == nil || IsNil(o.Path) {
+		return nil, false
+	}
+	return o.Path, true
+}
 
 // HasPath returns a boolean if a field has been set.
 func (o *RegistrySvcInstance) HasPath() bool {
@@ -160,8 +317,28 @@ func (o *RegistrySvcInstance) HasPath() bool {
 	return false
 }
 
+// SetPath gets a reference to the given string and assigns it to the Path field.
+func (o *RegistrySvcInstance) SetPath(v string) {
+	o.Path = &v
+}
 
+// GetPort returns the Port field value if set, zero value otherwise.
+func (o *RegistrySvcInstance) GetPort() int32 {
+	if o == nil || IsNil(o.Port) {
+		var ret int32
+		return ret
+	}
+	return *o.Port
+}
 
+// GetPortOk returns a tuple with the Port field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcInstance) GetPortOk() (*int32, bool) {
+	if o == nil || IsNil(o.Port) {
+		return nil, false
+	}
+	return o.Port, true
+}
 
 // HasPort returns a boolean if a field has been set.
 func (o *RegistrySvcInstance) HasPort() bool {
@@ -172,8 +349,28 @@ func (o *RegistrySvcInstance) HasPort() bool {
 	return false
 }
 
+// SetPort gets a reference to the given int32 and assigns it to the Port field.
+func (o *RegistrySvcInstance) SetPort(v int32) {
+	o.Port = &v
+}
 
+// GetScheme returns the Scheme field value if set, zero value otherwise.
+func (o *RegistrySvcInstance) GetScheme() string {
+	if o == nil || IsNil(o.Scheme) {
+		var ret string
+		return ret
+	}
+	return *o.Scheme
+}
 
+// GetSchemeOk returns a tuple with the Scheme field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcInstance) GetSchemeOk() (*string, bool) {
+	if o == nil || IsNil(o.Scheme) {
+		return nil, false
+	}
+	return o.Scheme, true
+}
 
 // HasScheme returns a boolean if a field has been set.
 func (o *RegistrySvcInstance) HasScheme() bool {
@@ -184,8 +381,28 @@ func (o *RegistrySvcInstance) HasScheme() bool {
 	return false
 }
 
+// SetScheme gets a reference to the given string and assigns it to the Scheme field.
+func (o *RegistrySvcInstance) SetScheme(v string) {
+	o.Scheme = &v
+}
 
+// GetSlug returns the Slug field value if set, zero value otherwise.
+func (o *RegistrySvcInstance) GetSlug() string {
+	if o == nil || IsNil(o.Slug) {
+		var ret string
+		return ret
+	}
+	return *o.Slug
+}
 
+// GetSlugOk returns a tuple with the Slug field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcInstance) GetSlugOk() (*string, bool) {
+	if o == nil || IsNil(o.Slug) {
+		return nil, false
+	}
+	return o.Slug, true
+}
 
 // HasSlug returns a boolean if a field has been set.
 func (o *RegistrySvcInstance) HasSlug() bool {
@@ -196,11 +413,52 @@ func (o *RegistrySvcInstance) HasSlug() bool {
 	return false
 }
 
+// SetSlug gets a reference to the given string and assigns it to the Slug field.
+func (o *RegistrySvcInstance) SetSlug(v string) {
+	o.Slug = &v
+}
 
+// GetStatus returns the Status field value
+func (o *RegistrySvcInstance) GetStatus() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Status
+}
 
+// GetStatusOk returns a tuple with the Status field value
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcInstance) GetStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Status, true
+}
 
+// SetStatus sets field value
+func (o *RegistrySvcInstance) SetStatus(v string) {
+	o.Status = v
+}
 
+// GetTags returns the Tags field value if set, zero value otherwise.
+func (o *RegistrySvcInstance) GetTags() []string {
+	if o == nil || IsNil(o.Tags) {
+		var ret []string
+		return ret
+	}
+	return o.Tags
+}
+
+// GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcInstance) GetTagsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Tags) {
+		return nil, false
+	}
+	return o.Tags, true
+}
 
 // HasTags returns a boolean if a field has been set.
 func (o *RegistrySvcInstance) HasTags() bool {
@@ -211,9 +469,34 @@ func (o *RegistrySvcInstance) HasTags() bool {
 	return false
 }
 
+// SetTags gets a reference to the given []string and assigns it to the Tags field.
+func (o *RegistrySvcInstance) SetTags(v []string) {
+	o.Tags = v
+}
 
+// GetUrl returns the Url field value
+func (o *RegistrySvcInstance) GetUrl() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Url
+}
 
+// GetUrlOk returns a tuple with the Url field value
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcInstance) GetUrlOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Url, true
+}
+
+// SetUrl sets field value
+func (o *RegistrySvcInstance) SetUrl(v string) {
+	o.Url = v
+}
 
 func (o RegistrySvcInstance) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

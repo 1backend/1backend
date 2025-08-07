@@ -45,6 +45,6 @@ jobs:
         run: |
           go install github.com/swaggo/swag/cmd/swag@latest
           npm install @openapitools/openapi-generator-cli -g
-          swag init --parseDependency
+          swag init --parseDependency --v3.1
           openapi-generator-cli generate -i docs/swagger.yaml -g typescript-fetch -o ./genn
         working-directory: server

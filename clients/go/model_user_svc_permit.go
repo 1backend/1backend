@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -58,7 +58,23 @@ func NewUserSvcPermitWithDefaults() *UserSvcPermit {
 	return &this
 }
 
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *UserSvcPermit) GetApp() string {
+	if o == nil || IsNil(o.App) {
+		var ret string
+		return ret
+	}
+	return *o.App
+}
 
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcPermit) GetAppOk() (*string, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
 
 // HasApp returns a boolean if a field has been set.
 func (o *UserSvcPermit) HasApp() bool {
@@ -69,11 +85,52 @@ func (o *UserSvcPermit) HasApp() bool {
 	return false
 }
 
+// SetApp gets a reference to the given string and assigns it to the App field.
+func (o *UserSvcPermit) SetApp(v string) {
+	o.App = &v
+}
 
+// GetCreatedAt returns the CreatedAt field value
+func (o *UserSvcPermit) GetCreatedAt() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.CreatedAt
+}
 
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcPermit) GetCreatedAtOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CreatedAt, true
+}
 
+// SetCreatedAt sets field value
+func (o *UserSvcPermit) SetCreatedAt(v string) {
+	o.CreatedAt = v
+}
 
+// GetDeletedAt returns the DeletedAt field value if set, zero value otherwise.
+func (o *UserSvcPermit) GetDeletedAt() string {
+	if o == nil || IsNil(o.DeletedAt) {
+		var ret string
+		return ret
+	}
+	return *o.DeletedAt
+}
+
+// GetDeletedAtOk returns a tuple with the DeletedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcPermit) GetDeletedAtOk() (*string, bool) {
+	if o == nil || IsNil(o.DeletedAt) {
+		return nil, false
+	}
+	return o.DeletedAt, true
+}
 
 // HasDeletedAt returns a boolean if a field has been set.
 func (o *UserSvcPermit) HasDeletedAt() bool {
@@ -84,14 +141,76 @@ func (o *UserSvcPermit) HasDeletedAt() bool {
 	return false
 }
 
+// SetDeletedAt gets a reference to the given string and assigns it to the DeletedAt field.
+func (o *UserSvcPermit) SetDeletedAt(v string) {
+	o.DeletedAt = &v
+}
 
+// GetId returns the Id field value
+func (o *UserSvcPermit) GetId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Id
+}
 
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcPermit) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Id, true
+}
 
+// SetId sets field value
+func (o *UserSvcPermit) SetId(v string) {
+	o.Id = v
+}
 
+// GetPermission returns the Permission field value
+func (o *UserSvcPermit) GetPermission() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Permission
+}
 
+// GetPermissionOk returns a tuple with the Permission field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcPermit) GetPermissionOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Permission, true
+}
 
+// SetPermission sets field value
+func (o *UserSvcPermit) SetPermission(v string) {
+	o.Permission = v
+}
+
+// GetRoles returns the Roles field value if set, zero value otherwise.
+func (o *UserSvcPermit) GetRoles() []string {
+	if o == nil || IsNil(o.Roles) {
+		var ret []string
+		return ret
+	}
+	return o.Roles
+}
+
+// GetRolesOk returns a tuple with the Roles field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcPermit) GetRolesOk() ([]string, bool) {
+	if o == nil || IsNil(o.Roles) {
+		return nil, false
+	}
+	return o.Roles, true
+}
 
 // HasRoles returns a boolean if a field has been set.
 func (o *UserSvcPermit) HasRoles() bool {
@@ -102,8 +221,28 @@ func (o *UserSvcPermit) HasRoles() bool {
 	return false
 }
 
+// SetRoles gets a reference to the given []string and assigns it to the Roles field.
+func (o *UserSvcPermit) SetRoles(v []string) {
+	o.Roles = v
+}
 
+// GetSlugs returns the Slugs field value if set, zero value otherwise.
+func (o *UserSvcPermit) GetSlugs() []string {
+	if o == nil || IsNil(o.Slugs) {
+		var ret []string
+		return ret
+	}
+	return o.Slugs
+}
 
+// GetSlugsOk returns a tuple with the Slugs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcPermit) GetSlugsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Slugs) {
+		return nil, false
+	}
+	return o.Slugs, true
+}
 
 // HasSlugs returns a boolean if a field has been set.
 func (o *UserSvcPermit) HasSlugs() bool {
@@ -114,9 +253,34 @@ func (o *UserSvcPermit) HasSlugs() bool {
 	return false
 }
 
+// SetSlugs gets a reference to the given []string and assigns it to the Slugs field.
+func (o *UserSvcPermit) SetSlugs(v []string) {
+	o.Slugs = v
+}
 
+// GetUpdatedAt returns the UpdatedAt field value
+func (o *UserSvcPermit) GetUpdatedAt() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.UpdatedAt
+}
 
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcPermit) GetUpdatedAtOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.UpdatedAt, true
+}
+
+// SetUpdatedAt sets field value
+func (o *UserSvcPermit) SetUpdatedAt(v string) {
+	o.UpdatedAt = v
+}
 
 func (o UserSvcPermit) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

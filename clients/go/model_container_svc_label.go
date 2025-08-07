@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc2
 Contact: sales@singulatron.com
 */
 
@@ -47,11 +47,53 @@ func NewContainerSvcLabelWithDefaults() *ContainerSvcLabel {
 	return &this
 }
 
+// GetKey returns the Key field value
+func (o *ContainerSvcLabel) GetKey() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Key
+}
 
+// GetKeyOk returns a tuple with the Key field value
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcLabel) GetKeyOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Key, true
+}
 
+// SetKey sets field value
+func (o *ContainerSvcLabel) SetKey(v string) {
+	o.Key = v
+}
 
+// GetValue returns the Value field value
+func (o *ContainerSvcLabel) GetValue() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Value
+}
+
+// GetValueOk returns a tuple with the Value field value
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcLabel) GetValueOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Value, true
+}
+
+// SetValue sets field value
+func (o *ContainerSvcLabel) SetValue(v string) {
+	o.Value = v
+}
 
 func (o ContainerSvcLabel) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
