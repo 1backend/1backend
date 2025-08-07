@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -47,23 +47,7 @@ func NewModelSvcContainerWithDefaults() *ModelSvcContainer {
 	return &this
 }
 
-// GetEnvars returns the Envars field value if set, zero value otherwise.
-func (o *ModelSvcContainer) GetEnvars() []ModelSvcEnvVar {
-	if o == nil || IsNil(o.Envars) {
-		var ret []ModelSvcEnvVar
-		return ret
-	}
-	return o.Envars
-}
 
-// GetEnvarsOk returns a tuple with the Envars field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcContainer) GetEnvarsOk() ([]ModelSvcEnvVar, bool) {
-	if o == nil || IsNil(o.Envars) {
-		return nil, false
-	}
-	return o.Envars, true
-}
 
 // HasEnvars returns a boolean if a field has been set.
 func (o *ModelSvcContainer) HasEnvars() bool {
@@ -74,28 +58,8 @@ func (o *ModelSvcContainer) HasEnvars() bool {
 	return false
 }
 
-// SetEnvars gets a reference to the given []ModelSvcEnvVar and assigns it to the Envars field.
-func (o *ModelSvcContainer) SetEnvars(v []ModelSvcEnvVar) {
-	o.Envars = v
-}
 
-// GetImageTemplate returns the ImageTemplate field value if set, zero value otherwise.
-func (o *ModelSvcContainer) GetImageTemplate() string {
-	if o == nil || IsNil(o.ImageTemplate) {
-		var ret string
-		return ret
-	}
-	return *o.ImageTemplate
-}
 
-// GetImageTemplateOk returns a tuple with the ImageTemplate field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcContainer) GetImageTemplateOk() (*string, bool) {
-	if o == nil || IsNil(o.ImageTemplate) {
-		return nil, false
-	}
-	return o.ImageTemplate, true
-}
 
 // HasImageTemplate returns a boolean if a field has been set.
 func (o *ModelSvcContainer) HasImageTemplate() bool {
@@ -106,28 +70,8 @@ func (o *ModelSvcContainer) HasImageTemplate() bool {
 	return false
 }
 
-// SetImageTemplate gets a reference to the given string and assigns it to the ImageTemplate field.
-func (o *ModelSvcContainer) SetImageTemplate(v string) {
-	o.ImageTemplate = &v
-}
 
-// GetKeeps returns the Keeps field value if set, zero value otherwise.
-func (o *ModelSvcContainer) GetKeeps() []ModelSvcKeep {
-	if o == nil || IsNil(o.Keeps) {
-		var ret []ModelSvcKeep
-		return ret
-	}
-	return o.Keeps
-}
 
-// GetKeepsOk returns a tuple with the Keeps field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcContainer) GetKeepsOk() ([]ModelSvcKeep, bool) {
-	if o == nil || IsNil(o.Keeps) {
-		return nil, false
-	}
-	return o.Keeps, true
-}
 
 // HasKeeps returns a boolean if a field has been set.
 func (o *ModelSvcContainer) HasKeeps() bool {
@@ -138,28 +82,8 @@ func (o *ModelSvcContainer) HasKeeps() bool {
 	return false
 }
 
-// SetKeeps gets a reference to the given []ModelSvcKeep and assigns it to the Keeps field.
-func (o *ModelSvcContainer) SetKeeps(v []ModelSvcKeep) {
-	o.Keeps = v
-}
 
-// GetPort returns the Port field value if set, zero value otherwise.
-func (o *ModelSvcContainer) GetPort() int32 {
-	if o == nil || IsNil(o.Port) {
-		var ret int32
-		return ret
-	}
-	return *o.Port
-}
 
-// GetPortOk returns a tuple with the Port field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcContainer) GetPortOk() (*int32, bool) {
-	if o == nil || IsNil(o.Port) {
-		return nil, false
-	}
-	return o.Port, true
-}
 
 // HasPort returns a boolean if a field has been set.
 func (o *ModelSvcContainer) HasPort() bool {
@@ -170,10 +94,6 @@ func (o *ModelSvcContainer) HasPort() bool {
 	return false
 }
 
-// SetPort gets a reference to the given int32 and assigns it to the Port field.
-func (o *ModelSvcContainer) SetPort(v int32) {
-	o.Port = &v
-}
 
 func (o ModelSvcContainer) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

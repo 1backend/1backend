@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -59,23 +59,7 @@ func NewRegistrySvcNodeWithDefaults() *RegistrySvcNode {
 	return &this
 }
 
-// GetAvailabilityZone returns the AvailabilityZone field value if set, zero value otherwise.
-func (o *RegistrySvcNode) GetAvailabilityZone() string {
-	if o == nil || IsNil(o.AvailabilityZone) {
-		var ret string
-		return ret
-	}
-	return *o.AvailabilityZone
-}
 
-// GetAvailabilityZoneOk returns a tuple with the AvailabilityZone field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcNode) GetAvailabilityZoneOk() (*string, bool) {
-	if o == nil || IsNil(o.AvailabilityZone) {
-		return nil, false
-	}
-	return o.AvailabilityZone, true
-}
 
 // HasAvailabilityZone returns a boolean if a field has been set.
 func (o *RegistrySvcNode) HasAvailabilityZone() bool {
@@ -86,28 +70,8 @@ func (o *RegistrySvcNode) HasAvailabilityZone() bool {
 	return false
 }
 
-// SetAvailabilityZone gets a reference to the given string and assigns it to the AvailabilityZone field.
-func (o *RegistrySvcNode) SetAvailabilityZone(v string) {
-	o.AvailabilityZone = &v
-}
 
-// GetGpus returns the Gpus field value if set, zero value otherwise.
-func (o *RegistrySvcNode) GetGpus() []RegistrySvcGPU {
-	if o == nil || IsNil(o.Gpus) {
-		var ret []RegistrySvcGPU
-		return ret
-	}
-	return o.Gpus
-}
 
-// GetGpusOk returns a tuple with the Gpus field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcNode) GetGpusOk() ([]RegistrySvcGPU, bool) {
-	if o == nil || IsNil(o.Gpus) {
-		return nil, false
-	}
-	return o.Gpus, true
-}
 
 // HasGpus returns a boolean if a field has been set.
 func (o *RegistrySvcNode) HasGpus() bool {
@@ -118,52 +82,11 @@ func (o *RegistrySvcNode) HasGpus() bool {
 	return false
 }
 
-// SetGpus gets a reference to the given []RegistrySvcGPU and assigns it to the Gpus field.
-func (o *RegistrySvcNode) SetGpus(v []RegistrySvcGPU) {
-	o.Gpus = v
-}
 
-// GetId returns the Id field value
-func (o *RegistrySvcNode) GetId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Id
-}
 
-// GetIdOk returns a tuple with the Id field value
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcNode) GetIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Id, true
-}
 
-// SetId sets field value
-func (o *RegistrySvcNode) SetId(v string) {
-	o.Id = v
-}
 
-// GetLastHeartbeat returns the LastHeartbeat field value if set, zero value otherwise.
-func (o *RegistrySvcNode) GetLastHeartbeat() string {
-	if o == nil || IsNil(o.LastHeartbeat) {
-		var ret string
-		return ret
-	}
-	return *o.LastHeartbeat
-}
-
-// GetLastHeartbeatOk returns a tuple with the LastHeartbeat field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcNode) GetLastHeartbeatOk() (*string, bool) {
-	if o == nil || IsNil(o.LastHeartbeat) {
-		return nil, false
-	}
-	return o.LastHeartbeat, true
-}
 
 // HasLastHeartbeat returns a boolean if a field has been set.
 func (o *RegistrySvcNode) HasLastHeartbeat() bool {
@@ -174,28 +97,8 @@ func (o *RegistrySvcNode) HasLastHeartbeat() bool {
 	return false
 }
 
-// SetLastHeartbeat gets a reference to the given string and assigns it to the LastHeartbeat field.
-func (o *RegistrySvcNode) SetLastHeartbeat(v string) {
-	o.LastHeartbeat = &v
-}
 
-// GetRegion returns the Region field value if set, zero value otherwise.
-func (o *RegistrySvcNode) GetRegion() string {
-	if o == nil || IsNil(o.Region) {
-		var ret string
-		return ret
-	}
-	return *o.Region
-}
 
-// GetRegionOk returns a tuple with the Region field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcNode) GetRegionOk() (*string, bool) {
-	if o == nil || IsNil(o.Region) {
-		return nil, false
-	}
-	return o.Region, true
-}
 
 // HasRegion returns a boolean if a field has been set.
 func (o *RegistrySvcNode) HasRegion() bool {
@@ -206,52 +109,11 @@ func (o *RegistrySvcNode) HasRegion() bool {
 	return false
 }
 
-// SetRegion gets a reference to the given string and assigns it to the Region field.
-func (o *RegistrySvcNode) SetRegion(v string) {
-	o.Region = &v
-}
 
-// GetUrl returns the Url field value
-func (o *RegistrySvcNode) GetUrl() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Url
-}
 
-// GetUrlOk returns a tuple with the Url field value
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcNode) GetUrlOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Url, true
-}
 
-// SetUrl sets field value
-func (o *RegistrySvcNode) SetUrl(v string) {
-	o.Url = v
-}
 
-// GetUsage returns the Usage field value if set, zero value otherwise.
-func (o *RegistrySvcNode) GetUsage() RegistrySvcResourceUsage {
-	if o == nil || IsNil(o.Usage) {
-		var ret RegistrySvcResourceUsage
-		return ret
-	}
-	return *o.Usage
-}
-
-// GetUsageOk returns a tuple with the Usage field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcNode) GetUsageOk() (*RegistrySvcResourceUsage, bool) {
-	if o == nil || IsNil(o.Usage) {
-		return nil, false
-	}
-	return o.Usage, true
-}
 
 // HasUsage returns a boolean if a field has been set.
 func (o *RegistrySvcNode) HasUsage() bool {
@@ -262,10 +124,6 @@ func (o *RegistrySvcNode) HasUsage() bool {
 	return false
 }
 
-// SetUsage gets a reference to the given RegistrySvcResourceUsage and assigns it to the Usage field.
-func (o *RegistrySvcNode) SetUsage(v RegistrySvcResourceUsage) {
-	o.Usage = &v
-}
 
 func (o RegistrySvcNode) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

@@ -6619,10 +6619,6 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
-                "jsonValues": {
-                    "description": "JSONValues is a JSON marshalled array of values.\nIt's JSON marhalled due to the limitations of the\nSwaggo -\u003e OpenAPI 2.0 -\u003e OpenAPI Go generator toolchain.",
-                    "type": "string"
-                },
                 "op": {
                     "$ref": "#/definitions/datastore.Op"
                 },
@@ -6632,6 +6628,11 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/datastore.Filter"
                     }
+                },
+                "values": {
+                    "description": "@openapi-any-array",
+                    "type": "array",
+                    "items": {}
                 }
             }
         },
@@ -6665,10 +6666,6 @@ const docTemplate = `{
                     "description": "The field by which to order the results",
                     "type": "string"
                 },
-                "randomize": {
-                    "description": "Randomize indicates that the results should be randomized instead of ordered by the ` + "`" + `field` + "`" + ` and ` + "`" + `desc` + "`" + ` criteria",
-                    "type": "boolean"
-                },
                 "sortingType": {
                     "description": "Defines the type of sorting to apply (numeric, text, date, etc.)",
                     "allOf": [
@@ -6682,6 +6679,11 @@ const docTemplate = `{
         "datastore.Query": {
             "type": "object",
             "properties": {
+                "after": {
+                    "description": "After is used for cursor-based pagination, which is more\neffective in scalable and distributed environments compared\nto offset-based pagination.\n@openapi-any-array",
+                    "type": "array",
+                    "items": {}
+                },
                 "count": {
                     "description": "Count true means return the count of the dataset filtered by Filters\nwithout after or limit.",
                     "type": "boolean"
@@ -6692,10 +6694,6 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/datastore.Filter"
                     }
-                },
-                "jsonAfter": {
-                    "description": "JSONAfter is used for cursor-based pagination, which is more\neffective in scalable and distributed environments compared\nto offset-based pagination.\n\nJSONAfter is a JSON-encoded string due to limitations in Swaggo (e.g., []interface{} gets converted to []map[string]interface{}).\nThere is no way to specify a type that results in an any/interface{} type in the ` + "`" + `go -\u003e openapi -\u003e go` + "`" + ` generation process.\nAs a result, JSONAfter is a JSON-marshalled string representing an array, e.g., ` + "`" + `[42]` + "`" + `.",
-                    "type": "string"
                 },
                 "limit": {
                     "description": "Limit the number of records in the result set.",
@@ -6716,13 +6714,15 @@ const docTemplate = `{
                 "",
                 "numeric",
                 "text",
-                "date"
+                "date",
+                "random"
             ],
             "x-enum-varnames": [
                 "SortingTypeDefault",
                 "SortingTypeNumeric",
                 "SortingTypeText",
-                "SortingTypeDate"
+                "SortingTypeDate",
+                "SortingTypeRandom"
             ]
         },
         "deploy_svc.AutoScalingConfig": {
@@ -10560,7 +10560,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.7.6",
+	Version:          "0.8.0-rc1",
 	Host:             "localhost:11337",
 	BasePath:         "/",
 	Schemes:          []string{},

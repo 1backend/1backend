@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -56,23 +56,7 @@ func NewUserSvcReadSelfResponseWithDefaults() *UserSvcReadSelfResponse {
 	return &this
 }
 
-// GetActiveOrganizationId returns the ActiveOrganizationId field value if set, zero value otherwise.
-func (o *UserSvcReadSelfResponse) GetActiveOrganizationId() string {
-	if o == nil || IsNil(o.ActiveOrganizationId) {
-		var ret string
-		return ret
-	}
-	return *o.ActiveOrganizationId
-}
 
-// GetActiveOrganizationIdOk returns a tuple with the ActiveOrganizationId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcReadSelfResponse) GetActiveOrganizationIdOk() (*string, bool) {
-	if o == nil || IsNil(o.ActiveOrganizationId) {
-		return nil, false
-	}
-	return o.ActiveOrganizationId, true
-}
 
 // HasActiveOrganizationId returns a boolean if a field has been set.
 func (o *UserSvcReadSelfResponse) HasActiveOrganizationId() bool {
@@ -83,28 +67,8 @@ func (o *UserSvcReadSelfResponse) HasActiveOrganizationId() bool {
 	return false
 }
 
-// SetActiveOrganizationId gets a reference to the given string and assigns it to the ActiveOrganizationId field.
-func (o *UserSvcReadSelfResponse) SetActiveOrganizationId(v string) {
-	o.ActiveOrganizationId = &v
-}
 
-// GetContacts returns the Contacts field value if set, zero value otherwise.
-func (o *UserSvcReadSelfResponse) GetContacts() []UserSvcContact {
-	if o == nil || IsNil(o.Contacts) {
-		var ret []UserSvcContact
-		return ret
-	}
-	return o.Contacts
-}
 
-// GetContactsOk returns a tuple with the Contacts field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcReadSelfResponse) GetContactsOk() ([]UserSvcContact, bool) {
-	if o == nil || IsNil(o.Contacts) {
-		return nil, false
-	}
-	return o.Contacts, true
-}
 
 // HasContacts returns a boolean if a field has been set.
 func (o *UserSvcReadSelfResponse) HasContacts() bool {
@@ -115,28 +79,8 @@ func (o *UserSvcReadSelfResponse) HasContacts() bool {
 	return false
 }
 
-// SetContacts gets a reference to the given []UserSvcContact and assigns it to the Contacts field.
-func (o *UserSvcReadSelfResponse) SetContacts(v []UserSvcContact) {
-	o.Contacts = v
-}
 
-// GetOrganizations returns the Organizations field value if set, zero value otherwise.
-func (o *UserSvcReadSelfResponse) GetOrganizations() []UserSvcOrganization {
-	if o == nil || IsNil(o.Organizations) {
-		var ret []UserSvcOrganization
-		return ret
-	}
-	return o.Organizations
-}
 
-// GetOrganizationsOk returns a tuple with the Organizations field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcReadSelfResponse) GetOrganizationsOk() ([]UserSvcOrganization, bool) {
-	if o == nil || IsNil(o.Organizations) {
-		return nil, false
-	}
-	return o.Organizations, true
-}
 
 // HasOrganizations returns a boolean if a field has been set.
 func (o *UserSvcReadSelfResponse) HasOrganizations() bool {
@@ -147,28 +91,8 @@ func (o *UserSvcReadSelfResponse) HasOrganizations() bool {
 	return false
 }
 
-// SetOrganizations gets a reference to the given []UserSvcOrganization and assigns it to the Organizations field.
-func (o *UserSvcReadSelfResponse) SetOrganizations(v []UserSvcOrganization) {
-	o.Organizations = v
-}
 
-// GetRoles returns the Roles field value if set, zero value otherwise.
-func (o *UserSvcReadSelfResponse) GetRoles() []string {
-	if o == nil || IsNil(o.Roles) {
-		var ret []string
-		return ret
-	}
-	return o.Roles
-}
 
-// GetRolesOk returns a tuple with the Roles field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcReadSelfResponse) GetRolesOk() ([]string, bool) {
-	if o == nil || IsNil(o.Roles) {
-		return nil, false
-	}
-	return o.Roles, true
-}
 
 // HasRoles returns a boolean if a field has been set.
 func (o *UserSvcReadSelfResponse) HasRoles() bool {
@@ -179,58 +103,12 @@ func (o *UserSvcReadSelfResponse) HasRoles() bool {
 	return false
 }
 
-// SetRoles gets a reference to the given []string and assigns it to the Roles field.
-func (o *UserSvcReadSelfResponse) SetRoles(v []string) {
-	o.Roles = v
-}
 
-// GetTokenCount returns the TokenCount field value
-func (o *UserSvcReadSelfResponse) GetTokenCount() int32 {
-	if o == nil {
-		var ret int32
-		return ret
-	}
 
-	return o.TokenCount
-}
 
-// GetTokenCountOk returns a tuple with the TokenCount field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcReadSelfResponse) GetTokenCountOk() (*int32, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.TokenCount, true
-}
 
-// SetTokenCount sets field value
-func (o *UserSvcReadSelfResponse) SetTokenCount(v int32) {
-	o.TokenCount = v
-}
 
-// GetUser returns the User field value
-func (o *UserSvcReadSelfResponse) GetUser() UserSvcUser {
-	if o == nil {
-		var ret UserSvcUser
-		return ret
-	}
 
-	return o.User
-}
-
-// GetUserOk returns a tuple with the User field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcReadSelfResponse) GetUserOk() (*UserSvcUser, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.User, true
-}
-
-// SetUser sets field value
-func (o *UserSvcReadSelfResponse) SetUser(v UserSvcUser) {
-	o.User = v
-}
 
 func (o UserSvcReadSelfResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

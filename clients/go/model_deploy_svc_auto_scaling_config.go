@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -45,23 +45,7 @@ func NewDeploySvcAutoScalingConfigWithDefaults() *DeploySvcAutoScalingConfig {
 	return &this
 }
 
-// GetCpuThreshold returns the CpuThreshold field value if set, zero value otherwise.
-func (o *DeploySvcAutoScalingConfig) GetCpuThreshold() int32 {
-	if o == nil || IsNil(o.CpuThreshold) {
-		var ret int32
-		return ret
-	}
-	return *o.CpuThreshold
-}
 
-// GetCpuThresholdOk returns a tuple with the CpuThreshold field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DeploySvcAutoScalingConfig) GetCpuThresholdOk() (*int32, bool) {
-	if o == nil || IsNil(o.CpuThreshold) {
-		return nil, false
-	}
-	return o.CpuThreshold, true
-}
 
 // HasCpuThreshold returns a boolean if a field has been set.
 func (o *DeploySvcAutoScalingConfig) HasCpuThreshold() bool {
@@ -72,28 +56,8 @@ func (o *DeploySvcAutoScalingConfig) HasCpuThreshold() bool {
 	return false
 }
 
-// SetCpuThreshold gets a reference to the given int32 and assigns it to the CpuThreshold field.
-func (o *DeploySvcAutoScalingConfig) SetCpuThreshold(v int32) {
-	o.CpuThreshold = &v
-}
 
-// GetMaxReplicas returns the MaxReplicas field value if set, zero value otherwise.
-func (o *DeploySvcAutoScalingConfig) GetMaxReplicas() int32 {
-	if o == nil || IsNil(o.MaxReplicas) {
-		var ret int32
-		return ret
-	}
-	return *o.MaxReplicas
-}
 
-// GetMaxReplicasOk returns a tuple with the MaxReplicas field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DeploySvcAutoScalingConfig) GetMaxReplicasOk() (*int32, bool) {
-	if o == nil || IsNil(o.MaxReplicas) {
-		return nil, false
-	}
-	return o.MaxReplicas, true
-}
 
 // HasMaxReplicas returns a boolean if a field has been set.
 func (o *DeploySvcAutoScalingConfig) HasMaxReplicas() bool {
@@ -104,28 +68,8 @@ func (o *DeploySvcAutoScalingConfig) HasMaxReplicas() bool {
 	return false
 }
 
-// SetMaxReplicas gets a reference to the given int32 and assigns it to the MaxReplicas field.
-func (o *DeploySvcAutoScalingConfig) SetMaxReplicas(v int32) {
-	o.MaxReplicas = &v
-}
 
-// GetMinReplicas returns the MinReplicas field value if set, zero value otherwise.
-func (o *DeploySvcAutoScalingConfig) GetMinReplicas() int32 {
-	if o == nil || IsNil(o.MinReplicas) {
-		var ret int32
-		return ret
-	}
-	return *o.MinReplicas
-}
 
-// GetMinReplicasOk returns a tuple with the MinReplicas field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DeploySvcAutoScalingConfig) GetMinReplicasOk() (*int32, bool) {
-	if o == nil || IsNil(o.MinReplicas) {
-		return nil, false
-	}
-	return o.MinReplicas, true
-}
 
 // HasMinReplicas returns a boolean if a field has been set.
 func (o *DeploySvcAutoScalingConfig) HasMinReplicas() bool {
@@ -136,10 +80,6 @@ func (o *DeploySvcAutoScalingConfig) HasMinReplicas() bool {
 	return false
 }
 
-// SetMinReplicas gets a reference to the given int32 and assigns it to the MinReplicas field.
-func (o *DeploySvcAutoScalingConfig) SetMinReplicas(v int32) {
-	o.MinReplicas = &v
-}
 
 func (o DeploySvcAutoScalingConfig) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -25,6 +25,7 @@ const (
 	SortingTypeNumeric DatastoreSortingType = "numeric"
 	SortingTypeText DatastoreSortingType = "text"
 	SortingTypeDate DatastoreSortingType = "date"
+	SortingTypeRandom DatastoreSortingType = "random"
 )
 
 // All allowed values of DatastoreSortingType enum
@@ -33,6 +34,7 @@ var AllowedDatastoreSortingTypeEnumValues = []DatastoreSortingType{
 	"numeric",
 	"text",
 	"date",
+	"random",
 }
 
 func (v *DatastoreSortingType) UnmarshalJSON(src []byte) error {

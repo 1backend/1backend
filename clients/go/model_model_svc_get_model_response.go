@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -49,77 +49,14 @@ func NewModelSvcGetModelResponseWithDefaults() *ModelSvcGetModelResponse {
 	return &this
 }
 
-// GetExists returns the Exists field value
-func (o *ModelSvcGetModelResponse) GetExists() bool {
-	if o == nil {
-		var ret bool
-		return ret
-	}
 
-	return o.Exists
-}
 
-// GetExistsOk returns a tuple with the Exists field value
-// and a boolean to check if the value has been set.
-func (o *ModelSvcGetModelResponse) GetExistsOk() (*bool, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Exists, true
-}
 
-// SetExists sets field value
-func (o *ModelSvcGetModelResponse) SetExists(v bool) {
-	o.Exists = v
-}
 
-// GetModel returns the Model field value
-func (o *ModelSvcGetModelResponse) GetModel() ModelSvcModel {
-	if o == nil {
-		var ret ModelSvcModel
-		return ret
-	}
 
-	return o.Model
-}
 
-// GetModelOk returns a tuple with the Model field value
-// and a boolean to check if the value has been set.
-func (o *ModelSvcGetModelResponse) GetModelOk() (*ModelSvcModel, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Model, true
-}
 
-// SetModel sets field value
-func (o *ModelSvcGetModelResponse) SetModel(v ModelSvcModel) {
-	o.Model = v
-}
 
-// GetPlatform returns the Platform field value
-func (o *ModelSvcGetModelResponse) GetPlatform() ModelSvcPlatform {
-	if o == nil {
-		var ret ModelSvcPlatform
-		return ret
-	}
-
-	return o.Platform
-}
-
-// GetPlatformOk returns a tuple with the Platform field value
-// and a boolean to check if the value has been set.
-func (o *ModelSvcGetModelResponse) GetPlatformOk() (*ModelSvcPlatform, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Platform, true
-}
-
-// SetPlatform sets field value
-func (o *ModelSvcGetModelResponse) SetPlatform(v ModelSvcPlatform) {
-	o.Platform = v
-}
 
 func (o ModelSvcGetModelResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

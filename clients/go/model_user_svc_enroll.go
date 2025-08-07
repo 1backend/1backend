@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -61,23 +61,7 @@ func NewUserSvcEnrollWithDefaults() *UserSvcEnroll {
 	return &this
 }
 
-// GetApp returns the App field value if set, zero value otherwise.
-func (o *UserSvcEnroll) GetApp() string {
-	if o == nil || IsNil(o.App) {
-		var ret string
-		return ret
-	}
-	return *o.App
-}
 
-// GetAppOk returns a tuple with the App field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcEnroll) GetAppOk() (*string, bool) {
-	if o == nil || IsNil(o.App) {
-		return nil, false
-	}
-	return o.App, true
-}
 
 // HasApp returns a boolean if a field has been set.
 func (o *UserSvcEnroll) HasApp() bool {
@@ -88,28 +72,8 @@ func (o *UserSvcEnroll) HasApp() bool {
 	return false
 }
 
-// SetApp gets a reference to the given string and assigns it to the App field.
-func (o *UserSvcEnroll) SetApp(v string) {
-	o.App = &v
-}
 
-// GetContactId returns the ContactId field value if set, zero value otherwise.
-func (o *UserSvcEnroll) GetContactId() string {
-	if o == nil || IsNil(o.ContactId) {
-		var ret string
-		return ret
-	}
-	return *o.ContactId
-}
 
-// GetContactIdOk returns a tuple with the ContactId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcEnroll) GetContactIdOk() (*string, bool) {
-	if o == nil || IsNil(o.ContactId) {
-		return nil, false
-	}
-	return o.ContactId, true
-}
 
 // HasContactId returns a boolean if a field has been set.
 func (o *UserSvcEnroll) HasContactId() bool {
@@ -120,52 +84,11 @@ func (o *UserSvcEnroll) HasContactId() bool {
 	return false
 }
 
-// SetContactId gets a reference to the given string and assigns it to the ContactId field.
-func (o *UserSvcEnroll) SetContactId(v string) {
-	o.ContactId = &v
-}
 
-// GetCreatedAt returns the CreatedAt field value
-func (o *UserSvcEnroll) GetCreatedAt() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.CreatedAt
-}
 
-// GetCreatedAtOk returns a tuple with the CreatedAt field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcEnroll) GetCreatedAtOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.CreatedAt, true
-}
 
-// SetCreatedAt sets field value
-func (o *UserSvcEnroll) SetCreatedAt(v string) {
-	o.CreatedAt = v
-}
 
-// GetCreatedBy returns the CreatedBy field value if set, zero value otherwise.
-func (o *UserSvcEnroll) GetCreatedBy() string {
-	if o == nil || IsNil(o.CreatedBy) {
-		var ret string
-		return ret
-	}
-	return *o.CreatedBy
-}
-
-// GetCreatedByOk returns a tuple with the CreatedBy field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcEnroll) GetCreatedByOk() (*string, bool) {
-	if o == nil || IsNil(o.CreatedBy) {
-		return nil, false
-	}
-	return o.CreatedBy, true
-}
 
 // HasCreatedBy returns a boolean if a field has been set.
 func (o *UserSvcEnroll) HasCreatedBy() bool {
@@ -176,28 +99,8 @@ func (o *UserSvcEnroll) HasCreatedBy() bool {
 	return false
 }
 
-// SetCreatedBy gets a reference to the given string and assigns it to the CreatedBy field.
-func (o *UserSvcEnroll) SetCreatedBy(v string) {
-	o.CreatedBy = &v
-}
 
-// GetDeletedAt returns the DeletedAt field value if set, zero value otherwise.
-func (o *UserSvcEnroll) GetDeletedAt() string {
-	if o == nil || IsNil(o.DeletedAt) {
-		var ret string
-		return ret
-	}
-	return *o.DeletedAt
-}
 
-// GetDeletedAtOk returns a tuple with the DeletedAt field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcEnroll) GetDeletedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.DeletedAt) {
-		return nil, false
-	}
-	return o.DeletedAt, true
-}
 
 // HasDeletedAt returns a boolean if a field has been set.
 func (o *UserSvcEnroll) HasDeletedAt() bool {
@@ -208,100 +111,17 @@ func (o *UserSvcEnroll) HasDeletedAt() bool {
 	return false
 }
 
-// SetDeletedAt gets a reference to the given string and assigns it to the DeletedAt field.
-func (o *UserSvcEnroll) SetDeletedAt(v string) {
-	o.DeletedAt = &v
-}
 
-// GetId returns the Id field value
-func (o *UserSvcEnroll) GetId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Id
-}
 
-// GetIdOk returns a tuple with the Id field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcEnroll) GetIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Id, true
-}
 
-// SetId sets field value
-func (o *UserSvcEnroll) SetId(v string) {
-	o.Id = v
-}
 
-// GetRole returns the Role field value
-func (o *UserSvcEnroll) GetRole() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Role
-}
 
-// GetRoleOk returns a tuple with the Role field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcEnroll) GetRoleOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Role, true
-}
 
-// SetRole sets field value
-func (o *UserSvcEnroll) SetRole(v string) {
-	o.Role = v
-}
 
-// GetUpdatedAt returns the UpdatedAt field value
-func (o *UserSvcEnroll) GetUpdatedAt() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.UpdatedAt
-}
 
-// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcEnroll) GetUpdatedAtOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.UpdatedAt, true
-}
-
-// SetUpdatedAt sets field value
-func (o *UserSvcEnroll) SetUpdatedAt(v string) {
-	o.UpdatedAt = v
-}
-
-// GetUserId returns the UserId field value if set, zero value otherwise.
-func (o *UserSvcEnroll) GetUserId() string {
-	if o == nil || IsNil(o.UserId) {
-		var ret string
-		return ret
-	}
-	return *o.UserId
-}
-
-// GetUserIdOk returns a tuple with the UserId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcEnroll) GetUserIdOk() (*string, bool) {
-	if o == nil || IsNil(o.UserId) {
-		return nil, false
-	}
-	return o.UserId, true
-}
 
 // HasUserId returns a boolean if a field has been set.
 func (o *UserSvcEnroll) HasUserId() bool {
@@ -312,10 +132,6 @@ func (o *UserSvcEnroll) HasUserId() bool {
 	return false
 }
 
-// SetUserId gets a reference to the given string and assigns it to the UserId field.
-func (o *UserSvcEnroll) SetUserId(v string) {
-	o.UserId = &v
-}
 
 func (o UserSvcEnroll) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

@@ -8,7 +8,6 @@
 package datastore
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"time"
@@ -171,10 +170,8 @@ const (
 type Filter struct {
 	Fields []string `json:"fields,omitempty"`
 
-	// JSONValues is a JSON marshalled array of values.
-	// It's JSON marhalled due to the limitations of the
-	// Swaggo -> OpenAPI 2.0 -> OpenAPI Go generator toolchain.
-	JSONValues string `json:"jsonValues,omitempty"`
+	// @openapi-any-array
+	Values []any `json:"values,omitempty"`
 
 	Op Op `json:"op"`
 
@@ -198,14 +195,11 @@ type Query struct {
 	// It's advised to use helper functions in your respective client library such as filter constructors (`all`, `equal`, `contains`, `startsWith`) and field selectors (`field`, `fields`, `id`) for easier access.
 	Filters []Filter `json:"filters,omitempty"`
 
-	// JSONAfter is used for cursor-based pagination, which is more
+	// After is used for cursor-based pagination, which is more
 	// effective in scalable and distributed environments compared
 	// to offset-based pagination.
-	//
-	// JSONAfter is a JSON-encoded string due to limitations in Swaggo (e.g., []interface{} gets converted to []map[string]interface{}).
-	// There is no way to specify a type that results in an any/interface{} type in the `go -> openapi -> go` generation process.
-	// As a result, JSONAfter is a JSON-marshalled string representing an array, e.g., `[42]`.
-	JSONAfter string `json:"jsonAfter,omitempty"`
+	// @openapi-any-array
+	After []any `json:"after,omitempty"`
 
 	// Limit the number of records in the result set.
 	Limit int64 `json:"limit,omitempty"`
@@ -235,6 +229,7 @@ const (
 	SortingTypeNumeric SortingType = "numeric"
 	SortingTypeText    SortingType = "text"
 	SortingTypeDate    SortingType = "date"
+	SortingTypeRandom  SortingType = "random"
 )
 
 type OrderBy struct {
@@ -244,9 +239,6 @@ type OrderBy struct {
 	// Desc indicates whether the sorting should be in descending order.
 	Desc bool `json:"desc,omitempty"`
 
-	// Randomize indicates that the results should be randomized instead of ordered by the `field` and `desc` criteria
-	Randomize bool `json:"randomize,omitempty"`
-
 	// Defines the type of sorting to apply (numeric, text, date, etc.)
 	SortingType SortingType `json:"sortingType,omitempty"`
 }
@@ -255,7 +247,7 @@ type OrderBy struct {
 // in a distributed setting
 func OrderByRandom() OrderBy {
 	return OrderBy{
-		Randomize: true,
+		SortingType: SortingTypeRandom,
 	}
 }
 
@@ -267,12 +259,6 @@ func OrderByField(field string, desc bool) OrderBy {
 }
 
 type AllMatch struct {
-}
-
-func marshal(value any) string {
-	jsonBytes, _ := json.Marshal(value)
-
-	return string(jsonBytes)
 }
 
 // OpOr allows grouping multiple filters with an OR condition.
@@ -299,9 +285,9 @@ func Or(filters ...Filter) Filter {
 //	}
 func Equals(fields []string, value any) Filter {
 	return Filter{
-		Fields:     fields,
-		JSONValues: marshal([]any{value}),
-		Op:         OpEquals,
+		Fields: fields,
+		Values: []any{value},
+		Op:     OpEquals,
 	}
 }
 
@@ -324,9 +310,9 @@ func Equals(fields []string, value any) Filter {
 //	}
 func Intersects(fields []string, values []any) Filter {
 	return Filter{
-		Fields:     fields,
-		JSONValues: marshal(values),
-		Op:         OpIntersects,
+		Fields: fields,
+		Values: values,
+		Op:     OpIntersects,
 	}
 }
 
@@ -344,9 +330,9 @@ func Intersects(fields []string, values []any) Filter {
 //	}
 func StartsWith(fields []string, value any) Filter {
 	return Filter{
-		Fields:     fields,
-		JSONValues: marshal([]any{value}),
-		Op:         OpStartsWith,
+		Fields: fields,
+		Values: []any{value},
+		Op:     OpStartsWith,
 	}
 }
 
@@ -364,9 +350,9 @@ func StartsWith(fields []string, value any) Filter {
 //	}
 func ContainsSubstring(fields []string, value any) Filter {
 	return Filter{
-		Fields:     fields,
-		JSONValues: marshal([]any{value}),
-		Op:         OpContainsSubstring,
+		Fields: fields,
+		Values: []any{value},
+		Op:     OpContainsSubstring,
 	}
 }
 
@@ -384,17 +370,17 @@ func ContainsSubstring(fields []string, value any) Filter {
 //	}
 func IsInList(fields []string, values ...any) Filter {
 	return Filter{
-		Fields:     fields,
-		JSONValues: marshal(values),
-		Op:         OpIsInList,
+		Fields: fields,
+		Values: values,
+		Op:     OpIsInList,
 	}
 }
 
 func Id(id any) Filter {
 	return Filter{
-		Fields:     []string{"id"},
-		JSONValues: marshal([]any{id}),
-		Op:         OpEquals,
+		Fields: []string{"id"},
+		Values: []any{id},
+		Op:     OpEquals,
 	}
 }
 

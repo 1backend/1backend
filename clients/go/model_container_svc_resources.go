@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -45,23 +45,7 @@ func NewContainerSvcResourcesWithDefaults() *ContainerSvcResources {
 	return &this
 }
 
-// GetCpu returns the Cpu field value if set, zero value otherwise.
-func (o *ContainerSvcResources) GetCpu() float32 {
-	if o == nil || IsNil(o.Cpu) {
-		var ret float32
-		return ret
-	}
-	return *o.Cpu
-}
 
-// GetCpuOk returns a tuple with the Cpu field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ContainerSvcResources) GetCpuOk() (*float32, bool) {
-	if o == nil || IsNil(o.Cpu) {
-		return nil, false
-	}
-	return o.Cpu, true
-}
 
 // HasCpu returns a boolean if a field has been set.
 func (o *ContainerSvcResources) HasCpu() bool {
@@ -72,28 +56,8 @@ func (o *ContainerSvcResources) HasCpu() bool {
 	return false
 }
 
-// SetCpu gets a reference to the given float32 and assigns it to the Cpu field.
-func (o *ContainerSvcResources) SetCpu(v float32) {
-	o.Cpu = &v
-}
 
-// GetDiskMB returns the DiskMB field value if set, zero value otherwise.
-func (o *ContainerSvcResources) GetDiskMB() int32 {
-	if o == nil || IsNil(o.DiskMB) {
-		var ret int32
-		return ret
-	}
-	return *o.DiskMB
-}
 
-// GetDiskMBOk returns a tuple with the DiskMB field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ContainerSvcResources) GetDiskMBOk() (*int32, bool) {
-	if o == nil || IsNil(o.DiskMB) {
-		return nil, false
-	}
-	return o.DiskMB, true
-}
 
 // HasDiskMB returns a boolean if a field has been set.
 func (o *ContainerSvcResources) HasDiskMB() bool {
@@ -104,28 +68,8 @@ func (o *ContainerSvcResources) HasDiskMB() bool {
 	return false
 }
 
-// SetDiskMB gets a reference to the given int32 and assigns it to the DiskMB field.
-func (o *ContainerSvcResources) SetDiskMB(v int32) {
-	o.DiskMB = &v
-}
 
-// GetMemoryMB returns the MemoryMB field value if set, zero value otherwise.
-func (o *ContainerSvcResources) GetMemoryMB() int32 {
-	if o == nil || IsNil(o.MemoryMB) {
-		var ret int32
-		return ret
-	}
-	return *o.MemoryMB
-}
 
-// GetMemoryMBOk returns a tuple with the MemoryMB field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ContainerSvcResources) GetMemoryMBOk() (*int32, bool) {
-	if o == nil || IsNil(o.MemoryMB) {
-		return nil, false
-	}
-	return o.MemoryMB, true
-}
 
 // HasMemoryMB returns a boolean if a field has been set.
 func (o *ContainerSvcResources) HasMemoryMB() bool {
@@ -136,10 +80,6 @@ func (o *ContainerSvcResources) HasMemoryMB() bool {
 	return false
 }
 
-// SetMemoryMB gets a reference to the given int32 and assigns it to the MemoryMB field.
-func (o *ContainerSvcResources) SetMemoryMB(v int32) {
-	o.MemoryMB = &v
-}
 
 func (o ContainerSvcResources) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

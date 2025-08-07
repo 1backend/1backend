@@ -64,7 +64,7 @@ func (cs *ConfigService) SaveConfig(
 		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
-	if !isAuthRsp.GetAuthorized() {
+	if !isAuthRsp.Authorized {
 		endpoint.Unauthorized(w)
 		return
 	}
@@ -84,16 +84,26 @@ func (cs *ConfigService) SaveConfig(
 		config.PermissionConfigEditOnBehalf,
 	)
 
-	if err == nil && isAuthRsp.GetAuthorized() {
+	if err == nil && isAuthRsp.Authorized {
 		canActonBehalf = true
 	}
 
-	if !canActonBehalf && req.App != "" {
-		logger.Error("Unauthorized attempt to save config with app specified",
-			slog.String("app", req.App),
-		)
-		endpoint.Unauthorized(w)
-		return
+	if !canActonBehalf {
+		if req.App != "" {
+			logger.Error("Unauthorized attempt to save config with app specified",
+				slog.String("app", req.App),
+			)
+			endpoint.Unauthorized(w)
+			return
+		}
+
+		if req.Key != "" {
+			logger.Error("Unauthorized attempt to save config with key specified",
+				slog.String("key", req.Key),
+			)
+			endpoint.Unauthorized(w)
+			return
+		}
 	}
 
 	app := req.App

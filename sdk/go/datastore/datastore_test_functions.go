@@ -509,6 +509,126 @@ func TestPagination(t *testing.T, store DataStore) {
 	})
 }
 
+func TestPaginationMultipleKeys(t *testing.T, store DataStore) {
+	base := time.Now()
+	data := []TestObject{
+		// Insert intentionally out of desired CreatedAt order
+		{Name: "C2", Value: 30, CreatedAt: base.Add(1 * time.Second)}, // oldest
+		{Name: "C1", Value: 30, CreatedAt: base.Add(3 * time.Second)}, // newest
+		{Name: "C3", Value: 30, CreatedAt: base.Add(2 * time.Second)}, // middle
+
+		{Name: "B3", Value: 20, CreatedAt: base.Add(2 * time.Second)},
+		{Name: "B1", Value: 20, CreatedAt: base.Add(3 * time.Second)},
+		{Name: "B2", Value: 20, CreatedAt: base.Add(1 * time.Second)},
+
+		{Name: "A1", Value: 10, CreatedAt: base.Add(3 * time.Second)},
+		{Name: "A3", Value: 10, CreatedAt: base.Add(2 * time.Second)},
+		{Name: "A2", Value: 10, CreatedAt: base.Add(1 * time.Second)},
+	}
+
+	for _, obj := range data {
+		require.NoError(t, store.Create(obj))
+	}
+
+	t.Run("composite key pagination", func(t *testing.T) {
+		results, err := store.Query().OrderBy(
+			OrderByField("Value", true),
+			OrderByField("CreatedAt", true),
+		).Limit(4).Find()
+		require.NoError(t, err)
+		require.Len(t, results, 4)
+
+		require.Equal(t, "C1", results[0].(TestObject).Name)
+		require.Equal(t, "C3", results[1].(TestObject).Name)
+		require.Equal(t, "C2", results[2].(TestObject).Name)
+		require.Equal(t, "B1", results[3].(TestObject).Name)
+
+		last := results[len(results)-1].(TestObject)
+
+		t.Run("after with time", func(t *testing.T) {
+			results, err = store.Query().OrderBy(
+				OrderByField("Value", true),
+				OrderByField("CreatedAt", true),
+			).After(last.Value, last.CreatedAt).Limit(4).Find()
+			require.NoError(t, err)
+			require.Len(t, results, 4)
+
+			require.Equal(t, "B3", results[0].(TestObject).Name, "Pagination did not respect second sort key")
+		})
+
+		t.Run("after with string time", func(t *testing.T) {
+			results, err = store.Query().OrderBy(
+				OrderByField("Value", true),
+				OrderByField("CreatedAt", true),
+			).After(last.Value, last.CreatedAt.Format(time.RFC3339)).Limit(4).Find()
+			require.NoError(t, err)
+			require.Len(t, results, 4)
+
+			require.Equal(t, "B3", results[0].(TestObject).Name, "Pagination did not respect second sort key")
+		})
+	})
+}
+
+func TestPointerPaginationMultipleKeys(t *testing.T, store DataStore) {
+	base := time.Now()
+	data := []*TestObject{
+		// Insert intentionally out of desired CreatedAt order
+		{Name: "C2", Value: 30, CreatedAt: base.Add(1 * time.Second)}, // oldest
+		{Name: "C1", Value: 30, CreatedAt: base.Add(3 * time.Second)}, // newest
+		{Name: "C3", Value: 30, CreatedAt: base.Add(2 * time.Second)}, // middle
+
+		{Name: "B3", Value: 20, CreatedAt: base.Add(2 * time.Second)},
+		{Name: "B1", Value: 20, CreatedAt: base.Add(3 * time.Second)},
+		{Name: "B2", Value: 20, CreatedAt: base.Add(1 * time.Second)},
+
+		{Name: "A1", Value: 10, CreatedAt: base.Add(3 * time.Second)},
+		{Name: "A3", Value: 10, CreatedAt: base.Add(2 * time.Second)},
+		{Name: "A2", Value: 10, CreatedAt: base.Add(1 * time.Second)},
+	}
+
+	for _, obj := range data {
+		require.NoError(t, store.Create(obj))
+	}
+
+	t.Run("composite key pagination", func(t *testing.T) {
+		results, err := store.Query().OrderBy(
+			OrderByField("Value", true),
+			OrderByField("CreatedAt", true),
+		).Limit(4).Find()
+		require.NoError(t, err)
+		require.Len(t, results, 4)
+
+		require.Equal(t, "C1", results[0].(*TestObject).Name)
+		require.Equal(t, "C3", results[1].(*TestObject).Name)
+		require.Equal(t, "C2", results[2].(*TestObject).Name)
+		require.Equal(t, "B1", results[3].(*TestObject).Name)
+
+		last := results[len(results)-1].(*TestObject)
+
+		t.Run("after with time", func(t *testing.T) {
+			results, err = store.Query().OrderBy(
+				OrderByField("Value", true),
+				OrderByField("CreatedAt", true),
+			).After(last.Value, last.CreatedAt).Limit(4).Find()
+			require.NoError(t, err)
+			require.Len(t, results, 4)
+
+			require.Equal(t, "B3", results[0].(*TestObject).Name, "Pagination did not respect second sort key")
+		})
+
+		t.Run("after with string time", func(t *testing.T) {
+			results, err = store.Query().OrderBy(
+				OrderByField("Value", true),
+				OrderByField("CreatedAt", true),
+			).After(last.Value, last.CreatedAt.Format(time.RFC3339)).Limit(4).Find()
+			require.NoError(t, err)
+			require.Len(t, results, 4)
+
+			require.Equal(t, "B3", results[0].(*TestObject).Name, "Pagination did not respect second sort key")
+		})
+	})
+}
+
 func TestPointerPagination(t *testing.T, store DataStore) {
 	for i := 1; i <= 10; i++ {
 		now := time.Now()

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -56,23 +56,7 @@ func NewDataSvcCreateObjectFieldsWithDefaults() *DataSvcCreateObjectFields {
 	return &this
 }
 
-// GetAuthors returns the Authors field value if set, zero value otherwise.
-func (o *DataSvcCreateObjectFields) GetAuthors() []string {
-	if o == nil || IsNil(o.Authors) {
-		var ret []string
-		return ret
-	}
-	return o.Authors
-}
 
-// GetAuthorsOk returns a tuple with the Authors field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DataSvcCreateObjectFields) GetAuthorsOk() ([]string, bool) {
-	if o == nil || IsNil(o.Authors) {
-		return nil, false
-	}
-	return o.Authors, true
-}
 
 // HasAuthors returns a boolean if a field has been set.
 func (o *DataSvcCreateObjectFields) HasAuthors() bool {
@@ -83,52 +67,11 @@ func (o *DataSvcCreateObjectFields) HasAuthors() bool {
 	return false
 }
 
-// SetAuthors gets a reference to the given []string and assigns it to the Authors field.
-func (o *DataSvcCreateObjectFields) SetAuthors(v []string) {
-	o.Authors = v
-}
 
-// GetData returns the Data field value
-func (o *DataSvcCreateObjectFields) GetData() map[string]interface{} {
-	if o == nil {
-		var ret map[string]interface{}
-		return ret
-	}
 
-	return o.Data
-}
 
-// GetDataOk returns a tuple with the Data field value
-// and a boolean to check if the value has been set.
-func (o *DataSvcCreateObjectFields) GetDataOk() (map[string]interface{}, bool) {
-	if o == nil {
-		return map[string]interface{}{}, false
-	}
-	return o.Data, true
-}
 
-// SetData sets field value
-func (o *DataSvcCreateObjectFields) SetData(v map[string]interface{}) {
-	o.Data = v
-}
 
-// GetDeleters returns the Deleters field value if set, zero value otherwise.
-func (o *DataSvcCreateObjectFields) GetDeleters() []string {
-	if o == nil || IsNil(o.Deleters) {
-		var ret []string
-		return ret
-	}
-	return o.Deleters
-}
-
-// GetDeletersOk returns a tuple with the Deleters field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DataSvcCreateObjectFields) GetDeletersOk() ([]string, bool) {
-	if o == nil || IsNil(o.Deleters) {
-		return nil, false
-	}
-	return o.Deleters, true
-}
 
 // HasDeleters returns a boolean if a field has been set.
 func (o *DataSvcCreateObjectFields) HasDeleters() bool {
@@ -139,28 +82,8 @@ func (o *DataSvcCreateObjectFields) HasDeleters() bool {
 	return false
 }
 
-// SetDeleters gets a reference to the given []string and assigns it to the Deleters field.
-func (o *DataSvcCreateObjectFields) SetDeleters(v []string) {
-	o.Deleters = v
-}
 
-// GetId returns the Id field value if set, zero value otherwise.
-func (o *DataSvcCreateObjectFields) GetId() string {
-	if o == nil || IsNil(o.Id) {
-		var ret string
-		return ret
-	}
-	return *o.Id
-}
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DataSvcCreateObjectFields) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
-		return nil, false
-	}
-	return o.Id, true
-}
 
 // HasId returns a boolean if a field has been set.
 func (o *DataSvcCreateObjectFields) HasId() bool {
@@ -171,28 +94,8 @@ func (o *DataSvcCreateObjectFields) HasId() bool {
 	return false
 }
 
-// SetId gets a reference to the given string and assigns it to the Id field.
-func (o *DataSvcCreateObjectFields) SetId(v string) {
-	o.Id = &v
-}
 
-// GetReaders returns the Readers field value if set, zero value otherwise.
-func (o *DataSvcCreateObjectFields) GetReaders() []string {
-	if o == nil || IsNil(o.Readers) {
-		var ret []string
-		return ret
-	}
-	return o.Readers
-}
 
-// GetReadersOk returns a tuple with the Readers field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DataSvcCreateObjectFields) GetReadersOk() ([]string, bool) {
-	if o == nil || IsNil(o.Readers) {
-		return nil, false
-	}
-	return o.Readers, true
-}
 
 // HasReaders returns a boolean if a field has been set.
 func (o *DataSvcCreateObjectFields) HasReaders() bool {
@@ -203,52 +106,11 @@ func (o *DataSvcCreateObjectFields) HasReaders() bool {
 	return false
 }
 
-// SetReaders gets a reference to the given []string and assigns it to the Readers field.
-func (o *DataSvcCreateObjectFields) SetReaders(v []string) {
-	o.Readers = v
-}
 
-// GetTable returns the Table field value
-func (o *DataSvcCreateObjectFields) GetTable() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Table
-}
 
-// GetTableOk returns a tuple with the Table field value
-// and a boolean to check if the value has been set.
-func (o *DataSvcCreateObjectFields) GetTableOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Table, true
-}
 
-// SetTable sets field value
-func (o *DataSvcCreateObjectFields) SetTable(v string) {
-	o.Table = v
-}
 
-// GetWriters returns the Writers field value if set, zero value otherwise.
-func (o *DataSvcCreateObjectFields) GetWriters() []string {
-	if o == nil || IsNil(o.Writers) {
-		var ret []string
-		return ret
-	}
-	return o.Writers
-}
-
-// GetWritersOk returns a tuple with the Writers field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DataSvcCreateObjectFields) GetWritersOk() ([]string, bool) {
-	if o == nil || IsNil(o.Writers) {
-		return nil, false
-	}
-	return o.Writers, true
-}
 
 // HasWriters returns a boolean if a field has been set.
 func (o *DataSvcCreateObjectFields) HasWriters() bool {
@@ -259,10 +121,6 @@ func (o *DataSvcCreateObjectFields) HasWriters() bool {
 	return false
 }
 
-// SetWriters gets a reference to the given []string and assigns it to the Writers field.
-func (o *DataSvcCreateObjectFields) SetWriters(v []string) {
-	o.Writers = v
-}
 
 func (o DataSvcCreateObjectFields) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

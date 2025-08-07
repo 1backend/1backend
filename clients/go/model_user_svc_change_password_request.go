@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -47,53 +47,11 @@ func NewUserSvcChangePasswordRequestWithDefaults() *UserSvcChangePasswordRequest
 	return &this
 }
 
-// GetCurrentPassword returns the CurrentPassword field value
-func (o *UserSvcChangePasswordRequest) GetCurrentPassword() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.CurrentPassword
-}
 
-// GetCurrentPasswordOk returns a tuple with the CurrentPassword field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcChangePasswordRequest) GetCurrentPasswordOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.CurrentPassword, true
-}
 
-// SetCurrentPassword sets field value
-func (o *UserSvcChangePasswordRequest) SetCurrentPassword(v string) {
-	o.CurrentPassword = v
-}
 
-// GetNewPassword returns the NewPassword field value
-func (o *UserSvcChangePasswordRequest) GetNewPassword() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.NewPassword
-}
-
-// GetNewPasswordOk returns a tuple with the NewPassword field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcChangePasswordRequest) GetNewPasswordOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.NewPassword, true
-}
-
-// SetNewPassword sets field value
-func (o *UserSvcChangePasswordRequest) SetNewPassword(v string) {
-	o.NewPassword = v
-}
 
 func (o UserSvcChangePasswordRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

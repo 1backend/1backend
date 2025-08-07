@@ -56,7 +56,7 @@ func (cs *SecretService) SaveSecrets(
 		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
-	if !isAuthRsp.GetAuthorized() {
+	if !isAuthRsp.Authorized {
 		endpoint.Unauthorized(w)
 		return
 	}
@@ -85,7 +85,7 @@ func (cs *SecretService) SaveSecrets(
 	err = cs.saveSecrets(
 		r.Context(),
 		req.Secrets,
-		isAuthRsp.GetAuthorized(),
+		isAuthRsp.Authorized,
 		isAuthRsp.User.Slug,
 	)
 	if err != nil {

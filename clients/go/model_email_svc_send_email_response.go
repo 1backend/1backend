@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -43,23 +43,7 @@ func NewEmailSvcSendEmailResponseWithDefaults() *EmailSvcSendEmailResponse {
 	return &this
 }
 
-// GetEmailId returns the EmailId field value if set, zero value otherwise.
-func (o *EmailSvcSendEmailResponse) GetEmailId() string {
-	if o == nil || IsNil(o.EmailId) {
-		var ret string
-		return ret
-	}
-	return *o.EmailId
-}
 
-// GetEmailIdOk returns a tuple with the EmailId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EmailSvcSendEmailResponse) GetEmailIdOk() (*string, bool) {
-	if o == nil || IsNil(o.EmailId) {
-		return nil, false
-	}
-	return o.EmailId, true
-}
 
 // HasEmailId returns a boolean if a field has been set.
 func (o *EmailSvcSendEmailResponse) HasEmailId() bool {
@@ -70,28 +54,8 @@ func (o *EmailSvcSendEmailResponse) HasEmailId() bool {
 	return false
 }
 
-// SetEmailId gets a reference to the given string and assigns it to the EmailId field.
-func (o *EmailSvcSendEmailResponse) SetEmailId(v string) {
-	o.EmailId = &v
-}
 
-// GetStatus returns the Status field value if set, zero value otherwise.
-func (o *EmailSvcSendEmailResponse) GetStatus() string {
-	if o == nil || IsNil(o.Status) {
-		var ret string
-		return ret
-	}
-	return *o.Status
-}
 
-// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *EmailSvcSendEmailResponse) GetStatusOk() (*string, bool) {
-	if o == nil || IsNil(o.Status) {
-		return nil, false
-	}
-	return o.Status, true
-}
 
 // HasStatus returns a boolean if a field has been set.
 func (o *EmailSvcSendEmailResponse) HasStatus() bool {
@@ -102,10 +66,6 @@ func (o *EmailSvcSendEmailResponse) HasStatus() bool {
 	return false
 }
 
-// SetStatus gets a reference to the given string and assigns it to the Status field.
-func (o *EmailSvcSendEmailResponse) SetStatus(v string) {
-	o.Status = &v
-}
 
 func (o EmailSvcSendEmailResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

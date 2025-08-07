@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -40,23 +40,7 @@ func NewUserSvcLoginResponseWithDefaults() *UserSvcLoginResponse {
 	return &this
 }
 
-// GetToken returns the Token field value if set, zero value otherwise.
-func (o *UserSvcLoginResponse) GetToken() UserSvcAuthToken {
-	if o == nil || IsNil(o.Token) {
-		var ret UserSvcAuthToken
-		return ret
-	}
-	return *o.Token
-}
 
-// GetTokenOk returns a tuple with the Token field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcLoginResponse) GetTokenOk() (*UserSvcAuthToken, bool) {
-	if o == nil || IsNil(o.Token) {
-		return nil, false
-	}
-	return o.Token, true
-}
 
 // HasToken returns a boolean if a field has been set.
 func (o *UserSvcLoginResponse) HasToken() bool {
@@ -67,10 +51,6 @@ func (o *UserSvcLoginResponse) HasToken() bool {
 	return false
 }
 
-// SetToken gets a reference to the given UserSvcAuthToken and assigns it to the Token field.
-func (o *UserSvcLoginResponse) SetToken(v UserSvcAuthToken) {
-	o.Token = &v
-}
 
 func (o UserSvcLoginResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

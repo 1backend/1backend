@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -41,23 +41,7 @@ func NewSecretSvcDecryptValueRequestWithDefaults() *SecretSvcDecryptValueRequest
 	return &this
 }
 
-// GetValue returns the Value field value if set, zero value otherwise.
-func (o *SecretSvcDecryptValueRequest) GetValue() string {
-	if o == nil || IsNil(o.Value) {
-		var ret string
-		return ret
-	}
-	return *o.Value
-}
 
-// GetValueOk returns a tuple with the Value field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SecretSvcDecryptValueRequest) GetValueOk() (*string, bool) {
-	if o == nil || IsNil(o.Value) {
-		return nil, false
-	}
-	return o.Value, true
-}
 
 // HasValue returns a boolean if a field has been set.
 func (o *SecretSvcDecryptValueRequest) HasValue() bool {
@@ -68,28 +52,8 @@ func (o *SecretSvcDecryptValueRequest) HasValue() bool {
 	return false
 }
 
-// SetValue gets a reference to the given string and assigns it to the Value field.
-func (o *SecretSvcDecryptValueRequest) SetValue(v string) {
-	o.Value = &v
-}
 
-// GetValues returns the Values field value if set, zero value otherwise.
-func (o *SecretSvcDecryptValueRequest) GetValues() []string {
-	if o == nil || IsNil(o.Values) {
-		var ret []string
-		return ret
-	}
-	return o.Values
-}
 
-// GetValuesOk returns a tuple with the Values field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SecretSvcDecryptValueRequest) GetValuesOk() ([]string, bool) {
-	if o == nil || IsNil(o.Values) {
-		return nil, false
-	}
-	return o.Values, true
-}
 
 // HasValues returns a boolean if a field has been set.
 func (o *SecretSvcDecryptValueRequest) HasValues() bool {
@@ -100,10 +64,6 @@ func (o *SecretSvcDecryptValueRequest) HasValues() bool {
 	return false
 }
 
-// SetValues gets a reference to the given []string and assigns it to the Values field.
-func (o *SecretSvcDecryptValueRequest) SetValues(v []string) {
-	o.Values = v
-}
 
 func (o SecretSvcDecryptValueRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

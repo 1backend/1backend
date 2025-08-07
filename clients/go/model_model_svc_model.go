@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -66,23 +66,7 @@ func NewModelSvcModelWithDefaults() *ModelSvcModel {
 	return &this
 }
 
-// GetAssets returns the Assets field value if set, zero value otherwise.
-func (o *ModelSvcModel) GetAssets() []ModelSvcAsset {
-	if o == nil || IsNil(o.Assets) {
-		var ret []ModelSvcAsset
-		return ret
-	}
-	return o.Assets
-}
 
-// GetAssetsOk returns a tuple with the Assets field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetAssetsOk() ([]ModelSvcAsset, bool) {
-	if o == nil || IsNil(o.Assets) {
-		return nil, false
-	}
-	return o.Assets, true
-}
 
 // HasAssets returns a boolean if a field has been set.
 func (o *ModelSvcModel) HasAssets() bool {
@@ -93,28 +77,8 @@ func (o *ModelSvcModel) HasAssets() bool {
 	return false
 }
 
-// SetAssets gets a reference to the given []ModelSvcAsset and assigns it to the Assets field.
-func (o *ModelSvcModel) SetAssets(v []ModelSvcAsset) {
-	o.Assets = v
-}
 
-// GetBits returns the Bits field value if set, zero value otherwise.
-func (o *ModelSvcModel) GetBits() int32 {
-	if o == nil || IsNil(o.Bits) {
-		var ret int32
-		return ret
-	}
-	return *o.Bits
-}
 
-// GetBitsOk returns a tuple with the Bits field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetBitsOk() (*int32, bool) {
-	if o == nil || IsNil(o.Bits) {
-		return nil, false
-	}
-	return o.Bits, true
-}
 
 // HasBits returns a boolean if a field has been set.
 func (o *ModelSvcModel) HasBits() bool {
@@ -125,28 +89,8 @@ func (o *ModelSvcModel) HasBits() bool {
 	return false
 }
 
-// SetBits gets a reference to the given int32 and assigns it to the Bits field.
-func (o *ModelSvcModel) SetBits(v int32) {
-	o.Bits = &v
-}
 
-// GetDescription returns the Description field value if set, zero value otherwise.
-func (o *ModelSvcModel) GetDescription() string {
-	if o == nil || IsNil(o.Description) {
-		var ret string
-		return ret
-	}
-	return *o.Description
-}
 
-// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetDescriptionOk() (*string, bool) {
-	if o == nil || IsNil(o.Description) {
-		return nil, false
-	}
-	return o.Description, true
-}
 
 // HasDescription returns a boolean if a field has been set.
 func (o *ModelSvcModel) HasDescription() bool {
@@ -157,28 +101,8 @@ func (o *ModelSvcModel) HasDescription() bool {
 	return false
 }
 
-// SetDescription gets a reference to the given string and assigns it to the Description field.
-func (o *ModelSvcModel) SetDescription(v string) {
-	o.Description = &v
-}
 
-// GetExtension returns the Extension field value if set, zero value otherwise.
-func (o *ModelSvcModel) GetExtension() string {
-	if o == nil || IsNil(o.Extension) {
-		var ret string
-		return ret
-	}
-	return *o.Extension
-}
 
-// GetExtensionOk returns a tuple with the Extension field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetExtensionOk() (*string, bool) {
-	if o == nil || IsNil(o.Extension) {
-		return nil, false
-	}
-	return o.Extension, true
-}
 
 // HasExtension returns a boolean if a field has been set.
 func (o *ModelSvcModel) HasExtension() bool {
@@ -189,28 +113,8 @@ func (o *ModelSvcModel) HasExtension() bool {
 	return false
 }
 
-// SetExtension gets a reference to the given string and assigns it to the Extension field.
-func (o *ModelSvcModel) SetExtension(v string) {
-	o.Extension = &v
-}
 
-// GetFlavour returns the Flavour field value if set, zero value otherwise.
-func (o *ModelSvcModel) GetFlavour() string {
-	if o == nil || IsNil(o.Flavour) {
-		var ret string
-		return ret
-	}
-	return *o.Flavour
-}
 
-// GetFlavourOk returns a tuple with the Flavour field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetFlavourOk() (*string, bool) {
-	if o == nil || IsNil(o.Flavour) {
-		return nil, false
-	}
-	return o.Flavour, true
-}
 
 // HasFlavour returns a boolean if a field has been set.
 func (o *ModelSvcModel) HasFlavour() bool {
@@ -221,28 +125,8 @@ func (o *ModelSvcModel) HasFlavour() bool {
 	return false
 }
 
-// SetFlavour gets a reference to the given string and assigns it to the Flavour field.
-func (o *ModelSvcModel) SetFlavour(v string) {
-	o.Flavour = &v
-}
 
-// GetFullName returns the FullName field value if set, zero value otherwise.
-func (o *ModelSvcModel) GetFullName() string {
-	if o == nil || IsNil(o.FullName) {
-		var ret string
-		return ret
-	}
-	return *o.FullName
-}
 
-// GetFullNameOk returns a tuple with the FullName field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetFullNameOk() (*string, bool) {
-	if o == nil || IsNil(o.FullName) {
-		return nil, false
-	}
-	return o.FullName, true
-}
 
 // HasFullName returns a boolean if a field has been set.
 func (o *ModelSvcModel) HasFullName() bool {
@@ -253,52 +137,11 @@ func (o *ModelSvcModel) HasFullName() bool {
 	return false
 }
 
-// SetFullName gets a reference to the given string and assigns it to the FullName field.
-func (o *ModelSvcModel) SetFullName(v string) {
-	o.FullName = &v
-}
 
-// GetId returns the Id field value
-func (o *ModelSvcModel) GetId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Id
-}
 
-// GetIdOk returns a tuple with the Id field value
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Id, true
-}
 
-// SetId sets field value
-func (o *ModelSvcModel) SetId(v string) {
-	o.Id = v
-}
 
-// GetMaxBits returns the MaxBits field value if set, zero value otherwise.
-func (o *ModelSvcModel) GetMaxBits() int32 {
-	if o == nil || IsNil(o.MaxBits) {
-		var ret int32
-		return ret
-	}
-	return *o.MaxBits
-}
-
-// GetMaxBitsOk returns a tuple with the MaxBits field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetMaxBitsOk() (*int32, bool) {
-	if o == nil || IsNil(o.MaxBits) {
-		return nil, false
-	}
-	return o.MaxBits, true
-}
 
 // HasMaxBits returns a boolean if a field has been set.
 func (o *ModelSvcModel) HasMaxBits() bool {
@@ -309,28 +152,8 @@ func (o *ModelSvcModel) HasMaxBits() bool {
 	return false
 }
 
-// SetMaxBits gets a reference to the given int32 and assigns it to the MaxBits field.
-func (o *ModelSvcModel) SetMaxBits(v int32) {
-	o.MaxBits = &v
-}
 
-// GetMaxRam returns the MaxRam field value if set, zero value otherwise.
-func (o *ModelSvcModel) GetMaxRam() float32 {
-	if o == nil || IsNil(o.MaxRam) {
-		var ret float32
-		return ret
-	}
-	return *o.MaxRam
-}
 
-// GetMaxRamOk returns a tuple with the MaxRam field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetMaxRamOk() (*float32, bool) {
-	if o == nil || IsNil(o.MaxRam) {
-		return nil, false
-	}
-	return o.MaxRam, true
-}
 
 // HasMaxRam returns a boolean if a field has been set.
 func (o *ModelSvcModel) HasMaxRam() bool {
@@ -341,28 +164,8 @@ func (o *ModelSvcModel) HasMaxRam() bool {
 	return false
 }
 
-// SetMaxRam gets a reference to the given float32 and assigns it to the MaxRam field.
-func (o *ModelSvcModel) SetMaxRam(v float32) {
-	o.MaxRam = &v
-}
 
-// GetMirrors returns the Mirrors field value if set, zero value otherwise.
-func (o *ModelSvcModel) GetMirrors() []string {
-	if o == nil || IsNil(o.Mirrors) {
-		var ret []string
-		return ret
-	}
-	return o.Mirrors
-}
 
-// GetMirrorsOk returns a tuple with the Mirrors field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetMirrorsOk() ([]string, bool) {
-	if o == nil || IsNil(o.Mirrors) {
-		return nil, false
-	}
-	return o.Mirrors, true
-}
 
 // HasMirrors returns a boolean if a field has been set.
 func (o *ModelSvcModel) HasMirrors() bool {
@@ -373,52 +176,11 @@ func (o *ModelSvcModel) HasMirrors() bool {
 	return false
 }
 
-// SetMirrors gets a reference to the given []string and assigns it to the Mirrors field.
-func (o *ModelSvcModel) SetMirrors(v []string) {
-	o.Mirrors = v
-}
 
-// GetName returns the Name field value
-func (o *ModelSvcModel) GetName() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Name
-}
 
-// GetNameOk returns a tuple with the Name field value
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetNameOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Name, true
-}
 
-// SetName sets field value
-func (o *ModelSvcModel) SetName(v string) {
-	o.Name = v
-}
 
-// GetParameters returns the Parameters field value if set, zero value otherwise.
-func (o *ModelSvcModel) GetParameters() string {
-	if o == nil || IsNil(o.Parameters) {
-		var ret string
-		return ret
-	}
-	return *o.Parameters
-}
-
-// GetParametersOk returns a tuple with the Parameters field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetParametersOk() (*string, bool) {
-	if o == nil || IsNil(o.Parameters) {
-		return nil, false
-	}
-	return o.Parameters, true
-}
 
 // HasParameters returns a boolean if a field has been set.
 func (o *ModelSvcModel) HasParameters() bool {
@@ -429,52 +191,11 @@ func (o *ModelSvcModel) HasParameters() bool {
 	return false
 }
 
-// SetParameters gets a reference to the given string and assigns it to the Parameters field.
-func (o *ModelSvcModel) SetParameters(v string) {
-	o.Parameters = &v
-}
 
-// GetPlatformId returns the PlatformId field value
-func (o *ModelSvcModel) GetPlatformId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.PlatformId
-}
 
-// GetPlatformIdOk returns a tuple with the PlatformId field value
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetPlatformIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.PlatformId, true
-}
 
-// SetPlatformId sets field value
-func (o *ModelSvcModel) SetPlatformId(v string) {
-	o.PlatformId = v
-}
 
-// GetPromptTemplate returns the PromptTemplate field value if set, zero value otherwise.
-func (o *ModelSvcModel) GetPromptTemplate() string {
-	if o == nil || IsNil(o.PromptTemplate) {
-		var ret string
-		return ret
-	}
-	return *o.PromptTemplate
-}
-
-// GetPromptTemplateOk returns a tuple with the PromptTemplate field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetPromptTemplateOk() (*string, bool) {
-	if o == nil || IsNil(o.PromptTemplate) {
-		return nil, false
-	}
-	return o.PromptTemplate, true
-}
 
 // HasPromptTemplate returns a boolean if a field has been set.
 func (o *ModelSvcModel) HasPromptTemplate() bool {
@@ -485,28 +206,8 @@ func (o *ModelSvcModel) HasPromptTemplate() bool {
 	return false
 }
 
-// SetPromptTemplate gets a reference to the given string and assigns it to the PromptTemplate field.
-func (o *ModelSvcModel) SetPromptTemplate(v string) {
-	o.PromptTemplate = &v
-}
 
-// GetQuality returns the Quality field value if set, zero value otherwise.
-func (o *ModelSvcModel) GetQuality() string {
-	if o == nil || IsNil(o.Quality) {
-		var ret string
-		return ret
-	}
-	return *o.Quality
-}
 
-// GetQualityOk returns a tuple with the Quality field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetQualityOk() (*string, bool) {
-	if o == nil || IsNil(o.Quality) {
-		return nil, false
-	}
-	return o.Quality, true
-}
 
 // HasQuality returns a boolean if a field has been set.
 func (o *ModelSvcModel) HasQuality() bool {
@@ -517,28 +218,8 @@ func (o *ModelSvcModel) HasQuality() bool {
 	return false
 }
 
-// SetQuality gets a reference to the given string and assigns it to the Quality field.
-func (o *ModelSvcModel) SetQuality(v string) {
-	o.Quality = &v
-}
 
-// GetQuantComment returns the QuantComment field value if set, zero value otherwise.
-func (o *ModelSvcModel) GetQuantComment() string {
-	if o == nil || IsNil(o.QuantComment) {
-		var ret string
-		return ret
-	}
-	return *o.QuantComment
-}
 
-// GetQuantCommentOk returns a tuple with the QuantComment field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetQuantCommentOk() (*string, bool) {
-	if o == nil || IsNil(o.QuantComment) {
-		return nil, false
-	}
-	return o.QuantComment, true
-}
 
 // HasQuantComment returns a boolean if a field has been set.
 func (o *ModelSvcModel) HasQuantComment() bool {
@@ -549,28 +230,8 @@ func (o *ModelSvcModel) HasQuantComment() bool {
 	return false
 }
 
-// SetQuantComment gets a reference to the given string and assigns it to the QuantComment field.
-func (o *ModelSvcModel) SetQuantComment(v string) {
-	o.QuantComment = &v
-}
 
-// GetSize returns the Size field value if set, zero value otherwise.
-func (o *ModelSvcModel) GetSize() float32 {
-	if o == nil || IsNil(o.Size) {
-		var ret float32
-		return ret
-	}
-	return *o.Size
-}
 
-// GetSizeOk returns a tuple with the Size field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetSizeOk() (*float32, bool) {
-	if o == nil || IsNil(o.Size) {
-		return nil, false
-	}
-	return o.Size, true
-}
 
 // HasSize returns a boolean if a field has been set.
 func (o *ModelSvcModel) HasSize() bool {
@@ -581,28 +242,8 @@ func (o *ModelSvcModel) HasSize() bool {
 	return false
 }
 
-// SetSize gets a reference to the given float32 and assigns it to the Size field.
-func (o *ModelSvcModel) SetSize(v float32) {
-	o.Size = &v
-}
 
-// GetTags returns the Tags field value if set, zero value otherwise.
-func (o *ModelSvcModel) GetTags() []string {
-	if o == nil || IsNil(o.Tags) {
-		var ret []string
-		return ret
-	}
-	return o.Tags
-}
 
-// GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetTagsOk() ([]string, bool) {
-	if o == nil || IsNil(o.Tags) {
-		return nil, false
-	}
-	return o.Tags, true
-}
 
 // HasTags returns a boolean if a field has been set.
 func (o *ModelSvcModel) HasTags() bool {
@@ -613,28 +254,8 @@ func (o *ModelSvcModel) HasTags() bool {
 	return false
 }
 
-// SetTags gets a reference to the given []string and assigns it to the Tags field.
-func (o *ModelSvcModel) SetTags(v []string) {
-	o.Tags = v
-}
 
-// GetUncensored returns the Uncensored field value if set, zero value otherwise.
-func (o *ModelSvcModel) GetUncensored() bool {
-	if o == nil || IsNil(o.Uncensored) {
-		var ret bool
-		return ret
-	}
-	return *o.Uncensored
-}
 
-// GetUncensoredOk returns a tuple with the Uncensored field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetUncensoredOk() (*bool, bool) {
-	if o == nil || IsNil(o.Uncensored) {
-		return nil, false
-	}
-	return o.Uncensored, true
-}
 
 // HasUncensored returns a boolean if a field has been set.
 func (o *ModelSvcModel) HasUncensored() bool {
@@ -645,28 +266,8 @@ func (o *ModelSvcModel) HasUncensored() bool {
 	return false
 }
 
-// SetUncensored gets a reference to the given bool and assigns it to the Uncensored field.
-func (o *ModelSvcModel) SetUncensored(v bool) {
-	o.Uncensored = &v
-}
 
-// GetVersion returns the Version field value if set, zero value otherwise.
-func (o *ModelSvcModel) GetVersion() string {
-	if o == nil || IsNil(o.Version) {
-		var ret string
-		return ret
-	}
-	return *o.Version
-}
 
-// GetVersionOk returns a tuple with the Version field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ModelSvcModel) GetVersionOk() (*string, bool) {
-	if o == nil || IsNil(o.Version) {
-		return nil, false
-	}
-	return o.Version, true
-}
 
 // HasVersion returns a boolean if a field has been set.
 func (o *ModelSvcModel) HasVersion() bool {
@@ -677,10 +278,6 @@ func (o *ModelSvcModel) HasVersion() bool {
 	return false
 }
 
-// SetVersion gets a reference to the given string and assigns it to the Version field.
-func (o *ModelSvcModel) SetVersion(v string) {
-	o.Version = &v
-}
 
 func (o ModelSvcModel) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

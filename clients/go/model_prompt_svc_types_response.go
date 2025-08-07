@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -40,23 +40,7 @@ func NewPromptSvcTypesResponseWithDefaults() *PromptSvcTypesResponse {
 	return &this
 }
 
-// GetChunk returns the Chunk field value if set, zero value otherwise.
-func (o *PromptSvcTypesResponse) GetChunk() PromptSvcStreamChunk {
-	if o == nil || IsNil(o.Chunk) {
-		var ret PromptSvcStreamChunk
-		return ret
-	}
-	return *o.Chunk
-}
 
-// GetChunkOk returns a tuple with the Chunk field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PromptSvcTypesResponse) GetChunkOk() (*PromptSvcStreamChunk, bool) {
-	if o == nil || IsNil(o.Chunk) {
-		return nil, false
-	}
-	return o.Chunk, true
-}
 
 // HasChunk returns a boolean if a field has been set.
 func (o *PromptSvcTypesResponse) HasChunk() bool {
@@ -67,10 +51,6 @@ func (o *PromptSvcTypesResponse) HasChunk() bool {
 	return false
 }
 
-// SetChunk gets a reference to the given PromptSvcStreamChunk and assigns it to the Chunk field.
-func (o *PromptSvcTypesResponse) SetChunk(v PromptSvcStreamChunk) {
-	o.Chunk = &v
-}
 
 func (o PromptSvcTypesResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

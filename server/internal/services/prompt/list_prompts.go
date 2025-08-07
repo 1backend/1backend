@@ -8,8 +8,6 @@
 package promptservice
 
 import (
-	"encoding/json"
-
 	"github.com/1backend/1backend/sdk/go/datastore"
 	prompttypes "github.com/1backend/1backend/server/internal/services/prompt/types"
 )
@@ -27,13 +25,8 @@ func (p *PromptService) listPrompts(
 		q = q.OrderBy(datastore.OrderByField("createdAt", false))
 	}
 
-	if options.Query.JSONAfter != "" {
-		v := []any{}
-		err := json.Unmarshal([]byte(options.Query.JSONAfter), &v)
-		if err != nil {
-			return nil, 0, err
-		}
-		q = q.After(v...)
+	if len(options.Query.After) != 0 {
+		q = q.After(options.Query.After...)
 	}
 
 	resI, err := q.Find()

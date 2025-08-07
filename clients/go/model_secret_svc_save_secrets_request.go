@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -40,23 +40,7 @@ func NewSecretSvcSaveSecretsRequestWithDefaults() *SecretSvcSaveSecretsRequest {
 	return &this
 }
 
-// GetSecrets returns the Secrets field value if set, zero value otherwise.
-func (o *SecretSvcSaveSecretsRequest) GetSecrets() []SecretSvcSecret {
-	if o == nil || IsNil(o.Secrets) {
-		var ret []SecretSvcSecret
-		return ret
-	}
-	return o.Secrets
-}
 
-// GetSecretsOk returns a tuple with the Secrets field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SecretSvcSaveSecretsRequest) GetSecretsOk() ([]SecretSvcSecret, bool) {
-	if o == nil || IsNil(o.Secrets) {
-		return nil, false
-	}
-	return o.Secrets, true
-}
 
 // HasSecrets returns a boolean if a field has been set.
 func (o *SecretSvcSaveSecretsRequest) HasSecrets() bool {
@@ -67,10 +51,6 @@ func (o *SecretSvcSaveSecretsRequest) HasSecrets() bool {
 	return false
 }
 
-// SetSecrets gets a reference to the given []SecretSvcSecret and assigns it to the Secrets field.
-func (o *SecretSvcSaveSecretsRequest) SetSecrets(v []SecretSvcSecret) {
-	o.Secrets = v
-}
 
 func (o SecretSvcSaveSecretsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

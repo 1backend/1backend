@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -44,23 +44,7 @@ func NewProxySvcRouteWithDefaults() *ProxySvcRoute {
 	return &this
 }
 
-// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
-func (o *ProxySvcRoute) GetCreatedAt() string {
-	if o == nil || IsNil(o.CreatedAt) {
-		var ret string
-		return ret
-	}
-	return *o.CreatedAt
-}
 
-// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProxySvcRoute) GetCreatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.CreatedAt) {
-		return nil, false
-	}
-	return o.CreatedAt, true
-}
 
 // HasCreatedAt returns a boolean if a field has been set.
 func (o *ProxySvcRoute) HasCreatedAt() bool {
@@ -71,28 +55,8 @@ func (o *ProxySvcRoute) HasCreatedAt() bool {
 	return false
 }
 
-// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
-func (o *ProxySvcRoute) SetCreatedAt(v string) {
-	o.CreatedAt = &v
-}
 
-// GetId returns the Id field value if set, zero value otherwise.
-func (o *ProxySvcRoute) GetId() string {
-	if o == nil || IsNil(o.Id) {
-		var ret string
-		return ret
-	}
-	return *o.Id
-}
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProxySvcRoute) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
-		return nil, false
-	}
-	return o.Id, true
-}
 
 // HasId returns a boolean if a field has been set.
 func (o *ProxySvcRoute) HasId() bool {
@@ -103,28 +67,8 @@ func (o *ProxySvcRoute) HasId() bool {
 	return false
 }
 
-// SetId gets a reference to the given string and assigns it to the Id field.
-func (o *ProxySvcRoute) SetId(v string) {
-	o.Id = &v
-}
 
-// GetTarget returns the Target field value if set, zero value otherwise.
-func (o *ProxySvcRoute) GetTarget() string {
-	if o == nil || IsNil(o.Target) {
-		var ret string
-		return ret
-	}
-	return *o.Target
-}
 
-// GetTargetOk returns a tuple with the Target field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProxySvcRoute) GetTargetOk() (*string, bool) {
-	if o == nil || IsNil(o.Target) {
-		return nil, false
-	}
-	return o.Target, true
-}
 
 // HasTarget returns a boolean if a field has been set.
 func (o *ProxySvcRoute) HasTarget() bool {
@@ -135,28 +79,8 @@ func (o *ProxySvcRoute) HasTarget() bool {
 	return false
 }
 
-// SetTarget gets a reference to the given string and assigns it to the Target field.
-func (o *ProxySvcRoute) SetTarget(v string) {
-	o.Target = &v
-}
 
-// GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
-func (o *ProxySvcRoute) GetUpdatedAt() string {
-	if o == nil || IsNil(o.UpdatedAt) {
-		var ret string
-		return ret
-	}
-	return *o.UpdatedAt
-}
 
-// GetUpdatedAtOk returns a tuple with the UpdatedAt field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProxySvcRoute) GetUpdatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.UpdatedAt) {
-		return nil, false
-	}
-	return o.UpdatedAt, true
-}
 
 // HasUpdatedAt returns a boolean if a field has been set.
 func (o *ProxySvcRoute) HasUpdatedAt() bool {
@@ -167,10 +91,6 @@ func (o *ProxySvcRoute) HasUpdatedAt() bool {
 	return false
 }
 
-// SetUpdatedAt gets a reference to the given string and assigns it to the UpdatedAt field.
-func (o *ProxySvcRoute) SetUpdatedAt(v string) {
-	o.UpdatedAt = &v
-}
 
 func (o ProxySvcRoute) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

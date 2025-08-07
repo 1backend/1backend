@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -43,23 +43,7 @@ func NewPolicySvcCheckRequestWithDefaults() *PolicySvcCheckRequest {
 	return &this
 }
 
-// GetEndpoint returns the Endpoint field value if set, zero value otherwise.
-func (o *PolicySvcCheckRequest) GetEndpoint() string {
-	if o == nil || IsNil(o.Endpoint) {
-		var ret string
-		return ret
-	}
-	return *o.Endpoint
-}
 
-// GetEndpointOk returns a tuple with the Endpoint field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PolicySvcCheckRequest) GetEndpointOk() (*string, bool) {
-	if o == nil || IsNil(o.Endpoint) {
-		return nil, false
-	}
-	return o.Endpoint, true
-}
 
 // HasEndpoint returns a boolean if a field has been set.
 func (o *PolicySvcCheckRequest) HasEndpoint() bool {
@@ -70,28 +54,8 @@ func (o *PolicySvcCheckRequest) HasEndpoint() bool {
 	return false
 }
 
-// SetEndpoint gets a reference to the given string and assigns it to the Endpoint field.
-func (o *PolicySvcCheckRequest) SetEndpoint(v string) {
-	o.Endpoint = &v
-}
 
-// GetIp returns the Ip field value if set, zero value otherwise.
-func (o *PolicySvcCheckRequest) GetIp() string {
-	if o == nil || IsNil(o.Ip) {
-		var ret string
-		return ret
-	}
-	return *o.Ip
-}
 
-// GetIpOk returns a tuple with the Ip field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PolicySvcCheckRequest) GetIpOk() (*string, bool) {
-	if o == nil || IsNil(o.Ip) {
-		return nil, false
-	}
-	return o.Ip, true
-}
 
 // HasIp returns a boolean if a field has been set.
 func (o *PolicySvcCheckRequest) HasIp() bool {
@@ -102,28 +66,8 @@ func (o *PolicySvcCheckRequest) HasIp() bool {
 	return false
 }
 
-// SetIp gets a reference to the given string and assigns it to the Ip field.
-func (o *PolicySvcCheckRequest) SetIp(v string) {
-	o.Ip = &v
-}
 
-// GetMethod returns the Method field value if set, zero value otherwise.
-func (o *PolicySvcCheckRequest) GetMethod() string {
-	if o == nil || IsNil(o.Method) {
-		var ret string
-		return ret
-	}
-	return *o.Method
-}
 
-// GetMethodOk returns a tuple with the Method field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PolicySvcCheckRequest) GetMethodOk() (*string, bool) {
-	if o == nil || IsNil(o.Method) {
-		return nil, false
-	}
-	return o.Method, true
-}
 
 // HasMethod returns a boolean if a field has been set.
 func (o *PolicySvcCheckRequest) HasMethod() bool {
@@ -134,28 +78,8 @@ func (o *PolicySvcCheckRequest) HasMethod() bool {
 	return false
 }
 
-// SetMethod gets a reference to the given string and assigns it to the Method field.
-func (o *PolicySvcCheckRequest) SetMethod(v string) {
-	o.Method = &v
-}
 
-// GetUserId returns the UserId field value if set, zero value otherwise.
-func (o *PolicySvcCheckRequest) GetUserId() string {
-	if o == nil || IsNil(o.UserId) {
-		var ret string
-		return ret
-	}
-	return *o.UserId
-}
 
-// GetUserIdOk returns a tuple with the UserId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *PolicySvcCheckRequest) GetUserIdOk() (*string, bool) {
-	if o == nil || IsNil(o.UserId) {
-		return nil, false
-	}
-	return o.UserId, true
-}
 
 // HasUserId returns a boolean if a field has been set.
 func (o *PolicySvcCheckRequest) HasUserId() bool {
@@ -166,10 +90,6 @@ func (o *PolicySvcCheckRequest) HasUserId() bool {
 	return false
 }
 
-// SetUserId gets a reference to the given string and assigns it to the UserId field.
-func (o *PolicySvcCheckRequest) SetUserId(v string) {
-	o.UserId = &v
-}
 
 func (o PolicySvcCheckRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

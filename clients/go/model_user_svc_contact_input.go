@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -51,23 +51,7 @@ func NewUserSvcContactInputWithDefaults() *UserSvcContactInput {
 	return &this
 }
 
-// GetHandle returns the Handle field value if set, zero value otherwise.
-func (o *UserSvcContactInput) GetHandle() string {
-	if o == nil || IsNil(o.Handle) {
-		var ret string
-		return ret
-	}
-	return *o.Handle
-}
 
-// GetHandleOk returns a tuple with the Handle field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcContactInput) GetHandleOk() (*string, bool) {
-	if o == nil || IsNil(o.Handle) {
-		return nil, false
-	}
-	return o.Handle, true
-}
 
 // HasHandle returns a boolean if a field has been set.
 func (o *UserSvcContactInput) HasHandle() bool {
@@ -78,58 +62,12 @@ func (o *UserSvcContactInput) HasHandle() bool {
 	return false
 }
 
-// SetHandle gets a reference to the given string and assigns it to the Handle field.
-func (o *UserSvcContactInput) SetHandle(v string) {
-	o.Handle = &v
-}
 
-// GetId returns the Id field value
-func (o *UserSvcContactInput) GetId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Id
-}
 
-// GetIdOk returns a tuple with the Id field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcContactInput) GetIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Id, true
-}
 
-// SetId sets field value
-func (o *UserSvcContactInput) SetId(v string) {
-	o.Id = v
-}
 
-// GetPlatform returns the Platform field value
-func (o *UserSvcContactInput) GetPlatform() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Platform
-}
-
-// GetPlatformOk returns a tuple with the Platform field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcContactInput) GetPlatformOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Platform, true
-}
-
-// SetPlatform sets field value
-func (o *UserSvcContactInput) SetPlatform(v string) {
-	o.Platform = v
-}
 
 func (o UserSvcContactInput) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

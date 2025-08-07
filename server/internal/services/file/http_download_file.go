@@ -44,7 +44,7 @@ func (ds *FileService) Download(
 		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
-	if !isAuthRsp.GetAuthorized() {
+	if !isAuthRsp.Authorized {
 		endpoint.WriteString(w, http.StatusUnauthorized, "Unauthorized")
 		return
 	}

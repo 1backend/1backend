@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -59,23 +59,7 @@ func NewRegistrySvcRegisterInstanceRequestWithDefaults() *RegistrySvcRegisterIns
 	return &this
 }
 
-// GetDeploymentId returns the DeploymentId field value if set, zero value otherwise.
-func (o *RegistrySvcRegisterInstanceRequest) GetDeploymentId() string {
-	if o == nil || IsNil(o.DeploymentId) {
-		var ret string
-		return ret
-	}
-	return *o.DeploymentId
-}
 
-// GetDeploymentIdOk returns a tuple with the DeploymentId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcRegisterInstanceRequest) GetDeploymentIdOk() (*string, bool) {
-	if o == nil || IsNil(o.DeploymentId) {
-		return nil, false
-	}
-	return o.DeploymentId, true
-}
 
 // HasDeploymentId returns a boolean if a field has been set.
 func (o *RegistrySvcRegisterInstanceRequest) HasDeploymentId() bool {
@@ -86,28 +70,8 @@ func (o *RegistrySvcRegisterInstanceRequest) HasDeploymentId() bool {
 	return false
 }
 
-// SetDeploymentId gets a reference to the given string and assigns it to the DeploymentId field.
-func (o *RegistrySvcRegisterInstanceRequest) SetDeploymentId(v string) {
-	o.DeploymentId = &v
-}
 
-// GetHost returns the Host field value if set, zero value otherwise.
-func (o *RegistrySvcRegisterInstanceRequest) GetHost() string {
-	if o == nil || IsNil(o.Host) {
-		var ret string
-		return ret
-	}
-	return *o.Host
-}
 
-// GetHostOk returns a tuple with the Host field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcRegisterInstanceRequest) GetHostOk() (*string, bool) {
-	if o == nil || IsNil(o.Host) {
-		return nil, false
-	}
-	return o.Host, true
-}
 
 // HasHost returns a boolean if a field has been set.
 func (o *RegistrySvcRegisterInstanceRequest) HasHost() bool {
@@ -118,28 +82,8 @@ func (o *RegistrySvcRegisterInstanceRequest) HasHost() bool {
 	return false
 }
 
-// SetHost gets a reference to the given string and assigns it to the Host field.
-func (o *RegistrySvcRegisterInstanceRequest) SetHost(v string) {
-	o.Host = &v
-}
 
-// GetId returns the Id field value if set, zero value otherwise.
-func (o *RegistrySvcRegisterInstanceRequest) GetId() string {
-	if o == nil || IsNil(o.Id) {
-		var ret string
-		return ret
-	}
-	return *o.Id
-}
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcRegisterInstanceRequest) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
-		return nil, false
-	}
-	return o.Id, true
-}
 
 // HasId returns a boolean if a field has been set.
 func (o *RegistrySvcRegisterInstanceRequest) HasId() bool {
@@ -150,28 +94,8 @@ func (o *RegistrySvcRegisterInstanceRequest) HasId() bool {
 	return false
 }
 
-// SetId gets a reference to the given string and assigns it to the Id field.
-func (o *RegistrySvcRegisterInstanceRequest) SetId(v string) {
-	o.Id = &v
-}
 
-// GetIp returns the Ip field value if set, zero value otherwise.
-func (o *RegistrySvcRegisterInstanceRequest) GetIp() string {
-	if o == nil || IsNil(o.Ip) {
-		var ret string
-		return ret
-	}
-	return *o.Ip
-}
 
-// GetIpOk returns a tuple with the Ip field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcRegisterInstanceRequest) GetIpOk() (*string, bool) {
-	if o == nil || IsNil(o.Ip) {
-		return nil, false
-	}
-	return o.Ip, true
-}
 
 // HasIp returns a boolean if a field has been set.
 func (o *RegistrySvcRegisterInstanceRequest) HasIp() bool {
@@ -182,28 +106,8 @@ func (o *RegistrySvcRegisterInstanceRequest) HasIp() bool {
 	return false
 }
 
-// SetIp gets a reference to the given string and assigns it to the Ip field.
-func (o *RegistrySvcRegisterInstanceRequest) SetIp(v string) {
-	o.Ip = &v
-}
 
-// GetPath returns the Path field value if set, zero value otherwise.
-func (o *RegistrySvcRegisterInstanceRequest) GetPath() string {
-	if o == nil || IsNil(o.Path) {
-		var ret string
-		return ret
-	}
-	return *o.Path
-}
 
-// GetPathOk returns a tuple with the Path field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcRegisterInstanceRequest) GetPathOk() (*string, bool) {
-	if o == nil || IsNil(o.Path) {
-		return nil, false
-	}
-	return o.Path, true
-}
 
 // HasPath returns a boolean if a field has been set.
 func (o *RegistrySvcRegisterInstanceRequest) HasPath() bool {
@@ -214,28 +118,8 @@ func (o *RegistrySvcRegisterInstanceRequest) HasPath() bool {
 	return false
 }
 
-// SetPath gets a reference to the given string and assigns it to the Path field.
-func (o *RegistrySvcRegisterInstanceRequest) SetPath(v string) {
-	o.Path = &v
-}
 
-// GetPort returns the Port field value if set, zero value otherwise.
-func (o *RegistrySvcRegisterInstanceRequest) GetPort() int32 {
-	if o == nil || IsNil(o.Port) {
-		var ret int32
-		return ret
-	}
-	return *o.Port
-}
 
-// GetPortOk returns a tuple with the Port field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcRegisterInstanceRequest) GetPortOk() (*int32, bool) {
-	if o == nil || IsNil(o.Port) {
-		return nil, false
-	}
-	return o.Port, true
-}
 
 // HasPort returns a boolean if a field has been set.
 func (o *RegistrySvcRegisterInstanceRequest) HasPort() bool {
@@ -246,28 +130,8 @@ func (o *RegistrySvcRegisterInstanceRequest) HasPort() bool {
 	return false
 }
 
-// SetPort gets a reference to the given int32 and assigns it to the Port field.
-func (o *RegistrySvcRegisterInstanceRequest) SetPort(v int32) {
-	o.Port = &v
-}
 
-// GetScheme returns the Scheme field value if set, zero value otherwise.
-func (o *RegistrySvcRegisterInstanceRequest) GetScheme() string {
-	if o == nil || IsNil(o.Scheme) {
-		var ret string
-		return ret
-	}
-	return *o.Scheme
-}
 
-// GetSchemeOk returns a tuple with the Scheme field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcRegisterInstanceRequest) GetSchemeOk() (*string, bool) {
-	if o == nil || IsNil(o.Scheme) {
-		return nil, false
-	}
-	return o.Scheme, true
-}
 
 // HasScheme returns a boolean if a field has been set.
 func (o *RegistrySvcRegisterInstanceRequest) HasScheme() bool {
@@ -278,34 +142,9 @@ func (o *RegistrySvcRegisterInstanceRequest) HasScheme() bool {
 	return false
 }
 
-// SetScheme gets a reference to the given string and assigns it to the Scheme field.
-func (o *RegistrySvcRegisterInstanceRequest) SetScheme(v string) {
-	o.Scheme = &v
-}
 
-// GetUrl returns the Url field value
-func (o *RegistrySvcRegisterInstanceRequest) GetUrl() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Url
-}
 
-// GetUrlOk returns a tuple with the Url field value
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcRegisterInstanceRequest) GetUrlOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Url, true
-}
-
-// SetUrl sets field value
-func (o *RegistrySvcRegisterInstanceRequest) SetUrl(v string) {
-	o.Url = v
-}
 
 func (o RegistrySvcRegisterInstanceRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

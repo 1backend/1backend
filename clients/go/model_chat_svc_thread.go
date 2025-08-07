@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -55,71 +55,13 @@ func NewChatSvcThreadWithDefaults() *ChatSvcThread {
 	return &this
 }
 
-// GetCreatedAt returns the CreatedAt field value
-func (o *ChatSvcThread) GetCreatedAt() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.CreatedAt
-}
 
-// GetCreatedAtOk returns a tuple with the CreatedAt field value
-// and a boolean to check if the value has been set.
-func (o *ChatSvcThread) GetCreatedAtOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.CreatedAt, true
-}
 
-// SetCreatedAt sets field value
-func (o *ChatSvcThread) SetCreatedAt(v string) {
-	o.CreatedAt = v
-}
 
-// GetId returns the Id field value
-func (o *ChatSvcThread) GetId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Id
-}
 
-// GetIdOk returns a tuple with the Id field value
-// and a boolean to check if the value has been set.
-func (o *ChatSvcThread) GetIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Id, true
-}
 
-// SetId sets field value
-func (o *ChatSvcThread) SetId(v string) {
-	o.Id = v
-}
-
-// GetTitle returns the Title field value if set, zero value otherwise.
-func (o *ChatSvcThread) GetTitle() string {
-	if o == nil || IsNil(o.Title) {
-		var ret string
-		return ret
-	}
-	return *o.Title
-}
-
-// GetTitleOk returns a tuple with the Title field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ChatSvcThread) GetTitleOk() (*string, bool) {
-	if o == nil || IsNil(o.Title) {
-		return nil, false
-	}
-	return o.Title, true
-}
 
 // HasTitle returns a boolean if a field has been set.
 func (o *ChatSvcThread) HasTitle() bool {
@@ -130,28 +72,8 @@ func (o *ChatSvcThread) HasTitle() bool {
 	return false
 }
 
-// SetTitle gets a reference to the given string and assigns it to the Title field.
-func (o *ChatSvcThread) SetTitle(v string) {
-	o.Title = &v
-}
 
-// GetTopicIds returns the TopicIds field value if set, zero value otherwise.
-func (o *ChatSvcThread) GetTopicIds() []string {
-	if o == nil || IsNil(o.TopicIds) {
-		var ret []string
-		return ret
-	}
-	return o.TopicIds
-}
 
-// GetTopicIdsOk returns a tuple with the TopicIds field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ChatSvcThread) GetTopicIdsOk() ([]string, bool) {
-	if o == nil || IsNil(o.TopicIds) {
-		return nil, false
-	}
-	return o.TopicIds, true
-}
 
 // HasTopicIds returns a boolean if a field has been set.
 func (o *ChatSvcThread) HasTopicIds() bool {
@@ -162,52 +84,11 @@ func (o *ChatSvcThread) HasTopicIds() bool {
 	return false
 }
 
-// SetTopicIds gets a reference to the given []string and assigns it to the TopicIds field.
-func (o *ChatSvcThread) SetTopicIds(v []string) {
-	o.TopicIds = v
-}
 
-// GetUpdatedAt returns the UpdatedAt field value
-func (o *ChatSvcThread) GetUpdatedAt() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.UpdatedAt
-}
 
-// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
-// and a boolean to check if the value has been set.
-func (o *ChatSvcThread) GetUpdatedAtOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.UpdatedAt, true
-}
 
-// SetUpdatedAt sets field value
-func (o *ChatSvcThread) SetUpdatedAt(v string) {
-	o.UpdatedAt = v
-}
 
-// GetUserIds returns the UserIds field value if set, zero value otherwise.
-func (o *ChatSvcThread) GetUserIds() []string {
-	if o == nil || IsNil(o.UserIds) {
-		var ret []string
-		return ret
-	}
-	return o.UserIds
-}
-
-// GetUserIdsOk returns a tuple with the UserIds field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ChatSvcThread) GetUserIdsOk() ([]string, bool) {
-	if o == nil || IsNil(o.UserIds) {
-		return nil, false
-	}
-	return o.UserIds, true
-}
 
 // HasUserIds returns a boolean if a field has been set.
 func (o *ChatSvcThread) HasUserIds() bool {
@@ -218,10 +99,6 @@ func (o *ChatSvcThread) HasUserIds() bool {
 	return false
 }
 
-// SetUserIds gets a reference to the given []string and assigns it to the UserIds field.
-func (o *ChatSvcThread) SetUserIds(v []string) {
-	o.UserIds = v
-}
 
 func (o ChatSvcThread) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

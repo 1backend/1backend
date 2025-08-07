@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -40,23 +40,7 @@ func NewRegistrySvcListNodesResponseWithDefaults() *RegistrySvcListNodesResponse
 	return &this
 }
 
-// GetNodes returns the Nodes field value if set, zero value otherwise.
-func (o *RegistrySvcListNodesResponse) GetNodes() []RegistrySvcNode {
-	if o == nil || IsNil(o.Nodes) {
-		var ret []RegistrySvcNode
-		return ret
-	}
-	return o.Nodes
-}
 
-// GetNodesOk returns a tuple with the Nodes field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcListNodesResponse) GetNodesOk() ([]RegistrySvcNode, bool) {
-	if o == nil || IsNil(o.Nodes) {
-		return nil, false
-	}
-	return o.Nodes, true
-}
 
 // HasNodes returns a boolean if a field has been set.
 func (o *RegistrySvcListNodesResponse) HasNodes() bool {
@@ -67,10 +51,6 @@ func (o *RegistrySvcListNodesResponse) HasNodes() bool {
 	return false
 }
 
-// SetNodes gets a reference to the given []RegistrySvcNode and assigns it to the Nodes field.
-func (o *RegistrySvcListNodesResponse) SetNodes(v []RegistrySvcNode) {
-	o.Nodes = v
-}
 
 func (o RegistrySvcListNodesResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -45,29 +45,8 @@ func NewRegistrySvcNodeSelfResponseWithDefaults() *RegistrySvcNodeSelfResponse {
 	return &this
 }
 
-// GetNode returns the Node field value
-func (o *RegistrySvcNodeSelfResponse) GetNode() RegistrySvcNode {
-	if o == nil {
-		var ret RegistrySvcNode
-		return ret
-	}
 
-	return o.Node
-}
 
-// GetNodeOk returns a tuple with the Node field value
-// and a boolean to check if the value has been set.
-func (o *RegistrySvcNodeSelfResponse) GetNodeOk() (*RegistrySvcNode, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Node, true
-}
-
-// SetNode sets field value
-func (o *RegistrySvcNodeSelfResponse) SetNode(v RegistrySvcNode) {
-	o.Node = v
-}
 
 func (o RegistrySvcNodeSelfResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

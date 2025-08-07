@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -53,23 +53,7 @@ func NewSourceSvcCheckoutRepoRequestWithDefaults() *SourceSvcCheckoutRepoRequest
 	return &this
 }
 
-// GetPassword returns the Password field value if set, zero value otherwise.
-func (o *SourceSvcCheckoutRepoRequest) GetPassword() string {
-	if o == nil || IsNil(o.Password) {
-		var ret string
-		return ret
-	}
-	return *o.Password
-}
 
-// GetPasswordOk returns a tuple with the Password field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SourceSvcCheckoutRepoRequest) GetPasswordOk() (*string, bool) {
-	if o == nil || IsNil(o.Password) {
-		return nil, false
-	}
-	return o.Password, true
-}
 
 // HasPassword returns a boolean if a field has been set.
 func (o *SourceSvcCheckoutRepoRequest) HasPassword() bool {
@@ -80,28 +64,8 @@ func (o *SourceSvcCheckoutRepoRequest) HasPassword() bool {
 	return false
 }
 
-// SetPassword gets a reference to the given string and assigns it to the Password field.
-func (o *SourceSvcCheckoutRepoRequest) SetPassword(v string) {
-	o.Password = &v
-}
 
-// GetSshKey returns the SshKey field value if set, zero value otherwise.
-func (o *SourceSvcCheckoutRepoRequest) GetSshKey() string {
-	if o == nil || IsNil(o.SshKey) {
-		var ret string
-		return ret
-	}
-	return *o.SshKey
-}
 
-// GetSshKeyOk returns a tuple with the SshKey field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SourceSvcCheckoutRepoRequest) GetSshKeyOk() (*string, bool) {
-	if o == nil || IsNil(o.SshKey) {
-		return nil, false
-	}
-	return o.SshKey, true
-}
 
 // HasSshKey returns a boolean if a field has been set.
 func (o *SourceSvcCheckoutRepoRequest) HasSshKey() bool {
@@ -112,28 +76,8 @@ func (o *SourceSvcCheckoutRepoRequest) HasSshKey() bool {
 	return false
 }
 
-// SetSshKey gets a reference to the given string and assigns it to the SshKey field.
-func (o *SourceSvcCheckoutRepoRequest) SetSshKey(v string) {
-	o.SshKey = &v
-}
 
-// GetSshKeyPwd returns the SshKeyPwd field value if set, zero value otherwise.
-func (o *SourceSvcCheckoutRepoRequest) GetSshKeyPwd() string {
-	if o == nil || IsNil(o.SshKeyPwd) {
-		var ret string
-		return ret
-	}
-	return *o.SshKeyPwd
-}
 
-// GetSshKeyPwdOk returns a tuple with the SshKeyPwd field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SourceSvcCheckoutRepoRequest) GetSshKeyPwdOk() (*string, bool) {
-	if o == nil || IsNil(o.SshKeyPwd) {
-		return nil, false
-	}
-	return o.SshKeyPwd, true
-}
 
 // HasSshKeyPwd returns a boolean if a field has been set.
 func (o *SourceSvcCheckoutRepoRequest) HasSshKeyPwd() bool {
@@ -144,28 +88,8 @@ func (o *SourceSvcCheckoutRepoRequest) HasSshKeyPwd() bool {
 	return false
 }
 
-// SetSshKeyPwd gets a reference to the given string and assigns it to the SshKeyPwd field.
-func (o *SourceSvcCheckoutRepoRequest) SetSshKeyPwd(v string) {
-	o.SshKeyPwd = &v
-}
 
-// GetToken returns the Token field value if set, zero value otherwise.
-func (o *SourceSvcCheckoutRepoRequest) GetToken() string {
-	if o == nil || IsNil(o.Token) {
-		var ret string
-		return ret
-	}
-	return *o.Token
-}
 
-// GetTokenOk returns a tuple with the Token field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SourceSvcCheckoutRepoRequest) GetTokenOk() (*string, bool) {
-	if o == nil || IsNil(o.Token) {
-		return nil, false
-	}
-	return o.Token, true
-}
 
 // HasToken returns a boolean if a field has been set.
 func (o *SourceSvcCheckoutRepoRequest) HasToken() bool {
@@ -176,28 +100,8 @@ func (o *SourceSvcCheckoutRepoRequest) HasToken() bool {
 	return false
 }
 
-// SetToken gets a reference to the given string and assigns it to the Token field.
-func (o *SourceSvcCheckoutRepoRequest) SetToken(v string) {
-	o.Token = &v
-}
 
-// GetUrl returns the Url field value if set, zero value otherwise.
-func (o *SourceSvcCheckoutRepoRequest) GetUrl() string {
-	if o == nil || IsNil(o.Url) {
-		var ret string
-		return ret
-	}
-	return *o.Url
-}
 
-// GetUrlOk returns a tuple with the Url field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SourceSvcCheckoutRepoRequest) GetUrlOk() (*string, bool) {
-	if o == nil || IsNil(o.Url) {
-		return nil, false
-	}
-	return o.Url, true
-}
 
 // HasUrl returns a boolean if a field has been set.
 func (o *SourceSvcCheckoutRepoRequest) HasUrl() bool {
@@ -208,28 +112,8 @@ func (o *SourceSvcCheckoutRepoRequest) HasUrl() bool {
 	return false
 }
 
-// SetUrl gets a reference to the given string and assigns it to the Url field.
-func (o *SourceSvcCheckoutRepoRequest) SetUrl(v string) {
-	o.Url = &v
-}
 
-// GetUsername returns the Username field value if set, zero value otherwise.
-func (o *SourceSvcCheckoutRepoRequest) GetUsername() string {
-	if o == nil || IsNil(o.Username) {
-		var ret string
-		return ret
-	}
-	return *o.Username
-}
 
-// GetUsernameOk returns a tuple with the Username field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SourceSvcCheckoutRepoRequest) GetUsernameOk() (*string, bool) {
-	if o == nil || IsNil(o.Username) {
-		return nil, false
-	}
-	return o.Username, true
-}
 
 // HasUsername returns a boolean if a field has been set.
 func (o *SourceSvcCheckoutRepoRequest) HasUsername() bool {
@@ -240,28 +124,8 @@ func (o *SourceSvcCheckoutRepoRequest) HasUsername() bool {
 	return false
 }
 
-// SetUsername gets a reference to the given string and assigns it to the Username field.
-func (o *SourceSvcCheckoutRepoRequest) SetUsername(v string) {
-	o.Username = &v
-}
 
-// GetVersion returns the Version field value if set, zero value otherwise.
-func (o *SourceSvcCheckoutRepoRequest) GetVersion() string {
-	if o == nil || IsNil(o.Version) {
-		var ret string
-		return ret
-	}
-	return *o.Version
-}
 
-// GetVersionOk returns a tuple with the Version field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SourceSvcCheckoutRepoRequest) GetVersionOk() (*string, bool) {
-	if o == nil || IsNil(o.Version) {
-		return nil, false
-	}
-	return o.Version, true
-}
 
 // HasVersion returns a boolean if a field has been set.
 func (o *SourceSvcCheckoutRepoRequest) HasVersion() bool {
@@ -272,10 +136,6 @@ func (o *SourceSvcCheckoutRepoRequest) HasVersion() bool {
 	return false
 }
 
-// SetVersion gets a reference to the given string and assigns it to the Version field.
-func (o *SourceSvcCheckoutRepoRequest) SetVersion(v string) {
-	o.Version = &v
-}
 
 func (o SourceSvcCheckoutRepoRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

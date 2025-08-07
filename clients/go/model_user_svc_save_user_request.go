@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -41,23 +41,7 @@ func NewUserSvcSaveUserRequestWithDefaults() *UserSvcSaveUserRequest {
 	return &this
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
-func (o *UserSvcSaveUserRequest) GetName() string {
-	if o == nil || IsNil(o.Name) {
-		var ret string
-		return ret
-	}
-	return *o.Name
-}
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcSaveUserRequest) GetNameOk() (*string, bool) {
-	if o == nil || IsNil(o.Name) {
-		return nil, false
-	}
-	return o.Name, true
-}
 
 // HasName returns a boolean if a field has been set.
 func (o *UserSvcSaveUserRequest) HasName() bool {
@@ -68,28 +52,8 @@ func (o *UserSvcSaveUserRequest) HasName() bool {
 	return false
 }
 
-// SetName gets a reference to the given string and assigns it to the Name field.
-func (o *UserSvcSaveUserRequest) SetName(v string) {
-	o.Name = &v
-}
 
-// GetThumbnailFileId returns the ThumbnailFileId field value if set, zero value otherwise.
-func (o *UserSvcSaveUserRequest) GetThumbnailFileId() string {
-	if o == nil || IsNil(o.ThumbnailFileId) {
-		var ret string
-		return ret
-	}
-	return *o.ThumbnailFileId
-}
 
-// GetThumbnailFileIdOk returns a tuple with the ThumbnailFileId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcSaveUserRequest) GetThumbnailFileIdOk() (*string, bool) {
-	if o == nil || IsNil(o.ThumbnailFileId) {
-		return nil, false
-	}
-	return o.ThumbnailFileId, true
-}
 
 // HasThumbnailFileId returns a boolean if a field has been set.
 func (o *UserSvcSaveUserRequest) HasThumbnailFileId() bool {
@@ -100,10 +64,6 @@ func (o *UserSvcSaveUserRequest) HasThumbnailFileId() bool {
 	return false
 }
 
-// SetThumbnailFileId gets a reference to the given string and assigns it to the ThumbnailFileId field.
-func (o *UserSvcSaveUserRequest) SetThumbnailFileId(v string) {
-	o.ThumbnailFileId = &v
-}
 
 func (o UserSvcSaveUserRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

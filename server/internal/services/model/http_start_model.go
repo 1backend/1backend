@@ -51,7 +51,7 @@ func (ms *ModelService) StartSpecific(
 		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
-	if !isAuthRsp.GetAuthorized() {
+	if !isAuthRsp.Authorized {
 		endpoint.Unauthorized(w)
 		return
 	}

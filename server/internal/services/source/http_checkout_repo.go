@@ -45,7 +45,7 @@ func (s *SourceService) CheckoutRepo(w http.ResponseWriter,
 		endpoint.WriteErr(w, statusCode, err)
 		return
 	}
-	if !isAuthRsp.GetAuthorized() {
+	if !isAuthRsp.Authorized {
 		endpoint.Unauthorized(w)
 		return
 	}

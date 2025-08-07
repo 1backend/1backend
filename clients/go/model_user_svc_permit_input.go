@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.7.6
+API version: 0.8.0-rc1
 Contact: sales@singulatron.com
 */
 
@@ -52,23 +52,7 @@ func NewUserSvcPermitInputWithDefaults() *UserSvcPermitInput {
 	return &this
 }
 
-// GetApp returns the App field value if set, zero value otherwise.
-func (o *UserSvcPermitInput) GetApp() string {
-	if o == nil || IsNil(o.App) {
-		var ret string
-		return ret
-	}
-	return *o.App
-}
 
-// GetAppOk returns a tuple with the App field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcPermitInput) GetAppOk() (*string, bool) {
-	if o == nil || IsNil(o.App) {
-		return nil, false
-	}
-	return o.App, true
-}
 
 // HasApp returns a boolean if a field has been set.
 func (o *UserSvcPermitInput) HasApp() bool {
@@ -79,28 +63,8 @@ func (o *UserSvcPermitInput) HasApp() bool {
 	return false
 }
 
-// SetApp gets a reference to the given string and assigns it to the App field.
-func (o *UserSvcPermitInput) SetApp(v string) {
-	o.App = &v
-}
 
-// GetId returns the Id field value if set, zero value otherwise.
-func (o *UserSvcPermitInput) GetId() string {
-	if o == nil || IsNil(o.Id) {
-		var ret string
-		return ret
-	}
-	return *o.Id
-}
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcPermitInput) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
-		return nil, false
-	}
-	return o.Id, true
-}
 
 // HasId returns a boolean if a field has been set.
 func (o *UserSvcPermitInput) HasId() bool {
@@ -111,52 +75,11 @@ func (o *UserSvcPermitInput) HasId() bool {
 	return false
 }
 
-// SetId gets a reference to the given string and assigns it to the Id field.
-func (o *UserSvcPermitInput) SetId(v string) {
-	o.Id = &v
-}
 
-// GetPermission returns the Permission field value
-func (o *UserSvcPermitInput) GetPermission() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
 
-	return o.Permission
-}
 
-// GetPermissionOk returns a tuple with the Permission field value
-// and a boolean to check if the value has been set.
-func (o *UserSvcPermitInput) GetPermissionOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.Permission, true
-}
 
-// SetPermission sets field value
-func (o *UserSvcPermitInput) SetPermission(v string) {
-	o.Permission = v
-}
 
-// GetRoles returns the Roles field value if set, zero value otherwise.
-func (o *UserSvcPermitInput) GetRoles() []string {
-	if o == nil || IsNil(o.Roles) {
-		var ret []string
-		return ret
-	}
-	return o.Roles
-}
-
-// GetRolesOk returns a tuple with the Roles field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcPermitInput) GetRolesOk() ([]string, bool) {
-	if o == nil || IsNil(o.Roles) {
-		return nil, false
-	}
-	return o.Roles, true
-}
 
 // HasRoles returns a boolean if a field has been set.
 func (o *UserSvcPermitInput) HasRoles() bool {
@@ -167,28 +90,8 @@ func (o *UserSvcPermitInput) HasRoles() bool {
 	return false
 }
 
-// SetRoles gets a reference to the given []string and assigns it to the Roles field.
-func (o *UserSvcPermitInput) SetRoles(v []string) {
-	o.Roles = v
-}
 
-// GetSlugs returns the Slugs field value if set, zero value otherwise.
-func (o *UserSvcPermitInput) GetSlugs() []string {
-	if o == nil || IsNil(o.Slugs) {
-		var ret []string
-		return ret
-	}
-	return o.Slugs
-}
 
-// GetSlugsOk returns a tuple with the Slugs field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcPermitInput) GetSlugsOk() ([]string, bool) {
-	if o == nil || IsNil(o.Slugs) {
-		return nil, false
-	}
-	return o.Slugs, true
-}
 
 // HasSlugs returns a boolean if a field has been set.
 func (o *UserSvcPermitInput) HasSlugs() bool {
@@ -199,10 +102,6 @@ func (o *UserSvcPermitInput) HasSlugs() bool {
 	return false
 }
 
-// SetSlugs gets a reference to the given []string and assigns it to the Slugs field.
-func (o *UserSvcPermitInput) SetSlugs(v []string) {
-	o.Slugs = v
-}
 
 func (o UserSvcPermitInput) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
