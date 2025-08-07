@@ -88,12 +88,22 @@ func (cs *ConfigService) SaveConfig(
 		canActonBehalf = true
 	}
 
-	if !canActonBehalf && req.App != "" {
-		logger.Error("Unauthorized attempt to save config with app specified",
-			slog.String("app", req.App),
-		)
-		endpoint.Unauthorized(w)
-		return
+	if !canActonBehalf {
+		if req.App != "" {
+			logger.Error("Unauthorized attempt to save config with app specified",
+				slog.String("app", req.App),
+			)
+			endpoint.Unauthorized(w)
+			return
+		}
+
+		if req.Key != "" {
+			logger.Error("Unauthorized attempt to save config with key specified",
+				slog.String("key", req.Key),
+			)
+			endpoint.Unauthorized(w)
+			return
+		}
 	}
 
 	app := req.App
