@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewDeploySvcSaveDeploymentRequestWithDefaults() *DeploySvcSaveDeploymentReq
 	return &this
 }
 
+// GetDeployment returns the Deployment field value if set, zero value otherwise.
+func (o *DeploySvcSaveDeploymentRequest) GetDeployment() DeploySvcDeployment {
+	if o == nil || IsNil(o.Deployment) {
+		var ret DeploySvcDeployment
+		return ret
+	}
+	return *o.Deployment
+}
 
+// GetDeploymentOk returns a tuple with the Deployment field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DeploySvcSaveDeploymentRequest) GetDeploymentOk() (*DeploySvcDeployment, bool) {
+	if o == nil || IsNil(o.Deployment) {
+		return nil, false
+	}
+	return o.Deployment, true
+}
 
 // HasDeployment returns a boolean if a field has been set.
 func (o *DeploySvcSaveDeploymentRequest) HasDeployment() bool {
@@ -51,6 +67,10 @@ func (o *DeploySvcSaveDeploymentRequest) HasDeployment() bool {
 	return false
 }
 
+// SetDeployment gets a reference to the given DeploySvcDeployment and assigns it to the Deployment field.
+func (o *DeploySvcSaveDeploymentRequest) SetDeployment(v DeploySvcDeployment) {
+	o.Deployment = &v
+}
 
 func (o DeploySvcSaveDeploymentRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

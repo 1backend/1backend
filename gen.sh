@@ -20,24 +20,39 @@ if ! command_exists npm; then
     exit 1
 fi
 
-# Check and install swag if not installed or version doesn't match
+TARGET_SWAG_VERSION="v2.0.0-rc4"
+INSTALL_PATH="$(go env GOPATH)/bin/swag"
+
 echo "Checking swag installation..."
+ORIGINAL_DIR="$(pwd)"
+
+# Get current swag version if installed
 if command -v swag >/dev/null 2>&1; then
-    INSTALLED_SWAG_VERSION=$(swag --version | awk '{print $3}')
+    INSTALLED_SWAG_VERSION=$(swag --version | sed -n '2p' | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' || true)
 else
     INSTALLED_SWAG_VERSION=""
 fi
-LATEST_SWAG_VERSION=$(go list -m -u -versions -json github.com/swaggo/swag | jq -r '.Versions[-1]')
 
-if [[ -z "$INSTALLED_SWAG_VERSION" ]]; then
-    echo "Swag not installed. Installing the latest version..."
-    go install github.com/swaggo/swag/cmd/swag@latest
-    elif [[ "$INSTALLED_SWAG_VERSION" != "$LATEST_SWAG_VERSION" ]]; then
-    echo "Swag version is outdated (installed: $INSTALLED_SWAG_VERSION, latest: $LATEST_SWAG_VERSION). Updating to the latest version..."
-    go install github.com/swaggo/swag/cmd/swag@latest
+echo "Current swag version: ${INSTALLED_SWAG_VERSION:-none}"
+
+ROUGH_SWAG_VERSION=$(echo "v2.0.0-rc4" | sed 's/-.*//')
+
+if [[ "$INSTALLED_SWAG_VERSION" != "$ROUGH_SWAG_VERSION" ]]; then
+    echo "Swag version mismatch or not installed (installed: '${INSTALLED_SWAG_VERSION:-none}, expected: '$TARGET_SWAG_VERSION'). Installing..."
+
+    TMP_DIR=$(mktemp -d)
+    trap 'rm -rf "$TMP_DIR"' EXIT
+
+    git clone --depth 1 --branch "$TARGET_SWAG_VERSION" https://github.com/swaggo/swag.git "$TMP_DIR/swag"
+    cd "$TMP_DIR/swag/cmd/swag"
+    go build -o "$INSTALL_PATH"
+
+    echo "Installed swag version $TARGET_SWAG_VERSION to $INSTALL_PATH"
 else
-    echo "Swag is up to date."
+    echo "Swag is already at the correct version ($INSTALLED_SWAG_VERSION)."
 fi
+
+cd "$ORIGINAL_DIR"
 
 # Check and install openapi-generator-cli if not installed or version doesn't match
 echo "Checking openapi-generator-cli installation..."

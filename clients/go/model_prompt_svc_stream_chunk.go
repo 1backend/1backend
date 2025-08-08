@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -25,7 +25,7 @@ type PromptSvcStreamChunk struct {
 	// TextChunk contains a part of the text output from the stream.
 	Text *string `json:"text,omitempty"`
 	// Type indicates the type of the stream event (e.g., text, done).
-	Type *PromptSvcStreamChunkType `json:"type,omitempty"`
+	Type *string `json:"type,omitempty"`
 }
 
 // NewPromptSvcStreamChunk instantiates a new PromptSvcStreamChunk object
@@ -45,7 +45,23 @@ func NewPromptSvcStreamChunkWithDefaults() *PromptSvcStreamChunk {
 	return &this
 }
 
+// GetMessageId returns the MessageId field value if set, zero value otherwise.
+func (o *PromptSvcStreamChunk) GetMessageId() string {
+	if o == nil || IsNil(o.MessageId) {
+		var ret string
+		return ret
+	}
+	return *o.MessageId
+}
 
+// GetMessageIdOk returns a tuple with the MessageId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcStreamChunk) GetMessageIdOk() (*string, bool) {
+	if o == nil || IsNil(o.MessageId) {
+		return nil, false
+	}
+	return o.MessageId, true
+}
 
 // HasMessageId returns a boolean if a field has been set.
 func (o *PromptSvcStreamChunk) HasMessageId() bool {
@@ -56,8 +72,28 @@ func (o *PromptSvcStreamChunk) HasMessageId() bool {
 	return false
 }
 
+// SetMessageId gets a reference to the given string and assigns it to the MessageId field.
+func (o *PromptSvcStreamChunk) SetMessageId(v string) {
+	o.MessageId = &v
+}
 
+// GetText returns the Text field value if set, zero value otherwise.
+func (o *PromptSvcStreamChunk) GetText() string {
+	if o == nil || IsNil(o.Text) {
+		var ret string
+		return ret
+	}
+	return *o.Text
+}
 
+// GetTextOk returns a tuple with the Text field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcStreamChunk) GetTextOk() (*string, bool) {
+	if o == nil || IsNil(o.Text) {
+		return nil, false
+	}
+	return o.Text, true
+}
 
 // HasText returns a boolean if a field has been set.
 func (o *PromptSvcStreamChunk) HasText() bool {
@@ -68,8 +104,28 @@ func (o *PromptSvcStreamChunk) HasText() bool {
 	return false
 }
 
+// SetText gets a reference to the given string and assigns it to the Text field.
+func (o *PromptSvcStreamChunk) SetText(v string) {
+	o.Text = &v
+}
 
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *PromptSvcStreamChunk) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
+		return ret
+	}
+	return *o.Type
+}
 
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcStreamChunk) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
 
 // HasType returns a boolean if a field has been set.
 func (o *PromptSvcStreamChunk) HasType() bool {
@@ -80,6 +136,10 @@ func (o *PromptSvcStreamChunk) HasType() bool {
 	return false
 }
 
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *PromptSvcStreamChunk) SetType(v string) {
+	o.Type = &v
+}
 
 func (o PromptSvcStreamChunk) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

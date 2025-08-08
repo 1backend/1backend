@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -56,12 +56,12 @@ type FirehoseSvcAPIService service
 type ApiPublishEventRequest struct {
 	ctx context.Context
 	ApiService FirehoseSvcAPI
-	event *FirehoseSvcEventPublishRequest
+	firehoseSvcEventPublishRequest *FirehoseSvcEventPublishRequest
 }
 
 // Event to publish
-func (r ApiPublishEventRequest) Event(event FirehoseSvcEventPublishRequest) ApiPublishEventRequest {
-	r.event = &event
+func (r ApiPublishEventRequest) Body(firehoseSvcEventPublishRequest FirehoseSvcEventPublishRequest) ApiPublishEventRequest {
+	r.firehoseSvcEventPublishRequest = &firehoseSvcEventPublishRequest
 	return r
 }
 
@@ -102,8 +102,8 @@ func (a *FirehoseSvcAPIService) PublishEventExecute(r ApiPublishEventRequest) (*
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.event == nil {
-		return nil, reportError("event is required and must be specified")
+	if r.firehoseSvcEventPublishRequest == nil {
+		return nil, reportError("firehoseSvcEventPublishRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -124,7 +124,7 @@ func (a *FirehoseSvcAPIService) PublishEventExecute(r ApiPublishEventRequest) (*
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.event
+	localVarPostBody = r.firehoseSvcEventPublishRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -191,6 +191,12 @@ func (a *FirehoseSvcAPIService) PublishEventExecute(r ApiPublishEventRequest) (*
 type ApiSubscribeToEventsRequest struct {
 	ctx context.Context
 	ApiService FirehoseSvcAPI
+	body *map[string]interface{}
+}
+
+func (r ApiSubscribeToEventsRequest) Body(body map[string]interface{}) ApiSubscribeToEventsRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiSubscribeToEventsRequest) Execute() (string, *http.Response, error) {
@@ -234,7 +240,7 @@ func (a *FirehoseSvcAPIService) SubscribeToEventsExecute(r ApiSubscribeToEventsR
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -243,13 +249,15 @@ func (a *FirehoseSvcAPIService) SubscribeToEventsExecute(r ApiSubscribeToEventsR
 	}
 
 	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"text/event-stream"}
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/event-stream"}
 
 	// set Accept header
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {

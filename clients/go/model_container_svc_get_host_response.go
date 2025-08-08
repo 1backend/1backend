@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -45,8 +45,29 @@ func NewContainerSvcGetHostResponseWithDefaults() *ContainerSvcGetHostResponse {
 	return &this
 }
 
+// GetHost returns the Host field value
+func (o *ContainerSvcGetHostResponse) GetHost() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Host
+}
 
+// GetHostOk returns a tuple with the Host field value
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcGetHostResponse) GetHostOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Host, true
+}
+
+// SetHost sets field value
+func (o *ContainerSvcGetHostResponse) SetHost(v string) {
+	o.Host = v
+}
 
 func (o ContainerSvcGetHostResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

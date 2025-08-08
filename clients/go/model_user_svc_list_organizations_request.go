@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -43,7 +43,23 @@ func NewUserSvcListOrganizationsRequestWithDefaults() *UserSvcListOrganizationsR
 	return &this
 }
 
+// GetAfterTime returns the AfterTime field value if set, zero value otherwise.
+func (o *UserSvcListOrganizationsRequest) GetAfterTime() string {
+	if o == nil || IsNil(o.AfterTime) {
+		var ret string
+		return ret
+	}
+	return *o.AfterTime
+}
 
+// GetAfterTimeOk returns a tuple with the AfterTime field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListOrganizationsRequest) GetAfterTimeOk() (*string, bool) {
+	if o == nil || IsNil(o.AfterTime) {
+		return nil, false
+	}
+	return o.AfterTime, true
+}
 
 // HasAfterTime returns a boolean if a field has been set.
 func (o *UserSvcListOrganizationsRequest) HasAfterTime() bool {
@@ -54,8 +70,28 @@ func (o *UserSvcListOrganizationsRequest) HasAfterTime() bool {
 	return false
 }
 
+// SetAfterTime gets a reference to the given string and assigns it to the AfterTime field.
+func (o *UserSvcListOrganizationsRequest) SetAfterTime(v string) {
+	o.AfterTime = &v
+}
 
+// GetIds returns the Ids field value if set, zero value otherwise.
+func (o *UserSvcListOrganizationsRequest) GetIds() []string {
+	if o == nil || IsNil(o.Ids) {
+		var ret []string
+		return ret
+	}
+	return o.Ids
+}
 
+// GetIdsOk returns a tuple with the Ids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListOrganizationsRequest) GetIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Ids) {
+		return nil, false
+	}
+	return o.Ids, true
+}
 
 // HasIds returns a boolean if a field has been set.
 func (o *UserSvcListOrganizationsRequest) HasIds() bool {
@@ -66,8 +102,28 @@ func (o *UserSvcListOrganizationsRequest) HasIds() bool {
 	return false
 }
 
+// SetIds gets a reference to the given []string and assigns it to the Ids field.
+func (o *UserSvcListOrganizationsRequest) SetIds(v []string) {
+	o.Ids = v
+}
 
+// GetLimit returns the Limit field value if set, zero value otherwise.
+func (o *UserSvcListOrganizationsRequest) GetLimit() int32 {
+	if o == nil || IsNil(o.Limit) {
+		var ret int32
+		return ret
+	}
+	return *o.Limit
+}
 
+// GetLimitOk returns a tuple with the Limit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListOrganizationsRequest) GetLimitOk() (*int32, bool) {
+	if o == nil || IsNil(o.Limit) {
+		return nil, false
+	}
+	return o.Limit, true
+}
 
 // HasLimit returns a boolean if a field has been set.
 func (o *UserSvcListOrganizationsRequest) HasLimit() bool {
@@ -78,6 +134,10 @@ func (o *UserSvcListOrganizationsRequest) HasLimit() bool {
 	return false
 }
 
+// SetLimit gets a reference to the given int32 and assigns it to the Limit field.
+func (o *UserSvcListOrganizationsRequest) SetLimit(v int32) {
+	o.Limit = &v
+}
 
 func (o UserSvcListOrganizationsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

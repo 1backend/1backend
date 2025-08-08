@@ -284,7 +284,8 @@ func (ns *DeployService) executeStartCommand(
 		)
 
 		deployment.Status = deploy.DeploymentStatus(
-			openapi.DeploymentStatusError,
+			// @todo Const disappeared: openapi.DeploymentStatusError,
+			"Error",
 		)
 		deployment.Details = err.Error()
 
@@ -305,7 +306,8 @@ func (ns *DeployService) executeStartCommand(
 		slog.String("deploymentId", deployment.Id),
 	)
 
-	deployment.Status = deploy.DeploymentStatus(openapi.DeploymentStatusOK)
+	// @todo openapi.DeploymentStatusOK
+	deployment.Status = deploy.DeploymentStatus("OK")
 	deployment.Details = ""
 
 	writeErr := ns.deploymentStore.Query(datastore.Id(command.DeploymentId)).

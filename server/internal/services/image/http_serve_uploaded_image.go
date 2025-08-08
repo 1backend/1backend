@@ -135,7 +135,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	img, _, err := stdimage.Decode(rsp)
+	img, _, err := stdimage.Decode(*rsp)
 	if err != nil {
 		endpoint.WriteErr(w, http.StatusInternalServerError, err)
 		return

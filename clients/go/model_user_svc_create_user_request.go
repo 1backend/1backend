@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -44,7 +44,23 @@ func NewUserSvcCreateUserRequestWithDefaults() *UserSvcCreateUserRequest {
 	return &this
 }
 
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *UserSvcCreateUserRequest) GetApp() string {
+	if o == nil || IsNil(o.App) {
+		var ret string
+		return ret
+	}
+	return *o.App
+}
 
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcCreateUserRequest) GetAppOk() (*string, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
 
 // HasApp returns a boolean if a field has been set.
 func (o *UserSvcCreateUserRequest) HasApp() bool {
@@ -55,8 +71,28 @@ func (o *UserSvcCreateUserRequest) HasApp() bool {
 	return false
 }
 
+// SetApp gets a reference to the given string and assigns it to the App field.
+func (o *UserSvcCreateUserRequest) SetApp(v string) {
+	o.App = &v
+}
 
+// GetContacts returns the Contacts field value if set, zero value otherwise.
+func (o *UserSvcCreateUserRequest) GetContacts() []UserSvcContact {
+	if o == nil || IsNil(o.Contacts) {
+		var ret []UserSvcContact
+		return ret
+	}
+	return o.Contacts
+}
 
+// GetContactsOk returns a tuple with the Contacts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcCreateUserRequest) GetContactsOk() ([]UserSvcContact, bool) {
+	if o == nil || IsNil(o.Contacts) {
+		return nil, false
+	}
+	return o.Contacts, true
+}
 
 // HasContacts returns a boolean if a field has been set.
 func (o *UserSvcCreateUserRequest) HasContacts() bool {
@@ -67,8 +103,28 @@ func (o *UserSvcCreateUserRequest) HasContacts() bool {
 	return false
 }
 
+// SetContacts gets a reference to the given []UserSvcContact and assigns it to the Contacts field.
+func (o *UserSvcCreateUserRequest) SetContacts(v []UserSvcContact) {
+	o.Contacts = v
+}
 
+// GetPassword returns the Password field value if set, zero value otherwise.
+func (o *UserSvcCreateUserRequest) GetPassword() string {
+	if o == nil || IsNil(o.Password) {
+		var ret string
+		return ret
+	}
+	return *o.Password
+}
 
+// GetPasswordOk returns a tuple with the Password field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcCreateUserRequest) GetPasswordOk() (*string, bool) {
+	if o == nil || IsNil(o.Password) {
+		return nil, false
+	}
+	return o.Password, true
+}
 
 // HasPassword returns a boolean if a field has been set.
 func (o *UserSvcCreateUserRequest) HasPassword() bool {
@@ -79,8 +135,28 @@ func (o *UserSvcCreateUserRequest) HasPassword() bool {
 	return false
 }
 
+// SetPassword gets a reference to the given string and assigns it to the Password field.
+func (o *UserSvcCreateUserRequest) SetPassword(v string) {
+	o.Password = &v
+}
 
+// GetRoleIds returns the RoleIds field value if set, zero value otherwise.
+func (o *UserSvcCreateUserRequest) GetRoleIds() []string {
+	if o == nil || IsNil(o.RoleIds) {
+		var ret []string
+		return ret
+	}
+	return o.RoleIds
+}
 
+// GetRoleIdsOk returns a tuple with the RoleIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcCreateUserRequest) GetRoleIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.RoleIds) {
+		return nil, false
+	}
+	return o.RoleIds, true
+}
 
 // HasRoleIds returns a boolean if a field has been set.
 func (o *UserSvcCreateUserRequest) HasRoleIds() bool {
@@ -91,8 +167,28 @@ func (o *UserSvcCreateUserRequest) HasRoleIds() bool {
 	return false
 }
 
+// SetRoleIds gets a reference to the given []string and assigns it to the RoleIds field.
+func (o *UserSvcCreateUserRequest) SetRoleIds(v []string) {
+	o.RoleIds = v
+}
 
+// GetUser returns the User field value if set, zero value otherwise.
+func (o *UserSvcCreateUserRequest) GetUser() UserSvcUserInput {
+	if o == nil || IsNil(o.User) {
+		var ret UserSvcUserInput
+		return ret
+	}
+	return *o.User
+}
 
+// GetUserOk returns a tuple with the User field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcCreateUserRequest) GetUserOk() (*UserSvcUserInput, bool) {
+	if o == nil || IsNil(o.User) {
+		return nil, false
+	}
+	return o.User, true
+}
 
 // HasUser returns a boolean if a field has been set.
 func (o *UserSvcCreateUserRequest) HasUser() bool {
@@ -103,6 +199,10 @@ func (o *UserSvcCreateUserRequest) HasUser() bool {
 	return false
 }
 
+// SetUser gets a reference to the given UserSvcUserInput and assigns it to the User field.
+func (o *UserSvcCreateUserRequest) SetUser(v UserSvcUserInput) {
+	o.User = &v
+}
 
 func (o UserSvcCreateUserRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

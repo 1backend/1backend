@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -41,7 +41,23 @@ func NewPromptSvcLlamaCppParametersWithDefaults() *PromptSvcLlamaCppParameters {
 	return &this
 }
 
+// GetTemplate returns the Template field value if set, zero value otherwise.
+func (o *PromptSvcLlamaCppParameters) GetTemplate() string {
+	if o == nil || IsNil(o.Template) {
+		var ret string
+		return ret
+	}
+	return *o.Template
+}
 
+// GetTemplateOk returns a tuple with the Template field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcLlamaCppParameters) GetTemplateOk() (*string, bool) {
+	if o == nil || IsNil(o.Template) {
+		return nil, false
+	}
+	return o.Template, true
+}
 
 // HasTemplate returns a boolean if a field has been set.
 func (o *PromptSvcLlamaCppParameters) HasTemplate() bool {
@@ -52,6 +68,10 @@ func (o *PromptSvcLlamaCppParameters) HasTemplate() bool {
 	return false
 }
 
+// SetTemplate gets a reference to the given string and assigns it to the Template field.
+func (o *PromptSvcLlamaCppParameters) SetTemplate(v string) {
+	o.Template = &v
+}
 
 func (o PromptSvcLlamaCppParameters) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

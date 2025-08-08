@@ -19,94 +19,88 @@ In distributed systems—especially when dealing with large datasets or high wri
 
 ---
 
-### Cursor-based pagination
+### Cursor-Based Pagination
 
-Cursor-based pagination solves these problems by:
+Cursor-based pagination is the preferred strategy in distributed systems because it avoids the problems of offset-based pagination — such as inconsistent results when data changes between pages, and performance issues with large offsets.
 
-1. Using a **cursor** (often an encoded value, like a timestamp or an ID) that marks your position in the result set.
-2. Querying for results **"after"** that cursor instead of skipping rows.
-3. Returning a new cursor in each response for the client to use for the next page.
+Instead of skipping rows, cursor-based pagination uses a **cursor value** to mark the position in the dataset and fetch the next page relative to that position.
 
 ---
 
+#### How It Works
+
+1. The client receives a **cursor** from the API in each paginated response.
+2. The client includes that cursor in the next request to fetch the next page.
+3. The server uses the cursor to determine where to resume from in the dataset.
+
+---
+
+#### Cursor Format
+
+The cursor is typically represented as a slice of values (`[]any`), such as:
+
+```json
+["2023-08-01T12:00:00Z", "user-123"]
+```
+
+This allows precise pagination even when multiple records share the same timestamp (e.g., `createdAt`). The second element (like a unique ID) ensures deterministic ordering and avoids skipping or duplicating records.
+
 #### Example
 
-**Request 1:**
+**Request 1**:
 
 ```http
 GET /items?limit=10
 ```
 
-**Response 1:**
+**Response 1**:
 
 ```json
 {
   "items": [...],
-  "next_cursor": "2023-08-01T12:00:00Z"
+  // This is actually optional, one can easily take the fields from the last item in the list.
+  "nextCursor": ["2023-08-01T12:00:00Z", "user-123"]
 }
 ```
 
-**Request 2:**
-
 ```http
-GET /items?limit=10&after=2023-08-01T12:00:00Z
+GET /items?limit=10&after=["2023-08-01T12:00:00Z","user-123"]
 ```
 
-**Common names for cursor-bbased pagination**:
+### Field Name Conventions
 
-- Cursor pagination (common in APIs like GraphQL and Twitter API)
-- Keyset pagination (common in SQL performance discussions)
-- Sometimes just "after-based pagination" (naming it after the query parameter)
-
-### Field name conventions
-
-Pagination should happen with these fields in the top level of a `List` request:
+Pagination parameters should be top-level fields in a `List` request. For example:
 
 ```json
 {
   "limit": 10,
-  "__comment_limit": "Limit is the maximum number of users to return.",
-
-  "afterTime": "2023-01-01T00:00:00Z",
-  "__comment_afterTime": "AfterTime is a time in RFC3339 format. It is used to paginate the results when the `orderBy` is set to `createdAt` or `updatedAt`. The results will be returned after this time.",
-
-  "order": "desc",
-  "orderBy": "createdAt",
-
-  "count": false,
-  "__comment_count": "Count is a flag that indicates if the count of the users should be returned."
+  "after": ["2023-08-01T12:00:00Z", "user-123"],
+  "order": "asc",
+  "orderBy": "createdAt"
 }
 ```
 
-### `createdAt` & `updatedAt` ordering
+### Common Ordering Strategies
 
-When exporting data from microservices into external systems (such as BigQuery), it’s important to respect **service boundaries**.  
-Each service owns its own data, and the only supported way to access it is through that service’s API.  
-This makes **efficient pagination** critical for both performance and reliability.
+- **`createdAt` (ascending)**:  
+  Use when exporting or scanning all records from the beginning. This gives a complete, chronological view of the dataset.
 
-Offset-based pagination (e.g., `offset=100&limit=50`) can be slow and unreliable in distributed systems, especially as datasets grow or records change during retrieval.  
-Instead, 1Backend services use **cursor-based pagination**, where the client provides a “bookmark” that tells the API where to resume.  
-For time-based pagination, this bookmark is expressed through the `afterTime` field.
-
-### Common ordering strategies
-
-- **Pagination by `createdAt`**  
-  Use when you need to retrieve _all_ records from the beginning, such as during a full export.  
-  Typically ordered **ascending**, starting with the oldest entries and moving forward in time.
-
-- **Pagination by `updatedAt`**  
-  Use when you need to retrieve _recently changed_ records, such as for an incremental sync.  
-  Typically ordered **descending**, returning the most recent changes first.
+- **`updatedAt` (descending)**:  
+  Use when syncing recent changes (e.g., polling for updates). Returns the newest records first.
 
 ---
 
-### `after` and `afterTime` Fields
+### Why Timestamps Alone Are Not Enough
 
-In theory, a pagination cursor could be named simply `after` and accept any type of value (or an array of values).  
-However, when the cursor represents a timestamp, using a generic `after` field would require extra parsing logic to convert it into a `time.Time` object in Go.
+Timestamps like `createdAt` or `updatedAt` are commonly used for ordering, but they are not unique. Multiple records can share the same timestamp, leading to unstable or overlapping pagination.
 
-To avoid this and allow **automatic unmarshaling** into `time.Time`, the convention for time-based pagination is to name the field **`afterTime`**.  
-This makes the expected format explicit (RFC3339 timestamp) and removes the need for custom parsing.
+To prevent this, always pair the timestamp with a **unique, stable identifier** (like an ID). This ensures:
+
+- Deterministic ordering
+- No records are skipped or repeated
+- Proper continuation across pages, even when timestamps collide
+
+No special parsing is required — the cursor is passed as a JSON array and can be unmarshaled directly as `[]any` in Go.
 
 ## API naming guidelines
 

@@ -32,7 +32,6 @@ var permittedSlugs = []string{
 // @Param ip query string false "IP to filter by"
 // @Param deploymentId query string false "Deployment ID to filter by"
 // @Param host query string false "Host to filter by"
-// @Param ip query string false "IP to filter by"
 // @Param id query string false "Id to filter by"
 // @Param slug query string false "Slug to filter by"
 // @Success 200 {object} registry.ListInstancesResponse

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewFileSvcListUploadsResponseWithDefaults() *FileSvcListUploadsResponse {
 	return &this
 }
 
+// GetUploads returns the Uploads field value if set, zero value otherwise.
+func (o *FileSvcListUploadsResponse) GetUploads() []FileSvcUpload {
+	if o == nil || IsNil(o.Uploads) {
+		var ret []FileSvcUpload
+		return ret
+	}
+	return o.Uploads
+}
 
+// GetUploadsOk returns a tuple with the Uploads field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FileSvcListUploadsResponse) GetUploadsOk() ([]FileSvcUpload, bool) {
+	if o == nil || IsNil(o.Uploads) {
+		return nil, false
+	}
+	return o.Uploads, true
+}
 
 // HasUploads returns a boolean if a field has been set.
 func (o *FileSvcListUploadsResponse) HasUploads() bool {
@@ -51,6 +67,10 @@ func (o *FileSvcListUploadsResponse) HasUploads() bool {
 	return false
 }
 
+// SetUploads gets a reference to the given []FileSvcUpload and assigns it to the Uploads field.
+func (o *FileSvcListUploadsResponse) SetUploads(v []FileSvcUpload) {
+	o.Uploads = v
+}
 
 func (o FileSvcListUploadsResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

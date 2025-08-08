@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewUserSvcReadSelfRequestWithDefaults() *UserSvcReadSelfRequest {
 	return &this
 }
 
+// GetCountTokens returns the CountTokens field value if set, zero value otherwise.
+func (o *UserSvcReadSelfRequest) GetCountTokens() bool {
+	if o == nil || IsNil(o.CountTokens) {
+		var ret bool
+		return ret
+	}
+	return *o.CountTokens
+}
 
+// GetCountTokensOk returns a tuple with the CountTokens field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcReadSelfRequest) GetCountTokensOk() (*bool, bool) {
+	if o == nil || IsNil(o.CountTokens) {
+		return nil, false
+	}
+	return o.CountTokens, true
+}
 
 // HasCountTokens returns a boolean if a field has been set.
 func (o *UserSvcReadSelfRequest) HasCountTokens() bool {
@@ -51,6 +67,10 @@ func (o *UserSvcReadSelfRequest) HasCountTokens() bool {
 	return false
 }
 
+// SetCountTokens gets a reference to the given bool and assigns it to the CountTokens field.
+func (o *UserSvcReadSelfRequest) SetCountTokens(v bool) {
+	o.CountTokens = &v
+}
 
 func (o UserSvcReadSelfRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

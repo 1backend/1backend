@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -87,12 +87,12 @@ type ProxySvcAPIService service
 type ApiListCertsRequest struct {
 	ctx context.Context
 	ApiService ProxySvcAPI
-	body *ProxySvcListCertsRequest
+	proxySvcListCertsRequest *ProxySvcListCertsRequest
 }
 
 // List Certs Request
-func (r ApiListCertsRequest) Body(body ProxySvcListCertsRequest) ApiListCertsRequest {
-	r.body = &body
+func (r ApiListCertsRequest) Body(proxySvcListCertsRequest ProxySvcListCertsRequest) ApiListCertsRequest {
+	r.proxySvcListCertsRequest = &proxySvcListCertsRequest
 	return r
 }
 
@@ -154,7 +154,7 @@ func (a *ProxySvcAPIService) ListCertsExecute(r ApiListCertsRequest) (*ProxySvcL
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.proxySvcListCertsRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -241,12 +241,12 @@ func (a *ProxySvcAPIService) ListCertsExecute(r ApiListCertsRequest) (*ProxySvcL
 type ApiListRoutesRequest struct {
 	ctx context.Context
 	ApiService ProxySvcAPI
-	body *ProxySvcListRoutesRequest
+	proxySvcListRoutesRequest *ProxySvcListRoutesRequest
 }
 
 // List Routes Request
-func (r ApiListRoutesRequest) Body(body ProxySvcListRoutesRequest) ApiListRoutesRequest {
-	r.body = &body
+func (r ApiListRoutesRequest) Body(proxySvcListRoutesRequest ProxySvcListRoutesRequest) ApiListRoutesRequest {
+	r.proxySvcListRoutesRequest = &proxySvcListRoutesRequest
 	return r
 }
 
@@ -308,7 +308,7 @@ func (a *ProxySvcAPIService) ListRoutesExecute(r ApiListRoutesRequest) (*ProxySv
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.proxySvcListRoutesRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -395,12 +395,12 @@ func (a *ProxySvcAPIService) ListRoutesExecute(r ApiListRoutesRequest) (*ProxySv
 type ApiSaveCertsRequest struct {
 	ctx context.Context
 	ApiService ProxySvcAPI
-	body *ProxySvcSaveCertsRequest
+	proxySvcSaveCertsRequest *ProxySvcSaveCertsRequest
 }
 
 // Save Certs Request
-func (r ApiSaveCertsRequest) Body(body ProxySvcSaveCertsRequest) ApiSaveCertsRequest {
-	r.body = &body
+func (r ApiSaveCertsRequest) Body(proxySvcSaveCertsRequest ProxySvcSaveCertsRequest) ApiSaveCertsRequest {
+	r.proxySvcSaveCertsRequest = &proxySvcSaveCertsRequest
 	return r
 }
 
@@ -445,8 +445,8 @@ func (a *ProxySvcAPIService) SaveCertsExecute(r ApiSaveCertsRequest) (map[string
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.proxySvcSaveCertsRequest == nil {
+		return localVarReturnValue, nil, reportError("proxySvcSaveCertsRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -467,7 +467,7 @@ func (a *ProxySvcAPIService) SaveCertsExecute(r ApiSaveCertsRequest) (map[string
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.proxySvcSaveCertsRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -554,12 +554,12 @@ func (a *ProxySvcAPIService) SaveCertsExecute(r ApiSaveCertsRequest) (map[string
 type ApiSaveRoutesRequest struct {
 	ctx context.Context
 	ApiService ProxySvcAPI
-	body *ProxySvcSaveRoutesRequest
+	proxySvcSaveRoutesRequest *ProxySvcSaveRoutesRequest
 }
 
 // Save Routes Request
-func (r ApiSaveRoutesRequest) Body(body ProxySvcSaveRoutesRequest) ApiSaveRoutesRequest {
-	r.body = &body
+func (r ApiSaveRoutesRequest) Body(proxySvcSaveRoutesRequest ProxySvcSaveRoutesRequest) ApiSaveRoutesRequest {
+	r.proxySvcSaveRoutesRequest = &proxySvcSaveRoutesRequest
 	return r
 }
 
@@ -602,8 +602,8 @@ func (a *ProxySvcAPIService) SaveRoutesExecute(r ApiSaveRoutesRequest) (*ProxySv
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.proxySvcSaveRoutesRequest == nil {
+		return localVarReturnValue, nil, reportError("proxySvcSaveRoutesRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -624,7 +624,7 @@ func (a *ProxySvcAPIService) SaveRoutesExecute(r ApiSaveRoutesRequest) (*ProxySv
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.proxySvcSaveRoutesRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {

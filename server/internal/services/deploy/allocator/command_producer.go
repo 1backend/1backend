@@ -91,7 +91,8 @@ func checkHealthAndKill(
 	commands := []*deploy.Command{}
 
 	if instance.LastHeartbeat == nil ||
-		instance.Status == openapi.InstanceStatusUnreachable {
+		// @todo: Const disappeared: openapi.InstanceStatusUnreachable
+		instance.Status == "Unreachable" {
 		commands = append(commands, &deploy.Command{
 			Action:       "KILL",
 			DeploymentId: instance.DeploymentId,

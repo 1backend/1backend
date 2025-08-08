@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -45,8 +45,29 @@ func NewContainerSvcImagePullableResponseWithDefaults() *ContainerSvcImagePullab
 	return &this
 }
 
+// GetPullable returns the Pullable field value
+func (o *ContainerSvcImagePullableResponse) GetPullable() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
 
+	return o.Pullable
+}
 
+// GetPullableOk returns a tuple with the Pullable field value
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcImagePullableResponse) GetPullableOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Pullable, true
+}
+
+// SetPullable sets field value
+func (o *ContainerSvcImagePullableResponse) SetPullable(v bool) {
+	o.Pullable = v
+}
 
 func (o ContainerSvcImagePullableResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

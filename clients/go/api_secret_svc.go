@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -116,12 +116,12 @@ type SecretSvcAPIService service
 type ApiDecryptValueRequest struct {
 	ctx context.Context
 	ApiService SecretSvcAPI
-	body *SecretSvcDecryptValueRequest
+	secretSvcDecryptValueRequest *SecretSvcDecryptValueRequest
 }
 
 // Decrypt Value Request
-func (r ApiDecryptValueRequest) Body(body SecretSvcDecryptValueRequest) ApiDecryptValueRequest {
-	r.body = &body
+func (r ApiDecryptValueRequest) Body(secretSvcDecryptValueRequest SecretSvcDecryptValueRequest) ApiDecryptValueRequest {
+	r.secretSvcDecryptValueRequest = &secretSvcDecryptValueRequest
 	return r
 }
 
@@ -164,8 +164,8 @@ func (a *SecretSvcAPIService) DecryptValueExecute(r ApiDecryptValueRequest) (*Se
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.secretSvcDecryptValueRequest == nil {
+		return localVarReturnValue, nil, reportError("secretSvcDecryptValueRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -186,7 +186,7 @@ func (a *SecretSvcAPIService) DecryptValueExecute(r ApiDecryptValueRequest) (*Se
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.secretSvcDecryptValueRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -273,12 +273,12 @@ func (a *SecretSvcAPIService) DecryptValueExecute(r ApiDecryptValueRequest) (*Se
 type ApiEncryptValueRequest struct {
 	ctx context.Context
 	ApiService SecretSvcAPI
-	body *SecretSvcEncryptValueRequest
+	secretSvcEncryptValueRequest *SecretSvcEncryptValueRequest
 }
 
 // Encrypt Value Request
-func (r ApiEncryptValueRequest) Body(body SecretSvcEncryptValueRequest) ApiEncryptValueRequest {
-	r.body = &body
+func (r ApiEncryptValueRequest) Body(secretSvcEncryptValueRequest SecretSvcEncryptValueRequest) ApiEncryptValueRequest {
+	r.secretSvcEncryptValueRequest = &secretSvcEncryptValueRequest
 	return r
 }
 
@@ -321,8 +321,8 @@ func (a *SecretSvcAPIService) EncryptValueExecute(r ApiEncryptValueRequest) (*Se
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.secretSvcEncryptValueRequest == nil {
+		return localVarReturnValue, nil, reportError("secretSvcEncryptValueRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -343,7 +343,7 @@ func (a *SecretSvcAPIService) EncryptValueExecute(r ApiEncryptValueRequest) (*Se
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.secretSvcEncryptValueRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -430,6 +430,12 @@ func (a *SecretSvcAPIService) EncryptValueExecute(r ApiEncryptValueRequest) (*Se
 type ApiIsSecureRequest struct {
 	ctx context.Context
 	ApiService SecretSvcAPI
+	body *map[string]interface{}
+}
+
+func (r ApiIsSecureRequest) Body(body map[string]interface{}) ApiIsSecureRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiIsSecureRequest) Execute() (*SecretSvcIsSecureResponse, *http.Response, error) {
@@ -473,7 +479,7 @@ func (a *SecretSvcAPIService) IsSecureExecute(r ApiIsSecureRequest) (*SecretSvcI
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -489,6 +495,8 @@ func (a *SecretSvcAPIService) IsSecureExecute(r ApiIsSecureRequest) (*SecretSvcI
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -575,12 +583,12 @@ func (a *SecretSvcAPIService) IsSecureExecute(r ApiIsSecureRequest) (*SecretSvcI
 type ApiListSecretsRequest struct {
 	ctx context.Context
 	ApiService SecretSvcAPI
-	body *SecretSvcListSecretsRequest
+	secretSvcListSecretsRequest *SecretSvcListSecretsRequest
 }
 
 // List Secret Request
-func (r ApiListSecretsRequest) Body(body SecretSvcListSecretsRequest) ApiListSecretsRequest {
-	r.body = &body
+func (r ApiListSecretsRequest) Body(secretSvcListSecretsRequest SecretSvcListSecretsRequest) ApiListSecretsRequest {
+	r.secretSvcListSecretsRequest = &secretSvcListSecretsRequest
 	return r
 }
 
@@ -642,7 +650,7 @@ func (a *SecretSvcAPIService) ListSecretsExecute(r ApiListSecretsRequest) (*Secr
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.secretSvcListSecretsRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -718,12 +726,12 @@ func (a *SecretSvcAPIService) ListSecretsExecute(r ApiListSecretsRequest) (*Secr
 type ApiRemoveSecretsRequest struct {
 	ctx context.Context
 	ApiService SecretSvcAPI
-	body *SecretSvcRemoveSecretsRequest
+	secretSvcRemoveSecretsRequest *SecretSvcRemoveSecretsRequest
 }
 
 // Remove Secret Request
-func (r ApiRemoveSecretsRequest) Body(body SecretSvcRemoveSecretsRequest) ApiRemoveSecretsRequest {
-	r.body = &body
+func (r ApiRemoveSecretsRequest) Body(secretSvcRemoveSecretsRequest SecretSvcRemoveSecretsRequest) ApiRemoveSecretsRequest {
+	r.secretSvcRemoveSecretsRequest = &secretSvcRemoveSecretsRequest
 	return r
 }
 
@@ -766,8 +774,8 @@ func (a *SecretSvcAPIService) RemoveSecretsExecute(r ApiRemoveSecretsRequest) (m
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.secretSvcRemoveSecretsRequest == nil {
+		return localVarReturnValue, nil, reportError("secretSvcRemoveSecretsRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -788,7 +796,7 @@ func (a *SecretSvcAPIService) RemoveSecretsExecute(r ApiRemoveSecretsRequest) (m
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.secretSvcRemoveSecretsRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -864,12 +872,12 @@ func (a *SecretSvcAPIService) RemoveSecretsExecute(r ApiRemoveSecretsRequest) (m
 type ApiSaveSecretsRequest struct {
 	ctx context.Context
 	ApiService SecretSvcAPI
-	body *SecretSvcSaveSecretsRequest
+	secretSvcSaveSecretsRequest *SecretSvcSaveSecretsRequest
 }
 
 // Save Secret Request
-func (r ApiSaveSecretsRequest) Body(body SecretSvcSaveSecretsRequest) ApiSaveSecretsRequest {
-	r.body = &body
+func (r ApiSaveSecretsRequest) Body(secretSvcSaveSecretsRequest SecretSvcSaveSecretsRequest) ApiSaveSecretsRequest {
+	r.secretSvcSaveSecretsRequest = &secretSvcSaveSecretsRequest
 	return r
 }
 
@@ -915,8 +923,8 @@ func (a *SecretSvcAPIService) SaveSecretsExecute(r ApiSaveSecretsRequest) (map[s
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.secretSvcSaveSecretsRequest == nil {
+		return localVarReturnValue, nil, reportError("secretSvcSaveSecretsRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -937,7 +945,7 @@ func (a *SecretSvcAPIService) SaveSecretsExecute(r ApiSaveSecretsRequest) (map[s
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.secretSvcSaveSecretsRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {

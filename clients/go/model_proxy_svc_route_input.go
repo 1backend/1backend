@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -42,7 +42,23 @@ func NewProxySvcRouteInputWithDefaults() *ProxySvcRouteInput {
 	return &this
 }
 
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *ProxySvcRouteInput) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
 
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ProxySvcRouteInput) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
 
 // HasId returns a boolean if a field has been set.
 func (o *ProxySvcRouteInput) HasId() bool {
@@ -53,8 +69,28 @@ func (o *ProxySvcRouteInput) HasId() bool {
 	return false
 }
 
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *ProxySvcRouteInput) SetId(v string) {
+	o.Id = &v
+}
 
+// GetTarget returns the Target field value if set, zero value otherwise.
+func (o *ProxySvcRouteInput) GetTarget() string {
+	if o == nil || IsNil(o.Target) {
+		var ret string
+		return ret
+	}
+	return *o.Target
+}
 
+// GetTargetOk returns a tuple with the Target field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ProxySvcRouteInput) GetTargetOk() (*string, bool) {
+	if o == nil || IsNil(o.Target) {
+		return nil, false
+	}
+	return o.Target, true
+}
 
 // HasTarget returns a boolean if a field has been set.
 func (o *ProxySvcRouteInput) HasTarget() bool {
@@ -65,6 +101,10 @@ func (o *ProxySvcRouteInput) HasTarget() bool {
 	return false
 }
 
+// SetTarget gets a reference to the given string and assigns it to the Target field.
+func (o *ProxySvcRouteInput) SetTarget(v string) {
+	o.Target = &v
+}
 
 func (o ProxySvcRouteInput) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

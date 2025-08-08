@@ -88,7 +88,8 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 	// Prioritize healthy instances
 	selectedInstances := make([]openapi.RegistrySvcInstance, 0, len(rsp.Instances))
 	for _, instance := range rsp.Instances {
-		if instance.Status == openapi.InstanceStatusHealthy {
+		// @todo openapi.InstanceStatusHealthy
+		if instance.Status == "Healthy" {
 			selectedInstances = append(selectedInstances, instance)
 		}
 	}

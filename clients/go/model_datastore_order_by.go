@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -25,7 +25,7 @@ type DatastoreOrderBy struct {
 	// The field by which to order the results
 	Field *string `json:"field,omitempty"`
 	// Defines the type of sorting to apply (numeric, text, date, etc.)
-	SortingType *DatastoreSortingType `json:"sortingType,omitempty"`
+	SortingType *string `json:"sortingType,omitempty"`
 }
 
 // NewDatastoreOrderBy instantiates a new DatastoreOrderBy object
@@ -45,7 +45,23 @@ func NewDatastoreOrderByWithDefaults() *DatastoreOrderBy {
 	return &this
 }
 
+// GetDesc returns the Desc field value if set, zero value otherwise.
+func (o *DatastoreOrderBy) GetDesc() bool {
+	if o == nil || IsNil(o.Desc) {
+		var ret bool
+		return ret
+	}
+	return *o.Desc
+}
 
+// GetDescOk returns a tuple with the Desc field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DatastoreOrderBy) GetDescOk() (*bool, bool) {
+	if o == nil || IsNil(o.Desc) {
+		return nil, false
+	}
+	return o.Desc, true
+}
 
 // HasDesc returns a boolean if a field has been set.
 func (o *DatastoreOrderBy) HasDesc() bool {
@@ -56,8 +72,28 @@ func (o *DatastoreOrderBy) HasDesc() bool {
 	return false
 }
 
+// SetDesc gets a reference to the given bool and assigns it to the Desc field.
+func (o *DatastoreOrderBy) SetDesc(v bool) {
+	o.Desc = &v
+}
 
+// GetField returns the Field field value if set, zero value otherwise.
+func (o *DatastoreOrderBy) GetField() string {
+	if o == nil || IsNil(o.Field) {
+		var ret string
+		return ret
+	}
+	return *o.Field
+}
 
+// GetFieldOk returns a tuple with the Field field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DatastoreOrderBy) GetFieldOk() (*string, bool) {
+	if o == nil || IsNil(o.Field) {
+		return nil, false
+	}
+	return o.Field, true
+}
 
 // HasField returns a boolean if a field has been set.
 func (o *DatastoreOrderBy) HasField() bool {
@@ -68,8 +104,28 @@ func (o *DatastoreOrderBy) HasField() bool {
 	return false
 }
 
+// SetField gets a reference to the given string and assigns it to the Field field.
+func (o *DatastoreOrderBy) SetField(v string) {
+	o.Field = &v
+}
 
+// GetSortingType returns the SortingType field value if set, zero value otherwise.
+func (o *DatastoreOrderBy) GetSortingType() string {
+	if o == nil || IsNil(o.SortingType) {
+		var ret string
+		return ret
+	}
+	return *o.SortingType
+}
 
+// GetSortingTypeOk returns a tuple with the SortingType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DatastoreOrderBy) GetSortingTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.SortingType) {
+		return nil, false
+	}
+	return o.SortingType, true
+}
 
 // HasSortingType returns a boolean if a field has been set.
 func (o *DatastoreOrderBy) HasSortingType() bool {
@@ -80,6 +136,10 @@ func (o *DatastoreOrderBy) HasSortingType() bool {
 	return false
 }
 
+// SetSortingType gets a reference to the given string and assigns it to the SortingType field.
+func (o *DatastoreOrderBy) SetSortingType(v string) {
+	o.SortingType = &v
+}
 
 func (o DatastoreOrderBy) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

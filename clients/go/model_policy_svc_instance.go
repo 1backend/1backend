@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -25,7 +25,7 @@ type PolicySvcInstance struct {
 	Endpoint *string `json:"endpoint,omitempty"`
 	Id *string `json:"id,omitempty"`
 	Parameters PolicySvcParameters `json:"parameters"`
-	TemplateId PolicySvcTemplateId `json:"templateId"`
+	TemplateId string `json:"templateId"`
 }
 
 type _PolicySvcInstance PolicySvcInstance
@@ -34,7 +34,7 @@ type _PolicySvcInstance PolicySvcInstance
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPolicySvcInstance(parameters PolicySvcParameters, templateId PolicySvcTemplateId) *PolicySvcInstance {
+func NewPolicySvcInstance(parameters PolicySvcParameters, templateId string) *PolicySvcInstance {
 	this := PolicySvcInstance{}
 	this.Parameters = parameters
 	this.TemplateId = templateId
@@ -49,7 +49,23 @@ func NewPolicySvcInstanceWithDefaults() *PolicySvcInstance {
 	return &this
 }
 
+// GetEndpoint returns the Endpoint field value if set, zero value otherwise.
+func (o *PolicySvcInstance) GetEndpoint() string {
+	if o == nil || IsNil(o.Endpoint) {
+		var ret string
+		return ret
+	}
+	return *o.Endpoint
+}
 
+// GetEndpointOk returns a tuple with the Endpoint field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PolicySvcInstance) GetEndpointOk() (*string, bool) {
+	if o == nil || IsNil(o.Endpoint) {
+		return nil, false
+	}
+	return o.Endpoint, true
+}
 
 // HasEndpoint returns a boolean if a field has been set.
 func (o *PolicySvcInstance) HasEndpoint() bool {
@@ -60,8 +76,28 @@ func (o *PolicySvcInstance) HasEndpoint() bool {
 	return false
 }
 
+// SetEndpoint gets a reference to the given string and assigns it to the Endpoint field.
+func (o *PolicySvcInstance) SetEndpoint(v string) {
+	o.Endpoint = &v
+}
 
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *PolicySvcInstance) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
 
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PolicySvcInstance) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
 
 // HasId returns a boolean if a field has been set.
 func (o *PolicySvcInstance) HasId() bool {
@@ -72,12 +108,58 @@ func (o *PolicySvcInstance) HasId() bool {
 	return false
 }
 
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *PolicySvcInstance) SetId(v string) {
+	o.Id = &v
+}
 
+// GetParameters returns the Parameters field value
+func (o *PolicySvcInstance) GetParameters() PolicySvcParameters {
+	if o == nil {
+		var ret PolicySvcParameters
+		return ret
+	}
 
+	return o.Parameters
+}
 
+// GetParametersOk returns a tuple with the Parameters field value
+// and a boolean to check if the value has been set.
+func (o *PolicySvcInstance) GetParametersOk() (*PolicySvcParameters, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Parameters, true
+}
 
+// SetParameters sets field value
+func (o *PolicySvcInstance) SetParameters(v PolicySvcParameters) {
+	o.Parameters = v
+}
 
+// GetTemplateId returns the TemplateId field value
+func (o *PolicySvcInstance) GetTemplateId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.TemplateId
+}
+
+// GetTemplateIdOk returns a tuple with the TemplateId field value
+// and a boolean to check if the value has been set.
+func (o *PolicySvcInstance) GetTemplateIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.TemplateId, true
+}
+
+// SetTemplateId sets field value
+func (o *PolicySvcInstance) SetTemplateId(v string) {
+	o.TemplateId = v
+}
 
 func (o PolicySvcInstance) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

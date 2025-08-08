@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewFirehoseSvcEventPublishRequestWithDefaults() *FirehoseSvcEventPublishReq
 	return &this
 }
 
+// GetEvent returns the Event field value if set, zero value otherwise.
+func (o *FirehoseSvcEventPublishRequest) GetEvent() FirehoseSvcEvent {
+	if o == nil || IsNil(o.Event) {
+		var ret FirehoseSvcEvent
+		return ret
+	}
+	return *o.Event
+}
 
+// GetEventOk returns a tuple with the Event field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FirehoseSvcEventPublishRequest) GetEventOk() (*FirehoseSvcEvent, bool) {
+	if o == nil || IsNil(o.Event) {
+		return nil, false
+	}
+	return o.Event, true
+}
 
 // HasEvent returns a boolean if a field has been set.
 func (o *FirehoseSvcEventPublishRequest) HasEvent() bool {
@@ -51,6 +67,10 @@ func (o *FirehoseSvcEventPublishRequest) HasEvent() bool {
 	return false
 }
 
+// SetEvent gets a reference to the given FirehoseSvcEvent and assigns it to the Event field.
+func (o *FirehoseSvcEventPublishRequest) SetEvent(v FirehoseSvcEvent) {
+	o.Event = &v
+}
 
 func (o FirehoseSvcEventPublishRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

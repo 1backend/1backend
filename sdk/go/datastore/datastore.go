@@ -170,7 +170,6 @@ const (
 type Filter struct {
 	Fields []string `json:"fields,omitempty"`
 
-	// @openapi-any-array
 	Values []any `json:"values,omitempty"`
 
 	Op Op `json:"op"`
@@ -198,7 +197,6 @@ type Query struct {
 	// After is used for cursor-based pagination, which is more
 	// effective in scalable and distributed environments compared
 	// to offset-based pagination.
-	// @openapi-any-array
 	After []any `json:"after,omitempty"`
 
 	// Limit the number of records in the result set.

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -41,7 +41,23 @@ func NewSourceSvcCheckoutRepoResponseWithDefaults() *SourceSvcCheckoutRepoRespon
 	return &this
 }
 
+// GetDir returns the Dir field value if set, zero value otherwise.
+func (o *SourceSvcCheckoutRepoResponse) GetDir() string {
+	if o == nil || IsNil(o.Dir) {
+		var ret string
+		return ret
+	}
+	return *o.Dir
+}
 
+// GetDirOk returns a tuple with the Dir field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SourceSvcCheckoutRepoResponse) GetDirOk() (*string, bool) {
+	if o == nil || IsNil(o.Dir) {
+		return nil, false
+	}
+	return o.Dir, true
+}
 
 // HasDir returns a boolean if a field has been set.
 func (o *SourceSvcCheckoutRepoResponse) HasDir() bool {
@@ -52,6 +68,10 @@ func (o *SourceSvcCheckoutRepoResponse) HasDir() bool {
 	return false
 }
 
+// SetDir gets a reference to the given string and assigns it to the Dir field.
+func (o *SourceSvcCheckoutRepoResponse) SetDir(v string) {
+	o.Dir = &v
+}
 
 func (o SourceSvcCheckoutRepoResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

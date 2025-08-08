@@ -25,15 +25,11 @@ import { Subscription, filter } from 'rxjs';
 import { ServerService } from '../../services/server.service';
 import { ChatService } from '../../services/chat.service';
 import { PromptService } from '../../services/prompt.service';
-import {
-	PromptSvcPrompt as Prompt,
-	PromptSvcStreamChunkType as ChunkType,
-} from '@1backend/client';
+import { PromptSvcPrompt as Prompt } from '@1backend/client';
 import {
 	ChatSvcThread as Thread,
 	ChatSvcMessage as Message,
 } from '@1backend/client';
-import { ElectronAppService } from '../../services/electron-app.service';
 
 import { FormsModule } from '@angular/forms';
 import { MessageComponent } from './message/message.component';
@@ -96,7 +92,6 @@ export class ChatBoxComponent implements OnChanges, AfterViewInit, OnDestroy {
 
 	constructor(
 		private server: ServerService,
-		public lapi: ElectronAppService,
 		private cd: ChangeDetectorRef,
 		private promptService: PromptService,
 		private chatService: ChatService,
@@ -163,8 +158,7 @@ export class ChatBoxComponent implements OnChanges, AfterViewInit, OnDestroy {
 		this.subscriptions.push(
 			this.chatService.onMessageAdded$.subscribe(async (event) => {
 				if (this.thread?.id && this.thread.id == event.threadId) {
-					
-				const rsp = await this.chatService.chatMessages(this.thread?.id);
+					const rsp = await this.chatService.chatMessages(this.thread?.id);
 					this.messages = rsp.messages!;
 					this.cd.markForCheck();
 				}
@@ -221,7 +215,7 @@ export class ChatBoxComponent implements OnChanges, AfterViewInit, OnDestroy {
 			// template: this.promptTemplate,
 			threadId: this.thread.id as string,
 			modelId: emitted.modelId as string,
-			engineParameters: emitted.engineParameters
+			engineParameters: emitted.engineParameters,
 		});
 
 		this.cd.markForCheck();
@@ -283,14 +277,16 @@ export class ChatBoxComponent implements OnChanges, AfterViewInit, OnDestroy {
 			this.streamSubscription = this.promptService
 				.promptSubscribe(threadId)
 				.subscribe(async (response) => {
-					if (response.type == ChunkType.ChunkTypeProgress) {
+					// @todo: Type disappeared:
+					// ChunkType.ChunkTypeDone
+					if (response.type == 'progress') {
 						const insidePre =
 							(this.messageCurrentlyStreamed.text!.match(/```/g) || []).length %
 								2 ===
 							1;
 						let addValue = insidePre
 							? response?.text || ''
-							: escapeHtml(response?.text || '') ;
+							: escapeHtml(response?.text || '');
 
 						if (first) {
 							addValue = addValue.trimStart();
@@ -303,7 +299,9 @@ export class ChatBoxComponent implements OnChanges, AfterViewInit, OnDestroy {
 						} as Message;
 					}
 
-					if (response.type == ChunkType.ChunkTypeDone) {
+					// @todo: Type disappeared:
+					// ChunkType.ChunkTypeDone
+					if (response.type == 'done') {
 						if (this.messages?.length == 1) {
 							this.setThreadName(this.messages[0].text!);
 						}

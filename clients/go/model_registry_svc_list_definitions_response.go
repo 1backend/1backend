@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewRegistrySvcListDefinitionsResponseWithDefaults() *RegistrySvcListDefinit
 	return &this
 }
 
+// GetDefinitions returns the Definitions field value if set, zero value otherwise.
+func (o *RegistrySvcListDefinitionsResponse) GetDefinitions() []RegistrySvcDefinition {
+	if o == nil || IsNil(o.Definitions) {
+		var ret []RegistrySvcDefinition
+		return ret
+	}
+	return o.Definitions
+}
 
+// GetDefinitionsOk returns a tuple with the Definitions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcListDefinitionsResponse) GetDefinitionsOk() ([]RegistrySvcDefinition, bool) {
+	if o == nil || IsNil(o.Definitions) {
+		return nil, false
+	}
+	return o.Definitions, true
+}
 
 // HasDefinitions returns a boolean if a field has been set.
 func (o *RegistrySvcListDefinitionsResponse) HasDefinitions() bool {
@@ -51,6 +67,10 @@ func (o *RegistrySvcListDefinitionsResponse) HasDefinitions() bool {
 	return false
 }
 
+// SetDefinitions gets a reference to the given []RegistrySvcDefinition and assigns it to the Definitions field.
+func (o *RegistrySvcListDefinitionsResponse) SetDefinitions(v []RegistrySvcDefinition) {
+	o.Definitions = v
+}
 
 func (o RegistrySvcListDefinitionsResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

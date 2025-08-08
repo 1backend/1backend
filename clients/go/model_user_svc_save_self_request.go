@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -20,7 +20,7 @@ var _ MappedNullable = &UserSvcSaveSelfRequest{}
 
 // UserSvcSaveSelfRequest struct for UserSvcSaveSelfRequest
 type UserSvcSaveSelfRequest struct {
-	Labels *map[string]string `json:"labels,omitempty"`
+	Labels map[string]string `json:"labels,omitempty"`
 	Name *string `json:"name,omitempty"`
 	ThumbnailFileId *string `json:"thumbnailFileId,omitempty"`
 }
@@ -42,7 +42,23 @@ func NewUserSvcSaveSelfRequestWithDefaults() *UserSvcSaveSelfRequest {
 	return &this
 }
 
+// GetLabels returns the Labels field value if set, zero value otherwise.
+func (o *UserSvcSaveSelfRequest) GetLabels() map[string]string {
+	if o == nil || IsNil(o.Labels) {
+		var ret map[string]string
+		return ret
+	}
+	return o.Labels
+}
 
+// GetLabelsOk returns a tuple with the Labels field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcSaveSelfRequest) GetLabelsOk() (map[string]string, bool) {
+	if o == nil || IsNil(o.Labels) {
+		return map[string]string{}, false
+	}
+	return o.Labels, true
+}
 
 // HasLabels returns a boolean if a field has been set.
 func (o *UserSvcSaveSelfRequest) HasLabels() bool {
@@ -53,8 +69,28 @@ func (o *UserSvcSaveSelfRequest) HasLabels() bool {
 	return false
 }
 
+// SetLabels gets a reference to the given map[string]string and assigns it to the Labels field.
+func (o *UserSvcSaveSelfRequest) SetLabels(v map[string]string) {
+	o.Labels = v
+}
 
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *UserSvcSaveSelfRequest) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
 
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcSaveSelfRequest) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
 
 // HasName returns a boolean if a field has been set.
 func (o *UserSvcSaveSelfRequest) HasName() bool {
@@ -65,8 +101,28 @@ func (o *UserSvcSaveSelfRequest) HasName() bool {
 	return false
 }
 
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *UserSvcSaveSelfRequest) SetName(v string) {
+	o.Name = &v
+}
 
+// GetThumbnailFileId returns the ThumbnailFileId field value if set, zero value otherwise.
+func (o *UserSvcSaveSelfRequest) GetThumbnailFileId() string {
+	if o == nil || IsNil(o.ThumbnailFileId) {
+		var ret string
+		return ret
+	}
+	return *o.ThumbnailFileId
+}
 
+// GetThumbnailFileIdOk returns a tuple with the ThumbnailFileId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcSaveSelfRequest) GetThumbnailFileIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ThumbnailFileId) {
+		return nil, false
+	}
+	return o.ThumbnailFileId, true
+}
 
 // HasThumbnailFileId returns a boolean if a field has been set.
 func (o *UserSvcSaveSelfRequest) HasThumbnailFileId() bool {
@@ -77,6 +133,10 @@ func (o *UserSvcSaveSelfRequest) HasThumbnailFileId() bool {
 	return false
 }
 
+// SetThumbnailFileId gets a reference to the given string and assigns it to the ThumbnailFileId field.
+func (o *UserSvcSaveSelfRequest) SetThumbnailFileId(v string) {
+	o.ThumbnailFileId = &v
+}
 
 func (o UserSvcSaveSelfRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

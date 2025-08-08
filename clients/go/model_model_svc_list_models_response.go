@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewModelSvcListModelsResponseWithDefaults() *ModelSvcListModelsResponse {
 	return &this
 }
 
+// GetModels returns the Models field value if set, zero value otherwise.
+func (o *ModelSvcListModelsResponse) GetModels() []ModelSvcModel {
+	if o == nil || IsNil(o.Models) {
+		var ret []ModelSvcModel
+		return ret
+	}
+	return o.Models
+}
 
+// GetModelsOk returns a tuple with the Models field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ModelSvcListModelsResponse) GetModelsOk() ([]ModelSvcModel, bool) {
+	if o == nil || IsNil(o.Models) {
+		return nil, false
+	}
+	return o.Models, true
+}
 
 // HasModels returns a boolean if a field has been set.
 func (o *ModelSvcListModelsResponse) HasModels() bool {
@@ -51,6 +67,10 @@ func (o *ModelSvcListModelsResponse) HasModels() bool {
 	return false
 }
 
+// SetModels gets a reference to the given []ModelSvcModel and assigns it to the Models field.
+func (o *ModelSvcListModelsResponse) SetModels(v []ModelSvcModel) {
+	o.Models = v
+}
 
 func (o ModelSvcListModelsResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

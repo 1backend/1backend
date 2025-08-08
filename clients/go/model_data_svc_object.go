@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -20,7 +20,7 @@ import (
 // checks if the DataSvcObject type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &DataSvcObject{}
 
-// DataSvcObject struct for DataSvcObject
+// DataSvcObject The object containing the fields to update in matching objects.
 type DataSvcObject struct {
 	// Authors is a list of user ID and organization ID who created the object. The authors field tracks which users or organizations created an entry, helping to prevent spam. If an organization ID is not provided, the currently active organization will be queried from the User Svc.
 	Authors []string `json:"authors,omitempty"`
@@ -60,7 +60,23 @@ func NewDataSvcObjectWithDefaults() *DataSvcObject {
 	return &this
 }
 
+// GetAuthors returns the Authors field value if set, zero value otherwise.
+func (o *DataSvcObject) GetAuthors() []string {
+	if o == nil || IsNil(o.Authors) {
+		var ret []string
+		return ret
+	}
+	return o.Authors
+}
 
+// GetAuthorsOk returns a tuple with the Authors field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DataSvcObject) GetAuthorsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Authors) {
+		return nil, false
+	}
+	return o.Authors, true
+}
 
 // HasAuthors returns a boolean if a field has been set.
 func (o *DataSvcObject) HasAuthors() bool {
@@ -71,14 +87,76 @@ func (o *DataSvcObject) HasAuthors() bool {
 	return false
 }
 
+// SetAuthors gets a reference to the given []string and assigns it to the Authors field.
+func (o *DataSvcObject) SetAuthors(v []string) {
+	o.Authors = v
+}
 
+// GetCreatedAt returns the CreatedAt field value
+func (o *DataSvcObject) GetCreatedAt() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.CreatedAt
+}
 
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
+// and a boolean to check if the value has been set.
+func (o *DataSvcObject) GetCreatedAtOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CreatedAt, true
+}
 
+// SetCreatedAt sets field value
+func (o *DataSvcObject) SetCreatedAt(v string) {
+	o.CreatedAt = v
+}
 
+// GetData returns the Data field value
+func (o *DataSvcObject) GetData() map[string]interface{} {
+	if o == nil {
+		var ret map[string]interface{}
+		return ret
+	}
 
+	return o.Data
+}
 
+// GetDataOk returns a tuple with the Data field value
+// and a boolean to check if the value has been set.
+func (o *DataSvcObject) GetDataOk() (map[string]interface{}, bool) {
+	if o == nil {
+		return map[string]interface{}{}, false
+	}
+	return o.Data, true
+}
 
+// SetData sets field value
+func (o *DataSvcObject) SetData(v map[string]interface{}) {
+	o.Data = v
+}
+
+// GetDeleters returns the Deleters field value if set, zero value otherwise.
+func (o *DataSvcObject) GetDeleters() []string {
+	if o == nil || IsNil(o.Deleters) {
+		var ret []string
+		return ret
+	}
+	return o.Deleters
+}
+
+// GetDeletersOk returns a tuple with the Deleters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DataSvcObject) GetDeletersOk() ([]string, bool) {
+	if o == nil || IsNil(o.Deleters) {
+		return nil, false
+	}
+	return o.Deleters, true
+}
 
 // HasDeleters returns a boolean if a field has been set.
 func (o *DataSvcObject) HasDeleters() bool {
@@ -89,8 +167,28 @@ func (o *DataSvcObject) HasDeleters() bool {
 	return false
 }
 
+// SetDeleters gets a reference to the given []string and assigns it to the Deleters field.
+func (o *DataSvcObject) SetDeleters(v []string) {
+	o.Deleters = v
+}
 
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *DataSvcObject) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
 
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DataSvcObject) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
 
 // HasId returns a boolean if a field has been set.
 func (o *DataSvcObject) HasId() bool {
@@ -101,8 +199,28 @@ func (o *DataSvcObject) HasId() bool {
 	return false
 }
 
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *DataSvcObject) SetId(v string) {
+	o.Id = &v
+}
 
+// GetReaders returns the Readers field value if set, zero value otherwise.
+func (o *DataSvcObject) GetReaders() []string {
+	if o == nil || IsNil(o.Readers) {
+		var ret []string
+		return ret
+	}
+	return o.Readers
+}
 
+// GetReadersOk returns a tuple with the Readers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DataSvcObject) GetReadersOk() ([]string, bool) {
+	if o == nil || IsNil(o.Readers) {
+		return nil, false
+	}
+	return o.Readers, true
+}
 
 // HasReaders returns a boolean if a field has been set.
 func (o *DataSvcObject) HasReaders() bool {
@@ -113,14 +231,76 @@ func (o *DataSvcObject) HasReaders() bool {
 	return false
 }
 
+// SetReaders gets a reference to the given []string and assigns it to the Readers field.
+func (o *DataSvcObject) SetReaders(v []string) {
+	o.Readers = v
+}
 
+// GetTable returns the Table field value
+func (o *DataSvcObject) GetTable() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Table
+}
 
+// GetTableOk returns a tuple with the Table field value
+// and a boolean to check if the value has been set.
+func (o *DataSvcObject) GetTableOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Table, true
+}
 
+// SetTable sets field value
+func (o *DataSvcObject) SetTable(v string) {
+	o.Table = v
+}
 
+// GetUpdatedAt returns the UpdatedAt field value
+func (o *DataSvcObject) GetUpdatedAt() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.UpdatedAt
+}
 
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
+// and a boolean to check if the value has been set.
+func (o *DataSvcObject) GetUpdatedAtOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.UpdatedAt, true
+}
 
+// SetUpdatedAt sets field value
+func (o *DataSvcObject) SetUpdatedAt(v string) {
+	o.UpdatedAt = v
+}
+
+// GetWriters returns the Writers field value if set, zero value otherwise.
+func (o *DataSvcObject) GetWriters() []string {
+	if o == nil || IsNil(o.Writers) {
+		var ret []string
+		return ret
+	}
+	return o.Writers
+}
+
+// GetWritersOk returns a tuple with the Writers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DataSvcObject) GetWritersOk() ([]string, bool) {
+	if o == nil || IsNil(o.Writers) {
+		return nil, false
+	}
+	return o.Writers, true
+}
 
 // HasWriters returns a boolean if a field has been set.
 func (o *DataSvcObject) HasWriters() bool {
@@ -131,6 +311,10 @@ func (o *DataSvcObject) HasWriters() bool {
 	return false
 }
 
+// SetWriters gets a reference to the given []string and assigns it to the Writers field.
+func (o *DataSvcObject) SetWriters(v []string) {
+	o.Writers = v
+}
 
 func (o DataSvcObject) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

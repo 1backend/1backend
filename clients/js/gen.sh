@@ -19,7 +19,7 @@ trap 'echo "Error occurred in script at line $LINENO"; exit 1' ERR
 # Initialize Swagger in server
 echo "Initializing Swagger in $OB_DIR"
 cd "$OB_DIR"
-swag init --parseDependency
+swag init --parseDependency --v3.1
 
 # Generate TypeScript Fetch client
 echo "Generating TypeScript Fetch client in $TYPESCRIPT_CLIENT_DIR"
@@ -30,7 +30,7 @@ openapi-generator-cli generate \
 -i "$SWAGGER_FILE" \
 -g typescript-fetch \
 -o "$TYPESCRIPT_CLIENT_DIR/src" \
---additional-properties modelPropertyNaming=original \
+--additional-properties modelPropertyNaming=original
 
 # Generate TypeScript Node client
 echo "Generating TypeScript Node client in $TYPESCRIPT_NODE_DIR"
@@ -41,6 +41,43 @@ openapi-generator-cli generate \
 -g typescript-node \
 -o "$TYPESCRIPT_NODE_DIR/src" \
 --additional-properties modelPropertyNaming=original
+
+# ------------------------------------------
+# Post-process generated TypeScript client
+# to normalize request body naming
+#
+# Context:
+# When using OpenAPI Generator with:
+#   --generator-name=typescript-fetch
+#   --additional-properties=useSingleRequestParameter=true
+#
+# It generates request interfaces like:
+#   export interface RegisterRequest {
+#     userSvcRegisterRequest: UserSvcRegisterRequest;
+#   }
+# ...and then accesses them via:
+#   requestParameters['userSvcRegisterRequest']
+#
+# We'd prefer a clean and consistent field name:
+#   body: UserSvcRegisterRequest;
+# ...and access like:
+#   requestParameters['body']
+#
+# This script rewrites both definitions and usage accordingly.
+# ------------------------------------------
+
+find . -type f -name "*.ts" ! -path "*/node_modules/*" | while read -r file; do
+  echo "Processing $file"
+
+  sed -i.bak -E \
+    '/export interface [A-Za-z0-9]+Request *\{/,/^\}/ s/^(\s*)[a-zA-Z0-9]+Svc[a-zA-Z0-9]*Request(\??):/\1body\2:/' "$file"
+done
+
+find . -type f -name "*.ts" ! -path "*/node_modules/*" | while read -r file; do
+  echo "Fixing request parameter usage in $file"
+
+  sed -i.bak -E "s/requestParameters\['[a-zA-Z0-9]+Svc[a-zA-Z0-9]*Request'\]/requestParameters['body']/g" "$file"
+done
 
 # Step into the node directory, install dependencies and build
 echo "Installing dependencies and building in node directory"

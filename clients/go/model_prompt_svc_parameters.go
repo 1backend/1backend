@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the PromptSvcParameters type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &PromptSvcParameters{}
 
-// PromptSvcParameters struct for PromptSvcParameters
+// PromptSvcParameters AI engine/platform (eg. Llama, Stable Diffusion) agnostic parameters. Use these high level parameters when you don't care about the actual engine, only the functionality (eg. text to image, image to image) it provides.
 type PromptSvcParameters struct {
 	TextToImage *PromptSvcTextToImageParameters `json:"textToImage,omitempty"`
 	TextToText *PromptSvcTextToTextParameters `json:"textToText,omitempty"`
@@ -41,7 +41,23 @@ func NewPromptSvcParametersWithDefaults() *PromptSvcParameters {
 	return &this
 }
 
+// GetTextToImage returns the TextToImage field value if set, zero value otherwise.
+func (o *PromptSvcParameters) GetTextToImage() PromptSvcTextToImageParameters {
+	if o == nil || IsNil(o.TextToImage) {
+		var ret PromptSvcTextToImageParameters
+		return ret
+	}
+	return *o.TextToImage
+}
 
+// GetTextToImageOk returns a tuple with the TextToImage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcParameters) GetTextToImageOk() (*PromptSvcTextToImageParameters, bool) {
+	if o == nil || IsNil(o.TextToImage) {
+		return nil, false
+	}
+	return o.TextToImage, true
+}
 
 // HasTextToImage returns a boolean if a field has been set.
 func (o *PromptSvcParameters) HasTextToImage() bool {
@@ -52,8 +68,28 @@ func (o *PromptSvcParameters) HasTextToImage() bool {
 	return false
 }
 
+// SetTextToImage gets a reference to the given PromptSvcTextToImageParameters and assigns it to the TextToImage field.
+func (o *PromptSvcParameters) SetTextToImage(v PromptSvcTextToImageParameters) {
+	o.TextToImage = &v
+}
 
+// GetTextToText returns the TextToText field value if set, zero value otherwise.
+func (o *PromptSvcParameters) GetTextToText() PromptSvcTextToTextParameters {
+	if o == nil || IsNil(o.TextToText) {
+		var ret PromptSvcTextToTextParameters
+		return ret
+	}
+	return *o.TextToText
+}
 
+// GetTextToTextOk returns a tuple with the TextToText field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcParameters) GetTextToTextOk() (*PromptSvcTextToTextParameters, bool) {
+	if o == nil || IsNil(o.TextToText) {
+		return nil, false
+	}
+	return o.TextToText, true
+}
 
 // HasTextToText returns a boolean if a field has been set.
 func (o *PromptSvcParameters) HasTextToText() bool {
@@ -64,6 +100,10 @@ func (o *PromptSvcParameters) HasTextToText() bool {
 	return false
 }
 
+// SetTextToText gets a reference to the given PromptSvcTextToTextParameters and assigns it to the TextToText field.
+func (o *PromptSvcParameters) SetTextToText(v PromptSvcTextToTextParameters) {
+	o.TextToText = &v
+}
 
 func (o PromptSvcParameters) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

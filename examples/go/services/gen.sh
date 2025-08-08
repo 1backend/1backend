@@ -53,7 +53,7 @@ for dir in */ ; do
     
     mkdir -p "$clientsDir/spec"
     
-    swag init --parseDependency --dir "$serviceName" --output "$clientsDir/spec"
+    swag init --parseDependency --dir "$serviceName" --output "$clientsDir/spec" --v3.1
     
     mkdir -p "$clientsDir/go"
     

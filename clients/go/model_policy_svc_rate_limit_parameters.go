@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -20,9 +20,9 @@ var _ MappedNullable = &PolicySvcRateLimitParameters{}
 
 // PolicySvcRateLimitParameters struct for PolicySvcRateLimitParameters
 type PolicySvcRateLimitParameters struct {
-	Entity *PolicySvcEntity `json:"entity,omitempty"`
+	Entity *string `json:"entity,omitempty"`
 	MaxRequests *int32 `json:"maxRequests,omitempty"`
-	Scope *PolicySvcScope `json:"scope,omitempty"`
+	Scope *string `json:"scope,omitempty"`
 	TimeWindow *string `json:"timeWindow,omitempty"`
 }
 
@@ -43,7 +43,23 @@ func NewPolicySvcRateLimitParametersWithDefaults() *PolicySvcRateLimitParameters
 	return &this
 }
 
+// GetEntity returns the Entity field value if set, zero value otherwise.
+func (o *PolicySvcRateLimitParameters) GetEntity() string {
+	if o == nil || IsNil(o.Entity) {
+		var ret string
+		return ret
+	}
+	return *o.Entity
+}
 
+// GetEntityOk returns a tuple with the Entity field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PolicySvcRateLimitParameters) GetEntityOk() (*string, bool) {
+	if o == nil || IsNil(o.Entity) {
+		return nil, false
+	}
+	return o.Entity, true
+}
 
 // HasEntity returns a boolean if a field has been set.
 func (o *PolicySvcRateLimitParameters) HasEntity() bool {
@@ -54,8 +70,28 @@ func (o *PolicySvcRateLimitParameters) HasEntity() bool {
 	return false
 }
 
+// SetEntity gets a reference to the given string and assigns it to the Entity field.
+func (o *PolicySvcRateLimitParameters) SetEntity(v string) {
+	o.Entity = &v
+}
 
+// GetMaxRequests returns the MaxRequests field value if set, zero value otherwise.
+func (o *PolicySvcRateLimitParameters) GetMaxRequests() int32 {
+	if o == nil || IsNil(o.MaxRequests) {
+		var ret int32
+		return ret
+	}
+	return *o.MaxRequests
+}
 
+// GetMaxRequestsOk returns a tuple with the MaxRequests field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PolicySvcRateLimitParameters) GetMaxRequestsOk() (*int32, bool) {
+	if o == nil || IsNil(o.MaxRequests) {
+		return nil, false
+	}
+	return o.MaxRequests, true
+}
 
 // HasMaxRequests returns a boolean if a field has been set.
 func (o *PolicySvcRateLimitParameters) HasMaxRequests() bool {
@@ -66,8 +102,28 @@ func (o *PolicySvcRateLimitParameters) HasMaxRequests() bool {
 	return false
 }
 
+// SetMaxRequests gets a reference to the given int32 and assigns it to the MaxRequests field.
+func (o *PolicySvcRateLimitParameters) SetMaxRequests(v int32) {
+	o.MaxRequests = &v
+}
 
+// GetScope returns the Scope field value if set, zero value otherwise.
+func (o *PolicySvcRateLimitParameters) GetScope() string {
+	if o == nil || IsNil(o.Scope) {
+		var ret string
+		return ret
+	}
+	return *o.Scope
+}
 
+// GetScopeOk returns a tuple with the Scope field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PolicySvcRateLimitParameters) GetScopeOk() (*string, bool) {
+	if o == nil || IsNil(o.Scope) {
+		return nil, false
+	}
+	return o.Scope, true
+}
 
 // HasScope returns a boolean if a field has been set.
 func (o *PolicySvcRateLimitParameters) HasScope() bool {
@@ -78,8 +134,28 @@ func (o *PolicySvcRateLimitParameters) HasScope() bool {
 	return false
 }
 
+// SetScope gets a reference to the given string and assigns it to the Scope field.
+func (o *PolicySvcRateLimitParameters) SetScope(v string) {
+	o.Scope = &v
+}
 
+// GetTimeWindow returns the TimeWindow field value if set, zero value otherwise.
+func (o *PolicySvcRateLimitParameters) GetTimeWindow() string {
+	if o == nil || IsNil(o.TimeWindow) {
+		var ret string
+		return ret
+	}
+	return *o.TimeWindow
+}
 
+// GetTimeWindowOk returns a tuple with the TimeWindow field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PolicySvcRateLimitParameters) GetTimeWindowOk() (*string, bool) {
+	if o == nil || IsNil(o.TimeWindow) {
+		return nil, false
+	}
+	return o.TimeWindow, true
+}
 
 // HasTimeWindow returns a boolean if a field has been set.
 func (o *PolicySvcRateLimitParameters) HasTimeWindow() bool {
@@ -90,6 +166,10 @@ func (o *PolicySvcRateLimitParameters) HasTimeWindow() bool {
 	return false
 }
 
+// SetTimeWindow gets a reference to the given string and assigns it to the TimeWindow field.
+func (o *PolicySvcRateLimitParameters) SetTimeWindow(v string) {
+	o.TimeWindow = &v
+}
 
 func (o PolicySvcRateLimitParameters) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

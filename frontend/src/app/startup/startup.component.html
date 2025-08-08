@@ -1,0 +1,213 @@
+<!--
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ -->
+<app-page title="Startup" [menuWidth]="'3rem'" [columnWidths]="['3rem']">
+  <ng-template #columnContent>
+    <div>
+      <app-icon-menu></app-icon-menu>
+    </div>
+  </ng-template>
+  <ng-template #mainContent>
+    <app-centered [headerHeight]="'56px'" [vertical]="true">
+      <div style="padding: 0rem 2rem">
+        <h2 *ngIf="!allIsWell" style="margin-bottom: 2rem">
+          {{ "Preparing to start your AI" | translate }}
+        </h2>
+        <h2 *ngIf="allIsWell" style="margin-bottom: 2rem">
+          {{ "Your AI is ready" | translate }}
+        </h2>
+
+        <ion-list>
+          <ion-item
+            button
+            detail="false"
+            (click)="toggleSection('dependencies')"
+          >
+            <ion-icon
+              [ngStyle]="
+                (containerService.onContainerInfo$ | async)?.hasDocker
+                  ? { color: '#53DD6C' }
+                  : {}
+              "
+              slot="start"
+              name="laptop-outline"
+            ></ion-icon>
+            <ion-label>{{ "Dependencies" | translate }}</ion-label>
+            <ion-icon
+              slot="end"
+              style="color: #bdbdbd; font-size: 1.25rem"
+              [name]="
+                showSections.dependencies ? 'chevron-down' : 'chevron-forward'
+              "
+            ></ion-icon>
+          </ion-item>
+          <ion-list class="dropdown" *ngIf="showSections.dependencies">
+            <ion-item
+              *ngIf="(containerService.onContainerInfo$ | async)?.hasDocker"
+            >
+              {{ "You have all the required dependecies. Yay!" | translate }}
+            </ion-item>
+            <ion-item
+              *ngIf="!(containerService.onContainerInfo$ | async)?.hasDocker"
+            >
+              <ion-label>
+                
+                  <div>
+                    {{
+                      "You are missing a critical runtime depependency."
+                        | translate
+                    }}.
+                  </div>
+             
+              </ion-label>
+            </ion-item>
+          </ion-list>
+
+          <ng-container
+            *ngIf="(containerService.onContainerInfo$ | async)?.hasDocker"
+          >
+            <ion-item button detail="false" (click)="toggleSection('model')">
+              <ion-icon
+                [ngStyle]="
+                  (modelService.onModelCheck$ | async)?.assetsReady
+                    ? { color: '#53DD6C' }
+                    : {}
+                "
+                slot="start"
+                name="cube-outline"
+              ></ion-icon>
+              <ion-label>{{ "Downloading your model" | translate }}</ion-label>
+              <ion-icon
+                slot="end"
+                style="color: #bdbdbd; font-size: 1.25rem"
+                [name]="showSections.model ? 'chevron-down' : 'chevron-forward'"
+              ></ion-icon>
+            </ion-item>
+            <ion-list class="dropdown" *ngIf="showSections.model">
+              <ion-item
+                *ngIf="(modelService?.onModelCheck$ | async)?.assetsReady"
+              >
+                {{ "You successfully downloaded the model." | translate }}
+              </ion-item>
+              <ion-item
+                *ngIf="!(modelService?.onModelCheck$ | async)?.assetsReady"
+              >
+                <ion-label>
+                  <ng-container *ngIf="!isDownloading && !downloaded">
+                    <p>
+                      {{ "Your selected model is" | translate }}:
+                      <strong
+                        >{{
+                          selectedModelName(configService.configs$ | async)
+                        }}.</strong
+                      >
+                    </p>
+                    <p>
+                      {{ "To change this go to" | translate }}
+                      <a routerLink="/model-explorer">{{
+                        "the Model Explorer" | translate
+                      }}</a>
+                      {{ "page and start a download" | translate }}.
+                    </p>
+                    <p>
+                      {{ "This operation will consume" | translate }}
+                      <strong
+                        >{{
+                          selectedModel(configService.configs$ | async)?.size
+                        }}
+                        GB</strong
+                      >
+                      {{ "of data." | translate }}
+                    </p>
+                    <div style="padding-top: 1rem; display: flex">
+                      <ion-button
+                        style="margin-right: 1rem"
+                        (click)="download()"
+                        [disabled]="isDownloading"
+                        ><span
+                          class="sng-test-download-button"
+                          style="color: white"
+                          >{{ "Download" | translate }}</span
+                        ></ion-button
+                      >
+                    </div>
+                  </ng-container>
+
+                  <h2>
+                    <app-downloading
+                      *ngIf="
+                        hasModelAsset(
+                          selectedModel(configService.configs$ | async)
+                        )
+                      "
+                      [url]="
+                        modelAssetUrl(
+                          selectedModel(configService.configs$ | async)
+                        )
+                      "
+                      (downloadStatusChange)="handleDownloadStatus($event)"
+                    ></app-downloading>
+                  </h2>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </ng-container>
+
+          <ng-container
+            *ngIf="
+              (modelService?.onModelCheck$ | async)?.assetsReady &&
+              (containerService?.onContainerInfo$ | async)?.hasDocker
+            "
+          >
+            <ion-item button detail="false" (click)="toggleSection('starting')">
+              <ion-icon
+                [ngStyle]="allIsWell ? { color: '#53DD6C' } : {}"
+                slot="start"
+                name="hardware-chip-outline"
+              ></ion-icon>
+              <ion-label>{{ "Starting up AI" | translate }}</ion-label>
+              <ion-icon
+                style="color: #bdbdbd; font-size: 1.25rem"
+                slot="end"
+                [name]="
+                  showSections.starting ? 'chevron-down' : 'chevron-forward'
+                "
+              ></ion-icon>
+            </ion-item>
+            <ion-list class="dropdown" *ngIf="showSections.starting">
+              <ion-item>
+                <ng-container *ngIf="!allIsWell">
+                  <ion-label>
+                    {{
+                      "Testing if your AI is responding. Hold on!" | translate
+                    }}
+                    <ion-spinner
+                      style="position: absolute; margin-left: 1rem; top: 0.5rem"
+                    ></ion-spinner>
+                  </ion-label>
+                </ng-container>
+                <ng-container *ngIf="allIsWell">
+                  <ion-label> {{ "Your AI is ready" | translate }}. </ion-label>
+                </ng-container>
+              </ion-item>
+            </ion-list>
+          </ng-container>
+        </ion-list>
+
+        <ng-container *ngIf="allIsWell">
+          <div style="margin-top: 2rem; padding-left: 4.5rem">
+            <ion-button routerLink="/chat"
+              ><span class="sng-test-go-button"
+                >{{ "Go" | translate }}!</span
+              ></ion-button
+            >
+          </div>
+        </ng-container>
+      </div>
+    </app-centered>
+  </ng-template>
+</app-page>

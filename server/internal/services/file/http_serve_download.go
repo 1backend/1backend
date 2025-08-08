@@ -183,13 +183,13 @@ func (fs *FileService) serveRemoteDownload(
 		return
 	}
 
-	defer file.Close()
+	defer (*file).Close()
 
 	w.Header().Set("Content-Type", fileHttpRsp.Header.Get("Content-Type"))
 	w.Header().Set("Content-Disposition", fileHttpRsp.Header.Get("Content-Disposition"))
 	w.Header().Set("Content-Length", fileHttpRsp.Header.Get("Content-Length"))
 
-	_, err = io.Copy(w, file)
+	_, err = io.Copy(w, *file)
 	if err != nil {
 		logger.Error("Failed to write file to response", slog.Any("error", err))
 		endpoint.InternalServerError(w)

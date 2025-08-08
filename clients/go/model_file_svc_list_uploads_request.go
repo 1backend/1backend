@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -43,7 +43,23 @@ func NewFileSvcListUploadsRequestWithDefaults() *FileSvcListUploadsRequest {
 	return &this
 }
 
+// GetAfter returns the After field value if set, zero value otherwise.
+func (o *FileSvcListUploadsRequest) GetAfter() string {
+	if o == nil || IsNil(o.After) {
+		var ret string
+		return ret
+	}
+	return *o.After
+}
 
+// GetAfterOk returns a tuple with the After field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FileSvcListUploadsRequest) GetAfterOk() (*string, bool) {
+	if o == nil || IsNil(o.After) {
+		return nil, false
+	}
+	return o.After, true
+}
 
 // HasAfter returns a boolean if a field has been set.
 func (o *FileSvcListUploadsRequest) HasAfter() bool {
@@ -54,8 +70,28 @@ func (o *FileSvcListUploadsRequest) HasAfter() bool {
 	return false
 }
 
+// SetAfter gets a reference to the given string and assigns it to the After field.
+func (o *FileSvcListUploadsRequest) SetAfter(v string) {
+	o.After = &v
+}
 
+// GetLimit returns the Limit field value if set, zero value otherwise.
+func (o *FileSvcListUploadsRequest) GetLimit() int32 {
+	if o == nil || IsNil(o.Limit) {
+		var ret int32
+		return ret
+	}
+	return *o.Limit
+}
 
+// GetLimitOk returns a tuple with the Limit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FileSvcListUploadsRequest) GetLimitOk() (*int32, bool) {
+	if o == nil || IsNil(o.Limit) {
+		return nil, false
+	}
+	return o.Limit, true
+}
 
 // HasLimit returns a boolean if a field has been set.
 func (o *FileSvcListUploadsRequest) HasLimit() bool {
@@ -66,8 +102,28 @@ func (o *FileSvcListUploadsRequest) HasLimit() bool {
 	return false
 }
 
+// SetLimit gets a reference to the given int32 and assigns it to the Limit field.
+func (o *FileSvcListUploadsRequest) SetLimit(v int32) {
+	o.Limit = &v
+}
 
+// GetUserId returns the UserId field value if set, zero value otherwise.
+func (o *FileSvcListUploadsRequest) GetUserId() string {
+	if o == nil || IsNil(o.UserId) {
+		var ret string
+		return ret
+	}
+	return *o.UserId
+}
 
+// GetUserIdOk returns a tuple with the UserId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FileSvcListUploadsRequest) GetUserIdOk() (*string, bool) {
+	if o == nil || IsNil(o.UserId) {
+		return nil, false
+	}
+	return o.UserId, true
+}
 
 // HasUserId returns a boolean if a field has been set.
 func (o *FileSvcListUploadsRequest) HasUserId() bool {
@@ -78,6 +134,10 @@ func (o *FileSvcListUploadsRequest) HasUserId() bool {
 	return false
 }
 
+// SetUserId gets a reference to the given string and assigns it to the UserId field.
+func (o *FileSvcListUploadsRequest) SetUserId(v string) {
+	o.UserId = &v
+}
 
 func (o FileSvcListUploadsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

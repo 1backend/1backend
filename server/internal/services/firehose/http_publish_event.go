@@ -24,7 +24,7 @@ import (
 // @Tags Firehose Svc
 // @Accept json
 // @Produce json
-// @Param event body firehose.EventPublishRequest true "Event to publish"
+// @Param body body firehose.EventPublishRequest true "Event to publish"
 // @Success 200 {object} nil "{}"
 // @Failure 400 {object} firehose.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} firehose.ErrorResponse "Unauthorized"

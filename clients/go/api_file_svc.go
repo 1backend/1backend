@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -121,7 +121,7 @@ Requires the `file-svc:download:edit` permission.
 
 	// ServeDownloadExecute executes the request
 	//  @return *os.File
-	ServeDownloadExecute(r ApiServeDownloadRequest) (*os.File, *http.Response, error)
+	ServeDownloadExecute(r ApiServeDownloadRequest) (**os.File, *http.Response, error)
 
 	/*
 	ServeUpload Serve an Uploaded File
@@ -141,7 +141,7 @@ This means each uploaded file may have multiple records with the same `FileID` b
 
 	// ServeUploadExecute executes the request
 	//  @return *os.File
-	ServeUploadExecute(r ApiServeUploadRequest) (*os.File, *http.Response, error)
+	ServeUploadExecute(r ApiServeUploadRequest) (**os.File, *http.Response, error)
 
 	/*
 	UploadFile Upload a File
@@ -169,12 +169,12 @@ type FileSvcAPIService service
 type ApiDownloadFileRequest struct {
 	ctx context.Context
 	ApiService FileSvcAPI
-	body *FileSvcDownloadFileRequest
+	fileSvcDownloadFileRequest *FileSvcDownloadFileRequest
 }
 
 // Download Request
-func (r ApiDownloadFileRequest) Body(body FileSvcDownloadFileRequest) ApiDownloadFileRequest {
-	r.body = &body
+func (r ApiDownloadFileRequest) Body(fileSvcDownloadFileRequest FileSvcDownloadFileRequest) ApiDownloadFileRequest {
+	r.fileSvcDownloadFileRequest = &fileSvcDownloadFileRequest
 	return r
 }
 
@@ -219,8 +219,8 @@ func (a *FileSvcAPIService) DownloadFileExecute(r ApiDownloadFileRequest) (map[s
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.fileSvcDownloadFileRequest == nil {
+		return localVarReturnValue, nil, reportError("fileSvcDownloadFileRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -241,7 +241,7 @@ func (a *FileSvcAPIService) DownloadFileExecute(r ApiDownloadFileRequest) (map[s
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.fileSvcDownloadFileRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -329,6 +329,12 @@ type ApiGetDownloadRequest struct {
 	ctx context.Context
 	ApiService FileSvcAPI
 	url string
+	body *map[string]interface{}
+}
+
+func (r ApiGetDownloadRequest) Body(body map[string]interface{}) ApiGetDownloadRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiGetDownloadRequest) Execute() (*FileSvcGetDownloadResponse, *http.Response, error) {
@@ -377,7 +383,7 @@ func (a *FileSvcAPIService) GetDownloadExecute(r ApiGetDownloadRequest) (*FileSv
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -393,6 +399,8 @@ func (a *FileSvcAPIService) GetDownloadExecute(r ApiGetDownloadRequest) (*FileSv
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -479,6 +487,12 @@ func (a *FileSvcAPIService) GetDownloadExecute(r ApiGetDownloadRequest) (*FileSv
 type ApiListDownloadsRequest struct {
 	ctx context.Context
 	ApiService FileSvcAPI
+	body *map[string]interface{}
+}
+
+func (r ApiListDownloadsRequest) Body(body map[string]interface{}) ApiListDownloadsRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiListDownloadsRequest) Execute() (*FileSvcDownloadsResponse, *http.Response, error) {
@@ -518,151 +532,6 @@ func (a *FileSvcAPIService) ListDownloadsExecute(r ApiListDownloadsRequest) (*Fi
 	}
 
 	localVarPath := localBasePath + "/file-svc/downloads"
-
-	localVarHeaderParams := make(map[string]string)
-	localVarQueryParams := url.Values{}
-	localVarFormParams := url.Values{}
-
-	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
-
-	// set Content-Type header
-	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
-	if localVarHTTPContentType != "" {
-		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
-	}
-
-	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/json"}
-
-	// set Accept header
-	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
-	if localVarHTTPHeaderAccept != "" {
-		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	if r.ctx != nil {
-		// API Key Authentication
-		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
-			if apiKey, ok := auth["BearerAuth"]; ok {
-				var key string
-				if apiKey.Prefix != "" {
-					key = apiKey.Prefix + " " + apiKey.Key
-				} else {
-					key = apiKey.Key
-				}
-				localVarHeaderParams["Authorization"] = key
-			}
-		}
-	}
-	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
-	if err != nil {
-		return localVarReturnValue, nil, err
-	}
-
-	localVarHTTPResponse, err := a.client.callAPI(req)
-	if err != nil || localVarHTTPResponse == nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
-	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
-	if err != nil {
-		return localVarReturnValue, localVarHTTPResponse, err
-	}
-
-	if localVarHTTPResponse.StatusCode >= 300 {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: localVarHTTPResponse.Status,
-		}
-		if localVarHTTPResponse.StatusCode == 401 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-			return localVarReturnValue, localVarHTTPResponse, newErr
-		}
-		if localVarHTTPResponse.StatusCode == 500 {
-			var v string
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
-					newErr.model = v
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-	if err != nil {
-		newErr := &GenericOpenAPIError{
-			body:  localVarBody,
-			error: err.Error(),
-		}
-		return localVarReturnValue, localVarHTTPResponse, newErr
-	}
-
-	return localVarReturnValue, localVarHTTPResponse, nil
-}
-
-type ApiListUploadsRequest struct {
-	ctx context.Context
-	ApiService FileSvcAPI
-	body *FileSvcListUploadsRequest
-}
-
-// List Uploads Request
-func (r ApiListUploadsRequest) Body(body FileSvcListUploadsRequest) ApiListUploadsRequest {
-	r.body = &body
-	return r
-}
-
-func (r ApiListUploadsRequest) Execute() (*FileSvcListUploadsResponse, *http.Response, error) {
-	return r.ApiService.ListUploadsExecute(r)
-}
-
-/*
-ListUploads List Uploads
-
-Lists uploaded files, returning only metadata about each upload.
-To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request.
-Note: Retrieving the contents of multiple files in a single request is not supported currently.
-
-Requires the `file-svc:upload:view` permission.
-
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiListUploadsRequest
-*/
-func (a *FileSvcAPIService) ListUploads(ctx context.Context) ApiListUploadsRequest {
-	return ApiListUploadsRequest{
-		ApiService: a,
-		ctx: ctx,
-	}
-}
-
-// Execute executes the request
-//  @return FileSvcListUploadsResponse
-func (a *FileSvcAPIService) ListUploadsExecute(r ApiListUploadsRequest) (*FileSvcListUploadsResponse, *http.Response, error) {
-	var (
-		localVarHTTPMethod   = http.MethodPost
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  *FileSvcListUploadsResponse
-	)
-
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FileSvcAPIService.ListUploads")
-	if err != nil {
-		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
-	}
-
-	localVarPath := localBasePath + "/file-svc/uploads"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -759,10 +628,163 @@ func (a *FileSvcAPIService) ListUploadsExecute(r ApiListUploadsRequest) (*FileSv
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ApiListUploadsRequest struct {
+	ctx context.Context
+	ApiService FileSvcAPI
+	fileSvcListUploadsRequest *FileSvcListUploadsRequest
+}
+
+// List Uploads Request
+func (r ApiListUploadsRequest) Body(fileSvcListUploadsRequest FileSvcListUploadsRequest) ApiListUploadsRequest {
+	r.fileSvcListUploadsRequest = &fileSvcListUploadsRequest
+	return r
+}
+
+func (r ApiListUploadsRequest) Execute() (*FileSvcListUploadsResponse, *http.Response, error) {
+	return r.ApiService.ListUploadsExecute(r)
+}
+
+/*
+ListUploads List Uploads
+
+Lists uploaded files, returning only metadata about each upload.
+To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request.
+Note: Retrieving the contents of multiple files in a single request is not supported currently.
+
+Requires the `file-svc:upload:view` permission.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiListUploadsRequest
+*/
+func (a *FileSvcAPIService) ListUploads(ctx context.Context) ApiListUploadsRequest {
+	return ApiListUploadsRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return FileSvcListUploadsResponse
+func (a *FileSvcAPIService) ListUploadsExecute(r ApiListUploadsRequest) (*FileSvcListUploadsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *FileSvcListUploadsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FileSvcAPIService.ListUploads")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/file-svc/uploads"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.fileSvcListUploadsRequest
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["BearerAuth"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v string
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 500 {
+			var v string
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiPauseDownloadRequest struct {
 	ctx context.Context
 	ApiService FileSvcAPI
 	url string
+	body *map[string]interface{}
+}
+
+func (r ApiPauseDownloadRequest) Body(body map[string]interface{}) ApiPauseDownloadRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiPauseDownloadRequest) Execute() (map[string]interface{}, *http.Response, error) {
@@ -811,7 +833,7 @@ func (a *FileSvcAPIService) PauseDownloadExecute(r ApiPauseDownloadRequest) (map
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -827,6 +849,8 @@ func (a *FileSvcAPIService) PauseDownloadExecute(r ApiPauseDownloadRequest) (map
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -916,7 +940,7 @@ type ApiServeDownloadRequest struct {
 	url string
 }
 
-func (r ApiServeDownloadRequest) Execute() (*os.File, *http.Response, error) {
+func (r ApiServeDownloadRequest) Execute() (**os.File, *http.Response, error) {
 	return r.ApiService.ServeDownloadExecute(r)
 }
 
@@ -939,12 +963,12 @@ func (a *FileSvcAPIService) ServeDownload(ctx context.Context, url string) ApiSe
 
 // Execute executes the request
 //  @return *os.File
-func (a *FileSvcAPIService) ServeDownloadExecute(r ApiServeDownloadRequest) (*os.File, *http.Response, error) {
+func (a *FileSvcAPIService) ServeDownloadExecute(r ApiServeDownloadRequest) (**os.File, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *os.File
+		localVarReturnValue  **os.File
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FileSvcAPIService.ServeDownload")
@@ -969,7 +993,7 @@ func (a *FileSvcAPIService) ServeDownloadExecute(r ApiServeDownloadRequest) (*os
 	}
 
 	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/octet-stream"}
+	localVarHTTPHeaderAccepts := []string{"application/json", "application/octet-stream"}
 
 	// set Accept header
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
@@ -1049,9 +1073,15 @@ type ApiServeUploadRequest struct {
 	ctx context.Context
 	ApiService FileSvcAPI
 	fileId string
+	body *map[string]interface{}
 }
 
-func (r ApiServeUploadRequest) Execute() (*os.File, *http.Response, error) {
+func (r ApiServeUploadRequest) Body(body map[string]interface{}) ApiServeUploadRequest {
+	r.body = &body
+	return r
+}
+
+func (r ApiServeUploadRequest) Execute() (**os.File, *http.Response, error) {
 	return r.ApiService.ServeUploadExecute(r)
 }
 
@@ -1079,12 +1109,12 @@ func (a *FileSvcAPIService) ServeUpload(ctx context.Context, fileId string) ApiS
 
 // Execute executes the request
 //  @return *os.File
-func (a *FileSvcAPIService) ServeUploadExecute(r ApiServeUploadRequest) (*os.File, *http.Response, error) {
+func (a *FileSvcAPIService) ServeUploadExecute(r ApiServeUploadRequest) (**os.File, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *os.File
+		localVarReturnValue  **os.File
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FileSvcAPIService.ServeUpload")
@@ -1100,7 +1130,7 @@ func (a *FileSvcAPIService) ServeUploadExecute(r ApiServeUploadRequest) (*os.Fil
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -1109,13 +1139,15 @@ func (a *FileSvcAPIService) ServeUploadExecute(r ApiServeUploadRequest) (*os.Fil
 	}
 
 	// to determine the Accept header
-	localVarHTTPHeaderAccepts := []string{"application/octet-stream"}
+	localVarHTTPHeaderAccepts := []string{"application/json", "application/octet-stream"}
 
 	// set Accept header
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -1188,13 +1220,6 @@ func (a *FileSvcAPIService) ServeUploadExecute(r ApiServeUploadRequest) (*os.Fil
 type ApiUploadFileRequest struct {
 	ctx context.Context
 	ApiService FileSvcAPI
-	file *os.File
-}
-
-// File to upload
-func (r ApiUploadFileRequest) File(file *os.File) ApiUploadFileRequest {
-	r.file = file
-	return r
 }
 
 func (r ApiUploadFileRequest) Execute() (*FileSvcUploadFileResponse, *http.Response, error) {
@@ -1241,9 +1266,6 @@ func (a *FileSvcAPIService) UploadFileExecute(r ApiUploadFileRequest) (*FileSvcU
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.file == nil {
-		return localVarReturnValue, nil, reportError("file is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"multipart/form-data"}
@@ -1261,21 +1283,6 @@ func (a *FileSvcAPIService) UploadFileExecute(r ApiUploadFileRequest) (*FileSvcU
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
-	}
-	var fileLocalVarFormFileName string
-	var fileLocalVarFileName     string
-	var fileLocalVarFileBytes    []byte
-
-	fileLocalVarFormFileName = "file"
-	fileLocalVarFile := r.file
-
-	if fileLocalVarFile != nil {
-		fbs, _ := io.ReadAll(fileLocalVarFile)
-
-		fileLocalVarFileBytes = fbs
-		fileLocalVarFileName = fileLocalVarFile.Name()
-		fileLocalVarFile.Close()
-		formFiles = append(formFiles, formFile{fileBytes: fileLocalVarFileBytes, fileName: fileLocalVarFileName, formFileName: fileLocalVarFormFileName})
 	}
 	if r.ctx != nil {
 		// API Key Authentication

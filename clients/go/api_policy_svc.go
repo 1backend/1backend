@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -59,12 +59,12 @@ type PolicySvcAPIService service
 type ApiCheckRequest struct {
 	ctx context.Context
 	ApiService PolicySvcAPI
-	body *PolicySvcCheckRequest
+	policySvcCheckRequest *PolicySvcCheckRequest
 }
 
 // Check Request
-func (r ApiCheckRequest) Body(body PolicySvcCheckRequest) ApiCheckRequest {
-	r.body = &body
+func (r ApiCheckRequest) Body(policySvcCheckRequest PolicySvcCheckRequest) ApiCheckRequest {
+	r.policySvcCheckRequest = &policySvcCheckRequest
 	return r
 }
 
@@ -107,8 +107,8 @@ func (a *PolicySvcAPIService) CheckExecute(r ApiCheckRequest) (*PolicySvcCheckRe
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.policySvcCheckRequest == nil {
+		return localVarReturnValue, nil, reportError("policySvcCheckRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -129,7 +129,7 @@ func (a *PolicySvcAPIService) CheckExecute(r ApiCheckRequest) (*PolicySvcCheckRe
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.policySvcCheckRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -217,12 +217,12 @@ type ApiUpsertInstanceRequest struct {
 	ctx context.Context
 	ApiService PolicySvcAPI
 	instanceId string
-	body *PolicySvcUpsertInstanceRequest
+	policySvcUpsertInstanceRequest *PolicySvcUpsertInstanceRequest
 }
 
 // Upsert Instance Request
-func (r ApiUpsertInstanceRequest) Body(body PolicySvcUpsertInstanceRequest) ApiUpsertInstanceRequest {
-	r.body = &body
+func (r ApiUpsertInstanceRequest) Body(policySvcUpsertInstanceRequest PolicySvcUpsertInstanceRequest) ApiUpsertInstanceRequest {
+	r.policySvcUpsertInstanceRequest = &policySvcUpsertInstanceRequest
 	return r
 }
 
@@ -268,8 +268,8 @@ func (a *PolicySvcAPIService) UpsertInstanceExecute(r ApiUpsertInstanceRequest) 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.policySvcUpsertInstanceRequest == nil {
+		return localVarReturnValue, nil, reportError("policySvcUpsertInstanceRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -290,7 +290,7 @@ func (a *PolicySvcAPIService) UpsertInstanceExecute(r ApiUpsertInstanceRequest) 
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.policySvcUpsertInstanceRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {

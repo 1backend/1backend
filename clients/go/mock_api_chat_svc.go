@@ -114,10 +114,10 @@ func (mr *MockChatSvcAPIMockRecorder) Events(ctx any) *gomock.Call {
 }
 
 // EventsExecute mocks base method.
-func (m *MockChatSvcAPI) EventsExecute(r ApiEventsRequest) (*ChatSvcEventThreadUpdate, *http.Response, error) {
+func (m *MockChatSvcAPI) EventsExecute(r ApiEventsRequest) (*Events200Response, *http.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "EventsExecute", r)
-	ret0, _ := ret[0].(*ChatSvcEventThreadUpdate)
+	ret0, _ := ret[0].(*Events200Response)
 	ret1, _ := ret[1].(*http.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2

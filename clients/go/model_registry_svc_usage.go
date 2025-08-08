@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -18,7 +18,7 @@ import (
 // checks if the RegistrySvcUsage type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &RegistrySvcUsage{}
 
-// RegistrySvcUsage struct for RegistrySvcUsage
+// RegistrySvcUsage CPU usage metrics.
 type RegistrySvcUsage struct {
 	// Usage percentage.
 	Percent *float32 `json:"percent,omitempty"`
@@ -45,7 +45,23 @@ func NewRegistrySvcUsageWithDefaults() *RegistrySvcUsage {
 	return &this
 }
 
+// GetPercent returns the Percent field value if set, zero value otherwise.
+func (o *RegistrySvcUsage) GetPercent() float32 {
+	if o == nil || IsNil(o.Percent) {
+		var ret float32
+		return ret
+	}
+	return *o.Percent
+}
 
+// GetPercentOk returns a tuple with the Percent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcUsage) GetPercentOk() (*float32, bool) {
+	if o == nil || IsNil(o.Percent) {
+		return nil, false
+	}
+	return o.Percent, true
+}
 
 // HasPercent returns a boolean if a field has been set.
 func (o *RegistrySvcUsage) HasPercent() bool {
@@ -56,8 +72,28 @@ func (o *RegistrySvcUsage) HasPercent() bool {
 	return false
 }
 
+// SetPercent gets a reference to the given float32 and assigns it to the Percent field.
+func (o *RegistrySvcUsage) SetPercent(v float32) {
+	o.Percent = &v
+}
 
+// GetTotal returns the Total field value if set, zero value otherwise.
+func (o *RegistrySvcUsage) GetTotal() int64 {
+	if o == nil || IsNil(o.Total) {
+		var ret int64
+		return ret
+	}
+	return *o.Total
+}
 
+// GetTotalOk returns a tuple with the Total field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcUsage) GetTotalOk() (*int64, bool) {
+	if o == nil || IsNil(o.Total) {
+		return nil, false
+	}
+	return o.Total, true
+}
 
 // HasTotal returns a boolean if a field has been set.
 func (o *RegistrySvcUsage) HasTotal() bool {
@@ -68,8 +104,28 @@ func (o *RegistrySvcUsage) HasTotal() bool {
 	return false
 }
 
+// SetTotal gets a reference to the given int64 and assigns it to the Total field.
+func (o *RegistrySvcUsage) SetTotal(v int64) {
+	o.Total = &v
+}
 
+// GetUsed returns the Used field value if set, zero value otherwise.
+func (o *RegistrySvcUsage) GetUsed() int64 {
+	if o == nil || IsNil(o.Used) {
+		var ret int64
+		return ret
+	}
+	return *o.Used
+}
 
+// GetUsedOk returns a tuple with the Used field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcUsage) GetUsedOk() (*int64, bool) {
+	if o == nil || IsNil(o.Used) {
+		return nil, false
+	}
+	return o.Used, true
+}
 
 // HasUsed returns a boolean if a field has been set.
 func (o *RegistrySvcUsage) HasUsed() bool {
@@ -80,6 +136,10 @@ func (o *RegistrySvcUsage) HasUsed() bool {
 	return false
 }
 
+// SetUsed gets a reference to the given int64 and assigns it to the Used field.
+func (o *RegistrySvcUsage) SetUsed(v int64) {
+	o.Used = &v
+}
 
 func (o RegistrySvcUsage) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

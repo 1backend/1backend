@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -64,8 +64,8 @@ type ChatSvcAPI interface {
 	Events(ctx context.Context) ApiEventsRequest
 
 	// EventsExecute executes the request
-	//  @return ChatSvcEventThreadUpdate
-	EventsExecute(r ApiEventsRequest) (*ChatSvcEventThreadUpdate, *http.Response, error)
+	//  @return Events200Response
+	EventsExecute(r ApiEventsRequest) (*Events200Response, *http.Response, error)
 
 	/*
 	ListMessages List Messages
@@ -133,6 +133,12 @@ type ApiDeleteMessageRequest struct {
 	ctx context.Context
 	ApiService ChatSvcAPI
 	messageId string
+	body *map[string]interface{}
+}
+
+func (r ApiDeleteMessageRequest) Body(body map[string]interface{}) ApiDeleteMessageRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiDeleteMessageRequest) Execute() (map[string]interface{}, *http.Response, error) {
@@ -179,7 +185,7 @@ func (a *ChatSvcAPIService) DeleteMessageExecute(r ApiDeleteMessageRequest) (map
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -195,6 +201,8 @@ func (a *ChatSvcAPIService) DeleteMessageExecute(r ApiDeleteMessageRequest) (map
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -282,6 +290,12 @@ type ApiDeleteThreadRequest struct {
 	ctx context.Context
 	ApiService ChatSvcAPI
 	threadId string
+	body *map[string]interface{}
+}
+
+func (r ApiDeleteThreadRequest) Body(body map[string]interface{}) ApiDeleteThreadRequest {
+	r.body = &body
+	return r
 }
 
 func (r ApiDeleteThreadRequest) Execute() (map[string]interface{}, *http.Response, error) {
@@ -328,7 +342,7 @@ func (a *ChatSvcAPIService) DeleteThreadExecute(r ApiDeleteThreadRequest) (map[s
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -344,6 +358,8 @@ func (a *ChatSvcAPIService) DeleteThreadExecute(r ApiDeleteThreadRequest) (map[s
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -430,9 +446,15 @@ func (a *ChatSvcAPIService) DeleteThreadExecute(r ApiDeleteThreadRequest) (map[s
 type ApiEventsRequest struct {
 	ctx context.Context
 	ApiService ChatSvcAPI
+	body *map[string]interface{}
 }
 
-func (r ApiEventsRequest) Execute() (*ChatSvcEventThreadUpdate, *http.Response, error) {
+func (r ApiEventsRequest) Body(body map[string]interface{}) ApiEventsRequest {
+	r.body = &body
+	return r
+}
+
+func (r ApiEventsRequest) Execute() (*Events200Response, *http.Response, error) {
 	return r.ApiService.EventsExecute(r)
 }
 
@@ -452,13 +474,13 @@ func (a *ChatSvcAPIService) Events(ctx context.Context) ApiEventsRequest {
 }
 
 // Execute executes the request
-//  @return ChatSvcEventThreadUpdate
-func (a *ChatSvcAPIService) EventsExecute(r ApiEventsRequest) (*ChatSvcEventThreadUpdate, *http.Response, error) {
+//  @return Events200Response
+func (a *ChatSvcAPIService) EventsExecute(r ApiEventsRequest) (*Events200Response, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  *ChatSvcEventThreadUpdate
+		localVarReturnValue  *Events200Response
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ChatSvcAPIService.Events")
@@ -473,7 +495,7 @@ func (a *ChatSvcAPIService) EventsExecute(r ApiEventsRequest) (*ChatSvcEventThre
 	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
-	localVarHTTPContentTypes := []string{}
+	localVarHTTPContentTypes := []string{"application/json"}
 
 	// set Content-Type header
 	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
@@ -489,6 +511,8 @@ func (a *ChatSvcAPIService) EventsExecute(r ApiEventsRequest) (*ChatSvcEventThre
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	// body params
+	localVarPostBody = r.body
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
 	if err != nil {
 		return localVarReturnValue, nil, err
@@ -529,12 +553,12 @@ func (a *ChatSvcAPIService) EventsExecute(r ApiEventsRequest) (*ChatSvcEventThre
 type ApiListMessagesRequest struct {
 	ctx context.Context
 	ApiService ChatSvcAPI
-	body *ChatSvcListMessagesRequest
+	chatSvcListMessagesRequest *ChatSvcListMessagesRequest
 }
 
 // List Messages Request
-func (r ApiListMessagesRequest) Body(body ChatSvcListMessagesRequest) ApiListMessagesRequest {
-	r.body = &body
+func (r ApiListMessagesRequest) Body(chatSvcListMessagesRequest ChatSvcListMessagesRequest) ApiListMessagesRequest {
+	r.chatSvcListMessagesRequest = &chatSvcListMessagesRequest
 	return r
 }
 
@@ -577,8 +601,8 @@ func (a *ChatSvcAPIService) ListMessagesExecute(r ApiListMessagesRequest) (*Chat
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.chatSvcListMessagesRequest == nil {
+		return localVarReturnValue, nil, reportError("chatSvcListMessagesRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -599,7 +623,7 @@ func (a *ChatSvcAPIService) ListMessagesExecute(r ApiListMessagesRequest) (*Chat
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.chatSvcListMessagesRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -686,12 +710,12 @@ func (a *ChatSvcAPIService) ListMessagesExecute(r ApiListMessagesRequest) (*Chat
 type ApiListThreadsRequest struct {
 	ctx context.Context
 	ApiService ChatSvcAPI
-	body *ChatSvcListThreadsRequest
+	chatSvcListThreadsRequest *ChatSvcListThreadsRequest
 }
 
 // List Threads Request
-func (r ApiListThreadsRequest) Body(body ChatSvcListThreadsRequest) ApiListThreadsRequest {
-	r.body = &body
+func (r ApiListThreadsRequest) Body(chatSvcListThreadsRequest ChatSvcListThreadsRequest) ApiListThreadsRequest {
+	r.chatSvcListThreadsRequest = &chatSvcListThreadsRequest
 	return r
 }
 
@@ -734,8 +758,8 @@ func (a *ChatSvcAPIService) ListThreadsExecute(r ApiListThreadsRequest) (*ChatSv
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.chatSvcListThreadsRequest == nil {
+		return localVarReturnValue, nil, reportError("chatSvcListThreadsRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -756,7 +780,7 @@ func (a *ChatSvcAPIService) ListThreadsExecute(r ApiListThreadsRequest) (*ChatSv
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.chatSvcListThreadsRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -844,12 +868,12 @@ type ApiSaveMessageRequest struct {
 	ctx context.Context
 	ApiService ChatSvcAPI
 	threadId string
-	body *ChatSvcSaveMessageRequest
+	chatSvcSaveMessageRequest *ChatSvcSaveMessageRequest
 }
 
 // Save Message Request
-func (r ApiSaveMessageRequest) Body(body ChatSvcSaveMessageRequest) ApiSaveMessageRequest {
-	r.body = &body
+func (r ApiSaveMessageRequest) Body(chatSvcSaveMessageRequest ChatSvcSaveMessageRequest) ApiSaveMessageRequest {
+	r.chatSvcSaveMessageRequest = &chatSvcSaveMessageRequest
 	return r
 }
 
@@ -895,8 +919,8 @@ func (a *ChatSvcAPIService) SaveMessageExecute(r ApiSaveMessageRequest) (map[str
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.chatSvcSaveMessageRequest == nil {
+		return localVarReturnValue, nil, reportError("chatSvcSaveMessageRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -917,7 +941,7 @@ func (a *ChatSvcAPIService) SaveMessageExecute(r ApiSaveMessageRequest) (map[str
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.chatSvcSaveMessageRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -1004,12 +1028,12 @@ func (a *ChatSvcAPIService) SaveMessageExecute(r ApiSaveMessageRequest) (map[str
 type ApiSaveThreadRequest struct {
 	ctx context.Context
 	ApiService ChatSvcAPI
-	body *ChatSvcSaveThreadRequest
+	chatSvcSaveThreadRequest *ChatSvcSaveThreadRequest
 }
 
 // Save Thread Request
-func (r ApiSaveThreadRequest) Body(body ChatSvcSaveThreadRequest) ApiSaveThreadRequest {
-	r.body = &body
+func (r ApiSaveThreadRequest) Body(chatSvcSaveThreadRequest ChatSvcSaveThreadRequest) ApiSaveThreadRequest {
+	r.chatSvcSaveThreadRequest = &chatSvcSaveThreadRequest
 	return r
 }
 
@@ -1053,8 +1077,8 @@ func (a *ChatSvcAPIService) SaveThreadExecute(r ApiSaveThreadRequest) (*ChatSvcS
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.chatSvcSaveThreadRequest == nil {
+		return localVarReturnValue, nil, reportError("chatSvcSaveThreadRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1075,7 +1099,7 @@ func (a *ChatSvcAPIService) SaveThreadExecute(r ApiSaveThreadRequest) (*ChatSvcS
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.chatSvcSaveThreadRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {

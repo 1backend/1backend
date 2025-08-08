@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewContainerSvcListContainersResponseWithDefaults() *ContainerSvcListContai
 	return &this
 }
 
+// GetContainers returns the Containers field value if set, zero value otherwise.
+func (o *ContainerSvcListContainersResponse) GetContainers() []ContainerSvcContainer {
+	if o == nil || IsNil(o.Containers) {
+		var ret []ContainerSvcContainer
+		return ret
+	}
+	return o.Containers
+}
 
+// GetContainersOk returns a tuple with the Containers field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcListContainersResponse) GetContainersOk() ([]ContainerSvcContainer, bool) {
+	if o == nil || IsNil(o.Containers) {
+		return nil, false
+	}
+	return o.Containers, true
+}
 
 // HasContainers returns a boolean if a field has been set.
 func (o *ContainerSvcListContainersResponse) HasContainers() bool {
@@ -51,6 +67,10 @@ func (o *ContainerSvcListContainersResponse) HasContainers() bool {
 	return false
 }
 
+// SetContainers gets a reference to the given []ContainerSvcContainer and assigns it to the Containers field.
+func (o *ContainerSvcListContainersResponse) SetContainers(v []ContainerSvcContainer) {
+	o.Containers = v
+}
 
 func (o ContainerSvcListContainersResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -22,7 +22,6 @@ var _ MappedNullable = &UserSvcExchangeTokenResponse{}
 
 // UserSvcExchangeTokenResponse struct for UserSvcExchangeTokenResponse
 type UserSvcExchangeTokenResponse struct {
-	// Token is the new token that will be returned by this endpoint.
 	Token UserSvcAuthToken `json:"token"`
 }
 
@@ -46,8 +45,29 @@ func NewUserSvcExchangeTokenResponseWithDefaults() *UserSvcExchangeTokenResponse
 	return &this
 }
 
+// GetToken returns the Token field value
+func (o *UserSvcExchangeTokenResponse) GetToken() UserSvcAuthToken {
+	if o == nil {
+		var ret UserSvcAuthToken
+		return ret
+	}
 
+	return o.Token
+}
 
+// GetTokenOk returns a tuple with the Token field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcExchangeTokenResponse) GetTokenOk() (*UserSvcAuthToken, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Token, true
+}
+
+// SetToken sets field value
+func (o *UserSvcExchangeTokenResponse) SetToken(v UserSvcAuthToken) {
+	o.Token = v
+}
 
 func (o UserSvcExchangeTokenResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

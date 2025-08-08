@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -62,7 +62,23 @@ func NewEmailSvcSendEmailRequestWithDefaults() *EmailSvcSendEmailRequest {
 	return &this
 }
 
+// GetAttachments returns the Attachments field value if set, zero value otherwise.
+func (o *EmailSvcSendEmailRequest) GetAttachments() []EmailSvcAttachment {
+	if o == nil || IsNil(o.Attachments) {
+		var ret []EmailSvcAttachment
+		return ret
+	}
+	return o.Attachments
+}
 
+// GetAttachmentsOk returns a tuple with the Attachments field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EmailSvcSendEmailRequest) GetAttachmentsOk() ([]EmailSvcAttachment, bool) {
+	if o == nil || IsNil(o.Attachments) {
+		return nil, false
+	}
+	return o.Attachments, true
+}
 
 // HasAttachments returns a boolean if a field has been set.
 func (o *EmailSvcSendEmailRequest) HasAttachments() bool {
@@ -73,8 +89,28 @@ func (o *EmailSvcSendEmailRequest) HasAttachments() bool {
 	return false
 }
 
+// SetAttachments gets a reference to the given []EmailSvcAttachment and assigns it to the Attachments field.
+func (o *EmailSvcSendEmailRequest) SetAttachments(v []EmailSvcAttachment) {
+	o.Attachments = v
+}
 
+// GetBcc returns the Bcc field value if set, zero value otherwise.
+func (o *EmailSvcSendEmailRequest) GetBcc() []string {
+	if o == nil || IsNil(o.Bcc) {
+		var ret []string
+		return ret
+	}
+	return o.Bcc
+}
 
+// GetBccOk returns a tuple with the Bcc field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EmailSvcSendEmailRequest) GetBccOk() ([]string, bool) {
+	if o == nil || IsNil(o.Bcc) {
+		return nil, false
+	}
+	return o.Bcc, true
+}
 
 // HasBcc returns a boolean if a field has been set.
 func (o *EmailSvcSendEmailRequest) HasBcc() bool {
@@ -85,11 +121,52 @@ func (o *EmailSvcSendEmailRequest) HasBcc() bool {
 	return false
 }
 
+// SetBcc gets a reference to the given []string and assigns it to the Bcc field.
+func (o *EmailSvcSendEmailRequest) SetBcc(v []string) {
+	o.Bcc = v
+}
 
+// GetBody returns the Body field value
+func (o *EmailSvcSendEmailRequest) GetBody() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Body
+}
 
+// GetBodyOk returns a tuple with the Body field value
+// and a boolean to check if the value has been set.
+func (o *EmailSvcSendEmailRequest) GetBodyOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Body, true
+}
 
+// SetBody sets field value
+func (o *EmailSvcSendEmailRequest) SetBody(v string) {
+	o.Body = v
+}
 
+// GetCc returns the Cc field value if set, zero value otherwise.
+func (o *EmailSvcSendEmailRequest) GetCc() []string {
+	if o == nil || IsNil(o.Cc) {
+		var ret []string
+		return ret
+	}
+	return o.Cc
+}
+
+// GetCcOk returns a tuple with the Cc field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EmailSvcSendEmailRequest) GetCcOk() ([]string, bool) {
+	if o == nil || IsNil(o.Cc) {
+		return nil, false
+	}
+	return o.Cc, true
+}
 
 // HasCc returns a boolean if a field has been set.
 func (o *EmailSvcSendEmailRequest) HasCc() bool {
@@ -100,8 +177,28 @@ func (o *EmailSvcSendEmailRequest) HasCc() bool {
 	return false
 }
 
+// SetCc gets a reference to the given []string and assigns it to the Cc field.
+func (o *EmailSvcSendEmailRequest) SetCc(v []string) {
+	o.Cc = v
+}
 
+// GetContentType returns the ContentType field value if set, zero value otherwise.
+func (o *EmailSvcSendEmailRequest) GetContentType() string {
+	if o == nil || IsNil(o.ContentType) {
+		var ret string
+		return ret
+	}
+	return *o.ContentType
+}
 
+// GetContentTypeOk returns a tuple with the ContentType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EmailSvcSendEmailRequest) GetContentTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.ContentType) {
+		return nil, false
+	}
+	return o.ContentType, true
+}
 
 // HasContentType returns a boolean if a field has been set.
 func (o *EmailSvcSendEmailRequest) HasContentType() bool {
@@ -112,8 +209,28 @@ func (o *EmailSvcSendEmailRequest) HasContentType() bool {
 	return false
 }
 
+// SetContentType gets a reference to the given string and assigns it to the ContentType field.
+func (o *EmailSvcSendEmailRequest) SetContentType(v string) {
+	o.ContentType = &v
+}
 
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *EmailSvcSendEmailRequest) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
 
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EmailSvcSendEmailRequest) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
 
 // HasId returns a boolean if a field has been set.
 func (o *EmailSvcSendEmailRequest) HasId() bool {
@@ -124,12 +241,58 @@ func (o *EmailSvcSendEmailRequest) HasId() bool {
 	return false
 }
 
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *EmailSvcSendEmailRequest) SetId(v string) {
+	o.Id = &v
+}
 
+// GetSubject returns the Subject field value
+func (o *EmailSvcSendEmailRequest) GetSubject() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Subject
+}
 
+// GetSubjectOk returns a tuple with the Subject field value
+// and a boolean to check if the value has been set.
+func (o *EmailSvcSendEmailRequest) GetSubjectOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Subject, true
+}
 
+// SetSubject sets field value
+func (o *EmailSvcSendEmailRequest) SetSubject(v string) {
+	o.Subject = v
+}
 
+// GetTo returns the To field value
+func (o *EmailSvcSendEmailRequest) GetTo() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
 
+	return o.To
+}
+
+// GetToOk returns a tuple with the To field value
+// and a boolean to check if the value has been set.
+func (o *EmailSvcSendEmailRequest) GetToOk() ([]string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.To, true
+}
+
+// SetTo sets field value
+func (o *EmailSvcSendEmailRequest) SetTo(v []string) {
+	o.To = v
+}
 
 func (o EmailSvcSendEmailRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

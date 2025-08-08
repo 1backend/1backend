@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -58,7 +58,23 @@ func NewUserSvcOrganizationWithDefaults() *UserSvcOrganization {
 	return &this
 }
 
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *UserSvcOrganization) GetApp() string {
+	if o == nil || IsNil(o.App) {
+		var ret string
+		return ret
+	}
+	return *o.App
+}
 
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcOrganization) GetAppOk() (*string, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
 
 // HasApp returns a boolean if a field has been set.
 func (o *UserSvcOrganization) HasApp() bool {
@@ -69,11 +85,52 @@ func (o *UserSvcOrganization) HasApp() bool {
 	return false
 }
 
+// SetApp gets a reference to the given string and assigns it to the App field.
+func (o *UserSvcOrganization) SetApp(v string) {
+	o.App = &v
+}
 
+// GetCreatedAt returns the CreatedAt field value
+func (o *UserSvcOrganization) GetCreatedAt() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.CreatedAt
+}
 
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcOrganization) GetCreatedAtOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CreatedAt, true
+}
 
+// SetCreatedAt sets field value
+func (o *UserSvcOrganization) SetCreatedAt(v string) {
+	o.CreatedAt = v
+}
 
+// GetDeletedAt returns the DeletedAt field value if set, zero value otherwise.
+func (o *UserSvcOrganization) GetDeletedAt() string {
+	if o == nil || IsNil(o.DeletedAt) {
+		var ret string
+		return ret
+	}
+	return *o.DeletedAt
+}
+
+// GetDeletedAtOk returns a tuple with the DeletedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcOrganization) GetDeletedAtOk() (*string, bool) {
+	if o == nil || IsNil(o.DeletedAt) {
+		return nil, false
+	}
+	return o.DeletedAt, true
+}
 
 // HasDeletedAt returns a boolean if a field has been set.
 func (o *UserSvcOrganization) HasDeletedAt() bool {
@@ -84,17 +141,100 @@ func (o *UserSvcOrganization) HasDeletedAt() bool {
 	return false
 }
 
+// SetDeletedAt gets a reference to the given string and assigns it to the DeletedAt field.
+func (o *UserSvcOrganization) SetDeletedAt(v string) {
+	o.DeletedAt = &v
+}
 
+// GetId returns the Id field value
+func (o *UserSvcOrganization) GetId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Id
+}
 
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcOrganization) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Id, true
+}
 
+// SetId sets field value
+func (o *UserSvcOrganization) SetId(v string) {
+	o.Id = v
+}
 
+// GetName returns the Name field value
+func (o *UserSvcOrganization) GetName() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Name
+}
 
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcOrganization) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Name, true
+}
 
+// SetName sets field value
+func (o *UserSvcOrganization) SetName(v string) {
+	o.Name = v
+}
 
+// GetSlug returns the Slug field value
+func (o *UserSvcOrganization) GetSlug() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Slug
+}
 
+// GetSlugOk returns a tuple with the Slug field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcOrganization) GetSlugOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Slug, true
+}
+
+// SetSlug sets field value
+func (o *UserSvcOrganization) SetSlug(v string) {
+	o.Slug = v
+}
+
+// GetThumbnailFileId returns the ThumbnailFileId field value if set, zero value otherwise.
+func (o *UserSvcOrganization) GetThumbnailFileId() string {
+	if o == nil || IsNil(o.ThumbnailFileId) {
+		var ret string
+		return ret
+	}
+	return *o.ThumbnailFileId
+}
+
+// GetThumbnailFileIdOk returns a tuple with the ThumbnailFileId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcOrganization) GetThumbnailFileIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ThumbnailFileId) {
+		return nil, false
+	}
+	return o.ThumbnailFileId, true
+}
 
 // HasThumbnailFileId returns a boolean if a field has been set.
 func (o *UserSvcOrganization) HasThumbnailFileId() bool {
@@ -105,9 +245,34 @@ func (o *UserSvcOrganization) HasThumbnailFileId() bool {
 	return false
 }
 
+// SetThumbnailFileId gets a reference to the given string and assigns it to the ThumbnailFileId field.
+func (o *UserSvcOrganization) SetThumbnailFileId(v string) {
+	o.ThumbnailFileId = &v
+}
 
+// GetUpdatedAt returns the UpdatedAt field value
+func (o *UserSvcOrganization) GetUpdatedAt() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.UpdatedAt
+}
 
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcOrganization) GetUpdatedAtOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.UpdatedAt, true
+}
+
+// SetUpdatedAt sets field value
+func (o *UserSvcOrganization) SetUpdatedAt(v string) {
+	o.UpdatedAt = v
+}
 
 func (o UserSvcOrganization) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

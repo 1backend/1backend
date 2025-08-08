@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewPromptSvcListPromptsRequestWithDefaults() *PromptSvcListPromptsRequest {
 	return &this
 }
 
+// GetQuery returns the Query field value if set, zero value otherwise.
+func (o *PromptSvcListPromptsRequest) GetQuery() DatastoreQuery {
+	if o == nil || IsNil(o.Query) {
+		var ret DatastoreQuery
+		return ret
+	}
+	return *o.Query
+}
 
+// GetQueryOk returns a tuple with the Query field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcListPromptsRequest) GetQueryOk() (*DatastoreQuery, bool) {
+	if o == nil || IsNil(o.Query) {
+		return nil, false
+	}
+	return o.Query, true
+}
 
 // HasQuery returns a boolean if a field has been set.
 func (o *PromptSvcListPromptsRequest) HasQuery() bool {
@@ -51,6 +67,10 @@ func (o *PromptSvcListPromptsRequest) HasQuery() bool {
 	return false
 }
 
+// SetQuery gets a reference to the given DatastoreQuery and assigns it to the Query field.
+func (o *PromptSvcListPromptsRequest) SetQuery(v DatastoreQuery) {
+	o.Query = &v
+}
 
 func (o PromptSvcListPromptsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

@@ -52,7 +52,7 @@ func (a *ChatService) updateThread(
 
 	_, err = a.options.ClientFactory.Client(client.WithToken(a.token)).
 		FirehoseSvcAPI.PublishEvent(context.Background()).
-		Event(openapi.FirehoseSvcEventPublishRequest{
+		Body(openapi.FirehoseSvcEventPublishRequest{
 			Event: &openapi.FirehoseSvcEvent{
 				Name: openapi.PtrString(ev.Name()),
 				Data: m,

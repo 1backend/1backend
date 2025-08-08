@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -50,14 +50,77 @@ func NewContainerSvcGetContainerSummaryResponseWithDefaults() *ContainerSvcGetCo
 	return &this
 }
 
+// GetLogs returns the Logs field value
+func (o *ContainerSvcGetContainerSummaryResponse) GetLogs() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Logs
+}
 
+// GetLogsOk returns a tuple with the Logs field value
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcGetContainerSummaryResponse) GetLogsOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Logs, true
+}
 
+// SetLogs sets field value
+func (o *ContainerSvcGetContainerSummaryResponse) SetLogs(v string) {
+	o.Logs = v
+}
 
+// GetStatus returns the Status field value
+func (o *ContainerSvcGetContainerSummaryResponse) GetStatus() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Status
+}
 
+// GetStatusOk returns a tuple with the Status field value
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcGetContainerSummaryResponse) GetStatusOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Status, true
+}
 
+// SetStatus sets field value
+func (o *ContainerSvcGetContainerSummaryResponse) SetStatus(v string) {
+	o.Status = v
+}
 
+// GetSummary returns the Summary field value
+func (o *ContainerSvcGetContainerSummaryResponse) GetSummary() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Summary
+}
+
+// GetSummaryOk returns a tuple with the Summary field value
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcGetContainerSummaryResponse) GetSummaryOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Summary, true
+}
+
+// SetSummary sets field value
+func (o *ContainerSvcGetContainerSummaryResponse) SetSummary(v string) {
+	o.Summary = v
+}
 
 func (o ContainerSvcGetContainerSummaryResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

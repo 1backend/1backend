@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -50,12 +50,12 @@ type EmailSvcAPIService service
 type ApiSendEmailRequest struct {
 	ctx context.Context
 	ApiService EmailSvcAPI
-	body *EmailSvcSendEmailRequest
+	emailSvcSendEmailRequest *EmailSvcSendEmailRequest
 }
 
 // Send Email Request
-func (r ApiSendEmailRequest) Body(body EmailSvcSendEmailRequest) ApiSendEmailRequest {
-	r.body = &body
+func (r ApiSendEmailRequest) Body(emailSvcSendEmailRequest EmailSvcSendEmailRequest) ApiSendEmailRequest {
+	r.emailSvcSendEmailRequest = &emailSvcSendEmailRequest
 	return r
 }
 
@@ -105,8 +105,8 @@ func (a *EmailSvcAPIService) SendEmailExecute(r ApiSendEmailRequest) (*EmailSvcS
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	if r.emailSvcSendEmailRequest == nil {
+		return localVarReturnValue, nil, reportError("emailSvcSendEmailRequest is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -127,7 +127,7 @@ func (a *EmailSvcAPIService) SendEmailExecute(r ApiSendEmailRequest) (*EmailSvcS
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.body
+	localVarPostBody = r.emailSvcSendEmailRequest
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
