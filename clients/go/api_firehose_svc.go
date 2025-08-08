@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc2
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -60,7 +60,7 @@ type ApiPublishEventRequest struct {
 }
 
 // Event to publish
-func (r ApiPublishEventRequest) FirehoseSvcEventPublishRequest(firehoseSvcEventPublishRequest FirehoseSvcEventPublishRequest) ApiPublishEventRequest {
+func (r ApiPublishEventRequest) Body(firehoseSvcEventPublishRequest FirehoseSvcEventPublishRequest) ApiPublishEventRequest {
 	r.firehoseSvcEventPublishRequest = &firehoseSvcEventPublishRequest
 	return r
 }

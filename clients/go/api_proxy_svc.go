@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc2
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -91,7 +91,7 @@ type ApiListCertsRequest struct {
 }
 
 // List Certs Request
-func (r ApiListCertsRequest) ProxySvcListCertsRequest(proxySvcListCertsRequest ProxySvcListCertsRequest) ApiListCertsRequest {
+func (r ApiListCertsRequest) Body(proxySvcListCertsRequest ProxySvcListCertsRequest) ApiListCertsRequest {
 	r.proxySvcListCertsRequest = &proxySvcListCertsRequest
 	return r
 }
@@ -245,7 +245,7 @@ type ApiListRoutesRequest struct {
 }
 
 // List Routes Request
-func (r ApiListRoutesRequest) ProxySvcListRoutesRequest(proxySvcListRoutesRequest ProxySvcListRoutesRequest) ApiListRoutesRequest {
+func (r ApiListRoutesRequest) Body(proxySvcListRoutesRequest ProxySvcListRoutesRequest) ApiListRoutesRequest {
 	r.proxySvcListRoutesRequest = &proxySvcListRoutesRequest
 	return r
 }
@@ -399,7 +399,7 @@ type ApiSaveCertsRequest struct {
 }
 
 // Save Certs Request
-func (r ApiSaveCertsRequest) ProxySvcSaveCertsRequest(proxySvcSaveCertsRequest ProxySvcSaveCertsRequest) ApiSaveCertsRequest {
+func (r ApiSaveCertsRequest) Body(proxySvcSaveCertsRequest ProxySvcSaveCertsRequest) ApiSaveCertsRequest {
 	r.proxySvcSaveCertsRequest = &proxySvcSaveCertsRequest
 	return r
 }
@@ -558,7 +558,7 @@ type ApiSaveRoutesRequest struct {
 }
 
 // Save Routes Request
-func (r ApiSaveRoutesRequest) ProxySvcSaveRoutesRequest(proxySvcSaveRoutesRequest ProxySvcSaveRoutesRequest) ApiSaveRoutesRequest {
+func (r ApiSaveRoutesRequest) Body(proxySvcSaveRoutesRequest ProxySvcSaveRoutesRequest) ApiSaveRoutesRequest {
 	r.proxySvcSaveRoutesRequest = &proxySvcSaveRoutesRequest
 	return r
 }

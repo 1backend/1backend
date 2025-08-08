@@ -206,7 +206,7 @@ func (dm *FileService) downloadFile(d *types.InternalDownload) error {
 				ev := types.EventDownloadStatusChange{}
 				_, err = dm.options.ClientFactory.Client(client.WithToken(token)).
 					FirehoseSvcAPI.PublishEvent(context.Background()).
-					Event(openapi.FirehoseSvcEventPublishRequest{
+					Body(openapi.FirehoseSvcEventPublishRequest{
 						Event: &openapi.FirehoseSvcEvent{
 							Name: openapi.PtrString(ev.Name()),
 							Data: nil,

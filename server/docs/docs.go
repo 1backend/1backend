@@ -18,7 +18,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.8.0-rc2",
+	Version:          "0.8.0-rc3",
 	Title:            "1Backend",
 	Description:      "AI-native microservices platform.",
 	InfoInstanceName: "swagger",

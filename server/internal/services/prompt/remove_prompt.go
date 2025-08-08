@@ -49,7 +49,7 @@ func (p *PromptService) removePrompt(promptId string) error {
 
 	_, err = p.options.ClientFactory.Client(client.WithToken(token)).
 		FirehoseSvcAPI.PublishEvent(context.Background()).
-		Event(openapi.FirehoseSvcEventPublishRequest{
+		Body(openapi.FirehoseSvcEventPublishRequest{
 			Event: &openapi.FirehoseSvcEvent{
 				Name: openapi.PtrString(ev.Name()),
 				Data: m,

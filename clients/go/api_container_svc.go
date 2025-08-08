@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc2
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -185,7 +185,7 @@ type ApiBuildImageRequest struct {
 }
 
 // Build Image Request
-func (r ApiBuildImageRequest) ContainerSvcBuildImageRequest(containerSvcBuildImageRequest ContainerSvcBuildImageRequest) ApiBuildImageRequest {
+func (r ApiBuildImageRequest) Body(containerSvcBuildImageRequest ContainerSvcBuildImageRequest) ApiBuildImageRequest {
 	r.containerSvcBuildImageRequest = &containerSvcBuildImageRequest
 	return r
 }
@@ -1141,7 +1141,7 @@ type ApiListContainerLogsRequest struct {
 }
 
 // List Logs Request
-func (r ApiListContainerLogsRequest) ContainerSvcListLogsRequest(containerSvcListLogsRequest ContainerSvcListLogsRequest) ApiListContainerLogsRequest {
+func (r ApiListContainerLogsRequest) Body(containerSvcListLogsRequest ContainerSvcListLogsRequest) ApiListContainerLogsRequest {
 	r.containerSvcListLogsRequest = &containerSvcListLogsRequest
 	return r
 }
@@ -1300,7 +1300,7 @@ type ApiListContainersRequest struct {
 }
 
 // List Containers Request
-func (r ApiListContainersRequest) ContainerSvcListContainersRequest(containerSvcListContainersRequest ContainerSvcListContainersRequest) ApiListContainersRequest {
+func (r ApiListContainersRequest) Body(containerSvcListContainersRequest ContainerSvcListContainersRequest) ApiListContainersRequest {
 	r.containerSvcListContainersRequest = &containerSvcListContainersRequest
 	return r
 }
@@ -1459,7 +1459,7 @@ type ApiRunContainerRequest struct {
 }
 
 // Run Container Request
-func (r ApiRunContainerRequest) ContainerSvcRunContainerRequest(containerSvcRunContainerRequest ContainerSvcRunContainerRequest) ApiRunContainerRequest {
+func (r ApiRunContainerRequest) Body(containerSvcRunContainerRequest ContainerSvcRunContainerRequest) ApiRunContainerRequest {
 	r.containerSvcRunContainerRequest = &containerSvcRunContainerRequest
 	return r
 }
@@ -1618,7 +1618,7 @@ type ApiStopContainerRequest struct {
 }
 
 // Stop Container Request
-func (r ApiStopContainerRequest) ContainerSvcStopContainerRequest(containerSvcStopContainerRequest ContainerSvcStopContainerRequest) ApiStopContainerRequest {
+func (r ApiStopContainerRequest) Body(containerSvcStopContainerRequest ContainerSvcStopContainerRequest) ApiStopContainerRequest {
 	r.containerSvcStopContainerRequest = &containerSvcStopContainerRequest
 	return r
 }

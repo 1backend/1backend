@@ -25,14 +25,11 @@ import { Subscription, filter } from 'rxjs';
 import { ServerService } from '../../services/server.service';
 import { ChatService } from '../../services/chat.service';
 import { PromptService } from '../../services/prompt.service';
-import {
-	PromptSvcPrompt as Prompt,
-} from '@1backend/client';
+import { PromptSvcPrompt as Prompt } from '@1backend/client';
 import {
 	ChatSvcThread as Thread,
 	ChatSvcMessage as Message,
 } from '@1backend/client';
-import { ElectronAppService } from '../../services/electron-app.service';
 
 import { FormsModule } from '@angular/forms';
 import { MessageComponent } from './message/message.component';
@@ -95,7 +92,6 @@ export class ChatBoxComponent implements OnChanges, AfterViewInit, OnDestroy {
 
 	constructor(
 		private server: ServerService,
-		public lapi: ElectronAppService,
 		private cd: ChangeDetectorRef,
 		private promptService: PromptService,
 		private chatService: ChatService,

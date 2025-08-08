@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc2
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -48,7 +48,7 @@ type ApiCheckoutRepoRequest struct {
 }
 
 // Checkout Repo Request
-func (r ApiCheckoutRepoRequest) SourceSvcCheckoutRepoRequest(sourceSvcCheckoutRepoRequest SourceSvcCheckoutRepoRequest) ApiCheckoutRepoRequest {
+func (r ApiCheckoutRepoRequest) Body(sourceSvcCheckoutRepoRequest SourceSvcCheckoutRepoRequest) ApiCheckoutRepoRequest {
 	r.sourceSvcCheckoutRepoRequest = &sourceSvcCheckoutRepoRequest
 	return r
 }

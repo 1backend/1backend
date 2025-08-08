@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc2
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -173,7 +173,7 @@ type ApiDownloadFileRequest struct {
 }
 
 // Download Request
-func (r ApiDownloadFileRequest) FileSvcDownloadFileRequest(fileSvcDownloadFileRequest FileSvcDownloadFileRequest) ApiDownloadFileRequest {
+func (r ApiDownloadFileRequest) Body(fileSvcDownloadFileRequest FileSvcDownloadFileRequest) ApiDownloadFileRequest {
 	r.fileSvcDownloadFileRequest = &fileSvcDownloadFileRequest
 	return r
 }
@@ -635,7 +635,7 @@ type ApiListUploadsRequest struct {
 }
 
 // List Uploads Request
-func (r ApiListUploadsRequest) FileSvcListUploadsRequest(fileSvcListUploadsRequest FileSvcListUploadsRequest) ApiListUploadsRequest {
+func (r ApiListUploadsRequest) Body(fileSvcListUploadsRequest FileSvcListUploadsRequest) ApiListUploadsRequest {
 	r.fileSvcListUploadsRequest = &fileSvcListUploadsRequest
 	return r
 }

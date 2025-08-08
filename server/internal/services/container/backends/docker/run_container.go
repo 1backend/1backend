@@ -229,7 +229,7 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 			if err != nil {
 				return nil, nil, errors.Wrapf(err, "failed to download asset with url '%v'", asset.Url)
 			}
-			defer rspFile.Close()
+			defer (*rspFile).Close()
 
 			targetFile, err := os.Create(assetPath)
 			if err != nil {
@@ -237,7 +237,7 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 			}
 			defer targetFile.Close()
 
-			_, err = io.Copy(targetFile, rspFile)
+			_, err = io.Copy(targetFile, (*rspFile))
 			if err != nil {
 				return nil, nil, errors.Wrap(err, "failed to write asset data to file")
 			}

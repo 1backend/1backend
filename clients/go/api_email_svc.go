@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc2
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -54,7 +54,7 @@ type ApiSendEmailRequest struct {
 }
 
 // Send Email Request
-func (r ApiSendEmailRequest) EmailSvcSendEmailRequest(emailSvcSendEmailRequest EmailSvcSendEmailRequest) ApiSendEmailRequest {
+func (r ApiSendEmailRequest) Body(emailSvcSendEmailRequest EmailSvcSendEmailRequest) ApiSendEmailRequest {
 	r.emailSvcSendEmailRequest = &emailSvcSendEmailRequest
 	return r
 }

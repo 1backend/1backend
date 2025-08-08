@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc2
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -557,7 +557,7 @@ type ApiListMessagesRequest struct {
 }
 
 // List Messages Request
-func (r ApiListMessagesRequest) ChatSvcListMessagesRequest(chatSvcListMessagesRequest ChatSvcListMessagesRequest) ApiListMessagesRequest {
+func (r ApiListMessagesRequest) Body(chatSvcListMessagesRequest ChatSvcListMessagesRequest) ApiListMessagesRequest {
 	r.chatSvcListMessagesRequest = &chatSvcListMessagesRequest
 	return r
 }
@@ -714,7 +714,7 @@ type ApiListThreadsRequest struct {
 }
 
 // List Threads Request
-func (r ApiListThreadsRequest) ChatSvcListThreadsRequest(chatSvcListThreadsRequest ChatSvcListThreadsRequest) ApiListThreadsRequest {
+func (r ApiListThreadsRequest) Body(chatSvcListThreadsRequest ChatSvcListThreadsRequest) ApiListThreadsRequest {
 	r.chatSvcListThreadsRequest = &chatSvcListThreadsRequest
 	return r
 }
@@ -872,7 +872,7 @@ type ApiSaveMessageRequest struct {
 }
 
 // Save Message Request
-func (r ApiSaveMessageRequest) ChatSvcSaveMessageRequest(chatSvcSaveMessageRequest ChatSvcSaveMessageRequest) ApiSaveMessageRequest {
+func (r ApiSaveMessageRequest) Body(chatSvcSaveMessageRequest ChatSvcSaveMessageRequest) ApiSaveMessageRequest {
 	r.chatSvcSaveMessageRequest = &chatSvcSaveMessageRequest
 	return r
 }
@@ -1032,7 +1032,7 @@ type ApiSaveThreadRequest struct {
 }
 
 // Save Thread Request
-func (r ApiSaveThreadRequest) ChatSvcSaveThreadRequest(chatSvcSaveThreadRequest ChatSvcSaveThreadRequest) ApiSaveThreadRequest {
+func (r ApiSaveThreadRequest) Body(chatSvcSaveThreadRequest ChatSvcSaveThreadRequest) ApiSaveThreadRequest {
 	r.chatSvcSaveThreadRequest = &chatSvcSaveThreadRequest
 	return r
 }

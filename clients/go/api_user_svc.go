@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc2
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -450,7 +450,7 @@ type ApiChangePasswordRequest struct {
 }
 
 // Change Password Request
-func (r ApiChangePasswordRequest) UserSvcChangePasswordRequest(userSvcChangePasswordRequest UserSvcChangePasswordRequest) ApiChangePasswordRequest {
+func (r ApiChangePasswordRequest) Body(userSvcChangePasswordRequest UserSvcChangePasswordRequest) ApiChangePasswordRequest {
 	r.userSvcChangePasswordRequest = &userSvcChangePasswordRequest
 	return r
 }
@@ -607,7 +607,7 @@ type ApiCreateUserRequest struct {
 }
 
 // Create User Request
-func (r ApiCreateUserRequest) UserSvcCreateUserRequest(userSvcCreateUserRequest UserSvcCreateUserRequest) ApiCreateUserRequest {
+func (r ApiCreateUserRequest) Body(userSvcCreateUserRequest UserSvcCreateUserRequest) ApiCreateUserRequest {
 	r.userSvcCreateUserRequest = &userSvcCreateUserRequest
 	return r
 }
@@ -1094,7 +1094,7 @@ type ApiExchangeTokenRequest struct {
 }
 
 // ExchangeToken Request
-func (r ApiExchangeTokenRequest) UserSvcExchangeTokenRequest(userSvcExchangeTokenRequest UserSvcExchangeTokenRequest) ApiExchangeTokenRequest {
+func (r ApiExchangeTokenRequest) Body(userSvcExchangeTokenRequest UserSvcExchangeTokenRequest) ApiExchangeTokenRequest {
 	r.userSvcExchangeTokenRequest = &userSvcExchangeTokenRequest
 	return r
 }
@@ -1244,7 +1244,7 @@ type ApiExchangeToken_0Request struct {
 }
 
 // ExchangeToken Request
-func (r ApiExchangeToken_0Request) UserSvcExchangeTokenRequest(userSvcExchangeTokenRequest UserSvcExchangeTokenRequest) ApiExchangeToken_0Request {
+func (r ApiExchangeToken_0Request) Body(userSvcExchangeTokenRequest UserSvcExchangeTokenRequest) ApiExchangeToken_0Request {
 	r.userSvcExchangeTokenRequest = &userSvcExchangeTokenRequest
 	return r
 }
@@ -1663,7 +1663,7 @@ type ApiListEnrollsRequest struct {
 }
 
 // List Enrolls Request
-func (r ApiListEnrollsRequest) UserSvcListEnrollsRequest(userSvcListEnrollsRequest UserSvcListEnrollsRequest) ApiListEnrollsRequest {
+func (r ApiListEnrollsRequest) Body(userSvcListEnrollsRequest UserSvcListEnrollsRequest) ApiListEnrollsRequest {
 	r.userSvcListEnrollsRequest = &userSvcListEnrollsRequest
 	return r
 }
@@ -1812,7 +1812,7 @@ type ApiListOrganizationsRequest struct {
 }
 
 // List Organizations Request
-func (r ApiListOrganizationsRequest) UserSvcListOrganizationsRequest(userSvcListOrganizationsRequest UserSvcListOrganizationsRequest) ApiListOrganizationsRequest {
+func (r ApiListOrganizationsRequest) Body(userSvcListOrganizationsRequest UserSvcListOrganizationsRequest) ApiListOrganizationsRequest {
 	r.userSvcListOrganizationsRequest = &userSvcListOrganizationsRequest
 	return r
 }
@@ -2127,7 +2127,7 @@ type ApiListPermitsRequest struct {
 }
 
 // List Permits Request
-func (r ApiListPermitsRequest) UserSvcListPermitsRequest(userSvcListPermitsRequest UserSvcListPermitsRequest) ApiListPermitsRequest {
+func (r ApiListPermitsRequest) Body(userSvcListPermitsRequest UserSvcListPermitsRequest) ApiListPermitsRequest {
 	r.userSvcListPermitsRequest = &userSvcListPermitsRequest
 	return r
 }
@@ -2274,7 +2274,7 @@ type ApiListUsersRequest struct {
 }
 
 // List Users Request
-func (r ApiListUsersRequest) UserSvcListUsersRequest(userSvcListUsersRequest UserSvcListUsersRequest) ApiListUsersRequest {
+func (r ApiListUsersRequest) Body(userSvcListUsersRequest UserSvcListUsersRequest) ApiListUsersRequest {
 	r.userSvcListUsersRequest = &userSvcListUsersRequest
 	return r
 }
@@ -2429,7 +2429,7 @@ type ApiLoginRequest struct {
 }
 
 // Login Request
-func (r ApiLoginRequest) UserSvcLoginRequest(userSvcLoginRequest UserSvcLoginRequest) ApiLoginRequest {
+func (r ApiLoginRequest) Body(userSvcLoginRequest UserSvcLoginRequest) ApiLoginRequest {
 	r.userSvcLoginRequest = &userSvcLoginRequest
 	return r
 }
@@ -2572,7 +2572,7 @@ type ApiReadSelfRequest struct {
 }
 
 // Read Self Request
-func (r ApiReadSelfRequest) UserSvcReadSelfRequest(userSvcReadSelfRequest UserSvcReadSelfRequest) ApiReadSelfRequest {
+func (r ApiReadSelfRequest) Body(userSvcReadSelfRequest UserSvcReadSelfRequest) ApiReadSelfRequest {
 	r.userSvcReadSelfRequest = &userSvcReadSelfRequest
 	return r
 }
@@ -2854,7 +2854,7 @@ type ApiRegisterRequest struct {
 }
 
 // Register Request
-func (r ApiRegisterRequest) UserSvcRegisterRequest(userSvcRegisterRequest UserSvcRegisterRequest) ApiRegisterRequest {
+func (r ApiRegisterRequest) Body(userSvcRegisterRequest UserSvcRegisterRequest) ApiRegisterRequest {
 	r.userSvcRegisterRequest = &userSvcRegisterRequest
 	return r
 }
@@ -2987,7 +2987,7 @@ type ApiResetPasswordRequest struct {
 }
 
 // Change Password Request
-func (r ApiResetPasswordRequest) UserSvcResetPasswordRequest(userSvcResetPasswordRequest UserSvcResetPasswordRequest) ApiResetPasswordRequest {
+func (r ApiResetPasswordRequest) Body(userSvcResetPasswordRequest UserSvcResetPasswordRequest) ApiResetPasswordRequest {
 	r.userSvcResetPasswordRequest = &userSvcResetPasswordRequest
 	return r
 }
@@ -3147,7 +3147,7 @@ type ApiRevokeTokensRequest struct {
 }
 
 // Revoke Tokens Request
-func (r ApiRevokeTokensRequest) UserSvcRevokeTokensRequest(userSvcRevokeTokensRequest UserSvcRevokeTokensRequest) ApiRevokeTokensRequest {
+func (r ApiRevokeTokensRequest) Body(userSvcRevokeTokensRequest UserSvcRevokeTokensRequest) ApiRevokeTokensRequest {
 	r.userSvcRevokeTokensRequest = &userSvcRevokeTokensRequest
 	return r
 }
@@ -3292,7 +3292,7 @@ type ApiSaveEnrollsRequest struct {
 }
 
 // Save Enrolls Request
-func (r ApiSaveEnrollsRequest) UserSvcSaveEnrollsRequest(userSvcSaveEnrollsRequest UserSvcSaveEnrollsRequest) ApiSaveEnrollsRequest {
+func (r ApiSaveEnrollsRequest) Body(userSvcSaveEnrollsRequest UserSvcSaveEnrollsRequest) ApiSaveEnrollsRequest {
 	r.userSvcSaveEnrollsRequest = &userSvcSaveEnrollsRequest
 	return r
 }
@@ -3646,7 +3646,7 @@ type ApiSaveOrganizationRequest struct {
 }
 
 // Save User Request
-func (r ApiSaveOrganizationRequest) UserSvcSaveOrganizationRequest(userSvcSaveOrganizationRequest UserSvcSaveOrganizationRequest) ApiSaveOrganizationRequest {
+func (r ApiSaveOrganizationRequest) Body(userSvcSaveOrganizationRequest UserSvcSaveOrganizationRequest) ApiSaveOrganizationRequest {
 	r.userSvcSaveOrganizationRequest = &userSvcSaveOrganizationRequest
 	return r
 }
@@ -3805,7 +3805,7 @@ type ApiSavePermitsRequest struct {
 }
 
 // Save Permits Request
-func (r ApiSavePermitsRequest) UserSvcSavePermitsRequest(userSvcSavePermitsRequest UserSvcSavePermitsRequest) ApiSavePermitsRequest {
+func (r ApiSavePermitsRequest) Body(userSvcSavePermitsRequest UserSvcSavePermitsRequest) ApiSavePermitsRequest {
 	r.userSvcSavePermitsRequest = &userSvcSavePermitsRequest
 	return r
 }
@@ -3963,7 +3963,7 @@ type ApiSaveSelfRequest struct {
 }
 
 // Save Profile Request
-func (r ApiSaveSelfRequest) UserSvcSaveSelfRequest(userSvcSaveSelfRequest UserSvcSaveSelfRequest) ApiSaveSelfRequest {
+func (r ApiSaveSelfRequest) Body(userSvcSaveSelfRequest UserSvcSaveSelfRequest) ApiSaveSelfRequest {
 	r.userSvcSaveSelfRequest = &userSvcSaveSelfRequest
 	return r
 }
@@ -4121,7 +4121,7 @@ type ApiSaveUserRequest struct {
 }
 
 // Save Profile Request
-func (r ApiSaveUserRequest) UserSvcSaveUserRequest(userSvcSaveUserRequest UserSvcSaveUserRequest) ApiSaveUserRequest {
+func (r ApiSaveUserRequest) Body(userSvcSaveUserRequest UserSvcSaveUserRequest) ApiSaveUserRequest {
 	r.userSvcSaveUserRequest = &userSvcSaveUserRequest
 	return r
 }

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc2
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -63,7 +63,7 @@ type ApiCheckRequest struct {
 }
 
 // Check Request
-func (r ApiCheckRequest) PolicySvcCheckRequest(policySvcCheckRequest PolicySvcCheckRequest) ApiCheckRequest {
+func (r ApiCheckRequest) Body(policySvcCheckRequest PolicySvcCheckRequest) ApiCheckRequest {
 	r.policySvcCheckRequest = &policySvcCheckRequest
 	return r
 }
@@ -221,7 +221,7 @@ type ApiUpsertInstanceRequest struct {
 }
 
 // Upsert Instance Request
-func (r ApiUpsertInstanceRequest) PolicySvcUpsertInstanceRequest(policySvcUpsertInstanceRequest PolicySvcUpsertInstanceRequest) ApiUpsertInstanceRequest {
+func (r ApiUpsertInstanceRequest) Body(policySvcUpsertInstanceRequest PolicySvcUpsertInstanceRequest) ApiUpsertInstanceRequest {
 	r.policySvcUpsertInstanceRequest = &policySvcUpsertInstanceRequest
 	return r
 }

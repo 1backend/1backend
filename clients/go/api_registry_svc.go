@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc2
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -1241,7 +1241,7 @@ type ApiListNodesRequest struct {
 }
 
 // List Nodes Request
-func (r ApiListNodesRequest) RegistrySvcListNodesRequest(registrySvcListNodesRequest RegistrySvcListNodesRequest) ApiListNodesRequest {
+func (r ApiListNodesRequest) Body(registrySvcListNodesRequest RegistrySvcListNodesRequest) ApiListNodesRequest {
 	r.registrySvcListNodesRequest = &registrySvcListNodesRequest
 	return r
 }
@@ -1395,7 +1395,7 @@ type ApiRegisterInstanceRequest struct {
 }
 
 // Register Instance Request
-func (r ApiRegisterInstanceRequest) RegistrySvcRegisterInstanceRequest(registrySvcRegisterInstanceRequest RegistrySvcRegisterInstanceRequest) ApiRegisterInstanceRequest {
+func (r ApiRegisterInstanceRequest) Body(registrySvcRegisterInstanceRequest RegistrySvcRegisterInstanceRequest) ApiRegisterInstanceRequest {
 	r.registrySvcRegisterInstanceRequest = &registrySvcRegisterInstanceRequest
 	return r
 }
@@ -1709,7 +1709,7 @@ type ApiSaveDefinitionRequest struct {
 }
 
 // Register Service Definition Request
-func (r ApiSaveDefinitionRequest) RegistrySvcSaveDefinitionRequest(registrySvcSaveDefinitionRequest RegistrySvcSaveDefinitionRequest) ApiSaveDefinitionRequest {
+func (r ApiSaveDefinitionRequest) Body(registrySvcSaveDefinitionRequest RegistrySvcSaveDefinitionRequest) ApiSaveDefinitionRequest {
 	r.registrySvcSaveDefinitionRequest = &registrySvcSaveDefinitionRequest
 	return r
 }

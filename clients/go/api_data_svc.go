@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc2
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -124,7 +124,7 @@ type ApiCreateObjectRequest struct {
 }
 
 // Create request payload
-func (r ApiCreateObjectRequest) DataSvcCreateObjectRequest(dataSvcCreateObjectRequest DataSvcCreateObjectRequest) ApiCreateObjectRequest {
+func (r ApiCreateObjectRequest) Body(dataSvcCreateObjectRequest DataSvcCreateObjectRequest) ApiCreateObjectRequest {
 	r.dataSvcCreateObjectRequest = &dataSvcCreateObjectRequest
 	return r
 }
@@ -281,7 +281,7 @@ type ApiDeleteObjectsRequest struct {
 }
 
 // Delete request payload
-func (r ApiDeleteObjectsRequest) DataSvcDeleteObjectRequest(dataSvcDeleteObjectRequest DataSvcDeleteObjectRequest) ApiDeleteObjectsRequest {
+func (r ApiDeleteObjectsRequest) Body(dataSvcDeleteObjectRequest DataSvcDeleteObjectRequest) ApiDeleteObjectsRequest {
 	r.dataSvcDeleteObjectRequest = &dataSvcDeleteObjectRequest
 	return r
 }
@@ -438,7 +438,7 @@ type ApiQueryObjectsRequest struct {
 }
 
 // Query Request
-func (r ApiQueryObjectsRequest) DataSvcQueryRequest(dataSvcQueryRequest DataSvcQueryRequest) ApiQueryObjectsRequest {
+func (r ApiQueryObjectsRequest) Body(dataSvcQueryRequest DataSvcQueryRequest) ApiQueryObjectsRequest {
 	r.dataSvcQueryRequest = &dataSvcQueryRequest
 	return r
 }
@@ -596,7 +596,7 @@ type ApiUpdateObjectsRequest struct {
 }
 
 // Update request payload
-func (r ApiUpdateObjectsRequest) DataSvcUpdateObjectsRequest(dataSvcUpdateObjectsRequest DataSvcUpdateObjectsRequest) ApiUpdateObjectsRequest {
+func (r ApiUpdateObjectsRequest) Body(dataSvcUpdateObjectsRequest DataSvcUpdateObjectsRequest) ApiUpdateObjectsRequest {
 	r.dataSvcUpdateObjectsRequest = &dataSvcUpdateObjectsRequest
 	return r
 }
@@ -755,7 +755,7 @@ type ApiUpsertObjectRequest struct {
 }
 
 // Upsert request payload
-func (r ApiUpsertObjectRequest) DataSvcUpsertObjectRequest(dataSvcUpsertObjectRequest DataSvcUpsertObjectRequest) ApiUpsertObjectRequest {
+func (r ApiUpsertObjectRequest) Body(dataSvcUpsertObjectRequest DataSvcUpsertObjectRequest) ApiUpsertObjectRequest {
 	r.dataSvcUpsertObjectRequest = &dataSvcUpsertObjectRequest
 	return r
 }
@@ -915,7 +915,7 @@ type ApiUpsertObjectsRequest struct {
 }
 
 // Upsert request payload
-func (r ApiUpsertObjectsRequest) DataSvcUpsertObjectRequest(dataSvcUpsertObjectRequest DataSvcUpsertObjectRequest) ApiUpsertObjectsRequest {
+func (r ApiUpsertObjectsRequest) Body(dataSvcUpsertObjectRequest DataSvcUpsertObjectRequest) ApiUpsertObjectsRequest {
 	r.dataSvcUpsertObjectRequest = &dataSvcUpsertObjectRequest
 	return r
 }

@@ -23,7 +23,14 @@ cp go.mod.template go.mod
 sed -i 's|github.com/GIT_USER_ID/GIT_REPO_ID|github.com/1backend/1backend/clients/go|g' test/*.go
 go mod tidy
 
-echo "Replacing []map[string]interface{} with []any in Go files after marker: $MARKER"
+find . -type f -name "*.go" ! -path "*/vendor/*" | while read -r file; do
+  echo "Processing $file"
+
+  # Replace method names like:
+  # func (r Receiver) SomeSvcSomethingRequest(...) → func (r Receiver) Body(...)
+  sed -i.bak -E \
+    's/^(func\s*\([^)]+\)\s+)[A-Za-z0-9]+Svc[A-Za-z0-9]*Request(\s*\()/\1Body\2/' "$file"
+done
 
 bash "$SERVER_DIR/mock_go.sh"
 

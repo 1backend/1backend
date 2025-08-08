@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc2
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -120,7 +120,7 @@ type ApiDecryptValueRequest struct {
 }
 
 // Decrypt Value Request
-func (r ApiDecryptValueRequest) SecretSvcDecryptValueRequest(secretSvcDecryptValueRequest SecretSvcDecryptValueRequest) ApiDecryptValueRequest {
+func (r ApiDecryptValueRequest) Body(secretSvcDecryptValueRequest SecretSvcDecryptValueRequest) ApiDecryptValueRequest {
 	r.secretSvcDecryptValueRequest = &secretSvcDecryptValueRequest
 	return r
 }
@@ -277,7 +277,7 @@ type ApiEncryptValueRequest struct {
 }
 
 // Encrypt Value Request
-func (r ApiEncryptValueRequest) SecretSvcEncryptValueRequest(secretSvcEncryptValueRequest SecretSvcEncryptValueRequest) ApiEncryptValueRequest {
+func (r ApiEncryptValueRequest) Body(secretSvcEncryptValueRequest SecretSvcEncryptValueRequest) ApiEncryptValueRequest {
 	r.secretSvcEncryptValueRequest = &secretSvcEncryptValueRequest
 	return r
 }
@@ -587,7 +587,7 @@ type ApiListSecretsRequest struct {
 }
 
 // List Secret Request
-func (r ApiListSecretsRequest) SecretSvcListSecretsRequest(secretSvcListSecretsRequest SecretSvcListSecretsRequest) ApiListSecretsRequest {
+func (r ApiListSecretsRequest) Body(secretSvcListSecretsRequest SecretSvcListSecretsRequest) ApiListSecretsRequest {
 	r.secretSvcListSecretsRequest = &secretSvcListSecretsRequest
 	return r
 }
@@ -730,7 +730,7 @@ type ApiRemoveSecretsRequest struct {
 }
 
 // Remove Secret Request
-func (r ApiRemoveSecretsRequest) SecretSvcRemoveSecretsRequest(secretSvcRemoveSecretsRequest SecretSvcRemoveSecretsRequest) ApiRemoveSecretsRequest {
+func (r ApiRemoveSecretsRequest) Body(secretSvcRemoveSecretsRequest SecretSvcRemoveSecretsRequest) ApiRemoveSecretsRequest {
 	r.secretSvcRemoveSecretsRequest = &secretSvcRemoveSecretsRequest
 	return r
 }
@@ -876,7 +876,7 @@ type ApiSaveSecretsRequest struct {
 }
 
 // Save Secret Request
-func (r ApiSaveSecretsRequest) SecretSvcSaveSecretsRequest(secretSvcSaveSecretsRequest SecretSvcSaveSecretsRequest) ApiSaveSecretsRequest {
+func (r ApiSaveSecretsRequest) Body(secretSvcSaveSecretsRequest SecretSvcSaveSecretsRequest) ApiSaveSecretsRequest {
 	r.secretSvcSaveSecretsRequest = &secretSvcSaveSecretsRequest
 	return r
 }

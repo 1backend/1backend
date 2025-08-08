@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc2
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -117,7 +117,7 @@ type ApiListPromptsRequest struct {
 }
 
 // List Prompts Request
-func (r ApiListPromptsRequest) PromptSvcListPromptsRequest(promptSvcListPromptsRequest PromptSvcListPromptsRequest) ApiListPromptsRequest {
+func (r ApiListPromptsRequest) Body(promptSvcListPromptsRequest PromptSvcListPromptsRequest) ApiListPromptsRequest {
 	r.promptSvcListPromptsRequest = &promptSvcListPromptsRequest
 	return r
 }
@@ -271,7 +271,7 @@ type ApiPromptRequest struct {
 }
 
 // Add Prompt Request
-func (r ApiPromptRequest) PromptSvcPromptRequest(promptSvcPromptRequest PromptSvcPromptRequest) ApiPromptRequest {
+func (r ApiPromptRequest) Body(promptSvcPromptRequest PromptSvcPromptRequest) ApiPromptRequest {
 	r.promptSvcPromptRequest = &promptSvcPromptRequest
 	return r
 }
@@ -595,7 +595,7 @@ type ApiRemovePromptRequest struct {
 }
 
 // Remove Prompt Request
-func (r ApiRemovePromptRequest) PromptSvcRemovePromptRequest(promptSvcRemovePromptRequest PromptSvcRemovePromptRequest) ApiRemovePromptRequest {
+func (r ApiRemovePromptRequest) Body(promptSvcRemovePromptRequest PromptSvcRemovePromptRequest) ApiRemovePromptRequest {
 	r.promptSvcRemovePromptRequest = &promptSvcRemovePromptRequest
 	return r
 }

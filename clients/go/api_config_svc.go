@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc2
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -81,7 +81,7 @@ type ApiListConfigsRequest struct {
 }
 
 // List Configs Request
-func (r ApiListConfigsRequest) ConfigSvcListConfigsRequest(configSvcListConfigsRequest ConfigSvcListConfigsRequest) ApiListConfigsRequest {
+func (r ApiListConfigsRequest) Body(configSvcListConfigsRequest ConfigSvcListConfigsRequest) ApiListConfigsRequest {
 	r.configSvcListConfigsRequest = &configSvcListConfigsRequest
 	return r
 }
@@ -217,7 +217,7 @@ type ApiSaveConfigRequest struct {
 }
 
 // Save Config Request
-func (r ApiSaveConfigRequest) ConfigSvcSaveConfigRequest(configSvcSaveConfigRequest ConfigSvcSaveConfigRequest) ApiSaveConfigRequest {
+func (r ApiSaveConfigRequest) Body(configSvcSaveConfigRequest ConfigSvcSaveConfigRequest) ApiSaveConfigRequest {
 	r.configSvcSaveConfigRequest = &configSvcSaveConfigRequest
 	return r
 }

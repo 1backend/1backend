@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc2
+API version: 0.8.0-rc3
 Contact: sales@singulatron.com
 */
 
@@ -75,7 +75,7 @@ type ApiDeleteDeploymentRequest struct {
 }
 
 // Delete Deploys Request
-func (r ApiDeleteDeploymentRequest) DeploySvcDeleteDeploymentRequest(deploySvcDeleteDeploymentRequest DeploySvcDeleteDeploymentRequest) ApiDeleteDeploymentRequest {
+func (r ApiDeleteDeploymentRequest) Body(deploySvcDeleteDeploymentRequest DeploySvcDeleteDeploymentRequest) ApiDeleteDeploymentRequest {
 	r.deploySvcDeleteDeploymentRequest = &deploySvcDeleteDeploymentRequest
 	return r
 }
@@ -383,7 +383,7 @@ type ApiSaveDeploymentRequest struct {
 }
 
 // Save Deploys Request
-func (r ApiSaveDeploymentRequest) DeploySvcSaveDeploymentRequest(deploySvcSaveDeploymentRequest DeploySvcSaveDeploymentRequest) ApiSaveDeploymentRequest {
+func (r ApiSaveDeploymentRequest) Body(deploySvcSaveDeploymentRequest DeploySvcSaveDeploymentRequest) ApiSaveDeploymentRequest {
 	r.deploySvcSaveDeploymentRequest = &deploySvcSaveDeploymentRequest
 	return r
 }
