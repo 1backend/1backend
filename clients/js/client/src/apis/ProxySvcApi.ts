@@ -44,19 +44,19 @@ import {
 } from '../models/index';
 
 export interface ListCertsRequest {
-    proxySvcListCertsRequest?: ProxySvcListCertsRequest;
+    body?: ProxySvcListCertsRequest;
 }
 
 export interface ListRoutesRequest {
-    proxySvcListRoutesRequest?: ProxySvcListRoutesRequest;
+    body?: ProxySvcListRoutesRequest;
 }
 
 export interface SaveCertsRequest {
-    proxySvcSaveCertsRequest: ProxySvcSaveCertsRequest;
+    body: ProxySvcSaveCertsRequest;
 }
 
 export interface SaveRoutesRequest {
-    proxySvcSaveRoutesRequest: ProxySvcSaveRoutesRequest;
+    body: ProxySvcSaveRoutesRequest;
 }
 
 /**
@@ -87,7 +87,7 @@ export class ProxySvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: ProxySvcListCertsRequestToJSON(requestParameters['proxySvcListCertsRequest']),
+            body: ProxySvcListCertsRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ProxySvcListCertsResponseFromJSON(jsonValue));
@@ -125,7 +125,7 @@ export class ProxySvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: ProxySvcListRoutesRequestToJSON(requestParameters['proxySvcListRoutesRequest']),
+            body: ProxySvcListRoutesRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ProxySvcListRoutesResponseFromJSON(jsonValue));
@@ -145,7 +145,7 @@ export class ProxySvcApi extends runtime.BaseAPI {
      * Save Certs
      */
     async saveCertsRaw(requestParameters: SaveCertsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['proxySvcSaveCertsRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'proxySvcSaveCertsRequest',
                 'Required parameter "proxySvcSaveCertsRequest" was null or undefined when calling saveCerts().'
@@ -170,7 +170,7 @@ export class ProxySvcApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: ProxySvcSaveCertsRequestToJSON(requestParameters['proxySvcSaveCertsRequest']),
+            body: ProxySvcSaveCertsRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -190,7 +190,7 @@ export class ProxySvcApi extends runtime.BaseAPI {
      * Save Routes
      */
     async saveRoutesRaw(requestParameters: SaveRoutesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProxySvcSaveRoutesResponse>> {
-        if (requestParameters['proxySvcSaveRoutesRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'proxySvcSaveRoutesRequest',
                 'Required parameter "proxySvcSaveRoutesRequest" was null or undefined when calling saveRoutes().'
@@ -215,7 +215,7 @@ export class ProxySvcApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: ProxySvcSaveRoutesRequestToJSON(requestParameters['proxySvcSaveRoutesRequest']),
+            body: ProxySvcSaveRoutesRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ProxySvcSaveRoutesResponseFromJSON(jsonValue));

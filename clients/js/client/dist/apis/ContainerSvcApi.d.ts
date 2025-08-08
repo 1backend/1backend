@@ -12,7 +12,7 @@
 import * as runtime from '../runtime';
 import type { ContainerSvcBuildImageRequest, ContainerSvcContainerIsRunningResponse, ContainerSvcDaemonInfoResponse, ContainerSvcGetContainerSummaryResponse, ContainerSvcGetHostResponse, ContainerSvcImagePullableResponse, ContainerSvcListContainersRequest, ContainerSvcListContainersResponse, ContainerSvcListLogsRequest, ContainerSvcListLogsResponse, ContainerSvcRunContainerRequest, ContainerSvcRunContainerResponse, ContainerSvcStopContainerRequest } from '../models/index';
 export interface BuildImageRequest {
-    containerSvcBuildImageRequest: ContainerSvcBuildImageRequest;
+    body: ContainerSvcBuildImageRequest;
 }
 export interface ContainerDaemonInfoRequest {
     body?: object;
@@ -36,16 +36,16 @@ export interface ImagePullableRequest {
     body?: object;
 }
 export interface ListContainerLogsRequest {
-    containerSvcListLogsRequest: ContainerSvcListLogsRequest;
+    body: ContainerSvcListLogsRequest;
 }
 export interface ListContainersRequest {
-    containerSvcListContainersRequest: ContainerSvcListContainersRequest;
+    body: ContainerSvcListContainersRequest;
 }
 export interface RunContainerRequest {
-    containerSvcRunContainerRequest: ContainerSvcRunContainerRequest;
+    body: ContainerSvcRunContainerRequest;
 }
 export interface StopContainerRequest {
-    containerSvcStopContainerRequest: ContainerSvcStopContainerRequest;
+    body: ContainerSvcStopContainerRequest;
 }
 /**
  *

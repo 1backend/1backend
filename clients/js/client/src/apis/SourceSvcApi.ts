@@ -29,7 +29,7 @@ import {
 } from '../models/index';
 
 export interface CheckoutRepoRequest {
-    sourceSvcCheckoutRepoRequest: SourceSvcCheckoutRepoRequest;
+    body: SourceSvcCheckoutRepoRequest;
 }
 
 /**
@@ -42,7 +42,7 @@ export class SourceSvcApi extends runtime.BaseAPI {
      * Checkout a git repository
      */
     async checkoutRepoRaw(requestParameters: CheckoutRepoRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SourceSvcCheckoutRepoResponse>> {
-        if (requestParameters['sourceSvcCheckoutRepoRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'sourceSvcCheckoutRepoRequest',
                 'Required parameter "sourceSvcCheckoutRepoRequest" was null or undefined when calling checkoutRepo().'
@@ -67,7 +67,7 @@ export class SourceSvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: SourceSvcCheckoutRepoRequestToJSON(requestParameters['sourceSvcCheckoutRepoRequest']),
+            body: SourceSvcCheckoutRepoRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SourceSvcCheckoutRepoResponseFromJSON(jsonValue));

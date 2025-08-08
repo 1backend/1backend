@@ -12,7 +12,7 @@
 import * as runtime from '../runtime';
 import type { EmailSvcSendEmailRequest, EmailSvcSendEmailResponse } from '../models/index';
 export interface SendEmailRequest {
-    emailSvcSendEmailRequest: EmailSvcSendEmailRequest;
+    body: EmailSvcSendEmailRequest;
 }
 /**
  *

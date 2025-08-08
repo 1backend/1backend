@@ -12,7 +12,7 @@
 import * as runtime from '../runtime';
 import type { FileSvcDownloadFileRequest, FileSvcDownloadsResponse, FileSvcGetDownloadResponse, FileSvcListUploadsRequest, FileSvcListUploadsResponse, FileSvcUploadFileResponse } from '../models/index';
 export interface DownloadFileRequest {
-    fileSvcDownloadFileRequest: FileSvcDownloadFileRequest;
+    body: FileSvcDownloadFileRequest;
 }
 export interface GetDownloadRequest {
     url: string;
@@ -22,7 +22,7 @@ export interface ListDownloadsRequest {
     body?: object;
 }
 export interface ListUploadsRequest {
-    fileSvcListUploadsRequest?: FileSvcListUploadsRequest;
+    body?: FileSvcListUploadsRequest;
 }
 export interface PauseDownloadRequest {
     url: string;

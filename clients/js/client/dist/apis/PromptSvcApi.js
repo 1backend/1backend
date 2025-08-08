@@ -44,7 +44,7 @@ export class PromptSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: PromptSvcListPromptsRequestToJSON(requestParameters['promptSvcListPromptsRequest']),
+                body: PromptSvcListPromptsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => PromptSvcListPromptsResponseFromJSON(jsonValue));
         });
@@ -65,7 +65,7 @@ export class PromptSvcApi extends runtime.BaseAPI {
      */
     promptRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['promptSvcPromptRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('promptSvcPromptRequest', 'Required parameter "promptSvcPromptRequest" was null or undefined when calling prompt().');
             }
             const queryParameters = {};
@@ -80,7 +80,7 @@ export class PromptSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: PromptSvcPromptRequestToJSON(requestParameters['promptSvcPromptRequest']),
+                body: PromptSvcPromptRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => PromptSvcPromptResponseFromJSON(jsonValue));
         });
@@ -137,7 +137,7 @@ export class PromptSvcApi extends runtime.BaseAPI {
      */
     removePromptRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['promptSvcRemovePromptRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('promptSvcRemovePromptRequest', 'Required parameter "promptSvcRemovePromptRequest" was null or undefined when calling removePrompt().');
             }
             const queryParameters = {};
@@ -152,7 +152,7 @@ export class PromptSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: PromptSvcRemovePromptRequestToJSON(requestParameters['promptSvcRemovePromptRequest']),
+                body: PromptSvcRemovePromptRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });

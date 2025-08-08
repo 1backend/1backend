@@ -32,7 +32,7 @@ export class ContainerSvcApi extends runtime.BaseAPI {
      */
     buildImageRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['containerSvcBuildImageRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('containerSvcBuildImageRequest', 'Required parameter "containerSvcBuildImageRequest" was null or undefined when calling buildImage().');
             }
             const queryParameters = {};
@@ -47,7 +47,7 @@ export class ContainerSvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ContainerSvcBuildImageRequestToJSON(requestParameters['containerSvcBuildImageRequest']),
+                body: ContainerSvcBuildImageRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
@@ -252,7 +252,7 @@ export class ContainerSvcApi extends runtime.BaseAPI {
      */
     listContainerLogsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['containerSvcListLogsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('containerSvcListLogsRequest', 'Required parameter "containerSvcListLogsRequest" was null or undefined when calling listContainerLogs().');
             }
             const queryParameters = {};
@@ -267,7 +267,7 @@ export class ContainerSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ContainerSvcListLogsRequestToJSON(requestParameters['containerSvcListLogsRequest']),
+                body: ContainerSvcListLogsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ContainerSvcListLogsResponseFromJSON(jsonValue));
         });
@@ -288,7 +288,7 @@ export class ContainerSvcApi extends runtime.BaseAPI {
      */
     listContainersRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['containerSvcListContainersRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('containerSvcListContainersRequest', 'Required parameter "containerSvcListContainersRequest" was null or undefined when calling listContainers().');
             }
             const queryParameters = {};
@@ -303,7 +303,7 @@ export class ContainerSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ContainerSvcListContainersRequestToJSON(requestParameters['containerSvcListContainersRequest']),
+                body: ContainerSvcListContainersRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ContainerSvcListContainersResponseFromJSON(jsonValue));
         });
@@ -324,7 +324,7 @@ export class ContainerSvcApi extends runtime.BaseAPI {
      */
     runContainerRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['containerSvcRunContainerRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('containerSvcRunContainerRequest', 'Required parameter "containerSvcRunContainerRequest" was null or undefined when calling runContainer().');
             }
             const queryParameters = {};
@@ -339,7 +339,7 @@ export class ContainerSvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ContainerSvcRunContainerRequestToJSON(requestParameters['containerSvcRunContainerRequest']),
+                body: ContainerSvcRunContainerRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ContainerSvcRunContainerResponseFromJSON(jsonValue));
         });
@@ -360,7 +360,7 @@ export class ContainerSvcApi extends runtime.BaseAPI {
      */
     stopContainerRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['containerSvcStopContainerRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('containerSvcStopContainerRequest', 'Required parameter "containerSvcStopContainerRequest" was null or undefined when calling stopContainer().');
             }
             const queryParameters = {};
@@ -375,7 +375,7 @@ export class ContainerSvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ContainerSvcStopContainerRequestToJSON(requestParameters['containerSvcStopContainerRequest']),
+                body: ContainerSvcStopContainerRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });

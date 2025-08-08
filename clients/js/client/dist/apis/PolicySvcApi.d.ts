@@ -12,11 +12,11 @@
 import * as runtime from '../runtime';
 import type { PolicySvcCheckRequest, PolicySvcCheckResponse, PolicySvcUpsertInstanceRequest } from '../models/index';
 export interface CheckRequest {
-    policySvcCheckRequest: PolicySvcCheckRequest;
+    body: PolicySvcCheckRequest;
 }
 export interface UpsertInstanceRequest {
     instanceId: string;
-    policySvcUpsertInstanceRequest: PolicySvcUpsertInstanceRequest;
+    body: PolicySvcUpsertInstanceRequest;
 }
 /**
  *

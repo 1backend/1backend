@@ -32,7 +32,7 @@ export class EmailSvcApi extends runtime.BaseAPI {
      */
     sendEmailRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['emailSvcSendEmailRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('emailSvcSendEmailRequest', 'Required parameter "emailSvcSendEmailRequest" was null or undefined when calling sendEmail().');
             }
             const queryParameters = {};
@@ -47,7 +47,7 @@ export class EmailSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: EmailSvcSendEmailRequestToJSON(requestParameters['emailSvcSendEmailRequest']),
+                body: EmailSvcSendEmailRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => EmailSvcSendEmailResponseFromJSON(jsonValue));
         });

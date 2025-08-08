@@ -23,17 +23,17 @@ export interface EventsRequest {
     body?: object;
 }
 export interface ListMessagesRequest {
-    chatSvcListMessagesRequest: ChatSvcListMessagesRequest;
+    body: ChatSvcListMessagesRequest;
 }
 export interface ListThreadsRequest {
-    chatSvcListThreadsRequest: ChatSvcListThreadsRequest;
+    body: ChatSvcListThreadsRequest;
 }
 export interface SaveMessageRequest {
     threadId: string;
-    chatSvcSaveMessageRequest: ChatSvcSaveMessageRequest;
+    body: ChatSvcSaveMessageRequest;
 }
 export interface SaveThreadRequest {
-    chatSvcSaveThreadRequest: ChatSvcSaveThreadRequest;
+    body: ChatSvcSaveThreadRequest;
 }
 /**
  *

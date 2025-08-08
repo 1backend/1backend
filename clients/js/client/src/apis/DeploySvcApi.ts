@@ -32,7 +32,7 @@ import {
 } from '../models/index';
 
 export interface DeleteDeploymentRequest {
-    deploySvcDeleteDeploymentRequest?: DeploySvcDeleteDeploymentRequest;
+    body?: DeploySvcDeleteDeploymentRequest;
 }
 
 export interface ListDeploymentsRequest {
@@ -40,7 +40,7 @@ export interface ListDeploymentsRequest {
 }
 
 export interface SaveDeploymentRequest {
-    deploySvcSaveDeploymentRequest?: DeploySvcSaveDeploymentRequest;
+    body?: DeploySvcSaveDeploymentRequest;
 }
 
 /**
@@ -71,7 +71,7 @@ export class DeploySvcApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-            body: DeploySvcDeleteDeploymentRequestToJSON(requestParameters['deploySvcDeleteDeploymentRequest']),
+            body: DeploySvcDeleteDeploymentRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -147,7 +147,7 @@ export class DeploySvcApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: DeploySvcSaveDeploymentRequestToJSON(requestParameters['deploySvcSaveDeploymentRequest']),
+            body: DeploySvcSaveDeploymentRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

@@ -32,7 +32,7 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     changePasswordRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcChangePasswordRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('userSvcChangePasswordRequest', 'Required parameter "userSvcChangePasswordRequest" was null or undefined when calling changePassword().');
             }
             const queryParameters = {};
@@ -47,7 +47,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcChangePasswordRequestToJSON(requestParameters['userSvcChangePasswordRequest']),
+                body: UserSvcChangePasswordRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
@@ -68,7 +68,7 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     createUserRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcCreateUserRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('userSvcCreateUserRequest', 'Required parameter "userSvcCreateUserRequest" was null or undefined when calling createUser().');
             }
             const queryParameters = {};
@@ -83,7 +83,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcCreateUserRequestToJSON(requestParameters['userSvcCreateUserRequest']),
+                body: UserSvcCreateUserRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
@@ -182,7 +182,7 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     exchangeTokenRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcExchangeTokenRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('userSvcExchangeTokenRequest', 'Required parameter "userSvcExchangeTokenRequest" was null or undefined when calling exchangeToken().');
             }
             const queryParameters = {};
@@ -194,7 +194,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcExchangeTokenRequestToJSON(requestParameters['userSvcExchangeTokenRequest']),
+                body: UserSvcExchangeTokenRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcExchangeTokenResponseFromJSON(jsonValue));
         });
@@ -215,7 +215,7 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     exchangeToken_1Raw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcExchangeTokenRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('userSvcExchangeTokenRequest', 'Required parameter "userSvcExchangeTokenRequest" was null or undefined when calling exchangeToken_1().');
             }
             const queryParameters = {};
@@ -227,7 +227,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcExchangeTokenRequestToJSON(requestParameters['userSvcExchangeTokenRequest']),
+                body: UserSvcExchangeTokenRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcExchangeTokenResponseFromJSON(jsonValue));
         });
@@ -315,7 +315,7 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     listEnrollsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcListEnrollsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('userSvcListEnrollsRequest', 'Required parameter "userSvcListEnrollsRequest" was null or undefined when calling listEnrolls().');
             }
             const queryParameters = {};
@@ -330,7 +330,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcListEnrollsRequestToJSON(requestParameters['userSvcListEnrollsRequest']),
+                body: UserSvcListEnrollsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListEnrollsResponseFromJSON(jsonValue));
         });
@@ -351,7 +351,7 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     listOrganizationsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcListOrganizationsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('userSvcListOrganizationsRequest', 'Required parameter "userSvcListOrganizationsRequest" was null or undefined when calling listOrganizations().');
             }
             const queryParameters = {};
@@ -366,7 +366,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcListOrganizationsRequestToJSON(requestParameters['userSvcListOrganizationsRequest']),
+                body: UserSvcListOrganizationsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListOrganizationsResponseFromJSON(jsonValue));
         });
@@ -424,7 +424,7 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     listPermitsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcListPermitsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('userSvcListPermitsRequest', 'Required parameter "userSvcListPermitsRequest" was null or undefined when calling listPermits().');
             }
             const queryParameters = {};
@@ -439,7 +439,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcListPermitsRequestToJSON(requestParameters['userSvcListPermitsRequest']),
+                body: UserSvcListPermitsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListPermitsResponseFromJSON(jsonValue));
         });
@@ -472,7 +472,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcListUsersRequestToJSON(requestParameters['userSvcListUsersRequest']),
+                body: UserSvcListUsersRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListUsersResponseFromJSON(jsonValue));
         });
@@ -493,7 +493,7 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     loginRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcLoginRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('userSvcLoginRequest', 'Required parameter "userSvcLoginRequest" was null or undefined when calling login().');
             }
             const queryParameters = {};
@@ -505,7 +505,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcLoginRequestToJSON(requestParameters['userSvcLoginRequest']),
+                body: UserSvcLoginRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcLoginResponseFromJSON(jsonValue));
         });
@@ -538,7 +538,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcReadSelfRequestToJSON(requestParameters['userSvcReadSelfRequest']),
+                body: UserSvcReadSelfRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcReadSelfResponseFromJSON(jsonValue));
         });
@@ -589,7 +589,7 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     registerRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcRegisterRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('userSvcRegisterRequest', 'Required parameter "userSvcRegisterRequest" was null or undefined when calling register().');
             }
             const queryParameters = {};
@@ -601,7 +601,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcRegisterRequestToJSON(requestParameters['userSvcRegisterRequest']),
+                body: UserSvcRegisterRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcRegisterResponseFromJSON(jsonValue));
         });
@@ -625,7 +625,7 @@ export class UserSvcApi extends runtime.BaseAPI {
             if (requestParameters['userId'] == null) {
                 throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling resetPassword().');
             }
-            if (requestParameters['userSvcResetPasswordRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('userSvcResetPasswordRequest', 'Required parameter "userSvcResetPasswordRequest" was null or undefined when calling resetPassword().');
             }
             const queryParameters = {};
@@ -641,7 +641,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcResetPasswordRequestToJSON(requestParameters['userSvcResetPasswordRequest']),
+                body: UserSvcResetPasswordRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
@@ -674,7 +674,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcRevokeTokensRequestToJSON(requestParameters['userSvcRevokeTokensRequest']),
+                body: UserSvcRevokeTokensRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
@@ -695,7 +695,7 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     saveEnrollsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcSaveEnrollsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('userSvcSaveEnrollsRequest', 'Required parameter "userSvcSaveEnrollsRequest" was null or undefined when calling saveEnrolls().');
             }
             const queryParameters = {};
@@ -710,7 +710,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcSaveEnrollsRequestToJSON(requestParameters['userSvcSaveEnrollsRequest']),
+                body: UserSvcSaveEnrollsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcSaveEnrollsResponseFromJSON(jsonValue));
         });
@@ -772,7 +772,7 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     saveOrganizationRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcSaveOrganizationRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('userSvcSaveOrganizationRequest', 'Required parameter "userSvcSaveOrganizationRequest" was null or undefined when calling saveOrganization().');
             }
             const queryParameters = {};
@@ -787,7 +787,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcSaveOrganizationRequestToJSON(requestParameters['userSvcSaveOrganizationRequest']),
+                body: UserSvcSaveOrganizationRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcSaveOrganizationResponseFromJSON(jsonValue));
         });
@@ -808,7 +808,7 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     savePermitsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcSavePermitsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('userSvcSavePermitsRequest', 'Required parameter "userSvcSavePermitsRequest" was null or undefined when calling savePermits().');
             }
             const queryParameters = {};
@@ -823,7 +823,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcSavePermitsRequestToJSON(requestParameters['userSvcSavePermitsRequest']),
+                body: UserSvcSavePermitsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
@@ -844,7 +844,7 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     saveSelfRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcSaveSelfRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('userSvcSaveSelfRequest', 'Required parameter "userSvcSaveSelfRequest" was null or undefined when calling saveSelf().');
             }
             const queryParameters = {};
@@ -859,7 +859,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcSaveSelfRequestToJSON(requestParameters['userSvcSaveSelfRequest']),
+                body: UserSvcSaveSelfRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
@@ -883,7 +883,7 @@ export class UserSvcApi extends runtime.BaseAPI {
             if (requestParameters['userId'] == null) {
                 throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling saveUser().');
             }
-            if (requestParameters['userSvcSaveUserRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('userSvcSaveUserRequest', 'Required parameter "userSvcSaveUserRequest" was null or undefined when calling saveUser().');
             }
             const queryParameters = {};
@@ -899,7 +899,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcSaveUserRequestToJSON(requestParameters['userSvcSaveUserRequest']),
+                body: UserSvcSaveUserRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });

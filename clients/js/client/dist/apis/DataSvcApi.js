@@ -32,7 +32,7 @@ export class DataSvcApi extends runtime.BaseAPI {
      */
     createObjectRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['dataSvcCreateObjectRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('dataSvcCreateObjectRequest', 'Required parameter "dataSvcCreateObjectRequest" was null or undefined when calling createObject().');
             }
             const queryParameters = {};
@@ -47,7 +47,7 @@ export class DataSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: DataSvcCreateObjectRequestToJSON(requestParameters['dataSvcCreateObjectRequest']),
+                body: DataSvcCreateObjectRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => DataSvcCreateObjectResponseFromJSON(jsonValue));
         });
@@ -68,7 +68,7 @@ export class DataSvcApi extends runtime.BaseAPI {
      */
     deleteObjectsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['dataSvcDeleteObjectRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('dataSvcDeleteObjectRequest', 'Required parameter "dataSvcDeleteObjectRequest" was null or undefined when calling deleteObjects().');
             }
             const queryParameters = {};
@@ -83,7 +83,7 @@ export class DataSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: DataSvcDeleteObjectRequestToJSON(requestParameters['dataSvcDeleteObjectRequest']),
+                body: DataSvcDeleteObjectRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
@@ -116,7 +116,7 @@ export class DataSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: DataSvcQueryRequestToJSON(requestParameters['dataSvcQueryRequest']),
+                body: DataSvcQueryRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => DataSvcQueryResponseFromJSON(jsonValue));
         });
@@ -137,7 +137,7 @@ export class DataSvcApi extends runtime.BaseAPI {
      */
     updateObjectsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['dataSvcUpdateObjectsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('dataSvcUpdateObjectsRequest', 'Required parameter "dataSvcUpdateObjectsRequest" was null or undefined when calling updateObjects().');
             }
             const queryParameters = {};
@@ -152,7 +152,7 @@ export class DataSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: DataSvcUpdateObjectsRequestToJSON(requestParameters['dataSvcUpdateObjectsRequest']),
+                body: DataSvcUpdateObjectsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
@@ -176,7 +176,7 @@ export class DataSvcApi extends runtime.BaseAPI {
             if (requestParameters['objectId'] == null) {
                 throw new runtime.RequiredError('objectId', 'Required parameter "objectId" was null or undefined when calling upsertObject().');
             }
-            if (requestParameters['dataSvcUpsertObjectRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('dataSvcUpsertObjectRequest', 'Required parameter "dataSvcUpsertObjectRequest" was null or undefined when calling upsertObject().');
             }
             const queryParameters = {};
@@ -192,7 +192,7 @@ export class DataSvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: DataSvcUpsertObjectRequestToJSON(requestParameters['dataSvcUpsertObjectRequest']),
+                body: DataSvcUpsertObjectRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => DataSvcUpsertObjectResponseFromJSON(jsonValue));
         });
@@ -213,7 +213,7 @@ export class DataSvcApi extends runtime.BaseAPI {
      */
     upsertObjectsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['dataSvcUpsertObjectRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('dataSvcUpsertObjectRequest', 'Required parameter "dataSvcUpsertObjectRequest" was null or undefined when calling upsertObjects().');
             }
             const queryParameters = {};
@@ -228,7 +228,7 @@ export class DataSvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: DataSvcUpsertObjectRequestToJSON(requestParameters['dataSvcUpsertObjectRequest']),
+                body: DataSvcUpsertObjectRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => DataSvcUpsertObjectResponseFromJSON(jsonValue));
         });

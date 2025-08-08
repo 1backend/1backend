@@ -12,22 +12,22 @@
 import * as runtime from '../runtime';
 import type { SecretSvcDecryptValueRequest, SecretSvcDecryptValueResponse, SecretSvcEncryptValueRequest, SecretSvcEncryptValueResponse, SecretSvcIsSecureResponse, SecretSvcListSecretsRequest, SecretSvcListSecretsResponse, SecretSvcRemoveSecretsRequest, SecretSvcSaveSecretsRequest } from '../models/index';
 export interface DecryptValueRequest {
-    secretSvcDecryptValueRequest: SecretSvcDecryptValueRequest;
+    body: SecretSvcDecryptValueRequest;
 }
 export interface EncryptValueRequest {
-    secretSvcEncryptValueRequest: SecretSvcEncryptValueRequest;
+    body: SecretSvcEncryptValueRequest;
 }
 export interface IsSecureRequest {
     body?: object;
 }
 export interface ListSecretsRequest {
-    secretSvcListSecretsRequest?: SecretSvcListSecretsRequest;
+    body?: SecretSvcListSecretsRequest;
 }
 export interface RemoveSecretsRequest {
-    secretSvcRemoveSecretsRequest: SecretSvcRemoveSecretsRequest;
+    body: SecretSvcRemoveSecretsRequest;
 }
 export interface SaveSecretsRequest {
-    secretSvcSaveSecretsRequest: SecretSvcSaveSecretsRequest;
+    body: SecretSvcSaveSecretsRequest;
 }
 /**
  *

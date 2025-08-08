@@ -41,7 +41,7 @@ import {
 } from '../models/index';
 
 export interface DownloadFileRequest {
-    fileSvcDownloadFileRequest: FileSvcDownloadFileRequest;
+    body: FileSvcDownloadFileRequest;
 }
 
 export interface GetDownloadRequest {
@@ -54,7 +54,7 @@ export interface ListDownloadsRequest {
 }
 
 export interface ListUploadsRequest {
-    fileSvcListUploadsRequest?: FileSvcListUploadsRequest;
+    body?: FileSvcListUploadsRequest;
 }
 
 export interface PauseDownloadRequest {
@@ -81,7 +81,7 @@ export class FileSvcApi extends runtime.BaseAPI {
      * Download a File
      */
     async downloadFileRaw(requestParameters: DownloadFileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: any; }>> {
-        if (requestParameters['fileSvcDownloadFileRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'fileSvcDownloadFileRequest',
                 'Required parameter "fileSvcDownloadFileRequest" was null or undefined when calling downloadFile().'
@@ -106,7 +106,7 @@ export class FileSvcApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: FileSvcDownloadFileRequestToJSON(requestParameters['fileSvcDownloadFileRequest']),
+            body: FileSvcDownloadFileRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -228,7 +228,7 @@ export class FileSvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: FileSvcListUploadsRequestToJSON(requestParameters['fileSvcListUploadsRequest']),
+            body: FileSvcListUploadsRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => FileSvcListUploadsResponseFromJSON(jsonValue));

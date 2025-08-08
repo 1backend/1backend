@@ -12,16 +12,16 @@
 import * as runtime from '../runtime';
 import type { PromptSvcListPromptsRequest, PromptSvcListPromptsResponse, PromptSvcPromptRequest, PromptSvcPromptResponse, PromptSvcRemovePromptRequest, PromptSvcTypesResponse } from '../models/index';
 export interface ListPromptsRequest {
-    promptSvcListPromptsRequest?: PromptSvcListPromptsRequest;
+    body?: PromptSvcListPromptsRequest;
 }
 export interface PromptRequest {
-    promptSvcPromptRequest: PromptSvcPromptRequest;
+    body: PromptSvcPromptRequest;
 }
 export interface PromptTypesRequest {
     body: object;
 }
 export interface RemovePromptRequest {
-    promptSvcRemovePromptRequest: PromptSvcRemovePromptRequest;
+    body: PromptSvcRemovePromptRequest;
 }
 export interface SubscribeToPromptResponsesRequest {
     threadId: string;

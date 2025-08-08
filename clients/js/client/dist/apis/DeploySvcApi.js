@@ -44,7 +44,7 @@ export class DeploySvcApi extends runtime.BaseAPI {
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
-                body: DeploySvcDeleteDeploymentRequestToJSON(requestParameters['deploySvcDeleteDeploymentRequest']),
+                body: DeploySvcDeleteDeploymentRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
@@ -110,7 +110,7 @@ export class DeploySvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: DeploySvcSaveDeploymentRequestToJSON(requestParameters['deploySvcSaveDeploymentRequest']),
+                body: DeploySvcSaveDeploymentRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });

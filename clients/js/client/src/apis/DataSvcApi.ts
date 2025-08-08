@@ -47,28 +47,28 @@ import {
 } from '../models/index';
 
 export interface CreateObjectRequest {
-    dataSvcCreateObjectRequest: DataSvcCreateObjectRequest;
+    body: DataSvcCreateObjectRequest;
 }
 
 export interface DeleteObjectsRequest {
-    dataSvcDeleteObjectRequest: DataSvcDeleteObjectRequest;
+    body: DataSvcDeleteObjectRequest;
 }
 
 export interface QueryObjectsRequest {
-    dataSvcQueryRequest?: DataSvcQueryRequest;
+    body?: DataSvcQueryRequest;
 }
 
 export interface UpdateObjectsRequest {
-    dataSvcUpdateObjectsRequest: DataSvcUpdateObjectsRequest;
+    body: DataSvcUpdateObjectsRequest;
 }
 
 export interface UpsertObjectRequest {
     objectId: string;
-    dataSvcUpsertObjectRequest: DataSvcUpsertObjectRequest;
+    body: DataSvcUpsertObjectRequest;
 }
 
 export interface UpsertObjectsRequest {
-    dataSvcUpsertObjectRequest: DataSvcUpsertObjectRequest;
+    body: DataSvcUpsertObjectRequest;
 }
 
 /**
@@ -81,7 +81,7 @@ export class DataSvcApi extends runtime.BaseAPI {
      * Create a Generic Object
      */
     async createObjectRaw(requestParameters: CreateObjectRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSvcCreateObjectResponse>> {
-        if (requestParameters['dataSvcCreateObjectRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'dataSvcCreateObjectRequest',
                 'Required parameter "dataSvcCreateObjectRequest" was null or undefined when calling createObject().'
@@ -106,7 +106,7 @@ export class DataSvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: DataSvcCreateObjectRequestToJSON(requestParameters['dataSvcCreateObjectRequest']),
+            body: DataSvcCreateObjectRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DataSvcCreateObjectResponseFromJSON(jsonValue));
@@ -126,7 +126,7 @@ export class DataSvcApi extends runtime.BaseAPI {
      * Delete Objects
      */
     async deleteObjectsRaw(requestParameters: DeleteObjectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['dataSvcDeleteObjectRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'dataSvcDeleteObjectRequest',
                 'Required parameter "dataSvcDeleteObjectRequest" was null or undefined when calling deleteObjects().'
@@ -151,7 +151,7 @@ export class DataSvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: DataSvcDeleteObjectRequestToJSON(requestParameters['dataSvcDeleteObjectRequest']),
+            body: DataSvcDeleteObjectRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -189,7 +189,7 @@ export class DataSvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: DataSvcQueryRequestToJSON(requestParameters['dataSvcQueryRequest']),
+            body: DataSvcQueryRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DataSvcQueryResponseFromJSON(jsonValue));
@@ -209,7 +209,7 @@ export class DataSvcApi extends runtime.BaseAPI {
      * Update Objects
      */
     async updateObjectsRaw(requestParameters: UpdateObjectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['dataSvcUpdateObjectsRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'dataSvcUpdateObjectsRequest',
                 'Required parameter "dataSvcUpdateObjectsRequest" was null or undefined when calling updateObjects().'
@@ -234,7 +234,7 @@ export class DataSvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: DataSvcUpdateObjectsRequestToJSON(requestParameters['dataSvcUpdateObjectsRequest']),
+            body: DataSvcUpdateObjectsRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -261,7 +261,7 @@ export class DataSvcApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['dataSvcUpsertObjectRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'dataSvcUpsertObjectRequest',
                 'Required parameter "dataSvcUpsertObjectRequest" was null or undefined when calling upsertObject().'
@@ -287,7 +287,7 @@ export class DataSvcApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: DataSvcUpsertObjectRequestToJSON(requestParameters['dataSvcUpsertObjectRequest']),
+            body: DataSvcUpsertObjectRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DataSvcUpsertObjectResponseFromJSON(jsonValue));
@@ -307,7 +307,7 @@ export class DataSvcApi extends runtime.BaseAPI {
      * Upsert Objects
      */
     async upsertObjectsRaw(requestParameters: UpsertObjectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DataSvcUpsertObjectResponse>> {
-        if (requestParameters['dataSvcUpsertObjectRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'dataSvcUpsertObjectRequest',
                 'Required parameter "dataSvcUpsertObjectRequest" was null or undefined when calling upsertObjects().'
@@ -332,7 +332,7 @@ export class DataSvcApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: DataSvcUpsertObjectRequestToJSON(requestParameters['dataSvcUpsertObjectRequest']),
+            body: DataSvcUpsertObjectRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => DataSvcUpsertObjectResponseFromJSON(jsonValue));

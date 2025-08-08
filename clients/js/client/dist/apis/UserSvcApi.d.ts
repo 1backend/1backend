@@ -12,10 +12,10 @@
 import * as runtime from '../runtime';
 import type { UserSvcChangePasswordRequest, UserSvcCreateUserRequest, UserSvcExchangeTokenRequest, UserSvcExchangeTokenResponse, UserSvcGetPublicKeyResponse, UserSvcHasPermissionResponse, UserSvcListEnrollsRequest, UserSvcListEnrollsResponse, UserSvcListOrganizationsRequest, UserSvcListOrganizationsResponse, UserSvcListPermissionsResponse, UserSvcListPermitsRequest, UserSvcListPermitsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadSelfRequest, UserSvcReadSelfResponse, UserSvcRefreshTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcRevokeTokensRequest, UserSvcSaveEnrollsRequest, UserSvcSaveEnrollsResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSavePermitsRequest, UserSvcSaveSelfRequest, UserSvcSaveUserRequest } from '../models/index';
 export interface ChangePasswordRequest {
-    userSvcChangePasswordRequest: UserSvcChangePasswordRequest;
+    body: UserSvcChangePasswordRequest;
 }
 export interface CreateUserRequest {
-    userSvcCreateUserRequest: UserSvcCreateUserRequest;
+    body: UserSvcCreateUserRequest;
 }
 export interface DeleteMembershipRequest {
     organizationId: string;
@@ -27,10 +27,10 @@ export interface DeleteUserRequest {
     body?: object;
 }
 export interface ExchangeTokenRequest {
-    userSvcExchangeTokenRequest: UserSvcExchangeTokenRequest;
+    body: UserSvcExchangeTokenRequest;
 }
 export interface ExchangeToken0Request {
-    userSvcExchangeTokenRequest: UserSvcExchangeTokenRequest;
+    body: UserSvcExchangeTokenRequest;
 }
 export interface GetPublicKeyRequest {
     body?: object;
@@ -40,42 +40,42 @@ export interface HasPermissionRequest {
     body?: object;
 }
 export interface ListEnrollsRequest {
-    userSvcListEnrollsRequest: UserSvcListEnrollsRequest;
+    body: UserSvcListEnrollsRequest;
 }
 export interface ListOrganizationsRequest {
-    userSvcListOrganizationsRequest: UserSvcListOrganizationsRequest;
+    body: UserSvcListOrganizationsRequest;
 }
 export interface ListPermissionsRequest {
     roleId: string;
     body?: object;
 }
 export interface ListPermitsRequest {
-    userSvcListPermitsRequest: UserSvcListPermitsRequest;
+    body: UserSvcListPermitsRequest;
 }
 export interface ListUsersRequest {
-    userSvcListUsersRequest?: UserSvcListUsersRequest;
+    body?: UserSvcListUsersRequest;
 }
 export interface LoginRequest {
-    userSvcLoginRequest: UserSvcLoginRequest;
+    body: UserSvcLoginRequest;
 }
 export interface ReadSelfRequest {
-    userSvcReadSelfRequest?: UserSvcReadSelfRequest;
+    body?: UserSvcReadSelfRequest;
 }
 export interface RefreshTokenRequest {
     body?: object;
 }
 export interface RegisterRequest {
-    userSvcRegisterRequest: UserSvcRegisterRequest;
+    body: UserSvcRegisterRequest;
 }
 export interface ResetPasswordRequest {
     userId: string;
-    userSvcResetPasswordRequest: UserSvcResetPasswordRequest;
+    body: UserSvcResetPasswordRequest;
 }
 export interface RevokeTokensRequest {
-    userSvcRevokeTokensRequest?: UserSvcRevokeTokensRequest;
+    body?: UserSvcRevokeTokensRequest;
 }
 export interface SaveEnrollsRequest {
-    userSvcSaveEnrollsRequest: UserSvcSaveEnrollsRequest;
+    body: UserSvcSaveEnrollsRequest;
 }
 export interface SaveMembershipRequest {
     organizationId: string;
@@ -83,17 +83,17 @@ export interface SaveMembershipRequest {
     body?: object;
 }
 export interface SaveOrganizationRequest {
-    userSvcSaveOrganizationRequest: UserSvcSaveOrganizationRequest;
+    body: UserSvcSaveOrganizationRequest;
 }
 export interface SavePermitsRequest {
-    userSvcSavePermitsRequest: UserSvcSavePermitsRequest;
+    body: UserSvcSavePermitsRequest;
 }
 export interface SaveSelfRequest {
-    userSvcSaveSelfRequest: UserSvcSaveSelfRequest;
+    body: UserSvcSaveSelfRequest;
 }
 export interface SaveUserRequest {
     userId: string;
-    userSvcSaveUserRequest: UserSvcSaveUserRequest;
+    body: UserSvcSaveUserRequest;
 }
 /**
  *

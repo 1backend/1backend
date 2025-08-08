@@ -136,7 +136,7 @@ export class ChatSvcApi extends runtime.BaseAPI {
      */
     listMessagesRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['chatSvcListMessagesRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('chatSvcListMessagesRequest', 'Required parameter "chatSvcListMessagesRequest" was null or undefined when calling listMessages().');
             }
             const queryParameters = {};
@@ -151,7 +151,7 @@ export class ChatSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ChatSvcListMessagesRequestToJSON(requestParameters['chatSvcListMessagesRequest']),
+                body: ChatSvcListMessagesRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ChatSvcListMessagesResponseFromJSON(jsonValue));
         });
@@ -172,7 +172,7 @@ export class ChatSvcApi extends runtime.BaseAPI {
      */
     listThreadsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['chatSvcListThreadsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('chatSvcListThreadsRequest', 'Required parameter "chatSvcListThreadsRequest" was null or undefined when calling listThreads().');
             }
             const queryParameters = {};
@@ -187,7 +187,7 @@ export class ChatSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ChatSvcListThreadsRequestToJSON(requestParameters['chatSvcListThreadsRequest']),
+                body: ChatSvcListThreadsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ChatSvcListThreadsResponseFromJSON(jsonValue));
         });
@@ -211,7 +211,7 @@ export class ChatSvcApi extends runtime.BaseAPI {
             if (requestParameters['threadId'] == null) {
                 throw new runtime.RequiredError('threadId', 'Required parameter "threadId" was null or undefined when calling saveMessage().');
             }
-            if (requestParameters['chatSvcSaveMessageRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('chatSvcSaveMessageRequest', 'Required parameter "chatSvcSaveMessageRequest" was null or undefined when calling saveMessage().');
             }
             const queryParameters = {};
@@ -227,7 +227,7 @@ export class ChatSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ChatSvcSaveMessageRequestToJSON(requestParameters['chatSvcSaveMessageRequest']),
+                body: ChatSvcSaveMessageRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
@@ -248,7 +248,7 @@ export class ChatSvcApi extends runtime.BaseAPI {
      */
     saveThreadRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['chatSvcSaveThreadRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('chatSvcSaveThreadRequest', 'Required parameter "chatSvcSaveThreadRequest" was null or undefined when calling saveThread().');
             }
             const queryParameters = {};
@@ -263,7 +263,7 @@ export class ChatSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ChatSvcSaveThreadRequestToJSON(requestParameters['chatSvcSaveThreadRequest']),
+                body: ChatSvcSaveThreadRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ChatSvcSaveThreadResponseFromJSON(jsonValue));
         });

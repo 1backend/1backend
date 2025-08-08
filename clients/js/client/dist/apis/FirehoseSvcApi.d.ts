@@ -12,7 +12,7 @@
 import * as runtime from '../runtime';
 import type { FirehoseSvcEventPublishRequest } from '../models/index';
 export interface PublishEventRequest {
-    firehoseSvcEventPublishRequest: FirehoseSvcEventPublishRequest;
+    body: FirehoseSvcEventPublishRequest;
 }
 export interface SubscribeToEventsRequest {
     body?: object;

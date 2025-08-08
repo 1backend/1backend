@@ -12,7 +12,7 @@
 import * as runtime from '../runtime';
 import type { SourceSvcCheckoutRepoRequest, SourceSvcCheckoutRepoResponse } from '../models/index';
 export interface CheckoutRepoRequest {
-    sourceSvcCheckoutRepoRequest: SourceSvcCheckoutRepoRequest;
+    body: SourceSvcCheckoutRepoRequest;
 }
 /**
  *

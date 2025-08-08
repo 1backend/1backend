@@ -41,11 +41,11 @@ import {
 } from '../models/index';
 
 export interface ListPromptsRequest {
-    promptSvcListPromptsRequest?: PromptSvcListPromptsRequest;
+    body?: PromptSvcListPromptsRequest;
 }
 
 export interface PromptRequest {
-    promptSvcPromptRequest: PromptSvcPromptRequest;
+    body: PromptSvcPromptRequest;
 }
 
 export interface PromptTypesRequest {
@@ -53,7 +53,7 @@ export interface PromptTypesRequest {
 }
 
 export interface RemovePromptRequest {
-    promptSvcRemovePromptRequest: PromptSvcRemovePromptRequest;
+    body: PromptSvcRemovePromptRequest;
 }
 
 export interface SubscribeToPromptResponsesRequest {
@@ -88,7 +88,7 @@ export class PromptSvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: PromptSvcListPromptsRequestToJSON(requestParameters['promptSvcListPromptsRequest']),
+            body: PromptSvcListPromptsRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => PromptSvcListPromptsResponseFromJSON(jsonValue));
@@ -108,7 +108,7 @@ export class PromptSvcApi extends runtime.BaseAPI {
      * Prompt an AI
      */
     async promptRaw(requestParameters: PromptRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PromptSvcPromptResponse>> {
-        if (requestParameters['promptSvcPromptRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'promptSvcPromptRequest',
                 'Required parameter "promptSvcPromptRequest" was null or undefined when calling prompt().'
@@ -133,7 +133,7 @@ export class PromptSvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: PromptSvcPromptRequestToJSON(requestParameters['promptSvcPromptRequest']),
+            body: PromptSvcPromptRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => PromptSvcPromptResponseFromJSON(jsonValue));
@@ -198,7 +198,7 @@ export class PromptSvcApi extends runtime.BaseAPI {
      * Remove Prompt
      */
     async removePromptRaw(requestParameters: RemovePromptRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['promptSvcRemovePromptRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'promptSvcRemovePromptRequest',
                 'Required parameter "promptSvcRemovePromptRequest" was null or undefined when calling removePrompt().'
@@ -223,7 +223,7 @@ export class PromptSvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: PromptSvcRemovePromptRequestToJSON(requestParameters['promptSvcRemovePromptRequest']),
+            body: PromptSvcRemovePromptRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

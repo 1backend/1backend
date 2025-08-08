@@ -29,11 +29,11 @@ import {
 } from '../models/index';
 
 export interface ListConfigsRequest {
-    configSvcListConfigsRequest?: ConfigSvcListConfigsRequest;
+    body?: ConfigSvcListConfigsRequest;
 }
 
 export interface SaveConfigRequest {
-    configSvcSaveConfigRequest: ConfigSvcSaveConfigRequest;
+    body: ConfigSvcSaveConfigRequest;
 }
 
 /**
@@ -60,7 +60,7 @@ export class ConfigSvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: ConfigSvcListConfigsRequestToJSON(requestParameters['configSvcListConfigsRequest']),
+            body: ConfigSvcListConfigsRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ConfigSvcListConfigsResponseFromJSON(jsonValue));
@@ -80,7 +80,7 @@ export class ConfigSvcApi extends runtime.BaseAPI {
      * Save Config
      */
     async saveConfigRaw(requestParameters: SaveConfigRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['configSvcSaveConfigRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'configSvcSaveConfigRequest',
                 'Required parameter "configSvcSaveConfigRequest" was null or undefined when calling saveConfig().'
@@ -105,7 +105,7 @@ export class ConfigSvcApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: ConfigSvcSaveConfigRequestToJSON(requestParameters['configSvcSaveConfigRequest']),
+            body: ConfigSvcSaveConfigRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

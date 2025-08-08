@@ -12,16 +12,16 @@
 import * as runtime from '../runtime';
 import type { ProxySvcListCertsRequest, ProxySvcListCertsResponse, ProxySvcListRoutesRequest, ProxySvcListRoutesResponse, ProxySvcSaveCertsRequest, ProxySvcSaveRoutesRequest, ProxySvcSaveRoutesResponse } from '../models/index';
 export interface ListCertsRequest {
-    proxySvcListCertsRequest?: ProxySvcListCertsRequest;
+    body?: ProxySvcListCertsRequest;
 }
 export interface ListRoutesRequest {
-    proxySvcListRoutesRequest?: ProxySvcListRoutesRequest;
+    body?: ProxySvcListRoutesRequest;
 }
 export interface SaveCertsRequest {
-    proxySvcSaveCertsRequest: ProxySvcSaveCertsRequest;
+    body: ProxySvcSaveCertsRequest;
 }
 export interface SaveRoutesRequest {
-    proxySvcSaveRoutesRequest: ProxySvcSaveRoutesRequest;
+    body: ProxySvcSaveRoutesRequest;
 }
 /**
  *

@@ -29,7 +29,7 @@ import {
 } from '../models/index';
 
 export interface SendEmailRequest {
-    emailSvcSendEmailRequest: EmailSvcSendEmailRequest;
+    body: EmailSvcSendEmailRequest;
 }
 
 /**
@@ -42,7 +42,7 @@ export class EmailSvcApi extends runtime.BaseAPI {
      * Send an Email
      */
     async sendEmailRaw(requestParameters: SendEmailRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmailSvcSendEmailResponse>> {
-        if (requestParameters['emailSvcSendEmailRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'emailSvcSendEmailRequest',
                 'Required parameter "emailSvcSendEmailRequest" was null or undefined when calling sendEmail().'
@@ -67,7 +67,7 @@ export class EmailSvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: EmailSvcSendEmailRequestToJSON(requestParameters['emailSvcSendEmailRequest']),
+            body: EmailSvcSendEmailRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => EmailSvcSendEmailResponseFromJSON(jsonValue));

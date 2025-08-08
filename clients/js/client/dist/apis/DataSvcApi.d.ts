@@ -12,23 +12,23 @@
 import * as runtime from '../runtime';
 import type { DataSvcCreateObjectRequest, DataSvcCreateObjectResponse, DataSvcDeleteObjectRequest, DataSvcQueryRequest, DataSvcQueryResponse, DataSvcUpdateObjectsRequest, DataSvcUpsertObjectRequest, DataSvcUpsertObjectResponse } from '../models/index';
 export interface CreateObjectRequest {
-    dataSvcCreateObjectRequest: DataSvcCreateObjectRequest;
+    body: DataSvcCreateObjectRequest;
 }
 export interface DeleteObjectsRequest {
-    dataSvcDeleteObjectRequest: DataSvcDeleteObjectRequest;
+    body: DataSvcDeleteObjectRequest;
 }
 export interface QueryObjectsRequest {
-    dataSvcQueryRequest?: DataSvcQueryRequest;
+    body?: DataSvcQueryRequest;
 }
 export interface UpdateObjectsRequest {
-    dataSvcUpdateObjectsRequest: DataSvcUpdateObjectsRequest;
+    body: DataSvcUpdateObjectsRequest;
 }
 export interface UpsertObjectRequest {
     objectId: string;
-    dataSvcUpsertObjectRequest: DataSvcUpsertObjectRequest;
+    body: DataSvcUpsertObjectRequest;
 }
 export interface UpsertObjectsRequest {
-    dataSvcUpsertObjectRequest: DataSvcUpsertObjectRequest;
+    body: DataSvcUpsertObjectRequest;
 }
 /**
  *

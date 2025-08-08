@@ -32,7 +32,7 @@ export class PolicySvcApi extends runtime.BaseAPI {
      */
     checkRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['policySvcCheckRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('policySvcCheckRequest', 'Required parameter "policySvcCheckRequest" was null or undefined when calling check().');
             }
             const queryParameters = {};
@@ -47,7 +47,7 @@ export class PolicySvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: PolicySvcCheckRequestToJSON(requestParameters['policySvcCheckRequest']),
+                body: PolicySvcCheckRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => PolicySvcCheckResponseFromJSON(jsonValue));
         });
@@ -71,7 +71,7 @@ export class PolicySvcApi extends runtime.BaseAPI {
             if (requestParameters['instanceId'] == null) {
                 throw new runtime.RequiredError('instanceId', 'Required parameter "instanceId" was null or undefined when calling upsertInstance().');
             }
-            if (requestParameters['policySvcUpsertInstanceRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('policySvcUpsertInstanceRequest', 'Required parameter "policySvcUpsertInstanceRequest" was null or undefined when calling upsertInstance().');
             }
             const queryParameters = {};
@@ -87,7 +87,7 @@ export class PolicySvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: PolicySvcUpsertInstanceRequestToJSON(requestParameters['policySvcUpsertInstanceRequest']),
+                body: PolicySvcUpsertInstanceRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });

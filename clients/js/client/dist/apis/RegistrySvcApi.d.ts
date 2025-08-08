@@ -38,17 +38,17 @@ export interface ListInstancesRequest {
     body?: object;
 }
 export interface ListNodesRequest {
-    registrySvcListNodesRequest?: RegistrySvcListNodesRequest;
+    body?: RegistrySvcListNodesRequest;
 }
 export interface RegisterInstanceRequest {
-    registrySvcRegisterInstanceRequest: RegistrySvcRegisterInstanceRequest;
+    body: RegistrySvcRegisterInstanceRequest;
 }
 export interface RemoveInstanceRequest {
     id: string;
     body?: object;
 }
 export interface SaveDefinitionRequest {
-    registrySvcSaveDefinitionRequest: RegistrySvcSaveDefinitionRequest;
+    body: RegistrySvcSaveDefinitionRequest;
 }
 export interface SelfNodeRequest {
     body?: object;

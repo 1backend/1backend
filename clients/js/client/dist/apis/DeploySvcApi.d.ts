@@ -12,13 +12,13 @@
 import * as runtime from '../runtime';
 import type { DeploySvcDeleteDeploymentRequest, DeploySvcListDeploymentsResponse, DeploySvcSaveDeploymentRequest } from '../models/index';
 export interface DeleteDeploymentRequest {
-    deploySvcDeleteDeploymentRequest?: DeploySvcDeleteDeploymentRequest;
+    body?: DeploySvcDeleteDeploymentRequest;
 }
 export interface ListDeploymentsRequest {
     body?: object;
 }
 export interface SaveDeploymentRequest {
-    deploySvcSaveDeploymentRequest?: DeploySvcSaveDeploymentRequest;
+    body?: DeploySvcSaveDeploymentRequest;
 }
 /**
  *

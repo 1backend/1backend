@@ -41,7 +41,7 @@ export class ConfigSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ConfigSvcListConfigsRequestToJSON(requestParameters['configSvcListConfigsRequest']),
+                body: ConfigSvcListConfigsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ConfigSvcListConfigsResponseFromJSON(jsonValue));
         });
@@ -62,7 +62,7 @@ export class ConfigSvcApi extends runtime.BaseAPI {
      */
     saveConfigRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['configSvcSaveConfigRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('configSvcSaveConfigRequest', 'Required parameter "configSvcSaveConfigRequest" was null or undefined when calling saveConfig().');
             }
             const queryParameters = {};
@@ -77,7 +77,7 @@ export class ConfigSvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ConfigSvcSaveConfigRequestToJSON(requestParameters['configSvcSaveConfigRequest']),
+                body: ConfigSvcSaveConfigRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });

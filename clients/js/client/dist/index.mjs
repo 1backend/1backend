@@ -10650,7 +10650,7 @@ class ChatSvcApi extends BaseAPI {
      */
     listMessagesRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['chatSvcListMessagesRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('chatSvcListMessagesRequest', 'Required parameter "chatSvcListMessagesRequest" was null or undefined when calling listMessages().');
             }
             const queryParameters = {};
@@ -10665,7 +10665,7 @@ class ChatSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ChatSvcListMessagesRequestToJSON(requestParameters['chatSvcListMessagesRequest']),
+                body: ChatSvcListMessagesRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ChatSvcListMessagesResponseFromJSON(jsonValue));
         });
@@ -10686,7 +10686,7 @@ class ChatSvcApi extends BaseAPI {
      */
     listThreadsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['chatSvcListThreadsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('chatSvcListThreadsRequest', 'Required parameter "chatSvcListThreadsRequest" was null or undefined when calling listThreads().');
             }
             const queryParameters = {};
@@ -10701,7 +10701,7 @@ class ChatSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ChatSvcListThreadsRequestToJSON(requestParameters['chatSvcListThreadsRequest']),
+                body: ChatSvcListThreadsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ChatSvcListThreadsResponseFromJSON(jsonValue));
         });
@@ -10725,7 +10725,7 @@ class ChatSvcApi extends BaseAPI {
             if (requestParameters['threadId'] == null) {
                 throw new RequiredError('threadId', 'Required parameter "threadId" was null or undefined when calling saveMessage().');
             }
-            if (requestParameters['chatSvcSaveMessageRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('chatSvcSaveMessageRequest', 'Required parameter "chatSvcSaveMessageRequest" was null or undefined when calling saveMessage().');
             }
             const queryParameters = {};
@@ -10741,7 +10741,7 @@ class ChatSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ChatSvcSaveMessageRequestToJSON(requestParameters['chatSvcSaveMessageRequest']),
+                body: ChatSvcSaveMessageRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -10762,7 +10762,7 @@ class ChatSvcApi extends BaseAPI {
      */
     saveThreadRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['chatSvcSaveThreadRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('chatSvcSaveThreadRequest', 'Required parameter "chatSvcSaveThreadRequest" was null or undefined when calling saveThread().');
             }
             const queryParameters = {};
@@ -10777,7 +10777,7 @@ class ChatSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ChatSvcSaveThreadRequestToJSON(requestParameters['chatSvcSaveThreadRequest']),
+                body: ChatSvcSaveThreadRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ChatSvcSaveThreadResponseFromJSON(jsonValue));
         });
@@ -10826,7 +10826,7 @@ class ConfigSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ConfigSvcListConfigsRequestToJSON(requestParameters['configSvcListConfigsRequest']),
+                body: ConfigSvcListConfigsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ConfigSvcListConfigsResponseFromJSON(jsonValue));
         });
@@ -10847,7 +10847,7 @@ class ConfigSvcApi extends BaseAPI {
      */
     saveConfigRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['configSvcSaveConfigRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('configSvcSaveConfigRequest', 'Required parameter "configSvcSaveConfigRequest" was null or undefined when calling saveConfig().');
             }
             const queryParameters = {};
@@ -10862,7 +10862,7 @@ class ConfigSvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ConfigSvcSaveConfigRequestToJSON(requestParameters['configSvcSaveConfigRequest']),
+                body: ConfigSvcSaveConfigRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -10902,7 +10902,7 @@ class ContainerSvcApi extends BaseAPI {
      */
     buildImageRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['containerSvcBuildImageRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('containerSvcBuildImageRequest', 'Required parameter "containerSvcBuildImageRequest" was null or undefined when calling buildImage().');
             }
             const queryParameters = {};
@@ -10917,7 +10917,7 @@ class ContainerSvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ContainerSvcBuildImageRequestToJSON(requestParameters['containerSvcBuildImageRequest']),
+                body: ContainerSvcBuildImageRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -11122,7 +11122,7 @@ class ContainerSvcApi extends BaseAPI {
      */
     listContainerLogsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['containerSvcListLogsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('containerSvcListLogsRequest', 'Required parameter "containerSvcListLogsRequest" was null or undefined when calling listContainerLogs().');
             }
             const queryParameters = {};
@@ -11137,7 +11137,7 @@ class ContainerSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ContainerSvcListLogsRequestToJSON(requestParameters['containerSvcListLogsRequest']),
+                body: ContainerSvcListLogsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ContainerSvcListLogsResponseFromJSON(jsonValue));
         });
@@ -11158,7 +11158,7 @@ class ContainerSvcApi extends BaseAPI {
      */
     listContainersRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['containerSvcListContainersRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('containerSvcListContainersRequest', 'Required parameter "containerSvcListContainersRequest" was null or undefined when calling listContainers().');
             }
             const queryParameters = {};
@@ -11173,7 +11173,7 @@ class ContainerSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ContainerSvcListContainersRequestToJSON(requestParameters['containerSvcListContainersRequest']),
+                body: ContainerSvcListContainersRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ContainerSvcListContainersResponseFromJSON(jsonValue));
         });
@@ -11194,7 +11194,7 @@ class ContainerSvcApi extends BaseAPI {
      */
     runContainerRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['containerSvcRunContainerRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('containerSvcRunContainerRequest', 'Required parameter "containerSvcRunContainerRequest" was null or undefined when calling runContainer().');
             }
             const queryParameters = {};
@@ -11209,7 +11209,7 @@ class ContainerSvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ContainerSvcRunContainerRequestToJSON(requestParameters['containerSvcRunContainerRequest']),
+                body: ContainerSvcRunContainerRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ContainerSvcRunContainerResponseFromJSON(jsonValue));
         });
@@ -11230,7 +11230,7 @@ class ContainerSvcApi extends BaseAPI {
      */
     stopContainerRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['containerSvcStopContainerRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('containerSvcStopContainerRequest', 'Required parameter "containerSvcStopContainerRequest" was null or undefined when calling stopContainer().');
             }
             const queryParameters = {};
@@ -11245,7 +11245,7 @@ class ContainerSvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ContainerSvcStopContainerRequestToJSON(requestParameters['containerSvcStopContainerRequest']),
+                body: ContainerSvcStopContainerRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -11285,7 +11285,7 @@ class DataSvcApi extends BaseAPI {
      */
     createObjectRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['dataSvcCreateObjectRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('dataSvcCreateObjectRequest', 'Required parameter "dataSvcCreateObjectRequest" was null or undefined when calling createObject().');
             }
             const queryParameters = {};
@@ -11300,7 +11300,7 @@ class DataSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: DataSvcCreateObjectRequestToJSON(requestParameters['dataSvcCreateObjectRequest']),
+                body: DataSvcCreateObjectRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => DataSvcCreateObjectResponseFromJSON(jsonValue));
         });
@@ -11321,7 +11321,7 @@ class DataSvcApi extends BaseAPI {
      */
     deleteObjectsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['dataSvcDeleteObjectRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('dataSvcDeleteObjectRequest', 'Required parameter "dataSvcDeleteObjectRequest" was null or undefined when calling deleteObjects().');
             }
             const queryParameters = {};
@@ -11336,7 +11336,7 @@ class DataSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: DataSvcDeleteObjectRequestToJSON(requestParameters['dataSvcDeleteObjectRequest']),
+                body: DataSvcDeleteObjectRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -11369,7 +11369,7 @@ class DataSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: DataSvcQueryRequestToJSON(requestParameters['dataSvcQueryRequest']),
+                body: DataSvcQueryRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => DataSvcQueryResponseFromJSON(jsonValue));
         });
@@ -11390,7 +11390,7 @@ class DataSvcApi extends BaseAPI {
      */
     updateObjectsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['dataSvcUpdateObjectsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('dataSvcUpdateObjectsRequest', 'Required parameter "dataSvcUpdateObjectsRequest" was null or undefined when calling updateObjects().');
             }
             const queryParameters = {};
@@ -11405,7 +11405,7 @@ class DataSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: DataSvcUpdateObjectsRequestToJSON(requestParameters['dataSvcUpdateObjectsRequest']),
+                body: DataSvcUpdateObjectsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -11429,7 +11429,7 @@ class DataSvcApi extends BaseAPI {
             if (requestParameters['objectId'] == null) {
                 throw new RequiredError('objectId', 'Required parameter "objectId" was null or undefined when calling upsertObject().');
             }
-            if (requestParameters['dataSvcUpsertObjectRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('dataSvcUpsertObjectRequest', 'Required parameter "dataSvcUpsertObjectRequest" was null or undefined when calling upsertObject().');
             }
             const queryParameters = {};
@@ -11445,7 +11445,7 @@ class DataSvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: DataSvcUpsertObjectRequestToJSON(requestParameters['dataSvcUpsertObjectRequest']),
+                body: DataSvcUpsertObjectRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => DataSvcUpsertObjectResponseFromJSON(jsonValue));
         });
@@ -11466,7 +11466,7 @@ class DataSvcApi extends BaseAPI {
      */
     upsertObjectsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['dataSvcUpsertObjectRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('dataSvcUpsertObjectRequest', 'Required parameter "dataSvcUpsertObjectRequest" was null or undefined when calling upsertObjects().');
             }
             const queryParameters = {};
@@ -11481,7 +11481,7 @@ class DataSvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: DataSvcUpsertObjectRequestToJSON(requestParameters['dataSvcUpsertObjectRequest']),
+                body: DataSvcUpsertObjectRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => DataSvcUpsertObjectResponseFromJSON(jsonValue));
         });
@@ -11533,7 +11533,7 @@ class DeploySvcApi extends BaseAPI {
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
-                body: DeploySvcDeleteDeploymentRequestToJSON(requestParameters['deploySvcDeleteDeploymentRequest']),
+                body: DeploySvcDeleteDeploymentRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -11599,7 +11599,7 @@ class DeploySvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: DeploySvcSaveDeploymentRequestToJSON(requestParameters['deploySvcSaveDeploymentRequest']),
+                body: DeploySvcSaveDeploymentRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -11639,7 +11639,7 @@ class EmailSvcApi extends BaseAPI {
      */
     sendEmailRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['emailSvcSendEmailRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('emailSvcSendEmailRequest', 'Required parameter "emailSvcSendEmailRequest" was null or undefined when calling sendEmail().');
             }
             const queryParameters = {};
@@ -11654,7 +11654,7 @@ class EmailSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: EmailSvcSendEmailRequestToJSON(requestParameters['emailSvcSendEmailRequest']),
+                body: EmailSvcSendEmailRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => EmailSvcSendEmailResponseFromJSON(jsonValue));
         });
@@ -11694,7 +11694,7 @@ class FileSvcApi extends BaseAPI {
      */
     downloadFileRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['fileSvcDownloadFileRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('fileSvcDownloadFileRequest', 'Required parameter "fileSvcDownloadFileRequest" was null or undefined when calling downloadFile().');
             }
             const queryParameters = {};
@@ -11709,7 +11709,7 @@ class FileSvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: FileSvcDownloadFileRequestToJSON(requestParameters['fileSvcDownloadFileRequest']),
+                body: FileSvcDownloadFileRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -11812,7 +11812,7 @@ class FileSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: FileSvcListUploadsRequestToJSON(requestParameters['fileSvcListUploadsRequest']),
+                body: FileSvcListUploadsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => FileSvcListUploadsResponseFromJSON(jsonValue));
         });
@@ -11996,7 +11996,7 @@ class FirehoseSvcApi extends BaseAPI {
      */
     publishEventRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['firehoseSvcEventPublishRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('firehoseSvcEventPublishRequest', 'Required parameter "firehoseSvcEventPublishRequest" was null or undefined when calling publishEvent().');
             }
             const queryParameters = {};
@@ -12011,7 +12011,7 @@ class FirehoseSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: FirehoseSvcEventPublishRequestToJSON(requestParameters['firehoseSvcEventPublishRequest']),
+                body: FirehoseSvcEventPublishRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new VoidApiResponse(response);
         });
@@ -12451,7 +12451,7 @@ class PolicySvcApi extends BaseAPI {
      */
     checkRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['policySvcCheckRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('policySvcCheckRequest', 'Required parameter "policySvcCheckRequest" was null or undefined when calling check().');
             }
             const queryParameters = {};
@@ -12466,7 +12466,7 @@ class PolicySvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: PolicySvcCheckRequestToJSON(requestParameters['policySvcCheckRequest']),
+                body: PolicySvcCheckRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => PolicySvcCheckResponseFromJSON(jsonValue));
         });
@@ -12490,7 +12490,7 @@ class PolicySvcApi extends BaseAPI {
             if (requestParameters['instanceId'] == null) {
                 throw new RequiredError('instanceId', 'Required parameter "instanceId" was null or undefined when calling upsertInstance().');
             }
-            if (requestParameters['policySvcUpsertInstanceRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('policySvcUpsertInstanceRequest', 'Required parameter "policySvcUpsertInstanceRequest" was null or undefined when calling upsertInstance().');
             }
             const queryParameters = {};
@@ -12506,7 +12506,7 @@ class PolicySvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: PolicySvcUpsertInstanceRequestToJSON(requestParameters['policySvcUpsertInstanceRequest']),
+                body: PolicySvcUpsertInstanceRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -12558,7 +12558,7 @@ class PromptSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: PromptSvcListPromptsRequestToJSON(requestParameters['promptSvcListPromptsRequest']),
+                body: PromptSvcListPromptsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => PromptSvcListPromptsResponseFromJSON(jsonValue));
         });
@@ -12579,7 +12579,7 @@ class PromptSvcApi extends BaseAPI {
      */
     promptRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['promptSvcPromptRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('promptSvcPromptRequest', 'Required parameter "promptSvcPromptRequest" was null or undefined when calling prompt().');
             }
             const queryParameters = {};
@@ -12594,7 +12594,7 @@ class PromptSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: PromptSvcPromptRequestToJSON(requestParameters['promptSvcPromptRequest']),
+                body: PromptSvcPromptRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => PromptSvcPromptResponseFromJSON(jsonValue));
         });
@@ -12651,7 +12651,7 @@ class PromptSvcApi extends BaseAPI {
      */
     removePromptRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['promptSvcRemovePromptRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('promptSvcRemovePromptRequest', 'Required parameter "promptSvcRemovePromptRequest" was null or undefined when calling removePrompt().');
             }
             const queryParameters = {};
@@ -12666,7 +12666,7 @@ class PromptSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: PromptSvcRemovePromptRequestToJSON(requestParameters['promptSvcRemovePromptRequest']),
+                body: PromptSvcRemovePromptRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -12758,7 +12758,7 @@ class ProxySvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ProxySvcListCertsRequestToJSON(requestParameters['proxySvcListCertsRequest']),
+                body: ProxySvcListCertsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ProxySvcListCertsResponseFromJSON(jsonValue));
         });
@@ -12791,7 +12791,7 @@ class ProxySvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ProxySvcListRoutesRequestToJSON(requestParameters['proxySvcListRoutesRequest']),
+                body: ProxySvcListRoutesRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ProxySvcListRoutesResponseFromJSON(jsonValue));
         });
@@ -12812,7 +12812,7 @@ class ProxySvcApi extends BaseAPI {
      */
     saveCertsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['proxySvcSaveCertsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('proxySvcSaveCertsRequest', 'Required parameter "proxySvcSaveCertsRequest" was null or undefined when calling saveCerts().');
             }
             const queryParameters = {};
@@ -12827,7 +12827,7 @@ class ProxySvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ProxySvcSaveCertsRequestToJSON(requestParameters['proxySvcSaveCertsRequest']),
+                body: ProxySvcSaveCertsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -12848,7 +12848,7 @@ class ProxySvcApi extends BaseAPI {
      */
     saveRoutesRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['proxySvcSaveRoutesRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('proxySvcSaveRoutesRequest', 'Required parameter "proxySvcSaveRoutesRequest" was null or undefined when calling saveRoutes().');
             }
             const queryParameters = {};
@@ -12863,7 +12863,7 @@ class ProxySvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: ProxySvcSaveRoutesRequestToJSON(requestParameters['proxySvcSaveRoutesRequest']),
+                body: ProxySvcSaveRoutesRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ProxySvcSaveRoutesResponseFromJSON(jsonValue));
         });
@@ -13168,7 +13168,7 @@ class RegistrySvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: RegistrySvcListNodesRequestToJSON(requestParameters['registrySvcListNodesRequest']),
+                body: RegistrySvcListNodesRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => RegistrySvcListNodesResponseFromJSON(jsonValue));
         });
@@ -13189,7 +13189,7 @@ class RegistrySvcApi extends BaseAPI {
      */
     registerInstanceRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['registrySvcRegisterInstanceRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('registrySvcRegisterInstanceRequest', 'Required parameter "registrySvcRegisterInstanceRequest" was null or undefined when calling registerInstance().');
             }
             const queryParameters = {};
@@ -13204,7 +13204,7 @@ class RegistrySvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: RegistrySvcRegisterInstanceRequestToJSON(requestParameters['registrySvcRegisterInstanceRequest']),
+                body: RegistrySvcRegisterInstanceRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -13261,7 +13261,7 @@ class RegistrySvcApi extends BaseAPI {
      */
     saveDefinitionRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['registrySvcSaveDefinitionRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('registrySvcSaveDefinitionRequest', 'Required parameter "registrySvcSaveDefinitionRequest" was null or undefined when calling saveDefinition().');
             }
             const queryParameters = {};
@@ -13276,7 +13276,7 @@ class RegistrySvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: RegistrySvcSaveDefinitionRequestToJSON(requestParameters['registrySvcSaveDefinitionRequest']),
+                body: RegistrySvcSaveDefinitionRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -13349,7 +13349,7 @@ class SecretSvcApi extends BaseAPI {
      */
     decryptValueRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['secretSvcDecryptValueRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('secretSvcDecryptValueRequest', 'Required parameter "secretSvcDecryptValueRequest" was null or undefined when calling decryptValue().');
             }
             const queryParameters = {};
@@ -13364,7 +13364,7 @@ class SecretSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: SecretSvcDecryptValueRequestToJSON(requestParameters['secretSvcDecryptValueRequest']),
+                body: SecretSvcDecryptValueRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => SecretSvcDecryptValueResponseFromJSON(jsonValue));
         });
@@ -13385,7 +13385,7 @@ class SecretSvcApi extends BaseAPI {
      */
     encryptValueRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['secretSvcEncryptValueRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('secretSvcEncryptValueRequest', 'Required parameter "secretSvcEncryptValueRequest" was null or undefined when calling encryptValue().');
             }
             const queryParameters = {};
@@ -13400,7 +13400,7 @@ class SecretSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: SecretSvcEncryptValueRequestToJSON(requestParameters['secretSvcEncryptValueRequest']),
+                body: SecretSvcEncryptValueRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => SecretSvcEncryptValueResponseFromJSON(jsonValue));
         });
@@ -13466,7 +13466,7 @@ class SecretSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: SecretSvcListSecretsRequestToJSON(requestParameters['secretSvcListSecretsRequest']),
+                body: SecretSvcListSecretsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => SecretSvcListSecretsResponseFromJSON(jsonValue));
         });
@@ -13487,7 +13487,7 @@ class SecretSvcApi extends BaseAPI {
      */
     removeSecretsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['secretSvcRemoveSecretsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('secretSvcRemoveSecretsRequest', 'Required parameter "secretSvcRemoveSecretsRequest" was null or undefined when calling removeSecrets().');
             }
             const queryParameters = {};
@@ -13502,7 +13502,7 @@ class SecretSvcApi extends BaseAPI {
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
-                body: SecretSvcRemoveSecretsRequestToJSON(requestParameters['secretSvcRemoveSecretsRequest']),
+                body: SecretSvcRemoveSecretsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -13523,7 +13523,7 @@ class SecretSvcApi extends BaseAPI {
      */
     saveSecretsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['secretSvcSaveSecretsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('secretSvcSaveSecretsRequest', 'Required parameter "secretSvcSaveSecretsRequest" was null or undefined when calling saveSecrets().');
             }
             const queryParameters = {};
@@ -13538,7 +13538,7 @@ class SecretSvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: SecretSvcSaveSecretsRequestToJSON(requestParameters['secretSvcSaveSecretsRequest']),
+                body: SecretSvcSaveSecretsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -13578,7 +13578,7 @@ class SourceSvcApi extends BaseAPI {
      */
     checkoutRepoRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['sourceSvcCheckoutRepoRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('sourceSvcCheckoutRepoRequest', 'Required parameter "sourceSvcCheckoutRepoRequest" was null or undefined when calling checkoutRepo().');
             }
             const queryParameters = {};
@@ -13593,7 +13593,7 @@ class SourceSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: SourceSvcCheckoutRepoRequestToJSON(requestParameters['sourceSvcCheckoutRepoRequest']),
+                body: SourceSvcCheckoutRepoRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => SourceSvcCheckoutRepoResponseFromJSON(jsonValue));
         });
@@ -13633,7 +13633,7 @@ class UserSvcApi extends BaseAPI {
      */
     changePasswordRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcChangePasswordRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('userSvcChangePasswordRequest', 'Required parameter "userSvcChangePasswordRequest" was null or undefined when calling changePassword().');
             }
             const queryParameters = {};
@@ -13648,7 +13648,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcChangePasswordRequestToJSON(requestParameters['userSvcChangePasswordRequest']),
+                body: UserSvcChangePasswordRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -13669,7 +13669,7 @@ class UserSvcApi extends BaseAPI {
      */
     createUserRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcCreateUserRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('userSvcCreateUserRequest', 'Required parameter "userSvcCreateUserRequest" was null or undefined when calling createUser().');
             }
             const queryParameters = {};
@@ -13684,7 +13684,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcCreateUserRequestToJSON(requestParameters['userSvcCreateUserRequest']),
+                body: UserSvcCreateUserRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -13783,7 +13783,7 @@ class UserSvcApi extends BaseAPI {
      */
     exchangeTokenRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcExchangeTokenRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('userSvcExchangeTokenRequest', 'Required parameter "userSvcExchangeTokenRequest" was null or undefined when calling exchangeToken().');
             }
             const queryParameters = {};
@@ -13795,7 +13795,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcExchangeTokenRequestToJSON(requestParameters['userSvcExchangeTokenRequest']),
+                body: UserSvcExchangeTokenRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcExchangeTokenResponseFromJSON(jsonValue));
         });
@@ -13816,7 +13816,7 @@ class UserSvcApi extends BaseAPI {
      */
     exchangeToken_1Raw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcExchangeTokenRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('userSvcExchangeTokenRequest', 'Required parameter "userSvcExchangeTokenRequest" was null or undefined when calling exchangeToken_1().');
             }
             const queryParameters = {};
@@ -13828,7 +13828,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcExchangeTokenRequestToJSON(requestParameters['userSvcExchangeTokenRequest']),
+                body: UserSvcExchangeTokenRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcExchangeTokenResponseFromJSON(jsonValue));
         });
@@ -13916,7 +13916,7 @@ class UserSvcApi extends BaseAPI {
      */
     listEnrollsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcListEnrollsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('userSvcListEnrollsRequest', 'Required parameter "userSvcListEnrollsRequest" was null or undefined when calling listEnrolls().');
             }
             const queryParameters = {};
@@ -13931,7 +13931,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcListEnrollsRequestToJSON(requestParameters['userSvcListEnrollsRequest']),
+                body: UserSvcListEnrollsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcListEnrollsResponseFromJSON(jsonValue));
         });
@@ -13952,7 +13952,7 @@ class UserSvcApi extends BaseAPI {
      */
     listOrganizationsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcListOrganizationsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('userSvcListOrganizationsRequest', 'Required parameter "userSvcListOrganizationsRequest" was null or undefined when calling listOrganizations().');
             }
             const queryParameters = {};
@@ -13967,7 +13967,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcListOrganizationsRequestToJSON(requestParameters['userSvcListOrganizationsRequest']),
+                body: UserSvcListOrganizationsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcListOrganizationsResponseFromJSON(jsonValue));
         });
@@ -14025,7 +14025,7 @@ class UserSvcApi extends BaseAPI {
      */
     listPermitsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcListPermitsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('userSvcListPermitsRequest', 'Required parameter "userSvcListPermitsRequest" was null or undefined when calling listPermits().');
             }
             const queryParameters = {};
@@ -14040,7 +14040,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcListPermitsRequestToJSON(requestParameters['userSvcListPermitsRequest']),
+                body: UserSvcListPermitsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcListPermitsResponseFromJSON(jsonValue));
         });
@@ -14073,7 +14073,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcListUsersRequestToJSON(requestParameters['userSvcListUsersRequest']),
+                body: UserSvcListUsersRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcListUsersResponseFromJSON(jsonValue));
         });
@@ -14094,7 +14094,7 @@ class UserSvcApi extends BaseAPI {
      */
     loginRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcLoginRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('userSvcLoginRequest', 'Required parameter "userSvcLoginRequest" was null or undefined when calling login().');
             }
             const queryParameters = {};
@@ -14106,7 +14106,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcLoginRequestToJSON(requestParameters['userSvcLoginRequest']),
+                body: UserSvcLoginRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcLoginResponseFromJSON(jsonValue));
         });
@@ -14139,7 +14139,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcReadSelfRequestToJSON(requestParameters['userSvcReadSelfRequest']),
+                body: UserSvcReadSelfRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcReadSelfResponseFromJSON(jsonValue));
         });
@@ -14190,7 +14190,7 @@ class UserSvcApi extends BaseAPI {
      */
     registerRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcRegisterRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('userSvcRegisterRequest', 'Required parameter "userSvcRegisterRequest" was null or undefined when calling register().');
             }
             const queryParameters = {};
@@ -14202,7 +14202,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcRegisterRequestToJSON(requestParameters['userSvcRegisterRequest']),
+                body: UserSvcRegisterRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcRegisterResponseFromJSON(jsonValue));
         });
@@ -14226,7 +14226,7 @@ class UserSvcApi extends BaseAPI {
             if (requestParameters['userId'] == null) {
                 throw new RequiredError('userId', 'Required parameter "userId" was null or undefined when calling resetPassword().');
             }
-            if (requestParameters['userSvcResetPasswordRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('userSvcResetPasswordRequest', 'Required parameter "userSvcResetPasswordRequest" was null or undefined when calling resetPassword().');
             }
             const queryParameters = {};
@@ -14242,7 +14242,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcResetPasswordRequestToJSON(requestParameters['userSvcResetPasswordRequest']),
+                body: UserSvcResetPasswordRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -14275,7 +14275,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcRevokeTokensRequestToJSON(requestParameters['userSvcRevokeTokensRequest']),
+                body: UserSvcRevokeTokensRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -14296,7 +14296,7 @@ class UserSvcApi extends BaseAPI {
      */
     saveEnrollsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcSaveEnrollsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('userSvcSaveEnrollsRequest', 'Required parameter "userSvcSaveEnrollsRequest" was null or undefined when calling saveEnrolls().');
             }
             const queryParameters = {};
@@ -14311,7 +14311,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcSaveEnrollsRequestToJSON(requestParameters['userSvcSaveEnrollsRequest']),
+                body: UserSvcSaveEnrollsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcSaveEnrollsResponseFromJSON(jsonValue));
         });
@@ -14373,7 +14373,7 @@ class UserSvcApi extends BaseAPI {
      */
     saveOrganizationRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcSaveOrganizationRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('userSvcSaveOrganizationRequest', 'Required parameter "userSvcSaveOrganizationRequest" was null or undefined when calling saveOrganization().');
             }
             const queryParameters = {};
@@ -14388,7 +14388,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcSaveOrganizationRequestToJSON(requestParameters['userSvcSaveOrganizationRequest']),
+                body: UserSvcSaveOrganizationRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcSaveOrganizationResponseFromJSON(jsonValue));
         });
@@ -14409,7 +14409,7 @@ class UserSvcApi extends BaseAPI {
      */
     savePermitsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcSavePermitsRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('userSvcSavePermitsRequest', 'Required parameter "userSvcSavePermitsRequest" was null or undefined when calling savePermits().');
             }
             const queryParameters = {};
@@ -14424,7 +14424,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcSavePermitsRequestToJSON(requestParameters['userSvcSavePermitsRequest']),
+                body: UserSvcSavePermitsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -14445,7 +14445,7 @@ class UserSvcApi extends BaseAPI {
      */
     saveSelfRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['userSvcSaveSelfRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('userSvcSaveSelfRequest', 'Required parameter "userSvcSaveSelfRequest" was null or undefined when calling saveSelf().');
             }
             const queryParameters = {};
@@ -14460,7 +14460,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcSaveSelfRequestToJSON(requestParameters['userSvcSaveSelfRequest']),
+                body: UserSvcSaveSelfRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });
@@ -14484,7 +14484,7 @@ class UserSvcApi extends BaseAPI {
             if (requestParameters['userId'] == null) {
                 throw new RequiredError('userId', 'Required parameter "userId" was null or undefined when calling saveUser().');
             }
-            if (requestParameters['userSvcSaveUserRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new RequiredError('userSvcSaveUserRequest', 'Required parameter "userSvcSaveUserRequest" was null or undefined when calling saveUser().');
             }
             const queryParameters = {};
@@ -14500,7 +14500,7 @@ class UserSvcApi extends BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: UserSvcSaveUserRequestToJSON(requestParameters['userSvcSaveUserRequest']),
+                body: UserSvcSaveUserRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new JSONApiResponse(response);
         });

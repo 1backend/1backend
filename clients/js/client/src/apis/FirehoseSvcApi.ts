@@ -26,7 +26,7 @@ import {
 } from '../models/index';
 
 export interface PublishEventRequest {
-    firehoseSvcEventPublishRequest: FirehoseSvcEventPublishRequest;
+    body: FirehoseSvcEventPublishRequest;
 }
 
 export interface SubscribeToEventsRequest {
@@ -43,7 +43,7 @@ export class FirehoseSvcApi extends runtime.BaseAPI {
      * Publish an Event
      */
     async publishEventRaw(requestParameters: PublishEventRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['firehoseSvcEventPublishRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'firehoseSvcEventPublishRequest',
                 'Required parameter "firehoseSvcEventPublishRequest" was null or undefined when calling publishEvent().'
@@ -68,7 +68,7 @@ export class FirehoseSvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: FirehoseSvcEventPublishRequestToJSON(requestParameters['firehoseSvcEventPublishRequest']),
+            body: FirehoseSvcEventPublishRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.VoidApiResponse(response);

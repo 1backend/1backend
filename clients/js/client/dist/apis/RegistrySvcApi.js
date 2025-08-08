@@ -297,7 +297,7 @@ export class RegistrySvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: RegistrySvcListNodesRequestToJSON(requestParameters['registrySvcListNodesRequest']),
+                body: RegistrySvcListNodesRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => RegistrySvcListNodesResponseFromJSON(jsonValue));
         });
@@ -318,7 +318,7 @@ export class RegistrySvcApi extends runtime.BaseAPI {
      */
     registerInstanceRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['registrySvcRegisterInstanceRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('registrySvcRegisterInstanceRequest', 'Required parameter "registrySvcRegisterInstanceRequest" was null or undefined when calling registerInstance().');
             }
             const queryParameters = {};
@@ -333,7 +333,7 @@ export class RegistrySvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: RegistrySvcRegisterInstanceRequestToJSON(requestParameters['registrySvcRegisterInstanceRequest']),
+                body: RegistrySvcRegisterInstanceRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
@@ -390,7 +390,7 @@ export class RegistrySvcApi extends runtime.BaseAPI {
      */
     saveDefinitionRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['registrySvcSaveDefinitionRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('registrySvcSaveDefinitionRequest', 'Required parameter "registrySvcSaveDefinitionRequest" was null or undefined when calling saveDefinition().');
             }
             const queryParameters = {};
@@ -405,7 +405,7 @@ export class RegistrySvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: RegistrySvcSaveDefinitionRequestToJSON(requestParameters['registrySvcSaveDefinitionRequest']),
+                body: RegistrySvcSaveDefinitionRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });

@@ -32,7 +32,7 @@ export class FirehoseSvcApi extends runtime.BaseAPI {
      */
     publishEventRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['firehoseSvcEventPublishRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('firehoseSvcEventPublishRequest', 'Required parameter "firehoseSvcEventPublishRequest" was null or undefined when calling publishEvent().');
             }
             const queryParameters = {};
@@ -47,7 +47,7 @@ export class FirehoseSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: FirehoseSvcEventPublishRequestToJSON(requestParameters['firehoseSvcEventPublishRequest']),
+                body: FirehoseSvcEventPublishRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.VoidApiResponse(response);
         });

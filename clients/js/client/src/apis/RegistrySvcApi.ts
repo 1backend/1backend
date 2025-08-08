@@ -76,11 +76,11 @@ export interface ListInstancesRequest {
 }
 
 export interface ListNodesRequest {
-    registrySvcListNodesRequest?: RegistrySvcListNodesRequest;
+    body?: RegistrySvcListNodesRequest;
 }
 
 export interface RegisterInstanceRequest {
-    registrySvcRegisterInstanceRequest: RegistrySvcRegisterInstanceRequest;
+    body: RegistrySvcRegisterInstanceRequest;
 }
 
 export interface RemoveInstanceRequest {
@@ -89,7 +89,7 @@ export interface RemoveInstanceRequest {
 }
 
 export interface SaveDefinitionRequest {
-    registrySvcSaveDefinitionRequest: RegistrySvcSaveDefinitionRequest;
+    body: RegistrySvcSaveDefinitionRequest;
 }
 
 export interface SelfNodeRequest {
@@ -425,7 +425,7 @@ export class RegistrySvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RegistrySvcListNodesRequestToJSON(requestParameters['registrySvcListNodesRequest']),
+            body: RegistrySvcListNodesRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => RegistrySvcListNodesResponseFromJSON(jsonValue));
@@ -445,7 +445,7 @@ export class RegistrySvcApi extends runtime.BaseAPI {
      * Register Instance
      */
     async registerInstanceRaw(requestParameters: RegisterInstanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['registrySvcRegisterInstanceRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'registrySvcRegisterInstanceRequest',
                 'Required parameter "registrySvcRegisterInstanceRequest" was null or undefined when calling registerInstance().'
@@ -470,7 +470,7 @@ export class RegistrySvcApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: RegistrySvcRegisterInstanceRequestToJSON(requestParameters['registrySvcRegisterInstanceRequest']),
+            body: RegistrySvcRegisterInstanceRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -535,7 +535,7 @@ export class RegistrySvcApi extends runtime.BaseAPI {
      * Register a Definition
      */
     async saveDefinitionRaw(requestParameters: SaveDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['registrySvcSaveDefinitionRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'registrySvcSaveDefinitionRequest',
                 'Required parameter "registrySvcSaveDefinitionRequest" was null or undefined when calling saveDefinition().'
@@ -560,7 +560,7 @@ export class RegistrySvcApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: RegistrySvcSaveDefinitionRequestToJSON(requestParameters['registrySvcSaveDefinitionRequest']),
+            body: RegistrySvcSaveDefinitionRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

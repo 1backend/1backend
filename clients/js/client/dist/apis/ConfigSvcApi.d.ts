@@ -12,10 +12,10 @@
 import * as runtime from '../runtime';
 import type { ConfigSvcListConfigsRequest, ConfigSvcListConfigsResponse, ConfigSvcSaveConfigRequest } from '../models/index';
 export interface ListConfigsRequest {
-    configSvcListConfigsRequest?: ConfigSvcListConfigsRequest;
+    body?: ConfigSvcListConfigsRequest;
 }
 export interface SaveConfigRequest {
-    configSvcSaveConfigRequest: ConfigSvcSaveConfigRequest;
+    body: ConfigSvcSaveConfigRequest;
 }
 /**
  *

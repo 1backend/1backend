@@ -32,7 +32,7 @@ export class FileSvcApi extends runtime.BaseAPI {
      */
     downloadFileRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['fileSvcDownloadFileRequest'] == null) {
+            if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('fileSvcDownloadFileRequest', 'Required parameter "fileSvcDownloadFileRequest" was null or undefined when calling downloadFile().');
             }
             const queryParameters = {};
@@ -47,7 +47,7 @@ export class FileSvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: FileSvcDownloadFileRequestToJSON(requestParameters['fileSvcDownloadFileRequest']),
+                body: FileSvcDownloadFileRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
@@ -150,7 +150,7 @@ export class FileSvcApi extends runtime.BaseAPI {
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-                body: FileSvcListUploadsRequestToJSON(requestParameters['fileSvcListUploadsRequest']),
+                body: FileSvcListUploadsRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => FileSvcListUploadsResponseFromJSON(jsonValue));
         });

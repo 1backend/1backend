@@ -47,11 +47,11 @@ import {
 } from '../models/index';
 
 export interface DecryptValueRequest {
-    secretSvcDecryptValueRequest: SecretSvcDecryptValueRequest;
+    body: SecretSvcDecryptValueRequest;
 }
 
 export interface EncryptValueRequest {
-    secretSvcEncryptValueRequest: SecretSvcEncryptValueRequest;
+    body: SecretSvcEncryptValueRequest;
 }
 
 export interface IsSecureRequest {
@@ -59,15 +59,15 @@ export interface IsSecureRequest {
 }
 
 export interface ListSecretsRequest {
-    secretSvcListSecretsRequest?: SecretSvcListSecretsRequest;
+    body?: SecretSvcListSecretsRequest;
 }
 
 export interface RemoveSecretsRequest {
-    secretSvcRemoveSecretsRequest: SecretSvcRemoveSecretsRequest;
+    body: SecretSvcRemoveSecretsRequest;
 }
 
 export interface SaveSecretsRequest {
-    secretSvcSaveSecretsRequest: SecretSvcSaveSecretsRequest;
+    body: SecretSvcSaveSecretsRequest;
 }
 
 /**
@@ -80,7 +80,7 @@ export class SecretSvcApi extends runtime.BaseAPI {
      * Decrypt a Value
      */
     async decryptValueRaw(requestParameters: DecryptValueRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SecretSvcDecryptValueResponse>> {
-        if (requestParameters['secretSvcDecryptValueRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'secretSvcDecryptValueRequest',
                 'Required parameter "secretSvcDecryptValueRequest" was null or undefined when calling decryptValue().'
@@ -105,7 +105,7 @@ export class SecretSvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: SecretSvcDecryptValueRequestToJSON(requestParameters['secretSvcDecryptValueRequest']),
+            body: SecretSvcDecryptValueRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SecretSvcDecryptValueResponseFromJSON(jsonValue));
@@ -125,7 +125,7 @@ export class SecretSvcApi extends runtime.BaseAPI {
      * Encrypt a Value
      */
     async encryptValueRaw(requestParameters: EncryptValueRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SecretSvcEncryptValueResponse>> {
-        if (requestParameters['secretSvcEncryptValueRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'secretSvcEncryptValueRequest',
                 'Required parameter "secretSvcEncryptValueRequest" was null or undefined when calling encryptValue().'
@@ -150,7 +150,7 @@ export class SecretSvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: SecretSvcEncryptValueRequestToJSON(requestParameters['secretSvcEncryptValueRequest']),
+            body: SecretSvcEncryptValueRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SecretSvcEncryptValueResponseFromJSON(jsonValue));
@@ -226,7 +226,7 @@ export class SecretSvcApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: SecretSvcListSecretsRequestToJSON(requestParameters['secretSvcListSecretsRequest']),
+            body: SecretSvcListSecretsRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => SecretSvcListSecretsResponseFromJSON(jsonValue));
@@ -246,7 +246,7 @@ export class SecretSvcApi extends runtime.BaseAPI {
      * Remove Secrets
      */
     async removeSecretsRaw(requestParameters: RemoveSecretsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['secretSvcRemoveSecretsRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'secretSvcRemoveSecretsRequest',
                 'Required parameter "secretSvcRemoveSecretsRequest" was null or undefined when calling removeSecrets().'
@@ -271,7 +271,7 @@ export class SecretSvcApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-            body: SecretSvcRemoveSecretsRequestToJSON(requestParameters['secretSvcRemoveSecretsRequest']),
+            body: SecretSvcRemoveSecretsRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -291,7 +291,7 @@ export class SecretSvcApi extends runtime.BaseAPI {
      * Save Secrets
      */
     async saveSecretsRaw(requestParameters: SaveSecretsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['secretSvcSaveSecretsRequest'] == null) {
+        if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'secretSvcSaveSecretsRequest',
                 'Required parameter "secretSvcSaveSecretsRequest" was null or undefined when calling saveSecrets().'
@@ -316,7 +316,7 @@ export class SecretSvcApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: SecretSvcSaveSecretsRequestToJSON(requestParameters['secretSvcSaveSecretsRequest']),
+            body: SecretSvcSaveSecretsRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
