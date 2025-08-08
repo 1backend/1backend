@@ -75,7 +75,7 @@ export class PromptsComponent {
 			return {
 				op: 'containsSubstring',
 				fields: ['modelId'],
-				jsonValues: JSON.stringify([value]),
+				values: [value],
 			};
 		};
 
@@ -131,7 +131,7 @@ export class PromptsComponent {
 		if (!query.filters.some((f) => f.fields?.includes('status'))) {
 			query.filters.push({
 				fields: ['status'],
-				jsonValues: JSON.stringify(this.request.statuses),
+				values: this.request.statuses,
 				op: 'isInList',
 			});
 		}
@@ -142,7 +142,7 @@ export class PromptsComponent {
 		};
 
 		if (this.after) {
-			request.query!.jsonAfter = JSON.stringify([this.after]);
+			request.query!.after = [this.after];
 		}
 
 		const response = await this.promptService.promptList(request);
@@ -186,7 +186,7 @@ function filtersToKeyValue(filters: DatastoreFilter[]): {
 	const object: { [key: string]: any } = {};
 
 	for (const filter of filters) {
-		object[filter.fields![0]] = JSON.parse(filter.jsonValues!)[0];
+		object[filter.fields![0]] = filter.values![0];
 	}
 
 	return object;

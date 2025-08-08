@@ -49,7 +49,7 @@ export class QueryParser {
 		}
 
 		if (afterMatch) {
-			query.jsonAfter = JSON.stringify(afterMatch[1].split(','));
+			query.after = afterMatch[1].split(',');
 		}
 
 		if (!queryString) {
