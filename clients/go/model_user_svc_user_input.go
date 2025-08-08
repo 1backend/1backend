@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -52,10 +52,47 @@ func NewUserSvcUserInputWithDefaults() *UserSvcUserInput {
 	return &this
 }
 
+// GetId returns the Id field value
+func (o *UserSvcUserInput) GetId() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Id
+}
 
+// GetIdOk returns a tuple with the Id field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcUserInput) GetIdOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Id, true
+}
 
+// SetId sets field value
+func (o *UserSvcUserInput) SetId(v string) {
+	o.Id = v
+}
 
+// GetLabels returns the Labels field value if set, zero value otherwise.
+func (o *UserSvcUserInput) GetLabels() map[string]string {
+	if o == nil || IsNil(o.Labels) {
+		var ret map[string]string
+		return ret
+	}
+	return *o.Labels
+}
+
+// GetLabelsOk returns a tuple with the Labels field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcUserInput) GetLabelsOk() (*map[string]string, bool) {
+	if o == nil || IsNil(o.Labels) {
+		return nil, false
+	}
+	return o.Labels, true
+}
 
 // HasLabels returns a boolean if a field has been set.
 func (o *UserSvcUserInput) HasLabels() bool {
@@ -66,8 +103,28 @@ func (o *UserSvcUserInput) HasLabels() bool {
 	return false
 }
 
+// SetLabels gets a reference to the given map[string]string and assigns it to the Labels field.
+func (o *UserSvcUserInput) SetLabels(v map[string]string) {
+	o.Labels = &v
+}
 
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *UserSvcUserInput) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
 
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcUserInput) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
 
 // HasName returns a boolean if a field has been set.
 func (o *UserSvcUserInput) HasName() bool {
@@ -78,11 +135,52 @@ func (o *UserSvcUserInput) HasName() bool {
 	return false
 }
 
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *UserSvcUserInput) SetName(v string) {
+	o.Name = &v
+}
 
+// GetSlug returns the Slug field value
+func (o *UserSvcUserInput) GetSlug() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Slug
+}
 
+// GetSlugOk returns a tuple with the Slug field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcUserInput) GetSlugOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Slug, true
+}
 
+// SetSlug sets field value
+func (o *UserSvcUserInput) SetSlug(v string) {
+	o.Slug = v
+}
 
+// GetThumbnailFileId returns the ThumbnailFileId field value if set, zero value otherwise.
+func (o *UserSvcUserInput) GetThumbnailFileId() string {
+	if o == nil || IsNil(o.ThumbnailFileId) {
+		var ret string
+		return ret
+	}
+	return *o.ThumbnailFileId
+}
+
+// GetThumbnailFileIdOk returns a tuple with the ThumbnailFileId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcUserInput) GetThumbnailFileIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ThumbnailFileId) {
+		return nil, false
+	}
+	return o.ThumbnailFileId, true
+}
 
 // HasThumbnailFileId returns a boolean if a field has been set.
 func (o *UserSvcUserInput) HasThumbnailFileId() bool {
@@ -93,6 +191,10 @@ func (o *UserSvcUserInput) HasThumbnailFileId() bool {
 	return false
 }
 
+// SetThumbnailFileId gets a reference to the given string and assigns it to the ThumbnailFileId field.
+func (o *UserSvcUserInput) SetThumbnailFileId(v string) {
+	o.ThumbnailFileId = &v
+}
 
 func (o UserSvcUserInput) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

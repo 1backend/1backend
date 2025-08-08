@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -24,8 +24,7 @@ type DatastoreFilter struct {
 	Op *DatastoreOp `json:"op,omitempty"`
 	// SubFilters is used for operations like OR where multiple filters are combined.
 	SubFilters []DatastoreFilter `json:"subFilters,omitempty"`
-	// @openapi-any-array
-	Values []any `json:"values,omitempty"`
+	ValuesJson *string `json:"valuesJson,omitempty"`
 }
 
 // NewDatastoreFilter instantiates a new DatastoreFilter object
@@ -45,7 +44,23 @@ func NewDatastoreFilterWithDefaults() *DatastoreFilter {
 	return &this
 }
 
+// GetFields returns the Fields field value if set, zero value otherwise.
+func (o *DatastoreFilter) GetFields() []string {
+	if o == nil || IsNil(o.Fields) {
+		var ret []string
+		return ret
+	}
+	return o.Fields
+}
 
+// GetFieldsOk returns a tuple with the Fields field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DatastoreFilter) GetFieldsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Fields) {
+		return nil, false
+	}
+	return o.Fields, true
+}
 
 // HasFields returns a boolean if a field has been set.
 func (o *DatastoreFilter) HasFields() bool {
@@ -56,8 +71,28 @@ func (o *DatastoreFilter) HasFields() bool {
 	return false
 }
 
+// SetFields gets a reference to the given []string and assigns it to the Fields field.
+func (o *DatastoreFilter) SetFields(v []string) {
+	o.Fields = v
+}
 
+// GetOp returns the Op field value if set, zero value otherwise.
+func (o *DatastoreFilter) GetOp() DatastoreOp {
+	if o == nil || IsNil(o.Op) {
+		var ret DatastoreOp
+		return ret
+	}
+	return *o.Op
+}
 
+// GetOpOk returns a tuple with the Op field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DatastoreFilter) GetOpOk() (*DatastoreOp, bool) {
+	if o == nil || IsNil(o.Op) {
+		return nil, false
+	}
+	return o.Op, true
+}
 
 // HasOp returns a boolean if a field has been set.
 func (o *DatastoreFilter) HasOp() bool {
@@ -68,8 +103,28 @@ func (o *DatastoreFilter) HasOp() bool {
 	return false
 }
 
+// SetOp gets a reference to the given DatastoreOp and assigns it to the Op field.
+func (o *DatastoreFilter) SetOp(v DatastoreOp) {
+	o.Op = &v
+}
 
+// GetSubFilters returns the SubFilters field value if set, zero value otherwise.
+func (o *DatastoreFilter) GetSubFilters() []DatastoreFilter {
+	if o == nil || IsNil(o.SubFilters) {
+		var ret []DatastoreFilter
+		return ret
+	}
+	return o.SubFilters
+}
 
+// GetSubFiltersOk returns a tuple with the SubFilters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DatastoreFilter) GetSubFiltersOk() ([]DatastoreFilter, bool) {
+	if o == nil || IsNil(o.SubFilters) {
+		return nil, false
+	}
+	return o.SubFilters, true
+}
 
 // HasSubFilters returns a boolean if a field has been set.
 func (o *DatastoreFilter) HasSubFilters() bool {
@@ -80,18 +135,42 @@ func (o *DatastoreFilter) HasSubFilters() bool {
 	return false
 }
 
+// SetSubFilters gets a reference to the given []DatastoreFilter and assigns it to the SubFilters field.
+func (o *DatastoreFilter) SetSubFilters(v []DatastoreFilter) {
+	o.SubFilters = v
+}
 
+// GetValuesJson returns the ValuesJson field value if set, zero value otherwise.
+func (o *DatastoreFilter) GetValuesJson() string {
+	if o == nil || IsNil(o.ValuesJson) {
+		var ret string
+		return ret
+	}
+	return *o.ValuesJson
+}
 
+// GetValuesJsonOk returns a tuple with the ValuesJson field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DatastoreFilter) GetValuesJsonOk() (*string, bool) {
+	if o == nil || IsNil(o.ValuesJson) {
+		return nil, false
+	}
+	return o.ValuesJson, true
+}
 
-// HasValues returns a boolean if a field has been set.
-func (o *DatastoreFilter) HasValues() bool {
-	if o != nil && !IsNil(o.Values) {
+// HasValuesJson returns a boolean if a field has been set.
+func (o *DatastoreFilter) HasValuesJson() bool {
+	if o != nil && !IsNil(o.ValuesJson) {
 		return true
 	}
 
 	return false
 }
 
+// SetValuesJson gets a reference to the given string and assigns it to the ValuesJson field.
+func (o *DatastoreFilter) SetValuesJson(v string) {
+	o.ValuesJson = &v
+}
 
 func (o DatastoreFilter) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
@@ -112,8 +191,8 @@ func (o DatastoreFilter) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.SubFilters) {
 		toSerialize["subFilters"] = o.SubFilters
 	}
-	if !IsNil(o.Values) {
-		toSerialize["values"] = o.Values
+	if !IsNil(o.ValuesJson) {
+		toSerialize["valuesJson"] = o.ValuesJson
 	}
 	return toSerialize, nil
 }

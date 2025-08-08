@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewChatSvcListThreadsResponseWithDefaults() *ChatSvcListThreadsResponse {
 	return &this
 }
 
+// GetThreads returns the Threads field value if set, zero value otherwise.
+func (o *ChatSvcListThreadsResponse) GetThreads() []ChatSvcThread {
+	if o == nil || IsNil(o.Threads) {
+		var ret []ChatSvcThread
+		return ret
+	}
+	return o.Threads
+}
 
+// GetThreadsOk returns a tuple with the Threads field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ChatSvcListThreadsResponse) GetThreadsOk() ([]ChatSvcThread, bool) {
+	if o == nil || IsNil(o.Threads) {
+		return nil, false
+	}
+	return o.Threads, true
+}
 
 // HasThreads returns a boolean if a field has been set.
 func (o *ChatSvcListThreadsResponse) HasThreads() bool {
@@ -51,6 +67,10 @@ func (o *ChatSvcListThreadsResponse) HasThreads() bool {
 	return false
 }
 
+// SetThreads gets a reference to the given []ChatSvcThread and assigns it to the Threads field.
+func (o *ChatSvcListThreadsResponse) SetThreads(v []ChatSvcThread) {
+	o.Threads = v
+}
 
 func (o ChatSvcListThreadsResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -47,11 +47,53 @@ func NewContainerSvcAssetWithDefaults() *ContainerSvcAsset {
 	return &this
 }
 
+// GetEnvVarKey returns the EnvVarKey field value
+func (o *ContainerSvcAsset) GetEnvVarKey() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.EnvVarKey
+}
 
+// GetEnvVarKeyOk returns a tuple with the EnvVarKey field value
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcAsset) GetEnvVarKeyOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.EnvVarKey, true
+}
 
+// SetEnvVarKey sets field value
+func (o *ContainerSvcAsset) SetEnvVarKey(v string) {
+	o.EnvVarKey = v
+}
 
+// GetUrl returns the Url field value
+func (o *ContainerSvcAsset) GetUrl() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Url
+}
+
+// GetUrlOk returns a tuple with the Url field value
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcAsset) GetUrlOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Url, true
+}
+
+// SetUrl sets field value
+func (o *ContainerSvcAsset) SetUrl(v string) {
+	o.Url = v
+}
 
 func (o ContainerSvcAsset) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -51,7 +51,23 @@ func NewUserSvcEnrollInputWithDefaults() *UserSvcEnrollInput {
 	return &this
 }
 
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *UserSvcEnrollInput) GetApp() string {
+	if o == nil || IsNil(o.App) {
+		var ret string
+		return ret
+	}
+	return *o.App
+}
 
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcEnrollInput) GetAppOk() (*string, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
 
 // HasApp returns a boolean if a field has been set.
 func (o *UserSvcEnrollInput) HasApp() bool {
@@ -62,8 +78,28 @@ func (o *UserSvcEnrollInput) HasApp() bool {
 	return false
 }
 
+// SetApp gets a reference to the given string and assigns it to the App field.
+func (o *UserSvcEnrollInput) SetApp(v string) {
+	o.App = &v
+}
 
+// GetContactId returns the ContactId field value if set, zero value otherwise.
+func (o *UserSvcEnrollInput) GetContactId() string {
+	if o == nil || IsNil(o.ContactId) {
+		var ret string
+		return ret
+	}
+	return *o.ContactId
+}
 
+// GetContactIdOk returns a tuple with the ContactId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcEnrollInput) GetContactIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ContactId) {
+		return nil, false
+	}
+	return o.ContactId, true
+}
 
 // HasContactId returns a boolean if a field has been set.
 func (o *UserSvcEnrollInput) HasContactId() bool {
@@ -74,8 +110,28 @@ func (o *UserSvcEnrollInput) HasContactId() bool {
 	return false
 }
 
+// SetContactId gets a reference to the given string and assigns it to the ContactId field.
+func (o *UserSvcEnrollInput) SetContactId(v string) {
+	o.ContactId = &v
+}
 
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *UserSvcEnrollInput) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
 
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcEnrollInput) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
 
 // HasId returns a boolean if a field has been set.
 func (o *UserSvcEnrollInput) HasId() bool {
@@ -86,11 +142,52 @@ func (o *UserSvcEnrollInput) HasId() bool {
 	return false
 }
 
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *UserSvcEnrollInput) SetId(v string) {
+	o.Id = &v
+}
 
+// GetRole returns the Role field value
+func (o *UserSvcEnrollInput) GetRole() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Role
+}
 
+// GetRoleOk returns a tuple with the Role field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcEnrollInput) GetRoleOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Role, true
+}
 
+// SetRole sets field value
+func (o *UserSvcEnrollInput) SetRole(v string) {
+	o.Role = v
+}
 
+// GetUserId returns the UserId field value if set, zero value otherwise.
+func (o *UserSvcEnrollInput) GetUserId() string {
+	if o == nil || IsNil(o.UserId) {
+		var ret string
+		return ret
+	}
+	return *o.UserId
+}
+
+// GetUserIdOk returns a tuple with the UserId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcEnrollInput) GetUserIdOk() (*string, bool) {
+	if o == nil || IsNil(o.UserId) {
+		return nil, false
+	}
+	return o.UserId, true
+}
 
 // HasUserId returns a boolean if a field has been set.
 func (o *UserSvcEnrollInput) HasUserId() bool {
@@ -101,6 +198,10 @@ func (o *UserSvcEnrollInput) HasUserId() bool {
 	return false
 }
 
+// SetUserId gets a reference to the given string and assigns it to the UserId field.
+func (o *UserSvcEnrollInput) SetUserId(v string) {
+	o.UserId = &v
+}
 
 func (o UserSvcEnrollInput) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

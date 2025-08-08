@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -94,7 +94,23 @@ func NewStableDiffusionTxt2ImgRequestWithDefaults() *StableDiffusionTxt2ImgReque
 	return &this
 }
 
+// GetAlwaysonScripts returns the AlwaysonScripts field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetAlwaysonScripts() map[string]string {
+	if o == nil || IsNil(o.AlwaysonScripts) {
+		var ret map[string]string
+		return ret
+	}
+	return *o.AlwaysonScripts
+}
 
+// GetAlwaysonScriptsOk returns a tuple with the AlwaysonScripts field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetAlwaysonScriptsOk() (*map[string]string, bool) {
+	if o == nil || IsNil(o.AlwaysonScripts) {
+		return nil, false
+	}
+	return o.AlwaysonScripts, true
+}
 
 // HasAlwaysonScripts returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasAlwaysonScripts() bool {
@@ -105,8 +121,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasAlwaysonScripts() bool {
 	return false
 }
 
+// SetAlwaysonScripts gets a reference to the given map[string]string and assigns it to the AlwaysonScripts field.
+func (o *StableDiffusionTxt2ImgRequest) SetAlwaysonScripts(v map[string]string) {
+	o.AlwaysonScripts = &v
+}
 
+// GetBatchSize returns the BatchSize field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetBatchSize() int32 {
+	if o == nil || IsNil(o.BatchSize) {
+		var ret int32
+		return ret
+	}
+	return *o.BatchSize
+}
 
+// GetBatchSizeOk returns a tuple with the BatchSize field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetBatchSizeOk() (*int32, bool) {
+	if o == nil || IsNil(o.BatchSize) {
+		return nil, false
+	}
+	return o.BatchSize, true
+}
 
 // HasBatchSize returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasBatchSize() bool {
@@ -117,8 +153,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasBatchSize() bool {
 	return false
 }
 
+// SetBatchSize gets a reference to the given int32 and assigns it to the BatchSize field.
+func (o *StableDiffusionTxt2ImgRequest) SetBatchSize(v int32) {
+	o.BatchSize = &v
+}
 
+// GetCfgScale returns the CfgScale field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetCfgScale() float32 {
+	if o == nil || IsNil(o.CfgScale) {
+		var ret float32
+		return ret
+	}
+	return *o.CfgScale
+}
 
+// GetCfgScaleOk returns a tuple with the CfgScale field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetCfgScaleOk() (*float32, bool) {
+	if o == nil || IsNil(o.CfgScale) {
+		return nil, false
+	}
+	return o.CfgScale, true
+}
 
 // HasCfgScale returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasCfgScale() bool {
@@ -129,8 +185,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasCfgScale() bool {
 	return false
 }
 
+// SetCfgScale gets a reference to the given float32 and assigns it to the CfgScale field.
+func (o *StableDiffusionTxt2ImgRequest) SetCfgScale(v float32) {
+	o.CfgScale = &v
+}
 
+// GetComments returns the Comments field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetComments() map[string]string {
+	if o == nil || IsNil(o.Comments) {
+		var ret map[string]string
+		return ret
+	}
+	return *o.Comments
+}
 
+// GetCommentsOk returns a tuple with the Comments field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetCommentsOk() (*map[string]string, bool) {
+	if o == nil || IsNil(o.Comments) {
+		return nil, false
+	}
+	return o.Comments, true
+}
 
 // HasComments returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasComments() bool {
@@ -141,8 +217,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasComments() bool {
 	return false
 }
 
+// SetComments gets a reference to the given map[string]string and assigns it to the Comments field.
+func (o *StableDiffusionTxt2ImgRequest) SetComments(v map[string]string) {
+	o.Comments = &v
+}
 
+// GetDenoisingStrength returns the DenoisingStrength field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetDenoisingStrength() float32 {
+	if o == nil || IsNil(o.DenoisingStrength) {
+		var ret float32
+		return ret
+	}
+	return *o.DenoisingStrength
+}
 
+// GetDenoisingStrengthOk returns a tuple with the DenoisingStrength field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetDenoisingStrengthOk() (*float32, bool) {
+	if o == nil || IsNil(o.DenoisingStrength) {
+		return nil, false
+	}
+	return o.DenoisingStrength, true
+}
 
 // HasDenoisingStrength returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasDenoisingStrength() bool {
@@ -153,8 +249,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasDenoisingStrength() bool {
 	return false
 }
 
+// SetDenoisingStrength gets a reference to the given float32 and assigns it to the DenoisingStrength field.
+func (o *StableDiffusionTxt2ImgRequest) SetDenoisingStrength(v float32) {
+	o.DenoisingStrength = &v
+}
 
+// GetDisableExtraNetworks returns the DisableExtraNetworks field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetDisableExtraNetworks() bool {
+	if o == nil || IsNil(o.DisableExtraNetworks) {
+		var ret bool
+		return ret
+	}
+	return *o.DisableExtraNetworks
+}
 
+// GetDisableExtraNetworksOk returns a tuple with the DisableExtraNetworks field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetDisableExtraNetworksOk() (*bool, bool) {
+	if o == nil || IsNil(o.DisableExtraNetworks) {
+		return nil, false
+	}
+	return o.DisableExtraNetworks, true
+}
 
 // HasDisableExtraNetworks returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasDisableExtraNetworks() bool {
@@ -165,8 +281,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasDisableExtraNetworks() bool {
 	return false
 }
 
+// SetDisableExtraNetworks gets a reference to the given bool and assigns it to the DisableExtraNetworks field.
+func (o *StableDiffusionTxt2ImgRequest) SetDisableExtraNetworks(v bool) {
+	o.DisableExtraNetworks = &v
+}
 
+// GetDoNotSaveGrid returns the DoNotSaveGrid field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetDoNotSaveGrid() bool {
+	if o == nil || IsNil(o.DoNotSaveGrid) {
+		var ret bool
+		return ret
+	}
+	return *o.DoNotSaveGrid
+}
 
+// GetDoNotSaveGridOk returns a tuple with the DoNotSaveGrid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetDoNotSaveGridOk() (*bool, bool) {
+	if o == nil || IsNil(o.DoNotSaveGrid) {
+		return nil, false
+	}
+	return o.DoNotSaveGrid, true
+}
 
 // HasDoNotSaveGrid returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasDoNotSaveGrid() bool {
@@ -177,8 +313,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasDoNotSaveGrid() bool {
 	return false
 }
 
+// SetDoNotSaveGrid gets a reference to the given bool and assigns it to the DoNotSaveGrid field.
+func (o *StableDiffusionTxt2ImgRequest) SetDoNotSaveGrid(v bool) {
+	o.DoNotSaveGrid = &v
+}
 
+// GetDoNotSaveSamples returns the DoNotSaveSamples field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetDoNotSaveSamples() bool {
+	if o == nil || IsNil(o.DoNotSaveSamples) {
+		var ret bool
+		return ret
+	}
+	return *o.DoNotSaveSamples
+}
 
+// GetDoNotSaveSamplesOk returns a tuple with the DoNotSaveSamples field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetDoNotSaveSamplesOk() (*bool, bool) {
+	if o == nil || IsNil(o.DoNotSaveSamples) {
+		return nil, false
+	}
+	return o.DoNotSaveSamples, true
+}
 
 // HasDoNotSaveSamples returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasDoNotSaveSamples() bool {
@@ -189,8 +345,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasDoNotSaveSamples() bool {
 	return false
 }
 
+// SetDoNotSaveSamples gets a reference to the given bool and assigns it to the DoNotSaveSamples field.
+func (o *StableDiffusionTxt2ImgRequest) SetDoNotSaveSamples(v bool) {
+	o.DoNotSaveSamples = &v
+}
 
+// GetEnableHr returns the EnableHr field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetEnableHr() bool {
+	if o == nil || IsNil(o.EnableHr) {
+		var ret bool
+		return ret
+	}
+	return *o.EnableHr
+}
 
+// GetEnableHrOk returns a tuple with the EnableHr field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetEnableHrOk() (*bool, bool) {
+	if o == nil || IsNil(o.EnableHr) {
+		return nil, false
+	}
+	return o.EnableHr, true
+}
 
 // HasEnableHr returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasEnableHr() bool {
@@ -201,8 +377,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasEnableHr() bool {
 	return false
 }
 
+// SetEnableHr gets a reference to the given bool and assigns it to the EnableHr field.
+func (o *StableDiffusionTxt2ImgRequest) SetEnableHr(v bool) {
+	o.EnableHr = &v
+}
 
+// GetEta returns the Eta field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetEta() float32 {
+	if o == nil || IsNil(o.Eta) {
+		var ret float32
+		return ret
+	}
+	return *o.Eta
+}
 
+// GetEtaOk returns a tuple with the Eta field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetEtaOk() (*float32, bool) {
+	if o == nil || IsNil(o.Eta) {
+		return nil, false
+	}
+	return o.Eta, true
+}
 
 // HasEta returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasEta() bool {
@@ -213,8 +409,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasEta() bool {
 	return false
 }
 
+// SetEta gets a reference to the given float32 and assigns it to the Eta field.
+func (o *StableDiffusionTxt2ImgRequest) SetEta(v float32) {
+	o.Eta = &v
+}
 
+// GetFirstpassImage returns the FirstpassImage field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetFirstpassImage() string {
+	if o == nil || IsNil(o.FirstpassImage) {
+		var ret string
+		return ret
+	}
+	return *o.FirstpassImage
+}
 
+// GetFirstpassImageOk returns a tuple with the FirstpassImage field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetFirstpassImageOk() (*string, bool) {
+	if o == nil || IsNil(o.FirstpassImage) {
+		return nil, false
+	}
+	return o.FirstpassImage, true
+}
 
 // HasFirstpassImage returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasFirstpassImage() bool {
@@ -225,8 +441,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasFirstpassImage() bool {
 	return false
 }
 
+// SetFirstpassImage gets a reference to the given string and assigns it to the FirstpassImage field.
+func (o *StableDiffusionTxt2ImgRequest) SetFirstpassImage(v string) {
+	o.FirstpassImage = &v
+}
 
+// GetFirstphaseHeight returns the FirstphaseHeight field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetFirstphaseHeight() int32 {
+	if o == nil || IsNil(o.FirstphaseHeight) {
+		var ret int32
+		return ret
+	}
+	return *o.FirstphaseHeight
+}
 
+// GetFirstphaseHeightOk returns a tuple with the FirstphaseHeight field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetFirstphaseHeightOk() (*int32, bool) {
+	if o == nil || IsNil(o.FirstphaseHeight) {
+		return nil, false
+	}
+	return o.FirstphaseHeight, true
+}
 
 // HasFirstphaseHeight returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasFirstphaseHeight() bool {
@@ -237,8 +473,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasFirstphaseHeight() bool {
 	return false
 }
 
+// SetFirstphaseHeight gets a reference to the given int32 and assigns it to the FirstphaseHeight field.
+func (o *StableDiffusionTxt2ImgRequest) SetFirstphaseHeight(v int32) {
+	o.FirstphaseHeight = &v
+}
 
+// GetFirstphaseWidth returns the FirstphaseWidth field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetFirstphaseWidth() int32 {
+	if o == nil || IsNil(o.FirstphaseWidth) {
+		var ret int32
+		return ret
+	}
+	return *o.FirstphaseWidth
+}
 
+// GetFirstphaseWidthOk returns a tuple with the FirstphaseWidth field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetFirstphaseWidthOk() (*int32, bool) {
+	if o == nil || IsNil(o.FirstphaseWidth) {
+		return nil, false
+	}
+	return o.FirstphaseWidth, true
+}
 
 // HasFirstphaseWidth returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasFirstphaseWidth() bool {
@@ -249,8 +505,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasFirstphaseWidth() bool {
 	return false
 }
 
+// SetFirstphaseWidth gets a reference to the given int32 and assigns it to the FirstphaseWidth field.
+func (o *StableDiffusionTxt2ImgRequest) SetFirstphaseWidth(v int32) {
+	o.FirstphaseWidth = &v
+}
 
+// GetForceTaskId returns the ForceTaskId field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetForceTaskId() string {
+	if o == nil || IsNil(o.ForceTaskId) {
+		var ret string
+		return ret
+	}
+	return *o.ForceTaskId
+}
 
+// GetForceTaskIdOk returns a tuple with the ForceTaskId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetForceTaskIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ForceTaskId) {
+		return nil, false
+	}
+	return o.ForceTaskId, true
+}
 
 // HasForceTaskId returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasForceTaskId() bool {
@@ -261,8 +537,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasForceTaskId() bool {
 	return false
 }
 
+// SetForceTaskId gets a reference to the given string and assigns it to the ForceTaskId field.
+func (o *StableDiffusionTxt2ImgRequest) SetForceTaskId(v string) {
+	o.ForceTaskId = &v
+}
 
+// GetHeight returns the Height field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetHeight() int32 {
+	if o == nil || IsNil(o.Height) {
+		var ret int32
+		return ret
+	}
+	return *o.Height
+}
 
+// GetHeightOk returns a tuple with the Height field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetHeightOk() (*int32, bool) {
+	if o == nil || IsNil(o.Height) {
+		return nil, false
+	}
+	return o.Height, true
+}
 
 // HasHeight returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasHeight() bool {
@@ -273,8 +569,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasHeight() bool {
 	return false
 }
 
+// SetHeight gets a reference to the given int32 and assigns it to the Height field.
+func (o *StableDiffusionTxt2ImgRequest) SetHeight(v int32) {
+	o.Height = &v
+}
 
+// GetHrCheckpointName returns the HrCheckpointName field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetHrCheckpointName() string {
+	if o == nil || IsNil(o.HrCheckpointName) {
+		var ret string
+		return ret
+	}
+	return *o.HrCheckpointName
+}
 
+// GetHrCheckpointNameOk returns a tuple with the HrCheckpointName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetHrCheckpointNameOk() (*string, bool) {
+	if o == nil || IsNil(o.HrCheckpointName) {
+		return nil, false
+	}
+	return o.HrCheckpointName, true
+}
 
 // HasHrCheckpointName returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasHrCheckpointName() bool {
@@ -285,8 +601,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasHrCheckpointName() bool {
 	return false
 }
 
+// SetHrCheckpointName gets a reference to the given string and assigns it to the HrCheckpointName field.
+func (o *StableDiffusionTxt2ImgRequest) SetHrCheckpointName(v string) {
+	o.HrCheckpointName = &v
+}
 
+// GetHrNegativePrompt returns the HrNegativePrompt field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetHrNegativePrompt() string {
+	if o == nil || IsNil(o.HrNegativePrompt) {
+		var ret string
+		return ret
+	}
+	return *o.HrNegativePrompt
+}
 
+// GetHrNegativePromptOk returns a tuple with the HrNegativePrompt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetHrNegativePromptOk() (*string, bool) {
+	if o == nil || IsNil(o.HrNegativePrompt) {
+		return nil, false
+	}
+	return o.HrNegativePrompt, true
+}
 
 // HasHrNegativePrompt returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasHrNegativePrompt() bool {
@@ -297,8 +633,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasHrNegativePrompt() bool {
 	return false
 }
 
+// SetHrNegativePrompt gets a reference to the given string and assigns it to the HrNegativePrompt field.
+func (o *StableDiffusionTxt2ImgRequest) SetHrNegativePrompt(v string) {
+	o.HrNegativePrompt = &v
+}
 
+// GetHrPrompt returns the HrPrompt field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetHrPrompt() string {
+	if o == nil || IsNil(o.HrPrompt) {
+		var ret string
+		return ret
+	}
+	return *o.HrPrompt
+}
 
+// GetHrPromptOk returns a tuple with the HrPrompt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetHrPromptOk() (*string, bool) {
+	if o == nil || IsNil(o.HrPrompt) {
+		return nil, false
+	}
+	return o.HrPrompt, true
+}
 
 // HasHrPrompt returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasHrPrompt() bool {
@@ -309,8 +665,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasHrPrompt() bool {
 	return false
 }
 
+// SetHrPrompt gets a reference to the given string and assigns it to the HrPrompt field.
+func (o *StableDiffusionTxt2ImgRequest) SetHrPrompt(v string) {
+	o.HrPrompt = &v
+}
 
+// GetHrResizeX returns the HrResizeX field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetHrResizeX() int32 {
+	if o == nil || IsNil(o.HrResizeX) {
+		var ret int32
+		return ret
+	}
+	return *o.HrResizeX
+}
 
+// GetHrResizeXOk returns a tuple with the HrResizeX field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetHrResizeXOk() (*int32, bool) {
+	if o == nil || IsNil(o.HrResizeX) {
+		return nil, false
+	}
+	return o.HrResizeX, true
+}
 
 // HasHrResizeX returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasHrResizeX() bool {
@@ -321,8 +697,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasHrResizeX() bool {
 	return false
 }
 
+// SetHrResizeX gets a reference to the given int32 and assigns it to the HrResizeX field.
+func (o *StableDiffusionTxt2ImgRequest) SetHrResizeX(v int32) {
+	o.HrResizeX = &v
+}
 
+// GetHrResizeY returns the HrResizeY field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetHrResizeY() int32 {
+	if o == nil || IsNil(o.HrResizeY) {
+		var ret int32
+		return ret
+	}
+	return *o.HrResizeY
+}
 
+// GetHrResizeYOk returns a tuple with the HrResizeY field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetHrResizeYOk() (*int32, bool) {
+	if o == nil || IsNil(o.HrResizeY) {
+		return nil, false
+	}
+	return o.HrResizeY, true
+}
 
 // HasHrResizeY returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasHrResizeY() bool {
@@ -333,8 +729,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasHrResizeY() bool {
 	return false
 }
 
+// SetHrResizeY gets a reference to the given int32 and assigns it to the HrResizeY field.
+func (o *StableDiffusionTxt2ImgRequest) SetHrResizeY(v int32) {
+	o.HrResizeY = &v
+}
 
+// GetHrSamplerName returns the HrSamplerName field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetHrSamplerName() string {
+	if o == nil || IsNil(o.HrSamplerName) {
+		var ret string
+		return ret
+	}
+	return *o.HrSamplerName
+}
 
+// GetHrSamplerNameOk returns a tuple with the HrSamplerName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetHrSamplerNameOk() (*string, bool) {
+	if o == nil || IsNil(o.HrSamplerName) {
+		return nil, false
+	}
+	return o.HrSamplerName, true
+}
 
 // HasHrSamplerName returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasHrSamplerName() bool {
@@ -345,8 +761,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasHrSamplerName() bool {
 	return false
 }
 
+// SetHrSamplerName gets a reference to the given string and assigns it to the HrSamplerName field.
+func (o *StableDiffusionTxt2ImgRequest) SetHrSamplerName(v string) {
+	o.HrSamplerName = &v
+}
 
+// GetHrScale returns the HrScale field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetHrScale() float32 {
+	if o == nil || IsNil(o.HrScale) {
+		var ret float32
+		return ret
+	}
+	return *o.HrScale
+}
 
+// GetHrScaleOk returns a tuple with the HrScale field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetHrScaleOk() (*float32, bool) {
+	if o == nil || IsNil(o.HrScale) {
+		return nil, false
+	}
+	return o.HrScale, true
+}
 
 // HasHrScale returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasHrScale() bool {
@@ -357,8 +793,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasHrScale() bool {
 	return false
 }
 
+// SetHrScale gets a reference to the given float32 and assigns it to the HrScale field.
+func (o *StableDiffusionTxt2ImgRequest) SetHrScale(v float32) {
+	o.HrScale = &v
+}
 
+// GetHrScheduler returns the HrScheduler field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetHrScheduler() string {
+	if o == nil || IsNil(o.HrScheduler) {
+		var ret string
+		return ret
+	}
+	return *o.HrScheduler
+}
 
+// GetHrSchedulerOk returns a tuple with the HrScheduler field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetHrSchedulerOk() (*string, bool) {
+	if o == nil || IsNil(o.HrScheduler) {
+		return nil, false
+	}
+	return o.HrScheduler, true
+}
 
 // HasHrScheduler returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasHrScheduler() bool {
@@ -369,8 +825,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasHrScheduler() bool {
 	return false
 }
 
+// SetHrScheduler gets a reference to the given string and assigns it to the HrScheduler field.
+func (o *StableDiffusionTxt2ImgRequest) SetHrScheduler(v string) {
+	o.HrScheduler = &v
+}
 
+// GetHrSecondPassSteps returns the HrSecondPassSteps field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetHrSecondPassSteps() int32 {
+	if o == nil || IsNil(o.HrSecondPassSteps) {
+		var ret int32
+		return ret
+	}
+	return *o.HrSecondPassSteps
+}
 
+// GetHrSecondPassStepsOk returns a tuple with the HrSecondPassSteps field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetHrSecondPassStepsOk() (*int32, bool) {
+	if o == nil || IsNil(o.HrSecondPassSteps) {
+		return nil, false
+	}
+	return o.HrSecondPassSteps, true
+}
 
 // HasHrSecondPassSteps returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasHrSecondPassSteps() bool {
@@ -381,8 +857,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasHrSecondPassSteps() bool {
 	return false
 }
 
+// SetHrSecondPassSteps gets a reference to the given int32 and assigns it to the HrSecondPassSteps field.
+func (o *StableDiffusionTxt2ImgRequest) SetHrSecondPassSteps(v int32) {
+	o.HrSecondPassSteps = &v
+}
 
+// GetHrUpscaler returns the HrUpscaler field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetHrUpscaler() string {
+	if o == nil || IsNil(o.HrUpscaler) {
+		var ret string
+		return ret
+	}
+	return *o.HrUpscaler
+}
 
+// GetHrUpscalerOk returns a tuple with the HrUpscaler field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetHrUpscalerOk() (*string, bool) {
+	if o == nil || IsNil(o.HrUpscaler) {
+		return nil, false
+	}
+	return o.HrUpscaler, true
+}
 
 // HasHrUpscaler returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasHrUpscaler() bool {
@@ -393,8 +889,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasHrUpscaler() bool {
 	return false
 }
 
+// SetHrUpscaler gets a reference to the given string and assigns it to the HrUpscaler field.
+func (o *StableDiffusionTxt2ImgRequest) SetHrUpscaler(v string) {
+	o.HrUpscaler = &v
+}
 
+// GetInfotext returns the Infotext field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetInfotext() string {
+	if o == nil || IsNil(o.Infotext) {
+		var ret string
+		return ret
+	}
+	return *o.Infotext
+}
 
+// GetInfotextOk returns a tuple with the Infotext field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetInfotextOk() (*string, bool) {
+	if o == nil || IsNil(o.Infotext) {
+		return nil, false
+	}
+	return o.Infotext, true
+}
 
 // HasInfotext returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasInfotext() bool {
@@ -405,8 +921,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasInfotext() bool {
 	return false
 }
 
+// SetInfotext gets a reference to the given string and assigns it to the Infotext field.
+func (o *StableDiffusionTxt2ImgRequest) SetInfotext(v string) {
+	o.Infotext = &v
+}
 
+// GetNIter returns the NIter field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetNIter() int32 {
+	if o == nil || IsNil(o.NIter) {
+		var ret int32
+		return ret
+	}
+	return *o.NIter
+}
 
+// GetNIterOk returns a tuple with the NIter field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetNIterOk() (*int32, bool) {
+	if o == nil || IsNil(o.NIter) {
+		return nil, false
+	}
+	return o.NIter, true
+}
 
 // HasNIter returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasNIter() bool {
@@ -417,8 +953,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasNIter() bool {
 	return false
 }
 
+// SetNIter gets a reference to the given int32 and assigns it to the NIter field.
+func (o *StableDiffusionTxt2ImgRequest) SetNIter(v int32) {
+	o.NIter = &v
+}
 
+// GetNegativePrompt returns the NegativePrompt field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetNegativePrompt() string {
+	if o == nil || IsNil(o.NegativePrompt) {
+		var ret string
+		return ret
+	}
+	return *o.NegativePrompt
+}
 
+// GetNegativePromptOk returns a tuple with the NegativePrompt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetNegativePromptOk() (*string, bool) {
+	if o == nil || IsNil(o.NegativePrompt) {
+		return nil, false
+	}
+	return o.NegativePrompt, true
+}
 
 // HasNegativePrompt returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasNegativePrompt() bool {
@@ -429,8 +985,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasNegativePrompt() bool {
 	return false
 }
 
+// SetNegativePrompt gets a reference to the given string and assigns it to the NegativePrompt field.
+func (o *StableDiffusionTxt2ImgRequest) SetNegativePrompt(v string) {
+	o.NegativePrompt = &v
+}
 
+// GetOverrideSettings returns the OverrideSettings field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetOverrideSettings() map[string]string {
+	if o == nil || IsNil(o.OverrideSettings) {
+		var ret map[string]string
+		return ret
+	}
+	return *o.OverrideSettings
+}
 
+// GetOverrideSettingsOk returns a tuple with the OverrideSettings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetOverrideSettingsOk() (*map[string]string, bool) {
+	if o == nil || IsNil(o.OverrideSettings) {
+		return nil, false
+	}
+	return o.OverrideSettings, true
+}
 
 // HasOverrideSettings returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasOverrideSettings() bool {
@@ -441,8 +1017,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasOverrideSettings() bool {
 	return false
 }
 
+// SetOverrideSettings gets a reference to the given map[string]string and assigns it to the OverrideSettings field.
+func (o *StableDiffusionTxt2ImgRequest) SetOverrideSettings(v map[string]string) {
+	o.OverrideSettings = &v
+}
 
+// GetOverrideSettingsRestoreAfterwards returns the OverrideSettingsRestoreAfterwards field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetOverrideSettingsRestoreAfterwards() bool {
+	if o == nil || IsNil(o.OverrideSettingsRestoreAfterwards) {
+		var ret bool
+		return ret
+	}
+	return *o.OverrideSettingsRestoreAfterwards
+}
 
+// GetOverrideSettingsRestoreAfterwardsOk returns a tuple with the OverrideSettingsRestoreAfterwards field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetOverrideSettingsRestoreAfterwardsOk() (*bool, bool) {
+	if o == nil || IsNil(o.OverrideSettingsRestoreAfterwards) {
+		return nil, false
+	}
+	return o.OverrideSettingsRestoreAfterwards, true
+}
 
 // HasOverrideSettingsRestoreAfterwards returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasOverrideSettingsRestoreAfterwards() bool {
@@ -453,8 +1049,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasOverrideSettingsRestoreAfterwards() b
 	return false
 }
 
+// SetOverrideSettingsRestoreAfterwards gets a reference to the given bool and assigns it to the OverrideSettingsRestoreAfterwards field.
+func (o *StableDiffusionTxt2ImgRequest) SetOverrideSettingsRestoreAfterwards(v bool) {
+	o.OverrideSettingsRestoreAfterwards = &v
+}
 
+// GetPrompt returns the Prompt field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetPrompt() string {
+	if o == nil || IsNil(o.Prompt) {
+		var ret string
+		return ret
+	}
+	return *o.Prompt
+}
 
+// GetPromptOk returns a tuple with the Prompt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetPromptOk() (*string, bool) {
+	if o == nil || IsNil(o.Prompt) {
+		return nil, false
+	}
+	return o.Prompt, true
+}
 
 // HasPrompt returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasPrompt() bool {
@@ -465,8 +1081,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasPrompt() bool {
 	return false
 }
 
+// SetPrompt gets a reference to the given string and assigns it to the Prompt field.
+func (o *StableDiffusionTxt2ImgRequest) SetPrompt(v string) {
+	o.Prompt = &v
+}
 
+// GetRefinerCheckpoint returns the RefinerCheckpoint field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetRefinerCheckpoint() string {
+	if o == nil || IsNil(o.RefinerCheckpoint) {
+		var ret string
+		return ret
+	}
+	return *o.RefinerCheckpoint
+}
 
+// GetRefinerCheckpointOk returns a tuple with the RefinerCheckpoint field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetRefinerCheckpointOk() (*string, bool) {
+	if o == nil || IsNil(o.RefinerCheckpoint) {
+		return nil, false
+	}
+	return o.RefinerCheckpoint, true
+}
 
 // HasRefinerCheckpoint returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasRefinerCheckpoint() bool {
@@ -477,8 +1113,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasRefinerCheckpoint() bool {
 	return false
 }
 
+// SetRefinerCheckpoint gets a reference to the given string and assigns it to the RefinerCheckpoint field.
+func (o *StableDiffusionTxt2ImgRequest) SetRefinerCheckpoint(v string) {
+	o.RefinerCheckpoint = &v
+}
 
+// GetRefinerSwitchAt returns the RefinerSwitchAt field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetRefinerSwitchAt() float32 {
+	if o == nil || IsNil(o.RefinerSwitchAt) {
+		var ret float32
+		return ret
+	}
+	return *o.RefinerSwitchAt
+}
 
+// GetRefinerSwitchAtOk returns a tuple with the RefinerSwitchAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetRefinerSwitchAtOk() (*float32, bool) {
+	if o == nil || IsNil(o.RefinerSwitchAt) {
+		return nil, false
+	}
+	return o.RefinerSwitchAt, true
+}
 
 // HasRefinerSwitchAt returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasRefinerSwitchAt() bool {
@@ -489,8 +1145,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasRefinerSwitchAt() bool {
 	return false
 }
 
+// SetRefinerSwitchAt gets a reference to the given float32 and assigns it to the RefinerSwitchAt field.
+func (o *StableDiffusionTxt2ImgRequest) SetRefinerSwitchAt(v float32) {
+	o.RefinerSwitchAt = &v
+}
 
+// GetRestoreFaces returns the RestoreFaces field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetRestoreFaces() bool {
+	if o == nil || IsNil(o.RestoreFaces) {
+		var ret bool
+		return ret
+	}
+	return *o.RestoreFaces
+}
 
+// GetRestoreFacesOk returns a tuple with the RestoreFaces field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetRestoreFacesOk() (*bool, bool) {
+	if o == nil || IsNil(o.RestoreFaces) {
+		return nil, false
+	}
+	return o.RestoreFaces, true
+}
 
 // HasRestoreFaces returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasRestoreFaces() bool {
@@ -501,8 +1177,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasRestoreFaces() bool {
 	return false
 }
 
+// SetRestoreFaces gets a reference to the given bool and assigns it to the RestoreFaces field.
+func (o *StableDiffusionTxt2ImgRequest) SetRestoreFaces(v bool) {
+	o.RestoreFaces = &v
+}
 
+// GetSChurn returns the SChurn field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetSChurn() float32 {
+	if o == nil || IsNil(o.SChurn) {
+		var ret float32
+		return ret
+	}
+	return *o.SChurn
+}
 
+// GetSChurnOk returns a tuple with the SChurn field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetSChurnOk() (*float32, bool) {
+	if o == nil || IsNil(o.SChurn) {
+		return nil, false
+	}
+	return o.SChurn, true
+}
 
 // HasSChurn returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasSChurn() bool {
@@ -513,8 +1209,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasSChurn() bool {
 	return false
 }
 
+// SetSChurn gets a reference to the given float32 and assigns it to the SChurn field.
+func (o *StableDiffusionTxt2ImgRequest) SetSChurn(v float32) {
+	o.SChurn = &v
+}
 
+// GetSMinUncond returns the SMinUncond field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetSMinUncond() float32 {
+	if o == nil || IsNil(o.SMinUncond) {
+		var ret float32
+		return ret
+	}
+	return *o.SMinUncond
+}
 
+// GetSMinUncondOk returns a tuple with the SMinUncond field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetSMinUncondOk() (*float32, bool) {
+	if o == nil || IsNil(o.SMinUncond) {
+		return nil, false
+	}
+	return o.SMinUncond, true
+}
 
 // HasSMinUncond returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasSMinUncond() bool {
@@ -525,8 +1241,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasSMinUncond() bool {
 	return false
 }
 
+// SetSMinUncond gets a reference to the given float32 and assigns it to the SMinUncond field.
+func (o *StableDiffusionTxt2ImgRequest) SetSMinUncond(v float32) {
+	o.SMinUncond = &v
+}
 
+// GetSNoise returns the SNoise field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetSNoise() float32 {
+	if o == nil || IsNil(o.SNoise) {
+		var ret float32
+		return ret
+	}
+	return *o.SNoise
+}
 
+// GetSNoiseOk returns a tuple with the SNoise field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetSNoiseOk() (*float32, bool) {
+	if o == nil || IsNil(o.SNoise) {
+		return nil, false
+	}
+	return o.SNoise, true
+}
 
 // HasSNoise returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasSNoise() bool {
@@ -537,8 +1273,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasSNoise() bool {
 	return false
 }
 
+// SetSNoise gets a reference to the given float32 and assigns it to the SNoise field.
+func (o *StableDiffusionTxt2ImgRequest) SetSNoise(v float32) {
+	o.SNoise = &v
+}
 
+// GetSTmax returns the STmax field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetSTmax() float32 {
+	if o == nil || IsNil(o.STmax) {
+		var ret float32
+		return ret
+	}
+	return *o.STmax
+}
 
+// GetSTmaxOk returns a tuple with the STmax field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetSTmaxOk() (*float32, bool) {
+	if o == nil || IsNil(o.STmax) {
+		return nil, false
+	}
+	return o.STmax, true
+}
 
 // HasSTmax returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasSTmax() bool {
@@ -549,8 +1305,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasSTmax() bool {
 	return false
 }
 
+// SetSTmax gets a reference to the given float32 and assigns it to the STmax field.
+func (o *StableDiffusionTxt2ImgRequest) SetSTmax(v float32) {
+	o.STmax = &v
+}
 
+// GetSTmin returns the STmin field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetSTmin() float32 {
+	if o == nil || IsNil(o.STmin) {
+		var ret float32
+		return ret
+	}
+	return *o.STmin
+}
 
+// GetSTminOk returns a tuple with the STmin field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetSTminOk() (*float32, bool) {
+	if o == nil || IsNil(o.STmin) {
+		return nil, false
+	}
+	return o.STmin, true
+}
 
 // HasSTmin returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasSTmin() bool {
@@ -561,8 +1337,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasSTmin() bool {
 	return false
 }
 
+// SetSTmin gets a reference to the given float32 and assigns it to the STmin field.
+func (o *StableDiffusionTxt2ImgRequest) SetSTmin(v float32) {
+	o.STmin = &v
+}
 
+// GetSamplerIndex returns the SamplerIndex field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetSamplerIndex() string {
+	if o == nil || IsNil(o.SamplerIndex) {
+		var ret string
+		return ret
+	}
+	return *o.SamplerIndex
+}
 
+// GetSamplerIndexOk returns a tuple with the SamplerIndex field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetSamplerIndexOk() (*string, bool) {
+	if o == nil || IsNil(o.SamplerIndex) {
+		return nil, false
+	}
+	return o.SamplerIndex, true
+}
 
 // HasSamplerIndex returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasSamplerIndex() bool {
@@ -573,8 +1369,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasSamplerIndex() bool {
 	return false
 }
 
+// SetSamplerIndex gets a reference to the given string and assigns it to the SamplerIndex field.
+func (o *StableDiffusionTxt2ImgRequest) SetSamplerIndex(v string) {
+	o.SamplerIndex = &v
+}
 
+// GetSamplerName returns the SamplerName field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetSamplerName() string {
+	if o == nil || IsNil(o.SamplerName) {
+		var ret string
+		return ret
+	}
+	return *o.SamplerName
+}
 
+// GetSamplerNameOk returns a tuple with the SamplerName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetSamplerNameOk() (*string, bool) {
+	if o == nil || IsNil(o.SamplerName) {
+		return nil, false
+	}
+	return o.SamplerName, true
+}
 
 // HasSamplerName returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasSamplerName() bool {
@@ -585,8 +1401,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasSamplerName() bool {
 	return false
 }
 
+// SetSamplerName gets a reference to the given string and assigns it to the SamplerName field.
+func (o *StableDiffusionTxt2ImgRequest) SetSamplerName(v string) {
+	o.SamplerName = &v
+}
 
+// GetSaveImages returns the SaveImages field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetSaveImages() bool {
+	if o == nil || IsNil(o.SaveImages) {
+		var ret bool
+		return ret
+	}
+	return *o.SaveImages
+}
 
+// GetSaveImagesOk returns a tuple with the SaveImages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetSaveImagesOk() (*bool, bool) {
+	if o == nil || IsNil(o.SaveImages) {
+		return nil, false
+	}
+	return o.SaveImages, true
+}
 
 // HasSaveImages returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasSaveImages() bool {
@@ -597,8 +1433,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasSaveImages() bool {
 	return false
 }
 
+// SetSaveImages gets a reference to the given bool and assigns it to the SaveImages field.
+func (o *StableDiffusionTxt2ImgRequest) SetSaveImages(v bool) {
+	o.SaveImages = &v
+}
 
+// GetScheduler returns the Scheduler field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetScheduler() string {
+	if o == nil || IsNil(o.Scheduler) {
+		var ret string
+		return ret
+	}
+	return *o.Scheduler
+}
 
+// GetSchedulerOk returns a tuple with the Scheduler field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetSchedulerOk() (*string, bool) {
+	if o == nil || IsNil(o.Scheduler) {
+		return nil, false
+	}
+	return o.Scheduler, true
+}
 
 // HasScheduler returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasScheduler() bool {
@@ -609,8 +1465,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasScheduler() bool {
 	return false
 }
 
+// SetScheduler gets a reference to the given string and assigns it to the Scheduler field.
+func (o *StableDiffusionTxt2ImgRequest) SetScheduler(v string) {
+	o.Scheduler = &v
+}
 
+// GetScriptArgs returns the ScriptArgs field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetScriptArgs() []string {
+	if o == nil || IsNil(o.ScriptArgs) {
+		var ret []string
+		return ret
+	}
+	return o.ScriptArgs
+}
 
+// GetScriptArgsOk returns a tuple with the ScriptArgs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetScriptArgsOk() ([]string, bool) {
+	if o == nil || IsNil(o.ScriptArgs) {
+		return nil, false
+	}
+	return o.ScriptArgs, true
+}
 
 // HasScriptArgs returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasScriptArgs() bool {
@@ -621,8 +1497,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasScriptArgs() bool {
 	return false
 }
 
+// SetScriptArgs gets a reference to the given []string and assigns it to the ScriptArgs field.
+func (o *StableDiffusionTxt2ImgRequest) SetScriptArgs(v []string) {
+	o.ScriptArgs = v
+}
 
+// GetScriptName returns the ScriptName field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetScriptName() string {
+	if o == nil || IsNil(o.ScriptName) {
+		var ret string
+		return ret
+	}
+	return *o.ScriptName
+}
 
+// GetScriptNameOk returns a tuple with the ScriptName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetScriptNameOk() (*string, bool) {
+	if o == nil || IsNil(o.ScriptName) {
+		return nil, false
+	}
+	return o.ScriptName, true
+}
 
 // HasScriptName returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasScriptName() bool {
@@ -633,8 +1529,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasScriptName() bool {
 	return false
 }
 
+// SetScriptName gets a reference to the given string and assigns it to the ScriptName field.
+func (o *StableDiffusionTxt2ImgRequest) SetScriptName(v string) {
+	o.ScriptName = &v
+}
 
+// GetSeed returns the Seed field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetSeed() int32 {
+	if o == nil || IsNil(o.Seed) {
+		var ret int32
+		return ret
+	}
+	return *o.Seed
+}
 
+// GetSeedOk returns a tuple with the Seed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetSeedOk() (*int32, bool) {
+	if o == nil || IsNil(o.Seed) {
+		return nil, false
+	}
+	return o.Seed, true
+}
 
 // HasSeed returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasSeed() bool {
@@ -645,8 +1561,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasSeed() bool {
 	return false
 }
 
+// SetSeed gets a reference to the given int32 and assigns it to the Seed field.
+func (o *StableDiffusionTxt2ImgRequest) SetSeed(v int32) {
+	o.Seed = &v
+}
 
+// GetSeedResizeFromH returns the SeedResizeFromH field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetSeedResizeFromH() int32 {
+	if o == nil || IsNil(o.SeedResizeFromH) {
+		var ret int32
+		return ret
+	}
+	return *o.SeedResizeFromH
+}
 
+// GetSeedResizeFromHOk returns a tuple with the SeedResizeFromH field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetSeedResizeFromHOk() (*int32, bool) {
+	if o == nil || IsNil(o.SeedResizeFromH) {
+		return nil, false
+	}
+	return o.SeedResizeFromH, true
+}
 
 // HasSeedResizeFromH returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasSeedResizeFromH() bool {
@@ -657,8 +1593,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasSeedResizeFromH() bool {
 	return false
 }
 
+// SetSeedResizeFromH gets a reference to the given int32 and assigns it to the SeedResizeFromH field.
+func (o *StableDiffusionTxt2ImgRequest) SetSeedResizeFromH(v int32) {
+	o.SeedResizeFromH = &v
+}
 
+// GetSeedResizeFromW returns the SeedResizeFromW field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetSeedResizeFromW() int32 {
+	if o == nil || IsNil(o.SeedResizeFromW) {
+		var ret int32
+		return ret
+	}
+	return *o.SeedResizeFromW
+}
 
+// GetSeedResizeFromWOk returns a tuple with the SeedResizeFromW field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetSeedResizeFromWOk() (*int32, bool) {
+	if o == nil || IsNil(o.SeedResizeFromW) {
+		return nil, false
+	}
+	return o.SeedResizeFromW, true
+}
 
 // HasSeedResizeFromW returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasSeedResizeFromW() bool {
@@ -669,8 +1625,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasSeedResizeFromW() bool {
 	return false
 }
 
+// SetSeedResizeFromW gets a reference to the given int32 and assigns it to the SeedResizeFromW field.
+func (o *StableDiffusionTxt2ImgRequest) SetSeedResizeFromW(v int32) {
+	o.SeedResizeFromW = &v
+}
 
+// GetSendImages returns the SendImages field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetSendImages() bool {
+	if o == nil || IsNil(o.SendImages) {
+		var ret bool
+		return ret
+	}
+	return *o.SendImages
+}
 
+// GetSendImagesOk returns a tuple with the SendImages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetSendImagesOk() (*bool, bool) {
+	if o == nil || IsNil(o.SendImages) {
+		return nil, false
+	}
+	return o.SendImages, true
+}
 
 // HasSendImages returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasSendImages() bool {
@@ -681,8 +1657,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasSendImages() bool {
 	return false
 }
 
+// SetSendImages gets a reference to the given bool and assigns it to the SendImages field.
+func (o *StableDiffusionTxt2ImgRequest) SetSendImages(v bool) {
+	o.SendImages = &v
+}
 
+// GetSteps returns the Steps field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetSteps() int32 {
+	if o == nil || IsNil(o.Steps) {
+		var ret int32
+		return ret
+	}
+	return *o.Steps
+}
 
+// GetStepsOk returns a tuple with the Steps field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetStepsOk() (*int32, bool) {
+	if o == nil || IsNil(o.Steps) {
+		return nil, false
+	}
+	return o.Steps, true
+}
 
 // HasSteps returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasSteps() bool {
@@ -693,8 +1689,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasSteps() bool {
 	return false
 }
 
+// SetSteps gets a reference to the given int32 and assigns it to the Steps field.
+func (o *StableDiffusionTxt2ImgRequest) SetSteps(v int32) {
+	o.Steps = &v
+}
 
+// GetStyles returns the Styles field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetStyles() []string {
+	if o == nil || IsNil(o.Styles) {
+		var ret []string
+		return ret
+	}
+	return o.Styles
+}
 
+// GetStylesOk returns a tuple with the Styles field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetStylesOk() ([]string, bool) {
+	if o == nil || IsNil(o.Styles) {
+		return nil, false
+	}
+	return o.Styles, true
+}
 
 // HasStyles returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasStyles() bool {
@@ -705,8 +1721,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasStyles() bool {
 	return false
 }
 
+// SetStyles gets a reference to the given []string and assigns it to the Styles field.
+func (o *StableDiffusionTxt2ImgRequest) SetStyles(v []string) {
+	o.Styles = v
+}
 
+// GetSubseed returns the Subseed field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetSubseed() int32 {
+	if o == nil || IsNil(o.Subseed) {
+		var ret int32
+		return ret
+	}
+	return *o.Subseed
+}
 
+// GetSubseedOk returns a tuple with the Subseed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetSubseedOk() (*int32, bool) {
+	if o == nil || IsNil(o.Subseed) {
+		return nil, false
+	}
+	return o.Subseed, true
+}
 
 // HasSubseed returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasSubseed() bool {
@@ -717,8 +1753,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasSubseed() bool {
 	return false
 }
 
+// SetSubseed gets a reference to the given int32 and assigns it to the Subseed field.
+func (o *StableDiffusionTxt2ImgRequest) SetSubseed(v int32) {
+	o.Subseed = &v
+}
 
+// GetSubseedStrength returns the SubseedStrength field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetSubseedStrength() float32 {
+	if o == nil || IsNil(o.SubseedStrength) {
+		var ret float32
+		return ret
+	}
+	return *o.SubseedStrength
+}
 
+// GetSubseedStrengthOk returns a tuple with the SubseedStrength field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetSubseedStrengthOk() (*float32, bool) {
+	if o == nil || IsNil(o.SubseedStrength) {
+		return nil, false
+	}
+	return o.SubseedStrength, true
+}
 
 // HasSubseedStrength returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasSubseedStrength() bool {
@@ -729,8 +1785,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasSubseedStrength() bool {
 	return false
 }
 
+// SetSubseedStrength gets a reference to the given float32 and assigns it to the SubseedStrength field.
+func (o *StableDiffusionTxt2ImgRequest) SetSubseedStrength(v float32) {
+	o.SubseedStrength = &v
+}
 
+// GetTiling returns the Tiling field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetTiling() bool {
+	if o == nil || IsNil(o.Tiling) {
+		var ret bool
+		return ret
+	}
+	return *o.Tiling
+}
 
+// GetTilingOk returns a tuple with the Tiling field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetTilingOk() (*bool, bool) {
+	if o == nil || IsNil(o.Tiling) {
+		return nil, false
+	}
+	return o.Tiling, true
+}
 
 // HasTiling returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasTiling() bool {
@@ -741,8 +1817,28 @@ func (o *StableDiffusionTxt2ImgRequest) HasTiling() bool {
 	return false
 }
 
+// SetTiling gets a reference to the given bool and assigns it to the Tiling field.
+func (o *StableDiffusionTxt2ImgRequest) SetTiling(v bool) {
+	o.Tiling = &v
+}
 
+// GetWidth returns the Width field value if set, zero value otherwise.
+func (o *StableDiffusionTxt2ImgRequest) GetWidth() int32 {
+	if o == nil || IsNil(o.Width) {
+		var ret int32
+		return ret
+	}
+	return *o.Width
+}
 
+// GetWidthOk returns a tuple with the Width field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StableDiffusionTxt2ImgRequest) GetWidthOk() (*int32, bool) {
+	if o == nil || IsNil(o.Width) {
+		return nil, false
+	}
+	return o.Width, true
+}
 
 // HasWidth returns a boolean if a field has been set.
 func (o *StableDiffusionTxt2ImgRequest) HasWidth() bool {
@@ -753,6 +1849,10 @@ func (o *StableDiffusionTxt2ImgRequest) HasWidth() bool {
 	return false
 }
 
+// SetWidth gets a reference to the given int32 and assigns it to the Width field.
+func (o *StableDiffusionTxt2ImgRequest) SetWidth(v int32) {
+	o.Width = &v
+}
 
 func (o StableDiffusionTxt2ImgRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

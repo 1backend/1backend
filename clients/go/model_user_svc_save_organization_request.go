@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -50,7 +50,23 @@ func NewUserSvcSaveOrganizationRequestWithDefaults() *UserSvcSaveOrganizationReq
 	return &this
 }
 
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *UserSvcSaveOrganizationRequest) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
 
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcSaveOrganizationRequest) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
 
 // HasId returns a boolean if a field has been set.
 func (o *UserSvcSaveOrganizationRequest) HasId() bool {
@@ -61,8 +77,28 @@ func (o *UserSvcSaveOrganizationRequest) HasId() bool {
 	return false
 }
 
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *UserSvcSaveOrganizationRequest) SetId(v string) {
+	o.Id = &v
+}
 
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *UserSvcSaveOrganizationRequest) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
 
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcSaveOrganizationRequest) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
 
 // HasName returns a boolean if a field has been set.
 func (o *UserSvcSaveOrganizationRequest) HasName() bool {
@@ -73,11 +109,52 @@ func (o *UserSvcSaveOrganizationRequest) HasName() bool {
 	return false
 }
 
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *UserSvcSaveOrganizationRequest) SetName(v string) {
+	o.Name = &v
+}
 
+// GetSlug returns the Slug field value
+func (o *UserSvcSaveOrganizationRequest) GetSlug() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Slug
+}
 
+// GetSlugOk returns a tuple with the Slug field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcSaveOrganizationRequest) GetSlugOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Slug, true
+}
 
+// SetSlug sets field value
+func (o *UserSvcSaveOrganizationRequest) SetSlug(v string) {
+	o.Slug = v
+}
 
+// GetThumbnailFileId returns the ThumbnailFileId field value if set, zero value otherwise.
+func (o *UserSvcSaveOrganizationRequest) GetThumbnailFileId() string {
+	if o == nil || IsNil(o.ThumbnailFileId) {
+		var ret string
+		return ret
+	}
+	return *o.ThumbnailFileId
+}
+
+// GetThumbnailFileIdOk returns a tuple with the ThumbnailFileId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcSaveOrganizationRequest) GetThumbnailFileIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ThumbnailFileId) {
+		return nil, false
+	}
+	return o.ThumbnailFileId, true
+}
 
 // HasThumbnailFileId returns a boolean if a field has been set.
 func (o *UserSvcSaveOrganizationRequest) HasThumbnailFileId() bool {
@@ -88,6 +165,10 @@ func (o *UserSvcSaveOrganizationRequest) HasThumbnailFileId() bool {
 	return false
 }
 
+// SetThumbnailFileId gets a reference to the given string and assigns it to the ThumbnailFileId field.
+func (o *UserSvcSaveOrganizationRequest) SetThumbnailFileId(v string) {
+	o.ThumbnailFileId = &v
+}
 
 func (o UserSvcSaveOrganizationRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

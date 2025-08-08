@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewContainerSvcListLogsResponseWithDefaults() *ContainerSvcListLogsResponse
 	return &this
 }
 
+// GetLogs returns the Logs field value if set, zero value otherwise.
+func (o *ContainerSvcListLogsResponse) GetLogs() []ContainerSvcLog {
+	if o == nil || IsNil(o.Logs) {
+		var ret []ContainerSvcLog
+		return ret
+	}
+	return o.Logs
+}
 
+// GetLogsOk returns a tuple with the Logs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcListLogsResponse) GetLogsOk() ([]ContainerSvcLog, bool) {
+	if o == nil || IsNil(o.Logs) {
+		return nil, false
+	}
+	return o.Logs, true
+}
 
 // HasLogs returns a boolean if a field has been set.
 func (o *ContainerSvcListLogsResponse) HasLogs() bool {
@@ -51,6 +67,10 @@ func (o *ContainerSvcListLogsResponse) HasLogs() bool {
 	return false
 }
 
+// SetLogs gets a reference to the given []ContainerSvcLog and assigns it to the Logs field.
+func (o *ContainerSvcListLogsResponse) SetLogs(v []ContainerSvcLog) {
+	o.Logs = v
+}
 
 func (o ContainerSvcListLogsResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

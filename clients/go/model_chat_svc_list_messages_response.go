@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewChatSvcListMessagesResponseWithDefaults() *ChatSvcListMessagesResponse {
 	return &this
 }
 
+// GetMessages returns the Messages field value if set, zero value otherwise.
+func (o *ChatSvcListMessagesResponse) GetMessages() []ChatSvcMessage {
+	if o == nil || IsNil(o.Messages) {
+		var ret []ChatSvcMessage
+		return ret
+	}
+	return o.Messages
+}
 
+// GetMessagesOk returns a tuple with the Messages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ChatSvcListMessagesResponse) GetMessagesOk() ([]ChatSvcMessage, bool) {
+	if o == nil || IsNil(o.Messages) {
+		return nil, false
+	}
+	return o.Messages, true
+}
 
 // HasMessages returns a boolean if a field has been set.
 func (o *ChatSvcListMessagesResponse) HasMessages() bool {
@@ -51,6 +67,10 @@ func (o *ChatSvcListMessagesResponse) HasMessages() bool {
 	return false
 }
 
+// SetMessages gets a reference to the given []ChatSvcMessage and assigns it to the Messages field.
+func (o *ChatSvcListMessagesResponse) SetMessages(v []ChatSvcMessage) {
+	o.Messages = v
+}
 
 func (o ChatSvcListMessagesResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

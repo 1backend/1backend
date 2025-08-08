@@ -801,10 +801,8 @@ definitions:
         items:
           $ref: '#/definitions/datastore.Filter'
         type: array
-      values:
-        description: '@openapi-any-array'
-        items: {}
-        type: array
+      valuesJson:
+        type: string
     type: object
   datastore.Op:
     enum:
@@ -837,14 +835,12 @@ definitions:
     type: object
   datastore.Query:
     properties:
-      after:
+      afterJson:
         description: |-
-          After is used for cursor-based pagination, which is more
+          AfterJson is used for cursor-based pagination, which is more
           effective in scalable and distributed environments compared
           to offset-based pagination.
-          @openapi-any-array
-        items: {}
-        type: array
+        type: string
       count:
         description: |-
           Count true means return the count of the dataset filtered by Filters
@@ -2355,12 +2351,6 @@ definitions:
       InstanceStatusUnknown: Default state when the instance status is not yet determined
       InstanceStatusUnreachable: Instance is not reachable, possibly down or with
         network issues
-    x-enum-descriptions:
-    - Default state when the instance status is not yet determined
-    - Instance is fully operational and responding as expected
-    - Instance is responding but with performance issues or partial failures
-    - Instance is not reachable, possibly down or with network issues
-    - Instance encountered errors or failed multiple health checks
     x-enum-varnames:
     - InstanceStatusUnknown
     - InstanceStatusHealthy
@@ -3748,7 +3738,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.8.0-rc1
+  version: 0.8.0-rc5
 paths:
   /chat-svc/events:
     get:

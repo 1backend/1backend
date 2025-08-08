@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewRegistrySvcSaveDefinitionRequestWithDefaults() *RegistrySvcSaveDefinitio
 	return &this
 }
 
+// GetDefinition returns the Definition field value if set, zero value otherwise.
+func (o *RegistrySvcSaveDefinitionRequest) GetDefinition() RegistrySvcDefinition {
+	if o == nil || IsNil(o.Definition) {
+		var ret RegistrySvcDefinition
+		return ret
+	}
+	return *o.Definition
+}
 
+// GetDefinitionOk returns a tuple with the Definition field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcSaveDefinitionRequest) GetDefinitionOk() (*RegistrySvcDefinition, bool) {
+	if o == nil || IsNil(o.Definition) {
+		return nil, false
+	}
+	return o.Definition, true
+}
 
 // HasDefinition returns a boolean if a field has been set.
 func (o *RegistrySvcSaveDefinitionRequest) HasDefinition() bool {
@@ -51,6 +67,10 @@ func (o *RegistrySvcSaveDefinitionRequest) HasDefinition() bool {
 	return false
 }
 
+// SetDefinition gets a reference to the given RegistrySvcDefinition and assigns it to the Definition field.
+func (o *RegistrySvcSaveDefinitionRequest) SetDefinition(v RegistrySvcDefinition) {
+	o.Definition = &v
+}
 
 func (o RegistrySvcSaveDefinitionRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

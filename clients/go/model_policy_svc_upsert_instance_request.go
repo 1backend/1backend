@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewPolicySvcUpsertInstanceRequestWithDefaults() *PolicySvcUpsertInstanceReq
 	return &this
 }
 
+// GetInstance returns the Instance field value if set, zero value otherwise.
+func (o *PolicySvcUpsertInstanceRequest) GetInstance() PolicySvcInstance {
+	if o == nil || IsNil(o.Instance) {
+		var ret PolicySvcInstance
+		return ret
+	}
+	return *o.Instance
+}
 
+// GetInstanceOk returns a tuple with the Instance field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PolicySvcUpsertInstanceRequest) GetInstanceOk() (*PolicySvcInstance, bool) {
+	if o == nil || IsNil(o.Instance) {
+		return nil, false
+	}
+	return o.Instance, true
+}
 
 // HasInstance returns a boolean if a field has been set.
 func (o *PolicySvcUpsertInstanceRequest) HasInstance() bool {
@@ -51,6 +67,10 @@ func (o *PolicySvcUpsertInstanceRequest) HasInstance() bool {
 	return false
 }
 
+// SetInstance gets a reference to the given PolicySvcInstance and assigns it to the Instance field.
+func (o *PolicySvcUpsertInstanceRequest) SetInstance(v PolicySvcInstance) {
+	o.Instance = &v
+}
 
 func (o PolicySvcUpsertInstanceRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -50,14 +50,77 @@ func NewModelSvcModelStatusWithDefaults() *ModelSvcModelStatus {
 	return &this
 }
 
+// GetAddress returns the Address field value
+func (o *ModelSvcModelStatus) GetAddress() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Address
+}
 
+// GetAddressOk returns a tuple with the Address field value
+// and a boolean to check if the value has been set.
+func (o *ModelSvcModelStatus) GetAddressOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Address, true
+}
 
+// SetAddress sets field value
+func (o *ModelSvcModelStatus) SetAddress(v string) {
+	o.Address = v
+}
 
+// GetAssetsReady returns the AssetsReady field value
+func (o *ModelSvcModelStatus) GetAssetsReady() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
 
+	return o.AssetsReady
+}
 
+// GetAssetsReadyOk returns a tuple with the AssetsReady field value
+// and a boolean to check if the value has been set.
+func (o *ModelSvcModelStatus) GetAssetsReadyOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.AssetsReady, true
+}
 
+// SetAssetsReady sets field value
+func (o *ModelSvcModelStatus) SetAssetsReady(v bool) {
+	o.AssetsReady = v
+}
 
+// GetRunning returns the Running field value
+func (o *ModelSvcModelStatus) GetRunning() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
+
+	return o.Running
+}
+
+// GetRunningOk returns a tuple with the Running field value
+// and a boolean to check if the value has been set.
+func (o *ModelSvcModelStatus) GetRunningOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Running, true
+}
+
+// SetRunning sets field value
+func (o *ModelSvcModelStatus) SetRunning(v bool) {
+	o.Running = v
+}
 
 func (o ModelSvcModelStatus) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

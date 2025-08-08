@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewModelSvcDefaultParametersWithDefaults() *ModelSvcDefaultParameters {
 	return &this
 }
 
+// GetContainer returns the Container field value if set, zero value otherwise.
+func (o *ModelSvcDefaultParameters) GetContainer() ModelSvcContainer {
+	if o == nil || IsNil(o.Container) {
+		var ret ModelSvcContainer
+		return ret
+	}
+	return *o.Container
+}
 
+// GetContainerOk returns a tuple with the Container field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ModelSvcDefaultParameters) GetContainerOk() (*ModelSvcContainer, bool) {
+	if o == nil || IsNil(o.Container) {
+		return nil, false
+	}
+	return o.Container, true
+}
 
 // HasContainer returns a boolean if a field has been set.
 func (o *ModelSvcDefaultParameters) HasContainer() bool {
@@ -51,6 +67,10 @@ func (o *ModelSvcDefaultParameters) HasContainer() bool {
 	return false
 }
 
+// SetContainer gets a reference to the given ModelSvcContainer and assigns it to the Container field.
+func (o *ModelSvcDefaultParameters) SetContainer(v ModelSvcContainer) {
+	o.Container = &v
+}
 
 func (o ModelSvcDefaultParameters) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

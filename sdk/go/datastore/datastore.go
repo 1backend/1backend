@@ -8,6 +8,7 @@
 package datastore
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"time"
@@ -170,8 +171,7 @@ const (
 type Filter struct {
 	Fields []string `json:"fields,omitempty"`
 
-	// @openapi-any-array
-	Values []any `json:"values,omitempty"`
+	ValuesJson string `json:"valuesJson,omitempty"`
 
 	Op Op `json:"op"`
 
@@ -195,11 +195,10 @@ type Query struct {
 	// It's advised to use helper functions in your respective client library such as filter constructors (`all`, `equal`, `contains`, `startsWith`) and field selectors (`field`, `fields`, `id`) for easier access.
 	Filters []Filter `json:"filters,omitempty"`
 
-	// After is used for cursor-based pagination, which is more
+	// AfterJson is used for cursor-based pagination, which is more
 	// effective in scalable and distributed environments compared
 	// to offset-based pagination.
-	// @openapi-any-array
-	After []any `json:"after,omitempty"`
+	AfterJson string `json:"afterJson,omitempty"`
 
 	// Limit the number of records in the result set.
 	Limit int64 `json:"limit,omitempty"`
@@ -285,9 +284,9 @@ func Or(filters ...Filter) Filter {
 //	}
 func Equals(fields []string, value any) Filter {
 	return Filter{
-		Fields: fields,
-		Values: []any{value},
-		Op:     OpEquals,
+		Fields:     fields,
+		ValuesJson: marshal([]any{value}),
+		Op:         OpEquals,
 	}
 }
 
@@ -310,9 +309,9 @@ func Equals(fields []string, value any) Filter {
 //	}
 func Intersects(fields []string, values []any) Filter {
 	return Filter{
-		Fields: fields,
-		Values: values,
-		Op:     OpIntersects,
+		Fields:     fields,
+		ValuesJson: marshal(values),
+		Op:         OpIntersects,
 	}
 }
 
@@ -330,9 +329,9 @@ func Intersects(fields []string, values []any) Filter {
 //	}
 func StartsWith(fields []string, value any) Filter {
 	return Filter{
-		Fields: fields,
-		Values: []any{value},
-		Op:     OpStartsWith,
+		Fields:     fields,
+		ValuesJson: marshal([]any{value}),
+		Op:         OpStartsWith,
 	}
 }
 
@@ -350,9 +349,9 @@ func StartsWith(fields []string, value any) Filter {
 //	}
 func ContainsSubstring(fields []string, value any) Filter {
 	return Filter{
-		Fields: fields,
-		Values: []any{value},
-		Op:     OpContainsSubstring,
+		Fields:     fields,
+		ValuesJson: marshal([]any{value}),
+		Op:         OpContainsSubstring,
 	}
 }
 
@@ -370,17 +369,17 @@ func ContainsSubstring(fields []string, value any) Filter {
 //	}
 func IsInList(fields []string, values ...any) Filter {
 	return Filter{
-		Fields: fields,
-		Values: values,
-		Op:     OpIsInList,
+		Fields:     fields,
+		ValuesJson: marshal(values),
+		Op:         OpIsInList,
 	}
 }
 
 func Id(id any) Filter {
 	return Filter{
-		Fields: []string{"id"},
-		Values: []any{id},
-		Op:     OpEquals,
+		Fields:     []string{"id"},
+		ValuesJson: marshal([]any{id}),
+		Op:         OpEquals,
 	}
 }
 
@@ -432,4 +431,9 @@ func ParseAnyDate(input string) (time.Time, error) {
 		}
 	}
 	return time.Time{}, fmt.Errorf("could not parse date: %v", input)
+}
+
+func marshal(x any) string {
+	bs, _ := json.Marshal(x)
+	return string(bs)
 }

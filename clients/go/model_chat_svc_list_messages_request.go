@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -41,7 +41,23 @@ func NewChatSvcListMessagesRequestWithDefaults() *ChatSvcListMessagesRequest {
 	return &this
 }
 
+// GetIds returns the Ids field value if set, zero value otherwise.
+func (o *ChatSvcListMessagesRequest) GetIds() []string {
+	if o == nil || IsNil(o.Ids) {
+		var ret []string
+		return ret
+	}
+	return o.Ids
+}
 
+// GetIdsOk returns a tuple with the Ids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ChatSvcListMessagesRequest) GetIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Ids) {
+		return nil, false
+	}
+	return o.Ids, true
+}
 
 // HasIds returns a boolean if a field has been set.
 func (o *ChatSvcListMessagesRequest) HasIds() bool {
@@ -52,8 +68,28 @@ func (o *ChatSvcListMessagesRequest) HasIds() bool {
 	return false
 }
 
+// SetIds gets a reference to the given []string and assigns it to the Ids field.
+func (o *ChatSvcListMessagesRequest) SetIds(v []string) {
+	o.Ids = v
+}
 
+// GetThreadId returns the ThreadId field value if set, zero value otherwise.
+func (o *ChatSvcListMessagesRequest) GetThreadId() string {
+	if o == nil || IsNil(o.ThreadId) {
+		var ret string
+		return ret
+	}
+	return *o.ThreadId
+}
 
+// GetThreadIdOk returns a tuple with the ThreadId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ChatSvcListMessagesRequest) GetThreadIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ThreadId) {
+		return nil, false
+	}
+	return o.ThreadId, true
+}
 
 // HasThreadId returns a boolean if a field has been set.
 func (o *ChatSvcListMessagesRequest) HasThreadId() bool {
@@ -64,6 +100,10 @@ func (o *ChatSvcListMessagesRequest) HasThreadId() bool {
 	return false
 }
 
+// SetThreadId gets a reference to the given string and assigns it to the ThreadId field.
+func (o *ChatSvcListMessagesRequest) SetThreadId(v string) {
+	o.ThreadId = &v
+}
 
 func (o ChatSvcListMessagesRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

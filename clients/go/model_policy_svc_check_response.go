@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -45,8 +45,29 @@ func NewPolicySvcCheckResponseWithDefaults() *PolicySvcCheckResponse {
 	return &this
 }
 
+// GetAllowed returns the Allowed field value
+func (o *PolicySvcCheckResponse) GetAllowed() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
 
+	return o.Allowed
+}
 
+// GetAllowedOk returns a tuple with the Allowed field value
+// and a boolean to check if the value has been set.
+func (o *PolicySvcCheckResponse) GetAllowedOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Allowed, true
+}
+
+// SetAllowed sets field value
+func (o *PolicySvcCheckResponse) SetAllowed(v bool) {
+	o.Allowed = v
+}
 
 func (o PolicySvcCheckResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

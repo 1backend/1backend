@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -45,7 +45,23 @@ func NewDeploySvcDeploymentStrategyWithDefaults() *DeploySvcDeploymentStrategy {
 	return &this
 }
 
+// GetMaxSurge returns the MaxSurge field value if set, zero value otherwise.
+func (o *DeploySvcDeploymentStrategy) GetMaxSurge() int32 {
+	if o == nil || IsNil(o.MaxSurge) {
+		var ret int32
+		return ret
+	}
+	return *o.MaxSurge
+}
 
+// GetMaxSurgeOk returns a tuple with the MaxSurge field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DeploySvcDeploymentStrategy) GetMaxSurgeOk() (*int32, bool) {
+	if o == nil || IsNil(o.MaxSurge) {
+		return nil, false
+	}
+	return o.MaxSurge, true
+}
 
 // HasMaxSurge returns a boolean if a field has been set.
 func (o *DeploySvcDeploymentStrategy) HasMaxSurge() bool {
@@ -56,8 +72,28 @@ func (o *DeploySvcDeploymentStrategy) HasMaxSurge() bool {
 	return false
 }
 
+// SetMaxSurge gets a reference to the given int32 and assigns it to the MaxSurge field.
+func (o *DeploySvcDeploymentStrategy) SetMaxSurge(v int32) {
+	o.MaxSurge = &v
+}
 
+// GetMaxUnavailable returns the MaxUnavailable field value if set, zero value otherwise.
+func (o *DeploySvcDeploymentStrategy) GetMaxUnavailable() int32 {
+	if o == nil || IsNil(o.MaxUnavailable) {
+		var ret int32
+		return ret
+	}
+	return *o.MaxUnavailable
+}
 
+// GetMaxUnavailableOk returns a tuple with the MaxUnavailable field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DeploySvcDeploymentStrategy) GetMaxUnavailableOk() (*int32, bool) {
+	if o == nil || IsNil(o.MaxUnavailable) {
+		return nil, false
+	}
+	return o.MaxUnavailable, true
+}
 
 // HasMaxUnavailable returns a boolean if a field has been set.
 func (o *DeploySvcDeploymentStrategy) HasMaxUnavailable() bool {
@@ -68,8 +104,28 @@ func (o *DeploySvcDeploymentStrategy) HasMaxUnavailable() bool {
 	return false
 }
 
+// SetMaxUnavailable gets a reference to the given int32 and assigns it to the MaxUnavailable field.
+func (o *DeploySvcDeploymentStrategy) SetMaxUnavailable(v int32) {
+	o.MaxUnavailable = &v
+}
 
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *DeploySvcDeploymentStrategy) GetType() DeploySvcStrategyType {
+	if o == nil || IsNil(o.Type) {
+		var ret DeploySvcStrategyType
+		return ret
+	}
+	return *o.Type
+}
 
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DeploySvcDeploymentStrategy) GetTypeOk() (*DeploySvcStrategyType, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
 
 // HasType returns a boolean if a field has been set.
 func (o *DeploySvcDeploymentStrategy) HasType() bool {
@@ -80,6 +136,10 @@ func (o *DeploySvcDeploymentStrategy) HasType() bool {
 	return false
 }
 
+// SetType gets a reference to the given DeploySvcStrategyType and assigns it to the Type field.
+func (o *DeploySvcDeploymentStrategy) SetType(v DeploySvcStrategyType) {
+	o.Type = &v
+}
 
 func (o DeploySvcDeploymentStrategy) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

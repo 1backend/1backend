@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewProxySvcSaveRoutesRequestWithDefaults() *ProxySvcSaveRoutesRequest {
 	return &this
 }
 
+// GetRoutes returns the Routes field value if set, zero value otherwise.
+func (o *ProxySvcSaveRoutesRequest) GetRoutes() []ProxySvcRouteInput {
+	if o == nil || IsNil(o.Routes) {
+		var ret []ProxySvcRouteInput
+		return ret
+	}
+	return o.Routes
+}
 
+// GetRoutesOk returns a tuple with the Routes field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ProxySvcSaveRoutesRequest) GetRoutesOk() ([]ProxySvcRouteInput, bool) {
+	if o == nil || IsNil(o.Routes) {
+		return nil, false
+	}
+	return o.Routes, true
+}
 
 // HasRoutes returns a boolean if a field has been set.
 func (o *ProxySvcSaveRoutesRequest) HasRoutes() bool {
@@ -51,6 +67,10 @@ func (o *ProxySvcSaveRoutesRequest) HasRoutes() bool {
 	return false
 }
 
+// SetRoutes gets a reference to the given []ProxySvcRouteInput and assigns it to the Routes field.
+func (o *ProxySvcSaveRoutesRequest) SetRoutes(v []ProxySvcRouteInput) {
+	o.Routes = v
+}
 
 func (o ProxySvcSaveRoutesRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

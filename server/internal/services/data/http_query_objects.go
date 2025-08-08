@@ -152,8 +152,13 @@ func (g *DataService) query(
 			q.Limit(options.Query.Limit)
 		}
 
-		if len(options.Query.After) != 0 {
-			q = q.After(options.Query.After...)
+		if options.Query.AfterJson != "" {
+			var after []any
+			err := json.Unmarshal([]byte(options.Query.AfterJson), &after)
+			if err != nil {
+				return nil, err
+			}
+			q = q.After(after...)
 		}
 	}
 

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -41,7 +41,23 @@ func NewPolicySvcParametersWithDefaults() *PolicySvcParameters {
 	return &this
 }
 
+// GetBlocklist returns the Blocklist field value if set, zero value otherwise.
+func (o *PolicySvcParameters) GetBlocklist() PolicySvcBlocklistParameters {
+	if o == nil || IsNil(o.Blocklist) {
+		var ret PolicySvcBlocklistParameters
+		return ret
+	}
+	return *o.Blocklist
+}
 
+// GetBlocklistOk returns a tuple with the Blocklist field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PolicySvcParameters) GetBlocklistOk() (*PolicySvcBlocklistParameters, bool) {
+	if o == nil || IsNil(o.Blocklist) {
+		return nil, false
+	}
+	return o.Blocklist, true
+}
 
 // HasBlocklist returns a boolean if a field has been set.
 func (o *PolicySvcParameters) HasBlocklist() bool {
@@ -52,8 +68,28 @@ func (o *PolicySvcParameters) HasBlocklist() bool {
 	return false
 }
 
+// SetBlocklist gets a reference to the given PolicySvcBlocklistParameters and assigns it to the Blocklist field.
+func (o *PolicySvcParameters) SetBlocklist(v PolicySvcBlocklistParameters) {
+	o.Blocklist = &v
+}
 
+// GetRateLimit returns the RateLimit field value if set, zero value otherwise.
+func (o *PolicySvcParameters) GetRateLimit() PolicySvcRateLimitParameters {
+	if o == nil || IsNil(o.RateLimit) {
+		var ret PolicySvcRateLimitParameters
+		return ret
+	}
+	return *o.RateLimit
+}
 
+// GetRateLimitOk returns a tuple with the RateLimit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PolicySvcParameters) GetRateLimitOk() (*PolicySvcRateLimitParameters, bool) {
+	if o == nil || IsNil(o.RateLimit) {
+		return nil, false
+	}
+	return o.RateLimit, true
+}
 
 // HasRateLimit returns a boolean if a field has been set.
 func (o *PolicySvcParameters) HasRateLimit() bool {
@@ -64,6 +100,10 @@ func (o *PolicySvcParameters) HasRateLimit() bool {
 	return false
 }
 
+// SetRateLimit gets a reference to the given PolicySvcRateLimitParameters and assigns it to the RateLimit field.
+func (o *PolicySvcParameters) SetRateLimit(v PolicySvcRateLimitParameters) {
+	o.RateLimit = &v
+}
 
 func (o PolicySvcParameters) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

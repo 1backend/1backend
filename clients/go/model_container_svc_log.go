@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -51,7 +51,23 @@ func NewContainerSvcLogWithDefaults() *ContainerSvcLog {
 	return &this
 }
 
+// GetContainerId returns the ContainerId field value if set, zero value otherwise.
+func (o *ContainerSvcLog) GetContainerId() string {
+	if o == nil || IsNil(o.ContainerId) {
+		var ret string
+		return ret
+	}
+	return *o.ContainerId
+}
 
+// GetContainerIdOk returns a tuple with the ContainerId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcLog) GetContainerIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ContainerId) {
+		return nil, false
+	}
+	return o.ContainerId, true
+}
 
 // HasContainerId returns a boolean if a field has been set.
 func (o *ContainerSvcLog) HasContainerId() bool {
@@ -62,8 +78,28 @@ func (o *ContainerSvcLog) HasContainerId() bool {
 	return false
 }
 
+// SetContainerId gets a reference to the given string and assigns it to the ContainerId field.
+func (o *ContainerSvcLog) SetContainerId(v string) {
+	o.ContainerId = &v
+}
 
+// GetContent returns the Content field value if set, zero value otherwise.
+func (o *ContainerSvcLog) GetContent() string {
+	if o == nil || IsNil(o.Content) {
+		var ret string
+		return ret
+	}
+	return *o.Content
+}
 
+// GetContentOk returns a tuple with the Content field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcLog) GetContentOk() (*string, bool) {
+	if o == nil || IsNil(o.Content) {
+		return nil, false
+	}
+	return o.Content, true
+}
 
 // HasContent returns a boolean if a field has been set.
 func (o *ContainerSvcLog) HasContent() bool {
@@ -74,11 +110,52 @@ func (o *ContainerSvcLog) HasContent() bool {
 	return false
 }
 
+// SetContent gets a reference to the given string and assigns it to the Content field.
+func (o *ContainerSvcLog) SetContent(v string) {
+	o.Content = &v
+}
 
+// GetCreatedAt returns the CreatedAt field value
+func (o *ContainerSvcLog) GetCreatedAt() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.CreatedAt
+}
 
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcLog) GetCreatedAtOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.CreatedAt, true
+}
 
+// SetCreatedAt sets field value
+func (o *ContainerSvcLog) SetCreatedAt(v string) {
+	o.CreatedAt = v
+}
 
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *ContainerSvcLog) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcLog) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
 
 // HasId returns a boolean if a field has been set.
 func (o *ContainerSvcLog) HasId() bool {
@@ -89,8 +166,28 @@ func (o *ContainerSvcLog) HasId() bool {
 	return false
 }
 
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *ContainerSvcLog) SetId(v string) {
+	o.Id = &v
+}
 
+// GetNodeId returns the NodeId field value if set, zero value otherwise.
+func (o *ContainerSvcLog) GetNodeId() string {
+	if o == nil || IsNil(o.NodeId) {
+		var ret string
+		return ret
+	}
+	return *o.NodeId
+}
 
+// GetNodeIdOk returns a tuple with the NodeId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcLog) GetNodeIdOk() (*string, bool) {
+	if o == nil || IsNil(o.NodeId) {
+		return nil, false
+	}
+	return o.NodeId, true
+}
 
 // HasNodeId returns a boolean if a field has been set.
 func (o *ContainerSvcLog) HasNodeId() bool {
@@ -101,6 +198,10 @@ func (o *ContainerSvcLog) HasNodeId() bool {
 	return false
 }
 
+// SetNodeId gets a reference to the given string and assigns it to the NodeId field.
+func (o *ContainerSvcLog) SetNodeId(v string) {
+	o.NodeId = &v
+}
 
 func (o ContainerSvcLog) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

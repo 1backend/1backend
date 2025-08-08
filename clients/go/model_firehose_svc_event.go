@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -41,7 +41,23 @@ func NewFirehoseSvcEventWithDefaults() *FirehoseSvcEvent {
 	return &this
 }
 
+// GetData returns the Data field value if set, zero value otherwise.
+func (o *FirehoseSvcEvent) GetData() map[string]interface{} {
+	if o == nil || IsNil(o.Data) {
+		var ret map[string]interface{}
+		return ret
+	}
+	return o.Data
+}
 
+// GetDataOk returns a tuple with the Data field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FirehoseSvcEvent) GetDataOk() (map[string]interface{}, bool) {
+	if o == nil || IsNil(o.Data) {
+		return map[string]interface{}{}, false
+	}
+	return o.Data, true
+}
 
 // HasData returns a boolean if a field has been set.
 func (o *FirehoseSvcEvent) HasData() bool {
@@ -52,8 +68,28 @@ func (o *FirehoseSvcEvent) HasData() bool {
 	return false
 }
 
+// SetData gets a reference to the given map[string]interface{} and assigns it to the Data field.
+func (o *FirehoseSvcEvent) SetData(v map[string]interface{}) {
+	o.Data = v
+}
 
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *FirehoseSvcEvent) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
 
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FirehoseSvcEvent) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
 
 // HasName returns a boolean if a field has been set.
 func (o *FirehoseSvcEvent) HasName() bool {
@@ -64,6 +100,10 @@ func (o *FirehoseSvcEvent) HasName() bool {
 	return false
 }
 
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *FirehoseSvcEvent) SetName(v string) {
+	o.Name = &v
+}
 
 func (o FirehoseSvcEvent) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

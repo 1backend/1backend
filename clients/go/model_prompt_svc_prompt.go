@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -78,7 +78,23 @@ func NewPromptSvcPromptWithDefaults() *PromptSvcPrompt {
 	return &this
 }
 
+// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
+func (o *PromptSvcPrompt) GetCreatedAt() string {
+	if o == nil || IsNil(o.CreatedAt) {
+		var ret string
+		return ret
+	}
+	return *o.CreatedAt
+}
 
+// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetCreatedAtOk() (*string, bool) {
+	if o == nil || IsNil(o.CreatedAt) {
+		return nil, false
+	}
+	return o.CreatedAt, true
+}
 
 // HasCreatedAt returns a boolean if a field has been set.
 func (o *PromptSvcPrompt) HasCreatedAt() bool {
@@ -89,8 +105,28 @@ func (o *PromptSvcPrompt) HasCreatedAt() bool {
 	return false
 }
 
+// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
+func (o *PromptSvcPrompt) SetCreatedAt(v string) {
+	o.CreatedAt = &v
+}
 
+// GetEngineParameters returns the EngineParameters field value if set, zero value otherwise.
+func (o *PromptSvcPrompt) GetEngineParameters() PromptSvcEngineParameters {
+	if o == nil || IsNil(o.EngineParameters) {
+		var ret PromptSvcEngineParameters
+		return ret
+	}
+	return *o.EngineParameters
+}
 
+// GetEngineParametersOk returns a tuple with the EngineParameters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetEngineParametersOk() (*PromptSvcEngineParameters, bool) {
+	if o == nil || IsNil(o.EngineParameters) {
+		return nil, false
+	}
+	return o.EngineParameters, true
+}
 
 // HasEngineParameters returns a boolean if a field has been set.
 func (o *PromptSvcPrompt) HasEngineParameters() bool {
@@ -101,8 +137,28 @@ func (o *PromptSvcPrompt) HasEngineParameters() bool {
 	return false
 }
 
+// SetEngineParameters gets a reference to the given PromptSvcEngineParameters and assigns it to the EngineParameters field.
+func (o *PromptSvcPrompt) SetEngineParameters(v PromptSvcEngineParameters) {
+	o.EngineParameters = &v
+}
 
+// GetError returns the Error field value if set, zero value otherwise.
+func (o *PromptSvcPrompt) GetError() string {
+	if o == nil || IsNil(o.Error) {
+		var ret string
+		return ret
+	}
+	return *o.Error
+}
 
+// GetErrorOk returns a tuple with the Error field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetErrorOk() (*string, bool) {
+	if o == nil || IsNil(o.Error) {
+		return nil, false
+	}
+	return o.Error, true
+}
 
 // HasError returns a boolean if a field has been set.
 func (o *PromptSvcPrompt) HasError() bool {
@@ -113,8 +169,28 @@ func (o *PromptSvcPrompt) HasError() bool {
 	return false
 }
 
+// SetError gets a reference to the given string and assigns it to the Error field.
+func (o *PromptSvcPrompt) SetError(v string) {
+	o.Error = &v
+}
 
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *PromptSvcPrompt) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
 
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
 
 // HasId returns a boolean if a field has been set.
 func (o *PromptSvcPrompt) HasId() bool {
@@ -125,8 +201,28 @@ func (o *PromptSvcPrompt) HasId() bool {
 	return false
 }
 
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *PromptSvcPrompt) SetId(v string) {
+	o.Id = &v
+}
 
+// GetLastRun returns the LastRun field value if set, zero value otherwise.
+func (o *PromptSvcPrompt) GetLastRun() string {
+	if o == nil || IsNil(o.LastRun) {
+		var ret string
+		return ret
+	}
+	return *o.LastRun
+}
 
+// GetLastRunOk returns a tuple with the LastRun field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetLastRunOk() (*string, bool) {
+	if o == nil || IsNil(o.LastRun) {
+		return nil, false
+	}
+	return o.LastRun, true
+}
 
 // HasLastRun returns a boolean if a field has been set.
 func (o *PromptSvcPrompt) HasLastRun() bool {
@@ -137,8 +233,28 @@ func (o *PromptSvcPrompt) HasLastRun() bool {
 	return false
 }
 
+// SetLastRun gets a reference to the given string and assigns it to the LastRun field.
+func (o *PromptSvcPrompt) SetLastRun(v string) {
+	o.LastRun = &v
+}
 
+// GetMaxRetries returns the MaxRetries field value if set, zero value otherwise.
+func (o *PromptSvcPrompt) GetMaxRetries() int32 {
+	if o == nil || IsNil(o.MaxRetries) {
+		var ret int32
+		return ret
+	}
+	return *o.MaxRetries
+}
 
+// GetMaxRetriesOk returns a tuple with the MaxRetries field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetMaxRetriesOk() (*int32, bool) {
+	if o == nil || IsNil(o.MaxRetries) {
+		return nil, false
+	}
+	return o.MaxRetries, true
+}
 
 // HasMaxRetries returns a boolean if a field has been set.
 func (o *PromptSvcPrompt) HasMaxRetries() bool {
@@ -149,8 +265,28 @@ func (o *PromptSvcPrompt) HasMaxRetries() bool {
 	return false
 }
 
+// SetMaxRetries gets a reference to the given int32 and assigns it to the MaxRetries field.
+func (o *PromptSvcPrompt) SetMaxRetries(v int32) {
+	o.MaxRetries = &v
+}
 
+// GetModelId returns the ModelId field value if set, zero value otherwise.
+func (o *PromptSvcPrompt) GetModelId() string {
+	if o == nil || IsNil(o.ModelId) {
+		var ret string
+		return ret
+	}
+	return *o.ModelId
+}
 
+// GetModelIdOk returns a tuple with the ModelId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetModelIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ModelId) {
+		return nil, false
+	}
+	return o.ModelId, true
+}
 
 // HasModelId returns a boolean if a field has been set.
 func (o *PromptSvcPrompt) HasModelId() bool {
@@ -161,8 +297,28 @@ func (o *PromptSvcPrompt) HasModelId() bool {
 	return false
 }
 
+// SetModelId gets a reference to the given string and assigns it to the ModelId field.
+func (o *PromptSvcPrompt) SetModelId(v string) {
+	o.ModelId = &v
+}
 
+// GetParameters returns the Parameters field value if set, zero value otherwise.
+func (o *PromptSvcPrompt) GetParameters() PromptSvcParameters {
+	if o == nil || IsNil(o.Parameters) {
+		var ret PromptSvcParameters
+		return ret
+	}
+	return *o.Parameters
+}
 
+// GetParametersOk returns a tuple with the Parameters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetParametersOk() (*PromptSvcParameters, bool) {
+	if o == nil || IsNil(o.Parameters) {
+		return nil, false
+	}
+	return o.Parameters, true
+}
 
 // HasParameters returns a boolean if a field has been set.
 func (o *PromptSvcPrompt) HasParameters() bool {
@@ -173,11 +329,52 @@ func (o *PromptSvcPrompt) HasParameters() bool {
 	return false
 }
 
+// SetParameters gets a reference to the given PromptSvcParameters and assigns it to the Parameters field.
+func (o *PromptSvcPrompt) SetParameters(v PromptSvcParameters) {
+	o.Parameters = &v
+}
 
+// GetPrompt returns the Prompt field value
+func (o *PromptSvcPrompt) GetPrompt() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Prompt
+}
 
+// GetPromptOk returns a tuple with the Prompt field value
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetPromptOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Prompt, true
+}
 
+// SetPrompt sets field value
+func (o *PromptSvcPrompt) SetPrompt(v string) {
+	o.Prompt = v
+}
 
+// GetRequestMessageId returns the RequestMessageId field value if set, zero value otherwise.
+func (o *PromptSvcPrompt) GetRequestMessageId() string {
+	if o == nil || IsNil(o.RequestMessageId) {
+		var ret string
+		return ret
+	}
+	return *o.RequestMessageId
+}
+
+// GetRequestMessageIdOk returns a tuple with the RequestMessageId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetRequestMessageIdOk() (*string, bool) {
+	if o == nil || IsNil(o.RequestMessageId) {
+		return nil, false
+	}
+	return o.RequestMessageId, true
+}
 
 // HasRequestMessageId returns a boolean if a field has been set.
 func (o *PromptSvcPrompt) HasRequestMessageId() bool {
@@ -188,8 +385,28 @@ func (o *PromptSvcPrompt) HasRequestMessageId() bool {
 	return false
 }
 
+// SetRequestMessageId gets a reference to the given string and assigns it to the RequestMessageId field.
+func (o *PromptSvcPrompt) SetRequestMessageId(v string) {
+	o.RequestMessageId = &v
+}
 
+// GetResponseMessageId returns the ResponseMessageId field value if set, zero value otherwise.
+func (o *PromptSvcPrompt) GetResponseMessageId() string {
+	if o == nil || IsNil(o.ResponseMessageId) {
+		var ret string
+		return ret
+	}
+	return *o.ResponseMessageId
+}
 
+// GetResponseMessageIdOk returns a tuple with the ResponseMessageId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetResponseMessageIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ResponseMessageId) {
+		return nil, false
+	}
+	return o.ResponseMessageId, true
+}
 
 // HasResponseMessageId returns a boolean if a field has been set.
 func (o *PromptSvcPrompt) HasResponseMessageId() bool {
@@ -200,8 +417,28 @@ func (o *PromptSvcPrompt) HasResponseMessageId() bool {
 	return false
 }
 
+// SetResponseMessageId gets a reference to the given string and assigns it to the ResponseMessageId field.
+func (o *PromptSvcPrompt) SetResponseMessageId(v string) {
+	o.ResponseMessageId = &v
+}
 
+// GetRunCount returns the RunCount field value if set, zero value otherwise.
+func (o *PromptSvcPrompt) GetRunCount() int32 {
+	if o == nil || IsNil(o.RunCount) {
+		var ret int32
+		return ret
+	}
+	return *o.RunCount
+}
 
+// GetRunCountOk returns a tuple with the RunCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetRunCountOk() (*int32, bool) {
+	if o == nil || IsNil(o.RunCount) {
+		return nil, false
+	}
+	return o.RunCount, true
+}
 
 // HasRunCount returns a boolean if a field has been set.
 func (o *PromptSvcPrompt) HasRunCount() bool {
@@ -212,8 +449,28 @@ func (o *PromptSvcPrompt) HasRunCount() bool {
 	return false
 }
 
+// SetRunCount gets a reference to the given int32 and assigns it to the RunCount field.
+func (o *PromptSvcPrompt) SetRunCount(v int32) {
+	o.RunCount = &v
+}
 
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *PromptSvcPrompt) GetStatus() PromptSvcPromptStatus {
+	if o == nil || IsNil(o.Status) {
+		var ret PromptSvcPromptStatus
+		return ret
+	}
+	return *o.Status
+}
 
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetStatusOk() (*PromptSvcPromptStatus, bool) {
+	if o == nil || IsNil(o.Status) {
+		return nil, false
+	}
+	return o.Status, true
+}
 
 // HasStatus returns a boolean if a field has been set.
 func (o *PromptSvcPrompt) HasStatus() bool {
@@ -224,8 +481,28 @@ func (o *PromptSvcPrompt) HasStatus() bool {
 	return false
 }
 
+// SetStatus gets a reference to the given PromptSvcPromptStatus and assigns it to the Status field.
+func (o *PromptSvcPrompt) SetStatus(v PromptSvcPromptStatus) {
+	o.Status = &v
+}
 
+// GetSync returns the Sync field value if set, zero value otherwise.
+func (o *PromptSvcPrompt) GetSync() bool {
+	if o == nil || IsNil(o.Sync) {
+		var ret bool
+		return ret
+	}
+	return *o.Sync
+}
 
+// GetSyncOk returns a tuple with the Sync field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetSyncOk() (*bool, bool) {
+	if o == nil || IsNil(o.Sync) {
+		return nil, false
+	}
+	return o.Sync, true
+}
 
 // HasSync returns a boolean if a field has been set.
 func (o *PromptSvcPrompt) HasSync() bool {
@@ -236,8 +513,28 @@ func (o *PromptSvcPrompt) HasSync() bool {
 	return false
 }
 
+// SetSync gets a reference to the given bool and assigns it to the Sync field.
+func (o *PromptSvcPrompt) SetSync(v bool) {
+	o.Sync = &v
+}
 
+// GetThreadId returns the ThreadId field value if set, zero value otherwise.
+func (o *PromptSvcPrompt) GetThreadId() string {
+	if o == nil || IsNil(o.ThreadId) {
+		var ret string
+		return ret
+	}
+	return *o.ThreadId
+}
 
+// GetThreadIdOk returns a tuple with the ThreadId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetThreadIdOk() (*string, bool) {
+	if o == nil || IsNil(o.ThreadId) {
+		return nil, false
+	}
+	return o.ThreadId, true
+}
 
 // HasThreadId returns a boolean if a field has been set.
 func (o *PromptSvcPrompt) HasThreadId() bool {
@@ -248,8 +545,28 @@ func (o *PromptSvcPrompt) HasThreadId() bool {
 	return false
 }
 
+// SetThreadId gets a reference to the given string and assigns it to the ThreadId field.
+func (o *PromptSvcPrompt) SetThreadId(v string) {
+	o.ThreadId = &v
+}
 
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *PromptSvcPrompt) GetType() PromptSvcPromptType {
+	if o == nil || IsNil(o.Type) {
+		var ret PromptSvcPromptType
+		return ret
+	}
+	return *o.Type
+}
 
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetTypeOk() (*PromptSvcPromptType, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
 
 // HasType returns a boolean if a field has been set.
 func (o *PromptSvcPrompt) HasType() bool {
@@ -260,8 +577,28 @@ func (o *PromptSvcPrompt) HasType() bool {
 	return false
 }
 
+// SetType gets a reference to the given PromptSvcPromptType and assigns it to the Type field.
+func (o *PromptSvcPrompt) SetType(v PromptSvcPromptType) {
+	o.Type = &v
+}
 
+// GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
+func (o *PromptSvcPrompt) GetUpdatedAt() string {
+	if o == nil || IsNil(o.UpdatedAt) {
+		var ret string
+		return ret
+	}
+	return *o.UpdatedAt
+}
 
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetUpdatedAtOk() (*string, bool) {
+	if o == nil || IsNil(o.UpdatedAt) {
+		return nil, false
+	}
+	return o.UpdatedAt, true
+}
 
 // HasUpdatedAt returns a boolean if a field has been set.
 func (o *PromptSvcPrompt) HasUpdatedAt() bool {
@@ -272,8 +609,28 @@ func (o *PromptSvcPrompt) HasUpdatedAt() bool {
 	return false
 }
 
+// SetUpdatedAt gets a reference to the given string and assigns it to the UpdatedAt field.
+func (o *PromptSvcPrompt) SetUpdatedAt(v string) {
+	o.UpdatedAt = &v
+}
 
+// GetUserId returns the UserId field value if set, zero value otherwise.
+func (o *PromptSvcPrompt) GetUserId() string {
+	if o == nil || IsNil(o.UserId) {
+		var ret string
+		return ret
+	}
+	return *o.UserId
+}
 
+// GetUserIdOk returns a tuple with the UserId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcPrompt) GetUserIdOk() (*string, bool) {
+	if o == nil || IsNil(o.UserId) {
+		return nil, false
+	}
+	return o.UserId, true
+}
 
 // HasUserId returns a boolean if a field has been set.
 func (o *PromptSvcPrompt) HasUserId() bool {
@@ -284,6 +641,10 @@ func (o *PromptSvcPrompt) HasUserId() bool {
 	return false
 }
 
+// SetUserId gets a reference to the given string and assigns it to the UserId field.
+func (o *PromptSvcPrompt) SetUserId(v string) {
+	o.UserId = &v
+}
 
 func (o PromptSvcPrompt) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

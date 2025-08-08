@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -40,7 +40,23 @@ func NewPromptSvcRemovePromptRequestWithDefaults() *PromptSvcRemovePromptRequest
 	return &this
 }
 
+// GetPromptId returns the PromptId field value if set, zero value otherwise.
+func (o *PromptSvcRemovePromptRequest) GetPromptId() string {
+	if o == nil || IsNil(o.PromptId) {
+		var ret string
+		return ret
+	}
+	return *o.PromptId
+}
 
+// GetPromptIdOk returns a tuple with the PromptId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcRemovePromptRequest) GetPromptIdOk() (*string, bool) {
+	if o == nil || IsNil(o.PromptId) {
+		return nil, false
+	}
+	return o.PromptId, true
+}
 
 // HasPromptId returns a boolean if a field has been set.
 func (o *PromptSvcRemovePromptRequest) HasPromptId() bool {
@@ -51,6 +67,10 @@ func (o *PromptSvcRemovePromptRequest) HasPromptId() bool {
 	return false
 }
 
+// SetPromptId gets a reference to the given string and assigns it to the PromptId field.
+func (o *PromptSvcRemovePromptRequest) SetPromptId(v string) {
+	o.PromptId = &v
+}
 
 func (o PromptSvcRemovePromptRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
