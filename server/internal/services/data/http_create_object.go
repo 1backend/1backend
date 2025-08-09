@@ -5,7 +5,7 @@
  * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
  * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
  */
-package dynamicservice
+package dataservice
 
 import (
 	"encoding/json"
@@ -80,7 +80,7 @@ func (g *DataService) Create(
 		}
 	}
 
-	err = g.createObject(req)
+	err = g.createObject(*isAuthRsp.App, req)
 	if err != nil {
 		logger.Error("Failed to create object", slog.Any("error", err))
 		endpoint.InternalServerError(w)
@@ -102,14 +102,26 @@ func (g *DataService) Create(
 }
 
 func (g *DataService) createObject(
+	app string,
 	request *data.CreateObjectRequest,
 ) error {
 	if request.Object.Id == "" {
-		request.Object.Id = sdk.Id(request.Object.Table)
+		request.Object.Id = sdk.Id(app, request.Object.Table)
 	}
 	if !strings.HasPrefix(request.Object.Id, request.Object.Table) {
 		return errors.New("wrong prefix")
 	}
 
-	return g.store.Create(request.Object)
+	object := &data.Object{
+		App:      app,
+		Id:       request.Object.Id,
+		Table:    request.Object.Table,
+		Data:     request.Object.Data,
+		Authors:  request.Object.Authors,
+		Readers:  request.Object.Readers,
+		Writers:  request.Object.Writers,
+		Deleters: request.Object.Deleters,
+	}
+
+	return g.store.Create(object)
 }

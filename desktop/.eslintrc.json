@@ -39,7 +39,7 @@
 		"@typescript-eslint/no-explicit-any": "off",
 		"unicorn/prefer-module": "off",
 		"unicorn/no-abusive-eslint-disable": "off",
-		// turned off because dynamicservice.find triggerds this
+		// turned off because dataservice.find triggerds this
 		"unicorn/no-array-method-this-argument": "off",
 		"unicorn/prefer-global-this": "off",
 		"unicorn/prevent-abbreviations": "off"

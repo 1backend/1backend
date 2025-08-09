@@ -5,7 +5,7 @@
  * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
  * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
  */
-package dynamicservice
+package dataservice
 
 import (
 	"encoding/json"
@@ -91,7 +91,7 @@ func (g *DataService) Query(
 		allowedReaders = lo.Intersect(identifiers, req.Readers)
 	}
 
-	objects, err := g.query(allowedReaders, data.QueryOptions{
+	objects, err := g.query(*isAuthRsp.App, allowedReaders, data.QueryOptions{
 		Table: req.Table,
 		Query: req.Query,
 	})
@@ -115,6 +115,7 @@ func (g *DataService) Query(
 }
 
 func (g *DataService) query(
+	app string,
 	readers []string,
 	options data.QueryOptions,
 ) ([]*data.Object, error) {
@@ -130,6 +131,7 @@ func (g *DataService) query(
 	}
 
 	filters = append(filters,
+		datastore.Equals(datastore.Field("app"), app),
 		datastore.Equals(datastore.Field("table"), options.Table),
 	)
 

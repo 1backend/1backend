@@ -616,7 +616,8 @@ definitions:
           If an organization ID is not provided, the currently active organization will
           be queried from the User Svc.
         example:
-        - '['
+        - '["usr_12345"'
+        - ' "org_67890"]'
         items:
           type: string
         type: array
@@ -683,6 +684,8 @@ definitions:
     type: object
   data_svc.Object:
     properties:
+      app:
+        type: string
       authors:
         description: |-
           Authors is a list of user ID and organization ID who created the object.
@@ -736,6 +739,7 @@ definitions:
           type: string
         type: array
     required:
+    - app
     - createdAt
     - data
     - table
@@ -3738,7 +3742,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.8.0-rc5
+  version: 0.8.0-rc6
 paths:
   /chat-svc/events:
     get:

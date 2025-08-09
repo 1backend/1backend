@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc5
+API version: 0.8.0-rc6
 Contact: sales@singulatron.com
 */
 
@@ -22,6 +22,7 @@ var _ MappedNullable = &DataSvcObject{}
 
 // DataSvcObject struct for DataSvcObject
 type DataSvcObject struct {
+	App string `json:"app"`
 	// Authors is a list of user ID and organization ID who created the object. The authors field tracks which users or organizations created an entry, helping to prevent spam. If an organization ID is not provided, the currently active organization will be queried from the User Svc.
 	Authors []string `json:"authors,omitempty"`
 	CreatedAt string `json:"createdAt"`
@@ -43,8 +44,9 @@ type _DataSvcObject DataSvcObject
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDataSvcObject(createdAt string, data map[string]interface{}, table string, updatedAt string) *DataSvcObject {
+func NewDataSvcObject(app string, createdAt string, data map[string]interface{}, table string, updatedAt string) *DataSvcObject {
 	this := DataSvcObject{}
+	this.App = app
 	this.CreatedAt = createdAt
 	this.Data = data
 	this.Table = table
@@ -58,6 +60,30 @@ func NewDataSvcObject(createdAt string, data map[string]interface{}, table strin
 func NewDataSvcObjectWithDefaults() *DataSvcObject {
 	this := DataSvcObject{}
 	return &this
+}
+
+// GetApp returns the App field value
+func (o *DataSvcObject) GetApp() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.App
+}
+
+// GetAppOk returns a tuple with the App field value
+// and a boolean to check if the value has been set.
+func (o *DataSvcObject) GetAppOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.App, true
+}
+
+// SetApp sets field value
+func (o *DataSvcObject) SetApp(v string) {
+	o.App = v
 }
 
 // GetAuthors returns the Authors field value if set, zero value otherwise.
@@ -326,6 +352,7 @@ func (o DataSvcObject) MarshalJSON() ([]byte, error) {
 
 func (o DataSvcObject) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	toSerialize["app"] = o.App
 	if !IsNil(o.Authors) {
 		toSerialize["authors"] = o.Authors
 	}
@@ -353,6 +380,7 @@ func (o *DataSvcObject) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"app",
 		"createdAt",
 		"data",
 		"table",
