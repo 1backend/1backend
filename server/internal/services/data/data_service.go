@@ -5,7 +5,7 @@
  * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
  * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
  */
-package dynamicservice
+package dataservice
 
 import (
 	"context"
@@ -22,7 +22,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/service"
 	"github.com/gorilla/mux"
 
-	dynamictypes "github.com/1backend/1backend/server/internal/services/data/types"
+	data "github.com/1backend/1backend/server/internal/services/data/types"
 	"github.com/1backend/1backend/server/internal/universe"
 )
 
@@ -93,7 +93,7 @@ func (cs *DataService) LazyStart() error {
 }
 
 func (g *DataService) start() error {
-	store, err := g.options.DataStoreFactory.Create("dataSvcObjects", &dynamictypes.Object{})
+	store, err := g.options.DataStoreFactory.Create("dataSvcObjects", &data.Object{})
 	if err != nil {
 		return err
 	}
@@ -135,16 +135,29 @@ func (g *DataService) start() error {
 }
 
 func (g *DataService) createMany(
-	request *dynamictypes.CreateManyRequest,
+	app string,
+	request *data.CreateManyRequest,
 ) error {
 	objectIs := []datastore.Row{}
-	for _, object := range request.Objects {
-		if object.Id == "" {
-			object.Id = sdk.Id(object.Table)
+
+	for _, createObject := range request.Objects {
+		if createObject.Id == "" {
+			createObject.Id = sdk.Id(createObject.Table)
 		}
-		if !strings.HasPrefix(object.Id, object.Table) {
+		if !strings.HasPrefix(createObject.Id, createObject.Table) {
 			return errors.New("wrong prefix")
 		}
+		object := &data.Object{
+			App:      app,
+			Id:       createObject.Id,
+			Table:    createObject.Table,
+			Data:     createObject.Data,
+			Authors:  createObject.Authors,
+			Readers:  createObject.Readers,
+			Writers:  createObject.Writers,
+			Deleters: createObject.Deleters,
+		}
+
 		objectIs = append(objectIs, object)
 	}
 

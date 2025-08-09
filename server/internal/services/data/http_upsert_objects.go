@@ -5,7 +5,7 @@
  * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
  * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
  */
-package dynamicservice
+package dataservice
 
 import (
 	"encoding/json"
@@ -61,7 +61,7 @@ func (g *DataService) SaveObjects(
 	}
 	defer r.Body.Close()
 
-	err = g.upsertObjects(req)
+	err = g.upsertObjects(*isAuthRsp.App, req)
 	if err != nil {
 		logger.Error(
 			"Error upserting objects",
@@ -79,11 +79,14 @@ func (g *DataService) SaveObjects(
 }
 
 func (g *DataService) upsertObjects(
+	app string,
 	request *data.UpsertObjectsRequest,
 ) error {
 	objectIs := []datastore.Row{}
 	for _, object := range request.Objects {
+		object.App = app
 		objectIs = append(objectIs, object)
 	}
+
 	return g.store.UpsertMany(objectIs)
 }

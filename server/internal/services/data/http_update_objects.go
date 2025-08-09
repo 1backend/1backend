@@ -5,7 +5,7 @@
  * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
  * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
  */
-package dynamicservice
+package dataservice
 
 import (
 	"encoding/json"
@@ -16,8 +16,8 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
+
 	data "github.com/1backend/1backend/server/internal/services/data/types"
-	dynamictypes "github.com/1backend/1backend/server/internal/services/data/types"
 )
 
 // @ID updateObjects
@@ -64,7 +64,13 @@ func (g *DataService) UpdateObjects(
 	}
 	defer r.Body.Close()
 
-	err = g.updateObjects(req.Table, isAuthRsp.User.Id, req.Filters, req.Object)
+	err = g.updateObjects(
+		*isAuthRsp.App,
+		req.Table,
+		isAuthRsp.User.Id,
+		req.Filters,
+		req.Object,
+	)
 	if err != nil {
 		logger.Error(
 			"Error updating objects",
@@ -82,10 +88,11 @@ func (g *DataService) UpdateObjects(
 }
 
 func (g *DataService) updateObjects(
+	app string,
 	tableName string,
 	userId string,
 	conditions []datastore.Filter,
-	object *dynamictypes.Object,
+	object *data.Object,
 ) error {
 	if len(conditions) == 0 {
 		return errors.New("no conditions")
@@ -93,6 +100,7 @@ func (g *DataService) updateObjects(
 
 	conditions = append(
 		conditions,
+		datastore.Equals(datastore.Field("app"), app),
 		datastore.Equals(datastore.Field("table"), tableName),
 	)
 	conditions = append(conditions, datastore.Equals(

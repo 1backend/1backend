@@ -5,7 +5,7 @@
  * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
  * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
  */
-package dynamicservice
+package dataservice
 
 import (
 	"encoding/json"
@@ -59,7 +59,7 @@ func (g *DataService) DeleteObjects(
 	}
 	defer r.Body.Close()
 
-	err = g.deleteObjects(req.Table, isAuthRsp.User.Id, req.Filters)
+	err = g.deleteObjects(*isAuthRsp.App, req.Table, isAuthRsp.User.Id, req.Filters)
 	if err != nil {
 		logger.Error("Error deleting objects", slog.Any("error", err))
 		endpoint.InternalServerError(w)
@@ -74,6 +74,7 @@ func (g *DataService) DeleteObjects(
 }
 
 func (g *DataService) deleteObjects(
+	app string,
 	tableName string,
 	userId string,
 	conditions []datastore.Filter,
@@ -84,6 +85,7 @@ func (g *DataService) deleteObjects(
 
 	conditions = append(
 		conditions,
+		datastore.Equals(datastore.Field("app"), app),
 		datastore.Equals(datastore.Field("table"), tableName),
 	)
 	conditions = append(conditions,
