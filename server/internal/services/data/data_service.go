@@ -142,7 +142,7 @@ func (g *DataService) createMany(
 
 	for _, createObject := range request.Objects {
 		if createObject.Id == "" {
-			createObject.Id = sdk.Id(createObject.Table)
+			createObject.Id = sdk.Id(app, createObject.Table)
 		}
 		if !strings.HasPrefix(createObject.Id, createObject.Table) {
 			return errors.New("wrong prefix")

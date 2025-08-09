@@ -106,7 +106,7 @@ func (g *DataService) createObject(
 	request *data.CreateObjectRequest,
 ) error {
 	if request.Object.Id == "" {
-		request.Object.Id = sdk.Id(request.Object.Table)
+		request.Object.Id = sdk.Id(app, request.Object.Table)
 	}
 	if !strings.HasPrefix(request.Object.Id, request.Object.Table) {
 		return errors.New("wrong prefix")
