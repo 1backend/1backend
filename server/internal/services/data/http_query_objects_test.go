@@ -133,8 +133,8 @@ func TestQueryObjects(t *testing.T) {
 						SortingType: openapi.SortingTypeNumeric.Ptr(),
 					},
 				},
-				Limit: openapi.PtrInt32(5),
-				After: []any{4},
+				Limit:     openapi.PtrInt32(5),
+				AfterJson: sdk.Marshal([]any{4}),
 			},
 		}
 
@@ -158,8 +158,8 @@ func TestQueryObjects(t *testing.T) {
 						SortingType: openapi.SortingTypeNumeric.Ptr(),
 					},
 				},
-				Limit: openapi.PtrInt32(5),
-				After: []any{15},
+				Limit:     openapi.PtrInt32(5),
+				AfterJson: sdk.Marshal([]any{15}),
 			},
 		}
 
