@@ -49,7 +49,7 @@ export class QueryParser {
 		}
 
 		if (afterMatch) {
-			query.jsonAfter = JSON.stringify(afterMatch[1].split(','));
+			query.afterJson = JSON.stringify(afterMatch[1].split(','));
 		}
 
 		if (!queryString) {
@@ -102,13 +102,13 @@ export class QueryParser {
 		if (value.startsWith('~')) {
 			return {
 				fields: [fieldName],
-				jsonValues: JSON.stringify([value.slice(1)]),
+				valuesJson: JSON.stringify([value.slice(1)]),
 				op: 'containsSubstring',
 			};
 		} else if (value.startsWith('^')) {
 			return {
 				fields: [fieldName],
-				jsonValues: JSON.stringify([value.slice(1)]),
+				valuesJson: JSON.stringify([value.slice(1)]),
 				op: 'containsSubstring',
 			};
 		} else {
@@ -116,7 +116,7 @@ export class QueryParser {
 
 			return {
 				fields: [fieldName],
-				jsonValues: JSON.stringify([
+				valuesJson: JSON.stringify([
 					Number.isNaN(numericValue) ? value : numericValue
 				]
 				),

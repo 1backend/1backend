@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -45,8 +45,29 @@ func NewSecretSvcIsSecureResponseWithDefaults() *SecretSvcIsSecureResponse {
 	return &this
 }
 
+// GetIsSecure returns the IsSecure field value
+func (o *SecretSvcIsSecureResponse) GetIsSecure() bool {
+	if o == nil {
+		var ret bool
+		return ret
+	}
 
+	return o.IsSecure
+}
 
+// GetIsSecureOk returns a tuple with the IsSecure field value
+// and a boolean to check if the value has been set.
+func (o *SecretSvcIsSecureResponse) GetIsSecureOk() (*bool, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.IsSecure, true
+}
+
+// SetIsSecure sets field value
+func (o *SecretSvcIsSecureResponse) SetIsSecure(v bool) {
+	o.IsSecure = v
+}
 
 func (o SecretSvcIsSecureResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

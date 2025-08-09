@@ -598,7 +598,11 @@ func evaluate(filter datastore.Filter, obj any) (bool, error) {
 				continue
 			}
 
-			values := filter.Values
+			var values []any
+			err := json.Unmarshal([]byte(filter.ValuesJson), &values)
+			if err != nil {
+				return false, err
+			}
 
 			value := values[0]
 			queryValue := reflect.ValueOf(value)
@@ -641,9 +645,13 @@ func evaluate(filter datastore.Filter, obj any) (bool, error) {
 				continue
 			}
 
-			value := filter.Values
+			var values []any
+			err := json.Unmarshal([]byte(filter.ValuesJson), &values)
+			if err != nil {
+				return false, err
+			}
 
-			queryValue := reflect.ValueOf(value)
+			queryValue := reflect.ValueOf(values)
 			fieldV := reflect.ValueOf(fieldValue)
 
 			if fieldV.Kind() == reflect.Slice {
@@ -683,9 +691,13 @@ func evaluate(filter datastore.Filter, obj any) (bool, error) {
 				continue
 			}
 
-			value := filter.Values
+			var values []any
+			err := json.Unmarshal([]byte(filter.ValuesJson), &values)
+			if err != nil {
+				return false, err
+			}
 
-			queryValue := reflect.ValueOf(value)
+			queryValue := reflect.ValueOf(values)
 			fieldV := reflect.ValueOf(fieldValue)
 
 			if fieldV.Kind() == reflect.Slice {
@@ -696,7 +708,7 @@ func evaluate(filter datastore.Filter, obj any) (bool, error) {
 					}
 				}
 			} else {
-				if matchFunc(fieldValue, value) {
+				if matchFunc(fieldValue, values) {
 					matched = true
 				}
 			}
@@ -724,7 +736,12 @@ func evaluate(filter datastore.Filter, obj any) (bool, error) {
 				continue
 			}
 
-			values := filter.Values
+			var values []any
+			err := json.Unmarshal([]byte(filter.ValuesJson), &values)
+			if err != nil {
+				return false, err
+			}
+
 			value := values[0]
 
 			queryValue := reflect.ValueOf(value)
@@ -766,7 +783,11 @@ func evaluate(filter datastore.Filter, obj any) (bool, error) {
 				continue
 			}
 
-			values := filter.Values
+			var values []any
+			err := json.Unmarshal([]byte(filter.ValuesJson), &values)
+			if err != nil {
+				return false, err
+			}
 
 			value := values
 			queryValue := reflect.ValueOf(value)

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -49,11 +49,53 @@ func NewRegistrySvcClientWithDefaults() *RegistrySvcClient {
 	return &this
 }
 
+// GetLanguage returns the Language field value
+func (o *RegistrySvcClient) GetLanguage() RegistrySvcLanguage {
+	if o == nil {
+		var ret RegistrySvcLanguage
+		return ret
+	}
 
+	return o.Language
+}
 
+// GetLanguageOk returns a tuple with the Language field value
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcClient) GetLanguageOk() (*RegistrySvcLanguage, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Language, true
+}
 
+// SetLanguage sets field value
+func (o *RegistrySvcClient) SetLanguage(v RegistrySvcLanguage) {
+	o.Language = v
+}
 
+// GetUrl returns the Url field value
+func (o *RegistrySvcClient) GetUrl() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Url
+}
+
+// GetUrlOk returns a tuple with the Url field value
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcClient) GetUrlOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Url, true
+}
+
+// SetUrl sets field value
+func (o *RegistrySvcClient) SetUrl(v string) {
+	o.Url = v
+}
 
 func (o RegistrySvcClient) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

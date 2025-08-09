@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -43,7 +43,23 @@ func NewModelSvcEnvVarWithDefaults() *ModelSvcEnvVar {
 	return &this
 }
 
+// GetKey returns the Key field value if set, zero value otherwise.
+func (o *ModelSvcEnvVar) GetKey() string {
+	if o == nil || IsNil(o.Key) {
+		var ret string
+		return ret
+	}
+	return *o.Key
+}
 
+// GetKeyOk returns a tuple with the Key field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ModelSvcEnvVar) GetKeyOk() (*string, bool) {
+	if o == nil || IsNil(o.Key) {
+		return nil, false
+	}
+	return o.Key, true
+}
 
 // HasKey returns a boolean if a field has been set.
 func (o *ModelSvcEnvVar) HasKey() bool {
@@ -54,8 +70,28 @@ func (o *ModelSvcEnvVar) HasKey() bool {
 	return false
 }
 
+// SetKey gets a reference to the given string and assigns it to the Key field.
+func (o *ModelSvcEnvVar) SetKey(v string) {
+	o.Key = &v
+}
 
+// GetValue returns the Value field value if set, zero value otherwise.
+func (o *ModelSvcEnvVar) GetValue() string {
+	if o == nil || IsNil(o.Value) {
+		var ret string
+		return ret
+	}
+	return *o.Value
+}
 
+// GetValueOk returns a tuple with the Value field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ModelSvcEnvVar) GetValueOk() (*string, bool) {
+	if o == nil || IsNil(o.Value) {
+		return nil, false
+	}
+	return o.Value, true
+}
 
 // HasValue returns a boolean if a field has been set.
 func (o *ModelSvcEnvVar) HasValue() bool {
@@ -66,6 +102,10 @@ func (o *ModelSvcEnvVar) HasValue() bool {
 	return false
 }
 
+// SetValue gets a reference to the given string and assigns it to the Value field.
+func (o *ModelSvcEnvVar) SetValue(v string) {
+	o.Value = &v
+}
 
 func (o ModelSvcEnvVar) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

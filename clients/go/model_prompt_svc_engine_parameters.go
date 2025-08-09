@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -41,7 +41,23 @@ func NewPromptSvcEngineParametersWithDefaults() *PromptSvcEngineParameters {
 	return &this
 }
 
+// GetLlamaCppParameters returns the LlamaCppParameters field value if set, zero value otherwise.
+func (o *PromptSvcEngineParameters) GetLlamaCppParameters() PromptSvcLlamaCppParameters {
+	if o == nil || IsNil(o.LlamaCppParameters) {
+		var ret PromptSvcLlamaCppParameters
+		return ret
+	}
+	return *o.LlamaCppParameters
+}
 
+// GetLlamaCppParametersOk returns a tuple with the LlamaCppParameters field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcEngineParameters) GetLlamaCppParametersOk() (*PromptSvcLlamaCppParameters, bool) {
+	if o == nil || IsNil(o.LlamaCppParameters) {
+		return nil, false
+	}
+	return o.LlamaCppParameters, true
+}
 
 // HasLlamaCppParameters returns a boolean if a field has been set.
 func (o *PromptSvcEngineParameters) HasLlamaCppParameters() bool {
@@ -52,8 +68,28 @@ func (o *PromptSvcEngineParameters) HasLlamaCppParameters() bool {
 	return false
 }
 
+// SetLlamaCppParameters gets a reference to the given PromptSvcLlamaCppParameters and assigns it to the LlamaCppParameters field.
+func (o *PromptSvcEngineParameters) SetLlamaCppParameters(v PromptSvcLlamaCppParameters) {
+	o.LlamaCppParameters = &v
+}
 
+// GetStableDiffusion returns the StableDiffusion field value if set, zero value otherwise.
+func (o *PromptSvcEngineParameters) GetStableDiffusion() PromptSvcStableDiffusionParameters {
+	if o == nil || IsNil(o.StableDiffusion) {
+		var ret PromptSvcStableDiffusionParameters
+		return ret
+	}
+	return *o.StableDiffusion
+}
 
+// GetStableDiffusionOk returns a tuple with the StableDiffusion field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PromptSvcEngineParameters) GetStableDiffusionOk() (*PromptSvcStableDiffusionParameters, bool) {
+	if o == nil || IsNil(o.StableDiffusion) {
+		return nil, false
+	}
+	return o.StableDiffusion, true
+}
 
 // HasStableDiffusion returns a boolean if a field has been set.
 func (o *PromptSvcEngineParameters) HasStableDiffusion() bool {
@@ -64,6 +100,10 @@ func (o *PromptSvcEngineParameters) HasStableDiffusion() bool {
 	return false
 }
 
+// SetStableDiffusion gets a reference to the given PromptSvcStableDiffusionParameters and assigns it to the StableDiffusion field.
+func (o *PromptSvcEngineParameters) SetStableDiffusion(v PromptSvcStableDiffusionParameters) {
+	o.StableDiffusion = &v
+}
 
 func (o PromptSvcEngineParameters) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

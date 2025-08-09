@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -55,7 +55,23 @@ func NewRegistrySvcRepositorySpecWithDefaults() *RegistrySvcRepositorySpec {
 	return &this
 }
 
+// GetBuildContext returns the BuildContext field value if set, zero value otherwise.
+func (o *RegistrySvcRepositorySpec) GetBuildContext() string {
+	if o == nil || IsNil(o.BuildContext) {
+		var ret string
+		return ret
+	}
+	return *o.BuildContext
+}
 
+// GetBuildContextOk returns a tuple with the BuildContext field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcRepositorySpec) GetBuildContextOk() (*string, bool) {
+	if o == nil || IsNil(o.BuildContext) {
+		return nil, false
+	}
+	return o.BuildContext, true
+}
 
 // HasBuildContext returns a boolean if a field has been set.
 func (o *RegistrySvcRepositorySpec) HasBuildContext() bool {
@@ -66,8 +82,28 @@ func (o *RegistrySvcRepositorySpec) HasBuildContext() bool {
 	return false
 }
 
+// SetBuildContext gets a reference to the given string and assigns it to the BuildContext field.
+func (o *RegistrySvcRepositorySpec) SetBuildContext(v string) {
+	o.BuildContext = &v
+}
 
+// GetContainerFile returns the ContainerFile field value if set, zero value otherwise.
+func (o *RegistrySvcRepositorySpec) GetContainerFile() string {
+	if o == nil || IsNil(o.ContainerFile) {
+		var ret string
+		return ret
+	}
+	return *o.ContainerFile
+}
 
+// GetContainerFileOk returns a tuple with the ContainerFile field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcRepositorySpec) GetContainerFileOk() (*string, bool) {
+	if o == nil || IsNil(o.ContainerFile) {
+		return nil, false
+	}
+	return o.ContainerFile, true
+}
 
 // HasContainerFile returns a boolean if a field has been set.
 func (o *RegistrySvcRepositorySpec) HasContainerFile() bool {
@@ -78,14 +114,76 @@ func (o *RegistrySvcRepositorySpec) HasContainerFile() bool {
 	return false
 }
 
+// SetContainerFile gets a reference to the given string and assigns it to the ContainerFile field.
+func (o *RegistrySvcRepositorySpec) SetContainerFile(v string) {
+	o.ContainerFile = &v
+}
 
+// GetInternalPorts returns the InternalPorts field value
+func (o *RegistrySvcRepositorySpec) GetInternalPorts() []int32 {
+	if o == nil {
+		var ret []int32
+		return ret
+	}
 
+	return o.InternalPorts
+}
 
+// GetInternalPortsOk returns a tuple with the InternalPorts field value
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcRepositorySpec) GetInternalPortsOk() ([]int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.InternalPorts, true
+}
 
+// SetInternalPorts sets field value
+func (o *RegistrySvcRepositorySpec) SetInternalPorts(v []int32) {
+	o.InternalPorts = v
+}
 
+// GetUrl returns the Url field value
+func (o *RegistrySvcRepositorySpec) GetUrl() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Url
+}
 
+// GetUrlOk returns a tuple with the Url field value
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcRepositorySpec) GetUrlOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Url, true
+}
 
+// SetUrl sets field value
+func (o *RegistrySvcRepositorySpec) SetUrl(v string) {
+	o.Url = v
+}
+
+// GetVersion returns the Version field value if set, zero value otherwise.
+func (o *RegistrySvcRepositorySpec) GetVersion() string {
+	if o == nil || IsNil(o.Version) {
+		var ret string
+		return ret
+	}
+	return *o.Version
+}
+
+// GetVersionOk returns a tuple with the Version field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcRepositorySpec) GetVersionOk() (*string, bool) {
+	if o == nil || IsNil(o.Version) {
+		return nil, false
+	}
+	return o.Version, true
+}
 
 // HasVersion returns a boolean if a field has been set.
 func (o *RegistrySvcRepositorySpec) HasVersion() bool {
@@ -96,6 +194,10 @@ func (o *RegistrySvcRepositorySpec) HasVersion() bool {
 	return false
 }
 
+// SetVersion gets a reference to the given string and assigns it to the Version field.
+func (o *RegistrySvcRepositorySpec) SetVersion(v string) {
+	o.Version = &v
+}
 
 func (o RegistrySvcRepositorySpec) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

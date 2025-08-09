@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -41,7 +41,23 @@ func NewRegistrySvcListNodesRequestWithDefaults() *RegistrySvcListNodesRequest {
 	return &this
 }
 
+// GetIds returns the Ids field value if set, zero value otherwise.
+func (o *RegistrySvcListNodesRequest) GetIds() []string {
+	if o == nil || IsNil(o.Ids) {
+		var ret []string
+		return ret
+	}
+	return o.Ids
+}
 
+// GetIdsOk returns a tuple with the Ids field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcListNodesRequest) GetIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Ids) {
+		return nil, false
+	}
+	return o.Ids, true
+}
 
 // HasIds returns a boolean if a field has been set.
 func (o *RegistrySvcListNodesRequest) HasIds() bool {
@@ -52,6 +68,10 @@ func (o *RegistrySvcListNodesRequest) HasIds() bool {
 	return false
 }
 
+// SetIds gets a reference to the given []string and assigns it to the Ids field.
+func (o *RegistrySvcListNodesRequest) SetIds(v []string) {
+	o.Ids = v
+}
 
 func (o RegistrySvcListNodesRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

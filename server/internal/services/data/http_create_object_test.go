@@ -112,9 +112,9 @@ func TestCreate(t *testing.T) {
 			Table: &table1,
 			Query: &obapi.DatastoreQuery{Filters: []obapi.DatastoreFilter{
 				{
-					Fields: []string{"id"},
-					Op:     obapi.OpEquals.Ptr(),
-					Values: []any{uuid1},
+					Fields:     []string{"id"},
+					Op:         obapi.OpEquals.Ptr(),
+					ValuesJson: sdk.Marshal([]any{uuid1}),
 				},
 			}},
 
@@ -134,9 +134,9 @@ func TestCreate(t *testing.T) {
 			Table: &table1,
 			Query: &obapi.DatastoreQuery{Filters: []obapi.DatastoreFilter{
 				{
-					Fields: []string{"id"},
-					Op:     obapi.OpEquals.Ptr(),
-					Values: []any{uuid1},
+					Fields:     []string{"id"},
+					Op:         obapi.OpEquals.Ptr(),
+					ValuesJson: sdk.Marshal([]any{uuid1}),
 				},
 			}},
 
@@ -166,9 +166,9 @@ func TestCreate(t *testing.T) {
 			Table: &table1,
 			Query: &obapi.DatastoreQuery{Filters: []obapi.DatastoreFilter{
 				{
-					Fields: []string{"id"},
-					Op:     obapi.OpEquals.Ptr(),
-					Values: []any{uuid2},
+					Fields:     []string{"id"},
+					Op:         obapi.OpEquals.Ptr(),
+					ValuesJson: sdk.Marshal([]any{uuid2}),
 				},
 			}},
 			Readers: []string{tokenReadRsp2.User.Id},
@@ -222,9 +222,9 @@ func TestCreate(t *testing.T) {
 			Table: obapi.PtrString(table1),
 			Filters: []obapi.DatastoreFilter{
 				{
-					Fields: []string{"id"},
-					Op:     obapi.OpEquals.Ptr(),
-					Values: []any{obj.Id},
+					Fields:     []string{"id"},
+					Op:         obapi.OpEquals.Ptr(),
+					ValuesJson: sdk.Marshal([]any{obj.Id}),
 				},
 			},
 		}

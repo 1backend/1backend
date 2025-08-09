@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -47,11 +47,53 @@ func NewRegistrySvcPortMappingWithDefaults() *RegistrySvcPortMapping {
 	return &this
 }
 
+// GetHost returns the Host field value
+func (o *RegistrySvcPortMapping) GetHost() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
 
+	return o.Host
+}
 
+// GetHostOk returns a tuple with the Host field value
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcPortMapping) GetHostOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Host, true
+}
 
+// SetHost sets field value
+func (o *RegistrySvcPortMapping) SetHost(v int32) {
+	o.Host = v
+}
 
+// GetInternal returns the Internal field value
+func (o *RegistrySvcPortMapping) GetInternal() int32 {
+	if o == nil {
+		var ret int32
+		return ret
+	}
 
+	return o.Internal
+}
+
+// GetInternalOk returns a tuple with the Internal field value
+// and a boolean to check if the value has been set.
+func (o *RegistrySvcPortMapping) GetInternalOk() (*int32, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Internal, true
+}
+
+// SetInternal sets field value
+func (o *RegistrySvcPortMapping) SetInternal(v int32) {
+	o.Internal = v
+}
 
 func (o RegistrySvcPortMapping) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

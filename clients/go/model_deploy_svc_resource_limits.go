@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -45,7 +45,23 @@ func NewDeploySvcResourceLimitsWithDefaults() *DeploySvcResourceLimits {
 	return &this
 }
 
+// GetCpu returns the Cpu field value if set, zero value otherwise.
+func (o *DeploySvcResourceLimits) GetCpu() string {
+	if o == nil || IsNil(o.Cpu) {
+		var ret string
+		return ret
+	}
+	return *o.Cpu
+}
 
+// GetCpuOk returns a tuple with the Cpu field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DeploySvcResourceLimits) GetCpuOk() (*string, bool) {
+	if o == nil || IsNil(o.Cpu) {
+		return nil, false
+	}
+	return o.Cpu, true
+}
 
 // HasCpu returns a boolean if a field has been set.
 func (o *DeploySvcResourceLimits) HasCpu() bool {
@@ -56,8 +72,28 @@ func (o *DeploySvcResourceLimits) HasCpu() bool {
 	return false
 }
 
+// SetCpu gets a reference to the given string and assigns it to the Cpu field.
+func (o *DeploySvcResourceLimits) SetCpu(v string) {
+	o.Cpu = &v
+}
 
+// GetMemory returns the Memory field value if set, zero value otherwise.
+func (o *DeploySvcResourceLimits) GetMemory() string {
+	if o == nil || IsNil(o.Memory) {
+		var ret string
+		return ret
+	}
+	return *o.Memory
+}
 
+// GetMemoryOk returns a tuple with the Memory field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DeploySvcResourceLimits) GetMemoryOk() (*string, bool) {
+	if o == nil || IsNil(o.Memory) {
+		return nil, false
+	}
+	return o.Memory, true
+}
 
 // HasMemory returns a boolean if a field has been set.
 func (o *DeploySvcResourceLimits) HasMemory() bool {
@@ -68,8 +104,28 @@ func (o *DeploySvcResourceLimits) HasMemory() bool {
 	return false
 }
 
+// SetMemory gets a reference to the given string and assigns it to the Memory field.
+func (o *DeploySvcResourceLimits) SetMemory(v string) {
+	o.Memory = &v
+}
 
+// GetVram returns the Vram field value if set, zero value otherwise.
+func (o *DeploySvcResourceLimits) GetVram() string {
+	if o == nil || IsNil(o.Vram) {
+		var ret string
+		return ret
+	}
+	return *o.Vram
+}
 
+// GetVramOk returns a tuple with the Vram field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *DeploySvcResourceLimits) GetVramOk() (*string, bool) {
+	if o == nil || IsNil(o.Vram) {
+		return nil, false
+	}
+	return o.Vram, true
+}
 
 // HasVram returns a boolean if a field has been set.
 func (o *DeploySvcResourceLimits) HasVram() bool {
@@ -80,6 +136,10 @@ func (o *DeploySvcResourceLimits) HasVram() bool {
 	return false
 }
 
+// SetVram gets a reference to the given string and assigns it to the Vram field.
+func (o *DeploySvcResourceLimits) SetVram(v string) {
+	o.Vram = &v
+}
 
 func (o DeploySvcResourceLimits) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

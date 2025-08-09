@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -46,7 +46,23 @@ func NewChatSvcSaveThreadRequestWithDefaults() *ChatSvcSaveThreadRequest {
 	return &this
 }
 
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *ChatSvcSaveThreadRequest) GetId() string {
+	if o == nil || IsNil(o.Id) {
+		var ret string
+		return ret
+	}
+	return *o.Id
+}
 
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ChatSvcSaveThreadRequest) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
+		return nil, false
+	}
+	return o.Id, true
+}
 
 // HasId returns a boolean if a field has been set.
 func (o *ChatSvcSaveThreadRequest) HasId() bool {
@@ -57,8 +73,28 @@ func (o *ChatSvcSaveThreadRequest) HasId() bool {
 	return false
 }
 
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *ChatSvcSaveThreadRequest) SetId(v string) {
+	o.Id = &v
+}
 
+// GetTitle returns the Title field value if set, zero value otherwise.
+func (o *ChatSvcSaveThreadRequest) GetTitle() string {
+	if o == nil || IsNil(o.Title) {
+		var ret string
+		return ret
+	}
+	return *o.Title
+}
 
+// GetTitleOk returns a tuple with the Title field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ChatSvcSaveThreadRequest) GetTitleOk() (*string, bool) {
+	if o == nil || IsNil(o.Title) {
+		return nil, false
+	}
+	return o.Title, true
+}
 
 // HasTitle returns a boolean if a field has been set.
 func (o *ChatSvcSaveThreadRequest) HasTitle() bool {
@@ -69,8 +105,28 @@ func (o *ChatSvcSaveThreadRequest) HasTitle() bool {
 	return false
 }
 
+// SetTitle gets a reference to the given string and assigns it to the Title field.
+func (o *ChatSvcSaveThreadRequest) SetTitle(v string) {
+	o.Title = &v
+}
 
+// GetTopicIds returns the TopicIds field value if set, zero value otherwise.
+func (o *ChatSvcSaveThreadRequest) GetTopicIds() []string {
+	if o == nil || IsNil(o.TopicIds) {
+		var ret []string
+		return ret
+	}
+	return o.TopicIds
+}
 
+// GetTopicIdsOk returns a tuple with the TopicIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ChatSvcSaveThreadRequest) GetTopicIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.TopicIds) {
+		return nil, false
+	}
+	return o.TopicIds, true
+}
 
 // HasTopicIds returns a boolean if a field has been set.
 func (o *ChatSvcSaveThreadRequest) HasTopicIds() bool {
@@ -81,8 +137,28 @@ func (o *ChatSvcSaveThreadRequest) HasTopicIds() bool {
 	return false
 }
 
+// SetTopicIds gets a reference to the given []string and assigns it to the TopicIds field.
+func (o *ChatSvcSaveThreadRequest) SetTopicIds(v []string) {
+	o.TopicIds = v
+}
 
+// GetUserIds returns the UserIds field value if set, zero value otherwise.
+func (o *ChatSvcSaveThreadRequest) GetUserIds() []string {
+	if o == nil || IsNil(o.UserIds) {
+		var ret []string
+		return ret
+	}
+	return o.UserIds
+}
 
+// GetUserIdsOk returns a tuple with the UserIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ChatSvcSaveThreadRequest) GetUserIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.UserIds) {
+		return nil, false
+	}
+	return o.UserIds, true
+}
 
 // HasUserIds returns a boolean if a field has been set.
 func (o *ChatSvcSaveThreadRequest) HasUserIds() bool {
@@ -93,6 +169,10 @@ func (o *ChatSvcSaveThreadRequest) HasUserIds() bool {
 	return false
 }
 
+// SetUserIds gets a reference to the given []string and assigns it to the UserIds field.
+func (o *ChatSvcSaveThreadRequest) SetUserIds(v []string) {
+	o.UserIds = v
+}
 
 func (o ChatSvcSaveThreadRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -51,10 +51,47 @@ func NewContainerSvcBuildImageRequestWithDefaults() *ContainerSvcBuildImageReque
 	return &this
 }
 
+// GetContextPath returns the ContextPath field value
+func (o *ContainerSvcBuildImageRequest) GetContextPath() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.ContextPath
+}
 
+// GetContextPathOk returns a tuple with the ContextPath field value
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcBuildImageRequest) GetContextPathOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.ContextPath, true
+}
 
+// SetContextPath sets field value
+func (o *ContainerSvcBuildImageRequest) SetContextPath(v string) {
+	o.ContextPath = v
+}
 
+// GetDockerfilePath returns the DockerfilePath field value if set, zero value otherwise.
+func (o *ContainerSvcBuildImageRequest) GetDockerfilePath() string {
+	if o == nil || IsNil(o.DockerfilePath) {
+		var ret string
+		return ret
+	}
+	return *o.DockerfilePath
+}
+
+// GetDockerfilePathOk returns a tuple with the DockerfilePath field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcBuildImageRequest) GetDockerfilePathOk() (*string, bool) {
+	if o == nil || IsNil(o.DockerfilePath) {
+		return nil, false
+	}
+	return o.DockerfilePath, true
+}
 
 // HasDockerfilePath returns a boolean if a field has been set.
 func (o *ContainerSvcBuildImageRequest) HasDockerfilePath() bool {
@@ -65,9 +102,34 @@ func (o *ContainerSvcBuildImageRequest) HasDockerfilePath() bool {
 	return false
 }
 
+// SetDockerfilePath gets a reference to the given string and assigns it to the DockerfilePath field.
+func (o *ContainerSvcBuildImageRequest) SetDockerfilePath(v string) {
+	o.DockerfilePath = &v
+}
 
+// GetName returns the Name field value
+func (o *ContainerSvcBuildImageRequest) GetName() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
 
+	return o.Name
+}
 
+// GetNameOk returns a tuple with the Name field value
+// and a boolean to check if the value has been set.
+func (o *ContainerSvcBuildImageRequest) GetNameOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Name, true
+}
+
+// SetName sets field value
+func (o *ContainerSvcBuildImageRequest) SetName(v string) {
+	o.Name = v
+}
 
 func (o ContainerSvcBuildImageRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()

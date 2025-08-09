@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc1
+API version: 0.8.0-rc5
 Contact: sales@singulatron.com
 */
 
@@ -42,7 +42,23 @@ func NewConfigSvcListConfigsRequestWithDefaults() *ConfigSvcListConfigsRequest {
 	return &this
 }
 
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *ConfigSvcListConfigsRequest) GetApp() string {
+	if o == nil || IsNil(o.App) {
+		var ret string
+		return ret
+	}
+	return *o.App
+}
 
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcListConfigsRequest) GetAppOk() (*string, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
 
 // HasApp returns a boolean if a field has been set.
 func (o *ConfigSvcListConfigsRequest) HasApp() bool {
@@ -53,8 +69,28 @@ func (o *ConfigSvcListConfigsRequest) HasApp() bool {
 	return false
 }
 
+// SetApp gets a reference to the given string and assigns it to the App field.
+func (o *ConfigSvcListConfigsRequest) SetApp(v string) {
+	o.App = &v
+}
 
+// GetKeys returns the Keys field value if set, zero value otherwise.
+func (o *ConfigSvcListConfigsRequest) GetKeys() []string {
+	if o == nil || IsNil(o.Keys) {
+		var ret []string
+		return ret
+	}
+	return o.Keys
+}
 
+// GetKeysOk returns a tuple with the Keys field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcListConfigsRequest) GetKeysOk() ([]string, bool) {
+	if o == nil || IsNil(o.Keys) {
+		return nil, false
+	}
+	return o.Keys, true
+}
 
 // HasKeys returns a boolean if a field has been set.
 func (o *ConfigSvcListConfigsRequest) HasKeys() bool {
@@ -65,6 +101,10 @@ func (o *ConfigSvcListConfigsRequest) HasKeys() bool {
 	return false
 }
 
+// SetKeys gets a reference to the given []string and assigns it to the Keys field.
+func (o *ConfigSvcListConfigsRequest) SetKeys(v []string) {
+	o.Keys = v
+}
 
 func (o ConfigSvcListConfigsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
