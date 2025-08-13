@@ -10,9 +10,11 @@ package middlewares
 import (
 	"compress/gzip"
 	"io"
+	"log/slog"
 	"net/http"
 	"strings"
 
+	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/andybalholm/brotli"
 )
 
@@ -23,6 +25,12 @@ func GzipDecodeMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		if strings.Contains(r.Header.Get("Content-Encoding"), "gzip") {
 			gzReader, err := gzip.NewReader(r.Body)
 			if err != nil {
+				logger.Error("Failed to create gzip reader",
+					slog.String("path", r.URL.Path),
+					slog.String("method", r.Method),
+					slog.Any("error", err),
+				)
+
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write([]byte(err.Error()))
 				return

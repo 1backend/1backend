@@ -23,6 +23,8 @@ func Recover(next http.HandlerFunc) http.HandlerFunc {
 				stackTrace := debug.Stack()
 
 				logger.Logger.Error("Recovered from panic",
+					slog.String("path", r.URL.Path),
+					slog.String("method", r.Method),
 					slog.Any("error", err),
 					slog.String("stackTrace", string(stackTrace)),
 				)
