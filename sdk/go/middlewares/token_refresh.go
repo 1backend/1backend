@@ -32,6 +32,8 @@ func TokenRefreshMiddleware(tr endpoint.TokenRefresher, autorefreshOff bool) fun
 				_, _, err := tr.EnsureValidToken(r)
 				if err != nil {
 					logger.Error("Token refresh middleware error",
+						r.Method,
+						r.URL.Path,
 						slog.Any("error", err),
 					)
 					http.Error(w, "Unauthorized: "+err.Error(), http.StatusUnauthorized)
