@@ -97,10 +97,10 @@ func addTokenCommand(rootCmd *cobra.Command) {
 
 func addUseCommand(rootCmd *cobra.Command) {
 	var runCmd = &cobra.Command{
-		Use:   "use [slug]",
+		Use:   "su [slug]",
 		Args:  cobra.ExactArgs(1),
-		Short: "Switch user by specifying their slug.",
-		RunE:  Use,
+		Short: "Switch to user by specifying their slug.",
+		RunE:  Su,
 	}
 
 	rootCmd.AddCommand(runCmd)
