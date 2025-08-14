@@ -8,8 +8,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Use [slug]
-func Use(cmd *cobra.Command, args []string) error {
+// Su [slug]
+func Su(cmd *cobra.Command, args []string) error {
 	conf, err := util.LoadConfig()
 	if err != nil {
 		return errors.Wrap(err, "failed to load config")
