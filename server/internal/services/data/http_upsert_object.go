@@ -5,7 +5,7 @@
  * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
  * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
  */
-package dynamicservice
+package dataservice
 
 import (
 	"encoding/json"
@@ -96,7 +96,11 @@ func (g *DataService) Upsert(
 	objectId := mux.Vars(r)
 	req.Object.Id = objectId["objectId"]
 
-	err = g.upsertObject(identifiers, req)
+	err = g.upsertObject(
+		*isAuthRsp.App,
+		identifiers,
+		req,
+	)
 	if err != nil {
 		logger.Error(
 			"Error upserting object",
@@ -114,6 +118,7 @@ func (g *DataService) Upsert(
 }
 
 func (g *DataService) upsertObject(
+	app string,
 	writers []string,
 	request *data.UpsertObjectRequest,
 ) error {
@@ -142,5 +147,16 @@ func (g *DataService) upsertObject(
 		}
 	}
 
-	return g.store.Upsert(request.Object)
+	object := &data.Object{
+		App:      app,
+		Id:       request.Object.Id,
+		Table:    request.Object.Table,
+		Data:     request.Object.Data,
+		Authors:  request.Object.Authors,
+		Readers:  request.Object.Readers,
+		Writers:  request.Object.Writers,
+		Deleters: request.Object.Deleters,
+	}
+
+	return g.store.Upsert(object)
 }

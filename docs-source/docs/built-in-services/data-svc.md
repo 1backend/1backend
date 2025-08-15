@@ -10,6 +10,7 @@ tags:
   - services
   - firebase
   - backendless
+  - multitenant
 ---
 
 # Data Svc
@@ -72,7 +73,7 @@ oo post /data-svc/objects \
 oo post /data-svc/objects \
   --table="pet" \
   --readers="_self" \
-  --query.filters='[{"fields":["data.species"],"op":"equals","jsonValues":"[\"cat\"]"}]'
+  --query.filters='[{"fields":["data.species"],"op":"equals","valuesJson":"[\"cat\"]"}]'
 
 # Query with sorting and pagination
 oo post /data-svc/objects \
@@ -96,7 +97,7 @@ oo post /data-svc/objects \
 # Update objects by filter
 oo post /data-svc/objects/update \
   --table="pet" \
-  --filters='[{"fields":["data.species"],"op":"equals","jsonValues":"[\"cat\"]"}]' \
+  --filters='[{"fields":["data.species"],"op":"equals","valuesJson":"[\"cat\"]"}]' \
   --object.data.vaccinated=true
 
 # Upsert specific object by ID
@@ -111,7 +112,7 @@ oo put /data-svc/object/pet_fluffy123 \
 # Delete objects by filter
 oo post /data-svc/objects/delete \
   --table="pet" \
-  --filters='[{"fields":["data.species"],"op":"equals","jsonValues":"[\"dog\"]"}]'
+  --filters='[{"fields":["data.species"],"op":"equals","valuesJson":"[\"dog\"]"}]'
 ```
 
 ## Object Structure & Data Model
@@ -120,6 +121,7 @@ oo post /data-svc/objects/delete \
 
 ```json
 {
+  "app": "yourapp.com",
   "id": "pet_fluffy123",
   "table": "pet",
   "readers": ["usr_12345", "org_67890"],
@@ -272,27 +274,27 @@ Data Svc supports comprehensive filtering with various operators:
 oo post /data-svc/objects \
   --table="pet" \
   --readers="_self" \
-  --query.filters='[{"fields":["data.species"],"op":"equals","jsonValues":"[\"cat\"]"}]'
+  --query.filters='[{"fields":["data.species"],"op":"equals","valuesJson":"[\"cat\"]"}]'
 
 # Contains filter (for strings)
 oo post /data-svc/objects \
   --table="pet" \
   --readers="_self" \
-  --query.filters='[{"fields":["data.name"],"op":"contains","jsonValues":"[\"flu\"]"}]'
+  --query.filters='[{"fields":["data.name"],"op":"contains","valuesJson":"[\"flu\"]"}]'
 
 # Greater than filter (for numbers)
 oo post /data-svc/objects \
   --table="pet" \
   --readers="_self" \
-  --query.filters='[{"fields":["data.age"],"op":"greaterThan","jsonValues":"[5]"}]'
+  --query.filters='[{"fields":["data.age"],"op":"greaterThan","valuesJson":"[5]"}]'
 
 # Multiple filters (AND logic)
 oo post /data-svc/objects \
   --table="pet" \
   --readers="_self" \
   --query.filters='[
-    {"fields":["data.species"],"op":"equals","jsonValues":"[\"cat\"]"},
-    {"fields":["data.age"],"op":"greaterThan","jsonValues":"[2]"}
+    {"fields":["data.species"],"op":"equals","valuesJson":"[\"cat\"]"},
+    {"fields":["data.age"],"op":"greaterThan","valuesJson":"[2]"}
   ]'
 ```
 
@@ -356,7 +358,7 @@ oo post /data-svc/object \
 # Update profile preferences
 oo post /data-svc/objects/update \
   --table="user_profile" \
-  --filters='[{"fields":["authors"],"op":"intersects","jsonValues":"[\"usr_currentuser\"]"}]' \
+  --filters='[{"fields":["authors"],"op":"intersects","valuesJson":"[\"usr_currentuser\"]"}]' \
   --object.data.preferences.theme="light"
 
 # Query own profile
@@ -382,14 +384,14 @@ oo post /data-svc/object \
 # Mark todo as completed
 oo post /data-svc/objects/update \
   --table="todo" \
-  --filters='[{"fields":["data.title"],"op":"equals","jsonValues":"[\"Learn Data Svc\"]"}]' \
+  --filters='[{"fields":["data.title"],"op":"equals","valuesJson":"[\"Learn Data Svc\"]"}]' \
   --object.data.completed=true
 
 # Get pending todos
 oo post /data-svc/objects \
   --table="todo" \
   --readers="_self" \
-  --query.filters='[{"fields":["data.completed"],"op":"equals","jsonValues":"[false]"}]' \
+  --query.filters='[{"fields":["data.completed"],"op":"equals","valuesJson":"[false]"}]' \
   --query.orderBys='[{"field":"data.priority","sortingType":"string"}]'
 ```
 
@@ -419,7 +421,7 @@ oo post /data-svc/object \
 oo post /data-svc/objects \
   --table="team_document" \
   --readers='["org_team123"]' \
-  --query.filters='[{"fields":["data.status"],"op":"equals","jsonValues":"[\"draft\"]"}]'
+  --query.filters='[{"fields":["data.status"],"op":"equals","valuesJson":"[\"draft\"]"}]'
 ```
 
 ### 4. E-commerce Product Catalog
@@ -441,7 +443,7 @@ oo post /data-svc/object \
 oo post /data-svc/objects \
   --table="product" \
   --readers='["any"]' \
-  --query.filters='[{"fields":["data.category"],"op":"equals","jsonValues":"[\"electronics\"]"}]' \
+  --query.filters='[{"fields":["data.category"],"op":"equals","valuesJson":"[\"electronics\"]"}]' \
   --query.orderBys='[{"field":"data.price","sortingType":"numeric"}]'
 
 # Filter by price range
@@ -449,8 +451,8 @@ oo post /data-svc/objects \
   --table="product" \
   --readers='["any"]' \
   --query.filters='[
-    {"fields":["data.price"],"op":"greaterThanOrEqual","jsonValues":"[100]"},
-    {"fields":["data.price"],"op":"lessThanOrEqual","jsonValues":"[300]"}
+    {"fields":["data.price"],"op":"greaterThanOrEqual","valuesJson":"[100]"},
+    {"fields":["data.price"],"op":"lessThanOrEqual","valuesJson":"[300]"}
   ]'
 ```
 

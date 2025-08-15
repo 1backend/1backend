@@ -1,4 +1,4 @@
-package dynamicservice_test
+package dataservice_test
 
 import (
 	"context"

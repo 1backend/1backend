@@ -36,7 +36,7 @@ const base62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 // However, because Sonyflake is time-based and IDs can be guessed or enumerated,
 // this ID type is not suitable for exposing sensitive resources without authentication.
 // For scenarios requiring non-enumerable, opaque identifiers, use OpaqueId instead.
-func Id(prefix string) string {
+func Id(prefixes ...string) string {
 	number, err := sonyFlake.NextID()
 	if err != nil {
 		panic(err)
@@ -53,7 +53,7 @@ func Id(prefix string) string {
 		b = append([]byte{base62[remainder]}, b...)
 	}
 
-	return prefix + "_" + string(b)
+	return strings.Join(prefixes, "_") + "_" + string(b)
 }
 
 // OpaqueId generates a non-enumerable, opaque ID with a prefix using UUID v4.
