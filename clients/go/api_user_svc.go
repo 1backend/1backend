@@ -340,8 +340,9 @@ Leaked tokens should be handled separately, via a revocation flag or deletion.
 	Enroll a list of users by contact or user Id to acquire a role.
 Works on future or current users.
 
-Requires the `user-svc:enroll:edit` permission, which by default all users have.
 A user can only enroll an other user to a role if the user "owns" that role.
+A user who owns a role can enroll others in that roll in any app.
+The same request might contain enrolls for different apps.
 
 A user "owns" a role in the following cases:
 - A static role where the role ID is prefixed with the caller's slug.
@@ -1832,9 +1833,6 @@ func (a *UserSvcAPIService) ListOrganizationsExecute(r ApiListOrganizationsReque
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
-	if r.body == nil {
-		return localVarReturnValue, nil, reportError("body is required and must be specified")
-	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/json"}
@@ -3267,8 +3265,9 @@ SaveEnrolls Save Enrolls
 Enroll a list of users by contact or user Id to acquire a role.
 Works on future or current users.
 
-Requires the `user-svc:enroll:edit` permission, which by default all users have.
 A user can only enroll an other user to a role if the user "owns" that role.
+A user who owns a role can enroll others in that roll in any app.
+The same request might contain enrolls for different apps.
 
 A user "owns" a role in the following cases:
 - A static role where the role ID is prefixed with the caller's slug.

@@ -345,9 +345,6 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     listOrganizationsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (requestParameters['body'] == null) {
-                throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling listOrganizations().');
-            }
             const queryParameters = {};
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
@@ -369,8 +366,8 @@ export class UserSvcApi extends runtime.BaseAPI {
      * Requires the `user-svc:organization:view` permission, that only admins have by default.
      * List Organizations
      */
-    listOrganizations(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
+    listOrganizations() {
+        return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
             const response = yield this.listOrganizationsRaw(requestParameters, initOverrides);
             return yield response.value();
         });
@@ -680,7 +677,7 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Enroll a list of users by contact or user Id to acquire a role. Works on future or current users.  Requires the `user-svc:enroll:edit` permission, which by default all users have. A user can only enroll an other user to a role if the user \"owns\" that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).  Examples: - A user with the slug `joe-doe` owns roles like `joe-doe:*` such as `joe-doe:any-custom-role`. - A user with any slug who has the role `my-service:admin` owns `my-service:*` roles such as `my-service:user`. - A user with any slug who has the role `user-svc:org:{%orgId}:admin` owns `user-svc:org:{%orgId}:*` such as `user-svc:org:{%orgId}:user`.
+     * Enroll a list of users by contact or user Id to acquire a role. Works on future or current users.  A user can only enroll an other user to a role if the user \"owns\" that role. A user who owns a role can enroll others in that roll in any app. The same request might contain enrolls for different apps.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).  Examples: - A user with the slug `joe-doe` owns roles like `joe-doe:*` such as `joe-doe:any-custom-role`. - A user with any slug who has the role `my-service:admin` owns `my-service:*` roles such as `my-service:user`. - A user with any slug who has the role `user-svc:org:{%orgId}:admin` owns `user-svc:org:{%orgId}:*` such as `user-svc:org:{%orgId}:user`.
      * Save Enrolls
      */
     saveEnrollsRaw(requestParameters, initOverrides) {
@@ -706,7 +703,7 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Enroll a list of users by contact or user Id to acquire a role. Works on future or current users.  Requires the `user-svc:enroll:edit` permission, which by default all users have. A user can only enroll an other user to a role if the user \"owns\" that role.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).  Examples: - A user with the slug `joe-doe` owns roles like `joe-doe:*` such as `joe-doe:any-custom-role`. - A user with any slug who has the role `my-service:admin` owns `my-service:*` roles such as `my-service:user`. - A user with any slug who has the role `user-svc:org:{%orgId}:admin` owns `user-svc:org:{%orgId}:*` such as `user-svc:org:{%orgId}:user`.
+     * Enroll a list of users by contact or user Id to acquire a role. Works on future or current users.  A user can only enroll an other user to a role if the user \"owns\" that role. A user who owns a role can enroll others in that roll in any app. The same request might contain enrolls for different apps.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).  Examples: - A user with the slug `joe-doe` owns roles like `joe-doe:*` such as `joe-doe:any-custom-role`. - A user with any slug who has the role `my-service:admin` owns `my-service:*` roles such as `my-service:user`. - A user with any slug who has the role `user-svc:org:{%orgId}:admin` owns `user-svc:org:{%orgId}:*` such as `user-svc:org:{%orgId}:user`.
      * Save Enrolls
      */
     saveEnrolls(requestParameters, initOverrides) {
