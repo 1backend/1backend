@@ -259,13 +259,32 @@ Enrollments are a flexible way to assign roles to users, whether they already ex
 ```yaml
 # Enrollment through contact ID
 id: "admin-enrollment-1"
+
+# Enrollment through contact ID
+#
+# `app` defines the scope in which the enrollment applies.
+# - A concrete app (e.g. "shoes.com") means the role is only assigned in that app’s tenant.
+# - The special value "*" means the enrollment applies to **all apps** in the instance.
+#
+# ⚠️ Note: Using "*" is powerful but should be reserved for global roles
+#   (e.g. "user-svc:admin"). In multitenant setups, this means the role
+#   will show up in every user token across all apps.
+app: "*"
 role: "user-svc:admin"
 contactId: "admin@company.com"
 ```
 
 ```yaml
 # Enrollment through user ID
-id: "payment-processor-enrollment"
+
+# IMPORTANT: `id` must be globally unique across ALL apps (not just within one app).
+# Prefer an explicit prefix tied to the app to avoid collisions in IaC workflows.
+# Example canonical form: "<app>-<purpose>-enrollment"
+#
+# Note: The system does not automatically enforce this naming convention,
+# but a save will fail if the same id is already bound to another app.
+id: "shoes.com-payment-processor-enrollment"
+app: "shoes.com"
 role: "payment-svc:processor"
 userId: "usr_abc123"
 ```
@@ -277,9 +296,13 @@ For CLI usage see [this section](#enrollment).
 Organizations provide a way for users to group together and collaborate. Think of them as user-defined domains of trust—similar to GitHub organizations, Slack workspaces, or Discord servers. They enable structured permissioning and scoped roles within a 1Backend application.
 
 ```yaml
+# organization.yaml
 id: "org_eZqC0BbdG2"
+app: "shoes.com"
+
 name: "Acme Corporation" # Full name of the organization
 slug: "acme-corporation" # URL-friendly unique identifier for the organization
+
 createdAt: "2025-01-15T12:00:00Z" # Example ISO 8601 timestamp
 ```
 
@@ -324,14 +347,33 @@ Any logged in user can create an organization, provided the `Organization` slug 
 
 A membership is a formal link between a user and an organization. It determines what organizations a user belongs to and enables organization-scoped roles to take effect (such as `user-svc:org:{orgId}:user` or `user-svc:org:{orgId}:admin`).
 
-Similarly how [`Enrolls`](#enrolls) add roles to users, Memberships add users to organizations. Memberships are created by the [`SaveEnrolls`](/docs/1backend-api/save-enrolls) endpoint, which allows you to assign roles to users based on their organization membership.
+Similarly how [`Enrolls`](#enrolls) add roles to users, memberships add organization roles to users. Memberships are created by the [`SaveMembership`](/docs/1backend-api/save-membership) endpoint.
+
+```yaml
+# membership.yaml
+id: "mem_123456789"
+app: "shoes.com"
+
+createdAt: "2025-08-16T12:34:56Z"
+updatedAt: "2025-08-16T12:45:30Z"
+deletedAt: null
+
+organizationId: "org_987654321"
+userId: "user_1122334455"
+
+# Marks the user's default organization
+# - Only one membership per user can be active
+# - Stored in JWT under key `oao`
+active: true
+```
 
 ## Permissions
 
 A permission is a simple string that represents a specific capability or access right within your service—e.g., `petstore-svc:pet:create`, `payment-svc:process`, or `chat-svc:message:read`. Permissions are purely convention-based and aren't backed by a database entity. They are just strings—but they become powerful when combined with permits.
 
 ```yaml
-# Permissions are not a database entity.
+# Permissions are not a standalone database entity,
+# they are produced by Permits.
 ```
 
 > Permissions typically correspond to protected API actions. They're meant to be human-readable and composable.

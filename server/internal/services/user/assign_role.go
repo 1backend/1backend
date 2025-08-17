@@ -57,6 +57,7 @@ func (s *UserService) assignRole(
 		Role:   role,
 		UserId: user.Id,
 	}
+
 	err = s.enrollsStore.Upsert(inv)
 	if err != nil {
 		return errors.Wrap(err, "failed to add role to user")

@@ -11,26 +11,6 @@ import (
 	"time"
 )
 
-type Membership struct {
-	Id  string `json:"id,omitempty"`
-	App string `json:"app,omitempty" example:"unnamed"`
-
-	CreatedAt time.Time  `json:"createdAt" binding:"required"`
-	UpdatedAt time.Time  `json:"updatedAt" binding:"required"`
-	DeletedAt *time.Time `json:"deletedAt,omitempty"`
-
-	OrganizationId string `json:"organizationId,omitempty"`
-	UserId         string `json:"userId,omitempty"`
-
-	// Active/default organization for a user.
-	// There can only be one per user.
-	Active bool `json:"active,omitempty"`
-}
-
-func (o *Membership) GetId() string {
-	return o.Id
-}
-
 type Organization struct {
 	Id  string `json:"id" binding:"required"`
 	App string `json:"app,omitempty" example:"unnamed"`
@@ -52,7 +32,7 @@ func (o *Organization) GetId() string {
 	return o.Id
 }
 
-type SaveOrganizationRequest struct {
+type OrganizationInput struct {
 	Id string `json:"id"`
 
 	// URL-friendly unique (inside the Singularon platform) identifier for the `organization`.
@@ -64,8 +44,12 @@ type SaveOrganizationRequest struct {
 	ThumbnailFileId string `json:"thumbnailFileId,omitempty" example:"file_fQDxusW8og"`
 }
 
-type SaveOrganizationResponse struct {
-	Organization Organization `json:"organization" binding:"required"`
+type SaveOrganizationsRequest struct {
+	Organizations []OrganizationInput `json:"organizations" binding:"required"`
+}
+
+type SaveOrganizationsResponse struct {
+	Organizations []Organization `json:"organizations" binding:"required"`
 
 	// Due to the nature of JWT tokens, the token must be refreshed after
 	// creating an organization, as dynamic organization roles are embedded in it.
@@ -84,16 +68,4 @@ type ListOrganizationsRequest struct {
 
 type ListOrganizationsResponse struct {
 	Organizations []Organization `json:"organizations"`
-}
-
-type SaveMembershipRequest struct {
-}
-
-type SaveMembershipResponse struct {
-}
-
-type DeleteMembershipRequest struct {
-}
-
-type DeleteMembershipResponse struct {
 }

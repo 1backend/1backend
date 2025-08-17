@@ -21,16 +21,16 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// @ID saveMembership
-// @Summary Save Membership
+// @ID SaveMemberships
+// @Summary Save Memberships
 // @Description Allows an organization admin to add a user to the organization.
 // @Tags User Svc
 // @Accept json
 // @Produce json
 // @Param organizationId path string true "Organization ID"
 // @Param userId path string true "User ID"
-// @Param body body user.SaveMembershipRequest false "Add User to Organization Request"
-// @Success 200 {object} user.SaveMembershipResponse "User added successfully"
+// @Param body body user.SaveMembershipsRequest false "Add User to Organization Request"
+// @Success 200 {object} user.SaveMembershipsResponse "User added successfully"
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Failure 403 {object} user.ErrorResponse "Forbidden"
@@ -38,7 +38,7 @@ import (
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
 // @Router /user-svc/organization/{organizationId}/user/{userId} [put]
-func (s *UserService) SaveMembership(
+func (s *UserService) SaveMemberships(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
@@ -63,7 +63,7 @@ func (s *UserService) SaveMembership(
 		return
 	}
 
-	req := user.SaveMembershipRequest{}
+	req := user.SaveMembershipsRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		logger.Error(
@@ -75,7 +75,7 @@ func (s *UserService) SaveMembership(
 	}
 	defer r.Body.Close()
 
-	err = s.saveMembership(claims.App, usr.Id, userId, organizationId)
+	err = s.saveMemberships(claims.App, usr.Id, userId, organizationId)
 	if err != nil {
 		logger.Error(
 			"Failed to save membership",
@@ -85,10 +85,10 @@ func (s *UserService) SaveMembership(
 		return
 	}
 
-	endpoint.WriteJSON(w, http.StatusOK, user.SaveMembershipResponse{})
+	endpoint.WriteJSON(w, http.StatusOK, user.SaveMembershipsResponse{})
 }
 
-func (s *UserService) saveMembership(
+func (s *UserService) saveMemberships(
 	app string,
 	callerId,
 	userId,

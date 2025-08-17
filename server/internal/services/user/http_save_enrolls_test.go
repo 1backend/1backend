@@ -447,3 +447,145 @@ func TestSaveEnrollsOldAssignTests(t *testing.T) {
 		require.NoError(t, err)
 	})
 }
+
+func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{Test: true})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+	manyClients, _, err := test.MakeClients(clientFactory, 1)
+	require.NoError(t, err)
+
+	userClient := manyClients[0]
+
+	const (
+		enrollID   = "payment-processor-enrollment" // human-readable, intentionally not prefixed
+		role       = "test-user-slug-0:custom-role" // owned by the first test user
+		contact    = "test-user@email.com"
+		appA       = "socks.com"
+		appB       = "shoes.com"
+		appGlobal  = "*"
+		newContact = "another@email.com"
+	)
+
+	// 1) Create enrollment in app A with a given id → OK
+	t.Run("create enrollment in app A", func(t *testing.T) {
+		_, rsp, err := userClient.UserSvcAPI.SaveEnrolls(context.Background()).
+			Body(openapi.UserSvcSaveEnrollsRequest{
+				Enrolls: []openapi.UserSvcEnrollInput{
+					{
+						Id:        openapi.PtrString(enrollID),
+						App:       openapi.PtrString(appA),
+						ContactId: openapi.PtrString(contact),
+						Role:      role,
+					},
+				},
+			}).Execute()
+
+		require.NoError(t, err, rsp)
+	})
+
+	// 2) Re-save same id within the SAME app (update) → OK
+	t.Run("update same id within same app", func(t *testing.T) {
+		_, rsp, err := userClient.UserSvcAPI.SaveEnrolls(context.Background()).
+			Body(openapi.UserSvcSaveEnrollsRequest{
+				Enrolls: []openapi.UserSvcEnrollInput{
+					{
+						Id:        openapi.PtrString(enrollID),
+						App:       openapi.PtrString(appA),
+						ContactId: openapi.PtrString(newContact), // change something to force an update
+						Role:      role,
+					},
+				},
+			}).Execute()
+
+		require.NoError(t, err, rsp)
+	})
+
+	// 3) Try to reuse the SAME id in a DIFFERENT app → should fail (global uniqueness)
+	t.Run("same id in different app should fail", func(t *testing.T) {
+		_, rsp, err := userClient.UserSvcAPI.SaveEnrolls(context.Background()).
+			Body(openapi.UserSvcSaveEnrollsRequest{
+				Enrolls: []openapi.UserSvcEnrollInput{
+					{
+						Id:        openapi.PtrString(enrollID),
+						App:       openapi.PtrString(appB),
+						ContactId: openapi.PtrString(contact),
+						Role:      role,
+					},
+				},
+			}).Execute()
+
+		require.Error(t, err, rsp)
+	})
+
+	// 4) Create a different id bound to "*" (global) → OK
+	const globalID = "global-role-enrollment"
+	t.Run("create global enrollment (*)", func(t *testing.T) {
+		_, rsp, err := userClient.UserSvcAPI.SaveEnrolls(context.Background()).
+			Body(openapi.UserSvcSaveEnrollsRequest{
+				Enrolls: []openapi.UserSvcEnrollInput{
+					{
+						Id:        openapi.PtrString(globalID),
+						App:       openapi.PtrString(appGlobal),
+						ContactId: openapi.PtrString(contact),
+						Role:      role,
+					},
+				},
+			}).Execute()
+
+		require.NoError(t, err, rsp)
+	})
+
+	// 5) Reuse the SAME global id in a concrete app → should fail (global id already bound to "*")
+	t.Run("reuse global id in concrete app should fail", func(t *testing.T) {
+		_, rsp, err := userClient.UserSvcAPI.SaveEnrolls(context.Background()).
+			Body(openapi.UserSvcSaveEnrollsRequest{
+				Enrolls: []openapi.UserSvcEnrollInput{
+					{
+						Id:        openapi.PtrString(globalID),
+						App:       openapi.PtrString(appA),
+						ContactId: openapi.PtrString(contact),
+						Role:      role,
+					},
+				},
+			}).Execute()
+
+		require.Error(t, err, rsp)
+	})
+
+	// 6) And vice versa: create in app B with a new id, then try to reuse that id with "*" → should fail
+	const appScopedID = "support-agent-enrollment"
+	t.Run("create in concrete app then reuse with * should fail", func(t *testing.T) {
+		// create in app B
+		_, rsp1, err := userClient.UserSvcAPI.SaveEnrolls(context.Background()).
+			Body(openapi.UserSvcSaveEnrollsRequest{
+				Enrolls: []openapi.UserSvcEnrollInput{
+					{
+						Id:        openapi.PtrString(appScopedID),
+						App:       openapi.PtrString(appB),
+						ContactId: openapi.PtrString(contact),
+						Role:      role,
+					},
+				},
+			}).Execute()
+		require.NoError(t, err, rsp1)
+
+		// attempt reuse with "*"
+		_, rsp2, err := userClient.UserSvcAPI.SaveEnrolls(context.Background()).
+			Body(openapi.UserSvcSaveEnrollsRequest{
+				Enrolls: []openapi.UserSvcEnrollInput{
+					{
+						Id:        openapi.PtrString(appScopedID),
+						App:       openapi.PtrString(appGlobal),
+						ContactId: openapi.PtrString(contact),
+						Role:      role,
+					},
+				},
+			}).Execute()
+		require.Error(t, err, rsp2)
+	})
+}

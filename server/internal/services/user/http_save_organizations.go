@@ -24,22 +24,23 @@ import (
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-// @ID saveOrganization
-// @Summary Save an Organization
-// @Description Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization.
+// @ID SaveOrganizations
+// @Summary Save Organizations
+// @Description Allows a logged-in user to save organizations.
+// @Description The user initiating the request will be assigned the role of admin for new organizations.
 // @Description The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the saved organization.
 // @Description Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
 // @Tags User Svc
 // @Accept json
 // @Produce json
-// @Param body body user.SaveOrganizationRequest true "Save User Request"
-// @Success 200 {object} user.SaveOrganizationResponse "User saved successfully"
+// @Param body body user.SaveOrganizationsRequest true "Save User Request"
+// @Success 200 {object} user.SaveOrganizationsResponse "User saved successfully"
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
-// @Router /user-svc/organization [put]
-func (s *UserService) SaveOrganization(
+// @Router /user-svc/organizations [put]
+func (s *UserService) SaveOrganizations(
 	w http.ResponseWriter,
 	r *http.Request) {
 
@@ -60,7 +61,7 @@ func (s *UserService) SaveOrganization(
 		return
 	}
 
-	req := user.SaveOrganizationRequest{}
+	req := user.SaveOrganizationsRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		logger.Error(
@@ -72,7 +73,7 @@ func (s *UserService) SaveOrganization(
 	}
 	defer r.Body.Close()
 
-	org, token, err := s.saveOrganization(
+	orgs, token, err := s.saveOrganizations(
 		claims.App,
 		usr.Id,
 		&req,
@@ -87,94 +88,106 @@ func (s *UserService) SaveOrganization(
 		return
 	}
 
-	rsp := user.SaveOrganizationResponse{
-		Organization: *org,
-		Token:        *token,
+	rsp := user.SaveOrganizationsResponse{
+		Organizations: orgs,
+		Token:         *token,
 	}
 	endpoint.WriteJSON(w, http.StatusOK, rsp)
 }
 
-func (s *UserService) saveOrganization(
+func (s *UserService) saveOrganizations(
 	app string,
 	userId string,
-	request *user.SaveOrganizationRequest,
+	request *user.SaveOrganizationsRequest,
 	claims *auth.Claims,
-) (*user.Organization, *user.AuthToken, error) {
-	if request.Slug == "" {
-		return nil, nil, errors.New("slug is required")
-	}
-	if request.Name == "" {
-		return nil, nil, errors.New("name is required")
-	}
+) ([]user.Organization, *user.AuthToken, error) {
+	orgs := make([]user.Organization, 0, len(request.Organizations))
+	enrolls := make([]user.EnrollInput, 0, len(request.Organizations))
 
-	orgI, exists, err := s.organizationsStore.Query(
-		datastore.Equals(datastore.Field("app"), app),
-		datastore.Equals(datastore.Field("slug"), request.Slug),
-	).FindOne()
-	if err != nil {
-		return nil, nil, err
-	}
+	membershipRows := make([]datastore.Row, 0, len(request.Organizations))
+	organizationRows := make([]datastore.Row, 0, len(request.Organizations))
 
-	var final *user.Organization
-	now := time.Now()
-
-	if exists {
-		final = orgI.(*user.Organization)
-		if request.Name != "" {
-			final.Name = request.Name
+	for _, request := range request.Organizations {
+		if request.Slug == "" {
+			return nil, nil, errors.New("slug is required")
 		}
-		if request.ThumbnailFileId != "" {
-			final.ThumbnailFileId = request.ThumbnailFileId
-		}
-		final.UpdatedAt = now
-	} else {
-		final = &user.Organization{
-			App:       app,
-			Name:      request.Name,
-			Slug:      request.Slug,
-			CreatedAt: now,
-			UpdatedAt: now,
+		if request.Name == "" {
+			return nil, nil, errors.New("name is required")
 		}
 
-		if request.Id != "" {
-			final.Id = request.Id
-		} else {
-			final.Id = sdk.Id("org")
-		}
-
-		// When creating a new org, the user switches to that org as the active one
-		link := &user.Membership{
-			Id:             sdk.Id("oul"),
-			App:            app,
-			UserId:         userId,
-			OrganizationId: final.Id,
-			// @todo null out the other active orgs for correctness
-			Active: true,
-		}
-
-		err = s.membershipsStore.Upsert(link)
+		orgI, exists, err := s.organizationsStore.Query(
+			datastore.Equals(datastore.Field("app"), app),
+			datastore.Equals(datastore.Field("slug"), request.Slug),
+		).FindOne()
 		if err != nil {
 			return nil, nil, err
 		}
 
+		var final *user.Organization
+		now := time.Now()
+
+		if exists {
+			final = orgI.(*user.Organization)
+			if request.Name != "" {
+				final.Name = request.Name
+			}
+			if request.ThumbnailFileId != "" {
+				final.ThumbnailFileId = request.ThumbnailFileId
+			}
+			final.UpdatedAt = now
+		} else {
+			final = &user.Organization{
+				App:       app,
+				Name:      request.Name,
+				Slug:      request.Slug,
+				CreatedAt: now,
+				UpdatedAt: now,
+			}
+
+			if request.Id != "" {
+				final.Id = request.Id
+			} else {
+				final.Id = sdk.Id("org")
+			}
+
+			// When creating a new org, the user switches to that org as the active one
+			membership := user.Membership{
+				Id:             sdk.Id("oul"),
+				App:            app,
+				UserId:         userId,
+				OrganizationId: final.Id,
+				// @todo null out the other active orgs for correctness
+				Active: true,
+			}
+
+			membershipRows = append(membershipRows, &membership)
+		}
+
+		orgs = append(orgs, *final)
+		organizationRows = append(organizationRows, final)
+
+		enrolls = append(enrolls, user.EnrollInput{
+			App:    app,
+			UserId: userId,
+			Role:   fmt.Sprintf("user-svc:org:{%v}:admin", final.Id),
+		})
 	}
 
-	err = s.organizationsStore.Upsert(final)
+	err := s.organizationsStore.UpsertMany(organizationRows)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, errors.Wrap(err, "error upserting organizations")
+	}
+
+	err = s.membershipsStore.UpsertMany(membershipRows)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "error upserting memberships")
 	}
 
 	_, err = s.saveEnrolls(
 		claims.App,
 		userId,
 		&user.SaveEnrollsRequest{
-			Enrolls: []user.EnrollInput{
-				{
-					App:    app,
-					UserId: userId,
-					Role:   fmt.Sprintf("user-svc:org:{%v}:admin", final.Id),
-				},
-			},
+			Enrolls: enrolls,
 		},
 	)
 	if err != nil {
@@ -211,7 +224,7 @@ func (s *UserService) saveOrganization(
 		return nil, nil, errors.Wrap(err, "error creating token")
 	}
 
-	return final, token, nil
+	return orgs, token, nil
 }
 
 func (s *UserService) inactivateTokens(app string, userId string) error {
