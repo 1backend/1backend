@@ -10,6 +10,7 @@ package userservice
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"time"
@@ -22,13 +23,16 @@ import (
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
+var ErrEnrollConflict = errors.New("enrollment id already bound to another app")
+
 // @ID saveEnrolls
 // @Summary Save Enrolls
 // @Description Enroll a list of users by contact or user Id to acquire a role.
 // @Description Works on future or current users.
 // @Description
-// @Description Requires the `user-svc:enroll:edit` permission, which by default all users have.
 // @Description A user can only enroll an other user to a role if the user "owns" that role.
+// @Description A user who owns a role can enroll others in that roll in any app.
+// @Description The same request might contain enrolls for different apps.
 // @Description
 // @Description A user "owns" a role in the following cases:
 // @Description - A static role where the role ID is prefixed with the caller's slug.
@@ -49,23 +53,12 @@ import (
 // @Security BearerAuth
 // @Router /user-svc/enrolls [put]
 func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
-
-	usr, hasPermission, claims, err := s.hasPermission(r, user.PermissionEnrollEdit)
-	if err != nil {
-		logger.Error(
-			"Failed to check permission",
-			slog.Any("error", err),
-		)
-		endpoint.InternalServerError(w)
-		return
-	}
-	if !hasPermission {
-		endpoint.Unauthorized(w)
-		return
-	}
+	// There is no permit check here because we don't have a good way
+	// yet to check permissions in multiple apps.
+	// It's not critical anyway due to the `OwnsRole` pattern.
 
 	req := user.SaveEnrollsRequest{}
-	err = json.NewDecoder(r.Body).Decode(&req)
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		logger.Error(
 			"Failed to decode request",
@@ -75,6 +68,16 @@ func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer r.Body.Close()
+
+	usr, claims, err := s.getUserFromRequest(r)
+	if err != nil {
+		logger.Error(
+			"Failed to get user from request",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
+		return
+	}
 
 	isAdmin := false
 	for _, role := range claims.Roles {
@@ -95,11 +98,13 @@ func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 
 	enrolls, err := s.saveEnrolls(claims.App, usr.Id, &req)
 	if err != nil {
-		logger.Error(
-			"Failed to save enrolls",
-			slog.Any("error", err),
-		)
-		endpoint.InternalServerError(w)
+		switch {
+		case errors.Is(err, ErrEnrollConflict):
+			endpoint.WriteErr(w, http.StatusConflict, err)
+		default:
+			logger.Error("Failed to save enrolls", slog.Any("error", err))
+			endpoint.InternalServerError(w)
+		}
 		return
 	}
 
@@ -197,13 +202,25 @@ func (s *UserService) saveEnrolls(
 
 	enrolls := []user.Enroll{}
 	for _, enroll := range req.Enrolls {
+		thisApp := enroll.App
+		if thisApp == "" {
+			thisApp = app
+		}
+
+		existingEnroll, existing := existingEnrolls[enroll.Id]
+
 		if enroll.Id == "" {
 			enroll.Id = sdk.Id("enr")
+		} else if existing {
+			if existingEnroll.App != thisApp {
+				return nil, fmt.Errorf("enroll id %s already bound to app %v, cannot bind to %v",
+					enroll.Id, existingEnroll.App, thisApp)
+			}
 		}
 
 		// Already registered users get applied the role immediately
 		if callerUserId, ok := existingContact[enroll.ContactId]; ok {
-			err = s.assignRole(app, callerUserId, enroll.Role)
+			err = s.assignRole(thisApp, callerUserId, enroll.Role)
 			if err != nil {
 				return nil, err
 			}
@@ -211,7 +228,7 @@ func (s *UserService) saveEnrolls(
 		}
 
 		if _, ok := existingUser[enroll.UserId]; ok {
-			err = s.assignRole(app, enroll.UserId, enroll.Role)
+			err = s.assignRole(thisApp, enroll.UserId, enroll.Role)
 			if err != nil {
 				return nil, err
 			}
@@ -224,13 +241,13 @@ func (s *UserService) saveEnrolls(
 
 		i := user.Enroll{
 			Id:        enroll.Id,
-			App:       app,
+			App:       thisApp,
 			ContactId: enroll.ContactId,
 			Role:      enroll.Role,
 			CreatedBy: callerUserId,
 		}
 
-		if existingEnroll, ok := existingEnrolls[enroll.Id]; ok {
+		if existing {
 			i.CreatedAt = existingEnroll.CreatedAt
 			i.UpdatedAt = now
 		} else {
