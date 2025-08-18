@@ -24,6 +24,8 @@ import (
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
+var ErrNotAnAdmin = errors.New("user is not an admin of the organization")
+
 // @ID saveOrganization
 // @Summary Save an Organization
 // @Description Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization.
@@ -79,6 +81,11 @@ func (s *UserService) SaveOrganization(
 		claims,
 	)
 	if err != nil {
+		if errors.Is(err, ErrNotAnAdmin) {
+			endpoint.WriteErr(w, http.StatusUnauthorized, err)
+			return
+		}
+
 		logger.Error(
 			"Failed to save organization",
 			slog.Any("error", err),
@@ -120,6 +127,18 @@ func (s *UserService) saveOrganization(
 
 	if exists {
 		final = orgI.(*user.Organization)
+
+		isAdmin := false
+		for _, role := range claims.Roles {
+			if role == fmt.Sprintf("user-svc:org:{%v}:admin", final.Id) {
+				isAdmin = true
+				break
+			}
+		}
+		if !isAdmin {
+			return nil, nil, ErrNotAnAdmin
+		}
+
 		if request.Name != "" {
 			final.Name = request.Name
 		}

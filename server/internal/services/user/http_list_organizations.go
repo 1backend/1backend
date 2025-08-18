@@ -24,7 +24,7 @@ import (
 // @Tags User Svc
 // @Accept json
 // @Produce json
-// @Param body body user.ListOrganizationsRequest true "List Organizations Request"
+// @Param body body user.ListOrganizationsRequest false "List Organizations Request"
 // @Success 200 {object} user.ListOrganizationsResponse "Organization listed successfully"
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
@@ -53,16 +53,19 @@ func (s *UserService) ListOrganizations(
 	}
 
 	req := user.ListOrganizationsRequest{}
-	err = json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		logger.Error(
-			"Failed to decode request",
-			slog.Any("error", err),
-		)
-		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
-		return
+
+	if r.Body != nil {
+		err = json.NewDecoder(r.Body).Decode(&req)
+		if err != nil {
+			logger.Error(
+				"Failed to decode request",
+				slog.Any("error", err),
+			)
+			endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
+			return
+		}
+		defer r.Body.Close()
 	}
-	defer r.Body.Close()
 
 	rsp, err := s.listOrganizations(claims.App, &req)
 	if err != nil {
