@@ -2,6 +2,7 @@ package endpoint_test
 
 import (
 	"context"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
@@ -20,19 +21,34 @@ func TestHasPermissionCaching(t *testing.T) {
 
 	mockClientFactory := client.NewMockClientFactory(ctrl)
 
-	mockUserSvc := test.MockUserSvc(context.Background(), ctrl, test.WithHasPermissionFactory(func() bool {
-		return true
-	}), test.WithUntilFactory(func() time.Time {
-		return time.Now().Add(1 * time.Second)
-	}), test.WithHasPermissionTimesFactory(func() int {
-		return 2
-	}))
+	mockUserSvc := test.MockUserSvc(context.Background(), ctrl)
 
 	mockClientFactory.EXPECT().
 		Client(gomock.Any()).
 		Return(&openapi.APIClient{
 			UserSvcAPI: mockUserSvc,
 		}).Times(2)
+
+	mockHasPermissionRequest := openapi.ApiHasPermissionRequest{
+		ApiService: mockUserSvc,
+	}
+
+	mockUserSvc.EXPECT().
+		HasPermission(gomock.Any(), gomock.Any()).
+		Return(mockHasPermissionRequest).
+		Times(2)
+
+	mockUserSvc.EXPECT().
+		HasPermissionExecute(gomock.Any()).
+		DoAndReturn(func(req openapi.ApiHasPermissionRequest) (*openapi.UserSvcHasPermissionResponse, *http.Response, error) {
+			return &openapi.UserSvcHasPermissionResponse{
+					Authorized: true,
+					Until:      time.Now().Add(time.Second).Format(time.RFC3339),
+				}, &http.Response{
+					StatusCode: 200,
+				}, nil
+		}).
+		Times(2)
 
 	// Use a very short cache duration to test expiry
 	pc := endpoint.NewPermissionChecker(mockClientFactory)
