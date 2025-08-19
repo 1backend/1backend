@@ -29,6 +29,15 @@ func TestHasPermissionCaching(t *testing.T) {
 			UserSvcAPI: mockUserSvc,
 		}).Times(2)
 
+	mockHasPermissionRequest := openapi.ApiHasPermissionRequest{
+		ApiService: mockUserSvc,
+	}
+
+	mockUserSvc.EXPECT().
+		HasPermission(gomock.Any(), gomock.Any()).
+		Return(mockHasPermissionRequest).
+		Times(2)
+
 	mockUserSvc.EXPECT().
 		HasPermissionExecute(gomock.Any()).
 		DoAndReturn(func(req openapi.ApiHasPermissionRequest) (*openapi.UserSvcHasPermissionResponse, *http.Response, error) {
@@ -38,7 +47,8 @@ func TestHasPermissionCaching(t *testing.T) {
 				}, &http.Response{
 					StatusCode: 200,
 				}, nil
-		})
+		}).
+		Times(2)
 
 	// Use a very short cache duration to test expiry
 	pc := endpoint.NewPermissionChecker(mockClientFactory)
