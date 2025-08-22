@@ -78,7 +78,7 @@ func TestAll(t *testing.T) {
 	}
 	tests := map[string]func(t *testing.T, store datastore.DataStore){
 		"Create":                 datastore.TestCreate,
-		"CreatedAt":              datastore.TestCreatedAt,
+		"CreatedAt":              datastore.TestOrderBy,
 		"Upsert":                 datastore.TestUpsert,
 		"InClause":               datastore.TestInClause,
 		"ReverseInClause":        datastore.TestReverseInClause,
@@ -101,7 +101,7 @@ func TestAll(t *testing.T) {
 	}
 	pointerTests := map[string]func(t *testing.T, store datastore.DataStore){
 		"PointerCreate":                 datastore.TestPointerCreate,
-		"PointerCreatedAt":              datastore.TestPointerCreatedAt,
+		"PointerCreatedAt":              datastore.TestPointerOrderBy,
 		"PointerUpsert":                 datastore.TestPointerUpsert,
 		"PointerInClause":               datastore.TestPointerInClause,
 		"PointerReverseInClause":        datastore.TestPointerReverseInClause,

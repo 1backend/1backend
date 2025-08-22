@@ -296,12 +296,7 @@ func (q *QueryBuilder) After(value ...any) datastore.QueryBuilder {
 			continue
 		}
 
-		v, err := json.Marshal(t)
-		if err != nil {
-			panic(err)
-		}
-
-		q.after[i] = strings.Replace(string(v), "\"", "", -1)
+		q.after[i] = t.Format(time.RFC3339Nano)
 	}
 
 	return q
@@ -331,6 +326,7 @@ func (q *QueryBuilder) Find() ([]datastore.Row, error) {
 	if len(q.orderFields) > 0 {
 		sort.Slice(result, func(i, j int) bool {
 			for idx, field := range q.orderFields {
+
 				if field == "" {
 					// Happens for random order
 					continue
@@ -350,8 +346,10 @@ func (q *QueryBuilder) Find() ([]datastore.Row, error) {
 				if compare(vj, vi, desc) {
 					return false // j < i
 				}
+
 				// otherwise equal, check next field
 			}
+
 			return false
 		})
 	}
@@ -362,6 +360,7 @@ func (q *QueryBuilder) Find() ([]datastore.Row, error) {
 		for i, obj := range result {
 			isAfter := false
 			equalSoFar := true
+
 			for k, field := range q.orderFields {
 				if k >= len(q.after) {
 					break
@@ -380,10 +379,11 @@ func (q *QueryBuilder) Find() ([]datastore.Row, error) {
 				}
 
 				// If not equal, stop equal tracking
-				if !reflect.DeepEqual(toBaseType(v), toBaseType(q.after[k])) {
+				if !equalWithZero(toBaseType(v), toBaseType(q.after[k])) {
 					equalSoFar = false
 					break
 				}
+
 			}
 
 			if isAfter {
@@ -416,6 +416,39 @@ func (q *QueryBuilder) Find() ([]datastore.Row, error) {
 	}
 
 	return ret, nil
+}
+
+func equalWithZero(a, b any) bool {
+	av := reflect.ValueOf(a)
+	bv := reflect.ValueOf(b)
+
+	// Both nil → equal
+	if !av.IsValid() && !bv.IsValid() {
+		return true
+	}
+
+	// If one side is nil, replace it with zero of the other's type
+	if !av.IsValid() {
+		av = reflect.Zero(bv.Type())
+	}
+	if !bv.IsValid() {
+		bv = reflect.Zero(av.Type())
+	}
+
+	// Unwrap pointers
+	if av.Kind() == reflect.Ptr && !av.IsNil() {
+		av = av.Elem()
+	}
+	if bv.Kind() == reflect.Ptr && !bv.IsNil() {
+		bv = bv.Elem()
+	}
+
+	// If types differ after normalization → not equal
+	if av.Type() != bv.Type() {
+		return false
+	}
+
+	return reflect.DeepEqual(av.Interface(), bv.Interface())
 }
 
 func (q *QueryBuilder) FindOne() (datastore.Row, bool, error) {
@@ -842,7 +875,12 @@ func fixFieldName(s string) string {
 func getField(obj any, field string) interface{} {
 	field = fixFieldName(field)
 
-	return dipper.Get(obj, field)
+	v := dipper.Get(obj, field)
+	if err := dipper.Error(v); err != nil {
+		// Field not found or other error → treat as missing
+		return nil
+	}
+	return v
 }
 
 func setField(obj any, field string, value interface{}) error {
@@ -854,10 +892,26 @@ func compare(vi, vj interface{}, desc bool) bool {
 	viVal := reflect.ValueOf(vi)
 	vjVal := reflect.ValueOf(vj)
 
-	if viVal.Kind() == reflect.Ptr {
+	// Treat nil or invalid as "missing"
+	viMissing := !viVal.IsValid() || (viVal.Kind() == reflect.Ptr && viVal.IsNil())
+	vjMissing := !vjVal.IsValid() || (vjVal.Kind() == reflect.Ptr && vjVal.IsNil())
+
+	if viMissing && vjMissing {
+		return false // equal
+	}
+
+	// Turn missing into zero of the other type
+	if viMissing && !vjMissing {
+		viVal = reflect.Zero(vjVal.Type())
+	}
+	if vjMissing && !viMissing {
+		vjVal = reflect.Zero(viVal.Type())
+	}
+
+	if viVal.Kind() == reflect.Ptr && !viVal.IsNil() {
 		viVal = viVal.Elem()
 	}
-	if vjVal.Kind() == reflect.Ptr {
+	if vjVal.Kind() == reflect.Ptr && !vjVal.IsNil() {
 		vjVal = vjVal.Elem()
 	}
 
@@ -867,16 +921,25 @@ func compare(vi, vj interface{}, desc bool) bool {
 			return viVal.Int() > vjVal.Int()
 		}
 		return viVal.Int() < vjVal.Int()
+
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 		if desc {
 			return viVal.Uint() > vjVal.Uint()
 		}
 		return viVal.Uint() < vjVal.Uint()
+
 	case reflect.Float32, reflect.Float64:
 		if desc {
 			return viVal.Float() > vjVal.Float()
 		}
 		return viVal.Float() < vjVal.Float()
+
+	case reflect.Bool:
+		if desc {
+			return viVal.Bool() && !vjVal.Bool() // true > false
+		}
+		return !viVal.Bool() && vjVal.Bool() // false < true
+
 	case reflect.String:
 		viStr := viVal.String()
 		vjStr := vjVal.String()
@@ -892,11 +955,12 @@ func compare(vi, vj interface{}, desc bool) bool {
 			return viTime.Before(vjTime)
 		}
 
-		// Fallback to string comparison if time parsing fails
+		// Fallback to string comparison
 		if desc {
 			return viStr > vjStr
 		}
 		return viStr < vjStr
+
 	case reflect.Struct:
 		if viVal.Type() == reflect.TypeOf(time.Time{}) {
 			viTime := viVal.Interface().(time.Time)
@@ -906,36 +970,10 @@ func compare(vi, vj interface{}, desc bool) bool {
 			}
 			return viTime.Before(vjTime)
 		}
-	default:
-		// @todo don't think time.Time ever gets saved
-		// due to JSON marshalling. Rethink
-		//
-		// Handle pointers to time.Time explicitly
-		//if viVal.Type() == reflect.TypeOf(&time.Time{}) && vjVal.Type() == reflect.TypeOf(&time.Time{}) {
-		//	viTime := viVal.Interface().(*time.Time)
-		//	vjTime := vjVal.Interface().(*time.Time)
-		//	if viTime == nil || vjTime == nil {
-		//		return false
-		//	}
-		//	if desc {
-		//		return viTime.After(*vjTime)
-		//	}
-		//	return viTime.Before(*vjTime)
-		//}
-		//
-		//if viVal.Type() == reflect.TypeOf(time.Time{}) {
-		//
-		//	viTime := viVal.Interface().(time.Time)
-		//	vjTime := vjVal.Interface().(time.Time)
-		//	if desc {
-		//		return viTime.After(vjTime)
-		//	}
-		//	return viTime.Before(vjTime)
-		//}
 	}
+
 	return false
 }
-
 func toBaseType(input interface{}) interface{} {
 	val := reflect.ValueOf(input)
 
