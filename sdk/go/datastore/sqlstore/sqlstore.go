@@ -815,11 +815,14 @@ func (q *SQLQueryBuilder) buildSelectQuery() (string, []interface{}, error) {
 			if i < len(q.orderSortingTypes) && q.orderSortingTypes[i] == datastore.SortingTypeNumeric {
 				cast = "numeric"
 			}
-			orderPart := q.store.fieldName(field, cast)
+
+			col := q.store.fieldName(field, cast)
+
 			if i < len(q.orderDescs) && q.orderDescs[i] {
-				orderPart += " DESC"
+				col += " DESC"
 			}
-			orderParts = append(orderParts, orderPart)
+
+			orderParts = append(orderParts, col)
 		}
 		query += " ORDER BY " + strings.Join(orderParts, ", ")
 	}
