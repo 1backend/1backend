@@ -259,6 +259,7 @@ func TestConfigService(t *testing.T) {
 
 		require.NoError(t, err)
 		require.NotNil(t, rsp.Configs)
+		require.Len(t, rsp.Configs, 1)
 		require.NotNil(t, rsp.Configs["otherSvc"])
 		require.Equal(t, "adminValue1", rsp.Configs["otherSvc"].Data["field1"], rsp)
 		require.Nil(t, rsp.Configs["otherSvc"].Data["field2"], rsp)

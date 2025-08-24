@@ -91,6 +91,12 @@ func (cs *ConfigService) listConfigs(req *types.ListConfigsRequest) (map[string]
 			fmt.Sprintf("%s_%s", req.App, slug),
 		)
 	}
+	for slug := range req.Selector {
+		slug = kebabToCamel(slug)
+		ids = append(ids,
+			fmt.Sprintf("%s_%s", req.App, slug),
+		)
+	}
 
 	filters := []datastore.Filter{}
 
