@@ -193,10 +193,28 @@ definitions:
       app:
         type: string
       keys:
-        description: Keys are camelCased slugs of the config owners.
+        description: |-
+          Keys are camelCased slugs of the config owners.
+          Specifying only the keys will mean all of the config will be returned
+          for that key.
+
+          If the configs are large, consider using the `Selector` request field.
         items:
           type: string
         type: array
+      selector:
+        additionalProperties:
+          items:
+            type: string
+          type: array
+        description: |-
+          Selector allows dotPath-based filtering per config owner.
+          Example:
+          {
+            "user1": ["settings.theme", "featureFlags.enableNewUI"],
+            "user2": ["settings.language"]
+          }
+        type: object
     type: object
   config_svc.ListConfigsResponse:
     properties:
@@ -3738,7 +3756,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.8.0-rc5
+  version: 0.8.0-rc6
 paths:
   /chat-svc/events:
     get:

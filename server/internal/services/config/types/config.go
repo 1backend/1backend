@@ -35,7 +35,19 @@ type ListConfigsRequest struct {
 	App string `json:"app" swagger:"default=default"`
 
 	// Keys are camelCased slugs of the config owners.
+	// Specifying only the keys will mean all of the config will be returned
+	// for that key.
+	//
+	// If the configs are large, consider using the `Selector` request field.
 	Keys []string `json:"keys,omitempty" swagger:"default=[]"`
+
+	// Selector allows dotPath-based filtering per config owner.
+	// Example:
+	// {
+	//   "user1": ["settings.theme", "featureFlags.enableNewUI"],
+	//   "user2": ["settings.language"]
+	// }
+	Selector map[string][]string `json:"selector,omitempty" swagger:"default={}"`
 }
 
 type ListConfigsResponse struct {

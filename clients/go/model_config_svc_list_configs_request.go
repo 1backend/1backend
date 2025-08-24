@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc5
+API version: 0.8.0-rc6
 Contact: sales@singulatron.com
 */
 
@@ -21,8 +21,10 @@ var _ MappedNullable = &ConfigSvcListConfigsRequest{}
 // ConfigSvcListConfigsRequest struct for ConfigSvcListConfigsRequest
 type ConfigSvcListConfigsRequest struct {
 	App *string `json:"app,omitempty"`
-	// Keys are camelCased slugs of the config owners.
+	// Keys are camelCased slugs of the config owners. Specifying only the keys will mean all of the config will be returned for that key.  If the configs are large, consider using the `Selector` request field.
 	Keys []string `json:"keys,omitempty"`
+	// Selector allows dotPath-based filtering per config owner. Example: {   \"user1\": [\"settings.theme\", \"featureFlags.enableNewUI\"],   \"user2\": [\"settings.language\"] }
+	Selector *map[string][]string `json:"selector,omitempty"`
 }
 
 // NewConfigSvcListConfigsRequest instantiates a new ConfigSvcListConfigsRequest object
@@ -106,6 +108,38 @@ func (o *ConfigSvcListConfigsRequest) SetKeys(v []string) {
 	o.Keys = v
 }
 
+// GetSelector returns the Selector field value if set, zero value otherwise.
+func (o *ConfigSvcListConfigsRequest) GetSelector() map[string][]string {
+	if o == nil || IsNil(o.Selector) {
+		var ret map[string][]string
+		return ret
+	}
+	return *o.Selector
+}
+
+// GetSelectorOk returns a tuple with the Selector field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcListConfigsRequest) GetSelectorOk() (*map[string][]string, bool) {
+	if o == nil || IsNil(o.Selector) {
+		return nil, false
+	}
+	return o.Selector, true
+}
+
+// HasSelector returns a boolean if a field has been set.
+func (o *ConfigSvcListConfigsRequest) HasSelector() bool {
+	if o != nil && !IsNil(o.Selector) {
+		return true
+	}
+
+	return false
+}
+
+// SetSelector gets a reference to the given map[string][]string and assigns it to the Selector field.
+func (o *ConfigSvcListConfigsRequest) SetSelector(v map[string][]string) {
+	o.Selector = &v
+}
+
 func (o ConfigSvcListConfigsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -121,6 +155,9 @@ func (o ConfigSvcListConfigsRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Keys) {
 		toSerialize["keys"] = o.Keys
+	}
+	if !IsNil(o.Selector) {
+		toSerialize["selector"] = o.Selector
 	}
 	return toSerialize, nil
 }

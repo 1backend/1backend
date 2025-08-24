@@ -157,10 +157,16 @@ func (cs *ConfigService) saveConfig(
 		return errors.Wrap(err, "failed to query config")
 	}
 
+	if newConfig.Key == "" {
+		newConfig.Key = callerSlug
+	}
+
 	entry := &types.Config{}
 
 	if !found {
 		entry.Id = id
+		entry.Key = newConfig.Key
+		entry.App = app
 		entry.Data = map[string]interface{}{}
 		entry.DataJSON = "{}"
 		entry.CreatedAt = now
