@@ -22,6 +22,7 @@ import (
 	types "github.com/1backend/1backend/server/internal/services/config/types"
 	modelservice "github.com/1backend/1backend/server/internal/services/model"
 	"github.com/pkg/errors"
+	"github.com/tidwall/gjson"
 )
 
 // @Id listConfigs
@@ -113,13 +114,25 @@ func (cs *ConfigService) listConfigs(req *types.ListConfigsRequest) (map[string]
 		conf := configI.(*types.Config)
 
 		if conf.DataJSON != "" {
-			err = json.Unmarshal([]byte(conf.DataJSON), &conf.Data)
-			if err != nil {
-				logger.Error("Failed to unmarshal config data",
-					slog.Any("error", err),
-					slog.String("dataJson", conf.DataJSON),
-				)
-				return nil, errors.Wrap(err, "failed to unmarshal config")
+			if req.Selector != nil && req.Selector[conf.Key] != nil {
+				conf.Data = map[string]any{}
+				for _, path := range req.Selector[conf.Key] {
+					res := gjson.Get(conf.DataJSON, path)
+					if res.Exists() {
+						m := ExpandDotPath(path, res.Value())
+						conf.Data = DeepMerge(conf.Data, m)
+					}
+				}
+			} else {
+				err = json.Unmarshal([]byte(conf.DataJSON), &conf.Data)
+				if err != nil {
+					logger.Error("Failed to unmarshal config data",
+						slog.Any("error", err),
+						slog.String("dataJson", conf.DataJSON),
+					)
+
+					return nil, errors.Wrap(err, "failed to unmarshal config")
+				}
 			}
 		}
 
