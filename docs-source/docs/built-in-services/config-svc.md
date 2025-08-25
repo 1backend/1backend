@@ -9,13 +9,19 @@ tags:
 
 # Config Svc
 
-The Config Svc stores public, non-sensitive and end-user-facing data.
+The Config Svc stores public, non-sensitive, end-user–facing data.
+It is not for secrets or internal infrastructure configuration (those belong in [Secret Svc](/docs/built-in-services/secret-svc)).
+
+Think of it as the place to put knobs and information that your application or users need at runtime, but that is safe to expose publicly.
+
+**Examples**:
+
+- Shop opening times
+- Feature flags like `enableNewUI`
+- UI preferences (theme = "dark", theme colors, layout)
+- Supported languages
 
 > This page provides a high-level overview of `Config Svc`. For detailed information, refer to the [Config Svc API documentation](/docs/1backend-api/list-configs).
-
-The Config Svc is less critical than it might seem—most configuration happens internally through the [Secret Svc](/docs/built-in-services/secret-svc).
-
-At the moment, it functions more like a minimal feature-flag service.
 
 ## CLI Usage
 
