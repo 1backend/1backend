@@ -12,9 +12,9 @@
 /**
  *
  * @export
- * @interface UserSvcAuthToken
+ * @interface UserSvcToken
  */
-export interface UserSvcAuthToken {
+export interface UserSvcToken {
     /**
      * Active tokens contain the most up-to-date information.
      * When a user's role changes—due to role assignment, organization
@@ -30,25 +30,25 @@ export interface UserSvcAuthToken {
      * that have been recently refreshed (see `lastRefreshedAt` field) and are still in use are retained for further refreshing.
      * (Unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, in which case old tokens can be refreshed indefinitely.)
      * @type {boolean}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     active?: boolean;
     /**
      *
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
-    app?: string;
+    app: string;
     /**
      *
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     createdAt: string;
     /**
      *
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     deletedAt?: string;
     /**
@@ -56,26 +56,32 @@ export interface UserSvcAuthToken {
      * This in combination with LastRefreshedAt can be used to
      * determine if the token is still in use, and lets us prune unused tokens.
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     device: string;
     /**
      *
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     expiresAt: string;
     /**
      *
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     id: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserSvcToken
+     */
+    internalId?: string;
     /**
      * The last time the token was refreshed.
      * This is used to determine if the token is still in use.
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     lastRefreshedAt?: string;
     /**
@@ -89,27 +95,27 @@ export interface UserSvcAuthToken {
      *   - "user-svc:user"
      *   - "user-svc:org:{org_dC4K7NNDCG}:user"
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     token: string;
     /**
      *
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     updatedAt: string;
     /**
      *
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     userId: string;
 }
 /**
- * Check if a given object implements the UserSvcAuthToken interface.
+ * Check if a given object implements the UserSvcToken interface.
  */
-export declare function instanceOfUserSvcAuthToken(value: object): value is UserSvcAuthToken;
-export declare function UserSvcAuthTokenFromJSON(json: any): UserSvcAuthToken;
-export declare function UserSvcAuthTokenFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcAuthToken;
-export declare function UserSvcAuthTokenToJSON(json: any): UserSvcAuthToken;
-export declare function UserSvcAuthTokenToJSONTyped(value?: UserSvcAuthToken | null, ignoreDiscriminator?: boolean): any;
+export declare function instanceOfUserSvcToken(value: object): value is UserSvcToken;
+export declare function UserSvcTokenFromJSON(json: any): UserSvcToken;
+export declare function UserSvcTokenFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcToken;
+export declare function UserSvcTokenToJSON(json: any): UserSvcToken;
+export declare function UserSvcTokenToJSONTyped(value?: UserSvcToken | null, ignoreDiscriminator?: boolean): any;

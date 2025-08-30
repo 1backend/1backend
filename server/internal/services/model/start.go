@@ -38,7 +38,7 @@ func (ms *ModelService) startModel(modelId string) error {
 	readConfigResponse, _, err := ms.options.ClientFactory.Client().
 		ConfigSvcAPI.ListConfigs(context.Background()).
 		Body(openapi.ConfigSvcListConfigsRequest{
-			Keys: []string{"modelSvc"},
+			Ids: []string{"modelSvc"},
 		}).
 		Execute()
 	if err != nil {

@@ -9,7 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import type { UserSvcAuthToken } from './UserSvcAuthToken';
+import type { UserSvcToken } from './UserSvcToken';
 /**
  *
  * @export
@@ -18,10 +18,10 @@ import type { UserSvcAuthToken } from './UserSvcAuthToken';
 export interface UserSvcLoginResponse {
     /**
      *
-     * @type {UserSvcAuthToken}
+     * @type {UserSvcToken}
      * @memberof UserSvcLoginResponse
      */
-    token?: UserSvcAuthToken;
+    token?: UserSvcToken;
 }
 /**
  * Check if a given object implements the UserSvcLoginResponse interface.

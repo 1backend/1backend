@@ -35,16 +35,16 @@ type UserService struct {
 
 	token string
 
-	usersStore         datastore.DataStore
-	credentialsStore   datastore.DataStore
-	passwordsStore     datastore.DataStore
-	authTokensStore    datastore.DataStore
-	keyPairsStore      datastore.DataStore
-	contactsStore      datastore.DataStore
-	organizationsStore datastore.DataStore
-	membershipsStore   datastore.DataStore
-	permitsStore       datastore.DataStore
-	enrollsStore       datastore.DataStore
+	userStore         datastore.DataStore
+	credentialStore   datastore.DataStore
+	passwordStore     datastore.DataStore
+	tokenStore        datastore.DataStore
+	keyPairStore      datastore.DataStore
+	contactStore      datastore.DataStore
+	organizationStore datastore.DataStore
+	membershipStore   datastore.DataStore
+	permitStore       datastore.DataStore
+	enrollStore       datastore.DataStore
 
 	privateKey   *rsa.PrivateKey
 	publicKeyPem string
@@ -63,8 +63,8 @@ func NewUserService(
 	}
 
 	authTokensStore, err := options.DataStoreFactory.Create(
-		"userSvcAuthTokens",
-		&usertypes.AuthToken{},
+		"userSvcTokens",
+		&usertypes.Token{},
 	)
 	if err != nil {
 		return nil, err
@@ -145,16 +145,16 @@ func NewUserService(
 
 	service := &UserService{
 		options:               options,
-		usersStore:            usersStore,
-		authTokensStore:       authTokensStore,
-		credentialsStore:      credentialsStore,
-		passwordsStore:        passwordsStore,
-		keyPairsStore:         keyPairsStore,
-		contactsStore:         contactsStore,
-		organizationsStore:    organizationsStore,
-		membershipsStore:      membershipsStore,
-		permitsStore:          permitsStore,
-		enrollsStore:          enrollsStore,
+		userStore:             usersStore,
+		tokenStore:            authTokensStore,
+		credentialStore:       credentialsStore,
+		passwordStore:         passwordsStore,
+		keyPairStore:          keyPairsStore,
+		contactStore:          contactsStore,
+		organizationStore:     organizationsStore,
+		membershipStore:       membershipsStore,
+		permitStore:           permitsStore,
+		enrollStore:           enrollsStore,
 		tokenReplacementCache: tokenReplacementCache,
 	}
 
@@ -302,7 +302,7 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 func (s *UserService) bootstrap() error {
 	// Bootstrapping key pairs
 
-	keyPairs, err := s.keyPairsStore.Query().Find()
+	keyPairs, err := s.keyPairStore.Query().Find()
 	if err != nil {
 		return errors.Wrap(err, "failed to query key pairs")
 	}
@@ -333,7 +333,7 @@ func (s *UserService) bootstrap() error {
 			PublicKey:  pubKey,
 			PrivateKey: privKey,
 		}
-		err = s.keyPairsStore.Upsert(kp)
+		err = s.keyPairStore.Upsert(kp)
 		if err != nil {
 			return errors.Wrap(err, "failed to upsert key pair")
 		}
@@ -351,7 +351,7 @@ func (s *UserService) bootstrap() error {
 	// we enforce the existence of an admin account with the slug "1backend".
 	// If absent, it's created with a default password, which should be updated for security.
 
-	count, err := s.usersStore.Query(
+	count, err := s.userStore.Query(
 		datastore.Equals([]string{"slug"}, "1backend"),
 	).Count()
 	if err != nil {
@@ -373,7 +373,7 @@ func (s *UserService) bootstrap() error {
 
 	// Bootstrapping credentials
 
-	credentials, err := s.credentialsStore.Query().Find()
+	credentials, err := s.credentialStore.Query().Find()
 	if err != nil {
 		return errors.Wrap(err, "failed to query credentials")
 	}
@@ -382,7 +382,7 @@ func (s *UserService) bootstrap() error {
 		slug := "user-svc"
 		pw := uuid.NewString()
 
-		err = s.credentialsStore.Upsert(&auth.Credential{
+		err = s.credentialStore.Upsert(&auth.Credential{
 			Slug:     slug,
 			Password: pw,
 		})

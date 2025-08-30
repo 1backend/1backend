@@ -88,7 +88,7 @@ func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
 
 func (s *UserService) login(
 	request *user.LoginRequest,
-) (*user.AuthToken, error) {
+) (*user.Token, error) {
 	if request.App == "" {
 		request.App = "unnamed"
 	}
@@ -96,7 +96,7 @@ func (s *UserService) login(
 	var usr *user.User
 
 	if request.Slug != "" {
-		userI, found, err := s.usersStore.Query(
+		userI, found, err := s.userStore.Query(
 			datastore.Equals(datastore.Field("slug"), request.Slug),
 		).FindOne()
 		if err != nil {
@@ -108,7 +108,7 @@ func (s *UserService) login(
 
 		usr = userI.(*user.User)
 	} else if request.Contact != "" {
-		contactI, found, err := s.contactsStore.Query(
+		contactI, found, err := s.contactStore.Query(
 			datastore.Equals(datastore.Field("id"), request.Contact),
 		).FindOne()
 		if err != nil {
@@ -118,7 +118,7 @@ func (s *UserService) login(
 			return nil, errors.New("not found")
 		}
 
-		userI, found, err := s.usersStore.Query(
+		userI, found, err := s.userStore.Query(
 			datastore.Equals(datastore.Field("id"), contactI.(*user.Contact).UserId),
 		).FindOne()
 		if err != nil {
@@ -133,7 +133,7 @@ func (s *UserService) login(
 		return nil, errors.New("slug or contact required")
 	}
 
-	passwordIs, err := s.passwordsStore.Query(
+	passwordIs, err := s.passwordStore.Query(
 		datastore.Equals(
 			datastore.Field("userId"), usr.Id),
 	).OrderBy(
@@ -156,19 +156,28 @@ func (s *UserService) login(
 		request.Device = unknownDevice
 	}
 
+	return s.issueToken(request.App, usr, request.Device)
+}
+
+func (s *UserService) issueToken(
+	app string,
+	usr *user.User,
+	device string,
+) (*user.Token, error) {
+
 	// Let's see if there is an active token we can reuse
-	tokenI, found, err := s.authTokensStore.Query(
-		datastore.Equals(datastore.Field("app"), request.App),
+	tokenI, found, err := s.tokenStore.Query(
+		datastore.Equals(datastore.Field("app"), app),
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 		datastore.Equals(datastore.Field("active"), true),
-		datastore.Equals(datastore.Field("device"), request.Device),
+		datastore.Equals(datastore.Field("device"), device),
 	).FindOne()
 	if err != nil {
 		return nil, err
 	}
 
 	if found {
-		tok := tokenI.(*user.AuthToken)
+		tok := tokenI.(*user.Token)
 		functional, err := s.isFunctional(tok.Token)
 		if err != nil {
 			if strings.Contains(err.Error(), "token is expired") {
@@ -187,16 +196,16 @@ func (s *UserService) login(
 			return tok, nil
 		}
 
-		err = s.inactivateToken(tok.Id)
+		err = s.inactivateToken(app, tok.Id)
 		if err != nil {
 			return nil, errors.Wrap(err, "could not inactivate token")
 		}
 	}
 
 	token, err := s.generateAuthToken(
-		request.App,
+		app,
 		usr,
-		request.Device,
+		device,
 	)
 	if err != nil {
 		return nil, err
@@ -206,7 +215,7 @@ func (s *UserService) login(
 		token.Device = unknownDevice
 	}
 
-	err = s.authTokensStore.Create(token)
+	err = s.tokenStore.Create(token)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating token")
 	}
@@ -238,7 +247,7 @@ func (s *UserService) generateAuthToken(
 	app string,
 	u *user.User,
 	device string,
-) (*user.AuthToken, error) {
+) (*user.Token, error) {
 	roles, err := s.getRolesByUserId(app, u.Id)
 	if err != nil {
 		return nil, errors.Wrap(err, "error listing roles")
@@ -249,7 +258,7 @@ func (s *UserService) generateAuthToken(
 		return nil, errors.Wrap(err, "error listing organizations")
 	}
 
-	token, err := s.generateJWT(
+	claims, token, err := s.generateJWT(
 		app, u, roles, activeOrganizationId,
 		s.privateKey, device)
 	if err != nil {
@@ -258,14 +267,17 @@ func (s *UserService) generateAuthToken(
 
 	now := time.Now()
 
-	return &user.AuthToken{
-		Id:        sdk.Id("tok"),
-		App:       app,
-		UserId:    u.Id,
-		Token:     token,
-		Device:    device,
-		Active:    true,
-		ExpiresAt: now.Add(s.options.TokenExpiration),
-		CreatedAt: now,
+	id := sdk.Id("tok")
+
+	return &user.Token{
+		InternalId: sdk.InternalId(claims.ID, app),
+		Id:         id,
+		App:        app,
+		UserId:     u.Id,
+		Token:      token,
+		Device:     device,
+		Active:     true,
+		ExpiresAt:  now.Add(s.options.TokenExpiration),
+		CreatedAt:  now,
 	}, nil
 }

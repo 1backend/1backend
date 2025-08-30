@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { UserSvcAuthToken } from './UserSvcAuthToken';
+import type { UserSvcToken } from './UserSvcToken';
 import {
-    UserSvcAuthTokenFromJSON,
-    UserSvcAuthTokenFromJSONTyped,
-    UserSvcAuthTokenToJSON,
-    UserSvcAuthTokenToJSONTyped,
-} from './UserSvcAuthToken';
+    UserSvcTokenFromJSON,
+    UserSvcTokenFromJSONTyped,
+    UserSvcTokenToJSON,
+    UserSvcTokenToJSONTyped,
+} from './UserSvcToken';
 
 /**
  * 
@@ -29,10 +29,10 @@ import {
 export interface UserSvcRefreshTokenResponse {
     /**
      * 
-     * @type {UserSvcAuthToken}
+     * @type {UserSvcToken}
      * @memberof UserSvcRefreshTokenResponse
      */
-    token: UserSvcAuthToken;
+    token: UserSvcToken;
 }
 
 /**
@@ -53,7 +53,7 @@ export function UserSvcRefreshTokenResponseFromJSONTyped(json: any, ignoreDiscri
     }
     return {
         
-        'token': UserSvcAuthTokenFromJSON(json['token']),
+        'token': UserSvcTokenFromJSON(json['token']),
     };
 }
 
@@ -68,7 +68,7 @@ export function UserSvcRefreshTokenResponseToJSONTyped(value?: UserSvcRefreshTok
 
     return {
         
-        'token': UserSvcAuthTokenToJSON(value['token']),
+        'token': UserSvcTokenToJSON(value['token']),
     };
 }
 

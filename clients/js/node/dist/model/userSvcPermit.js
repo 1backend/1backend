@@ -37,6 +37,11 @@ UserSvcPermit.attributeTypeMap = [
         "type": "string"
     },
     {
+        "name": "internalId",
+        "baseName": "internalId",
+        "type": "string"
+    },
+    {
         "name": "permission",
         "baseName": "permission",
         "type": "string"

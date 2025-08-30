@@ -9,7 +9,6 @@ import (
 
 	"github.com/1backend/1backend/cli/oo/util"
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
@@ -70,9 +69,8 @@ func Encrypt(cmd *cobra.Command, args []string) error {
 		byte(h >> 24), byte(h >> 16), byte(h >> 8), byte(h),
 	})
 
-	secret := openapi.SecretSvcSecret{
-		Id:                openapi.PtrString(sdk.Id("secr")),
-		Key:               openapi.PtrString(key),
+	secret := openapi.SecretSvcSecretInput{
+		Id:                key,
 		Encrypted:         openapi.PtrBool(true),
 		Value:             rsp.Value,
 		Checksum:          openapi.PtrString(hash),

@@ -13,13 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { UserSvcAuthToken } from './UserSvcAuthToken';
-import {
-    UserSvcAuthTokenFromJSON,
-    UserSvcAuthTokenFromJSONTyped,
-    UserSvcAuthTokenToJSON,
-    UserSvcAuthTokenToJSONTyped,
-} from './UserSvcAuthToken';
 import type { UserSvcOrganization } from './UserSvcOrganization';
 import {
     UserSvcOrganizationFromJSON,
@@ -27,6 +20,13 @@ import {
     UserSvcOrganizationToJSON,
     UserSvcOrganizationToJSONTyped,
 } from './UserSvcOrganization';
+import type { UserSvcToken } from './UserSvcToken';
+import {
+    UserSvcTokenFromJSON,
+    UserSvcTokenFromJSONTyped,
+    UserSvcTokenToJSON,
+    UserSvcTokenToJSONTyped,
+} from './UserSvcToken';
 
 /**
  * 
@@ -43,10 +43,10 @@ export interface UserSvcSaveOrganizationResponse {
     /**
      * Due to the nature of JWT tokens, the token must be refreshed after
      * creating an organization, as dynamic organization roles are embedded in it.
-     * @type {UserSvcAuthToken}
+     * @type {UserSvcToken}
      * @memberof UserSvcSaveOrganizationResponse
      */
-    token: UserSvcAuthToken;
+    token: UserSvcToken;
 }
 
 /**
@@ -69,7 +69,7 @@ export function UserSvcSaveOrganizationResponseFromJSONTyped(json: any, ignoreDi
     return {
         
         'organization': UserSvcOrganizationFromJSON(json['organization']),
-        'token': UserSvcAuthTokenFromJSON(json['token']),
+        'token': UserSvcTokenFromJSON(json['token']),
     };
 }
 
@@ -85,7 +85,7 @@ export function UserSvcSaveOrganizationResponseToJSONTyped(value?: UserSvcSaveOr
     return {
         
         'organization': UserSvcOrganizationToJSON(value['organization']),
-        'token': UserSvcAuthTokenToJSON(value['token']),
+        'token': UserSvcTokenToJSON(value['token']),
     };
 }
 

@@ -121,7 +121,7 @@ func (s *UserService) listEnrolls(
 		filters = append(filters, datastore.Equals([]string{"userId"}, req.UserId))
 	}
 
-	enrollIs, err := s.enrollsStore.Query(filters...).Find()
+	enrollIs, err := s.enrollStore.Query(filters...).Find()
 	if err != nil {
 		return nil, errors.Wrap(err, "error querying enrolls")
 	}

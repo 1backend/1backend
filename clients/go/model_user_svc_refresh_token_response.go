@@ -22,7 +22,7 @@ var _ MappedNullable = &UserSvcRefreshTokenResponse{}
 
 // UserSvcRefreshTokenResponse struct for UserSvcRefreshTokenResponse
 type UserSvcRefreshTokenResponse struct {
-	Token UserSvcAuthToken `json:"token"`
+	Token UserSvcToken `json:"token"`
 }
 
 type _UserSvcRefreshTokenResponse UserSvcRefreshTokenResponse
@@ -31,7 +31,7 @@ type _UserSvcRefreshTokenResponse UserSvcRefreshTokenResponse
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcRefreshTokenResponse(token UserSvcAuthToken) *UserSvcRefreshTokenResponse {
+func NewUserSvcRefreshTokenResponse(token UserSvcToken) *UserSvcRefreshTokenResponse {
 	this := UserSvcRefreshTokenResponse{}
 	this.Token = token
 	return &this
@@ -46,9 +46,9 @@ func NewUserSvcRefreshTokenResponseWithDefaults() *UserSvcRefreshTokenResponse {
 }
 
 // GetToken returns the Token field value
-func (o *UserSvcRefreshTokenResponse) GetToken() UserSvcAuthToken {
+func (o *UserSvcRefreshTokenResponse) GetToken() UserSvcToken {
 	if o == nil {
-		var ret UserSvcAuthToken
+		var ret UserSvcToken
 		return ret
 	}
 
@@ -57,7 +57,7 @@ func (o *UserSvcRefreshTokenResponse) GetToken() UserSvcAuthToken {
 
 // GetTokenOk returns a tuple with the Token field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcRefreshTokenResponse) GetTokenOk() (*UserSvcAuthToken, bool) {
+func (o *UserSvcRefreshTokenResponse) GetTokenOk() (*UserSvcToken, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -65,7 +65,7 @@ func (o *UserSvcRefreshTokenResponse) GetTokenOk() (*UserSvcAuthToken, bool) {
 }
 
 // SetToken sets field value
-func (o *UserSvcRefreshTokenResponse) SetToken(v UserSvcAuthToken) {
+func (o *UserSvcRefreshTokenResponse) SetToken(v UserSvcToken) {
 	o.Token = v
 }
 

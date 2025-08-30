@@ -44,7 +44,7 @@ func (ms *ModelService) status(
 		rsp, _, err := ms.options.ClientFactory.Client(client.WithToken(ms.token)).
 			ConfigSvcAPI.ListConfigs(context.Background()).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				Keys: []string{"modelSvc"},
+				Ids: []string{"modelSvc"},
 			}).
 			Execute()
 		if err != nil {

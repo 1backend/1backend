@@ -173,15 +173,14 @@ definitions:
       dataJson:
         type: string
       id:
-        description: |-
-          Id of the config.
-          It is deterministically created from the app and the key.
+        description: CamelCased slugs of the config owners
         type: string
-      key:
+      internalId:
         type: string
       updatedAt:
         type: string
     required:
+    - app
     - createdAt
     - data
     - dataJson
@@ -191,11 +190,12 @@ definitions:
   config_svc.ListConfigsRequest:
     properties:
       app:
+        example: shoes.com
         type: string
-      keys:
+      ids:
         description: |-
-          Keys are camelCased slugs of the config owners.
-          Specifying only the keys will mean all of the config will be returned
+          Ids are camelCased slugs of the config owners.
+          Specifying only the ids will mean all of the config will be returned
           for that key.
 
           If the configs are large, consider using the `Selector` request field.
@@ -242,9 +242,9 @@ definitions:
         type: object
       dataJson:
         type: string
-      key:
+      id:
         description: |-
-          Key is the slug of the owner to save the config for.
+          Id is the slug of the owner to save the config for.
           Only user with the `config-svc:config:edit-on-behalf` can specify this.
           For everyone else, it is automatically set to the slug of the caller user.
         type: string
@@ -2670,9 +2670,9 @@ definitions:
     type: object
   secret_svc.ListSecretsRequest:
     properties:
-      key:
+      id:
         type: string
-      keys:
+      ids:
         items:
           type: string
         type: array
@@ -2692,12 +2692,6 @@ definitions:
         items:
           type: string
         type: array
-      key:
-        type: string
-      keys:
-        items:
-          type: string
-        type: array
     type: object
   secret_svc.RemoveSecretsResponse:
     type: object
@@ -2705,7 +2699,7 @@ definitions:
     properties:
       secrets:
         items:
-          $ref: '#/definitions/secret_svc.Secret'
+          $ref: '#/definitions/secret_svc.SecretInput'
         type: array
     type: object
   secret_svc.SaveSecretsResponse:
@@ -2713,7 +2707,6 @@ definitions:
   secret_svc.Secret:
     properties:
       app:
-        description: App of the secret
         type: string
       canChangeDeleters:
         description: Slugs of services/users who can change the deleters list
@@ -2748,14 +2741,13 @@ definitions:
           Whether the secret is encrypted
           All secrets are encrypted before written to the DB.
           This really only exists for write requests to know if the secret is already encrypted.
-          Ie: while most `secret save [key] [value]` commands are probably not encrypted,
+          Ie: while most `secret save [id] [value]` commands are probably not encrypted,
           File based saves, eg. `secret save secretA.yaml` are probably encrypted.
         type: boolean
       id:
-        description: Id of the secret
+        description: Envar- or slug-like id of the secret
         type: string
-      key:
-        description: Envar or slug-like key of the secret
+      internalId:
         type: string
       readers:
         description: Slugs of services/users who can read the secret
@@ -2770,6 +2762,69 @@ definitions:
         items:
           type: string
         type: array
+    required:
+    - app
+    - id
+    - value
+    type: object
+  secret_svc.SecretInput:
+    properties:
+      app:
+        type: string
+      canChangeDeleters:
+        description: Slugs of services/users who can change the deleters list
+        items:
+          type: string
+        type: array
+      canChangeReaders:
+        description: Slugs of services/users who can change the readers list
+        items:
+          type: string
+        type: array
+      canChangeWriters:
+        description: Slugs of services/users who can change the writers list
+        items:
+          type: string
+        type: array
+      checksum:
+        description: Checksum of the secret value
+        type: string
+      checksumAlgorithm:
+        allOf:
+        - $ref: '#/definitions/secret_svc.ChecksumAlgorithm'
+        description: Algorithm used for the checksum (e.g., "CRC32")
+        example: CRC32
+      deleters:
+        description: Slugs of services/users who can delete the secret
+        items:
+          type: string
+        type: array
+      encrypted:
+        description: |-
+          Whether the secret is encrypted
+          All secrets are encrypted before written to the DB.
+          This really only exists for write requests to know if the secret is already encrypted.
+          Ie: while most `secret save [id] [value]` commands are probably not encrypted,
+          File based saves, eg. `secret save secretA.yaml` are probably encrypted.
+        type: boolean
+      id:
+        description: Envar- or slug-like id of the secret
+        type: string
+      readers:
+        description: Slugs of services/users who can read the secret
+        items:
+          type: string
+        type: array
+      value:
+        description: Secret Value
+        type: string
+      writers:
+        description: Slugs of services/users who can modify the secret
+        items:
+          type: string
+        type: array
+    required:
+    - id
     type: object
   source_svc.CheckoutRepoRequest:
     properties:
@@ -2929,71 +2984,6 @@ definitions:
       width:
         type: integer
     type: object
-  user_svc.AuthToken:
-    properties:
-      active:
-        description: |-
-          Active tokens contain the most up-to-date information.
-          When a user's role changes—due to role assignment, organization
-          creation/assignment, etc.—all existing tokens are marked inactive.
-          Active tokens are reused during login, while inactive tokens
-          that have been recently refreshed (being used still) are kept for further refreshing
-          (unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, old tokens can be refreshed indefinitely.)
-
-          Active tokens contain the most up-to-date information.
-          When a user's role changes—due to role assignment, organization
-          creation/assignment, etc.—all existing tokens are marked inactive.
-          Active tokens are reused during login, while inactive tokens
-          that have been recently refreshed (see `lastRefreshedAt` field) and are still in use are retained for further refreshing.
-          (Unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, in which case old tokens can be refreshed indefinitely.)
-        type: boolean
-      app:
-        example: unnamed,omitempty
-        type: string
-      createdAt:
-        type: string
-      deletedAt:
-        type: string
-      device:
-        description: |-
-          The device the token is associated with.
-          This in combination with LastRefreshedAt can be used to
-          determine if the token is still in use, and lets us prune unused tokens.
-        type: string
-      expiresAt:
-        type: string
-      id:
-        type: string
-      lastRefreshedAt:
-        description: |-
-          The last time the token was refreshed.
-          This is used to determine if the token is still in use.
-        type: string
-      token:
-        description: |-
-          Token is a signed JWT used to authenticate the user without querying the User Svc.
-          You can verify it using the public key at `/user-svc/public-key`.
-
-          The token is just a JSON object with fields like:
-          - "oui": the user ID (e.g., "usr_dC4K75Cbp6")
-          - "olu": the user slug (e.g., "test-user-slug-0")
-          - "oro": a list of roles, such as:
-            - "user-svc:user"
-            - "user-svc:org:{org_dC4K7NNDCG}:user"
-        type: string
-      updatedAt:
-        type: string
-      userId:
-        type: string
-    required:
-    - createdAt
-    - device
-    - expiresAt
-    - id
-    - token
-    - updatedAt
-    - userId
-    type: object
   user_svc.ChangePasswordRequest:
     properties:
       currentPassword:
@@ -3129,6 +3119,8 @@ definitions:
       id:
         example: inv_fIYPbMHIcI
         type: string
+      internalId:
+        type: string
       role:
         description: |-
           Role specifies the role to be assigned to the ContactId.
@@ -3199,7 +3191,7 @@ definitions:
     properties:
       token:
         allOf:
-        - $ref: '#/definitions/user_svc.AuthToken'
+        - $ref: '#/definitions/user_svc.Token'
         description: Token is the new token that will be returned by this endpoint.
     required:
     - token
@@ -3361,7 +3353,7 @@ definitions:
   user_svc.LoginResponse:
     properties:
       token:
-        $ref: '#/definitions/user_svc.AuthToken'
+        $ref: '#/definitions/user_svc.Token'
     type: object
   user_svc.OrderDirection:
     enum:
@@ -3381,6 +3373,8 @@ definitions:
       deletedAt:
         type: string
       id:
+        type: string
+      internalId:
         type: string
       name:
         description: Full name of the organization
@@ -3418,6 +3412,8 @@ definitions:
         type: string
       id:
         example: inv_fIYPbMHIcI
+        type: string
+      internalId:
         type: string
       permission:
         type: string
@@ -3512,7 +3508,7 @@ definitions:
   user_svc.RefreshTokenResponse:
     properties:
       token:
-        $ref: '#/definitions/user_svc.AuthToken'
+        $ref: '#/definitions/user_svc.Token'
     required:
     - token
     type: object
@@ -3542,7 +3538,7 @@ definitions:
   user_svc.RegisterResponse:
     properties:
       token:
-        $ref: '#/definitions/user_svc.AuthToken'
+        $ref: '#/definitions/user_svc.Token'
     type: object
   user_svc.ResetPasswordRequest:
     properties:
@@ -3592,6 +3588,13 @@ definitions:
     type: object
   user_svc.SaveOrganizationRequest:
     properties:
+      assignCaller:
+        description: |-
+          If true, the caller (the user making the request) will be assigned
+          the admin role for the organization.
+          If false, no Membership or Enroll will be created.
+        example: true
+        type: boolean
       id:
         type: string
       name:
@@ -3613,7 +3616,7 @@ definitions:
         $ref: '#/definitions/user_svc.Organization'
       token:
         allOf:
-        - $ref: '#/definitions/user_svc.AuthToken'
+        - $ref: '#/definitions/user_svc.Token'
         description: |-
           Due to the nature of JWT tokens, the token must be refreshed after
           creating an organization, as dynamic organization roles are embedded in it.
@@ -3653,6 +3656,74 @@ definitions:
         type: string
     type: object
   user_svc.SaveUserResponse:
+    type: object
+  user_svc.Token:
+    properties:
+      active:
+        description: |-
+          Active tokens contain the most up-to-date information.
+          When a user's role changes—due to role assignment, organization
+          creation/assignment, etc.—all existing tokens are marked inactive.
+          Active tokens are reused during login, while inactive tokens
+          that have been recently refreshed (being used still) are kept for further refreshing
+          (unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, old tokens can be refreshed indefinitely.)
+
+          Active tokens contain the most up-to-date information.
+          When a user's role changes—due to role assignment, organization
+          creation/assignment, etc.—all existing tokens are marked inactive.
+          Active tokens are reused during login, while inactive tokens
+          that have been recently refreshed (see `lastRefreshedAt` field) and are still in use are retained for further refreshing.
+          (Unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, in which case old tokens can be refreshed indefinitely.)
+        type: boolean
+      app:
+        example: shoes.com
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      device:
+        description: |-
+          The device the token is associated with.
+          This in combination with LastRefreshedAt can be used to
+          determine if the token is still in use, and lets us prune unused tokens.
+        type: string
+      expiresAt:
+        type: string
+      id:
+        type: string
+      internalId:
+        type: string
+      lastRefreshedAt:
+        description: |-
+          The last time the token was refreshed.
+          This is used to determine if the token is still in use.
+        type: string
+      token:
+        description: |-
+          Token is a signed JWT used to authenticate the user without querying the User Svc.
+          You can verify it using the public key at `/user-svc/public-key`.
+
+          The token is just a JSON object with fields like:
+          - "oui": the user ID (e.g., "usr_dC4K75Cbp6")
+          - "olu": the user slug (e.g., "test-user-slug-0")
+          - "oro": a list of roles, such as:
+            - "user-svc:user"
+            - "user-svc:org:{org_dC4K7NNDCG}:user"
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        type: string
+    required:
+    - app
+    - createdAt
+    - device
+    - expiresAt
+    - id
+    - token
+    - updatedAt
+    - userId
     type: object
   user_svc.User:
     properties:
@@ -6891,7 +6962,10 @@ paths:
     put:
       consumes:
       - application/json
-      description: Allows an organization admin to add a user to the organization.
+      description: |-
+        Adds a user to an organization by saving a Membership.
+        Also issues the corresponding Enroll, which grants the
+        user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
       operationId: saveMembership
       parameters:
       - description: Organization ID

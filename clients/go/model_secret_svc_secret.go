@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the SecretSvcSecret type satisfies the MappedNullable interface at compile time
@@ -20,8 +22,7 @@ var _ MappedNullable = &SecretSvcSecret{}
 
 // SecretSvcSecret struct for SecretSvcSecret
 type SecretSvcSecret struct {
-	// App of the secret
-	App *string `json:"app,omitempty"`
+	App string `json:"app"`
 	// Slugs of services/users who can change the deleters list
 	CanChangeDeleters []string `json:"canChangeDeleters,omitempty"`
 	// Slugs of services/users who can change the readers list
@@ -34,26 +35,30 @@ type SecretSvcSecret struct {
 	ChecksumAlgorithm *SecretSvcChecksumAlgorithm `json:"checksumAlgorithm,omitempty"`
 	// Slugs of services/users who can delete the secret
 	Deleters []string `json:"deleters,omitempty"`
-	// Whether the secret is encrypted All secrets are encrypted before written to the DB. This really only exists for write requests to know if the secret is already encrypted. Ie: while most `secret save [key] [value]` commands are probably not encrypted, File based saves, eg. `secret save secretA.yaml` are probably encrypted.
+	// Whether the secret is encrypted All secrets are encrypted before written to the DB. This really only exists for write requests to know if the secret is already encrypted. Ie: while most `secret save [id] [value]` commands are probably not encrypted, File based saves, eg. `secret save secretA.yaml` are probably encrypted.
 	Encrypted *bool `json:"encrypted,omitempty"`
-	// Id of the secret
-	Id *string `json:"id,omitempty"`
-	// Envar or slug-like key of the secret
-	Key *string `json:"key,omitempty"`
+	// Envar- or slug-like id of the secret
+	Id string `json:"id"`
+	InternalId *string `json:"internalId,omitempty"`
 	// Slugs of services/users who can read the secret
 	Readers []string `json:"readers,omitempty"`
 	// Secret Value
-	Value *string `json:"value,omitempty"`
+	Value string `json:"value"`
 	// Slugs of services/users who can modify the secret
 	Writers []string `json:"writers,omitempty"`
 }
+
+type _SecretSvcSecret SecretSvcSecret
 
 // NewSecretSvcSecret instantiates a new SecretSvcSecret object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSecretSvcSecret() *SecretSvcSecret {
+func NewSecretSvcSecret(app string, id string, value string) *SecretSvcSecret {
 	this := SecretSvcSecret{}
+	this.App = app
+	this.Id = id
+	this.Value = value
 	return &this
 }
 
@@ -65,36 +70,28 @@ func NewSecretSvcSecretWithDefaults() *SecretSvcSecret {
 	return &this
 }
 
-// GetApp returns the App field value if set, zero value otherwise.
+// GetApp returns the App field value
 func (o *SecretSvcSecret) GetApp() string {
-	if o == nil || IsNil(o.App) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.App
+
+	return o.App
 }
 
-// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// GetAppOk returns a tuple with the App field value
 // and a boolean to check if the value has been set.
 func (o *SecretSvcSecret) GetAppOk() (*string, bool) {
-	if o == nil || IsNil(o.App) {
+	if o == nil {
 		return nil, false
 	}
-	return o.App, true
+	return &o.App, true
 }
 
-// HasApp returns a boolean if a field has been set.
-func (o *SecretSvcSecret) HasApp() bool {
-	if o != nil && !IsNil(o.App) {
-		return true
-	}
-
-	return false
-}
-
-// SetApp gets a reference to the given string and assigns it to the App field.
+// SetApp sets field value
 func (o *SecretSvcSecret) SetApp(v string) {
-	o.App = &v
+	o.App = v
 }
 
 // GetCanChangeDeleters returns the CanChangeDeleters field value if set, zero value otherwise.
@@ -321,68 +318,60 @@ func (o *SecretSvcSecret) SetEncrypted(v bool) {
 	o.Encrypted = &v
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value
 func (o *SecretSvcSecret) GetId() string {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Id
+
+	return o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *SecretSvcSecret) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Id, true
+	return &o.Id, true
 }
 
-// HasId returns a boolean if a field has been set.
-func (o *SecretSvcSecret) HasId() bool {
-	if o != nil && !IsNil(o.Id) {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
+// SetId sets field value
 func (o *SecretSvcSecret) SetId(v string) {
-	o.Id = &v
+	o.Id = v
 }
 
-// GetKey returns the Key field value if set, zero value otherwise.
-func (o *SecretSvcSecret) GetKey() string {
-	if o == nil || IsNil(o.Key) {
+// GetInternalId returns the InternalId field value if set, zero value otherwise.
+func (o *SecretSvcSecret) GetInternalId() string {
+	if o == nil || IsNil(o.InternalId) {
 		var ret string
 		return ret
 	}
-	return *o.Key
+	return *o.InternalId
 }
 
-// GetKeyOk returns a tuple with the Key field value if set, nil otherwise
+// GetInternalIdOk returns a tuple with the InternalId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SecretSvcSecret) GetKeyOk() (*string, bool) {
-	if o == nil || IsNil(o.Key) {
+func (o *SecretSvcSecret) GetInternalIdOk() (*string, bool) {
+	if o == nil || IsNil(o.InternalId) {
 		return nil, false
 	}
-	return o.Key, true
+	return o.InternalId, true
 }
 
-// HasKey returns a boolean if a field has been set.
-func (o *SecretSvcSecret) HasKey() bool {
-	if o != nil && !IsNil(o.Key) {
+// HasInternalId returns a boolean if a field has been set.
+func (o *SecretSvcSecret) HasInternalId() bool {
+	if o != nil && !IsNil(o.InternalId) {
 		return true
 	}
 
 	return false
 }
 
-// SetKey gets a reference to the given string and assigns it to the Key field.
-func (o *SecretSvcSecret) SetKey(v string) {
-	o.Key = &v
+// SetInternalId gets a reference to the given string and assigns it to the InternalId field.
+func (o *SecretSvcSecret) SetInternalId(v string) {
+	o.InternalId = &v
 }
 
 // GetReaders returns the Readers field value if set, zero value otherwise.
@@ -417,36 +406,28 @@ func (o *SecretSvcSecret) SetReaders(v []string) {
 	o.Readers = v
 }
 
-// GetValue returns the Value field value if set, zero value otherwise.
+// GetValue returns the Value field value
 func (o *SecretSvcSecret) GetValue() string {
-	if o == nil || IsNil(o.Value) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Value
+
+	return o.Value
 }
 
-// GetValueOk returns a tuple with the Value field value if set, nil otherwise
+// GetValueOk returns a tuple with the Value field value
 // and a boolean to check if the value has been set.
 func (o *SecretSvcSecret) GetValueOk() (*string, bool) {
-	if o == nil || IsNil(o.Value) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Value, true
+	return &o.Value, true
 }
 
-// HasValue returns a boolean if a field has been set.
-func (o *SecretSvcSecret) HasValue() bool {
-	if o != nil && !IsNil(o.Value) {
-		return true
-	}
-
-	return false
-}
-
-// SetValue gets a reference to the given string and assigns it to the Value field.
+// SetValue sets field value
 func (o *SecretSvcSecret) SetValue(v string) {
-	o.Value = &v
+	o.Value = v
 }
 
 // GetWriters returns the Writers field value if set, zero value otherwise.
@@ -491,9 +472,7 @@ func (o SecretSvcSecret) MarshalJSON() ([]byte, error) {
 
 func (o SecretSvcSecret) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.App) {
-		toSerialize["app"] = o.App
-	}
+	toSerialize["app"] = o.App
 	if !IsNil(o.CanChangeDeleters) {
 		toSerialize["canChangeDeleters"] = o.CanChangeDeleters
 	}
@@ -515,22 +494,57 @@ func (o SecretSvcSecret) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Encrypted) {
 		toSerialize["encrypted"] = o.Encrypted
 	}
-	if !IsNil(o.Id) {
-		toSerialize["id"] = o.Id
-	}
-	if !IsNil(o.Key) {
-		toSerialize["key"] = o.Key
+	toSerialize["id"] = o.Id
+	if !IsNil(o.InternalId) {
+		toSerialize["internalId"] = o.InternalId
 	}
 	if !IsNil(o.Readers) {
 		toSerialize["readers"] = o.Readers
 	}
-	if !IsNil(o.Value) {
-		toSerialize["value"] = o.Value
-	}
+	toSerialize["value"] = o.Value
 	if !IsNil(o.Writers) {
 		toSerialize["writers"] = o.Writers
 	}
 	return toSerialize, nil
+}
+
+func (o *SecretSvcSecret) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"app",
+		"id",
+		"value",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varSecretSvcSecret := _SecretSvcSecret{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varSecretSvcSecret)
+
+	if err != nil {
+		return err
+	}
+
+	*o = SecretSvcSecret(varSecretSvcSecret)
+
+	return err
 }
 
 type NullableSecretSvcSecret struct {

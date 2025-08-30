@@ -42,8 +42,8 @@ ConfigSvcConfig.attributeTypeMap = [
         "type": "string"
     },
     {
-        "name": "key",
-        "baseName": "key",
+        "name": "internalId",
+        "baseName": "internalId",
         "type": "string"
     },
     {

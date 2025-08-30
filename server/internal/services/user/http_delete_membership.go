@@ -95,7 +95,7 @@ func (s *UserService) deleteMembership(
 		return err
 	}
 
-	org, found, err := s.organizationsStore.Query(datastore.Id(organizationId)).
+	org, found, err := s.organizationStore.Query(datastore.Id(organizationId)).
 		FindOne()
 	if err != nil {
 		return err

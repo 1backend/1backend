@@ -22,8 +22,6 @@ var _ MappedNullable = &SecretSvcRemoveSecretsRequest{}
 type SecretSvcRemoveSecretsRequest struct {
 	Id *string `json:"id,omitempty"`
 	Ids []string `json:"ids,omitempty"`
-	Key *string `json:"key,omitempty"`
-	Keys []string `json:"keys,omitempty"`
 }
 
 // NewSecretSvcRemoveSecretsRequest instantiates a new SecretSvcRemoveSecretsRequest object
@@ -107,70 +105,6 @@ func (o *SecretSvcRemoveSecretsRequest) SetIds(v []string) {
 	o.Ids = v
 }
 
-// GetKey returns the Key field value if set, zero value otherwise.
-func (o *SecretSvcRemoveSecretsRequest) GetKey() string {
-	if o == nil || IsNil(o.Key) {
-		var ret string
-		return ret
-	}
-	return *o.Key
-}
-
-// GetKeyOk returns a tuple with the Key field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SecretSvcRemoveSecretsRequest) GetKeyOk() (*string, bool) {
-	if o == nil || IsNil(o.Key) {
-		return nil, false
-	}
-	return o.Key, true
-}
-
-// HasKey returns a boolean if a field has been set.
-func (o *SecretSvcRemoveSecretsRequest) HasKey() bool {
-	if o != nil && !IsNil(o.Key) {
-		return true
-	}
-
-	return false
-}
-
-// SetKey gets a reference to the given string and assigns it to the Key field.
-func (o *SecretSvcRemoveSecretsRequest) SetKey(v string) {
-	o.Key = &v
-}
-
-// GetKeys returns the Keys field value if set, zero value otherwise.
-func (o *SecretSvcRemoveSecretsRequest) GetKeys() []string {
-	if o == nil || IsNil(o.Keys) {
-		var ret []string
-		return ret
-	}
-	return o.Keys
-}
-
-// GetKeysOk returns a tuple with the Keys field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SecretSvcRemoveSecretsRequest) GetKeysOk() ([]string, bool) {
-	if o == nil || IsNil(o.Keys) {
-		return nil, false
-	}
-	return o.Keys, true
-}
-
-// HasKeys returns a boolean if a field has been set.
-func (o *SecretSvcRemoveSecretsRequest) HasKeys() bool {
-	if o != nil && !IsNil(o.Keys) {
-		return true
-	}
-
-	return false
-}
-
-// SetKeys gets a reference to the given []string and assigns it to the Keys field.
-func (o *SecretSvcRemoveSecretsRequest) SetKeys(v []string) {
-	o.Keys = v
-}
-
 func (o SecretSvcRemoveSecretsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -186,12 +120,6 @@ func (o SecretSvcRemoveSecretsRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Ids) {
 		toSerialize["ids"] = o.Ids
-	}
-	if !IsNil(o.Key) {
-		toSerialize["key"] = o.Key
-	}
-	if !IsNil(o.Keys) {
-		toSerialize["keys"] = o.Keys
 	}
 	return toSerialize, nil
 }

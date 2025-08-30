@@ -25,7 +25,7 @@ func (s *UserService) createUser(
 	roles []string,
 ) error {
 	if len(contacts) > 0 {
-		_, contactExists, err := s.contactsStore.Query(
+		_, contactExists, err := s.contactStore.Query(
 			datastore.Equals(
 				datastore.Field("id"),
 				contacts[0].Id,
@@ -40,7 +40,7 @@ func (s *UserService) createUser(
 		}
 	}
 
-	_, slugExists, err := s.usersStore.Query(
+	_, slugExists, err := s.userStore.Query(
 		datastore.Equals(datastore.Field("slug"), userInput.Slug),
 	).FindOne()
 	if err != nil {
@@ -62,7 +62,7 @@ func (s *UserService) createUser(
 
 	now := time.Now()
 
-	err = s.passwordsStore.Upsert(&usertypes.Password{
+	err = s.passwordStore.Upsert(&usertypes.Password{
 		Id:           sdk.Id("pw"),
 		PasswordHash: passwordHash,
 		UserId:       userInput.Id,
@@ -82,7 +82,7 @@ func (s *UserService) createUser(
 		ThumbnailFileId: userInput.ThumbnailFileId,
 	}
 
-	err = s.usersStore.Create(user)
+	err = s.userStore.Create(user)
 	if err != nil {
 		return nil
 	}
@@ -99,7 +99,7 @@ func (s *UserService) createUser(
 		contact.UserId = user.Id
 		contactIs = append(contactIs, contact)
 	}
-	err = s.contactsStore.UpsertMany(contactIs)
+	err = s.contactStore.UpsertMany(contactIs)
 	if err != nil {
 		return err
 	}

@@ -16,6 +16,14 @@
  */
 export interface UserSvcSaveOrganizationRequest {
     /**
+     * If true, the caller (the user making the request) will be assigned
+     * the admin role for the organization.
+     * If false, no Membership or Enroll will be created.
+     * @type {boolean}
+     * @memberof UserSvcSaveOrganizationRequest
+     */
+    assignCaller?: boolean;
+    /**
      *
      * @type {string}
      * @memberof UserSvcSaveOrganizationRequest

@@ -14,6 +14,7 @@ export declare class UserSvcOrganization {
     'createdAt': string;
     'deletedAt'?: string;
     'id': string;
+    'internalId'?: string;
     /**
     * Full name of the organization
     */

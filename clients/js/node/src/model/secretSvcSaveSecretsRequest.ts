@@ -11,10 +11,10 @@
  */
 
 import { RequestFile } from './models';
-import { SecretSvcSecret } from './secretSvcSecret';
+import { SecretSvcSecretInput } from './secretSvcSecretInput';
 
 export class SecretSvcSaveSecretsRequest {
-    'secrets'?: Array<SecretSvcSecret>;
+    'secrets'?: Array<SecretSvcSecretInput>;
 
     static discriminator: string | undefined = undefined;
 
@@ -22,7 +22,7 @@ export class SecretSvcSaveSecretsRequest {
         {
             "name": "secrets",
             "baseName": "secrets",
-            "type": "Array<SecretSvcSecret>"
+            "type": "Array<SecretSvcSecretInput>"
         }    ];
 
     static getAttributeTypeMap() {

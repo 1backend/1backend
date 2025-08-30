@@ -31,6 +31,7 @@ type UserSvcEnroll struct {
 	CreatedBy *string `json:"createdBy,omitempty"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	Id string `json:"id"`
+	InternalId *string `json:"internalId,omitempty"`
 	// Role specifies the role to be assigned to the ContactId. Callers can only assign roles they own, identified by their service slug (e.g., if \"my-service\" creates an enroll, the role must be \"my-service:admin\"). Dynamic organization roles can also be assigned (e.g., \"user-svc:org:{%orgId}:admin\" or \"user-svc:org:{%orgId}:user\"), but in this case, the caller must be an admin of the target organization.
 	Role string `json:"role"`
 	UpdatedAt string `json:"updatedAt"`
@@ -237,6 +238,38 @@ func (o *UserSvcEnroll) SetId(v string) {
 	o.Id = v
 }
 
+// GetInternalId returns the InternalId field value if set, zero value otherwise.
+func (o *UserSvcEnroll) GetInternalId() string {
+	if o == nil || IsNil(o.InternalId) {
+		var ret string
+		return ret
+	}
+	return *o.InternalId
+}
+
+// GetInternalIdOk returns a tuple with the InternalId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcEnroll) GetInternalIdOk() (*string, bool) {
+	if o == nil || IsNil(o.InternalId) {
+		return nil, false
+	}
+	return o.InternalId, true
+}
+
+// HasInternalId returns a boolean if a field has been set.
+func (o *UserSvcEnroll) HasInternalId() bool {
+	if o != nil && !IsNil(o.InternalId) {
+		return true
+	}
+
+	return false
+}
+
+// SetInternalId gets a reference to the given string and assigns it to the InternalId field.
+func (o *UserSvcEnroll) SetInternalId(v string) {
+	o.InternalId = &v
+}
+
 // GetRole returns the Role field value
 func (o *UserSvcEnroll) GetRole() string {
 	if o == nil {
@@ -341,6 +374,9 @@ func (o UserSvcEnroll) ToMap() (map[string]interface{}, error) {
 		toSerialize["deletedAt"] = o.DeletedAt
 	}
 	toSerialize["id"] = o.Id
+	if !IsNil(o.InternalId) {
+		toSerialize["internalId"] = o.InternalId
+	}
 	toSerialize["role"] = o.Role
 	toSerialize["updatedAt"] = o.UpdatedAt
 	if !IsNil(o.UserId) {

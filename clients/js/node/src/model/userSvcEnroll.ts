@@ -28,6 +28,7 @@ export class UserSvcEnroll {
     'createdBy'?: string;
     'deletedAt'?: string;
     'id': string;
+    'internalId'?: string;
     /**
     * Role specifies the role to be assigned to the ContactId. Callers can only assign roles they own, identified by their service slug (e.g., if \"my-service\" creates an enroll, the role must be \"my-service:admin\"). Dynamic organization roles can also be assigned (e.g., \"user-svc:org:{%orgId}:admin\" or \"user-svc:org:{%orgId}:user\"), but in this case, the caller must be an admin of the target organization.
     */
@@ -69,6 +70,11 @@ export class UserSvcEnroll {
         {
             "name": "id",
             "baseName": "id",
+            "type": "string"
+        },
+        {
+            "name": "internalId",
+            "baseName": "internalId",
             "type": "string"
         },
         {

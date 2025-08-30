@@ -46,6 +46,12 @@ export interface UserSvcPermit {
      * @type {string}
      * @memberof UserSvcPermit
      */
+    internalId?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserSvcPermit
+     */
     permission: string;
     /**
      * Role IDs that have been permited the specified permission.

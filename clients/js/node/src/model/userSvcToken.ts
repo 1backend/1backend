@@ -9,12 +9,15 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export declare class UserSvcAuthToken {
+
+import { RequestFile } from './models';
+
+export class UserSvcToken {
     /**
     * Active tokens contain the most up-to-date information. When a user\'s role changes—due to role assignment, organization creation/assignment, etc.—all existing tokens are marked inactive. Active tokens are reused during login, while inactive tokens that have been recently refreshed (being used still) are kept for further refreshing (unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, old tokens can be refreshed indefinitely.)  Active tokens contain the most up-to-date information. When a user\'s role changes—due to role assignment, organization creation/assignment, etc.—all existing tokens are marked inactive. Active tokens are reused during login, while inactive tokens that have been recently refreshed (see `lastRefreshedAt` field) and are still in use are retained for further refreshing. (Unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, in which case old tokens can be refreshed indefinitely.)
     */
     'active'?: boolean;
-    'app'?: string;
+    'app': string;
     'createdAt': string;
     'deletedAt'?: string;
     /**
@@ -23,6 +26,7 @@ export declare class UserSvcAuthToken {
     'device': string;
     'expiresAt': string;
     'id': string;
+    'internalId'?: string;
     /**
     * The last time the token was refreshed. This is used to determine if the token is still in use.
     */
@@ -33,15 +37,73 @@ export declare class UserSvcAuthToken {
     'token': string;
     'updatedAt': string;
     'userId': string;
-    static discriminator: string | undefined;
-    static attributeTypeMap: Array<{
-        name: string;
-        baseName: string;
-        type: string;
-    }>;
-    static getAttributeTypeMap(): {
-        name: string;
-        baseName: string;
-        type: string;
-    }[];
+
+    static discriminator: string | undefined = undefined;
+
+    static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
+        {
+            "name": "active",
+            "baseName": "active",
+            "type": "boolean"
+        },
+        {
+            "name": "app",
+            "baseName": "app",
+            "type": "string"
+        },
+        {
+            "name": "createdAt",
+            "baseName": "createdAt",
+            "type": "string"
+        },
+        {
+            "name": "deletedAt",
+            "baseName": "deletedAt",
+            "type": "string"
+        },
+        {
+            "name": "device",
+            "baseName": "device",
+            "type": "string"
+        },
+        {
+            "name": "expiresAt",
+            "baseName": "expiresAt",
+            "type": "string"
+        },
+        {
+            "name": "id",
+            "baseName": "id",
+            "type": "string"
+        },
+        {
+            "name": "internalId",
+            "baseName": "internalId",
+            "type": "string"
+        },
+        {
+            "name": "lastRefreshedAt",
+            "baseName": "lastRefreshedAt",
+            "type": "string"
+        },
+        {
+            "name": "token",
+            "baseName": "token",
+            "type": "string"
+        },
+        {
+            "name": "updatedAt",
+            "baseName": "updatedAt",
+            "type": "string"
+        },
+        {
+            "name": "userId",
+            "baseName": "userId",
+            "type": "string"
+        }    ];
+
+    static getAttributeTypeMap() {
+        return UserSvcToken.attributeTypeMap;
+    }
 }
+

@@ -9,9 +9,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { SecretSvcSecret } from './secretSvcSecret';
+import { SecretSvcSecretInput } from './secretSvcSecretInput';
 export declare class SecretSvcSaveSecretsRequest {
-    'secrets'?: Array<SecretSvcSecret>;
+    'secrets'?: Array<SecretSvcSecretInput>;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

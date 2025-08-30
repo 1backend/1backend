@@ -87,102 +87,56 @@ func (s *UserService) hasPermission(
 		return nil, false, claims, errors.Wrap(err, "failed to get user from request")
 	}
 
-	enrolls, err := s.enrollsStore.Query(
-		datastore.Equals(datastore.Field("app"), claims.App),
-		datastore.Equals(datastore.Field("userId"), usr.Id),
-	).Find()
-	if err != nil {
-		return usr, false, claims, errors.Wrap(err, "failed to query enrolls")
+	roles := []any{}
+	for _, roleId := range claims.Roles {
+		roles = append(roles, roleId)
 	}
 
-	roleIds := []string{
-		"user-svc:user", // Default role for all users
-	}
-	for _, role := range enrolls {
-		roleIds = append(roleIds, role.(*user.Enroll).Role)
-	}
-
-	roleIdAnys := []any{}
-	for _, roleId := range roleIds {
-		roleIdAnys = append(roleIdAnys, roleId)
-	}
-
-	permits, err := s.permitsStore.Query(
-		//datastore.Or(
-		//	datastore.Equals(datastore.Field("app"), claims.App),
-		//	datastore.Equals(datastore.Field("app"), "*"),
-		//),
-		datastore.Intersects(datastore.Field("roles"), roleIdAnys),
-	).Find()
-	if err != nil {
-		return usr, false, claims, err
-	}
-
-	for _, permit := range permits {
-		p := permit.(*user.Permit)
-
-		if (p.App == claims.App || p.App == "*") && p.Permission == permission {
-			return usr, true, claims, nil
-		}
-
-	}
-
-	// check permits
-
-	// @todo investigate why this doesn't work
-	//
-	// _, exists, err := s.permitsStore.Query(
-	// 	datastore.Equals([]string{"permission"}, permissionId),
-	// 	datastore.IsInList([]string{"slugs"}, usr.Slug),
-	// ).FindOne()
-
-	permitIs, err := s.permitsStore.Query(
+	permitIs, err := s.permitStore.Query(
 		datastore.Or(
 			datastore.Equals(datastore.Field("app"), claims.App),
 			datastore.Equals(datastore.Field("app"), "*"),
 		),
 		datastore.Equals([]string{"permission"}, permission),
+		// TODO: Optimize this query
+		// For some reason it doesn't work.
+		//
+		// datastore.Or(
+		// 	datastore.Equals(datastore.Field("userId"), usr.Id),
+		// 	datastore.Intersects(datastore.Field("roles"), roles),
+		// 	datastore.IsInList(datastore.Field("slugs"), claims.Slug),
+		// ),
 	).Find()
 	if err != nil {
 		return usr, false, claims, err
 	}
 
-	exists := false
 	for _, permitI := range permitIs {
-		if exists {
-			break
-		}
 		permit := permitI.(*user.Permit)
+		if permit.App != claims.App && permit.App != "*" {
+			continue
+		}
+
 		for _, slug := range permit.Slugs {
-			if slug == usr.Slug {
-				exists = true
-				break
+			if slug == claims.Slug {
+				return usr, true, claims, nil
 			}
 		}
 
-		for _, userRoleId := range roleIds {
-			for _, permitRoleIds := range permit.Roles {
-
-				if userRoleId == permitRoleIds {
-					exists = true
-					break
+		for _, roleId := range permit.Roles {
+			for _, userRoleId := range claims.Roles {
+				if roleId == userRoleId {
+					return usr, true, claims, nil
 				}
 			}
-			if exists {
-				break
-			}
 		}
-	}
-
-	if exists {
-		return usr, true, claims, nil
 	}
 
 	return usr, false, claims, nil
 }
 
 func (s *UserService) getRolesByUserId(app, userId string) ([]string, error) {
-	contactIs, err := s.contactsStore.Query(
+	contactIs, err := s.contactStore.Query(
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Find()
 	if err != nil {
@@ -197,7 +151,7 @@ func (s *UserService) getRolesByUserId(app, userId string) ([]string, error) {
 	// `user-svc:admin`s are platform admins, not app admins.
 	// This is mostly to avoid bootstrapping issues.
 
-	adminEnrolls, err := s.enrollsStore.Query(
+	adminEnrolls, err := s.enrollStore.Query(
 		datastore.Equals(datastore.Field("role"), "user-svc:admin"),
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Find()
@@ -205,8 +159,11 @@ func (s *UserService) getRolesByUserId(app, userId string) ([]string, error) {
 		return nil, errors.Wrap(err, "failed to query admin enrolls")
 	}
 
-	enrolls, err := s.enrollsStore.Query(
-		datastore.Equals(datastore.Field("app"), app),
+	enrolls, err := s.enrollStore.Query(
+		datastore.Or(
+			datastore.Equals(datastore.Field("app"), app),
+			datastore.Equals(datastore.Field("app"), "*"),
+		),
 		datastore.Or(
 			datastore.Equals(datastore.Field("userId"), userId),
 			datastore.IsInList(datastore.Field("contactId"), contactIds...),
@@ -244,7 +201,7 @@ func (s *UserService) getContactIdsByUserId(userId string) ([]string, error) {
 }
 
 func (s *UserService) getContactsByUserId(userId string) ([]user.Contact, error) {
-	contactIs, err := s.contactsStore.Query(
+	contactIs, err := s.contactStore.Query(
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Find()
 	if err != nil {
@@ -276,29 +233,19 @@ func (s *UserService) getUserFromRequest(r *http.Request) (
 		return nil, nil, errors.Wrap(err, "failed to parse JWT from request")
 	}
 
-	tokenI, found, err := s.authTokensStore.Query(
-		datastore.Equals(datastore.Field("token"), authHeader),
-	).FindOne()
-	if err != nil {
-		return nil, claims, err
-	}
+	// Do not read the token here:
+	// exchanged tokens are not persisted so they won't be found.
 
-	if !found {
-		return nil, claims, errors.New("token not found")
-	}
-
-	token := tokenI.(*user.AuthToken)
-
-	userI, found, err := s.usersStore.Query(
-		datastore.Id(token.UserId),
+	userI, found, err := s.userStore.Query(
+		datastore.Id(claims.UserId),
 	).FindOne()
 	if err != nil {
 		return nil, claims, err
 	}
 	if !found {
 		logger.Error("Token refers to nonexistent user",
-			slog.String("userId", token.UserId),
-			slog.String("tokenId", token.Id),
+			slog.String("userId", claims.UserId),
+			//slog.String("tokenId", token.Id),
 		)
 		return nil, claims, errors.New("token user does not exist")
 	}
@@ -317,7 +264,7 @@ func (s *UserService) GetUserFromRequest(
 	}
 	authHeader = strings.Replace(authHeader, "Bearer ", "", 1)
 
-	tokenI, found, err := s.authTokensStore.Query(
+	tokenI, found, err := s.tokenStore.Query(
 		datastore.Equals(datastore.Field("token"), authHeader),
 	).FindOne()
 	if err != nil {
@@ -327,9 +274,9 @@ func (s *UserService) GetUserFromRequest(
 	if !found {
 		return nil, false, errors.New("unauthorized")
 	}
-	token := tokenI.(*user.AuthToken)
+	token := tokenI.(*user.Token)
 
-	userI, found, err := s.usersStore.Query(
+	userI, found, err := s.userStore.Query(
 		datastore.Id(token.UserId),
 	).FindOne()
 	if err != nil {

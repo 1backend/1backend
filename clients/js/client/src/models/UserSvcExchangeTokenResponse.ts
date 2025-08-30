@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { UserSvcAuthToken } from './UserSvcAuthToken';
+import type { UserSvcToken } from './UserSvcToken';
 import {
-    UserSvcAuthTokenFromJSON,
-    UserSvcAuthTokenFromJSONTyped,
-    UserSvcAuthTokenToJSON,
-    UserSvcAuthTokenToJSONTyped,
-} from './UserSvcAuthToken';
+    UserSvcTokenFromJSON,
+    UserSvcTokenFromJSONTyped,
+    UserSvcTokenToJSON,
+    UserSvcTokenToJSONTyped,
+} from './UserSvcToken';
 
 /**
  * 
@@ -29,10 +29,10 @@ import {
 export interface UserSvcExchangeTokenResponse {
     /**
      * Token is the new token that will be returned by this endpoint.
-     * @type {UserSvcAuthToken}
+     * @type {UserSvcToken}
      * @memberof UserSvcExchangeTokenResponse
      */
-    token: UserSvcAuthToken;
+    token: UserSvcToken;
 }
 
 /**
@@ -53,7 +53,7 @@ export function UserSvcExchangeTokenResponseFromJSONTyped(json: any, ignoreDiscr
     }
     return {
         
-        'token': UserSvcAuthTokenFromJSON(json['token']),
+        'token': UserSvcTokenFromJSON(json['token']),
     };
 }
 
@@ -68,7 +68,7 @@ export function UserSvcExchangeTokenResponseToJSONTyped(value?: UserSvcExchangeT
 
     return {
         
-        'token': UserSvcAuthTokenToJSON(value['token']),
+        'token': UserSvcTokenToJSON(value['token']),
     };
 }
 

@@ -17,11 +17,11 @@ import type { SecretSvcChecksumAlgorithm } from './SecretSvcChecksumAlgorithm';
  */
 export interface SecretSvcSecret {
     /**
-     * App of the secret
+     *
      * @type {string}
      * @memberof SecretSvcSecret
      */
-    app?: string;
+    app: string;
     /**
      * Slugs of services/users who can change the deleters list
      * @type {Array<string>}
@@ -62,24 +62,24 @@ export interface SecretSvcSecret {
      * Whether the secret is encrypted
      * All secrets are encrypted before written to the DB.
      * This really only exists for write requests to know if the secret is already encrypted.
-     * Ie: while most `secret save [key] [value]` commands are probably not encrypted,
+     * Ie: while most `secret save [id] [value]` commands are probably not encrypted,
      * File based saves, eg. `secret save secretA.yaml` are probably encrypted.
      * @type {boolean}
      * @memberof SecretSvcSecret
      */
     encrypted?: boolean;
     /**
-     * Id of the secret
+     * Envar- or slug-like id of the secret
      * @type {string}
      * @memberof SecretSvcSecret
      */
-    id?: string;
+    id: string;
     /**
-     * Envar or slug-like key of the secret
+     *
      * @type {string}
      * @memberof SecretSvcSecret
      */
-    key?: string;
+    internalId?: string;
     /**
      * Slugs of services/users who can read the secret
      * @type {Array<string>}
@@ -91,7 +91,7 @@ export interface SecretSvcSecret {
      * @type {string}
      * @memberof SecretSvcSecret
      */
-    value?: string;
+    value: string;
     /**
      * Slugs of services/users who can modify the secret
      * @type {Array<string>}

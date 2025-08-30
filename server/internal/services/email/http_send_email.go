@@ -88,7 +88,7 @@ func (s *EmailService) sendgridSendEmail(req email.SendEmailRequest) error {
 	secretClient := s.options.ClientFactory.Client(client.WithToken(s.token)).SecretSvcAPI
 	secretResp, _, err := secretClient.ListSecrets(context.Background()).Body(
 		openapi.SecretSvcListSecretsRequest{
-			Keys: []string{
+			Ids: []string{
 				"sender-email",
 				"sender-name",
 				"sendgrid-api-key",
@@ -110,18 +110,18 @@ func (s *EmailService) sendgridSendEmail(req email.SendEmailRequest) error {
 	)
 
 	for _, secret := range secretResp.Secrets {
-		if secret.Key == nil || secret.Value == nil {
+		if secret.Id == "" || secret.Value == "" {
 			logger.Error("Secret key or value is nil", slog.Any("secret", secret))
 			continue
 		}
 
-		switch *secret.Key {
+		switch secret.Id {
 		case "sender-email":
-			senderEmail = *secret.Value
+			senderEmail = secret.Value
 		case "sender-name":
-			senderName = *secret.Value
+			senderName = secret.Value
 		case "sendgrid-api-key":
-			sendgridApiKey = *secret.Value
+			sendgridApiKey = secret.Value
 		}
 	}
 

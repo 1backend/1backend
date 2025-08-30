@@ -12,8 +12,6 @@
 export declare class SecretSvcRemoveSecretsRequest {
     'id'?: string;
     'ids'?: Array<string>;
-    'key'?: string;
-    'keys'?: Array<string>;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

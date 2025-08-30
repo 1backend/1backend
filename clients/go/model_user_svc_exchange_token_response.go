@@ -23,7 +23,7 @@ var _ MappedNullable = &UserSvcExchangeTokenResponse{}
 // UserSvcExchangeTokenResponse struct for UserSvcExchangeTokenResponse
 type UserSvcExchangeTokenResponse struct {
 	// Token is the new token that will be returned by this endpoint.
-	Token UserSvcAuthToken `json:"token"`
+	Token UserSvcToken `json:"token"`
 }
 
 type _UserSvcExchangeTokenResponse UserSvcExchangeTokenResponse
@@ -32,7 +32,7 @@ type _UserSvcExchangeTokenResponse UserSvcExchangeTokenResponse
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcExchangeTokenResponse(token UserSvcAuthToken) *UserSvcExchangeTokenResponse {
+func NewUserSvcExchangeTokenResponse(token UserSvcToken) *UserSvcExchangeTokenResponse {
 	this := UserSvcExchangeTokenResponse{}
 	this.Token = token
 	return &this
@@ -47,9 +47,9 @@ func NewUserSvcExchangeTokenResponseWithDefaults() *UserSvcExchangeTokenResponse
 }
 
 // GetToken returns the Token field value
-func (o *UserSvcExchangeTokenResponse) GetToken() UserSvcAuthToken {
+func (o *UserSvcExchangeTokenResponse) GetToken() UserSvcToken {
 	if o == nil {
-		var ret UserSvcAuthToken
+		var ret UserSvcToken
 		return ret
 	}
 
@@ -58,7 +58,7 @@ func (o *UserSvcExchangeTokenResponse) GetToken() UserSvcAuthToken {
 
 // GetTokenOk returns a tuple with the Token field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcExchangeTokenResponse) GetTokenOk() (*UserSvcAuthToken, bool) {
+func (o *UserSvcExchangeTokenResponse) GetTokenOk() (*UserSvcToken, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -66,7 +66,7 @@ func (o *UserSvcExchangeTokenResponse) GetTokenOk() (*UserSvcAuthToken, bool) {
 }
 
 // SetToken sets field value
-func (o *UserSvcExchangeTokenResponse) SetToken(v UserSvcAuthToken) {
+func (o *UserSvcExchangeTokenResponse) SetToken(v UserSvcToken) {
 	o.Token = v
 }
 

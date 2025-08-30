@@ -291,12 +291,12 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      */
     saveEnrolls(requestParameters: SaveEnrollsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcSaveEnrollsResponse>;
     /**
-     * Allows an organization admin to add a user to the organization.
+     * Adds a user to an organization by saving a Membership. Also issues the corresponding Enroll, which grants the user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
      * Save Membership
      */
     saveMembershipRaw(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
     /**
-     * Allows an organization admin to add a user to the organization.
+     * Adds a user to an organization by saving a Membership. Also issues the corresponding Enroll, which grants the user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
      * Save Membership
      */
     saveMembership(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;

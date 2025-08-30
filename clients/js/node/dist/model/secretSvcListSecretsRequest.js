@@ -17,13 +17,13 @@ export class SecretSvcListSecretsRequest {
 SecretSvcListSecretsRequest.discriminator = undefined;
 SecretSvcListSecretsRequest.attributeTypeMap = [
     {
-        "name": "key",
-        "baseName": "key",
+        "name": "id",
+        "baseName": "id",
         "type": "string"
     },
     {
-        "name": "keys",
-        "baseName": "keys",
+        "name": "ids",
+        "baseName": "ids",
         "type": "Array<string>"
     }
 ];

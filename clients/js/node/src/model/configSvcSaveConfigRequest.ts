@@ -20,9 +20,9 @@ export class ConfigSvcSaveConfigRequest {
     'data'?: { [key: string]: any; };
     'dataJson'?: string;
     /**
-    * Key is the slug of the owner to save the config for. Only user with the `config-svc:config:edit-on-behalf` can specify this. For everyone else, it is automatically set to the slug of the caller user.
+    * Id is the slug of the owner to save the config for. Only user with the `config-svc:config:edit-on-behalf` can specify this. For everyone else, it is automatically set to the slug of the caller user.
     */
-    'key'?: string;
+    'id'?: string;
 
     static discriminator: string | undefined = undefined;
 
@@ -43,8 +43,8 @@ export class ConfigSvcSaveConfigRequest {
             "type": "string"
         },
         {
-            "name": "key",
-            "baseName": "key",
+            "name": "id",
+            "baseName": "id",
             "type": "string"
         }    ];
 

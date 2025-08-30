@@ -149,7 +149,7 @@ func (s *UserService) saveEnrolls(
 	)
 
 	if len(contactIds) > 0 {
-		contacts, err = s.contactsStore.Query(
+		contacts, err = s.contactStore.Query(
 			datastore.IsInList(
 				datastore.Field("id"),
 				contactIds...,
@@ -161,7 +161,7 @@ func (s *UserService) saveEnrolls(
 	}
 
 	if len(callerUserIds) > 0 {
-		users, err = s.usersStore.Query(
+		users, err = s.userStore.Query(
 			datastore.IsInList(
 				datastore.Field("id"),
 				callerUserIds...,
@@ -173,7 +173,7 @@ func (s *UserService) saveEnrolls(
 	}
 
 	if len(enrollIds) > 0 {
-		enrollIs, err = s.enrollsStore.Query(
+		enrollIs, err = s.enrollStore.Query(
 			datastore.IsInList(
 				datastore.Field("id"),
 				enrollIds...,
@@ -240,11 +240,12 @@ func (s *UserService) saveEnrolls(
 		}
 
 		i := user.Enroll{
-			Id:        enroll.Id,
-			App:       thisApp,
-			ContactId: enroll.ContactId,
-			Role:      enroll.Role,
-			CreatedBy: callerUserId,
+			InternalId: sdk.InternalId(enroll.Id, thisApp),
+			Id:         enroll.Id,
+			App:        thisApp,
+			ContactId:  enroll.ContactId,
+			Role:       enroll.Role,
+			CreatedBy:  callerUserId,
 		}
 
 		if existing {
@@ -263,7 +264,7 @@ func (s *UserService) saveEnrolls(
 		rows = append(rows, enroll)
 	}
 
-	err = s.enrollsStore.UpsertMany(rows)
+	err = s.enrollStore.UpsertMany(rows)
 	if err != nil {
 		return nil, err
 	}

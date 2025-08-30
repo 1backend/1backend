@@ -25,8 +25,8 @@ export function SecretSvcListSecretsRequestFromJSONTyped(json, ignoreDiscriminat
         return json;
     }
     return {
-        'key': json['key'] == null ? undefined : json['key'],
-        'keys': json['keys'] == null ? undefined : json['keys'],
+        'id': json['id'] == null ? undefined : json['id'],
+        'ids': json['ids'] == null ? undefined : json['ids'],
     };
 }
 export function SecretSvcListSecretsRequestToJSON(json) {
@@ -37,7 +37,7 @@ export function SecretSvcListSecretsRequestToJSONTyped(value, ignoreDiscriminato
         return value;
     }
     return {
-        'key': value['key'],
-        'keys': value['keys'],
+        'id': value['id'],
+        'ids': value['ids'],
     };
 }

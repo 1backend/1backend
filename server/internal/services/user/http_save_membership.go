@@ -23,7 +23,9 @@ import (
 
 // @ID saveMembership
 // @Summary Save Membership
-// @Description Allows an organization admin to add a user to the organization.
+// @Description Adds a user to an organization by saving a Membership.
+// @Description Also issues the corresponding Enroll, which grants the
+// @Description user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
 // @Tags User Svc
 // @Accept json
 // @Produce json
@@ -99,7 +101,7 @@ func (s *UserService) saveMembership(
 		return err
 	}
 
-	orgI, found, err := s.organizationsStore.Query(
+	orgI, found, err := s.organizationStore.Query(
 		datastore.Equals(datastore.Field("app"), app),
 		datastore.Id(organizationId),
 	).
@@ -137,9 +139,12 @@ func (s *UserService) saveMembership(
 		return err
 	}
 
+	id := sdk.Id("memb")
+
 	// When creating a new org, the user switches to that org as the active one
 	link := &user.Membership{
-		Id:             sdk.Id("memb"),
+		InternalId:     sdk.InternalId(id, app),
+		Id:             id,
 		App:            app,
 		UserId:         userId,
 		OrganizationId: org.Id,
@@ -147,7 +152,7 @@ func (s *UserService) saveMembership(
 		Active: true,
 	}
 
-	err = s.membershipsStore.Upsert(link)
+	err = s.membershipStore.Upsert(link)
 	if err != nil {
 		return err
 	}

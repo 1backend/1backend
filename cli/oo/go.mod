@@ -2,7 +2,7 @@ module github.com/1backend/1backend/cli/oo
 
 go 1.23
 
-//replace github.com/1backend/1backend/clients/go => ../../clients/go
+// replace github.com/1backend/1backend/clients/go => ../../clients/go
 
 //replace github.com/1backend/1backend/sdk/go => ../../sdk/go
 

@@ -44,6 +44,12 @@ export interface UserSvcOrganization {
      */
     id: string;
     /**
+     * 
+     * @type {string}
+     * @memberof UserSvcOrganization
+     */
+    internalId?: string;
+    /**
      * Full name of the organization
      * @type {string}
      * @memberof UserSvcOrganization
@@ -95,6 +101,7 @@ export function UserSvcOrganizationFromJSONTyped(json: any, ignoreDiscriminator:
         'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'id': json['id'],
+        'internalId': json['internalId'] == null ? undefined : json['internalId'],
         'name': json['name'],
         'slug': json['slug'],
         'thumbnailFileId': json['thumbnailFileId'] == null ? undefined : json['thumbnailFileId'],
@@ -117,6 +124,7 @@ export function UserSvcOrganizationToJSONTyped(value?: UserSvcOrganization | nul
         'createdAt': value['createdAt'],
         'deletedAt': value['deletedAt'],
         'id': value['id'],
+        'internalId': value['internalId'],
         'name': value['name'],
         'slug': value['slug'],
         'thumbnailFileId': value['thumbnailFileId'],

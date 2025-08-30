@@ -62,6 +62,7 @@ func (s *UserService) ExchangeToken(w http.ResponseWriter, r *http.Request) {
 		logger.Error(
 			"Failed to parse JWT from request",
 			slog.Any("error", err),
+			slog.Any("request", request),
 		)
 		endpoint.InternalServerError(w)
 	}
@@ -89,8 +90,8 @@ func (s *UserService) ExchangeToken(w http.ResponseWriter, r *http.Request) {
 func (s *UserService) exchangeToken(
 	claims *auth.Claims,
 	request *user.ExchangeTokenRequest,
-) (*user.AuthToken, error) {
-	userI, found, err := s.usersStore.Query(
+) (*user.Token, error) {
+	userI, found, err := s.userStore.Query(
 		datastore.Id(claims.UserId),
 	).FindOne()
 	if err != nil {
@@ -101,25 +102,12 @@ func (s *UserService) exchangeToken(
 	}
 	usr, ok := userI.(*user.User)
 	if !ok {
-		return nil, errors.Errorf("tyőe mismatch: expected *user.User, got %T", userI)
+		return nil, errors.Errorf("type mismatch: expected *user.User, got %T", userI)
 	}
 
 	if request.NewDevice == "" {
 		request.NewDevice = claims.Device
 	}
 
-	token, err := s.generateAuthToken(
-		request.NewApp,
-		usr,
-		request.NewDevice,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	if token.Device == "" {
-		token.Device = unknownDevice
-	}
-
-	return token, nil
+	return s.issueToken(request.NewApp, usr, request.NewDevice)
 }

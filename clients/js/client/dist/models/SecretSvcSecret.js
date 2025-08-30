@@ -16,6 +16,12 @@ import { SecretSvcChecksumAlgorithmFromJSON, SecretSvcChecksumAlgorithmToJSON, }
  * Check if a given object implements the SecretSvcSecret interface.
  */
 export function instanceOfSecretSvcSecret(value) {
+    if (!('app' in value) || value['app'] === undefined)
+        return false;
+    if (!('id' in value) || value['id'] === undefined)
+        return false;
+    if (!('value' in value) || value['value'] === undefined)
+        return false;
     return true;
 }
 export function SecretSvcSecretFromJSON(json) {
@@ -26,7 +32,7 @@ export function SecretSvcSecretFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'app': json['app'] == null ? undefined : json['app'],
+        'app': json['app'],
         'canChangeDeleters': json['canChangeDeleters'] == null ? undefined : json['canChangeDeleters'],
         'canChangeReaders': json['canChangeReaders'] == null ? undefined : json['canChangeReaders'],
         'canChangeWriters': json['canChangeWriters'] == null ? undefined : json['canChangeWriters'],
@@ -34,10 +40,10 @@ export function SecretSvcSecretFromJSONTyped(json, ignoreDiscriminator) {
         'checksumAlgorithm': json['checksumAlgorithm'] == null ? undefined : SecretSvcChecksumAlgorithmFromJSON(json['checksumAlgorithm']),
         'deleters': json['deleters'] == null ? undefined : json['deleters'],
         'encrypted': json['encrypted'] == null ? undefined : json['encrypted'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'key': json['key'] == null ? undefined : json['key'],
+        'id': json['id'],
+        'internalId': json['internalId'] == null ? undefined : json['internalId'],
         'readers': json['readers'] == null ? undefined : json['readers'],
-        'value': json['value'] == null ? undefined : json['value'],
+        'value': json['value'],
         'writers': json['writers'] == null ? undefined : json['writers'],
     };
 }
@@ -58,7 +64,7 @@ export function SecretSvcSecretToJSONTyped(value, ignoreDiscriminator = false) {
         'deleters': value['deleters'],
         'encrypted': value['encrypted'],
         'id': value['id'],
-        'key': value['key'],
+        'internalId': value['internalId'],
         'readers': value['readers'],
         'value': value['value'],
         'writers': value['writers'],

@@ -20,7 +20,7 @@ func (s *UserService) assignRole(
 	userId string,
 	role string,
 ) error {
-	q := s.usersStore.Query(
+	q := s.userStore.Query(
 		datastore.Id(userId),
 	)
 	userI, found, err := q.FindOne()
@@ -32,7 +32,7 @@ func (s *UserService) assignRole(
 	}
 	user := userI.(*usertypes.User)
 
-	enrolls, err := s.enrollsStore.Query(
+	enrolls, err := s.enrollStore.Query(
 		datastore.Equals(datastore.Field("app"), app),
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Find()
@@ -57,7 +57,7 @@ func (s *UserService) assignRole(
 		Role:   role,
 		UserId: user.Id,
 	}
-	err = s.enrollsStore.Upsert(inv)
+	err = s.enrollStore.Upsert(inv)
 	if err != nil {
 		return errors.Wrap(err, "failed to add role to user")
 	}
@@ -66,7 +66,7 @@ func (s *UserService) assignRole(
 }
 
 func (s *UserService) removeRoleFromUser(userId string, roleId string) error {
-	q := s.usersStore.Query(
+	q := s.userStore.Query(
 		datastore.Id(userId),
 	)
 	_, found, err := q.FindOne()
@@ -77,7 +77,7 @@ func (s *UserService) removeRoleFromUser(userId string, roleId string) error {
 		return errors.New("user not found")
 	}
 
-	enrolls, err := s.enrollsStore.Query(
+	enrolls, err := s.enrollStore.Query(
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Find()
 	if err != nil {
@@ -96,7 +96,7 @@ func (s *UserService) removeRoleFromUser(userId string, roleId string) error {
 		return nil
 	}
 
-	return s.enrollsStore.Query(
+	return s.enrollStore.Query(
 		datastore.Id(enrollId),
 	).Delete()
 }

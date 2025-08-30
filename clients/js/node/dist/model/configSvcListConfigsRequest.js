@@ -22,8 +22,8 @@ ConfigSvcListConfigsRequest.attributeTypeMap = [
         "type": "string"
     },
     {
-        "name": "keys",
-        "baseName": "keys",
+        "name": "ids",
+        "baseName": "ids",
         "type": "Array<string>"
     },
     {

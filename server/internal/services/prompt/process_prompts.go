@@ -229,7 +229,7 @@ func (p *PromptService) processPrompt(
 		readConfigRsp, _, err := p.options.ClientFactory.Client(client.WithToken(token)).
 			ConfigSvcAPI.ListConfigs(context.Background()).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				Keys: []string{"modelSvc"},
+				Ids: []string{"modelSvc"},
 			}).
 			Execute()
 		if err != nil {

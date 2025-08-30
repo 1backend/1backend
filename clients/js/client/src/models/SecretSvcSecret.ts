@@ -28,11 +28,11 @@ import {
  */
 export interface SecretSvcSecret {
     /**
-     * App of the secret
+     * 
      * @type {string}
      * @memberof SecretSvcSecret
      */
-    app?: string;
+    app: string;
     /**
      * Slugs of services/users who can change the deleters list
      * @type {Array<string>}
@@ -73,24 +73,24 @@ export interface SecretSvcSecret {
      * Whether the secret is encrypted
      * All secrets are encrypted before written to the DB.
      * This really only exists for write requests to know if the secret is already encrypted.
-     * Ie: while most `secret save [key] [value]` commands are probably not encrypted,
+     * Ie: while most `secret save [id] [value]` commands are probably not encrypted,
      * File based saves, eg. `secret save secretA.yaml` are probably encrypted.
      * @type {boolean}
      * @memberof SecretSvcSecret
      */
     encrypted?: boolean;
     /**
-     * Id of the secret
+     * Envar- or slug-like id of the secret
      * @type {string}
      * @memberof SecretSvcSecret
      */
-    id?: string;
+    id: string;
     /**
-     * Envar or slug-like key of the secret
+     * 
      * @type {string}
      * @memberof SecretSvcSecret
      */
-    key?: string;
+    internalId?: string;
     /**
      * Slugs of services/users who can read the secret
      * @type {Array<string>}
@@ -102,7 +102,7 @@ export interface SecretSvcSecret {
      * @type {string}
      * @memberof SecretSvcSecret
      */
-    value?: string;
+    value: string;
     /**
      * Slugs of services/users who can modify the secret
      * @type {Array<string>}
@@ -117,6 +117,9 @@ export interface SecretSvcSecret {
  * Check if a given object implements the SecretSvcSecret interface.
  */
 export function instanceOfSecretSvcSecret(value: object): value is SecretSvcSecret {
+    if (!('app' in value) || value['app'] === undefined) return false;
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('value' in value) || value['value'] === undefined) return false;
     return true;
 }
 
@@ -130,7 +133,7 @@ export function SecretSvcSecretFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'app': json['app'] == null ? undefined : json['app'],
+        'app': json['app'],
         'canChangeDeleters': json['canChangeDeleters'] == null ? undefined : json['canChangeDeleters'],
         'canChangeReaders': json['canChangeReaders'] == null ? undefined : json['canChangeReaders'],
         'canChangeWriters': json['canChangeWriters'] == null ? undefined : json['canChangeWriters'],
@@ -138,10 +141,10 @@ export function SecretSvcSecretFromJSONTyped(json: any, ignoreDiscriminator: boo
         'checksumAlgorithm': json['checksumAlgorithm'] == null ? undefined : SecretSvcChecksumAlgorithmFromJSON(json['checksumAlgorithm']),
         'deleters': json['deleters'] == null ? undefined : json['deleters'],
         'encrypted': json['encrypted'] == null ? undefined : json['encrypted'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'key': json['key'] == null ? undefined : json['key'],
+        'id': json['id'],
+        'internalId': json['internalId'] == null ? undefined : json['internalId'],
         'readers': json['readers'] == null ? undefined : json['readers'],
-        'value': json['value'] == null ? undefined : json['value'],
+        'value': json['value'],
         'writers': json['writers'] == null ? undefined : json['writers'],
     };
 }
@@ -166,7 +169,7 @@ export function SecretSvcSecretToJSONTyped(value?: SecretSvcSecret | null, ignor
         'deleters': value['deleters'],
         'encrypted': value['encrypted'],
         'id': value['id'],
-        'key': value['key'],
+        'internalId': value['internalId'],
         'readers': value['readers'],
         'value': value['value'],
         'writers': value['writers'],

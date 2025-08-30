@@ -27,18 +27,6 @@ export interface SecretSvcRemoveSecretsRequest {
      * @memberof SecretSvcRemoveSecretsRequest
      */
     ids?: Array<string>;
-    /**
-     *
-     * @type {string}
-     * @memberof SecretSvcRemoveSecretsRequest
-     */
-    key?: string;
-    /**
-     *
-     * @type {Array<string>}
-     * @memberof SecretSvcRemoveSecretsRequest
-     */
-    keys?: Array<string>;
 }
 /**
  * Check if a given object implements the SecretSvcRemoveSecretsRequest interface.

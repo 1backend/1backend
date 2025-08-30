@@ -89,7 +89,7 @@ func TestConfigService(t *testing.T) {
 	t.Run("list configs by id", func(t *testing.T) {
 		rsp, _, err := client2.ConfigSvcAPI.ListConfigs(ctx).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				Keys: []string{"testUserSlug1"},
+				Ids: []string{"testUserSlug1"},
 			}).
 			Execute()
 
@@ -105,7 +105,7 @@ func TestConfigService(t *testing.T) {
 			_, _, err := client1.ConfigSvcAPI.SaveConfig(ctx).
 				Body(openapi.ConfigSvcSaveConfigRequest{
 					Data: map[string]any{
-						"key3": map[string]any{
+						"id3": map[string]any{
 							"nested1": "n1",
 							"nested2": "n2",
 						},
@@ -120,7 +120,7 @@ func TestConfigService(t *testing.T) {
 			_, _, err = client1.ConfigSvcAPI.SaveConfig(ctx).
 				Body(openapi.ConfigSvcSaveConfigRequest{
 					Data: map[string]any{
-						"key3": map[string]any{
+						"id3": map[string]any{
 							"nested1": "n1-updated",
 							"nested3": "n3",
 						},
@@ -135,7 +135,7 @@ func TestConfigService(t *testing.T) {
 			rsp, _, err := client1.ConfigSvcAPI.
 				ListConfigs(ctx).
 				Body(openapi.ConfigSvcListConfigsRequest{
-					Keys: []string{"testUserSlug0"},
+					Ids: []string{"testUserSlug0"},
 				}).
 				Execute()
 
@@ -147,12 +147,12 @@ func TestConfigService(t *testing.T) {
 			require.NotNil(t, config.Data["field1"])
 			require.NotNil(t, config.Data["field2"])
 
-			key3, ok := config.Data["key3"].(map[string]any)
-			require.True(t, ok, "key3 should be a nested map")
+			id3, ok := config.Data["id3"].(map[string]any)
+			require.True(t, ok, "id3 should be a nested map")
 
-			require.Equal(t, "n1-updated", key3["nested1"], rsp)
-			require.Equal(t, "n2", key3["nested2"], rsp)
-			require.Equal(t, "n3", key3["nested3"], rsp)
+			require.Equal(t, "n1-updated", id3["nested1"], rsp)
+			require.Equal(t, "n2", id3["nested2"], rsp)
+			require.Equal(t, "n3", id3["nested3"], rsp)
 		})
 	})
 
@@ -162,7 +162,7 @@ func TestConfigService(t *testing.T) {
 
 		_, _, err := adminClient.ConfigSvcAPI.SaveConfig(ctx).
 			Body(openapi.ConfigSvcSaveConfigRequest{
-				Key: openapi.PtrString("otherSvc"),
+				Id: openapi.PtrString("otherSvc"),
 				Data: map[string]any{
 					"field1": "adminValue1",
 					"field2": "adminValue2",
@@ -177,21 +177,21 @@ func TestConfigService(t *testing.T) {
 
 		rsp, _, err := adminClient.ConfigSvcAPI.ListConfigs(ctx).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				Keys: []string{"otherSvc", "anotherSvc"},
+				Ids: []string{"otherSvc", "anotherSvc"},
 			}).
 			Execute()
 		require.NoError(t, err)
 		require.NotNil(t, rsp.Configs)
 
 		require.NotNil(t, rsp.Configs["otherSvc"])
-		require.Equal(t, "unnamed_otherSvc", rsp.Configs["otherSvc"].Id, rsp)
+		require.Equal(t, "otherSvc", rsp.Configs["otherSvc"].Id, rsp)
 		require.Equal(t, "adminValue1", rsp.Configs["otherSvc"].Data["field1"], rsp)
 		require.Equal(t, "adminValue2", rsp.Configs["otherSvc"].Data["field2"], rsp)
 
 		_, _, err = adminClient.ConfigSvcAPI.SaveConfig(ctx).
 			Body(openapi.ConfigSvcSaveConfigRequest{
 				App: openapi.PtrString("otherApp"),
-				Key: openapi.PtrString("anotherSvc"),
+				Id:  openapi.PtrString("anotherSvc"),
 				Data: map[string]any{
 					"field1": "adminValue3",
 					"field2": "adminValue4",
@@ -203,8 +203,8 @@ func TestConfigService(t *testing.T) {
 
 		rsp, _, err = adminClient.ConfigSvcAPI.ListConfigs(ctx).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				App:  openapi.PtrString("otherApp"),
-				Keys: []string{"anotherSvc"},
+				App: openapi.PtrString("otherApp"),
+				Ids: []string{"anotherSvc"},
 			}).
 			Execute()
 
@@ -232,10 +232,10 @@ func TestConfigService(t *testing.T) {
 		require.Error(t, err, "users should not be able to save configs for other apps")
 	})
 
-	t.Run("users cannot specify others key", func(t *testing.T) {
+	t.Run("users cannot specify others id", func(t *testing.T) {
 		_, _, err := client1.ConfigSvcAPI.SaveConfig(ctx).
 			Body(openapi.ConfigSvcSaveConfigRequest{
-				Key: openapi.PtrString("otherSvc"),
+				Id: openapi.PtrString("otherSvc"),
 				Data: map[string]any{
 					"otherSvc": map[string]any{
 						"field1": "userValue1",
@@ -266,5 +266,4 @@ func TestConfigService(t *testing.T) {
 		require.NotNil(t, rsp.Configs["otherSvc"].Data["field3"].(map[string]interface{}))
 		require.Equal(t, "adminValue3", rsp.Configs["otherSvc"].Data["field3"].(map[string]interface{})["secondLevel3"], rsp)
 	})
-
 }

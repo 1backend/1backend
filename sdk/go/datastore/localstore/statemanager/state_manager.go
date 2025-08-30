@@ -195,7 +195,7 @@ func (sm *StateManager) PeriodicSaveState(interval time.Duration) {
 		case <-ticker.C:
 			if sm.hasChanged {
 				if err := sm.SaveState(sm.stateGetter()); err != nil {
-					logger.Logger.Error("Error saving file state",
+					logger.Error("Error saving file state",
 						slog.String("filePath", sm.filePath),
 						slog.String("error", err.Error()),
 					)
@@ -213,7 +213,7 @@ func (sm *StateManager) setupSignalHandler() {
 		<-c
 		err := sm.SaveState(sm.stateGetter())
 		if err != nil {
-			logger.Logger.Error("Error saving file state on shutdown",
+			logger.Error("Error saving file state on shutdown",
 				slog.String("filePath", sm.filePath),
 				slog.String("error", err.Error()),
 			)

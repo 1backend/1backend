@@ -20,7 +20,7 @@ export interface ConfigSvcConfig {
      * @type {string}
      * @memberof ConfigSvcConfig
      */
-    app?: string;
+    app: string;
     /**
      *
      * @type {string}
@@ -42,8 +42,7 @@ export interface ConfigSvcConfig {
      */
     dataJson: string;
     /**
-     * Id of the config.
-     * It is deterministically created from the app and the key.
+     * CamelCased slugs of the config owners
      * @type {string}
      * @memberof ConfigSvcConfig
      */
@@ -53,7 +52,7 @@ export interface ConfigSvcConfig {
      * @type {string}
      * @memberof ConfigSvcConfig
      */
-    key?: string;
+    internalId?: string;
     /**
      *
      * @type {string}

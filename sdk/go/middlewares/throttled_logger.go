@@ -102,7 +102,8 @@ func (rw *throttledResponseWriter) Write(b []byte) (int, error) {
 			logger.Debug("Endpoint returned error",
 				slog.String("endpoint", rw.endpoint),
 				slog.Int("statusCode", rw.statusCode),
-				slog.String("error", strings.TrimSuffix(string(b), "\n")))
+				slog.String("error", strings.TrimSuffix(string(b), "\n")),
+			)
 		}
 
 		return rw.ResponseWriter.Write([]byte(errorMsg))
@@ -115,6 +116,8 @@ func (tw *throttledResponseWriter) Flush() {
 	if flusher, ok := tw.ResponseWriter.(http.Flusher); ok {
 		flusher.Flush()
 	} else {
-		logger.Warn("Flushing is not supported by the underlying responsewriter of throttledResponseWriter")
+		logger.Warn(
+			"Flushing is not supported by the underlying responsewriter of throttledResponseWriter",
+		)
 	}
 }

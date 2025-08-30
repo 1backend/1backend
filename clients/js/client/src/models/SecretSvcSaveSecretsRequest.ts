@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { SecretSvcSecret } from './SecretSvcSecret';
+import type { SecretSvcSecretInput } from './SecretSvcSecretInput';
 import {
-    SecretSvcSecretFromJSON,
-    SecretSvcSecretFromJSONTyped,
-    SecretSvcSecretToJSON,
-    SecretSvcSecretToJSONTyped,
-} from './SecretSvcSecret';
+    SecretSvcSecretInputFromJSON,
+    SecretSvcSecretInputFromJSONTyped,
+    SecretSvcSecretInputToJSON,
+    SecretSvcSecretInputToJSONTyped,
+} from './SecretSvcSecretInput';
 
 /**
  * 
@@ -29,10 +29,10 @@ import {
 export interface SecretSvcSaveSecretsRequest {
     /**
      * 
-     * @type {Array<SecretSvcSecret>}
+     * @type {Array<SecretSvcSecretInput>}
      * @memberof SecretSvcSaveSecretsRequest
      */
-    secrets?: Array<SecretSvcSecret>;
+    secrets?: Array<SecretSvcSecretInput>;
 }
 
 /**
@@ -52,7 +52,7 @@ export function SecretSvcSaveSecretsRequestFromJSONTyped(json: any, ignoreDiscri
     }
     return {
         
-        'secrets': json['secrets'] == null ? undefined : ((json['secrets'] as Array<any>).map(SecretSvcSecretFromJSON)),
+        'secrets': json['secrets'] == null ? undefined : ((json['secrets'] as Array<any>).map(SecretSvcSecretInputFromJSON)),
     };
 }
 
@@ -67,7 +67,7 @@ export function SecretSvcSaveSecretsRequestToJSONTyped(value?: SecretSvcSaveSecr
 
     return {
         
-        'secrets': value['secrets'] == null ? undefined : ((value['secrets'] as Array<any>).map(SecretSvcSecretToJSON)),
+        'secrets': value['secrets'] == null ? undefined : ((value['secrets'] as Array<any>).map(SecretSvcSecretInputToJSON)),
     };
 }
 

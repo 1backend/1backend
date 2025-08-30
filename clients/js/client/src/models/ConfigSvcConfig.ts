@@ -24,7 +24,7 @@ export interface ConfigSvcConfig {
      * @type {string}
      * @memberof ConfigSvcConfig
      */
-    app?: string;
+    app: string;
     /**
      * 
      * @type {string}
@@ -44,8 +44,7 @@ export interface ConfigSvcConfig {
      */
     dataJson: string;
     /**
-     * Id of the config.
-     * It is deterministically created from the app and the key.
+     * CamelCased slugs of the config owners
      * @type {string}
      * @memberof ConfigSvcConfig
      */
@@ -55,7 +54,7 @@ export interface ConfigSvcConfig {
      * @type {string}
      * @memberof ConfigSvcConfig
      */
-    key?: string;
+    internalId?: string;
     /**
      * 
      * @type {string}
@@ -68,6 +67,7 @@ export interface ConfigSvcConfig {
  * Check if a given object implements the ConfigSvcConfig interface.
  */
 export function instanceOfConfigSvcConfig(value: object): value is ConfigSvcConfig {
+    if (!('app' in value) || value['app'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('data' in value) || value['data'] === undefined) return false;
     if (!('dataJson' in value) || value['dataJson'] === undefined) return false;
@@ -86,12 +86,12 @@ export function ConfigSvcConfigFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'app': json['app'] == null ? undefined : json['app'],
+        'app': json['app'],
         'createdAt': json['createdAt'],
         'data': json['data'],
         'dataJson': json['dataJson'],
         'id': json['id'],
-        'key': json['key'] == null ? undefined : json['key'],
+        'internalId': json['internalId'] == null ? undefined : json['internalId'],
         'updatedAt': json['updatedAt'],
     };
 }
@@ -112,7 +112,7 @@ export function ConfigSvcConfigToJSONTyped(value?: ConfigSvcConfig | null, ignor
         'data': value['data'],
         'dataJson': value['dataJson'],
         'id': value['id'],
-        'key': value['key'],
+        'internalId': value['internalId'],
         'updatedAt': value['updatedAt'],
     };
 }

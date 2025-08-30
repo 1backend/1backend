@@ -32,8 +32,8 @@ ConfigSvcSaveConfigRequest.attributeTypeMap = [
         "type": "string"
     },
     {
-        "name": "key",
-        "baseName": "key",
+        "name": "id",
+        "baseName": "id",
         "type": "string"
     }
 ];

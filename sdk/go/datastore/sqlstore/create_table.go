@@ -32,6 +32,8 @@ func (s *SQLStore) createTable(instance any, db DB, tableName string) (map[strin
 	// Recursive function to process struct fields (including embedded fields)
 	var processFields func(reflect.Type)
 	processFields = func(typ reflect.Type) {
+		pkDeclared := false
+
 		for i := 0; i < typ.NumField(); i++ {
 			field := typ.Field(i)
 			if !field.IsExported() {
@@ -57,6 +59,17 @@ func (s *SQLStore) createTable(instance any, db DB, tableName string) (map[strin
 
 			// Map field type to SQL type
 			fieldType := s.sqlType(field.Type)
+
+			// Decide if PK
+			if !pkDeclared {
+				if strings.ToLower(field.Name) == "internalid" {
+					fieldType = "TEXT PRIMARY KEY"
+					pkDeclared = true
+				} else if strings.ToLower(field.Name) == "id" {
+					fieldType = "TEXT PRIMARY KEY"
+					pkDeclared = true
+				}
+			}
 
 			fieldNames = append(fieldNames, fieldName)
 			fieldTypes = append(fieldTypes, fieldType)

@@ -12,9 +12,11 @@
  * Do not edit the class manually.
  */
 /**
- * Check if a given object implements the UserSvcAuthToken interface.
+ * Check if a given object implements the UserSvcToken interface.
  */
-export function instanceOfUserSvcAuthToken(value) {
+export function instanceOfUserSvcToken(value) {
+    if (!('app' in value) || value['app'] === undefined)
+        return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined)
         return false;
     if (!('device' in value) || value['device'] === undefined)
@@ -31,31 +33,32 @@ export function instanceOfUserSvcAuthToken(value) {
         return false;
     return true;
 }
-export function UserSvcAuthTokenFromJSON(json) {
-    return UserSvcAuthTokenFromJSONTyped(json, false);
+export function UserSvcTokenFromJSON(json) {
+    return UserSvcTokenFromJSONTyped(json, false);
 }
-export function UserSvcAuthTokenFromJSONTyped(json, ignoreDiscriminator) {
+export function UserSvcTokenFromJSONTyped(json, ignoreDiscriminator) {
     if (json == null) {
         return json;
     }
     return {
         'active': json['active'] == null ? undefined : json['active'],
-        'app': json['app'] == null ? undefined : json['app'],
+        'app': json['app'],
         'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'device': json['device'],
         'expiresAt': json['expiresAt'],
         'id': json['id'],
+        'internalId': json['internalId'] == null ? undefined : json['internalId'],
         'lastRefreshedAt': json['lastRefreshedAt'] == null ? undefined : json['lastRefreshedAt'],
         'token': json['token'],
         'updatedAt': json['updatedAt'],
         'userId': json['userId'],
     };
 }
-export function UserSvcAuthTokenToJSON(json) {
-    return UserSvcAuthTokenToJSONTyped(json, false);
+export function UserSvcTokenToJSON(json) {
+    return UserSvcTokenToJSONTyped(json, false);
 }
-export function UserSvcAuthTokenToJSONTyped(value, ignoreDiscriminator = false) {
+export function UserSvcTokenToJSONTyped(value, ignoreDiscriminator = false) {
     if (value == null) {
         return value;
     }
@@ -67,6 +70,7 @@ export function UserSvcAuthTokenToJSONTyped(value, ignoreDiscriminator = false) 
         'device': value['device'],
         'expiresAt': value['expiresAt'],
         'id': value['id'],
+        'internalId': value['internalId'],
         'lastRefreshedAt': value['lastRefreshedAt'],
         'token': value['token'],
         'updatedAt': value['updatedAt'],

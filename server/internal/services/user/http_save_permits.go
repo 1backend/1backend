@@ -109,7 +109,7 @@ func (cs *UserService) savePermits(
 		permissions = append(permissions, permit.Permission)
 	}
 
-	permitIs, err := cs.permitsStore.Query(
+	permitIs, err := cs.permitStore.Query(
 		datastore.IsInList([]string{"permission"}, permissions...),
 	).Find()
 	if err != nil {
@@ -128,7 +128,7 @@ func (cs *UserService) savePermits(
 	for _, permit := range req.Permits {
 		nu := false
 		if permit.Id == "" {
-			permit.Id = sdk.Id("pmt")
+			permit.Id = sdk.Id("perm")
 			nu = true
 		}
 		permit.App = app
@@ -150,6 +150,7 @@ func (cs *UserService) savePermits(
 		}
 
 		permit := &user.Permit{
+			InternalId: sdk.InternalId(permit.Id, app),
 			Id:         permit.Id,
 			App:        permit.App,
 			Permission: permit.Permission,
@@ -168,7 +169,7 @@ func (cs *UserService) savePermits(
 		return nil
 	}
 
-	err = cs.permitsStore.UpsertMany(permits)
+	err = cs.permitStore.UpsertMany(permits)
 	if err != nil {
 		return errors.Wrap(err, "error saving permits")
 	}

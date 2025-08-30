@@ -11,7 +11,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UserSvcAuthTokenFromJSON, UserSvcAuthTokenToJSON, } from './UserSvcAuthToken';
+import { UserSvcTokenFromJSON, UserSvcTokenToJSON, } from './UserSvcToken';
 /**
  * Check if a given object implements the UserSvcLoginResponse interface.
  */
@@ -26,7 +26,7 @@ export function UserSvcLoginResponseFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'token': json['token'] == null ? undefined : UserSvcAuthTokenFromJSON(json['token']),
+        'token': json['token'] == null ? undefined : UserSvcTokenFromJSON(json['token']),
     };
 }
 export function UserSvcLoginResponseToJSON(json) {
@@ -37,6 +37,6 @@ export function UserSvcLoginResponseToJSONTyped(value, ignoreDiscriminator = fal
         return value;
     }
     return {
-        'token': UserSvcAuthTokenToJSON(value['token']),
+        'token': UserSvcTokenToJSON(value['token']),
     };
 }

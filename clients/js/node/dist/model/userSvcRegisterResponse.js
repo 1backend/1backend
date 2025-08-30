@@ -19,6 +19,6 @@ UserSvcRegisterResponse.attributeTypeMap = [
     {
         "name": "token",
         "baseName": "token",
-        "type": "UserSvcAuthToken"
+        "type": "UserSvcToken"
     }
 ];

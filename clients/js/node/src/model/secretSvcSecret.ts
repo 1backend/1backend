@@ -14,10 +14,7 @@ import { RequestFile } from './models';
 import { SecretSvcChecksumAlgorithm } from './secretSvcChecksumAlgorithm';
 
 export class SecretSvcSecret {
-    /**
-    * App of the secret
-    */
-    'app'?: string;
+    'app': string;
     /**
     * Slugs of services/users who can change the deleters list
     */
@@ -43,17 +40,14 @@ export class SecretSvcSecret {
     */
     'deleters'?: Array<string>;
     /**
-    * Whether the secret is encrypted All secrets are encrypted before written to the DB. This really only exists for write requests to know if the secret is already encrypted. Ie: while most `secret save [key] [value]` commands are probably not encrypted, File based saves, eg. `secret save secretA.yaml` are probably encrypted.
+    * Whether the secret is encrypted All secrets are encrypted before written to the DB. This really only exists for write requests to know if the secret is already encrypted. Ie: while most `secret save [id] [value]` commands are probably not encrypted, File based saves, eg. `secret save secretA.yaml` are probably encrypted.
     */
     'encrypted'?: boolean;
     /**
-    * Id of the secret
+    * Envar- or slug-like id of the secret
     */
-    'id'?: string;
-    /**
-    * Envar or slug-like key of the secret
-    */
-    'key'?: string;
+    'id': string;
+    'internalId'?: string;
     /**
     * Slugs of services/users who can read the secret
     */
@@ -61,7 +55,7 @@ export class SecretSvcSecret {
     /**
     * Secret Value
     */
-    'value'?: string;
+    'value': string;
     /**
     * Slugs of services/users who can modify the secret
     */
@@ -116,8 +110,8 @@ export class SecretSvcSecret {
             "type": "string"
         },
         {
-            "name": "key",
-            "baseName": "key",
+            "name": "internalId",
+            "baseName": "internalId",
             "type": "string"
         },
         {

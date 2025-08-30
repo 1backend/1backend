@@ -9,13 +9,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export class UserSvcAuthToken {
+export class UserSvcToken {
     static getAttributeTypeMap() {
-        return UserSvcAuthToken.attributeTypeMap;
+        return UserSvcToken.attributeTypeMap;
     }
 }
-UserSvcAuthToken.discriminator = undefined;
-UserSvcAuthToken.attributeTypeMap = [
+UserSvcToken.discriminator = undefined;
+UserSvcToken.attributeTypeMap = [
     {
         "name": "active",
         "baseName": "active",
@@ -49,6 +49,11 @@ UserSvcAuthToken.attributeTypeMap = [
     {
         "name": "id",
         "baseName": "id",
+        "type": "string"
+    },
+    {
+        "name": "internalId",
+        "baseName": "internalId",
         "type": "string"
     },
     {

@@ -24,13 +24,13 @@ export interface SecretSvcListSecretsRequest {
      * @type {string}
      * @memberof SecretSvcListSecretsRequest
      */
-    key?: string;
+    id?: string;
     /**
      * 
      * @type {Array<string>}
      * @memberof SecretSvcListSecretsRequest
      */
-    keys?: Array<string>;
+    ids?: Array<string>;
 }
 
 /**
@@ -50,8 +50,8 @@ export function SecretSvcListSecretsRequestFromJSONTyped(json: any, ignoreDiscri
     }
     return {
         
-        'key': json['key'] == null ? undefined : json['key'],
-        'keys': json['keys'] == null ? undefined : json['keys'],
+        'id': json['id'] == null ? undefined : json['id'],
+        'ids': json['ids'] == null ? undefined : json['ids'],
     };
 }
 
@@ -66,8 +66,8 @@ export function SecretSvcListSecretsRequestToJSONTyped(value?: SecretSvcListSecr
 
     return {
         
-        'key': value['key'],
-        'keys': value['keys'],
+        'id': value['id'],
+        'ids': value['ids'],
     };
 }
 

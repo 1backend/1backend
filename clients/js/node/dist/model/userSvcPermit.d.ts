@@ -17,6 +17,7 @@ export declare class UserSvcPermit {
     'createdAt': string;
     'deletedAt'?: string;
     'id': string;
+    'internalId'?: string;
     'permission': string;
     /**
     * Role IDs that have been permited the specified permission.  Originally, permits were designed for slugs to facilitate service-to-service calls. Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.

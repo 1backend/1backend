@@ -50,6 +50,12 @@ export interface UserSvcPermit {
      * @type {string}
      * @memberof UserSvcPermit
      */
+    internalId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSvcPermit
+     */
     permission: string;
     /**
      * Role IDs that have been permited the specified permission.
@@ -99,6 +105,7 @@ export function UserSvcPermitFromJSONTyped(json: any, ignoreDiscriminator: boole
         'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'id': json['id'],
+        'internalId': json['internalId'] == null ? undefined : json['internalId'],
         'permission': json['permission'],
         'roles': json['roles'] == null ? undefined : json['roles'],
         'slugs': json['slugs'] == null ? undefined : json['slugs'],
@@ -121,6 +128,7 @@ export function UserSvcPermitToJSONTyped(value?: UserSvcPermit | null, ignoreDis
         'createdAt': value['createdAt'],
         'deletedAt': value['deletedAt'],
         'id': value['id'],
+        'internalId': value['internalId'],
         'permission': value['permission'],
         'roles': value['roles'],
         'slugs': value['slugs'],

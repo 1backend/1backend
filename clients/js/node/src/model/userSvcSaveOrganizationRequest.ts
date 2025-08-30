@@ -13,6 +13,10 @@
 import { RequestFile } from './models';
 
 export class UserSvcSaveOrganizationRequest {
+    /**
+    * If true, the caller (the user making the request) will be assigned the admin role for the organization. If false, no Membership or Enroll will be created.
+    */
+    'assignCaller'?: boolean;
     'id'?: string;
     /**
     * Full name of the organization.
@@ -27,6 +31,11 @@ export class UserSvcSaveOrganizationRequest {
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
+        {
+            "name": "assignCaller",
+            "baseName": "assignCaller",
+            "type": "boolean"
+        },
         {
             "name": "id",
             "baseName": "id",

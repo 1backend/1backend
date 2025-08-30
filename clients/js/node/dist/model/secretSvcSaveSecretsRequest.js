@@ -19,6 +19,6 @@ SecretSvcSaveSecretsRequest.attributeTypeMap = [
     {
         "name": "secrets",
         "baseName": "secrets",
-        "type": "Array<SecretSvcSecret>"
+        "type": "Array<SecretSvcSecretInput>"
     }
 ];

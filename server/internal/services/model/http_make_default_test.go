@@ -64,7 +64,7 @@ func TestMakeDefault(t *testing.T) {
 		rsp, _, err := adminClient.ConfigSvcAPI.
 			ListConfigs(context.Background()).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				Keys: []string{"modelSvc"},
+				Ids: []string{"modelSvc"},
 			}).
 			Execute()
 		require.NoError(t, err)

@@ -8,21 +8,79 @@
 package logger
 
 import (
+	"context"
 	"log"
 	"log/slog"
+	"runtime"
+	"strconv"
 	"strings"
 )
 
+func NewLogger(fields ...slog.Attr) *slog.Logger {
+	args := make([]any, len(fields))
+	for i, f := range fields {
+		args[i] = f
+	}
+	return base.With(args...)
+}
+
 var jsonHandler = slog.NewJSONHandler(log.Writer(), &slog.HandlerOptions{
-	Level: slog.LevelDebug,
+	Level:     slog.LevelDebug,
+	AddSource: false,
 })
 
-var Logger = slog.New(jsonHandler)
+type fileOnlyHandler struct{ slog.Handler }
 
-var Debug = Logger.Debug
-var Info = Logger.Info
-var Warn = Logger.Warn
-var Error = Logger.Error
+func (h fileOnlyHandler) Enabled(ctx context.Context, lvl slog.Level) bool {
+	return h.Handler.Enabled(ctx, lvl)
+}
+
+func (h fileOnlyHandler) Handle(ctx context.Context, r slog.Record) error {
+	nr := slog.NewRecord(r.Time, r.Level, r.Message, r.PC)
+	r.Attrs(func(a slog.Attr) bool {
+		if a.Key != slog.SourceKey {
+			nr.AddAttrs(a)
+		}
+		return true
+	})
+
+	// Find first caller outside slog/runtime/this logger package.
+	pcs := make([]uintptr, 32)
+	n := runtime.Callers(3, pcs) // skip Callers + Handle + slog internals entry
+	frames := runtime.CallersFrames(pcs[:n])
+	for {
+		fr, ok := frames.Next()
+		if !ok {
+			break
+		}
+		fn, f := fr.Function, fr.File
+		if strings.HasPrefix(fn, "runtime.") ||
+			strings.HasPrefix(fn, "log/slog.") ||
+			strings.HasPrefix(fn, "log.") ||
+			strings.Contains(fn, "logger.") {
+			continue
+		}
+		nr.AddAttrs(slog.String("file", f+":"+strconv.Itoa(fr.Line))) // full path + line
+		break
+	}
+
+	return h.Handler.Handle(ctx, nr)
+}
+
+func (h fileOnlyHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
+	return fileOnlyHandler{h.Handler.WithAttrs(attrs)}
+}
+
+func (h fileOnlyHandler) WithGroup(name string) slog.Handler {
+	return fileOnlyHandler{h.Handler.WithGroup(name)}
+}
+
+var base = slog.New(fileOnlyHandler{jsonHandler})
+
+var Debug = base.Debug
+var Info = base.Info
+var Warn = base.Warn
+var Error = base.Error
 
 func init() {
 	//
@@ -30,12 +88,14 @@ func init() {
 	// so we need to redirect the stdlib log to our custom slog logger.
 	//
 
-	// Redirect stdlib log to your custom writer
-	log.SetOutput(&logProxyWriter{})
+	// Redirect stdlib log to our custom writer
+	log.SetOutput(&logProxyWriter{log: base})
 }
 
 // logProxyWriter inspects the message and routes to slog with a guessed level
-type logProxyWriter struct{}
+type logProxyWriter struct {
+	log *slog.Logger
+}
 
 func (w *logProxyWriter) Write(p []byte) (n int, err error) {
 	msg := strings.TrimSpace(string(p))
@@ -50,9 +110,9 @@ func (w *logProxyWriter) Write(p []byte) (n int, err error) {
 	// Heuristics: look for keywords
 	switch {
 	case strings.Contains(lower, "error"), strings.Contains(lower, "fail"):
-		Logger.Error(msg)
+		w.log.Error(msg)
 	default:
-		Logger.Info(msg)
+		w.log.Info(msg)
 	}
 
 	return len(p), nil

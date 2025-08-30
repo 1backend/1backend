@@ -20,6 +20,14 @@ import { mapValues } from '../runtime';
  */
 export interface UserSvcSaveOrganizationRequest {
     /**
+     * If true, the caller (the user making the request) will be assigned
+     * the admin role for the organization.
+     * If false, no Membership or Enroll will be created.
+     * @type {boolean}
+     * @memberof UserSvcSaveOrganizationRequest
+     */
+    assignCaller?: boolean;
+    /**
      * 
      * @type {string}
      * @memberof UserSvcSaveOrganizationRequest
@@ -63,6 +71,7 @@ export function UserSvcSaveOrganizationRequestFromJSONTyped(json: any, ignoreDis
     }
     return {
         
+        'assignCaller': json['assignCaller'] == null ? undefined : json['assignCaller'],
         'id': json['id'] == null ? undefined : json['id'],
         'name': json['name'] == null ? undefined : json['name'],
         'slug': json['slug'],
@@ -81,6 +90,7 @@ export function UserSvcSaveOrganizationRequestToJSONTyped(value?: UserSvcSaveOrg
 
     return {
         
+        'assignCaller': value['assignCaller'],
         'id': value['id'],
         'name': value['name'],
         'slug': value['slug'],

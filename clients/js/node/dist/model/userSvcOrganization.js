@@ -37,6 +37,11 @@ UserSvcOrganization.attributeTypeMap = [
         "type": "string"
     },
     {
+        "name": "internalId",
+        "baseName": "internalId",
+        "type": "string"
+    },
+    {
         "name": "name",
         "baseName": "name",
         "type": "string"

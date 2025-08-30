@@ -20,8 +20,8 @@ var _ MappedNullable = &SecretSvcListSecretsRequest{}
 
 // SecretSvcListSecretsRequest struct for SecretSvcListSecretsRequest
 type SecretSvcListSecretsRequest struct {
-	Key *string `json:"key,omitempty"`
-	Keys []string `json:"keys,omitempty"`
+	Id *string `json:"id,omitempty"`
+	Ids []string `json:"ids,omitempty"`
 }
 
 // NewSecretSvcListSecretsRequest instantiates a new SecretSvcListSecretsRequest object
@@ -41,68 +41,68 @@ func NewSecretSvcListSecretsRequestWithDefaults() *SecretSvcListSecretsRequest {
 	return &this
 }
 
-// GetKey returns the Key field value if set, zero value otherwise.
-func (o *SecretSvcListSecretsRequest) GetKey() string {
-	if o == nil || IsNil(o.Key) {
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *SecretSvcListSecretsRequest) GetId() string {
+	if o == nil || IsNil(o.Id) {
 		var ret string
 		return ret
 	}
-	return *o.Key
+	return *o.Id
 }
 
-// GetKeyOk returns a tuple with the Key field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SecretSvcListSecretsRequest) GetKeyOk() (*string, bool) {
-	if o == nil || IsNil(o.Key) {
+func (o *SecretSvcListSecretsRequest) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
 		return nil, false
 	}
-	return o.Key, true
+	return o.Id, true
 }
 
-// HasKey returns a boolean if a field has been set.
-func (o *SecretSvcListSecretsRequest) HasKey() bool {
-	if o != nil && !IsNil(o.Key) {
+// HasId returns a boolean if a field has been set.
+func (o *SecretSvcListSecretsRequest) HasId() bool {
+	if o != nil && !IsNil(o.Id) {
 		return true
 	}
 
 	return false
 }
 
-// SetKey gets a reference to the given string and assigns it to the Key field.
-func (o *SecretSvcListSecretsRequest) SetKey(v string) {
-	o.Key = &v
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *SecretSvcListSecretsRequest) SetId(v string) {
+	o.Id = &v
 }
 
-// GetKeys returns the Keys field value if set, zero value otherwise.
-func (o *SecretSvcListSecretsRequest) GetKeys() []string {
-	if o == nil || IsNil(o.Keys) {
+// GetIds returns the Ids field value if set, zero value otherwise.
+func (o *SecretSvcListSecretsRequest) GetIds() []string {
+	if o == nil || IsNil(o.Ids) {
 		var ret []string
 		return ret
 	}
-	return o.Keys
+	return o.Ids
 }
 
-// GetKeysOk returns a tuple with the Keys field value if set, nil otherwise
+// GetIdsOk returns a tuple with the Ids field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SecretSvcListSecretsRequest) GetKeysOk() ([]string, bool) {
-	if o == nil || IsNil(o.Keys) {
+func (o *SecretSvcListSecretsRequest) GetIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Ids) {
 		return nil, false
 	}
-	return o.Keys, true
+	return o.Ids, true
 }
 
-// HasKeys returns a boolean if a field has been set.
-func (o *SecretSvcListSecretsRequest) HasKeys() bool {
-	if o != nil && !IsNil(o.Keys) {
+// HasIds returns a boolean if a field has been set.
+func (o *SecretSvcListSecretsRequest) HasIds() bool {
+	if o != nil && !IsNil(o.Ids) {
 		return true
 	}
 
 	return false
 }
 
-// SetKeys gets a reference to the given []string and assigns it to the Keys field.
-func (o *SecretSvcListSecretsRequest) SetKeys(v []string) {
-	o.Keys = v
+// SetIds gets a reference to the given []string and assigns it to the Ids field.
+func (o *SecretSvcListSecretsRequest) SetIds(v []string) {
+	o.Ids = v
 }
 
 func (o SecretSvcListSecretsRequest) MarshalJSON() ([]byte, error) {
@@ -115,11 +115,11 @@ func (o SecretSvcListSecretsRequest) MarshalJSON() ([]byte, error) {
 
 func (o SecretSvcListSecretsRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Key) {
-		toSerialize["key"] = o.Key
+	if !IsNil(o.Id) {
+		toSerialize["id"] = o.Id
 	}
-	if !IsNil(o.Keys) {
-		toSerialize["keys"] = o.Keys
+	if !IsNil(o.Ids) {
+		toSerialize["ids"] = o.Ids
 	}
 	return toSerialize, nil
 }

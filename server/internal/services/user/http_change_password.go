@@ -79,7 +79,7 @@ func (s *UserService) ChangePassword(w http.ResponseWriter, r *http.Request) {
 func (s *UserService) changePassword(
 	userId, currentPassword, newPassword string,
 ) error {
-	q := s.passwordsStore.Query(
+	q := s.passwordStore.Query(
 		datastore.Equals(datastore.Field("userId"), userId),
 	).OrderBy(
 		datastore.OrderByField("createdAt", true),
@@ -103,7 +103,7 @@ func (s *UserService) changePassword(
 		return err
 	}
 
-	err = s.passwordsStore.Upsert(&usertypes.Password{
+	err = s.passwordStore.Upsert(&usertypes.Password{
 		Id:           password.Id,
 		PasswordHash: newPasswordHash,
 		UserId:       password.UserId,

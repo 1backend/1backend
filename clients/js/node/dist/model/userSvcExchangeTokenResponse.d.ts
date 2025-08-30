@@ -9,12 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UserSvcAuthToken } from './userSvcAuthToken';
+import { UserSvcToken } from './userSvcToken';
 export declare class UserSvcExchangeTokenResponse {
     /**
     * Token is the new token that will be returned by this endpoint.
     */
-    'token': UserSvcAuthToken;
+    'token': UserSvcToken;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;
