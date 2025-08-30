@@ -22,6 +22,8 @@ var _ MappedNullable = &UserSvcSaveOrganizationRequest{}
 
 // UserSvcSaveOrganizationRequest struct for UserSvcSaveOrganizationRequest
 type UserSvcSaveOrganizationRequest struct {
+	// If true, the caller (the user making the request) will be assigned the admin role for the organization. If false, no Membership or Enroll will be created.
+	AssignCaller *bool `json:"assignCaller,omitempty"`
 	Id *string `json:"id,omitempty"`
 	// Full name of the organization.
 	Name *string `json:"name,omitempty"`
@@ -48,6 +50,38 @@ func NewUserSvcSaveOrganizationRequest(slug string) *UserSvcSaveOrganizationRequ
 func NewUserSvcSaveOrganizationRequestWithDefaults() *UserSvcSaveOrganizationRequest {
 	this := UserSvcSaveOrganizationRequest{}
 	return &this
+}
+
+// GetAssignCaller returns the AssignCaller field value if set, zero value otherwise.
+func (o *UserSvcSaveOrganizationRequest) GetAssignCaller() bool {
+	if o == nil || IsNil(o.AssignCaller) {
+		var ret bool
+		return ret
+	}
+	return *o.AssignCaller
+}
+
+// GetAssignCallerOk returns a tuple with the AssignCaller field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcSaveOrganizationRequest) GetAssignCallerOk() (*bool, bool) {
+	if o == nil || IsNil(o.AssignCaller) {
+		return nil, false
+	}
+	return o.AssignCaller, true
+}
+
+// HasAssignCaller returns a boolean if a field has been set.
+func (o *UserSvcSaveOrganizationRequest) HasAssignCaller() bool {
+	if o != nil && !IsNil(o.AssignCaller) {
+		return true
+	}
+
+	return false
+}
+
+// SetAssignCaller gets a reference to the given bool and assigns it to the AssignCaller field.
+func (o *UserSvcSaveOrganizationRequest) SetAssignCaller(v bool) {
+	o.AssignCaller = &v
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
@@ -180,6 +214,9 @@ func (o UserSvcSaveOrganizationRequest) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcSaveOrganizationRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.AssignCaller) {
+		toSerialize["assignCaller"] = o.AssignCaller
+	}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}

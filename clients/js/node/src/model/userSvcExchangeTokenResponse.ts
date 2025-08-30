@@ -11,13 +11,13 @@
  */
 
 import { RequestFile } from './models';
-import { UserSvcAuthToken } from './userSvcAuthToken';
+import { UserSvcToken } from './userSvcToken';
 
 export class UserSvcExchangeTokenResponse {
     /**
     * Token is the new token that will be returned by this endpoint.
     */
-    'token': UserSvcAuthToken;
+    'token': UserSvcToken;
 
     static discriminator: string | undefined = undefined;
 
@@ -25,7 +25,7 @@ export class UserSvcExchangeTokenResponse {
         {
             "name": "token",
             "baseName": "token",
-            "type": "UserSvcAuthToken"
+            "type": "UserSvcToken"
         }    ];
 
     static getAttributeTypeMap() {

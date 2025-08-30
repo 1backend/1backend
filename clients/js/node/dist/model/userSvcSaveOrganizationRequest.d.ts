@@ -10,6 +10,10 @@
  * Do not edit the class manually.
  */
 export declare class UserSvcSaveOrganizationRequest {
+    /**
+    * If true, the caller (the user making the request) will be assigned the admin role for the organization. If false, no Membership or Enroll will be created.
+    */
+    'assignCaller'?: boolean;
     'id'?: string;
     /**
     * Full name of the organization.

@@ -17,6 +17,7 @@ export class UserSvcOrganization {
     'createdAt': string;
     'deletedAt'?: string;
     'id': string;
+    'internalId'?: string;
     /**
     * Full name of the organization
     */
@@ -49,6 +50,11 @@ export class UserSvcOrganization {
         {
             "name": "id",
             "baseName": "id",
+            "type": "string"
+        },
+        {
+            "name": "internalId",
+            "baseName": "internalId",
             "type": "string"
         },
         {

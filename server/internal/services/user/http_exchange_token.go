@@ -62,6 +62,7 @@ func (s *UserService) ExchangeToken(w http.ResponseWriter, r *http.Request) {
 		logger.Error(
 			"Failed to parse JWT from request",
 			slog.Any("error", err),
+			slog.Any("request", request),
 		)
 		endpoint.InternalServerError(w)
 	}
@@ -89,8 +90,8 @@ func (s *UserService) ExchangeToken(w http.ResponseWriter, r *http.Request) {
 func (s *UserService) exchangeToken(
 	claims *auth.Claims,
 	request *user.ExchangeTokenRequest,
-) (*user.AuthToken, error) {
-	userI, found, err := s.usersStore.Query(
+) (*user.Token, error) {
+	userI, found, err := s.userStore.Query(
 		datastore.Id(claims.UserId),
 	).FindOne()
 	if err != nil {

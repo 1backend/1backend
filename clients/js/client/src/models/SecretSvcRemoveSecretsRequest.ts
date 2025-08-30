@@ -31,18 +31,6 @@ export interface SecretSvcRemoveSecretsRequest {
      * @memberof SecretSvcRemoveSecretsRequest
      */
     ids?: Array<string>;
-    /**
-     * 
-     * @type {string}
-     * @memberof SecretSvcRemoveSecretsRequest
-     */
-    key?: string;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof SecretSvcRemoveSecretsRequest
-     */
-    keys?: Array<string>;
 }
 
 /**
@@ -64,8 +52,6 @@ export function SecretSvcRemoveSecretsRequestFromJSONTyped(json: any, ignoreDisc
         
         'id': json['id'] == null ? undefined : json['id'],
         'ids': json['ids'] == null ? undefined : json['ids'],
-        'key': json['key'] == null ? undefined : json['key'],
-        'keys': json['keys'] == null ? undefined : json['keys'],
     };
 }
 
@@ -82,8 +68,6 @@ export function SecretSvcRemoveSecretsRequestToJSONTyped(value?: SecretSvcRemove
         
         'id': value['id'],
         'ids': value['ids'],
-        'key': value['key'],
-        'keys': value['keys'],
     };
 }
 

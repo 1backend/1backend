@@ -47,6 +47,11 @@ UserSvcEnroll.attributeTypeMap = [
         "type": "string"
     },
     {
+        "name": "internalId",
+        "baseName": "internalId",
+        "type": "string"
+    },
+    {
         "name": "role",
         "baseName": "role",
         "type": "string"

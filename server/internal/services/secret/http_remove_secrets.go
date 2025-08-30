@@ -103,11 +103,11 @@ func (cs *SecretService) removeSecrets(
 	defer cs.options.Lock.Release(ctx, "secret-svc-save")
 
 	keys := []any{}
-	for _, key := range req.Keys {
+	for _, key := range req.Ids {
 		keys = append(keys, key)
 	}
-	if req.Key != "" {
-		keys = append(keys, req.Key)
+	if req.Id != "" {
+		keys = append(keys, req.Id)
 	}
 
 	ids := []any{}

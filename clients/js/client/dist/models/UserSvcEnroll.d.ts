@@ -56,6 +56,12 @@ export interface UserSvcEnroll {
      */
     id: string;
     /**
+     *
+     * @type {string}
+     * @memberof UserSvcEnroll
+     */
+    internalId?: string;
+    /**
      * Role specifies the role to be assigned to the ContactId.
      * Callers can only assign roles they own, identified by their service slug
      * (e.g., if "my-service" creates an enroll, the role must be "my-service:admin").

@@ -15,8 +15,6 @@ import { RequestFile } from './models';
 export class SecretSvcRemoveSecretsRequest {
     'id'?: string;
     'ids'?: Array<string>;
-    'key'?: string;
-    'keys'?: Array<string>;
 
     static discriminator: string | undefined = undefined;
 
@@ -29,16 +27,6 @@ export class SecretSvcRemoveSecretsRequest {
         {
             "name": "ids",
             "baseName": "ids",
-            "type": "Array<string>"
-        },
-        {
-            "name": "key",
-            "baseName": "key",
-            "type": "string"
-        },
-        {
-            "name": "keys",
-            "baseName": "keys",
             "type": "Array<string>"
         }    ];
 

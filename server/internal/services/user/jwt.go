@@ -11,6 +11,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
@@ -63,7 +64,7 @@ func (s *UserService) generateJWT(
 	activeOrganizationId string,
 	privateKey *rsa.PrivateKey,
 	device string,
-) (string, error) {
+) (*auth.Claims, string, error) {
 	now := time.Now()
 
 	claims := &auth.Claims{
@@ -74,6 +75,7 @@ func (s *UserService) generateJWT(
 		Device:               device,
 		ActiveOrganizationId: activeOrganizationId,
 		RegisteredClaims: jwt.RegisteredClaims{
+			ID:        sdk.Id(""),
 			IssuedAt:  jwt.NewNumericDate(now),
 			ExpiresAt: jwt.NewNumericDate(now.Add(s.options.TokenExpiration)),
 		},
@@ -85,8 +87,8 @@ func (s *UserService) generateJWT(
 	if err != nil {
 		// Log the error if signing fails
 		log.Printf("Error signing token: %v\n", err)
-		return "", fmt.Errorf("failed to sign token: %v", err)
+		return nil, "", fmt.Errorf("failed to sign token: %v", err)
 	}
 
-	return tokenString, nil
+	return claims, tokenString, nil
 }

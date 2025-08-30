@@ -9,8 +9,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import type { UserSvcAuthToken } from './UserSvcAuthToken';
 import type { UserSvcOrganization } from './UserSvcOrganization';
+import type { UserSvcToken } from './UserSvcToken';
 /**
  *
  * @export
@@ -26,10 +26,10 @@ export interface UserSvcSaveOrganizationResponse {
     /**
      * Due to the nature of JWT tokens, the token must be refreshed after
      * creating an organization, as dynamic organization roles are embedded in it.
-     * @type {UserSvcAuthToken}
+     * @type {UserSvcToken}
      * @memberof UserSvcSaveOrganizationResponse
      */
-    token: UserSvcAuthToken;
+    token: UserSvcToken;
 }
 /**
  * Check if a given object implements the UserSvcSaveOrganizationResponse interface.

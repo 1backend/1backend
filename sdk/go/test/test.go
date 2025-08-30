@@ -24,10 +24,10 @@ func AdminClient(clientFactory client.ClientFactory) (*openapi.APIClient, string
 	return clientFactory.Client(client.WithToken(adminLoginRsp.Token.Token)), adminLoginRsp.Token.Token, nil
 }
 
-func MakeClients(clientFactory client.ClientFactory, num int) ([]*openapi.APIClient, []*openapi.UserSvcAuthToken, error) {
+func MakeClients(clientFactory client.ClientFactory, num int) ([]*openapi.APIClient, []*openapi.UserSvcToken, error) {
 	var (
 		clients []*openapi.APIClient
-		tokens  []*openapi.UserSvcAuthToken
+		tokens  []*openapi.UserSvcToken
 	)
 
 	for i := 0; i < num; i++ {
@@ -53,7 +53,7 @@ func LoggedInClient(
 	clientFactory client.ClientFactory,
 	slug,
 	password string,
-) (*openapi.APIClient, *openapi.UserSvcAuthToken, error) {
+) (*openapi.APIClient, *openapi.UserSvcToken, error) {
 	loginReq := openapi.UserSvcLoginRequest{
 		Slug:     openapi.PtrString(slug),
 		Password: openapi.PtrString(password),
@@ -85,7 +85,7 @@ func MockUserSvc(ctx context.Context, ctrl *gomock.Controller, options ...MockUs
 	mockUserSvc := openapi.NewMockUserSvcAPI(ctrl)
 
 	expectedUserSvcLoginResponse := &openapi.UserSvcLoginResponse{
-		Token: &openapi.UserSvcAuthToken{
+		Token: &openapi.UserSvcToken{
 			Token: "HELLO",
 		},
 	}
@@ -96,7 +96,7 @@ func MockUserSvc(ctx context.Context, ctrl *gomock.Controller, options ...MockUs
 		ApiService: mockUserSvc,
 	}
 	expectedUserSvcRegisterResponse := &openapi.UserSvcRegisterResponse{
-		Token: &openapi.UserSvcAuthToken{
+		Token: &openapi.UserSvcToken{
 			Token: "HELLO",
 		},
 	}

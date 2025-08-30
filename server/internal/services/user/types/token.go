@@ -9,9 +9,12 @@ package user_svc
 
 import "time"
 
-type AuthToken struct {
-	Id  string `json:"id" binding:"required"`
-	App string `json:"app" example:"unnamed,omitempty"`
+type Token struct {
+	InternalId string `json:"internalId,omitempty" swagger:"ignore"`
+
+	App string `json:"app" binding:"required" example:"shoes.com"`
+
+	Id string `json:"id" binding:"required"`
 
 	CreatedAt time.Time  `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time  `json:"updatedAt" binding:"required"`
@@ -57,7 +60,7 @@ type AuthToken struct {
 	Active bool `json:"active,omitempty"`
 }
 
-func (c *AuthToken) GetId() string {
+func (c *Token) GetId() string {
 	return c.Id
 }
 
@@ -65,7 +68,7 @@ type RefreshTokenRequest struct {
 }
 
 type RefreshTokenResponse struct {
-	Token *AuthToken `json:"token" binding:"required"`
+	Token *Token `json:"token" binding:"required"`
 }
 
 type RevokeTokensRequest struct {
@@ -91,5 +94,5 @@ type ExchangeTokenRequest struct {
 
 type ExchangeTokenResponse struct {
 	// Token is the new token that will be returned by this endpoint.
-	Token *AuthToken `json:"token" binding:"required"`
+	Token *Token `json:"token" binding:"required"`
 }

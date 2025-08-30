@@ -45,7 +45,7 @@ func TestTokenExchangeCaching(t *testing.T) {
 		DoAndReturn(func(r openapi.ApiExchangeTokenRequest) (*openapi.UserSvcExchangeTokenResponse, *http.Response, error) {
 			count++
 			return &openapi.UserSvcExchangeTokenResponse{
-				Token: openapi.UserSvcAuthToken{
+				Token: openapi.UserSvcToken{
 					Token:     exchanged[count-1],
 					ExpiresAt: time.Now().Add(1 * time.Second).Format(time.RFC3339),
 				},

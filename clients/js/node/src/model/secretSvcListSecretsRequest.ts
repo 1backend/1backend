@@ -13,20 +13,20 @@
 import { RequestFile } from './models';
 
 export class SecretSvcListSecretsRequest {
-    'key'?: string;
-    'keys'?: Array<string>;
+    'id'?: string;
+    'ids'?: Array<string>;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "key",
-            "baseName": "key",
+            "name": "id",
+            "baseName": "id",
             "type": "string"
         },
         {
-            "name": "keys",
-            "baseName": "keys",
+            "name": "ids",
+            "baseName": "ids",
             "type": "Array<string>"
         }    ];
 

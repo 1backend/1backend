@@ -100,7 +100,7 @@ func (s *UserService) listOrganizations(
 		))
 	}
 
-	q := s.organizationsStore.Query(
+	q := s.organizationStore.Query(
 		filters...,
 	).OrderBy(
 		datastore.OrderByField("createdAt", false),

@@ -11,8 +11,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UserSvcAuthTokenFromJSON, UserSvcAuthTokenToJSON, } from './UserSvcAuthToken';
 import { UserSvcOrganizationFromJSON, UserSvcOrganizationToJSON, } from './UserSvcOrganization';
+import { UserSvcTokenFromJSON, UserSvcTokenToJSON, } from './UserSvcToken';
 /**
  * Check if a given object implements the UserSvcSaveOrganizationResponse interface.
  */
@@ -32,7 +32,7 @@ export function UserSvcSaveOrganizationResponseFromJSONTyped(json, ignoreDiscrim
     }
     return {
         'organization': UserSvcOrganizationFromJSON(json['organization']),
-        'token': UserSvcAuthTokenFromJSON(json['token']),
+        'token': UserSvcTokenFromJSON(json['token']),
     };
 }
 export function UserSvcSaveOrganizationResponseToJSON(json) {
@@ -44,6 +44,6 @@ export function UserSvcSaveOrganizationResponseToJSONTyped(value, ignoreDiscrimi
     }
     return {
         'organization': UserSvcOrganizationToJSON(value['organization']),
-        'token': UserSvcAuthTokenToJSON(value['token']),
+        'token': UserSvcTokenToJSON(value['token']),
     };
 }

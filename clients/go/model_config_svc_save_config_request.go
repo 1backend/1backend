@@ -24,8 +24,8 @@ type ConfigSvcSaveConfigRequest struct {
 	App *string `json:"app,omitempty"`
 	Data map[string]interface{} `json:"data,omitempty"`
 	DataJson *string `json:"dataJson,omitempty"`
-	// Key is the slug of the owner to save the config for. Only user with the `config-svc:config:edit-on-behalf` can specify this. For everyone else, it is automatically set to the slug of the caller user.
-	Key *string `json:"key,omitempty"`
+	// Id is the slug of the owner to save the config for. Only user with the `config-svc:config:edit-on-behalf` can specify this. For everyone else, it is automatically set to the slug of the caller user.
+	Id *string `json:"id,omitempty"`
 }
 
 // NewConfigSvcSaveConfigRequest instantiates a new ConfigSvcSaveConfigRequest object
@@ -141,36 +141,36 @@ func (o *ConfigSvcSaveConfigRequest) SetDataJson(v string) {
 	o.DataJson = &v
 }
 
-// GetKey returns the Key field value if set, zero value otherwise.
-func (o *ConfigSvcSaveConfigRequest) GetKey() string {
-	if o == nil || IsNil(o.Key) {
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *ConfigSvcSaveConfigRequest) GetId() string {
+	if o == nil || IsNil(o.Id) {
 		var ret string
 		return ret
 	}
-	return *o.Key
+	return *o.Id
 }
 
-// GetKeyOk returns a tuple with the Key field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigSvcSaveConfigRequest) GetKeyOk() (*string, bool) {
-	if o == nil || IsNil(o.Key) {
+func (o *ConfigSvcSaveConfigRequest) GetIdOk() (*string, bool) {
+	if o == nil || IsNil(o.Id) {
 		return nil, false
 	}
-	return o.Key, true
+	return o.Id, true
 }
 
-// HasKey returns a boolean if a field has been set.
-func (o *ConfigSvcSaveConfigRequest) HasKey() bool {
-	if o != nil && !IsNil(o.Key) {
+// HasId returns a boolean if a field has been set.
+func (o *ConfigSvcSaveConfigRequest) HasId() bool {
+	if o != nil && !IsNil(o.Id) {
 		return true
 	}
 
 	return false
 }
 
-// SetKey gets a reference to the given string and assigns it to the Key field.
-func (o *ConfigSvcSaveConfigRequest) SetKey(v string) {
-	o.Key = &v
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *ConfigSvcSaveConfigRequest) SetId(v string) {
+	o.Id = &v
 }
 
 func (o ConfigSvcSaveConfigRequest) MarshalJSON() ([]byte, error) {
@@ -192,8 +192,8 @@ func (o ConfigSvcSaveConfigRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.DataJson) {
 		toSerialize["dataJson"] = o.DataJson
 	}
-	if !IsNil(o.Key) {
-		toSerialize["key"] = o.Key
+	if !IsNil(o.Id) {
+		toSerialize["id"] = o.Id
 	}
 	return toSerialize, nil
 }

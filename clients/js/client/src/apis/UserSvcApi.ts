@@ -1058,7 +1058,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Allows an organization admin to add a user to the organization.
+     * Adds a user to an organization by saving a Membership. Also issues the corresponding Enroll, which grants the user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
      * Save Membership
      */
     async saveMembershipRaw(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
@@ -1103,7 +1103,7 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Allows an organization admin to add a user to the organization.
+     * Adds a user to an organization by saving a Membership. Also issues the corresponding Enroll, which grants the user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
      * Save Membership
      */
     async saveMembership(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {

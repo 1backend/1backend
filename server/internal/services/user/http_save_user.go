@@ -86,7 +86,7 @@ func (s *UserService) saveUser(
 	userId string,
 	request *user.SaveUserRequest,
 ) error {
-	query := s.usersStore.Query(
+	query := s.userStore.Query(
 		datastore.Equals(datastore.Field("id"), userId),
 	)
 

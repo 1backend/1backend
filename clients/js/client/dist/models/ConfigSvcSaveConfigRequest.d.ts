@@ -39,13 +39,13 @@ export interface ConfigSvcSaveConfigRequest {
      */
     dataJson?: string;
     /**
-     * Key is the slug of the owner to save the config for.
+     * Id is the slug of the owner to save the config for.
      * Only user with the `config-svc:config:edit-on-behalf` can specify this.
      * For everyone else, it is automatically set to the slug of the caller user.
      * @type {string}
      * @memberof ConfigSvcSaveConfigRequest
      */
-    key?: string;
+    id?: string;
 }
 /**
  * Check if a given object implements the ConfigSvcSaveConfigRequest interface.

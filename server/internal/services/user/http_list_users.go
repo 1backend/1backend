@@ -101,7 +101,7 @@ func (s *UserService) listUsers(
 			),
 		}
 
-		contact, found, err := s.contactsStore.Query(
+		contact, found, err := s.contactStore.Query(
 			datastore.Id(request.Search),
 		).FindOne()
 		if err != nil {
@@ -128,7 +128,7 @@ func (s *UserService) listUsers(
 	}
 
 	if request.ContactId != "" {
-		contactIs, err := s.contactsStore.Query(
+		contactIs, err := s.contactStore.Query(
 			datastore.Id(request.ContactId),
 		).Find()
 		if err != nil {
@@ -144,7 +144,7 @@ func (s *UserService) listUsers(
 		))
 	}
 
-	q := s.usersStore.Query(
+	q := s.userStore.Query(
 		filters...,
 	)
 

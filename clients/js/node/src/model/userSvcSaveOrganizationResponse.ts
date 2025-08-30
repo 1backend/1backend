@@ -11,15 +11,15 @@
  */
 
 import { RequestFile } from './models';
-import { UserSvcAuthToken } from './userSvcAuthToken';
 import { UserSvcOrganization } from './userSvcOrganization';
+import { UserSvcToken } from './userSvcToken';
 
 export class UserSvcSaveOrganizationResponse {
     'organization': UserSvcOrganization;
     /**
     * Due to the nature of JWT tokens, the token must be refreshed after creating an organization, as dynamic organization roles are embedded in it.
     */
-    'token': UserSvcAuthToken;
+    'token': UserSvcToken;
 
     static discriminator: string | undefined = undefined;
 
@@ -32,7 +32,7 @@ export class UserSvcSaveOrganizationResponse {
         {
             "name": "token",
             "baseName": "token",
-            "type": "UserSvcAuthToken"
+            "type": "UserSvcToken"
         }    ];
 
     static getAttributeTypeMap() {

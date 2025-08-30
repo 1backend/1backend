@@ -22,15 +22,15 @@ export interface ConfigSvcListConfigsRequest {
      */
     app?: string;
     /**
-     * Keys are camelCased slugs of the config owners.
-     * Specifying only the keys will mean all of the config will be returned
+     * Ids are camelCased slugs of the config owners.
+     * Specifying only the ids will mean all of the config will be returned
      * for that key.
      *
      * If the configs are large, consider using the `Selector` request field.
      * @type {Array<string>}
      * @memberof ConfigSvcListConfigsRequest
      */
-    keys?: Array<string>;
+    ids?: Array<string>;
     /**
      * Selector allows dotPath-based filtering per config owner.
      * Example:

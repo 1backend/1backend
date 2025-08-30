@@ -97,9 +97,9 @@ func (cs *ConfigService) SaveConfig(
 			return
 		}
 
-		if req.Key != "" {
+		if req.Id != "" {
 			logger.Error("Unauthorized attempt to save config with key specified",
-				slog.String("key", req.Key),
+				slog.String("id", req.Id),
 			)
 			endpoint.Unauthorized(w)
 			return
@@ -137,10 +137,10 @@ func (cs *ConfigService) saveConfig(
 	callerSlug = kebabToCamel(callerSlug)
 
 	if canActonBehalf {
-		if newConfig.Key == "" {
-			return errors.New("key must be provided when editing on behalf of another user")
+		if newConfig.Id == "" {
+			return errors.New("id must be provided when editing on behalf of another user")
 		}
-		callerSlug = kebabToCamel(newConfig.Key)
+		callerSlug = kebabToCamel(newConfig.Id)
 	}
 
 	cs.configMutex.Lock()
@@ -148,24 +148,25 @@ func (cs *ConfigService) saveConfig(
 
 	now := time.Now()
 
-	id := fmt.Sprintf("%s_%s", app, callerSlug)
+	id := callerSlug
 
 	existing, found, err := cs.configStore.Query(
 		datastore.Id(id),
+		datastore.Equals([]string{"app"}, app),
 	).FindOne()
 	if err != nil {
 		return errors.Wrap(err, "failed to query config")
 	}
 
-	if newConfig.Key == "" {
-		newConfig.Key = callerSlug
+	if newConfig.Id == "" {
+		newConfig.Id = callerSlug
 	}
 
 	entry := &types.Config{}
 
 	if !found {
+		entry.InternalId = fmt.Sprintf("%s_%s", app, callerSlug)
 		entry.Id = id
-		entry.Key = newConfig.Key
 		entry.App = app
 		entry.Data = map[string]interface{}{}
 		entry.DataJSON = "{}"

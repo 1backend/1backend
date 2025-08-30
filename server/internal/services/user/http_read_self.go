@@ -126,7 +126,7 @@ func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) readSelf(userId string) (*user.User, error) {
-	userI, found, err := s.usersStore.Query(
+	userI, found, err := s.userStore.Query(
 		datastore.Equals(datastore.Field("id"), userId),
 	).FindOne()
 	if err != nil {
@@ -145,7 +145,7 @@ func (s *UserService) getUserOrganizations(
 	app string,
 	userId string,
 ) ([]*user.Organization, string, error) {
-	links, err := s.membershipsStore.Query(
+	links, err := s.membershipStore.Query(
 		datastore.Equals(
 			datastore.Field("app"),
 			app,
@@ -169,7 +169,7 @@ func (s *UserService) getUserOrganizations(
 		organizationIds = append(organizationIds, link.OrganizationId)
 	}
 
-	orgIs, err := s.organizationsStore.Query(
+	orgIs, err := s.organizationStore.Query(
 		datastore.IsInList(
 			datastore.Field("id"),
 			organizationIds...,
@@ -189,7 +189,7 @@ func (s *UserService) getUserOrganizations(
 }
 
 func (s *UserService) countTokens(userId string) (int64, error) {
-	tokenCount, err := s.authTokensStore.Query(
+	tokenCount, err := s.tokenStore.Query(
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Count()
 	if err != nil {

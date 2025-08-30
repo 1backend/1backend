@@ -211,13 +211,13 @@ docs/SecretSvcListSecretsResponse.md
 docs/SecretSvcRemoveSecretsRequest.md
 docs/SecretSvcSaveSecretsRequest.md
 docs/SecretSvcSecret.md
+docs/SecretSvcSecretInput.md
 docs/SourceSvcAPI.md
 docs/SourceSvcCheckoutRepoRequest.md
 docs/SourceSvcCheckoutRepoResponse.md
 docs/SourceSvcErrorResponse.md
 docs/StableDiffusionTxt2ImgRequest.md
 docs/UserSvcAPI.md
-docs/UserSvcAuthToken.md
 docs/UserSvcChangePasswordRequest.md
 docs/UserSvcContact.md
 docs/UserSvcContactInput.md
@@ -259,6 +259,7 @@ docs/UserSvcSaveOrganizationResponse.md
 docs/UserSvcSavePermitsRequest.md
 docs/UserSvcSaveSelfRequest.md
 docs/UserSvcSaveUserRequest.md
+docs/UserSvcToken.md
 docs/UserSvcUser.md
 docs/UserSvcUserInput.md
 docs/UserSvcUserRecord.md
@@ -440,11 +441,11 @@ model_secret_svc_list_secrets_response.go
 model_secret_svc_remove_secrets_request.go
 model_secret_svc_save_secrets_request.go
 model_secret_svc_secret.go
+model_secret_svc_secret_input.go
 model_source_svc_checkout_repo_request.go
 model_source_svc_checkout_repo_response.go
 model_source_svc_error_response.go
 model_stable_diffusion_txt2_img_request.go
-model_user_svc_auth_token.go
 model_user_svc_change_password_request.go
 model_user_svc_contact.go
 model_user_svc_contact_input.go
@@ -486,6 +487,7 @@ model_user_svc_save_organization_response.go
 model_user_svc_save_permits_request.go
 model_user_svc_save_self_request.go
 model_user_svc_save_user_request.go
+model_user_svc_token.go
 model_user_svc_user.go
 model_user_svc_user_input.go
 model_user_svc_user_record.go

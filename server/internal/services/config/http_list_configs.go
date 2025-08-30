@@ -9,11 +9,9 @@ package configservice
 
 import (
 	"encoding/json"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"path"
-	"strings"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
@@ -80,21 +78,17 @@ func (cs *ConfigService) ListConfigs(
 }
 
 func (cs *ConfigService) listConfigs(req *types.ListConfigsRequest) (map[string]*types.Config, error) {
-	if req.App == "" {
-		req.App = defaultApp
-	}
-
 	ids := []any{}
-	for _, slug := range req.Keys {
+	for _, slug := range req.Ids {
 		slug = kebabToCamel(slug)
 		ids = append(ids,
-			fmt.Sprintf("%s_%s", req.App, slug),
+			slug,
 		)
 	}
 	for slug := range req.Selector {
 		slug = kebabToCamel(slug)
 		ids = append(ids,
-			fmt.Sprintf("%s_%s", req.App, slug),
+			slug,
 		)
 	}
 
@@ -104,6 +98,13 @@ func (cs *ConfigService) listConfigs(req *types.ListConfigsRequest) (map[string]
 		filters = append(filters, datastore.IsInList(
 			datastore.Field("id"),
 			ids...,
+		))
+	}
+
+	if req.App != "" {
+		filters = append(filters, datastore.Equals(
+			datastore.Field("app"),
+			req.App,
 		))
 	}
 
@@ -118,11 +119,12 @@ func (cs *ConfigService) listConfigs(req *types.ListConfigsRequest) (map[string]
 
 	for _, configI := range configIs {
 		conf := configI.(*types.Config)
+		conf.InternalId = ""
 
 		if conf.DataJSON != "" {
-			if req.Selector != nil && req.Selector[conf.Key] != nil {
+			if req.Selector != nil && req.Selector[conf.Id] != nil {
 				conf.Data = map[string]any{}
-				for _, path := range req.Selector[conf.Key] {
+				for _, path := range req.Selector[conf.Id] {
 					res := gjson.Get(conf.DataJSON, path)
 					if res.Exists() {
 						m := ExpandDotPath(path, res.Value())
@@ -143,7 +145,7 @@ func (cs *ConfigService) listConfigs(req *types.ListConfigsRequest) (map[string]
 		}
 
 		conf.DataJSON = ""
-		ret[strings.Split(conf.Id, "_")[1]] = conf
+		ret[conf.Id] = conf
 	}
 
 	cs.defaults(req, ret)
@@ -156,7 +158,7 @@ func (cs *ConfigService) defaults(
 	ret map[string]*types.Config,
 ) {
 	slugMap := map[string]bool{}
-	for _, slug := range req.Keys {
+	for _, slug := range req.Ids {
 		slug = kebabToCamel(slug)
 		slugMap[slug] = true
 	}

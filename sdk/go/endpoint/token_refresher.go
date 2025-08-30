@@ -153,7 +153,7 @@ func (tr *tokenRefresher) EnsureValidToken(request *http.Request) (string, *auth
 	return jwt, claims, nil
 }
 
-func calculateTokenTtl(token openapi.UserSvcAuthToken) (time.Duration, error) {
+func calculateTokenTtl(token openapi.UserSvcToken) (time.Duration, error) {
 	if token.ExpiresAt == "" {
 		return 0, errors.New("token expiresAt is empty")
 	}

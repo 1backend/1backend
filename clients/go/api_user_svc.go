@@ -365,7 +365,9 @@ Examples:
 	/*
 	SaveMembership Save Membership
 
-	Allows an organization admin to add a user to the organization.
+	Adds a user to an organization by saving a Membership.
+Also issues the corresponding Enroll, which grants the
+user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param organizationId Organization ID
@@ -3435,7 +3437,9 @@ func (r ApiSaveMembershipRequest) Execute() (map[string]interface{}, *http.Respo
 /*
 SaveMembership Save Membership
 
-Allows an organization admin to add a user to the organization.
+Adds a user to an organization by saving a Membership.
+Also issues the corresponding Enroll, which grants the
+user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param organizationId Organization ID

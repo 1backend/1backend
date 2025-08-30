@@ -17,20 +17,21 @@ import (
 	"fmt"
 )
 
-// checks if the UserSvcAuthToken type satisfies the MappedNullable interface at compile time
-var _ MappedNullable = &UserSvcAuthToken{}
+// checks if the UserSvcToken type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &UserSvcToken{}
 
-// UserSvcAuthToken struct for UserSvcAuthToken
-type UserSvcAuthToken struct {
+// UserSvcToken struct for UserSvcToken
+type UserSvcToken struct {
 	// Active tokens contain the most up-to-date information. When a user's role changes—due to role assignment, organization creation/assignment, etc.—all existing tokens are marked inactive. Active tokens are reused during login, while inactive tokens that have been recently refreshed (being used still) are kept for further refreshing (unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, old tokens can be refreshed indefinitely.)  Active tokens contain the most up-to-date information. When a user's role changes—due to role assignment, organization creation/assignment, etc.—all existing tokens are marked inactive. Active tokens are reused during login, while inactive tokens that have been recently refreshed (see `lastRefreshedAt` field) and are still in use are retained for further refreshing. (Unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, in which case old tokens can be refreshed indefinitely.)
 	Active *bool `json:"active,omitempty"`
-	App *string `json:"app,omitempty"`
+	App string `json:"app"`
 	CreatedAt string `json:"createdAt"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	// The device the token is associated with. This in combination with LastRefreshedAt can be used to determine if the token is still in use, and lets us prune unused tokens.
 	Device string `json:"device"`
 	ExpiresAt string `json:"expiresAt"`
 	Id string `json:"id"`
+	InternalId *string `json:"internalId,omitempty"`
 	// The last time the token was refreshed. This is used to determine if the token is still in use.
 	LastRefreshedAt *string `json:"lastRefreshedAt,omitempty"`
 	// Token is a signed JWT used to authenticate the user without querying the User Svc. You can verify it using the public key at `/user-svc/public-key`.  The token is just a JSON object with fields like: - \"oui\": the user ID (e.g., \"usr_dC4K75Cbp6\") - \"olu\": the user slug (e.g., \"test-user-slug-0\") - \"oro\": a list of roles, such as:   - \"user-svc:user\"   - \"user-svc:org:{org_dC4K7NNDCG}:user\"
@@ -39,14 +40,15 @@ type UserSvcAuthToken struct {
 	UserId string `json:"userId"`
 }
 
-type _UserSvcAuthToken UserSvcAuthToken
+type _UserSvcToken UserSvcToken
 
-// NewUserSvcAuthToken instantiates a new UserSvcAuthToken object
+// NewUserSvcToken instantiates a new UserSvcToken object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcAuthToken(createdAt string, device string, expiresAt string, id string, token string, updatedAt string, userId string) *UserSvcAuthToken {
-	this := UserSvcAuthToken{}
+func NewUserSvcToken(app string, createdAt string, device string, expiresAt string, id string, token string, updatedAt string, userId string) *UserSvcToken {
+	this := UserSvcToken{}
+	this.App = app
 	this.CreatedAt = createdAt
 	this.Device = device
 	this.ExpiresAt = expiresAt
@@ -57,16 +59,16 @@ func NewUserSvcAuthToken(createdAt string, device string, expiresAt string, id s
 	return &this
 }
 
-// NewUserSvcAuthTokenWithDefaults instantiates a new UserSvcAuthToken object
+// NewUserSvcTokenWithDefaults instantiates a new UserSvcToken object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewUserSvcAuthTokenWithDefaults() *UserSvcAuthToken {
-	this := UserSvcAuthToken{}
+func NewUserSvcTokenWithDefaults() *UserSvcToken {
+	this := UserSvcToken{}
 	return &this
 }
 
 // GetActive returns the Active field value if set, zero value otherwise.
-func (o *UserSvcAuthToken) GetActive() bool {
+func (o *UserSvcToken) GetActive() bool {
 	if o == nil || IsNil(o.Active) {
 		var ret bool
 		return ret
@@ -76,7 +78,7 @@ func (o *UserSvcAuthToken) GetActive() bool {
 
 // GetActiveOk returns a tuple with the Active field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcAuthToken) GetActiveOk() (*bool, bool) {
+func (o *UserSvcToken) GetActiveOk() (*bool, bool) {
 	if o == nil || IsNil(o.Active) {
 		return nil, false
 	}
@@ -84,7 +86,7 @@ func (o *UserSvcAuthToken) GetActiveOk() (*bool, bool) {
 }
 
 // HasActive returns a boolean if a field has been set.
-func (o *UserSvcAuthToken) HasActive() bool {
+func (o *UserSvcToken) HasActive() bool {
 	if o != nil && !IsNil(o.Active) {
 		return true
 	}
@@ -93,44 +95,36 @@ func (o *UserSvcAuthToken) HasActive() bool {
 }
 
 // SetActive gets a reference to the given bool and assigns it to the Active field.
-func (o *UserSvcAuthToken) SetActive(v bool) {
+func (o *UserSvcToken) SetActive(v bool) {
 	o.Active = &v
 }
 
-// GetApp returns the App field value if set, zero value otherwise.
-func (o *UserSvcAuthToken) GetApp() string {
-	if o == nil || IsNil(o.App) {
+// GetApp returns the App field value
+func (o *UserSvcToken) GetApp() string {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.App
+
+	return o.App
 }
 
-// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// GetAppOk returns a tuple with the App field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcAuthToken) GetAppOk() (*string, bool) {
-	if o == nil || IsNil(o.App) {
+func (o *UserSvcToken) GetAppOk() (*string, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.App, true
+	return &o.App, true
 }
 
-// HasApp returns a boolean if a field has been set.
-func (o *UserSvcAuthToken) HasApp() bool {
-	if o != nil && !IsNil(o.App) {
-		return true
-	}
-
-	return false
-}
-
-// SetApp gets a reference to the given string and assigns it to the App field.
-func (o *UserSvcAuthToken) SetApp(v string) {
-	o.App = &v
+// SetApp sets field value
+func (o *UserSvcToken) SetApp(v string) {
+	o.App = v
 }
 
 // GetCreatedAt returns the CreatedAt field value
-func (o *UserSvcAuthToken) GetCreatedAt() string {
+func (o *UserSvcToken) GetCreatedAt() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -141,7 +135,7 @@ func (o *UserSvcAuthToken) GetCreatedAt() string {
 
 // GetCreatedAtOk returns a tuple with the CreatedAt field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcAuthToken) GetCreatedAtOk() (*string, bool) {
+func (o *UserSvcToken) GetCreatedAtOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -149,12 +143,12 @@ func (o *UserSvcAuthToken) GetCreatedAtOk() (*string, bool) {
 }
 
 // SetCreatedAt sets field value
-func (o *UserSvcAuthToken) SetCreatedAt(v string) {
+func (o *UserSvcToken) SetCreatedAt(v string) {
 	o.CreatedAt = v
 }
 
 // GetDeletedAt returns the DeletedAt field value if set, zero value otherwise.
-func (o *UserSvcAuthToken) GetDeletedAt() string {
+func (o *UserSvcToken) GetDeletedAt() string {
 	if o == nil || IsNil(o.DeletedAt) {
 		var ret string
 		return ret
@@ -164,7 +158,7 @@ func (o *UserSvcAuthToken) GetDeletedAt() string {
 
 // GetDeletedAtOk returns a tuple with the DeletedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcAuthToken) GetDeletedAtOk() (*string, bool) {
+func (o *UserSvcToken) GetDeletedAtOk() (*string, bool) {
 	if o == nil || IsNil(o.DeletedAt) {
 		return nil, false
 	}
@@ -172,7 +166,7 @@ func (o *UserSvcAuthToken) GetDeletedAtOk() (*string, bool) {
 }
 
 // HasDeletedAt returns a boolean if a field has been set.
-func (o *UserSvcAuthToken) HasDeletedAt() bool {
+func (o *UserSvcToken) HasDeletedAt() bool {
 	if o != nil && !IsNil(o.DeletedAt) {
 		return true
 	}
@@ -181,12 +175,12 @@ func (o *UserSvcAuthToken) HasDeletedAt() bool {
 }
 
 // SetDeletedAt gets a reference to the given string and assigns it to the DeletedAt field.
-func (o *UserSvcAuthToken) SetDeletedAt(v string) {
+func (o *UserSvcToken) SetDeletedAt(v string) {
 	o.DeletedAt = &v
 }
 
 // GetDevice returns the Device field value
-func (o *UserSvcAuthToken) GetDevice() string {
+func (o *UserSvcToken) GetDevice() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -197,7 +191,7 @@ func (o *UserSvcAuthToken) GetDevice() string {
 
 // GetDeviceOk returns a tuple with the Device field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcAuthToken) GetDeviceOk() (*string, bool) {
+func (o *UserSvcToken) GetDeviceOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -205,12 +199,12 @@ func (o *UserSvcAuthToken) GetDeviceOk() (*string, bool) {
 }
 
 // SetDevice sets field value
-func (o *UserSvcAuthToken) SetDevice(v string) {
+func (o *UserSvcToken) SetDevice(v string) {
 	o.Device = v
 }
 
 // GetExpiresAt returns the ExpiresAt field value
-func (o *UserSvcAuthToken) GetExpiresAt() string {
+func (o *UserSvcToken) GetExpiresAt() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -221,7 +215,7 @@ func (o *UserSvcAuthToken) GetExpiresAt() string {
 
 // GetExpiresAtOk returns a tuple with the ExpiresAt field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcAuthToken) GetExpiresAtOk() (*string, bool) {
+func (o *UserSvcToken) GetExpiresAtOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -229,12 +223,12 @@ func (o *UserSvcAuthToken) GetExpiresAtOk() (*string, bool) {
 }
 
 // SetExpiresAt sets field value
-func (o *UserSvcAuthToken) SetExpiresAt(v string) {
+func (o *UserSvcToken) SetExpiresAt(v string) {
 	o.ExpiresAt = v
 }
 
 // GetId returns the Id field value
-func (o *UserSvcAuthToken) GetId() string {
+func (o *UserSvcToken) GetId() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -245,7 +239,7 @@ func (o *UserSvcAuthToken) GetId() string {
 
 // GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcAuthToken) GetIdOk() (*string, bool) {
+func (o *UserSvcToken) GetIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -253,12 +247,44 @@ func (o *UserSvcAuthToken) GetIdOk() (*string, bool) {
 }
 
 // SetId sets field value
-func (o *UserSvcAuthToken) SetId(v string) {
+func (o *UserSvcToken) SetId(v string) {
 	o.Id = v
 }
 
+// GetInternalId returns the InternalId field value if set, zero value otherwise.
+func (o *UserSvcToken) GetInternalId() string {
+	if o == nil || IsNil(o.InternalId) {
+		var ret string
+		return ret
+	}
+	return *o.InternalId
+}
+
+// GetInternalIdOk returns a tuple with the InternalId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcToken) GetInternalIdOk() (*string, bool) {
+	if o == nil || IsNil(o.InternalId) {
+		return nil, false
+	}
+	return o.InternalId, true
+}
+
+// HasInternalId returns a boolean if a field has been set.
+func (o *UserSvcToken) HasInternalId() bool {
+	if o != nil && !IsNil(o.InternalId) {
+		return true
+	}
+
+	return false
+}
+
+// SetInternalId gets a reference to the given string and assigns it to the InternalId field.
+func (o *UserSvcToken) SetInternalId(v string) {
+	o.InternalId = &v
+}
+
 // GetLastRefreshedAt returns the LastRefreshedAt field value if set, zero value otherwise.
-func (o *UserSvcAuthToken) GetLastRefreshedAt() string {
+func (o *UserSvcToken) GetLastRefreshedAt() string {
 	if o == nil || IsNil(o.LastRefreshedAt) {
 		var ret string
 		return ret
@@ -268,7 +294,7 @@ func (o *UserSvcAuthToken) GetLastRefreshedAt() string {
 
 // GetLastRefreshedAtOk returns a tuple with the LastRefreshedAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcAuthToken) GetLastRefreshedAtOk() (*string, bool) {
+func (o *UserSvcToken) GetLastRefreshedAtOk() (*string, bool) {
 	if o == nil || IsNil(o.LastRefreshedAt) {
 		return nil, false
 	}
@@ -276,7 +302,7 @@ func (o *UserSvcAuthToken) GetLastRefreshedAtOk() (*string, bool) {
 }
 
 // HasLastRefreshedAt returns a boolean if a field has been set.
-func (o *UserSvcAuthToken) HasLastRefreshedAt() bool {
+func (o *UserSvcToken) HasLastRefreshedAt() bool {
 	if o != nil && !IsNil(o.LastRefreshedAt) {
 		return true
 	}
@@ -285,12 +311,12 @@ func (o *UserSvcAuthToken) HasLastRefreshedAt() bool {
 }
 
 // SetLastRefreshedAt gets a reference to the given string and assigns it to the LastRefreshedAt field.
-func (o *UserSvcAuthToken) SetLastRefreshedAt(v string) {
+func (o *UserSvcToken) SetLastRefreshedAt(v string) {
 	o.LastRefreshedAt = &v
 }
 
 // GetToken returns the Token field value
-func (o *UserSvcAuthToken) GetToken() string {
+func (o *UserSvcToken) GetToken() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -301,7 +327,7 @@ func (o *UserSvcAuthToken) GetToken() string {
 
 // GetTokenOk returns a tuple with the Token field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcAuthToken) GetTokenOk() (*string, bool) {
+func (o *UserSvcToken) GetTokenOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -309,12 +335,12 @@ func (o *UserSvcAuthToken) GetTokenOk() (*string, bool) {
 }
 
 // SetToken sets field value
-func (o *UserSvcAuthToken) SetToken(v string) {
+func (o *UserSvcToken) SetToken(v string) {
 	o.Token = v
 }
 
 // GetUpdatedAt returns the UpdatedAt field value
-func (o *UserSvcAuthToken) GetUpdatedAt() string {
+func (o *UserSvcToken) GetUpdatedAt() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -325,7 +351,7 @@ func (o *UserSvcAuthToken) GetUpdatedAt() string {
 
 // GetUpdatedAtOk returns a tuple with the UpdatedAt field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcAuthToken) GetUpdatedAtOk() (*string, bool) {
+func (o *UserSvcToken) GetUpdatedAtOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -333,12 +359,12 @@ func (o *UserSvcAuthToken) GetUpdatedAtOk() (*string, bool) {
 }
 
 // SetUpdatedAt sets field value
-func (o *UserSvcAuthToken) SetUpdatedAt(v string) {
+func (o *UserSvcToken) SetUpdatedAt(v string) {
 	o.UpdatedAt = v
 }
 
 // GetUserId returns the UserId field value
-func (o *UserSvcAuthToken) GetUserId() string {
+func (o *UserSvcToken) GetUserId() string {
 	if o == nil {
 		var ret string
 		return ret
@@ -349,7 +375,7 @@ func (o *UserSvcAuthToken) GetUserId() string {
 
 // GetUserIdOk returns a tuple with the UserId field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcAuthToken) GetUserIdOk() (*string, bool) {
+func (o *UserSvcToken) GetUserIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -357,11 +383,11 @@ func (o *UserSvcAuthToken) GetUserIdOk() (*string, bool) {
 }
 
 // SetUserId sets field value
-func (o *UserSvcAuthToken) SetUserId(v string) {
+func (o *UserSvcToken) SetUserId(v string) {
 	o.UserId = v
 }
 
-func (o UserSvcAuthToken) MarshalJSON() ([]byte, error) {
+func (o UserSvcToken) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
@@ -369,14 +395,12 @@ func (o UserSvcAuthToken) MarshalJSON() ([]byte, error) {
 	return json.Marshal(toSerialize)
 }
 
-func (o UserSvcAuthToken) ToMap() (map[string]interface{}, error) {
+func (o UserSvcToken) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Active) {
 		toSerialize["active"] = o.Active
 	}
-	if !IsNil(o.App) {
-		toSerialize["app"] = o.App
-	}
+	toSerialize["app"] = o.App
 	toSerialize["createdAt"] = o.CreatedAt
 	if !IsNil(o.DeletedAt) {
 		toSerialize["deletedAt"] = o.DeletedAt
@@ -384,6 +408,9 @@ func (o UserSvcAuthToken) ToMap() (map[string]interface{}, error) {
 	toSerialize["device"] = o.Device
 	toSerialize["expiresAt"] = o.ExpiresAt
 	toSerialize["id"] = o.Id
+	if !IsNil(o.InternalId) {
+		toSerialize["internalId"] = o.InternalId
+	}
 	if !IsNil(o.LastRefreshedAt) {
 		toSerialize["lastRefreshedAt"] = o.LastRefreshedAt
 	}
@@ -393,11 +420,12 @@ func (o UserSvcAuthToken) ToMap() (map[string]interface{}, error) {
 	return toSerialize, nil
 }
 
-func (o *UserSvcAuthToken) UnmarshalJSON(data []byte) (err error) {
+func (o *UserSvcToken) UnmarshalJSON(data []byte) (err error) {
 	// This validates that all required properties are included in the JSON object
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"app",
 		"createdAt",
 		"device",
 		"expiresAt",
@@ -421,53 +449,53 @@ func (o *UserSvcAuthToken) UnmarshalJSON(data []byte) (err error) {
 		}
 	}
 
-	varUserSvcAuthToken := _UserSvcAuthToken{}
+	varUserSvcToken := _UserSvcToken{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varUserSvcAuthToken)
+	err = decoder.Decode(&varUserSvcToken)
 
 	if err != nil {
 		return err
 	}
 
-	*o = UserSvcAuthToken(varUserSvcAuthToken)
+	*o = UserSvcToken(varUserSvcToken)
 
 	return err
 }
 
-type NullableUserSvcAuthToken struct {
-	value *UserSvcAuthToken
+type NullableUserSvcToken struct {
+	value *UserSvcToken
 	isSet bool
 }
 
-func (v NullableUserSvcAuthToken) Get() *UserSvcAuthToken {
+func (v NullableUserSvcToken) Get() *UserSvcToken {
 	return v.value
 }
 
-func (v *NullableUserSvcAuthToken) Set(val *UserSvcAuthToken) {
+func (v *NullableUserSvcToken) Set(val *UserSvcToken) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableUserSvcAuthToken) IsSet() bool {
+func (v NullableUserSvcToken) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableUserSvcAuthToken) Unset() {
+func (v *NullableUserSvcToken) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableUserSvcAuthToken(val *UserSvcAuthToken) *NullableUserSvcAuthToken {
-	return &NullableUserSvcAuthToken{value: val, isSet: true}
+func NewNullableUserSvcToken(val *UserSvcToken) *NullableUserSvcToken {
+	return &NullableUserSvcToken{value: val, isSet: true}
 }
 
-func (v NullableUserSvcAuthToken) MarshalJSON() ([]byte, error) {
+func (v NullableUserSvcToken) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableUserSvcAuthToken) UnmarshalJSON(src []byte) error {
+func (v *NullableUserSvcToken) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

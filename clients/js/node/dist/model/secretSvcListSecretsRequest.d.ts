@@ -10,8 +10,8 @@
  * Do not edit the class manually.
  */
 export declare class SecretSvcListSecretsRequest {
-    'key'?: string;
-    'keys'?: Array<string>;
+    'id'?: string;
+    'ids'?: Array<string>;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

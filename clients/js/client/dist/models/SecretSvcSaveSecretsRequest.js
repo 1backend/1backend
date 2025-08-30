@@ -11,7 +11,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { SecretSvcSecretFromJSON, SecretSvcSecretToJSON, } from './SecretSvcSecret';
+import { SecretSvcSecretInputFromJSON, SecretSvcSecretInputToJSON, } from './SecretSvcSecretInput';
 /**
  * Check if a given object implements the SecretSvcSaveSecretsRequest interface.
  */
@@ -26,7 +26,7 @@ export function SecretSvcSaveSecretsRequestFromJSONTyped(json, ignoreDiscriminat
         return json;
     }
     return {
-        'secrets': json['secrets'] == null ? undefined : (json['secrets'].map(SecretSvcSecretFromJSON)),
+        'secrets': json['secrets'] == null ? undefined : (json['secrets'].map(SecretSvcSecretInputFromJSON)),
     };
 }
 export function SecretSvcSaveSecretsRequestToJSON(json) {
@@ -37,6 +37,6 @@ export function SecretSvcSaveSecretsRequestToJSONTyped(value, ignoreDiscriminato
         return value;
     }
     return {
-        'secrets': value['secrets'] == null ? undefined : (value['secrets'].map(SecretSvcSecretToJSON)),
+        'secrets': value['secrets'] == null ? undefined : (value['secrets'].map(SecretSvcSecretInputToJSON)),
     };
 }

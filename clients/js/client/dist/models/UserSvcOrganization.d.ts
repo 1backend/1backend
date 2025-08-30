@@ -40,6 +40,12 @@ export interface UserSvcOrganization {
      */
     id: string;
     /**
+     *
+     * @type {string}
+     * @memberof UserSvcOrganization
+     */
+    internalId?: string;
+    /**
      * Full name of the organization
      * @type {string}
      * @memberof UserSvcOrganization

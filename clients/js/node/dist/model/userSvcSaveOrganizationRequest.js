@@ -17,6 +17,11 @@ export class UserSvcSaveOrganizationRequest {
 UserSvcSaveOrganizationRequest.discriminator = undefined;
 UserSvcSaveOrganizationRequest.attributeTypeMap = [
     {
+        "name": "assignCaller",
+        "baseName": "assignCaller",
+        "type": "boolean"
+    },
+    {
         "name": "id",
         "baseName": "id",
         "type": "string"

@@ -53,6 +53,10 @@ func Id(prefix string) string {
 		b = append([]byte{base62[remainder]}, b...)
 	}
 
+	if prefix == "" {
+		return string(b)
+	}
+
 	return prefix + "_" + string(b)
 }
 
@@ -119,4 +123,11 @@ func Marshal(value any) *string {
 
 	v := string(jsonBytes)
 	return &v
+}
+
+// Put the higher-cardinality (more unique) component first.
+// - Prefixing with low-cardinality (app) increases risk of long runs of similar keys → less even distribution in indexes, hash maps, or sorted stores.
+// - Starting with enroll.Id maximizes early entropy, improves lookup and sharding balance
+func InternalId(id, app string) string {
+	return fmt.Sprintf("%s_%s", id, app)
 }

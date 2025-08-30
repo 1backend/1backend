@@ -102,7 +102,7 @@ func (s *UserService) revokeTokens(request *user.RevokeTokensRequest) error {
 		filters = append(filters, datastore.Equals(datastore.Field("device"), request.Device))
 	}
 
-	err := s.authTokensStore.Query(
+	err := s.tokenStore.Query(
 		filters...,
 	).Delete()
 	if err != nil {

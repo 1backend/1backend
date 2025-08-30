@@ -22,13 +22,13 @@ var _ MappedNullable = &ConfigSvcConfig{}
 
 // ConfigSvcConfig struct for ConfigSvcConfig
 type ConfigSvcConfig struct {
-	App *string `json:"app,omitempty"`
+	App string `json:"app"`
 	CreatedAt string `json:"createdAt"`
 	Data map[string]interface{} `json:"data"`
 	DataJson string `json:"dataJson"`
-	// Id of the config. It is deterministically created from the app and the key.
+	// CamelCased slugs of the config owners
 	Id string `json:"id"`
-	Key *string `json:"key,omitempty"`
+	InternalId *string `json:"internalId,omitempty"`
 	UpdatedAt string `json:"updatedAt"`
 }
 
@@ -38,8 +38,9 @@ type _ConfigSvcConfig ConfigSvcConfig
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewConfigSvcConfig(createdAt string, data map[string]interface{}, dataJson string, id string, updatedAt string) *ConfigSvcConfig {
+func NewConfigSvcConfig(app string, createdAt string, data map[string]interface{}, dataJson string, id string, updatedAt string) *ConfigSvcConfig {
 	this := ConfigSvcConfig{}
+	this.App = app
 	this.CreatedAt = createdAt
 	this.Data = data
 	this.DataJson = dataJson
@@ -56,36 +57,28 @@ func NewConfigSvcConfigWithDefaults() *ConfigSvcConfig {
 	return &this
 }
 
-// GetApp returns the App field value if set, zero value otherwise.
+// GetApp returns the App field value
 func (o *ConfigSvcConfig) GetApp() string {
-	if o == nil || IsNil(o.App) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.App
+
+	return o.App
 }
 
-// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// GetAppOk returns a tuple with the App field value
 // and a boolean to check if the value has been set.
 func (o *ConfigSvcConfig) GetAppOk() (*string, bool) {
-	if o == nil || IsNil(o.App) {
+	if o == nil {
 		return nil, false
 	}
-	return o.App, true
+	return &o.App, true
 }
 
-// HasApp returns a boolean if a field has been set.
-func (o *ConfigSvcConfig) HasApp() bool {
-	if o != nil && !IsNil(o.App) {
-		return true
-	}
-
-	return false
-}
-
-// SetApp gets a reference to the given string and assigns it to the App field.
+// SetApp sets field value
 func (o *ConfigSvcConfig) SetApp(v string) {
-	o.App = &v
+	o.App = v
 }
 
 // GetCreatedAt returns the CreatedAt field value
@@ -184,36 +177,36 @@ func (o *ConfigSvcConfig) SetId(v string) {
 	o.Id = v
 }
 
-// GetKey returns the Key field value if set, zero value otherwise.
-func (o *ConfigSvcConfig) GetKey() string {
-	if o == nil || IsNil(o.Key) {
+// GetInternalId returns the InternalId field value if set, zero value otherwise.
+func (o *ConfigSvcConfig) GetInternalId() string {
+	if o == nil || IsNil(o.InternalId) {
 		var ret string
 		return ret
 	}
-	return *o.Key
+	return *o.InternalId
 }
 
-// GetKeyOk returns a tuple with the Key field value if set, nil otherwise
+// GetInternalIdOk returns a tuple with the InternalId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigSvcConfig) GetKeyOk() (*string, bool) {
-	if o == nil || IsNil(o.Key) {
+func (o *ConfigSvcConfig) GetInternalIdOk() (*string, bool) {
+	if o == nil || IsNil(o.InternalId) {
 		return nil, false
 	}
-	return o.Key, true
+	return o.InternalId, true
 }
 
-// HasKey returns a boolean if a field has been set.
-func (o *ConfigSvcConfig) HasKey() bool {
-	if o != nil && !IsNil(o.Key) {
+// HasInternalId returns a boolean if a field has been set.
+func (o *ConfigSvcConfig) HasInternalId() bool {
+	if o != nil && !IsNil(o.InternalId) {
 		return true
 	}
 
 	return false
 }
 
-// SetKey gets a reference to the given string and assigns it to the Key field.
-func (o *ConfigSvcConfig) SetKey(v string) {
-	o.Key = &v
+// SetInternalId gets a reference to the given string and assigns it to the InternalId field.
+func (o *ConfigSvcConfig) SetInternalId(v string) {
+	o.InternalId = &v
 }
 
 // GetUpdatedAt returns the UpdatedAt field value
@@ -250,15 +243,13 @@ func (o ConfigSvcConfig) MarshalJSON() ([]byte, error) {
 
 func (o ConfigSvcConfig) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.App) {
-		toSerialize["app"] = o.App
-	}
+	toSerialize["app"] = o.App
 	toSerialize["createdAt"] = o.CreatedAt
 	toSerialize["data"] = o.Data
 	toSerialize["dataJson"] = o.DataJson
 	toSerialize["id"] = o.Id
-	if !IsNil(o.Key) {
-		toSerialize["key"] = o.Key
+	if !IsNil(o.InternalId) {
+		toSerialize["internalId"] = o.InternalId
 	}
 	toSerialize["updatedAt"] = o.UpdatedAt
 	return toSerialize, nil
@@ -269,6 +260,7 @@ func (o *ConfigSvcConfig) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"app",
 		"createdAt",
 		"data",
 		"dataJson",
