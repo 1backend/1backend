@@ -156,12 +156,21 @@ func (s *UserService) login(
 		request.Device = unknownDevice
 	}
 
+	return s.issueToken(request.App, usr, request.Device)
+}
+
+func (s *UserService) issueToken(
+	app string,
+	usr *user.User,
+	device string,
+) (*user.Token, error) {
+
 	// Let's see if there is an active token we can reuse
 	tokenI, found, err := s.tokenStore.Query(
-		datastore.Equals(datastore.Field("app"), request.App),
+		datastore.Equals(datastore.Field("app"), app),
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 		datastore.Equals(datastore.Field("active"), true),
-		datastore.Equals(datastore.Field("device"), request.Device),
+		datastore.Equals(datastore.Field("device"), device),
 	).FindOne()
 	if err != nil {
 		return nil, err
@@ -187,16 +196,16 @@ func (s *UserService) login(
 			return tok, nil
 		}
 
-		err = s.inactivateToken(tok.Id)
+		err = s.inactivateToken(app, tok.Id)
 		if err != nil {
 			return nil, errors.Wrap(err, "could not inactivate token")
 		}
 	}
 
 	token, err := s.generateAuthToken(
-		request.App,
+		app,
 		usr,
-		request.Device,
+		device,
 	)
 	if err != nil {
 		return nil, err

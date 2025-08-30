@@ -102,25 +102,12 @@ func (s *UserService) exchangeToken(
 	}
 	usr, ok := userI.(*user.User)
 	if !ok {
-		return nil, errors.Errorf("tyőe mismatch: expected *user.User, got %T", userI)
+		return nil, errors.Errorf("type mismatch: expected *user.User, got %T", userI)
 	}
 
 	if request.NewDevice == "" {
 		request.NewDevice = claims.Device
 	}
 
-	token, err := s.generateAuthToken(
-		request.NewApp,
-		usr,
-		request.NewDevice,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	if token.Device == "" {
-		token.Device = unknownDevice
-	}
-
-	return token, nil
+	return s.issueToken(request.NewApp, usr, request.NewDevice)
 }

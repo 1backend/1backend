@@ -73,13 +73,17 @@ func (s *UserService) refreshToken(
 		return cachedToken.(*user.Token), nil
 	}
 
-	// Do not read the token as it might be an exchanged token
-	// which is not in the store.
-
-	tokenToBeRefreshed, err := s.options.Authorizer.ParseJWTUnverified(stringToken)
+	tokenToBeRefreshedI, found, err := s.tokenStore.Query(
+		datastore.Equals(datastore.Field("token"), stringToken),
+	).FindOne()
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse token")
+		return nil, err
 	}
+	if !found {
+		return nil, errors.New("token not found")
+	}
+
+	tokenToBeRefreshed := tokenToBeRefreshedI.(*user.Token)
 
 	userI, found, err := s.userStore.Query(
 		datastore.Equals(datastore.Field("id"), tokenToBeRefreshed.UserId),
@@ -92,20 +96,44 @@ func (s *UserService) refreshToken(
 	}
 	usr := userI.(*user.User)
 
-	err = s.inactivateToken(tokenToBeRefreshed.ID)
+	activeTokenI, found, err := s.tokenStore.Query(
+		datastore.Equals(datastore.Field("app"), tokenToBeRefreshed.App),
+		datastore.Equals(datastore.Field("userId"), usr.Id),
+		datastore.Equals(datastore.Field("active"), true),
+		datastore.Equals(datastore.Field("device"), tokenToBeRefreshed.Device),
+	).FindOne()
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to inactivate token")
+		return nil, err
+	}
+	if !found {
+		return nil, errors.New("active token not found")
+	}
+
+	activeToken := activeTokenI.(*user.Token)
+
+	if tokenToBeRefreshed.Active {
+		err = s.inactivateToken(tokenToBeRefreshed.App, tokenToBeRefreshed.Id)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to inactivate token")
+		}
 	}
 
 	now := time.Now()
 
 	err = s.tokenStore.Query(
-		datastore.Equals(datastore.Field("id"), tokenToBeRefreshed.ID),
+		datastore.Equals(datastore.Field("id"), tokenToBeRefreshed.Id),
 	).UpdateFields(map[string]any{
 		"lastRefreshedAt": now,
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to update token")
+	}
+
+	if activeToken.Id != tokenToBeRefreshed.Id {
+		err = s.inactivateToken(activeToken.App, activeToken.Id)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to inactivate token")
+		}
 	}
 
 	token, err := s.generateAuthToken(

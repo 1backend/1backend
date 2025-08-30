@@ -250,8 +250,12 @@ func (s *UserService) inactivateTokens(app string, userId string) error {
 	})
 }
 
-func (s *UserService) inactivateToken(tokenId string) error {
+func (s *UserService) inactivateToken(app, tokenId string) error {
 	return s.tokenStore.Query(
+		datastore.Equals(
+			datastore.Fields("app"),
+			app,
+		),
 		datastore.Equals(
 			datastore.Fields("id"),
 			tokenId,
