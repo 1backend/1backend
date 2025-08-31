@@ -51,11 +51,14 @@ func (s *UserService) assignRole(
 		return nil
 	}
 
+	id := sdk.Id("enr")
+
 	inv := &usertypes.Enroll{
-		Id:     sdk.Id("enr"),
-		App:    app,
-		Role:   role,
-		UserId: user.Id,
+		InternalId: sdk.InternalId(id, app),
+		Id:         id,
+		App:        app,
+		Role:       role,
+		UserId:     user.Id,
 	}
 	err = s.enrollStore.Upsert(inv)
 	if err != nil {

@@ -130,7 +130,7 @@ func (s *UserService) refreshToken(
 	}
 
 	if activeToken.Id != tokenToBeRefreshed.Id {
-		err = s.inactivateToken(activeToken.App, activeToken.Id)
+		err = s.inactivateToken(tokenToBeRefreshed.App, activeToken.Id)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to inactivate token")
 		}

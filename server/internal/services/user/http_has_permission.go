@@ -80,16 +80,10 @@ func (s *UserService) hasPermission(
 	usr, claims, err := s.getUserFromRequest(r)
 	if err != nil {
 		if strings.Contains(err.Error(), "token is expired") {
-
 			return nil, false, claims, nil
 		}
 
 		return nil, false, claims, errors.Wrap(err, "failed to get user from request")
-	}
-
-	roles := []any{}
-	for _, roleId := range claims.Roles {
-		roles = append(roles, roleId)
 	}
 
 	permitIs, err := s.permitStore.Query(
