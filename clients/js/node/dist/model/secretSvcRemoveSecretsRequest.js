@@ -25,15 +25,5 @@ SecretSvcRemoveSecretsRequest.attributeTypeMap = [
         "name": "ids",
         "baseName": "ids",
         "type": "Array<string>"
-    },
-    {
-        "name": "key",
-        "baseName": "key",
-        "type": "string"
-    },
-    {
-        "name": "keys",
-        "baseName": "keys",
-        "type": "Array<string>"
     }
 ];

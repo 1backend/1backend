@@ -30,7 +30,7 @@ func RegisterServiceAccount(
 	serviceSlug,
 	serviceName string,
 	store datastore.DataStore,
-) (*onebackendapi.UserSvcAuthToken, error) {
+) (*onebackendapi.UserSvcToken, error) {
 	ctx := context.Background()
 
 	res, err := store.Query().Find()
@@ -94,7 +94,7 @@ func RegisterServiceAccount(
 
 // RegisterUserAccount is primarily used in tests.
 // @todo Move to a test package.
-func RegisterUserAccount(userService onebackendapi.UserSvcAPI, slug, password, name string) (*onebackendapi.UserSvcAuthToken, error) {
+func RegisterUserAccount(userService onebackendapi.UserSvcAPI, slug, password, name string) (*onebackendapi.UserSvcToken, error) {
 	_, _, err := userService.Register(context.Background()).Body(onebackendapi.UserSvcRegisterRequest{
 		Slug:     slug,
 		Password: onebackendapi.PtrString(password),

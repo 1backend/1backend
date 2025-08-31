@@ -20,7 +20,7 @@ var _ MappedNullable = &SecretSvcSaveSecretsRequest{}
 
 // SecretSvcSaveSecretsRequest struct for SecretSvcSaveSecretsRequest
 type SecretSvcSaveSecretsRequest struct {
-	Secrets []SecretSvcSecret `json:"secrets,omitempty"`
+	Secrets []SecretSvcSecretInput `json:"secrets,omitempty"`
 }
 
 // NewSecretSvcSaveSecretsRequest instantiates a new SecretSvcSaveSecretsRequest object
@@ -41,9 +41,9 @@ func NewSecretSvcSaveSecretsRequestWithDefaults() *SecretSvcSaveSecretsRequest {
 }
 
 // GetSecrets returns the Secrets field value if set, zero value otherwise.
-func (o *SecretSvcSaveSecretsRequest) GetSecrets() []SecretSvcSecret {
+func (o *SecretSvcSaveSecretsRequest) GetSecrets() []SecretSvcSecretInput {
 	if o == nil || IsNil(o.Secrets) {
-		var ret []SecretSvcSecret
+		var ret []SecretSvcSecretInput
 		return ret
 	}
 	return o.Secrets
@@ -51,7 +51,7 @@ func (o *SecretSvcSaveSecretsRequest) GetSecrets() []SecretSvcSecret {
 
 // GetSecretsOk returns a tuple with the Secrets field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SecretSvcSaveSecretsRequest) GetSecretsOk() ([]SecretSvcSecret, bool) {
+func (o *SecretSvcSaveSecretsRequest) GetSecretsOk() ([]SecretSvcSecretInput, bool) {
 	if o == nil || IsNil(o.Secrets) {
 		return nil, false
 	}
@@ -67,8 +67,8 @@ func (o *SecretSvcSaveSecretsRequest) HasSecrets() bool {
 	return false
 }
 
-// SetSecrets gets a reference to the given []SecretSvcSecret and assigns it to the Secrets field.
-func (o *SecretSvcSaveSecretsRequest) SetSecrets(v []SecretSvcSecret) {
+// SetSecrets gets a reference to the given []SecretSvcSecretInput and assigns it to the Secrets field.
+func (o *SecretSvcSaveSecretsRequest) SetSecrets(v []SecretSvcSecretInput) {
 	o.Secrets = v
 }
 

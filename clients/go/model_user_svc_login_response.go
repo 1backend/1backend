@@ -20,7 +20,7 @@ var _ MappedNullable = &UserSvcLoginResponse{}
 
 // UserSvcLoginResponse struct for UserSvcLoginResponse
 type UserSvcLoginResponse struct {
-	Token *UserSvcAuthToken `json:"token,omitempty"`
+	Token *UserSvcToken `json:"token,omitempty"`
 }
 
 // NewUserSvcLoginResponse instantiates a new UserSvcLoginResponse object
@@ -41,9 +41,9 @@ func NewUserSvcLoginResponseWithDefaults() *UserSvcLoginResponse {
 }
 
 // GetToken returns the Token field value if set, zero value otherwise.
-func (o *UserSvcLoginResponse) GetToken() UserSvcAuthToken {
+func (o *UserSvcLoginResponse) GetToken() UserSvcToken {
 	if o == nil || IsNil(o.Token) {
-		var ret UserSvcAuthToken
+		var ret UserSvcToken
 		return ret
 	}
 	return *o.Token
@@ -51,7 +51,7 @@ func (o *UserSvcLoginResponse) GetToken() UserSvcAuthToken {
 
 // GetTokenOk returns a tuple with the Token field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcLoginResponse) GetTokenOk() (*UserSvcAuthToken, bool) {
+func (o *UserSvcLoginResponse) GetTokenOk() (*UserSvcToken, bool) {
 	if o == nil || IsNil(o.Token) {
 		return nil, false
 	}
@@ -67,8 +67,8 @@ func (o *UserSvcLoginResponse) HasToken() bool {
 	return false
 }
 
-// SetToken gets a reference to the given UserSvcAuthToken and assigns it to the Token field.
-func (o *UserSvcLoginResponse) SetToken(v UserSvcAuthToken) {
+// SetToken gets a reference to the given UserSvcToken and assigns it to the Token field.
+func (o *UserSvcLoginResponse) SetToken(v UserSvcToken) {
 	o.Token = &v
 }
 

@@ -17,9 +17,9 @@ import (
 func List(cmd *cobra.Command, args []string, show bool) error {
 	ctx := cmd.Context()
 
-	var key string
+	var id string
 	if len(args) > 0 {
-		key = args[0]
+		id = args[0]
 	}
 
 	url, token, err := util.GetSelectedUrlAndToken()
@@ -30,7 +30,7 @@ func List(cmd *cobra.Command, args []string, show bool) error {
 	cf := client.NewApiClientFactory(url)
 
 	req := openapi.SecretSvcListSecretsRequest{
-		Key: openapi.PtrString(key),
+		Id: openapi.PtrString(id),
 	}
 
 	rsp, _, err := cf.Client(client.WithToken(token)).
@@ -46,28 +46,27 @@ func List(cmd *cobra.Command, args []string, show bool) error {
 
 	fmt.Fprintln(
 		writer,
-		"SECRET ID\tAPP\tKEY\tLENGTH\tVALUE",
+		"SECRET ID\tAPP\tLENGTH\tVALUE",
 	)
 
 	for _, secret := range rsp.Secrets {
-		length := len(*secret.Value)
+		length := len(secret.Value)
 
 		value := strings.Repeat("*", length)
 		if show {
-			value = *secret.Value
+			value = secret.Value
 		}
 
 		app := "unnamed"
-		if secret.App != nil {
-			app = *secret.App
+		if secret.App != "" {
+			app = secret.App
 		}
 
 		fmt.Fprintf(
 			writer,
-			"%s\t%s\t%s\t%d\t%s\n",
-			*secret.Id,
+			"%s\t%s\t%s\t%d\n",
+			secret.Id,
 			app,
-			*secret.Key,
 			length,
 			value,
 		)

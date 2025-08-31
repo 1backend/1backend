@@ -116,7 +116,7 @@ func (s *UserService) saveSelf(
 
 	usr.UpdatedAt = time.Now()
 
-	err := s.usersStore.Query(
+	err := s.userStore.Query(
 		datastore.Id(usr.Id),
 	).Update(usr)
 	if err != nil {

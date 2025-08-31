@@ -82,7 +82,7 @@ func (s *UserService) deleteUser(userId string) error {
 	if userId == "" {
 		return errors.New("no user id")
 	}
-	q := s.usersStore.Query(
+	q := s.userStore.Query(
 		datastore.Id(userId),
 	)
 	_, found, err := q.FindOne()
@@ -99,7 +99,7 @@ func (s *UserService) deleteUser(userId string) error {
 	}
 
 	if isAdminUser {
-		adminUsers, err := s.enrollsStore.Query(
+		adminUsers, err := s.enrollStore.Query(
 			datastore.Equals(datastore.Field("role"), usertypes.RoleAdmin),
 		).Find()
 		if err != nil {
@@ -117,7 +117,7 @@ func (s *UserService) deleteUser(userId string) error {
 }
 
 func (s *UserService) isAdmin(userId string) (bool, error) {
-	_, isAdminUser, err := s.enrollsStore.Query(
+	_, isAdminUser, err := s.enrollStore.Query(
 		datastore.Equals([]string{"userId"}, userId),
 		datastore.Equals([]string{"role"}, usertypes.RoleAdmin),
 	).FindOne()

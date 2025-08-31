@@ -24,7 +24,7 @@ var _ MappedNullable = &UserSvcSaveOrganizationResponse{}
 type UserSvcSaveOrganizationResponse struct {
 	Organization UserSvcOrganization `json:"organization"`
 	// Due to the nature of JWT tokens, the token must be refreshed after creating an organization, as dynamic organization roles are embedded in it.
-	Token UserSvcAuthToken `json:"token"`
+	Token UserSvcToken `json:"token"`
 }
 
 type _UserSvcSaveOrganizationResponse UserSvcSaveOrganizationResponse
@@ -33,7 +33,7 @@ type _UserSvcSaveOrganizationResponse UserSvcSaveOrganizationResponse
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcSaveOrganizationResponse(organization UserSvcOrganization, token UserSvcAuthToken) *UserSvcSaveOrganizationResponse {
+func NewUserSvcSaveOrganizationResponse(organization UserSvcOrganization, token UserSvcToken) *UserSvcSaveOrganizationResponse {
 	this := UserSvcSaveOrganizationResponse{}
 	this.Organization = organization
 	this.Token = token
@@ -73,9 +73,9 @@ func (o *UserSvcSaveOrganizationResponse) SetOrganization(v UserSvcOrganization)
 }
 
 // GetToken returns the Token field value
-func (o *UserSvcSaveOrganizationResponse) GetToken() UserSvcAuthToken {
+func (o *UserSvcSaveOrganizationResponse) GetToken() UserSvcToken {
 	if o == nil {
-		var ret UserSvcAuthToken
+		var ret UserSvcToken
 		return ret
 	}
 
@@ -84,7 +84,7 @@ func (o *UserSvcSaveOrganizationResponse) GetToken() UserSvcAuthToken {
 
 // GetTokenOk returns a tuple with the Token field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcSaveOrganizationResponse) GetTokenOk() (*UserSvcAuthToken, bool) {
+func (o *UserSvcSaveOrganizationResponse) GetTokenOk() (*UserSvcToken, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -92,7 +92,7 @@ func (o *UserSvcSaveOrganizationResponse) GetTokenOk() (*UserSvcAuthToken, bool)
 }
 
 // SetToken sets field value
-func (o *UserSvcSaveOrganizationResponse) SetToken(v UserSvcAuthToken) {
+func (o *UserSvcSaveOrganizationResponse) SetToken(v UserSvcToken) {
 	o.Token = v
 }
 

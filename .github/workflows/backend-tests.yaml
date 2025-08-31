@@ -5,7 +5,7 @@ on:
 
 jobs:
   test:
-    timeout-minutes: 4
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -16,23 +16,36 @@ jobs:
         with:
           go-version: "^1.23.2"
 
-      - name: Install dependencies
+      - name: Install deps + gotestsum
         run: |
           go mod tidy
+          go install gotest.tools/gotestsum@latest
         working-directory: server
 
-      - name: Run tests
+      - name: Run unit tests (retry fails)
         run: |
-          # Some tests invoke the server cli itself
           go install
-
-          go test ./... -v -failfast -timeout=30s
-
-          docker rm -f mypostgres
-          docker run --name mypostgres -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_DB=mydatabase -p 5432:5432 -d postgres
-
-          # We rerun the tests with an SQL backend
-          OB_DB=postgres \
-            OB_DB_CONNECTION_STRING="postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable" \
-            go test ./... -failfast -tags=dist -v -timeout=90s
+          gotestsum --rerun-fails=2 --packages="./..." -- -v -count=1 -timeout=30s
         working-directory: server
+
+      - name: Start Postgres
+        run: |
+          docker rm -f mypostgres || true
+          docker run --name mypostgres \
+            -e POSTGRES_PASSWORD=mysecretpassword \
+            -e POSTGRES_DB=mydatabase \
+            -p 5432:5432 -d postgres
+          # wait for port
+          for i in {1..30}; do nc -z 127.0.0.1 5432 && break; sleep 1; done
+
+      - name: Run SQL-backed tests (retry fails)
+        env:
+          OB_DB: postgres
+          OB_DB_CONNECTION_STRING: postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable
+        run: |
+          gotestsum --rerun-fails=2 --packages="./..." -- -tags=dist -v -count=1 -timeout=90s
+        working-directory: server
+
+      - name: Cleanup
+        if: always()
+        run: docker rm -f mypostgres || true

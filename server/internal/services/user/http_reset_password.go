@@ -86,7 +86,7 @@ func (s *UserService) ResetPassword(
 }
 
 func (s *UserService) resetPassword(userId, newPassword string) error {
-	q := s.usersStore.Query(
+	q := s.userStore.Query(
 		datastore.Id(userId),
 	)
 	userI, found, err := q.FindOne()
@@ -103,7 +103,7 @@ func (s *UserService) resetPassword(userId, newPassword string) error {
 		return err
 	}
 
-	passwordIs, err := s.passwordsStore.Query(
+	passwordIs, err := s.passwordStore.Query(
 		datastore.Equals(
 			datastore.Field("userId"), user.Id),
 	).OrderBy(
@@ -116,7 +116,7 @@ func (s *UserService) resetPassword(userId, newPassword string) error {
 		return errors.New("user password not found to update")
 	}
 
-	err = s.passwordsStore.Upsert(&usertypes.Password{
+	err = s.passwordStore.Upsert(&usertypes.Password{
 		Id:           sdk.Id("pw"),
 		PasswordHash: newPasswordHash,
 		UserId:       user.Id,

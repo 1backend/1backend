@@ -22,11 +22,14 @@ const (
 )
 
 type Secret struct {
-	Id  string `json:"id"`  // Id of the secret
-	App string `json:"app"` // App of the secret
+	InternalId string `json:"internalId,omitempty" swagger:"ignore"`
 
-	Key   string `json:"key"`   // Envar or slug-like key of the secret
-	Value string `json:"value"` // Secret Value
+	App string `json:"app" binding:"required"`
+
+	// Envar- or slug-like id of the secret
+	Id string `json:"id" binding:"required"`
+
+	Value string `json:"value" binding:"required"` // Secret Value
 
 	Readers  []string `json:"readers"`  // Slugs of services/users who can read the secret
 	Writers  []string `json:"writers"`  // Slugs of services/users who can modify the secret
@@ -39,21 +42,48 @@ type Secret struct {
 	// Whether the secret is encrypted
 	// All secrets are encrypted before written to the DB.
 	// This really only exists for write requests to know if the secret is already encrypted.
-	// Ie: while most `secret save [key] [value]` commands are probably not encrypted,
+	// Ie: while most `secret save [id] [value]` commands are probably not encrypted,
 	// File based saves, eg. `secret save secretA.yaml` are probably encrypted.
-	Encrypted bool `json:"encrypted"`
+	Encrypted bool `json:"encrypted,omitempty"`
 
-	Checksum          string            `json:"checksum"`                          // Checksum of the secret value
-	ChecksumAlgorithm ChecksumAlgorithm `json:"checksumAlgorithm" example:"CRC32"` // Algorithm used for the checksum (e.g., "CRC32")
+	Checksum          string            `json:"checksum,omitempty"`                          // Checksum of the secret value
+	ChecksumAlgorithm ChecksumAlgorithm `json:"checksumAlgorithm,omitempty" example:"CRC32"` // Algorithm used for the checksum (e.g., "CRC32")
 }
 
 func (s *Secret) GetId() string {
-	return s.Id
+	return s.InternalId
+}
+
+type SecretInput struct {
+	App string `json:"app,omitempty"`
+
+	// Envar- or slug-like id of the secret
+	Id string `json:"id" binding:"required"`
+
+	Value string `json:"value,omitempty"` // Secret Value
+
+	Readers  []string `json:"readers"`  // Slugs of services/users who can read the secret
+	Writers  []string `json:"writers"`  // Slugs of services/users who can modify the secret
+	Deleters []string `json:"deleters"` // Slugs of services/users who can delete the secret
+
+	CanChangeReaders  []string `json:"canChangeReaders"`  // Slugs of services/users who can change the readers list
+	CanChangeWriters  []string `json:"canChangeWriters"`  // Slugs of services/users who can change the writers list
+	CanChangeDeleters []string `json:"canChangeDeleters"` // Slugs of services/users who can change the deleters list
+
+	// Whether the secret is encrypted
+	// All secrets are encrypted before written to the DB.
+	// This really only exists for write requests to know if the secret is already encrypted.
+	// Ie: while most `secret save [id] [value]` commands are probably not encrypted,
+	// File based saves, eg. `secret save secretA.yaml` are probably encrypted.
+	Encrypted bool `json:"encrypted,omitempty"`
+
+	Checksum          string            `json:"checksum,omitempty"`                          // Checksum of the secret value
+	ChecksumAlgorithm ChecksumAlgorithm `json:"checksumAlgorithm,omitempty" example:"CRC32"` // Algorithm used for the checksum (e.g., "CRC32")
 }
 
 type ListSecretsRequest struct {
-	Key  string   `json:"key"`
-	Keys []string `json:"keys"`
+	Id  string   `json:"id"`
+	Ids []string `json:"ids"`
 }
 
 type ListSecretsResponse struct {
@@ -61,7 +91,7 @@ type ListSecretsResponse struct {
 }
 
 type SaveSecretsRequest struct {
-	Secrets []*Secret `json:"secrets"`
+	Secrets []*SecretInput `json:"secrets"`
 }
 
 type SaveSecretsResponse struct {
@@ -88,10 +118,8 @@ type DecryptValueResponse struct {
 }
 
 type RemoveSecretsRequest struct {
-	Key  string   `json:"key"`
-	Keys []string `json:"keys"`
-	Id   string   `json:"id"`
-	Ids  []string `json:"ids"`
+	Id  string   `json:"id"`
+	Ids []string `json:"ids"`
 }
 
 type RemoveSecretsResponse struct {

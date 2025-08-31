@@ -99,15 +99,15 @@ func (cs *SecretService) getSecrets(
 		datastore.Equals([]string{"app"}, app),
 	}
 
-	if req.Key != "" {
-		filters = append(filters, datastore.Equals([]string{"key"}, req.Key))
+	if req.Id != "" {
+		filters = append(filters, datastore.Equals([]string{"id"}, req.Id))
 	}
-	if req.Keys != nil {
-		keys := []any{}
-		for _, v := range req.Keys {
-			keys = append(keys, v)
+	if req.Ids != nil {
+		ids := []any{}
+		for _, v := range req.Ids {
+			ids = append(ids, v)
 		}
-		filters = append(filters, datastore.IsInList([]string{"key"}, keys...))
+		filters = append(filters, datastore.IsInList([]string{"id"}, ids...))
 	}
 
 	secretIs, err := cs.secretStore.Query(filters...).Find()

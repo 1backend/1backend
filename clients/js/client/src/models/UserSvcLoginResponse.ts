@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { UserSvcAuthToken } from './UserSvcAuthToken';
+import type { UserSvcToken } from './UserSvcToken';
 import {
-    UserSvcAuthTokenFromJSON,
-    UserSvcAuthTokenFromJSONTyped,
-    UserSvcAuthTokenToJSON,
-    UserSvcAuthTokenToJSONTyped,
-} from './UserSvcAuthToken';
+    UserSvcTokenFromJSON,
+    UserSvcTokenFromJSONTyped,
+    UserSvcTokenToJSON,
+    UserSvcTokenToJSONTyped,
+} from './UserSvcToken';
 
 /**
  * 
@@ -29,10 +29,10 @@ import {
 export interface UserSvcLoginResponse {
     /**
      * 
-     * @type {UserSvcAuthToken}
+     * @type {UserSvcToken}
      * @memberof UserSvcLoginResponse
      */
-    token?: UserSvcAuthToken;
+    token?: UserSvcToken;
 }
 
 /**
@@ -52,7 +52,7 @@ export function UserSvcLoginResponseFromJSONTyped(json: any, ignoreDiscriminator
     }
     return {
         
-        'token': json['token'] == null ? undefined : UserSvcAuthTokenFromJSON(json['token']),
+        'token': json['token'] == null ? undefined : UserSvcTokenFromJSON(json['token']),
     };
 }
 
@@ -67,7 +67,7 @@ export function UserSvcLoginResponseToJSONTyped(value?: UserSvcLoginResponse | n
 
     return {
         
-        'token': UserSvcAuthTokenToJSON(value['token']),
+        'token': UserSvcTokenToJSON(value['token']),
     };
 }
 

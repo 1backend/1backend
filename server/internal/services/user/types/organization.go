@@ -11,29 +11,12 @@ import (
 	"time"
 )
 
-type Membership struct {
-	Id  string `json:"id,omitempty"`
-	App string `json:"app,omitempty" example:"unnamed"`
-
-	CreatedAt time.Time  `json:"createdAt" binding:"required"`
-	UpdatedAt time.Time  `json:"updatedAt" binding:"required"`
-	DeletedAt *time.Time `json:"deletedAt,omitempty"`
-
-	OrganizationId string `json:"organizationId,omitempty"`
-	UserId         string `json:"userId,omitempty"`
-
-	// Active/default organization for a user.
-	// There can only be one per user.
-	Active bool `json:"active,omitempty"`
-}
-
-func (o *Membership) GetId() string {
-	return o.Id
-}
-
 type Organization struct {
-	Id  string `json:"id" binding:"required"`
+	InternalId string `json:"internalId,omitempty" swagger:"ignore"`
+
 	App string `json:"app,omitempty" example:"unnamed"`
+
+	Id string `json:"id" binding:"required"`
 
 	CreatedAt time.Time  `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time  `json:"updatedAt" binding:"required"`
@@ -62,6 +45,11 @@ type SaveOrganizationRequest struct {
 	Name string `json:"name,omitempty"`
 
 	ThumbnailFileId string `json:"thumbnailFileId,omitempty" example:"file_fQDxusW8og"`
+
+	// If true, the caller (the user making the request) will be assigned
+	// the admin role for the organization.
+	// If false, no Membership or Enroll will be created.
+	AssignCaller bool `json:"assignCaller,omitempty" example:"true"`
 }
 
 type SaveOrganizationResponse struct {
@@ -69,7 +57,7 @@ type SaveOrganizationResponse struct {
 
 	// Due to the nature of JWT tokens, the token must be refreshed after
 	// creating an organization, as dynamic organization roles are embedded in it.
-	Token AuthToken `json:"token" binding:"required"`
+	Token Token `json:"token" binding:"required"`
 }
 
 type ListOrganizationsRequest struct {
@@ -84,16 +72,4 @@ type ListOrganizationsRequest struct {
 
 type ListOrganizationsResponse struct {
 	Organizations []Organization `json:"organizations"`
-}
-
-type SaveMembershipRequest struct {
-}
-
-type SaveMembershipResponse struct {
-}
-
-type DeleteMembershipRequest struct {
-}
-
-type DeleteMembershipResponse struct {
 }

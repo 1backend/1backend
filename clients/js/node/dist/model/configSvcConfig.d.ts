@@ -10,17 +10,17 @@
  * Do not edit the class manually.
  */
 export declare class ConfigSvcConfig {
-    'app'?: string;
+    'app': string;
     'createdAt': string;
     'data': {
         [key: string]: any;
     };
     'dataJson': string;
     /**
-    * Id of the config. It is deterministically created from the app and the key.
+    * CamelCased slugs of the config owners
     */
     'id': string;
-    'key'?: string;
+    'internalId'?: string;
     'updatedAt': string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{

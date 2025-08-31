@@ -88,6 +88,7 @@ func TestStart(t *testing.T) {
 		rsp, _, err := adminClient.RegistrySvcAPI.ListNodes(context.Background()).
 			Body(openapi.RegistrySvcListNodesRequest{}).
 			Execute()
+
 		require.NoError(t, err)
 
 		if len(rsp.Nodes) == 2 {

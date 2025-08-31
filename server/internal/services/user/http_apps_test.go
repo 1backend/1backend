@@ -39,7 +39,7 @@ func TestAppRoles(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, rsp.Token)
 		require.NotNil(t, rsp.Token.App)
-		require.Equal(t, "unnamed", *rsp.Token.App)
+		require.Equal(t, "unnamed", rsp.Token.App)
 		userId = rsp.Token.UserId
 	})
 
@@ -109,7 +109,7 @@ func TestAppRoles(t *testing.T) {
 			},
 		).Execute()
 		require.NoError(t, err)
-		require.Equal(t, "helloapp", *rsp.Token.App)
+		require.Equal(t, "helloapp", rsp.Token.App)
 
 		clientFactory.Client(client.WithToken(rsp.Token.Token)).
 			UserSvcAPI.SaveEnrolls(ctx).
@@ -132,7 +132,7 @@ func TestAppRoles(t *testing.T) {
 				},
 			).Execute()
 			require.NoError(t, err)
-			require.Equal(t, "helloapp", *rsp.Token.App)
+			require.Equal(t, "helloapp", rsp.Token.App)
 
 			selfRsp, _, err := clientFactory.Client(client.WithToken(rsp.Token.Token)).
 				UserSvcAPI.ReadSelf(ctx).Execute()

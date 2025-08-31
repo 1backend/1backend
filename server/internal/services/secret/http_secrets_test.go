@@ -41,7 +41,7 @@ func TestSecretService(t *testing.T) {
 	t.Run("reading non-existent secret", func(t *testing.T) {
 		readRsp, _, err := client1.SecretSvcAPI.ListSecrets(ctx).
 			Body(openapi.SecretSvcListSecretsRequest{
-				Key: openapi.PtrString("nonexistent"),
+				Id: openapi.PtrString("nonexistent"),
 			}).
 			Execute()
 
@@ -52,9 +52,9 @@ func TestSecretService(t *testing.T) {
 	t.Run("creating a secret without prefix as user", func(t *testing.T) {
 		_, _, err := client1.SecretSvcAPI.SaveSecrets(ctx).
 			Body(openapi.SecretSvcSaveSecretsRequest{
-				Secrets: []openapi.SecretSvcSecret{
+				Secrets: []openapi.SecretSvcSecretInput{
 					{
-						Key:   openapi.PtrString("non-prefixed"),
+						Id:    "non-prefixed",
 						Value: openapi.PtrString("value"),
 					}},
 			}).
@@ -66,9 +66,9 @@ func TestSecretService(t *testing.T) {
 	t.Run("as an admin trying to claim prefixed works", func(t *testing.T) {
 		_, _, err := adminClient.SecretSvcAPI.SaveSecrets(ctx).
 			Body(openapi.SecretSvcSaveSecretsRequest{
-				Secrets: []openapi.SecretSvcSecret{
+				Secrets: []openapi.SecretSvcSecretInput{
 					{
-						Key:   openapi.PtrString("non-prefixed"),
+						Id:    "non-prefixed",
 						Value: openapi.PtrString("value"),
 					}},
 			}).
@@ -79,7 +79,7 @@ func TestSecretService(t *testing.T) {
 	t.Run("user cannot read secret owned by admin", func(t *testing.T) {
 		readRsp, _, err := client1.SecretSvcAPI.ListSecrets(ctx).
 			Body(openapi.SecretSvcListSecretsRequest{
-				Key: openapi.PtrString("non-prefixed"),
+				Id: openapi.PtrString("non-prefixed"),
 			}).
 			Execute()
 
@@ -90,7 +90,7 @@ func TestSecretService(t *testing.T) {
 	t.Run("user 1 can write and read, but user 2 will not have access", func(t *testing.T) {
 		readRsp, _, err := client1.SecretSvcAPI.ListSecrets(ctx).
 			Body(openapi.SecretSvcListSecretsRequest{
-				Key: openapi.PtrString("test-user-slug-0/non-existent"),
+				Id: openapi.PtrString("test-user-slug-0/non-existent"),
 			}).
 			Execute()
 
@@ -99,9 +99,9 @@ func TestSecretService(t *testing.T) {
 
 		_, _, err = client1.SecretSvcAPI.SaveSecrets(ctx).
 			Body(openapi.SecretSvcSaveSecretsRequest{
-				Secrets: []openapi.SecretSvcSecret{
+				Secrets: []openapi.SecretSvcSecretInput{
 					{
-						Key:   openapi.PtrString("test-user-slug-0/non-existent"),
+						Id:    "test-user-slug-0/non-existent",
 						Value: openapi.PtrString("value"),
 					}},
 			}).
@@ -111,7 +111,7 @@ func TestSecretService(t *testing.T) {
 
 		readRsp, _, err = client1.SecretSvcAPI.ListSecrets(ctx).
 			Body(openapi.SecretSvcListSecretsRequest{
-				Key: openapi.PtrString("test-user-slug-0/non-existent"),
+				Id: openapi.PtrString("test-user-slug-0/non-existent"),
 			}).
 			Execute()
 
@@ -120,7 +120,7 @@ func TestSecretService(t *testing.T) {
 
 		readRsp, _, err = client2.SecretSvcAPI.ListSecrets(ctx).
 			Body(openapi.SecretSvcListSecretsRequest{
-				Key: openapi.PtrString("test-user-slug-1/non-existent"),
+				Id: openapi.PtrString("test-user-slug-1/non-existent"),
 			}).
 			Execute()
 
@@ -138,9 +138,9 @@ func TestSecretService(t *testing.T) {
 
 		_, _, err = client1.SecretSvcAPI.SaveSecrets(ctx).
 			Body(openapi.SecretSvcSaveSecretsRequest{
-				Secrets: []openapi.SecretSvcSecret{
+				Secrets: []openapi.SecretSvcSecretInput{
 					{
-						Key:       openapi.PtrString("test-user-slug-0/enc1"),
+						Id:        "test-user-slug-0/enc1",
 						Value:     rsp.Value,
 						Encrypted: openapi.PtrBool(true),
 					}},
@@ -150,23 +150,23 @@ func TestSecretService(t *testing.T) {
 
 		readRsp, _, err := client1.SecretSvcAPI.ListSecrets(ctx).
 			Body(openapi.SecretSvcListSecretsRequest{
-				Key: openapi.PtrString("test-user-slug-0/enc1"),
+				Id: openapi.PtrString("test-user-slug-0/enc1"),
 			}).
 			Execute()
 		require.NoError(t, err)
-		require.Equal(t, 1, len(readRsp.Secrets))
-		require.Equal(t, "value", *readRsp.Secrets[0].Value)
+		require.Equal(t, 1, len(readRsp.Secrets), readRsp)
+		require.Equal(t, "value", readRsp.Secrets[0].Value)
 		//require.Equal(t, true, *readRsp.Secrets[0].Encrypted)
-		//require.Equal(t, "test-user-slug-0/enc1", *readRsp.Secrets[0].Key)
+		//require.Equal(t, "test-user-slug-0/enc1", *readRsp.Secrets[0].Id)
 
 	})
 
 	t.Run("list multiple", func(t *testing.T) {
 		_, _, err := adminClient.SecretSvcAPI.SaveSecrets(ctx).
 			Body(openapi.SecretSvcSaveSecretsRequest{
-				Secrets: []openapi.SecretSvcSecret{
+				Secrets: []openapi.SecretSvcSecretInput{
 					{
-						Key:   openapi.PtrString("a"),
+						Id:    "a",
 						Value: openapi.PtrString("value"),
 					}},
 			}).
@@ -175,9 +175,9 @@ func TestSecretService(t *testing.T) {
 
 		_, _, err = adminClient.SecretSvcAPI.SaveSecrets(ctx).
 			Body(openapi.SecretSvcSaveSecretsRequest{
-				Secrets: []openapi.SecretSvcSecret{
+				Secrets: []openapi.SecretSvcSecretInput{
 					{
-						Key:   openapi.PtrString("b"),
+						Id:    "b",
 						Value: openapi.PtrString("value"),
 					}},
 			}).
@@ -186,13 +186,13 @@ func TestSecretService(t *testing.T) {
 
 		readRsp, _, err := adminClient.SecretSvcAPI.ListSecrets(ctx).
 			Body(openapi.SecretSvcListSecretsRequest{
-				Keys: []string{"a", "b"},
+				Ids: []string{"a", "b"},
 			}).
 			Execute()
 
 		require.NoError(t, err)
 		require.Equal(t, 2, len(readRsp.Secrets))
-		require.Equal(t, "value", *readRsp.Secrets[0].Value)
+		require.Equal(t, "value", readRsp.Secrets[0].Value)
 	})
 
 }

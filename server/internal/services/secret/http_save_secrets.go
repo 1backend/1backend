@@ -109,7 +109,7 @@ func (cs *SecretService) SaveSecrets(
 // @todo here canSaveUnprefixed is an approximation of whether the user is an admin or not.
 func (cs *SecretService) saveSecrets(
 	ctx context.Context,
-	ss []*secret.Secret,
+	ss []*secret.SecretInput,
 	canSaveUnprefixed bool,
 	userSlug string,
 ) error {
@@ -123,16 +123,16 @@ func (cs *SecretService) saveSecrets(
 
 		secretI, found, err := cs.secretStore.Query(
 			datastore.Equals([]string{"app"}, s.App),
-			datastore.Equals([]string{"key"}, s.Key),
+			datastore.Equals([]string{"id"}, s.Id),
 		).
 			FindOne()
 		if err != nil {
 			return err
 		}
 		if !found {
-			// When secret key does not exist, it can be "claimed" by any authorized user
-			// but non admins can only claim keys prefixed with their user slug
-			if !canSaveUnprefixed && !strings.HasPrefix(s.Key, userSlug) {
+			// When secret id does not exist, it can be "claimed" by any authorized user
+			// but non admins can only claim ids prefixed with their user slug
+			if !canSaveUnprefixed && !strings.HasPrefix(s.Id, userSlug) {
 				return errors.New("users can only claim secrets prefixed with their user slug")
 			}
 			if s.Id == "" {
@@ -167,20 +167,37 @@ func (cs *SecretService) saveSecrets(
 					return errors.Wrap(err, "failed to encrypt secret")
 				}
 			}
-			err = cs.checkSum(s)
+
+			secr := &secret.Secret{
+				InternalId:        fmt.Sprintf("%s_%s", s.App, s.Id),
+				App:               s.App,
+				Id:                s.Id,
+				Value:             s.Value,
+				Readers:           s.Readers,
+				Writers:           s.Writers,
+				Deleters:          s.Deleters,
+				CanChangeReaders:  s.CanChangeReaders,
+				CanChangeWriters:  s.CanChangeWriters,
+				CanChangeDeleters: s.CanChangeDeleters,
+				Encrypted:         s.Encrypted,
+				Checksum:          s.Checksum,
+				ChecksumAlgorithm: s.ChecksumAlgorithm,
+			}
+
+			err = cs.checkSum(secr)
 			if err != nil {
 				return errors.Wrap(err, "checksum failed")
 			}
 
-			return cs.secretStore.Upsert(s)
+			return cs.secretStore.Upsert(secr)
 		}
 
-		secret := secretI.(*secret.Secret)
+		secr := secretI.(*secret.Secret)
 
 		// When a secret is found, it can only be modified by authorized users
 		canSave := canSaveUnprefixed
 		if !canSave {
-			for _, writer := range secret.Writers {
+			for _, writer := range secr.Writers {
 				if writer == userSlug {
 					canSave = true
 					break
@@ -199,12 +216,28 @@ func (cs *SecretService) saveSecrets(
 			}
 		}
 
-		err = cs.checkSum(s)
+		secr = &secret.Secret{
+			InternalId:        secr.InternalId,
+			App:               secr.App,
+			Id:                secr.Id,
+			Value:             s.Value,
+			Readers:           secr.Readers,
+			Writers:           secr.Writers,
+			Deleters:          secr.Deleters,
+			CanChangeReaders:  secr.CanChangeReaders,
+			CanChangeWriters:  secr.CanChangeWriters,
+			CanChangeDeleters: secr.CanChangeDeleters,
+			Encrypted:         s.Encrypted,
+			Checksum:          s.Checksum,
+			ChecksumAlgorithm: s.ChecksumAlgorithm,
+		}
+
+		err = cs.checkSum(secr)
 		if err != nil {
 			return errors.Wrap(err, "checksum failed")
 		}
 
-		err = cs.secretStore.Upsert(s)
+		err = cs.secretStore.Upsert(secr)
 		if err != nil {
 			return err
 		}

@@ -21,8 +21,8 @@ var _ MappedNullable = &ConfigSvcListConfigsRequest{}
 // ConfigSvcListConfigsRequest struct for ConfigSvcListConfigsRequest
 type ConfigSvcListConfigsRequest struct {
 	App *string `json:"app,omitempty"`
-	// Keys are camelCased slugs of the config owners. Specifying only the keys will mean all of the config will be returned for that key.  If the configs are large, consider using the `Selector` request field.
-	Keys []string `json:"keys,omitempty"`
+	// Ids are camelCased slugs of the config owners. Specifying only the ids will mean all of the config will be returned for that key.  If the configs are large, consider using the `Selector` request field.
+	Ids []string `json:"ids,omitempty"`
 	// Selector allows dotPath-based filtering per config owner. Example: {   \"user1\": [\"settings.theme\", \"featureFlags.enableNewUI\"],   \"user2\": [\"settings.language\"] }
 	Selector *map[string][]string `json:"selector,omitempty"`
 }
@@ -76,36 +76,36 @@ func (o *ConfigSvcListConfigsRequest) SetApp(v string) {
 	o.App = &v
 }
 
-// GetKeys returns the Keys field value if set, zero value otherwise.
-func (o *ConfigSvcListConfigsRequest) GetKeys() []string {
-	if o == nil || IsNil(o.Keys) {
+// GetIds returns the Ids field value if set, zero value otherwise.
+func (o *ConfigSvcListConfigsRequest) GetIds() []string {
+	if o == nil || IsNil(o.Ids) {
 		var ret []string
 		return ret
 	}
-	return o.Keys
+	return o.Ids
 }
 
-// GetKeysOk returns a tuple with the Keys field value if set, nil otherwise
+// GetIdsOk returns a tuple with the Ids field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigSvcListConfigsRequest) GetKeysOk() ([]string, bool) {
-	if o == nil || IsNil(o.Keys) {
+func (o *ConfigSvcListConfigsRequest) GetIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Ids) {
 		return nil, false
 	}
-	return o.Keys, true
+	return o.Ids, true
 }
 
-// HasKeys returns a boolean if a field has been set.
-func (o *ConfigSvcListConfigsRequest) HasKeys() bool {
-	if o != nil && !IsNil(o.Keys) {
+// HasIds returns a boolean if a field has been set.
+func (o *ConfigSvcListConfigsRequest) HasIds() bool {
+	if o != nil && !IsNil(o.Ids) {
 		return true
 	}
 
 	return false
 }
 
-// SetKeys gets a reference to the given []string and assigns it to the Keys field.
-func (o *ConfigSvcListConfigsRequest) SetKeys(v []string) {
-	o.Keys = v
+// SetIds gets a reference to the given []string and assigns it to the Ids field.
+func (o *ConfigSvcListConfigsRequest) SetIds(v []string) {
+	o.Ids = v
 }
 
 // GetSelector returns the Selector field value if set, zero value otherwise.
@@ -153,8 +153,8 @@ func (o ConfigSvcListConfigsRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.App) {
 		toSerialize["app"] = o.App
 	}
-	if !IsNil(o.Keys) {
-		toSerialize["keys"] = o.Keys
+	if !IsNil(o.Ids) {
+		toSerialize["ids"] = o.Ids
 	}
 	if !IsNil(o.Selector) {
 		toSerialize["selector"] = o.Selector

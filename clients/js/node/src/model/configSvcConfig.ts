@@ -13,15 +13,15 @@
 import { RequestFile } from './models';
 
 export class ConfigSvcConfig {
-    'app'?: string;
+    'app': string;
     'createdAt': string;
     'data': { [key: string]: any; };
     'dataJson': string;
     /**
-    * Id of the config. It is deterministically created from the app and the key.
+    * CamelCased slugs of the config owners
     */
     'id': string;
-    'key'?: string;
+    'internalId'?: string;
     'updatedAt': string;
 
     static discriminator: string | undefined = undefined;
@@ -53,8 +53,8 @@ export class ConfigSvcConfig {
             "type": "string"
         },
         {
-            "name": "key",
-            "baseName": "key",
+            "name": "internalId",
+            "baseName": "internalId",
             "type": "string"
         },
         {

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"strings"
 	"text/tabwriter"
 
 	"github.com/1backend/1backend/cli/oo/util"
@@ -18,9 +17,9 @@ import (
 func List(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
 
-	var keys []string
+	var ids []string
 	if len(args) > 0 {
-		keys = args
+		ids = args
 	}
 
 	url, token, err := util.GetSelectedUrlAndToken()
@@ -31,7 +30,7 @@ func List(cmd *cobra.Command, args []string) error {
 	cf := client.NewApiClientFactory(url)
 
 	req := openapi.ConfigSvcListConfigsRequest{
-		Keys: keys,
+		Ids: ids,
 	}
 
 	rsp, _, err := cf.Client(client.WithToken(token)).
@@ -47,7 +46,7 @@ func List(cmd *cobra.Command, args []string) error {
 
 	fmt.Fprintln(
 		writer,
-		"CONFIG KEY\tAPP\tJSON",
+		"CONFIG ID\tAPP\tJSON",
 	)
 
 	for _, config := range rsp.Configs {
@@ -56,25 +55,11 @@ func List(cmd *cobra.Command, args []string) error {
 			return errors.Wrapf(err, "failed to marshal config data for ID '%s'", config)
 		}
 
-		// @todo We should definitely not rely on the ID format here,
-		// we only do it for backwards compatibility.
-		parts := strings.Split(config.Id, "_")
-
-		key := config.Key
-		if key == nil {
-			key = &parts[1]
-		}
-
-		app := config.App
-		if app == nil {
-			app = &parts[0]
-		}
-
 		fmt.Fprintf(
 			writer,
 			"%s\t%s\t%s\n",
-			*key,
-			*app,
+			config.Id,
+			config.App,
 			jsonValue,
 		)
 	}

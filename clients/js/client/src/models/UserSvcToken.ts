@@ -16,9 +16,9 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface UserSvcAuthToken
+ * @interface UserSvcToken
  */
-export interface UserSvcAuthToken {
+export interface UserSvcToken {
     /**
      * Active tokens contain the most up-to-date information.
      * When a user's role changes—due to role assignment, organization
@@ -34,25 +34,25 @@ export interface UserSvcAuthToken {
      * that have been recently refreshed (see `lastRefreshedAt` field) and are still in use are retained for further refreshing.
      * (Unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, in which case old tokens can be refreshed indefinitely.)
      * @type {boolean}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     active?: boolean;
     /**
      * 
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
-    app?: string;
+    app: string;
     /**
      * 
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     createdAt: string;
     /**
      * 
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     deletedAt?: string;
     /**
@@ -60,26 +60,32 @@ export interface UserSvcAuthToken {
      * This in combination with LastRefreshedAt can be used to
      * determine if the token is still in use, and lets us prune unused tokens.
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     device: string;
     /**
      * 
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     expiresAt: string;
     /**
      * 
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSvcToken
+     */
+    internalId?: string;
     /**
      * The last time the token was refreshed.
      * This is used to determine if the token is still in use.
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     lastRefreshedAt?: string;
     /**
@@ -93,27 +99,28 @@ export interface UserSvcAuthToken {
      *   - "user-svc:user"
      *   - "user-svc:org:{org_dC4K7NNDCG}:user"
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     token: string;
     /**
      * 
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     updatedAt: string;
     /**
      * 
      * @type {string}
-     * @memberof UserSvcAuthToken
+     * @memberof UserSvcToken
      */
     userId: string;
 }
 
 /**
- * Check if a given object implements the UserSvcAuthToken interface.
+ * Check if a given object implements the UserSvcToken interface.
  */
-export function instanceOfUserSvcAuthToken(value: object): value is UserSvcAuthToken {
+export function instanceOfUserSvcToken(value: object): value is UserSvcToken {
+    if (!('app' in value) || value['app'] === undefined) return false;
     if (!('createdAt' in value) || value['createdAt'] === undefined) return false;
     if (!('device' in value) || value['device'] === undefined) return false;
     if (!('expiresAt' in value) || value['expiresAt'] === undefined) return false;
@@ -124,23 +131,24 @@ export function instanceOfUserSvcAuthToken(value: object): value is UserSvcAuthT
     return true;
 }
 
-export function UserSvcAuthTokenFromJSON(json: any): UserSvcAuthToken {
-    return UserSvcAuthTokenFromJSONTyped(json, false);
+export function UserSvcTokenFromJSON(json: any): UserSvcToken {
+    return UserSvcTokenFromJSONTyped(json, false);
 }
 
-export function UserSvcAuthTokenFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcAuthToken {
+export function UserSvcTokenFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserSvcToken {
     if (json == null) {
         return json;
     }
     return {
         
         'active': json['active'] == null ? undefined : json['active'],
-        'app': json['app'] == null ? undefined : json['app'],
+        'app': json['app'],
         'createdAt': json['createdAt'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'device': json['device'],
         'expiresAt': json['expiresAt'],
         'id': json['id'],
+        'internalId': json['internalId'] == null ? undefined : json['internalId'],
         'lastRefreshedAt': json['lastRefreshedAt'] == null ? undefined : json['lastRefreshedAt'],
         'token': json['token'],
         'updatedAt': json['updatedAt'],
@@ -148,11 +156,11 @@ export function UserSvcAuthTokenFromJSONTyped(json: any, ignoreDiscriminator: bo
     };
 }
 
-export function UserSvcAuthTokenToJSON(json: any): UserSvcAuthToken {
-    return UserSvcAuthTokenToJSONTyped(json, false);
+export function UserSvcTokenToJSON(json: any): UserSvcToken {
+    return UserSvcTokenToJSONTyped(json, false);
 }
 
-export function UserSvcAuthTokenToJSONTyped(value?: UserSvcAuthToken | null, ignoreDiscriminator: boolean = false): any {
+export function UserSvcTokenToJSONTyped(value?: UserSvcToken | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
@@ -166,6 +174,7 @@ export function UserSvcAuthTokenToJSONTyped(value?: UserSvcAuthToken | null, ign
         'device': value['device'],
         'expiresAt': value['expiresAt'],
         'id': value['id'],
+        'internalId': value['internalId'],
         'lastRefreshedAt': value['lastRefreshedAt'],
         'token': value['token'],
         'updatedAt': value['updatedAt'],

@@ -135,9 +135,9 @@ func (s *UserService) register(
 	password,
 	name string,
 	roles []string,
-) (*user.AuthToken, error) {
+) (*user.Token, error) {
 
-	_, alreadyExists, err := s.usersStore.Query(
+	_, alreadyExists, err := s.userStore.Query(
 		datastore.Equals(datastore.Field("slug"), slug),
 	).FindOne()
 	if err != nil {
@@ -161,7 +161,7 @@ func (s *UserService) register(
 		Slug:      slug,
 	}
 
-	err = s.passwordsStore.Upsert(&user.Password{
+	err = s.passwordStore.Upsert(&user.Password{
 		Id:           sdk.Id("pw"),
 		PasswordHash: passwordHash,
 		UserId:       usr.Id,
@@ -171,7 +171,7 @@ func (s *UserService) register(
 		return nil, errors.Wrap(err, "failed to save password")
 	}
 
-	err = s.usersStore.Create(usr)
+	err = s.userStore.Create(usr)
 	if err != nil {
 		return nil, err
 	}
@@ -192,7 +192,7 @@ func (s *UserService) register(
 		return nil, err
 	}
 
-	return token, s.authTokensStore.Create(token)
+	return token, s.tokenStore.Create(token)
 }
 
 func (s *UserService) hashPassword(password string) (string, error) {

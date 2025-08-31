@@ -10,17 +10,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Remove --key=key1 --id=id1 --id=id2
+// Remove --id=id1 --id=id1 --id=id2
 func Remove(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
 
-	// Retrieve flags for keys and ids
-	keys, _ := cmd.Flags().GetStringArray("key")
+	// Retrieve flags for ids and ids
 	ids, _ := cmd.Flags().GetStringArray("id")
 
-	// Ensure that at least one key or id is specified
-	if len(keys) == 0 && len(ids) == 0 {
-		return fmt.Errorf("at least one --key or --id must be specified")
+	// Ensure that at least one id or id is specified
+	if len(ids) == 0 && len(ids) == 0 {
+		return fmt.Errorf("at least one --id or --id must be specified")
 	}
 
 	url, token, err := util.GetSelectedUrlAndToken()
@@ -33,8 +32,7 @@ func Remove(cmd *cobra.Command, args []string) error {
 	_, _, err = cf.Client(client.WithToken(token)).
 		SecretSvcAPI.RemoveSecrets(ctx).
 		Body(openapi.SecretSvcRemoveSecretsRequest{
-			Keys: keys,
-			Ids:  ids,
+			Ids: ids,
 		}).
 		Execute()
 	if err != nil {

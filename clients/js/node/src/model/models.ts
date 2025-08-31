@@ -175,11 +175,11 @@ export * from './secretSvcListSecretsResponse';
 export * from './secretSvcRemoveSecretsRequest';
 export * from './secretSvcSaveSecretsRequest';
 export * from './secretSvcSecret';
+export * from './secretSvcSecretInput';
 export * from './sourceSvcCheckoutRepoRequest';
 export * from './sourceSvcCheckoutRepoResponse';
 export * from './sourceSvcErrorResponse';
 export * from './stableDiffusionTxt2ImgRequest';
-export * from './userSvcAuthToken';
 export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';
 export * from './userSvcContactInput';
@@ -221,6 +221,7 @@ export * from './userSvcSaveOrganizationResponse';
 export * from './userSvcSavePermitsRequest';
 export * from './userSvcSaveSelfRequest';
 export * from './userSvcSaveUserRequest';
+export * from './userSvcToken';
 export * from './userSvcUser';
 export * from './userSvcUserInput';
 export * from './userSvcUserRecord';
@@ -413,11 +414,11 @@ import { SecretSvcListSecretsResponse } from './secretSvcListSecretsResponse';
 import { SecretSvcRemoveSecretsRequest } from './secretSvcRemoveSecretsRequest';
 import { SecretSvcSaveSecretsRequest } from './secretSvcSaveSecretsRequest';
 import { SecretSvcSecret } from './secretSvcSecret';
+import { SecretSvcSecretInput } from './secretSvcSecretInput';
 import { SourceSvcCheckoutRepoRequest } from './sourceSvcCheckoutRepoRequest';
 import { SourceSvcCheckoutRepoResponse } from './sourceSvcCheckoutRepoResponse';
 import { SourceSvcErrorResponse } from './sourceSvcErrorResponse';
 import { StableDiffusionTxt2ImgRequest } from './stableDiffusionTxt2ImgRequest';
-import { UserSvcAuthToken } from './userSvcAuthToken';
 import { UserSvcChangePasswordRequest } from './userSvcChangePasswordRequest';
 import { UserSvcContact } from './userSvcContact';
 import { UserSvcContactInput } from './userSvcContactInput';
@@ -459,6 +460,7 @@ import { UserSvcSaveOrganizationResponse } from './userSvcSaveOrganizationRespon
 import { UserSvcSavePermitsRequest } from './userSvcSavePermitsRequest';
 import { UserSvcSaveSelfRequest } from './userSvcSaveSelfRequest';
 import { UserSvcSaveUserRequest } from './userSvcSaveUserRequest';
+import { UserSvcToken } from './userSvcToken';
 import { UserSvcUser } from './userSvcUser';
 import { UserSvcUserInput } from './userSvcUserInput';
 import { UserSvcUserRecord } from './userSvcUserRecord';
@@ -656,11 +658,11 @@ let typeMap: {[index: string]: any} = {
     "SecretSvcRemoveSecretsRequest": SecretSvcRemoveSecretsRequest,
     "SecretSvcSaveSecretsRequest": SecretSvcSaveSecretsRequest,
     "SecretSvcSecret": SecretSvcSecret,
+    "SecretSvcSecretInput": SecretSvcSecretInput,
     "SourceSvcCheckoutRepoRequest": SourceSvcCheckoutRepoRequest,
     "SourceSvcCheckoutRepoResponse": SourceSvcCheckoutRepoResponse,
     "SourceSvcErrorResponse": SourceSvcErrorResponse,
     "StableDiffusionTxt2ImgRequest": StableDiffusionTxt2ImgRequest,
-    "UserSvcAuthToken": UserSvcAuthToken,
     "UserSvcChangePasswordRequest": UserSvcChangePasswordRequest,
     "UserSvcContact": UserSvcContact,
     "UserSvcContactInput": UserSvcContactInput,
@@ -700,6 +702,7 @@ let typeMap: {[index: string]: any} = {
     "UserSvcSavePermitsRequest": UserSvcSavePermitsRequest,
     "UserSvcSaveSelfRequest": UserSvcSaveSelfRequest,
     "UserSvcSaveUserRequest": UserSvcSaveUserRequest,
+    "UserSvcToken": UserSvcToken,
     "UserSvcUser": UserSvcUser,
     "UserSvcUserInput": UserSvcUserInput,
     "UserSvcUserRecord": UserSvcUserRecord,

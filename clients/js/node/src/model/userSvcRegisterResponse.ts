@@ -11,10 +11,10 @@
  */
 
 import { RequestFile } from './models';
-import { UserSvcAuthToken } from './userSvcAuthToken';
+import { UserSvcToken } from './userSvcToken';
 
 export class UserSvcRegisterResponse {
-    'token'?: UserSvcAuthToken;
+    'token'?: UserSvcToken;
 
     static discriminator: string | undefined = undefined;
 
@@ -22,7 +22,7 @@ export class UserSvcRegisterResponse {
         {
             "name": "token",
             "baseName": "token",
-            "type": "UserSvcAuthToken"
+            "type": "UserSvcToken"
         }    ];
 
     static getAttributeTypeMap() {

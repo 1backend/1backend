@@ -20,13 +20,13 @@ export interface SecretSvcListSecretsRequest {
      * @type {string}
      * @memberof SecretSvcListSecretsRequest
      */
-    key?: string;
+    id?: string;
     /**
      *
      * @type {Array<string>}
      * @memberof SecretSvcListSecretsRequest
      */
-    keys?: Array<string>;
+    ids?: Array<string>;
 }
 /**
  * Check if a given object implements the SecretSvcListSecretsRequest interface.

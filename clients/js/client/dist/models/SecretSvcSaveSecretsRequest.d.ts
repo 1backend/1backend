@@ -9,7 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import type { SecretSvcSecret } from './SecretSvcSecret';
+import type { SecretSvcSecretInput } from './SecretSvcSecretInput';
 /**
  *
  * @export
@@ -18,10 +18,10 @@ import type { SecretSvcSecret } from './SecretSvcSecret';
 export interface SecretSvcSaveSecretsRequest {
     /**
      *
-     * @type {Array<SecretSvcSecret>}
+     * @type {Array<SecretSvcSecretInput>}
      * @memberof SecretSvcSaveSecretsRequest
      */
-    secrets?: Array<SecretSvcSecret>;
+    secrets?: Array<SecretSvcSecretInput>;
 }
 /**
  * Check if a given object implements the SecretSvcSaveSecretsRequest interface.

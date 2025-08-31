@@ -31,7 +31,7 @@ func TestRevokeTokens(t *testing.T) {
 	client2 := manyClients[1]
 	client3 := manyClients[2]
 
-	t.Run("revoke nonexisten device tokens", func(t *testing.T) {
+	t.Run("revoke nonexistent device tokens", func(t *testing.T) {
 		t.Run("revoking non-existent device throws no error", func(t *testing.T) {
 			_, hrsp, err := client1.UserSvcAPI.RevokeTokens(
 				context.Background(),
@@ -40,6 +40,7 @@ func TestRevokeTokens(t *testing.T) {
 					Device: openapi.PtrString("nonexistent-device"),
 				},
 			).Execute()
+
 			require.NoError(t, err, hrsp)
 		})
 
@@ -47,6 +48,7 @@ func TestRevokeTokens(t *testing.T) {
 			rsp, hrsp, err := client1.UserSvcAPI.
 				ReadSelf(context.Background()).
 				Execute()
+
 			require.NoError(t, err, hrsp)
 			require.NotEmpty(t, rsp.User)
 		})
@@ -59,6 +61,7 @@ func TestRevokeTokens(t *testing.T) {
 					Device: openapi.PtrString("unknown"),
 				},
 			).Execute()
+
 			require.NoError(t, err, hrsp)
 		})
 
@@ -68,6 +71,7 @@ func TestRevokeTokens(t *testing.T) {
 			_, hrsp, err := client1.UserSvcAPI.
 				ReadSelf(context.Background()).
 				Execute()
+
 			require.Error(t, err, hrsp)
 		})
 	})
@@ -76,6 +80,7 @@ func TestRevokeTokens(t *testing.T) {
 		_, hrsp, err := client2.UserSvcAPI.
 			ReadSelf(context.Background()).
 			Execute()
+
 		require.NoError(t, err, hrsp)
 	})
 
@@ -90,6 +95,7 @@ func TestRevokeTokens(t *testing.T) {
 				AllTokens: openapi.PtrBool(true),
 			},
 		).Execute()
+
 		require.Error(t, err, hrsp)
 	})
 
@@ -101,6 +107,7 @@ func TestRevokeTokens(t *testing.T) {
 				AllTokens: openapi.PtrBool(true),
 			},
 		).Execute()
+
 		require.NoError(t, err, hrsp)
 	})
 
@@ -112,6 +119,7 @@ func TestRevokeTokens(t *testing.T) {
 		rsp, hrsp, err := client2.UserSvcAPI.
 			ReadSelf(context.Background()).
 			Execute()
+
 		require.NoError(t, err, hrsp)
 		require.NotEmpty(t, rsp.User)
 	})
@@ -120,6 +128,7 @@ func TestRevokeTokens(t *testing.T) {
 		_, hrsp, err := client3.UserSvcAPI.
 			ReadSelf(context.Background()).
 			Execute()
+
 		require.NoError(t, err, hrsp)
 	})
 
@@ -129,6 +138,7 @@ func TestRevokeTokens(t *testing.T) {
 		_, hrsp, err := client2.UserSvcAPI.
 			ReadSelf(context.Background()).
 			Execute()
+
 		require.Error(t, err, hrsp)
 	})
 
@@ -136,6 +146,7 @@ func TestRevokeTokens(t *testing.T) {
 		_, hrsp, err := client3.UserSvcAPI.
 			ReadSelf(context.Background()).
 			Execute()
+
 		require.Error(t, err, hrsp)
 	})
 }

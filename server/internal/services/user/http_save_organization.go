@@ -106,7 +106,7 @@ func (s *UserService) saveOrganization(
 	userId string,
 	request *user.SaveOrganizationRequest,
 	claims *auth.Claims,
-) (*user.Organization, *user.AuthToken, error) {
+) (*user.Organization, *user.Token, error) {
 	if request.Slug == "" {
 		return nil, nil, errors.New("slug is required")
 	}
@@ -114,7 +114,7 @@ func (s *UserService) saveOrganization(
 		return nil, nil, errors.New("name is required")
 	}
 
-	orgI, exists, err := s.organizationsStore.Query(
+	orgI, exists, err := s.organizationStore.Query(
 		datastore.Equals(datastore.Field("app"), app),
 		datastore.Equals(datastore.Field("slug"), request.Slug),
 	).FindOne()
@@ -161,9 +161,12 @@ func (s *UserService) saveOrganization(
 			final.Id = sdk.Id("org")
 		}
 
+		id := sdk.Id("memb")
+
 		// When creating a new org, the user switches to that org as the active one
 		link := &user.Membership{
-			Id:             sdk.Id("oul"),
+			InternalId:     sdk.InternalId(id, app),
+			Id:             id,
 			App:            app,
 			UserId:         userId,
 			OrganizationId: final.Id,
@@ -171,14 +174,14 @@ func (s *UserService) saveOrganization(
 			Active: true,
 		}
 
-		err = s.membershipsStore.Upsert(link)
+		err = s.membershipStore.Upsert(link)
 		if err != nil {
 			return nil, nil, err
 		}
 
 	}
 
-	err = s.organizationsStore.Upsert(final)
+	err = s.organizationStore.Upsert(final)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -205,7 +208,7 @@ func (s *UserService) saveOrganization(
 		return nil, nil, errors.Wrap(err, "error inactivating tokens")
 	}
 
-	userI, found, err := s.usersStore.Query(
+	userI, found, err := s.userStore.Query(
 		datastore.Id(userId),
 	).FindOne()
 	if err != nil {
@@ -225,7 +228,7 @@ func (s *UserService) saveOrganization(
 		return nil, nil, errors.Wrap(err, "error generating token")
 	}
 
-	err = s.authTokensStore.Upsert(token)
+	err = s.tokenStore.Upsert(token)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "error creating token")
 	}
@@ -234,7 +237,7 @@ func (s *UserService) saveOrganization(
 }
 
 func (s *UserService) inactivateTokens(app string, userId string) error {
-	return s.authTokensStore.Query(
+	return s.tokenStore.Query(
 		datastore.Equals(
 			datastore.Fields("app"),
 			app,
@@ -247,8 +250,12 @@ func (s *UserService) inactivateTokens(app string, userId string) error {
 	})
 }
 
-func (s *UserService) inactivateToken(tokenId string) error {
-	return s.authTokensStore.Query(
+func (s *UserService) inactivateToken(app, tokenId string) error {
+	return s.tokenStore.Query(
+		datastore.Equals(
+			datastore.Fields("app"),
+			app,
+		),
 		datastore.Equals(
 			datastore.Fields("id"),
 			tokenId,

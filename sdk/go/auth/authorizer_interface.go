@@ -24,6 +24,7 @@ import (
 type Authorizer interface {
 	TokenFromRequest(r *http.Request) (string, bool)
 	ParseJWT(userSvcPublicKey, token string) (*Claims, error)
+	ParseJWTUnverified(token string) (*Claims, error)
 	ParseJWTFromRequest(userSvcPublicKey string, r *http.Request) (*Claims, error)
 
 	// IsAdmin returns true if the user has
@@ -88,6 +89,23 @@ func (a AuthorizerImpl) ParseJWT(userSvcPublicKey, token string) (*Claims, error
 	}
 
 	return nil, fmt.Errorf("invalid JWT token")
+}
+
+func (a AuthorizerImpl) ParseJWTUnverified(token string) (*Claims, error) {
+	if token == "" {
+		return nil, fmt.Errorf("token is empty")
+	}
+
+	jwtToken, _, err := new(jwt.Parser).ParseUnverified(token, &Claims{})
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse JWT unverified: %v", err)
+	}
+
+	if claims, ok := jwtToken.Claims.(*Claims); ok {
+		return claims, nil
+	}
+
+	return nil, fmt.Errorf("token is not a claim")
 }
 
 func (a AuthorizerImpl) TokenFromRequest(r *http.Request) (string, bool) {

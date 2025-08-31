@@ -88,7 +88,7 @@ func (us *UserService) listPermits(req *user.ListPermitsRequest) ([]*user.Permit
 		filters = append(filters, datastore.Equals([]string{"slug"}, req.Slug))
 	}
 
-	permitIs, err := us.permitsStore.Query(filters...).Find()
+	permitIs, err := us.permitStore.Query(filters...).Find()
 	if err != nil {
 		return nil, errors.Wrap(err, "error querying permits")
 	}

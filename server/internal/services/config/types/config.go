@@ -14,32 +14,32 @@ type ErrorResponse struct {
 }
 
 type Config struct {
-	// Id of the config.
-	// It is deterministically created from the app and the key.
+	InternalId string `json:"internalId,omitempty" swagger:"ignore"`
+
+	App string `json:"app" binding:"required"`
+
+	// CamelCased slugs of the config owners
 	Id        string    `json:"id" binding:"required"`
 	CreatedAt time.Time `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
-
-	App string `json:"app,omitempty"`
-	Key string `json:"key,omitempty"`
 
 	DataJSON string                 `json:"dataJson" binding:"required"`
 	Data     map[string]interface{} `json:"data" binding:"required"`
 }
 
 func (c Config) GetId() string {
-	return c.Id
+	return c.InternalId
 }
 
 type ListConfigsRequest struct {
-	App string `json:"app" swagger:"default=default"`
+	App string `json:"app" example:"shoes.com"`
 
-	// Keys are camelCased slugs of the config owners.
-	// Specifying only the keys will mean all of the config will be returned
+	// Ids are camelCased slugs of the config owners.
+	// Specifying only the ids will mean all of the config will be returned
 	// for that key.
 	//
 	// If the configs are large, consider using the `Selector` request field.
-	Keys []string `json:"keys,omitempty" swagger:"default=[]"`
+	Ids []string `json:"ids,omitempty" swagger:"default=[]"`
 
 	// Selector allows dotPath-based filtering per config owner.
 	// Example:
@@ -72,10 +72,10 @@ type SaveConfigRequest struct {
 	// If not specified, the config will be saved for the current app of the user's token.
 	App string `json:"app,omitempty"`
 
-	// Key is the slug of the owner to save the config for.
+	// Id is the slug of the owner to save the config for.
 	// Only user with the `config-svc:config:edit-on-behalf` can specify this.
 	// For everyone else, it is automatically set to the slug of the caller user.
-	Key string `json:"key,omitempty"`
+	Id string `json:"id,omitempty"`
 
 	DataJSON string                 `json:"dataJson,omitempty"`
 	Data     map[string]interface{} `json:"data,omitempty"`

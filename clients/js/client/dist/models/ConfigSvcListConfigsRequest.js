@@ -26,7 +26,7 @@ export function ConfigSvcListConfigsRequestFromJSONTyped(json, ignoreDiscriminat
     }
     return {
         'app': json['app'] == null ? undefined : json['app'],
-        'keys': json['keys'] == null ? undefined : json['keys'],
+        'ids': json['ids'] == null ? undefined : json['ids'],
         'selector': json['selector'] == null ? undefined : json['selector'],
     };
 }
@@ -39,7 +39,7 @@ export function ConfigSvcListConfigsRequestToJSONTyped(value, ignoreDiscriminato
     }
     return {
         'app': value['app'],
-        'keys': value['keys'],
+        'ids': value['ids'],
         'selector': value['selector'],
     };
 }

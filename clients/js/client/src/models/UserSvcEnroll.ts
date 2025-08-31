@@ -60,6 +60,12 @@ export interface UserSvcEnroll {
      */
     id: string;
     /**
+     * 
+     * @type {string}
+     * @memberof UserSvcEnroll
+     */
+    internalId?: string;
+    /**
      * Role specifies the role to be assigned to the ContactId.
      * Callers can only assign roles they own, identified by their service slug
      * (e.g., if "my-service" creates an enroll, the role must be "my-service:admin").
@@ -113,6 +119,7 @@ export function UserSvcEnrollFromJSONTyped(json: any, ignoreDiscriminator: boole
         'createdBy': json['createdBy'] == null ? undefined : json['createdBy'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
         'id': json['id'],
+        'internalId': json['internalId'] == null ? undefined : json['internalId'],
         'role': json['role'],
         'updatedAt': json['updatedAt'],
         'userId': json['userId'] == null ? undefined : json['userId'],
@@ -136,6 +143,7 @@ export function UserSvcEnrollToJSONTyped(value?: UserSvcEnroll | null, ignoreDis
         'createdBy': value['createdBy'],
         'deletedAt': value['deletedAt'],
         'id': value['id'],
+        'internalId': value['internalId'],
         'role': value['role'],
         'updatedAt': value['updatedAt'],
         'userId': value['userId'],

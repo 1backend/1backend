@@ -27,8 +27,6 @@ export function SecretSvcRemoveSecretsRequestFromJSONTyped(json, ignoreDiscrimin
     return {
         'id': json['id'] == null ? undefined : json['id'],
         'ids': json['ids'] == null ? undefined : json['ids'],
-        'key': json['key'] == null ? undefined : json['key'],
-        'keys': json['keys'] == null ? undefined : json['keys'],
     };
 }
 export function SecretSvcRemoveSecretsRequestToJSON(json) {
@@ -41,7 +39,5 @@ export function SecretSvcRemoveSecretsRequestToJSONTyped(value, ignoreDiscrimina
     return {
         'id': value['id'],
         'ids': value['ids'],
-        'key': value['key'],
-        'keys': value['keys'],
     };
 }
