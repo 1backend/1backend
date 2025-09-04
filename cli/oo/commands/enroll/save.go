@@ -82,7 +82,6 @@ func Save(cmd *cobra.Command, args []string, userId, contactId string) error {
 		}
 	}
 
-	// Make a single API call to save all enrolls
 	_, hrsp, err := cf.Client(client.WithToken(token)).
 		UserSvcAPI.SaveEnrolls(ctx).
 		Body(openapi.UserSvcSaveEnrollsRequest{

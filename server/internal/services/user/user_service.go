@@ -71,7 +71,7 @@ func NewUserService(
 	}
 
 	credentialsStore, err := options.DataStoreFactory.Create(
-		"userSvcCredetentials",
+		"userSvcCredentials",
 		&auth.Credential{},
 	)
 	if err != nil {

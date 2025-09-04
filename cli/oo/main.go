@@ -15,6 +15,7 @@ import (
 	"github.com/1backend/1backend/cli/oo/commands/node"
 	"github.com/1backend/1backend/cli/oo/commands/permit"
 	"github.com/1backend/1backend/cli/oo/commands/route"
+	"github.com/1backend/1backend/cli/oo/commands/save"
 	secret "github.com/1backend/1backend/cli/oo/commands/secret"
 	"github.com/1backend/1backend/cli/oo/commands/user"
 	"github.com/1backend/1backend/cli/oo/config"
@@ -43,6 +44,7 @@ func main() {
 	route.AddRouteCommands(rootCmd)
 	cert.AddCertCommands(rootCmd)
 	config.AddConfigCommands(rootCmd)
+	save.AddSaveCommand(rootCmd)
 
 	addCallCommands(rootCmd)
 
