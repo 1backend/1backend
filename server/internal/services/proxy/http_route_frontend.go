@@ -15,6 +15,7 @@ import (
 	"net/http"
 	"strings"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/logger"
 
@@ -27,30 +28,20 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 		slog.String("path", r.URL.Path),
 	)
 
-	// Try to find a matching route for this host
-	routeI, found, err := cs.routeStore.Query(
-		datastore.Id(r.Host),
-	).FindOne()
+	target, err := cs.findRouteTarget(r.Host, r.URL.Path, r.URL.RawQuery)
 	if err != nil {
-		logger.Error("Error querying route store", slog.String("error", err.Error()))
+		// check for HTTPError
+		if herr, ok := err.(*sdk.HTTPError); ok {
+			http.Error(w, herr.Msg, herr.Code)
+			return
+		}
+		logger.Error("Error finding route target",
+			slog.String("host", r.Host),
+			slog.String("path", r.URL.Path),
+			slog.Any("error", err),
+		)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
-	}
-	if !found {
-		http.Error(w, "Route not found", http.StatusNotFound)
-		return
-	}
-
-	route, ok := routeI.(*proxy.Route)
-	if !ok {
-		logger.Error("Invalid route type", slog.String("type", fmt.Sprintf("%T", routeI)))
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-
-	target := strings.TrimSuffix(route.Target, "/") + r.URL.Path
-	if r.URL.RawQuery != "" {
-		target += "?" + r.URL.RawQuery
 	}
 
 	req, err := http.NewRequest(r.Method, target, r.Body)
@@ -143,4 +134,51 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 	if flusher, ok := w.(http.Flusher); ok {
 		flusher.Flush()
 	}
+}
+
+func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, error) {
+	if path == "" {
+		path = "/"
+	}
+	var candidates []string
+	parts := strings.Split(path, "/")
+	for i := len(parts); i >= 0; i-- {
+		prefix := strings.Join(parts[:i], "/")
+		if prefix == "" {
+			candidates = append(candidates, host)
+		} else {
+			candidates = append(candidates, host+prefix)
+		}
+	}
+
+	var route *proxy.Route
+	for _, key := range candidates {
+		ri, found, err := cs.routeStore.Query(datastore.Id(key)).FindOne()
+		if err != nil {
+			// datastore failure = 500
+			return "", sdk.NewHTTPError(http.StatusInternalServerError,
+				fmt.Sprintf("failed to query route: %v", err))
+		}
+		if found {
+			var ok bool
+			route, ok = ri.(*proxy.Route)
+			if !ok {
+				return "", sdk.NewHTTPError(http.StatusInternalServerError,
+					fmt.Sprintf("invalid route type: %T", ri))
+			}
+			break
+		}
+	}
+	if route == nil {
+		// not found = 404
+		return "", sdk.NewHTTPError(http.StatusNotFound,
+			fmt.Sprintf("route not found for host %q and path %q", host, path))
+	}
+
+	target := strings.TrimSuffix(route.Target, "/") + path
+	if rawQuery != "" {
+		target += "?" + rawQuery
+	}
+
+	return target, nil
 }
