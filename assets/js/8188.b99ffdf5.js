@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunksingulatron_api_docs=self.webpackChunksingulatron_api_docs||[]).push([[8188],{38188:(e,s,a)=>{a.d(s,{createPieServices:()=>c.f});var c=a(19786);a(58198)}}]);

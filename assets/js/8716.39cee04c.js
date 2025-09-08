@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunksingulatron_api_docs=self.webpackChunksingulatron_api_docs||[]).push([[8716],{98716:(e,s,a)=>{a.d(s,{createPacketServices:()=>c.$});var c=a(59811);a(58198)}}]);
