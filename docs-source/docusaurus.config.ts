@@ -150,56 +150,56 @@ const config: Config = {
         "bash",
         "go",
         "c",
-        "ocaml"
+        "ocaml",
       ],
-     //languageTabs: [
-     //  {
-     //    highlight: "python",
-     //    language: "python",
-     //    logoClass: "python",
-     //  },
-     //  {
-     //    highlight: "bash",
-     //    language: "curl",
-     //    logoClass: "bash",
-     //  },
-     //  {
-     //    highlight: "csharp",
-     //    language: "csharp",
-     //    logoClass: "csharp",
-     //  },
-     //  {
-     //    highlight: "go",
-     //    language: "go",
-     //    logoClass: "go",
-     //  },
-     //  {
-     //    highlight: "javascript",
-     //    language: "nodejs",
-     //    logoClass: "nodejs",
-     //  },
-     //  {
-     //    highlight: "ruby",
-     //    language: "ruby",
-     //    logoClass: "ruby",
-     //  },
-     //  {
-     //    highlight: "php",
-     //    language: "php",
-     //    logoClass: "php",
-     //  },
-     //  {
-     //    highlight: "java",
-     //    language: "java",
-     //    logoClass: "java",
-     //    variant: "unirest",
-     //  },
-     //  {
-     //    highlight: "powershell",
-     //    language: "powershell",
-     //    logoClass: "powershell",
-     //  },
-     //],
+      //languageTabs: [
+      //  {
+      //    highlight: "python",
+      //    language: "python",
+      //    logoClass: "python",
+      //  },
+      //  {
+      //    highlight: "bash",
+      //    language: "curl",
+      //    logoClass: "bash",
+      //  },
+      //  {
+      //    highlight: "csharp",
+      //    language: "csharp",
+      //    logoClass: "csharp",
+      //  },
+      //  {
+      //    highlight: "go",
+      //    language: "go",
+      //    logoClass: "go",
+      //  },
+      //  {
+      //    highlight: "javascript",
+      //    language: "nodejs",
+      //    logoClass: "nodejs",
+      //  },
+      //  {
+      //    highlight: "ruby",
+      //    language: "ruby",
+      //    logoClass: "ruby",
+      //  },
+      //  {
+      //    highlight: "php",
+      //    language: "php",
+      //    logoClass: "php",
+      //  },
+      //  {
+      //    highlight: "java",
+      //    language: "java",
+      //    logoClass: "java",
+      //    variant: "unirest",
+      //  },
+      //  {
+      //    highlight: "powershell",
+      //    language: "powershell",
+      //    logoClass: "powershell",
+      //  },
+      //],
     },
   } satisfies Preset.ThemeConfig,
 
@@ -227,7 +227,10 @@ const config: Config = {
     require.resolve("docusaurus-lunr-search"),
   ],
 
-  themes: ["docusaurus-theme-openapi-docs"],
+  themes: ["docusaurus-theme-openapi-docs", "@docusaurus/theme-mermaid"],
+  markdown: {
+    mermaid: true,
+  },
 };
 
 export default async function createConfig() {
