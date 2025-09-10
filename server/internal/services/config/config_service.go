@@ -104,7 +104,7 @@ func (cs *ConfigService) start() error {
 	cs.publicKey = pk.PublicKey
 
 	configStore, err := cs.options.DataStoreFactory.Create(
-		"configSvcConfig",
+		"configSvcConfigs",
 		&types.Config{},
 	)
 	if err != nil {
