@@ -55,9 +55,17 @@ func Decrypt(ciphertext string, key string) (string, error) {
 		return "", err
 	}
 
-	// Extract the IV from the first 16 bytes
+	// Need at least one block for IV
+	if len(data) < aes.BlockSize {
+		return "", fmt.Errorf("ciphertext too short")
+	}
 	iv := data[:aes.BlockSize]
 	ciphertextBytes := data[aes.BlockSize:]
+
+	// Ciphertext must be non-empty and block aligned
+	if len(ciphertextBytes) == 0 || len(ciphertextBytes)%aes.BlockSize != 0 {
+		return "", fmt.Errorf("ciphertext is not a multiple of the block size")
+	}
 
 	// Create AES cipher block
 	block, err := aes.NewCipher([]byte(key))
@@ -70,8 +78,21 @@ func Decrypt(ciphertext string, key string) (string, error) {
 	mode := cipher.NewCBCDecrypter(block, iv)
 	mode.CryptBlocks(plaintext, ciphertextBytes)
 
-	// Remove padding
+	// Validate and remove PKCS#7 padding
+	if len(plaintext) == 0 {
+		return "", fmt.Errorf("decryption produced empty plaintext")
+	}
 	padding := int(plaintext[len(plaintext)-1])
+	if padding == 0 || padding > aes.BlockSize || padding > len(plaintext) {
+		return "", fmt.Errorf("invalid padding size")
+	}
+
+	// Check all padding bytes
+	for i := 0; i < padding; i++ {
+		if plaintext[len(plaintext)-1-i] != byte(padding) {
+			return "", fmt.Errorf("invalid padding bytes")
+		}
+	}
 	plaintext = plaintext[:len(plaintext)-padding]
 
 	return string(plaintext), nil

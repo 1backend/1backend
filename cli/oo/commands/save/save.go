@@ -40,6 +40,10 @@ type Entity struct {
 }
 
 type Meta struct {
+	// Entity identifies the type of metadata. It can be used to link to external
+	// metadata sources, or make them unnecessary when the entity is handled
+	// directly (e.g. in hardcoded cases).
+	Entity    string     `yaml:"entity,omitempty" example:"secret-svc:secret"`
 	Version   string     `yaml:"version,omitempty"`
 	Transport *Transport `yaml:"transport,omitempty"` // http|grpc; default http
 }
@@ -55,9 +59,11 @@ type Transport struct {
 	// Body defines how the payload is wrapped or transformed before sending.
 	// - If set to a string (e.g. "data"), the payload is wrapped: {"data": body}.
 	// - If set to a JSON object containing "$", "$" is replaced with the payload.
-	//   Example: {"data": $, "meta": {"id": "123"}} →
-	//            {"data": body, "meta": {"id": "123"}}.
-	Body string `yaml:"body,omitempty"`
+	//   Simple Example:   "key" →
+	//                     { "key": "example payload of any type" }
+	//   Complex Example:  {"data": "$", "meta": {"id": "123"}} →
+	//                     "data": "example payload of any type", "meta": {"id": "123"}}
+	Body any `yaml:"body,omitempty"`
 
 	// Array indicates whether the endpoint expects an array payload. Default: false.
 	Array bool `yaml:"array,omitempty"`
@@ -118,12 +124,18 @@ func processDir(ctx context.Context, baseURL, token, dir string) error {
 			fmt.Println(warn("Entering folder:"), p)
 
 			metaPath := filepath.Join(p, "_meta.yaml")
-			if b, err := ioutil.ReadFile(metaPath); err == nil {
-				// fmt.Println("loading folder meta from", metaPath)
-				if err := yaml.Unmarshal(b, &folderMeta); err != nil {
+
+			_, err := os.Stat(metaPath)
+			if err == nil || !os.IsNotExist(err) {
+				b, err := ioutil.ReadFile(metaPath)
+				if err != nil {
+					return errors.Wrap(err, "cannot read _meta.yaml")
+				}
+				fmt.Println(warn("Loading folder meta from"), metaPath)
+
+				err = yaml.Unmarshal(b, &folderMeta)
+				if err != nil {
 					return errors.Wrap(err, "invalid _meta.yaml")
-				} else {
-					// fmt.Printf("parsed folderMeta: %+v\n", folderMeta.Transport)
 				}
 			}
 
@@ -155,25 +167,40 @@ func handleFileWithMeta(ctx context.Context, baseURL, token, filePath string, fo
 		meta.Transport = &Transport{}
 	}
 
-	if folderMeta != nil && folderMeta.Transport.Endpoint != "" {
-		if meta.Transport.Endpoint == "" {
-			meta.Transport.Endpoint = folderMeta.Transport.Endpoint
-		}
-		if meta.Transport.Method == "" {
-			meta.Transport.Method = folderMeta.Transport.Method
-		}
-		if meta.Transport.Body == "" {
-			meta.Transport.Body = folderMeta.Transport.Body
-		}
-		if meta.Transport.ContentType == "" {
-			meta.Transport.ContentType = folderMeta.Transport.ContentType
-		}
-		if !meta.Transport.Array && folderMeta.Transport.Array {
-			meta.Transport.Array = true
+	if folderMeta != nil {
+		if folderMeta.Transport != nil && folderMeta.Transport.Endpoint != "" {
+			if meta.Transport.Endpoint == "" {
+				meta.Transport.Endpoint = folderMeta.Transport.Endpoint
+			}
+			if meta.Transport.Method == "" {
+				meta.Transport.Method = folderMeta.Transport.Method
+			}
+			if meta.Transport.Body == "" {
+				meta.Transport.Body = folderMeta.Transport.Body
+			}
+			if meta.Transport.ContentType == "" {
+				meta.Transport.ContentType = folderMeta.Transport.ContentType
+			}
+			if !meta.Transport.Array && folderMeta.Transport.Array {
+				meta.Transport.Array = true
+			}
 		}
 
-		if meta.Transport.Endpoint == "" {
-			return errors.Errorf("missing endpoint for %s", filePath)
+		if meta.Entity == "" && folderMeta.Entity != "" {
+			meta.Entity = folderMeta.Entity
+		}
+	}
+
+	if meta.Transport.Endpoint == "" {
+		switch meta.Entity {
+		case "secret-svc:secret":
+			meta = &secretMeta
+		case "user-svc:permit":
+			meta = &permitMeta
+		case "proxy-svc:route":
+			meta = &routeMeta
+		default:
+			return errors.Errorf("unknown hardcoded entity %s in %s", meta.Entity, filePath)
 		}
 	}
 
@@ -187,12 +214,12 @@ func handleEntity(
 	data []byte,
 	filePath string,
 ) error {
-	// fmt.Printf("detected endpoint=%s version=%s from %s\n", meta.Transport.Endpoint, meta.Transport.Version, filePath)
-	return handleDynamic(ctx, baseURL, token, meta, data)
+	return handleDynamic(ctx, filePath, baseURL, token, meta, data)
 }
 
 func handleDynamic(
 	ctx context.Context,
+	filePath,
 	baseURL, token string,
 	meta Meta,
 	fileBytes []byte,
@@ -215,19 +242,18 @@ func handleDynamic(
 		}
 	}
 
-	if transport.Body != "" {
-		body = map[string]interface{}{transport.Body: body}
+	switch b := transport.Body.(type) {
+	case string:
+		body = map[string]interface{}{b: body}
+	default:
+		return errors.Errorf("only string body wrapping is supported for now, not %T", b)
 	}
 
-	if id, ok := doc["id"].(string); ok {
-		fmt.Printf("%s %s=%s %s=%s %s=%s... ", success("saving"),
-			header("id"), idStyle(id),
-			header("endpoint"), idStyle(transport.Endpoint),
-			header("method"), idStyle(transport.Method),
-		)
-	} else {
-		fmt.Printf("%s %s\n", success("saving"), header(transport.Endpoint))
-	}
+	fmt.Printf("%s %s=%s %s=%s %s=%s... ", success("Saving"),
+		header("file"), idStyle(filePath),
+		header("endpoint"), idStyle(transport.Endpoint),
+		header("method"), idStyle(transport.Method),
+	)
 
 	ct := transport.ContentType
 	if ct == "" {
@@ -271,7 +297,7 @@ func handleDynamic(
 	bodyBytes, _ := io.ReadAll(resp.Body)
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return errors.Errorf("dynamic save failed: %s: %s", resp.Status, string(bodyBytes))
+		fmt.Println(fail(fmt.Sprintf("dynamic save failed: %s: %s", resp.Status, string(bodyBytes))))
 	}
 
 	fmt.Println(success("ok"))
