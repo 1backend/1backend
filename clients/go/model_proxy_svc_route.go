@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc6
+API version: 0.8.0-rc7
 Contact: sales@singulatron.com
 */
 
@@ -20,11 +20,9 @@ var _ MappedNullable = &ProxySvcRoute{}
 
 // ProxySvcRoute struct for ProxySvcRoute
 type ProxySvcRoute struct {
-	CreatedAt *string `json:"createdAt,omitempty"`
-	// Id is the host itself, e.g. \"test.localhost\"
+	// Id is the routing key: host plus optional path prefix. Example:   \"x.com\"              -> root of the domain   \"x.com/path1\"        -> microfrontend at /path1   \"x.com/path1/path2\"  -> deeper microfrontend mounted at /path1/path2  Use case: multiple microfrontends served under the same host but separated by URL path segments. For example:   - Marketing site at x.com   - Dashboard at x.com/app   - Admin UI at x.com/app/admin  Lookup algorithm:   1. Take the request host and path (e.g. \"x.com/app/admin/users\").   2. Try to match the longest registered Id by progressively stripping      trailing path segments:         - x.com/app/admin/users   (no match)         - x.com/app/admin         (match -> admin UI)   3. If still no match, strip again:         - x.com/app               (match -> dashboard)   4. If still no match, fallback to host-only route:         - x.com                   (match -> marketing site)   5. If no host-only route exists, return 404.  This provides deterministic longest-prefix routing without regex or rule engines, keeping the model simple but enabling path-based microfrontend composition.
 	Id *string `json:"id,omitempty"`
 	Target *string `json:"target,omitempty"`
-	UpdatedAt *string `json:"updatedAt,omitempty"`
 }
 
 // NewProxySvcRoute instantiates a new ProxySvcRoute object
@@ -42,38 +40,6 @@ func NewProxySvcRoute() *ProxySvcRoute {
 func NewProxySvcRouteWithDefaults() *ProxySvcRoute {
 	this := ProxySvcRoute{}
 	return &this
-}
-
-// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
-func (o *ProxySvcRoute) GetCreatedAt() string {
-	if o == nil || IsNil(o.CreatedAt) {
-		var ret string
-		return ret
-	}
-	return *o.CreatedAt
-}
-
-// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProxySvcRoute) GetCreatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.CreatedAt) {
-		return nil, false
-	}
-	return o.CreatedAt, true
-}
-
-// HasCreatedAt returns a boolean if a field has been set.
-func (o *ProxySvcRoute) HasCreatedAt() bool {
-	if o != nil && !IsNil(o.CreatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
-func (o *ProxySvcRoute) SetCreatedAt(v string) {
-	o.CreatedAt = &v
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
@@ -140,38 +106,6 @@ func (o *ProxySvcRoute) SetTarget(v string) {
 	o.Target = &v
 }
 
-// GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
-func (o *ProxySvcRoute) GetUpdatedAt() string {
-	if o == nil || IsNil(o.UpdatedAt) {
-		var ret string
-		return ret
-	}
-	return *o.UpdatedAt
-}
-
-// GetUpdatedAtOk returns a tuple with the UpdatedAt field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ProxySvcRoute) GetUpdatedAtOk() (*string, bool) {
-	if o == nil || IsNil(o.UpdatedAt) {
-		return nil, false
-	}
-	return o.UpdatedAt, true
-}
-
-// HasUpdatedAt returns a boolean if a field has been set.
-func (o *ProxySvcRoute) HasUpdatedAt() bool {
-	if o != nil && !IsNil(o.UpdatedAt) {
-		return true
-	}
-
-	return false
-}
-
-// SetUpdatedAt gets a reference to the given string and assigns it to the UpdatedAt field.
-func (o *ProxySvcRoute) SetUpdatedAt(v string) {
-	o.UpdatedAt = &v
-}
-
 func (o ProxySvcRoute) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -182,17 +116,11 @@ func (o ProxySvcRoute) MarshalJSON() ([]byte, error) {
 
 func (o ProxySvcRoute) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.CreatedAt) {
-		toSerialize["createdAt"] = o.CreatedAt
-	}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}
 	if !IsNil(o.Target) {
 		toSerialize["target"] = o.Target
-	}
-	if !IsNil(o.UpdatedAt) {
-		toSerialize["updatedAt"] = o.UpdatedAt
 	}
 	return toSerialize, nil
 }

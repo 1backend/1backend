@@ -294,3 +294,83 @@ func TestProxyService_FrontendRoute(t *testing.T) {
 		require.Contains(t, string(body), "proto=")
 	})
 }
+
+func TestProxyService_MicrofrontendsByPath(t *testing.T) {
+	t.Parallel()
+
+	backendRoot := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "root")
+	}))
+	defer backendRoot.Close()
+
+	backendApp := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "app: %s", r.URL.Path)
+	}))
+	defer backendApp.Close()
+
+	backendAdmin := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "admin: %s", r.URL.Path)
+	}))
+	defer backendAdmin.Close()
+
+	port, err := test.FindAvailablePort()
+	require.NoError(t, err)
+
+	server, err := test.StartService(test.Options{
+		EdgeProxy:          true,
+		EdgeProxyTestMode:  true,
+		EdgeProxyHttpsPort: port,
+		Test:               true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+	adminClient, _, err := test.AdminClient(clientFactory)
+	require.NoError(t, err)
+
+	edgeProxyUrl := fmt.Sprintf("http://localhost:%d", port)
+
+	// save routes: host-only, /app, /app/admin
+	routeReq := openapi.ProxySvcSaveRoutesRequest{
+		Routes: []openapi.ProxySvcRouteInput{
+			{Id: openapi.PtrString("x.localhost"), Target: openapi.PtrString(backendRoot.URL)},
+			{Id: openapi.PtrString("x.localhost/app"), Target: openapi.PtrString(backendApp.URL)},
+			{Id: openapi.PtrString("x.localhost/app/admin"), Target: openapi.PtrString(backendAdmin.URL)},
+		},
+	}
+	_, _, err = adminClient.ProxySvcAPI.SaveRoutes(context.Background()).Body(routeReq).Execute()
+	require.NoError(t, err)
+
+	proxyClient := &http.Client{}
+
+	t.Run("falls back to host-only route", func(t *testing.T) {
+		req, _ := http.NewRequest("GET", edgeProxyUrl+"/", nil)
+		req.Host = "x.localhost"
+		resp, err := proxyClient.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+		body, _ := io.ReadAll(resp.Body)
+		require.Equal(t, "root", string(body))
+	})
+
+	t.Run("matches /app prefix route", func(t *testing.T) {
+		req, _ := http.NewRequest("GET", edgeProxyUrl+"/app/page", nil)
+		req.Host = "x.localhost"
+		resp, err := proxyClient.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+		body, _ := io.ReadAll(resp.Body)
+		require.Contains(t, string(body), "app: /app/page")
+	})
+
+	t.Run("prefers deeper /app/admin route", func(t *testing.T) {
+		req, _ := http.NewRequest("GET", edgeProxyUrl+"/app/admin/settings", nil)
+		req.Host = "x.localhost"
+		resp, err := proxyClient.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+		body, _ := io.ReadAll(resp.Body)
+		require.Contains(t, string(body), "admin: /app/admin/settings")
+	})
+}

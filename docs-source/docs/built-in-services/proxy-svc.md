@@ -35,26 +35,78 @@ Proxy Svc serves as the **traffic management layer** for 1Backend, providing:
 ```mermaid
 graph TD
     Client[External Client]
-    Edge[Edge Proxy :80/:443]
-    Internal[Internal Proxy :11337]
-    Registry[Registry Svc]
-    Service[Custom Services]
-    
+
+    subgraph "Edge Mode"
+        Edge[Edge Proxy :80/:443]
+        Routes["Saved Routes: domain/path -> target URL"]
+        Targets[Target URLs / Frontends]
+        Edge --> Routes --> Targets
+    end
+
+    subgraph "Service Mode"
+        Internal[Internal Proxy :11337]
+        Registry[Registry Svc]
+        Services[Backend Services]
+        Internal --> |Lookup service slug| Registry --> |Discovered instances| Services
+    end
+
     Client --> Edge
-    Edge --> |Domain routing| Service
     Client --> Internal
-    Internal --> Registry
-    Registry --> |Service discovery| Service
-    
-    subgraph "Edge Mode (OB_EDGE_PROXY=true)"
-        Edge
-    end
-    
-    subgraph "Service Mode (Always Active)"
-        Internal
-        Registry
-    end
 ```
+
+## Microfrontends by Path
+
+Proxy Svc supports hosting **multiple frontends under a single domain** by using path-prefix routes. This makes it easy to run a microfrontend architecture without extra gateways.
+
+### Example Routes
+
+- id: "x.localhost"  
+  target: "http://root-frontend:8080"
+
+- id: "x.localhost/app"  
+  target: "http://app-frontend:3000"
+
+- id: "x.localhost/app/admin"  
+  target: "http://admin-frontend:4000"
+
+### How Lookup Works
+
+When a request comes in, Proxy Svc tries the **longest matching prefix**:
+
+1. `/app/admin/settings` → matches `x.localhost/app/admin`  
+   → goes to `http://admin-frontend:4000/app/admin/settings`
+
+2. `/app/page` → matches `x.localhost/app`  
+   → goes to `http://app-frontend:3000/app/page`
+
+3. `/` or anything else → falls back to `x.localhost`  
+   → goes to `http://root-frontend:8080/`
+
+### Visual Flow
+
+```mermaid
+flowchart TD
+    Client["Browser Request to x.localhost/..."]
+
+    subgraph ProxySvc["Proxy Svc Route Matching"]
+      A1["Check host+path: x.localhost/app/admin"]
+      A2["Check host+path: x.localhost/app"]
+      A3["Fallback: x.localhost"]
+    end
+
+    Client --> A1
+    A1 -->|If match| Admin["Admin Frontend (4000)"]
+    A1 -->|Else| A2
+    A2 -->|If match| App["App Frontend (3000)"]
+    A2 -->|Else| A3
+    A3 --> Root["Root Frontend (8080)"]
+```
+
+Benefits:
+
+- Multiple independent frontends can live under one domain
+- Deepest path prefix always takes precedence, ensuring /app/admin resolves correctly
+- Easy to extend: just add more host+path routes
 
 ## CLI Usage
 
@@ -105,7 +157,7 @@ target: "http://1backend:11337"
 cat > dev-routes.yaml << EOF
 - id: "api.localhost"
   target: "http://localhost:11337"
-- id: "app.localhost"  
+- id: "app.localhost"
   target: "http://localhost:3000"
 - id: "admin.localhost"
   target: "http://localhost:8080"
@@ -179,11 +231,11 @@ The routing decision follows this flow:
 flowchart TD
     Request["`**Client Request**
     /user-svc/login`"]
-    BuiltIn{"`Is 'user-svc' 
+    BuiltIn{"`Is 'user-svc'
     a built-in service?`"}
     Registry["`**Registry Lookup**
     Find 'user-svc' instances`"]
-    Health{"`Any healthy 
+    Health{"`Any healthy
     instances?`"}
     LoadBalance["`**Load Balancing**
     Select healthy instance`"]
@@ -193,7 +245,7 @@ flowchart TD
     No instances available`"]
     Direct["`**Direct Route**
     Built-in service`"]
-    
+
     Request --> BuiltIn
     BuiltIn -->|Yes| Direct
     BuiltIn -->|No| Registry
@@ -303,7 +355,7 @@ sequenceDiagram
     participant EdgeProxy as Edge Proxy :443
     participant ACME as Let's Encrypt
     participant Backend as Target Service
-    
+
     Note over Browser,Backend: First-time domain setup
     Browser->>EdgeProxy: HTTPS request to myapp.com
     EdgeProxy->>ACME: Request certificate for myapp.com
@@ -312,7 +364,7 @@ sequenceDiagram
     EdgeProxy->>Backend: Forward request to http://frontend:8080
     Backend-->>EdgeProxy: Response
     EdgeProxy-->>Browser: HTTPS response
-    
+
     Note over Browser,Backend: Subsequent requests
     Browser->>EdgeProxy: HTTPS request to myapp.com
     EdgeProxy->>EdgeProxy: TLS termination with stored cert
@@ -420,7 +472,7 @@ curl https://api.myapp.com/user-svc/health
 # microservices.yaml
 - id: "gateway.company.com"
   target: "http://1backend:11337"
-- id: "web.company.com" 
+- id: "web.company.com"
   target: "http://web-app:8080"
 - id: "mobile-api.company.com"
   target: "http://mobile-backend:9000"
@@ -455,7 +507,7 @@ cat > staging.yaml << EOF
   target: "http://staging-frontend:8080"
 EOF
 
-# Production routes  
+# Production routes
 cat > production.yaml << EOF
 - id: "api.company.com"
   target: "http://prod-backend:11337"
@@ -478,7 +530,7 @@ oo routes save production.yaml
 register_service() {
   local service_name=$1
   local service_url=$2
-  
+
   oo post /registry-svc/instances/register \
     --slug="$service_name" \
     --url="$service_url" \
@@ -515,10 +567,10 @@ monitor_services() {
     "product-svc:http://product-service:8080"
     "order-svc:http://order-service:8080"
   )
-  
+
   for service in "${services[@]}"; do
     IFS=':' read -r name url <<< "$service"
-    
+
     if health_check "$url"; then
       echo "✅ $name is healthy"
     else
@@ -541,7 +593,7 @@ setup_load_balanced_service() {
   local service_name=$1
   shift
   local instances=("$@")
-  
+
   for instance in "${instances[@]}"; do
     oo post /registry-svc/instances/register \
       --slug="$service_name" \
@@ -568,7 +620,7 @@ setup_load_balanced_service "api-svc" \
 install_custom_cert() {
   local domain=$1
   local cert_file=$2
-  
+
   # Note: This endpoint is primarily for testing
   # Production certificates should be managed automatically
   oo put /proxy-svc/certs \
@@ -601,7 +653,7 @@ done
 monitor_edge_routes() {
   while true; do
     echo "=== Edge Route Health Check $(date) ==="
-    
+
     oo post /proxy-svc/routes | jq -r '.routes[] | "\(.id) -> \(.target)"' | \
     while IFS=' -> ' read -r domain target; do
       # Check HTTPS accessibility
@@ -615,17 +667,17 @@ monitor_edge_routes() {
           echo "❌ $domain (unreachable)"
         fi
       fi
-      
+
       # Check target availability
       if curl -fsSL --max-time 5 "$target" > /dev/null 2>&1; then
         echo "✅ Target: $target"
       else
         echo "❌ Target: $target (unreachable)"
       fi
-      
+
       echo "---"
     done
-    
+
     sleep 30
   done
 }
@@ -639,26 +691,26 @@ monitor_edge_routes
 # Monitor service proxy health
 monitor_service_routes() {
   echo "=== Service Route Health Check $(date) ==="
-  
+
   # Get all registered services
   oo post /registry-svc/instances | jq -r '.instances[] | "\(.slug) -> \(.url)"' | \
   while IFS=' -> ' read -r slug url; do
     # Test proxy routing
     proxy_url="http://localhost:11337/$slug/health"
-    
+
     if curl -fsSL --max-time 5 "$proxy_url" > /dev/null 2>&1; then
       echo "✅ Proxy: $slug (via 1Backend)"
     else
       echo "❌ Proxy: $slug (proxy failed)"
     fi
-    
+
     # Test direct access
     if curl -fsSL --max-time 5 "$url/health" > /dev/null 2>&1; then
       echo "✅ Direct: $url"
     else
       echo "❌ Direct: $url (unreachable)"
     fi
-    
+
     echo "---"
   done
 }
@@ -672,14 +724,14 @@ monitor_service_routes
 # Monitor certificate status
 monitor_certificates() {
   echo "=== Certificate Status $(date) ==="
-  
+
   oo post /proxy-svc/certs | jq -r '.certs[] | "\(.id) \(.notAfter) \(.issuer)"' | \
   while read -r domain expiry issuer; do
     # Calculate days until expiry
     expiry_epoch=$(date -d "$expiry" +%s)
     current_epoch=$(date +%s)
     days_left=$(( (expiry_epoch - current_epoch) / 86400 ))
-    
+
     if [ $days_left -gt 30 ]; then
       status="✅"
     elif [ $days_left -gt 7 ]; then
@@ -687,7 +739,7 @@ monitor_certificates() {
     else
       status="❌"
     fi
-    
+
     echo "$status $domain - $days_left days left ($issuer)"
   done
 }
@@ -702,18 +754,18 @@ monitor_certificates
 test_proxy_performance() {
   local target_url=$1
   local num_requests=${2:-100}
-  
+
   echo "Testing proxy performance: $target_url"
-  
+
   # Direct target test
   echo "Direct target performance:"
   curl -w "@curl-format.txt" -o /dev/null -s "$target_url"
-  
+
   # Proxy performance test
   echo "Proxy performance:"
   proxy_url="http://localhost:11337/$(basename $target_url)"
   curl -w "@curl-format.txt" -o /dev/null -s "$proxy_url"
-  
+
   # Concurrent test
   echo "Concurrent test ($num_requests requests):"
   time for i in $(seq 1 $num_requests); do
@@ -821,22 +873,22 @@ docker logs 1backend-proxy
 # Comprehensive proxy debug
 debug_proxy() {
   echo "=== Proxy Service Debug ==="
-  
+
   echo "1. Routes Configuration:"
   oo routes list
-  
+
   echo "2. Certificate Status:"
   oo post /proxy-svc/certs
-  
+
   echo "3. Service Instances:"
   oo post /registry-svc/instances
-  
+
   echo "4. Service Health Check:"
   for service in $(oo post /registry-svc/instances | jq -r '.instances[].slug' | sort -u); do
     echo "Testing service: $service"
     curl -f "http://localhost:11337/$service/health" && echo "✅" || echo "❌"
   done
-  
+
   echo "5. Edge Proxy Test:"
   if [ "$OB_EDGE_PROXY" = "true" ]; then
     echo "Edge proxy is enabled"
@@ -855,7 +907,7 @@ debug_proxy
 test_connectivity() {
   local target=$1
   echo "Testing connectivity to: $target"
-  
+
   # Extract host and port
   if [[ $target =~ ^https?://([^:/]+)(:([0-9]+))?.*$ ]]; then
     host=${BASH_REMATCH[1]}
@@ -864,15 +916,15 @@ test_connectivity() {
     echo "Invalid URL format"
     return 1
   fi
-  
+
   # Test DNS resolution
   echo "DNS resolution:"
   nslookup $host || echo "DNS resolution failed"
-  
+
   # Test port connectivity
   echo "Port connectivity:"
   nc -zv $host $port || echo "Port $port is not reachable"
-  
+
   # Test HTTP response
   echo "HTTP response:"
   curl -I --max-time 10 $target || echo "HTTP request failed"
@@ -890,16 +942,16 @@ test_connectivity "https://api.example.com"
 analyze_proxy_latency() {
   local service=$1
   local iterations=${2:-10}
-  
+
   echo "Analyzing proxy latency for: $service"
-  
+
   # Direct service call
   echo "Direct service latency:"
   for i in $(seq 1 $iterations); do
     direct_time=$(curl -w "%{time_total}" -o /dev/null -s "http://$service:8080/health" 2>/dev/null || echo "0")
     echo "Iteration $i: ${direct_time}s"
   done
-  
+
   # Proxy call
   echo "Proxy service latency:"
   for i in $(seq 1 $iterations); do
@@ -916,11 +968,11 @@ load_test_proxy() {
   local endpoint=$1
   local concurrent=${2:-10}
   local requests=${3:-100}
-  
+
   echo "Load testing: $endpoint"
   echo "Concurrent users: $concurrent"
   echo "Total requests: $requests"
-  
+
   # Using curl for simple load test
   for i in $(seq 1 $concurrent); do
     (
@@ -929,7 +981,7 @@ load_test_proxy() {
       done
     ) &
   done
-  
+
   wait
   echo "Load test completed"
 }
@@ -944,7 +996,7 @@ load_test_proxy "http://localhost:11337/user-svc/health" 5 50
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
+version: "3.8"
 services:
   1backend:
     image: 1backend/1backend:latest
@@ -958,12 +1010,12 @@ services:
     volumes:
       - ./certs:/root/.1backend/certs
       - ./routes:/app/routes
-    
+
   frontend:
     image: nginx:alpine
     ports:
       - "8080:80"
-    
+
   api-service:
     image: my-api:latest
     ports:
@@ -1000,22 +1052,22 @@ spec:
         app: 1backend-proxy
     spec:
       containers:
-      - name: proxy
-        image: 1backend/1backend:latest
-        ports:
-        - containerPort: 11337
-        - containerPort: 80  
-        - containerPort: 443
-        env:
-        - name: OB_EDGE_PROXY
-          value: "true"
-        volumeMounts:
-        - name: routes
-          mountPath: /app/routes
+        - name: proxy
+          image: 1backend/1backend:latest
+          ports:
+            - containerPort: 11337
+            - containerPort: 80
+            - containerPort: 443
+          env:
+            - name: OB_EDGE_PROXY
+              value: "true"
+          volumeMounts:
+            - name: routes
+              mountPath: /app/routes
       volumes:
-      - name: routes
-        configMap:
-          name: proxy-routes
+        - name: routes
+          configMap:
+            name: proxy-routes
 ```
 
 ### Nginx Integration
@@ -1025,10 +1077,10 @@ spec:
 server {
     listen 443 ssl;
     server_name myapp.com;
-    
+
     ssl_certificate /path/to/.1backend/certs/live/myapp.com/fullchain.pem;
     ssl_certificate_key /path/to/.1backend/certs/live/myapp.com/privkey.pem;
-    
+
     location / {
         proxy_pass http://frontend:8080;
         proxy_set_header Host $host;
@@ -1041,12 +1093,12 @@ server {
 
 ## API Reference Summary
 
-| Endpoint | Method | Purpose |
-|----------|---------|---------|
-| `/proxy-svc/routes` | POST | List configured routes |
-| `/proxy-svc/routes` | PUT | Save/update routes |
-| `/proxy-svc/certs` | POST | List SSL certificates |
-| `/proxy-svc/certs` | PUT | Save certificates (testing only) |
+| Endpoint            | Method | Purpose                          |
+| ------------------- | ------ | -------------------------------- |
+| `/proxy-svc/routes` | POST   | List configured routes           |
+| `/proxy-svc/routes` | PUT    | Save/update routes               |
+| `/proxy-svc/certs`  | POST   | List SSL certificates            |
+| `/proxy-svc/certs`  | PUT    | Save certificates (testing only) |
 
 ## Permissions & Security
 
@@ -1079,7 +1131,7 @@ OB_EDGE_PROXY=true                 # Enable edge proxy on ports 80/443
 OB_SYNC_CERTS_TO_FILES=true        # Write certificates to filesystem
 OB_SECRET_ENCRYPTION_KEY=your_key  # Key for encrypting stored certificates
 
-# Server configuration  
+# Server configuration
 OB_SERVER_URL=http://localhost:11337  # Internal proxy endpoint
 ```
 
@@ -1097,10 +1149,10 @@ monitor_ssl_expiry() {
 test_ssl_security() {
   local domain=$1
   echo "Testing SSL security for: $domain"
-  
+
   # Test SSL Labs grade (requires external service)
   # curl "https://api.ssllabs.com/api/v3/analyze?host=$domain"
-  
+
   # Test certificate chain
   echo | openssl s_client -servername $domain -connect $domain:443 -verify_return_error
 }
@@ -1125,7 +1177,7 @@ monitor_proxy_health() {
     echo "❌ Internal proxy unhealthy"
     exit 1
   fi
-  
+
   # Check edge proxy (if enabled)
   if [ "$OB_EDGE_PROXY" = "true" ]; then
     if netstat -tlnp | grep -q ":443.*LISTEN"; then
