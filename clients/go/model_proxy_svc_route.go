@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the ProxySvcRoute type satisfies the MappedNullable interface at compile time
@@ -21,16 +23,20 @@ var _ MappedNullable = &ProxySvcRoute{}
 // ProxySvcRoute struct for ProxySvcRoute
 type ProxySvcRoute struct {
 	// Id is the routing key: host plus optional path prefix. Example:   \"x.com\"              -> root of the domain   \"x.com/path1\"        -> microfrontend at /path1   \"x.com/path1/path2\"  -> deeper microfrontend mounted at /path1/path2  Use case: multiple microfrontends served under the same host but separated by URL path segments. For example:   - Marketing site at x.com   - Dashboard at x.com/app   - Admin UI at x.com/app/admin  Lookup algorithm:   1. Take the request host and path (e.g. \"x.com/app/admin/users\").   2. Try to match the longest registered Id by progressively stripping      trailing path segments:         - x.com/app/admin/users   (no match)         - x.com/app/admin         (match -> admin UI)   3. If still no match, strip again:         - x.com/app               (match -> dashboard)   4. If still no match, fallback to host-only route:         - x.com                   (match -> marketing site)   5. If no host-only route exists, return 404.  This provides deterministic longest-prefix routing without regex or rule engines, keeping the model simple but enabling path-based microfrontend composition.
-	Id *string `json:"id,omitempty"`
-	Target *string `json:"target,omitempty"`
+	Id string `json:"id"`
+	Target string `json:"target"`
 }
+
+type _ProxySvcRoute ProxySvcRoute
 
 // NewProxySvcRoute instantiates a new ProxySvcRoute object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewProxySvcRoute() *ProxySvcRoute {
+func NewProxySvcRoute(id string, target string) *ProxySvcRoute {
 	this := ProxySvcRoute{}
+	this.Id = id
+	this.Target = target
 	return &this
 }
 
@@ -42,68 +48,52 @@ func NewProxySvcRouteWithDefaults() *ProxySvcRoute {
 	return &this
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value
 func (o *ProxySvcRoute) GetId() string {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Id
+
+	return o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *ProxySvcRoute) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Id, true
+	return &o.Id, true
 }
 
-// HasId returns a boolean if a field has been set.
-func (o *ProxySvcRoute) HasId() bool {
-	if o != nil && !IsNil(o.Id) {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
+// SetId sets field value
 func (o *ProxySvcRoute) SetId(v string) {
-	o.Id = &v
+	o.Id = v
 }
 
-// GetTarget returns the Target field value if set, zero value otherwise.
+// GetTarget returns the Target field value
 func (o *ProxySvcRoute) GetTarget() string {
-	if o == nil || IsNil(o.Target) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Target
+
+	return o.Target
 }
 
-// GetTargetOk returns a tuple with the Target field value if set, nil otherwise
+// GetTargetOk returns a tuple with the Target field value
 // and a boolean to check if the value has been set.
 func (o *ProxySvcRoute) GetTargetOk() (*string, bool) {
-	if o == nil || IsNil(o.Target) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Target, true
+	return &o.Target, true
 }
 
-// HasTarget returns a boolean if a field has been set.
-func (o *ProxySvcRoute) HasTarget() bool {
-	if o != nil && !IsNil(o.Target) {
-		return true
-	}
-
-	return false
-}
-
-// SetTarget gets a reference to the given string and assigns it to the Target field.
+// SetTarget sets field value
 func (o *ProxySvcRoute) SetTarget(v string) {
-	o.Target = &v
+	o.Target = v
 }
 
 func (o ProxySvcRoute) MarshalJSON() ([]byte, error) {
@@ -116,13 +106,47 @@ func (o ProxySvcRoute) MarshalJSON() ([]byte, error) {
 
 func (o ProxySvcRoute) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Id) {
-		toSerialize["id"] = o.Id
-	}
-	if !IsNil(o.Target) {
-		toSerialize["target"] = o.Target
-	}
+	toSerialize["id"] = o.Id
+	toSerialize["target"] = o.Target
 	return toSerialize, nil
+}
+
+func (o *ProxySvcRoute) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"id",
+		"target",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varProxySvcRoute := _ProxySvcRoute{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varProxySvcRoute)
+
+	if err != nil {
+		return err
+	}
+
+	*o = ProxySvcRoute(varProxySvcRoute)
+
+	return err
 }
 
 type NullableProxySvcRoute struct {

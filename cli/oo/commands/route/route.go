@@ -9,13 +9,23 @@ func AddRouteCommands(rootCmd *cobra.Command) {
 		Short:   "Manage routes",
 	}
 
+	var (
+		id     string
+		target string
+	)
+
 	var saveCmd = &cobra.Command{
 		Use:     "save [filePath | dirPath]",
 		Aliases: []string{"s"},
 		Args:    cobra.MaximumNArgs(2),
 		Short:   "Save routes from a file or directory",
-		RunE:    Save,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return Save(cmd, args, id, target)
+		},
 	}
+
+	saveCmd.Flags().StringVar(&id, "id", "", "ID of the route to save")
+	saveCmd.Flags().StringVar(&target, "target", "", "Target URL of the route to save")
 
 	// var removeCmd = &cobra.Command{
 	// 	Use:     "remove [id]",

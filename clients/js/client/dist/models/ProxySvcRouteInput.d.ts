@@ -20,7 +20,7 @@ export interface ProxySvcRouteInput {
      * @type {string}
      * @memberof ProxySvcRouteInput
      */
-    id?: string;
+    id: string;
     /**
      *
      * @type {string}

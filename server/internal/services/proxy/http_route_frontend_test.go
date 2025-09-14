@@ -38,7 +38,6 @@ func TestProxyService_FrontendRoute(t *testing.T) {
 	require.NoError(t, err)
 
 	server, err := test.StartService(test.Options{
-		EdgeProxy:         true,
 		EdgeProxyTestMode: true,
 		EdgeProxyHttpPort: port,
 		Test:              true,
@@ -55,7 +54,7 @@ func TestProxyService_FrontendRoute(t *testing.T) {
 	routeReq := openapi.ProxySvcSaveRoutesRequest{
 		Routes: []openapi.ProxySvcRouteInput{
 			{
-				Id:     openapi.PtrString("test.localhost"),
+				Id:     "test.localhost",
 				Target: openapi.PtrString(mockBackend.URL),
 			},
 		},
@@ -317,7 +316,6 @@ func TestProxyService_MicrofrontendsByPath(t *testing.T) {
 	require.NoError(t, err)
 
 	server, err := test.StartService(test.Options{
-		EdgeProxy:         true,
 		EdgeProxyTestMode: true,
 		EdgeProxyHttpPort: port,
 		Test:              true,
@@ -334,9 +332,9 @@ func TestProxyService_MicrofrontendsByPath(t *testing.T) {
 	// save routes: host-only, /app, /app/admin
 	routeReq := openapi.ProxySvcSaveRoutesRequest{
 		Routes: []openapi.ProxySvcRouteInput{
-			{Id: openapi.PtrString("x.localhost"), Target: openapi.PtrString(backendRoot.URL)},
-			{Id: openapi.PtrString("x.localhost/app"), Target: openapi.PtrString(backendApp.URL)},
-			{Id: openapi.PtrString("x.localhost/app/admin"), Target: openapi.PtrString(backendAdmin.URL)},
+			{Id: "x.localhost", Target: openapi.PtrString(backendRoot.URL)},
+			{Id: "x.localhost/app", Target: openapi.PtrString(backendApp.URL)},
+			{Id: "x.localhost/app/admin", Target: openapi.PtrString(backendAdmin.URL)},
 		},
 	}
 	_, _, err = adminClient.ProxySvcAPI.SaveRoutes(context.Background()).Body(routeReq).Execute()

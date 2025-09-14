@@ -37,11 +37,11 @@ func TestListRoutes(t *testing.T) {
 		req := openapi.ProxySvcSaveRoutesRequest{
 			Routes: []openapi.ProxySvcRouteInput{
 				{
-					Id:     openapi.PtrString("test.localhost"),
+					Id:     "test.localhost",
 					Target: openapi.PtrString("some-backend-url"),
 				},
 				{
-					Id:     openapi.PtrString("test.localhost2"),
+					Id:     "test.localhost2",
 					Target: openapi.PtrString("some-backend-url2"),
 				},
 			},
@@ -83,11 +83,11 @@ func TestListRoutes(t *testing.T) {
 		var routeIDs []string
 		var routeTargets []string
 		for _, route := range rsp.Routes {
-			if route.Id != nil {
-				routeIDs = append(routeIDs, *route.Id)
+			if route.Id != "" {
+				routeIDs = append(routeIDs, route.Id)
 			}
-			if route.Target != nil {
-				routeTargets = append(routeTargets, *route.Target)
+			if route.Target != "" {
+				routeTargets = append(routeTargets, route.Target)
 			}
 		}
 

@@ -50,19 +50,21 @@ export interface ProxySvcRoute {
      * @type {string}
      * @memberof ProxySvcRoute
      */
-    id?: string;
+    id: string;
     /**
      * 
      * @type {string}
      * @memberof ProxySvcRoute
      */
-    target?: string;
+    target: string;
 }
 
 /**
  * Check if a given object implements the ProxySvcRoute interface.
  */
 export function instanceOfProxySvcRoute(value: object): value is ProxySvcRoute {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('target' in value) || value['target'] === undefined) return false;
     return true;
 }
 
@@ -76,8 +78,8 @@ export function ProxySvcRouteFromJSONTyped(json: any, ignoreDiscriminator: boole
     }
     return {
         
-        'id': json['id'] == null ? undefined : json['id'],
-        'target': json['target'] == null ? undefined : json['target'],
+        'id': json['id'],
+        'target': json['target'],
     };
 }
 

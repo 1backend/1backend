@@ -15,6 +15,8 @@
  * Check if a given object implements the ProxySvcRouteInput interface.
  */
 export function instanceOfProxySvcRouteInput(value) {
+    if (!('id' in value) || value['id'] === undefined)
+        return false;
     return true;
 }
 export function ProxySvcRouteInputFromJSON(json) {
@@ -25,7 +27,7 @@ export function ProxySvcRouteInputFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'id': json['id'] == null ? undefined : json['id'],
+        'id': json['id'],
         'target': json['target'] == null ? undefined : json['target'],
     };
 }

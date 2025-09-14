@@ -13,7 +13,7 @@ export declare class ProxySvcRouteInput {
     /**
     * Id is the host itself, e.g. \"test.localhost\"
     */
-    'id'?: string;
+    'id': string;
     'target'?: string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{

@@ -13,8 +13,8 @@ export declare class ProxySvcRoute {
     /**
     * Id is the routing key: host plus optional path prefix. Example:   \"x.com\"              -> root of the domain   \"x.com/path1\"        -> microfrontend at /path1   \"x.com/path1/path2\"  -> deeper microfrontend mounted at /path1/path2  Use case: multiple microfrontends served under the same host but separated by URL path segments. For example:   - Marketing site at x.com   - Dashboard at x.com/app   - Admin UI at x.com/app/admin  Lookup algorithm:   1. Take the request host and path (e.g. \"x.com/app/admin/users\").   2. Try to match the longest registered Id by progressively stripping      trailing path segments:         - x.com/app/admin/users   (no match)         - x.com/app/admin         (match -> admin UI)   3. If still no match, strip again:         - x.com/app               (match -> dashboard)   4. If still no match, fallback to host-only route:         - x.com                   (match -> marketing site)   5. If no host-only route exists, return 404.  This provides deterministic longest-prefix routing without regex or rule engines, keeping the model simple but enabling path-based microfrontend composition.
     */
-    'id'?: string;
-    'target'?: string;
+    'id': string;
+    'target': string;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

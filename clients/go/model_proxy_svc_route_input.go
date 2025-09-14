@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the ProxySvcRouteInput type satisfies the MappedNullable interface at compile time
@@ -21,16 +23,19 @@ var _ MappedNullable = &ProxySvcRouteInput{}
 // ProxySvcRouteInput struct for ProxySvcRouteInput
 type ProxySvcRouteInput struct {
 	// Id is the host itself, e.g. \"test.localhost\"
-	Id *string `json:"id,omitempty"`
+	Id string `json:"id"`
 	Target *string `json:"target,omitempty"`
 }
+
+type _ProxySvcRouteInput ProxySvcRouteInput
 
 // NewProxySvcRouteInput instantiates a new ProxySvcRouteInput object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewProxySvcRouteInput() *ProxySvcRouteInput {
+func NewProxySvcRouteInput(id string) *ProxySvcRouteInput {
 	this := ProxySvcRouteInput{}
+	this.Id = id
 	return &this
 }
 
@@ -42,36 +47,28 @@ func NewProxySvcRouteInputWithDefaults() *ProxySvcRouteInput {
 	return &this
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value
 func (o *ProxySvcRouteInput) GetId() string {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Id
+
+	return o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *ProxySvcRouteInput) GetIdOk() (*string, bool) {
-	if o == nil || IsNil(o.Id) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Id, true
+	return &o.Id, true
 }
 
-// HasId returns a boolean if a field has been set.
-func (o *ProxySvcRouteInput) HasId() bool {
-	if o != nil && !IsNil(o.Id) {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
+// SetId sets field value
 func (o *ProxySvcRouteInput) SetId(v string) {
-	o.Id = &v
+	o.Id = v
 }
 
 // GetTarget returns the Target field value if set, zero value otherwise.
@@ -116,13 +113,48 @@ func (o ProxySvcRouteInput) MarshalJSON() ([]byte, error) {
 
 func (o ProxySvcRouteInput) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Id) {
-		toSerialize["id"] = o.Id
-	}
+	toSerialize["id"] = o.Id
 	if !IsNil(o.Target) {
 		toSerialize["target"] = o.Target
 	}
 	return toSerialize, nil
+}
+
+func (o *ProxySvcRouteInput) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"id",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varProxySvcRouteInput := _ProxySvcRouteInput{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varProxySvcRouteInput)
+
+	if err != nil {
+		return err
+	}
+
+	*o = ProxySvcRouteInput(varProxySvcRouteInput)
+
+	return err
 }
 
 type NullableProxySvcRouteInput struct {

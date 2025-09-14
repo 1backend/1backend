@@ -6930,6 +6930,10 @@ function ProxySvcListRoutesRequestToJSONTyped(value, ignoreDiscriminator = false
  * Check if a given object implements the ProxySvcRoute interface.
  */
 function instanceOfProxySvcRoute(value) {
+    if (!('id' in value) || value['id'] === undefined)
+        return false;
+    if (!('target' in value) || value['target'] === undefined)
+        return false;
     return true;
 }
 function ProxySvcRouteFromJSON(json) {
@@ -6940,8 +6944,8 @@ function ProxySvcRouteFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'id': json['id'] == null ? undefined : json['id'],
-        'target': json['target'] == null ? undefined : json['target'],
+        'id': json['id'],
+        'target': json['target'],
     };
 }
 function ProxySvcRouteToJSON(json) {
@@ -7016,6 +7020,8 @@ function ProxySvcListRoutesResponseToJSONTyped(value, ignoreDiscriminator = fals
  * Check if a given object implements the ProxySvcRouteInput interface.
  */
 function instanceOfProxySvcRouteInput(value) {
+    if (!('id' in value) || value['id'] === undefined)
+        return false;
     return true;
 }
 function ProxySvcRouteInputFromJSON(json) {
@@ -7026,7 +7032,7 @@ function ProxySvcRouteInputFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'id': json['id'] == null ? undefined : json['id'],
+        'id': json['id'],
         'target': json['target'] == null ? undefined : json['target'],
     };
 }

@@ -46,13 +46,13 @@ export interface ProxySvcRoute {
      * @type {string}
      * @memberof ProxySvcRoute
      */
-    id?: string;
+    id: string;
     /**
      *
      * @type {string}
      * @memberof ProxySvcRoute
      */
-    target?: string;
+    target: string;
 }
 /**
  * Check if a given object implements the ProxySvcRoute interface.

@@ -2118,6 +2118,9 @@ definitions:
         type: string
       target:
         type: string
+    required:
+    - id
+    - target
     type: object
   proxy_svc.RouteInput:
     properties:
@@ -2126,6 +2129,8 @@ definitions:
         type: string
       target:
         type: string
+    required:
+    - id
     type: object
   proxy_svc.SaveCertsRequest:
     properties:
