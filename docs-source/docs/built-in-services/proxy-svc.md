@@ -108,6 +108,57 @@ Benefits:
 - Deepest path prefix always takes precedence, ensuring /app/admin resolves correctly
 - Easy to extend: just add more host+path routes
 
+## Routes and Apps
+
+The Proxy Svc and its routes enable you to host multiple web applications (ie. websites) under different hosts using a single 1Backend installation.
+
+**In this section we'll explore the most minimal multiapp setup possible.**
+First make sure 1Backend runs with `OB_EDGE_PROXY` set to `true`:
+
+```sh
+# Some setup is needed to make sure the server can bind to port 80
+~/1backend/server$ go build -o server main.go && sudo setcap 'cap_net_bind_service=+ep' ./server && OB_EDGE_PROXY_TEST_MODE=true ./server
+# Output streams...
+```
+
+Now let's launch two servers:
+
+```sh
+node -e "
+const http=require('http');
+http.createServer((_,res)=>res.end('Server A\n')).listen(4200);
+http.createServer((_,res)=>res.end('Server B\n')).listen(4201);
+"
+```
+
+```yaml
+# routeA.yaml
+id: "127.0.0.1"
+target: "127.0.0.1:4200"
+```
+
+```yaml
+# routeB.yaml
+id: "localhost"
+target: "127.0.0.1:4201"
+```
+
+Please note that the ID and the target is the same because we have no domain to route.
+
+```cli
+oo route save routeA.yaml
+oo route save routeB.yaml
+```
+
+Now you're ready to call them:
+
+```sh
+$ curl 127.0.0.1
+Server A
+$ curl localhost
+Server B
+```
+
 ## CLI Usage
 
 ### Route Management
