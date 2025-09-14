@@ -485,7 +485,7 @@ func BigBang(options *universe.Options) (*Universe, error) {
 			return errors.Wrap(err, "deploy service start failed")
 		}
 
-		if options.EdgeProxy {
+		if options.EdgeProxy || options.EdgeProxyTestMode {
 			univ.EdgeProxyHttpsRouter = mux.NewRouter().SkipClean(true).UseEncodedPath()
 			proxyService.RegisterFrontendRoutes(univ.EdgeProxyHttpsRouter)
 
@@ -494,7 +494,7 @@ func BigBang(options *universe.Options) (*Universe, error) {
 					// Only launch the "HTTPS" server... but in HTTP mode for testing.
 					// The point is to be able to test the edge proxy routing functionality.
 					s := &http.Server{
-						Addr:    fmt.Sprintf(":%v", options.EdgeProxyHttpsPort),
+						Addr:    fmt.Sprintf(":%v", options.EdgeProxyHttpPort),
 						Handler: univ.EdgeProxyHttpsRouter,
 					}
 					if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {

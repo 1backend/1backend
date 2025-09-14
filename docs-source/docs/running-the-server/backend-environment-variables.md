@@ -71,10 +71,11 @@ Use this flag when 1Backend is running as a publicly accessible server that need
 
 ## `OB_EDGE_PROXY_TEST_MODE`
 
-Enables test mode for the edge proxy:
+Enables test mode for the edge proxy. Contrary to the production edge proxy, the dev mode:
 
-- Turns off autocert.
-- Uses HTTP for both the HTTP and HTTPS port.
+- Does not try to redirect to 443
+- Does no certificate requests and renewal
+- Routes HTTP requests (vs HTTP for prod).
 
 ## `OB_EDGE_PROXY_HTTP_PORT`
 

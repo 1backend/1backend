@@ -44,8 +44,20 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !strings.HasPrefix(target, "http") {
+		target = "http://" + target
+	}
+
 	req, err := http.NewRequest(r.Method, target, r.Body)
 	if err != nil {
+		logger.Error(
+			"Failed to create request",
+			slog.String("target", target),
+			slog.String("host", r.Host),
+			slog.String("path", r.URL.Path),
+			slog.String("target", target),
+			slog.Any("error", err),
+		)
 		http.Error(w, "Failed to create proxy request", http.StatusInternalServerError)
 		return
 	}

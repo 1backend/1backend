@@ -38,10 +38,10 @@ func TestProxyService_FrontendRoute(t *testing.T) {
 	require.NoError(t, err)
 
 	server, err := test.StartService(test.Options{
-		EdgeProxy:          true,
-		EdgeProxyTestMode:  true,
-		EdgeProxyHttpsPort: port,
-		Test:               true,
+		EdgeProxy:         true,
+		EdgeProxyTestMode: true,
+		EdgeProxyHttpPort: port,
+		Test:              true,
 	})
 	require.NoError(t, err)
 	defer server.Cleanup(t)
@@ -317,10 +317,10 @@ func TestProxyService_MicrofrontendsByPath(t *testing.T) {
 	require.NoError(t, err)
 
 	server, err := test.StartService(test.Options{
-		EdgeProxy:          true,
-		EdgeProxyTestMode:  true,
-		EdgeProxyHttpsPort: port,
-		Test:               true,
+		EdgeProxy:         true,
+		EdgeProxyTestMode: true,
+		EdgeProxyHttpPort: port,
+		Test:              true,
 	})
 	require.NoError(t, err)
 	defer server.Cleanup(t)
