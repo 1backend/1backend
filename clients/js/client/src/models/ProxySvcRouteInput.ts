@@ -24,7 +24,7 @@ export interface ProxySvcRouteInput {
      * @type {string}
      * @memberof ProxySvcRouteInput
      */
-    id?: string;
+    id: string;
     /**
      * 
      * @type {string}
@@ -37,6 +37,7 @@ export interface ProxySvcRouteInput {
  * Check if a given object implements the ProxySvcRouteInput interface.
  */
 export function instanceOfProxySvcRouteInput(value: object): value is ProxySvcRouteInput {
+    if (!('id' in value) || value['id'] === undefined) return false;
     return true;
 }
 
@@ -50,7 +51,7 @@ export function ProxySvcRouteInputFromJSONTyped(json: any, ignoreDiscriminator: 
     }
     return {
         
-        'id': json['id'] == null ? undefined : json['id'],
+        'id': json['id'],
         'target': json['target'] == null ? undefined : json['target'],
     };
 }

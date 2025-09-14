@@ -39,13 +39,13 @@ type Route struct {
 	// This provides deterministic longest-prefix routing without regex or
 	// rule engines, keeping the model simple but enabling path-based
 	// microfrontend composition.
-	Id     string `json:"id"`
-	Target string `json:"target"`
+	Id     string `json:"id" binding:"required"`
+	Target string `json:"target" binding:"required"`
 }
 
 type RouteInput struct {
 	// Id is the host itself, e.g. "test.localhost"
-	Id string `json:"id"`
+	Id string `json:"id" binding:"required"`
 
 	Target string `json:"target"`
 }

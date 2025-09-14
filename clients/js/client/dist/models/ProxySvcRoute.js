@@ -15,6 +15,10 @@
  * Check if a given object implements the ProxySvcRoute interface.
  */
 export function instanceOfProxySvcRoute(value) {
+    if (!('id' in value) || value['id'] === undefined)
+        return false;
+    if (!('target' in value) || value['target'] === undefined)
+        return false;
     return true;
 }
 export function ProxySvcRouteFromJSON(json) {
@@ -25,8 +29,8 @@ export function ProxySvcRouteFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'id': json['id'] == null ? undefined : json['id'],
-        'target': json['target'] == null ? undefined : json['target'],
+        'id': json['id'],
+        'target': json['target'],
     };
 }
 export function ProxySvcRouteToJSON(json) {

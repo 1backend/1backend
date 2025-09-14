@@ -45,8 +45,8 @@ func List(cmd *cobra.Command, args []string) error {
 		fmt.Fprintf(
 			writer,
 			"%s\t%s\n",
-			*route.Id,
-			*route.Target,
+			route.Id,
+			route.Target,
 		)
 	}
 
