@@ -79,7 +79,9 @@ func (pc *PermissionCheckerImpl) HasPermission(
 	permission string,
 ) (*openapi.UserSvcHasPermissionResponse, int, error) {
 
-	jwt := strings.TrimPrefix(request.Header.Get("Authorization"), "Bearer ")
+	jwt := strings.TrimSpace(
+		strings.TrimPrefix(request.Header.Get("Authorization"), "Bearer "),
+	)
 
 	key := generateCacheKey(
 		jwt,
@@ -115,7 +117,7 @@ func (pc *PermissionCheckerImpl) HasPermission(
 		code = httpResponse.StatusCode
 	}
 
-	if key != "" {
+	if jwt != "" {
 		expiresAt, err := time.Parse(time.RFC3339, isAuthRsp.Until)
 		if err != nil {
 			return nil, http.StatusInternalServerError, errors.Wrap(err, "failed to parse expiresAt")
