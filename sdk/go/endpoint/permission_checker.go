@@ -12,7 +12,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"log/slog"
 	"net/http"
 	"strings"
 	"time"
@@ -21,7 +20,6 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
-	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/dgraph-io/ristretto"
 )
 
@@ -91,9 +89,6 @@ func (pc *PermissionCheckerImpl) HasPermission(
 	)
 
 	if jwt != "" {
-		logger.Debug("Getting permission response from cache",
-			slog.String("key", key),
-		)
 		if value, found := pc.permissionCache.Get(key); found {
 			if cachedResp, ok := value.(*HasPermissionResponse); ok {
 				return cachedResp.Response, cachedResp.StatusCode, nil
@@ -128,11 +123,6 @@ func (pc *PermissionCheckerImpl) HasPermission(
 			return nil, http.StatusInternalServerError, errors.Wrap(err, "failed to parse expiresAt")
 		}
 
-		logger.Debug("Saving permission response to cache",
-			slog.String("key", key),
-			slog.Any("response", isAuthRsp),
-			slog.Int("statusCode", code),
-		)
 		pc.permissionCache.SetWithTTL(key, &HasPermissionResponse{
 			Response:   isAuthRsp,
 			StatusCode: code,
