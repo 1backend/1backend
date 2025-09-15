@@ -91,7 +91,7 @@ func (pc *PermissionCheckerImpl) HasPermission(
 	)
 
 	if jwt != "" {
-		logger.Debug("Getting permission from cache",
+		logger.Debug("Getting permission response from cache",
 			slog.String("key", key),
 		)
 		if value, found := pc.permissionCache.Get(key); found {
@@ -128,7 +128,7 @@ func (pc *PermissionCheckerImpl) HasPermission(
 			return nil, http.StatusInternalServerError, errors.Wrap(err, "failed to parse expiresAt")
 		}
 
-		logger.Debug("Saving permission to cache",
+		logger.Debug("Saving permission response to cache",
 			slog.String("key", key),
 			slog.Any("response", isAuthRsp),
 			slog.Int("statusCode", code),
