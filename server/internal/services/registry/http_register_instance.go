@@ -93,8 +93,9 @@ func (rs *RegistryService) registerInstance(
 ) error {
 	var instance registry.Instance
 
-	instances, err := rs.instanceStore.Query(datastore.Equals([]string{"url"}, req.URL)).
-		Find()
+	instances, err := rs.instanceStore.Query(
+		datastore.Equals([]string{"url"}, req.URL),
+	).Find()
 	if err != nil {
 		return err
 	}
@@ -148,6 +149,12 @@ func (rs *RegistryService) registerInstance(
 	if instance.URL == "" {
 		return errors.New("url is missing")
 	}
+
+	logger.Debug("Saving instance",
+		slog.Any("id", instance.Id),
+		slog.String("slug", instance.Slug),
+		slog.String("url", instance.URL),
+	)
 
 	return rs.instanceStore.Upsert(&instance)
 }
