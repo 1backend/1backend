@@ -233,7 +233,7 @@ func StartService(options Options) (*ServiceProcess, error) {
 		return nil, errors.Wrap(err, "service failed to start")
 	}
 
-	timeout := 5 * time.Second
+	timeout := 8 * time.Second
 
 	select {
 	case <-waitChan:
