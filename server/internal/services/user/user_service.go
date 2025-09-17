@@ -318,7 +318,7 @@ func (s *UserService) bootstrap() error {
 	} else {
 		bits := 4096
 		if s.options.Test {
-			bits = 512
+			bits = 2048
 		}
 		privKey, pubKey, err := generateRSAKeys(bits)
 
