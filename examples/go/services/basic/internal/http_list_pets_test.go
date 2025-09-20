@@ -47,7 +47,7 @@ func TestListPets(t *testing.T) {
 	serverAdminClient, _, err := test.AdminClient(clientFactory)
 	assert.NoError(t, err)
 
-	serverClients, tokens, err := test.MakeClients(clientFactory, 1)
+	serverClients, tokens, err := test.MakeClients(clientFactory, "test", 1)
 	require.NoError(t, err)
 
 	client1 := newClient(server.Url, tokens[0].Token)

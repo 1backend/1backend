@@ -65,15 +65,8 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if req.AppHost == "" {
-		req.AppHost, err = s.options.TokenExchanger.AppHostFromRequest(r)
-		if err != nil {
-			logger.Error(
-				"Failed to get app from request host",
-				slog.Any("error", err),
-			)
-			endpoint.InternalServerError(w)
-			return
-		}
+		endpoint.WriteErr(w, http.StatusBadRequest, errors.New("AppHost missing"))
+		return
 	}
 
 	app, err := s.getOrCreateApp(req.AppHost)

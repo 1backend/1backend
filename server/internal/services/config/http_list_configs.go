@@ -61,16 +61,8 @@ func (cs *ConfigService) ListConfigs(
 	}
 
 	if req.AppHost == "" {
-		var err error
-		req.AppHost, err = cs.options.TokenExchanger.AppHostFromRequest(r)
-		if err != nil {
-			logger.Error(
-				"Failed to get app from request host",
-				slog.Any("error", err),
-			)
-			endpoint.InternalServerError(w)
-			return
-		}
+		endpoint.WriteErr(w, http.StatusBadRequest, errors.New("AppHost missing"))
+		return
 	}
 
 	appId, err := cs.options.TokenExchanger.AppIdFromHost(

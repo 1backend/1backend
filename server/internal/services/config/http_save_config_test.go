@@ -28,7 +28,7 @@ func TestConfigService(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, _, err := test.MakeClients(clientFactory, 2)
+	manyClients, _, err := test.MakeClients(clientFactory, "test", 2)
 	require.NoError(t, err)
 	client1 := manyClients[0]
 	client2 := manyClients[1]

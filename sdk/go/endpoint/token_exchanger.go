@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"net/http"
 	"strings"
 	"time"
 
@@ -31,8 +30,6 @@ type TokenExchanger interface {
 		newApp string,
 	) (string, error)
 
-	AppHostFromRequest(request *http.Request) (string, error)
-	AppIdFromRequestHost(ctx context.Context, request *http.Request) (string, error)
 	AppIdFromHost(ctx context.Context, appHost string) (string, error)
 }
 
@@ -104,31 +101,6 @@ func (te *TokenExchangerImpl) ExchangeToken(
 	}
 
 	return rsp.Token.Token, nil
-}
-
-func (te *TokenExchangerImpl) AppHostFromRequest(
-	request *http.Request,
-) (
-	string, error,
-) {
-	if request == nil || request.Host == "" {
-		return "", errors.New("request or request host is empty")
-	}
-
-	return request.Host, nil
-}
-
-func (te *TokenExchangerImpl) AppIdFromRequestHost(
-	ctx context.Context,
-	request *http.Request,
-) (
-	string, error,
-) {
-	if request == nil || request.Host == "" {
-		return "", errors.New("request or request host is empty")
-	}
-
-	return te.AppIdFromHost(ctx, request.Host)
 }
 
 func (te *TokenExchangerImpl) AppIdFromHost(

@@ -7,24 +7,33 @@ import (
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/pkg/errors"
 	"go.uber.org/mock/gomock"
 )
 
-func AdminClient(clientFactory client.ClientFactory) (*openapi.APIClient, string, error) {
+func AdminClient(
+	clientFactory client.ClientFactory,
+	appHost string,
+) (*openapi.APIClient, string, error) {
 	userSvc := clientFactory.Client().UserSvcAPI
 
 	adminLoginRsp, _, err := userSvc.Login(context.Background()).Body(openapi.UserSvcLoginRequest{
+		AppHost:  &appHost,
 		Slug:     openapi.PtrString("1backend"),
 		Password: openapi.PtrString("changeme"),
 	}).Execute()
 	if err != nil {
-		return nil, "", err
+		return nil, "", errors.Wrap(err, "error logging in as admin")
 	}
 
 	return clientFactory.Client(client.WithToken(adminLoginRsp.Token.Token)), adminLoginRsp.Token.Token, nil
 }
 
-func MakeClients(clientFactory client.ClientFactory, num int) ([]*openapi.APIClient, []*openapi.UserSvcToken, error) {
+func MakeClients(
+	clientFactory client.ClientFactory,
+	appHost string,
+	num int,
+) ([]*openapi.APIClient, []*openapi.UserSvcToken, error) {
 	var (
 		clients []*openapi.APIClient
 		tokens  []*openapi.UserSvcToken
@@ -35,7 +44,13 @@ func MakeClients(clientFactory client.ClientFactory, num int) ([]*openapi.APICli
 		password := fmt.Sprintf("testUserPassword%v", i)
 		username := fmt.Sprintf("Test User Name %v", i)
 
-		token, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, slug, password, username)
+		token, err := boot.RegisterUserAccount(
+			clientFactory.Client().UserSvcAPI,
+			appHost,
+			slug,
+			password,
+			username,
+		)
 		if err != nil {
 			return nil, nil, err
 		}

@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
@@ -24,7 +25,7 @@ func TestEnrollForUnregistered(t *testing.T) {
 	defer server.Cleanup(t)
 
 	manyClients, _, err := test.MakeClients(
-		client.NewApiClientFactory(server.Url), 1)
+		client.NewApiClientFactory(server.Url), sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -119,7 +120,7 @@ func TestEnrollForRegisteredUser(t *testing.T) {
 	defer server.Cleanup(t)
 
 	clientFactory := client.NewApiClientFactory(server.Url)
-	manyClients, _, err := test.MakeClients(clientFactory, 1)
+	manyClients, _, err := test.MakeClients(clientFactory, "test", 1)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -190,7 +191,7 @@ func TestListEnrollAuthorization(t *testing.T) {
 	defer server.Cleanup(t)
 
 	clientFactory := client.NewApiClientFactory(server.Url)
-	manyClients, tokens, err := test.MakeClients(clientFactory, 2)
+	manyClients, tokens, err := test.MakeClients(clientFactory, "test", 2)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -268,7 +269,7 @@ func TestSaveEnrollsOldAssignTests(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, tokens, err := test.MakeClients(clientFactory, 3)
+	manyClients, tokens, err := test.MakeClients(clientFactory, "test", 3)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -456,7 +457,7 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 	defer server.Cleanup(t)
 
 	clientFactory := client.NewApiClientFactory(server.Url)
-	manyClients, _, err := test.MakeClients(clientFactory, 1)
+	manyClients, _, err := test.MakeClients(clientFactory, "test", 1)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]

@@ -48,7 +48,7 @@ func TestServeUploadedImage(t *testing.T) {
 	clientFactory := client.NewApiClientFactory(server.Url)
 
 	ctx := context.Background()
-	_, _, err = test.MakeClients(clientFactory, 1)
+	_, _, err = test.MakeClients(clientFactory, "test", 1)
 	require.NoError(t, err)
 
 	adminClient, _, err := test.AdminClient(clientFactory)

@@ -9,13 +9,13 @@ package userservice_test
 
 import (
 	"context"
-	"strings"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/require"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
@@ -35,6 +35,7 @@ func TestUnauthorizedShouldNotReturnError(t *testing.T) {
 
 	token, err := boot.RegisterUserAccount(
 		clientFactory.Client().UserSvcAPI,
+		sdk.DefaultTestAppHost,
 		"someuser",
 		"pw123",
 		"Some name",
@@ -50,7 +51,7 @@ func TestUnauthorizedShouldNotReturnError(t *testing.T) {
 	require.NoError(t, err)
 	require.False(t, rsp.Authorized)
 	require.NotNil(t, rsp.AppId)
-	require.Equal(t, strings.Replace(server.Url, "http://", "", 1), rsp.App.Host)
+	require.Equal(t, sdk.DefaultTestAppHost, rsp.App.Host)
 	require.NotEmpty(t, rsp.User)
 }
 
@@ -67,6 +68,7 @@ func TestPermitsBySlug(t *testing.T) {
 
 	token, err := boot.RegisterUserAccount(
 		clientFactory.Client().UserSvcAPI,
+		sdk.DefaultTestAppHost,
 		"someuser",
 		"pw123",
 		"Some name",
@@ -79,7 +81,7 @@ func TestPermitsBySlug(t *testing.T) {
 	_, _, err = userClient.UserSvcAPI.ListUsers(ctx).Execute()
 	require.Error(t, err)
 
-	adminClient, _, err := test.AdminClient(clientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	_, _, err = adminClient.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
@@ -110,6 +112,7 @@ func TestPermitsByRoleId(t *testing.T) {
 
 	token, err := boot.RegisterUserAccount(
 		clientFactory.Client().UserSvcAPI,
+		sdk.DefaultTestAppHost,
 		"someuser",
 		"pw123",
 		"Some name",
@@ -122,7 +125,7 @@ func TestPermitsByRoleId(t *testing.T) {
 	_, _, err = userClient.UserSvcAPI.ListUsers(ctx).Execute()
 	require.Error(t, err)
 
-	adminClient, _, err := test.AdminClient(clientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	_, _, err = adminClient.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
@@ -155,6 +158,7 @@ func TestAutoRefresh(t *testing.T) {
 
 	token, err := boot.RegisterUserAccount(
 		clientFactory.Client().UserSvcAPI,
+		sdk.DefaultTestAppHost,
 		"someuser",
 		"pw123",
 		"Some name",
@@ -191,6 +195,7 @@ func TestAutoRefreshOff(t *testing.T) {
 
 	token, err := boot.RegisterUserAccount(
 		clientFactory.Client().UserSvcAPI,
+		sdk.DefaultTestAppHost,
 		"someuser",
 		"pw123",
 		"Some name",

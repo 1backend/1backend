@@ -15,6 +15,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
@@ -33,12 +34,12 @@ func TestChangePassword(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, _, err := test.MakeClients(clientFactory, 2)
+	manyClients, _, err := test.MakeClients(clientFactory, "test", 2)
 	require.NoError(t, err)
 
 	client1 := manyClients[0]
 
-	adminClient, _, err := test.AdminClient(clientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	ctx := context.Background()
@@ -95,6 +96,7 @@ func TestChangePassword(t *testing.T) {
 	t.Run("user 1 can login with new password", func(t *testing.T) {
 		rsp, _, err := client1.UserSvcAPI.Login(ctx).Body(
 			openapi.UserSvcLoginRequest{
+				AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
 				Slug:     openapi.PtrString("test-user-slug-0"),
 				Password: openapi.PtrString("a test"),
 			}).Execute()
@@ -123,7 +125,7 @@ func TestPasswordChange(t *testing.T) {
 
 	userSvc := options.ClientFactory.Client().UserSvcAPI
 
-	manyClients, _, err := test.MakeClients(options.ClientFactory, 1)
+	manyClients, _, err := test.MakeClients(options.ClientFactory, sdk.DefaultTestAppHost, 1)
 
 	require.NoError(t, err)
 

@@ -28,6 +28,9 @@ func init() {
 	}
 }
 
+const DefaultAppHost = "unnamed"
+const DefaultTestAppHost = "test.app"
+
 const base62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
 // Id generates a short, human-readable unique ID with a prefix using Sonyflake.

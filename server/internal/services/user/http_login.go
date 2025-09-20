@@ -49,15 +49,8 @@ func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	if request.AppHost == "" {
-		request.AppHost, err = s.options.TokenExchanger.AppHostFromRequest(r)
-		if err != nil {
-			logger.Error(
-				"Failed to get app from request host",
-				slog.Any("error", err),
-			)
-			endpoint.InternalServerError(w)
-			return
-		}
+		endpoint.WriteErr(w, http.StatusBadRequest, errors.New("AppHost missing"))
+		return
 	}
 
 	app, err := s.getOrCreateApp(request.AppHost)

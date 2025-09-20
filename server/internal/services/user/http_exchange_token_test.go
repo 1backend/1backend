@@ -24,7 +24,7 @@ func TestExchangeToken(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	clients, tokens, err := test.MakeClients(clientFactory, 1)
+	clients, tokens, err := test.MakeClients(clientFactory, "test", 1)
 	require.NoError(t, err)
 
 	client1 := clients[0]

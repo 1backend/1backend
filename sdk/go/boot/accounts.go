@@ -11,6 +11,7 @@ import (
 	"context"
 	"strings"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/google/uuid"
@@ -52,7 +53,10 @@ func RegisterServiceAccount(
 			return nil, errors.Wrap(err, "error refreshing credential store")
 		}
 
+		appHost := sdk.DefaultAppHost
+
 		rsp, _, err := userService.Register(ctx).Body(onebackendapi.UserSvcRegisterRequest{
+			AppHost:  &appHost,
 			Slug:     serviceSlug,
 			Name:     onebackendapi.PtrString(serviceName),
 			Password: onebackendapi.PtrString(pw),
@@ -94,23 +98,31 @@ func RegisterServiceAccount(
 
 // RegisterUserAccount is primarily used in tests.
 // @todo Move to a test package.
-func RegisterUserAccount(userService onebackendapi.UserSvcAPI, slug, password, name string) (*onebackendapi.UserSvcToken, error) {
+func RegisterUserAccount(
+	userService onebackendapi.UserSvcAPI,
+	appHost string,
+	slug string,
+	password string,
+	name string,
+) (*onebackendapi.UserSvcToken, error) {
 	_, _, err := userService.Register(context.Background()).Body(onebackendapi.UserSvcRegisterRequest{
+		AppHost:  onebackendapi.PtrString(appHost),
 		Slug:     slug,
 		Password: onebackendapi.PtrString(password),
 		Name:     onebackendapi.PtrString(name),
 	}).Execute()
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error registering user account")
 	}
 
 	loginRsp, _, err := userService.Login(context.Background()).Body(onebackendapi.UserSvcLoginRequest{
+		AppHost:  onebackendapi.PtrString(appHost),
 		Slug:     onebackendapi.PtrString(slug),
 		Password: onebackendapi.PtrString(password),
 	}).Execute()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error logging in with user account")
 	}
 
 	return loginRsp.Token, nil

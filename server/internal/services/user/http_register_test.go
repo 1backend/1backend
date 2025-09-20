@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/server/internal/di"
 	userservice "github.com/1backend/1backend/server/internal/services/user"
 	"github.com/1backend/1backend/server/internal/universe"
@@ -42,6 +43,7 @@ func TestRegister(t *testing.T) {
 	t.Run("anyone can register", func(t *testing.T) {
 		rsp, _, err := options.ClientFactory.Client().UserSvcAPI.Register(ctx).Body(
 			openapi.UserSvcRegisterRequest{
+				AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
 				Slug:     "test-slug-1",
 				Name:     openapi.PtrString("Test Name"),
 				Password: openapi.PtrString("testPass123"),
@@ -88,6 +90,7 @@ func TestRegister(t *testing.T) {
 	t.Run("login doesn't produce a new token", func(t *testing.T) {
 		rsp, _, err := options.ClientFactory.Client().UserSvcAPI.Login(ctx).Body(
 			openapi.UserSvcLoginRequest{
+				AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
 				Slug:     openapi.PtrString("test-slug-1"),
 				Password: openapi.PtrString("testPass123"),
 			},
@@ -117,7 +120,8 @@ func TestRegistration(t *testing.T) {
 	userSvc := options.ClientFactory.Client().UserSvcAPI
 	_, hrsp, err := userSvc.Register(context.Background()).Body(
 		openapi.UserSvcRegisterRequest{
-			Slug: "test-1",
+			AppHost: openapi.PtrString(sdk.DefaultTestAppHost),
+			Slug:    "test-1",
 			Contact: &openapi.UserSvcContactInput{
 				Id:       "test1@test.comm",
 				Platform: "email",
@@ -129,6 +133,7 @@ func TestRegistration(t *testing.T) {
 
 	t.Run("slug login works", func(t *testing.T) {
 		loginReq := openapi.UserSvcLoginRequest{
+			AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
 			Slug:     openapi.PtrString("test-1"),
 			Password: openapi.PtrString("test"),
 		}
@@ -140,6 +145,7 @@ func TestRegistration(t *testing.T) {
 
 	t.Run("contact login works", func(t *testing.T) {
 		loginReq := openapi.UserSvcLoginRequest{
+			AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
 			Contact:  openapi.PtrString("test1@test.comm"),
 			Password: openapi.PtrString("test"),
 		}

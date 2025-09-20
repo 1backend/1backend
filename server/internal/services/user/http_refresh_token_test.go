@@ -25,7 +25,7 @@ func TestRefreshToken(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, tokens, err := test.MakeClients(clientFactory, 1)
+	manyClients, tokens, err := test.MakeClients(clientFactory, "test", 1)
 	require.NoError(t, err)
 
 	client1 := manyClients[0]
@@ -74,7 +74,7 @@ func TestRefreshTokenCountIsBounded(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, tokens, err := test.MakeClients(clientFactory, 1)
+	manyClients, tokens, err := test.MakeClients(clientFactory, "test", 1)
 	require.NoError(t, err)
 
 	client1 := manyClients[0]
@@ -168,7 +168,7 @@ func TestRefreshTokenCountIsBoundedPerDevice(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, _, err := test.MakeClients(clientFactory, 1)
+	manyClients, _, err := test.MakeClients(clientFactory, "test", 1)
 	require.NoError(t, err)
 
 	// default device
@@ -237,7 +237,7 @@ func TestRefreshToken_AfterExchange_KeepsAppAndExtendsExpiry(t *testing.T) {
 	ctx := context.Background()
 
 	// user
-	many, toks, err := test.MakeClients(clientFactory, 1)
+	many, toks, err := test.MakeClients(clientFactory, "test", 1)
 	require.NoError(t, err)
 	userUnnamed := many[0]
 

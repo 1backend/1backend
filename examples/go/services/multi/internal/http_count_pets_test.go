@@ -55,7 +55,7 @@ func TestCountPets(t *testing.T) {
 	serverAdminClient, _, err := test.AdminClient(clientFactory)
 	assert.NoError(t, err)
 
-	serverClients, tokens, err := test.MakeClients(clientFactory, 1)
+	serverClients, tokens, err := test.MakeClients(clientFactory, "test", 1)
 	require.NoError(t, err)
 
 	t.Run("admin assigns role to user so user can save a pet first", func(t *testing.T) {
