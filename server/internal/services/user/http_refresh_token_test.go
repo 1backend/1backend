@@ -178,7 +178,7 @@ func TestRefreshTokenCountIsBoundedPerDevice(t *testing.T) {
 	lrsp, httrsp, err := deviceA.UserSvcAPI.Login(
 		context.Background(),
 	).Body(openapi.UserSvcLoginRequest{
-		AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
+		AppHost:  sdk.DefaultTestAppHost,
 		Slug:     openapi.PtrString("test-user-slug-0"),
 		Password: openapi.PtrString("testUserPassword0"),
 		Device:   openapi.PtrString("device-a"),

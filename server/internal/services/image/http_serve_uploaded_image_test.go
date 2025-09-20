@@ -52,7 +52,7 @@ func TestServeUploadedImage(t *testing.T) {
 	_, _, err = test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
-	adminClient, _, err := test.AdminClient(clientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	imageFile, cleanup := createTestImageFile(t)

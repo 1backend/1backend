@@ -78,7 +78,7 @@ func TestEnrollForUnregistered(t *testing.T) {
 	t.Run("new user should have role", func(t *testing.T) {
 		rsp, _, err := userClient.UserSvcAPI.Register(context.Background()).
 			Body(openapi.UserSvcRegisterRequest{
-				AppHost: openapi.PtrString(sdk.DefaultTestAppHost),
+				AppHost: sdk.DefaultTestAppHost,
 				Slug:    "test-user-slug-1",
 				Contact: &openapi.UserSvcContactInput{
 					Id: "test-user@email.com",
@@ -129,7 +129,7 @@ func TestEnrollForRegisteredUser(t *testing.T) {
 	t.Run("register user", func(t *testing.T) {
 		_, hrsp, err := userClient.UserSvcAPI.Register(context.Background()).
 			Body(openapi.UserSvcRegisterRequest{
-				AppHost: openapi.PtrString(sdk.DefaultTestAppHost),
+				AppHost: sdk.DefaultTestAppHost,
 				Slug:    "test-user-slug-1",
 				Contact: &openapi.UserSvcContactInput{
 					Id: "test-user@email.com",
@@ -154,7 +154,7 @@ func TestEnrollForRegisteredUser(t *testing.T) {
 		require.NoError(t, err)
 
 		loginReq := openapi.UserSvcLoginRequest{
-			AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
+			AppHost:  sdk.DefaultTestAppHost,
 			Slug:     openapi.PtrString("test-user-slug-1"),
 			Password: openapi.PtrString("yo"),
 		}

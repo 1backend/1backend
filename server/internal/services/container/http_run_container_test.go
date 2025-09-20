@@ -13,6 +13,7 @@ import (
 	"testing"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
 	"github.com/1backend/1backend/server/internal/universe"
@@ -36,7 +37,7 @@ func TestRunContainer(t *testing.T) {
 	err = universe.StarterFunc()
 	require.NoError(t, err)
 
-	adminClient, _, err := test.AdminClient(options.ClientFactory)
+	adminClient, _, err := test.AdminClient(options.ClientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	ctx := context.Background()

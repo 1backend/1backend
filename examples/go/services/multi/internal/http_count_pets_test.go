@@ -53,7 +53,7 @@ func TestCountPets(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	serverAdminClient, _, err := test.AdminClient(clientFactory)
+	serverAdminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	assert.NoError(t, err)
 
 	serverClients, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)

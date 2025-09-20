@@ -32,7 +32,7 @@ func (c Config) GetId() string {
 }
 
 type ListConfigsRequest struct {
-	AppHost string `json:"appHost" example:"shoes.com"`
+	AppHost string `json:"appHost" binding:"required" example:"shoes.com"`
 
 	// Ids are camelCased slugs of the config owners.
 	// Specifying only the ids will mean all of the config will be returned

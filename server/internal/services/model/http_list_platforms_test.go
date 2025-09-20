@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
@@ -32,6 +33,7 @@ func TestListPlatforms(t *testing.T) {
 
 	token, err := boot.RegisterUserAccount(
 		options.ClientFactory.Client().UserSvcAPI,
+		sdk.DefaultTestAppHost,
 		"someuser",
 		"pw123",
 		"Some name",

@@ -447,7 +447,7 @@ func TestWildcardEnroll_AppStar_RoleAppearsAcrossApps(t *testing.T) {
 
 	// the user registers later
 	reg, _, err := owner.UserSvcAPI.Register(ctx).Body(openapi.UserSvcRegisterRequest{
-		AppHost: openapi.PtrString(sdk.DefaultTestAppHost),
+		AppHost: sdk.DefaultTestAppHost,
 		Slug:    "wildcard-user",
 		Contact: &openapi.UserSvcContactInput{
 			Id: contact,

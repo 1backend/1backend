@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the ConfigSvcListConfigsRequest type satisfies the MappedNullable interface at compile time
@@ -20,19 +22,22 @@ var _ MappedNullable = &ConfigSvcListConfigsRequest{}
 
 // ConfigSvcListConfigsRequest struct for ConfigSvcListConfigsRequest
 type ConfigSvcListConfigsRequest struct {
-	AppHost *string `json:"appHost,omitempty"`
+	AppHost string `json:"appHost"`
 	// Ids are camelCased slugs of the config owners. Specifying only the ids will mean all of the config will be returned for that key.  If the configs are large, consider using the `Selector` request field.
 	Ids []string `json:"ids,omitempty"`
 	// Selector allows dotPath-based filtering per config owner. Example: {   \"user1\": [\"settings.theme\", \"featureFlags.enableNewUI\"],   \"user2\": [\"settings.language\"] }
 	Selector *map[string][]string `json:"selector,omitempty"`
 }
 
+type _ConfigSvcListConfigsRequest ConfigSvcListConfigsRequest
+
 // NewConfigSvcListConfigsRequest instantiates a new ConfigSvcListConfigsRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewConfigSvcListConfigsRequest() *ConfigSvcListConfigsRequest {
+func NewConfigSvcListConfigsRequest(appHost string) *ConfigSvcListConfigsRequest {
 	this := ConfigSvcListConfigsRequest{}
+	this.AppHost = appHost
 	return &this
 }
 
@@ -44,36 +49,28 @@ func NewConfigSvcListConfigsRequestWithDefaults() *ConfigSvcListConfigsRequest {
 	return &this
 }
 
-// GetAppHost returns the AppHost field value if set, zero value otherwise.
+// GetAppHost returns the AppHost field value
 func (o *ConfigSvcListConfigsRequest) GetAppHost() string {
-	if o == nil || IsNil(o.AppHost) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.AppHost
+
+	return o.AppHost
 }
 
-// GetAppHostOk returns a tuple with the AppHost field value if set, nil otherwise
+// GetAppHostOk returns a tuple with the AppHost field value
 // and a boolean to check if the value has been set.
 func (o *ConfigSvcListConfigsRequest) GetAppHostOk() (*string, bool) {
-	if o == nil || IsNil(o.AppHost) {
+	if o == nil {
 		return nil, false
 	}
-	return o.AppHost, true
+	return &o.AppHost, true
 }
 
-// HasAppHost returns a boolean if a field has been set.
-func (o *ConfigSvcListConfigsRequest) HasAppHost() bool {
-	if o != nil && !IsNil(o.AppHost) {
-		return true
-	}
-
-	return false
-}
-
-// SetAppHost gets a reference to the given string and assigns it to the AppHost field.
+// SetAppHost sets field value
 func (o *ConfigSvcListConfigsRequest) SetAppHost(v string) {
-	o.AppHost = &v
+	o.AppHost = v
 }
 
 // GetIds returns the Ids field value if set, zero value otherwise.
@@ -150,9 +147,7 @@ func (o ConfigSvcListConfigsRequest) MarshalJSON() ([]byte, error) {
 
 func (o ConfigSvcListConfigsRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.AppHost) {
-		toSerialize["appHost"] = o.AppHost
-	}
+	toSerialize["appHost"] = o.AppHost
 	if !IsNil(o.Ids) {
 		toSerialize["ids"] = o.Ids
 	}
@@ -160,6 +155,43 @@ func (o ConfigSvcListConfigsRequest) ToMap() (map[string]interface{}, error) {
 		toSerialize["selector"] = o.Selector
 	}
 	return toSerialize, nil
+}
+
+func (o *ConfigSvcListConfigsRequest) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"appHost",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varConfigSvcListConfigsRequest := _ConfigSvcListConfigsRequest{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varConfigSvcListConfigsRequest)
+
+	if err != nil {
+		return err
+	}
+
+	*o = ConfigSvcListConfigsRequest(varConfigSvcListConfigsRequest)
+
+	return err
 }
 
 type NullableConfigSvcListConfigsRequest struct {

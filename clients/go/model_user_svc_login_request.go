@@ -13,6 +13,8 @@ package openapi
 
 import (
 	"encoding/json"
+	"bytes"
+	"fmt"
 )
 
 // checks if the UserSvcLoginRequest type satisfies the MappedNullable interface at compile time
@@ -20,19 +22,22 @@ var _ MappedNullable = &UserSvcLoginRequest{}
 
 // UserSvcLoginRequest struct for UserSvcLoginRequest
 type UserSvcLoginRequest struct {
-	AppHost *string `json:"appHost,omitempty"`
+	AppHost string `json:"appHost"`
 	Contact *string `json:"contact,omitempty"`
 	Device *string `json:"device,omitempty"`
 	Password *string `json:"password,omitempty"`
 	Slug *string `json:"slug,omitempty"`
 }
 
+type _UserSvcLoginRequest UserSvcLoginRequest
+
 // NewUserSvcLoginRequest instantiates a new UserSvcLoginRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcLoginRequest() *UserSvcLoginRequest {
+func NewUserSvcLoginRequest(appHost string) *UserSvcLoginRequest {
 	this := UserSvcLoginRequest{}
+	this.AppHost = appHost
 	return &this
 }
 
@@ -44,36 +49,28 @@ func NewUserSvcLoginRequestWithDefaults() *UserSvcLoginRequest {
 	return &this
 }
 
-// GetAppHost returns the AppHost field value if set, zero value otherwise.
+// GetAppHost returns the AppHost field value
 func (o *UserSvcLoginRequest) GetAppHost() string {
-	if o == nil || IsNil(o.AppHost) {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.AppHost
+
+	return o.AppHost
 }
 
-// GetAppHostOk returns a tuple with the AppHost field value if set, nil otherwise
+// GetAppHostOk returns a tuple with the AppHost field value
 // and a boolean to check if the value has been set.
 func (o *UserSvcLoginRequest) GetAppHostOk() (*string, bool) {
-	if o == nil || IsNil(o.AppHost) {
+	if o == nil {
 		return nil, false
 	}
-	return o.AppHost, true
+	return &o.AppHost, true
 }
 
-// HasAppHost returns a boolean if a field has been set.
-func (o *UserSvcLoginRequest) HasAppHost() bool {
-	if o != nil && !IsNil(o.AppHost) {
-		return true
-	}
-
-	return false
-}
-
-// SetAppHost gets a reference to the given string and assigns it to the AppHost field.
+// SetAppHost sets field value
 func (o *UserSvcLoginRequest) SetAppHost(v string) {
-	o.AppHost = &v
+	o.AppHost = v
 }
 
 // GetContact returns the Contact field value if set, zero value otherwise.
@@ -214,9 +211,7 @@ func (o UserSvcLoginRequest) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcLoginRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.AppHost) {
-		toSerialize["appHost"] = o.AppHost
-	}
+	toSerialize["appHost"] = o.AppHost
 	if !IsNil(o.Contact) {
 		toSerialize["contact"] = o.Contact
 	}
@@ -230,6 +225,43 @@ func (o UserSvcLoginRequest) ToMap() (map[string]interface{}, error) {
 		toSerialize["slug"] = o.Slug
 	}
 	return toSerialize, nil
+}
+
+func (o *UserSvcLoginRequest) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"appHost",
+	}
+
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err;
+	}
+
+	for _, requiredProperty := range(requiredProperties) {
+		if _, exists := allProperties[requiredProperty]; !exists {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	varUserSvcLoginRequest := _UserSvcLoginRequest{}
+
+	decoder := json.NewDecoder(bytes.NewReader(data))
+	decoder.DisallowUnknownFields()
+	err = decoder.Decode(&varUserSvcLoginRequest)
+
+	if err != nil {
+		return err
+	}
+
+	*o = UserSvcLoginRequest(varUserSvcLoginRequest)
+
+	return err
 }
 
 type NullableUserSvcLoginRequest struct {

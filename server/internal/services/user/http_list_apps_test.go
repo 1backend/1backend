@@ -58,7 +58,7 @@ func TestListApps(t *testing.T) {
 			context.Background(),
 		).Body(openapi.UserSvcLoginRequest{
 			Slug:    openapi.PtrString("non-existent"),
-			AppHost: openapi.PtrString("example.com"),
+			AppHost: "example.com",
 		}).Execute()
 
 		require.Error(t, err)

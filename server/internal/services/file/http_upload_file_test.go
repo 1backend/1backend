@@ -49,7 +49,7 @@ func TestUploadFile(t *testing.T) {
 
 	token, err := boot.RegisterUserAccount(
 		options.ClientFactory.Client().UserSvcAPI,
-		sdk.DefaultAppHost,
+		sdk.DefaultTestAppHost,
 		"someuser",
 		"pw123",
 		"Some name",

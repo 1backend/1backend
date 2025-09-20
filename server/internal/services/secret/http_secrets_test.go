@@ -34,7 +34,7 @@ func TestSecretService(t *testing.T) {
 	client1 := manyClients[0]
 	client2 := manyClients[1]
 
-	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultAppHost)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	ctx := context.Background()

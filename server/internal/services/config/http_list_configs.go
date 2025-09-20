@@ -36,7 +36,7 @@ import (
 // @Tags Config Svc
 // @Accept json
 // @Produce json
-// @Param body body config.ListConfigsRequest false "List Configs Request"
+// @Param body body config.ListConfigsRequest true "List Configs Request"
 // @Success 200 {object} config.ListConfigsResponse "Current configuration"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 500 {string} string "Internal Server Error"

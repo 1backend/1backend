@@ -43,7 +43,7 @@ func TestRegister(t *testing.T) {
 	t.Run("anyone can register", func(t *testing.T) {
 		rsp, _, err := options.ClientFactory.Client().UserSvcAPI.Register(ctx).Body(
 			openapi.UserSvcRegisterRequest{
-				AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
+				AppHost:  sdk.DefaultTestAppHost,
 				Slug:     "test-slug-1",
 				Name:     openapi.PtrString("Test Name"),
 				Password: openapi.PtrString("testPass123"),
@@ -90,7 +90,7 @@ func TestRegister(t *testing.T) {
 	t.Run("login doesn't produce a new token", func(t *testing.T) {
 		rsp, _, err := options.ClientFactory.Client().UserSvcAPI.Login(ctx).Body(
 			openapi.UserSvcLoginRequest{
-				AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
+				AppHost:  sdk.DefaultTestAppHost,
 				Slug:     openapi.PtrString("test-slug-1"),
 				Password: openapi.PtrString("testPass123"),
 			},
@@ -120,7 +120,7 @@ func TestRegistration(t *testing.T) {
 	userSvc := options.ClientFactory.Client().UserSvcAPI
 	_, hrsp, err := userSvc.Register(context.Background()).Body(
 		openapi.UserSvcRegisterRequest{
-			AppHost: openapi.PtrString(sdk.DefaultTestAppHost),
+			AppHost: sdk.DefaultTestAppHost,
 			Slug:    "test-1",
 			Contact: &openapi.UserSvcContactInput{
 				Id:       "test1@test.comm",
@@ -133,7 +133,7 @@ func TestRegistration(t *testing.T) {
 
 	t.Run("slug login works", func(t *testing.T) {
 		loginReq := openapi.UserSvcLoginRequest{
-			AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
+			AppHost:  sdk.DefaultTestAppHost,
 			Slug:     openapi.PtrString("test-1"),
 			Password: openapi.PtrString("test"),
 		}
@@ -145,7 +145,7 @@ func TestRegistration(t *testing.T) {
 
 	t.Run("contact login works", func(t *testing.T) {
 		loginReq := openapi.UserSvcLoginRequest{
-			AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
+			AppHost:  sdk.DefaultTestAppHost,
 			Contact:  openapi.PtrString("test1@test.comm"),
 			Password: openapi.PtrString("test"),
 		}

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	client "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
 	firehose "github.com/1backend/1backend/server/internal/services/firehose/types"
@@ -36,7 +37,7 @@ func TestFirehoseSubscription(t *testing.T) {
 	err = universe.StarterFunc()
 	require.NoError(t, err)
 
-	cl, adminToken, err := test.AdminClient(options.ClientFactory)
+	cl, adminToken, err := test.AdminClient(options.ClientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	firehoseSvc := cl.FirehoseSvcAPI

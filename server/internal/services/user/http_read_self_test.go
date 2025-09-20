@@ -28,7 +28,7 @@ func TestReadSelf(t *testing.T) {
 	t.Run("register", func(t *testing.T) {
 		rsp, _, err := clientFactory.Client().UserSvcAPI.Register(context.Background()).
 			Body(openapi.UserSvcRegisterRequest{
-				AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
+				AppHost:  sdk.DefaultTestAppHost,
 				Slug:     "some-slug",
 				Password: openapi.PtrString("some password"),
 				Contact: &openapi.UserSvcContactInput{

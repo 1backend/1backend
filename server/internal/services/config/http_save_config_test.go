@@ -34,7 +34,7 @@ func TestConfigService(t *testing.T) {
 	client1 := manyClients[0]
 	client2 := manyClients[1]
 
-	adminClient, _, err := test.AdminClient(clientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	ctx := context.Background()
@@ -54,6 +54,9 @@ func TestConfigService(t *testing.T) {
 
 	t.Run("read config client 1", func(t *testing.T) {
 		rsp, _, err := client1.ConfigSvcAPI.ListConfigs(ctx).
+			Body(openapi.ConfigSvcListConfigsRequest{
+				AppHost: sdk.DefaultTestAppHost,
+			}).
 			Execute()
 
 		require.NoError(t, err)
@@ -78,6 +81,9 @@ func TestConfigService(t *testing.T) {
 
 	t.Run("read config client 2", func(t *testing.T) {
 		rsp, _, err := client2.ConfigSvcAPI.ListConfigs(ctx).
+			Body(openapi.ConfigSvcListConfigsRequest{
+				AppHost: sdk.DefaultTestAppHost,
+			}).
 			Execute()
 
 		require.NoError(t, err)
@@ -90,7 +96,8 @@ func TestConfigService(t *testing.T) {
 	t.Run("list configs by id", func(t *testing.T) {
 		rsp, _, err := client2.ConfigSvcAPI.ListConfigs(ctx).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				Ids: []string{"testUserSlug1"},
+				AppHost: sdk.DefaultTestAppHost,
+				Ids:     []string{"testUserSlug1"},
 			}).
 			Execute()
 
@@ -136,7 +143,8 @@ func TestConfigService(t *testing.T) {
 			rsp, _, err := client1.ConfigSvcAPI.
 				ListConfigs(ctx).
 				Body(openapi.ConfigSvcListConfigsRequest{
-					Ids: []string{"testUserSlug0"},
+					AppHost: sdk.DefaultTestAppHost,
+					Ids:     []string{"testUserSlug0"},
 				}).
 				Execute()
 
@@ -178,7 +186,8 @@ func TestConfigService(t *testing.T) {
 
 		rsp, _, err := adminClient.ConfigSvcAPI.ListConfigs(ctx).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				Ids: []string{"otherSvc", "anotherSvc"},
+				AppHost: sdk.DefaultTestAppHost,
+				Ids:     []string{"otherSvc", "anotherSvc"},
 			}).
 			Execute()
 		require.NoError(t, err)
@@ -204,7 +213,7 @@ func TestConfigService(t *testing.T) {
 
 		rsp, _, err = adminClient.ConfigSvcAPI.ListConfigs(ctx).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				AppHost: openapi.PtrString("otherApp"),
+				AppHost: "otherApp",
 				Ids:     []string{"anotherSvc"},
 			}).
 			Execute()
@@ -252,6 +261,7 @@ func TestConfigService(t *testing.T) {
 	t.Run("query dotpath", func(t *testing.T) {
 		rsp, _, err := client1.ConfigSvcAPI.ListConfigs(ctx).
 			Body(openapi.ConfigSvcListConfigsRequest{
+				AppHost: sdk.DefaultTestAppHost,
 				Selector: &map[string][]string{
 					"otherSvc": {"field1", "field3.secondLevel3"},
 				},

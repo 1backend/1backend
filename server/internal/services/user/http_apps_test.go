@@ -33,7 +33,7 @@ func TestAppRoles(t *testing.T) {
 	t.Run("anyone can register", func(t *testing.T) {
 		rsp, _, err := clientFactory.Client().UserSvcAPI.Register(ctx).Body(
 			openapi.UserSvcRegisterRequest{
-				AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
+				AppHost:  sdk.DefaultTestAppHost,
 				Slug:     "test-slug-1",
 				Name:     openapi.PtrString("Test Name"),
 				Password: openapi.PtrString("testPass123"),
@@ -52,7 +52,7 @@ func TestAppRoles(t *testing.T) {
 	t.Run("cannot re-register in a different app", func(t *testing.T) {
 		_, _, err := clientFactory.Client().UserSvcAPI.Register(ctx).Body(
 			openapi.UserSvcRegisterRequest{
-				AppHost:  openapi.PtrString("helloapp"),
+				AppHost:  "helloapp",
 				Slug:     "test-slug-1",
 				Name:     openapi.PtrString("Test Name"),
 				Password: openapi.PtrString("testPass123"),
@@ -77,7 +77,7 @@ func TestAppRoles(t *testing.T) {
 	t.Run("log in to default app and see the role", func(t *testing.T) {
 		rsp, _, err := clientFactory.Client().UserSvcAPI.Login(ctx).Body(
 			openapi.UserSvcLoginRequest{
-				AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
+				AppHost:  sdk.DefaultTestAppHost,
 				Slug:     openapi.PtrString("test-slug-1"),
 				Password: openapi.PtrString("testPass123"),
 			},
@@ -94,7 +94,7 @@ func TestAppRoles(t *testing.T) {
 	t.Run("log in to helloapp and NOT see the role", func(t *testing.T) {
 		rsp, _, err := clientFactory.Client().UserSvcAPI.Login(ctx).Body(
 			openapi.UserSvcLoginRequest{
-				AppHost:  openapi.PtrString("helloapp"),
+				AppHost:  "helloapp",
 				Slug:     openapi.PtrString("test-slug-1"),
 				Password: openapi.PtrString("testPass123"),
 			},
@@ -110,7 +110,7 @@ func TestAppRoles(t *testing.T) {
 	t.Run("admin logs in to an other app", func(t *testing.T) {
 		rsp, _, err := adminClient.UserSvcAPI.Login(ctx).Body(
 			openapi.UserSvcLoginRequest{
-				AppHost:  openapi.PtrString("helloapp"),
+				AppHost:  "helloapp",
 				Slug:     openapi.PtrString("1backend"),
 				Password: openapi.PtrString("changeme"),
 			},
@@ -133,7 +133,7 @@ func TestAppRoles(t *testing.T) {
 		t.Run("log in to helloapp and see the role", func(t *testing.T) {
 			rsp, _, err := clientFactory.Client().UserSvcAPI.Login(ctx).Body(
 				openapi.UserSvcLoginRequest{
-					AppHost:  openapi.PtrString("helloapp"),
+					AppHost:  "helloapp",
 					Slug:     openapi.PtrString("test-slug-1"),
 					Password: openapi.PtrString("testPass123"),
 				},

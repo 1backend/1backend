@@ -56,7 +56,7 @@ func RegisterServiceAccount(
 		appHost := sdk.DefaultAppHost
 
 		rsp, _, err := userService.Register(ctx).Body(onebackendapi.UserSvcRegisterRequest{
-			AppHost:  &appHost,
+			AppHost:  appHost,
 			Slug:     serviceSlug,
 			Name:     onebackendapi.PtrString(serviceName),
 			Password: onebackendapi.PtrString(pw),
@@ -106,7 +106,7 @@ func RegisterUserAccount(
 	name string,
 ) (*onebackendapi.UserSvcToken, error) {
 	_, _, err := userService.Register(context.Background()).Body(onebackendapi.UserSvcRegisterRequest{
-		AppHost:  onebackendapi.PtrString(appHost),
+		AppHost:  appHost,
 		Slug:     slug,
 		Password: onebackendapi.PtrString(password),
 		Name:     onebackendapi.PtrString(name),
@@ -117,7 +117,7 @@ func RegisterUserAccount(
 	}
 
 	loginRsp, _, err := userService.Login(context.Background()).Body(onebackendapi.UserSvcLoginRequest{
-		AppHost:  onebackendapi.PtrString(appHost),
+		AppHost:  appHost,
 		Slug:     onebackendapi.PtrString(slug),
 		Password: onebackendapi.PtrString(password),
 	}).Execute()

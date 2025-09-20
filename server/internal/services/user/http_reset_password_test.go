@@ -70,7 +70,7 @@ func TestResetPassword(t *testing.T) {
 	t.Run("user 1 can login with new password", func(t *testing.T) {
 		rsp, _, err := client1.UserSvcAPI.Login(ctx).Body(
 			openapi.UserSvcLoginRequest{
-				AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
+				AppHost:  sdk.DefaultTestAppHost,
 				Slug:     openapi.PtrString("test-user-slug-0"),
 				Password: openapi.PtrString("resetPass123"),
 			}).Execute()

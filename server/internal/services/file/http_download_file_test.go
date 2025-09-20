@@ -67,7 +67,7 @@ func TestDownloadFile(t *testing.T) {
 
 	token, err := boot.RegisterUserAccount(
 		options.ClientFactory.Client().UserSvcAPI,
-		sdk.DefaultAppHost,
+		sdk.DefaultTestAppHost,
 		"someuser",
 		"pw123",
 		"Some name",
@@ -171,7 +171,7 @@ func TestDownloadFileWithPartFile(t *testing.T) {
 
 	token, err := boot.RegisterUserAccount(
 		options.ClientFactory.Client().UserSvcAPI,
-		sdk.DefaultAppHost,
+		sdk.DefaultTestAppHost,
 		"someuser",
 		"pw123",
 		"Some name",
@@ -261,7 +261,7 @@ func TestDownloadFileWithFullFile(t *testing.T) {
 
 	token, err := boot.RegisterUserAccount(
 		options.ClientFactory.Client().UserSvcAPI,
-		sdk.DefaultAppHost,
+		sdk.DefaultTestAppHost,
 		"someuser",
 		"pw123",
 		"Some name",

@@ -105,7 +105,7 @@ func TestSaveSelf(t *testing.T) {
 	t.Run("make sure login still works after update", func(t *testing.T) {
 		_, _, err := client1.UserSvcAPI.Login(ctx).Body(
 			openapi.UserSvcLoginRequest{
-				AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
+				AppHost:  sdk.DefaultTestAppHost,
 				Slug:     openapi.PtrString("test-user-slug-0"),
 				Password: openapi.PtrString("testUserPassword0"),
 			}).Execute()

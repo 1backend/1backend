@@ -18,7 +18,7 @@ func AdminClient(
 	userSvc := clientFactory.Client().UserSvcAPI
 
 	adminLoginRsp, _, err := userSvc.Login(context.Background()).Body(openapi.UserSvcLoginRequest{
-		AppHost:  &appHost,
+		AppHost:  appHost,
 		Slug:     openapi.PtrString("1backend"),
 		Password: openapi.PtrString("changeme"),
 	}).Execute()
@@ -71,7 +71,7 @@ func LoggedInClient(
 	password string,
 ) (*openapi.APIClient, *openapi.UserSvcToken, error) {
 	loginReq := openapi.UserSvcLoginRequest{
-		AppHost:  openapi.PtrString(appHost),
+		AppHost:  appHost,
 		Slug:     openapi.PtrString(slug),
 		Password: openapi.PtrString(password),
 	}

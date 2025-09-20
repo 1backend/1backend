@@ -35,6 +35,7 @@ func TestMessageCreatesThread(t *testing.T) {
 
 	token, err := boot.RegisterUserAccount(
 		options.ClientFactory.Client().UserSvcAPI,
+		sdk.DefaultTestAppHost,
 		"someuser",
 		"pw123",
 		"Some name",

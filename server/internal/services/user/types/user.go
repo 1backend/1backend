@@ -112,7 +112,7 @@ type ReadSelfResponse struct {
 }
 
 type RegisterRequest struct {
-	AppHost string `json:"appHost,omitempty" example:"shoes.com"`
+	AppHost string `json:"appHost" binding:"required" example:"shoes.com"`
 
 	Name string `json:"name,omitempty"`
 
@@ -134,7 +134,7 @@ type RegisterResponse struct {
 }
 
 type LoginRequest struct {
-	AppHost  string `json:"appHost,omitempty" example:"shoes.com"`
+	AppHost  string `json:"appHost" binding:"required" example:"shoes.com"`
 	Slug     string `json:"slug,omitempty"`
 	Contact  string `json:"contact,omitempty"`
 	Password string `json:"password"`

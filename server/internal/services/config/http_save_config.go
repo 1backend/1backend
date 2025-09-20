@@ -108,8 +108,7 @@ func (cs *ConfigService) SaveConfig(
 	}
 
 	if req.AppHost == "" {
-		endpoint.WriteErr(w, http.StatusBadRequest, errors.New("AppHost missing"))
-		return
+		req.AppHost = isAuthRsp.App.Host
 	}
 
 	appId, err := cs.options.TokenExchanger.AppIdFromHost(
