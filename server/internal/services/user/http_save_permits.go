@@ -78,7 +78,7 @@ func (s *UserService) SavePermits(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = s.savePermits(
-		claims.App,
+		claims.AppId,
 		r.Context(),
 		&req,
 	)
@@ -100,7 +100,7 @@ func (s *UserService) SavePermits(w http.ResponseWriter, r *http.Request) {
 }
 
 func (cs *UserService) savePermits(
-	app string,
+	appId string,
 	ctx context.Context,
 	req *user.SavePermitsRequest,
 ) error {
@@ -131,7 +131,6 @@ func (cs *UserService) savePermits(
 			permit.Id = sdk.Id("perm")
 			nu = true
 		}
-		permit.App = app
 
 		existingPermits, ok := permitsByPermission[permit.Permission]
 		isDuplicate := false
@@ -139,7 +138,7 @@ func (cs *UserService) savePermits(
 			for _, existingPermit := range existingPermits {
 				if equalUnordered(existingPermit.Roles, permit.Roles) &&
 					equalUnordered(existingPermit.Slugs, permit.Slugs) &&
-					existingPermit.App == permit.App {
+					existingPermit.AppId == appId {
 					isDuplicate = true
 					break
 				}
@@ -149,10 +148,15 @@ func (cs *UserService) savePermits(
 			continue
 		}
 
+		internalId, err := sdk.InternalId(appId, permit.Id)
+		if err != nil {
+			return errors.Wrap(err, "failed to create internal id")
+		}
+
 		permit := &user.Permit{
-			InternalId: sdk.InternalId(permit.Id, app),
+			InternalId: internalId,
 			Id:         permit.Id,
-			App:        permit.App,
+			AppId:      appId,
 			Permission: permit.Permission,
 			Slugs:      permit.Slugs,
 			Roles:      permit.Roles,

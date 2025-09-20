@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc7
+API version: 0.8.0-rc8
 Contact: sales@singulatron.com
 */
 
@@ -20,7 +20,7 @@ var _ MappedNullable = &ConfigSvcListConfigsRequest{}
 
 // ConfigSvcListConfigsRequest struct for ConfigSvcListConfigsRequest
 type ConfigSvcListConfigsRequest struct {
-	App *string `json:"app,omitempty"`
+	AppHost *string `json:"appHost,omitempty"`
 	// Ids are camelCased slugs of the config owners. Specifying only the ids will mean all of the config will be returned for that key.  If the configs are large, consider using the `Selector` request field.
 	Ids []string `json:"ids,omitempty"`
 	// Selector allows dotPath-based filtering per config owner. Example: {   \"user1\": [\"settings.theme\", \"featureFlags.enableNewUI\"],   \"user2\": [\"settings.language\"] }
@@ -44,36 +44,36 @@ func NewConfigSvcListConfigsRequestWithDefaults() *ConfigSvcListConfigsRequest {
 	return &this
 }
 
-// GetApp returns the App field value if set, zero value otherwise.
-func (o *ConfigSvcListConfigsRequest) GetApp() string {
-	if o == nil || IsNil(o.App) {
+// GetAppHost returns the AppHost field value if set, zero value otherwise.
+func (o *ConfigSvcListConfigsRequest) GetAppHost() string {
+	if o == nil || IsNil(o.AppHost) {
 		var ret string
 		return ret
 	}
-	return *o.App
+	return *o.AppHost
 }
 
-// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// GetAppHostOk returns a tuple with the AppHost field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigSvcListConfigsRequest) GetAppOk() (*string, bool) {
-	if o == nil || IsNil(o.App) {
+func (o *ConfigSvcListConfigsRequest) GetAppHostOk() (*string, bool) {
+	if o == nil || IsNil(o.AppHost) {
 		return nil, false
 	}
-	return o.App, true
+	return o.AppHost, true
 }
 
-// HasApp returns a boolean if a field has been set.
-func (o *ConfigSvcListConfigsRequest) HasApp() bool {
-	if o != nil && !IsNil(o.App) {
+// HasAppHost returns a boolean if a field has been set.
+func (o *ConfigSvcListConfigsRequest) HasAppHost() bool {
+	if o != nil && !IsNil(o.AppHost) {
 		return true
 	}
 
 	return false
 }
 
-// SetApp gets a reference to the given string and assigns it to the App field.
-func (o *ConfigSvcListConfigsRequest) SetApp(v string) {
-	o.App = &v
+// SetAppHost gets a reference to the given string and assigns it to the AppHost field.
+func (o *ConfigSvcListConfigsRequest) SetAppHost(v string) {
+	o.AppHost = &v
 }
 
 // GetIds returns the Ids field value if set, zero value otherwise.
@@ -150,8 +150,8 @@ func (o ConfigSvcListConfigsRequest) MarshalJSON() ([]byte, error) {
 
 func (o ConfigSvcListConfigsRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.App) {
-		toSerialize["app"] = o.App
+	if !IsNil(o.AppHost) {
+		toSerialize["appHost"] = o.AppHost
 	}
 	if !IsNil(o.Ids) {
 		toSerialize["ids"] = o.Ids

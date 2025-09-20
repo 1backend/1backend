@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc7
+API version: 0.8.0-rc8
 Contact: sales@singulatron.com
 */
 
@@ -23,7 +23,7 @@ var _ MappedNullable = &UserSvcEnroll{}
 // UserSvcEnroll struct for UserSvcEnroll
 type UserSvcEnroll struct {
 	// App of the enroll. Use `*` to match all apps, such as when bootstrapping in services.
-	App *string `json:"app,omitempty"`
+	AppId string `json:"appId"`
 	// ContactId is the the recipient of the enroll. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
 	ContactId *string `json:"contactId,omitempty"`
 	CreatedAt string `json:"createdAt"`
@@ -45,8 +45,9 @@ type _UserSvcEnroll UserSvcEnroll
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcEnroll(createdAt string, id string, role string, updatedAt string) *UserSvcEnroll {
+func NewUserSvcEnroll(appId string, createdAt string, id string, role string, updatedAt string) *UserSvcEnroll {
 	this := UserSvcEnroll{}
+	this.AppId = appId
 	this.CreatedAt = createdAt
 	this.Id = id
 	this.Role = role
@@ -62,36 +63,28 @@ func NewUserSvcEnrollWithDefaults() *UserSvcEnroll {
 	return &this
 }
 
-// GetApp returns the App field value if set, zero value otherwise.
-func (o *UserSvcEnroll) GetApp() string {
-	if o == nil || IsNil(o.App) {
+// GetAppId returns the AppId field value
+func (o *UserSvcEnroll) GetAppId() string {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.App
+
+	return o.AppId
 }
 
-// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// GetAppIdOk returns a tuple with the AppId field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcEnroll) GetAppOk() (*string, bool) {
-	if o == nil || IsNil(o.App) {
+func (o *UserSvcEnroll) GetAppIdOk() (*string, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.App, true
+	return &o.AppId, true
 }
 
-// HasApp returns a boolean if a field has been set.
-func (o *UserSvcEnroll) HasApp() bool {
-	if o != nil && !IsNil(o.App) {
-		return true
-	}
-
-	return false
-}
-
-// SetApp gets a reference to the given string and assigns it to the App field.
-func (o *UserSvcEnroll) SetApp(v string) {
-	o.App = &v
+// SetAppId sets field value
+func (o *UserSvcEnroll) SetAppId(v string) {
+	o.AppId = v
 }
 
 // GetContactId returns the ContactId field value if set, zero value otherwise.
@@ -360,9 +353,7 @@ func (o UserSvcEnroll) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcEnroll) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.App) {
-		toSerialize["app"] = o.App
-	}
+	toSerialize["appId"] = o.AppId
 	if !IsNil(o.ContactId) {
 		toSerialize["contactId"] = o.ContactId
 	}
@@ -390,6 +381,7 @@ func (o *UserSvcEnroll) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"appId",
 		"createdAt",
 		"id",
 		"role",

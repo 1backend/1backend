@@ -60,7 +60,33 @@ func (cs *ConfigService) ListConfigs(
 		defer r.Body.Close()
 	}
 
-	confs, err := cs.listConfigs(req)
+	if req.AppHost == "" {
+		var err error
+		req.AppHost, err = cs.options.TokenExchanger.AppHostFromRequest(r)
+		if err != nil {
+			logger.Error(
+				"Failed to get app from request host",
+				slog.Any("error", err),
+			)
+			endpoint.InternalServerError(w)
+			return
+		}
+	}
+
+	appId, err := cs.options.TokenExchanger.AppIdFromHost(
+		r.Context(),
+		req.AppHost,
+	)
+	if err != nil {
+		logger.Error(
+			"Failed to get app id from host",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
+		return
+	}
+
+	confs, err := cs.listConfigs(appId, req)
 	if err != nil {
 		logger.Error("Failed to get config", slog.Any("error", err))
 		endpoint.InternalServerError(w)
@@ -77,7 +103,10 @@ func (cs *ConfigService) ListConfigs(
 	}
 }
 
-func (cs *ConfigService) listConfigs(req *types.ListConfigsRequest) (map[string]*types.Config, error) {
+func (cs *ConfigService) listConfigs(
+	appId string,
+	req *types.ListConfigsRequest,
+) (map[string]*types.Config, error) {
 	ids := []any{}
 	for _, slug := range req.Ids {
 		slug = kebabToCamel(slug)
@@ -101,10 +130,11 @@ func (cs *ConfigService) listConfigs(req *types.ListConfigsRequest) (map[string]
 		))
 	}
 
-	if req.App != "" {
+	if req.AppHost != "" {
+
 		filters = append(filters, datastore.Equals(
-			datastore.Field("app"),
-			req.App,
+			datastore.Field("appId"),
+			appId,
 		))
 	}
 

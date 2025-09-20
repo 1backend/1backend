@@ -279,6 +279,36 @@ func (mr *MockUserSvcAPIMockRecorder) HasPermissionExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasPermissionExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).HasPermissionExecute), r)
 }
 
+// ListApps mocks base method.
+func (m *MockUserSvcAPI) ListApps(ctx context.Context) ApiListAppsRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListApps", ctx)
+	ret0, _ := ret[0].(ApiListAppsRequest)
+	return ret0
+}
+
+// ListApps indicates an expected call of ListApps.
+func (mr *MockUserSvcAPIMockRecorder) ListApps(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListApps", reflect.TypeOf((*MockUserSvcAPI)(nil).ListApps), ctx)
+}
+
+// ListAppsExecute mocks base method.
+func (m *MockUserSvcAPI) ListAppsExecute(r ApiListAppsRequest) (*UserSvcListAppsResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAppsExecute", r)
+	ret0, _ := ret[0].(*UserSvcListAppsResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListAppsExecute indicates an expected call of ListAppsExecute.
+func (mr *MockUserSvcAPIMockRecorder) ListAppsExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAppsExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListAppsExecute), r)
+}
+
 // ListEnrolls mocks base method.
 func (m *MockUserSvcAPI) ListEnrolls(ctx context.Context) ApiListEnrollsRequest {
 	m.ctrl.T.Helper()

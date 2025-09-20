@@ -9,6 +9,7 @@ package userservice_test
 
 import (
 	"context"
+	"strings"
 	"testing"
 	"time"
 
@@ -48,8 +49,8 @@ func TestUnauthorizedShouldNotReturnError(t *testing.T) {
 		Execute()
 	require.NoError(t, err)
 	require.False(t, rsp.Authorized)
-	require.NotNil(t, rsp.App)
-	require.Equal(t, "unnamed", *rsp.App)
+	require.NotNil(t, rsp.AppId)
+	require.Equal(t, strings.Replace(server.Url, "http://", "", 1), rsp.App.Host)
 	require.NotEmpty(t, rsp.User)
 }
 

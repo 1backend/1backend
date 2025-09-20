@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc7
+API version: 0.8.0-rc8
 Contact: sales@singulatron.com
 */
 
@@ -20,7 +20,7 @@ var _ MappedNullable = &UserSvcCreateUserRequest{}
 
 // UserSvcCreateUserRequest struct for UserSvcCreateUserRequest
 type UserSvcCreateUserRequest struct {
-	App *string `json:"app,omitempty"`
+	AppHost *string `json:"appHost,omitempty"`
 	Contacts []UserSvcContact `json:"contacts,omitempty"`
 	Password *string `json:"password,omitempty"`
 	RoleIds []string `json:"roleIds,omitempty"`
@@ -44,36 +44,36 @@ func NewUserSvcCreateUserRequestWithDefaults() *UserSvcCreateUserRequest {
 	return &this
 }
 
-// GetApp returns the App field value if set, zero value otherwise.
-func (o *UserSvcCreateUserRequest) GetApp() string {
-	if o == nil || IsNil(o.App) {
+// GetAppHost returns the AppHost field value if set, zero value otherwise.
+func (o *UserSvcCreateUserRequest) GetAppHost() string {
+	if o == nil || IsNil(o.AppHost) {
 		var ret string
 		return ret
 	}
-	return *o.App
+	return *o.AppHost
 }
 
-// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// GetAppHostOk returns a tuple with the AppHost field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcCreateUserRequest) GetAppOk() (*string, bool) {
-	if o == nil || IsNil(o.App) {
+func (o *UserSvcCreateUserRequest) GetAppHostOk() (*string, bool) {
+	if o == nil || IsNil(o.AppHost) {
 		return nil, false
 	}
-	return o.App, true
+	return o.AppHost, true
 }
 
-// HasApp returns a boolean if a field has been set.
-func (o *UserSvcCreateUserRequest) HasApp() bool {
-	if o != nil && !IsNil(o.App) {
+// HasAppHost returns a boolean if a field has been set.
+func (o *UserSvcCreateUserRequest) HasAppHost() bool {
+	if o != nil && !IsNil(o.AppHost) {
 		return true
 	}
 
 	return false
 }
 
-// SetApp gets a reference to the given string and assigns it to the App field.
-func (o *UserSvcCreateUserRequest) SetApp(v string) {
-	o.App = &v
+// SetAppHost gets a reference to the given string and assigns it to the AppHost field.
+func (o *UserSvcCreateUserRequest) SetAppHost(v string) {
+	o.AppHost = &v
 }
 
 // GetContacts returns the Contacts field value if set, zero value otherwise.
@@ -214,8 +214,8 @@ func (o UserSvcCreateUserRequest) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcCreateUserRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.App) {
-		toSerialize["app"] = o.App
+	if !IsNil(o.AppHost) {
+		toSerialize["appHost"] = o.AppHost
 	}
 	if !IsNil(o.Contacts) {
 		toSerialize["contacts"] = o.Contacts

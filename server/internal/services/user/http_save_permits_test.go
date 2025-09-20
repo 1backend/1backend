@@ -295,10 +295,10 @@ func TestAppIsolation_ListPermits_AdminScopedByApp(t *testing.T) {
 	// exchange user token into appA and appB
 	userUnnamed := clientFactory.Client(client.WithToken(uTok.Token))
 	uA, _, err := userUnnamed.UserSvcAPI.ExchangeToken(ctx).
-		Body(openapi.UserSvcExchangeTokenRequest{NewApp: appA}).Execute()
+		Body(openapi.UserSvcExchangeTokenRequest{NewAppHost: appA}).Execute()
 	require.NoError(t, err)
 	uB, _, err := userUnnamed.UserSvcAPI.ExchangeToken(ctx).
-		Body(openapi.UserSvcExchangeTokenRequest{NewApp: appB}).Execute()
+		Body(openapi.UserSvcExchangeTokenRequest{NewAppHost: appB}).Execute()
 	require.NoError(t, err)
 
 	require.NotEmpty(t, uA.Token.Token)
@@ -366,7 +366,7 @@ func TestExchangeToken_AppScopesRolesInJWT(t *testing.T) {
 
 	// move into appA and create an org to mint an org-scoped role into the token
 	uA, _, err := userUnnamed.UserSvcAPI.ExchangeToken(ctx).
-		Body(openapi.UserSvcExchangeTokenRequest{NewApp: appA}).Execute()
+		Body(openapi.UserSvcExchangeTokenRequest{NewAppHost: appA}).Execute()
 	require.NoError(t, err)
 	userA := clientFactory.Client(client.WithToken(uA.Token.Token))
 
@@ -392,11 +392,11 @@ func TestExchangeToken_AppScopesRolesInJWT(t *testing.T) {
 			hasOrgAdminA = true
 		}
 	}
-	require.True(t, hasOrgAdminA, "expected org admin role in appA token")
+	require.True(t, hasOrgAdminA, "expected org admin role in appA token %v", claimsA)
 
 	// now exchange into appB and ensure org-admin from appA is NOT present
 	uB, _, err := userUnnamed.UserSvcAPI.ExchangeToken(ctx).
-		Body(openapi.UserSvcExchangeTokenRequest{NewApp: appB}).Execute()
+		Body(openapi.UserSvcExchangeTokenRequest{NewAppHost: appB}).Execute()
 	require.NoError(t, err)
 
 	claimsB, err := auth.AuthorizerImpl{}.ParseJWT(pk.PublicKey, uB.Token.Token)
@@ -434,7 +434,7 @@ func TestWildcardEnroll_AppStar_RoleAppearsAcrossApps(t *testing.T) {
 	_, _, err = owner.UserSvcAPI.SaveEnrolls(ctx).Body(openapi.UserSvcSaveEnrollsRequest{
 		Enrolls: []openapi.UserSvcEnrollInput{
 			{
-				App:       openapi.PtrString("*"),
+				AppHost:   openapi.PtrString("*"),
 				ContactId: openapi.PtrString(contact),
 				Role:      "ownerstar:pro",
 			},
@@ -463,7 +463,7 @@ func TestWildcardEnroll_AppStar_RoleAppearsAcrossApps(t *testing.T) {
 
 	// exchange into appA and appB and verify role persists in both
 	appATok, _, err := receiver.UserSvcAPI.ExchangeToken(ctx).
-		Body(openapi.UserSvcExchangeTokenRequest{NewApp: appA}).Execute()
+		Body(openapi.UserSvcExchangeTokenRequest{NewAppHost: appA}).Execute()
 	require.NoError(t, err)
 	claimsA, err := auth.AuthorizerImpl{}.ParseJWT(pk.PublicKey, appATok.Token.Token)
 	require.NoError(t, err)
@@ -471,7 +471,7 @@ func TestWildcardEnroll_AppStar_RoleAppearsAcrossApps(t *testing.T) {
 	require.Contains(t, claimsA.Roles, "ownerstar:pro")
 
 	appBTok, _, err := receiver.UserSvcAPI.ExchangeToken(ctx).
-		Body(openapi.UserSvcExchangeTokenRequest{NewApp: appB}).Execute()
+		Body(openapi.UserSvcExchangeTokenRequest{NewAppHost: appB}).Execute()
 	require.NoError(t, err)
 	claimsB, err := auth.AuthorizerImpl{}.ParseJWT(pk.PublicKey, appBTok.Token.Token)
 	require.NoError(t, err)

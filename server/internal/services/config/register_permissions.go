@@ -24,7 +24,7 @@ func (p *ConfigService) registerPermits() error {
 	req := openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{
 			{
-				App:        openapi.PtrString("*"),
+				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"model-svc"},
 				Permission: config.PermissionConfigEdit,
 			},
@@ -36,7 +36,7 @@ func (p *ConfigService) registerPermits() error {
 	} {
 		for _, permission := range config.AdminPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
-				App:        openapi.PtrString("*"),
+				AppHost:    openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})
@@ -48,7 +48,7 @@ func (p *ConfigService) registerPermits() error {
 	} {
 		for _, permission := range config.UserPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
-				App:        openapi.PtrString("*"),
+				AppHost:    openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})

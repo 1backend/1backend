@@ -3012,6 +3012,16 @@ definitions:
       width:
         type: integer
     type: object
+  user_svc.App:
+    properties:
+      host:
+        type: string
+      id:
+        type: string
+    required:
+    - host
+    - id
+    type: object
   user_svc.ChangePasswordRequest:
     properties:
       currentPassword:
@@ -3098,8 +3108,8 @@ definitions:
     type: object
   user_svc.CreateUserRequest:
     properties:
-      app:
-        example: unnamed
+      appHost:
+        example: shoes.com
         type: string
       contacts:
         items:
@@ -3246,6 +3256,26 @@ definitions:
     - until
     - user
     type: object
+  user_svc.ListAppsRequest:
+    properties:
+      host:
+        items:
+          type: string
+        type: array
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
+  user_svc.ListAppsResponse:
+    properties:
+      apps:
+        items:
+          $ref: '#/definitions/user_svc.App'
+        type: array
+    required:
+    - apps
+    type: object
   user_svc.ListEnrollsRequest:
     properties:
       contactId:
@@ -3366,8 +3396,8 @@ definitions:
     type: object
   user_svc.LoginRequest:
     properties:
-      app:
-        example: unnamed
+      appHost:
+        example: shoes.com
         type: string
       contact:
         type: string
@@ -3542,8 +3572,8 @@ definitions:
     type: object
   user_svc.RegisterRequest:
     properties:
-      app:
-        example: unnamed
+      appHost:
+        example: shoes.com
         type: string
       contact:
         $ref: '#/definitions/user_svc.ContactInput'
@@ -3855,7 +3885,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.8.0-rc7
+  version: 0.8.0-rc8
 paths:
   /chat-svc/events:
     get:
@@ -6731,6 +6761,43 @@ paths:
       security:
       - BearerAuth: []
       summary: Reset Password
+      tags:
+      - User Svc
+  /user-svc/apps:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        List apps. Role, user ID or contact ID must be specified.
+
+        Requires the `user-svc:app:view` permission, which by default all users have.
+        Caller can only list apps of roles they own (unless they are an admin).
+      operationId: listApps
+      parameters:
+      - description: List Apps Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.ListAppsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Apps listed successfully
+          schema:
+            $ref: '#/definitions/user_svc.ListAppsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List Apps
       tags:
       - User Svc
   /user-svc/change-password:

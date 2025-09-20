@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc7
+API version: 0.8.0-rc8
 Contact: sales@singulatron.com
 */
 
@@ -24,7 +24,8 @@ var _ MappedNullable = &UserSvcToken{}
 type UserSvcToken struct {
 	// Active tokens contain the most up-to-date information. When a user's role changes—due to role assignment, organization creation/assignment, etc.—all existing tokens are marked inactive. Active tokens are reused during login, while inactive tokens that have been recently refreshed (being used still) are kept for further refreshing (unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, old tokens can be refreshed indefinitely.)  Active tokens contain the most up-to-date information. When a user's role changes—due to role assignment, organization creation/assignment, etc.—all existing tokens are marked inactive. Active tokens are reused during login, while inactive tokens that have been recently refreshed (see `lastRefreshedAt` field) and are still in use are retained for further refreshing. (Unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, in which case old tokens can be refreshed indefinitely.)
 	Active *bool `json:"active,omitempty"`
-	App string `json:"app"`
+	App *UserSvcApp `json:"app,omitempty"`
+	AppId string `json:"appId"`
 	CreatedAt string `json:"createdAt"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	// The device the token is associated with. This in combination with LastRefreshedAt can be used to determine if the token is still in use, and lets us prune unused tokens.
@@ -46,9 +47,9 @@ type _UserSvcToken UserSvcToken
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcToken(app string, createdAt string, device string, expiresAt string, id string, token string, updatedAt string, userId string) *UserSvcToken {
+func NewUserSvcToken(appId string, createdAt string, device string, expiresAt string, id string, token string, updatedAt string, userId string) *UserSvcToken {
 	this := UserSvcToken{}
-	this.App = app
+	this.AppId = appId
 	this.CreatedAt = createdAt
 	this.Device = device
 	this.ExpiresAt = expiresAt
@@ -99,28 +100,60 @@ func (o *UserSvcToken) SetActive(v bool) {
 	o.Active = &v
 }
 
-// GetApp returns the App field value
-func (o *UserSvcToken) GetApp() string {
+// GetApp returns the App field value if set, zero value otherwise.
+func (o *UserSvcToken) GetApp() UserSvcApp {
+	if o == nil || IsNil(o.App) {
+		var ret UserSvcApp
+		return ret
+	}
+	return *o.App
+}
+
+// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcToken) GetAppOk() (*UserSvcApp, bool) {
+	if o == nil || IsNil(o.App) {
+		return nil, false
+	}
+	return o.App, true
+}
+
+// HasApp returns a boolean if a field has been set.
+func (o *UserSvcToken) HasApp() bool {
+	if o != nil && !IsNil(o.App) {
+		return true
+	}
+
+	return false
+}
+
+// SetApp gets a reference to the given UserSvcApp and assigns it to the App field.
+func (o *UserSvcToken) SetApp(v UserSvcApp) {
+	o.App = &v
+}
+
+// GetAppId returns the AppId field value
+func (o *UserSvcToken) GetAppId() string {
 	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.App
+	return o.AppId
 }
 
-// GetAppOk returns a tuple with the App field value
+// GetAppIdOk returns a tuple with the AppId field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcToken) GetAppOk() (*string, bool) {
+func (o *UserSvcToken) GetAppIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.App, true
+	return &o.AppId, true
 }
 
-// SetApp sets field value
-func (o *UserSvcToken) SetApp(v string) {
-	o.App = v
+// SetAppId sets field value
+func (o *UserSvcToken) SetAppId(v string) {
+	o.AppId = v
 }
 
 // GetCreatedAt returns the CreatedAt field value
@@ -400,7 +433,10 @@ func (o UserSvcToken) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Active) {
 		toSerialize["active"] = o.Active
 	}
-	toSerialize["app"] = o.App
+	if !IsNil(o.App) {
+		toSerialize["app"] = o.App
+	}
+	toSerialize["appId"] = o.AppId
 	toSerialize["createdAt"] = o.CreatedAt
 	if !IsNil(o.DeletedAt) {
 		toSerialize["deletedAt"] = o.DeletedAt
@@ -425,7 +461,7 @@ func (o *UserSvcToken) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"app",
+		"appId",
 		"createdAt",
 		"device",
 		"expiresAt",

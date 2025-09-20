@@ -190,8 +190,8 @@ func TestConfigService(t *testing.T) {
 
 		_, _, err = adminClient.ConfigSvcAPI.SaveConfig(ctx).
 			Body(openapi.ConfigSvcSaveConfigRequest{
-				App: openapi.PtrString("otherApp"),
-				Id:  openapi.PtrString("anotherSvc"),
+				AppHost: openapi.PtrString("otherApp"),
+				Id:      openapi.PtrString("anotherSvc"),
 				Data: map[string]any{
 					"field1": "adminValue3",
 					"field2": "adminValue4",
@@ -203,8 +203,8 @@ func TestConfigService(t *testing.T) {
 
 		rsp, _, err = adminClient.ConfigSvcAPI.ListConfigs(ctx).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				App: openapi.PtrString("otherApp"),
-				Ids: []string{"anotherSvc"},
+				AppHost: openapi.PtrString("otherApp"),
+				Ids:     []string{"anotherSvc"},
 			}).
 			Execute()
 
@@ -219,7 +219,7 @@ func TestConfigService(t *testing.T) {
 	t.Run("users cannot specify other app", func(t *testing.T) {
 		_, _, err := client1.ConfigSvcAPI.SaveConfig(ctx).
 			Body(openapi.ConfigSvcSaveConfigRequest{
-				App: openapi.PtrString("otherApp"),
+				AppHost: openapi.PtrString("otherApp"),
 				Data: map[string]any{
 					"otherSvc": map[string]any{
 						"field1": "userValue1",

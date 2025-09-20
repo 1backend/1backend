@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc7
+API version: 0.8.0-rc8
 Contact: sales@singulatron.com
 */
 
@@ -22,7 +22,7 @@ var _ MappedNullable = &UserSvcOrganization{}
 
 // UserSvcOrganization struct for UserSvcOrganization
 type UserSvcOrganization struct {
-	App *string `json:"app,omitempty"`
+	AppId *string `json:"appId,omitempty"`
 	CreatedAt string `json:"createdAt"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	Id string `json:"id"`
@@ -59,36 +59,36 @@ func NewUserSvcOrganizationWithDefaults() *UserSvcOrganization {
 	return &this
 }
 
-// GetApp returns the App field value if set, zero value otherwise.
-func (o *UserSvcOrganization) GetApp() string {
-	if o == nil || IsNil(o.App) {
+// GetAppId returns the AppId field value if set, zero value otherwise.
+func (o *UserSvcOrganization) GetAppId() string {
+	if o == nil || IsNil(o.AppId) {
 		var ret string
 		return ret
 	}
-	return *o.App
+	return *o.AppId
 }
 
-// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// GetAppIdOk returns a tuple with the AppId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcOrganization) GetAppOk() (*string, bool) {
-	if o == nil || IsNil(o.App) {
+func (o *UserSvcOrganization) GetAppIdOk() (*string, bool) {
+	if o == nil || IsNil(o.AppId) {
 		return nil, false
 	}
-	return o.App, true
+	return o.AppId, true
 }
 
-// HasApp returns a boolean if a field has been set.
-func (o *UserSvcOrganization) HasApp() bool {
-	if o != nil && !IsNil(o.App) {
+// HasAppId returns a boolean if a field has been set.
+func (o *UserSvcOrganization) HasAppId() bool {
+	if o != nil && !IsNil(o.AppId) {
 		return true
 	}
 
 	return false
 }
 
-// SetApp gets a reference to the given string and assigns it to the App field.
-func (o *UserSvcOrganization) SetApp(v string) {
-	o.App = &v
+// SetAppId gets a reference to the given string and assigns it to the AppId field.
+func (o *UserSvcOrganization) SetAppId(v string) {
+	o.AppId = &v
 }
 
 // GetCreatedAt returns the CreatedAt field value
@@ -317,8 +317,8 @@ func (o UserSvcOrganization) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcOrganization) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.App) {
-		toSerialize["app"] = o.App
+	if !IsNil(o.AppId) {
+		toSerialize["appId"] = o.AppId
 	}
 	toSerialize["createdAt"] = o.CreatedAt
 	if !IsNil(o.DeletedAt) {

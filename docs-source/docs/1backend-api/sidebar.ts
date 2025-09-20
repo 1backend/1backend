@@ -582,6 +582,12 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "1backend-api/list-apps",
+          label: "List Apps",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
           id: "1backend-api/change-password",
           label: "Change Password",
           className: "api-method post",

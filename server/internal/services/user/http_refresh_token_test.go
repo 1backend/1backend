@@ -250,7 +250,7 @@ func TestRefreshToken_AfterExchange_KeepsAppAndExtendsExpiry(t *testing.T) {
 
 	// exchange into appA
 	exA, _, err := userUnnamed.UserSvcAPI.ExchangeToken(ctx).
-		Body(openapi.UserSvcExchangeTokenRequest{NewApp: appA}).Execute()
+		Body(openapi.UserSvcExchangeTokenRequest{NewAppHost: appA}).Execute()
 	require.NoError(t, err)
 	require.NotEmpty(t, exA.Token.Token)
 	userA := clientFactory.Client(client.WithToken(exA.Token.Token))
@@ -282,7 +282,7 @@ func TestRefreshToken_AfterExchange_KeepsAppAndExtendsExpiry(t *testing.T) {
 
 	// exchange into appB and ensure permission is NOT granted there
 	exB, _, err := userARef.UserSvcAPI.ExchangeToken(ctx).
-		Body(openapi.UserSvcExchangeTokenRequest{NewApp: appB}).Execute()
+		Body(openapi.UserSvcExchangeTokenRequest{NewAppHost: appB}).Execute()
 	require.NoError(t, err)
 	userB := clientFactory.Client(client.WithToken(exB.Token.Token))
 
@@ -320,7 +320,7 @@ func TestRefreshTokenCount_IsBounded_ForExchangedTokens_PerDevice(t *testing.T) 
 	// exchange that device token into appA (device should carry over unless overridden)
 	exA, _, err := clientFactory.Client(client.WithToken(login.Token.Token)).
 		UserSvcAPI.ExchangeToken(ctx).
-		Body(openapi.UserSvcExchangeTokenRequest{NewApp: appA}).Execute()
+		Body(openapi.UserSvcExchangeTokenRequest{NewAppHost: appA}).Execute()
 	require.NoError(t, err)
 	require.NotEmpty(t, exA.Token.Token)
 

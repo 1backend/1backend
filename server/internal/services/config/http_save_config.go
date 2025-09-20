@@ -17,6 +17,7 @@ import (
 	"time"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
@@ -89,9 +90,9 @@ func (cs *ConfigService) SaveConfig(
 	}
 
 	if !canActonBehalf {
-		if req.App != "" {
+		if req.AppHost != "" {
 			logger.Error("Unauthorized attempt to save config with app specified",
-				slog.String("app", req.App),
+				slog.String("appHost", req.AppHost),
 			)
 			endpoint.Unauthorized(w)
 			return
@@ -106,14 +107,33 @@ func (cs *ConfigService) SaveConfig(
 		}
 	}
 
-	app := req.App
-	if app == "" {
-		app = *isAuthRsp.App
+	if req.AppHost == "" {
+		req.AppHost, err = cs.options.TokenExchanger.AppHostFromRequest(r)
+		if err != nil {
+			logger.Error(
+				"Failed to get app from request host",
+				slog.Any("error", err),
+			)
+			endpoint.InternalServerError(w)
+			return
+		}
 	}
 
+	appId, err := cs.options.TokenExchanger.AppIdFromHost(
+		r.Context(),
+		req.AppHost,
+	)
+	if err != nil {
+		logger.Error(
+			"Failed to get app id from host",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
+		return
+	}
 	err = cs.saveConfig(
 		canActonBehalf,
-		app,
+		appId,
 		isAuthRsp.User.Slug,
 		req,
 	)
@@ -130,7 +150,7 @@ func (cs *ConfigService) SaveConfig(
 
 func (cs *ConfigService) saveConfig(
 	canActonBehalf bool,
-	app string,
+	appId string,
 	callerSlug string,
 	newConfig *types.SaveConfigRequest,
 ) error {
@@ -152,7 +172,7 @@ func (cs *ConfigService) saveConfig(
 
 	existing, found, err := cs.configStore.Query(
 		datastore.Id(id),
-		datastore.Equals([]string{"app"}, app),
+		datastore.Equals([]string{"appId"}, appId),
 	).FindOne()
 	if err != nil {
 		return errors.Wrap(err, "failed to query config")
@@ -165,9 +185,12 @@ func (cs *ConfigService) saveConfig(
 	entry := &types.Config{}
 
 	if !found {
-		entry.InternalId = fmt.Sprintf("%s_%s", app, callerSlug)
+		entry.InternalId, err = sdk.InternalId(appId, id)
+		if err != nil {
+			return fmt.Errorf("failed to generate internal id: %w", err)
+		}
 		entry.Id = id
-		entry.App = app
+		entry.AppId = appId
 		entry.Data = map[string]interface{}{}
 		entry.DataJSON = "{}"
 		entry.CreatedAt = now

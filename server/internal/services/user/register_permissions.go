@@ -21,7 +21,7 @@ func (us *UserService) registerPermits() error {
 	} {
 		for _, permission := range user.AdminPermissions {
 			permits = append(permits, &user.PermitInput{
-				App:        "*",
+				AppHost:    "*",
 				Roles:      []string{role},
 				Permission: permission,
 			})
@@ -33,7 +33,7 @@ func (us *UserService) registerPermits() error {
 	} {
 		for _, permission := range user.UserPermissions {
 			permits = append(permits, &user.PermitInput{
-				App:        "*",
+				AppHost:    "*",
 				Roles:      []string{role},
 				Permission: permission,
 			})

@@ -64,8 +64,26 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.App == "" {
-		req.App = user.DefaultApp
+	if req.AppHost == "" {
+		req.AppHost, err = s.options.TokenExchanger.AppHostFromRequest(r)
+		if err != nil {
+			logger.Error(
+				"Failed to get app from request host",
+				slog.Any("error", err),
+			)
+			endpoint.InternalServerError(w)
+			return
+		}
+	}
+
+	app, err := s.getOrCreateApp(req.AppHost)
+	if err != nil {
+		logger.Error(
+			"Failed to get or create app",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
+		return
 	}
 
 	if req.Device == "" {
@@ -89,7 +107,7 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 	err = s.createUser(
-		req.App,
+		app.Id,
 		newUser,
 		contacts,
 		req.Password,
@@ -104,12 +122,13 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := s.login(&user.LoginRequest{
-		App:      req.App,
-		Slug:     req.Slug,
-		Password: req.Password,
-		Device:   req.Device,
-	})
+	token, err := s.login(
+		app.Id,
+		&user.LoginRequest{
+			Slug:     req.Slug,
+			Password: req.Password,
+			Device:   req.Device,
+		})
 	if err != nil {
 		logger.Error(
 			"Failed to login after registration",
@@ -130,7 +149,7 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) register(
-	app string,
+	appHost string,
 	slug,
 	password,
 	name string,
@@ -176,15 +195,20 @@ func (s *UserService) register(
 		return nil, err
 	}
 
+	app, err := s.getOrCreateApp(appHost)
+	if err != nil {
+		return nil, errors.Wrap(err, "error getting or creating app")
+	}
+
 	for _, role := range roles {
-		err = s.assignRole(app, usr.Id, role)
+		err = s.assignRole(app.Id, usr.Id, role)
 		if err != nil {
 			return nil, err
 		}
 	}
 
 	token, err := s.generateAuthToken(
-		app,
+		app.Id,
 		usr,
 		unknownDevice,
 	)

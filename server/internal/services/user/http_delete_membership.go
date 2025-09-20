@@ -74,7 +74,7 @@ func (s *UserService) DeleteMembership(
 	}
 	defer r.Body.Close()
 
-	err = s.deleteMembership(claims.App, usr.Id, userId, organizationId)
+	err = s.deleteMembership(claims.AppId, usr.Id, userId, organizationId)
 	if err != nil {
 		logger.Error(
 			"Failed to delete membership",
@@ -88,9 +88,9 @@ func (s *UserService) DeleteMembership(
 }
 
 func (s *UserService) deleteMembership(
-	app, callerId, userId, organizationId string,
+	appId, callerId, userId, organizationId string,
 ) error {
-	roleIds, err := s.getRolesByUserId(app, callerId)
+	roleIds, err := s.getRolesByUserId(appId, callerId)
 	if err != nil {
 		return err
 	}

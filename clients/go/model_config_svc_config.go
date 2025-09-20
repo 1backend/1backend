@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc7
+API version: 0.8.0-rc8
 Contact: sales@singulatron.com
 */
 
@@ -22,7 +22,7 @@ var _ MappedNullable = &ConfigSvcConfig{}
 
 // ConfigSvcConfig struct for ConfigSvcConfig
 type ConfigSvcConfig struct {
-	App string `json:"app"`
+	AppId string `json:"appId"`
 	CreatedAt string `json:"createdAt"`
 	Data map[string]interface{} `json:"data"`
 	DataJson string `json:"dataJson"`
@@ -38,9 +38,9 @@ type _ConfigSvcConfig ConfigSvcConfig
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewConfigSvcConfig(app string, createdAt string, data map[string]interface{}, dataJson string, id string, updatedAt string) *ConfigSvcConfig {
+func NewConfigSvcConfig(appId string, createdAt string, data map[string]interface{}, dataJson string, id string, updatedAt string) *ConfigSvcConfig {
 	this := ConfigSvcConfig{}
-	this.App = app
+	this.AppId = appId
 	this.CreatedAt = createdAt
 	this.Data = data
 	this.DataJson = dataJson
@@ -57,28 +57,28 @@ func NewConfigSvcConfigWithDefaults() *ConfigSvcConfig {
 	return &this
 }
 
-// GetApp returns the App field value
-func (o *ConfigSvcConfig) GetApp() string {
+// GetAppId returns the AppId field value
+func (o *ConfigSvcConfig) GetAppId() string {
 	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.App
+	return o.AppId
 }
 
-// GetAppOk returns a tuple with the App field value
+// GetAppIdOk returns a tuple with the AppId field value
 // and a boolean to check if the value has been set.
-func (o *ConfigSvcConfig) GetAppOk() (*string, bool) {
+func (o *ConfigSvcConfig) GetAppIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.App, true
+	return &o.AppId, true
 }
 
-// SetApp sets field value
-func (o *ConfigSvcConfig) SetApp(v string) {
-	o.App = v
+// SetAppId sets field value
+func (o *ConfigSvcConfig) SetAppId(v string) {
+	o.AppId = v
 }
 
 // GetCreatedAt returns the CreatedAt field value
@@ -243,7 +243,7 @@ func (o ConfigSvcConfig) MarshalJSON() ([]byte, error) {
 
 func (o ConfigSvcConfig) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["app"] = o.App
+	toSerialize["appId"] = o.AppId
 	toSerialize["createdAt"] = o.CreatedAt
 	toSerialize["data"] = o.Data
 	toSerialize["dataJson"] = o.DataJson
@@ -260,7 +260,7 @@ func (o *ConfigSvcConfig) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"app",
+		"appId",
 		"createdAt",
 		"data",
 		"dataJson",

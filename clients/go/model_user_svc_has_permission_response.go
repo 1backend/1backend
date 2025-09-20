@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0-rc7
+API version: 0.8.0-rc8
 Contact: sales@singulatron.com
 */
 
@@ -22,7 +22,8 @@ var _ MappedNullable = &UserSvcHasPermissionResponse{}
 
 // UserSvcHasPermissionResponse struct for UserSvcHasPermissionResponse
 type UserSvcHasPermissionResponse struct {
-	App *string `json:"app,omitempty"`
+	App UserSvcApp `json:"app"`
+	AppId string `json:"appId"`
 	Authorized bool `json:"authorized"`
 	Until string `json:"until"`
 	User UserSvcUser `json:"user"`
@@ -34,8 +35,10 @@ type _UserSvcHasPermissionResponse UserSvcHasPermissionResponse
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcHasPermissionResponse(authorized bool, until string, user UserSvcUser) *UserSvcHasPermissionResponse {
+func NewUserSvcHasPermissionResponse(app UserSvcApp, appId string, authorized bool, until string, user UserSvcUser) *UserSvcHasPermissionResponse {
 	this := UserSvcHasPermissionResponse{}
+	this.App = app
+	this.AppId = appId
 	this.Authorized = authorized
 	this.Until = until
 	this.User = user
@@ -50,36 +53,52 @@ func NewUserSvcHasPermissionResponseWithDefaults() *UserSvcHasPermissionResponse
 	return &this
 }
 
-// GetApp returns the App field value if set, zero value otherwise.
-func (o *UserSvcHasPermissionResponse) GetApp() string {
-	if o == nil || IsNil(o.App) {
+// GetApp returns the App field value
+func (o *UserSvcHasPermissionResponse) GetApp() UserSvcApp {
+	if o == nil {
+		var ret UserSvcApp
+		return ret
+	}
+
+	return o.App
+}
+
+// GetAppOk returns a tuple with the App field value
+// and a boolean to check if the value has been set.
+func (o *UserSvcHasPermissionResponse) GetAppOk() (*UserSvcApp, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.App, true
+}
+
+// SetApp sets field value
+func (o *UserSvcHasPermissionResponse) SetApp(v UserSvcApp) {
+	o.App = v
+}
+
+// GetAppId returns the AppId field value
+func (o *UserSvcHasPermissionResponse) GetAppId() string {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.App
+
+	return o.AppId
 }
 
-// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// GetAppIdOk returns a tuple with the AppId field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcHasPermissionResponse) GetAppOk() (*string, bool) {
-	if o == nil || IsNil(o.App) {
+func (o *UserSvcHasPermissionResponse) GetAppIdOk() (*string, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.App, true
+	return &o.AppId, true
 }
 
-// HasApp returns a boolean if a field has been set.
-func (o *UserSvcHasPermissionResponse) HasApp() bool {
-	if o != nil && !IsNil(o.App) {
-		return true
-	}
-
-	return false
-}
-
-// SetApp gets a reference to the given string and assigns it to the App field.
-func (o *UserSvcHasPermissionResponse) SetApp(v string) {
-	o.App = &v
+// SetAppId sets field value
+func (o *UserSvcHasPermissionResponse) SetAppId(v string) {
+	o.AppId = v
 }
 
 // GetAuthorized returns the Authorized field value
@@ -164,9 +183,8 @@ func (o UserSvcHasPermissionResponse) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcHasPermissionResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.App) {
-		toSerialize["app"] = o.App
-	}
+	toSerialize["app"] = o.App
+	toSerialize["appId"] = o.AppId
 	toSerialize["authorized"] = o.Authorized
 	toSerialize["until"] = o.Until
 	toSerialize["user"] = o.User
@@ -178,6 +196,8 @@ func (o *UserSvcHasPermissionResponse) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
+		"app",
+		"appId",
 		"authorized",
 		"until",
 		"user",

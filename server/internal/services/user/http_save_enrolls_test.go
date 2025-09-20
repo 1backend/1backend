@@ -478,7 +478,7 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 				Enrolls: []openapi.UserSvcEnrollInput{
 					{
 						Id:        openapi.PtrString(enrollID),
-						App:       openapi.PtrString(appA),
+						AppHost:   openapi.PtrString(appA),
 						ContactId: openapi.PtrString(contact),
 						Role:      role,
 					},
@@ -495,7 +495,7 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 				Enrolls: []openapi.UserSvcEnrollInput{
 					{
 						Id:        openapi.PtrString(enrollID),
-						App:       openapi.PtrString(appA),
+						AppHost:   openapi.PtrString(appA),
 						ContactId: openapi.PtrString(newContact), // change something to force an update
 						Role:      role,
 					},
@@ -512,7 +512,7 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 				Enrolls: []openapi.UserSvcEnrollInput{
 					{
 						Id:        openapi.PtrString(enrollID),
-						App:       openapi.PtrString(appB),
+						AppHost:   openapi.PtrString(appB),
 						ContactId: openapi.PtrString(contact),
 						Role:      role,
 					},
@@ -530,7 +530,7 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 				Enrolls: []openapi.UserSvcEnrollInput{
 					{
 						Id:        openapi.PtrString(globalID),
-						App:       openapi.PtrString(appGlobal),
+						AppHost:   openapi.PtrString(appGlobal),
 						ContactId: openapi.PtrString(contact),
 						Role:      role,
 					},
@@ -547,7 +547,7 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 				Enrolls: []openapi.UserSvcEnrollInput{
 					{
 						Id:        openapi.PtrString(globalID),
-						App:       openapi.PtrString(appA),
+						AppHost:   openapi.PtrString(appA),
 						ContactId: openapi.PtrString(contact),
 						Role:      role,
 					},
@@ -566,7 +566,7 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 				Enrolls: []openapi.UserSvcEnrollInput{
 					{
 						Id:        openapi.PtrString(appScopedID),
-						App:       openapi.PtrString(appB),
+						AppHost:   openapi.PtrString(appB),
 						ContactId: openapi.PtrString(contact),
 						Role:      role,
 					},
@@ -580,7 +580,7 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 				Enrolls: []openapi.UserSvcEnrollInput{
 					{
 						Id:        openapi.PtrString(appScopedID),
-						App:       openapi.PtrString(appGlobal),
+						AppHost:   openapi.PtrString(appGlobal),
 						ContactId: openapi.PtrString(contact),
 						Role:      role,
 					},
