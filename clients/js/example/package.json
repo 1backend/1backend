@@ -15,6 +15,6 @@
     "typescript": "^5.5.3"
   },
   "dependencies": {
-    "@1backend/client": "0.8.0-rc8"
+    "@1backend/client": "0.8.0"
   }
 }
