@@ -2734,7 +2734,7 @@ definitions:
     type: object
   secret_svc.Secret:
     properties:
-      app:
+      appId:
         type: string
       canChangeDeleters:
         description: Slugs of services/users who can change the deleters list
@@ -2791,13 +2791,13 @@ definitions:
           type: string
         type: array
     required:
-    - app
+    - appId
     - id
     - value
     type: object
   secret_svc.SecretInput:
     properties:
-      app:
+      appHost:
         type: string
       canChangeDeleters:
         description: Slugs of services/users who can change the deleters list

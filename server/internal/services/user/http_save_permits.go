@@ -100,7 +100,7 @@ func (s *UserService) SavePermits(w http.ResponseWriter, r *http.Request) {
 }
 
 func (cs *UserService) savePermits(
-	appId string,
+	claimAppId string,
 	ctx context.Context,
 	req *user.SavePermitsRequest,
 ) error {
@@ -132,13 +132,31 @@ func (cs *UserService) savePermits(
 			nu = true
 		}
 
+		permitAppId := ""
+		if permit.AppHost != "" && permit.AppHost != "*" {
+			permitI, found, err := cs.appStore.Query(
+				datastore.Equals([]string{"host"}, permit.AppHost),
+			).FindOne()
+			if err != nil {
+				return errors.Wrap(err, "failed to query app by host")
+			}
+			if !found {
+				return errors.Errorf("app with host %s not found", permit.AppHost)
+			}
+			permitAppId = permitI.(*user.App).Id
+		} else if permit.AppHost == "*" {
+			permitAppId = "*"
+		} else {
+			permitAppId = claimAppId
+		}
+
 		existingPermits, ok := permitsByPermission[permit.Permission]
 		isDuplicate := false
 		if ok {
 			for _, existingPermit := range existingPermits {
 				if equalUnordered(existingPermit.Roles, permit.Roles) &&
 					equalUnordered(existingPermit.Slugs, permit.Slugs) &&
-					existingPermit.AppId == appId {
+					existingPermit.AppId == permitAppId {
 					isDuplicate = true
 					break
 				}
@@ -148,7 +166,7 @@ func (cs *UserService) savePermits(
 			continue
 		}
 
-		internalId, err := sdk.InternalId(appId, permit.Id)
+		internalId, err := sdk.InternalId(permitAppId, permit.Id)
 		if err != nil {
 			return errors.Wrap(err, "failed to create internal id")
 		}
@@ -156,7 +174,7 @@ func (cs *UserService) savePermits(
 		permit := &user.Permit{
 			InternalId: internalId,
 			Id:         permit.Id,
-			AppId:      appId,
+			AppId:      permitAppId,
 			Permission: permit.Permission,
 			Slugs:      permit.Slugs,
 			Roles:      permit.Roles,

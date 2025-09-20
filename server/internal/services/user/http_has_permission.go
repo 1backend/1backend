@@ -129,6 +129,7 @@ func (s *UserService) hasPermission(
 
 	for _, permitI := range permitIs {
 		permit := permitI.(*user.Permit)
+
 		if permit.AppId != claims.AppId && permit.AppId != "*" {
 			continue
 		}

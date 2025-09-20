@@ -22,7 +22,7 @@ var _ MappedNullable = &SecretSvcSecret{}
 
 // SecretSvcSecret struct for SecretSvcSecret
 type SecretSvcSecret struct {
-	App string `json:"app"`
+	AppId string `json:"appId"`
 	// Slugs of services/users who can change the deleters list
 	CanChangeDeleters []string `json:"canChangeDeleters,omitempty"`
 	// Slugs of services/users who can change the readers list
@@ -54,9 +54,9 @@ type _SecretSvcSecret SecretSvcSecret
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSecretSvcSecret(app string, id string, value string) *SecretSvcSecret {
+func NewSecretSvcSecret(appId string, id string, value string) *SecretSvcSecret {
 	this := SecretSvcSecret{}
-	this.App = app
+	this.AppId = appId
 	this.Id = id
 	this.Value = value
 	return &this
@@ -70,28 +70,28 @@ func NewSecretSvcSecretWithDefaults() *SecretSvcSecret {
 	return &this
 }
 
-// GetApp returns the App field value
-func (o *SecretSvcSecret) GetApp() string {
+// GetAppId returns the AppId field value
+func (o *SecretSvcSecret) GetAppId() string {
 	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.App
+	return o.AppId
 }
 
-// GetAppOk returns a tuple with the App field value
+// GetAppIdOk returns a tuple with the AppId field value
 // and a boolean to check if the value has been set.
-func (o *SecretSvcSecret) GetAppOk() (*string, bool) {
+func (o *SecretSvcSecret) GetAppIdOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.App, true
+	return &o.AppId, true
 }
 
-// SetApp sets field value
-func (o *SecretSvcSecret) SetApp(v string) {
-	o.App = v
+// SetAppId sets field value
+func (o *SecretSvcSecret) SetAppId(v string) {
+	o.AppId = v
 }
 
 // GetCanChangeDeleters returns the CanChangeDeleters field value if set, zero value otherwise.
@@ -472,7 +472,7 @@ func (o SecretSvcSecret) MarshalJSON() ([]byte, error) {
 
 func (o SecretSvcSecret) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["app"] = o.App
+	toSerialize["appId"] = o.AppId
 	if !IsNil(o.CanChangeDeleters) {
 		toSerialize["canChangeDeleters"] = o.CanChangeDeleters
 	}
@@ -513,7 +513,7 @@ func (o *SecretSvcSecret) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"app",
+		"appId",
 		"id",
 		"value",
 	}
