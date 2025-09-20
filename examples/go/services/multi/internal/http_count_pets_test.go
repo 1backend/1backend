@@ -9,6 +9,7 @@ import (
 	multiservice "github.com/1backend/1backend/examples/go/services/multi/internal"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
@@ -55,7 +56,7 @@ func TestCountPets(t *testing.T) {
 	serverAdminClient, _, err := test.AdminClient(clientFactory)
 	assert.NoError(t, err)
 
-	serverClients, tokens, err := test.MakeClients(clientFactory, "test", 1)
+	serverClients, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
 	t.Run("admin assigns role to user so user can save a pet first", func(t *testing.T) {

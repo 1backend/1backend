@@ -78,7 +78,8 @@ func TestEnrollForUnregistered(t *testing.T) {
 	t.Run("new user should have role", func(t *testing.T) {
 		rsp, _, err := userClient.UserSvcAPI.Register(context.Background()).
 			Body(openapi.UserSvcRegisterRequest{
-				Slug: "test-user-slug-1",
+				AppHost: openapi.PtrString(sdk.DefaultTestAppHost),
+				Slug:    "test-user-slug-1",
 				Contact: &openapi.UserSvcContactInput{
 					Id: "test-user@email.com",
 				},
@@ -120,7 +121,7 @@ func TestEnrollForRegisteredUser(t *testing.T) {
 	defer server.Cleanup(t)
 
 	clientFactory := client.NewApiClientFactory(server.Url)
-	manyClients, _, err := test.MakeClients(clientFactory, "test", 1)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -152,6 +153,7 @@ func TestEnrollForRegisteredUser(t *testing.T) {
 		require.NoError(t, err)
 
 		loginReq := openapi.UserSvcLoginRequest{
+			AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
 			Slug:     openapi.PtrString("test-user-slug-1"),
 			Password: openapi.PtrString("yo"),
 		}
@@ -191,7 +193,7 @@ func TestListEnrollAuthorization(t *testing.T) {
 	defer server.Cleanup(t)
 
 	clientFactory := client.NewApiClientFactory(server.Url)
-	manyClients, tokens, err := test.MakeClients(clientFactory, "test", 2)
+	manyClients, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 2)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -233,7 +235,7 @@ func TestListEnrollAuthorization(t *testing.T) {
 		require.Len(t, rsp.Enrolls, 2, rsp)
 	})
 
-	secondUserClient, _, err = test.LoggedInClient(clientFactory, "test-user-slug-1", "testUserPassword1")
+	secondUserClient, _, err = test.LoggedInClient(clientFactory, sdk.DefaultTestAppHost, "test-user-slug-1", "testUserPassword1")
 	require.NoError(t, err)
 
 	t.Run("second user cannot enroll someone as it has the role but does not own it", func(t *testing.T) {
@@ -269,7 +271,7 @@ func TestSaveEnrollsOldAssignTests(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, tokens, err := test.MakeClients(clientFactory, "test", 3)
+	manyClients, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 3)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -354,6 +356,7 @@ func TestSaveEnrollsOldAssignTests(t *testing.T) {
 
 	secondClient, _, err := test.LoggedInClient(
 		clientFactory,
+		sdk.DefaultTestAppHost,
 		"test-user-slug-1",
 		"testUserPassword1",
 	)
@@ -415,6 +418,7 @@ func TestSaveEnrollsOldAssignTests(t *testing.T) {
 
 	secondClient, _, err = test.LoggedInClient(
 		clientFactory,
+		sdk.DefaultTestAppHost,
 		"test-user-slug-1",
 		"testUserPassword1",
 	)
@@ -457,7 +461,7 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 	defer server.Cleanup(t)
 
 	clientFactory := client.NewApiClientFactory(server.Url)
-	manyClients, _, err := test.MakeClients(clientFactory, "test", 1)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]

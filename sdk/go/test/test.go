@@ -66,10 +66,12 @@ func MakeClients(
 
 func LoggedInClient(
 	clientFactory client.ClientFactory,
+	appHost string,
 	slug,
 	password string,
 ) (*openapi.APIClient, *openapi.UserSvcToken, error) {
 	loginReq := openapi.UserSvcLoginRequest{
+		AppHost:  openapi.PtrString(appHost),
 		Slug:     openapi.PtrString(slug),
 		Password: openapi.PtrString(password),
 	}

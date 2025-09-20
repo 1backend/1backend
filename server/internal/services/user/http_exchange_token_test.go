@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
@@ -24,7 +25,7 @@ func TestExchangeToken(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	clients, tokens, err := test.MakeClients(clientFactory, "test", 1)
+	clients, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
 	client1 := clients[0]

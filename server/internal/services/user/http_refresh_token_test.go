@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
@@ -25,7 +26,7 @@ func TestRefreshToken(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, tokens, err := test.MakeClients(clientFactory, "test", 1)
+	manyClients, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
 	client1 := manyClients[0]
@@ -74,7 +75,7 @@ func TestRefreshTokenCountIsBounded(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, tokens, err := test.MakeClients(clientFactory, "test", 1)
+	manyClients, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
 	client1 := manyClients[0]
@@ -168,7 +169,7 @@ func TestRefreshTokenCountIsBoundedPerDevice(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, _, err := test.MakeClients(clientFactory, "test", 1)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
 	// default device
@@ -177,6 +178,7 @@ func TestRefreshTokenCountIsBoundedPerDevice(t *testing.T) {
 	lrsp, httrsp, err := deviceA.UserSvcAPI.Login(
 		context.Background(),
 	).Body(openapi.UserSvcLoginRequest{
+		AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
 		Slug:     openapi.PtrString("test-user-slug-0"),
 		Password: openapi.PtrString("testUserPassword0"),
 		Device:   openapi.PtrString("device-a"),
@@ -237,7 +239,7 @@ func TestRefreshToken_AfterExchange_KeepsAppAndExtendsExpiry(t *testing.T) {
 	ctx := context.Background()
 
 	// user
-	many, toks, err := test.MakeClients(clientFactory, "test", 1)
+	many, toks, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 	userUnnamed := many[0]
 

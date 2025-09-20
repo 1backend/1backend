@@ -12,6 +12,7 @@ import (
 	"testing"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/stretchr/testify/require"
@@ -28,7 +29,7 @@ func TestSecretService(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, _, err := test.MakeClients(clientFactory, "test", 2)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 2)
 	require.NoError(t, err)
 	client1 := manyClients[0]
 	client2 := manyClients[1]

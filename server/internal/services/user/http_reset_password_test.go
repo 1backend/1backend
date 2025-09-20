@@ -30,7 +30,7 @@ func TestResetPassword(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, tokens, err := test.MakeClients(clientFactory, "test", 2)
+	manyClients, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 2)
 	require.NoError(t, err)
 
 	client1 := manyClients[0]

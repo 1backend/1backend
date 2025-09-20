@@ -30,7 +30,7 @@ func TestQueryObjects(t *testing.T) {
 
 	table1 := "test_table_" + uniq
 
-	manyClients, _, err := test.MakeClients(clientFactory, "test", 1)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 	client1 := manyClients[0]
 

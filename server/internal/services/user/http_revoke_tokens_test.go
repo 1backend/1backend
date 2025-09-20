@@ -25,7 +25,7 @@ func TestRevokeTokens(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, _, err := test.MakeClients(clientFactory, "test", 3)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 3)
 	require.NoError(t, err)
 
 	client1 := manyClients[0]

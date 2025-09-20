@@ -9,6 +9,7 @@ import (
 	basicservice "github.com/1backend/1backend/examples/go/services/basic/internal"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
@@ -47,7 +48,7 @@ func TestListPets(t *testing.T) {
 	serverAdminClient, _, err := test.AdminClient(clientFactory)
 	assert.NoError(t, err)
 
-	serverClients, tokens, err := test.MakeClients(clientFactory, "test", 1)
+	serverClients, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
 	client1 := newClient(server.Url, tokens[0].Token)

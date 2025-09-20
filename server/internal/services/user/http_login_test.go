@@ -81,6 +81,7 @@ func TestOrganization(t *testing.T) {
 			require.Equal(t, claim.ExpiresAt.Time.Before(time.Now().Add(302*time.Second)), true)
 
 			loginReq := openapi.UserSvcLoginRequest{
+				AppHost:  openapi.PtrString(sdk.DefaultTestAppHost),
 				Slug:     openapi.PtrString("test-user-slug-0"),
 				Password: openapi.PtrString("testUserPassword0"),
 			}

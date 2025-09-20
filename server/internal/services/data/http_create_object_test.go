@@ -33,7 +33,7 @@ func TestCreate(t *testing.T) {
 	table1 := "test_table" + uniq
 	table2 := "test_table2" + uniq
 
-	manyClients, _, err := test.MakeClients(clientFactory, "test", 2)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 2)
 	require.NoError(t, err)
 	client1 := manyClients[0]
 	client2 := manyClients[1]

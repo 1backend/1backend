@@ -23,7 +23,7 @@ func TestListUsers(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, tokens, err := test.MakeClients(clientFactory, "test", 5)
+	manyClients, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 5)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]

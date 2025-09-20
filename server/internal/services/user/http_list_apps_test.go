@@ -2,7 +2,6 @@ package userservice_test
 
 import (
 	"context"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -46,7 +45,7 @@ func TestListApps(t *testing.T) {
 			if app.Host == "unnamed" {
 				foundUnnamed = true
 			}
-			if app.Host == strings.Replace(server.Url, "http://", "", 1) {
+			if app.Host == sdk.DefaultTestAppHost {
 				foundServerApp = true
 			}
 		}

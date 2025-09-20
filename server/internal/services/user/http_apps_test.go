@@ -116,7 +116,7 @@ func TestAppRoles(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, "helloapp", rsp.Token.App.Host)
 
-		clientFactory.Client(client.WithToken(rsp.Token.Token)).
+		_, _, err = clientFactory.Client(client.WithToken(rsp.Token.Token)).
 			UserSvcAPI.SaveEnrolls(ctx).
 			Body(openapi.UserSvcSaveEnrollsRequest{
 				Enrolls: []openapi.UserSvcEnrollInput{
