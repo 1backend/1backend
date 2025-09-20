@@ -25,3 +25,11 @@ type ListAppsRequest struct {
 type ListAppsResponse struct {
 	Apps []App `json:"apps" binding:"required"`
 }
+
+type ReadAppRequest struct {
+	Host string `json:"host,omitempty"`
+}
+
+type ReadAppResponse struct {
+	App App `json:"app" binding:"required"`
+}

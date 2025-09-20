@@ -172,6 +172,7 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**ListPermits**](docs/UserSvcAPI.md#listpermits) | **Post** /user-svc/permits | List Permits
 *UserSvcAPI* | [**ListUsers**](docs/UserSvcAPI.md#listusers) | **Post** /user-svc/users | List Users
 *UserSvcAPI* | [**Login**](docs/UserSvcAPI.md#login) | **Post** /user-svc/login | Login
+*UserSvcAPI* | [**ReadApp**](docs/UserSvcAPI.md#readapp) | **Post** /user-svc/app | Read or Create App
 *UserSvcAPI* | [**ReadSelf**](docs/UserSvcAPI.md#readself) | **Post** /user-svc/self | Read Self
 *UserSvcAPI* | [**RefreshToken**](docs/UserSvcAPI.md#refreshtoken) | **Post** /user-svc/refresh-token | Refresh Token
 *UserSvcAPI* | [**Register**](docs/UserSvcAPI.md#register) | **Post** /user-svc/register | Register
@@ -397,6 +398,8 @@ Class | Method | HTTP request | Description
  - [UserSvcOrganization](docs/UserSvcOrganization.md)
  - [UserSvcPermit](docs/UserSvcPermit.md)
  - [UserSvcPermitInput](docs/UserSvcPermitInput.md)
+ - [UserSvcReadAppRequest](docs/UserSvcReadAppRequest.md)
+ - [UserSvcReadAppResponse](docs/UserSvcReadAppResponse.md)
  - [UserSvcReadSelfRequest](docs/UserSvcReadSelfRequest.md)
  - [UserSvcReadSelfResponse](docs/UserSvcReadSelfResponse.md)
  - [UserSvcRefreshTokenResponse](docs/UserSvcRefreshTokenResponse.md)

@@ -3530,6 +3530,18 @@ definitions:
     required:
     - permission
     type: object
+  user_svc.ReadAppRequest:
+    properties:
+      host:
+        type: string
+    type: object
+  user_svc.ReadAppResponse:
+    properties:
+      app:
+        $ref: '#/definitions/user_svc.App'
+    required:
+    - app
+    type: object
   user_svc.ReadSelfRequest:
     properties:
       countTokens:
@@ -6764,6 +6776,39 @@ paths:
       security:
       - BearerAuth: []
       summary: Reset Password
+      tags:
+      - User Svc
+  /user-svc/app:
+    post:
+      consumes:
+      - application/json
+      description: Get an app by host, or create it if it does not exist.
+      operationId: readApp
+      parameters:
+      - description: Read App Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.ReadAppRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: App retrieved or created successfully
+          schema:
+            $ref: '#/definitions/user_svc.ReadAppResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Read or Create App
       tags:
       - User Svc
   /user-svc/apps:

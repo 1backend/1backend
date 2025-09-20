@@ -210,6 +210,8 @@ export * from './UserSvcOrderDirection';
 export * from './UserSvcOrganization';
 export * from './UserSvcPermit';
 export * from './UserSvcPermitInput';
+export * from './UserSvcReadAppRequest';
+export * from './UserSvcReadAppResponse';
 export * from './UserSvcReadSelfRequest';
 export * from './UserSvcReadSelfResponse';
 export * from './UserSvcRefreshTokenResponse';

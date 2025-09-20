@@ -35,6 +35,8 @@ import type {
   UserSvcListUsersResponse,
   UserSvcLoginRequest,
   UserSvcLoginResponse,
+  UserSvcReadAppRequest,
+  UserSvcReadAppResponse,
   UserSvcReadSelfRequest,
   UserSvcReadSelfResponse,
   UserSvcRefreshTokenResponse,
@@ -91,6 +93,10 @@ import {
     UserSvcLoginRequestToJSON,
     UserSvcLoginResponseFromJSON,
     UserSvcLoginResponseToJSON,
+    UserSvcReadAppRequestFromJSON,
+    UserSvcReadAppRequestToJSON,
+    UserSvcReadAppResponseFromJSON,
+    UserSvcReadAppResponseToJSON,
     UserSvcReadSelfRequestFromJSON,
     UserSvcReadSelfRequestToJSON,
     UserSvcReadSelfResponseFromJSON,
@@ -177,6 +183,10 @@ export interface ListUsersRequest {
 
 export interface LoginRequest {
     body: UserSvcLoginRequest;
+}
+
+export interface ReadAppRequest {
+    body: UserSvcReadAppRequest;
 }
 
 export interface ReadSelfRequest {
@@ -863,6 +873,51 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     async login(requestParameters: LoginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcLoginResponse> {
         const response = await this.loginRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Get an app by host, or create it if it does not exist.
+     * Read or Create App
+     */
+    async readAppRaw(requestParameters: ReadAppRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcReadAppResponse>> {
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling readApp().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+
+        let urlPath = `/user-svc/app`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserSvcReadAppRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcReadAppResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Get an app by host, or create it if it does not exist.
+     * Read or Create App
+     */
+    async readApp(requestParameters: ReadAppRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcReadAppResponse> {
+        const response = await this.readAppRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

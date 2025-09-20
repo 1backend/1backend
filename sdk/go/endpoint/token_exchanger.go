@@ -147,24 +147,20 @@ func (te *TokenExchangerImpl) AppIdFromHost(
 
 	rsp, _, err := te.clientFactory.Client().
 		UserSvcAPI.
-		ListApps(ctx).
-		Body(openapi.UserSvcListAppsRequest{
-			Host: []string{appHost},
+		ReadApp(ctx).
+		Body(openapi.UserSvcReadAppRequest{
+			Host: &appHost,
 		}).
 		Execute()
 	if err != nil {
 		return "", errors.Wrap(err, "failed to list app")
 	}
 
-	if len(rsp.Apps) == 0 {
-		return "", fmt.Errorf("no app found for host: '%s'", appHost)
+	if rsp.App.Id == "" {
+		return "", fmt.Errorf("app not found for host: '%s'", appHost)
 	}
 
-	if len(rsp.Apps) > 1 {
-		return "", fmt.Errorf("multiple apps found for host: '%s'", appHost)
-	}
-
-	return rsp.Apps[0].Id, nil
+	return rsp.App.Id, nil
 }
 
 func generateTokenExchangeKey(token, newApp string) string {
