@@ -127,16 +127,17 @@ func TestEnrollForRegisteredUser(t *testing.T) {
 	userClient := manyClients[0]
 
 	t.Run("register user", func(t *testing.T) {
-		_, _, err := userClient.UserSvcAPI.Register(context.Background()).
+		_, hrsp, err := userClient.UserSvcAPI.Register(context.Background()).
 			Body(openapi.UserSvcRegisterRequest{
-				Slug: "test-user-slug-1",
+				AppHost: openapi.PtrString(sdk.DefaultTestAppHost),
+				Slug:    "test-user-slug-1",
 				Contact: &openapi.UserSvcContactInput{
 					Id: "test-user@email.com",
 				},
 				Password: openapi.PtrString("yo"),
 			}).Execute()
 
-		require.NoError(t, err)
+		require.NoError(t, err, hrsp)
 	})
 
 	t.Run("enroll already registered user - role should apply immediately", func(t *testing.T) {
