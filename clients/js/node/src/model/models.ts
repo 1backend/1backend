@@ -180,6 +180,7 @@ export * from './sourceSvcCheckoutRepoRequest';
 export * from './sourceSvcCheckoutRepoResponse';
 export * from './sourceSvcErrorResponse';
 export * from './stableDiffusionTxt2ImgRequest';
+export * from './userSvcApp';
 export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';
 export * from './userSvcContactInput';
@@ -191,6 +192,8 @@ export * from './userSvcExchangeTokenRequest';
 export * from './userSvcExchangeTokenResponse';
 export * from './userSvcGetPublicKeyResponse';
 export * from './userSvcHasPermissionResponse';
+export * from './userSvcListAppsRequest';
+export * from './userSvcListAppsResponse';
 export * from './userSvcListEnrollsRequest';
 export * from './userSvcListEnrollsResponse';
 export * from './userSvcListOrganizationsRequest';
@@ -207,6 +210,8 @@ export * from './userSvcOrderDirection';
 export * from './userSvcOrganization';
 export * from './userSvcPermit';
 export * from './userSvcPermitInput';
+export * from './userSvcReadAppRequest';
+export * from './userSvcReadAppResponse';
 export * from './userSvcReadSelfRequest';
 export * from './userSvcReadSelfResponse';
 export * from './userSvcRefreshTokenResponse';
@@ -419,6 +424,7 @@ import { SourceSvcCheckoutRepoRequest } from './sourceSvcCheckoutRepoRequest';
 import { SourceSvcCheckoutRepoResponse } from './sourceSvcCheckoutRepoResponse';
 import { SourceSvcErrorResponse } from './sourceSvcErrorResponse';
 import { StableDiffusionTxt2ImgRequest } from './stableDiffusionTxt2ImgRequest';
+import { UserSvcApp } from './userSvcApp';
 import { UserSvcChangePasswordRequest } from './userSvcChangePasswordRequest';
 import { UserSvcContact } from './userSvcContact';
 import { UserSvcContactInput } from './userSvcContactInput';
@@ -430,6 +436,8 @@ import { UserSvcExchangeTokenRequest } from './userSvcExchangeTokenRequest';
 import { UserSvcExchangeTokenResponse } from './userSvcExchangeTokenResponse';
 import { UserSvcGetPublicKeyResponse } from './userSvcGetPublicKeyResponse';
 import { UserSvcHasPermissionResponse } from './userSvcHasPermissionResponse';
+import { UserSvcListAppsRequest } from './userSvcListAppsRequest';
+import { UserSvcListAppsResponse } from './userSvcListAppsResponse';
 import { UserSvcListEnrollsRequest } from './userSvcListEnrollsRequest';
 import { UserSvcListEnrollsResponse } from './userSvcListEnrollsResponse';
 import { UserSvcListOrganizationsRequest } from './userSvcListOrganizationsRequest';
@@ -446,6 +454,8 @@ import { UserSvcOrderDirection } from './userSvcOrderDirection';
 import { UserSvcOrganization } from './userSvcOrganization';
 import { UserSvcPermit } from './userSvcPermit';
 import { UserSvcPermitInput } from './userSvcPermitInput';
+import { UserSvcReadAppRequest } from './userSvcReadAppRequest';
+import { UserSvcReadAppResponse } from './userSvcReadAppResponse';
 import { UserSvcReadSelfRequest } from './userSvcReadSelfRequest';
 import { UserSvcReadSelfResponse } from './userSvcReadSelfResponse';
 import { UserSvcRefreshTokenResponse } from './userSvcRefreshTokenResponse';
@@ -663,6 +673,7 @@ let typeMap: {[index: string]: any} = {
     "SourceSvcCheckoutRepoResponse": SourceSvcCheckoutRepoResponse,
     "SourceSvcErrorResponse": SourceSvcErrorResponse,
     "StableDiffusionTxt2ImgRequest": StableDiffusionTxt2ImgRequest,
+    "UserSvcApp": UserSvcApp,
     "UserSvcChangePasswordRequest": UserSvcChangePasswordRequest,
     "UserSvcContact": UserSvcContact,
     "UserSvcContactInput": UserSvcContactInput,
@@ -674,6 +685,8 @@ let typeMap: {[index: string]: any} = {
     "UserSvcExchangeTokenResponse": UserSvcExchangeTokenResponse,
     "UserSvcGetPublicKeyResponse": UserSvcGetPublicKeyResponse,
     "UserSvcHasPermissionResponse": UserSvcHasPermissionResponse,
+    "UserSvcListAppsRequest": UserSvcListAppsRequest,
+    "UserSvcListAppsResponse": UserSvcListAppsResponse,
     "UserSvcListEnrollsRequest": UserSvcListEnrollsRequest,
     "UserSvcListEnrollsResponse": UserSvcListEnrollsResponse,
     "UserSvcListOrganizationsRequest": UserSvcListOrganizationsRequest,
@@ -688,6 +701,8 @@ let typeMap: {[index: string]: any} = {
     "UserSvcOrganization": UserSvcOrganization,
     "UserSvcPermit": UserSvcPermit,
     "UserSvcPermitInput": UserSvcPermitInput,
+    "UserSvcReadAppRequest": UserSvcReadAppRequest,
+    "UserSvcReadAppResponse": UserSvcReadAppResponse,
     "UserSvcReadSelfRequest": UserSvcReadSelfRequest,
     "UserSvcReadSelfResponse": UserSvcReadSelfResponse,
     "UserSvcRefreshTokenResponse": UserSvcRefreshTokenResponse,

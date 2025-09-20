@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0
+API version: 0.8.1
 Contact: sales@singulatron.com
 */
 
@@ -23,7 +23,7 @@ var _ MappedNullable = &UserSvcExchangeTokenRequest{}
 // UserSvcExchangeTokenRequest struct for UserSvcExchangeTokenRequest
 type UserSvcExchangeTokenRequest struct {
 	// NewApp is the app of the new token that will be returned by this endpoint.
-	NewApp string `json:"newApp"`
+	NewAppHost string `json:"newAppHost"`
 	// NewDevice. If not provided, the device of the original token will be used.
 	NewDevice *string `json:"newDevice,omitempty"`
 }
@@ -34,9 +34,9 @@ type _UserSvcExchangeTokenRequest UserSvcExchangeTokenRequest
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcExchangeTokenRequest(newApp string) *UserSvcExchangeTokenRequest {
+func NewUserSvcExchangeTokenRequest(newAppHost string) *UserSvcExchangeTokenRequest {
 	this := UserSvcExchangeTokenRequest{}
-	this.NewApp = newApp
+	this.NewAppHost = newAppHost
 	return &this
 }
 
@@ -48,28 +48,28 @@ func NewUserSvcExchangeTokenRequestWithDefaults() *UserSvcExchangeTokenRequest {
 	return &this
 }
 
-// GetNewApp returns the NewApp field value
-func (o *UserSvcExchangeTokenRequest) GetNewApp() string {
+// GetNewAppHost returns the NewAppHost field value
+func (o *UserSvcExchangeTokenRequest) GetNewAppHost() string {
 	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.NewApp
+	return o.NewAppHost
 }
 
-// GetNewAppOk returns a tuple with the NewApp field value
+// GetNewAppHostOk returns a tuple with the NewAppHost field value
 // and a boolean to check if the value has been set.
-func (o *UserSvcExchangeTokenRequest) GetNewAppOk() (*string, bool) {
+func (o *UserSvcExchangeTokenRequest) GetNewAppHostOk() (*string, bool) {
 	if o == nil {
 		return nil, false
 	}
-	return &o.NewApp, true
+	return &o.NewAppHost, true
 }
 
-// SetNewApp sets field value
-func (o *UserSvcExchangeTokenRequest) SetNewApp(v string) {
-	o.NewApp = v
+// SetNewAppHost sets field value
+func (o *UserSvcExchangeTokenRequest) SetNewAppHost(v string) {
+	o.NewAppHost = v
 }
 
 // GetNewDevice returns the NewDevice field value if set, zero value otherwise.
@@ -114,7 +114,7 @@ func (o UserSvcExchangeTokenRequest) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcExchangeTokenRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["newApp"] = o.NewApp
+	toSerialize["newAppHost"] = o.NewAppHost
 	if !IsNil(o.NewDevice) {
 		toSerialize["newDevice"] = o.NewDevice
 	}
@@ -126,7 +126,7 @@ func (o *UserSvcExchangeTokenRequest) UnmarshalJSON(data []byte) (err error) {
 	// by unmarshalling the object into a generic map with string keys and checking
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
-		"newApp",
+		"newAppHost",
 	}
 
 	allProperties := make(map[string]interface{})

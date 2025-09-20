@@ -28,6 +28,9 @@ func init() {
 	}
 }
 
+const DefaultAppHost = "unnamed"
+const DefaultTestAppHost = "test.app"
+
 const base62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
 // Id generates a short, human-readable unique ID with a prefix using Sonyflake.
@@ -125,9 +128,11 @@ func Marshal(value any) *string {
 	return &v
 }
 
-// Put the higher-cardinality (more unique) component first.
-// - Prefixing with low-cardinality (app) increases risk of long runs of similar keys → less even distribution in indexes, hash maps, or sorted stores.
-// - Starting with enroll.Id maximizes early entropy, improves lookup and sharding balance
-func InternalId(id, app string) string {
-	return fmt.Sprintf("%s_%s", id, app)
+// InternalId creates an internal identifier by combining an app ID and an ID.
+func InternalId(appId, id string) (string, error) {
+	if !strings.HasPrefix(appId, "app_") && appId != "*" {
+		return "", fmt.Errorf("appId must start with 'app_' or be '*', got: '%s'", appId)
+	}
+
+	return fmt.Sprintf("%s:%s", appId, id), nil
 }

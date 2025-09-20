@@ -67,7 +67,7 @@ func (s *UserService) ListOrganizations(
 		defer r.Body.Close()
 	}
 
-	rsp, err := s.listOrganizations(claims.App, &req)
+	rsp, err := s.listOrganizations(claims.AppId, &req)
 	if err != nil {
 		logger.Error(
 			"Failed to list organizations",
@@ -85,7 +85,7 @@ func (s *UserService) listOrganizations(
 	request *user.ListOrganizationsRequest,
 ) (*user.ListOrganizationsResponse, error) {
 	filters := []datastore.Filter{
-		datastore.Equals(datastore.Field("app"), app),
+		datastore.Equals(datastore.Field("appId"), app),
 	}
 
 	if request.Ids != nil {

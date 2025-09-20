@@ -24,32 +24,32 @@ func (p *ContainerService) registerPermits() error {
 	req := openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{
 			{
-				App:        openapi.PtrString("*"),
+				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"model-svc"},
 				Permission: dockertypes.PermissionContainerView,
 			},
 			{
-				App:        openapi.PtrString("*"),
+				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"model-svc", "deploy-svc"},
 				Permission: dockertypes.PermissionLogView,
 			},
 			{
-				App:        openapi.PtrString("*"),
+				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"model-svc", "deploy-svc"},
 				Permission: dockertypes.PermissionContainerCreate,
 			},
 			{
-				App:        openapi.PtrString("*"),
+				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"model-svc", "deploy-svc"},
 				Permission: dockertypes.PermissionContainerCreate,
 			},
 			{
-				App:        openapi.PtrString("*"),
+				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"model-svc", "deploy-svc"},
 				Permission: dockertypes.PermissionContainerStop,
 			},
 			{
-				App:        openapi.PtrString("*"),
+				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
 				Permission: dockertypes.PermissionImageBuild,
 			},
@@ -61,7 +61,7 @@ func (p *ContainerService) registerPermits() error {
 	} {
 		for _, permission := range dockertypes.AdminPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
-				App:        openapi.PtrString("*"),
+				AppHost:    openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})

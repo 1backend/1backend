@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0
+API version: 0.8.1
 Contact: sales@singulatron.com
 */
 
@@ -22,7 +22,7 @@ var _ MappedNullable = &UserSvcEnrollInput{}
 
 // UserSvcEnrollInput struct for UserSvcEnrollInput
 type UserSvcEnrollInput struct {
-	App *string `json:"app,omitempty"`
+	AppHost *string `json:"appHost,omitempty"`
 	// ContactId is the the recipient of the enroll. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
 	ContactId *string `json:"contactId,omitempty"`
 	Id *string `json:"id,omitempty"`
@@ -51,36 +51,36 @@ func NewUserSvcEnrollInputWithDefaults() *UserSvcEnrollInput {
 	return &this
 }
 
-// GetApp returns the App field value if set, zero value otherwise.
-func (o *UserSvcEnrollInput) GetApp() string {
-	if o == nil || IsNil(o.App) {
+// GetAppHost returns the AppHost field value if set, zero value otherwise.
+func (o *UserSvcEnrollInput) GetAppHost() string {
+	if o == nil || IsNil(o.AppHost) {
 		var ret string
 		return ret
 	}
-	return *o.App
+	return *o.AppHost
 }
 
-// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// GetAppHostOk returns a tuple with the AppHost field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcEnrollInput) GetAppOk() (*string, bool) {
-	if o == nil || IsNil(o.App) {
+func (o *UserSvcEnrollInput) GetAppHostOk() (*string, bool) {
+	if o == nil || IsNil(o.AppHost) {
 		return nil, false
 	}
-	return o.App, true
+	return o.AppHost, true
 }
 
-// HasApp returns a boolean if a field has been set.
-func (o *UserSvcEnrollInput) HasApp() bool {
-	if o != nil && !IsNil(o.App) {
+// HasAppHost returns a boolean if a field has been set.
+func (o *UserSvcEnrollInput) HasAppHost() bool {
+	if o != nil && !IsNil(o.AppHost) {
 		return true
 	}
 
 	return false
 }
 
-// SetApp gets a reference to the given string and assigns it to the App field.
-func (o *UserSvcEnrollInput) SetApp(v string) {
-	o.App = &v
+// SetAppHost gets a reference to the given string and assigns it to the AppHost field.
+func (o *UserSvcEnrollInput) SetAppHost(v string) {
+	o.AppHost = &v
 }
 
 // GetContactId returns the ContactId field value if set, zero value otherwise.
@@ -213,8 +213,8 @@ func (o UserSvcEnrollInput) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcEnrollInput) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.App) {
-		toSerialize["app"] = o.App
+	if !IsNil(o.AppHost) {
+		toSerialize["appHost"] = o.AppHost
 	}
 	if !IsNil(o.ContactId) {
 		toSerialize["contactId"] = o.ContactId

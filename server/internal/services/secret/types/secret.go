@@ -24,7 +24,7 @@ const (
 type Secret struct {
 	InternalId string `json:"internalId,omitempty" swagger:"ignore"`
 
-	App string `json:"app" binding:"required"`
+	AppId string `json:"appId" binding:"required"`
 
 	// Envar- or slug-like id of the secret
 	Id string `json:"id" binding:"required"`
@@ -55,7 +55,7 @@ func (s *Secret) GetId() string {
 }
 
 type SecretInput struct {
-	App string `json:"app,omitempty"`
+	AppHost string `json:"appHost,omitempty"`
 
 	// Envar- or slug-like id of the secret
 	Id string `json:"id" binding:"required"`

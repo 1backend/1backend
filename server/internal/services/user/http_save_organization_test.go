@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 
@@ -22,7 +23,7 @@ func TestSaveOrganization(t *testing.T) {
 	defer server.Cleanup(t)
 
 	manyClients, _, err := test.MakeClients(
-		client.NewApiClientFactory(server.Url), 2)
+		client.NewApiClientFactory(server.Url), sdk.DefaultTestAppHost, 2)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]

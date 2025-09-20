@@ -72,7 +72,7 @@ func (cs *SecretService) ListSecrets(
 		return
 	}
 
-	ss, err := cs.getSecrets(*isAuthRsp.App, req, isAdmin, isAuthRsp.User.Slug)
+	ss, err := cs.getSecrets(isAuthRsp.AppId, req, isAdmin, isAuthRsp.User.Slug)
 	if err != nil {
 		logger.Error(
 			"Error listing secrets",
@@ -92,11 +92,11 @@ func (cs *SecretService) ListSecrets(
 }
 
 func (cs *SecretService) getSecrets(
-	app string,
+	appId string,
 	req secret.ListSecretsRequest, isAdmin bool, userSlug string,
 ) ([]*secret.Secret, error) {
 	filters := []datastore.Filter{
-		datastore.Equals([]string{"app"}, app),
+		datastore.Equals([]string{"appId"}, appId),
 	}
 
 	if req.Id != "" {

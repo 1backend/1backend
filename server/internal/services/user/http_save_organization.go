@@ -75,7 +75,7 @@ func (s *UserService) SaveOrganization(
 	defer r.Body.Close()
 
 	org, token, err := s.saveOrganization(
-		claims.App,
+		claims.AppId,
 		usr.Id,
 		&req,
 		claims,
@@ -102,7 +102,7 @@ func (s *UserService) SaveOrganization(
 }
 
 func (s *UserService) saveOrganization(
-	app string,
+	appId string,
 	userId string,
 	request *user.SaveOrganizationRequest,
 	claims *auth.Claims,
@@ -115,7 +115,7 @@ func (s *UserService) saveOrganization(
 	}
 
 	orgI, exists, err := s.organizationStore.Query(
-		datastore.Equals(datastore.Field("app"), app),
+		datastore.Equals(datastore.Field("appId"), appId),
 		datastore.Equals(datastore.Field("slug"), request.Slug),
 	).FindOne()
 	if err != nil {
@@ -148,7 +148,7 @@ func (s *UserService) saveOrganization(
 		final.UpdatedAt = now
 	} else {
 		final = &user.Organization{
-			App:       app,
+			AppId:     appId,
 			Name:      request.Name,
 			Slug:      request.Slug,
 			CreatedAt: now,
@@ -162,12 +162,16 @@ func (s *UserService) saveOrganization(
 		}
 
 		id := sdk.Id("memb")
+		internalId, err := sdk.InternalId(appId, id)
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "failed to create internal id")
+		}
 
 		// When creating a new org, the user switches to that org as the active one
 		link := &user.Membership{
-			InternalId:     sdk.InternalId(id, app),
+			InternalId:     internalId,
 			Id:             id,
-			App:            app,
+			AppId:          appId,
 			UserId:         userId,
 			OrganizationId: final.Id,
 			// @todo null out the other active orgs for correctness
@@ -186,15 +190,26 @@ func (s *UserService) saveOrganization(
 		return nil, nil, err
 	}
 
+	currentAppI, found, err := s.appStore.Query(
+		datastore.Equals(datastore.Field("id"), claims.AppId),
+	).FindOne()
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "error finding current app by id")
+	}
+	if !found {
+		return nil, nil, errors.New("current app not found by id")
+	}
+	currentApp := currentAppI.(*user.App)
+
 	_, err = s.saveEnrolls(
-		claims.App,
+		claims.AppId,
 		userId,
 		&user.SaveEnrollsRequest{
 			Enrolls: []user.EnrollInput{
 				{
-					App:    app,
-					UserId: userId,
-					Role:   fmt.Sprintf("user-svc:org:{%v}:admin", final.Id),
+					AppHost: currentApp.Host,
+					UserId:  userId,
+					Role:    fmt.Sprintf("user-svc:org:{%v}:admin", final.Id),
 				},
 			},
 		},
@@ -203,7 +218,7 @@ func (s *UserService) saveOrganization(
 		return nil, nil, err
 	}
 
-	err = s.inactivateTokens(claims.App, userId)
+	err = s.inactivateTokens(claims.AppId, userId)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "error inactivating tokens")
 	}
@@ -220,7 +235,7 @@ func (s *UserService) saveOrganization(
 	u := userI.(*user.User)
 
 	token, err := s.generateAuthToken(
-		app,
+		appId,
 		u,
 		claims.Device,
 	)
@@ -236,11 +251,11 @@ func (s *UserService) saveOrganization(
 	return final, token, nil
 }
 
-func (s *UserService) inactivateTokens(app string, userId string) error {
+func (s *UserService) inactivateTokens(appId string, userId string) error {
 	return s.tokenStore.Query(
 		datastore.Equals(
-			datastore.Fields("app"),
-			app,
+			datastore.Fields("appId"),
+			appId,
 		),
 		datastore.Equals(
 			datastore.Fields("userId"),
@@ -250,11 +265,11 @@ func (s *UserService) inactivateTokens(app string, userId string) error {
 	})
 }
 
-func (s *UserService) inactivateToken(app, tokenId string) error {
+func (s *UserService) inactivateToken(appId, tokenId string) error {
 	return s.tokenStore.Query(
 		datastore.Equals(
-			datastore.Fields("app"),
-			app,
+			datastore.Fields("appId"),
+			appId,
 		),
 		datastore.Equals(
 			datastore.Fields("id"),

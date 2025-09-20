@@ -13,12 +13,12 @@ import (
 
 // Enroll (enrollment) is a mechanism to give registered or not yet registered roles.
 type Enroll struct {
-	InternalId string `json:"internalId,omitempty" swagger:"ignore"`
+	InternalId string `json:"internalId" swagger:"ignore"`
 
 	// App of the enroll.
 	// Use `*` to match all apps, such as when bootstrapping
 	// in services.
-	App string `json:"app" example:"unnamed,omitempty"`
+	AppId string `json:"appId" binding:"required"`
 
 	Id string `json:"id" example:"inv_fIYPbMHIcI" binding:"required"`
 
@@ -54,8 +54,8 @@ func (i Enroll) GetId() string {
 
 // EnrollInput is the settable subset of Enroll, excluding system-managed fields.
 type EnrollInput struct {
-	Id  string `json:"id,omitempty" example:"inv_fIYPbMHIcI"`
-	App string `json:"app" example:"unnamed,omitempty"`
+	Id      string `json:"id" example:"inv_fIYPbMHIcI"`
+	AppHost string `json:"appHost,omitempty"`
 
 	// ContactId is the the recipient of the enroll.
 	// If the user is already registered, the role is assigned immediately;

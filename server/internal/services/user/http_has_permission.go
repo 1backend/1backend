@@ -63,11 +63,33 @@ func (s *UserService) HasPermission(
 		return
 	}
 
+	appI, found, err := s.appStore.Query(
+		datastore.Equals(datastore.Field("id"), claims.AppId),
+	).FindOne()
+	if err != nil {
+		logger.Error(
+			"Failed to query app",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
+		return
+	}
+	if !found {
+		logger.Error(
+			"App from token not found",
+			slog.String("appId", claims.AppId),
+			slog.String("userId", claims.UserId),
+		)
+		endpoint.InternalServerError(w)
+		return
+	}
+
 	rsp := &user.HasPermissionResponse{
 		Authorized: hasPermission,
-		App:        claims.App,
+		AppId:      claims.AppId,
 		Until:      claims.ExpiresAt.Time,
 		User:       *usr,
+		App:        *appI.(*user.App),
 	}
 
 	endpoint.WriteJSON(w, http.StatusOK, rsp)
@@ -88,8 +110,8 @@ func (s *UserService) hasPermission(
 
 	permitIs, err := s.permitStore.Query(
 		datastore.Or(
-			datastore.Equals(datastore.Field("app"), claims.App),
-			datastore.Equals(datastore.Field("app"), "*"),
+			datastore.Equals(datastore.Field("appId"), claims.AppId),
+			datastore.Equals(datastore.Field("appId"), "*"),
 		),
 		datastore.Equals([]string{"permission"}, permission),
 		// TODO: Optimize this query
@@ -107,7 +129,8 @@ func (s *UserService) hasPermission(
 
 	for _, permitI := range permitIs {
 		permit := permitI.(*user.Permit)
-		if permit.App != claims.App && permit.App != "*" {
+
+		if permit.AppId != claims.AppId && permit.AppId != "*" {
 			continue
 		}
 
@@ -129,7 +152,7 @@ func (s *UserService) hasPermission(
 	return usr, false, claims, nil
 }
 
-func (s *UserService) getRolesByUserId(app, userId string) ([]string, error) {
+func (s *UserService) getRolesByUserId(appId, userId string) ([]string, error) {
 	contactIs, err := s.contactStore.Query(
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Find()
@@ -155,8 +178,8 @@ func (s *UserService) getRolesByUserId(app, userId string) ([]string, error) {
 
 	enrolls, err := s.enrollStore.Query(
 		datastore.Or(
-			datastore.Equals(datastore.Field("app"), app),
-			datastore.Equals(datastore.Field("app"), "*"),
+			datastore.Equals(datastore.Field("appId"), appId),
+			datastore.Equals(datastore.Field("appId"), "*"),
 		),
 		datastore.Or(
 			datastore.Equals(datastore.Field("userId"), userId),

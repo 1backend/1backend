@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0
+API version: 0.8.1
 Contact: sales@singulatron.com
 */
 
@@ -23,7 +23,7 @@ var _ MappedNullable = &UserSvcPermitInput{}
 // UserSvcPermitInput struct for UserSvcPermitInput
 type UserSvcPermitInput struct {
 	// App of the permit. Use `*` to match all apps, such as when bootstrapping in services.
-	App *string `json:"app,omitempty"`
+	AppHost *string `json:"appHost,omitempty"`
 	Id *string `json:"id,omitempty"`
 	Permission string `json:"permission"`
 	// Role IDs that have been permited the specified permission.  Originally, permits were designed for slugs to facilitate service-to-service calls. Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.
@@ -52,36 +52,36 @@ func NewUserSvcPermitInputWithDefaults() *UserSvcPermitInput {
 	return &this
 }
 
-// GetApp returns the App field value if set, zero value otherwise.
-func (o *UserSvcPermitInput) GetApp() string {
-	if o == nil || IsNil(o.App) {
+// GetAppHost returns the AppHost field value if set, zero value otherwise.
+func (o *UserSvcPermitInput) GetAppHost() string {
+	if o == nil || IsNil(o.AppHost) {
 		var ret string
 		return ret
 	}
-	return *o.App
+	return *o.AppHost
 }
 
-// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// GetAppHostOk returns a tuple with the AppHost field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcPermitInput) GetAppOk() (*string, bool) {
-	if o == nil || IsNil(o.App) {
+func (o *UserSvcPermitInput) GetAppHostOk() (*string, bool) {
+	if o == nil || IsNil(o.AppHost) {
 		return nil, false
 	}
-	return o.App, true
+	return o.AppHost, true
 }
 
-// HasApp returns a boolean if a field has been set.
-func (o *UserSvcPermitInput) HasApp() bool {
-	if o != nil && !IsNil(o.App) {
+// HasAppHost returns a boolean if a field has been set.
+func (o *UserSvcPermitInput) HasAppHost() bool {
+	if o != nil && !IsNil(o.AppHost) {
 		return true
 	}
 
 	return false
 }
 
-// SetApp gets a reference to the given string and assigns it to the App field.
-func (o *UserSvcPermitInput) SetApp(v string) {
-	o.App = &v
+// SetAppHost gets a reference to the given string and assigns it to the AppHost field.
+func (o *UserSvcPermitInput) SetAppHost(v string) {
+	o.AppHost = &v
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
@@ -214,8 +214,8 @@ func (o UserSvcPermitInput) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcPermitInput) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.App) {
-		toSerialize["app"] = o.App
+	if !IsNil(o.AppHost) {
+		toSerialize["appHost"] = o.AppHost
 	}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id

@@ -58,7 +58,7 @@ func privateKeyFromString(privateKeyPem string) (*rsa.PrivateKey, error) {
 }
 
 func (s *UserService) generateJWT(
-	app string,
+	appId string,
 	user *usertypes.User,
 	roles []string,
 	activeOrganizationId string,
@@ -68,7 +68,7 @@ func (s *UserService) generateJWT(
 	now := time.Now()
 
 	claims := &auth.Claims{
-		App:                  app,
+		AppId:                appId,
 		UserId:               user.Id,
 		Slug:                 user.Slug,
 		Roles:                roles,

@@ -9,13 +9,14 @@ package user_svc
 
 import "time"
 
-const DefaultApp = "unnamed"
+const DefaultAppHost = "unnamed"
 
 type HasPermissionResponse struct {
 	Authorized bool      `json:"authorized" binding:"required"`
-	App        string    `json:"app,omitempty"`
+	AppId      string    `json:"appId" binding:"required"`
 	Until      time.Time `json:"until" binding:"required"`
 	User       User      `json:"user" binding:"required"`
+	App        App       `json:"app" binding:"required"`
 }
 
 type ListPermissionsRequest struct {
@@ -50,6 +51,8 @@ var (
 	PermissionEnrollView = "user-svc:enroll:view"
 
 	PermissionTokenRevoke = "user-svc:token:revoke"
+
+	PermissionAppMultiView = "user-svc:app:multi-view"
 )
 
 var UserPermissions = []string{
@@ -84,4 +87,5 @@ var AdminPermissions = []string{
 	PermissionUserPasswordChange,
 	PermissionUserPasswordReset,
 	PermissionTokenRevoke,
+	PermissionAppMultiView,
 }

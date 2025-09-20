@@ -29,7 +29,7 @@ func (p *ChatService) registerPermits() error {
 	} {
 		for _, permission := range append(chattypes.ThreadPermissions, chattypes.MessagePermissions...) {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
-				App:        openapi.PtrString("*"),
+				AppHost:    openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})

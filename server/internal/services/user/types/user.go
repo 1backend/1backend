@@ -112,7 +112,7 @@ type ReadSelfResponse struct {
 }
 
 type RegisterRequest struct {
-	App string `json:"app,omitempty" example:"unnamed"`
+	AppHost string `json:"appHost,omitempty" example:"shoes.com"`
 
 	Name string `json:"name,omitempty"`
 
@@ -134,7 +134,7 @@ type RegisterResponse struct {
 }
 
 type LoginRequest struct {
-	App      string `json:"app,omitempty" example:"unnamed"`
+	AppHost  string `json:"appHost,omitempty" example:"shoes.com"`
 	Slug     string `json:"slug,omitempty"`
 	Contact  string `json:"contact,omitempty"`
 	Password string `json:"password"`
@@ -221,7 +221,7 @@ type ListUsersResponse struct {
 }
 
 type CreateUserRequest struct {
-	App      string     `json:"app,omitempty" example:"unnamed"`
+	AppHost  string     `json:"appHost,omitempty" example:"shoes.com"`
 	User     *UserInput `json:"user,omitempty"`
 	Contacts []Contact  `json:"contacts,omitempty"`
 	Password string     `json:"password,omitempty"`

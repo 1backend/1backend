@@ -24,7 +24,7 @@ func (p *SecretService) registerPermits() error {
 	req := openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{
 			{
-				App:        openapi.PtrString("*"),
+				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"model-svc"},
 				Permission: secrettypes.PermissionSecretSave,
 			},
@@ -41,7 +41,7 @@ func (p *SecretService) registerPermits() error {
 	} {
 		for _, permission := range secrettypes.UserPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
-				App:        openapi.PtrString("*"),
+				AppHost:    openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})
@@ -53,7 +53,7 @@ func (p *SecretService) registerPermits() error {
 	} {
 		for _, permission := range secrettypes.AdminPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
-				App:        openapi.PtrString("*"),
+				AppHost:    openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})

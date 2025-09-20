@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 )
@@ -37,12 +38,13 @@ func TestCreateUser(t *testing.T) {
 		require.Error(t, err)
 	})
 
-	adminClient, _, err := test.AdminClient(clientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	t.Run("admins can create users", func(t *testing.T) {
 		_, httpRsp, err := adminClient.UserSvcAPI.CreateUser(ctx).Body(
 			openapi.UserSvcCreateUserRequest{
+				AppHost: openapi.PtrString(sdk.DefaultTestAppHost),
 				User: &openapi.UserSvcUserInput{
 					Slug: "test-slug-1",
 					Name: openapi.PtrString("Test Name"),
@@ -78,7 +80,7 @@ func TestCreateUserAutoRefreshOff(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	adminClient, _, err := test.AdminClient(clientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	ctx := context.Background()
@@ -112,7 +114,7 @@ func TestCreateUserAutoRefreshOn(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	adminClient, _, err := test.AdminClient(clientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	ctx := context.Background()
@@ -122,6 +124,7 @@ func TestCreateUserAutoRefreshOn(t *testing.T) {
 	t.Run("admins can create users", func(t *testing.T) {
 		_, httpRsp, err := adminClient.UserSvcAPI.CreateUser(ctx).Body(
 			openapi.UserSvcCreateUserRequest{
+				AppHost: openapi.PtrString(sdk.DefaultTestAppHost),
 				User: &openapi.UserSvcUserInput{
 					Slug: "test-slug-1",
 					Name: openapi.PtrString("Test Name"),

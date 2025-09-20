@@ -77,7 +77,7 @@ func (s *UserService) SaveMembership(
 	}
 	defer r.Body.Close()
 
-	err = s.saveMembership(claims.App, usr.Id, userId, organizationId)
+	err = s.saveMembership(claims.AppId, usr.Id, userId, organizationId)
 	if err != nil {
 		logger.Error(
 			"Failed to save membership",
@@ -91,18 +91,18 @@ func (s *UserService) SaveMembership(
 }
 
 func (s *UserService) saveMembership(
-	app string,
+	appId string,
 	callerId,
 	userId,
 	organizationId string,
 ) error {
-	roles, err := s.getRolesByUserId(app, callerId)
+	roles, err := s.getRolesByUserId(appId, callerId)
 	if err != nil {
 		return err
 	}
 
 	orgI, found, err := s.organizationStore.Query(
-		datastore.Equals(datastore.Field("app"), app),
+		datastore.Equals(datastore.Field("appId"), appId),
 		datastore.Id(organizationId),
 	).
 		FindOne()
@@ -131,7 +131,7 @@ func (s *UserService) saveMembership(
 	}
 
 	err = s.assignRole(
-		app,
+		appId,
 		userId,
 		newRole,
 	)
@@ -140,12 +140,16 @@ func (s *UserService) saveMembership(
 	}
 
 	id := sdk.Id("memb")
+	internalId, err := sdk.InternalId(appId, id)
+	if err != nil {
+		return err
+	}
 
 	// When creating a new org, the user switches to that org as the active one
 	link := &user.Membership{
-		InternalId:     sdk.InternalId(id, app),
+		InternalId:     internalId,
 		Id:             id,
-		App:            app,
+		AppId:          appId,
 		UserId:         userId,
 		OrganizationId: org.Id,
 		// @todo null out the other active orgs for correctness
@@ -157,7 +161,7 @@ func (s *UserService) saveMembership(
 		return err
 	}
 
-	return s.inactivateTokens(app, userId)
+	return s.inactivateTokens(appId, userId)
 }
 
 func contains(ss []string, s string) bool {

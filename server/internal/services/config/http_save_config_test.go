@@ -12,6 +12,7 @@ import (
 	"testing"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/stretchr/testify/require"
@@ -28,7 +29,7 @@ func TestConfigService(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, _, err := test.MakeClients(clientFactory, 2)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 2)
 	require.NoError(t, err)
 	client1 := manyClients[0]
 	client2 := manyClients[1]
@@ -190,8 +191,8 @@ func TestConfigService(t *testing.T) {
 
 		_, _, err = adminClient.ConfigSvcAPI.SaveConfig(ctx).
 			Body(openapi.ConfigSvcSaveConfigRequest{
-				App: openapi.PtrString("otherApp"),
-				Id:  openapi.PtrString("anotherSvc"),
+				AppHost: openapi.PtrString("otherApp"),
+				Id:      openapi.PtrString("anotherSvc"),
 				Data: map[string]any{
 					"field1": "adminValue3",
 					"field2": "adminValue4",
@@ -203,8 +204,8 @@ func TestConfigService(t *testing.T) {
 
 		rsp, _, err = adminClient.ConfigSvcAPI.ListConfigs(ctx).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				App: openapi.PtrString("otherApp"),
-				Ids: []string{"anotherSvc"},
+				AppHost: openapi.PtrString("otherApp"),
+				Ids:     []string{"anotherSvc"},
 			}).
 			Execute()
 
@@ -219,7 +220,7 @@ func TestConfigService(t *testing.T) {
 	t.Run("users cannot specify other app", func(t *testing.T) {
 		_, _, err := client1.ConfigSvcAPI.SaveConfig(ctx).
 			Body(openapi.ConfigSvcSaveConfigRequest{
-				App: openapi.PtrString("otherApp"),
+				AppHost: openapi.PtrString("otherApp"),
 				Data: map[string]any{
 					"otherSvc": map[string]any{
 						"field1": "userValue1",

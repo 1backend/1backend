@@ -9,11 +9,12 @@ package userservice
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"time"
+
+	"github.com/pkg/errors"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
@@ -96,7 +97,7 @@ func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	enrolls, err := s.saveEnrolls(claims.App, usr.Id, &req)
+	enrolls, err := s.saveEnrolls(claims.AppId, usr.Id, &req)
 	if err != nil {
 		switch {
 		case errors.Is(err, ErrEnrollConflict):
@@ -119,7 +120,7 @@ func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) saveEnrolls(
-	app string,
+	appId string,
 	callerUserId string,
 	req *user.SaveEnrollsRequest,
 ) ([]user.Enroll, error) {
@@ -200,11 +201,56 @@ func (s *UserService) saveEnrolls(
 		existingUser[usr.GetId()] = true
 	}
 
+	currentAppI, found, err := s.appStore.Query(
+		datastore.Equals(
+			datastore.Field("id"),
+			appId,
+		),
+	).FindOne()
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, fmt.Errorf("current app id '%s' not found", appId)
+	}
+	currentApp := currentAppI.(*user.App)
+
+	appsByHost := map[string]*user.App{}
+
+	for _, enroll := range req.Enrolls {
+		if enroll.AppHost != "" {
+			app, err := s.getOrCreateApp(enroll.AppHost)
+			if err != nil {
+				return nil, errors.Wrap(err, "error getting or creating app")
+			}
+			appsByHost[app.Host] = app
+		} else {
+			appsByHost[currentApp.Host] = currentApp
+		}
+	}
+
 	enrolls := []user.Enroll{}
 	for _, enroll := range req.Enrolls {
-		thisApp := enroll.App
-		if thisApp == "" {
-			thisApp = app
+		var thisApp *user.App
+		if enroll.AppHost == "" {
+			enroll.AppHost = currentApp.Host
+			thisApp = currentApp
+		} else if enroll.AppHost == "*" {
+			thisApp = &user.App{
+				Id:   "*",
+				Host: "*",
+			}
+		} else {
+			var ok bool
+			thisApp, ok = appsByHost[enroll.AppHost]
+			if !ok {
+				return nil, fmt.Errorf("app with host '%s' not found", enroll.AppHost)
+			}
+		}
+		thisAppId := thisApp.Id
+
+		if thisAppId == "" {
+			thisAppId = appId
 		}
 
 		existingEnroll, existing := existingEnrolls[enroll.Id]
@@ -212,15 +258,15 @@ func (s *UserService) saveEnrolls(
 		if enroll.Id == "" {
 			enroll.Id = sdk.Id("enr")
 		} else if existing {
-			if existingEnroll.App != thisApp {
+			if existingEnroll.AppId != thisAppId {
 				return nil, fmt.Errorf("enroll id %s already bound to app %v, cannot bind to %v",
-					enroll.Id, existingEnroll.App, thisApp)
+					enroll.Id, existingEnroll.AppId, thisAppId)
 			}
 		}
 
 		// Already registered users get applied the role immediately
 		if callerUserId, ok := existingContact[enroll.ContactId]; ok {
-			err = s.assignRole(thisApp, callerUserId, enroll.Role)
+			err = s.assignRole(thisAppId, callerUserId, enroll.Role)
 			if err != nil {
 				return nil, err
 			}
@@ -228,7 +274,7 @@ func (s *UserService) saveEnrolls(
 		}
 
 		if _, ok := existingUser[enroll.UserId]; ok {
-			err = s.assignRole(thisApp, enroll.UserId, enroll.Role)
+			err = s.assignRole(thisAppId, enroll.UserId, enroll.Role)
 			if err != nil {
 				return nil, err
 			}
@@ -239,10 +285,15 @@ func (s *UserService) saveEnrolls(
 			return nil, errors.New("enroll missing required fields")
 		}
 
+		internalId, err := sdk.InternalId(thisAppId, enroll.Id)
+		if err != nil {
+			return nil, err
+		}
+
 		i := user.Enroll{
-			InternalId: sdk.InternalId(enroll.Id, thisApp),
+			InternalId: internalId,
 			Id:         enroll.Id,
-			App:        thisApp,
+			AppId:      thisAppId,
 			ContactId:  enroll.ContactId,
 			Role:       enroll.Role,
 			CreatedBy:  callerUserId,

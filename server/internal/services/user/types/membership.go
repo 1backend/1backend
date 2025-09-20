@@ -8,9 +8,9 @@ import "time"
 // corresponding Enrollment, enabling their dynamic role assignment
 // (e.g. `user-svc:org:{org_123}:user`).
 type Membership struct {
-	InternalId string `json:"internalId,omitempty" swagger:"ignore"`
+	InternalId string `json:"internalId" swagger:"ignore"`
 
-	App string `json:"app,omitempty" example:"unnamed"`
+	AppId string `json:"appId,omitempty"`
 
 	Id string `json:"id,omitempty"`
 

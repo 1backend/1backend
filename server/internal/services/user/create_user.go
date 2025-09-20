@@ -18,7 +18,7 @@ import (
 )
 
 func (s *UserService) createUser(
-	app string,
+	appId string,
 	userInput *usertypes.UserInput,
 	contacts []usertypes.Contact,
 	password string,
@@ -88,7 +88,7 @@ func (s *UserService) createUser(
 	}
 
 	for _, role := range roles {
-		err = s.assignRole(app, user.Id, role)
+		err = s.assignRole(appId, user.Id, role)
 		if err != nil {
 			return err
 		}

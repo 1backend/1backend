@@ -53,7 +53,7 @@ func (s *UserService) ExchangeToken(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	if request.NewApp == "" {
+	if request.NewAppHost == "" {
 		endpoint.WriteString(w, http.StatusBadRequest, "New app is required")
 	}
 
@@ -109,5 +109,10 @@ func (s *UserService) exchangeToken(
 		request.NewDevice = claims.Device
 	}
 
-	return s.issueToken(request.NewApp, usr, request.NewDevice)
+	app, err := s.getOrCreateApp(request.NewAppHost)
+	if err != nil {
+		return nil, errors.Wrap(err, "error getting or creating app")
+	}
+
+	return s.issueToken(app.GetId(), usr, request.NewDevice)
 }
