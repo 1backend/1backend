@@ -194,10 +194,10 @@ func (s *UserService) saveOrganization(
 		datastore.Equals(datastore.Field("id"), claims.AppId),
 	).FindOne()
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "error finding current app by id")
+		return nil, nil, errors.Errorf("error finding current app by id '%s': %v", claims.AppId, err)
 	}
 	if !found {
-		return nil, nil, errors.New("current app not found by id")
+		return nil, nil, fmt.Errorf("current app not found by id '%s'", claims.AppId)
 	}
 	currentApp := currentAppI.(*user.App)
 

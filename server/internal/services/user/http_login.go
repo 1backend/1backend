@@ -9,6 +9,7 @@ package userservice
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -290,10 +291,10 @@ func (s *UserService) generateAuthToken(
 		datastore.Equals(datastore.Field("id"), appId),
 	).FindOne()
 	if err != nil {
-		return nil, errors.Wrap(err, "error querying app")
+		return nil, fmt.Errorf("error finding app by id '%s': %v", appId, err)
 	}
 	if !found {
-		return nil, errors.New("app not found")
+		return nil, fmt.Errorf("app not found by id '%s'", appId)
 	}
 	app := appI.(*user.App)
 
