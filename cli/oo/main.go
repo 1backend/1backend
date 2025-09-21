@@ -5,6 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/1backend/1backend/cli/oo/commands/app"
 	call "github.com/1backend/1backend/cli/oo/commands/call"
 	"github.com/1backend/1backend/cli/oo/commands/cert"
 	definition "github.com/1backend/1backend/cli/oo/commands/definition"
@@ -32,6 +33,7 @@ func main() {
 		SilenceUsage: true,
 	}
 
+	app.AddAppCommands(rootCmd)
 	user.AddUserCommands(rootCmd)
 	env.AddEnvCommands(rootCmd)
 	definition.AddDefinitionCommands(rootCmd)
