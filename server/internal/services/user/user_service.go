@@ -438,8 +438,13 @@ func (s *UserService) bootstrap() error {
 	} else {
 		cred := credentials[0].(*auth.Credential)
 
+		app, err := s.getOrCreateApp(usertypes.DefaultAppHost)
+		if err != nil {
+			return errors.Wrap(err, "failed to get or create app")
+		}
+
 		tok, err := s.login(
-			usertypes.DefaultAppHost,
+			app.Id,
 			&usertypes.LoginRequest{
 				Slug:     cred.Slug,
 				Password: cred.Password,

@@ -53,10 +53,8 @@ func RegisterServiceAccount(
 			return nil, errors.Wrap(err, "error refreshing credential store")
 		}
 
-		appHost := sdk.DefaultAppHost
-
 		rsp, _, err := userService.Register(ctx).Body(onebackendapi.UserSvcRegisterRequest{
-			AppHost:  appHost,
+			AppHost:  sdk.DefaultAppHost,
 			Slug:     serviceSlug,
 			Name:     onebackendapi.PtrString(serviceName),
 			Password: onebackendapi.PtrString(pw),
@@ -71,6 +69,7 @@ func RegisterServiceAccount(
 	cred := res[0].(*auth.Credential)
 
 	loginRsp, loginHttpRsp, err := userService.Login(ctx).Body(onebackendapi.UserSvcLoginRequest{
+		AppHost:  sdk.DefaultAppHost,
 		Slug:     onebackendapi.PtrString(serviceSlug),
 		Password: onebackendapi.PtrString(cred.Password),
 	}).Execute()
@@ -80,6 +79,7 @@ func RegisterServiceAccount(
 			// We'll try to register as maybe registration failed or did not
 			// happen after saving the credential.
 			rsp, _, err := userService.Register(ctx).Body(onebackendapi.UserSvcRegisterRequest{
+				AppHost:  sdk.DefaultAppHost,
 				Slug:     serviceSlug,
 				Name:     onebackendapi.PtrString(serviceName),
 				Password: onebackendapi.PtrString(cred.Password),
