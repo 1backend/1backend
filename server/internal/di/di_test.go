@@ -82,7 +82,7 @@ func TestStart(t *testing.T) {
 		time.Sleep(100 * time.Millisecond)
 		c++
 
-		adminClient, _, err := test.AdminClient(universe1.Options.ClientFactory)
+		adminClient, _, err := test.AdminClient(universe1.Options.ClientFactory, sdk.DefaultTestAppHost)
 		require.NoError(t, err)
 
 		rsp, _, err := adminClient.RegistrySvcAPI.ListNodes(context.Background()).
