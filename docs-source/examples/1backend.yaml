@@ -215,6 +215,8 @@ definitions:
             "user2": ["settings.language"]
           }
         type: object
+    required:
+    - appHost
     type: object
   config_svc.ListConfigsResponse:
     properties:
@@ -2734,7 +2736,7 @@ definitions:
     type: object
   secret_svc.Secret:
     properties:
-      app:
+      appId:
         type: string
       canChangeDeleters:
         description: Slugs of services/users who can change the deleters list
@@ -2791,13 +2793,13 @@ definitions:
           type: string
         type: array
     required:
-    - app
+    - appId
     - id
     - value
     type: object
   secret_svc.SecretInput:
     properties:
-      app:
+      appHost:
         type: string
       canChangeDeleters:
         description: Slugs of services/users who can change the deleters list
@@ -3410,6 +3412,8 @@ definitions:
         type: string
       slug:
         type: string
+    required:
+    - appHost
     type: object
   user_svc.LoginResponse:
     properties:
@@ -3605,6 +3609,7 @@ definitions:
           If your project has no use for a slug, just derive it from the email or similar.
         type: string
     required:
+    - appHost
     - slug
     type: object
   user_svc.RegisterResponse:
@@ -4214,6 +4219,7 @@ paths:
       - description: List Configs Request
         in: body
         name: body
+        required: true
         schema:
           $ref: '#/definitions/config_svc.ListConfigsRequest'
       produces:

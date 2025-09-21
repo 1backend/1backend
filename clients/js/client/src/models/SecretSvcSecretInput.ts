@@ -32,7 +32,7 @@ export interface SecretSvcSecretInput {
      * @type {string}
      * @memberof SecretSvcSecretInput
      */
-    app?: string;
+    appHost?: string;
     /**
      * Slugs of services/users who can change the deleters list
      * @type {Array<string>}
@@ -125,7 +125,7 @@ export function SecretSvcSecretInputFromJSONTyped(json: any, ignoreDiscriminator
     }
     return {
         
-        'app': json['app'] == null ? undefined : json['app'],
+        'appHost': json['appHost'] == null ? undefined : json['appHost'],
         'canChangeDeleters': json['canChangeDeleters'] == null ? undefined : json['canChangeDeleters'],
         'canChangeReaders': json['canChangeReaders'] == null ? undefined : json['canChangeReaders'],
         'canChangeWriters': json['canChangeWriters'] == null ? undefined : json['canChangeWriters'],
@@ -151,7 +151,7 @@ export function SecretSvcSecretInputToJSONTyped(value?: SecretSvcSecretInput | n
 
     return {
         
-        'app': value['app'],
+        'appHost': value['appHost'],
         'canChangeDeleters': value['canChangeDeleters'],
         'canChangeReaders': value['canChangeReaders'],
         'canChangeWriters': value['canChangeWriters'],

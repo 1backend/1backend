@@ -20,7 +20,7 @@ export interface UserSvcLoginRequest {
      * @type {string}
      * @memberof UserSvcLoginRequest
      */
-    appHost?: string;
+    appHost: string;
     /**
      *
      * @type {string}

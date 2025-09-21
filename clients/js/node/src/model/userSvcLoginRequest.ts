@@ -13,7 +13,7 @@
 import { RequestFile } from './models';
 
 export class UserSvcLoginRequest {
-    'appHost'?: string;
+    'appHost': string;
     'contact'?: string;
     'device'?: string;
     'password'?: string;

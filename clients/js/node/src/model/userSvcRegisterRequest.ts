@@ -14,7 +14,7 @@ import { RequestFile } from './models';
 import { UserSvcContactInput } from './userSvcContactInput';
 
 export class UserSvcRegisterRequest {
-    'appHost'?: string;
+    'appHost': string;
     'contact'?: UserSvcContactInput;
     'device'?: string;
     'name'?: string;

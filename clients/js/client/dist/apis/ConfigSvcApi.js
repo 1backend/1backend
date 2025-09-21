@@ -32,6 +32,9 @@ export class ConfigSvcApi extends runtime.BaseAPI {
      */
     listConfigsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['body'] == null) {
+                throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling listConfigs().');
+            }
             const queryParameters = {};
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
@@ -50,8 +53,8 @@ export class ConfigSvcApi extends runtime.BaseAPI {
      * Retrieves the current configurations for a specified app. Since any user can save configurations, it is strongly advised that you supply a list of owners to filter on. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
      * List Configs
      */
-    listConfigs() {
-        return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
+    listConfigs(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.listConfigsRaw(requestParameters, initOverrides);
             return yield response.value();
         });

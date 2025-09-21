@@ -14,7 +14,7 @@ import { RequestFile } from './models';
 import { SecretSvcChecksumAlgorithm } from './secretSvcChecksumAlgorithm';
 
 export class SecretSvcSecretInput {
-    'app'?: string;
+    'appHost'?: string;
     /**
     * Slugs of services/users who can change the deleters list
     */
@@ -64,8 +64,8 @@ export class SecretSvcSecretInput {
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "app",
-            "baseName": "app",
+            "name": "appHost",
+            "baseName": "appHost",
             "type": "string"
         },
         {

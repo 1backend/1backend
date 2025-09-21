@@ -17,8 +17,8 @@ export class SecretSvcSecret {
 SecretSvcSecret.discriminator = undefined;
 SecretSvcSecret.attributeTypeMap = [
     {
-        "name": "app",
-        "baseName": "app",
+        "name": "appId",
+        "baseName": "appId",
         "type": "string"
     },
     {

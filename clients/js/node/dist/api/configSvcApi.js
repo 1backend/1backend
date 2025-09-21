@@ -94,6 +94,10 @@ export class ConfigSvcApi {
                 localVarHeaderParams.Accept = produces.join(',');
             }
             let localVarFormParams = {};
+            // verify required parameter 'body' is not null or undefined
+            if (body === null || body === undefined) {
+                throw new Error('Required parameter body was null or undefined when calling listConfigs.');
+            }
             Object.assign(localVarHeaderParams, options.headers);
             let localVarUseFormData = false;
             let localVarRequestOptions = {

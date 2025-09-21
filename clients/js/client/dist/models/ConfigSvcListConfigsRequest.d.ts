@@ -20,7 +20,7 @@ export interface ConfigSvcListConfigsRequest {
      * @type {string}
      * @memberof ConfigSvcListConfigsRequest
      */
-    appHost?: string;
+    appHost: string;
     /**
      * Ids are camelCased slugs of the config owners.
      * Specifying only the ids will mean all of the config will be returned

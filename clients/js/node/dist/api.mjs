@@ -6029,8 +6029,8 @@ class SecretSvcSecret {
 SecretSvcSecret.discriminator = undefined;
 SecretSvcSecret.attributeTypeMap = [
     {
-        "name": "app",
-        "baseName": "app",
+        "name": "appId",
+        "baseName": "appId",
         "type": "string"
     },
     {
@@ -6114,8 +6114,8 @@ class SecretSvcSecretInput {
 SecretSvcSecretInput.discriminator = undefined;
 SecretSvcSecretInput.attributeTypeMap = [
     {
-        "name": "app",
-        "baseName": "app",
+        "name": "appHost",
+        "baseName": "appHost",
         "type": "string"
     },
     {
@@ -9507,6 +9507,10 @@ class ConfigSvcApi {
                 localVarHeaderParams.Accept = produces.join(',');
             }
             let localVarFormParams = {};
+            // verify required parameter 'body' is not null or undefined
+            if (body === null || body === undefined) {
+                throw new Error('Required parameter body was null or undefined when calling listConfigs.');
+            }
             Object.assign(localVarHeaderParams, options.headers);
             let localVarRequestOptions = {
                 method: 'POST',

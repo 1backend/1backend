@@ -968,6 +968,8 @@ function ConfigSvcConfigToJSONTyped(value, ignoreDiscriminator = false) {
  * Check if a given object implements the ConfigSvcListConfigsRequest interface.
  */
 function instanceOfConfigSvcListConfigsRequest(value) {
+    if (!('appHost' in value) || value['appHost'] === undefined)
+        return false;
     return true;
 }
 function ConfigSvcListConfigsRequestFromJSON(json) {
@@ -978,7 +980,7 @@ function ConfigSvcListConfigsRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'appHost': json['appHost'] == null ? undefined : json['appHost'],
+        'appHost': json['appHost'],
         'ids': json['ids'] == null ? undefined : json['ids'],
         'selector': json['selector'] == null ? undefined : json['selector'],
     };
@@ -8653,7 +8655,7 @@ function SecretSvcListSecretsRequestToJSONTyped(value, ignoreDiscriminator = fal
  * Check if a given object implements the SecretSvcSecret interface.
  */
 function instanceOfSecretSvcSecret(value) {
-    if (!('app' in value) || value['app'] === undefined)
+    if (!('appId' in value) || value['appId'] === undefined)
         return false;
     if (!('id' in value) || value['id'] === undefined)
         return false;
@@ -8669,7 +8671,7 @@ function SecretSvcSecretFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'app': json['app'],
+        'appId': json['appId'],
         'canChangeDeleters': json['canChangeDeleters'] == null ? undefined : json['canChangeDeleters'],
         'canChangeReaders': json['canChangeReaders'] == null ? undefined : json['canChangeReaders'],
         'canChangeWriters': json['canChangeWriters'] == null ? undefined : json['canChangeWriters'],
@@ -8692,7 +8694,7 @@ function SecretSvcSecretToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
-        'app': value['app'],
+        'appId': value['appId'],
         'canChangeDeleters': value['canChangeDeleters'],
         'canChangeReaders': value['canChangeReaders'],
         'canChangeWriters': value['canChangeWriters'],
@@ -8823,7 +8825,7 @@ function SecretSvcSecretInputFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'app': json['app'] == null ? undefined : json['app'],
+        'appHost': json['appHost'] == null ? undefined : json['appHost'],
         'canChangeDeleters': json['canChangeDeleters'] == null ? undefined : json['canChangeDeleters'],
         'canChangeReaders': json['canChangeReaders'] == null ? undefined : json['canChangeReaders'],
         'canChangeWriters': json['canChangeWriters'] == null ? undefined : json['canChangeWriters'],
@@ -8845,7 +8847,7 @@ function SecretSvcSecretInputToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
-        'app': value['app'],
+        'appHost': value['appHost'],
         'canChangeDeleters': value['canChangeDeleters'],
         'canChangeReaders': value['canChangeReaders'],
         'canChangeWriters': value['canChangeWriters'],
@@ -10663,6 +10665,8 @@ function UserSvcListUsersResponseToJSONTyped(value, ignoreDiscriminator = false)
  * Check if a given object implements the UserSvcLoginRequest interface.
  */
 function instanceOfUserSvcLoginRequest(value) {
+    if (!('appHost' in value) || value['appHost'] === undefined)
+        return false;
     return true;
 }
 function UserSvcLoginRequestFromJSON(json) {
@@ -10673,7 +10677,7 @@ function UserSvcLoginRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'appHost': json['appHost'] == null ? undefined : json['appHost'],
+        'appHost': json['appHost'],
         'contact': json['contact'] == null ? undefined : json['contact'],
         'device': json['device'] == null ? undefined : json['device'],
         'password': json['password'] == null ? undefined : json['password'],
@@ -11035,6 +11039,8 @@ function UserSvcRefreshTokenResponseToJSONTyped(value, ignoreDiscriminator = fal
  * Check if a given object implements the UserSvcRegisterRequest interface.
  */
 function instanceOfUserSvcRegisterRequest(value) {
+    if (!('appHost' in value) || value['appHost'] === undefined)
+        return false;
     if (!('slug' in value) || value['slug'] === undefined)
         return false;
     return true;
@@ -11047,7 +11053,7 @@ function UserSvcRegisterRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'appHost': json['appHost'] == null ? undefined : json['appHost'],
+        'appHost': json['appHost'],
         'contact': json['contact'] == null ? undefined : UserSvcContactInputFromJSON(json['contact']),
         'device': json['device'] == null ? undefined : json['device'],
         'name': json['name'] == null ? undefined : json['name'],
@@ -11812,6 +11818,9 @@ class ConfigSvcApi extends BaseAPI {
      */
     listConfigsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['body'] == null) {
+                throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling listConfigs().');
+            }
             const queryParameters = {};
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
@@ -11830,8 +11839,8 @@ class ConfigSvcApi extends BaseAPI {
      * Retrieves the current configurations for a specified app. Since any user can save configurations, it is strongly advised that you supply a list of owners to filter on. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
      * List Configs
      */
-    listConfigs() {
-        return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
+    listConfigs(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.listConfigsRaw(requestParameters, initOverrides);
             return yield response.value();
         });

@@ -21,7 +21,7 @@ export interface SecretSvcSecret {
      * @type {string}
      * @memberof SecretSvcSecret
      */
-    app: string;
+    appId: string;
     /**
      * Slugs of services/users who can change the deleters list
      * @type {Array<string>}

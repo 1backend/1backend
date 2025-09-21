@@ -17,8 +17,8 @@ export class SecretSvcSecretInput {
 SecretSvcSecretInput.discriminator = undefined;
 SecretSvcSecretInput.attributeTypeMap = [
     {
-        "name": "app",
-        "baseName": "app",
+        "name": "appHost",
+        "baseName": "appHost",
         "type": "string"
     },
     {

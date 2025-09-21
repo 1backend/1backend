@@ -32,7 +32,7 @@ export interface SecretSvcSecret {
      * @type {string}
      * @memberof SecretSvcSecret
      */
-    app: string;
+    appId: string;
     /**
      * Slugs of services/users who can change the deleters list
      * @type {Array<string>}
@@ -117,7 +117,7 @@ export interface SecretSvcSecret {
  * Check if a given object implements the SecretSvcSecret interface.
  */
 export function instanceOfSecretSvcSecret(value: object): value is SecretSvcSecret {
-    if (!('app' in value) || value['app'] === undefined) return false;
+    if (!('appId' in value) || value['appId'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('value' in value) || value['value'] === undefined) return false;
     return true;
@@ -133,7 +133,7 @@ export function SecretSvcSecretFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'app': json['app'],
+        'appId': json['appId'],
         'canChangeDeleters': json['canChangeDeleters'] == null ? undefined : json['canChangeDeleters'],
         'canChangeReaders': json['canChangeReaders'] == null ? undefined : json['canChangeReaders'],
         'canChangeWriters': json['canChangeWriters'] == null ? undefined : json['canChangeWriters'],
@@ -160,7 +160,7 @@ export function SecretSvcSecretToJSONTyped(value?: SecretSvcSecret | null, ignor
 
     return {
         
-        'app': value['app'],
+        'appId': value['appId'],
         'canChangeDeleters': value['canChangeDeleters'],
         'canChangeReaders': value['canChangeReaders'],
         'canChangeWriters': value['canChangeWriters'],

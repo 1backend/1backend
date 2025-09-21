@@ -21,7 +21,7 @@ export interface UserSvcRegisterRequest {
      * @type {string}
      * @memberof UserSvcRegisterRequest
      */
-    appHost?: string;
+    appHost: string;
     /**
      *
      * @type {UserSvcContactInput}

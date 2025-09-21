@@ -24,7 +24,7 @@ export interface ConfigSvcListConfigsRequest {
      * @type {string}
      * @memberof ConfigSvcListConfigsRequest
      */
-    appHost?: string;
+    appHost: string;
     /**
      * Ids are camelCased slugs of the config owners.
      * Specifying only the ids will mean all of the config will be returned
@@ -52,6 +52,7 @@ export interface ConfigSvcListConfigsRequest {
  * Check if a given object implements the ConfigSvcListConfigsRequest interface.
  */
 export function instanceOfConfigSvcListConfigsRequest(value: object): value is ConfigSvcListConfigsRequest {
+    if (!('appHost' in value) || value['appHost'] === undefined) return false;
     return true;
 }
 
@@ -65,7 +66,7 @@ export function ConfigSvcListConfigsRequestFromJSONTyped(json: any, ignoreDiscri
     }
     return {
         
-        'appHost': json['appHost'] == null ? undefined : json['appHost'],
+        'appHost': json['appHost'],
         'ids': json['ids'] == null ? undefined : json['ids'],
         'selector': json['selector'] == null ? undefined : json['selector'],
     };

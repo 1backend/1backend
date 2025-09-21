@@ -96,7 +96,7 @@ export class ConfigSvcApi {
      * @summary List Configs
      * @param body List Configs Request
      */
-    public async listConfigs (body?: ConfigSvcListConfigsRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: ConfigSvcListConfigsResponse;  }> {
+    public async listConfigs (body: ConfigSvcListConfigsRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: ConfigSvcListConfigsResponse;  }> {
         const localVarPath = this.basePath + '/config-svc/configs';
         let localVarQueryParameters: any = {};
         let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
@@ -108,6 +108,11 @@ export class ConfigSvcApi {
             localVarHeaderParams.Accept = produces.join(',');
         }
         let localVarFormParams: any = {};
+
+        // verify required parameter 'body' is not null or undefined
+        if (body === null || body === undefined) {
+            throw new Error('Required parameter body was null or undefined when calling listConfigs.');
+        }
 
         (<any>Object).assign(localVarHeaderParams, options.headers);
 

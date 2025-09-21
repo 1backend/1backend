@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 export declare class UserSvcLoginRequest {
-    'appHost'?: string;
+    'appHost': string;
     'contact'?: string;
     'device'?: string;
     'password'?: string;

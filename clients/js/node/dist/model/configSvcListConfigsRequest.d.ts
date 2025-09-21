@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 export declare class ConfigSvcListConfigsRequest {
-    'appHost'?: string;
+    'appHost': string;
     /**
     * Ids are camelCased slugs of the config owners. Specifying only the ids will mean all of the config will be returned for that key.  If the configs are large, consider using the `Selector` request field.
     */

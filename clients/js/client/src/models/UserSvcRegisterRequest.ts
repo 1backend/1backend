@@ -32,7 +32,7 @@ export interface UserSvcRegisterRequest {
      * @type {string}
      * @memberof UserSvcRegisterRequest
      */
-    appHost?: string;
+    appHost: string;
     /**
      * 
      * @type {UserSvcContactInput}
@@ -71,6 +71,7 @@ export interface UserSvcRegisterRequest {
  * Check if a given object implements the UserSvcRegisterRequest interface.
  */
 export function instanceOfUserSvcRegisterRequest(value: object): value is UserSvcRegisterRequest {
+    if (!('appHost' in value) || value['appHost'] === undefined) return false;
     if (!('slug' in value) || value['slug'] === undefined) return false;
     return true;
 }
@@ -85,7 +86,7 @@ export function UserSvcRegisterRequestFromJSONTyped(json: any, ignoreDiscriminat
     }
     return {
         
-        'appHost': json['appHost'] == null ? undefined : json['appHost'],
+        'appHost': json['appHost'],
         'contact': json['contact'] == null ? undefined : UserSvcContactInputFromJSON(json['contact']),
         'device': json['device'] == null ? undefined : json['device'],
         'name': json['name'] == null ? undefined : json['name'],

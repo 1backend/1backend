@@ -11,7 +11,7 @@
  */
 import { SecretSvcChecksumAlgorithm } from './secretSvcChecksumAlgorithm';
 export declare class SecretSvcSecretInput {
-    'app'?: string;
+    'appHost'?: string;
     /**
     * Slugs of services/users who can change the deleters list
     */

@@ -15,6 +15,8 @@
  * Check if a given object implements the UserSvcLoginRequest interface.
  */
 export function instanceOfUserSvcLoginRequest(value) {
+    if (!('appHost' in value) || value['appHost'] === undefined)
+        return false;
     return true;
 }
 export function UserSvcLoginRequestFromJSON(json) {
@@ -25,7 +27,7 @@ export function UserSvcLoginRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'appHost': json['appHost'] == null ? undefined : json['appHost'],
+        'appHost': json['appHost'],
         'contact': json['contact'] == null ? undefined : json['contact'],
         'device': json['device'] == null ? undefined : json['device'],
         'password': json['password'] == null ? undefined : json['password'],

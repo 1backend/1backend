@@ -16,7 +16,7 @@ import { SecretSvcChecksumAlgorithmFromJSON, SecretSvcChecksumAlgorithmToJSON, }
  * Check if a given object implements the SecretSvcSecret interface.
  */
 export function instanceOfSecretSvcSecret(value) {
-    if (!('app' in value) || value['app'] === undefined)
+    if (!('appId' in value) || value['appId'] === undefined)
         return false;
     if (!('id' in value) || value['id'] === undefined)
         return false;
@@ -32,7 +32,7 @@ export function SecretSvcSecretFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'app': json['app'],
+        'appId': json['appId'],
         'canChangeDeleters': json['canChangeDeleters'] == null ? undefined : json['canChangeDeleters'],
         'canChangeReaders': json['canChangeReaders'] == null ? undefined : json['canChangeReaders'],
         'canChangeWriters': json['canChangeWriters'] == null ? undefined : json['canChangeWriters'],
@@ -55,7 +55,7 @@ export function SecretSvcSecretToJSONTyped(value, ignoreDiscriminator = false) {
         return value;
     }
     return {
-        'app': value['app'],
+        'appId': value['appId'],
         'canChangeDeleters': value['canChangeDeleters'],
         'canChangeReaders': value['canChangeReaders'],
         'canChangeWriters': value['canChangeWriters'],

@@ -21,7 +21,7 @@ export interface SecretSvcSecretInput {
      * @type {string}
      * @memberof SecretSvcSecretInput
      */
-    app?: string;
+    appHost?: string;
     /**
      * Slugs of services/users who can change the deleters list
      * @type {Array<string>}

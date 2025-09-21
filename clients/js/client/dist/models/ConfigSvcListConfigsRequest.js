@@ -15,6 +15,8 @@
  * Check if a given object implements the ConfigSvcListConfigsRequest interface.
  */
 export function instanceOfConfigSvcListConfigsRequest(value) {
+    if (!('appHost' in value) || value['appHost'] === undefined)
+        return false;
     return true;
 }
 export function ConfigSvcListConfigsRequestFromJSON(json) {
@@ -25,7 +27,7 @@ export function ConfigSvcListConfigsRequestFromJSONTyped(json, ignoreDiscriminat
         return json;
     }
     return {
-        'appHost': json['appHost'] == null ? undefined : json['appHost'],
+        'appHost': json['appHost'],
         'ids': json['ids'] == null ? undefined : json['ids'],
         'selector': json['selector'] == null ? undefined : json['selector'],
     };

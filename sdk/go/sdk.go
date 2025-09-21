@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	onebackendapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/google/uuid"
 
 	"github.com/sony/sonyflake"
@@ -130,8 +131,12 @@ func Marshal(value any) *string {
 
 // InternalId creates an internal identifier by combining an app ID and an ID.
 func InternalId(appId, id string) (string, error) {
-	if !strings.HasPrefix(appId, "app_") && appId != "*" {
-		return "", fmt.Errorf("appId must start with 'app_' or be '*', got: '%s'", appId)
+	switch {
+	case strings.HasPrefix(appId, "app_"):
+	case appId == "*":
+	case sdk.DefaultAppHost, sdk.DefaultTestAppHost:
+	default:
+		return "", fmt.Errorf("appId must start with 'app_' or be '*', '%s', '%s', got: '%s'", appId, sdk.DefaultAppHost, sdk.DefaultTestAppHost)
 	}
 
 	return fmt.Sprintf("%s:%s", appId, id), nil
