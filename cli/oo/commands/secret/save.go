@@ -1,15 +1,9 @@
 package secret
 
 import (
-	"fmt"
-	"io/ioutil"
-	"os"
-	"path/filepath"
-
 	"github.com/1backend/1backend/cli/oo/util"
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
-	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -50,43 +44,9 @@ func Save(cmd *cobra.Command, args []string) error {
 		// Case 2: File or directory-based secrets
 		path := args[0]
 
-		stat, err := os.Stat(path)
-		if os.IsNotExist(err) {
-			return errors.Wrap(err, fmt.Sprintf("path not found: '%v'", path))
-		} else if err != nil {
-			return errors.Wrap(err, "error checking path")
-		}
-
-		var secrets []openapi.SecretSvcSecretInput
-		fileCount := 0
-		if stat.IsDir() {
-			// Handle directory: Iterate over files and collect secrets
-			err = filepath.Walk(path, func(filePath string, info os.FileInfo, err error) error {
-				if err != nil {
-					return errors.Wrap(err, fmt.Sprintf("error accessing file '%v'", filePath))
-				}
-				if !info.IsDir() {
-					// Collect secrets from each file in the directory
-					fileCount++
-					fileSecrets, err := extractSecretsFromFile(filePath)
-					if err != nil {
-						return err
-					}
-					secrets = append(secrets, fileSecrets...)
-				}
-				return nil
-			})
-			if err != nil {
-				return err
-			}
-		} else {
-			// Handle single file
-			fileCount++
-			fileSecrets, err := extractSecretsFromFile(path)
-			if err != nil {
-				return err
-			}
-			secrets = append(secrets, fileSecrets...)
+		secrets, err := util.CollectFromPath[openapi.SecretSvcSecretInput](path, "secrets")
+		if err != nil {
+			return err
 		}
 
 		// Make a single API call to save all secrets
@@ -104,33 +64,4 @@ func Save(cmd *cobra.Command, args []string) error {
 	}
 
 	return errors.New("invalid arguments: use 'save [id] [value]' or 'save [filePath | dirPath]'")
-}
-
-// extract one or more secrets from a file
-func extractSecretsFromFile(filePath string) ([]openapi.SecretSvcSecretInput, error) {
-	data, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("failed to read file at '%v'", filePath))
-	}
-
-	// Determine whether the file contains single or multiple secrets
-	var secrets []openapi.SecretSvcSecretInput
-
-	// Unmarshal as list first (multiple secrets)
-	if err := yaml.Unmarshal(data, &secrets); err != nil {
-		// If unmarshalling to list fails, attempt unmarshalling as single secret
-		var singleSecret openapi.SecretSvcSecretInput
-		if err := yaml.Unmarshal(data, &singleSecret); err != nil {
-			return nil, errors.Wrap(
-				err,
-				fmt.Sprintf(
-					"failed to parse secrets file at '%v' as single or multiple secrets",
-					filePath,
-				),
-			)
-		}
-		secrets = append(secrets, singleSecret)
-	}
-
-	return secrets, nil
 }
