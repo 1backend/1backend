@@ -14,7 +14,6 @@ import (
 	"strings"
 
 	onebackendapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/google/uuid"
 
 	"github.com/sony/sonyflake"
@@ -134,9 +133,9 @@ func InternalId(appId, id string) (string, error) {
 	switch {
 	case strings.HasPrefix(appId, "app_"):
 	case appId == "*":
-	case sdk.DefaultAppHost, sdk.DefaultTestAppHost:
+	case appId == DefaultAppHost, appId == DefaultTestAppHost:
 	default:
-		return "", fmt.Errorf("appId must start with 'app_' or be '*', '%s', '%s', got: '%s'", appId, sdk.DefaultAppHost, sdk.DefaultTestAppHost)
+		return "", fmt.Errorf("appId must start with 'app_' or be '*', '%s', '%s', got: '%s'", appId, DefaultAppHost, DefaultTestAppHost)
 	}
 
 	return fmt.Sprintf("%s:%s", appId, id), nil
