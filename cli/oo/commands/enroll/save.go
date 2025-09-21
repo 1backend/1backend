@@ -1,10 +1,7 @@
 package enroll
 
 import (
-	"fmt"
 	"io/ioutil"
-	"os"
-	"path/filepath"
 
 	"github.com/1backend/1backend/cli/oo/util"
 	openapi "github.com/1backend/1backend/clients/go"
@@ -38,47 +35,9 @@ func Save(cmd *cobra.Command, args []string, userId, contactId string) error {
 
 		enrolls = append(enrolls, enroll)
 	} else {
-
-		path := args[0]
-
-		stat, err := os.Stat(path)
-		if os.IsNotExist(err) {
-			return errors.Wrap(err, fmt.Sprintf("path not found: '%v'", path))
-		} else if err != nil {
-			return errors.Wrap(err, "error checking path")
-		}
-
-		fileCount := 0
-		if stat.IsDir() {
-			// Handle directory: Iterate over files and collect enrolls
-			err = filepath.Walk(path, func(filePath string, info os.FileInfo, err error) error {
-				if err != nil {
-					return errors.Wrap(err, fmt.Sprintf("error accessing file '%v'", filePath))
-				}
-				if !info.IsDir() {
-					// Collect enrolls from each file in the directory
-					fileCount++
-					var fileEnrolls []openapi.UserSvcEnrollInput
-					err = util.ExtractFromFile(filePath, &fileEnrolls)
-					if err != nil {
-						return err
-					}
-					enrolls = append(enrolls, fileEnrolls...)
-				}
-				return nil
-			})
-			if err != nil {
-				return err
-			}
-		} else {
-			// Handle single file
-			fileCount++
-			var fileEnrolls []openapi.UserSvcEnrollInput
-			err = util.ExtractFromFile(path, &fileEnrolls)
-			if err != nil {
-				return err
-			}
-			enrolls = append(enrolls, fileEnrolls...)
+		enrolls, err = util.CollectFromPath[openapi.UserSvcEnrollInput](args[0], "enrolls")
+		if err != nil {
+			return err
 		}
 	}
 

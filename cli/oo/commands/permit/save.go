@@ -10,7 +10,6 @@ package permit
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
 	"github.com/1backend/1backend/cli/oo/util"
 	openapi "github.com/1backend/1backend/clients/go"
@@ -31,7 +30,7 @@ func Save(cmd *cobra.Command, args []string) error {
 
 	path := args[0]
 
-	stat, err := os.Stat(path)
+	_, err = os.Stat(path)
 	if os.IsNotExist(err) {
 		return errors.Wrap(err, fmt.Sprintf("path not found: '%v'", path))
 	} else if err != nil {
@@ -40,37 +39,9 @@ func Save(cmd *cobra.Command, args []string) error {
 
 	var permits []openapi.UserSvcPermitInput
 
-	fileCount := 0
-	if stat.IsDir() {
-		// Handle directory: Iterate over files and collect permits
-		err = filepath.Walk(path, func(filePath string, info os.FileInfo, err error) error {
-			if err != nil {
-				return errors.Wrap(err, fmt.Sprintf("error accessing file '%v'", filePath))
-			}
-			if !info.IsDir() {
-				// Collect permits from each file in the directory
-				fileCount++
-				var filePermits []openapi.UserSvcPermitInput
-				err = util.ExtractFromFile(filePath, &filePermits)
-				if err != nil {
-					return err
-				}
-				permits = append(permits, filePermits...)
-			}
-			return nil
-		})
-		if err != nil {
-			return err
-		}
-	} else {
-		// Handle single file
-		fileCount++
-		var filePermits []openapi.UserSvcPermitInput
-		err = util.ExtractFromFile(path, &filePermits)
-		if err != nil {
-			return err
-		}
-		permits = append(permits, filePermits...)
+	permits, err = util.CollectFromPath[openapi.UserSvcPermitInput](path, "permits")
+	if err != nil {
+		return err
 	}
 
 	// Make a single API call to save all permits

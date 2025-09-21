@@ -2,12 +2,66 @@ package util
 
 import (
 	"fmt"
+	"io/fs"
 	"io/ioutil"
+	"os"
+	"path/filepath"
 	"reflect"
 
 	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 )
+
+// CollectFromPath collects entities of type T from a file or directory path.
+// The entityName is used to provide context in error messages.
+func CollectFromPath[T any](path string, entityName string) ([]T, error) {
+	stat, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		return nil, errors.Wrap(err, fmt.Sprintf("%s path not found: '%v'", entityName, path))
+	} else if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("error checking %s path", entityName))
+	}
+
+	var entities []T
+
+	if stat.IsDir() {
+		err = filepath.WalkDir(path, func(filePath string, d fs.DirEntry, err error) error {
+			if err != nil {
+				return errors.Wrap(err, fmt.Sprintf("error accessing file '%v'", filePath))
+			}
+			if d.IsDir() {
+				return nil
+			}
+
+			fileEntities, err := extractEntitiesFromFile[T](filePath, entityName)
+			if err != nil {
+				return err
+			}
+			entities = append(entities, fileEntities...)
+			return nil
+		})
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		fileEntities, err := extractEntitiesFromFile[T](path, entityName)
+		if err != nil {
+			return nil, err
+		}
+		entities = append(entities, fileEntities...)
+	}
+
+	return entities, nil
+}
+
+func extractEntitiesFromFile[T any](filePath string, entityName string) ([]T, error) {
+	var items []T
+	if err := ExtractFromFile(filePath, &items); err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("failed to parse %s file at '%v'", entityName, filePath))
+	}
+
+	return items, nil
+}
 
 // ExtractFromFile extracts one or more entities from a YAML file into a slice.
 func ExtractFromFile(filePath string, entitySlice any) error {

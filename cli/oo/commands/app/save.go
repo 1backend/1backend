@@ -2,14 +2,10 @@ package app
 
 import (
 	"fmt"
-	"io/ioutil"
-	"os"
-	"path/filepath"
 
 	"github.com/1backend/1backend/cli/oo/util"
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
-	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -32,7 +28,7 @@ func Save(cmd *cobra.Command, args []string, id string, host string) error {
 
 	if len(args) > 0 {
 		path := args[0]
-		fileInputs, err := collectAppsFromPath(path)
+		fileInputs, err := util.CollectFromPath[openapi.UserSvcApp](path, "apps")
 		if err != nil {
 			return err
 		}
@@ -63,65 +59,4 @@ func Save(cmd *cobra.Command, args []string, id string, host string) error {
 	}
 
 	return nil
-}
-
-func collectAppsFromPath(path string) ([]openapi.UserSvcApp, error) {
-	stat, err := os.Stat(path)
-	if os.IsNotExist(err) {
-		return nil, errors.Wrap(err, fmt.Sprintf("path not found: '%v'", path))
-	} else if err != nil {
-		return nil, errors.Wrap(err, "error checking path")
-	}
-
-	inputs := []openapi.UserSvcApp{}
-
-	if stat.IsDir() {
-		err = filepath.Walk(path, func(filePath string, info os.FileInfo, err error) error {
-			if err != nil {
-				return errors.Wrap(err, fmt.Sprintf("error accessing file '%v'", filePath))
-			}
-			if info.IsDir() {
-				return nil
-			}
-
-			fileInputs, err := extractAppsFromFile(filePath)
-			if err != nil {
-				return err
-			}
-			inputs = append(inputs, fileInputs...)
-			return nil
-		})
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		fileInputs, err := extractAppsFromFile(path)
-		if err != nil {
-			return nil, err
-		}
-		inputs = append(inputs, fileInputs...)
-	}
-
-	return inputs, nil
-}
-
-func extractAppsFromFile(filePath string) ([]openapi.UserSvcApp, error) {
-	data, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("failed to read file at '%v'", filePath))
-	}
-
-	var inputs []openapi.UserSvcApp
-	if err := yaml.Unmarshal(data, &inputs); err != nil {
-		var single openapi.UserSvcApp
-		if err := yaml.Unmarshal(data, &single); err != nil {
-			return nil, errors.Wrap(
-				err,
-				fmt.Sprintf("failed to parse apps file at '%v'", filePath),
-			)
-		}
-		inputs = append(inputs, single)
-	}
-
-	return inputs, nil
 }
