@@ -11,6 +11,7 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 )
@@ -32,7 +33,7 @@ func TestListInstances(t *testing.T) {
 
 	client := client.NewApiClientFactory(server.Url)
 
-	manyClients, _, err := test.MakeClients(client, 1)
+	manyClients, _, err := test.MakeClients(client, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
 	client1 := manyClients[0]

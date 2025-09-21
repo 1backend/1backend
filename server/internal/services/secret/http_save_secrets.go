@@ -121,7 +121,7 @@ func (cs *SecretService) saveSecrets(
 
 	for _, s := range ss {
 		secretAppId := ""
-		if s.AppHost == "" {
+		if s.AppHost != "" {
 			rsp, _, err := cs.options.ClientFactory.
 				Client().
 				UserSvcAPI.
@@ -132,7 +132,7 @@ func (cs *SecretService) saveSecrets(
 				Execute()
 
 			if err != nil {
-				return errors.Wrap(err, "failed to read app by host")
+				return errors.Wrapf(err, "failed to read app '%s' by host", s.AppHost)
 			}
 			secretAppId = rsp.GetApp().Id
 		} else {

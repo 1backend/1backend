@@ -34,7 +34,8 @@ type ModelService struct {
 	started    bool
 	startupErr error
 
-	token string
+	token        string
+	tokenAppHost string
 
 	modelStateMutex sync.Mutex
 	modelPortMap    map[int]*modeltypes.ModelState
@@ -162,6 +163,7 @@ func (ms *ModelService) start() error {
 		return err
 	}
 	ms.token = token.Token
+	ms.tokenAppHost = token.App.Host
 
 	return ms.registerPermits()
 }

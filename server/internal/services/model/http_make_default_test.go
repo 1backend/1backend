@@ -65,9 +65,12 @@ func TestMakeDefault(t *testing.T) {
 		rsp, _, err := adminClient.ConfigSvcAPI.
 			ListConfigs(context.Background()).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				Ids: []string{"modelSvc"},
+				// Model service does not respect AppHost as it's not multitenant
+				AppHost: sdk.DefaultAppHost,
+				Ids:     []string{"modelSvc"},
 			}).
 			Execute()
+
 		require.NoError(t, err)
 		require.Equal(t, "dummy", rsp.Configs["modelSvc"].Data["currentModelId"], rsp)
 	})

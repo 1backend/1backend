@@ -40,6 +40,11 @@ func (s *UserService) ReadApp(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
+	if req.Host == "" {
+		endpoint.WriteString(w, http.StatusBadRequest, "Host is required")
+		return
+	}
+
 	// lookup
 	app, err := s.findApp(req)
 	if err != nil {
