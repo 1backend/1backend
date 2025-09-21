@@ -8,6 +8,7 @@ import (
 
 	"github.com/1backend/1backend/cli/oo/util"
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -30,7 +31,8 @@ func List(cmd *cobra.Command, args []string) error {
 	cf := client.NewApiClientFactory(url)
 
 	req := openapi.ConfigSvcListConfigsRequest{
-		Ids: ids,
+		AppHost: sdk.DefaultAppHost,
+		Ids:     ids,
 	}
 
 	rsp, _, err := cf.Client(client.WithToken(token)).
