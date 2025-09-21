@@ -127,7 +127,7 @@ export class UserService {
 
 	login(slug: string, password: string): Promise<UserSvcLoginResponse> {
 		return this.userService.login({
-			body: { slug: slug, password: password },
+			body: { appHost: "unnamed", slug: slug, password: password },
 		});
 	}
 

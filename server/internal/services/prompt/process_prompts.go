@@ -19,6 +19,7 @@ import (
 	"github.com/pkg/errors"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/logger"
@@ -229,7 +230,8 @@ func (p *PromptService) processPrompt(
 		readConfigRsp, _, err := p.options.ClientFactory.Client(client.WithToken(token)).
 			ConfigSvcAPI.ListConfigs(context.Background()).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				Ids: []string{"modelSvc"},
+				AppHost: sdk.DefaultAppHost,
+				Ids:     []string{"modelSvc"},
 			}).
 			Execute()
 		if err != nil {

@@ -78,6 +78,12 @@ export class ConfigService {
 	async listConfigs(
 		req?: ListConfigsRequest
 	): Promise<ConfigSvcListConfigsResponse> {
-		return await this.configService.listConfigs(req);
+		return await this.configService.listConfigs(
+			req || {
+				body: {
+					appHost: "unnamed",
+				},
+			}
+		);
 	}
 }
