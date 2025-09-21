@@ -75,6 +75,7 @@ func TestCountPets(t *testing.T) {
 
 	loginRsp, _, err := serverClients[0].UserSvcAPI.Login(context.Background()).Body(
 		openapi.UserSvcLoginRequest{
+			AppHost:  sdk.DefaultTestAppHost,
 			Slug:     openapi.PtrString("test-user-slug-0"),
 			Password: openapi.PtrString("testUserPassword0"),
 		},
