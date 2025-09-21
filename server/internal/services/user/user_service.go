@@ -49,6 +49,7 @@ type UserService struct {
 	membershipStore   datastore.DataStore
 	permitStore       datastore.DataStore
 	enrollStore       datastore.DataStore
+	appStore          datastore.DataStore
 
 	privateKey   *rsa.PrivateKey
 	publicKeyPem string
@@ -138,6 +139,14 @@ func NewUserService(
 		return nil, err
 	}
 
+	appStore, err := options.DataStoreFactory.Create(
+		"userSvcApps",
+		&usertypes.App{},
+	)
+	if err != nil {
+		return nil, err
+	}
+
 	tokenReplacementCache, err := ristretto.NewCache(&ristretto.Config{
 		NumCounters: 1e5,     // number of keys to track frequency (10x max items)
 		MaxCost:     1 << 20, // max cost in bytes (~1 MiB)
@@ -159,6 +168,7 @@ func NewUserService(
 		membershipStore:       membershipsStore,
 		permitStore:           permitsStore,
 		enrollStore:           enrollsStore,
+		appStore:              appStore,
 		tokenReplacementCache: tokenReplacementCache,
 	}
 
@@ -301,6 +311,16 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 		us.RevokeTokens(w, r)
 	})).
 		Methods("OPTIONS", "DELETE")
+
+	router.HandleFunc("/user-svc/apps", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.ListApps(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/app", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.ReadApp(w, r)
+	})).
+		Methods("OPTIONS", "POST")
 }
 
 func (s *UserService) bootstrap() error {
@@ -374,7 +394,7 @@ func (s *UserService) bootstrap() error {
 
 	if count == 0 {
 		_, err = s.register(
-			usertypes.DefaultApp,
+			usertypes.DefaultAppHost,
 			"1backend",
 			"changeme",
 			"Admin", []string{
@@ -405,7 +425,7 @@ func (s *UserService) bootstrap() error {
 		}
 
 		tok, err := s.register(
-			usertypes.DefaultApp,
+			usertypes.DefaultAppHost,
 			slug,
 			pw,
 			"User Svc", []string{
@@ -418,10 +438,17 @@ func (s *UserService) bootstrap() error {
 	} else {
 		cred := credentials[0].(*auth.Credential)
 
-		tok, err := s.login(&usertypes.LoginRequest{
-			Slug:     cred.Slug,
-			Password: cred.Password,
-		})
+		app, err := s.getOrCreateApp(usertypes.DefaultAppHost)
+		if err != nil {
+			return errors.Wrap(err, "failed to get or create app")
+		}
+
+		tok, err := s.login(
+			app.Id,
+			&usertypes.LoginRequest{
+				Slug:     cred.Slug,
+				Password: cred.Password,
+			})
 		if err != nil {
 			return errors.Wrap(err, "failed to login user-svc")
 		}

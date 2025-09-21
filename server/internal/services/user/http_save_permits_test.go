@@ -15,6 +15,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
@@ -34,6 +35,7 @@ func TestSavePermits(t *testing.T) {
 
 	token, err := boot.RegisterUserAccount(
 		clientFactory.Client().UserSvcAPI,
+		sdk.DefaultTestAppHost,
 		"firstuser",
 		"pw123",
 		"Some name",
@@ -43,6 +45,7 @@ func TestSavePermits(t *testing.T) {
 
 	token, err = boot.RegisterUserAccount(
 		clientFactory.Client().UserSvcAPI,
+		sdk.DefaultTestAppHost,
 		"seconduser",
 		"pw123",
 		"Other name",
@@ -50,7 +53,7 @@ func TestSavePermits(t *testing.T) {
 	require.NoError(t, err)
 	userClient2 := clientFactory.Client(client.WithToken(token.Token))
 
-	adminClient, _, err := test.AdminClient(clientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	ctx := context.Background()
@@ -146,7 +149,7 @@ func TestListPermits_NonAdmin_Forbidden(t *testing.T) {
 	clientFactory := client.NewApiClientFactory(server.Url)
 
 	// two normal users
-	token1, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, "u1", "pw", "n")
+	token1, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, sdk.DefaultTestAppHost, "u1", "pw", "n")
 	require.NoError(t, err)
 	userClient := clientFactory.Client(client.WithToken(token1.Token))
 
@@ -169,12 +172,12 @@ func TestPermissionOwnership_NonOwnerCannotAttach(t *testing.T) {
 	clientFactory := client.NewApiClientFactory(server.Url)
 
 	// owner user
-	token1, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, "owneruser", "pw", "n")
+	token1, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, sdk.DefaultTestAppHost, "owneruser", "pw", "n")
 	require.NoError(t, err)
 	owner := clientFactory.Client(client.WithToken(token1.Token))
 
 	// non-owner user
-	token2, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, "otheruser", "pw", "n")
+	token2, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, sdk.DefaultTestAppHost, "otheruser", "pw", "n")
 	require.NoError(t, err)
 	other := clientFactory.Client(client.WithToken(token2.Token))
 
@@ -213,11 +216,11 @@ func TestSavePermits_DuplicateItems_InSingleRequest_NoDupCreated(t *testing.T) {
 	clientFactory := client.NewApiClientFactory(server.Url)
 
 	// user and admin
-	token, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, "duper", "pw", "n")
+	token, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, sdk.DefaultTestAppHost, "duper", "pw", "n")
 	require.NoError(t, err)
 	user := clientFactory.Client(client.WithToken(token.Token))
 
-	admin, _, err := test.AdminClient(clientFactory)
+	admin, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	ctx := context.Background()
@@ -256,7 +259,7 @@ func TestPermissionOwnership_OwnerCanAttachToForeignRole(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	token, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, "permowner", "pw", "n")
+	token, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, sdk.DefaultTestAppHost, "permowner", "pw", "n")
 	require.NoError(t, err)
 	owner := clientFactory.Client(client.WithToken(token.Token))
 
@@ -289,16 +292,16 @@ func TestAppIsolation_ListPermits_AdminScopedByApp(t *testing.T) {
 	const appB = "shoes.com"
 
 	// create a normal user
-	uTok, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, "tenantuser", "pw", "Tenant")
+	uTok, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, sdk.DefaultTestAppHost, "tenantuser", "pw", "Tenant")
 	require.NoError(t, err)
 
 	// exchange user token into appA and appB
 	userUnnamed := clientFactory.Client(client.WithToken(uTok.Token))
 	uA, _, err := userUnnamed.UserSvcAPI.ExchangeToken(ctx).
-		Body(openapi.UserSvcExchangeTokenRequest{NewApp: appA}).Execute()
+		Body(openapi.UserSvcExchangeTokenRequest{NewAppHost: appA}).Execute()
 	require.NoError(t, err)
 	uB, _, err := userUnnamed.UserSvcAPI.ExchangeToken(ctx).
-		Body(openapi.UserSvcExchangeTokenRequest{NewApp: appB}).Execute()
+		Body(openapi.UserSvcExchangeTokenRequest{NewAppHost: appB}).Execute()
 	require.NoError(t, err)
 
 	require.NotEmpty(t, uA.Token.Token)
@@ -308,7 +311,7 @@ func TestAppIsolation_ListPermits_AdminScopedByApp(t *testing.T) {
 	userB := clientFactory.Client(client.WithToken(uB.Token.Token))
 
 	// admin base, then exchange into each app
-	adminBase, _, err := test.AdminClient(clientFactory)
+	adminBase, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	// create one permit per app
@@ -360,13 +363,13 @@ func TestExchangeToken_AppScopesRolesInJWT(t *testing.T) {
 	const appB = "shoes.com"
 
 	// register a user
-	uTok, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, "scoper", "pw", "n")
+	uTok, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, sdk.DefaultTestAppHost, "scoper", "pw", "n")
 	require.NoError(t, err)
 	userUnnamed := clientFactory.Client(client.WithToken(uTok.Token))
 
 	// move into appA and create an org to mint an org-scoped role into the token
 	uA, _, err := userUnnamed.UserSvcAPI.ExchangeToken(ctx).
-		Body(openapi.UserSvcExchangeTokenRequest{NewApp: appA}).Execute()
+		Body(openapi.UserSvcExchangeTokenRequest{NewAppHost: appA}).Execute()
 	require.NoError(t, err)
 	userA := clientFactory.Client(client.WithToken(uA.Token.Token))
 
@@ -392,11 +395,11 @@ func TestExchangeToken_AppScopesRolesInJWT(t *testing.T) {
 			hasOrgAdminA = true
 		}
 	}
-	require.True(t, hasOrgAdminA, "expected org admin role in appA token")
+	require.True(t, hasOrgAdminA, "expected org admin role in appA token %v", claimsA)
 
 	// now exchange into appB and ensure org-admin from appA is NOT present
 	uB, _, err := userUnnamed.UserSvcAPI.ExchangeToken(ctx).
-		Body(openapi.UserSvcExchangeTokenRequest{NewApp: appB}).Execute()
+		Body(openapi.UserSvcExchangeTokenRequest{NewAppHost: appB}).Execute()
 	require.NoError(t, err)
 
 	claimsB, err := auth.AuthorizerImpl{}.ParseJWT(pk.PublicKey, uB.Token.Token)
@@ -423,7 +426,7 @@ func TestWildcardEnroll_AppStar_RoleAppearsAcrossApps(t *testing.T) {
 	const appB = "shoes.com"
 
 	// owner user who will create a role under its slug
-	ownerTok, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, "ownerstar", "pw", "n")
+	ownerTok, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, sdk.DefaultTestAppHost, "ownerstar", "pw", "n")
 	require.NoError(t, err)
 	owner := clientFactory.Client(client.WithToken(ownerTok.Token))
 
@@ -434,7 +437,7 @@ func TestWildcardEnroll_AppStar_RoleAppearsAcrossApps(t *testing.T) {
 	_, _, err = owner.UserSvcAPI.SaveEnrolls(ctx).Body(openapi.UserSvcSaveEnrollsRequest{
 		Enrolls: []openapi.UserSvcEnrollInput{
 			{
-				App:       openapi.PtrString("*"),
+				AppHost:   openapi.PtrString("*"),
 				ContactId: openapi.PtrString(contact),
 				Role:      "ownerstar:pro",
 			},
@@ -444,7 +447,8 @@ func TestWildcardEnroll_AppStar_RoleAppearsAcrossApps(t *testing.T) {
 
 	// the user registers later
 	reg, _, err := owner.UserSvcAPI.Register(ctx).Body(openapi.UserSvcRegisterRequest{
-		Slug: "wildcard-user",
+		AppHost: sdk.DefaultTestAppHost,
+		Slug:    "wildcard-user",
 		Contact: &openapi.UserSvcContactInput{
 			Id: contact,
 		},
@@ -463,7 +467,7 @@ func TestWildcardEnroll_AppStar_RoleAppearsAcrossApps(t *testing.T) {
 
 	// exchange into appA and appB and verify role persists in both
 	appATok, _, err := receiver.UserSvcAPI.ExchangeToken(ctx).
-		Body(openapi.UserSvcExchangeTokenRequest{NewApp: appA}).Execute()
+		Body(openapi.UserSvcExchangeTokenRequest{NewAppHost: appA}).Execute()
 	require.NoError(t, err)
 	claimsA, err := auth.AuthorizerImpl{}.ParseJWT(pk.PublicKey, appATok.Token.Token)
 	require.NoError(t, err)
@@ -471,7 +475,7 @@ func TestWildcardEnroll_AppStar_RoleAppearsAcrossApps(t *testing.T) {
 	require.Contains(t, claimsA.Roles, "ownerstar:pro")
 
 	appBTok, _, err := receiver.UserSvcAPI.ExchangeToken(ctx).
-		Body(openapi.UserSvcExchangeTokenRequest{NewApp: appB}).Execute()
+		Body(openapi.UserSvcExchangeTokenRequest{NewAppHost: appB}).Execute()
 	require.NoError(t, err)
 	claimsB, err := auth.AuthorizerImpl{}.ParseJWT(pk.PublicKey, appBTok.Token.Token)
 	require.NoError(t, err)

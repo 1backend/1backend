@@ -163,7 +163,7 @@ definitions:
     type: object
   config_svc.Config:
     properties:
-      app:
+      appId:
         type: string
       createdAt:
         type: string
@@ -180,7 +180,7 @@ definitions:
       updatedAt:
         type: string
     required:
-    - app
+    - appId
     - createdAt
     - data
     - dataJson
@@ -189,7 +189,7 @@ definitions:
     type: object
   config_svc.ListConfigsRequest:
     properties:
-      app:
+      appHost:
         example: shoes.com
         type: string
       ids:
@@ -215,6 +215,8 @@ definitions:
             "user2": ["settings.language"]
           }
         type: object
+    required:
+    - appHost
     type: object
   config_svc.ListConfigsResponse:
     properties:
@@ -230,9 +232,9 @@ definitions:
     type: object
   config_svc.SaveConfigRequest:
     properties:
-      app:
+      appHost:
         description: |-
-          App can only be specified by users who have the
+          AppHost can only be specified by users who have the
           `config-svc:config:edit-on-behalf` permission, who are typically admins.
 
           If not specified, the config will be saved for the current app of the user's token.
@@ -2734,7 +2736,7 @@ definitions:
     type: object
   secret_svc.Secret:
     properties:
-      app:
+      appId:
         type: string
       canChangeDeleters:
         description: Slugs of services/users who can change the deleters list
@@ -2791,13 +2793,13 @@ definitions:
           type: string
         type: array
     required:
-    - app
+    - appId
     - id
     - value
     type: object
   secret_svc.SecretInput:
     properties:
-      app:
+      appHost:
         type: string
       canChangeDeleters:
         description: Slugs of services/users who can change the deleters list
@@ -3012,6 +3014,16 @@ definitions:
       width:
         type: integer
     type: object
+  user_svc.App:
+    properties:
+      host:
+        type: string
+      id:
+        type: string
+    required:
+    - host
+    - id
+    type: object
   user_svc.ChangePasswordRequest:
     properties:
       currentPassword:
@@ -3098,8 +3110,8 @@ definitions:
     type: object
   user_svc.CreateUserRequest:
     properties:
-      app:
-        example: unnamed
+      appHost:
+        example: shoes.com
         type: string
       contacts:
         items:
@@ -3124,12 +3136,11 @@ definitions:
     type: object
   user_svc.Enroll:
     properties:
-      app:
+      appId:
         description: |-
           App of the enroll.
           Use `*` to match all apps, such as when bootstrapping
           in services.
-        example: unnamed,omitempty
         type: string
       contactId:
         description: |-
@@ -3167,6 +3178,7 @@ definitions:
           otherwise, it is applied upon registration.
         type: string
     required:
+    - appId
     - createdAt
     - id
     - role
@@ -3174,8 +3186,7 @@ definitions:
     type: object
   user_svc.EnrollInput:
     properties:
-      app:
-        example: unnamed,omitempty
+      appHost:
         type: string
       contactId:
         description: |-
@@ -3204,7 +3215,7 @@ definitions:
     type: object
   user_svc.ExchangeTokenRequest:
     properties:
-      newApp:
+      newAppHost:
         description: NewApp is the app of the new token that will be returned by this
           endpoint.
         type: string
@@ -3213,7 +3224,7 @@ definitions:
           will be used.
         type: string
     required:
-    - newApp
+    - newAppHost
     type: object
   user_svc.ExchangeTokenResponse:
     properties:
@@ -3234,6 +3245,8 @@ definitions:
   user_svc.HasPermissionResponse:
     properties:
       app:
+        $ref: '#/definitions/user_svc.App'
+      appId:
         type: string
       authorized:
         type: boolean
@@ -3242,9 +3255,31 @@ definitions:
       user:
         $ref: '#/definitions/user_svc.User'
     required:
+    - app
+    - appId
     - authorized
     - until
     - user
+    type: object
+  user_svc.ListAppsRequest:
+    properties:
+      host:
+        items:
+          type: string
+        type: array
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
+  user_svc.ListAppsResponse:
+    properties:
+      apps:
+        items:
+          $ref: '#/definitions/user_svc.App'
+        type: array
+    required:
+    - apps
     type: object
   user_svc.ListEnrollsRequest:
     properties:
@@ -3366,8 +3401,8 @@ definitions:
     type: object
   user_svc.LoginRequest:
     properties:
-      app:
-        example: unnamed
+      appHost:
+        example: shoes.com
         type: string
       contact:
         type: string
@@ -3377,6 +3412,8 @@ definitions:
         type: string
       slug:
         type: string
+    required:
+    - appHost
     type: object
   user_svc.LoginResponse:
     properties:
@@ -3393,8 +3430,7 @@ definitions:
     - OrderDirectionDesc
   user_svc.Organization:
     properties:
-      app:
-        example: unnamed
+      appId:
         type: string
       createdAt:
         type: string
@@ -3427,12 +3463,11 @@ definitions:
     type: object
   user_svc.Permit:
     properties:
-      app:
+      appId:
         description: |-
           App of the permit.
           Use `*` to match all apps, such as when bootstrapping
           in services.
-        example: unnamed,omitempty
         type: string
       createdAt:
         type: string
@@ -3462,6 +3497,7 @@ definitions:
       updatedAt:
         type: string
     required:
+    - appId
     - createdAt
     - id
     - permission
@@ -3469,7 +3505,7 @@ definitions:
     type: object
   user_svc.PermitInput:
     properties:
-      app:
+      appHost:
         description: |-
           App of the permit.
           Use `*` to match all apps, such as when bootstrapping
@@ -3497,6 +3533,18 @@ definitions:
         type: array
     required:
     - permission
+    type: object
+  user_svc.ReadAppRequest:
+    properties:
+      host:
+        type: string
+    type: object
+  user_svc.ReadAppResponse:
+    properties:
+      app:
+        $ref: '#/definitions/user_svc.App'
+    required:
+    - app
     type: object
   user_svc.ReadSelfRequest:
     properties:
@@ -3542,8 +3590,8 @@ definitions:
     type: object
   user_svc.RegisterRequest:
     properties:
-      app:
-        example: unnamed
+      appHost:
+        example: shoes.com
         type: string
       contact:
         $ref: '#/definitions/user_svc.ContactInput'
@@ -3561,6 +3609,7 @@ definitions:
           If your project has no use for a slug, just derive it from the email or similar.
         type: string
     required:
+    - appHost
     - slug
     type: object
   user_svc.RegisterResponse:
@@ -3704,7 +3753,8 @@ definitions:
           (Unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, in which case old tokens can be refreshed indefinitely.)
         type: boolean
       app:
-        example: shoes.com
+        $ref: '#/definitions/user_svc.App'
+      appId:
         type: string
       createdAt:
         type: string
@@ -3744,7 +3794,7 @@ definitions:
       userId:
         type: string
     required:
-    - app
+    - appId
     - createdAt
     - device
     - expiresAt
@@ -3855,7 +3905,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.8.0
+  version: 0.8.1
 paths:
   /chat-svc/events:
     get:
@@ -4169,6 +4219,7 @@ paths:
       - description: List Configs Request
         in: body
         name: body
+        required: true
         schema:
           $ref: '#/definitions/config_svc.ListConfigsRequest'
       produces:
@@ -6731,6 +6782,76 @@ paths:
       security:
       - BearerAuth: []
       summary: Reset Password
+      tags:
+      - User Svc
+  /user-svc/app:
+    post:
+      consumes:
+      - application/json
+      description: Get an app by host, or create it if it does not exist.
+      operationId: readApp
+      parameters:
+      - description: Read App Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.ReadAppRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: App retrieved or created successfully
+          schema:
+            $ref: '#/definitions/user_svc.ReadAppResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Read or Create App
+      tags:
+      - User Svc
+  /user-svc/apps:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        List apps. Role, user ID or contact ID must be specified.
+
+        Requires the `user-svc:app:view` permission, which by default all users have.
+        Caller can only list apps of roles they own (unless they are an admin).
+      operationId: listApps
+      parameters:
+      - description: List Apps Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.ListAppsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Apps listed successfully
+          schema:
+            $ref: '#/definitions/user_svc.ListAppsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List Apps
       tags:
       - User Svc
   /user-svc/change-password:

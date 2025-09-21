@@ -14,6 +14,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 )
@@ -29,7 +30,7 @@ func TestSaveSelf(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, _, err := test.MakeClients(clientFactory, 1)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
 	client1 := manyClients[0]
@@ -104,6 +105,7 @@ func TestSaveSelf(t *testing.T) {
 	t.Run("make sure login still works after update", func(t *testing.T) {
 		_, _, err := client1.UserSvcAPI.Login(ctx).Body(
 			openapi.UserSvcLoginRequest{
+				AppHost:  sdk.DefaultTestAppHost,
 				Slug:     openapi.PtrString("test-user-slug-0"),
 				Password: openapi.PtrString("testUserPassword0"),
 			}).Execute()

@@ -1,0 +1,74 @@
+---
+id: list-apps
+title: "List Apps"
+description: "List apps. Role, user ID or contact ID must be specified."
+sidebar_label: "List Apps"
+hide_title: true
+hide_table_of_contents: true
+api: eJzdVsFu4zYQ/RWCpy6gSHbTooVOdbaLImiADeLNyTawY2oscUORDElZqxr692IoKXZid4HuoYdebGk8M5z3ZubRB16gF07aII3mOb+TPjCw1qfswShMWOPRsdvfmXFMGB1ABHqrGx/YFpm3KOROYpGu9Vo/4HMjHXoWKmSfKfLK70UO1uZ7ie1nZtHV0ntpdMLaSoqKbTtW4A4aFRgoFU/zrII9pmv9HpRCxwRoZrTqmJpqY2bHnFHDQR0zrWY/NFqhHw3gkIFmUNRSv0t5wo1FB4TwtuA5pzwLaz1PuMPnBn24MUXH8wMnhKgDPYK1SooYlH3xxM2Be1FhDfRkHaUMEj29VcbHGBmwjobQWeQ598FJXfI+mQzgHHT0Lgv/bwKOBrP9giLwnkwXOkew2MMAaoQnHRY8D67BngzeGu2Hsn+czejrdZqYgRjCgvlGCPR+1yjV8eR72aGOvQJ7mbwzCmRxwdyfgloNwdF1c0bRBRJPQ2NZ51GR2Z9m83NmHjU0oTJO/oXF97OBzhl3GdilSn6+1KNbHdBpUGyJbo+OfYg5/5uS+oR7FI2ToeP56sBvEBy6RRMqnq82PREKpSeCH0k5lntBJNcYKkO7Z4eGWSB/nk0akcGwjz4C8jFz4xS5ZMoIUNTofD6/vv6F0xlTCUuCNKA4LeQtYZ86i2w9uqw52xmlTIsFyQ8wb0GQYBQsmCfUDMQwJWznTB21bILC7kwpNUNdWCN1IGmRlL9CKJA6oKEmvhbjoET++XEQrfwTh0mknjwcxefDV6itwuM+rKYubEaxOBpoNfTOTHoFIjYca5DElweF/jcvddkoCM7oVJj6pLL7W7ZsrDWO2jBQXIVg8yybb0E8oS4oIONn+rK4vdIQ5B5ZLYUz1Ckp0DOrIOyMq4kMJQVqH2FM5/1xf8f21+ns1Wk+z7K2bdNSN6lxZTbG+QxKq66u01lahVrFFUZX+4+75XDasVjfQlmiS6XJoktGLMtAFPL5zQCEJ5yGaSh/lv6azikjTWAN+qTGF+XkbzCfXAj/04txHMyAX0NmFUhNDMU+HcYdXfGpXJ68aOY0o4fDFjw+OtX3ZH5u0JEqbBK+BydhS+1Y0cCOC0Jr/YQdz/n7gdgr2kzqE6hm2JA3stUnU8RCCLThm76nQnP/cfmJJ3w73uy1KSjGQUvXIrQ85/F/AUVH+Yi2A1egywZK8h1y0rLCKCrHNaaSkumBUE0/6e6kwrcyMAChT4J1MeRwGESi71/8h5/+MeJFewZvauGm7/u/AQhBZVY=
+sidebar_class_name: "post api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List Apps"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/user-svc/apps"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+List apps. Role, user ID or contact ID must be specified.
+
+Requires the `user-svc:app:view` permission, which by default all users have.
+Caller can only list apps of roles they own (unless they are an admin).
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"host":{"items":{"type":"string"},"type":"array"},"ids":{"items":{"type":"string"},"type":"array"}},"type":"object"}}},"description":"List Apps Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Apps listed successfully","content":{"application/json":{"schema":{"properties":{"apps":{"items":{"properties":{"host":{"type":"string"},"id":{"type":"string"}},"required":["host","id"],"type":"object"},"type":"array"}},"required":["apps"],"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

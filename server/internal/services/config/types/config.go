@@ -16,7 +16,7 @@ type ErrorResponse struct {
 type Config struct {
 	InternalId string `json:"internalId,omitempty" swagger:"ignore"`
 
-	App string `json:"app" binding:"required"`
+	AppId string `json:"appId" binding:"required"`
 
 	// CamelCased slugs of the config owners
 	Id        string    `json:"id" binding:"required"`
@@ -32,7 +32,7 @@ func (c Config) GetId() string {
 }
 
 type ListConfigsRequest struct {
-	App string `json:"app" example:"shoes.com"`
+	AppHost string `json:"appHost" binding:"required" example:"shoes.com"`
 
 	// Ids are camelCased slugs of the config owners.
 	// Specifying only the ids will mean all of the config will be returned
@@ -66,11 +66,11 @@ type ListConfigsResponse struct {
 }
 
 type SaveConfigRequest struct {
-	// App can only be specified by users who have the
+	// AppHost can only be specified by users who have the
 	// `config-svc:config:edit-on-behalf` permission, who are typically admins.
 	//
 	// If not specified, the config will be saved for the current app of the user's token.
-	App string `json:"app,omitempty"`
+	AppHost string `json:"appHost,omitempty"`
 
 	// Id is the slug of the owner to save the config for.
 	// Only user with the `config-svc:config:edit-on-behalf` can specify this.

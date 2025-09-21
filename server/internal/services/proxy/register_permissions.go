@@ -28,7 +28,7 @@ func (p *ProxyService) registerPermits() error {
 	} {
 		for _, permission := range proxytypes.AdminPermissions {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
-				App:        openapi.PtrString("*"),
+				AppHost:    openapi.PtrString("*"),
 				Roles:      []string{role},
 				Permission: permission,
 			})

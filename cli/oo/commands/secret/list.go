@@ -58,8 +58,8 @@ func List(cmd *cobra.Command, args []string, show bool) error {
 		}
 
 		app := "unnamed"
-		if secret.App != "" {
-			app = secret.App
+		if secret.AppId != "" {
+			app = secret.AppId
 		}
 
 		fmt.Fprintf(

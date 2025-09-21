@@ -12,7 +12,7 @@ import "time"
 type Token struct {
 	InternalId string `json:"internalId,omitempty" swagger:"ignore"`
 
-	App string `json:"app" binding:"required" example:"shoes.com"`
+	AppId string `json:"appId" binding:"required"`
 
 	Id string `json:"id" binding:"required"`
 
@@ -58,6 +58,8 @@ type Token struct {
 	// that have been recently refreshed (see `lastRefreshedAt` field) and are still in use are retained for further refreshing.
 	// (Unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, in which case old tokens can be refreshed indefinitely.)
 	Active bool `json:"active,omitempty"`
+
+	App *App `json:"app,omitempty"`
 }
 
 func (c *Token) GetId() string {
@@ -86,7 +88,7 @@ type RevokeTokensResponse struct{}
 
 type ExchangeTokenRequest struct {
 	// NewApp is the app of the new token that will be returned by this endpoint.
-	NewApp string `json:"newApp" binding:"required"`
+	NewAppHost string `json:"newAppHost" binding:"required"`
 
 	// NewDevice. If not provided, the device of the original token will be used.
 	NewDevice string `json:"newDevice,omitempty"`

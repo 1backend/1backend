@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 )
@@ -22,12 +23,12 @@ func TestListUsers(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, tokens, err := test.MakeClients(clientFactory, 5)
+	manyClients, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 5)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
 
-	adminClient, _, err := test.AdminClient(clientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	t.Run("users can not list users", func(t *testing.T) {

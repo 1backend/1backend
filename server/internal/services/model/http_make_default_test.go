@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 )
@@ -23,7 +24,7 @@ func TestMakeDefault(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	adminClient, _, err := test.AdminClient(clientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	t.Run("download model asset", func(t *testing.T) {
@@ -64,9 +65,12 @@ func TestMakeDefault(t *testing.T) {
 		rsp, _, err := adminClient.ConfigSvcAPI.
 			ListConfigs(context.Background()).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				Ids: []string{"modelSvc"},
+				// Model service does not respect AppHost as it's not multitenant
+				AppHost: sdk.DefaultAppHost,
+				Ids:     []string{"modelSvc"},
 			}).
 			Execute()
+
 		require.NoError(t, err)
 		require.Equal(t, "dummy", rsp.Configs["modelSvc"].Data["currentModelId"], rsp)
 	})

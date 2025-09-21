@@ -30,6 +30,7 @@ import (
 	"github.com/flusflas/dipper"
 	"github.com/pkg/errors"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/logger"
 
@@ -284,7 +285,10 @@ func (d *DockerBackend) additionalEnvsAndHostBinds(
 			readConfigResponse, _, err := d.clientFactory.Client(client.WithToken(d.token)).
 				ConfigSvcAPI.ListConfigs(context.Background()).
 				Body(openapi.ConfigSvcListConfigsRequest{
-					Ids: []string{"configSvc"},
+					// @todo maybe list config should use the tokens app host by default
+					// It's probably better to be explicit
+					AppHost: sdk.DefaultAppHost,
+					Ids:     []string{"configSvc"},
 				}).
 				Execute()
 			if err != nil {

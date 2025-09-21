@@ -2,11 +2,13 @@ package userservice_test
 
 import (
 	"context"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 )
@@ -23,7 +25,7 @@ func TestAppRoles(t *testing.T) {
 	clientFactory := client.NewApiClientFactory(server.Url)
 	ctx := context.Background()
 
-	adminClient, _, err := test.AdminClient(clientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	var userId string
@@ -31,6 +33,7 @@ func TestAppRoles(t *testing.T) {
 	t.Run("anyone can register", func(t *testing.T) {
 		rsp, _, err := clientFactory.Client().UserSvcAPI.Register(ctx).Body(
 			openapi.UserSvcRegisterRequest{
+				AppHost:  sdk.DefaultTestAppHost,
 				Slug:     "test-slug-1",
 				Name:     openapi.PtrString("Test Name"),
 				Password: openapi.PtrString("testPass123"),
@@ -38,15 +41,18 @@ func TestAppRoles(t *testing.T) {
 		).Execute()
 		require.NoError(t, err)
 		require.NotNil(t, rsp.Token)
-		require.NotNil(t, rsp.Token.App)
-		require.Equal(t, "unnamed", rsp.Token.App)
+		require.NotNil(t, rsp.Token.AppId)
+		require.Equal(t,
+			strings.Replace(rsp.Token.App.Host, "http://", "", -1),
+			rsp.Token.App.Host,
+		)
 		userId = rsp.Token.UserId
 	})
 
 	t.Run("cannot re-register in a different app", func(t *testing.T) {
 		_, _, err := clientFactory.Client().UserSvcAPI.Register(ctx).Body(
 			openapi.UserSvcRegisterRequest{
-				App:      openapi.PtrString("helloapp"),
+				AppHost:  "helloapp",
 				Slug:     "test-slug-1",
 				Name:     openapi.PtrString("Test Name"),
 				Password: openapi.PtrString("testPass123"),
@@ -71,6 +77,7 @@ func TestAppRoles(t *testing.T) {
 	t.Run("log in to default app and see the role", func(t *testing.T) {
 		rsp, _, err := clientFactory.Client().UserSvcAPI.Login(ctx).Body(
 			openapi.UserSvcLoginRequest{
+				AppHost:  sdk.DefaultTestAppHost,
 				Slug:     openapi.PtrString("test-slug-1"),
 				Password: openapi.PtrString("testPass123"),
 			},
@@ -87,7 +94,7 @@ func TestAppRoles(t *testing.T) {
 	t.Run("log in to helloapp and NOT see the role", func(t *testing.T) {
 		rsp, _, err := clientFactory.Client().UserSvcAPI.Login(ctx).Body(
 			openapi.UserSvcLoginRequest{
-				App:      openapi.PtrString("helloapp"),
+				AppHost:  "helloapp",
 				Slug:     openapi.PtrString("test-slug-1"),
 				Password: openapi.PtrString("testPass123"),
 			},
@@ -103,15 +110,15 @@ func TestAppRoles(t *testing.T) {
 	t.Run("admin logs in to an other app", func(t *testing.T) {
 		rsp, _, err := adminClient.UserSvcAPI.Login(ctx).Body(
 			openapi.UserSvcLoginRequest{
-				App:      openapi.PtrString("helloapp"),
+				AppHost:  "helloapp",
 				Slug:     openapi.PtrString("1backend"),
 				Password: openapi.PtrString("changeme"),
 			},
 		).Execute()
 		require.NoError(t, err)
-		require.Equal(t, "helloapp", rsp.Token.App)
+		require.Equal(t, "helloapp", rsp.Token.App.Host)
 
-		clientFactory.Client(client.WithToken(rsp.Token.Token)).
+		_, _, err = clientFactory.Client(client.WithToken(rsp.Token.Token)).
 			UserSvcAPI.SaveEnrolls(ctx).
 			Body(openapi.UserSvcSaveEnrollsRequest{
 				Enrolls: []openapi.UserSvcEnrollInput{
@@ -126,13 +133,13 @@ func TestAppRoles(t *testing.T) {
 		t.Run("log in to helloapp and see the role", func(t *testing.T) {
 			rsp, _, err := clientFactory.Client().UserSvcAPI.Login(ctx).Body(
 				openapi.UserSvcLoginRequest{
-					App:      openapi.PtrString("helloapp"),
+					AppHost:  "helloapp",
 					Slug:     openapi.PtrString("test-slug-1"),
 					Password: openapi.PtrString("testPass123"),
 				},
 			).Execute()
 			require.NoError(t, err)
-			require.Equal(t, "helloapp", rsp.Token.App)
+			require.Equal(t, "helloapp", rsp.Token.App.Host)
 
 			selfRsp, _, err := clientFactory.Client(client.WithToken(rsp.Token.Token)).
 				UserSvcAPI.ReadSelf(ctx).Execute()

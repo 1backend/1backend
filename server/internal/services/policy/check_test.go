@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/server/internal/di"
 	policytypes "github.com/1backend/1backend/server/internal/services/policy/types"
 	"github.com/1backend/1backend/server/internal/universe"
@@ -41,6 +42,7 @@ func TestRateLimiting(t *testing.T) {
 
 	adminLoginRsp, _, err := client.UserSvcAPI.Login(context.Background()).
 		Body(openapi.UserSvcLoginRequest{
+			AppHost:  sdk.DefaultTestAppHost,
 			Slug:     openapi.PtrString("1backend"),
 			Password: openapi.PtrString("changeme"),
 		}).

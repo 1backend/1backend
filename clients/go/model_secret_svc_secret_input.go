@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0
+API version: 0.8.1
 Contact: sales@singulatron.com
 */
 
@@ -22,7 +22,7 @@ var _ MappedNullable = &SecretSvcSecretInput{}
 
 // SecretSvcSecretInput struct for SecretSvcSecretInput
 type SecretSvcSecretInput struct {
-	App *string `json:"app,omitempty"`
+	AppHost *string `json:"appHost,omitempty"`
 	// Slugs of services/users who can change the deleters list
 	CanChangeDeleters []string `json:"canChangeDeleters,omitempty"`
 	// Slugs of services/users who can change the readers list
@@ -67,36 +67,36 @@ func NewSecretSvcSecretInputWithDefaults() *SecretSvcSecretInput {
 	return &this
 }
 
-// GetApp returns the App field value if set, zero value otherwise.
-func (o *SecretSvcSecretInput) GetApp() string {
-	if o == nil || IsNil(o.App) {
+// GetAppHost returns the AppHost field value if set, zero value otherwise.
+func (o *SecretSvcSecretInput) GetAppHost() string {
+	if o == nil || IsNil(o.AppHost) {
 		var ret string
 		return ret
 	}
-	return *o.App
+	return *o.AppHost
 }
 
-// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// GetAppHostOk returns a tuple with the AppHost field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SecretSvcSecretInput) GetAppOk() (*string, bool) {
-	if o == nil || IsNil(o.App) {
+func (o *SecretSvcSecretInput) GetAppHostOk() (*string, bool) {
+	if o == nil || IsNil(o.AppHost) {
 		return nil, false
 	}
-	return o.App, true
+	return o.AppHost, true
 }
 
-// HasApp returns a boolean if a field has been set.
-func (o *SecretSvcSecretInput) HasApp() bool {
-	if o != nil && !IsNil(o.App) {
+// HasAppHost returns a boolean if a field has been set.
+func (o *SecretSvcSecretInput) HasAppHost() bool {
+	if o != nil && !IsNil(o.AppHost) {
 		return true
 	}
 
 	return false
 }
 
-// SetApp gets a reference to the given string and assigns it to the App field.
-func (o *SecretSvcSecretInput) SetApp(v string) {
-	o.App = &v
+// SetAppHost gets a reference to the given string and assigns it to the AppHost field.
+func (o *SecretSvcSecretInput) SetAppHost(v string) {
+	o.AppHost = &v
 }
 
 // GetCanChangeDeleters returns the CanChangeDeleters field value if set, zero value otherwise.
@@ -453,8 +453,8 @@ func (o SecretSvcSecretInput) MarshalJSON() ([]byte, error) {
 
 func (o SecretSvcSecretInput) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.App) {
-		toSerialize["app"] = o.App
+	if !IsNil(o.AppHost) {
+		toSerialize["appHost"] = o.AppHost
 	}
 	if !IsNil(o.CanChangeDeleters) {
 		toSerialize["canChangeDeleters"] = o.CanChangeDeleters

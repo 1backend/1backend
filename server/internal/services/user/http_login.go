@@ -9,6 +9,7 @@ package userservice
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -48,7 +49,22 @@ func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	token, err := s.login(&request)
+	if request.AppHost == "" {
+		endpoint.WriteErr(w, http.StatusBadRequest, errors.New("AppHost missing"))
+		return
+	}
+
+	app, err := s.getOrCreateApp(request.AppHost)
+	if err != nil {
+		logger.Error(
+			"Failed to get or create app",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
+		return
+	}
+
+	token, err := s.login(app.Id, &request)
 	if err != nil {
 		switch err.Error() {
 		case "unauthorized":
@@ -87,11 +103,9 @@ func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) login(
+	appId string,
 	request *user.LoginRequest,
 ) (*user.Token, error) {
-	if request.App == "" {
-		request.App = "unnamed"
-	}
 
 	var usr *user.User
 
@@ -156,18 +170,18 @@ func (s *UserService) login(
 		request.Device = unknownDevice
 	}
 
-	return s.issueToken(request.App, usr, request.Device)
+	return s.issueToken(appId, usr, request.Device)
 }
 
 func (s *UserService) issueToken(
-	app string,
+	appId string,
 	usr *user.User,
 	device string,
 ) (*user.Token, error) {
 
 	// Let's see if there is an active token we can reuse
 	tokenI, found, err := s.tokenStore.Query(
-		datastore.Equals(datastore.Field("app"), app),
+		datastore.Equals(datastore.Field("appId"), appId),
 		datastore.Equals(datastore.Field("userId"), usr.Id),
 		datastore.Equals(datastore.Field("active"), true),
 		datastore.Equals(datastore.Field("device"), device),
@@ -196,14 +210,14 @@ func (s *UserService) issueToken(
 			return tok, nil
 		}
 
-		err = s.inactivateToken(app, tok.Id)
+		err = s.inactivateToken(appId, tok.Id)
 		if err != nil {
 			return nil, errors.Wrap(err, "could not inactivate token")
 		}
 	}
 
 	token, err := s.generateAuthToken(
-		app,
+		appId,
 		usr,
 		device,
 	)
@@ -244,22 +258,22 @@ func (s *UserService) isFunctional(token string) (bool, error) {
 }
 
 func (s *UserService) generateAuthToken(
-	app string,
+	appId string,
 	u *user.User,
 	device string,
 ) (*user.Token, error) {
-	roles, err := s.getRolesByUserId(app, u.Id)
+	roles, err := s.getRolesByUserId(appId, u.Id)
 	if err != nil {
 		return nil, errors.Wrap(err, "error listing roles")
 	}
 
-	_, activeOrganizationId, err := s.getUserOrganizations(app, u.Id)
+	_, activeOrganizationId, err := s.getUserOrganizations(appId, u.Id)
 	if err != nil {
 		return nil, errors.Wrap(err, "error listing organizations")
 	}
 
-	claims, token, err := s.generateJWT(
-		app, u, roles, activeOrganizationId,
+	_, token, err := s.generateJWT(
+		appId, u, roles, activeOrganizationId,
 		s.privateKey, device)
 	if err != nil {
 		return nil, err
@@ -268,10 +282,31 @@ func (s *UserService) generateAuthToken(
 	now := time.Now()
 
 	id := sdk.Id("tok")
+	internalId, err := sdk.InternalId(appId, id)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to create internal id")
+	}
+
+	appI, found, err := s.appStore.Query(
+		datastore.Equals(datastore.Field("id"), appId),
+	).FindOne()
+	if err != nil {
+		return nil, fmt.Errorf("error finding app by id '%s': %v", appId, err)
+	}
+	if !found {
+		return nil, fmt.Errorf("app not found by id '%s'", appId)
+	}
+	app := appI.(*user.App)
+
+	app, err = s.getOrCreateApp(app.Host)
+	if err != nil {
+		return nil, errors.Wrap(err, "error getting or creating app")
+	}
 
 	return &user.Token{
-		InternalId: sdk.InternalId(claims.ID, app),
+		InternalId: internalId,
 		Id:         id,
+		AppId:      appId,
 		App:        app,
 		UserId:     u.Id,
 		Token:      token,
@@ -280,4 +315,28 @@ func (s *UserService) generateAuthToken(
 		ExpiresAt:  now.Add(s.options.TokenExpiration),
 		CreatedAt:  now,
 	}, nil
+}
+
+func (s *UserService) getOrCreateApp(host string) (*user.App, error) {
+	appI, found, err := s.appStore.Query(
+		datastore.Equals(datastore.Field("host"), host),
+	).FindOne()
+	if err != nil {
+		return nil, errors.Wrap(err, "error querying app by host")
+	}
+	if found {
+		return appI.(*user.App), nil
+	}
+
+	app := &user.App{
+		Id:   sdk.Id("app"),
+		Host: host,
+	}
+
+	err = s.appStore.Upsert(app)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating app")
+	}
+
+	return app, nil
 }

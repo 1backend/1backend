@@ -11,12 +11,12 @@ import "time"
 
 // Permit is a mechanism to give users or roles permissions to perform actions defined by the `Permission` field.
 type Permit struct {
-	InternalId string `json:"internalId,omitempty" swagger:"ignore"`
+	InternalId string `json:"internalId" swagger:"ignore"`
 
 	// App of the permit.
 	// Use `*` to match all apps, such as when bootstrapping
 	// in services.
-	App string `json:"app" example:"unnamed,omitempty"`
+	AppId string `json:"appId" binding:"required"`
 
 	Id string `json:"id" example:"inv_fIYPbMHIcI" binding:"required"`
 
@@ -43,7 +43,7 @@ type PermitInput struct {
 	// App of the permit.
 	// Use `*` to match all apps, such as when bootstrapping
 	// in services.
-	App string `json:"app" example:"unnamed,omitempty"`
+	AppHost string `json:"appHost" example:"unnamed,omitempty"`
 
 	Permission string `json:"permission" binding:"required"`
 

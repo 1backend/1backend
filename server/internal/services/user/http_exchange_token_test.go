@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
@@ -24,7 +25,7 @@ func TestExchangeToken(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	clients, tokens, err := test.MakeClients(clientFactory, 1)
+	clients, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
 	client1 := clients[0]
@@ -45,7 +46,7 @@ func TestExchangeToken(t *testing.T) {
 
 	t.Run("exchange", func(t *testing.T) {
 		exchangeReq := openapi.UserSvcExchangeTokenRequest{
-			NewApp: newApp,
+			NewAppHost: newApp,
 		}
 
 		rsp, httpRsp, err := client1.UserSvcAPI.ExchangeToken(context.Background()).
@@ -63,15 +64,15 @@ func TestExchangeToken(t *testing.T) {
 
 		require.Equal(t, originalClaim.UserId, exchangedClaim.UserId)
 		require.Equal(t, originalClaim.Device, exchangedClaim.Device)
-		require.Equal(t, newApp, exchangedClaim.App)
+		require.Equal(t, newApp, rsp.Token.App.Host)
 	})
 
 	newToken := ""
 
 	t.Run("exchange new device", func(t *testing.T) {
 		exchangeReq := openapi.UserSvcExchangeTokenRequest{
-			NewApp:    newApp,
-			NewDevice: openapi.PtrString("new-device"),
+			NewAppHost: newApp,
+			NewDevice:  openapi.PtrString("new-device"),
 		}
 
 		rsp, httpRsp, err := client1.UserSvcAPI.ExchangeToken(context.Background()).
@@ -89,14 +90,14 @@ func TestExchangeToken(t *testing.T) {
 
 		require.Equal(t, originalClaim.UserId, exchangedClaim.UserId)
 		require.Equal(t, "new-device", exchangedClaim.Device)
-		require.Equal(t, newApp, exchangedClaim.App)
+		require.Equal(t, newApp, rsp.Token.App.Host)
 
 		newToken = rsp.Token.Token
 	})
 
 	t.Run("exchange, device not specified", func(t *testing.T) {
 		exchangeReq := openapi.UserSvcExchangeTokenRequest{
-			NewApp: newApp,
+			NewAppHost: newApp,
 		}
 
 		rsp, httpRsp, err := clientFactory.Client(client.WithToken(newToken)).
@@ -114,6 +115,6 @@ func TestExchangeToken(t *testing.T) {
 		require.NoError(t, err)
 
 		require.Equal(t, "new-device", exchangedClaim.Device)
-		require.Equal(t, newApp, exchangedClaim.App)
+		require.Equal(t, newApp, rsp.Token.App.Host)
 	})
 }

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0
+API version: 0.8.1
 Contact: sales@singulatron.com
 */
 
@@ -20,8 +20,8 @@ var _ MappedNullable = &ConfigSvcSaveConfigRequest{}
 
 // ConfigSvcSaveConfigRequest struct for ConfigSvcSaveConfigRequest
 type ConfigSvcSaveConfigRequest struct {
-	// App can only be specified by users who have the `config-svc:config:edit-on-behalf` permission, who are typically admins.  If not specified, the config will be saved for the current app of the user's token.
-	App *string `json:"app,omitempty"`
+	// AppHost can only be specified by users who have the `config-svc:config:edit-on-behalf` permission, who are typically admins.  If not specified, the config will be saved for the current app of the user's token.
+	AppHost *string `json:"appHost,omitempty"`
 	Data map[string]interface{} `json:"data,omitempty"`
 	DataJson *string `json:"dataJson,omitempty"`
 	// Id is the slug of the owner to save the config for. Only user with the `config-svc:config:edit-on-behalf` can specify this. For everyone else, it is automatically set to the slug of the caller user.
@@ -45,36 +45,36 @@ func NewConfigSvcSaveConfigRequestWithDefaults() *ConfigSvcSaveConfigRequest {
 	return &this
 }
 
-// GetApp returns the App field value if set, zero value otherwise.
-func (o *ConfigSvcSaveConfigRequest) GetApp() string {
-	if o == nil || IsNil(o.App) {
+// GetAppHost returns the AppHost field value if set, zero value otherwise.
+func (o *ConfigSvcSaveConfigRequest) GetAppHost() string {
+	if o == nil || IsNil(o.AppHost) {
 		var ret string
 		return ret
 	}
-	return *o.App
+	return *o.AppHost
 }
 
-// GetAppOk returns a tuple with the App field value if set, nil otherwise
+// GetAppHostOk returns a tuple with the AppHost field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigSvcSaveConfigRequest) GetAppOk() (*string, bool) {
-	if o == nil || IsNil(o.App) {
+func (o *ConfigSvcSaveConfigRequest) GetAppHostOk() (*string, bool) {
+	if o == nil || IsNil(o.AppHost) {
 		return nil, false
 	}
-	return o.App, true
+	return o.AppHost, true
 }
 
-// HasApp returns a boolean if a field has been set.
-func (o *ConfigSvcSaveConfigRequest) HasApp() bool {
-	if o != nil && !IsNil(o.App) {
+// HasAppHost returns a boolean if a field has been set.
+func (o *ConfigSvcSaveConfigRequest) HasAppHost() bool {
+	if o != nil && !IsNil(o.AppHost) {
 		return true
 	}
 
 	return false
 }
 
-// SetApp gets a reference to the given string and assigns it to the App field.
-func (o *ConfigSvcSaveConfigRequest) SetApp(v string) {
-	o.App = &v
+// SetAppHost gets a reference to the given string and assigns it to the AppHost field.
+func (o *ConfigSvcSaveConfigRequest) SetAppHost(v string) {
+	o.AppHost = &v
 }
 
 // GetData returns the Data field value if set, zero value otherwise.
@@ -183,8 +183,8 @@ func (o ConfigSvcSaveConfigRequest) MarshalJSON() ([]byte, error) {
 
 func (o ConfigSvcSaveConfigRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.App) {
-		toSerialize["app"] = o.App
+	if !IsNil(o.AppHost) {
+		toSerialize["appHost"] = o.AppHost
 	}
 	if !IsNil(o.Data) {
 		toSerialize["data"] = o.Data

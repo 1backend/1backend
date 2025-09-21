@@ -39,7 +39,7 @@ func TestNodeId(t *testing.T) {
 	require.NoError(t, nodeInfo1.StarterFunc())
 
 	require.Equal(t, true, opt1.ClientFactory != nil)
-	adminClient, _, err := test.AdminClient(opt1.ClientFactory)
+	adminClient, _, err := test.AdminClient(opt1.ClientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	t.Run("first node appears in node list", func(t *testing.T) {
@@ -65,7 +65,7 @@ func TestNodeId(t *testing.T) {
 	hs2.UpdateHandler(nodeInfo2.Router)
 	require.NoError(t, nodeInfo2.StarterFunc())
 
-	adminClient2, _, err := test.AdminClient(opt2.ClientFactory)
+	adminClient2, _, err := test.AdminClient(opt2.ClientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	t.Run("second node appears in node list", func(t *testing.T) {

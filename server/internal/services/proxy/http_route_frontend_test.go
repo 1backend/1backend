@@ -11,6 +11,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 
@@ -46,7 +47,7 @@ func TestProxyService_FrontendRoute(t *testing.T) {
 	defer server.Cleanup(t)
 
 	clientFactory := client.NewApiClientFactory(server.Url)
-	adminClient, _, err := test.AdminClient(clientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	edgeProxyUrl := fmt.Sprintf("http://localhost:%d", port)
@@ -324,7 +325,7 @@ func TestProxyService_MicrofrontendsByPath(t *testing.T) {
 	defer server.Cleanup(t)
 
 	clientFactory := client.NewApiClientFactory(server.Url)
-	adminClient, _, err := test.AdminClient(clientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	edgeProxyUrl := fmt.Sprintf("http://localhost:%d", port)

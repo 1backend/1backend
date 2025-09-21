@@ -59,7 +59,7 @@ func List(cmd *cobra.Command, args []string) error {
 			writer,
 			"%s\t%s\t%s\n",
 			config.Id,
-			config.App,
+			config.AppId,
 			jsonValue,
 		)
 	}

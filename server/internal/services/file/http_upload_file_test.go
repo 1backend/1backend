@@ -11,6 +11,7 @@ import (
 
 	"github.com/1backend/1backend/server/internal/universe"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
@@ -48,6 +49,7 @@ func TestUploadFile(t *testing.T) {
 
 	token, err := boot.RegisterUserAccount(
 		options.ClientFactory.Client().UserSvcAPI,
+		sdk.DefaultTestAppHost,
 		"someuser",
 		"pw123",
 		"Some name",
@@ -55,7 +57,7 @@ func TestUploadFile(t *testing.T) {
 	require.NoError(t, err)
 	userClient := options.ClientFactory.Client(client.WithToken(token.Token))
 
-	adminClient, _, err := test.AdminClient(options.ClientFactory)
+	adminClient, _, err := test.AdminClient(options.ClientFactory, sdk.DefaultAppHost)
 	require.NoError(t, err)
 
 	ctx := context.Background()

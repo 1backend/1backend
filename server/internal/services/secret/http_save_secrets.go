@@ -19,6 +19,7 @@ import (
 	"net/http"
 	"strings"
 
+	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
@@ -84,6 +85,7 @@ func (cs *SecretService) SaveSecrets(
 
 	err = cs.saveSecrets(
 		r.Context(),
+		isAuthRsp.AppId,
 		req.Secrets,
 		isAuthRsp.Authorized,
 		isAuthRsp.User.Slug,
@@ -109,6 +111,7 @@ func (cs *SecretService) SaveSecrets(
 // @todo here canSaveUnprefixed is an approximation of whether the user is an admin or not.
 func (cs *SecretService) saveSecrets(
 	ctx context.Context,
+	defaultAppId string,
 	ss []*secret.SecretInput,
 	canSaveUnprefixed bool,
 	userSlug string,
@@ -117,12 +120,27 @@ func (cs *SecretService) saveSecrets(
 	defer cs.options.Lock.Release(ctx, "secret-svc-save")
 
 	for _, s := range ss {
-		if s.App == "" {
-			s.App = defaultApp
+		secretAppId := ""
+		if s.AppHost != "" {
+			rsp, _, err := cs.options.ClientFactory.
+				Client().
+				UserSvcAPI.
+				ReadApp(ctx).
+				Body(openapi.UserSvcReadAppRequest{
+					Host: &s.AppHost,
+				}).
+				Execute()
+
+			if err != nil {
+				return errors.Wrapf(err, "failed to read app '%s' by host", s.AppHost)
+			}
+			secretAppId = rsp.GetApp().Id
+		} else {
+			secretAppId = defaultAppId
 		}
 
 		secretI, found, err := cs.secretStore.Query(
-			datastore.Equals([]string{"app"}, s.App),
+			datastore.Equals([]string{"appId"}, secretAppId),
 			datastore.Equals([]string{"id"}, s.Id),
 		).
 			FindOne()
@@ -168,9 +186,14 @@ func (cs *SecretService) saveSecrets(
 				}
 			}
 
+			internalId, err := sdk.InternalId(secretAppId, s.Id)
+			if err != nil {
+				return errors.Wrap(err, "failed to create internal id")
+			}
+
 			secr := &secret.Secret{
-				InternalId:        fmt.Sprintf("%s_%s", s.App, s.Id),
-				App:               s.App,
+				InternalId:        internalId,
+				AppId:             secretAppId,
 				Id:                s.Id,
 				Value:             s.Value,
 				Readers:           s.Readers,
@@ -216,9 +239,14 @@ func (cs *SecretService) saveSecrets(
 			}
 		}
 
+		internalId, err := sdk.InternalId(secretAppId, secr.Id)
+		if err != nil {
+			return errors.Wrap(err, "failed to create internal id")
+		}
+
 		secr = &secret.Secret{
-			InternalId:        secr.InternalId,
-			App:               secr.App,
+			InternalId:        internalId,
+			AppId:             secretAppId,
 			Id:                secr.Id,
 			Value:             s.Value,
 			Readers:           secr.Readers,

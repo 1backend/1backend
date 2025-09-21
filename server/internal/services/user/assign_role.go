@@ -16,7 +16,7 @@ import (
 )
 
 func (s *UserService) assignRole(
-	app string,
+	appId string,
 	userId string,
 	role string,
 ) error {
@@ -33,7 +33,7 @@ func (s *UserService) assignRole(
 	user := userI.(*usertypes.User)
 
 	enrolls, err := s.enrollStore.Query(
-		datastore.Equals(datastore.Field("app"), app),
+		datastore.Equals(datastore.Field("appId"), appId),
 		datastore.Equals(datastore.Field("userId"), userId),
 	).Find()
 	if err != nil {
@@ -43,7 +43,7 @@ func (s *UserService) assignRole(
 	alreadyHasRole := false
 	for _, v := range enrolls {
 		enroll := v.(*usertypes.Enroll)
-		if enroll.Role == role && enroll.App == app {
+		if enroll.Role == role && enroll.AppId == appId {
 			alreadyHasRole = true
 		}
 	}
@@ -53,10 +53,15 @@ func (s *UserService) assignRole(
 
 	id := sdk.Id("enr")
 
+	internalId, err := sdk.InternalId(appId, id)
+	if err != nil {
+		return errors.Wrap(err, "failed to create internal id")
+	}
+
 	inv := &usertypes.Enroll{
-		InternalId: sdk.InternalId(id, app),
+		InternalId: internalId,
 		Id:         id,
-		App:        app,
+		AppId:      appId,
 		Role:       role,
 		UserId:     user.Id,
 	}
@@ -65,7 +70,7 @@ func (s *UserService) assignRole(
 		return errors.Wrap(err, "failed to add role to user")
 	}
 
-	return s.inactivateTokens(app, userId)
+	return s.inactivateTokens(appId, userId)
 }
 
 func (s *UserService) removeRoleFromUser(userId string, roleId string) error {

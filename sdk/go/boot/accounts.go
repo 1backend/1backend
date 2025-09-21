@@ -11,6 +11,7 @@ import (
 	"context"
 	"strings"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/google/uuid"
@@ -53,6 +54,7 @@ func RegisterServiceAccount(
 		}
 
 		rsp, _, err := userService.Register(ctx).Body(onebackendapi.UserSvcRegisterRequest{
+			AppHost:  sdk.DefaultAppHost,
 			Slug:     serviceSlug,
 			Name:     onebackendapi.PtrString(serviceName),
 			Password: onebackendapi.PtrString(pw),
@@ -67,6 +69,7 @@ func RegisterServiceAccount(
 	cred := res[0].(*auth.Credential)
 
 	loginRsp, loginHttpRsp, err := userService.Login(ctx).Body(onebackendapi.UserSvcLoginRequest{
+		AppHost:  sdk.DefaultAppHost,
 		Slug:     onebackendapi.PtrString(serviceSlug),
 		Password: onebackendapi.PtrString(cred.Password),
 	}).Execute()
@@ -76,6 +79,7 @@ func RegisterServiceAccount(
 			// We'll try to register as maybe registration failed or did not
 			// happen after saving the credential.
 			rsp, _, err := userService.Register(ctx).Body(onebackendapi.UserSvcRegisterRequest{
+				AppHost:  sdk.DefaultAppHost,
 				Slug:     serviceSlug,
 				Name:     onebackendapi.PtrString(serviceName),
 				Password: onebackendapi.PtrString(cred.Password),
@@ -94,23 +98,31 @@ func RegisterServiceAccount(
 
 // RegisterUserAccount is primarily used in tests.
 // @todo Move to a test package.
-func RegisterUserAccount(userService onebackendapi.UserSvcAPI, slug, password, name string) (*onebackendapi.UserSvcToken, error) {
+func RegisterUserAccount(
+	userService onebackendapi.UserSvcAPI,
+	appHost string,
+	slug string,
+	password string,
+	name string,
+) (*onebackendapi.UserSvcToken, error) {
 	_, _, err := userService.Register(context.Background()).Body(onebackendapi.UserSvcRegisterRequest{
+		AppHost:  appHost,
 		Slug:     slug,
 		Password: onebackendapi.PtrString(password),
 		Name:     onebackendapi.PtrString(name),
 	}).Execute()
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error registering user account")
 	}
 
 	loginRsp, _, err := userService.Login(context.Background()).Body(onebackendapi.UserSvcLoginRequest{
+		AppHost:  appHost,
 		Slug:     onebackendapi.PtrString(slug),
 		Password: onebackendapi.PtrString(password),
 	}).Execute()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error logging in with user account")
 	}
 
 	return loginRsp.Token, nil

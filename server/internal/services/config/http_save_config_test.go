@@ -12,6 +12,7 @@ import (
 	"testing"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 	"github.com/stretchr/testify/require"
@@ -28,12 +29,12 @@ func TestConfigService(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, _, err := test.MakeClients(clientFactory, 2)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 2)
 	require.NoError(t, err)
 	client1 := manyClients[0]
 	client2 := manyClients[1]
 
-	adminClient, _, err := test.AdminClient(clientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	ctx := context.Background()
@@ -53,6 +54,9 @@ func TestConfigService(t *testing.T) {
 
 	t.Run("read config client 1", func(t *testing.T) {
 		rsp, _, err := client1.ConfigSvcAPI.ListConfigs(ctx).
+			Body(openapi.ConfigSvcListConfigsRequest{
+				AppHost: sdk.DefaultTestAppHost,
+			}).
 			Execute()
 
 		require.NoError(t, err)
@@ -77,6 +81,9 @@ func TestConfigService(t *testing.T) {
 
 	t.Run("read config client 2", func(t *testing.T) {
 		rsp, _, err := client2.ConfigSvcAPI.ListConfigs(ctx).
+			Body(openapi.ConfigSvcListConfigsRequest{
+				AppHost: sdk.DefaultTestAppHost,
+			}).
 			Execute()
 
 		require.NoError(t, err)
@@ -89,7 +96,8 @@ func TestConfigService(t *testing.T) {
 	t.Run("list configs by id", func(t *testing.T) {
 		rsp, _, err := client2.ConfigSvcAPI.ListConfigs(ctx).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				Ids: []string{"testUserSlug1"},
+				AppHost: sdk.DefaultTestAppHost,
+				Ids:     []string{"testUserSlug1"},
 			}).
 			Execute()
 
@@ -135,7 +143,8 @@ func TestConfigService(t *testing.T) {
 			rsp, _, err := client1.ConfigSvcAPI.
 				ListConfigs(ctx).
 				Body(openapi.ConfigSvcListConfigsRequest{
-					Ids: []string{"testUserSlug0"},
+					AppHost: sdk.DefaultTestAppHost,
+					Ids:     []string{"testUserSlug0"},
 				}).
 				Execute()
 
@@ -177,7 +186,8 @@ func TestConfigService(t *testing.T) {
 
 		rsp, _, err := adminClient.ConfigSvcAPI.ListConfigs(ctx).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				Ids: []string{"otherSvc", "anotherSvc"},
+				AppHost: sdk.DefaultTestAppHost,
+				Ids:     []string{"otherSvc", "anotherSvc"},
 			}).
 			Execute()
 		require.NoError(t, err)
@@ -190,8 +200,8 @@ func TestConfigService(t *testing.T) {
 
 		_, _, err = adminClient.ConfigSvcAPI.SaveConfig(ctx).
 			Body(openapi.ConfigSvcSaveConfigRequest{
-				App: openapi.PtrString("otherApp"),
-				Id:  openapi.PtrString("anotherSvc"),
+				AppHost: openapi.PtrString("otherApp"),
+				Id:      openapi.PtrString("anotherSvc"),
 				Data: map[string]any{
 					"field1": "adminValue3",
 					"field2": "adminValue4",
@@ -203,8 +213,8 @@ func TestConfigService(t *testing.T) {
 
 		rsp, _, err = adminClient.ConfigSvcAPI.ListConfigs(ctx).
 			Body(openapi.ConfigSvcListConfigsRequest{
-				App: openapi.PtrString("otherApp"),
-				Ids: []string{"anotherSvc"},
+				AppHost: "otherApp",
+				Ids:     []string{"anotherSvc"},
 			}).
 			Execute()
 
@@ -219,7 +229,7 @@ func TestConfigService(t *testing.T) {
 	t.Run("users cannot specify other app", func(t *testing.T) {
 		_, _, err := client1.ConfigSvcAPI.SaveConfig(ctx).
 			Body(openapi.ConfigSvcSaveConfigRequest{
-				App: openapi.PtrString("otherApp"),
+				AppHost: openapi.PtrString("otherApp"),
 				Data: map[string]any{
 					"otherSvc": map[string]any{
 						"field1": "userValue1",
@@ -251,6 +261,7 @@ func TestConfigService(t *testing.T) {
 	t.Run("query dotpath", func(t *testing.T) {
 		rsp, _, err := client1.ConfigSvcAPI.ListConfigs(ctx).
 			Body(openapi.ConfigSvcListConfigsRequest{
+				AppHost: sdk.DefaultTestAppHost,
 				Selector: &map[string][]string{
 					"otherSvc": {"field1", "field3.secondLevel3"},
 				},

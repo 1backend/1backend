@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 
@@ -48,10 +49,10 @@ func TestServeUploadedImage(t *testing.T) {
 	clientFactory := client.NewApiClientFactory(server.Url)
 
 	ctx := context.Background()
-	_, _, err = test.MakeClients(clientFactory, 1)
+	_, _, err = test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
-	adminClient, _, err := test.AdminClient(clientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	imageFile, cleanup := createTestImageFile(t)

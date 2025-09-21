@@ -28,7 +28,7 @@ func TestOrganization(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, _, err := test.MakeClients(clientFactory, 3)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 3)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -81,6 +81,7 @@ func TestOrganization(t *testing.T) {
 			require.Equal(t, claim.ExpiresAt.Time.Before(time.Now().Add(302*time.Second)), true)
 
 			loginReq := openapi.UserSvcLoginRequest{
+				AppHost:  sdk.DefaultTestAppHost,
 				Slug:     openapi.PtrString("test-user-slug-0"),
 				Password: openapi.PtrString("testUserPassword0"),
 			}
@@ -133,6 +134,7 @@ func TestOrganization(t *testing.T) {
 		require.NoError(t, err)
 
 		loginReq := openapi.UserSvcLoginRequest{
+			AppHost:  sdk.DefaultTestAppHost,
 			Slug:     openapi.PtrString("test-user-slug-1"),
 			Password: openapi.PtrString("testUserPassword1"),
 		}
@@ -189,13 +191,14 @@ func TestLoginAfterTokenExpiry(t *testing.T) {
 	clientFactory := client.NewApiClientFactory(server.Url)
 
 	ctx := context.Background()
-	_, _, err = test.MakeClients(clientFactory, 1)
+	_, _, err = test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
 	time.Sleep(1 * time.Second)
 
 	rsp, _, err := clientFactory.Client().UserSvcAPI.Login(ctx).Body(
 		openapi.UserSvcLoginRequest{
+			AppHost:  sdk.DefaultTestAppHost,
 			Slug:     openapi.PtrString("test-user-slug-0"),
 			Password: openapi.PtrString("testUserPassword0"),
 		},

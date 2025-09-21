@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
@@ -24,7 +25,7 @@ func TestEnrollForUnregistered(t *testing.T) {
 	defer server.Cleanup(t)
 
 	manyClients, _, err := test.MakeClients(
-		client.NewApiClientFactory(server.Url), 1)
+		client.NewApiClientFactory(server.Url), sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -77,7 +78,8 @@ func TestEnrollForUnregistered(t *testing.T) {
 	t.Run("new user should have role", func(t *testing.T) {
 		rsp, _, err := userClient.UserSvcAPI.Register(context.Background()).
 			Body(openapi.UserSvcRegisterRequest{
-				Slug: "test-user-slug-1",
+				AppHost: sdk.DefaultTestAppHost,
+				Slug:    "test-user-slug-1",
 				Contact: &openapi.UserSvcContactInput{
 					Id: "test-user@email.com",
 				},
@@ -119,22 +121,23 @@ func TestEnrollForRegisteredUser(t *testing.T) {
 	defer server.Cleanup(t)
 
 	clientFactory := client.NewApiClientFactory(server.Url)
-	manyClients, _, err := test.MakeClients(clientFactory, 1)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
 
 	t.Run("register user", func(t *testing.T) {
-		_, _, err := userClient.UserSvcAPI.Register(context.Background()).
+		_, hrsp, err := userClient.UserSvcAPI.Register(context.Background()).
 			Body(openapi.UserSvcRegisterRequest{
-				Slug: "test-user-slug-1",
+				AppHost: sdk.DefaultTestAppHost,
+				Slug:    "test-user-slug-1",
 				Contact: &openapi.UserSvcContactInput{
 					Id: "test-user@email.com",
 				},
 				Password: openapi.PtrString("yo"),
 			}).Execute()
 
-		require.NoError(t, err)
+		require.NoError(t, err, hrsp)
 	})
 
 	t.Run("enroll already registered user - role should apply immediately", func(t *testing.T) {
@@ -151,6 +154,7 @@ func TestEnrollForRegisteredUser(t *testing.T) {
 		require.NoError(t, err)
 
 		loginReq := openapi.UserSvcLoginRequest{
+			AppHost:  sdk.DefaultTestAppHost,
 			Slug:     openapi.PtrString("test-user-slug-1"),
 			Password: openapi.PtrString("yo"),
 		}
@@ -190,7 +194,7 @@ func TestListEnrollAuthorization(t *testing.T) {
 	defer server.Cleanup(t)
 
 	clientFactory := client.NewApiClientFactory(server.Url)
-	manyClients, tokens, err := test.MakeClients(clientFactory, 2)
+	manyClients, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 2)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -232,7 +236,7 @@ func TestListEnrollAuthorization(t *testing.T) {
 		require.Len(t, rsp.Enrolls, 2, rsp)
 	})
 
-	secondUserClient, _, err = test.LoggedInClient(clientFactory, "test-user-slug-1", "testUserPassword1")
+	secondUserClient, _, err = test.LoggedInClient(clientFactory, sdk.DefaultTestAppHost, "test-user-slug-1", "testUserPassword1")
 	require.NoError(t, err)
 
 	t.Run("second user cannot enroll someone as it has the role but does not own it", func(t *testing.T) {
@@ -268,7 +272,7 @@ func TestSaveEnrollsOldAssignTests(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, tokens, err := test.MakeClients(clientFactory, 3)
+	manyClients, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 3)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -353,6 +357,7 @@ func TestSaveEnrollsOldAssignTests(t *testing.T) {
 
 	secondClient, _, err := test.LoggedInClient(
 		clientFactory,
+		sdk.DefaultTestAppHost,
 		"test-user-slug-1",
 		"testUserPassword1",
 	)
@@ -414,6 +419,7 @@ func TestSaveEnrollsOldAssignTests(t *testing.T) {
 
 	secondClient, _, err = test.LoggedInClient(
 		clientFactory,
+		sdk.DefaultTestAppHost,
 		"test-user-slug-1",
 		"testUserPassword1",
 	)
@@ -456,7 +462,7 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 	defer server.Cleanup(t)
 
 	clientFactory := client.NewApiClientFactory(server.Url)
-	manyClients, _, err := test.MakeClients(clientFactory, 1)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
@@ -478,7 +484,7 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 				Enrolls: []openapi.UserSvcEnrollInput{
 					{
 						Id:        openapi.PtrString(enrollID),
-						App:       openapi.PtrString(appA),
+						AppHost:   openapi.PtrString(appA),
 						ContactId: openapi.PtrString(contact),
 						Role:      role,
 					},
@@ -495,7 +501,7 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 				Enrolls: []openapi.UserSvcEnrollInput{
 					{
 						Id:        openapi.PtrString(enrollID),
-						App:       openapi.PtrString(appA),
+						AppHost:   openapi.PtrString(appA),
 						ContactId: openapi.PtrString(newContact), // change something to force an update
 						Role:      role,
 					},
@@ -512,7 +518,7 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 				Enrolls: []openapi.UserSvcEnrollInput{
 					{
 						Id:        openapi.PtrString(enrollID),
-						App:       openapi.PtrString(appB),
+						AppHost:   openapi.PtrString(appB),
 						ContactId: openapi.PtrString(contact),
 						Role:      role,
 					},
@@ -530,7 +536,7 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 				Enrolls: []openapi.UserSvcEnrollInput{
 					{
 						Id:        openapi.PtrString(globalID),
-						App:       openapi.PtrString(appGlobal),
+						AppHost:   openapi.PtrString(appGlobal),
 						ContactId: openapi.PtrString(contact),
 						Role:      role,
 					},
@@ -547,7 +553,7 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 				Enrolls: []openapi.UserSvcEnrollInput{
 					{
 						Id:        openapi.PtrString(globalID),
-						App:       openapi.PtrString(appA),
+						AppHost:   openapi.PtrString(appA),
 						ContactId: openapi.PtrString(contact),
 						Role:      role,
 					},
@@ -566,7 +572,7 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 				Enrolls: []openapi.UserSvcEnrollInput{
 					{
 						Id:        openapi.PtrString(appScopedID),
-						App:       openapi.PtrString(appB),
+						AppHost:   openapi.PtrString(appB),
 						ContactId: openapi.PtrString(contact),
 						Role:      role,
 					},
@@ -580,7 +586,7 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 				Enrolls: []openapi.UserSvcEnrollInput{
 					{
 						Id:        openapi.PtrString(appScopedID),
-						App:       openapi.PtrString(appGlobal),
+						AppHost:   openapi.PtrString(appGlobal),
 						ContactId: openapi.PtrString(contact),
 						Role:      role,
 					},

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.8.0
+API version: 0.8.1
 Contact: sales@singulatron.com
 */
 
@@ -132,6 +132,9 @@ func (a *ConfigSvcAPIService) ListConfigsExecute(r ApiListConfigsRequest) (*Conf
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
+	if r.body == nil {
+		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/json"}

@@ -21,6 +21,7 @@ import (
 	univ "github.com/1backend/1backend/server/internal/universe"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
@@ -66,6 +67,7 @@ func TestDownloadFile(t *testing.T) {
 
 	token, err := boot.RegisterUserAccount(
 		options.ClientFactory.Client().UserSvcAPI,
+		sdk.DefaultTestAppHost,
 		"someuser",
 		"pw123",
 		"Some name",
@@ -82,7 +84,7 @@ func TestDownloadFile(t *testing.T) {
 		Execute()
 	require.Error(t, err)
 
-	adminClient, _, err := test.AdminClient(options.ClientFactory)
+	adminClient, _, err := test.AdminClient(options.ClientFactory, sdk.DefaultAppHost)
 	require.NoError(t, err)
 
 	_, _, err = adminClient.FileSvcAPI.DownloadFile(context.Background()).
@@ -169,6 +171,7 @@ func TestDownloadFileWithPartFile(t *testing.T) {
 
 	token, err := boot.RegisterUserAccount(
 		options.ClientFactory.Client().UserSvcAPI,
+		sdk.DefaultTestAppHost,
 		"someuser",
 		"pw123",
 		"Some name",
@@ -176,7 +179,7 @@ func TestDownloadFileWithPartFile(t *testing.T) {
 	require.NoError(t, err)
 	userClient := options.ClientFactory.Client(client.WithToken(token.Token))
 
-	adminClient, _, err := test.AdminClient(options.ClientFactory)
+	adminClient, _, err := test.AdminClient(options.ClientFactory, sdk.DefaultAppHost)
 	require.NoError(t, err)
 
 	downloadURL := fileHostServer.URL + "/file"
@@ -258,6 +261,7 @@ func TestDownloadFileWithFullFile(t *testing.T) {
 
 	token, err := boot.RegisterUserAccount(
 		options.ClientFactory.Client().UserSvcAPI,
+		sdk.DefaultTestAppHost,
 		"someuser",
 		"pw123",
 		"Some name",
@@ -265,7 +269,7 @@ func TestDownloadFileWithFullFile(t *testing.T) {
 	require.NoError(t, err)
 	userClient := options.ClientFactory.Client(client.WithToken(token.Token))
 
-	adminClient, _, err := test.AdminClient(options.ClientFactory)
+	adminClient, _, err := test.AdminClient(options.ClientFactory, sdk.DefaultAppHost)
 	require.NoError(t, err)
 
 	downloadURL := "full-file"

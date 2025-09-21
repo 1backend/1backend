@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	openapi "github.com/1backend/1backend/clients/go"
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
 )
@@ -24,7 +25,7 @@ func TestRevokeTokens(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, _, err := test.MakeClients(clientFactory, 3)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 3)
 	require.NoError(t, err)
 
 	client1 := manyClients[0]
@@ -84,7 +85,7 @@ func TestRevokeTokens(t *testing.T) {
 		require.NoError(t, err, hrsp)
 	})
 
-	adminClient, _, err := test.AdminClient(clientFactory)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
 	t.Run("non-admin cannot revoke all tokens", func(t *testing.T) {

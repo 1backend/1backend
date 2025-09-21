@@ -5,8 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"net"
-	"net/http"
+	"strings"
 	"time"
 
 	openapi "github.com/1backend/1backend/clients/go"
@@ -31,11 +30,7 @@ type TokenExchanger interface {
 		newApp string,
 	) (string, error)
 
-	// AppFromRequestHost extracts the app name from the request host.
-	//
-	// This is useful for public endpoints when the request doesn't contain a token.
-	// When the endpoint is authenticated, the token is usually used to determine the app.
-	AppFromRequestHost(request *http.Request) (string, error)
+	AppIdFromHost(ctx context.Context, appHost string) (string, error)
 }
 
 type TokenExchangerImpl struct {
@@ -65,10 +60,10 @@ func NewTokenExchanger(
 func (te *TokenExchangerImpl) ExchangeToken(
 	ctx context.Context,
 	token string,
-	newApp string,
+	newAppHost string,
 ) (string, error) {
 
-	cacheKey := generateTokenExchangeKey(token, newApp)
+	cacheKey := generateTokenExchangeKey(token, newAppHost)
 	if value, found := te.cache.Get(cacheKey); found {
 		if cached, ok := value.(*TokenExchangeResponse); ok {
 			return cached.Token, nil
@@ -76,7 +71,7 @@ func (te *TokenExchangerImpl) ExchangeToken(
 	}
 
 	req := openapi.UserSvcExchangeTokenRequest{
-		NewApp: newApp,
+		NewAppHost: newAppHost,
 	}
 
 	rsp, _, err := te.clientFactory.Client(
@@ -108,22 +103,36 @@ func (te *TokenExchangerImpl) ExchangeToken(
 	return rsp.Token.Token, nil
 }
 
-func (te *TokenExchangerImpl) AppFromRequestHost(request *http.Request) (
+func (te *TokenExchangerImpl) AppIdFromHost(
+	ctx context.Context,
+	appHost string,
+) (
 	string, error,
 ) {
-	if request == nil || request.Host == "" {
-		return "", errors.New("request or request host is empty")
+	if appHost == "" {
+		return "", errors.New("app host is empty")
 	}
 
-	host, _, err := net.SplitHostPort(request.Host)
+	if strings.HasPrefix(appHost, "app_") {
+		return "", fmt.Errorf("appHost is already an app id: '%s'", appHost)
+	}
+
+	rsp, _, err := te.clientFactory.Client().
+		UserSvcAPI.
+		ReadApp(ctx).
+		Body(openapi.UserSvcReadAppRequest{
+			Host: &appHost,
+		}).
+		Execute()
 	if err != nil {
-		return "", errors.Wrap(err, "failed to split host and port from request host")
-	}
-	if host == "" {
-		return "", errors.New("host is empty")
+		return "", errors.Wrap(err, "failed to list app")
 	}
 
-	return host, nil
+	if rsp.App.Id == "" {
+		return "", fmt.Errorf("app not found for host: '%s'", appHost)
+	}
+
+	return rsp.App.Id, nil
 }
 
 func generateTokenExchangeKey(token, newApp string) string {
