@@ -6,6 +6,7 @@ async function start() {
   let userService = new UserSvcApi();
   let loginResponse = await userService.login({
     body: {
+      appHost: "unnamed",
       slug: "1backend",
       password: "changeme",
     },
