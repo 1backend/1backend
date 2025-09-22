@@ -30,7 +30,7 @@ save ./permitA.yaml
 
 # Example contents of 'permitA.yaml':
 id: "permit-id-1"
-permissionId: "user-svc:role:read"
+permission: "user-svc:role:read"
 slugs:
   - "service1"
   - "user1"
@@ -40,12 +40,12 @@ save ./permits.yaml
 
 # Example contents of 'permits.yaml':
 - id: "permit-id-1"
-  permissionId: "user-svc:role:read"
+  permission: "user-svc:role:read"
   slugs:
     - "service1"
     - "user1"
 - id: "permit-id-2"
-  permissionId: "user-svc:role:write"
+  permission: "user-svc:role:write"
   slugs:
     - "service2"
     - "user2"`,

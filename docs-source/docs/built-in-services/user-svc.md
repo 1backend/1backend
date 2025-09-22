@@ -62,7 +62,7 @@ To enable your service to call the Add Prompt endpoint, we need to create a perm
 
 ```yaml
 id: "user-prompter-permit"
-permissionId: "prompt-svc:prompt:create"
+permission: "prompt-svc:prompt:create"
 slugs:
   - "user-prompter-svc"
 ```
@@ -582,7 +582,7 @@ oo permit save <permits-directory>
 ```yaml
 # api-access-permit.yaml
 id: "payment-api-access"
-permissionId: "payment-svc:process"
+permission: "payment-svc:process"
 slugs:
   - "order-service"
   - "subscription-service"
@@ -595,15 +595,15 @@ roles:
 ```yaml
 # service-permissions.yaml
 - id: "chat-read-permit"
-  permissionId: "chat-svc:message:read"
+  permission: "chat-svc:message:read"
   slugs: ["frontend-app", "mobile-app"]
 
 - id: "chat-write-permit"
-  permissionId: "chat-svc:message:create"
+  permission: "chat-svc:message:create"
   roles: ["chat-svc:user"]
 
 - id: "admin-chat-permit"
-  permissionId: "chat-svc:admin"
+  permission: "chat-svc:admin"
   roles: ["user-svc:admin"]
 ```
 
