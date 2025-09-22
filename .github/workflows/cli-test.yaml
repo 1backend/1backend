@@ -1,0 +1,36 @@
+name: "CLI test"
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    timeout-minutes: 6
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "^1.23.2"
+
+      - name: Start docker containers
+        run: |
+          docker compose up 1backend -d
+
+      - name: Run
+        run: |
+          HOST="127.0.0.1"
+          PORT=11337
+
+          while ! nc -z $HOST $PORT; do
+            echo "Waiting for $HOST:$PORT to come online..."
+            sleep 1
+          done
+
+          sleep 7
+
+          go test ./...
+        working-directory: ./cli/oo/smoketest
