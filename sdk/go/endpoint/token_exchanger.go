@@ -71,7 +71,7 @@ func (te *TokenExchangerImpl) ExchangeToken(
 	}
 
 	req := openapi.UserSvcExchangeTokenRequest{
-		NewAppHost: newAppHost,
+		NewAppHost: openapi.PtrString(newAppHost),
 	}
 
 	rsp, _, err := te.clientFactory.Client(

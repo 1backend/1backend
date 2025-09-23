@@ -46,7 +46,7 @@ func TestExchangeToken(t *testing.T) {
 
 	t.Run("exchange", func(t *testing.T) {
 		exchangeReq := openapi.UserSvcExchangeTokenRequest{
-			NewAppHost: newApp,
+			NewAppHost: openapi.PtrString(newApp),
 		}
 
 		rsp, httpRsp, err := client1.UserSvcAPI.ExchangeToken(context.Background()).
@@ -71,7 +71,7 @@ func TestExchangeToken(t *testing.T) {
 
 	t.Run("exchange new device", func(t *testing.T) {
 		exchangeReq := openapi.UserSvcExchangeTokenRequest{
-			NewAppHost: newApp,
+			NewAppHost: openapi.PtrString(newApp),
 			NewDevice:  openapi.PtrString("new-device"),
 		}
 
@@ -97,7 +97,7 @@ func TestExchangeToken(t *testing.T) {
 
 	t.Run("exchange, device not specified", func(t *testing.T) {
 		exchangeReq := openapi.UserSvcExchangeTokenRequest{
-			NewAppHost: newApp,
+			NewAppHost: openapi.PtrString(newApp),
 		}
 
 		rsp, httpRsp, err := clientFactory.Client(client.WithToken(newToken)).
