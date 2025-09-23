@@ -281,12 +281,6 @@ func (s *UserService) generateAuthToken(
 
 	now := time.Now()
 
-	id := sdk.Id("tok")
-	internalId, err := sdk.InternalId(appId, id)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to create internal id")
-	}
-
 	appI, found, err := s.appStore.Query(
 		datastore.Equals(datastore.Field("id"), appId),
 	).FindOne()
@@ -301,6 +295,13 @@ func (s *UserService) generateAuthToken(
 	app, err = s.getOrCreateApp(app.Host)
 	if err != nil {
 		return nil, errors.Wrap(err, "error getting or creating app")
+	}
+
+	id := sdk.Id("tok")
+
+	internalId, err := sdk.InternalId(appId, id)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to create internal id")
 	}
 
 	return &user.Token{
