@@ -16,7 +16,8 @@ export class UserSvcExchangeTokenRequest {
     /**
     * NewApp is the app of the new token that will be returned by this endpoint.
     */
-    'newAppHost': string;
+    'newAppHost'?: string;
+    'newAppId'?: string;
     /**
     * NewDevice. If not provided, the device of the original token will be used.
     */
@@ -28,6 +29,11 @@ export class UserSvcExchangeTokenRequest {
         {
             "name": "newAppHost",
             "baseName": "newAppHost",
+            "type": "string"
+        },
+        {
+            "name": "newAppId",
+            "baseName": "newAppId",
             "type": "string"
         },
         {

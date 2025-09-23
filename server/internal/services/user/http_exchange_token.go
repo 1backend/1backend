@@ -109,10 +109,15 @@ func (s *UserService) exchangeToken(
 		request.NewDevice = claims.Device
 	}
 
-	app, err := s.getOrCreateApp(request.NewAppHost)
-	if err != nil {
-		return nil, errors.Wrap(err, "error getting or creating app")
+	appId := request.NewAppId
+	if appId == "" {
+		app, err := s.getOrCreateApp(request.NewAppHost)
+		if err != nil {
+			return nil, errors.Wrap(err, "error getting or creating app")
+		}
+
+		appId = app.GetId()
 	}
 
-	return s.issueToken(app.GetId(), usr, request.NewDevice)
+	return s.issueToken(appId, usr, request.NewDevice)
 }

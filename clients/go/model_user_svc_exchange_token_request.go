@@ -13,8 +13,6 @@ package openapi
 
 import (
 	"encoding/json"
-	"bytes"
-	"fmt"
 )
 
 // checks if the UserSvcExchangeTokenRequest type satisfies the MappedNullable interface at compile time
@@ -23,20 +21,18 @@ var _ MappedNullable = &UserSvcExchangeTokenRequest{}
 // UserSvcExchangeTokenRequest struct for UserSvcExchangeTokenRequest
 type UserSvcExchangeTokenRequest struct {
 	// NewApp is the app of the new token that will be returned by this endpoint.
-	NewAppHost string `json:"newAppHost"`
+	NewAppHost *string `json:"newAppHost,omitempty"`
+	NewAppId *string `json:"newAppId,omitempty"`
 	// NewDevice. If not provided, the device of the original token will be used.
 	NewDevice *string `json:"newDevice,omitempty"`
 }
-
-type _UserSvcExchangeTokenRequest UserSvcExchangeTokenRequest
 
 // NewUserSvcExchangeTokenRequest instantiates a new UserSvcExchangeTokenRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcExchangeTokenRequest(newAppHost string) *UserSvcExchangeTokenRequest {
+func NewUserSvcExchangeTokenRequest() *UserSvcExchangeTokenRequest {
 	this := UserSvcExchangeTokenRequest{}
-	this.NewAppHost = newAppHost
 	return &this
 }
 
@@ -48,28 +44,68 @@ func NewUserSvcExchangeTokenRequestWithDefaults() *UserSvcExchangeTokenRequest {
 	return &this
 }
 
-// GetNewAppHost returns the NewAppHost field value
+// GetNewAppHost returns the NewAppHost field value if set, zero value otherwise.
 func (o *UserSvcExchangeTokenRequest) GetNewAppHost() string {
-	if o == nil {
+	if o == nil || IsNil(o.NewAppHost) {
 		var ret string
 		return ret
 	}
-
-	return o.NewAppHost
+	return *o.NewAppHost
 }
 
-// GetNewAppHostOk returns a tuple with the NewAppHost field value
+// GetNewAppHostOk returns a tuple with the NewAppHost field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *UserSvcExchangeTokenRequest) GetNewAppHostOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.NewAppHost) {
 		return nil, false
 	}
-	return &o.NewAppHost, true
+	return o.NewAppHost, true
 }
 
-// SetNewAppHost sets field value
+// HasNewAppHost returns a boolean if a field has been set.
+func (o *UserSvcExchangeTokenRequest) HasNewAppHost() bool {
+	if o != nil && !IsNil(o.NewAppHost) {
+		return true
+	}
+
+	return false
+}
+
+// SetNewAppHost gets a reference to the given string and assigns it to the NewAppHost field.
 func (o *UserSvcExchangeTokenRequest) SetNewAppHost(v string) {
-	o.NewAppHost = v
+	o.NewAppHost = &v
+}
+
+// GetNewAppId returns the NewAppId field value if set, zero value otherwise.
+func (o *UserSvcExchangeTokenRequest) GetNewAppId() string {
+	if o == nil || IsNil(o.NewAppId) {
+		var ret string
+		return ret
+	}
+	return *o.NewAppId
+}
+
+// GetNewAppIdOk returns a tuple with the NewAppId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcExchangeTokenRequest) GetNewAppIdOk() (*string, bool) {
+	if o == nil || IsNil(o.NewAppId) {
+		return nil, false
+	}
+	return o.NewAppId, true
+}
+
+// HasNewAppId returns a boolean if a field has been set.
+func (o *UserSvcExchangeTokenRequest) HasNewAppId() bool {
+	if o != nil && !IsNil(o.NewAppId) {
+		return true
+	}
+
+	return false
+}
+
+// SetNewAppId gets a reference to the given string and assigns it to the NewAppId field.
+func (o *UserSvcExchangeTokenRequest) SetNewAppId(v string) {
+	o.NewAppId = &v
 }
 
 // GetNewDevice returns the NewDevice field value if set, zero value otherwise.
@@ -114,48 +150,16 @@ func (o UserSvcExchangeTokenRequest) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcExchangeTokenRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	toSerialize["newAppHost"] = o.NewAppHost
+	if !IsNil(o.NewAppHost) {
+		toSerialize["newAppHost"] = o.NewAppHost
+	}
+	if !IsNil(o.NewAppId) {
+		toSerialize["newAppId"] = o.NewAppId
+	}
 	if !IsNil(o.NewDevice) {
 		toSerialize["newDevice"] = o.NewDevice
 	}
 	return toSerialize, nil
-}
-
-func (o *UserSvcExchangeTokenRequest) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"newAppHost",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err;
-	}
-
-	for _, requiredProperty := range(requiredProperties) {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
-	varUserSvcExchangeTokenRequest := _UserSvcExchangeTokenRequest{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varUserSvcExchangeTokenRequest)
-
-	if err != nil {
-		return err
-	}
-
-	*o = UserSvcExchangeTokenRequest(varUserSvcExchangeTokenRequest)
-
-	return err
 }
 
 type NullableUserSvcExchangeTokenRequest struct {

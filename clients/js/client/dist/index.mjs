@@ -9543,8 +9543,6 @@ function UserSvcErrorResponseToJSONTyped(value, ignoreDiscriminator = false) {
  * Check if a given object implements the UserSvcExchangeTokenRequest interface.
  */
 function instanceOfUserSvcExchangeTokenRequest(value) {
-    if (!('newAppHost' in value) || value['newAppHost'] === undefined)
-        return false;
     return true;
 }
 function UserSvcExchangeTokenRequestFromJSON(json) {
@@ -9555,7 +9553,8 @@ function UserSvcExchangeTokenRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
-        'newAppHost': json['newAppHost'],
+        'newAppHost': json['newAppHost'] == null ? undefined : json['newAppHost'],
+        'newAppId': json['newAppId'] == null ? undefined : json['newAppId'],
         'newDevice': json['newDevice'] == null ? undefined : json['newDevice'],
     };
 }
@@ -9568,6 +9567,7 @@ function UserSvcExchangeTokenRequestToJSONTyped(value, ignoreDiscriminator = fal
     }
     return {
         'newAppHost': value['newAppHost'],
+        'newAppId': value['newAppId'],
         'newDevice': value['newDevice'],
     };
 }
