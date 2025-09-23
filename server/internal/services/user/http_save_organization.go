@@ -252,15 +252,23 @@ func (s *UserService) saveOrganization(
 }
 
 func (s *UserService) inactivateTokens(appId string, userId string) error {
-	return s.tokenStore.Query(
-		datastore.Equals(
-			datastore.Fields("appId"),
-			appId,
-		),
+	filters := []datastore.Filter{
 		datastore.Equals(
 			datastore.Fields("userId"),
 			userId,
-		)).UpdateFields(map[string]any{
+		),
+	}
+
+	if appId != "*" {
+		filters = append(filters, datastore.Equals(
+			datastore.Fields("appId"),
+			appId,
+		))
+	}
+
+	return s.tokenStore.Query(
+		filters...,
+	).UpdateFields(map[string]any{
 		"active": false,
 	})
 }

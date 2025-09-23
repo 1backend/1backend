@@ -595,3 +595,91 @@ func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
 		require.Error(t, err, rsp2)
 	})
 }
+
+func TestGlobalEnrollVisibilityOnLogin(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{Test: true})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+	manyClients, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
+	require.NoError(t, err)
+
+	userClient := manyClients[0]
+
+	const contact = "global-role@email.com"
+	const role = "test-user-slug-0:global-role"
+	const role2 = "test-user-slug-0:global-role2"
+
+	t.Run("save global enrollment with AppHost *", func(t *testing.T) {
+		_, rsp, err := userClient.UserSvcAPI.SaveEnrolls(context.Background()).
+			Body(openapi.UserSvcSaveEnrollsRequest{
+				Enrolls: []openapi.UserSvcEnrollInput{
+					{
+						ContactId: openapi.PtrString(contact),
+						Role:      role,
+						AppHost:   openapi.PtrString("*"),
+					},
+				},
+			}).Execute()
+		require.NoError(t, err, rsp)
+	})
+
+	t.Run("register user with same contact", func(t *testing.T) {
+		rsp, _, err := userClient.UserSvcAPI.Register(context.Background()).
+			Body(openapi.UserSvcRegisterRequest{
+				AppHost:  sdk.DefaultTestAppHost,
+				Slug:     "test-user-slug-global",
+				Contact:  &openapi.UserSvcContactInput{Id: contact},
+				Password: openapi.PtrString("pw"),
+			}).Execute()
+		require.NoError(t, err)
+
+		// fetch public key and parse token
+		pkRsp, _, err := userClient.UserSvcAPI.GetPublicKey(context.Background()).Execute()
+		require.NoError(t, err)
+
+		claim, err := auth.AuthorizerImpl{}.ParseJWT(pkRsp.PublicKey, rsp.Token.Token)
+		require.NoError(t, err)
+
+		// check if global role is included in token
+		require.Contains(t, claim.Roles, role, "global AppHost enroll by contact id should appear in JWT roles")
+	})
+
+	t.Run("save enroll with user id", func(t *testing.T) {
+		_, rsp, err := userClient.UserSvcAPI.SaveEnrolls(context.Background()).
+			Body(openapi.UserSvcSaveEnrollsRequest{
+				Enrolls: []openapi.UserSvcEnrollInput{
+					{
+						UserId:  openapi.PtrString(tokens[0].UserId),
+						Role:    role2,
+						AppHost: openapi.PtrString("*"),
+					},
+				},
+			}).Execute()
+		require.NoError(t, err, rsp)
+	})
+
+	t.Run("login and see if role2 is applied", func(t *testing.T) {
+		rsp, _, err := userClient.UserSvcAPI.Login(context.Background()).
+			Body(openapi.UserSvcLoginRequest{
+				AppHost:  sdk.DefaultTestAppHost,
+				Slug:     openapi.PtrString("test-user-slug-0"),
+				Password: openapi.PtrString("testUserPassword0"),
+			}).Execute()
+
+		require.NoError(t, err, rsp)
+
+		// fetch public key and parse token
+		pkRsp, _, err := userClient.UserSvcAPI.GetPublicKey(context.Background()).Execute()
+		require.NoError(t, err)
+
+		claim, err := auth.AuthorizerImpl{}.ParseJWT(pkRsp.PublicKey, rsp.Token.Token)
+		require.NoError(t, err)
+
+		// check if global role is included in token
+		require.Contains(t, claim.Roles, role2, "global AppHost enroll by user id should appear in JWT roles")
+	})
+}
