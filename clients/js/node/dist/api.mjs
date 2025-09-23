@@ -6944,6 +6944,11 @@ UserSvcExchangeTokenRequest.attributeTypeMap = [
         "type": "string"
     },
     {
+        "name": "newAppId",
+        "baseName": "newAppId",
+        "type": "string"
+    },
+    {
         "name": "newDevice",
         "baseName": "newDevice",
         "type": "string"

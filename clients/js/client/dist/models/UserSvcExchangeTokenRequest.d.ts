@@ -20,7 +20,13 @@ export interface UserSvcExchangeTokenRequest {
      * @type {string}
      * @memberof UserSvcExchangeTokenRequest
      */
-    newAppHost: string;
+    newAppHost?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserSvcExchangeTokenRequest
+     */
+    newAppId?: string;
     /**
      * NewDevice. If not provided, the device of the original token will be used.
      * @type {string}

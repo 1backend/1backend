@@ -24,7 +24,13 @@ export interface UserSvcExchangeTokenRequest {
      * @type {string}
      * @memberof UserSvcExchangeTokenRequest
      */
-    newAppHost: string;
+    newAppHost?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSvcExchangeTokenRequest
+     */
+    newAppId?: string;
     /**
      * NewDevice. If not provided, the device of the original token will be used.
      * @type {string}
@@ -37,7 +43,6 @@ export interface UserSvcExchangeTokenRequest {
  * Check if a given object implements the UserSvcExchangeTokenRequest interface.
  */
 export function instanceOfUserSvcExchangeTokenRequest(value: object): value is UserSvcExchangeTokenRequest {
-    if (!('newAppHost' in value) || value['newAppHost'] === undefined) return false;
     return true;
 }
 
@@ -51,7 +56,8 @@ export function UserSvcExchangeTokenRequestFromJSONTyped(json: any, ignoreDiscri
     }
     return {
         
-        'newAppHost': json['newAppHost'],
+        'newAppHost': json['newAppHost'] == null ? undefined : json['newAppHost'],
+        'newAppId': json['newAppId'] == null ? undefined : json['newAppId'],
         'newDevice': json['newDevice'] == null ? undefined : json['newDevice'],
     };
 }
@@ -68,6 +74,7 @@ export function UserSvcExchangeTokenRequestToJSONTyped(value?: UserSvcExchangeTo
     return {
         
         'newAppHost': value['newAppHost'],
+        'newAppId': value['newAppId'],
         'newDevice': value['newDevice'],
     };
 }
