@@ -19,6 +19,22 @@ type TokenExchangeResponse struct {
 	ExpiresAt time.Time
 }
 
+type ExchangeOptions struct {
+	AppHost string
+	AppId   string
+	Device  string
+}
+
+func (o ExchangeOptions) validate() error {
+	if o.AppHost != "" && o.AppId != "" {
+		return errors.New("only one of AppHost or AppId must be set")
+	}
+	if o.AppHost == "" && o.AppId == "" {
+		return errors.New("either AppHost or AppId must be set")
+	}
+	return nil
+}
+
 // TokenExchanger is an interface for exchanging tokens between different apps or devices.
 // It caches the exchanged tokens to avoid unnecessary calls to the user service.
 type TokenExchanger interface {
@@ -27,7 +43,7 @@ type TokenExchanger interface {
 	ExchangeToken(
 		ctx context.Context,
 		token string,
-		newApp string,
+		options ExchangeOptions,
 	) (string, error)
 
 	AppIdFromHost(ctx context.Context, appHost string) (string, error)
@@ -60,27 +76,33 @@ func NewTokenExchanger(
 func (te *TokenExchangerImpl) ExchangeToken(
 	ctx context.Context,
 	token string,
-	newAppHost string,
+	opts ExchangeOptions,
 ) (string, error) {
+	if err := opts.validate(); err != nil {
+		return "", err
+	}
 
-	cacheKey := generateTokenExchangeKey(token, newAppHost)
+	cacheKey := generateTokenExchangeKey(token, key(opts))
 	if value, found := te.cache.Get(cacheKey); found {
 		if cached, ok := value.(*TokenExchangeResponse); ok {
 			return cached.Token, nil
 		}
 	}
 
-	req := openapi.UserSvcExchangeTokenRequest{
-		NewAppHost: openapi.PtrString(newAppHost),
+	req := openapi.UserSvcExchangeTokenRequest{}
+	if opts.AppHost != "" {
+		req.NewAppHost = openapi.PtrString(opts.AppHost)
+	}
+	if opts.AppId != "" {
+		req.NewAppId = openapi.PtrString(opts.AppId)
+	}
+	if opts.Device != "" {
+		req.NewDevice = openapi.PtrString(opts.Device)
 	}
 
 	rsp, _, err := te.clientFactory.Client(
 		client.WithToken(token),
-	).
-		UserSvcAPI.
-		ExchangeToken(ctx).
-		Body(req).
-		Execute()
+	).UserSvcAPI.ExchangeToken(ctx).Body(req).Execute()
 	if err != nil {
 		return "", errors.Wrap(err, "failed to exchange token")
 	}
@@ -99,8 +121,19 @@ func (te *TokenExchangerImpl) ExchangeToken(
 	if te.Testing {
 		te.cache.Wait()
 	}
-
 	return rsp.Token.Token, nil
+}
+
+func key(opts ExchangeOptions) string {
+	if opts.Device == "" {
+		opts.Device = "unknown"
+	}
+
+	if opts.AppHost != "" {
+		return opts.AppHost + ":" + opts.Device
+	}
+
+	return opts.AppId + ":" + opts.Device
 }
 
 func (te *TokenExchangerImpl) AppIdFromHost(
