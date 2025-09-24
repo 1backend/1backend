@@ -35,12 +35,12 @@ func List(cmd *cobra.Command, args []string) error {
 		Ids:     ids,
 	}
 
-	rsp, _, err := cf.Client(client.WithToken(token)).
+	rsp, httpResp, err := cf.Client(client.WithToken(token)).
 		ConfigSvcAPI.ListConfigs(ctx).
 		Body(req).
 		Execute()
 	if err != nil {
-		return errors.Wrap(err, "failed to list configs")
+		return util.ErrorWithBody(err, httpResp, "failed to list configs")
 	}
 
 	writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)

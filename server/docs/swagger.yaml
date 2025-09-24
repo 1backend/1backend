@@ -3905,7 +3905,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.8.1
+  version: 0.8.2
 paths:
   /chat-svc/events:
     get:
