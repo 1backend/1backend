@@ -53,8 +53,8 @@ func (s *UserService) ExchangeToken(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	if request.NewAppHost == "" {
-		endpoint.WriteString(w, http.StatusBadRequest, "New app is required")
+	if request.NewAppHost == "" && request.NewAppId == "" {
+		endpoint.WriteString(w, http.StatusBadRequest, "New app host or app id is required")
 	}
 
 	claims, err := s.options.Authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
