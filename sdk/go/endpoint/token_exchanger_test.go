@@ -57,12 +57,12 @@ func TestTokenExchangeCaching(t *testing.T) {
 	pc.(*endpoint.TokenExchangerImpl).Testing = true
 
 	// First call - should hit service
-	newToken, err1 := pc.ExchangeToken(context.TODO(), "original-token", "new-app")
+	newToken, err1 := pc.ExchangeToken(context.TODO(), "original-token", endpoint.ExchangeOptions{AppHost: "new-app"})
 	assert.NoError(t, err1)
 	assert.Equal(t, exchanged[0], newToken)
 
 	// Second call - should hit cache, not service
-	_, err1 = pc.ExchangeToken(context.TODO(), "original-token", "new-app")
+	_, err1 = pc.ExchangeToken(context.TODO(), "original-token", endpoint.ExchangeOptions{AppHost: "new-app"})
 	assert.NoError(t, err1)
 	assert.Equal(t, exchanged[0], newToken)
 
@@ -70,7 +70,7 @@ func TestTokenExchangeCaching(t *testing.T) {
 	time.Sleep(time.Second)
 
 	// Third call - should hit service again
-	resp3, err3 := pc.ExchangeToken(context.TODO(), "original-token", "new-app")
+	resp3, err3 := pc.ExchangeToken(context.TODO(), "original-token", endpoint.ExchangeOptions{AppHost: "new-app"})
 	assert.NoError(t, err3)
 	assert.Equal(t, exchanged[1], resp3)
 }
