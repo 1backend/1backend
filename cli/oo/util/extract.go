@@ -2,8 +2,10 @@ package util
 
 import (
 	"fmt"
+	"io"
 	"io/fs"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -90,4 +92,13 @@ func ExtractFromFile(filePath string, entitySlice any) error {
 	entitySliceValue.Set(reflect.Append(entitySliceValue, reflect.ValueOf(singleEntity).Elem()))
 
 	return nil
+}
+
+func ErrorWithBody(err error, resp *http.Response, msg string) error {
+	body, readErr := io.ReadAll(resp.Body)
+	if readErr != nil {
+		return errors.Wrap(readErr, "failed to read response body")
+	}
+
+	return errors.Wrap(err, fmt.Sprintf("%s: '%s'", msg, string(body)))
 }

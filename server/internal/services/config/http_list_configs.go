@@ -50,17 +50,16 @@ func (cs *ConfigService) ListConfigs(
 
 	req := &config.ListConfigsRequest{}
 
-	if r.ContentLength > 0 {
-		err := json.NewDecoder(r.Body).Decode(req)
-		if err != nil {
-			logger.Error("Failed to decode request body", slog.Any("error", err))
-			endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
-			return
-		}
-		defer r.Body.Close()
+	err := json.NewDecoder(r.Body).Decode(req)
+	if err != nil {
+		logger.Error("Failed to decode request body", slog.Any("error", err))
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
+		return
 	}
+	defer r.Body.Close()
 
 	if req.AppHost == "" {
+		logger.Error("AppHost missing in list configs request")
 		endpoint.WriteErr(w, http.StatusBadRequest, errors.New("AppHost missing"))
 		return
 	}
