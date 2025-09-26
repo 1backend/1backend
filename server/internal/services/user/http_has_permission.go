@@ -39,6 +39,7 @@ import (
 // @Param permission path string true "Permission"
 // @Success 200 {object} user.HasPermissionResponse
 // @Failure 400 {object} user.ErrorResponse "Missing Permission"
+// @Failure 422 {object} user.ErrorResponse "No Auth Header"
 // @Security BearerAuth
 // @Router /user-svc/self/has/{permission} [post]
 func (s *UserService) HasPermission(
@@ -50,6 +51,14 @@ func (s *UserService) HasPermission(
 
 	if permission == "" {
 		endpoint.WriteString(w, http.StatusBadRequest, "Missing Permission")
+		return
+	}
+
+	authHeader := r.Header.Get("Authorization")
+	authHeader = strings.Replace(authHeader, "Bearer ", "", 1)
+
+	if authHeader == "" || authHeader == "Bearer" {
+		endpoint.WriteErr(w, http.StatusUnprocessableEntity, errors.New("No Auth Header"))
 		return
 	}
 
@@ -241,6 +250,7 @@ func (s *UserService) getUserFromRequest(r *http.Request) (
 	authHeader := r.Header.Get("Authorization")
 	authHeader = strings.Replace(authHeader, "Bearer ", "", 1)
 
+	// at this point we should definitely have an auth header but we still check
 	if authHeader == "" || authHeader == "Bearer" {
 		return nil, nil, fmt.Errorf("no auth header")
 	}

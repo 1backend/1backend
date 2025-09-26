@@ -27,6 +27,10 @@ import (
 	"github.com/pkg/errors"
 )
 
+var (
+	idMustBeProvidedErr = errors.New("id must be provided when editing on behalf of another user")
+)
+
 // @Id saveConfig
 // @Summary Save Config
 // @Description Save the provided configuration to the server.
@@ -129,7 +133,11 @@ func (cs *ConfigService) SaveConfig(
 		isAuthRsp.User.Slug,
 		req,
 	)
-	if err != nil {
+	switch {
+	case errors.Is(err, idMustBeProvidedErr):
+		endpoint.WriteString(w, http.StatusBadRequest, err.Error())
+		return
+	case err != nil:
 		logger.Error("Failed to save config",
 			slog.Any("error", err),
 		)
@@ -150,7 +158,7 @@ func (cs *ConfigService) saveConfig(
 
 	if canActonBehalf {
 		if newConfig.Id == "" {
-			return errors.New("id must be provided when editing on behalf of another user")
+			return errors.New("id must be provided when editing on behalf of another user for safety reasons")
 		}
 		callerSlug = kebabToCamel(newConfig.Id)
 	}
