@@ -53,6 +53,15 @@ func TestUnauthorizedShouldNotReturnError(t *testing.T) {
 	require.NotNil(t, rsp.AppId)
 	require.Equal(t, sdk.DefaultTestAppHost, rsp.App.Host)
 	require.NotEmpty(t, rsp.User)
+
+	t.Run("not logged in user should not return error", func(t *testing.T) {
+		_, hrsp, err := clientFactory.Client().UserSvcAPI.
+			HasPermission(context.Background(), "user.view").
+			Execute()
+
+		require.Error(t, err)
+		require.Equal(t, 422, hrsp.StatusCode)
+	})
 }
 
 func TestPermitsBySlug(t *testing.T) {
