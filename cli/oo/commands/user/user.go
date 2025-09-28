@@ -1,6 +1,7 @@
 package user
 
 import (
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/spf13/cobra"
 )
 
@@ -22,7 +23,9 @@ func AddUserCommands(rootCmd *cobra.Command) {
 }
 
 func addLoginCommand(rootCmd *cobra.Command) {
-	var runCmd = &cobra.Command{
+	appHost := sdk.DefaultAppHost
+
+	var loginCmd = &cobra.Command{
 		Use:   "login [slug] [password]",
 		Args:  cobra.MaximumNArgs(2),
 		Short: "Log in to the currently selected environment.",
@@ -37,10 +40,14 @@ that the password will be visible in the terminal command history.`,
 
   # Login by providing both slug and password (not secure, avoid this)
   login johnny myPass1`,
-		RunE: Login,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return Login(cmd, args, appHost)
+		},
 	}
 
-	rootCmd.AddCommand(runCmd)
+	loginCmd.Flags().StringVarP(&appHost, "app-host", "a", sdk.DefaultAppHost, "App host to use for login")
+
+	rootCmd.AddCommand(loginCmd)
 }
 
 func addRegisterCommand(rootCmd *cobra.Command) {
