@@ -21,6 +21,10 @@ import (
 	"github.com/samber/lo"
 )
 
+var (
+	cannotListUnowned = errors.New("cannot list enrolls for unowned role")
+)
+
 // @ID listEnrolls
 // @Summary List Enrolls
 // @Description List enrolls. Role, user ID or contact ID must be specified.
@@ -33,6 +37,7 @@ import (
 // @Param body body user.ListEnrollsRequest true "List Enrolls Request"
 // @Success 200 {object} user.ListEnrollsResponse "Enrolls listed successfully"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
+// @Failure 400 {object} user.ErrorResponse "Role, Contact ID or User ID is Required"
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
 // @Router /user-svc/enrolls [post]
@@ -64,20 +69,25 @@ func (s *UserService) ListEnrolls(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
+	if req.Role == "" && req.ContactId == "" && req.UserId == "" {
+		logger.Error(
+			"Role, contact ID or user ID is required",
+		)
+		endpoint.WriteString(w, http.StatusBadRequest, "Role, Contact ID or User ID is Required")
+		return
+	}
+
 	enrolls, err := s.listEnrolls(claims, req)
-	if err != nil {
-		if err != nil {
-			logger.Error(
-				"Failed to list enrolls",
-				slog.Any("error", err),
-			)
-			endpoint.InternalServerError(w)
-			return
-		}
-		if !hasPermission {
-			endpoint.Unauthorized(w)
-			return
-		}
+	switch {
+	case errors.Is(err, cannotListUnowned):
+		endpoint.Unauthorized(w)
+		return
+	case err != nil:
+		logger.Error(
+			"Failed to list enrolls",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
 		return
 	}
 
@@ -91,9 +101,6 @@ func (s *UserService) listEnrolls(
 	claims *auth.Claims,
 	req *user.ListEnrollsRequest,
 ) ([]user.Enroll, error) {
-	if req.Role == "" && req.ContactId == "" && req.UserId == "" {
-		return nil, errors.New("role, contact id or user id is required")
-	}
 
 	isAdmin := lo.Contains(claims.Roles, user.RoleAdmin)
 
@@ -102,7 +109,7 @@ func (s *UserService) listEnrolls(
 	if req.Role != "" {
 		if !isAdmin {
 			if !auth.OwnsRole(claims, req.Role) {
-				return nil, errors.New("cannot list enrolls for unowned role")
+				return nil, cannotListUnowned
 			}
 		}
 		filters = append(filters, datastore.Equals([]string{"role"}, req.Role))

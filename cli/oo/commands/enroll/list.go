@@ -35,12 +35,12 @@ func List(cmd *cobra.Command, args []string, role, userId, contactId string) err
 		req.ContactId = &contactId
 	}
 
-	rsp, _, err := cf.Client(client.WithToken(token)).
+	rsp, hrsp, err := cf.Client(client.WithToken(token)).
 		UserSvcAPI.ListEnrolls(ctx).
 		Body(req).
 		Execute()
 	if err != nil {
-		return errors.Wrap(err, "failed to list enrolls")
+		return util.ErrorWithBody(err, hrsp, "failed to list enrolls")
 	}
 
 	writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)

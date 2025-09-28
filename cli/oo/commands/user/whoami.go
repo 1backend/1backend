@@ -6,6 +6,7 @@ import (
 
 	"github.com/1backend/1backend/cli/oo/types"
 	"github.com/1backend/1backend/cli/oo/util"
+	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/pkg/errors"
@@ -119,10 +120,25 @@ func displayUser(
 		}
 	}
 
+	appHost, appHostRsp, err := cf.Client(client.WithToken(usr.Token)).
+		UserSvcAPI.ListApps(cmd.Context()).
+		Body(
+			openapi.UserSvcListAppsRequest{
+				Ids: []string{claims.AppId},
+			},
+		).Execute()
+	if err != nil {
+		return util.ErrorWithBody(err, appHostRsp, "failed to get app info")
+	}
+
 	userInfo := UserInfo{
 		Id:    claims.UserId,
 		Slug:  claims.Slug,
 		Roles: claims.Roles,
+		App: AppInfo{
+			Id:   claims.AppId,
+			Host: appHost.Apps[0].Host,
+		},
 	}
 
 	enc := yaml.NewEncoder(cmd.OutOrStdout())
@@ -133,8 +149,14 @@ func displayUser(
 	return nil
 }
 
+type AppInfo struct {
+	Id   string `json:"id"`
+	Host string `json:"host"`
+}
+
 type UserInfo struct {
 	Slug  string   `json:"slug"`
 	Id    string   `json:"id"`
+	App   AppInfo  `json:"app"`
 	Roles []string `json:"roles"`
 }
