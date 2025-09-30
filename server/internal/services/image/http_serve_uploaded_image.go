@@ -187,21 +187,23 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 	}
 	defer outFile.Close()
 
-	var encodeErr error
 	switch contentType {
 	case "image/jpeg", "image/jpg":
 		w.Header().Set("Content-Type", "image/jpeg")
-		encodeErr = jpeg.Encode(io.MultiWriter(w, outFile), img, &jpeg.Options{Quality: quality})
+		err = jpeg.Encode(io.MultiWriter(w, outFile), img, &jpeg.Options{Quality: quality})
 	case "image/gif":
 		w.Header().Set("Content-Type", "image/gif")
-		encodeErr = gif.Encode(io.MultiWriter(w, outFile), img, nil)
+		err = gif.Encode(io.MultiWriter(w, outFile), img, nil)
 	default:
 		w.Header().Set("Content-Type", "image/png")
-		encodeErr = png.Encode(io.MultiWriter(w, outFile), img)
+		err = png.Encode(io.MultiWriter(w, outFile), img)
 	}
 
-	if encodeErr != nil {
-		endpoint.WriteErr(w, http.StatusInternalServerError, encodeErr)
-		return
+	switch {
+	case err == nil:
+	case errors.Is(err, stdimage.ErrFormat):
+		endpoint.WriteErr(w, http.StatusUnsupportedMediaType, errors.New("unsupported image format"))
+	default:
+		endpoint.WriteErr(w, http.StatusInternalServerError, err)
 	}
 }
