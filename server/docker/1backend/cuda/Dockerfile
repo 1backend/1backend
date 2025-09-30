@@ -1,7 +1,7 @@
 ARG BACKEND_VERSION="12.5.0"
 ARG UBUNTU_VERSION="22.04"
 
-FROM golang:1.23.2 as build
+FROM golang:1.24.5 as build
 
 WORKDIR /app/server
 
