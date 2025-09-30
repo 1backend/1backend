@@ -15,7 +15,6 @@ import (
 	stdimage "image"
 	"image/gif"
 	"image/jpeg"
-	"image/png"
 	"io"
 	"log/slog"
 	"net/http"
@@ -31,6 +30,12 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
+
+	_ "golang.org/x/image/bmp"
+	_ "golang.org/x/image/tiff"
+	_ "golang.org/x/image/webp"
+
+	"github.com/chai2010/webp"
 
 	image "github.com/1backend/1backend/server/internal/services/image/types"
 )
@@ -128,6 +133,8 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 			w.Header().Set("Content-Type", "image/jpeg")
 		case "image/gif":
 			w.Header().Set("Content-Type", "image/gif")
+		case "image/webp":
+			w.Header().Set("Content-Type", "image/webp")
 		default:
 			w.Header().Set("Content-Type", "image/png")
 		}
@@ -194,9 +201,13 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 	case "image/gif":
 		w.Header().Set("Content-Type", "image/gif")
 		err = gif.Encode(io.MultiWriter(w, outFile), img, nil)
+	case "image/webp":
+		w.Header().Set("Content-Type", "image/webp")
+		err = webp.Encode(io.MultiWriter(w, outFile), img, &webp.Options{Quality: float32(quality)})
 	default:
+		// Fallback for formats without encoder (e.g. TIFF, BMP):
+		// serve cached version as PNG
 		w.Header().Set("Content-Type", "image/png")
-		err = png.Encode(io.MultiWriter(w, outFile), img)
 	}
 
 	switch {
