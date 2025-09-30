@@ -15,6 +15,7 @@ import (
 	stdimage "image"
 	"image/gif"
 	"image/jpeg"
+	"image/png"
 	"io"
 	"log/slog"
 	"net/http"
@@ -208,6 +209,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		// Fallback for formats without encoder (e.g. TIFF, BMP):
 		// serve cached version as PNG
 		w.Header().Set("Content-Type", "image/png")
+		err = png.Encode(io.MultiWriter(w, outFile), img)
 	}
 
 	switch {
