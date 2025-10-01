@@ -32,9 +32,8 @@ import (
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 
-	_ "golang.org/x/image/bmp"
-	_ "golang.org/x/image/tiff"
-	_ "golang.org/x/image/webp"
+	"golang.org/x/image/bmp"
+	"golang.org/x/image/tiff"
 
 	"github.com/chai2010/webp"
 
@@ -143,7 +142,24 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	img, _, err := stdimage.Decode(rsp)
+	var img stdimage.Image
+	switch contentType {
+	case "image/png":
+		img, err = png.Decode(rsp)
+	case "image/jpeg", "image/jpg":
+		img, err = jpeg.Decode(rsp)
+	case "image/gif":
+		img, err = gif.Decode(rsp)
+	case "image/webp":
+		img, err = webp.Decode(rsp)
+	case "image/tiff":
+		img, err = tiff.Decode(rsp)
+	case "image/bmp":
+		img, err = bmp.Decode(rsp)
+	default:
+		// fall back to generic
+		img, _, err = stdimage.Decode(rsp)
+	}
 	if err != nil {
 		endpoint.WriteErr(w, http.StatusInternalServerError, err)
 		return
