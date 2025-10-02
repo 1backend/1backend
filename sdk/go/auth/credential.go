@@ -16,19 +16,33 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+// @todo none of the standard JWT fields are currently used ; )
 type Claims struct {
-	UserId string   `json:"oui,omitempty"` // `oui`: 1backend user id
-	AppId  string   `json:"oai,omitempty"` // `oai`: 1backend app id
-	Slug   string   `json:"osl,omitempty"` // `osl`: 1backend slug
-	Roles  []string `json:"oro,omitempty"` // `oro`: 1backend role ids
-	Device string   `json:"odi,omitempty"` // `odi`: 1backend device
+	// 1backend user id
+	// @todo use `sub` instead?
+	UserId string `json:"1ui,omitempty"`
 
-	// Organization ids are already included within role ids
+	// 1backend app id
+	// @todo use `aud` instead?
+	AppId string `json:"1ai,omitempty"`
+
+	// 1backend slug
+	Slug string `json:"1sl,omitempty"`
+
+	// 1backend roles
+	Roles []string `json:"1ro,omitempty"`
+
+	// 1backend device
+	Device string `json:"1de,omitempty"`
+
+	// 1backend active organization id
+	//
+	// Organization ids are already included within roles
 	// (e.g., `user-svc:org:{org_dBZRCej3fo}:admin`).
 	// Helper functions make it easy to extract them, so they aren't stored separately to save space.
-	// However, role ids don’t specify the active or default organization.
+	// However, roles don’t specify the active or default organization.
 	// This field explicitly provides that information.
-	ActiveOrganizationId string `json:"oao,omitempty"` // `oao`: 1backend active organization id
+	ActiveOrganizationId string `json:"1ao,omitempty"` // 1backend active organization id
 
 	jwt.RegisteredClaims
 }
