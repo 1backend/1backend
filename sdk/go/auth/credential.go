@@ -16,7 +16,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// @todo non of the standard JWT fields are currently used ; )
+// @todo none of the standard JWT fields are currently used ; )
 type Claims struct {
 	// 1backend user id
 	// @todo use `sub` instead?
