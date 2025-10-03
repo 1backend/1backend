@@ -17,6 +17,9 @@
   </div>
 </p>
 
+> "Works of art make rules; rules do not make works of art."  
+> — Claude Debussy
+
 ## Overview
 
 The story of 1Backend began in 2017, but the current incarnation emerged when a seasoned microservices platform architect set out to build an on-premise ChatGPT alternative. What started as a focused AI project quickly grew in complexity—naturally demanding a microservices approach.
