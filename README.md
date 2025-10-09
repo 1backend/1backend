@@ -10,7 +10,7 @@
 <a target="_blank" rel="noopener noreferrer" href="https://github.com/1backend/1backend/actions/workflows/js-client-build.yaml/badge.svg"><img src="https://github.com/1backend/1backend/actions/workflows/js-client-build.yaml/badge.svg" alt="js client build" style="max-width: 100%;"></a>
 <a target="_blank" rel="noopener noreferrer" href="https://github.com/1backend/1backend/actions/workflows/go-sdk-build.yaml/badge.svg"><img src="https://github.com/1backend/1backend/actions/workflows/go-sdk-build.yaml/badge.svg" alt="go sdk" style="max-width: 100%;"></a>
     </span>
-    <div style="margin-top: 2rem">AI-native microservices platform. v0.8.0-rc1.</div>
+    <div style="margin-top: 2rem">AI-native microservices platform. v0.8.2.</div>
     <div>
       <a href="https://1backend.com">1backend.com</a>
     </div>
@@ -22,24 +22,12 @@
 
 ## Overview
 
-The story of 1Backend began in 2017, but the current incarnation emerged when a seasoned microservices platform architect set out to build an on-premise ChatGPT alternative. What started as a focused AI project quickly grew in complexity—naturally demanding a microservices approach.
+1Backend rethinks software development for the AI age: it lets you build modern distributed apps quickly without infrastructure components.
+It's a framework, it's a proxy (edge proxy, reverse proxy and more), handles authorization, microservice calls, microfrontend routing, emails.
 
-With over a decade of experience and ideas in building scalable systems, the author saw an opportunity to merge two passions: modern AI and battle-tested microservice design.
+It lets you run LLMs through containers and program them. It's zero trust, zero config, comes with its own ORM that can let you test-drive it even without a DB.
 
-1Backend is the result—a framework and runtime for building distributed web applications from day one. It includes everything you need to get started—running AI models, user management, config, secrets, request routing, proxying, and more—so you don’t need to duct-tape a dozen tools together. And when your needs evolve, it integrates cleanly with standard tools from the broader ecosystem.
-
-<img src="https://singulatron.com/assets/1b.png" />
-
-## Highlights
-
-- On-premise ChatGPT alternative – Run your AI models locally through a UI, CLI or API.
-- A "microservices-first" web framework – Think of it like Angular for the backend, built for large, scalable enterprise codebases.
-- Out-of-the-box services – Includes built-in file uploads, downloads, user management, and more.
-- Infrastructure simplification – Acts as a container orchestrator, reverse proxy, and more.
-- Multi-database support – Comes with its own built-in ORM.
-- AI integration – Works with LlamaCpp, StableDiffusion, and other AI platforms.
-
-## Starting
+## Launching the server
 
 Easiest way to run 1Backend is with Docker. [Install Docker if you don't have it](https://docs.docker.com/engine/install/).
 Step into repo root and:
@@ -48,107 +36,62 @@ Step into repo root and:
 docker compose up
 ```
 
-to run the platform in foreground. It stops running if you Ctrl+C it. If you want to run it in the background:
-
-```sh
-docker compose up -d
-```
-
 Also see [this page](https://1backend.com/docs/category/running-the-server) for other ways to launch 1Backend.
 
-## Building microservices
+## Build and use your first service in 3 steps
 
 Check out the [examples](./examples/go/services/) folder or the [relevant documentation](https://1backend.com/docs/writing-custom-services/your-first-service) to learn how to easily build testable, scalable microservices on 1Backend.
 
-## Prompting
+Here are the conceptual steps though to illustrate how simple is a 1Backend service:
 
-Now that the 1Backend is running you have a few options to interact with it.
+### Step 1: Register your service's user account
 
-### UI
+Each service - just like humans - must have their account and manage their own credentials.
+Just like humans, they must remember their passwords :)).
 
-You can go to `http://127.0.0.1:3901` and log in with username `1backend` and password `changeme` and start using it just like you would use ChatGPT.
+#### Go SDK example
 
-Click on the big "AI" button and download a model first. Don't worry, this model will be persisted across restarts (see volumes in the docker-compose.yaml).
+```go
+import (
+  "github.com/1backend/1backend/sdk/go/boot"
+  "github.com/1backend/1backend/sdk/go/client"
+)
 
-### Clients
-
-For brevity the below example assumes you went to the UI and downloaded a model already. (That could also be done in code with the clients but then the code snippet would be longer).
-
-Let's do a sync prompting in JS. In your project run
-
-```sh
-npm init -y && jq '. + { "type": "module" }' package.json > temp.json && mv temp.json package.json
-npm i -s @1backend/client
+oneBackendClient  := client.NewApiClientFactory(service.Options.ServerUrl).Client()
+token, err := boot.RegisterServiceAccount(
+		oneBackendClient .UserSvcAPI,
+		"your-svc",
+		"Your Service",
+		credentialStore, // This is just a DB handle
+	)
 ```
 
-Make sure your `package.json` contains `"type": "module"`, put the following snippet into `index.js`
+### Step 2: Register your service
 
-```js
-import { UserSvcApi, PromptSvcApi, Configuration } from "@1backend/client";
+#### Language-agnostic
 
-async function testDrive() {
-  let userService = new UserSvcApi();
-  let loginResponse = await userService.login({
-    body: {
-      slug: "1backend",
-      password: "changeme",
-    },
-  });
+Call [`RegisterInstance` endpoint](https://1backend.com/docs/1backend-api/register-instance) directly from any programming language.
 
-  const promptSvc = new PromptSvcApi(
-    new Configuration({
-      apiKey: loginResponse.token?.token,
-    })
-  );
+#### Go SDK example
 
-  // Make sure there is a model downloaded and active at this point,
-  // either through the UI or programmatically .
+```go
+import (
+  "github.com/1backend/1backend/sdk/go/client"
+)
 
-  let promptRsp = await promptSvc.prompt({
-    body: {
-      sync: true,
-      prompt: "Is a cat an animal? Just answer with yes or no please.",
-    },
-  });
+oneBackendClient := client.NewApiClientFactory(service.Options.ServerUrl).Client()
 
-  console.log(promptRsp);
-}
-
-testDrive();
+oneBackendClient.RegistrySvcAPI.
+		RegisterInstance(context.Background()).
+		Body(openapi.RegistrySvcRegisterInstanceRequest{
+			Url: "https://your-service-url",
+		}).Execute()
 ```
 
-and run
+### Step 3: Call your service through 1Backend
 
-```js
-$ node index.js
-{
-  prompt: {
-    createdAt: '2025-02-03T16:53:09.883792389Z',
-    id: 'prom_emaAv7SlM2',
-    prompt: 'Is a cat an animal? Just answer with yes or no please.',
-    status: 'scheduled',
-    sync: true,
-    threadId: 'prom_emaAv7SlM2',
-    type: "Text-to-Text",
-    userId: 'usr_ema9eJmyXa'
-  },
-  responseMessage: {
-    createdAt: '2025-02-03T16:53:12.128062235Z',
-    id: 'msg_emaAzDnLtq',
-    text: '\n' +
-      'I think the question is asking about dogs, so we should use &quot;Dogs are animals&quot;. But what about cats?',
-    threadId: 'prom_emaAv7SlM2'
-  }
-}
-```
-
-Depending on your system it might take a while for the AI to respond.
-In case it takes long check the backend logs if it's processing, you should see something like this:
-
-```sh
-1backend-1backend-1   | {"time":"2024-11-27T17:27:14.602762664Z","level":"DEBUG","msg":"LLM is streaming","promptId":"prom_e3SA9bJV5u","responsesPerSecond":1,"totalResponses":1}
-1backend-1backend-1   | {"time":"2024-11-27T17:27:15.602328634Z","level":"DEBUG","msg":"LLM is streaming","promptId":"prom_e3SA9bJV5u","responsesPerSecond":4,"totalResponses":9}
-```
+All services registered will be available under their slug at `http(s)://your-1backend-host/{service-slug}/...`.
+For more details see doc about the [Proxy Svc](https://1backend.com/docs/built-in-services/proxy-svc).
 
 ### CLI
 
@@ -156,21 +99,6 @@ Install `oo` to get started (at the moment you need Go to install it):
 
 ```sh
 go install github.com/1backend/1backend/cli/oo@latest
-```
-
-To make the installed binary available on your system:
-
-```sh
-$ go env | grep GOPATH
-GOPATH='/home/crufter/go' # this will be different for you
-
-# Open your bashrc file with any editor
-vim ~/.bashrc
-
-# And place your go bin folder there
-export PATH=$PATH:/home/crufter/go/bin
-
-# Please keep in mind your username won't be crufter probably, change it to yours :)
 ```
 
 ```sh
@@ -185,7 +113,11 @@ $ oo login 1backend changeme
 $ oo whoami
 slug: 1backend
 id: usr_e9WSQYiJc9
+app:
+  id: app_hRKWXZzK6P
+  host: unnamed
 roles:
+- user-svc:user
 - user-svc:admin
 ```
 
