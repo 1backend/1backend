@@ -22,10 +22,11 @@
 
 ## Overview
 
-1Backend rethinks software development for the AI age: it lets you build modern distributed apps quickly without infrastructure components.
-It's a framework, it's a proxy (edge proxy, reverse proxy and more), handles authorization, microservice calls, microfrontend routing, emails.
+1Backend reimagines software development for the AI era. It lets you build modern distributed applications fast, without getting slowed down by infrastructure in the early stages. It’s a full platform: a framework, a proxy (edge, reverse, and more), and much more. It manages authorization and user accounts, microservice communication, microfrontend routing, email delivery, and many other core parts of modern app development.
 
-It lets you run LLMs through containers and program them. It's zero trust, zero config, comes with its own ORM that can let you test-drive it even without a DB.
+It can run and program LLMs inside containers. It’s zero-trust, zero-config, and includes its own ORM, allowing development even without a database.
+
+It’s multitenant—host multiple apps, websites, or projects on one installation. In effect, it serves as a distributed operating system for your applications.
 
 ## Launching the server
 
