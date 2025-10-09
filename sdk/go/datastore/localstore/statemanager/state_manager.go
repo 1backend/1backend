@@ -30,7 +30,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-const periodicSaveAlertThreshold = 100 * 1024 // 10 KB
+const periodicSaveAlertThreshold = 100 * 1024
 
 type StateFile struct {
 	Rows []any `json:"rows"`
