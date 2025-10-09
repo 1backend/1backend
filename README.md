@@ -44,7 +44,7 @@ Check out the [examples](./examples/go/services/) folder or the [relevant docume
 
 Here are the conceptual steps though to illustrate how simple is a 1Backend service:
 
-### Step 1: Register your service's user account
+### Step 1: Register the user account of your service
 
 Each service - just like humans - must have their account and manage their own credentials.
 Just like humans, they must remember their passwords :)).
@@ -66,7 +66,7 @@ token, err := boot.RegisterServiceAccount(
 	)
 ```
 
-### Step 2: Register your service
+### Step 2: Register your service instance address
 
 #### Language-agnostic
 
