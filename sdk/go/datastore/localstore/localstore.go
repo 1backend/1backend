@@ -84,7 +84,7 @@ func NewLocalStore(instance any, filePath string) (*LocalStore, error) {
 		return nil, err
 	}
 
-	go sm.PeriodicSaveState(5 * time.Second)
+	go sm.PeriodicSaveState(10 * time.Second)
 
 	return ls, nil
 }

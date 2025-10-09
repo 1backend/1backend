@@ -10,6 +10,7 @@ package statemanager
 import (
 	"archive/zip"
 	"bytes"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -23,20 +24,25 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/dustin/go-humanize"
+
 	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/pkg/errors"
 )
+
+const periodicSaveAlertThreshold = 100 * 1024
 
 type StateFile struct {
 	Rows []any `json:"rows"`
 }
 
 type StateManager struct {
-	instance    any
-	lock        sync.Mutex
-	filePath    string
-	hasChanged  bool
-	stateGetter func() []any
+	instance     any
+	lock         sync.Mutex
+	filePath     string
+	hasChanged   bool
+	stateGetter  func() []any
+	lastChecksum [32]byte
 }
 
 func New(instance any, stateGetter func() []any, filePath string) *StateManager {
@@ -147,7 +153,7 @@ func createSliceOfType(elemType reflect.Type) interface{} {
 	return sliceValue.Interface()
 }
 
-func (sm *StateManager) SaveState(shallowCopy []any) error {
+func (sm *StateManager) SaveState(shallowCopy []any) (int, error) {
 	sm.lock.Lock()
 	defer sm.lock.Unlock()
 
@@ -155,28 +161,34 @@ func (sm *StateManager) SaveState(shallowCopy []any) error {
 		Rows: shallowCopy,
 	})
 	if err != nil {
-		return errors.Wrap(err, "failed to marshal data when saving state")
+		return 0, errors.Wrap(err, "failed to marshal data when saving state")
+	}
+
+	newChecksum := sha256.Sum256(data)
+	if newChecksum == sm.lastChecksum {
+		return len(shallowCopy), nil // no change, skip write
 	}
 
 	zippedData, err := zipData(sm.filePath, data)
 	if err != nil {
-		return errors.Wrap(err, "failed to zip data when saving state")
+		return 0, errors.Wrap(err, "failed to zip data when saving state")
 	}
 
 	tempFilePath := sm.filePath + ".tmp"
 	err = ioutil.WriteFile(tempFilePath, zippedData, 0644)
 	if err != nil {
-		return errors.Wrap(err, "failed to write temp file when saving state")
+		return 0, errors.Wrap(err, "failed to write temp file when saving state")
 	}
 
 	finalFilePath := sm.filePath
 	err = os.Rename(tempFilePath, finalFilePath)
 	if err != nil {
-		return errors.Wrap(err, "failed to rename temp file when saving state")
+		return 0, errors.Wrap(err, "failed to rename temp file when saving state")
 	}
 
+	sm.lastChecksum = newChecksum
 	sm.hasChanged = false
-	return nil
+	return len(shallowCopy), nil
 }
 
 func (sm *StateManager) MarkChanged() {
@@ -194,10 +206,21 @@ func (sm *StateManager) PeriodicSaveState(interval time.Duration) {
 		select {
 		case <-ticker.C:
 			if sm.hasChanged {
-				if err := sm.SaveState(sm.stateGetter()); err != nil {
+				s, err := sm.SaveState(sm.stateGetter())
+				if err != nil {
 					logger.Error("Error saving file state",
 						slog.String("filePath", sm.filePath),
 						slog.String("error", err.Error()),
+					)
+				}
+
+				if s > periodicSaveAlertThreshold {
+					// Warn if the periodic save file is unusually large.
+					// Prevents users from accidentally writing huge files and wearing out SSDs.
+					logger.Warn("Periodic save file is too large",
+						slog.String("path", sm.filePath),
+						slog.String("interval", interval.String()),
+						slog.String("size", humanize.Bytes(uint64(s))),
 					)
 				}
 			}
@@ -211,7 +234,7 @@ func (sm *StateManager) setupSignalHandler() {
 
 	go func() {
 		<-c
-		err := sm.SaveState(sm.stateGetter())
+		_, err := sm.SaveState(sm.stateGetter())
 		if err != nil {
 			logger.Error("Error saving file state on shutdown",
 				slog.String("filePath", sm.filePath),
@@ -223,11 +246,13 @@ func (sm *StateManager) setupSignalHandler() {
 }
 
 func (sm *StateManager) Close() error {
-	return sm.SaveState(sm.stateGetter())
+	_, err := sm.SaveState(sm.stateGetter())
+	return err
 }
 
 func (sm *StateManager) Refresh() error {
-	return sm.SaveState(sm.stateGetter())
+	_, err := sm.SaveState(sm.stateGetter())
+	return err
 }
 
 func zipData(filePath string, data []byte) ([]byte, error) {
