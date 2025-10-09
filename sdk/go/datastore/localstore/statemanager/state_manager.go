@@ -10,6 +10,7 @@ package statemanager
 import (
 	"archive/zip"
 	"bytes"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -36,11 +37,12 @@ type StateFile struct {
 }
 
 type StateManager struct {
-	instance    any
-	lock        sync.Mutex
-	filePath    string
-	hasChanged  bool
-	stateGetter func() []any
+	instance     any
+	lock         sync.Mutex
+	filePath     string
+	hasChanged   bool
+	stateGetter  func() []any
+	lastChecksum [32]byte
 }
 
 func New(instance any, stateGetter func() []any, filePath string) *StateManager {
@@ -162,6 +164,11 @@ func (sm *StateManager) SaveState(shallowCopy []any) (int, error) {
 		return 0, errors.Wrap(err, "failed to marshal data when saving state")
 	}
 
+	newChecksum := sha256.Sum256(data)
+	if newChecksum == sm.lastChecksum {
+		return len(shallowCopy), nil // no change, skip write
+	}
+
 	zippedData, err := zipData(sm.filePath, data)
 	if err != nil {
 		return 0, errors.Wrap(err, "failed to zip data when saving state")
@@ -179,6 +186,7 @@ func (sm *StateManager) SaveState(shallowCopy []any) (int, error) {
 		return 0, errors.Wrap(err, "failed to rename temp file when saving state")
 	}
 
+	sm.lastChecksum = newChecksum
 	sm.hasChanged = false
 	return len(shallowCopy), nil
 }
@@ -206,14 +214,15 @@ func (sm *StateManager) PeriodicSaveState(interval time.Duration) {
 					)
 				}
 
-				// Warn if the periodic save file is unusually large.
-				// Prevents users from accidentally writing huge files and wearing out SSDs.
-				logger.Warn("Periodic save file is too large",
-					slog.String("path", sm.filePath),
-					slog.String("interval", interval.String()),
-					slog.String("size", humanize.Bytes(uint64(s))),
-				)
-
+				if s > periodicSaveAlertThreshold {
+					// Warn if the periodic save file is unusually large.
+					// Prevents users from accidentally writing huge files and wearing out SSDs.
+					logger.Warn("Periodic save file is too large",
+						slog.String("path", sm.filePath),
+						slog.String("interval", interval.String()),
+						slog.String("size", humanize.Bytes(uint64(s))),
+					)
+				}
 			}
 		}
 	}
