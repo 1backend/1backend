@@ -50,6 +50,10 @@ Here are the conceptual steps though to illustrate how simple is a 1Backend serv
 Each service - just like humans - must have their account and manage their own credentials.
 Just like humans, they must remember their passwords :)).
 
+#### Language-agnostic
+
+See the [Register](https://1backend.com/docs/1backend-api/register) and [Login](https://1backend.com/docs/1backend-api/login) endpoints.
+
 #### Go SDK example
 
 ```go
