@@ -37,6 +37,8 @@ import (
 
 	"github.com/chai2010/webp"
 
+	"github.com/gen2brain/avif"
+
 	image "github.com/1backend/1backend/server/internal/services/image/types"
 )
 
@@ -135,6 +137,8 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 			w.Header().Set("Content-Type", "image/gif")
 		case "image/webp":
 			w.Header().Set("Content-Type", "image/webp")
+		case "image/avif":
+			w.Header().Set("Content-Type", "image/avif")
 		default:
 			w.Header().Set("Content-Type", "image/png")
 		}
@@ -156,6 +160,8 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		img, err = tiff.Decode(rsp)
 	case "image/bmp":
 		img, err = bmp.Decode(rsp)
+	case "image/avif":
+		img, err = avif.Decode(rsp)
 	default:
 		// fall back to generic
 		img, _, err = stdimage.Decode(rsp)
