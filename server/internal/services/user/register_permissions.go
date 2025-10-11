@@ -10,6 +10,7 @@ package userservice
 import (
 	"context"
 
+	email "github.com/1backend/1backend/server/internal/services/email/types"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
@@ -39,6 +40,12 @@ func (us *UserService) registerPermits() error {
 			})
 		}
 	}
+
+	permits = append(permits, &user.PermitInput{
+		AppHost:    "*",
+		Slugs:      []string{"user-svc"},
+		Permission: email.PermissionSendEmail,
+	})
 
 	err := us.savePermits(
 		"*",

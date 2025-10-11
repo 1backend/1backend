@@ -85,6 +85,10 @@ func (s *EmailService) SendEmail(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *EmailService) sendgridSendEmail(req email.SendEmailRequest) error {
+	if s.options.Test {
+		return s.storeEmail(req, time.Now())
+	}
+
 	secretClient := s.options.ClientFactory.Client(client.WithToken(s.token)).SecretSvcAPI
 	secretResp, _, err := secretClient.ListSecrets(context.Background()).Body(
 		openapi.SecretSvcListSecretsRequest{
@@ -176,10 +180,16 @@ func (s *EmailService) sendgridSendEmail(req email.SendEmailRequest) error {
 		return fmt.Errorf("error sending email: %s", resp.Body)
 	}
 
-	now := time.Now()
+	return s.storeEmail(req, time.Now())
+}
 
-	emailId := sdk.Id("email")
-	err = s.emailStore.Create(&email.Email{
+func (s *EmailService) storeEmail(req email.SendEmailRequest, now time.Time) error {
+	emailId := req.Id
+	if emailId == "" {
+		emailId = sdk.Id("email")
+	}
+
+	err := s.emailStore.Create(&email.Email{
 		Id:          emailId,
 		To:          req.To,
 		CC:          req.CC,
