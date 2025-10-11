@@ -26,6 +26,8 @@ type UserSvcContactInput struct {
 	Handle *string `json:"handle,omitempty"`
 	// The unique identifier, which can be a URL.  Example values: \"joe12\" (1backend username), \"twitter.com/thejoe\" (twitter url), \"joe@joesdomain.com\" (email)
 	Id string `json:"id"`
+	OtpCode *string `json:"otpCode,omitempty"`
+	OtpId *string `json:"otpId,omitempty"`
 	// Platform of the contact (e.g., \"email\", \"phone\", \"twitter\")
 	Platform string `json:"platform"`
 }
@@ -107,6 +109,70 @@ func (o *UserSvcContactInput) SetId(v string) {
 	o.Id = v
 }
 
+// GetOtpCode returns the OtpCode field value if set, zero value otherwise.
+func (o *UserSvcContactInput) GetOtpCode() string {
+	if o == nil || IsNil(o.OtpCode) {
+		var ret string
+		return ret
+	}
+	return *o.OtpCode
+}
+
+// GetOtpCodeOk returns a tuple with the OtpCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcContactInput) GetOtpCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.OtpCode) {
+		return nil, false
+	}
+	return o.OtpCode, true
+}
+
+// HasOtpCode returns a boolean if a field has been set.
+func (o *UserSvcContactInput) HasOtpCode() bool {
+	if o != nil && !IsNil(o.OtpCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetOtpCode gets a reference to the given string and assigns it to the OtpCode field.
+func (o *UserSvcContactInput) SetOtpCode(v string) {
+	o.OtpCode = &v
+}
+
+// GetOtpId returns the OtpId field value if set, zero value otherwise.
+func (o *UserSvcContactInput) GetOtpId() string {
+	if o == nil || IsNil(o.OtpId) {
+		var ret string
+		return ret
+	}
+	return *o.OtpId
+}
+
+// GetOtpIdOk returns a tuple with the OtpId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcContactInput) GetOtpIdOk() (*string, bool) {
+	if o == nil || IsNil(o.OtpId) {
+		return nil, false
+	}
+	return o.OtpId, true
+}
+
+// HasOtpId returns a boolean if a field has been set.
+func (o *UserSvcContactInput) HasOtpId() bool {
+	if o != nil && !IsNil(o.OtpId) {
+		return true
+	}
+
+	return false
+}
+
+// SetOtpId gets a reference to the given string and assigns it to the OtpId field.
+func (o *UserSvcContactInput) SetOtpId(v string) {
+	o.OtpId = &v
+}
+
 // GetPlatform returns the Platform field value
 func (o *UserSvcContactInput) GetPlatform() string {
 	if o == nil {
@@ -145,6 +211,12 @@ func (o UserSvcContactInput) ToMap() (map[string]interface{}, error) {
 		toSerialize["handle"] = o.Handle
 	}
 	toSerialize["id"] = o.Id
+	if !IsNil(o.OtpCode) {
+		toSerialize["otpCode"] = o.OtpCode
+	}
+	if !IsNil(o.OtpId) {
+		toSerialize["otpId"] = o.OtpId
+	}
 	toSerialize["platform"] = o.Platform
 	return toSerialize, nil
 }

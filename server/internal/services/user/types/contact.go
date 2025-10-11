@@ -66,6 +66,9 @@ type ContactInput struct {
 	//
 	// Example values: "joe12" (1backend username), "thejoe" (twitter username), "joe@joesdomain.com" (email)
 	Handle string `json:"handle,omitempty" example:"thejoe"`
+
+	OtpId   string `json:"otpId,omitempty"`
+	OtpCode string `json:"otpCode,omitempty"`
 }
 
 func (c Contact) GetId() string {

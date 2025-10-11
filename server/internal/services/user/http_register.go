@@ -91,6 +91,18 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	var contacts []user.Contact
 	now := time.Now()
 	if req.Contact.Id != "" {
+		if s.options.VerifyContacts {
+			err = s.verifyContactOTP(&req.Contact)
+			if err != nil {
+				logger.Error(
+					"Contact verification failed",
+					slog.Any("error", err),
+				)
+				endpoint.WriteErr(w, http.StatusBadRequest, errors.New("Contact verification failed"))
+				return
+			}
+		}
+
 		contacts = append(contacts, user.Contact{
 			Id:        req.Contact.Id,
 			CreatedAt: now,
@@ -99,7 +111,8 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 			Handle:    req.Contact.Handle,
 		})
 	}
-	err = s.createUser(
+
+	err = s.createUserWithoutVerification(
 		app.Id,
 		newUser,
 		contacts,
@@ -226,4 +239,43 @@ func (s *UserService) hashPassword(password string) (string, error) {
 		return "", err
 	}
 	return string(bytes), nil
+}
+
+func (s *UserService) verifyContactOTP(contact *user.ContactInput) error {
+	if contact.OtpId == "" || contact.OtpCode == "" {
+		return errors.New("OTP ID and code are required for contact verification")
+	}
+
+	otpI, found, err := s.otpStore.Query(
+		datastore.Equals(datastore.Field("id"), contact.OtpId),
+	).FindOne()
+	if err != nil {
+		return err
+	}
+	if !found {
+		return errors.New("OTP not found")
+	}
+	otp := otpI.(*user.OTP)
+
+	if otp.Used {
+		return errors.New("OTP already used")
+	}
+
+	if time.Now().After(otp.ExpiresAt) {
+		return errors.New("OTP expired")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(otp.CodeHash), []byte(contact.OtpCode))
+	if err != nil {
+		return errors.New("Invalid OTP code")
+	}
+
+	otp.Used = true
+	otp.VerifiedAt = time.Now()
+	err = s.otpStore.Upsert(otp)
+	if err != nil {
+		return errors.Wrap(err, "failed to mark OTP as used")
+	}
+
+	return nil
 }

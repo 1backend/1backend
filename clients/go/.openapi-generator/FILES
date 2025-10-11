@@ -264,6 +264,8 @@ docs/UserSvcSaveOrganizationResponse.md
 docs/UserSvcSavePermitsRequest.md
 docs/UserSvcSaveSelfRequest.md
 docs/UserSvcSaveUserRequest.md
+docs/UserSvcSendOtpRequest.md
+docs/UserSvcSendOtpResponse.md
 docs/UserSvcToken.md
 docs/UserSvcUser.md
 docs/UserSvcUserInput.md
@@ -497,6 +499,8 @@ model_user_svc_save_organization_response.go
 model_user_svc_save_permits_request.go
 model_user_svc_save_self_request.go
 model_user_svc_save_user_request.go
+model_user_svc_send_otp_request.go
+model_user_svc_send_otp_response.go
 model_user_svc_token.go
 model_user_svc_user.go
 model_user_svc_user_input.go

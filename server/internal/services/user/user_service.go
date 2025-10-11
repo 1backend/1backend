@@ -50,6 +50,7 @@ type UserService struct {
 	permitStore       datastore.DataStore
 	enrollStore       datastore.DataStore
 	appStore          datastore.DataStore
+	otpStore          datastore.DataStore
 
 	privateKey   *rsa.PrivateKey
 	publicKeyPem string
@@ -147,6 +148,14 @@ func NewUserService(
 		return nil, err
 	}
 
+	otpStore, err := options.DataStoreFactory.Create(
+		"userSvcOtps",
+		&usertypes.OTP{},
+	)
+	if err != nil {
+		return nil, err
+	}
+
 	tokenReplacementCache, err := ristretto.NewCache(&ristretto.Config{
 		NumCounters: 1e5,     // number of keys to track frequency (10x max items)
 		MaxCost:     1 << 20, // max cost in bytes (~1 MiB)
@@ -169,6 +178,7 @@ func NewUserService(
 		permitStore:           permitsStore,
 		enrollStore:           enrollsStore,
 		appStore:              appStore,
+		otpStore:              otpStore,
 		tokenReplacementCache: tokenReplacementCache,
 	}
 
@@ -319,6 +329,11 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 
 	router.HandleFunc("/user-svc/app", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.ReadApp(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/otp/send", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.SendOTP(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 }

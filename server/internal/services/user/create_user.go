@@ -17,7 +17,9 @@ import (
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-func (s *UserService) createUser(
+// Creates the user along with contacts, password and roles.
+// Accepts the contact as is, verification should be done beforehand if needed.
+func (s *UserService) createUserWithoutVerification(
 	appId string,
 	userInput *usertypes.UserInput,
 	contacts []usertypes.Contact,

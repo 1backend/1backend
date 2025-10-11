@@ -3100,6 +3100,10 @@ definitions:
           Example values: "joe12" (1backend username), "twitter.com/thejoe" (twitter url), "joe@joesdomain.com" (email)
         example: twitter.com/thejoe
         type: string
+      otpCode:
+        type: string
+      otpId:
+        type: string
       platform:
         description: Platform of the contact (e.g., "email", "phone", "twitter")
         example: twitter
@@ -3733,6 +3737,32 @@ definitions:
         type: string
     type: object
   user_svc.SaveUserResponse:
+    type: object
+  user_svc.SendOtpRequest:
+    properties:
+      appHost:
+        type: string
+      contactHandle:
+        type: string
+      contactId:
+        type: string
+      contactPlatform:
+        type: string
+    required:
+    - appHost
+    - contactId
+    - contactPlatform
+    type: object
+  user_svc.SendOtpResponse:
+    properties:
+      code:
+        description: In test mode, the OTP code is returned in the response for easier
+          testing.
+        type: string
+      otpId:
+        type: string
+    required:
+    - otpId
     type: object
   user_svc.Token:
     properties:
@@ -6915,6 +6945,10 @@ paths:
           description: Enrolls listed successfully
           schema:
             $ref: '#/definitions/user_svc.ListEnrollsResponse'
+        "400":
+          description: Role, Contact ID or User ID is Required
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
@@ -7199,6 +7233,44 @@ paths:
       security:
       - BearerAuth: []
       summary: List Organizations
+      tags:
+      - User Svc
+  /user-svc/otp/send:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Generates and sends a one-time password (OTP) to the specified contact.
+
+        The OTP can be used for contact verification or login depending on purpose.
+      operationId: sendOtp
+      parameters:
+      - description: Send OTP Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.SendOtpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OTP sent successfully
+          schema:
+            $ref: '#/definitions/user_svc.SendOtpResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "404":
+          description: Contact not found
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      summary: Send OTP
       tags:
       - User Svc
   /user-svc/permissions:
@@ -7500,6 +7572,10 @@ paths:
             $ref: '#/definitions/user_svc.HasPermissionResponse'
         "400":
           description: Missing Permission
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "422":
+          description: No Auth Header
           schema:
             $ref: '#/definitions/user_svc.ErrorResponse'
       security:

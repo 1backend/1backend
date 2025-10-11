@@ -156,6 +156,74 @@ func TestRegistration(t *testing.T) {
 	})
 }
 
+func TestRegistration__VerifyContacts(t *testing.T) {
+	hs := &di.HandlerSwitcher{}
+	server := httptest.NewServer(hs)
+	defer server.Close()
+
+	options := &universe.Options{
+		Test:           true,
+		Url:            server.URL,
+		VerifyContacts: true,
+	}
+	universe, err := di.BigBang(options)
+	require.NoError(t, err)
+
+	hs.UpdateHandler(universe.Router)
+
+	err = universe.StarterFunc()
+	require.NoError(t, err)
+
+	userSvc := options.ClientFactory.Client().UserSvcAPI
+	_, hrsp, err := userSvc.Register(context.Background()).Body(
+		openapi.UserSvcRegisterRequest{
+			AppHost:  sdk.DefaultTestAppHost,
+			Slug:     "test-1",
+			Password: openapi.PtrString("test"),
+		},
+	).Execute()
+	require.NoError(t, err, hrsp)
+
+	_, hrsp, err = userSvc.Register(context.Background()).Body(
+		openapi.UserSvcRegisterRequest{
+			AppHost: sdk.DefaultTestAppHost,
+			Slug:    "test-2",
+			Contact: &openapi.UserSvcContactInput{
+				Id:       "test1@test.comm",
+				Platform: "email",
+			},
+			Password: openapi.PtrString("test"),
+		},
+	).Execute()
+	require.Error(t, err, hrsp)
+
+	otpRsp, _, err := userSvc.SendOtp(context.Background()).Body(
+		openapi.UserSvcSendOtpRequest{
+			AppHost:         sdk.DefaultTestAppHost,
+			ContactId:       "test1@test.comm",
+			ContactPlatform: "email",
+		},
+	).Execute()
+	require.NoError(t, err, otpRsp)
+
+	t.Run("registration with OTP succeeds", func(t *testing.T) {
+		_, hrsp, err = userSvc.Register(context.Background()).Body(
+			openapi.UserSvcRegisterRequest{
+				AppHost: sdk.DefaultTestAppHost,
+				Slug:    "test-2",
+				Contact: &openapi.UserSvcContactInput{
+					Id:       "test1@test.comm",
+					Platform: "email",
+					OtpId:    &otpRsp.OtpId,
+					OtpCode:  otpRsp.Code,
+				},
+				Password: openapi.PtrString("test"),
+			},
+		).Execute()
+		require.NoError(t, err, hrsp)
+	})
+}
+
 func TestSlugRegexp(t *testing.T) {
 	shouldWork := []string{
 		"1backend",
