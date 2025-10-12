@@ -224,6 +224,8 @@ export * from './userSvcSaveOrganizationResponse';
 export * from './userSvcSavePermitsRequest';
 export * from './userSvcSaveSelfRequest';
 export * from './userSvcSaveUserRequest';
+export * from './userSvcSendOtpRequest';
+export * from './userSvcSendOtpResponse';
 export * from './userSvcToken';
 export * from './userSvcUser';
 export * from './userSvcUserInput';
@@ -454,6 +456,8 @@ import { UserSvcSaveOrganizationResponse } from './userSvcSaveOrganizationRespon
 import { UserSvcSavePermitsRequest } from './userSvcSavePermitsRequest';
 import { UserSvcSaveSelfRequest } from './userSvcSaveSelfRequest';
 import { UserSvcSaveUserRequest } from './userSvcSaveUserRequest';
+import { UserSvcSendOtpRequest } from './userSvcSendOtpRequest';
+import { UserSvcSendOtpResponse } from './userSvcSendOtpResponse';
 import { UserSvcToken } from './userSvcToken';
 import { UserSvcUser } from './userSvcUser';
 import { UserSvcUserInput } from './userSvcUserInput';
@@ -698,6 +702,8 @@ let typeMap = {
     "UserSvcSavePermitsRequest": UserSvcSavePermitsRequest,
     "UserSvcSaveSelfRequest": UserSvcSaveSelfRequest,
     "UserSvcSaveUserRequest": UserSvcSaveUserRequest,
+    "UserSvcSendOtpRequest": UserSvcSendOtpRequest,
+    "UserSvcSendOtpResponse": UserSvcSendOtpResponse,
     "UserSvcToken": UserSvcToken,
     "UserSvcUser": UserSvcUser,
     "UserSvcUserInput": UserSvcUserInput,

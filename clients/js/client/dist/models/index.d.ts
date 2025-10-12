@@ -224,6 +224,8 @@ export * from './UserSvcSaveOrganizationResponse';
 export * from './UserSvcSavePermitsRequest';
 export * from './UserSvcSaveSelfRequest';
 export * from './UserSvcSaveUserRequest';
+export * from './UserSvcSendOtpRequest';
+export * from './UserSvcSendOtpResponse';
 export * from './UserSvcToken';
 export * from './UserSvcUser';
 export * from './UserSvcUserInput';

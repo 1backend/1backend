@@ -642,6 +642,12 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "1backend-api/send-otp",
+          label: "Send OTP",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
           id: "1backend-api/list-permissions",
           label: "List Permissions",
           className: "api-method post",
