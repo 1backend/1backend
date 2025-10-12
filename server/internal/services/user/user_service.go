@@ -463,7 +463,8 @@ func (s *UserService) bootstrap() error {
 			&usertypes.LoginRequest{
 				Slug:     cred.Slug,
 				Password: cred.Password,
-			})
+			},
+			false)
 		if err != nil {
 			return errors.Wrap(err, "failed to login user-svc")
 		}

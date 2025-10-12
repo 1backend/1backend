@@ -131,7 +131,8 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 			Password: req.Password,
 			Device:   req.Device,
 			Contact:  req.Contact,
-		})
+		},
+		true)
 	if err != nil {
 		logger.Error(
 			"Failed to login after registration",
@@ -269,6 +270,7 @@ func (s *UserService) verifyContactOTP(contact *user.ContactInput) error {
 
 	otp.Used = true
 	otp.VerifiedAt = time.Now()
+
 	err = s.otpStore.Upsert(otp)
 	if err != nil {
 		return errors.Wrap(err, "failed to mark OTP as used")

@@ -64,7 +64,7 @@ func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := s.login(app.Id, &request)
+	token, err := s.login(app.Id, &request, false)
 	if err != nil {
 		switch err.Error() {
 		case "unauthorized":
@@ -105,6 +105,7 @@ func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
 func (s *UserService) login(
 	appId string,
 	request *user.LoginRequest,
+	otpAlreadyVerified bool,
 ) (*user.Token, error) {
 
 	var usr *user.User
@@ -167,13 +168,18 @@ func (s *UserService) login(
 		if !checkPasswordHash(request.Password, password.PasswordHash) {
 			return nil, errors.New("unauthorized")
 		}
+	case otpAlreadyVerified:
+		// If OTP is already verified, we can proceed with login
+		break
 	case request.Contact.OtpId != "" && request.Contact.OtpCode != "":
 		err := s.verifyContactOTP(&request.Contact)
 		if err != nil {
 			return nil, err
 		}
+
 	default:
 		return nil, errors.New("password or otp required")
+
 	}
 
 	if request.Device == "" {
