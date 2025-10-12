@@ -1,0 +1,73 @@
+---
+id: send-otp
+title: "Send OTP"
+description: "Generates and sends a one-time password (OTP) to the specified contact."
+sidebar_label: "Send OTP"
+hide_title: true
+hide_table_of_contents: true
+api: eJzNVsFu2zgQ/ZUBT7uAIiWbLhbr0yaLog22QIzaPSU5jMmxzEYasiRl12v434uhpMSJvT30UKwvFqjhm8c3M4/aKUNRB+uTdawm6h0xBUwUAdlAJDYREBzTWbItgccYNy4Y+OV2Pv0VkoO0IoietF1aMqAdJ9SpvOd7nq8IbudT0MiwIOgiGVi6MMbAmoJdWo2SGVyAxtWWwZAnNpZrcAy+C95FKlWhnBde1vGNURMlxG6TV4UK9KWjmK6d2arJTgk4cZJH9L4Z4KvPUU63U1GvqEV58kEQk6U4xL53MW9LW0+SIQXLtdoXauD7Htk09L0IYfbfb6cNpqUL7YmYfX8MG8ioyd0TmUPgY5iHYoRxi8+kk9oLzstqzohNrsHHXiV1mCiFjnLm6B3HXoffzs/l7yWKAETiBLHTmmJcdk2zHRj9gNbaGTpOcsOQKCZonaEid1XuHWcIbIRAqQtMBizndyPp3FCE0VLI2y3X0ixHNXDJn6zOK+X7sFPK7gv15pQ2N7zGxhoITwL/oCoUggunGZ4m8+aYzN/DZLFLsHQdm59G5/fT2iQKjA3MKKwpwNuM+XMoySLWUYr6KVKA2VpLXVtKKycG4vsB85hWaqKqLlI4i2tdueQrMRdVqJhZC8ROdaGRsKpxGpuVi2lycXF5+YfaP0ic7oJN25nw7qleEwYKV52Av1ZlvvUE90PIvYKlaxq3IQOLLSBEj5qy9yb3SAyo++6EZXBtbv3xOPAh+yWx8c5ykra3gr8iNCQyM7YiirBwwf6bRX6eDfT2H9pm9UT4j882+vYrtr53uidbHMU+csOjF709v1p89r6DmbS8dKNlo87tQC1aETpiQ/GvaLnuGkzBcalde3Ck6Q3MOu9dkBr2tVml5CdVdbFA/UhsZEOljgzx6uaMMdk1QWt1cFJiqymCHwiKio3VxDGff8z3bvoB1pfl+YtscVJVm82mrLkrXairYV+ssPbN2WV5Xq5S2wiHRKGNt8tZn+2ZbNxgXVMoratySCXlsSnrenHdH0QVSrqwp39e/lleCKK0b4t8wHG0evXqyAdX4v/3ch96MtHXVPkGLcsZs9K7YUTv1DiiKrt5nk/OXr3KHXqndrsFRvoUmv1elr90FLZqcvdQqDUGiwuR9e5hX4wTInP9SNvBN4nTmYym6I1N14/IK3PaF+OOK63Jp+/GHrrN9HY2V4VaDB8pbb4BVcCNXMi4UROVv3Bkd/aPvLZTDXLdYS2xPab8vgF85Vx8
+sidebar_class_name: "post api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Send OTP"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/user-svc/otp/send"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Generates and sends a one-time password (OTP) to the specified contact.
+
+The OTP can be used for contact verification or login depending on purpose.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"appHost":{"type":"string"},"contactHandle":{"type":"string"},"contactId":{"type":"string"},"contactPlatform":{"type":"string"}},"required":["appHost","contactId","contactPlatform"],"type":"object"}}},"description":"Send OTP Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OTP sent successfully","content":{"application/json":{"schema":{"properties":{"code":{"description":"In test mode, the OTP code is returned in the response for easier testing.","type":"string"},"otpId":{"type":"string"}},"required":["otpId"],"type":"object"}}}},"400":{"description":"Invalid request","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"404":{"description":"Contact not found","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

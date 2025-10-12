@@ -99,7 +99,7 @@ func (s *UserService) CreateUser(
 	}
 	appId := appI.(*user.App).Id
 
-	err = s.createUser(
+	err = s.createUserWithoutVerification(
 		appId,
 		req.User,
 		req.Contacts,

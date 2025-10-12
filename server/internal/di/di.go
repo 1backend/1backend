@@ -199,12 +199,16 @@ func BigBang(options *universe.Options) (*Universe, error) {
 		options.EdgeProxyHttpsPort = 443
 	}
 
-	if options.SyncCertsToFiles == false {
+	if !options.SyncCertsToFiles {
 		options.SyncCertsToFiles = os.Getenv("OB_SYNC_CERTS_TO_FILES") == "true"
 	}
 
 	if options.ContactEmail == "" {
 		options.ContactEmail = os.Getenv("OB_CONTACT_EMAIL")
+	}
+
+	if !options.VerifyContacts && os.Getenv("OB_VERIFY_CONTACTS") == "true" {
+		options.VerifyContacts = true
 	}
 
 	homeDir, err := infra.HomeDir(infra.HomeDirOptions{

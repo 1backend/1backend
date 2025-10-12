@@ -48,22 +48,6 @@ type UserInput struct {
 	Labels map[string]string `json:"labels,omitempty"`
 }
 
-// Password (password hash), is separate from the user record
-// so that we avoid accidentally exposing or overwriting the password.
-type Password struct {
-	Id string `json:"id" binding:"required"`
-
-	CreatedAt time.Time `json:"createdAt" binding:"required"`
-	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
-
-	UserId       string `json:"userId" binding:"required"`
-	PasswordHash string `json:"passwordHash,omitempty"`
-}
-
-func (p *Password) GetId() string {
-	return p.Id
-}
-
 type UserRecord struct {
 	Id string `json:"id" binding:"required"`
 
@@ -136,9 +120,10 @@ type RegisterResponse struct {
 type LoginRequest struct {
 	AppHost  string `json:"appHost" binding:"required" example:"shoes.com"`
 	Slug     string `json:"slug,omitempty"`
-	Contact  string `json:"contact,omitempty"`
 	Password string `json:"password"`
 	Device   string `json:"device,omitempty"`
+
+	Contact ContactInput `json:"contact,omitempty"`
 }
 
 type LoginResponse struct {

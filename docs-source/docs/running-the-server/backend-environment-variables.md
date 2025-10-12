@@ -136,6 +136,10 @@ Host With 1Backend
 
 For information about this, please refer to the [Registry Svc Node section](/docs/built-in-services/registry-svc#node-management--cluster-topology)
 
+## `OB_VERIFY_CONTACTS`
+
+When set to true, registration of new users with a contact address requires an OTP to prove ownership of the contact.
+
 ## `OB_SERVER_URL`
 
 The OB_SERVER_URL is the internally addressable (non-public-facing) URL of an 1Backend server. It should point to the local 1Backend instance on each physical node. Ideally, every node should have its own 1Backend instance.

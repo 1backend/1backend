@@ -64,6 +64,9 @@ type Options struct {
 	// See `OB_SYNC_CERTS_TO_FILES` environment variable documentation.
 	SyncCertsToFiles bool
 
+	// See `OB_REQUIRE_VERIFIED_CONTACT` environment variable documentation.
+	VerifyContacts bool
+
 	// Test mode if true will cause the localstore to
 	// save data into random temporary folders.
 	Test bool

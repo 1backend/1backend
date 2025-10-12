@@ -66,6 +66,8 @@ type Options struct {
 	// Only used in tests
 	EdgeProxyHttpsPort int
 
+	VerifyContacts bool
+
 	// Self url
 	Url string
 
@@ -160,6 +162,7 @@ func StartService(options Options) (*ServiceProcess, error) {
 		"OB_EDGE_PROXY_TEST_MODE":   fmt.Sprintf("%v", options.EdgeProxyTestMode),
 		"OB_EDGE_PROXY_HTTP_PORT":   fmt.Sprintf("%v", options.EdgeProxyHttpPort),
 		"OB_EDGE_PROXY_HTTPS_PORT":  fmt.Sprintf("%v", options.EdgeProxyHttpsPort),
+		"OB_VERIFY_CONTACTS":        fmt.Sprintf("%v", options.VerifyContacts),
 	}
 
 	for key, value := range envVars {

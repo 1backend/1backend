@@ -848,3 +848,33 @@ func (mr *MockUserSvcAPIMockRecorder) SaveUserExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveUserExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).SaveUserExecute), r)
 }
+
+// SendOtp mocks base method.
+func (m *MockUserSvcAPI) SendOtp(ctx context.Context) ApiSendOtpRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendOtp", ctx)
+	ret0, _ := ret[0].(ApiSendOtpRequest)
+	return ret0
+}
+
+// SendOtp indicates an expected call of SendOtp.
+func (mr *MockUserSvcAPIMockRecorder) SendOtp(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendOtp", reflect.TypeOf((*MockUserSvcAPI)(nil).SendOtp), ctx)
+}
+
+// SendOtpExecute mocks base method.
+func (m *MockUserSvcAPI) SendOtpExecute(r ApiSendOtpRequest) (*UserSvcSendOtpResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SendOtpExecute", r)
+	ret0, _ := ret[0].(*UserSvcSendOtpResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// SendOtpExecute indicates an expected call of SendOtpExecute.
+func (mr *MockUserSvcAPIMockRecorder) SendOtpExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendOtpExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).SendOtpExecute), r)
+}

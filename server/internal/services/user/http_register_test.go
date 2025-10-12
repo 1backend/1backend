@@ -123,7 +123,7 @@ func TestRegistration(t *testing.T) {
 			AppHost: sdk.DefaultTestAppHost,
 			Slug:    "test-1",
 			Contact: &openapi.UserSvcContactInput{
-				Id:       "test1@test.comm",
+				Id:       "test1@test.com",
 				Platform: "email",
 			},
 			Password: openapi.PtrString("test"),
@@ -145,14 +145,85 @@ func TestRegistration(t *testing.T) {
 
 	t.Run("contact login works", func(t *testing.T) {
 		loginReq := openapi.UserSvcLoginRequest{
-			AppHost:  sdk.DefaultTestAppHost,
-			Contact:  openapi.PtrString("test1@test.comm"),
+			AppHost: sdk.DefaultTestAppHost,
+			Contact: &openapi.UserSvcContactInput{
+				Id:       "test1@test.com",
+				Platform: "email",
+			},
 			Password: openapi.PtrString("test"),
 		}
 		_, _, err := options.ClientFactory.Client().UserSvcAPI.Login(context.Background()).
 			Body(loginReq).
 			Execute()
 		require.NoError(t, err)
+	})
+}
+
+func TestRegistration__VerifyContacts(t *testing.T) {
+	hs := &di.HandlerSwitcher{}
+	server := httptest.NewServer(hs)
+	defer server.Close()
+
+	options := &universe.Options{
+		Test:           true,
+		Url:            server.URL,
+		VerifyContacts: true,
+	}
+	universe, err := di.BigBang(options)
+	require.NoError(t, err)
+
+	hs.UpdateHandler(universe.Router)
+
+	err = universe.StarterFunc()
+	require.NoError(t, err)
+
+	userSvc := options.ClientFactory.Client().UserSvcAPI
+	_, hrsp, err := userSvc.Register(context.Background()).Body(
+		openapi.UserSvcRegisterRequest{
+			AppHost:  sdk.DefaultTestAppHost,
+			Slug:     "test-1",
+			Password: openapi.PtrString("test"),
+		},
+	).Execute()
+	require.NoError(t, err, hrsp)
+
+	_, hrsp, err = userSvc.Register(context.Background()).Body(
+		openapi.UserSvcRegisterRequest{
+			AppHost: sdk.DefaultTestAppHost,
+			Slug:    "test-2",
+			Contact: &openapi.UserSvcContactInput{
+				Id:       "test1@test.com",
+				Platform: "email",
+			},
+			Password: openapi.PtrString("test"),
+		},
+	).Execute()
+	require.Error(t, err, hrsp)
+
+	otpRsp, _, err := userSvc.SendOtp(context.Background()).Body(
+		openapi.UserSvcSendOtpRequest{
+			AppHost:         sdk.DefaultTestAppHost,
+			ContactId:       "test1@test.com",
+			ContactPlatform: "email",
+		},
+	).Execute()
+	require.NoError(t, err, otpRsp)
+
+	t.Run("registration with OTP succeeds", func(t *testing.T) {
+		_, hrsp, err = userSvc.Register(context.Background()).Body(
+			openapi.UserSvcRegisterRequest{
+				AppHost: sdk.DefaultTestAppHost,
+				Slug:    "test-2",
+				Contact: &openapi.UserSvcContactInput{
+					Id:       "test1@test.com",
+					Platform: "email",
+					OtpId:    &otpRsp.OtpId,
+					OtpCode:  otpRsp.Code,
+				},
+				Password: openapi.PtrString("test"),
+			},
+		).Execute()
+		require.NoError(t, err, hrsp)
 	})
 }
 

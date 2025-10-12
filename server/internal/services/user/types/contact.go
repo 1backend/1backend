@@ -59,13 +59,8 @@ type ContactInput struct {
 	// Platform of the contact (e.g., "email", "phone", "twitter")
 	Platform string `json:"platform" example:"twitter" binding:"required"`
 
-	// Handle is the platform local unique identifier.
-	// Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`.
-	// For email and phones the `id` and the `value` will be the same.
-	// This field mostly exists for display purposes.
-	//
-	// Example values: "joe12" (1backend username), "thejoe" (twitter username), "joe@joesdomain.com" (email)
-	Handle string `json:"handle,omitempty" example:"thejoe"`
+	OtpId   string `json:"otpId,omitempty"`
+	OtpCode string `json:"otpCode,omitempty"`
 }
 
 func (c Contact) GetId() string {
