@@ -23,7 +23,7 @@ var _ MappedNullable = &UserSvcLoginRequest{}
 // UserSvcLoginRequest struct for UserSvcLoginRequest
 type UserSvcLoginRequest struct {
 	AppHost string `json:"appHost"`
-	Contact *string `json:"contact,omitempty"`
+	Contact *UserSvcContactInput `json:"contact,omitempty"`
 	Device *string `json:"device,omitempty"`
 	Password *string `json:"password,omitempty"`
 	Slug *string `json:"slug,omitempty"`
@@ -74,9 +74,9 @@ func (o *UserSvcLoginRequest) SetAppHost(v string) {
 }
 
 // GetContact returns the Contact field value if set, zero value otherwise.
-func (o *UserSvcLoginRequest) GetContact() string {
+func (o *UserSvcLoginRequest) GetContact() UserSvcContactInput {
 	if o == nil || IsNil(o.Contact) {
-		var ret string
+		var ret UserSvcContactInput
 		return ret
 	}
 	return *o.Contact
@@ -84,7 +84,7 @@ func (o *UserSvcLoginRequest) GetContact() string {
 
 // GetContactOk returns a tuple with the Contact field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcLoginRequest) GetContactOk() (*string, bool) {
+func (o *UserSvcLoginRequest) GetContactOk() (*UserSvcContactInput, bool) {
 	if o == nil || IsNil(o.Contact) {
 		return nil, false
 	}
@@ -100,8 +100,8 @@ func (o *UserSvcLoginRequest) HasContact() bool {
 	return false
 }
 
-// SetContact gets a reference to the given string and assigns it to the Contact field.
-func (o *UserSvcLoginRequest) SetContact(v string) {
+// SetContact gets a reference to the given UserSvcContactInput and assigns it to the Contact field.
+func (o *UserSvcLoginRequest) SetContact(v UserSvcContactInput) {
 	o.Contact = &v
 }
 

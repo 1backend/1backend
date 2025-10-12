@@ -121,15 +121,15 @@ func (s *UserService) login(
 		}
 
 		usr = userI.(*user.User)
-	} else if request.Contact != "" {
+	} else if request.Contact.Id != "" {
 		contactI, found, err := s.contactStore.Query(
-			datastore.Equals(datastore.Field("id"), request.Contact),
+			datastore.Equals(datastore.Field("id"), request.Contact.Id),
 		).FindOne()
 		if err != nil {
 			return nil, err
 		}
 		if !found {
-			return nil, errors.New("not found")
+			return nil, fmt.Errorf("contact not found by id '%s'", request.Contact.Id)
 		}
 
 		userI, found, err := s.userStore.Query(
@@ -147,23 +147,33 @@ func (s *UserService) login(
 		return nil, errors.New("slug or contact required")
 	}
 
-	passwordIs, err := s.passwordStore.Query(
-		datastore.Equals(
-			datastore.Field("userId"), usr.Id),
-	).OrderBy(
-		datastore.OrderByField("createdAt", true),
-	).Limit(1).Find()
-	if err != nil {
-		return nil, errors.Wrap(err, "error listing passwords for user")
-	}
-	if len(passwordIs) == 0 {
-		return nil, errors.New("password not found for user")
-	}
+	switch {
+	case request.Password != "":
+		passwordIs, err := s.passwordStore.Query(
+			datastore.Equals(
+				datastore.Field("userId"), usr.Id),
+		).OrderBy(
+			datastore.OrderByField("createdAt", true),
+		).Limit(1).Find()
+		if err != nil {
+			return nil, errors.Wrap(err, "error listing passwords for user")
+		}
+		if len(passwordIs) == 0 {
+			return nil, errors.New("password not found for user")
+		}
 
-	password := passwordIs[0].(*user.Password)
+		password := passwordIs[0].(*user.Password)
 
-	if !checkPasswordHash(request.Password, password.PasswordHash) {
-		return nil, errors.New("unauthorized")
+		if !checkPasswordHash(request.Password, password.PasswordHash) {
+			return nil, errors.New("unauthorized")
+		}
+	case request.Contact.OtpId != "" && request.Contact.OtpCode != "":
+		err := s.verifyContactOTP(&request.Contact)
+		if err != nil {
+			return nil, err
+		}
+	default:
+		return nil, errors.New("password or otp required")
 	}
 
 	if request.Device == "" {

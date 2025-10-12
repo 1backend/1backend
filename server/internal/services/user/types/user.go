@@ -120,9 +120,10 @@ type RegisterResponse struct {
 type LoginRequest struct {
 	AppHost  string `json:"appHost" binding:"required" example:"shoes.com"`
 	Slug     string `json:"slug,omitempty"`
-	Contact  string `json:"contact,omitempty"`
 	Password string `json:"password"`
 	Device   string `json:"device,omitempty"`
+
+	Contact ContactInput `json:"contact,omitempty"`
 }
 
 type LoginResponse struct {

@@ -47,11 +47,6 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	if req.Password == "" {
-		endpoint.WriteErr(w, http.StatusBadRequest, errors.New(`Password missing`))
-		return
-	}
-
 	if req.Slug == "" {
 		endpoint.WriteErr(w, http.StatusBadRequest, errors.New(`Slug missing`))
 		return
@@ -108,7 +103,8 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 			CreatedAt: now,
 			UpdatedAt: now,
 			Platform:  req.Contact.Platform,
-			Handle:    req.Contact.Handle,
+			// @todo create handle
+			// Handle:    req.Contact.Handle,
 		})
 	}
 
@@ -134,6 +130,7 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 			Slug:     req.Slug,
 			Password: req.Password,
 			Device:   req.Device,
+			Contact:  req.Contact,
 		})
 	if err != nil {
 		logger.Error(

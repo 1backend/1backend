@@ -22,8 +22,6 @@ var _ MappedNullable = &UserSvcContactInput{}
 
 // UserSvcContactInput struct for UserSvcContactInput
 type UserSvcContactInput struct {
-	// Handle is the platform local unique identifier. Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`. For email and phones the `id` and the `value` will be the same. This field mostly exists for display purposes.  Example values: \"joe12\" (1backend username), \"thejoe\" (twitter username), \"joe@joesdomain.com\" (email)
-	Handle *string `json:"handle,omitempty"`
 	// The unique identifier, which can be a URL.  Example values: \"joe12\" (1backend username), \"twitter.com/thejoe\" (twitter url), \"joe@joesdomain.com\" (email)
 	Id string `json:"id"`
 	OtpCode *string `json:"otpCode,omitempty"`
@@ -51,38 +49,6 @@ func NewUserSvcContactInput(id string, platform string) *UserSvcContactInput {
 func NewUserSvcContactInputWithDefaults() *UserSvcContactInput {
 	this := UserSvcContactInput{}
 	return &this
-}
-
-// GetHandle returns the Handle field value if set, zero value otherwise.
-func (o *UserSvcContactInput) GetHandle() string {
-	if o == nil || IsNil(o.Handle) {
-		var ret string
-		return ret
-	}
-	return *o.Handle
-}
-
-// GetHandleOk returns a tuple with the Handle field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcContactInput) GetHandleOk() (*string, bool) {
-	if o == nil || IsNil(o.Handle) {
-		return nil, false
-	}
-	return o.Handle, true
-}
-
-// HasHandle returns a boolean if a field has been set.
-func (o *UserSvcContactInput) HasHandle() bool {
-	if o != nil && !IsNil(o.Handle) {
-		return true
-	}
-
-	return false
-}
-
-// SetHandle gets a reference to the given string and assigns it to the Handle field.
-func (o *UserSvcContactInput) SetHandle(v string) {
-	o.Handle = &v
 }
 
 // GetId returns the Id field value
@@ -207,9 +173,6 @@ func (o UserSvcContactInput) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcContactInput) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Handle) {
-		toSerialize["handle"] = o.Handle
-	}
 	toSerialize["id"] = o.Id
 	if !IsNil(o.OtpCode) {
 		toSerialize["otpCode"] = o.OtpCode
