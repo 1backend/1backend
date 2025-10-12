@@ -22,11 +22,11 @@
 
 ## Overview
 
-1Backend reimagines software development for the AI era. It lets you build modern distributed applications fast, without getting slowed down by infrastructure in the early stages. It’s a full platform: a framework, a proxy (edge, reverse, and more), and much more. It manages authorization and user accounts, microservice communication, microfrontend routing, email delivery, and many other core parts of modern app development.
+1Backend is a full-stack platform for the AI era. It lets you build distributed applications fast, without early infrastructure overhead. It’s a framework, proxy, and runtime that handles auth, user accounts, microservice and microfrontend routing, email, and more.
 
-It can run and program LLMs inside containers. It’s zero-trust, zero-config, and includes its own ORM, allowing development even without a database.
+It can run and program LLMs inside containers. Zero-trust, zero-config, with its own ORM for development even without a database.
 
-It’s multitenant—host multiple apps, websites, or projects on one installation. In effect, it serves as a distributed operating system for your applications.
+It’s multitenant—host multiple apps or sites on one install. In essence, a distributed operating system for your applications.
 
 ## Launching the server
 
@@ -65,8 +65,8 @@ import (
 oneBackendClient  := client.NewApiClientFactory(service.Options.ServerUrl).Client()
 token, err := boot.RegisterServiceAccount(
 		oneBackendClient .UserSvcAPI,
-		"your-svc",
-		"Your Service",
+		"your-svc", // Account slug
+		"Your Service", // Display name
 		credentialStore, // This is just a DB handle
 	)
 ```
@@ -75,7 +75,7 @@ token, err := boot.RegisterServiceAccount(
 
 #### Language-agnostic
 
-Call [`RegisterInstance` endpoint](https://1backend.com/docs/1backend-api/register-instance) directly from any programming language.
+Call the [`RegisterInstance` endpoint](https://1backend.com/docs/1backend-api/register-instance) directly from any programming language.
 
 #### Go SDK example
 
@@ -93,10 +93,23 @@ oneBackendClient.RegistrySvcAPI.
 		}).Execute()
 ```
 
-### Step 3: Call your service through 1Backend
+### Step 3: Call your service through the 1Backend server
 
-All services registered will be available under their slug at `http(s)://your-1backend-host/{service-slug}/...`.
-For more details see doc about the [Proxy Svc](https://1backend.com/docs/built-in-services/proxy-svc).
+All services registered will be available under their slug:
+
+```sh
+curl http://127.0.0.1:11337/your-svc/your-endpoint`.
+```
+
+### Bonus step: deploy a microfrontend
+
+1Backend doesn't just manage microservices, it also manages microfrontends. You can deploy a React/Vue/Angular/etc. apps as microfrontends and 1Backend will route requests to them based on routes:
+
+```sh
+oo route save --id=yourdomain.com --target=http://your-network-local-frontend-url
+```
+
+Automatic SSL is supported out of the box, see the [Proxy Svc](https://1backend.com/docs/running-the-server/backend-environment-variables#ob_edge_proxy) documentation and the [edge proxy mode](https://1backend.com/docs/running-the-server/backend-environment-variables#ob_edge_proxy).
 
 ### CLI
 
