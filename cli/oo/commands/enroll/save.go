@@ -13,7 +13,7 @@ import (
 // Save [role] [--userId | --contactId]  | [filePath | dirPath]
 func Save(cmd *cobra.Command, args []string, userId, contactId string) error {
 	ctx := cmd.Context()
-	url, token, err := util.GetSelectedUrlAndToken()
+	url, token, err := util.GetSelectedUrlAndToken(cmd)
 	if err != nil {
 		return errors.Wrap(err, "cannot get env url")
 	}

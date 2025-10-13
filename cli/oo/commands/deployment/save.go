@@ -63,7 +63,7 @@ func Save(cmd *cobra.Command, args []string) error {
 	stat := openapi.DeploymentStatusDeploying
 	deployment.Status = &stat
 
-	url, token, err := util.GetSelectedUrlAndToken()
+	url, token, err := util.GetSelectedUrlAndToken(cmd)
 	if err != nil {
 		return errors.Wrap(err, "cannot get env url")
 	}

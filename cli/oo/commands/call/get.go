@@ -22,7 +22,7 @@ func Get(cmd *cobra.Command, args []string) error {
 		)
 	}
 
-	uri, token, err := util.GetSelectedUrlAndToken()
+	uri, token, err := util.GetSelectedUrlAndToken(cmd)
 	if err != nil {
 		return errors.Wrap(err, "cannot get environment URL and token")
 	}

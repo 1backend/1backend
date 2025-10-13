@@ -35,7 +35,7 @@ func Encrypt(cmd *cobra.Command, args []string) error {
 		fmt.Println() // Move to the next line after password input
 	}
 
-	url, token, err := util.GetSelectedUrlAndToken()
+	url, token, err := util.GetSelectedUrlAndToken(cmd)
 	if err != nil {
 		return errors.Wrap(err, "cannot get env url")
 	}

@@ -11,7 +11,7 @@ func Delete(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
 	serviceDefinitionId := args[0]
 
-	url, token, err := util.GetSelectedUrlAndToken()
+	url, token, err := util.GetSelectedUrlAndToken(cmd)
 	if err != nil {
 		return errors.Wrap(err, "cannot get env url")
 	}

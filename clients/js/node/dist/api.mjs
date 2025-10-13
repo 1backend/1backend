@@ -5919,6 +5919,11 @@ class SecretSvcListSecretsRequest {
 SecretSvcListSecretsRequest.discriminator = undefined;
 SecretSvcListSecretsRequest.attributeTypeMap = [
     {
+        "name": "allApps",
+        "baseName": "allApps",
+        "type": "boolean"
+    },
+    {
         "name": "id",
         "baseName": "id",
         "type": "string"

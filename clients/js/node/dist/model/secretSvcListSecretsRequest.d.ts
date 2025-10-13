@@ -10,6 +10,10 @@
  * Do not edit the class manually.
  */
 export declare class SecretSvcListSecretsRequest {
+    /**
+    * AllApps indicates whether to list secrets across all apps. If false, the app from the authentication context is used.
+    */
+    'allApps'?: boolean;
     'id'?: string;
     'ids'?: Array<string>;
     static discriminator: string | undefined;

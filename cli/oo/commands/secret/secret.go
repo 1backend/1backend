@@ -9,6 +9,25 @@ func AddSecretCommands(rootCmd *cobra.Command) {
 		Short:   "Manage secrets",
 	}
 
+	var fromEnv string
+	var toEnv string
+
+	var copyCmd = &cobra.Command{
+		Use: "copy",
+		Short: `Copy all secrets from one environment to another.
+Uses the selected app context for both 'from' and 'to' environments.`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return Copy(cmd, fromEnv, toEnv)
+		},
+	}
+
+	var readCmd = &cobra.Command{
+		Use:   "read [id]",
+		Short: "Read secrets and print them as YAML",
+		Args:  cobra.MaximumNArgs(1),
+		RunE:  Read,
+	}
+
 	var saveCmd = &cobra.Command{
 		Use:     "save [key] [value] | [filePath]",
 		Aliases: []string{"s"},
@@ -95,14 +114,18 @@ Enter secret value:`,
 	removeCmd.Flags().StringArrayP("key", "k", []string{}, "Keys of secrets to remove")
 	removeCmd.Flags().StringArrayP("id", "i", []string{}, "IDs of secrets to remove")
 
-	var show bool
+	var (
+		show    bool
+		allApps bool
+		verbose bool
+	)
 
 	var listCmd = &cobra.Command{
 		Use:     "list",
 		Short:   "List secrets",
 		Aliases: []string{"ls"},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return List(cmd, args, show)
+			return List(cmd, args, show, allApps, verbose)
 		},
 	}
 
@@ -119,13 +142,24 @@ Enter secret value:`,
 		BoolVar(&show, "show", false, "Show secrets unmasked")
 
 	listCmd.Flags().
-		StringP("namespace", "n", "", "Namespace to filter on. If not provided all namespaces are shown.")
+		BoolVarP(&allApps, "all-apps", "a", false, "List secrets across all apps. If false, the app from the authentication context is used.")
 
+	listCmd.Flags().
+		BoolVarP(&verbose, "verbose", "v", false, "Verbose output (yaml array)")
+
+	secretCmd.AddCommand(readCmd)
 	secretCmd.AddCommand(saveCmd)
 	secretCmd.AddCommand(removeCmd)
 	secretCmd.AddCommand(listCmd)
 	secretCmd.AddCommand(encryptCmd)
 	secretCmd.AddCommand(isSecureCmd)
+	secretCmd.AddCommand(copyCmd)
+
+	copyCmd.Flags().
+		StringVarP(&fromEnv, "from", "f", "", "Source environment short name")
+
+	copyCmd.Flags().
+		StringVarP(&toEnv, "to", "t", "", "Destination environment short name")
 
 	rootCmd.AddCommand(secretCmd)
 }

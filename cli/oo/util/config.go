@@ -8,6 +8,7 @@ import (
 
 	types "github.com/1backend/1backend/cli/oo/types"
 	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
 
 	"gopkg.in/yaml.v2"
 )
@@ -55,13 +56,13 @@ func LoadConfig() (types.Config, error) {
 	if len(config.Environments) == 0 {
 		config.Environments = map[string]*types.Environment{}
 
-		shortName := "local"
+		envShortName := "local"
 		config.Environments["local"] = &types.Environment{
-			ShortName: shortName,
+			ShortName: envShortName,
 			// @todo make this come from somewhere else
 			URL: "http://127.0.0.1:11337",
 		}
-		config.SelectedEnvironment = shortName
+		config.SelectedEnvironment = envShortName
 
 		err = SaveConfig(config)
 		if err != nil {
@@ -93,7 +94,7 @@ func SaveConfig(config types.Config) error {
 	return nil
 }
 
-func GetSelectedEnv() (*types.Environment, error) {
+func GetSelectedEnv(cmd *cobra.Command) (*types.Environment, error) {
 	conf, err := LoadConfig()
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to load config")
@@ -103,27 +104,89 @@ func GetSelectedEnv() (*types.Environment, error) {
 		return nil, fmt.Errorf("no environments")
 	}
 
-	env, ok := conf.Environments[conf.SelectedEnvironment]
+	envFlag, _ := cmd.Context().Value("env").(string)
+	selected := conf.SelectedEnvironment
+	if envFlag != "" {
+		selected = envFlag
+	}
+
+	env, ok := conf.Environments[selected]
 	if !ok {
 		return nil, fmt.Errorf(
 			"failed to find selected env '%s'",
-			conf.SelectedEnvironment,
+			selected,
 		)
 	}
 
 	return env, nil
 }
 
-func GetSelectedUrlAndToken() (string, string, error) {
-	env, err := GetSelectedEnv()
+func GetSelectedUrlAndToken(cmd *cobra.Command) (string, string, error) {
+	env, err := GetSelectedEnv(cmd)
 	if err != nil {
 		return "", "", err
 	}
 
+	appHostFlag, _ := cmd.Context().Value("app-host").(string)
 	selectedUser, ok := env.Users[env.SelectedUser]
 	if !ok {
 		return "", "", fmt.Errorf("no user selected. maybe try logging in first?")
 	}
 
-	return env.URL, selectedUser.Token, nil
+	return env.URL, selectedUser.TokensByAppHost[appHostFlag], nil
+}
+
+func GetUrlAndTokenForEnv(cmd *cobra.Command, envShortName, appHost string) (string, string, error) {
+	conf, err := LoadConfig()
+	if err != nil {
+		return "", "", errors.Wrap(err, "failed to load config")
+	}
+
+	if conf.Environments == nil {
+		return "", "", fmt.Errorf("no environments configured")
+	}
+
+	env, ok := conf.Environments[envShortName]
+	if !ok {
+		return "", "", fmt.Errorf("failed to find env '%s'", envShortName)
+	}
+
+	if env.URL == "" {
+		return "", "", fmt.Errorf("env '%s' has no URL configured", envShortName)
+	}
+
+	if env.SelectedUser == "" {
+		return "", "", fmt.Errorf("no user selected in env '%s'", envShortName)
+	}
+
+	if env.Users == nil {
+		return "", "", fmt.Errorf("no stored users for env '%s'", envShortName)
+	}
+
+	selectedUser, ok := env.Users[env.SelectedUser]
+	if !ok {
+		return "", "", fmt.Errorf(
+			"cannot find selected user '%s' in env '%s'",
+			env.SelectedUser,
+			envShortName,
+		)
+	}
+
+	if appHost == "" {
+		appHost, _ = cmd.Context().Value("app-host").(string)
+		if appHost == "" {
+			return "", "", fmt.Errorf("app host is empty")
+		}
+	}
+
+	if selectedUser.TokensByAppHost[appHost] == "" {
+		return "", "", fmt.Errorf(
+			"selected user '%s' in env '%s' has no token for app host '%s'",
+			env.SelectedUser,
+			envShortName,
+			appHost,
+		)
+	}
+
+	return env.URL, selectedUser.TokensByAppHost[appHost], nil
 }

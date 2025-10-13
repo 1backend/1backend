@@ -15,7 +15,9 @@ import (
 )
 
 // Login [slug] [password]
-func Login(cmd *cobra.Command, args []string, appHost string) error {
+func Login(cmd *cobra.Command, args []string) error {
+	appHost, _ := cmd.Context().Value("app-host").(string)
+
 	conf, err := util.LoadConfig()
 	if err != nil {
 		return errors.Wrap(err, "failed to load config")
@@ -83,10 +85,18 @@ func Login(cmd *cobra.Command, args []string, appHost string) error {
 		env.Users = map[string]*types.User{}
 	}
 
-	env.Users[slug] = &types.User{
-		Slug:  slug,
-		Token: token,
+	if env.Users[slug] == nil {
+		env.Users[slug] = &types.User{
+			Slug: slug,
+		}
 	}
+
+	if env.Users[slug].TokensByAppHost == nil {
+		env.Users[slug].TokensByAppHost = map[string]string{}
+	}
+
+	env.Users[slug].TokensByAppHost[appHost] = token
+	env.Users[slug].SelectedAppHost = appHost
 	env.SelectedUser = slug
 
 	conf.Environments[env.ShortName] = env

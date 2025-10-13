@@ -42,7 +42,7 @@ func Token(cmd *cobra.Command, args []string) error {
 		)
 	}
 
-	fmt.Println(usr.Token)
+	fmt.Println(usr.TokensByAppHost[usr.SelectedAppHost])
 
 	return nil
 }

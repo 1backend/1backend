@@ -19,7 +19,7 @@ func Delete(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
 	nodeUrl := args[0]
 
-	ur, token, err := util.GetSelectedUrlAndToken()
+	ur, token, err := util.GetSelectedUrlAndToken(cmd)
 	if err != nil {
 		return errors.Wrap(err, "cannot get env url")
 	}
