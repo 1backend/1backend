@@ -58,7 +58,7 @@ func main() {
 	}
 
 	rootCmd.PersistentFlags().
-		StringVarP(&globalEnv, "env", "e", "local", "Environment short name (overrides selected)")
+		StringVarP(&globalEnv, "env", "e", "", "Environment short name (overrides selected)")
 	rootCmd.PersistentFlags().
 		StringVarP(&globalApp, "app-host", "a", sdk.DefaultAppHost, "App host name")
 

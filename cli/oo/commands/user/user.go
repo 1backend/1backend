@@ -81,7 +81,7 @@ func addWhoamiCommand(rootCmd *cobra.Command) {
 		},
 	}
 
-	runCmd.Flags().BoolVarP(&all, "all", "a", false, "Display all logged in user information, not just the currently selected one")
+	runCmd.Flags().BoolVarP(&all, "all", "l", false, "Display all logged in user information, not just the currently selected one")
 
 	rootCmd.AddCommand(runCmd)
 }
