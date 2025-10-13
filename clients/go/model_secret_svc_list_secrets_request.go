@@ -20,6 +20,8 @@ var _ MappedNullable = &SecretSvcListSecretsRequest{}
 
 // SecretSvcListSecretsRequest struct for SecretSvcListSecretsRequest
 type SecretSvcListSecretsRequest struct {
+	// AllApps indicates whether to list secrets across all apps. If false, the app from the authentication context is used.
+	AllApps *bool `json:"allApps,omitempty"`
 	Id *string `json:"id,omitempty"`
 	Ids []string `json:"ids,omitempty"`
 }
@@ -39,6 +41,38 @@ func NewSecretSvcListSecretsRequest() *SecretSvcListSecretsRequest {
 func NewSecretSvcListSecretsRequestWithDefaults() *SecretSvcListSecretsRequest {
 	this := SecretSvcListSecretsRequest{}
 	return &this
+}
+
+// GetAllApps returns the AllApps field value if set, zero value otherwise.
+func (o *SecretSvcListSecretsRequest) GetAllApps() bool {
+	if o == nil || IsNil(o.AllApps) {
+		var ret bool
+		return ret
+	}
+	return *o.AllApps
+}
+
+// GetAllAppsOk returns a tuple with the AllApps field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SecretSvcListSecretsRequest) GetAllAppsOk() (*bool, bool) {
+	if o == nil || IsNil(o.AllApps) {
+		return nil, false
+	}
+	return o.AllApps, true
+}
+
+// HasAllApps returns a boolean if a field has been set.
+func (o *SecretSvcListSecretsRequest) HasAllApps() bool {
+	if o != nil && !IsNil(o.AllApps) {
+		return true
+	}
+
+	return false
+}
+
+// SetAllApps gets a reference to the given bool and assigns it to the AllApps field.
+func (o *SecretSvcListSecretsRequest) SetAllApps(v bool) {
+	o.AllApps = &v
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
@@ -115,6 +149,9 @@ func (o SecretSvcListSecretsRequest) MarshalJSON() ([]byte, error) {
 
 func (o SecretSvcListSecretsRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.AllApps) {
+		toSerialize["allApps"] = o.AllApps
+	}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}

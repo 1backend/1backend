@@ -8621,6 +8621,7 @@ function SecretSvcListSecretsRequestFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'allApps': json['allApps'] == null ? undefined : json['allApps'],
         'id': json['id'] == null ? undefined : json['id'],
         'ids': json['ids'] == null ? undefined : json['ids'],
     };
@@ -8633,6 +8634,7 @@ function SecretSvcListSecretsRequestToJSONTyped(value, ignoreDiscriminator = fal
         return value;
     }
     return {
+        'allApps': value['allApps'],
         'id': value['id'],
         'ids': value['ids'],
     };

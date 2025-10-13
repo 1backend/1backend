@@ -6,7 +6,6 @@ import (
 
 	"github.com/1backend/1backend/cli/oo/types"
 	"github.com/1backend/1backend/cli/oo/util"
-	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/pkg/errors"
@@ -99,10 +98,10 @@ func displayUser(
 	usr *types.User,
 	cf *client.APIClientFactory,
 ) error {
-	claims, err := auth.AuthorizerImpl{}.ParseJWT(publicKey, usr.Token)
+	claims, err := auth.AuthorizerImpl{}.ParseJWT(publicKey, usr.TokensByAppHost[usr.SelectedAppHost])
 	if err != nil {
 		if strings.Contains(err.Error(), "token is expired") {
-			rsp, _, err := cf.Client(client.WithToken(usr.Token)).
+			rsp, _, err := cf.Client(client.WithToken(usr.TokensByAppHost[usr.SelectedAppHost])).
 				UserSvcAPI.RefreshToken(cmd.Context()).
 				Execute()
 			if err != nil {
@@ -120,15 +119,10 @@ func displayUser(
 		}
 	}
 
-	appHost, appHostRsp, err := cf.Client(client.WithToken(usr.Token)).
-		UserSvcAPI.ListApps(cmd.Context()).
-		Body(
-			openapi.UserSvcListAppsRequest{
-				Ids: []string{claims.AppId},
-			},
-		).Execute()
-	if err != nil {
-		return util.ErrorWithBody(err, appHostRsp, "failed to get app info")
+	selectedAppHost := usr.SelectedAppHost
+	tokenHosts := make([]string, 0, len(usr.TokensByAppHost))
+	for appHost := range usr.TokensByAppHost {
+		tokenHosts = append(tokenHosts, appHost)
 	}
 
 	userInfo := UserInfo{
@@ -137,8 +131,9 @@ func displayUser(
 		Roles: claims.Roles,
 		App: AppInfo{
 			Id:   claims.AppId,
-			Host: appHost.Apps[0].Host,
+			Host: selectedAppHost,
 		},
+		TokenHosts: tokenHosts,
 	}
 
 	enc := yaml.NewEncoder(cmd.OutOrStdout())
@@ -155,8 +150,9 @@ type AppInfo struct {
 }
 
 type UserInfo struct {
-	Slug  string   `json:"slug"`
-	Id    string   `json:"id"`
-	App   AppInfo  `json:"app"`
-	Roles []string `json:"roles"`
+	Slug       string   `json:"slug"`
+	Id         string   `json:"id"`
+	App        AppInfo  `json:"app"`
+	Roles      []string `json:"roles"`
+	TokenHosts []string `json:"tokenHosts,omitempty" yaml:"tokenHosts,omitempty"`
 }

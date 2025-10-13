@@ -40,7 +40,7 @@ func Put(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "failed to marshal payload to JSON")
 	}
 
-	url, token, err := util.GetSelectedUrlAndToken()
+	url, token, err := util.GetSelectedUrlAndToken(cmd)
 	if err != nil {
 		return errors.Wrap(err, "cannot get environment URL and token")
 	}

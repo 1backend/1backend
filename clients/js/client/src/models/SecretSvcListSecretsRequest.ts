@@ -20,6 +20,13 @@ import { mapValues } from '../runtime';
  */
 export interface SecretSvcListSecretsRequest {
     /**
+     * AllApps indicates whether to list secrets across all apps.
+     * If false, the app from the authentication context is used.
+     * @type {boolean}
+     * @memberof SecretSvcListSecretsRequest
+     */
+    allApps?: boolean;
+    /**
      * 
      * @type {string}
      * @memberof SecretSvcListSecretsRequest
@@ -50,6 +57,7 @@ export function SecretSvcListSecretsRequestFromJSONTyped(json: any, ignoreDiscri
     }
     return {
         
+        'allApps': json['allApps'] == null ? undefined : json['allApps'],
         'id': json['id'] == null ? undefined : json['id'],
         'ids': json['ids'] == null ? undefined : json['ids'],
     };
@@ -66,6 +74,7 @@ export function SecretSvcListSecretsRequestToJSONTyped(value?: SecretSvcListSecr
 
     return {
         
+        'allApps': value['allApps'],
         'id': value['id'],
         'ids': value['ids'],
     };

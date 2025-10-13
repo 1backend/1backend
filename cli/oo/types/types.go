@@ -14,6 +14,7 @@ type Environment struct {
 }
 
 type User struct {
-	Slug  string `json:"slug"  yaml:"slug"`
-	Token string `json:"token" yaml:"token"`
+	Slug            string            `json:"slug"  yaml:"slug"`
+	SelectedAppHost string            `json:"selectedAppHost" yaml:"selectedAppHost"`
+	TokensByAppHost map[string]string `json:"tokensByAppHost" yaml:"tokensByAppHost"`
 }

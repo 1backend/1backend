@@ -2700,6 +2700,11 @@ definitions:
     type: object
   secret_svc.ListSecretsRequest:
     properties:
+      allApps:
+        description: |-
+          AllApps indicates whether to list secrets across all apps.
+          If false, the app from the authentication context is used.
+        type: boolean
       id:
         type: string
       ids:

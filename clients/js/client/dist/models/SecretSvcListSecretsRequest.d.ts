@@ -16,6 +16,13 @@
  */
 export interface SecretSvcListSecretsRequest {
     /**
+     * AllApps indicates whether to list secrets across all apps.
+     * If false, the app from the authentication context is used.
+     * @type {boolean}
+     * @memberof SecretSvcListSecretsRequest
+     */
+    allApps?: boolean;
+    /**
      *
      * @type {string}
      * @memberof SecretSvcListSecretsRequest

@@ -82,8 +82,11 @@ type SecretInput struct {
 }
 
 type ListSecretsRequest struct {
-	Id  string   `json:"id"`
-	Ids []string `json:"ids"`
+	// AllApps indicates whether to list secrets across all apps.
+	// If false, the app from the authentication context is used.
+	AllApps bool     `json:"allApps,omitempty"`
+	Id      string   `json:"id"`
+	Ids     []string `json:"ids"`
 }
 
 type ListSecretsResponse struct {

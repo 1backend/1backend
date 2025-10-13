@@ -1,7 +1,6 @@
 package user
 
 import (
-	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/spf13/cobra"
 )
 
@@ -23,8 +22,6 @@ func AddUserCommands(rootCmd *cobra.Command) {
 }
 
 func addLoginCommand(rootCmd *cobra.Command) {
-	appHost := sdk.DefaultAppHost
-
 	var loginCmd = &cobra.Command{
 		Use:   "login [slug] [password]",
 		Args:  cobra.MaximumNArgs(2),
@@ -41,11 +38,9 @@ that the password will be visible in the terminal command history.`,
   # Login by providing both slug and password (not secure, avoid this)
   login johnny myPass1`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return Login(cmd, args, appHost)
+			return Login(cmd, args)
 		},
 	}
-
-	loginCmd.Flags().StringVarP(&appHost, "app-host", "a", sdk.DefaultAppHost, "App host to use for login")
 
 	rootCmd.AddCommand(loginCmd)
 }
@@ -80,7 +75,7 @@ func addWhoamiCommand(rootCmd *cobra.Command) {
 	var runCmd = &cobra.Command{
 		Use:   "whoami",
 		Args:  cobra.ExactArgs(0),
-		Short: "Display the user currently logged in",
+		Short: "Display the currently logged in user.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return Whoami(cmd, args, all)
 		},
@@ -124,7 +119,7 @@ func addListUsersCommand(rootCmd *cobra.Command) {
 		Use:     "list",
 		Aliases: []string{"ls"},
 		Args:    cobra.ExactArgs(0),
-		Short:   "Display the user currently logged in",
+		Short:   "List users.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return ListUsers(cmd, args, userId, contactId, limit)
 		},
