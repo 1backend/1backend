@@ -7,8 +7,8 @@ go 1.23
 //replace github.com/1backend/1backend/sdk/go => ../../sdk/go
 
 require (
-	github.com/1backend/1backend/clients/go v0.0.0-20251009054427-3ec1099ec3be
-	github.com/1backend/1backend/sdk/go v0.0.0-20251009054427-3ec1099ec3be
+	github.com/1backend/1backend/clients/go v0.0.0-20251013205843-dddc96a2a59c
+	github.com/1backend/1backend/sdk/go v0.0.0-20251013205843-dddc96a2a59c
 	github.com/fatih/color v1.18.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/pkg/errors v0.9.1
