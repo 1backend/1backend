@@ -129,6 +129,15 @@ Enter secret value:`,
 		},
 	}
 
+	listCmd.Flags().
+		BoolVar(&show, "show", false, "Show secrets unmasked")
+
+	listCmd.Flags().
+		BoolVarP(&allApps, "all-apps", "l", false, "List secrets across all apps. If false, the app from the authentication context is used.")
+
+	listCmd.Flags().
+		BoolVarP(&verbose, "verbose", "v", false, "Verbose output (yaml array)")
+
 	var isSecureCmd = &cobra.Command{
 		Use:     "is-secure",
 		Short:   "Tells if the secret service is secure (ie. encryption key is set, etc.)",
@@ -137,15 +146,6 @@ Enter secret value:`,
 			return IsSecure(cmd, args)
 		},
 	}
-
-	listCmd.Flags().
-		BoolVar(&show, "show", false, "Show secrets unmasked")
-
-	listCmd.Flags().
-		BoolVarP(&allApps, "all-apps", "a", false, "List secrets across all apps. If false, the app from the authentication context is used.")
-
-	listCmd.Flags().
-		BoolVarP(&verbose, "verbose", "v", false, "Verbose output (yaml array)")
 
 	secretCmd.AddCommand(readCmd)
 	secretCmd.AddCommand(saveCmd)
