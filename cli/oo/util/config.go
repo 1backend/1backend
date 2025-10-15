@@ -127,13 +127,18 @@ func GetSelectedUrlAndToken(cmd *cobra.Command) (string, string, error) {
 		return "", "", err
 	}
 
-	appHostFlag, _ := cmd.Context().Value("app-host").(string)
 	selectedUser, ok := env.Users[env.SelectedUser]
 	if !ok {
 		return "", "", fmt.Errorf("no user selected. maybe try logging in first?")
 	}
 
-	return env.URL, selectedUser.TokensByAppHost[appHostFlag], nil
+	appHost := selectedUser.SelectedAppHost
+	appHostFlag, _ := cmd.Context().Value("app-host").(string)
+	if appHostFlag != "" {
+		appHost = appHostFlag
+	}
+
+	return env.URL, selectedUser.TokensByAppHost[appHost], nil
 }
 
 func GetUrlAndTokenForEnv(cmd *cobra.Command, envShortName, appHost string) (string, string, error) {

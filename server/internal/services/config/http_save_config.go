@@ -127,6 +127,7 @@ func (cs *ConfigService) SaveConfig(
 		endpoint.InternalServerError(w)
 		return
 	}
+
 	err = cs.saveConfig(
 		canActonBehalf,
 		appId,

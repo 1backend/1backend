@@ -40,7 +40,10 @@ func Whoami(cmd *cobra.Command, args []string, all bool) error {
 	}
 
 	cf := client.NewApiClientFactory(env.URL)
-	publicKeyRsp, _, err := cf.Client().UserSvcAPI.GetPublicKey(cmd.Context()).Execute()
+	publicKeyRsp, _, err := cf.Client().
+		UserSvcAPI.
+		GetPublicKey(cmd.Context()).
+		Execute()
 	if err != nil {
 		return errors.Wrap(err, "failed to get public key")
 	}

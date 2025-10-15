@@ -23,7 +23,6 @@ import (
 	secret "github.com/1backend/1backend/cli/oo/commands/secret"
 	"github.com/1backend/1backend/cli/oo/commands/user"
 	"github.com/1backend/1backend/cli/oo/config"
-	sdk "github.com/1backend/1backend/sdk/go"
 )
 
 func main() {
@@ -60,7 +59,7 @@ func main() {
 	rootCmd.PersistentFlags().
 		StringVarP(&globalEnv, "env", "e", "", "Environment short name (overrides selected)")
 	rootCmd.PersistentFlags().
-		StringVarP(&globalApp, "app-host", "a", sdk.DefaultAppHost, "App host name")
+		StringVarP(&globalApp, "app-host", "a", "", "App host name")
 
 	app.AddAppCommands(rootCmd)
 	user.AddUserCommands(rootCmd)
