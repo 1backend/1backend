@@ -139,11 +139,6 @@ roles:
 - user-svc:admin
 ```
 
-```sh
-$ oo post /prompt-svc/prompt --sync=true --prompt="Is a cat an animal? Just answer with yes or no please."
-# see example response above...
-```
-
 ## Run On Your Servers
 
 See the [Running the daemon](https://1backend.com/docs/category/running-the-server) page to help you get started.
