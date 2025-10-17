@@ -95,6 +95,9 @@ func ExtractFromFile(filePath string, entitySlice any) error {
 }
 
 func ErrorWithBody(err error, resp *http.Response, msg string) error {
+	if resp == nil || resp.Body == nil {
+		return errors.Wrap(err, msg)
+	}
 	body, readErr := io.ReadAll(resp.Body)
 	if readErr != nil {
 		return errors.Wrap(readErr, "failed to read response body")

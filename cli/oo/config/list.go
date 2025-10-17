@@ -47,12 +47,24 @@ func List(cmd *cobra.Command, args []string) error {
 		return util.ErrorWithBody(err, httpResp, "failed to list configs")
 	}
 
+	appIds := []string{}
+	for _, config := range rsp.Configs {
+		if config.AppId != "" {
+			appIds = append(appIds, config.AppId)
+		}
+	}
+
+	appIdToHost, err := util.AppIdsToHosts(ctx, cf.Client(client.WithToken(token)), appIds)
+	if err != nil {
+		return errors.Wrap(err, "failed to resolve app hosts")
+	}
+
 	writer := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
 	defer writer.Flush()
 
 	fmt.Fprintln(
 		writer,
-		"CONFIG ID\tAPP\tJSON",
+		"CONFIG ID\tAPP HOST\tJSON",
 	)
 
 	for _, config := range rsp.Configs {
@@ -65,7 +77,7 @@ func List(cmd *cobra.Command, args []string) error {
 			writer,
 			"%s\t%s\t%s\n",
 			config.Id,
-			config.AppId,
+			appIdToHost[config.AppId],
 			jsonValue,
 		)
 	}
