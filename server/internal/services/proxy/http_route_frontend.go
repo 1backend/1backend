@@ -8,12 +8,14 @@
 package proxyservice
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
 	"net"
 	"net/http"
 	"strings"
+	"syscall"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
@@ -132,19 +134,22 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(resp.StatusCode)
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		logger.Error("Error reading edge proxy response body", slog.String("error", err.Error()))
-		return
-	}
-	_, err = w.Write(body)
-	if err != nil {
-		logger.Error("Error writing edge proxy response body", slog.String("error", err.Error()))
-		return
+	// Use a fixed 32 KB buffer for predictable memory use and fewer allocations.
+	// Copy the upstream response body directly to the downstream client.
+	// This streams the data instead of buffering the entire response in memory.
+	buf := make([]byte, 32*1024)
+	_, err = io.CopyBuffer(w, resp.Body, buf)
+
+	// Ignore common disconnect errors — they just mean the client closed the connection early.
+	// Log only unexpected I/O problems.
+	if err != nil && !errors.Is(err, syscall.EPIPE) && !strings.Contains(err.Error(), "stream closed") {
+		logger.Error("Proxy stream error", slog.String("error", err.Error()))
 	}
 
-	if flusher, ok := w.(http.Flusher); ok {
-		flusher.Flush()
+	// Optionally flush if ResponseWriter supports it (e.g., for HTTP/1.1 chunked or slow clients).
+	// In HTTP/2, Go auto-flushes frames, so it's rarely needed. Harmless but not required.
+	if f, ok := w.(http.Flusher); ok {
+		f.Flush()
 	}
 }
 
