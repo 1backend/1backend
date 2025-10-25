@@ -14,6 +14,7 @@ import (
 	"math/rand/v2"
 	"net/http"
 	"strings"
+	"syscall"
 
 	"github.com/pkg/errors"
 
@@ -143,23 +144,9 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 
 	w.WriteHeader(resp.StatusCode)
 
-	// Unfortunately io.Copy does not work here and causes "invalid write result"
-
-	//_, err = io.Copy(w, resp.Body)
-	//if err != nil {
-	//	logger.Error("Error proxying body",
-	//		slog.String("error", err.Error()),
-	//	)
-	//}
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return http.StatusInternalServerError, errors.Wrap(err, "failed to read body while proxying")
-	}
-
-	_, err = w.Write(body)
-	if err != nil {
-		logger.Error("Error writing response body", slog.String("error", err.Error()))
+	_, err = io.Copy(w, resp.Body)
+	if err != nil && !errors.Is(err, syscall.EPIPE) && !strings.Contains(err.Error(), "stream closed") {
+		return http.StatusInternalServerError, errors.Wrap(err, "error copying response body")
 	}
 
 	if flusher, ok := w.(http.Flusher); ok {
