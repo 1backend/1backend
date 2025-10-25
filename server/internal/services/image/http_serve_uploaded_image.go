@@ -142,6 +142,9 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		default:
 			w.Header().Set("Content-Type", "image/png")
 		}
+
+		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+
 		io.Copy(w, f)
 		return
 	}
@@ -216,6 +219,8 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	defer outFile.Close()
+
+	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 
 	switch contentType {
 	case "image/jpeg", "image/jpg":
