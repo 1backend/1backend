@@ -18,6 +18,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/1backend/1backend/server/internal/universe"
 	univ "github.com/1backend/1backend/server/internal/universe"
 
 	openapi "github.com/1backend/1backend/clients/go"
@@ -324,4 +325,59 @@ outer:
 
 	require.Equal(t, int64(11), *d.DownloadedBytes)
 	require.Equal(t, int64(11), *d.FileSize)
+}
+
+func TestServeDownload_ProxiesCachedHeaders(t *testing.T) {
+	// Fake origin server with caching headers
+	fileHostServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "public, max-age=60")
+		w.Header().Set("ETag", `"abc123"`)
+		w.Header().Set("Last-Modified", "Wed, 21 Oct 2015 07:28:00 GMT")
+		w.Header().Set("Expires", "Wed, 21 Oct 2025 07:28:00 GMT")
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		io.WriteString(w, "cached response")
+	}))
+	defer fileHostServer.Close()
+
+	ctx := context.Background()
+
+	// One node
+	hs := &di.HandlerSwitcher{}
+	server := httptest.NewServer(hs)
+	defer server.Close()
+
+	opts := &universe.Options{
+		Test: true,
+		Url:  server.URL,
+	}
+	nodeInfo, err := di.BigBang(opts)
+	require.NoError(t, err)
+	hs.UpdateHandler(nodeInfo.Router)
+	require.NoError(t, nodeInfo.StarterFunc())
+
+	adminClient, _, err := test.AdminClient(opts.ClientFactory, sdk.DefaultTestAppHost)
+	require.NoError(t, err)
+
+	downloadURL := fileHostServer.URL + "/cached.txt"
+
+	// Perform download
+	_, _, err = adminClient.FileSvcAPI.DownloadFile(ctx).
+		Body(openapi.FileSvcDownloadFileRequest{Url: downloadURL}).
+		Execute()
+	require.NoError(t, err)
+
+	// Serve download
+	fileRsp, fileHttpRsp, err := adminClient.FileSvcAPI.ServeDownload(ctx, downloadURL).Execute()
+	require.NoError(t, err)
+
+	body, err := io.ReadAll(fileRsp)
+	require.NoError(t, err)
+	require.Equal(t, "cached response", string(body))
+
+	// Validate replayed headers
+	require.Equal(t, "public, max-age=60", fileHttpRsp.Header.Get("Cache-Control"))
+	require.Equal(t, `"abc123"`, fileHttpRsp.Header.Get("ETag"))
+	require.Equal(t, "Wed, 21 Oct 2015 07:28:00 GMT", fileHttpRsp.Header.Get("Last-Modified"))
+	require.Equal(t, "Wed, 21 Oct 2025 07:28:00 GMT", fileHttpRsp.Header.Get("Expires"))
+	require.Equal(t, "text/plain; charset=utf-8", fileHttpRsp.Header.Get("Content-Type"))
 }

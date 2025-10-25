@@ -24,13 +24,14 @@ var (
 
 // Download is the internal type for downloads.
 type InternalDownload struct {
-	Id             string         `json:"id"`
-	URL            string         `json:"url"`
-	NodeId         string         `json:"nodeId"`
-	FilePath       string         `json:"filePath"`
-	DownloadedSize int64          `json:"downloadedSize"`
-	TotalSize      int64          `json:"totalSize"`
-	Status         DownloadStatus `json:"status"`
+	Id             string          `json:"id"`
+	URL            string          `json:"url"`
+	NodeId         string          `json:"nodeId"`
+	FilePath       string          `json:"filePath"`
+	DownloadedSize int64           `json:"downloadedSize"`
+	TotalSize      int64           `json:"totalSize"`
+	Status         DownloadStatus  `json:"status"`
+	Headers        DownloadHeaders `json:"headers,omitempty"`
 }
 
 func (d InternalDownload) GetId() string {
@@ -56,6 +57,16 @@ type Download struct {
 
 	FilePath string `json:"filePath,omitempty"`
 	Error    string `json:"error,omitempty"`
+
+	Headers DownloadHeaders `json:"headers,omitempty"`
+}
+
+type DownloadHeaders struct {
+	CacheControl string `json:"cacheControl,omitempty"`
+	ETag         string `json:"etag,omitempty"`
+	LastModified string `json:"lastModified,omitempty"`
+	Expires      string `json:"expires,omitempty"`
+	ContentType  string `json:"contentType,omitempty"`
 }
 
 type DownloadFileRequest struct {

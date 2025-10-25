@@ -106,9 +106,29 @@ func (fs *FileService) serveLocalDownload(
 	if contentType == "" {
 		contentType = "application/octet-stream"
 	}
+
 	w.Header().Set("Content-Type", contentType)
 	w.Header().Set("Content-Disposition", "attachment; filename=\""+sanitizeFilename(fileName)+"\"")
 	w.Header().Set("Content-Length", strconv.FormatInt(fileInfo.Size(), 10))
+
+	h := download.Headers
+	if h.ContentType != "" {
+		w.Header().Set("Content-Type", h.ContentType)
+	}
+	if h.CacheControl != "" {
+		w.Header().Set("Cache-Control", h.CacheControl)
+	} else {
+		w.Header().Set("Cache-Control", "no-store")
+	}
+	if h.ETag != "" {
+		w.Header().Set("ETag", h.ETag)
+	}
+	if h.LastModified != "" {
+		w.Header().Set("Last-Modified", h.LastModified)
+	}
+	if h.Expires != "" {
+		w.Header().Set("Expires", h.Expires)
+	}
 
 	srcFile, err := os.Open(download.FilePath)
 	if err != nil {
@@ -188,6 +208,13 @@ func (fs *FileService) serveRemoteDownload(
 	w.Header().Set("Content-Type", fileHttpRsp.Header.Get("Content-Type"))
 	w.Header().Set("Content-Disposition", fileHttpRsp.Header.Get("Content-Disposition"))
 	w.Header().Set("Content-Length", fileHttpRsp.Header.Get("Content-Length"))
+
+	cacheControl := fileHttpRsp.Header.Get("Cache-Control")
+	if cacheControl != "" {
+		w.Header().Set("Cache-Control", cacheControl)
+	} else {
+		w.Header().Set("Cache-Control", "no-store")
+	}
 
 	_, err = io.Copy(w, file)
 	if err != nil {

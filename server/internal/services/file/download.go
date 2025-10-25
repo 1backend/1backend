@@ -170,6 +170,14 @@ func (dm *FileService) downloadFile(d *types.InternalDownload) error {
 	}
 	defer resp.Body.Close()
 
+	d.Headers = types.DownloadHeaders{
+		CacheControl: resp.Header.Get("Cache-Control"),
+		ETag:         resp.Header.Get("ETag"),
+		LastModified: resp.Header.Get("Last-Modified"),
+		Expires:      resp.Header.Get("Expires"),
+		ContentType:  resp.Header.Get("Content-Type"),
+	}
+
 	totalSize, _ := getTotalSizeFromHeaders(resp)
 	if err != nil {
 		fmt.Printf("Error retrieving total size: %v\n", err)

@@ -104,6 +104,7 @@ func (fs *FileService) serveLocal(
 	w.Header().
 		Set("Content-Disposition", "attachment; filename=\""+sanitizeFilename(upload.FileName)+"\"")
 	w.Header().Set("Content-Length", strconv.FormatInt(fileInfo.Size(), 10))
+	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 
 	srcFile, err := os.Open(upload.FilePath)
 	if err != nil {
@@ -184,6 +185,7 @@ func (fs *FileService) serveRemote(
 	w.Header().Set("Content-Type", fileHttpRsp.Header.Get("Content-Type"))
 	w.Header().Set("Content-Disposition", fileHttpRsp.Header.Get("Content-Disposition"))
 	w.Header().Set("Content-Length", fileHttpRsp.Header.Get("Content-Length"))
+	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 
 	_, err = io.Copy(w, file)
 	if err != nil {
