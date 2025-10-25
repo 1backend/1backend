@@ -142,8 +142,8 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 		slog.Int("statusCode", resp.StatusCode),
 	)
 
-	// Do not call WriteHeader.
-	// The first call to Write (inside io.Copy) will trigger it automatically.
+	w.WriteHeader(resp.StatusCode)
+
 	_, err = io.Copy(w, resp.Body)
 	if err != nil && !errors.Is(err, syscall.EPIPE) && !strings.Contains(err.Error(), "stream closed") {
 		return http.StatusInternalServerError, errors.Wrap(err, "error copying response body")
@@ -153,7 +153,7 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 		flusher.Flush()
 	}
 
-	return resp.StatusCode, nil
+	return http.StatusOK, nil
 }
 
 // gets service slug from http request path
