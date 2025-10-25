@@ -115,10 +115,10 @@ func (s *UserService) login(
 			datastore.Equals(datastore.Field("slug"), request.Slug),
 		).FindOne()
 		if err != nil {
-			return nil, errors.Wrap(err, "error querying user by slug")
+			return nil, fmt.Errorf("error querying user by slug '%s': %v", request.Slug, err)
 		}
 		if !found {
-			return nil, errors.New("user not found by slug")
+			return nil, fmt.Errorf("user not found by slug '%s'", request.Slug)
 		}
 
 		usr = userI.(*user.User)
