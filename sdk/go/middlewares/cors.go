@@ -19,11 +19,11 @@ func CORS(next http.HandlerFunc) http.HandlerFunc {
 		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, X-Content-Encrypted")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Vary", "Origin")
 
 		origin := r.Header.Get("Origin")
 		if origin != "" {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
-			w.Header().Set("Vary", "Origin")
 		} else {
 			w.Header().Set("Access-Control-Allow-Origin", "*")
 		}
