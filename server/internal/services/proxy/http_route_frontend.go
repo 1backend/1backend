@@ -124,7 +124,18 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 	defer resp.Body.Close()
 
 	for k, v := range resp.Header {
-		if k == "Content-Length" || k == "Transfer-Encoding" {
+		switch http.CanonicalHeaderKey(k) {
+		// Hop-by-hop headers are meaningful only for a single transport link.
+		// They must not be forwarded by proxies or gateways per RFC 9110 §7.6.1.
+		// Keeping them can corrupt HTTP/2 framing or break keep-alive logic.
+
+		case "Content-Length", // handled automatically by Go based on written bytes
+			"Transfer-Encoding", // conflicts with automatic chunked encoding
+			"Connection",        // hop-by-hop; invalid in HTTP/2
+			"Keep-Alive",        // deprecated; invalid in HTTP/2
+			"Upgrade",           // used only for protocol switches (e.g., WebSocket)
+			"Proxy-Connection",  // nonstandard, used by some clients incorrectly
+			"Trailer":           // managed by Go's chunked encoder if needed
 			continue
 		}
 		for _, vv := range v {
