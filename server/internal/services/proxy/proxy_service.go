@@ -171,7 +171,7 @@ func (cs *ProxyService) RegisterRoutes(router *mux.Router) {
 		cs.options.TokenAutoRefreshOff,
 	)
 
-	router.PathPrefix("/").HandlerFunc(tokenRefresherMiddleware(func(w http.ResponseWriter, r *http.Request) {
+	router.PathPrefix("/{svc:[^-]+-svc}/").HandlerFunc(tokenRefresherMiddleware(func(w http.ResponseWriter, r *http.Request) {
 		cs.RouteBackend(w, r)
 	}))
 }
