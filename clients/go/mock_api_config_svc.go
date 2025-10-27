@@ -39,6 +39,36 @@ func (m *MockConfigSvcAPI) EXPECT() *MockConfigSvcAPIMockRecorder {
 	return m.recorder
 }
 
+// ListConfigVersions mocks base method.
+func (m *MockConfigSvcAPI) ListConfigVersions(ctx context.Context) ApiListConfigVersionsRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListConfigVersions", ctx)
+	ret0, _ := ret[0].(ApiListConfigVersionsRequest)
+	return ret0
+}
+
+// ListConfigVersions indicates an expected call of ListConfigVersions.
+func (mr *MockConfigSvcAPIMockRecorder) ListConfigVersions(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListConfigVersions", reflect.TypeOf((*MockConfigSvcAPI)(nil).ListConfigVersions), ctx)
+}
+
+// ListConfigVersionsExecute mocks base method.
+func (m *MockConfigSvcAPI) ListConfigVersionsExecute(r ApiListConfigVersionsRequest) (*ConfigSvcListVersionsResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListConfigVersionsExecute", r)
+	ret0, _ := ret[0].(*ConfigSvcListVersionsResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListConfigVersionsExecute indicates an expected call of ListConfigVersionsExecute.
+func (mr *MockConfigSvcAPIMockRecorder) ListConfigVersionsExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListConfigVersionsExecute", reflect.TypeOf((*MockConfigSvcAPI)(nil).ListConfigVersionsExecute), r)
+}
+
 // ListConfigs mocks base method.
 func (m *MockConfigSvcAPI) ListConfigs(ctx context.Context) ApiListConfigsRequest {
 	m.ctrl.T.Helper()

@@ -36,6 +36,7 @@ type ConfigService struct {
 
 	credentialStore datastore.DataStore
 	configStore     datastore.DataStore
+	versionStore    datastore.DataStore
 
 	configMutex sync.Mutex
 
@@ -65,6 +66,11 @@ func (cs *ConfigService) RegisterRoutes(router *mux.Router) {
 		cs.SaveConfig(w, r)
 	}))).
 		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/config-svc/versions", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+		cs.ListVersions(w, r)
+	}))).
+		Methods("OPTIONS", "POST")
 }
 
 func (cs *ConfigService) LazyStart() error {
@@ -111,6 +117,15 @@ func (cs *ConfigService) start() error {
 		return errors.Wrap(err, "failed to create config store")
 	}
 	cs.configStore = configStore
+
+	versionStore, err := cs.options.DataStoreFactory.Create(
+		"configSvcVersions",
+		&types.Version{},
+	)
+	if err != nil {
+		return errors.Wrap(err, "failed to create config version store")
+	}
+	cs.versionStore = versionStore
 
 	ctx := context.Background()
 

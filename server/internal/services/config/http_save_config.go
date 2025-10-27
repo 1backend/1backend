@@ -196,6 +196,7 @@ func (cs *ConfigService) saveConfig(
 		entry.DataJSON = "{}"
 		entry.CreatedAt = now
 		entry.UpdatedAt = now
+		entry.Tags = newConfig.Tags
 	} else {
 		entry = existing.(*types.Config)
 		err = json.Unmarshal([]byte(entry.DataJSON), &entry.Data)
@@ -217,6 +218,29 @@ func (cs *ConfigService) saveConfig(
 	err = cs.configStore.Upsert(entry)
 	if err != nil {
 		return errors.Wrap(err, "failed to save config")
+	}
+
+	versionValue := sdk.OpaqueId("ver")
+	versionId := sdk.DeterministicId(id, versionValue)
+	versionInternalId, err := sdk.InternalId(appId, versionId)
+	if err != nil {
+		return fmt.Errorf("failed to generate version internal id: %w", err)
+	}
+
+	version := config.Version{
+		InternalId: versionInternalId,
+		AppId:      appId,
+		Id:         versionId,
+		Version:    versionValue,
+		CreatedAt:  now,
+		UpdatedAt:  now,
+		DataJSON:   string(newJson),
+		Tags:       newConfig.Tags,
+	}
+
+	err = cs.versionStore.Upsert(version)
+	if err != nil {
+		return errors.Wrap(err, "failed to save config version")
 	}
 
 	ev := types.EventConfigUpdate{}

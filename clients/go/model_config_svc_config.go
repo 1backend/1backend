@@ -29,7 +29,10 @@ type ConfigSvcConfig struct {
 	// CamelCased slugs of the config owners
 	Id string `json:"id"`
 	InternalId *string `json:"internalId,omitempty"`
+	// Tags are used to filter on versions, not active configs.
+	Tags []string `json:"tags,omitempty"`
 	UpdatedAt string `json:"updatedAt"`
+	Version *string `json:"version,omitempty"`
 }
 
 type _ConfigSvcConfig ConfigSvcConfig
@@ -209,6 +212,38 @@ func (o *ConfigSvcConfig) SetInternalId(v string) {
 	o.InternalId = &v
 }
 
+// GetTags returns the Tags field value if set, zero value otherwise.
+func (o *ConfigSvcConfig) GetTags() []string {
+	if o == nil || IsNil(o.Tags) {
+		var ret []string
+		return ret
+	}
+	return o.Tags
+}
+
+// GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcConfig) GetTagsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Tags) {
+		return nil, false
+	}
+	return o.Tags, true
+}
+
+// HasTags returns a boolean if a field has been set.
+func (o *ConfigSvcConfig) HasTags() bool {
+	if o != nil && !IsNil(o.Tags) {
+		return true
+	}
+
+	return false
+}
+
+// SetTags gets a reference to the given []string and assigns it to the Tags field.
+func (o *ConfigSvcConfig) SetTags(v []string) {
+	o.Tags = v
+}
+
 // GetUpdatedAt returns the UpdatedAt field value
 func (o *ConfigSvcConfig) GetUpdatedAt() string {
 	if o == nil {
@@ -233,6 +268,38 @@ func (o *ConfigSvcConfig) SetUpdatedAt(v string) {
 	o.UpdatedAt = v
 }
 
+// GetVersion returns the Version field value if set, zero value otherwise.
+func (o *ConfigSvcConfig) GetVersion() string {
+	if o == nil || IsNil(o.Version) {
+		var ret string
+		return ret
+	}
+	return *o.Version
+}
+
+// GetVersionOk returns a tuple with the Version field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcConfig) GetVersionOk() (*string, bool) {
+	if o == nil || IsNil(o.Version) {
+		return nil, false
+	}
+	return o.Version, true
+}
+
+// HasVersion returns a boolean if a field has been set.
+func (o *ConfigSvcConfig) HasVersion() bool {
+	if o != nil && !IsNil(o.Version) {
+		return true
+	}
+
+	return false
+}
+
+// SetVersion gets a reference to the given string and assigns it to the Version field.
+func (o *ConfigSvcConfig) SetVersion(v string) {
+	o.Version = &v
+}
+
 func (o ConfigSvcConfig) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -251,7 +318,13 @@ func (o ConfigSvcConfig) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.InternalId) {
 		toSerialize["internalId"] = o.InternalId
 	}
+	if !IsNil(o.Tags) {
+		toSerialize["tags"] = o.Tags
+	}
 	toSerialize["updatedAt"] = o.UpdatedAt
+	if !IsNil(o.Version) {
+		toSerialize["version"] = o.Version
+	}
 	return toSerialize, nil
 }
 

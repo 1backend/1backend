@@ -177,7 +177,14 @@ definitions:
         type: string
       internalId:
         type: string
+      tags:
+        description: Tags are used to filter on versions, not active configs.
+        items:
+          type: string
+        type: array
       updatedAt:
+        type: string
+      version:
         type: string
     required:
     - appId
@@ -230,6 +237,58 @@ definitions:
     required:
     - configs
     type: object
+  config_svc.ListVersionsRequest:
+    properties:
+      afterJson:
+        type: string
+      appHost:
+        example: shoes.com
+        type: string
+      ids:
+        description: |-
+          Ids are camelCased slugs of the config owners.
+          Specifying only the ids will mean all of the config will be returned
+          for that key.
+
+          If the configs are large, consider using the `Selector` request field.
+        items:
+          type: string
+        type: array
+      limit:
+        type: integer
+      selector:
+        additionalProperties:
+          items:
+            type: string
+          type: array
+        description: |-
+          Selector allows dotPath-based filtering per config owner.
+          Example:
+          {
+            "user1": ["settings.theme", "featureFlags.enableNewUI"],
+            "user2": ["settings.language"]
+          }
+        type: object
+      tags:
+        items:
+          type: string
+        type: array
+    required:
+    - appHost
+    type: object
+  config_svc.ListVersionsResponse:
+    properties:
+      afterJson:
+        description: |-
+          AfterJson is the cursor to fetch the next page, encoded as a JSON array string.
+          e.g. '["2023-08-01T12:00:00Z","versid-123"]'
+        type: string
+      versions:
+        description: Versions across all IDs, sorted by CreatedAt descending.
+        items:
+          $ref: '#/definitions/config_svc.Version'
+        type: array
+    type: object
   config_svc.SaveConfigRequest:
     properties:
       appHost:
@@ -250,8 +309,44 @@ definitions:
           Only user with the `config-svc:config:edit-on-behalf` can specify this.
           For everyone else, it is automatically set to the slug of the caller user.
         type: string
+      tags:
+        items:
+          type: string
+        type: array
     type: object
   config_svc.SaveConfigResponse:
+    type: object
+  config_svc.Version:
+    properties:
+      appId:
+        type: string
+      createdAt:
+        type: string
+      data:
+        additionalProperties: true
+        type: object
+      dataJson:
+        type: string
+      id:
+        description: CamelCased slugs of the config owners
+        type: string
+      internalId:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      updatedAt:
+        type: string
+      version:
+        type: string
+    required:
+    - appId
+    - createdAt
+    - data
+    - dataJson
+    - id
+    - updatedAt
     type: object
   container_svc.Asset:
     properties:
@@ -4263,6 +4358,45 @@ paths:
           schema:
             type: string
       summary: List Configs
+      tags:
+      - Config Svc
+  /config-svc/versions:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Retrieves the current configurations for a specified app.
+        Since any user can save configurations, it is strongly advised that you supply a list of
+        owners to filter on.
+        If no app is specified, the default "unnamed" app is used.
+        This is a public endpoint and does not require authentication.
+        Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
+
+        Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+      operationId: listConfigVersions
+      parameters:
+      - description: List Configs Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/config_svc.ListVersionsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Current configuration
+          schema:
+            $ref: '#/definitions/config_svc.ListVersionsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: List Versions
       tags:
       - Config Svc
   /container-svc/container:

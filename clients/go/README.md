@@ -86,6 +86,7 @@ Class | Method | HTTP request | Description
 *ChatSvcAPI* | [**ListThreads**](docs/ChatSvcAPI.md#listthreads) | **Post** /chat-svc/threads | List Threads
 *ChatSvcAPI* | [**SaveMessage**](docs/ChatSvcAPI.md#savemessage) | **Post** /chat-svc/thread/{threadId}/message | Save Message
 *ChatSvcAPI* | [**SaveThread**](docs/ChatSvcAPI.md#savethread) | **Post** /chat-svc/thread | Save Thread
+*ConfigSvcAPI* | [**ListConfigVersions**](docs/ConfigSvcAPI.md#listconfigversions) | **Post** /config-svc/versions | List Versions
 *ConfigSvcAPI* | [**ListConfigs**](docs/ConfigSvcAPI.md#listconfigs) | **Post** /config-svc/configs | List Configs
 *ConfigSvcAPI* | [**SaveConfig**](docs/ConfigSvcAPI.md#saveconfig) | **Put** /config-svc/config | Save Config
 *ContainerSvcAPI* | [**BuildImage**](docs/ContainerSvcAPI.md#buildimage) | **Put** /container-svc/image | Build an Image
@@ -204,7 +205,10 @@ Class | Method | HTTP request | Description
  - [ConfigSvcConfig](docs/ConfigSvcConfig.md)
  - [ConfigSvcListConfigsRequest](docs/ConfigSvcListConfigsRequest.md)
  - [ConfigSvcListConfigsResponse](docs/ConfigSvcListConfigsResponse.md)
+ - [ConfigSvcListVersionsRequest](docs/ConfigSvcListVersionsRequest.md)
+ - [ConfigSvcListVersionsResponse](docs/ConfigSvcListVersionsResponse.md)
  - [ConfigSvcSaveConfigRequest](docs/ConfigSvcSaveConfigRequest.md)
+ - [ConfigSvcVersion](docs/ConfigSvcVersion.md)
  - [ContainerSvcAsset](docs/ContainerSvcAsset.md)
  - [ContainerSvcBuildImageRequest](docs/ContainerSvcBuildImageRequest.md)
  - [ContainerSvcCapabilities](docs/ContainerSvcCapabilities.md)
