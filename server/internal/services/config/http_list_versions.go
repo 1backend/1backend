@@ -22,14 +22,11 @@ import (
 
 // @Id listConfigVersions
 // @Summary List Versions
-// @Description Retrieves the current configurations for a specified app.
-// @Description Since any user can save configurations, it is strongly advised that you supply a list of
-// @Description owners to filter on.
-// @Description If no app is specified, the default "unnamed" app is used.
-// @Description This is a public endpoint and does not require authentication.
-// @Description Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
-// @Description
-// @Description Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+// @Description Returns the historical versions of a configuration for a given app.
+// @Description Intended for retrieving the version history of a **single configuration ID**.
+// @Description Supplying multiple IDs is supported but not recommended,
+// @Description since results from different IDs will interleave in the same time-ordered list,
+// @Description making chronological paging ambiguous.
 // @Tags Config Svc
 // @Accept json
 // @Produce json
