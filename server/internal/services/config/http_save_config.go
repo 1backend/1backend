@@ -221,8 +221,7 @@ func (cs *ConfigService) saveConfig(
 	}
 
 	versionValue := sdk.OpaqueId("ver")
-	versionId := sdk.DeterministicId(id, versionValue)
-	versionInternalId, err := sdk.InternalId(appId, versionId)
+	versionInternalId, err := sdk.InternalId(appId, sdk.DeterministicId(id, versionValue))
 	if err != nil {
 		return fmt.Errorf("failed to generate version internal id: %w", err)
 	}
@@ -230,7 +229,7 @@ func (cs *ConfigService) saveConfig(
 	version := config.Version{
 		InternalId: versionInternalId,
 		AppId:      appId,
-		Id:         versionId,
+		Id:         id,
 		Version:    versionValue,
 		CreatedAt:  now,
 		UpdatedAt:  now,

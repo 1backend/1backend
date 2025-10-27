@@ -143,6 +143,11 @@ func (cs *ConfigService) listVersions(
 
 		q = q.After(afterCursor...)
 	}
+	if req.Limit != 0 {
+		q = q.Limit(int64(req.Limit))
+	} else {
+		q = q.Limit(20)
+	}
 
 	versionIs, err := q.Find()
 	if err != nil {
