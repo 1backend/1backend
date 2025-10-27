@@ -13,7 +13,10 @@ export * from './chatSvcThread';
 export * from './configSvcConfig';
 export * from './configSvcListConfigsRequest';
 export * from './configSvcListConfigsResponse';
+export * from './configSvcListVersionsRequest';
+export * from './configSvcListVersionsResponse';
 export * from './configSvcSaveConfigRequest';
+export * from './configSvcVersion';
 export * from './containerSvcAsset';
 export * from './containerSvcBuildImageRequest';
 export * from './containerSvcCapabilities';
@@ -245,7 +248,10 @@ import { ChatSvcThread } from './chatSvcThread';
 import { ConfigSvcConfig } from './configSvcConfig';
 import { ConfigSvcListConfigsRequest } from './configSvcListConfigsRequest';
 import { ConfigSvcListConfigsResponse } from './configSvcListConfigsResponse';
+import { ConfigSvcListVersionsRequest } from './configSvcListVersionsRequest';
+import { ConfigSvcListVersionsResponse } from './configSvcListVersionsResponse';
 import { ConfigSvcSaveConfigRequest } from './configSvcSaveConfigRequest';
+import { ConfigSvcVersion } from './configSvcVersion';
 import { ContainerSvcAsset } from './containerSvcAsset';
 import { ContainerSvcBuildImageRequest } from './containerSvcBuildImageRequest';
 import { ContainerSvcCapabilities } from './containerSvcCapabilities';
@@ -506,7 +512,10 @@ let typeMap = {
     "ConfigSvcConfig": ConfigSvcConfig,
     "ConfigSvcListConfigsRequest": ConfigSvcListConfigsRequest,
     "ConfigSvcListConfigsResponse": ConfigSvcListConfigsResponse,
+    "ConfigSvcListVersionsRequest": ConfigSvcListVersionsRequest,
+    "ConfigSvcListVersionsResponse": ConfigSvcListVersionsResponse,
     "ConfigSvcSaveConfigRequest": ConfigSvcSaveConfigRequest,
+    "ConfigSvcVersion": ConfigSvcVersion,
     "ContainerSvcAsset": ContainerSvcAsset,
     "ContainerSvcBuildImageRequest": ContainerSvcBuildImageRequest,
     "ContainerSvcCapabilities": ContainerSvcCapabilities,

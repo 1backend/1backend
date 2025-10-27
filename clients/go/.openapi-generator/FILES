@@ -38,7 +38,10 @@ docs/ConfigSvcAPI.md
 docs/ConfigSvcConfig.md
 docs/ConfigSvcListConfigsRequest.md
 docs/ConfigSvcListConfigsResponse.md
+docs/ConfigSvcListVersionsRequest.md
+docs/ConfigSvcListVersionsResponse.md
 docs/ConfigSvcSaveConfigRequest.md
+docs/ConfigSvcVersion.md
 docs/ContainerSvcAPI.md
 docs/ContainerSvcAsset.md
 docs/ContainerSvcBuildImageRequest.md
@@ -288,7 +291,10 @@ model_chat_svc_thread.go
 model_config_svc_config.go
 model_config_svc_list_configs_request.go
 model_config_svc_list_configs_response.go
+model_config_svc_list_versions_request.go
+model_config_svc_list_versions_response.go
 model_config_svc_save_config_request.go
+model_config_svc_version.go
 model_container_svc_asset.go
 model_container_svc_build_image_request.go
 model_container_svc_capabilities.go

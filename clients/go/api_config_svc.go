@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.1
+API version: 0.9.2
 Contact: sales@singulatron.com
 */
 
@@ -21,6 +21,27 @@ import (
 
 
 type ConfigSvcAPI interface {
+
+	/*
+	ListConfigVersions List Versions
+
+	Retrieves the current configurations for a specified app.
+Since any user can save configurations, it is strongly advised that you supply a list of
+owners to filter on.
+If no app is specified, the default "unnamed" app is used.
+This is a public endpoint and does not require authentication.
+Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
+
+Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiListConfigVersionsRequest
+	*/
+	ListConfigVersions(ctx context.Context) ApiListConfigVersionsRequest
+
+	// ListConfigVersionsExecute executes the request
+	//  @return ConfigSvcListVersionsResponse
+	ListConfigVersionsExecute(r ApiListConfigVersionsRequest) (*ConfigSvcListVersionsResponse, *http.Response, error)
 
 	/*
 	ListConfigs List Configs
@@ -73,6 +94,145 @@ The save performs a deep merge, that is:
 
 // ConfigSvcAPIService ConfigSvcAPI service
 type ConfigSvcAPIService service
+
+type ApiListConfigVersionsRequest struct {
+	ctx context.Context
+	ApiService ConfigSvcAPI
+	body *ConfigSvcListVersionsRequest
+}
+
+// List Configs Request
+func (r ApiListConfigVersionsRequest) Body(body ConfigSvcListVersionsRequest) ApiListConfigVersionsRequest {
+	r.body = &body
+	return r
+}
+
+func (r ApiListConfigVersionsRequest) Execute() (*ConfigSvcListVersionsResponse, *http.Response, error) {
+	return r.ApiService.ListConfigVersionsExecute(r)
+}
+
+/*
+ListConfigVersions List Versions
+
+Retrieves the current configurations for a specified app.
+Since any user can save configurations, it is strongly advised that you supply a list of
+owners to filter on.
+If no app is specified, the default "unnamed" app is used.
+This is a public endpoint and does not require authentication.
+Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
+
+Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiListConfigVersionsRequest
+*/
+func (a *ConfigSvcAPIService) ListConfigVersions(ctx context.Context) ApiListConfigVersionsRequest {
+	return ApiListConfigVersionsRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return ConfigSvcListVersionsResponse
+func (a *ConfigSvcAPIService) ListConfigVersionsExecute(r ApiListConfigVersionsRequest) (*ConfigSvcListVersionsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *ConfigSvcListVersionsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ConfigSvcAPIService.ListConfigVersions")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/config-svc/versions"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.body == nil {
+		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.body
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v string
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 500 {
+			var v string
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
 
 type ApiListConfigsRequest struct {
 	ctx context.Context
