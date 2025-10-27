@@ -70,6 +70,12 @@ const sidebar: SidebarsConfig = {
           label: "List Configs",
           className: "api-method post",
         },
+        {
+          type: "doc",
+          id: "1backend-api/list-config-versions",
+          label: "List Versions",
+          className: "api-method post",
+        },
       ],
     },
     {
