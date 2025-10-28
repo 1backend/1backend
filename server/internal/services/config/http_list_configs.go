@@ -114,6 +114,18 @@ func (cs *ConfigService) listConfigs(
 
 	filters := []datastore.Filter{}
 
+	if req.Branch != "" {
+		filters = append(filters, datastore.Equals(
+			datastore.Field("branch"),
+			req.Branch,
+		))
+	} else {
+		filters = append(filters, datastore.Equals(
+			datastore.Field("branch"),
+			defaultBranch,
+		))
+	}
+
 	if len(ids) > 0 {
 		filters = append(filters, datastore.IsInList(
 			datastore.Field("id"),
@@ -122,7 +134,6 @@ func (cs *ConfigService) listConfigs(
 	}
 
 	if req.AppHost != "" {
-
 		filters = append(filters, datastore.Equals(
 			datastore.Field("appId"),
 			appId,

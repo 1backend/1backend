@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.2
+API version: 0.9.3
 Contact: sales@singulatron.com
 */
 
@@ -23,6 +23,8 @@ var _ MappedNullable = &ConfigSvcListConfigsRequest{}
 // ConfigSvcListConfigsRequest struct for ConfigSvcListConfigsRequest
 type ConfigSvcListConfigsRequest struct {
 	AppHost string `json:"appHost"`
+	// Branch specifies the branch to get configs from.
+	Branch *string `json:"branch,omitempty"`
 	// Ids are camelCased slugs of the config owners. Specifying only the ids will mean all of the config will be returned for that key.  If the configs are large, consider using the `Selector` request field.
 	Ids []string `json:"ids,omitempty"`
 	// Selector allows dotPath-based filtering per config owner. Example: {   \"user1\": [\"settings.theme\", \"featureFlags.enableNewUI\"],   \"user2\": [\"settings.language\"] }
@@ -71,6 +73,38 @@ func (o *ConfigSvcListConfigsRequest) GetAppHostOk() (*string, bool) {
 // SetAppHost sets field value
 func (o *ConfigSvcListConfigsRequest) SetAppHost(v string) {
 	o.AppHost = v
+}
+
+// GetBranch returns the Branch field value if set, zero value otherwise.
+func (o *ConfigSvcListConfigsRequest) GetBranch() string {
+	if o == nil || IsNil(o.Branch) {
+		var ret string
+		return ret
+	}
+	return *o.Branch
+}
+
+// GetBranchOk returns a tuple with the Branch field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcListConfigsRequest) GetBranchOk() (*string, bool) {
+	if o == nil || IsNil(o.Branch) {
+		return nil, false
+	}
+	return o.Branch, true
+}
+
+// HasBranch returns a boolean if a field has been set.
+func (o *ConfigSvcListConfigsRequest) HasBranch() bool {
+	if o != nil && !IsNil(o.Branch) {
+		return true
+	}
+
+	return false
+}
+
+// SetBranch gets a reference to the given string and assigns it to the Branch field.
+func (o *ConfigSvcListConfigsRequest) SetBranch(v string) {
+	o.Branch = &v
 }
 
 // GetIds returns the Ids field value if set, zero value otherwise.
@@ -148,6 +182,9 @@ func (o ConfigSvcListConfigsRequest) MarshalJSON() ([]byte, error) {
 func (o ConfigSvcListConfigsRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["appHost"] = o.AppHost
+	if !IsNil(o.Branch) {
+		toSerialize["branch"] = o.Branch
+	}
 	if !IsNil(o.Ids) {
 		toSerialize["ids"] = o.Ids
 	}

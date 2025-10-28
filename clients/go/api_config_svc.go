@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.2
+API version: 0.9.3
 Contact: sales@singulatron.com
 */
 
@@ -25,14 +25,11 @@ type ConfigSvcAPI interface {
 	/*
 	ListConfigVersions List Versions
 
-	Retrieves the current configurations for a specified app.
-Since any user can save configurations, it is strongly advised that you supply a list of
-owners to filter on.
-If no app is specified, the default "unnamed" app is used.
-This is a public endpoint and does not require authentication.
-Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
-
-Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+	Returns the historical versions of a configuration for a given app.
+Intended for retrieving the version history of a **single configuration ID**.
+Supplying multiple IDs is supported but not recommended,
+since results from different IDs will interleave in the same time-ordered list,
+making chronological paging ambiguous.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiListConfigVersionsRequest
@@ -114,14 +111,11 @@ func (r ApiListConfigVersionsRequest) Execute() (*ConfigSvcListVersionsResponse,
 /*
 ListConfigVersions List Versions
 
-Retrieves the current configurations for a specified app.
-Since any user can save configurations, it is strongly advised that you supply a list of
-owners to filter on.
-If no app is specified, the default "unnamed" app is used.
-This is a public endpoint and does not require authentication.
-Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
-
-Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+Returns the historical versions of a configuration for a given app.
+Intended for retrieving the version history of a **single configuration ID**.
+Supplying multiple IDs is supported but not recommended,
+since results from different IDs will interleave in the same time-ordered list,
+making chronological paging ambiguous.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiListConfigVersionsRequest

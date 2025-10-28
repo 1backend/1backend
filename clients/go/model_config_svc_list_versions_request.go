@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.2
+API version: 0.9.3
 Contact: sales@singulatron.com
 */
 
@@ -24,12 +24,14 @@ var _ MappedNullable = &ConfigSvcListVersionsRequest{}
 type ConfigSvcListVersionsRequest struct {
 	AfterJson *string `json:"afterJson,omitempty"`
 	AppHost string `json:"appHost"`
+	// Branch specifies the branch to get versions from.
+	Branch *string `json:"branch,omitempty"`
 	// Ids are camelCased slugs of the config owners. Specifying only the ids will mean all of the config will be returned for that key.  If the configs are large, consider using the `Selector` request field.
 	Ids []string `json:"ids,omitempty"`
 	Limit *int32 `json:"limit,omitempty"`
 	// Selector allows dotPath-based filtering per config owner. Example: {   \"user1\": [\"settings.theme\", \"featureFlags.enableNewUI\"],   \"user2\": [\"settings.language\"] }
 	Selector *map[string][]string `json:"selector,omitempty"`
-	Tags []string `json:"tags,omitempty"`
+	VersionIds []string `json:"versionIds,omitempty"`
 }
 
 type _ConfigSvcListVersionsRequest ConfigSvcListVersionsRequest
@@ -106,6 +108,38 @@ func (o *ConfigSvcListVersionsRequest) GetAppHostOk() (*string, bool) {
 // SetAppHost sets field value
 func (o *ConfigSvcListVersionsRequest) SetAppHost(v string) {
 	o.AppHost = v
+}
+
+// GetBranch returns the Branch field value if set, zero value otherwise.
+func (o *ConfigSvcListVersionsRequest) GetBranch() string {
+	if o == nil || IsNil(o.Branch) {
+		var ret string
+		return ret
+	}
+	return *o.Branch
+}
+
+// GetBranchOk returns a tuple with the Branch field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcListVersionsRequest) GetBranchOk() (*string, bool) {
+	if o == nil || IsNil(o.Branch) {
+		return nil, false
+	}
+	return o.Branch, true
+}
+
+// HasBranch returns a boolean if a field has been set.
+func (o *ConfigSvcListVersionsRequest) HasBranch() bool {
+	if o != nil && !IsNil(o.Branch) {
+		return true
+	}
+
+	return false
+}
+
+// SetBranch gets a reference to the given string and assigns it to the Branch field.
+func (o *ConfigSvcListVersionsRequest) SetBranch(v string) {
+	o.Branch = &v
 }
 
 // GetIds returns the Ids field value if set, zero value otherwise.
@@ -204,36 +238,36 @@ func (o *ConfigSvcListVersionsRequest) SetSelector(v map[string][]string) {
 	o.Selector = &v
 }
 
-// GetTags returns the Tags field value if set, zero value otherwise.
-func (o *ConfigSvcListVersionsRequest) GetTags() []string {
-	if o == nil || IsNil(o.Tags) {
+// GetVersionIds returns the VersionIds field value if set, zero value otherwise.
+func (o *ConfigSvcListVersionsRequest) GetVersionIds() []string {
+	if o == nil || IsNil(o.VersionIds) {
 		var ret []string
 		return ret
 	}
-	return o.Tags
+	return o.VersionIds
 }
 
-// GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
+// GetVersionIdsOk returns a tuple with the VersionIds field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ConfigSvcListVersionsRequest) GetTagsOk() ([]string, bool) {
-	if o == nil || IsNil(o.Tags) {
+func (o *ConfigSvcListVersionsRequest) GetVersionIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.VersionIds) {
 		return nil, false
 	}
-	return o.Tags, true
+	return o.VersionIds, true
 }
 
-// HasTags returns a boolean if a field has been set.
-func (o *ConfigSvcListVersionsRequest) HasTags() bool {
-	if o != nil && !IsNil(o.Tags) {
+// HasVersionIds returns a boolean if a field has been set.
+func (o *ConfigSvcListVersionsRequest) HasVersionIds() bool {
+	if o != nil && !IsNil(o.VersionIds) {
 		return true
 	}
 
 	return false
 }
 
-// SetTags gets a reference to the given []string and assigns it to the Tags field.
-func (o *ConfigSvcListVersionsRequest) SetTags(v []string) {
-	o.Tags = v
+// SetVersionIds gets a reference to the given []string and assigns it to the VersionIds field.
+func (o *ConfigSvcListVersionsRequest) SetVersionIds(v []string) {
+	o.VersionIds = v
 }
 
 func (o ConfigSvcListVersionsRequest) MarshalJSON() ([]byte, error) {
@@ -250,6 +284,9 @@ func (o ConfigSvcListVersionsRequest) ToMap() (map[string]interface{}, error) {
 		toSerialize["afterJson"] = o.AfterJson
 	}
 	toSerialize["appHost"] = o.AppHost
+	if !IsNil(o.Branch) {
+		toSerialize["branch"] = o.Branch
+	}
 	if !IsNil(o.Ids) {
 		toSerialize["ids"] = o.Ids
 	}
@@ -259,8 +296,8 @@ func (o ConfigSvcListVersionsRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Selector) {
 		toSerialize["selector"] = o.Selector
 	}
-	if !IsNil(o.Tags) {
-		toSerialize["tags"] = o.Tags
+	if !IsNil(o.VersionIds) {
+		toSerialize["versionIds"] = o.VersionIds
 	}
 	return toSerialize, nil
 }

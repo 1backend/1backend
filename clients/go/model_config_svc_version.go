@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.2
+API version: 0.9.3
 Contact: sales@singulatron.com
 */
 
@@ -23,15 +23,15 @@ var _ MappedNullable = &ConfigSvcVersion{}
 // ConfigSvcVersion struct for ConfigSvcVersion
 type ConfigSvcVersion struct {
 	AppId string `json:"appId"`
+	Branch string `json:"branch"`
 	CreatedAt string `json:"createdAt"`
 	Data map[string]interface{} `json:"data"`
 	DataJson string `json:"dataJson"`
-	// CamelCased slugs of the config owners
+	// CamelCased slugs of the config owners. Same as Config.Id.
 	Id string `json:"id"`
 	InternalId *string `json:"internalId,omitempty"`
-	Tags []string `json:"tags,omitempty"`
 	UpdatedAt string `json:"updatedAt"`
-	Version *string `json:"version,omitempty"`
+	VersionId string `json:"versionId"`
 }
 
 type _ConfigSvcVersion ConfigSvcVersion
@@ -40,14 +40,16 @@ type _ConfigSvcVersion ConfigSvcVersion
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewConfigSvcVersion(appId string, createdAt string, data map[string]interface{}, dataJson string, id string, updatedAt string) *ConfigSvcVersion {
+func NewConfigSvcVersion(appId string, branch string, createdAt string, data map[string]interface{}, dataJson string, id string, updatedAt string, versionId string) *ConfigSvcVersion {
 	this := ConfigSvcVersion{}
 	this.AppId = appId
+	this.Branch = branch
 	this.CreatedAt = createdAt
 	this.Data = data
 	this.DataJson = dataJson
 	this.Id = id
 	this.UpdatedAt = updatedAt
+	this.VersionId = versionId
 	return &this
 }
 
@@ -81,6 +83,30 @@ func (o *ConfigSvcVersion) GetAppIdOk() (*string, bool) {
 // SetAppId sets field value
 func (o *ConfigSvcVersion) SetAppId(v string) {
 	o.AppId = v
+}
+
+// GetBranch returns the Branch field value
+func (o *ConfigSvcVersion) GetBranch() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Branch
+}
+
+// GetBranchOk returns a tuple with the Branch field value
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcVersion) GetBranchOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Branch, true
+}
+
+// SetBranch sets field value
+func (o *ConfigSvcVersion) SetBranch(v string) {
+	o.Branch = v
 }
 
 // GetCreatedAt returns the CreatedAt field value
@@ -211,38 +237,6 @@ func (o *ConfigSvcVersion) SetInternalId(v string) {
 	o.InternalId = &v
 }
 
-// GetTags returns the Tags field value if set, zero value otherwise.
-func (o *ConfigSvcVersion) GetTags() []string {
-	if o == nil || IsNil(o.Tags) {
-		var ret []string
-		return ret
-	}
-	return o.Tags
-}
-
-// GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigSvcVersion) GetTagsOk() ([]string, bool) {
-	if o == nil || IsNil(o.Tags) {
-		return nil, false
-	}
-	return o.Tags, true
-}
-
-// HasTags returns a boolean if a field has been set.
-func (o *ConfigSvcVersion) HasTags() bool {
-	if o != nil && !IsNil(o.Tags) {
-		return true
-	}
-
-	return false
-}
-
-// SetTags gets a reference to the given []string and assigns it to the Tags field.
-func (o *ConfigSvcVersion) SetTags(v []string) {
-	o.Tags = v
-}
-
 // GetUpdatedAt returns the UpdatedAt field value
 func (o *ConfigSvcVersion) GetUpdatedAt() string {
 	if o == nil {
@@ -267,36 +261,28 @@ func (o *ConfigSvcVersion) SetUpdatedAt(v string) {
 	o.UpdatedAt = v
 }
 
-// GetVersion returns the Version field value if set, zero value otherwise.
-func (o *ConfigSvcVersion) GetVersion() string {
-	if o == nil || IsNil(o.Version) {
+// GetVersionId returns the VersionId field value
+func (o *ConfigSvcVersion) GetVersionId() string {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Version
+
+	return o.VersionId
 }
 
-// GetVersionOk returns a tuple with the Version field value if set, nil otherwise
+// GetVersionIdOk returns a tuple with the VersionId field value
 // and a boolean to check if the value has been set.
-func (o *ConfigSvcVersion) GetVersionOk() (*string, bool) {
-	if o == nil || IsNil(o.Version) {
+func (o *ConfigSvcVersion) GetVersionIdOk() (*string, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.Version, true
+	return &o.VersionId, true
 }
 
-// HasVersion returns a boolean if a field has been set.
-func (o *ConfigSvcVersion) HasVersion() bool {
-	if o != nil && !IsNil(o.Version) {
-		return true
-	}
-
-	return false
-}
-
-// SetVersion gets a reference to the given string and assigns it to the Version field.
-func (o *ConfigSvcVersion) SetVersion(v string) {
-	o.Version = &v
+// SetVersionId sets field value
+func (o *ConfigSvcVersion) SetVersionId(v string) {
+	o.VersionId = v
 }
 
 func (o ConfigSvcVersion) MarshalJSON() ([]byte, error) {
@@ -310,6 +296,7 @@ func (o ConfigSvcVersion) MarshalJSON() ([]byte, error) {
 func (o ConfigSvcVersion) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["appId"] = o.AppId
+	toSerialize["branch"] = o.Branch
 	toSerialize["createdAt"] = o.CreatedAt
 	toSerialize["data"] = o.Data
 	toSerialize["dataJson"] = o.DataJson
@@ -317,13 +304,8 @@ func (o ConfigSvcVersion) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.InternalId) {
 		toSerialize["internalId"] = o.InternalId
 	}
-	if !IsNil(o.Tags) {
-		toSerialize["tags"] = o.Tags
-	}
 	toSerialize["updatedAt"] = o.UpdatedAt
-	if !IsNil(o.Version) {
-		toSerialize["version"] = o.Version
-	}
+	toSerialize["versionId"] = o.VersionId
 	return toSerialize, nil
 }
 
@@ -333,11 +315,13 @@ func (o *ConfigSvcVersion) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"appId",
+		"branch",
 		"createdAt",
 		"data",
 		"dataJson",
 		"id",
 		"updatedAt",
+		"versionId",
 	}
 
 	allProperties := make(map[string]interface{})

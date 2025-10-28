@@ -29,6 +29,7 @@ import (
 
 var (
 	idMustBeProvidedErr = errors.New("id must be provided when editing on behalf of another user")
+	defaultBranch       = "main"
 )
 
 // @Id saveConfig
@@ -171,9 +172,15 @@ func (cs *ConfigService) saveConfig(
 
 	id := callerSlug
 
+	branch := defaultBranch
+	if newConfig.Branch != "" {
+		branch = newConfig.Branch
+	}
+
 	existing, found, err := cs.configStore.Query(
 		datastore.Id(id),
 		datastore.Equals([]string{"appId"}, appId),
+		datastore.Equals([]string{"branch"}, branch),
 	).FindOne()
 	if err != nil {
 		return errors.Wrap(err, "failed to query config")
@@ -186,7 +193,7 @@ func (cs *ConfigService) saveConfig(
 	entry := &types.Config{}
 
 	if !found {
-		entry.InternalId, err = sdk.InternalId(appId, id)
+		entry.InternalId, err = sdk.InternalId(appId, sdk.DeterministicId(id, branch))
 		if err != nil {
 			return fmt.Errorf("failed to generate internal id: %w", err)
 		}
@@ -196,7 +203,7 @@ func (cs *ConfigService) saveConfig(
 		entry.DataJSON = "{}"
 		entry.CreatedAt = now
 		entry.UpdatedAt = now
-		entry.Tags = newConfig.Tags
+		entry.Branch = branch
 	} else {
 		entry = existing.(*types.Config)
 		err = json.Unmarshal([]byte(entry.DataJSON), &entry.Data)
@@ -220,8 +227,8 @@ func (cs *ConfigService) saveConfig(
 		return errors.Wrap(err, "failed to save config")
 	}
 
-	versionValue := sdk.OpaqueId("ver")
-	versionInternalId, err := sdk.InternalId(appId, sdk.DeterministicId(id, versionValue))
+	versionId := sdk.OpaqueId("ver")
+	versionInternalId, err := sdk.InternalId(appId, sdk.DeterministicId(id, versionId))
 	if err != nil {
 		return fmt.Errorf("failed to generate version internal id: %w", err)
 	}
@@ -230,11 +237,11 @@ func (cs *ConfigService) saveConfig(
 		InternalId: versionInternalId,
 		AppId:      appId,
 		Id:         id,
-		Version:    versionValue,
+		VersionId:  versionId,
 		CreatedAt:  now,
 		UpdatedAt:  now,
 		DataJSON:   string(newJson),
-		Tags:       newConfig.Tags,
+		Branch:     branch,
 	}
 
 	err = cs.versionStore.Upsert(version)

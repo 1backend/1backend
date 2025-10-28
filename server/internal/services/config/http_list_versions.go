@@ -122,6 +122,29 @@ func (cs *ConfigService) listVersions(
 		))
 	}
 
+	if req.Branch != "" {
+		filters = append(filters, datastore.Equals(
+			datastore.Field("branch"),
+			req.Branch,
+		))
+	} else {
+		filters = append(filters, datastore.Equals(
+			datastore.Field("branch"),
+			defaultBranch,
+		))
+	}
+
+	if len(req.VersionIds) != 0 {
+		versionIds := []any{}
+		for _, vId := range req.VersionIds {
+			versionIds = append(versionIds, vId)
+		}
+		filters = append(filters, datastore.IsInList(
+			datastore.Field("versionId"),
+			versionIds...,
+		))
+	}
+
 	q := cs.versionStore.Query(
 		filters...,
 	).OrderBy(
