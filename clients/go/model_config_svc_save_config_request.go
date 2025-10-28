@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.2
+API version: 0.9.3
 Contact: sales@singulatron.com
 */
 
@@ -22,11 +22,12 @@ var _ MappedNullable = &ConfigSvcSaveConfigRequest{}
 type ConfigSvcSaveConfigRequest struct {
 	// AppHost can only be specified by users who have the `config-svc:config:edit-on-behalf` permission, who are typically admins.  If not specified, the config will be saved for the current app of the user's token.
 	AppHost *string `json:"appHost,omitempty"`
+	// Branch specifies the branch to get configs from.
+	Branch *string `json:"branch,omitempty"`
 	Data map[string]interface{} `json:"data,omitempty"`
 	DataJson *string `json:"dataJson,omitempty"`
 	// Id is the slug of the owner to save the config for. Only user with the `config-svc:config:edit-on-behalf` can specify this. For everyone else, it is automatically set to the slug of the caller user.
 	Id *string `json:"id,omitempty"`
-	Tags []string `json:"tags,omitempty"`
 }
 
 // NewConfigSvcSaveConfigRequest instantiates a new ConfigSvcSaveConfigRequest object
@@ -76,6 +77,38 @@ func (o *ConfigSvcSaveConfigRequest) HasAppHost() bool {
 // SetAppHost gets a reference to the given string and assigns it to the AppHost field.
 func (o *ConfigSvcSaveConfigRequest) SetAppHost(v string) {
 	o.AppHost = &v
+}
+
+// GetBranch returns the Branch field value if set, zero value otherwise.
+func (o *ConfigSvcSaveConfigRequest) GetBranch() string {
+	if o == nil || IsNil(o.Branch) {
+		var ret string
+		return ret
+	}
+	return *o.Branch
+}
+
+// GetBranchOk returns a tuple with the Branch field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcSaveConfigRequest) GetBranchOk() (*string, bool) {
+	if o == nil || IsNil(o.Branch) {
+		return nil, false
+	}
+	return o.Branch, true
+}
+
+// HasBranch returns a boolean if a field has been set.
+func (o *ConfigSvcSaveConfigRequest) HasBranch() bool {
+	if o != nil && !IsNil(o.Branch) {
+		return true
+	}
+
+	return false
+}
+
+// SetBranch gets a reference to the given string and assigns it to the Branch field.
+func (o *ConfigSvcSaveConfigRequest) SetBranch(v string) {
+	o.Branch = &v
 }
 
 // GetData returns the Data field value if set, zero value otherwise.
@@ -174,38 +207,6 @@ func (o *ConfigSvcSaveConfigRequest) SetId(v string) {
 	o.Id = &v
 }
 
-// GetTags returns the Tags field value if set, zero value otherwise.
-func (o *ConfigSvcSaveConfigRequest) GetTags() []string {
-	if o == nil || IsNil(o.Tags) {
-		var ret []string
-		return ret
-	}
-	return o.Tags
-}
-
-// GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigSvcSaveConfigRequest) GetTagsOk() ([]string, bool) {
-	if o == nil || IsNil(o.Tags) {
-		return nil, false
-	}
-	return o.Tags, true
-}
-
-// HasTags returns a boolean if a field has been set.
-func (o *ConfigSvcSaveConfigRequest) HasTags() bool {
-	if o != nil && !IsNil(o.Tags) {
-		return true
-	}
-
-	return false
-}
-
-// SetTags gets a reference to the given []string and assigns it to the Tags field.
-func (o *ConfigSvcSaveConfigRequest) SetTags(v []string) {
-	o.Tags = v
-}
-
 func (o ConfigSvcSaveConfigRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -219,6 +220,9 @@ func (o ConfigSvcSaveConfigRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.AppHost) {
 		toSerialize["appHost"] = o.AppHost
 	}
+	if !IsNil(o.Branch) {
+		toSerialize["branch"] = o.Branch
+	}
 	if !IsNil(o.Data) {
 		toSerialize["data"] = o.Data
 	}
@@ -227,9 +231,6 @@ func (o ConfigSvcSaveConfigRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
-	}
-	if !IsNil(o.Tags) {
-		toSerialize["tags"] = o.Tags
 	}
 	return toSerialize, nil
 }

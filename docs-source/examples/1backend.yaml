@@ -165,6 +165,8 @@ definitions:
     properties:
       appId:
         type: string
+      branch:
+        type: string
       createdAt:
         type: string
       data:
@@ -177,17 +179,13 @@ definitions:
         type: string
       internalId:
         type: string
-      tags:
-        description: Tags are used to filter on versions, not active configs.
-        items:
-          type: string
-        type: array
       updatedAt:
         type: string
       version:
         type: string
     required:
     - appId
+    - branch
     - createdAt
     - data
     - dataJson
@@ -198,6 +196,9 @@ definitions:
     properties:
       appHost:
         example: shoes.com
+        type: string
+      branch:
+        description: Branch specifies the branch to get configs from.
         type: string
       ids:
         description: |-
@@ -244,6 +245,9 @@ definitions:
       appHost:
         example: shoes.com
         type: string
+      branch:
+        description: Branch specifies the branch to get versions from.
+        type: string
       ids:
         description: |-
           Ids are camelCased slugs of the config owners.
@@ -269,7 +273,7 @@ definitions:
             "user2": ["settings.language"]
           }
         type: object
-      tags:
+      versionIds:
         items:
           type: string
         type: array
@@ -298,6 +302,9 @@ definitions:
 
           If not specified, the config will be saved for the current app of the user's token.
         type: string
+      branch:
+        description: Branch specifies the branch to get configs from.
+        type: string
       data:
         additionalProperties: true
         type: object
@@ -309,16 +316,14 @@ definitions:
           Only user with the `config-svc:config:edit-on-behalf` can specify this.
           For everyone else, it is automatically set to the slug of the caller user.
         type: string
-      tags:
-        items:
-          type: string
-        type: array
     type: object
   config_svc.SaveConfigResponse:
     type: object
   config_svc.Version:
     properties:
       appId:
+        type: string
+      branch:
         type: string
       createdAt:
         type: string
@@ -328,25 +333,25 @@ definitions:
       dataJson:
         type: string
       id:
-        description: CamelCased slugs of the config owners
+        description: |-
+          CamelCased slugs of the config owners.
+          Same as Config.Id.
         type: string
       internalId:
         type: string
-      tags:
-        items:
-          type: string
-        type: array
       updatedAt:
         type: string
-      version:
+      versionId:
         type: string
     required:
     - appId
+    - branch
     - createdAt
     - data
     - dataJson
     - id
     - updatedAt
+    - versionId
     type: object
   container_svc.Asset:
     properties:
@@ -4025,7 +4030,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.9.2
+  version: 0.9.3
 paths:
   /chat-svc/events:
     get:
@@ -4365,14 +4370,11 @@ paths:
       consumes:
       - application/json
       description: |-
-        Retrieves the current configurations for a specified app.
-        Since any user can save configurations, it is strongly advised that you supply a list of
-        owners to filter on.
-        If no app is specified, the default "unnamed" app is used.
-        This is a public endpoint and does not require authentication.
-        Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.
-
-        Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+        Returns the historical versions of a configuration for a given app.
+        Intended for retrieving the version history of a **single configuration ID**.
+        Supplying multiple IDs is supported but not recommended,
+        since results from different IDs will interleave in the same time-ordered list,
+        making chronological paging ambiguous.
       operationId: listConfigVersions
       parameters:
       - description: List Configs Request

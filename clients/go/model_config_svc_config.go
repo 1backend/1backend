@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.2
+API version: 0.9.3
 Contact: sales@singulatron.com
 */
 
@@ -23,14 +23,13 @@ var _ MappedNullable = &ConfigSvcConfig{}
 // ConfigSvcConfig struct for ConfigSvcConfig
 type ConfigSvcConfig struct {
 	AppId string `json:"appId"`
+	Branch string `json:"branch"`
 	CreatedAt string `json:"createdAt"`
 	Data map[string]interface{} `json:"data"`
 	DataJson string `json:"dataJson"`
 	// CamelCased slugs of the config owners
 	Id string `json:"id"`
 	InternalId *string `json:"internalId,omitempty"`
-	// Tags are used to filter on versions, not active configs.
-	Tags []string `json:"tags,omitempty"`
 	UpdatedAt string `json:"updatedAt"`
 	Version *string `json:"version,omitempty"`
 }
@@ -41,9 +40,10 @@ type _ConfigSvcConfig ConfigSvcConfig
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewConfigSvcConfig(appId string, createdAt string, data map[string]interface{}, dataJson string, id string, updatedAt string) *ConfigSvcConfig {
+func NewConfigSvcConfig(appId string, branch string, createdAt string, data map[string]interface{}, dataJson string, id string, updatedAt string) *ConfigSvcConfig {
 	this := ConfigSvcConfig{}
 	this.AppId = appId
+	this.Branch = branch
 	this.CreatedAt = createdAt
 	this.Data = data
 	this.DataJson = dataJson
@@ -82,6 +82,30 @@ func (o *ConfigSvcConfig) GetAppIdOk() (*string, bool) {
 // SetAppId sets field value
 func (o *ConfigSvcConfig) SetAppId(v string) {
 	o.AppId = v
+}
+
+// GetBranch returns the Branch field value
+func (o *ConfigSvcConfig) GetBranch() string {
+	if o == nil {
+		var ret string
+		return ret
+	}
+
+	return o.Branch
+}
+
+// GetBranchOk returns a tuple with the Branch field value
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcConfig) GetBranchOk() (*string, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return &o.Branch, true
+}
+
+// SetBranch sets field value
+func (o *ConfigSvcConfig) SetBranch(v string) {
+	o.Branch = v
 }
 
 // GetCreatedAt returns the CreatedAt field value
@@ -212,38 +236,6 @@ func (o *ConfigSvcConfig) SetInternalId(v string) {
 	o.InternalId = &v
 }
 
-// GetTags returns the Tags field value if set, zero value otherwise.
-func (o *ConfigSvcConfig) GetTags() []string {
-	if o == nil || IsNil(o.Tags) {
-		var ret []string
-		return ret
-	}
-	return o.Tags
-}
-
-// GetTagsOk returns a tuple with the Tags field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigSvcConfig) GetTagsOk() ([]string, bool) {
-	if o == nil || IsNil(o.Tags) {
-		return nil, false
-	}
-	return o.Tags, true
-}
-
-// HasTags returns a boolean if a field has been set.
-func (o *ConfigSvcConfig) HasTags() bool {
-	if o != nil && !IsNil(o.Tags) {
-		return true
-	}
-
-	return false
-}
-
-// SetTags gets a reference to the given []string and assigns it to the Tags field.
-func (o *ConfigSvcConfig) SetTags(v []string) {
-	o.Tags = v
-}
-
 // GetUpdatedAt returns the UpdatedAt field value
 func (o *ConfigSvcConfig) GetUpdatedAt() string {
 	if o == nil {
@@ -311,15 +303,13 @@ func (o ConfigSvcConfig) MarshalJSON() ([]byte, error) {
 func (o ConfigSvcConfig) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["appId"] = o.AppId
+	toSerialize["branch"] = o.Branch
 	toSerialize["createdAt"] = o.CreatedAt
 	toSerialize["data"] = o.Data
 	toSerialize["dataJson"] = o.DataJson
 	toSerialize["id"] = o.Id
 	if !IsNil(o.InternalId) {
 		toSerialize["internalId"] = o.InternalId
-	}
-	if !IsNil(o.Tags) {
-		toSerialize["tags"] = o.Tags
 	}
 	toSerialize["updatedAt"] = o.UpdatedAt
 	if !IsNil(o.Version) {
@@ -334,6 +324,7 @@ func (o *ConfigSvcConfig) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"appId",
+		"branch",
 		"createdAt",
 		"data",
 		"dataJson",

@@ -10,6 +10,7 @@ package configservice_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
@@ -277,4 +278,181 @@ func TestConfigService(t *testing.T) {
 		require.NotNil(t, rsp.Configs["otherSvc"].Data["field3"].(map[string]interface{}))
 		require.Equal(t, "adminValue3", rsp.Configs["otherSvc"].Data["field3"].(map[string]interface{})["secondLevel3"], rsp)
 	})
+
+	t.Run("branch-based save and read", func(t *testing.T) {
+		// Client 1 saves different data into main and preview branches
+		_, _, err := client1.ConfigSvcAPI.SaveConfig(ctx).
+			Body(openapi.ConfigSvcSaveConfigRequest{
+				Data: map[string]any{
+					"env": "production",
+				},
+				Branch: openapi.PtrString("main"),
+			}).Execute()
+		require.NoError(t, err)
+
+		_, _, err = client1.ConfigSvcAPI.SaveConfig(ctx).
+			Body(openapi.ConfigSvcSaveConfigRequest{
+				Data: map[string]any{
+					"env": "staging",
+				},
+				Branch: openapi.PtrString("preview"),
+			}).Execute()
+		require.NoError(t, err)
+
+		// Read from main branch
+		mainRsp, _, err := client1.ConfigSvcAPI.ListConfigs(ctx).
+			Body(openapi.ConfigSvcListConfigsRequest{
+				AppHost: sdk.DefaultTestAppHost,
+				Branch:  openapi.PtrString("main"),
+				Ids:     []string{"testUserSlug0"},
+			}).Execute()
+		require.NoError(t, err)
+		require.NotNil(t, mainRsp.Configs["testUserSlug0"])
+		require.Equal(t, "production", mainRsp.Configs["testUserSlug0"].Data["env"], mainRsp)
+
+		// Read from preview branch
+		previewRsp, _, err := client1.ConfigSvcAPI.ListConfigs(ctx).
+			Body(openapi.ConfigSvcListConfigsRequest{
+				AppHost: sdk.DefaultTestAppHost,
+				Branch:  openapi.PtrString("preview"),
+				Ids:     []string{"testUserSlug0"},
+			}).Execute()
+		require.NoError(t, err)
+		require.NotNil(t, previewRsp.Configs["testUserSlug0"])
+		require.Equal(t, "staging", previewRsp.Configs["testUserSlug0"].Data["env"], previewRsp)
+
+		// Ensure branches are isolated
+		require.NotEqual(t,
+			mainRsp.Configs["testUserSlug0"].Data["env"],
+			previewRsp.Configs["testUserSlug0"].Data["env"],
+			"main and preview branches must hold distinct data",
+		)
+	})
+
+	t.Run("branch isolation after multiple saves", func(t *testing.T) {
+		// Save main and preview branches multiple times
+		for i := 0; i < 2; i++ {
+			_, _, err := client1.ConfigSvcAPI.SaveConfig(ctx).
+				Body(openapi.ConfigSvcSaveConfigRequest{
+					Data:   map[string]any{"counter": i},
+					Branch: openapi.PtrString("main"),
+				}).Execute()
+			require.NoError(t, err)
+		}
+
+		_, _, err := client1.ConfigSvcAPI.SaveConfig(ctx).
+			Body(openapi.ConfigSvcSaveConfigRequest{
+				Data:   map[string]any{"counter": "preview-only"},
+				Branch: openapi.PtrString("preview"),
+			}).Execute()
+		require.NoError(t, err)
+
+		// Confirm branch data divergence
+		mainRsp, _, _ := client1.ConfigSvcAPI.ListConfigs(ctx).
+			Body(openapi.ConfigSvcListConfigsRequest{
+				AppHost: sdk.DefaultTestAppHost,
+				Branch:  openapi.PtrString("main"),
+				Ids:     []string{"testUserSlug0"},
+			}).Execute()
+
+		previewRsp, _, _ := client1.ConfigSvcAPI.ListConfigs(ctx).
+			Body(openapi.ConfigSvcListConfigsRequest{
+				AppHost: sdk.DefaultTestAppHost,
+				Branch:  openapi.PtrString("preview"),
+				Ids:     []string{"testUserSlug0"},
+			}).Execute()
+
+		require.NotEqual(t,
+			mainRsp.Configs["testUserSlug0"].Data["counter"],
+			previewRsp.Configs["testUserSlug0"].Data["counter"],
+		)
+	})
+
+	t.Run("default branch is main", func(t *testing.T) {
+		_, _, err := client1.ConfigSvcAPI.SaveConfig(ctx).
+			Body(openapi.ConfigSvcSaveConfigRequest{
+				Data: map[string]any{"auto": "defaultBranch"},
+			}).Execute()
+		require.NoError(t, err)
+
+		rsp, _, err := client1.ConfigSvcAPI.ListConfigs(ctx).
+			Body(openapi.ConfigSvcListConfigsRequest{
+				AppHost: sdk.DefaultTestAppHost,
+				Branch:  openapi.PtrString("main"),
+				Ids:     []string{"testUserSlug0"},
+			}).Execute()
+		require.NoError(t, err)
+		require.Equal(t, "defaultBranch", rsp.Configs["testUserSlug0"].Data["auto"])
+	})
+
+	t.Run("pagination returns empty when no more data", func(t *testing.T) {
+		rsp, _, _ := client1.ConfigSvcAPI.ListConfigVersions(ctx).
+			Body(openapi.ConfigSvcListVersionsRequest{
+				AppHost: sdk.DefaultTestAppHost,
+				Limit:   openapi.PtrInt32(1000),
+			}).Execute()
+		require.NoError(t, err)
+		cursor := []any{rsp.Versions[len(rsp.Versions)-1].CreatedAt, rsp.Versions[len(rsp.Versions)-1].Id}
+		afterJSON := sdk.Marshal(cursor)
+
+		empty, _, _ := client1.ConfigSvcAPI.ListConfigVersions(ctx).
+			Body(openapi.ConfigSvcListVersionsRequest{
+				AppHost:   sdk.DefaultTestAppHost,
+				AfterJson: afterJSON,
+			}).Execute()
+		require.Empty(t, empty.Versions)
+	})
+
+	t.Run("version history preserves previous values", func(t *testing.T) {
+		// Save first version
+		_, _, err := client1.ConfigSvcAPI.SaveConfig(ctx).
+			Body(openapi.ConfigSvcSaveConfigRequest{
+				Data: map[string]any{"featureFlag": "off"},
+			}).Execute()
+		require.NoError(t, err)
+
+		time.Sleep(5 * time.Millisecond)
+
+		// Save updated version
+		_, _, err = client1.ConfigSvcAPI.SaveConfig(ctx).
+			Body(openapi.ConfigSvcSaveConfigRequest{
+				Data: map[string]any{"featureFlag": "on"},
+			}).Execute()
+		require.NoError(t, err)
+
+		// List versions, newest first
+		rsp, _, err := client1.ConfigSvcAPI.ListConfigVersions(ctx).
+			Body(openapi.ConfigSvcListVersionsRequest{
+				AppHost: sdk.DefaultTestAppHost,
+				Ids:     []string{"testUserSlug0"},
+				Limit:   openapi.PtrInt32(2),
+			}).Execute()
+		require.NoError(t, err)
+		require.GreaterOrEqual(t, len(rsp.Versions), 2)
+
+		latest := rsp.Versions[0]
+		previous := rsp.Versions[1]
+
+		require.Equal(t, "on", latest.Data["featureFlag"], "latest version must contain the new value")
+		require.Equal(t, "off", previous.Data["featureFlag"], "previous version must preserve the old value")
+
+		t1, err := parseStringTime(latest.CreatedAt)
+		require.NoError(t, err)
+		t2, err := parseStringTime(previous.CreatedAt)
+		require.NoError(t, err)
+		require.True(t, t1.After(t2), "latest version must have newer timestamp")
+	})
+}
+
+func parseStringTime(s string) (time.Time, error) {
+	if s == "" {
+		return time.Time{}, nil
+	}
+	// RFC3339 is Go’s default JSON timestamp format.
+	t, err := time.Parse(time.RFC3339, s)
+	if err != nil {
+		// attempt fallback for non-RFC3339 timestamps
+		t, err = time.Parse("2006-01-02T15:04:05Z07:00", s)
+	}
+	return t, err
 }
