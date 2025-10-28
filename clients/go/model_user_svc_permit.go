@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.3
+API version: 0.9.4
 Contact: sales@singulatron.com
 */
 
@@ -27,7 +27,6 @@ type UserSvcPermit struct {
 	CreatedAt string `json:"createdAt"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	Id string `json:"id"`
-	InternalId *string `json:"internalId,omitempty"`
 	Permission string `json:"permission"`
 	// Role IDs that have been permited the specified permission.  Originally, permits were designed for slugs to facilitate service-to-service calls. Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.
 	Roles []string `json:"roles,omitempty"`
@@ -164,38 +163,6 @@ func (o *UserSvcPermit) SetId(v string) {
 	o.Id = v
 }
 
-// GetInternalId returns the InternalId field value if set, zero value otherwise.
-func (o *UserSvcPermit) GetInternalId() string {
-	if o == nil || IsNil(o.InternalId) {
-		var ret string
-		return ret
-	}
-	return *o.InternalId
-}
-
-// GetInternalIdOk returns a tuple with the InternalId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcPermit) GetInternalIdOk() (*string, bool) {
-	if o == nil || IsNil(o.InternalId) {
-		return nil, false
-	}
-	return o.InternalId, true
-}
-
-// HasInternalId returns a boolean if a field has been set.
-func (o *UserSvcPermit) HasInternalId() bool {
-	if o != nil && !IsNil(o.InternalId) {
-		return true
-	}
-
-	return false
-}
-
-// SetInternalId gets a reference to the given string and assigns it to the InternalId field.
-func (o *UserSvcPermit) SetInternalId(v string) {
-	o.InternalId = &v
-}
-
 // GetPermission returns the Permission field value
 func (o *UserSvcPermit) GetPermission() string {
 	if o == nil {
@@ -324,9 +291,6 @@ func (o UserSvcPermit) ToMap() (map[string]interface{}, error) {
 		toSerialize["deletedAt"] = o.DeletedAt
 	}
 	toSerialize["id"] = o.Id
-	if !IsNil(o.InternalId) {
-		toSerialize["internalId"] = o.InternalId
-	}
 	toSerialize["permission"] = o.Permission
 	if !IsNil(o.Roles) {
 		toSerialize["roles"] = o.Roles

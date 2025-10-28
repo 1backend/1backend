@@ -16,7 +16,7 @@ type ErrorResponse struct {
 }
 
 type Config struct {
-	InternalId string `json:"internalId,omitempty" swagger:"ignore"`
+	InternalId string `json:"internalId,omitempty" swaggerignore:"true"`
 
 	AppId string `json:"appId" binding:"required"`
 

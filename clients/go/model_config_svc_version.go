@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.3
+API version: 0.9.4
 Contact: sales@singulatron.com
 */
 
@@ -29,7 +29,6 @@ type ConfigSvcVersion struct {
 	DataJson string `json:"dataJson"`
 	// CamelCased slugs of the config owners. Same as Config.Id.
 	Id string `json:"id"`
-	InternalId *string `json:"internalId,omitempty"`
 	UpdatedAt string `json:"updatedAt"`
 	VersionId string `json:"versionId"`
 }
@@ -205,38 +204,6 @@ func (o *ConfigSvcVersion) SetId(v string) {
 	o.Id = v
 }
 
-// GetInternalId returns the InternalId field value if set, zero value otherwise.
-func (o *ConfigSvcVersion) GetInternalId() string {
-	if o == nil || IsNil(o.InternalId) {
-		var ret string
-		return ret
-	}
-	return *o.InternalId
-}
-
-// GetInternalIdOk returns a tuple with the InternalId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ConfigSvcVersion) GetInternalIdOk() (*string, bool) {
-	if o == nil || IsNil(o.InternalId) {
-		return nil, false
-	}
-	return o.InternalId, true
-}
-
-// HasInternalId returns a boolean if a field has been set.
-func (o *ConfigSvcVersion) HasInternalId() bool {
-	if o != nil && !IsNil(o.InternalId) {
-		return true
-	}
-
-	return false
-}
-
-// SetInternalId gets a reference to the given string and assigns it to the InternalId field.
-func (o *ConfigSvcVersion) SetInternalId(v string) {
-	o.InternalId = &v
-}
-
 // GetUpdatedAt returns the UpdatedAt field value
 func (o *ConfigSvcVersion) GetUpdatedAt() string {
 	if o == nil {
@@ -301,9 +268,6 @@ func (o ConfigSvcVersion) ToMap() (map[string]interface{}, error) {
 	toSerialize["data"] = o.Data
 	toSerialize["dataJson"] = o.DataJson
 	toSerialize["id"] = o.Id
-	if !IsNil(o.InternalId) {
-		toSerialize["internalId"] = o.InternalId
-	}
 	toSerialize["updatedAt"] = o.UpdatedAt
 	toSerialize["versionId"] = o.VersionId
 	return toSerialize, nil

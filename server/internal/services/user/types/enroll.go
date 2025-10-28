@@ -13,7 +13,7 @@ import (
 
 // Enroll (enrollment) is a mechanism to give registered or not yet registered roles.
 type Enroll struct {
-	InternalId string `json:"internalId" swagger:"ignore"`
+	InternalId string `json:"internalId" swaggerignore:"true"`
 
 	// App of the enroll.
 	// Use `*` to match all apps, such as when bootstrapping

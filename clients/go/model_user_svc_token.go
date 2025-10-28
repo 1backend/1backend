@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.3
+API version: 0.9.4
 Contact: sales@singulatron.com
 */
 
@@ -32,7 +32,6 @@ type UserSvcToken struct {
 	Device string `json:"device"`
 	ExpiresAt string `json:"expiresAt"`
 	Id string `json:"id"`
-	InternalId *string `json:"internalId,omitempty"`
 	// The last time the token was refreshed. This is used to determine if the token is still in use.
 	LastRefreshedAt *string `json:"lastRefreshedAt,omitempty"`
 	// Token is a signed JWT used to authenticate the user without querying the User Svc. You can verify it using the public key at `/user-svc/public-key`.  The token is just a JSON object with fields like: - \"oui\": the user ID (e.g., \"usr_dC4K75Cbp6\") - \"olu\": the user slug (e.g., \"test-user-slug-0\") - \"oro\": a list of roles, such as:   - \"user-svc:user\"   - \"user-svc:org:{org_dC4K7NNDCG}:user\"
@@ -284,38 +283,6 @@ func (o *UserSvcToken) SetId(v string) {
 	o.Id = v
 }
 
-// GetInternalId returns the InternalId field value if set, zero value otherwise.
-func (o *UserSvcToken) GetInternalId() string {
-	if o == nil || IsNil(o.InternalId) {
-		var ret string
-		return ret
-	}
-	return *o.InternalId
-}
-
-// GetInternalIdOk returns a tuple with the InternalId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcToken) GetInternalIdOk() (*string, bool) {
-	if o == nil || IsNil(o.InternalId) {
-		return nil, false
-	}
-	return o.InternalId, true
-}
-
-// HasInternalId returns a boolean if a field has been set.
-func (o *UserSvcToken) HasInternalId() bool {
-	if o != nil && !IsNil(o.InternalId) {
-		return true
-	}
-
-	return false
-}
-
-// SetInternalId gets a reference to the given string and assigns it to the InternalId field.
-func (o *UserSvcToken) SetInternalId(v string) {
-	o.InternalId = &v
-}
-
 // GetLastRefreshedAt returns the LastRefreshedAt field value if set, zero value otherwise.
 func (o *UserSvcToken) GetLastRefreshedAt() string {
 	if o == nil || IsNil(o.LastRefreshedAt) {
@@ -444,9 +411,6 @@ func (o UserSvcToken) ToMap() (map[string]interface{}, error) {
 	toSerialize["device"] = o.Device
 	toSerialize["expiresAt"] = o.ExpiresAt
 	toSerialize["id"] = o.Id
-	if !IsNil(o.InternalId) {
-		toSerialize["internalId"] = o.InternalId
-	}
 	if !IsNil(o.LastRefreshedAt) {
 		toSerialize["lastRefreshedAt"] = o.LastRefreshedAt
 	}

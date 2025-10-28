@@ -177,8 +177,6 @@ definitions:
       id:
         description: CamelCased slugs of the config owners
         type: string
-      internalId:
-        type: string
       updatedAt:
         type: string
       version:
@@ -336,8 +334,6 @@ definitions:
         description: |-
           CamelCased slugs of the config owners.
           Same as Config.Id.
-        type: string
-      internalId:
         type: string
       updatedAt:
         type: string
@@ -2882,8 +2878,6 @@ definitions:
       id:
         description: Envar- or slug-like id of the secret
         type: string
-      internalId:
-        type: string
       readers:
         description: Slugs of services/users who can read the secret
         items:
@@ -3257,8 +3251,6 @@ definitions:
       id:
         example: inv_fIYPbMHIcI
         type: string
-      internalId:
-        type: string
       role:
         description: |-
           Role specifies the role to be assigned to the ContactId.
@@ -3537,8 +3529,6 @@ definitions:
         type: string
       id:
         type: string
-      internalId:
-        type: string
       name:
         description: Full name of the organization
         example: Acme Corporation
@@ -3574,8 +3564,6 @@ definitions:
         type: string
       id:
         example: inv_fIYPbMHIcI
-        type: string
-      internalId:
         type: string
       permission:
         type: string
@@ -3895,8 +3883,6 @@ definitions:
         type: string
       id:
         type: string
-      internalId:
-        type: string
       lastRefreshedAt:
         description: |-
           The last time the token was refreshed.
@@ -4030,7 +4016,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.9.3
+  version: 0.9.4
 paths:
   /chat-svc/events:
     get:

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.3
+API version: 0.9.4
 Contact: sales@singulatron.com
 */
 
@@ -26,7 +26,6 @@ type UserSvcOrganization struct {
 	CreatedAt string `json:"createdAt"`
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	Id string `json:"id"`
-	InternalId *string `json:"internalId,omitempty"`
 	// Full name of the organization
 	Name string `json:"name"`
 	// URL-friendly unique (inside the Singularon platform) identifier for the `organization`.
@@ -171,38 +170,6 @@ func (o *UserSvcOrganization) SetId(v string) {
 	o.Id = v
 }
 
-// GetInternalId returns the InternalId field value if set, zero value otherwise.
-func (o *UserSvcOrganization) GetInternalId() string {
-	if o == nil || IsNil(o.InternalId) {
-		var ret string
-		return ret
-	}
-	return *o.InternalId
-}
-
-// GetInternalIdOk returns a tuple with the InternalId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcOrganization) GetInternalIdOk() (*string, bool) {
-	if o == nil || IsNil(o.InternalId) {
-		return nil, false
-	}
-	return o.InternalId, true
-}
-
-// HasInternalId returns a boolean if a field has been set.
-func (o *UserSvcOrganization) HasInternalId() bool {
-	if o != nil && !IsNil(o.InternalId) {
-		return true
-	}
-
-	return false
-}
-
-// SetInternalId gets a reference to the given string and assigns it to the InternalId field.
-func (o *UserSvcOrganization) SetInternalId(v string) {
-	o.InternalId = &v
-}
-
 // GetName returns the Name field value
 func (o *UserSvcOrganization) GetName() string {
 	if o == nil {
@@ -325,9 +292,6 @@ func (o UserSvcOrganization) ToMap() (map[string]interface{}, error) {
 		toSerialize["deletedAt"] = o.DeletedAt
 	}
 	toSerialize["id"] = o.Id
-	if !IsNil(o.InternalId) {
-		toSerialize["internalId"] = o.InternalId
-	}
 	toSerialize["name"] = o.Name
 	toSerialize["slug"] = o.Slug
 	if !IsNil(o.ThumbnailFileId) {

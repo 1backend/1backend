@@ -11,7 +11,7 @@ import "time"
 
 // Version is a historical snapshot of a Config at a point in time.
 type Version struct {
-	InternalId string `json:"internalId,omitempty" swagger:"ignore"`
+	InternalId string `json:"internalId,omitempty" swaggerignore:"true"`
 
 	AppId string `json:"appId" binding:"required"`
 

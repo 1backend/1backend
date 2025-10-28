@@ -19,7 +19,7 @@ type Event struct {
 }
 
 type Email struct {
-	InternalId string `json:"internalId,omitempty" swagger:"ignore"`
+	InternalId string `json:"internalId,omitempty" swaggerignore:"true"`
 
 	// Unique identifier
 	Id string `json:"id" binding:"required"`

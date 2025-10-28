@@ -10,7 +10,7 @@ package user_svc
 import "time"
 
 type Token struct {
-	InternalId string `json:"internalId,omitempty" swagger:"ignore"`
+	InternalId string `json:"internalId,omitempty" swaggerignore:"true"`
 
 	AppId string `json:"appId" binding:"required"`
 

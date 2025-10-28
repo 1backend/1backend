@@ -11,7 +11,7 @@ import "time"
 
 // Permit is a mechanism to give users or roles permissions to perform actions defined by the `Permission` field.
 type Permit struct {
-	InternalId string `json:"internalId" swagger:"ignore"`
+	InternalId string `json:"internalId" swaggerignore:"true"`
 
 	// App of the permit.
 	// Use `*` to match all apps, such as when bootstrapping

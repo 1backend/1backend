@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.3
+API version: 0.9.4
 Contact: sales@singulatron.com
 */
 
@@ -39,7 +39,6 @@ type SecretSvcSecret struct {
 	Encrypted *bool `json:"encrypted,omitempty"`
 	// Envar- or slug-like id of the secret
 	Id string `json:"id"`
-	InternalId *string `json:"internalId,omitempty"`
 	// Slugs of services/users who can read the secret
 	Readers []string `json:"readers,omitempty"`
 	// Secret Value
@@ -342,38 +341,6 @@ func (o *SecretSvcSecret) SetId(v string) {
 	o.Id = v
 }
 
-// GetInternalId returns the InternalId field value if set, zero value otherwise.
-func (o *SecretSvcSecret) GetInternalId() string {
-	if o == nil || IsNil(o.InternalId) {
-		var ret string
-		return ret
-	}
-	return *o.InternalId
-}
-
-// GetInternalIdOk returns a tuple with the InternalId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *SecretSvcSecret) GetInternalIdOk() (*string, bool) {
-	if o == nil || IsNil(o.InternalId) {
-		return nil, false
-	}
-	return o.InternalId, true
-}
-
-// HasInternalId returns a boolean if a field has been set.
-func (o *SecretSvcSecret) HasInternalId() bool {
-	if o != nil && !IsNil(o.InternalId) {
-		return true
-	}
-
-	return false
-}
-
-// SetInternalId gets a reference to the given string and assigns it to the InternalId field.
-func (o *SecretSvcSecret) SetInternalId(v string) {
-	o.InternalId = &v
-}
-
 // GetReaders returns the Readers field value if set, zero value otherwise.
 func (o *SecretSvcSecret) GetReaders() []string {
 	if o == nil || IsNil(o.Readers) {
@@ -495,9 +462,6 @@ func (o SecretSvcSecret) ToMap() (map[string]interface{}, error) {
 		toSerialize["encrypted"] = o.Encrypted
 	}
 	toSerialize["id"] = o.Id
-	if !IsNil(o.InternalId) {
-		toSerialize["internalId"] = o.InternalId
-	}
 	if !IsNil(o.Readers) {
 		toSerialize["readers"] = o.Readers
 	}

@@ -12,7 +12,7 @@ import (
 )
 
 type Organization struct {
-	InternalId string `json:"internalId,omitempty" swagger:"ignore"`
+	InternalId string `json:"internalId,omitempty" swaggerignore:"true"`
 
 	AppId string `json:"appId,omitempty"`
 
