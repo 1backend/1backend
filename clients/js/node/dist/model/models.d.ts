@@ -14,6 +14,7 @@ export * from './chatSvcThread';
 export * from './configSvcConfig';
 export * from './configSvcListConfigsRequest';
 export * from './configSvcListConfigsResponse';
+export * from './configSvcListConfigsScope';
 export * from './configSvcListVersionsRequest';
 export * from './configSvcListVersionsResponse';
 export * from './configSvcSaveConfigRequest';

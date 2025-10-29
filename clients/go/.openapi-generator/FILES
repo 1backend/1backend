@@ -38,6 +38,7 @@ docs/ConfigSvcAPI.md
 docs/ConfigSvcConfig.md
 docs/ConfigSvcListConfigsRequest.md
 docs/ConfigSvcListConfigsResponse.md
+docs/ConfigSvcListConfigsScope.md
 docs/ConfigSvcListVersionsRequest.md
 docs/ConfigSvcListVersionsResponse.md
 docs/ConfigSvcSaveConfigRequest.md
@@ -291,6 +292,7 @@ model_chat_svc_thread.go
 model_config_svc_config.go
 model_config_svc_list_configs_request.go
 model_config_svc_list_configs_response.go
+model_config_svc_list_configs_scope.go
 model_config_svc_list_versions_request.go
 model_config_svc_list_versions_response.go
 model_config_svc_save_config_request.go

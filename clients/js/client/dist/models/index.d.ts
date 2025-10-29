@@ -13,6 +13,7 @@ export * from './ChatSvcThread';
 export * from './ConfigSvcConfig';
 export * from './ConfigSvcListConfigsRequest';
 export * from './ConfigSvcListConfigsResponse';
+export * from './ConfigSvcListConfigsScope';
 export * from './ConfigSvcListVersionsRequest';
 export * from './ConfigSvcListVersionsResponse';
 export * from './ConfigSvcSaveConfigRequest';

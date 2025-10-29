@@ -15,6 +15,7 @@ export * from './chatSvcThread';
 export * from './configSvcConfig';
 export * from './configSvcListConfigsRequest';
 export * from './configSvcListConfigsResponse';
+export * from './configSvcListConfigsScope';
 export * from './configSvcListVersionsRequest';
 export * from './configSvcListVersionsResponse';
 export * from './configSvcSaveConfigRequest';
@@ -264,6 +265,7 @@ import { ChatSvcThread } from './chatSvcThread';
 import { ConfigSvcConfig } from './configSvcConfig';
 import { ConfigSvcListConfigsRequest } from './configSvcListConfigsRequest';
 import { ConfigSvcListConfigsResponse } from './configSvcListConfigsResponse';
+import { ConfigSvcListConfigsScope } from './configSvcListConfigsScope';
 import { ConfigSvcListVersionsRequest } from './configSvcListVersionsRequest';
 import { ConfigSvcListVersionsResponse } from './configSvcListVersionsResponse';
 import { ConfigSvcSaveConfigRequest } from './configSvcSaveConfigRequest';
@@ -498,6 +500,7 @@ let primitives = [
                  ];
 
 let enumsMap: {[index: string]: any} = {
+        "ConfigSvcListConfigsScope": ConfigSvcListConfigsScope,
         "DatastoreOp": DatastoreOp,
         "DatastoreSortingType": DatastoreSortingType,
         "DeploySvcDeploymentStatus": DeploySvcDeploymentStatus,

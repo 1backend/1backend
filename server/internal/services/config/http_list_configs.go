@@ -114,15 +114,17 @@ func (cs *ConfigService) listConfigs(
 
 	filters := []datastore.Filter{}
 
-	if req.Branch != "" {
+	if req.Scope == types.ListConfigsScopeBranch ||
+		string(req.Scope) == "" {
+
+		branch := req.Branch
+		if branch == "" {
+			branch = defaultBranch
+		}
+
 		filters = append(filters, datastore.Equals(
 			datastore.Field("branch"),
-			req.Branch,
-		))
-	} else {
-		filters = append(filters, datastore.Equals(
-			datastore.Field("branch"),
-			defaultBranch,
+			branch,
 		))
 	}
 
@@ -177,7 +179,12 @@ func (cs *ConfigService) listConfigs(
 		}
 
 		conf.DataJSON = ""
-		ret[conf.Id] = conf
+
+		key := conf.Id
+		if req.Scope == types.ListConfigsScopeAll {
+			key += ":" + conf.Branch
+		}
+		ret[key] = conf
 	}
 
 	cs.defaults(req, ret)

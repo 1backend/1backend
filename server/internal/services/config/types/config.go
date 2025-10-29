@@ -37,6 +37,13 @@ func (c Config) GetId() string {
 	return c.InternalId
 }
 
+type ListConfigsScope string
+
+const (
+	ListConfigsScopeAll    ListConfigsScope = "all"
+	ListConfigsScopeBranch ListConfigsScope = "branch"
+)
+
 type ListConfigsRequest struct {
 	AppHost string `json:"appHost" binding:"required" example:"shoes.com"`
 
@@ -46,6 +53,8 @@ type ListConfigsRequest struct {
 	//
 	// If the configs are large, consider using the `Selector` request field.
 	Ids []string `json:"ids,omitempty" swagger:"default=[]"`
+
+	Scope ListConfigsScope `json:"scope,omitempty" swagger:"default=branch" example:"branch"`
 
 	// Branch specifies the branch to get configs from.
 	Branch string `json:"branch,omitempty" swagger:"default=main"`

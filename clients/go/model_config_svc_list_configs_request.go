@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.3
+API version: 0.9.4
 Contact: sales@singulatron.com
 */
 
@@ -27,6 +27,7 @@ type ConfigSvcListConfigsRequest struct {
 	Branch *string `json:"branch,omitempty"`
 	// Ids are camelCased slugs of the config owners. Specifying only the ids will mean all of the config will be returned for that key.  If the configs are large, consider using the `Selector` request field.
 	Ids []string `json:"ids,omitempty"`
+	Scope *ConfigSvcListConfigsScope `json:"scope,omitempty"`
 	// Selector allows dotPath-based filtering per config owner. Example: {   \"user1\": [\"settings.theme\", \"featureFlags.enableNewUI\"],   \"user2\": [\"settings.language\"] }
 	Selector *map[string][]string `json:"selector,omitempty"`
 }
@@ -139,6 +140,38 @@ func (o *ConfigSvcListConfigsRequest) SetIds(v []string) {
 	o.Ids = v
 }
 
+// GetScope returns the Scope field value if set, zero value otherwise.
+func (o *ConfigSvcListConfigsRequest) GetScope() ConfigSvcListConfigsScope {
+	if o == nil || IsNil(o.Scope) {
+		var ret ConfigSvcListConfigsScope
+		return ret
+	}
+	return *o.Scope
+}
+
+// GetScopeOk returns a tuple with the Scope field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcListConfigsRequest) GetScopeOk() (*ConfigSvcListConfigsScope, bool) {
+	if o == nil || IsNil(o.Scope) {
+		return nil, false
+	}
+	return o.Scope, true
+}
+
+// HasScope returns a boolean if a field has been set.
+func (o *ConfigSvcListConfigsRequest) HasScope() bool {
+	if o != nil && !IsNil(o.Scope) {
+		return true
+	}
+
+	return false
+}
+
+// SetScope gets a reference to the given ConfigSvcListConfigsScope and assigns it to the Scope field.
+func (o *ConfigSvcListConfigsRequest) SetScope(v ConfigSvcListConfigsScope) {
+	o.Scope = &v
+}
+
 // GetSelector returns the Selector field value if set, zero value otherwise.
 func (o *ConfigSvcListConfigsRequest) GetSelector() map[string][]string {
 	if o == nil || IsNil(o.Selector) {
@@ -187,6 +220,9 @@ func (o ConfigSvcListConfigsRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Ids) {
 		toSerialize["ids"] = o.Ids
+	}
+	if !IsNil(o.Scope) {
+		toSerialize["scope"] = o.Scope
 	}
 	if !IsNil(o.Selector) {
 		toSerialize["selector"] = o.Selector
