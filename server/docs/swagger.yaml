@@ -210,6 +210,10 @@ definitions:
         items:
           type: string
         type: array
+      scope:
+        allOf:
+        - $ref: '#/definitions/config_svc.ListConfigsScope'
+        example: branch
       selector:
         additionalProperties:
           items:
@@ -238,6 +242,14 @@ definitions:
     required:
     - configs
     type: object
+  config_svc.ListConfigsScope:
+    enum:
+    - all
+    - branch
+    type: string
+    x-enum-varnames:
+    - ListConfigsScopeAll
+    - ListConfigsScopeBranch
   config_svc.ListVersionsRequest:
     properties:
       afterJson:

@@ -442,6 +442,44 @@ func TestConfigService(t *testing.T) {
 		require.NoError(t, err)
 		require.True(t, t1.After(t2), "latest version must have newer timestamp")
 	})
+
+	t.Run("scope all returns separate entries per branch", func(t *testing.T) {
+		// Save different values under main and preview
+		_, _, err := client1.ConfigSvcAPI.SaveConfig(ctx).
+			Body(openapi.ConfigSvcSaveConfigRequest{
+				Data:   map[string]any{"scopeFlag": "mainValue"},
+				Branch: openapi.PtrString("main"),
+			}).Execute()
+		require.NoError(t, err)
+
+		_, _, err = client1.ConfigSvcAPI.SaveConfig(ctx).
+			Body(openapi.ConfigSvcSaveConfigRequest{
+				Data:   map[string]any{"scopeFlag": "previewValue"},
+				Branch: openapi.PtrString("preview"),
+			}).Execute()
+		require.NoError(t, err)
+
+		scope := openapi.ListConfigsScopeAll
+
+		// Query all branches
+		rsp, _, err := client1.ConfigSvcAPI.ListConfigs(ctx).
+			Body(openapi.ConfigSvcListConfigsRequest{
+				AppHost: sdk.DefaultTestAppHost,
+				Ids:     []string{"testUserSlug0"},
+				Scope:   &scope,
+			}).Execute()
+		require.NoError(t, err)
+
+		// Expect two distinct entries: <id>::main and <id>::preview
+		mainKey := "testUserSlug0:main"
+		previewKey := "testUserSlug0:preview"
+
+		require.NotNil(t, rsp.Configs[mainKey])
+		require.NotNil(t, rsp.Configs[previewKey])
+
+		require.Equal(t, "mainValue", rsp.Configs[mainKey].Data["scopeFlag"])
+		require.Equal(t, "previewValue", rsp.Configs[previewKey].Data["scopeFlag"])
+	})
 }
 
 func parseStringTime(s string) (time.Time, error) {

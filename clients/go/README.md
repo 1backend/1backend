@@ -205,6 +205,7 @@ Class | Method | HTTP request | Description
  - [ConfigSvcConfig](docs/ConfigSvcConfig.md)
  - [ConfigSvcListConfigsRequest](docs/ConfigSvcListConfigsRequest.md)
  - [ConfigSvcListConfigsResponse](docs/ConfigSvcListConfigsResponse.md)
+ - [ConfigSvcListConfigsScope](docs/ConfigSvcListConfigsScope.md)
  - [ConfigSvcListVersionsRequest](docs/ConfigSvcListVersionsRequest.md)
  - [ConfigSvcListVersionsResponse](docs/ConfigSvcListVersionsResponse.md)
  - [ConfigSvcSaveConfigRequest](docs/ConfigSvcSaveConfigRequest.md)
