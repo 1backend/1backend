@@ -4042,7 +4042,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.9.3
+  version: 0.9.4
 paths:
   /chat-svc/events:
     get:
