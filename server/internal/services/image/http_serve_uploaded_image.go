@@ -203,6 +203,11 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 			targetHeight = origHeight
 		}
 
+		// Prevent enlargement
+		if targetWidth > origWidth || targetHeight > origHeight {
+			targetWidth, targetHeight = origWidth, origHeight
+		}
+
 		logger.Info("Resizing image",
 			slog.Int("width", width),
 			slog.Int("height", height),
