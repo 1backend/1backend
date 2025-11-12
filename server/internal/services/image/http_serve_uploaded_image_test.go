@@ -95,4 +95,17 @@ func TestServeUploadedImage(t *testing.T) {
 		require.Equal(t, 70, bounds.Dx())
 		require.Equal(t, 70, bounds.Dy())
 	})
+
+	t.Run("does not enlarge image", func(t *testing.T) {
+		rsp, _, err := adminClient.ImageSvcAPI.ServeUploadedImage(ctx, fileId).
+			Width(200).
+			Height(200).
+			Execute()
+		require.NoError(t, err)
+		img, _, err := image.Decode(rsp)
+		require.NoError(t, err)
+		bounds := img.Bounds()
+		require.Equal(t, 100, bounds.Dx())
+		require.Equal(t, 100, bounds.Dy())
+	})
 }
