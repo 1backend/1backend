@@ -30,7 +30,7 @@ Example:
 save ./config.yaml
 
 # Example contents of 'config.yaml':
-app: "my-app"
+appHost: "my-app"
 data:
   # Limitation: only a single top level key can be saved,
   # even by admins.
