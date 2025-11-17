@@ -269,7 +269,7 @@ id: "admin-enrollment-1"
 # ⚠️ Note: Using "*" is powerful but should be reserved for global roles
 #   (e.g. "user-svc:admin"). In multitenant setups, this means the role
 #   will show up in every user token across all apps.
-app: "*"
+appHost: "*"
 role: "user-svc:admin"
 contactId: "admin@company.com"
 ```
@@ -284,7 +284,7 @@ contactId: "admin@company.com"
 # Note: The system does not automatically enforce this naming convention,
 # but a save will fail if the same id is already bound to another app.
 id: "shoes.com-payment-processor-enrollment"
-app: "shoes.com"
+appHost: "shoes.com"
 role: "payment-svc:processor"
 userId: "usr_abc123"
 ```

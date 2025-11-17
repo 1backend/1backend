@@ -59,7 +59,7 @@ func CollectFromPath[T any](path string, entityName string) ([]T, error) {
 func extractEntitiesFromFile[T any](filePath string, entityName string) ([]T, error) {
 	var items []T
 	if err := ExtractFromFile(filePath, &items); err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("failed to parse %s file at '%v'", entityName, filePath))
+		return nil, errors.Wrap(err, fmt.Sprintf("failed to parse '%s' file at '%v'", entityName, filePath))
 	}
 
 	return items, nil

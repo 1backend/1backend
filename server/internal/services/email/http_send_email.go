@@ -67,7 +67,7 @@ func (s *EmailService) SendEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = s.sendgridSendEmail(*req)
+	err = s.sendgridSendEmail(isAuthRsp.App, *req)
 	if err != nil {
 		logger.Error(
 			"Failed to send email",
@@ -84,8 +84,15 @@ func (s *EmailService) SendEmail(w http.ResponseWriter, r *http.Request) {
 	endpoint.WriteJSON(w, http.StatusOK, response)
 }
 
-func (s *EmailService) sendgridSendEmail(req email.SendEmailRequest) error {
-	secretClient := s.options.ClientFactory.Client(client.WithToken(s.token)).SecretSvcAPI
+func (s *EmailService) sendgridSendEmail(app openapi.UserSvcApp, req email.SendEmailRequest) error {
+	exchangedToken, err := s.options.TokenExchanger.ExchangeToken(context.Background(), s.token, endpoint.ExchangeOptions{
+		AppHost: app.Id,
+	})
+	if err != nil {
+		return errors.Wrap(err, "cannot exchange token")
+	}
+
+	secretClient := s.options.ClientFactory.Client(client.WithToken(exchangedToken)).SecretSvcAPI
 	secretResp, _, err := secretClient.ListSecrets(context.Background()).Body(
 		openapi.SecretSvcListSecretsRequest{
 			Ids: []string{
@@ -126,13 +133,13 @@ func (s *EmailService) sendgridSendEmail(req email.SendEmailRequest) error {
 	}
 
 	if senderEmail == "" {
-		return errors.New("sender email is not configured")
+		return fmt.Errorf("'sender-email' is not configured for '%v'", app.Host)
 	}
 	if senderName == "" {
-		return errors.New("sender name is not configured")
+		return fmt.Errorf("'sender-name' is not configured for '%v'", app.Host)
 	}
 	if sendgridApiKey == "" {
-		return errors.New("SendGrid API key is not configured")
+		return fmt.Errorf("'sendgrid-api-key' is not configured for '%v'", app.Host)
 	}
 
 	from := mail.NewEmail(senderName, senderEmail)
