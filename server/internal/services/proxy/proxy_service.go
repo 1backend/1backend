@@ -13,7 +13,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"sync"
 
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -43,8 +42,6 @@ type ProxyService struct {
 	credentialStore datastore.DataStore
 	certStore       datastore.DataStore
 	routeStore      datastore.DataStore
-
-	proxyCache sync.Map
 
 	CertStore *CertStore
 }
