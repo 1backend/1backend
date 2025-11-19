@@ -16,20 +16,14 @@ import (
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 )
 
-const (
-	// How long to keep a route in memory before re-verifying with DB
-	routeCacheTTL = 30 * time.Second
-)
-
 func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
-
 	logger.Debug("Edge proxying",
 		slog.String("host", r.Host),
 		slog.String("path", r.URL.Path),
 	)
 
 	// Capture the matchedRoute to use its ID for prefix stripping
-	matchedRoute, targetURL, err := cs.resolveRoute(r.Host, r.URL.Path)
+	_, targetURL, err := cs.resolveRoute(r.Host, r.URL.Path)
 	if err != nil {
 		if herr, ok := err.(*sdk.HTTPError); ok {
 			http.Error(w, herr.Msg, herr.Code)
@@ -56,49 +50,10 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Save the original path requested by the client.
-	originalPath := r.URL.Path
-
-	// --- Path Rewriting Logic (Fixes Microfrontend Path Bug) ---
-
-	// 1. Determine the target path from the route definition, stripping the trailing slash.
-	targetPath := strings.TrimSuffix(targetURL.Path, "/")
-
-	if targetPath != "" {
-		// This is a path replacement/rewriting scenario (e.g., /app -> /v1).
-
-		// A. Identify the matched route prefix (e.g., "/app/admin" from "x.localhost/app/admin")
-		routePrefix := ""
-		if strings.HasPrefix(matchedRoute.Id, r.Host+"/") {
-			// Extract the path part, including the leading slash
-			routePrefix = matchedRoute.Id[len(r.Host):]
-		}
-
-		// B. Path Stripping: Remove the matched route prefix from the original path.
-		strippedPath := originalPath
-		if routePrefix != "" && strings.HasPrefix(originalPath, routePrefix) {
-			strippedPath = originalPath[len(routePrefix):]
-		}
-
-		// C. Cleanup: Ensure the stripped path always starts with a slash, even if it's empty.
-		// If the stripped path is empty (e.g., exact match on /app), it becomes "/".
-		if strippedPath == "" || strippedPath[0] != '/' {
-			strippedPath = "/" + strippedPath
-		}
-
-		// D. Prepend: The new path is the target path + the stripped path.
-		r.URL.Path = targetPath + strippedPath
-
-	} else {
-		// If the target URL has no path component, it's a simple pass-through/microfrontend route.
-		// The original requested path (e.g., /app/page) is passed directly to the backend.
-		r.URL.Path = originalPath
-	}
+	r.URL.Path = targetURL.Path
 
 	// Important: Clear RawPath so Go recalculates it from the new Path
 	r.URL.RawPath = ""
-
-	// --- End Path Rewriting Logic ---
 
 	// Merge Query Params
 	// If the route target had query params (e.g. ?force=true), merge them.
