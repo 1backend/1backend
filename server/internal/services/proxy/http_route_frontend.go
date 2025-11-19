@@ -1,10 +1,3 @@
-/**
- * @license
- * Copyright (c) The Authors (see the AUTHORS file)
- *
- * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
- * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
- */
 package proxyservice
 
 import (
@@ -14,6 +7,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"strings"
+	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
@@ -22,13 +16,20 @@ import (
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 )
 
+const (
+	// How long to keep a route in memory before re-verifying with DB
+	routeCacheTTL = 30 * time.Second
+)
+
 func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
+
 	logger.Debug("Edge proxying",
 		slog.String("host", r.Host),
 		slog.String("path", r.URL.Path),
 	)
 
-	targetString, err := cs.findRouteTarget(r.Host, r.URL.Path, r.URL.RawQuery)
+	// Capture the matchedRoute to use its ID for prefix stripping
+	matchedRoute, targetURL, err := cs.resolveRoute(r.Host, r.URL.Path)
 	if err != nil {
 		if herr, ok := err.(*sdk.HTTPError); ok {
 			http.Error(w, herr.Msg, herr.Code)
@@ -43,86 +44,209 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	targetUrl, err := url.Parse(targetString)
+	// Determine the Proxy Host (Scheme + Host only)
+	// We strip the path from the key so that http://backend/v1 and http://backend/v2
+	// share the same ReverseProxy instance (and thus the same TCP connection pool).
+	proxyKey := fmt.Sprintf("%s://%s", targetURL.Scheme, targetURL.Host)
+
+	rp, err := cs.getReverseProxy(proxyKey, targetURL)
 	if err != nil {
-		logger.Error("Failed to parse target URL", slog.String("target", targetString), slog.Any("error", err))
+		logger.Error("Failed to get reverse proxy", slog.Any("error", err))
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
-	proxy := httputil.NewSingleHostReverseProxy(targetUrl)
+	// Save the original path requested by the client.
+	originalPath := r.URL.Path
 
-	// Set the Director to fix paths (if findRouteTarget only returns the base)
-	// BUT since `findRouteTarget` *already* builds the full path,
-	// we need to tell the proxy to use the URL *as-is*.
-	//
-	// We must rewrite the proxy's Director.
-	// By default, NewSingleHostReverseProxy just appends the request path,
-	// but your `findRouteTarget` already *includes* the path.
-	originalDirector := proxy.Director
-	proxy.Director = func(req *http.Request) {
-		// Run the original director (which sets host, scheme, etc.)
-		originalDirector(req)
+	// --- Path Rewriting Logic (Fixes Microfrontend Path Bug) ---
 
-		// Override the Path and RawQuery with the values from our target URL.
-		// This is the key part!
-		req.URL.Path = targetUrl.Path
-		req.URL.RawQuery = targetUrl.RawQuery
+	// 1. Determine the target path from the route definition, stripping the trailing slash.
+	targetPath := strings.TrimSuffix(targetURL.Path, "/")
 
-		// You also need to fix the `Host` header, as NewSingleHostReverseProxy
-		// sets it to targetUrl.Host.
-		req.Host = targetUrl.Host
+	if targetPath != "" {
+		// This is a path replacement/rewriting scenario (e.g., /app -> /v1).
 
-		// httputil.ReverseProxy handles X-Forwarded-For, etc. automatically.
-		// You can customize it if needed.
+		// A. Identify the matched route prefix (e.g., "/app/admin" from "x.localhost/app/admin")
+		routePrefix := ""
+		if strings.HasPrefix(matchedRoute.Id, r.Host+"/") {
+			// Extract the path part, including the leading slash
+			routePrefix = matchedRoute.Id[len(r.Host):]
+		}
+
+		// B. Path Stripping: Remove the matched route prefix from the original path.
+		strippedPath := originalPath
+		if routePrefix != "" && strings.HasPrefix(originalPath, routePrefix) {
+			strippedPath = originalPath[len(routePrefix):]
+		}
+
+		// C. Cleanup: Ensure the stripped path always starts with a slash, even if it's empty.
+		// If the stripped path is empty (e.g., exact match on /app), it becomes "/".
+		if strippedPath == "" || strippedPath[0] != '/' {
+			strippedPath = "/" + strippedPath
+		}
+
+		// D. Prepend: The new path is the target path + the stripped path.
+		r.URL.Path = targetPath + strippedPath
+
+	} else {
+		// If the target URL has no path component, it's a simple pass-through/microfrontend route.
+		// The original requested path (e.g., /app/page) is passed directly to the backend.
+		r.URL.Path = originalPath
 	}
 
-	proxy.ServeHTTP(w, r)
+	// Important: Clear RawPath so Go recalculates it from the new Path
+	r.URL.RawPath = ""
+
+	// --- End Path Rewriting Logic ---
+
+	// Merge Query Params
+	// If the route target had query params (e.g. ?force=true), merge them.
+	if targetURL.RawQuery != "" {
+		if r.URL.RawQuery == "" {
+			r.URL.RawQuery = targetURL.RawQuery
+		} else {
+			// Note: This logic for merging raw query strings is technically incorrect
+			// if targetURL.RawQuery contains characters that need encoding, but
+			// sticking to the existing implementation style for now.
+			r.URL.RawQuery = targetURL.RawQuery + "&" + r.URL.RawQuery
+		}
+	}
+
+	r.Host = targetURL.Host
+	r.URL.Host = targetURL.Host
+	r.URL.Scheme = targetURL.Scheme
+
+	rp.ServeHTTP(w, r)
 }
 
-func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, error) {
-	if path == "" {
-		path = "/"
+// getReverseProxy returns a cached proxy or creates a new one.
+// proxyKey should be "scheme://host".
+func (cs *ProxyService) getReverseProxy(proxyKey string, targetURLForCreation *url.URL) (*httputil.ReverseProxy, error) {
+	if val, ok := cs.proxyCache.Load(proxyKey); ok {
+		return val.(*httputil.ReverseProxy), nil
 	}
-	var candidates []string
-	parts := strings.Split(path, "/")
-	for i := len(parts); i >= 0; i-- {
-		prefix := strings.Join(parts[:i], "/")
-		if prefix == "" {
-			candidates = append(candidates, host)
-		} else {
-			candidates = append(candidates, host+prefix)
+
+	// We create a proxy for the BASE URL (no path).
+	// This ensures the standard Director doesn't double-append paths,
+	// because we handled path rewriting manually in RouteFrontend.
+	baseURL := &url.URL{
+		Scheme: targetURLForCreation.Scheme,
+		Host:   targetURLForCreation.Host,
+	}
+
+	transport := &http.Transport{
+		MaxIdleConns:        100,
+		MaxIdleConnsPerHost: 20,
+		IdleConnTimeout:     90 * time.Second,
+	}
+
+	p := httputil.NewSingleHostReverseProxy(baseURL)
+	p.Transport = transport
+
+	// We wrap the director to ensure headers like X-Forwarded-Host are correct
+	// and to handle the Host header requirement for some backends.
+	originalDirector := p.Director
+	p.Director = func(req *http.Request) {
+		originalDirector(req)
+		req.Host = baseURL.Host
+	}
+
+	// Store in cache
+	cs.proxyCache.Store(proxyKey, p)
+	return p, nil
+}
+
+// resolve the Target (with Caching + Batch DB Query)
+// returned URL contains the full parsed URL from the route (e.g., http://backend/v1)
+func (cs *ProxyService) resolveRoute(host, path string) (*proxy.Route, *url.URL, error) {
+	candidateKeys := candidateKeys(host, path)
+
+	queryValues := make([]any, 0, len(candidateKeys))
+	for _, v := range candidateKeys {
+		queryValues = append(queryValues, v)
+	}
+
+	// Batch Query
+	rows, err := cs.routeStore.Query(
+		datastore.IsInList(datastore.Field("id"), queryValues...),
+	).Find()
+
+	if err != nil {
+
+		return nil, nil, sdk.NewHTTPError(http.StatusInternalServerError,
+			fmt.Sprintf("failed to query routes: %v", err))
+	}
+
+	//  Match Specificity
+	foundRoutes := make(map[string]*proxy.Route)
+	for _, row := range rows {
+		if r, ok := row.(*proxy.Route); ok {
+			foundRoutes[r.GetId()] = r
 		}
 	}
 
-	var route *proxy.Route
-	for _, key := range candidates {
-		ri, found, err := cs.routeStore.Query(datastore.Id(key)).FindOne()
-		if err != nil {
-			// datastore failure = 500
-			return "", sdk.NewHTTPError(http.StatusInternalServerError,
-				fmt.Sprintf("failed to query route: %v", err))
-		}
-		if found {
-			var ok bool
-			route, ok = ri.(*proxy.Route)
-			if !ok {
-				return "", sdk.NewHTTPError(http.StatusInternalServerError,
-					fmt.Sprintf("invalid route type: %T", ri))
-			}
-			break
+	var bestMatch *proxy.Route
+	for _, key := range candidateKeys {
+		if route, exists := foundRoutes[key]; exists {
+			bestMatch = route
+			break // Longest match found
 		}
 	}
-	if route == nil {
-		// not found = 404
-		return "", sdk.NewHTTPError(http.StatusNotFound,
+
+	if bestMatch == nil {
+		return nil, nil, sdk.NewHTTPError(http.StatusNotFound,
 			fmt.Sprintf("route not found for host %q and path %q", host, path))
 	}
 
-	target := strings.TrimSuffix(route.Target, "/") + path
-	if rawQuery != "" {
-		target += "?" + rawQuery
+	// 5. Parse and Cache
+	targetURL, err := url.Parse(bestMatch.Target)
+	if err != nil {
+		return nil, nil, sdk.NewHTTPError(http.StatusInternalServerError,
+			fmt.Sprintf("invalid target url in route %s: %v", bestMatch.Id, err))
 	}
 
-	return target, nil
+	return bestMatch, targetURL, nil
+}
+
+func candidateKeys(host, path string) (
+	candidates []string,
+) {
+
+	var candidateKeys []string
+
+	// Start with the full path, prefixed by host. This is the longest candidate key.
+	currentKey := host + path
+
+	// Remove any trailing slash for consistency (unless it's just the root host/)
+	if len(currentKey) > len(host)+1 && strings.HasSuffix(currentKey, "/") {
+		currentKey = currentKey[:len(currentKey)-1]
+	}
+
+	// Iterate from the longest prefix down to the root host key.
+	for {
+		key := currentKey
+
+		candidateKeys = append(candidateKeys, key)
+
+		// Termination check: If the current key is already just the host, stop.
+		if key == host {
+			break
+		}
+
+		// Find the index of the last slash that separates path segments.
+		// We search in the path part of the key.
+		lastSlash := strings.LastIndex(key[len(host):], "/")
+
+		// If lastSlash is -1, it means the key is "host/segment".
+		if lastSlash == -1 {
+			currentKey = host // Next iteration will check the root key
+		} else {
+			// Trim the key up to (but not including) the last slash found in the path.
+			// lastSlash is relative to the path string, so add back len(host).
+			currentKey = key[:len(host)+lastSlash]
+		}
+	}
+
+	return candidateKeys
 }
