@@ -58,7 +58,7 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 	//
 	// We must rewrite the proxy's Director.
 	// By default, NewSingleHostReverseProxy just appends the request path,
-	// but your `findRouteTarget` already *includes* the path.
+	// but `findRouteTarget` already *includes* the path.
 	originalDirector := proxy.Director
 	proxy.Director = func(req *http.Request) {
 		// Run the original director (which sets host, scheme, etc.)
@@ -69,12 +69,9 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 		req.URL.Path = targetUrl.Path
 		req.URL.RawQuery = targetUrl.RawQuery
 
-		// You also need to fix the `Host` header, as NewSingleHostReverseProxy
-		// sets it to targetUrl.Host.
-		req.Host = targetUrl.Host
-
-		// httputil.ReverseProxy handles X-Forwarded-For, etc. automatically.
-		// You can customize it if needed.
+		// Preserve original header.
+		// Maybe make this optional later
+		req.Host = r.Host
 	}
 
 	proxy.ServeHTTP(w, r)
