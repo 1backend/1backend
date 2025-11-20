@@ -81,6 +81,7 @@ func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, er
 	if path == "" {
 		path = "/"
 	}
+
 	var candidates []string
 	parts := strings.Split(path, "/")
 	for i := len(parts); i >= 0; i-- {
@@ -92,28 +93,68 @@ func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, er
 		}
 	}
 
+	routes := map[string]*proxy.Route{}
+	var missing []any
+
+	// 1. Check cache first (including negative cache)
+	for _, key := range candidates {
+		if v, ok := cs.routeCache.Load(key); ok {
+			if v == nil {
+				// cached miss
+				continue
+			}
+			routes[key] = v.(*proxy.Route)
+		} else {
+			missing = append(missing, key)
+		}
+	}
+
+	// 2. Fetch all missing from DB in one query
+	if len(missing) > 0 {
+		logger.Debug("Cache miss for routes", slog.Any("missing", missing))
+
+		ri, err := cs.routeStore.Query(
+			datastore.IsInList(datastore.Field("id"), missing...),
+		).Find()
+		if err != nil {
+			return "", sdk.NewHTTPError(
+				http.StatusInternalServerError,
+				fmt.Sprintf("failed to query route: %v", err),
+			)
+		}
+
+		foundMap := map[string]*proxy.Route{}
+
+		for _, r := range ri {
+			route := r.(*proxy.Route)
+			foundMap[route.Id] = route
+			cs.routeCache.Store(route.Id, route)
+			routes[route.Id] = route
+		}
+
+		// 3. Negative cache the rest
+		for _, k := range missing {
+			key := k.(string)
+			if _, ok := foundMap[key]; !ok {
+				cs.routeCache.Store(key, nil)
+			}
+		}
+	}
+
+	// 4. Pick longest match (candidates is already longest → shortest)
 	var route *proxy.Route
 	for _, key := range candidates {
-		ri, found, err := cs.routeStore.Query(datastore.Id(key)).FindOne()
-		if err != nil {
-			// datastore failure = 500
-			return "", sdk.NewHTTPError(http.StatusInternalServerError,
-				fmt.Sprintf("failed to query route: %v", err))
-		}
-		if found {
-			var ok bool
-			route, ok = ri.(*proxy.Route)
-			if !ok {
-				return "", sdk.NewHTTPError(http.StatusInternalServerError,
-					fmt.Sprintf("invalid route type: %T", ri))
-			}
+		if r, ok := routes[key]; ok {
+			route = r
 			break
 		}
 	}
+
 	if route == nil {
-		// not found = 404
-		return "", sdk.NewHTTPError(http.StatusNotFound,
-			fmt.Sprintf("route not found for host %q and path %q", host, path))
+		return "", sdk.NewHTTPError(
+			http.StatusNotFound,
+			fmt.Sprintf("route not found for host %q and path %q", host, path),
+		)
 	}
 
 	target := strings.TrimSuffix(route.Target, "/") + path

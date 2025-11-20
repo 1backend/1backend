@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -43,7 +44,8 @@ type ProxyService struct {
 	certStore       datastore.DataStore
 	routeStore      datastore.DataStore
 
-	CertStore *CertStore
+	routeCache sync.Map
+	CertStore  *CertStore
 }
 
 func NewProxyService(

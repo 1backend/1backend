@@ -103,5 +103,8 @@ func (cs *ProxyService) saveRoutes(req *proxy.SaveRoutesRequest) ([]proxy.Route,
 		return nil, errors.Wrap(err, "failed to save routes")
 	}
 
+	// @todo this is not going to work in a distributed setting
+	cs.routeCache.Clear()
+
 	return routes, nil
 }
