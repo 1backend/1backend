@@ -78,9 +78,6 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 }
 
 func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, error) {
-	if path == "" {
-		path = "/"
-	}
 
 	candidates := make([]string, 0, strings.Count(path, "/")+1)
 
@@ -128,15 +125,27 @@ func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, er
 	if len(missing) > 0 {
 		logger.Debug("Cache miss for routes", slog.Any("missing", missing))
 
-		ri, err := cs.routeStore.Query(
-			datastore.IsInList(datastore.Field("id"), missing...),
-		).Find()
+		sfKey := fmt.Sprintf("%s|%s", host, path)
+		v, err, _ := cs.sf.Do(sfKey, func() (interface{}, error) {
+
+			ri, err := cs.routeStore.Query(
+				datastore.IsInList(datastore.Field("id"), missing...),
+			).Find()
+			if err != nil {
+				return nil, sdk.NewHTTPError(
+					http.StatusInternalServerError,
+					fmt.Sprintf("failed to query route: %v", err),
+				)
+			}
+
+			return ri, nil
+		})
+
 		if err != nil {
-			return "", sdk.NewHTTPError(
-				http.StatusInternalServerError,
-				fmt.Sprintf("failed to query route: %v", err),
-			)
+			return "", err
 		}
+
+		ri := v.([]datastore.Row)
 
 		foundMap := map[string]*proxy.Route{}
 

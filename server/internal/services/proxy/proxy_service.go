@@ -17,6 +17,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
+	"golang.org/x/sync/singleflight"
 
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
@@ -45,6 +46,7 @@ type ProxyService struct {
 	routeStore      datastore.DataStore
 
 	routeCache sync.Map
+	sf         singleflight.Group
 	CertStore  *CertStore
 }
 
