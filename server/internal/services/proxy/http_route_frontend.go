@@ -88,14 +88,22 @@ func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, er
 	for {
 		candidates = append(candidates, host+p)
 
-		if p == "/" {
+		if len(p) == 0 {
 			break
 		}
 
 		idx := strings.LastIndexByte(p, '/')
-		if idx <= 0 {
-			p = "/"
+
+		if idx < 0 {
+			// Only happens if path is "segment1" (no slash).
+			// Next step is root (empty string).
+			p = ""
+		} else if idx == 0 {
+			// We are at "/segment1". The slash is at 0.
+			// The substring up to 0 is empty. Next step is root.
+			p = ""
 		} else {
+			// We are at "/segment1/segment2". Slice before the slash.
 			p = p[:idx]
 		}
 	}
