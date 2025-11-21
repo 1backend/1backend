@@ -82,14 +82,21 @@ func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, er
 		path = "/"
 	}
 
-	var candidates []string
-	parts := strings.Split(path, "/")
-	for i := len(parts); i >= 0; i-- {
-		prefix := strings.Join(parts[:i], "/")
-		if prefix == "" {
-			candidates = append(candidates, host)
+	candidates := make([]string, 0, strings.Count(path, "/")+1)
+
+	p := path
+	for {
+		candidates = append(candidates, host+p)
+
+		if p == "/" {
+			break
+		}
+
+		idx := strings.LastIndexByte(p, '/')
+		if idx <= 0 {
+			p = "/"
 		} else {
-			candidates = append(candidates, host+prefix)
+			p = p[:idx]
 		}
 	}
 
