@@ -8,10 +8,10 @@
 package proxyservice
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
 	"strings"
 
@@ -50,31 +50,9 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	proxy := httputil.NewSingleHostReverseProxy(targetUrl)
+	ctx := context.WithValue(r.Context(), targetURLKey, targetUrl)
 
-	// Set the Director to fix paths (if findRouteTarget only returns the base)
-	// BUT since `findRouteTarget` *already* builds the full path,
-	// we need to tell the proxy to use the URL *as-is*.
-	//
-	// We must rewrite the proxy's Director.
-	// By default, NewSingleHostReverseProxy just appends the request path,
-	// but `findRouteTarget` already *includes* the path.
-	originalDirector := proxy.Director
-	proxy.Director = func(req *http.Request) {
-		// Run the original director (which sets host, scheme, etc.)
-		originalDirector(req)
-
-		// Override the Path and RawQuery with the values from our target URL.
-		// This is the key part!
-		req.URL.Path = targetUrl.Path
-		req.URL.RawQuery = targetUrl.RawQuery
-
-		// Preserve original header.
-		// Maybe make this optional later
-		req.Host = r.Host
-	}
-
-	proxy.ServeHTTP(w, r)
+	cs.reverseProxy.ServeHTTP(w, r.WithContext(ctx))
 }
 
 func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, error) {

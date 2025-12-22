@@ -11,9 +11,12 @@ import (
 	"context"
 	"log/slog"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -29,6 +32,13 @@ import (
 	"github.com/1backend/1backend/sdk/go/service"
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 	"github.com/1backend/1backend/server/internal/universe"
+)
+
+type contextKey string
+
+const (
+	// unexported so other packages can't overwrite it
+	targetURLKey contextKey = "proxy-target"
 )
 
 type ProxyService struct {
@@ -48,6 +58,8 @@ type ProxyService struct {
 	routeCache sync.Map
 	sf         singleflight.Group
 	CertStore  *CertStore
+
+	reverseProxy *httputil.ReverseProxy
 }
 
 func NewProxyService(
@@ -81,6 +93,40 @@ func NewProxyService(
 			CertFolder:       filepath.Join(options.ConfigPath, "certs"),
 			EncryptionKey:    options.SecretEncryptionKey,
 			Db:               certStore,
+		},
+		reverseProxy: &httputil.ReverseProxy{
+			Rewrite: func(pr *httputil.ProxyRequest) {
+				target, ok := pr.In.Context().Value(targetURLKey).(*url.URL)
+				if !ok {
+					return
+				}
+
+				pr.SetURL(target)
+				pr.Out.URL.Path = target.Path
+				pr.Out.URL.RawQuery = target.RawQuery
+
+				priorFor := pr.In.Header.Get("X-Forwarded-For")
+				if priorFor != "" {
+					pr.Out.Header.Set("X-Forwarded-For", priorFor+", "+pr.In.RemoteAddr)
+				} else {
+					pr.Out.Header.Set("X-Forwarded-For", pr.In.RemoteAddr)
+				}
+
+				if proto := pr.In.Header.Get("X-Forwarded-Proto"); proto != "" {
+					pr.Out.Header.Set("X-Forwarded-Proto", proto)
+				} else if pr.In.TLS != nil {
+					pr.Out.Header.Set("X-Forwarded-Proto", "https")
+				} else {
+					pr.Out.Header.Set("X-Forwarded-Proto", "http")
+				}
+
+				pr.Out.Host = pr.In.Host
+			},
+			Transport: &http.Transport{
+				MaxIdleConns:        50000,
+				MaxIdleConnsPerHost: 50,
+				IdleConnTimeout:     30 * time.Second,
+			},
 		},
 	}
 
