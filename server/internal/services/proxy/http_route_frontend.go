@@ -23,10 +23,10 @@ import (
 )
 
 func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
-	logger.Debug("Edge proxying",
-		slog.String("host", r.Host),
-		slog.String("path", r.URL.Path),
-	)
+	// logger.Debug("Edge proxying",
+	// 	slog.String("host", r.Host),
+	// 	slog.String("path", r.URL.Path),
+	// )
 
 	targetString, err := cs.findRouteTarget(r.Host, r.URL.Path, r.URL.RawQuery)
 	if err != nil {
