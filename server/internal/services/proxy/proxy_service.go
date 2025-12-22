@@ -11,6 +11,8 @@ import (
 	"context"
 	"log/slog"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
 	"path/filepath"
 	"sync"
@@ -31,6 +33,13 @@ import (
 	"github.com/1backend/1backend/server/internal/universe"
 )
 
+type contextKey string
+
+const (
+	// unexported so other packages can't overwrite it
+	targetURLKey contextKey = "proxy-target"
+)
+
 type ProxyService struct {
 	options *universe.Options
 
@@ -48,6 +57,8 @@ type ProxyService struct {
 	routeCache sync.Map
 	sf         singleflight.Group
 	CertStore  *CertStore
+
+	reverseProxy *httputil.ReverseProxy
 }
 
 func NewProxyService(
@@ -81,6 +92,28 @@ func NewProxyService(
 			CertFolder:       filepath.Join(options.ConfigPath, "certs"),
 			EncryptionKey:    options.SecretEncryptionKey,
 			Db:               certStore,
+		},
+		reverseProxy: &httputil.ReverseProxy{
+			Rewrite: func(pr *httputil.ProxyRequest) {
+				// 1. Get the target data we stored in the context earlier
+				target, ok := pr.In.Context().Value(targetURLKey).(*url.URL)
+				if !ok {
+					return // Should be handled by ErrorHandler if target is missing
+				}
+
+				// 2. Set the destination (handles Scheme and Host)
+				pr.SetURL(target)
+
+				// 3. Fixup the path/query specifically
+				pr.Out.URL.Path = target.Path
+				pr.Out.URL.RawQuery = target.RawQuery
+
+				// 4. Set standard forwarding headers (X-Forwarded-For, etc.)
+				pr.SetXForwarded()
+
+				// 5. Preserve the original Host header if needed for the backend
+				pr.Out.Host = pr.In.Host
+			},
 		},
 	}
 
