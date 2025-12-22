@@ -96,23 +96,30 @@ func NewProxyService(
 		},
 		reverseProxy: &httputil.ReverseProxy{
 			Rewrite: func(pr *httputil.ProxyRequest) {
-				// 1. Get the target data we stored in the context earlier
 				target, ok := pr.In.Context().Value(targetURLKey).(*url.URL)
 				if !ok {
-					return // Should be handled by ErrorHandler if target is missing
+					return
 				}
 
-				// 2. Set the destination (handles Scheme and Host)
 				pr.SetURL(target)
-
-				// 3. Fixup the path/query specifically
 				pr.Out.URL.Path = target.Path
 				pr.Out.URL.RawQuery = target.RawQuery
 
-				// 4. Set standard forwarding headers (X-Forwarded-For, etc.)
-				pr.SetXForwarded()
+				priorFor := pr.In.Header.Get("X-Forwarded-For")
+				if priorFor != "" {
+					pr.Out.Header.Set("X-Forwarded-For", priorFor+", "+pr.In.RemoteAddr)
+				} else {
+					pr.Out.Header.Set("X-Forwarded-For", pr.In.RemoteAddr)
+				}
 
-				// 5. Preserve the original Host header if needed for the backend
+				if proto := pr.In.Header.Get("X-Forwarded-Proto"); proto != "" {
+					pr.Out.Header.Set("X-Forwarded-Proto", proto)
+				} else if pr.In.TLS != nil {
+					pr.Out.Header.Set("X-Forwarded-Proto", "https")
+				} else {
+					pr.Out.Header.Set("X-Forwarded-Proto", "http")
+				}
+
 				pr.Out.Host = pr.In.Host
 			},
 			Transport: &http.Transport{
