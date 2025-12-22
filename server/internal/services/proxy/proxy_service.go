@@ -16,6 +16,7 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -113,6 +114,11 @@ func NewProxyService(
 
 				// 5. Preserve the original Host header if needed for the backend
 				pr.Out.Host = pr.In.Host
+			},
+			Transport: &http.Transport{
+				MaxIdleConns:        50000,
+				MaxIdleConnsPerHost: 50,
+				IdleConnTimeout:     30 * time.Second,
 			},
 		},
 	}
