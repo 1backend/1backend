@@ -249,10 +249,11 @@ func (cs *ProxyService) RegisterRoutes(router *mux.Router) {
 // HTTP server that listens on ports 80 (to handle ACME/Let's Encrypt challenges) and 443 (to handle
 // HTTPS requests and act as the front-facing smart proxy).
 func (cs *ProxyService) RegisterFrontendRoutes(router *mux.Router) {
-
-	router.PathPrefix("/").HandlerFunc((func(w http.ResponseWriter, r *http.Request) {
+	handler := withSmartGzip(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		cs.RouteFrontend(w, r)
 	}))
+
+	router.PathPrefix("/").Handler(handler)
 }
 
 func (cs *ProxyService) LazyStart() error {
