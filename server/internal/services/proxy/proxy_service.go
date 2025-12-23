@@ -59,7 +59,9 @@ type ProxyService struct {
 	sf         singleflight.Group
 	CertStore  *CertStore
 
-	reverseProxy *httputil.ReverseProxy
+	reverseProxy  *httputil.ReverseProxy
+	instanceCache sync.Map
+	httpClient    *http.Client
 }
 
 func NewProxyService(
@@ -124,8 +126,15 @@ func NewProxyService(
 			},
 			Transport: &http.Transport{
 				MaxIdleConns:        50000,
-				MaxIdleConnsPerHost: 50,
+				MaxIdleConnsPerHost: 500,
 				IdleConnTimeout:     30 * time.Second,
+			},
+		},
+		httpClient: &http.Client{
+			Transport: &http.Transport{
+				MaxIdleConns:        100,
+				IdleConnTimeout:     90 * time.Second,
+				TLSHandshakeTimeout: 10 * time.Second,
 			},
 		},
 	}

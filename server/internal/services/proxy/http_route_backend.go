@@ -8,13 +8,13 @@
 package proxyservice
 
 import (
-	"context"
 	"io"
 	"log/slog"
 	"math/rand/v2"
 	"net/http"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/pkg/errors"
 
@@ -22,6 +22,11 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/logger"
 )
+
+type cacheEntry struct {
+	instances []openapi.RegistrySvcInstance
+	expiry    time.Time
+}
 
 // RouteBackend routes requests that look just like the builtin 1Backend service paths:
 // - /my-svc/my-endpoint -> my-svc
@@ -57,10 +62,10 @@ func (cs *ProxyService) RouteBackend(w http.ResponseWriter, r *http.Request) {
 }
 
 func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (int, error) {
-	logger.Debug("Service proxying",
-		slog.String("path", r.URL.Path),
-		slog.String("method", r.Method),
-	)
+	// logger.Debug("Service proxying",
+	// 	slog.String("path", r.URL.Path),
+	// 	slog.String("method", r.Method),
+	// )
 
 	// The proxy service's LazyStart() must be called here because OPTIONS requests
 	// are not handled the standard Lazy logic. Unlike other services, the Proxy does handle
@@ -70,25 +75,56 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 		return http.StatusInternalServerError, errors.Wrap(err, "error starting proxy service")
 	}
 
-	// @todo cache?
-
 	serviceSlug := getServiceSlug(r)
 
-	rsp, _, err := cs.options.ClientFactory.Client(client.WithToken(cs.token)).
-		RegistrySvcAPI.ListInstances(context.Background()).
-		Slug(serviceSlug).
-		Execute()
-	if err != nil {
-		return http.StatusInternalServerError, errors.Wrap(err, "error listing instances")
+	var cachedEntry *cacheEntry
+	if val, ok := cs.instanceCache.Load(serviceSlug); ok {
+		e := val.(cacheEntry)
+		cachedEntry = &e
 	}
 
-	if len(rsp.Instances) == 0 {
+	var instances []openapi.RegistrySvcInstance
+	shouldFetch := cachedEntry == nil || time.Now().After(cachedEntry.expiry)
+
+	if shouldFetch {
+		// Attempt refresh
+		rsp, _, err := cs.options.ClientFactory.Client(client.WithToken(cs.token)).
+			RegistrySvcAPI.ListInstances(r.Context()).
+			Slug(serviceSlug).
+			Execute()
+
+		if err != nil {
+			// --- CRITICAL FALLBACK ---
+			if cachedEntry != nil {
+				logger.Warn("Registry lookup failed, using stale cache",
+					slog.String("service", serviceSlug),
+					slog.String("error", err.Error()),
+				)
+				instances = cachedEntry.instances
+			} else {
+				// No cache and API failed: we must error out
+				return http.StatusInternalServerError, errors.Wrap(err, "registry unavailable and no cache exists")
+			}
+		} else {
+			// API Success: Update cache
+			instances = rsp.Instances
+			cs.instanceCache.Store(serviceSlug, cacheEntry{
+				instances: instances,
+				expiry:    time.Now().Add(10 * time.Second), // 10s TTL
+			})
+		}
+	} else {
+		// Cache is still fresh
+		instances = cachedEntry.instances
+	}
+
+	if len(instances) == 0 {
 		return http.StatusNotFound, errors.New("no instances found")
 	}
 
 	// Prioritize healthy instances
-	selectedInstances := make([]openapi.RegistrySvcInstance, 0, len(rsp.Instances))
-	for _, instance := range rsp.Instances {
+	selectedInstances := make([]openapi.RegistrySvcInstance, 0, len(instances))
+	for _, instance := range instances {
 		if instance.Status == openapi.InstanceStatusHealthy {
 			selectedInstances = append(selectedInstances, instance)
 		}
@@ -96,7 +132,7 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 
 	// But fall back to any instances if none found
 	if len(selectedInstances) == 0 {
-		selectedInstances = rsp.Instances
+		selectedInstances = instances
 	}
 
 	randomIndex := rand.IntN(len(selectedInstances))
@@ -109,19 +145,16 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 		uri += "?" + r.URL.RawQuery
 	}
 
-	req, err := http.NewRequest(r.Method, uri, r.Body)
+	req, err := http.NewRequestWithContext(r.Context(), r.Method, uri, r.Body)
 	if err != nil {
 		return http.StatusInternalServerError, errors.Wrap(err, "error creating proxy request")
 	}
-
 	req.Header = r.Header
 
-	client := http.Client{}
-	resp, err := client.Do(req)
+	resp, err := cs.httpClient.Do(req)
 	if err != nil {
 		return http.StatusInternalServerError, errors.Wrap(err, "error proxying request")
 	}
-
 	defer resp.Body.Close()
 
 	for k, v := range resp.Header {
@@ -136,11 +169,11 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 		}
 	}
 
-	logger.Debug("Service proxy request returned",
-		slog.String("path", r.URL.Path),
-		slog.String("method", r.Method),
-		slog.Int("statusCode", resp.StatusCode),
-	)
+	// logger.Debug("Service proxy request returned",
+	// 	slog.String("path", r.URL.Path),
+	// 	slog.String("method", r.Method),
+	// 	slog.Int("statusCode", resp.StatusCode),
+	// )
 
 	w.WriteHeader(resp.StatusCode)
 
