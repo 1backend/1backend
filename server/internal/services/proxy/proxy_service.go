@@ -126,7 +126,7 @@ func NewProxyService(
 			},
 			Transport: &http.Transport{
 				MaxIdleConns:        50000,
-				MaxIdleConnsPerHost: 50,
+				MaxIdleConnsPerHost: 500,
 				IdleConnTimeout:     30 * time.Second,
 			},
 		},

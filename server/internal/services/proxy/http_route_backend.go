@@ -169,11 +169,11 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 		}
 	}
 
-	logger.Debug("Service proxy request returned",
-		slog.String("path", r.URL.Path),
-		slog.String("method", r.Method),
-		slog.Int("statusCode", resp.StatusCode),
-	)
+	// logger.Debug("Service proxy request returned",
+	// 	slog.String("path", r.URL.Path),
+	// 	slog.String("method", r.Method),
+	// 	slog.Int("statusCode", resp.StatusCode),
+	// )
 
 	w.WriteHeader(resp.StatusCode)
 
