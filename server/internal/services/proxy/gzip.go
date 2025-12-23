@@ -2,11 +2,13 @@ package proxyservice
 
 import (
 	"compress/gzip"
+	"io"
 	"net/http"
 	"strings"
+
+	"github.com/andybalholm/brotli"
 )
 
-// List of types worth compressing
 var compressibleTypes = map[string]bool{
 	"text/html":                true,
 	"text/css":                 true,
@@ -19,65 +21,80 @@ var compressibleTypes = map[string]bool{
 	"image/svg+xml":            true,
 }
 
-type gzipResponseBuffer struct {
+type compressionBuffer struct {
 	http.ResponseWriter
-	gw           *gzip.Writer
+	writer       io.WriteCloser
+	encoding     string // "br" or "gzip"
 	compressible bool
 	wroteHeader  bool
 }
 
-func (g *gzipResponseBuffer) WriteHeader(code int) {
-	if g.wroteHeader {
+func (c *compressionBuffer) WriteHeader(code int) {
+	if c.wroteHeader {
 		return
 	}
 
-	// Check if the backend response is a type we want to compress
-	contentType := g.Header().Get("Content-Type")
-	// Handle types like "text/html; charset=utf-8"
+	contentType := c.Header().Get("Content-Type")
 	baseType := strings.Split(contentType, ";")[0]
 
-	if compressibleTypes[baseType] && g.Header().Get("Content-Encoding") == "" {
-		g.compressible = true
-		g.Header().Set("Content-Encoding", "gzip")
-		g.Header().Del("Content-Length")
-		g.Header().Add("Vary", "Accept-Encoding")
+	// Only compress if the type is in our list and not already encoded
+	if compressibleTypes[baseType] && c.Header().Get("Content-Encoding") == "" {
+		c.compressible = true
+		c.Header().Set("Content-Encoding", c.encoding)
+		c.Header().Del("Content-Length")
+		c.Header().Add("Vary", "Accept-Encoding")
 
-		// Initialize the writer only if we are actually compressing
-		g.gw, _ = gzip.NewWriterLevel(g.ResponseWriter, 5)
+		if c.encoding == "br" {
+			// Level 4 is a good balance between speed and ratio for on-the-fly
+			c.writer = brotli.NewWriterLevel(c.ResponseWriter, 4)
+		} else if c.encoding == "gzip" {
+			c.writer, _ = gzip.NewWriterLevel(c.ResponseWriter, gzip.DefaultCompression)
+		}
 	}
 
-	g.wroteHeader = true
-	g.ResponseWriter.WriteHeader(code)
+	c.wroteHeader = true
+	c.ResponseWriter.WriteHeader(code)
 }
 
-func (g *gzipResponseBuffer) Write(b []byte) (int, error) {
-	if !g.wroteHeader {
-		g.WriteHeader(http.StatusOK)
+func (c *compressionBuffer) Write(b []byte) (int, error) {
+	if !c.wroteHeader {
+		c.WriteHeader(http.StatusOK)
 	}
-	if g.compressible && g.gw != nil {
-		return g.gw.Write(b)
+	if c.compressible && c.writer != nil {
+		return c.writer.Write(b)
 	}
-	return g.ResponseWriter.Write(b)
+	return c.ResponseWriter.Write(b)
 }
 
-func (g *gzipResponseBuffer) Close() {
-	if g.gw != nil {
-		g.gw.Close()
+func (c *compressionBuffer) Close() {
+	if c.writer != nil {
+		c.writer.Close()
 	}
 }
 
-func withSmartGzip(next http.Handler) http.Handler {
+func WithCompression(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// 1. Skip if client doesn't support gzip
-		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
+		accept := r.Header.Get("Accept-Encoding")
+		encoding := ""
+
+		// Brotli has priority
+		if strings.Contains(accept, "br") {
+			encoding = "br"
+		} else if strings.Contains(accept, "gzip") {
+			encoding = "gzip"
+		}
+
+		if encoding == "" {
 			next.ServeHTTP(w, r)
 			return
 		}
 
-		// 2. Wrap the response writer
-		gb := &gzipResponseBuffer{ResponseWriter: w}
-		defer gb.Close()
+		cb := &compressionBuffer{
+			ResponseWriter: w,
+			encoding:       encoding,
+		}
+		defer cb.Close()
 
-		next.ServeHTTP(gb, r)
+		next.ServeHTTP(cb, r)
 	})
 }
