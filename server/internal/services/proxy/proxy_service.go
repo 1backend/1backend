@@ -61,6 +61,7 @@ type ProxyService struct {
 
 	reverseProxy  *httputil.ReverseProxy
 	instanceCache sync.Map
+	httpClient    *http.Client
 }
 
 func NewProxyService(
@@ -127,6 +128,13 @@ func NewProxyService(
 				MaxIdleConns:        50000,
 				MaxIdleConnsPerHost: 50,
 				IdleConnTimeout:     30 * time.Second,
+			},
+		},
+		httpClient: &http.Client{
+			Transport: &http.Transport{
+				MaxIdleConns:        100,
+				IdleConnTimeout:     90 * time.Second,
+				TLSHandshakeTimeout: 10 * time.Second,
 			},
 		},
 	}

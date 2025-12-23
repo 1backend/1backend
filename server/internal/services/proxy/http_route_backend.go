@@ -151,9 +151,7 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 	}
 	req.Header = r.Header
 
-	// 2. USE THE REUSABLE CLIENT (cs.httpClient) instead of client := http.Client{}
-	// This uses connection pooling and prevents socket exhaustion.
-	resp, err := cs.client.Do(req)
+	resp, err := cs.httpClient.Do(req)
 	if err != nil {
 		return http.StatusInternalServerError, errors.Wrap(err, "error proxying request")
 	}
