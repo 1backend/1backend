@@ -59,7 +59,8 @@ type ProxyService struct {
 	sf         singleflight.Group
 	CertStore  *CertStore
 
-	reverseProxy *httputil.ReverseProxy
+	reverseProxy  *httputil.ReverseProxy
+	instanceCache sync.Map
 }
 
 func NewProxyService(
