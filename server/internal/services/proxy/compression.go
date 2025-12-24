@@ -77,11 +77,11 @@ func WithCompression(next http.Handler) http.Handler {
 		accept := r.Header.Get("Accept-Encoding")
 		encoding := ""
 
-		// Brotli has priority
-		if strings.Contains(accept, "br") {
-			encoding = "br"
-		} else if strings.Contains(accept, "gzip") {
+		// Gzip now has priority over Brotli
+		if strings.Contains(accept, "gzip") {
 			encoding = "gzip"
+		} else if strings.Contains(accept, "br") {
+			encoding = "br"
 		}
 
 		if encoding == "" {
