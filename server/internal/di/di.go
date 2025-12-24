@@ -36,7 +36,6 @@ import (
 	configservice "github.com/1backend/1backend/server/internal/services/config"
 	containerservice "github.com/1backend/1backend/server/internal/services/container"
 	dataservice "github.com/1backend/1backend/server/internal/services/data"
-	deployservice "github.com/1backend/1backend/server/internal/services/deploy"
 	emailservice "github.com/1backend/1backend/server/internal/services/email"
 	fileservice "github.com/1backend/1backend/server/internal/services/file"
 	firehoseservice "github.com/1backend/1backend/server/internal/services/firehose"
@@ -396,14 +395,6 @@ func BigBang(options *universe.Options) (*Universe, error) {
 	}
 	registryService.RegisterRoutes(router)
 
-	deployService, err := deployservice.NewDeployService(
-		options,
-	)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to create deploy service")
-	}
-	deployService.RegisterRoutes(router)
-
 	sourceService, err := sourceservice.NewSourceService(
 		options,
 	)
@@ -482,11 +473,6 @@ func BigBang(options *universe.Options) (*Universe, error) {
 		err = containerService.Start()
 		if err != nil {
 			return errors.Wrap(err, "container service start failed")
-		}
-
-		err = deployService.Start()
-		if err != nil {
-			return errors.Wrap(err, "deploy service start failed")
 		}
 
 		if options.EdgeProxy || options.EdgeProxyTestMode {

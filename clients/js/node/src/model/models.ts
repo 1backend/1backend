@@ -61,17 +61,6 @@ export * from './datastoreOp';
 export * from './datastoreOrderBy';
 export * from './datastoreQuery';
 export * from './datastoreSortingType';
-export * from './deploySvcAutoScalingConfig';
-export * from './deploySvcDeleteDeploymentRequest';
-export * from './deploySvcDeployment';
-export * from './deploySvcDeploymentStatus';
-export * from './deploySvcDeploymentStrategy';
-export * from './deploySvcErrorResponse';
-export * from './deploySvcListDeploymentsResponse';
-export * from './deploySvcResourceLimits';
-export * from './deploySvcSaveDeploymentRequest';
-export * from './deploySvcStrategyType';
-export * from './deploySvcTargetRegion';
 export * from './emailSvcAttachment';
 export * from './emailSvcErrorResponse';
 export * from './emailSvcSendEmailRequest';
@@ -311,17 +300,6 @@ import { DatastoreOp } from './datastoreOp';
 import { DatastoreOrderBy } from './datastoreOrderBy';
 import { DatastoreQuery } from './datastoreQuery';
 import { DatastoreSortingType } from './datastoreSortingType';
-import { DeploySvcAutoScalingConfig } from './deploySvcAutoScalingConfig';
-import { DeploySvcDeleteDeploymentRequest } from './deploySvcDeleteDeploymentRequest';
-import { DeploySvcDeployment } from './deploySvcDeployment';
-import { DeploySvcDeploymentStatus } from './deploySvcDeploymentStatus';
-import { DeploySvcDeploymentStrategy } from './deploySvcDeploymentStrategy';
-import { DeploySvcErrorResponse } from './deploySvcErrorResponse';
-import { DeploySvcListDeploymentsResponse } from './deploySvcListDeploymentsResponse';
-import { DeploySvcResourceLimits } from './deploySvcResourceLimits';
-import { DeploySvcSaveDeploymentRequest } from './deploySvcSaveDeploymentRequest';
-import { DeploySvcStrategyType } from './deploySvcStrategyType';
-import { DeploySvcTargetRegion } from './deploySvcTargetRegion';
 import { EmailSvcAttachment } from './emailSvcAttachment';
 import { EmailSvcErrorResponse } from './emailSvcErrorResponse';
 import { EmailSvcSendEmailRequest } from './emailSvcSendEmailRequest';
@@ -503,8 +481,6 @@ let enumsMap: {[index: string]: any} = {
         "ConfigSvcListConfigsScope": ConfigSvcListConfigsScope,
         "DatastoreOp": DatastoreOp,
         "DatastoreSortingType": DatastoreSortingType,
-        "DeploySvcDeploymentStatus": DeploySvcDeploymentStatus,
-        "DeploySvcStrategyType": DeploySvcStrategyType,
         "PolicySvcEntity": PolicySvcEntity,
         "PolicySvcScope": PolicySvcScope,
         "PolicySvcTemplateId": PolicySvcTemplateId,
@@ -577,15 +553,6 @@ let typeMap: {[index: string]: any} = {
     "DatastoreFilter": DatastoreFilter,
     "DatastoreOrderBy": DatastoreOrderBy,
     "DatastoreQuery": DatastoreQuery,
-    "DeploySvcAutoScalingConfig": DeploySvcAutoScalingConfig,
-    "DeploySvcDeleteDeploymentRequest": DeploySvcDeleteDeploymentRequest,
-    "DeploySvcDeployment": DeploySvcDeployment,
-    "DeploySvcDeploymentStrategy": DeploySvcDeploymentStrategy,
-    "DeploySvcErrorResponse": DeploySvcErrorResponse,
-    "DeploySvcListDeploymentsResponse": DeploySvcListDeploymentsResponse,
-    "DeploySvcResourceLimits": DeploySvcResourceLimits,
-    "DeploySvcSaveDeploymentRequest": DeploySvcSaveDeploymentRequest,
-    "DeploySvcTargetRegion": DeploySvcTargetRegion,
     "EmailSvcAttachment": EmailSvcAttachment,
     "EmailSvcErrorResponse": EmailSvcErrorResponse,
     "EmailSvcSendEmailRequest": EmailSvcSendEmailRequest,

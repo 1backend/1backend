@@ -105,9 +105,6 @@ Class | Method | HTTP request | Description
 *DataSvcAPI* | [**UpdateObjects**](docs/DataSvcAPI.md#updateobjects) | **Post** /data-svc/objects/update | Update Objects
 *DataSvcAPI* | [**UpsertObject**](docs/DataSvcAPI.md#upsertobject) | **Put** /data-svc/object/{objectId} | Upsert a Generic Object
 *DataSvcAPI* | [**UpsertObjects**](docs/DataSvcAPI.md#upsertobjects) | **Put** /data-svc/objects/upsert | Upsert Objects
-*DeploySvcAPI* | [**DeleteDeployment**](docs/DeploySvcAPI.md#deletedeployment) | **Delete** /deploy-svc/deployment | Delete Deployment
-*DeploySvcAPI* | [**ListDeployments**](docs/DeploySvcAPI.md#listdeployments) | **Post** /deploy-svc/deployments | List Deployments
-*DeploySvcAPI* | [**SaveDeployment**](docs/DeploySvcAPI.md#savedeployment) | **Put** /deploy-svc/deployment | Save Deployment
 *EmailSvcAPI* | [**SendEmail**](docs/EmailSvcAPI.md#sendemail) | **Post** /email-svc/email | Send an Email
 *FileSvcAPI* | [**DownloadFile**](docs/FileSvcAPI.md#downloadfile) | **Put** /file-svc/download | Download a File
 *FileSvcAPI* | [**GetDownload**](docs/FileSvcAPI.md#getdownload) | **Get** /file-svc/download/{url} | Get a Download
@@ -251,17 +248,6 @@ Class | Method | HTTP request | Description
  - [DatastoreOrderBy](docs/DatastoreOrderBy.md)
  - [DatastoreQuery](docs/DatastoreQuery.md)
  - [DatastoreSortingType](docs/DatastoreSortingType.md)
- - [DeploySvcAutoScalingConfig](docs/DeploySvcAutoScalingConfig.md)
- - [DeploySvcDeleteDeploymentRequest](docs/DeploySvcDeleteDeploymentRequest.md)
- - [DeploySvcDeployment](docs/DeploySvcDeployment.md)
- - [DeploySvcDeploymentStatus](docs/DeploySvcDeploymentStatus.md)
- - [DeploySvcDeploymentStrategy](docs/DeploySvcDeploymentStrategy.md)
- - [DeploySvcErrorResponse](docs/DeploySvcErrorResponse.md)
- - [DeploySvcListDeploymentsResponse](docs/DeploySvcListDeploymentsResponse.md)
- - [DeploySvcResourceLimits](docs/DeploySvcResourceLimits.md)
- - [DeploySvcSaveDeploymentRequest](docs/DeploySvcSaveDeploymentRequest.md)
- - [DeploySvcStrategyType](docs/DeploySvcStrategyType.md)
- - [DeploySvcTargetRegion](docs/DeploySvcTargetRegion.md)
  - [EmailSvcAttachment](docs/EmailSvcAttachment.md)
  - [EmailSvcErrorResponse](docs/EmailSvcErrorResponse.md)
  - [EmailSvcSendEmailRequest](docs/EmailSvcSendEmailRequest.md)

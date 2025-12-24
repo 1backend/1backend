@@ -4,7 +4,6 @@ export * from './ChatSvcApi';
 export * from './ConfigSvcApi';
 export * from './ContainerSvcApi';
 export * from './DataSvcApi';
-export * from './DeploySvcApi';
 export * from './EmailSvcApi';
 export * from './FileSvcApi';
 export * from './FirehoseSvcApi';

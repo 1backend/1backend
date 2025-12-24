@@ -456,22 +456,6 @@ oo put /registry-svc/instance --url="http://user-service-3:8080"
 curl http://localhost:11337/user-svc/api/users
 ```
 
-### Deploy Svc Integration
-
-Registry Svc is tightly integrated with [Deploy Svc](/docs/built-in-services/deploy-svc):
-
-```bash
-# Deploy Svc uses definitions to create instances
-oo definitions save user-service-def.yaml
-oo deployments save user-service-deployment.yaml
-
-# Deploy Svc automatically:
-# 1. Reads the definition
-# 2. Creates container instances
-# 3. Registers instances in Registry Svc
-# 4. Proxy Svc discovers instances for routing
-```
-
 ## Real-World Usage Examples
 
 ### 1. Microservices E-Commerce Platform
@@ -1105,12 +1089,10 @@ registry-svc:node:delete       # Remove nodes from cluster
 
 # Service isolation
 # Services can only see their own instances unless they have admin privileges
-# or are specifically permitted services (deploy-svc, proxy-svc)
+# or are specifically permitted services (proxy-svc)
 ```
 
 ## Related Services
-
-- **[Deploy Svc](/docs/built-in-services/deploy-svc)**: Uses definitions to create and manage instances
 - **[Proxy Svc](/docs/built-in-services/proxy-svc)**: Discovers instances for load balancing and routing
 - **[Container Svc](/docs/built-in-services/container-svc)**: Manages container instances on individual nodes
 
