@@ -523,6 +523,10 @@ func BigBang(options *universe.Options) (*Universe, error) {
 						TLSConfig: certManager.TLSConfig(),
 						Handler:   univ.EdgeProxyHttpsRouter,
 					}
+					logger.Info("Starting edge proxy mode",
+						slog.Any("httpsPort", options.EdgeProxyHttpsPort),
+						slog.Any("httpPort", options.EdgeProxyHttpPort),
+					)
 					if err := s.ListenAndServeTLS("", ""); err != nil && err != http.ErrServerClosed {
 						log.Fatalf("HTTPS server failed: %v", err)
 					}
