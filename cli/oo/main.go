@@ -12,7 +12,6 @@ import (
 	call "github.com/1backend/1backend/cli/oo/commands/call"
 	"github.com/1backend/1backend/cli/oo/commands/cert"
 	definition "github.com/1backend/1backend/cli/oo/commands/definition"
-	deployment "github.com/1backend/1backend/cli/oo/commands/deployment"
 	"github.com/1backend/1backend/cli/oo/commands/enroll"
 	"github.com/1backend/1backend/cli/oo/commands/env"
 	instance "github.com/1backend/1backend/cli/oo/commands/instance"
@@ -66,7 +65,6 @@ func main() {
 	env.AddEnvCommands(rootCmd)
 	definition.AddDefinitionCommands(rootCmd)
 	instance.AddInstanceCommands(rootCmd)
-	deployment.AddDeploymentCommands(rootCmd)
 	node.AddNodeCommands(rootCmd)
 	secret.AddSecretCommands(rootCmd)
 	permit.AddPermitCommands(rootCmd)
