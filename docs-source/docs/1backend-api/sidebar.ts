@@ -188,30 +188,6 @@ const sidebar: SidebarsConfig = {
     },
     {
       type: "category",
-      label: "Deploy Svc",
-      items: [
-        {
-          type: "doc",
-          id: "1backend-api/delete-deployment",
-          label: "Delete Deployment",
-          className: "api-method delete",
-        },
-        {
-          type: "doc",
-          id: "1backend-api/save-deployment",
-          label: "Save Deployment",
-          className: "api-method put",
-        },
-        {
-          type: "doc",
-          id: "1backend-api/list-deployments",
-          label: "List Deployments",
-          className: "api-method post",
-        },
-      ],
-    },
-    {
-      type: "category",
       label: "Email Svc",
       items: [
         {

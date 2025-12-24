@@ -77,6 +77,5 @@ docker run --rm --gpus all nvidia/cuda:11.0-base nvidia-smi
 ## Related Services
 
 - **[Model Svc](/docs/built-in-services/model-svc)** - AI model deployment and management
-- **[Deploy Svc](/docs/built-in-services/deploy-svc)** - Service deployment orchestration
 - **[File Svc](/docs/built-in-services/file-svc)** - Asset downloading and file management
 - **[Registry Svc](/docs/built-in-services/registry-svc)** - Node and instance registry

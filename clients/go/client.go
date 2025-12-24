@@ -58,8 +58,6 @@ type APIClient struct {
 
 	DataSvcAPI DataSvcAPI
 
-	DeploySvcAPI DeploySvcAPI
-
 	EmailSvcAPI EmailSvcAPI
 
 	FileSvcAPI FileSvcAPI
@@ -105,7 +103,6 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 	c.ConfigSvcAPI = (*ConfigSvcAPIService)(&c.common)
 	c.ContainerSvcAPI = (*ContainerSvcAPIService)(&c.common)
 	c.DataSvcAPI = (*DataSvcAPIService)(&c.common)
-	c.DeploySvcAPI = (*DeploySvcAPIService)(&c.common)
 	c.EmailSvcAPI = (*EmailSvcAPIService)(&c.common)
 	c.FileSvcAPI = (*FileSvcAPIService)(&c.common)
 	c.FirehoseSvcAPI = (*FirehoseSvcAPIService)(&c.common)

@@ -6,8 +6,6 @@ export * from './containerSvcApi';
 import { ContainerSvcApi } from './containerSvcApi';
 export * from './dataSvcApi';
 import { DataSvcApi } from './dataSvcApi';
-export * from './deploySvcApi';
-import { DeploySvcApi } from './deploySvcApi';
 export * from './emailSvcApi';
 import { EmailSvcApi } from './emailSvcApi';
 export * from './fileSvcApi';
@@ -40,4 +38,4 @@ export declare class HttpError extends Error {
     constructor(response: http.IncomingMessage, body: any, statusCode?: number | undefined);
 }
 export { RequestFile } from '../model/models';
-export declare const APIS: (typeof ChatSvcApi | typeof ConfigSvcApi | typeof ContainerSvcApi | typeof DataSvcApi | typeof DeploySvcApi | typeof EmailSvcApi | typeof FileSvcApi | typeof FirehoseSvcApi | typeof ImageSvcApi | typeof ModelSvcApi | typeof PolicySvcApi | typeof PromptSvcApi | typeof ProxySvcApi | typeof RegistrySvcApi | typeof SecretSvcApi | typeof SourceSvcApi | typeof UserSvcApi)[];
+export declare const APIS: (typeof ChatSvcApi | typeof ConfigSvcApi | typeof ContainerSvcApi | typeof DataSvcApi | typeof EmailSvcApi | typeof FileSvcApi | typeof FirehoseSvcApi | typeof ImageSvcApi | typeof ModelSvcApi | typeof PolicySvcApi | typeof PromptSvcApi | typeof ProxySvcApi | typeof RegistrySvcApi | typeof SecretSvcApi | typeof SourceSvcApi | typeof UserSvcApi)[];
