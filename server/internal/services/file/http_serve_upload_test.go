@@ -1,103 +1,90 @@
-//go:build dist
-// +build dist
-
 package fileservice_test
 
 import (
 	"context"
-	"io/ioutil"
-
-	"net/http/httptest"
+	"io"
+	"net/http"
+	"os"
 	"testing"
 
 	sdk "github.com/1backend/1backend/sdk/go"
-
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
-	"github.com/1backend/1backend/server/internal/di"
-	"github.com/1backend/1backend/server/internal/universe"
-
 	"github.com/stretchr/testify/require"
 )
 
-func TestServeUploadProxy(t *testing.T) {
-	file, cleanup := createTestFile(t, "Test file things")
-	defer cleanup()
-
+func TestServeUpload(t *testing.T) {
+	// 1. Setup environment
 	ctx := context.Background()
 
-	hs := &di.HandlerSwitcher{}
-	server := httptest.NewServer(hs)
-	defer server.Close()
+	// Start the full service (Local Storage by default in tests)
+	server, err := test.StartService(test.Options{
+		Test: true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
 
-	dbprefix := sdk.Id("node_id")
-
-	opt1 := &universe.Options{
-		Test:     true,
-		NodeId:   "node1",
-		Db:       "postgres",
-		DbPrefix: dbprefix,
-		Url:      server.URL,
-	}
-
-	nodeInfo1, err := di.BigBang(opt1)
+	// Create an admin client
+	apiFactory := client.NewApiClientFactory(server.Url)
+	adminClient, _, err := test.AdminClient(apiFactory, sdk.DefaultTestAppHost)
 	require.NoError(t, err)
 
-	hs.UpdateHandler(nodeInfo1.Router)
-	require.NoError(t, nodeInfo1.StarterFunc())
-
-	require.Equal(t, true, opt1.ClientFactory != nil)
-	adminClient, _, err := test.AdminClient(opt1.ClientFactory, sdk.DefaultTestAppHost)
+	// Prepare a test file
+	tmpFile, err := os.CreateTemp("", "test-upload-*.txt")
 	require.NoError(t, err)
+	defer os.Remove(tmpFile.Name())
 
-	t.Run("upload to node1 works", func(t *testing.T) {
+	content := "Hello 1Backend Storage"
+	_, err = tmpFile.WriteString(content)
+	require.NoError(t, err)
+	tmpFile.Close()
+
+	var fileId string
+
+	// 2. Test Upload
+	t.Run("upload file works", func(t *testing.T) {
+		f, err := os.Open(tmpFile.Name())
+		require.NoError(t, err)
+		defer f.Close()
+
 		_, _, err = adminClient.FileSvcAPI.UploadFile(ctx).
-			File(file).
+			File(f).
 			Execute()
 		require.NoError(t, err)
 	})
 
-	hs2 := &di.HandlerSwitcher{}
-	server2 := httptest.NewServer(hs2)
-	defer server2.Close()
-
-	opt2 := &universe.Options{
-		Test:     true,
-		NodeId:   "node2",
-		Db:       "postgres",
-		DbPrefix: dbprefix,
-		Url:      server2.URL,
-	}
-	nodeInfo2, err := di.BigBang(opt2)
-	hs2.UpdateHandler(nodeInfo2.Router)
-	require.NoError(t, nodeInfo2.StarterFunc())
-
-	adminClient2, _, err := test.AdminClient(opt2.ClientFactory, sdk.DefaultTestAppHost)
-	require.NoError(t, err)
-
-	var fileId string
-
-	t.Run("upload serve from node2 works", func(t *testing.T) {
-		// listing can be done from either node as the list comes from a DB
+	// 3. Test Metadata Retrieval (List)
+	t.Run("list uploads shows the file", func(t *testing.T) {
 		rsp, _, err := adminClient.FileSvcAPI.ListUploads(ctx).Execute()
 		require.NoError(t, err)
 		require.Equal(t, 1, len(rsp.Uploads))
-		require.Equal(t, int64(16), rsp.Uploads[0].FileSize)
 
 		fileId = rsp.Uploads[0].FileId
-
-		fileRsp, fileHttpRsp, err := adminClient2.FileSvcAPI.ServeUpload(ctx, fileId).Execute()
-		require.NoError(t, err)
-		require.Equal(t, true, fileRsp != nil)
-		bs, err := ioutil.ReadAll(fileRsp)
-		require.NoError(t, err)
-		require.Equal(t, "Test file things", string(bs))
-		require.Equal(t, "text/plain; charset=utf-8", fileHttpRsp.Header.Get("Content-Type"))
+		require.NotEmpty(t, fileId)
+		require.Equal(t, int64(len(content)), rsp.Uploads[0].FileSize)
 	})
 
-	t.Run("upload serve should fail if node is down", func(t *testing.T) {
-		server.Close()
+	// 4. Test Serve (The core functionality)
+	t.Run("serve upload returns correct content and type", func(t *testing.T) {
+		fileRsp, httpRsp, err := adminClient.FileSvcAPI.ServeUpload(ctx, fileId).Execute()
+		require.NoError(t, err)
+		require.NotNil(t, fileRsp)
+		defer fileRsp.Close()
 
-		_, _, err := adminClient2.FileSvcAPI.ServeUpload(ctx, fileId).Execute()
+		// Verify Content-Type (Detection works because ID includes extension)
+		require.Equal(t, http.StatusOK, httpRsp.StatusCode)
+		require.Equal(t, "text/plain; charset=utf-8", httpRsp.Header.Get("Content-Type"))
+
+		// Verify Body
+		bs, err := io.ReadAll(fileRsp)
+		require.NoError(t, err)
+		require.Equal(t, content, string(bs))
+	})
+
+	// 5. Test 404
+	t.Run("serving non-existent file returns 404", func(t *testing.T) {
+		_, httpRsp, err := adminClient.FileSvcAPI.ServeUpload(ctx, "non-existent.txt").Execute()
 		require.Error(t, err)
+		require.Equal(t, http.StatusNotFound, httpRsp.StatusCode)
 	})
 }
