@@ -9,8 +9,10 @@ replace github.com/1backend/1backend/clients/go => ../clients/go
 replace github.com/1backend/1backend/sdk/go => ../sdk/go
 
 require (
+	cloud.google.com/go/storage v1.58.0
 	github.com/1backend/1backend/clients/go v0.0.0
 	github.com/1backend/1backend/sdk/go v0.0.0
+	github.com/andybalholm/brotli v1.1.1
 	github.com/anthonynsimon/bild v0.14.0
 	github.com/chai2010/webp v1.4.0
 	github.com/dgraph-io/ristretto v0.2.0
@@ -34,7 +36,9 @@ require (
 	go.uber.org/mock v0.5.0
 	golang.org/x/crypto v0.43.0
 	golang.org/x/image v0.31.0
+	golang.org/x/sync v0.18.0
 	golang.org/x/time v0.14.0
+	google.golang.org/api v0.256.0
 )
 
 require (
@@ -45,7 +49,6 @@ require (
 	cloud.google.com/go/compute/metadata v0.9.0 // indirect
 	cloud.google.com/go/iam v1.5.3 // indirect
 	cloud.google.com/go/monitoring v1.24.2 // indirect
-	cloud.google.com/go/storage v1.58.0 // indirect
 	dario.cat/mergo v1.0.1 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.29.0 // indirect
@@ -54,7 +57,6 @@ require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/ProtonMail/go-crypto v1.1.6 // indirect
-	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cloudflare/circl v1.6.0 // indirect
 	github.com/cncf/xds/go v0.0.0-20250501225837-2ac532fd4443 // indirect
@@ -127,11 +129,9 @@ require (
 	go.opentelemetry.io/otel/trace v1.38.0 // indirect
 	golang.org/x/net v0.46.0 // indirect
 	golang.org/x/oauth2 v0.33.0 // indirect
-	golang.org/x/sync v0.18.0 // indirect
 	golang.org/x/sys v0.37.0 // indirect
 	golang.org/x/text v0.30.0 // indirect
 	golang.org/x/tools v0.37.0 // indirect
-	google.golang.org/api v0.256.0 // indirect
 	google.golang.org/genproto v0.0.0-20250922171735-9219d122eba9 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20251111163417-95abcf5c77ba // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251111163417-95abcf5c77ba // indirect
