@@ -65,24 +65,22 @@ func NewFileService(
 	}
 
 	// Determine Strategy
-	if os.Getenv("OB_FILE_GCS") == "true" {
+	if options.FileGcs {
 		ctx := context.Background()
-		saKeyPath := os.Getenv("OB_GCP_SA_KEY")
-		bucketName := os.Getenv("OB_GCS_BUCKET")
 
-		if saKeyPath == "" || bucketName == "" {
+		if options.GcpSaKey == "" || options.GcsBucket == "" {
 			return nil, fmt.Errorf("GCS enabled but OB_GCP_SA_KEY or OB_GCS_BUCKET is missing")
 		}
 
 		// Initialize GCS Client
-		gcsClient, err := storage.NewClient(ctx, option.WithCredentialsFile(saKeyPath))
+		gcsClient, err := storage.NewClient(ctx, option.WithCredentialsFile(options.GcpSaKey))
 		if err != nil {
 			return nil, fmt.Errorf("failed to init GCS client: %w", err)
 		}
 
 		gcsProvider := &GCSProvider{
 			client: gcsClient,
-			bucket: bucketName,
+			bucket: options.GcsBucket,
 		}
 
 		// Wrap them in the Cache Provider

@@ -184,6 +184,24 @@ func BigBang(options *universe.Options) (*Universe, error) {
 		options.EdgeProxyHttpPort = 80
 	}
 
+	if options.GcpSaKey == "" {
+		options.GcpSaKey = os.Getenv("OB_GCP_SA_KEY")
+	}
+
+	if options.GcsBucket == "" {
+		options.GcsBucket = os.Getenv("OB_GCS_BUCKET")
+	}
+
+	if options.FileGcs == false && os.Getenv("OB_FILE_GCS") == "true" {
+		options.FileGcs = true
+	}
+
+	if options.FileGcs {
+		if options.GcpSaKey == "" || options.GcsBucket == "" {
+			return nil, fmt.Errorf("file gcs is set but sa key or bucket is empty")
+		}
+	}
+
 	if options.EdgeProxyHttpsPort == 0 {
 		edgeProxyHttpsPort := os.Getenv("OB_EDGE_PROXY_HTTPS_PORT")
 		if edgeProxyHttpsPort != "" {
