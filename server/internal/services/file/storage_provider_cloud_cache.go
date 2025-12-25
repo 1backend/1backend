@@ -3,97 +3,95 @@ package fileservice
 import (
 	"context"
 	"io"
-	"os"
-	"path/filepath"
 
 	file "github.com/1backend/1backend/server/internal/services/file/types"
 )
 
 type CloudCacheProvider struct {
-	gcs   *GCSProvider
-	local *LocalProvider
+	cloud StorageProvider
+	local StorageProvider
 }
 
-func NewCloudCacheProvider(gcs *GCSProvider, local *LocalProvider) *CloudCacheProvider {
+func NewCloudCacheProvider(
+	cloud StorageProvider,
+	local StorageProvider,
+) *CloudCacheProvider {
 	return &CloudCacheProvider{
-		gcs:   gcs,
+		cloud: cloud,
 		local: local,
 	}
 }
 
-func (p *CloudCacheProvider) Open(ctx context.Context, filePath string) (io.ReadCloser, int64, string, error) {
-	// 1. Try Local Disk first
-	if f, size, fileName, err := p.local.Open(ctx, filePath); err == nil {
-		return f, size, fileName, nil
+func (p *CloudCacheProvider) Open(ctx context.Context, filePath string) (io.ReadCloser, int64, error) {
+	// 1. Check local cache
+	if f, size, err := p.local.Open(ctx, filePath); err == nil {
+		return f, size, nil
 	}
 
-	// 2. Cache Miss: Pull from GCS
-	gcsReader, size, fileName, err := p.gcs.Open(ctx, filePath)
+	// 2. Cache Miss: Open cloud stream
+	cloudReader, size, err := p.cloud.Open(ctx, filePath)
 	if err != nil {
-		return nil, 0, "", err
+		return nil, 0, err
 	}
 
-	// 3. Prepare local path for caching
-	absPath := filepath.Join(p.local.uploadFolder, filePath)
-	os.MkdirAll(filepath.Dir(absPath), 0755)
-
-	cacheFile, err := os.Create(absPath)
+	// 3. Open local writer for caching
+	localWriter, err := p.local.NewWriter(ctx, filePath)
 	if err != nil {
-		// If disk is full/locked, stream GCS directly so service stays up
-		return gcsReader, size, "", nil
+		// Disk error? Don't break the download, just stream cloud directly.
+		return cloudReader, size, nil
 	}
 
-	// 4. Stream to User and Disk simultaneously
+	// 4. Return the Tee stream
 	return &teeReadCloser{
-		reader: io.TeeReader(gcsReader, cacheFile),
-		closer: gcsReader,
-		file:   cacheFile,
-	}, size, fileName, nil
+		reader: io.TeeReader(cloudReader, localWriter),
+		closer: cloudReader,
+		writer: localWriter,
+	}, size, nil
 }
 
 func (p *CloudCacheProvider) Save(ctx context.Context, u *file.Upload, content io.Reader) (int64, error) {
-	// 1. Write to local disk first
+	// Write-through: Local first, then Cloud
 	written, err := p.local.Save(ctx, u, content)
 	if err != nil {
 		return 0, err
 	}
 
-	// 2. Re-open the local file to stream up to GCS
-	absPath := filepath.Join(p.local.uploadFolder, u.FilePath)
-	f, err := os.Open(absPath)
+	// Use local file as source for Cloud upload
+	f, _, err := p.local.Open(ctx, u.FilePath)
 	if err != nil {
 		return written, nil
 	}
 	defer f.Close()
 
-	// 3. Sync to GCS
-	_, err = p.gcs.Save(ctx, u, f)
+	_, err = p.cloud.Save(ctx, u, f)
 	return written, err
 }
 
-// teeReadCloser is a helper that wraps an io.TeeReader to ensure
-// that both the underlying network stream (GCS) and the local cache file
-// are closed correctly when the operation finishes.
-type teeReadCloser struct {
-	reader io.Reader // This will be the io.TeeReader(gcsReader, localFile)
-	closer io.Closer // This is the original GCS body (to close the connection)
-	file   *os.File  // This is the local file being written to (the cache)
+// GetPath satisfies the interface but we don't need it here anymore
+func (p *CloudCacheProvider) NewWriter(ctx context.Context, f string) (io.WriteCloser, error) {
+	return p.local.NewWriter(ctx, f)
 }
 
-// Read satisfies the io.Reader interface by reading from the TeeReader.
-// As data is read from GCS, it is automatically written to the local file.
+// teeReadCloser is a helper that wraps an io.TeeReader to ensure
+// that both the underlying network stream (Cloud) and the local cache writer
+// are closed correctly when the operation finishes.
+type teeReadCloser struct {
+	reader io.Reader      // The io.TeeReader(cloudReader, localWriter)
+	closer io.Closer      // The original cloud body stream
+	writer io.WriteCloser // The local cache file/stream
+}
+
+// Read satisfies the io.Reader interface.
 func (t *teeReadCloser) Read(p []byte) (n int, err error) {
 	return t.reader.Read(p)
 }
 
-// Close satisfies the io.Closer interface.
-// This is critical: it ensures the local file is flushed/closed and the
-// GCS network connection is released back to the pool.
+// Close ensures both the local cache is finalized and the cloud connection is released.
 func (t *teeReadCloser) Close() error {
-	// Close the local file first to ensure all data is flushed to disk
-	err1 := t.file.Close()
+	// 1. Close the local writer first to flush the cache to disk
+	err1 := t.writer.Close()
 
-	// Close the GCS stream
+	// 2. Close the cloud stream
 	err2 := t.closer.Close()
 
 	if err1 != nil {

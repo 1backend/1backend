@@ -87,14 +87,14 @@ func NewFileService(
 
 		// Wrap them in the Cache Provider
 		fs.storage = &CloudCacheProvider{
-			gcs:   gcsProvider,
+			cloud: gcsProvider,
 			local: localProvider,
 		}
 		logger.Info("File service initialized with GCS Cloud Cache")
 	} else {
 		// Fallback to standard distributed behavior
 		fs.storage = localProvider
-		logger.Info("File service initialized with Distributed Storage")
+		logger.Info("File service initialized with Local Storage")
 	}
 
 	return fs, nil

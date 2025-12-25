@@ -28,14 +28,31 @@ func (fs *FileService) ServeUpload(
 		return
 	}
 
-	// 3. Open the stream via the StorageProvider (Local, Distributed, or GCS-Cache)
-	src, size, filename, err := fs.storage.Open(r.Context(), fileId)
+	uploadReplicaIs, err := fs.uploadStore.Query(datastore.Equals(
+		[]string{"fileId"},
+		fileId,
+	)).Find()
+	if err != nil {
+		logger.Error("Error querying upload", slog.Any("error", err))
+		endpoint.InternalServerError(w)
+		return
+	}
+	if len(uploadReplicaIs) == 0 {
+		endpoint.WriteString(w, http.StatusNotFound, "File not found")
+		return
+	}
+
+	uploadReplicas := toUploads(uploadReplicaIs)
+
+	src, size, err := fs.storage.Open(r.Context(), fileId)
 	if err != nil {
 		logger.Error("Failed to open file stream", slog.Any("error", err))
 		endpoint.WriteString(w, http.StatusNotFound, "File not found")
 		return
 	}
 	defer src.Close()
+
+	filename := uploadReplicas[0].FileName
 
 	// 4. Set Headers and stream the response
 	contentType := mime.TypeByExtension(filepath.Ext(filename))
