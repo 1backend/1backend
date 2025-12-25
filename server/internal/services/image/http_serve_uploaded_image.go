@@ -175,21 +175,38 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 }
 
 // Helper to handle aspect ratio and prevent enlargement
-func (cs *ImageService) smartResize(img stdimage.Image, w, h int, filter transform.ResampleFilter) stdimage.Image {
+func (cs *ImageService) smartResize(img stdimage.Image, targetW, targetH int, filter transform.ResampleFilter) stdimage.Image {
 	bounds := img.Bounds()
 	origW, origH := bounds.Dx(), bounds.Dy()
 
-	if w <= 0 {
-		w = int(float64(h) * float64(origW) / float64(origH))
-	}
-	if h <= 0 {
-		h = int(float64(w) * float64(origH) / float64(origW))
-	}
+	// 1. Calculate the scaling factor
+	ratioW := float64(targetW) / float64(origW)
+	ratioH := float64(targetH) / float64(origH)
 
-	// Prevent enlargement
-	if w >= origW || h >= origH {
+	var finalW, finalH int
+
+	if targetW > 0 && targetH > 0 {
+		// Use the smaller ratio to ensure the image fits inside the box
+		ratio := ratioW
+		if ratioH < ratioW {
+			ratio = ratioH
+		}
+		finalW = int(float64(origW) * ratio)
+		finalH = int(float64(origH) * ratio)
+	} else if targetW > 0 {
+		finalW = targetW
+		finalH = int(float64(targetW) * float64(origH) / float64(origW))
+	} else if targetH > 0 {
+		finalH = targetH
+		finalW = int(float64(targetH) * float64(origW) / float64(origH))
+	} else {
 		return img
 	}
 
-	return transform.Resize(img, w, h, filter)
+	// 2. Prevent enlargement (Don't upscale if target is bigger than source)
+	if finalW >= origW || finalH >= origH {
+		return img
+	}
+
+	return transform.Resize(img, finalW, finalH, filter)
 }
