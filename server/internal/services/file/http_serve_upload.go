@@ -28,21 +28,26 @@ func (fs *FileService) ServeUpload(
 		return
 	}
 
-	uploadReplicaIs, err := fs.uploadStore.Query(datastore.Equals(
-		[]string{"fileId"},
-		fileId,
-	)).Find()
-	if err != nil {
-		logger.Error("Error querying upload", slog.Any("error", err))
-		endpoint.InternalServerError(w)
-		return
-	}
-	if len(uploadReplicaIs) == 0 {
-		endpoint.WriteString(w, http.StatusNotFound, "File not found")
-		return
-	}
+	var upload *file.Upload
 
-	uploadReplicas := toUploads(uploadReplicaIs)
+	if cachedUpload, ok := fs.cache.Get(fileId); ok {
+		upload = cachedUpload
+	} else {
+		uploadReplicaIs, err := fs.uploadStore.Query(datastore.Equals(
+			[]string{"fileId"},
+			fileId,
+		)).Find()
+
+		if err != nil || len(uploadReplicaIs) == 0 {
+			endpoint.WriteString(w, http.StatusNotFound, "File not found")
+			return
+		}
+
+		uploadReplicas := toUploads(uploadReplicaIs)
+		upload = uploadReplicas[0]
+
+		fs.cache.Add(fileId, upload)
+	}
 
 	src, size, err := fs.storage.Open(r.Context(), fileId)
 	if err != nil {
@@ -52,7 +57,7 @@ func (fs *FileService) ServeUpload(
 	}
 	defer src.Close()
 
-	filename := uploadReplicas[0].FileName
+	filename := upload.FileName
 
 	// 4. Set Headers and stream the response
 	contentType := mime.TypeByExtension(filepath.Ext(filename))

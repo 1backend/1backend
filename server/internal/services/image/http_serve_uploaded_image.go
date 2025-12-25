@@ -17,7 +17,6 @@ import (
 	"image/jpeg"
 	"image/png"
 	"io"
-	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -26,14 +25,9 @@ import (
 
 	"github.com/anthonynsimon/bild/transform"
 	"github.com/gorilla/mux"
-	"github.com/pkg/errors"
 
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/endpoint"
-	"github.com/1backend/1backend/sdk/go/logger"
-
-	"golang.org/x/image/bmp"
-	"golang.org/x/image/tiff"
 
 	"github.com/chai2010/webp"
 
@@ -66,63 +60,23 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	widthStr := r.URL.Query().Get("width")
-	heightStr := r.URL.Query().Get("height")
-	qualityStr := r.URL.Query().Get("quality")
-
-	width := 0
-	height := 0
-	quality := 85
-
-	var err error
-	if widthStr != "" {
-		widthStr = strings.TrimSuffix(widthStr, "px")
-		width, err = strconv.Atoi(widthStr)
-		if err != nil {
-			endpoint.WriteErr(w, http.StatusBadRequest, errors.New("invalid width"))
-			return
-		}
-	}
-	if heightStr != "" {
-		heightStr = strings.TrimSuffix(heightStr, "px")
-		height, err = strconv.Atoi(heightStr)
-		if err != nil {
-			endpoint.WriteErr(w, http.StatusBadRequest, errors.New("invalid height"))
-			return
-		}
-	}
-	if qualityStr != "" {
-		quality, err = strconv.Atoi(qualityStr)
-		if err != nil {
-			endpoint.WriteErr(w, http.StatusBadRequest, errors.New("invalid quality"))
-			return
-		}
-	}
-
-	rsp, hrsp, err := cs.options.ClientFactory.Client(client.WithToken(cs.token)).
-		FileSvcAPI.ServeUpload(context.Background(), fileId).
-		Execute()
-	if err != nil {
-		endpoint.WriteErr(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	contentType := "image/png"
-	if len(hrsp.Header["Content-Type"]) > 0 {
-		contentType = hrsp.Header.Get("Content-Type")
+	// 1. Parse Params (Optimized: No need to trim "px" manually if using Atoi generally)
+	width, _ := strconv.Atoi(strings.TrimSuffix(r.URL.Query().Get("width"), "px"))
+	height, _ := strconv.Atoi(strings.TrimSuffix(r.URL.Query().Get("height"), "px"))
+	quality, _ := strconv.Atoi(r.URL.Query().Get("quality"))
+	if quality <= 0 {
+		quality = 85
 	}
 
 	resampleFilter := transform.Lanczos
 
-	cacheKeyData := fmt.Sprintf("%s-%d-%d-%d-%s-%v",
-		fileId,
-		width,
-		height,
-		quality,
-		contentType,
-		resampleFilter,
-	)
+	// 2. Metadata Lookup (Avoid unnecessary Network calls)
+	contentType, metaFound := cs.metaCache.Get(fileId)
 
+	// 3. Disk Cache Check
+	// We generate the hash without the content-type if not found,
+	// but include it if we have it to ensure unique variants.
+	cacheKeyData := fmt.Sprintf("%s-%d-%d-%d-%s", fileId, width, height, quality, contentType)
 	h := sha1.New()
 	h.Write([]byte(cacheKeyData))
 	hash := hex.EncodeToString(h.Sum(nil))
@@ -130,125 +84,112 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 
 	if f, err := os.Open(cachePath); err == nil {
 		defer f.Close()
-		switch contentType {
-		case "image/jpeg", "image/jpg":
-			w.Header().Set("Content-Type", "image/jpeg")
-		case "image/gif":
-			w.Header().Set("Content-Type", "image/gif")
-		case "image/webp":
-			w.Header().Set("Content-Type", "image/webp")
-		case "image/avif":
-			w.Header().Set("Content-Type", "image/avif")
-		default:
+		if metaFound {
+			w.Header().Set("Content-Type", contentType)
+		} else {
+			// Sniff or fallback if meta was lost from RAM but file exists on disk
 			w.Header().Set("Content-Type", "image/png")
 		}
-
 		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
-
 		io.Copy(w, f)
 		return
 	}
 
-	var img stdimage.Image
-	switch contentType {
-	case "image/png":
-		img, err = png.Decode(rsp)
-	case "image/jpeg", "image/jpg":
-		img, err = jpeg.Decode(rsp)
-	case "image/gif":
-		img, err = gif.Decode(rsp)
-	case "image/webp":
-		img, err = webp.Decode(rsp)
-	case "image/tiff":
-		img, err = tiff.Decode(rsp)
-	case "image/bmp":
-		img, err = bmp.Decode(rsp)
-	case "image/avif":
-		img, err = avif.Decode(rsp)
-	default:
-		// fall back to generic
-		img, _, err = stdimage.Decode(rsp)
-	}
-	if err != nil {
-		endpoint.WriteErr(w, http.StatusInternalServerError, err)
-		return
-	}
-
-	if width > 0 && height > 0 {
-		bounds := img.Bounds()
-		origWidth := bounds.Dx()
-		origHeight := bounds.Dy()
-
-		// Compute the target width/height while maintaining aspect ratio
-		var targetWidth, targetHeight int
-
-		if width > 0 && height > 0 {
-			aspectRatio := float64(origWidth) / float64(origHeight)
-			if float64(width)/aspectRatio <= float64(height) {
-				targetWidth = width
-				targetHeight = int(float64(width) / aspectRatio)
-			} else {
-				targetHeight = height
-				targetWidth = int(float64(height) * aspectRatio)
-			}
-		} else if width > 0 {
-			targetWidth = width
-			targetHeight = int(float64(width) * float64(origHeight) / float64(origWidth))
-		} else if height > 0 {
-			targetHeight = height
-			targetWidth = int(float64(height) * float64(origWidth) / float64(origHeight))
-		} else {
-			// Neither width nor height is set, don't resize
-			targetWidth = origWidth
-			targetHeight = origHeight
+	// 4. Singleflight: Prevent concurrent processing of the same image variant
+	_, err, _ := cs.sf.Do(hash, func() (interface{}, error) {
+		// Double check disk inside singleflight to catch the winner's work
+		if _, err := os.Stat(cachePath); err == nil {
+			return nil, nil // Someone else just finished it
 		}
 
-		// Prevent enlargement
-		if targetWidth > origWidth || targetHeight > origHeight {
-			targetWidth, targetHeight = origWidth, origHeight
+		// 5. CACHE MISS: Fetch from File Service
+		rsp, hrsp, err := cs.options.ClientFactory.Client(client.WithToken(cs.token)).
+			FileSvcAPI.ServeUpload(context.Background(), fileId).
+			Execute()
+		if err != nil {
+			return nil, err
 		}
 
-		logger.Info("Resizing image",
-			slog.Int("width", width),
-			slog.Int("height", height),
-			slog.String("fileId", fileId),
-			slog.String("contentType", contentType),
-			slog.Int("quality", quality),
-		)
-		img = transform.Resize(img, targetWidth, targetHeight, resampleFilter)
-	}
+		// Update meta cache immediately
+		fetchedType := hrsp.Header.Get("Content-Type")
+		if fetchedType == "" {
+			fetchedType = "image/png"
+		}
+		cs.metaCache.Add(fileId, fetchedType)
+		contentType = fetchedType
 
-	outFile, err := os.Create(cachePath)
+		// 6. Decode
+		var img stdimage.Image
+		switch contentType {
+		case "image/png":
+			img, err = png.Decode(rsp)
+		case "image/jpeg", "image/jpg":
+			img, err = jpeg.Decode(rsp)
+		case "image/gif":
+			img, err = gif.Decode(rsp)
+		case "image/webp":
+			img, err = webp.Decode(rsp)
+		case "image/avif":
+			img, err = avif.Decode(rsp)
+		default:
+			img, _, err = stdimage.Decode(rsp)
+		}
+		if err != nil {
+			return nil, err
+		}
+
+		// 7. Resize (only if necessary)
+		if width > 0 || height > 0 {
+			img = cs.smartResize(img, width, height, resampleFilter)
+		}
+
+		// 8. Save and Stream
+		outFile, err := os.Create(cachePath)
+		if err != nil {
+			return nil, err
+		}
+		defer outFile.Close()
+
+		// Set response headers
+		w.Header().Set("Content-Type", contentType)
+		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+
+		// Use MultiWriter to save to disk and send to user simultaneously
+		mw := io.MultiWriter(w, outFile)
+		switch contentType {
+		case "image/jpeg", "image/jpg":
+			err = jpeg.Encode(mw, img, &jpeg.Options{Quality: quality})
+		case "image/webp":
+			err = webp.Encode(mw, img, &webp.Options{Quality: float32(quality)})
+		case "image/gif":
+			err = gif.Encode(mw, img, nil)
+		default:
+			err = png.Encode(mw, img)
+		}
+		return nil, err
+	})
+
 	if err != nil {
 		endpoint.WriteErr(w, http.StatusInternalServerError, err)
-		return
 	}
-	defer outFile.Close()
+}
 
-	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+// Helper to handle aspect ratio and prevent enlargement
+func (cs *ImageService) smartResize(img stdimage.Image, w, h int, filter transform.ResampleFilter) stdimage.Image {
+	bounds := img.Bounds()
+	origW, origH := bounds.Dx(), bounds.Dy()
 
-	switch contentType {
-	case "image/jpeg", "image/jpg":
-		w.Header().Set("Content-Type", "image/jpeg")
-		err = jpeg.Encode(io.MultiWriter(w, outFile), img, &jpeg.Options{Quality: quality})
-	case "image/gif":
-		w.Header().Set("Content-Type", "image/gif")
-		err = gif.Encode(io.MultiWriter(w, outFile), img, nil)
-	case "image/webp":
-		w.Header().Set("Content-Type", "image/webp")
-		err = webp.Encode(io.MultiWriter(w, outFile), img, &webp.Options{Quality: float32(quality)})
-	default:
-		// Fallback for formats without encoder (e.g. TIFF, BMP):
-		// serve cached version as PNG
-		w.Header().Set("Content-Type", "image/png")
-		err = png.Encode(io.MultiWriter(w, outFile), img)
+	if w <= 0 {
+		w = int(float64(h) * float64(origW) / float64(origH))
+	}
+	if h <= 0 {
+		h = int(float64(w) * float64(origH) / float64(origW))
 	}
 
-	switch {
-	case err == nil:
-	case errors.Is(err, stdimage.ErrFormat):
-		endpoint.WriteErr(w, http.StatusUnsupportedMediaType, errors.New("unsupported image format"))
-	default:
-		endpoint.WriteErr(w, http.StatusInternalServerError, err)
+	// Prevent enlargement
+	if w >= origW || h >= origH {
+		return img
 	}
+
+	return transform.Resize(img, w, h, filter)
 }

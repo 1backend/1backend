@@ -21,9 +21,11 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/1backend/1backend/sdk/go/service"
+	file "github.com/1backend/1backend/server/internal/services/file/types"
 	types "github.com/1backend/1backend/server/internal/services/file/types"
 	"github.com/1backend/1backend/server/internal/universe"
 	"github.com/gorilla/mux"
+	lru "github.com/hashicorp/golang-lru/v2"
 	"github.com/pkg/errors"
 	"google.golang.org/api/option"
 )
@@ -48,6 +50,7 @@ type FileService struct {
 	storage StorageProvider
 
 	nodeId string
+	cache  *lru.Cache[string, *file.Upload]
 }
 
 func NewFileService(
@@ -63,6 +66,8 @@ func NewFileService(
 	localProvider := &LocalProvider{
 		uploadFolder: fs.uploadFolder,
 	}
+
+	fs.cache, _ = lru.New[string, *file.Upload](100000)
 
 	// Determine Strategy
 	if options.FileGcs {
