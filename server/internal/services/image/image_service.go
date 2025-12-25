@@ -40,6 +40,7 @@ type ImageService struct {
 
 	credentialStore datastore.DataStore
 	metaCache       *lru.Cache[string, string]
+	imageDataCache  *lru.Cache[string, []byte]
 	// Singleflight: Ensures only one resize operation happens for the same hash
 	sf singleflight.Group
 }
@@ -51,6 +52,7 @@ func NewImageService(
 		options: options,
 	}
 	cs.metaCache, _ = lru.New[string, string](100000)
+	cs.imageDataCache, _ = lru.New[string, []byte](10000)
 
 	return cs, nil
 }

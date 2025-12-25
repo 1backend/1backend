@@ -8,12 +8,12 @@
 package imageservice
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
 	stdimage "image"
-	"image/gif"
 	"image/jpeg"
 	"image/png"
 	"io"
@@ -30,8 +30,6 @@ import (
 	"github.com/1backend/1backend/sdk/go/endpoint"
 
 	"github.com/chai2010/webp"
-
-	"github.com/gen2brain/avif"
 
 	image "github.com/1backend/1backend/server/internal/services/image/types"
 )
@@ -60,7 +58,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	// 1. Parse Params (Optimized: No need to trim "px" manually if using Atoi generally)
+	// 1. Parse Params
 	width, _ := strconv.Atoi(strings.TrimSuffix(r.URL.Query().Get("width"), "px"))
 	height, _ := strconv.Atoi(strings.TrimSuffix(r.URL.Query().Get("height"), "px"))
 	quality, _ := strconv.Atoi(r.URL.Query().Get("quality"))
@@ -68,49 +66,60 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		quality = 85
 	}
 
-	resampleFilter := transform.Lanczos
-
-	// 2. Metadata Lookup (Avoid unnecessary Network calls)
 	contentType, metaFound := cs.metaCache.Get(fileId)
 
-	// 3. Disk Cache Check
-	// We generate the hash without the content-type if not found,
-	// but include it if we have it to ensure unique variants.
+	// 2. Generate Hash
 	cacheKeyData := fmt.Sprintf("%s-%d-%d-%d-%s", fileId, width, height, quality, contentType)
 	h := sha1.New()
 	h.Write([]byte(cacheKeyData))
 	hash := hex.EncodeToString(h.Sum(nil))
-	cachePath := filepath.Join(cs.imageCacheFolder, hash)
 
-	if f, err := os.Open(cachePath); err == nil {
-		defer f.Close()
-		if metaFound {
-			w.Header().Set("Content-Type", contentType)
-		} else {
-			// Sniff or fallback if meta was lost from RAM but file exists on disk
+	// 3. L1 CACHE CHECK (Memory)
+	if data, ok := cs.imageDataCache.Get(hash); ok {
+		w.Header().Set("Content-Type", contentType) // contentType might be empty if !metaFound
+		if !metaFound {
 			w.Header().Set("Content-Type", "image/png")
 		}
 		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
-		io.Copy(w, f)
+		w.Write(data)
 		return
 	}
 
-	// 4. Singleflight: Prevent concurrent processing of the same image variant
-	_, err, _ := cs.sf.Do(hash, func() (interface{}, error) {
-		// Double check disk inside singleflight to catch the winner's work
-		if _, err := os.Stat(cachePath); err == nil {
-			return nil, nil // Someone else just finished it
+	// 4. L2 CACHE CHECK (Disk)
+	cachePath := filepath.Join(cs.imageCacheFolder, hash)
+	if f, err := os.Open(cachePath); err == nil {
+		defer f.Close()
+
+		// Optimization: Read into buffer to serve and potentially populate L1
+		data, err := io.ReadAll(f)
+		if err == nil {
+			// Populate L1 if small (e.g., < 100KB)
+			if len(data) < 100*1024 {
+				cs.imageDataCache.Add(hash, data)
+			}
+			w.Header().Set("Content-Type", contentType)
+			if !metaFound {
+				w.Header().Set("Content-Type", "image/png")
+			}
+			w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+			w.Write(data)
+			return
+		}
+	}
+
+	// 5. CACHE MISS (Singleflight)
+	val, err, _ := cs.sf.Do(hash, func() (interface{}, error) {
+		// Re-check disk in case someone else just finished it
+		if data, err := os.ReadFile(cachePath); err == nil {
+			return data, nil
 		}
 
-		// 5. CACHE MISS: Fetch from File Service
 		rsp, hrsp, err := cs.options.ClientFactory.Client(client.WithToken(cs.token)).
-			FileSvcAPI.ServeUpload(context.Background(), fileId).
-			Execute()
+			FileSvcAPI.ServeUpload(context.Background(), fileId).Execute()
 		if err != nil {
 			return nil, err
 		}
 
-		// Update meta cache immediately
 		fetchedType := hrsp.Header.Get("Content-Type")
 		if fetchedType == "" {
 			fetchedType = "image/png"
@@ -118,19 +127,15 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		cs.metaCache.Add(fileId, fetchedType)
 		contentType = fetchedType
 
-		// 6. Decode
+		// 6. Decode & Process
 		var img stdimage.Image
 		switch contentType {
 		case "image/png":
 			img, err = png.Decode(rsp)
 		case "image/jpeg", "image/jpg":
 			img, err = jpeg.Decode(rsp)
-		case "image/gif":
-			img, err = gif.Decode(rsp)
 		case "image/webp":
 			img, err = webp.Decode(rsp)
-		case "image/avif":
-			img, err = avif.Decode(rsp)
 		default:
 			img, _, err = stdimage.Decode(rsp)
 		}
@@ -138,40 +143,54 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 			return nil, err
 		}
 
-		// 7. Resize (only if necessary)
 		if width > 0 || height > 0 {
-			img = cs.smartResize(img, width, height, resampleFilter)
+			img = cs.smartResize(img, width, height, transform.Lanczos)
 		}
 
-		// 8. Save and Stream
-		outFile, err := os.Create(cachePath)
-		if err != nil {
-			return nil, err
-		}
-		defer outFile.Close()
-
-		// Set response headers
-		w.Header().Set("Content-Type", contentType)
-		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
-
-		// Use MultiWriter to save to disk and send to user simultaneously
-		mw := io.MultiWriter(w, outFile)
+		// 7. Encode to Buffer (Capture bytes for L1 and Disk)
+		buf := new(bytes.Buffer)
 		switch contentType {
 		case "image/jpeg", "image/jpg":
-			err = jpeg.Encode(mw, img, &jpeg.Options{Quality: quality})
+			jpeg.Encode(buf, img, &jpeg.Options{Quality: quality})
 		case "image/webp":
-			err = webp.Encode(mw, img, &webp.Options{Quality: float32(quality)})
-		case "image/gif":
-			err = gif.Encode(mw, img, nil)
+			webp.Encode(buf, img, &webp.Options{Quality: float32(quality)})
 		default:
-			err = png.Encode(mw, img)
+			png.Encode(buf, img)
 		}
-		return nil, err
+
+		finalData := buf.Bytes()
+
+		// 8. Save to Disk (Async-ish or via WriteFile)
+		_ = os.WriteFile(cachePath, finalData, 0644)
+
+		// 9. Populate L1 if small
+		if len(finalData) < 100*1024 {
+			cs.imageDataCache.Add(hash, finalData)
+		}
+
+		return finalData, nil
 	})
 
 	if err != nil {
 		endpoint.WriteErr(w, http.StatusInternalServerError, err)
+		return
 	}
+
+	// --- CRITICAL FIX START ---
+	// If we are here, 'val' contains the []byte from a fresh process or a concurrent winner
+	data, ok := val.([]byte)
+	if !ok || len(data) == 0 {
+		endpoint.WriteErr(w, http.StatusInternalServerError, fmt.Errorf("failed to retrieve image data"))
+		return
+	}
+
+	// Set headers again because the waiting callers didn't run the switch/hrsp logic
+	w.Header().Set("Content-Type", contentType)
+	if contentType == "" {
+		w.Header().Set("Content-Type", "image/png")
+	}
+	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+	w.Write(data)
 }
 
 // Helper to handle aspect ratio and prevent enlargement
