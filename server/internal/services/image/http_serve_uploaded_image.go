@@ -14,8 +14,11 @@ import (
 	"encoding/hex"
 	"fmt"
 	stdimage "image"
+	"image/gif"
 	"image/jpeg"
 	"image/png"
+	"io"
+	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -23,19 +26,18 @@ import (
 	"strings"
 
 	"github.com/anthonynsimon/bild/transform"
+	"github.com/gen2brain/avif"
+
 	"github.com/gorilla/mux"
+	"github.com/pkg/errors"
+	"golang.org/x/image/bmp"
+	"golang.org/x/image/tiff"
 
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/endpoint"
-
-	_ "image/gif"
-	_ "image/jpeg"
-	_ "image/png"
+	"github.com/1backend/1backend/sdk/go/logger"
 
 	"github.com/chai2010/webp"
-
-	_ "golang.org/x/image/bmp"
-	_ "golang.org/x/image/tiff"
 
 	image "github.com/1backend/1backend/server/internal/services/image/types"
 )
@@ -69,20 +71,38 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	// 1. Parse Params
-	width, _ := strconv.Atoi(strings.TrimSuffix(r.URL.Query().Get("width"), "px"))
-	height, _ := strconv.Atoi(strings.TrimSuffix(r.URL.Query().Get("height"), "px"))
-	quality, _ := strconv.Atoi(r.URL.Query().Get("quality"))
-	if quality <= 0 {
-		quality = 85
-	}
+	widthStr := r.URL.Query().Get("width")
+	heightStr := r.URL.Query().Get("height")
+	qualityStr := r.URL.Query().Get("quality")
 
-	// 2. Initial cache check (L1/L2)
-	// We use a stable hash that doesn't rely on the metadata being found yet
-	cacheKeyData := fmt.Sprintf("%s-%d-%d-%d", fileId, width, height, quality)
-	h := sha1.New()
-	h.Write([]byte(cacheKeyData))
-	hash := hex.EncodeToString(h.Sum(nil))
+	width := 0
+	height := 0
+	quality := 85
+
+	var err error
+	if widthStr != "" {
+		widthStr = strings.TrimSuffix(widthStr, "px")
+		width, err = strconv.Atoi(widthStr)
+		if err != nil {
+			endpoint.WriteErr(w, http.StatusBadRequest, errors.New("invalid width"))
+			return
+		}
+	}
+	if heightStr != "" {
+		heightStr = strings.TrimSuffix(heightStr, "px")
+		height, err = strconv.Atoi(heightStr)
+		if err != nil {
+			endpoint.WriteErr(w, http.StatusBadRequest, errors.New("invalid height"))
+			return
+		}
+	}
+	if qualityStr != "" {
+		quality, err = strconv.Atoi(qualityStr)
+		if err != nil {
+			endpoint.WriteErr(w, http.StatusBadRequest, errors.New("invalid quality"))
+			return
+		}
+	}
 
 	contentType, _ := cs.metaCache.Get(fileId)
 
@@ -105,38 +125,53 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		cs.metaCache.Add(fileId, contentType)
 	}
 
+	cacheKeyData := fmt.Sprintf("%s-%d-%d-%d", fileId, width, height, quality)
+	h := sha1.New()
+	h.Write([]byte(cacheKeyData))
+	hash := hex.EncodeToString(h.Sum(nil))
+
+	switch contentType {
+	case "image/jpeg", "image/jpg":
+		w.Header().Set("Content-Type", "image/jpeg")
+	case "image/gif":
+		w.Header().Set("Content-Type", "image/gif")
+	case "image/webp":
+		w.Header().Set("Content-Type", "image/webp")
+	case "image/avif":
+		w.Header().Set("Content-Type", "image/avif")
+	default:
+		w.Header().Set("Content-Type", "image/png")
+	}
+
+	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+
 	// Check RAM
 	if data, ok := cs.imageDataCache.Get(hash); ok {
 		contentType, _ := cs.metaCache.Get(fileId)
 		if contentType == "" {
 			contentType = "image/png"
 		}
-		w.Header().Set("Content-Type", contentType)
-		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+
 		w.Write(data)
 		return
 	}
 
-	// Check Disk
+	// Check disk
 	cachePath := filepath.Join(cs.imageCacheFolder, hash)
 	if data, err := os.ReadFile(cachePath); err == nil {
 		if len(data) < 100*1024 {
 			cs.imageDataCache.Add(hash, data)
 		}
-		w.Header().Set("Content-Type", contentType)
-		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+
 		w.Write(data)
 		return
 	}
 
-	// 3. Singleflight - Only one worker processes the image
 	val, err, _ := cs.sf.Do(hash, func() (interface{}, error) {
-		// Double check disk
 		if data, err := os.ReadFile(cachePath); err == nil {
 			return &imgResult{Data: data, ContentType: contentType}, nil
 		}
 
-		// Fetch original
 		if rsp == nil {
 			var (
 				hrsp *http.Response
@@ -148,57 +183,105 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 			if err != nil {
 				return nil, err
 			}
+			defer rsp.Close()
 
-			contentType = hrsp.Header["Content-Type"][0]
-			cs.metaCache.Add(fileId, contentType)
+			cs.metaCache.Add(fileId, hrsp.Header.Get("Content-Type"))
 		}
 
-		// --- YOUR ORIGINAL DECODE BLOCK RESTORED ---
 		var img stdimage.Image
-		var decodeErr error
 		switch contentType {
 		case "image/png":
-			img, decodeErr = png.Decode(rsp)
+			img, err = png.Decode(rsp)
 		case "image/jpeg", "image/jpg":
-			img, decodeErr = jpeg.Decode(rsp)
+			img, err = jpeg.Decode(rsp)
+		case "image/gif":
+			img, err = gif.Decode(rsp)
 		case "image/webp":
-			img, decodeErr = webp.Decode(rsp)
+			img, err = webp.Decode(rsp)
+		case "image/tiff":
+			img, err = tiff.Decode(rsp)
+		case "image/bmp":
+			img, err = bmp.Decode(rsp)
+		case "image/avif":
+			img, err = avif.Decode(rsp)
 		default:
-			img, _, decodeErr = stdimage.Decode(rsp)
+			// fall back to generic
+			img, _, err = stdimage.Decode(rsp)
 		}
-		if decodeErr != nil {
-			return nil, decodeErr
-		}
-
-		// 4. Resize
-		if width > 0 || height > 0 {
-			img = cs.smartResize(img, width, height, transform.Lanczos)
+		if err != nil {
+			endpoint.WriteErr(w, http.StatusInternalServerError, err)
+			return nil, errors.Wrap(err, "decode err")
 		}
 
-		// 5. Encode
+		if width > 0 && height > 0 {
+			bounds := img.Bounds()
+			origWidth := bounds.Dx()
+			origHeight := bounds.Dy()
+
+			// Compute the target width/height while maintaining aspect ratio
+			var targetWidth, targetHeight int
+
+			if width > 0 && height > 0 {
+				aspectRatio := float64(origWidth) / float64(origHeight)
+				if float64(width)/aspectRatio <= float64(height) {
+					targetWidth = width
+					targetHeight = int(float64(width) / aspectRatio)
+				} else {
+					targetHeight = height
+					targetWidth = int(float64(height) * aspectRatio)
+				}
+			} else if width > 0 {
+				targetWidth = width
+				targetHeight = int(float64(width) * float64(origHeight) / float64(origWidth))
+			} else if height > 0 {
+				targetHeight = height
+				targetWidth = int(float64(height) * float64(origWidth) / float64(origHeight))
+			} else {
+				// Neither width nor height is set, don't resize
+				targetWidth = origWidth
+				targetHeight = origHeight
+			}
+
+			// Prevent enlargement
+			if targetWidth > origWidth || targetHeight > origHeight {
+				targetWidth, targetHeight = origWidth, origHeight
+			}
+
+			logger.Info("Resizing image",
+				slog.Int("width", width),
+				slog.Int("height", height),
+				slog.String("fileId", fileId),
+				slog.String("contentType", contentType),
+				slog.Int("quality", quality),
+			)
+			img = transform.Resize(img, targetWidth, targetHeight, transform.Lanczos)
+		}
+
 		buf := new(bytes.Buffer)
-		var encodeErr error
+
 		switch contentType {
 		case "image/jpeg", "image/jpg":
-			encodeErr = jpeg.Encode(buf, img, &jpeg.Options{Quality: quality})
+			err = jpeg.Encode(io.MultiWriter(w, buf), img, &jpeg.Options{Quality: quality})
+		case "image/gif":
+			err = gif.Encode(io.MultiWriter(w, buf), img, nil)
 		case "image/webp":
-			encodeErr = webp.Encode(buf, img, &webp.Options{Quality: float32(quality)})
+			err = webp.Encode(io.MultiWriter(w, buf), img, &webp.Options{Quality: float32(quality)})
 		default:
-			encodeErr = png.Encode(buf, img)
-		}
-		if encodeErr != nil {
-			return nil, encodeErr
+			// Fallback for formats without encoder (e.g. TIFF, BMP):
+			// serve cached version as PNG
+			w.Header().Set("Content-Type", "image/png")
+			err = png.Encode(io.MultiWriter(w, buf), img)
 		}
 
 		finalData := buf.Bytes()
 		_ = os.WriteFile(cachePath, finalData, 0644)
-		cs.metaCache.Add(fileId, contentType) // Store for L1/L2 hits
 
+		result := &imgResult{Data: finalData, ContentType: contentType}
 		if len(finalData) < 100*1024 {
-			cs.imageDataCache.Add(hash, finalData)
+			cs.imageDataCache.Add(hash, result.Data)
 		}
 
-		return &imgResult{Data: finalData, ContentType: contentType}, nil
+		return result, nil
 	})
 
 	if err != nil {
@@ -206,46 +289,6 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	// 6. Serve the result to everyone (Winner and Waiters)
 	res := val.(*imgResult)
-	w.Header().Set("Content-Type", res.ContentType)
-	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 	w.Write(res.Data)
-}
-
-// Helper to handle aspect ratio and prevent enlargement
-func (cs *ImageService) smartResize(img stdimage.Image, targetW, targetH int, filter transform.ResampleFilter) stdimage.Image {
-	bounds := img.Bounds()
-	origW, origH := bounds.Dx(), bounds.Dy()
-
-	// 1. Calculate the scaling factor
-	ratioW := float64(targetW) / float64(origW)
-	ratioH := float64(targetH) / float64(origH)
-
-	var finalW, finalH int
-
-	if targetW > 0 && targetH > 0 {
-		// Use the smaller ratio to ensure the image fits inside the box
-		ratio := ratioW
-		if ratioH < ratioW {
-			ratio = ratioH
-		}
-		finalW = int(float64(origW) * ratio)
-		finalH = int(float64(origH) * ratio)
-	} else if targetW > 0 {
-		finalW = targetW
-		finalH = int(float64(targetW) * float64(origH) / float64(origW))
-	} else if targetH > 0 {
-		finalH = targetH
-		finalW = int(float64(targetH) * float64(origW) / float64(origH))
-	} else {
-		return img
-	}
-
-	// 2. Prevent enlargement (Don't upscale if target is bigger than source)
-	if finalW >= origW || finalH >= origH {
-		return img
-	}
-
-	return transform.Resize(img, finalW, finalH, filter)
 }
