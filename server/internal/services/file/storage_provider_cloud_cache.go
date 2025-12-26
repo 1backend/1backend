@@ -59,7 +59,7 @@ func (p *CloudCacheProvider) Save(ctx context.Context, u *file.Upload, content i
 	// Use local file as source for Cloud upload
 	f, _, err := p.local.Open(ctx, u.FilePath)
 	if err != nil {
-		return written, nil
+		return written, err
 	}
 	defer f.Close()
 

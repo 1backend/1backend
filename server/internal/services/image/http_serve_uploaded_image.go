@@ -155,7 +155,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 	}
 
 	// Check disk
-	cachePath := filepath.Join(cs.imageCacheFolder, hash)
+	cachePath := cs.getCachePath(hash)
 	if data, err := os.ReadFile(cachePath); err == nil {
 		if len(data) < memCacheLimit {
 			cs.imageDataCache.Add(hash, data)
@@ -289,4 +289,15 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 
 	res := val.(*imgResult)
 	w.Write(res.Data)
+}
+
+func (cs *ImageService) getCachePath(hash string) string {
+	// Shard by the first 4 characters of the SHA1 hash
+	subfolder := filepath.Join(hash[0:2], hash[2:4])
+	fullDir := filepath.Join(cs.imageCacheFolder, subfolder)
+
+	// Ensure the directories exist
+	_ = os.MkdirAll(fullDir, 0755)
+
+	return filepath.Join(fullDir, hash)
 }

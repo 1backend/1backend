@@ -6,7 +6,6 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
-	"os"
 	"path/filepath"
 	"time"
 
@@ -80,22 +79,6 @@ func (fs *FileService) UploadFile(
 		// prevent enumeration, as there is no concept of file ownership.
 		fileId := sdk.OpaqueId("file")
 
-		destinationFilePath := filepath.Join(fs.uploadFolder, fileId)
-		dstFile, err := os.Create(destinationFilePath)
-		if err != nil {
-			logger.Error("Failed to create destination file", slog.Any("error", err))
-			endpoint.InternalServerError(w)
-			return
-		}
-		defer dstFile.Close()
-
-		written, err := io.Copy(dstFile, part)
-		if err != nil {
-			logger.Error("Failed to copy file data", slog.Any("error", err))
-			endpoint.InternalServerError(w)
-			return
-		}
-
 		if fs.nodeId == "" {
 			err := fs.getNodeId(r.Context())
 			if err != nil {
@@ -105,15 +88,18 @@ func (fs *FileService) UploadFile(
 			}
 		}
 
+		// Calculate the nested path: e.g., "81/d2/file_81d2..."
+		// This prevents directory saturation on your SSD.
+		intricatePath := calculateIntricatePath(fileId)
+
 		// @todo this is fairly weird that we process multiple files but only a single one is returned
 		uploadRecord = file.Upload{
 			Id:        sdk.Id("upl"),
 			FileId:    fileId,
 			NodeId:    fs.nodeId,
 			FileName:  part.FileName(),
-			FilePath:  fileId,
+			FilePath:  intricatePath,
 			UserId:    isAuthRsp.User.Id,
-			FileSize:  written,
 			CreatedAt: time.Now(),
 		}
 		err = fs.uploadStore.Upsert(uploadRecord)
@@ -122,6 +108,15 @@ func (fs *FileService) UploadFile(
 			endpoint.InternalServerError(w)
 			return
 		}
+
+		written, err := fs.storage.Save(r.Context(), &uploadRecord, part)
+		if err != nil {
+			logger.Error("Failed to save file to storage", slog.Any("error", err))
+			endpoint.InternalServerError(w)
+			return
+		}
+
+		uploadRecord.FileSize = written
 	}
 
 	jsonData, _ := json.Marshal(file.UploadFileResponse{
@@ -150,4 +145,21 @@ func (fs *FileService) getNodeId(ctx context.Context) error {
 
 	fs.nodeId = nodeRsp.Node.Id
 	return nil
+}
+
+func calculateIntricatePath(fileId string) string {
+	// Input:  "file_81d259fc..."
+	// Output: "81/d2/file_81d259fc..."
+
+	prefix := "file_"
+	idPart := fileId
+	if len(fileId) > len(prefix) && fileId[:len(prefix)] == prefix {
+		idPart = fileId[len(prefix):]
+	}
+
+	if len(idPart) < 4 {
+		return fileId
+	}
+
+	return filepath.Join(idPart[0:2], idPart[2:4], fileId)
 }
