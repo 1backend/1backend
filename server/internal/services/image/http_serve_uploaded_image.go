@@ -122,6 +122,8 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 
 		contentType = hrsp.Header["Content-Type"][0]
 		cs.metaCache.Add(fileId, contentType)
+
+		defer rsp.Close()
 	}
 
 	cacheKeyData := fmt.Sprintf("%s-%d-%d-%d", fileId, width, height, quality)
