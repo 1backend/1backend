@@ -17,7 +17,6 @@ import (
 	"image/gif"
 	"image/jpeg"
 	"image/png"
-	"io"
 	"log/slog"
 	"net/http"
 	"os"
@@ -261,16 +260,16 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 
 		switch contentType {
 		case "image/jpeg", "image/jpg":
-			err = jpeg.Encode(io.MultiWriter(w, buf), img, &jpeg.Options{Quality: quality})
+			err = jpeg.Encode(buf, img, &jpeg.Options{Quality: quality})
 		case "image/gif":
-			err = gif.Encode(io.MultiWriter(w, buf), img, nil)
+			err = gif.Encode(buf, img, nil)
 		case "image/webp":
-			err = webp.Encode(io.MultiWriter(w, buf), img, &webp.Options{Quality: float32(quality)})
+			err = webp.Encode(buf, img, &webp.Options{Quality: float32(quality)})
 		default:
 			// Fallback for formats without encoder (e.g. TIFF, BMP):
 			// serve cached version as PNG
 			w.Header().Set("Content-Type", "image/png")
-			err = png.Encode(io.MultiWriter(w, buf), img)
+			err = png.Encode(buf, img)
 		}
 
 		finalData := buf.Bytes()
