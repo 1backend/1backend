@@ -48,6 +48,8 @@ type imgResult struct {
 	ContentType string
 }
 
+const memCacheLimit = 250 * 1024
+
 // @ID serveUploadedImage
 // @Summary Serve Uploaded Image
 // @Description Retrieves and serves a previously uploaded image file using its File ID.
@@ -148,11 +150,6 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 
 	// Check RAM
 	if data, ok := cs.imageDataCache.Get(hash); ok {
-		contentType, _ := cs.metaCache.Get(fileId)
-		if contentType == "" {
-			contentType = "image/png"
-		}
-
 		w.Write(data)
 		return
 	}
@@ -160,7 +157,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 	// Check disk
 	cachePath := filepath.Join(cs.imageCacheFolder, hash)
 	if data, err := os.ReadFile(cachePath); err == nil {
-		if len(data) < 100*1024 {
+		if len(data) < memCacheLimit {
 			cs.imageDataCache.Add(hash, data)
 		}
 
@@ -278,7 +275,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		_ = os.WriteFile(cachePath, finalData, 0644)
 
 		result := &imgResult{Data: finalData, ContentType: contentType}
-		if len(finalData) < 100*1024 {
+		if len(finalData) < memCacheLimit {
 			cs.imageDataCache.Add(hash, result.Data)
 		}
 
