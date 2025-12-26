@@ -88,8 +88,6 @@ func (fs *FileService) UploadFile(
 			}
 		}
 
-		// Calculate the nested path: e.g., "81/d2/file_81d2..."
-		// This prevents directory saturation on your SSD.
 		intricatePath := calculateIntricatePath(fileId)
 
 		// @todo this is fairly weird that we process multiple files but only a single one is returned
@@ -147,10 +145,12 @@ func (fs *FileService) getNodeId(ctx context.Context) error {
 	return nil
 }
 
+// Calculate the nested path: e.g., "81/d2/file_81d2..."
+// This prevents directory saturation on your SSD.
+//
+// Input:  "file_81d259fc..."
+// Output: "81/d2/file_81d259fc..."
 func calculateIntricatePath(fileId string) string {
-	// Input:  "file_81d259fc..."
-	// Output: "81/d2/file_81d259fc..."
-
 	prefix := "file_"
 	idPart := fileId
 	if len(fileId) > len(prefix) && fileId[:len(prefix)] == prefix {
