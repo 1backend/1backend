@@ -29,7 +29,14 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 
+	_ "image/gif"
+	_ "image/jpeg"
+	_ "image/png"
+
 	"github.com/chai2010/webp"
+
+	_ "golang.org/x/image/bmp"
+	_ "golang.org/x/image/tiff"
 
 	image "github.com/1backend/1backend/server/internal/services/image/types"
 )
