@@ -106,6 +106,10 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 	}
 
 	contentType, _ := cs.metaCache.Get(fileId)
+	cacheKeyData := fmt.Sprintf("%s-%d-%d-%d", fileId, width, height, quality)
+	h := sha1.New()
+	h.Write([]byte(cacheKeyData))
+	hash := hex.EncodeToString(h.Sum(nil))
 
 	var rsp *os.File
 
@@ -115,23 +119,27 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 			err  error
 		)
 
-		rsp, hrsp, err = cs.options.ClientFactory.Client(client.WithToken(cs.token)).
-			FileSvcAPI.ServeUpload(context.Background(), fileId).Execute()
+		_, err, _ = cs.sf.Do(hash, func() (interface{}, error) {
+			rsp, hrsp, err = cs.options.ClientFactory.Client(client.WithToken(cs.token)).
+				FileSvcAPI.ServeUpload(context.Background(), fileId).Execute()
+			if err != nil {
+				endpoint.WriteErr(w, http.StatusInternalServerError, err)
+				return nil, errors.Wrap(err, "error calling serve upload to get content type")
+			}
+
+			contentType = hrsp.Header["Content-Type"][0]
+			cs.metaCache.Add(fileId, contentType)
+
+			return nil, nil
+		})
+
 		if err != nil {
 			endpoint.WriteErr(w, http.StatusInternalServerError, err)
 			return
 		}
 
 		defer rsp.Close()
-
-		contentType = hrsp.Header["Content-Type"][0]
-		cs.metaCache.Add(fileId, contentType)
 	}
-
-	cacheKeyData := fmt.Sprintf("%s-%d-%d-%d", fileId, width, height, quality)
-	h := sha1.New()
-	h.Write([]byte(cacheKeyData))
-	hash := hex.EncodeToString(h.Sum(nil))
 
 	switch contentType {
 	case "image/jpeg", "image/jpg":
@@ -155,7 +163,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 	}
 
 	// Check disk
-	cachePath := filepath.Join(cs.imageCacheFolder, hash)
+	cachePath := cs.getCachePath(hash)
 	if data, err := os.ReadFile(cachePath); err == nil {
 		if len(data) < memCacheLimit {
 			cs.imageDataCache.Add(hash, data)
@@ -166,9 +174,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 	}
 
 	val, err, _ := cs.sf.Do(hash, func() (interface{}, error) {
-		if data, err := os.ReadFile(cachePath); err == nil {
-			return &imgResult{Data: data, ContentType: contentType}, nil
-		}
+		logger.Info("getting from file service", hash)
 
 		if rsp == nil {
 			var (
@@ -289,4 +295,15 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 
 	res := val.(*imgResult)
 	w.Write(res.Data)
+}
+
+func (cs *ImageService) getCachePath(hash string) string {
+	// Shard by the first 4 characters of the SHA1 hash
+	subfolder := filepath.Join(hash[0:2], hash[2:4])
+	fullDir := filepath.Join(cs.imageCacheFolder, subfolder)
+
+	// Ensure the directories exist
+	_ = os.MkdirAll(fullDir, 0755)
+
+	return filepath.Join(fullDir, hash)
 }
