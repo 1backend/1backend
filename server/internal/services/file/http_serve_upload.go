@@ -49,9 +49,7 @@ func (fs *FileService) ServeUpload(
 		fs.cache.Add(fileId, upload)
 	}
 
-	intricatePath := calculateIntricatePath(fileId)
-
-	src, size, err := fs.storage.Open(r.Context(), intricatePath)
+	src, size, err := fs.storage.Open(r.Context(), upload.FilePath)
 	if err != nil {
 		logger.Error("Failed to open file stream", slog.Any("error", err))
 		endpoint.WriteString(w, http.StatusNotFound, "File not found")
