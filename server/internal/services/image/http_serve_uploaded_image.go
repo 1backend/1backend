@@ -106,6 +106,10 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 	}
 
 	contentType, _ := cs.metaCache.Get(fileId)
+	cacheKeyData := fmt.Sprintf("%s-%d-%d-%d", fileId, width, height, quality)
+	h := sha1.New()
+	h.Write([]byte(cacheKeyData))
+	hash := hex.EncodeToString(h.Sum(nil))
 
 	var rsp *os.File
 
@@ -115,23 +119,27 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 			err  error
 		)
 
-		rsp, hrsp, err = cs.options.ClientFactory.Client(client.WithToken(cs.token)).
-			FileSvcAPI.ServeUpload(context.Background(), fileId).Execute()
+		_, err, _ = cs.sf.Do(hash, func() (interface{}, error) {
+			rsp, hrsp, err = cs.options.ClientFactory.Client(client.WithToken(cs.token)).
+				FileSvcAPI.ServeUpload(context.Background(), fileId).Execute()
+			if err != nil {
+				endpoint.WriteErr(w, http.StatusInternalServerError, err)
+				return nil, errors.Wrap(err, "error calling serve upload to get content type")
+			}
+
+			contentType = hrsp.Header["Content-Type"][0]
+			cs.metaCache.Add(fileId, contentType)
+
+			return nil, nil
+		})
+
 		if err != nil {
 			endpoint.WriteErr(w, http.StatusInternalServerError, err)
 			return
 		}
 
 		defer rsp.Close()
-
-		contentType = hrsp.Header["Content-Type"][0]
-		cs.metaCache.Add(fileId, contentType)
 	}
-
-	cacheKeyData := fmt.Sprintf("%s-%d-%d-%d", fileId, width, height, quality)
-	h := sha1.New()
-	h.Write([]byte(cacheKeyData))
-	hash := hex.EncodeToString(h.Sum(nil))
 
 	switch contentType {
 	case "image/jpeg", "image/jpg":
@@ -166,9 +174,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 	}
 
 	val, err, _ := cs.sf.Do(hash, func() (interface{}, error) {
-		if data, err := os.ReadFile(cachePath); err == nil {
-			return &imgResult{Data: data, ContentType: contentType}, nil
-		}
+		logger.Info("getting from file service", hash)
 
 		if rsp == nil {
 			var (
