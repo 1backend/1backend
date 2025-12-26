@@ -15,6 +15,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
+	"golang.org/x/sync/singleflight"
 
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
@@ -22,6 +23,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/service"
 	"github.com/1backend/1backend/server/internal/universe"
+	lru "github.com/hashicorp/golang-lru/v2"
 )
 
 type ImageService struct {
@@ -37,6 +39,10 @@ type ImageService struct {
 	publicKey string
 
 	credentialStore datastore.DataStore
+	metaCache       *lru.Cache[string, string]
+	imageDataCache  *lru.Cache[string, []byte]
+	// Singleflight: Ensures only one resize operation happens for the same hash
+	sf singleflight.Group
 }
 
 func NewImageService(
@@ -45,6 +51,8 @@ func NewImageService(
 	cs := &ImageService{
 		options: options,
 	}
+	cs.metaCache, _ = lru.New[string, string](100000)
+	cs.imageDataCache, _ = lru.New[string, []byte](10000)
 
 	return cs, nil
 }

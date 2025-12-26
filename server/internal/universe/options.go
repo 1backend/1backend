@@ -48,6 +48,10 @@ type Options struct {
 	SourceControlToken  string
 	SecretEncryptionKey string
 
+	FileGcs   bool
+	GcpSaKey  string
+	GcsBucket string
+
 	// URL of the local 1Backend server instance
 	Url string
 

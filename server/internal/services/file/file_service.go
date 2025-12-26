@@ -9,19 +9,25 @@ package fileservice
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"os"
 	"path"
 	"sync"
 
+	"cloud.google.com/go/storage"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/logger"
 	"github.com/1backend/1backend/sdk/go/service"
+	file "github.com/1backend/1backend/server/internal/services/file/types"
 	types "github.com/1backend/1backend/server/internal/services/file/types"
 	"github.com/1backend/1backend/server/internal/universe"
 	"github.com/gorilla/mux"
+	lru "github.com/hashicorp/golang-lru/v2"
 	"github.com/pkg/errors"
+	"google.golang.org/api/option"
 )
 
 type FileService struct {
@@ -41,17 +47,60 @@ type FileService struct {
 
 	credentialStore datastore.DataStore
 
+	storage StorageProvider
+
 	nodeId string
+	cache  *lru.Cache[string, *file.Upload]
 }
 
 func NewFileService(
 	options *universe.Options,
 ) (*FileService, error) {
-	ret := &FileService{
+	fs := &FileService{
 		options: options,
 	}
 
-	return ret, nil
+	fs.uploadFolder = path.Join(fs.options.HomeDir, "uploads")
+	fs.downloadFolder = path.Join(fs.options.HomeDir, "downloads")
+
+	localProvider := &LocalProvider{
+		uploadFolder: fs.uploadFolder,
+	}
+
+	fs.cache, _ = lru.New[string, *file.Upload](100000)
+
+	// Determine Strategy
+	if options.FileGcs {
+		ctx := context.Background()
+
+		if options.GcpSaKey == "" || options.GcsBucket == "" {
+			return nil, fmt.Errorf("GCS enabled but OB_GCP_SA_KEY or OB_GCS_BUCKET is missing")
+		}
+
+		// Initialize GCS Client
+		gcsClient, err := storage.NewClient(ctx, option.WithCredentialsFile(options.GcpSaKey))
+		if err != nil {
+			return nil, fmt.Errorf("failed to init GCS client: %w", err)
+		}
+
+		gcsProvider := &GCSProvider{
+			client: gcsClient,
+			bucket: options.GcsBucket,
+		}
+
+		// Wrap them in the Cache Provider
+		fs.storage = &CloudCacheProvider{
+			cloud: gcsProvider,
+			local: localProvider,
+		}
+		logger.Info("File service initialized with GCS Cloud Cache")
+	} else {
+		// Fallback to standard distributed behavior
+		fs.storage = localProvider
+		logger.Info("File service initialized with Local Storage")
+	}
+
+	return fs, nil
 }
 
 func (fs *FileService) RegisterRoutes(router *mux.Router) {
@@ -114,19 +163,15 @@ func (fs *FileService) Start() error {
 	}
 	fs.credentialStore = credentialStore
 
-	uploadFolder := path.Join(fs.options.HomeDir, "uploads")
-	err = os.MkdirAll(uploadFolder, 0700)
+	err = os.MkdirAll(fs.uploadFolder, 0700)
 	if err != nil {
 		return err
 	}
-	fs.uploadFolder = uploadFolder
 
-	downloadFolder := path.Join(fs.options.HomeDir, "downloads")
-	err = os.MkdirAll(downloadFolder, 0700)
+	err = os.MkdirAll(fs.downloadFolder, 0700)
 	if err != nil {
 		return err
 	}
-	fs.downloadFolder = downloadFolder
 
 	downloadStore, err := fs.options.DataStoreFactory.Create(
 		"fileSvcDownloads",

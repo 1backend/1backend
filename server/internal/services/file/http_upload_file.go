@@ -1,6 +1,7 @@
 package fileservice
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"log/slog"
@@ -10,9 +11,11 @@ import (
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
+	"github.com/pkg/errors"
 )
 
 // @ID uploadFile
@@ -108,7 +111,7 @@ func (fs *FileService) UploadFile(
 			FileId:    fileId,
 			NodeId:    fs.nodeId,
 			FileName:  part.FileName(),
-			FilePath:  destinationFilePath,
+			FilePath:  fileId,
 			UserId:    isAuthRsp.User.Id,
 			FileSize:  written,
 			CreatedAt: time.Now(),
@@ -129,4 +132,22 @@ func (fs *FileService) UploadFile(
 		logger.Error("Error writing response", slog.Any("error", err))
 		return
 	}
+}
+
+func (fs *FileService) getNodeId(ctx context.Context) error {
+	token, err := fs.getToken()
+	if err != nil {
+		return errors.Wrap(err, "cannot get token")
+	}
+
+	nodeRsp, _, err := fs.options.ClientFactory.
+		Client(client.WithToken(token)).
+		RegistrySvcAPI.SelfNode(ctx).
+		Execute()
+	if err != nil {
+		return err
+	}
+
+	fs.nodeId = nodeRsp.Node.Id
+	return nil
 }
