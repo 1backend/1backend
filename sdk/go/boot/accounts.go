@@ -9,6 +9,7 @@ package boot
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	sdk "github.com/1backend/1backend/sdk/go"
@@ -68,29 +69,26 @@ func RegisterServiceAccount(
 
 	cred := res[0].(*auth.Credential)
 
-	loginRsp, loginHttpRsp, err := userService.Login(ctx).Body(onebackendapi.UserSvcLoginRequest{
+	loginRsp, _, err := userService.Login(ctx).Body(onebackendapi.UserSvcLoginRequest{
 		AppHost:  sdk.DefaultAppHost,
 		Slug:     onebackendapi.PtrString(serviceSlug),
 		Password: onebackendapi.PtrString(cred.Password),
 	}).Execute()
 
 	if err != nil {
-		if loginHttpRsp != nil && loginHttpRsp.StatusCode == 404 {
-			// We'll try to register as maybe registration failed or did not
-			// happen after saving the credential.
-			rsp, _, err := userService.Register(ctx).Body(onebackendapi.UserSvcRegisterRequest{
-				AppHost:  sdk.DefaultAppHost,
-				Slug:     serviceSlug,
-				Name:     onebackendapi.PtrString(serviceName),
-				Password: onebackendapi.PtrString(cred.Password),
-			}).Execute()
-			if err != nil {
-				return nil, errors.Wrap(err, "error registering while recovering service account")
-			}
-
-			return rsp.Token, nil
+		// We'll try to register as maybe registration failed or did not
+		// happen after saving the credential.
+		rsp, _, regErr := userService.Register(ctx).Body(onebackendapi.UserSvcRegisterRequest{
+			AppHost:  sdk.DefaultAppHost,
+			Slug:     serviceSlug,
+			Name:     onebackendapi.PtrString(serviceName),
+			Password: onebackendapi.PtrString(cred.Password),
+		}).Execute()
+		if regErr != nil {
+			return nil, fmt.Errorf("failed to recover service account: register error: %w; original login error: %w", regErr, err)
 		}
-		return nil, errors.Wrap(err, "error logging in with service account")
+
+		return rsp.Token, nil
 	}
 
 	return loginRsp.Token, nil
