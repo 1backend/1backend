@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -89,7 +90,8 @@ outer:
 		case <-timeout:
 			t.Fatal("Timeout reached while waiting for upload to complete")
 		case <-ticker.C:
-			files, err := os.ReadDir(filepath.Join(options.HomeDir, "uploads"))
+			rawId := strings.Replace(uplRsp.Upload.FileId, "file_", "", -1)
+			files, err := os.ReadDir(filepath.Join(options.HomeDir, "uploads", rawId[0:2], rawId[2:4]))
 			require.NoError(t, err)
 			for _, f := range files {
 				if f.Name() == uplRsp.Upload.FileId {
