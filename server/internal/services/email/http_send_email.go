@@ -15,6 +15,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/logger"
 	email "github.com/1backend/1backend/server/internal/services/email/types"
 	"github.com/pkg/errors"
+	"golang.org/x/time/rate"
 )
 
 // @ID sendEmail
@@ -63,6 +64,27 @@ func (s *EmailService) SendEmail(w http.ResponseWriter, r *http.Request) {
 		logger.Error("No recipients specified", slog.Any("request", req))
 		endpoint.WriteString(w, http.StatusBadRequest, "At least one recipient is required")
 		return
+	}
+
+	// Pre-check: Make sure NO ONE in the list is over the limit
+	for _, recipient := range req.To {
+		if limiter, exists := s.recipientFilters.Get(recipient); exists {
+			if limiter.Tokens() < 1 {
+				endpoint.WriteString(w, http.StatusTooManyRequests,
+					fmt.Sprintf("Rate limit exceeded for %s", recipient))
+				return
+			}
+		}
+	}
+
+	// Execution: Now that we know everyone is likely OK, consume the tokens
+	for _, recipient := range req.To {
+		limiter, exists := s.recipientFilters.Get(recipient)
+		if !exists {
+			limiter = rate.NewLimiter(rate.Every(time.Hour/2), 5)
+			s.recipientFilters.Add(recipient, limiter)
+		}
+		limiter.Allow()
 	}
 
 	em, err := s.dispatchLocalOrGlobal(isAuthRsp.App, *req)
