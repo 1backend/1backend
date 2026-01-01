@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 
 	openapi "github.com/1backend/1backend/clients/go"
@@ -67,7 +68,9 @@ func (s *EmailService) SendEmail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Pre-check: Make sure NO ONE in the list is over the limit
-	for _, recipient := range req.To {
+	for _, rawRecipient := range req.To {
+		recipient := normalizeEmail(rawRecipient)
+
 		if limiter, exists := s.recipientFilters.Get(recipient); exists {
 			if limiter.Tokens() < 1 {
 				endpoint.WriteString(w, http.StatusTooManyRequests,
@@ -78,7 +81,9 @@ func (s *EmailService) SendEmail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Execution: Now that we know everyone is likely OK, consume the tokens
-	for _, recipient := range req.To {
+	for _, rawRecipient := range req.To {
+		recipient := normalizeEmail(rawRecipient)
+
 		limiter, exists := s.recipientFilters.Get(recipient)
 		if !exists {
 			limiter = rate.NewLimiter(rate.Every(time.Hour/2), 5)
@@ -103,6 +108,24 @@ func (s *EmailService) SendEmail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	endpoint.WriteJSON(w, http.StatusOK, response)
+}
+
+// normalizeEmail removes sub-addressing (the + part) for rate limiting purposes.
+func normalizeEmail(emailAddr string) string {
+	parts := strings.Split(emailAddr, "@")
+	if len(parts) != 2 {
+		return emailAddr // Not a valid email, return as is
+	}
+
+	localPart := parts[0]
+	domain := parts[1]
+
+	// Remove everything after '+' in the local part
+	if plusIdx := strings.Index(localPart, "+"); plusIdx != -1 {
+		localPart = localPart[:plusIdx]
+	}
+
+	return strings.ToLower(localPart + "@" + domain)
 }
 
 func (s *EmailService) dispatchLocalOrGlobal(
