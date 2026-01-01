@@ -16,7 +16,23 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// ServeUpload now handles the request by delegating to the abstract storage provider.
+// @ID serveUpload
+// @Summary Serve an Uploaded File
+// @Description Retrieves and serves a previously uploaded file using its File ID.
+// @Description Note: The `ID` and `FileID` fields of an upload are different.
+// @Description - `FileID` is a unique identifier for the file itself.
+// @Description - `ID` is a unique identifier for a specific replica of the file.
+// @Description Since 1Backend is a distributed system, files can be replicated across multiple nodes.
+// @Description This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
+// @Tags File Svc
+// @Accept json
+// @Produce application/octet-stream
+// @Param fileId path string true "FileID uniquely identifies the file itself (not an ID, which represents a specific replica)"
+// @Success 200 {file} binary "File served successfully"
+// @Failure 400 {object} file.ErrorResponse "Missing Upload ID"
+// @Failure 404 {object} file.ErrorResponse "File Not Found"
+// @Failure 500 {object} file.ErrorResponse "Internal Server Error"
+// @Router /file-svc/serve/upload/{fileId} [get]
 func (fs *FileService) ServeUpload(
 	w http.ResponseWriter,
 	r *http.Request,

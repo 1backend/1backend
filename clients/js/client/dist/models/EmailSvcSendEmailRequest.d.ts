@@ -47,6 +47,13 @@ export interface EmailSvcSendEmailRequest {
      */
     contentType?: string;
     /**
+     * FromName specifies the display name of the sender.
+     * If left empty, it defaults to the value stored in the `sender-name` secret.
+     * @type {string}
+     * @memberof EmailSvcSendEmailRequest
+     */
+    fromName?: string;
+    /**
      * Unique identifier
      * @type {string}
      * @memberof EmailSvcSendEmailRequest
