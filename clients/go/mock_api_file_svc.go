@@ -220,36 +220,6 @@ func (mr *MockFileSvcAPIMockRecorder) ServeDownloadExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ServeDownloadExecute", reflect.TypeOf((*MockFileSvcAPI)(nil).ServeDownloadExecute), r)
 }
 
-// ServeUpload mocks base method.
-func (m *MockFileSvcAPI) ServeUpload(ctx context.Context, fileId string) ApiServeUploadRequest {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ServeUpload", ctx, fileId)
-	ret0, _ := ret[0].(ApiServeUploadRequest)
-	return ret0
-}
-
-// ServeUpload indicates an expected call of ServeUpload.
-func (mr *MockFileSvcAPIMockRecorder) ServeUpload(ctx, fileId any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ServeUpload", reflect.TypeOf((*MockFileSvcAPI)(nil).ServeUpload), ctx, fileId)
-}
-
-// ServeUploadExecute mocks base method.
-func (m *MockFileSvcAPI) ServeUploadExecute(r ApiServeUploadRequest) (*os.File, *http.Response, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ServeUploadExecute", r)
-	ret0, _ := ret[0].(*os.File)
-	ret1, _ := ret[1].(*http.Response)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// ServeUploadExecute indicates an expected call of ServeUploadExecute.
-func (mr *MockFileSvcAPIMockRecorder) ServeUploadExecute(r any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ServeUploadExecute", reflect.TypeOf((*MockFileSvcAPI)(nil).ServeUploadExecute), r)
-}
-
 // UploadFile mocks base method.
 func (m *MockFileSvcAPI) UploadFile(ctx context.Context) ApiUploadFileRequest {
 	m.ctrl.T.Helper()

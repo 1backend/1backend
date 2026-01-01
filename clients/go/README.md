@@ -112,7 +112,6 @@ Class | Method | HTTP request | Description
 *FileSvcAPI* | [**ListUploads**](docs/FileSvcAPI.md#listuploads) | **Post** /file-svc/uploads | List Uploads
 *FileSvcAPI* | [**PauseDownload**](docs/FileSvcAPI.md#pausedownload) | **Put** /file-svc/download/{url}/pause | Pause a Download
 *FileSvcAPI* | [**ServeDownload**](docs/FileSvcAPI.md#servedownload) | **Get** /file-svc/serve/download/{url} | Serve a Downloaded file
-*FileSvcAPI* | [**ServeUpload**](docs/FileSvcAPI.md#serveupload) | **Get** /file-svc/serve/upload/{fileId} | Serve an Uploaded File
 *FileSvcAPI* | [**UploadFile**](docs/FileSvcAPI.md#uploadfile) | **Put** /file-svc/upload | Upload a File
 *FirehoseSvcAPI* | [**PublishEvent**](docs/FirehoseSvcAPI.md#publishevent) | **Post** /firehose-svc/event | Publish an Event
 *FirehoseSvcAPI* | [**SubscribeToEvents**](docs/FirehoseSvcAPI.md#subscribetoevents) | **Get** /firehose-svc/events/subscribe | Subscribe to the Event Stream

@@ -1063,6 +1063,11 @@ definitions:
       contentType:
         description: 'Content type: "text/plain" or "text/html"'
         type: string
+      fromName:
+        description: |-
+          FromName specifies the display name of the sender.
+          If left empty, it defaults to the value stored in the `sender-name` secret.
+        type: string
       id:
         description: Unique identifier
         type: string
@@ -5086,47 +5091,6 @@ paths:
           schema:
             $ref: '#/definitions/file_svc.ErrorResponse'
       summary: Serve a Downloaded file
-      tags:
-      - File Svc
-  /file-svc/serve/upload/{fileId}:
-    get:
-      consumes:
-      - application/json
-      description: |-
-        Retrieves and serves a previously uploaded file using its File ID.
-        Note: The `ID` and `FileID` fields of an upload are different.
-        - `FileID` is a unique identifier for the file itself.
-        - `ID` is a unique identifier for a specific replica of the file.
-        Since 1Backend is a distributed system, files can be replicated across multiple nodes.
-        This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
-      operationId: serveUpload
-      parameters:
-      - description: FileID uniquely identifies the file itself (not an ID, which
-          represents a specific replica)
-        in: path
-        name: fileId
-        required: true
-        type: string
-      produces:
-      - application/octet-stream
-      responses:
-        "200":
-          description: File served successfully
-          schema:
-            type: file
-        "400":
-          description: Missing Upload ID
-          schema:
-            $ref: '#/definitions/file_svc.ErrorResponse'
-        "404":
-          description: File Not Found
-          schema:
-            $ref: '#/definitions/file_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/file_svc.ErrorResponse'
-      summary: Serve an Uploaded File
       tags:
       - File Svc
   /file-svc/upload:

@@ -15,8 +15,6 @@ import (
 	"github.com/1backend/1backend/sdk/go/logger"
 	email "github.com/1backend/1backend/server/internal/services/email/types"
 	"github.com/pkg/errors"
-	"github.com/sendgrid/sendgrid-go"
-	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
 // @ID sendEmail
@@ -67,7 +65,7 @@ func (s *EmailService) SendEmail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = s.sendgridSendEmail(isAuthRsp.App, *req)
+	em, err := s.dispatchLocalOrGlobal(isAuthRsp.App, *req)
 	if err != nil {
 		logger.Error(
 			"Failed to send email",
@@ -78,42 +76,95 @@ func (s *EmailService) SendEmail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := email.SendEmailResponse{
-		Status: "sent",
+		EmailId: em.Id,
+		Status:  "sent",
 	}
 
 	endpoint.WriteJSON(w, http.StatusOK, response)
 }
 
-func (s *EmailService) sendgridSendEmail(app openapi.UserSvcApp, req email.SendEmailRequest) error {
+func (s *EmailService) dispatchLocalOrGlobal(
+	app openapi.UserSvcApp, req email.SendEmailRequest,
+) (*email.Email, error) {
+	// This is a pretty way to solve the problem of whether we
+	// should use an app specific secret or the default one.
+	// Anyway...
+
 	exchangedToken, err := s.options.TokenExchanger.ExchangeToken(context.Background(), s.token, endpoint.ExchangeOptions{
 		AppHost: app.Id,
 	})
 	if err != nil {
-		return errors.Wrap(err, "cannot exchange token")
+		return nil, errors.Wrap(err, "cannot exchange token")
 	}
 
-	secretClient := s.options.ClientFactory.Client(client.WithToken(exchangedToken)).SecretSvcAPI
+	err = s.dispatchEmail(exchangedToken, app, req)
+	if err != nil {
+		logger.Warn(
+			"Failed to send email in specific app",
+			slog.String("appHost", app.Host),
+			slog.String("appId", app.Host),
+			slog.Any("error", err),
+		)
+	}
+
+	err = s.dispatchEmail(s.token, app, req)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("failed to send email in apps '%v' and unnamed", app.Host))
+	}
+
+	now := time.Now()
+
+	emailId := sdk.Id("email")
+	em := &email.Email{
+		Id:          emailId,
+		To:          req.To,
+		CC:          req.CC,
+		BCC:         req.BCC,
+		Subject:     req.Subject,
+		Body:        req.Body,
+		ContentType: req.ContentType,
+		CreatedAt:   now,
+		FromName:    req.FromName,
+	}
+	err = s.emailStore.Create(em)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to store email")
+	}
+
+	return em, nil
+}
+
+func (s *EmailService) dispatchEmail(
+	token string,
+	app openapi.UserSvcApp,
+	req email.SendEmailRequest,
+) error {
+	secretClient := s.options.ClientFactory.Client(client.WithToken(token)).SecretSvcAPI
 	secretResp, _, err := secretClient.ListSecrets(context.Background()).Body(
 		openapi.SecretSvcListSecretsRequest{
 			Ids: []string{
 				"sender-email",
 				"sender-name",
-				"sendgrid-api-key",
+				"sendgrid-api-key",                           // SendGrid
+				"aws-access-key", "aws-secret", "aws-region", // SES
+				"mailersend-api-key", // MailerSend
 			},
 		},
 	).Execute()
 	if err != nil {
-		return errors.Wrap(err, "failed to read SendGrid API key")
+		return errors.Wrap(err, "failed to read email secrets")
 	}
 
 	if secretResp == nil {
-		return errors.New("SendGrid is not configured")
+		return errors.New("email secrets are not configured")
 	}
 
 	var (
-		senderEmail    string
-		senderName     string
-		sendgridApiKey string
+		senderEmail                        string
+		senderName                         string
+		sendgridApiKey                     string
+		awsAccessKey, awsSecret, awsRegion string
+		mailerSendApiKey                   string
 	)
 
 	for _, secret := range secretResp.Secrets {
@@ -129,76 +180,82 @@ func (s *EmailService) sendgridSendEmail(app openapi.UserSvcApp, req email.SendE
 			senderName = secret.Value
 		case "sendgrid-api-key":
 			sendgridApiKey = secret.Value
+		case "aws-access-key":
+			awsAccessKey = secret.Value
+		case "aws-secret":
+			awsSecret = secret.Value
+		case "aws-region":
+			awsRegion = secret.Value
+		case "mailersend-api-key":
+			mailerSendApiKey = secret.Value
 		}
 	}
 
 	if senderEmail == "" {
-		return fmt.Errorf("'sender-email' is not configured for '%v'", app.Host)
+		return fmt.Errorf("'sender-email' is not configured")
 	}
+
+	if req.FromName != "" {
+		senderName = req.FromName
+	}
+
 	if senderName == "" {
-		return fmt.Errorf("'sender-name' is not configured for '%v'", app.Host)
-	}
-	if sendgridApiKey == "" {
-		return fmt.Errorf("'sendgrid-api-key' is not configured for '%v'", app.Host)
+		return fmt.Errorf("'sender-name' is not configured")
 	}
 
-	from := mail.NewEmail(senderName, senderEmail)
-
-	subject := req.Subject
-
-	// @todo For simplicity, only sending to the first recipient
-	to := mail.NewEmail("Recipient", req.To[0])
-
-	var content mail.Content
-	if req.ContentType == "text/html" {
-		content = *mail.NewContent("text/html", req.Body)
-	} else {
-		content = *mail.NewContent("text/plain", req.Body)
-	}
-
-	message := mail.NewV3MailInit(from, subject, to, &content)
-
-	for _, attachment := range req.Attachments {
-		if attachment.FileId != "" && attachment.Content != "" {
-			return errors.New("only one of 'FileId' or 'Content' should be provided")
+	if awsAccessKey != "" {
+		err = s.awsSesSendEmail(
+			senderEmail, senderName,
+			awsAccessKey, awsSecret, awsRegion,
+			req,
+		)
+		if err != nil {
+			logger.Warn("AWS email sending failed",
+				slog.Any("error", err),
+				slog.String("appId", app.Id),
+				slog.String("appHost", app.Host),
+			)
+		} else {
+			return nil
 		}
-
-		// @todo support FileSvc.serveUpload too
-
-		file := mail.NewAttachment()
-		file.SetContent(attachment.Content)   // File content as base64-encoded string
-		file.SetType(attachment.ContentType)  // MIME type of the file
-		file.SetFilename(attachment.Filename) // Filename for the attachment
-		message.AddAttachment(file)
 	}
 
-	client := sendgrid.NewSendClient(sendgridApiKey)
-
-	resp, err := client.Send(message)
-	if err != nil {
-		return fmt.Errorf("failed to send email: %v", err)
+	if mailerSendApiKey != "" {
+		err = s.mailerSendSendEmail(
+			senderEmail, senderName,
+			mailerSendApiKey,
+			req,
+		)
+		if err != nil {
+			logger.Warn("MailerSend email sending failed",
+				slog.Any("error", err),
+				slog.String("appId", app.Id),
+				slog.String("appHost", app.Host),
+			)
+		} else {
+			return nil
+		}
 	}
 
-	if resp.StatusCode >= 400 {
-		return fmt.Errorf("error sending email: %s", resp.Body)
+	if sendgridApiKey != "" {
+		err = s.sendgridSendEmail(
+			senderEmail, senderName,
+			sendgridApiKey, req,
+		)
+		if err != nil {
+			logger.Warn("Sendgrid email sending failed",
+				slog.Any("error", err),
+				slog.String("appId", app.Id),
+				slog.String("appHost", app.Host),
+			)
+		} else {
+			return nil
+		}
 	}
 
-	now := time.Now()
-
-	emailId := sdk.Id("email")
-	err = s.emailStore.Create(&email.Email{
-		Id:          emailId,
-		To:          req.To,
-		CC:          req.CC,
-		BCC:         req.BCC,
-		Subject:     req.Subject,
-		Body:        req.Body,
-		ContentType: req.ContentType,
-		CreatedAt:   now,
-	})
-	if err != nil {
-		return errors.Wrap(err, "failed to store email")
+	if err == nil {
+		return fmt.Errorf("no email provider is configured")
 	}
 
-	return nil
+	return errors.Wrap(err, "none of the email providers succeeded")
 }

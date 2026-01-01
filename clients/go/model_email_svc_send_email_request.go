@@ -32,6 +32,8 @@ type EmailSvcSendEmailRequest struct {
 	Cc []string `json:"cc,omitempty"`
 	// Content type: \"text/plain\" or \"text/html\"
 	ContentType *string `json:"contentType,omitempty"`
+	// FromName specifies the display name of the sender. If left empty, it defaults to the value stored in the `sender-name` secret.
+	FromName *string `json:"fromName,omitempty"`
 	// Unique identifier
 	Id *string `json:"id,omitempty"`
 	// Email subject line
@@ -214,6 +216,38 @@ func (o *EmailSvcSendEmailRequest) SetContentType(v string) {
 	o.ContentType = &v
 }
 
+// GetFromName returns the FromName field value if set, zero value otherwise.
+func (o *EmailSvcSendEmailRequest) GetFromName() string {
+	if o == nil || IsNil(o.FromName) {
+		var ret string
+		return ret
+	}
+	return *o.FromName
+}
+
+// GetFromNameOk returns a tuple with the FromName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EmailSvcSendEmailRequest) GetFromNameOk() (*string, bool) {
+	if o == nil || IsNil(o.FromName) {
+		return nil, false
+	}
+	return o.FromName, true
+}
+
+// HasFromName returns a boolean if a field has been set.
+func (o *EmailSvcSendEmailRequest) HasFromName() bool {
+	if o != nil && !IsNil(o.FromName) {
+		return true
+	}
+
+	return false
+}
+
+// SetFromName gets a reference to the given string and assigns it to the FromName field.
+func (o *EmailSvcSendEmailRequest) SetFromName(v string) {
+	o.FromName = &v
+}
+
 // GetId returns the Id field value if set, zero value otherwise.
 func (o *EmailSvcSendEmailRequest) GetId() string {
 	if o == nil || IsNil(o.Id) {
@@ -316,6 +350,9 @@ func (o EmailSvcSendEmailRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ContentType) {
 		toSerialize["contentType"] = o.ContentType
+	}
+	if !IsNil(o.FromName) {
+		toSerialize["fromName"] = o.FromName
 	}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
