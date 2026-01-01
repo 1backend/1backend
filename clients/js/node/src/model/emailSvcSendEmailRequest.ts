@@ -35,6 +35,14 @@ export class EmailSvcSendEmailRequest {
     */
     'contentType'?: string;
     /**
+    * FromEmail specifies the sender\'s email address. If left empty, it defaults to the value stored in the `sender-email` secret.
+    */
+    'fromEmail'?: string;
+    /**
+    * FromName specifies the display name of the sender. If left empty, it defaults to the value stored in the `sender-name` secret.
+    */
+    'fromName'?: string;
+    /**
     * Unique identifier
     */
     'id'?: string;
@@ -73,6 +81,16 @@ export class EmailSvcSendEmailRequest {
         {
             "name": "contentType",
             "baseName": "contentType",
+            "type": "string"
+        },
+        {
+            "name": "fromEmail",
+            "baseName": "fromEmail",
+            "type": "string"
+        },
+        {
+            "name": "fromName",
+            "baseName": "fromName",
             "type": "string"
         },
         {

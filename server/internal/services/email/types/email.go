@@ -44,6 +44,14 @@ type Email struct {
 
 	// Timestamp of email creation
 	CreatedAt time.Time `json:"createdAt" binding:"required"`
+
+	// FromName specifies the display name of the sender.
+	// If left empty, it defaults to the value stored in the `sender-name` secret.
+	FromName string `json:"fromName,omitempty"`
+
+	// FromEmail specifies the sender's email address.
+	// If left empty, it defaults to the value stored in the `sender-email` secret.
+	FromEmail string `json:"fromEmail,omitempty"`
 }
 
 type SendEmailRequest struct {
@@ -70,6 +78,14 @@ type SendEmailRequest struct {
 
 	// List of file attachments (optional)
 	Attachments []Attachment `json:"attachments"`
+
+	// FromName specifies the display name of the sender.
+	// If left empty, it defaults to the value stored in the `sender-name` secret.
+	FromName string `json:"fromName,omitempty"`
+
+	// FromEmail specifies the sender's email address.
+	// If left empty, it defaults to the value stored in the `sender-email` secret.
+	FromEmail string `json:"fromEmail,omitempty"`
 }
 
 func (e *Email) GetId() string {

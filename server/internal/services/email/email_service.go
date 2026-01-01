@@ -22,7 +22,11 @@ import (
 	"github.com/1backend/1backend/sdk/go/service"
 	email "github.com/1backend/1backend/server/internal/services/email/types"
 	"github.com/1backend/1backend/server/internal/universe"
+
 	"github.com/gorilla/mux"
+
+	lru "github.com/hashicorp/golang-lru/v2"
+	"golang.org/x/time/rate"
 )
 
 type EmailService struct {
@@ -35,14 +39,18 @@ type EmailService struct {
 
 	credentialStore datastore.DataStore
 	emailStore      datastore.DataStore
+
+	recipientFilters *lru.Cache[string, *rate.Limiter]
 }
 
 func NewEmailService(
 	options *universe.Options,
 ) (*EmailService, error) {
+	cache, _ := lru.New[string, *rate.Limiter](10000)
 
 	service := &EmailService{
-		options: options,
+		options:          options,
+		recipientFilters: cache,
 	}
 
 	return service, nil

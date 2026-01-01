@@ -42,6 +42,16 @@ EmailSvcSendEmailRequest.attributeTypeMap = [
         "type": "string"
     },
     {
+        "name": "fromEmail",
+        "baseName": "fromEmail",
+        "type": "string"
+    },
+    {
+        "name": "fromName",
+        "baseName": "fromName",
+        "type": "string"
+    },
+    {
         "name": "id",
         "baseName": "id",
         "type": "string"

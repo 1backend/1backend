@@ -100,12 +100,6 @@ func (fs *FileService) UploadFile(
 			UserId:    isAuthRsp.User.Id,
 			CreatedAt: time.Now(),
 		}
-		err = fs.uploadStore.Upsert(uploadRecord)
-		if err != nil {
-			logger.Error("Failed to save upload record", slog.Any("error", err))
-			endpoint.InternalServerError(w)
-			return
-		}
 
 		written, err := fs.storage.Save(r.Context(), &uploadRecord, part)
 		if err != nil {
@@ -115,6 +109,13 @@ func (fs *FileService) UploadFile(
 		}
 
 		uploadRecord.FileSize = written
+
+		err = fs.uploadStore.Upsert(uploadRecord)
+		if err != nil {
+			logger.Error("Failed to save upload record", slog.Any("error", err))
+			endpoint.InternalServerError(w)
+			return
+		}
 	}
 
 	jsonData, _ := json.Marshal(file.UploadFileResponse{

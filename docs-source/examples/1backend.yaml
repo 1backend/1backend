@@ -1063,6 +1063,16 @@ definitions:
       contentType:
         description: 'Content type: "text/plain" or "text/html"'
         type: string
+      fromEmail:
+        description: |-
+          FromEmail specifies the sender's email address.
+          If left empty, it defaults to the value stored in the `sender-email` secret.
+        type: string
+      fromName:
+        description: |-
+          FromName specifies the display name of the sender.
+          If left empty, it defaults to the value stored in the `sender-name` secret.
+        type: string
       id:
         description: Unique identifier
         type: string
