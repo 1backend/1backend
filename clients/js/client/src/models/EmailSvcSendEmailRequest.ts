@@ -58,6 +58,13 @@ export interface EmailSvcSendEmailRequest {
      */
     contentType?: string;
     /**
+     * FromEmail specifies the sender's email address.
+     * If left empty, it defaults to the value stored in the `sender-email` secret.
+     * @type {string}
+     * @memberof EmailSvcSendEmailRequest
+     */
+    fromEmail?: string;
+    /**
      * FromName specifies the display name of the sender.
      * If left empty, it defaults to the value stored in the `sender-name` secret.
      * @type {string}
@@ -109,6 +116,7 @@ export function EmailSvcSendEmailRequestFromJSONTyped(json: any, ignoreDiscrimin
         'body': json['body'],
         'cc': json['cc'] == null ? undefined : json['cc'],
         'contentType': json['contentType'] == null ? undefined : json['contentType'],
+        'fromEmail': json['fromEmail'] == null ? undefined : json['fromEmail'],
         'fromName': json['fromName'] == null ? undefined : json['fromName'],
         'id': json['id'] == null ? undefined : json['id'],
         'subject': json['subject'],
@@ -132,6 +140,7 @@ export function EmailSvcSendEmailRequestToJSONTyped(value?: EmailSvcSendEmailReq
         'body': value['body'],
         'cc': value['cc'],
         'contentType': value['contentType'],
+        'fromEmail': value['fromEmail'],
         'fromName': value['fromName'],
         'id': value['id'],
         'subject': value['subject'],

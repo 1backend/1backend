@@ -191,6 +191,10 @@ func (s *EmailService) dispatchEmail(
 		}
 	}
 
+	if req.FromEmail != "" {
+		senderEmail = req.FromEmail
+	}
+
 	if senderEmail == "" {
 		return fmt.Errorf("'sender-email' is not configured")
 	}

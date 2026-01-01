@@ -48,6 +48,10 @@ type Email struct {
 	// FromName specifies the display name of the sender.
 	// If left empty, it defaults to the value stored in the `sender-name` secret.
 	FromName string `json:"fromName,omitempty"`
+
+	// FromEmail specifies the sender's email address.
+	// If left empty, it defaults to the value stored in the `sender-email` secret.
+	FromEmail string `json:"fromEmail,omitempty"`
 }
 
 type SendEmailRequest struct {
@@ -78,6 +82,10 @@ type SendEmailRequest struct {
 	// FromName specifies the display name of the sender.
 	// If left empty, it defaults to the value stored in the `sender-name` secret.
 	FromName string `json:"fromName,omitempty"`
+
+	// FromEmail specifies the sender's email address.
+	// If left empty, it defaults to the value stored in the `sender-email` secret.
+	FromEmail string `json:"fromEmail,omitempty"`
 }
 
 func (e *Email) GetId() string {
