@@ -21,6 +21,8 @@ import (
 
 var sonyFlake *sonyflake.Sonyflake
 
+const idSeparator = "-"
+
 func init() {
 	sonyFlake = sonyflake.NewSonyflake(sonyflake.Settings{})
 	if sonyFlake == nil {
@@ -34,7 +36,7 @@ const DefaultTestAppHost = "test.app"
 const base62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
 // Id generates a short, human-readable unique ID with a prefix using Sonyflake.
-// Example: Id("usr") might return "usr_fm7lcQnPni".
+// Example: Id("usr") might return "usr-fm7lcQnPni".
 // This format is compact and memorable, making it ideal for user-friendly identifiers.
 // However, because Sonyflake is time-based and IDs can be guessed or enumerated,
 // this ID type is not suitable for exposing sensitive resources without authentication.
@@ -60,17 +62,18 @@ func Id(prefix string) string {
 		return string(b)
 	}
 
-	return prefix + "_" + string(b)
+	return strings.TrimSuffix(prefix, idSeparator) + idSeparator + string(b)
 }
 
 // OpaqueId generates a non-enumerable, opaque ID with a prefix using UUID v4.
-// Example: OpaqueId("file") might return "file_5f906bb0_10e8_4066_a032_a9ad0eae1fdb".
+// Example: OpaqueId("file") might return "file-5f906bb0-10e8-4066-a032-a9ad0eae1fdb".
 // These IDs are suitable for public exposure and access control scenarios
 // where predictability or enumeration must be avoided.
 func OpaqueId(prefix string) string {
-	return fmt.Sprintf("%v_%v",
+	return fmt.Sprintf("%s%s%s",
 		prefix,
-		strings.Replace(uuid.New().String(), "-", "_", -1),
+		idSeparator,
+		uuid.New().String(),
 	)
 }
 
@@ -82,21 +85,20 @@ func OpaqueId(prefix string) string {
 //   - Derived records (e.g., credit/debit entries from a transaction ID)
 //   - Stable keys in distributed writes
 //
-// The resulting ID is formatted as: <prefix>_<cleaned source ID>
+// The resulting ID is formatted as: <prefix>-<cleaned source ID>
 // Hyphens in either component are replaced with underscores for consistency.
 //
 // Example:
 //
-//	DeterministicId("txn_debit", "order123")   → "txn_debit_order123"
-//	DeterministicId("txn_credit", "order123")  → "txn_credit_order123"
+//	DeterministicId("txn-debit", "order123")   → "txn-debit-order123"
+//	DeterministicId("txn-credit", "order123")  → "txn-credit-order123"
 //
 // This avoids clashing with auto-generated IDs while remaining readable and traceable.
 func DeterministicId(prefix, id string) string {
-	prefix = strings.TrimSuffix(prefix, "_")
-	prefix = strings.ReplaceAll(prefix, "-", "_")
-	id = strings.ReplaceAll(id, "-", "_")
+	prefix = strings.TrimSuffix(prefix, idSeparator)
+	id = strings.ReplaceAll(id, "_", idSeparator)
 
-	return fmt.Sprintf("%s_%s", prefix, id)
+	return fmt.Sprintf("%s%s%s", prefix, idSeparator, id)
 }
 
 // OneBackendAPIError checks if an error is a GenericOpenAPIError and returns a meaningful error.
@@ -131,7 +133,9 @@ func Marshal(value any) *string {
 // InternalId creates an internal identifier by combining an app ID and an ID.
 func InternalId(appId, id string) (string, error) {
 	switch {
+	// Legacy: id separator was _ before it became -
 	case strings.HasPrefix(appId, "app_"):
+	case strings.HasPrefix(appId, "app-"):
 	case appId == "*":
 	case appId == DefaultAppHost, appId == DefaultTestAppHost:
 	default:
