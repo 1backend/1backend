@@ -138,7 +138,7 @@ func StartService(options Options) (*ServiceProcess, error) {
 	}
 
 	if options.Test {
-		options.DbPrefix = sdk.Id("t")
+		options.DbPrefix = "t_" + sdk.Id("")
 	}
 
 	envVars := map[string]string{

@@ -44,7 +44,7 @@ func TestServeDownloadProxy(t *testing.T) {
 	server := httptest.NewServer(hs)
 	defer server.Close()
 
-	dbPrefix := sdk.Id("node_id_")
+	dbPrefix := "node_id_" + sdk.Id("")
 
 	opt1 := &universe.Options{
 		Test:     true,

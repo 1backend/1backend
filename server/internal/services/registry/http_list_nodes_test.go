@@ -23,7 +23,7 @@ func TestNodeId(t *testing.T) {
 	server := httptest.NewServer(hs)
 	defer server.Close()
 
-	dbprefix := sdk.Id("node_id")
+	dbprefix := "node_id_" + sdk.Id("")
 
 	opt1 := &universe.Options{
 		Test:     true,
@@ -47,7 +47,7 @@ func TestNodeId(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 1, len(nodesRsp.Nodes))
 		require.Equal(t, nodesRsp.Nodes[0].Url, server.URL)
-		require.Equal(t, true, strings.Contains(nodesRsp.Nodes[0].Id, "node_"))
+		require.Equal(t, true, strings.Contains(nodesRsp.Nodes[0].Id, "node"))
 	})
 
 	hs2 := &di.HandlerSwitcher{}

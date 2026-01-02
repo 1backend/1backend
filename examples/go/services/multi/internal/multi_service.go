@@ -44,7 +44,7 @@ func NewService(options *boot.Options) (*MultiService, error) {
 	dconf := infra.DataStoreConfig{}
 	if options.Test {
 		dconf.Test = true
-		dconf.TablePrefix = sdk.Id("t")
+		dconf.TablePrefix = "t_" + sdk.Id("")
 	}
 
 	service := &MultiService{

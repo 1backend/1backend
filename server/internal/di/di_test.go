@@ -23,7 +23,7 @@ func TestStart(t *testing.T) {
 	server1 := httptest.NewServer(hs1)
 	defer server1.Close()
 
-	dbprefix := sdk.Id("node_start")
+	dbprefix := "node_start_" + sdk.Id("")
 
 	options1 := &universe.Options{
 		Test:     true,
