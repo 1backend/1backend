@@ -174,7 +174,10 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 	}
 
 	val, err, _ := cs.sf.Do(hash, func() (interface{}, error) {
-		logger.Info("getting from file service", hash)
+		logger.Info("Reading image from file service",
+			slog.String("hash", hash),
+			slog.String("fileId", fileId),
+		)
 
 		if rsp == nil {
 			var (
