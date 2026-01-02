@@ -11,6 +11,7 @@ import (
 	"database/sql"
 	"os"
 	"path"
+	"strings"
 	"sync"
 
 	sdk "github.com/1backend/1backend/sdk/go"
@@ -65,7 +66,7 @@ func NewDataStoreFactory(options DataStoreConfig) (DataStoreFactory, error) {
 		options.TablePrefix = os.Getenv("OB_DB_PREFIX")
 	}
 	if options.Test && options.TablePrefix == "" {
-		options.TablePrefix = sdk.Id("test") + "_"
+		options.TablePrefix = strings.Replace(sdk.Id("test"), "-", "_", -1)
 	}
 
 	if options.Db == "" {
