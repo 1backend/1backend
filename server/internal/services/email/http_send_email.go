@@ -136,7 +136,7 @@ func (s *EmailService) dispatchLocalOrGlobal(
 	// Anyway...
 
 	exchangedToken, err := s.options.TokenExchanger.ExchangeToken(context.Background(), s.token, endpoint.ExchangeOptions{
-		AppHost: app.Id,
+		AppId: app.Id,
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot exchange token")
