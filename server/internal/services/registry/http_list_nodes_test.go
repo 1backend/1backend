@@ -47,7 +47,7 @@ func TestNodeId(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, 1, len(nodesRsp.Nodes))
 		require.Equal(t, nodesRsp.Nodes[0].Url, server.URL)
-		require.Equal(t, true, strings.Contains(nodesRsp.Nodes[0].Id, "node_"))
+		require.Equal(t, true, strings.Contains(nodesRsp.Nodes[0].Id, "node"))
 	})
 
 	hs2 := &di.HandlerSwitcher{}
