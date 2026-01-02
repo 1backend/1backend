@@ -71,7 +71,7 @@ func Id(prefix string) string {
 // where predictability or enumeration must be avoided.
 func OpaqueId(prefix string) string {
 	return fmt.Sprintf("%s%s%s",
-		prefix,
+		strings.TrimSuffix(prefix, idSeparator),
 		idSeparator,
 		uuid.New().String(),
 	)
