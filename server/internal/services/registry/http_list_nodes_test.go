@@ -23,7 +23,7 @@ func TestNodeId(t *testing.T) {
 	server := httptest.NewServer(hs)
 	defer server.Close()
 
-	dbprefix := sdk.Id("node_id")
+	dbprefix := "node_id_" + sdk.Id("")
 
 	opt1 := &universe.Options{
 		Test:     true,
