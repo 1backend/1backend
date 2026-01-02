@@ -147,7 +147,7 @@ func (s *EmailService) dispatchLocalOrGlobal(
 		logger.Warn(
 			"Failed to send email in specific app",
 			slog.String("appHost", app.Host),
-			slog.String("appId", app.Host),
+			slog.String("appId", app.Id),
 			slog.Any("error", err),
 		)
 	}

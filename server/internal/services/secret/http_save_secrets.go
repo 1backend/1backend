@@ -260,6 +260,21 @@ func (cs *SecretService) saveSecrets(
 			ChecksumAlgorithm: s.ChecksumAlgorithm,
 		}
 
+		// @todo CanChangeReaders is not being respected here
+		if s.Readers != nil {
+			secr.Readers = s.Readers
+		}
+
+		// @todo CanChangeWriters is not being respected here
+		if s.Writers != nil {
+			secr.Writers = s.Writers
+		}
+
+		// @todo CanChangeDeleters is not being respected here
+		if s.Deleters != nil {
+			secr.Deleters = s.Deleters
+		}
+
 		err = cs.checkSum(secr)
 		if err != nil {
 			return errors.Wrap(err, "checksum failed")
