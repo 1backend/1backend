@@ -135,24 +135,27 @@ func (s *EmailService) dispatchLocalOrGlobal(
 	// should use an app specific secret or the default one.
 	// Anyway...
 
-	exchangedToken, err := s.options.TokenExchanger.ExchangeToken(context.Background(), s.token, endpoint.ExchangeOptions{
-		AppId: app.Id,
-	})
-	if err != nil {
-		return nil, errors.Wrap(err, "cannot exchange token")
+	// Only try to exchange into an app if that's not the default unnamed one
+	if app.Id != "unnamed" {
+		exchangedToken, err := s.options.TokenExchanger.ExchangeToken(context.Background(), s.token, endpoint.ExchangeOptions{
+			AppId: app.Id,
+		})
+		if err != nil {
+			return nil, errors.Wrap(err, "cannot exchange token")
+		}
+
+		err = s.dispatchEmail(exchangedToken, app, req)
+		if err != nil {
+			logger.Warn(
+				"Failed to send email in specific app",
+				slog.String("appHost", app.Host),
+				slog.String("appId", app.Id),
+				slog.Any("error", err),
+			)
+		}
 	}
 
-	err = s.dispatchEmail(exchangedToken, app, req)
-	if err != nil {
-		logger.Warn(
-			"Failed to send email in specific app",
-			slog.String("appHost", app.Host),
-			slog.String("appId", app.Id),
-			slog.Any("error", err),
-		)
-	}
-
-	err = s.dispatchEmail(s.token, app, req)
+	err := s.dispatchEmail(s.token, app, req)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("failed to send email in apps '%v' and unnamed", app.Host))
 	}
