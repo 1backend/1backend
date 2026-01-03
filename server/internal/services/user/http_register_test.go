@@ -227,6 +227,80 @@ func TestRegistration__VerifyContacts(t *testing.T) {
 	})
 }
 
+func TestRegister__EscalationAttack(t *testing.T) {
+	hs := &di.HandlerSwitcher{}
+	server := httptest.NewServer(hs)
+	defer server.Close()
+
+	options := &universe.Options{
+		Test:           true,
+		Url:            server.URL,
+		VerifyContacts: true,
+	}
+	u, _ := di.BigBang(options)
+	hs.UpdateHandler(u.Router)
+	u.StarterFunc()
+
+	userSvc := options.ClientFactory.Client().UserSvcAPI
+	ctx := context.Background()
+
+	// 1. SETUP: Create a legitimate victim account
+	victimEmail := "victim@target.com"
+	victimSlug := "victim-slug"
+
+	// (Assume victim is already registered via some flow)
+	// For this test, we'll quickly register them properly first.
+	otpV, _, _ := userSvc.SendOtp(ctx).Body(openapi.UserSvcSendOtpRequest{
+		AppHost: sdk.DefaultTestAppHost, ContactId: victimEmail, ContactPlatform: "email",
+	}).Execute()
+	userSvc.Register(ctx).Body(openapi.UserSvcRegisterRequest{
+		AppHost: sdk.DefaultTestAppHost,
+		Slug:    victimSlug,
+		Contact: &openapi.UserSvcContactInput{
+			Id: victimEmail, Platform: "email", OtpId: &otpV.OtpId, OtpCode: otpV.Code,
+		},
+	}).Execute()
+
+	// 2. ATTACK: Attacker tries to "Register" using Victim's Slug but Attacker's Email
+	attackerEmail := "attacker@evil.com"
+
+	// Attacker gets a VALID OTP for THEIR OWN email
+	otpA, _, _ := userSvc.SendOtp(ctx).Body(openapi.UserSvcSendOtpRequest{
+		AppHost: sdk.DefaultTestAppHost, ContactId: attackerEmail, ContactPlatform: "email",
+	}).Execute()
+
+	t.Run("Attacker tries to register with Victim Slug and Attacker OTP", func(t *testing.T) {
+		// This request provides:
+		// - The Victim's Slug (to target their account)
+		// - The Attacker's Email + Valid OTP (to pass the 'verified' check)
+		_, hrsp, err := userSvc.Register(ctx).Body(openapi.UserSvcRegisterRequest{
+			AppHost: sdk.DefaultTestAppHost,
+			Slug:    victimSlug, // Targeting the victim
+			Contact: &openapi.UserSvcContactInput{
+				Id:       attackerEmail,
+				Platform: "email",
+				OtpId:    &otpA.OtpId,
+				OtpCode:  otpA.Code,
+			},
+		}).Execute()
+
+		// IF THE CODE IS VULNERABLE:
+		// 1. verifyContactOTP(attackerEmail) passes.
+		// 2. createUserWithoutVerification fails because "victim-slug" exists.
+		// 3. The code calls s.login(victimSlug, otpAlreadyVerified=true).
+		// 4. The attacker gets a token for the Victim.
+
+		if err == nil {
+			// Check if the token issued actually belongs to the attacker or victim
+			// By parsing the token or calling ReadSelf
+			t.Errorf("SECURITY FLAW: Registration allowed login escalation. Status: %d", hrsp.StatusCode)
+
+			// Further verification: Check who the token belongs to
+			// (Assuming you add the token to the client config here)
+		}
+	})
+}
+
 func TestSlugRegexp(t *testing.T) {
 	shouldWork := []string{
 		"1backend",

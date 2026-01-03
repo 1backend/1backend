@@ -242,6 +242,42 @@ func (s *UserService) getContactsByUserId(userId string) ([]user.Contact, error)
 	return contacts, nil
 }
 
+func (s *UserService) getUserByContactId(contactId string) (*user.User, bool, error) {
+	if contactId == "" {
+		return nil, false, fmt.Errorf("contact id is required")
+	}
+
+	contactI, found, err := s.contactStore.Query(
+		datastore.Equals(datastore.Field("id"), contactId),
+	).FindOne()
+	if err != nil {
+		return nil, false, err
+	}
+
+	if !found {
+		return nil, false, nil
+	}
+
+	contact := contactI.(*user.Contact)
+
+	userI, found, err := s.userStore.Query(
+		datastore.Equals(datastore.Field("id"), contact.UserId),
+	).FindOne()
+
+	if err != nil {
+		return nil, false, err
+	}
+
+	if !found {
+		return nil, false, fmt.Errorf("database corrupted - contact '%s' found but no corresponding user for user id '%v'",
+			contact.Id,
+			contact.UserId,
+		)
+	}
+
+	return userI.(*user.User), true, nil
+}
+
 func (s *UserService) getUserFromRequest(r *http.Request) (
 	*user.User,
 	*auth.Claims,
