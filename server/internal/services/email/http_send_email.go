@@ -135,6 +135,8 @@ func (s *EmailService) dispatchLocalOrGlobal(
 	// should use an app specific secret or the default one.
 	// Anyway...
 
+	var succeeded bool
+
 	// Only try to exchange into an app if that's not the default unnamed one
 	if app.Id != "unnamed" {
 		exchangedToken, err := s.options.TokenExchanger.ExchangeToken(context.Background(), s.token, endpoint.ExchangeOptions{
@@ -152,12 +154,16 @@ func (s *EmailService) dispatchLocalOrGlobal(
 				slog.String("appId", app.Id),
 				slog.Any("error", err),
 			)
+		} else {
+			succeeded = true
 		}
 	}
 
-	err := s.dispatchEmail(s.token, app, req)
-	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("failed to send email in apps '%v' and unnamed", app.Host))
+	if !succeeded {
+		err := s.dispatchEmail(s.token, app, req)
+		if err != nil {
+			return nil, errors.Wrap(err, fmt.Sprintf("failed to send email in apps '%v' and unnamed", app.Host))
+		}
 	}
 
 	now := time.Now()
@@ -174,7 +180,7 @@ func (s *EmailService) dispatchLocalOrGlobal(
 		CreatedAt:   now,
 		FromName:    req.FromName,
 	}
-	err = s.emailStore.Create(em)
+	err := s.emailStore.Create(em)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to store email")
 	}
