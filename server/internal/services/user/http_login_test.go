@@ -92,6 +92,21 @@ func TestLogin__OnlyOtp(t *testing.T) {
 	require.NotNil(t, otpRsp.OtpId)
 	require.NotNil(t, otpRsp.Code)
 
+	t.Run("log in with wrong OTP fails", func(t *testing.T) {
+		_, hrsp, err := userSvc.Login(context.Background()).Body(
+			openapi.UserSvcLoginRequest{
+				AppHost: sdk.DefaultTestAppHost,
+				Contact: &openapi.UserSvcContactInput{
+					Id:       "test2@test.com",
+					Platform: "email",
+					OtpId:    &otpRsp.OtpId,
+					OtpCode:  openapi.PtrString("incorrect"),
+				},
+			},
+		).Execute()
+		require.Error(t, err, hrsp)
+	})
+
 	t.Run("registration with OTP succeeds", func(t *testing.T) {
 		_, hrsp, err := userSvc.Register(context.Background()).Body(
 			openapi.UserSvcRegisterRequest{
@@ -145,6 +160,28 @@ func TestLogin__OnlyOtp(t *testing.T) {
 			},
 		).Execute()
 		require.NoError(t, err, hrsp)
+	})
+
+	t.Run("log in with empty password fails", func(t *testing.T) {
+		_, hrsp, err := userSvc.Login(context.Background()).Body(
+			openapi.UserSvcLoginRequest{
+				AppHost:  sdk.DefaultTestAppHost,
+				Slug:     openapi.PtrString("test-2"),
+				Password: openapi.PtrString(""),
+			},
+		).Execute()
+		require.Error(t, err, hrsp)
+	})
+
+	t.Run("log in with incorrect password fails", func(t *testing.T) {
+		_, hrsp, err := userSvc.Login(context.Background()).Body(
+			openapi.UserSvcLoginRequest{
+				AppHost:  sdk.DefaultTestAppHost,
+				Slug:     openapi.PtrString("test-2"),
+				Password: openapi.PtrString("incorrect"),
+			},
+		).Execute()
+		require.Error(t, err, hrsp)
 	})
 }
 
