@@ -85,14 +85,17 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 
 	var contacts []user.Contact
 	now := time.Now()
-	if req.Contact.Id != "" {
-		verified := false
 
+	verified := false
+
+	if req.Contact.Id != "" {
 		if s.options.VerifyContacts {
 			err = s.verifyContactOTP(&req.Contact)
 			if err != nil {
 				logger.Error(
 					"Contact verification failed",
+					slog.String("contactId", req.Contact.Id),
+					slog.String("otpId", req.Contact.OtpId),
 					slog.Any("error", err),
 				)
 				endpoint.WriteErr(w, http.StatusBadRequest, errors.New("Contact verification failed"))
@@ -113,20 +116,43 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	err = s.createUserWithoutVerification(
-		app.Id,
-		newUser,
-		contacts,
-		req.Password,
-		nil,
-	)
-	if err != nil {
-		logger.Error(
-			"Failed to create user",
-			slog.Any("error", err),
+	userFound := false
+	var foundUser *user.User
+
+	if verified {
+		foundUser, userFound, err = s.getUserByContactId(req.Contact.Id)
+
+		if err != nil {
+			logger.Error(
+				"Failed to fetch user by contact id",
+				slog.String("contactId", req.Contact.Id),
+				slog.Any("error", err),
+			)
+			endpoint.InternalServerError(w)
+			return
+		}
+
+		if userFound {
+			req.Slug = foundUser.Slug
+		}
+	}
+
+	if !userFound {
+		err = s.createUserWithoutVerification(
+			app.Id,
+			newUser,
+			contacts,
+			req.Password,
+			nil,
 		)
-		endpoint.InternalServerError(w)
-		return
+		if err != nil {
+			logger.Error(
+				"Failed to create user",
+				slog.Any("error", err),
+			)
+			endpoint.InternalServerError(w)
+			return
+		}
 	}
 
 	token, err := s.login(
@@ -137,7 +163,8 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 			Device:   req.Device,
 			Contact:  req.Contact,
 		},
-		true)
+		true,
+	)
 	if err != nil {
 		logger.Error(
 			"Failed to login after registration",

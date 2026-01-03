@@ -575,3 +575,87 @@ func TestLogin__SecurityBoundaries(t *testing.T) {
 		require.Error(t, err, "Security Breach: System allowed login using an OTP issued for a different email")
 	})
 }
+
+func TestRegister__IdempotentWithOtp(t *testing.T) {
+	hs := &di.HandlerSwitcher{}
+	server := httptest.NewServer(hs)
+	defer server.Close()
+
+	options := &universe.Options{
+		Test:           true,
+		Url:            server.URL,
+		VerifyContacts: true,
+	}
+	u, err := di.BigBang(options)
+	require.NoError(t, err)
+
+	hs.UpdateHandler(u.Router)
+	err = u.StarterFunc()
+	require.NoError(t, err)
+
+	userSvc := options.ClientFactory.Client().UserSvcAPI
+	ctx := context.Background()
+	email := "idempotent-test@test.com"
+
+	// 1. Initial Registration
+	otpRsp1, _, err := userSvc.SendOtp(ctx).Body(openapi.UserSvcSendOtpRequest{
+		AppHost:         sdk.DefaultTestAppHost,
+		ContactId:       email,
+		ContactPlatform: "email",
+	}).Execute()
+	require.NoError(t, err)
+
+	_, _, err = userSvc.Register(ctx).Body(openapi.UserSvcRegisterRequest{
+		AppHost: sdk.DefaultTestAppHost,
+		Slug:    "original-user",
+		Contact: &openapi.UserSvcContactInput{
+			Id:       email,
+			Platform: "email",
+			OtpId:    &otpRsp1.OtpId,
+			OtpCode:  otpRsp1.Code,
+		},
+	}).Execute()
+	require.NoError(t, err, "Initial registration should succeed")
+
+	t.Run("registering existing contact with valid OTP logs in", func(t *testing.T) {
+		// 2. Request a NEW OTP for the same contact
+		otpRsp2, _, err := userSvc.SendOtp(ctx).Body(openapi.UserSvcSendOtpRequest{
+			AppHost:         sdk.DefaultTestAppHost,
+			ContactId:       email,
+			ContactPlatform: "email",
+		}).Execute()
+		require.NoError(t, err)
+
+		// 3. Attempt to Register again with the same email but new OTP
+		// Even if the Slug is different, it should identify the existing contact and log in.
+		resp, hrsp, err := userSvc.Register(ctx).Body(openapi.UserSvcRegisterRequest{
+			AppHost: sdk.DefaultTestAppHost,
+			Slug:    "duplicate-slug",
+			Contact: &openapi.UserSvcContactInput{
+				Id:       email,
+				Platform: "email",
+				OtpId:    &otpRsp2.OtpId,
+				OtpCode:  otpRsp2.Code,
+			},
+		}).Execute()
+
+		require.NoError(t, err, "Should not return error for existing contact if OTP is valid")
+		require.NotNil(t, resp.Token, "Should return a session token")
+		require.Equal(t, 200, hrsp.StatusCode)
+	})
+
+	t.Run("registering existing contact with NO OTP fails", func(t *testing.T) {
+		_, hrsp, err := userSvc.Register(ctx).Body(openapi.UserSvcRegisterRequest{
+			AppHost: sdk.DefaultTestAppHost,
+			Slug:    "another-slug",
+			Contact: &openapi.UserSvcContactInput{
+				Id:       email,
+				Platform: "email",
+			},
+		}).Execute()
+
+		require.Error(t, err, "Should fail registration for existing contact without OTP")
+		// Usually returns 409 Conflict or 400 depending on implementation
+		require.True(t, hrsp.StatusCode >= 400)
+	})
+}
