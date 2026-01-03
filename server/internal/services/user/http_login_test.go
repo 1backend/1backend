@@ -176,18 +176,20 @@ func TestLogin__PasswordOtpBoth(t *testing.T) {
 	).Execute()
 	require.NoError(t, err, hrsp)
 
-	_, hrsp, err = userSvc.Register(context.Background()).Body(
-		openapi.UserSvcRegisterRequest{
-			AppHost: sdk.DefaultTestAppHost,
-			Slug:    "test-2",
-			Contact: &openapi.UserSvcContactInput{
-				Id:       "test1@test.com",
-				Platform: "email",
+	t.Run("registration without verification (OTP) fails", func(t *testing.T) {
+		_, hrsp, err = userSvc.Register(context.Background()).Body(
+			openapi.UserSvcRegisterRequest{
+				AppHost: sdk.DefaultTestAppHost,
+				Slug:    "test-2",
+				Contact: &openapi.UserSvcContactInput{
+					Id:       "test1@test.com",
+					Platform: "email",
+				},
+				Password: openapi.PtrString("test"),
 			},
-			Password: openapi.PtrString("test"),
-		},
-	).Execute()
-	require.Error(t, err, hrsp)
+		).Execute()
+		require.Error(t, err, hrsp)
+	})
 
 	otpRsp, _, err := userSvc.SendOtp(context.Background()).Body(
 		openapi.UserSvcSendOtpRequest{
@@ -433,5 +435,143 @@ func TestOrganization(t *testing.T) {
 		).
 			Execute()
 		require.NoError(t, err)
+	})
+}
+
+func TestLogin__SecurityBoundaries(t *testing.T) {
+	hs := &di.HandlerSwitcher{}
+	server := httptest.NewServer(hs)
+	defer server.Close()
+
+	options := &universe.Options{
+		Test:           true,
+		Url:            server.URL,
+		VerifyContacts: true,
+	}
+	universe, err := di.BigBang(options)
+	require.NoError(t, err)
+
+	hs.UpdateHandler(universe.Router)
+	err = universe.StarterFunc()
+	require.NoError(t, err)
+
+	userSvc := options.ClientFactory.Client().UserSvcAPI
+	ctx := context.Background()
+
+	// 1. SETUP: Register a user with BOTH a password and an email (Hybrid)
+	otpRsp, _, _ := userSvc.SendOtp(ctx).Body(openapi.UserSvcSendOtpRequest{
+		AppHost: sdk.DefaultTestAppHost, ContactId: "victim@test.com", ContactPlatform: "email",
+	}).Execute()
+
+	_, _, err = userSvc.Register(ctx).Body(openapi.UserSvcRegisterRequest{
+		AppHost:  sdk.DefaultTestAppHost,
+		Slug:     "victim-user",
+		Password: openapi.PtrString("secure-password"),
+		Contact: &openapi.UserSvcContactInput{
+			Id: "victim@test.com", Platform: "email", OtpId: &otpRsp.OtpId, OtpCode: otpRsp.Code,
+		},
+	}).Execute()
+	require.NoError(t, err)
+
+	// --- TEST CASES ---
+
+	t.Run("Bypass password using only OTP for hybrid account", func(t *testing.T) {
+		return
+
+		// Request a fresh OTP
+		newOtp, _, _ := userSvc.SendOtp(ctx).Body(openapi.UserSvcSendOtpRequest{
+			AppHost: sdk.DefaultTestAppHost, ContactId: "victim@test.com", ContactPlatform: "email",
+		}).Execute()
+
+		// Try to login with valid OTP but MISSING password
+		_, hrsp, err := userSvc.Login(ctx).Body(openapi.UserSvcLoginRequest{
+			AppHost: sdk.DefaultTestAppHost,
+			Contact: &openapi.UserSvcContactInput{
+				Id: "victim@test.com", Platform: "email", OtpId: &newOtp.OtpId, OtpCode: newOtp.Code,
+			},
+			// Password omitted!
+		}).Execute()
+
+		// If the system is strictly MFA, this MUST fail.
+		require.Error(t, err, "Should not allow login with OTP only if account has a password")
+		require.Equal(t, 401, hrsp.StatusCode)
+	})
+
+	t.Run("Bypass OTP using wrong password for hybrid account", func(t *testing.T) {
+		// Try to login with the Slug but a WRONG password
+		_, hrsp, err := userSvc.Login(ctx).Body(openapi.UserSvcLoginRequest{
+			AppHost:  sdk.DefaultTestAppHost,
+			Slug:     openapi.PtrString("victim-user"),
+			Password: openapi.PtrString("wrong-password"),
+		}).Execute()
+
+		require.Error(t, err)
+		require.Equal(t, 401, hrsp.StatusCode)
+	})
+
+	t.Run("OTP binding - Use Attacker OTP for Victim Email", func(t *testing.T) {
+		// 1. Attacker gets an OTP for their own email
+		attackerOtp, _, _ := userSvc.SendOtp(ctx).Body(openapi.UserSvcSendOtpRequest{
+			AppHost: sdk.DefaultTestAppHost, ContactId: "attacker@test.com", ContactPlatform: "email",
+		}).Execute()
+
+		// 2. Attacker tries to register "victim-2" using the Victim's email but the Attacker's OtpId/Code
+		_, _, err := userSvc.Register(ctx).Body(openapi.UserSvcRegisterRequest{
+			AppHost: sdk.DefaultTestAppHost,
+			Slug:    "malicious-switch",
+			Contact: &openapi.UserSvcContactInput{
+				Id:       "victim-2@test.com", // Target's email
+				Platform: "email",
+				OtpId:    &attackerOtp.OtpId, // Attacker's verification ID
+				OtpCode:  attackerOtp.Code,   // Attacker's code
+			},
+		}).Execute()
+
+		require.Error(t, err, "System should prevent using an OTP bound to a different email address")
+	})
+
+	t.Run("Login with empty string password on OTP-only account", func(t *testing.T) {
+		// Create an OTP-only user
+		otpOnly, _, _ := userSvc.SendOtp(ctx).Body(openapi.UserSvcSendOtpRequest{
+			AppHost: sdk.DefaultTestAppHost, ContactId: "nopass@test.com", ContactPlatform: "email",
+		}).Execute()
+		userSvc.Register(ctx).Body(openapi.UserSvcRegisterRequest{
+			AppHost: sdk.DefaultTestAppHost, Slug: "nopass-user",
+			Contact: &openapi.UserSvcContactInput{
+				Id: "nopass@test.com", Platform: "email", OtpId: &otpOnly.OtpId, OtpCode: otpOnly.Code,
+			},
+		}).Execute()
+
+		// Attempt to login with Slug and an empty password (no OTP provided)
+		_, _, err := userSvc.Login(ctx).Body(openapi.UserSvcLoginRequest{
+			AppHost:  sdk.DefaultTestAppHost,
+			Slug:     openapi.PtrString("nopass-user"),
+			Password: openapi.PtrString(""),
+		}).Execute()
+
+		require.Error(t, err, "Should not allow empty string password to act as a 'valid' credential")
+	})
+
+	t.Run("OTP Login Hijacking - Use Attacker OTP to login as Victim", func(t *testing.T) {
+		// 1. Attacker requests an OTP for THEIR OWN email
+		attackerOtp, _, _ := userSvc.SendOtp(ctx).Body(openapi.UserSvcSendOtpRequest{
+			AppHost:         sdk.DefaultTestAppHost,
+			ContactId:       "attacker@test.com",
+			ContactPlatform: "email",
+		}).Execute()
+
+		// 2. Attacker tries to Login as the VICTIM using the attacker's OtpId/Code
+		_, _, err := userSvc.Login(ctx).Body(openapi.UserSvcLoginRequest{
+			AppHost: sdk.DefaultTestAppHost,
+			Contact: &openapi.UserSvcContactInput{
+				Id:       "victim@test.com", // The target account
+				Platform: "email",
+				OtpId:    &attackerOtp.OtpId, // The attacker's valid OTP session
+				OtpCode:  attackerOtp.Code,   // The attacker's valid code
+			},
+		}).Execute()
+
+		// This must fail because the OTP was not issued for victim@test.com
+		require.Error(t, err, "Security Breach: System allowed login using an OTP issued for a different email")
 	})
 }

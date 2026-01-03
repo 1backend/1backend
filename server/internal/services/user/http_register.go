@@ -86,6 +86,8 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	var contacts []user.Contact
 	now := time.Now()
 	if req.Contact.Id != "" {
+		verified := false
+
 		if s.options.VerifyContacts {
 			err = s.verifyContactOTP(&req.Contact)
 			if err != nil {
@@ -96,6 +98,8 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 				endpoint.WriteErr(w, http.StatusBadRequest, errors.New("Contact verification failed"))
 				return
 			}
+
+			verified = true
 		}
 
 		contacts = append(contacts, user.Contact{
@@ -103,6 +107,7 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 			CreatedAt: now,
 			UpdatedAt: now,
 			Platform:  req.Contact.Platform,
+			Verified:  verified,
 			// @todo create handle
 			// Handle:    req.Contact.Handle,
 		})
@@ -246,6 +251,7 @@ func (s *UserService) verifyContactOTP(contact *user.ContactInput) error {
 
 	otpI, found, err := s.otpStore.Query(
 		datastore.Equals(datastore.Field("id"), contact.OtpId),
+		datastore.Equals(datastore.Field("contactId"), contact.Id),
 	).FindOne()
 	if err != nil {
 		return err
