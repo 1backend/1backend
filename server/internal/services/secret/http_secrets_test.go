@@ -197,3 +197,92 @@ func TestSecretService(t *testing.T) {
 	})
 
 }
+
+func TestSecretService_BatchCreate(t *testing.T) {
+	server, err := test.StartService(test.Options{Test: true})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
+	require.NoError(t, err)
+
+	cl := manyClients[0]
+	ctx := context.Background()
+	prefix := "test-user-slug-0/"
+
+	// Execute batch save
+	_, _, err = cl.SecretSvcAPI.SaveSecrets(ctx).
+		Body(openapi.SecretSvcSaveSecretsRequest{
+			Secrets: []openapi.SecretSvcSecretInput{
+				{Id: prefix + "b1", Value: openapi.PtrString("v1")},
+				{Id: prefix + "b2", Value: openapi.PtrString("v2")},
+			},
+		}).
+		Execute()
+	require.NoError(t, err)
+
+	// Verify both exist
+	readRsp, _, err := cl.SecretSvcAPI.ListSecrets(ctx).
+		Body(openapi.SecretSvcListSecretsRequest{
+			Ids: []string{prefix + "b1", prefix + "b2"},
+		}).
+		Execute()
+
+	require.NoError(t, err)
+	require.Equal(t, 2, len(readRsp.Secrets))
+}
+
+func TestSecretService_BatchUpdate(t *testing.T) {
+	server, err := test.StartService(test.Options{Test: true})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
+	require.NoError(t, err)
+
+	cl := manyClients[0]
+	ctx := context.Background()
+	prefix := "test-user-slug-0/"
+	id1, id2 := prefix+"u1", prefix+"u2"
+
+	// 1. Initial State
+	_, _, err = cl.SecretSvcAPI.SaveSecrets(ctx).
+		Body(openapi.SecretSvcSaveSecretsRequest{
+			Secrets: []openapi.SecretSvcSecretInput{
+				{Id: id1, Value: openapi.PtrString("old-1")},
+				{Id: id2, Value: openapi.PtrString("old-2")},
+			},
+		}).
+		Execute()
+	require.NoError(t, err)
+
+	// 2. Batch Update (Same IDs, New Values)
+	_, _, err = cl.SecretSvcAPI.SaveSecrets(ctx).
+		Body(openapi.SecretSvcSaveSecretsRequest{
+			Secrets: []openapi.SecretSvcSecretInput{
+				{Id: id1, Value: openapi.PtrString("new-1")},
+				{Id: id2, Value: openapi.PtrString("new-2")},
+			},
+		}).
+		Execute()
+	require.NoError(t, err)
+
+	// 3. Verification
+	readRsp, _, err := cl.SecretSvcAPI.ListSecrets(ctx).
+		Body(openapi.SecretSvcListSecretsRequest{
+			Ids: []string{id1, id2},
+		}).
+		Execute()
+
+	require.NoError(t, err)
+
+	results := make(map[string]string)
+	for _, s := range readRsp.Secrets {
+		results[s.Id] = s.Value
+	}
+
+	require.Equal(t, "new-1", results[id1])
+	require.Equal(t, "new-2", results[id2])
+}

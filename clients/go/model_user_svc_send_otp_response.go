@@ -22,9 +22,15 @@ var _ MappedNullable = &UserSvcSendOtpResponse{}
 
 // UserSvcSendOtpResponse struct for UserSvcSendOtpResponse
 type UserSvcSendOtpResponse struct {
+	Body *string `json:"body,omitempty"`
 	// In test mode, the OTP code is returned in the response for easier testing.
 	Code *string `json:"code,omitempty"`
+	ContentType *string `json:"contentType,omitempty"`
+	FromEmail *string `json:"fromEmail,omitempty"`
+	FromName *string `json:"fromName,omitempty"`
 	OtpId string `json:"otpId"`
+	// In test mode, these email fields are returned
+	Subject *string `json:"subject,omitempty"`
 }
 
 type _UserSvcSendOtpResponse UserSvcSendOtpResponse
@@ -45,6 +51,38 @@ func NewUserSvcSendOtpResponse(otpId string) *UserSvcSendOtpResponse {
 func NewUserSvcSendOtpResponseWithDefaults() *UserSvcSendOtpResponse {
 	this := UserSvcSendOtpResponse{}
 	return &this
+}
+
+// GetBody returns the Body field value if set, zero value otherwise.
+func (o *UserSvcSendOtpResponse) GetBody() string {
+	if o == nil || IsNil(o.Body) {
+		var ret string
+		return ret
+	}
+	return *o.Body
+}
+
+// GetBodyOk returns a tuple with the Body field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcSendOtpResponse) GetBodyOk() (*string, bool) {
+	if o == nil || IsNil(o.Body) {
+		return nil, false
+	}
+	return o.Body, true
+}
+
+// HasBody returns a boolean if a field has been set.
+func (o *UserSvcSendOtpResponse) HasBody() bool {
+	if o != nil && !IsNil(o.Body) {
+		return true
+	}
+
+	return false
+}
+
+// SetBody gets a reference to the given string and assigns it to the Body field.
+func (o *UserSvcSendOtpResponse) SetBody(v string) {
+	o.Body = &v
 }
 
 // GetCode returns the Code field value if set, zero value otherwise.
@@ -79,6 +117,102 @@ func (o *UserSvcSendOtpResponse) SetCode(v string) {
 	o.Code = &v
 }
 
+// GetContentType returns the ContentType field value if set, zero value otherwise.
+func (o *UserSvcSendOtpResponse) GetContentType() string {
+	if o == nil || IsNil(o.ContentType) {
+		var ret string
+		return ret
+	}
+	return *o.ContentType
+}
+
+// GetContentTypeOk returns a tuple with the ContentType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcSendOtpResponse) GetContentTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.ContentType) {
+		return nil, false
+	}
+	return o.ContentType, true
+}
+
+// HasContentType returns a boolean if a field has been set.
+func (o *UserSvcSendOtpResponse) HasContentType() bool {
+	if o != nil && !IsNil(o.ContentType) {
+		return true
+	}
+
+	return false
+}
+
+// SetContentType gets a reference to the given string and assigns it to the ContentType field.
+func (o *UserSvcSendOtpResponse) SetContentType(v string) {
+	o.ContentType = &v
+}
+
+// GetFromEmail returns the FromEmail field value if set, zero value otherwise.
+func (o *UserSvcSendOtpResponse) GetFromEmail() string {
+	if o == nil || IsNil(o.FromEmail) {
+		var ret string
+		return ret
+	}
+	return *o.FromEmail
+}
+
+// GetFromEmailOk returns a tuple with the FromEmail field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcSendOtpResponse) GetFromEmailOk() (*string, bool) {
+	if o == nil || IsNil(o.FromEmail) {
+		return nil, false
+	}
+	return o.FromEmail, true
+}
+
+// HasFromEmail returns a boolean if a field has been set.
+func (o *UserSvcSendOtpResponse) HasFromEmail() bool {
+	if o != nil && !IsNil(o.FromEmail) {
+		return true
+	}
+
+	return false
+}
+
+// SetFromEmail gets a reference to the given string and assigns it to the FromEmail field.
+func (o *UserSvcSendOtpResponse) SetFromEmail(v string) {
+	o.FromEmail = &v
+}
+
+// GetFromName returns the FromName field value if set, zero value otherwise.
+func (o *UserSvcSendOtpResponse) GetFromName() string {
+	if o == nil || IsNil(o.FromName) {
+		var ret string
+		return ret
+	}
+	return *o.FromName
+}
+
+// GetFromNameOk returns a tuple with the FromName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcSendOtpResponse) GetFromNameOk() (*string, bool) {
+	if o == nil || IsNil(o.FromName) {
+		return nil, false
+	}
+	return o.FromName, true
+}
+
+// HasFromName returns a boolean if a field has been set.
+func (o *UserSvcSendOtpResponse) HasFromName() bool {
+	if o != nil && !IsNil(o.FromName) {
+		return true
+	}
+
+	return false
+}
+
+// SetFromName gets a reference to the given string and assigns it to the FromName field.
+func (o *UserSvcSendOtpResponse) SetFromName(v string) {
+	o.FromName = &v
+}
+
 // GetOtpId returns the OtpId field value
 func (o *UserSvcSendOtpResponse) GetOtpId() string {
 	if o == nil {
@@ -103,6 +237,38 @@ func (o *UserSvcSendOtpResponse) SetOtpId(v string) {
 	o.OtpId = v
 }
 
+// GetSubject returns the Subject field value if set, zero value otherwise.
+func (o *UserSvcSendOtpResponse) GetSubject() string {
+	if o == nil || IsNil(o.Subject) {
+		var ret string
+		return ret
+	}
+	return *o.Subject
+}
+
+// GetSubjectOk returns a tuple with the Subject field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcSendOtpResponse) GetSubjectOk() (*string, bool) {
+	if o == nil || IsNil(o.Subject) {
+		return nil, false
+	}
+	return o.Subject, true
+}
+
+// HasSubject returns a boolean if a field has been set.
+func (o *UserSvcSendOtpResponse) HasSubject() bool {
+	if o != nil && !IsNil(o.Subject) {
+		return true
+	}
+
+	return false
+}
+
+// SetSubject gets a reference to the given string and assigns it to the Subject field.
+func (o *UserSvcSendOtpResponse) SetSubject(v string) {
+	o.Subject = &v
+}
+
 func (o UserSvcSendOtpResponse) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -113,10 +279,25 @@ func (o UserSvcSendOtpResponse) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcSendOtpResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Body) {
+		toSerialize["body"] = o.Body
+	}
 	if !IsNil(o.Code) {
 		toSerialize["code"] = o.Code
 	}
+	if !IsNil(o.ContentType) {
+		toSerialize["contentType"] = o.ContentType
+	}
+	if !IsNil(o.FromEmail) {
+		toSerialize["fromEmail"] = o.FromEmail
+	}
+	if !IsNil(o.FromName) {
+		toSerialize["fromName"] = o.FromName
+	}
 	toSerialize["otpId"] = o.OtpId
+	if !IsNil(o.Subject) {
+		toSerialize["subject"] = o.Subject
+	}
 	return toSerialize, nil
 }
 

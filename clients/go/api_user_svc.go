@@ -4607,11 +4607,18 @@ type ApiSendOtpRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
 	body *UserSvcSendOtpRequest
+	acceptLanguage *string
 }
 
 // Send OTP Request
 func (r ApiSendOtpRequest) Body(body UserSvcSendOtpRequest) ApiSendOtpRequest {
 	r.body = &body
+	return r
+}
+
+// Language preference for the email
+func (r ApiSendOtpRequest) AcceptLanguage(acceptLanguage string) ApiSendOtpRequest {
+	r.acceptLanguage = &acceptLanguage
 	return r
 }
 
@@ -4676,6 +4683,9 @@ func (a *UserSvcAPIService) SendOtpExecute(r ApiSendOtpRequest) (*UserSvcSendOtp
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.acceptLanguage != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Accept-Language", r.acceptLanguage, "", "")
 	}
 	// body params
 	localVarPostBody = r.body

@@ -3713,11 +3713,22 @@ definitions:
     type: object
   user_svc.SendOtpResponse:
     properties:
+      body:
+        type: string
       code:
         description: In test mode, the OTP code is returned in the response for easier
           testing.
         type: string
+      contentType:
+        type: string
+      fromEmail:
+        type: string
+      fromName:
+        type: string
       otpId:
+        type: string
+      subject:
+        description: In test mode, these email fields are returned
         type: string
     required:
     - otpId
@@ -7138,6 +7149,10 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/user_svc.SendOtpRequest'
+      - description: Language preference for the email
+        in: header
+        name: Accept-Language
+        type: string
       produces:
       - application/json
       responses:
