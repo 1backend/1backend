@@ -8,7 +8,6 @@
 package secretservice
 
 import (
-	"context"
 	"crypto/sha256"
 	"crypto/sha512"
 	"encoding/hex"
@@ -36,6 +35,8 @@ import (
 // @Description Requires the `secret-svc:secret:save` permission.
 // @Description Users can only save secrets prefixed with their user slug unless they also have the
 // @Description `secret-svc:secret:save-unprefixed` permission, which allows them to save a secret without a slug prefix.
+// @Description `secret-svc:secret:save:$secretId` (eg. `secret-svc:secret:save:sendgrid-api-key`) permission allows callers to save secrets otherwise they don't have access to.
+// @Description This permission also supports tail-wildcards by splitting the ID with hyphens (e.g., `secret-svc:secret:save:otp-*` grants access to `otp-body-en` and `otp-subject-hu`).
 // @Tags Secret Svc
 // @Accept json
 // @Produce json
@@ -84,7 +85,7 @@ func (cs *SecretService) SaveSecrets(
 	}
 
 	err = cs.saveSecrets(
-		r.Context(),
+		r,
 		isAuthRsp.AppId,
 		req.Secrets,
 		isAuthRsp.Authorized,
@@ -110,12 +111,14 @@ func (cs *SecretService) SaveSecrets(
 
 // @todo here canSaveUnprefixed is an approximation of whether the user is an admin or not.
 func (cs *SecretService) saveSecrets(
-	ctx context.Context,
+	r *http.Request,
 	defaultAppId string,
 	ss []*secret.SecretInput,
 	canSaveUnprefixed bool,
 	userSlug string,
 ) error {
+	ctx := r.Context()
+
 	cs.options.Lock.Acquire(ctx, "secret-svc-save")
 	defer cs.options.Lock.Release(ctx, "secret-svc-save")
 
@@ -147,10 +150,41 @@ func (cs *SecretService) saveSecrets(
 		if err != nil {
 			return err
 		}
+
+		rsp, _, err := cs.options.PermissionChecker.HasPermission(
+			r,
+			fmt.Sprintf("secret-svc:secret:save:%s", s.Id),
+		)
+		if err != nil {
+			return err
+		}
+		hasPermissionToSaveThisSecret := rsp.Authorized
+
+		// Hack for Wildcard: If not authorized, check for a prefix match
+		if !hasPermissionToSaveThisSecret && strings.Contains(s.Id, "-") {
+			// Split "otp-body-en" -> ["otp", "body", "en"]
+			parts := strings.Split(s.Id, "-")
+
+			// Check "otp-*" , "otp-body-*"
+			for i := 1; i < len(parts); i++ {
+				wildcardPattern := strings.Join(parts[:i], "-") + "-*"
+
+				wRsp, _, wErr := cs.options.PermissionChecker.HasPermission(
+					r,
+					fmt.Sprintf("secret-svc:secret:save:%s", wildcardPattern),
+				)
+
+				if wErr == nil && wRsp.Authorized {
+					hasPermissionToSaveThisSecret = true
+					break
+				}
+			}
+		}
+
 		if !found {
 			// When secret id does not exist, it can be "claimed" by any authorized user
 			// but non admins can only claim ids prefixed with their user slug
-			if !canSaveUnprefixed && !strings.HasPrefix(s.Id, userSlug) {
+			if !hasPermissionToSaveThisSecret && !canSaveUnprefixed && !strings.HasPrefix(s.Id, userSlug) {
 				return errors.New("users can only claim secrets prefixed with their user slug")
 			}
 			if s.Id == "" {
@@ -159,7 +193,7 @@ func (cs *SecretService) saveSecrets(
 
 			// Admin slugs don't need to be saved the writers, readers and deleters blocks
 			// as they can read write and anything.
-			if !canSaveUnprefixed {
+			if !canSaveUnprefixed && !hasPermissionToSaveThisSecret {
 				if s.Writers == nil {
 					s.Writers = []string{userSlug}
 				}
@@ -179,6 +213,7 @@ func (cs *SecretService) saveSecrets(
 					s.CanChangeDeleters = []string{userSlug}
 				}
 			}
+
 			if !s.Encrypted {
 				s.Value, err = secrets.Encrypt(s.Value, cs.options.SecretEncryptionKey)
 				if err != nil {
@@ -231,6 +266,10 @@ func (cs *SecretService) saveSecrets(
 					break
 				}
 			}
+		}
+
+		if hasPermissionToSaveThisSecret {
+			canSave = true
 		}
 
 		if !canSave {
