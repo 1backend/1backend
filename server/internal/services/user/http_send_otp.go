@@ -28,7 +28,6 @@ import (
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 )
 
@@ -190,7 +189,10 @@ func (s *UserService) dispatchOtp(
 		return nil, fmt.Errorf("unsupported contact platform '%s'", otp.ContactPlatform)
 	}
 
-	ts := s.getOtpTemplateSecrets(ctx, appId, language)
+	ts, err := s.getOtpTemplateSecrets(ctx, appId, language)
+	if err != nil {
+		return nil, err
+	}
 
 	// 2. Prepare Template Data
 	expiresIn := time.Until(otp.ExpiresAt).Round(time.Second)
@@ -208,6 +210,8 @@ func (s *UserService) dispatchOtp(
 	if ts.Subject != "" {
 		if renderedSub, err := renderTemplate("otp-sub", ts.Subject, data, false); err == nil {
 			finalSubject = renderedSub
+		} else {
+			return nil, err
 		}
 	}
 
@@ -217,6 +221,8 @@ func (s *UserService) dispatchOtp(
 		isHTML := ts.ContentType == "text/html"
 		if renderedBody, err := renderTemplate("otp-body", ts.Body, data, isHTML); err == nil {
 			finalBody = renderedBody
+		} else {
+			return nil, err
 		}
 	}
 
@@ -227,7 +233,12 @@ func (s *UserService) dispatchOtp(
 		Body:        finalBody,
 		ContentType: openapi.PtrString(ts.ContentType),
 	}
+
 	contentType := "text/plain"
+	if ts.ContentType != "" {
+		contentType = ts.ContentType
+	}
+
 	emailReq.ContentType = openapi.PtrString(contentType)
 
 	if !s.options.Test {
@@ -272,7 +283,7 @@ type otpTemplateSecrets struct {
 	ContentType string
 }
 
-func (s *UserService) getOtpTemplateSecrets(ctx context.Context, appId, lang string) otpTemplateSecrets {
+func (s *UserService) getOtpTemplateSecrets(ctx context.Context, appId, lang string) (*otpTemplateSecrets, error) {
 	// Generate keys for both the requested language and English fallback
 	keys := []string{
 		"otp-email-subject-" + lang, "otp-email-subject",
@@ -280,50 +291,58 @@ func (s *UserService) getOtpTemplateSecrets(ctx context.Context, appId, lang str
 		"otp-email-type",
 	}
 
-	primary := s.fetchSecretMap(ctx, appId, keys)
-	backup := s.fetchSecretMap(ctx, sdk.DefaultAppId, keys)
+	primary, err := s.fetchSecretMap(ctx, appId, keys)
+	if err != nil {
+		return nil, err
+	}
 
-	spew.Dump("primary", primary, "backup", backup)
+	backup, err := s.fetchSecretMap(ctx, sdk.DefaultAppId, keys)
+	if err != nil {
+		return nil, err
+	}
 
 	// Resolve with priority: App(Lang) -> App(en) -> Global(Lang) -> Global(en)
-	return otpTemplateSecrets{
+	return &otpTemplateSecrets{
 		Subject: pick(
 			primary["otp-email-subject-"+lang],
-			primary["otp-email-subject-en"],
+			primary["otp-email-subject"],
 			backup["otp-email-subject-"+lang],
-			backup["otp-email-subject-en"],
+			backup["otp-email-subject"],
 		),
 		Body: pick(
 			primary["otp-email-body-"+lang],
-			primary["otp-email-body-en"],
+			primary["otp-email-body"],
 			backup["otp-email-body-"+lang],
-			backup["otp-email-body-en"],
+			backup["otp-email-body"],
 		),
 		ContentType: pick(primary["otp-email-type"], backup["otp-email-type"], "text/plain"),
-	}
+	}, nil
 }
 
-func (s *UserService) fetchSecretMap(ctx context.Context, appId string, keys []string) map[string]string {
+func (s *UserService) fetchSecretMap(ctx context.Context, appId string, keys []string) (map[string]string, error) {
 	res := make(map[string]string)
 	token := s.token
 
 	if appId != "" && appId != sdk.DefaultAppId {
 		exchanged, err := s.options.TokenExchanger.ExchangeToken(ctx, s.token, endpoint.ExchangeOptions{AppId: appId})
 		if err != nil {
-			return res
+			return nil, err
 		}
 		token = exchanged
 	}
 
 	resp, _, err := s.options.ClientFactory.Client(client.WithToken(token)).SecretSvcAPI.
 		ListSecrets(ctx).Body(openapi.SecretSvcListSecretsRequest{Ids: keys}).Execute()
+	if err != nil {
+		return nil, err
+	}
 
 	if err == nil && resp != nil {
 		for _, sec := range resp.Secrets {
 			res[sec.Id] = sec.Value
 		}
 	}
-	return res
+	return res, nil
 }
 
 func pick(vals ...string) string {

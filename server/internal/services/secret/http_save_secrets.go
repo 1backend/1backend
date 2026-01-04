@@ -212,7 +212,12 @@ func (cs *SecretService) saveSecrets(
 				return errors.Wrap(err, "checksum failed")
 			}
 
-			return cs.secretStore.Upsert(secr)
+			err = cs.secretStore.Upsert(secr)
+			if err != nil {
+				return err
+			}
+
+			continue
 		}
 
 		secr := secretI.(*secret.Secret)
