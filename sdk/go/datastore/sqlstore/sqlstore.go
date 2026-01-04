@@ -146,6 +146,7 @@ func (s *SQLStore) Create(obj datastore.Row) error {
 	}
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicate key value") {
+			logger.Info("duplicate key value", slog.Any("error", err))
 			return datastore.ErrEntryAlreadyExists
 		}
 		return err
@@ -175,6 +176,7 @@ func (s *SQLStore) CreateMany(objs []datastore.Row) error {
 		if err != nil {
 			tx.Rollback()
 			if strings.Contains(err.Error(), "duplicate key value") {
+				logger.Info("duplicate key value", slog.Any("error", err))
 				return datastore.ErrEntryAlreadyExists
 			}
 			return errors.Wrap(err, "error executing query in create many")
