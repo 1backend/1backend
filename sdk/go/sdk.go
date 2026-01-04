@@ -31,6 +31,7 @@ func init() {
 }
 
 const DefaultAppHost = "unnamed"
+const DefaultAppId = "unnamed"
 const DefaultTestAppHost = "test.app"
 
 const base62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"

@@ -135,7 +135,11 @@ func (s *EmailService) dispatchLocalOrGlobal(
 	// should use an app specific secret or the default one.
 	// Anyway...
 
-	var succeeded bool
+	var (
+		currentEmailSecrets emailSecrets
+		unnamedEmailSecrets emailSecrets
+		err                 error
+	)
 
 	// Only try to exchange into an app if that's not the default unnamed one
 	if app.Id != "unnamed" {
@@ -146,30 +150,40 @@ func (s *EmailService) dispatchLocalOrGlobal(
 			return nil, errors.Wrap(err, "cannot exchange token")
 		}
 
-		err = s.dispatchEmail(exchangedToken, app, req)
+		t, err := s.emailSecrets(exchangedToken, app, req)
 		if err != nil {
-			logger.Warn(
-				"Failed to send email in specific app",
-				slog.String("appHost", app.Host),
-				slog.String("appId", app.Id),
-				slog.Any("error", err),
-			)
-		} else {
-			succeeded = true
+			return nil, errors.Wrap(err, "error getting specific email secrets")
 		}
+		currentEmailSecrets = *t
 	}
 
-	if !succeeded {
-		err := s.dispatchEmail(s.token, app, req)
+	if currentEmailSecrets.senderEmail == "" ||
+		currentEmailSecrets.senderName == "" || !hasKey(currentEmailSecrets) {
+		t, err := s.emailSecrets(s.token, app, req)
 		if err != nil {
-			return nil, errors.Wrap(err, fmt.Sprintf("failed to send email in apps '%v' and unnamed", app.Host))
+			return nil, errors.Wrap(err, "error getting unnamed email secrets")
 		}
+		unnamedEmailSecrets = *t
+	}
+
+	finalEmailSecrets := fallbackEmailSecrets(currentEmailSecrets, unnamedEmailSecrets)
+
+	err = s.dispatchEmail(s.token, app, req, finalEmailSecrets)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("failed to send email in apps '%v' and unnamed", app.Host))
 	}
 
 	now := time.Now()
 
 	emailId := sdk.Id("email")
+	internalId, err := sdk.InternalId(app.Id, emailId)
+	if err != nil {
+		return nil, err
+	}
+
 	em := &email.Email{
+		InternalId:  internalId,
+		AppId:       app.Id,
 		Id:          emailId,
 		To:          req.To,
 		CC:          req.CC,
@@ -180,7 +194,8 @@ func (s *EmailService) dispatchLocalOrGlobal(
 		CreatedAt:   now,
 		FromName:    req.FromName,
 	}
-	err := s.emailStore.Create(em)
+
+	err = s.emailStore.Create(em)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to store email")
 	}
@@ -188,11 +203,54 @@ func (s *EmailService) dispatchLocalOrGlobal(
 	return em, nil
 }
 
-func (s *EmailService) dispatchEmail(
+func hasKey(es emailSecrets) bool {
+	if es.mailerSendApiKey != "" {
+		return true
+	}
+
+	if es.sendgridApiKey != "" {
+		return true
+	}
+
+	if es.awsAccessKey != "" && es.awsRegion != "" && es.awsSecret != "" {
+		return true
+	}
+
+	return false
+}
+
+type emailSecrets struct {
+	senderEmail                        string
+	senderName                         string
+	sendgridApiKey                     string
+	awsAccessKey, awsSecret, awsRegion string
+	mailerSendApiKey                   string
+}
+
+func fallbackEmailSecrets(primary, backup emailSecrets) emailSecrets {
+	return emailSecrets{
+		senderEmail:      pick(primary.senderEmail, backup.senderEmail),
+		senderName:       pick(primary.senderName, backup.senderName),
+		sendgridApiKey:   pick(primary.sendgridApiKey, backup.sendgridApiKey),
+		awsAccessKey:     pick(primary.awsAccessKey, backup.awsAccessKey),
+		awsSecret:        pick(primary.awsSecret, backup.awsSecret),
+		awsRegion:        pick(primary.awsRegion, backup.awsRegion),
+		mailerSendApiKey: pick(primary.mailerSendApiKey, backup.mailerSendApiKey),
+	}
+}
+
+func pick(val, fallback string) string {
+	if val != "" {
+		return val
+	}
+	return fallback
+}
+
+func (s *EmailService) emailSecrets(
 	token string,
 	app openapi.UserSvcApp,
 	req email.SendEmailRequest,
-) error {
+) (*emailSecrets, error) {
 	secretClient := s.options.ClientFactory.Client(client.WithToken(token)).SecretSvcAPI
 	secretResp, _, err := secretClient.ListSecrets(context.Background()).Body(
 		openapi.SecretSvcListSecretsRequest{
@@ -206,20 +264,14 @@ func (s *EmailService) dispatchEmail(
 		},
 	).Execute()
 	if err != nil {
-		return errors.Wrap(err, "failed to read email secrets")
+		return nil, errors.Wrap(err, "failed to read email secrets")
 	}
 
 	if secretResp == nil {
-		return errors.New("email secrets are not configured")
+		return nil, errors.New("email secrets are not configured")
 	}
 
-	var (
-		senderEmail                        string
-		senderName                         string
-		sendgridApiKey                     string
-		awsAccessKey, awsSecret, awsRegion string
-		mailerSendApiKey                   string
-	)
+	var es emailSecrets
 
 	for _, secret := range secretResp.Secrets {
 		if secret.Id == "" || secret.Value == "" {
@@ -229,42 +281,51 @@ func (s *EmailService) dispatchEmail(
 
 		switch secret.Id {
 		case "sender-email":
-			senderEmail = secret.Value
+			es.senderEmail = secret.Value
 		case "sender-name":
-			senderName = secret.Value
+			es.senderName = secret.Value
 		case "sendgrid-api-key":
-			sendgridApiKey = secret.Value
+			es.sendgridApiKey = secret.Value
 		case "aws-access-key":
-			awsAccessKey = secret.Value
+			es.awsAccessKey = secret.Value
 		case "aws-secret":
-			awsSecret = secret.Value
+			es.awsSecret = secret.Value
 		case "aws-region":
-			awsRegion = secret.Value
+			es.awsRegion = secret.Value
 		case "mailersend-api-key":
-			mailerSendApiKey = secret.Value
+			es.mailerSendApiKey = secret.Value
 		}
 	}
 
+	return &es, nil
+}
+
+func (s *EmailService) dispatchEmail(
+	token string,
+	app openapi.UserSvcApp,
+	req email.SendEmailRequest,
+	es emailSecrets,
+) error {
 	if req.FromEmail != "" {
-		senderEmail = req.FromEmail
+		es.senderEmail = req.FromEmail
 	}
 
-	if senderEmail == "" {
+	if es.senderEmail == "" {
 		return fmt.Errorf("'sender-email' is not configured")
 	}
 
 	if req.FromName != "" {
-		senderName = req.FromName
+		es.senderName = req.FromName
 	}
 
-	if senderName == "" {
+	if es.senderName == "" {
 		return fmt.Errorf("'sender-name' is not configured")
 	}
 
-	if awsAccessKey != "" {
-		err = s.awsSesSendEmail(
-			senderEmail, senderName,
-			awsAccessKey, awsSecret, awsRegion,
+	if es.awsAccessKey != "" {
+		err := s.awsSesSendEmail(
+			es.senderEmail, es.senderName,
+			es.awsAccessKey, es.awsSecret, es.awsRegion,
 			req,
 		)
 		if err != nil {
@@ -278,10 +339,10 @@ func (s *EmailService) dispatchEmail(
 		}
 	}
 
-	if mailerSendApiKey != "" {
-		err = s.mailerSendSendEmail(
-			senderEmail, senderName,
-			mailerSendApiKey,
+	if es.mailerSendApiKey != "" {
+		err := s.mailerSendSendEmail(
+			es.senderEmail, es.senderName,
+			es.mailerSendApiKey,
 			req,
 		)
 		if err != nil {
@@ -295,10 +356,10 @@ func (s *EmailService) dispatchEmail(
 		}
 	}
 
-	if sendgridApiKey != "" {
-		err = s.sendgridSendEmail(
-			senderEmail, senderName,
-			sendgridApiKey, req,
+	if es.sendgridApiKey != "" {
+		err := s.sendgridSendEmail(
+			es.senderEmail, es.senderName,
+			es.sendgridApiKey, req,
 		)
 		if err != nil {
 			logger.Warn("Sendgrid email sending failed",
@@ -311,9 +372,5 @@ func (s *EmailService) dispatchEmail(
 		}
 	}
 
-	if err == nil {
-		return fmt.Errorf("no email provider is configured")
-	}
-
-	return errors.Wrap(err, "none of the email providers succeeded")
+	return fmt.Errorf("none of the email providers succeeded")
 }

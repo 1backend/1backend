@@ -10,6 +10,10 @@ package user_svc
 import "time"
 
 type OTP struct {
+	InternalId string `json:"internalId,omitempty"`
+
+	AppId string `json:"appId,omitempty"`
+
 	Id         string    `json:"id"  binding:"required"`
 	CreatedAt  time.Time `json:"createdAt" binding:"required"`
 	UpdatedAt  time.Time `json:"updatedAt" binding:"required"`
@@ -46,4 +50,11 @@ type SendOtpResponse struct {
 
 	// In test mode, the OTP code is returned in the response for easier testing.
 	Code string `json:"code,omitempty"`
+
+	// In test mode, these email fields are returned
+	Subject     string `json:"subject,omitempty"`
+	Body        string `json:"body,omitempty"`
+	FromName    string `json:"fromName,omitempty"`
+	FromEmail   string `json:"fromEmail,omitempty"`
+	ContentType string `json:"contentType,omitempty"`
 }
