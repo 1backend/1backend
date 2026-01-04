@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -47,10 +48,16 @@ func (s *UserService) HasPermission(
 	r *http.Request,
 ) {
 	vars := mux.Vars(r)
-	permission := vars["permission"]
+	rawPermission := vars["permission"]
 
-	if permission == "" {
+	if rawPermission == "" {
 		endpoint.WriteString(w, http.StatusBadRequest, "Missing Permission")
+		return
+	}
+
+	permission, err := url.PathUnescape(rawPermission)
+	if err != nil {
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid Permission Format")
 		return
 	}
 

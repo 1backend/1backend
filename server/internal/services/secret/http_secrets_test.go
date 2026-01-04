@@ -286,3 +286,95 @@ func TestSecretService_BatchUpdate(t *testing.T) {
 	require.Equal(t, "new-1", results[id1])
 	require.Equal(t, "new-2", results[id2])
 }
+
+func TestSecretService_GranularWriters_Wildcard(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{Test: true})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+	ctx := t.Context()
+
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
+	require.NoError(t, err)
+
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 2)
+	require.NoError(t, err)
+	client1 := manyClients[0]
+	client2 := manyClients[1]
+
+	t.Run("Admin grants wildcard permit to client1", func(t *testing.T) {
+		_, _, err = adminClient.UserSvcAPI.SavePermits(ctx).
+			Body(openapi.UserSvcSavePermitsRequest{
+				Permits: []openapi.UserSvcPermitInput{
+					{
+						AppHost:    openapi.PtrString("*"),
+						Slugs:      []string{"test-user-slug-0"},
+						Permission: "secret-svc:secret:save:random-secret-*",
+					},
+				},
+			}).
+			Execute()
+		require.NoError(t, err)
+	})
+
+	t.Run("Client1 can save matching secret", func(t *testing.T) {
+		secretId := "random-secret-1" // Matches "random-secret-*"
+
+		_, _, err = client1.SecretSvcAPI.SaveSecrets(ctx).
+			Body(openapi.SecretSvcSaveSecretsRequest{
+				Secrets: []openapi.SecretSvcSecretInput{
+					{
+						Id:    secretId,
+						Value: openapi.PtrString("wildcard-value"),
+					},
+				},
+			}).
+			Execute()
+
+		require.NoError(t, err, "Should be authorized by hierarchical wildcard logic")
+
+		readRsp, _, err := adminClient.SecretSvcAPI.ListSecrets(ctx).
+			Body(openapi.SecretSvcListSecretsRequest{
+				Id: openapi.PtrString(secretId),
+			}).
+			Execute()
+		require.NoError(t, err)
+		require.Equal(t, 1, len(readRsp.Secrets))
+		require.Equal(t, "wildcard-value", readRsp.Secrets[0].Value)
+	})
+
+	t.Run("Client1 cannot save non-matching secret", func(t *testing.T) {
+		secretId := "random-sec1111ret-1"
+
+		_, _, err = client1.SecretSvcAPI.SaveSecrets(ctx).
+			Body(openapi.SecretSvcSaveSecretsRequest{
+				Secrets: []openapi.SecretSvcSecretInput{
+					{
+						Id:    secretId,
+						Value: openapi.PtrString("wildcard-value"),
+					},
+				},
+			}).
+			Execute()
+
+		require.Error(t, err)
+	})
+
+	t.Run("Client2 cannot save non-matching secret", func(t *testing.T) {
+		_, _, err = client2.SecretSvcAPI.SaveSecrets(ctx).
+			Body(openapi.SecretSvcSaveSecretsRequest{
+				Secrets: []openapi.SecretSvcSecretInput{
+					{
+						Id:    "other-prefix-123",
+						Value: openapi.PtrString("forbidden"),
+					},
+				},
+			}).
+			Execute()
+
+		require.Error(t, err, "Should fail because it doesn't match the wildcard and has no user prefix")
+	})
+}
