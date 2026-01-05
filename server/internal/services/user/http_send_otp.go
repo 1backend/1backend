@@ -153,7 +153,12 @@ func (s *UserService) SendOTP(w http.ResponseWriter, r *http.Request) {
 		response.Code = code
 		response.Subject = emailReq.Subject
 		response.Body = emailReq.Body
-		response.ContentType = *emailReq.ContentType
+		if emailReq.ContentType != nil {
+			response.ContentType = *emailReq.ContentType
+		}
+		if emailReq.FromName != nil {
+			response.FromName = *emailReq.FromName
+		}
 	}
 
 	endpoint.WriteJSON(w, http.StatusOK, response)
@@ -234,6 +239,10 @@ func (s *UserService) dispatchOtp(
 		ContentType: openapi.PtrString(ts.ContentType),
 	}
 
+	if ts.SenderName != "" {
+		emailReq.FromName = &ts.SenderName
+	}
+
 	contentType := "text/plain"
 	if ts.ContentType != "" {
 		contentType = ts.ContentType
@@ -278,6 +287,7 @@ func renderTemplate(name, text string, data any, isHTML bool) (string, error) {
 }
 
 type otpTemplateSecrets struct {
+	SenderName  string
 	Subject     string
 	Body        string
 	ContentType string
@@ -286,6 +296,7 @@ type otpTemplateSecrets struct {
 func (s *UserService) getOtpTemplateSecrets(ctx context.Context, appId, lang string) (*otpTemplateSecrets, error) {
 	// Generate keys for both the requested language and English fallback
 	keys := []string{
+		"sender-name",
 		"otp-email-subject-" + lang, "otp-email-subject",
 		"otp-email-body-" + lang, "otp-email-body",
 		"otp-email-type",
@@ -303,6 +314,10 @@ func (s *UserService) getOtpTemplateSecrets(ctx context.Context, appId, lang str
 
 	// Resolve with priority: App(Lang) -> App(en) -> Global(Lang) -> Global(en)
 	return &otpTemplateSecrets{
+		SenderName: pick(
+			primary["sender-name"],
+			backup["sender-name"],
+		),
 		Subject: pick(
 			primary["otp-email-subject-"+lang],
 			primary["otp-email-subject"],

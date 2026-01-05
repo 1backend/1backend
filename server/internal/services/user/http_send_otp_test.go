@@ -46,6 +46,11 @@ func TestSendOtp__TemplateFallback(t *testing.T) {
 				Value:   openapi.PtrString("text/html"),
 				Readers: []string{"user-svc"},
 			},
+			{
+				Id:      "sender-name",
+				Value:   openapi.PtrString("Test Sender Name"),
+				Readers: []string{"user-svc"},
+			},
 		},
 	}).Execute()
 	require.NoError(t, err)
@@ -72,5 +77,6 @@ func TestSendOtp__TemplateFallback(t *testing.T) {
 		require.Contains(t, *otpRsp.Body, *otpRsp.Code)
 
 		require.Equal(t, *otpRsp.ContentType, "text/html")
+		require.Equal(t, *otpRsp.FromName, "Test Sender Name")
 	})
 }
