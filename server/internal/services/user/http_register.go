@@ -12,6 +12,7 @@ import (
 	"log/slog"
 	"net/http"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/pkg/errors"
@@ -89,6 +90,10 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	verified := false
 
 	if req.Contact.Id != "" {
+		if isEmail(req.Contact.Id) {
+			req.Contact.Id = normalizeEmail(req.Contact.Id)
+		}
+
 		if s.options.VerifyContacts {
 			err = s.verifyContactOTP(&req.Contact)
 			if err != nil {
@@ -182,6 +187,28 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		logger.Error("Error writing response", slog.Any("error", err))
 		return
 	}
+}
+
+func isEmail(contactId string) bool {
+	return strings.Contains(contactId, "@")
+}
+
+// normalizeEmail removes sub-addressing (the + part)
+func normalizeEmail(emailAddr string) string {
+	parts := strings.Split(emailAddr, "@")
+	if len(parts) != 2 {
+		return emailAddr // Not a valid email, return as is
+	}
+
+	localPart := parts[0]
+	domain := parts[1]
+
+	// Remove everything after '+' in the local part
+	if plusIdx := strings.Index(localPart, "+"); plusIdx != -1 {
+		localPart = localPart[:plusIdx]
+	}
+
+	return strings.ToLower(localPart + "@" + domain)
 }
 
 func (s *UserService) register(
