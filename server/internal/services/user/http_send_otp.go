@@ -69,6 +69,10 @@ func (s *UserService) SendOTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if isEmail(req.ContactId) {
+		req.ContactId = normalizeEmail(req.ContactId)
+	}
+
 	code, err := generateOtpCode(otpCodeLength)
 	if err != nil {
 		logger.Error("Failed to generate OTP", slog.Any("error", err))
