@@ -1,0 +1,71 @@
+---
+id: delete-routes
+title: "Delete Routes"
+description: "Delete specific routes by their IDs."
+sidebar_label: "Delete Routes"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VU1v4zYQ/SvEnBUpbrYoqlOTxijcBt0g3py8PoypscwNRXJJyo5q6L8vRpRjJ3GL7WUvFk3Nx3sz80Z7qChIr1xU1kAJt6QpkgiOpForKbxtIwWx6kTckPJidhtyyMA68sguswpKqAanh8EUMvD0taUQb2zVQbkHaU0kE/mIzmklB8fiS+CEewhyQw3yyXkOGxUF/qeq9IjUDIfYOYISQvTK1NBnhwv0Hjvojxd29YVkhJ6vzpJLQMVDgjkCVp4qKKNvqeeL4KwJCchPl5f8eB1qjJGYVyK0UlII61brDrLvp/wOcp/Bh3P5ZmaLWlXiz/nHv4X1olEhKFNzP/5PvtclJu+tP1Pbc7UcgE3eA3s02MaN9eofqn4Ykp/PlyiSN6jFnPyWvJgOMX8MpD6DQLL1KnZQLvZwQ+jJX7dxA+Vi2S8ziFgHKBdw7+1zJ+ZbCcsMGoobe1QQZOCQXaBwbHYRtrLwB1mFgVYY4rdes1WhrUS9sSGWk8nV1S/AmQ5A5kwscTmF87ZsnzpH4vNo8hnE2mptd1Sx5lEEh5IEmkpE+0RGoExSEWtvG94J4jGQZz7iztbKCDKVs8pE3hKK428IK+I+GGy4atfjuAxdgKOMnfqLko65Mw/HHTJ9xsZpetkJi0Mrlj2nWNvDkkE5NJkaVFydgJrCb6ySVmP01uTSNic47mdi3jpnPa+AVNBNjK4siskK5ROZih0KeLdGrmcXBqPakmiU9Jb7oiQF4TTGtfUNU9dKkgkD6EO+P+7vxPYqv3yVLZRFsdvt8tq0ufV1MfqFAmunL67yy3wTGz2sO/JN+Liep2xHsGGHdU0+V7YYTAquqYpcMJjcJCKQAY9Ogn+Z/5p/4IjOhtigOcH4akHCG94nm/x7PxNjbyM9x8JpVIbTDuT346Qv4GXSeRGnxMsMeKb57X6/wkCPXvc9X39tybPClhls0StcMc0FD8I4ZiyOJ+qghN8T2Aueb+aPuk1z9mYF9NnB41pKcvE/bU81ezu9m36aQgar8UPX2Iq9PO6YCu6ghOFTyf6DDIe7PWg0dYs126aoPPQ4ivMoBwaVHQ7M6/DKdCcY38opUeFfJnbWZb9PYuv7F/v06l89XjScrLmPy77vvwFD/9Wc
+sidebar_class_name: "delete api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Delete Routes"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/proxy-svc/routes"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Delete specific routes by their IDs.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"ids":{"items":{"type":"string"},"type":"array"}},"type":"object"}}},"description":"Delete Routes Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Routes deleted successfully","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid JSON or missing IDs","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

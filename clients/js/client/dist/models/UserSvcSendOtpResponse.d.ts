@@ -16,6 +16,12 @@
  */
 export interface UserSvcSendOtpResponse {
     /**
+     *
+     * @type {string}
+     * @memberof UserSvcSendOtpResponse
+     */
+    body?: string;
+    /**
      * In test mode, the OTP code is returned in the response for easier testing.
      * @type {string}
      * @memberof UserSvcSendOtpResponse
@@ -26,7 +32,31 @@ export interface UserSvcSendOtpResponse {
      * @type {string}
      * @memberof UserSvcSendOtpResponse
      */
+    contentType?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserSvcSendOtpResponse
+     */
+    fromEmail?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserSvcSendOtpResponse
+     */
+    fromName?: string;
+    /**
+     *
+     * @type {string}
+     * @memberof UserSvcSendOtpResponse
+     */
     otpId: string;
+    /**
+     * In test mode, these email fields are returned
+     * @type {string}
+     * @memberof UserSvcSendOtpResponse
+     */
+    subject?: string;
 }
 /**
  * Check if a given object implements the UserSvcSendOtpResponse interface.

@@ -20,6 +20,12 @@ import { mapValues } from '../runtime';
  */
 export interface UserSvcSendOtpResponse {
     /**
+     * 
+     * @type {string}
+     * @memberof UserSvcSendOtpResponse
+     */
+    body?: string;
+    /**
      * In test mode, the OTP code is returned in the response for easier testing.
      * @type {string}
      * @memberof UserSvcSendOtpResponse
@@ -30,7 +36,31 @@ export interface UserSvcSendOtpResponse {
      * @type {string}
      * @memberof UserSvcSendOtpResponse
      */
+    contentType?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSvcSendOtpResponse
+     */
+    fromEmail?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSvcSendOtpResponse
+     */
+    fromName?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserSvcSendOtpResponse
+     */
     otpId: string;
+    /**
+     * In test mode, these email fields are returned
+     * @type {string}
+     * @memberof UserSvcSendOtpResponse
+     */
+    subject?: string;
 }
 
 /**
@@ -51,8 +81,13 @@ export function UserSvcSendOtpResponseFromJSONTyped(json: any, ignoreDiscriminat
     }
     return {
         
+        'body': json['body'] == null ? undefined : json['body'],
         'code': json['code'] == null ? undefined : json['code'],
+        'contentType': json['contentType'] == null ? undefined : json['contentType'],
+        'fromEmail': json['fromEmail'] == null ? undefined : json['fromEmail'],
+        'fromName': json['fromName'] == null ? undefined : json['fromName'],
         'otpId': json['otpId'],
+        'subject': json['subject'] == null ? undefined : json['subject'],
     };
 }
 
@@ -67,8 +102,13 @@ export function UserSvcSendOtpResponseToJSONTyped(value?: UserSvcSendOtpResponse
 
     return {
         
+        'body': value['body'],
         'code': value['code'],
+        'contentType': value['contentType'],
+        'fromEmail': value['fromEmail'],
+        'fromName': value['fromName'],
         'otpId': value['otpId'],
+        'subject': value['subject'],
     };
 }
 

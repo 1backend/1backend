@@ -429,8 +429,9 @@ export declare class UserSvcApi {
      * Generates and sends a one-time password (OTP) to the specified contact.  The OTP can be used for contact verification or login depending on purpose.
      * @summary Send OTP
      * @param body Send OTP Request
+     * @param acceptLanguage Language preference for the email
      */
-    sendOtp(body: UserSvcSendOtpRequest, options?: {
+    sendOtp(body: UserSvcSendOtpRequest, acceptLanguage?: string, options?: {
         headers: {
             [name: string]: string;
         };

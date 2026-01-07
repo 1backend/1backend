@@ -9,20 +9,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-export declare class UserSvcSendOtpResponse {
-    'body'?: string;
-    /**
-    * In test mode, the OTP code is returned in the response for easier testing.
-    */
-    'code'?: string;
-    'contentType'?: string;
-    'fromEmail'?: string;
-    'fromName'?: string;
-    'otpId': string;
-    /**
-    * In test mode, these email fields are returned
-    */
-    'subject'?: string;
+export declare class ProxySvcDeleteRoutesRequest {
+    'ids'?: Array<string>;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

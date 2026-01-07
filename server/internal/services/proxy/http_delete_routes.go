@@ -20,23 +20,23 @@ import (
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 )
 
-// @ID deleteRoutes
-// @Summary Delete Routes
-// @Description Delete specific routes by their IDs.
+// @ID saveRoutes
+// @Summary Save Routes
+// @Description Save routes that the edge proxy will use to route requests.
 // @Tags Proxy Svc
 // @Accept json
 // @Produce json
-// @Param body body proxy.DeleteRoutesRequest true "Delete Routes Request"
-// @Success 200 {object} proxy.DeleteRoutesResponse "Routes deleted successfully"
-// @Failure 400 {object} proxy.ErrorResponse "Invalid JSON or missing IDs"
+// @Param body body proxy.SaveRoutesRequest true "Save Routes Request"
+// @Success 200 {object} proxy.SaveRoutesResponse "Routes saved successfully"
+// @Failure 400 {object} proxy.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} proxy.ErrorResponse "Unauthorized"
 // @Failure 500 {object} proxy.ErrorResponse "Internal Server Error"
 // @Security BearerAuth
-// @Router /proxy-svc/routes [delete]
-func (cs *ProxyService) DeleteRoutes(w http.ResponseWriter, r *http.Request) {
+// @Router /proxy-svc/routes [put]
+func (cs *ProxyService) SaveRoutes(w http.ResponseWriter, r *http.Request) {
 	isAuthRsp, statusCode, err := cs.options.PermissionChecker.HasPermission(
 		r,
-		proxy.PermissionRouteEdit, // Reusing edit permission
+		proxy.PermissionRouteEdit,
 	)
 	if err != nil {
 		endpoint.WriteErr(w, statusCode, err)
@@ -47,11 +47,11 @@ func (cs *ProxyService) DeleteRoutes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	req := &proxy.DeleteRoutesRequest{}
+	req := &proxy.SaveRoutesRequest{}
 	err = json.NewDecoder(r.Body).Decode(req)
 	if err != nil {
 		logger.Error(
-			"Failed to decode delete request body",
+			"Failed to decode request body",
 			slog.Any("error", err),
 		)
 		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
@@ -59,39 +59,52 @@ func (cs *ProxyService) DeleteRoutes(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	err = cs.deleteRoutes(req)
+	routes, err := cs.saveRoutes(req)
 	if err != nil {
 		logger.Error(
-			"Failed to delete routes",
+			"Failed to save routes",
 			slog.Any("error", err),
 		)
 		endpoint.InternalServerError(w)
 		return
 	}
 
-	endpoint.WriteJSON(w, http.StatusOK, &proxy.DeleteRoutesResponse{})
+	endpoint.WriteJSON(w, http.StatusOK, &proxy.SaveRoutesResponse{
+		Routes: routes,
+	})
 }
 
-func (cs *ProxyService) deleteRoutes(req *proxy.DeleteRoutesRequest) error {
-	if len(req.Ids) == 0 {
-		return errors.New("no route IDs provided")
+func (cs *ProxyService) saveRoutes(req *proxy.SaveRoutesRequest) ([]proxy.Route, error) {
+	if len(req.Routes) == 0 {
+		return nil, errors.New("no routes provided")
 	}
 
-	ids := []any{}
-	for _, v := range req.Ids {
-		ids = append(ids, v)
+	rows := make([]datastore.Row, 0, len(req.Routes))
+	routes := make([]proxy.Route, 0, len(req.Routes))
+
+	for _, route := range req.Routes {
+		if route.Id == "" {
+			return nil, errors.New("route ID is required")
+		}
+		if route.Target == "" {
+			return nil, errors.New("route target is required")
+		}
+
+		r := proxy.Route{
+			Id:     route.Id,
+			Target: route.Target,
+		}
+		routes = append(routes, r)
+		rows = append(rows, &r)
 	}
 
-	err := cs.routeStore.Query(
-		datastore.IsInList([]string{"id"}, ids...),
-	).Delete()
+	err := cs.routeStore.UpsertMany(rows)
 	if err != nil {
-		return errors.Wrap(err, "failed to delete routes from store")
+		return nil, errors.Wrap(err, "failed to save routes")
 	}
 
-	// Clear cache as seen in saveRoutes
 	// @todo this is not going to work in a distributed setting
 	cs.routeCache.Clear()
 
-	return nil
+	return routes, nil
 }

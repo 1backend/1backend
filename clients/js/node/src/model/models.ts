@@ -124,6 +124,7 @@ export * from './promptSvcTextToTextParameters';
 export * from './promptSvcTypesResponse';
 export * from './proxySvcCert';
 export * from './proxySvcCertInput';
+export * from './proxySvcDeleteRoutesRequest';
 export * from './proxySvcErrorResponse';
 export * from './proxySvcListCertsRequest';
 export * from './proxySvcListCertsResponse';
@@ -363,6 +364,7 @@ import { PromptSvcTextToTextParameters } from './promptSvcTextToTextParameters';
 import { PromptSvcTypesResponse } from './promptSvcTypesResponse';
 import { ProxySvcCert } from './proxySvcCert';
 import { ProxySvcCertInput } from './proxySvcCertInput';
+import { ProxySvcDeleteRoutesRequest } from './proxySvcDeleteRoutesRequest';
 import { ProxySvcErrorResponse } from './proxySvcErrorResponse';
 import { ProxySvcListCertsRequest } from './proxySvcListCertsRequest';
 import { ProxySvcListCertsResponse } from './proxySvcListCertsResponse';
@@ -610,6 +612,7 @@ let typeMap: {[index: string]: any} = {
     "PromptSvcTypesResponse": PromptSvcTypesResponse,
     "ProxySvcCert": ProxySvcCert,
     "ProxySvcCertInput": ProxySvcCertInput,
+    "ProxySvcDeleteRoutesRequest": ProxySvcDeleteRoutesRequest,
     "ProxySvcErrorResponse": ProxySvcErrorResponse,
     "ProxySvcListCertsRequest": ProxySvcListCertsRequest,
     "ProxySvcListCertsResponse": ProxySvcListCertsResponse,

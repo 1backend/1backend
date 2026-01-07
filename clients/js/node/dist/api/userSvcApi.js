@@ -1978,9 +1978,10 @@ export class UserSvcApi {
      * Generates and sends a one-time password (OTP) to the specified contact.  The OTP can be used for contact verification or login depending on purpose.
      * @summary Send OTP
      * @param body Send OTP Request
+     * @param acceptLanguage Language preference for the email
      */
-    sendOtp(body_1) {
-        return __awaiter(this, arguments, void 0, function* (body, options = { headers: {} }) {
+    sendOtp(body_1, acceptLanguage_1) {
+        return __awaiter(this, arguments, void 0, function* (body, acceptLanguage, options = { headers: {} }) {
             const localVarPath = this.basePath + '/user-svc/otp/send';
             let localVarQueryParameters = {};
             let localVarHeaderParams = Object.assign({}, this._defaultHeaders);
@@ -1997,6 +1998,7 @@ export class UserSvcApi {
             if (body === null || body === undefined) {
                 throw new Error('Required parameter body was null or undefined when calling sendOtp.');
             }
+            localVarHeaderParams['Accept-Language'] = ObjectSerializer.serialize(acceptLanguage, "string");
             Object.assign(localVarHeaderParams, options.headers);
             let localVarUseFormData = false;
             let localVarRequestOptions = {

@@ -113,3 +113,81 @@ func TestListRoutes(t *testing.T) {
 		require.Len(t, rsp.Routes, 2)
 	})
 }
+
+func TestDeleteRoutes(t *testing.T) {
+	t.Parallel()
+
+	// 1. Setup Service
+	server, err := test.StartService(test.Options{
+		Test: true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
+	require.NoError(t, err)
+
+	userClient, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
+	require.NoError(t, err)
+
+	// 2. Seed Data: Save two routes to delete later
+	initialRoutes := openapi.ProxySvcSaveRoutesRequest{
+		Routes: []openapi.ProxySvcRouteInput{
+			{Id: "route.one", Target: openapi.PtrString("target.one")},
+			{Id: "route.two", Target: openapi.PtrString("target.two")},
+		},
+	}
+	_, hrsp, err := adminClient.ProxySvcAPI.SaveRoutes(context.Background()).Body(initialRoutes).Execute()
+	require.NoError(t, err, hrsp)
+
+	// 3. Test: Unauthorized user cannot delete
+	t.Run("unauthorized user is blocked", func(t *testing.T) {
+		req := openapi.ProxySvcDeleteRoutesRequest{
+			Ids: []string{"route.one"},
+		}
+		_, hrsp, err := userClient[0].ProxySvcAPI.DeleteRoutes(context.Background()).Body(req).Execute()
+
+		require.Error(t, err)
+		require.Equal(t, 401, hrsp.StatusCode)
+	})
+
+	// 4. Test: Admin deletes one route
+	t.Run("admin deletes a single route", func(t *testing.T) {
+		req := openapi.ProxySvcDeleteRoutesRequest{
+			Ids: []string{"route.one"},
+		}
+		_, hrsp, err := adminClient.ProxySvcAPI.DeleteRoutes(context.Background()).Body(req).Execute()
+		require.NoError(t, err, hrsp)
+
+		// Verify count is now 1
+		list, _, _ := adminClient.ProxySvcAPI.ListRoutes(context.Background()).Execute()
+		require.Len(t, list.Routes, 1)
+		require.Equal(t, "route.two", list.Routes[0].Id)
+	})
+
+	// 5. Test: Admin deletes multiple/remaining routes
+	t.Run("admin deletes remaining routes", func(t *testing.T) {
+		req := openapi.ProxySvcDeleteRoutesRequest{
+			Ids: []string{"route.two"},
+		}
+		_, hrsp, err := adminClient.ProxySvcAPI.DeleteRoutes(context.Background()).Body(req).Execute()
+		require.NoError(t, err, hrsp)
+
+		// Verify store is empty
+		list, _, _ := adminClient.ProxySvcAPI.ListRoutes(context.Background()).Execute()
+		require.Empty(t, list.Routes)
+	})
+
+	// 6. Test: Delete non-existent route (should typically be idempotent/no-op)
+	t.Run("deleting non-existent route is idempotent", func(t *testing.T) {
+		req := openapi.ProxySvcDeleteRoutesRequest{
+			Ids: []string{"ghost.route"},
+		}
+		_, hrsp, err := adminClient.ProxySvcAPI.DeleteRoutes(context.Background()).Body(req).Execute()
+
+		// Usually, deleting something already gone returns 200 OK
+		require.NoError(t, err, hrsp)
+		require.Equal(t, 200, hrsp.StatusCode)
+	})
+}

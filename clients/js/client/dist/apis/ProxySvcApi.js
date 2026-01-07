@@ -21,11 +21,47 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as runtime from '../runtime';
-import { ProxySvcListCertsRequestToJSON, ProxySvcListCertsResponseFromJSON, ProxySvcListRoutesRequestToJSON, ProxySvcListRoutesResponseFromJSON, ProxySvcSaveCertsRequestToJSON, ProxySvcSaveRoutesRequestToJSON, ProxySvcSaveRoutesResponseFromJSON, } from '../models/index';
+import { ProxySvcDeleteRoutesRequestToJSON, ProxySvcListCertsRequestToJSON, ProxySvcListCertsResponseFromJSON, ProxySvcListRoutesRequestToJSON, ProxySvcListRoutesResponseFromJSON, ProxySvcSaveCertsRequestToJSON, ProxySvcSaveRoutesRequestToJSON, ProxySvcSaveRoutesResponseFromJSON, } from '../models/index';
 /**
  *
  */
 export class ProxySvcApi extends runtime.BaseAPI {
+    /**
+     * Delete specific routes by their IDs.
+     * Delete Routes
+     */
+    deleteRoutesRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['body'] == null) {
+                throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling deleteRoutes().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            let urlPath = `/proxy-svc/routes`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'DELETE',
+                headers: headerParameters,
+                query: queryParameters,
+                body: ProxySvcDeleteRoutesRequestToJSON(requestParameters['body']),
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response);
+        });
+    }
+    /**
+     * Delete specific routes by their IDs.
+     * Delete Routes
+     */
+    deleteRoutes(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.deleteRoutesRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
     /**
      * List certs that the edge proxy will use to cert requests.
      * List Certs

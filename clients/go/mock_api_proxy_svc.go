@@ -39,6 +39,36 @@ func (m *MockProxySvcAPI) EXPECT() *MockProxySvcAPIMockRecorder {
 	return m.recorder
 }
 
+// DeleteRoutes mocks base method.
+func (m *MockProxySvcAPI) DeleteRoutes(ctx context.Context) ApiDeleteRoutesRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteRoutes", ctx)
+	ret0, _ := ret[0].(ApiDeleteRoutesRequest)
+	return ret0
+}
+
+// DeleteRoutes indicates an expected call of DeleteRoutes.
+func (mr *MockProxySvcAPIMockRecorder) DeleteRoutes(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRoutes", reflect.TypeOf((*MockProxySvcAPI)(nil).DeleteRoutes), ctx)
+}
+
+// DeleteRoutesExecute mocks base method.
+func (m *MockProxySvcAPI) DeleteRoutesExecute(r ApiDeleteRoutesRequest) (map[string]any, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteRoutesExecute", r)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// DeleteRoutesExecute indicates an expected call of DeleteRoutesExecute.
+func (mr *MockProxySvcAPIMockRecorder) DeleteRoutesExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRoutesExecute", reflect.TypeOf((*MockProxySvcAPI)(nil).DeleteRoutesExecute), r)
+}
+
 // ListCerts mocks base method.
 func (m *MockProxySvcAPI) ListCerts(ctx context.Context) ApiListCertsRequest {
 	m.ctrl.T.Helper()

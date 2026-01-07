@@ -985,6 +985,9 @@ export class UserSvcApi extends runtime.BaseAPI {
             const queryParameters = {};
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
+            if (requestParameters['acceptLanguage'] != null) {
+                headerParameters['Accept-Language'] = String(requestParameters['acceptLanguage']);
+            }
             let urlPath = `/user-svc/otp/send`;
             const response = yield this.request({
                 path: urlPath,

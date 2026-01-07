@@ -94,6 +94,7 @@ export interface SaveUserRequest {
 }
 export interface SendOtpRequest {
     body: UserSvcSendOtpRequest;
+    acceptLanguage?: string;
 }
 /**
  *

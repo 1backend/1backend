@@ -156,6 +156,7 @@ docs/PromptSvcTypesResponse.md
 docs/ProxySvcAPI.md
 docs/ProxySvcCert.md
 docs/ProxySvcCertInput.md
+docs/ProxySvcDeleteRoutesRequest.md
 docs/ProxySvcErrorResponse.md
 docs/ProxySvcListCertsRequest.md
 docs/ProxySvcListCertsResponse.md
@@ -388,6 +389,7 @@ model_prompt_svc_text_to_text_parameters.go
 model_prompt_svc_types_response.go
 model_proxy_svc_cert.go
 model_proxy_svc_cert_input.go
+model_proxy_svc_delete_routes_request.go
 model_proxy_svc_error_response.go
 model_proxy_svc_list_certs_request.go
 model_proxy_svc_list_certs_response.go

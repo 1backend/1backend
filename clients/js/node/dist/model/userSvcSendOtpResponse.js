@@ -17,13 +17,38 @@ export class UserSvcSendOtpResponse {
 UserSvcSendOtpResponse.discriminator = undefined;
 UserSvcSendOtpResponse.attributeTypeMap = [
     {
+        "name": "body",
+        "baseName": "body",
+        "type": "string"
+    },
+    {
         "name": "code",
         "baseName": "code",
         "type": "string"
     },
     {
+        "name": "contentType",
+        "baseName": "contentType",
+        "type": "string"
+    },
+    {
+        "name": "fromEmail",
+        "baseName": "fromEmail",
+        "type": "string"
+    },
+    {
+        "name": "fromName",
+        "baseName": "fromName",
+        "type": "string"
+    },
+    {
         "name": "otpId",
         "baseName": "otpId",
+        "type": "string"
+    },
+    {
+        "name": "subject",
+        "baseName": "subject",
         "type": "string"
     }
 ];

@@ -27,8 +27,13 @@ export function UserSvcSendOtpResponseFromJSONTyped(json, ignoreDiscriminator) {
         return json;
     }
     return {
+        'body': json['body'] == null ? undefined : json['body'],
         'code': json['code'] == null ? undefined : json['code'],
+        'contentType': json['contentType'] == null ? undefined : json['contentType'],
+        'fromEmail': json['fromEmail'] == null ? undefined : json['fromEmail'],
+        'fromName': json['fromName'] == null ? undefined : json['fromName'],
         'otpId': json['otpId'],
+        'subject': json['subject'] == null ? undefined : json['subject'],
     };
 }
 export function UserSvcSendOtpResponseToJSON(json) {
@@ -39,7 +44,12 @@ export function UserSvcSendOtpResponseToJSONTyped(value, ignoreDiscriminator = f
         return value;
     }
     return {
+        'body': value['body'],
         'code': value['code'],
+        'contentType': value['contentType'],
+        'fromEmail': value['fromEmail'],
+        'fromName': value['fromName'],
         'otpId': value['otpId'],
+        'subject': value['subject'],
     };
 }

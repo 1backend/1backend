@@ -122,6 +122,7 @@ export * from './PromptSvcTextToTextParameters';
 export * from './PromptSvcTypesResponse';
 export * from './ProxySvcCert';
 export * from './ProxySvcCertInput';
+export * from './ProxySvcDeleteRoutesRequest';
 export * from './ProxySvcErrorResponse';
 export * from './ProxySvcListCertsRequest';
 export * from './ProxySvcListCertsResponse';

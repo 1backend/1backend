@@ -241,6 +241,7 @@ export interface SaveUserRequest {
 
 export interface SendOtpRequest {
     body: UserSvcSendOtpRequest;
+    acceptLanguage?: string;
 }
 
 /**
@@ -1436,6 +1437,10 @@ export class UserSvcApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters['acceptLanguage'] != null) {
+            headerParameters['Accept-Language'] = String(requestParameters['acceptLanguage']);
+        }
 
 
         let urlPath = `/user-svc/otp/send`;
