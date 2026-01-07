@@ -215,6 +215,11 @@ func (cs *ProxyService) RegisterRoutes(router *mux.Router) {
 	}))).
 		Methods("OPTIONS", "POST")
 
+	router.HandleFunc("/proxy-svc/routes", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+		cs.DeleteRoutes(w, r)
+	}))).
+		Methods("OPTIONS", "DELETE")
+
 	router.HandleFunc("/proxy-svc/certs", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.ListCerts(w, r)
 	}))).

@@ -69,3 +69,9 @@ type ListRoutesRequest struct {
 type ListRoutesResponse struct {
 	Routes []Route `json:"routes"`
 }
+
+type DeleteRoutesRequest struct {
+	Ids []string `json:"ids,omitempty"`
+}
+
+type DeleteRoutesResponse struct{}

@@ -2016,6 +2016,15 @@ definitions:
     - cert
     - id
     type: object
+  proxy_svc.DeleteRoutesRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
+  proxy_svc.DeleteRoutesResponse:
+    type: object
   proxy_svc.ErrorResponse:
     properties:
       error:
@@ -5940,6 +5949,42 @@ paths:
       tags:
       - Proxy Svc
   /proxy-svc/routes:
+    delete:
+      consumes:
+      - application/json
+      description: Delete specific routes by their IDs.
+      operationId: deleteRoutes
+      parameters:
+      - description: Delete Routes Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/proxy_svc.DeleteRoutesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Routes deleted successfully
+          schema:
+            $ref: '#/definitions/proxy_svc.DeleteRoutesResponse'
+        "400":
+          description: Invalid JSON or missing IDs
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete Routes
+      tags:
+      - Proxy Svc
     post:
       consumes:
       - application/json
@@ -6603,6 +6648,8 @@ paths:
         Requires the `secret-svc:secret:save` permission.
         Users can only save secrets prefixed with their user slug unless they also have the
         `secret-svc:secret:save-unprefixed` permission, which allows them to save a secret without a slug prefix.
+        `secret-svc:secret:save:$secretId` (eg. `secret-svc:secret:save:sendgrid-api-key`) permission allows callers to save secrets otherwise they don't have access to.
+        This permission also supports tail-wildcards by splitting the ID with hyphens (e.g., `secret-svc:secret:save:otp-*` grants access to `otp-body-en` and `otp-subject-hu`).
       operationId: saveSecrets
       parameters:
       - description: Save Secret Request

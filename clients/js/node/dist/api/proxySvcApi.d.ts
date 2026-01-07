@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 import http from 'http';
+import { ProxySvcDeleteRoutesRequest } from '../model/proxySvcDeleteRoutesRequest';
 import { ProxySvcListCertsRequest } from '../model/proxySvcListCertsRequest';
 import { ProxySvcListCertsResponse } from '../model/proxySvcListCertsResponse';
 import { ProxySvcListRoutesRequest } from '../model/proxySvcListRoutesRequest';
@@ -40,6 +41,19 @@ export declare class ProxySvcApi {
     setDefaultAuthentication(auth: Authentication): void;
     setApiKey(key: ProxySvcApiApiKeys, value: string): void;
     addInterceptor(interceptor: Interceptor): void;
+    /**
+     * Delete specific routes by their IDs.
+     * @summary Delete Routes
+     * @param body Delete Routes Request
+     */
+    deleteRoutes(body: ProxySvcDeleteRoutesRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: object;
+    }>;
     /**
      * List certs that the edge proxy will use to cert requests.
      * @summary List Certs

@@ -15,6 +15,7 @@
 
 import * as runtime from '../runtime';
 import type {
+  ProxySvcDeleteRoutesRequest,
   ProxySvcErrorResponse,
   ProxySvcListCertsRequest,
   ProxySvcListCertsResponse,
@@ -25,6 +26,8 @@ import type {
   ProxySvcSaveRoutesResponse,
 } from '../models/index';
 import {
+    ProxySvcDeleteRoutesRequestFromJSON,
+    ProxySvcDeleteRoutesRequestToJSON,
     ProxySvcErrorResponseFromJSON,
     ProxySvcErrorResponseToJSON,
     ProxySvcListCertsRequestFromJSON,
@@ -42,6 +45,10 @@ import {
     ProxySvcSaveRoutesResponseFromJSON,
     ProxySvcSaveRoutesResponseToJSON,
 } from '../models/index';
+
+export interface DeleteRoutesRequest {
+    body: ProxySvcDeleteRoutesRequest;
+}
 
 export interface ListCertsRequest {
     body?: ProxySvcListCertsRequest;
@@ -63,6 +70,51 @@ export interface SaveRoutesRequest {
  * 
  */
 export class ProxySvcApi extends runtime.BaseAPI {
+
+    /**
+     * Delete specific routes by their IDs.
+     * Delete Routes
+     */
+    async deleteRoutesRaw(requestParameters: DeleteRoutesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling deleteRoutes().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+
+        let urlPath = `/proxy-svc/routes`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ProxySvcDeleteRoutesRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Delete specific routes by their IDs.
+     * Delete Routes
+     */
+    async deleteRoutes(requestParameters: DeleteRoutesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+        const response = await this.deleteRoutesRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * List certs that the edge proxy will use to cert requests.

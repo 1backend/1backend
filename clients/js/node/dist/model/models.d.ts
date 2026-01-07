@@ -123,6 +123,7 @@ export * from './promptSvcTextToTextParameters';
 export * from './promptSvcTypesResponse';
 export * from './proxySvcCert';
 export * from './proxySvcCertInput';
+export * from './proxySvcDeleteRoutesRequest';
 export * from './proxySvcErrorResponse';
 export * from './proxySvcListCertsRequest';
 export * from './proxySvcListCertsResponse';

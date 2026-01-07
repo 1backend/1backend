@@ -280,7 +280,7 @@ export class SecretSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Save secrets if authorized to do so. Requires the `secret-svc:secret:save` permission. Users can only save secrets prefixed with their user slug unless they also have the `secret-svc:secret:save-unprefixed` permission, which allows them to save a secret without a slug prefix.
+     * Save secrets if authorized to do so. Requires the `secret-svc:secret:save` permission. Users can only save secrets prefixed with their user slug unless they also have the `secret-svc:secret:save-unprefixed` permission, which allows them to save a secret without a slug prefix. `secret-svc:secret:save:$secretId` (eg. `secret-svc:secret:save:sendgrid-api-key`) permission allows callers to save secrets otherwise they don\'t have access to. This permission also supports tail-wildcards by splitting the ID with hyphens (e.g., `secret-svc:secret:save:otp-*` grants access to `otp-body-en` and `otp-subject-hu`).
      * Save Secrets
      */
     async saveSecretsRaw(requestParameters: SaveSecretsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
@@ -316,7 +316,7 @@ export class SecretSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Save secrets if authorized to do so. Requires the `secret-svc:secret:save` permission. Users can only save secrets prefixed with their user slug unless they also have the `secret-svc:secret:save-unprefixed` permission, which allows them to save a secret without a slug prefix.
+     * Save secrets if authorized to do so. Requires the `secret-svc:secret:save` permission. Users can only save secrets prefixed with their user slug unless they also have the `secret-svc:secret:save-unprefixed` permission, which allows them to save a secret without a slug prefix. `secret-svc:secret:save:$secretId` (eg. `secret-svc:secret:save:sendgrid-api-key`) permission allows callers to save secrets otherwise they don\'t have access to. This permission also supports tail-wildcards by splitting the ID with hyphens (e.g., `secret-svc:secret:save:otp-*` grants access to `otp-body-en` and `otp-subject-hu`).
      * Save Secrets
      */
     async saveSecrets(requestParameters: SaveSecretsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {

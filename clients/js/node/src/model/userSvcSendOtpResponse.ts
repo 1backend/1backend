@@ -13,23 +13,56 @@
 import { RequestFile } from './models';
 
 export class UserSvcSendOtpResponse {
+    'body'?: string;
     /**
     * In test mode, the OTP code is returned in the response for easier testing.
     */
     'code'?: string;
+    'contentType'?: string;
+    'fromEmail'?: string;
+    'fromName'?: string;
     'otpId': string;
+    /**
+    * In test mode, these email fields are returned
+    */
+    'subject'?: string;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
+        {
+            "name": "body",
+            "baseName": "body",
+            "type": "string"
+        },
         {
             "name": "code",
             "baseName": "code",
             "type": "string"
         },
         {
+            "name": "contentType",
+            "baseName": "contentType",
+            "type": "string"
+        },
+        {
+            "name": "fromEmail",
+            "baseName": "fromEmail",
+            "type": "string"
+        },
+        {
+            "name": "fromName",
+            "baseName": "fromName",
+            "type": "string"
+        },
+        {
             "name": "otpId",
             "baseName": "otpId",
+            "type": "string"
+        },
+        {
+            "name": "subject",
+            "baseName": "subject",
             "type": "string"
         }    ];
 

@@ -408,6 +408,12 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "1backend-api/delete-routes",
+          label: "Delete Routes",
+          className: "api-method delete",
+        },
+        {
+          type: "doc",
           id: "1backend-api/list-routes",
           label: "List Routes",
           className: "api-method post",
