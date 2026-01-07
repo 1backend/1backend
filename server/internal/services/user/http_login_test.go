@@ -133,7 +133,7 @@ func TestLogin__OnlyOtp(t *testing.T) {
 		).Execute()
 		require.NoError(t, err, otpRsp2)
 
-		_, hrsp, err := userSvc.Login(context.Background()).Body(
+		_, _, err = userSvc.Login(context.Background()).Body(
 			openapi.UserSvcLoginRequest{
 				AppHost: sdk.DefaultTestAppHost,
 				Contact: &openapi.UserSvcContactInput{
@@ -144,7 +144,7 @@ func TestLogin__OnlyOtp(t *testing.T) {
 				},
 			},
 		).Execute()
-		require.NoError(t, err, hrsp)
+		require.NoError(t, err)
 	})
 }
 
@@ -217,6 +217,15 @@ func TestLogin__PasswordOtpBoth(t *testing.T) {
 		require.NoError(t, err, hrsp)
 	})
 
+	otpRsp2, _, err := userSvc.SendOtp(context.Background()).Body(
+		openapi.UserSvcSendOtpRequest{
+			AppHost:         sdk.DefaultTestAppHost,
+			ContactId:       "test1@test.com",
+			ContactPlatform: "email",
+		},
+	).Execute()
+	require.NoError(t, err, otpRsp)
+
 	t.Run("log in with only OTP, no password", func(t *testing.T) {
 		_, hrsp, err = userSvc.Login(context.Background()).Body(
 			openapi.UserSvcLoginRequest{
@@ -224,8 +233,8 @@ func TestLogin__PasswordOtpBoth(t *testing.T) {
 				Contact: &openapi.UserSvcContactInput{
 					Id:       "test1@test.com",
 					Platform: "email",
-					OtpId:    &otpRsp.OtpId,
-					OtpCode:  otpRsp.Code,
+					OtpId:    &otpRsp2.OtpId,
+					OtpCode:  otpRsp2.Code,
 				},
 				Password: openapi.PtrString("test"),
 			},
@@ -733,7 +742,7 @@ func TestRegister__PlusEmail(t *testing.T) {
 	}).Execute()
 	require.NoError(t, err)
 
-	rsp, _, err := userSvc.Register(ctx).Body(openapi.UserSvcRegisterRequest{
+	rsp, hrsp, err := userSvc.Register(ctx).Body(openapi.UserSvcRegisterRequest{
 		AppHost: sdk.DefaultTestAppHost,
 		Slug:    "original-user",
 		Name:    openapi.PtrString("John Doe"),
@@ -744,7 +753,7 @@ func TestRegister__PlusEmail(t *testing.T) {
 			OtpCode:  otpRsp1.Code,
 		},
 	}).Execute()
-	require.NoError(t, err, "Initial registration should succeed")
+	require.NoError(t, err, hrsp)
 
 	userSvc = options.ClientFactory.Client(
 		client.WithToken(rsp.Token.Token),
@@ -755,4 +764,55 @@ func TestRegister__PlusEmail(t *testing.T) {
 
 	require.Equal(t, *srsp.User.Name, "John Doe")
 	require.Equal(t, srsp.Contacts[0].Id, "plus-test@test.com")
+}
+
+func TestRegister__VerifyTrueRegisterOnLogin(t *testing.T) {
+	hs := &di.HandlerSwitcher{}
+	server := httptest.NewServer(hs)
+	defer server.Close()
+
+	options := &universe.Options{
+		Test:           true,
+		Url:            server.URL,
+		VerifyContacts: true,
+	}
+	u, err := di.BigBang(options)
+	require.NoError(t, err)
+
+	hs.UpdateHandler(u.Router)
+	err = u.StarterFunc()
+	require.NoError(t, err)
+
+	userSvc := options.ClientFactory.Client().UserSvcAPI
+	ctx := context.Background()
+	unregisteredEmail := "unregistered@test.com"
+
+	otpRsp1, _, err := userSvc.SendOtp(ctx).Body(openapi.UserSvcSendOtpRequest{
+		AppHost:         sdk.DefaultTestAppHost,
+		ContactId:       unregisteredEmail,
+		ContactPlatform: "email",
+	}).Execute()
+	require.NoError(t, err)
+
+	rsp, hrsp, err := userSvc.Login(ctx).Body(openapi.UserSvcLoginRequest{
+		AppHost: sdk.DefaultTestAppHost,
+		Slug:    openapi.PtrString("available-slug"),
+		Contact: &openapi.UserSvcContactInput{
+			Id:       unregisteredEmail,
+			Platform: "email",
+			OtpId:    &otpRsp1.OtpId,
+			OtpCode:  otpRsp1.Code,
+		},
+	}).Execute()
+	require.NoError(t, err, hrsp)
+
+	userSvc = options.ClientFactory.Client(
+		client.WithToken(rsp.Token.Token),
+	).UserSvcAPI
+
+	srsp, _, err := userSvc.ReadSelf(ctx).Execute()
+	require.NoError(t, err)
+
+	require.Empty(t, srsp.User.Name)
+	require.Equal(t, srsp.Contacts[0].Id, unregisteredEmail)
 }

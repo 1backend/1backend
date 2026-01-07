@@ -54,6 +54,12 @@ func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if request.Contact.Id != "" {
+		if isEmail(request.Contact.Id) {
+			request.Contact.Id = normalizeEmail(request.Contact.Id)
+		}
+	}
+
 	app, err := s.getOrCreateApp(request.AppHost)
 	if err != nil {
 		logger.Error(
@@ -110,27 +116,81 @@ func (s *UserService) login(
 
 	var usr *user.User
 
-	if request.Slug != "" {
-		userI, found, err := s.userStore.Query(
-			datastore.Equals(datastore.Field("slug"), request.Slug),
-		).FindOne()
-		if err != nil {
-			return nil, fmt.Errorf("error querying user by slug '%s': %v", request.Slug, err)
-		}
-		if !found {
-			return nil, fmt.Errorf("user not found by slug '%s'", request.Slug)
-		}
+	if request.Device == "" {
+		request.Device = unknownDevice
+	}
 
-		usr = userI.(*user.User)
-	} else if request.Contact.Id != "" {
+	if request.Contact.Id != "" {
 		contactI, found, err := s.contactStore.Query(
 			datastore.Equals(datastore.Field("id"), request.Contact.Id),
 		).FindOne()
 		if err != nil {
 			return nil, err
 		}
-		if !found {
-			return nil, fmt.Errorf("contact not found by id '%s'", request.Contact.Id)
+
+		if s.options.VerifyContacts {
+			if !otpAlreadyVerified {
+				err = s.verifyContactOTP(&request.Contact)
+				if err != nil {
+					return nil, errors.Wrap(err, "login contact verification failed")
+				}
+			}
+
+			if found {
+				userI, found, err := s.userStore.Query(
+					datastore.Equals(datastore.Field("id"), contactI.(*user.Contact).UserId),
+				).FindOne()
+				if err != nil {
+					return nil, errors.Wrap(err, "error querying user by contact")
+				}
+
+				if !found {
+					return nil, fmt.Errorf("user not found by contact id '%s'", request.Contact.Id)
+				}
+
+				return s.issueToken(appId, userI.(*user.User), request.Device)
+			} else {
+				newUser := &user.UserInput{
+					Id:   sdk.Id("usr"),
+					Slug: request.Slug,
+				}
+
+				now := time.Now()
+
+				err = s.createUserWithoutVerification(
+					appId,
+					newUser,
+					[]user.Contact{
+						{
+							Id:        request.Contact.Id,
+							CreatedAt: now,
+							UpdatedAt: now,
+							Platform:  request.Contact.Platform,
+							Verified:  true,
+						},
+					},
+					request.Password,
+					nil,
+				)
+
+				if err != nil {
+					return nil, errors.Wrap(err, "error creating user when login-registering")
+				}
+
+				userI, found, err := s.userStore.Query(
+					datastore.Equals(datastore.Field("slug"), request.Slug),
+				).FindOne()
+				if err != nil {
+					return nil, fmt.Errorf("error querying user by slug '%s': %v", request.Slug, err)
+				}
+				if !found {
+					return nil, fmt.Errorf("user not found by slug '%s'", request.Slug)
+				}
+
+				usr = userI.(*user.User)
+
+				return s.issueToken(appId, usr, request.Device)
+			}
 		}
 
 		userI, found, err := s.userStore.Query(
@@ -141,6 +201,18 @@ func (s *UserService) login(
 		}
 		if !found {
 			return nil, errors.New("user not found by contact")
+		}
+
+		usr = userI.(*user.User)
+	} else if request.Slug != "" {
+		userI, found, err := s.userStore.Query(
+			datastore.Equals(datastore.Field("slug"), request.Slug),
+		).FindOne()
+		if err != nil {
+			return nil, fmt.Errorf("error querying user by slug '%s': %v", request.Slug, err)
+		}
+		if !found {
+			return nil, fmt.Errorf("user not found by slug '%s'", request.Slug)
 		}
 
 		usr = userI.(*user.User)
@@ -179,11 +251,6 @@ func (s *UserService) login(
 
 	default:
 		return nil, errors.New("password or otp required")
-
-	}
-
-	if request.Device == "" {
-		request.Device = unknownDevice
 	}
 
 	return s.issueToken(appId, usr, request.Device)

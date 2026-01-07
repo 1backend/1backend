@@ -53,25 +53,27 @@ func (s *UserService) createUserWithoutVerification(
 		return errors.New("slug already exists")
 	}
 
-	passwordHash, err := s.hashPassword(password)
-	if err != nil {
-		return err
-	}
-
-	if userInput.Id == "" {
-		userInput.Id = sdk.Id("usr")
-	}
-
 	now := time.Now()
 
-	err = s.passwordStore.Upsert(&usertypes.Password{
-		Id:           sdk.Id("pw"),
-		PasswordHash: passwordHash,
-		UserId:       userInput.Id,
-		CreatedAt:    now,
-	})
-	if err != nil {
-		return errors.Wrap(err, "failed to save password")
+	if password != "" {
+		passwordHash, err := s.hashPassword(password)
+		if err != nil {
+			return err
+		}
+
+		if userInput.Id == "" {
+			userInput.Id = sdk.Id("usr")
+		}
+
+		err = s.passwordStore.Upsert(&usertypes.Password{
+			Id:           sdk.Id("pw"),
+			PasswordHash: passwordHash,
+			UserId:       userInput.Id,
+			CreatedAt:    now,
+		})
+		if err != nil {
+			return errors.Wrap(err, "failed to save password")
+		}
 	}
 
 	user := &usertypes.User{
