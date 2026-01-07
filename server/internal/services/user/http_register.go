@@ -80,6 +80,7 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newUser := &user.UserInput{
+		Id:   sdk.Id("usr"),
 		Name: req.Name,
 		Slug: req.Slug,
 	}
