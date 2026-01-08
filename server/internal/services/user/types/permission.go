@@ -53,6 +53,7 @@ var (
 	PermissionTokenRevoke = "user-svc:token:revoke"
 
 	PermissionAppMultiView = "user-svc:app:multi-view"
+	PermissionAppEdit      = "user-svc:app:edit"
 )
 
 var UserPermissions = []string{
@@ -88,4 +89,5 @@ var AdminPermissions = []string{
 	PermissionUserPasswordReset,
 	PermissionTokenRevoke,
 	PermissionAppMultiView,
+	PermissionAppEdit,
 }

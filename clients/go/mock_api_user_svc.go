@@ -878,3 +878,33 @@ func (mr *MockUserSvcAPIMockRecorder) SendOtpExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendOtpExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).SendOtpExecute), r)
 }
+
+// UpdateApp mocks base method.
+func (m *MockUserSvcAPI) UpdateApp(ctx context.Context) ApiUpdateAppRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateApp", ctx)
+	ret0, _ := ret[0].(ApiUpdateAppRequest)
+	return ret0
+}
+
+// UpdateApp indicates an expected call of UpdateApp.
+func (mr *MockUserSvcAPIMockRecorder) UpdateApp(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateApp", reflect.TypeOf((*MockUserSvcAPI)(nil).UpdateApp), ctx)
+}
+
+// UpdateAppExecute mocks base method.
+func (m *MockUserSvcAPI) UpdateAppExecute(r ApiUpdateAppRequest) (map[string]any, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateAppExecute", r)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// UpdateAppExecute indicates an expected call of UpdateAppExecute.
+func (mr *MockUserSvcAPIMockRecorder) UpdateAppExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAppExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).UpdateAppExecute), r)
+}

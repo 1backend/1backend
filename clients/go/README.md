@@ -184,6 +184,7 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**SaveSelf**](docs/UserSvcAPI.md#saveself) | **Put** /user-svc/self | Save User Profile
 *UserSvcAPI* | [**SaveUser**](docs/UserSvcAPI.md#saveuser) | **Put** /user-svc/user/{userId} | Save User
 *UserSvcAPI* | [**SendOtp**](docs/UserSvcAPI.md#sendotp) | **Post** /user-svc/otp/send | Send OTP
+*UserSvcAPI* | [**UpdateApp**](docs/UserSvcAPI.md#updateapp) | **Put** /user-svc/app | Update App Host
 
 
 ## Documentation For Models
@@ -411,6 +412,7 @@ Class | Method | HTTP request | Description
  - [UserSvcSendOtpRequest](docs/UserSvcSendOtpRequest.md)
  - [UserSvcSendOtpResponse](docs/UserSvcSendOtpResponse.md)
  - [UserSvcToken](docs/UserSvcToken.md)
+ - [UserSvcUpdateAppRequest](docs/UserSvcUpdateAppRequest.md)
  - [UserSvcUser](docs/UserSvcUser.md)
  - [UserSvcUserInput](docs/UserSvcUserInput.md)
  - [UserSvcUserRecord](docs/UserSvcUserRecord.md)

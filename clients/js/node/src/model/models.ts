@@ -223,6 +223,7 @@ export * from './userSvcSaveUserRequest';
 export * from './userSvcSendOtpRequest';
 export * from './userSvcSendOtpResponse';
 export * from './userSvcToken';
+export * from './userSvcUpdateAppRequest';
 export * from './userSvcUser';
 export * from './userSvcUserInput';
 export * from './userSvcUserRecord';
@@ -463,6 +464,7 @@ import { UserSvcSaveUserRequest } from './userSvcSaveUserRequest';
 import { UserSvcSendOtpRequest } from './userSvcSendOtpRequest';
 import { UserSvcSendOtpResponse } from './userSvcSendOtpResponse';
 import { UserSvcToken } from './userSvcToken';
+import { UserSvcUpdateAppRequest } from './userSvcUpdateAppRequest';
 import { UserSvcUser } from './userSvcUser';
 import { UserSvcUserInput } from './userSvcUserInput';
 import { UserSvcUserRecord } from './userSvcUserRecord';
@@ -706,6 +708,7 @@ let typeMap: {[index: string]: any} = {
     "UserSvcSendOtpRequest": UserSvcSendOtpRequest,
     "UserSvcSendOtpResponse": UserSvcSendOtpResponse,
     "UserSvcToken": UserSvcToken,
+    "UserSvcUpdateAppRequest": UserSvcUpdateAppRequest,
     "UserSvcUser": UserSvcUser,
     "UserSvcUserInput": UserSvcUserInput,
     "UserSvcUserRecord": UserSvcUserRecord,

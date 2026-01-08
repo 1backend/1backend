@@ -223,6 +223,7 @@ export * from './UserSvcSaveUserRequest';
 export * from './UserSvcSendOtpRequest';
 export * from './UserSvcSendOtpResponse';
 export * from './UserSvcToken';
+export * from './UserSvcUpdateAppRequest';
 export * from './UserSvcUser';
 export * from './UserSvcUserInput';
 export * from './UserSvcUserRecord';
