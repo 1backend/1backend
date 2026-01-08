@@ -47,6 +47,7 @@ import { UserSvcSaveSelfRequest } from '../model/userSvcSaveSelfRequest';
 import { UserSvcSaveUserRequest } from '../model/userSvcSaveUserRequest';
 import { UserSvcSendOtpRequest } from '../model/userSvcSendOtpRequest';
 import { UserSvcSendOtpResponse } from '../model/userSvcSendOtpResponse';
+import { UserSvcUpdateAppRequest } from '../model/userSvcUpdateAppRequest';
 import { Authentication, Interceptor } from '../model/models';
 import { ApiKeyAuth } from '../model/models';
 export declare enum UserSvcApiApiKeys {
@@ -438,5 +439,18 @@ export declare class UserSvcApi {
     }): Promise<{
         response: http.IncomingMessage;
         body: UserSvcSendOtpResponse;
+    }>;
+    /**
+     * Change the hostname of an existing app. Requires the `user-svc:app:edit` permission.
+     * @summary Update App Host
+     * @param body Update App Request
+     */
+    updateApp(body: UserSvcUpdateAppRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: object;
     }>;
 }

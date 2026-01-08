@@ -576,6 +576,12 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "1backend-api/update-app",
+          label: "Update App Host",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
           id: "1backend-api/list-apps",
           label: "List Apps",
           className: "api-method post",

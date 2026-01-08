@@ -3811,6 +3811,18 @@ definitions:
     - updatedAt
     - userId
     type: object
+  user_svc.UpdateAppRequest:
+    properties:
+      id:
+        type: string
+      newHost:
+        type: string
+    required:
+    - id
+    - newHost
+    type: object
+  user_svc.UpdateAppResponse:
+    type: object
   user_svc.User:
     properties:
       createdAt:
@@ -6790,6 +6802,40 @@ paths:
       security:
       - BearerAuth: []
       summary: Read or Create App
+      tags:
+      - User Svc
+    put:
+      consumes:
+      - application/json
+      description: |-
+        Change the hostname of an existing app.
+        Requires the `user-svc:app:edit` permission.
+      operationId: updateApp
+      parameters:
+      - description: Update App Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.UpdateAppRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: App updated successfully
+          schema:
+            $ref: '#/definitions/user_svc.UpdateAppResponse'
+        "400":
+          description: Invalid Request
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "404":
+          description: App Not Found
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update App Host
       tags:
       - User Svc
   /user-svc/apps:

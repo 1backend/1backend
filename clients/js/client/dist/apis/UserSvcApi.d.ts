@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 import * as runtime from '../runtime';
-import type { UserSvcChangePasswordRequest, UserSvcCreateUserRequest, UserSvcExchangeTokenRequest, UserSvcExchangeTokenResponse, UserSvcGetPublicKeyResponse, UserSvcHasPermissionResponse, UserSvcListAppsRequest, UserSvcListAppsResponse, UserSvcListEnrollsRequest, UserSvcListEnrollsResponse, UserSvcListOrganizationsRequest, UserSvcListOrganizationsResponse, UserSvcListPermissionsResponse, UserSvcListPermitsRequest, UserSvcListPermitsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadAppRequest, UserSvcReadAppResponse, UserSvcReadSelfRequest, UserSvcReadSelfResponse, UserSvcRefreshTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcRevokeTokensRequest, UserSvcSaveEnrollsRequest, UserSvcSaveEnrollsResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSavePermitsRequest, UserSvcSaveSelfRequest, UserSvcSaveUserRequest, UserSvcSendOtpRequest, UserSvcSendOtpResponse } from '../models/index';
+import type { UserSvcChangePasswordRequest, UserSvcCreateUserRequest, UserSvcExchangeTokenRequest, UserSvcExchangeTokenResponse, UserSvcGetPublicKeyResponse, UserSvcHasPermissionResponse, UserSvcListAppsRequest, UserSvcListAppsResponse, UserSvcListEnrollsRequest, UserSvcListEnrollsResponse, UserSvcListOrganizationsRequest, UserSvcListOrganizationsResponse, UserSvcListPermissionsResponse, UserSvcListPermitsRequest, UserSvcListPermitsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadAppRequest, UserSvcReadAppResponse, UserSvcReadSelfRequest, UserSvcReadSelfResponse, UserSvcRefreshTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcRevokeTokensRequest, UserSvcSaveEnrollsRequest, UserSvcSaveEnrollsResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSavePermitsRequest, UserSvcSaveSelfRequest, UserSvcSaveUserRequest, UserSvcSendOtpRequest, UserSvcSendOtpResponse, UserSvcUpdateAppRequest } from '../models/index';
 export interface ChangePasswordRequest {
     body: UserSvcChangePasswordRequest;
 }
@@ -95,6 +95,9 @@ export interface SaveUserRequest {
 export interface SendOtpRequest {
     body: UserSvcSendOtpRequest;
     acceptLanguage?: string;
+}
+export interface UpdateAppRequest {
+    body: UserSvcUpdateAppRequest;
 }
 /**
  *
@@ -380,4 +383,14 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      * Send OTP
      */
     sendOtp(requestParameters: SendOtpRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcSendOtpResponse>;
+    /**
+     * Change the hostname of an existing app. Requires the `user-svc:app:edit` permission.
+     * Update App Host
+     */
+    updateAppRaw(requestParameters: UpdateAppRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+    /**
+     * Change the hostname of an existing app. Requires the `user-svc:app:edit` permission.
+     * Update App Host
+     */
+    updateApp(requestParameters: UpdateAppRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
 }

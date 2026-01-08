@@ -53,6 +53,7 @@ import type {
   UserSvcSaveUserRequest,
   UserSvcSendOtpRequest,
   UserSvcSendOtpResponse,
+  UserSvcUpdateAppRequest,
 } from '../models/index';
 import {
     UserSvcChangePasswordRequestFromJSON,
@@ -131,6 +132,8 @@ import {
     UserSvcSendOtpRequestToJSON,
     UserSvcSendOtpResponseFromJSON,
     UserSvcSendOtpResponseToJSON,
+    UserSvcUpdateAppRequestFromJSON,
+    UserSvcUpdateAppRequestToJSON,
 } from '../models/index';
 
 export interface ChangePasswordRequest {
@@ -242,6 +245,10 @@ export interface SaveUserRequest {
 export interface SendOtpRequest {
     body: UserSvcSendOtpRequest;
     acceptLanguage?: string;
+}
+
+export interface UpdateAppRequest {
+    body: UserSvcUpdateAppRequest;
 }
 
 /**
@@ -1462,6 +1469,51 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     async sendOtp(requestParameters: SendOtpRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcSendOtpResponse> {
         const response = await this.sendOtpRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Change the hostname of an existing app. Requires the `user-svc:app:edit` permission.
+     * Update App Host
+     */
+    async updateAppRaw(requestParameters: UpdateAppRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling updateApp().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+
+        let urlPath = `/user-svc/app`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserSvcUpdateAppRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Change the hostname of an existing app. Requires the `user-svc:app:edit` permission.
+     * Update App Host
+     */
+    async updateApp(requestParameters: UpdateAppRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+        const response = await this.updateAppRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

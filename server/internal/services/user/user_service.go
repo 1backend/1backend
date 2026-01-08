@@ -332,6 +332,11 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 	})).
 		Methods("OPTIONS", "POST")
 
+	router.HandleFunc("/user-svc/app", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.UpdateApp(w, r)
+	})).
+		Methods("OPTIONS", "PUT")
+
 	router.HandleFunc("/user-svc/otp/send", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.SendOTP(w, r)
 	})).

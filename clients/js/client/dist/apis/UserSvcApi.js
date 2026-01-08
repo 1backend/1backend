@@ -21,7 +21,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as runtime from '../runtime';
-import { UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, UserSvcExchangeTokenRequestToJSON, UserSvcExchangeTokenResponseFromJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListAppsRequestToJSON, UserSvcListAppsResponseFromJSON, UserSvcListEnrollsRequestToJSON, UserSvcListEnrollsResponseFromJSON, UserSvcListOrganizationsRequestToJSON, UserSvcListOrganizationsResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListPermitsRequestToJSON, UserSvcListPermitsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadAppRequestToJSON, UserSvcReadAppResponseFromJSON, UserSvcReadSelfRequestToJSON, UserSvcReadSelfResponseFromJSON, UserSvcRefreshTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcRevokeTokensRequestToJSON, UserSvcSaveEnrollsRequestToJSON, UserSvcSaveEnrollsResponseFromJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSavePermitsRequestToJSON, UserSvcSaveSelfRequestToJSON, UserSvcSaveUserRequestToJSON, UserSvcSendOtpRequestToJSON, UserSvcSendOtpResponseFromJSON, } from '../models/index';
+import { UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, UserSvcExchangeTokenRequestToJSON, UserSvcExchangeTokenResponseFromJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListAppsRequestToJSON, UserSvcListAppsResponseFromJSON, UserSvcListEnrollsRequestToJSON, UserSvcListEnrollsResponseFromJSON, UserSvcListOrganizationsRequestToJSON, UserSvcListOrganizationsResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListPermitsRequestToJSON, UserSvcListPermitsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadAppRequestToJSON, UserSvcReadAppResponseFromJSON, UserSvcReadSelfRequestToJSON, UserSvcReadSelfResponseFromJSON, UserSvcRefreshTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcRevokeTokensRequestToJSON, UserSvcSaveEnrollsRequestToJSON, UserSvcSaveEnrollsResponseFromJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSavePermitsRequestToJSON, UserSvcSaveSelfRequestToJSON, UserSvcSaveUserRequestToJSON, UserSvcSendOtpRequestToJSON, UserSvcSendOtpResponseFromJSON, UserSvcUpdateAppRequestToJSON, } from '../models/index';
 /**
  *
  */
@@ -1006,6 +1006,42 @@ export class UserSvcApi extends runtime.BaseAPI {
     sendOtp(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.sendOtpRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * Change the hostname of an existing app. Requires the `user-svc:app:edit` permission.
+     * Update App Host
+     */
+    updateAppRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['body'] == null) {
+                throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling updateApp().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            let urlPath = `/user-svc/app`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'PUT',
+                headers: headerParameters,
+                query: queryParameters,
+                body: UserSvcUpdateAppRequestToJSON(requestParameters['body']),
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response);
+        });
+    }
+    /**
+     * Change the hostname of an existing app. Requires the `user-svc:app:edit` permission.
+     * Update App Host
+     */
+    updateApp(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.updateAppRaw(requestParameters, initOverrides);
             return yield response.value();
         });
     }

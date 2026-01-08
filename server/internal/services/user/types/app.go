@@ -33,3 +33,11 @@ type ReadAppRequest struct {
 type ReadAppResponse struct {
 	App App `json:"app" binding:"required"`
 }
+
+type UpdateAppRequest struct {
+	Id      string `json:"id" binding:"required"`
+	NewHost string `json:"newHost" binding:"required"`
+}
+
+type UpdateAppResponse struct {
+}

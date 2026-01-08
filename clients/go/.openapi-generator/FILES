@@ -259,6 +259,7 @@ docs/UserSvcSaveUserRequest.md
 docs/UserSvcSendOtpRequest.md
 docs/UserSvcSendOtpResponse.md
 docs/UserSvcToken.md
+docs/UserSvcUpdateAppRequest.md
 docs/UserSvcUser.md
 docs/UserSvcUserInput.md
 docs/UserSvcUserRecord.md
@@ -488,6 +489,7 @@ model_user_svc_save_user_request.go
 model_user_svc_send_otp_request.go
 model_user_svc_send_otp_response.go
 model_user_svc_token.go
+model_user_svc_update_app_request.go
 model_user_svc_user.go
 model_user_svc_user_input.go
 model_user_svc_user_record.go
