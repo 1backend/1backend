@@ -73,6 +73,10 @@ func (s *UserService) refreshToken(
 		return cachedToken.(*user.Token), nil
 	}
 
+	// @todo: should be a distributed lock
+	s.refreshLock.Lock()
+	defer s.refreshLock.Unlock()
+
 	tokenToBeRefreshedI, found, err := s.tokenStore.Query(
 		datastore.Equals(datastore.Field("token"), stringToken),
 	).FindOne()

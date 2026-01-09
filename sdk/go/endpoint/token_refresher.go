@@ -2,9 +2,11 @@ package endpoint
 
 import (
 	"context"
+	"log/slog"
 	"net/http"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/dgraph-io/ristretto"
@@ -15,6 +17,7 @@ import (
 
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/logger"
 )
 
 // Subset of teh auth.Authorizer interface.
@@ -26,6 +29,21 @@ type TokenRefresher interface {
 	EnsureValidToken(request *http.Request) (string, *auth.Claims, error)
 }
 
+type fastClock struct {
+	now atomic.Int64
+}
+
+func (c *fastClock) start() {
+	for {
+		c.now.Store(time.Now().Unix())
+		time.Sleep(500 * time.Millisecond) // Update twice a second
+	}
+}
+
+func (c *fastClock) get() time.Time {
+	return time.Unix(c.now.Load(), 0)
+}
+
 type tokenRefresher struct {
 	clientFactory         client.ClientFactory
 	parser                JWTParser
@@ -33,6 +51,8 @@ type tokenRefresher struct {
 	userServicePublicKey  string
 	mutex                 sync.Mutex
 	currentTime           time.Time
+	once                  sync.Once
+	clock                 atomic.Int64
 }
 
 func NewTokenRefresher(
@@ -48,39 +68,62 @@ func NewTokenRefresher(
 		return nil, errors.Wrap(err, "failed to create token replacement cache")
 	}
 
-	return &tokenRefresher{
+	tr := &tokenRefresher{
 		clientFactory:         clientFactory,
 		parser:                parser,
 		tokenReplacementCache: cache,
-	}, nil
+	}
+
+	tr.clock.Store(time.Now().Unix())
+
+	go tr.backgroundClock()
+
+	return tr, nil
 }
 
 func (tr *tokenRefresher) getUserServicePublicKey() (string, error) {
-	tr.mutex.Lock()
-	defer tr.mutex.Unlock()
-
-	if tr.userServicePublicKey == "" {
+	tr.once.Do(func() {
 		keyResp, _, err := tr.clientFactory.Client().
 			UserSvcAPI.GetPublicKey(context.Background()).
 			Execute()
+
 		if err != nil {
-			return "", errors.Wrap(err, "failed to get public key from user service")
+			logger.Error("Failed to get public key",
+				slog.Any("error", err),
+			)
+			return
 		}
 		tr.userServicePublicKey = keyResp.PublicKey
-	}
+	})
+
 	return tr.userServicePublicKey, nil
 }
 
+func (tr *tokenRefresher) getNow() time.Time {
+	// Priority 1: Manual override for tests
+	if !tr.currentTime.IsZero() {
+		return tr.currentTime
+	}
+	// Priority 2: High-performance atomic clock for production
+	return time.Unix(tr.clock.Load(), 0)
+}
+
+func (tr *tokenRefresher) backgroundClock() {
+	ticker := time.NewTicker(500 * time.Millisecond)
+	for t := range ticker.C {
+		tr.clock.Store(t.Unix())
+	}
+}
+
 func (tr *tokenRefresher) EnsureValidToken(request *http.Request) (string, *auth.Claims, error) {
-	jwt := strings.TrimSpace(strings.TrimPrefix(request.Header.Get("Authorization"), "Bearer"))
-	if jwt == "" {
+	authHeader := request.Header.Get("Authorization")
+	if len(authHeader) < 7 || !strings.HasPrefix(authHeader, "Bearer ") {
 		return "", nil, nil
 	}
+	// Zero-allocation slicing
+	jwt := authHeader[7:]
 
-	now := tr.currentTime
-	if now.IsZero() {
-		now = time.Now()
-	}
+	now := tr.getNow()
 
 	publicKey, err := tr.getUserServicePublicKey()
 	if err != nil {
