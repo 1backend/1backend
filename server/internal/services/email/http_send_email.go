@@ -141,11 +141,12 @@ func (s *EmailService) dispatchLocalOrGlobal(
 		err                 error
 	)
 
-	// Only try to exchange into an app if that's not the default unnamed one
-	if app.Id != "unnamed" {
-		exchangedToken, err := s.options.TokenExchanger.ExchangeToken(context.Background(), s.token, endpoint.ExchangeOptions{
-			AppId: app.Id,
-		})
+	// Only try to exchange into an app if that's not the default one
+	if app.Host != sdk.DefaultAppHost {
+		exchangedToken, err := s.options.TokenExchanger.
+			ExchangeToken(context.Background(), s.token, endpoint.ExchangeOptions{
+				AppId: app.Id,
+			})
 		if err != nil {
 			return nil, errors.Wrap(err, "cannot exchange token")
 		}
