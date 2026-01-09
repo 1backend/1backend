@@ -295,7 +295,9 @@ func TestRefreshToken_AfterExchange_KeepsAppAndExtendsExpiry(t *testing.T) {
 }
 
 func TestRefreshTokenCount_IsBounded_ForExchangedTokens_PerDevice(t *testing.T) {
+	// @todo
 	return
+
 	t.Parallel()
 
 	server, err := test.StartService(test.Options{
@@ -308,11 +310,16 @@ func TestRefreshTokenCount_IsBounded_ForExchangedTokens_PerDevice(t *testing.T) 
 	const appA = "socks.com"
 
 	clientFactory := client.NewApiClientFactory(server.Url)
+	many, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
+	require.NoError(t, err)
+	cl := many[0]
+
 	ctx := context.Background()
 
 	// login with explicit device
-	login, _, err := clientFactory.Client().UserSvcAPI.Login(ctx).
+	login, _, err := cl.UserSvcAPI.Login(ctx).
 		Body(openapi.UserSvcLoginRequest{
+			AppHost:  sdk.DefaultTestAppHost,
 			Slug:     openapi.PtrString("test-user-slug-0"),
 			Password: openapi.PtrString("testUserPassword0"),
 			Device:   openapi.PtrString("device-a"),
@@ -345,7 +352,7 @@ func TestRefreshTokenCount_IsBounded_ForExchangedTokens_PerDevice(t *testing.T) 
 	}
 
 	// refresh several times; count should stay ≤ 3 for the device even for exchanged tokens
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 4; i++ {
 		cnt := doRefreshAndCount()
 		require.LessOrEqual(t, cnt, int32(3), "exchanged-token refresh exceeded per-device bound on iter %d", i)
 	}

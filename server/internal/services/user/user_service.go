@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
@@ -58,6 +59,7 @@ type UserService struct {
 	configCache map[string]any
 
 	tokenReplacementCache *ristretto.Cache
+	refreshLock           sync.Mutex
 }
 
 func NewUserService(
