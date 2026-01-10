@@ -13,6 +13,7 @@ import (
 	"math/rand/v2"
 	"net/http"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 
@@ -22,6 +23,12 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/logger"
 )
+
+var copyBufPool = sync.Pool{
+	New: func() any {
+		return make([]byte, 32*1024) // 32KB standard buffer
+	},
+}
 
 type cacheEntry struct {
 	instances []openapi.RegistrySvcInstance
@@ -75,47 +82,55 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 		return http.StatusInternalServerError, errors.Wrap(err, "error starting proxy service")
 	}
 
-	serviceSlug := getServiceSlug(r)
-
-	var cachedEntry *cacheEntry
-	if val, ok := cs.instanceCache.Load(serviceSlug); ok {
-		e := val.(cacheEntry)
-		cachedEntry = &e
-	}
+	serviceSlug := getServiceSlug(r.URL.Path)
 
 	var instances []openapi.RegistrySvcInstance
-	shouldFetch := cachedEntry == nil || time.Now().After(cachedEntry.expiry)
+	val, ok := cs.instanceCache.Load(serviceSlug)
+	entry, _ := val.(cacheEntry)
 
-	if shouldFetch {
-		// Attempt refresh
-		rsp, _, err := cs.options.ClientFactory.Client(client.WithToken(cs.token)).
-			RegistrySvcAPI.ListInstances(r.Context()).
-			Slug(serviceSlug).
-			Execute()
+	if ok && time.Now().Before(entry.expiry) {
+		instances = entry.instances
+	} else {
+		// 2. Cache expired or missing -> Use Singleflight
+		// This ensures only ONE call to RegistrySvcAPI happens per slug
+		res, err, _ := cs.backendSf.Do(serviceSlug, func() (any, error) {
+			rsp, _, err := cs.options.ClientFactory.Client(client.WithToken(cs.token)).
+				RegistrySvcAPI.ListInstances(r.Context()).
+				Slug(serviceSlug).
+				Execute()
+
+			if err != nil {
+				// If API fails but we have stale data, return stale data as fallback
+				if ok {
+					return entry.instances, nil
+				}
+				return nil, err
+			}
+
+			// Pre-filter healthy instances here to save CPU on every request
+			healthy := make([]openapi.RegistrySvcInstance, 0, len(rsp.Instances))
+			for _, ins := range rsp.Instances {
+				if ins.Status == openapi.InstanceStatusHealthy {
+					healthy = append(healthy, ins)
+				}
+			}
+
+			// If no healthy ones, use all as fallback
+			if len(healthy) == 0 {
+				healthy = rsp.Instances
+			}
+
+			cs.instanceCache.Store(serviceSlug, cacheEntry{
+				instances: healthy,
+				expiry:    time.Now().Add(10 * time.Second),
+			})
+			return healthy, nil
+		})
 
 		if err != nil {
-			// --- CRITICAL FALLBACK ---
-			if cachedEntry != nil {
-				logger.Warn("Registry lookup failed, using stale cache",
-					slog.String("service", serviceSlug),
-					slog.String("error", err.Error()),
-				)
-				instances = cachedEntry.instances
-			} else {
-				// No cache and API failed: we must error out
-				return http.StatusInternalServerError, errors.Wrap(err, "registry unavailable and no cache exists")
-			}
-		} else {
-			// API Success: Update cache
-			instances = rsp.Instances
-			cs.instanceCache.Store(serviceSlug, cacheEntry{
-				instances: instances,
-				expiry:    time.Now().Add(10 * time.Second), // 10s TTL
-			})
+			return http.StatusInternalServerError, errors.Wrap(err, "registry unavailable")
 		}
-	} else {
-		// Cache is still fresh
-		instances = cachedEntry.instances
+		instances = res.([]openapi.RegistrySvcInstance)
 	}
 
 	if len(instances) == 0 {
@@ -138,12 +153,17 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 	randomIndex := rand.IntN(len(selectedInstances))
 	instance := selectedInstances[randomIndex]
 
-	uri := strings.TrimSuffix(instance.Url, "/") +
-		"/" +
-		strings.TrimLeft(r.URL.Path, "/")
-	if r.URL.RawQuery != "" {
-		uri += "?" + r.URL.RawQuery
+	var sb strings.Builder
+	sb.WriteString(strings.TrimSuffix(instance.Url, "/"))
+	if !strings.HasPrefix(r.URL.Path, "/") {
+		sb.WriteByte('/')
 	}
+	sb.WriteString(r.URL.Path)
+	if r.URL.RawQuery != "" {
+		sb.WriteByte('?')
+		sb.WriteString(r.URL.RawQuery)
+	}
+	uri := sb.String()
 
 	req, err := http.NewRequestWithContext(r.Context(), r.Method, uri, r.Body)
 	if err != nil {
@@ -177,7 +197,14 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 
 	w.WriteHeader(resp.StatusCode)
 
-	_, err = io.Copy(w, resp.Body)
+	buf := copyBufPool.Get().([]byte)
+
+	defer copyBufPool.Put(buf)
+
+	// io.CopyBuffer is exactly like io.Copy, but it uses the memory we provide
+	// instead of allocating its own 32KB slice internally.
+	_, err = io.CopyBuffer(w, resp.Body, buf)
+
 	if err != nil && !errors.Is(err, syscall.EPIPE) && !strings.Contains(err.Error(), "stream closed") {
 		return http.StatusInternalServerError, errors.Wrap(err, "error copying response body")
 	}
@@ -191,11 +218,13 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 
 // gets service slug from http request path
 // eg. /my-svc/my-endpoint -> my-svc
-func getServiceSlug(r *http.Request) string {
-	cleanedPath := strings.Trim(r.URL.Path, "/")
-	parts := strings.Split(cleanedPath, "/")
-	if len(parts) > 0 && parts[0] != "" {
-		return parts[0]
+func getServiceSlug(path string) string {
+	if path == "" || path == "/" {
+		return ""
 	}
-	return ""
+	path = strings.TrimPrefix(path, "/")
+	if i := strings.Index(path, "/"); i != -1 {
+		return path[:i]
+	}
+	return path
 }
