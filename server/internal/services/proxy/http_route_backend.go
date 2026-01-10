@@ -8,6 +8,7 @@
 package proxyservice
 
 import (
+	"context"
 	"io"
 	"log/slog"
 	"math/rand/v2"
@@ -95,7 +96,7 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 		// This ensures only ONE call to RegistrySvcAPI happens per slug
 		res, err, _ := cs.backendSf.Do(serviceSlug, func() (any, error) {
 			rsp, _, err := cs.options.ClientFactory.Client(client.WithToken(cs.token)).
-				RegistrySvcAPI.ListInstances(r.Context()).
+				RegistrySvcAPI.ListInstances(context.Background()).
 				Slug(serviceSlug).
 				Execute()
 
