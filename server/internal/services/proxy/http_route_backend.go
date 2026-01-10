@@ -137,21 +137,7 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 		return http.StatusNotFound, errors.New("no instances found")
 	}
 
-	// Prioritize healthy instances
-	selectedInstances := make([]openapi.RegistrySvcInstance, 0, len(instances))
-	for _, instance := range instances {
-		if instance.Status == openapi.InstanceStatusHealthy {
-			selectedInstances = append(selectedInstances, instance)
-		}
-	}
-
-	// But fall back to any instances if none found
-	if len(selectedInstances) == 0 {
-		selectedInstances = instances
-	}
-
-	randomIndex := rand.IntN(len(selectedInstances))
-	instance := selectedInstances[randomIndex]
+	instance := instances[rand.IntN(len(instances))]
 
 	var sb strings.Builder
 	sb.WriteString(strings.TrimSuffix(instance.Url, "/"))
@@ -177,16 +163,13 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 	}
 	defer resp.Body.Close()
 
+	wh := w.Header()
 	for k, v := range resp.Header {
-		// Skip "Content-Length" and "Transfer-Encoding" to prevent HTTP response errors.
-		// - Go automatically sets "Content-Length" based on the actual body size.
-		// - "Transfer-Encoding: chunked" conflicts with "Content-Length", so we avoid copying it.
-		if k == "Content-Length" || k == "Transfer-Encoding" {
+		// Skip hop-by-hop and content-length headers
+		if k == "Content-Length" || k == "Transfer-Encoding" || k == "Connection" {
 			continue
 		}
-		for _, vv := range v {
-			w.Header().Add(k, vv)
-		}
+		wh[k] = v // Direct map assignment is much faster than Add()
 	}
 
 	// logger.Debug("Service proxy request returned",
