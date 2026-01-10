@@ -18,6 +18,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/dgraph-io/ristretto"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	"golang.org/x/sync/singleflight"
@@ -63,6 +64,8 @@ type ProxyService struct {
 	reverseProxy  *httputil.ReverseProxy
 	instanceCache sync.Map
 	httpClient    *http.Client
+
+	fileCache *ristretto.Cache
 }
 
 func NewProxyService(
@@ -140,6 +143,12 @@ func NewProxyService(
 			},
 		},
 	}
+
+	cs.fileCache, _ = ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1e7,
+		MaxCost:     4 << 30, // 4GB
+		BufferItems: 64,
+	})
 
 	if cs.options.SyncCertsToFiles {
 		cs.syncCertsToFiles()

@@ -22,6 +22,18 @@ import (
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 )
 
+const maxCachedFileSize = 2 << 20 // 2MB
+
+type cachedResponse struct {
+	status int
+	header http.Header
+	body   []byte
+}
+
+func cacheKey(r *http.Request) string {
+	return r.Host + r.URL.RequestURI()
+}
+
 func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 	// logger.Debug("Edge proxying",
 	// 	slog.String("host", r.Host),
@@ -50,9 +62,43 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if r.Method == http.MethodGet {
+		if v, ok := cs.fileCache.Get(cacheKey(r)); ok {
+			cr := v.(*cachedResponse)
+			for k, vv := range cr.header {
+				w.Header()[k] = vv
+			}
+			w.WriteHeader(cr.status)
+			w.Write(cr.body)
+			return
+		}
+	}
+
 	ctx := context.WithValue(r.Context(), targetURLKey, targetUrl)
 
-	cs.reverseProxy.ServeHTTP(w, r.WithContext(ctx))
+	rr := &responseRecorder{}
+	cs.reverseProxy.ServeHTTP(rr, r.WithContext(ctx))
+
+	for k, vv := range rr.header {
+		w.Header()[k] = vv
+	}
+	if rr.status == 0 {
+		rr.status = http.StatusOK
+	}
+	w.WriteHeader(rr.status)
+	w.Write(rr.body)
+
+	if isCacheable(r, rr) {
+		cs.fileCache.Set(
+			cacheKey(r),
+			&cachedResponse{
+				status: rr.status,
+				header: rr.header.Clone(),
+				body:   append([]byte(nil), rr.body...),
+			},
+			int64(len(rr.body)),
+		)
+	}
 }
 
 func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, error) {
@@ -165,4 +211,55 @@ func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, er
 	}
 
 	return target, nil
+}
+
+type responseRecorder struct {
+	status int
+	header http.Header
+	body   []byte
+}
+
+func (r *responseRecorder) Header() http.Header {
+	if r.header == nil {
+		r.header = make(http.Header)
+	}
+	return r.header
+}
+
+func (r *responseRecorder) WriteHeader(code int) {
+	r.status = code
+}
+
+func (r *responseRecorder) Write(b []byte) (int, error) {
+	r.body = append(r.body, b...)
+	return len(b), nil
+}
+
+func isCacheable(req *http.Request, rr *responseRecorder) bool {
+	if req.Method != http.MethodGet {
+		return false
+	}
+	if rr.status != http.StatusOK {
+		return false
+	}
+	if len(rr.body) > maxCachedFileSize {
+		return false
+	}
+	if rr.header.Get("Set-Cookie") != "" {
+		return false
+	}
+
+	ct := rr.header.Get("Content-Type")
+	switch {
+	case strings.HasPrefix(ct, "text/"):
+	case strings.Contains(ct, "javascript"):
+	case strings.Contains(ct, "json"):
+	case strings.Contains(ct, "css"):
+	case strings.Contains(ct, "image/"):
+	case strings.Contains(ct, "font/"):
+	default:
+		return false
+	}
+
+	return true
 }
