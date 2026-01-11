@@ -22,6 +22,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	pglock "github.com/1backend/1backend/sdk/go/lock/pg"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/docker/go-units"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -199,6 +200,28 @@ func BigBang(options *universe.Options) (*Universe, error) {
 	if options.FileGcs {
 		if options.GcpSaKey == "" || options.GcsBucket == "" {
 			return nil, fmt.Errorf("file gcs is set but sa key or bucket is empty")
+		}
+	}
+
+	if options.FileCacheMaxSize == 0 {
+		maxSize := os.Getenv("OB_FILE_CACHE_MAX_SIZE")
+		if maxSize != "" {
+			size, err := units.RAMInBytes(maxSize)
+			if err != nil {
+				return nil, err
+			}
+			options.FileCacheMaxSize = size
+		}
+	}
+
+	if options.FileCacheItemMaxSize == 0 {
+		maxSize := os.Getenv("OB_FILE_CACHE_ITEM_MAX_SIZE")
+		if maxSize != "" {
+			size, err := units.RAMInBytes(maxSize)
+			if err != nil {
+				return nil, err
+			}
+			options.FileCacheItemMaxSize = size
 		}
 	}
 

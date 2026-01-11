@@ -14,7 +14,6 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"sync"
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
@@ -23,6 +22,7 @@ import (
 	"github.com/dgraph-io/ristretto"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
+	"golang.org/x/sync/singleflight"
 
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/1backend/1backend/server/internal/universe"
@@ -59,7 +59,7 @@ type UserService struct {
 	configCache map[string]any
 
 	tokenReplacementCache *ristretto.Cache
-	refreshLock           sync.Mutex
+	refreshGroup          singleflight.Group
 }
 
 func NewUserService(

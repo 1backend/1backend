@@ -18,6 +18,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/dgraph-io/ristretto"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	"golang.org/x/sync/singleflight"
@@ -63,6 +64,9 @@ type ProxyService struct {
 	reverseProxy  *httputil.ReverseProxy
 	instanceCache sync.Map
 	httpClient    *http.Client
+
+	fileCache         *ristretto.Cache
+	maxCachedFileSize int
 }
 
 func NewProxyService(
@@ -87,10 +91,16 @@ func NewProxyService(
 		return nil, errors.Wrap(err, "failed to create route store")
 	}
 
+	maxCachedFileSize := 2 << 20 // 2MB default
+	if options.FileCacheItemMaxSize != 0 {
+		maxCachedFileSize = int(options.FileCacheItemMaxSize)
+	}
+
 	cs := &ProxyService{
-		options:    options,
-		routeStore: routeStore,
-		certStore:  certStore,
+		maxCachedFileSize: maxCachedFileSize,
+		options:           options,
+		routeStore:        routeStore,
+		certStore:         certStore,
 		CertStore: &CertStore{
 			SyncCertsToFiles: options.SyncCertsToFiles,
 			CertFolder:       filepath.Join(options.ConfigPath, "certs"),
@@ -140,6 +150,17 @@ func NewProxyService(
 			},
 		},
 	}
+
+	maxCost := 100 * 1024 * 1024 // 100MB default
+	if options.FileCacheMaxSize != 0 {
+		maxCost = int(options.FileCacheMaxSize)
+	}
+
+	cs.fileCache, _ = ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1e7,
+		MaxCost:     int64(maxCost),
+		BufferItems: 64,
+	})
 
 	if cs.options.SyncCertsToFiles {
 		cs.syncCertsToFiles()

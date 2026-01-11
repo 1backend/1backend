@@ -11,6 +11,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"sort"
@@ -68,148 +69,170 @@ func (s *UserService) RefreshToken(w http.ResponseWriter, r *http.Request) {
 func (s *UserService) refreshToken(
 	stringToken string,
 ) (*user.Token, error) {
-	cacheKey := generateCacheKey(stringToken)
+	// FAST PATH: Parse JWT without verification just to get the identity for the lock
+	// We don't care if it's expired or valid yet; the lock just needs a string key.
+	claims, err := s.options.Authorizer.ParseJWTUnverified(stringToken)
+	if err != nil {
+		return nil, errors.Wrap(err, "invalid token format")
+	}
+
+	cacheKey := fmt.Sprintf("%s:%s", claims.UserId, claims.Device)
+
+	// Fast Path: Check cache without any locking (handles 99% of traffic)
 	if cachedToken, found := s.tokenReplacementCache.Get(cacheKey); found {
 		return cachedToken.(*user.Token), nil
 	}
 
 	// @todo: should be a distributed lock
-	s.refreshLock.Lock()
-	defer s.refreshLock.Unlock()
-
-	tokenToBeRefreshedI, found, err := s.tokenStore.Query(
-		datastore.Equals(datastore.Field("token"), stringToken),
-	).FindOne()
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, errors.New("token not found")
-	}
-
-	tokenToBeRefreshed := tokenToBeRefreshedI.(*user.Token)
-
-	userI, found, err := s.userStore.Query(
-		datastore.Equals(datastore.Field("id"), tokenToBeRefreshed.UserId),
-	).FindOne()
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to query user")
-	}
-	if !found {
-		return nil, errors.New("user not found")
-	}
-	usr := userI.(*user.User)
-
-	activeTokenI, found, err := s.tokenStore.Query(
-		datastore.Equals(datastore.Field("appId"), tokenToBeRefreshed.AppId),
-		datastore.Equals(datastore.Field("userId"), usr.Id),
-		datastore.Equals(datastore.Field("active"), true),
-		datastore.Equals(datastore.Field("device"), tokenToBeRefreshed.Device),
-	).FindOne()
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, errors.New("active token not found")
-	}
-
-	activeToken := activeTokenI.(*user.Token)
-
-	if tokenToBeRefreshed.Active {
-		err = s.inactivateToken(tokenToBeRefreshed.AppId, tokenToBeRefreshed.Id)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to inactivate token")
+	val, err, _ := s.refreshGroup.Do(cacheKey, func() (interface{}, error) {
+		// THE DOUBLE CHECK:
+		// Requests 2, 3, 4, and 5 wait at the door. When Request 1 finishes
+		// and sets the cache, these requests enter one by one (or share the result).
+		// We check the cache again to see if Request 1 already did the work.
+		if cachedToken, found := s.tokenReplacementCache.Get(cacheKey); found {
+			return cachedToken.(*user.Token), nil
 		}
-	}
 
-	now := time.Now()
+		tokenToBeRefreshedI, found, err := s.tokenStore.Query(
+			datastore.Equals(datastore.Field("token"), stringToken),
+		).FindOne()
+		if err != nil {
+			return nil, err
+		}
+		if !found {
+			return nil, errors.New("token not found")
+		}
 
-	err = s.tokenStore.Query(
-		datastore.Equals(datastore.Field("id"), tokenToBeRefreshed.Id),
-	).UpdateFields(map[string]any{
-		"lastRefreshedAt": now,
+		tokenToBeRefreshed := tokenToBeRefreshedI.(*user.Token)
+
+		userI, found, err := s.userStore.Query(
+			datastore.Equals(datastore.Field("id"), tokenToBeRefreshed.UserId),
+		).FindOne()
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to query user")
+		}
+		if !found {
+			return nil, errors.New("user not found")
+		}
+		usr := userI.(*user.User)
+
+		activeTokenI, found, err := s.tokenStore.Query(
+			datastore.Equals(datastore.Field("appId"), tokenToBeRefreshed.AppId),
+			datastore.Equals(datastore.Field("userId"), usr.Id),
+			datastore.Equals(datastore.Field("active"), true),
+			datastore.Equals(datastore.Field("device"), tokenToBeRefreshed.Device),
+		).FindOne()
+		if err != nil {
+			return nil, err
+		}
+		if !found {
+			return nil, errors.New("active token not found")
+		}
+
+		activeToken := activeTokenI.(*user.Token)
+
+		if tokenToBeRefreshed.Active {
+			err = s.inactivateToken(tokenToBeRefreshed.AppId, tokenToBeRefreshed.Id)
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to inactivate token")
+			}
+		}
+
+		now := time.Now()
+
+		err = s.tokenStore.Query(
+			datastore.Equals(datastore.Field("id"), tokenToBeRefreshed.Id),
+		).UpdateFields(map[string]any{
+			"lastRefreshedAt": now,
+		})
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to update token")
+		}
+
+		if activeToken.Id != tokenToBeRefreshed.Id {
+			err = s.inactivateToken(tokenToBeRefreshed.AppId, activeToken.Id)
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to inactivate token")
+			}
+		}
+
+		token, err := s.generateAuthToken(
+			tokenToBeRefreshed.AppId,
+			usr,
+			tokenToBeRefreshed.Device,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		if token.Device == "" {
+			token.Device = unknownDevice
+		}
+
+		err = s.tokenStore.Create(token)
+		if err != nil {
+			return nil, errors.Wrap(err, "error creating token")
+		}
+
+		// Prune old tokens for the same device
+		tokens, err := s.tokenStore.Query(
+			datastore.Equals(datastore.Field("appId"), token.AppId),
+			datastore.Equals(datastore.Field("userId"), usr.Id),
+			datastore.Equals(datastore.Field("device"), tokenToBeRefreshed.Device),
+		).Find()
+		if err != nil {
+			logger.Error("Failed to query tokens for pruning", slog.Any("error", err))
+			return token, nil // return token anyway, pruning is best-effort
+		}
+
+		// Sort tokens by LastRefreshedAt descending, treating nil as zero (oldest)
+		sort.Slice(tokens, func(i, j int) bool {
+			ti := tokens[i].(*user.Token)
+			tj := tokens[j].(*user.Token)
+
+			var tiTime, tjTime time.Time
+			if ti.LastRefreshedAt != nil {
+				tiTime = *ti.LastRefreshedAt
+			}
+			if tj.LastRefreshedAt != nil {
+				tjTime = *tj.LastRefreshedAt
+			}
+			// Now compare: newer first
+			return tiTime.After(tjTime)
+		})
+
+		// Keep latest 2, delete the rest
+		for i := 2; i < len(tokens); i++ {
+			t := tokens[i].(*user.Token)
+			if t.Active {
+				// We don't want to delete the active token
+				continue
+			}
+			err := s.tokenStore.Query(datastore.Id(t.Id)).Delete()
+			if err != nil {
+				logger.Error("Failed to delete old token",
+					slog.String("appId", t.AppId),
+					slog.String("tokenId", t.Id),
+					slog.Any("error", err),
+				)
+			}
+		}
+
+		s.tokenReplacementCache.SetWithTTL(
+			cacheKey,
+			token,
+			1,
+			s.options.TokenExpiration,
+		)
+
+		return token, nil
 	})
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to update token")
-	}
 
-	if activeToken.Id != tokenToBeRefreshed.Id {
-		err = s.inactivateToken(tokenToBeRefreshed.AppId, activeToken.Id)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to inactivate token")
-		}
-	}
-
-	token, err := s.generateAuthToken(
-		tokenToBeRefreshed.AppId,
-		usr,
-		tokenToBeRefreshed.Device,
-	)
 	if err != nil {
 		return nil, err
 	}
 
-	if token.Device == "" {
-		token.Device = unknownDevice
-	}
-
-	err = s.tokenStore.Create(token)
-	if err != nil {
-		return nil, errors.Wrap(err, "error creating token")
-	}
-
-	// Prune old tokens for the same device
-	tokens, err := s.tokenStore.Query(
-		datastore.Equals(datastore.Field("appId"), token.AppId),
-		datastore.Equals(datastore.Field("userId"), usr.Id),
-		datastore.Equals(datastore.Field("device"), tokenToBeRefreshed.Device),
-	).Find()
-	if err != nil {
-		logger.Error("Failed to query tokens for pruning", slog.Any("error", err))
-		return token, nil // return token anyway, pruning is best-effort
-	}
-
-	// Sort tokens by LastRefreshedAt descending, treating nil as zero (oldest)
-	sort.Slice(tokens, func(i, j int) bool {
-		ti := tokens[i].(*user.Token)
-		tj := tokens[j].(*user.Token)
-
-		var tiTime, tjTime time.Time
-		if ti.LastRefreshedAt != nil {
-			tiTime = *ti.LastRefreshedAt
-		}
-		if tj.LastRefreshedAt != nil {
-			tjTime = *tj.LastRefreshedAt
-		}
-		// Now compare: newer first
-		return tiTime.After(tjTime)
-	})
-
-	// Keep latest 2, delete the rest
-	for i := 2; i < len(tokens); i++ {
-		t := tokens[i].(*user.Token)
-		if t.Active {
-			// We don't want to delete the active token
-			continue
-		}
-		err := s.tokenStore.Query(datastore.Id(t.Id)).Delete()
-		if err != nil {
-			logger.Error("Failed to delete old token",
-				slog.String("appId", t.AppId),
-				slog.String("tokenId", t.Id),
-				slog.Any("error", err),
-			)
-		}
-	}
-
-	s.tokenReplacementCache.SetWithTTL(
-		cacheKey,
-		token,
-		1,
-		s.options.TokenExpiration,
-	)
-
-	return token, nil
+	return val.(*user.Token), nil
 }
 
 func generateCacheKey(token string) string {
