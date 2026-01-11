@@ -11,6 +11,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"sort"
@@ -68,7 +69,14 @@ func (s *UserService) RefreshToken(w http.ResponseWriter, r *http.Request) {
 func (s *UserService) refreshToken(
 	stringToken string,
 ) (*user.Token, error) {
-	cacheKey := generateCacheKey(stringToken)
+	// FAST PATH: Parse JWT without verification just to get the identity for the lock
+	// We don't care if it's expired or valid yet; the lock just needs a string key.
+	claims, err := s.options.Authorizer.ParseJWTUnverified(stringToken)
+	if err != nil {
+		return nil, errors.Wrap(err, "invalid token format")
+	}
+
+	cacheKey := fmt.Sprintf("%s:%s", claims.UserId, claims.Device)
 
 	// Fast Path: Check cache without any locking (handles 99% of traffic)
 	if cachedToken, found := s.tokenReplacementCache.Get(cacheKey); found {
