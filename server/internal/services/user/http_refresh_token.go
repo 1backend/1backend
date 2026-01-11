@@ -68,14 +68,14 @@ func (s *UserService) RefreshToken(w http.ResponseWriter, r *http.Request) {
 func (s *UserService) refreshToken(
 	stringToken string,
 ) (*user.Token, error) {
+	// @todo: should be a distributed lock
+	s.refreshLock.Lock()
+	defer s.refreshLock.Unlock()
+
 	cacheKey := generateCacheKey(stringToken)
 	if cachedToken, found := s.tokenReplacementCache.Get(cacheKey); found {
 		return cachedToken.(*user.Token), nil
 	}
-
-	// @todo: should be a distributed lock
-	s.refreshLock.Lock()
-	defer s.refreshLock.Unlock()
 
 	tokenToBeRefreshedI, found, err := s.tokenStore.Query(
 		datastore.Equals(datastore.Field("token"), stringToken),
