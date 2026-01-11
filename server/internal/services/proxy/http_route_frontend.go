@@ -22,8 +22,6 @@ import (
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 )
 
-const maxCachedFileSize = 2 << 20 // 2MB
-
 type cachedResponse struct {
 	status int
 	header http.Header
@@ -88,7 +86,7 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(rr.status)
 	w.Write(rr.body)
 
-	if isCacheable(r, rr) {
+	if cs.isCacheable(r, rr) {
 		cs.fileCache.Set(
 			cacheKey(r),
 			&cachedResponse{
@@ -235,14 +233,14 @@ func (r *responseRecorder) Write(b []byte) (int, error) {
 	return len(b), nil
 }
 
-func isCacheable(req *http.Request, rr *responseRecorder) bool {
+func (cs *ProxyService) isCacheable(req *http.Request, rr *responseRecorder) bool {
 	if req.Method != http.MethodGet {
 		return false
 	}
 	if rr.status != http.StatusOK {
 		return false
 	}
-	if len(rr.body) > maxCachedFileSize {
+	if len(rr.body) > cs.maxCachedFileSize {
 		return false
 	}
 	if rr.header.Get("Set-Cookie") != "" {

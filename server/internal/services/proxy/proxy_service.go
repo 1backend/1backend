@@ -65,7 +65,8 @@ type ProxyService struct {
 	instanceCache sync.Map
 	httpClient    *http.Client
 
-	fileCache *ristretto.Cache
+	fileCache         *ristretto.Cache
+	maxCachedFileSize int
 }
 
 func NewProxyService(
@@ -90,10 +91,16 @@ func NewProxyService(
 		return nil, errors.Wrap(err, "failed to create route store")
 	}
 
+	maxCachedFileSize := 2 << 20 // 2MB default
+	if options.FileCacheItemMaxSize != 0 {
+		maxCachedFileSize = int(options.FileCacheItemMaxSize)
+	}
+
 	cs := &ProxyService{
-		options:    options,
-		routeStore: routeStore,
-		certStore:  certStore,
+		maxCachedFileSize: maxCachedFileSize,
+		options:           options,
+		routeStore:        routeStore,
+		certStore:         certStore,
 		CertStore: &CertStore{
 			SyncCertsToFiles: options.SyncCertsToFiles,
 			CertFolder:       filepath.Join(options.ConfigPath, "certs"),
@@ -144,9 +151,14 @@ func NewProxyService(
 		},
 	}
 
+	maxCost := 100 * 1024 * 1024 // 100MB default
+	if options.FileCacheMaxSize != 0 {
+		maxCost = int(options.FileCacheMaxSize)
+	}
+
 	cs.fileCache, _ = ristretto.NewCache(&ristretto.Config{
 		NumCounters: 1e7,
-		MaxCost:     4 << 30, // 4GB
+		MaxCost:     int64(maxCost),
 		BufferItems: 64,
 	})
 
