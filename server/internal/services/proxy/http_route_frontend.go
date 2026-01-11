@@ -251,7 +251,7 @@ func (cs *ProxyService) isCacheable(req *http.Request, rr *responseRecorder) boo
 	switch {
 	case strings.HasPrefix(ct, "text/"):
 	case strings.Contains(ct, "javascript"):
-	case strings.Contains(ct, "json"):
+	// case strings.Contains(ct, "json"):
 	case strings.Contains(ct, "css"):
 	case strings.Contains(ct, "image/"):
 	case strings.Contains(ct, "font/"):
