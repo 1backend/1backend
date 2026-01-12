@@ -65,7 +65,7 @@ type ProxyService struct {
 	instanceCache sync.Map
 	httpClient    *http.Client
 
-	fileCache         *ristretto.Cache
+	edgeCache         *ristretto.Cache
 	maxCachedFileSize int
 }
 
@@ -92,8 +92,8 @@ func NewProxyService(
 	}
 
 	maxCachedFileSize := 2 << 20 // 2MB default
-	if options.FileCacheItemMaxSize != 0 {
-		maxCachedFileSize = int(options.FileCacheItemMaxSize)
+	if options.EdgeCacheItemMaxSize != 0 {
+		maxCachedFileSize = int(options.EdgeCacheItemMaxSize)
 	}
 
 	cs := &ProxyService{
@@ -152,11 +152,11 @@ func NewProxyService(
 	}
 
 	maxCost := 100 * 1024 * 1024 // 100MB default
-	if options.FileCacheMaxSize != 0 {
-		maxCost = int(options.FileCacheMaxSize)
+	if options.EdgeCacheMaxSize != 0 {
+		maxCost = int(options.EdgeCacheMaxSize)
 	}
 
-	cs.fileCache, _ = ristretto.NewCache(&ristretto.Config{
+	cs.edgeCache, _ = ristretto.NewCache(&ristretto.Config{
 		NumCounters: 1e7,
 		MaxCost:     int64(maxCost),
 		BufferItems: 64,

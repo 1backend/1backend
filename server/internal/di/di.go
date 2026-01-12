@@ -203,25 +203,25 @@ func BigBang(options *universe.Options) (*Universe, error) {
 		}
 	}
 
-	if options.FileCacheMaxSize == 0 {
-		maxSize := os.Getenv("OB_FILE_CACHE_MAX_SIZE")
+	if options.EdgeCacheMaxSize == 0 {
+		maxSize := os.Getenv("OB_EDGE_CACHE_MAX_SIZE")
 		if maxSize != "" {
 			size, err := units.RAMInBytes(maxSize)
 			if err != nil {
 				return nil, err
 			}
-			options.FileCacheMaxSize = size
+			options.EdgeCacheMaxSize = size
 		}
 	}
 
-	if options.FileCacheItemMaxSize == 0 {
-		maxSize := os.Getenv("OB_FILE_CACHE_ITEM_MAX_SIZE")
+	if options.EdgeCacheItemMaxSize == 0 {
+		maxSize := os.Getenv("OB_EDGE_CACHE_ITEM_MAX_SIZE")
 		if maxSize != "" {
 			size, err := units.RAMInBytes(maxSize)
 			if err != nil {
 				return nil, err
 			}
-			options.FileCacheItemMaxSize = size
+			options.EdgeCacheItemMaxSize = size
 		}
 	}
 

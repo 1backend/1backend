@@ -55,12 +55,12 @@ type Options struct {
 	// URL of the local 1Backend server instance
 	Url string
 
-	// FileCacheItemMaxSize defines the maximum size of a single file allowed in the cache.
+	// EdgeCacheItemMaxSize defines the maximum size of a single response allowed in the cache.
 	// Use bytes (e.g., 50 * 1024 * 1024 for 50MB).
-	FileCacheItemMaxSize int64
+	EdgeCacheItemMaxSize int64
 
-	// FileCacheMaxSize defines the total disk/memory footprint allowed for the file cache.
-	FileCacheMaxSize int64
+	// EdgeCacheMaxSize defines the total disk/memory footprint allowed for the file cache.
+	EdgeCacheMaxSize int64
 
 	// OB_EDGE_PROXY is used to enable the edge proxy.
 	EdgeProxy bool

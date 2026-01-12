@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"sync/atomic"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -371,5 +372,201 @@ func TestProxyService_MicrofrontendsByPath(t *testing.T) {
 		defer resp.Body.Close()
 		body, _ := io.ReadAll(resp.Body)
 		require.Contains(t, string(body), "admin: /app/admin/settings")
+	})
+}
+
+func TestProxyService_Caching(t *testing.T) {
+	t.Parallel()
+
+	// Use atomic counter to safely track backend hits across parallel tests
+	var requestCount atomic.Int32
+
+	mockBackend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestCount.Add(1)
+
+		// Logic to simulate different backend behaviors
+		cc := r.URL.Query().Get("cc")
+		if cc != "" {
+			w.Header().Set("Cache-Control", cc) // e.g., "private" or "no-cache"
+		}
+
+		// Set a cacheable content type
+		w.Header().Set("Content-Type", "text/plain")
+		fmt.Fprintf(w, "Response #%d", requestCount.Load())
+	}))
+	defer mockBackend.Close()
+
+	port, err := test.FindAvailablePort()
+	require.NoError(t, err)
+
+	server, err := test.StartService(test.Options{
+		EdgeProxyTestMode: true,
+		EdgeProxyHttpPort: port,
+		Test:              true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	// SAVE THE ROUTE (Crucial step)
+	clientFactory := client.NewApiClientFactory(server.Url)
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
+	require.NoError(t, err)
+
+	routeReq := openapi.ProxySvcSaveRoutesRequest{
+		Routes: []openapi.ProxySvcRouteInput{
+			{
+				Id:     "cache.localhost",
+				Target: openapi.PtrString(mockBackend.URL),
+			},
+		},
+	}
+	_, _, err = adminClient.ProxySvcAPI.SaveRoutes(context.Background()).Body(routeReq).Execute()
+	require.NoError(t, err)
+
+	edgeProxyUrl := fmt.Sprintf("http://localhost:%d", port)
+	proxyClient := &http.Client{}
+
+	// --- THE ACTUAL CACHE TESTS ---
+
+	t.Run("canonicalizes query parameters (sorting)", func(t *testing.T) {
+		requestCount.Store(0)
+
+		// Request A: ?a=1&b=2
+		req1, _ := http.NewRequest("GET", edgeProxyUrl+"/search?a=1&b=2", nil)
+		req1.Host = "cache.localhost"
+		resp1, _ := proxyClient.Do(req1)
+		body1, _ := io.ReadAll(resp1.Body)
+		require.Equal(t, "Response #1", string(body1))
+
+		// Request B: ?b=2&a=1 (Should be a CACHE HIT)
+		req2, _ := http.NewRequest("GET", edgeProxyUrl+"/search?b=2&a=1", nil)
+		req2.Host = "cache.localhost"
+		resp2, _ := proxyClient.Do(req2)
+		body2, _ := io.ReadAll(resp2.Body)
+
+		require.Equal(t, "Response #1", string(body2), "Reordered params should result in cache hit")
+		require.Equal(t, int32(1), requestCount.Load(), "Backend should only have been hit once")
+	})
+
+	t.Run("bypasses cache on auth cookie", func(t *testing.T) {
+		requestCount.Store(0)
+		url := edgeProxyUrl + "/profile"
+
+		// Request 1: No Cookie (Miss)
+		req1, _ := http.NewRequest("GET", url, nil)
+		req1.Host = "cache.localhost"
+		proxyClient.Do(req1) // requestCount -> 1
+
+		// Request 2: With Auth Cookie (Should Bypass -> Miss)
+		req2, _ := http.NewRequest("GET", url, nil)
+		req2.Host = "cache.localhost"
+		req2.AddCookie(&http.Cookie{Name: "session_id", Value: "123"})
+		resp, _ := proxyClient.Do(req2)
+
+		body, _ := io.ReadAll(resp.Body)
+		require.Equal(t, "Response #2", string(body), "Auth cookie must force backend fetch")
+	})
+
+	t.Run("respects no-cache values case-insensitively", func(t *testing.T) {
+		requestCount.Store(0)
+		// Use uppercase "NO-CACHE" to test your ToLower logic
+		url := edgeProxyUrl + "/metabase-style?cc=NO-CACHE"
+		req, _ := http.NewRequest("GET", url, nil)
+		req.Host = "cache.localhost"
+
+		proxyClient.Do(req)            // Hit 1
+		resp, _ := proxyClient.Do(req) // Should be Hit 2
+
+		body, _ := io.ReadAll(resp.Body)
+		require.Equal(t, "Response #2", string(body), "no-cache should never store in fileCache")
+	})
+
+	t.Run("differentiates cache by Accept-Language", func(t *testing.T) {
+		requestCount.Store(0)
+		url := edgeProxyUrl + "/localized"
+
+		// 1. Request in English
+		reqEN, _ := http.NewRequest("GET", url, nil)
+		reqEN.Host = "cache.localhost"
+		reqEN.Header.Set("Accept-Language", "en-US")
+		proxyClient.Do(reqEN) // Backend Hit #1
+
+		// 2. Request in Spanish (Should be a CACHE MISS)
+		reqES, _ := http.NewRequest("GET", url, nil)
+		reqES.Host = "cache.localhost"
+		reqES.Header.Set("Accept-Language", "es-ES")
+		resp, _ := proxyClient.Do(reqES)
+
+		body, _ := io.ReadAll(resp.Body)
+		require.Equal(t, "Response #2", string(body), "Different languages must not share cache entries")
+	})
+
+	t.Run("differentiates cache by Accept-Encoding", func(t *testing.T) {
+		requestCount.Store(0)
+		url := edgeProxyUrl + "/assets"
+
+		// 1. Client supports Gzip
+		reqGzip, _ := http.NewRequest("GET", url, nil)
+		reqGzip.Host = "cache.localhost"
+		reqGzip.Header.Set("Accept-Encoding", "gzip")
+		proxyClient.Do(reqGzip) // Backend Hit #1
+
+		// 2. Client supports Identity (Should be a CACHE MISS)
+		reqPlain, _ := http.NewRequest("GET", url, nil)
+		reqPlain.Host = "cache.localhost"
+		reqPlain.Header.Set("Accept-Encoding", "identity")
+		resp, _ := proxyClient.Do(reqPlain)
+
+		body, _ := io.ReadAll(resp.Body)
+		require.Equal(t, "Response #2", string(body), "Compressed and uncompressed responses must have different keys")
+	})
+
+	t.Run("respects maxCachedFileSize limit", func(t *testing.T) {
+		requestCount.Store(0)
+		// We need the backend to send a large body
+		largeBackend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			requestCount.Add(1)
+			w.Header().Set("Content-Type", "text/plain")
+			// Send 2MB if your limit is 1MB
+			w.Write(make([]byte, 3*1024*1024))
+		}))
+		defer largeBackend.Close()
+
+		// Register new route for this backend
+		routeReq.Routes[0].Id = "large.localhost"
+		routeReq.Routes[0].Target = openapi.PtrString(largeBackend.URL)
+		adminClient.ProxySvcAPI.SaveRoutes(context.Background()).Body(routeReq).Execute()
+
+		req, _ := http.NewRequest("GET", edgeProxyUrl+"/", nil)
+		req.Host = "large.localhost"
+
+		proxyClient.Do(req) // Hit 1
+		proxyClient.Do(req) // Should be Hit 2 (because 2MB > limit)
+
+		require.Equal(t, int32(2), requestCount.Load(), "Large files should bypass the cache entirely")
+	})
+
+	t.Run("respects legacy Pragma: no-cache", func(t *testing.T) {
+		requestCount.Store(0)
+		// Backend sends old-school Pragma header
+		pragmaBackend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			requestCount.Add(1)
+			w.Header().Set("Pragma", "no-cache")
+			w.Header().Set("Content-Type", "text/html")
+			fmt.Fprint(w, "legacy")
+		}))
+		defer pragmaBackend.Close()
+
+		routeReq.Routes[0].Id = "pragma.localhost"
+		routeReq.Routes[0].Target = openapi.PtrString(pragmaBackend.URL)
+		adminClient.ProxySvcAPI.SaveRoutes(context.Background()).Body(routeReq).Execute()
+
+		req, _ := http.NewRequest("GET", edgeProxyUrl+"/", nil)
+		req.Host = "pragma.localhost"
+
+		proxyClient.Do(req)
+		proxyClient.Do(req)
+
+		require.Equal(t, int32(2), requestCount.Load(), "Pragma: no-cache should prevent caching")
 	})
 }
