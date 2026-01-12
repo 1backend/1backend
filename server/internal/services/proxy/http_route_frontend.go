@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
@@ -26,10 +27,6 @@ type cachedResponse struct {
 	status int
 	header http.Header
 	body   []byte
-}
-
-func cacheKey(r *http.Request) string {
-	return r.Host + r.URL.RequestURI()
 }
 
 func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
@@ -60,8 +57,12 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if r.Method == http.MethodGet {
-		if v, ok := cs.fileCache.Get(cacheKey(r)); ok {
+	isCacheableRequest := cs.isCacheableRequest(r)
+
+	cacheK := cacheKey(r)
+
+	if isCacheableRequest {
+		if v, ok := cs.edgeCache.Get(cacheK); ok {
 			cr := v.(*cachedResponse)
 			for k, vv := range cr.header {
 				w.Header()[k] = vv
@@ -86,16 +87,19 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(rr.status)
 	w.Write(rr.body)
 
-	if cs.isCacheable(r, rr) {
-		cs.fileCache.Set(
-			cacheKey(r),
-			&cachedResponse{
-				status: rr.status,
-				header: rr.header.Clone(),
-				body:   append([]byte(nil), rr.body...),
-			},
-			int64(len(rr.body)),
-		)
+	if isCacheableRequest {
+		if isCacheableResponse, ttl := cs.isCacheableResponse(rr); isCacheableResponse {
+			cs.edgeCache.SetWithTTL(
+				cacheK,
+				&cachedResponse{
+					status: rr.status,
+					header: rr.header.Clone(),
+					body:   append([]byte(nil), rr.body...),
+				},
+				int64(len(rr.body)),
+				ttl,
+			)
+		}
 	}
 }
 
@@ -233,31 +237,122 @@ func (r *responseRecorder) Write(b []byte) (int, error) {
 	return len(b), nil
 }
 
-func (cs *ProxyService) isCacheable(req *http.Request, rr *responseRecorder) bool {
+func (cs *ProxyService) isCacheableRequest(req *http.Request) bool {
 	if req.Method != http.MethodGet {
 		return false
 	}
-	if rr.status != http.StatusOK {
-		return false
-	}
-	if len(rr.body) > cs.maxCachedFileSize {
-		return false
-	}
-	if rr.header.Get("Set-Cookie") != "" {
-		return false
-	}
 
-	ct := rr.header.Get("Content-Type")
-	switch {
-	case strings.HasPrefix(ct, "text/"):
-	case strings.Contains(ct, "javascript"):
-	// case strings.Contains(ct, "json"):
-	case strings.Contains(ct, "css"):
-	case strings.Contains(ct, "image/"):
-	case strings.Contains(ct, "font/"):
-	default:
+	if req.Header.Get("Authorization") != "" || hasAuthCookie(req) {
 		return false
 	}
 
 	return true
+}
+
+func (cs *ProxyService) isCacheableResponse(rr *responseRecorder) (bool, time.Duration) {
+	if rr.status != http.StatusOK {
+		return false, 0
+	}
+
+	// Respect Backend 'Opt-Out'
+
+	// rr.header.Get() handles the KEY case-insensitivity.
+	// strings.ToLower() handles the VALUE case-insensitivity.
+	cc := strings.ToLower(rr.header.Get("Cache-Control"))
+
+	if strings.Contains(cc, "no-store") ||
+		strings.Contains(cc, "no-cache") ||
+		strings.Contains(cc, "private") ||
+		strings.ToLower(rr.header.Get("Pragma")) == "no-cache" {
+		return false, 0
+	}
+
+	if len(rr.body) > cs.maxCachedFileSize {
+		return false, 0
+	}
+	if rr.header.Get("Set-Cookie") != "" {
+		return false, 0
+	}
+
+	ct := rr.header.Get("Content-Type")
+
+	// Handle HTML (Short-lived for Guests).
+	// Note: This provides a "Public Cache." Anonymous users will see the same
+	// cached version of dynamic pages for up to 5 minutes. This should be
+	// disabled via flag if the site requires real-time accuracy for guests.
+	if strings.Contains(ct, "text/html") {
+		return true, 5 * time.Minute
+	}
+
+	// Handle Static Assets (Long-lived)
+	switch {
+	case strings.HasPrefix(ct, "text/"),
+		strings.Contains(ct, "javascript"),
+		strings.Contains(ct, "css"),
+		strings.Contains(ct, "image/"),
+		strings.Contains(ct, "font/"):
+		return true, 24 * time.Hour
+	}
+
+	// Fallback for everything else (JSON APIs, PDFs, etc.)
+	return false, 0
+}
+
+// hasAuthCookie checks if the request contains any common authentication or session cookies.
+func hasAuthCookie(req *http.Request) bool {
+	// Use a map for O(1) lookups
+	staticAuthCookies := map[string]struct{}{
+		"access_token": {}, "token": {}, "the_token": {},
+		"session_id": {}, "session": {}, "id_token": {},
+		"refresh_token": {}, "connect.sid": {}, "_session_id": {},
+		"sessionid": {}, "PHPSESSID": {}, "JSESSIONID": {},
+		".AspNetCore.Cookies": {}, "Cookies": {},
+	}
+
+	// Iterate through the cookies actually sent by the browser
+	for _, c := range req.Cookies() {
+		if _, found := staticAuthCookies[c.Name]; found {
+			return true
+		}
+	}
+	return false
+}
+
+func cacheKey(r *http.Request) string {
+	// Determine the Scheme accurately.
+	// If behind a load balancer, r.URL.Scheme is often empty.
+	scheme := r.URL.Scheme
+	if scheme == "" {
+		scheme = r.Header.Get("X-Forwarded-Proto")
+	}
+	if scheme == "" {
+		scheme = "http" // Fallback
+	}
+
+	// Canonicalize Query Parameters.
+	// URL.Query() parses params into a map; Encode() returns them sorted alphabetically.
+	// This ensures ?b=2&a=1 and ?a=1&b=2 generate the same key.
+	params := r.URL.Query()
+	sortedQuery := params.Encode()
+
+	normalizedPath := r.URL.Path
+	if sortedQuery != "" {
+		normalizedPath += "?" + sortedQuery
+	}
+
+	// Incorporate Content Negotiation Headers.
+	// Accept-Language: prevents serving the wrong translation.
+	// Accept-Encoding: prevents serving Gzip/Brotli to clients that can't decode it.
+	lang := r.Header.Get("Accept-Language")
+	encoding := r.Header.Get("Accept-Encoding")
+
+	// Using a separator like '|' helps prevent "key collision" attacks where
+	// parts of a path might blend into headers.
+	return fmt.Sprintf("%s://%s%s|lang:%s|enc:%s",
+		scheme,
+		r.Host,
+		normalizedPath,
+		lang,
+		encoding,
+	)
 }
