@@ -74,7 +74,13 @@ func (c *compressionBuffer) WriteHeader(code int) {
 		c.compressible = true
 		c.Header().Set("Content-Encoding", c.encoding)
 		c.Header().Del("Content-Length")
-		c.Header().Add("Vary", "Accept-Encoding")
+
+		currVary := c.Header().Get("Vary")
+		if currVary == "" {
+			c.Header().Set("Vary", "Accept-Encoding")
+		} else if !strings.Contains(strings.ToLower(currVary), "accept-encoding") {
+			c.Header().Set("Vary", currVary+", Accept-Encoding")
+		}
 
 		if c.encoding == "gzip" {
 			gw := gzipPool.Get().(*gzip.Writer)
