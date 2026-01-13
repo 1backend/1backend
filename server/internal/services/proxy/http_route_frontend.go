@@ -24,9 +24,10 @@ import (
 )
 
 type cachedResponse struct {
-	status int
-	header http.Header
-	body   []byte
+	status    int
+	header    http.Header
+	body      []byte
+	createdAt time.Time
 }
 
 func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
@@ -67,6 +68,13 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 			for k, vv := range cr.header {
 				w.Header()[k] = vv
 			}
+
+			w.Header().Set("Vary", "Accept-Encoding, Accept-Language")
+			w.Header().Set("X-Content-Type-Options", "nosniff")
+			age := time.Since(cr.createdAt).Seconds()
+			w.Header().Set("Age", fmt.Sprintf("%.0f", age)) // Age is in seconds
+			w.Header().Set("X-Cache", "HIT")
+
 			w.WriteHeader(cr.status)
 			w.Write(cr.body)
 			return
@@ -81,6 +89,12 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 	for k, vv := range rr.header {
 		w.Header()[k] = vv
 	}
+
+	w.Header().Set("Vary", "Accept-Encoding, Accept-Language")
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.Header().Set("X-Cache", "MISS")
+	w.Header().Set("Vary", "Accept-Encoding, Accept-Language")
+
 	if rr.status == 0 {
 		rr.status = http.StatusOK
 	}
