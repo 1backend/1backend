@@ -51,6 +51,8 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	r.Header.Del("Accept-Encoding")
+
 	targetUrl, err := url.Parse(targetString)
 	if err != nil {
 		logger.Error("Failed to parse target URL", slog.String("target", targetString), slog.Any("error", err))
@@ -83,31 +85,28 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 
 	ctx := context.WithValue(r.Context(), targetURLKey, targetUrl)
 
-	rr := &responseRecorder{}
-	cs.reverseProxy.ServeHTTP(rr, r.WithContext(ctx))
-
-	for k, vv := range rr.header {
-		w.Header()[k] = vv
+	rr := &responseRecorder{
+		w:      w,
+		header: w.Header(),
+		limit:  cs.maxCachedFileSize,
 	}
-
-	w.Header().Set("Vary", "Accept-Encoding, Accept-Language")
-	w.Header().Set("X-Content-Type-Options", "nosniff")
-	w.Header().Set("X-Cache", "MISS")
-	w.Header().Set("Vary", "Accept-Encoding, Accept-Language")
+	cs.reverseProxy.ServeHTTP(rr, r.WithContext(ctx))
 
 	if rr.status == 0 {
 		rr.status = http.StatusOK
 	}
-	w.WriteHeader(rr.status)
-	w.Write(rr.body)
 
 	if isCacheableRequest {
 		if isCacheableResponse, ttl := cs.isCacheableResponse(rr); isCacheableResponse {
+			cachedHeader := rr.header.Clone()
+			cachedHeader.Del("Content-Encoding")
+			cachedHeader.Del("Content-Length")
+
 			cs.edgeCache.SetWithTTL(
 				cacheK,
 				&cachedResponse{
 					status:    rr.status,
-					header:    rr.header.Clone(),
+					header:    cachedHeader,
 					body:      append([]byte(nil), rr.body...),
 					createdAt: time.Now(),
 				},
@@ -231,25 +230,69 @@ func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, er
 }
 
 type responseRecorder struct {
-	status int
-	header http.Header
-	body   []byte
+	w          http.ResponseWriter
+	status     int
+	header     http.Header
+	body       []byte
+	limit      int // Max size to buffer
+	overflowed bool
+}
+
+// Flush allows the recorder to satisfy the http.Flusher interface,
+// ensuring the outer compression middleware can stream data correctly.
+func (r *responseRecorder) Flush() {
+	if f, ok := r.w.(http.Flusher); ok {
+		f.Flush()
+	}
 }
 
 func (r *responseRecorder) Header() http.Header {
-	if r.header == nil {
-		r.header = make(http.Header)
-	}
-	return r.header
+	return r.w.Header()
 }
 
 func (r *responseRecorder) WriteHeader(code int) {
+	if r.status != 0 {
+		return // Prevent double-header writing
+	}
 	r.status = code
+
+	// Inject your proxy-specific headers HERE,
+	// just before the real writer sends them out.
+	h := r.w.Header()
+
+	// Remove Content-Length to allow chunked encoding during streaming
+	h.Del("Content-Length")
+
+	// If we are streaming/teeing, we want the proxy to
+	// let the outer server handle compression.
+	h.Del("Content-Encoding")
+
+	h.Set("Vary", "Accept-Encoding, Accept-Language")
+	h.Set("X-Content-Type-Options", "nosniff")
+	h.Set("X-Cache", "MISS")
+
+	r.w.WriteHeader(code)
 }
 
 func (r *responseRecorder) Write(b []byte) (int, error) {
-	r.body = append(r.body, b...)
-	return len(b), nil
+	// 1. Always send data to the client immediately
+	n, err := r.w.Write(b)
+
+	// 2. Only keep in memory if we are under the limit
+	if !r.overflowed {
+		if len(r.body)+len(b) > r.limit {
+			r.overflowed = true
+			r.body = nil // Drop the buffer to save memory
+		} else {
+			r.body = append(r.body, b...)
+		}
+	}
+
+	return n, err
+}
+
+func (r *responseRecorder) Unwrap() http.ResponseWriter {
+	return r.w
 }
 
 func (cs *ProxyService) isCacheableRequest(req *http.Request) bool {
@@ -265,10 +308,9 @@ func (cs *ProxyService) isCacheableRequest(req *http.Request) bool {
 }
 
 func (cs *ProxyService) isCacheableResponse(rr *responseRecorder) (bool, time.Duration) {
-	if rr.status != http.StatusOK {
+	if rr.status != http.StatusOK || rr.overflowed {
 		return false, 0
 	}
-
 	// Respect Backend 'Opt-Out'
 
 	// rr.header.Get() handles the KEY case-insensitivity.
@@ -282,9 +324,6 @@ func (cs *ProxyService) isCacheableResponse(rr *responseRecorder) (bool, time.Du
 		return false, 0
 	}
 
-	if len(rr.body) > cs.maxCachedFileSize {
-		return false, 0
-	}
 	if rr.header.Get("Set-Cookie") != "" {
 		return false, 0
 	}

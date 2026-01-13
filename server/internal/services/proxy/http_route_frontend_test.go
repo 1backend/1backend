@@ -501,7 +501,7 @@ func TestProxyService_Caching(t *testing.T) {
 		require.Equal(t, "Response #2", string(body), "Different languages must not share cache entries")
 	})
 
-	t.Run("differentiates cache by Accept-Encoding", func(t *testing.T) {
+	t.Run("Accept-Encoding normalization", func(t *testing.T) {
 		requestCount.Store(0)
 		url := edgeProxyUrl + "/assets"
 
@@ -511,14 +511,17 @@ func TestProxyService_Caching(t *testing.T) {
 		reqGzip.Header.Set("Accept-Encoding", "gzip")
 		proxyClient.Do(reqGzip) // Backend Hit #1
 
-		// 2. Client supports Identity (Should be a CACHE MISS)
+		// 2. Client supports Identity
 		reqPlain, _ := http.NewRequest("GET", url, nil)
 		reqPlain.Host = "cache.localhost"
 		reqPlain.Header.Set("Accept-Encoding", "identity")
 		resp, _ := proxyClient.Do(reqPlain)
 
 		body, _ := io.ReadAll(resp.Body)
-		require.Equal(t, "Response #2", string(body), "Compressed and uncompressed responses must have different keys")
+		// CHANGE: This should now be a HIT (Response #1) because the
+		// proxy normalizes encoding to ensure raw storage.
+		require.Equal(t, "Response #1", string(body), "Encoding should be normalized to prevent cache fragmentation")
+		require.Equal(t, int32(1), requestCount.Load(), "Backend should only see one request")
 	})
 
 	t.Run("respects maxCachedFileSize limit", func(t *testing.T) {
