@@ -106,9 +106,10 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 			cs.edgeCache.SetWithTTL(
 				cacheK,
 				&cachedResponse{
-					status: rr.status,
-					header: rr.header.Clone(),
-					body:   append([]byte(nil), rr.body...),
+					status:    rr.status,
+					header:    rr.header.Clone(),
+					body:      append([]byte(nil), rr.body...),
+					createdAt: time.Now(),
 				},
 				int64(len(rr.body)),
 				ttl,
