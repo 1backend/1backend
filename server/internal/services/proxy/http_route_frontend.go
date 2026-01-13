@@ -8,6 +8,7 @@
 package proxyservice
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"log/slog"
@@ -24,9 +25,10 @@ import (
 )
 
 type cachedResponse struct {
-	status int
-	header http.Header
-	body   []byte
+	status    int
+	header    http.Header
+	body      []byte
+	createdAt time.Time
 }
 
 func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
@@ -67,6 +69,15 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 			for k, vv := range cr.header {
 				w.Header()[k] = vv
 			}
+
+			w.Header().Set("Vary", "Accept-Encoding, Accept-Language")
+			w.Header().Set("X-Content-Type-Options", "nosniff")
+
+			age := time.Since(cr.createdAt).Seconds()
+			w.Header().Set("Age", fmt.Sprintf("%.0f", age)) // Age is in seconds
+
+			w.Header().Set("X-Cache", "HIT")
+
 			w.WriteHeader(cr.status)
 			w.Write(cr.body)
 			return
@@ -75,28 +86,34 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 
 	ctx := context.WithValue(r.Context(), targetURLKey, targetUrl)
 
-	rr := &responseRecorder{}
-	cs.reverseProxy.ServeHTTP(rr, r.WithContext(ctx))
-
-	for k, vv := range rr.header {
-		w.Header()[k] = vv
+	sr := &streamingRecorder{
+		w:       w,
+		body:    new(bytes.Buffer),
+		maxSize: cs.maxCachedFileSize,
 	}
-	if rr.status == 0 {
-		rr.status = http.StatusOK
-	}
-	w.WriteHeader(rr.status)
-	w.Write(rr.body)
 
+	// 2. PRE-SET your proxy headers.
+	// These will be merged with backend headers inside ServeHTTP.
+	w.Header().Set("Vary", "Accept-Encoding, Accept-Language")
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.Header().Set("X-Cache", "MISS")
+
+	// 3. This call streams data to the user in REAL-TIME.
+	// As the backend writes to 'sr', 'sr' writes immediately to 'w'.
+	cs.reverseProxy.ServeHTTP(sr, r.WithContext(ctx))
+
+	// 5. Cache the results that were captured in the buffer
 	if isCacheableRequest {
-		if isCacheableResponse, ttl := cs.isCacheableResponse(rr); isCacheableResponse {
+		if ok, ttl := cs.isCacheableResponse(sr); ok {
 			cs.edgeCache.SetWithTTL(
 				cacheK,
 				&cachedResponse{
-					status: rr.status,
-					header: rr.header.Clone(),
-					body:   append([]byte(nil), rr.body...),
+					status:    sr.status,
+					header:    sr.Header().Clone(),
+					body:      append([]byte(nil), sr.body.Bytes()...),
+					createdAt: time.Now(),
 				},
-				int64(len(rr.body)),
+				int64(sr.body.Len()),
 				ttl,
 			)
 		}
@@ -215,26 +232,39 @@ func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, er
 	return target, nil
 }
 
-type responseRecorder struct {
-	status int
-	header http.Header
-	body   []byte
+type streamingRecorder struct {
+	w          http.ResponseWriter
+	status     int
+	body       *bytes.Buffer
+	overflowed bool
+	maxSize    int
 }
 
-func (r *responseRecorder) Header() http.Header {
-	if r.header == nil {
-		r.header = make(http.Header)
+func (r *streamingRecorder) Header() http.Header {
+	return r.w.Header()
+}
+
+func (r *streamingRecorder) WriteHeader(code int) {
+	if r.status == 0 {
+		r.status = code
+		r.w.WriteHeader(code)
 	}
-	return r.header
 }
 
-func (r *responseRecorder) WriteHeader(code int) {
-	r.status = code
-}
+func (r *streamingRecorder) Write(b []byte) (int, error) {
+	// 1. Always write to the user immediately
+	n, err := r.w.Write(b)
 
-func (r *responseRecorder) Write(b []byte) (int, error) {
-	r.body = append(r.body, b...)
-	return len(b), nil
+	// 2. If we haven't hit the limit, try to cache it
+	if !r.overflowed {
+		if r.body.Len()+len(b) > r.maxSize {
+			r.overflowed = true
+			r.body.Reset() // Clear memory, this won't be cached
+		} else {
+			r.body.Write(b)
+		}
+	}
+	return n, err
 }
 
 func (cs *ProxyService) isCacheableRequest(req *http.Request) bool {
@@ -249,37 +279,43 @@ func (cs *ProxyService) isCacheableRequest(req *http.Request) bool {
 	return true
 }
 
-func (cs *ProxyService) isCacheableResponse(rr *responseRecorder) (bool, time.Duration) {
-	if rr.status != http.StatusOK {
+func (cs *ProxyService) isCacheableResponse(sr *streamingRecorder) (bool, time.Duration) {
+	// Check status via our recorded status
+	if sr.status != http.StatusOK {
 		return false, 0
 	}
 
-	// Respect Backend 'Opt-Out'
+	// Disqualify immediately if it exceeded max size during streaming
+	if sr.overflowed {
+		return false, 0
+	}
 
-	// rr.header.Get() handles the KEY case-insensitivity.
-	// strings.ToLower() handles the VALUE case-insensitivity.
-	cc := strings.ToLower(rr.header.Get("Cache-Control"))
+	// Access headers via the Header() method
+	h := sr.Header()
+
+	// Respect Backend 'Opt-Out'
+	cc := strings.ToLower(h.Get("Cache-Control"))
 
 	if strings.Contains(cc, "no-store") ||
 		strings.Contains(cc, "no-cache") ||
 		strings.Contains(cc, "private") ||
-		strings.ToLower(rr.header.Get("Pragma")) == "no-cache" {
+		strings.ToLower(h.Get("Pragma")) == "no-cache" {
 		return false, 0
 	}
 
-	if len(rr.body) > cs.maxCachedFileSize {
-		return false, 0
-	}
-	if rr.header.Get("Set-Cookie") != "" {
+	// Double check body size from the buffer
+	bodySize := sr.body.Len()
+	if bodySize == 0 || bodySize > cs.maxCachedFileSize {
 		return false, 0
 	}
 
-	ct := rr.header.Get("Content-Type")
+	if h.Get("Set-Cookie") != "" {
+		return false, 0
+	}
 
-	// Handle HTML (Short-lived for Guests).
-	// Note: This provides a "Public Cache." Anonymous users will see the same
-	// cached version of dynamic pages for up to 5 minutes. This should be
-	// disabled via flag if the site requires real-time accuracy for guests.
+	ct := h.Get("Content-Type")
+
+	// Handle HTML (Short-lived for Guests)
 	if strings.Contains(ct, "text/html") {
 		return true, 5 * time.Minute
 	}
@@ -294,7 +330,6 @@ func (cs *ProxyService) isCacheableResponse(rr *responseRecorder) (bool, time.Du
 		return true, 24 * time.Hour
 	}
 
-	// Fallback for everything else (JSON APIs, PDFs, etc.)
 	return false, 0
 }
 
