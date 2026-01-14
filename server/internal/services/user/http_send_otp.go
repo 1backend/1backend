@@ -99,6 +99,10 @@ func (s *UserService) SendOTP(w http.ResponseWriter, r *http.Request) {
 		endpoint.InternalServerError(w)
 		return
 	}
+	logger.Info("Got app id",
+		slog.String("appId", appId),
+		slog.String("host", req.AppHost),
+	)
 
 	now := time.Now()
 
@@ -134,6 +138,7 @@ func (s *UserService) SendOTP(w http.ResponseWriter, r *http.Request) {
 	emailReq, err := s.dispatchOtp(
 		r.Context(),
 		appId,
+		req.AppHost,
 		getPreferredLanguage(r),
 		otp,
 		code,
@@ -185,6 +190,7 @@ func getPreferredLanguage(r *http.Request) string {
 func (s *UserService) dispatchOtp(
 	ctx context.Context,
 	appId string,
+	appHost string,
 	language string,
 	otp *user.OTP,
 	code string,
@@ -198,7 +204,21 @@ func (s *UserService) dispatchOtp(
 		return nil, fmt.Errorf("unsupported contact platform '%s'", otp.ContactPlatform)
 	}
 
-	ts, err := s.getOtpTemplateSecrets(ctx, appId, language)
+	var (
+		err            error
+		exchangedToken string
+	)
+
+	if appHost != sdk.DefaultAppHost {
+		exchangedToken, err = s.options.
+			TokenExchanger.
+			ExchangeToken(ctx, s.token, endpoint.ExchangeOptions{AppId: appId})
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	ts, err := s.getOtpTemplateSecrets(ctx, appHost, exchangedToken, language)
 	if err != nil {
 		return nil, err
 	}
@@ -254,9 +274,14 @@ func (s *UserService) dispatchOtp(
 
 	emailReq.ContentType = openapi.PtrString(contentType)
 
+	token := s.token
+	if exchangedToken != "" {
+		token = exchangedToken
+	}
+
 	if !s.options.Test {
 		_, _, err := s.options.ClientFactory.
-			Client(client.WithToken(s.token)).
+			Client(client.WithToken(token)).
 			EmailSvcAPI.
 			SendEmail(ctx).
 			Body(emailReq).
@@ -297,7 +322,11 @@ type otpTemplateSecrets struct {
 	ContentType string
 }
 
-func (s *UserService) getOtpTemplateSecrets(ctx context.Context, appId, lang string) (*otpTemplateSecrets, error) {
+func (s *UserService) getOtpTemplateSecrets(
+	ctx context.Context,
+	appHost string,
+	exchangedToken, lang string,
+) (*otpTemplateSecrets, error) {
 	// Generate keys for both the requested language and English fallback
 	keys := []string{
 		"sender-name",
@@ -306,15 +335,27 @@ func (s *UserService) getOtpTemplateSecrets(ctx context.Context, appId, lang str
 		"otp-email-type",
 	}
 
-	primary, err := s.fetchSecretMap(ctx, appId, keys)
+	var err error
+	primary := map[string]string{}
+
+	if exchangedToken != "" {
+		primary, err = s.fetchSecretMap(ctx, exchangedToken, keys)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	backup, err := s.fetchSecretMap(ctx, s.token, keys)
 	if err != nil {
 		return nil, err
 	}
 
-	backup, err := s.fetchSecretMap(ctx, sdk.DefaultAppId, keys)
-	if err != nil {
-		return nil, err
-	}
+	logger.Info("Sending OTP with",
+		slog.Bool("exchanged", exchangedToken != ""),
+		slog.Any("appHost", appHost),
+		slog.Any("primary", primary),
+		slog.Any("backup", backup),
+	)
 
 	// Resolve with priority: App(Lang) -> App(en) -> Global(Lang) -> Global(en)
 	return &otpTemplateSecrets{
@@ -338,17 +379,12 @@ func (s *UserService) getOtpTemplateSecrets(ctx context.Context, appId, lang str
 	}, nil
 }
 
-func (s *UserService) fetchSecretMap(ctx context.Context, appId string, keys []string) (map[string]string, error) {
+func (s *UserService) fetchSecretMap(
+	ctx context.Context,
+	token string,
+	keys []string,
+) (map[string]string, error) {
 	res := make(map[string]string)
-	token := s.token
-
-	if appId != "" && appId != sdk.DefaultAppId {
-		exchanged, err := s.options.TokenExchanger.ExchangeToken(ctx, s.token, endpoint.ExchangeOptions{AppId: appId})
-		if err != nil {
-			return nil, err
-		}
-		token = exchanged
-	}
 
 	resp, _, err := s.options.ClientFactory.Client(client.WithToken(token)).SecretSvcAPI.
 		ListSecrets(ctx).Body(openapi.SecretSvcListSecretsRequest{Ids: keys}).Execute()
@@ -356,11 +392,10 @@ func (s *UserService) fetchSecretMap(ctx context.Context, appId string, keys []s
 		return nil, err
 	}
 
-	if err == nil && resp != nil {
-		for _, sec := range resp.Secrets {
-			res[sec.Id] = sec.Value
-		}
+	for _, sec := range resp.Secrets {
+		res[sec.Id] = sec.Value
 	}
+
 	return res, nil
 }
 

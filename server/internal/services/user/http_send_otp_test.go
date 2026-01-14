@@ -22,7 +22,9 @@ func TestSendOtp__TemplateFallback(t *testing.T) {
 
 	clientFactory := client.NewApiClientFactory(server.Url)
 
-	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
+	appHost := "some-app"
+
+	manyClients, _, err := test.MakeClients(clientFactory, appHost, 1)
 	require.NoError(t, err)
 	client1 := manyClients[0]
 
@@ -33,21 +35,37 @@ func TestSendOtp__TemplateFallback(t *testing.T) {
 		Secrets: []openapi.SecretSvcSecretInput{
 			{
 				Id:      "otp-email-subject-hu",
+				AppHost: &appHost,
 				Value:   openapi.PtrString("Helló {{.Code}}"),
 				Readers: []string{"user-svc"},
 			},
 			{
+				Id:      "otp-email-subject",
+				AppHost: &appHost,
+				Value:   openapi.PtrString("Hello {{.Code}}"),
+				Readers: []string{"user-svc"},
+			},
+			{
 				Id:      "otp-email-body-hu",
+				AppHost: &appHost,
+				Value:   openapi.PtrString("Ez a test {{.Code}}"),
+				Readers: []string{"user-svc"},
+			},
+			{
+				Id:      "otp-email-body",
+				AppHost: &appHost,
 				Value:   openapi.PtrString("This is the body {{.Code}}"),
 				Readers: []string{"user-svc"},
 			},
 			{
 				Id:      "otp-email-type",
+				AppHost: &appHost,
 				Value:   openapi.PtrString("text/html"),
 				Readers: []string{"user-svc"},
 			},
 			{
 				Id:      "sender-name",
+				AppHost: &appHost,
 				Value:   openapi.PtrString("Test Sender Name"),
 				Readers: []string{"user-svc"},
 			},
@@ -55,22 +73,41 @@ func TestSendOtp__TemplateFallback(t *testing.T) {
 	}).Execute()
 	require.NoError(t, err)
 
-	t.Run("Falls back to Global English when no App secrets exist", func(t *testing.T) {
-		// Send OTP
+	t.Run("Uses language specific secrets", func(t *testing.T) {
 		otpRsp, _, err := client1.UserSvcAPI.SendOtp(t.Context()).
 			Body(openapi.UserSvcSendOtpRequest{
-				AppHost:         sdk.DefaultTestAppHost,
+				AppHost:         appHost,
 				ContactId:       "fallback@test.com",
 				ContactPlatform: "email",
 			}).AcceptLanguage("hu").Execute()
 		require.NoError(t, err)
 
-		// In a real integration test, you'd check a mock EmailSvc or logs.
-		// Since options.Test is true, we verify the response contains the generated code.
 		require.NotEmpty(t, otpRsp.Code)
 		require.NotEmpty(t, otpRsp.OtpId)
 
 		require.Contains(t, *otpRsp.Subject, "Helló")
+		require.Contains(t, *otpRsp.Subject, *otpRsp.Code)
+
+		require.Contains(t, *otpRsp.Body, "Ez a test")
+		require.Contains(t, *otpRsp.Body, *otpRsp.Code)
+
+		require.Equal(t, *otpRsp.ContentType, "text/html")
+		require.Equal(t, *otpRsp.FromName, "Test Sender Name")
+	})
+
+	t.Run("Falls back to global English", func(t *testing.T) {
+		otpRsp, _, err := client1.UserSvcAPI.SendOtp(t.Context()).
+			Body(openapi.UserSvcSendOtpRequest{
+				AppHost:         appHost,
+				ContactId:       "fallback@test.com",
+				ContactPlatform: "email",
+			}).Execute()
+		require.NoError(t, err)
+
+		require.NotEmpty(t, otpRsp.Code)
+		require.NotEmpty(t, otpRsp.OtpId)
+
+		require.Contains(t, *otpRsp.Subject, "Hello")
 		require.Contains(t, *otpRsp.Subject, *otpRsp.Code)
 
 		require.Contains(t, *otpRsp.Body, "This is the body")
