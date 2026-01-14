@@ -74,8 +74,15 @@ func List(cmd *cobra.Command, args []string, show, allApps, verbose bool) error 
 
 	for _, secret := range rsp.Secrets {
 		length := len(secret.Value)
+		displayLength := length
+		postfix := ""
+		if length > 32 {
+			displayLength = 32
+			postfix = "…"
 
-		value := strings.Repeat("*", length)
+		}
+
+		value := strings.Repeat("*", displayLength)
 		if show {
 			value = secret.Value
 		}
@@ -86,7 +93,7 @@ func List(cmd *cobra.Command, args []string, show, allApps, verbose bool) error 
 			secret.Id,
 			appIdToHost[secret.AppId],
 			length,
-			value,
+			value+postfix,
 		)
 	}
 

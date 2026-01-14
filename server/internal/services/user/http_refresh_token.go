@@ -76,7 +76,7 @@ func (s *UserService) refreshToken(
 		return nil, errors.Wrap(err, "invalid token format")
 	}
 
-	cacheKey := fmt.Sprintf("%s:%s", claims.UserId, claims.Device)
+	cacheKey := fmt.Sprintf("%s:%s:%s", claims.AppId, claims.UserId, claims.Device)
 
 	// Fast Path: Check cache without any locking (handles 99% of traffic)
 	if cachedToken, found := s.tokenReplacementCache.Get(cacheKey); found {

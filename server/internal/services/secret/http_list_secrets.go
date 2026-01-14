@@ -143,6 +143,11 @@ func (cs *SecretService) getSecrets(
 		}
 
 		if !canList {
+			logger.Warn("Cannot list",
+				slog.String("slug", userSlug),
+				slog.String("secretId", s.Id),
+				slog.String("appId", appId),
+			)
 			continue
 		}
 
