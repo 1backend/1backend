@@ -168,6 +168,9 @@ func (s *UserService) SendOTP(w http.ResponseWriter, r *http.Request) {
 		if emailReq.FromName != nil {
 			response.FromName = *emailReq.FromName
 		}
+		if emailReq.FromEmail != nil {
+			response.FromEmail = *emailReq.FromEmail
+		}
 	}
 
 	endpoint.WriteJSON(w, http.StatusOK, response)
@@ -267,6 +270,10 @@ func (s *UserService) dispatchOtp(
 		emailReq.FromName = &ts.SenderName
 	}
 
+	if ts.SenderEmail != "" {
+		emailReq.FromEmail = &ts.SenderEmail
+	}
+
 	contentType := "text/plain"
 	if ts.ContentType != "" {
 		contentType = ts.ContentType
@@ -317,6 +324,7 @@ func renderTemplate(name, text string, data any, isHTML bool) (string, error) {
 
 type otpTemplateSecrets struct {
 	SenderName  string
+	SenderEmail string
 	Subject     string
 	Body        string
 	ContentType string
@@ -330,6 +338,7 @@ func (s *UserService) getOtpTemplateSecrets(
 	// Generate keys for both the requested language and English fallback
 	keys := []string{
 		"sender-name",
+		"sender-email",
 		"otp-email-subject-" + lang, "otp-email-subject",
 		"otp-email-body-" + lang, "otp-email-body",
 		"otp-email-type",
@@ -353,8 +362,6 @@ func (s *UserService) getOtpTemplateSecrets(
 	logger.Info("Sending OTP with",
 		slog.Bool("exchanged", exchangedToken != ""),
 		slog.Any("appHost", appHost),
-		slog.Any("primary", primary),
-		slog.Any("backup", backup),
 	)
 
 	// Resolve with priority: App(Lang) -> App(en) -> Global(Lang) -> Global(en)
@@ -362,6 +369,10 @@ func (s *UserService) getOtpTemplateSecrets(
 		SenderName: pick(
 			primary["sender-name"],
 			backup["sender-name"],
+		),
+		SenderEmail: pick(
+			primary["sender-email"],
+			backup["sender-email"],
 		),
 		Subject: pick(
 			primary["otp-email-subject-"+lang],
