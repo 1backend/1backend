@@ -4236,6 +4236,10 @@ paths:
         Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
       operationId: listConfigs
       parameters:
+      - description: Bypass cache (use 'no-cache')
+        in: header
+        name: Cache-Control
+        type: string
       - description: List Configs Request
         in: body
         name: body

@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/dgraph-io/ristretto"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 
@@ -39,6 +40,7 @@ type ConfigService struct {
 	versionStore    datastore.DataStore
 
 	configMutex sync.Mutex
+	cache       *ristretto.Cache
 
 	publicKey string
 }

@@ -147,9 +147,10 @@ export class ConfigSvcApi {
      * Retrieves the current configurations for a specified app. Since any user can save configurations, it is strongly advised that you supply a list of owners to filter on. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
      * @summary List Configs
      * @param body List Configs Request
+     * @param cacheControl Bypass cache (use \&#39;no-cache\&#39;)
      */
-    listConfigs(body_1) {
-        return __awaiter(this, arguments, void 0, function* (body, options = { headers: {} }) {
+    listConfigs(body_1, cacheControl_1) {
+        return __awaiter(this, arguments, void 0, function* (body, cacheControl, options = { headers: {} }) {
             const localVarPath = this.basePath + '/config-svc/configs';
             let localVarQueryParameters = {};
             let localVarHeaderParams = Object.assign({}, this._defaultHeaders);
@@ -166,6 +167,7 @@ export class ConfigSvcApi {
             if (body === null || body === undefined) {
                 throw new Error('Required parameter body was null or undefined when calling listConfigs.');
             }
+            localVarHeaderParams['Cache-Control'] = ObjectSerializer.serialize(cacheControl, "string");
             Object.assign(localVarHeaderParams, options.headers);
             let localVarUseFormData = false;
             let localVarRequestOptions = {

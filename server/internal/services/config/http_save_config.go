@@ -264,6 +264,11 @@ func (cs *ConfigService) saveConfig(
 		logger.Error("Failed to publish firehose event", slog.Any("error", err))
 	}
 
+	host := newConfig.AppHost
+	if host != "" {
+		cs.invalidate(host, branch)
+	}
+
 	return nil
 }
 

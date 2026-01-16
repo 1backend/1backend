@@ -55,8 +55,9 @@ export declare class ConfigSvcApi {
      * Retrieves the current configurations for a specified app. Since any user can save configurations, it is strongly advised that you supply a list of owners to filter on. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
      * @summary List Configs
      * @param body List Configs Request
+     * @param cacheControl Bypass cache (use \&#39;no-cache\&#39;)
      */
-    listConfigs(body: ConfigSvcListConfigsRequest, options?: {
+    listConfigs(body: ConfigSvcListConfigsRequest, cacheControl?: string, options?: {
         headers: {
             [name: string]: string;
         };
