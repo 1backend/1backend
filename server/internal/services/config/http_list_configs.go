@@ -69,6 +69,10 @@ func (cs *ConfigService) ListConfigs(
 		return
 	}
 
+	if req.Branch == "" {
+		req.Branch = defaultBranch
+	}
+
 	noCache := r.Header.Get("Cache-Control") == "no-cache" || r.Header.Get("Pragma") == "no-cache"
 	var cacheKey string
 
@@ -124,6 +128,10 @@ func (cs *ConfigService) ListConfigs(
 			int64(len(jsonData)),
 			5*time.Minute,
 		)
+
+		if cs.options.Test {
+			cs.cache.Wait()
+		}
 	}
 
 	_, err = w.Write([]byte(jsonData))
@@ -157,9 +165,6 @@ func (cs *ConfigService) listConfigs(
 		string(req.Scope) == "" {
 
 		branch := req.Branch
-		if branch == "" {
-			branch = defaultBranch
-		}
 
 		filters = append(filters, datastore.Equals(
 			datastore.Field("branch"),
@@ -272,6 +277,7 @@ func (cs *ConfigService) defaults(
 func (cs *ConfigService) getNamespaceVersion(host, branch string) int64 {
 	key := "ver:" + host + ":" + branch
 	val, found := cs.cache.Get(key)
+
 	if !found {
 		return 0
 	}
@@ -281,5 +287,9 @@ func (cs *ConfigService) getNamespaceVersion(host, branch string) int64 {
 func (cs *ConfigService) invalidate(host, branch string) {
 	key := "ver:" + host + ":" + branch
 	current := cs.getNamespaceVersion(host, branch)
+
 	cs.cache.Set(key, current+1, 1)
+	if cs.options.Test {
+		cs.cache.Wait()
+	}
 }
