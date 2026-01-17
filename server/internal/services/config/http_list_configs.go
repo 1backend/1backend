@@ -9,9 +9,13 @@ package configservice
 
 import (
 	"encoding/json"
+	"fmt"
+	"hash/maphash"
+	"io"
 	"log/slog"
 	"net/http"
 	"path"
+	"time"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
@@ -22,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/tidwall/gjson"
 )
+
+var hashSeed = maphash.MakeSeed()
 
 // @Id listConfigs
 // @Summary List Configs
@@ -36,6 +42,7 @@ import (
 // @Tags Config Svc
 // @Accept json
 // @Produce json
+// @Param Cache-Control header string false "Bypass cache (use 'no-cache')"
 // @Param body body config.ListConfigsRequest true "List Configs Request"
 // @Success 200 {object} config.ListConfigsResponse "Current configuration"
 // @Failure 401 {string} string "Unauthorized"
@@ -48,15 +55,41 @@ func (cs *ConfigService) ListConfigs(
 	// Config get should not be authorized because
 	// it is public, nonsensitive information.
 
-	req := &config.ListConfigsRequest{}
-
-	err := json.NewDecoder(r.Body).Decode(req)
+	bodyBytes, err := io.ReadAll(r.Body)
 	if err != nil {
-		logger.Error("Failed to decode request body", slog.Any("error", err))
-		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
+		endpoint.WriteString(w, http.StatusBadRequest, "Read Error")
 		return
 	}
 	defer r.Body.Close()
+
+	req := &config.ListConfigsRequest{}
+
+	if err := json.Unmarshal(bodyBytes, req); err != nil {
+		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
+		return
+	}
+
+	if req.Branch == "" {
+		req.Branch = defaultBranch
+	}
+
+	noCache := r.Header.Get("Cache-Control") == "no-cache" || r.Header.Get("Pragma") == "no-cache"
+	var cacheKey string
+
+	if !noCache {
+		var h maphash.Hash
+		h.SetSeed(hashSeed)
+		h.Write(bodyBytes)
+		bodyHash := h.Sum64()
+
+		v := cs.getNamespaceVersion(req.AppHost, req.Branch)
+		cacheKey = fmt.Sprintf("%s:%s:%d:%x", req.AppHost, req.Branch, v, bodyHash)
+
+		if val, found := cs.cache.Get(cacheKey); found {
+			w.Write(val.([]byte))
+			return
+		}
+	}
 
 	if req.AppHost == "" {
 		logger.Error("AppHost missing in list configs request")
@@ -87,6 +120,20 @@ func (cs *ConfigService) ListConfigs(
 	jsonData, _ := json.Marshal(config.ListConfigsResponse{
 		Configs: confs,
 	})
+
+	if !noCache {
+		cs.cache.SetWithTTL(
+			cacheKey,
+			jsonData,
+			int64(len(jsonData)),
+			5*time.Minute,
+		)
+
+		if cs.options.Test {
+			cs.cache.Wait()
+		}
+	}
+
 	_, err = w.Write([]byte(jsonData))
 	if err != nil {
 		logger.Error("Error writing response", slog.Any("error", err))
@@ -118,9 +165,6 @@ func (cs *ConfigService) listConfigs(
 		string(req.Scope) == "" {
 
 		branch := req.Branch
-		if branch == "" {
-			branch = defaultBranch
-		}
 
 		filters = append(filters, datastore.Equals(
 			datastore.Field("branch"),
@@ -227,5 +271,25 @@ func (cs *ConfigService) defaults(
 				"directory": cs.options.HomeDir,
 			},
 		}
+	}
+}
+
+func (cs *ConfigService) getNamespaceVersion(host, branch string) int64 {
+	key := "ver:" + host + ":" + branch
+	val, found := cs.cache.Get(key)
+
+	if !found {
+		return 0
+	}
+	return val.(int64)
+}
+
+func (cs *ConfigService) invalidate(host, branch string) {
+	key := "ver:" + host + ":" + branch
+	current := cs.getNamespaceVersion(host, branch)
+
+	cs.cache.Set(key, current+1, 1)
+	if cs.options.Test {
+		cs.cache.Wait()
 	}
 }

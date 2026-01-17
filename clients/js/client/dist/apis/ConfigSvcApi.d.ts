@@ -16,6 +16,7 @@ export interface ListConfigVersionsRequest {
 }
 export interface ListConfigsRequest {
     body: ConfigSvcListConfigsRequest;
+    cacheControl?: string;
 }
 export interface SaveConfigRequest {
     body: ConfigSvcSaveConfigRequest;

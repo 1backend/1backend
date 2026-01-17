@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/dgraph-io/ristretto"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 
@@ -39,6 +40,7 @@ type ConfigService struct {
 	versionStore    datastore.DataStore
 
 	configMutex sync.Mutex
+	cache       *ristretto.Cache
 
 	publicKey string
 }
@@ -50,6 +52,16 @@ func NewConfigService(
 	cs := &ConfigService{
 		options: options,
 	}
+
+	cache, err := ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1e6,     // 1,000,000 keys (track frequency for admission)
+		MaxCost:     1 << 28, // 256MB maximum memory usage
+		BufferItems: 64,      // Number of keys per get buffer (perf optimization)
+	})
+	if err != nil {
+		return nil, err
+	}
+	cs.cache = cache
 
 	return cs, nil
 }

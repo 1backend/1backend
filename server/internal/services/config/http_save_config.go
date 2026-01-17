@@ -132,6 +132,7 @@ func (cs *ConfigService) SaveConfig(
 	err = cs.saveConfig(
 		canActonBehalf,
 		appId,
+		req.AppHost,
 		isAuthRsp.User.Slug,
 		req,
 	)
@@ -153,6 +154,7 @@ func (cs *ConfigService) SaveConfig(
 func (cs *ConfigService) saveConfig(
 	canActonBehalf bool,
 	appId string,
+	appHost string,
 	callerSlug string,
 	newConfig *types.SaveConfigRequest,
 ) error {
@@ -263,6 +265,8 @@ func (cs *ConfigService) saveConfig(
 	if err != nil {
 		logger.Error("Failed to publish firehose event", slog.Any("error", err))
 	}
+
+	cs.invalidate(appHost, branch)
 
 	return nil
 }

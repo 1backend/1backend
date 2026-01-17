@@ -40,6 +40,7 @@ export interface ListConfigVersionsRequest {
 
 export interface ListConfigsRequest {
     body: ConfigSvcListConfigsRequest;
+    cacheControl?: string;
 }
 
 export interface SaveConfigRequest {
@@ -109,6 +110,10 @@ export class ConfigSvcApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters['cacheControl'] != null) {
+            headerParameters['Cache-Control'] = String(requestParameters['cacheControl']);
+        }
 
 
         let urlPath = `/config-svc/configs`;

@@ -71,6 +71,9 @@ export class ConfigSvcApi extends runtime.BaseAPI {
             const queryParameters = {};
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
+            if (requestParameters['cacheControl'] != null) {
+                headerParameters['Cache-Control'] = String(requestParameters['cacheControl']);
+            }
             let urlPath = `/config-svc/configs`;
             const response = yield this.request({
                 path: urlPath,

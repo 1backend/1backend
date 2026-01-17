@@ -232,11 +232,18 @@ type ApiListConfigsRequest struct {
 	ctx context.Context
 	ApiService ConfigSvcAPI
 	body *ConfigSvcListConfigsRequest
+	cacheControl *string
 }
 
 // List Configs Request
 func (r ApiListConfigsRequest) Body(body ConfigSvcListConfigsRequest) ApiListConfigsRequest {
 	r.body = &body
+	return r
+}
+
+// Bypass cache (use &#39;no-cache&#39;)
+func (r ApiListConfigsRequest) CacheControl(cacheControl string) ApiListConfigsRequest {
+	r.cacheControl = &cacheControl
 	return r
 }
 
@@ -306,6 +313,9 @@ func (a *ConfigSvcAPIService) ListConfigsExecute(r ApiListConfigsRequest) (*Conf
 	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.cacheControl != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "Cache-Control", r.cacheControl, "", "")
 	}
 	// body params
 	localVarPostBody = r.body
