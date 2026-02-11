@@ -787,32 +787,105 @@ func TestRegister__VerifyTrueRegisterOnLogin(t *testing.T) {
 	ctx := context.Background()
 	unregisteredEmail := "unregistered@test.com"
 
-	otpRsp1, _, err := userSvc.SendOtp(ctx).Body(openapi.UserSvcSendOtpRequest{
-		AppHost:         sdk.DefaultTestAppHost,
-		ContactId:       unregisteredEmail,
-		ContactPlatform: "email",
-	}).Execute()
-	require.NoError(t, err)
+	t.Run("will fail with empty slug", func(t *testing.T) {
+		otpRsp1, _, err := userSvc.SendOtp(ctx).Body(openapi.UserSvcSendOtpRequest{
+			AppHost:         sdk.DefaultTestAppHost,
+			ContactId:       unregisteredEmail,
+			ContactPlatform: "email",
+		}).Execute()
+		require.NoError(t, err)
 
-	rsp, hrsp, err := userSvc.Login(ctx).Body(openapi.UserSvcLoginRequest{
-		AppHost: sdk.DefaultTestAppHost,
-		Slug:    openapi.PtrString("available-slug"),
-		Contact: &openapi.UserSvcContactInput{
-			Id:       unregisteredEmail,
-			Platform: "email",
-			OtpId:    &otpRsp1.OtpId,
-			OtpCode:  otpRsp1.Code,
-		},
-	}).Execute()
-	require.NoError(t, err, hrsp)
+		rsp, _, err := userSvc.Login(ctx).Body(openapi.UserSvcLoginRequest{
+			AppHost: sdk.DefaultTestAppHost,
+			Contact: &openapi.UserSvcContactInput{
+				Id:       unregisteredEmail,
+				Platform: "email",
+				OtpId:    &otpRsp1.OtpId,
+				OtpCode:  otpRsp1.Code,
+			},
+		}).Execute()
+		require.Error(t, err, rsp)
+	})
 
-	userSvc = options.ClientFactory.Client(
-		client.WithToken(rsp.Token.Token),
-	).UserSvcAPI
+	t.Run("login-register works", func(t *testing.T) {
+		otpRsp1, _, err := userSvc.SendOtp(ctx).Body(openapi.UserSvcSendOtpRequest{
+			AppHost:         sdk.DefaultTestAppHost,
+			ContactId:       unregisteredEmail,
+			ContactPlatform: "email",
+		}).Execute()
+		require.NoError(t, err)
 
-	srsp, _, err := userSvc.ReadSelf(ctx).Execute()
-	require.NoError(t, err)
+		_, hrsp, err := userSvc.Login(ctx).Body(openapi.UserSvcLoginRequest{
+			AppHost: sdk.DefaultTestAppHost,
+			Slug:    openapi.PtrString("available-slug"),
+			Contact: &openapi.UserSvcContactInput{
+				Id:       unregisteredEmail,
+				Platform: "email",
+				OtpId:    &otpRsp1.OtpId,
+				OtpCode:  otpRsp1.Code,
+			},
+		}).Execute()
+		require.NoError(t, err, hrsp)
+	})
 
-	require.Empty(t, srsp.User.Name)
-	require.Equal(t, srsp.Contacts[0].Id, unregisteredEmail)
+	t.Run("idempotent", func(t *testing.T) {
+		otpRsp2, _, err := userSvc.SendOtp(ctx).Body(openapi.UserSvcSendOtpRequest{
+			AppHost:         sdk.DefaultTestAppHost,
+			ContactId:       unregisteredEmail,
+			ContactPlatform: "email",
+		}).Execute()
+		require.NoError(t, err)
+
+		rsp, _, err := userSvc.Login(ctx).Body(openapi.UserSvcLoginRequest{
+			AppHost: sdk.DefaultTestAppHost,
+			Slug:    openapi.PtrString("available-slug"),
+			Contact: &openapi.UserSvcContactInput{
+				Id:       unregisteredEmail,
+				Platform: "email",
+				OtpId:    &otpRsp2.OtpId,
+				OtpCode:  otpRsp2.Code,
+			},
+		}).Execute()
+		require.NoError(t, err, rsp)
+
+		userSvc = options.ClientFactory.Client(
+			client.WithToken(rsp.Token.Token),
+		).UserSvcAPI
+
+		srsp, _, err := userSvc.ReadSelf(ctx).Execute()
+		require.NoError(t, err)
+
+		require.Empty(t, srsp.User.Name)
+		require.Equal(t, srsp.Contacts[0].Id, unregisteredEmail)
+	})
+
+	t.Run("nonmatching slug is ok if contact matches", func(t *testing.T) {
+		otpRsp2, _, err := userSvc.SendOtp(ctx).Body(openapi.UserSvcSendOtpRequest{
+			AppHost:         sdk.DefaultTestAppHost,
+			ContactId:       unregisteredEmail,
+			ContactPlatform: "email",
+		}).Execute()
+		require.NoError(t, err)
+
+		rsp, _, err := userSvc.Login(ctx).Body(openapi.UserSvcLoginRequest{
+			AppHost: sdk.DefaultTestAppHost,
+			Slug:    openapi.PtrString("RANDOMavailable-slug"),
+			Contact: &openapi.UserSvcContactInput{
+				Id:       unregisteredEmail,
+				Platform: "email",
+				OtpId:    &otpRsp2.OtpId,
+				OtpCode:  otpRsp2.Code,
+			},
+		}).Execute()
+		require.NoError(t, err, rsp)
+
+		userSvc = options.ClientFactory.Client(
+			client.WithToken(rsp.Token.Token),
+		).UserSvcAPI
+
+		srsp, _, err := userSvc.ReadSelf(ctx).Execute()
+		require.NoError(t, err)
+
+		require.Equal(t, srsp.Contacts[0].Id, unregisteredEmail)
+	})
 }

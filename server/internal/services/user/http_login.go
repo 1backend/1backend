@@ -150,6 +150,10 @@ func (s *UserService) login(
 
 				return s.issueToken(appId, userI.(*user.User), request.Device)
 			} else {
+				if request.Slug == "" {
+					return nil, fmt.Errorf("slug is missing")
+				}
+
 				newUser := &user.UserInput{
 					Id:   sdk.Id("usr"),
 					Slug: request.Slug,
@@ -174,6 +178,9 @@ func (s *UserService) login(
 				)
 
 				if err != nil {
+					logger.Error("Error when login-registering",
+						slog.String("slug", request.Slug),
+					)
 					return nil, errors.Wrap(err, "error creating user when login-registering")
 				}
 
