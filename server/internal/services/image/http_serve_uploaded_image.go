@@ -220,7 +220,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 			return nil, errors.Wrap(err, "decode err")
 		}
 
-		if width > 0 && height > 0 {
+		if width > 0 || height > 0 {
 			bounds := img.Bounds()
 			origWidth := bounds.Dx()
 			origHeight := bounds.Dy()
