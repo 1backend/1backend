@@ -105,15 +105,28 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		}
 	}
 
-	contentType, _ := cs.metaCache.Get(fileId)
-	cacheKeyData := fmt.Sprintf("%s-%d-%d-%d", fileId, width, height, quality)
+	originalContentType, _ := cs.metaCache.Get(fileId)
+
+	requestedFormat := r.URL.Query().Get("format") // e.g., "webp", "jpeg", "png"
+	cacheKeyData := fmt.Sprintf("%s-%d-%d-%d-%s", fileId, width, height, quality, requestedFormat)
+
+	targetContentType := "image/webp"
+	if requestedFormat != "" {
+		// Normalize "jpg" to "jpeg" for consistent mime types
+		fmtExt := strings.ToLower(requestedFormat)
+		if fmtExt == "jpg" {
+			fmtExt = "jpeg"
+		}
+		targetContentType = "image/" + fmtExt
+	}
+
 	h := sha1.New()
 	h.Write([]byte(cacheKeyData))
 	hash := hex.EncodeToString(h.Sum(nil))
 
 	var rsp *os.File
 
-	if contentType == "" {
+	if originalContentType == "" {
 		var (
 			hrsp *http.Response
 			err  error
@@ -127,8 +140,8 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 				return nil, errors.Wrap(err, "error calling serve upload to get content type")
 			}
 
-			contentType = hrsp.Header["Content-Type"][0]
-			cs.metaCache.Add(fileId, contentType)
+			originalContentType = hrsp.Header["Content-Type"][0]
+			cs.metaCache.Add(fileId, originalContentType)
 
 			return nil, nil
 		})
@@ -141,17 +154,8 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		defer rsp.Close()
 	}
 
-	switch contentType {
-	case "image/jpeg", "image/jpg":
-		w.Header().Set("Content-Type", "image/jpeg")
-	case "image/gif":
-		w.Header().Set("Content-Type", "image/gif")
-	case "image/webp":
-		w.Header().Set("Content-Type", "image/webp")
-	case "image/avif":
-		w.Header().Set("Content-Type", "image/avif")
-	default:
-		w.Header().Set("Content-Type", "image/png")
+	if targetContentType != "" {
+		w.Header().Set("Content-Type", targetContentType)
 	}
 
 	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
@@ -196,7 +200,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		}
 
 		var img stdimage.Image
-		switch contentType {
+		switch originalContentType {
 		case "image/png":
 			img, err = png.Decode(rsp)
 		case "image/jpeg", "image/jpg":
@@ -258,7 +262,8 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 				slog.Int("width", width),
 				slog.Int("height", height),
 				slog.String("fileId", fileId),
-				slog.String("contentType", contentType),
+				slog.String("originalContentType", originalContentType),
+				slog.String("targetContentType", targetContentType),
 				slog.Int("quality", quality),
 			)
 			img = transform.Resize(img, targetWidth, targetHeight, transform.Lanczos)
@@ -266,24 +271,31 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 
 		buf := new(bytes.Buffer)
 
-		switch contentType {
+		// Encode based on the target format
+		switch targetContentType {
 		case "image/jpeg", "image/jpg":
 			err = jpeg.Encode(buf, img, &jpeg.Options{Quality: quality})
+		case "image/webp":
+			// WebP is significantly smaller for photographic content (burgers!)
+			err = webp.Encode(buf, img, &webp.Options{Quality: float32(quality)})
 		case "image/gif":
 			err = gif.Encode(buf, img, nil)
-		case "image/webp":
-			err = webp.Encode(buf, img, &webp.Options{Quality: float32(quality)})
+		case "image/avif":
+			err = avif.Encode(buf, img, avif.Options{Quality: quality})
+		case "image/png":
+			// Use BestCompression for PNGs to shave off a few more KBs
+			encoder := png.Encoder{CompressionLevel: png.BestCompression}
+			err = encoder.Encode(buf, img)
+
 		default:
-			// Fallback for formats without encoder (e.g. TIFF, BMP):
-			// serve cached version as PNG
-			w.Header().Set("Content-Type", "image/png")
+			// If unknown, default to PNG as a safe web standard
 			err = png.Encode(buf, img)
 		}
 
 		finalData := buf.Bytes()
 		_ = os.WriteFile(cachePath, finalData, 0644)
 
-		result := &imgResult{Data: finalData, ContentType: contentType}
+		result := &imgResult{Data: finalData, ContentType: targetContentType}
 		if len(finalData) < memCacheLimit {
 			cs.imageDataCache.Add(hash, result.Data)
 		}
