@@ -70,7 +70,13 @@ func (s *UserService) HasPermission(
 	}
 
 	usr, hasPermission, claims, err := s.hasPermission(r, permission)
-	if err != nil {
+	if err != nil || !hasPermission {
+		// TODO: Previously this check was only `err != nil`. If a user simply lacked
+		// permission (e.g., unauthenticated), `claims` could be nil and the code below
+		// would panic with a nil pointer. That panic resulted in a 500 response.
+		// The condition now also checks `!hasPermission` to avoid the panic while
+		// preserving the original observable behavior (still returning 500).
+		// The endpoint semantics should be corrected in the future.
 		logger.Error(
 			"Failed to check permission",
 			slog.Any("error", err),
