@@ -79,6 +79,7 @@ func (s *UserService) HasPermission(
 		// The endpoint semantics should be corrected in the future.
 		logger.Error(
 			"Failed to check permission",
+			slog.String("permission", permission),
 			slog.Any("error", err),
 		)
 		endpoint.InternalServerError(w)
