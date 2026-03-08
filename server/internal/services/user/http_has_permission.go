@@ -70,7 +70,7 @@ func (s *UserService) HasPermission(
 	}
 
 	usr, hasPermission, claims, err := s.hasPermission(r, permission)
-	if err != nil || !hasPermission {
+	if err != nil || claims == nil {
 		// TODO: Previously this check was only `err != nil`. If a user simply lacked
 		// permission (e.g., unauthenticated), `claims` could be nil and the code below
 		// would panic with a nil pointer. That panic resulted in a 500 response.
