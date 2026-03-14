@@ -8,9 +8,11 @@
 package proxyservice
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"log/slog"
+	"net"
 	"net/http"
 	"net/url"
 	"strings"
@@ -236,6 +238,15 @@ type responseRecorder struct {
 	body       []byte
 	limit      int // Max size to buffer
 	overflowed bool
+}
+
+func (r *responseRecorder) Hijack() (net.Conn, *bufio.ReadWriter, error) {
+	// Corrected: accessing 'r.w' instead of 'r.ResponseWriter'
+	h, ok := r.w.(http.Hijacker)
+	if !ok {
+		return nil, nil, fmt.Errorf("underlying response writer does not support Hijacker")
+	}
+	return h.Hijack()
 }
 
 // Flush allows the recorder to satisfy the http.Flusher interface,
