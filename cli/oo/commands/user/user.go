@@ -9,6 +9,7 @@ func AddUserCommands(rootCmd *cobra.Command) {
 	addRegisterCommand(rootCmd)
 	addWhoamiCommand(rootCmd)
 	addTokenCommand(rootCmd)
+	addSetTokenCommand(rootCmd)
 	addUseCommand(rootCmd)
 
 	var usersCmd = &cobra.Command{
@@ -92,6 +93,17 @@ func addTokenCommand(rootCmd *cobra.Command) {
 		// Args:  cobra.ExactArgs(0),
 		Short: "Display the token of the user currently logged in",
 		RunE:  Token,
+	}
+
+	rootCmd.AddCommand(runCmd)
+}
+
+func addSetTokenCommand(rootCmd *cobra.Command) {
+	var runCmd = &cobra.Command{
+		Use: "set-token",
+		// Args:  cobra.ExactArgs(0),
+		Short: "Set an arbitrary token and switch to that app",
+		RunE:  SetToken,
 	}
 
 	rootCmd.AddCommand(runCmd)
