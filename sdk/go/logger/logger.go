@@ -109,6 +109,10 @@ func (w *logProxyWriter) Write(p []byte) (n int, err error) {
 
 	// Heuristics: look for keywords
 	switch {
+	case strings.HasPrefix(msg, "http: TLS handshake error"):
+		w.log.Warn(msg)
+	case strings.HasPrefix(msg, "http: proxy error: Hijack failed"):
+		w.log.Warn(msg)
 	case strings.Contains(lower, "error"), strings.Contains(lower, "fail"):
 		w.log.Error(msg)
 	default:

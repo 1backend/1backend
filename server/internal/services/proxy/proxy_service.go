@@ -9,7 +9,6 @@ package proxyservice
 
 import (
 	"context"
-	"log"
 	"log/slog"
 	"net/http"
 	"net/http/httputil"
@@ -97,10 +96,6 @@ func NewProxyService(
 		maxCachedFileSize = int(options.EdgeCacheItemMaxSize)
 	}
 
-	proxyRewriter := &LevelRewriter{Logger: slog.Default()}
-
-	errorLog := log.New(proxyRewriter, "", 0)
-
 	cs := &ProxyService{
 		maxCachedFileSize: maxCachedFileSize,
 		options:           options,
@@ -113,7 +108,6 @@ func NewProxyService(
 			Db:               certStore,
 		},
 		reverseProxy: &httputil.ReverseProxy{
-			ErrorLog: errorLog,
 			Rewrite: func(pr *httputil.ProxyRequest) {
 				target, ok := pr.In.Context().Value(targetURLKey).(*url.URL)
 				if !ok {
