@@ -421,23 +421,3 @@ func cacheKey(r *http.Request) string {
 		encoding,
 	)
 }
-
-type LevelRewriter struct {
-	Logger *slog.Logger
-}
-
-func (lr *LevelRewriter) Write(p []byte) (n int, err error) {
-	// Trim newline as standard loggers append it; prevents double-newlines in JSON
-	s := strings.TrimRight(string(p), "\n")
-
-	switch {
-	case strings.HasPrefix(s, "http: TLS handshake error"):
-		lr.Logger.Warn(s)
-	case strings.HasPrefix(s, "http: proxy error: Hijack failed"):
-		lr.Logger.Warn(s)
-	default:
-		lr.Logger.Error(s)
-	}
-
-	return len(p), nil
-}

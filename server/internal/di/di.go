@@ -545,11 +545,7 @@ func BigBang(options *universe.Options) (*Universe, error) {
 
 				// HTTPS server with autocert
 				go func() {
-					rewriter := &LevelRewriter{Logger: slog.Default()}
-					errorLogger := log.New(rewriter, "", 0)
-
 					s := &http.Server{
-						ErrorLog:  errorLogger,
 						Addr:      fmt.Sprintf(":%v", options.EdgeProxyHttpsPort),
 						TLSConfig: certManager.TLSConfig(),
 						Handler:   univ.EdgeProxyHttpsRouter,
@@ -601,24 +597,4 @@ func (hs *HandlerSwitcher) UpdateHandler(handler http.Handler) {
 	hs.mu.Lock()
 	defer hs.mu.Unlock()
 	hs.handler = handler
-}
-
-type LevelRewriter struct {
-	Logger *slog.Logger
-}
-
-func (lr *LevelRewriter) Write(p []byte) (n int, err error) {
-	// Trim newline as standard loggers append it; prevents double-newlines in JSON
-	s := strings.TrimRight(string(p), "\n")
-
-	switch {
-	case strings.HasPrefix(s, "http: TLS handshake error"):
-		lr.Logger.Warn(s)
-	case strings.HasPrefix(s, "http: proxy error: Hijack failed"):
-		lr.Logger.Warn(s)
-	default:
-		lr.Logger.Error(s)
-	}
-
-	return len(p), nil
 }
