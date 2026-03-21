@@ -64,6 +64,11 @@ func (cs *ImageService) RegisterRoutes(router *mux.Router) {
 		cs.ServeUploadedImage(w, r)
 	}))).
 		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/image-svc/serve/download/{url}", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+		cs.ServeDownloadedImage(w, r)
+	}))).
+		Methods("OPTIONS", "GET")
 }
 
 func (cs *ImageService) LazyStart() error {

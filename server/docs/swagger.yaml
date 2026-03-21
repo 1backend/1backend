@@ -3925,7 +3925,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.9.4
+  version: 0.9.5
 paths:
   /chat-svc/events:
     get:
@@ -5313,6 +5313,57 @@ paths:
       summary: Subscribe to the Event Stream
       tags:
       - Firehose Svc
+  /image-svc/serve/download/{url}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves, caches, resizes, and serves an image referenced by its
+        original URL.
+      operationId: serveDownloadedImage
+      parameters:
+      - description: Original URL of the downloaded file (path-escaped)
+        in: path
+        name: url
+        required: true
+        type: string
+      - description: Optional width to resize the image to
+        in: query
+        name: width
+        type: integer
+      - description: Optional height to resize the image to
+        in: query
+        name: height
+        type: integer
+      - description: Optional quality for lossy output formats (default 85)
+        in: query
+        name: quality
+        type: integer
+      - description: 'Optional output format: webp, jpeg, png, gif, avif'
+        in: query
+        name: format
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: Image served successfully
+          schema:
+            type: file
+        "400":
+          description: Invalid URL
+          schema:
+            $ref: '#/definitions/image_svc.ErrorResponse'
+        "404":
+          description: File Not Found
+          schema:
+            $ref: '#/definitions/image_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/image_svc.ErrorResponse'
+      summary: Serve Downloaded Image
+      tags:
+      - Image Svc
   /image-svc/serve/upload/{fileId}:
     get:
       consumes:

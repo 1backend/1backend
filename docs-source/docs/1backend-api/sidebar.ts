@@ -276,6 +276,12 @@ const sidebar: SidebarsConfig = {
       items: [
         {
           type: "doc",
+          id: "1backend-api/serve-downloaded-image",
+          label: "Serve Downloaded Image",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
           id: "1backend-api/serve-uploaded-image",
           label: "Serve Uploaded Image",
           className: "api-method get",

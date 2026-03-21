@@ -1,0 +1,71 @@
+---
+id: serve-downloaded-image
+title: "Serve Downloaded Image"
+description: "Retrieves, caches, resizes, and serves an image referenced by its original URL."
+sidebar_label: "Serve Downloaded Image"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9lt9v3DYMx/8VgU8J4JyTpcE2Py3F2iJYsBZJ89TmgSfTthpZUiT6bteD//eC9v1I0ku2pFifzidL5IfUl6SXUFLS0QQ23kEBF8TR0IxSpjTqRn4jJfNVHtCVKlGcUVLolGmxJhWpokhOU6mmC2U4KR9NbRxadXVxPoEMfKCIYv2shAKG83/6ubMeSyrPxAhkEDBiS0wxQfFp+YDp/R2LyleKG1LlxoSqjCW1F5CbA0oaA5X7kIGRk7IIGThsCQroooUMIt12JlIJBceOMki6oRahWAIvgmxLHI2roe+z70CGB7RqbkpuFPtVbgaiMR/s175vO4qLrfPhCOxwZxxTTfFJfw2ZuuHnORzPvNTjbYfW8EJVPirrU1oo33HoWBZa5KT2Sqqws6x+O9l/hGBl46UI9xwWak7TkKkvgepMBVdnqjZVpnBmqkfcjwd3ed/c8LXIIQXvEiV5/8vhofzcBxo0Ogq/VKnTmlKqOmvFlfaOybEcwhCs0YPSc6+Z+CBxJGzl3WME2RqygKlxGBfQ932fwaudHG6G1pRSBS/xHKJUIpsxUorRx52iX6/46RfSvAF69T3QWym8vz2rt75z5U9nOtmdJKYo6rmU+4rqzWDz56LJItbSyVbauZxpuM6gJW68NMGaeOh53EAB+VDHB2mm80Fj+bq15csu2l70O4QydkbpYQXkufUabeMTF0dHx8e/gkg5ke6i4cWlBDFyvyaMFE878fQwVR8XgdTn1ZbPoCpvrZ+PjRxVCqhpaPnsb8gp1GPbVFX07dB/rhJFCU2d+9o4Ra4M3jierMuxISwpbutRKHw0X4fMwyZxGMxftBhSaVzlhVMuC/VwWdSikYgTWkp/JOPqziJH7ybat3dsfzhTl10IPkpmxyQ1zKHI86Mp6htypRzIoc8eZOH07MAhmxmp1ujoJddGU1LBIktxSjjWaHKJhGft792HczU7nhze85aKPJ/P55PadRMf63x1LuVYB3twPDmcNNxaYWCKbXpfXY7etrBpjnVNcWJ8PmzJJU+GrWw5ej0GAhmIHEb8w8nvkxOxGHziFt0dxqEC1HbWqvWwvZeA5bY0/ofhv7pjpn84DxaNE9QhYcuV/j/BRv9rqQviihoyKGT7dQYidtm+XE4x0VW0fS/LY9MfPhpMwqmVwV6hTfREnP91ju+kv6HFnXE+Q9vJHhgG2fMJ/m2yP4GwGfA/yvDcWf8E03bk/yjUc6b/E0Cbj4Atz7X8iUaAnqmbvYvVt+O+etE36U7OdRt097K25hfx99d9tu6mAjy+OdWawt3IHp1r/d3Z8+7NR+j7byMwH6I=
+sidebar_class_name: "get api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Serve Downloaded Image"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/image-svc/serve/download/{url}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Retrieves, caches, resizes, and serves an image referenced by its original URL.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Original URL of the downloaded file (path-escaped)","in":"path","name":"url","required":true,"schema":{"type":"string"}},{"description":"Optional width to resize the image to","in":"query","name":"width","schema":{"type":"integer"}},{"description":"Optional height to resize the image to","in":"query","name":"height","schema":{"type":"integer"}},{"description":"Optional quality for lossy output formats (default 85)","in":"query","name":"quality","schema":{"type":"integer"}},{"description":"Optional output format: webp, jpeg, png, gif, avif","in":"query","name":"format","schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Image served successfully","content":{"application/octet-stream":{"schema":{"type":"string","format":"binary"}}}},"400":{"description":"Invalid URL","content":{"application/octet-stream":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"404":{"description":"File Not Found","content":{"application/octet-stream":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/octet-stream":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      
