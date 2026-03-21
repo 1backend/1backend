@@ -38,6 +38,11 @@ func (fs *FileService) registerPermits() error {
 				Slugs:      []string{"prompt-svc"},
 				Permission: file.PermissionUploadCreate,
 			},
+			{
+				AppHost:    openapi.PtrString("*"),
+				Slugs:      []string{"image-svc"},
+				Permission: file.PermissionDownloadCreate,
+			},
 		},
 	}
 
