@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.4
+API version: 0.9.5
 Contact: sales@singulatron.com
 */
 
@@ -25,6 +25,21 @@ import (
 type ImageSvcAPI interface {
 
 	/*
+	ServeDownloadedImage Serve Downloaded Image
+
+	Retrieves, caches, resizes, and serves an image referenced by its original URL.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param url Original URL of the downloaded file (path-escaped)
+	@return ApiServeDownloadedImageRequest
+	*/
+	ServeDownloadedImage(ctx context.Context, url string) ApiServeDownloadedImageRequest
+
+	// ServeDownloadedImageExecute executes the request
+	//  @return *os.File
+	ServeDownloadedImageExecute(r ApiServeDownloadedImageRequest) (*os.File, *http.Response, error)
+
+	/*
 	ServeUploadedImage Serve Uploaded Image
 
 	Retrieves and serves a previously uploaded image file using its File ID.
@@ -42,6 +57,181 @@ type ImageSvcAPI interface {
 
 // ImageSvcAPIService ImageSvcAPI service
 type ImageSvcAPIService service
+
+type ApiServeDownloadedImageRequest struct {
+	ctx context.Context
+	ApiService ImageSvcAPI
+	url string
+	width *int32
+	height *int32
+	quality *int32
+	format *string
+}
+
+// Optional width to resize the image to
+func (r ApiServeDownloadedImageRequest) Width(width int32) ApiServeDownloadedImageRequest {
+	r.width = &width
+	return r
+}
+
+// Optional height to resize the image to
+func (r ApiServeDownloadedImageRequest) Height(height int32) ApiServeDownloadedImageRequest {
+	r.height = &height
+	return r
+}
+
+// Optional quality for lossy output formats (default 85)
+func (r ApiServeDownloadedImageRequest) Quality(quality int32) ApiServeDownloadedImageRequest {
+	r.quality = &quality
+	return r
+}
+
+// Optional output format: webp, jpeg, png, gif, avif
+func (r ApiServeDownloadedImageRequest) Format(format string) ApiServeDownloadedImageRequest {
+	r.format = &format
+	return r
+}
+
+func (r ApiServeDownloadedImageRequest) Execute() (*os.File, *http.Response, error) {
+	return r.ApiService.ServeDownloadedImageExecute(r)
+}
+
+/*
+ServeDownloadedImage Serve Downloaded Image
+
+Retrieves, caches, resizes, and serves an image referenced by its original URL.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param url Original URL of the downloaded file (path-escaped)
+ @return ApiServeDownloadedImageRequest
+*/
+func (a *ImageSvcAPIService) ServeDownloadedImage(ctx context.Context, url string) ApiServeDownloadedImageRequest {
+	return ApiServeDownloadedImageRequest{
+		ApiService: a,
+		ctx: ctx,
+		url: url,
+	}
+}
+
+// Execute executes the request
+//  @return *os.File
+func (a *ImageSvcAPIService) ServeDownloadedImageExecute(r ApiServeDownloadedImageRequest) (*os.File, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *os.File
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "ImageSvcAPIService.ServeDownloadedImage")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/image-svc/serve/download/{url}"
+	localVarPath = strings.Replace(localVarPath, "{"+"url"+"}", url.PathEscape(parameterValueToString(r.url, "url")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.width != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "width", r.width, "", "")
+	}
+	if r.height != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "height", r.height, "", "")
+	}
+	if r.quality != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "quality", r.quality, "", "")
+	}
+	if r.format != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "format", r.format, "", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/octet-stream"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v ImageSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v ImageSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 500 {
+			var v ImageSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
 
 type ApiServeUploadedImageRequest struct {
 	ctx context.Context

@@ -39,7 +39,11 @@ import (
 	"github.com/1backend/1backend/sdk/go/logger"
 
 	openapi "github.com/1backend/1backend/clients/go"
+
+	image "github.com/1backend/1backend/server/internal/services/image/types"
 )
+
+type ErrResponse image.ErrorResponse
 
 // @ID serveDownloadedImage
 // @Summary Serve Downloaded Image

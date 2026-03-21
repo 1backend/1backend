@@ -40,6 +40,36 @@ func (m *MockImageSvcAPI) EXPECT() *MockImageSvcAPIMockRecorder {
 	return m.recorder
 }
 
+// ServeDownloadedImage mocks base method.
+func (m *MockImageSvcAPI) ServeDownloadedImage(ctx context.Context, url string) ApiServeDownloadedImageRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ServeDownloadedImage", ctx, url)
+	ret0, _ := ret[0].(ApiServeDownloadedImageRequest)
+	return ret0
+}
+
+// ServeDownloadedImage indicates an expected call of ServeDownloadedImage.
+func (mr *MockImageSvcAPIMockRecorder) ServeDownloadedImage(ctx, url any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ServeDownloadedImage", reflect.TypeOf((*MockImageSvcAPI)(nil).ServeDownloadedImage), ctx, url)
+}
+
+// ServeDownloadedImageExecute mocks base method.
+func (m *MockImageSvcAPI) ServeDownloadedImageExecute(r ApiServeDownloadedImageRequest) (*os.File, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ServeDownloadedImageExecute", r)
+	ret0, _ := ret[0].(*os.File)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ServeDownloadedImageExecute indicates an expected call of ServeDownloadedImageExecute.
+func (mr *MockImageSvcAPIMockRecorder) ServeDownloadedImageExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ServeDownloadedImageExecute", reflect.TypeOf((*MockImageSvcAPI)(nil).ServeDownloadedImageExecute), r)
+}
+
 // ServeUploadedImage mocks base method.
 func (m *MockImageSvcAPI) ServeUploadedImage(ctx context.Context, fileId string) ApiServeUploadedImageRequest {
 	m.ctrl.T.Helper()

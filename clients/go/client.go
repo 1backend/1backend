@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.4
+API version: 0.9.5
 Contact: sales@singulatron.com
 */
 
@@ -42,7 +42,7 @@ var (
 	queryDescape    = strings.NewReplacer( "%5B", "[", "%5D", "]" )
 )
 
-// APIClient manages communication with the 1Backend API v0.9.4
+// APIClient manages communication with the 1Backend API v0.9.5
 // In most cases there should be only one, shared, APIClient.
 type APIClient struct {
 	cfg    *Configuration
