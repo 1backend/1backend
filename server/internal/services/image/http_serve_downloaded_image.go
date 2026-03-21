@@ -141,6 +141,7 @@ func (cs *ImageService) ServeDownloadedImage(w http.ResponseWriter, r *http.Requ
 		if strings.Contains(strings.ToLower(err.Error()), "not found") {
 			status = http.StatusNotFound
 		}
+		logger.Error("Error download file", slog.Any("error", err))
 		endpoint.WriteErr(w, status, err)
 		return
 	}
@@ -318,15 +319,12 @@ func (cs *ImageService) openDownloadedFile(
 ) (*os.File, *http.Response, error) {
 	api := cs.options.ClientFactory.Client(client.WithToken(cs.token)).FileSvcAPI
 
-	// First try serve existing download
 	file, rsp, err := api.ServeDownload(ctx, rawURL).Execute()
 	if err == nil {
 		return file, rsp, nil
 	}
 
-	// If not found, trigger download
-	var apiErr openapi.GenericOpenAPIError
-	if errors.As(err, &apiErr) && rsp != nil && rsp.StatusCode == http.StatusNotFound {
+	if rsp != nil && rsp.StatusCode == http.StatusNotFound {
 		_, _, derr := api.DownloadFile(ctx).
 			Body(openapi.FileSvcDownloadFileRequest{
 				Url: rawURL,
@@ -343,5 +341,5 @@ func (cs *ImageService) openDownloadedFile(
 		return file, rsp, nil
 	}
 
-	return nil, nil, errors.Wrap(err, "failed to serve downloaded file")
+	return nil, rsp, errors.Wrap(err, "failed to serve downloaded file")
 }
