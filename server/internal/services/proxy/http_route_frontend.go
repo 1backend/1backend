@@ -33,12 +33,15 @@ type cachedResponse struct {
 }
 
 func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
-	// logger.Debug("Edge proxying",
+	// logger.Debug("Edge proxy request",
 	// 	slog.String("host", r.Host),
+	// 	slog.String("requestURI", r.RequestURI),
 	// 	slog.String("path", r.URL.Path),
+	// 	slog.String("rawPath", r.URL.RawPath),
+	// 	slog.String("escapedPath", r.URL.EscapedPath()),
 	// )
 
-	targetString, err := cs.findRouteTarget(r.Host, r.URL.Path, r.URL.RawQuery)
+	targetString, err := cs.findRouteTarget(r.Host, r.URL.EscapedPath(), r.URL.RawQuery)
 	if err != nil {
 		if herr, ok := err.(*sdk.HTTPError); ok {
 			http.Error(w, herr.Msg, herr.Code)
@@ -46,7 +49,7 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 		}
 		logger.Error("Error finding route target",
 			slog.String("host", r.Host),
-			slog.String("path", r.URL.Path),
+			slog.String("path", r.URL.EscapedPath()),
 			slog.Any("error", err),
 		)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -400,7 +403,7 @@ func cacheKey(r *http.Request) string {
 	params := r.URL.Query()
 	sortedQuery := params.Encode()
 
-	normalizedPath := r.URL.Path
+	normalizedPath := r.URL.EscapedPath()
 	if sortedQuery != "" {
 		normalizedPath += "?" + sortedQuery
 	}

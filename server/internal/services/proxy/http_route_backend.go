@@ -47,7 +47,10 @@ func (cs *ProxyService) RouteBackend(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.Error("Error service proxying",
 			slog.String("method", r.Method),
+			slog.String("host", r.Host),
 			slog.String("path", r.URL.Path),
+			slog.String("rawPath", r.URL.RawPath),
+			slog.String("escapedPath", r.URL.EscapedPath()),
 			slog.String("error", err.Error()),
 		)
 		if r.Method == http.MethodOptions {
@@ -83,7 +86,7 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 		return http.StatusInternalServerError, errors.Wrap(err, "error starting proxy service")
 	}
 
-	serviceSlug := getServiceSlug(r.URL.Path)
+	serviceSlug := getServiceSlug(r.URL.EscapedPath())
 
 	var instances []openapi.RegistrySvcInstance
 	val, ok := cs.instanceCache.Load(serviceSlug)
@@ -121,10 +124,13 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 				healthy = rsp.Instances
 			}
 
-			cs.instanceCache.Store(serviceSlug, cacheEntry{
-				instances: healthy,
-				expiry:    time.Now().Add(10 * time.Second),
-			})
+			if len(healthy) > 0 {
+				cs.instanceCache.Store(serviceSlug, cacheEntry{
+					instances: healthy,
+					expiry:    time.Now().Add(10 * time.Second),
+				})
+			}
+
 			return healthy, nil
 		})
 
@@ -135,6 +141,10 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 	}
 
 	if len(instances) == 0 {
+		logger.Warn("No instances found",
+			slog.String("serviceSlug", serviceSlug),
+			slog.String("path", r.URL.EscapedPath()),
+		)
 		return http.StatusNotFound, errors.New("no instances found")
 	}
 
@@ -142,10 +152,10 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 
 	var sb strings.Builder
 	sb.WriteString(strings.TrimSuffix(instance.Url, "/"))
-	if !strings.HasPrefix(r.URL.Path, "/") {
+	if !strings.HasPrefix(r.URL.EscapedPath(), "/") {
 		sb.WriteByte('/')
 	}
-	sb.WriteString(r.URL.Path)
+	sb.WriteString(r.URL.EscapedPath())
 	if r.URL.RawQuery != "" {
 		sb.WriteByte('?')
 		sb.WriteString(r.URL.RawQuery)
@@ -203,12 +213,13 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 // gets service slug from http request path
 // eg. /my-svc/my-endpoint -> my-svc
 func getServiceSlug(path string) string {
-	if path == "" || path == "/" {
+	// 1. Remove ALL leading slashes (e.g., ///image-svc -> image-svc)
+	path = strings.TrimLeft(path, "/")
+	if path == "" {
 		return ""
 	}
-	path = strings.TrimPrefix(path, "/")
-	if i := strings.Index(path, "/"); i != -1 {
-		return path[:i]
-	}
-	return path
+
+	// 2. Get the first segment only
+	segments := strings.SplitN(path, "/", 2)
+	return segments[0]
 }

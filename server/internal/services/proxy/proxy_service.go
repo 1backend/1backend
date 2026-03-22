@@ -116,6 +116,7 @@ func NewProxyService(
 
 				pr.SetURL(target)
 				pr.Out.URL.Path = target.Path
+				pr.Out.URL.RawPath = target.RawPath
 				pr.Out.URL.RawQuery = target.RawQuery
 
 				priorFor := pr.In.Header.Get("X-Forwarded-For")

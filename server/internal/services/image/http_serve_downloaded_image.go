@@ -38,8 +38,6 @@ import (
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 
-	openapi "github.com/1backend/1backend/clients/go"
-
 	image "github.com/1backend/1backend/server/internal/services/image/types"
 )
 
@@ -325,18 +323,14 @@ func (cs *ImageService) openDownloadedFile(
 	}
 
 	if rsp != nil && rsp.StatusCode == http.StatusNotFound {
-		_, _, derr := api.DownloadFile(ctx).
-			Body(openapi.FileSvcDownloadFileRequest{
-				Url: rawURL,
-			}).
-			Execute()
-		if derr != nil {
-			return nil, nil, errors.Wrap(derr, "failed to download source file")
-		}
-
 		file, rsp, err = api.ServeDownload(ctx, rawURL).Execute()
 		if err != nil {
-			return nil, nil, errors.Wrap(err, "failed to serve downloaded file after download")
+			logger.Error(
+				"Failed to serve file",
+				slog.Any("error", err),
+				slog.Any("url", rawURL),
+			)
+			return nil, nil, errors.Wrap(err, "failed to serve downloaded file")
 		}
 		return file, rsp, nil
 	}

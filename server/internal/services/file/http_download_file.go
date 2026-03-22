@@ -57,7 +57,7 @@ func (ds *FileService) Download(
 	}
 	defer r.Body.Close()
 
-	err = ds.download(r.Context(), req.URL, req.FolderPath)
+	err = ds.download(r.Context(), req.URL, req.FolderPath, ds.SyncDownloads)
 	if err != nil {
 		endpoint.WriteString(w, http.StatusInternalServerError, "Failed to download file")
 		return

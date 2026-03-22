@@ -30,7 +30,9 @@ import (
 Starts or resumes a download.
 Can resume downloads not found in the JSON statefile.
 */
-func (dm *FileService) download(ctx context.Context, url, downloadDir string) error {
+func (dm *FileService) download(
+	ctx context.Context, url, downloadDir string,
+	sync bool) error {
 	if downloadDir == "" {
 		downloadDir = dm.downloadFolder
 	}
@@ -111,7 +113,7 @@ func (dm *FileService) download(ctx context.Context, url, downloadDir string) er
 
 	err = f()
 	if err != nil {
-		return nil
+		return err
 	}
 
 	err = dm.downloadStore.Upsert(download)
@@ -119,7 +121,7 @@ func (dm *FileService) download(ctx context.Context, url, downloadDir string) er
 		return errors.Wrap(err, "failed to upsert download")
 	}
 
-	if dm.SyncDownloads {
+	if dm.SyncDownloads || sync {
 		return dm.downloadFile(download)
 	} else {
 		go func() {
@@ -170,7 +172,7 @@ func (dm *FileService) downloadFile(d *types.InternalDownload) error {
 	}
 	defer resp.Body.Close()
 
-	totalSize, _ := getTotalSizeFromHeaders(resp)
+	totalSize, err := getTotalSizeFromHeaders(resp)
 	if err != nil {
 		fmt.Printf("Error retrieving total size: %v\n", err)
 	}
@@ -241,7 +243,7 @@ func (dm *FileService) downloadFile(d *types.InternalDownload) error {
 			return errors.Wrap(err, "failed to upsert download")
 		}
 	} else {
-		fmt.Printf("Failed to download: %s, status code: %d\n", d.URL, resp.StatusCode)
+		return fmt.Errorf("Failed to download: %s, status code: %d\n", d.URL, resp.StatusCode)
 	}
 
 	return nil
