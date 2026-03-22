@@ -203,7 +203,7 @@ func (fs *FileService) Start() error {
 		download := downloadI.(*types.InternalDownload)
 
 		if download.Status == types.DownloadStatusInProgress {
-			err = fs.download(context.Background(), download.URL, path.Dir(download.FilePath))
+			err = fs.download(context.Background(), download.URL, path.Dir(download.FilePath), fs.SyncDownloads)
 			if err != nil {
 				return err
 			}

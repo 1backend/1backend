@@ -12,6 +12,7 @@ import (
 	"path"
 	"path/filepath"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -56,9 +57,38 @@ func (fs *FileService) ServeDownload(
 		endpoint.WriteString(w, http.StatusInternalServerError, err.Error())
 		return
 	}
+
 	if len(downloadReplicaIs) == 0 {
-		endpoint.WriteString(w, http.StatusNotFound, "File Not Found")
-		return
+		err := fs.download(r.Context(), ur, "", true)
+		if err != nil {
+			logger.Error("Failed to download on demand",
+				slog.String("url", ur),
+				slog.Any("error", err),
+			)
+			endpoint.WriteString(w, http.StatusInternalServerError, "Failed to download file")
+			return
+		}
+
+		for i := 0; i < 10; i++ {
+			downloadReplicaIs, err = fs.downloadStore.Query(datastore.Equals(
+				[]string{"url"},
+				ur,
+			)).Find()
+			if err != nil {
+				logger.Error("Error querying download after on-demand download", slog.Any("error", err))
+				endpoint.WriteString(w, http.StatusInternalServerError, err.Error())
+				return
+			}
+			if len(downloadReplicaIs) > 0 {
+				break
+			}
+			time.Sleep(200 * time.Millisecond)
+		}
+
+		if len(downloadReplicaIs) == 0 {
+			endpoint.WriteString(w, http.StatusNotFound, "File Not Found")
+			return
+		}
 	}
 
 	downloadReplicas := toDownloads(downloadReplicaIs)
@@ -91,8 +121,64 @@ func (fs *FileService) serveLocalDownload(
 
 	fileInfo, err := os.Stat(download.FilePath)
 	if err != nil || fileInfo.IsDir() {
-		endpoint.WriteString(w, http.StatusNotFound, "file not found")
-		return
+		logger.Warn("Local download missing on disk, attempting recovery",
+			slog.String("url", download.URL),
+			slog.String("filePath", download.FilePath),
+			slog.Any("error", err),
+		)
+
+		if err := fs.downloadStore.Query(datastore.Id(download.Id)).Delete(); err != nil {
+			logger.Error("Failed to delete stale download record",
+				slog.String("url", download.URL),
+				slog.String("filePath", download.FilePath),
+				slog.Any("error", err),
+			)
+			endpoint.WriteString(w, http.StatusInternalServerError, "Failed to recover file")
+			return
+		}
+
+		if err := fs.download(r.Context(), download.URL, "", true); err != nil {
+			logger.Error("Failed to recover missing local download",
+				slog.String("url", download.URL),
+				slog.String("filePath", download.FilePath),
+				slog.Any("error", err),
+			)
+			endpoint.WriteString(w, http.StatusInternalServerError, "Failed to recover file")
+			return
+		}
+
+		downloadIs, qerr := fs.downloadStore.Query(datastore.Equals(
+			[]string{"url"},
+			download.URL,
+		)).Find()
+		if qerr != nil {
+			logger.Error("Failed to query recovered download",
+				slog.String("url", download.URL),
+				slog.Any("error", qerr),
+			)
+			endpoint.WriteString(w, http.StatusInternalServerError, "Failed to recover file")
+			return
+		}
+		if len(downloadIs) == 0 {
+			logger.Error("Recovered download missing after re-query",
+				slog.String("url", download.URL),
+			)
+			endpoint.WriteString(w, http.StatusNotFound, "file not found")
+			return
+		}
+
+		download = downloadIs[0].(*file.InternalDownload)
+
+		fileInfo, err = os.Stat(download.FilePath)
+		if err != nil || fileInfo.IsDir() {
+			logger.Error("Recovered download still missing on disk",
+				slog.String("url", download.URL),
+				slog.String("filePath", download.FilePath),
+				slog.Any("error", err),
+			)
+			endpoint.WriteString(w, http.StatusNotFound, "file not found")
+			return
+		}
 	}
 
 	parsedURL, err := url.Parse(download.URL)
