@@ -213,11 +213,61 @@ func (q *SQLQueryBuilder) evaluateFilters(
 		} else {
 			*filters = append(*filters, fmt.Sprintf("(%s)", strings.Join(orFilters, " OR ")))
 		}
+	} else if filter.Op == datastore.OpLessThan {
+		return q.applyBinaryComparisonFilter(filter, "<", filters, params, paramCounter)
+	} else if filter.Op == datastore.OpLessThanOrEqual {
+		return q.applyBinaryComparisonFilter(filter, "<=", filters, params, paramCounter)
+	} else if filter.Op == datastore.OpGreaterThan {
+		return q.applyBinaryComparisonFilter(filter, ">", filters, params, paramCounter)
+	} else if filter.Op == datastore.OpGreaterThanOrEqual {
+		return q.applyBinaryComparisonFilter(filter, ">=", filters, params, paramCounter)
 	} else {
 		panic(fmt.Sprintf("unknown filter %v", filter))
 	}
 
 	return err
+}
+
+func (q *SQLQueryBuilder) applyBinaryComparisonFilter(
+	filter datastore.Filter,
+	operator string,
+	filters *[]string,
+	params *[]interface{},
+	paramCounter *int,
+) error {
+	orFilters := []string{}
+
+	var values []any
+	err := json.Unmarshal([]byte(filter.ValuesJson), &values)
+	if err != nil {
+		return err
+	}
+	if len(values) != 1 {
+		return fmt.Errorf("comparison operator %q requires exactly one value", operator)
+	}
+
+	for _, field := range filter.Fields {
+		placeHolder := q.store.placeholder(*paramCounter)
+		fieldName := q.store.fieldName(field, castType(values[0]))
+
+		orFilters = append(orFilters, fmt.Sprintf("%s %s %s", fieldName, operator, placeHolder))
+
+		param, err := q.store.convertParam(values[0])
+		if err != nil {
+			return err
+		}
+
+		*params = append(*params, param)
+		*paramCounter++
+	}
+
+	if len(orFilters) == 1 {
+		*filters = append(*filters, orFilters...)
+	} else {
+		*filters = append(*filters, fmt.Sprintf("(%s)", strings.Join(orFilters, " OR ")))
+	}
+
+	return nil
 }
 
 func (q *SQLQueryBuilder) buildFilters(start ...int) ([]string, []interface{}, error) {

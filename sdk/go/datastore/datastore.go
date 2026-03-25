@@ -166,6 +166,18 @@ const (
 	//   }
 	// }
 	OpIsInList Op = "isInList"
+
+	// OpLessThan selects objects where the field value is less than (<) the given value.
+	OpLessThan Op = "lessThan"
+
+	// OpLessThanOrEqual selects objects where the field value is less than or equal to (<=) the given value.
+	OpLessThanOrEqual Op = "lessThanOrEqual"
+
+	// OpGreaterThan selects objects where the field value is greater than (>) the given value.
+	OpGreaterThan Op = "greaterThan"
+
+	// OpGreaterThanOrEqual selects objects where the field value is greater than or equal to (>=) the given value.
+	OpGreaterThanOrEqual Op = "greaterThanOrEqual"
 )
 
 type Filter struct {
@@ -372,6 +384,38 @@ func IsInList(fields []string, values ...any) Filter {
 		Fields:     fields,
 		ValuesJson: marshal(values),
 		Op:         OpIsInList,
+	}
+}
+
+func LessThan(fields []string, value any) Filter {
+	return Filter{
+		Fields:     fields,
+		ValuesJson: marshal([]any{value}),
+		Op:         OpLessThan,
+	}
+}
+
+func LessThanOrEqual(fields []string, value any) Filter {
+	return Filter{
+		Fields:     fields,
+		ValuesJson: marshal([]any{value}),
+		Op:         OpLessThanOrEqual,
+	}
+}
+
+func GreaterThan(fields []string, value any) Filter {
+	return Filter{
+		Fields:     fields,
+		ValuesJson: marshal([]any{value}),
+		Op:         OpGreaterThan,
+	}
+}
+
+func GreaterThanOrEqual(fields []string, value any) Filter {
+	return Filter{
+		Fields:     fields,
+		ValuesJson: marshal([]any{value}),
+		Op:         OpGreaterThanOrEqual,
 	}
 }
 

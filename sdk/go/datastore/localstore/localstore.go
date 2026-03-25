@@ -844,9 +844,143 @@ func evaluate(filter datastore.Filter, obj any) (bool, error) {
 
 		}
 		return matched, nil
+	case datastore.OpLessThan, datastore.OpLessThanOrEqual, datastore.OpGreaterThan, datastore.OpGreaterThanOrEqual:
+		var values []any
+		err := json.Unmarshal([]byte(filter.ValuesJson), &values)
+		if err != nil {
+			return false, err
+		}
+		if len(values) != 1 {
+			return false, errors.New("comparison operators require exactly one value")
+		}
+
+		testValue := values[0]
+		for _, fieldName := range filter.Fields {
+			fieldValue := getField(obj, fieldName)
+			if fieldValue == nil {
+				continue
+			}
+
+			comp, ok := compareValues(fieldValue, testValue)
+			if !ok {
+				continue
+			}
+
+			switch filter.Op {
+			case datastore.OpLessThan:
+				if comp < 0 {
+					return true, nil
+				}
+			case datastore.OpLessThanOrEqual:
+				if comp <= 0 {
+					return true, nil
+				}
+			case datastore.OpGreaterThan:
+				if comp > 0 {
+					return true, nil
+				}
+			case datastore.OpGreaterThanOrEqual:
+				if comp >= 0 {
+					return true, nil
+				}
+			}
+		}
+		return false, nil
 	}
 
 	return false, fmt.Errorf("unknown filter %v", filter)
+}
+
+func compareValues(subject, test any) (int, bool) {
+	left := toBaseType(subject)
+	right := toBaseType(test)
+
+	leftFloat, leftOK := asFloat64(left)
+	rightFloat, rightOK := asFloat64(right)
+	if leftOK && rightOK {
+		switch {
+		case leftFloat < rightFloat:
+			return -1, true
+		case leftFloat > rightFloat:
+			return 1, true
+		default:
+			return 0, true
+		}
+	}
+
+	leftTime, leftIsTime := asTime(left)
+	rightTime, rightIsTime := asTime(right)
+	if leftIsTime && rightIsTime {
+		switch {
+		case leftTime.Before(rightTime):
+			return -1, true
+		case leftTime.After(rightTime):
+			return 1, true
+		default:
+			return 0, true
+		}
+	}
+
+	leftString, leftIsString := left.(string)
+	rightString, rightIsString := right.(string)
+	if leftIsString && rightIsString {
+		switch {
+		case leftString < rightString:
+			return -1, true
+		case leftString > rightString:
+			return 1, true
+		default:
+			return 0, true
+		}
+	}
+
+	return 0, false
+}
+
+func asFloat64(v any) (float64, bool) {
+	switch t := v.(type) {
+	case int:
+		return float64(t), true
+	case int8:
+		return float64(t), true
+	case int16:
+		return float64(t), true
+	case int32:
+		return float64(t), true
+	case int64:
+		return float64(t), true
+	case uint:
+		return float64(t), true
+	case uint8:
+		return float64(t), true
+	case uint16:
+		return float64(t), true
+	case uint32:
+		return float64(t), true
+	case uint64:
+		return float64(t), true
+	case float32:
+		return float64(t), true
+	case float64:
+		return t, true
+	default:
+		return 0, false
+	}
+}
+
+func asTime(v any) (time.Time, bool) {
+	switch t := v.(type) {
+	case time.Time:
+		return t, true
+	case string:
+		parsed, err := datastore.ParseAnyDate(t)
+		if err != nil {
+			return time.Time{}, false
+		}
+		return parsed, true
+	default:
+		return time.Time{}, false
+	}
 }
 
 func (q *QueryBuilder) match(obj any) (bool, error) {
