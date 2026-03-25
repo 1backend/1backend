@@ -157,3 +157,67 @@ func TestPointerDotNotation(t *testing.T, store DataStore) {
 	err = store.Query(Equals(Field("Friend.Name"), "CharlieFriend")).Delete()
 	require.NoError(t, err)
 }
+
+func TestDotNotationComparisonOperators(t *testing.T, store DataStore) {
+	obj1 := TestObject{Name: "Alice", Friend: Friend{Name: "AliceFriend", Age: 26}}
+	obj2 := TestObject{Name: "Bob", Friend: Friend{Name: "BobFriend", Age: 31}}
+	obj3 := TestObject{Name: "Charlie", Friend: Friend{Name: "CharlieFriend", Age: 36}}
+
+	require.NoError(t, store.Create(obj1))
+	require.NoError(t, store.Create(obj2))
+	require.NoError(t, store.Create(obj3))
+
+	results, err := store.Query(LessThan(Field("Friend.Age"), 31)).Find()
+	require.NoError(t, err)
+	require.Len(t, results, 1)
+	require.Contains(t, results, obj1)
+
+	results, err = store.Query(LessThanOrEqual(Field("Friend.Age"), 31)).Find()
+	require.NoError(t, err)
+	require.Len(t, results, 2)
+	require.Contains(t, results, obj1)
+	require.Contains(t, results, obj2)
+
+	results, err = store.Query(GreaterThan(Field("Friend.Age"), 31)).Find()
+	require.NoError(t, err)
+	require.Len(t, results, 1)
+	require.Contains(t, results, obj3)
+
+	results, err = store.Query(GreaterThanOrEqual(Field("Friend.Age"), 31)).Find()
+	require.NoError(t, err)
+	require.Len(t, results, 2)
+	require.Contains(t, results, obj2)
+	require.Contains(t, results, obj3)
+}
+
+func TestPointerDotNotationComparisonOperators(t *testing.T, store DataStore) {
+	obj1 := &TestObject{Name: "Alice", Friend: Friend{Name: "AliceFriend", Age: 26}}
+	obj2 := &TestObject{Name: "Bob", Friend: Friend{Name: "BobFriend", Age: 31}}
+	obj3 := &TestObject{Name: "Charlie", Friend: Friend{Name: "CharlieFriend", Age: 36}}
+
+	require.NoError(t, store.Create(obj1))
+	require.NoError(t, store.Create(obj2))
+	require.NoError(t, store.Create(obj3))
+
+	results, err := store.Query(LessThan(Field("Friend.Age"), 31)).Find()
+	require.NoError(t, err)
+	require.Len(t, results, 1)
+	require.Contains(t, results, obj1)
+
+	results, err = store.Query(LessThanOrEqual(Field("Friend.Age"), 31)).Find()
+	require.NoError(t, err)
+	require.Len(t, results, 2)
+	require.Contains(t, results, obj1)
+	require.Contains(t, results, obj2)
+
+	results, err = store.Query(GreaterThan(Field("Friend.Age"), 31)).Find()
+	require.NoError(t, err)
+	require.Len(t, results, 1)
+	require.Contains(t, results, obj3)
+
+	results, err = store.Query(GreaterThanOrEqual(Field("Friend.Age"), 31)).Find()
+	require.NoError(t, err)
+	require.Len(t, results, 2)
+	require.Contains(t, results, obj2)
+	require.Contains(t, results, obj3)
+}
