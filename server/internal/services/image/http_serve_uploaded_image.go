@@ -13,6 +13,7 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
+	"github.com/gen2brain/avif"
 	stdimage "image"
 	"image/gif"
 	"image/jpeg"
@@ -21,11 +22,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
-
-	"github.com/anthonynsimon/bild/transform"
-	"github.com/gen2brain/avif"
 
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -49,6 +46,7 @@ type imgResult struct {
 }
 
 const memCacheLimit = 250 * 1024
+const transformCacheVersion = "v2-contain-default"
 
 // @ID serveUploadedImage
 // @Summary Serve Uploaded Image
@@ -59,6 +57,8 @@ const memCacheLimit = 250 * 1024
 // @Param fileId path string true "FileID uniquely identifies the file itself (not an ID, which represents a specific replica)"
 // @Param width query int false "Optional width to resize the image to"
 // @Param height query int false "Optional height to resize the image to"
+// @Param fit query string false "Resize strategy: contain|cover (default contain)"
+// @Param position query string false "Crop anchor when fit=cover: center|top|bottom|left|right|top-left|top-right|bottom-left|bottom-right"
 // @Success 200 {file} binary "File served successfully"
 // @Failure 400 {object} image.ErrorResponse "Missing File ID"
 // @Failure 404 {object} image.ErrorResponse "File Not Found"
@@ -72,48 +72,32 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	widthStr := r.URL.Query().Get("width")
-	heightStr := r.URL.Query().Get("height")
-	qualityStr := r.URL.Query().Get("quality")
-
-	width := 0
-	height := 0
-	quality := 85
-
-	var err error
-	if widthStr != "" {
-		widthStr = strings.TrimSuffix(widthStr, "px")
-		width, err = strconv.Atoi(widthStr)
-		if err != nil {
-			endpoint.WriteErr(w, http.StatusBadRequest, errors.New("invalid width"))
-			return
-		}
+	params, err := parseImageParams(r.URL.Query())
+	if err != nil {
+		endpoint.WriteErr(w, http.StatusBadRequest, err)
+		return
 	}
-	if heightStr != "" {
-		heightStr = strings.TrimSuffix(heightStr, "px")
-		height, err = strconv.Atoi(heightStr)
-		if err != nil {
-			endpoint.WriteErr(w, http.StatusBadRequest, errors.New("invalid height"))
-			return
-		}
-	}
-	if qualityStr != "" {
-		quality, err = strconv.Atoi(qualityStr)
-		if err != nil {
-			endpoint.WriteErr(w, http.StatusBadRequest, errors.New("invalid quality"))
-			return
-		}
+	if r.URL.Query().Get("fit") == "" {
+		params.Fit = fitContain
 	}
 
 	originalContentType, _ := cs.metaCache.Get(fileId)
 
-	requestedFormat := r.URL.Query().Get("format") // e.g., "webp", "jpeg", "png"
-	cacheKeyData := fmt.Sprintf("%s-%d-%d-%d-%s", fileId, width, height, quality, requestedFormat)
+	cacheKeyData := fmt.Sprintf("%s-%s-%d-%d-%d-%s-%s-%s",
+		transformCacheVersion,
+		fileId,
+		params.Width,
+		params.Height,
+		params.Quality,
+		params.RequestedFormat,
+		params.Fit,
+		params.Position,
+	)
 
 	targetContentType := "image/webp"
-	if requestedFormat != "" {
+	if params.RequestedFormat != "" {
 		// Normalize "jpg" to "jpeg" for consistent mime types
-		fmtExt := strings.ToLower(requestedFormat)
+		fmtExt := strings.ToLower(params.RequestedFormat)
 		if fmtExt == "jpg" {
 			fmtExt = "jpeg"
 		}
@@ -224,49 +208,18 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 			return nil, errors.Wrap(err, "decode err")
 		}
 
-		if width > 0 || height > 0 {
-			bounds := img.Bounds()
-			origWidth := bounds.Dx()
-			origHeight := bounds.Dy()
-
-			// Compute the target width/height while maintaining aspect ratio
-			var targetWidth, targetHeight int
-
-			if width > 0 && height > 0 {
-				aspectRatio := float64(origWidth) / float64(origHeight)
-				if float64(width)/aspectRatio <= float64(height) {
-					targetWidth = width
-					targetHeight = int(float64(width) / aspectRatio)
-				} else {
-					targetHeight = height
-					targetWidth = int(float64(height) * aspectRatio)
-				}
-			} else if width > 0 {
-				targetWidth = width
-				targetHeight = int(float64(width) * float64(origHeight) / float64(origWidth))
-			} else if height > 0 {
-				targetHeight = height
-				targetWidth = int(float64(height) * float64(origWidth) / float64(origHeight))
-			} else {
-				// Neither width nor height is set, don't resize
-				targetWidth = origWidth
-				targetHeight = origHeight
-			}
-
-			// Prevent enlargement
-			if targetWidth > origWidth || targetHeight > origHeight {
-				targetWidth, targetHeight = origWidth, origHeight
-			}
-
+		if params.Width > 0 || params.Height > 0 {
 			logger.Info("Resizing image",
-				slog.Int("width", width),
-				slog.Int("height", height),
+				slog.Int("width", params.Width),
+				slog.Int("height", params.Height),
 				slog.String("fileId", fileId),
 				slog.String("originalContentType", originalContentType),
 				slog.String("targetContentType", targetContentType),
-				slog.Int("quality", quality),
+				slog.Int("quality", params.Quality),
+				slog.String("fit", params.Fit),
+				slog.String("position", params.Position),
 			)
-			img = transform.Resize(img, targetWidth, targetHeight, transform.Lanczos)
+			img = resizeWithFit(img, params.Width, params.Height, params.Fit, params.Position)
 		}
 
 		buf := new(bytes.Buffer)
@@ -274,14 +227,14 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		// Encode based on the target format
 		switch targetContentType {
 		case "image/jpeg", "image/jpg":
-			err = jpeg.Encode(buf, img, &jpeg.Options{Quality: quality})
+			err = jpeg.Encode(buf, img, &jpeg.Options{Quality: params.Quality})
 		case "image/webp":
 			// WebP is significantly smaller for photographic content (burgers!)
-			err = webp.Encode(buf, img, &webp.Options{Quality: float32(quality)})
+			err = webp.Encode(buf, img, &webp.Options{Quality: float32(params.Quality)})
 		case "image/gif":
 			err = gif.Encode(buf, img, nil)
 		case "image/avif":
-			err = avif.Encode(buf, img, avif.Options{Quality: quality})
+			err = avif.Encode(buf, img, avif.Options{Quality: params.Quality})
 		case "image/png":
 			// Use BestCompression for PNGs to shave off a few more KBs
 			encoder := png.Encoder{CompressionLevel: png.BestCompression}
