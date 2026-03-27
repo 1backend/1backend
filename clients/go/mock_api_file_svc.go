@@ -40,6 +40,36 @@ func (m *MockFileSvcAPI) EXPECT() *MockFileSvcAPIMockRecorder {
 	return m.recorder
 }
 
+// DeleteUpload mocks base method.
+func (m *MockFileSvcAPI) DeleteUpload(ctx context.Context, fileId string) ApiDeleteUploadRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteUpload", ctx, fileId)
+	ret0, _ := ret[0].(ApiDeleteUploadRequest)
+	return ret0
+}
+
+// DeleteUpload indicates an expected call of DeleteUpload.
+func (mr *MockFileSvcAPIMockRecorder) DeleteUpload(ctx, fileId any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUpload", reflect.TypeOf((*MockFileSvcAPI)(nil).DeleteUpload), ctx, fileId)
+}
+
+// DeleteUploadExecute mocks base method.
+func (m *MockFileSvcAPI) DeleteUploadExecute(r ApiDeleteUploadRequest) (map[string]any, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteUploadExecute", r)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// DeleteUploadExecute indicates an expected call of DeleteUploadExecute.
+func (mr *MockFileSvcAPIMockRecorder) DeleteUploadExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUploadExecute", reflect.TypeOf((*MockFileSvcAPI)(nil).DeleteUploadExecute), r)
+}
+
 // DownloadFile mocks base method.
 func (m *MockFileSvcAPI) DownloadFile(ctx context.Context) ApiDownloadFileRequest {
 	m.ctrl.T.Helper()

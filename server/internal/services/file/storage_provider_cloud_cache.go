@@ -72,6 +72,11 @@ func (p *CloudCacheProvider) NewWriter(ctx context.Context, f string) (io.WriteC
 	return p.local.NewWriter(ctx, f)
 }
 
+func (p *CloudCacheProvider) Delete(ctx context.Context, filePath string) error {
+	_ = p.local.Delete(ctx, filePath)
+	return p.cloud.Delete(ctx, filePath)
+}
+
 // teeReadCloser is a helper that wraps an io.TeeReader to ensure
 // that both the underlying network stream (Cloud) and the local cache writer
 // are closed correctly when the operation finishes.

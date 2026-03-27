@@ -29,4 +29,7 @@ type StorageProvider interface {
 	// This is the engine behind the performant CloudCacheProvider: it allows
 	// us to pipe data to the local disk while simultaneously serving the user.
 	NewWriter(ctx context.Context, filePath string) (io.WriteCloser, error)
+
+	// Delete removes a file from storage by its relative file path.
+	Delete(ctx context.Context, filePath string) error
 }

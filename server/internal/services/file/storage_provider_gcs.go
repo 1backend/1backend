@@ -70,3 +70,7 @@ func (p *GCSProvider) NewWriter(ctx context.Context, filePath string) (io.WriteC
 
 	return w, nil
 }
+
+func (p *GCSProvider) Delete(ctx context.Context, filePath string) error {
+	return p.client.Bucket(p.bucket).Object(filePath).Delete(ctx)
+}
