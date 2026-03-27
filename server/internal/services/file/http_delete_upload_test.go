@@ -41,7 +41,7 @@ func TestDeleteUpload(t *testing.T) {
 
 	req, err := http.NewRequest(http.MethodDelete, server.Url+"/file-svc/upload/"+uplRsp.Upload.FileId, nil)
 	require.NoError(t, err)
-	req.Header.Set("Authorization", "Bearer "+adminToken.Token)
+	req.Header.Set("Authorization", "Bearer "+adminToken)
 
 	httpRsp, err := http.DefaultClient.Do(req)
 	require.NoError(t, err)
