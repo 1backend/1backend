@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.5
+API version: 0.9.6
 Contact: sales@singulatron.com
 */
 
@@ -27,6 +27,10 @@ const (
 	OpStartsWith DatastoreOp = "startsWith"
 	OpIntersects DatastoreOp = "intersects"
 	OpIsInList DatastoreOp = "isInList"
+	OpLessThan DatastoreOp = "lessThan"
+	OpLessThanOrEqual DatastoreOp = "lessThanOrEqual"
+	OpGreaterThan DatastoreOp = "greaterThan"
+	OpGreaterThanOrEqual DatastoreOp = "greaterThanOrEqual"
 )
 
 // All allowed values of DatastoreOp enum
@@ -37,6 +41,10 @@ var AllowedDatastoreOpEnumValues = []DatastoreOp{
 	"startsWith",
 	"intersects",
 	"isInList",
+	"lessThan",
+	"lessThanOrEqual",
+	"greaterThan",
+	"greaterThanOrEqual",
 }
 
 func (v *DatastoreOp) UnmarshalJSON(src []byte) error {

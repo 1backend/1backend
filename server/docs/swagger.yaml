@@ -944,6 +944,10 @@ definitions:
     - startsWith
     - intersects
     - isInList
+    - lessThan
+    - lessThanOrEqual
+    - greaterThan
+    - greaterThanOrEqual
     type: string
     x-enum-varnames:
     - OpOr
@@ -952,6 +956,10 @@ definitions:
     - OpStartsWith
     - OpIntersects
     - OpIsInList
+    - OpLessThan
+    - OpLessThanOrEqual
+    - OpGreaterThan
+    - OpGreaterThanOrEqual
   datastore.OrderBy:
     properties:
       desc:
@@ -3925,7 +3933,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.9.5
+  version: 0.9.6
 paths:
   /chat-svc/events:
     get:
@@ -5342,6 +5350,14 @@ paths:
         in: query
         name: format
         type: string
+      - description: 'Resize strategy: contain|cover (default contain)'
+        in: query
+        name: fit
+        type: string
+      - description: 'Crop anchor when fit=cover: center|top|bottom|left|right|top-left|top-right|bottom-left|bottom-right'
+        in: query
+        name: position
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -5386,6 +5402,14 @@ paths:
         in: query
         name: height
         type: integer
+      - description: 'Resize strategy: contain|cover (default contain)'
+        in: query
+        name: fit
+        type: string
+      - description: 'Crop anchor when fit=cover: center|top|bottom|left|right|top-left|top-right|bottom-left|bottom-right'
+        in: query
+        name: position
+        type: string
       produces:
       - application/octet-stream
       responses:

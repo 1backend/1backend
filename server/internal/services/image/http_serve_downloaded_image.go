@@ -23,10 +23,8 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 
-	"github.com/anthonynsimon/bild/transform"
 	"github.com/chai2010/webp"
 	"github.com/gen2brain/avif"
 	"github.com/gorilla/mux"
@@ -54,6 +52,8 @@ type ErrResponse image.ErrorResponse
 // @Param height query int false "Optional height to resize the image to"
 // @Param quality query int false "Optional quality for lossy output formats (default 85)"
 // @Param format query string false "Optional output format: webp, jpeg, png, gif, avif"
+// @Param fit query string false "Resize strategy: contain|cover (default contain)"
+// @Param position query string false "Crop anchor when fit=cover: center|top|bottom|left|right|top-left|top-right|bottom-left|bottom-right"
 // @Success 200 {file} binary "Image served successfully"
 // @Failure 400 {object} image.ErrorResponse "Invalid URL"
 // @Failure 404 {object} image.ErrorResponse "File Not Found"
@@ -68,16 +68,28 @@ func (cs *ImageService) ServeDownloadedImage(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	width, height, quality, requestedFormat, err := parseImageParams(r)
+	params, err := parseImageParams(r.URL.Query())
 	if err != nil {
 		endpoint.WriteErr(w, http.StatusBadRequest, err)
 		return
 	}
+	if r.URL.Query().Get("fit") == "" {
+		params.Fit = fitContain
+	}
 
 	originalContentType, _ := cs.metaCache.Get("download:" + rawURL)
 
-	targetContentType := buildTargetContentType(requestedFormat)
-	cacheKeyData := fmt.Sprintf("download:%s-%d-%d-%d-%s", rawURL, width, height, quality, requestedFormat)
+	targetContentType := buildTargetContentType(params.RequestedFormat)
+	cacheKeyData := fmt.Sprintf("%s-download:%s-%d-%d-%d-%s-%s-%s",
+		transformCacheVersion,
+		rawURL,
+		params.Width,
+		params.Height,
+		params.Quality,
+		params.RequestedFormat,
+		params.Fit,
+		params.Position,
+	)
 	hash := sha1Hex(cacheKeyData)
 
 	if targetContentType != "" {
@@ -122,9 +134,11 @@ func (cs *ImageService) ServeDownloadedImage(w http.ResponseWriter, r *http.Requ
 			rsp,
 			originalContentType,
 			targetContentType,
-			width,
-			height,
-			quality,
+			params.Width,
+			params.Height,
+			params.Quality,
+			params.Fit,
+			params.Position,
 			cachePath,
 		)
 		if err != nil {
@@ -146,41 +160,6 @@ func (cs *ImageService) ServeDownloadedImage(w http.ResponseWriter, r *http.Requ
 
 	res := val.(*imgResult)
 	_, _ = w.Write(res.Data)
-}
-
-func parseImageParams(r *http.Request) (int, int, int, string, error) {
-	widthStr := r.URL.Query().Get("width")
-	heightStr := r.URL.Query().Get("height")
-	qualityStr := r.URL.Query().Get("quality")
-	requestedFormat := r.URL.Query().Get("format")
-
-	width := 0
-	height := 0
-	quality := 85
-
-	var err error
-	if widthStr != "" {
-		widthStr = strings.TrimSuffix(widthStr, "px")
-		width, err = strconv.Atoi(widthStr)
-		if err != nil {
-			return 0, 0, 0, "", errors.New("invalid width")
-		}
-	}
-	if heightStr != "" {
-		heightStr = strings.TrimSuffix(heightStr, "px")
-		height, err = strconv.Atoi(heightStr)
-		if err != nil {
-			return 0, 0, 0, "", errors.New("invalid height")
-		}
-	}
-	if qualityStr != "" {
-		quality, err = strconv.Atoi(qualityStr)
-		if err != nil {
-			return 0, 0, 0, "", errors.New("invalid quality")
-		}
-	}
-
-	return width, height, quality, requestedFormat, nil
 }
 
 func buildTargetContentType(requestedFormat string) string {
@@ -209,6 +188,8 @@ func (cs *ImageService) processImage(
 	width int,
 	height int,
 	quality int,
+	fit string,
+	position string,
 	cachePath string,
 ) (*imgResult, error) {
 	var (
@@ -239,7 +220,7 @@ func (cs *ImageService) processImage(
 	}
 
 	if width > 0 || height > 0 {
-		img = resizePreservingAspect(img, width, height)
+		img = resizeWithFit(img, width, height, fit, position)
 	}
 
 	buf := new(bytes.Buffer)
@@ -276,39 +257,6 @@ func (cs *ImageService) processImage(
 	}
 
 	return result, nil
-}
-
-func resizePreservingAspect(img stdimage.Image, width, height int) stdimage.Image {
-	bounds := img.Bounds()
-	origWidth := bounds.Dx()
-	origHeight := bounds.Dy()
-
-	targetWidth := origWidth
-	targetHeight := origHeight
-
-	if width > 0 && height > 0 {
-		aspectRatio := float64(origWidth) / float64(origHeight)
-		if float64(width)/aspectRatio <= float64(height) {
-			targetWidth = width
-			targetHeight = int(float64(width) / aspectRatio)
-		} else {
-			targetHeight = height
-			targetWidth = int(float64(height) * aspectRatio)
-		}
-	} else if width > 0 {
-		targetWidth = width
-		targetHeight = int(float64(width) * float64(origHeight) / float64(origWidth))
-	} else if height > 0 {
-		targetHeight = height
-		targetWidth = int(float64(height) * float64(origWidth) / float64(origHeight))
-	}
-
-	if targetWidth > origWidth || targetHeight > origHeight {
-		targetWidth = origWidth
-		targetHeight = origHeight
-	}
-
-	return transform.Resize(img, targetWidth, targetHeight, transform.Lanczos)
 }
 
 func (cs *ImageService) openDownloadedFile(

@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.5
+API version: 0.9.6
 Contact: sales@singulatron.com
 */
 
@@ -66,6 +66,8 @@ type ApiServeDownloadedImageRequest struct {
 	height *int32
 	quality *int32
 	format *string
+	fit *string
+	position *string
 }
 
 // Optional width to resize the image to
@@ -89,6 +91,18 @@ func (r ApiServeDownloadedImageRequest) Quality(quality int32) ApiServeDownloade
 // Optional output format: webp, jpeg, png, gif, avif
 func (r ApiServeDownloadedImageRequest) Format(format string) ApiServeDownloadedImageRequest {
 	r.format = &format
+	return r
+}
+
+// Resize strategy: contain|cover (default contain)
+func (r ApiServeDownloadedImageRequest) Fit(fit string) ApiServeDownloadedImageRequest {
+	r.fit = &fit
+	return r
+}
+
+// Crop anchor when fit&#x3D;cover: center|top|bottom|left|right|top-left|top-right|bottom-left|bottom-right
+func (r ApiServeDownloadedImageRequest) Position(position string) ApiServeDownloadedImageRequest {
+	r.position = &position
 	return r
 }
 
@@ -146,6 +160,12 @@ func (a *ImageSvcAPIService) ServeDownloadedImageExecute(r ApiServeDownloadedIma
 	}
 	if r.format != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "format", r.format, "", "")
+	}
+	if r.fit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fit", r.fit, "", "")
+	}
+	if r.position != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "position", r.position, "", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -239,6 +259,8 @@ type ApiServeUploadedImageRequest struct {
 	fileId string
 	width *int32
 	height *int32
+	fit *string
+	position *string
 }
 
 // Optional width to resize the image to
@@ -250,6 +272,18 @@ func (r ApiServeUploadedImageRequest) Width(width int32) ApiServeUploadedImageRe
 // Optional height to resize the image to
 func (r ApiServeUploadedImageRequest) Height(height int32) ApiServeUploadedImageRequest {
 	r.height = &height
+	return r
+}
+
+// Resize strategy: contain|cover (default contain)
+func (r ApiServeUploadedImageRequest) Fit(fit string) ApiServeUploadedImageRequest {
+	r.fit = &fit
+	return r
+}
+
+// Crop anchor when fit&#x3D;cover: center|top|bottom|left|right|top-left|top-right|bottom-left|bottom-right
+func (r ApiServeUploadedImageRequest) Position(position string) ApiServeUploadedImageRequest {
+	r.position = &position
 	return r
 }
 
@@ -301,6 +335,12 @@ func (a *ImageSvcAPIService) ServeUploadedImageExecute(r ApiServeUploadedImageRe
 	}
 	if r.height != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "height", r.height, "", "")
+	}
+	if r.fit != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "fit", r.fit, "", "")
+	}
+	if r.position != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "position", r.position, "", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
