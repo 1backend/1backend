@@ -58,3 +58,12 @@ func (p *LocalProvider) NewWriter(ctx context.Context, filePath string) (io.Writ
 	}
 	return os.Create(absPath)
 }
+
+func (p *LocalProvider) Delete(ctx context.Context, filePath string) error {
+	absPath := filepath.Join(p.uploadFolder, filePath)
+	err := os.Remove(absPath)
+	if os.IsNotExist(err) {
+		return nil
+	}
+	return err
+}

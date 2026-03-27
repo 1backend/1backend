@@ -1,0 +1,73 @@
+---
+id: delete-upload
+title: "Delete an Uploaded File"
+description: "Deletes an uploaded file and its metadata by `fileId`."
+sidebar_label: "Delete an Uploaded File"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VU1v4zYQ/SvEnFpAkexmi0V1ahZJC6MBGtTrU2IgY2pscUORXJKy6wr674sRrdj1OgV6ycWWNF9vHvlmOqgoSK9cVNZACbekKVIQaETrtMWKKrFWmgSaSqgYREMRK4woVnvxzJZZ9Zw/mSfzF31tlacgYk3JchW2skxZymrI+ywc+UaFoKzJIQPryCNXnlVQQvJZDAGQgUOPDUXyAcrH7gznb4xpdgsZKH51GGvIwGBDUEKCBRn4hKmCMvqWMgiypgah7CDuHXuG6JXZQN8v2Tk4awIFtv80mfDfhaIJZSVCKyWFsG613kMG0ppIJnIQOqeVHPoqvgSO7E4qY1UpNqF+8Nx/VFwx4TugsqsvJCP0fd9n8OESEmW2qFUluEEK8f/UdydVOyDvrb9EyFtgpt+DWRhsY229+oeqd0Ty4Y0DMjaKtW3N+2H5+dIRzUwkb1CLOfkteXE35HwfSH0GgWTrVdwP2vlE6MnftLGG8nHJlz3ihmWVGJtvJSwzaCjW9ijEQYIcAcWo5iKpueiSwnrgOtxdkmjrNXsX2krUtQ2xnE6vrz8CFxzxzLm/1NIpqnP2Pu8diaeDyxOItdXa7qjisYMiOJRpJEX7QkagTDoXa2+bYQAtAnnuS9zbjTKCTOWsMjEfB0ZNWJE/joybww0eDgNeOUWn/qD9wLIya8s4+fxQDudHDSruOKCm8GtQZtNqjN6aXNrmJPfDTMxb56xnoSaS6hhdWRTTFcoXMhUHFNBnZyzczK4MRrUl0SjpLXOtJAXhNMa19Q23o5UkE4jxjPV+f7gX2+t88q9qoSyK3W6Xb0ybW78pDnGhwI3TV9f5JK9joxlDJN+EP9fzVO0INuxwsyGfK1sMLgXzpKJml+mn1AhkwNchwZ/kv+QfOaOzITZoTjCmPcNrZjGuGb6KcMZAd5TLO6+mwwWI9HcsnEZluI+Bze4gi0cYMzHP49YqD8tnmQErgN26boWBFl73PX/+2pJnWS4z2KJXuGICecGpwM8VlGvUgf6DiR8ODVU/iuMevAh4vMaGV9QWdctvkMEL7Y97sl/22SgIBpKMN1KSiydh302r/nRm3N7d332+gwzwoOejgjhfNj5wgYuozhWYUPBvn70R0nVJn33/6p9Mb0a8yj55M0nLvu+/AbI1Gyc=
+sidebar_class_name: "delete api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Delete an Uploaded File"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/file-svc/upload/{fileId}"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Deletes an uploaded file and its metadata by `fileId`.
+
+Requires the `file-svc:upload:delete` permission.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"File ID","in":"path","name":"fileId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"File deleted successfully","content":{"application/json":{"schema":{"additionalProperties":true,"type":"object"}}}},"400":{"description":"invalid request","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"404":{"description":"File not found","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

@@ -246,6 +246,12 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "1backend-api/delete-upload",
+          label: "Delete an Uploaded File",
+          className: "api-method delete",
+        },
+        {
+          type: "doc",
           id: "1backend-api/list-uploads",
           label: "List Uploads",
           className: "api-method post",

@@ -136,6 +136,11 @@ func (fs *FileService) RegisterRoutes(router *mux.Router) {
 	}))).
 		Methods("OPTIONS", "POST")
 
+	router.HandleFunc("/file-svc/upload/{fileId}", appl(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
+		fs.DeleteUpload(w, r)
+	}))).
+		Methods("OPTIONS", "DELETE")
+
 	// @todo
 	// Investigate why SkipLock is needed here.
 	// I placed it here because the serve proxy tests were deadlocking.

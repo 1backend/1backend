@@ -3933,7 +3933,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.9.6
+  version: 0.9.7
 paths:
   /chat-svc/events:
     get:
@@ -5223,6 +5223,50 @@ paths:
       security:
       - BearerAuth: []
       summary: Upload a File
+      tags:
+      - File Svc
+  /file-svc/upload/{fileId}:
+    delete:
+      consumes:
+      - application/json
+      description: |-
+        Deletes an uploaded file and its metadata by `fileId`.
+
+        Requires the `file-svc:upload:delete` permission.
+      operationId: deleteUpload
+      parameters:
+      - description: File ID
+        in: path
+        name: fileId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: File deleted successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: invalid request
+          schema:
+            $ref: '#/definitions/file_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/file_svc.ErrorResponse'
+        "404":
+          description: File not found
+          schema:
+            $ref: '#/definitions/file_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/file_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete an Uploaded File
       tags:
       - File Svc
   /file-svc/uploads:

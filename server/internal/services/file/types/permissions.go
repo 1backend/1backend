@@ -18,6 +18,7 @@ var (
 	// File Service - Upload Permissions
 	PermissionUploadCreate = "file-svc:upload:create"
 	PermissionUploadView   = "file-svc:upload:view"
+	PermissionUploadDelete = "file-svc:upload:delete"
 
 	// Admin Permission Group
 	AdminPermissions = []string{
@@ -27,5 +28,6 @@ var (
 		PermissionDownloadDelete,
 		PermissionUploadCreate,
 		PermissionUploadView,
+		PermissionUploadDelete,
 	}
 )
