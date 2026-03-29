@@ -195,3 +195,68 @@ func GetUrlAndTokenForEnv(cmd *cobra.Command, envShortName, appHost string) (str
 
 	return env.URL, selectedUser.TokensByAppHost[appHost], nil
 }
+
+func GetUrlAndTokenForEnvSelectedAppHost(cmd *cobra.Command, envShortName string) (string, string, error) {
+	conf, err := LoadConfig()
+	if err != nil {
+		return "", "", errors.Wrap(err, "failed to load config")
+	}
+
+	if conf.Environments == nil {
+		return "", "", fmt.Errorf("no environments configured")
+	}
+
+	env, ok := conf.Environments[envShortName]
+	if !ok {
+		return "", "", fmt.Errorf("failed to find env '%s'", envShortName)
+	}
+
+	if env.URL == "" {
+		return "", "", fmt.Errorf("env '%s' has no URL configured", envShortName)
+	}
+
+	if env.SelectedUser == "" {
+		return "", "", fmt.Errorf("no user selected in env '%s'", envShortName)
+	}
+
+	if env.Users == nil {
+		return "", "", fmt.Errorf("no stored users for env '%s'", envShortName)
+	}
+
+	selectedUser, ok := env.Users[env.SelectedUser]
+	if !ok {
+		return "", "", fmt.Errorf(
+			"cannot find selected user '%s' in env '%s'",
+			env.SelectedUser,
+			envShortName,
+		)
+	}
+
+	if selectedUser.SelectedAppHost == "" {
+		return "", "", fmt.Errorf(
+			"selected user '%s' in env '%s' has no selected app host",
+			env.SelectedUser,
+			envShortName,
+		)
+	}
+
+	if selectedUser.TokensByAppHost == nil {
+		return "", "", fmt.Errorf(
+			"selected user '%s' in env '%s' has no tokens stored",
+			env.SelectedUser,
+			envShortName,
+		)
+	}
+
+	token := selectedUser.TokensByAppHost[selectedUser.SelectedAppHost]
+	if token == "" {
+		return "", "", fmt.Errorf(
+			"selected user '%s' in env '%s' has no token for selected app host '%s'",
+			env.SelectedUser,
+			envShortName,
+			selectedUser.SelectedAppHost,
+		)
+	}
+
+	return env.URL, token, nil
+}

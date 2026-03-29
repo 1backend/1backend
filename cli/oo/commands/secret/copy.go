@@ -25,12 +25,12 @@ func Copy(cmd *cobra.Command, fromEnv string, toEnv string) error {
 
 	ctx := cmd.Context()
 
-	fromURL, fromToken, err := util.GetUrlAndTokenForEnv(cmd, fromEnv, "")
+	fromURL, fromToken, err := util.GetUrlAndTokenForEnvSelectedAppHost(cmd, fromEnv)
 	if err != nil {
 		return errors.Wrapf(err, "failed to load source environment '%s'", fromEnv)
 	}
 
-	toURL, toToken, err := util.GetUrlAndTokenForEnv(cmd, toEnv, "")
+	toURL, toToken, err := util.GetUrlAndTokenForEnvSelectedAppHost(cmd, toEnv)
 	if err != nil {
 		return errors.Wrapf(err, "failed to load destination environment '%s'", toEnv)
 	}
