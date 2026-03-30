@@ -180,6 +180,20 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+// Publish user register event (non-blocking)
+if s.options.PubSub != nil {
+    evt := map[string]any{
+        "appId":  token.AppId,
+        "userId": token.UserId,
+        "slug":   req.Slug,
+        "device": req.Device,
+        "time":   time.Now().UTC(),
+    }
+    payload, _ := json.Marshal(evt)
+    if _, perr := s.options.PubSub.Publish(r.Context(), "user.register", payload); perr != nil {
+        logger.Error("Failed to publish register event", slog.Any("error", perr))
+    }
+}
 	bs, _ := json.Marshal(user.RegisterResponse{
 		Token: token,
 	})
