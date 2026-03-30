@@ -20,10 +20,10 @@ import (
 	"github.com/lib/pq"
 )
 
-const channelName = "ob_pubsub_v1"
+const channelName = "ob_pubsub_channel"
 
 const (
-	defaultTableName = "ob_pubsub_messages_v2"
+	defaultTableName = "ob_pubsub"
 	defaultLeaseSec  = 30
 	defaultNackDelay = 2
 )
@@ -72,7 +72,7 @@ func NewPGPubSub(connectionString string, db *sql.DB, tableName string) (*PGPubS
 	ps := &PGPubSub{
 		db:       db,
 		listener: listener,
-		msgTable: tableName,
+		msgTable: tableName + "_messages",
 		subTable: tableName + "_subscriptions",
 		delTable: tableName + "_deliveries",
 		subbers:  map[*pgSubscription]struct{}{},
@@ -306,7 +306,7 @@ type dbMessage struct {
 
 func ensureSchema(db *sql.DB, table string) error {
 	_, err := db.Exec(fmt.Sprintf(`
-		CREATE TABLE IF NOT EXISTS %s (
+		CREATE TABLE IF NOT EXISTS %s_messages (
 			id BIGSERIAL PRIMARY KEY,
 			topic TEXT NOT NULL,
 			payload BYTEA NOT NULL,
@@ -320,7 +320,7 @@ func ensureSchema(db *sql.DB, table string) error {
 			PRIMARY KEY (id, topic)
 		);
 		CREATE TABLE IF NOT EXISTS %s_deliveries (
-			message_id BIGINT NOT NULL REFERENCES %s(id) ON DELETE CASCADE,
+			message_id BIGINT NOT NULL REFERENCES %s_messages(id) ON DELETE CASCADE,
 			subscriber_id TEXT NOT NULL,
 			topic TEXT NOT NULL,
 			status TEXT NOT NULL,
@@ -331,7 +331,7 @@ func ensureSchema(db *sql.DB, table string) error {
 			FOREIGN KEY (subscriber_id, topic)
 				REFERENCES %s_subscriptions(id, topic) ON DELETE CASCADE
 		);
-		CREATE INDEX IF NOT EXISTS %s_topic_created_idx ON %s(topic, created_at, id);
+		CREATE INDEX IF NOT EXISTS %s_topic_created_idx ON %s_messages(topic, created_at, id);
 		CREATE INDEX IF NOT EXISTS %s_sub_topic_idx ON %s_subscriptions(topic);
 		CREATE INDEX IF NOT EXISTS %s_del_claim_idx ON %s_deliveries(subscriber_id, status, available_at, message_id);
 	`, table, table, table, table, table, table, table, table, table, table, table))
