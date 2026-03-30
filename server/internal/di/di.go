@@ -306,6 +306,28 @@ func BigBang(options *universe.Options) (*Universe, error) {
 		}
 	}
 
+	if options.PubSubFactory == nil {
+		pc, err := infra.NewPubSubFactory(infra.DataStoreConfig{
+			HomeDir:            options.HomeDir,
+			Test:               options.Test,
+			TablePrefix:        options.DbPrefix,
+			Db:                 options.Db,
+			DbConnectionString: options.DbConnectionString,
+		})
+		if err != nil {
+			return nil, err
+		}
+		options.PubSubFactory = pc
+	}
+
+	if options.PubSub == nil {
+		ps, err := options.PubSubFactory.Create("default")
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to create pubsub")
+		}
+		options.PubSub = ps
+	}
+
 	if options.ClientFactory == nil {
 		options.ClientFactory = client.NewApiClientFactory(options.Url)
 	}

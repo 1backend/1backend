@@ -9,6 +9,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/infra"
 	"github.com/1backend/1backend/sdk/go/lock"
+	"github.com/1backend/1backend/sdk/go/pubsub"
 	"github.com/1backend/1backend/server/internal/clients/llamacpp"
 )
 
@@ -91,6 +92,12 @@ type Options struct {
 
 	// DataStoreFactory can create database tables
 	DataStoreFactory infra.DataStoreFactory
+
+	// PubSubFactory can create local or postgres pubsub instances.
+	PubSubFactory infra.PubSubFactory
+
+	// PubSub is the default server-level publish/subscribe instance.
+	PubSub pubsub.PubSub
 
 	// HomeDir is the 1Backend config/data/uploads/downloads directory.
 	// For tests it's something like /tmp/1backend-2698538720/
