@@ -41,11 +41,18 @@ type LocalPubSub struct {
 	subbers map[*localSubscription]struct{}
 
 	acked map[string]map[string]bool
+	meta  map[string]map[string]deliveryMeta
 }
 
 type ackState struct {
 	// subscriberId -> messageId -> acked
-	Acked map[string]map[string]bool `json:"acked"`
+	Acked map[string]map[string]bool         `json:"acked"`
+	Meta  map[string]map[string]deliveryMeta `json:"meta"`
+}
+
+type deliveryMeta struct {
+	Attempts    int       `json:"attempts"`
+	AvailableAt time.Time `json:"available_at"`
 }
 
 type localSubscription struct {
@@ -58,6 +65,8 @@ type localSubscription struct {
 	closeCh  chan struct{}
 	once     sync.Once
 	inflight map[string]struct{}
+	messages map[string]pubsub.Message
+	order    []string
 }
 
 func NewLocalPubSub(filePath string) (*LocalPubSub, error) {
@@ -67,10 +76,14 @@ func NewLocalPubSub(filePath string) (*LocalPubSub, error) {
 
 	ackPath := filePath + ".acks.json"
 	acked := map[string]map[string]bool{}
+	meta := map[string]map[string]deliveryMeta{}
 	if b, err := os.ReadFile(ackPath); err == nil && len(b) > 0 {
 		st := ackState{}
 		if json.Unmarshal(b, &st) == nil && st.Acked != nil {
 			acked = st.Acked
+		}
+		if st.Meta != nil {
+			meta = st.Meta
 		}
 	}
 
@@ -87,6 +100,7 @@ func NewLocalPubSub(filePath string) (*LocalPubSub, error) {
 		filePath: filePath,
 		ackPath:  ackPath,
 		acked:    acked,
+		meta:     meta,
 		f:        f,
 		subbers:  map[*localSubscription]struct{}{},
 	}, nil
@@ -132,7 +146,7 @@ func (ps *LocalPubSub) Publish(ctx context.Context, topic string, payload []byte
 }
 
 func (ps *LocalPubSub) saveAckStateLocked() error {
-	b, err := json.Marshal(ackState{Acked: ps.acked})
+	b, err := json.Marshal(ackState{Acked: ps.acked, Meta: ps.meta})
 	if err != nil {
 		return err
 	}
@@ -183,6 +197,8 @@ func (ps *LocalPubSub) Subscribe(ctx context.Context, subscriberId, topic string
 		offset:   0,
 		closeCh:  make(chan struct{}),
 		inflight: map[string]struct{}{},
+		messages: map[string]pubsub.Message{},
+		order:    []string{},
 	}
 	ps.subbers[sub] = struct{}{}
 
@@ -206,7 +222,11 @@ func (s *localSubscription) Ack(ctx context.Context, messageID string) error {
 		s.ps.acked[s.id] = map[string]bool{}
 	}
 	s.ps.acked[s.id][messageID] = true
+	if s.ps.meta[s.id] != nil {
+		delete(s.ps.meta[s.id], messageID)
+	}
 	delete(s.inflight, messageID)
+	delete(s.messages, messageID)
 
 	return s.ps.saveAckStateLocked()
 }
@@ -223,12 +243,22 @@ func (s *localSubscription) Nack(ctx context.Context, messageID string) error {
 	}
 
 	delete(s.inflight, messageID)
-
-	if s.ps.acked[s.id] != nil {
-		delete(s.ps.acked[s.id], messageID)
-	}
+	s.ps.setMessageBackoffLocked(s.id, messageID, time.Now().UTC())
 
 	return s.ps.saveAckStateLocked()
+}
+
+func (ps *LocalPubSub) ReadDeliveryDiagnostics(ctx context.Context, subscriberID, topic, messageID string) (pubsub.DeliveryDiagnostics, error) {
+	ps.mu.Lock()
+	defer ps.mu.Unlock()
+
+	_ = ctx
+	_ = topic // Local backend stores diagnostics per subscriber/message; topic is included for API parity.
+
+	meta := ps.meta[subscriberID][messageID]
+	return pubsub.DeliveryDiagnostics{
+		Attempts: meta.Attempts,
+	}, nil
 }
 
 func (s *localSubscription) isAcked(messageID string) bool {
@@ -238,6 +268,29 @@ func (s *localSubscription) isAcked(messageID string) bool {
 		return false
 	}
 	return s.ps.acked[s.id][messageID]
+}
+
+func nackBackoffDuration(attempts int) time.Duration {
+	if attempts < 1 {
+		attempts = 1
+	}
+	backoffMillis := 100 * (1 << (attempts - 1))
+	if backoffMillis > 5000 {
+		backoffMillis = 5000
+	}
+	return time.Duration(backoffMillis) * time.Millisecond
+}
+
+func (ps *LocalPubSub) setMessageBackoffLocked(subscriberID, messageID string, now time.Time) {
+	if ps.meta[subscriberID] == nil {
+		ps.meta[subscriberID] = map[string]deliveryMeta{}
+	}
+	meta := ps.meta[subscriberID][messageID]
+	if meta.Attempts < 1 {
+		meta.Attempts = 1
+	}
+	meta.AvailableAt = now.Add(nackBackoffDuration(meta.Attempts))
+	ps.meta[subscriberID][messageID] = meta
 }
 
 func (ps *LocalPubSub) Close() error {
@@ -278,11 +331,15 @@ func (s *localSubscription) Unsubscribe() error {
 }
 
 func (s *localSubscription) run(ctx context.Context) {
-	ticker := time.NewTicker(200 * time.Millisecond)
+	ticker := time.NewTicker(25 * time.Millisecond)
 	defer ticker.Stop()
 
 	for {
 		if err := s.forwardNewEntries(); err != nil {
+			_ = s.Unsubscribe()
+			return
+		}
+		if err := s.deliverAvailable(); err != nil {
 			_ = s.Unsubscribe()
 			return
 		}
@@ -314,9 +371,9 @@ func (s *localSubscription) forwardNewEntries() error {
 		line, err := r.ReadBytes('\n')
 		if err != nil {
 			if errors.Is(err, io.EOF) {
-				offset, err := f.Seek(0, io.SeekCurrent)
-				if err != nil {
-					return err
+				offset, seekErr := f.Seek(0, io.SeekCurrent)
+				if seekErr != nil {
+					return seekErr
 				}
 				s.offset = offset
 				return nil
@@ -348,25 +405,74 @@ func (s *localSubscription) forwardNewEntries() error {
 		default:
 		}
 
-		if s.isAcked(entry.ID) {
+		s.ps.mu.Lock()
+		if s.ps.acked[s.id] != nil && s.ps.acked[s.id][entry.ID] {
+			s.ps.mu.Unlock()
 			continue
 		}
+		if _, exists := s.messages[entry.ID]; !exists {
+			s.messages[entry.ID] = pubsub.Message{
+				ID:      entry.ID,
+				Topic:   entry.Topic,
+				Payload: payload,
+			}
+			s.order = append(s.order, entry.ID)
+		}
+		s.ps.mu.Unlock()
+	}
+}
+
+func (s *localSubscription) deliverAvailable() error {
+	for {
+		var message pubsub.Message
+		found := false
+		now := time.Now().UTC()
 
 		s.ps.mu.Lock()
-		s.inflight[entry.ID] = struct{}{}
+		for _, messageID := range s.order {
+			msg, exists := s.messages[messageID]
+			if !exists {
+				continue
+			}
+			if s.ps.acked[s.id] != nil && s.ps.acked[s.id][messageID] {
+				delete(s.messages, messageID)
+				continue
+			}
+			if _, inflight := s.inflight[messageID]; inflight {
+				continue
+			}
+			meta := s.ps.meta[s.id][messageID]
+			if !meta.AvailableAt.IsZero() && now.Before(meta.AvailableAt) {
+				continue
+			}
+			if s.ps.meta[s.id] == nil {
+				s.ps.meta[s.id] = map[string]deliveryMeta{}
+			}
+			meta.Attempts++
+			meta.AvailableAt = now.Add(nackBackoffDuration(meta.Attempts))
+			s.ps.meta[s.id][messageID] = meta
+			s.inflight[messageID] = struct{}{}
+			if err := s.ps.saveAckStateLocked(); err != nil {
+				s.ps.mu.Unlock()
+				return err
+			}
+			message = msg
+			found = true
+			break
+		}
 		s.ps.mu.Unlock()
 
+		if !found {
+			return nil
+		}
+
 		select {
-		case s.ch <- pubsub.Message{
-			ID:      entry.ID,
-			Topic:   entry.Topic,
-			Payload: payload,
-		}:
+		case s.ch <- message:
 		default:
-			// Channel full => keep message unacked for retry on next poll.
 			s.ps.mu.Lock()
-			delete(s.inflight, entry.ID)
+			delete(s.inflight, message.ID)
 			s.ps.mu.Unlock()
+			return nil
 		}
 	}
 }
