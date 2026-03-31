@@ -52,6 +52,7 @@ type localSubscription struct {
 	ps       *LocalPubSub
 	topic    string
 	id       string
+	backfill *time.Time
 	ch       chan pubsub.Message
 	offset   int64
 	closeCh  chan struct{}
@@ -138,7 +139,7 @@ func (ps *LocalPubSub) saveAckStateLocked() error {
 	return os.WriteFile(ps.ackPath, b, 0644)
 }
 
-func (ps *LocalPubSub) Subscribe(ctx context.Context, subscriberId, topic string) (pubsub.Subscription, error) {
+func (ps *LocalPubSub) Subscribe(ctx context.Context, subscriberId, topic string, options ...pubsub.SubscribeOption) (pubsub.Subscription, error) {
 	if topic == "" {
 		return nil, errors.New("topic is empty")
 	}
@@ -171,10 +172,13 @@ func (ps *LocalPubSub) Subscribe(ctx context.Context, subscriberId, topic string
 		return nil, errors.New("pubsub closed")
 	}
 
+	subscribeOpts := pubsub.BuildSubscribeOptions(options)
+
 	sub := &localSubscription{
 		ps:       ps,
 		topic:    topic,
 		id:       subscriberId,
+		backfill: subscribeOpts.BackfillSince,
 		ch:       make(chan pubsub.Message, 32),
 		offset:   0,
 		closeCh:  make(chan struct{}),
@@ -328,6 +332,9 @@ func (s *localSubscription) forwardNewEntries() error {
 			continue
 		}
 		if entry.ID == "" {
+			continue
+		}
+		if s.backfill != nil && entry.Published.Before(*s.backfill) {
 			continue
 		}
 		payload, err := base64.StdEncoding.DecodeString(entry.Payload)

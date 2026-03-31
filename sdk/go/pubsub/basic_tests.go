@@ -135,6 +135,32 @@ func TestMultiplePublishesAreDelivered(t *testing.T, ps PubSub) {
 	}
 }
 
+func TestSubscribeBackfillSinceFiltersOldMessages(t *testing.T, ps PubSub) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	topic := "topic.backfill-since"
+
+	_, err := ps.Publish(ctx, topic, []byte("old"))
+	require.NoError(t, err)
+
+	time.Sleep(20 * time.Millisecond)
+	backfillSince := time.Now().UTC()
+	time.Sleep(20 * time.Millisecond)
+
+	sub, err := ps.Subscribe(ctx, "a", topic, WithBackfillSince(backfillSince))
+	require.NoError(t, err)
+	defer sub.Unsubscribe()
+
+	_, err = ps.Publish(ctx, topic, []byte("new"))
+	require.NoError(t, err)
+
+	msg := mustReceiveMessage(t, ctx, sub)
+	require.Equal(t, []byte("new"), msg.Payload)
+	require.NoError(t, sub.Ack(ctx, msg.ID))
+	mustNotReceiveMessage(t, sub, 300*time.Millisecond)
+}
+
 func TestUnsubscribeOneSubscriberDoesNotAffectOthers(t *testing.T, ps PubSub) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

@@ -114,7 +114,7 @@ func (ps *PGPubSub) Publish(ctx context.Context, topic string, payload []byte) (
 	return strconv.FormatInt(id, 10), nil
 }
 
-func (ps *PGPubSub) Subscribe(ctx context.Context, subscriberId string, topic string) (pubsub.Subscription, error) {
+func (ps *PGPubSub) Subscribe(ctx context.Context, subscriberId string, topic string, options ...pubsub.SubscribeOption) (pubsub.Subscription, error) {
 	if topic == "" {
 		return nil, errors.New("topic is empty")
 	}
@@ -148,6 +148,8 @@ func (ps *PGPubSub) Subscribe(ctx context.Context, subscriberId string, topic st
 		return nil, errors.New("pubsub closed")
 	}
 
+	subscribeOpts := pubsub.BuildSubscribeOptions(options)
+
 	sub := &pgSubscription{
 		ps:      ps,
 		topic:   topic,
@@ -155,7 +157,7 @@ func (ps *PGPubSub) Subscribe(ctx context.Context, subscriberId string, topic st
 		ch:      make(chan pubsub.Message, 32),
 		closeCh: make(chan struct{}),
 	}
-	if err := ps.ensureSubscriber(ctx, sub.id, sub.topic); err != nil {
+	if err := ps.ensureSubscriber(ctx, sub.id, sub.topic, subscribeOpts.BackfillSince); err != nil {
 		return nil, err
 	}
 	ps.subbers[sub] = struct{}{}
@@ -404,7 +406,7 @@ func (ps *PGPubSub) nack(ctx context.Context, subID, topic string, messageID int
 	return nil
 }
 
-func (ps *PGPubSub) ensureSubscriber(ctx context.Context, subID, topic string) error {
+func (ps *PGPubSub) ensureSubscriber(ctx context.Context, subID, topic string, backfillSince *time.Time) error {
 	_, err := ps.db.ExecContext(ctx, fmt.Sprintf(`
         INSERT INTO %s (id, topic, created_at, last_seen)
         VALUES ($1, $2, NOW(), NOW())
@@ -415,7 +417,7 @@ func (ps *PGPubSub) ensureSubscriber(ctx context.Context, subID, topic string) e
 		return err
 	}
 
-	_, err = ps.db.ExecContext(ctx, fmt.Sprintf(`
+	query := fmt.Sprintf(`
         INSERT INTO %s (message_id, subscriber_id, topic, status, attempts, available_at)
         SELECT m.id, $1, $2, 'pending', 0, NOW()
         FROM %s m
@@ -425,8 +427,15 @@ func (ps *PGPubSub) ensureSubscriber(ctx context.Context, subID, topic string) e
             WHERE d.message_id = m.id
               AND d.subscriber_id = $1
               AND d.topic = $2
-          )
-    `, ps.delTable, ps.msgTable, ps.delTable), subID, topic)
+          )`, ps.delTable, ps.msgTable, ps.delTable)
+
+	args := []any{subID, topic}
+	if backfillSince != nil {
+		query += "\n          AND m.created_at >= $3"
+		args = append(args, backfillSince.UTC())
+	}
+
+	_, err = ps.db.ExecContext(ctx, query, args...)
 
 	return err
 }
