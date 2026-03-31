@@ -72,6 +72,7 @@ func TestAll(t *testing.T) {
 		"SubscribeRejectsEmptySubscriberID":                   pubsub.TestSubscribeRejectsEmptySubscriberID,
 		"SubscribeRejectsEmptyTopic":                          pubsub.TestSubscribeRejectsEmptyTopic,
 		"PublishRejectsEmptyTopic":                            pubsub.TestPublishRejectsEmptyTopic,
+		"SubscribeBackfillSinceFiltersOldMessages":            pubsub.TestSubscribeBackfillSinceFiltersOldMessages,
 	}
 
 	for testName, testFn := range tests {

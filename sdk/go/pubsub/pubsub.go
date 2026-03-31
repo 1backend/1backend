@@ -7,7 +7,10 @@
  */
 package pubsub
 
-import "context"
+import (
+	"context"
+	"time"
+)
 
 type Message struct {
 	ID      string
@@ -22,8 +25,32 @@ type Subscription interface {
 	Nack(ctx context.Context, messageID string) error
 }
 
+type SubscribeOptions struct {
+	BackfillSince *time.Time
+}
+
+type SubscribeOption func(*SubscribeOptions)
+
+func WithBackfillSince(since time.Time) SubscribeOption {
+	s := since.UTC()
+	return func(opts *SubscribeOptions) {
+		opts.BackfillSince = &s
+	}
+}
+
+func BuildSubscribeOptions(options []SubscribeOption) SubscribeOptions {
+	opts := SubscribeOptions{}
+	for _, option := range options {
+		if option == nil {
+			continue
+		}
+		option(&opts)
+	}
+	return opts
+}
+
 type PubSub interface {
 	Publish(ctx context.Context, topic string, payload []byte) (string, error)
-	Subscribe(ctx context.Context, subscriberId string, topic string) (Subscription, error)
+	Subscribe(ctx context.Context, subscriberId string, topic string, options ...SubscribeOption) (Subscription, error)
 	Close() error
 }
