@@ -12,12 +12,19 @@ package pubsub
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/require"
 )
+
+type pgDiagnosticsAccessor interface {
+	DiagnosticsDB() *sql.DB
+	DiagnosticsDeliveriesTable() string
+	DiagnosticsMessagesTable() string
+}
 
 func TestPublishSubscribe(t *testing.T, ps PubSub) {
 	topic := "topic.publish-subscribe"
@@ -161,6 +168,44 @@ func TestSubscribeBackfillSinceFiltersOldMessages(t *testing.T, ps PubSub) {
 	mustNotReceiveMessage(t, sub, 300*time.Millisecond)
 }
 
+func TestSubscribeBackfillSinceDoesNotCreateOldDeliveryRows(t *testing.T, ps PubSub) {
+	accessor, ok := any(ps).(pgDiagnosticsAccessor)
+	if !ok {
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	topic := "topic.backfill-no-old-deliveries"
+	subscriberID := "consumer.backfill-no-old-deliveries"
+
+	for i := 0; i < 3; i++ {
+		_, err := ps.Publish(ctx, topic, []byte(fmt.Sprintf("old-%d", i)))
+		require.NoError(t, err)
+	}
+
+	time.Sleep(20 * time.Millisecond)
+	backfillSince := time.Now().UTC()
+	time.Sleep(20 * time.Millisecond)
+
+	sub, err := ps.Subscribe(ctx, subscriberID, topic, WithBackfillSince(backfillSince))
+	require.NoError(t, err)
+	defer sub.Unsubscribe()
+
+	var oldDeliveries int
+	err = accessor.DiagnosticsDB().QueryRowContext(ctx, fmt.Sprintf(`
+		SELECT COUNT(*)
+		FROM %s d
+		JOIN %s m ON m.id = d.message_id
+		WHERE d.subscriber_id = $1
+		  AND d.topic = $2
+		  AND m.created_at < $3
+	`, accessor.DiagnosticsDeliveriesTable(), accessor.DiagnosticsMessagesTable()), subscriberID, topic, backfillSince).Scan(&oldDeliveries)
+	require.NoError(t, err)
+	require.Zero(t, oldDeliveries, "subscribe with backfill since should not enqueue old messages")
+}
+
 func TestUnsubscribeOneSubscriberDoesNotAffectOthers(t *testing.T, ps PubSub) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -268,6 +313,139 @@ func TestNackRequeuesMessage(t *testing.T, ps PubSub) {
 	second := mustReceiveMessage(t, ctx, sub)
 	require.Equal(t, first.ID, second.ID, "nacked message should be redelivered")
 	require.Equal(t, []byte("retry-me"), second.Payload)
+	require.NoError(t, sub.Ack(ctx, second.ID))
+}
+
+func TestNackBackoffIncreasesAcrossAttempts(t *testing.T, ps PubSub) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	sub, err := ps.Subscribe(ctx, "a", "topic.nack-backoff")
+	require.NoError(t, err)
+	defer sub.Unsubscribe()
+
+	_, err = ps.Publish(ctx, "topic.nack-backoff", []byte("retry-with-backoff"))
+	require.NoError(t, err)
+
+	first := mustReceiveMessage(t, ctx, sub)
+
+	nackAt1 := time.Now()
+	require.NoError(t, sub.Nack(ctx, first.ID))
+	second := mustReceiveMessage(t, ctx, sub)
+	delay1 := time.Since(nackAt1)
+	require.Equal(t, first.ID, second.ID)
+
+	nackAt2 := time.Now()
+	require.NoError(t, sub.Nack(ctx, second.ID))
+	third := mustReceiveMessage(t, ctx, sub)
+	delay2 := time.Since(nackAt2)
+	require.Equal(t, second.ID, third.ID)
+
+	require.Greater(t, delay2, delay1+20*time.Millisecond, "expected exponential backoff to increase between retries")
+	require.NoError(t, sub.Ack(ctx, third.ID))
+}
+
+func TestRetryWithoutNackUsesBackoff(t *testing.T, ps PubSub) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	topic := "topic.retry-without-nack-backoff"
+	subscriberID := "consumer.retry-without-nack-backoff"
+
+	sub, err := ps.Subscribe(ctx, subscriberID, topic)
+	require.NoError(t, err)
+
+	_, err = ps.Publish(ctx, topic, []byte("retry-after-processing-drop"))
+	require.NoError(t, err)
+
+	first := mustReceiveMessage(t, ctx, sub)
+	require.NoError(t, sub.Unsubscribe())
+
+	sub2, err := ps.Subscribe(ctx, subscriberID, topic)
+	require.NoError(t, err)
+	defer sub2.Unsubscribe()
+
+	mustNotReceiveMessage(t, sub2, 40*time.Millisecond)
+
+	second := mustReceiveMessage(t, ctx, sub2)
+	require.Equal(t, first.ID, second.ID)
+	require.Equal(t, []byte("retry-after-processing-drop"), second.Payload)
+	require.NoError(t, sub2.Ack(ctx, second.ID))
+}
+
+func TestRetryWithoutAckOrNackIncreasesBackoff(t *testing.T, ps PubSub) {
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
+	defer cancel()
+
+	topic := "topic.retry-without-ack-or-nack-increases-backoff"
+	subscriberID := "consumer.retry-without-ack-or-nack-increases-backoff"
+	payload := []byte("retry-progressive-delay")
+
+	sub1, err := ps.Subscribe(ctx, subscriberID, topic)
+	require.NoError(t, err)
+
+	_, err = ps.Publish(ctx, topic, payload)
+	require.NoError(t, err)
+
+	first := mustReceiveMessage(t, ctx, sub1)
+	require.NoError(t, sub1.Unsubscribe())
+
+	sub2, err := ps.Subscribe(ctx, subscriberID, topic)
+	require.NoError(t, err)
+	start1 := time.Now()
+	second := mustReceiveMessage(t, ctx, sub2)
+	delay1 := time.Since(start1)
+	require.Equal(t, first.ID, second.ID)
+	require.Equal(t, payload, second.Payload)
+	require.NoError(t, sub2.Unsubscribe())
+
+	sub3, err := ps.Subscribe(ctx, subscriberID, topic)
+	require.NoError(t, err)
+	defer sub3.Unsubscribe()
+
+	start2 := time.Now()
+	third := mustReceiveMessage(t, ctx, sub3)
+	delay2 := time.Since(start2)
+	require.Equal(t, second.ID, third.ID)
+	require.Equal(t, payload, third.Payload)
+
+	require.Greater(t, delay2, delay1+20*time.Millisecond, "expected retries without ack/nack to have increasing backoff")
+	require.NoError(t, sub3.Ack(ctx, third.ID))
+}
+
+func TestRetryIncrementsAttemptDiagnostics(t *testing.T, ps PubSub) {
+	ctx, cancel := context.WithTimeout(context.Background(), 8*time.Second)
+	defer cancel()
+
+	diagReader, ok := ps.(DeliveryDiagnosticsReader)
+	if !ok {
+		t.Skip("pubsub implementation does not expose delivery diagnostics")
+	}
+
+	topic := "topic.retry-increments-attempt-diagnostics"
+	subscriberID := "consumer.retry-increments-attempt-diagnostics"
+	payload := []byte("attempts")
+
+	sub, err := ps.Subscribe(ctx, subscriberID, topic)
+	require.NoError(t, err)
+	defer sub.Unsubscribe()
+
+	_, err = ps.Publish(ctx, topic, payload)
+	require.NoError(t, err)
+
+	first := mustReceiveMessage(t, ctx, sub)
+	d1, err := diagReader.ReadDeliveryDiagnostics(ctx, subscriberID, topic, first.ID)
+	require.NoError(t, err)
+	require.GreaterOrEqual(t, d1.Attempts, 1)
+
+	require.NoError(t, sub.Nack(ctx, first.ID))
+	second := mustReceiveMessage(t, ctx, sub)
+	require.Equal(t, first.ID, second.ID)
+
+	d2, err := diagReader.ReadDeliveryDiagnostics(ctx, subscriberID, topic, second.ID)
+	require.NoError(t, err)
+	require.Greater(t, d2.Attempts, d1.Attempts, "expected attempt counter to increase after retry")
+
 	require.NoError(t, sub.Ack(ctx, second.ID))
 }
 

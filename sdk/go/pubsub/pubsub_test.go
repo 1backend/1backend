@@ -66,13 +66,18 @@ func TestAll(t *testing.T) {
 		"MultiplePersistentMessagesSurviveRestart":                   pubsub.TestMultiplePersistentMessagesSurviveRestart,
 		"SameSubscriberIDAcrossTopicsIsIndependent":                  pubsub.TestSameSubscriberIDAcrossTopicsIsIndependent,
 		// "AckFromDifferentSubscriberFails":                            pubsub.TestAckFromDifferentSubscriberFails,
-		"AckTwiceFails":     pubsub.TestAckTwiceFails,
-		"NackAfterAckFails": pubsub.TestNackAfterAckFails,
+		"AckTwiceFails":                                       pubsub.TestAckTwiceFails,
+		"NackAfterAckFails":                                   pubsub.TestNackAfterAckFails,
+		"NackBackoffIncreasesAcrossAttempts":                  pubsub.TestNackBackoffIncreasesAcrossAttempts,
+		"RetryWithoutNackUsesBackoff":                         pubsub.TestRetryWithoutNackUsesBackoff,
+		"RetryWithoutAckOrNackIncreasesBackoff":               pubsub.TestRetryWithoutAckOrNackIncreasesBackoff,
+		"RetryIncrementsAttemptDiagnostics":                   pubsub.TestRetryIncrementsAttemptDiagnostics,
 		"ResubscribeSameConsumerReplacesPreviousSubscription": pubsub.TestResubscribeSameConsumerReplacesPreviousSubscription,
 		"SubscribeRejectsEmptySubscriberID":                   pubsub.TestSubscribeRejectsEmptySubscriberID,
 		"SubscribeRejectsEmptyTopic":                          pubsub.TestSubscribeRejectsEmptyTopic,
 		"PublishRejectsEmptyTopic":                            pubsub.TestPublishRejectsEmptyTopic,
 		"SubscribeBackfillSinceFiltersOldMessages":            pubsub.TestSubscribeBackfillSinceFiltersOldMessages,
+		"SubscribeBackfillSinceDoesNotCreateOldDeliveryRows":  pubsub.TestSubscribeBackfillSinceDoesNotCreateOldDeliveryRows,
 	}
 
 	for testName, testFn := range tests {
