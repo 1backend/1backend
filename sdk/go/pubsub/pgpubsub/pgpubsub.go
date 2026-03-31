@@ -26,6 +26,7 @@ const (
 	defaultTableName = "ob_pubsub"
 	defaultLeaseSec  = 30
 	defaultNackDelay = 2
+	fallbackPollWait = 5 * time.Second
 )
 
 type PGPubSub struct {
@@ -46,6 +47,7 @@ type pgSubscription struct {
 	ch      chan pubsub.Message
 	id      string
 	closeCh chan struct{}
+	wakeCh  chan struct{}
 	once    sync.Once
 }
 
@@ -156,11 +158,13 @@ func (ps *PGPubSub) Subscribe(ctx context.Context, subscriberId string, topic st
 		id:      subscriberId,
 		ch:      make(chan pubsub.Message, 32),
 		closeCh: make(chan struct{}),
+		wakeCh:  make(chan struct{}, 1),
 	}
 	if err := ps.ensureSubscriber(ctx, sub.id, sub.topic, subscribeOpts.BackfillSince); err != nil {
 		return nil, err
 	}
 	ps.subbers[sub] = struct{}{}
+	sub.signal()
 
 	go func() {
 		<-ctx.Done()
@@ -202,20 +206,21 @@ func (s *pgSubscription) Nack(ctx context.Context, messageID string) error {
 }
 
 func (s *pgSubscription) run() {
-	t := time.NewTicker(200 * time.Millisecond)
-	defer t.Stop()
-	for {
-		select {
-		case <-s.closeCh:
-			return
-		default:
-		}
+	fallback := time.NewTimer(fallbackPollWait)
+	defer fallback.Stop()
 
+	for {
 		msg, found, err := s.ps.claim(context.Background(), s.topic, s.id)
 		if err == nil && found {
 			select {
 			case <-s.closeCh:
+				_ = s.ps.nack(context.Background(), s.id, s.topic, msg.ID, 0)
+				s.ps.signalTopic(s.topic)
 				return
+			default:
+			}
+
+			select {
 			case s.ch <- pubsub.Message{
 				ID:      strconv.FormatInt(msg.ID, 10),
 				Topic:   msg.Topic,
@@ -224,13 +229,29 @@ func (s *pgSubscription) run() {
 			default:
 				_ = s.ps.nack(context.Background(), s.id, s.topic, msg.ID, defaultNackDelay)
 			}
+			if !fallback.Stop() {
+				select {
+				case <-fallback.C:
+				default:
+				}
+			}
+			fallback.Reset(fallbackPollWait)
 			continue
 		}
+
+		if !fallback.Stop() {
+			select {
+			case <-fallback.C:
+			default:
+			}
+		}
+		fallback.Reset(fallbackPollWait)
 
 		select {
 		case <-s.closeCh:
 			return
-		case <-t.C:
+		case <-s.wakeCh:
+		case <-fallback.C:
 		}
 	}
 }
@@ -292,11 +313,29 @@ func (ps *PGPubSub) consume() {
 			if closed {
 				return
 			}
+			ps.signalTopic("")
 			continue
 		}
 
-		// No decode / no dispatch here.
-		// Message delivery happens in sub.run() via ps.claim(...).
+		ps.signalTopic(n.Extra)
+	}
+}
+
+func (ps *PGPubSub) signalTopic(topic string) {
+	ps.mu.RLock()
+	defer ps.mu.RUnlock()
+
+	for sub := range ps.subbers {
+		if topic == "" || sub.topic == topic {
+			sub.signal()
+		}
+	}
+}
+
+func (s *pgSubscription) signal() {
+	select {
+	case s.wakeCh <- struct{}{}:
+	default:
 	}
 }
 
