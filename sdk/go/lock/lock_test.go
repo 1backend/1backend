@@ -1,6 +1,3 @@
-//go:build dist
-// +build dist
-
 package lock
 
 import (
@@ -11,20 +8,23 @@ import (
 	"time"
 
 	pglock "github.com/1backend/1backend/sdk/go/lock/pg"
+	"github.com/1backend/1backend/sdk/go/testutil"
 
 	"github.com/stretchr/testify/require"
 )
 
 func TestLocks(t *testing.T) {
+	pgConn := testutil.StartPostgres(t)
+
 	lockStores := map[string]func(instance any) (DistributedLock, DistributedLock){
 		"pgLock": func(instance any) (DistributedLock, DistributedLock) {
 			// Use the same PostgreSQL connection string as in your existing tests
-			db, err := sql.Open("postgres", "postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable")
+			db, err := sql.Open("postgres", pgConn)
 			require.NoError(t, err)
 			conn, err := db.Conn(context.Background())
 			require.NoError(t, err)
 
-			db2, err := sql.Open("postgres", "postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable")
+			db2, err := sql.Open("postgres", pgConn)
 			require.NoError(t, err)
 			conn2, err := db2.Conn(context.Background())
 			require.NoError(t, err)

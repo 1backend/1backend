@@ -1,6 +1,3 @@
-//go:build dist
-// +build dist
-
 /**
  * @license
  * Copyright (c) The Authors (see the AUTHORS file)
@@ -19,11 +16,14 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	localstore "github.com/1backend/1backend/sdk/go/datastore/localstore"
 	"github.com/1backend/1backend/sdk/go/datastore/sqlstore"
+	"github.com/1backend/1backend/sdk/go/testutil"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAll(t *testing.T) {
+	pgConn := testutil.StartPostgres(t)
+
 	stores := map[string]func(instance any) datastore.DataStore{
 		"localStore": func(instance any) datastore.DataStore {
 			store, err := localstore.NewLocalStore(instance, "")
@@ -34,7 +34,7 @@ func TestAll(t *testing.T) {
 			table := uuid.New().String()
 			table = strings.Replace(table, "-", "", -1)[0:10]
 
-			db, err := sql.Open("postgres", "postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable")
+			db, err := sql.Open("postgres", pgConn)
 			if err != nil {
 				require.NoError(t, err)
 			}
@@ -60,7 +60,7 @@ func TestAll(t *testing.T) {
 			table := uuid.New().String()
 			table = strings.Replace(table, "-", "", -1)[0:10]
 
-			db, err := sql.Open("postgres", "postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable")
+			db, err := sql.Open("postgres", pgConn)
 			if err != nil {
 				require.NoError(t, err)
 			}
