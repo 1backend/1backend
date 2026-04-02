@@ -231,7 +231,8 @@ func (s *localSubscription) Ack(ctx context.Context, messageID string) error {
 	return s.ps.saveAckStateLocked()
 }
 
-func (s *localSubscription) Nack(ctx context.Context, messageID string) error {
+func (s *localSubscription) Nack(ctx context.Context, messageID string, options ...pubsub.NackOption) error {
+	_ = pubsub.BuildNackOptions(options)
 	if messageID == "" {
 		return errors.New("message id is empty")
 	}

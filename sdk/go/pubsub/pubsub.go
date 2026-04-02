@@ -49,9 +49,39 @@ type Subscription interface {
 	// Ack marks a message as successfully handled so it will not be redelivered.
 	Ack(ctx context.Context, messageID string) error
 	// Nack marks a message as not successfully handled and requests redelivery.
+	// Options can be used to provide optional diagnostics such as a freeform
+	// nack message for backend troubleshooting.
 	// Compared to leaving a message inflight, Nack allows the backend to release
 	// it immediately and schedule retry policy without waiting for lease timeout.
-	Nack(ctx context.Context, messageID string) error
+	Nack(ctx context.Context, messageID string, options ...NackOption) error
+}
+
+// NackOptions controls optional behavior for nack operations.
+type NackOptions struct {
+	// Message is an optional freeform diagnostic reason for the nack.
+	Message string
+}
+
+// NackOption mutates NackOptions.
+type NackOption func(*NackOptions)
+
+// WithNackMessage sets a freeform diagnostic message for a nack.
+func WithNackMessage(message string) NackOption {
+	return func(opts *NackOptions) {
+		opts.Message = message
+	}
+}
+
+// BuildNackOptions materializes the final options from functional options.
+func BuildNackOptions(options []NackOption) NackOptions {
+	opts := NackOptions{}
+	for _, option := range options {
+		if option == nil {
+			continue
+		}
+		option(&opts)
+	}
+	return opts
 }
 
 // SubscribeOptions controls optional behavior when creating a subscription.
