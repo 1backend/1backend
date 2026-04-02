@@ -1,6 +1,3 @@
-//go:build dist
-// +build dist
-
 /**
  * @license
  * Copyright (c) The Authors (see the AUTHORS file)
@@ -19,12 +16,13 @@ import (
 	"github.com/1backend/1backend/sdk/go/pubsub"
 	"github.com/1backend/1backend/sdk/go/pubsub/localpubsub"
 	"github.com/1backend/1backend/sdk/go/pubsub/pgpubsub"
+	"github.com/1backend/1backend/sdk/go/testutil"
 	"github.com/stretchr/testify/require"
 )
 
-const pgConn = "postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
-
 func TestAll(t *testing.T) {
+	pgConn := testutil.StartPostgres(t)
+
 	factories := map[string]func(t *testing.T) pubsub.PubSub{
 		"localPubSub": func(t *testing.T) pubsub.PubSub {
 			ps, err := localpubsub.NewLocalPubSub("")
@@ -38,7 +36,7 @@ func TestAll(t *testing.T) {
 				require.NoError(t, db.Close())
 			})
 
-			require.NoError(t, db.Ping(), "postgres must be available for dist pubsub tests")
+			require.NoError(t, db.Ping(), "postgres must be available for pubsub tests")
 
 			uniqueTable := fmt.Sprintf("t_%d", time.Now().UnixNano())
 

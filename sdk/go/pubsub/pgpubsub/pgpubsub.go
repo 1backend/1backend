@@ -220,16 +220,17 @@ func (s *pgSubscription) Ack(ctx context.Context, messageID string) error {
 		}
 		return err
 	}
-	return s.ps.recordDeliveryEvent(ctx, id, s.id, s.topic, "acked", attempts)
+	return s.ps.recordDeliveryEvent(ctx, id, s.id, s.topic, "acked", attempts, "")
 }
 
-func (s *pgSubscription) Nack(ctx context.Context, messageID string) error {
+func (s *pgSubscription) Nack(ctx context.Context, messageID string, options ...pubsub.NackOption) error {
 	id, err := strconv.ParseInt(messageID, 10, 64)
 	if err != nil {
 		return err
 	}
+	nackOptions := pubsub.BuildNackOptions(options)
 
-	if err := s.ps.nack(ctx, s.id, s.topic, id, defaultNackDelay); err != nil {
+	if err := s.ps.nack(ctx, s.id, s.topic, id, defaultNackDelay, nackOptions.Message); err != nil {
 		return err
 	}
 	// Wake this process immediately; pg_notify wakes other listeners.
@@ -247,7 +248,7 @@ func (s *pgSubscription) run() {
 		if err == nil && found {
 			select {
 			case <-s.closeCh:
-				_ = s.ps.nack(context.Background(), s.id, s.topic, msg.ID, 0)
+				_ = s.ps.nack(context.Background(), s.id, s.topic, msg.ID, 0, "subscription closed before delivery")
 				s.ps.signalTopic(s.topic)
 				return
 			default:
@@ -260,7 +261,7 @@ func (s *pgSubscription) run() {
 				Payload: msg.Payload,
 			}:
 			default:
-				_ = s.ps.nack(context.Background(), s.id, s.topic, msg.ID, defaultNackDelay)
+				_ = s.ps.nack(context.Background(), s.id, s.topic, msg.ID, defaultNackDelay, "subscriber channel full")
 			}
 			if !fallback.Stop() {
 				select {
@@ -421,50 +422,123 @@ type dbMessage struct {
 }
 
 func ensureSchema(db *sql.DB, table string) error {
-	_, err := db.Exec(fmt.Sprintf(`
-		CREATE TABLE IF NOT EXISTS %s_messages (
-			id BIGSERIAL PRIMARY KEY,
-			topic TEXT NOT NULL,
-			payload BYTEA NOT NULL,
-			created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-		);
-		CREATE TABLE IF NOT EXISTS %s_subscriptions (
-			id TEXT NOT NULL,
-			topic TEXT NOT NULL,
-			created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-			last_seen TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-			PRIMARY KEY (id, topic)
-		);
-		CREATE TABLE IF NOT EXISTS %s_deliveries (
-			message_id BIGINT NOT NULL REFERENCES %s_messages(id) ON DELETE CASCADE,
-			subscriber_id TEXT NOT NULL,
-			topic TEXT NOT NULL,
-			status TEXT NOT NULL,
-			attempts INT NOT NULL DEFAULT 0,
-			available_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-			locked_at TIMESTAMPTZ,
-			PRIMARY KEY (message_id, subscriber_id, topic),
-			FOREIGN KEY (subscriber_id, topic)
-				REFERENCES %s_subscriptions(id, topic) ON DELETE CASCADE
-		);
-		CREATE TABLE IF NOT EXISTS %s_delivery_events (
-			id BIGSERIAL PRIMARY KEY,
-			message_id BIGINT NOT NULL REFERENCES %s_messages(id) ON DELETE CASCADE,
-			subscriber_id TEXT NOT NULL,
-			topic TEXT NOT NULL,
-			event_type TEXT NOT NULL,
-			attempts INT NOT NULL DEFAULT 0,
-			created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-		);
-		CREATE INDEX IF NOT EXISTS %s_topic_created_idx ON %s_messages(topic, created_at, id);
-		CREATE INDEX IF NOT EXISTS %s_sub_topic_idx ON %s_subscriptions(topic);
-		CREATE INDEX IF NOT EXISTS %s_del_claim_idx ON %s_deliveries(subscriber_id, status, available_at, message_id);
-		CREATE INDEX IF NOT EXISTS %s_evt_created_idx ON %s_delivery_events(created_at);
-		CREATE INDEX IF NOT EXISTS %s_evt_topic_created_idx ON %s_delivery_events(topic, created_at);
-		CREATE INDEX IF NOT EXISTS %s_evt_type_created_idx ON %s_delivery_events(event_type, created_at);
-		CREATE INDEX IF NOT EXISTS %s_evt_sub_created_idx ON %s_delivery_events(subscriber_id, created_at);
-	`, table, table, table, table, table, table, table, table, table, table, table, table, table, table, table, table, table, table, table, table, table))
-	return err
+	msgTable := table + "_messages"
+	subTable := table + "_subscriptions"
+	delTable := table + "_deliveries"
+	evTable := table + "_delivery_events"
+
+	statements := []string{
+		fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s ();", msgTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS id BIGSERIAL;", msgTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS topic TEXT;", msgTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS payload BYTEA;", msgTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ;", msgTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN topic SET NOT NULL;", msgTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN payload SET NOT NULL;", msgTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN created_at SET NOT NULL;", msgTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN created_at SET DEFAULT NOW();", msgTable),
+		fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s ();", subTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS id TEXT;", subTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS topic TEXT;", subTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ;", subTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS last_seen TIMESTAMPTZ;", subTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN id SET NOT NULL;", subTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN topic SET NOT NULL;", subTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN created_at SET NOT NULL;", subTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN created_at SET DEFAULT NOW();", subTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN last_seen SET NOT NULL;", subTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN last_seen SET DEFAULT NOW();", subTable),
+		fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s ();", delTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS message_id BIGINT;", delTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS subscriber_id TEXT;", delTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS topic TEXT;", delTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS status TEXT;", delTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS attempts INT;", delTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS available_at TIMESTAMPTZ;", delTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS locked_at TIMESTAMPTZ;", delTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN message_id SET NOT NULL;", delTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN subscriber_id SET NOT NULL;", delTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN topic SET NOT NULL;", delTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN status SET NOT NULL;", delTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN attempts SET NOT NULL;", delTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN attempts SET DEFAULT 0;", delTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN available_at SET NOT NULL;", delTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN available_at SET DEFAULT NOW();", delTable),
+		fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s ();", evTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS id BIGSERIAL;", evTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS message_id BIGINT;", evTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS subscriber_id TEXT;", evTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS topic TEXT;", evTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS event_type TEXT;", evTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS nack_message TEXT;", evTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS attempts INT;", evTable),
+		fmt.Sprintf("ALTER TABLE %s ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ;", evTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN message_id SET NOT NULL;", evTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN subscriber_id SET NOT NULL;", evTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN topic SET NOT NULL;", evTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN event_type SET NOT NULL;", evTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN attempts SET NOT NULL;", evTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN attempts SET DEFAULT 0;", evTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN created_at SET NOT NULL;", evTable),
+		fmt.Sprintf("ALTER TABLE %s ALTER COLUMN created_at SET DEFAULT NOW();", evTable),
+		fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s_topic_created_idx ON %s(topic, created_at, id);", table, msgTable),
+		fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s_sub_topic_idx ON %s(topic);", table, subTable),
+		fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s_del_claim_idx ON %s(subscriber_id, status, available_at, message_id);", table, delTable),
+		fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s_evt_created_idx ON %s(created_at);", table, evTable),
+		fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s_evt_topic_created_idx ON %s(topic, created_at);", table, evTable),
+		fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s_evt_type_created_idx ON %s(event_type, created_at);", table, evTable),
+		fmt.Sprintf("CREATE INDEX IF NOT EXISTS %s_evt_sub_created_idx ON %s(subscriber_id, created_at);", table, evTable),
+	}
+
+	constraints := []string{
+		fmt.Sprintf(`DO $$ BEGIN
+			IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '%s_messages_pkey') THEN
+				ALTER TABLE %s ADD CONSTRAINT %s_messages_pkey PRIMARY KEY (id);
+			END IF;
+		END $$;`, table, msgTable, table),
+		fmt.Sprintf(`DO $$ BEGIN
+			IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '%s_subscriptions_pkey') THEN
+				ALTER TABLE %s ADD CONSTRAINT %s_subscriptions_pkey PRIMARY KEY (id, topic);
+			END IF;
+		END $$;`, table, subTable, table),
+		fmt.Sprintf(`DO $$ BEGIN
+			IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '%s_deliveries_pkey') THEN
+				ALTER TABLE %s ADD CONSTRAINT %s_deliveries_pkey PRIMARY KEY (message_id, subscriber_id, topic);
+			END IF;
+		END $$;`, table, delTable, table),
+		fmt.Sprintf(`DO $$ BEGIN
+			IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '%s_delivery_events_pkey') THEN
+				ALTER TABLE %s ADD CONSTRAINT %s_delivery_events_pkey PRIMARY KEY (id);
+			END IF;
+		END $$;`, table, evTable, table),
+		fmt.Sprintf(`DO $$ BEGIN
+			IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '%s_deliveries_message_fk') THEN
+				ALTER TABLE %s ADD CONSTRAINT %s_deliveries_message_fk FOREIGN KEY (message_id) REFERENCES %s(id) ON DELETE CASCADE;
+			END IF;
+		END $$;`, table, delTable, table, msgTable),
+		fmt.Sprintf(`DO $$ BEGIN
+			IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '%s_deliveries_subscriber_fk') THEN
+				ALTER TABLE %s ADD CONSTRAINT %s_deliveries_subscriber_fk FOREIGN KEY (subscriber_id, topic) REFERENCES %s(id, topic) ON DELETE CASCADE;
+			END IF;
+		END $$;`, table, delTable, table, subTable),
+		fmt.Sprintf(`DO $$ BEGIN
+			IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '%s_delivery_events_message_fk') THEN
+				ALTER TABLE %s ADD CONSTRAINT %s_delivery_events_message_fk FOREIGN KEY (message_id) REFERENCES %s(id) ON DELETE CASCADE;
+			END IF;
+		END $$;`, table, evTable, table, msgTable),
+	}
+
+	for _, statement := range statements {
+		if _, err := db.Exec(statement); err != nil {
+			return err
+		}
+	}
+	for _, constraint := range constraints {
+		if _, err := db.Exec(constraint); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (ps *PGPubSub) claim(ctx context.Context, topic, subID string) (*dbMessage, bool, error) {
@@ -519,13 +593,13 @@ func (ps *PGPubSub) claim(ctx context.Context, topic, subID string) (*dbMessage,
 	if attempts > 1 {
 		eventType = "retried"
 	}
-	if err := ps.recordDeliveryEvent(ctx, msgID, subID, topic, eventType, attempts); err != nil {
+	if err := ps.recordDeliveryEvent(ctx, msgID, subID, topic, eventType, attempts, ""); err != nil {
 		return nil, false, err
 	}
 	return &msg, true, nil
 }
 
-func (ps *PGPubSub) nack(ctx context.Context, subID, topic string, messageID int64, delayMillis int) error {
+func (ps *PGPubSub) nack(ctx context.Context, subID, topic string, messageID int64, delayMillis int, nackMessage string) error {
 	var attempts int
 	err := ps.db.QueryRowContext(ctx, fmt.Sprintf(`
 		UPDATE %s d
@@ -546,7 +620,7 @@ func (ps *PGPubSub) nack(ctx context.Context, subID, topic string, messageID int
 		}
 		return err
 	}
-	return ps.recordDeliveryEvent(ctx, messageID, subID, topic, "nacked", attempts)
+	return ps.recordDeliveryEvent(ctx, messageID, subID, topic, "nacked", attempts, nackMessage)
 }
 
 func (ps *PGPubSub) ensureSubscriber(ctx context.Context, subID, topic string, backfillSince *time.Time) error {
@@ -622,10 +696,10 @@ func (ps *PGPubSub) ReadDeliveryDiagnostics(ctx context.Context, subscriberID, t
 	}, nil
 }
 
-func (ps *PGPubSub) recordDeliveryEvent(ctx context.Context, messageID int64, subscriberID, topic, eventType string, attempts int) error {
+func (ps *PGPubSub) recordDeliveryEvent(ctx context.Context, messageID int64, subscriberID, topic, eventType string, attempts int, nackMessage string) error {
 	_, err := ps.db.ExecContext(ctx, fmt.Sprintf(`
-		INSERT INTO %s (message_id, subscriber_id, topic, event_type, attempts, created_at)
-		VALUES ($1, $2, $3, $4, $5, NOW())
-	`, ps.evTable), messageID, subscriberID, topic, eventType, attempts)
+		INSERT INTO %s (message_id, subscriber_id, topic, event_type, attempts, nack_message, created_at)
+		VALUES ($1, $2, $3, $4, $5, NULLIF($6, ''), NOW())
+	`, ps.evTable), messageID, subscriberID, topic, eventType, attempts, nackMessage)
 	return err
 }

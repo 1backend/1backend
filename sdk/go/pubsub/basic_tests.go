@@ -1,6 +1,3 @@
-//go:build dist
-// +build dist
-
 /**
  * @license
  * Copyright (c) The Authors (see the AUTHORS file)
@@ -308,7 +305,7 @@ func TestNackRequeuesMessage(t *testing.T, ps PubSub) {
 	require.NoError(t, err)
 
 	first := mustReceiveMessage(t, ctx, sub)
-	require.NoError(t, sub.Nack(ctx, first.ID))
+	require.NoError(t, sub.Nack(ctx, first.ID, WithNackMessage("transient downstream timeout")))
 
 	second := mustReceiveMessage(t, ctx, sub)
 	require.Equal(t, first.ID, second.ID, "nacked message should be redelivered")
@@ -762,7 +759,7 @@ func TestNackAfterAckFails(t *testing.T, ps PubSub) {
 	msg := mustReceiveMessage(t, ctx, sub)
 
 	require.NoError(t, sub.Ack(ctx, msg.ID))
-	require.Error(t, sub.Nack(ctx, msg.ID))
+	require.Error(t, sub.Nack(ctx, msg.ID, WithNackMessage("already-acked")))
 }
 
 func TestSubscribeRejectsEmptySubscriberID(t *testing.T, ps PubSub) {
