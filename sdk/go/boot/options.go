@@ -28,6 +28,12 @@ type Options struct {
 	// Used for service registration.
 	SelfUrl string
 
+	// Db is the database engine (for example: postgres, mysql).
+	Db string
+
+	// DbConnectionString is the database connection string.
+	DbConnectionString string
+
 	// If set to true, expired tokens won't be autorefreshed by
 	// the server.
 	TokenAutoRefreshOff bool
@@ -61,6 +67,14 @@ func (o *Options) LoadEnvars() error {
 
 	if !o.Test && os.Getenv("OB_TEST") == "true" {
 		o.Test = true
+	}
+
+	if o.Db == "" {
+		o.Db = os.Getenv("OB_DB")
+	}
+
+	if o.DbConnectionString == "" {
+		o.DbConnectionString = os.Getenv("OB_DB_CONNECTION_STRING")
 	}
 
 	if o.ClientFactory == nil {
