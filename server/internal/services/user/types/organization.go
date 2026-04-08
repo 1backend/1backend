@@ -60,6 +60,14 @@ type SaveOrganizationResponse struct {
 	Token Token `json:"token" binding:"required"`
 }
 
+type ActivateOrganizationRequest struct {
+	OrganizationId string `json:"organizationId" binding:"required"`
+}
+
+type ActivateOrganizationResponse struct {
+	Token Token `json:"token" binding:"required"`
+}
+
 type ListOrganizationsRequest struct {
 	Ids []string `json:"ids"`
 
