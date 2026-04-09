@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.7
+API version: 0.9.8
 Contact: sales@singulatron.com
 */
 
@@ -23,8 +23,8 @@ var _ MappedNullable = &UserSvcSaveOrganizationResponse{}
 // UserSvcSaveOrganizationResponse struct for UserSvcSaveOrganizationResponse
 type UserSvcSaveOrganizationResponse struct {
 	Organization UserSvcOrganization `json:"organization"`
-	// Due to the nature of JWT tokens, the token must be refreshed after creating an organization, as dynamic organization roles are embedded in it.
-	Token UserSvcToken `json:"token"`
+	// Due to the nature of JWT tokens, the token may be refreshed after creating an organization, as dynamic organization roles are embedded in it.
+	Token *UserSvcToken `json:"token,omitempty"`
 }
 
 type _UserSvcSaveOrganizationResponse UserSvcSaveOrganizationResponse
@@ -33,10 +33,9 @@ type _UserSvcSaveOrganizationResponse UserSvcSaveOrganizationResponse
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcSaveOrganizationResponse(organization UserSvcOrganization, token UserSvcToken) *UserSvcSaveOrganizationResponse {
+func NewUserSvcSaveOrganizationResponse(organization UserSvcOrganization) *UserSvcSaveOrganizationResponse {
 	this := UserSvcSaveOrganizationResponse{}
 	this.Organization = organization
-	this.Token = token
 	return &this
 }
 
@@ -72,28 +71,36 @@ func (o *UserSvcSaveOrganizationResponse) SetOrganization(v UserSvcOrganization)
 	o.Organization = v
 }
 
-// GetToken returns the Token field value
+// GetToken returns the Token field value if set, zero value otherwise.
 func (o *UserSvcSaveOrganizationResponse) GetToken() UserSvcToken {
-	if o == nil {
+	if o == nil || IsNil(o.Token) {
 		var ret UserSvcToken
 		return ret
 	}
-
-	return o.Token
+	return *o.Token
 }
 
-// GetTokenOk returns a tuple with the Token field value
+// GetTokenOk returns a tuple with the Token field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *UserSvcSaveOrganizationResponse) GetTokenOk() (*UserSvcToken, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Token) {
 		return nil, false
 	}
-	return &o.Token, true
+	return o.Token, true
 }
 
-// SetToken sets field value
+// HasToken returns a boolean if a field has been set.
+func (o *UserSvcSaveOrganizationResponse) HasToken() bool {
+	if o != nil && !IsNil(o.Token) {
+		return true
+	}
+
+	return false
+}
+
+// SetToken gets a reference to the given UserSvcToken and assigns it to the Token field.
 func (o *UserSvcSaveOrganizationResponse) SetToken(v UserSvcToken) {
-	o.Token = v
+	o.Token = &v
 }
 
 func (o UserSvcSaveOrganizationResponse) MarshalJSON() ([]byte, error) {
@@ -107,7 +114,9 @@ func (o UserSvcSaveOrganizationResponse) MarshalJSON() ([]byte, error) {
 func (o UserSvcSaveOrganizationResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["organization"] = o.Organization
-	toSerialize["token"] = o.Token
+	if !IsNil(o.Token) {
+		toSerialize["token"] = o.Token
+	}
 	return toSerialize, nil
 }
 
@@ -117,7 +126,6 @@ func (o *UserSvcSaveOrganizationResponse) UnmarshalJSON(data []byte) (err error)
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 		"organization",
-		"token",
 	}
 
 	allProperties := make(map[string]interface{})

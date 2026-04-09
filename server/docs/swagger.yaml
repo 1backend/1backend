@@ -2999,6 +2999,20 @@ definitions:
       width:
         type: integer
     type: object
+  user_svc.ActivateOrganizationRequest:
+    properties:
+      organizationId:
+        type: string
+    required:
+    - organizationId
+    type: object
+  user_svc.ActivateOrganizationResponse:
+    properties:
+      token:
+        $ref: '#/definitions/user_svc.Token'
+    required:
+    - token
+    type: object
   user_svc.App:
     properties:
       host:
@@ -3644,6 +3658,14 @@ definitions:
     type: object
   user_svc.SaveOrganizationRequest:
     properties:
+      activate:
+        description: |-
+          If true, and a new organization is created, it becomes the
+          active organization for the caller's current device and a fresh token
+          is issued. If false, the active organization is not changed and no
+          new token is issued.
+        example: true
+        type: boolean
       assignCaller:
         description: |-
           If true, the caller (the user making the request) will be assigned
@@ -3674,11 +3696,10 @@ definitions:
         allOf:
         - $ref: '#/definitions/user_svc.Token'
         description: |-
-          Due to the nature of JWT tokens, the token must be refreshed after
+          Due to the nature of JWT tokens, the token may be refreshed after
           creating an organization, as dynamic organization roles are embedded in it.
     required:
     - organization
-    - token
     type: object
   user_svc.SavePermitsRequest:
     properties:
@@ -3933,7 +3954,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.9.7
+  version: 0.9.8
 paths:
   /chat-svc/events:
     get:
@@ -7310,6 +7331,44 @@ paths:
       security:
       - BearerAuth: []
       summary: Save Membership
+      tags:
+      - User Svc
+  /user-svc/organization/activate:
+    post:
+      consumes:
+      - application/json
+      description: Sets the caller user's active organization and returns a fresh
+        token reflecting the new active organization.
+      operationId: activateOrganization
+      parameters:
+      - description: Activate Organization Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.ActivateOrganizationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.ActivateOrganizationResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Activate Organization
       tags:
       - User Svc
   /user-svc/organizations:
