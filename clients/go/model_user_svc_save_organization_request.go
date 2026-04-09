@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.7
+API version: 0.9.8
 Contact: sales@singulatron.com
 */
 
@@ -22,6 +22,8 @@ var _ MappedNullable = &UserSvcSaveOrganizationRequest{}
 
 // UserSvcSaveOrganizationRequest struct for UserSvcSaveOrganizationRequest
 type UserSvcSaveOrganizationRequest struct {
+	// If true, and a new organization is created, it becomes the active organization for the caller's current device and a fresh token is issued. If false, the active organization is not changed and no new token is issued.
+	Activate *bool `json:"activate,omitempty"`
 	// If true, the caller (the user making the request) will be assigned the admin role for the organization. If false, no Membership or Enroll will be created.
 	AssignCaller *bool `json:"assignCaller,omitempty"`
 	Id *string `json:"id,omitempty"`
@@ -50,6 +52,38 @@ func NewUserSvcSaveOrganizationRequest(slug string) *UserSvcSaveOrganizationRequ
 func NewUserSvcSaveOrganizationRequestWithDefaults() *UserSvcSaveOrganizationRequest {
 	this := UserSvcSaveOrganizationRequest{}
 	return &this
+}
+
+// GetActivate returns the Activate field value if set, zero value otherwise.
+func (o *UserSvcSaveOrganizationRequest) GetActivate() bool {
+	if o == nil || IsNil(o.Activate) {
+		var ret bool
+		return ret
+	}
+	return *o.Activate
+}
+
+// GetActivateOk returns a tuple with the Activate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcSaveOrganizationRequest) GetActivateOk() (*bool, bool) {
+	if o == nil || IsNil(o.Activate) {
+		return nil, false
+	}
+	return o.Activate, true
+}
+
+// HasActivate returns a boolean if a field has been set.
+func (o *UserSvcSaveOrganizationRequest) HasActivate() bool {
+	if o != nil && !IsNil(o.Activate) {
+		return true
+	}
+
+	return false
+}
+
+// SetActivate gets a reference to the given bool and assigns it to the Activate field.
+func (o *UserSvcSaveOrganizationRequest) SetActivate(v bool) {
+	o.Activate = &v
 }
 
 // GetAssignCaller returns the AssignCaller field value if set, zero value otherwise.
@@ -214,6 +248,9 @@ func (o UserSvcSaveOrganizationRequest) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcSaveOrganizationRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Activate) {
+		toSerialize["activate"] = o.Activate
+	}
 	if !IsNil(o.AssignCaller) {
 		toSerialize["assignCaller"] = o.AssignCaller
 	}

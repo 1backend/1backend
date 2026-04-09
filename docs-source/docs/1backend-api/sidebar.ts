@@ -642,6 +642,12 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "1backend-api/activate-organization",
+          label: "Activate Organization",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
           id: "1backend-api/list-organizations",
           label: "List Organizations",
           className: "api-method post",

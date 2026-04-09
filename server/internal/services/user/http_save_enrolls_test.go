@@ -312,6 +312,7 @@ func TestSaveEnrollsOldAssignTests(t *testing.T) {
 		rsp, _, err := userClient.UserSvcAPI.SaveOrganization(
 			context.Background(),
 		).Body(openapi.UserSvcSaveOrganizationRequest{
+			Activate: openapi.PtrBool(true),
 			Slug: "test-org",
 			Name: openapi.PtrString("Test Org"),
 		}).Execute()

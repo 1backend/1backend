@@ -36,6 +36,7 @@ func TestSaveOrganization(t *testing.T) {
 		orgName := "Some org name"
 
 		req := openapi.UserSvcSaveOrganizationRequest{
+			Activate: openapi.PtrBool(true),
 			Name: openapi.PtrString(orgName),
 			Slug: slug,
 		}

@@ -39,6 +39,36 @@ func (m *MockUserSvcAPI) EXPECT() *MockUserSvcAPIMockRecorder {
 	return m.recorder
 }
 
+// ActivateOrganization mocks base method.
+func (m *MockUserSvcAPI) ActivateOrganization(ctx context.Context) ApiActivateOrganizationRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ActivateOrganization", ctx)
+	ret0, _ := ret[0].(ApiActivateOrganizationRequest)
+	return ret0
+}
+
+// ActivateOrganization indicates an expected call of ActivateOrganization.
+func (mr *MockUserSvcAPIMockRecorder) ActivateOrganization(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActivateOrganization", reflect.TypeOf((*MockUserSvcAPI)(nil).ActivateOrganization), ctx)
+}
+
+// ActivateOrganizationExecute mocks base method.
+func (m *MockUserSvcAPI) ActivateOrganizationExecute(r ApiActivateOrganizationRequest) (*UserSvcActivateOrganizationResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ActivateOrganizationExecute", r)
+	ret0, _ := ret[0].(*UserSvcActivateOrganizationResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ActivateOrganizationExecute indicates an expected call of ActivateOrganizationExecute.
+func (mr *MockUserSvcAPIMockRecorder) ActivateOrganizationExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActivateOrganizationExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ActivateOrganizationExecute), r)
+}
+
 // ChangePassword mocks base method.
 func (m *MockUserSvcAPI) ChangePassword(ctx context.Context) ApiChangePasswordRequest {
 	m.ctrl.T.Helper()

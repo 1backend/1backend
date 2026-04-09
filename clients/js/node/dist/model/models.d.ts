@@ -173,6 +173,8 @@ export * from './sourceSvcCheckoutRepoRequest';
 export * from './sourceSvcCheckoutRepoResponse';
 export * from './sourceSvcErrorResponse';
 export * from './stableDiffusionTxt2ImgRequest';
+export * from './userSvcActivateOrganizationRequest';
+export * from './userSvcActivateOrganizationResponse';
 export * from './userSvcApp';
 export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';

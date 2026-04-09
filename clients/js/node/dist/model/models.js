@@ -172,6 +172,8 @@ export * from './sourceSvcCheckoutRepoRequest';
 export * from './sourceSvcCheckoutRepoResponse';
 export * from './sourceSvcErrorResponse';
 export * from './stableDiffusionTxt2ImgRequest';
+export * from './userSvcActivateOrganizationRequest';
+export * from './userSvcActivateOrganizationResponse';
 export * from './userSvcApp';
 export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';
@@ -399,6 +401,8 @@ import { SourceSvcCheckoutRepoRequest } from './sourceSvcCheckoutRepoRequest';
 import { SourceSvcCheckoutRepoResponse } from './sourceSvcCheckoutRepoResponse';
 import { SourceSvcErrorResponse } from './sourceSvcErrorResponse';
 import { StableDiffusionTxt2ImgRequest } from './stableDiffusionTxt2ImgRequest';
+import { UserSvcActivateOrganizationRequest } from './userSvcActivateOrganizationRequest';
+import { UserSvcActivateOrganizationResponse } from './userSvcActivateOrganizationResponse';
 import { UserSvcApp } from './userSvcApp';
 import { UserSvcChangePasswordRequest } from './userSvcChangePasswordRequest';
 import { UserSvcContact } from './userSvcContact';
@@ -642,6 +646,8 @@ let typeMap = {
     "SourceSvcCheckoutRepoResponse": SourceSvcCheckoutRepoResponse,
     "SourceSvcErrorResponse": SourceSvcErrorResponse,
     "StableDiffusionTxt2ImgRequest": StableDiffusionTxt2ImgRequest,
+    "UserSvcActivateOrganizationRequest": UserSvcActivateOrganizationRequest,
+    "UserSvcActivateOrganizationResponse": UserSvcActivateOrganizationResponse,
     "UserSvcApp": UserSvcApp,
     "UserSvcChangePasswordRequest": UserSvcChangePasswordRequest,
     "UserSvcContact": UserSvcContact,

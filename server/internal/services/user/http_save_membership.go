@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
@@ -77,7 +78,7 @@ func (s *UserService) SaveMembership(
 	}
 	defer r.Body.Close()
 
-	err = s.saveMembership(claims.AppId, usr.Id, userId, organizationId)
+	err = s.saveMembership(claims.AppId, usr.Id, userId, organizationId, unknownDevice)
 	if err != nil {
 		logger.Error(
 			"Failed to save membership",
@@ -95,6 +96,7 @@ func (s *UserService) saveMembership(
 	callerId,
 	userId,
 	organizationId string,
+	device string,
 ) error {
 	roles, err := s.getRolesByUserId(appId, callerId)
 	if err != nil {
@@ -145,15 +147,20 @@ func (s *UserService) saveMembership(
 		return err
 	}
 
-	// When creating a new org, the user switches to that org as the active one
+	now := time.Now()
+
+	// SaveMembership only links the user to the org; it does not switch the
+	// user's active organization on any device.
 	link := &user.Membership{
 		InternalId:     internalId,
 		Id:             id,
 		AppId:          appId,
 		UserId:         userId,
 		OrganizationId: org.Id,
-		// @todo null out the other active orgs for correctness
-		Active: true,
+		Device:         device,
+		Active:         false,
+		CreatedAt:      now,
+		UpdatedAt:      now,
 	}
 
 	err = s.membershipStore.Upsert(link)
@@ -161,7 +168,7 @@ func (s *UserService) saveMembership(
 		return err
 	}
 
-	return s.inactivateTokens(appId, userId)
+	return nil
 }
 
 func contains(ss []string, s string) bool {

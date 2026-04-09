@@ -98,22 +98,22 @@ func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-// Publish user login event (non-blocking)
-if s.options.PubSub != nil {
-    evt := map[string]any{
-        "appId":  token.AppId,
-        "userId": token.UserId,
-        "device": token.Device,
-        "time":   time.Now().UTC(),
-    }
-    if request.Slug != "" {
-        evt["slug"] = request.Slug
-    }
-    payload, _ := json.Marshal(evt)
-    if _, perr := s.options.PubSub.Publish(r.Context(), "user.login", payload); perr != nil {
-        logger.Error("Failed to publish login event", slog.Any("error", perr))
-    }
-}
+	// Publish user login event (non-blocking)
+	if s.options.PubSub != nil {
+		evt := map[string]any{
+			"appId":  token.AppId,
+			"userId": token.UserId,
+			"device": token.Device,
+			"time":   time.Now().UTC(),
+		}
+		if request.Slug != "" {
+			evt["slug"] = request.Slug
+		}
+		payload, _ := json.Marshal(evt)
+		if _, perr := s.options.PubSub.Publish(r.Context(), "user.login", payload); perr != nil {
+			logger.Error("Failed to publish login event", slog.Any("error", perr))
+		}
+	}
 	bs, _ := json.Marshal(user.LoginResponse{
 		Token: token,
 	})
@@ -373,7 +373,7 @@ func (s *UserService) generateAuthToken(
 		return nil, errors.Wrap(err, "error listing roles")
 	}
 
-	_, activeOrganizationId, err := s.getUserOrganizations(appId, u.Id)
+	_, activeOrganizationId, err := s.getUserOrganizations(appId, u.Id, device)
 	if err != nil {
 		return nil, errors.Wrap(err, "error listing organizations")
 	}

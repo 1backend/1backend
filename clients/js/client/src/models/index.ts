@@ -174,6 +174,8 @@ export * from './SourceSvcCheckoutRepoRequest';
 export * from './SourceSvcCheckoutRepoResponse';
 export * from './SourceSvcErrorResponse';
 export * from './StableDiffusionTxt2ImgRequest';
+export * from './UserSvcActivateOrganizationRequest';
+export * from './UserSvcActivateOrganizationResponse';
 export * from './UserSvcApp';
 export * from './UserSvcChangePasswordRequest';
 export * from './UserSvcContact';
