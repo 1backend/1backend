@@ -50,13 +50,27 @@ type SaveOrganizationRequest struct {
 	// the admin role for the organization.
 	// If false, no Membership or Enroll will be created.
 	AssignCaller bool `json:"assignCaller,omitempty" example:"true"`
+
+	// If true, and a new organization is created, it becomes the
+	// active organization for the caller's current device and a fresh token
+	// is issued. If false, the active organization is not changed and no
+	// new token is issued.
+	Activate bool `json:"activate" example:"true"`
 }
 
 type SaveOrganizationResponse struct {
 	Organization Organization `json:"organization" binding:"required"`
 
-	// Due to the nature of JWT tokens, the token must be refreshed after
+	// Due to the nature of JWT tokens, the token may be refreshed after
 	// creating an organization, as dynamic organization roles are embedded in it.
+	Token *Token `json:"token,omitempty"`
+}
+
+type ActivateOrganizationRequest struct {
+	OrganizationId string `json:"organizationId" binding:"required"`
+}
+
+type ActivateOrganizationResponse struct {
 	Token Token `json:"token" binding:"required"`
 }
 

@@ -376,6 +376,7 @@ func TestExchangeToken_AppScopesRolesInJWT(t *testing.T) {
 	// saving an org should return a refreshed token containing org-admin role in appA
 	orgRsp, _, err := userA.UserSvcAPI.SaveOrganization(ctx).
 		Body(openapi.UserSvcSaveOrganizationRequest{
+			Activate: openapi.PtrBool(true),
 			Slug: "org-a",
 			Name: openapi.PtrString("Org A"),
 		}).Execute()

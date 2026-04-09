@@ -96,7 +96,7 @@ func (s *UserService) SaveOrganization(
 
 	rsp := user.SaveOrganizationResponse{
 		Organization: *org,
-		Token:        *token,
+		Token:        token,
 	}
 	endpoint.WriteJSON(w, http.StatusOK, rsp)
 }
@@ -124,6 +124,8 @@ func (s *UserService) saveOrganization(
 
 	var final *user.Organization
 	now := time.Now()
+
+	shouldActivate := request.Activate
 
 	if exists {
 		final = orgI.(*user.Organization)
@@ -161,26 +163,58 @@ func (s *UserService) saveOrganization(
 			final.Id = sdk.Id("org")
 		}
 
+		final.InternalId, err = sdk.InternalId(appId, final.Id)
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "failed to create organization internal id")
+		}
+
 		id := sdk.Id("memb")
 		internalId, err := sdk.InternalId(appId, id)
 		if err != nil {
 			return nil, nil, errors.Wrap(err, "failed to create internal id")
 		}
 
-		// When creating a new org, the user switches to that org as the active one
+		// When creating a new org, the user may switch to that org as the active one.
 		link := &user.Membership{
 			InternalId:     internalId,
 			Id:             id,
 			AppId:          appId,
 			UserId:         userId,
 			OrganizationId: final.Id,
-			// @todo null out the other active orgs for correctness
-			Active: true,
+			Device:         claims.Device,
+			Active:         shouldActivate,
+			CreatedAt:      now,
+			UpdatedAt:      now,
 		}
 
 		err = s.membershipStore.Upsert(link)
 		if err != nil {
 			return nil, nil, err
+		}
+
+		deviceMemberships, err := s.membershipStore.Query(
+			datastore.Equals(datastore.Field("appId"), appId),
+			datastore.Equals(datastore.Field("userId"), userId),
+			datastore.Equals(datastore.Field("device"), claims.Device),
+		).Find()
+		if err != nil {
+			return nil, nil, err
+		}
+
+		for _, membershipI := range deviceMemberships {
+			membership := membershipI.(*user.Membership)
+			if membership.Id == link.Id || !membership.Active || !shouldActivate {
+				continue
+			}
+
+			err = s.membershipStore.Query(
+				datastore.Id(membership.Id),
+			).UpdateFields(map[string]any{
+				"active": false,
+			})
+			if err != nil {
+				return nil, nil, err
+			}
 		}
 
 	}
@@ -216,6 +250,10 @@ func (s *UserService) saveOrganization(
 	)
 	if err != nil {
 		return nil, nil, err
+	}
+
+	if !shouldActivate {
+		return final, nil, nil
 	}
 
 	err = s.inactivateTokens(claims.AppId, userId)

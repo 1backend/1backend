@@ -320,6 +320,7 @@ func TestOrganization(t *testing.T) {
 		"claim contains new organization admin role after creating organization",
 		func(t *testing.T) {
 			createOrgReq := openapi.UserSvcSaveOrganizationRequest{
+				Activate: openapi.PtrBool(true),
 				Id:   openapi.PtrString(orgId1),
 				Slug: "test-org",
 				Name: openapi.PtrString("Test Org"),
@@ -421,7 +422,7 @@ func TestOrganization(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, claim)
 		require.Equal(t, 2, len(claim.Roles), claim.Roles)
-		require.Equal(t, orgId1, claim.ActiveOrganizationId)
+		require.Empty(t, claim.ActiveOrganizationId)
 		require.Contains(
 			t,
 			claim.Roles,

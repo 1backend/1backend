@@ -20,9 +20,10 @@ type Membership struct {
 
 	OrganizationId string `json:"organizationId,omitempty"`
 	UserId         string `json:"userId,omitempty"`
+	Device         string `json:"device,omitempty"`
 
-	// Active/default organization for a user.
-	// There can only be one per user.
+	// Active/default organization for a user on a specific device.
+	// There can only be one active membership per (user, device).
 	Active bool `json:"active,omitempty"`
 }
 
