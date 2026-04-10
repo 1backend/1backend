@@ -152,34 +152,116 @@ func (s *LocalStore) CreateMany(objs []datastore.Row) error {
 	return nil
 }
 
-func (s *LocalStore) Upsert(obj datastore.Row) error {
+func (s *LocalStore) Upsert(obj datastore.Row, opts ...datastore.UpsertOption) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
+	options := datastore.ParseUpsertOptions(opts...)
+	if len(options.Fields) == 0 {
+		if err := s.upsertWithoutLock(obj); err != nil {
+			return err
+		}
+		s.stateManager.MarkChanged()
+		return nil
+	}
+
+	if err := s.upsertPartialWithoutLock(obj, options.Fields...); err != nil {
+		return err
+	}
+	s.stateManager.MarkChanged()
+	return nil
+}
+
+func (s *LocalStore) UpsertMany(objs []datastore.Row, opts ...datastore.UpsertOption) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	options := datastore.ParseUpsertOptions(opts...)
+	for _, obj := range objs {
+		if len(options.Fields) == 0 {
+			if err := s.upsertWithoutLock(obj); err != nil {
+				return err
+			}
+		} else {
+			if err := s.upsertPartialWithoutLock(obj, options.Fields...); err != nil {
+				return err
+			}
+		}
+	}
+	s.stateManager.MarkChanged()
+	return nil
+}
+
+func (s *LocalStore) Patch(id string, fields map[string]any) error {
+	return s.PatchMany([]datastore.Patch{{ID: id, Fields: fields}})
+}
+
+func (s *LocalStore) PatchMany(updates []datastore.Patch) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	idField := s.idFieldName()
+	for _, update := range updates {
+		existingObj, exists := s.data[update.ID]
+		if !exists {
+			existingObj = map[string]any{}
+			if err := setField(&existingObj, idField, update.ID); err != nil {
+				return err
+			}
+		}
+
+		for field, value := range update.Fields {
+			if err := setField(&existingObj, field, value); err != nil {
+				return err
+			}
+		}
+
+		s.data[update.ID] = existingObj
+	}
+
+	s.stateManager.MarkChanged()
+	return nil
+}
+
+func (s *LocalStore) upsertWithoutLock(obj datastore.Row) error {
 	v, err := reflector.DeepCopyIntoMap(obj)
 	if err != nil {
 		return err
 	}
 
 	s.data[obj.GetId()] = v
-	s.stateManager.MarkChanged()
 	return nil
 }
 
-func (s *LocalStore) UpsertMany(objs []datastore.Row) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+func (s *LocalStore) upsertPartialWithoutLock(obj datastore.Row, fields ...string) error {
+	existingObj, exists := s.data[obj.GetId()]
+	if !exists {
+		return s.upsertWithoutLock(obj)
+	}
 
-	for _, obj := range objs {
-		v, err := reflector.DeepCopyIntoMap(obj)
-		if err != nil {
+	partialObj, err := reflector.DeepCopyIntoMap(obj)
+	if err != nil {
+		return err
+	}
+
+	for _, field := range fields {
+		value := getField(partialObj, field)
+		if err := setField(&existingObj, field, value); err != nil {
 			return err
 		}
-
-		s.data[obj.GetId()] = v
 	}
-	s.stateManager.MarkChanged()
+
+	s.data[obj.GetId()] = existingObj
 	return nil
+}
+
+func (s *LocalStore) idFieldName() string {
+	t := reflect.TypeOf(s.instance)
+	if t.Kind() == reflect.Ptr {
+		t = t.Elem()
+	}
+
+	return t.Field(0).Name
 }
 
 func (s *LocalStore) Query(filters ...datastore.Filter) datastore.QueryBuilder {
