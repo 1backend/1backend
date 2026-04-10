@@ -15,6 +15,7 @@ import (
 	"log/slog"
 	"reflect"
 	"runtime/debug"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -184,11 +185,15 @@ func (s *SQLStore) CreateMany(objs []datastore.Row) error {
 	return tx.Commit()
 }
 
-func (s *SQLStore) Upsert(obj datastore.Row) error {
+func (s *SQLStore) Upsert(obj datastore.Row, opts ...datastore.UpsertOption) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
+	options := datastore.ParseUpsertOptions(opts...)
 	query, values, err := s.buildUpsertQuery(obj)
+	if len(options.Fields) > 0 {
+		query, values, err = s.buildUpsertPartialQuery(obj, options.Fields...)
+	}
 	if err != nil {
 		return errors.Wrap(err, "error building query in upsert")
 	}
@@ -202,16 +207,20 @@ func (s *SQLStore) Upsert(obj datastore.Row) error {
 	return err
 }
 
-func (s *SQLStore) UpsertMany(objs []datastore.Row) error {
+func (s *SQLStore) UpsertMany(objs []datastore.Row, opts ...datastore.UpsertOption) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
+	options := datastore.ParseUpsertOptions(opts...)
 	tx, err := s.db.Begin()
 	if err != nil {
 		return errors.Wrap(err, "error beginning transaction in upsert many")
 	}
 	for _, obj := range objs {
 		query, values, err := s.buildUpsertQuery(obj)
+		if len(options.Fields) > 0 {
+			query, values, err = s.buildUpsertPartialQuery(obj, options.Fields...)
+		}
 		if err != nil {
 			return errors.Wrap(err, "error building query in upsert many")
 		}
@@ -219,6 +228,32 @@ func (s *SQLStore) UpsertMany(objs []datastore.Row) error {
 		if err != nil {
 			tx.Rollback()
 			return errors.Wrap(err, "error executing query in upsert many")
+		}
+	}
+	return tx.Commit()
+}
+
+func (s *SQLStore) Patch(id string, fields map[string]any) error {
+	return s.PatchMany([]datastore.Patch{{ID: id, Fields: fields}})
+}
+
+func (s *SQLStore) PatchMany(updates []datastore.Patch) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	tx, err := s.db.Begin()
+	if err != nil {
+		return errors.Wrap(err, "error beginning transaction in patch many")
+	}
+	for _, update := range updates {
+		query, values, err := s.buildPatchQuery(update)
+		if err != nil {
+			return errors.Wrap(err, "error building query in patch many")
+		}
+		_, err = tx.Exec(query, values...)
+		if err != nil {
+			tx.Rollback()
+			return errors.Wrap(err, "error executing query in patch many")
 		}
 	}
 	return tx.Commit()
@@ -441,6 +476,126 @@ func (s *SQLStore) buildUpsertQuery(obj datastore.Row) (string, []interface{}, e
 		strings.Join(placeholders, ", "),
 		strings.ToLower(s.fieldName(typ.Field(0).Name)),
 		strings.Join(updateFields, ", "))
+
+	return query, params, nil
+}
+
+func (s *SQLStore) buildUpsertPartialQuery(obj datastore.Row, fields ...string) (string, []interface{}, error) {
+	query, params, err := s.buildUpsertQuery(obj)
+	if err != nil {
+		return "", nil, err
+	}
+
+	if len(fields) == 0 {
+		return query, params, nil
+	}
+
+	val := reflect.ValueOf(obj)
+	typ := val.Type()
+
+	if val.Kind() == reflect.Ptr {
+		typ = typ.Elem()
+	}
+
+	columnNames := make([]string, 0, len(fields))
+	for _, field := range fields {
+		columnNames = append(columnNames, s.fieldName(field))
+	}
+
+	query = fmt.Sprintf("INSERT INTO %s (%s) VALUES (%s) ON CONFLICT (%s) DO UPDATE SET %s;",
+		strings.ToLower(s.tableName),
+		strings.Join(s.exportedFieldNames(typ), ", "),
+		strings.Join(s.placeholdersForType(typ), ", "),
+		strings.ToLower(s.fieldName(typ.Field(0).Name)),
+		buildExcludedUpdateFields(columnNames))
+
+	return query, params, nil
+}
+
+func (s *SQLStore) exportedFieldNames(typ reflect.Type) []string {
+	fields := make([]string, 0, typ.NumField())
+	for i := 0; i < typ.NumField(); i++ {
+		field := typ.Field(i)
+		if !field.IsExported() {
+			continue
+		}
+		fields = append(fields, s.fieldName(field.Name))
+	}
+	return fields
+}
+
+func (s *SQLStore) placeholdersForType(typ reflect.Type) []string {
+	placeholders := make([]string, 0, typ.NumField())
+	paramCounter := 1
+	for i := 0; i < typ.NumField(); i++ {
+		if !typ.Field(i).IsExported() {
+			continue
+		}
+		placeholders = append(placeholders, s.placeholder(paramCounter))
+		paramCounter++
+	}
+	return placeholders
+}
+
+func buildExcludedUpdateFields(columnNames []string) string {
+	updateFields := make([]string, 0, len(columnNames))
+	for _, fieldName := range columnNames {
+		updateFields = append(updateFields, fmt.Sprintf("%s=EXCLUDED.%s", fieldName, fieldName))
+	}
+	return strings.Join(updateFields, ", ")
+}
+
+func (s *SQLStore) buildPatchQuery(update datastore.Patch) (string, []interface{}, error) {
+	patchByColumn := map[string]any{}
+	for field, value := range update.Fields {
+		patchByColumn[s.fieldName(field)] = value
+	}
+
+	columns := make([]string, 0, len(s.fieldTypes))
+	for field := range s.fieldTypes {
+		columns = append(columns, field)
+	}
+	sort.Strings(columns)
+
+	params := make([]interface{}, 0, len(columns))
+	placeholders := make([]string, 0, len(columns))
+	updateColumns := make([]string, 0, len(patchByColumn))
+
+	paramCounter := 1
+	for _, column := range columns {
+		var rawValue any
+		if column == s.idFieldName {
+			rawValue = update.ID
+		} else if v, ok := patchByColumn[column]; ok {
+			rawValue = v
+			updateColumns = append(updateColumns, column)
+		} else {
+			rawValue = reflect.Zero(s.fieldTypes[column]).Interface()
+		}
+
+		converted, err := s.convertParam(rawValue)
+		if err != nil {
+			return "", nil, err
+		}
+
+		params = append(params, converted)
+		placeholders = append(placeholders, s.placeholder(paramCounter))
+		paramCounter++
+	}
+
+	updateClause := "DO NOTHING"
+	if len(updateColumns) > 0 {
+		updateClause = "DO UPDATE SET " + buildExcludedUpdateFields(updateColumns)
+	}
+
+	query := fmt.Sprintf(
+		"INSERT INTO %s (%s) VALUES (%s) ON CONFLICT (%s) %s;",
+		strings.ToLower(s.tableName),
+		strings.Join(columns, ", "),
+		strings.Join(placeholders, ", "),
+		s.idFieldName,
+		updateClause,
+	)
 
 	return query, params, nil
 }

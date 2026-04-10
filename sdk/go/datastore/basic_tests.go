@@ -115,6 +115,130 @@ func TestPointerUpsert(t *testing.T, store DataStore) {
 	require.NoError(t, err)
 }
 
+func TestUpsertPartial(t *testing.T, store DataStore) {
+	obj1 := TestObject{Name: "AliceCreate", Value: 10, Age: 25, CreatedAt: time.Now()}
+	err := store.Upsert(obj1)
+	require.NoError(t, err)
+
+	obj2 := TestObject{Name: "AliceCreate", Value: 50, Age: 99, CreatedAt: time.Now()}
+	err = store.Upsert(obj2, WithFields("Value"))
+	require.NoError(t, err)
+
+	res, found, err := store.Query(Equals(Field("Name"), "AliceCreate")).FindOne()
+	require.NoError(t, err)
+	require.True(t, found)
+	require.Equal(t, 50, res.(TestObject).Value)
+	require.Equal(t, 25, res.(TestObject).Age)
+}
+
+func TestPointerUpsertPartial(t *testing.T, store DataStore) {
+	obj1 := &TestObject{Name: "AliceCreate", Value: 10, Age: 25, CreatedAt: time.Now()}
+	err := store.Upsert(obj1)
+	require.NoError(t, err)
+
+	obj2 := &TestObject{Name: "AliceCreate", Value: 50, Age: 99, CreatedAt: time.Now()}
+	err = store.Upsert(obj2, WithFields("Value"))
+	require.NoError(t, err)
+
+	res, found, err := store.Query(Equals(Field("Name"), "AliceCreate")).FindOne()
+	require.NoError(t, err)
+	require.True(t, found)
+	require.Equal(t, 50, res.(*TestObject).Value)
+	require.Equal(t, 25, res.(*TestObject).Age)
+}
+
+func TestUpsertManyPartial(t *testing.T, store DataStore) {
+	err := store.UpsertMany([]Row{
+		TestObject{Name: "test1", Value: 10, Age: 30, CreatedAt: time.Now()},
+		TestObject{Name: "test2", Value: 20, Age: 40, CreatedAt: time.Now()},
+	})
+	require.NoError(t, err)
+
+	err = store.UpsertMany([]Row{
+		TestObject{Name: "test1", Value: 100, Age: 300, CreatedAt: time.Now()},
+		TestObject{Name: "test2", Value: 200, Age: 400, CreatedAt: time.Now()},
+	}, WithFields("Value"))
+	require.NoError(t, err)
+
+	res, err := store.Query().OrderBy(OrderByField("Name", false)).Find()
+	require.NoError(t, err)
+	require.Equal(t, 2, len(res))
+	require.Equal(t, 100, res[0].(TestObject).Value)
+	require.Equal(t, 30, res[0].(TestObject).Age)
+	require.Equal(t, 200, res[1].(TestObject).Value)
+	require.Equal(t, 40, res[1].(TestObject).Age)
+}
+
+func TestPointerUpsertManyPartial(t *testing.T, store DataStore) {
+	err := store.UpsertMany([]Row{
+		&TestObject{Name: "test1", Value: 10, Age: 30, CreatedAt: time.Now()},
+		&TestObject{Name: "test2", Value: 20, Age: 40, CreatedAt: time.Now()},
+	})
+	require.NoError(t, err)
+
+	err = store.UpsertMany([]Row{
+		&TestObject{Name: "test1", Value: 100, Age: 300, CreatedAt: time.Now()},
+		&TestObject{Name: "test2", Value: 200, Age: 400, CreatedAt: time.Now()},
+	}, WithFields("Value"))
+	require.NoError(t, err)
+
+	res, err := store.Query().OrderBy(OrderByField("Name", false)).Find()
+	require.NoError(t, err)
+	require.Equal(t, 2, len(res))
+	require.Equal(t, 100, res[0].(*TestObject).Value)
+	require.Equal(t, 30, res[0].(*TestObject).Age)
+	require.Equal(t, 200, res[1].(*TestObject).Value)
+	require.Equal(t, 40, res[1].(*TestObject).Age)
+}
+
+func TestPatchMany(t *testing.T, store DataStore) {
+	err := store.UpsertMany([]Row{
+		TestObject{Name: "test1", Value: 10, Age: 30, CreatedAt: time.Now()},
+		TestObject{Name: "test2", Value: 20, Age: 40, CreatedAt: time.Now()},
+	})
+	require.NoError(t, err)
+
+	err = store.PatchMany([]Patch{
+		{ID: "test1", Fields: map[string]any{"Value": 100}},
+		{ID: "test2", Fields: map[string]any{"Value": 200}},
+		{ID: "test3", Fields: map[string]any{"Value": 300}},
+	})
+	require.NoError(t, err)
+
+	res, err := store.Query().OrderBy(OrderByField("Name", false)).Find()
+	require.NoError(t, err)
+	require.Equal(t, 3, len(res))
+	require.Equal(t, 100, res[0].(TestObject).Value)
+	require.Equal(t, 30, res[0].(TestObject).Age)
+	require.Equal(t, 200, res[1].(TestObject).Value)
+	require.Equal(t, 40, res[1].(TestObject).Age)
+	require.Equal(t, 300, res[2].(TestObject).Value)
+}
+
+func TestPointerPatchMany(t *testing.T, store DataStore) {
+	err := store.UpsertMany([]Row{
+		&TestObject{Name: "test1", Value: 10, Age: 30, CreatedAt: time.Now()},
+		&TestObject{Name: "test2", Value: 20, Age: 40, CreatedAt: time.Now()},
+	})
+	require.NoError(t, err)
+
+	err = store.PatchMany([]Patch{
+		{ID: "test1", Fields: map[string]any{"Value": 100}},
+		{ID: "test2", Fields: map[string]any{"Value": 200}},
+		{ID: "test3", Fields: map[string]any{"Value": 300}},
+	})
+	require.NoError(t, err)
+
+	res, err := store.Query().OrderBy(OrderByField("Name", false)).Find()
+	require.NoError(t, err)
+	require.Equal(t, 3, len(res))
+	require.Equal(t, 100, res[0].(*TestObject).Value)
+	require.Equal(t, 30, res[0].(*TestObject).Age)
+	require.Equal(t, 200, res[1].(*TestObject).Value)
+	require.Equal(t, 40, res[1].(*TestObject).Age)
+	require.Equal(t, 300, res[2].(*TestObject).Value)
+}
+
 func TestUpdate(t *testing.T, store DataStore) {
 	obj1 := TestObject{Name: "AliceCreate", Value: 10, Age: 25, CreatedAt: time.Now()}
 

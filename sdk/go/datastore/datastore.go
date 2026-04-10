@@ -35,11 +35,17 @@ type DataStore interface {
 	 */
 	CreateMany(objs []Row) error
 
-	/* Create or Update an object */
-	Upsert(obj Row) error
+	// Create or update an object. By default this replaces the full stored object on update.
+	Upsert(obj Row, opts ...UpsertOption) error
 
-	/* Create or Update many objects */
-	UpsertMany(objs []Row) error
+	// Create or update many objects. By default this replaces full stored object(s) on update.
+	UpsertMany(objs []Row, opts ...UpsertOption) error
+
+	// Create or partially update one object by id from field/value pairs.
+	Patch(id string, fields map[string]any) error
+
+	// Create or partially update many objects by id from field/value pairs.
+	PatchMany(updates []Patch) error
 
 	Query(filters ...Filter) QueryBuilder
 
@@ -72,6 +78,31 @@ type QueryBuilder interface {
 
 	UpdateFields(fields map[string]interface{}) error
 	Delete() error
+}
+
+type UpsertOptions struct {
+	Fields []string
+}
+
+type UpsertOption func(*UpsertOptions)
+
+func WithFields(fields ...string) UpsertOption {
+	return func(o *UpsertOptions) {
+		o.Fields = append(o.Fields, fields...)
+	}
+}
+
+func ParseUpsertOptions(opts ...UpsertOption) UpsertOptions {
+	options := UpsertOptions{}
+	for _, opt := range opts {
+		opt(&options)
+	}
+	return options
+}
+
+type Patch struct {
+	ID     string
+	Fields map[string]any
 }
 
 type Indexable interface {
