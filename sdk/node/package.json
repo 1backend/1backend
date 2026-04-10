@@ -1,0 +1,50 @@
+{
+  "name": "@1backend/sdk-node",
+  "version": "0.9.7",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc && rollup -c",
+    "check": "tsc --noEmit"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "keywords": [
+    "1backend",
+    "microservices",
+    "sdk",
+    "nodejs",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/1backend/1backend.git"
+  },
+  "author": "Janos Dobronszki",
+  "license": "AGPL-3.0-only",
+  "description": "Node.js SDK to bootstrap and run custom 1Backend services.",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "@1backend/client": "^0.9.7",
+    "jsonwebtoken": "^9.0.2",
+    "lru-cache": "^11.2.2",
+    "nanoid": "^5.1.5"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^22.15.2",
+    "rollup": "^3.0.0",
+    "typescript": "^5.5.3"
+  }
+}

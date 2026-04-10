@@ -41,6 +41,12 @@ jobs:
           npm run build
         working-directory: ./clients/js/node
 
+      - name: Build Node SDK
+        run: |
+          npm install
+          npm run build
+        working-directory: ./sdk/node
+
       - name: Check for uncommitted changes
         if: false
         run: |
