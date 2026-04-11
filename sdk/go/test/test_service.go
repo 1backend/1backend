@@ -9,6 +9,8 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
 	"testing"
@@ -119,10 +121,12 @@ func StartService(options Options) (*ServiceProcess, error) {
 		options.Name = "server"
 	}
 
-	var (
-		port int
-		err  error
-	)
+	serviceBin, err := ensureServiceBinary(options.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	var port int
 
 	if options.Url == "" {
 		port, err = FindAvailablePort()
@@ -174,7 +178,7 @@ func StartService(options Options) (*ServiceProcess, error) {
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
-	cmd := exec.CommandContext(ctx, options.Name)
+	cmd := exec.CommandContext(ctx, serviceBin)
 
 	cmd.Env = append(cmd.Env, os.Environ()...)
 	for key, value := range envVars {
@@ -257,6 +261,43 @@ func StartService(options Options) (*ServiceProcess, error) {
 	}()
 
 	return service, nil
+}
+
+func ensureServiceBinary(name string) (string, error) {
+	if path, err := exec.LookPath(name); err == nil {
+		return path, nil
+	}
+
+	if name != "server" {
+		return "", errors.Errorf("service executable '%v' not found in PATH", name)
+	}
+
+	gopathCmd := exec.Command("go", "env", "GOPATH")
+	rawGoPath, err := gopathCmd.Output()
+	if err != nil {
+		return "", errors.Wrap(err, "failed to resolve GOPATH")
+	}
+
+	gopath := strings.TrimSpace(string(rawGoPath))
+	if gopath == "" {
+		return "", errors.New("GOPATH is empty")
+	}
+
+	binaryName := name
+	if runtime.GOOS == "windows" {
+		binaryName += ".exe"
+	}
+
+	installedBinary := filepath.Join(gopath, "bin", binaryName)
+	if _, err := os.Stat(installedBinary); err == nil {
+		return installedBinary, nil
+	}
+
+	return "", errors.Errorf(
+		"service executable '%v' not found in PATH or GOPATH/bin (%v); install it with `go install`",
+		name,
+		installedBinary,
+	)
 }
 
 type funcWriter func([]byte) (int, error)
