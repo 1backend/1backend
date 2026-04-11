@@ -102,9 +102,10 @@ export interface StopContainerRequest {
 export class ContainerSvcApi extends runtime.BaseAPI {
 
     /**
-     * Creates request options for buildImage without sending the request
+     * Builds a Docker image with the specified parameters.  Requires the `container-svc:image:build` permission.
+     * Build an Image
      */
-    async buildImageRequestOpts(requestParameters: BuildImageRequest): Promise<runtime.RequestOpts> {
+    async buildImageRaw(requestParameters: BuildImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -125,22 +126,13 @@ export class ContainerSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/container-svc/image`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: ContainerSvcBuildImageRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Builds a Docker image with the specified parameters.  Requires the `container-svc:image:build` permission.
-     * Build an Image
-     */
-    async buildImageRaw(requestParameters: BuildImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        const requestOptions = await this.buildImageRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -155,9 +147,10 @@ export class ContainerSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for containerDaemonInfo without sending the request
+     * Retrieve detailed information about the availability and status of container daemons on the node.
+     * Get Container Daemon Information
      */
-    async containerDaemonInfoRequestOpts(): Promise<runtime.RequestOpts> {
+    async containerDaemonInfoRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ContainerSvcDaemonInfoResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -169,21 +162,12 @@ export class ContainerSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/container-svc/daemon/info`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Retrieve detailed information about the availability and status of container daemons on the node.
-     * Get Container Daemon Information
-     */
-    async containerDaemonInfoRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ContainerSvcDaemonInfoResponse>> {
-        const requestOptions = await this.containerDaemonInfoRequestOpts();
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ContainerSvcDaemonInfoResponseFromJSON(jsonValue));
     }
@@ -198,9 +182,10 @@ export class ContainerSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for containerIsRunning without sending the request
+     * Check if a Docker container is running, identified by hash or name.
+     * Check If a Container Is Running
      */
-    async containerIsRunningRequestOpts(requestParameters: ContainerIsRunningRequest): Promise<runtime.RequestOpts> {
+    async containerIsRunningRaw(requestParameters: ContainerIsRunningRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ContainerSvcContainerIsRunningResponse>> {
         const queryParameters: any = {};
 
         if (requestParameters['hash'] != null) {
@@ -220,21 +205,12 @@ export class ContainerSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/container-svc/container/is-running`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Check if a Docker container is running, identified by hash or name.
-     * Check If a Container Is Running
-     */
-    async containerIsRunningRaw(requestParameters: ContainerIsRunningRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ContainerSvcContainerIsRunningResponse>> {
-        const requestOptions = await this.containerIsRunningRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ContainerSvcContainerIsRunningResponseFromJSON(jsonValue));
     }
@@ -249,9 +225,10 @@ export class ContainerSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for containerSummary without sending the request
+     * Get a summary of the Docker container identified by hash or name, limited to a specified number of lines.
+     * Get Container Summary
      */
-    async containerSummaryRequestOpts(requestParameters: ContainerSummaryRequest): Promise<runtime.RequestOpts> {
+    async containerSummaryRaw(requestParameters: ContainerSummaryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ContainerSvcGetContainerSummaryResponse>> {
         const queryParameters: any = {};
 
         if (requestParameters['hash'] != null) {
@@ -275,21 +252,12 @@ export class ContainerSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/container-svc/container/summary`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a summary of the Docker container identified by hash or name, limited to a specified number of lines.
-     * Get Container Summary
-     */
-    async containerSummaryRaw(requestParameters: ContainerSummaryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ContainerSvcGetContainerSummaryResponse>> {
-        const requestOptions = await this.containerSummaryRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ContainerSvcGetContainerSummaryResponseFromJSON(jsonValue));
     }
@@ -304,9 +272,10 @@ export class ContainerSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for getHost without sending the request
+     * Retrieve information about the Container host
+     * Get Container Host
      */
-    async getHostRequestOpts(): Promise<runtime.RequestOpts> {
+    async getHostRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ContainerSvcGetHostResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -318,21 +287,12 @@ export class ContainerSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/container-svc/host`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Retrieve information about the Container host
-     * Get Container Host
-     */
-    async getHostRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ContainerSvcGetHostResponse>> {
-        const requestOptions = await this.getHostRequestOpts();
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ContainerSvcGetHostResponseFromJSON(jsonValue));
     }
@@ -347,9 +307,10 @@ export class ContainerSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for imagePullable without sending the request
+     * Check if an image exists on in the container registry and is pullable.
+     * Check if Container Image is Pullable
      */
-    async imagePullableRequestOpts(requestParameters: ImagePullableRequest): Promise<runtime.RequestOpts> {
+    async imagePullableRaw(requestParameters: ImagePullableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ContainerSvcImagePullableResponse>> {
         if (requestParameters['imageName'] == null) {
             throw new runtime.RequiredError(
                 'imageName',
@@ -369,21 +330,12 @@ export class ContainerSvcApi extends runtime.BaseAPI {
         let urlPath = `/container-svc/image/{imageName}/pullable`;
         urlPath = urlPath.replace(`{${"imageName"}}`, encodeURIComponent(String(requestParameters['imageName'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Check if an image exists on in the container registry and is pullable.
-     * Check if Container Image is Pullable
-     */
-    async imagePullableRaw(requestParameters: ImagePullableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ContainerSvcImagePullableResponse>> {
-        const requestOptions = await this.imagePullableRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ContainerSvcImagePullableResponseFromJSON(jsonValue));
     }
@@ -398,9 +350,10 @@ export class ContainerSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for listContainerLogs without sending the request
+     * List Container logs.  Requires the `container-svc:log:view` permission.
+     * List Logs
      */
-    async listContainerLogsRequestOpts(requestParameters: ListContainerLogsRequest): Promise<runtime.RequestOpts> {
+    async listContainerLogsRaw(requestParameters: ListContainerLogsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ContainerSvcListLogsResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -421,22 +374,13 @@ export class ContainerSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/container-svc/logs`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: ContainerSvcListLogsRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * List Container logs.  Requires the `container-svc:log:view` permission.
-     * List Logs
-     */
-    async listContainerLogsRaw(requestParameters: ListContainerLogsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ContainerSvcListLogsResponse>> {
-        const requestOptions = await this.listContainerLogsRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ContainerSvcListLogsResponseFromJSON(jsonValue));
     }
@@ -451,9 +395,10 @@ export class ContainerSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for listContainers without sending the request
+     * List containers.  Requires the `container-svc:container:view` permission.
+     * List Containers
      */
-    async listContainersRequestOpts(requestParameters: ListContainersRequest): Promise<runtime.RequestOpts> {
+    async listContainersRaw(requestParameters: ListContainersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ContainerSvcListContainersResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -474,22 +419,13 @@ export class ContainerSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/container-svc/containers`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: ContainerSvcListContainersRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * List containers.  Requires the `container-svc:container:view` permission.
-     * List Containers
-     */
-    async listContainersRaw(requestParameters: ListContainersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ContainerSvcListContainersResponse>> {
-        const requestOptions = await this.listContainersRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ContainerSvcListContainersResponseFromJSON(jsonValue));
     }
@@ -504,9 +440,10 @@ export class ContainerSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for runContainer without sending the request
+     * Runs a Docker container with the specified parameters.  Requires the `container-svc:container:run` permission.
+     * Run a Container
      */
-    async runContainerRequestOpts(requestParameters: RunContainerRequest): Promise<runtime.RequestOpts> {
+    async runContainerRaw(requestParameters: RunContainerRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ContainerSvcRunContainerResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -527,22 +464,13 @@ export class ContainerSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/container-svc/container`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: ContainerSvcRunContainerRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Runs a Docker container with the specified parameters.  Requires the `container-svc:container:run` permission.
-     * Run a Container
-     */
-    async runContainerRaw(requestParameters: RunContainerRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ContainerSvcRunContainerResponse>> {
-        const requestOptions = await this.runContainerRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ContainerSvcRunContainerResponseFromJSON(jsonValue));
     }
@@ -557,9 +485,10 @@ export class ContainerSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for stopContainer without sending the request
+     * Stops a Docker container with the specified parameters.  Requires the `container-svc:container:stop` permission.
+     * Stop a Container
      */
-    async stopContainerRequestOpts(requestParameters: StopContainerRequest): Promise<runtime.RequestOpts> {
+    async stopContainerRaw(requestParameters: StopContainerRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -580,22 +509,13 @@ export class ContainerSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/container-svc/container/stop`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: ContainerSvcStopContainerRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Stops a Docker container with the specified parameters.  Requires the `container-svc:container:stop` permission.
-     * Stop a Container
-     */
-    async stopContainerRaw(requestParameters: StopContainerRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        const requestOptions = await this.stopContainerRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }

@@ -28,10 +28,6 @@ export interface StartModelRequest {
  */
 export declare class ModelSvcApi extends runtime.BaseAPI {
     /**
-     * Creates request options for getDefaultModelStatus without sending the request
-     */
-    getDefaultModelStatusRequestOpts(): Promise<runtime.RequestOpts>;
-    /**
      * Retrieves the status of the default model.  Requires the `model-svc:model:view` permission.
      * Get Default Model Status
      */
@@ -41,10 +37,6 @@ export declare class ModelSvcApi extends runtime.BaseAPI {
      * Get Default Model Status
      */
     getDefaultModelStatus(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ModelSvcStatusResponse>;
-    /**
-     * Creates request options for getModel without sending the request
-     */
-    getModelRequestOpts(requestParameters: GetModelRequest): Promise<runtime.RequestOpts>;
     /**
      * Retrieves the details of a model by its ID.  the Requires `model.view` permission.
      * Get a Model
@@ -56,10 +48,6 @@ export declare class ModelSvcApi extends runtime.BaseAPI {
      */
     getModel(requestParameters: GetModelRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ModelSvcGetModelResponse>;
     /**
-     * Creates request options for getModelStatus without sending the request
-     */
-    getModelStatusRequestOpts(requestParameters: GetModelStatusRequest): Promise<runtime.RequestOpts>;
-    /**
      * Retrieves the status of a model by ID.  Requires the `model-svc:model:view` permission.
      * Get Model Status
      */
@@ -69,10 +57,6 @@ export declare class ModelSvcApi extends runtime.BaseAPI {
      * Get Model Status
      */
     getModelStatus(requestParameters: GetModelStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ModelSvcStatusResponse>;
-    /**
-     * Creates request options for listModels without sending the request
-     */
-    listModelsRequestOpts(): Promise<runtime.RequestOpts>;
     /**
      * Retrieves a list of models.  Requires `model-svc:model:view` permission.
      * List Models
@@ -84,10 +68,6 @@ export declare class ModelSvcApi extends runtime.BaseAPI {
      */
     listModels(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ModelSvcListModelsResponse>;
     /**
-     * Creates request options for listPlatforms without sending the request
-     */
-    listPlatformsRequestOpts(): Promise<runtime.RequestOpts>;
-    /**
      * Retrieves a list of AI platforms. Eg. LlamaCpp, StableDiffusion etc.  Requires `model-svc:platform:view` permission.
      * List Platforms
      */
@@ -97,10 +77,6 @@ export declare class ModelSvcApi extends runtime.BaseAPI {
      * List Platforms
      */
     listPlatforms(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ModelSvcListPlatformsResponse>;
-    /**
-     * Creates request options for makeDefault without sending the request
-     */
-    makeDefaultRequestOpts(requestParameters: MakeDefaultRequest): Promise<runtime.RequestOpts>;
     /**
      * Sets a model as the default model — when prompts are sent without a Model ID, the default model is used.
      * Make a Model Default
@@ -112,10 +88,6 @@ export declare class ModelSvcApi extends runtime.BaseAPI {
      */
     makeDefault(requestParameters: MakeDefaultRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
-     * Creates request options for startDefaultModel without sending the request
-     */
-    startDefaultModelRequestOpts(): Promise<runtime.RequestOpts>;
-    /**
      * Starts The Default Model.  Requires the `model-svc:model:create` permission.
      * Start the Default Model
      */
@@ -125,10 +97,6 @@ export declare class ModelSvcApi extends runtime.BaseAPI {
      * Start the Default Model
      */
     startDefaultModel(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
-    /**
-     * Creates request options for startModel without sending the request
-     */
-    startModelRequestOpts(requestParameters: StartModelRequest): Promise<runtime.RequestOpts>;
     /**
      * Starts a model by ID
      * Start a Model

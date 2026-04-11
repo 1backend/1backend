@@ -89,6 +89,7 @@ func (fs *FileService) UploadFile(
 		}
 
 		intricatePath := calculateIntricatePath(fileId)
+		now := time.Now().UTC()
 
 		// @todo this is fairly weird that we process multiple files but only a single one is returned
 		uploadRecord = file.Upload{
@@ -98,7 +99,8 @@ func (fs *FileService) UploadFile(
 			FileName:  part.FileName(),
 			FilePath:  intricatePath,
 			UserId:    isAuthRsp.User.Id,
-			CreatedAt: time.Now(),
+			CreatedAt: now,
+			UpdatedAt: now,
 		}
 
 		written, err := fs.storage.Save(r.Context(), &uploadRecord, part)

@@ -43,10 +43,6 @@ export interface StopContainerRequest {
  */
 export declare class ContainerSvcApi extends runtime.BaseAPI {
     /**
-     * Creates request options for buildImage without sending the request
-     */
-    buildImageRequestOpts(requestParameters: BuildImageRequest): Promise<runtime.RequestOpts>;
-    /**
      * Builds a Docker image with the specified parameters.  Requires the `container-svc:image:build` permission.
      * Build an Image
      */
@@ -56,10 +52,6 @@ export declare class ContainerSvcApi extends runtime.BaseAPI {
      * Build an Image
      */
     buildImage(requestParameters: BuildImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
-    /**
-     * Creates request options for containerDaemonInfo without sending the request
-     */
-    containerDaemonInfoRequestOpts(): Promise<runtime.RequestOpts>;
     /**
      * Retrieve detailed information about the availability and status of container daemons on the node.
      * Get Container Daemon Information
@@ -71,10 +63,6 @@ export declare class ContainerSvcApi extends runtime.BaseAPI {
      */
     containerDaemonInfo(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ContainerSvcDaemonInfoResponse>;
     /**
-     * Creates request options for containerIsRunning without sending the request
-     */
-    containerIsRunningRequestOpts(requestParameters: ContainerIsRunningRequest): Promise<runtime.RequestOpts>;
-    /**
      * Check if a Docker container is running, identified by hash or name.
      * Check If a Container Is Running
      */
@@ -84,10 +72,6 @@ export declare class ContainerSvcApi extends runtime.BaseAPI {
      * Check If a Container Is Running
      */
     containerIsRunning(requestParameters?: ContainerIsRunningRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ContainerSvcContainerIsRunningResponse>;
-    /**
-     * Creates request options for containerSummary without sending the request
-     */
-    containerSummaryRequestOpts(requestParameters: ContainerSummaryRequest): Promise<runtime.RequestOpts>;
     /**
      * Get a summary of the Docker container identified by hash or name, limited to a specified number of lines.
      * Get Container Summary
@@ -99,10 +83,6 @@ export declare class ContainerSvcApi extends runtime.BaseAPI {
      */
     containerSummary(requestParameters?: ContainerSummaryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ContainerSvcGetContainerSummaryResponse>;
     /**
-     * Creates request options for getHost without sending the request
-     */
-    getHostRequestOpts(): Promise<runtime.RequestOpts>;
-    /**
      * Retrieve information about the Container host
      * Get Container Host
      */
@@ -112,10 +92,6 @@ export declare class ContainerSvcApi extends runtime.BaseAPI {
      * Get Container Host
      */
     getHost(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ContainerSvcGetHostResponse>;
-    /**
-     * Creates request options for imagePullable without sending the request
-     */
-    imagePullableRequestOpts(requestParameters: ImagePullableRequest): Promise<runtime.RequestOpts>;
     /**
      * Check if an image exists on in the container registry and is pullable.
      * Check if Container Image is Pullable
@@ -127,10 +103,6 @@ export declare class ContainerSvcApi extends runtime.BaseAPI {
      */
     imagePullable(requestParameters: ImagePullableRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ContainerSvcImagePullableResponse>;
     /**
-     * Creates request options for listContainerLogs without sending the request
-     */
-    listContainerLogsRequestOpts(requestParameters: ListContainerLogsRequest): Promise<runtime.RequestOpts>;
-    /**
      * List Container logs.  Requires the `container-svc:log:view` permission.
      * List Logs
      */
@@ -140,10 +112,6 @@ export declare class ContainerSvcApi extends runtime.BaseAPI {
      * List Logs
      */
     listContainerLogs(requestParameters: ListContainerLogsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ContainerSvcListLogsResponse>;
-    /**
-     * Creates request options for listContainers without sending the request
-     */
-    listContainersRequestOpts(requestParameters: ListContainersRequest): Promise<runtime.RequestOpts>;
     /**
      * List containers.  Requires the `container-svc:container:view` permission.
      * List Containers
@@ -155,10 +123,6 @@ export declare class ContainerSvcApi extends runtime.BaseAPI {
      */
     listContainers(requestParameters: ListContainersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ContainerSvcListContainersResponse>;
     /**
-     * Creates request options for runContainer without sending the request
-     */
-    runContainerRequestOpts(requestParameters: RunContainerRequest): Promise<runtime.RequestOpts>;
-    /**
      * Runs a Docker container with the specified parameters.  Requires the `container-svc:container:run` permission.
      * Run a Container
      */
@@ -168,10 +132,6 @@ export declare class ContainerSvcApi extends runtime.BaseAPI {
      * Run a Container
      */
     runContainer(requestParameters: RunContainerRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ContainerSvcRunContainerResponse>;
-    /**
-     * Creates request options for stopContainer without sending the request
-     */
-    stopContainerRequestOpts(requestParameters: StopContainerRequest): Promise<runtime.RequestOpts>;
     /**
      * Stops a Docker container with the specified parameters.  Requires the `container-svc:container:stop` permission.
      * Stop a Container

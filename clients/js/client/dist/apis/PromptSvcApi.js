@@ -27,9 +27,10 @@ import { PromptSvcListPromptsRequestToJSON, PromptSvcListPromptsResponseFromJSON
  */
 export class PromptSvcApi extends runtime.BaseAPI {
     /**
-     * Creates request options for listPrompts without sending the request
+     * List prompts that satisfy a query.
+     * List Prompts
      */
-    listPromptsRequestOpts(requestParameters) {
+    listPromptsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -38,23 +39,13 @@ export class PromptSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/prompt-svc/prompts`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: PromptSvcListPromptsRequestToJSON(requestParameters['body']),
-            };
-        });
-    }
-    /**
-     * List prompts that satisfy a query.
-     * List Prompts
-     */
-    listPromptsRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.listPromptsRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => PromptSvcListPromptsResponseFromJSON(jsonValue));
         });
     }
@@ -69,9 +60,10 @@ export class PromptSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for prompt without sending the request
+     * Sends a prompt and waits for a response if sync is true. If sync is false, adds the prompt to the queue and returns immediately.  Prompts can be used for `text-to-text`, `text-to-image`, `image-to-image`, and other types of generation. If no model ID is specified, the default model will be used (see `Model Svc` for details). The default model may or may not support the requested generation type.  **Prompting Modes** - **High-Level Parameters**: Uses predefined parameters relevant to `text-to-image`, `image-to-image`, etc. This mode abstracts away the underlying engine (e.g., LLaMA, Stable Diffusion) and focuses on functionality. - **Engine-Specific Parameters**: Uses `engineParameters` to directly specify an AI engine, exposing all available parameters for fine-tuned control.  **Permissions Required:** `prompt-svc:prompt:create`
+     * Prompt an AI
      */
-    promptRequestOpts(requestParameters) {
+    promptRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling prompt().');
@@ -83,23 +75,13 @@ export class PromptSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/prompt-svc/prompt`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: PromptSvcPromptRequestToJSON(requestParameters['body']),
-            };
-        });
-    }
-    /**
-     * Sends a prompt and waits for a response if sync is true. If sync is false, adds the prompt to the queue and returns immediately.  Prompts can be used for `text-to-text`, `text-to-image`, `image-to-image`, and other types of generation. If no model ID is specified, the default model will be used (see `Model Svc` for details). The default model may or may not support the requested generation type.  **Prompting Modes** - **High-Level Parameters**: Uses predefined parameters relevant to `text-to-image`, `image-to-image`, etc. This mode abstracts away the underlying engine (e.g., LLaMA, Stable Diffusion) and focuses on functionality. - **Engine-Specific Parameters**: Uses `engineParameters` to directly specify an AI engine, exposing all available parameters for fine-tuned control.  **Permissions Required:** `prompt-svc:prompt:create`
-     * Prompt an AI
-     */
-    promptRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.promptRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => PromptSvcPromptResponseFromJSON(jsonValue));
         });
     }
@@ -114,9 +96,10 @@ export class PromptSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for promptTypes without sending the request
+     * The only purpose of this \"endpoint\" is to export types otherwise not appearing in the API docs. This endpoint otherwise does nothing. Do not depend on this endpoint, only its types.
+     * Prompt Types
      */
-    promptTypesRequestOpts(requestParameters) {
+    promptTypesRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling promptTypes().');
@@ -128,23 +111,13 @@ export class PromptSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/prompt-svc/types`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: requestParameters['body'],
-            };
-        });
-    }
-    /**
-     * The only purpose of this \"endpoint\" is to export types otherwise not appearing in the API docs. This endpoint otherwise does nothing. Do not depend on this endpoint, only its types.
-     * Prompt Types
-     */
-    promptTypesRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.promptTypesRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => PromptSvcTypesResponseFromJSON(jsonValue));
         });
     }
@@ -159,9 +132,10 @@ export class PromptSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for removePrompt without sending the request
+     * Remove a prompt by ID.
+     * Remove Prompt
      */
-    removePromptRequestOpts(requestParameters) {
+    removePromptRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling removePrompt().');
@@ -173,23 +147,13 @@ export class PromptSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/prompt-svc/remove`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: PromptSvcRemovePromptRequestToJSON(requestParameters['body']),
-            };
-        });
-    }
-    /**
-     * Remove a prompt by ID.
-     * Remove Prompt
-     */
-    removePromptRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.removePromptRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
     }
@@ -204,9 +168,10 @@ export class PromptSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for subscribeToPromptResponses without sending the request
+     * Subscribe to prompt responses by thread via Server-Sent Events (SSE). You can subscribe to threads before they are created. The streamed strings are of type `StreamChunk`, see the PromptTypes endpoint for more details.
+     * Subscribe to Prompt Responses by Thread
      */
-    subscribeToPromptResponsesRequestOpts(requestParameters) {
+    subscribeToPromptResponsesRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['threadId'] == null) {
                 throw new runtime.RequiredError('threadId', 'Required parameter "threadId" was null or undefined when calling subscribeToPromptResponses().');
@@ -218,22 +183,12 @@ export class PromptSvcApi extends runtime.BaseAPI {
             }
             let urlPath = `/prompt-svc/prompts/{threadId}/responses/subscribe`;
             urlPath = urlPath.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId'])));
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            };
-        });
-    }
-    /**
-     * Subscribe to prompt responses by thread via Server-Sent Events (SSE). You can subscribe to threads before they are created. The streamed strings are of type `StreamChunk`, see the PromptTypes endpoint for more details.
-     * Subscribe to Prompt Responses by Thread
-     */
-    subscribeToPromptResponsesRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.subscribeToPromptResponsesRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             if (this.isJsonMime(response.headers.get('content-type'))) {
                 return new runtime.JSONApiResponse(response);
             }

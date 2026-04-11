@@ -52,6 +52,12 @@ export interface FileSvcUpload {
      */
     id: string;
     /**
+     * LastAccessedAt is updated asynchronously by the file service when the file is served.
+     * @type {string}
+     * @memberof FileSvcUpload
+     */
+    lastAccessedAt?: string;
+    /**
      * ID of the node storing this replica
      * @type {string}
      * @memberof FileSvcUpload

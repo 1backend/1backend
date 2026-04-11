@@ -87,9 +87,10 @@ export interface SelfNodeRequest {
 export class RegistrySvcApi extends runtime.BaseAPI {
 
     /**
-     * Creates request options for deleteDefinition without sending the request
+     * Deletes a registered definition by ID.
+     * Delete Definition
      */
-    async deleteDefinitionRequestOpts(requestParameters: DeleteDefinitionRequest): Promise<runtime.RequestOpts> {
+    async deleteDefinitionRaw(requestParameters: DeleteDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -109,21 +110,12 @@ export class RegistrySvcApi extends runtime.BaseAPI {
         let urlPath = `/registry-svc/definition/{id}`;
         urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Deletes a registered definition by ID.
-     * Delete Definition
-     */
-    async deleteDefinitionRaw(requestParameters: DeleteDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.deleteDefinitionRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
     }
@@ -137,9 +129,10 @@ export class RegistrySvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for deleteNode without sending the request
+     * Deletes a registered node by node URL. This endpoint is useful when a node is no longer available but it\'s still present in the database.
+     * Delete Node
      */
-    async deleteNodeRequestOpts(requestParameters: DeleteNodeRequest): Promise<runtime.RequestOpts> {
+    async deleteNodeRaw(requestParameters: DeleteNodeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['url'] == null) {
             throw new runtime.RequiredError(
                 'url',
@@ -159,21 +152,12 @@ export class RegistrySvcApi extends runtime.BaseAPI {
         let urlPath = `/registry-svc/node/{url}`;
         urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Deletes a registered node by node URL. This endpoint is useful when a node is no longer available but it\'s still present in the database.
-     * Delete Node
-     */
-    async deleteNodeRaw(requestParameters: DeleteNodeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.deleteNodeRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
     }
@@ -187,9 +171,10 @@ export class RegistrySvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for echoGet without sending the request
+     * This endpoint is used to test the server\'s response to a GET request. It echoes back the query parameters as a JSON object.
+     * Echo the query parameters in the response body.
      */
-    async echoGetRequestOpts(): Promise<runtime.RequestOpts> {
+    async echoGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: any; }>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -201,21 +186,12 @@ export class RegistrySvcApi extends runtime.BaseAPI {
 
         let urlPath = `/registry-svc/echo`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * This endpoint is used to test the server\'s response to a GET request. It echoes back the query parameters as a JSON object.
-     * Echo the query parameters in the response body.
-     */
-    async echoGetRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: any; }>> {
-        const requestOptions = await this.echoGetRequestOpts();
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -230,9 +206,10 @@ export class RegistrySvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for echoPost without sending the request
+     * This endpoint is used to test the server\'s response to a request. It simply echoes back the request body as a JSON response.
+     * Echo the request body in the response body.
      */
-    async echoPostRequestOpts(): Promise<runtime.RequestOpts> {
+    async echoPostRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: any; }>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -244,21 +221,12 @@ export class RegistrySvcApi extends runtime.BaseAPI {
 
         let urlPath = `/registry-svc/echo`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * This endpoint is used to test the server\'s response to a request. It simply echoes back the request body as a JSON response.
-     * Echo the request body in the response body.
-     */
-    async echoPostRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: any; }>> {
-        const requestOptions = await this.echoPostRequestOpts();
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -273,9 +241,10 @@ export class RegistrySvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for echoPut without sending the request
+     * This endpoint is used to test the server\'s response to a request. It simply echoes back the request body as a JSON response.
+     * Echo the request body in the response body.
      */
-    async echoPutRequestOpts(): Promise<runtime.RequestOpts> {
+    async echoPutRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: any; }>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -287,21 +256,12 @@ export class RegistrySvcApi extends runtime.BaseAPI {
 
         let urlPath = `/registry-svc/echo`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * This endpoint is used to test the server\'s response to a request. It simply echoes back the request body as a JSON response.
-     * Echo the request body in the response body.
-     */
-    async echoPutRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: any; }>> {
-        const requestOptions = await this.echoPutRequestOpts();
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -316,9 +276,10 @@ export class RegistrySvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for listDefinitions without sending the request
+     * Retrieves a list of all definitions or filters them by specific criteria.
+     * List Definitions
      */
-    async listDefinitionsRequestOpts(): Promise<runtime.RequestOpts> {
+    async listDefinitionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RegistrySvcListDefinitionsResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -330,21 +291,12 @@ export class RegistrySvcApi extends runtime.BaseAPI {
 
         let urlPath = `/registry-svc/definitions`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Retrieves a list of all definitions or filters them by specific criteria.
-     * List Definitions
-     */
-    async listDefinitionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RegistrySvcListDefinitionsResponse>> {
-        const requestOptions = await this.listDefinitionsRequestOpts();
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => RegistrySvcListDefinitionsResponseFromJSON(jsonValue));
     }
@@ -359,9 +311,10 @@ export class RegistrySvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for listInstances without sending the request
+     * Retrieves a list of all instances or filters them by specific criteria (e.g., host, IP).
+     * List Service Instances
      */
-    async listInstancesRequestOpts(requestParameters: ListInstancesRequest): Promise<runtime.RequestOpts> {
+    async listInstancesRaw(requestParameters: ListInstancesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RegistrySvcListInstancesResponse>> {
         const queryParameters: any = {};
 
         if (requestParameters['scheme'] != null) {
@@ -401,21 +354,12 @@ export class RegistrySvcApi extends runtime.BaseAPI {
 
         let urlPath = `/registry-svc/instances`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Retrieves a list of all instances or filters them by specific criteria (e.g., host, IP).
-     * List Service Instances
-     */
-    async listInstancesRaw(requestParameters: ListInstancesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RegistrySvcListInstancesResponse>> {
-        const requestOptions = await this.listInstancesRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => RegistrySvcListInstancesResponseFromJSON(jsonValue));
     }
@@ -430,9 +374,10 @@ export class RegistrySvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for listNodes without sending the request
+     * Retrieve a list of nodes.
+     * List Nodes
      */
-    async listNodesRequestOpts(requestParameters: ListNodesRequest): Promise<runtime.RequestOpts> {
+    async listNodesRaw(requestParameters: ListNodesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RegistrySvcListNodesResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -446,22 +391,13 @@ export class RegistrySvcApi extends runtime.BaseAPI {
 
         let urlPath = `/registry-svc/nodes`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: RegistrySvcListNodesRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Retrieve a list of nodes.
-     * List Nodes
-     */
-    async listNodesRaw(requestParameters: ListNodesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RegistrySvcListNodesResponse>> {
-        const requestOptions = await this.listNodesRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => RegistrySvcListNodesResponseFromJSON(jsonValue));
     }
@@ -476,9 +412,10 @@ export class RegistrySvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for registerInstance without sending the request
+     * Registers an instance. Idempotent.
+     * Register Instance
      */
-    async registerInstanceRequestOpts(requestParameters: RegisterInstanceRequest): Promise<runtime.RequestOpts> {
+    async registerInstanceRaw(requestParameters: RegisterInstanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -499,22 +436,13 @@ export class RegistrySvcApi extends runtime.BaseAPI {
 
         let urlPath = `/registry-svc/instance`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: RegistrySvcRegisterInstanceRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Registers an instance. Idempotent.
-     * Register Instance
-     */
-    async registerInstanceRaw(requestParameters: RegisterInstanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        const requestOptions = await this.registerInstanceRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -529,9 +457,10 @@ export class RegistrySvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for removeInstance without sending the request
+     * Removes a registered instance by ID.
+     * Remove Instance
      */
-    async removeInstanceRequestOpts(requestParameters: RemoveInstanceRequest): Promise<runtime.RequestOpts> {
+    async removeInstanceRaw(requestParameters: RemoveInstanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters['id'] == null) {
             throw new runtime.RequiredError(
                 'id',
@@ -551,21 +480,12 @@ export class RegistrySvcApi extends runtime.BaseAPI {
         let urlPath = `/registry-svc/instance/{id}`;
         urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Removes a registered instance by ID.
-     * Remove Instance
-     */
-    async removeInstanceRaw(requestParameters: RemoveInstanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        const requestOptions = await this.removeInstanceRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.VoidApiResponse(response);
     }
@@ -579,9 +499,10 @@ export class RegistrySvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for saveDefinition without sending the request
+     * Registers a new definition, associating an definition address with a slug acquired from the bearer token.
+     * Register a Definition
      */
-    async saveDefinitionRequestOpts(requestParameters: SaveDefinitionRequest): Promise<runtime.RequestOpts> {
+    async saveDefinitionRaw(requestParameters: SaveDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -602,22 +523,13 @@ export class RegistrySvcApi extends runtime.BaseAPI {
 
         let urlPath = `/registry-svc/definition`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: RegistrySvcSaveDefinitionRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Registers a new definition, associating an definition address with a slug acquired from the bearer token.
-     * Register a Definition
-     */
-    async saveDefinitionRaw(requestParameters: SaveDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        const requestOptions = await this.saveDefinitionRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -632,9 +544,10 @@ export class RegistrySvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for selfNode without sending the request
+     * Show the local node.
+     * View Self Node
      */
-    async selfNodeRequestOpts(requestParameters: SelfNodeRequest): Promise<runtime.RequestOpts> {
+    async selfNodeRaw(requestParameters: SelfNodeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RegistrySvcNodeSelfResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -648,22 +561,13 @@ export class RegistrySvcApi extends runtime.BaseAPI {
 
         let urlPath = `/registry-svc/node/self`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
             body: requestParameters['body'] as any,
-        };
-    }
-
-    /**
-     * Show the local node.
-     * View Self Node
-     */
-    async selfNodeRaw(requestParameters: SelfNodeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RegistrySvcNodeSelfResponse>> {
-        const requestOptions = await this.selfNodeRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => RegistrySvcNodeSelfResponseFromJSON(jsonValue));
     }

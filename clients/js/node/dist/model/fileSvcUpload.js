@@ -47,6 +47,11 @@ FileSvcUpload.attributeTypeMap = [
         "type": "string"
     },
     {
+        "name": "lastAccessedAt",
+        "baseName": "lastAccessedAt",
+        "type": "string"
+    },
+    {
         "name": "nodeId",
         "baseName": "nodeId",
         "type": "string"

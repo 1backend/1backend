@@ -27,9 +27,10 @@ import { ProxySvcDeleteRoutesRequestToJSON, ProxySvcListCertsRequestToJSON, Prox
  */
 export class ProxySvcApi extends runtime.BaseAPI {
     /**
-     * Creates request options for deleteRoutes without sending the request
+     * Delete specific routes by their IDs.
+     * Delete Routes
      */
-    deleteRoutesRequestOpts(requestParameters) {
+    deleteRoutesRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling deleteRoutes().');
@@ -41,23 +42,13 @@ export class ProxySvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/proxy-svc/routes`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ProxySvcDeleteRoutesRequestToJSON(requestParameters['body']),
-            };
-        });
-    }
-    /**
-     * Delete specific routes by their IDs.
-     * Delete Routes
-     */
-    deleteRoutesRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.deleteRoutesRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
     }
@@ -72,9 +63,10 @@ export class ProxySvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for listCerts without sending the request
+     * List certs that the edge proxy will use to cert requests.
+     * List Certs
      */
-    listCertsRequestOpts(requestParameters) {
+    listCertsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -83,23 +75,13 @@ export class ProxySvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/proxy-svc/certs`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ProxySvcListCertsRequestToJSON(requestParameters['body']),
-            };
-        });
-    }
-    /**
-     * List certs that the edge proxy will use to cert requests.
-     * List Certs
-     */
-    listCertsRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.listCertsRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ProxySvcListCertsResponseFromJSON(jsonValue));
         });
     }
@@ -114,9 +96,10 @@ export class ProxySvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for listRoutes without sending the request
+     * List routes that the edge proxy will use to route requests.
+     * List Routes
      */
-    listRoutesRequestOpts(requestParameters) {
+    listRoutesRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -125,23 +108,13 @@ export class ProxySvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/proxy-svc/routes`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ProxySvcListRoutesRequestToJSON(requestParameters['body']),
-            };
-        });
-    }
-    /**
-     * List routes that the edge proxy will use to route requests.
-     * List Routes
-     */
-    listRoutesRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.listRoutesRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ProxySvcListRoutesResponseFromJSON(jsonValue));
         });
     }
@@ -156,9 +129,10 @@ export class ProxySvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for saveCerts without sending the request
+     * This endpoint only exist for testing purposes. Only callable by admins Certs should be saved by the Proxy Svc and its edge proxying functionality internally, not through this endpoint.
+     * Save Certs
      */
-    saveCertsRequestOpts(requestParameters) {
+    saveCertsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling saveCerts().');
@@ -170,23 +144,13 @@ export class ProxySvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/proxy-svc/certs`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ProxySvcSaveCertsRequestToJSON(requestParameters['body']),
-            };
-        });
-    }
-    /**
-     * This endpoint only exist for testing purposes. Only callable by admins Certs should be saved by the Proxy Svc and its edge proxying functionality internally, not through this endpoint.
-     * Save Certs
-     */
-    saveCertsRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.saveCertsRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
     }
@@ -201,9 +165,10 @@ export class ProxySvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for saveRoutes without sending the request
+     * Save routes that the edge proxy will use to route requests.
+     * Save Routes
      */
-    saveRoutesRequestOpts(requestParameters) {
+    saveRoutesRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling saveRoutes().');
@@ -215,23 +180,13 @@ export class ProxySvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/proxy-svc/routes`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ProxySvcSaveRoutesRequestToJSON(requestParameters['body']),
-            };
-        });
-    }
-    /**
-     * Save routes that the edge proxy will use to route requests.
-     * Save Routes
-     */
-    saveRoutesRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.saveRoutesRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ProxySvcSaveRoutesResponseFromJSON(jsonValue));
         });
     }

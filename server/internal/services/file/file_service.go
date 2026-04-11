@@ -10,10 +10,12 @@ package fileservice
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"os"
 	"path"
 	"sync"
+	"time"
 
 	"cloud.google.com/go/storage"
 	"github.com/1backend/1backend/sdk/go/auth"
@@ -51,6 +53,15 @@ type FileService struct {
 
 	nodeId string
 	cache  *lru.Cache[string, *file.Upload]
+
+	accessFlushInterval time.Duration
+	lastAccessMu        sync.Mutex
+	pendingLastAccessAt map[string]pendingAccess
+}
+
+type pendingAccess struct {
+	FileId         string
+	LastAccessedAt time.Time
 }
 
 func NewFileService(
@@ -68,6 +79,11 @@ func NewFileService(
 	}
 
 	fs.cache, _ = lru.New[string, *file.Upload](100000)
+	fs.pendingLastAccessAt = map[string]pendingAccess{}
+	fs.accessFlushInterval = 30 * time.Second
+	if options.Test {
+		fs.accessFlushInterval = 250 * time.Millisecond
+	}
 
 	// Determine Strategy
 	if options.FileGcs {
@@ -215,7 +231,90 @@ func (fs *FileService) Start() error {
 		}
 	}
 
+	go fs.flushAccessLoop()
+
 	return err
+}
+
+func (fs *FileService) markUploadAccess(upload *types.Upload) {
+	if upload == nil || upload.Id == "" {
+		return
+	}
+
+	now := time.Now().UTC()
+
+	fs.lastAccessMu.Lock()
+	prev, exists := fs.pendingLastAccessAt[upload.Id]
+	if !exists || now.After(prev.LastAccessedAt) {
+		fs.pendingLastAccessAt[upload.Id] = pendingAccess{
+			FileId:         upload.FileId,
+			LastAccessedAt: now,
+		}
+	}
+	fs.lastAccessMu.Unlock()
+}
+
+func (fs *FileService) flushAccessLoop() {
+	ticker := time.NewTicker(fs.accessFlushInterval)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		fs.flushAccesses()
+	}
+}
+
+func (fs *FileService) flushAccesses() {
+	pending := fs.swapPendingAccesses()
+	if len(pending) == 0 {
+		return
+	}
+
+	patches := make([]datastore.Patch, 0, len(pending))
+	cacheUpdates := make(map[string]time.Time, len(pending))
+	for uploadId, update := range pending {
+		patches = append(patches, datastore.Patch{
+			ID: uploadId,
+			Fields: map[string]any{
+				"lastAccessedAt": update.LastAccessedAt,
+			},
+		})
+
+		prev, exists := cacheUpdates[update.FileId]
+		if !exists || update.LastAccessedAt.After(prev) {
+			cacheUpdates[update.FileId] = update.LastAccessedAt
+		}
+	}
+
+	if len(patches) > 0 {
+		if err := fs.uploadStore.PatchMany(patches); err != nil {
+			// non-critical: never fail file serving due to analytics-like metadata updates
+			logger.Error("Failed to flush lastAccessedAt batch",
+				slog.Int("count", len(patches)),
+				slog.Any("error", err))
+			return
+		}
+	}
+
+	for fileId, lastAccessedAt := range cacheUpdates {
+		if cachedUpload, ok := fs.cache.Get(fileId); ok {
+			accessedAt := lastAccessedAt
+			cachedUpload.LastAccessedAt = &accessedAt
+			fs.cache.Add(fileId, cachedUpload)
+		}
+	}
+}
+
+func (fs *FileService) swapPendingAccesses() map[string]pendingAccess {
+	fs.lastAccessMu.Lock()
+	defer fs.lastAccessMu.Unlock()
+
+	if len(fs.pendingLastAccessAt) == 0 {
+		return nil
+	}
+
+	pending := fs.pendingLastAccessAt
+	fs.pendingLastAccessAt = map[string]pendingAccess{}
+	return pending
 }
 
 func (fs *FileService) LazyStart() error {
