@@ -6,7 +6,6 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
-	"path/filepath"
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
