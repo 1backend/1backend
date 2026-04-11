@@ -19,6 +19,8 @@ type Upload struct {
 
 	CreatedAt time.Time `json:"createdAt" binding:"required"`
 	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
+	// LastAccessedAt is updated asynchronously by the file service when the file is served.
+	LastAccessedAt *time.Time `json:"lastAccessedAt,omitempty"`
 
 	// ID of the node storing this replica
 	NodeId string `json:"nodeId" binding:"required"`

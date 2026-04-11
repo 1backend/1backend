@@ -31,10 +31,6 @@ export interface ServeUploadedImageRequest {
  */
 export declare class ImageSvcApi extends runtime.BaseAPI {
     /**
-     * Creates request options for serveDownloadedImage without sending the request
-     */
-    serveDownloadedImageRequestOpts(requestParameters: ServeDownloadedImageRequest): Promise<runtime.RequestOpts>;
-    /**
      * Retrieves, caches, resizes, and serves an image referenced by its original URL.
      * Serve Downloaded Image
      */
@@ -44,10 +40,6 @@ export declare class ImageSvcApi extends runtime.BaseAPI {
      * Serve Downloaded Image
      */
     serveDownloadedImage(requestParameters: ServeDownloadedImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
-    /**
-     * Creates request options for serveUploadedImage without sending the request
-     */
-    serveUploadedImageRequestOpts(requestParameters: ServeUploadedImageRequest): Promise<runtime.RequestOpts>;
     /**
      * Retrieves and serves a previously uploaded image file using its File ID.
      * Serve Uploaded Image

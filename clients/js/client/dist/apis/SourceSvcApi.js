@@ -27,9 +27,10 @@ import { SourceSvcCheckoutRepoRequestToJSON, SourceSvcCheckoutRepoResponseFromJS
  */
 export class SourceSvcApi extends runtime.BaseAPI {
     /**
-     * Creates request options for checkoutRepo without sending the request
+     * Checkout a git repository over https or ssh at a specific version into a temporary directory. Performs a shallow clone with minimal history for faster checkout.
+     * Checkout a git repository
      */
-    checkoutRepoRequestOpts(requestParameters) {
+    checkoutRepoRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling checkoutRepo().');
@@ -41,23 +42,13 @@ export class SourceSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/source-svc/repo/checkout`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: SourceSvcCheckoutRepoRequestToJSON(requestParameters['body']),
-            };
-        });
-    }
-    /**
-     * Checkout a git repository over https or ssh at a specific version into a temporary directory. Performs a shallow clone with minimal history for faster checkout.
-     * Checkout a git repository
-     */
-    checkoutRepoRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.checkoutRepoRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => SourceSvcCheckoutRepoResponseFromJSON(jsonValue));
         });
     }

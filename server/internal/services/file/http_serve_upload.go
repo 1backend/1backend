@@ -72,6 +72,7 @@ func (fs *FileService) ServeUpload(
 		return
 	}
 	defer src.Close()
+	fs.markUploadAccess(upload)
 
 	filename := upload.FileName
 

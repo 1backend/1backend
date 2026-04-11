@@ -56,6 +56,12 @@ export interface FileSvcUpload {
      */
     id: string;
     /**
+     * LastAccessedAt is updated asynchronously by the file service when the file is served.
+     * @type {string}
+     * @memberof FileSvcUpload
+     */
+    lastAccessedAt?: string;
+    /**
      * ID of the node storing this replica
      * @type {string}
      * @memberof FileSvcUpload
@@ -107,6 +113,7 @@ export function FileSvcUploadFromJSONTyped(json: any, ignoreDiscriminator: boole
         'filePath': json['filePath'],
         'fileSize': json['fileSize'],
         'id': json['id'],
+        'lastAccessedAt': json['lastAccessedAt'] == null ? undefined : json['lastAccessedAt'],
         'nodeId': json['nodeId'],
         'updatedAt': json['updatedAt'],
         'userId': json['userId'],
@@ -130,6 +137,7 @@ export function FileSvcUploadToJSONTyped(value?: FileSvcUpload | null, ignoreDis
         'filePath': value['filePath'],
         'fileSize': value['fileSize'],
         'id': value['id'],
+        'lastAccessedAt': value['lastAccessedAt'],
         'nodeId': value['nodeId'],
         'updatedAt': value['updatedAt'],
         'userId': value['userId'],

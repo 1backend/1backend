@@ -267,9 +267,10 @@ export interface UpdateAppRequest {
 export class UserSvcApi extends runtime.BaseAPI {
 
     /**
-     * Creates request options for activateOrganization without sending the request
+     * Sets the caller user\'s active organization and returns a fresh token reflecting the new active organization.
+     * Activate Organization
      */
-    async activateOrganizationRequestOpts(requestParameters: ActivateOrganizationRequest): Promise<runtime.RequestOpts> {
+    async activateOrganizationRaw(requestParameters: ActivateOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcActivateOrganizationResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -290,22 +291,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/organization/activate`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcActivateOrganizationRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Sets the caller user\'s active organization and returns a fresh token reflecting the new active organization.
-     * Activate Organization
-     */
-    async activateOrganizationRaw(requestParameters: ActivateOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcActivateOrganizationResponse>> {
-        const requestOptions = await this.activateOrganizationRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcActivateOrganizationResponseFromJSON(jsonValue));
     }
@@ -320,9 +312,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for changePassword without sending the request
+     * Allows an authenticated user to change their own password.
+     * Change Password
      */
-    async changePasswordRequestOpts(requestParameters: ChangePasswordRequest): Promise<runtime.RequestOpts> {
+    async changePasswordRaw(requestParameters: ChangePasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -343,22 +336,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/change-password`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcChangePasswordRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Allows an authenticated user to change their own password.
-     * Change Password
-     */
-    async changePasswordRaw(requestParameters: ChangePasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        const requestOptions = await this.changePasswordRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -373,9 +357,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for createUser without sending the request
+     * Allows an authenticated administrator to create a new user with specified details.
+     * Create a New User
      */
-    async createUserRequestOpts(requestParameters: CreateUserRequest): Promise<runtime.RequestOpts> {
+    async createUserRaw(requestParameters: CreateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -396,22 +381,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/user`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcCreateUserRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Allows an authenticated administrator to create a new user with specified details.
-     * Create a New User
-     */
-    async createUserRaw(requestParameters: CreateUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        const requestOptions = await this.createUserRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -426,9 +402,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for deleteMembership without sending the request
+     * Allows an organization admin to remove a user from an organization.
+     * Delete Membership
      */
-    async deleteMembershipRequestOpts(requestParameters: DeleteMembershipRequest): Promise<runtime.RequestOpts> {
+    async deleteMembershipRaw(requestParameters: DeleteMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['organizationId'] == null) {
             throw new runtime.RequiredError(
                 'organizationId',
@@ -458,22 +435,13 @@ export class UserSvcApi extends runtime.BaseAPI {
         urlPath = urlPath.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId'])));
         urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
             body: requestParameters['body'] as any,
-        };
-    }
-
-    /**
-     * Allows an organization admin to remove a user from an organization.
-     * Delete Membership
-     */
-    async deleteMembershipRaw(requestParameters: DeleteMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        const requestOptions = await this.deleteMembershipRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -488,9 +456,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for deleteUser without sending the request
+     * Delete a user based on the user ID.
+     * Delete a User
      */
-    async deleteUserRequestOpts(requestParameters: DeleteUserRequest): Promise<runtime.RequestOpts> {
+    async deleteUserRaw(requestParameters: DeleteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -510,21 +479,12 @@ export class UserSvcApi extends runtime.BaseAPI {
         let urlPath = `/user-svc/user/{userId}`;
         urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Delete a user based on the user ID.
-     * Delete a User
-     */
-    async deleteUserRaw(requestParameters: DeleteUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        const requestOptions = await this.deleteUserRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -539,9 +499,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for exchangeToken without sending the request
+     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
+     * Exchange Token
      */
-    async exchangeTokenRequestOpts(requestParameters: ExchangeTokenRequest): Promise<runtime.RequestOpts> {
+    async exchangeTokenRaw(requestParameters: ExchangeTokenRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcExchangeTokenResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -558,22 +519,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/token/exchange`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcExchangeTokenRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
-     * Exchange Token
-     */
-    async exchangeTokenRaw(requestParameters: ExchangeTokenRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcExchangeTokenResponse>> {
-        const requestOptions = await this.exchangeTokenRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcExchangeTokenResponseFromJSON(jsonValue));
     }
@@ -588,9 +540,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for exchangeToken_1 without sending the request
+     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
+     * Exchange Token
      */
-    async exchangeToken_1RequestOpts(requestParameters: ExchangeToken0Request): Promise<runtime.RequestOpts> {
+    async exchangeToken_1Raw(requestParameters: ExchangeToken0Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcExchangeTokenResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -607,22 +560,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/token/exchange`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcExchangeTokenRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
-     * Exchange Token
-     */
-    async exchangeToken_1Raw(requestParameters: ExchangeToken0Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcExchangeTokenResponse>> {
-        const requestOptions = await this.exchangeToken_1RequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcExchangeTokenResponseFromJSON(jsonValue));
     }
@@ -637,9 +581,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for getPublicKey without sending the request
+     * Get the public key to verify the JWT signature.
+     * Get Public Key
      */
-    async getPublicKeyRequestOpts(): Promise<runtime.RequestOpts> {
+    async getPublicKeyRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcGetPublicKeyResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -647,21 +592,12 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/public-key`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Get the public key to verify the JWT signature.
-     * Get Public Key
-     */
-    async getPublicKeyRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcGetPublicKeyResponse>> {
-        const requestOptions = await this.getPublicKeyRequestOpts();
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcGetPublicKeyResponseFromJSON(jsonValue));
     }
@@ -676,9 +612,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for hasPermission without sending the request
+     * Checks whether the caller has a specific permission. Optimized for caching — only the caller and the permission are required. To assign a permission to a user or role, use the `Save Permits` endpoint.  This endpoint does not return 401 Unauthorized if access is denied. Instead, it always returns 200 OK with `Authorized: false` if the permission is missing. The response will still include the caller’s user information if not authorized.
+     * Has Permission
      */
-    async hasPermissionRequestOpts(requestParameters: HasPermissionRequest): Promise<runtime.RequestOpts> {
+    async hasPermissionRaw(requestParameters: HasPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcHasPermissionResponse>> {
         if (requestParameters['permission'] == null) {
             throw new runtime.RequiredError(
                 'permission',
@@ -698,21 +635,12 @@ export class UserSvcApi extends runtime.BaseAPI {
         let urlPath = `/user-svc/self/has/{permission}`;
         urlPath = urlPath.replace(`{${"permission"}}`, encodeURIComponent(String(requestParameters['permission'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Checks whether the caller has a specific permission. Optimized for caching — only the caller and the permission are required. To assign a permission to a user or role, use the `Save Permits` endpoint.  This endpoint does not return 401 Unauthorized if access is denied. Instead, it always returns 200 OK with `Authorized: false` if the permission is missing. The response will still include the caller’s user information if not authorized.
-     * Has Permission
-     */
-    async hasPermissionRaw(requestParameters: HasPermissionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcHasPermissionResponse>> {
-        const requestOptions = await this.hasPermissionRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcHasPermissionResponseFromJSON(jsonValue));
     }
@@ -727,9 +655,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for listApps without sending the request
+     * List apps. Role, user ID or contact ID must be specified.  Requires the `user-svc:app:view` permission, which by default all users have. Caller can only list apps of roles they own (unless they are an admin).
+     * List Apps
      */
-    async listAppsRequestOpts(requestParameters: ListAppsRequest): Promise<runtime.RequestOpts> {
+    async listAppsRaw(requestParameters: ListAppsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListAppsResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -750,22 +679,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/apps`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcListAppsRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * List apps. Role, user ID or contact ID must be specified.  Requires the `user-svc:app:view` permission, which by default all users have. Caller can only list apps of roles they own (unless they are an admin).
-     * List Apps
-     */
-    async listAppsRaw(requestParameters: ListAppsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListAppsResponse>> {
-        const requestOptions = await this.listAppsRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListAppsResponseFromJSON(jsonValue));
     }
@@ -780,9 +700,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for listEnrolls without sending the request
+     * List enrolls. Role, user ID or contact ID must be specified.  Requires the `user-svc:enroll:view` permission, which by default all users have. Caller can only list enrolls of roles they own (unless they are an admin).
+     * List Enrolls
      */
-    async listEnrollsRequestOpts(requestParameters: ListEnrollsRequest): Promise<runtime.RequestOpts> {
+    async listEnrollsRaw(requestParameters: ListEnrollsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListEnrollsResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -803,22 +724,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/enrolls`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcListEnrollsRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * List enrolls. Role, user ID or contact ID must be specified.  Requires the `user-svc:enroll:view` permission, which by default all users have. Caller can only list enrolls of roles they own (unless they are an admin).
-     * List Enrolls
-     */
-    async listEnrollsRaw(requestParameters: ListEnrollsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListEnrollsResponse>> {
-        const requestOptions = await this.listEnrollsRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListEnrollsResponseFromJSON(jsonValue));
     }
@@ -833,9 +745,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for listOrganizations without sending the request
+     * Requires the `user-svc:organization:view` permission, that only admins have by default.
+     * List Organizations
      */
-    async listOrganizationsRequestOpts(requestParameters: ListOrganizationsRequest): Promise<runtime.RequestOpts> {
+    async listOrganizationsRaw(requestParameters: ListOrganizationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListOrganizationsResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -849,22 +762,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/organizations`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcListOrganizationsRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Requires the `user-svc:organization:view` permission, that only admins have by default.
-     * List Organizations
-     */
-    async listOrganizationsRaw(requestParameters: ListOrganizationsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListOrganizationsResponse>> {
-        const requestOptions = await this.listOrganizationsRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListOrganizationsResponseFromJSON(jsonValue));
     }
@@ -879,9 +783,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for listPermissions without sending the request
+     * List permissions by roles. Caller can only list permissions for roles they have.
+     * List Permissions
      */
-    async listPermissionsRequestOpts(requestParameters: ListPermissionsRequest): Promise<runtime.RequestOpts> {
+    async listPermissionsRaw(requestParameters: ListPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListPermissionsResponse>> {
         if (requestParameters['roleId'] == null) {
             throw new runtime.RequiredError(
                 'roleId',
@@ -901,21 +806,12 @@ export class UserSvcApi extends runtime.BaseAPI {
         let urlPath = `/user-svc/permissions`;
         urlPath = urlPath.replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * List permissions by roles. Caller can only list permissions for roles they have.
-     * List Permissions
-     */
-    async listPermissionsRaw(requestParameters: ListPermissionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListPermissionsResponse>> {
-        const requestOptions = await this.listPermissionsRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListPermissionsResponseFromJSON(jsonValue));
     }
@@ -930,9 +826,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for listPermits without sending the request
+     * List permits. Requires the `user-svc:permit:view` permission, which only admins have by default. &todo Users should be able to list permits referring to them.
+     * List Permits
      */
-    async listPermitsRequestOpts(requestParameters: ListPermitsRequest): Promise<runtime.RequestOpts> {
+    async listPermitsRaw(requestParameters: ListPermitsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListPermitsResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -953,22 +850,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/permits`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcListPermitsRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * List permits. Requires the `user-svc:permit:view` permission, which only admins have by default. &todo Users should be able to list permits referring to them.
-     * List Permits
-     */
-    async listPermitsRaw(requestParameters: ListPermitsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListPermitsResponse>> {
-        const requestOptions = await this.listPermitsRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListPermitsResponseFromJSON(jsonValue));
     }
@@ -983,9 +871,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for listUsers without sending the request
+     * Fetches a list of users with optional query filters and pagination. Requires the `user-svc:user:view` permission that only admins have by default.
+     * List Users
      */
-    async listUsersRequestOpts(requestParameters: ListUsersRequest): Promise<runtime.RequestOpts> {
+    async listUsersRaw(requestParameters: ListUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListUsersResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -999,22 +888,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/users`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcListUsersRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Fetches a list of users with optional query filters and pagination. Requires the `user-svc:user:view` permission that only admins have by default.
-     * List Users
-     */
-    async listUsersRaw(requestParameters: ListUsersRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListUsersResponse>> {
-        const requestOptions = await this.listUsersRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListUsersResponseFromJSON(jsonValue));
     }
@@ -1029,9 +909,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for login without sending the request
+     * Authenticates a user and returns a token.
+     * Login
      */
-    async loginRequestOpts(requestParameters: LoginRequest): Promise<runtime.RequestOpts> {
+    async loginRaw(requestParameters: LoginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcLoginResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -1048,22 +929,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/login`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcLoginRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Authenticates a user and returns a token.
-     * Login
-     */
-    async loginRaw(requestParameters: LoginRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcLoginResponse>> {
-        const requestOptions = await this.loginRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcLoginResponseFromJSON(jsonValue));
     }
@@ -1078,9 +950,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for readApp without sending the request
+     * Get an app by host, or create it if it does not exist.
+     * Read or Create App
      */
-    async readAppRequestOpts(requestParameters: ReadAppRequest): Promise<runtime.RequestOpts> {
+    async readAppRaw(requestParameters: ReadAppRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcReadAppResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -1101,22 +974,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/app`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcReadAppRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Get an app by host, or create it if it does not exist.
-     * Read or Create App
-     */
-    async readAppRaw(requestParameters: ReadAppRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcReadAppResponse>> {
-        const requestOptions = await this.readAppRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcReadAppResponseFromJSON(jsonValue));
     }
@@ -1131,9 +995,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for readSelf without sending the request
+     * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.  ReadSelf intentionally still works after token revocation until the token expires. This is to ensure that the user is not notified of token revocation (though some information is leaked by the count token functionality @todo).
+     * Read Self
      */
-    async readSelfRequestOpts(requestParameters: ReadSelfRequest): Promise<runtime.RequestOpts> {
+    async readSelfRaw(requestParameters: ReadSelfRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcReadSelfResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1147,22 +1012,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/self`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcReadSelfRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.  ReadSelf intentionally still works after token revocation until the token expires. This is to ensure that the user is not notified of token revocation (though some information is leaked by the count token functionality @todo).
-     * Read Self
-     */
-    async readSelfRaw(requestParameters: ReadSelfRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcReadSelfResponse>> {
-        const requestOptions = await this.readSelfRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcReadSelfResponseFromJSON(jsonValue));
     }
@@ -1177,9 +1033,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for refreshToken without sending the request
+     * Refreshes an existing token, including inactive ones. The old token becomes inactive (if not already inactive), and a new, active token is issued. This allows continued verification of user roles without requiring a new login. Inactive tokens are refreshable unless explicitly revoked (no mechanism for this yet). Leaked tokens should be handled separately, via a revocation flag or deletion.
+     * Refresh Token
      */
-    async refreshTokenRequestOpts(): Promise<runtime.RequestOpts> {
+    async refreshTokenRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcRefreshTokenResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1187,21 +1044,12 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/refresh-token`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Refreshes an existing token, including inactive ones. The old token becomes inactive (if not already inactive), and a new, active token is issued. This allows continued verification of user roles without requiring a new login. Inactive tokens are refreshable unless explicitly revoked (no mechanism for this yet). Leaked tokens should be handled separately, via a revocation flag or deletion.
-     * Refresh Token
-     */
-    async refreshTokenRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcRefreshTokenResponse>> {
-        const requestOptions = await this.refreshTokenRequestOpts();
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcRefreshTokenResponseFromJSON(jsonValue));
     }
@@ -1216,9 +1064,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for register without sending the request
+     * Register a new user with a name, email, and password.
+     * Register
      */
-    async registerRequestOpts(requestParameters: RegisterRequest): Promise<runtime.RequestOpts> {
+    async registerRaw(requestParameters: RegisterRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcRegisterResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -1235,22 +1084,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/register`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcRegisterRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Register a new user with a name, email, and password.
-     * Register
-     */
-    async registerRaw(requestParameters: RegisterRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcRegisterResponse>> {
-        const requestOptions = await this.registerRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcRegisterResponseFromJSON(jsonValue));
     }
@@ -1265,9 +1105,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for resetPassword without sending the request
+     * Allows an administrator to change a user\'s password.
+     * Reset Password
      */
-    async resetPasswordRequestOpts(requestParameters: ResetPasswordRequest): Promise<runtime.RequestOpts> {
+    async resetPasswordRaw(requestParameters: ResetPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -1296,22 +1137,13 @@ export class UserSvcApi extends runtime.BaseAPI {
         let urlPath = `/user-svc/{userId}/reset-password`;
         urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcResetPasswordRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Allows an administrator to change a user\'s password.
-     * Reset Password
-     */
-    async resetPasswordRaw(requestParameters: ResetPasswordRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        const requestOptions = await this.resetPasswordRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -1326,9 +1158,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for revokeTokens without sending the request
+     * Revoke tokens in one of the following scenarios: - For the current user. - For another user (see `userId` field), if permitted (`user-svc:token:revoke` permission, typically by admins).
+     * Revoke Tokens
      */
-    async revokeTokensRequestOpts(requestParameters: RevokeTokensRequest): Promise<runtime.RequestOpts> {
+    async revokeTokensRaw(requestParameters: RevokeTokensRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1342,22 +1175,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/tokens`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcRevokeTokensRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Revoke tokens in one of the following scenarios: - For the current user. - For another user (see `userId` field), if permitted (`user-svc:token:revoke` permission, typically by admins).
-     * Revoke Tokens
-     */
-    async revokeTokensRaw(requestParameters: RevokeTokensRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        const requestOptions = await this.revokeTokensRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -1372,9 +1196,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for saveEnrolls without sending the request
+     * Enroll a list of users by contact or user Id to acquire a role. Works on future or current users.  A user can only enroll an other user to a role if the user \"owns\" that role. A user who owns a role can enroll others in that roll in any app. The same request might contain enrolls for different apps.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).  Examples: - A user with the slug `joe-doe` owns roles like `joe-doe:*` such as `joe-doe:any-custom-role`. - A user with any slug who has the role `my-service:admin` owns `my-service:*` roles such as `my-service:user`. - A user with any slug who has the role `user-svc:org:{%orgId}:admin` owns `user-svc:org:{%orgId}:*` such as `user-svc:org:{%orgId}:user`.
+     * Save Enrolls
      */
-    async saveEnrollsRequestOpts(requestParameters: SaveEnrollsRequest): Promise<runtime.RequestOpts> {
+    async saveEnrollsRaw(requestParameters: SaveEnrollsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcSaveEnrollsResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -1395,22 +1220,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/enrolls`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcSaveEnrollsRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Enroll a list of users by contact or user Id to acquire a role. Works on future or current users.  A user can only enroll an other user to a role if the user \"owns\" that role. A user who owns a role can enroll others in that roll in any app. The same request might contain enrolls for different apps.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).  Examples: - A user with the slug `joe-doe` owns roles like `joe-doe:*` such as `joe-doe:any-custom-role`. - A user with any slug who has the role `my-service:admin` owns `my-service:*` roles such as `my-service:user`. - A user with any slug who has the role `user-svc:org:{%orgId}:admin` owns `user-svc:org:{%orgId}:*` such as `user-svc:org:{%orgId}:user`.
-     * Save Enrolls
-     */
-    async saveEnrollsRaw(requestParameters: SaveEnrollsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcSaveEnrollsResponse>> {
-        const requestOptions = await this.saveEnrollsRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcSaveEnrollsResponseFromJSON(jsonValue));
     }
@@ -1425,9 +1241,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for saveMembership without sending the request
+     * Adds a user to an organization by saving a Membership. Also issues the corresponding Enroll, which grants the user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
+     * Save Membership
      */
-    async saveMembershipRequestOpts(requestParameters: SaveMembershipRequest): Promise<runtime.RequestOpts> {
+    async saveMembershipRaw(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['organizationId'] == null) {
             throw new runtime.RequiredError(
                 'organizationId',
@@ -1457,22 +1274,13 @@ export class UserSvcApi extends runtime.BaseAPI {
         urlPath = urlPath.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId'])));
         urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: requestParameters['body'] as any,
-        };
-    }
-
-    /**
-     * Adds a user to an organization by saving a Membership. Also issues the corresponding Enroll, which grants the user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
-     * Save Membership
-     */
-    async saveMembershipRaw(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        const requestOptions = await this.saveMembershipRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -1487,9 +1295,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for saveOrganization without sending the request
+     * Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization. The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the saved organization. Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
+     * Save an Organization
      */
-    async saveOrganizationRequestOpts(requestParameters: SaveOrganizationRequest): Promise<runtime.RequestOpts> {
+    async saveOrganizationRaw(requestParameters: SaveOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcSaveOrganizationResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -1510,22 +1319,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/organization`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcSaveOrganizationRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization. The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the saved organization. Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
-     * Save an Organization
-     */
-    async saveOrganizationRaw(requestParameters: SaveOrganizationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcSaveOrganizationResponse>> {
-        const requestOptions = await this.saveOrganizationRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcSaveOrganizationResponseFromJSON(jsonValue));
     }
@@ -1540,9 +1340,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for savePermits without sending the request
+     * Save permits. Permits give access to users with certain slugs and roles to permissions.
+     * Save Permits
      */
-    async savePermitsRequestOpts(requestParameters: SavePermitsRequest): Promise<runtime.RequestOpts> {
+    async savePermitsRaw(requestParameters: SavePermitsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -1563,22 +1364,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/permits`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcSavePermitsRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Save permits. Permits give access to users with certain slugs and roles to permissions.
-     * Save Permits
-     */
-    async savePermitsRaw(requestParameters: SavePermitsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        const requestOptions = await this.savePermitsRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -1593,9 +1385,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for saveSelf without sending the request
+     * Save user\'s own profile information.
+     * Save User Profile
      */
-    async saveSelfRequestOpts(requestParameters: SaveSelfRequest): Promise<runtime.RequestOpts> {
+    async saveSelfRaw(requestParameters: SaveSelfRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -1616,22 +1409,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/self`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcSaveSelfRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Save user\'s own profile information.
-     * Save User Profile
-     */
-    async saveSelfRaw(requestParameters: SaveSelfRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        const requestOptions = await this.saveSelfRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -1646,9 +1430,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for saveUser without sending the request
+     * Save user information based on the provided user ID. Intended for admins. Requires the `user-svc:user:edit` permission. For a user to edit their own profile, see `saveSelf`.
+     * Save User
      */
-    async saveUserRequestOpts(requestParameters: SaveUserRequest): Promise<runtime.RequestOpts> {
+    async saveUserRaw(requestParameters: SaveUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['userId'] == null) {
             throw new runtime.RequiredError(
                 'userId',
@@ -1677,22 +1462,13 @@ export class UserSvcApi extends runtime.BaseAPI {
         let urlPath = `/user-svc/user/{userId}`;
         urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcSaveUserRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Save user information based on the provided user ID. Intended for admins. Requires the `user-svc:user:edit` permission. For a user to edit their own profile, see `saveSelf`.
-     * Save User
-     */
-    async saveUserRaw(requestParameters: SaveUserRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        const requestOptions = await this.saveUserRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -1707,9 +1483,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for sendOtp without sending the request
+     * Generates and sends a one-time password (OTP) to the specified contact.  The OTP can be used for contact verification or login depending on purpose.
+     * Send OTP
      */
-    async sendOtpRequestOpts(requestParameters: SendOtpRequest): Promise<runtime.RequestOpts> {
+    async sendOtpRaw(requestParameters: SendOtpRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcSendOtpResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -1730,22 +1507,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/otp/send`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcSendOtpRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Generates and sends a one-time password (OTP) to the specified contact.  The OTP can be used for contact verification or login depending on purpose.
-     * Send OTP
-     */
-    async sendOtpRaw(requestParameters: SendOtpRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcSendOtpResponse>> {
-        const requestOptions = await this.sendOtpRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcSendOtpResponseFromJSON(jsonValue));
     }
@@ -1760,9 +1528,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for updateApp without sending the request
+     * Change the hostname of an existing app. Requires the `user-svc:app:edit` permission.
+     * Update App Host
      */
-    async updateAppRequestOpts(requestParameters: UpdateAppRequest): Promise<runtime.RequestOpts> {
+    async updateAppRaw(requestParameters: UpdateAppRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -1783,22 +1552,13 @@ export class UserSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/user-svc/app`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: UserSvcUpdateAppRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Change the hostname of an existing app. Requires the `user-svc:app:edit` permission.
-     * Update App Host
-     */
-    async updateAppRaw(requestParameters: UpdateAppRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        const requestOptions = await this.updateAppRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }

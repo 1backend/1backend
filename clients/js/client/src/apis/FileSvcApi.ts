@@ -78,9 +78,10 @@ export interface UploadFileRequest {
 export class FileSvcApi extends runtime.BaseAPI {
 
     /**
-     * Creates request options for deleteUpload without sending the request
+     * Deletes an uploaded file and its metadata by `fileId`.  Requires the `file-svc:upload:delete` permission.
+     * Delete an Uploaded File
      */
-    async deleteUploadRequestOpts(requestParameters: DeleteUploadRequest): Promise<runtime.RequestOpts> {
+    async deleteUploadRaw(requestParameters: DeleteUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: any; }>> {
         if (requestParameters['fileId'] == null) {
             throw new runtime.RequiredError(
                 'fileId',
@@ -100,21 +101,12 @@ export class FileSvcApi extends runtime.BaseAPI {
         let urlPath = `/file-svc/upload/{fileId}`;
         urlPath = urlPath.replace(`{${"fileId"}}`, encodeURIComponent(String(requestParameters['fileId'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Deletes an uploaded file and its metadata by `fileId`.  Requires the `file-svc:upload:delete` permission.
-     * Delete an Uploaded File
-     */
-    async deleteUploadRaw(requestParameters: DeleteUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: any; }>> {
-        const requestOptions = await this.deleteUploadRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -129,9 +121,10 @@ export class FileSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for downloadFile without sending the request
+     * Start or resume the download for a specified URL.  Requires the `file-svc:download:create` permission.
+     * Download a File
      */
-    async downloadFileRequestOpts(requestParameters: DownloadFileRequest): Promise<runtime.RequestOpts> {
+    async downloadFileRaw(requestParameters: DownloadFileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: any; }>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -152,22 +145,13 @@ export class FileSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/file-svc/download`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: FileSvcDownloadFileRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Start or resume the download for a specified URL.  Requires the `file-svc:download:create` permission.
-     * Download a File
-     */
-    async downloadFileRaw(requestParameters: DownloadFileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: any; }>> {
-        const requestOptions = await this.downloadFileRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -182,9 +166,10 @@ export class FileSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for getDownload without sending the request
+     * Get a download by URL.  Requires the `file-svc:download:view` permission.
+     * Get a Download
      */
-    async getDownloadRequestOpts(requestParameters: GetDownloadRequest): Promise<runtime.RequestOpts> {
+    async getDownloadRaw(requestParameters: GetDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FileSvcGetDownloadResponse>> {
         if (requestParameters['url'] == null) {
             throw new runtime.RequiredError(
                 'url',
@@ -204,21 +189,12 @@ export class FileSvcApi extends runtime.BaseAPI {
         let urlPath = `/file-svc/download/{url}`;
         urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Get a download by URL.  Requires the `file-svc:download:view` permission.
-     * Get a Download
-     */
-    async getDownloadRaw(requestParameters: GetDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FileSvcGetDownloadResponse>> {
-        const requestOptions = await this.getDownloadRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => FileSvcGetDownloadResponseFromJSON(jsonValue));
     }
@@ -233,9 +209,10 @@ export class FileSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for listDownloads without sending the request
+     * List download details.  Requires the `file-svc:download:view` permission.
+     * List Downloads
      */
-    async listDownloadsRequestOpts(): Promise<runtime.RequestOpts> {
+    async listDownloadsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FileSvcDownloadsResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -247,21 +224,12 @@ export class FileSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/file-svc/downloads`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * List download details.  Requires the `file-svc:download:view` permission.
-     * List Downloads
-     */
-    async listDownloadsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FileSvcDownloadsResponse>> {
-        const requestOptions = await this.listDownloadsRequestOpts();
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => FileSvcDownloadsResponseFromJSON(jsonValue));
     }
@@ -276,9 +244,10 @@ export class FileSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for listUploads without sending the request
+     * Lists uploaded files, returning only metadata about each upload. To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request. Note: Retrieving the contents of multiple files in a single request is not supported currently.  Requires the `file-svc:upload:view` permission.
+     * List Uploads
      */
-    async listUploadsRequestOpts(requestParameters: ListUploadsRequest): Promise<runtime.RequestOpts> {
+    async listUploadsRaw(requestParameters: ListUploadsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FileSvcListUploadsResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -292,22 +261,13 @@ export class FileSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/file-svc/uploads`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: FileSvcListUploadsRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Lists uploaded files, returning only metadata about each upload. To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request. Note: Retrieving the contents of multiple files in a single request is not supported currently.  Requires the `file-svc:upload:view` permission.
-     * List Uploads
-     */
-    async listUploadsRaw(requestParameters: ListUploadsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FileSvcListUploadsResponse>> {
-        const requestOptions = await this.listUploadsRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => FileSvcListUploadsResponseFromJSON(jsonValue));
     }
@@ -322,9 +282,10 @@ export class FileSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for pauseDownload without sending the request
+     * Pause a download that is currently in progress.  Requires the `file-svc:download:edit` permission.
+     * Pause a Download
      */
-    async pauseDownloadRequestOpts(requestParameters: PauseDownloadRequest): Promise<runtime.RequestOpts> {
+    async pauseDownloadRaw(requestParameters: PauseDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: any; }>> {
         if (requestParameters['url'] == null) {
             throw new runtime.RequiredError(
                 'url',
@@ -344,21 +305,12 @@ export class FileSvcApi extends runtime.BaseAPI {
         let urlPath = `/file-svc/download/{url}/pause`;
         urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Pause a download that is currently in progress.  Requires the `file-svc:download:edit` permission.
-     * Pause a Download
-     */
-    async pauseDownloadRaw(requestParameters: PauseDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<{ [key: string]: any; }>> {
-        const requestOptions = await this.pauseDownloadRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -373,9 +325,10 @@ export class FileSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for serveDownload without sending the request
+     * Serves a previously downloaded file based on its URL.
+     * Serve a Downloaded file
      */
-    async serveDownloadRequestOpts(requestParameters: ServeDownloadRequest): Promise<runtime.RequestOpts> {
+    async serveDownloadRaw(requestParameters: ServeDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
         if (requestParameters['url'] == null) {
             throw new runtime.RequiredError(
                 'url',
@@ -391,21 +344,12 @@ export class FileSvcApi extends runtime.BaseAPI {
         let urlPath = `/file-svc/serve/download/{url}`;
         urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Serves a previously downloaded file based on its URL.
-     * Serve a Downloaded file
-     */
-    async serveDownloadRaw(requestParameters: ServeDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
-        const requestOptions = await this.serveDownloadRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.BlobApiResponse(response);
     }
@@ -420,9 +364,10 @@ export class FileSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for serveUpload without sending the request
+     * Retrieves and serves a previously uploaded file using its File ID. Note: The `ID` and `FileID` fields of an upload are different. - `FileID` is a unique identifier for the file itself. - `ID` is a unique identifier for a specific replica of the file. Since 1Backend is a distributed system, files can be replicated across multiple nodes. This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
+     * Serve an Uploaded File
      */
-    async serveUploadRequestOpts(requestParameters: ServeUploadRequest): Promise<runtime.RequestOpts> {
+    async serveUploadRaw(requestParameters: ServeUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
         if (requestParameters['fileId'] == null) {
             throw new runtime.RequiredError(
                 'fileId',
@@ -438,21 +383,12 @@ export class FileSvcApi extends runtime.BaseAPI {
         let urlPath = `/file-svc/serve/upload/{fileId}`;
         urlPath = urlPath.replace(`{${"fileId"}}`, encodeURIComponent(String(requestParameters['fileId'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Retrieves and serves a previously uploaded file using its File ID. Note: The `ID` and `FileID` fields of an upload are different. - `FileID` is a unique identifier for the file itself. - `ID` is a unique identifier for a specific replica of the file. Since 1Backend is a distributed system, files can be replicated across multiple nodes. This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
-     * Serve an Uploaded File
-     */
-    async serveUploadRaw(requestParameters: ServeUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
-        const requestOptions = await this.serveUploadRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.BlobApiResponse(response);
     }
@@ -467,9 +403,10 @@ export class FileSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for uploadFile without sending the request
+     * Uploads a file to the server. Currently if using the clients only one file can be uploaded at a time due to this bug https://github.com/OpenAPITools/openapi-generator/issues/11341 Once that is fixed we should have an `PUT /file-svc/uploads`/uploadFiles (note the plural) endpoints. In reality the endpoint \"unofficially\" supports multiple files. YMMV.  Requires the `file-svc:upload:create` permission.
+     * Upload a File
      */
-    async uploadFileRequestOpts(requestParameters: UploadFileRequest): Promise<runtime.RequestOpts> {
+    async uploadFileRaw(requestParameters: UploadFileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FileSvcUploadFileResponse>> {
         if (requestParameters['file'] == null) {
             throw new runtime.RequiredError(
                 'file',
@@ -508,22 +445,13 @@ export class FileSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/file-svc/upload`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: formParams,
-        };
-    }
-
-    /**
-     * Uploads a file to the server. Currently if using the clients only one file can be uploaded at a time due to this bug https://github.com/OpenAPITools/openapi-generator/issues/11341 Once that is fixed we should have an `PUT /file-svc/uploads`/uploadFiles (note the plural) endpoints. In reality the endpoint \"unofficially\" supports multiple files. YMMV.  Requires the `file-svc:upload:create` permission.
-     * Upload a File
-     */
-    async uploadFileRaw(requestParameters: UploadFileRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<FileSvcUploadFileResponse>> {
-        const requestOptions = await this.uploadFileRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => FileSvcUploadFileResponseFromJSON(jsonValue));
     }

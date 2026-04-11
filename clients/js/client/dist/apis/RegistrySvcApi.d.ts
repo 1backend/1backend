@@ -46,10 +46,6 @@ export interface SelfNodeRequest {
  */
 export declare class RegistrySvcApi extends runtime.BaseAPI {
     /**
-     * Creates request options for deleteDefinition without sending the request
-     */
-    deleteDefinitionRequestOpts(requestParameters: DeleteDefinitionRequest): Promise<runtime.RequestOpts>;
-    /**
      * Deletes a registered definition by ID.
      * Delete Definition
      */
@@ -60,10 +56,6 @@ export declare class RegistrySvcApi extends runtime.BaseAPI {
      */
     deleteDefinition(requestParameters: DeleteDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
     /**
-     * Creates request options for deleteNode without sending the request
-     */
-    deleteNodeRequestOpts(requestParameters: DeleteNodeRequest): Promise<runtime.RequestOpts>;
-    /**
      * Deletes a registered node by node URL. This endpoint is useful when a node is no longer available but it\'s still present in the database.
      * Delete Node
      */
@@ -73,10 +65,6 @@ export declare class RegistrySvcApi extends runtime.BaseAPI {
      * Delete Node
      */
     deleteNode(requestParameters: DeleteNodeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
-    /**
-     * Creates request options for echoGet without sending the request
-     */
-    echoGetRequestOpts(): Promise<runtime.RequestOpts>;
     /**
      * This endpoint is used to test the server\'s response to a GET request. It echoes back the query parameters as a JSON object.
      * Echo the query parameters in the response body.
@@ -92,10 +80,6 @@ export declare class RegistrySvcApi extends runtime.BaseAPI {
         [key: string]: any;
     }>;
     /**
-     * Creates request options for echoPost without sending the request
-     */
-    echoPostRequestOpts(): Promise<runtime.RequestOpts>;
-    /**
      * This endpoint is used to test the server\'s response to a request. It simply echoes back the request body as a JSON response.
      * Echo the request body in the response body.
      */
@@ -109,10 +93,6 @@ export declare class RegistrySvcApi extends runtime.BaseAPI {
     echoPost(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{
         [key: string]: any;
     }>;
-    /**
-     * Creates request options for echoPut without sending the request
-     */
-    echoPutRequestOpts(): Promise<runtime.RequestOpts>;
     /**
      * This endpoint is used to test the server\'s response to a request. It simply echoes back the request body as a JSON response.
      * Echo the request body in the response body.
@@ -128,10 +108,6 @@ export declare class RegistrySvcApi extends runtime.BaseAPI {
         [key: string]: any;
     }>;
     /**
-     * Creates request options for listDefinitions without sending the request
-     */
-    listDefinitionsRequestOpts(): Promise<runtime.RequestOpts>;
-    /**
      * Retrieves a list of all definitions or filters them by specific criteria.
      * List Definitions
      */
@@ -141,10 +117,6 @@ export declare class RegistrySvcApi extends runtime.BaseAPI {
      * List Definitions
      */
     listDefinitions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RegistrySvcListDefinitionsResponse>;
-    /**
-     * Creates request options for listInstances without sending the request
-     */
-    listInstancesRequestOpts(requestParameters: ListInstancesRequest): Promise<runtime.RequestOpts>;
     /**
      * Retrieves a list of all instances or filters them by specific criteria (e.g., host, IP).
      * List Service Instances
@@ -156,10 +128,6 @@ export declare class RegistrySvcApi extends runtime.BaseAPI {
      */
     listInstances(requestParameters?: ListInstancesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RegistrySvcListInstancesResponse>;
     /**
-     * Creates request options for listNodes without sending the request
-     */
-    listNodesRequestOpts(requestParameters: ListNodesRequest): Promise<runtime.RequestOpts>;
-    /**
      * Retrieve a list of nodes.
      * List Nodes
      */
@@ -169,10 +137,6 @@ export declare class RegistrySvcApi extends runtime.BaseAPI {
      * List Nodes
      */
     listNodes(requestParameters?: ListNodesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RegistrySvcListNodesResponse>;
-    /**
-     * Creates request options for registerInstance without sending the request
-     */
-    registerInstanceRequestOpts(requestParameters: RegisterInstanceRequest): Promise<runtime.RequestOpts>;
     /**
      * Registers an instance. Idempotent.
      * Register Instance
@@ -184,10 +148,6 @@ export declare class RegistrySvcApi extends runtime.BaseAPI {
      */
     registerInstance(requestParameters: RegisterInstanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
-     * Creates request options for removeInstance without sending the request
-     */
-    removeInstanceRequestOpts(requestParameters: RemoveInstanceRequest): Promise<runtime.RequestOpts>;
-    /**
      * Removes a registered instance by ID.
      * Remove Instance
      */
@@ -198,10 +158,6 @@ export declare class RegistrySvcApi extends runtime.BaseAPI {
      */
     removeInstance(requestParameters: RemoveInstanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
     /**
-     * Creates request options for saveDefinition without sending the request
-     */
-    saveDefinitionRequestOpts(requestParameters: SaveDefinitionRequest): Promise<runtime.RequestOpts>;
-    /**
      * Registers a new definition, associating an definition address with a slug acquired from the bearer token.
      * Register a Definition
      */
@@ -211,10 +167,6 @@ export declare class RegistrySvcApi extends runtime.BaseAPI {
      * Register a Definition
      */
     saveDefinition(requestParameters: SaveDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
-    /**
-     * Creates request options for selfNode without sending the request
-     */
-    selfNodeRequestOpts(requestParameters: SelfNodeRequest): Promise<runtime.RequestOpts>;
     /**
      * Show the local node.
      * View Self Node

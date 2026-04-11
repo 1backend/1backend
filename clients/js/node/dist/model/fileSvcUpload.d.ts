@@ -29,6 +29,10 @@ export declare class FileSvcUpload {
     */
     'id': string;
     /**
+    * LastAccessedAt is updated asynchronously by the file service when the file is served.
+    */
+    'lastAccessedAt'?: string;
+    /**
     * ID of the node storing this replica
     */
     'nodeId': string;

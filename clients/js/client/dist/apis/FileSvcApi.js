@@ -27,9 +27,10 @@ import { FileSvcDownloadFileRequestToJSON, FileSvcDownloadsResponseFromJSON, Fil
  */
 export class FileSvcApi extends runtime.BaseAPI {
     /**
-     * Creates request options for deleteUpload without sending the request
+     * Deletes an uploaded file and its metadata by `fileId`.  Requires the `file-svc:upload:delete` permission.
+     * Delete an Uploaded File
      */
-    deleteUploadRequestOpts(requestParameters) {
+    deleteUploadRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['fileId'] == null) {
                 throw new runtime.RequiredError('fileId', 'Required parameter "fileId" was null or undefined when calling deleteUpload().');
@@ -41,22 +42,12 @@ export class FileSvcApi extends runtime.BaseAPI {
             }
             let urlPath = `/file-svc/upload/{fileId}`;
             urlPath = urlPath.replace(`{${"fileId"}}`, encodeURIComponent(String(requestParameters['fileId'])));
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
-            };
-        });
-    }
-    /**
-     * Deletes an uploaded file and its metadata by `fileId`.  Requires the `file-svc:upload:delete` permission.
-     * Delete an Uploaded File
-     */
-    deleteUploadRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.deleteUploadRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
     }
@@ -71,9 +62,10 @@ export class FileSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for downloadFile without sending the request
+     * Start or resume the download for a specified URL.  Requires the `file-svc:download:create` permission.
+     * Download a File
      */
-    downloadFileRequestOpts(requestParameters) {
+    downloadFileRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling downloadFile().');
@@ -85,23 +77,13 @@ export class FileSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/file-svc/download`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: FileSvcDownloadFileRequestToJSON(requestParameters['body']),
-            };
-        });
-    }
-    /**
-     * Start or resume the download for a specified URL.  Requires the `file-svc:download:create` permission.
-     * Download a File
-     */
-    downloadFileRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.downloadFileRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
     }
@@ -116,9 +98,10 @@ export class FileSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for getDownload without sending the request
+     * Get a download by URL.  Requires the `file-svc:download:view` permission.
+     * Get a Download
      */
-    getDownloadRequestOpts(requestParameters) {
+    getDownloadRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['url'] == null) {
                 throw new runtime.RequiredError('url', 'Required parameter "url" was null or undefined when calling getDownload().');
@@ -130,22 +113,12 @@ export class FileSvcApi extends runtime.BaseAPI {
             }
             let urlPath = `/file-svc/download/{url}`;
             urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            };
-        });
-    }
-    /**
-     * Get a download by URL.  Requires the `file-svc:download:view` permission.
-     * Get a Download
-     */
-    getDownloadRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.getDownloadRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => FileSvcGetDownloadResponseFromJSON(jsonValue));
         });
     }
@@ -160,9 +133,10 @@ export class FileSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for listDownloads without sending the request
+     * List download details.  Requires the `file-svc:download:view` permission.
+     * List Downloads
      */
-    listDownloadsRequestOpts() {
+    listDownloadsRaw(initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -170,22 +144,12 @@ export class FileSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/file-svc/downloads`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-            };
-        });
-    }
-    /**
-     * List download details.  Requires the `file-svc:download:view` permission.
-     * List Downloads
-     */
-    listDownloadsRaw(initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.listDownloadsRequestOpts();
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => FileSvcDownloadsResponseFromJSON(jsonValue));
         });
     }
@@ -200,9 +164,10 @@ export class FileSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for listUploads without sending the request
+     * Lists uploaded files, returning only metadata about each upload. To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request. Note: Retrieving the contents of multiple files in a single request is not supported currently.  Requires the `file-svc:upload:view` permission.
+     * List Uploads
      */
-    listUploadsRequestOpts(requestParameters) {
+    listUploadsRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -211,23 +176,13 @@ export class FileSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/file-svc/uploads`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: FileSvcListUploadsRequestToJSON(requestParameters['body']),
-            };
-        });
-    }
-    /**
-     * Lists uploaded files, returning only metadata about each upload. To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request. Note: Retrieving the contents of multiple files in a single request is not supported currently.  Requires the `file-svc:upload:view` permission.
-     * List Uploads
-     */
-    listUploadsRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.listUploadsRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => FileSvcListUploadsResponseFromJSON(jsonValue));
         });
     }
@@ -242,9 +197,10 @@ export class FileSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for pauseDownload without sending the request
+     * Pause a download that is currently in progress.  Requires the `file-svc:download:edit` permission.
+     * Pause a Download
      */
-    pauseDownloadRequestOpts(requestParameters) {
+    pauseDownloadRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['url'] == null) {
                 throw new runtime.RequiredError('url', 'Required parameter "url" was null or undefined when calling pauseDownload().');
@@ -256,22 +212,12 @@ export class FileSvcApi extends runtime.BaseAPI {
             }
             let urlPath = `/file-svc/download/{url}/pause`;
             urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-            };
-        });
-    }
-    /**
-     * Pause a download that is currently in progress.  Requires the `file-svc:download:edit` permission.
-     * Pause a Download
-     */
-    pauseDownloadRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.pauseDownloadRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
     }
@@ -286,9 +232,10 @@ export class FileSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for serveDownload without sending the request
+     * Serves a previously downloaded file based on its URL.
+     * Serve a Downloaded file
      */
-    serveDownloadRequestOpts(requestParameters) {
+    serveDownloadRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['url'] == null) {
                 throw new runtime.RequiredError('url', 'Required parameter "url" was null or undefined when calling serveDownload().');
@@ -297,22 +244,12 @@ export class FileSvcApi extends runtime.BaseAPI {
             const headerParameters = {};
             let urlPath = `/file-svc/serve/download/{url}`;
             urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            };
-        });
-    }
-    /**
-     * Serves a previously downloaded file based on its URL.
-     * Serve a Downloaded file
-     */
-    serveDownloadRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.serveDownloadRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.BlobApiResponse(response);
         });
     }
@@ -327,9 +264,10 @@ export class FileSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for serveUpload without sending the request
+     * Retrieves and serves a previously uploaded file using its File ID. Note: The `ID` and `FileID` fields of an upload are different. - `FileID` is a unique identifier for the file itself. - `ID` is a unique identifier for a specific replica of the file. Since 1Backend is a distributed system, files can be replicated across multiple nodes. This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
+     * Serve an Uploaded File
      */
-    serveUploadRequestOpts(requestParameters) {
+    serveUploadRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['fileId'] == null) {
                 throw new runtime.RequiredError('fileId', 'Required parameter "fileId" was null or undefined when calling serveUpload().');
@@ -338,22 +276,12 @@ export class FileSvcApi extends runtime.BaseAPI {
             const headerParameters = {};
             let urlPath = `/file-svc/serve/upload/{fileId}`;
             urlPath = urlPath.replace(`{${"fileId"}}`, encodeURIComponent(String(requestParameters['fileId'])));
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            };
-        });
-    }
-    /**
-     * Retrieves and serves a previously uploaded file using its File ID. Note: The `ID` and `FileID` fields of an upload are different. - `FileID` is a unique identifier for the file itself. - `ID` is a unique identifier for a specific replica of the file. Since 1Backend is a distributed system, files can be replicated across multiple nodes. This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
-     * Serve an Uploaded File
-     */
-    serveUploadRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.serveUploadRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.BlobApiResponse(response);
         });
     }
@@ -368,9 +296,10 @@ export class FileSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for uploadFile without sending the request
+     * Uploads a file to the server. Currently if using the clients only one file can be uploaded at a time due to this bug https://github.com/OpenAPITools/openapi-generator/issues/11341 Once that is fixed we should have an `PUT /file-svc/uploads`/uploadFiles (note the plural) endpoints. In reality the endpoint \"unofficially\" supports multiple files. YMMV.  Requires the `file-svc:upload:create` permission.
+     * Upload a File
      */
-    uploadFileRequestOpts(requestParameters) {
+    uploadFileRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['file'] == null) {
                 throw new runtime.RequiredError('file', 'Required parameter "file" was null or undefined when calling uploadFile().');
@@ -399,23 +328,13 @@ export class FileSvcApi extends runtime.BaseAPI {
                 formParams.append('file', requestParameters['file']);
             }
             let urlPath = `/file-svc/upload`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: formParams,
-            };
-        });
-    }
-    /**
-     * Uploads a file to the server. Currently if using the clients only one file can be uploaded at a time due to this bug https://github.com/OpenAPITools/openapi-generator/issues/11341 Once that is fixed we should have an `PUT /file-svc/uploads`/uploadFiles (note the plural) endpoints. In reality the endpoint \"unofficially\" supports multiple files. YMMV.  Requires the `file-svc:upload:create` permission.
-     * Upload a File
-     */
-    uploadFileRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.uploadFileRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => FileSvcUploadFileResponseFromJSON(jsonValue));
         });
     }

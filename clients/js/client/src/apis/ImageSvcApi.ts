@@ -46,9 +46,10 @@ export interface ServeUploadedImageRequest {
 export class ImageSvcApi extends runtime.BaseAPI {
 
     /**
-     * Creates request options for serveDownloadedImage without sending the request
+     * Retrieves, caches, resizes, and serves an image referenced by its original URL.
+     * Serve Downloaded Image
      */
-    async serveDownloadedImageRequestOpts(requestParameters: ServeDownloadedImageRequest): Promise<runtime.RequestOpts> {
+    async serveDownloadedImageRaw(requestParameters: ServeDownloadedImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
         if (requestParameters['url'] == null) {
             throw new runtime.RequiredError(
                 'url',
@@ -88,21 +89,12 @@ export class ImageSvcApi extends runtime.BaseAPI {
         let urlPath = `/image-svc/serve/download/{url}`;
         urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Retrieves, caches, resizes, and serves an image referenced by its original URL.
-     * Serve Downloaded Image
-     */
-    async serveDownloadedImageRaw(requestParameters: ServeDownloadedImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
-        const requestOptions = await this.serveDownloadedImageRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.BlobApiResponse(response);
     }
@@ -117,9 +109,10 @@ export class ImageSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for serveUploadedImage without sending the request
+     * Retrieves and serves a previously uploaded image file using its File ID.
+     * Serve Uploaded Image
      */
-    async serveUploadedImageRequestOpts(requestParameters: ServeUploadedImageRequest): Promise<runtime.RequestOpts> {
+    async serveUploadedImageRaw(requestParameters: ServeUploadedImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
         if (requestParameters['fileId'] == null) {
             throw new runtime.RequiredError(
                 'fileId',
@@ -151,21 +144,12 @@ export class ImageSvcApi extends runtime.BaseAPI {
         let urlPath = `/image-svc/serve/upload/{fileId}`;
         urlPath = urlPath.replace(`{${"fileId"}}`, encodeURIComponent(String(requestParameters['fileId'])));
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        };
-    }
-
-    /**
-     * Retrieves and serves a previously uploaded image file using its File ID.
-     * Serve Uploaded Image
-     */
-    async serveUploadedImageRaw(requestParameters: ServeUploadedImageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
-        const requestOptions = await this.serveUploadedImageRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.BlobApiResponse(response);
     }

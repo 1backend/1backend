@@ -27,9 +27,10 @@ import { ModelSvcGetModelResponseFromJSON, ModelSvcListModelsResponseFromJSON, M
  */
 export class ModelSvcApi extends runtime.BaseAPI {
     /**
-     * Creates request options for getDefaultModelStatus without sending the request
+     * Retrieves the status of the default model.  Requires the `model-svc:model:view` permission.
+     * Get Default Model Status
      */
-    getDefaultModelStatusRequestOpts() {
+    getDefaultModelStatusRaw(initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -37,22 +38,12 @@ export class ModelSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/model-svc/default-model/status`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            };
-        });
-    }
-    /**
-     * Retrieves the status of the default model.  Requires the `model-svc:model:view` permission.
-     * Get Default Model Status
-     */
-    getDefaultModelStatusRaw(initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.getDefaultModelStatusRequestOpts();
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ModelSvcStatusResponseFromJSON(jsonValue));
         });
     }
@@ -67,9 +58,10 @@ export class ModelSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for getModel without sending the request
+     * Retrieves the details of a model by its ID.  the Requires `model.view` permission.
+     * Get a Model
      */
-    getModelRequestOpts(requestParameters) {
+    getModelRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['modelId'] == null) {
                 throw new runtime.RequiredError('modelId', 'Required parameter "modelId" was null or undefined when calling getModel().');
@@ -81,22 +73,12 @@ export class ModelSvcApi extends runtime.BaseAPI {
             }
             let urlPath = `/model-svc/model/{modelId}`;
             urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            };
-        });
-    }
-    /**
-     * Retrieves the details of a model by its ID.  the Requires `model.view` permission.
-     * Get a Model
-     */
-    getModelRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.getModelRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ModelSvcGetModelResponseFromJSON(jsonValue));
         });
     }
@@ -111,9 +93,10 @@ export class ModelSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for getModelStatus without sending the request
+     * Retrieves the status of a model by ID.  Requires the `model-svc:model:view` permission.
+     * Get Model Status
      */
-    getModelStatusRequestOpts(requestParameters) {
+    getModelStatusRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['modelId'] == null) {
                 throw new runtime.RequiredError('modelId', 'Required parameter "modelId" was null or undefined when calling getModelStatus().');
@@ -125,22 +108,12 @@ export class ModelSvcApi extends runtime.BaseAPI {
             }
             let urlPath = `/model-svc/model/{modelId}/status`;
             urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            };
-        });
-    }
-    /**
-     * Retrieves the status of a model by ID.  Requires the `model-svc:model:view` permission.
-     * Get Model Status
-     */
-    getModelStatusRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.getModelStatusRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ModelSvcStatusResponseFromJSON(jsonValue));
         });
     }
@@ -155,9 +128,10 @@ export class ModelSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for listModels without sending the request
+     * Retrieves a list of models.  Requires `model-svc:model:view` permission.
+     * List Models
      */
-    listModelsRequestOpts() {
+    listModelsRaw(initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -165,22 +139,12 @@ export class ModelSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/model-svc/models`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-            };
-        });
-    }
-    /**
-     * Retrieves a list of models.  Requires `model-svc:model:view` permission.
-     * List Models
-     */
-    listModelsRaw(initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.listModelsRequestOpts();
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ModelSvcListModelsResponseFromJSON(jsonValue));
         });
     }
@@ -195,9 +159,10 @@ export class ModelSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for listPlatforms without sending the request
+     * Retrieves a list of AI platforms. Eg. LlamaCpp, StableDiffusion etc.  Requires `model-svc:platform:view` permission.
+     * List Platforms
      */
-    listPlatformsRequestOpts() {
+    listPlatformsRaw(initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -205,22 +170,12 @@ export class ModelSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/model-svc/platforms`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-            };
-        });
-    }
-    /**
-     * Retrieves a list of AI platforms. Eg. LlamaCpp, StableDiffusion etc.  Requires `model-svc:platform:view` permission.
-     * List Platforms
-     */
-    listPlatformsRaw(initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.listPlatformsRequestOpts();
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ModelSvcListPlatformsResponseFromJSON(jsonValue));
         });
     }
@@ -235,9 +190,10 @@ export class ModelSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for makeDefault without sending the request
+     * Sets a model as the default model — when prompts are sent without a Model ID, the default model is used.
+     * Make a Model Default
      */
-    makeDefaultRequestOpts(requestParameters) {
+    makeDefaultRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['modelId'] == null) {
                 throw new runtime.RequiredError('modelId', 'Required parameter "modelId" was null or undefined when calling makeDefault().');
@@ -249,22 +205,12 @@ export class ModelSvcApi extends runtime.BaseAPI {
             }
             let urlPath = `/model-svc/model/{modelId}/make-default`;
             urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-            };
-        });
-    }
-    /**
-     * Sets a model as the default model — when prompts are sent without a Model ID, the default model is used.
-     * Make a Model Default
-     */
-    makeDefaultRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.makeDefaultRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
     }
@@ -279,9 +225,10 @@ export class ModelSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for startDefaultModel without sending the request
+     * Starts The Default Model.  Requires the `model-svc:model:create` permission.
+     * Start the Default Model
      */
-    startDefaultModelRequestOpts() {
+    startDefaultModelRaw(initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -289,22 +236,12 @@ export class ModelSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/model-svc/default-model/start`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-            };
-        });
-    }
-    /**
-     * Starts The Default Model.  Requires the `model-svc:model:create` permission.
-     * Start the Default Model
-     */
-    startDefaultModelRaw(initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.startDefaultModelRequestOpts();
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
     }
@@ -319,9 +256,10 @@ export class ModelSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for startModel without sending the request
+     * Starts a model by ID
+     * Start a Model
      */
-    startModelRequestOpts(requestParameters) {
+    startModelRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['modelId'] == null) {
                 throw new runtime.RequiredError('modelId', 'Required parameter "modelId" was null or undefined when calling startModel().');
@@ -333,22 +271,12 @@ export class ModelSvcApi extends runtime.BaseAPI {
             }
             let urlPath = `/model-svc/model/{modelId}/start`;
             urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-            };
-        });
-    }
-    /**
-     * Starts a model by ID
-     * Start a Model
-     */
-    startModelRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.startModelRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
     }

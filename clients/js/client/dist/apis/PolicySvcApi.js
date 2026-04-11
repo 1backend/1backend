@@ -27,9 +27,10 @@ import { PolicySvcCheckRequestToJSON, PolicySvcCheckResponseFromJSON, PolicySvcU
  */
 export class PolicySvcApi extends runtime.BaseAPI {
     /**
-     * Creates request options for check without sending the request
+     * Check records a resource access and returns if the access is allowed.
+     * Check
      */
-    checkRequestOpts(requestParameters) {
+    checkRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling check().');
@@ -41,23 +42,13 @@ export class PolicySvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/policy-svc/check`;
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: PolicySvcCheckRequestToJSON(requestParameters['body']),
-            };
-        });
-    }
-    /**
-     * Check records a resource access and returns if the access is allowed.
-     * Check
-     */
-    checkRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.checkRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => PolicySvcCheckResponseFromJSON(jsonValue));
         });
     }
@@ -72,9 +63,10 @@ export class PolicySvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Creates request options for upsertInstance without sending the request
+     * Allows user to upsert a new policy instance based on a template.
+     * Upsert an Instance
      */
-    upsertInstanceRequestOpts(requestParameters) {
+    upsertInstanceRaw(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['instanceId'] == null) {
                 throw new runtime.RequiredError('instanceId', 'Required parameter "instanceId" was null or undefined when calling upsertInstance().');
@@ -90,23 +82,13 @@ export class PolicySvcApi extends runtime.BaseAPI {
             }
             let urlPath = `/policy-svc/instance/{instanceId}`;
             urlPath = urlPath.replace(`{${"instanceId"}}`, encodeURIComponent(String(requestParameters['instanceId'])));
-            return {
+            const response = yield this.request({
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: PolicySvcUpsertInstanceRequestToJSON(requestParameters['body']),
-            };
-        });
-    }
-    /**
-     * Allows user to upsert a new policy instance based on a template.
-     * Upsert an Instance
-     */
-    upsertInstanceRaw(requestParameters, initOverrides) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const requestOptions = yield this.upsertInstanceRequestOpts(requestParameters);
-            const response = yield this.request(requestOptions, initOverrides);
+            }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
     }

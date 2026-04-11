@@ -32,6 +32,8 @@ type FileSvcUpload struct {
 	FileSize int64 `json:"fileSize"`
 	// Unique ID for this replica
 	Id string `json:"id"`
+	// LastAccessedAt is updated asynchronously by the file service when the file is served.
+	LastAccessedAt *string `json:"lastAccessedAt,omitempty"`
 	// ID of the node storing this replica
 	NodeId string `json:"nodeId"`
 	UpdatedAt string `json:"updatedAt"`
@@ -210,6 +212,38 @@ func (o *FileSvcUpload) SetId(v string) {
 	o.Id = v
 }
 
+// GetLastAccessedAt returns the LastAccessedAt field value if set, zero value otherwise.
+func (o *FileSvcUpload) GetLastAccessedAt() string {
+	if o == nil || IsNil(o.LastAccessedAt) {
+		var ret string
+		return ret
+	}
+	return *o.LastAccessedAt
+}
+
+// GetLastAccessedAtOk returns a tuple with the LastAccessedAt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FileSvcUpload) GetLastAccessedAtOk() (*string, bool) {
+	if o == nil || IsNil(o.LastAccessedAt) {
+		return nil, false
+	}
+	return o.LastAccessedAt, true
+}
+
+// HasLastAccessedAt returns a boolean if a field has been set.
+func (o *FileSvcUpload) HasLastAccessedAt() bool {
+	if o != nil && !IsNil(o.LastAccessedAt) {
+		return true
+	}
+
+	return false
+}
+
+// SetLastAccessedAt gets a reference to the given string and assigns it to the LastAccessedAt field.
+func (o *FileSvcUpload) SetLastAccessedAt(v string) {
+	o.LastAccessedAt = &v
+}
+
 // GetNodeId returns the NodeId field value
 func (o *FileSvcUpload) GetNodeId() string {
 	if o == nil {
@@ -298,6 +332,9 @@ func (o FileSvcUpload) ToMap() (map[string]interface{}, error) {
 	toSerialize["filePath"] = o.FilePath
 	toSerialize["fileSize"] = o.FileSize
 	toSerialize["id"] = o.Id
+	if !IsNil(o.LastAccessedAt) {
+		toSerialize["lastAccessedAt"] = o.LastAccessedAt
+	}
 	toSerialize["nodeId"] = o.NodeId
 	toSerialize["updatedAt"] = o.UpdatedAt
 	toSerialize["userId"] = o.UserId

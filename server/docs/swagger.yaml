@@ -1205,6 +1205,10 @@ definitions:
       id:
         description: Unique ID for this replica
         type: string
+      lastAccessedAt:
+        description: LastAccessedAt is updated asynchronously by the file service
+          when the file is served.
+        type: string
       nodeId:
         description: ID of the node storing this replica
         type: string

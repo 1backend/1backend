@@ -72,9 +72,10 @@ export interface SaveRoutesRequest {
 export class ProxySvcApi extends runtime.BaseAPI {
 
     /**
-     * Creates request options for deleteRoutes without sending the request
+     * Delete specific routes by their IDs.
+     * Delete Routes
      */
-    async deleteRoutesRequestOpts(requestParameters: DeleteRoutesRequest): Promise<runtime.RequestOpts> {
+    async deleteRoutesRaw(requestParameters: DeleteRoutesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -95,22 +96,13 @@ export class ProxySvcApi extends runtime.BaseAPI {
 
         let urlPath = `/proxy-svc/routes`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
             body: ProxySvcDeleteRoutesRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Delete specific routes by their IDs.
-     * Delete Routes
-     */
-    async deleteRoutesRaw(requestParameters: DeleteRoutesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        const requestOptions = await this.deleteRoutesRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -125,9 +117,10 @@ export class ProxySvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for listCerts without sending the request
+     * List certs that the edge proxy will use to cert requests.
+     * List Certs
      */
-    async listCertsRequestOpts(requestParameters: ListCertsRequest): Promise<runtime.RequestOpts> {
+    async listCertsRaw(requestParameters: ListCertsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProxySvcListCertsResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -141,22 +134,13 @@ export class ProxySvcApi extends runtime.BaseAPI {
 
         let urlPath = `/proxy-svc/certs`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: ProxySvcListCertsRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * List certs that the edge proxy will use to cert requests.
-     * List Certs
-     */
-    async listCertsRaw(requestParameters: ListCertsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProxySvcListCertsResponse>> {
-        const requestOptions = await this.listCertsRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ProxySvcListCertsResponseFromJSON(jsonValue));
     }
@@ -171,9 +155,10 @@ export class ProxySvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for listRoutes without sending the request
+     * List routes that the edge proxy will use to route requests.
+     * List Routes
      */
-    async listRoutesRequestOpts(requestParameters: ListRoutesRequest): Promise<runtime.RequestOpts> {
+    async listRoutesRaw(requestParameters: ListRoutesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProxySvcListRoutesResponse>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -187,22 +172,13 @@ export class ProxySvcApi extends runtime.BaseAPI {
 
         let urlPath = `/proxy-svc/routes`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: ProxySvcListRoutesRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * List routes that the edge proxy will use to route requests.
-     * List Routes
-     */
-    async listRoutesRaw(requestParameters: ListRoutesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProxySvcListRoutesResponse>> {
-        const requestOptions = await this.listRoutesRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ProxySvcListRoutesResponseFromJSON(jsonValue));
     }
@@ -217,9 +193,10 @@ export class ProxySvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for saveCerts without sending the request
+     * This endpoint only exist for testing purposes. Only callable by admins Certs should be saved by the Proxy Svc and its edge proxying functionality internally, not through this endpoint.
+     * Save Certs
      */
-    async saveCertsRequestOpts(requestParameters: SaveCertsRequest): Promise<runtime.RequestOpts> {
+    async saveCertsRaw(requestParameters: SaveCertsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -240,22 +217,13 @@ export class ProxySvcApi extends runtime.BaseAPI {
 
         let urlPath = `/proxy-svc/certs`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: ProxySvcSaveCertsRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * This endpoint only exist for testing purposes. Only callable by admins Certs should be saved by the Proxy Svc and its edge proxying functionality internally, not through this endpoint.
-     * Save Certs
-     */
-    async saveCertsRaw(requestParameters: SaveCertsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        const requestOptions = await this.saveCertsRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -270,9 +238,10 @@ export class ProxySvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Creates request options for saveRoutes without sending the request
+     * Save routes that the edge proxy will use to route requests.
+     * Save Routes
      */
-    async saveRoutesRequestOpts(requestParameters: SaveRoutesRequest): Promise<runtime.RequestOpts> {
+    async saveRoutesRaw(requestParameters: SaveRoutesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProxySvcSaveRoutesResponse>> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -293,22 +262,13 @@ export class ProxySvcApi extends runtime.BaseAPI {
 
         let urlPath = `/proxy-svc/routes`;
 
-        return {
+        const response = await this.request({
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: ProxySvcSaveRoutesRequestToJSON(requestParameters['body']),
-        };
-    }
-
-    /**
-     * Save routes that the edge proxy will use to route requests.
-     * Save Routes
-     */
-    async saveRoutesRaw(requestParameters: SaveRoutesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProxySvcSaveRoutesResponse>> {
-        const requestOptions = await this.saveRoutesRequestOpts(requestParameters);
-        const response = await this.request(requestOptions, initOverrides);
+        }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ProxySvcSaveRoutesResponseFromJSON(jsonValue));
     }
