@@ -59,7 +59,7 @@ func (fs *FileService) ServeDownload(
 	}
 
 	if len(downloadReplicaIs) == 0 {
-		err := fs.download(r.Context(), ur, "", true)
+		err := fs.download(r.Context(), ur, "", true, true)
 		if err != nil {
 			logger.Error("Failed to download on demand",
 				slog.String("url", ur),
@@ -137,7 +137,7 @@ func (fs *FileService) serveLocalDownload(
 			return
 		}
 
-		if err := fs.download(r.Context(), download.URL, "", true); err != nil {
+		if err := fs.download(r.Context(), download.URL, "", true, false); err != nil {
 			logger.Error("Failed to recover missing local download",
 				slog.String("url", download.URL),
 				slog.String("filePath", download.FilePath),

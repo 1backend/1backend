@@ -32,7 +32,9 @@ Can resume downloads not found in the JSON statefile.
 */
 func (dm *FileService) download(
 	ctx context.Context, url, downloadDir string,
-	sync bool) error {
+	sync bool,
+	allowStorageRestore bool,
+) error {
 	if downloadDir == "" {
 		downloadDir = dm.downloadFolder
 	}
@@ -60,7 +62,7 @@ func (dm *FileService) download(
 		return err
 	}
 
-	if !fullFileExists && dm.downloadStorage != nil {
+	if allowStorageRestore && !fullFileExists && dm.downloadStorage != nil {
 		restored, restoredSize, restoreErr := dm.restoreDownloadFromStorage(
 			ctx,
 			storageFilePath,

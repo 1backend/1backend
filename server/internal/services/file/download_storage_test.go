@@ -151,6 +151,7 @@ func TestServeLocalDownloadRecoversFromOriginWithoutStorageRestore(t *testing.T)
 
 	url := origin.URL + "/assets/cached.txt"
 	localPath := filepath.Join(tmp, "downloads", EncodeURLtoFileName(url))
+	require.NoError(t, os.MkdirAll(filepath.Dir(localPath), 0755))
 	storage := newMemoryStorageProvider()
 	storage.data[DownloadStorageFilePath(url)] = []byte("from-storage")
 
@@ -167,6 +168,7 @@ func TestServeLocalDownloadRecoversFromOriginWithoutStorageRestore(t *testing.T)
 		nodeId:          "node-1",
 		downloadStore:   downloadStore,
 		downloadStorage: storage,
+		downloadFolder:  filepath.Join(tmp, "downloads"),
 	}
 
 	req := httptest.NewRequest(http.MethodGet, "/file-svc/serve/download/ignored", nil)
