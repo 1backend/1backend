@@ -37,9 +37,11 @@ func (dm *FileService) download(
 		downloadDir = dm.downloadFolder
 	}
 
-	err := dm.getNodeId(ctx)
-	if err != nil {
-		return errors.Wrap(err, "cannot get node id")
+	if dm.nodeId == "" {
+		err := dm.getNodeId(ctx)
+		if err != nil {
+			return errors.Wrap(err, "cannot get node id")
+		}
 	}
 
 	safeFileName := EncodeURLtoFileName(url)
