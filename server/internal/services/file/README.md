@@ -30,6 +30,21 @@ Generate FilePath (canonical)
       '--> store Upload metadata (includes FilePath)
 ```
 
+## Serve uploaded file path
+
+```text
+GET /file-svc/serve/upload/{fileId}
+      |
+      v
+Find upload replica metadata by fileId
+      |
+      v
+Open file via fs.storage
+      |
+      +--> local file exists: stream local file
+      '--> if cloud cache enabled and local missing: stream from cloud and warm local cache
+```
+
 ## Download path
 
 ```text
@@ -52,7 +67,15 @@ GET /file-svc/serve/download/{url}
 Find local replica metadata
       |
       +--> if local file exists: serve local file (no cloud restore)
-      '--> if local file missing: delete stale record and redownload from origin
+      '--> if local file missing:
+             |
+             +--> try restore from download cloud storage using DownloadStorageFilePath(url)
+             |      |
+             |      '--> if restored: mark record completed and serve restored local file
+             |
+             '--> if cloud object missing/unavailable: delete stale record and redownload from origin
+                    |
+                    '--> persist redownloaded file to download cloud storage (when enabled)
 ```
 
 ## Storage key layout
