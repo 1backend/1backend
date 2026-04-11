@@ -43,6 +43,7 @@ func (dm *FileService) download(
 	}
 
 	safeFileName := EncodeURLtoFileName(url)
+	storageFilePath := safeFileName
 	safeFullFilePath := filepath.Join(downloadDir, safeFileName)
 	safePartialFilePath := filepath.Join(downloadDir, safeFileName+".part")
 
@@ -55,6 +56,26 @@ func (dm *FileService) download(
 	)
 	if err != nil {
 		return err
+	}
+
+	if !fullFileExists && dm.downloadStorage != nil {
+		restored, restoredSize, restoreErr := dm.restoreDownloadFromStorage(
+			ctx,
+			storageFilePath,
+			safeFullFilePath,
+		)
+		if restoreErr != nil {
+			logger.Warn("Failed to restore download from storage backend",
+				slog.String("url", url),
+				slog.String("error", restoreErr.Error()),
+			)
+		}
+		if restored {
+			fullFileExists = true
+			fullSize = restoredSize
+			partialFileExists = false
+			partialSize = 0
+		}
 	}
 
 	var (
@@ -139,6 +160,8 @@ func (dm *FileService) download(
 }
 
 func (dm *FileService) downloadFile(d *types.InternalDownload) error {
+	storageFilePath := EncodeURLtoFileName(d.URL)
+
 	if d.Status == types.DownloadStatusCompleted {
 		return nil
 	}
@@ -241,6 +264,15 @@ func (dm *FileService) downloadFile(d *types.InternalDownload) error {
 		err = dm.downloadStore.Upsert(d)
 		if err != nil {
 			return errors.Wrap(err, "failed to upsert download")
+		}
+
+		if dm.downloadStorage != nil {
+			if err := dm.persistDownloadToStorage(context.Background(), storageFilePath, d.FilePath); err != nil {
+				logger.Warn("Failed to persist download to storage backend",
+					slog.String("url", d.URL),
+					slog.String("error", err.Error()),
+				)
+			}
 		}
 	} else {
 		return fmt.Errorf("Failed to download: %s, status code: %d\n", d.URL, resp.StatusCode)

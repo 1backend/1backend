@@ -127,6 +127,45 @@ func (fs *FileService) serveLocalDownload(
 			slog.Any("error", err),
 		)
 
+		if fs.downloadStorage != nil {
+			storageFilePath := EncodeURLtoFileName(download.URL)
+			restored, restoredSize, restoreErr := fs.restoreDownloadFromStorage(
+				r.Context(),
+				storageFilePath,
+				download.FilePath,
+			)
+			if restoreErr != nil {
+				logger.Warn("Failed to restore missing local download from storage backend",
+					slog.String("url", download.URL),
+					slog.String("filePath", download.FilePath),
+					slog.Any("error", restoreErr),
+				)
+			}
+			if restored {
+				download.Status = file.DownloadStatusCompleted
+				download.TotalSize = restoredSize
+				download.DownloadedSize = restoredSize
+				if upsertErr := fs.downloadStore.Upsert(download); upsertErr != nil {
+					logger.Warn("Failed to update download after storage restore",
+						slog.String("url", download.URL),
+						slog.Any("error", upsertErr),
+					)
+				}
+
+				fileInfo, err = os.Stat(download.FilePath)
+				if err == nil && !fileInfo.IsDir() {
+					// Successfully recovered from storage backend.
+				} else {
+					restored = false
+				}
+			}
+
+			if restored {
+				fs.writeDownloadFileToResponse(download, fileInfo, w)
+				return
+			}
+		}
+
 		if err := fs.downloadStore.Query(datastore.Id(download.Id)).Delete(); err != nil {
 			logger.Error("Failed to delete stale download record",
 				slog.String("url", download.URL),
@@ -181,6 +220,14 @@ func (fs *FileService) serveLocalDownload(
 		}
 	}
 
+	fs.writeDownloadFileToResponse(download, fileInfo, w)
+}
+
+func (fs *FileService) writeDownloadFileToResponse(
+	download *file.InternalDownload,
+	fileInfo os.FileInfo,
+	w http.ResponseWriter,
+) {
 	parsedURL, err := url.Parse(download.URL)
 	if err != nil {
 		endpoint.WriteString(w, http.StatusBadRequest, "error parsing download URL")
@@ -207,7 +254,6 @@ func (fs *FileService) serveLocalDownload(
 	if err != nil {
 		logger.Error("Failed to write file to response", slog.Any("error", err))
 		endpoint.InternalServerError(w)
-		return
 	}
 }
 

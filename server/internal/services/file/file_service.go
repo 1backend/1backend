@@ -50,6 +50,9 @@ type FileService struct {
 	credentialStore datastore.DataStore
 
 	storage StorageProvider
+	// downloadStorage is an optional backing storage used for downloaded
+	// internet assets (e.g. GCS). Local disk remains the serving cache.
+	downloadStorage StorageProvider
 
 	nodeId string
 	cache  *lru.Cache[string, *file.Upload]
@@ -76,6 +79,9 @@ func NewFileService(
 
 	localProvider := &LocalProvider{
 		uploadFolder: fs.uploadFolder,
+	}
+	localDownloadProvider := &LocalProvider{
+		uploadFolder: fs.downloadFolder,
 	}
 
 	fs.cache, _ = lru.New[string, *file.Upload](100000)
@@ -104,15 +110,24 @@ func NewFileService(
 			bucket: options.GcsBucket,
 		}
 
-		// Wrap them in the Cache Provider
+		// Wrap uploads in Cloud+Local cache provider.
 		fs.storage = &CloudCacheProvider{
 			cloud: gcsProvider,
 			local: localProvider,
+		}
+		// Downloads are backed by cloud and cached under ~/.1backend/downloads.
+		fs.downloadStorage = &CloudCacheProvider{
+			cloud: &PrefixedStorageProvider{
+				base:   gcsProvider,
+				prefix: "downloads",
+			},
+			local: localDownloadProvider,
 		}
 		logger.Info("File service initialized with GCS Cloud Cache")
 	} else {
 		// Fallback to standard distributed behavior
 		fs.storage = localProvider
+		fs.downloadStorage = nil
 		logger.Info("File service initialized with Local Storage")
 	}
 

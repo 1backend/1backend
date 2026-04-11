@@ -51,7 +51,8 @@ func TestServeUploadRecordsLastAccessedAt(t *testing.T) {
 	require.NotNil(t, firstAccessUpload.LastAccessedAt)
 	require.Equal(t, initialUpdatedAt, firstAccessUpload.UpdatedAt, "serving should not mutate updatedAt")
 
-	firstAccessTs := *firstAccessUpload.LastAccessedAt
+	firstAccessTs, err := time.Parse(time.RFC3339Nano, *firstAccessUpload.LastAccessedAt)
+	require.NoError(t, err)
 
 	// Repeated access: verify lastAccessedAt advances over time via interval-based flushing.
 	time.Sleep(300 * time.Millisecond)
@@ -59,7 +60,14 @@ func TestServeUploadRecordsLastAccessedAt(t *testing.T) {
 
 	require.Eventually(t, func() bool {
 		upload := waitForUploadByFileID(t, adminClient, ctx, uplRsp.Upload.FileId, 500*time.Millisecond)
-		return upload.LastAccessedAt != nil && upload.LastAccessedAt.After(firstAccessTs)
+		if upload.LastAccessedAt == nil {
+			return false
+		}
+		nextTs, err := time.Parse(time.RFC3339Nano, *upload.LastAccessedAt)
+		if err != nil {
+			return false
+		}
+		return nextTs.After(firstAccessTs)
 	}, 3*time.Second, 100*time.Millisecond, "expected lastAccessedAt to advance after repeated serves")
 
 	finalUpload := waitForUploadByFileID(t, adminClient, ctx, uplRsp.Upload.FileId, 2*time.Second)
