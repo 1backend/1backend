@@ -24,9 +24,14 @@ var (
 
 // Download is the internal type for downloads.
 type InternalDownload struct {
-	Id             string         `json:"id"`
-	URL            string         `json:"url"`
-	NodeId         string         `json:"nodeId"`
+	Id     string `json:"id"`
+	URL    string `json:"url"`
+	NodeId string `json:"nodeId"`
+	// FilePath is the canonical object path used by file-svc for both:
+	// 1) local node disk location and
+	// 2) storage backend object key/path.
+	// The exact path-generation algorithm is an implementation detail and may
+	// evolve over time; callers must treat FilePath as the source of truth.
 	FilePath       string         `json:"filePath"`
 	DownloadedSize int64          `json:"downloadedSize"`
 	TotalSize      int64          `json:"totalSize"`
@@ -54,6 +59,11 @@ type Download struct {
 	FileSize int64          `json:"fileSize,omitempty" format:"int64"`
 	Status   DownloadStatus `json:"status"`
 
+	// FilePath is the canonical object path used by file-svc for both:
+	// 1) local node disk location and
+	// 2) storage backend object key/path.
+	// The exact path-generation algorithm is an implementation detail and may
+	// evolve over time; callers must treat FilePath as the source of truth.
 	FilePath string `json:"filePath,omitempty"`
 	Error    string `json:"error,omitempty"`
 }

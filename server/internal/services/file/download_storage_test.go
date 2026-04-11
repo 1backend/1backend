@@ -131,22 +131,29 @@ func TestDownloadFilePersistsToDownloadStorage(t *testing.T) {
 	require.Equal(t, filetypes.DownloadStatusCompleted, d.Status)
 	require.FileExists(t, filePath)
 
-	storageKey := EncodeURLtoFileName(d.URL)
+	storageKey := DownloadStorageFilePath(d.URL)
 	_, ok := storage.data[storageKey]
 	require.True(t, ok, "expected completed download to be persisted to download storage")
 }
 
-func TestServeLocalDownloadRestoresFromStorageBeforeOriginRecovery(t *testing.T) {
+func TestServeLocalDownloadRecoversFromStorageWhenLocalMissing(t *testing.T) {
+	origin := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Empty body avoids firehose/token path while still exercising fallback behavior.
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer origin.Close()
+
 	tmp := t.TempDir()
 	dsPath := filepath.Join(tmp, "downloads.json")
 	downloadStore, err := localstore.NewLocalStore(&filetypes.InternalDownload{}, dsPath)
 	require.NoError(t, err)
 	defer downloadStore.Close()
 
-	url := "https://example.com/assets/cached.txt"
+	url := origin.URL + "/assets/cached.txt"
 	localPath := filepath.Join(tmp, "downloads", EncodeURLtoFileName(url))
+	require.NoError(t, os.MkdirAll(filepath.Dir(localPath), 0755))
 	storage := newMemoryStorageProvider()
-	storage.data[EncodeURLtoFileName(url)] = []byte("from-storage")
+	storage.data[DownloadStorageFilePath(url)] = []byte("from-storage")
 
 	download := &filetypes.InternalDownload{
 		Id:       "dl_cached",
@@ -161,6 +168,7 @@ func TestServeLocalDownloadRestoresFromStorageBeforeOriginRecovery(t *testing.T)
 		nodeId:          "node-1",
 		downloadStore:   downloadStore,
 		downloadStorage: storage,
+		downloadFolder:  filepath.Join(tmp, "downloads"),
 	}
 
 	req := httptest.NewRequest(http.MethodGet, "/file-svc/serve/download/ignored", nil)
@@ -181,6 +189,28 @@ func TestServeLocalDownloadRestoresFromStorageBeforeOriginRecovery(t *testing.T)
 	require.True(t, exists)
 	updated := updatedI.(*filetypes.InternalDownload)
 	require.Equal(t, filetypes.DownloadStatusCompleted, updated.Status)
+}
+
+func TestRestoreDownloadFromStorageReturnsFalseWhenObjectMissing(t *testing.T) {
+	tmp := t.TempDir()
+	localFile := filepath.Join(tmp, "downloads", "missing.bin")
+
+	url := "https://example.com/missing.bin"
+	storage := newMemoryStorageProvider()
+
+	fs := &FileService{
+		downloadStorage: storage,
+	}
+
+	restored, size, err := fs.restoreDownloadFromStorage(
+		context.Background(),
+		DownloadStorageFilePath(url),
+		localFile,
+	)
+	require.NoError(t, err)
+	require.False(t, restored)
+	require.Equal(t, int64(0), size)
+	require.NoFileExists(t, localFile)
 }
 
 func TestPrefixedStorageProviderAppliesPrefix(t *testing.T) {
@@ -205,4 +235,105 @@ func TestPrefixedStorageProviderAppliesPrefix(t *testing.T) {
 	bs, err := io.ReadAll(rc)
 	require.NoError(t, err)
 	require.Equal(t, "abc", string(bs))
+}
+
+func TestDownloadStorageUsesPrefixAndShardedPath(t *testing.T) {
+	base := newMemoryStorageProvider()
+	p := &PrefixedStorageProvider{
+		base:   base,
+		prefix: "downloads",
+	}
+
+	url := "https://example.com/a/b/c.png"
+	shardedPath := DownloadStorageFilePath(url)
+
+	_, err := p.Save(context.Background(), &filetypes.Upload{
+		FilePath: shardedPath,
+	}, newBytesReader([]byte("abc")))
+	require.NoError(t, err)
+
+	_, ok := base.data["downloads/"+filepath.ToSlash(shardedPath)]
+	require.True(t, ok, "expected objects saved as downloads/<2>/<2>/<full-hash>")
+}
+
+func TestShardStoragePathAlwaysUsesTwoCharBuckets(t *testing.T) {
+	require.Equal(t, filepath.Join("ab", "cd", "abcd"), shardStoragePath("abcd"))
+	require.Equal(t, filepath.Join("ab", "__", "ab"), shardStoragePath("ab"))
+	require.Equal(t, filepath.Join("a_", "__", "a"), shardStoragePath("a"))
+}
+
+func TestShardStoragePathWithBasisExhaustive(t *testing.T) {
+	testCases := []struct {
+		name     string
+		basis    string
+		fileName string
+		expected string
+	}{
+		{
+			name:     "empty basis and file",
+			basis:    "",
+			fileName: "",
+			expected: filepath.Join("__", "__", ""),
+		},
+		{
+			name:     "one char basis",
+			basis:    "a",
+			fileName: "a",
+			expected: filepath.Join("a_", "__", "a"),
+		},
+		{
+			name:     "two char basis",
+			basis:    "ab",
+			fileName: "ab",
+			expected: filepath.Join("ab", "__", "ab"),
+		},
+		{
+			name:     "three char basis",
+			basis:    "abc",
+			fileName: "abc",
+			expected: filepath.Join("ab", "c_", "abc"),
+		},
+		{
+			name:     "four char basis",
+			basis:    "abcd",
+			fileName: "abcd",
+			expected: filepath.Join("ab", "cd", "abcd"),
+		},
+		{
+			name:     "five char basis",
+			basis:    "abcde",
+			fileName: "abcde",
+			expected: filepath.Join("ab", "cd", "abcde"),
+		},
+		{
+			name:     "long basis",
+			basis:    "this-is-a-long-basis",
+			fileName: "this-is-a-long-basis",
+			expected: filepath.Join("th", "is", "this-is-a-long-basis"),
+		},
+		{
+			name:     "upload style basis and file name differ",
+			basis:    "81d259fc",
+			fileName: "file_81d259fc",
+			expected: filepath.Join("81", "d2", "file_81d259fc"),
+		},
+		{
+			name:     "short upload style basis and full file id",
+			basis:    "x",
+			fileName: "file_x",
+			expected: filepath.Join("x_", "__", "file_x"),
+		},
+		{
+			name:     "basis with symbols",
+			basis:    "-_",
+			fileName: "file-special",
+			expected: filepath.Join("-_", "__", "file-special"),
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			require.Equal(t, tc.expected, shardStoragePathWithBasis(tc.basis, tc.fileName))
+		})
+	}
 }

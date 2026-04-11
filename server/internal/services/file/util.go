@@ -11,6 +11,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -22,6 +23,38 @@ func EncodeURLtoFileName(url string) string {
 	encoded := base64.URLEncoding.EncodeToString(hashBytes)
 
 	return strings.TrimRight(encoded, "=")
+}
+
+func DownloadStorageFilePath(url string) string {
+	fileName := EncodeURLtoFileName(url)
+	return shardStoragePath(fileName)
+}
+
+func shardStoragePath(fileName string) string {
+	return shardStoragePathWithBasis(fileName, fileName)
+}
+
+func shardStoragePathWithBasis(basis, fileName string) string {
+	first := basis
+	if len(first) > 2 {
+		first = first[:2]
+	}
+	if len(first) < 2 {
+		first += strings.Repeat("_", 2-len(first))
+	}
+
+	second := ""
+	if len(basis) > 2 {
+		second = basis[2:]
+	}
+	if len(second) > 2 {
+		second = second[:2]
+	}
+	if len(second) < 2 {
+		second += strings.Repeat("_", 2-len(second))
+	}
+
+	return filepath.Join(first, second, fileName)
 }
 
 // checkFileExistsAndSize checks if a file exists and returns its size.

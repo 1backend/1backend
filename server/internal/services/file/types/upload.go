@@ -28,7 +28,11 @@ type Upload struct {
 	// Logical file ID spanning all replicas
 	FileId string `json:"fileId" binding:"required"`
 
-	// FilePath is the full node local path of the file
+	// FilePath is the canonical object path used by file-svc for both:
+	// 1) local node disk location and
+	// 2) storage backend object key/path.
+	// The exact path-generation algorithm is an implementation detail and may
+	// evolve over time; callers must treat FilePath as the source of truth.
 	FilePath string `json:"filePath" binding:"required"`
 
 	// Filename is the original name of the file

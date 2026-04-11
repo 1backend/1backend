@@ -32,18 +32,21 @@ Can resume downloads not found in the JSON statefile.
 */
 func (dm *FileService) download(
 	ctx context.Context, url, downloadDir string,
-	sync bool) error {
+	sync bool,
+) error {
 	if downloadDir == "" {
 		downloadDir = dm.downloadFolder
 	}
 
-	err := dm.getNodeId(ctx)
-	if err != nil {
-		return errors.Wrap(err, "cannot get node id")
+	if dm.nodeId == "" {
+		err := dm.getNodeId(ctx)
+		if err != nil {
+			return errors.Wrap(err, "cannot get node id")
+		}
 	}
 
 	safeFileName := EncodeURLtoFileName(url)
-	storageFilePath := safeFileName
+	storageFilePath := DownloadStorageFilePath(url)
 	safeFullFilePath := filepath.Join(downloadDir, safeFileName)
 	safePartialFilePath := filepath.Join(downloadDir, safeFileName+".part")
 
@@ -160,7 +163,7 @@ func (dm *FileService) download(
 }
 
 func (dm *FileService) downloadFile(d *types.InternalDownload) error {
-	storageFilePath := EncodeURLtoFileName(d.URL)
+	storageFilePath := DownloadStorageFilePath(d.URL)
 
 	if d.Status == types.DownloadStatusCompleted {
 		return nil
