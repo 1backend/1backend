@@ -43,7 +43,7 @@ func (dm *FileService) download(
 	}
 
 	safeFileName := EncodeURLtoFileName(url)
-	storageFilePath := safeFileName
+	storageFilePath := DownloadStorageFilePath(url)
 	safeFullFilePath := filepath.Join(downloadDir, safeFileName)
 	safePartialFilePath := filepath.Join(downloadDir, safeFileName+".part")
 
@@ -160,7 +160,7 @@ func (dm *FileService) download(
 }
 
 func (dm *FileService) downloadFile(d *types.InternalDownload) error {
-	storageFilePath := EncodeURLtoFileName(d.URL)
+	storageFilePath := DownloadStorageFilePath(d.URL)
 
 	if d.Status == types.DownloadStatusCompleted {
 		return nil

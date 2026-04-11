@@ -160,9 +160,5 @@ func calculateIntricatePath(fileId string) string {
 		idPart = fileId[len(prefix):]
 	}
 
-	if len(idPart) < 4 {
-		return fileId
-	}
-
-	return filepath.Join(idPart[0:2], idPart[2:4], fileId)
+	return shardStoragePathWithBasis(idPart, fileId)
 }
