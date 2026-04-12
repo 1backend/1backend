@@ -325,3 +325,54 @@ outer:
 	require.Equal(t, int64(11), *d.DownloadedBytes)
 	require.Equal(t, int64(11), *d.FileSize)
 }
+
+func TestDownloadFileWithRestartRetryOptions(t *testing.T) {
+	fileHostServer := httptest.NewServer(
+		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusOK)
+			_, err := io.WriteString(w, "Hello world")
+			require.NoError(t, err)
+		}),
+	)
+	defer fileHostServer.Close()
+
+	hs := &di.HandlerSwitcher{}
+	server := httptest.NewServer(hs)
+	defer server.Close()
+
+	baseOptions := &univ.Options{
+		Test:   true,
+		Url:    server.URL,
+		NodeId: "test-node-restart-1",
+	}
+
+	universe1, err := di.BigBang(baseOptions)
+	require.NoError(t, err)
+	hs.UpdateHandler(universe1.Router)
+	require.NoError(t, universe1.StarterFunc())
+
+	adminClient1, _, err := test.AdminClient(baseOptions.ClientFactory, sdk.DefaultAppHost)
+	require.NoError(t, err)
+
+	downloadURL := fileHostServer.URL + "/file.txt"
+	_, _, err = adminClient1.FileSvcAPI.DownloadFile(context.Background()).
+		Body(openapi.FileSvcDownloadFileRequest{Url: downloadURL}).
+		Execute()
+	require.NoError(t, err)
+
+	timeout := time.After(5 * time.Second)
+	ticker := time.NewTicker(10 * time.Millisecond)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-timeout:
+			t.Fatal("timeout while waiting for download to complete")
+		case <-ticker.C:
+			rsp, _, err := adminClient1.FileSvcAPI.GetDownload(context.Background(), downloadURL).Execute()
+			require.NoError(t, err)
+			if rsp.Exists && *rsp.Download.Status == string(types.DownloadStatusCompleted) {
+				return
+			}
+		}
+	}
+}
