@@ -99,6 +99,9 @@ func (dm *FileService) download(
 					Status:         types.DownloadStatusCompleted,
 					TotalSize:      fullSize,
 					DownloadedSize: fullSize,
+					RetryCount:     nil,
+					NextRetryAt:    nil,
+					LastError:      nil,
 				}
 			} else if partialFileExists {
 				download = &types.InternalDownload{
@@ -108,14 +111,20 @@ func (dm *FileService) download(
 					FilePath:       safeFullFilePath,
 					Status:         types.DownloadStatusInProgress,
 					DownloadedSize: partialSize,
+					RetryCount:     nil,
+					NextRetryAt:    nil,
+					LastError:      nil,
 				}
 			} else {
 				download = &types.InternalDownload{
-					Id:       sdk.Id("dl"),
-					URL:      url,
-					NodeId:   dm.nodeId,
-					FilePath: safeFullFilePath,
-					Status:   types.DownloadStatusInProgress,
+					Id:          sdk.Id("dl"),
+					URL:         url,
+					NodeId:      dm.nodeId,
+					FilePath:    safeFullFilePath,
+					Status:      types.DownloadStatusInProgress,
+					RetryCount:  nil,
+					NextRetryAt: nil,
+					LastError:   nil,
 				}
 			}
 		} else {
@@ -130,6 +139,7 @@ func (dm *FileService) download(
 			if download.Status == types.DownloadStatusPaused {
 				download.Status = types.DownloadStatusInProgress
 			}
+			download.LastError = nil
 		}
 
 		return nil
@@ -226,12 +236,12 @@ func (dm *FileService) downloadFile(d *types.InternalDownload) error {
 					return errors.Wrap(err, "failed to upsert download")
 				}
 
+				ev := types.EventDownloadStatusChange{}
 				token, err := dm.getToken()
 				if err != nil {
 					return errors.Wrap(err, "cannot get token")
 				}
 
-				ev := types.EventDownloadStatusChange{}
 				_, err = dm.options.ClientFactory.Client(client.WithToken(token)).
 					FirehoseSvcAPI.PublishEvent(context.Background()).
 					Event(openapi.FirehoseSvcEventPublishRequest{
@@ -264,6 +274,9 @@ func (dm *FileService) downloadFile(d *types.InternalDownload) error {
 		}
 
 		d.Status = types.DownloadStatusCompleted
+		d.RetryCount = nil
+		d.NextRetryAt = nil
+		d.LastError = nil
 		err = dm.downloadStore.Upsert(d)
 		if err != nil {
 			return errors.Wrap(err, "failed to upsert download")

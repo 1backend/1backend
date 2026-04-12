@@ -36,6 +36,9 @@ type InternalDownload struct {
 	DownloadedSize int64          `json:"downloadedSize"`
 	TotalSize      int64          `json:"totalSize"`
 	Status         DownloadStatus `json:"status"`
+	RetryCount     *int           `json:"retryCount,omitempty"`
+	NextRetryAt    *time.Time     `json:"nextRetryAt,omitempty"`
+	LastError      *string        `json:"lastError,omitempty"`
 }
 
 func (d InternalDownload) GetId() string {

@@ -10,6 +10,7 @@ package fileservice
 import (
 	"context"
 	"fmt"
+	"hash/fnv"
 	"log/slog"
 	"net/http"
 	"os"
@@ -66,6 +67,8 @@ type pendingAccess struct {
 	FileId         string
 	LastAccessedAt time.Time
 }
+
+const restartDownloadBaseBackoff = 3 * time.Second
 
 func NewFileService(
 	options *universe.Options,
@@ -227,10 +230,13 @@ func (fs *FileService) Start() error {
 	}
 	fs.uploadStore = uploadStore
 
+	if fs.nodeId == "" {
+		fs.nodeId = fs.options.NodeId
+	}
+
 	downloads, err := fs.downloadStore.Query(
-		datastore.Equals([]string{"status"},
-			types.DownloadStatusInProgress,
-		)).Find()
+		datastore.Equals([]string{"status"}, types.DownloadStatusInProgress),
+	).Find()
 	if err != nil {
 		return nil
 	}
@@ -239,16 +245,122 @@ func (fs *FileService) Start() error {
 		download := downloadI.(*types.InternalDownload)
 
 		if download.Status == types.DownloadStatusInProgress {
-			err = fs.download(context.Background(), download.URL, path.Dir(download.FilePath), fs.SyncDownloads)
-			if err != nil {
-				return err
-			}
+			go fs.restartDownloadWithBackoffLoop(context.Background(), download)
 		}
 	}
 
 	go fs.flushAccessLoop()
 
 	return err
+}
+
+func (fs *FileService) restartDownloadWithBackoffLoop(
+	ctx context.Context,
+	download *types.InternalDownload,
+) {
+	for {
+		shouldRetry := fs.restartDownloadWithBackoffOnce(ctx, download)
+		if !shouldRetry {
+			return
+		}
+	}
+}
+
+func (fs *FileService) restartDownloadWithBackoffOnce(
+	ctx context.Context,
+	download *types.InternalDownload,
+) bool {
+	latest, exists := fs.getDownloadById(download.Id)
+	if exists {
+		download = latest
+	}
+	if download.Status != types.DownloadStatusInProgress {
+		return false
+	}
+
+	now := time.Now().UTC()
+	if download.NextRetryAt != nil && download.NextRetryAt.After(now) {
+		time.Sleep(time.Until(*download.NextRetryAt))
+	}
+
+	lockKey := fmt.Sprintf("file-svc-download-restart:%s", download.Id)
+	if lockKey == "file-svc-download-restart:" {
+		lockKey = fmt.Sprintf("file-svc-download-restart:%s", EncodeURLtoFileName(download.URL))
+	}
+	if fs.options != nil && fs.options.Lock != nil {
+		acquired, lockErr := fs.options.Lock.TryAcquire(ctx, lockKey)
+		if lockErr != nil || !acquired {
+			return false
+		}
+		defer func() {
+			if err := fs.options.Lock.Release(ctx, lockKey); err != nil {
+				logger.Warn("Failed to release restart lock",
+					slog.String("lockKey", lockKey),
+					slog.String("error", err.Error()),
+				)
+			}
+		}()
+	}
+
+	latest, exists = fs.getDownloadById(download.Id)
+	if exists {
+		download = latest
+	}
+	if download.Status != types.DownloadStatusInProgress {
+		return false
+	}
+
+	err := fs.download(ctx, download.URL, path.Dir(download.FilePath), fs.SyncDownloads)
+	if err == nil {
+		return false
+	}
+
+	retryCount := 1
+	if download.RetryCount != nil && *download.RetryCount > 0 {
+		retryCount = *download.RetryCount + 1
+	}
+	download.RetryCount = &retryCount
+	errMessage := err.Error()
+	download.LastError = &errMessage
+
+	waitFor := restartDownloadBackoff(restartDownloadBaseBackoff, retryCount, download.URL)
+	if waitFor > 0 {
+		nextRetry := time.Now().UTC().Add(waitFor)
+		download.NextRetryAt = &nextRetry
+	}
+
+	if upsertErr := fs.downloadStore.Upsert(download); upsertErr != nil {
+		logger.Error("Failed to persist restart download retry state",
+			slog.String("url", download.URL),
+			slog.String("error", upsertErr.Error()),
+		)
+		return false
+	}
+
+	logger.Warn("Restart download attempt failed; persisted retry metadata",
+		slog.String("url", download.URL),
+		slog.Int("retryCount", retryCount),
+		slog.Duration("nextBackoff", waitFor),
+		slog.String("error", err.Error()),
+	)
+	return true
+}
+
+func restartDownloadBackoff(base time.Duration, retryCount int, url string) time.Duration {
+	if base <= 0 || retryCount <= 0 {
+		return 0
+	}
+
+	backoff := base * time.Duration(1<<uint(retryCount-1))
+
+	h := fnv.New32a()
+	_, _ = h.Write([]byte(url))
+	jitter := time.Duration(h.Sum32()%1000) * (base / 1000)
+	if jitter <= 0 {
+		jitter = time.Duration(h.Sum32()%10) * time.Millisecond
+	}
+
+	return backoff + jitter
 }
 
 func (fs *FileService) markUploadAccess(upload *types.Upload) {
@@ -382,6 +494,22 @@ func (fs *FileService) getDownload(url string) (*types.InternalDownload, bool) {
 	}
 
 	if len(downloadIs) == 0 {
+		return nil, false
+	}
+
+	return downloadIs[0].(*types.InternalDownload), true
+}
+
+func (fs *FileService) getDownloadById(id string) (*types.InternalDownload, bool) {
+	if id == "" {
+		return nil, false
+	}
+
+	fs.mutex.Lock()
+	defer fs.mutex.Unlock()
+
+	downloadIs, err := fs.downloadStore.Query(datastore.Id(id)).Find()
+	if err != nil || len(downloadIs) == 0 {
 		return nil, false
 	}
 

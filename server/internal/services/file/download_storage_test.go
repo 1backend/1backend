@@ -7,10 +7,14 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"sync/atomic"
 	"testing"
+	"time"
 
 	"github.com/1backend/1backend/sdk/go/datastore/localstore"
+	distlock "github.com/1backend/1backend/sdk/go/lock/local"
 	filetypes "github.com/1backend/1backend/server/internal/services/file/types"
+	"github.com/1backend/1backend/server/internal/universe"
 	"github.com/stretchr/testify/require"
 )
 
@@ -22,6 +26,10 @@ func newMemoryStorageProvider() *memoryStorageProvider {
 	return &memoryStorageProvider{
 		data: map[string][]byte{},
 	}
+}
+
+func ptrInt(v int) *int {
+	return &v
 }
 
 func (m *memoryStorageProvider) Open(_ context.Context, filePath string) (io.ReadCloser, int64, error) {
@@ -390,4 +398,201 @@ func TestShardStoragePathWithBasisExhaustive(t *testing.T) {
 			require.Equal(t, tc.expected, shardStoragePathWithBasis(tc.basis, tc.fileName))
 		})
 	}
+}
+
+func TestRestartDownloadWithBackoffPersistsRetryMetadata(t *testing.T) {
+	origin := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusServiceUnavailable)
+	}))
+	defer origin.Close()
+
+	tmp := t.TempDir()
+	dsPath := filepath.Join(tmp, "downloads.json")
+	downloadStore, err := localstore.NewLocalStore(&filetypes.InternalDownload{}, dsPath)
+	require.NoError(t, err)
+	defer downloadStore.Close()
+
+	fs := &FileService{
+		nodeId:         "node-1",
+		downloadFolder: filepath.Join(tmp, "downloads"),
+		downloadStore:  downloadStore,
+		SyncDownloads:  true,
+	}
+	require.NoError(t, os.MkdirAll(fs.downloadFolder, 0755))
+
+	d := &filetypes.InternalDownload{
+		Id:       "dl_retry",
+		URL:      origin.URL + "/asset.txt",
+		NodeId:   "node-1",
+		FilePath: filepath.Join(fs.downloadFolder, EncodeURLtoFileName(origin.URL+"/asset.txt")),
+		Status:   filetypes.DownloadStatusInProgress,
+	}
+	require.NoError(t, downloadStore.Upsert(d))
+
+	fs.restartDownloadWithBackoffOnce(context.Background(), d)
+
+	dl, exists := fs.getDownload(d.URL)
+	require.True(t, exists)
+	require.NotNil(t, dl)
+	require.NotNil(t, dl.RetryCount)
+	require.Equal(t, 1, *dl.RetryCount)
+	require.NotNil(t, dl.NextRetryAt)
+	require.NotNil(t, dl.LastError)
+	require.NotEmpty(t, *dl.LastError)
+	require.Equal(t, filetypes.DownloadStatusInProgress, dl.Status)
+}
+
+func TestRestartDownloadWithBackoffHonorsNextRetryAt(t *testing.T) {
+	var requestCount atomic.Int32
+	origin := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestCount.Add(1)
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer origin.Close()
+
+	tmp := t.TempDir()
+	dsPath := filepath.Join(tmp, "downloads.json")
+	downloadStore, err := localstore.NewLocalStore(&filetypes.InternalDownload{}, dsPath)
+	require.NoError(t, err)
+	defer downloadStore.Close()
+
+	nextRetry := time.Now().UTC().Add(250 * time.Millisecond)
+	fs := &FileService{
+		nodeId:         "node-1",
+		downloadFolder: filepath.Join(tmp, "downloads"),
+		downloadStore:  downloadStore,
+		SyncDownloads:  true,
+	}
+	require.NoError(t, os.MkdirAll(fs.downloadFolder, 0755))
+
+	d := &filetypes.InternalDownload{
+		Id:          "dl_delayed",
+		URL:         origin.URL + "/delayed.txt",
+		NodeId:      "node-1",
+		FilePath:    filepath.Join(fs.downloadFolder, EncodeURLtoFileName(origin.URL+"/delayed.txt")),
+		Status:      filetypes.DownloadStatusInProgress,
+		RetryCount:  ptrInt(2),
+		NextRetryAt: &nextRetry,
+	}
+	require.NoError(t, downloadStore.Upsert(d))
+
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		fs.restartDownloadWithBackoffOnce(context.Background(), d)
+	}()
+
+	time.Sleep(120 * time.Millisecond)
+	require.Equal(t, int32(0), requestCount.Load())
+
+	select {
+	case <-done:
+	case <-time.After(2 * time.Second):
+		t.Fatal("timeout waiting for delayed restart")
+	}
+	require.GreaterOrEqual(t, requestCount.Load(), int32(1))
+}
+
+func TestRestartDownloadWithBackoffLoopRetriesUntilSuccess(t *testing.T) {
+	var requestCount atomic.Int32
+	origin := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		n := requestCount.Add(1)
+		if n <= 2 {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer origin.Close()
+
+	tmp := t.TempDir()
+	dsPath := filepath.Join(tmp, "downloads.json")
+	downloadStore, err := localstore.NewLocalStore(&filetypes.InternalDownload{}, dsPath)
+	require.NoError(t, err)
+	defer downloadStore.Close()
+
+	fs := &FileService{
+		nodeId:         "node-1",
+		downloadFolder: filepath.Join(tmp, "downloads"),
+		downloadStore:  downloadStore,
+		SyncDownloads:  true,
+	}
+	require.NoError(t, os.MkdirAll(fs.downloadFolder, 0755))
+
+	d := &filetypes.InternalDownload{
+		Id:       "dl_loop",
+		URL:      origin.URL + "/loop.txt",
+		NodeId:   "node-1",
+		FilePath: filepath.Join(fs.downloadFolder, EncodeURLtoFileName(origin.URL+"/loop.txt")),
+		Status:   filetypes.DownloadStatusInProgress,
+	}
+	require.NoError(t, downloadStore.Upsert(d))
+
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		fs.restartDownloadWithBackoffLoop(context.Background(), d)
+	}()
+
+	select {
+	case <-done:
+	case <-time.After(15 * time.Second):
+		t.Fatal("timeout waiting for retry loop success")
+	}
+
+	updated, exists := fs.getDownload(d.URL)
+	require.True(t, exists)
+	require.Equal(t, filetypes.DownloadStatusCompleted, updated.Status)
+	require.GreaterOrEqual(t, requestCount.Load(), int32(3))
+}
+
+func TestRestartDownloadWithBackoffUsesDistributedLock(t *testing.T) {
+	var requestCount atomic.Int32
+	origin := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestCount.Add(1)
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer origin.Close()
+
+	tmp := t.TempDir()
+	dsPath := filepath.Join(tmp, "downloads.json")
+	downloadStore, err := localstore.NewLocalStore(&filetypes.InternalDownload{}, dsPath)
+	require.NoError(t, err)
+	defer downloadStore.Close()
+
+	lock := distlock.NewLocalDistributedLock()
+	fs1 := &FileService{
+		nodeId:         "node-1",
+		downloadFolder: filepath.Join(tmp, "downloads"),
+		downloadStore:  downloadStore,
+		SyncDownloads:  true,
+		options:        &universe.Options{Lock: lock},
+	}
+	fs2 := &FileService{
+		nodeId:         "node-2",
+		downloadFolder: filepath.Join(tmp, "downloads"),
+		downloadStore:  downloadStore,
+		SyncDownloads:  true,
+		options:        &universe.Options{Lock: lock},
+	}
+	require.NoError(t, os.MkdirAll(fs1.downloadFolder, 0755))
+
+	d := &filetypes.InternalDownload{
+		Id:       "dl_lock",
+		URL:      origin.URL + "/lock.txt",
+		NodeId:   "node-1",
+		FilePath: filepath.Join(fs1.downloadFolder, EncodeURLtoFileName(origin.URL+"/lock.txt")),
+		Status:   filetypes.DownloadStatusInProgress,
+	}
+	require.NoError(t, downloadStore.Upsert(d))
+
+	done := make(chan struct{})
+	go func() {
+		defer close(done)
+		_ = fs1.restartDownloadWithBackoffOnce(context.Background(), d)
+	}()
+	_ = fs2.restartDownloadWithBackoffOnce(context.Background(), d)
+	<-done
+
+	require.Equal(t, int32(1), requestCount.Load())
 }
