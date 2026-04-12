@@ -191,6 +191,60 @@ func TestServeLocalDownloadRecoversFromStorageWhenLocalMissing(t *testing.T) {
 	require.Equal(t, filetypes.DownloadStatusCompleted, updated.Status)
 }
 
+func TestServeLocalDownloadRedownloadsWhenLocalAndStorageMissing(t *testing.T) {
+	originHits := 0
+	origin := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		originHits++
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer origin.Close()
+
+	tmp := t.TempDir()
+	dsPath := filepath.Join(tmp, "downloads.json")
+	downloadStore, err := localstore.NewLocalStore(&filetypes.InternalDownload{}, dsPath)
+	require.NoError(t, err)
+	defer downloadStore.Close()
+
+	url := origin.URL + "/assets/missing.txt"
+	localPath := filepath.Join(tmp, "downloads", EncodeURLtoFileName(url))
+	require.NoError(t, os.MkdirAll(filepath.Dir(localPath), 0755))
+	storage := newMemoryStorageProvider()
+
+	download := &filetypes.InternalDownload{
+		Id:       "dl_missing",
+		URL:      url,
+		NodeId:   "node-1",
+		FilePath: localPath,
+		Status:   filetypes.DownloadStatusInProgress,
+	}
+	require.NoError(t, downloadStore.Upsert(download))
+
+	fs := &FileService{
+		nodeId:          "node-1",
+		downloadStore:   downloadStore,
+		downloadStorage: storage,
+		downloadFolder:  filepath.Join(tmp, "downloads"),
+		SyncDownloads:   true,
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/file-svc/serve/download/ignored", nil)
+	w := httptest.NewRecorder()
+	fs.serveLocalDownload([]*filetypes.InternalDownload{download}, w, req)
+
+	resp := w.Result()
+	defer resp.Body.Close()
+	require.Equal(t, http.StatusOK, resp.StatusCode)
+
+	body, err := io.ReadAll(resp.Body)
+	require.NoError(t, err)
+	require.Empty(t, string(body))
+	require.Equal(t, 1, originHits, "expected one redownload from origin")
+	require.FileExists(t, localPath)
+
+	storageKey := DownloadStorageFilePath(url)
+	require.Equal(t, []byte(""), storage.data[storageKey], "expected redownloaded object persisted to storage")
+}
+
 func TestRestoreDownloadFromStorageReturnsFalseWhenObjectMissing(t *testing.T) {
 	tmp := t.TempDir()
 	localFile := filepath.Join(tmp, "downloads", "missing.bin")

@@ -127,24 +127,51 @@ func (fs *FileService) serveLocalDownload(
 			slog.Any("error", err),
 		)
 
-		if err := fs.downloadStore.Query(datastore.Id(download.Id)).Delete(); err != nil {
-			logger.Error("Failed to delete stale download record",
+		storageFilePath := DownloadStorageFilePath(download.URL)
+		restored, _, restoreErr := fs.restoreDownloadFromStorage(
+			r.Context(),
+			storageFilePath,
+			download.FilePath,
+		)
+		if restoreErr != nil {
+			logger.Warn("Failed to restore missing local download from storage",
 				slog.String("url", download.URL),
 				slog.String("filePath", download.FilePath),
-				slog.Any("error", err),
+				slog.Any("error", restoreErr),
 			)
-			endpoint.WriteString(w, http.StatusInternalServerError, "Failed to recover file")
-			return
 		}
 
-		if err := fs.download(r.Context(), download.URL, "", true); err != nil {
-			logger.Error("Failed to recover missing local download",
-				slog.String("url", download.URL),
-				slog.String("filePath", download.FilePath),
-				slog.Any("error", err),
-			)
-			endpoint.WriteString(w, http.StatusInternalServerError, "Failed to recover file")
-			return
+		if restored {
+			download.Status = file.DownloadStatusCompleted
+			if err := fs.downloadStore.Upsert(download); err != nil {
+				logger.Error("Failed to update restored download record",
+					slog.String("url", download.URL),
+					slog.String("filePath", download.FilePath),
+					slog.Any("error", err),
+				)
+				endpoint.WriteString(w, http.StatusInternalServerError, "Failed to recover file")
+				return
+			}
+		} else {
+			if err := fs.downloadStore.Query(datastore.Id(download.Id)).Delete(); err != nil {
+				logger.Error("Failed to delete stale download record",
+					slog.String("url", download.URL),
+					slog.String("filePath", download.FilePath),
+					slog.Any("error", err),
+				)
+				endpoint.WriteString(w, http.StatusInternalServerError, "Failed to recover file")
+				return
+			}
+
+			if err := fs.download(r.Context(), download.URL, "", true); err != nil {
+				logger.Error("Failed to redownload missing local download",
+					slog.String("url", download.URL),
+					slog.String("filePath", download.FilePath),
+					slog.Any("error", err),
+				)
+				endpoint.WriteString(w, http.StatusInternalServerError, "Failed to recover file")
+				return
+			}
 		}
 
 		downloadIs, qerr := fs.downloadStore.Query(datastore.Equals(
