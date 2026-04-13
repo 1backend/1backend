@@ -65,6 +65,7 @@ var UserPermissions = []string{
 	PermissionOrganizationCreate,
 	PermissionOrganizationAddUser,
 	PermissionOrganizationRemoveUser,
+	PermissionOrganizationView,
 
 	// A User can edit their own enrolls
 	PermissionEnrollEdit,

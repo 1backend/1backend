@@ -79,6 +79,8 @@ type ListOrganizationsRequest struct {
 
 	Limit int `json:"limit"`
 
+	All bool `json:"all,omitempty"`
+
 	// Organizations by default come back ordered
 	// desc by `createdAt` field.
 	AfterTime time.Time `json:"afterTime"`

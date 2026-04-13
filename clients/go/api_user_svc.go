@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.8
+API version: 0.9.9
 Contact: sales@singulatron.com
 */
 
@@ -210,7 +210,9 @@ Caller can only list enrolls of roles they own (unless they are an admin).
 	/*
 	ListOrganizations List Organizations
 
-	Requires the `user-svc:organization:view` permission, that only admins have by default.
+	Requires the `user-svc:organization:view` permission.
+With `all=true`, platform admins see all organizations in the current app.
+Otherwise users only see organizations they are members of.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiListOrganizationsRequest
@@ -2207,7 +2209,9 @@ func (r ApiListOrganizationsRequest) Execute() (*UserSvcListOrganizationsRespons
 /*
 ListOrganizations List Organizations
 
-Requires the `user-svc:organization:view` permission, that only admins have by default.
+Requires the `user-svc:organization:view` permission.
+With `all=true`, platform admins see all organizations in the current app.
+Otherwise users only see organizations they are members of.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiListOrganizationsRequest

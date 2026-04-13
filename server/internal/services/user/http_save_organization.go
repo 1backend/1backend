@@ -130,14 +130,8 @@ func (s *UserService) saveOrganization(
 	if exists {
 		final = orgI.(*user.Organization)
 
-		isAdmin := false
-		for _, role := range claims.Roles {
-			if role == fmt.Sprintf("user-svc:org:{%v}:admin", final.Id) {
-				isAdmin = true
-				break
-			}
-		}
-		if !isAdmin {
+		orgAdminRole := fmt.Sprintf("user-svc:org:{%v}:admin", final.Id)
+		if !contains(claims.Roles, user.RoleAdmin) && !contains(claims.Roles, orgAdminRole) {
 			return nil, nil, ErrNotAnAdmin
 		}
 

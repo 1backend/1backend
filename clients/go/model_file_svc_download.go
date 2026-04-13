@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.8
+API version: 0.9.9
 Contact: sales@singulatron.com
 */
 
@@ -27,6 +27,7 @@ type FileSvcDownload struct {
 	DownloadedBytes *int64 `json:"downloadedBytes,omitempty"`
 	Error *string `json:"error,omitempty"`
 	FileName *string `json:"fileName,omitempty"`
+	// FilePath is the canonical object path used by file-svc for both: 1) local node disk location and 2) storage backend object key/path. The exact path-generation algorithm is an implementation detail and may evolve over time; callers must treat FilePath as the source of truth.
 	FilePath *string `json:"filePath,omitempty"`
 	// FileSize is the full final downloaded file size.
 	FileSize *int64 `json:"fileSize,omitempty"`

@@ -20,7 +20,9 @@ import (
 
 // @ID listOrganizations
 // @Summary List Organizations
-// @Description Requires the `user-svc:organization:view` permission, that only admins have by default.
+// @Description Requires the `user-svc:organization:view` permission.
+// @Description With `all=true`, platform admins see all organizations in the current app.
+// @Description Otherwise users only see organizations they are members of.
 // @Tags User Svc
 // @Accept json
 // @Produce json
@@ -35,7 +37,7 @@ func (s *UserService) ListOrganizations(
 	w http.ResponseWriter,
 	r *http.Request) {
 
-	_, hasPermission, claims, err := s.hasPermission(
+	usr, hasPermission, claims, err := s.hasPermission(
 		r,
 		user.PermissionOrganizationView,
 	)
@@ -67,7 +69,18 @@ func (s *UserService) ListOrganizations(
 		defer r.Body.Close()
 	}
 
-	rsp, err := s.listOrganizations(claims.AppId, &req)
+	isAdmin := contains(claims.Roles, user.RoleAdmin)
+	if req.All && !isAdmin {
+		endpoint.Unauthorized(w)
+		return
+	}
+
+	rsp, err := s.listOrganizations(
+		claims.AppId,
+		usr.Id,
+		isAdmin,
+		&req,
+	)
 	if err != nil {
 		logger.Error(
 			"Failed to list organizations",
@@ -82,10 +95,39 @@ func (s *UserService) ListOrganizations(
 
 func (s *UserService) listOrganizations(
 	app string,
+	userId string,
+	isAdmin bool,
 	request *user.ListOrganizationsRequest,
 ) (*user.ListOrganizationsResponse, error) {
 	filters := []datastore.Filter{
 		datastore.Equals(datastore.Field("appId"), app),
+	}
+
+	if !isAdmin || !request.All {
+		membershipIs, err := s.membershipStore.Query(
+			datastore.Equals(datastore.Field("appId"), app),
+			datastore.Equals(datastore.Field("userId"), userId),
+		).Find()
+		if err != nil {
+			return nil, err
+		}
+
+		if len(membershipIs) == 0 {
+			return &user.ListOrganizationsResponse{
+				Organizations: []user.Organization{},
+			}, nil
+		}
+
+		organizationIds := []any{}
+		for _, membershipI := range membershipIs {
+			membership := membershipI.(*user.Membership)
+			organizationIds = append(organizationIds, membership.OrganizationId)
+		}
+
+		filters = append(filters, datastore.IsInList(
+			datastore.Field("id"),
+			organizationIds...,
+		))
 	}
 
 	if request.Ids != nil {

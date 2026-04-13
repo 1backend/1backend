@@ -28,6 +28,11 @@ func TestSaveOrganization(t *testing.T) {
 
 	userClient := manyClients[0]
 	otherClient := manyClients[1]
+	adminClient, _, err := test.AdminClient(
+		client.NewApiClientFactory(server.Url),
+		sdk.DefaultTestAppHost,
+	)
+	require.NoError(t, err)
 
 	orgId := ""
 	slug := "some-org-name"
@@ -53,6 +58,10 @@ func TestSaveOrganization(t *testing.T) {
 		require.Equal(t, httpResp.StatusCode, 200)
 
 		orgId = resp.Organization.Id
+		require.NotNil(t, resp.Token)
+		require.NotEmpty(t, resp.Token.Token)
+		userClient = client.NewApiClientFactory(server.Url).
+			Client(client.WithToken(resp.Token.Token))
 	})
 
 	t.Run("other user cannot update organization", func(t *testing.T) {
@@ -74,5 +83,47 @@ func TestSaveOrganization(t *testing.T) {
 		require.Error(t, err)
 		require.NotNil(t, httpResp)
 		require.Equal(t, 401, httpResp.StatusCode)
+	})
+
+	t.Run("organization admin can update own organization", func(t *testing.T) {
+		orgName := "Updated by organization admin"
+		req := openapi.UserSvcSaveOrganizationRequest{
+			Id:   openapi.PtrString(orgId),
+			Name: openapi.PtrString(orgName),
+			Slug: slug,
+		}
+
+		resp, httpResp, err := userClient.UserSvcAPI.
+			SaveOrganization(
+				context.Background(),
+			).
+			Body(req).
+			Execute()
+
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		require.Equal(t, 200, httpResp.StatusCode)
+		require.Equal(t, orgName, resp.Organization.Name)
+	})
+
+	t.Run("admin can update organization", func(t *testing.T) {
+		orgName := "Updated by admin"
+		req := openapi.UserSvcSaveOrganizationRequest{
+			Id:   openapi.PtrString(orgId),
+			Name: openapi.PtrString(orgName),
+			Slug: slug,
+		}
+
+		resp, httpResp, err := adminClient.UserSvcAPI.
+			SaveOrganization(
+				context.Background(),
+			).
+			Body(req).
+			Execute()
+
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		require.Equal(t, 200, httpResp.StatusCode)
+		require.Equal(t, orgName, resp.Organization.Name)
 	})
 }
