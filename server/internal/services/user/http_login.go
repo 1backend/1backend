@@ -378,6 +378,8 @@ func (s *UserService) generateAuthToken(
 		return nil, errors.Wrap(err, "error listing organizations")
 	}
 
+	roles = filterRolesForActiveOrganization(roles, activeOrganizationId)
+
 	_, token, err := s.generateJWT(
 		appId, u, roles, activeOrganizationId,
 		s.privateKey, device)
@@ -422,6 +424,27 @@ func (s *UserService) generateAuthToken(
 		ExpiresAt:  now.Add(s.options.TokenExpiration),
 		CreatedAt:  now,
 	}, nil
+}
+
+func filterRolesForActiveOrganization(roles []string, activeOrganizationId string) []string {
+	filtered := make([]string, 0, len(roles))
+
+	for _, role := range roles {
+		if !strings.HasPrefix(role, "user-svc:org:{") {
+			filtered = append(filtered, role)
+			continue
+		}
+
+		if activeOrganizationId == "" {
+			continue
+		}
+
+		if strings.HasPrefix(role, fmt.Sprintf("user-svc:org:{%s}:", activeOrganizationId)) {
+			filtered = append(filtered, role)
+		}
+	}
+
+	return filtered
 }
 
 func (s *UserService) getOrCreateApp(host string) (*user.App, error) {

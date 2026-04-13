@@ -35,6 +35,7 @@ func TestSaveOrganization(t *testing.T) {
 	require.NoError(t, err)
 
 	orgId := ""
+	otherOrgId := ""
 	slug := "some-org-name"
 
 	t.Run("save organization", func(t *testing.T) {
@@ -104,6 +105,42 @@ func TestSaveOrganization(t *testing.T) {
 		require.NotNil(t, resp)
 		require.Equal(t, 200, httpResp.StatusCode)
 		require.Equal(t, orgName, resp.Organization.Name)
+	})
+
+	t.Run("organization admin can update non-active organization", func(t *testing.T) {
+		resp, _, err := userClient.UserSvcAPI.
+			SaveOrganization(
+				context.Background(),
+			).
+			Body(openapi.UserSvcSaveOrganizationRequest{
+				Activate: openapi.PtrBool(true),
+				Name:     openapi.PtrString("Another Org"),
+				Slug:     "another-org",
+			}).
+			Execute()
+
+		require.NoError(t, err)
+		require.NotEmpty(t, resp.Organization.Id)
+		require.NotEmpty(t, resp.Token.Token)
+		otherOrgId = resp.Organization.Id
+		userClient = client.NewApiClientFactory(server.Url).
+			Client(client.WithToken(resp.Token.Token))
+
+		updateResp, httpResp, err := userClient.UserSvcAPI.
+			SaveOrganization(
+				context.Background(),
+			).
+			Body(openapi.UserSvcSaveOrganizationRequest{
+				Id:   openapi.PtrString(orgId),
+				Name: openapi.PtrString("Updated while another org is active"),
+				Slug: slug,
+			}).
+			Execute()
+
+		require.NoError(t, err)
+		require.Equal(t, 200, httpResp.StatusCode)
+		require.Equal(t, orgId, updateResp.Organization.Id)
+		require.NotEqual(t, orgId, otherOrgId)
 	})
 
 	t.Run("admin can update organization", func(t *testing.T) {

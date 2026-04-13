@@ -77,7 +77,17 @@ func (s *UserService) ListEnrolls(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	enrolls, err := s.listEnrolls(claims, req)
+	roles, err := s.getRolesByUserId(claims.AppId, claims.UserId)
+	if err != nil {
+		logger.Error("Failed to list effective roles", slog.Any("error", err))
+		endpoint.InternalServerError(w)
+		return
+	}
+
+	effectiveClaims := *claims
+	effectiveClaims.Roles = roles
+
+	enrolls, err := s.listEnrolls(&effectiveClaims, req)
 	switch {
 	case errors.Is(err, cannotListUnowned):
 		endpoint.Unauthorized(w)

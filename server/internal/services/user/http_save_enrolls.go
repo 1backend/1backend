@@ -81,7 +81,17 @@ func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 	}
 
 	isAdmin := false
-	for _, role := range claims.Roles {
+	roles, err := s.getRolesByUserId(claims.AppId, claims.UserId)
+	if err != nil {
+		logger.Error("Failed to list effective roles", slog.Any("error", err))
+		endpoint.InternalServerError(w)
+		return
+	}
+
+	effectiveClaims := *claims
+	effectiveClaims.Roles = roles
+
+	for _, role := range effectiveClaims.Roles {
 		if role == user.RoleAdmin {
 			isAdmin = true
 			break
@@ -90,7 +100,7 @@ func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 
 	if !isAdmin {
 		for _, enroll := range req.Enrolls {
-			if !auth.OwnsRole(claims, enroll.Role) {
+			if !auth.OwnsRole(&effectiveClaims, enroll.Role) {
 				endpoint.Unauthorized(w)
 				return
 			}

@@ -453,6 +453,17 @@ func TestSaveEnrollsOldAssignTests(t *testing.T) {
 
 		require.NoError(t, err)
 	})
+
+	t.Run("second user can list enrolls for owned org role without activating the org", func(t *testing.T) {
+		rsp, _, err := secondClient.UserSvcAPI.ListEnrolls(context.Background()).
+			Body(openapi.UserSvcListEnrollsRequest{
+				Role: openapi.PtrString(fmt.Sprintf("user-svc:org:{%v}:user", orgId)),
+			}).
+			Execute()
+
+		require.NoError(t, err)
+		require.NotEmpty(t, rsp.Enrolls)
+	})
 }
 
 func TestEnrollIDGlobalUniquenessAcrossApps(t *testing.T) {
