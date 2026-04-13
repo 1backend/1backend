@@ -22,6 +22,11 @@ UserSvcListOrganizationsRequest.attributeTypeMap = [
         "type": "string"
     },
     {
+        "name": "all",
+        "baseName": "all",
+        "type": "boolean"
+    },
+    {
         "name": "ids",
         "baseName": "ids",
         "type": "Array<string>"

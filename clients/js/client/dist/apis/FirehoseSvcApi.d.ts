@@ -19,6 +19,10 @@ export interface PublishEventRequest {
  */
 export declare class FirehoseSvcApi extends runtime.BaseAPI {
     /**
+     * Creates request options for publishEvent without sending the request
+     */
+    publishEventRequestOpts(requestParameters: PublishEventRequest): Promise<runtime.RequestOpts>;
+    /**
      * Publishes an event to the firehose service after authorization check
      * Publish an Event
      */
@@ -28,6 +32,10 @@ export declare class FirehoseSvcApi extends runtime.BaseAPI {
      * Publish an Event
      */
     publishEvent(requestParameters: PublishEventRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+    /**
+     * Creates request options for subscribeToEvents without sending the request
+     */
+    subscribeToEventsRequestOpts(): Promise<runtime.RequestOpts>;
     /**
      * Establish a subscription to the firehose events and accept a real time stream of them.
      * Subscribe to the Event Stream

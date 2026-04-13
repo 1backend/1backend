@@ -17,6 +17,7 @@ export class UserSvcListOrganizationsRequest {
     * Organizations by default come back ordered desc by `createdAt` field.
     */
     'afterTime'?: string;
+    'all'?: boolean;
     'ids'?: Array<string>;
     'limit'?: number;
 
@@ -27,6 +28,11 @@ export class UserSvcListOrganizationsRequest {
             "name": "afterTime",
             "baseName": "afterTime",
             "type": "string"
+        },
+        {
+            "name": "all",
+            "baseName": "all",
+            "type": "boolean"
         },
         {
             "name": "ids",

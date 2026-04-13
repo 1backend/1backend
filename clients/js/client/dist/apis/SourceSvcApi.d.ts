@@ -19,6 +19,10 @@ export interface CheckoutRepoRequest {
  */
 export declare class SourceSvcApi extends runtime.BaseAPI {
     /**
+     * Creates request options for checkoutRepo without sending the request
+     */
+    checkoutRepoRequestOpts(requestParameters: CheckoutRepoRequest): Promise<runtime.RequestOpts>;
+    /**
      * Checkout a git repository over https or ssh at a specific version into a temporary directory. Performs a shallow clone with minimal history for faster checkout.
      * Checkout a git repository
      */

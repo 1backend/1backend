@@ -26,6 +26,7 @@ export function UserSvcListOrganizationsRequestFromJSONTyped(json, ignoreDiscrim
     }
     return {
         'afterTime': json['afterTime'] == null ? undefined : json['afterTime'],
+        'all': json['all'] == null ? undefined : json['all'],
         'ids': json['ids'] == null ? undefined : json['ids'],
         'limit': json['limit'] == null ? undefined : json['limit'],
     };
@@ -39,6 +40,7 @@ export function UserSvcListOrganizationsRequestToJSONTyped(value, ignoreDiscrimi
     }
     return {
         'afterTime': value['afterTime'],
+        'all': value['all'],
         'ids': value['ids'],
         'limit': value['limit'],
     };

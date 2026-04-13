@@ -40,6 +40,10 @@ export interface UploadFileRequest {
  */
 export declare class FileSvcApi extends runtime.BaseAPI {
     /**
+     * Creates request options for deleteUpload without sending the request
+     */
+    deleteUploadRequestOpts(requestParameters: DeleteUploadRequest): Promise<runtime.RequestOpts>;
+    /**
      * Deletes an uploaded file and its metadata by `fileId`.  Requires the `file-svc:upload:delete` permission.
      * Delete an Uploaded File
      */
@@ -53,6 +57,10 @@ export declare class FileSvcApi extends runtime.BaseAPI {
     deleteUpload(requestParameters: DeleteUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{
         [key: string]: any;
     }>;
+    /**
+     * Creates request options for downloadFile without sending the request
+     */
+    downloadFileRequestOpts(requestParameters: DownloadFileRequest): Promise<runtime.RequestOpts>;
     /**
      * Start or resume the download for a specified URL.  Requires the `file-svc:download:create` permission.
      * Download a File
@@ -68,6 +76,10 @@ export declare class FileSvcApi extends runtime.BaseAPI {
         [key: string]: any;
     }>;
     /**
+     * Creates request options for getDownload without sending the request
+     */
+    getDownloadRequestOpts(requestParameters: GetDownloadRequest): Promise<runtime.RequestOpts>;
+    /**
      * Get a download by URL.  Requires the `file-svc:download:view` permission.
      * Get a Download
      */
@@ -77,6 +89,10 @@ export declare class FileSvcApi extends runtime.BaseAPI {
      * Get a Download
      */
     getDownload(requestParameters: GetDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<FileSvcGetDownloadResponse>;
+    /**
+     * Creates request options for listDownloads without sending the request
+     */
+    listDownloadsRequestOpts(): Promise<runtime.RequestOpts>;
     /**
      * List download details.  Requires the `file-svc:download:view` permission.
      * List Downloads
@@ -88,6 +104,10 @@ export declare class FileSvcApi extends runtime.BaseAPI {
      */
     listDownloads(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<FileSvcDownloadsResponse>;
     /**
+     * Creates request options for listUploads without sending the request
+     */
+    listUploadsRequestOpts(requestParameters: ListUploadsRequest): Promise<runtime.RequestOpts>;
+    /**
      * Lists uploaded files, returning only metadata about each upload. To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request. Note: Retrieving the contents of multiple files in a single request is not supported currently.  Requires the `file-svc:upload:view` permission.
      * List Uploads
      */
@@ -97,6 +117,10 @@ export declare class FileSvcApi extends runtime.BaseAPI {
      * List Uploads
      */
     listUploads(requestParameters?: ListUploadsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<FileSvcListUploadsResponse>;
+    /**
+     * Creates request options for pauseDownload without sending the request
+     */
+    pauseDownloadRequestOpts(requestParameters: PauseDownloadRequest): Promise<runtime.RequestOpts>;
     /**
      * Pause a download that is currently in progress.  Requires the `file-svc:download:edit` permission.
      * Pause a Download
@@ -112,6 +136,10 @@ export declare class FileSvcApi extends runtime.BaseAPI {
         [key: string]: any;
     }>;
     /**
+     * Creates request options for serveDownload without sending the request
+     */
+    serveDownloadRequestOpts(requestParameters: ServeDownloadRequest): Promise<runtime.RequestOpts>;
+    /**
      * Serves a previously downloaded file based on its URL.
      * Serve a Downloaded file
      */
@@ -122,6 +150,10 @@ export declare class FileSvcApi extends runtime.BaseAPI {
      */
     serveDownload(requestParameters: ServeDownloadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
     /**
+     * Creates request options for serveUpload without sending the request
+     */
+    serveUploadRequestOpts(requestParameters: ServeUploadRequest): Promise<runtime.RequestOpts>;
+    /**
      * Retrieves and serves a previously uploaded file using its File ID. Note: The `ID` and `FileID` fields of an upload are different. - `FileID` is a unique identifier for the file itself. - `ID` is a unique identifier for a specific replica of the file. Since 1Backend is a distributed system, files can be replicated across multiple nodes. This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
      * Serve an Uploaded File
      */
@@ -131,6 +163,10 @@ export declare class FileSvcApi extends runtime.BaseAPI {
      * Serve an Uploaded File
      */
     serveUpload(requestParameters: ServeUploadRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob>;
+    /**
+     * Creates request options for uploadFile without sending the request
+     */
+    uploadFileRequestOpts(requestParameters: UploadFileRequest): Promise<runtime.RequestOpts>;
     /**
      * Uploads a file to the server. Currently if using the clients only one file can be uploaded at a time due to this bug https://github.com/OpenAPITools/openapi-generator/issues/11341 Once that is fixed we should have an `PUT /file-svc/uploads`/uploadFiles (note the plural) endpoints. In reality the endpoint \"unofficially\" supports multiple files. YMMV.  Requires the `file-svc:upload:create` permission.
      * Upload a File

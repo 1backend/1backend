@@ -24,6 +24,12 @@ export interface UserSvcListOrganizationsRequest {
     afterTime?: string;
     /**
      *
+     * @type {boolean}
+     * @memberof UserSvcListOrganizationsRequest
+     */
+    all?: boolean;
+    /**
+     *
      * @type {Array<string>}
      * @memberof UserSvcListOrganizationsRequest
      */

@@ -66,10 +66,9 @@ export interface SubscribeToPromptResponsesRequest {
 export class PromptSvcApi extends runtime.BaseAPI {
 
     /**
-     * List prompts that satisfy a query.
-     * List Prompts
+     * Creates request options for listPrompts without sending the request
      */
-    async listPromptsRaw(requestParameters: ListPromptsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PromptSvcListPromptsResponse>> {
+    async listPromptsRequestOpts(requestParameters: ListPromptsRequest): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -83,13 +82,22 @@ export class PromptSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/prompt-svc/prompts`;
 
-        const response = await this.request({
+        return {
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: PromptSvcListPromptsRequestToJSON(requestParameters['body']),
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * List prompts that satisfy a query.
+     * List Prompts
+     */
+    async listPromptsRaw(requestParameters: ListPromptsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PromptSvcListPromptsResponse>> {
+        const requestOptions = await this.listPromptsRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => PromptSvcListPromptsResponseFromJSON(jsonValue));
     }
@@ -104,10 +112,9 @@ export class PromptSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Sends a prompt and waits for a response if sync is true. If sync is false, adds the prompt to the queue and returns immediately.  Prompts can be used for `text-to-text`, `text-to-image`, `image-to-image`, and other types of generation. If no model ID is specified, the default model will be used (see `Model Svc` for details). The default model may or may not support the requested generation type.  **Prompting Modes** - **High-Level Parameters**: Uses predefined parameters relevant to `text-to-image`, `image-to-image`, etc. This mode abstracts away the underlying engine (e.g., LLaMA, Stable Diffusion) and focuses on functionality. - **Engine-Specific Parameters**: Uses `engineParameters` to directly specify an AI engine, exposing all available parameters for fine-tuned control.  **Permissions Required:** `prompt-svc:prompt:create`
-     * Prompt an AI
+     * Creates request options for prompt without sending the request
      */
-    async promptRaw(requestParameters: PromptRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PromptSvcPromptResponse>> {
+    async promptRequestOpts(requestParameters: PromptRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -128,13 +135,22 @@ export class PromptSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/prompt-svc/prompt`;
 
-        const response = await this.request({
+        return {
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: PromptSvcPromptRequestToJSON(requestParameters['body']),
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Sends a prompt and waits for a response if sync is true. If sync is false, adds the prompt to the queue and returns immediately.  Prompts can be used for `text-to-text`, `text-to-image`, `image-to-image`, and other types of generation. If no model ID is specified, the default model will be used (see `Model Svc` for details). The default model may or may not support the requested generation type.  **Prompting Modes** - **High-Level Parameters**: Uses predefined parameters relevant to `text-to-image`, `image-to-image`, etc. This mode abstracts away the underlying engine (e.g., LLaMA, Stable Diffusion) and focuses on functionality. - **Engine-Specific Parameters**: Uses `engineParameters` to directly specify an AI engine, exposing all available parameters for fine-tuned control.  **Permissions Required:** `prompt-svc:prompt:create`
+     * Prompt an AI
+     */
+    async promptRaw(requestParameters: PromptRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PromptSvcPromptResponse>> {
+        const requestOptions = await this.promptRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => PromptSvcPromptResponseFromJSON(jsonValue));
     }
@@ -149,10 +165,9 @@ export class PromptSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * The only purpose of this \"endpoint\" is to export types otherwise not appearing in the API docs. This endpoint otherwise does nothing. Do not depend on this endpoint, only its types.
-     * Prompt Types
+     * Creates request options for promptTypes without sending the request
      */
-    async promptTypesRaw(requestParameters: PromptTypesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PromptSvcTypesResponse>> {
+    async promptTypesRequestOpts(requestParameters: PromptTypesRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -173,13 +188,22 @@ export class PromptSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/prompt-svc/types`;
 
-        const response = await this.request({
+        return {
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: requestParameters['body'] as any,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * The only purpose of this \"endpoint\" is to export types otherwise not appearing in the API docs. This endpoint otherwise does nothing. Do not depend on this endpoint, only its types.
+     * Prompt Types
+     */
+    async promptTypesRaw(requestParameters: PromptTypesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<PromptSvcTypesResponse>> {
+        const requestOptions = await this.promptTypesRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => PromptSvcTypesResponseFromJSON(jsonValue));
     }
@@ -194,10 +218,9 @@ export class PromptSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Remove a prompt by ID.
-     * Remove Prompt
+     * Creates request options for removePrompt without sending the request
      */
-    async removePromptRaw(requestParameters: RemovePromptRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async removePromptRequestOpts(requestParameters: RemovePromptRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -218,13 +241,22 @@ export class PromptSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/prompt-svc/remove`;
 
-        const response = await this.request({
+        return {
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: PromptSvcRemovePromptRequestToJSON(requestParameters['body']),
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Remove a prompt by ID.
+     * Remove Prompt
+     */
+    async removePromptRaw(requestParameters: RemovePromptRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        const requestOptions = await this.removePromptRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -239,10 +271,9 @@ export class PromptSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Subscribe to prompt responses by thread via Server-Sent Events (SSE). You can subscribe to threads before they are created. The streamed strings are of type `StreamChunk`, see the PromptTypes endpoint for more details.
-     * Subscribe to Prompt Responses by Thread
+     * Creates request options for subscribeToPromptResponses without sending the request
      */
-    async subscribeToPromptResponsesRaw(requestParameters: SubscribeToPromptResponsesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+    async subscribeToPromptResponsesRequestOpts(requestParameters: SubscribeToPromptResponsesRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['threadId'] == null) {
             throw new runtime.RequiredError(
                 'threadId',
@@ -262,12 +293,21 @@ export class PromptSvcApi extends runtime.BaseAPI {
         let urlPath = `/prompt-svc/prompts/{threadId}/responses/subscribe`;
         urlPath = urlPath.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId'])));
 
-        const response = await this.request({
+        return {
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Subscribe to prompt responses by thread via Server-Sent Events (SSE). You can subscribe to threads before they are created. The streamed strings are of type `StreamChunk`, see the PromptTypes endpoint for more details.
+     * Subscribe to Prompt Responses by Thread
+     */
+    async subscribeToPromptResponsesRaw(requestParameters: SubscribeToPromptResponsesRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        const requestOptions = await this.subscribeToPromptResponsesRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         if (this.isJsonMime(response.headers.get('content-type'))) {
             return new runtime.JSONApiResponse<string>(response);

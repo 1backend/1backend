@@ -215,6 +215,11 @@ class ResponseError extends Error {
         super(msg);
         this.response = response;
         this.name = "ResponseError";
+        // restore prototype chain
+        const actualProto = new.target.prototype;
+        if (Object.setPrototypeOf) {
+            Object.setPrototypeOf(this, actualProto);
+        }
     }
 }
 class FetchError extends Error {
@@ -222,6 +227,11 @@ class FetchError extends Error {
         super(msg);
         this.cause = cause;
         this.name = "FetchError";
+        // restore prototype chain
+        const actualProto = new.target.prototype;
+        if (Object.setPrototypeOf) {
+            Object.setPrototypeOf(this, actualProto);
+        }
     }
 }
 class RequiredError extends Error {
@@ -229,6 +239,11 @@ class RequiredError extends Error {
         super(msg);
         this.field = field;
         this.name = "RequiredError";
+        // restore prototype chain
+        const actualProto = new.target.prototype;
+        if (Object.setPrototypeOf) {
+            Object.setPrototypeOf(this, actualProto);
+        }
     }
 }
 const COLLECTION_FORMATS = {
@@ -9935,6 +9950,7 @@ function UserSvcListOrganizationsRequestFromJSONTyped(json, ignoreDiscriminator)
     }
     return {
         'afterTime': json['afterTime'] == null ? undefined : json['afterTime'],
+        'all': json['all'] == null ? undefined : json['all'],
         'ids': json['ids'] == null ? undefined : json['ids'],
         'limit': json['limit'] == null ? undefined : json['limit'],
     };
@@ -9948,6 +9964,7 @@ function UserSvcListOrganizationsRequestToJSONTyped(value, ignoreDiscriminator =
     }
     return {
         'afterTime': value['afterTime'],
+        'all': value['all'],
         'ids': value['ids'],
         'limit': value['limit'],
     };
@@ -11569,10 +11586,9 @@ function UserSvcUpdateAppRequestToJSONTyped(value, ignoreDiscriminator = false) 
  */
 class ChatSvcApi extends BaseAPI {
     /**
-     * Delete a specific message from a chat thread by its ID
-     * Delete a Message
+     * Creates request options for deleteMessage without sending the request
      */
-    deleteMessageRaw(requestParameters, initOverrides) {
+    deleteMessageRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['messageId'] == null) {
                 throw new RequiredError('messageId', 'Required parameter "messageId" was null or undefined when calling deleteMessage().');
@@ -11584,12 +11600,22 @@ class ChatSvcApi extends BaseAPI {
             }
             let urlPath = `/chat-svc/message/{messageId}`;
             urlPath = urlPath.replace(`{${"messageId"}}`, encodeURIComponent(String(requestParameters['messageId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Delete a specific message from a chat thread by its ID
+     * Delete a Message
+     */
+    deleteMessageRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.deleteMessageRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -11604,10 +11630,9 @@ class ChatSvcApi extends BaseAPI {
         });
     }
     /**
-     * Delete a specific chat thread by its ID
-     * Delete a Thread
+     * Creates request options for deleteThread without sending the request
      */
-    deleteThreadRaw(requestParameters, initOverrides) {
+    deleteThreadRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['threadId'] == null) {
                 throw new RequiredError('threadId', 'Required parameter "threadId" was null or undefined when calling deleteThread().');
@@ -11619,12 +11644,22 @@ class ChatSvcApi extends BaseAPI {
             }
             let urlPath = `/chat-svc/thread/{threadId}`;
             urlPath = urlPath.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Delete a specific chat thread by its ID
+     * Delete a Thread
+     */
+    deleteThreadRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.deleteThreadRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -11639,20 +11674,29 @@ class ChatSvcApi extends BaseAPI {
         });
     }
     /**
+     * Creates request options for events without sending the request
+     */
+    eventsRequestOpts() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            let urlPath = `/chat-svc/events`;
+            return {
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            };
+        });
+    }
+    /**
      * Events is a dummy endpoint to display documentation about the events that this service emits.
      * Events
      */
     eventsRaw(initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            const queryParameters = {};
-            const headerParameters = {};
-            let urlPath = `/chat-svc/events`;
-            const response = yield this.request({
-                path: urlPath,
-                method: 'GET',
-                headers: headerParameters,
-                query: queryParameters,
-            }, initOverrides);
+            const requestOptions = yield this.eventsRequestOpts();
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ChatSvcEventThreadUpdateFromJSON(jsonValue));
         });
     }
@@ -11667,10 +11711,9 @@ class ChatSvcApi extends BaseAPI {
         });
     }
     /**
-     * Fetch messages (and associated assets) for a specific chat thread.
-     * List Messages
+     * Creates request options for listMessages without sending the request
      */
-    listMessagesRaw(requestParameters, initOverrides) {
+    listMessagesRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling listMessages().');
@@ -11682,13 +11725,23 @@ class ChatSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/chat-svc/messages`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ChatSvcListMessagesRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Fetch messages (and associated assets) for a specific chat thread.
+     * List Messages
+     */
+    listMessagesRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listMessagesRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ChatSvcListMessagesResponseFromJSON(jsonValue));
         });
     }
@@ -11703,10 +11756,9 @@ class ChatSvcApi extends BaseAPI {
         });
     }
     /**
-     * Fetch all chat threads associated with a specific user
-     * List Threads
+     * Creates request options for listThreads without sending the request
      */
-    listThreadsRaw(requestParameters, initOverrides) {
+    listThreadsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling listThreads().');
@@ -11718,13 +11770,23 @@ class ChatSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/chat-svc/threads`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ChatSvcListThreadsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Fetch all chat threads associated with a specific user
+     * List Threads
+     */
+    listThreadsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listThreadsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ChatSvcListThreadsResponseFromJSON(jsonValue));
         });
     }
@@ -11739,10 +11801,9 @@ class ChatSvcApi extends BaseAPI {
         });
     }
     /**
-     * Save a new message to a specific thread.
-     * Save Message
+     * Creates request options for saveMessage without sending the request
      */
-    saveMessageRaw(requestParameters, initOverrides) {
+    saveMessageRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['threadId'] == null) {
                 throw new RequiredError('threadId', 'Required parameter "threadId" was null or undefined when calling saveMessage().');
@@ -11758,13 +11819,23 @@ class ChatSvcApi extends BaseAPI {
             }
             let urlPath = `/chat-svc/thread/{threadId}/message`;
             urlPath = urlPath.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ChatSvcSaveMessageRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Save a new message to a specific thread.
+     * Save Message
+     */
+    saveMessageRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.saveMessageRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -11779,10 +11850,9 @@ class ChatSvcApi extends BaseAPI {
         });
     }
     /**
-     * Create or update a chat thread. Requires the `chat-svc:thread:edit` permission.
-     * Save Thread
+     * Creates request options for saveThread without sending the request
      */
-    saveThreadRaw(requestParameters, initOverrides) {
+    saveThreadRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling saveThread().');
@@ -11794,13 +11864,23 @@ class ChatSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/chat-svc/thread`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ChatSvcSaveThreadRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Create or update a chat thread. Requires the `chat-svc:thread:edit` permission.
+     * Save Thread
+     */
+    saveThreadRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.saveThreadRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ChatSvcSaveThreadResponseFromJSON(jsonValue));
         });
     }
@@ -11834,10 +11914,9 @@ class ChatSvcApi extends BaseAPI {
  */
 class ConfigSvcApi extends BaseAPI {
     /**
-     * Returns the historical versions of a configuration for a given app. Intended for retrieving the version history of a **single configuration ID**. Supplying multiple IDs is supported but not recommended, since results from different IDs will interleave in the same time-ordered list, making chronological paging ambiguous.
-     * List Versions
+     * Creates request options for listConfigVersions without sending the request
      */
-    listConfigVersionsRaw(requestParameters, initOverrides) {
+    listConfigVersionsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling listConfigVersions().');
@@ -11846,13 +11925,23 @@ class ConfigSvcApi extends BaseAPI {
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
             let urlPath = `/config-svc/versions`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ConfigSvcListVersionsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Returns the historical versions of a configuration for a given app. Intended for retrieving the version history of a **single configuration ID**. Supplying multiple IDs is supported but not recommended, since results from different IDs will interleave in the same time-ordered list, making chronological paging ambiguous.
+     * List Versions
+     */
+    listConfigVersionsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listConfigVersionsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ConfigSvcListVersionsResponseFromJSON(jsonValue));
         });
     }
@@ -11867,10 +11956,9 @@ class ConfigSvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieves the current configurations for a specified app. Since any user can save configurations, it is strongly advised that you supply a list of owners to filter on. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
-     * List Configs
+     * Creates request options for listConfigs without sending the request
      */
-    listConfigsRaw(requestParameters, initOverrides) {
+    listConfigsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling listConfigs().');
@@ -11882,13 +11970,23 @@ class ConfigSvcApi extends BaseAPI {
                 headerParameters['Cache-Control'] = String(requestParameters['cacheControl']);
             }
             let urlPath = `/config-svc/configs`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ConfigSvcListConfigsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieves the current configurations for a specified app. Since any user can save configurations, it is strongly advised that you supply a list of owners to filter on. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+     * List Configs
+     */
+    listConfigsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listConfigsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ConfigSvcListConfigsResponseFromJSON(jsonValue));
         });
     }
@@ -11903,10 +12001,9 @@ class ConfigSvcApi extends BaseAPI {
         });
     }
     /**
-     * Save the provided configuration to the server. The app from the caller\'s token is used to determine which app the config belongs to. The caller\'s camelCased slug (e.g., \"test-user-slug\" becomes \"testUserSlug\") is used as the config key automatically, except for users who have the \"config-svc:config:edit-on-behalf\" permission (admins), who can specify any key they want. Admins (users with the \"config-svc:config:edit-on-behalf\" permission) can also provide an \"app\" field in the request body to specify which app the config belongs to, while non-admin users cannot specify the \"app\" field, the app associated with their token will be used.  The save performs a deep merge, that is: - Nested objects are recursively merged rather than replaced. - If a field exists in both the existing and the incoming config and both values are objects, their contents are merged. - If a field exists in both but one or both values are not objects (e.g., string, number, array), the incoming value replaces the existing one. - Fields present only in the incoming config are added. - Fields present only in the existing config are preserved. - Top-level and nested merges follow the same rules.
-     * Save Config
+     * Creates request options for saveConfig without sending the request
      */
-    saveConfigRaw(requestParameters, initOverrides) {
+    saveConfigRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling saveConfig().');
@@ -11918,13 +12015,23 @@ class ConfigSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/config-svc/config`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ConfigSvcSaveConfigRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Save the provided configuration to the server. The app from the caller\'s token is used to determine which app the config belongs to. The caller\'s camelCased slug (e.g., \"test-user-slug\" becomes \"testUserSlug\") is used as the config key automatically, except for users who have the \"config-svc:config:edit-on-behalf\" permission (admins), who can specify any key they want. Admins (users with the \"config-svc:config:edit-on-behalf\" permission) can also provide an \"app\" field in the request body to specify which app the config belongs to, while non-admin users cannot specify the \"app\" field, the app associated with their token will be used.  The save performs a deep merge, that is: - Nested objects are recursively merged rather than replaced. - If a field exists in both the existing and the incoming config and both values are objects, their contents are merged. - If a field exists in both but one or both values are not objects (e.g., string, number, array), the incoming value replaces the existing one. - Fields present only in the incoming config are added. - Fields present only in the existing config are preserved. - Top-level and nested merges follow the same rules.
+     * Save Config
+     */
+    saveConfigRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.saveConfigRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -11958,10 +12065,9 @@ class ConfigSvcApi extends BaseAPI {
  */
 class ContainerSvcApi extends BaseAPI {
     /**
-     * Builds a Docker image with the specified parameters.  Requires the `container-svc:image:build` permission.
-     * Build an Image
+     * Creates request options for buildImage without sending the request
      */
-    buildImageRaw(requestParameters, initOverrides) {
+    buildImageRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling buildImage().');
@@ -11973,13 +12079,23 @@ class ContainerSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/container-svc/image`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ContainerSvcBuildImageRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Builds a Docker image with the specified parameters.  Requires the `container-svc:image:build` permission.
+     * Build an Image
+     */
+    buildImageRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.buildImageRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -11994,10 +12110,9 @@ class ContainerSvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieve detailed information about the availability and status of container daemons on the node.
-     * Get Container Daemon Information
+     * Creates request options for containerDaemonInfo without sending the request
      */
-    containerDaemonInfoRaw(initOverrides) {
+    containerDaemonInfoRequestOpts() {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -12005,12 +12120,22 @@ class ContainerSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/container-svc/daemon/info`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieve detailed information about the availability and status of container daemons on the node.
+     * Get Container Daemon Information
+     */
+    containerDaemonInfoRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.containerDaemonInfoRequestOpts();
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ContainerSvcDaemonInfoResponseFromJSON(jsonValue));
         });
     }
@@ -12025,10 +12150,9 @@ class ContainerSvcApi extends BaseAPI {
         });
     }
     /**
-     * Check if a Docker container is running, identified by hash or name.
-     * Check If a Container Is Running
+     * Creates request options for containerIsRunning without sending the request
      */
-    containerIsRunningRaw(requestParameters, initOverrides) {
+    containerIsRunningRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             if (requestParameters['hash'] != null) {
@@ -12042,12 +12166,22 @@ class ContainerSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/container-svc/container/is-running`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Check if a Docker container is running, identified by hash or name.
+     * Check If a Container Is Running
+     */
+    containerIsRunningRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.containerIsRunningRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ContainerSvcContainerIsRunningResponseFromJSON(jsonValue));
         });
     }
@@ -12062,10 +12196,9 @@ class ContainerSvcApi extends BaseAPI {
         });
     }
     /**
-     * Get a summary of the Docker container identified by hash or name, limited to a specified number of lines.
-     * Get Container Summary
+     * Creates request options for containerSummary without sending the request
      */
-    containerSummaryRaw(requestParameters, initOverrides) {
+    containerSummaryRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             if (requestParameters['hash'] != null) {
@@ -12082,12 +12215,22 @@ class ContainerSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/container-svc/container/summary`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Get a summary of the Docker container identified by hash or name, limited to a specified number of lines.
+     * Get Container Summary
+     */
+    containerSummaryRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.containerSummaryRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ContainerSvcGetContainerSummaryResponseFromJSON(jsonValue));
         });
     }
@@ -12102,10 +12245,9 @@ class ContainerSvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieve information about the Container host
-     * Get Container Host
+     * Creates request options for getHost without sending the request
      */
-    getHostRaw(initOverrides) {
+    getHostRequestOpts() {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -12113,12 +12255,22 @@ class ContainerSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/container-svc/host`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieve information about the Container host
+     * Get Container Host
+     */
+    getHostRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.getHostRequestOpts();
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ContainerSvcGetHostResponseFromJSON(jsonValue));
         });
     }
@@ -12133,10 +12285,9 @@ class ContainerSvcApi extends BaseAPI {
         });
     }
     /**
-     * Check if an image exists on in the container registry and is pullable.
-     * Check if Container Image is Pullable
+     * Creates request options for imagePullable without sending the request
      */
-    imagePullableRaw(requestParameters, initOverrides) {
+    imagePullableRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['imageName'] == null) {
                 throw new RequiredError('imageName', 'Required parameter "imageName" was null or undefined when calling imagePullable().');
@@ -12148,12 +12299,22 @@ class ContainerSvcApi extends BaseAPI {
             }
             let urlPath = `/container-svc/image/{imageName}/pullable`;
             urlPath = urlPath.replace(`{${"imageName"}}`, encodeURIComponent(String(requestParameters['imageName'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Check if an image exists on in the container registry and is pullable.
+     * Check if Container Image is Pullable
+     */
+    imagePullableRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.imagePullableRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ContainerSvcImagePullableResponseFromJSON(jsonValue));
         });
     }
@@ -12168,10 +12329,9 @@ class ContainerSvcApi extends BaseAPI {
         });
     }
     /**
-     * List Container logs.  Requires the `container-svc:log:view` permission.
-     * List Logs
+     * Creates request options for listContainerLogs without sending the request
      */
-    listContainerLogsRaw(requestParameters, initOverrides) {
+    listContainerLogsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling listContainerLogs().');
@@ -12183,13 +12343,23 @@ class ContainerSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/container-svc/logs`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ContainerSvcListLogsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * List Container logs.  Requires the `container-svc:log:view` permission.
+     * List Logs
+     */
+    listContainerLogsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listContainerLogsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ContainerSvcListLogsResponseFromJSON(jsonValue));
         });
     }
@@ -12204,10 +12374,9 @@ class ContainerSvcApi extends BaseAPI {
         });
     }
     /**
-     * List containers.  Requires the `container-svc:container:view` permission.
-     * List Containers
+     * Creates request options for listContainers without sending the request
      */
-    listContainersRaw(requestParameters, initOverrides) {
+    listContainersRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling listContainers().');
@@ -12219,13 +12388,23 @@ class ContainerSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/container-svc/containers`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ContainerSvcListContainersRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * List containers.  Requires the `container-svc:container:view` permission.
+     * List Containers
+     */
+    listContainersRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listContainersRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ContainerSvcListContainersResponseFromJSON(jsonValue));
         });
     }
@@ -12240,10 +12419,9 @@ class ContainerSvcApi extends BaseAPI {
         });
     }
     /**
-     * Runs a Docker container with the specified parameters.  Requires the `container-svc:container:run` permission.
-     * Run a Container
+     * Creates request options for runContainer without sending the request
      */
-    runContainerRaw(requestParameters, initOverrides) {
+    runContainerRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling runContainer().');
@@ -12255,13 +12433,23 @@ class ContainerSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/container-svc/container`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ContainerSvcRunContainerRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Runs a Docker container with the specified parameters.  Requires the `container-svc:container:run` permission.
+     * Run a Container
+     */
+    runContainerRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.runContainerRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ContainerSvcRunContainerResponseFromJSON(jsonValue));
         });
     }
@@ -12276,10 +12464,9 @@ class ContainerSvcApi extends BaseAPI {
         });
     }
     /**
-     * Stops a Docker container with the specified parameters.  Requires the `container-svc:container:stop` permission.
-     * Stop a Container
+     * Creates request options for stopContainer without sending the request
      */
-    stopContainerRaw(requestParameters, initOverrides) {
+    stopContainerRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling stopContainer().');
@@ -12291,13 +12478,23 @@ class ContainerSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/container-svc/container/stop`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ContainerSvcStopContainerRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Stops a Docker container with the specified parameters.  Requires the `container-svc:container:stop` permission.
+     * Stop a Container
+     */
+    stopContainerRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.stopContainerRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -12331,10 +12528,9 @@ class ContainerSvcApi extends BaseAPI {
  */
 class DataSvcApi extends BaseAPI {
     /**
-     * Creates a new object with the provided details. Requires authorization and user authentication.
-     * Create a Generic Object
+     * Creates request options for createObject without sending the request
      */
-    createObjectRaw(requestParameters, initOverrides) {
+    createObjectRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling createObject().');
@@ -12346,13 +12542,23 @@ class DataSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/data-svc/object`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: DataSvcCreateObjectRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Creates a new object with the provided details. Requires authorization and user authentication.
+     * Create a Generic Object
+     */
+    createObjectRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.createObjectRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => DataSvcCreateObjectResponseFromJSON(jsonValue));
         });
     }
@@ -12367,10 +12573,9 @@ class DataSvcApi extends BaseAPI {
         });
     }
     /**
-     * Deletes all objects matchin the provided filters.
-     * Delete Objects
+     * Creates request options for deleteObjects without sending the request
      */
-    deleteObjectsRaw(requestParameters, initOverrides) {
+    deleteObjectsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling deleteObjects().');
@@ -12382,13 +12587,23 @@ class DataSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/data-svc/objects/delete`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: DataSvcDeleteObjectRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Deletes all objects matchin the provided filters.
+     * Delete Objects
+     */
+    deleteObjectsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.deleteObjectsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -12403,10 +12618,9 @@ class DataSvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieves objects from a specified table based on search criteria. Requires authorization and user authentication.   Use helper functions in your respective client library such as condition constructors (`equal`, `contains`, `startsWith`) and field selectors (`field`, `fields`, `id`) for easier access.
-     * Query Objects
+     * Creates request options for queryObjects without sending the request
      */
-    queryObjectsRaw(requestParameters, initOverrides) {
+    queryObjectsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -12415,13 +12629,23 @@ class DataSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/data-svc/objects`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: DataSvcQueryRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieves objects from a specified table based on search criteria. Requires authorization and user authentication.   Use helper functions in your respective client library such as condition constructors (`equal`, `contains`, `startsWith`) and field selectors (`field`, `fields`, `id`) for easier access.
+     * Query Objects
+     */
+    queryObjectsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.queryObjectsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => DataSvcQueryResponseFromJSON(jsonValue));
         });
     }
@@ -12436,10 +12660,9 @@ class DataSvcApi extends BaseAPI {
         });
     }
     /**
-     * Update fields of objects that match the given filters using the provided object. Any fields not included in the incoming object will remain unchanged.
-     * Update Objects
+     * Creates request options for updateObjects without sending the request
      */
-    updateObjectsRaw(requestParameters, initOverrides) {
+    updateObjectsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling updateObjects().');
@@ -12451,13 +12674,23 @@ class DataSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/data-svc/objects/update`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: DataSvcUpdateObjectsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Update fields of objects that match the given filters using the provided object. Any fields not included in the incoming object will remain unchanged.
+     * Update Objects
+     */
+    updateObjectsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.updateObjectsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -12472,10 +12705,9 @@ class DataSvcApi extends BaseAPI {
         });
     }
     /**
-     * Creates a new dynamic object or updates an existing one based on the provided data. Requires authorization and user authentication.
-     * Upsert a Generic Object
+     * Creates request options for upsertObject without sending the request
      */
-    upsertObjectRaw(requestParameters, initOverrides) {
+    upsertObjectRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['objectId'] == null) {
                 throw new RequiredError('objectId', 'Required parameter "objectId" was null or undefined when calling upsertObject().');
@@ -12491,13 +12723,23 @@ class DataSvcApi extends BaseAPI {
             }
             let urlPath = `/data-svc/object/{objectId}`;
             urlPath = urlPath.replace(`{${"objectId"}}`, encodeURIComponent(String(requestParameters['objectId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: DataSvcUpsertObjectRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Creates a new dynamic object or updates an existing one based on the provided data. Requires authorization and user authentication.
+     * Upsert a Generic Object
+     */
+    upsertObjectRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.upsertObjectRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => DataSvcUpsertObjectResponseFromJSON(jsonValue));
         });
     }
@@ -12512,10 +12754,9 @@ class DataSvcApi extends BaseAPI {
         });
     }
     /**
-     * Upserts objects by ids.
-     * Upsert Objects
+     * Creates request options for upsertObjects without sending the request
      */
-    upsertObjectsRaw(requestParameters, initOverrides) {
+    upsertObjectsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling upsertObjects().');
@@ -12527,13 +12768,23 @@ class DataSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/data-svc/objects/upsert`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: DataSvcUpsertObjectRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Upserts objects by ids.
+     * Upsert Objects
+     */
+    upsertObjectsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.upsertObjectsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => DataSvcUpsertObjectResponseFromJSON(jsonValue));
         });
     }
@@ -12567,10 +12818,9 @@ class DataSvcApi extends BaseAPI {
  */
 class EmailSvcApi extends BaseAPI {
     /**
-     * Sends an email with optional attachments via a supported email provider.  Currently, only SendGrid is supported. Additional providers may be added in the future.  Required secrets from the Secret Svc for SendGrid: - `sender-email`: Sender\'s email address. - `sender-name`: Sender\'s display name. - `sendgrid-api-key`: API key for SendGrid.
-     * Send an Email
+     * Creates request options for sendEmail without sending the request
      */
-    sendEmailRaw(requestParameters, initOverrides) {
+    sendEmailRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling sendEmail().');
@@ -12582,13 +12832,23 @@ class EmailSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/email-svc/email`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: EmailSvcSendEmailRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Sends an email with optional attachments via a supported email provider.  Currently, only SendGrid is supported. Additional providers may be added in the future.  Required secrets from the Secret Svc for SendGrid: - `sender-email`: Sender\'s email address. - `sender-name`: Sender\'s display name. - `sendgrid-api-key`: API key for SendGrid.
+     * Send an Email
+     */
+    sendEmailRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.sendEmailRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => EmailSvcSendEmailResponseFromJSON(jsonValue));
         });
     }
@@ -12622,10 +12882,9 @@ class EmailSvcApi extends BaseAPI {
  */
 class FileSvcApi extends BaseAPI {
     /**
-     * Deletes an uploaded file and its metadata by `fileId`.  Requires the `file-svc:upload:delete` permission.
-     * Delete an Uploaded File
+     * Creates request options for deleteUpload without sending the request
      */
-    deleteUploadRaw(requestParameters, initOverrides) {
+    deleteUploadRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['fileId'] == null) {
                 throw new RequiredError('fileId', 'Required parameter "fileId" was null or undefined when calling deleteUpload().');
@@ -12637,12 +12896,22 @@ class FileSvcApi extends BaseAPI {
             }
             let urlPath = `/file-svc/upload/{fileId}`;
             urlPath = urlPath.replace(`{${"fileId"}}`, encodeURIComponent(String(requestParameters['fileId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Deletes an uploaded file and its metadata by `fileId`.  Requires the `file-svc:upload:delete` permission.
+     * Delete an Uploaded File
+     */
+    deleteUploadRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.deleteUploadRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -12657,10 +12926,9 @@ class FileSvcApi extends BaseAPI {
         });
     }
     /**
-     * Start or resume the download for a specified URL.  Requires the `file-svc:download:create` permission.
-     * Download a File
+     * Creates request options for downloadFile without sending the request
      */
-    downloadFileRaw(requestParameters, initOverrides) {
+    downloadFileRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling downloadFile().');
@@ -12672,13 +12940,23 @@ class FileSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/file-svc/download`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: FileSvcDownloadFileRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Start or resume the download for a specified URL.  Requires the `file-svc:download:create` permission.
+     * Download a File
+     */
+    downloadFileRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.downloadFileRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -12693,10 +12971,9 @@ class FileSvcApi extends BaseAPI {
         });
     }
     /**
-     * Get a download by URL.  Requires the `file-svc:download:view` permission.
-     * Get a Download
+     * Creates request options for getDownload without sending the request
      */
-    getDownloadRaw(requestParameters, initOverrides) {
+    getDownloadRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['url'] == null) {
                 throw new RequiredError('url', 'Required parameter "url" was null or undefined when calling getDownload().');
@@ -12708,12 +12985,22 @@ class FileSvcApi extends BaseAPI {
             }
             let urlPath = `/file-svc/download/{url}`;
             urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Get a download by URL.  Requires the `file-svc:download:view` permission.
+     * Get a Download
+     */
+    getDownloadRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.getDownloadRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => FileSvcGetDownloadResponseFromJSON(jsonValue));
         });
     }
@@ -12728,10 +13015,9 @@ class FileSvcApi extends BaseAPI {
         });
     }
     /**
-     * List download details.  Requires the `file-svc:download:view` permission.
-     * List Downloads
+     * Creates request options for listDownloads without sending the request
      */
-    listDownloadsRaw(initOverrides) {
+    listDownloadsRequestOpts() {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -12739,12 +13025,22 @@ class FileSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/file-svc/downloads`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * List download details.  Requires the `file-svc:download:view` permission.
+     * List Downloads
+     */
+    listDownloadsRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listDownloadsRequestOpts();
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => FileSvcDownloadsResponseFromJSON(jsonValue));
         });
     }
@@ -12759,10 +13055,9 @@ class FileSvcApi extends BaseAPI {
         });
     }
     /**
-     * Lists uploaded files, returning only metadata about each upload. To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request. Note: Retrieving the contents of multiple files in a single request is not supported currently.  Requires the `file-svc:upload:view` permission.
-     * List Uploads
+     * Creates request options for listUploads without sending the request
      */
-    listUploadsRaw(requestParameters, initOverrides) {
+    listUploadsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -12771,13 +13066,23 @@ class FileSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/file-svc/uploads`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: FileSvcListUploadsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Lists uploaded files, returning only metadata about each upload. To retrieve file content, use the `Serve an Uploaded File` endpoint, which serves a single file per request. Note: Retrieving the contents of multiple files in a single request is not supported currently.  Requires the `file-svc:upload:view` permission.
+     * List Uploads
+     */
+    listUploadsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listUploadsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => FileSvcListUploadsResponseFromJSON(jsonValue));
         });
     }
@@ -12792,10 +13097,9 @@ class FileSvcApi extends BaseAPI {
         });
     }
     /**
-     * Pause a download that is currently in progress.  Requires the `file-svc:download:edit` permission.
-     * Pause a Download
+     * Creates request options for pauseDownload without sending the request
      */
-    pauseDownloadRaw(requestParameters, initOverrides) {
+    pauseDownloadRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['url'] == null) {
                 throw new RequiredError('url', 'Required parameter "url" was null or undefined when calling pauseDownload().');
@@ -12807,12 +13111,22 @@ class FileSvcApi extends BaseAPI {
             }
             let urlPath = `/file-svc/download/{url}/pause`;
             urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Pause a download that is currently in progress.  Requires the `file-svc:download:edit` permission.
+     * Pause a Download
+     */
+    pauseDownloadRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.pauseDownloadRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -12827,10 +13141,9 @@ class FileSvcApi extends BaseAPI {
         });
     }
     /**
-     * Serves a previously downloaded file based on its URL.
-     * Serve a Downloaded file
+     * Creates request options for serveDownload without sending the request
      */
-    serveDownloadRaw(requestParameters, initOverrides) {
+    serveDownloadRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['url'] == null) {
                 throw new RequiredError('url', 'Required parameter "url" was null or undefined when calling serveDownload().');
@@ -12839,12 +13152,22 @@ class FileSvcApi extends BaseAPI {
             const headerParameters = {};
             let urlPath = `/file-svc/serve/download/{url}`;
             urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Serves a previously downloaded file based on its URL.
+     * Serve a Downloaded file
+     */
+    serveDownloadRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.serveDownloadRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new BlobApiResponse(response);
         });
     }
@@ -12859,10 +13182,9 @@ class FileSvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieves and serves a previously uploaded file using its File ID. Note: The `ID` and `FileID` fields of an upload are different. - `FileID` is a unique identifier for the file itself. - `ID` is a unique identifier for a specific replica of the file. Since 1Backend is a distributed system, files can be replicated across multiple nodes. This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
-     * Serve an Uploaded File
+     * Creates request options for serveUpload without sending the request
      */
-    serveUploadRaw(requestParameters, initOverrides) {
+    serveUploadRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['fileId'] == null) {
                 throw new RequiredError('fileId', 'Required parameter "fileId" was null or undefined when calling serveUpload().');
@@ -12871,12 +13193,22 @@ class FileSvcApi extends BaseAPI {
             const headerParameters = {};
             let urlPath = `/file-svc/serve/upload/{fileId}`;
             urlPath = urlPath.replace(`{${"fileId"}}`, encodeURIComponent(String(requestParameters['fileId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieves and serves a previously uploaded file using its File ID. Note: The `ID` and `FileID` fields of an upload are different. - `FileID` is a unique identifier for the file itself. - `ID` is a unique identifier for a specific replica of the file. Since 1Backend is a distributed system, files can be replicated across multiple nodes. This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
+     * Serve an Uploaded File
+     */
+    serveUploadRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.serveUploadRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new BlobApiResponse(response);
         });
     }
@@ -12891,10 +13223,9 @@ class FileSvcApi extends BaseAPI {
         });
     }
     /**
-     * Uploads a file to the server. Currently if using the clients only one file can be uploaded at a time due to this bug https://github.com/OpenAPITools/openapi-generator/issues/11341 Once that is fixed we should have an `PUT /file-svc/uploads`/uploadFiles (note the plural) endpoints. In reality the endpoint \"unofficially\" supports multiple files. YMMV.  Requires the `file-svc:upload:create` permission.
-     * Upload a File
+     * Creates request options for uploadFile without sending the request
      */
-    uploadFileRaw(requestParameters, initOverrides) {
+    uploadFileRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['file'] == null) {
                 throw new RequiredError('file', 'Required parameter "file" was null or undefined when calling uploadFile().');
@@ -12923,13 +13254,23 @@ class FileSvcApi extends BaseAPI {
                 formParams.append('file', requestParameters['file']);
             }
             let urlPath = `/file-svc/upload`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: formParams,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Uploads a file to the server. Currently if using the clients only one file can be uploaded at a time due to this bug https://github.com/OpenAPITools/openapi-generator/issues/11341 Once that is fixed we should have an `PUT /file-svc/uploads`/uploadFiles (note the plural) endpoints. In reality the endpoint \"unofficially\" supports multiple files. YMMV.  Requires the `file-svc:upload:create` permission.
+     * Upload a File
+     */
+    uploadFileRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.uploadFileRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => FileSvcUploadFileResponseFromJSON(jsonValue));
         });
     }
@@ -12963,10 +13304,9 @@ class FileSvcApi extends BaseAPI {
  */
 class FirehoseSvcApi extends BaseAPI {
     /**
-     * Publishes an event to the firehose service after authorization check
-     * Publish an Event
+     * Creates request options for publishEvent without sending the request
      */
-    publishEventRaw(requestParameters, initOverrides) {
+    publishEventRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['event'] == null) {
                 throw new RequiredError('event', 'Required parameter "event" was null or undefined when calling publishEvent().');
@@ -12978,13 +13318,23 @@ class FirehoseSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/firehose-svc/event`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: FirehoseSvcEventPublishRequestToJSON(requestParameters['event']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Publishes an event to the firehose service after authorization check
+     * Publish an Event
+     */
+    publishEventRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.publishEventRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new VoidApiResponse(response);
         });
     }
@@ -12998,10 +13348,9 @@ class FirehoseSvcApi extends BaseAPI {
         });
     }
     /**
-     * Establish a subscription to the firehose events and accept a real time stream of them.
-     * Subscribe to the Event Stream
+     * Creates request options for subscribeToEvents without sending the request
      */
-    subscribeToEventsRaw(initOverrides) {
+    subscribeToEventsRequestOpts() {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -13009,12 +13358,22 @@ class FirehoseSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/firehose-svc/events/subscribe`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Establish a subscription to the firehose events and accept a real time stream of them.
+     * Subscribe to the Event Stream
+     */
+    subscribeToEventsRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.subscribeToEventsRequestOpts();
+            const response = yield this.request(requestOptions, initOverrides);
             if (this.isJsonMime(response.headers.get('content-type'))) {
                 return new JSONApiResponse(response);
             }
@@ -13053,10 +13412,9 @@ class FirehoseSvcApi extends BaseAPI {
  */
 class ImageSvcApi extends BaseAPI {
     /**
-     * Retrieves, caches, resizes, and serves an image referenced by its original URL.
-     * Serve Downloaded Image
+     * Creates request options for serveDownloadedImage without sending the request
      */
-    serveDownloadedImageRaw(requestParameters, initOverrides) {
+    serveDownloadedImageRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['url'] == null) {
                 throw new RequiredError('url', 'Required parameter "url" was null or undefined when calling serveDownloadedImage().');
@@ -13083,12 +13441,22 @@ class ImageSvcApi extends BaseAPI {
             const headerParameters = {};
             let urlPath = `/image-svc/serve/download/{url}`;
             urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieves, caches, resizes, and serves an image referenced by its original URL.
+     * Serve Downloaded Image
+     */
+    serveDownloadedImageRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.serveDownloadedImageRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new BlobApiResponse(response);
         });
     }
@@ -13103,10 +13471,9 @@ class ImageSvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieves and serves a previously uploaded image file using its File ID.
-     * Serve Uploaded Image
+     * Creates request options for serveUploadedImage without sending the request
      */
-    serveUploadedImageRaw(requestParameters, initOverrides) {
+    serveUploadedImageRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['fileId'] == null) {
                 throw new RequiredError('fileId', 'Required parameter "fileId" was null or undefined when calling serveUploadedImage().');
@@ -13127,12 +13494,22 @@ class ImageSvcApi extends BaseAPI {
             const headerParameters = {};
             let urlPath = `/image-svc/serve/upload/{fileId}`;
             urlPath = urlPath.replace(`{${"fileId"}}`, encodeURIComponent(String(requestParameters['fileId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieves and serves a previously uploaded image file using its File ID.
+     * Serve Uploaded Image
+     */
+    serveUploadedImageRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.serveUploadedImageRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new BlobApiResponse(response);
         });
     }
@@ -13166,10 +13543,9 @@ class ImageSvcApi extends BaseAPI {
  */
 class ModelSvcApi extends BaseAPI {
     /**
-     * Retrieves the status of the default model.  Requires the `model-svc:model:view` permission.
-     * Get Default Model Status
+     * Creates request options for getDefaultModelStatus without sending the request
      */
-    getDefaultModelStatusRaw(initOverrides) {
+    getDefaultModelStatusRequestOpts() {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -13177,12 +13553,22 @@ class ModelSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/model-svc/default-model/status`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieves the status of the default model.  Requires the `model-svc:model:view` permission.
+     * Get Default Model Status
+     */
+    getDefaultModelStatusRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.getDefaultModelStatusRequestOpts();
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ModelSvcStatusResponseFromJSON(jsonValue));
         });
     }
@@ -13197,10 +13583,9 @@ class ModelSvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieves the details of a model by its ID.  the Requires `model.view` permission.
-     * Get a Model
+     * Creates request options for getModel without sending the request
      */
-    getModelRaw(requestParameters, initOverrides) {
+    getModelRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['modelId'] == null) {
                 throw new RequiredError('modelId', 'Required parameter "modelId" was null or undefined when calling getModel().');
@@ -13212,12 +13597,22 @@ class ModelSvcApi extends BaseAPI {
             }
             let urlPath = `/model-svc/model/{modelId}`;
             urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieves the details of a model by its ID.  the Requires `model.view` permission.
+     * Get a Model
+     */
+    getModelRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.getModelRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ModelSvcGetModelResponseFromJSON(jsonValue));
         });
     }
@@ -13232,10 +13627,9 @@ class ModelSvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieves the status of a model by ID.  Requires the `model-svc:model:view` permission.
-     * Get Model Status
+     * Creates request options for getModelStatus without sending the request
      */
-    getModelStatusRaw(requestParameters, initOverrides) {
+    getModelStatusRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['modelId'] == null) {
                 throw new RequiredError('modelId', 'Required parameter "modelId" was null or undefined when calling getModelStatus().');
@@ -13247,12 +13641,22 @@ class ModelSvcApi extends BaseAPI {
             }
             let urlPath = `/model-svc/model/{modelId}/status`;
             urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieves the status of a model by ID.  Requires the `model-svc:model:view` permission.
+     * Get Model Status
+     */
+    getModelStatusRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.getModelStatusRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ModelSvcStatusResponseFromJSON(jsonValue));
         });
     }
@@ -13267,10 +13671,9 @@ class ModelSvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieves a list of models.  Requires `model-svc:model:view` permission.
-     * List Models
+     * Creates request options for listModels without sending the request
      */
-    listModelsRaw(initOverrides) {
+    listModelsRequestOpts() {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -13278,12 +13681,22 @@ class ModelSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/model-svc/models`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieves a list of models.  Requires `model-svc:model:view` permission.
+     * List Models
+     */
+    listModelsRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listModelsRequestOpts();
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ModelSvcListModelsResponseFromJSON(jsonValue));
         });
     }
@@ -13298,10 +13711,9 @@ class ModelSvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieves a list of AI platforms. Eg. LlamaCpp, StableDiffusion etc.  Requires `model-svc:platform:view` permission.
-     * List Platforms
+     * Creates request options for listPlatforms without sending the request
      */
-    listPlatformsRaw(initOverrides) {
+    listPlatformsRequestOpts() {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -13309,12 +13721,22 @@ class ModelSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/model-svc/platforms`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieves a list of AI platforms. Eg. LlamaCpp, StableDiffusion etc.  Requires `model-svc:platform:view` permission.
+     * List Platforms
+     */
+    listPlatformsRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listPlatformsRequestOpts();
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ModelSvcListPlatformsResponseFromJSON(jsonValue));
         });
     }
@@ -13329,10 +13751,9 @@ class ModelSvcApi extends BaseAPI {
         });
     }
     /**
-     * Sets a model as the default model — when prompts are sent without a Model ID, the default model is used.
-     * Make a Model Default
+     * Creates request options for makeDefault without sending the request
      */
-    makeDefaultRaw(requestParameters, initOverrides) {
+    makeDefaultRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['modelId'] == null) {
                 throw new RequiredError('modelId', 'Required parameter "modelId" was null or undefined when calling makeDefault().');
@@ -13344,12 +13765,22 @@ class ModelSvcApi extends BaseAPI {
             }
             let urlPath = `/model-svc/model/{modelId}/make-default`;
             urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Sets a model as the default model — when prompts are sent without a Model ID, the default model is used.
+     * Make a Model Default
+     */
+    makeDefaultRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.makeDefaultRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -13364,10 +13795,9 @@ class ModelSvcApi extends BaseAPI {
         });
     }
     /**
-     * Starts The Default Model.  Requires the `model-svc:model:create` permission.
-     * Start the Default Model
+     * Creates request options for startDefaultModel without sending the request
      */
-    startDefaultModelRaw(initOverrides) {
+    startDefaultModelRequestOpts() {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -13375,12 +13805,22 @@ class ModelSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/model-svc/default-model/start`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Starts The Default Model.  Requires the `model-svc:model:create` permission.
+     * Start the Default Model
+     */
+    startDefaultModelRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.startDefaultModelRequestOpts();
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -13395,10 +13835,9 @@ class ModelSvcApi extends BaseAPI {
         });
     }
     /**
-     * Starts a model by ID
-     * Start a Model
+     * Creates request options for startModel without sending the request
      */
-    startModelRaw(requestParameters, initOverrides) {
+    startModelRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['modelId'] == null) {
                 throw new RequiredError('modelId', 'Required parameter "modelId" was null or undefined when calling startModel().');
@@ -13410,12 +13849,22 @@ class ModelSvcApi extends BaseAPI {
             }
             let urlPath = `/model-svc/model/{modelId}/start`;
             urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Starts a model by ID
+     * Start a Model
+     */
+    startModelRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.startModelRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -13449,10 +13898,9 @@ class ModelSvcApi extends BaseAPI {
  */
 class PolicySvcApi extends BaseAPI {
     /**
-     * Check records a resource access and returns if the access is allowed.
-     * Check
+     * Creates request options for check without sending the request
      */
-    checkRaw(requestParameters, initOverrides) {
+    checkRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling check().');
@@ -13464,13 +13912,23 @@ class PolicySvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/policy-svc/check`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: PolicySvcCheckRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Check records a resource access and returns if the access is allowed.
+     * Check
+     */
+    checkRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.checkRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => PolicySvcCheckResponseFromJSON(jsonValue));
         });
     }
@@ -13485,10 +13943,9 @@ class PolicySvcApi extends BaseAPI {
         });
     }
     /**
-     * Allows user to upsert a new policy instance based on a template.
-     * Upsert an Instance
+     * Creates request options for upsertInstance without sending the request
      */
-    upsertInstanceRaw(requestParameters, initOverrides) {
+    upsertInstanceRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['instanceId'] == null) {
                 throw new RequiredError('instanceId', 'Required parameter "instanceId" was null or undefined when calling upsertInstance().');
@@ -13504,13 +13961,23 @@ class PolicySvcApi extends BaseAPI {
             }
             let urlPath = `/policy-svc/instance/{instanceId}`;
             urlPath = urlPath.replace(`{${"instanceId"}}`, encodeURIComponent(String(requestParameters['instanceId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: PolicySvcUpsertInstanceRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Allows user to upsert a new policy instance based on a template.
+     * Upsert an Instance
+     */
+    upsertInstanceRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.upsertInstanceRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -13544,10 +14011,9 @@ class PolicySvcApi extends BaseAPI {
  */
 class PromptSvcApi extends BaseAPI {
     /**
-     * List prompts that satisfy a query.
-     * List Prompts
+     * Creates request options for listPrompts without sending the request
      */
-    listPromptsRaw(requestParameters, initOverrides) {
+    listPromptsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -13556,13 +14022,23 @@ class PromptSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/prompt-svc/prompts`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: PromptSvcListPromptsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * List prompts that satisfy a query.
+     * List Prompts
+     */
+    listPromptsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listPromptsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => PromptSvcListPromptsResponseFromJSON(jsonValue));
         });
     }
@@ -13577,10 +14053,9 @@ class PromptSvcApi extends BaseAPI {
         });
     }
     /**
-     * Sends a prompt and waits for a response if sync is true. If sync is false, adds the prompt to the queue and returns immediately.  Prompts can be used for `text-to-text`, `text-to-image`, `image-to-image`, and other types of generation. If no model ID is specified, the default model will be used (see `Model Svc` for details). The default model may or may not support the requested generation type.  **Prompting Modes** - **High-Level Parameters**: Uses predefined parameters relevant to `text-to-image`, `image-to-image`, etc. This mode abstracts away the underlying engine (e.g., LLaMA, Stable Diffusion) and focuses on functionality. - **Engine-Specific Parameters**: Uses `engineParameters` to directly specify an AI engine, exposing all available parameters for fine-tuned control.  **Permissions Required:** `prompt-svc:prompt:create`
-     * Prompt an AI
+     * Creates request options for prompt without sending the request
      */
-    promptRaw(requestParameters, initOverrides) {
+    promptRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling prompt().');
@@ -13592,13 +14067,23 @@ class PromptSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/prompt-svc/prompt`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: PromptSvcPromptRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Sends a prompt and waits for a response if sync is true. If sync is false, adds the prompt to the queue and returns immediately.  Prompts can be used for `text-to-text`, `text-to-image`, `image-to-image`, and other types of generation. If no model ID is specified, the default model will be used (see `Model Svc` for details). The default model may or may not support the requested generation type.  **Prompting Modes** - **High-Level Parameters**: Uses predefined parameters relevant to `text-to-image`, `image-to-image`, etc. This mode abstracts away the underlying engine (e.g., LLaMA, Stable Diffusion) and focuses on functionality. - **Engine-Specific Parameters**: Uses `engineParameters` to directly specify an AI engine, exposing all available parameters for fine-tuned control.  **Permissions Required:** `prompt-svc:prompt:create`
+     * Prompt an AI
+     */
+    promptRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.promptRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => PromptSvcPromptResponseFromJSON(jsonValue));
         });
     }
@@ -13613,10 +14098,9 @@ class PromptSvcApi extends BaseAPI {
         });
     }
     /**
-     * The only purpose of this \"endpoint\" is to export types otherwise not appearing in the API docs. This endpoint otherwise does nothing. Do not depend on this endpoint, only its types.
-     * Prompt Types
+     * Creates request options for promptTypes without sending the request
      */
-    promptTypesRaw(requestParameters, initOverrides) {
+    promptTypesRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling promptTypes().');
@@ -13628,13 +14112,23 @@ class PromptSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/prompt-svc/types`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: requestParameters['body'],
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * The only purpose of this \"endpoint\" is to export types otherwise not appearing in the API docs. This endpoint otherwise does nothing. Do not depend on this endpoint, only its types.
+     * Prompt Types
+     */
+    promptTypesRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.promptTypesRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => PromptSvcTypesResponseFromJSON(jsonValue));
         });
     }
@@ -13649,10 +14143,9 @@ class PromptSvcApi extends BaseAPI {
         });
     }
     /**
-     * Remove a prompt by ID.
-     * Remove Prompt
+     * Creates request options for removePrompt without sending the request
      */
-    removePromptRaw(requestParameters, initOverrides) {
+    removePromptRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling removePrompt().');
@@ -13664,13 +14157,23 @@ class PromptSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/prompt-svc/remove`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: PromptSvcRemovePromptRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Remove a prompt by ID.
+     * Remove Prompt
+     */
+    removePromptRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.removePromptRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -13685,10 +14188,9 @@ class PromptSvcApi extends BaseAPI {
         });
     }
     /**
-     * Subscribe to prompt responses by thread via Server-Sent Events (SSE). You can subscribe to threads before they are created. The streamed strings are of type `StreamChunk`, see the PromptTypes endpoint for more details.
-     * Subscribe to Prompt Responses by Thread
+     * Creates request options for subscribeToPromptResponses without sending the request
      */
-    subscribeToPromptResponsesRaw(requestParameters, initOverrides) {
+    subscribeToPromptResponsesRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['threadId'] == null) {
                 throw new RequiredError('threadId', 'Required parameter "threadId" was null or undefined when calling subscribeToPromptResponses().');
@@ -13700,12 +14202,22 @@ class PromptSvcApi extends BaseAPI {
             }
             let urlPath = `/prompt-svc/prompts/{threadId}/responses/subscribe`;
             urlPath = urlPath.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Subscribe to prompt responses by thread via Server-Sent Events (SSE). You can subscribe to threads before they are created. The streamed strings are of type `StreamChunk`, see the PromptTypes endpoint for more details.
+     * Subscribe to Prompt Responses by Thread
+     */
+    subscribeToPromptResponsesRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.subscribeToPromptResponsesRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             if (this.isJsonMime(response.headers.get('content-type'))) {
                 return new JSONApiResponse(response);
             }
@@ -13744,10 +14256,9 @@ class PromptSvcApi extends BaseAPI {
  */
 class ProxySvcApi extends BaseAPI {
     /**
-     * Delete specific routes by their IDs.
-     * Delete Routes
+     * Creates request options for deleteRoutes without sending the request
      */
-    deleteRoutesRaw(requestParameters, initOverrides) {
+    deleteRoutesRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling deleteRoutes().');
@@ -13759,13 +14270,23 @@ class ProxySvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/proxy-svc/routes`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ProxySvcDeleteRoutesRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Delete specific routes by their IDs.
+     * Delete Routes
+     */
+    deleteRoutesRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.deleteRoutesRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -13780,10 +14301,9 @@ class ProxySvcApi extends BaseAPI {
         });
     }
     /**
-     * List certs that the edge proxy will use to cert requests.
-     * List Certs
+     * Creates request options for listCerts without sending the request
      */
-    listCertsRaw(requestParameters, initOverrides) {
+    listCertsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -13792,13 +14312,23 @@ class ProxySvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/proxy-svc/certs`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ProxySvcListCertsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * List certs that the edge proxy will use to cert requests.
+     * List Certs
+     */
+    listCertsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listCertsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ProxySvcListCertsResponseFromJSON(jsonValue));
         });
     }
@@ -13813,10 +14343,9 @@ class ProxySvcApi extends BaseAPI {
         });
     }
     /**
-     * List routes that the edge proxy will use to route requests.
-     * List Routes
+     * Creates request options for listRoutes without sending the request
      */
-    listRoutesRaw(requestParameters, initOverrides) {
+    listRoutesRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -13825,13 +14354,23 @@ class ProxySvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/proxy-svc/routes`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ProxySvcListRoutesRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * List routes that the edge proxy will use to route requests.
+     * List Routes
+     */
+    listRoutesRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listRoutesRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ProxySvcListRoutesResponseFromJSON(jsonValue));
         });
     }
@@ -13846,10 +14385,9 @@ class ProxySvcApi extends BaseAPI {
         });
     }
     /**
-     * This endpoint only exist for testing purposes. Only callable by admins Certs should be saved by the Proxy Svc and its edge proxying functionality internally, not through this endpoint.
-     * Save Certs
+     * Creates request options for saveCerts without sending the request
      */
-    saveCertsRaw(requestParameters, initOverrides) {
+    saveCertsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling saveCerts().');
@@ -13861,13 +14399,23 @@ class ProxySvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/proxy-svc/certs`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ProxySvcSaveCertsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * This endpoint only exist for testing purposes. Only callable by admins Certs should be saved by the Proxy Svc and its edge proxying functionality internally, not through this endpoint.
+     * Save Certs
+     */
+    saveCertsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.saveCertsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -13882,10 +14430,9 @@ class ProxySvcApi extends BaseAPI {
         });
     }
     /**
-     * Save routes that the edge proxy will use to route requests.
-     * Save Routes
+     * Creates request options for saveRoutes without sending the request
      */
-    saveRoutesRaw(requestParameters, initOverrides) {
+    saveRoutesRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling saveRoutes().');
@@ -13897,13 +14444,23 @@ class ProxySvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/proxy-svc/routes`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ProxySvcSaveRoutesRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Save routes that the edge proxy will use to route requests.
+     * Save Routes
+     */
+    saveRoutesRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.saveRoutesRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => ProxySvcSaveRoutesResponseFromJSON(jsonValue));
         });
     }
@@ -13937,10 +14494,9 @@ class ProxySvcApi extends BaseAPI {
  */
 class RegistrySvcApi extends BaseAPI {
     /**
-     * Deletes a registered definition by ID.
-     * Delete Definition
+     * Creates request options for deleteDefinition without sending the request
      */
-    deleteDefinitionRaw(requestParameters, initOverrides) {
+    deleteDefinitionRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['id'] == null) {
                 throw new RequiredError('id', 'Required parameter "id" was null or undefined when calling deleteDefinition().');
@@ -13952,12 +14508,22 @@ class RegistrySvcApi extends BaseAPI {
             }
             let urlPath = `/registry-svc/definition/{id}`;
             urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Deletes a registered definition by ID.
+     * Delete Definition
+     */
+    deleteDefinitionRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.deleteDefinitionRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new VoidApiResponse(response);
         });
     }
@@ -13971,10 +14537,9 @@ class RegistrySvcApi extends BaseAPI {
         });
     }
     /**
-     * Deletes a registered node by node URL. This endpoint is useful when a node is no longer available but it\'s still present in the database.
-     * Delete Node
+     * Creates request options for deleteNode without sending the request
      */
-    deleteNodeRaw(requestParameters, initOverrides) {
+    deleteNodeRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['url'] == null) {
                 throw new RequiredError('url', 'Required parameter "url" was null or undefined when calling deleteNode().');
@@ -13986,12 +14551,22 @@ class RegistrySvcApi extends BaseAPI {
             }
             let urlPath = `/registry-svc/node/{url}`;
             urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Deletes a registered node by node URL. This endpoint is useful when a node is no longer available but it\'s still present in the database.
+     * Delete Node
+     */
+    deleteNodeRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.deleteNodeRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new VoidApiResponse(response);
         });
     }
@@ -14005,10 +14580,9 @@ class RegistrySvcApi extends BaseAPI {
         });
     }
     /**
-     * This endpoint is used to test the server\'s response to a GET request. It echoes back the query parameters as a JSON object.
-     * Echo the query parameters in the response body.
+     * Creates request options for echoGet without sending the request
      */
-    echoGetRaw(initOverrides) {
+    echoGetRequestOpts() {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -14016,12 +14590,22 @@ class RegistrySvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/registry-svc/echo`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * This endpoint is used to test the server\'s response to a GET request. It echoes back the query parameters as a JSON object.
+     * Echo the query parameters in the response body.
+     */
+    echoGetRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.echoGetRequestOpts();
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -14036,10 +14620,9 @@ class RegistrySvcApi extends BaseAPI {
         });
     }
     /**
-     * This endpoint is used to test the server\'s response to a request. It simply echoes back the request body as a JSON response.
-     * Echo the request body in the response body.
+     * Creates request options for echoPost without sending the request
      */
-    echoPostRaw(initOverrides) {
+    echoPostRequestOpts() {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -14047,12 +14630,22 @@ class RegistrySvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/registry-svc/echo`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * This endpoint is used to test the server\'s response to a request. It simply echoes back the request body as a JSON response.
+     * Echo the request body in the response body.
+     */
+    echoPostRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.echoPostRequestOpts();
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -14067,10 +14660,9 @@ class RegistrySvcApi extends BaseAPI {
         });
     }
     /**
-     * This endpoint is used to test the server\'s response to a request. It simply echoes back the request body as a JSON response.
-     * Echo the request body in the response body.
+     * Creates request options for echoPut without sending the request
      */
-    echoPutRaw(initOverrides) {
+    echoPutRequestOpts() {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -14078,12 +14670,22 @@ class RegistrySvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/registry-svc/echo`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * This endpoint is used to test the server\'s response to a request. It simply echoes back the request body as a JSON response.
+     * Echo the request body in the response body.
+     */
+    echoPutRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.echoPutRequestOpts();
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -14098,10 +14700,9 @@ class RegistrySvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieves a list of all definitions or filters them by specific criteria.
-     * List Definitions
+     * Creates request options for listDefinitions without sending the request
      */
-    listDefinitionsRaw(initOverrides) {
+    listDefinitionsRequestOpts() {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -14109,12 +14710,22 @@ class RegistrySvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/registry-svc/definitions`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieves a list of all definitions or filters them by specific criteria.
+     * List Definitions
+     */
+    listDefinitionsRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listDefinitionsRequestOpts();
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => RegistrySvcListDefinitionsResponseFromJSON(jsonValue));
         });
     }
@@ -14129,10 +14740,9 @@ class RegistrySvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieves a list of all instances or filters them by specific criteria (e.g., host, IP).
-     * List Service Instances
+     * Creates request options for listInstances without sending the request
      */
-    listInstancesRaw(requestParameters, initOverrides) {
+    listInstancesRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             if (requestParameters['scheme'] != null) {
@@ -14161,12 +14771,22 @@ class RegistrySvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/registry-svc/instances`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieves a list of all instances or filters them by specific criteria (e.g., host, IP).
+     * List Service Instances
+     */
+    listInstancesRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listInstancesRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => RegistrySvcListInstancesResponseFromJSON(jsonValue));
         });
     }
@@ -14181,10 +14801,9 @@ class RegistrySvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieve a list of nodes.
-     * List Nodes
+     * Creates request options for listNodes without sending the request
      */
-    listNodesRaw(requestParameters, initOverrides) {
+    listNodesRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -14193,13 +14812,23 @@ class RegistrySvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/registry-svc/nodes`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: RegistrySvcListNodesRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieve a list of nodes.
+     * List Nodes
+     */
+    listNodesRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listNodesRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => RegistrySvcListNodesResponseFromJSON(jsonValue));
         });
     }
@@ -14214,10 +14843,9 @@ class RegistrySvcApi extends BaseAPI {
         });
     }
     /**
-     * Registers an instance. Idempotent.
-     * Register Instance
+     * Creates request options for registerInstance without sending the request
      */
-    registerInstanceRaw(requestParameters, initOverrides) {
+    registerInstanceRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling registerInstance().');
@@ -14229,13 +14857,23 @@ class RegistrySvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/registry-svc/instance`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: RegistrySvcRegisterInstanceRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Registers an instance. Idempotent.
+     * Register Instance
+     */
+    registerInstanceRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.registerInstanceRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -14250,10 +14888,9 @@ class RegistrySvcApi extends BaseAPI {
         });
     }
     /**
-     * Removes a registered instance by ID.
-     * Remove Instance
+     * Creates request options for removeInstance without sending the request
      */
-    removeInstanceRaw(requestParameters, initOverrides) {
+    removeInstanceRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['id'] == null) {
                 throw new RequiredError('id', 'Required parameter "id" was null or undefined when calling removeInstance().');
@@ -14265,12 +14902,22 @@ class RegistrySvcApi extends BaseAPI {
             }
             let urlPath = `/registry-svc/instance/{id}`;
             urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Removes a registered instance by ID.
+     * Remove Instance
+     */
+    removeInstanceRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.removeInstanceRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new VoidApiResponse(response);
         });
     }
@@ -14284,10 +14931,9 @@ class RegistrySvcApi extends BaseAPI {
         });
     }
     /**
-     * Registers a new definition, associating an definition address with a slug acquired from the bearer token.
-     * Register a Definition
+     * Creates request options for saveDefinition without sending the request
      */
-    saveDefinitionRaw(requestParameters, initOverrides) {
+    saveDefinitionRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling saveDefinition().');
@@ -14299,13 +14945,23 @@ class RegistrySvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/registry-svc/definition`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: RegistrySvcSaveDefinitionRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Registers a new definition, associating an definition address with a slug acquired from the bearer token.
+     * Register a Definition
+     */
+    saveDefinitionRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.saveDefinitionRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -14320,10 +14976,9 @@ class RegistrySvcApi extends BaseAPI {
         });
     }
     /**
-     * Show the local node.
-     * View Self Node
+     * Creates request options for selfNode without sending the request
      */
-    selfNodeRaw(requestParameters, initOverrides) {
+    selfNodeRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -14332,13 +14987,23 @@ class RegistrySvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/registry-svc/node/self`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
                 body: requestParameters['body'],
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Show the local node.
+     * View Self Node
+     */
+    selfNodeRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.selfNodeRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => RegistrySvcNodeSelfResponseFromJSON(jsonValue));
         });
     }
@@ -14372,10 +15037,9 @@ class RegistrySvcApi extends BaseAPI {
  */
 class SecretSvcApi extends BaseAPI {
     /**
-     * Decrypt a value and return the encrypted result
-     * Decrypt a Value
+     * Creates request options for decryptValue without sending the request
      */
-    decryptValueRaw(requestParameters, initOverrides) {
+    decryptValueRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling decryptValue().');
@@ -14387,13 +15051,23 @@ class SecretSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/secret-svc/decrypt`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: SecretSvcDecryptValueRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Decrypt a value and return the encrypted result
+     * Decrypt a Value
+     */
+    decryptValueRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.decryptValueRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => SecretSvcDecryptValueResponseFromJSON(jsonValue));
         });
     }
@@ -14408,10 +15082,9 @@ class SecretSvcApi extends BaseAPI {
         });
     }
     /**
-     * Encrypt a value and return the encrypted result
-     * Encrypt a Value
+     * Creates request options for encryptValue without sending the request
      */
-    encryptValueRaw(requestParameters, initOverrides) {
+    encryptValueRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling encryptValue().');
@@ -14423,13 +15096,23 @@ class SecretSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/secret-svc/encrypt`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: SecretSvcEncryptValueRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Encrypt a value and return the encrypted result
+     * Encrypt a Value
+     */
+    encryptValueRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.encryptValueRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => SecretSvcEncryptValueResponseFromJSON(jsonValue));
         });
     }
@@ -14444,10 +15127,9 @@ class SecretSvcApi extends BaseAPI {
         });
     }
     /**
-     * Returns true if the encryption key is sufficiently secure.
-     * Check Security Status
+     * Creates request options for isSecure without sending the request
      */
-    isSecureRaw(initOverrides) {
+    isSecureRequestOpts() {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -14455,12 +15137,22 @@ class SecretSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/secret-svc/is-secure`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Returns true if the encryption key is sufficiently secure.
+     * Check Security Status
+     */
+    isSecureRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.isSecureRequestOpts();
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => SecretSvcIsSecureResponseFromJSON(jsonValue));
         });
     }
@@ -14475,10 +15167,9 @@ class SecretSvcApi extends BaseAPI {
         });
     }
     /**
-     * List secrets by key(s) if authorized.
-     * List Secrets
+     * Creates request options for listSecrets without sending the request
      */
-    listSecretsRaw(requestParameters, initOverrides) {
+    listSecretsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -14487,13 +15178,23 @@ class SecretSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/secret-svc/secrets`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: SecretSvcListSecretsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * List secrets by key(s) if authorized.
+     * List Secrets
+     */
+    listSecretsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listSecretsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => SecretSvcListSecretsResponseFromJSON(jsonValue));
         });
     }
@@ -14508,10 +15209,9 @@ class SecretSvcApi extends BaseAPI {
         });
     }
     /**
-     * Remove secrets if authorized to do so
-     * Remove Secrets
+     * Creates request options for removeSecrets without sending the request
      */
-    removeSecretsRaw(requestParameters, initOverrides) {
+    removeSecretsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling removeSecrets().');
@@ -14523,13 +15223,23 @@ class SecretSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/secret-svc/secrets`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
                 body: SecretSvcRemoveSecretsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Remove secrets if authorized to do so
+     * Remove Secrets
+     */
+    removeSecretsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.removeSecretsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -14544,10 +15254,9 @@ class SecretSvcApi extends BaseAPI {
         });
     }
     /**
-     * Save secrets if authorized to do so. Requires the `secret-svc:secret:save` permission. Users can only save secrets prefixed with their user slug unless they also have the `secret-svc:secret:save-unprefixed` permission, which allows them to save a secret without a slug prefix. `secret-svc:secret:save:$secretId` (eg. `secret-svc:secret:save:sendgrid-api-key`) permission allows callers to save secrets otherwise they don\'t have access to. This permission also supports tail-wildcards by splitting the ID with hyphens (e.g., `secret-svc:secret:save:otp-*` grants access to `otp-body-en` and `otp-subject-hu`).
-     * Save Secrets
+     * Creates request options for saveSecrets without sending the request
      */
-    saveSecretsRaw(requestParameters, initOverrides) {
+    saveSecretsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling saveSecrets().');
@@ -14559,13 +15268,23 @@ class SecretSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/secret-svc/secrets`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: SecretSvcSaveSecretsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Save secrets if authorized to do so. Requires the `secret-svc:secret:save` permission. Users can only save secrets prefixed with their user slug unless they also have the `secret-svc:secret:save-unprefixed` permission, which allows them to save a secret without a slug prefix. `secret-svc:secret:save:$secretId` (eg. `secret-svc:secret:save:sendgrid-api-key`) permission allows callers to save secrets otherwise they don\'t have access to. This permission also supports tail-wildcards by splitting the ID with hyphens (e.g., `secret-svc:secret:save:otp-*` grants access to `otp-body-en` and `otp-subject-hu`).
+     * Save Secrets
+     */
+    saveSecretsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.saveSecretsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -14599,10 +15318,9 @@ class SecretSvcApi extends BaseAPI {
  */
 class SourceSvcApi extends BaseAPI {
     /**
-     * Checkout a git repository over https or ssh at a specific version into a temporary directory. Performs a shallow clone with minimal history for faster checkout.
-     * Checkout a git repository
+     * Creates request options for checkoutRepo without sending the request
      */
-    checkoutRepoRaw(requestParameters, initOverrides) {
+    checkoutRepoRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling checkoutRepo().');
@@ -14614,13 +15332,23 @@ class SourceSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/source-svc/repo/checkout`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: SourceSvcCheckoutRepoRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Checkout a git repository over https or ssh at a specific version into a temporary directory. Performs a shallow clone with minimal history for faster checkout.
+     * Checkout a git repository
+     */
+    checkoutRepoRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.checkoutRepoRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => SourceSvcCheckoutRepoResponseFromJSON(jsonValue));
         });
     }
@@ -14654,10 +15382,9 @@ class SourceSvcApi extends BaseAPI {
  */
 class UserSvcApi extends BaseAPI {
     /**
-     * Sets the caller user\'s active organization and returns a fresh token reflecting the new active organization.
-     * Activate Organization
+     * Creates request options for activateOrganization without sending the request
      */
-    activateOrganizationRaw(requestParameters, initOverrides) {
+    activateOrganizationRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling activateOrganization().');
@@ -14669,13 +15396,23 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/user-svc/organization/activate`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcActivateOrganizationRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Sets the caller user\'s active organization and returns a fresh token reflecting the new active organization.
+     * Activate Organization
+     */
+    activateOrganizationRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.activateOrganizationRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcActivateOrganizationResponseFromJSON(jsonValue));
         });
     }
@@ -14690,10 +15427,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Allows an authenticated user to change their own password.
-     * Change Password
+     * Creates request options for changePassword without sending the request
      */
-    changePasswordRaw(requestParameters, initOverrides) {
+    changePasswordRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling changePassword().');
@@ -14705,13 +15441,23 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/user-svc/change-password`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcChangePasswordRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Allows an authenticated user to change their own password.
+     * Change Password
+     */
+    changePasswordRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.changePasswordRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -14726,10 +15472,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Allows an authenticated administrator to create a new user with specified details.
-     * Create a New User
+     * Creates request options for createUser without sending the request
      */
-    createUserRaw(requestParameters, initOverrides) {
+    createUserRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling createUser().');
@@ -14741,13 +15486,23 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/user-svc/user`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcCreateUserRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Allows an authenticated administrator to create a new user with specified details.
+     * Create a New User
+     */
+    createUserRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.createUserRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -14762,10 +15517,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Allows an organization admin to remove a user from an organization.
-     * Delete Membership
+     * Creates request options for deleteMembership without sending the request
      */
-    deleteMembershipRaw(requestParameters, initOverrides) {
+    deleteMembershipRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['organizationId'] == null) {
                 throw new RequiredError('organizationId', 'Required parameter "organizationId" was null or undefined when calling deleteMembership().');
@@ -14782,13 +15536,23 @@ class UserSvcApi extends BaseAPI {
             let urlPath = `/user-svc/organization/{organizationId}/user/{userId}`;
             urlPath = urlPath.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId'])));
             urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
                 body: requestParameters['body'],
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Allows an organization admin to remove a user from an organization.
+     * Delete Membership
+     */
+    deleteMembershipRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.deleteMembershipRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -14803,10 +15567,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Delete a user based on the user ID.
-     * Delete a User
+     * Creates request options for deleteUser without sending the request
      */
-    deleteUserRaw(requestParameters, initOverrides) {
+    deleteUserRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['userId'] == null) {
                 throw new RequiredError('userId', 'Required parameter "userId" was null or undefined when calling deleteUser().');
@@ -14818,12 +15581,22 @@ class UserSvcApi extends BaseAPI {
             }
             let urlPath = `/user-svc/user/{userId}`;
             urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Delete a user based on the user ID.
+     * Delete a User
+     */
+    deleteUserRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.deleteUserRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -14838,10 +15611,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
-     * Exchange Token
+     * Creates request options for exchangeToken without sending the request
      */
-    exchangeTokenRaw(requestParameters, initOverrides) {
+    exchangeTokenRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling exchangeToken().');
@@ -14850,13 +15622,23 @@ class UserSvcApi extends BaseAPI {
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
             let urlPath = `/user-svc/token/exchange`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcExchangeTokenRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
+     * Exchange Token
+     */
+    exchangeTokenRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.exchangeTokenRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcExchangeTokenResponseFromJSON(jsonValue));
         });
     }
@@ -14871,10 +15653,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
-     * Exchange Token
+     * Creates request options for exchangeToken_1 without sending the request
      */
-    exchangeToken_1Raw(requestParameters, initOverrides) {
+    exchangeToken_1RequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling exchangeToken_1().');
@@ -14883,13 +15664,23 @@ class UserSvcApi extends BaseAPI {
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
             let urlPath = `/user-svc/token/exchange`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcExchangeTokenRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Exchange an existing token for a new token scoped to a different app (namespace). The new token represents the same user but contains roles specific to the target app.  The original token remains valid. The minted token is not stored and cannot be refreshed (and will have the same expiration duration as normal tokens), unlike tokens acquired via login.  For now, token exchange is designed to be in situ — the User Svc must be contacted at exchange time. This introduces a stateful dependency on the User Svc, but simplifies things until broader use cases emerge.
+     * Exchange Token
+     */
+    exchangeToken_1Raw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.exchangeToken_1RequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcExchangeTokenResponseFromJSON(jsonValue));
         });
     }
@@ -14904,20 +15695,29 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
+     * Creates request options for getPublicKey without sending the request
+     */
+    getPublicKeyRequestOpts() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            let urlPath = `/user-svc/public-key`;
+            return {
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            };
+        });
+    }
+    /**
      * Get the public key to verify the JWT signature.
      * Get Public Key
      */
     getPublicKeyRaw(initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            const queryParameters = {};
-            const headerParameters = {};
-            let urlPath = `/user-svc/public-key`;
-            const response = yield this.request({
-                path: urlPath,
-                method: 'GET',
-                headers: headerParameters,
-                query: queryParameters,
-            }, initOverrides);
+            const requestOptions = yield this.getPublicKeyRequestOpts();
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcGetPublicKeyResponseFromJSON(jsonValue));
         });
     }
@@ -14932,10 +15732,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Checks whether the caller has a specific permission. Optimized for caching — only the caller and the permission are required. To assign a permission to a user or role, use the `Save Permits` endpoint.  This endpoint does not return 401 Unauthorized if access is denied. Instead, it always returns 200 OK with `Authorized: false` if the permission is missing. The response will still include the caller’s user information if not authorized.
-     * Has Permission
+     * Creates request options for hasPermission without sending the request
      */
-    hasPermissionRaw(requestParameters, initOverrides) {
+    hasPermissionRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['permission'] == null) {
                 throw new RequiredError('permission', 'Required parameter "permission" was null or undefined when calling hasPermission().');
@@ -14947,12 +15746,22 @@ class UserSvcApi extends BaseAPI {
             }
             let urlPath = `/user-svc/self/has/{permission}`;
             urlPath = urlPath.replace(`{${"permission"}}`, encodeURIComponent(String(requestParameters['permission'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Checks whether the caller has a specific permission. Optimized for caching — only the caller and the permission are required. To assign a permission to a user or role, use the `Save Permits` endpoint.  This endpoint does not return 401 Unauthorized if access is denied. Instead, it always returns 200 OK with `Authorized: false` if the permission is missing. The response will still include the caller’s user information if not authorized.
+     * Has Permission
+     */
+    hasPermissionRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.hasPermissionRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcHasPermissionResponseFromJSON(jsonValue));
         });
     }
@@ -14967,10 +15776,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * List apps. Role, user ID or contact ID must be specified.  Requires the `user-svc:app:view` permission, which by default all users have. Caller can only list apps of roles they own (unless they are an admin).
-     * List Apps
+     * Creates request options for listApps without sending the request
      */
-    listAppsRaw(requestParameters, initOverrides) {
+    listAppsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling listApps().');
@@ -14982,13 +15790,23 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/user-svc/apps`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcListAppsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * List apps. Role, user ID or contact ID must be specified.  Requires the `user-svc:app:view` permission, which by default all users have. Caller can only list apps of roles they own (unless they are an admin).
+     * List Apps
+     */
+    listAppsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listAppsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcListAppsResponseFromJSON(jsonValue));
         });
     }
@@ -15003,10 +15821,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * List enrolls. Role, user ID or contact ID must be specified.  Requires the `user-svc:enroll:view` permission, which by default all users have. Caller can only list enrolls of roles they own (unless they are an admin).
-     * List Enrolls
+     * Creates request options for listEnrolls without sending the request
      */
-    listEnrollsRaw(requestParameters, initOverrides) {
+    listEnrollsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling listEnrolls().');
@@ -15018,13 +15835,23 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/user-svc/enrolls`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcListEnrollsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * List enrolls. Role, user ID or contact ID must be specified.  Requires the `user-svc:enroll:view` permission, which by default all users have. Caller can only list enrolls of roles they own (unless they are an admin).
+     * List Enrolls
+     */
+    listEnrollsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listEnrollsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcListEnrollsResponseFromJSON(jsonValue));
         });
     }
@@ -15039,10 +15866,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Requires the `user-svc:organization:view` permission, that only admins have by default.
-     * List Organizations
+     * Creates request options for listOrganizations without sending the request
      */
-    listOrganizationsRaw(requestParameters, initOverrides) {
+    listOrganizationsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -15051,18 +15877,28 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/user-svc/organizations`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcListOrganizationsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Requires the `user-svc:organization:view` permission. With `all=true`, platform admins see all organizations in the current app. Otherwise users only see organizations they are members of.
+     * List Organizations
+     */
+    listOrganizationsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listOrganizationsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcListOrganizationsResponseFromJSON(jsonValue));
         });
     }
     /**
-     * Requires the `user-svc:organization:view` permission, that only admins have by default.
+     * Requires the `user-svc:organization:view` permission. With `all=true`, platform admins see all organizations in the current app. Otherwise users only see organizations they are members of.
      * List Organizations
      */
     listOrganizations() {
@@ -15072,10 +15908,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * List permissions by roles. Caller can only list permissions for roles they have.
-     * List Permissions
+     * Creates request options for listPermissions without sending the request
      */
-    listPermissionsRaw(requestParameters, initOverrides) {
+    listPermissionsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['roleId'] == null) {
                 throw new RequiredError('roleId', 'Required parameter "roleId" was null or undefined when calling listPermissions().');
@@ -15087,12 +15922,22 @@ class UserSvcApi extends BaseAPI {
             }
             let urlPath = `/user-svc/permissions`;
             urlPath = urlPath.replace(`{${"roleId"}}`, encodeURIComponent(String(requestParameters['roleId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * List permissions by roles. Caller can only list permissions for roles they have.
+     * List Permissions
+     */
+    listPermissionsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listPermissionsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcListPermissionsResponseFromJSON(jsonValue));
         });
     }
@@ -15107,10 +15952,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * List permits. Requires the `user-svc:permit:view` permission, which only admins have by default. &todo Users should be able to list permits referring to them.
-     * List Permits
+     * Creates request options for listPermits without sending the request
      */
-    listPermitsRaw(requestParameters, initOverrides) {
+    listPermitsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling listPermits().');
@@ -15122,13 +15966,23 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/user-svc/permits`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcListPermitsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * List permits. Requires the `user-svc:permit:view` permission, which only admins have by default. &todo Users should be able to list permits referring to them.
+     * List Permits
+     */
+    listPermitsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listPermitsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcListPermitsResponseFromJSON(jsonValue));
         });
     }
@@ -15143,10 +15997,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Fetches a list of users with optional query filters and pagination. Requires the `user-svc:user:view` permission that only admins have by default.
-     * List Users
+     * Creates request options for listUsers without sending the request
      */
-    listUsersRaw(requestParameters, initOverrides) {
+    listUsersRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -15155,13 +16008,23 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/user-svc/users`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcListUsersRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Fetches a list of users with optional query filters and pagination. Requires the `user-svc:user:view` permission that only admins have by default.
+     * List Users
+     */
+    listUsersRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listUsersRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcListUsersResponseFromJSON(jsonValue));
         });
     }
@@ -15176,10 +16039,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Authenticates a user and returns a token.
-     * Login
+     * Creates request options for login without sending the request
      */
-    loginRaw(requestParameters, initOverrides) {
+    loginRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling login().');
@@ -15188,13 +16050,23 @@ class UserSvcApi extends BaseAPI {
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
             let urlPath = `/user-svc/login`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcLoginRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Authenticates a user and returns a token.
+     * Login
+     */
+    loginRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.loginRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcLoginResponseFromJSON(jsonValue));
         });
     }
@@ -15209,10 +16081,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Get an app by host, or create it if it does not exist.
-     * Read or Create App
+     * Creates request options for readApp without sending the request
      */
-    readAppRaw(requestParameters, initOverrides) {
+    readAppRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling readApp().');
@@ -15224,13 +16095,23 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/user-svc/app`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcReadAppRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Get an app by host, or create it if it does not exist.
+     * Read or Create App
+     */
+    readAppRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.readAppRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcReadAppResponseFromJSON(jsonValue));
         });
     }
@@ -15245,10 +16126,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.  ReadSelf intentionally still works after token revocation until the token expires. This is to ensure that the user is not notified of token revocation (though some information is leaked by the count token functionality @todo).
-     * Read Self
+     * Creates request options for readSelf without sending the request
      */
-    readSelfRaw(requestParameters, initOverrides) {
+    readSelfRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -15257,13 +16137,23 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/user-svc/self`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcReadSelfRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.  ReadSelf intentionally still works after token revocation until the token expires. This is to ensure that the user is not notified of token revocation (though some information is leaked by the count token functionality @todo).
+     * Read Self
+     */
+    readSelfRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.readSelfRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcReadSelfResponseFromJSON(jsonValue));
         });
     }
@@ -15278,20 +16168,29 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
+     * Creates request options for refreshToken without sending the request
+     */
+    refreshTokenRequestOpts() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            let urlPath = `/user-svc/refresh-token`;
+            return {
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            };
+        });
+    }
+    /**
      * Refreshes an existing token, including inactive ones. The old token becomes inactive (if not already inactive), and a new, active token is issued. This allows continued verification of user roles without requiring a new login. Inactive tokens are refreshable unless explicitly revoked (no mechanism for this yet). Leaked tokens should be handled separately, via a revocation flag or deletion.
      * Refresh Token
      */
     refreshTokenRaw(initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            const queryParameters = {};
-            const headerParameters = {};
-            let urlPath = `/user-svc/refresh-token`;
-            const response = yield this.request({
-                path: urlPath,
-                method: 'POST',
-                headers: headerParameters,
-                query: queryParameters,
-            }, initOverrides);
+            const requestOptions = yield this.refreshTokenRequestOpts();
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcRefreshTokenResponseFromJSON(jsonValue));
         });
     }
@@ -15306,10 +16205,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Register a new user with a name, email, and password.
-     * Register
+     * Creates request options for register without sending the request
      */
-    registerRaw(requestParameters, initOverrides) {
+    registerRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling register().');
@@ -15318,13 +16216,23 @@ class UserSvcApi extends BaseAPI {
             const headerParameters = {};
             headerParameters['Content-Type'] = 'application/json';
             let urlPath = `/user-svc/register`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcRegisterRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Register a new user with a name, email, and password.
+     * Register
+     */
+    registerRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.registerRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcRegisterResponseFromJSON(jsonValue));
         });
     }
@@ -15339,10 +16247,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Allows an administrator to change a user\'s password.
-     * Reset Password
+     * Creates request options for resetPassword without sending the request
      */
-    resetPasswordRaw(requestParameters, initOverrides) {
+    resetPasswordRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['userId'] == null) {
                 throw new RequiredError('userId', 'Required parameter "userId" was null or undefined when calling resetPassword().');
@@ -15358,13 +16265,23 @@ class UserSvcApi extends BaseAPI {
             }
             let urlPath = `/user-svc/{userId}/reset-password`;
             urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcResetPasswordRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Allows an administrator to change a user\'s password.
+     * Reset Password
+     */
+    resetPasswordRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.resetPasswordRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -15379,10 +16296,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Revoke tokens in one of the following scenarios: - For the current user. - For another user (see `userId` field), if permitted (`user-svc:token:revoke` permission, typically by admins).
-     * Revoke Tokens
+     * Creates request options for revokeTokens without sending the request
      */
-    revokeTokensRaw(requestParameters, initOverrides) {
+    revokeTokensRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             const queryParameters = {};
             const headerParameters = {};
@@ -15391,13 +16307,23 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/user-svc/tokens`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcRevokeTokensRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Revoke tokens in one of the following scenarios: - For the current user. - For another user (see `userId` field), if permitted (`user-svc:token:revoke` permission, typically by admins).
+     * Revoke Tokens
+     */
+    revokeTokensRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.revokeTokensRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -15412,10 +16338,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Enroll a list of users by contact or user Id to acquire a role. Works on future or current users.  A user can only enroll an other user to a role if the user \"owns\" that role. A user who owns a role can enroll others in that roll in any app. The same request might contain enrolls for different apps.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).  Examples: - A user with the slug `joe-doe` owns roles like `joe-doe:*` such as `joe-doe:any-custom-role`. - A user with any slug who has the role `my-service:admin` owns `my-service:*` roles such as `my-service:user`. - A user with any slug who has the role `user-svc:org:{%orgId}:admin` owns `user-svc:org:{%orgId}:*` such as `user-svc:org:{%orgId}:user`.
-     * Save Enrolls
+     * Creates request options for saveEnrolls without sending the request
      */
-    saveEnrollsRaw(requestParameters, initOverrides) {
+    saveEnrollsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling saveEnrolls().');
@@ -15427,13 +16352,23 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/user-svc/enrolls`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcSaveEnrollsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Enroll a list of users by contact or user Id to acquire a role. Works on future or current users.  A user can only enroll an other user to a role if the user \"owns\" that role. A user who owns a role can enroll others in that roll in any app. The same request might contain enrolls for different apps.  A user \"owns\" a role in the following cases: - A static role where the role ID is prefixed with the caller\'s slug. - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).  Examples: - A user with the slug `joe-doe` owns roles like `joe-doe:*` such as `joe-doe:any-custom-role`. - A user with any slug who has the role `my-service:admin` owns `my-service:*` roles such as `my-service:user`. - A user with any slug who has the role `user-svc:org:{%orgId}:admin` owns `user-svc:org:{%orgId}:*` such as `user-svc:org:{%orgId}:user`.
+     * Save Enrolls
+     */
+    saveEnrollsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.saveEnrollsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcSaveEnrollsResponseFromJSON(jsonValue));
         });
     }
@@ -15448,10 +16383,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Adds a user to an organization by saving a Membership. Also issues the corresponding Enroll, which grants the user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
-     * Save Membership
+     * Creates request options for saveMembership without sending the request
      */
-    saveMembershipRaw(requestParameters, initOverrides) {
+    saveMembershipRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['organizationId'] == null) {
                 throw new RequiredError('organizationId', 'Required parameter "organizationId" was null or undefined when calling saveMembership().');
@@ -15468,13 +16402,23 @@ class UserSvcApi extends BaseAPI {
             let urlPath = `/user-svc/organization/{organizationId}/user/{userId}`;
             urlPath = urlPath.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId'])));
             urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: requestParameters['body'],
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Adds a user to an organization by saving a Membership. Also issues the corresponding Enroll, which grants the user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
+     * Save Membership
+     */
+    saveMembershipRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.saveMembershipRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -15489,10 +16433,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization. The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the saved organization. Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
-     * Save an Organization
+     * Creates request options for saveOrganization without sending the request
      */
-    saveOrganizationRaw(requestParameters, initOverrides) {
+    saveOrganizationRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling saveOrganization().');
@@ -15504,13 +16447,23 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/user-svc/organization`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcSaveOrganizationRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization. The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the saved organization. Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
+     * Save an Organization
+     */
+    saveOrganizationRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.saveOrganizationRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcSaveOrganizationResponseFromJSON(jsonValue));
         });
     }
@@ -15525,10 +16478,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Save permits. Permits give access to users with certain slugs and roles to permissions.
-     * Save Permits
+     * Creates request options for savePermits without sending the request
      */
-    savePermitsRaw(requestParameters, initOverrides) {
+    savePermitsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling savePermits().');
@@ -15540,13 +16492,23 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/user-svc/permits`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcSavePermitsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Save permits. Permits give access to users with certain slugs and roles to permissions.
+     * Save Permits
+     */
+    savePermitsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.savePermitsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -15561,10 +16523,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Save user\'s own profile information.
-     * Save User Profile
+     * Creates request options for saveSelf without sending the request
      */
-    saveSelfRaw(requestParameters, initOverrides) {
+    saveSelfRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling saveSelf().');
@@ -15576,13 +16537,23 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/user-svc/self`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcSaveSelfRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Save user\'s own profile information.
+     * Save User Profile
+     */
+    saveSelfRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.saveSelfRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -15597,10 +16568,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Save user information based on the provided user ID. Intended for admins. Requires the `user-svc:user:edit` permission. For a user to edit their own profile, see `saveSelf`.
-     * Save User
+     * Creates request options for saveUser without sending the request
      */
-    saveUserRaw(requestParameters, initOverrides) {
+    saveUserRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['userId'] == null) {
                 throw new RequiredError('userId', 'Required parameter "userId" was null or undefined when calling saveUser().');
@@ -15616,13 +16586,23 @@ class UserSvcApi extends BaseAPI {
             }
             let urlPath = `/user-svc/user/{userId}`;
             urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcSaveUserRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Save user information based on the provided user ID. Intended for admins. Requires the `user-svc:user:edit` permission. For a user to edit their own profile, see `saveSelf`.
+     * Save User
+     */
+    saveUserRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.saveUserRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }
@@ -15637,10 +16617,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Generates and sends a one-time password (OTP) to the specified contact.  The OTP can be used for contact verification or login depending on purpose.
-     * Send OTP
+     * Creates request options for sendOtp without sending the request
      */
-    sendOtpRaw(requestParameters, initOverrides) {
+    sendOtpRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling sendOtp().');
@@ -15652,13 +16631,23 @@ class UserSvcApi extends BaseAPI {
                 headerParameters['Accept-Language'] = String(requestParameters['acceptLanguage']);
             }
             let urlPath = `/user-svc/otp/send`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcSendOtpRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Generates and sends a one-time password (OTP) to the specified contact.  The OTP can be used for contact verification or login depending on purpose.
+     * Send OTP
+     */
+    sendOtpRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.sendOtpRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response, (jsonValue) => UserSvcSendOtpResponseFromJSON(jsonValue));
         });
     }
@@ -15673,10 +16662,9 @@ class UserSvcApi extends BaseAPI {
         });
     }
     /**
-     * Change the hostname of an existing app. Requires the `user-svc:app:edit` permission.
-     * Update App Host
+     * Creates request options for updateApp without sending the request
      */
-    updateAppRaw(requestParameters, initOverrides) {
+    updateAppRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new RequiredError('body', 'Required parameter "body" was null or undefined when calling updateApp().');
@@ -15688,13 +16676,23 @@ class UserSvcApi extends BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/user-svc/app`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
                 body: UserSvcUpdateAppRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Change the hostname of an existing app. Requires the `user-svc:app:edit` permission.
+     * Update App Host
+     */
+    updateAppRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.updateAppRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new JSONApiResponse(response);
         });
     }

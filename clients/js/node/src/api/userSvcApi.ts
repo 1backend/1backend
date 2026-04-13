@@ -915,7 +915,7 @@ export class UserSvcApi {
         });
     }
     /**
-     * Requires the `user-svc:organization:view` permission, that only admins have by default.
+     * Requires the `user-svc:organization:view` permission. With `all=true`, platform admins see all organizations in the current app. Otherwise users only see organizations they are members of.
      * @summary List Organizations
      * @param body List Organizations Request
      */

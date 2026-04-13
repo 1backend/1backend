@@ -22,6 +22,7 @@ var _ MappedNullable = &UserSvcListOrganizationsRequest{}
 type UserSvcListOrganizationsRequest struct {
 	// Organizations by default come back ordered desc by `createdAt` field.
 	AfterTime *string `json:"afterTime,omitempty"`
+	All *bool `json:"all,omitempty"`
 	Ids []string `json:"ids,omitempty"`
 	Limit *int32 `json:"limit,omitempty"`
 }
@@ -73,6 +74,38 @@ func (o *UserSvcListOrganizationsRequest) HasAfterTime() bool {
 // SetAfterTime gets a reference to the given string and assigns it to the AfterTime field.
 func (o *UserSvcListOrganizationsRequest) SetAfterTime(v string) {
 	o.AfterTime = &v
+}
+
+// GetAll returns the All field value if set, zero value otherwise.
+func (o *UserSvcListOrganizationsRequest) GetAll() bool {
+	if o == nil || IsNil(o.All) {
+		var ret bool
+		return ret
+	}
+	return *o.All
+}
+
+// GetAllOk returns a tuple with the All field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListOrganizationsRequest) GetAllOk() (*bool, bool) {
+	if o == nil || IsNil(o.All) {
+		return nil, false
+	}
+	return o.All, true
+}
+
+// HasAll returns a boolean if a field has been set.
+func (o *UserSvcListOrganizationsRequest) HasAll() bool {
+	if o != nil && !IsNil(o.All) {
+		return true
+	}
+
+	return false
+}
+
+// SetAll gets a reference to the given bool and assigns it to the All field.
+func (o *UserSvcListOrganizationsRequest) SetAll(v bool) {
+	o.All = &v
 }
 
 // GetIds returns the Ids field value if set, zero value otherwise.
@@ -151,6 +184,9 @@ func (o UserSvcListOrganizationsRequest) ToMap() (map[string]interface{}, error)
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.AfterTime) {
 		toSerialize["afterTime"] = o.AfterTime
+	}
+	if !IsNil(o.All) {
+		toSerialize["all"] = o.All
 	}
 	if !IsNil(o.Ids) {
 		toSerialize["ids"] = o.Ids

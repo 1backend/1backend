@@ -19,6 +19,10 @@ export interface SendEmailRequest {
  */
 export declare class EmailSvcApi extends runtime.BaseAPI {
     /**
+     * Creates request options for sendEmail without sending the request
+     */
+    sendEmailRequestOpts(requestParameters: SendEmailRequest): Promise<runtime.RequestOpts>;
+    /**
      * Sends an email with optional attachments via a supported email provider.  Currently, only SendGrid is supported. Additional providers may be added in the future.  Required secrets from the Secret Svc for SendGrid: - `sender-email`: Sender\'s email address. - `sender-name`: Sender\'s display name. - `sendgrid-api-key`: API key for SendGrid.
      * Send an Email
      */

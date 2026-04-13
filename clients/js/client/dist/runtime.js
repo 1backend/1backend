@@ -223,6 +223,11 @@ export class ResponseError extends Error {
         super(msg);
         this.response = response;
         this.name = "ResponseError";
+        // restore prototype chain
+        const actualProto = new.target.prototype;
+        if (Object.setPrototypeOf) {
+            Object.setPrototypeOf(this, actualProto);
+        }
     }
 }
 export class FetchError extends Error {
@@ -230,6 +235,11 @@ export class FetchError extends Error {
         super(msg);
         this.cause = cause;
         this.name = "FetchError";
+        // restore prototype chain
+        const actualProto = new.target.prototype;
+        if (Object.setPrototypeOf) {
+            Object.setPrototypeOf(this, actualProto);
+        }
     }
 }
 export class RequiredError extends Error {
@@ -237,6 +247,11 @@ export class RequiredError extends Error {
         super(msg);
         this.field = field;
         this.name = "RequiredError";
+        // restore prototype chain
+        const actualProto = new.target.prototype;
+        if (Object.setPrototypeOf) {
+            Object.setPrototypeOf(this, actualProto);
+        }
     }
 }
 export const COLLECTION_FORMATS = {

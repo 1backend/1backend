@@ -14,6 +14,7 @@ export declare class UserSvcListOrganizationsRequest {
     * Organizations by default come back ordered desc by `createdAt` field.
     */
     'afterTime'?: string;
+    'all'?: boolean;
     'ids'?: Array<string>;
     'limit'?: number;
     static discriminator: string | undefined;

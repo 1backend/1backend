@@ -56,10 +56,9 @@ export interface StartModelRequest {
 export class ModelSvcApi extends runtime.BaseAPI {
 
     /**
-     * Retrieves the status of the default model.  Requires the `model-svc:model:view` permission.
-     * Get Default Model Status
+     * Creates request options for getDefaultModelStatus without sending the request
      */
-    async getDefaultModelStatusRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ModelSvcStatusResponse>> {
+    async getDefaultModelStatusRequestOpts(): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -71,12 +70,21 @@ export class ModelSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/model-svc/default-model/status`;
 
-        const response = await this.request({
+        return {
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves the status of the default model.  Requires the `model-svc:model:view` permission.
+     * Get Default Model Status
+     */
+    async getDefaultModelStatusRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ModelSvcStatusResponse>> {
+        const requestOptions = await this.getDefaultModelStatusRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ModelSvcStatusResponseFromJSON(jsonValue));
     }
@@ -91,10 +99,9 @@ export class ModelSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves the details of a model by its ID.  the Requires `model.view` permission.
-     * Get a Model
+     * Creates request options for getModel without sending the request
      */
-    async getModelRaw(requestParameters: GetModelRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ModelSvcGetModelResponse>> {
+    async getModelRequestOpts(requestParameters: GetModelRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['modelId'] == null) {
             throw new runtime.RequiredError(
                 'modelId',
@@ -114,12 +121,21 @@ export class ModelSvcApi extends runtime.BaseAPI {
         let urlPath = `/model-svc/model/{modelId}`;
         urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
 
-        const response = await this.request({
+        return {
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves the details of a model by its ID.  the Requires `model.view` permission.
+     * Get a Model
+     */
+    async getModelRaw(requestParameters: GetModelRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ModelSvcGetModelResponse>> {
+        const requestOptions = await this.getModelRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ModelSvcGetModelResponseFromJSON(jsonValue));
     }
@@ -134,10 +150,9 @@ export class ModelSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves the status of a model by ID.  Requires the `model-svc:model:view` permission.
-     * Get Model Status
+     * Creates request options for getModelStatus without sending the request
      */
-    async getModelStatusRaw(requestParameters: GetModelStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ModelSvcStatusResponse>> {
+    async getModelStatusRequestOpts(requestParameters: GetModelStatusRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['modelId'] == null) {
             throw new runtime.RequiredError(
                 'modelId',
@@ -157,12 +172,21 @@ export class ModelSvcApi extends runtime.BaseAPI {
         let urlPath = `/model-svc/model/{modelId}/status`;
         urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
 
-        const response = await this.request({
+        return {
             path: urlPath,
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves the status of a model by ID.  Requires the `model-svc:model:view` permission.
+     * Get Model Status
+     */
+    async getModelStatusRaw(requestParameters: GetModelStatusRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ModelSvcStatusResponse>> {
+        const requestOptions = await this.getModelStatusRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ModelSvcStatusResponseFromJSON(jsonValue));
     }
@@ -177,10 +201,9 @@ export class ModelSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves a list of models.  Requires `model-svc:model:view` permission.
-     * List Models
+     * Creates request options for listModels without sending the request
      */
-    async listModelsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ModelSvcListModelsResponse>> {
+    async listModelsRequestOpts(): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -192,12 +215,21 @@ export class ModelSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/model-svc/models`;
 
-        const response = await this.request({
+        return {
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves a list of models.  Requires `model-svc:model:view` permission.
+     * List Models
+     */
+    async listModelsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ModelSvcListModelsResponse>> {
+        const requestOptions = await this.listModelsRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ModelSvcListModelsResponseFromJSON(jsonValue));
     }
@@ -212,10 +244,9 @@ export class ModelSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves a list of AI platforms. Eg. LlamaCpp, StableDiffusion etc.  Requires `model-svc:platform:view` permission.
-     * List Platforms
+     * Creates request options for listPlatforms without sending the request
      */
-    async listPlatformsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ModelSvcListPlatformsResponse>> {
+    async listPlatformsRequestOpts(): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -227,12 +258,21 @@ export class ModelSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/model-svc/platforms`;
 
-        const response = await this.request({
+        return {
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves a list of AI platforms. Eg. LlamaCpp, StableDiffusion etc.  Requires `model-svc:platform:view` permission.
+     * List Platforms
+     */
+    async listPlatformsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ModelSvcListPlatformsResponse>> {
+        const requestOptions = await this.listPlatformsRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ModelSvcListPlatformsResponseFromJSON(jsonValue));
     }
@@ -247,10 +287,9 @@ export class ModelSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Sets a model as the default model — when prompts are sent without a Model ID, the default model is used.
-     * Make a Model Default
+     * Creates request options for makeDefault without sending the request
      */
-    async makeDefaultRaw(requestParameters: MakeDefaultRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async makeDefaultRequestOpts(requestParameters: MakeDefaultRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['modelId'] == null) {
             throw new runtime.RequiredError(
                 'modelId',
@@ -270,12 +309,21 @@ export class ModelSvcApi extends runtime.BaseAPI {
         let urlPath = `/model-svc/model/{modelId}/make-default`;
         urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
 
-        const response = await this.request({
+        return {
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Sets a model as the default model — when prompts are sent without a Model ID, the default model is used.
+     * Make a Model Default
+     */
+    async makeDefaultRaw(requestParameters: MakeDefaultRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        const requestOptions = await this.makeDefaultRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -290,10 +338,9 @@ export class ModelSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Starts The Default Model.  Requires the `model-svc:model:create` permission.
-     * Start the Default Model
+     * Creates request options for startDefaultModel without sending the request
      */
-    async startDefaultModelRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async startDefaultModelRequestOpts(): Promise<runtime.RequestOpts> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -305,12 +352,21 @@ export class ModelSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/model-svc/default-model/start`;
 
-        const response = await this.request({
+        return {
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Starts The Default Model.  Requires the `model-svc:model:create` permission.
+     * Start the Default Model
+     */
+    async startDefaultModelRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        const requestOptions = await this.startDefaultModelRequestOpts();
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }
@@ -325,10 +381,9 @@ export class ModelSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Starts a model by ID
-     * Start a Model
+     * Creates request options for startModel without sending the request
      */
-    async startModelRaw(requestParameters: StartModelRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async startModelRequestOpts(requestParameters: StartModelRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['modelId'] == null) {
             throw new runtime.RequiredError(
                 'modelId',
@@ -348,12 +403,21 @@ export class ModelSvcApi extends runtime.BaseAPI {
         let urlPath = `/model-svc/model/{modelId}/start`;
         urlPath = urlPath.replace(`{${"modelId"}}`, encodeURIComponent(String(requestParameters['modelId'])));
 
-        const response = await this.request({
+        return {
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Starts a model by ID
+     * Start a Model
+     */
+    async startModelRaw(requestParameters: StartModelRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        const requestOptions = await this.startModelRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }

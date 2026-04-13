@@ -26,10 +26,9 @@ import * as runtime from '../runtime';
  */
 export class ImageSvcApi extends runtime.BaseAPI {
     /**
-     * Retrieves, caches, resizes, and serves an image referenced by its original URL.
-     * Serve Downloaded Image
+     * Creates request options for serveDownloadedImage without sending the request
      */
-    serveDownloadedImageRaw(requestParameters, initOverrides) {
+    serveDownloadedImageRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['url'] == null) {
                 throw new runtime.RequiredError('url', 'Required parameter "url" was null or undefined when calling serveDownloadedImage().');
@@ -56,12 +55,22 @@ export class ImageSvcApi extends runtime.BaseAPI {
             const headerParameters = {};
             let urlPath = `/image-svc/serve/download/{url}`;
             urlPath = urlPath.replace(`{${"url"}}`, encodeURIComponent(String(requestParameters['url'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieves, caches, resizes, and serves an image referenced by its original URL.
+     * Serve Downloaded Image
+     */
+    serveDownloadedImageRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.serveDownloadedImageRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new runtime.BlobApiResponse(response);
         });
     }
@@ -76,10 +85,9 @@ export class ImageSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Retrieves and serves a previously uploaded image file using its File ID.
-     * Serve Uploaded Image
+     * Creates request options for serveUploadedImage without sending the request
      */
-    serveUploadedImageRaw(requestParameters, initOverrides) {
+    serveUploadedImageRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['fileId'] == null) {
                 throw new runtime.RequiredError('fileId', 'Required parameter "fileId" was null or undefined when calling serveUploadedImage().');
@@ -100,12 +108,22 @@ export class ImageSvcApi extends runtime.BaseAPI {
             const headerParameters = {};
             let urlPath = `/image-svc/serve/upload/{fileId}`;
             urlPath = urlPath.replace(`{${"fileId"}}`, encodeURIComponent(String(requestParameters['fileId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'GET',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Retrieves and serves a previously uploaded image file using its File ID.
+     * Serve Uploaded Image
+     */
+    serveUploadedImageRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.serveUploadedImageRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new runtime.BlobApiResponse(response);
         });
     }

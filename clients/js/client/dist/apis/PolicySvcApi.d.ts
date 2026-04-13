@@ -23,6 +23,10 @@ export interface UpsertInstanceRequest {
  */
 export declare class PolicySvcApi extends runtime.BaseAPI {
     /**
+     * Creates request options for check without sending the request
+     */
+    checkRequestOpts(requestParameters: CheckRequest): Promise<runtime.RequestOpts>;
+    /**
      * Check records a resource access and returns if the access is allowed.
      * Check
      */
@@ -32,6 +36,10 @@ export declare class PolicySvcApi extends runtime.BaseAPI {
      * Check
      */
     check(requestParameters: CheckRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<PolicySvcCheckResponse>;
+    /**
+     * Creates request options for upsertInstance without sending the request
+     */
+    upsertInstanceRequestOpts(requestParameters: UpsertInstanceRequest): Promise<runtime.RequestOpts>;
     /**
      * Allows user to upsert a new policy instance based on a template.
      * Upsert an Instance

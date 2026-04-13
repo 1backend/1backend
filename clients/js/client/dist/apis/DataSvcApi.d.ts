@@ -35,6 +35,10 @@ export interface UpsertObjectsRequest {
  */
 export declare class DataSvcApi extends runtime.BaseAPI {
     /**
+     * Creates request options for createObject without sending the request
+     */
+    createObjectRequestOpts(requestParameters: CreateObjectRequest): Promise<runtime.RequestOpts>;
+    /**
      * Creates a new object with the provided details. Requires authorization and user authentication.
      * Create a Generic Object
      */
@@ -44,6 +48,10 @@ export declare class DataSvcApi extends runtime.BaseAPI {
      * Create a Generic Object
      */
     createObject(requestParameters: CreateObjectRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSvcCreateObjectResponse>;
+    /**
+     * Creates request options for deleteObjects without sending the request
+     */
+    deleteObjectsRequestOpts(requestParameters: DeleteObjectsRequest): Promise<runtime.RequestOpts>;
     /**
      * Deletes all objects matchin the provided filters.
      * Delete Objects
@@ -55,6 +63,10 @@ export declare class DataSvcApi extends runtime.BaseAPI {
      */
     deleteObjects(requestParameters: DeleteObjectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
+     * Creates request options for queryObjects without sending the request
+     */
+    queryObjectsRequestOpts(requestParameters: QueryObjectsRequest): Promise<runtime.RequestOpts>;
+    /**
      * Retrieves objects from a specified table based on search criteria. Requires authorization and user authentication.   Use helper functions in your respective client library such as condition constructors (`equal`, `contains`, `startsWith`) and field selectors (`field`, `fields`, `id`) for easier access.
      * Query Objects
      */
@@ -64,6 +76,10 @@ export declare class DataSvcApi extends runtime.BaseAPI {
      * Query Objects
      */
     queryObjects(requestParameters?: QueryObjectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSvcQueryResponse>;
+    /**
+     * Creates request options for updateObjects without sending the request
+     */
+    updateObjectsRequestOpts(requestParameters: UpdateObjectsRequest): Promise<runtime.RequestOpts>;
     /**
      * Update fields of objects that match the given filters using the provided object. Any fields not included in the incoming object will remain unchanged.
      * Update Objects
@@ -75,6 +91,10 @@ export declare class DataSvcApi extends runtime.BaseAPI {
      */
     updateObjects(requestParameters: UpdateObjectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
+     * Creates request options for upsertObject without sending the request
+     */
+    upsertObjectRequestOpts(requestParameters: UpsertObjectRequest): Promise<runtime.RequestOpts>;
+    /**
      * Creates a new dynamic object or updates an existing one based on the provided data. Requires authorization and user authentication.
      * Upsert a Generic Object
      */
@@ -84,6 +104,10 @@ export declare class DataSvcApi extends runtime.BaseAPI {
      * Upsert a Generic Object
      */
     upsertObject(requestParameters: UpsertObjectRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DataSvcUpsertObjectResponse>;
+    /**
+     * Creates request options for upsertObjects without sending the request
+     */
+    upsertObjectsRequestOpts(requestParameters: UpsertObjectsRequest): Promise<runtime.RequestOpts>;
     /**
      * Upserts objects by ids.
      * Upsert Objects

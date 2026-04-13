@@ -53,10 +53,9 @@ export interface SaveConfigRequest {
 export class ConfigSvcApi extends runtime.BaseAPI {
 
     /**
-     * Returns the historical versions of a configuration for a given app. Intended for retrieving the version history of a **single configuration ID**. Supplying multiple IDs is supported but not recommended, since results from different IDs will interleave in the same time-ordered list, making chronological paging ambiguous.
-     * List Versions
+     * Creates request options for listConfigVersions without sending the request
      */
-    async listConfigVersionsRaw(requestParameters: ListConfigVersionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ConfigSvcListVersionsResponse>> {
+    async listConfigVersionsRequestOpts(requestParameters: ListConfigVersionsRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -73,13 +72,22 @@ export class ConfigSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/config-svc/versions`;
 
-        const response = await this.request({
+        return {
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: ConfigSvcListVersionsRequestToJSON(requestParameters['body']),
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Returns the historical versions of a configuration for a given app. Intended for retrieving the version history of a **single configuration ID**. Supplying multiple IDs is supported but not recommended, since results from different IDs will interleave in the same time-ordered list, making chronological paging ambiguous.
+     * List Versions
+     */
+    async listConfigVersionsRaw(requestParameters: ListConfigVersionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ConfigSvcListVersionsResponse>> {
+        const requestOptions = await this.listConfigVersionsRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ConfigSvcListVersionsResponseFromJSON(jsonValue));
     }
@@ -94,10 +102,9 @@ export class ConfigSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Retrieves the current configurations for a specified app. Since any user can save configurations, it is strongly advised that you supply a list of owners to filter on. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
-     * List Configs
+     * Creates request options for listConfigs without sending the request
      */
-    async listConfigsRaw(requestParameters: ListConfigsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ConfigSvcListConfigsResponse>> {
+    async listConfigsRequestOpts(requestParameters: ListConfigsRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -118,13 +125,22 @@ export class ConfigSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/config-svc/configs`;
 
-        const response = await this.request({
+        return {
             path: urlPath,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
             body: ConfigSvcListConfigsRequestToJSON(requestParameters['body']),
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Retrieves the current configurations for a specified app. Since any user can save configurations, it is strongly advised that you supply a list of owners to filter on. If no app is specified, the default \"unnamed\" app is used. This is a public endpoint and does not require authentication. Configuration data is non-sensitive. For sensitive data, refer to the Secret Service.  Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
+     * List Configs
+     */
+    async listConfigsRaw(requestParameters: ListConfigsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ConfigSvcListConfigsResponse>> {
+        const requestOptions = await this.listConfigsRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => ConfigSvcListConfigsResponseFromJSON(jsonValue));
     }
@@ -139,10 +155,9 @@ export class ConfigSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Save the provided configuration to the server. The app from the caller\'s token is used to determine which app the config belongs to. The caller\'s camelCased slug (e.g., \"test-user-slug\" becomes \"testUserSlug\") is used as the config key automatically, except for users who have the \"config-svc:config:edit-on-behalf\" permission (admins), who can specify any key they want. Admins (users with the \"config-svc:config:edit-on-behalf\" permission) can also provide an \"app\" field in the request body to specify which app the config belongs to, while non-admin users cannot specify the \"app\" field, the app associated with their token will be used.  The save performs a deep merge, that is: - Nested objects are recursively merged rather than replaced. - If a field exists in both the existing and the incoming config and both values are objects, their contents are merged. - If a field exists in both but one or both values are not objects (e.g., string, number, array), the incoming value replaces the existing one. - Fields present only in the incoming config are added. - Fields present only in the existing config are preserved. - Top-level and nested merges follow the same rules.
-     * Save Config
+     * Creates request options for saveConfig without sending the request
      */
-    async saveConfigRaw(requestParameters: SaveConfigRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async saveConfigRequestOpts(requestParameters: SaveConfigRequest): Promise<runtime.RequestOpts> {
         if (requestParameters['body'] == null) {
             throw new runtime.RequiredError(
                 'body',
@@ -163,13 +178,22 @@ export class ConfigSvcApi extends runtime.BaseAPI {
 
         let urlPath = `/config-svc/config`;
 
-        const response = await this.request({
+        return {
             path: urlPath,
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
             body: ConfigSvcSaveConfigRequestToJSON(requestParameters['body']),
-        }, initOverrides);
+        };
+    }
+
+    /**
+     * Save the provided configuration to the server. The app from the caller\'s token is used to determine which app the config belongs to. The caller\'s camelCased slug (e.g., \"test-user-slug\" becomes \"testUserSlug\") is used as the config key automatically, except for users who have the \"config-svc:config:edit-on-behalf\" permission (admins), who can specify any key they want. Admins (users with the \"config-svc:config:edit-on-behalf\" permission) can also provide an \"app\" field in the request body to specify which app the config belongs to, while non-admin users cannot specify the \"app\" field, the app associated with their token will be used.  The save performs a deep merge, that is: - Nested objects are recursively merged rather than replaced. - If a field exists in both the existing and the incoming config and both values are objects, their contents are merged. - If a field exists in both but one or both values are not objects (e.g., string, number, array), the incoming value replaces the existing one. - Fields present only in the incoming config are added. - Fields present only in the existing config are preserved. - Top-level and nested merges follow the same rules.
+     * Save Config
+     */
+    async saveConfigRaw(requestParameters: SaveConfigRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        const requestOptions = await this.saveConfigRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
     }

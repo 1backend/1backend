@@ -27,10 +27,9 @@ import { ChatSvcEventThreadUpdateFromJSON, ChatSvcListMessagesRequestToJSON, Cha
  */
 export class ChatSvcApi extends runtime.BaseAPI {
     /**
-     * Delete a specific message from a chat thread by its ID
-     * Delete a Message
+     * Creates request options for deleteMessage without sending the request
      */
-    deleteMessageRaw(requestParameters, initOverrides) {
+    deleteMessageRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['messageId'] == null) {
                 throw new runtime.RequiredError('messageId', 'Required parameter "messageId" was null or undefined when calling deleteMessage().');
@@ -42,12 +41,22 @@ export class ChatSvcApi extends runtime.BaseAPI {
             }
             let urlPath = `/chat-svc/message/{messageId}`;
             urlPath = urlPath.replace(`{${"messageId"}}`, encodeURIComponent(String(requestParameters['messageId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Delete a specific message from a chat thread by its ID
+     * Delete a Message
+     */
+    deleteMessageRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.deleteMessageRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
     }
@@ -62,10 +71,9 @@ export class ChatSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Delete a specific chat thread by its ID
-     * Delete a Thread
+     * Creates request options for deleteThread without sending the request
      */
-    deleteThreadRaw(requestParameters, initOverrides) {
+    deleteThreadRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['threadId'] == null) {
                 throw new runtime.RequiredError('threadId', 'Required parameter "threadId" was null or undefined when calling deleteThread().');
@@ -77,12 +85,22 @@ export class ChatSvcApi extends runtime.BaseAPI {
             }
             let urlPath = `/chat-svc/thread/{threadId}`;
             urlPath = urlPath.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'DELETE',
                 headers: headerParameters,
                 query: queryParameters,
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Delete a specific chat thread by its ID
+     * Delete a Thread
+     */
+    deleteThreadRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.deleteThreadRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
     }
@@ -97,20 +115,29 @@ export class ChatSvcApi extends runtime.BaseAPI {
         });
     }
     /**
+     * Creates request options for events without sending the request
+     */
+    eventsRequestOpts() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            let urlPath = `/chat-svc/events`;
+            return {
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            };
+        });
+    }
+    /**
      * Events is a dummy endpoint to display documentation about the events that this service emits.
      * Events
      */
     eventsRaw(initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
-            const queryParameters = {};
-            const headerParameters = {};
-            let urlPath = `/chat-svc/events`;
-            const response = yield this.request({
-                path: urlPath,
-                method: 'GET',
-                headers: headerParameters,
-                query: queryParameters,
-            }, initOverrides);
+            const requestOptions = yield this.eventsRequestOpts();
+            const response = yield this.request(requestOptions, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ChatSvcEventThreadUpdateFromJSON(jsonValue));
         });
     }
@@ -125,10 +152,9 @@ export class ChatSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Fetch messages (and associated assets) for a specific chat thread.
-     * List Messages
+     * Creates request options for listMessages without sending the request
      */
-    listMessagesRaw(requestParameters, initOverrides) {
+    listMessagesRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling listMessages().');
@@ -140,13 +166,23 @@ export class ChatSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/chat-svc/messages`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ChatSvcListMessagesRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Fetch messages (and associated assets) for a specific chat thread.
+     * List Messages
+     */
+    listMessagesRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listMessagesRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ChatSvcListMessagesResponseFromJSON(jsonValue));
         });
     }
@@ -161,10 +197,9 @@ export class ChatSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Fetch all chat threads associated with a specific user
-     * List Threads
+     * Creates request options for listThreads without sending the request
      */
-    listThreadsRaw(requestParameters, initOverrides) {
+    listThreadsRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling listThreads().');
@@ -176,13 +211,23 @@ export class ChatSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/chat-svc/threads`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ChatSvcListThreadsRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Fetch all chat threads associated with a specific user
+     * List Threads
+     */
+    listThreadsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.listThreadsRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ChatSvcListThreadsResponseFromJSON(jsonValue));
         });
     }
@@ -197,10 +242,9 @@ export class ChatSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Save a new message to a specific thread.
-     * Save Message
+     * Creates request options for saveMessage without sending the request
      */
-    saveMessageRaw(requestParameters, initOverrides) {
+    saveMessageRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['threadId'] == null) {
                 throw new runtime.RequiredError('threadId', 'Required parameter "threadId" was null or undefined when calling saveMessage().');
@@ -216,13 +260,23 @@ export class ChatSvcApi extends runtime.BaseAPI {
             }
             let urlPath = `/chat-svc/thread/{threadId}/message`;
             urlPath = urlPath.replace(`{${"threadId"}}`, encodeURIComponent(String(requestParameters['threadId'])));
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ChatSvcSaveMessageRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Save a new message to a specific thread.
+     * Save Message
+     */
+    saveMessageRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.saveMessageRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new runtime.JSONApiResponse(response);
         });
     }
@@ -237,10 +291,9 @@ export class ChatSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Create or update a chat thread. Requires the `chat-svc:thread:edit` permission.
-     * Save Thread
+     * Creates request options for saveThread without sending the request
      */
-    saveThreadRaw(requestParameters, initOverrides) {
+    saveThreadRequestOpts(requestParameters) {
         return __awaiter(this, void 0, void 0, function* () {
             if (requestParameters['body'] == null) {
                 throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling saveThread().');
@@ -252,13 +305,23 @@ export class ChatSvcApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
             }
             let urlPath = `/chat-svc/thread`;
-            const response = yield this.request({
+            return {
                 path: urlPath,
                 method: 'POST',
                 headers: headerParameters,
                 query: queryParameters,
                 body: ChatSvcSaveThreadRequestToJSON(requestParameters['body']),
-            }, initOverrides);
+            };
+        });
+    }
+    /**
+     * Create or update a chat thread. Requires the `chat-svc:thread:edit` permission.
+     * Save Thread
+     */
+    saveThreadRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const requestOptions = yield this.saveThreadRequestOpts(requestParameters);
+            const response = yield this.request(requestOptions, initOverrides);
             return new runtime.JSONApiResponse(response, (jsonValue) => ChatSvcSaveThreadResponseFromJSON(jsonValue));
         });
     }

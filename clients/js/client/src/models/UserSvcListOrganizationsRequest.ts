@@ -28,6 +28,12 @@ export interface UserSvcListOrganizationsRequest {
     afterTime?: string;
     /**
      * 
+     * @type {boolean}
+     * @memberof UserSvcListOrganizationsRequest
+     */
+    all?: boolean;
+    /**
+     * 
      * @type {Array<string>}
      * @memberof UserSvcListOrganizationsRequest
      */
@@ -58,6 +64,7 @@ export function UserSvcListOrganizationsRequestFromJSONTyped(json: any, ignoreDi
     return {
         
         'afterTime': json['afterTime'] == null ? undefined : json['afterTime'],
+        'all': json['all'] == null ? undefined : json['all'],
         'ids': json['ids'] == null ? undefined : json['ids'],
         'limit': json['limit'] == null ? undefined : json['limit'],
     };
@@ -75,6 +82,7 @@ export function UserSvcListOrganizationsRequestToJSONTyped(value?: UserSvcListOr
     return {
         
         'afterTime': value['afterTime'],
+        'all': value['all'],
         'ids': value['ids'],
         'limit': value['limit'],
     };
