@@ -2,6 +2,7 @@ package userservice_test
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -90,6 +91,8 @@ func TestActivateOrganization(t *testing.T) {
 		)
 		require.NoError(t, err)
 		require.Equal(t, orgId1, claims.ActiveOrganizationId)
+		require.Contains(t, claims.Roles, fmt.Sprintf("user-svc:org:{%s}:admin", orgId1))
+		require.NotContains(t, claims.Roles, fmt.Sprintf("user-svc:org:{%s}:admin", orgId2))
 
 		readSelfRsp, _, err := clientFactory.Client(client.WithToken(newToken)).
 			UserSvcAPI.ReadSelf(context.Background()).
@@ -163,9 +166,13 @@ func TestActivateOrganization(t *testing.T) {
 		claimsA, err := (auth.AuthorizerImpl{}).ParseJWT(publicKeyRsp.PublicKey, newTokenA)
 		require.NoError(t, err)
 		require.Equal(t, orgId1, claimsA.ActiveOrganizationId)
+		require.Contains(t, claimsA.Roles, fmt.Sprintf("user-svc:org:{%s}:admin", orgId1))
+		require.NotContains(t, claimsA.Roles, fmt.Sprintf("user-svc:org:{%s}:admin", orgId2))
 
 		claimsB, err := (auth.AuthorizerImpl{}).ParseJWT(publicKeyRsp.PublicKey, newTokenB)
 		require.NoError(t, err)
 		require.Equal(t, orgId2, claimsB.ActiveOrganizationId)
+		require.Contains(t, claimsB.Roles, fmt.Sprintf("user-svc:org:{%s}:admin", orgId2))
+		require.NotContains(t, claimsB.Roles, fmt.Sprintf("user-svc:org:{%s}:admin", orgId1))
 	})
 }

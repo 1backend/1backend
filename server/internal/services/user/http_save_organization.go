@@ -130,8 +130,13 @@ func (s *UserService) saveOrganization(
 	if exists {
 		final = orgI.(*user.Organization)
 
+		roles, err := s.getRolesByUserId(claims.AppId, claims.UserId)
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "failed to list effective roles")
+		}
+
 		orgAdminRole := fmt.Sprintf("user-svc:org:{%v}:admin", final.Id)
-		if !contains(claims.Roles, user.RoleAdmin) && !contains(claims.Roles, orgAdminRole) {
+		if !contains(roles, user.RoleAdmin) && !contains(roles, orgAdminRole) {
 			return nil, nil, ErrNotAnAdmin
 		}
 

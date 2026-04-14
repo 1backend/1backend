@@ -421,13 +421,9 @@ func TestOrganization(t *testing.T) {
 
 		require.NoError(t, err)
 		require.NotNil(t, claim)
-		require.Equal(t, 2, len(claim.Roles), claim.Roles)
+		require.Equal(t, 1, len(claim.Roles), claim.Roles)
 		require.Empty(t, claim.ActiveOrganizationId)
-		require.Contains(
-			t,
-			claim.Roles,
-			fmt.Sprintf("user-svc:org:{%v}:user", orgId1),
-		)
+		require.NotContains(t, claim.Roles, fmt.Sprintf("user-svc:org:{%v}:user", orgId1))
 
 		_, _, err = thirdClient.UserSvcAPI.DeleteMembership(
 			context.Background(),

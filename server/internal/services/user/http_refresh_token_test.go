@@ -2,6 +2,7 @@ package userservice_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -292,6 +293,61 @@ func TestRefreshToken_AfterExchange_KeepsAppAndExtendsExpiry(t *testing.T) {
 		Execute()
 	require.NoError(t, err)
 	require.False(t, hasB.Authorized, "appA permit leaked into appB")
+}
+
+func TestRefreshToken_KeepsOnlyActiveOrganizationRolesInJWT(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{Test: true})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+	ctx := context.Background()
+
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
+	require.NoError(t, err)
+	userClient := manyClients[0]
+
+	pk, _, err := clientFactory.Client().UserSvcAPI.GetPublicKey(ctx).Execute()
+	require.NoError(t, err)
+
+	createOrg := func(slug string) string {
+		rsp, _, err := userClient.UserSvcAPI.SaveOrganization(ctx).
+			Body(openapi.UserSvcSaveOrganizationRequest{
+				Activate: openapi.PtrBool(false),
+				Slug:     slug,
+				Name:     openapi.PtrString(slug),
+			}).
+			Execute()
+		require.NoError(t, err)
+		return rsp.Organization.Id
+	}
+
+	orgId1 := createOrg("org-1")
+	orgId2 := createOrg("org-2")
+
+	activateRsp, _, err := userClient.UserSvcAPI.ActivateOrganization(ctx).
+		Body(openapi.UserSvcActivateOrganizationRequest{
+			OrganizationId: orgId2,
+		}).
+		Execute()
+	require.NoError(t, err)
+	require.NotEmpty(t, activateRsp.Token.Token)
+
+	userClient = clientFactory.Client(client.WithToken(activateRsp.Token.Token))
+
+	time.Sleep(1100 * time.Millisecond)
+
+	refreshed, _, err := userClient.UserSvcAPI.RefreshToken(ctx).Execute()
+	require.NoError(t, err)
+	require.NotEmpty(t, refreshed.Token.Token)
+
+	claims, err := auth.AuthorizerImpl{}.ParseJWT(pk.PublicKey, refreshed.Token.Token)
+	require.NoError(t, err)
+	require.Equal(t, orgId2, claims.ActiveOrganizationId)
+	require.Contains(t, claims.Roles, fmt.Sprintf("user-svc:org:{%s}:admin", orgId2))
+	require.NotContains(t, claims.Roles, fmt.Sprintf("user-svc:org:{%s}:admin", orgId1))
 }
 
 func TestRefreshTokenCount_IsBounded_ForExchangedTokens_PerDevice(t *testing.T) {
