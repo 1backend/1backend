@@ -103,6 +103,7 @@ func TestAll(t *testing.T) {
 		"ComplexOrTest":          datastore.TestComplexOr,
 		"TestIndex":              datastore.TestIndex,
 		"TestNamedTypeArray":     datastore.TestNamedTypeArray,
+		"TestScalarPointers":     datastore.TestScalarPointers,
 	}
 	pointerTests := map[string]func(t *testing.T, store datastore.DataStore){
 		"PointerCreate":                 datastore.TestPointerCreate,
@@ -129,12 +130,17 @@ func TestAll(t *testing.T) {
 		"PointerOrTest":                 datastore.TestPointerOr,
 		"PointerComplexOrTest":          datastore.TestPointerComplexOr,
 		"PointerTestNamedTypeArray":     datastore.TestPointerNamedTypeArray,
+		"PointerTestScalarPointers":     datastore.TestPointerScalarPointers,
 	}
 
 	for testName, test := range tests {
 		for storeName, storeFunc := range stores {
 			t.Run(fmt.Sprintf("%v %v", testName, storeName), func(t *testing.T) {
-				store := storeFunc(datastore.TestObject{})
+				instance := any(datastore.TestObject{})
+				if testName == "TestScalarPointers" {
+					instance = datastore.ScalarPointerTestObject{}
+				}
+				store := storeFunc(instance)
 				test(t, store)
 			})
 		}
@@ -143,7 +149,11 @@ func TestAll(t *testing.T) {
 	for testName, test := range pointerTests {
 		for storeName, storeFunc := range pointerStores {
 			t.Run(fmt.Sprintf("%v %v", testName, storeName), func(t *testing.T) {
-				store := storeFunc(&datastore.TestObject{})
+				instance := any(&datastore.TestObject{})
+				if testName == "PointerTestScalarPointers" {
+					instance = &datastore.ScalarPointerTestObject{}
+				}
+				store := storeFunc(instance)
 				test(t, store)
 			})
 		}

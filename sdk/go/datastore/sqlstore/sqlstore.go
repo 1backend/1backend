@@ -16,6 +16,7 @@ import (
 	"reflect"
 	"runtime/debug"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -656,6 +657,79 @@ func (a *GenericArray) Value() (driver.Value, error) {
 	return pq.Array(a.Array).Value()
 }
 
+func isJSONBackedType(t reflect.Type) bool {
+	if t.Kind() == reflect.Pointer {
+		t = t.Elem()
+	}
+
+	if t == reflect.TypeOf(time.Time{}) {
+		return false
+	}
+
+	switch t.Kind() {
+	case reflect.Struct, reflect.Map, reflect.Slice, reflect.Array:
+		return true
+	default:
+		return false
+	}
+}
+
+func scalarValueFromString(raw string, t reflect.Type) (reflect.Value, error) {
+	value := reflect.New(t).Elem()
+
+	switch t.Kind() {
+	case reflect.String:
+		value.SetString(raw)
+	case reflect.Bool:
+		parsed, err := strconv.ParseBool(raw)
+		if err != nil {
+			return reflect.Value{}, err
+		}
+		value.SetBool(parsed)
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		parsed, err := strconv.ParseInt(raw, 10, t.Bits())
+		if err != nil {
+			return reflect.Value{}, err
+		}
+		value.SetInt(parsed)
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		parsed, err := strconv.ParseUint(raw, 10, t.Bits())
+		if err != nil {
+			return reflect.Value{}, err
+		}
+		value.SetUint(parsed)
+	case reflect.Float32, reflect.Float64:
+		parsed, err := strconv.ParseFloat(raw, t.Bits())
+		if err != nil {
+			return reflect.Value{}, err
+		}
+		value.SetFloat(parsed)
+	default:
+		return reflect.Value{}, fmt.Errorf("unsupported scalar type: %s", t)
+	}
+
+	return value, nil
+}
+
+func parsePointerFieldValue(raw string, t reflect.Type) (reflect.Value, error) {
+	ptr := reflect.New(t)
+
+	if isJSONBackedType(t) {
+		if err := json.Unmarshal([]byte(raw), ptr.Interface()); err != nil {
+			return reflect.Value{}, err
+		}
+		return ptr, nil
+	}
+
+	value, err := scalarValueFromString(raw, t)
+	if err != nil {
+		return reflect.Value{}, err
+	}
+
+	ptr.Elem().Set(value)
+	return ptr, nil
+}
+
 func (q *SQLQueryBuilder) Find() ([]datastore.Row, error) {
 	query, params, err := q.buildSelectQuery()
 	if err != nil {
@@ -786,21 +860,19 @@ func (q *SQLQueryBuilder) Find() ([]datastore.Row, error) {
 				}
 
 				if ok && str.Valid {
-					newField := reflect.New(fieldType.Elem()).Interface()
-					err := json.Unmarshal([]byte(str.String), newField)
+					newField, err := parsePointerFieldValue(str.String, fieldType.Elem())
 					if err != nil {
-						return nil, errors.Wrap(err, "error unmarshaling struct")
+						return nil, errors.Wrap(err, "error unmarshaling pointer field")
 					}
-					field.Set(reflect.ValueOf(newField))
+					field.Set(newField)
 				} else {
 					bin, ok := fields[i].(*[]uint8)
 					if ok && bin != nil {
-						newField := reflect.New(fieldType.Elem()).Interface()
-						err := json.Unmarshal(*bin, newField)
+						newField, err := parsePointerFieldValue(string(*bin), fieldType.Elem())
 						if err != nil {
-							return nil, errors.Wrap(err, "error unmarshaling JSONB binary data")
+							return nil, errors.Wrap(err, "error unmarshaling pointer binary data")
 						}
-						field.Set(reflect.ValueOf(newField))
+						field.Set(newField)
 					} else {
 						field.Set(reflect.Zero(fieldType))
 					}
