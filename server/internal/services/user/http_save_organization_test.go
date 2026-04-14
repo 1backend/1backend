@@ -143,7 +143,13 @@ func TestSaveOrganization(t *testing.T) {
 		require.NotEqual(t, orgId, otherOrgId)
 	})
 
-	t.Run("admin can update organization", func(t *testing.T) {
+	t.Run("admin can update organization without acquiring org role", func(t *testing.T) {
+		adminSelf, _, err := adminClient.UserSvcAPI.
+			ReadSelf(context.Background()).
+			Body(openapi.UserSvcReadSelfRequest{}).
+			Execute()
+		require.NoError(t, err)
+
 		orgName := "Updated by admin"
 		req := openapi.UserSvcSaveOrganizationRequest{
 			Id:   openapi.PtrString(orgId),
@@ -162,5 +168,18 @@ func TestSaveOrganization(t *testing.T) {
 		require.NotNil(t, resp)
 		require.Equal(t, 200, httpResp.StatusCode)
 		require.Equal(t, orgName, resp.Organization.Name)
+		require.Nil(t, resp.Token)
+
+		enrollsRsp, _, err := adminClient.UserSvcAPI.
+			ListEnrolls(context.Background()).
+			Body(openapi.UserSvcListEnrollsRequest{
+				Role: openapi.PtrString("user-svc:org:{" + orgId + "}:admin"),
+			}).
+			Execute()
+		require.NoError(t, err)
+
+		for _, enroll := range enrollsRsp.Enrolls {
+			require.NotEqual(t, adminSelf.User.Id, enroll.UserId)
+		}
 	})
 }
