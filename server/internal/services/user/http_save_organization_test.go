@@ -144,6 +144,34 @@ func TestSaveOrganization(t *testing.T) {
 		require.NotEqual(t, orgId, otherOrgId)
 	})
 
+	t.Run("create organization with activate false returns usable token", func(t *testing.T) {
+		resp, httpResp, err := userClient.UserSvcAPI.
+			SaveOrganization(
+				context.Background(),
+			).
+			Body(openapi.UserSvcSaveOrganizationRequest{
+				Activate: openapi.PtrBool(false),
+				Name:     openapi.PtrString("Passive Org"),
+				Slug:     "passive-org",
+			}).
+			Execute()
+
+		require.NoError(t, err)
+		require.Equal(t, 200, httpResp.StatusCode)
+		require.NotNil(t, resp.Token)
+		require.NotEmpty(t, resp.Token.Token)
+
+		passiveClient := client.NewApiClientFactory(server.Url).
+			Client(client.WithToken(resp.Token.Token))
+
+		selfRsp, _, err := passiveClient.UserSvcAPI.
+			ReadSelf(context.Background()).
+			Body(openapi.UserSvcReadSelfRequest{}).
+			Execute()
+		require.NoError(t, err)
+		require.Equal(t, otherOrgId, selfRsp.GetActiveOrganizationId())
+	})
+
 	t.Run("organization admin can update and activate organization", func(t *testing.T) {
 		updateResp, httpResp, err := userClient.UserSvcAPI.
 			SaveOrganization(
