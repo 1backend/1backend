@@ -2,6 +2,7 @@ package userservice_test
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -143,6 +144,82 @@ func TestSaveOrganization(t *testing.T) {
 		require.NotEqual(t, orgId, otherOrgId)
 	})
 
+	t.Run("organization admin can update and activate organization", func(t *testing.T) {
+		updateResp, httpResp, err := userClient.UserSvcAPI.
+			SaveOrganization(
+				context.Background(),
+			).
+			Body(openapi.UserSvcSaveOrganizationRequest{
+				Id:       openapi.PtrString(orgId),
+				Name:     openapi.PtrString("Activated via update"),
+				Slug:     slug,
+				Activate: openapi.PtrBool(true),
+			}).
+			Execute()
+
+		require.NoError(t, err)
+		require.Equal(t, 200, httpResp.StatusCode)
+		require.NotNil(t, updateResp.Token)
+		require.NotEmpty(t, updateResp.Token.Token)
+
+		userClient = client.NewApiClientFactory(server.Url).
+			Client(client.WithToken(updateResp.Token.Token))
+
+		selfRsp, _, err := userClient.UserSvcAPI.
+			ReadSelf(context.Background()).
+			Body(openapi.UserSvcReadSelfRequest{}).
+			Execute()
+		require.NoError(t, err)
+		require.Equal(t, orgId, selfRsp.GetActiveOrganizationId())
+	})
+
+	t.Run("organization admin can update and deactivate organization", func(t *testing.T) {
+		updateResp, httpResp, err := userClient.UserSvcAPI.
+			SaveOrganization(
+				context.Background(),
+			).
+			Body(openapi.UserSvcSaveOrganizationRequest{
+				Id:       openapi.PtrString(orgId),
+				Name:     openapi.PtrString("Deactivated via update"),
+				Slug:     slug,
+				Activate: openapi.PtrBool(false),
+			}).
+			Execute()
+
+		require.NoError(t, err)
+		require.Equal(t, 200, httpResp.StatusCode)
+		require.NotNil(t, updateResp.Token)
+		require.NotEmpty(t, updateResp.Token.Token)
+
+		userClient = client.NewApiClientFactory(server.Url).
+			Client(client.WithToken(updateResp.Token.Token))
+
+		selfRsp, _, err := userClient.UserSvcAPI.
+			ReadSelf(context.Background()).
+			Body(openapi.UserSvcReadSelfRequest{}).
+			Execute()
+		require.NoError(t, err)
+		require.Empty(t, selfRsp.GetActiveOrganizationId())
+	})
+
+	t.Run("organization admin update does not return token when activation state is unchanged", func(t *testing.T) {
+		updateResp, httpResp, err := userClient.UserSvcAPI.
+			SaveOrganization(
+				context.Background(),
+			).
+			Body(openapi.UserSvcSaveOrganizationRequest{
+				Id:       openapi.PtrString(orgId),
+				Name:     openapi.PtrString("Still inactive"),
+				Slug:     slug,
+				Activate: openapi.PtrBool(false),
+			}).
+			Execute()
+
+		require.NoError(t, err)
+		require.Equal(t, 200, httpResp.StatusCode)
+		require.Nil(t, updateResp.Token)
+	})
+
 	t.Run("admin can update organization without acquiring org role", func(t *testing.T) {
 		adminSelf, _, err := adminClient.UserSvcAPI.
 			ReadSelf(context.Background()).
@@ -173,7 +250,7 @@ func TestSaveOrganization(t *testing.T) {
 		enrollsRsp, _, err := adminClient.UserSvcAPI.
 			ListEnrolls(context.Background()).
 			Body(openapi.UserSvcListEnrollsRequest{
-				Role: openapi.PtrString("user-svc:org:{" + orgId + "}:admin"),
+				Role: openapi.PtrString(fmt.Sprintf("user-svc:org:{%s}:admin", orgId)),
 			}).
 			Execute()
 		require.NoError(t, err)

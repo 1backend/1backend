@@ -85,6 +85,10 @@ func (s *UserService) SaveOrganization(
 			endpoint.WriteErr(w, http.StatusUnauthorized, err)
 			return
 		}
+		if errors.Is(err, ErrOrganizationMembershipNotFound) {
+			endpoint.WriteErr(w, http.StatusUnauthorized, err)
+			return
+		}
 
 		logger.Error(
 			"Failed to save organization",
@@ -152,7 +156,37 @@ func (s *UserService) saveOrganization(
 			return nil, nil, err
 		}
 
-		return final, nil, nil
+		u, err := s.readSelf(userId)
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "error finding user by id")
+		}
+
+		_, activeOrganizationId, err := s.getUserOrganizations(appId, userId, claims.Device)
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "error listing organizations")
+		}
+
+		if shouldActivate && activeOrganizationId == final.Id {
+			return final, nil, nil
+		}
+		if !shouldActivate && activeOrganizationId != final.Id {
+			return final, nil, nil
+		}
+
+		var token *user.Token
+		if shouldActivate {
+			token, err = s.activateOrganization(appId, u, final.Id, claims.Device)
+			if err != nil {
+				return nil, nil, errors.Wrap(err, "error activating organization")
+			}
+		} else {
+			token, err = s.deactivateOrganization(appId, u, final.Id, claims.Device)
+			if err != nil {
+				return nil, nil, errors.Wrap(err, "error deactivating organization")
+			}
+		}
+
+		return final, token, nil
 	}
 
 	final = &user.Organization{
@@ -291,6 +325,58 @@ func (s *UserService) saveOrganization(
 	}
 
 	return final, token, nil
+}
+
+func (s *UserService) deactivateOrganization(
+	appId string,
+	usr *user.User,
+	organizationId string,
+	device string,
+) (*user.Token, error) {
+	links, err := s.membershipStore.Query(
+		datastore.Equals(datastore.Field("appId"), appId),
+		datastore.Equals(datastore.Field("userId"), usr.Id),
+	).Find()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query memberships")
+	}
+
+	now := time.Now()
+	changed := false
+	for _, linkI := range links {
+		link := linkI.(*user.Membership)
+		if link.Device != device || link.OrganizationId != organizationId || !link.Active {
+			continue
+		}
+
+		err = s.membershipStore.Query(
+			datastore.Id(link.Id),
+		).UpdateFields(map[string]any{
+			"active":    false,
+			"updatedAt": now,
+		})
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to update membership")
+		}
+
+		changed = true
+	}
+
+	if !changed {
+		return nil, nil
+	}
+
+	err = s.inactivateTokens(appId, usr.Id)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to inactivate tokens")
+	}
+
+	token, err := s.issueToken(appId, usr, device)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to issue token")
+	}
+
+	return token, nil
 }
 
 func (s *UserService) inactivateTokens(appId string, userId string) error {
