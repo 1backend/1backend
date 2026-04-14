@@ -92,3 +92,16 @@ func (t TestObject) Indexes() []Index {
 func (t TestObject) GetId() string {
 	return t.Name
 }
+
+type ScalarPointerTestObject struct {
+	Name          string     `json:"name"`
+	StringPointer *string    `json:"stringPointer"`
+	IntPointer    *int       `json:"intPointer"`
+	BoolPointer   *bool      `json:"boolPointer"`
+	TimePointer   *time.Time `json:"timePointer,omitempty"`
+	FriendPointer *Friend    `json:"friendPointer,omitempty"`
+}
+
+func (t ScalarPointerTestObject) GetId() string {
+	return t.Name
+}
