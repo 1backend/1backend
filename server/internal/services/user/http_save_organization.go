@@ -290,15 +290,6 @@ func (s *UserService) saveOrganization(
 		return nil, nil, err
 	}
 
-	if !shouldActivate {
-		return final, nil, nil
-	}
-
-	err = s.inactivateTokens(claims.AppId, userId)
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "error inactivating tokens")
-	}
-
 	userI, found, err := s.userStore.Query(
 		datastore.Id(userId),
 	).FindOne()
@@ -309,6 +300,20 @@ func (s *UserService) saveOrganization(
 		return nil, nil, errors.New("user not found by id")
 	}
 	u := userI.(*user.User)
+
+	if !shouldActivate {
+		token, err := s.issueToken(appId, u, claims.Device)
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "error issuing token")
+		}
+
+		return final, token, nil
+	}
+
+	err = s.inactivateTokens(claims.AppId, userId)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "error inactivating tokens")
+	}
 
 	token, err := s.generateAuthToken(
 		appId,
