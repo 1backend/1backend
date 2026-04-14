@@ -85,6 +85,10 @@ func (s *UserService) SaveOrganization(
 			endpoint.WriteErr(w, http.StatusUnauthorized, err)
 			return
 		}
+		if errors.Is(err, ErrOrganizationMembershipNotFound) {
+			endpoint.WriteErr(w, http.StatusUnauthorized, err)
+			return
+		}
 
 		logger.Error(
 			"Failed to save organization",
@@ -147,75 +151,110 @@ func (s *UserService) saveOrganization(
 			final.ThumbnailFileId = request.ThumbnailFileId
 		}
 		final.UpdatedAt = now
-	} else {
-		final = &user.Organization{
-			AppId:     appId,
-			Name:      request.Name,
-			Slug:      request.Slug,
-			CreatedAt: now,
-			UpdatedAt: now,
-		}
-
-		if request.Id != "" {
-			final.Id = request.Id
-		} else {
-			final.Id = sdk.Id("org")
-		}
-
-		final.InternalId, err = sdk.InternalId(appId, final.Id)
-		if err != nil {
-			return nil, nil, errors.Wrap(err, "failed to create organization internal id")
-		}
-
-		id := sdk.Id("memb")
-		internalId, err := sdk.InternalId(appId, id)
-		if err != nil {
-			return nil, nil, errors.Wrap(err, "failed to create internal id")
-		}
-
-		// When creating a new org, the user may switch to that org as the active one.
-		link := &user.Membership{
-			InternalId:     internalId,
-			Id:             id,
-			AppId:          appId,
-			UserId:         userId,
-			OrganizationId: final.Id,
-			Device:         claims.Device,
-			Active:         shouldActivate,
-			CreatedAt:      now,
-			UpdatedAt:      now,
-		}
-
-		err = s.membershipStore.Upsert(link)
+		err = s.organizationStore.Upsert(final)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		deviceMemberships, err := s.membershipStore.Query(
-			datastore.Equals(datastore.Field("appId"), appId),
-			datastore.Equals(datastore.Field("userId"), userId),
-			datastore.Equals(datastore.Field("device"), claims.Device),
-		).Find()
+		u, err := s.readSelf(userId)
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, errors.Wrap(err, "error finding user by id")
 		}
 
-		for _, membershipI := range deviceMemberships {
-			membership := membershipI.(*user.Membership)
-			if membership.Id == link.Id || !membership.Active || !shouldActivate {
-				continue
-			}
+		_, activeOrganizationId, err := s.getUserOrganizations(appId, userId, claims.Device)
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "error listing organizations")
+		}
 
-			err = s.membershipStore.Query(
-				datastore.Id(membership.Id),
-			).UpdateFields(map[string]any{
-				"active": false,
-			})
+		if shouldActivate && activeOrganizationId == final.Id {
+			return final, nil, nil
+		}
+		if !shouldActivate && activeOrganizationId != final.Id {
+			return final, nil, nil
+		}
+
+		var token *user.Token
+		if shouldActivate {
+			token, err = s.activateOrganization(appId, u, final.Id, claims.Device)
 			if err != nil {
-				return nil, nil, err
+				return nil, nil, errors.Wrap(err, "error activating organization")
+			}
+		} else {
+			token, err = s.deactivateOrganization(appId, u, final.Id, claims.Device)
+			if err != nil {
+				return nil, nil, errors.Wrap(err, "error deactivating organization")
 			}
 		}
 
+		return final, token, nil
+	}
+
+	final = &user.Organization{
+		AppId:     appId,
+		Name:      request.Name,
+		Slug:      request.Slug,
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	if request.Id != "" {
+		final.Id = request.Id
+	} else {
+		final.Id = sdk.Id("org")
+	}
+
+	final.InternalId, err = sdk.InternalId(appId, final.Id)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "failed to create organization internal id")
+	}
+
+	id := sdk.Id("memb")
+	internalId, err := sdk.InternalId(appId, id)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "failed to create internal id")
+	}
+
+	// When creating a new org, the user may switch to that org as the active one.
+	link := &user.Membership{
+		InternalId:     internalId,
+		Id:             id,
+		AppId:          appId,
+		UserId:         userId,
+		OrganizationId: final.Id,
+		Device:         claims.Device,
+		Active:         shouldActivate,
+		CreatedAt:      now,
+		UpdatedAt:      now,
+	}
+
+	err = s.membershipStore.Upsert(link)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	deviceMemberships, err := s.membershipStore.Query(
+		datastore.Equals(datastore.Field("appId"), appId),
+		datastore.Equals(datastore.Field("userId"), userId),
+		datastore.Equals(datastore.Field("device"), claims.Device),
+	).Find()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	for _, membershipI := range deviceMemberships {
+		membership := membershipI.(*user.Membership)
+		if membership.Id == link.Id || !membership.Active || !shouldActivate {
+			continue
+		}
+
+		err = s.membershipStore.Query(
+			datastore.Id(membership.Id),
+		).UpdateFields(map[string]any{
+			"active": false,
+		})
+		if err != nil {
+			return nil, nil, err
+		}
 	}
 
 	err = s.organizationStore.Upsert(final)
@@ -286,6 +325,58 @@ func (s *UserService) saveOrganization(
 	}
 
 	return final, token, nil
+}
+
+func (s *UserService) deactivateOrganization(
+	appId string,
+	usr *user.User,
+	organizationId string,
+	device string,
+) (*user.Token, error) {
+	links, err := s.membershipStore.Query(
+		datastore.Equals(datastore.Field("appId"), appId),
+		datastore.Equals(datastore.Field("userId"), usr.Id),
+	).Find()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query memberships")
+	}
+
+	now := time.Now()
+	changed := false
+	for _, linkI := range links {
+		link := linkI.(*user.Membership)
+		if link.Device != device || link.OrganizationId != organizationId || !link.Active {
+			continue
+		}
+
+		err = s.membershipStore.Query(
+			datastore.Id(link.Id),
+		).UpdateFields(map[string]any{
+			"active":    false,
+			"updatedAt": now,
+		})
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to update membership")
+		}
+
+		changed = true
+	}
+
+	if !changed {
+		return nil, nil
+	}
+
+	err = s.inactivateTokens(appId, usr.Id)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to inactivate tokens")
+	}
+
+	token, err := s.issueToken(appId, usr, device)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to issue token")
+	}
+
+	return token, nil
 }
 
 func (s *UserService) inactivateTokens(appId string, userId string) error {
