@@ -43,6 +43,7 @@ import { UserSvcResetPasswordRequest } from '../model/userSvcResetPasswordReques
 import { UserSvcRevokeTokensRequest } from '../model/userSvcRevokeTokensRequest';
 import { UserSvcSaveEnrollsRequest } from '../model/userSvcSaveEnrollsRequest';
 import { UserSvcSaveEnrollsResponse } from '../model/userSvcSaveEnrollsResponse';
+import { UserSvcSaveMembershipRequest } from '../model/userSvcSaveMembershipRequest';
 import { UserSvcSaveOrganizationRequest } from '../model/userSvcSaveOrganizationRequest';
 import { UserSvcSaveOrganizationResponse } from '../model/userSvcSaveOrganizationResponse';
 import { UserSvcSavePermitsRequest } from '../model/userSvcSavePermitsRequest';
@@ -393,7 +394,7 @@ export declare class UserSvcApi {
      * @param userId User ID
      * @param body Add User to Organization Request
      */
-    saveMembership(organizationId: string, userId: string, body?: object, options?: {
+    saveMembership(organizationId: string, userId: string, body?: UserSvcSaveMembershipRequest, options?: {
         headers: {
             [name: string]: string;
         };

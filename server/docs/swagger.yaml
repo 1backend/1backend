@@ -3677,6 +3677,15 @@ definitions:
     - enrolls
     type: object
   user_svc.SaveMembershipRequest:
+    properties:
+      active:
+        description: |-
+          If true, this membership becomes the active organization for the
+          specified device. Only one membership can remain active per (user, device).
+        type: boolean
+      device:
+        description: Device scope of the membership activation. Defaults to `unknown`.
+        type: string
     type: object
   user_svc.SaveMembershipResponse:
     type: object

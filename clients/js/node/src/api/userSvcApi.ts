@@ -49,6 +49,7 @@ import { UserSvcResetPasswordRequest } from '../model/userSvcResetPasswordReques
 import { UserSvcRevokeTokensRequest } from '../model/userSvcRevokeTokensRequest';
 import { UserSvcSaveEnrollsRequest } from '../model/userSvcSaveEnrollsRequest';
 import { UserSvcSaveEnrollsResponse } from '../model/userSvcSaveEnrollsResponse';
+import { UserSvcSaveMembershipRequest } from '../model/userSvcSaveMembershipRequest';
 import { UserSvcSaveOrganizationRequest } from '../model/userSvcSaveOrganizationRequest';
 import { UserSvcSaveOrganizationResponse } from '../model/userSvcSaveOrganizationResponse';
 import { UserSvcSavePermitsRequest } from '../model/userSvcSavePermitsRequest';
@@ -1822,7 +1823,7 @@ export class UserSvcApi {
      * @param userId User ID
      * @param body Add User to Organization Request
      */
-    public async saveMembership (organizationId: string, userId: string, body?: object, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: object;  }> {
+    public async saveMembership (organizationId: string, userId: string, body?: UserSvcSaveMembershipRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: object;  }> {
         const localVarPath = this.basePath + '/user-svc/organization/{organizationId}/user/{userId}'
             .replace('{' + 'organizationId' + '}', encodeURIComponent(String(organizationId)))
             .replace('{' + 'userId' + '}', encodeURIComponent(String(userId)));
@@ -1858,7 +1859,7 @@ export class UserSvcApi {
             uri: localVarPath,
             useQuerystring: this._useQuerystring,
             json: true,
-            body: ObjectSerializer.serialize(body, "object")
+            body: ObjectSerializer.serialize(body, "UserSvcSaveMembershipRequest")
         };
 
         let authenticationPromise = Promise.resolve();

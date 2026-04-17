@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 import * as runtime from '../runtime';
-import type { UserSvcActivateOrganizationRequest, UserSvcActivateOrganizationResponse, UserSvcChangePasswordRequest, UserSvcCreateUserRequest, UserSvcDeactivateOrganizationResponse, UserSvcExchangeTokenRequest, UserSvcExchangeTokenResponse, UserSvcGetPublicKeyResponse, UserSvcHasPermissionResponse, UserSvcListAppsRequest, UserSvcListAppsResponse, UserSvcListEnrollsRequest, UserSvcListEnrollsResponse, UserSvcListOrganizationsRequest, UserSvcListOrganizationsResponse, UserSvcListPermissionsResponse, UserSvcListPermitsRequest, UserSvcListPermitsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadAppRequest, UserSvcReadAppResponse, UserSvcReadSelfRequest, UserSvcReadSelfResponse, UserSvcRefreshTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcRevokeTokensRequest, UserSvcSaveEnrollsRequest, UserSvcSaveEnrollsResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSavePermitsRequest, UserSvcSaveSelfRequest, UserSvcSaveUserRequest, UserSvcSendOtpRequest, UserSvcSendOtpResponse, UserSvcUpdateAppRequest } from '../models/index';
+import type { UserSvcActivateOrganizationRequest, UserSvcActivateOrganizationResponse, UserSvcChangePasswordRequest, UserSvcCreateUserRequest, UserSvcDeactivateOrganizationResponse, UserSvcExchangeTokenRequest, UserSvcExchangeTokenResponse, UserSvcGetPublicKeyResponse, UserSvcHasPermissionResponse, UserSvcListAppsRequest, UserSvcListAppsResponse, UserSvcListEnrollsRequest, UserSvcListEnrollsResponse, UserSvcListOrganizationsRequest, UserSvcListOrganizationsResponse, UserSvcListPermissionsResponse, UserSvcListPermitsRequest, UserSvcListPermitsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadAppRequest, UserSvcReadAppResponse, UserSvcReadSelfRequest, UserSvcReadSelfResponse, UserSvcRefreshTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcRevokeTokensRequest, UserSvcSaveEnrollsRequest, UserSvcSaveEnrollsResponse, UserSvcSaveMembershipRequest, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSavePermitsRequest, UserSvcSaveSelfRequest, UserSvcSaveUserRequest, UserSvcSendOtpRequest, UserSvcSendOtpResponse, UserSvcUpdateAppRequest } from '../models/index';
 export interface ActivateOrganizationRequest {
     body: UserSvcActivateOrganizationRequest;
 }
@@ -80,7 +80,7 @@ export interface SaveEnrollsRequest {
 export interface SaveMembershipRequest {
     organizationId: string;
     userId: string;
-    body?: object;
+    body?: UserSvcSaveMembershipRequest;
 }
 export interface SaveOrganizationRequest {
     body: UserSvcSaveOrganizationRequest;

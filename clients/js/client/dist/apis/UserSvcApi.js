@@ -21,7 +21,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as runtime from '../runtime';
-import { UserSvcActivateOrganizationRequestToJSON, UserSvcActivateOrganizationResponseFromJSON, UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, UserSvcDeactivateOrganizationResponseFromJSON, UserSvcExchangeTokenRequestToJSON, UserSvcExchangeTokenResponseFromJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListAppsRequestToJSON, UserSvcListAppsResponseFromJSON, UserSvcListEnrollsRequestToJSON, UserSvcListEnrollsResponseFromJSON, UserSvcListOrganizationsRequestToJSON, UserSvcListOrganizationsResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListPermitsRequestToJSON, UserSvcListPermitsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadAppRequestToJSON, UserSvcReadAppResponseFromJSON, UserSvcReadSelfRequestToJSON, UserSvcReadSelfResponseFromJSON, UserSvcRefreshTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcRevokeTokensRequestToJSON, UserSvcSaveEnrollsRequestToJSON, UserSvcSaveEnrollsResponseFromJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSavePermitsRequestToJSON, UserSvcSaveSelfRequestToJSON, UserSvcSaveUserRequestToJSON, UserSvcSendOtpRequestToJSON, UserSvcSendOtpResponseFromJSON, UserSvcUpdateAppRequestToJSON, } from '../models/index';
+import { UserSvcActivateOrganizationRequestToJSON, UserSvcActivateOrganizationResponseFromJSON, UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, UserSvcDeactivateOrganizationResponseFromJSON, UserSvcExchangeTokenRequestToJSON, UserSvcExchangeTokenResponseFromJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListAppsRequestToJSON, UserSvcListAppsResponseFromJSON, UserSvcListEnrollsRequestToJSON, UserSvcListEnrollsResponseFromJSON, UserSvcListOrganizationsRequestToJSON, UserSvcListOrganizationsResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListPermitsRequestToJSON, UserSvcListPermitsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadAppRequestToJSON, UserSvcReadAppResponseFromJSON, UserSvcReadSelfRequestToJSON, UserSvcReadSelfResponseFromJSON, UserSvcRefreshTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcRevokeTokensRequestToJSON, UserSvcSaveEnrollsRequestToJSON, UserSvcSaveEnrollsResponseFromJSON, UserSvcSaveMembershipRequestToJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSavePermitsRequestToJSON, UserSvcSaveSelfRequestToJSON, UserSvcSaveUserRequestToJSON, UserSvcSendOtpRequestToJSON, UserSvcSendOtpResponseFromJSON, UserSvcUpdateAppRequestToJSON, } from '../models/index';
 /**
  *
  */
@@ -877,7 +877,7 @@ export class UserSvcApi extends runtime.BaseAPI {
                 method: 'PUT',
                 headers: headerParameters,
                 query: queryParameters,
-                body: requestParameters['body'],
+                body: UserSvcSaveMembershipRequestToJSON(requestParameters['body']),
             }, initOverrides);
             return new runtime.JSONApiResponse(response);
         });

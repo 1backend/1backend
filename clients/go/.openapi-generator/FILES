@@ -254,6 +254,7 @@ docs/UserSvcResetPasswordRequest.md
 docs/UserSvcRevokeTokensRequest.md
 docs/UserSvcSaveEnrollsRequest.md
 docs/UserSvcSaveEnrollsResponse.md
+docs/UserSvcSaveMembershipRequest.md
 docs/UserSvcSaveOrganizationRequest.md
 docs/UserSvcSaveOrganizationResponse.md
 docs/UserSvcSavePermitsRequest.md
@@ -487,6 +488,7 @@ model_user_svc_reset_password_request.go
 model_user_svc_revoke_tokens_request.go
 model_user_svc_save_enrolls_request.go
 model_user_svc_save_enrolls_response.go
+model_user_svc_save_membership_request.go
 model_user_svc_save_organization_request.go
 model_user_svc_save_organization_response.go
 model_user_svc_save_permits_request.go

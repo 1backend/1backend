@@ -218,6 +218,7 @@ export * from './UserSvcResetPasswordRequest';
 export * from './UserSvcRevokeTokensRequest';
 export * from './UserSvcSaveEnrollsRequest';
 export * from './UserSvcSaveEnrollsResponse';
+export * from './UserSvcSaveMembershipRequest';
 export * from './UserSvcSaveOrganizationRequest';
 export * from './UserSvcSaveOrganizationResponse';
 export * from './UserSvcSavePermitsRequest';

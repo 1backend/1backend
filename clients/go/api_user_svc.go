@@ -4123,11 +4123,11 @@ type ApiSaveMembershipRequest struct {
 	ApiService UserSvcAPI
 	organizationId string
 	userId string
-	body *map[string]interface{}
+	body *UserSvcSaveMembershipRequest
 }
 
 // Add User to Organization Request
-func (r ApiSaveMembershipRequest) Body(body map[string]interface{}) ApiSaveMembershipRequest {
+func (r ApiSaveMembershipRequest) Body(body UserSvcSaveMembershipRequest) ApiSaveMembershipRequest {
 	r.body = &body
 	return r
 }

@@ -411,6 +411,7 @@ Class | Method | HTTP request | Description
  - [UserSvcRevokeTokensRequest](docs/UserSvcRevokeTokensRequest.md)
  - [UserSvcSaveEnrollsRequest](docs/UserSvcSaveEnrollsRequest.md)
  - [UserSvcSaveEnrollsResponse](docs/UserSvcSaveEnrollsResponse.md)
+ - [UserSvcSaveMembershipRequest](docs/UserSvcSaveMembershipRequest.md)
  - [UserSvcSaveOrganizationRequest](docs/UserSvcSaveOrganizationRequest.md)
  - [UserSvcSaveOrganizationResponse](docs/UserSvcSaveOrganizationResponse.md)
  - [UserSvcSavePermitsRequest](docs/UserSvcSavePermitsRequest.md)

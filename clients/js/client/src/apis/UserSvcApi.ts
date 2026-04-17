@@ -49,6 +49,7 @@ import type {
   UserSvcRevokeTokensRequest,
   UserSvcSaveEnrollsRequest,
   UserSvcSaveEnrollsResponse,
+  UserSvcSaveMembershipRequest,
   UserSvcSaveOrganizationRequest,
   UserSvcSaveOrganizationResponse,
   UserSvcSavePermitsRequest,
@@ -127,6 +128,8 @@ import {
     UserSvcSaveEnrollsRequestToJSON,
     UserSvcSaveEnrollsResponseFromJSON,
     UserSvcSaveEnrollsResponseToJSON,
+    UserSvcSaveMembershipRequestFromJSON,
+    UserSvcSaveMembershipRequestToJSON,
     UserSvcSaveOrganizationRequestFromJSON,
     UserSvcSaveOrganizationRequestToJSON,
     UserSvcSaveOrganizationResponseFromJSON,
@@ -235,7 +238,7 @@ export interface SaveEnrollsRequest {
 export interface SaveMembershipRequest {
     organizationId: string;
     userId: string;
-    body?: object;
+    body?: UserSvcSaveMembershipRequest;
 }
 
 export interface SaveOrganizationRequest {
@@ -1317,7 +1320,7 @@ export class UserSvcApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters['body'] as any,
+            body: UserSvcSaveMembershipRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

@@ -216,6 +216,7 @@ export * from './userSvcResetPasswordRequest';
 export * from './userSvcRevokeTokensRequest';
 export * from './userSvcSaveEnrollsRequest';
 export * from './userSvcSaveEnrollsResponse';
+export * from './userSvcSaveMembershipRequest';
 export * from './userSvcSaveOrganizationRequest';
 export * from './userSvcSaveOrganizationResponse';
 export * from './userSvcSavePermitsRequest';
@@ -446,6 +447,7 @@ import { UserSvcResetPasswordRequest } from './userSvcResetPasswordRequest';
 import { UserSvcRevokeTokensRequest } from './userSvcRevokeTokensRequest';
 import { UserSvcSaveEnrollsRequest } from './userSvcSaveEnrollsRequest';
 import { UserSvcSaveEnrollsResponse } from './userSvcSaveEnrollsResponse';
+import { UserSvcSaveMembershipRequest } from './userSvcSaveMembershipRequest';
 import { UserSvcSaveOrganizationRequest } from './userSvcSaveOrganizationRequest';
 import { UserSvcSaveOrganizationResponse } from './userSvcSaveOrganizationResponse';
 import { UserSvcSavePermitsRequest } from './userSvcSavePermitsRequest';
@@ -690,6 +692,7 @@ let typeMap = {
     "UserSvcRevokeTokensRequest": UserSvcRevokeTokensRequest,
     "UserSvcSaveEnrollsRequest": UserSvcSaveEnrollsRequest,
     "UserSvcSaveEnrollsResponse": UserSvcSaveEnrollsResponse,
+    "UserSvcSaveMembershipRequest": UserSvcSaveMembershipRequest,
     "UserSvcSaveOrganizationRequest": UserSvcSaveOrganizationRequest,
     "UserSvcSaveOrganizationResponse": UserSvcSaveOrganizationResponse,
     "UserSvcSavePermitsRequest": UserSvcSavePermitsRequest,
