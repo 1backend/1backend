@@ -8,9 +8,13 @@
 package sdk
 
 import (
+	"crypto/rand"
+	"encoding/binary"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"hash/fnv"
+	"os"
 	"strings"
 
 	onebackendapi "github.com/1backend/1backend/clients/go"
@@ -24,10 +28,52 @@ var sonyFlake *sonyflake.Sonyflake
 const idSeparator = "-"
 
 func init() {
-	sonyFlake = sonyflake.NewSonyflake(sonyflake.Settings{})
+	sonyFlake = initSonyflake()
 	if sonyFlake == nil {
 		panic("Sonyflake not created")
 	}
+}
+
+func initSonyflake() *sonyflake.Sonyflake {
+	// Default settings may fail in isolated/containerized test sandboxes when no
+	// private IPv4 can be discovered. Fall back to a stable process-local machine
+	// id so IDs can still be generated in those environments.
+	flake := sonyflake.NewSonyflake(sonyflake.Settings{})
+	if flake != nil {
+		return flake
+	}
+
+	fallbackMachineID := machineIDFromHostname()
+	if fallbackMachineID == 0 {
+		fallbackMachineID = randomMachineID()
+	}
+
+	return sonyflake.NewSonyflake(sonyflake.Settings{
+		MachineID: func() (uint16, error) {
+			return fallbackMachineID, nil
+		},
+	})
+}
+
+func machineIDFromHostname() uint16 {
+	hostname, err := os.Hostname()
+	if err != nil || hostname == "" {
+		return 0
+	}
+
+	hash := fnv.New32a()
+	_, _ = hash.Write([]byte(hostname))
+
+	return uint16(hash.Sum32())
+}
+
+func randomMachineID() uint16 {
+	var machineIDBytes [2]byte
+	if _, err := rand.Read(machineIDBytes[:]); err != nil {
+		return 1
+	}
+
+	return binary.BigEndian.Uint16(machineIDBytes[:])
 }
 
 const DefaultAppHost = "unnamed"
