@@ -179,6 +179,7 @@ export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';
 export * from './userSvcContactInput';
 export * from './userSvcCreateUserRequest';
+export * from './userSvcDeactivateOrganizationResponse';
 export * from './userSvcEnroll';
 export * from './userSvcEnrollInput';
 export * from './userSvcErrorResponse';
@@ -215,6 +216,7 @@ export * from './userSvcResetPasswordRequest';
 export * from './userSvcRevokeTokensRequest';
 export * from './userSvcSaveEnrollsRequest';
 export * from './userSvcSaveEnrollsResponse';
+export * from './userSvcSaveMembershipRequest';
 export * from './userSvcSaveOrganizationRequest';
 export * from './userSvcSaveOrganizationResponse';
 export * from './userSvcSavePermitsRequest';
@@ -408,6 +410,7 @@ import { UserSvcChangePasswordRequest } from './userSvcChangePasswordRequest';
 import { UserSvcContact } from './userSvcContact';
 import { UserSvcContactInput } from './userSvcContactInput';
 import { UserSvcCreateUserRequest } from './userSvcCreateUserRequest';
+import { UserSvcDeactivateOrganizationResponse } from './userSvcDeactivateOrganizationResponse';
 import { UserSvcEnroll } from './userSvcEnroll';
 import { UserSvcEnrollInput } from './userSvcEnrollInput';
 import { UserSvcErrorResponse } from './userSvcErrorResponse';
@@ -444,6 +447,7 @@ import { UserSvcResetPasswordRequest } from './userSvcResetPasswordRequest';
 import { UserSvcRevokeTokensRequest } from './userSvcRevokeTokensRequest';
 import { UserSvcSaveEnrollsRequest } from './userSvcSaveEnrollsRequest';
 import { UserSvcSaveEnrollsResponse } from './userSvcSaveEnrollsResponse';
+import { UserSvcSaveMembershipRequest } from './userSvcSaveMembershipRequest';
 import { UserSvcSaveOrganizationRequest } from './userSvcSaveOrganizationRequest';
 import { UserSvcSaveOrganizationResponse } from './userSvcSaveOrganizationResponse';
 import { UserSvcSavePermitsRequest } from './userSvcSavePermitsRequest';
@@ -653,6 +657,7 @@ let typeMap = {
     "UserSvcContact": UserSvcContact,
     "UserSvcContactInput": UserSvcContactInput,
     "UserSvcCreateUserRequest": UserSvcCreateUserRequest,
+    "UserSvcDeactivateOrganizationResponse": UserSvcDeactivateOrganizationResponse,
     "UserSvcEnroll": UserSvcEnroll,
     "UserSvcEnrollInput": UserSvcEnrollInput,
     "UserSvcErrorResponse": UserSvcErrorResponse,
@@ -687,6 +692,7 @@ let typeMap = {
     "UserSvcRevokeTokensRequest": UserSvcRevokeTokensRequest,
     "UserSvcSaveEnrollsRequest": UserSvcSaveEnrollsRequest,
     "UserSvcSaveEnrollsResponse": UserSvcSaveEnrollsResponse,
+    "UserSvcSaveMembershipRequest": UserSvcSaveMembershipRequest,
     "UserSvcSaveOrganizationRequest": UserSvcSaveOrganizationRequest,
     "UserSvcSaveOrganizationResponse": UserSvcSaveOrganizationResponse,
     "UserSvcSavePermitsRequest": UserSvcSavePermitsRequest,

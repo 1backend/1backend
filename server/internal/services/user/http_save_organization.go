@@ -338,6 +338,16 @@ func (s *UserService) deactivateOrganization(
 	organizationId string,
 	device string,
 ) (*user.Token, error) {
+	return s.deactivateOrganizationForDevice(appId, usr, organizationId, device, false)
+}
+
+func (s *UserService) deactivateOrganizationForDevice(
+	appId string,
+	usr *user.User,
+	organizationId string,
+	device string,
+	forceToken bool,
+) (*user.Token, error) {
 	links, err := s.membershipStore.Query(
 		datastore.Equals(datastore.Field("appId"), appId),
 		datastore.Equals(datastore.Field("userId"), usr.Id),
@@ -350,7 +360,10 @@ func (s *UserService) deactivateOrganization(
 	changed := false
 	for _, linkI := range links {
 		link := linkI.(*user.Membership)
-		if link.Device != device || link.OrganizationId != organizationId || !link.Active {
+		if link.Device != device || !link.Active {
+			continue
+		}
+		if organizationId != "" && link.OrganizationId != organizationId {
 			continue
 		}
 
@@ -367,7 +380,7 @@ func (s *UserService) deactivateOrganization(
 		changed = true
 	}
 
-	if !changed {
+	if !changed && !forceToken {
 		return nil, nil
 	}
 

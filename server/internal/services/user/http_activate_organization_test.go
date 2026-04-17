@@ -2,6 +2,7 @@ package userservice_test
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"testing"
@@ -42,8 +43,8 @@ func TestActivateOrganization(t *testing.T) {
 			UserSvcAPI.SaveOrganization(context.Background()).
 			Body(openapi.UserSvcSaveOrganizationRequest{
 				Activate: openapi.PtrBool(false),
-				Name: openapi.PtrString(name),
-				Slug: slug,
+				Name:     openapi.PtrString(name),
+				Slug:     slug,
 			}).
 			Execute()
 		require.NoError(t, err)
@@ -93,6 +94,7 @@ func TestActivateOrganization(t *testing.T) {
 		require.Equal(t, orgId1, claims.ActiveOrganizationId)
 		require.Contains(t, claims.Roles, fmt.Sprintf("user-svc:org:{%s}:admin", orgId1))
 		require.NotContains(t, claims.Roles, fmt.Sprintf("user-svc:org:{%s}:admin", orgId2))
+		currentToken = newToken
 
 		readSelfRsp, _, err := clientFactory.Client(client.WithToken(newToken)).
 			UserSvcAPI.ReadSelf(context.Background()).
@@ -174,5 +176,131 @@ func TestActivateOrganization(t *testing.T) {
 		require.Equal(t, orgId2, claimsB.ActiveOrganizationId)
 		require.Contains(t, claimsB.Roles, fmt.Sprintf("user-svc:org:{%s}:admin", orgId2))
 		require.NotContains(t, claimsB.Roles, fmt.Sprintf("user-svc:org:{%s}:admin", orgId1))
+	})
+}
+
+func TestDeactivateOrganization(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{
+		Test: true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	clients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
+	require.NoError(t, err)
+
+	userClient := clients[0]
+
+	publicKeyRsp, _, err := clientFactory.Client().
+		UserSvcAPI.GetPublicKey(context.Background()).
+		Execute()
+	require.NoError(t, err)
+
+	createOrg := func(name, slug string, token string) string {
+		rsp, _, err := clientFactory.Client(client.WithToken(token)).
+			UserSvcAPI.SaveOrganization(context.Background()).
+			Body(openapi.UserSvcSaveOrganizationRequest{
+				Activate: openapi.PtrBool(false),
+				Name:     openapi.PtrString(name),
+				Slug:     slug,
+			}).
+			Execute()
+		require.NoError(t, err)
+
+		return rsp.Organization.Id
+	}
+
+	activate := func(token string, organizationId string) (*openapi.UserSvcActivateOrganizationResponse, *http.Response, error) {
+		return clientFactory.Client(client.WithToken(token)).
+			UserSvcAPI.ActivateOrganization(context.Background()).
+			Body(openapi.UserSvcActivateOrganizationRequest{
+				OrganizationId: organizationId,
+			}).
+			Execute()
+	}
+
+	deactivate := func(token string) (*openapi.UserSvcActivateOrganizationResponse, *http.Response, error) {
+		req, err := http.NewRequest(http.MethodPost, server.Url+"/user-svc/organization/deactivate", nil)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		req.Header.Set("Authorization", "Bearer "+token)
+
+		httpResp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return nil, nil, err
+		}
+		defer httpResp.Body.Close()
+
+		var rsp openapi.UserSvcActivateOrganizationResponse
+		err = json.NewDecoder(httpResp.Body).Decode(&rsp)
+		if err != nil {
+			return nil, httpResp, err
+		}
+
+		return &rsp, httpResp, nil
+	}
+
+	loginRsp, _, err := userClient.UserSvcAPI.Login(context.Background()).
+		Body(openapi.UserSvcLoginRequest{
+			AppHost:  sdk.DefaultTestAppHost,
+			Slug:     openapi.PtrString("test-user-slug-0"),
+			Password: openapi.PtrString("testUserPassword0"),
+		}).
+		Execute()
+	require.NoError(t, err)
+
+	orgId1 := createOrg("Org 1", "org-1-deactivate", loginRsp.Token.Token)
+	orgId2 := createOrg("Org 2", "org-2-deactivate", loginRsp.Token.Token)
+
+	activateRsp, _, err := activate(loginRsp.Token.Token, orgId1)
+	require.NoError(t, err)
+	currentToken := activateRsp.Token.Token
+
+	t.Run("clear active organization and mint a fresh token without org roles", func(t *testing.T) {
+		deactivateRsp, httpResp, err := deactivate(currentToken)
+		require.NoError(t, err)
+		require.Equal(t, http.StatusOK, httpResp.StatusCode)
+		require.NotNil(t, deactivateRsp)
+		require.NotEmpty(t, deactivateRsp.Token.Token)
+
+		newToken := deactivateRsp.Token.Token
+
+		claims, err := (auth.AuthorizerImpl{}).ParseJWT(
+			publicKeyRsp.PublicKey,
+			newToken,
+		)
+		require.NoError(t, err)
+		require.Empty(t, claims.ActiveOrganizationId)
+		require.NotContains(t, claims.Roles, fmt.Sprintf("user-svc:org:{%s}:admin", orgId1))
+		require.NotContains(t, claims.Roles, fmt.Sprintf("user-svc:org:{%s}:admin", orgId2))
+		currentToken = newToken
+
+		readSelfRsp, _, err := clientFactory.Client(client.WithToken(newToken)).
+			UserSvcAPI.ReadSelf(context.Background()).
+			Execute()
+		require.NoError(t, err)
+		require.Empty(t, readSelfRsp.GetActiveOrganizationId())
+		require.Len(t, readSelfRsp.Organizations, 2)
+	})
+
+	t.Run("mint a fresh token even when no organization is active", func(t *testing.T) {
+		deactivateRsp, httpResp, err := deactivate(currentToken)
+		require.NoError(t, err)
+		require.Equal(t, http.StatusOK, httpResp.StatusCode)
+		require.NotNil(t, deactivateRsp)
+		require.NotEmpty(t, deactivateRsp.Token.Token)
+
+		claims, err := (auth.AuthorizerImpl{}).ParseJWT(
+			publicKeyRsp.PublicKey,
+			deactivateRsp.Token.Token,
+		)
+		require.NoError(t, err)
+		require.Empty(t, claims.ActiveOrganizationId)
 	})
 }

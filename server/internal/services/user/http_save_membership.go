@@ -10,6 +10,7 @@ package userservice
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 	"time"
@@ -68,7 +69,7 @@ func (s *UserService) SaveMembership(
 
 	req := user.SaveMembershipRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
+	if err != nil && err != io.EOF {
 		logger.Error(
 			"Failed to decode request",
 			slog.Any("error", err),
@@ -78,7 +79,19 @@ func (s *UserService) SaveMembership(
 	}
 	defer r.Body.Close()
 
-	err = s.saveMembership(claims.AppId, usr.Id, userId, organizationId, unknownDevice)
+	device := req.Device
+	if device == "" {
+		device = unknownDevice
+	}
+
+	err = s.saveMembership(
+		claims.AppId,
+		usr.Id,
+		userId,
+		organizationId,
+		device,
+		req.Active,
+	)
 	if err != nil {
 		logger.Error(
 			"Failed to save membership",
@@ -97,6 +110,7 @@ func (s *UserService) saveMembership(
 	userId,
 	organizationId string,
 	device string,
+	active bool,
 ) error {
 	roles, err := s.getRolesByUserId(appId, callerId)
 	if err != nil {
@@ -125,47 +139,123 @@ func (s *UserService) saveMembership(
 	}
 
 	newRole := fmt.Sprintf("user-svc:org:{%v}:user", org.Id)
+	changed := false
 
-	for _, role := range roles {
-		if newRole == role {
-			return nil
+	targetRoles, err := s.getRolesByUserId(appId, userId)
+	if err != nil {
+		return err
+	}
+
+	if !contains(targetRoles, newRole) {
+		err = s.assignRole(
+			appId,
+			userId,
+			newRole,
+		)
+		if err != nil {
+			return err
 		}
-	}
-
-	err = s.assignRole(
-		appId,
-		userId,
-		newRole,
-	)
-	if err != nil {
-		return err
-	}
-
-	id := sdk.Id("memb")
-	internalId, err := sdk.InternalId(appId, id)
-	if err != nil {
-		return err
+		changed = true
 	}
 
 	now := time.Now()
 
-	// SaveMembership only links the user to the org; it does not switch the
-	// user's active organization on any device.
-	link := &user.Membership{
-		InternalId:     internalId,
-		Id:             id,
-		AppId:          appId,
-		UserId:         userId,
-		OrganizationId: org.Id,
-		Device:         device,
-		Active:         false,
-		CreatedAt:      now,
-		UpdatedAt:      now,
-	}
-
-	err = s.membershipStore.Upsert(link)
+	existingMembershipI, found, err := s.membershipStore.Query(
+		datastore.Equals(datastore.Field("appId"), appId),
+		datastore.Equals(datastore.Field("userId"), userId),
+		datastore.Equals(datastore.Field("organizationId"), org.Id),
+		datastore.Equals(datastore.Field("device"), device),
+	).FindOne()
 	if err != nil {
 		return err
+	}
+
+	var membershipId string
+	if found {
+		link := existingMembershipI.(*user.Membership)
+		membershipId = link.Id
+		if link.Active != active {
+			err = s.membershipStore.Query(
+				datastore.Id(link.Id),
+			).UpdateFields(map[string]any{
+				"active":    active,
+				"updatedAt": now,
+			})
+			if err != nil {
+				return err
+			}
+			changed = true
+		}
+	} else {
+		id := sdk.Id("memb")
+		internalId, err := sdk.InternalId(appId, id)
+		if err != nil {
+			return err
+		}
+
+		link := &user.Membership{
+			InternalId:     internalId,
+			Id:             id,
+			AppId:          appId,
+			UserId:         userId,
+			OrganizationId: org.Id,
+			Device:         device,
+			Active:         active,
+			CreatedAt:      now,
+			UpdatedAt:      now,
+		}
+
+		err = s.membershipStore.Upsert(link)
+		if err != nil {
+			return err
+		}
+
+		membershipId = id
+		changed = true
+	}
+
+	if !active {
+		if changed {
+			err = s.inactivateTokens(appId, userId)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+
+	deviceMemberships, err := s.membershipStore.Query(
+		datastore.Equals(datastore.Field("appId"), appId),
+		datastore.Equals(datastore.Field("userId"), userId),
+		datastore.Equals(datastore.Field("device"), device),
+	).Find()
+	if err != nil {
+		return err
+	}
+
+	for _, membershipI := range deviceMemberships {
+		membership := membershipI.(*user.Membership)
+		if membership.Id == membershipId || !membership.Active {
+			continue
+		}
+
+		err = s.membershipStore.Query(
+			datastore.Id(membership.Id),
+		).UpdateFields(map[string]any{
+			"active":    false,
+			"updatedAt": now,
+		})
+		if err != nil {
+			return err
+		}
+		changed = true
+	}
+
+	if changed {
+		err = s.inactivateTokens(appId, userId)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

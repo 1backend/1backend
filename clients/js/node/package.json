@@ -1,6 +1,6 @@
 {
   "name": "@1backend/node",
-  "version": "0.9.9",
+  "version": "0.9.10",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",

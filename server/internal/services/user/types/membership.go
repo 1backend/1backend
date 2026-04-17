@@ -32,6 +32,12 @@ func (o *Membership) GetId() string {
 }
 
 type SaveMembershipRequest struct {
+	// Device scope of the membership activation. Defaults to `unknown`.
+	Device string `json:"device,omitempty"`
+
+	// If true, this membership becomes the active organization for the
+	// specified device. Only one membership can remain active per (user, device).
+	Active bool `json:"active,omitempty"`
 }
 
 type SaveMembershipResponse struct {

@@ -3136,6 +3136,13 @@ definitions:
     type: object
   user_svc.CreateUserResponse:
     type: object
+  user_svc.DeactivateOrganizationResponse:
+    properties:
+      token:
+        $ref: '#/definitions/user_svc.Token'
+    required:
+    - token
+    type: object
   user_svc.DeleteMembershipRequest:
     type: object
   user_svc.DeleteMembershipResponse:
@@ -3670,6 +3677,15 @@ definitions:
     - enrolls
     type: object
   user_svc.SaveMembershipRequest:
+    properties:
+      active:
+        description: |-
+          If true, this membership becomes the active organization for the
+          specified device. Only one membership can remain active per (user, device).
+        type: boolean
+      device:
+        description: Device scope of the membership activation. Defaults to `unknown`.
+        type: string
     type: object
   user_svc.SaveMembershipResponse:
     type: object
@@ -3971,7 +3987,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.9.9
+  version: 0.9.10
 paths:
   /chat-svc/events:
     get:
@@ -7386,6 +7402,31 @@ paths:
       security:
       - BearerAuth: []
       summary: Activate Organization
+      tags:
+      - User Svc
+  /user-svc/organization/deactivate:
+    post:
+      description: Clears the caller user's active organization for the current device
+        and returns a fresh token without an active organization.
+      operationId: deactivateOrganization
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.DeactivateOrganizationResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Deactivate Organization
       tags:
       - User Svc
   /user-svc/organizations:
