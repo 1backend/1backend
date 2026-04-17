@@ -180,6 +180,7 @@ export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';
 export * from './userSvcContactInput';
 export * from './userSvcCreateUserRequest';
+export * from './userSvcDeactivateOrganizationResponse';
 export * from './userSvcEnroll';
 export * from './userSvcEnrollInput';
 export * from './userSvcErrorResponse';

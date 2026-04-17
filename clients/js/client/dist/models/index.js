@@ -181,6 +181,7 @@ export * from './UserSvcChangePasswordRequest';
 export * from './UserSvcContact';
 export * from './UserSvcContactInput';
 export * from './UserSvcCreateUserRequest';
+export * from './UserSvcDeactivateOrganizationResponse';
 export * from './UserSvcEnroll';
 export * from './UserSvcEnrollInput';
 export * from './UserSvcErrorResponse';

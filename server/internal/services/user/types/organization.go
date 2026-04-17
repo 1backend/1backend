@@ -74,6 +74,10 @@ type ActivateOrganizationResponse struct {
 	Token Token `json:"token" binding:"required"`
 }
 
+type DeactivateOrganizationResponse struct {
+	Token Token `json:"token" binding:"required"`
+}
+
 type ListOrganizationsRequest struct {
 	Ids []string `json:"ids"`
 

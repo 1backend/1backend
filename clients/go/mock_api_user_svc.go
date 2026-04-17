@@ -129,6 +129,36 @@ func (mr *MockUserSvcAPIMockRecorder) CreateUserExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUserExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).CreateUserExecute), r)
 }
 
+// DeactivateOrganization mocks base method.
+func (m *MockUserSvcAPI) DeactivateOrganization(ctx context.Context) ApiDeactivateOrganizationRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeactivateOrganization", ctx)
+	ret0, _ := ret[0].(ApiDeactivateOrganizationRequest)
+	return ret0
+}
+
+// DeactivateOrganization indicates an expected call of DeactivateOrganization.
+func (mr *MockUserSvcAPIMockRecorder) DeactivateOrganization(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeactivateOrganization", reflect.TypeOf((*MockUserSvcAPI)(nil).DeactivateOrganization), ctx)
+}
+
+// DeactivateOrganizationExecute mocks base method.
+func (m *MockUserSvcAPI) DeactivateOrganizationExecute(r ApiDeactivateOrganizationRequest) (*UserSvcDeactivateOrganizationResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeactivateOrganizationExecute", r)
+	ret0, _ := ret[0].(*UserSvcDeactivateOrganizationResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// DeactivateOrganizationExecute indicates an expected call of DeactivateOrganizationExecute.
+func (mr *MockUserSvcAPIMockRecorder) DeactivateOrganizationExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeactivateOrganizationExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).DeactivateOrganizationExecute), r)
+}
+
 // DeleteMembership mocks base method.
 func (m *MockUserSvcAPI) DeleteMembership(ctx context.Context, organizationId, userId string) ApiDeleteMembershipRequest {
 	m.ctrl.T.Helper()

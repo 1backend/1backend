@@ -249,6 +249,11 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 	})).
 		Methods("OPTIONS", "POST")
 
+	router.HandleFunc("/user-svc/organization/deactivate", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.DeactivateOrganization(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
 	router.HandleFunc("/user-svc/organizations", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.ListOrganizations(w, r)
 	})).

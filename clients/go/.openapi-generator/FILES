@@ -217,6 +217,7 @@ docs/UserSvcChangePasswordRequest.md
 docs/UserSvcContact.md
 docs/UserSvcContactInput.md
 docs/UserSvcCreateUserRequest.md
+docs/UserSvcDeactivateOrganizationResponse.md
 docs/UserSvcEnroll.md
 docs/UserSvcEnrollInput.md
 docs/UserSvcErrorResponse.md
@@ -449,6 +450,7 @@ model_user_svc_change_password_request.go
 model_user_svc_contact.go
 model_user_svc_contact_input.go
 model_user_svc_create_user_request.go
+model_user_svc_deactivate_organization_response.go
 model_user_svc_enroll.go
 model_user_svc_enroll_input.go
 model_user_svc_error_response.go
