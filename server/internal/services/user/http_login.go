@@ -373,9 +373,9 @@ func (s *UserService) generateAuthToken(
 		return nil, errors.Wrap(err, "error listing roles")
 	}
 
-	_, activeOrganizationId, err := s.getUserOrganizations(appId, u.Id, device)
+	activeOrganizationId, err := s.getActiveOrganizationId(appId, u.Id, device)
 	if err != nil {
-		return nil, errors.Wrap(err, "error listing organizations")
+		return nil, errors.Wrap(err, "error reading active organization")
 	}
 
 	roles = filterRolesForActiveOrganization(roles, activeOrganizationId)

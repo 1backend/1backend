@@ -48,6 +48,7 @@ type UserService struct {
 	contactStore      datastore.DataStore
 	organizationStore datastore.DataStore
 	membershipStore   datastore.DataStore
+	activationStore   datastore.DataStore
 	permitStore       datastore.DataStore
 	enrollStore       datastore.DataStore
 	appStore          datastore.DataStore
@@ -126,6 +127,14 @@ func NewUserService(
 		return nil, err
 	}
 
+	activationsStore, err := options.DataStoreFactory.Create(
+		"userSvcActivations",
+		&usertypes.Activation{},
+	)
+	if err != nil {
+		return nil, err
+	}
+
 	permitsStore, err := options.DataStoreFactory.Create(
 		"userSvcPermits",
 		&usertypes.Permit{},
@@ -177,6 +186,7 @@ func NewUserService(
 		contactStore:          contactsStore,
 		organizationStore:     organizationsStore,
 		membershipStore:       membershipsStore,
+		activationStore:       activationsStore,
 		permitStore:           permitsStore,
 		enrollStore:           enrollsStore,
 		appStore:              appStore,
@@ -249,6 +259,16 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 	})).
 		Methods("OPTIONS", "POST")
 
+	router.HandleFunc("/user-svc/organization/{organizationId}/membership/accept", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.AcceptMembership(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/organization/{organizationId}/membership/decline", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.DeclineMembership(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
 	router.HandleFunc("/user-svc/organization/deactivate", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.DeactivateOrganization(w, r)
 	})).
@@ -268,6 +288,11 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 		us.DeleteMembership(w, r)
 	})).
 		Methods("OPTIONS", "DELETE")
+
+	router.HandleFunc("/user-svc/memberships", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.ListMemberships(w, r)
+	})).
+		Methods("OPTIONS", "POST")
 
 	router.HandleFunc("/user-svc/user", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.CreateUser(w, r)

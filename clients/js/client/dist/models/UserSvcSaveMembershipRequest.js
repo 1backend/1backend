@@ -25,8 +25,7 @@ export function UserSvcSaveMembershipRequestFromJSONTyped(json, ignoreDiscrimina
         return json;
     }
     return {
-        'active': json['active'] == null ? undefined : json['active'],
-        'device': json['device'] == null ? undefined : json['device'],
+        'roles': json['roles'] == null ? undefined : json['roles'],
     };
 }
 export function UserSvcSaveMembershipRequestToJSON(json) {
@@ -37,7 +36,6 @@ export function UserSvcSaveMembershipRequestToJSONTyped(value, ignoreDiscriminat
         return value;
     }
     return {
-        'active': value['active'],
-        'device': value['device'],
+        'roles': value['roles'],
     };
 }

@@ -3,10 +3,7 @@ package user_svc
 import "time"
 
 // Membership links a user to an organization.
-// Note: Roles come from Enrollments, not Memberships.
-// When created through SaveMembership, the user also receives the
-// corresponding Enrollment, enabling their dynamic role assignment
-// (e.g. `user-svc:org:{org_123}:user`).
+// Membership is the canonical organization relationship for a user.
 type Membership struct {
 	InternalId string `json:"internalId" swagger:"ignore"`
 
@@ -20,31 +17,74 @@ type Membership struct {
 
 	OrganizationId string `json:"organizationId,omitempty"`
 	UserId         string `json:"userId,omitempty"`
-	Device         string `json:"device,omitempty"`
 
-	// Active/default organization for a user on a specific device.
-	// There can only be one active membership per (user, device).
-	Active bool `json:"active,omitempty"`
+	Status MembershipStatus `json:"status,omitempty"`
+
+	Roles []string `json:"roles,omitempty"`
+
+	InvitedBy string `json:"invitedBy,omitempty"`
+
+	AcceptedAt *time.Time `json:"acceptedAt,omitempty"`
 }
 
 func (o *Membership) GetId() string {
-	return o.Id
+	if o.InternalId == "" {
+		panic("membership has no internal id")
+	}
+
+	return o.InternalId
 }
 
-type SaveMembershipRequest struct {
-	// Device scope of the membership activation. Defaults to `unknown`.
-	Device string `json:"device,omitempty"`
+type MembershipStatus string
 
-	// If true, this membership becomes the active organization for the
-	// specified device. Only one membership can remain active per (user, device).
-	Active bool `json:"active,omitempty"`
+const (
+	MembershipStatusPending  MembershipStatus = "pending"
+	MembershipStatusAccepted MembershipStatus = "accepted"
+	MembershipStatusDeclined MembershipStatus = "declined"
+)
+
+type SaveMembershipRequest struct {
+	Roles []string `json:"roles,omitempty"`
 }
 
 type SaveMembershipResponse struct {
+	Membership Membership `json:"membership" binding:"required"`
 }
 
 type DeleteMembershipRequest struct {
 }
 
 type DeleteMembershipResponse struct {
+}
+
+type AcceptMembershipRequest struct {
+	Activate bool `json:"activate,omitempty"`
+}
+
+type AcceptMembershipResponse struct {
+	Membership Membership `json:"membership" binding:"required"`
+	Token      *Token     `json:"token,omitempty"`
+}
+
+type DeclineMembershipRequest struct {
+}
+
+type DeclineMembershipResponse struct {
+	Membership Membership `json:"membership" binding:"required"`
+}
+
+type ListMembershipsRequest struct {
+	OrganizationId string           `json:"organizationId,omitempty"`
+	UserId         string           `json:"userId,omitempty"`
+	Status         MembershipStatus `json:"status,omitempty"`
+	Limit          int              `json:"limit,omitempty"`
+	AfterTime      time.Time        `json:"afterTime,omitempty"`
+}
+
+type ListMembershipsResponse struct {
+	Memberships []struct {
+		Membership   Membership   `json:"membership" binding:"required"`
+		Organization Organization `json:"organization" binding:"required"`
+		User         User         `json:"user" binding:"required"`
+	} `json:"memberships" binding:"required"`
 }

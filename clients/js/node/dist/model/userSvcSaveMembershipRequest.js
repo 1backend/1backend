@@ -17,13 +17,8 @@ export class UserSvcSaveMembershipRequest {
 UserSvcSaveMembershipRequest.discriminator = undefined;
 UserSvcSaveMembershipRequest.attributeTypeMap = [
     {
-        "name": "active",
-        "baseName": "active",
-        "type": "boolean"
-    },
-    {
-        "name": "device",
-        "baseName": "device",
-        "type": "string"
+        "name": "roles",
+        "baseName": "roles",
+        "type": "Array<string>"
     }
 ];

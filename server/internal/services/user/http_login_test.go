@@ -306,9 +306,6 @@ func TestOrganization(t *testing.T) {
 	userToken = strings.Replace(userToken, "Bearer ", "", -1)
 	require.Equal(t, true, len(userToken) > 0)
 
-	otherClient := manyClients[1]
-	thirdClient := manyClients[2]
-
 	publicKeyRsp, _, err := clientFactory.Client().
 		UserSvcAPI.GetPublicKey(context.Background()).
 		Execute()
@@ -366,7 +363,13 @@ func TestOrganization(t *testing.T) {
 			)
 			require.NoError(t, err)
 			require.NotNil(t, claim)
-			require.Equal(t, 2, len(claim.Roles), claim.Roles)
+			require.Equal(t, 3, len(claim.Roles), claim.Roles)
+			require.Contains(
+				t,
+				claim.Roles,
+				fmt.Sprintf("user-svc:org:{%v}:user", orgId1),
+				claim.Roles,
+			)
 			require.Contains(
 				t,
 				claim.Roles,
@@ -390,208 +393,6 @@ func TestOrganization(t *testing.T) {
 		},
 	)
 
-	t.Run("assign org to user", func(t *testing.T) {
-		readSelfRsp, _, err := otherClient.UserSvcAPI.ReadSelf(context.Background()).
-			Execute()
-		require.NoError(t, err)
-
-		_, _, err = userClient.UserSvcAPI.SaveMembership(
-			context.Background(),
-			orgId1,
-			readSelfRsp.User.Id,
-		).
-			Execute()
-		require.NoError(t, err)
-
-		loginReq := openapi.UserSvcLoginRequest{
-			AppHost:  sdk.DefaultTestAppHost,
-			Slug:     openapi.PtrString("test-user-slug-1"),
-			Password: openapi.PtrString("testUserPassword1"),
-		}
-		// log in again and see the claim
-		loginRsp, _, err := otherClient.UserSvcAPI.Login(context.Background()).
-			Body(loginReq).
-			Execute()
-		require.NoError(t, err)
-
-		claim, err := auth.AuthorizerImpl{}.ParseJWT(
-			publicKeyRsp.PublicKey,
-			loginRsp.Token.Token,
-		)
-
-		require.NoError(t, err)
-		require.NotNil(t, claim)
-		require.Equal(t, 1, len(claim.Roles), claim.Roles)
-		require.Empty(t, claim.ActiveOrganizationId)
-		require.NotContains(t, claim.Roles, fmt.Sprintf("user-svc:org:{%v}:user", orgId1))
-
-		_, _, err = thirdClient.UserSvcAPI.DeleteMembership(
-			context.Background(),
-			orgId1,
-			readSelfRsp.User.Id,
-		).
-			Execute()
-		// third user cannot remove the second from the org of the first
-		require.Error(t, err)
-
-		_, _, err = userClient.UserSvcAPI.DeleteMembership(
-			context.Background(),
-			orgId1,
-			readSelfRsp.User.Id,
-		).
-			Execute()
-		require.NoError(t, err)
-	})
-
-	t.Run("save membership supports active state per device", func(t *testing.T) {
-		readSelfRsp, _, err := otherClient.UserSvcAPI.ReadSelf(context.Background()).
-			Execute()
-		require.NoError(t, err)
-
-		loginOnDevice := func(device string) (*auth.Claims, *openapi.UserSvcReadSelfResponse) {
-			loginRsp, _, err := otherClient.UserSvcAPI.Login(context.Background()).
-				Body(openapi.UserSvcLoginRequest{
-					AppHost:  sdk.DefaultTestAppHost,
-					Slug:     openapi.PtrString("test-user-slug-1"),
-					Password: openapi.PtrString("testUserPassword1"),
-					Device:   openapi.PtrString(device),
-				}).
-				Execute()
-			require.NoError(t, err)
-
-			claim, err := auth.AuthorizerImpl{}.ParseJWT(
-				publicKeyRsp.PublicKey,
-				loginRsp.Token.Token,
-			)
-			require.NoError(t, err)
-
-			selfRsp, _, err := client.NewApiClientFactory(server.Url).
-				Client(client.WithToken(loginRsp.Token.Token)).
-				UserSvcAPI.ReadSelf(context.Background()).
-				Execute()
-			require.NoError(t, err)
-
-			return claim, selfRsp
-		}
-
-		t.Run("fresh membership can be saved as active=true", func(t *testing.T) {
-			device := "membership-active-device"
-
-			_, _, err = userClient.UserSvcAPI.SaveMembership(
-				context.Background(),
-				orgId1,
-				readSelfRsp.User.Id,
-			).
-				Body(openapi.UserSvcSaveMembershipRequest{
-					Device: openapi.PtrString(device),
-					Active: openapi.PtrBool(true),
-				}).
-				Execute()
-			require.NoError(t, err)
-
-			claim, selfRsp := loginOnDevice(device)
-			require.Equal(t, orgId1, claim.ActiveOrganizationId)
-			require.Contains(t, claim.Roles, fmt.Sprintf("user-svc:org:{%v}:user", orgId1))
-			require.Equal(t, orgId1, selfRsp.GetActiveOrganizationId())
-		})
-
-		t.Run("fresh membership can be saved as active=false", func(t *testing.T) {
-			device := "membership-inactive-device"
-
-			_, _, err = userClient.UserSvcAPI.SaveMembership(
-				context.Background(),
-				orgId1,
-				readSelfRsp.User.Id,
-			).
-				Body(openapi.UserSvcSaveMembershipRequest{
-					Device: openapi.PtrString(device),
-					Active: openapi.PtrBool(false),
-				}).
-				Execute()
-			require.NoError(t, err)
-
-			claim, selfRsp := loginOnDevice(device)
-			require.Empty(t, claim.ActiveOrganizationId)
-			require.NotContains(t, claim.Roles, fmt.Sprintf("user-svc:org:{%v}:user", orgId1))
-			require.Empty(t, selfRsp.GetActiveOrganizationId())
-		})
-
-		t.Run("membership can transition from active=false to active=true", func(t *testing.T) {
-			device := "membership-transition-device"
-
-			_, _, err = userClient.UserSvcAPI.SaveMembership(
-				context.Background(),
-				orgId1,
-				readSelfRsp.User.Id,
-			).
-				Body(openapi.UserSvcSaveMembershipRequest{
-					Device: openapi.PtrString(device),
-					Active: openapi.PtrBool(false),
-				}).
-				Execute()
-			require.NoError(t, err)
-
-			claim, selfRsp := loginOnDevice(device)
-			require.Empty(t, claim.ActiveOrganizationId)
-			require.NotContains(t, claim.Roles, fmt.Sprintf("user-svc:org:{%v}:user", orgId1))
-			require.Empty(t, selfRsp.GetActiveOrganizationId())
-
-			_, _, err = userClient.UserSvcAPI.SaveMembership(
-				context.Background(),
-				orgId1,
-				readSelfRsp.User.Id,
-			).
-				Body(openapi.UserSvcSaveMembershipRequest{
-					Device: openapi.PtrString(device),
-					Active: openapi.PtrBool(true),
-				}).
-				Execute()
-			require.NoError(t, err)
-
-			claim, selfRsp = loginOnDevice(device)
-			require.Equal(t, orgId1, claim.ActiveOrganizationId)
-			require.Contains(t, claim.Roles, fmt.Sprintf("user-svc:org:{%v}:user", orgId1))
-			require.Equal(t, orgId1, selfRsp.GetActiveOrganizationId())
-		})
-
-		t.Run("membership can transition from active=true to active=false", func(t *testing.T) {
-			device := "membership-active-to-false-device"
-
-			_, _, err = userClient.UserSvcAPI.SaveMembership(
-				context.Background(),
-				orgId1,
-				readSelfRsp.User.Id,
-			).
-				Body(openapi.UserSvcSaveMembershipRequest{
-					Device: openapi.PtrString(device),
-					Active: openapi.PtrBool(true),
-				}).
-				Execute()
-			require.NoError(t, err)
-
-			claim, selfRsp := loginOnDevice(device)
-			require.Equal(t, orgId1, claim.ActiveOrganizationId)
-			require.Contains(t, claim.Roles, fmt.Sprintf("user-svc:org:{%v}:user", orgId1))
-			require.Equal(t, orgId1, selfRsp.GetActiveOrganizationId())
-
-			_, _, err = userClient.UserSvcAPI.SaveMembership(
-				context.Background(),
-				orgId1,
-				readSelfRsp.User.Id,
-			).
-				Body(openapi.UserSvcSaveMembershipRequest{
-					Device: openapi.PtrString(device),
-					Active: openapi.PtrBool(false),
-				}).
-				Execute()
-			require.NoError(t, err)
-
-			claim, selfRsp = loginOnDevice(device)
-			require.Empty(t, claim.ActiveOrganizationId)
-			require.NotContains(t, claim.Roles, fmt.Sprintf("user-svc:org:{%v}:user", orgId1))
-			require.Empty(t, selfRsp.GetActiveOrganizationId())
-		})
-	})
 }
 
 func TestLogin__SecurityBoundaries(t *testing.T) {

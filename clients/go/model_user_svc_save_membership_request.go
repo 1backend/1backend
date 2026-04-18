@@ -20,10 +20,7 @@ var _ MappedNullable = &UserSvcSaveMembershipRequest{}
 
 // UserSvcSaveMembershipRequest struct for UserSvcSaveMembershipRequest
 type UserSvcSaveMembershipRequest struct {
-	// If true, this membership becomes the active organization for the specified device. Only one membership can remain active per (user, device).
-	Active *bool `json:"active,omitempty"`
-	// Device scope of the membership activation. Defaults to `unknown`.
-	Device *string `json:"device,omitempty"`
+	Roles []string `json:"roles,omitempty"`
 }
 
 // NewUserSvcSaveMembershipRequest instantiates a new UserSvcSaveMembershipRequest object
@@ -43,68 +40,36 @@ func NewUserSvcSaveMembershipRequestWithDefaults() *UserSvcSaveMembershipRequest
 	return &this
 }
 
-// GetActive returns the Active field value if set, zero value otherwise.
-func (o *UserSvcSaveMembershipRequest) GetActive() bool {
-	if o == nil || IsNil(o.Active) {
-		var ret bool
+// GetRoles returns the Roles field value if set, zero value otherwise.
+func (o *UserSvcSaveMembershipRequest) GetRoles() []string {
+	if o == nil || IsNil(o.Roles) {
+		var ret []string
 		return ret
 	}
-	return *o.Active
+	return o.Roles
 }
 
-// GetActiveOk returns a tuple with the Active field value if set, nil otherwise
+// GetRolesOk returns a tuple with the Roles field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *UserSvcSaveMembershipRequest) GetActiveOk() (*bool, bool) {
-	if o == nil || IsNil(o.Active) {
+func (o *UserSvcSaveMembershipRequest) GetRolesOk() ([]string, bool) {
+	if o == nil || IsNil(o.Roles) {
 		return nil, false
 	}
-	return o.Active, true
+	return o.Roles, true
 }
 
-// HasActive returns a boolean if a field has been set.
-func (o *UserSvcSaveMembershipRequest) HasActive() bool {
-	if o != nil && !IsNil(o.Active) {
+// HasRoles returns a boolean if a field has been set.
+func (o *UserSvcSaveMembershipRequest) HasRoles() bool {
+	if o != nil && !IsNil(o.Roles) {
 		return true
 	}
 
 	return false
 }
 
-// SetActive gets a reference to the given bool and assigns it to the Active field.
-func (o *UserSvcSaveMembershipRequest) SetActive(v bool) {
-	o.Active = &v
-}
-
-// GetDevice returns the Device field value if set, zero value otherwise.
-func (o *UserSvcSaveMembershipRequest) GetDevice() string {
-	if o == nil || IsNil(o.Device) {
-		var ret string
-		return ret
-	}
-	return *o.Device
-}
-
-// GetDeviceOk returns a tuple with the Device field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcSaveMembershipRequest) GetDeviceOk() (*string, bool) {
-	if o == nil || IsNil(o.Device) {
-		return nil, false
-	}
-	return o.Device, true
-}
-
-// HasDevice returns a boolean if a field has been set.
-func (o *UserSvcSaveMembershipRequest) HasDevice() bool {
-	if o != nil && !IsNil(o.Device) {
-		return true
-	}
-
-	return false
-}
-
-// SetDevice gets a reference to the given string and assigns it to the Device field.
-func (o *UserSvcSaveMembershipRequest) SetDevice(v string) {
-	o.Device = &v
+// SetRoles gets a reference to the given []string and assigns it to the Roles field.
+func (o *UserSvcSaveMembershipRequest) SetRoles(v []string) {
+	o.Roles = v
 }
 
 func (o UserSvcSaveMembershipRequest) MarshalJSON() ([]byte, error) {
@@ -117,11 +82,8 @@ func (o UserSvcSaveMembershipRequest) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcSaveMembershipRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if !IsNil(o.Active) {
-		toSerialize["active"] = o.Active
-	}
-	if !IsNil(o.Device) {
-		toSerialize["device"] = o.Device
+	if !IsNil(o.Roles) {
+		toSerialize["roles"] = o.Roles
 	}
 	return toSerialize, nil
 }

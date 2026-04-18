@@ -16,22 +16,12 @@
  */
 export interface UserSvcSaveOrganizationRequest {
     /**
-     * If true, and a new organization is created, it becomes the
-     * active organization for the caller's current device and a fresh token
-     * is issued. If false, the active organization is not changed and no
-     * new token is issued.
+     * If true, the organization becomes the active organization for the
+     * caller's current device and a fresh token is issued.
      * @type {boolean}
      * @memberof UserSvcSaveOrganizationRequest
      */
     activate?: boolean;
-    /**
-     * If true, the caller (the user making the request) will be assigned
-     * the admin role for the organization.
-     * If false, no Membership or Enroll will be created.
-     * @type {boolean}
-     * @memberof UserSvcSaveOrganizationRequest
-     */
-    assignCaller?: boolean;
     /**
      *
      * @type {string}

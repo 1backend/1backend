@@ -25,6 +25,7 @@ import (
 )
 
 var ErrEnrollConflict = errors.New("enrollment id already bound to another app")
+var ErrOrgScopedEnroll = errors.New("organization-scoped roles must be managed through memberships")
 
 // @ID saveEnrolls
 // @Summary Save Enrolls
@@ -100,6 +101,10 @@ func (s *UserService) SaveEnrolls(w http.ResponseWriter, r *http.Request) {
 
 	if !isAdmin {
 		for _, enroll := range req.Enrolls {
+			if isOrgScopedRole(enroll.Role) {
+				endpoint.WriteErr(w, http.StatusBadRequest, ErrOrgScopedEnroll)
+				return
+			}
 			if !auth.OwnsRole(&effectiveClaims, enroll.Role) {
 				endpoint.Unauthorized(w)
 				return
@@ -147,6 +152,9 @@ func (s *UserService) saveEnrolls(
 		enrollIds     []any
 	)
 	for _, enroll := range req.Enrolls {
+		if isOrgScopedRole(enroll.Role) {
+			return nil, ErrOrgScopedEnroll
+		}
 		contactIds = append(contactIds, enroll.ContactId)
 		enrollIds = append(enrollIds, enroll.Id)
 		callerUserIds = append(callerUserIds, enroll.UserId)

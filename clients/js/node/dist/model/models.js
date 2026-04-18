@@ -172,6 +172,8 @@ export * from './sourceSvcCheckoutRepoRequest';
 export * from './sourceSvcCheckoutRepoResponse';
 export * from './sourceSvcErrorResponse';
 export * from './stableDiffusionTxt2ImgRequest';
+export * from './userSvcAcceptMembershipRequest';
+export * from './userSvcAcceptMembershipResponse';
 export * from './userSvcActivateOrganizationRequest';
 export * from './userSvcActivateOrganizationResponse';
 export * from './userSvcApp';
@@ -180,6 +182,7 @@ export * from './userSvcContact';
 export * from './userSvcContactInput';
 export * from './userSvcCreateUserRequest';
 export * from './userSvcDeactivateOrganizationResponse';
+export * from './userSvcDeclineMembershipResponse';
 export * from './userSvcEnroll';
 export * from './userSvcEnrollInput';
 export * from './userSvcErrorResponse';
@@ -191,6 +194,9 @@ export * from './userSvcListAppsRequest';
 export * from './userSvcListAppsResponse';
 export * from './userSvcListEnrollsRequest';
 export * from './userSvcListEnrollsResponse';
+export * from './userSvcListMembershipsRequest';
+export * from './userSvcListMembershipsResponse';
+export * from './userSvcListMembershipsResponseMembershipsInner';
 export * from './userSvcListOrganizationsRequest';
 export * from './userSvcListOrganizationsResponse';
 export * from './userSvcListPermissionsResponse';
@@ -201,6 +207,8 @@ export * from './userSvcListUsersRequest';
 export * from './userSvcListUsersResponse';
 export * from './userSvcLoginRequest';
 export * from './userSvcLoginResponse';
+export * from './userSvcMembership';
+export * from './userSvcMembershipStatus';
 export * from './userSvcOrderDirection';
 export * from './userSvcOrganization';
 export * from './userSvcPermit';
@@ -217,6 +225,7 @@ export * from './userSvcRevokeTokensRequest';
 export * from './userSvcSaveEnrollsRequest';
 export * from './userSvcSaveEnrollsResponse';
 export * from './userSvcSaveMembershipRequest';
+export * from './userSvcSaveMembershipResponse';
 export * from './userSvcSaveOrganizationRequest';
 export * from './userSvcSaveOrganizationResponse';
 export * from './userSvcSavePermitsRequest';
@@ -403,6 +412,8 @@ import { SourceSvcCheckoutRepoRequest } from './sourceSvcCheckoutRepoRequest';
 import { SourceSvcCheckoutRepoResponse } from './sourceSvcCheckoutRepoResponse';
 import { SourceSvcErrorResponse } from './sourceSvcErrorResponse';
 import { StableDiffusionTxt2ImgRequest } from './stableDiffusionTxt2ImgRequest';
+import { UserSvcAcceptMembershipRequest } from './userSvcAcceptMembershipRequest';
+import { UserSvcAcceptMembershipResponse } from './userSvcAcceptMembershipResponse';
 import { UserSvcActivateOrganizationRequest } from './userSvcActivateOrganizationRequest';
 import { UserSvcActivateOrganizationResponse } from './userSvcActivateOrganizationResponse';
 import { UserSvcApp } from './userSvcApp';
@@ -411,6 +422,7 @@ import { UserSvcContact } from './userSvcContact';
 import { UserSvcContactInput } from './userSvcContactInput';
 import { UserSvcCreateUserRequest } from './userSvcCreateUserRequest';
 import { UserSvcDeactivateOrganizationResponse } from './userSvcDeactivateOrganizationResponse';
+import { UserSvcDeclineMembershipResponse } from './userSvcDeclineMembershipResponse';
 import { UserSvcEnroll } from './userSvcEnroll';
 import { UserSvcEnrollInput } from './userSvcEnrollInput';
 import { UserSvcErrorResponse } from './userSvcErrorResponse';
@@ -422,6 +434,9 @@ import { UserSvcListAppsRequest } from './userSvcListAppsRequest';
 import { UserSvcListAppsResponse } from './userSvcListAppsResponse';
 import { UserSvcListEnrollsRequest } from './userSvcListEnrollsRequest';
 import { UserSvcListEnrollsResponse } from './userSvcListEnrollsResponse';
+import { UserSvcListMembershipsRequest } from './userSvcListMembershipsRequest';
+import { UserSvcListMembershipsResponse } from './userSvcListMembershipsResponse';
+import { UserSvcListMembershipsResponseMembershipsInner } from './userSvcListMembershipsResponseMembershipsInner';
 import { UserSvcListOrganizationsRequest } from './userSvcListOrganizationsRequest';
 import { UserSvcListOrganizationsResponse } from './userSvcListOrganizationsResponse';
 import { UserSvcListPermissionsResponse } from './userSvcListPermissionsResponse';
@@ -432,6 +447,8 @@ import { UserSvcListUsersRequest } from './userSvcListUsersRequest';
 import { UserSvcListUsersResponse } from './userSvcListUsersResponse';
 import { UserSvcLoginRequest } from './userSvcLoginRequest';
 import { UserSvcLoginResponse } from './userSvcLoginResponse';
+import { UserSvcMembership } from './userSvcMembership';
+import { UserSvcMembershipStatus } from './userSvcMembershipStatus';
 import { UserSvcOrderDirection } from './userSvcOrderDirection';
 import { UserSvcOrganization } from './userSvcOrganization';
 import { UserSvcPermit } from './userSvcPermit';
@@ -448,6 +465,7 @@ import { UserSvcRevokeTokensRequest } from './userSvcRevokeTokensRequest';
 import { UserSvcSaveEnrollsRequest } from './userSvcSaveEnrollsRequest';
 import { UserSvcSaveEnrollsResponse } from './userSvcSaveEnrollsResponse';
 import { UserSvcSaveMembershipRequest } from './userSvcSaveMembershipRequest';
+import { UserSvcSaveMembershipResponse } from './userSvcSaveMembershipResponse';
 import { UserSvcSaveOrganizationRequest } from './userSvcSaveOrganizationRequest';
 import { UserSvcSaveOrganizationResponse } from './userSvcSaveOrganizationResponse';
 import { UserSvcSavePermitsRequest } from './userSvcSavePermitsRequest';
@@ -485,6 +503,7 @@ let enumsMap = {
     "RegistrySvcLanguage": RegistrySvcLanguage,
     "SecretSvcChecksumAlgorithm": SecretSvcChecksumAlgorithm,
     "UserSvcListUsersOrderBy": UserSvcListUsersOrderBy,
+    "UserSvcMembershipStatus": UserSvcMembershipStatus,
     "UserSvcOrderDirection": UserSvcOrderDirection,
 };
 let typeMap = {
@@ -650,6 +669,8 @@ let typeMap = {
     "SourceSvcCheckoutRepoResponse": SourceSvcCheckoutRepoResponse,
     "SourceSvcErrorResponse": SourceSvcErrorResponse,
     "StableDiffusionTxt2ImgRequest": StableDiffusionTxt2ImgRequest,
+    "UserSvcAcceptMembershipRequest": UserSvcAcceptMembershipRequest,
+    "UserSvcAcceptMembershipResponse": UserSvcAcceptMembershipResponse,
     "UserSvcActivateOrganizationRequest": UserSvcActivateOrganizationRequest,
     "UserSvcActivateOrganizationResponse": UserSvcActivateOrganizationResponse,
     "UserSvcApp": UserSvcApp,
@@ -658,6 +679,7 @@ let typeMap = {
     "UserSvcContactInput": UserSvcContactInput,
     "UserSvcCreateUserRequest": UserSvcCreateUserRequest,
     "UserSvcDeactivateOrganizationResponse": UserSvcDeactivateOrganizationResponse,
+    "UserSvcDeclineMembershipResponse": UserSvcDeclineMembershipResponse,
     "UserSvcEnroll": UserSvcEnroll,
     "UserSvcEnrollInput": UserSvcEnrollInput,
     "UserSvcErrorResponse": UserSvcErrorResponse,
@@ -669,6 +691,9 @@ let typeMap = {
     "UserSvcListAppsResponse": UserSvcListAppsResponse,
     "UserSvcListEnrollsRequest": UserSvcListEnrollsRequest,
     "UserSvcListEnrollsResponse": UserSvcListEnrollsResponse,
+    "UserSvcListMembershipsRequest": UserSvcListMembershipsRequest,
+    "UserSvcListMembershipsResponse": UserSvcListMembershipsResponse,
+    "UserSvcListMembershipsResponseMembershipsInner": UserSvcListMembershipsResponseMembershipsInner,
     "UserSvcListOrganizationsRequest": UserSvcListOrganizationsRequest,
     "UserSvcListOrganizationsResponse": UserSvcListOrganizationsResponse,
     "UserSvcListPermissionsResponse": UserSvcListPermissionsResponse,
@@ -678,6 +703,7 @@ let typeMap = {
     "UserSvcListUsersResponse": UserSvcListUsersResponse,
     "UserSvcLoginRequest": UserSvcLoginRequest,
     "UserSvcLoginResponse": UserSvcLoginResponse,
+    "UserSvcMembership": UserSvcMembership,
     "UserSvcOrganization": UserSvcOrganization,
     "UserSvcPermit": UserSvcPermit,
     "UserSvcPermitInput": UserSvcPermitInput,
@@ -693,6 +719,7 @@ let typeMap = {
     "UserSvcSaveEnrollsRequest": UserSvcSaveEnrollsRequest,
     "UserSvcSaveEnrollsResponse": UserSvcSaveEnrollsResponse,
     "UserSvcSaveMembershipRequest": UserSvcSaveMembershipRequest,
+    "UserSvcSaveMembershipResponse": UserSvcSaveMembershipResponse,
     "UserSvcSaveOrganizationRequest": UserSvcSaveOrganizationRequest,
     "UserSvcSaveOrganizationResponse": UserSvcSaveOrganizationResponse,
     "UserSvcSavePermitsRequest": UserSvcSavePermitsRequest,

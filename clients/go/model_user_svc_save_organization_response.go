@@ -23,7 +23,7 @@ var _ MappedNullable = &UserSvcSaveOrganizationResponse{}
 // UserSvcSaveOrganizationResponse struct for UserSvcSaveOrganizationResponse
 type UserSvcSaveOrganizationResponse struct {
 	Organization UserSvcOrganization `json:"organization"`
-	// Due to the nature of JWT tokens, the token may be refreshed after creating an organization, as dynamic organization roles are embedded in it.
+	// A fresh token is returned only when the organization is activated.
 	Token *UserSvcToken `json:"token,omitempty"`
 }
 

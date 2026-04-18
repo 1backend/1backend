@@ -10,14 +10,7 @@
  * Do not edit the class manually.
  */
 export declare class UserSvcSaveMembershipRequest {
-    /**
-    * If true, this membership becomes the active organization for the specified device. Only one membership can remain active per (user, device).
-    */
-    'active'?: boolean;
-    /**
-    * Device scope of the membership activation. Defaults to `unknown`.
-    */
-    'device'?: string;
+    'roles'?: Array<string>;
     static discriminator: string | undefined;
     static attributeTypeMap: Array<{
         name: string;

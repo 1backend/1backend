@@ -15,11 +15,14 @@
 
 import * as runtime from '../runtime';
 import type {
+  UserSvcAcceptMembershipRequest,
+  UserSvcAcceptMembershipResponse,
   UserSvcActivateOrganizationRequest,
   UserSvcActivateOrganizationResponse,
   UserSvcChangePasswordRequest,
   UserSvcCreateUserRequest,
   UserSvcDeactivateOrganizationResponse,
+  UserSvcDeclineMembershipResponse,
   UserSvcErrorResponse,
   UserSvcExchangeTokenRequest,
   UserSvcExchangeTokenResponse,
@@ -29,6 +32,8 @@ import type {
   UserSvcListAppsResponse,
   UserSvcListEnrollsRequest,
   UserSvcListEnrollsResponse,
+  UserSvcListMembershipsRequest,
+  UserSvcListMembershipsResponse,
   UserSvcListOrganizationsRequest,
   UserSvcListOrganizationsResponse,
   UserSvcListPermissionsResponse,
@@ -50,6 +55,7 @@ import type {
   UserSvcSaveEnrollsRequest,
   UserSvcSaveEnrollsResponse,
   UserSvcSaveMembershipRequest,
+  UserSvcSaveMembershipResponse,
   UserSvcSaveOrganizationRequest,
   UserSvcSaveOrganizationResponse,
   UserSvcSavePermitsRequest,
@@ -60,6 +66,10 @@ import type {
   UserSvcUpdateAppRequest,
 } from '../models/index';
 import {
+    UserSvcAcceptMembershipRequestFromJSON,
+    UserSvcAcceptMembershipRequestToJSON,
+    UserSvcAcceptMembershipResponseFromJSON,
+    UserSvcAcceptMembershipResponseToJSON,
     UserSvcActivateOrganizationRequestFromJSON,
     UserSvcActivateOrganizationRequestToJSON,
     UserSvcActivateOrganizationResponseFromJSON,
@@ -70,6 +80,8 @@ import {
     UserSvcCreateUserRequestToJSON,
     UserSvcDeactivateOrganizationResponseFromJSON,
     UserSvcDeactivateOrganizationResponseToJSON,
+    UserSvcDeclineMembershipResponseFromJSON,
+    UserSvcDeclineMembershipResponseToJSON,
     UserSvcErrorResponseFromJSON,
     UserSvcErrorResponseToJSON,
     UserSvcExchangeTokenRequestFromJSON,
@@ -88,6 +100,10 @@ import {
     UserSvcListEnrollsRequestToJSON,
     UserSvcListEnrollsResponseFromJSON,
     UserSvcListEnrollsResponseToJSON,
+    UserSvcListMembershipsRequestFromJSON,
+    UserSvcListMembershipsRequestToJSON,
+    UserSvcListMembershipsResponseFromJSON,
+    UserSvcListMembershipsResponseToJSON,
     UserSvcListOrganizationsRequestFromJSON,
     UserSvcListOrganizationsRequestToJSON,
     UserSvcListOrganizationsResponseFromJSON,
@@ -130,6 +146,8 @@ import {
     UserSvcSaveEnrollsResponseToJSON,
     UserSvcSaveMembershipRequestFromJSON,
     UserSvcSaveMembershipRequestToJSON,
+    UserSvcSaveMembershipResponseFromJSON,
+    UserSvcSaveMembershipResponseToJSON,
     UserSvcSaveOrganizationRequestFromJSON,
     UserSvcSaveOrganizationRequestToJSON,
     UserSvcSaveOrganizationResponseFromJSON,
@@ -148,6 +166,11 @@ import {
     UserSvcUpdateAppRequestToJSON,
 } from '../models/index';
 
+export interface AcceptMembershipRequest {
+    organizationId: string;
+    body?: UserSvcAcceptMembershipRequest;
+}
+
 export interface ActivateOrganizationRequest {
     body: UserSvcActivateOrganizationRequest;
 }
@@ -158,6 +181,11 @@ export interface ChangePasswordRequest {
 
 export interface CreateUserRequest {
     body: UserSvcCreateUserRequest;
+}
+
+export interface DeclineMembershipRequest {
+    organizationId: string;
+    body?: object;
 }
 
 export interface DeleteMembershipRequest {
@@ -188,6 +216,10 @@ export interface ListAppsRequest {
 
 export interface ListEnrollsRequest {
     body: UserSvcListEnrollsRequest;
+}
+
+export interface ListMembershipsRequest {
+    body?: UserSvcListMembershipsRequest;
 }
 
 export interface ListOrganizationsRequest {
@@ -271,6 +303,52 @@ export interface UpdateAppRequest {
  * 
  */
 export class UserSvcApi extends runtime.BaseAPI {
+
+    /**
+     * Accepts the caller user\'s pending invite for an organization.
+     * Accept Membership
+     */
+    async acceptMembershipRaw(requestParameters: AcceptMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcAcceptMembershipResponse>> {
+        if (requestParameters['organizationId'] == null) {
+            throw new runtime.RequiredError(
+                'organizationId',
+                'Required parameter "organizationId" was null or undefined when calling acceptMembership().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+
+        let urlPath = `/user-svc/organization/{organizationId}/membership/accept`;
+        urlPath = urlPath.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserSvcAcceptMembershipRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcAcceptMembershipResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Accepts the caller user\'s pending invite for an organization.
+     * Accept Membership
+     */
+    async acceptMembership(requestParameters: AcceptMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcAcceptMembershipResponse> {
+        const response = await this.acceptMembershipRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Sets the caller user\'s active organization and returns a fresh token reflecting the new active organization.
@@ -439,6 +517,52 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     async deactivateOrganization(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcDeactivateOrganizationResponse> {
         const response = await this.deactivateOrganizationRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Declines the caller user\'s pending invite for an organization.
+     * Decline Membership
+     */
+    async declineMembershipRaw(requestParameters: DeclineMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcDeclineMembershipResponse>> {
+        if (requestParameters['organizationId'] == null) {
+            throw new runtime.RequiredError(
+                'organizationId',
+                'Required parameter "organizationId" was null or undefined when calling declineMembership().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+
+        let urlPath = `/user-svc/organization/{organizationId}/membership/decline`;
+        urlPath = urlPath.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters['body'] as any,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcDeclineMembershipResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Declines the caller user\'s pending invite for an organization.
+     * Decline Membership
+     */
+    async declineMembership(requestParameters: DeclineMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcDeclineMembershipResponse> {
+        const response = await this.declineMembershipRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -782,6 +906,44 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     async listEnrolls(requestParameters: ListEnrollsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListEnrollsResponse> {
         const response = await this.listEnrollsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Lists organization memberships and pending invites.
+     * List Memberships
+     */
+    async listMembershipsRaw(requestParameters: ListMembershipsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListMembershipsResponse>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+
+        let urlPath = `/user-svc/memberships`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserSvcListMembershipsRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListMembershipsResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Lists organization memberships and pending invites.
+     * List Memberships
+     */
+    async listMemberships(requestParameters: ListMembershipsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListMembershipsResponse> {
+        const response = await this.listMembershipsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1282,10 +1444,10 @@ export class UserSvcApi extends runtime.BaseAPI {
     }
 
     /**
-     * Adds a user to an organization by saving a Membership. Also issues the corresponding Enroll, which grants the user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
+     * Creates or updates an organization membership invite.
      * Save Membership
      */
-    async saveMembershipRaw(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async saveMembershipRaw(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcSaveMembershipResponse>> {
         if (requestParameters['organizationId'] == null) {
             throw new runtime.RequiredError(
                 'organizationId',
@@ -1323,14 +1485,14 @@ export class UserSvcApi extends runtime.BaseAPI {
             body: UserSvcSaveMembershipRequestToJSON(requestParameters['body']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcSaveMembershipResponseFromJSON(jsonValue));
     }
 
     /**
-     * Adds a user to an organization by saving a Membership. Also issues the corresponding Enroll, which grants the user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
+     * Creates or updates an organization membership invite.
      * Save Membership
      */
-    async saveMembership(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async saveMembership(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcSaveMembershipResponse> {
         const response = await this.saveMembershipRaw(requestParameters, initOverrides);
         return await response.value();
     }

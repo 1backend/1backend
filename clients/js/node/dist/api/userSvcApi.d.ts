@@ -10,11 +10,14 @@
  * Do not edit the class manually.
  */
 import http from 'http';
+import { UserSvcAcceptMembershipRequest } from '../model/userSvcAcceptMembershipRequest';
+import { UserSvcAcceptMembershipResponse } from '../model/userSvcAcceptMembershipResponse';
 import { UserSvcActivateOrganizationRequest } from '../model/userSvcActivateOrganizationRequest';
 import { UserSvcActivateOrganizationResponse } from '../model/userSvcActivateOrganizationResponse';
 import { UserSvcChangePasswordRequest } from '../model/userSvcChangePasswordRequest';
 import { UserSvcCreateUserRequest } from '../model/userSvcCreateUserRequest';
 import { UserSvcDeactivateOrganizationResponse } from '../model/userSvcDeactivateOrganizationResponse';
+import { UserSvcDeclineMembershipResponse } from '../model/userSvcDeclineMembershipResponse';
 import { UserSvcExchangeTokenRequest } from '../model/userSvcExchangeTokenRequest';
 import { UserSvcExchangeTokenResponse } from '../model/userSvcExchangeTokenResponse';
 import { UserSvcGetPublicKeyResponse } from '../model/userSvcGetPublicKeyResponse';
@@ -23,6 +26,8 @@ import { UserSvcListAppsRequest } from '../model/userSvcListAppsRequest';
 import { UserSvcListAppsResponse } from '../model/userSvcListAppsResponse';
 import { UserSvcListEnrollsRequest } from '../model/userSvcListEnrollsRequest';
 import { UserSvcListEnrollsResponse } from '../model/userSvcListEnrollsResponse';
+import { UserSvcListMembershipsRequest } from '../model/userSvcListMembershipsRequest';
+import { UserSvcListMembershipsResponse } from '../model/userSvcListMembershipsResponse';
 import { UserSvcListOrganizationsRequest } from '../model/userSvcListOrganizationsRequest';
 import { UserSvcListOrganizationsResponse } from '../model/userSvcListOrganizationsResponse';
 import { UserSvcListPermissionsResponse } from '../model/userSvcListPermissionsResponse';
@@ -44,6 +49,7 @@ import { UserSvcRevokeTokensRequest } from '../model/userSvcRevokeTokensRequest'
 import { UserSvcSaveEnrollsRequest } from '../model/userSvcSaveEnrollsRequest';
 import { UserSvcSaveEnrollsResponse } from '../model/userSvcSaveEnrollsResponse';
 import { UserSvcSaveMembershipRequest } from '../model/userSvcSaveMembershipRequest';
+import { UserSvcSaveMembershipResponse } from '../model/userSvcSaveMembershipResponse';
 import { UserSvcSaveOrganizationRequest } from '../model/userSvcSaveOrganizationRequest';
 import { UserSvcSaveOrganizationResponse } from '../model/userSvcSaveOrganizationResponse';
 import { UserSvcSavePermitsRequest } from '../model/userSvcSavePermitsRequest';
@@ -75,6 +81,20 @@ export declare class UserSvcApi {
     setDefaultAuthentication(auth: Authentication): void;
     setApiKey(key: UserSvcApiApiKeys, value: string): void;
     addInterceptor(interceptor: Interceptor): void;
+    /**
+     * Accepts the caller user\'s pending invite for an organization.
+     * @summary Accept Membership
+     * @param organizationId Organization ID
+     * @param body Accept Membership Request
+     */
+    acceptMembership(organizationId: string, body?: UserSvcAcceptMembershipRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: UserSvcAcceptMembershipResponse;
+    }>;
     /**
      * Sets the caller user\'s active organization and returns a fresh token reflecting the new active organization.
      * @summary Activate Organization
@@ -125,6 +145,20 @@ export declare class UserSvcApi {
     }): Promise<{
         response: http.IncomingMessage;
         body: UserSvcDeactivateOrganizationResponse;
+    }>;
+    /**
+     * Declines the caller user\'s pending invite for an organization.
+     * @summary Decline Membership
+     * @param organizationId Organization ID
+     * @param body Decline Membership Request
+     */
+    declineMembership(organizationId: string, body?: object, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: UserSvcDeclineMembershipResponse;
     }>;
     /**
      * Allows an organization admin to remove a user from an organization.
@@ -230,6 +264,19 @@ export declare class UserSvcApi {
     }): Promise<{
         response: http.IncomingMessage;
         body: UserSvcListEnrollsResponse;
+    }>;
+    /**
+     * Lists organization memberships and pending invites.
+     * @summary List Memberships
+     * @param body List Memberships Request
+     */
+    listMemberships(body?: UserSvcListMembershipsRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: UserSvcListMembershipsResponse;
     }>;
     /**
      * Requires the `user-svc:organization:view` permission. With `all=true`, platform admins see all organizations in the current app. Otherwise users only see organizations they are members of.
@@ -388,7 +435,7 @@ export declare class UserSvcApi {
         body: UserSvcSaveEnrollsResponse;
     }>;
     /**
-     * Adds a user to an organization by saving a Membership. Also issues the corresponding Enroll, which grants the user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
+     * Creates or updates an organization membership invite.
      * @summary Save Membership
      * @param organizationId Organization ID
      * @param userId User ID
@@ -400,7 +447,7 @@ export declare class UserSvcApi {
         };
     }): Promise<{
         response: http.IncomingMessage;
-        body: object;
+        body: UserSvcSaveMembershipResponse;
     }>;
     /**
      * Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization. The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the saved organization. Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.

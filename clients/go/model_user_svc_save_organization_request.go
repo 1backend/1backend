@@ -22,10 +22,8 @@ var _ MappedNullable = &UserSvcSaveOrganizationRequest{}
 
 // UserSvcSaveOrganizationRequest struct for UserSvcSaveOrganizationRequest
 type UserSvcSaveOrganizationRequest struct {
-	// If true, and a new organization is created, it becomes the active organization for the caller's current device and a fresh token is issued. If false, the active organization is not changed and no new token is issued.
+	// If true, the organization becomes the active organization for the caller's current device and a fresh token is issued.
 	Activate *bool `json:"activate,omitempty"`
-	// If true, the caller (the user making the request) will be assigned the admin role for the organization. If false, no Membership or Enroll will be created.
-	AssignCaller *bool `json:"assignCaller,omitempty"`
 	Id *string `json:"id,omitempty"`
 	// Full name of the organization.
 	Name *string `json:"name,omitempty"`
@@ -84,38 +82,6 @@ func (o *UserSvcSaveOrganizationRequest) HasActivate() bool {
 // SetActivate gets a reference to the given bool and assigns it to the Activate field.
 func (o *UserSvcSaveOrganizationRequest) SetActivate(v bool) {
 	o.Activate = &v
-}
-
-// GetAssignCaller returns the AssignCaller field value if set, zero value otherwise.
-func (o *UserSvcSaveOrganizationRequest) GetAssignCaller() bool {
-	if o == nil || IsNil(o.AssignCaller) {
-		var ret bool
-		return ret
-	}
-	return *o.AssignCaller
-}
-
-// GetAssignCallerOk returns a tuple with the AssignCaller field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *UserSvcSaveOrganizationRequest) GetAssignCallerOk() (*bool, bool) {
-	if o == nil || IsNil(o.AssignCaller) {
-		return nil, false
-	}
-	return o.AssignCaller, true
-}
-
-// HasAssignCaller returns a boolean if a field has been set.
-func (o *UserSvcSaveOrganizationRequest) HasAssignCaller() bool {
-	if o != nil && !IsNil(o.AssignCaller) {
-		return true
-	}
-
-	return false
-}
-
-// SetAssignCaller gets a reference to the given bool and assigns it to the AssignCaller field.
-func (o *UserSvcSaveOrganizationRequest) SetAssignCaller(v bool) {
-	o.AssignCaller = &v
 }
 
 // GetId returns the Id field value if set, zero value otherwise.
@@ -250,9 +216,6 @@ func (o UserSvcSaveOrganizationRequest) ToMap() (map[string]interface{}, error) 
 	toSerialize := map[string]interface{}{}
 	if !IsNil(o.Activate) {
 		toSerialize["activate"] = o.Activate
-	}
-	if !IsNil(o.AssignCaller) {
-		toSerialize["assignCaller"] = o.AssignCaller
 	}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id

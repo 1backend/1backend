@@ -1,0 +1,71 @@
+---
+id: decline-membership
+title: "Decline Membership"
+description: "Declines the caller user's pending invite for an organization."
+sidebar_label: "Decline Membership"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9Vk1v4zYQ/SvEXNoCsmU3LYrq1KRZFO5umyDenLw+jKWxzA1FcknKjlfQfy9Gkm3FVoKiBfZiS+J8vnkzwwoy8qmTNkijIYFbSpXU5EXYkEhRKXKi9OS+88KSzqTOhdRbGUisjROohXE5avkVWX8MERhLrnmZZZBA1pr7i4oVOb+RFiKw6LCgQM5DsqjO/N/1zInZLUQg+bPFsIEINBYECfR9zjKIwNGXUjrKIAmupAh8uqECIakg7C1r+OCkzqGul60w+XBjsj1LpEYH0oEf0Vol08Zs/NlzPNWlKbP6TGmAuq6jYezEKVvx0PqCmt16a7Qnz7Z+nEz47yz39xD9+3CsY6iDbA0WJ4QvzjBNyQbKrsMAIhG74VoNnKSO8HW9jBS9fiqHTUodyGlUr3hsuZXd7AdPz+o+JOKMapOWgQo/KNJ9QOdwz+8+YCgbUdJlAckCOqZDdIQOogOVM1hGZzYjeB6x6miLjhnKvIYTCeaN/fujzfOT65OP86Pbo886gtJmb1SDm3QQk7rfHoteTfsWTzkd6f1SrcevAVmW/mmI0jO9RSUz8ef87u//Tm5yzrjh1IYjmV5G8qixDBvj5NcG6W8Tyc/DmLQtIObktuTEu8bmtwmJ6U5p6WTYN8P3htCRuy7DBpLFkqdjwLzh76MnJ+bblMtdUNgYHufW+NBMcJaHmDk38ts07jdmXL1s0zo+cSfumgg4DE6+XQGlU2wuViZFtTE+JNPp1dUvwPEcwp1z+m3G/aDPwf24tyQ+dSKfQKyNUmZHmVjtBQpvMSWBOhPBPJEWmLYMF2tnimblHdIWH0wutSCdWSN1GB8W0YYwI3daRdcdqZpk4TRcrHxP+6YIXL+H08p594yFVQRJ1Yy7tTnsIEyb0lOBktHwqMj/5qXOS4XBGT1OTdHzez8T89Ja45pGbgDchGCTOJ6uMH0inbFCDBdb6no20hjklkQhU2e4DjIlL6zCsDau4FSVTEl7DvLo74/7D2J7NZ688OaTON7tduNcl2Pj8rjT8zHmVo2uxpPxJhSqGbrkCn+3nrfeTsH6HeY5ubE0cSMSM4YyMEAwvWkTgQiYKm34k/Gv4+mETTIZC9S9IC8XMJxl31v3//+q09U60HOIrUKpmznM4FRdiyzg0CLwcntBBMnFLaZ4GXbbKcsIuCPYVlWt0NOjU3XNn7+U5LiLlxFs0UlcMWh8oZKenzNI1qg8vYHA9w/dhP9BXN67BrM70FvvuSioSn6DCJ5of3kvq3lrdQ3DgbVCv7fuR9ypPSMXI6+ODhrtgnxTtj+k7u/mHyGCVXe/K0zGOg53fFHEXRuwaeBoxknzrQKFOi8xZ9nWJjcvdkPm1NYcUnR44KwGITkfC20i/MtpDapUVTs06voo3x69qnGcRa00V2hZ1/U/2EMYBw==
+sidebar_class_name: "post api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Decline Membership"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/user-svc/organization/{organizationId}/membership/decline"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Declines the caller user's pending invite for an organization.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Organization ID","in":"path","name":"organizationId","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"type":"object"}}},"description":"Decline Membership Request"}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"membership":{"properties":{"acceptedAt":{"type":"string"},"appId":{"type":"string"},"createdAt":{"type":"string"},"deletedAt":{"type":"string"},"id":{"type":"string"},"internalId":{"type":"string"},"invitedBy":{"type":"string"},"organizationId":{"type":"string"},"roles":{"items":{"type":"string"},"type":"array"},"status":{"enum":["pending","accepted","declined"],"type":"string","x-enum-varnames":["MembershipStatusPending","MembershipStatusAccepted","MembershipStatusDeclined"]},"updatedAt":{"type":"string"},"userId":{"type":"string"}},"required":["createdAt","updatedAt"],"type":"object"}},"required":["membership"],"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

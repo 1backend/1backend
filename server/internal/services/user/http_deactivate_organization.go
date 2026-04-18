@@ -50,13 +50,7 @@ func (s *UserService) DeactivateOrganization(
 		return
 	}
 
-	token, err := s.deactivateOrganizationForDevice(
-		claims.AppId,
-		usr,
-		"",
-		claims.Device,
-		true,
-	)
+	token, err := s.deactivateOrganization(claims.AppId, usr, claims.Device)
 	if err != nil {
 		logger.Error(
 			"Failed to deactivate organization",

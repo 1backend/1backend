@@ -2,7 +2,6 @@ package userservice_test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -23,14 +22,15 @@ func TestSaveOrganization(t *testing.T) {
 	require.NoError(t, err)
 	defer server.Cleanup(t)
 
+	clientFactory := client.NewApiClientFactory(server.Url)
 	manyClients, _, err := test.MakeClients(
-		client.NewApiClientFactory(server.Url), sdk.DefaultTestAppHost, 2)
+		clientFactory, sdk.DefaultTestAppHost, 2)
 	require.NoError(t, err)
 
 	userClient := manyClients[0]
 	otherClient := manyClients[1]
-	adminClient, _, err := test.AdminClient(
-		client.NewApiClientFactory(server.Url),
+	adminClient, adminToken, err := test.AdminClient(
+		clientFactory,
 		sdk.DefaultTestAppHost,
 	)
 	require.NoError(t, err)
@@ -44,8 +44,8 @@ func TestSaveOrganization(t *testing.T) {
 
 		req := openapi.UserSvcSaveOrganizationRequest{
 			Activate: openapi.PtrBool(true),
-			Name: openapi.PtrString(orgName),
-			Slug: slug,
+			Name:     openapi.PtrString(orgName),
+			Slug:     slug,
 		}
 
 		resp, httpResp, err := userClient.UserSvcAPI.
@@ -62,7 +62,7 @@ func TestSaveOrganization(t *testing.T) {
 		orgId = resp.Organization.Id
 		require.NotNil(t, resp.Token)
 		require.NotEmpty(t, resp.Token.Token)
-		userClient = client.NewApiClientFactory(server.Url).
+		userClient = clientFactory.
 			Client(client.WithToken(resp.Token.Token))
 	})
 
@@ -124,7 +124,7 @@ func TestSaveOrganization(t *testing.T) {
 		require.NotEmpty(t, resp.Organization.Id)
 		require.NotEmpty(t, resp.Token.Token)
 		otherOrgId = resp.Organization.Id
-		userClient = client.NewApiClientFactory(server.Url).
+		userClient = clientFactory.
 			Client(client.WithToken(resp.Token.Token))
 
 		updateResp, httpResp, err := userClient.UserSvcAPI.
@@ -144,7 +144,7 @@ func TestSaveOrganization(t *testing.T) {
 		require.NotEqual(t, orgId, otherOrgId)
 	})
 
-	t.Run("create organization with activate false returns usable token", func(t *testing.T) {
+	t.Run("create organization with activate false returns no token and keeps active org unchanged", func(t *testing.T) {
 		resp, httpResp, err := userClient.UserSvcAPI.
 			SaveOrganization(
 				context.Background(),
@@ -158,13 +158,9 @@ func TestSaveOrganization(t *testing.T) {
 
 		require.NoError(t, err)
 		require.Equal(t, 200, httpResp.StatusCode)
-		require.NotNil(t, resp.Token)
-		require.NotEmpty(t, resp.Token.Token)
+		require.Nil(t, resp.Token)
 
-		passiveClient := client.NewApiClientFactory(server.Url).
-			Client(client.WithToken(resp.Token.Token))
-
-		selfRsp, _, err := passiveClient.UserSvcAPI.
+		selfRsp, _, err := userClient.UserSvcAPI.
 			ReadSelf(context.Background()).
 			Body(openapi.UserSvcReadSelfRequest{}).
 			Execute()
@@ -201,7 +197,7 @@ func TestSaveOrganization(t *testing.T) {
 		require.Equal(t, orgId, selfRsp.GetActiveOrganizationId())
 	})
 
-	t.Run("organization admin can update and deactivate organization", func(t *testing.T) {
+	t.Run("organization admin update with activate false does not deactivate organization", func(t *testing.T) {
 		updateResp, httpResp, err := userClient.UserSvcAPI.
 			SaveOrganization(
 				context.Background(),
@@ -216,18 +212,14 @@ func TestSaveOrganization(t *testing.T) {
 
 		require.NoError(t, err)
 		require.Equal(t, 200, httpResp.StatusCode)
-		require.NotNil(t, updateResp.Token)
-		require.NotEmpty(t, updateResp.Token.Token)
-
-		userClient = client.NewApiClientFactory(server.Url).
-			Client(client.WithToken(updateResp.Token.Token))
+		require.Nil(t, updateResp.Token)
 
 		selfRsp, _, err := userClient.UserSvcAPI.
 			ReadSelf(context.Background()).
 			Body(openapi.UserSvcReadSelfRequest{}).
 			Execute()
 		require.NoError(t, err)
-		require.Empty(t, selfRsp.GetActiveOrganizationId())
+		require.Equal(t, orgId, selfRsp.GetActiveOrganizationId())
 	})
 
 	t.Run("organization admin update does not return token when activation state is unchanged", func(t *testing.T) {
@@ -248,7 +240,7 @@ func TestSaveOrganization(t *testing.T) {
 		require.Nil(t, updateResp.Token)
 	})
 
-	t.Run("admin can update organization without acquiring org role", func(t *testing.T) {
+	t.Run("admin can update organization without acquiring org membership", func(t *testing.T) {
 		adminSelf, _, err := adminClient.UserSvcAPI.
 			ReadSelf(context.Background()).
 			Body(openapi.UserSvcReadSelfRequest{}).
@@ -275,16 +267,14 @@ func TestSaveOrganization(t *testing.T) {
 		require.Equal(t, orgName, resp.Organization.Name)
 		require.Nil(t, resp.Token)
 
-		enrollsRsp, _, err := adminClient.UserSvcAPI.
-			ListEnrolls(context.Background()).
-			Body(openapi.UserSvcListEnrollsRequest{
-				Role: openapi.PtrString(fmt.Sprintf("user-svc:org:{%s}:admin", orgId)),
-			}).
-			Execute()
-		require.NoError(t, err)
-
-		for _, enroll := range enrollsRsp.Enrolls {
-			require.NotEqual(t, adminSelf.User.Id, enroll.UserId)
+		membershipRsp, httpResp := listMemberships(
+			t,
+			clientFactory.Client(client.WithToken(adminToken)),
+			&openapi.UserSvcListMembershipsRequest{OrganizationId: openapi.PtrString(orgId)},
+		)
+		require.Equal(t, 200, httpResp.StatusCode)
+		for _, membership := range membershipRsp.Memberships {
+			require.NotEqual(t, adminSelf.User.Id, membership.User.Id)
 		}
 	})
 }

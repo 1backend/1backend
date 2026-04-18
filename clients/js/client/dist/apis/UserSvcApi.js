@@ -21,11 +21,48 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as runtime from '../runtime';
-import { UserSvcActivateOrganizationRequestToJSON, UserSvcActivateOrganizationResponseFromJSON, UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, UserSvcDeactivateOrganizationResponseFromJSON, UserSvcExchangeTokenRequestToJSON, UserSvcExchangeTokenResponseFromJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListAppsRequestToJSON, UserSvcListAppsResponseFromJSON, UserSvcListEnrollsRequestToJSON, UserSvcListEnrollsResponseFromJSON, UserSvcListOrganizationsRequestToJSON, UserSvcListOrganizationsResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListPermitsRequestToJSON, UserSvcListPermitsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadAppRequestToJSON, UserSvcReadAppResponseFromJSON, UserSvcReadSelfRequestToJSON, UserSvcReadSelfResponseFromJSON, UserSvcRefreshTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcRevokeTokensRequestToJSON, UserSvcSaveEnrollsRequestToJSON, UserSvcSaveEnrollsResponseFromJSON, UserSvcSaveMembershipRequestToJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSavePermitsRequestToJSON, UserSvcSaveSelfRequestToJSON, UserSvcSaveUserRequestToJSON, UserSvcSendOtpRequestToJSON, UserSvcSendOtpResponseFromJSON, UserSvcUpdateAppRequestToJSON, } from '../models/index';
+import { UserSvcAcceptMembershipRequestToJSON, UserSvcAcceptMembershipResponseFromJSON, UserSvcActivateOrganizationRequestToJSON, UserSvcActivateOrganizationResponseFromJSON, UserSvcChangePasswordRequestToJSON, UserSvcCreateUserRequestToJSON, UserSvcDeactivateOrganizationResponseFromJSON, UserSvcDeclineMembershipResponseFromJSON, UserSvcExchangeTokenRequestToJSON, UserSvcExchangeTokenResponseFromJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListAppsRequestToJSON, UserSvcListAppsResponseFromJSON, UserSvcListEnrollsRequestToJSON, UserSvcListEnrollsResponseFromJSON, UserSvcListMembershipsRequestToJSON, UserSvcListMembershipsResponseFromJSON, UserSvcListOrganizationsRequestToJSON, UserSvcListOrganizationsResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListPermitsRequestToJSON, UserSvcListPermitsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadAppRequestToJSON, UserSvcReadAppResponseFromJSON, UserSvcReadSelfRequestToJSON, UserSvcReadSelfResponseFromJSON, UserSvcRefreshTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcRevokeTokensRequestToJSON, UserSvcSaveEnrollsRequestToJSON, UserSvcSaveEnrollsResponseFromJSON, UserSvcSaveMembershipRequestToJSON, UserSvcSaveMembershipResponseFromJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSavePermitsRequestToJSON, UserSvcSaveSelfRequestToJSON, UserSvcSaveUserRequestToJSON, UserSvcSendOtpRequestToJSON, UserSvcSendOtpResponseFromJSON, UserSvcUpdateAppRequestToJSON, } from '../models/index';
 /**
  *
  */
 export class UserSvcApi extends runtime.BaseAPI {
+    /**
+     * Accepts the caller user\'s pending invite for an organization.
+     * Accept Membership
+     */
+    acceptMembershipRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['organizationId'] == null) {
+                throw new runtime.RequiredError('organizationId', 'Required parameter "organizationId" was null or undefined when calling acceptMembership().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            let urlPath = `/user-svc/organization/{organizationId}/membership/accept`;
+            urlPath = urlPath.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: UserSvcAcceptMembershipRequestToJSON(requestParameters['body']),
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcAcceptMembershipResponseFromJSON(jsonValue));
+        });
+    }
+    /**
+     * Accepts the caller user\'s pending invite for an organization.
+     * Accept Membership
+     */
+    acceptMembership(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.acceptMembershipRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
     /**
      * Sets the caller user\'s active organization and returns a fresh token reflecting the new active organization.
      * Activate Organization
@@ -162,6 +199,43 @@ export class UserSvcApi extends runtime.BaseAPI {
     deactivateOrganization(initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.deactivateOrganizationRaw(initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * Declines the caller user\'s pending invite for an organization.
+     * Decline Membership
+     */
+    declineMembershipRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['organizationId'] == null) {
+                throw new runtime.RequiredError('organizationId', 'Required parameter "organizationId" was null or undefined when calling declineMembership().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            let urlPath = `/user-svc/organization/{organizationId}/membership/decline`;
+            urlPath = urlPath.replace(`{${"organizationId"}}`, encodeURIComponent(String(requestParameters['organizationId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: requestParameters['body'],
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcDeclineMembershipResponseFromJSON(jsonValue));
+        });
+    }
+    /**
+     * Declines the caller user\'s pending invite for an organization.
+     * Decline Membership
+     */
+    declineMembership(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.declineMembershipRaw(requestParameters, initOverrides);
             return yield response.value();
         });
     }
@@ -439,6 +513,39 @@ export class UserSvcApi extends runtime.BaseAPI {
     listEnrolls(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.listEnrollsRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * Lists organization memberships and pending invites.
+     * List Memberships
+     */
+    listMembershipsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            let urlPath = `/user-svc/memberships`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: UserSvcListMembershipsRequestToJSON(requestParameters['body']),
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcListMembershipsResponseFromJSON(jsonValue));
+        });
+    }
+    /**
+     * Lists organization memberships and pending invites.
+     * List Memberships
+     */
+    listMemberships() {
+        return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
+            const response = yield this.listMembershipsRaw(requestParameters, initOverrides);
             return yield response.value();
         });
     }
@@ -852,7 +959,7 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Adds a user to an organization by saving a Membership. Also issues the corresponding Enroll, which grants the user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
+     * Creates or updates an organization membership invite.
      * Save Membership
      */
     saveMembershipRaw(requestParameters, initOverrides) {
@@ -879,11 +986,11 @@ export class UserSvcApi extends runtime.BaseAPI {
                 query: queryParameters,
                 body: UserSvcSaveMembershipRequestToJSON(requestParameters['body']),
             }, initOverrides);
-            return new runtime.JSONApiResponse(response);
+            return new runtime.JSONApiResponse(response, (jsonValue) => UserSvcSaveMembershipResponseFromJSON(jsonValue));
         });
     }
     /**
-     * Adds a user to an organization by saving a Membership. Also issues the corresponding Enroll, which grants the user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
+     * Creates or updates an organization membership invite.
      * Save Membership
      */
     saveMembership(requestParameters, initOverrides) {

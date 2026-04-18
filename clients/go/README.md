@@ -158,10 +158,12 @@ Class | Method | HTTP request | Description
 *SecretSvcAPI* | [**RemoveSecrets**](docs/SecretSvcAPI.md#removesecrets) | **Delete** /secret-svc/secrets | Remove Secrets
 *SecretSvcAPI* | [**SaveSecrets**](docs/SecretSvcAPI.md#savesecrets) | **Put** /secret-svc/secrets | Save Secrets
 *SourceSvcAPI* | [**CheckoutRepo**](docs/SourceSvcAPI.md#checkoutrepo) | **Post** /source-svc/repo/checkout | Checkout a git repository
+*UserSvcAPI* | [**AcceptMembership**](docs/UserSvcAPI.md#acceptmembership) | **Post** /user-svc/organization/{organizationId}/membership/accept | Accept Membership
 *UserSvcAPI* | [**ActivateOrganization**](docs/UserSvcAPI.md#activateorganization) | **Post** /user-svc/organization/activate | Activate Organization
 *UserSvcAPI* | [**ChangePassword**](docs/UserSvcAPI.md#changepassword) | **Post** /user-svc/change-password | Change Password
 *UserSvcAPI* | [**CreateUser**](docs/UserSvcAPI.md#createuser) | **Post** /user-svc/user | Create a New User
 *UserSvcAPI* | [**DeactivateOrganization**](docs/UserSvcAPI.md#deactivateorganization) | **Post** /user-svc/organization/deactivate | Deactivate Organization
+*UserSvcAPI* | [**DeclineMembership**](docs/UserSvcAPI.md#declinemembership) | **Post** /user-svc/organization/{organizationId}/membership/decline | Decline Membership
 *UserSvcAPI* | [**DeleteMembership**](docs/UserSvcAPI.md#deletemembership) | **Delete** /user-svc/organization/{organizationId}/user/{userId} | Delete Membership
 *UserSvcAPI* | [**DeleteUser**](docs/UserSvcAPI.md#deleteuser) | **Delete** /user-svc/user/{userId} | Delete a User
 *UserSvcAPI* | [**ExchangeToken**](docs/UserSvcAPI.md#exchangetoken) | **Put** /user-svc/token/exchange | Exchange Token
@@ -170,6 +172,7 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**HasPermission**](docs/UserSvcAPI.md#haspermission) | **Post** /user-svc/self/has/{permission} | Has Permission
 *UserSvcAPI* | [**ListApps**](docs/UserSvcAPI.md#listapps) | **Post** /user-svc/apps | List Apps
 *UserSvcAPI* | [**ListEnrolls**](docs/UserSvcAPI.md#listenrolls) | **Post** /user-svc/enrolls | List Enrolls
+*UserSvcAPI* | [**ListMemberships**](docs/UserSvcAPI.md#listmemberships) | **Post** /user-svc/memberships | List Memberships
 *UserSvcAPI* | [**ListOrganizations**](docs/UserSvcAPI.md#listorganizations) | **Post** /user-svc/organizations | List Organizations
 *UserSvcAPI* | [**ListPermissions**](docs/UserSvcAPI.md#listpermissions) | **Post** /user-svc/permissions | List Permissions
 *UserSvcAPI* | [**ListPermits**](docs/UserSvcAPI.md#listpermits) | **Post** /user-svc/permits | List Permits
@@ -367,6 +370,8 @@ Class | Method | HTTP request | Description
  - [SourceSvcCheckoutRepoResponse](docs/SourceSvcCheckoutRepoResponse.md)
  - [SourceSvcErrorResponse](docs/SourceSvcErrorResponse.md)
  - [StableDiffusionTxt2ImgRequest](docs/StableDiffusionTxt2ImgRequest.md)
+ - [UserSvcAcceptMembershipRequest](docs/UserSvcAcceptMembershipRequest.md)
+ - [UserSvcAcceptMembershipResponse](docs/UserSvcAcceptMembershipResponse.md)
  - [UserSvcActivateOrganizationRequest](docs/UserSvcActivateOrganizationRequest.md)
  - [UserSvcActivateOrganizationResponse](docs/UserSvcActivateOrganizationResponse.md)
  - [UserSvcApp](docs/UserSvcApp.md)
@@ -375,6 +380,7 @@ Class | Method | HTTP request | Description
  - [UserSvcContactInput](docs/UserSvcContactInput.md)
  - [UserSvcCreateUserRequest](docs/UserSvcCreateUserRequest.md)
  - [UserSvcDeactivateOrganizationResponse](docs/UserSvcDeactivateOrganizationResponse.md)
+ - [UserSvcDeclineMembershipResponse](docs/UserSvcDeclineMembershipResponse.md)
  - [UserSvcEnroll](docs/UserSvcEnroll.md)
  - [UserSvcEnrollInput](docs/UserSvcEnrollInput.md)
  - [UserSvcErrorResponse](docs/UserSvcErrorResponse.md)
@@ -386,6 +392,9 @@ Class | Method | HTTP request | Description
  - [UserSvcListAppsResponse](docs/UserSvcListAppsResponse.md)
  - [UserSvcListEnrollsRequest](docs/UserSvcListEnrollsRequest.md)
  - [UserSvcListEnrollsResponse](docs/UserSvcListEnrollsResponse.md)
+ - [UserSvcListMembershipsRequest](docs/UserSvcListMembershipsRequest.md)
+ - [UserSvcListMembershipsResponse](docs/UserSvcListMembershipsResponse.md)
+ - [UserSvcListMembershipsResponseMembershipsInner](docs/UserSvcListMembershipsResponseMembershipsInner.md)
  - [UserSvcListOrganizationsRequest](docs/UserSvcListOrganizationsRequest.md)
  - [UserSvcListOrganizationsResponse](docs/UserSvcListOrganizationsResponse.md)
  - [UserSvcListPermissionsResponse](docs/UserSvcListPermissionsResponse.md)
@@ -396,6 +405,8 @@ Class | Method | HTTP request | Description
  - [UserSvcListUsersResponse](docs/UserSvcListUsersResponse.md)
  - [UserSvcLoginRequest](docs/UserSvcLoginRequest.md)
  - [UserSvcLoginResponse](docs/UserSvcLoginResponse.md)
+ - [UserSvcMembership](docs/UserSvcMembership.md)
+ - [UserSvcMembershipStatus](docs/UserSvcMembershipStatus.md)
  - [UserSvcOrderDirection](docs/UserSvcOrderDirection.md)
  - [UserSvcOrganization](docs/UserSvcOrganization.md)
  - [UserSvcPermit](docs/UserSvcPermit.md)
@@ -412,6 +423,7 @@ Class | Method | HTTP request | Description
  - [UserSvcSaveEnrollsRequest](docs/UserSvcSaveEnrollsRequest.md)
  - [UserSvcSaveEnrollsResponse](docs/UserSvcSaveEnrollsResponse.md)
  - [UserSvcSaveMembershipRequest](docs/UserSvcSaveMembershipRequest.md)
+ - [UserSvcSaveMembershipResponse](docs/UserSvcSaveMembershipResponse.md)
  - [UserSvcSaveOrganizationRequest](docs/UserSvcSaveOrganizationRequest.md)
  - [UserSvcSaveOrganizationResponse](docs/UserSvcSaveOrganizationResponse.md)
  - [UserSvcSavePermitsRequest](docs/UserSvcSavePermitsRequest.md)
