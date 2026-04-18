@@ -126,7 +126,7 @@ Important details:
 - Memberships now automatically include `user-svc:org:{orgId}:{userId}` in addition to any explicit org roles such as `user` or `admin`.
 - This pattern intentionally relies on both ownership checks: `user-svc:org:{orgId}:admin` owns `user-svc:org:{orgId}:{userId}` as a role, and also owns the permission namespace `user-svc:org:{orgId}:...`.
 - JWTs only include roles for the active organization. If the user switches organizations, the per-member role for the old org disappears from the token, and `HasPermission` for that org-scoped permission returns false.
-- If you want organization admins to manage a role directly, keep it in the flat org family form `user-svc:org:{orgId}:{roleName}`. A deeper role like `user-svc:org:{orgId}:team:admin` is a different role family and is not automatically owned by `user-svc:org:{orgId}:admin`.
+- Role ownership is hierarchical inside the namespace. For example, `user-svc:org:{orgId}:admin` also owns nested roles such as `user-svc:org:{orgId}:team:admin`.
 
 ## Tokens
 
@@ -270,20 +270,22 @@ These roles are yours — you can assign them, modify them, or revoke them.
 
 #### ✅ 2. You’re an admin of that role family
 
-If you hold a role like `user-svc:org:{org_id}:admin`, then you also **own** other roles that share the same prefix.
+If you hold a role like `user-svc:org:{org_id}:admin`, then you also **own** other roles in that namespace.
 
 **Example:**
 
 If you have:
 
-```
-user-svc:org:org_xyz123:admin
+```sh
+user-svc:org:{org_xyz123}:admin
 ```
 
 Then you also own:
 
-- `user-svc:org:org_xyz123:user`
-- `user-svc:org:org_xyz123:viewer`
+- `user-svc:org:{org_xyz123}:user`
+- `user-svc:org:{org_xyz123}:viewer`
+- `user-svc:org:{org_xyz123}:team:admin`
+- `user-svc:org:{org_xyz123}:team:viewer`
 
 That means you're authorized to assign those roles to others.
 

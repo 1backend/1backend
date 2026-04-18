@@ -212,6 +212,7 @@ func ExtractOrganizationRoles(roleIds []string) map[string][]string {
 // - A user with any slug who has the role "my-service:admin" owns "my-service:user".
 // - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
 // - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:{%userId}".
+// - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:team:admin".
 func OwnsRole(claim *Claims, roleId string) bool {
 	// @todo Probably not great in terms of zero trust design ; )
 	if lo.Contains(claim.Roles, "user-svc:admin") {
@@ -222,23 +223,13 @@ func OwnsRole(claim *Claims, roleId string) bool {
 		return true
 	}
 
-	idx := strings.LastIndex(roleId, ":")
-	if idx == -1 {
-		return false
-	}
-
-	rolePrefix := roleId[:idx]
-
 	for _, userRole := range claim.Roles {
-		idx := strings.LastIndex(userRole, ":")
-		if idx == -1 {
+		if !strings.HasSuffix(userRole, ":admin") {
 			continue
 		}
 
-		userRolePrefix := userRole[:idx]
-		userRoleSuffix := userRole[idx+1:]
-
-		if userRolePrefix == rolePrefix && userRoleSuffix == "admin" {
+		namespacePrefix := strings.TrimSuffix(userRole, "admin")
+		if strings.HasPrefix(roleId, namespacePrefix) {
 			return true
 		}
 	}

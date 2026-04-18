@@ -418,8 +418,8 @@ func TestMembershipRoleAssignmentOwnership(t *testing.T) {
 		require.Len(t, membershipsRsp.Memberships, 1)
 	})
 
-	t.Run("rejects org-scoped roles the caller does not own", func(t *testing.T) {
-		unownedRole := "user-svc:org:{" + orgId + "}:team:admin"
+	t.Run("allows nested org-scoped roles owned by org admin", func(t *testing.T) {
+		nestedRole := "user-svc:org:{" + orgId + "}:team:admin"
 
 		rsp, httpResp, err := ownerClient.UserSvcAPI.SaveMembership(
 			context.Background(),
@@ -427,24 +427,24 @@ func TestMembershipRoleAssignmentOwnership(t *testing.T) {
 			memberUserId,
 		).
 			Body(openapi.UserSvcSaveMembershipRequest{
-				Roles: []string{unownedRole},
+				Roles: []string{nestedRole},
 			}).
 			Execute()
-		require.Error(t, err)
-		require.Nil(t, rsp)
+		require.NoError(t, err)
+		require.NotNil(t, rsp)
 		require.NotNil(t, httpResp)
 		t.Cleanup(func() {
 			closeResponseBody(t, httpResp)
 		})
-		require.Equal(t, http.StatusForbidden, httpResp.StatusCode)
-
-		membershipsRsp, membershipsHTTP := listMemberships(
+		require.Equal(t, http.StatusOK, httpResp.StatusCode)
+		require.ElementsMatch(
 			t,
-			ownerClient,
-			&openapi.UserSvcListMembershipsRequest{OrganizationId: openapi.PtrString(orgId)},
+			[]string{
+				testOrgMemberRole(orgId, memberUserId),
+				nestedRole,
+			},
+			rsp.Membership.Roles,
 		)
-		require.Equal(t, http.StatusOK, membershipsHTTP.StatusCode)
-		require.Len(t, membershipsRsp.Memberships, 1)
 	})
 
 	t.Run("allows org-scoped roles the caller owns", func(t *testing.T) {
