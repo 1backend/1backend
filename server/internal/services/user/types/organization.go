@@ -32,7 +32,11 @@ type Organization struct {
 }
 
 func (o *Organization) GetId() string {
-	return o.Id
+	if o.InternalId == "" {
+		panic("organization has no internal id")
+	}
+
+	return o.InternalId
 }
 
 type SaveOrganizationRequest struct {
@@ -46,23 +50,15 @@ type SaveOrganizationRequest struct {
 
 	ThumbnailFileId string `json:"thumbnailFileId,omitempty" example:"file_fQDxusW8og"`
 
-	// If true, the caller (the user making the request) will be assigned
-	// the admin role for the organization.
-	// If false, no Membership or Enroll will be created.
-	AssignCaller bool `json:"assignCaller,omitempty" example:"true"`
-
-	// If true, and a new organization is created, it becomes the
-	// active organization for the caller's current device and a fresh token
-	// is issued. If false, the active organization is not changed and no
-	// new token is issued.
+	// If true, the organization becomes the active organization for the
+	// caller's current device and a fresh token is issued.
 	Activate bool `json:"activate" example:"true"`
 }
 
 type SaveOrganizationResponse struct {
 	Organization Organization `json:"organization" binding:"required"`
 
-	// Due to the nature of JWT tokens, the token may be refreshed after
-	// creating an organization, as dynamic organization roles are embedded in it.
+	// A fresh token is returned only when the organization is activated.
 	Token *Token `json:"token,omitempty"`
 }
 

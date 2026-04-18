@@ -107,6 +107,7 @@ func (s *UserService) listOrganizations(
 		membershipIs, err := s.membershipStore.Query(
 			datastore.Equals(datastore.Field("appId"), app),
 			datastore.Equals(datastore.Field("userId"), userId),
+			datastore.Equals(datastore.Field("status"), user.MembershipStatusAccepted),
 		).Find()
 		if err != nil {
 			return nil, err

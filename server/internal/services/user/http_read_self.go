@@ -155,19 +155,34 @@ func (s *UserService) getUserOrganizations(
 			datastore.Field("userId"),
 			userId,
 		),
+		datastore.Equals(
+			datastore.Field("status"),
+			user.MembershipStatusAccepted,
+		),
 	).Find()
 	if err != nil {
 		return nil, "", err
 	}
 
+	activeOrganizationId, err := s.getActiveOrganizationId(appId, userId, device)
+	if err != nil {
+		return nil, "", err
+	}
+
+	if len(links) == 0 {
+		return []*user.Organization{}, "", nil
+	}
+
 	organizationIds := []any{}
-	activeOrganizationId := ""
+	membershipOrganizationIds := map[string]struct{}{}
 	for _, linkI := range links {
 		link := linkI.(*user.Membership)
-		if link.Active && link.Device == device {
-			activeOrganizationId = link.OrganizationId
-		}
+		membershipOrganizationIds[link.OrganizationId] = struct{}{}
 		organizationIds = append(organizationIds, link.OrganizationId)
+	}
+
+	if _, ok := membershipOrganizationIds[activeOrganizationId]; !ok {
+		activeOrganizationId = ""
 	}
 
 	orgIs, err := s.organizationStore.Query(

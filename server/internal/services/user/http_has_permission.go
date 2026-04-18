@@ -223,6 +223,21 @@ func (s *UserService) getRolesByUserId(appId, userId string) ([]string, error) {
 		rolesIndex[enroll.(*user.Enroll).Role] = struct{}{}
 	}
 
+	membershipIs, err := s.membershipStore.Query(
+		datastore.Equals(datastore.Field("appId"), appId),
+		datastore.Equals(datastore.Field("userId"), userId),
+		datastore.Equals(datastore.Field("status"), user.MembershipStatusAccepted),
+	).Find()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to query memberships")
+	}
+	for _, membershipI := range membershipIs {
+		membership := membershipI.(*user.Membership)
+		for _, roleId := range membership.Roles {
+			rolesIndex[roleId] = struct{}{}
+		}
+	}
+
 	roles := []string{"user-svc:user"}
 	for role := range rolesIndex {
 		roles = append(roles, role)

@@ -10,6 +10,7 @@ package userservice
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 
@@ -47,7 +48,7 @@ func (s *UserService) DeleteMembership(
 
 	usr, hasPermission, claims, err := s.hasPermission(
 		r,
-		user.PermissionOrganizationCreate,
+		user.PermissionOrganizationRemoveUser,
 	)
 	if err != nil {
 		logger.Error(
@@ -64,7 +65,7 @@ func (s *UserService) DeleteMembership(
 
 	req := user.DeleteMembershipRequest{}
 	err = json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
+	if err != nil && err != io.EOF {
 		logger.Error(
 			"Failed to decode request",
 			slog.Any("error", err),
@@ -106,10 +107,26 @@ func (s *UserService) deleteMembership(
 
 	if !contains(
 		roleIds,
-		fmt.Sprintf("user-svc:org:{%v}:admin", org.(*user.Organization).Id),
+		user.RoleAdmin,
 	) {
-		return fmt.Errorf("unauthorized")
+		if !contains(roleIds, orgAdminRole(org.(*user.Organization).Id)) {
+			return fmt.Errorf("unauthorized")
+		}
 	}
 
-	return s.removeRoleFromUser(userId, "user-svc:org:{%v}:user")
+	err = s.membershipStore.Query(
+		datastore.Equals(datastore.Field("appId"), appId),
+		datastore.Equals(datastore.Field("userId"), userId),
+		datastore.Equals(datastore.Field("organizationId"), organizationId),
+	).Delete()
+	if err != nil {
+		return err
+	}
+
+	err = s.deleteActivations(appId, userId, organizationId)
+	if err != nil {
+		return err
+	}
+
+	return s.inactivateTokens(appId, userId)
 }

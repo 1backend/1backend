@@ -9,7 +9,6 @@ package userservice
 
 import (
 	"encoding/json"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"time"
@@ -139,8 +138,7 @@ func (s *UserService) saveOrganization(
 			return nil, nil, errors.Wrap(err, "failed to list effective roles")
 		}
 
-		orgAdminRole := fmt.Sprintf("user-svc:org:{%v}:admin", final.Id)
-		if !contains(roles, user.RoleAdmin) && !contains(roles, orgAdminRole) {
+		if !hasOrganizationAdminAccess(roles, final.Id) {
 			return nil, nil, ErrNotAnAdmin
 		}
 
@@ -161,28 +159,11 @@ func (s *UserService) saveOrganization(
 			return nil, nil, errors.Wrap(err, "error finding user by id")
 		}
 
-		_, activeOrganizationId, err := s.getUserOrganizations(appId, userId, claims.Device)
-		if err != nil {
-			return nil, nil, errors.Wrap(err, "error listing organizations")
-		}
-
-		if shouldActivate && activeOrganizationId == final.Id {
-			return final, nil, nil
-		}
-		if !shouldActivate && activeOrganizationId != final.Id {
-			return final, nil, nil
-		}
-
 		var token *user.Token
 		if shouldActivate {
 			token, err = s.activateOrganization(appId, u, final.Id, claims.Device)
 			if err != nil {
 				return nil, nil, errors.Wrap(err, "error activating organization")
-			}
-		} else {
-			token, err = s.deactivateOrganization(appId, u, final.Id, claims.Device)
-			if err != nil {
-				return nil, nil, errors.Wrap(err, "error deactivating organization")
 			}
 		}
 
@@ -208,84 +189,7 @@ func (s *UserService) saveOrganization(
 		return nil, nil, errors.Wrap(err, "failed to create organization internal id")
 	}
 
-	id := sdk.Id("memb")
-	internalId, err := sdk.InternalId(appId, id)
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "failed to create internal id")
-	}
-
-	// When creating a new org, the user may switch to that org as the active one.
-	link := &user.Membership{
-		InternalId:     internalId,
-		Id:             id,
-		AppId:          appId,
-		UserId:         userId,
-		OrganizationId: final.Id,
-		Device:         claims.Device,
-		Active:         shouldActivate,
-		CreatedAt:      now,
-		UpdatedAt:      now,
-	}
-
-	err = s.membershipStore.Upsert(link)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	deviceMemberships, err := s.membershipStore.Query(
-		datastore.Equals(datastore.Field("appId"), appId),
-		datastore.Equals(datastore.Field("userId"), userId),
-		datastore.Equals(datastore.Field("device"), claims.Device),
-	).Find()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	for _, membershipI := range deviceMemberships {
-		membership := membershipI.(*user.Membership)
-		if membership.Id == link.Id || !membership.Active || !shouldActivate {
-			continue
-		}
-
-		err = s.membershipStore.Query(
-			datastore.Id(membership.Id),
-		).UpdateFields(map[string]any{
-			"active": false,
-		})
-		if err != nil {
-			return nil, nil, err
-		}
-	}
-
 	err = s.organizationStore.Upsert(final)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	currentAppI, found, err := s.appStore.Query(
-		datastore.Equals(datastore.Field("id"), claims.AppId),
-	).FindOne()
-	if err != nil {
-		return nil, nil, errors.Errorf("error finding current app by id '%s': %v", claims.AppId, err)
-	}
-	if !found {
-		return nil, nil, fmt.Errorf("current app not found by id '%s'", claims.AppId)
-	}
-	currentApp := currentAppI.(*user.App)
-
-	_, err = s.saveEnrolls(
-		claims.AppId,
-		userId,
-		&user.SaveEnrollsRequest{
-			Enrolls: []user.EnrollInput{
-				{
-					AppHost: currentApp.Host,
-					UserId:  userId,
-					Role:    fmt.Sprintf("user-svc:org:{%v}:admin", final.Id),
-				},
-			},
-		},
-	)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -301,32 +205,32 @@ func (s *UserService) saveOrganization(
 	}
 	u := userI.(*user.User)
 
-	if !shouldActivate {
-		token, err := s.issueToken(appId, u, claims.Device)
-		if err != nil {
-			return nil, nil, errors.Wrap(err, "error issuing token")
-		}
-
-		return final, token, nil
-	}
-
-	err = s.inactivateTokens(claims.AppId, userId)
+	roles, err := normalizeMembershipRoles(final.Id, []string{orgAdminRole(final.Id)})
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "error inactivating tokens")
+		return nil, nil, errors.Wrap(err, "error normalizing creator membership roles")
 	}
 
-	token, err := s.generateAuthToken(
+	acceptedAt := now
+	_, err = s.createMembership(
 		appId,
-		u,
-		claims.Device,
+		userId,
+		final.Id,
+		user.MembershipStatusAccepted,
+		roles,
+		"",
+		&acceptedAt,
 	)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "error generating token")
+		return nil, nil, errors.Wrap(err, "error creating creator membership")
 	}
 
-	err = s.tokenStore.Upsert(token)
+	if !shouldActivate {
+		return final, nil, nil
+	}
+
+	token, err := s.activateOrganization(appId, u, final.Id, claims.Device)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "error creating token")
+		return nil, nil, errors.Wrap(err, "error activating organization")
 	}
 
 	return final, token, nil
@@ -335,53 +239,11 @@ func (s *UserService) saveOrganization(
 func (s *UserService) deactivateOrganization(
 	appId string,
 	usr *user.User,
-	organizationId string,
 	device string,
 ) (*user.Token, error) {
-	return s.deactivateOrganizationForDevice(appId, usr, organizationId, device, false)
-}
-
-func (s *UserService) deactivateOrganizationForDevice(
-	appId string,
-	usr *user.User,
-	organizationId string,
-	device string,
-	forceToken bool,
-) (*user.Token, error) {
-	links, err := s.membershipStore.Query(
-		datastore.Equals(datastore.Field("appId"), appId),
-		datastore.Equals(datastore.Field("userId"), usr.Id),
-	).Find()
+	err := s.setActivation(appId, usr.Id, device, "")
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to query memberships")
-	}
-
-	now := time.Now()
-	changed := false
-	for _, linkI := range links {
-		link := linkI.(*user.Membership)
-		if link.Device != device || !link.Active {
-			continue
-		}
-		if organizationId != "" && link.OrganizationId != organizationId {
-			continue
-		}
-
-		err = s.membershipStore.Query(
-			datastore.Id(link.Id),
-		).UpdateFields(map[string]any{
-			"active":    false,
-			"updatedAt": now,
-		})
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to update membership")
-		}
-
-		changed = true
-	}
-
-	if !changed && !forceToken {
-		return nil, nil
+		return nil, errors.Wrap(err, "failed to clear activation")
 	}
 
 	err = s.inactivateTokens(appId, usr.Id)

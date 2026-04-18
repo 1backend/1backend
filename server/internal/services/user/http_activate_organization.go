@@ -11,10 +11,7 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
-	"time"
 
-	sdk "github.com/1backend/1backend/sdk/go"
-	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
@@ -110,79 +107,16 @@ func (s *UserService) activateOrganization(
 	organizationId string,
 	device string,
 ) (*user.Token, error) {
-	links, err := s.membershipStore.Query(
-		datastore.Equals(datastore.Field("appId"), appId),
-		datastore.Equals(datastore.Field("userId"), usr.Id),
-	).Find()
+	link, found, err := s.findMembership(appId, usr.Id, organizationId)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to query memberships")
+		return nil, errors.Wrap(err, "failed to query membership")
 	}
-
-	found := false
-	for _, linkI := range links {
-		link := linkI.(*user.Membership)
-		if link.OrganizationId == organizationId {
-			found = true
-			break
-		}
-	}
-
-	if !found {
+	if !found || link.Status != user.MembershipStatusAccepted {
 		return nil, ErrOrganizationMembershipNotFound
 	}
 
-	now := time.Now()
-	deviceLinks := []*user.Membership{}
-	deviceOrganizationFound := false
-	for _, linkI := range links {
-		link := linkI.(*user.Membership)
-		if link.Device != device {
-			continue
-		}
-		deviceLinks = append(deviceLinks, link)
-		if link.OrganizationId == organizationId {
-			deviceOrganizationFound = true
-		}
-	}
-
-	for _, link := range deviceLinks {
-		isActive := link.OrganizationId == organizationId
-		if link.Active == isActive {
-			continue
-		}
-
-		err = s.membershipStore.Query(
-			datastore.Id(link.Id),
-		).UpdateFields(map[string]any{
-			"active":    isActive,
-			"updatedAt": now,
-		})
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to update membership")
-		}
-	}
-
-	if !deviceOrganizationFound {
-		id := sdk.Id("memb")
-		internalId, err := sdk.InternalId(appId, id)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to create membership internal id")
-		}
-
-		err = s.membershipStore.Upsert(&user.Membership{
-			InternalId:     internalId,
-			Id:             id,
-			AppId:          appId,
-			UserId:         usr.Id,
-			OrganizationId: organizationId,
-			Device:         device,
-			Active:         true,
-			CreatedAt:      now,
-			UpdatedAt:      now,
-		})
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to create membership for device")
-		}
+	if err := s.setActivation(appId, usr.Id, device, organizationId); err != nil {
+		return nil, errors.Wrap(err, "failed to update activation")
 	}
 
 	err = s.inactivateTokens(appId, usr.Id)

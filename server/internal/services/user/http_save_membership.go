@@ -9,13 +9,12 @@ package userservice
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
-	"time"
 
-	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
@@ -25,16 +24,14 @@ import (
 
 // @ID saveMembership
 // @Summary Save Membership
-// @Description Adds a user to an organization by saving a Membership.
-// @Description Also issues the corresponding Enroll, which grants the
-// @Description user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
+// @Description Creates or updates an organization membership invite.
 // @Tags User Svc
 // @Accept json
 // @Produce json
 // @Param organizationId path string true "Organization ID"
 // @Param userId path string true "User ID"
 // @Param body body user.SaveMembershipRequest false "Add User to Organization Request"
-// @Success 200 {object} user.SaveMembershipResponse "User added successfully"
+// @Success 200 {object} user.SaveMembershipResponse "Membership saved successfully"
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Failure 403 {object} user.ErrorResponse "Forbidden"
@@ -79,20 +76,24 @@ func (s *UserService) SaveMembership(
 	}
 	defer r.Body.Close()
 
-	device := req.Device
-	if device == "" {
-		device = unknownDevice
-	}
-
-	err = s.saveMembership(
+	membership, err := s.saveMembership(
 		claims.AppId,
 		usr.Id,
+		usr.Slug,
 		userId,
 		organizationId,
-		device,
-		req.Active,
+		req.Roles,
 	)
 	if err != nil {
+		if errors.Is(err, ErrOrganizationAdminRequired) || errors.Is(err, ErrMembershipRoleNotOwned) {
+			endpoint.WriteString(w, http.StatusForbidden, "Forbidden")
+			return
+		}
+		if errors.Is(err, ErrMembershipRoleOutsideOrganizationScope) || errors.Is(err, ErrMembershipRolesEmpty) {
+			endpoint.WriteString(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
 		logger.Error(
 			"Failed to save membership",
 			slog.Any("error", err),
@@ -101,20 +102,22 @@ func (s *UserService) SaveMembership(
 		return
 	}
 
-	endpoint.WriteJSON(w, http.StatusOK, user.SaveMembershipResponse{})
+	endpoint.WriteJSON(w, http.StatusOK, user.SaveMembershipResponse{
+		Membership: *membership,
+	})
 }
 
 func (s *UserService) saveMembership(
 	appId string,
 	callerId,
+	callerSlug,
 	userId,
 	organizationId string,
-	device string,
-	active bool,
-) error {
+	Roles []string,
+) (*user.Membership, error) {
 	roles, err := s.getRolesByUserId(appId, callerId)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	orgI, found, err := s.organizationStore.Query(
@@ -123,142 +126,81 @@ func (s *UserService) saveMembership(
 	).
 		FindOne()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if !found {
-		return fmt.Errorf("organization not found")
+		return nil, fmt.Errorf("organization not found")
 	}
 
 	org := orgI.(*user.Organization)
 
-	if !contains(
-		roles,
-		fmt.Sprintf("user-svc:org:{%v}:admin", org.Id),
-	) {
-		return fmt.Errorf("not an admin of the organization")
+	if !hasOrganizationAdminAccess(roles, org.Id) {
+		return nil, ErrOrganizationAdminRequired
 	}
 
-	newRole := fmt.Sprintf("user-svc:org:{%v}:user", org.Id)
-	changed := false
-
-	targetRoles, err := s.getRolesByUserId(appId, userId)
+	_, targetUserFound, err := s.userStore.Query(datastore.Id(userId)).FindOne()
 	if err != nil {
-		return err
+		return nil, err
+	}
+	if !targetUserFound {
+		return nil, fmt.Errorf("user not found")
 	}
 
-	if !contains(targetRoles, newRole) {
-		err = s.assignRole(
-			appId,
-			userId,
-			newRole,
+	normalizedRoles, err := normalizeMembershipRoles(org.Id, Roles)
+	if err != nil {
+		return nil, err
+	}
+	if err := validateMembershipRoleOwnership(callerSlug, roles, normalizedRoles); err != nil {
+		return nil, err
+	}
+
+	existingMembership, found, err := s.findMembership(appId, userId, org.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	if found {
+		if existingMembership.Status == user.MembershipStatusAccepted {
+			updatedMembership, changed, err := s.updateMembership(
+				existingMembership,
+				user.MembershipStatusAccepted,
+				normalizedRoles,
+				existingMembership.InvitedBy,
+				existingMembership.AcceptedAt,
+			)
+			if err != nil {
+				return nil, err
+			}
+			if changed {
+				if err := s.inactivateTokens(appId, userId); err != nil {
+					return nil, err
+				}
+			}
+			return updatedMembership, nil
+		}
+
+		updatedMembership, _, err := s.updateMembership(
+			existingMembership,
+			user.MembershipStatusPending,
+			normalizedRoles,
+			callerId,
+			nil,
 		)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		changed = true
+		return updatedMembership, nil
 	}
 
-	now := time.Now()
-
-	existingMembershipI, found, err := s.membershipStore.Query(
-		datastore.Equals(datastore.Field("appId"), appId),
-		datastore.Equals(datastore.Field("userId"), userId),
-		datastore.Equals(datastore.Field("organizationId"), org.Id),
-		datastore.Equals(datastore.Field("device"), device),
-	).FindOne()
-	if err != nil {
-		return err
-	}
-
-	var membershipId string
-	if found {
-		link := existingMembershipI.(*user.Membership)
-		membershipId = link.Id
-		if link.Active != active {
-			err = s.membershipStore.Query(
-				datastore.Id(link.Id),
-			).UpdateFields(map[string]any{
-				"active":    active,
-				"updatedAt": now,
-			})
-			if err != nil {
-				return err
-			}
-			changed = true
-		}
-	} else {
-		id := sdk.Id("memb")
-		internalId, err := sdk.InternalId(appId, id)
-		if err != nil {
-			return err
-		}
-
-		link := &user.Membership{
-			InternalId:     internalId,
-			Id:             id,
-			AppId:          appId,
-			UserId:         userId,
-			OrganizationId: org.Id,
-			Device:         device,
-			Active:         active,
-			CreatedAt:      now,
-			UpdatedAt:      now,
-		}
-
-		err = s.membershipStore.Upsert(link)
-		if err != nil {
-			return err
-		}
-
-		membershipId = id
-		changed = true
-	}
-
-	if !active {
-		if changed {
-			err = s.inactivateTokens(appId, userId)
-			if err != nil {
-				return err
-			}
-		}
-		return nil
-	}
-
-	deviceMemberships, err := s.membershipStore.Query(
-		datastore.Equals(datastore.Field("appId"), appId),
-		datastore.Equals(datastore.Field("userId"), userId),
-		datastore.Equals(datastore.Field("device"), device),
-	).Find()
-	if err != nil {
-		return err
-	}
-
-	for _, membershipI := range deviceMemberships {
-		membership := membershipI.(*user.Membership)
-		if membership.Id == membershipId || !membership.Active {
-			continue
-		}
-
-		err = s.membershipStore.Query(
-			datastore.Id(membership.Id),
-		).UpdateFields(map[string]any{
-			"active":    false,
-			"updatedAt": now,
-		})
-		if err != nil {
-			return err
-		}
-		changed = true
-	}
-
-	if changed {
-		err = s.inactivateTokens(appId, userId)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
+	return s.createMembership(
+		appId,
+		userId,
+		org.Id,
+		user.MembershipStatusPending,
+		normalizedRoles,
+		callerId,
+		nil,
+	)
 }
 
 func contains(ss []string, s string) bool {
