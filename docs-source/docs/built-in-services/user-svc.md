@@ -89,17 +89,20 @@ Permission-based checks offer more nuanced control than simple role-only checksâ
 
 ### Recommended org-specific permission pattern
 
-If your service needs organization-local authorization, the recommended pattern is:
+If your service needs organization-local authorization and you want organization admins to manage it directly, the recommended pattern is:
 
-1. Keep the permission owned by your service slug.
+1. Put the permission under an organization-owned namespace.
+   Example: `user-svc:org:{org_abc123}:...`
 2. Scope the permission string by organization id.
+   Example: `user-svc:org:{org_abc123}:notes-svc:note:edit`
 3. Grant that permission to the membership's canonical per-member org role.
+   Example role: `user-svc:org:{org_abc123}:usr_456`
 
 Example for a service called `notes-svc`:
 
 ```yaml
 # Permission checked by your handler
-notes-svc:org:{org_abc123}:note:edit
+user-svc:org:{org_abc123}:notes-svc:note:edit
 
 # Canonical per-member role automatically added to the membership
 user-svc:org:{org_abc123}:usr_456
@@ -109,7 +112,7 @@ Then save a permit like:
 
 ```yaml
 id: notes-edit-org-abc123-user-456
-permission: notes-svc:org:{org_abc123}:note:edit
+permission: user-svc:org:{org_abc123}:notes-svc:note:edit
 roles:
   - user-svc:org:{org_abc123}:usr_456
 ```
@@ -118,10 +121,10 @@ This gives you a stable place to attach a large custom permission set to one use
 
 Important details:
 
-- Permissions should stay service-prefixed, for example `notes-svc:org:{orgId}:note:edit`.
-- Avoid patterns like `org:{orgId}:notes-svc:note:edit`, because permission ownership is based on the creator slug prefix.
+- If organization admins should manage the permission, use an organization-owned prefix such as `user-svc:org:{orgId}:notes-svc:note:edit`.
+- A plain service-owned permission such as `notes-svc:note:edit` is still valid, but then only `notes-svc` itself or a platform admin owns that permission namespace.
 - Memberships now automatically include `user-svc:org:{orgId}:{userId}` in addition to any explicit org roles such as `user` or `admin`.
-- This pattern intentionally relies on `OwnsRole`: `user-svc:org:{orgId}:admin` owns `user-svc:org:{orgId}:{userId}`, so org admins can assign membership roles in that flat org role family.
+- This pattern intentionally relies on both ownership checks: `user-svc:org:{orgId}:admin` owns `user-svc:org:{orgId}:{userId}` as a role, and also owns the permission namespace `user-svc:org:{orgId}:...`.
 - JWTs only include roles for the active organization. If the user switches organizations, the per-member role for the old org disappears from the token, and `HasPermission` for that org-scoped permission returns false.
 - If you want organization admins to manage a role directly, keep it in the flat org family form `user-svc:org:{orgId}:{roleName}`. A deeper role like `user-svc:org:{orgId}:team:admin` is a different role family and is not automatically owned by `user-svc:org:{orgId}:admin`.
 
@@ -422,9 +425,19 @@ Permits are the glue between permissions, roles, and service slugs.
 
 ### Permission access rules
 
-Each permission created must by prefixed by the slug of the account that created it. Said account becomes the owner of the permission and only that account can add the permission to a role.
+Permissions are owned by namespaces. The two most important ownership patterns are:
 
-> Once you (your service) own a permission (by creating it, and it being prefixed by your account slug), you can add it to any role, not just roles owned by you.
+- A service-owned namespace such as `notes-svc:...`
+- An organization-owned namespace such as `user-svc:org:{orgId}:...`
+
+The owner of that namespace can save permits for the permission.
+
+Examples:
+
+- `notes-svc` owns `notes-svc:note:edit`
+- `user-svc:org:{org_abc123}:admin` owns `user-svc:org:{org_abc123}:notes-svc:note:edit`
+
+> Once you own a permission namespace, you can add that permission to any role, not just roles owned by you.
 
 #### Permission examples
 

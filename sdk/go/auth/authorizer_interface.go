@@ -246,6 +246,44 @@ func OwnsRole(claim *Claims, roleId string) bool {
 	return false
 }
 
+// OwnsPermission determines if the caller owns a permission namespace.
+//
+// A caller owns a permission in the following cases:
+// - The permission is prefixed by the caller slug.
+// - The caller has an `:admin` role whose namespace prefixes the permission.
+// - The caller is `user-svc:admin`.
+//
+// Examples:
+//   - A caller with slug `notes-svc` owns `notes-svc:note:edit`.
+//   - A caller with role `user-svc:org:{org_abc}:admin` owns
+//     `user-svc:org:{org_abc}:notes-svc:note:edit`.
+func OwnsPermission(claim *Claims, permission string) bool {
+	if claim == nil {
+		return false
+	}
+
+	if lo.Contains(claim.Roles, "user-svc:admin") {
+		return true
+	}
+
+	if claim.Slug != "" && (permission == claim.Slug || strings.HasPrefix(permission, claim.Slug+":")) {
+		return true
+	}
+
+	for _, userRole := range claim.Roles {
+		if !strings.HasSuffix(userRole, ":admin") {
+			continue
+		}
+
+		namespacePrefix := strings.TrimSuffix(userRole, "admin")
+		if strings.HasPrefix(permission, namespacePrefix) {
+			return true
+		}
+	}
+
+	return false
+}
+
 func TokenFromClient(client *openapi.APIClient) string {
 	userToken := client.GetConfig().DefaultHeader["Authorization"]
 	userToken = strings.Replace(userToken, "Bearer ", "", -1)

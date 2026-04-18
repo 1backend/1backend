@@ -12,10 +12,10 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
-	"strings"
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
@@ -27,6 +27,7 @@ import (
 // @Summary Save Permits
 // @Description Save permits.
 // @Description Permits give access to users with certain slugs and roles to permissions.
+// @Description Non-admin callers may only save permissions they own, such as `their-slug:...` or organization-scoped namespaces they administer.
 // @Tags User Svc
 // @Accept json
 // @Produce json
@@ -38,7 +39,7 @@ import (
 // @Security BearerAuth
 // @Router /user-svc/permits [put]
 func (s *UserService) SavePermits(w http.ResponseWriter, r *http.Request) {
-	usr, claims, err := s.getUserFromRequest(r)
+	_, claims, err := s.getUserFromRequest(r)
 	if err != nil {
 		logger.Error(
 			"Failed to get user from request",
@@ -60,20 +61,10 @@ func (s *UserService) SavePermits(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	isAdmin := false
-	for _, role := range claims.Roles {
-		if role == user.RoleAdmin {
-			isAdmin = true
-			break
-		}
-	}
-
-	if !isAdmin {
-		for _, permit := range req.Permits {
-			if !strings.HasPrefix(permit.Permission, usr.Slug) {
-				endpoint.Unauthorized(w)
-				return
-			}
+	for _, permit := range req.Permits {
+		if !auth.OwnsPermission(claims, permit.Permission) {
+			endpoint.Unauthorized(w)
+			return
 		}
 	}
 

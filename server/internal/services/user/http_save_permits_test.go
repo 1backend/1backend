@@ -277,6 +277,102 @@ func TestPermissionOwnership_OwnerCanAttachToForeignRole(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func TestPermissionOwnership_OrgAdminOwnsOrgScopedPermissionNamespace(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{Test: true})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	clients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 2)
+	require.NoError(t, err)
+
+	ownerClient := clients[0]
+	memberClient := clients[1]
+
+	ctx := context.Background()
+
+	memberSelf, _, err := memberClient.UserSvcAPI.ReadSelf(ctx).Execute()
+	require.NoError(t, err)
+	memberUserId := memberSelf.User.Id
+
+	orgRsp, _, err := ownerClient.UserSvcAPI.SaveOrganization(ctx).
+		Body(openapi.UserSvcSaveOrganizationRequest{
+			Activate: openapi.PtrBool(true),
+			Slug:     "org-owned-permission-org",
+			Name:     openapi.PtrString("Org Owned Permission Org"),
+		}).
+		Execute()
+	require.NoError(t, err)
+	require.NotNil(t, orgRsp.Token)
+
+	orgId := orgRsp.Organization.Id
+	ownerClient = clientFactory.Client(client.WithToken(orgRsp.Token.Token))
+
+	inviteRsp, inviteHTTP := saveMembership(
+		t,
+		ownerClient,
+		orgId,
+		memberUserId,
+		&openapi.UserSvcSaveMembershipRequest{},
+	)
+	require.Equal(t, 200, inviteHTTP.StatusCode)
+
+	memberRole := "user-svc:org:{" + orgId + "}:" + memberUserId
+	require.Contains(t, inviteRsp.Membership.Roles, memberRole)
+
+	orgPermission := "user-svc:org:{" + orgId + "}:notes-svc:note:edit"
+
+	t.Run("org admin can save org-owned permission", func(t *testing.T) {
+		_, _, err := ownerClient.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
+			Permits: []openapi.UserSvcPermitInput{
+				{
+					Permission: orgPermission,
+					Roles:      []string{memberRole},
+				},
+			},
+		}).Execute()
+		require.NoError(t, err)
+	})
+
+	t.Run("org member cannot save org-owned permission", func(t *testing.T) {
+		loginRsp, _, err := clientFactory.Client().UserSvcAPI.Login(ctx).
+			Body(openapi.UserSvcLoginRequest{
+				AppHost:  sdk.DefaultTestAppHost,
+				Slug:     openapi.PtrString("test-user-slug-1"),
+				Password: openapi.PtrString("testUserPassword1"),
+				Device:   openapi.PtrString("org-owned-permission-device"),
+			}).
+			Execute()
+		require.NoError(t, err)
+
+		memberClient = clientFactory.Client(client.WithToken(loginRsp.Token.Token))
+
+		acceptRsp, acceptHTTP := acceptMembership(
+			t,
+			memberClient,
+			orgId,
+			&openapi.UserSvcAcceptMembershipRequest{Activate: openapi.PtrBool(true)},
+		)
+		require.Equal(t, 200, acceptHTTP.StatusCode)
+		require.NotNil(t, acceptRsp.Token)
+
+		memberClient = clientFactory.Client(client.WithToken(acceptRsp.Token.Token))
+
+		_, _, err = memberClient.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
+			Permits: []openapi.UserSvcPermitInput{
+				{
+					Permission: orgPermission,
+					Roles:      []string{memberRole},
+				},
+			},
+		}).Execute()
+		require.Error(t, err)
+	})
+}
+
 func TestAppIsolation_ListPermits_AdminScopedByApp(t *testing.T) {
 	t.Parallel()
 
@@ -377,8 +473,8 @@ func TestExchangeToken_AppScopesRolesInJWT(t *testing.T) {
 	orgRsp, _, err := userA.UserSvcAPI.SaveOrganization(ctx).
 		Body(openapi.UserSvcSaveOrganizationRequest{
 			Activate: openapi.PtrBool(true),
-			Slug: "org-a",
-			Name: openapi.PtrString("Org A"),
+			Slug:     "org-a",
+			Name:     openapi.PtrString("Org A"),
 		}).Execute()
 	require.NoError(t, err)
 	require.NotEmpty(t, orgRsp.Token.Token)

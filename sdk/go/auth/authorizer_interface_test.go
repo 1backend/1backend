@@ -118,3 +118,40 @@ func TestOwnsRole(t *testing.T) {
 		require.Equal(t, true, owns)
 	})
 }
+
+func TestOwnsPermission(t *testing.T) {
+	t.Run("slug owner owns service permission", func(t *testing.T) {
+		owns := auth.OwnsPermission(&auth.Claims{
+			Slug: "notes-svc",
+		}, "notes-svc:note:edit")
+
+		require.Equal(t, true, owns)
+	})
+
+	t.Run("org admin owns org-scoped permission namespace", func(t *testing.T) {
+		owns := auth.OwnsPermission(&auth.Claims{
+			Slug:  "some-user",
+			Roles: []string{"user-svc:org:{abc}:admin"},
+		}, "user-svc:org:{abc}:notes-svc:note:edit")
+
+		require.Equal(t, true, owns)
+	})
+
+	t.Run("org member does not own org-scoped permission namespace", func(t *testing.T) {
+		owns := auth.OwnsPermission(&auth.Claims{
+			Slug:  "some-user",
+			Roles: []string{"user-svc:org:{abc}:user"},
+		}, "user-svc:org:{abc}:notes-svc:note:edit")
+
+		require.Equal(t, false, owns)
+	})
+
+	t.Run("org admin does not own different org permission namespace", func(t *testing.T) {
+		owns := auth.OwnsPermission(&auth.Claims{
+			Slug:  "some-user",
+			Roles: []string{"user-svc:org:{abc}:admin"},
+		}, "user-svc:org:{xyz}:notes-svc:note:edit")
+
+		require.Equal(t, false, owns)
+	})
+}

@@ -153,7 +153,12 @@ func TestPermitsByRoleId(t *testing.T) {
 	require.NotEmpty(t, len(rsp.Users))
 }
 
-func TestHasPermission_OrgScopedPermitViaCanonicalMemberRole(t *testing.T) {
+// Mirrors the documented org-specific permission pattern in user-svc.md:
+// 1. org admin creates membership
+// 2. membership gets canonical role user-svc:org:{orgId}:{userId}
+// 3. org admin saves an org-owned permission to that role
+// 4. HasPermission succeeds only while that org is active
+func TestOrgScopedPermissionPattern_DocsFlow(t *testing.T) {
 	t.Parallel()
 
 	server, err := test.StartService(test.Options{Test: true})
@@ -180,7 +185,7 @@ func TestHasPermission_OrgScopedPermitViaCanonicalMemberRole(t *testing.T) {
 		Body(openapi.UserSvcSaveOrganizationRequest{
 			Activate: openapi.PtrBool(true),
 			Slug:     "drift-member-role-org-1",
-			Name:     openapi.PtrString("Drift Member Role Org 1"),
+			Name:     openapi.PtrString("Notes Member Role Org 1"),
 		}).
 		Execute()
 	require.NoError(t, err)
@@ -193,7 +198,7 @@ func TestHasPermission_OrgScopedPermitViaCanonicalMemberRole(t *testing.T) {
 		Body(openapi.UserSvcSaveOrganizationRequest{
 			Activate: openapi.PtrBool(false),
 			Slug:     "drift-member-role-org-2",
-			Name:     openapi.PtrString("Drift Member Role Org 2"),
+			Name:     openapi.PtrString("Notes Member Role Org 2"),
 		}).
 		Execute()
 	require.NoError(t, err)
@@ -264,18 +269,8 @@ func TestHasPermission_OrgScopedPermitViaCanonicalMemberRole(t *testing.T) {
 	require.Equal(t, org1Id, claims.ActiveOrganizationId)
 	require.Contains(t, claims.Roles, memberRole)
 
-	driftToken, err := boot.RegisterUserAccount(
-		clientFactory.Client().UserSvcAPI,
-		sdk.DefaultTestAppHost,
-		"drift-svc",
-		"pw123",
-		"Drift Service",
-	)
-	require.NoError(t, err)
-	driftClient := clientFactory.Client(client.WithToken(driftToken.Token))
-
-	orgScopedPermission := "drift-svc:org:{" + org1Id + "}:save:monitor"
-	_, _, err = driftClient.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
+	orgScopedPermission := "user-svc:org:{" + org1Id + "}:notes-svc:note:edit"
+	_, _, err = ownerClient.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{
 			{
 				Permission: orgScopedPermission,
