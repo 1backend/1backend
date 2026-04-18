@@ -233,6 +233,7 @@ func (s *UserService) getRolesByUserId(appId, userId string) ([]string, error) {
 	}
 	for _, membershipI := range membershipIs {
 		membership := membershipI.(*user.Membership)
+		rolesIndex[orgMemberRole(membership.OrganizationId, membership.UserId)] = struct{}{}
 		for _, roleId := range membership.Roles {
 			rolesIndex[roleId] = struct{}{}
 		}

@@ -16,6 +16,7 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/test"
@@ -150,6 +151,159 @@ func TestPermitsByRoleId(t *testing.T) {
 	rsp, _, err := userClient.UserSvcAPI.ListUsers(ctx).Execute()
 	require.NoError(t, err)
 	require.NotEmpty(t, len(rsp.Users))
+}
+
+func TestHasPermission_OrgScopedPermitViaCanonicalMemberRole(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{Test: true})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+	ctx := context.Background()
+
+	clients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 2)
+	require.NoError(t, err)
+
+	ownerClient := clients[0]
+	memberClient := clients[1]
+
+	pk, _, err := clientFactory.Client().UserSvcAPI.GetPublicKey(ctx).Execute()
+	require.NoError(t, err)
+
+	memberSelf, _, err := memberClient.UserSvcAPI.ReadSelf(ctx).Execute()
+	require.NoError(t, err)
+	memberUserId := memberSelf.User.Id
+
+	org1Rsp, _, err := ownerClient.UserSvcAPI.SaveOrganization(ctx).
+		Body(openapi.UserSvcSaveOrganizationRequest{
+			Activate: openapi.PtrBool(true),
+			Slug:     "drift-member-role-org-1",
+			Name:     openapi.PtrString("Drift Member Role Org 1"),
+		}).
+		Execute()
+	require.NoError(t, err)
+	require.NotNil(t, org1Rsp.Token)
+
+	org1Id := org1Rsp.Organization.Id
+	ownerClient = clientFactory.Client(client.WithToken(org1Rsp.Token.Token))
+
+	org2Rsp, _, err := ownerClient.UserSvcAPI.SaveOrganization(ctx).
+		Body(openapi.UserSvcSaveOrganizationRequest{
+			Activate: openapi.PtrBool(false),
+			Slug:     "drift-member-role-org-2",
+			Name:     openapi.PtrString("Drift Member Role Org 2"),
+		}).
+		Execute()
+	require.NoError(t, err)
+
+	org2Id := org2Rsp.Organization.Id
+
+	inviteOrg1Rsp, inviteOrg1HTTP := saveMembership(
+		t,
+		ownerClient,
+		org1Id,
+		memberUserId,
+		&openapi.UserSvcSaveMembershipRequest{},
+	)
+	require.Equal(t, 200, inviteOrg1HTTP.StatusCode)
+	require.ElementsMatch(
+		t,
+		[]string{
+			"user-svc:org:{" + org1Id + "}:user",
+			"user-svc:org:{" + org1Id + "}:" + memberUserId,
+		},
+		inviteOrg1Rsp.Membership.Roles,
+	)
+
+	_, inviteOrg2HTTP := saveMembership(
+		t,
+		ownerClient,
+		org2Id,
+		memberUserId,
+		&openapi.UserSvcSaveMembershipRequest{},
+	)
+	require.Equal(t, 200, inviteOrg2HTTP.StatusCode)
+
+	loginRsp, _, err := clientFactory.Client().UserSvcAPI.Login(ctx).
+		Body(openapi.UserSvcLoginRequest{
+			AppHost:  sdk.DefaultTestAppHost,
+			Slug:     openapi.PtrString("test-user-slug-1"),
+			Password: openapi.PtrString("testUserPassword1"),
+			Device:   openapi.PtrString("drift-browser"),
+		}).
+		Execute()
+	require.NoError(t, err)
+
+	memberClient = clientFactory.Client(client.WithToken(loginRsp.Token.Token))
+
+	acceptOrg1Rsp, acceptOrg1HTTP := acceptMembership(
+		t,
+		memberClient,
+		org1Id,
+		&openapi.UserSvcAcceptMembershipRequest{Activate: openapi.PtrBool(true)},
+	)
+	require.Equal(t, 200, acceptOrg1HTTP.StatusCode)
+	require.NotNil(t, acceptOrg1Rsp.Token)
+
+	memberClient = clientFactory.Client(client.WithToken(acceptOrg1Rsp.Token.Token))
+
+	acceptOrg2Rsp, acceptOrg2HTTP := acceptMembership(
+		t,
+		memberClient,
+		org2Id,
+		&openapi.UserSvcAcceptMembershipRequest{Activate: openapi.PtrBool(false)},
+	)
+	require.Equal(t, 200, acceptOrg2HTTP.StatusCode)
+	require.Nil(t, acceptOrg2Rsp.Token)
+
+	memberRole := "user-svc:org:{" + org1Id + "}:" + memberUserId
+	claims, err := auth.AuthorizerImpl{}.ParseJWT(pk.PublicKey, acceptOrg1Rsp.Token.Token)
+	require.NoError(t, err)
+	require.Equal(t, org1Id, claims.ActiveOrganizationId)
+	require.Contains(t, claims.Roles, memberRole)
+
+	driftToken, err := boot.RegisterUserAccount(
+		clientFactory.Client().UserSvcAPI,
+		sdk.DefaultTestAppHost,
+		"drift-svc",
+		"pw123",
+		"Drift Service",
+	)
+	require.NoError(t, err)
+	driftClient := clientFactory.Client(client.WithToken(driftToken.Token))
+
+	orgScopedPermission := "drift-svc:org:{" + org1Id + "}:save:monitor"
+	_, _, err = driftClient.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
+		Permits: []openapi.UserSvcPermitInput{
+			{
+				Permission: orgScopedPermission,
+				Roles:      []string{memberRole},
+			},
+		},
+	}).Execute()
+	require.NoError(t, err)
+
+	hasInOrg1, _, err := memberClient.UserSvcAPI.HasPermission(ctx, orgScopedPermission).Execute()
+	require.NoError(t, err)
+	require.True(t, hasInOrg1.Authorized)
+
+	activateOrg2Rsp, _, err := memberClient.UserSvcAPI.ActivateOrganization(ctx).
+		Body(openapi.UserSvcActivateOrganizationRequest{OrganizationId: org2Id}).
+		Execute()
+	require.NoError(t, err)
+
+	memberClient = clientFactory.Client(client.WithToken(activateOrg2Rsp.Token.Token))
+
+	org2Claims, err := auth.AuthorizerImpl{}.ParseJWT(pk.PublicKey, activateOrg2Rsp.Token.Token)
+	require.NoError(t, err)
+	require.Equal(t, org2Id, org2Claims.ActiveOrganizationId)
+	require.NotContains(t, org2Claims.Roles, memberRole)
+
+	hasInOrg2, _, err := memberClient.UserSvcAPI.HasPermission(ctx, orgScopedPermission).Execute()
+	require.NoError(t, err)
+	require.False(t, hasInOrg2.Authorized)
 }
 
 func TestAutoRefresh(t *testing.T) {

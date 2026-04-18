@@ -27,6 +27,10 @@ func orgAdminRole(organizationId string) string {
 	return orgRolePrefix(organizationId) + "admin"
 }
 
+func orgMemberRole(organizationId string, userId string) string {
+	return orgRolePrefix(organizationId) + userId
+}
+
 func isOrgScopedRole(role string) bool {
 	return strings.HasPrefix(role, "user-svc:org:{")
 }
@@ -35,7 +39,7 @@ func isOrgScopedRoleForOrganization(organizationId string, role string) bool {
 	return strings.HasPrefix(role, orgRolePrefix(organizationId))
 }
 
-func normalizeMembershipRoles(organizationId string, roles []string) ([]string, error) {
+func normalizeMembershipRoles(organizationId string, userId string, roles []string) ([]string, error) {
 	if roles == nil {
 		roles = []string{orgUserRole(organizationId)}
 	}
@@ -43,7 +47,9 @@ func normalizeMembershipRoles(organizationId string, roles []string) ([]string, 
 		return nil, ErrMembershipRolesEmpty
 	}
 
-	roleSet := map[string]struct{}{}
+	roleSet := map[string]struct{}{
+		orgMemberRole(organizationId, userId): {},
+	}
 	for _, roleId := range roles {
 		if !isOrgScopedRoleForOrganization(organizationId, roleId) {
 			return nil, fmt.Errorf("%w: %q", ErrMembershipRoleOutsideOrganizationScope, roleId)
@@ -58,6 +64,10 @@ func normalizeMembershipRoles(organizationId string, roles []string) ([]string, 
 	if _, ok := roleSet[orgUserRole(organizationId)]; ok {
 		normalized = append(normalized, orgUserRole(organizationId))
 		delete(roleSet, orgUserRole(organizationId))
+	}
+	if _, ok := roleSet[orgMemberRole(organizationId, userId)]; ok {
+		normalized = append(normalized, orgMemberRole(organizationId, userId))
+		delete(roleSet, orgMemberRole(organizationId, userId))
 	}
 
 	remaining := make([]string, 0, len(roleSet))

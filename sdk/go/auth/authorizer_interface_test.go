@@ -64,6 +64,24 @@ func TestOwnsRole(t *testing.T) {
 		require.Equal(t, true, owns)
 	})
 
+	t.Run("org admin owns per-member org role", func(t *testing.T) {
+		owns := auth.OwnsRole(&auth.Claims{
+			Roles: []string{"user-svc:org:{abc}:admin"},
+			Slug:  "some-svc",
+		}, "user-svc:org:{abc}:usr_member")
+
+		require.Equal(t, true, owns)
+	})
+
+	t.Run("org admin does not own nested org role family", func(t *testing.T) {
+		owns := auth.OwnsRole(&auth.Claims{
+			Roles: []string{"user-svc:org:{abc}:admin"},
+			Slug:  "some-svc",
+		}, "user-svc:org:{abc}:team:admin")
+
+		require.Equal(t, false, owns)
+	})
+
 	t.Run("test for prefix logic error", func(t *testing.T) {
 		owns := auth.OwnsRole(&auth.Claims{
 			Roles: []string{"user-svc:org:{abc}:admin"},

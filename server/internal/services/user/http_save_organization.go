@@ -29,6 +29,7 @@ var ErrNotAnAdmin = errors.New("user is not an admin of the organization")
 // @Summary Save an Organization
 // @Description Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization.
 // @Description The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the saved organization.
+// @Description The creator membership also receives the canonical per-user org role `user-svc:org:{organizationId}:{userId}` so org-specific permits can target the creator directly.
 // @Description Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
 // @Tags User Svc
 // @Accept json
@@ -205,7 +206,7 @@ func (s *UserService) saveOrganization(
 	}
 	u := userI.(*user.User)
 
-	roles, err := normalizeMembershipRoles(final.Id, []string{orgAdminRole(final.Id)})
+	roles, err := normalizeMembershipRoles(final.Id, userId, []string{orgAdminRole(final.Id)})
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "error normalizing creator membership roles")
 	}

@@ -211,6 +211,7 @@ func ExtractOrganizationRoles(roleIds []string) map[string][]string {
 // - A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
 // - A user with any slug who has the role "my-service:admin" owns "my-service:user".
 // - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
+// - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:{%userId}".
 func OwnsRole(claim *Claims, roleId string) bool {
 	// @todo Probably not great in terms of zero trust design ; )
 	if lo.Contains(claim.Roles, "user-svc:admin") {

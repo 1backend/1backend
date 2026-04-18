@@ -25,6 +25,9 @@ import (
 // @ID saveMembership
 // @Summary Save Membership
 // @Description Creates or updates an organization membership invite.
+// @Description Memberships automatically include a canonical per-user org role in the form `user-svc:org:{organizationId}:{userId}`.
+// @Description Callers may add additional roles under the same organization prefix to model org-local groups or custom permission bundles.
+// @Description Additional roles are still subject to role ownership validation via `OwnsRole`.
 // @Tags User Svc
 // @Accept json
 // @Produce json
@@ -146,7 +149,7 @@ func (s *UserService) saveMembership(
 		return nil, fmt.Errorf("user not found")
 	}
 
-	normalizedRoles, err := normalizeMembershipRoles(org.Id, Roles)
+	normalizedRoles, err := normalizeMembershipRoles(org.Id, userId, Roles)
 	if err != nil {
 		return nil, err
 	}

@@ -87,6 +87,44 @@ Permission-based checks offer more nuanced control than simple role-only checksâ
 
 > If you are looking at restricting access to endpoints in other ways, you might be interested in: [Policy Svc](/docs/built-in-services/policy-svc).
 
+### Recommended org-specific permission pattern
+
+If your service needs organization-local authorization, the recommended pattern is:
+
+1. Keep the permission owned by your service slug.
+2. Scope the permission string by organization id.
+3. Grant that permission to the membership's canonical per-member org role.
+
+Example for a service called `notes-svc`:
+
+```yaml
+# Permission checked by your handler
+notes-svc:org:{org_abc123}:note:edit
+
+# Canonical per-member role automatically added to the membership
+user-svc:org:{org_abc123}:usr_456
+```
+
+Then save a permit like:
+
+```yaml
+id: notes-edit-org-abc123-user-456
+permission: notes-svc:org:{org_abc123}:note:edit
+roles:
+  - user-svc:org:{org_abc123}:usr_456
+```
+
+This gives you a stable place to attach a large custom permission set to one user without inflating the JWT with hundreds of direct roles.
+
+Important details:
+
+- Permissions should stay service-prefixed, for example `notes-svc:org:{orgId}:note:edit`.
+- Avoid patterns like `org:{orgId}:notes-svc:note:edit`, because permission ownership is based on the creator slug prefix.
+- Memberships now automatically include `user-svc:org:{orgId}:{userId}` in addition to any explicit org roles such as `user` or `admin`.
+- This pattern intentionally relies on `OwnsRole`: `user-svc:org:{orgId}:admin` owns `user-svc:org:{orgId}:{userId}`, so org admins can assign membership roles in that flat org role family.
+- JWTs only include roles for the active organization. If the user switches organizations, the per-member role for the old org disappears from the token, and `HasPermission` for that org-scoped permission returns false.
+- If you want organization admins to manage a role directly, keep it in the flat org family form `user-svc:org:{orgId}:{roleName}`. A deeper role like `user-svc:org:{orgId}:team:admin` is a different role family and is not automatically owned by `user-svc:org:{orgId}:admin`.
+
 ## Tokens
 
 The User Svc produces a JWT ([JSON Web Token](https://en.wikipedia.org/wiki/JSON_Web_Token)) upon [/user-svc/login](/docs/1backend-api/login) in the `token.token` field (see the response documentation).
@@ -345,7 +383,7 @@ Any logged in user can create an organization, provided the `Organization` slug 
 
 ## Membership
 
-A membership is a formal link between a user and an organization. It determines what organizations a user belongs to and enables organization-scoped roles to take effect (such as `user-svc:org:{orgId}:user` or `user-svc:org:{orgId}:admin`).
+A membership is a formal link between a user and an organization. It determines what organizations a user belongs to and enables organization-scoped roles to take effect (such as `user-svc:org:{orgId}:user`, `user-svc:org:{orgId}:admin`, or the canonical per-member role `user-svc:org:{orgId}:{userId}`).
 
 Similarly how [`Enrolls`](#enrolls) add roles to users, memberships add organization roles to users. Memberships are created by the [`SaveMembership`](/docs/1backend-api/save-membership) endpoint.
 
