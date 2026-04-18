@@ -22,11 +22,6 @@ UserSvcSaveOrganizationRequest.attributeTypeMap = [
         "type": "boolean"
     },
     {
-        "name": "assignCaller",
-        "baseName": "assignCaller",
-        "type": "boolean"
-    },
-    {
         "name": "id",
         "baseName": "id",
         "type": "string"

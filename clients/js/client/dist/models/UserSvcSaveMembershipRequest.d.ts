@@ -16,18 +16,11 @@
  */
 export interface UserSvcSaveMembershipRequest {
     /**
-     * If true, this membership becomes the active organization for the
-     * specified device. Only one membership can remain active per (user, device).
-     * @type {boolean}
+     *
+     * @type {Array<string>}
      * @memberof UserSvcSaveMembershipRequest
      */
-    active?: boolean;
-    /**
-     * Device scope of the membership activation. Defaults to `unknown`.
-     * @type {string}
-     * @memberof UserSvcSaveMembershipRequest
-     */
-    device?: string;
+    roles?: Array<string>;
 }
 /**
  * Check if a given object implements the UserSvcSaveMembershipRequest interface.

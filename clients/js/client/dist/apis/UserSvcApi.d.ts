@@ -10,7 +10,11 @@
  * Do not edit the class manually.
  */
 import * as runtime from '../runtime';
-import type { UserSvcActivateOrganizationRequest, UserSvcActivateOrganizationResponse, UserSvcChangePasswordRequest, UserSvcCreateUserRequest, UserSvcDeactivateOrganizationResponse, UserSvcExchangeTokenRequest, UserSvcExchangeTokenResponse, UserSvcGetPublicKeyResponse, UserSvcHasPermissionResponse, UserSvcListAppsRequest, UserSvcListAppsResponse, UserSvcListEnrollsRequest, UserSvcListEnrollsResponse, UserSvcListOrganizationsRequest, UserSvcListOrganizationsResponse, UserSvcListPermissionsResponse, UserSvcListPermitsRequest, UserSvcListPermitsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadAppRequest, UserSvcReadAppResponse, UserSvcReadSelfRequest, UserSvcReadSelfResponse, UserSvcRefreshTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcRevokeTokensRequest, UserSvcSaveEnrollsRequest, UserSvcSaveEnrollsResponse, UserSvcSaveMembershipRequest, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSavePermitsRequest, UserSvcSaveSelfRequest, UserSvcSaveUserRequest, UserSvcSendOtpRequest, UserSvcSendOtpResponse, UserSvcUpdateAppRequest } from '../models/index';
+import type { UserSvcAcceptMembershipRequest, UserSvcAcceptMembershipResponse, UserSvcActivateOrganizationRequest, UserSvcActivateOrganizationResponse, UserSvcChangePasswordRequest, UserSvcCreateUserRequest, UserSvcDeactivateOrganizationResponse, UserSvcDeclineMembershipResponse, UserSvcExchangeTokenRequest, UserSvcExchangeTokenResponse, UserSvcGetPublicKeyResponse, UserSvcHasPermissionResponse, UserSvcListAppsRequest, UserSvcListAppsResponse, UserSvcListEnrollsRequest, UserSvcListEnrollsResponse, UserSvcListMembershipsRequest, UserSvcListMembershipsResponse, UserSvcListOrganizationsRequest, UserSvcListOrganizationsResponse, UserSvcListPermissionsResponse, UserSvcListPermitsRequest, UserSvcListPermitsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadAppRequest, UserSvcReadAppResponse, UserSvcReadSelfRequest, UserSvcReadSelfResponse, UserSvcRefreshTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcRevokeTokensRequest, UserSvcSaveEnrollsRequest, UserSvcSaveEnrollsResponse, UserSvcSaveMembershipRequest, UserSvcSaveMembershipResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSavePermitsRequest, UserSvcSaveSelfRequest, UserSvcSaveUserRequest, UserSvcSendOtpRequest, UserSvcSendOtpResponse, UserSvcUpdateAppRequest } from '../models/index';
+export interface AcceptMembershipRequest {
+    organizationId: string;
+    body?: UserSvcAcceptMembershipRequest;
+}
 export interface ActivateOrganizationRequest {
     body: UserSvcActivateOrganizationRequest;
 }
@@ -19,6 +23,10 @@ export interface ChangePasswordRequest {
 }
 export interface CreateUserRequest {
     body: UserSvcCreateUserRequest;
+}
+export interface DeclineMembershipRequest {
+    organizationId: string;
+    body?: object;
 }
 export interface DeleteMembershipRequest {
     organizationId: string;
@@ -42,6 +50,9 @@ export interface ListAppsRequest {
 }
 export interface ListEnrollsRequest {
     body: UserSvcListEnrollsRequest;
+}
+export interface ListMembershipsRequest {
+    body?: UserSvcListMembershipsRequest;
 }
 export interface ListOrganizationsRequest {
     body?: UserSvcListOrganizationsRequest;
@@ -107,6 +118,16 @@ export interface UpdateAppRequest {
  */
 export declare class UserSvcApi extends runtime.BaseAPI {
     /**
+     * Accepts the caller user\'s pending invite for an organization.
+     * Accept Membership
+     */
+    acceptMembershipRaw(requestParameters: AcceptMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcAcceptMembershipResponse>>;
+    /**
+     * Accepts the caller user\'s pending invite for an organization.
+     * Accept Membership
+     */
+    acceptMembership(requestParameters: AcceptMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcAcceptMembershipResponse>;
+    /**
      * Sets the caller user\'s active organization and returns a fresh token reflecting the new active organization.
      * Activate Organization
      */
@@ -146,6 +167,16 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      * Deactivate Organization
      */
     deactivateOrganization(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcDeactivateOrganizationResponse>;
+    /**
+     * Declines the caller user\'s pending invite for an organization.
+     * Decline Membership
+     */
+    declineMembershipRaw(requestParameters: DeclineMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcDeclineMembershipResponse>>;
+    /**
+     * Declines the caller user\'s pending invite for an organization.
+     * Decline Membership
+     */
+    declineMembership(requestParameters: DeclineMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcDeclineMembershipResponse>;
     /**
      * Allows an organization admin to remove a user from an organization.
      * Delete Membership
@@ -226,6 +257,16 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      * List Enrolls
      */
     listEnrolls(requestParameters: ListEnrollsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListEnrollsResponse>;
+    /**
+     * Lists organization memberships and pending invites.
+     * List Memberships
+     */
+    listMembershipsRaw(requestParameters: ListMembershipsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcListMembershipsResponse>>;
+    /**
+     * Lists organization memberships and pending invites.
+     * List Memberships
+     */
+    listMemberships(requestParameters?: ListMembershipsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcListMembershipsResponse>;
     /**
      * Requires the `user-svc:organization:view` permission. With `all=true`, platform admins see all organizations in the current app. Otherwise users only see organizations they are members of.
      * List Organizations
@@ -347,15 +388,15 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      */
     saveEnrolls(requestParameters: SaveEnrollsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcSaveEnrollsResponse>;
     /**
-     * Adds a user to an organization by saving a Membership. Also issues the corresponding Enroll, which grants the user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
+     * Creates or updates an organization membership invite.
      * Save Membership
      */
-    saveMembershipRaw(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+    saveMembershipRaw(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserSvcSaveMembershipResponse>>;
     /**
-     * Adds a user to an organization by saving a Membership. Also issues the corresponding Enroll, which grants the user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
+     * Creates or updates an organization membership invite.
      * Save Membership
      */
-    saveMembership(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+    saveMembership(requestParameters: SaveMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcSaveMembershipResponse>;
     /**
      * Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization. The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the saved organization. Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
      * Save an Organization

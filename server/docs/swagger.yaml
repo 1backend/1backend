@@ -3014,6 +3014,20 @@ definitions:
       width:
         type: integer
     type: object
+  user_svc.AcceptMembershipRequest:
+    properties:
+      activate:
+        type: boolean
+    type: object
+  user_svc.AcceptMembershipResponse:
+    properties:
+      membership:
+        $ref: '#/definitions/user_svc.Membership'
+      token:
+        $ref: '#/definitions/user_svc.Token'
+    required:
+    - membership
+    type: object
   user_svc.ActivateOrganizationRequest:
     properties:
       organizationId:
@@ -3142,6 +3156,15 @@ definitions:
         $ref: '#/definitions/user_svc.Token'
     required:
     - token
+    type: object
+  user_svc.DeclineMembershipRequest:
+    type: object
+  user_svc.DeclineMembershipResponse:
+    properties:
+      membership:
+        $ref: '#/definitions/user_svc.Membership'
+    required:
+    - membership
     type: object
   user_svc.DeleteMembershipRequest:
     type: object
@@ -3314,6 +3337,39 @@ definitions:
     required:
     - enrolls
     type: object
+  user_svc.ListMembershipsRequest:
+    properties:
+      afterTime:
+        type: string
+      limit:
+        type: integer
+      organizationId:
+        type: string
+      status:
+        $ref: '#/definitions/user_svc.MembershipStatus'
+      userId:
+        type: string
+    type: object
+  user_svc.ListMembershipsResponse:
+    properties:
+      memberships:
+        items:
+          properties:
+            membership:
+              $ref: '#/definitions/user_svc.Membership'
+            organization:
+              $ref: '#/definitions/user_svc.Organization'
+            user:
+              $ref: '#/definitions/user_svc.User'
+          required:
+          - membership
+          - organization
+          - user
+          type: object
+        type: array
+    required:
+    - memberships
+    type: object
   user_svc.ListOrganizationsRequest:
     properties:
       afterTime:
@@ -3437,6 +3493,48 @@ definitions:
       token:
         $ref: '#/definitions/user_svc.Token'
     type: object
+  user_svc.Membership:
+    properties:
+      acceptedAt:
+        type: string
+      appId:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      id:
+        type: string
+      internalId:
+        type: string
+      invitedBy:
+        type: string
+      organizationId:
+        type: string
+      roles:
+        items:
+          type: string
+        type: array
+      status:
+        $ref: '#/definitions/user_svc.MembershipStatus'
+      updatedAt:
+        type: string
+      userId:
+        type: string
+    required:
+    - createdAt
+    - updatedAt
+    type: object
+  user_svc.MembershipStatus:
+    enum:
+    - pending
+    - accepted
+    - declined
+    type: string
+    x-enum-varnames:
+    - MembershipStatusPending
+    - MembershipStatusAccepted
+    - MembershipStatusDeclined
   user_svc.OrderDirection:
     enum:
     - asc
@@ -3678,32 +3776,24 @@ definitions:
     type: object
   user_svc.SaveMembershipRequest:
     properties:
-      active:
-        description: |-
-          If true, this membership becomes the active organization for the
-          specified device. Only one membership can remain active per (user, device).
-        type: boolean
-      device:
-        description: Device scope of the membership activation. Defaults to `unknown`.
-        type: string
+      roles:
+        items:
+          type: string
+        type: array
     type: object
   user_svc.SaveMembershipResponse:
+    properties:
+      membership:
+        $ref: '#/definitions/user_svc.Membership'
+    required:
+    - membership
     type: object
   user_svc.SaveOrganizationRequest:
     properties:
       activate:
         description: |-
-          If true, and a new organization is created, it becomes the
-          active organization for the caller's current device and a fresh token
-          is issued. If false, the active organization is not changed and no
-          new token is issued.
-        example: true
-        type: boolean
-      assignCaller:
-        description: |-
-          If true, the caller (the user making the request) will be assigned
-          the admin role for the organization.
-          If false, no Membership or Enroll will be created.
+          If true, the organization becomes the active organization for the
+          caller's current device and a fresh token is issued.
         example: true
         type: boolean
       id:
@@ -3728,9 +3818,7 @@ definitions:
       token:
         allOf:
         - $ref: '#/definitions/user_svc.Token'
-        description: |-
-          Due to the nature of JWT tokens, the token may be refreshed after
-          creating an organization, as dynamic organization roles are embedded in it.
+        description: A fresh token is returned only when the organization is activated.
     required:
     - organization
     type: object
@@ -7216,6 +7304,42 @@ paths:
       summary: Login
       tags:
       - User Svc
+  /user-svc/memberships:
+    post:
+      consumes:
+      - application/json
+      description: Lists organization memberships and pending invites.
+      operationId: listMemberships
+      parameters:
+      - description: List Memberships Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/user_svc.ListMembershipsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.ListMembershipsResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List Memberships
+      tags:
+      - User Svc
   /user-svc/organization:
     put:
       consumes:
@@ -7254,6 +7378,88 @@ paths:
       security:
       - BearerAuth: []
       summary: Save an Organization
+      tags:
+      - User Svc
+  /user-svc/organization/{organizationId}/membership/accept:
+    post:
+      consumes:
+      - application/json
+      description: Accepts the caller user's pending invite for an organization.
+      operationId: acceptMembership
+      parameters:
+      - description: Organization ID
+        in: path
+        name: organizationId
+        required: true
+        type: string
+      - description: Accept Membership Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/user_svc.AcceptMembershipRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.AcceptMembershipResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Accept Membership
+      tags:
+      - User Svc
+  /user-svc/organization/{organizationId}/membership/decline:
+    post:
+      consumes:
+      - application/json
+      description: Declines the caller user's pending invite for an organization.
+      operationId: declineMembership
+      parameters:
+      - description: Organization ID
+        in: path
+        name: organizationId
+        required: true
+        type: string
+      - description: Decline Membership Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/user_svc.DeclineMembershipRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.DeclineMembershipResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Decline Membership
       tags:
       - User Svc
   /user-svc/organization/{organizationId}/user/{userId}:
@@ -7313,10 +7519,7 @@ paths:
     put:
       consumes:
       - application/json
-      description: |-
-        Adds a user to an organization by saving a Membership.
-        Also issues the corresponding Enroll, which grants the
-        user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
+      description: Creates or updates an organization membership invite.
       operationId: saveMembership
       parameters:
       - description: Organization ID
@@ -7338,7 +7541,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: User added successfully
+          description: Membership saved successfully
           schema:
             $ref: '#/definitions/user_svc.SaveMembershipResponse'
         "400":

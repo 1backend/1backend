@@ -20,18 +20,11 @@ import { mapValues } from '../runtime';
  */
 export interface UserSvcSaveMembershipRequest {
     /**
-     * If true, this membership becomes the active organization for the
-     * specified device. Only one membership can remain active per (user, device).
-     * @type {boolean}
+     * 
+     * @type {Array<string>}
      * @memberof UserSvcSaveMembershipRequest
      */
-    active?: boolean;
-    /**
-     * Device scope of the membership activation. Defaults to `unknown`.
-     * @type {string}
-     * @memberof UserSvcSaveMembershipRequest
-     */
-    device?: string;
+    roles?: Array<string>;
 }
 
 /**
@@ -51,8 +44,7 @@ export function UserSvcSaveMembershipRequestFromJSONTyped(json: any, ignoreDiscr
     }
     return {
         
-        'active': json['active'] == null ? undefined : json['active'],
-        'device': json['device'] == null ? undefined : json['device'],
+        'roles': json['roles'] == null ? undefined : json['roles'],
     };
 }
 
@@ -67,8 +59,7 @@ export function UserSvcSaveMembershipRequestToJSONTyped(value?: UserSvcSaveMembe
 
     return {
         
-        'active': value['active'],
-        'device': value['device'],
+        'roles': value['roles'],
     };
 }
 

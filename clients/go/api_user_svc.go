@@ -24,6 +24,21 @@ import (
 type UserSvcAPI interface {
 
 	/*
+	AcceptMembership Accept Membership
+
+	Accepts the caller user's pending invite for an organization.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param organizationId Organization ID
+	@return ApiAcceptMembershipRequest
+	*/
+	AcceptMembership(ctx context.Context, organizationId string) ApiAcceptMembershipRequest
+
+	// AcceptMembershipExecute executes the request
+	//  @return UserSvcAcceptMembershipResponse
+	AcceptMembershipExecute(r ApiAcceptMembershipRequest) (*UserSvcAcceptMembershipResponse, *http.Response, error)
+
+	/*
 	ActivateOrganization Activate Organization
 
 	Sets the caller user's active organization and returns a fresh token reflecting the new active organization.
@@ -78,6 +93,21 @@ type UserSvcAPI interface {
 	// DeactivateOrganizationExecute executes the request
 	//  @return UserSvcDeactivateOrganizationResponse
 	DeactivateOrganizationExecute(r ApiDeactivateOrganizationRequest) (*UserSvcDeactivateOrganizationResponse, *http.Response, error)
+
+	/*
+	DeclineMembership Decline Membership
+
+	Declines the caller user's pending invite for an organization.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param organizationId Organization ID
+	@return ApiDeclineMembershipRequest
+	*/
+	DeclineMembership(ctx context.Context, organizationId string) ApiDeclineMembershipRequest
+
+	// DeclineMembershipExecute executes the request
+	//  @return UserSvcDeclineMembershipResponse
+	DeclineMembershipExecute(r ApiDeclineMembershipRequest) (*UserSvcDeclineMembershipResponse, *http.Response, error)
 
 	/*
 	DeleteMembership Delete Membership
@@ -220,6 +250,20 @@ Caller can only list enrolls of roles they own (unless they are an admin).
 	// ListEnrollsExecute executes the request
 	//  @return UserSvcListEnrollsResponse
 	ListEnrollsExecute(r ApiListEnrollsRequest) (*UserSvcListEnrollsResponse, *http.Response, error)
+
+	/*
+	ListMemberships List Memberships
+
+	Lists organization memberships and pending invites.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiListMembershipsRequest
+	*/
+	ListMemberships(ctx context.Context) ApiListMembershipsRequest
+
+	// ListMembershipsExecute executes the request
+	//  @return UserSvcListMembershipsResponse
+	ListMembershipsExecute(r ApiListMembershipsRequest) (*UserSvcListMembershipsResponse, *http.Response, error)
 
 	/*
 	ListOrganizations List Organizations
@@ -426,9 +470,7 @@ Examples:
 	/*
 	SaveMembership Save Membership
 
-	Adds a user to an organization by saving a Membership.
-Also issues the corresponding Enroll, which grants the
-user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
+	Creates or updates an organization membership invite.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param organizationId Organization ID
@@ -438,8 +480,8 @@ user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
 	SaveMembership(ctx context.Context, organizationId string, userId string) ApiSaveMembershipRequest
 
 	// SaveMembershipExecute executes the request
-	//  @return map[string]interface{}
-	SaveMembershipExecute(r ApiSaveMembershipRequest) (map[string]interface{}, *http.Response, error)
+	//  @return UserSvcSaveMembershipResponse
+	SaveMembershipExecute(r ApiSaveMembershipRequest) (*UserSvcSaveMembershipResponse, *http.Response, error)
 
 	/*
 	SaveOrganization Save an Organization
@@ -537,6 +579,164 @@ Requires the `user-svc:app:edit` permission.
 
 // UserSvcAPIService UserSvcAPI service
 type UserSvcAPIService service
+
+type ApiAcceptMembershipRequest struct {
+	ctx context.Context
+	ApiService UserSvcAPI
+	organizationId string
+	body *UserSvcAcceptMembershipRequest
+}
+
+// Accept Membership Request
+func (r ApiAcceptMembershipRequest) Body(body UserSvcAcceptMembershipRequest) ApiAcceptMembershipRequest {
+	r.body = &body
+	return r
+}
+
+func (r ApiAcceptMembershipRequest) Execute() (*UserSvcAcceptMembershipResponse, *http.Response, error) {
+	return r.ApiService.AcceptMembershipExecute(r)
+}
+
+/*
+AcceptMembership Accept Membership
+
+Accepts the caller user's pending invite for an organization.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param organizationId Organization ID
+ @return ApiAcceptMembershipRequest
+*/
+func (a *UserSvcAPIService) AcceptMembership(ctx context.Context, organizationId string) ApiAcceptMembershipRequest {
+	return ApiAcceptMembershipRequest{
+		ApiService: a,
+		ctx: ctx,
+		organizationId: organizationId,
+	}
+}
+
+// Execute executes the request
+//  @return UserSvcAcceptMembershipResponse
+func (a *UserSvcAPIService) AcceptMembershipExecute(r ApiAcceptMembershipRequest) (*UserSvcAcceptMembershipResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *UserSvcAcceptMembershipResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.AcceptMembership")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/user-svc/organization/{organizationId}/membership/accept"
+	localVarPath = strings.Replace(localVarPath, "{"+"organizationId"+"}", url.PathEscape(parameterValueToString(r.organizationId, "organizationId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.body
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["BearerAuth"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 500 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
 
 type ApiActivateOrganizationRequest struct {
 	ctx context.Context
@@ -1106,6 +1306,164 @@ func (a *UserSvcAPIService) DeactivateOrganizationExecute(r ApiDeactivateOrganiz
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 500 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiDeclineMembershipRequest struct {
+	ctx context.Context
+	ApiService UserSvcAPI
+	organizationId string
+	body *map[string]interface{}
+}
+
+// Decline Membership Request
+func (r ApiDeclineMembershipRequest) Body(body map[string]interface{}) ApiDeclineMembershipRequest {
+	r.body = &body
+	return r
+}
+
+func (r ApiDeclineMembershipRequest) Execute() (*UserSvcDeclineMembershipResponse, *http.Response, error) {
+	return r.ApiService.DeclineMembershipExecute(r)
+}
+
+/*
+DeclineMembership Decline Membership
+
+Declines the caller user's pending invite for an organization.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param organizationId Organization ID
+ @return ApiDeclineMembershipRequest
+*/
+func (a *UserSvcAPIService) DeclineMembership(ctx context.Context, organizationId string) ApiDeclineMembershipRequest {
+	return ApiDeclineMembershipRequest{
+		ApiService: a,
+		ctx: ctx,
+		organizationId: organizationId,
+	}
+}
+
+// Execute executes the request
+//  @return UserSvcDeclineMembershipResponse
+func (a *UserSvcAPIService) DeclineMembershipExecute(r ApiDeclineMembershipRequest) (*UserSvcDeclineMembershipResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *UserSvcDeclineMembershipResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.DeclineMembership")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/user-svc/organization/{organizationId}/membership/decline"
+	localVarPath = strings.Replace(localVarPath, "{"+"organizationId"+"}", url.PathEscape(parameterValueToString(r.organizationId, "organizationId")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.body
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["BearerAuth"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v UserSvcErrorResponse
@@ -2235,6 +2593,160 @@ func (a *UserSvcAPIService) ListEnrollsExecute(r ApiListEnrollsRequest) (*UserSv
 	if r.body == nil {
 		return localVarReturnValue, nil, reportError("body is required and must be specified")
 	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.body
+	if r.ctx != nil {
+		// API Key Authentication
+		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
+			if apiKey, ok := auth["BearerAuth"]; ok {
+				var key string
+				if apiKey.Prefix != "" {
+					key = apiKey.Prefix + " " + apiKey.Key
+				} else {
+					key = apiKey.Key
+				}
+				localVarHeaderParams["Authorization"] = key
+			}
+		}
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 500 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListMembershipsRequest struct {
+	ctx context.Context
+	ApiService UserSvcAPI
+	body *UserSvcListMembershipsRequest
+}
+
+// List Memberships Request
+func (r ApiListMembershipsRequest) Body(body UserSvcListMembershipsRequest) ApiListMembershipsRequest {
+	r.body = &body
+	return r
+}
+
+func (r ApiListMembershipsRequest) Execute() (*UserSvcListMembershipsResponse, *http.Response, error) {
+	return r.ApiService.ListMembershipsExecute(r)
+}
+
+/*
+ListMemberships List Memberships
+
+Lists organization memberships and pending invites.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiListMembershipsRequest
+*/
+func (a *UserSvcAPIService) ListMemberships(ctx context.Context) ApiListMembershipsRequest {
+	return ApiListMembershipsRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return UserSvcListMembershipsResponse
+func (a *UserSvcAPIService) ListMembershipsExecute(r ApiListMembershipsRequest) (*UserSvcListMembershipsResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *UserSvcListMembershipsResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.ListMemberships")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/user-svc/memberships"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/json"}
@@ -4132,16 +4644,14 @@ func (r ApiSaveMembershipRequest) Body(body UserSvcSaveMembershipRequest) ApiSav
 	return r
 }
 
-func (r ApiSaveMembershipRequest) Execute() (map[string]interface{}, *http.Response, error) {
+func (r ApiSaveMembershipRequest) Execute() (*UserSvcSaveMembershipResponse, *http.Response, error) {
 	return r.ApiService.SaveMembershipExecute(r)
 }
 
 /*
 SaveMembership Save Membership
 
-Adds a user to an organization by saving a Membership.
-Also issues the corresponding Enroll, which grants the
-user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
+Creates or updates an organization membership invite.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param organizationId Organization ID
@@ -4158,13 +4668,13 @@ func (a *UserSvcAPIService) SaveMembership(ctx context.Context, organizationId s
 }
 
 // Execute executes the request
-//  @return map[string]interface{}
-func (a *UserSvcAPIService) SaveMembershipExecute(r ApiSaveMembershipRequest) (map[string]interface{}, *http.Response, error) {
+//  @return UserSvcSaveMembershipResponse
+func (a *UserSvcAPIService) SaveMembershipExecute(r ApiSaveMembershipRequest) (*UserSvcSaveMembershipResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPut
 		localVarPostBody     interface{}
 		formFiles            []formFile
-		localVarReturnValue  map[string]interface{}
+		localVarReturnValue  *UserSvcSaveMembershipResponse
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.SaveMembership")

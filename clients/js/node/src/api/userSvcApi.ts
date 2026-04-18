@@ -15,11 +15,14 @@ import localVarRequest from 'request';
 import http from 'http';
 
 /* tslint:disable:no-unused-locals */
+import { UserSvcAcceptMembershipRequest } from '../model/userSvcAcceptMembershipRequest';
+import { UserSvcAcceptMembershipResponse } from '../model/userSvcAcceptMembershipResponse';
 import { UserSvcActivateOrganizationRequest } from '../model/userSvcActivateOrganizationRequest';
 import { UserSvcActivateOrganizationResponse } from '../model/userSvcActivateOrganizationResponse';
 import { UserSvcChangePasswordRequest } from '../model/userSvcChangePasswordRequest';
 import { UserSvcCreateUserRequest } from '../model/userSvcCreateUserRequest';
 import { UserSvcDeactivateOrganizationResponse } from '../model/userSvcDeactivateOrganizationResponse';
+import { UserSvcDeclineMembershipResponse } from '../model/userSvcDeclineMembershipResponse';
 import { UserSvcErrorResponse } from '../model/userSvcErrorResponse';
 import { UserSvcExchangeTokenRequest } from '../model/userSvcExchangeTokenRequest';
 import { UserSvcExchangeTokenResponse } from '../model/userSvcExchangeTokenResponse';
@@ -29,6 +32,8 @@ import { UserSvcListAppsRequest } from '../model/userSvcListAppsRequest';
 import { UserSvcListAppsResponse } from '../model/userSvcListAppsResponse';
 import { UserSvcListEnrollsRequest } from '../model/userSvcListEnrollsRequest';
 import { UserSvcListEnrollsResponse } from '../model/userSvcListEnrollsResponse';
+import { UserSvcListMembershipsRequest } from '../model/userSvcListMembershipsRequest';
+import { UserSvcListMembershipsResponse } from '../model/userSvcListMembershipsResponse';
 import { UserSvcListOrganizationsRequest } from '../model/userSvcListOrganizationsRequest';
 import { UserSvcListOrganizationsResponse } from '../model/userSvcListOrganizationsResponse';
 import { UserSvcListPermissionsResponse } from '../model/userSvcListPermissionsResponse';
@@ -50,6 +55,7 @@ import { UserSvcRevokeTokensRequest } from '../model/userSvcRevokeTokensRequest'
 import { UserSvcSaveEnrollsRequest } from '../model/userSvcSaveEnrollsRequest';
 import { UserSvcSaveEnrollsResponse } from '../model/userSvcSaveEnrollsResponse';
 import { UserSvcSaveMembershipRequest } from '../model/userSvcSaveMembershipRequest';
+import { UserSvcSaveMembershipResponse } from '../model/userSvcSaveMembershipResponse';
 import { UserSvcSaveOrganizationRequest } from '../model/userSvcSaveOrganizationRequest';
 import { UserSvcSaveOrganizationResponse } from '../model/userSvcSaveOrganizationResponse';
 import { UserSvcSavePermitsRequest } from '../model/userSvcSavePermitsRequest';
@@ -131,6 +137,80 @@ export class UserSvcApi {
         this.interceptors.push(interceptor);
     }
 
+    /**
+     * Accepts the caller user\'s pending invite for an organization.
+     * @summary Accept Membership
+     * @param organizationId Organization ID
+     * @param body Accept Membership Request
+     */
+    public async acceptMembership (organizationId: string, body?: UserSvcAcceptMembershipRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: UserSvcAcceptMembershipResponse;  }> {
+        const localVarPath = this.basePath + '/user-svc/organization/{organizationId}/membership/accept'
+            .replace('{' + 'organizationId' + '}', encodeURIComponent(String(organizationId)));
+        let localVarQueryParameters: any = {};
+        let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
+        const produces = ['application/json'];
+        // give precedence to 'application/json'
+        if (produces.indexOf('application/json') >= 0) {
+            localVarHeaderParams.Accept = 'application/json';
+        } else {
+            localVarHeaderParams.Accept = produces.join(',');
+        }
+        let localVarFormParams: any = {};
+
+        // verify required parameter 'organizationId' is not null or undefined
+        if (organizationId === null || organizationId === undefined) {
+            throw new Error('Required parameter organizationId was null or undefined when calling acceptMembership.');
+        }
+
+        (<any>Object).assign(localVarHeaderParams, options.headers);
+
+        let localVarUseFormData = false;
+
+        let localVarRequestOptions: localVarRequest.Options = {
+            method: 'POST',
+            qs: localVarQueryParameters,
+            headers: localVarHeaderParams,
+            uri: localVarPath,
+            useQuerystring: this._useQuerystring,
+            json: true,
+            body: ObjectSerializer.serialize(body, "UserSvcAcceptMembershipRequest")
+        };
+
+        let authenticationPromise = Promise.resolve();
+        if (this.authentications.BearerAuth.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.BearerAuth.applyToRequest(localVarRequestOptions));
+        }
+        authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
+
+        let interceptorPromise = authenticationPromise;
+        for (const interceptor of this.interceptors) {
+            interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
+        }
+
+        return interceptorPromise.then(() => {
+            if (Object.keys(localVarFormParams).length) {
+                if (localVarUseFormData) {
+                    (<any>localVarRequestOptions).formData = localVarFormParams;
+                } else {
+                    localVarRequestOptions.form = localVarFormParams;
+                }
+            }
+            return new Promise<{ response: http.IncomingMessage; body: UserSvcAcceptMembershipResponse;  }>((resolve, reject) => {
+                localVarRequest(localVarRequestOptions, (error, response, body) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
+                            body = ObjectSerializer.deserialize(body, "UserSvcAcceptMembershipResponse");
+                            resolve({ response: response, body: body });
+                        } else {
+                            reject(new HttpError(response, body, response.statusCode));
+                        }
+                    }
+                });
+            });
+        });
+    }
     /**
      * Sets the caller user\'s active organization and returns a fresh token reflecting the new active organization.
      * @summary Activate Organization
@@ -403,6 +483,80 @@ export class UserSvcApi {
                     } else {
                         if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
                             body = ObjectSerializer.deserialize(body, "UserSvcDeactivateOrganizationResponse");
+                            resolve({ response: response, body: body });
+                        } else {
+                            reject(new HttpError(response, body, response.statusCode));
+                        }
+                    }
+                });
+            });
+        });
+    }
+    /**
+     * Declines the caller user\'s pending invite for an organization.
+     * @summary Decline Membership
+     * @param organizationId Organization ID
+     * @param body Decline Membership Request
+     */
+    public async declineMembership (organizationId: string, body?: object, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: UserSvcDeclineMembershipResponse;  }> {
+        const localVarPath = this.basePath + '/user-svc/organization/{organizationId}/membership/decline'
+            .replace('{' + 'organizationId' + '}', encodeURIComponent(String(organizationId)));
+        let localVarQueryParameters: any = {};
+        let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
+        const produces = ['application/json'];
+        // give precedence to 'application/json'
+        if (produces.indexOf('application/json') >= 0) {
+            localVarHeaderParams.Accept = 'application/json';
+        } else {
+            localVarHeaderParams.Accept = produces.join(',');
+        }
+        let localVarFormParams: any = {};
+
+        // verify required parameter 'organizationId' is not null or undefined
+        if (organizationId === null || organizationId === undefined) {
+            throw new Error('Required parameter organizationId was null or undefined when calling declineMembership.');
+        }
+
+        (<any>Object).assign(localVarHeaderParams, options.headers);
+
+        let localVarUseFormData = false;
+
+        let localVarRequestOptions: localVarRequest.Options = {
+            method: 'POST',
+            qs: localVarQueryParameters,
+            headers: localVarHeaderParams,
+            uri: localVarPath,
+            useQuerystring: this._useQuerystring,
+            json: true,
+            body: ObjectSerializer.serialize(body, "object")
+        };
+
+        let authenticationPromise = Promise.resolve();
+        if (this.authentications.BearerAuth.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.BearerAuth.applyToRequest(localVarRequestOptions));
+        }
+        authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
+
+        let interceptorPromise = authenticationPromise;
+        for (const interceptor of this.interceptors) {
+            interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
+        }
+
+        return interceptorPromise.then(() => {
+            if (Object.keys(localVarFormParams).length) {
+                if (localVarUseFormData) {
+                    (<any>localVarRequestOptions).formData = localVarFormParams;
+                } else {
+                    localVarRequestOptions.form = localVarFormParams;
+                }
+            }
+            return new Promise<{ response: http.IncomingMessage; body: UserSvcDeclineMembershipResponse;  }>((resolve, reject) => {
+                localVarRequest(localVarRequestOptions, (error, response, body) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
+                            body = ObjectSerializer.deserialize(body, "UserSvcDeclineMembershipResponse");
                             resolve({ response: response, body: body });
                         } else {
                             reject(new HttpError(response, body, response.statusCode));
@@ -972,6 +1126,73 @@ export class UserSvcApi {
                     } else {
                         if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
                             body = ObjectSerializer.deserialize(body, "UserSvcListEnrollsResponse");
+                            resolve({ response: response, body: body });
+                        } else {
+                            reject(new HttpError(response, body, response.statusCode));
+                        }
+                    }
+                });
+            });
+        });
+    }
+    /**
+     * Lists organization memberships and pending invites.
+     * @summary List Memberships
+     * @param body List Memberships Request
+     */
+    public async listMemberships (body?: UserSvcListMembershipsRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: UserSvcListMembershipsResponse;  }> {
+        const localVarPath = this.basePath + '/user-svc/memberships';
+        let localVarQueryParameters: any = {};
+        let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
+        const produces = ['application/json'];
+        // give precedence to 'application/json'
+        if (produces.indexOf('application/json') >= 0) {
+            localVarHeaderParams.Accept = 'application/json';
+        } else {
+            localVarHeaderParams.Accept = produces.join(',');
+        }
+        let localVarFormParams: any = {};
+
+        (<any>Object).assign(localVarHeaderParams, options.headers);
+
+        let localVarUseFormData = false;
+
+        let localVarRequestOptions: localVarRequest.Options = {
+            method: 'POST',
+            qs: localVarQueryParameters,
+            headers: localVarHeaderParams,
+            uri: localVarPath,
+            useQuerystring: this._useQuerystring,
+            json: true,
+            body: ObjectSerializer.serialize(body, "UserSvcListMembershipsRequest")
+        };
+
+        let authenticationPromise = Promise.resolve();
+        if (this.authentications.BearerAuth.apiKey) {
+            authenticationPromise = authenticationPromise.then(() => this.authentications.BearerAuth.applyToRequest(localVarRequestOptions));
+        }
+        authenticationPromise = authenticationPromise.then(() => this.authentications.default.applyToRequest(localVarRequestOptions));
+
+        let interceptorPromise = authenticationPromise;
+        for (const interceptor of this.interceptors) {
+            interceptorPromise = interceptorPromise.then(() => interceptor(localVarRequestOptions));
+        }
+
+        return interceptorPromise.then(() => {
+            if (Object.keys(localVarFormParams).length) {
+                if (localVarUseFormData) {
+                    (<any>localVarRequestOptions).formData = localVarFormParams;
+                } else {
+                    localVarRequestOptions.form = localVarFormParams;
+                }
+            }
+            return new Promise<{ response: http.IncomingMessage; body: UserSvcListMembershipsResponse;  }>((resolve, reject) => {
+                localVarRequest(localVarRequestOptions, (error, response, body) => {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
+                            body = ObjectSerializer.deserialize(body, "UserSvcListMembershipsResponse");
                             resolve({ response: response, body: body });
                         } else {
                             reject(new HttpError(response, body, response.statusCode));
@@ -1817,13 +2038,13 @@ export class UserSvcApi {
         });
     }
     /**
-     * Adds a user to an organization by saving a Membership. Also issues the corresponding Enroll, which grants the user their dynamic organization role (e.g. `user-svc:org:{org_123}:user`).
+     * Creates or updates an organization membership invite.
      * @summary Save Membership
      * @param organizationId Organization ID
      * @param userId User ID
      * @param body Add User to Organization Request
      */
-    public async saveMembership (organizationId: string, userId: string, body?: UserSvcSaveMembershipRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: object;  }> {
+    public async saveMembership (organizationId: string, userId: string, body?: UserSvcSaveMembershipRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: UserSvcSaveMembershipResponse;  }> {
         const localVarPath = this.basePath + '/user-svc/organization/{organizationId}/user/{userId}'
             .replace('{' + 'organizationId' + '}', encodeURIComponent(String(organizationId)))
             .replace('{' + 'userId' + '}', encodeURIComponent(String(userId)));
@@ -1881,13 +2102,13 @@ export class UserSvcApi {
                     localVarRequestOptions.form = localVarFormParams;
                 }
             }
-            return new Promise<{ response: http.IncomingMessage; body: object;  }>((resolve, reject) => {
+            return new Promise<{ response: http.IncomingMessage; body: UserSvcSaveMembershipResponse;  }>((resolve, reject) => {
                 localVarRequest(localVarRequestOptions, (error, response, body) => {
                     if (error) {
                         reject(error);
                     } else {
                         if (response.statusCode && response.statusCode >= 200 && response.statusCode <= 299) {
-                            body = ObjectSerializer.deserialize(body, "object");
+                            body = ObjectSerializer.deserialize(body, "UserSvcSaveMembershipResponse");
                             resolve({ response: response, body: body });
                         } else {
                             reject(new HttpError(response, body, response.statusCode));

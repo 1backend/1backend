@@ -39,6 +39,36 @@ func (m *MockUserSvcAPI) EXPECT() *MockUserSvcAPIMockRecorder {
 	return m.recorder
 }
 
+// AcceptMembership mocks base method.
+func (m *MockUserSvcAPI) AcceptMembership(ctx context.Context, organizationId string) ApiAcceptMembershipRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AcceptMembership", ctx, organizationId)
+	ret0, _ := ret[0].(ApiAcceptMembershipRequest)
+	return ret0
+}
+
+// AcceptMembership indicates an expected call of AcceptMembership.
+func (mr *MockUserSvcAPIMockRecorder) AcceptMembership(ctx, organizationId any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AcceptMembership", reflect.TypeOf((*MockUserSvcAPI)(nil).AcceptMembership), ctx, organizationId)
+}
+
+// AcceptMembershipExecute mocks base method.
+func (m *MockUserSvcAPI) AcceptMembershipExecute(r ApiAcceptMembershipRequest) (*UserSvcAcceptMembershipResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AcceptMembershipExecute", r)
+	ret0, _ := ret[0].(*UserSvcAcceptMembershipResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// AcceptMembershipExecute indicates an expected call of AcceptMembershipExecute.
+func (mr *MockUserSvcAPIMockRecorder) AcceptMembershipExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AcceptMembershipExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).AcceptMembershipExecute), r)
+}
+
 // ActivateOrganization mocks base method.
 func (m *MockUserSvcAPI) ActivateOrganization(ctx context.Context) ApiActivateOrganizationRequest {
 	m.ctrl.T.Helper()
@@ -157,6 +187,36 @@ func (m *MockUserSvcAPI) DeactivateOrganizationExecute(r ApiDeactivateOrganizati
 func (mr *MockUserSvcAPIMockRecorder) DeactivateOrganizationExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeactivateOrganizationExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).DeactivateOrganizationExecute), r)
+}
+
+// DeclineMembership mocks base method.
+func (m *MockUserSvcAPI) DeclineMembership(ctx context.Context, organizationId string) ApiDeclineMembershipRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeclineMembership", ctx, organizationId)
+	ret0, _ := ret[0].(ApiDeclineMembershipRequest)
+	return ret0
+}
+
+// DeclineMembership indicates an expected call of DeclineMembership.
+func (mr *MockUserSvcAPIMockRecorder) DeclineMembership(ctx, organizationId any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeclineMembership", reflect.TypeOf((*MockUserSvcAPI)(nil).DeclineMembership), ctx, organizationId)
+}
+
+// DeclineMembershipExecute mocks base method.
+func (m *MockUserSvcAPI) DeclineMembershipExecute(r ApiDeclineMembershipRequest) (*UserSvcDeclineMembershipResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeclineMembershipExecute", r)
+	ret0, _ := ret[0].(*UserSvcDeclineMembershipResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// DeclineMembershipExecute indicates an expected call of DeclineMembershipExecute.
+func (mr *MockUserSvcAPIMockRecorder) DeclineMembershipExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeclineMembershipExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).DeclineMembershipExecute), r)
 }
 
 // DeleteMembership mocks base method.
@@ -397,6 +457,36 @@ func (m *MockUserSvcAPI) ListEnrollsExecute(r ApiListEnrollsRequest) (*UserSvcLi
 func (mr *MockUserSvcAPIMockRecorder) ListEnrollsExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListEnrollsExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListEnrollsExecute), r)
+}
+
+// ListMemberships mocks base method.
+func (m *MockUserSvcAPI) ListMemberships(ctx context.Context) ApiListMembershipsRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListMemberships", ctx)
+	ret0, _ := ret[0].(ApiListMembershipsRequest)
+	return ret0
+}
+
+// ListMemberships indicates an expected call of ListMemberships.
+func (mr *MockUserSvcAPIMockRecorder) ListMemberships(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMemberships", reflect.TypeOf((*MockUserSvcAPI)(nil).ListMemberships), ctx)
+}
+
+// ListMembershipsExecute mocks base method.
+func (m *MockUserSvcAPI) ListMembershipsExecute(r ApiListMembershipsRequest) (*UserSvcListMembershipsResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListMembershipsExecute", r)
+	ret0, _ := ret[0].(*UserSvcListMembershipsResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListMembershipsExecute indicates an expected call of ListMembershipsExecute.
+func (mr *MockUserSvcAPIMockRecorder) ListMembershipsExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMembershipsExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListMembershipsExecute), r)
 }
 
 // ListOrganizations mocks base method.
@@ -774,10 +864,10 @@ func (mr *MockUserSvcAPIMockRecorder) SaveMembership(ctx, organizationId, userId
 }
 
 // SaveMembershipExecute mocks base method.
-func (m *MockUserSvcAPI) SaveMembershipExecute(r ApiSaveMembershipRequest) (map[string]any, *http.Response, error) {
+func (m *MockUserSvcAPI) SaveMembershipExecute(r ApiSaveMembershipRequest) (*UserSvcSaveMembershipResponse, *http.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SaveMembershipExecute", r)
-	ret0, _ := ret[0].(map[string]any)
+	ret0, _ := ret[0].(*UserSvcSaveMembershipResponse)
 	ret1, _ := ret[1].(*http.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2

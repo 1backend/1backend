@@ -624,9 +624,27 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "1backend-api/list-memberships",
+          label: "List Memberships",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
           id: "1backend-api/save-organization",
           label: "Save an Organization",
           className: "api-method put",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/accept-membership",
+          label: "Accept Membership",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/decline-membership",
+          label: "Decline Membership",
+          className: "api-method post",
         },
         {
           type: "doc",

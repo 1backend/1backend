@@ -210,6 +210,8 @@ docs/SourceSvcCheckoutRepoResponse.md
 docs/SourceSvcErrorResponse.md
 docs/StableDiffusionTxt2ImgRequest.md
 docs/UserSvcAPI.md
+docs/UserSvcAcceptMembershipRequest.md
+docs/UserSvcAcceptMembershipResponse.md
 docs/UserSvcActivateOrganizationRequest.md
 docs/UserSvcActivateOrganizationResponse.md
 docs/UserSvcApp.md
@@ -218,6 +220,7 @@ docs/UserSvcContact.md
 docs/UserSvcContactInput.md
 docs/UserSvcCreateUserRequest.md
 docs/UserSvcDeactivateOrganizationResponse.md
+docs/UserSvcDeclineMembershipResponse.md
 docs/UserSvcEnroll.md
 docs/UserSvcEnrollInput.md
 docs/UserSvcErrorResponse.md
@@ -229,6 +232,9 @@ docs/UserSvcListAppsRequest.md
 docs/UserSvcListAppsResponse.md
 docs/UserSvcListEnrollsRequest.md
 docs/UserSvcListEnrollsResponse.md
+docs/UserSvcListMembershipsRequest.md
+docs/UserSvcListMembershipsResponse.md
+docs/UserSvcListMembershipsResponseMembershipsInner.md
 docs/UserSvcListOrganizationsRequest.md
 docs/UserSvcListOrganizationsResponse.md
 docs/UserSvcListPermissionsResponse.md
@@ -239,6 +245,8 @@ docs/UserSvcListUsersRequest.md
 docs/UserSvcListUsersResponse.md
 docs/UserSvcLoginRequest.md
 docs/UserSvcLoginResponse.md
+docs/UserSvcMembership.md
+docs/UserSvcMembershipStatus.md
 docs/UserSvcOrderDirection.md
 docs/UserSvcOrganization.md
 docs/UserSvcPermit.md
@@ -255,6 +263,7 @@ docs/UserSvcRevokeTokensRequest.md
 docs/UserSvcSaveEnrollsRequest.md
 docs/UserSvcSaveEnrollsResponse.md
 docs/UserSvcSaveMembershipRequest.md
+docs/UserSvcSaveMembershipResponse.md
 docs/UserSvcSaveOrganizationRequest.md
 docs/UserSvcSaveOrganizationResponse.md
 docs/UserSvcSavePermitsRequest.md
@@ -444,6 +453,8 @@ model_source_svc_checkout_repo_request.go
 model_source_svc_checkout_repo_response.go
 model_source_svc_error_response.go
 model_stable_diffusion_txt2_img_request.go
+model_user_svc_accept_membership_request.go
+model_user_svc_accept_membership_response.go
 model_user_svc_activate_organization_request.go
 model_user_svc_activate_organization_response.go
 model_user_svc_app.go
@@ -452,6 +463,7 @@ model_user_svc_contact.go
 model_user_svc_contact_input.go
 model_user_svc_create_user_request.go
 model_user_svc_deactivate_organization_response.go
+model_user_svc_decline_membership_response.go
 model_user_svc_enroll.go
 model_user_svc_enroll_input.go
 model_user_svc_error_response.go
@@ -463,6 +475,9 @@ model_user_svc_list_apps_request.go
 model_user_svc_list_apps_response.go
 model_user_svc_list_enrolls_request.go
 model_user_svc_list_enrolls_response.go
+model_user_svc_list_memberships_request.go
+model_user_svc_list_memberships_response.go
+model_user_svc_list_memberships_response_memberships_inner.go
 model_user_svc_list_organizations_request.go
 model_user_svc_list_organizations_response.go
 model_user_svc_list_permissions_response.go
@@ -473,6 +488,8 @@ model_user_svc_list_users_request.go
 model_user_svc_list_users_response.go
 model_user_svc_login_request.go
 model_user_svc_login_response.go
+model_user_svc_membership.go
+model_user_svc_membership_status.go
 model_user_svc_order_direction.go
 model_user_svc_organization.go
 model_user_svc_permit.go
@@ -489,6 +506,7 @@ model_user_svc_revoke_tokens_request.go
 model_user_svc_save_enrolls_request.go
 model_user_svc_save_enrolls_response.go
 model_user_svc_save_membership_request.go
+model_user_svc_save_membership_response.go
 model_user_svc_save_organization_request.go
 model_user_svc_save_organization_response.go
 model_user_svc_save_permits_request.go

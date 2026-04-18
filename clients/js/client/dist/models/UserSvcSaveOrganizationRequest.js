@@ -28,7 +28,6 @@ export function UserSvcSaveOrganizationRequestFromJSONTyped(json, ignoreDiscrimi
     }
     return {
         'activate': json['activate'] == null ? undefined : json['activate'],
-        'assignCaller': json['assignCaller'] == null ? undefined : json['assignCaller'],
         'id': json['id'] == null ? undefined : json['id'],
         'name': json['name'] == null ? undefined : json['name'],
         'slug': json['slug'],
@@ -44,7 +43,6 @@ export function UserSvcSaveOrganizationRequestToJSONTyped(value, ignoreDiscrimin
     }
     return {
         'activate': value['activate'],
-        'assignCaller': value['assignCaller'],
         'id': value['id'],
         'name': value['name'],
         'slug': value['slug'],

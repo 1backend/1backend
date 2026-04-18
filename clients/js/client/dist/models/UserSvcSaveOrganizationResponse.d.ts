@@ -24,8 +24,7 @@ export interface UserSvcSaveOrganizationResponse {
      */
     organization: UserSvcOrganization;
     /**
-     * Due to the nature of JWT tokens, the token may be refreshed after
-     * creating an organization, as dynamic organization roles are embedded in it.
+     * A fresh token is returned only when the organization is activated.
      * @type {UserSvcToken}
      * @memberof UserSvcSaveOrganizationResponse
      */
