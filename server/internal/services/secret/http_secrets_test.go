@@ -312,7 +312,7 @@ func TestSecretService_GranularWriters_Wildcard(t *testing.T) {
 					{
 						AppHost:    openapi.PtrString("*"),
 						Slugs:      []string{"test-user-slug-0"},
-						Permission: "secret-svc:secret:save:random-secret-*",
+						Permission: openapi.PtrString("secret-svc:secret:save:random-secret-*"),
 					},
 				},
 			}).

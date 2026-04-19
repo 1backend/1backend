@@ -211,6 +211,8 @@ func ExtractOrganizationRoles(roleIds []string) map[string][]string {
 // - A user with the slug "joe-doe" owns roles like "joe-doe:any-custom-role".
 // - A user with any slug who has the role "my-service:admin" owns "my-service:user".
 // - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:user".
+// - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:{%userId}".
+// - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:team:admin".
 func OwnsRole(claim *Claims, roleId string) bool {
 	// @todo Probably not great in terms of zero trust design ; )
 	if lo.Contains(claim.Roles, "user-svc:admin") {
@@ -221,23 +223,51 @@ func OwnsRole(claim *Claims, roleId string) bool {
 		return true
 	}
 
-	idx := strings.LastIndex(roleId, ":")
-	if idx == -1 {
-		return false
-	}
-
-	rolePrefix := roleId[:idx]
-
 	for _, userRole := range claim.Roles {
-		idx := strings.LastIndex(userRole, ":")
-		if idx == -1 {
+		if !strings.HasSuffix(userRole, ":admin") {
 			continue
 		}
 
-		userRolePrefix := userRole[:idx]
-		userRoleSuffix := userRole[idx+1:]
+		namespacePrefix := strings.TrimSuffix(userRole, "admin")
+		if strings.HasPrefix(roleId, namespacePrefix) {
+			return true
+		}
+	}
 
-		if userRolePrefix == rolePrefix && userRoleSuffix == "admin" {
+	return false
+}
+
+// OwnsPermission determines if the caller owns a permission namespace.
+//
+// A caller owns a permission in the following cases:
+// - The permission is prefixed by the caller slug.
+// - The caller has an `:admin` role whose namespace prefixes the permission.
+// - The caller is `user-svc:admin`.
+//
+// Examples:
+//   - A caller with slug `notes-svc` owns `notes-svc:note:edit`.
+//   - A caller with role `user-svc:org:{org_abc}:admin` owns
+//     `user-svc:org:{org_abc}:notes-svc:note:edit`.
+func OwnsPermission(claim *Claims, permission string) bool {
+	if claim == nil {
+		return false
+	}
+
+	if lo.Contains(claim.Roles, "user-svc:admin") {
+		return true
+	}
+
+	if claim.Slug != "" && (permission == claim.Slug || strings.HasPrefix(permission, claim.Slug+":")) {
+		return true
+	}
+
+	for _, userRole := range claim.Roles {
+		if !strings.HasSuffix(userRole, ":admin") {
+			continue
+		}
+
+		namespacePrefix := strings.TrimSuffix(userRole, "admin")
+		if strings.HasPrefix(permission, namespacePrefix) {
 			return true
 		}
 	}

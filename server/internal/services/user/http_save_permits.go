@@ -12,10 +12,10 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
-	"strings"
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
+	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
@@ -27,6 +27,7 @@ import (
 // @Summary Save Permits
 // @Description Save permits.
 // @Description Permits give access to users with certain slugs and roles to permissions.
+// @Description Non-admin callers may only save permissions they own, such as `their-slug:...` or organization-scoped namespaces they administer.
 // @Tags User Svc
 // @Accept json
 // @Produce json
@@ -38,8 +39,18 @@ import (
 // @Security BearerAuth
 // @Router /user-svc/permits [put]
 func (s *UserService) SavePermits(w http.ResponseWriter, r *http.Request) {
-	usr, claims, err := s.getUserFromRequest(r)
+	if _, hasToken := s.options.Authorizer.TokenFromRequest(r); !hasToken {
+		endpoint.Unauthorized(w)
+		return
+	}
+
+	_, claims, err := s.getUserFromRequest(r)
 	if err != nil {
+		if isUnauthorizedRequestError(err) {
+			endpoint.Unauthorized(w)
+			return
+		}
+
 		logger.Error(
 			"Failed to get user from request",
 			slog.Any("error", err),
@@ -60,17 +71,15 @@ func (s *UserService) SavePermits(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	isAdmin := false
-	for _, role := range claims.Roles {
-		if role == user.RoleAdmin {
-			isAdmin = true
-			break
+	for _, permit := range req.Permits {
+		permissions := normalizePermitInputPermissions(permit)
+		if len(permissions) == 0 {
+			endpoint.WriteString(w, http.StatusBadRequest, "Permit must include permission or permissions")
+			return
 		}
-	}
 
-	if !isAdmin {
-		for _, permit := range req.Permits {
-			if !strings.HasPrefix(permit.Permission, usr.Slug) {
+		for _, permission := range permissions {
+			if !auth.OwnsPermission(claims, permission) {
 				endpoint.Unauthorized(w)
 				return
 			}
@@ -106,26 +115,38 @@ func (cs *UserService) savePermits(
 ) error {
 	permissions := []any{}
 	for _, permit := range req.Permits {
-		permissions = append(permissions, permit.Permission)
+		for _, permission := range normalizePermitInputPermissions(permit) {
+			permissions = append(permissions, permission)
+		}
 	}
 
-	permitIs, err := cs.permitStore.Query(
-		datastore.IsInList([]string{"permission"}, permissions...),
-	).Find()
-	if err != nil {
-		return errors.Wrap(err, "failed to list permits by permission")
-	}
+	existingPermits := []*user.Permit{}
+	if len(permissions) > 0 {
+		permitIs, err := cs.permitStore.Query(
+			datastore.Or(
+				datastore.IsInList([]string{"permission"}, permissions...),
+				datastore.Intersects([]string{"permissions"}, permissions),
+			),
+		).Find()
+		if err != nil {
+			return errors.Wrap(err, "failed to list permits by permission")
+		}
 
-	permitsByPermission := map[string][]*user.Permit{}
-	for _, permitI := range permitIs {
-		g := permitI.(*user.Permit)
-		permitsByPermission[g.Permission] = append(permitsByPermission[g.Permission], g)
+		for _, permitI := range permitIs {
+			existingPermits = append(existingPermits, permitI.(*user.Permit))
+		}
 	}
 
 	permits := []datastore.Row{}
+	seenPermitKeys := map[string]struct{}{}
 
 	now := time.Now()
 	for _, permit := range req.Permits {
+		normalizedPermissions := normalizePermitInputPermissions(permit)
+		if len(normalizedPermissions) == 0 {
+			continue
+		}
+
 		nu := false
 		if permit.Id == "" {
 			permit.Id = sdk.Id("perm")
@@ -150,19 +171,36 @@ func (cs *UserService) savePermits(
 			permitAppId = claimAppId
 		}
 
-		existingPermits, ok := permitsByPermission[permit.Permission]
+		identityKey := permitIdentityKey(
+			permitAppId,
+			permit.Roles,
+			permit.Slugs,
+			normalizedPermissions,
+		)
+		if _, ok := seenPermitKeys[identityKey]; ok {
+			continue
+		}
+
 		isDuplicate := false
-		if ok {
-			for _, existingPermit := range existingPermits {
-				if equalUnordered(existingPermit.Roles, permit.Roles) &&
-					equalUnordered(existingPermit.Slugs, permit.Slugs) &&
-					existingPermit.AppId == permitAppId {
-					isDuplicate = true
-					break
-				}
+		for _, existingPermit := range existingPermits {
+			if existingPermit.AppId != permitAppId {
+				continue
 			}
+			if !equalUnordered(existingPermit.Roles, permit.Roles) {
+				continue
+			}
+			if !equalUnordered(existingPermit.Slugs, permit.Slugs) {
+				continue
+			}
+			if !equalUnordered(permitPermissions(existingPermit), normalizedPermissions) {
+				continue
+			}
+
+			isDuplicate = true
+			break
 		}
 		if isDuplicate {
+			seenPermitKeys[identityKey] = struct{}{}
 			continue
 		}
 
@@ -171,19 +209,24 @@ func (cs *UserService) savePermits(
 			return errors.Wrap(err, "failed to create internal id")
 		}
 
+		permissionField, permissionsField := canonicalPermissionFields(normalizedPermissions)
+
 		permit := &user.Permit{
-			InternalId: internalId,
-			Id:         permit.Id,
-			AppId:      permitAppId,
-			Permission: permit.Permission,
-			Slugs:      permit.Slugs,
-			Roles:      permit.Roles,
-			UpdatedAt:  now,
+			InternalId:  internalId,
+			Id:          permit.Id,
+			AppId:       permitAppId,
+			Permission:  permissionField,
+			Permissions: permissionsField,
+			Slugs:       permit.Slugs,
+			Roles:       permit.Roles,
+			UpdatedAt:   now,
 		}
 		if nu {
 			permit.CreatedAt = now
 		}
 
+		existingPermits = append(existingPermits, permit)
+		seenPermitKeys[identityKey] = struct{}{}
 		permits = append(permits, permit)
 	}
 
@@ -191,8 +234,7 @@ func (cs *UserService) savePermits(
 		return nil
 	}
 
-	err = cs.permitStore.UpsertMany(permits)
-	if err != nil {
+	if err := cs.permitStore.UpsertMany(permits); err != nil {
 		return errors.Wrap(err, "error saving permits")
 	}
 

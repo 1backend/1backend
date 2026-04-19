@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.10
+API version: 0.9.12
 Contact: sales@singulatron.com
 */
 
@@ -28,7 +28,10 @@ type UserSvcPermit struct {
 	DeletedAt *string `json:"deletedAt,omitempty"`
 	Id string `json:"id"`
 	InternalId *string `json:"internalId,omitempty"`
-	Permission string `json:"permission"`
+	// Legacy single-permission form.
+	Permission *string `json:"permission,omitempty"`
+	// Canonical multi-permission form.
+	Permissions []string `json:"permissions,omitempty"`
 	// Role IDs that have been permited the specified permission.  Originally, permits were designed for slugs to facilitate service-to-service calls. Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.
 	Roles []string `json:"roles,omitempty"`
 	// Slugs that have been permited the specified permission.
@@ -42,12 +45,11 @@ type _UserSvcPermit UserSvcPermit
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcPermit(appId string, createdAt string, id string, permission string, updatedAt string) *UserSvcPermit {
+func NewUserSvcPermit(appId string, createdAt string, id string, updatedAt string) *UserSvcPermit {
 	this := UserSvcPermit{}
 	this.AppId = appId
 	this.CreatedAt = createdAt
 	this.Id = id
-	this.Permission = permission
 	this.UpdatedAt = updatedAt
 	return &this
 }
@@ -196,28 +198,68 @@ func (o *UserSvcPermit) SetInternalId(v string) {
 	o.InternalId = &v
 }
 
-// GetPermission returns the Permission field value
+// GetPermission returns the Permission field value if set, zero value otherwise.
 func (o *UserSvcPermit) GetPermission() string {
-	if o == nil {
+	if o == nil || IsNil(o.Permission) {
 		var ret string
 		return ret
 	}
-
-	return o.Permission
+	return *o.Permission
 }
 
-// GetPermissionOk returns a tuple with the Permission field value
+// GetPermissionOk returns a tuple with the Permission field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *UserSvcPermit) GetPermissionOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Permission) {
 		return nil, false
 	}
-	return &o.Permission, true
+	return o.Permission, true
 }
 
-// SetPermission sets field value
+// HasPermission returns a boolean if a field has been set.
+func (o *UserSvcPermit) HasPermission() bool {
+	if o != nil && !IsNil(o.Permission) {
+		return true
+	}
+
+	return false
+}
+
+// SetPermission gets a reference to the given string and assigns it to the Permission field.
 func (o *UserSvcPermit) SetPermission(v string) {
-	o.Permission = v
+	o.Permission = &v
+}
+
+// GetPermissions returns the Permissions field value if set, zero value otherwise.
+func (o *UserSvcPermit) GetPermissions() []string {
+	if o == nil || IsNil(o.Permissions) {
+		var ret []string
+		return ret
+	}
+	return o.Permissions
+}
+
+// GetPermissionsOk returns a tuple with the Permissions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcPermit) GetPermissionsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Permissions) {
+		return nil, false
+	}
+	return o.Permissions, true
+}
+
+// HasPermissions returns a boolean if a field has been set.
+func (o *UserSvcPermit) HasPermissions() bool {
+	if o != nil && !IsNil(o.Permissions) {
+		return true
+	}
+
+	return false
+}
+
+// SetPermissions gets a reference to the given []string and assigns it to the Permissions field.
+func (o *UserSvcPermit) SetPermissions(v []string) {
+	o.Permissions = v
 }
 
 // GetRoles returns the Roles field value if set, zero value otherwise.
@@ -327,7 +369,12 @@ func (o UserSvcPermit) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.InternalId) {
 		toSerialize["internalId"] = o.InternalId
 	}
-	toSerialize["permission"] = o.Permission
+	if !IsNil(o.Permission) {
+		toSerialize["permission"] = o.Permission
+	}
+	if !IsNil(o.Permissions) {
+		toSerialize["permissions"] = o.Permissions
+	}
 	if !IsNil(o.Roles) {
 		toSerialize["roles"] = o.Roles
 	}
@@ -346,7 +393,6 @@ func (o *UserSvcPermit) UnmarshalJSON(data []byte) (err error) {
 		"appId",
 		"createdAt",
 		"id",
-		"permission",
 		"updatedAt",
 	}
 

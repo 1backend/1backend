@@ -261,7 +261,7 @@ func TestRefreshToken_AfterExchange_KeepsAppAndExtendsExpiry(t *testing.T) {
 	// create an appA-scoped permit
 	_, _, err = userA.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{
-			{Roles: []string{"user-svc:user"}, Permission: permA},
+			{Roles: []string{"user-svc:user"}, Permission: openapi.PtrString(permA)},
 		},
 	}).Execute()
 	require.NoError(t, err)

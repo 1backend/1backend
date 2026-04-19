@@ -36,9 +36,18 @@ import (
 func (s *UserService) ListPermits(
 	w http.ResponseWriter,
 	r *http.Request) {
+	if _, hasToken := s.options.Authorizer.TokenFromRequest(r); !hasToken {
+		endpoint.Unauthorized(w)
+		return
+	}
 
 	_, has, _, err := s.hasPermission(r, user.PermissionPermitView)
 	if err != nil {
+		if isUnauthorizedRequestError(err) {
+			endpoint.Unauthorized(w)
+			return
+		}
+
 		logger.Error(
 			"Failed to check permission",
 			slog.Any("error", err),
@@ -82,10 +91,13 @@ func (s *UserService) ListPermits(
 func (us *UserService) listPermits(req *user.ListPermitsRequest) ([]*user.Permit, error) {
 	filters := []datastore.Filter{}
 	if req.Permission != "" {
-		filters = append(filters, datastore.Equals([]string{"permission"}, req.Permission))
+		filters = append(filters, datastore.Or(
+			datastore.Equals([]string{"permission"}, req.Permission),
+			datastore.Equals([]string{"permissions"}, req.Permission),
+		))
 	}
 	if req.Slug != "" {
-		filters = append(filters, datastore.Equals([]string{"slug"}, req.Slug))
+		filters = append(filters, datastore.Equals([]string{"slugs"}, req.Slug))
 	}
 
 	permitIs, err := us.permitStore.Query(filters...).Find()

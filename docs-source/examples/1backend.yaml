@@ -3594,7 +3594,13 @@ definitions:
       internalId:
         type: string
       permission:
+        description: Legacy single-permission form.
         type: string
+      permissions:
+        description: Canonical multi-permission form.
+        items:
+          type: string
+        type: array
       roles:
         description: |-
           Role IDs that have been permited the specified permission.
@@ -3615,7 +3621,6 @@ definitions:
     - appId
     - createdAt
     - id
-    - permission
     - updatedAt
     type: object
   user_svc.PermitInput:
@@ -3631,7 +3636,13 @@ definitions:
         example: inv_fIYPbMHIcI
         type: string
       permission:
+        description: Legacy single-permission form.
         type: string
+      permissions:
+        description: Canonical multi-permission form.
+        items:
+          type: string
+        type: array
       roles:
         description: |-
           Role IDs that have been permited the specified permission.
@@ -3646,8 +3657,6 @@ definitions:
         items:
           type: string
         type: array
-    required:
-    - permission
     type: object
   user_svc.ReadAppRequest:
     properties:
@@ -4075,7 +4084,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.9.10
+  version: 0.9.12
 paths:
   /chat-svc/events:
     get:
@@ -7347,6 +7356,7 @@ paths:
       description: |-
         Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization.
         The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the saved organization.
+        The creator membership also receives the canonical per-user org role `user-svc:org:{organizationId}:{userId}` so org-specific permits can target the creator directly.
         Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
       operationId: saveOrganization
       parameters:
@@ -7519,7 +7529,11 @@ paths:
     put:
       consumes:
       - application/json
-      description: Creates or updates an organization membership invite.
+      description: |-
+        Creates or updates an organization membership invite.
+        Memberships automatically include a canonical per-user org role in the form `user-svc:org:{organizationId}:{userId}`.
+        Callers may add additional roles under the same organization prefix to model org-local groups or custom permission bundles.
+        Additional roles are still subject to role ownership validation via `OwnsRole`.
       operationId: saveMembership
       parameters:
       - description: Organization ID
@@ -7792,6 +7806,7 @@ paths:
       description: |-
         Save permits.
         Permits give access to users with certain slugs and roles to permissions.
+        Non-admin callers may only save permissions they own, such as `their-slug:...` or organization-scoped namespaces they administer.
       operationId: savePermits
       parameters:
       - description: Save Permits Request

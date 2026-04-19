@@ -26,7 +26,7 @@ func (p *ConfigService) registerPermits() error {
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"model-svc"},
-				Permission: config.PermissionConfigEdit,
+				Permission: openapi.PtrString(config.PermissionConfigEdit),
 			},
 		},
 	}
@@ -38,7 +38,7 @@ func (p *ConfigService) registerPermits() error {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				AppHost:    openapi.PtrString("*"),
 				Roles:      []string{role},
-				Permission: permission,
+				Permission: openapi.PtrString(permission),
 			})
 		}
 	}
@@ -50,7 +50,7 @@ func (p *ConfigService) registerPermits() error {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				AppHost:    openapi.PtrString("*"),
 				Roles:      []string{role},
-				Permission: permission,
+				Permission: openapi.PtrString(permission),
 			})
 		}
 	}

@@ -87,6 +87,48 @@ Permission-based checks offer more nuanced control than simple role-only checks�
 
 > If you are looking at restricting access to endpoints in other ways, you might be interested in: [Policy Svc](/docs/built-in-services/policy-svc).
 
+### Recommended org-specific permission pattern
+
+If your service needs organization-local authorization and you want organization admins to manage it directly, the recommended pattern is:
+
+1. Put the permission under an organization-owned namespace.
+   Example: `user-svc:org:{org_abc123}:...`
+2. Scope the permission string by organization id.
+   Example: `user-svc:org:{org_abc123}:notes-svc:note:edit`
+3. Grant that permission to the membership's canonical per-member org role.
+   Example role: `user-svc:org:{org_abc123}:usr_456`
+
+Example for a service called `notes-svc`:
+
+```yaml
+# Permission checked by your handler
+user-svc:org:{org_abc123}:notes-svc:note:edit
+
+# Canonical per-member role automatically added to the membership
+user-svc:org:{org_abc123}:usr_456
+```
+
+Then save a permit like:
+
+```yaml
+id: notes-edit-org-abc123-user-456
+permissions:
+  - user-svc:org:{org_abc123}:notes-svc:note:edit
+roles:
+  - user-svc:org:{org_abc123}:usr_456
+```
+
+This gives you a stable place to attach a large custom permission set to one user without inflating the JWT with hundreds of direct roles.
+
+Important details:
+
+- If organization admins should manage the permission, use an organization-owned prefix such as `user-svc:org:{orgId}:notes-svc:note:edit`.
+- A plain service-owned permission such as `notes-svc:note:edit` is still valid, but then only `notes-svc` itself or a platform admin owns that permission namespace.
+- Memberships now automatically include `user-svc:org:{orgId}:{userId}` in addition to any explicit org roles such as `user` or `admin`.
+- This pattern intentionally relies on both ownership checks: `user-svc:org:{orgId}:admin` owns `user-svc:org:{orgId}:{userId}` as a role, and also owns the permission namespace `user-svc:org:{orgId}:...`.
+- JWTs only include roles for the active organization. If the user switches organizations, the per-member role for the old org disappears from the token, and `HasPermission` for that org-scoped permission returns false.
+- Role ownership is hierarchical inside the namespace. For example, `user-svc:org:{orgId}:admin` also owns nested roles such as `user-svc:org:{orgId}:team:admin`.
+
 ## Tokens
 
 The User Svc produces a JWT ([JSON Web Token](https://en.wikipedia.org/wiki/JSON_Web_Token)) upon [/user-svc/login](/docs/1backend-api/login) in the `token.token` field (see the response documentation).
@@ -229,20 +271,22 @@ These roles are yours — you can assign them, modify them, or revoke them.
 
 #### ✅ 2. You’re an admin of that role family
 
-If you hold a role like `user-svc:org:{org_id}:admin`, then you also **own** other roles that share the same prefix.
+If you hold a role like `user-svc:org:{org_id}:admin`, then you also **own** other roles in that namespace.
 
 **Example:**
 
 If you have:
 
-```
-user-svc:org:org_xyz123:admin
+```sh
+user-svc:org:{org_xyz123}:admin
 ```
 
 Then you also own:
 
-- `user-svc:org:org_xyz123:user`
-- `user-svc:org:org_xyz123:viewer`
+- `user-svc:org:{org_xyz123}:user`
+- `user-svc:org:{org_xyz123}:viewer`
+- `user-svc:org:{org_xyz123}:team:admin`
+- `user-svc:org:{org_xyz123}:team:viewer`
 
 That means you're authorized to assign those roles to others.
 
@@ -345,7 +389,7 @@ Any logged in user can create an organization, provided the `Organization` slug 
 
 ## Membership
 
-A membership is a formal link between a user and an organization. It determines what organizations a user belongs to and enables organization-scoped roles to take effect (such as `user-svc:org:{orgId}:user` or `user-svc:org:{orgId}:admin`).
+A membership is a formal link between a user and an organization. It determines what organizations a user belongs to and enables organization-scoped roles to take effect (such as `user-svc:org:{orgId}:user`, `user-svc:org:{orgId}:admin`, or the canonical per-member role `user-svc:org:{orgId}:{userId}`).
 
 Similarly how [`Enrolls`](#enrolls) add roles to users, memberships add organization roles to users. Memberships are created by the [`SaveMembership`](/docs/1backend-api/save-membership) endpoint.
 
@@ -384,9 +428,19 @@ Permits are the glue between permissions, roles, and service slugs.
 
 ### Permission access rules
 
-Each permission created must by prefixed by the slug of the account that created it. Said account becomes the owner of the permission and only that account can add the permission to a role.
+Permissions are owned by namespaces. The two most important ownership patterns are:
 
-> Once you (your service) own a permission (by creating it, and it being prefixed by your account slug), you can add it to any role, not just roles owned by you.
+- A service-owned namespace such as `notes-svc:...`
+- An organization-owned namespace such as `user-svc:org:{orgId}:...`
+
+The owner of that namespace can save permits for the permission.
+
+Examples:
+
+- `notes-svc` owns `notes-svc:note:edit`
+- `user-svc:org:{org_abc123}:admin` owns `user-svc:org:{org_abc123}:notes-svc:note:edit`
+
+> Once you own a permission namespace, you can add that permission to any role, not just roles owned by you.
 
 #### Permission examples
 

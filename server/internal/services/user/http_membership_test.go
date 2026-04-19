@@ -14,6 +14,18 @@ import (
 	"github.com/1backend/1backend/sdk/go/test"
 )
 
+func testOrgUserRole(orgId string) string {
+	return "user-svc:org:{" + orgId + "}:user"
+}
+
+func testOrgAdminRole(orgId string) string {
+	return "user-svc:org:{" + orgId + "}:admin"
+}
+
+func testOrgMemberRole(orgId string, userId string) string {
+	return "user-svc:org:{" + orgId + "}:" + userId
+}
+
 func TestMembershipLifecycle(t *testing.T) {
 	t.Parallel()
 
@@ -65,8 +77,9 @@ func TestMembershipLifecycle(t *testing.T) {
 	require.ElementsMatch(
 		t,
 		[]string{
-			"user-svc:org:{" + org1Id + "}:user",
-			"user-svc:org:{" + org1Id + "}:admin",
+			testOrgUserRole(org1Id),
+			testOrgMemberRole(org1Id, org1Claims.UserId),
+			testOrgAdminRole(org1Id),
 		},
 		creatorMemberships.Memberships[0].Membership.Roles,
 	)
@@ -80,7 +93,14 @@ func TestMembershipLifecycle(t *testing.T) {
 	)
 	require.Equal(t, http.StatusOK, inviteHTTP.StatusCode)
 	require.Equal(t, openapi.MembershipStatusPending, inviteRsp.Membership.GetStatus())
-	require.ElementsMatch(t, []string{"user-svc:org:{" + org1Id + "}:user"}, inviteRsp.Membership.Roles)
+	require.ElementsMatch(
+		t,
+		[]string{
+			testOrgUserRole(org1Id),
+			testOrgMemberRole(org1Id, memberUserId),
+		},
+		inviteRsp.Membership.Roles,
+	)
 
 	memberBeforeAccept, _, err := memberClient.UserSvcAPI.ReadSelf(context.Background()).Execute()
 	require.NoError(t, err)
@@ -181,8 +201,9 @@ func TestMembershipLifecycle(t *testing.T) {
 	require.ElementsMatch(
 		t,
 		[]string{
-			"user-svc:org:{" + org2Id + "}:user",
-			"user-svc:org:{" + org2Id + "}:admin",
+			testOrgUserRole(org2Id),
+			testOrgMemberRole(org2Id, memberUserId),
+			testOrgAdminRole(org2Id),
 		},
 		adminInviteRsp.Membership.Roles,
 	)
@@ -238,8 +259,9 @@ func TestMembershipLifecycle(t *testing.T) {
 	require.ElementsMatch(
 		t,
 		[]string{
-			"user-svc:org:{" + org1Id + "}:user",
-			"user-svc:org:{" + org1Id + "}:admin",
+			testOrgUserRole(org1Id),
+			testOrgMemberRole(org1Id, memberUserId),
+			testOrgAdminRole(org1Id),
 		},
 		roleUpdateRsp.Membership.Roles,
 	)
@@ -396,8 +418,8 @@ func TestMembershipRoleAssignmentOwnership(t *testing.T) {
 		require.Len(t, membershipsRsp.Memberships, 1)
 	})
 
-	t.Run("rejects org-scoped roles the caller does not own", func(t *testing.T) {
-		unownedRole := "user-svc:org:{" + orgId + "}:team:admin"
+	t.Run("allows nested org-scoped roles owned by org admin", func(t *testing.T) {
+		nestedRole := "user-svc:org:{" + orgId + "}:team:admin"
 
 		rsp, httpResp, err := ownerClient.UserSvcAPI.SaveMembership(
 			context.Background(),
@@ -405,24 +427,24 @@ func TestMembershipRoleAssignmentOwnership(t *testing.T) {
 			memberUserId,
 		).
 			Body(openapi.UserSvcSaveMembershipRequest{
-				Roles: []string{unownedRole},
+				Roles: []string{nestedRole},
 			}).
 			Execute()
-		require.Error(t, err)
-		require.Nil(t, rsp)
+		require.NoError(t, err)
+		require.NotNil(t, rsp)
 		require.NotNil(t, httpResp)
 		t.Cleanup(func() {
 			closeResponseBody(t, httpResp)
 		})
-		require.Equal(t, http.StatusForbidden, httpResp.StatusCode)
-
-		membershipsRsp, membershipsHTTP := listMemberships(
+		require.Equal(t, http.StatusOK, httpResp.StatusCode)
+		require.ElementsMatch(
 			t,
-			ownerClient,
-			&openapi.UserSvcListMembershipsRequest{OrganizationId: openapi.PtrString(orgId)},
+			[]string{
+				testOrgMemberRole(orgId, memberUserId),
+				nestedRole,
+			},
+			rsp.Membership.Roles,
 		)
-		require.Equal(t, http.StatusOK, membershipsHTTP.StatusCode)
-		require.Len(t, membershipsRsp.Memberships, 1)
 	})
 
 	t.Run("allows org-scoped roles the caller owns", func(t *testing.T) {
@@ -440,8 +462,9 @@ func TestMembershipRoleAssignmentOwnership(t *testing.T) {
 		require.ElementsMatch(
 			t,
 			[]string{
-				"user-svc:org:{" + orgId + "}:user",
-				"user-svc:org:{" + orgId + "}:admin",
+				testOrgUserRole(orgId),
+				testOrgMemberRole(orgId, memberUserId),
+				testOrgAdminRole(orgId),
 			},
 			inviteRsp.Membership.Roles,
 		)
@@ -727,8 +750,9 @@ func TestDeclineMembership(t *testing.T) {
 	require.ElementsMatch(
 		t,
 		[]string{
-			"user-svc:org:{" + orgId + "}:user",
-			"user-svc:org:{" + orgId + "}:admin",
+			testOrgUserRole(orgId),
+			testOrgMemberRole(orgId, memberUserId),
+			testOrgAdminRole(orgId),
 		},
 		inviteRsp.Membership.Roles,
 	)

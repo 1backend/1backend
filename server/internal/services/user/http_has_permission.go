@@ -129,11 +129,23 @@ func (s *UserService) hasPermission(
 ) (*user.User, bool, *auth.Claims, error) {
 	usr, claims, err := s.getUserFromRequest(r)
 	if err != nil {
-		if strings.Contains(err.Error(), "token is expired") {
-			return nil, false, claims, nil
+		if isExpiredTokenError(err) {
+			return usr, false, claims, nil
 		}
 
 		return nil, false, claims, errors.Wrap(err, "failed to get user from request")
+	}
+
+	roleValues := make([]any, 0, len(claims.Roles))
+	for _, role := range claims.Roles {
+		roleValues = append(roleValues, role)
+	}
+
+	subjectFilters := []datastore.Filter{
+		datastore.Equals(datastore.Field("slugs"), claims.Slug),
+	}
+	if len(roleValues) > 0 {
+		subjectFilters = append(subjectFilters, datastore.Intersects(datastore.Field("roles"), roleValues))
 	}
 
 	permitIs, err := s.permitStore.Query(
@@ -141,40 +153,18 @@ func (s *UserService) hasPermission(
 			datastore.Equals(datastore.Field("appId"), claims.AppId),
 			datastore.Equals(datastore.Field("appId"), "*"),
 		),
-		datastore.Equals([]string{"permission"}, permission),
-		// TODO: Optimize this query
-		// For some reason it doesn't work.
-		//
-		// datastore.Or(
-		// 	datastore.Equals(datastore.Field("userId"), usr.Id),
-		// 	datastore.Intersects(datastore.Field("roles"), roles),
-		// 	datastore.IsInList(datastore.Field("slugs"), claims.Slug),
-		// ),
+		datastore.Or(
+			datastore.Equals(datastore.Field("permission"), permission),
+			datastore.Equals(datastore.Field("permissions"), permission),
+		),
+		datastore.Or(subjectFilters...),
 	).Find()
 	if err != nil {
 		return usr, false, claims, err
 	}
 
-	for _, permitI := range permitIs {
-		permit := permitI.(*user.Permit)
-
-		if permit.AppId != claims.AppId && permit.AppId != "*" {
-			continue
-		}
-
-		for _, slug := range permit.Slugs {
-			if slug == claims.Slug {
-				return usr, true, claims, nil
-			}
-		}
-
-		for _, roleId := range permit.Roles {
-			for _, userRoleId := range claims.Roles {
-				if roleId == userRoleId {
-					return usr, true, claims, nil
-				}
-			}
-		}
+	if len(permitIs) > 0 {
+		return usr, true, claims, nil
 	}
 
 	return usr, false, claims, nil
@@ -233,6 +223,7 @@ func (s *UserService) getRolesByUserId(appId, userId string) ([]string, error) {
 	}
 	for _, membershipI := range membershipIs {
 		membership := membershipI.(*user.Membership)
+		rolesIndex[orgMemberRole(membership.OrganizationId, membership.UserId)] = struct{}{}
 		for _, roleId := range membership.Roles {
 			rolesIndex[roleId] = struct{}{}
 		}
@@ -326,8 +317,22 @@ func (s *UserService) getUserFromRequest(r *http.Request) (
 	}
 
 	claims, err := s.options.Authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
+	tokenErr := error(nil)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "failed to parse JWT from request")
+		tokenErr = errors.Wrap(err, "failed to parse JWT from request")
+
+		if isExpiredTokenError(err) {
+			recoveredUsr, recoveredClaims, recoverErr := s.recoverExpiredRequestUser(r)
+			if recoverErr == nil {
+				return recoveredUsr, recoveredClaims, tokenErr
+			}
+			if recoveredClaims != nil {
+				claims = recoveredClaims
+			}
+		}
+		if claims == nil {
+			return nil, nil, tokenErr
+		}
 	}
 
 	// Do not read the token here:
@@ -349,7 +354,58 @@ func (s *UserService) getUserFromRequest(r *http.Request) (
 
 	usr := userI.(*user.User)
 
+	if tokenErr != nil {
+		return usr, claims, tokenErr
+	}
+
 	return usr, claims, nil
+}
+
+func (s *UserService) recoverExpiredRequestUser(r *http.Request) (*user.User, *auth.Claims, error) {
+	tokenString, hasToken := s.options.Authorizer.TokenFromRequest(r)
+	if !hasToken {
+		return nil, nil, fmt.Errorf("no auth header")
+	}
+
+	claims, err := s.options.Authorizer.ParseJWTUnverified(tokenString)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	userI, found, err := s.userStore.Query(
+		datastore.Id(claims.UserId),
+	).FindOne()
+	if err != nil {
+		return nil, claims, err
+	}
+	if !found {
+		logger.Error("Expired token refers to nonexistent user",
+			slog.String("userId", claims.UserId),
+		)
+		return nil, claims, errors.New("token user does not exist")
+	}
+
+	return userI.(*user.User), claims, nil
+}
+
+func isExpiredTokenError(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	return strings.Contains(err.Error(), "token is expired")
+}
+
+func isUnauthorizedRequestError(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	msg := err.Error()
+
+	return strings.Contains(msg, "no auth header") ||
+		strings.Contains(msg, "failed to parse JWT from request") ||
+		strings.Contains(msg, "token user does not exist")
 }
 
 func (s *UserService) GetUserFromRequest(

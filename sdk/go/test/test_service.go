@@ -91,6 +91,7 @@ type ServiceProcess struct {
 	Options Options
 	// Url of the service process
 	Url        string
+	BinaryPath string
 	Cmd        *exec.Cmd
 	StdoutPipe io.ReadCloser
 	StderrPipe io.ReadCloser
@@ -196,12 +197,26 @@ func StartService(options Options) (*ServiceProcess, error) {
 
 	service := &ServiceProcess{
 		Options:    options,
+		BinaryPath: serviceBin,
 		Cmd:        cmd,
 		StdoutPipe: stdoutPipe,
 		StderrPipe: stderrPipe,
 		cancel:     cancel,
 		Port:       port,
 		Url:        options.Url,
+	}
+	service.Stdout.WriteString(fmt.Sprintf(
+		"[test harness] launching %q binary from %s\n",
+		options.Name,
+		serviceBin,
+	))
+	if options.Name == "server" {
+		service.Stdout.WriteString(
+			"[test harness] StartService does not run ./server source directly. " +
+				"It launches OB_TEST_SERVER_BIN, then PATH, then GOPATH/bin. " +
+				"To test current source, rebuild a binary such as /tmp/server and run with " +
+				"OB_TEST_SERVER_BIN=/tmp/server or PATH=/tmp:$PATH.\n",
+		)
 	}
 
 	// **Wait until first line of output appears**
@@ -264,6 +279,16 @@ func StartService(options Options) (*ServiceProcess, error) {
 }
 
 func ensureServiceBinary(name string) (string, error) {
+	envKey := "OB_TEST_" + strings.ToUpper(strings.ReplaceAll(name, "-", "_")) + "_BIN"
+	if explicit := strings.TrimSpace(os.Getenv(envKey)); explicit != "" {
+		return explicit, nil
+	}
+	if name == "server" {
+		if explicit := strings.TrimSpace(os.Getenv("OB_TEST_SERVER_BIN")); explicit != "" {
+			return explicit, nil
+		}
+	}
+
 	if path, err := exec.LookPath(name); err == nil {
 		return path, nil
 	}
@@ -294,9 +319,11 @@ func ensureServiceBinary(name string) (string, error) {
 	}
 
 	return "", errors.Errorf(
-		"service executable '%v' not found in PATH or GOPATH/bin (%v); install it with `go install`",
+		"service executable '%v' not found in %v, PATH, or GOPATH/bin (%v); install/build it and point tests at it with %v if needed",
 		name,
+		envKey,
 		installedBinary,
+		envKey,
 	)
 }
 
@@ -325,6 +352,7 @@ func (s *ServiceProcess) Cleanup(t *testing.T) {
 			"=== %v OUTPUT ===\n",
 			processName,
 		)
+		fmt.Printf("Binary: %s\n", s.BinaryPath)
 		fmt.Print(s.Stdout.String() + s.Stderr.String())
 		fmt.Printf(
 			"=== END OF %v OUTPUT ===\n",

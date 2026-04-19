@@ -363,7 +363,7 @@ func TestOrganization(t *testing.T) {
 			)
 			require.NoError(t, err)
 			require.NotNil(t, claim)
-			require.Equal(t, 3, len(claim.Roles), claim.Roles)
+			require.Equal(t, 4, len(claim.Roles), claim.Roles)
 			require.Contains(
 				t,
 				claim.Roles,
@@ -374,6 +374,12 @@ func TestOrganization(t *testing.T) {
 				t,
 				claim.Roles,
 				fmt.Sprintf("user-svc:org:{%v}:admin", orgId1),
+				claim.Roles,
+			)
+			require.Contains(
+				t,
+				claim.Roles,
+				fmt.Sprintf("user-svc:org:{%v}:%v", orgId1, claim.UserId),
 				claim.Roles,
 			)
 			require.Equal(t, orgId1, claim.ActiveOrganizationId)

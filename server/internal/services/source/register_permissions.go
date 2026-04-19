@@ -27,7 +27,7 @@ func (ns *SourceService) registerPermits() error {
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
-				Permission: sourcetypes.PermissionSourceRepoCheckout,
+				Permission: openapi.PtrString(sourcetypes.PermissionSourceRepoCheckout),
 			},
 		},
 	}
@@ -39,7 +39,7 @@ func (ns *SourceService) registerPermits() error {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				AppHost:    openapi.PtrString("*"),
 				Roles:      []string{role},
-				Permission: permission,
+				Permission: openapi.PtrString(permission),
 			})
 		}
 	}
