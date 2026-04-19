@@ -9,7 +9,8 @@ package user_svc
 
 import "time"
 
-// Permit is a mechanism to give users or roles permissions to perform actions defined by the `Permission` field.
+// Permit is a mechanism to give users or roles permissions to perform actions
+// defined by the `permission` or `permissions` fields.
 type Permit struct {
 	InternalId string `json:"internalId" swagger:"ignore"`
 
@@ -24,7 +25,11 @@ type Permit struct {
 	UpdatedAt time.Time `json:"updatedAt" binding:"required"`
 	DeletedAt time.Time `json:"deletedAt,omitempty"`
 
-	Permission string `json:"permission" binding:"required"`
+	// Legacy single-permission form.
+	Permission string `json:"permission,omitempty"`
+
+	// Canonical multi-permission form.
+	Permissions []string `json:"permissions,omitempty"`
 
 	// Slugs that have been permited the specified permission.
 	Slugs []string `json:"slugs,omitempty"`
@@ -45,7 +50,11 @@ type PermitInput struct {
 	// in services.
 	AppHost string `json:"appHost" example:"unnamed,omitempty"`
 
-	Permission string `json:"permission" binding:"required"`
+	// Legacy single-permission form.
+	Permission string `json:"permission,omitempty"`
+
+	// Canonical multi-permission form.
+	Permissions []string `json:"permissions,omitempty"`
 
 	// Slugs that have been permited the specified permission.
 	Slugs []string `json:"slugs,omitempty"`

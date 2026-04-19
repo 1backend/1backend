@@ -82,10 +82,13 @@ func (s *UserService) ListPermits(
 func (us *UserService) listPermits(req *user.ListPermitsRequest) ([]*user.Permit, error) {
 	filters := []datastore.Filter{}
 	if req.Permission != "" {
-		filters = append(filters, datastore.Equals([]string{"permission"}, req.Permission))
+		filters = append(filters, datastore.Or(
+			datastore.Equals([]string{"permission"}, req.Permission),
+			datastore.Equals([]string{"permissions"}, req.Permission),
+		))
 	}
 	if req.Slug != "" {
-		filters = append(filters, datastore.Equals([]string{"slug"}, req.Slug))
+		filters = append(filters, datastore.Equals([]string{"slugs"}, req.Slug))
 	}
 
 	permitIs, err := us.permitStore.Query(filters...).Find()

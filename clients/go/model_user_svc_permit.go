@@ -12,9 +12,9 @@ Contact: sales@singulatron.com
 package openapi
 
 import (
-	"encoding/json"
 	"bytes"
-	"fmt"
+	"encoding/json"
+	"errors"
 )
 
 // checks if the UserSvcPermit type satisfies the MappedNullable interface at compile time
@@ -23,17 +23,18 @@ var _ MappedNullable = &UserSvcPermit{}
 // UserSvcPermit struct for UserSvcPermit
 type UserSvcPermit struct {
 	// App of the permit. Use `*` to match all apps, such as when bootstrapping in services.
-	AppId string `json:"appId"`
-	CreatedAt string `json:"createdAt"`
-	DeletedAt *string `json:"deletedAt,omitempty"`
-	Id string `json:"id"`
-	InternalId *string `json:"internalId,omitempty"`
-	Permission string `json:"permission"`
+	AppId       string   `json:"appId"`
+	CreatedAt   string   `json:"createdAt"`
+	DeletedAt   *string  `json:"deletedAt,omitempty"`
+	Id          string   `json:"id"`
+	InternalId  *string  `json:"internalId,omitempty"`
+	Permission  string   `json:"permission,omitempty"`
+	Permissions []string `json:"permissions,omitempty"`
 	// Role IDs that have been permited the specified permission.  Originally, permits were designed for slugs to facilitate service-to-service calls. Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.
 	Roles []string `json:"roles,omitempty"`
 	// Slugs that have been permited the specified permission.
-	Slugs []string `json:"slugs,omitempty"`
-	UpdatedAt string `json:"updatedAt"`
+	Slugs     []string `json:"slugs,omitempty"`
+	UpdatedAt string   `json:"updatedAt"`
 }
 
 type _UserSvcPermit UserSvcPermit
@@ -220,6 +221,38 @@ func (o *UserSvcPermit) SetPermission(v string) {
 	o.Permission = v
 }
 
+// GetPermissions returns the Permissions field value if set, zero value otherwise.
+func (o *UserSvcPermit) GetPermissions() []string {
+	if o == nil || IsNil(o.Permissions) {
+		var ret []string
+		return ret
+	}
+	return o.Permissions
+}
+
+// GetPermissionsOk returns a tuple with the Permissions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcPermit) GetPermissionsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Permissions) {
+		return nil, false
+	}
+	return o.Permissions, true
+}
+
+// HasPermissions returns a boolean if a field has been set.
+func (o *UserSvcPermit) HasPermissions() bool {
+	if o != nil && !IsNil(o.Permissions) {
+		return true
+	}
+
+	return false
+}
+
+// SetPermissions gets a reference to the given []string and assigns it to the Permissions field.
+func (o *UserSvcPermit) SetPermissions(v []string) {
+	o.Permissions = v
+}
+
 // GetRoles returns the Roles field value if set, zero value otherwise.
 func (o *UserSvcPermit) GetRoles() []string {
 	if o == nil || IsNil(o.Roles) {
@@ -309,7 +342,7 @@ func (o *UserSvcPermit) SetUpdatedAt(v string) {
 }
 
 func (o UserSvcPermit) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -327,7 +360,12 @@ func (o UserSvcPermit) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.InternalId) {
 		toSerialize["internalId"] = o.InternalId
 	}
-	toSerialize["permission"] = o.Permission
+	if o.Permission != "" {
+		toSerialize["permission"] = o.Permission
+	}
+	if !IsNil(o.Permissions) {
+		toSerialize["permissions"] = o.Permissions
+	}
 	if !IsNil(o.Roles) {
 		toSerialize["roles"] = o.Roles
 	}
@@ -346,7 +384,6 @@ func (o *UserSvcPermit) UnmarshalJSON(data []byte) (err error) {
 		"appId",
 		"createdAt",
 		"id",
-		"permission",
 		"updatedAt",
 	}
 
@@ -355,12 +392,12 @@ func (o *UserSvcPermit) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
+			return errors.New("no value given for required property " + requiredProperty)
 		}
 	}
 
@@ -414,5 +451,3 @@ func (v *NullableUserSvcPermit) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

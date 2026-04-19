@@ -12,9 +12,8 @@ Contact: sales@singulatron.com
 package openapi
 
 import (
-	"encoding/json"
 	"bytes"
-	"fmt"
+	"encoding/json"
 )
 
 // checks if the UserSvcPermitInput type satisfies the MappedNullable interface at compile time
@@ -23,9 +22,10 @@ var _ MappedNullable = &UserSvcPermitInput{}
 // UserSvcPermitInput struct for UserSvcPermitInput
 type UserSvcPermitInput struct {
 	// App of the permit. Use `*` to match all apps, such as when bootstrapping in services.
-	AppHost *string `json:"appHost,omitempty"`
-	Id *string `json:"id,omitempty"`
-	Permission string `json:"permission"`
+	AppHost     *string  `json:"appHost,omitempty"`
+	Id          *string  `json:"id,omitempty"`
+	Permission  string   `json:"permission,omitempty"`
+	Permissions []string `json:"permissions,omitempty"`
 	// Role IDs that have been permited the specified permission.  Originally, permits were designed for slugs to facilitate service-to-service calls. Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.
 	Roles []string `json:"roles,omitempty"`
 	// Slugs that have been permited the specified permission.
@@ -140,6 +140,38 @@ func (o *UserSvcPermitInput) SetPermission(v string) {
 	o.Permission = v
 }
 
+// GetPermissions returns the Permissions field value if set, zero value otherwise.
+func (o *UserSvcPermitInput) GetPermissions() []string {
+	if o == nil || IsNil(o.Permissions) {
+		var ret []string
+		return ret
+	}
+	return o.Permissions
+}
+
+// GetPermissionsOk returns a tuple with the Permissions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcPermitInput) GetPermissionsOk() ([]string, bool) {
+	if o == nil || IsNil(o.Permissions) {
+		return nil, false
+	}
+	return o.Permissions, true
+}
+
+// HasPermissions returns a boolean if a field has been set.
+func (o *UserSvcPermitInput) HasPermissions() bool {
+	if o != nil && !IsNil(o.Permissions) {
+		return true
+	}
+
+	return false
+}
+
+// SetPermissions gets a reference to the given []string and assigns it to the Permissions field.
+func (o *UserSvcPermitInput) SetPermissions(v []string) {
+	o.Permissions = v
+}
+
 // GetRoles returns the Roles field value if set, zero value otherwise.
 func (o *UserSvcPermitInput) GetRoles() []string {
 	if o == nil || IsNil(o.Roles) {
@@ -205,7 +237,7 @@ func (o *UserSvcPermitInput) SetSlugs(v []string) {
 }
 
 func (o UserSvcPermitInput) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -220,7 +252,12 @@ func (o UserSvcPermitInput) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}
-	toSerialize["permission"] = o.Permission
+	if o.Permission != "" {
+		toSerialize["permission"] = o.Permission
+	}
+	if !IsNil(o.Permissions) {
+		toSerialize["permissions"] = o.Permissions
+	}
 	if !IsNil(o.Roles) {
 		toSerialize["roles"] = o.Roles
 	}
@@ -231,27 +268,6 @@ func (o UserSvcPermitInput) ToMap() (map[string]interface{}, error) {
 }
 
 func (o *UserSvcPermitInput) UnmarshalJSON(data []byte) (err error) {
-	// This validates that all required properties are included in the JSON object
-	// by unmarshalling the object into a generic map with string keys and checking
-	// that every required field exists as a key in the generic map.
-	requiredProperties := []string{
-		"permission",
-	}
-
-	allProperties := make(map[string]interface{})
-
-	err = json.Unmarshal(data, &allProperties)
-
-	if err != nil {
-		return err;
-	}
-
-	for _, requiredProperty := range(requiredProperties) {
-		if _, exists := allProperties[requiredProperty]; !exists {
-			return fmt.Errorf("no value given for required property %v", requiredProperty)
-		}
-	}
-
 	varUserSvcPermitInput := _UserSvcPermitInput{}
 
 	decoder := json.NewDecoder(bytes.NewReader(data))
@@ -302,5 +318,3 @@ func (v *NullableUserSvcPermitInput) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

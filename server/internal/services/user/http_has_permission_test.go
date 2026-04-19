@@ -109,6 +109,55 @@ func TestPermitsBySlug(t *testing.T) {
 	require.NotEmpty(t, len(rsp.Users))
 }
 
+func TestPermitsBySlug_MultiPermissionPermit(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{
+		Test: true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	token, err := boot.RegisterUserAccount(
+		clientFactory.Client().UserSvcAPI,
+		sdk.DefaultTestAppHost,
+		"someuser",
+		"pw123",
+		"Some name",
+	)
+	require.NoError(t, err)
+	userClient := clientFactory.Client(client.WithToken(token.Token))
+
+	ctx := context.Background()
+
+	_, _, err = userClient.UserSvcAPI.ListUsers(ctx).Execute()
+	require.Error(t, err)
+
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
+	require.NoError(t, err)
+
+	customPermission := "user-svc:test:slug-multi"
+	_, _, err = adminClient.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
+		Permits: []openapi.UserSvcPermitInput{
+			{
+				Slugs:       []string{"someuser"},
+				Permissions: []string{user_svc.PermissionUserView, customPermission},
+			},
+		},
+	}).Execute()
+	require.NoError(t, err)
+
+	rsp, _, err := userClient.UserSvcAPI.ListUsers(ctx).Execute()
+	require.NoError(t, err)
+	require.NotEmpty(t, len(rsp.Users))
+
+	hasCustom, _, err := userClient.UserSvcAPI.HasPermission(ctx, customPermission).Execute()
+	require.NoError(t, err)
+	require.True(t, hasCustom.Authorized)
+}
+
 func TestPermitsByRoleId(t *testing.T) {
 	t.Parallel()
 
@@ -151,6 +200,55 @@ func TestPermitsByRoleId(t *testing.T) {
 	rsp, _, err := userClient.UserSvcAPI.ListUsers(ctx).Execute()
 	require.NoError(t, err)
 	require.NotEmpty(t, len(rsp.Users))
+}
+
+func TestPermitsByRoleId_MultiPermissionPermit(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{
+		Test: true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	token, err := boot.RegisterUserAccount(
+		clientFactory.Client().UserSvcAPI,
+		sdk.DefaultTestAppHost,
+		"someuser",
+		"pw123",
+		"Some name",
+	)
+	require.NoError(t, err)
+	userClient := clientFactory.Client(client.WithToken(token.Token))
+
+	ctx := context.Background()
+
+	_, _, err = userClient.UserSvcAPI.ListUsers(ctx).Execute()
+	require.Error(t, err)
+
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
+	require.NoError(t, err)
+
+	customPermission := "user-svc:test:role-multi"
+	_, _, err = adminClient.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
+		Permits: []openapi.UserSvcPermitInput{
+			{
+				Roles:       []string{"user-svc:user"},
+				Permissions: []string{user_svc.PermissionUserView, customPermission},
+			},
+		},
+	}).Execute()
+	require.NoError(t, err)
+
+	rsp, _, err := userClient.UserSvcAPI.ListUsers(ctx).Execute()
+	require.NoError(t, err)
+	require.NotEmpty(t, len(rsp.Users))
+
+	hasCustom, _, err := userClient.UserSvcAPI.HasPermission(ctx, customPermission).Execute()
+	require.NoError(t, err)
+	require.True(t, hasCustom.Authorized)
 }
 
 // Mirrors the documented org-specific permission pattern in user-svc.md:
@@ -273,8 +371,8 @@ func TestOrgScopedPermissionPattern_DocsFlow(t *testing.T) {
 	_, _, err = ownerClient.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{
 			{
-				Permission: orgScopedPermission,
-				Roles:      []string{memberRole},
+				Permissions: []string{orgScopedPermission},
+				Roles:       []string{memberRole},
 			},
 		},
 	}).Execute()

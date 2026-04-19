@@ -3595,6 +3595,11 @@ definitions:
         type: string
       permission:
         type: string
+      permissions:
+        description: Canonical multi-permission form.
+        items:
+          type: string
+        type: array
       roles:
         description: |-
           Role IDs that have been permited the specified permission.
@@ -3615,7 +3620,6 @@ definitions:
     - appId
     - createdAt
     - id
-    - permission
     - updatedAt
     type: object
   user_svc.PermitInput:
@@ -3632,6 +3636,11 @@ definitions:
         type: string
       permission:
         type: string
+      permissions:
+        description: Canonical multi-permission form.
+        items:
+          type: string
+        type: array
       roles:
         description: |-
           Role IDs that have been permited the specified permission.
@@ -3646,8 +3655,6 @@ definitions:
         items:
           type: string
         type: array
-    required:
-    - permission
     type: object
   user_svc.ReadAppRequest:
     properties:

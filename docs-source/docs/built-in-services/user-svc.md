@@ -112,7 +112,8 @@ Then save a permit like:
 
 ```yaml
 id: notes-edit-org-abc123-user-456
-permission: user-svc:org:{org_abc123}:notes-svc:note:edit
+permissions:
+  - user-svc:org:{org_abc123}:notes-svc:note:edit
 roles:
   - user-svc:org:{org_abc123}:usr_456
 ```

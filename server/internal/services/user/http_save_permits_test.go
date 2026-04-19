@@ -9,6 +9,7 @@ package userservice_test
 
 import (
 	"context"
+	"net/http"
 	"strings"
 	"testing"
 
@@ -235,8 +236,14 @@ func TestSavePermits_DuplicateItems_InSingleRequest_NoDupCreated(t *testing.T) {
 	// send two identical items in a single call
 	_, _, err = user.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{
-			{Roles: []string{"user-svc:user"}, Permission: "duper:dedup-test"},
-			{Roles: []string{"user-svc:user"}, Permission: "duper:dedup-test"},
+			{
+				Roles:       []string{"user-svc:user"},
+				Permissions: []string{"duper:dedup-test-a", "duper:dedup-test-b"},
+			},
+			{
+				Roles:       []string{"user-svc:user"},
+				Permissions: []string{"duper:dedup-test-b", "duper:dedup-test-a"},
+			},
 		},
 	}).Execute()
 	require.NoError(t, err)
@@ -246,8 +253,96 @@ func TestSavePermits_DuplicateItems_InSingleRequest_NoDupCreated(t *testing.T) {
 		Body(openapi.UserSvcListPermitsRequest{}).
 		Execute()
 	require.NoError(t, err)
-	// @TODO: This is wrong, it should be base+1
-	require.Equal(t, base+2, len(after.Permits))
+	require.Equal(t, base+1, len(after.Permits))
+}
+
+func TestSavePermits_MultiPermissionPermit_SavesSingleRowAndMatchesContainedPermission(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{Test: true})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	token, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, sdk.DefaultTestAppHost, "arrayowner", "pw", "n")
+	require.NoError(t, err)
+	user := clientFactory.Client(client.WithToken(token.Token))
+
+	admin, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+
+	before, _, err := admin.UserSvcAPI.ListPermits(ctx).
+		Body(openapi.UserSvcListPermitsRequest{}).
+		Execute()
+	require.NoError(t, err)
+	base := len(before.Permits)
+
+	permissions := []string{"arrayowner:perm-a", "arrayowner:perm-b"}
+	_, _, err = user.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
+		Permits: []openapi.UserSvcPermitInput{
+			{
+				Roles:       []string{"user-svc:user"},
+				Permissions: permissions,
+			},
+		},
+	}).Execute()
+	require.NoError(t, err)
+
+	after, _, err := admin.UserSvcAPI.ListPermits(ctx).
+		Body(openapi.UserSvcListPermitsRequest{}).
+		Execute()
+	require.NoError(t, err)
+	require.Equal(t, base+1, len(after.Permits))
+
+	filtered, _, err := admin.UserSvcAPI.ListPermits(ctx).
+		Body(openapi.UserSvcListPermitsRequest{Permission: openapi.PtrString("arrayowner:perm-b")}).
+		Execute()
+	require.NoError(t, err)
+	require.Len(t, filtered.Permits, 1)
+	require.Empty(t, filtered.Permits[0].Permission)
+	require.ElementsMatch(t, permissions, responsePermitPermissions(filtered.Permits[0]))
+}
+
+func TestListPermissions_FlattensMultiPermissionPermits(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{Test: true})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	token, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, sdk.DefaultTestAppHost, "reader", "pw", "n")
+	require.NoError(t, err)
+	user := clientFactory.Client(client.WithToken(token.Token))
+
+	admin, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+
+	_, _, err = admin.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
+		Permits: []openapi.UserSvcPermitInput{
+			{
+				Roles:       []string{"user-svc:user"},
+				Permissions: []string{"reader:perm-flat-a", "reader:perm-flat-b"},
+			},
+			{
+				Roles:      []string{"user-svc:user"},
+				Permission: "reader:perm-flat-b",
+			},
+		},
+	}).Execute()
+	require.NoError(t, err)
+
+	rsp, httpRsp := listPermissionsRequest(t, user, []string{"user-svc:user"})
+	require.Equal(t, http.StatusOK, httpRsp.StatusCode)
+	require.Contains(t, rsp.Permissions, "reader:perm-flat-a")
+	require.Contains(t, rsp.Permissions, "reader:perm-flat-b")
+	require.Equal(t, 1, countString(rsp.Permissions, "reader:perm-flat-b"))
 }
 
 func TestPermissionOwnership_OwnerCanAttachToForeignRole(t *testing.T) {

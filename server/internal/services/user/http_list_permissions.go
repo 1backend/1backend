@@ -101,8 +101,15 @@ func (s *UserService) listPermissions(
 	}
 
 	permissions := []string{}
+	seen := map[string]struct{}{}
 	for _, permissionI := range permissionsI {
-		permissions = append(permissions, permissionI.(*user.Permit).Permission)
+		for _, permission := range permitPermissions(permissionI.(*user.Permit)) {
+			if _, ok := seen[permission]; ok {
+				continue
+			}
+			seen[permission] = struct{}{}
+			permissions = append(permissions, permission)
+		}
 	}
 
 	return permissions, nil

@@ -136,45 +136,35 @@ func (s *UserService) hasPermission(
 		return nil, false, claims, errors.Wrap(err, "failed to get user from request")
 	}
 
+	roleValues := make([]any, 0, len(claims.Roles))
+	for _, role := range claims.Roles {
+		roleValues = append(roleValues, role)
+	}
+
+	subjectFilters := []datastore.Filter{
+		datastore.Equals(datastore.Field("slugs"), claims.Slug),
+	}
+	if len(roleValues) > 0 {
+		subjectFilters = append(subjectFilters, datastore.Intersects(datastore.Field("roles"), roleValues))
+	}
+
 	permitIs, err := s.permitStore.Query(
 		datastore.Or(
 			datastore.Equals(datastore.Field("appId"), claims.AppId),
 			datastore.Equals(datastore.Field("appId"), "*"),
 		),
-		datastore.Equals([]string{"permission"}, permission),
-		// TODO: Optimize this query
-		// For some reason it doesn't work.
-		//
-		// datastore.Or(
-		// 	datastore.Equals(datastore.Field("userId"), usr.Id),
-		// 	datastore.Intersects(datastore.Field("roles"), roles),
-		// 	datastore.IsInList(datastore.Field("slugs"), claims.Slug),
-		// ),
+		datastore.Or(
+			datastore.Equals(datastore.Field("permission"), permission),
+			datastore.Equals(datastore.Field("permissions"), permission),
+		),
+		datastore.Or(subjectFilters...),
 	).Find()
 	if err != nil {
 		return usr, false, claims, err
 	}
 
-	for _, permitI := range permitIs {
-		permit := permitI.(*user.Permit)
-
-		if permit.AppId != claims.AppId && permit.AppId != "*" {
-			continue
-		}
-
-		for _, slug := range permit.Slugs {
-			if slug == claims.Slug {
-				return usr, true, claims, nil
-			}
-		}
-
-		for _, roleId := range permit.Roles {
-			for _, userRoleId := range claims.Roles {
-				if roleId == userRoleId {
-					return usr, true, claims, nil
-				}
-			}
-		}
+	if len(permitIs) > 0 {
+		return usr, true, claims, nil
 	}
 
 	return usr, false, claims, nil
