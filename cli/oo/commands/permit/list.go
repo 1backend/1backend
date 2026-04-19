@@ -50,11 +50,18 @@ func List(cmd *cobra.Command, args []string) error {
 	)
 
 	for _, permit := range rsp.Permits {
+		permission := ""
+		if permit.Permission != nil {
+			permission = *permit.Permission
+		} else if len(permit.Permissions) > 0 {
+			permission = strings.Join(permit.Permissions, ", ")
+		}
+
 		fmt.Fprintf(
 			writer,
 			"%s\t%s\t%s\t%s\n",
 			permit.Id,
-			permit.Permission,
+			permission,
 			strings.Join(permit.Slugs, ", "),
 			strings.Join(permit.Roles, ", "),
 		)
