@@ -11,6 +11,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 )
@@ -31,11 +32,13 @@ func TokenRefreshMiddleware(tr endpoint.TokenRefresher, autorefreshOff bool) fun
 
 				_, _, err := tr.EnsureValidToken(r)
 				if err != nil {
-					logger.Error("Token refresh middleware error",
+					args := append(
+						attrsToArgs(auth.TokenDebugAttrs(tokenFromRequest(r))),
 						slog.String("path", r.URL.Path),
 						slog.String("method", r.Method),
 						slog.Any("error", err),
 					)
+					logger.Error("Token refresh middleware error", args...)
 					http.Error(w, "Unauthorized: "+err.Error(), http.StatusUnauthorized)
 					return
 				}
@@ -45,4 +48,26 @@ func TokenRefreshMiddleware(tr endpoint.TokenRefresher, autorefreshOff bool) fun
 			next(w, r)
 		}
 	}
+}
+
+func tokenFromRequest(r *http.Request) string {
+	if r == nil {
+		return ""
+	}
+
+	token, _ := auth.AuthorizerImpl{}.TokenFromRequest(r)
+	return token
+}
+
+func attrsToArgs(attrs []slog.Attr) []any {
+	if len(attrs) == 0 {
+		return nil
+	}
+
+	args := make([]any, 0, len(attrs))
+	for _, attr := range attrs {
+		args = append(args, attr)
+	}
+
+	return args
 }
