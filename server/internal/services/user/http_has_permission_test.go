@@ -65,6 +65,41 @@ func TestUnauthorizedShouldNotReturnError(t *testing.T) {
 	})
 }
 
+func TestHasPermission_ExpiredTokenReturnsFalse(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{
+		Test:                true,
+		TokenAutoRefreshOff: true,
+		TokenExpiration:     time.Second,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	token, err := boot.RegisterUserAccount(
+		clientFactory.Client().UserSvcAPI,
+		sdk.DefaultTestAppHost,
+		"expired-user",
+		"pw123",
+		"Expired User",
+	)
+	require.NoError(t, err)
+
+	userClient := clientFactory.Client(client.WithToken(token.Token))
+
+	time.Sleep(1100 * time.Millisecond)
+
+	rsp, _, err := userClient.UserSvcAPI.
+		HasPermission(context.Background(), "expired-user:some-permission").
+		Execute()
+	require.NoError(t, err)
+	require.False(t, rsp.Authorized)
+	require.Equal(t, sdk.DefaultTestAppHost, rsp.App.Host)
+	require.Equal(t, "expired-user", rsp.User.Slug)
+}
+
 func TestPermitsBySlug(t *testing.T) {
 	t.Parallel()
 
@@ -98,7 +133,7 @@ func TestPermitsBySlug(t *testing.T) {
 		Permits: []openapi.UserSvcPermitInput{
 			{
 				Slugs:      []string{"someuser"},
-				Permission: user_svc.PermissionUserView,
+				Permission: openapi.PtrString(user_svc.PermissionUserView),
 			},
 		},
 	}).Execute()
@@ -191,7 +226,7 @@ func TestPermitsByRoleId(t *testing.T) {
 		Permits: []openapi.UserSvcPermitInput{
 			{
 				Roles:      []string{"user-svc:user"},
-				Permission: user_svc.PermissionUserView,
+				Permission: openapi.PtrString(user_svc.PermissionUserView),
 			},
 		},
 	}).Execute()

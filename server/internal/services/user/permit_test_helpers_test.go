@@ -33,7 +33,9 @@ func responsePermitPermissions(permit openapi.UserSvcPermit) []string {
 		ret = append(ret, value)
 	}
 
-	add(permit.Permission)
+	if permit.Permission != nil {
+		add(*permit.Permission)
+	}
 	for _, permission := range permit.Permissions {
 		add(permission)
 	}

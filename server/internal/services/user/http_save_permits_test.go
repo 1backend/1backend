@@ -64,7 +64,7 @@ func TestSavePermits(t *testing.T) {
 			Permits: []openapi.UserSvcPermitInput{
 				{
 					Roles:      []string{"user-svc:user"},
-					Permission: "seconduser:myperm",
+					Permission: openapi.PtrString("seconduser:myperm"),
 				},
 			},
 		}).Execute()
@@ -77,7 +77,7 @@ func TestSavePermits(t *testing.T) {
 			Permits: []openapi.UserSvcPermitInput{
 				{
 					Roles:      []string{"user-svc:user"},
-					Permission: "firstuser:myperm",
+					Permission: openapi.PtrString("firstuser:myperm"),
 				},
 			},
 		}).Execute()
@@ -98,7 +98,7 @@ func TestSavePermits(t *testing.T) {
 			Permits: []openapi.UserSvcPermitInput{
 				{
 					Roles:      []string{"user-svc:user"},
-					Permission: "firstuser:myperm",
+					Permission: openapi.PtrString("firstuser:myperm"),
 				},
 			},
 		}).Execute()
@@ -118,7 +118,7 @@ func TestSavePermits(t *testing.T) {
 			Permits: []openapi.UserSvcPermitInput{
 				{
 					Roles:      []string{"user-svc:user"},
-					Permission: "firstuser:myperm",
+					Permission: openapi.PtrString("firstuser:myperm"),
 				},
 			},
 		}).Execute()
@@ -131,7 +131,7 @@ func TestSavePermits(t *testing.T) {
 			Permits: []openapi.UserSvcPermitInput{
 				{
 					Roles:      []string{"user-svc:user"},
-					Permission: "firstuser:myperm",
+					Permission: openapi.PtrString("firstuser:myperm"),
 				},
 			},
 		}).Execute()
@@ -163,6 +163,45 @@ func TestListPermits_NonAdmin_Forbidden(t *testing.T) {
 	require.Error(t, err)
 }
 
+func TestSavePermits_NoAuth_Forbidden(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{Test: true})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	_, httpRsp, err := clientFactory.Client().UserSvcAPI.SavePermits(context.Background()).Body(
+		openapi.UserSvcSavePermitsRequest{
+			Permits: []openapi.UserSvcPermitInput{
+				{
+					Roles:      []string{"user-svc:user"},
+					Permission: openapi.PtrString("noauth:perm"),
+				},
+			},
+		},
+	).Execute()
+	require.Error(t, err)
+	require.Equal(t, http.StatusUnauthorized, httpRsp.StatusCode)
+}
+
+func TestListPermits_NoAuth_Forbidden(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{Test: true})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	_, httpRsp, err := clientFactory.Client().UserSvcAPI.ListPermits(context.Background()).
+		Body(openapi.UserSvcListPermitsRequest{}).
+		Execute()
+	require.Error(t, err)
+	require.Equal(t, http.StatusUnauthorized, httpRsp.StatusCode)
+}
+
 func TestPermissionOwnership_NonOwnerCannotAttach(t *testing.T) {
 	t.Parallel()
 
@@ -189,7 +228,7 @@ func TestPermissionOwnership_NonOwnerCannotAttach(t *testing.T) {
 		Permits: []openapi.UserSvcPermitInput{
 			{
 				Roles:      []string{"user-svc:user"},
-				Permission: "owneruser:perm.attach-test",
+				Permission: openapi.PtrString("owneruser:perm.attach-test"),
 			},
 		},
 	}).Execute()
@@ -200,7 +239,7 @@ func TestPermissionOwnership_NonOwnerCannotAttach(t *testing.T) {
 		Permits: []openapi.UserSvcPermitInput{
 			{
 				Roles:      []string{"user-svc:user"},
-				Permission: "owneruser:perm.attach-test",
+				Permission: openapi.PtrString("owneruser:perm.attach-test"),
 			},
 		},
 	}).Execute()
@@ -302,8 +341,84 @@ func TestSavePermits_MultiPermissionPermit_SavesSingleRowAndMatchesContainedPerm
 		Execute()
 	require.NoError(t, err)
 	require.Len(t, filtered.Permits, 1)
-	require.Empty(t, filtered.Permits[0].Permission)
+	require.Nil(t, filtered.Permits[0].Permission)
 	require.ElementsMatch(t, permissions, responsePermitPermissions(filtered.Permits[0]))
+}
+
+func TestSavePermits_MixedPermissionInput_NormalizesAndDeduplicates(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{Test: true})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	token, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, sdk.DefaultTestAppHost, "mixedowner", "pw", "n")
+	require.NoError(t, err)
+	user := clientFactory.Client(client.WithToken(token.Token))
+
+	admin, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+
+	_, _, err = user.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
+		Permits: []openapi.UserSvcPermitInput{
+			{
+				Roles:       []string{"user-svc:user"},
+				Permission:  openapi.PtrString("mixedowner:perm-a"),
+				Permissions: []string{"mixedowner:perm-b", "mixedowner:perm-a"},
+			},
+		},
+	}).Execute()
+	require.NoError(t, err)
+
+	filtered, _, err := admin.UserSvcAPI.ListPermits(ctx).
+		Body(openapi.UserSvcListPermitsRequest{Permission: openapi.PtrString("mixedowner:perm-b")}).
+		Execute()
+	require.NoError(t, err)
+	require.Len(t, filtered.Permits, 1)
+	require.Nil(t, filtered.Permits[0].Permission)
+	require.ElementsMatch(t, []string{"mixedowner:perm-a", "mixedowner:perm-b"}, responsePermitPermissions(filtered.Permits[0]))
+}
+
+func TestSavePermits_SinglePermissionArray_CanonicalizesToLegacyField(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{Test: true})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	token, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, sdk.DefaultTestAppHost, "singlearray", "pw", "n")
+	require.NoError(t, err)
+	user := clientFactory.Client(client.WithToken(token.Token))
+
+	admin, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+
+	_, _, err = user.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
+		Permits: []openapi.UserSvcPermitInput{
+			{
+				Roles:       []string{"user-svc:user"},
+				Permissions: []string{"singlearray:perm-only"},
+			},
+		},
+	}).Execute()
+	require.NoError(t, err)
+
+	filtered, _, err := admin.UserSvcAPI.ListPermits(ctx).
+		Body(openapi.UserSvcListPermitsRequest{Permission: openapi.PtrString("singlearray:perm-only")}).
+		Execute()
+	require.NoError(t, err)
+	require.Len(t, filtered.Permits, 1)
+	require.NotNil(t, filtered.Permits[0].Permission)
+	require.Equal(t, "singlearray:perm-only", *filtered.Permits[0].Permission)
+	require.Empty(t, filtered.Permits[0].Permissions)
 }
 
 func TestListPermissions_FlattensMultiPermissionPermits(t *testing.T) {
@@ -332,7 +447,7 @@ func TestListPermissions_FlattensMultiPermissionPermits(t *testing.T) {
 			},
 			{
 				Roles:      []string{"user-svc:user"},
-				Permission: "reader:perm-flat-b",
+				Permission: openapi.PtrString("reader:perm-flat-b"),
 			},
 		},
 	}).Execute()
@@ -343,6 +458,71 @@ func TestListPermissions_FlattensMultiPermissionPermits(t *testing.T) {
 	require.Contains(t, rsp.Permissions, "reader:perm-flat-a")
 	require.Contains(t, rsp.Permissions, "reader:perm-flat-b")
 	require.Equal(t, 1, countString(rsp.Permissions, "reader:perm-flat-b"))
+}
+
+func TestListPermissions_NoAuth_Forbidden(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{Test: true})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	_, httpRsp := listPermissionsRequest(t, clientFactory.Client(), []string{"user-svc:user"})
+	require.Equal(t, http.StatusUnauthorized, httpRsp.StatusCode)
+}
+
+func TestListPermissions_ForeignRole_Forbidden(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{Test: true})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	token, err := boot.RegisterUserAccount(clientFactory.Client().UserSvcAPI, sdk.DefaultTestAppHost, "roleviewer", "pw", "n")
+	require.NoError(t, err)
+	user := clientFactory.Client(client.WithToken(token.Token))
+
+	_, httpRsp := listPermissionsRequest(t, user, []string{"user-svc:admin"})
+	require.Equal(t, http.StatusUnauthorized, httpRsp.StatusCode)
+}
+
+func TestListPermits_FilterByPermissionAndSlug_MatchesArrayPermit(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{Test: true})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	admin, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
+	require.NoError(t, err)
+
+	ctx := context.Background()
+
+	_, _, err = admin.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
+		Permits: []openapi.UserSvcPermitInput{
+			{
+				Slugs:       []string{"slugged-user"},
+				Permissions: []string{"user-svc:test:slug-filter-a", "user-svc:test:slug-filter-b"},
+			},
+		},
+	}).Execute()
+	require.NoError(t, err)
+
+	rsp, _, err := admin.UserSvcAPI.ListPermits(ctx).
+		Body(openapi.UserSvcListPermitsRequest{
+			Permission: openapi.PtrString("user-svc:test:slug-filter-b"),
+			Slug:       openapi.PtrString("slugged-user"),
+		}).
+		Execute()
+	require.NoError(t, err)
+	require.Len(t, rsp.Permits, 1)
+	require.ElementsMatch(t, []string{"user-svc:test:slug-filter-a", "user-svc:test:slug-filter-b"}, responsePermitPermissions(rsp.Permits[0]))
 }
 
 func TestPermissionOwnership_OwnerCanAttachToForeignRole(t *testing.T) {
@@ -365,7 +545,7 @@ func TestPermissionOwnership_OwnerCanAttachToForeignRole(t *testing.T) {
 		Permits: []openapi.UserSvcPermitInput{
 			{
 				Roles:      []string{"user-svc:user"},
-				Permission: "permowner:foreign-role-ok",
+				Permission: openapi.PtrString("permowner:foreign-role-ok"),
 			},
 		},
 	}).Execute()
@@ -424,7 +604,7 @@ func TestPermissionOwnership_OrgAdminOwnsOrgScopedPermissionNamespace(t *testing
 		_, _, err := ownerClient.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
 			Permits: []openapi.UserSvcPermitInput{
 				{
-					Permission: orgPermission,
+					Permission: openapi.PtrString(orgPermission),
 					Roles:      []string{memberRole},
 				},
 			},
@@ -459,7 +639,7 @@ func TestPermissionOwnership_OrgAdminOwnsOrgScopedPermissionNamespace(t *testing
 		_, _, err = memberClient.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
 			Permits: []openapi.UserSvcPermitInput{
 				{
-					Permission: orgPermission,
+					Permission: openapi.PtrString(orgPermission),
 					Roles:      []string{memberRole},
 				},
 			},
@@ -508,14 +688,14 @@ func TestAppIsolation_ListPermits_AdminScopedByApp(t *testing.T) {
 	// create one permit per app
 	_, _, err = userA.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{
-			{Roles: []string{"user-svc:user"}, Permission: "tenantuser:perm-in-appA"},
+			{Roles: []string{"user-svc:user"}, Permission: openapi.PtrString("tenantuser:perm-in-appA")},
 		},
 	}).Execute()
 	require.NoError(t, err)
 
 	_, _, err = userB.UserSvcAPI.SavePermits(ctx).Body(openapi.UserSvcSavePermitsRequest{
 		Permits: []openapi.UserSvcPermitInput{
-			{Roles: []string{"user-svc:user"}, Permission: "tenantuser:perm-in-appB"},
+			{Roles: []string{"user-svc:user"}, Permission: openapi.PtrString("tenantuser:perm-in-appB")},
 		},
 	}).Execute()
 	require.NoError(t, err)
@@ -528,10 +708,10 @@ func TestAppIsolation_ListPermits_AdminScopedByApp(t *testing.T) {
 		foundA := false
 		foundB := false
 		for _, p := range rspA.Permits {
-			if p.Permission == "tenantuser:perm-in-appA" {
+			if p.Permission != nil && *p.Permission == "tenantuser:perm-in-appA" {
 				foundA = true
 			}
-			if p.Permission == "tenantuser:perm-in-appB" {
+			if p.Permission != nil && *p.Permission == "tenantuser:perm-in-appB" {
 				foundB = true
 			}
 		}

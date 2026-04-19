@@ -39,8 +39,18 @@ import (
 // @Security BearerAuth
 // @Router /user-svc/permits [put]
 func (s *UserService) SavePermits(w http.ResponseWriter, r *http.Request) {
+	if _, hasToken := s.options.Authorizer.TokenFromRequest(r); !hasToken {
+		endpoint.Unauthorized(w)
+		return
+	}
+
 	_, claims, err := s.getUserFromRequest(r)
 	if err != nil {
+		if isUnauthorizedRequestError(err) {
+			endpoint.Unauthorized(w)
+			return
+		}
+
 		logger.Error(
 			"Failed to get user from request",
 			slog.Any("error", err),

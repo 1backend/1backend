@@ -27,12 +27,12 @@ func (p *ModelService) registerPermits() error {
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"prompt-svc"},
-				Permission: model.PermissionModelView,
+				Permission: openapi.PtrString(model.PermissionModelView),
 			},
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"prompt-svc"},
-				Permission: model.PermissionPlatformView,
+				Permission: openapi.PtrString(model.PermissionPlatformView),
 			},
 		},
 	}
@@ -44,7 +44,7 @@ func (p *ModelService) registerPermits() error {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				AppHost:    openapi.PtrString("*"),
 				Roles:      []string{role},
-				Permission: permission,
+				Permission: openapi.PtrString(permission),
 			})
 		}
 	}

@@ -33,7 +33,7 @@ func (p *FirehoseService) registerPermits() error {
 					"chat-svc",
 					"model-svc",
 				},
-				Permission: firehosetypes.PermissionEventPublish,
+				Permission: openapi.PtrString(firehosetypes.PermissionEventPublish),
 			},
 		},
 	}
@@ -45,7 +45,7 @@ func (p *FirehoseService) registerPermits() error {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				AppHost:    openapi.PtrString("*"),
 				Roles:      []string{role},
-				Permission: permission,
+				Permission: openapi.PtrString(permission),
 			})
 		}
 	}

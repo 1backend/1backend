@@ -35,37 +35,37 @@ func (ns *RegistryService) registerPermits() error {
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
-				Permission: registry.PermissionDefinitionDelete,
+				Permission: openapi.PtrString(registry.PermissionDefinitionDelete),
 			},
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
-				Permission: registry.PermissionNodeDelete,
+				Permission: openapi.PtrString(registry.PermissionNodeDelete),
 			},
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
-				Permission: registry.PermissionDefinitionView,
+				Permission: openapi.PtrString(registry.PermissionDefinitionView),
 			},
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc", "proxy-svc"},
-				Permission: registry.PermissionInstanceView,
+				Permission: openapi.PtrString(registry.PermissionInstanceView),
 			},
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc", "file-svc", "model-svc"},
-				Permission: registry.PermissionNodeView,
+				Permission: openapi.PtrString(registry.PermissionNodeView),
 			},
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
-				Permission: registry.PermissionInstanceEdit,
+				Permission: openapi.PtrString(registry.PermissionInstanceEdit),
 			},
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
-				Permission: registry.PermissionInstanceDelete,
+				Permission: openapi.PtrString(registry.PermissionInstanceDelete),
 			},
 		},
 	}
@@ -81,7 +81,7 @@ func (ns *RegistryService) registerPermits() error {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				AppHost:    openapi.PtrString("*"),
 				Roles:      []string{role},
-				Permission: permission,
+				Permission: openapi.PtrString(permission),
 			})
 		}
 	}
@@ -96,7 +96,7 @@ func (ns *RegistryService) registerPermits() error {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				AppHost:    openapi.PtrString("*"),
 				Roles:      []string{role},
-				Permission: permission,
+				Permission: openapi.PtrString(permission),
 			})
 		}
 	}

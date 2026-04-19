@@ -26,22 +26,22 @@ func (fs *FileService) registerPermits() error {
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"docker-svc", "model-svc"},
-				Permission: file.PermissionDownloadView,
+				Permission: openapi.PtrString(file.PermissionDownloadView),
 			},
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"model-svc"},
-				Permission: file.PermissionDownloadCreate,
+				Permission: openapi.PtrString(file.PermissionDownloadCreate),
 			},
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"prompt-svc"},
-				Permission: file.PermissionUploadCreate,
+				Permission: openapi.PtrString(file.PermissionUploadCreate),
 			},
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"image-svc"},
-				Permission: file.PermissionDownloadCreate,
+				Permission: openapi.PtrString(file.PermissionDownloadCreate),
 			},
 		},
 	}
@@ -53,7 +53,7 @@ func (fs *FileService) registerPermits() error {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				AppHost:    openapi.PtrString("*"),
 				Roles:      []string{role},
-				Permission: permission,
+				Permission: openapi.PtrString(permission),
 			})
 		}
 	}

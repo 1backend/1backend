@@ -26,32 +26,32 @@ func (p *ContainerService) registerPermits() error {
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"model-svc"},
-				Permission: dockertypes.PermissionContainerView,
+				Permission: openapi.PtrString(dockertypes.PermissionContainerView),
 			},
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"model-svc", "deploy-svc"},
-				Permission: dockertypes.PermissionLogView,
+				Permission: openapi.PtrString(dockertypes.PermissionLogView),
 			},
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"model-svc", "deploy-svc"},
-				Permission: dockertypes.PermissionContainerCreate,
+				Permission: openapi.PtrString(dockertypes.PermissionContainerCreate),
 			},
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"model-svc", "deploy-svc"},
-				Permission: dockertypes.PermissionContainerCreate,
+				Permission: openapi.PtrString(dockertypes.PermissionContainerCreate),
 			},
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"model-svc", "deploy-svc"},
-				Permission: dockertypes.PermissionContainerStop,
+				Permission: openapi.PtrString(dockertypes.PermissionContainerStop),
 			},
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
-				Permission: dockertypes.PermissionImageBuild,
+				Permission: openapi.PtrString(dockertypes.PermissionImageBuild),
 			},
 		},
 	}
@@ -63,7 +63,7 @@ func (p *ContainerService) registerPermits() error {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				AppHost:    openapi.PtrString("*"),
 				Roles:      []string{role},
-				Permission: permission,
+				Permission: openapi.PtrString(permission),
 			})
 		}
 	}

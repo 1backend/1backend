@@ -36,9 +36,18 @@ import (
 func (s *UserService) ListPermits(
 	w http.ResponseWriter,
 	r *http.Request) {
+	if _, hasToken := s.options.Authorizer.TokenFromRequest(r); !hasToken {
+		endpoint.Unauthorized(w)
+		return
+	}
 
 	_, has, _, err := s.hasPermission(r, user.PermissionPermitView)
 	if err != nil {
+		if isUnauthorizedRequestError(err) {
+			endpoint.Unauthorized(w)
+			return
+		}
+
 		logger.Error(
 			"Failed to check permission",
 			slog.Any("error", err),
