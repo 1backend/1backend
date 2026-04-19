@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.10
+API version: 0.9.12
 Contact: sales@singulatron.com
 */
 
@@ -471,6 +471,9 @@ Examples:
 	SaveMembership Save Membership
 
 	Creates or updates an organization membership invite.
+Memberships automatically include a canonical per-user org role in the form `user-svc:org:{organizationId}:{userId}`.
+Callers may add additional roles under the same organization prefix to model org-local groups or custom permission bundles.
+Additional roles are still subject to role ownership validation via `OwnsRole`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@param organizationId Organization ID
@@ -488,6 +491,7 @@ Examples:
 
 	Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization.
 The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the saved organization.
+The creator membership also receives the canonical per-user org role `user-svc:org:{organizationId}:{userId}` so org-specific permits can target the creator directly.
 Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -504,6 +508,7 @@ Dynamic roles are generated based on specific user-resource associations (in thi
 
 	Save permits.
 Permits give access to users with certain slugs and roles to permissions.
+Non-admin callers may only save permissions they own, such as `their-slug:...` or organization-scoped namespaces they administer.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiSavePermitsRequest
@@ -4652,6 +4657,9 @@ func (r ApiSaveMembershipRequest) Execute() (*UserSvcSaveMembershipResponse, *ht
 SaveMembership Save Membership
 
 Creates or updates an organization membership invite.
+Memberships automatically include a canonical per-user org role in the form `user-svc:org:{organizationId}:{userId}`.
+Callers may add additional roles under the same organization prefix to model org-local groups or custom permission bundles.
+Additional roles are still subject to role ownership validation via `OwnsRole`.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @param organizationId Organization ID
@@ -4835,6 +4843,7 @@ SaveOrganization Save an Organization
 
 Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization.
 The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the saved organization.
+The creator membership also receives the canonical per-user org role `user-svc:org:{organizationId}:{userId}` so org-specific permits can target the creator directly.
 Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
@@ -4994,6 +5003,7 @@ SavePermits Save Permits
 
 Save permits.
 Permits give access to users with certain slugs and roles to permissions.
+Non-admin callers may only save permissions they own, such as `their-slug:...` or organization-scoped namespaces they administer.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiSavePermitsRequest

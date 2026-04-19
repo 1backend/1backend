@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.10
+API version: 0.9.12
 Contact: sales@singulatron.com
 */
 
@@ -12,9 +12,9 @@ Contact: sales@singulatron.com
 package openapi
 
 import (
-	"bytes"
 	"encoding/json"
-	"errors"
+	"bytes"
+	"fmt"
 )
 
 // checks if the UserSvcPermit type satisfies the MappedNullable interface at compile time
@@ -23,18 +23,20 @@ var _ MappedNullable = &UserSvcPermit{}
 // UserSvcPermit struct for UserSvcPermit
 type UserSvcPermit struct {
 	// App of the permit. Use `*` to match all apps, such as when bootstrapping in services.
-	AppId       string   `json:"appId"`
-	CreatedAt   string   `json:"createdAt"`
-	DeletedAt   *string  `json:"deletedAt,omitempty"`
-	Id          string   `json:"id"`
-	InternalId  *string  `json:"internalId,omitempty"`
-	Permission  string   `json:"permission,omitempty"`
+	AppId string `json:"appId"`
+	CreatedAt string `json:"createdAt"`
+	DeletedAt *string `json:"deletedAt,omitempty"`
+	Id string `json:"id"`
+	InternalId *string `json:"internalId,omitempty"`
+	// Legacy single-permission form.
+	Permission *string `json:"permission,omitempty"`
+	// Canonical multi-permission form.
 	Permissions []string `json:"permissions,omitempty"`
 	// Role IDs that have been permited the specified permission.  Originally, permits were designed for slugs to facilitate service-to-service calls. Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.
 	Roles []string `json:"roles,omitempty"`
 	// Slugs that have been permited the specified permission.
-	Slugs     []string `json:"slugs,omitempty"`
-	UpdatedAt string   `json:"updatedAt"`
+	Slugs []string `json:"slugs,omitempty"`
+	UpdatedAt string `json:"updatedAt"`
 }
 
 type _UserSvcPermit UserSvcPermit
@@ -43,12 +45,11 @@ type _UserSvcPermit UserSvcPermit
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcPermit(appId string, createdAt string, id string, permission string, updatedAt string) *UserSvcPermit {
+func NewUserSvcPermit(appId string, createdAt string, id string, updatedAt string) *UserSvcPermit {
 	this := UserSvcPermit{}
 	this.AppId = appId
 	this.CreatedAt = createdAt
 	this.Id = id
-	this.Permission = permission
 	this.UpdatedAt = updatedAt
 	return &this
 }
@@ -197,28 +198,36 @@ func (o *UserSvcPermit) SetInternalId(v string) {
 	o.InternalId = &v
 }
 
-// GetPermission returns the Permission field value
+// GetPermission returns the Permission field value if set, zero value otherwise.
 func (o *UserSvcPermit) GetPermission() string {
-	if o == nil {
+	if o == nil || IsNil(o.Permission) {
 		var ret string
 		return ret
 	}
-
-	return o.Permission
+	return *o.Permission
 }
 
-// GetPermissionOk returns a tuple with the Permission field value
+// GetPermissionOk returns a tuple with the Permission field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *UserSvcPermit) GetPermissionOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Permission) {
 		return nil, false
 	}
-	return &o.Permission, true
+	return o.Permission, true
 }
 
-// SetPermission sets field value
+// HasPermission returns a boolean if a field has been set.
+func (o *UserSvcPermit) HasPermission() bool {
+	if o != nil && !IsNil(o.Permission) {
+		return true
+	}
+
+	return false
+}
+
+// SetPermission gets a reference to the given string and assigns it to the Permission field.
 func (o *UserSvcPermit) SetPermission(v string) {
-	o.Permission = v
+	o.Permission = &v
 }
 
 // GetPermissions returns the Permissions field value if set, zero value otherwise.
@@ -342,7 +351,7 @@ func (o *UserSvcPermit) SetUpdatedAt(v string) {
 }
 
 func (o UserSvcPermit) MarshalJSON() ([]byte, error) {
-	toSerialize, err := o.ToMap()
+	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -360,7 +369,7 @@ func (o UserSvcPermit) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.InternalId) {
 		toSerialize["internalId"] = o.InternalId
 	}
-	if o.Permission != "" {
+	if !IsNil(o.Permission) {
 		toSerialize["permission"] = o.Permission
 	}
 	if !IsNil(o.Permissions) {
@@ -392,12 +401,12 @@ func (o *UserSvcPermit) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err
+		return err;
 	}
 
-	for _, requiredProperty := range requiredProperties {
+	for _, requiredProperty := range(requiredProperties) {
 		if _, exists := allProperties[requiredProperty]; !exists {
-			return errors.New("no value given for required property " + requiredProperty)
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
 	}
 
@@ -451,3 +460,5 @@ func (v *NullableUserSvcPermit) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+
+

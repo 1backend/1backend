@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.10
+API version: 0.9.12
 Contact: sales@singulatron.com
 */
 
@@ -12,7 +12,6 @@ Contact: sales@singulatron.com
 package openapi
 
 import (
-	"bytes"
 	"encoding/json"
 )
 
@@ -22,9 +21,11 @@ var _ MappedNullable = &UserSvcPermitInput{}
 // UserSvcPermitInput struct for UserSvcPermitInput
 type UserSvcPermitInput struct {
 	// App of the permit. Use `*` to match all apps, such as when bootstrapping in services.
-	AppHost     *string  `json:"appHost,omitempty"`
-	Id          *string  `json:"id,omitempty"`
-	Permission  string   `json:"permission,omitempty"`
+	AppHost *string `json:"appHost,omitempty"`
+	Id *string `json:"id,omitempty"`
+	// Legacy single-permission form.
+	Permission *string `json:"permission,omitempty"`
+	// Canonical multi-permission form.
 	Permissions []string `json:"permissions,omitempty"`
 	// Role IDs that have been permited the specified permission.  Originally, permits were designed for slugs to facilitate service-to-service calls. Due to their convenience—especially with CLI and infrastructure-as-code support—they were later extended to roles.
 	Roles []string `json:"roles,omitempty"`
@@ -32,15 +33,12 @@ type UserSvcPermitInput struct {
 	Slugs []string `json:"slugs,omitempty"`
 }
 
-type _UserSvcPermitInput UserSvcPermitInput
-
 // NewUserSvcPermitInput instantiates a new UserSvcPermitInput object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewUserSvcPermitInput(permission string) *UserSvcPermitInput {
+func NewUserSvcPermitInput() *UserSvcPermitInput {
 	this := UserSvcPermitInput{}
-	this.Permission = permission
 	return &this
 }
 
@@ -116,28 +114,36 @@ func (o *UserSvcPermitInput) SetId(v string) {
 	o.Id = &v
 }
 
-// GetPermission returns the Permission field value
+// GetPermission returns the Permission field value if set, zero value otherwise.
 func (o *UserSvcPermitInput) GetPermission() string {
-	if o == nil {
+	if o == nil || IsNil(o.Permission) {
 		var ret string
 		return ret
 	}
-
-	return o.Permission
+	return *o.Permission
 }
 
-// GetPermissionOk returns a tuple with the Permission field value
+// GetPermissionOk returns a tuple with the Permission field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *UserSvcPermitInput) GetPermissionOk() (*string, bool) {
-	if o == nil {
+	if o == nil || IsNil(o.Permission) {
 		return nil, false
 	}
-	return &o.Permission, true
+	return o.Permission, true
 }
 
-// SetPermission sets field value
+// HasPermission returns a boolean if a field has been set.
+func (o *UserSvcPermitInput) HasPermission() bool {
+	if o != nil && !IsNil(o.Permission) {
+		return true
+	}
+
+	return false
+}
+
+// SetPermission gets a reference to the given string and assigns it to the Permission field.
 func (o *UserSvcPermitInput) SetPermission(v string) {
-	o.Permission = v
+	o.Permission = &v
 }
 
 // GetPermissions returns the Permissions field value if set, zero value otherwise.
@@ -237,7 +243,7 @@ func (o *UserSvcPermitInput) SetSlugs(v []string) {
 }
 
 func (o UserSvcPermitInput) MarshalJSON() ([]byte, error) {
-	toSerialize, err := o.ToMap()
+	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -252,7 +258,7 @@ func (o UserSvcPermitInput) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
 	}
-	if o.Permission != "" {
+	if !IsNil(o.Permission) {
 		toSerialize["permission"] = o.Permission
 	}
 	if !IsNil(o.Permissions) {
@@ -265,22 +271,6 @@ func (o UserSvcPermitInput) ToMap() (map[string]interface{}, error) {
 		toSerialize["slugs"] = o.Slugs
 	}
 	return toSerialize, nil
-}
-
-func (o *UserSvcPermitInput) UnmarshalJSON(data []byte) (err error) {
-	varUserSvcPermitInput := _UserSvcPermitInput{}
-
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varUserSvcPermitInput)
-
-	if err != nil {
-		return err
-	}
-
-	*o = UserSvcPermitInput(varUserSvcPermitInput)
-
-	return err
 }
 
 type NullableUserSvcPermitInput struct {
@@ -318,3 +308,5 @@ func (v *NullableUserSvcPermitInput) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+
+
