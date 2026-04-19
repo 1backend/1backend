@@ -8,8 +8,6 @@
 package userservice
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"log/slog"
@@ -17,6 +15,7 @@ import (
 	"sort"
 	"time"
 
+	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
@@ -47,10 +46,11 @@ func (s *UserService) RefreshToken(w http.ResponseWriter, r *http.Request) {
 
 	token, err := s.refreshToken(stringToken)
 	if err != nil {
-		logger.Error(
-			"Failed to refresh token",
+		args := append(
+			attrsToArgs(auth.TokenDebugAttrs(stringToken)),
 			slog.Any("error", err),
 		)
+		logger.Error("Failed to refresh token", args...)
 		endpoint.InternalServerError(w)
 
 		return
@@ -235,7 +235,19 @@ func (s *UserService) refreshToken(
 	return val.(*user.Token), nil
 }
 
+func attrsToArgs(attrs []slog.Attr) []any {
+	if len(attrs) == 0 {
+		return nil
+	}
+
+	args := make([]any, 0, len(attrs))
+	for _, attr := range attrs {
+		args = append(args, attr)
+	}
+
+	return args
+}
+
 func generateCacheKey(token string) string {
-	hash := sha256.Sum256([]byte(token))
-	return hex.EncodeToString(hash[:])
+	return auth.TokenHash(token)
 }
