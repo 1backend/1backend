@@ -109,6 +109,54 @@ type Indexable interface {
 	Indexes() []Index
 }
 
+type AutoIndexStatsProvider interface {
+	AutoIndexStats() AutoIndexStats
+}
+
+type AutoIndexStatus string
+
+const (
+	AutoIndexStatusObserved   AutoIndexStatus = "observed"
+	AutoIndexStatusPending    AutoIndexStatus = "pending"
+	AutoIndexStatusCreated    AutoIndexStatus = "created"
+	AutoIndexStatusFailed     AutoIndexStatus = "failed"
+	AutoIndexStatusDiscovered AutoIndexStatus = "discovered"
+	AutoIndexStatusManual     AutoIndexStatus = "manual"
+)
+
+type AutoIndexKind string
+
+const (
+	AutoIndexKindAuto   AutoIndexKind = "auto"
+	AutoIndexKindManual AutoIndexKind = "manual"
+)
+
+type AutoIndexStats struct {
+	Supported bool `json:"supported"`
+	Backend   string
+
+	Shapes  []AutoIndexShapeStats `json:"shapes,omitempty"`
+	Indexes []AutoIndexEntry      `json:"indexes,omitempty"`
+}
+
+type AutoIndexShapeStats struct {
+	Fingerprint string    `json:"fingerprint"`
+	Hits        int       `json:"hits"`
+	LastSeen    time.Time `json:"lastSeen,omitempty"`
+	Eligible    bool      `json:"eligible"`
+	Reason      string    `json:"reason,omitempty"`
+}
+
+type AutoIndexEntry struct {
+	Fingerprint string          `json:"fingerprint"`
+	Kind        AutoIndexKind   `json:"kind"`
+	Method      string          `json:"method,omitempty"`
+	Status      AutoIndexStatus `json:"status"`
+	Name        string          `json:"name,omitempty"`
+	LastSeen    time.Time       `json:"lastSeen,omitempty"`
+	Error       string          `json:"error,omitempty"`
+}
+
 type Index struct {
 	// Support composite indexes
 	Fields []string
