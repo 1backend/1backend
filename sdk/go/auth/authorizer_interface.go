@@ -214,12 +214,16 @@ func ExtractOrganizationRoles(roleIds []string) map[string][]string {
 // - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:{%userId}".
 // - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:team:admin".
 func OwnsRole(claim *Claims, roleId string) bool {
+	if claim == nil {
+		return false
+	}
+
 	// @todo Probably not great in terms of zero trust design ; )
 	if lo.Contains(claim.Roles, "user-svc:admin") {
 		return true
 	}
 
-	if strings.HasPrefix(roleId, claim.Slug) {
+	if claim.Slug != "" && (roleId == claim.Slug || strings.HasPrefix(roleId, claim.Slug+":")) {
 		return true
 	}
 

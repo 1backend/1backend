@@ -9,7 +9,6 @@ package userservice
 
 import (
 	"encoding/json"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"sort"
@@ -69,14 +68,7 @@ func (s *UserService) RefreshToken(w http.ResponseWriter, r *http.Request) {
 func (s *UserService) refreshToken(
 	stringToken string,
 ) (*user.Token, error) {
-	// FAST PATH: Parse JWT without verification just to get the identity for the lock
-	// We don't care if it's expired or valid yet; the lock just needs a string key.
-	claims, err := s.options.Authorizer.ParseJWTUnverified(stringToken)
-	if err != nil {
-		return nil, errors.Wrap(err, "invalid token format")
-	}
-
-	cacheKey := fmt.Sprintf("%s:%s:%s", claims.AppId, claims.UserId, claims.Device)
+	cacheKey := generateCacheKey(stringToken)
 
 	// Fast Path: Check cache without any locking (handles 99% of traffic)
 	if cachedToken, found := s.tokenReplacementCache.Get(cacheKey); found {
@@ -224,6 +216,9 @@ func (s *UserService) refreshToken(
 			1,
 			s.options.TokenExpiration,
 		)
+		if s.options.Test {
+			s.tokenReplacementCache.Wait()
+		}
 
 		return token, nil
 	})
