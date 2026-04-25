@@ -78,3 +78,53 @@ func TestHasPermissionCaching(t *testing.T) {
 	assert.Equal(t, 200, code3)
 	assert.True(t, resp3.Authorized)
 }
+
+func TestHasPermissionDoesNotCacheExpiredResponses(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockClientFactory := client.NewMockClientFactory(ctrl)
+
+	mockUserSvc := test.MockUserSvc(context.Background(), ctrl)
+
+	mockClientFactory.EXPECT().
+		Client(gomock.Any()).
+		Return(&openapi.APIClient{
+			UserSvcAPI: mockUserSvc,
+		}).Times(2)
+
+	mockHasPermissionRequest := openapi.ApiHasPermissionRequest{
+		ApiService: mockUserSvc,
+	}
+
+	mockUserSvc.EXPECT().
+		HasPermission(gomock.Any(), gomock.Any()).
+		Return(mockHasPermissionRequest).
+		Times(2)
+
+	mockUserSvc.EXPECT().
+		HasPermissionExecute(gomock.Any()).
+		Return(&openapi.UserSvcHasPermissionResponse{
+			Authorized: true,
+			Until:      time.Now().Add(-time.Second).Format(time.RFC3339),
+		}, &http.Response{
+			StatusCode: 200,
+		}, nil).
+		Times(2)
+
+	pc := endpoint.NewPermissionChecker(mockClientFactory)
+	pc.(*endpoint.PermissionCheckerImpl).Testing = true
+
+	req := httptest.NewRequest("GET", "/", nil)
+	req.Header.Set("Authorization", "Bearer token")
+
+	resp1, code1, err1 := pc.HasPermission(req, "perm")
+	assert.NoError(t, err1)
+	assert.Equal(t, 200, code1)
+	assert.True(t, resp1.Authorized)
+
+	resp2, code2, err2 := pc.HasPermission(req, "perm")
+	assert.NoError(t, err2)
+	assert.Equal(t, 200, code2)
+	assert.True(t, resp2.Authorized)
+}
