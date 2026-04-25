@@ -29,6 +29,11 @@ type TokenRefresher interface {
 	EnsureValidToken(request *http.Request) (string, *auth.Claims, error)
 }
 
+const (
+	tokenRefreshLeewayFraction = 0.10
+	maxTokenRefreshLeeway      = 5 * time.Second
+)
+
 type fastClock struct {
 	now atomic.Int64
 }
@@ -143,9 +148,7 @@ func (tr *tokenRefresher) EnsureValidToken(request *http.Request) (string, *auth
 
 	if claims == nil ||
 		claims.ExpiresAt == nil ||
-		// Here we could add a leeway of 5 seconds but in tests token duration is often 1 second
-		// and I'm afraid this would mess with that.
-		claims.ExpiresAt.Time.Before(now) {
+		shouldRefreshByExpiry(claims, now) {
 		isExpired = true
 	}
 
@@ -194,6 +197,45 @@ func (tr *tokenRefresher) EnsureValidToken(request *http.Request) (string, *auth
 	}
 
 	return jwt, claims, nil
+}
+
+func shouldRefreshByExpiry(claims *auth.Claims, now time.Time) bool {
+	if claims.ExpiresAt == nil {
+		return true
+	}
+
+	if !claims.ExpiresAt.Time.After(now) {
+		return true
+	}
+
+	if claims.IssuedAt == nil {
+		return false
+	}
+
+	leeway := tokenRefreshLeeway(claims)
+	if leeway <= 0 {
+		return false
+	}
+
+	return !claims.ExpiresAt.Time.After(now.Add(leeway))
+}
+
+func tokenRefreshLeeway(claims *auth.Claims) time.Duration {
+	if claims == nil || claims.IssuedAt == nil || claims.ExpiresAt == nil {
+		return 0
+	}
+
+	lifetime := claims.ExpiresAt.Time.Sub(claims.IssuedAt.Time)
+	if lifetime <= 0 {
+		return 0
+	}
+
+	leeway := time.Duration(float64(lifetime) * tokenRefreshLeewayFraction)
+	if leeway > maxTokenRefreshLeeway {
+		return maxTokenRefreshLeeway
+	}
+
+	return leeway
 }
 
 func calculateTokenTtl(token openapi.UserSvcToken) (time.Duration, error) {
