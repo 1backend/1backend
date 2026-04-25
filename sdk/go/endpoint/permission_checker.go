@@ -91,7 +91,10 @@ func (pc *PermissionCheckerImpl) HasPermission(
 	if jwt != "" {
 		if value, found := pc.permissionCache.Get(key); found {
 			if cachedResp, ok := value.(*HasPermissionResponse); ok {
-				return cachedResp.Response, cachedResp.StatusCode, nil
+				if cachedPermissionResponseValid(cachedResp, time.Now()) {
+					return cachedResp.Response, cachedResp.StatusCode, nil
+				}
+				pc.permissionCache.Del(key)
 			}
 		}
 	}
@@ -109,7 +112,11 @@ func (pc *PermissionCheckerImpl) HasPermission(
 	).
 		Execute()
 	if err != nil {
-		return nil, httpResponse.StatusCode, err
+		code := http.StatusInternalServerError
+		if httpResponse != nil {
+			code = httpResponse.StatusCode
+		}
+		return nil, code, err
 	}
 
 	code := 0
@@ -123,16 +130,32 @@ func (pc *PermissionCheckerImpl) HasPermission(
 			return nil, http.StatusInternalServerError, errors.Wrap(err, "failed to parse expiresAt")
 		}
 
-		pc.permissionCache.SetWithTTL(key, &HasPermissionResponse{
-			Response:   isAuthRsp,
-			StatusCode: code,
-		}, 1, time.Until(expiresAt))
-		if pc.Testing {
-			pc.permissionCache.Wait()
+		ttl := time.Until(expiresAt)
+		if ttl > 0 {
+			pc.permissionCache.SetWithTTL(key, &HasPermissionResponse{
+				Response:   isAuthRsp,
+				StatusCode: code,
+			}, 1, ttl)
+			if pc.Testing {
+				pc.permissionCache.Wait()
+			}
 		}
 	}
 
 	return isAuthRsp, code, nil
+}
+
+func cachedPermissionResponseValid(cachedResp *HasPermissionResponse, now time.Time) bool {
+	if cachedResp == nil || cachedResp.Response == nil {
+		return false
+	}
+
+	expiresAt, err := time.Parse(time.RFC3339, cachedResp.Response.Until)
+	if err != nil {
+		return false
+	}
+
+	return expiresAt.After(now)
 }
 
 func generateCacheKey(token, permission string) string {
