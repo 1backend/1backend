@@ -76,6 +76,18 @@ func TestRegister(t *testing.T) {
 		require.Error(t, err)
 	})
 
+	t.Run("reserved user slug prefix fails", func(t *testing.T) {
+		_, _, err := options.ClientFactory.Client().UserSvcAPI.Register(ctx).Body(
+			openapi.UserSvcRegisterRequest{
+				AppHost:  sdk.DefaultTestAppHost,
+				Slug:     "user-service",
+				Name:     openapi.PtrString("Test Name"),
+				Password: openapi.PtrString("testPass123"),
+			},
+		).Execute()
+		require.Error(t, err)
+	})
+
 	t.Run("cannot re-register", func(t *testing.T) {
 		_, _, err := options.ClientFactory.Client().UserSvcAPI.Register(ctx).Body(
 			openapi.UserSvcRegisterRequest{

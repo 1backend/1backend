@@ -46,6 +46,20 @@ func TestOwnsRole(t *testing.T) {
 		require.Equal(t, true, owns)
 	})
 
+	t.Run("slug ownership requires namespace boundary", func(t *testing.T) {
+		owns := auth.OwnsRole(&auth.Claims{
+			Slug: "user",
+		}, "user-svc:admin")
+
+		require.Equal(t, false, owns)
+
+		owns = auth.OwnsRole(&auth.Claims{
+			Slug: "user",
+		}, "user:custom")
+
+		require.Equal(t, true, owns)
+	})
+
 	t.Run("org user does not own org user role", func(t *testing.T) {
 		owns := auth.OwnsRole(&auth.Claims{
 			Roles: []string{"user-svc:org:{abc}:user"},

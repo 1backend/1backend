@@ -27,6 +27,10 @@ import (
 
 var SlugRegexp = regexp.MustCompile(`^[a-z0-9]+(?:-[a-z0-9]+)*$`)
 
+func isReservedUserSlug(slug string) bool {
+	return strings.HasPrefix(slug, "user")
+}
+
 // @ID register
 // @Summary Register
 // @Description Register a new user with a name, email, and password.
@@ -57,6 +61,11 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		endpoint.WriteErr(w, http.StatusBadRequest,
 			errors.New(`Slug must be lowercase and can only contain letters, numbers, and dashes`),
 		)
+		return
+	}
+
+	if isReservedUserSlug(req.Slug) {
+		endpoint.WriteErr(w, http.StatusBadRequest, errors.New(`Slug is reserved`))
 		return
 	}
 
@@ -180,20 +189,20 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-// Publish user register event (non-blocking)
-if s.options.PubSub != nil {
-    evt := map[string]any{
-        "appId":  token.AppId,
-        "userId": token.UserId,
-        "slug":   req.Slug,
-        "device": req.Device,
-        "time":   time.Now().UTC(),
-    }
-    payload, _ := json.Marshal(evt)
-    if _, perr := s.options.PubSub.Publish(r.Context(), "user.register", payload); perr != nil {
-        logger.Error("Failed to publish register event", slog.Any("error", perr))
-    }
-}
+	// Publish user register event (non-blocking)
+	if s.options.PubSub != nil {
+		evt := map[string]any{
+			"appId":  token.AppId,
+			"userId": token.UserId,
+			"slug":   req.Slug,
+			"device": req.Device,
+			"time":   time.Now().UTC(),
+		}
+		payload, _ := json.Marshal(evt)
+		if _, perr := s.options.PubSub.Publish(r.Context(), "user.register", payload); perr != nil {
+			logger.Error("Failed to publish register event", slog.Any("error", perr))
+		}
+	}
 	bs, _ := json.Marshal(user.RegisterResponse{
 		Token: token,
 	})

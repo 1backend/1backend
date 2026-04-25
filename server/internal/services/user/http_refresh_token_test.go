@@ -3,9 +3,11 @@ package userservice_test
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"testing"
 	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/1backend/1backend/sdk/go"
@@ -61,6 +63,24 @@ func TestRefreshToken(t *testing.T) {
 		)
 		require.NoError(t, err)
 		require.Equal(t, true, originalClaim.ExpiresAt.Before(newClaim.ExpiresAt.Time))
+	})
+
+	t.Run("forged token with matching claims cannot use cached refresh", func(t *testing.T) {
+		forgedToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, &auth.Claims{
+			AppId:  originalClaim.AppId,
+			UserId: originalClaim.UserId,
+			Slug:   originalClaim.Slug,
+			Device: originalClaim.Device,
+		}).SignedString([]byte("not-the-user-service-key"))
+		require.NoError(t, err)
+
+		_, httpRsp, err := clientFactory.Client(client.WithToken(forgedToken)).
+			UserSvcAPI.RefreshToken(context.Background()).Execute()
+
+		require.Error(t, err)
+		if httpRsp != nil {
+			require.NotEqual(t, http.StatusOK, httpRsp.StatusCode)
+		}
 	})
 }
 
