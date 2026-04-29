@@ -8,6 +8,7 @@
 package userservice
 
 import (
+	"context"
 	"encoding/json"
 	"log/slog"
 	"net/http"
@@ -43,7 +44,7 @@ func (s *UserService) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := s.refreshToken(stringToken)
+	token, err := s.refreshToken(r.Context(), stringToken)
 	if err != nil {
 		args := append(
 			attrsToArgs(auth.TokenDebugAttrs(stringToken)),
@@ -66,6 +67,7 @@ func (s *UserService) RefreshToken(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) refreshToken(
+	ctx context.Context,
 	stringToken string,
 ) (*user.Token, error) {
 	cacheKey := generateCacheKey(stringToken)
@@ -75,7 +77,6 @@ func (s *UserService) refreshToken(
 		return cachedToken.(*user.Token), nil
 	}
 
-	// @todo: should be a distributed lock
 	val, err, _ := s.refreshGroup.Do(cacheKey, func() (interface{}, error) {
 		// THE DOUBLE CHECK:
 		// Requests 2, 3, 4, and 5 wait at the door. When Request 1 finishes
@@ -96,6 +97,42 @@ func (s *UserService) refreshToken(
 		}
 
 		tokenToBeRefreshed := tokenToBeRefreshedI.(*user.Token)
+
+		now := time.Now()
+
+		// Mark the presented token as in-use before taking the per-device lock.
+		// Otherwise a concurrent refresh for the same device can prune this token
+		// while this request is waiting, causing timing-dependent refresh failures.
+		err = s.tokenStore.Query(
+			datastore.Equals(datastore.Field("id"), tokenToBeRefreshed.Id),
+		).UpdateFields(map[string]any{
+			"lastRefreshedAt": now,
+		})
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to update token")
+		}
+
+		releaseLock, err := s.acquireRefreshTokenLock(ctx, tokenToBeRefreshed)
+		if err != nil {
+			return nil, err
+		}
+		defer releaseLock()
+
+		if cachedToken, found := s.tokenReplacementCache.Get(cacheKey); found {
+			return cachedToken.(*user.Token), nil
+		}
+
+		tokenToBeRefreshedI, found, err = s.tokenStore.Query(
+			datastore.Equals(datastore.Field("token"), stringToken),
+		).FindOne()
+		if err != nil {
+			return nil, err
+		}
+		if !found {
+			return nil, errors.New("token not found")
+		}
+
+		tokenToBeRefreshed = tokenToBeRefreshedI.(*user.Token)
 
 		userI, found, err := s.userStore.Query(
 			datastore.Equals(datastore.Field("id"), tokenToBeRefreshed.UserId),
@@ -128,17 +165,6 @@ func (s *UserService) refreshToken(
 			if err != nil {
 				return nil, errors.Wrap(err, "failed to inactivate token")
 			}
-		}
-
-		now := time.Now()
-
-		err = s.tokenStore.Query(
-			datastore.Equals(datastore.Field("id"), tokenToBeRefreshed.Id),
-		).UpdateFields(map[string]any{
-			"lastRefreshedAt": now,
-		})
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to update token")
 		}
 
 		if activeToken.Id != tokenToBeRefreshed.Id {
@@ -177,27 +203,24 @@ func (s *UserService) refreshToken(
 			return token, nil // return token anyway, pruning is best-effort
 		}
 
-		// Sort tokens by LastRefreshedAt descending, treating nil as zero (oldest)
+		// Sort tokens by recent use. LastRefreshedAt is the strongest signal,
+		// while CreatedAt keeps newly issued active tokens ahead of old nils.
 		sort.Slice(tokens, func(i, j int) bool {
 			ti := tokens[i].(*user.Token)
 			tj := tokens[j].(*user.Token)
 
-			var tiTime, tjTime time.Time
-			if ti.LastRefreshedAt != nil {
-				tiTime = *ti.LastRefreshedAt
-			}
-			if tj.LastRefreshedAt != nil {
-				tjTime = *tj.LastRefreshedAt
-			}
-			// Now compare: newer first
-			return tiTime.After(tjTime)
+			return tokenPruneTime(ti).After(tokenPruneTime(tj))
 		})
 
-		// Keep latest 2, delete the rest
-		for i := 2; i < len(tokens); i++ {
-			t := tokens[i].(*user.Token)
-			if t.Active {
-				// We don't want to delete the active token
+		// Keep the new active token and the two most recently used inactive tokens.
+		keptInactive := 0
+		for _, tokenI := range tokens {
+			t := tokenI.(*user.Token)
+			if t.Id == token.Id {
+				continue
+			}
+			if !t.Active && keptInactive < 2 {
+				keptInactive++
 				continue
 			}
 			err := s.tokenStore.Query(datastore.Id(t.Id)).Delete()
@@ -228,6 +251,38 @@ func (s *UserService) refreshToken(
 	}
 
 	return val.(*user.Token), nil
+}
+
+func (s *UserService) acquireRefreshTokenLock(
+	ctx context.Context,
+	token *user.Token,
+) (func(), error) {
+	if s.options.Lock == nil {
+		return func() {}, nil
+	}
+
+	key := "user-svc:refresh-token:" + token.AppId + ":" + token.UserId + ":" + token.Device
+	err := s.options.Lock.Acquire(ctx, key)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to acquire refresh token lock")
+	}
+
+	return func() {
+		if err := s.options.Lock.Release(context.Background(), key); err != nil {
+			logger.Error(
+				"Failed to release refresh token lock",
+				slog.String("lockKey", key),
+				slog.Any("error", err),
+			)
+		}
+	}, nil
+}
+
+func tokenPruneTime(token *user.Token) time.Time {
+	if token.LastRefreshedAt != nil {
+		return *token.LastRefreshedAt
+	}
+	return token.CreatedAt
 }
 
 func attrsToArgs(attrs []slog.Attr) []any {

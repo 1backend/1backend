@@ -8,6 +8,7 @@
 package userservice
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log/slog"
@@ -302,7 +303,7 @@ func (s *UserService) issueToken(
 		if err != nil {
 			if strings.Contains(err.Error(), "token is expired") {
 				// @todo this feels pretty crufty
-				tok, err := s.refreshToken(tok.Token)
+				tok, err := s.refreshToken(context.Background(), tok.Token)
 				if err != nil {
 					return nil, errors.Wrap(err, "error refreshing token")
 				}
