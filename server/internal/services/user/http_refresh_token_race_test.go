@@ -96,7 +96,185 @@ func TestRefreshTokenConcurrentDifferentTokensKeepsSingleActiveToken(t *testing.
 	require.LessOrEqual(t, len(deviceTokens), 3)
 }
 
+func TestRefreshTokenPruneCanDeleteInFlightTokenBeforeMarker(t *testing.T) {
+	s := newRefreshRaceTestService(t)
+
+	tok0 := registerRefreshRaceUser(t, s, "refresh-prune-window")
+
+	waitForReplacementCacheExpiry()
+	tok1, err := s.refreshToken(context.Background(), tok0.Token)
+	require.NoError(t, err)
+
+	waitForReplacementCacheExpiry()
+	_, err = s.refreshToken(context.Background(), tok1.Token)
+	require.NoError(t, err)
+
+	waitForReplacementCacheExpiry()
+
+	blocker := &blockingParseUnverifiedAuthorizer{
+		AuthorizerImpl: auth.AuthorizerImpl{},
+		token:          tok0.Token,
+		entered:        make(chan struct{}),
+		release:        make(chan struct{}),
+	}
+	s.options.Authorizer = blocker
+
+	var blockedErr error
+	blockedDone := make(chan struct{})
+	go func() {
+		_, blockedErr = s.refreshToken(context.Background(), tok0.Token)
+		close(blockedDone)
+	}()
+
+	require.Eventually(t, func() bool {
+		select {
+		case <-blocker.entered:
+			return true
+		default:
+			return false
+		}
+	}, time.Second, time.Millisecond)
+
+	var competingErr error
+	competingDone := make(chan struct{})
+	go func() {
+		_, competingErr = s.refreshToken(context.Background(), tok1.Token)
+		close(competingDone)
+	}()
+
+	close(blocker.release)
+
+	require.Eventually(t, func() bool {
+		select {
+		case <-blockedDone:
+			return true
+		default:
+			return false
+		}
+	}, time.Second, time.Millisecond)
+	require.NoError(t, blockedErr)
+
+	require.Eventually(t, func() bool {
+		select {
+		case <-competingDone:
+			return true
+		default:
+			return false
+		}
+	}, time.Second, time.Millisecond)
+	require.NoError(t, competingErr)
+}
+
+func TestRefreshTokenConcurrentIssueTokenKeepsSingleActiveToken(t *testing.T) {
+	s := newRefreshRaceTestServiceWithExpiration(t, time.Minute)
+
+	tok := registerRefreshRaceUser(t, s, "refresh-issue-race")
+	usr, err := s.readSelf(tok.UserId)
+	require.NoError(t, err)
+
+	realTokenStore := s.tokenStore
+	blocker := &blockActiveFalseStore{
+		DataStore: realTokenStore,
+		blocked:   make(chan struct{}),
+		release:   make(chan struct{}),
+	}
+	s.tokenStore = blocker
+
+	var refreshErr error
+	refreshDone := make(chan struct{})
+	go func() {
+		_, refreshErr = s.refreshToken(context.Background(), tok.Token)
+		close(refreshDone)
+	}()
+
+	require.Eventually(t, func() bool {
+		select {
+		case <-blocker.blocked:
+			return true
+		default:
+			return false
+		}
+	}, time.Second, time.Millisecond)
+
+	var issued *user.Token
+	var issueErr error
+	issueDone := make(chan struct{})
+	go func() {
+		issued, issueErr = s.issueToken(tok.AppId, usr, tok.Device)
+		close(issueDone)
+	}()
+
+	close(blocker.release)
+
+	require.Eventually(t, func() bool {
+		select {
+		case <-refreshDone:
+			return true
+		default:
+			return false
+		}
+	}, time.Second, time.Millisecond)
+	require.NoError(t, refreshErr)
+
+	require.Eventually(t, func() bool {
+		select {
+		case <-issueDone:
+			return true
+		default:
+			return false
+		}
+	}, time.Second, time.Millisecond)
+	require.NoError(t, issueErr)
+	require.NotNil(t, issued)
+	require.NotEmpty(t, issued.Token)
+
+	_, found, err := s.tokenStore.Query(
+		datastore.Equals(datastore.Field("token"), issued.Token),
+	).FindOne()
+	require.NoError(t, err)
+	require.True(t, found, "issueToken returned a token that concurrent refresh pruning deleted")
+
+	activeTokens, err := s.tokenStore.Query(
+		datastore.Equals(datastore.Field("appId"), tok.AppId),
+		datastore.Equals(datastore.Field("userId"), tok.UserId),
+		datastore.Equals(datastore.Field("device"), tok.Device),
+		datastore.Equals(datastore.Field("active"), true),
+	).Find()
+	require.NoError(t, err)
+	require.Len(t, activeTokens, 1)
+}
+
+func TestRefreshTokenReplacementCacheDoesNotReturnStaleTokenAfterInactivation(t *testing.T) {
+	s := newRefreshRaceTestServiceWithExpiration(t, time.Minute)
+
+	tok0 := registerRefreshRaceUser(t, s, "refresh-cache-stale")
+
+	tok1, err := s.refreshToken(context.Background(), tok0.Token)
+	require.NoError(t, err)
+	require.NotEmpty(t, tok1.Token)
+
+	role := "user-svc:cache-stale:" + sdk.Id("")
+	err = s.assignRole(tok0.AppId, tok0.UserId, role)
+	require.NoError(t, err)
+
+	refreshed, err := s.refreshToken(context.Background(), tok0.Token)
+	require.NoError(t, err)
+
+	claims, err := s.options.Authorizer.ParseJWT(s.publicKeyPem, refreshed.Token)
+	require.NoError(t, err)
+	require.Contains(t, claims.Roles, role)
+}
+
 func newRefreshRaceTestService(t *testing.T) *UserService {
+	t.Helper()
+
+	return newRefreshRaceTestServiceWithExpiration(t, 20*time.Millisecond)
+}
+
+func newRefreshRaceTestServiceWithExpiration(
+	t *testing.T,
+	tokenExpiration time.Duration,
+) *UserService {
 	t.Helper()
 
 	dataStoreFactory, err := infra.NewDataStoreFactory(infra.DataStoreConfig{
@@ -108,7 +286,7 @@ func newRefreshRaceTestService(t *testing.T) *UserService {
 
 	s, err := NewUserService(&universe.Options{
 		Test:             true,
-		TokenExpiration:  20 * time.Millisecond,
+		TokenExpiration:  tokenExpiration,
 		DataStoreFactory: dataStoreFactory,
 		Lock:             distlock.NewLocalDistributedLock(),
 		Authorizer:       auth.AuthorizerImpl{},
@@ -119,8 +297,89 @@ func newRefreshRaceTestService(t *testing.T) *UserService {
 	return s
 }
 
+func registerRefreshRaceUser(
+	t *testing.T,
+	s *UserService,
+	slugPrefix string,
+) *user.Token {
+	t.Helper()
+
+	tok, err := s.register(
+		user.DefaultAppHost,
+		slugPrefix+"-"+sdk.Id(""),
+		"password",
+		"Refresh Race",
+		[]string{user.RoleUser},
+	)
+	require.NoError(t, err)
+
+	return tok
+}
+
 func waitForReplacementCacheExpiry() {
 	time.Sleep(30 * time.Millisecond)
+}
+
+type blockingParseUnverifiedAuthorizer struct {
+	auth.AuthorizerImpl
+	token   string
+	entered chan struct{}
+	release chan struct{}
+	once    sync.Once
+}
+
+func (a *blockingParseUnverifiedAuthorizer) ParseJWTUnverified(
+	token string,
+) (*auth.Claims, error) {
+	claims, err := a.AuthorizerImpl.ParseJWTUnverified(token)
+	if err != nil {
+		return nil, err
+	}
+
+	if token == a.token {
+		a.once.Do(func() {
+			close(a.entered)
+			<-a.release
+		})
+	}
+
+	return claims, nil
+}
+
+type blockActiveFalseStore struct {
+	datastore.DataStore
+	blocked chan struct{}
+	release chan struct{}
+	once    sync.Once
+}
+
+func (s *blockActiveFalseStore) Query(filters ...datastore.Filter) datastore.QueryBuilder {
+	return &blockActiveFalseQuery{
+		QueryBuilder: s.DataStore.Query(filters...),
+		store:        s,
+	}
+}
+
+type blockActiveFalseQuery struct {
+	datastore.QueryBuilder
+	store *blockActiveFalseStore
+}
+
+func (q *blockActiveFalseQuery) UpdateFields(fields map[string]interface{}) error {
+	err := q.QueryBuilder.UpdateFields(fields)
+	if err != nil {
+		return err
+	}
+
+	active, ok := fields["active"].(bool)
+	if ok && !active {
+		q.store.once.Do(func() {
+			close(q.store.blocked)
+			<-q.store.release
+		})
+	}
+
+	return nil
 }
 
 type activeTokenLookupBarrierStore struct {

@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"strings"
 	"sync"
-	"sync/atomic"
 	"time"
 
 	"github.com/dgraph-io/ristretto"
@@ -34,21 +33,6 @@ const (
 	maxTokenRefreshLeeway      = 5 * time.Second
 )
 
-type fastClock struct {
-	now atomic.Int64
-}
-
-func (c *fastClock) start() {
-	for {
-		c.now.Store(time.Now().Unix())
-		time.Sleep(500 * time.Millisecond) // Update twice a second
-	}
-}
-
-func (c *fastClock) get() time.Time {
-	return time.Unix(c.now.Load(), 0)
-}
-
 type tokenRefresher struct {
 	clientFactory         client.ClientFactory
 	parser                JWTParser
@@ -57,7 +41,6 @@ type tokenRefresher struct {
 	mutex                 sync.Mutex
 	currentTime           time.Time
 	once                  sync.Once
-	clock                 atomic.Int64
 }
 
 func NewTokenRefresher(
@@ -78,10 +61,6 @@ func NewTokenRefresher(
 		parser:                parser,
 		tokenReplacementCache: cache,
 	}
-
-	tr.clock.Store(time.Now().Unix())
-
-	go tr.backgroundClock()
 
 	return tr, nil
 }
@@ -109,15 +88,8 @@ func (tr *tokenRefresher) getNow() time.Time {
 	if !tr.currentTime.IsZero() {
 		return tr.currentTime
 	}
-	// Priority 2: High-performance atomic clock for production
-	return time.Unix(tr.clock.Load(), 0)
-}
 
-func (tr *tokenRefresher) backgroundClock() {
-	ticker := time.NewTicker(500 * time.Millisecond)
-	for t := range ticker.C {
-		tr.clock.Store(t.Unix())
-	}
+	return time.Now()
 }
 
 func (tr *tokenRefresher) EnsureValidToken(request *http.Request) (string, *auth.Claims, error) {

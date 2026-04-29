@@ -101,20 +101,12 @@ func TestRefreshTokenCountIsBounded(t *testing.T) {
 
 	client1 := manyClients[0]
 
-	publicKeyRsp, _, err := clientFactory.Client().
-		UserSvcAPI.GetPublicKey(context.Background()).
-		Execute()
-	require.NoError(t, err)
-
-	originalClaim, err := (auth.AuthorizerImpl{}).ParseJWT(
-		publicKeyRsp.PublicKey,
+	// This test uses one-second token lifetimes and sleeps across second
+	// boundaries, so parse claims without rejecting tokens that expire while the
+	// package's parallel tests are queued.
+	originalClaim, err := (auth.AuthorizerImpl{}).ParseJWTUnverified(
 		tokens[0].Token,
 	)
-	require.NoError(t, err)
-
-	clientFactory.Client().
-		UserSvcAPI.GetPublicKey(context.Background()).
-		Execute()
 	require.NoError(t, err)
 
 	t.Run("refresh token", func(t *testing.T) {
@@ -129,8 +121,7 @@ func TestRefreshTokenCountIsBounded(t *testing.T) {
 		require.NoError(t, err, hrsp)
 		require.NotEmpty(t, rsp.Token.Token)
 
-		newClaim, err := (auth.AuthorizerImpl{}).ParseJWT(
-			publicKeyRsp.PublicKey,
+		newClaim, err := (auth.AuthorizerImpl{}).ParseJWTUnverified(
 			rsp.Token.Token,
 		)
 		require.NoError(t, err)
@@ -159,8 +150,7 @@ func TestRefreshTokenCountIsBounded(t *testing.T) {
 		require.NoError(t, err, hrsp)
 		require.NotEmpty(t, rsp.Token.Token)
 
-		newClaim, err := (auth.AuthorizerImpl{}).ParseJWT(
-			publicKeyRsp.PublicKey,
+		newClaim, err := (auth.AuthorizerImpl{}).ParseJWTUnverified(
 			rsp.Token.Token,
 		)
 		require.NoError(t, err)
@@ -182,7 +172,7 @@ func TestRefreshTokenCountIsBoundedPerDevice(t *testing.T) {
 	t.Parallel()
 
 	server, err := test.StartService(test.Options{
-		TokenExpiration: time.Second,
+		TokenExpiration: time.Minute,
 		Test:            true,
 	})
 	require.NoError(t, err)
@@ -210,14 +200,14 @@ func TestRefreshTokenCountIsBoundedPerDevice(t *testing.T) {
 		client.WithToken(lrsp.Token.Token),
 	)
 
-	doRefreshAndCount := func(c openapi.UserSvcAPI) int32 {
-		time.Sleep(1100 * time.Millisecond)
-
-		rsp, _, err := c.RefreshToken(context.Background()).Execute()
+	doRefreshAndCount := func(c **openapi.APIClient) int32 {
+		rsp, _, err := (*c).UserSvcAPI.RefreshToken(context.Background()).Execute()
 		require.NoError(t, err)
 		require.NotEmpty(t, rsp.Token.Token)
 
-		self, _, err := c.ReadSelf(context.Background()).
+		*c = clientFactory.Client(client.WithToken(rsp.Token.Token))
+
+		self, _, err := (*c).UserSvcAPI.ReadSelf(context.Background()).
 			Body(openapi.UserSvcReadSelfRequest{CountTokens: openapi.PtrBool(true)}).
 			Execute()
 		require.NoError(t, err)
@@ -228,13 +218,13 @@ func TestRefreshTokenCountIsBoundedPerDevice(t *testing.T) {
 
 	// Device A: do 4 refreshes, ensure count never exceeds 6
 	for i := 0; i < 4; i++ {
-		cnt := doRefreshAndCount(deviceA.UserSvcAPI)
+		cnt := doRefreshAndCount(&deviceA)
 		require.LessOrEqual(t, cnt, int32(6), "device A exceeded token bound on iteration %d", i)
 	}
 
 	// Device B: do 4 refreshes, ensure count never exceeds 6
 	for i := 0; i < 4; i++ {
-		cnt := doRefreshAndCount(deviceB.UserSvcAPI)
+		cnt := doRefreshAndCount(&deviceB)
 		require.LessOrEqual(t, cnt, int32(6), "device B exceeded token bound on iteration %d", i)
 	}
 

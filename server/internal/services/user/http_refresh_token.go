@@ -73,8 +73,8 @@ func (s *UserService) refreshToken(
 	cacheKey := generateCacheKey(stringToken)
 
 	// Fast Path: Check cache without any locking (handles 99% of traffic)
-	if cachedToken, found := s.tokenReplacementCache.Get(cacheKey); found {
-		return cachedToken.(*user.Token), nil
+	if cachedToken, found := s.cachedReplacementToken(cacheKey); found {
+		return cachedToken, nil
 	}
 
 	val, err, _ := s.refreshGroup.Do(cacheKey, func() (interface{}, error) {
@@ -82,8 +82,53 @@ func (s *UserService) refreshToken(
 		// Requests 2, 3, 4, and 5 wait at the door. When Request 1 finishes
 		// and sets the cache, these requests enter one by one (or share the result).
 		// We check the cache again to see if Request 1 already did the work.
-		if cachedToken, found := s.tokenReplacementCache.Get(cacheKey); found {
-			return cachedToken.(*user.Token), nil
+		if cachedToken, found := s.cachedReplacementToken(cacheKey); found {
+			return cachedToken, nil
+		}
+
+		releaseEntryLock, err := s.acquireRefreshTokenLock(
+			ctx,
+			"user-svc:refresh-token-entry",
+		)
+		if err != nil {
+			return nil, err
+		}
+		entryLockHeld := true
+		defer func() {
+			if entryLockHeld {
+				releaseEntryLock()
+			}
+		}()
+
+		lockKey, err := s.refreshTokenLockKey(stringToken)
+		if err != nil {
+			return nil, err
+		}
+
+		// Mark the exact presented token before waiting on the per-device lock.
+		// A concurrent refresh holding that lock can prune old tokens; this keeps
+		// an already in-flight refresh from looking abandoned.
+		now := time.Now()
+		err = s.tokenStore.Query(
+			datastore.Equals(datastore.Field("token"), stringToken),
+		).UpdateFields(map[string]any{
+			"lastRefreshedAt": now,
+		})
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to update token")
+		}
+
+		releaseEntryLock()
+		entryLockHeld = false
+
+		releaseLock, err := s.acquireRefreshTokenLock(ctx, lockKey)
+		if err != nil {
+			return nil, err
+		}
+		defer releaseLock()
+
+		if cachedToken, found := s.cachedReplacementToken(cacheKey); found {
+			return cachedToken, nil
 		}
 
 		tokenToBeRefreshedI, found, err := s.tokenStore.Query(
@@ -97,42 +142,6 @@ func (s *UserService) refreshToken(
 		}
 
 		tokenToBeRefreshed := tokenToBeRefreshedI.(*user.Token)
-
-		now := time.Now()
-
-		// Mark the presented token as in-use before taking the per-device lock.
-		// Otherwise a concurrent refresh for the same device can prune this token
-		// while this request is waiting, causing timing-dependent refresh failures.
-		err = s.tokenStore.Query(
-			datastore.Equals(datastore.Field("id"), tokenToBeRefreshed.Id),
-		).UpdateFields(map[string]any{
-			"lastRefreshedAt": now,
-		})
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to update token")
-		}
-
-		releaseLock, err := s.acquireRefreshTokenLock(ctx, tokenToBeRefreshed)
-		if err != nil {
-			return nil, err
-		}
-		defer releaseLock()
-
-		if cachedToken, found := s.tokenReplacementCache.Get(cacheKey); found {
-			return cachedToken.(*user.Token), nil
-		}
-
-		tokenToBeRefreshedI, found, err = s.tokenStore.Query(
-			datastore.Equals(datastore.Field("token"), stringToken),
-		).FindOne()
-		if err != nil {
-			return nil, err
-		}
-		if !found {
-			return nil, errors.New("token not found")
-		}
-
-		tokenToBeRefreshed = tokenToBeRefreshedI.(*user.Token)
 
 		userI, found, err := s.userStore.Query(
 			datastore.Equals(datastore.Field("id"), tokenToBeRefreshed.UserId),
@@ -154,11 +163,10 @@ func (s *UserService) refreshToken(
 		if err != nil {
 			return nil, err
 		}
-		if !found {
-			return nil, errors.New("active token not found")
+		var activeToken *user.Token
+		if found {
+			activeToken = activeTokenI.(*user.Token)
 		}
-
-		activeToken := activeTokenI.(*user.Token)
 
 		if tokenToBeRefreshed.Active {
 			err = s.inactivateToken(tokenToBeRefreshed.AppId, tokenToBeRefreshed.Id)
@@ -167,7 +175,18 @@ func (s *UserService) refreshToken(
 			}
 		}
 
-		if activeToken.Id != tokenToBeRefreshed.Id {
+		now = time.Now()
+
+		err = s.tokenStore.Query(
+			datastore.Equals(datastore.Field("id"), tokenToBeRefreshed.Id),
+		).UpdateFields(map[string]any{
+			"lastRefreshedAt": now,
+		})
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to update token")
+		}
+
+		if activeToken != nil && activeToken.Id != tokenToBeRefreshed.Id {
 			err = s.inactivateToken(tokenToBeRefreshed.AppId, activeToken.Id)
 			if err != nil {
 				return nil, errors.Wrap(err, "failed to inactivate token")
@@ -253,15 +272,55 @@ func (s *UserService) refreshToken(
 	return val.(*user.Token), nil
 }
 
+func (s *UserService) cachedReplacementToken(
+	cacheKey string,
+) (*user.Token, bool) {
+	cachedToken, found := s.tokenReplacementCache.Get(cacheKey)
+	if !found {
+		return nil, false
+	}
+
+	token, ok := cachedToken.(*user.Token)
+	if !ok {
+		s.tokenReplacementCache.Del(cacheKey)
+		if s.options.Test {
+			s.tokenReplacementCache.Wait()
+		}
+		return nil, false
+	}
+
+	_, found, err := s.tokenStore.Query(
+		datastore.Equals(datastore.Field("id"), token.Id),
+		datastore.Equals(datastore.Field("token"), token.Token),
+		datastore.Equals(datastore.Field("active"), true),
+	).FindOne()
+	if err != nil {
+		logger.Error(
+			"Failed to validate cached replacement token",
+			slog.String("tokenId", token.Id),
+			slog.Any("error", err),
+		)
+		return nil, false
+	}
+	if !found {
+		s.tokenReplacementCache.Del(cacheKey)
+		if s.options.Test {
+			s.tokenReplacementCache.Wait()
+		}
+		return nil, false
+	}
+
+	return token, true
+}
+
 func (s *UserService) acquireRefreshTokenLock(
 	ctx context.Context,
-	token *user.Token,
+	key string,
 ) (func(), error) {
 	if s.options.Lock == nil {
 		return func() {}, nil
 	}
 
-	key := "user-svc:refresh-token:" + token.AppId + ":" + token.UserId + ":" + token.Device
 	err := s.options.Lock.Acquire(ctx, key)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to acquire refresh token lock")
@@ -276,6 +335,32 @@ func (s *UserService) acquireRefreshTokenLock(
 			)
 		}
 	}, nil
+}
+
+func (s *UserService) refreshTokenLockKey(
+	stringToken string,
+) (string, error) {
+	claims, err := s.options.Authorizer.ParseJWTUnverified(stringToken)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to parse refresh token claims")
+	}
+	if claims.AppId == "" || claims.UserId == "" {
+		return "", errors.New("refresh token claims missing appId or userId")
+	}
+	device := claims.Device
+	if device == "" {
+		device = unknownDevice
+	}
+
+	return "user-svc:refresh-token:" + claims.AppId + ":" + claims.UserId + ":" + device, nil
+}
+
+func refreshTokenLockKeyForParts(appId, userId, device string) string {
+	if device == "" {
+		device = unknownDevice
+	}
+
+	return "user-svc:refresh-token:" + appId + ":" + userId + ":" + device
 }
 
 func tokenPruneTime(token *user.Token) time.Time {
