@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	locallock "github.com/1backend/1backend/sdk/go/lock/local"
 	pglock "github.com/1backend/1backend/sdk/go/lock/pg"
 	"github.com/1backend/1backend/sdk/go/testutil"
 
@@ -17,6 +18,10 @@ func TestLocks(t *testing.T) {
 	pgConn := testutil.StartPostgres(t)
 
 	lockStores := map[string]func(instance any) (DistributedLock, DistributedLock){
+		"localLock": func(instance any) (DistributedLock, DistributedLock) {
+			lockService := locallock.NewLocalDistributedLock()
+			return lockService, lockService
+		},
 		"pgLock": func(instance any) (DistributedLock, DistributedLock) {
 			// Use the same PostgreSQL connection string as in your existing tests
 			db, err := sql.Open("postgres", pgConn)
@@ -37,9 +42,12 @@ func TestLocks(t *testing.T) {
 	}
 
 	tests := map[string]func(t *testing.T, lock, lock2 DistributedLock){
-		"AcquireRelease": LockAcquireRelease,
-		"TryAcquire":     LockTryAcquire,
-		"LockContention": LockContention,
+		"AcquireCancellationDoesNotStealLock": LockAcquireCancellationDoesNotStealLock,
+		"AcquireRelease":                      LockAcquireRelease,
+		"ReleaseWithCanceledContext":          LockReleaseWithCanceledContext,
+		"SameInstanceAcquireContention":       LockSameInstanceAcquireContention,
+		"TryAcquire":                          LockTryAcquire,
+		"LockContention":                      LockContention,
 	}
 
 	for testName, test := range tests {
@@ -77,16 +85,22 @@ func LockTryAcquire(t *testing.T, lock, lock2 DistributedLock) {
 	require.NoError(t, err, "should try acquire the lock without error")
 	require.True(t, success, "should acquire the lock successfully")
 
-	// second try
 	success, err = lock.TryAcquire(ctx, key)
 	require.NoError(t, err, "should try acquire the lock without error")
-	require.True(t, success, "should acquire the lock successfully")
+	require.False(t, success, "same lock instance should not reenter the lock")
 
 	success, err = lock2.TryAcquire(ctx, key)
 	require.NoError(t, err, "should try acquire the lock without error")
 	require.False(t, success, "should not acquire the lock a second time")
 
 	err = lock.Release(ctx, key)
+	require.NoError(t, err, "should release the lock without error")
+
+	success, err = lock2.TryAcquire(ctx, key)
+	require.NoError(t, err, "should try acquire the lock after release")
+	require.True(t, success, "should acquire the lock after release")
+
+	err = lock2.Release(ctx, key)
 	require.NoError(t, err, "should release the lock without error")
 }
 
@@ -96,10 +110,6 @@ func LockContention(t *testing.T, lock, lock2 DistributedLock) {
 
 	err := lock.Acquire(ctx, key)
 	require.NoError(t, err, "should acquire the lock without error")
-
-	// this blocks here but not in the goroutine below?
-	//err = lock.Acquire(ctx, key)
-	//require.NoError(t, err, "should acquire the lock without error second time too")
 
 	acquireResult := make(chan error, 1)
 	go func() {
@@ -119,4 +129,79 @@ func LockContention(t *testing.T, lock, lock2 DistributedLock) {
 
 	err = <-acquireResult
 	require.NoError(t, err, "second acquisition should succeed after release")
+
+	err = lock2.Release(ctx, key)
+	require.NoError(t, err, "should release the second acquisition")
+}
+
+func LockSameInstanceAcquireContention(t *testing.T, lock, lock2 DistributedLock) {
+	ctx := context.Background()
+	key := "test_lock_same_instance_contention"
+
+	err := lock.Acquire(ctx, key)
+	require.NoError(t, err, "should acquire the lock without error")
+
+	acquireCtx, cancel := context.WithTimeout(context.Background(), 25*time.Millisecond)
+	defer cancel()
+
+	err = lock.Acquire(acquireCtx, key)
+	require.Error(t, err, "same lock instance should not reenter the lock")
+
+	err = lock.Release(ctx, key)
+	require.NoError(t, err, "should release the lock without error")
+
+	err = lock.Acquire(ctx, key)
+	require.NoError(t, err, "same instance should acquire the lock after release")
+
+	err = lock.Release(ctx, key)
+	require.NoError(t, err, "should release the lock without error")
+}
+
+func LockAcquireCancellationDoesNotStealLock(t *testing.T, lock, lock2 DistributedLock) {
+	ctx := context.Background()
+	key := "test_lock_cancellation_does_not_steal"
+
+	err := lock.Acquire(ctx, key)
+	require.NoError(t, err, "should acquire the lock without error")
+
+	acquireCtx, cancel := context.WithTimeout(context.Background(), 25*time.Millisecond)
+	defer cancel()
+
+	err = lock2.Acquire(acquireCtx, key)
+	require.Error(t, err, "contending acquisition should stop when context is canceled")
+
+	err = lock.Release(ctx, key)
+	require.NoError(t, err, "should release the lock without error")
+
+	time.Sleep(25 * time.Millisecond)
+
+	retryCtx, retryCancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+	defer retryCancel()
+
+	err = lock2.Acquire(retryCtx, key)
+	require.NoError(t, err, "canceled acquisition must not steal the lock after release")
+
+	err = lock2.Release(ctx, key)
+	require.NoError(t, err, "should release the retried acquisition")
+}
+
+func LockReleaseWithCanceledContext(t *testing.T, lock, lock2 DistributedLock) {
+	ctx := context.Background()
+	key := "test_lock_release_with_canceled_context"
+
+	err := lock.Acquire(ctx, key)
+	require.NoError(t, err, "should acquire the lock without error")
+
+	releaseCtx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	err = lock.Release(releaseCtx, key)
+	require.NoError(t, err, "release should not leave locks held when caller context is canceled")
+	require.False(t, lock.IsHeld(key), "lock should not be held after release")
+
+	err = lock2.Acquire(ctx, key)
+	require.NoError(t, err, "another acquisition should succeed after canceled-context release")
+
+	err = lock2.Release(ctx, key)
+	require.NoError(t, err, "should release the second acquisition")
 }

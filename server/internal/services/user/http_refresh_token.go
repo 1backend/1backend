@@ -86,30 +86,12 @@ func (s *UserService) refreshToken(
 			return cachedToken, nil
 		}
 
-		releaseEntryLock, err := s.acquireRefreshTokenLock(
-			ctx,
-			"user-svc:refresh-token-entry",
-		)
-		if err != nil {
-			return nil, err
-		}
-		entryLockHeld := true
-		defer func() {
-			if entryLockHeld {
-				releaseEntryLock()
-			}
-		}()
-
-		lockKey, err := s.refreshTokenLockKey(stringToken)
-		if err != nil {
-			return nil, err
-		}
-
-		// Mark the exact presented token before waiting on the per-device lock.
+		// Mark the exact presented token before parsing or waiting on the
+		// per-device lock.
 		// A concurrent refresh holding that lock can prune old tokens; this keeps
 		// an already in-flight refresh from looking abandoned.
 		now := time.Now()
-		err = s.tokenStore.Query(
+		err := s.tokenStore.Query(
 			datastore.Equals(datastore.Field("token"), stringToken),
 		).UpdateFields(map[string]any{
 			"lastRefreshedAt": now,
@@ -118,8 +100,10 @@ func (s *UserService) refreshToken(
 			return nil, errors.Wrap(err, "failed to update token")
 		}
 
-		releaseEntryLock()
-		entryLockHeld = false
+		lockKey, err := s.refreshTokenLockKey(stringToken)
+		if err != nil {
+			return nil, err
+		}
 
 		releaseLock, err := s.acquireRefreshTokenLock(ctx, lockKey)
 		if err != nil {

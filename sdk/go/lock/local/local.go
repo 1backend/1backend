@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"sync"
+	"time"
 )
 
 // LocalDistributedLock implements the DistributedLock interface using sync.Mutex for local locking.
@@ -38,46 +39,42 @@ func (l *LocalDistributedLock) getOrCreateMutex(key string) *sync.Mutex {
 // Acquire tries to acquire the lock for the specified key. It blocks until the lock is acquired or the context is done.
 func (l *LocalDistributedLock) Acquire(ctx context.Context, key string) error {
 	mutex := l.getOrCreateMutex(key)
+	ticker := time.NewTicker(time.Millisecond)
+	defer ticker.Stop()
 
-	// Try to lock the mutex or wait for the context to be done
-	done := make(chan struct{})
-	go func() {
-		mutex.Lock()
-		close(done)
-	}()
+	for {
+		if mutex.TryLock() {
+			l.lock.Lock()
+			l.heldKeys[key] = true
+			l.lock.Unlock()
+			return nil
+		}
 
-	select {
-	case <-done:
-		l.lock.Lock()
-		l.heldKeys[key] = true
-		l.lock.Unlock()
-		return nil
-	case <-ctx.Done():
-		return errors.New("failed to acquire lock due to context cancellation")
+		select {
+		case <-ctx.Done():
+			return errors.New("failed to acquire lock due to context cancellation")
+		case <-ticker.C:
+		}
 	}
 }
 
 // TryAcquire tries to acquire the lock for the specified key without blocking. Returns true if successful, false otherwise.
 func (l *LocalDistributedLock) TryAcquire(ctx context.Context, key string) (bool, error) {
-	mutex := l.getOrCreateMutex(key)
-
-	// Try to lock the mutex without blocking
-	locked := make(chan bool)
-	go func() {
-		locked <- mutex.TryLock()
-	}()
-
 	select {
-	case success := <-locked:
-		if success {
-			l.lock.Lock()
-			l.heldKeys[key] = true
-			l.lock.Unlock()
-		}
-		return success, nil
 	case <-ctx.Done():
 		return false, errors.New("context canceled before lock attempt")
+	default:
 	}
+
+	mutex := l.getOrCreateMutex(key)
+	if mutex.TryLock() {
+		l.lock.Lock()
+		l.heldKeys[key] = true
+		l.lock.Unlock()
+		return true, nil
+	}
+
+	return false, nil
 }
 
 // Release releases the lock for the specified key.

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/dgraph-io/ristretto"
@@ -41,6 +42,7 @@ type tokenRefresher struct {
 	mutex                 sync.Mutex
 	currentTime           time.Time
 	once                  sync.Once
+	clock                 atomic.Int64
 }
 
 func NewTokenRefresher(
@@ -61,6 +63,10 @@ func NewTokenRefresher(
 		parser:                parser,
 		tokenReplacementCache: cache,
 	}
+
+	tr.clock.Store(time.Now().UnixNano())
+
+	go tr.backgroundClock()
 
 	return tr, nil
 }
@@ -89,7 +95,14 @@ func (tr *tokenRefresher) getNow() time.Time {
 		return tr.currentTime
 	}
 
-	return time.Now()
+	return time.Unix(0, tr.clock.Load())
+}
+
+func (tr *tokenRefresher) backgroundClock() {
+	ticker := time.NewTicker(500 * time.Millisecond)
+	for t := range ticker.C {
+		tr.clock.Store(t.UnixNano())
+	}
 }
 
 func (tr *tokenRefresher) EnsureValidToken(request *http.Request) (string, *auth.Claims, error) {
