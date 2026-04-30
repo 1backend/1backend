@@ -40,7 +40,7 @@ func (s *UserService) SaveSelf(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := s.refreshToken(stringToken)
+	token, err := s.refreshToken(r.Context(), stringToken)
 	if err != nil {
 		logger.Error(
 			"Failed to refresh token",

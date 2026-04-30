@@ -8,6 +8,7 @@
 package userservice
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log/slog"
@@ -284,6 +285,23 @@ func (s *UserService) issueToken(
 	usr *user.User,
 	device string,
 ) (*user.Token, error) {
+	if device == "" {
+		device = unknownDevice
+	}
+
+	releaseLock, err := s.acquireRefreshTokenLock(
+		context.Background(),
+		refreshTokenLockKeyForParts(appId, usr.Id, device),
+	)
+	if err != nil {
+		return nil, err
+	}
+	lockHeld := true
+	defer func() {
+		if lockHeld {
+			releaseLock()
+		}
+	}()
 
 	// Let's see if there is an active token we can reuse
 	tokenI, found, err := s.tokenStore.Query(
@@ -302,7 +320,10 @@ func (s *UserService) issueToken(
 		if err != nil {
 			if strings.Contains(err.Error(), "token is expired") {
 				// @todo this feels pretty crufty
-				tok, err := s.refreshToken(tok.Token)
+				lockHeld = false
+				releaseLock()
+
+				tok, err := s.refreshToken(context.Background(), tok.Token)
 				if err != nil {
 					return nil, errors.Wrap(err, "error refreshing token")
 				}

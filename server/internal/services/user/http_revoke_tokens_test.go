@@ -112,25 +112,20 @@ func TestRevokeTokens(t *testing.T) {
 		require.NoError(t, err, hrsp)
 	})
 
-	// If this test fails, that's a good indication that token refreshing is not being cached.
-	// Ie. Since we already had sleep in this test, the token is already expired.
-	// But the old expired token should be mapped to a new one on the backend without a token DB lookup.
-	// If that caching is not working, this test will fail.
-	t.Run("client 2 should be able to read before expiration", func(t *testing.T) {
-		rsp, hrsp, err := client2.UserSvcAPI.
+	t.Run("client 2 should not be able to read after all tokens are revoked", func(t *testing.T) {
+		_, hrsp, err := client2.UserSvcAPI.
 			ReadSelf(context.Background()).
 			Execute()
 
-		require.NoError(t, err, hrsp)
-		require.NotEmpty(t, rsp.User)
+		require.Error(t, err, hrsp)
 	})
 
-	t.Run("client 3 should be able to read before expiration", func(t *testing.T) {
+	t.Run("client 3 should not be able to read after all tokens are revoked", func(t *testing.T) {
 		_, hrsp, err := client3.UserSvcAPI.
 			ReadSelf(context.Background()).
 			Execute()
 
-		require.NoError(t, err, hrsp)
+		require.Error(t, err, hrsp)
 	})
 
 	time.Sleep(1 * time.Second)

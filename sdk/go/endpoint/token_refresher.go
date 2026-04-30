@@ -34,21 +34,6 @@ const (
 	maxTokenRefreshLeeway      = 5 * time.Second
 )
 
-type fastClock struct {
-	now atomic.Int64
-}
-
-func (c *fastClock) start() {
-	for {
-		c.now.Store(time.Now().Unix())
-		time.Sleep(500 * time.Millisecond) // Update twice a second
-	}
-}
-
-func (c *fastClock) get() time.Time {
-	return time.Unix(c.now.Load(), 0)
-}
-
 type tokenRefresher struct {
 	clientFactory         client.ClientFactory
 	parser                JWTParser
@@ -79,7 +64,7 @@ func NewTokenRefresher(
 		tokenReplacementCache: cache,
 	}
 
-	tr.clock.Store(time.Now().Unix())
+	tr.clock.Store(time.Now().UnixNano())
 
 	go tr.backgroundClock()
 
@@ -109,14 +94,14 @@ func (tr *tokenRefresher) getNow() time.Time {
 	if !tr.currentTime.IsZero() {
 		return tr.currentTime
 	}
-	// Priority 2: High-performance atomic clock for production
-	return time.Unix(tr.clock.Load(), 0)
+
+	return time.Unix(0, tr.clock.Load())
 }
 
 func (tr *tokenRefresher) backgroundClock() {
 	ticker := time.NewTicker(500 * time.Millisecond)
 	for t := range ticker.C {
-		tr.clock.Store(t.Unix())
+		tr.clock.Store(t.UnixNano())
 	}
 }
 
