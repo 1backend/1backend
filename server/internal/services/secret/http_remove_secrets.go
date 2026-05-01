@@ -61,9 +61,26 @@ func (cs *SecretService) RemoveSecrets(
 
 	isAdmin, err := cs.options.Authorizer.IsAdminFromRequest(cs.publicKey, r)
 	if err != nil {
+		args := secretRequestLogArgs(
+			r,
+			isAuthRsp,
+			slog.String("operation", "remove-secrets"),
+			slog.String("secretId", req.Id),
+			slog.Int("secretIdsCount", len(req.Ids)),
+			slog.Any("error", err),
+		)
+		if isRequestAuthError(err) {
+			logger.Warn(
+				"Cannot check if user is admin for secret remove request",
+				args...,
+			)
+			endpoint.Unauthorized(w)
+			return
+		}
+
 		logger.Error(
 			"Failed to check if user is admin",
-			slog.Any("error", err),
+			args...,
 		)
 		endpoint.InternalServerError(w)
 		return
@@ -78,8 +95,14 @@ func (cs *SecretService) RemoveSecrets(
 	if err != nil {
 		logger.Error(
 			"Failed to remove secrets",
-			slog.String("user", isAuthRsp.User.Slug),
-			slog.Any("error", err),
+			secretRequestLogArgs(
+				r,
+				isAuthRsp,
+				slog.String("operation", "remove-secrets"),
+				slog.String("secretId", req.Id),
+				slog.Int("secretIdsCount", len(req.Ids)),
+				slog.Any("error", err),
+			)...,
 		)
 		endpoint.InternalServerError(w)
 		return

@@ -737,6 +737,79 @@ func scalarValueFromString(raw string, t reflect.Type) (reflect.Value, error) {
 	return value, nil
 }
 
+func newNullableScalarScanTarget(t reflect.Type) (any, bool) {
+	switch t.Kind() {
+	case reflect.String:
+		return &sql.NullString{}, true
+	case reflect.Bool:
+		return &sql.NullBool{}, true
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return &sql.NullInt64{}, true
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return &sql.NullInt64{}, true
+	case reflect.Float32, reflect.Float64:
+		return &sql.NullFloat64{}, true
+	default:
+		return nil, false
+	}
+}
+
+func assignNullableScalarField(field reflect.Value, target any) (bool, error) {
+	switch v := target.(type) {
+	case *sql.NullString:
+		if !v.Valid {
+			field.Set(reflect.Zero(field.Type()))
+			return true, nil
+		}
+		field.SetString(v.String)
+		return true, nil
+	case *sql.NullBool:
+		if !v.Valid {
+			field.Set(reflect.Zero(field.Type()))
+			return true, nil
+		}
+		field.SetBool(v.Bool)
+		return true, nil
+	case *sql.NullInt64:
+		if !v.Valid {
+			field.Set(reflect.Zero(field.Type()))
+			return true, nil
+		}
+
+		switch field.Kind() {
+		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+			if field.OverflowInt(v.Int64) {
+				return true, fmt.Errorf("integer overflow assigning %d to %s", v.Int64, field.Type())
+			}
+			field.SetInt(v.Int64)
+		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+			if v.Int64 < 0 {
+				return true, fmt.Errorf("cannot assign negative integer %d to %s", v.Int64, field.Type())
+			}
+			uintValue := uint64(v.Int64)
+			if field.OverflowUint(uintValue) {
+				return true, fmt.Errorf("unsigned integer overflow assigning %d to %s", uintValue, field.Type())
+			}
+			field.SetUint(uintValue)
+		default:
+			return false, nil
+		}
+		return true, nil
+	case *sql.NullFloat64:
+		if !v.Valid {
+			field.Set(reflect.Zero(field.Type()))
+			return true, nil
+		}
+		if field.OverflowFloat(v.Float64) {
+			return true, fmt.Errorf("float overflow assigning %f to %s", v.Float64, field.Type())
+		}
+		field.SetFloat(v.Float64)
+		return true, nil
+	default:
+		return false, nil
+	}
+}
+
 func parsePointerFieldValue(raw string, t reflect.Type) (reflect.Value, error) {
 	ptr := reflect.New(t)
 
@@ -824,7 +897,11 @@ func (q *SQLQueryBuilder) Find() ([]datastore.Row, error) {
 				var str sql.NullString
 				fields[i] = &str
 			default:
-				fields[i] = field.Addr().Interface()
+				if target, ok := newNullableScalarScanTarget(fieldType); ok {
+					fields[i] = target
+				} else {
+					fields[i] = field.Addr().Interface()
+				}
 			}
 		}
 
@@ -934,6 +1011,14 @@ func (q *SQLQueryBuilder) Find() ([]datastore.Row, error) {
 					field.Set(reflect.ValueOf(nullTime.Time.UTC()))
 				} else {
 					field.Set(reflect.Zero(fieldType))
+				}
+			default:
+				handled, err := assignNullableScalarField(field, fields[i])
+				if err != nil {
+					return nil, errors.Wrap(err, "error assigning scalar field")
+				}
+				if handled {
+					break
 				}
 			}
 		}

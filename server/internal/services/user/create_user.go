@@ -53,6 +53,10 @@ func (s *UserService) createUserWithoutVerification(
 		return errors.New("slug already exists")
 	}
 
+	if isReservedUserSlug(userInput.Slug) {
+		return errors.New("slug is reserved")
+	}
+
 	now := time.Now()
 
 	if password != "" {

@@ -3,6 +3,7 @@ package user
 import (
 	"fmt"
 
+	"github.com/1backend/1backend/cli/oo/types"
 	"github.com/1backend/1backend/cli/oo/util"
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/auth"
@@ -28,15 +29,6 @@ func SetToken(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to find selected env '%s'", conf.SelectedEnvironment)
 	}
 
-	if env.SelectedUser == "" {
-		return fmt.Errorf("no selected user in env '%s'", conf.SelectedEnvironment)
-	}
-
-	usr, ok := env.Users[env.SelectedUser]
-	if !ok {
-		return fmt.Errorf("cannot find user '%s' in env '%s'", env.SelectedUser, conf.SelectedEnvironment)
-	}
-
 	// get server public key
 	cf := client.NewApiClientFactory(env.URL)
 	publicKeyRsp, _, err := cf.Client().
@@ -47,29 +39,41 @@ func SetToken(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "failed to get public key")
 	}
 
-	trsp, _, err := cf.Client(client.WithToken(token)).
-		UserSvcAPI.RefreshToken(cmd.Context()).
-		Execute()
-
-	if err != nil {
-		return errors.Wrap(err, "failed to refresh token")
-	}
-
-	token = trsp.Token.Token
-
 	claims, err := auth.AuthorizerImpl{}.ParseJWT(publicKeyRsp.PublicKey, token)
 	if err != nil {
-		return errors.Wrap(err, "failed to decode token")
+		claims, err = auth.AuthorizerImpl{}.ParseJWTUnverified(token)
+		if err != nil {
+			return errors.Wrap(err, "failed to decode token")
+		}
 	}
 
-	rsp, _, err := cf.Client(client.WithToken(token)).
+	rsp, hrsp, err := cf.Client(client.WithToken(token)).
 		UserSvcAPI.ListApps(cmd.Context()).Body(
 		openapi.UserSvcListAppsRequest{
 			Ids: []string{claims.AppId},
 		},
 	).Execute()
+	if err != nil {
+		return util.ErrorWithBody(err, hrsp, "failed to resolve app host from token")
+	}
+	if len(rsp.Apps) == 0 {
+		return fmt.Errorf("app not found for id '%s'", claims.AppId)
+	}
 
 	appHost := rsp.Apps[0].Host
+
+	if env.Users == nil {
+		env.Users = map[string]*types.User{}
+	}
+
+	usr := env.Users[claims.Slug]
+	if usr == nil {
+		usr = &types.User{
+			Slug:            claims.Slug,
+			TokensByAppHost: map[string]string{},
+		}
+		env.Users[claims.Slug] = usr
+	}
 
 	if usr.TokensByAppHost == nil {
 		usr.TokensByAppHost = map[string]string{}
@@ -77,6 +81,7 @@ func SetToken(cmd *cobra.Command, args []string) error {
 
 	usr.TokensByAppHost[appHost] = token
 	usr.SelectedAppHost = appHost
+	env.SelectedUser = claims.Slug
 
 	if err := util.SaveConfig(conf); err != nil {
 		return errors.Wrap(err, "failed to save config")

@@ -8,8 +8,8 @@
 package userservice
 
 import (
+	"context"
 	"encoding/json"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"sort"
@@ -44,7 +44,7 @@ func (s *UserService) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := s.refreshToken(stringToken)
+	token, err := s.refreshToken(r.Context(), stringToken)
 	if err != nil {
 		args := append(
 			attrsToArgs(auth.TokenDebugAttrs(stringToken)),
@@ -67,30 +67,52 @@ func (s *UserService) RefreshToken(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) refreshToken(
+	ctx context.Context,
 	stringToken string,
 ) (*user.Token, error) {
-	// FAST PATH: Parse JWT without verification just to get the identity for the lock
-	// We don't care if it's expired or valid yet; the lock just needs a string key.
-	claims, err := s.options.Authorizer.ParseJWTUnverified(stringToken)
-	if err != nil {
-		return nil, errors.Wrap(err, "invalid token format")
-	}
-
-	cacheKey := fmt.Sprintf("%s:%s:%s", claims.AppId, claims.UserId, claims.Device)
+	cacheKey := generateCacheKey(stringToken)
 
 	// Fast Path: Check cache without any locking (handles 99% of traffic)
-	if cachedToken, found := s.tokenReplacementCache.Get(cacheKey); found {
-		return cachedToken.(*user.Token), nil
+	if cachedToken, found := s.cachedReplacementToken(cacheKey); found {
+		return cachedToken, nil
 	}
 
-	// @todo: should be a distributed lock
 	val, err, _ := s.refreshGroup.Do(cacheKey, func() (interface{}, error) {
 		// THE DOUBLE CHECK:
 		// Requests 2, 3, 4, and 5 wait at the door. When Request 1 finishes
 		// and sets the cache, these requests enter one by one (or share the result).
 		// We check the cache again to see if Request 1 already did the work.
-		if cachedToken, found := s.tokenReplacementCache.Get(cacheKey); found {
-			return cachedToken.(*user.Token), nil
+		if cachedToken, found := s.cachedReplacementToken(cacheKey); found {
+			return cachedToken, nil
+		}
+
+		// Mark the exact presented token before parsing or waiting on the
+		// per-device lock.
+		// A concurrent refresh holding that lock can prune old tokens; this keeps
+		// an already in-flight refresh from looking abandoned.
+		now := time.Now()
+		err := s.tokenStore.Query(
+			datastore.Equals(datastore.Field("token"), stringToken),
+		).UpdateFields(map[string]any{
+			"lastRefreshedAt": now,
+		})
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to update token")
+		}
+
+		lockKey, err := s.refreshTokenLockKey(stringToken)
+		if err != nil {
+			return nil, err
+		}
+
+		releaseLock, err := s.acquireRefreshTokenLock(ctx, lockKey)
+		if err != nil {
+			return nil, err
+		}
+		defer releaseLock()
+
+		if cachedToken, found := s.cachedReplacementToken(cacheKey); found {
+			return cachedToken, nil
 		}
 
 		tokenToBeRefreshedI, found, err := s.tokenStore.Query(
@@ -125,11 +147,10 @@ func (s *UserService) refreshToken(
 		if err != nil {
 			return nil, err
 		}
-		if !found {
-			return nil, errors.New("active token not found")
+		var activeToken *user.Token
+		if found {
+			activeToken = activeTokenI.(*user.Token)
 		}
-
-		activeToken := activeTokenI.(*user.Token)
 
 		if tokenToBeRefreshed.Active {
 			err = s.inactivateToken(tokenToBeRefreshed.AppId, tokenToBeRefreshed.Id)
@@ -138,7 +159,7 @@ func (s *UserService) refreshToken(
 			}
 		}
 
-		now := time.Now()
+		now = time.Now()
 
 		err = s.tokenStore.Query(
 			datastore.Equals(datastore.Field("id"), tokenToBeRefreshed.Id),
@@ -149,7 +170,7 @@ func (s *UserService) refreshToken(
 			return nil, errors.Wrap(err, "failed to update token")
 		}
 
-		if activeToken.Id != tokenToBeRefreshed.Id {
+		if activeToken != nil && activeToken.Id != tokenToBeRefreshed.Id {
 			err = s.inactivateToken(tokenToBeRefreshed.AppId, activeToken.Id)
 			if err != nil {
 				return nil, errors.Wrap(err, "failed to inactivate token")
@@ -185,27 +206,24 @@ func (s *UserService) refreshToken(
 			return token, nil // return token anyway, pruning is best-effort
 		}
 
-		// Sort tokens by LastRefreshedAt descending, treating nil as zero (oldest)
+		// Sort tokens by recent use. LastRefreshedAt is the strongest signal,
+		// while CreatedAt keeps newly issued active tokens ahead of old nils.
 		sort.Slice(tokens, func(i, j int) bool {
 			ti := tokens[i].(*user.Token)
 			tj := tokens[j].(*user.Token)
 
-			var tiTime, tjTime time.Time
-			if ti.LastRefreshedAt != nil {
-				tiTime = *ti.LastRefreshedAt
-			}
-			if tj.LastRefreshedAt != nil {
-				tjTime = *tj.LastRefreshedAt
-			}
-			// Now compare: newer first
-			return tiTime.After(tjTime)
+			return tokenPruneTime(ti).After(tokenPruneTime(tj))
 		})
 
-		// Keep latest 2, delete the rest
-		for i := 2; i < len(tokens); i++ {
-			t := tokens[i].(*user.Token)
-			if t.Active {
-				// We don't want to delete the active token
+		// Keep the new active token and the two most recently used inactive tokens.
+		keptInactive := 0
+		for _, tokenI := range tokens {
+			t := tokenI.(*user.Token)
+			if t.Id == token.Id {
+				continue
+			}
+			if !t.Active && keptInactive < 2 {
+				keptInactive++
 				continue
 			}
 			err := s.tokenStore.Query(datastore.Id(t.Id)).Delete()
@@ -224,6 +242,9 @@ func (s *UserService) refreshToken(
 			1,
 			s.options.TokenExpiration,
 		)
+		if s.options.Test {
+			s.tokenReplacementCache.Wait()
+		}
 
 		return token, nil
 	})
@@ -233,6 +254,104 @@ func (s *UserService) refreshToken(
 	}
 
 	return val.(*user.Token), nil
+}
+
+func (s *UserService) cachedReplacementToken(
+	cacheKey string,
+) (*user.Token, bool) {
+	cachedToken, found := s.tokenReplacementCache.Get(cacheKey)
+	if !found {
+		return nil, false
+	}
+
+	token, ok := cachedToken.(*user.Token)
+	if !ok {
+		s.tokenReplacementCache.Del(cacheKey)
+		if s.options.Test {
+			s.tokenReplacementCache.Wait()
+		}
+		return nil, false
+	}
+
+	_, found, err := s.tokenStore.Query(
+		datastore.Equals(datastore.Field("id"), token.Id),
+		datastore.Equals(datastore.Field("token"), token.Token),
+		datastore.Equals(datastore.Field("active"), true),
+	).FindOne()
+	if err != nil {
+		logger.Error(
+			"Failed to validate cached replacement token",
+			slog.String("tokenId", token.Id),
+			slog.Any("error", err),
+		)
+		return nil, false
+	}
+	if !found {
+		s.tokenReplacementCache.Del(cacheKey)
+		if s.options.Test {
+			s.tokenReplacementCache.Wait()
+		}
+		return nil, false
+	}
+
+	return token, true
+}
+
+func (s *UserService) acquireRefreshTokenLock(
+	ctx context.Context,
+	key string,
+) (func(), error) {
+	if s.options.Lock == nil {
+		return func() {}, nil
+	}
+
+	err := s.options.Lock.Acquire(ctx, key)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to acquire refresh token lock")
+	}
+
+	return func() {
+		if err := s.options.Lock.Release(context.Background(), key); err != nil {
+			logger.Error(
+				"Failed to release refresh token lock",
+				slog.String("lockKey", key),
+				slog.Any("error", err),
+			)
+		}
+	}, nil
+}
+
+func (s *UserService) refreshTokenLockKey(
+	stringToken string,
+) (string, error) {
+	claims, err := s.options.Authorizer.ParseJWTUnverified(stringToken)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to parse refresh token claims")
+	}
+	if claims.AppId == "" || claims.UserId == "" {
+		return "", errors.New("refresh token claims missing appId or userId")
+	}
+	device := claims.Device
+	if device == "" {
+		device = unknownDevice
+	}
+
+	return "user-svc:refresh-token:" + claims.AppId + ":" + claims.UserId + ":" + device, nil
+}
+
+func refreshTokenLockKeyForParts(appId, userId, device string) string {
+	if device == "" {
+		device = unknownDevice
+	}
+
+	return "user-svc:refresh-token:" + appId + ":" + userId + ":" + device
+}
+
+func tokenPruneTime(token *user.Token) time.Time {
+	if token.LastRefreshedAt != nil {
+		return *token.LastRefreshedAt
+	}
+	return token.CreatedAt
 }
 
 func attrsToArgs(attrs []slog.Attr) []any {
