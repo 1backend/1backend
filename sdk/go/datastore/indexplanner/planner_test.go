@@ -93,6 +93,45 @@ func TestPlanQueryPathArrayAndTrigram(t *testing.T) {
 		require.Equal(t, "gin_trgm_ops", plan.PlannedIndexes[0].OperatorClass)
 		require.Equal(t, []IndexPart{{Field: "name"}}, plan.PlannedIndexes[0].Parts)
 	})
+
+	t.Run("go field aliases", func(t *testing.T) {
+		plan := PlanQuery(plannerObject{}, datastore.Query{
+			Filters: []datastore.Filter{
+				datastore.LessThan(datastore.Field("Friend.Age"), 30),
+				datastore.Intersects(datastore.Field("Tags"), []any{"tag-a"}),
+				datastore.ContainsSubstring(datastore.Field("Name"), "ali"),
+			},
+			OrderBys: []datastore.OrderBy{
+				datastore.OrderByField("CreatedAt", true),
+			},
+		}, PlanOptions{Dialect: DialectPostgres})
+
+		require.Empty(t, plan.Diagnostics)
+		require.Len(t, plan.PlannedIndexes, 3)
+		require.Contains(t, plan.PlannedIndexes, PlannedIndex{
+			Method: MethodBTree,
+			Parts:  []IndexPart{{Field: "friend", Path: []string{"age"}, Cast: "numeric"}, {Field: "createdAt", Desc: true}},
+			Fingerprint: PlanFingerprint(PlannedIndex{
+				Method: MethodBTree,
+				Parts:  []IndexPart{{Field: "friend", Path: []string{"age"}, Cast: "numeric"}, {Field: "createdAt", Desc: true}},
+			}),
+		})
+		require.Contains(t, plan.PlannedIndexes, PlannedIndex{
+			Method:      MethodGIN,
+			Parts:       []IndexPart{{Field: "tags"}},
+			Fingerprint: PlanFingerprint(PlannedIndex{Method: MethodGIN, Parts: []IndexPart{{Field: "tags"}}}),
+		})
+		require.Contains(t, plan.PlannedIndexes, PlannedIndex{
+			Method:        MethodGIN,
+			OperatorClass: "gin_trgm_ops",
+			Parts:         []IndexPart{{Field: "name"}},
+			Fingerprint: PlanFingerprint(PlannedIndex{
+				Method:        MethodGIN,
+				OperatorClass: "gin_trgm_ops",
+				Parts:         []IndexPart{{Field: "name"}},
+			}),
+		})
+	})
 }
 
 func TestPlanQueryOrCollapseAndCap(t *testing.T) {

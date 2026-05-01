@@ -287,6 +287,7 @@ func BigBang(options *universe.Options) (*Universe, error) {
 			TablePrefix:        options.DbPrefix,
 			Db:                 options.Db,
 			DbConnectionString: options.DbConnectionString,
+			Lock:               options.Lock,
 		})
 		if err != nil {
 			return nil, err
@@ -303,6 +304,7 @@ func BigBang(options *universe.Options) (*Universe, error) {
 				return nil, errors.Wrap(err, "failed to get db connection")
 			}
 			options.Lock = pglock.NewPGDistributedLock(conn)
+			infra.SetDataStoreFactoryLock(dc, options.Lock)
 		}
 	}
 

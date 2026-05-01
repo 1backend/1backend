@@ -1,13 +1,17 @@
 package sqlstore
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/datastore/indexplanner"
 )
+
+const autoIndexLockTimeout = 2 * time.Minute
 
 func (s *SQLStore) initAutoIndexes(instance any) error {
 	if s.autoIndexes == nil {
@@ -90,6 +94,18 @@ func (s *SQLStore) observePlan(plan indexplanner.QueryPlan) {
 }
 
 func (s *SQLStore) createAutoIndex(plan indexplanner.PlannedIndex, name string) {
+	if s.autoIndexMu != nil {
+		s.autoIndexMu.Lock()
+		defer s.autoIndexMu.Unlock()
+	}
+
+	releaseLock, err := s.acquireAutoIndexLock()
+	if err != nil {
+		s.autoIndexes.MarkFailed(plan, name, err)
+		return
+	}
+	defer releaseLock()
+
 	if plan.OperatorClass == "gin_trgm_ops" {
 		if err := s.ensurePGTrgm(); err != nil {
 			s.autoIndexes.MarkFailed(plan, name, err)
@@ -109,6 +125,28 @@ func (s *SQLStore) createAutoIndex(plan indexplanner.PlannedIndex, name string) 
 	}
 
 	s.autoIndexes.MarkCreated(plan, name)
+}
+
+func (s *SQLStore) acquireAutoIndexLock() (func(), error) {
+	if s.autoIndexLock == nil {
+		return func() {}, nil
+	}
+
+	key := s.autoIndexLockKey()
+	ctx, cancel := context.WithTimeout(context.Background(), autoIndexLockTimeout)
+	defer cancel()
+
+	if err := s.autoIndexLock.Acquire(ctx, key); err != nil {
+		return nil, err
+	}
+
+	return func() {
+		_ = s.autoIndexLock.Release(context.Background(), key)
+	}, nil
+}
+
+func (s *SQLStore) autoIndexLockKey() string {
+	return fmt.Sprintf("sqlstore:autoindex:%s", s.tableName)
 }
 
 func (s *SQLStore) ensurePGTrgm() error {

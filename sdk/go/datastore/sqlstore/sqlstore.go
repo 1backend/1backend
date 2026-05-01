@@ -23,6 +23,7 @@ import (
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/datastore/indexplanner"
+	lock "github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/logger"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/lib/pq"
@@ -61,11 +62,30 @@ type SQLStore struct {
 	fieldTypes       map[string]reflect.Type
 	idFieldName      string
 	autoIndexes      *indexplanner.Tracker
+	autoIndexMu      *sync.Mutex
+	autoIndexLock    lock.DistributedLock
 	pgTrgmOnce       sync.Once
 	pgTrgmErr        error
 }
 
-func NewSQLStore(instance any, driverName string, db *sql.DB, tableName string, debug bool) (*SQLStore, error) {
+type SQLStoreOption func(*sqlStoreOptions)
+
+type sqlStoreOptions struct {
+	autoIndexLock lock.DistributedLock
+}
+
+func WithAutoIndexLock(autoIndexLock lock.DistributedLock) SQLStoreOption {
+	return func(opts *sqlStoreOptions) {
+		opts.autoIndexLock = autoIndexLock
+	}
+}
+
+func NewSQLStore(instance any, driverName string, db *sql.DB, tableName string, debug bool, opts ...SQLStoreOption) (*SQLStore, error) {
+	options := sqlStoreOptions{}
+	for _, opt := range opts {
+		opt(&options)
+	}
+
 	placeholderStyle := DollarSignPlaceholder
 	if driverName == "mysql" {
 		placeholderStyle = QuestionMarkPlaceholder
@@ -85,6 +105,8 @@ func NewSQLStore(instance any, driverName string, db *sql.DB, tableName string, 
 		placeholderStyle: placeholderStyle,
 		db:               NewDebugDB(db, tableName),
 		fieldTypes:       map[string]reflect.Type{},
+		autoIndexMu:      &sync.Mutex{},
+		autoIndexLock:    options.autoIndexLock,
 		autoIndexes: indexplanner.NewTracker(indexplanner.TrackerOptions{
 			Backend:   driverName,
 			Supported: driverName == DriverPostGRES,
@@ -314,6 +336,8 @@ func (s *SQLStore) BeginTransaction() (datastore.DataStore, error) {
 		idFieldName:      s.idFieldName,
 		placeholderStyle: s.placeholderStyle,
 		autoIndexes:      s.autoIndexes,
+		autoIndexMu:      s.autoIndexMu,
+		autoIndexLock:    s.autoIndexLock,
 	}, nil
 }
 

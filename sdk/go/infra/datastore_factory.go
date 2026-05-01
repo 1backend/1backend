@@ -17,6 +17,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/datastore/localstore"
 	"github.com/1backend/1backend/sdk/go/datastore/sqlstore"
+	lock "github.com/1backend/1backend/sdk/go/lock"
 	"github.com/pkg/errors"
 )
 
@@ -48,6 +49,7 @@ type DataStoreConfig struct {
 	Db                 string
 	DbConnectionString string
 	TablePrefix        string
+	Lock               lock.DistributedLock
 }
 
 func NewDataStoreFactory(options DataStoreConfig) (DataStoreFactory, error) {
@@ -104,12 +106,18 @@ func (df *DataStoreFactoryPostgresImpl) Create(tableName string, instance any) (
 		df.db = db
 	}
 
+	var opts []sqlstore.SQLStoreOption
+	if df.options.Lock != nil {
+		opts = append(opts, sqlstore.WithAutoIndexLock(df.options.Lock))
+	}
+
 	d, err := sqlstore.NewSQLStore(
 		instance,
 		df.options.Db,
 		df.db,
 		df.options.TablePrefix+tableName,
 		false,
+		opts...,
 	)
 	if err != nil {
 		return nil, err
@@ -165,4 +173,28 @@ func (df *DataStoreFactoryPostgresImpl) Handle() (any, error) {
 	}
 
 	return df.db, nil
+}
+
+func (df *DataStoreFactoryPostgresImpl) SetLock(distributedLock lock.DistributedLock) {
+	df.mutex.Lock()
+	defer df.mutex.Unlock()
+
+	df.options.Lock = distributedLock
+}
+
+func SetDataStoreFactoryLock(factory DataStoreFactory, distributedLock lock.DistributedLock) {
+	lockAwareFactory, ok := factory.(interface {
+		SetLock(lock.DistributedLock)
+	})
+	if !ok {
+		return
+	}
+	lockAwareFactory.SetLock(distributedLock)
+}
+
+func (df *DataStoreFactoryLocalImpl) SetLock(distributedLock lock.DistributedLock) {
+	df.mutex.Lock()
+	defer df.mutex.Unlock()
+
+	df.options.Lock = distributedLock
 }
