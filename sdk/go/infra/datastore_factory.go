@@ -8,6 +8,7 @@
 package infra
 
 import (
+	"context"
 	"database/sql"
 	"os"
 	"path"
@@ -18,14 +19,16 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore/localstore"
 	"github.com/1backend/1backend/sdk/go/datastore/sqlstore"
 	lock "github.com/1backend/1backend/sdk/go/lock"
+	pglock "github.com/1backend/1backend/sdk/go/lock/pg"
 	"github.com/pkg/errors"
 )
 
 type DataStoreFactoryPostgresImpl struct {
 	mutex sync.Mutex
 
-	options DataStoreConfig
-	db      *sql.DB
+	options  DataStoreConfig
+	db       *sql.DB
+	lockConn *sql.Conn
 }
 
 type DataStoreFactoryLocalImpl struct {
@@ -105,6 +108,9 @@ func (df *DataStoreFactoryPostgresImpl) Create(tableName string, instance any) (
 		}
 		df.db = db
 	}
+	if err := df.initAutoIndexLockLocked(); err != nil {
+		return nil, err
+	}
 
 	var opts []sqlstore.SQLStoreOption
 	if df.options.Lock != nil {
@@ -127,6 +133,20 @@ func (df *DataStoreFactoryPostgresImpl) Create(tableName string, instance any) (
 
 	return d, nil
 
+}
+
+func (df *DataStoreFactoryPostgresImpl) initAutoIndexLockLocked() error {
+	if df.options.Lock != nil || df.options.Db != string(sqlstore.DriverPostGRES) {
+		return nil
+	}
+
+	conn, err := df.db.Conn(context.Background())
+	if err != nil {
+		return errors.Wrap(err, "error creating automatic index lock connection")
+	}
+	df.lockConn = conn
+	df.options.Lock = pglock.NewPGDistributedLock(conn)
+	return nil
 }
 
 func (df *DataStoreFactoryLocalImpl) Create(tableName string, instance any) (datastore.DataStore, error) {
@@ -179,6 +199,10 @@ func (df *DataStoreFactoryPostgresImpl) SetLock(distributedLock lock.Distributed
 	df.mutex.Lock()
 	defer df.mutex.Unlock()
 
+	if df.lockConn != nil {
+		_ = df.lockConn.Close()
+		df.lockConn = nil
+	}
 	df.options.Lock = distributedLock
 }
 
