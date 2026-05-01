@@ -22,6 +22,8 @@ import (
 	"time"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/datastore/indexplanner"
+	lock "github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/logger"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/lib/pq"
@@ -59,9 +61,31 @@ type SQLStore struct {
 	tableName        string
 	fieldTypes       map[string]reflect.Type
 	idFieldName      string
+	autoIndexes      *indexplanner.Tracker
+	autoIndexMu      *sync.Mutex
+	autoIndexLock    lock.DistributedLock
+	pgTrgmOnce       sync.Once
+	pgTrgmErr        error
 }
 
-func NewSQLStore(instance any, driverName string, db *sql.DB, tableName string, debug bool) (*SQLStore, error) {
+type SQLStoreOption func(*sqlStoreOptions)
+
+type sqlStoreOptions struct {
+	autoIndexLock lock.DistributedLock
+}
+
+func WithAutoIndexLock(autoIndexLock lock.DistributedLock) SQLStoreOption {
+	return func(opts *sqlStoreOptions) {
+		opts.autoIndexLock = autoIndexLock
+	}
+}
+
+func NewSQLStore(instance any, driverName string, db *sql.DB, tableName string, debug bool, opts ...SQLStoreOption) (*SQLStore, error) {
+	options := sqlStoreOptions{}
+	for _, opt := range opts {
+		opt(&options)
+	}
+
 	placeholderStyle := DollarSignPlaceholder
 	if driverName == "mysql" {
 		placeholderStyle = QuestionMarkPlaceholder
@@ -81,6 +105,12 @@ func NewSQLStore(instance any, driverName string, db *sql.DB, tableName string, 
 		placeholderStyle: placeholderStyle,
 		db:               NewDebugDB(db, tableName),
 		fieldTypes:       map[string]reflect.Type{},
+		autoIndexMu:      &sync.Mutex{},
+		autoIndexLock:    options.autoIndexLock,
+		autoIndexes: indexplanner.NewTracker(indexplanner.TrackerOptions{
+			Backend:   driverName,
+			Supported: driverName == DriverPostGRES,
+		}),
 	}
 	sstore.db.SetDebug(debug)
 
@@ -110,6 +140,10 @@ func NewSQLStore(instance any, driverName string, db *sql.DB, tableName string, 
 		logger.Debug("Error adding constraint", slog.Any("error", err))
 	}
 
+	if err := sstore.initAutoIndexes(instance); err != nil {
+		return nil, errors.Wrap(err, "error initializing automatic indexes")
+	}
+
 	return sstore, nil
 }
 
@@ -122,6 +156,16 @@ func createNewElement(instance interface{}) interface{} {
 
 func (s *SQLStore) SetDebug(debug bool) {
 	s.db.SetDebug(debug)
+}
+
+func (s *SQLStore) AutoIndexStats() datastore.AutoIndexStats {
+	if s.autoIndexes == nil {
+		return datastore.AutoIndexStats{
+			Supported: false,
+			Backend:   s.driverName,
+		}
+	}
+	return s.autoIndexes.Stats()
 }
 
 func (s *SQLStore) Close() error {
@@ -281,13 +325,19 @@ func (s *SQLStore) BeginTransaction() (datastore.DataStore, error) {
 	}
 
 	return &SQLStore{
+		DB:               s.DB,
+		instance:         s.instance,
 		db:               s.db,
 		tableName:        s.tableName,
 		driverName:       s.driverName,
 		inTransaction:    true,
 		tx:               tx,
 		fieldTypes:       s.fieldTypes,
+		idFieldName:      s.idFieldName,
 		placeholderStyle: s.placeholderStyle,
+		autoIndexes:      s.autoIndexes,
+		autoIndexMu:      s.autoIndexMu,
+		autoIndexLock:    s.autoIndexLock,
 	}, nil
 }
 
@@ -810,6 +860,7 @@ func (q *SQLQueryBuilder) Find() ([]datastore.Row, error) {
 	}
 
 	rows, err := q.store.db.Query(query, params...)
+	q.observeExecution()
 	if err != nil {
 		return nil, errors.Wrap(err, "error querying")
 	}
@@ -1032,6 +1083,7 @@ func (q *SQLQueryBuilder) Count() (int64, error) {
 
 	var count int64
 	err = q.store.db.QueryRow(query, params...).Scan(&count)
+	q.observeExecution()
 	if err != nil {
 		return 0, err
 	}
@@ -1045,6 +1097,7 @@ func (q *SQLQueryBuilder) Update(obj datastore.Row) error {
 		return err
 	}
 	_, err = q.store.db.Exec(query, params...)
+	q.observeExecution()
 	return err
 }
 
@@ -1054,6 +1107,7 @@ func (q *SQLQueryBuilder) Upsert(obj datastore.Row) error {
 		return err
 	}
 	_, err = q.store.db.Exec(query, values...)
+	q.observeExecution()
 	return err
 }
 
@@ -1063,6 +1117,7 @@ func (q *SQLQueryBuilder) UpdateFields(fields map[string]interface{}) error {
 		return err
 	}
 	_, err = q.store.db.Exec(query, params...)
+	q.observeExecution()
 	return err
 }
 
@@ -1072,6 +1127,7 @@ func (q *SQLQueryBuilder) Delete() error {
 		return err
 	}
 	_, err = q.store.db.Exec(query, values...)
+	q.observeExecution()
 	return err
 }
 

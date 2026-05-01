@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
-	"github.com/1backend/1backend/sdk/go/testutil"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
@@ -36,7 +35,7 @@ func TestFindTreatsNullScalarsAsZeroValues(t *testing.T) {
 		}
 	}()
 
-	pgConn := testutil.StartPostgres(t)
+	pgConn := postgresConnString(t)
 
 	db, err := sql.Open("postgres", pgConn)
 	require.NoError(t, err)

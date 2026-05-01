@@ -19,6 +19,7 @@ import (
 	"time"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/datastore/indexplanner"
 	"github.com/1backend/1backend/sdk/go/datastore/localstore/statemanager"
 	"github.com/1backend/1backend/sdk/go/reflector"
 	"github.com/flusflas/dipper"
@@ -34,6 +35,7 @@ type LocalStore struct {
 	originalStore *LocalStore // Reference to the original store in case of transaction
 	stateManager  *statemanager.StateManager
 	filePath      string
+	autoIndexes   *indexplanner.Tracker
 }
 
 func NewLocalStore(instance any, filePath string) (*LocalStore, error) {
@@ -49,6 +51,10 @@ func NewLocalStore(instance any, filePath string) (*LocalStore, error) {
 		instance: instance,
 		data:     make(map[string]any),
 		filePath: filePath,
+		autoIndexes: indexplanner.NewTracker(indexplanner.TrackerOptions{
+			Backend:   "localstore",
+			Supported: false,
+		}),
 	}
 
 	sm := statemanager.New(instance, func() []any {
@@ -90,6 +96,16 @@ func NewLocalStore(instance any, filePath string) (*LocalStore, error) {
 }
 
 func (s *LocalStore) SetDebug(debug bool) {
+}
+
+func (s *LocalStore) AutoIndexStats() datastore.AutoIndexStats {
+	if s.autoIndexes == nil {
+		return datastore.AutoIndexStats{
+			Supported: false,
+			Backend:   "localstore",
+		}
+	}
+	return s.autoIndexes.Stats()
 }
 
 func (s *LocalStore) Create(obj datastore.Row) error {
@@ -280,11 +296,14 @@ func (s *LocalStore) BeginTransaction() (datastore.DataStore, error) {
 
 	// Create a copy of the current store data
 	newStore := &LocalStore{
+		instance:      s.instance,
 		data:          make(map[string]any),
 		lastID:        s.lastID,
 		inTransaction: true,
 		originalStore: s,
 		stateManager:  s.stateManager,
+		filePath:      s.filePath,
+		autoIndexes:   s.autoIndexes,
 	}
 
 	for k, v := range s.data {
@@ -337,6 +356,7 @@ type QueryBuilder struct {
 	filters      []datastore.Filter
 	orderFields  []string
 	orderDescs   []bool
+	orderTypes   []datastore.SortingType
 	orderByRand  bool
 	limit        int64
 	after        []any
@@ -350,10 +370,13 @@ func (q *QueryBuilder) OrderBy(options ...datastore.OrderBy) datastore.QueryBuil
 
 	q.orderFields = make([]string, len(options))
 	q.orderDescs = make([]bool, len(options))
+	q.orderTypes = make([]datastore.SortingType, len(options))
 
 	for i, option := range options {
 		q.orderFields[i] = option.Field
 		q.orderDescs[i] = option.Desc
+		q.orderTypes[i] = option.SortingType
+		q.orderByRand = q.orderByRand || option.SortingType == datastore.SortingTypeRandom
 	}
 
 	return q
@@ -497,6 +520,7 @@ func (q *QueryBuilder) Find() ([]datastore.Row, error) {
 		ret[i] = v.(datastore.Row)
 	}
 
+	q.observe()
 	return ret, nil
 }
 
@@ -550,10 +574,12 @@ func (q *QueryBuilder) FindOne() (datastore.Row, bool, error) {
 				return nil, false, err
 			}
 
+			q.observe()
 			return cop.(datastore.Row), true, nil
 		}
 	}
 
+	q.observe()
 	return empty, false, nil
 }
 
@@ -571,6 +597,7 @@ func (q *QueryBuilder) Count() (int64, error) {
 			count++
 		}
 	}
+	q.observe()
 	return count, nil
 }
 
@@ -601,6 +628,7 @@ func (q *QueryBuilder) Update(obj datastore.Row) error {
 	}
 
 	q.store.stateManager.MarkChanged()
+	q.observe()
 
 	return nil
 }
@@ -630,9 +658,12 @@ func (q *QueryBuilder) Upsert(obj datastore.Row) error {
 	}
 
 	if !found {
-		return q.store.createWithoutLock(obj)
+		err := q.store.createWithoutLock(obj)
+		q.observe()
+		return err
 	}
 
+	q.observe()
 	return nil
 }
 
@@ -657,6 +688,7 @@ func (q *QueryBuilder) UpdateFields(fields map[string]interface{}) error {
 		}
 	}
 	q.store.stateManager.MarkChanged()
+	q.observe()
 	return nil
 }
 
@@ -675,7 +707,48 @@ func (q *QueryBuilder) Delete() error {
 		}
 	}
 	q.store.stateManager.MarkChanged()
+	q.observe()
 	return nil
+}
+
+func (q *QueryBuilder) observe() {
+	if q.store.autoIndexes == nil {
+		return
+	}
+	plan := indexplanner.PlanQuery(q.store.instance, q.queryDefinition(), indexplanner.PlanOptions{
+		Dialect: indexplanner.DialectGeneric,
+	})
+	q.store.autoIndexes.Observe(plan)
+}
+
+func (q *QueryBuilder) queryDefinition() datastore.Query {
+	orderBys := make([]datastore.OrderBy, 0, len(q.orderFields))
+	for i, field := range q.orderFields {
+		orderBy := datastore.OrderBy{
+			Field: field,
+		}
+		if i < len(q.orderDescs) {
+			orderBy.Desc = q.orderDescs[i]
+		}
+		if i < len(q.orderTypes) {
+			orderBy.SortingType = q.orderTypes[i]
+		}
+		orderBys = append(orderBys, orderBy)
+	}
+
+	afterJSON := ""
+	if len(q.after) > 0 {
+		if bs, err := json.Marshal(q.after); err == nil {
+			afterJSON = string(bs)
+		}
+	}
+
+	return datastore.Query{
+		Filters:   append([]datastore.Filter(nil), q.filters...),
+		AfterJson: afterJSON,
+		Limit:     q.limit,
+		OrderBys:  orderBys,
+	}
 }
 
 func evaluate(filter datastore.Filter, obj any) (bool, error) {
