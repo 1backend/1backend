@@ -8,6 +8,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -18,6 +19,7 @@ import (
 	_ "github.com/1backend/1backend/server/docs"
 	"github.com/1backend/1backend/server/internal/di"
 	"github.com/1backend/1backend/server/internal/router"
+	"github.com/1backend/1backend/server/internal/telemetry"
 	"github.com/1backend/1backend/server/internal/universe"
 )
 
@@ -45,6 +47,24 @@ import (
 // @externalDocs.url          https://1backend.com/docs/category/1backend-api
 func main() {
 	logger.Info("Starting...")
+
+	telemetryShutdown, metricsPath, err := telemetry.Setup(context.Background(), telemetry.Config{
+		ServiceVersion: "0.9.12",
+	})
+	if err != nil {
+		logger.Error("Cannot initialize telemetry", slog.Any("error", err))
+		os.Exit(1)
+	}
+	defer func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := telemetryShutdown(ctx); err != nil {
+			logger.Error("Cannot shutdown telemetry", slog.Any("error", err))
+		}
+	}()
+	if metricsPath != "" {
+		logger.Info("OpenTelemetry metrics endpoint enabled", slog.String("path", metricsPath))
+	}
 
 	universe, err := di.BigBang(&universe.Options{})
 	if err != nil {

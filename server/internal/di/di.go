@@ -49,6 +49,7 @@ import (
 	secretservice "github.com/1backend/1backend/server/internal/services/secret"
 	sourceservice "github.com/1backend/1backend/server/internal/services/source"
 	userservice "github.com/1backend/1backend/server/internal/services/user"
+	"github.com/1backend/1backend/server/internal/telemetry"
 	"github.com/1backend/1backend/server/internal/universe"
 )
 
@@ -272,6 +273,7 @@ func BigBang(options *universe.Options) (*Universe, error) {
 	}
 
 	router := mux.NewRouter().SkipClean(true).UseEncodedPath()
+	router.Use(telemetry.HTTPMiddleware("1backend"))
 
 	configService, err := configservice.NewConfigService(
 		options,
@@ -505,6 +507,8 @@ func BigBang(options *universe.Options) (*Universe, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create proxy service")
 	}
+	telemetry.RegisterMetricsRoute(router, os.Getenv("OB_OTEL_METRICS_PATH"))
+
 	proxyService.RegisterRoutes(router)
 
 	router.HandleFunc("/swagger/", httpSwagger.WrapHandler)
@@ -542,6 +546,7 @@ func BigBang(options *universe.Options) (*Universe, error) {
 
 		if options.EdgeProxy || options.EdgeProxyTestMode {
 			univ.EdgeProxyHttpsRouter = mux.NewRouter().SkipClean(true).UseEncodedPath()
+			univ.EdgeProxyHttpsRouter.Use(telemetry.HTTPMiddleware("1backend-edge"))
 			proxyService.RegisterFrontendRoutes(univ.EdgeProxyHttpsRouter)
 
 			if options.EdgeProxyTestMode {
