@@ -10,32 +10,31 @@ tags:
 
 ## 1Backend server
 
-The built-in 1Backend server initializes telemetry at process startup, before services and datastores are constructed. It exposes Prometheus-format metrics at `/metrics` by default. Set `OB_OTEL_METRICS_PATH` to change that route, or `OB_OTEL_DISABLED=true` to disable telemetry.
+The built-in 1Backend server initializes telemetry by default at process startup, before services and datastores are constructed. No extra configuration is required. It exposes Prometheus-format metrics at `/metrics` by default. Set `OB_OTEL_METRICS_PATH` to change that route, or `OB_OTEL_DISABLED=true` to disable telemetry.
 
 The server records HTTP request counts, response times, response sizes, 4xx/5xx error counts, datastore operation timings, SQL statement timings, and automatic-index state. If `OB_OTEL_TRACES=true` or an OTLP trace endpoint is configured through the standard `OTEL_EXPORTER_OTLP_*` variables, traces are exported through OTLP HTTP.
 
 ## Consuming services
 
-External services should initialize telemetry once per process before constructing datastores, then instrument their router after routes are registered:
+External services should use `boot.NewOptions(serviceName, ...)`. The default options initialize telemetry the first time `LoadEnvars` runs, which happens automatically when a service creates a datastore through `options.NewDataStoreFactory()`. This makes datastore startup work visible without a separate telemetry setup call.
 
 ```go
-options := &boot.Options{SelfUrl: selfURL}
-
-shutdown, metricsPath, err := options.SetupTelemetry(context.Background(), "basic-svc")
-if err != nil {
-    return err
-}
-defer shutdown(context.Background())
+options := boot.NewOptions("basic-svc", boot.WithSelfUrl(selfURL))
+defer options.ShutdownTelemetry(context.Background())
 
 svc, err := basic.NewService(options)
 if err != nil {
     return err
 }
 
-metricsRoute := options.InstrumentRouter(svc.Router, "basic-svc", metricsPath)
+metricsRoute := options.InstrumentRouter(svc.Router, "", "")
 log.Println("metrics exposed at", metricsRoute)
 ```
 
 With the default metrics path, a service named `basic-svc` exposes `/basic-svc/metrics`, matching the usual `/service-name/endpoint` routing style. The 1Backend proxy can route that endpoint like any other service endpoint, while the service still owns the in-process metrics for its handlers and datastore calls.
 
 Services that use `options.NewDataStoreFactory()` or `infra.NewDataStoreFactory(...)` automatically get datastore instrumentation. Services with a custom datastore can wrap it with `telemetry.InstrumentDataStore(...)`.
+
+### Overrides
+
+Use `boot.WithTelemetryDisabled()` or `OB_OTEL_DISABLED=true` to turn telemetry off for a service. Use `boot.WithTelemetryConfig(telemetry.Config{...})` to override the service name, metrics path, version, or disabled flag. Existing services that construct `&boot.Options{}` directly can still call `SetupTelemetry(ctx, serviceName)` explicitly, but new services should prefer `boot.NewOptions`.

@@ -36,18 +36,11 @@ func main() {
 		selfUrl = "http://127.0.0.1:9111"
 	}
 
-	options := &boot.Options{
-		SelfUrl: selfUrl,
-	}
-
-	telemetryShutdown, metricsPath, err := options.SetupTelemetry(context.Background(), "basic-svc")
-	if err != nil {
-		log.Fatalf("Failed to initialize telemetry: %v", err)
-	}
+	options := boot.NewOptions("basic-svc", boot.WithSelfUrl(selfUrl))
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		if err := telemetryShutdown(ctx); err != nil {
+		if err := options.ShutdownTelemetry(ctx); err != nil {
 			log.Printf("Failed to shut down telemetry: %v", err)
 		}
 	}()
@@ -56,7 +49,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to initialize basic service: %v", err)
 	}
-	metricsRoute := options.InstrumentRouter(basicService.Router, "basic-svc", metricsPath)
+	metricsRoute := options.InstrumentRouter(basicService.Router, "", "")
 
 	err = basicService.Start()
 	if err != nil {

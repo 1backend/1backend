@@ -18,24 +18,88 @@ import (
 // service. Call this before constructing datastores when you want startup
 // datastore work to be visible in metrics.
 func (o *Options) SetupTelemetry(ctx context.Context, serviceName string) (telemetry.ShutdownFunc, string, error) {
-	if err := o.LoadEnvars(); err != nil {
+	if serviceName != "" {
+		o.ServiceName = serviceName
+	}
+	if err := o.loadEnvars(); err != nil {
 		return nil, "", err
 	}
-	return telemetry.Setup(ctx, telemetry.Config{
-		ServiceName: serviceName,
-	})
+	return o.ensureTelemetry(ctx, true)
 }
 
 // InstrumentRouter applies HTTP telemetry middleware and registers the
 // service metrics route. With the default metrics path, serviceName "basic-svc"
 // is exposed at /basic-svc/metrics.
 func (o *Options) InstrumentRouter(router *mux.Router, serviceName, metricsPath string) string {
-	if router == nil || metricsPath == "" {
-		return metricsPath
+	if router == nil {
+		return ""
+	}
+	if serviceName == "" {
+		serviceName = o.ServiceName
+	}
+	if serviceName == "" {
+		serviceName = o.Telemetry.ServiceName
+	}
+	if !o.telemetryInitialized && serviceName != "" {
+		_, _, _ = o.ensureTelemetry(context.Background(), false)
+	}
+	if metricsPath == "" {
+		metricsPath = o.telemetryMetricsPath
+	}
+	if metricsPath == "" {
+		return ""
 	}
 
 	metricsRoute := telemetry.ServiceMetricsPath(serviceName, metricsPath)
 	router.Use(telemetry.HTTPMiddleware(serviceName))
 	telemetry.RegisterMetricsRoute(router, metricsRoute)
 	return metricsRoute
+}
+
+// TelemetryMetricsPath returns the process metrics path chosen during
+// telemetry setup. It is empty when telemetry is disabled or not configured.
+func (o *Options) TelemetryMetricsPath() string {
+	return o.telemetryMetricsPath
+}
+
+// ShutdownTelemetry flushes and closes telemetry providers configured through
+// boot options. It is safe to call when telemetry is disabled.
+func (o *Options) ShutdownTelemetry(ctx context.Context) error {
+	if o.telemetryShutdown == nil {
+		return nil
+	}
+	return o.telemetryShutdown(ctx)
+}
+
+func (o *Options) ensureTelemetry(ctx context.Context, force bool) (telemetry.ShutdownFunc, string, error) {
+	if o.telemetryInitialized {
+		return o.telemetryShutdown, o.telemetryMetricsPath, nil
+	}
+
+	cfg := o.Telemetry
+	if cfg.ServiceName == "" {
+		cfg.ServiceName = o.ServiceName
+	}
+	if !force && cfg.ServiceName == "" {
+		return func(context.Context) error { return nil }, "", nil
+	}
+
+	setup := o.TelemetrySetup
+	if setup == nil {
+		setup = telemetry.Setup
+	}
+
+	shutdown, metricsPath, err := setup(ctx, cfg)
+	if err != nil {
+		return nil, "", err
+	}
+	if shutdown == nil {
+		shutdown = func(context.Context) error { return nil }
+	}
+
+	o.Telemetry = cfg
+	o.telemetryShutdown = shutdown
+	o.telemetryMetricsPath = metricsPath
+	o.telemetryInitialized = true
+	return shutdown, metricsPath, nil
 }

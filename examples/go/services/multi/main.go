@@ -36,18 +36,11 @@ func main() {
 		selfUrl = "http://127.0.0.1:9211"
 	}
 
-	options := &boot.Options{
-		SelfUrl: selfUrl,
-	}
-
-	telemetryShutdown, metricsPath, err := options.SetupTelemetry(context.Background(), "multi-svc")
-	if err != nil {
-		log.Fatalf("Failed to initialize telemetry: %v", err)
-	}
+	options := boot.NewOptions("multi-svc", boot.WithSelfUrl(selfUrl))
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		if err := telemetryShutdown(ctx); err != nil {
+		if err := options.ShutdownTelemetry(ctx); err != nil {
 			log.Printf("Failed to shut down telemetry: %v", err)
 		}
 	}()
@@ -56,7 +49,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to initialize multi service: %v", err)
 	}
-	metricsRoute := options.InstrumentRouter(multiService.Router, "multi-svc", metricsPath)
+	metricsRoute := options.InstrumentRouter(multiService.Router, "", "")
 
 	err = multiService.Start()
 	if err != nil {
