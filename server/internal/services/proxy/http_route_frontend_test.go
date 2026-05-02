@@ -72,6 +72,38 @@ func TestProxyService_FrontendRoute(t *testing.T) {
 
 	proxyClient := &http.Client{}
 
+	t.Run("does not expose metrics endpoints", func(t *testing.T) {
+		var metricsHits atomic.Int32
+		metricsBackend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			metricsHits.Add(1)
+			fmt.Fprint(w, "backend metrics")
+		}))
+		defer metricsBackend.Close()
+
+		t.Cleanup(func() {
+			routeReq.Routes[0].Target = openapi.PtrString(mockBackend.URL)
+			_, _, err := adminClient.ProxySvcAPI.SaveRoutes(context.Background()).Body(routeReq).Execute()
+			require.NoError(t, err)
+		})
+
+		routeReq.Routes[0].Target = openapi.PtrString(metricsBackend.URL)
+		_, _, err := adminClient.ProxySvcAPI.SaveRoutes(context.Background()).Body(routeReq).Execute()
+		require.NoError(t, err)
+
+		for _, path := range []string{"/metrics", "/basic-svc/metrics", "/basic-svc/metrics/"} {
+			req, err := http.NewRequest(http.MethodGet, edgeProxyUrl+path, nil)
+			require.NoError(t, err)
+			req.Host = "test.localhost"
+
+			resp, err := proxyClient.Do(req)
+			require.NoError(t, err)
+			defer resp.Body.Close()
+			require.Equal(t, http.StatusNotFound, resp.StatusCode)
+		}
+
+		require.Equal(t, int32(0), metricsHits.Load())
+	})
+
 	t.Run("proxies GET request to /hello", func(t *testing.T) {
 		req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/hello", edgeProxyUrl), nil)
 		require.NoError(t, err)

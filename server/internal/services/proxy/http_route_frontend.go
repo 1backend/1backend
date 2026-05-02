@@ -41,6 +41,11 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 	// 	slog.String("escapedPath", r.URL.EscapedPath()),
 	// )
 
+	if isMetricsEndpoint(r.URL.Path) || isMetricsEndpoint(r.URL.EscapedPath()) {
+		http.NotFound(w, r)
+		return
+	}
+
 	targetString, err := cs.findRouteTarget(r.Host, r.URL.EscapedPath(), r.URL.RawQuery)
 	if err != nil {
 		if herr, ok := err.(*sdk.HTTPError); ok {
@@ -232,6 +237,20 @@ func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, er
 	}
 
 	return target, nil
+}
+
+func isMetricsEndpoint(path string) bool {
+	path = strings.TrimRight(path, "/")
+	if path == "" {
+		return false
+	}
+
+	lastSegmentIdx := strings.LastIndexByte(path, '/')
+	if lastSegmentIdx >= 0 {
+		path = path[lastSegmentIdx+1:]
+	}
+
+	return strings.EqualFold(path, "metrics")
 }
 
 type responseRecorder struct {
