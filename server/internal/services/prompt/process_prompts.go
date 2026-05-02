@@ -32,84 +32,141 @@ import (
 var TimeNow = time.Now
 
 const (
-	maxRetries    = 5
-	BaseDelay     = 1 * time.Second
-	promptTimeout = 1 * time.Minute
+	maxRetries               = 5
+	BaseDelay                = 1 * time.Second
+	promptTimeout            = 1 * time.Minute
+	promptActivePollInterval = 2 * time.Second
+	promptIdlePollInterval   = 1 * time.Minute
+)
+
+type promptProcessState int
+
+const (
+	promptProcessIdle promptProcessState = iota
+	promptProcessActive
 )
 
 // a blocking method, call it in a goroutine
 func (p *PromptService) processPrompts() {
-	ticker := time.NewTicker(2000 * time.Millisecond)
-	defer ticker.Stop()
+	timer := time.NewTimer(0)
+	defer timer.Stop()
 
 	for {
 		select {
-		case <-ticker.C:
+		case <-timer.C:
 		case <-p.trigger:
 		}
 
-		err := p.processNextPrompt()
+		stopPromptTimer(timer)
+
+		state, waitFor, err := p.processNextPrompt()
 		if err != nil {
 			logger.Error("Error processing prompt",
 				slog.String("error", err.Error()),
 			)
+			state = promptProcessActive
+		}
+
+		nextPoll := promptIdlePollInterval
+		if state == promptProcessActive {
+			nextPoll = promptActivePollInterval
+		}
+		if waitFor > 0 {
+			nextPoll = waitFor
+			if nextPoll > promptIdlePollInterval {
+				nextPoll = promptIdlePollInterval
+			}
+		}
+		timer.Reset(nextPoll)
+	}
+}
+
+func stopPromptTimer(timer *time.Timer) {
+	if !timer.Stop() {
+		select {
+		case <-timer.C:
+		default:
 		}
 	}
 }
 
-func (p *PromptService) processNextPrompt() error {
+func (p *PromptService) processNextPrompt() (promptProcessState, time.Duration, error) {
 	p.runMutex.Lock()
 	defer p.runMutex.Unlock()
 
-	runningPrompts, err := p.promptsStore.Query(
-		datastore.Equals(
+	activePrompts, err := p.promptsStore.Query(
+		datastore.IsInList(
 			datastore.Field("status"),
 			prompttypes.PromptStatusRunning,
+			prompttypes.PromptStatusScheduled,
+			prompttypes.PromptStatusErrored,
 		),
-	).Find()
+	).
+		OrderBy(datastore.OrderByField("createdAt", false)).
+		Find()
 	if err != nil {
-		return err
+		return promptProcessActive, 0, err
 	}
 
 	hasRunning := false
 	runningPromptId := ""
-	for _, runningPromptI := range runningPrompts {
-		runningPrompt := runningPromptI.(*prompttypes.Prompt)
+	queuedPrompts := make([]datastore.Row, 0, len(activePrompts))
 
-		if runningPrompt.LastRun.Before(time.Now().Add(-promptTimeout)) {
+	for _, promptI := range activePrompts {
+		prompt := promptI.(*prompttypes.Prompt)
+
+		if prompt.Status == prompttypes.PromptStatusScheduled ||
+			prompt.Status == prompttypes.PromptStatusErrored {
+			queuedPrompts = append(queuedPrompts, promptI)
+			continue
+		}
+
+		if prompt.Status != prompttypes.PromptStatusRunning {
+			continue
+		}
+
+		if prompt.LastRun.Before(TimeNow().Add(-promptTimeout)) {
 			logger.Info("Setting prompt as timed out",
-				slog.String("promptId", runningPrompt.Id),
+				slog.String("promptId", prompt.Id),
 			)
 
-			runningPrompt.Status = prompttypes.PromptStatusErrored
-			runningPrompt.Error = "timed out"
+			prompt.Status = prompttypes.PromptStatusErrored
+			prompt.Error = "timed out"
 			err = p.promptsStore.Query(
-				datastore.Id(runningPrompt.Id),
-			).Update(runningPrompt)
+				datastore.Id(prompt.Id),
+			).Update(prompt)
 			if err != nil {
-				return err
+				return promptProcessActive, 0, err
 			}
+			queuedPrompts = append(queuedPrompts, prompt)
 			continue
 		}
 		hasRunning = true
-		runningPromptId = runningPrompt.Id
+		runningPromptId = prompt.Id
 	}
 
 	if hasRunning {
 		logger.Debug("Prompt is already running",
 			slog.String("promptId", runningPromptId),
 		)
-		return nil
+		return promptProcessActive, 0, nil
 	}
 
-	currentPrompt, err := SelectPrompt(p.promptsStore)
-	if err != nil {
-		return err
-	}
+	currentPrompt, hasQueuedPrompt, nextDue := selectPromptFromRows(queuedPrompts)
 	if currentPrompt == nil {
-		return nil
+		if hasQueuedPrompt {
+			return promptProcessActive, nextDue, nil
+		}
+		return promptProcessIdle, 0, nil
 	}
 
+	return promptProcessActive, 0, p.runPrompt(currentPrompt)
+}
+
+func (p *PromptService) runPrompt(currentPrompt *prompttypes.Prompt) error {
+	if p.processPromptFunc != nil {
+		return p.processPromptFunc(currentPrompt)
+	}
 	return p.processPrompt(currentPrompt)
 }
 
@@ -122,16 +179,6 @@ func (p *PromptService) processPrompt(
 			slog.String("status", string(currentPrompt.Status)),
 			slog.Any("error", err),
 		)
-
-		err = p.promptsStore.Query(
-			datastore.Id(currentPrompt.Id),
-		).Update(currentPrompt)
-		if err != nil {
-			logger.Error("Error updating prompt",
-				slog.String("promptId", currentPrompt.Id),
-				slog.String("error", err.Error()),
-			)
-		}
 
 		err = p.promptsStore.Query(
 			datastore.Id(currentPrompt.Id),

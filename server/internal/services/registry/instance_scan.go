@@ -21,8 +21,13 @@ import (
 	"github.com/pkg/errors"
 )
 
+const (
+	instanceScanInterval           = 15 * time.Second
+	instanceHeartbeatWriteInterval = 5 * time.Minute
+)
+
 func (ns *RegistryService) instanceScan() {
-	ticker := time.NewTicker(15 * time.Second)
+	ticker := time.NewTicker(instanceScanInterval)
 	defer ticker.Stop()
 
 	sigChan := make(chan os.Signal, 1)
@@ -70,10 +75,10 @@ func (ns *RegistryService) instanceScanCycle() {
 
 // scan the port of the instance to see if its available, update lastHeartbeat if it is
 func (ns *RegistryService) scanInstance(instance *registry.Instance) error {
-	now := time.Now()
+	start := time.Now()
 	listening := checkPortListening(instance.URL, 3*time.Second)
 	lastHeartbeat := time.Now()
-	duration := time.Since(now)
+	duration := time.Since(start)
 
 	var status registry.InstanceStatus
 
@@ -86,12 +91,17 @@ func (ns *RegistryService) scanInstance(instance *registry.Instance) error {
 		status = registry.InstanceStatusHealthy
 	}
 
-	updateFields := map[string]any{
-		"status": status,
+	updateFields := map[string]any{}
+	if instance.Status != status {
+		updateFields["status"] = status
 	}
 
-	if listening {
+	if listening && shouldPersistInstanceHeartbeat(instance.LastHeartbeat, lastHeartbeat) {
 		updateFields["lastHeartbeat"] = lastHeartbeat
+	}
+
+	if len(updateFields) == 0 {
+		return nil
 	}
 
 	err := ns.instanceStore.Query(datastore.Equals([]string{"id"}, instance.Id)).
@@ -101,6 +111,10 @@ func (ns *RegistryService) scanInstance(instance *registry.Instance) error {
 	}
 
 	return nil
+}
+
+func shouldPersistInstanceHeartbeat(previous time.Time, current time.Time) bool {
+	return previous.IsZero() || current.Sub(previous) >= instanceHeartbeatWriteInterval
 }
 
 func checkPortListening(address string, timeout time.Duration) bool {

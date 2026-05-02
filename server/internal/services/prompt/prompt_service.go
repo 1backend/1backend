@@ -33,8 +33,9 @@ type PromptService struct {
 	promptsStore    datastore.DataStore
 	credentialStore datastore.DataStore
 
-	runMutex sync.Mutex
-	trigger  chan bool
+	runMutex          sync.Mutex
+	trigger           chan bool
+	processPromptFunc func(*prompttypes.Prompt) error
 }
 
 func NewPromptService(
@@ -106,15 +107,23 @@ func (cs *PromptService) Start() error {
 		promptIds = append(promptIds, promptI.(*prompttypes.Prompt).Id)
 	}
 
-	err = cs.promptsStore.Query(
-		datastore.Equals(datastore.Field("id"), promptIds),
-	).UpdateFields(map[string]any{
-		"status": prompttypes.PromptStatusScheduled,
-	})
-	if err != nil {
-		return err
+	if len(promptIds) > 0 {
+		promptIdValues := make([]any, 0, len(promptIds))
+		for _, promptId := range promptIds {
+			promptIdValues = append(promptIdValues, promptId)
+		}
+
+		err = cs.promptsStore.Query(
+			datastore.IsInList(datastore.Field("id"), promptIdValues...),
+		).UpdateFields(map[string]any{
+			"status": prompttypes.PromptStatusScheduled,
+		})
+		if err != nil {
+			return err
+		}
 	}
 
+	cs.subscribePromptQueue()
 	go cs.processPrompts()
 
 	return nil

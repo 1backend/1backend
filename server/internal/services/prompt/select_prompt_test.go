@@ -105,6 +105,31 @@ func TestSelectPrompt(t *testing.T) {
 			expectedPrompt: nil,
 		},
 		{
+			name: "Running prompt",
+			prompts: []datastore.Row{
+				&prompttypes.Prompt{
+					Status:   prompttypes.PromptStatusRunning,
+					RunCount: 0,
+				},
+			},
+			expectedPrompt: nil,
+		},
+		{
+			name: "Errored prompt due",
+			prompts: []datastore.Row{
+				&prompttypes.Prompt{
+					Status:   prompttypes.PromptStatusErrored,
+					RunCount: 1,
+					LastRun:  fixedTime.Add(-promptservice.BaseDelay),
+				},
+			},
+			expectedPrompt: &prompttypes.Prompt{
+				Status:   prompttypes.PromptStatusErrored,
+				RunCount: 1,
+				LastRun:  fixedTime.Add(-promptservice.BaseDelay),
+			},
+		},
+		{
 			name: "Prompt with RunCount greater than 1, not due yet",
 			prompts: []datastore.Row{
 				&prompttypes.Prompt{
