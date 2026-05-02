@@ -37,6 +37,7 @@ import (
 // @Param body body user.ExchangeTokenRequest true "ExchangeToken Request"
 // @Success 200 {object} user.ExchangeTokenResponse "ExchangeToken successful"
 // @Failure 400 {object} user.ErrorResponse "Invalid JSON"
+// @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Failure 404 {object} user.ErrorResponse "User Not Found"
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
 // @Router /user-svc/token/exchange [put]
@@ -55,6 +56,7 @@ func (s *UserService) ExchangeToken(w http.ResponseWriter, r *http.Request) {
 
 	if request.NewAppHost == "" && request.NewAppId == "" {
 		endpoint.WriteString(w, http.StatusBadRequest, "New app host or app id is required")
+		return
 	}
 
 	claims, err := s.options.Authorizer.ParseJWTFromRequest(s.publicKeyPem, r)
@@ -64,7 +66,8 @@ func (s *UserService) ExchangeToken(w http.ResponseWriter, r *http.Request) {
 			slog.Any("error", err),
 			slog.Any("request", request),
 		)
-		endpoint.InternalServerError(w)
+		endpoint.Unauthorized(w)
+		return
 	}
 
 	token, err := s.exchangeToken(claims, &request)
@@ -91,6 +94,13 @@ func (s *UserService) exchangeToken(
 	claims *auth.Claims,
 	request *user.ExchangeTokenRequest,
 ) (*user.Token, error) {
+	if claims == nil {
+		return nil, errors.New("claims are required")
+	}
+	if request == nil {
+		return nil, errors.New("request is required")
+	}
+
 	userI, found, err := s.userStore.Query(
 		datastore.Id(claims.UserId),
 	).FindOne()
