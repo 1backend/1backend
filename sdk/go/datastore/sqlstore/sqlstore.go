@@ -95,15 +95,16 @@ func NewSQLStore(instance any, driverName string, db *sql.DB, tableName string, 
 		tableName = reflect.TypeOf(new(datastore.Row)).Elem().Name()
 	}
 
+	debugDB := NewDebugDB(db, tableName)
+	storeDB := instrumentDB(driverName, tableName, debugDB)
+
 	sstore := &SQLStore{
-		DB: &DebugDB{
-			DB: db,
-		},
+		DB:               debugDB,
 		instance:         instance,
 		driverName:       driverName,
 		tableName:        tableName,
 		placeholderStyle: placeholderStyle,
-		db:               NewDebugDB(db, tableName),
+		db:               storeDB,
 		fieldTypes:       map[string]reflect.Type{},
 		autoIndexMu:      &sync.Mutex{},
 		autoIndexLock:    options.autoIndexLock,

@@ -20,6 +20,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore/sqlstore"
 	lock "github.com/1backend/1backend/sdk/go/lock"
 	pglock "github.com/1backend/1backend/sdk/go/lock/pg"
+	"github.com/1backend/1backend/sdk/go/telemetry"
 	"github.com/pkg/errors"
 )
 
@@ -117,11 +118,12 @@ func (df *DataStoreFactoryPostgresImpl) Create(tableName string, instance any) (
 		opts = append(opts, sqlstore.WithAutoIndexLock(df.options.Lock))
 	}
 
+	fullTableName := df.options.TablePrefix + tableName
 	d, err := sqlstore.NewSQLStore(
 		instance,
 		df.options.Db,
 		df.db,
-		df.options.TablePrefix+tableName,
+		fullTableName,
 		false,
 		opts...,
 	)
@@ -131,7 +133,7 @@ func (df *DataStoreFactoryPostgresImpl) Create(tableName string, instance any) (
 
 	// d.SetDebug(df.options.Test)
 
-	return d, nil
+	return telemetry.InstrumentDataStore(df.options.Db, fullTableName, instance, d), nil
 
 }
 
@@ -163,9 +165,10 @@ func (df *DataStoreFactoryLocalImpl) Create(tableName string, instance any) (dat
 		df.localStorePath = localStorePath
 	}
 
+	fullTableName := df.options.TablePrefix + tableName
 	d, err := localstore.NewLocalStore(
 		instance,
-		path.Join(df.localStorePath, df.options.TablePrefix+tableName),
+		path.Join(df.localStorePath, fullTableName),
 	)
 	if err != nil {
 		return nil, err
@@ -173,7 +176,7 @@ func (df *DataStoreFactoryLocalImpl) Create(tableName string, instance any) (dat
 
 	//d.SetDebug(df.options.Test)
 
-	return d, nil
+	return telemetry.InstrumentDataStore("localstore", fullTableName, instance, d), nil
 }
 
 func (df *DataStoreFactoryLocalImpl) Handle() (any, error) {

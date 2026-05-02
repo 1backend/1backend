@@ -8,6 +8,7 @@
 package boot
 
 import (
+	"context"
 	"net/http"
 	"os"
 
@@ -15,11 +16,18 @@ import (
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/telemetry"
 	"github.com/pkg/errors"
 )
 
+type Option func(*Options)
+
 type Options struct {
 	Test bool
+
+	// ServiceName is the service identity used for telemetry and other
+	// service-level defaults. Use NewOptions to set this for normal services.
+	ServiceName string
 
 	// ServerUrl is the URL of the 1Backend server.
 	ServerUrl string
@@ -50,9 +58,76 @@ type Options struct {
 	// Authorizer is a helper interface that contains
 	// auth related utility functions
 	Authorizer auth.Authorizer
+
+	// Telemetry configures the default OpenTelemetry setup. It is enabled by
+	// default when ServiceName is set, and can be disabled with
+	// WithTelemetryDisabled or OB_OTEL_DISABLED=true.
+	Telemetry telemetry.Config
+
+	// TelemetrySetup overrides the telemetry setup function. This is mainly
+	// useful for tests and custom hosting environments.
+	TelemetrySetup func(context.Context, telemetry.Config) (telemetry.ShutdownFunc, string, error)
+
+	telemetryShutdown    telemetry.ShutdownFunc
+	telemetryMetricsPath string
+	telemetryInitialized bool
+}
+
+// NewOptions returns the default boot options for a service. The default set
+// includes OpenTelemetry setup; LoadEnvars starts it automatically before
+// datastore factories are created.
+func NewOptions(serviceName string, opts ...Option) *Options {
+	o := &Options{
+		ServiceName: serviceName,
+	}
+	for _, opt := range opts {
+		if opt != nil {
+			opt(o)
+		}
+	}
+	return o
+}
+
+func WithServerUrl(serverURL string) Option {
+	return func(o *Options) {
+		o.ServerUrl = serverURL
+	}
+}
+
+func WithSelfUrl(selfURL string) Option {
+	return func(o *Options) {
+		o.SelfUrl = selfURL
+	}
+}
+
+func WithTelemetryConfig(cfg telemetry.Config) Option {
+	return func(o *Options) {
+		o.Telemetry = cfg
+	}
+}
+
+func WithTelemetryDisabled() Option {
+	return func(o *Options) {
+		o.Telemetry.Disabled = true
+	}
+}
+
+func WithTelemetrySetup(setup func(context.Context, telemetry.Config) (telemetry.ShutdownFunc, string, error)) Option {
+	return func(o *Options) {
+		o.TelemetrySetup = setup
+	}
 }
 
 func (o *Options) LoadEnvars() error {
+	if err := o.loadEnvars(); err != nil {
+		return err
+	}
+
+	_, _, err := o.ensureTelemetry(context.Background(), false)
+	return err
+}
+
+func (o *Options) loadEnvars() error {
 	if o.ServerUrl == "" {
 		o.ServerUrl = os.Getenv("OB_SERVER_URL")
 	}
