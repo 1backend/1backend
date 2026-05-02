@@ -22,6 +22,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	pglock "github.com/1backend/1backend/sdk/go/lock/pg"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/telemetry"
 	"github.com/docker/go-units"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -49,7 +50,6 @@ import (
 	secretservice "github.com/1backend/1backend/server/internal/services/secret"
 	sourceservice "github.com/1backend/1backend/server/internal/services/source"
 	userservice "github.com/1backend/1backend/server/internal/services/user"
-	"github.com/1backend/1backend/server/internal/telemetry"
 	"github.com/1backend/1backend/server/internal/universe"
 )
 

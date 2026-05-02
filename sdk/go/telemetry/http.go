@@ -1,3 +1,10 @@
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package telemetry
 
 import (
@@ -29,11 +36,23 @@ var (
 )
 
 func RegisterMetricsRoute(router *mux.Router, path string) {
-	if strings.EqualFold(os.Getenv("OB_OTEL_DISABLED"), "true") {
+	if router == nil || strings.EqualFold(os.Getenv("OB_OTEL_DISABLED"), "true") {
 		return
 	}
 	path = normalizeMetricsPath(path)
 	router.Handle(path, promhttp.Handler()).Methods(http.MethodGet)
+}
+
+// ServiceMetricsPath returns a metrics route that matches the usual
+// /service-name/endpoint routing style. The default path for "basic-svc" is
+// /basic-svc/metrics; explicit non-default paths are left unchanged.
+func ServiceMetricsPath(serviceName, metricsPath string) string {
+	metricsPath = normalizeMetricsPath(metricsPath)
+	serviceName = strings.Trim(strings.TrimSpace(serviceName), "/")
+	if serviceName == "" || metricsPath != defaultMetricsPath {
+		return metricsPath
+	}
+	return "/" + serviceName + metricsPath
 }
 
 func HTTPMiddleware(serviceName string) mux.MiddlewareFunc {

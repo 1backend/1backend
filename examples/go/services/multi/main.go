@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	multi "github.com/1backend/1backend/examples/go/services/multi/internal"
 	"github.com/1backend/1backend/sdk/go/boot"
@@ -34,12 +36,27 @@ func main() {
 		selfUrl = "http://127.0.0.1:9211"
 	}
 
-	multiService, err := multi.NewService(&boot.Options{
+	options := &boot.Options{
 		SelfUrl: selfUrl,
-	})
+	}
+
+	telemetryShutdown, metricsPath, err := options.SetupTelemetry(context.Background(), "multi-svc")
+	if err != nil {
+		log.Fatalf("Failed to initialize telemetry: %v", err)
+	}
+	defer func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := telemetryShutdown(ctx); err != nil {
+			log.Printf("Failed to shut down telemetry: %v", err)
+		}
+	}()
+
+	multiService, err := multi.NewService(options)
 	if err != nil {
 		log.Fatalf("Failed to initialize multi service: %v", err)
 	}
+	metricsRoute := options.InstrumentRouter(multiService.Router, "multi-svc", metricsPath)
 
 	err = multiService.Start()
 	if err != nil {
@@ -48,5 +65,8 @@ func main() {
 	}
 
 	log.Println("Server started on " + selfUrl)
+	if metricsRoute != "" {
+		log.Println("Telemetry metrics endpoint enabled at " + metricsRoute)
+	}
 	log.Fatal(http.ListenAndServe(boot.ListenAddress(selfUrl), multiService.Router))
 }

@@ -1,3 +1,10 @@
+/**
+ * @license
+ * Copyright (c) The Authors (see the AUTHORS file)
+ *
+ * This source code is licensed under the GNU Affero General Public License v3.0 (AGPLv3).
+ * You may obtain a copy of the AGPL v3.0 at https://www.gnu.org/licenses/agpl-3.0.html.
+ */
 package telemetry
 
 import (
@@ -7,23 +14,25 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 
-	"github.com/1backend/1backend/sdk/go/logger"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/exporters/prometheus"
-	"go.opentelemetry.io/otel/propagation"
+	otelpropagation "go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/metric"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
 )
 
 const (
-	instrumentationName = "github.com/1backend/1backend/server/internal/telemetry"
-	defaultServiceName  = "1backend"
-	defaultMetricsPath  = "/metrics"
+	defaultServiceName = "1backend"
+	defaultMetricsPath = "/metrics"
 )
+
+var setupMu sync.Mutex
+var setupState *setupResult
 
 type Config struct {
 	ServiceName    string
@@ -34,9 +43,23 @@ type Config struct {
 
 type ShutdownFunc func(context.Context) error
 
+type setupResult struct {
+	shutdown    ShutdownFunc
+	metricsPath string
+}
+
+// Setup configures OpenTelemetry metrics and optional OTLP traces for the
+// current process. It is safe to call more than once in tests; the first
+// successful setup owns the process-wide OpenTelemetry provider.
 func Setup(ctx context.Context, cfg Config) (ShutdownFunc, string, error) {
 	if cfg.Disabled || strings.EqualFold(os.Getenv("OB_OTEL_DISABLED"), "true") {
 		return func(context.Context) error { return nil }, "", nil
+	}
+
+	setupMu.Lock()
+	defer setupMu.Unlock()
+	if setupState != nil {
+		return setupState.shutdown, setupState.metricsPath, nil
 	}
 
 	if cfg.ServiceName == "" {
@@ -71,9 +94,9 @@ func Setup(ctx context.Context, cfg Config) (ShutdownFunc, string, error) {
 		metric.WithReader(promExporter),
 	)
 	otel.SetMeterProvider(meterProvider)
-	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(
-		propagation.TraceContext{},
-		propagation.Baggage{},
+	otel.SetTextMapPropagator(otelpropagation.NewCompositeTextMapPropagator(
+		otelpropagation.TraceContext{},
+		otelpropagation.Baggage{},
 	))
 
 	var traceProvider *trace.TracerProvider
@@ -89,17 +112,22 @@ func Setup(ctx context.Context, cfg Config) (ShutdownFunc, string, error) {
 			trace.WithSampler(trace.ParentBased(trace.TraceIDRatioBased(traceSampleRatio()))),
 		)
 		otel.SetTracerProvider(traceProvider)
-		logger.Info("OpenTelemetry OTLP traces enabled")
 	}
 
-	return func(ctx context.Context) error {
+	result := &setupResult{
+		metricsPath: cfg.MetricsPath,
+	}
+	result.shutdown = func(ctx context.Context) error {
 		var errs []error
 		if traceProvider != nil {
 			errs = append(errs, traceProvider.Shutdown(ctx))
 		}
 		errs = append(errs, meterProvider.Shutdown(ctx))
 		return errors.Join(errs...)
-	}, cfg.MetricsPath, nil
+	}
+	setupState = result
+
+	return result.shutdown, result.metricsPath, nil
 }
 
 func envOrDefault(key, fallback string) string {

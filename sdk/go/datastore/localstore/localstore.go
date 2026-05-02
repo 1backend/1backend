@@ -12,7 +12,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"path/filepath"
 	"reflect"
 	"sort"
 	"strings"
@@ -23,7 +22,6 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore/indexplanner"
 	"github.com/1backend/1backend/sdk/go/datastore/localstore/statemanager"
 	"github.com/1backend/1backend/sdk/go/reflector"
-	"github.com/1backend/1backend/sdk/go/telemetry"
 	"github.com/flusflas/dipper"
 	"github.com/google/uuid"
 )
@@ -93,8 +91,6 @@ func NewLocalStore(instance any, filePath string) (*LocalStore, error) {
 	}
 
 	go sm.PeriodicSaveState(10 * time.Second)
-
-	telemetry.RegisterAutoIndexStatsProvider("localstore", filepath.Base(filePath), ls)
 
 	return ls, nil
 }

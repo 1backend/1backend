@@ -8,13 +8,10 @@
 package sqlstore
 
 import (
-	"context"
 	"database/sql"
 	"fmt"
-	"time"
 
 	"github.com/1backend/1backend/sdk/go/logger"
-	"github.com/1backend/1backend/sdk/go/telemetry"
 	"github.com/davecgh/go-spew/spew"
 )
 
@@ -25,8 +22,7 @@ type DebugDB struct {
 	// skipExec is only here to avoid having to use a mock for the tests
 	skipExec bool
 
-	tableName  string
-	driverName string
+	tableName string
 
 	// when debug is enabled all queries are stored here
 	queries []string
@@ -35,9 +31,8 @@ type DebugDB struct {
 
 type DebugTx struct {
 	*sql.Tx
-	debug      bool
-	tableName  string
-	driverName string
+	debug     bool
+	tableName string
 
 	// skipExec is only here to avoid having to use a mock for the tests
 	skipExec bool
@@ -47,22 +42,15 @@ type DebugTx struct {
 	values  [][]interface{}
 }
 
-func NewDebugDB(db *sql.DB, tableName string, driverName ...string) *DebugDB {
-	driver := ""
-	if len(driverName) > 0 {
-		driver = driverName[0]
-	}
+func NewDebugDB(db *sql.DB, tableName string) *DebugDB {
 	return &DebugDB{
-		DB:         db,
-		tableName:  tableName,
-		driverName: driver,
+		DB:        db,
+		tableName: tableName,
 	}
 }
 
 func (db *DebugDB) Query(query string, args ...interface{}) (*sql.Rows, error) {
-	started := time.Now()
 	res, err := db.DB.Query(query, args...)
-	telemetry.RecordSQLStatement(context.Background(), db.driverName, db.tableName, query, started, err)
 	db.logQuery(query, err, args...)
 	return res, err
 }
@@ -80,7 +68,6 @@ func (db *DebugDB) SkipExec(skip bool) {
 }
 
 func (db *DebugDB) Exec(query string, args ...interface{}) (sql.Result, error) {
-	started := time.Now()
 	var (
 		res sql.Result
 		err error
@@ -88,13 +75,11 @@ func (db *DebugDB) Exec(query string, args ...interface{}) (sql.Result, error) {
 	if !db.skipExec {
 		res, err = db.DB.Exec(query, args...)
 	}
-	telemetry.RecordSQLStatement(context.Background(), db.driverName, db.tableName, query, started, err)
 	db.logQuery(query, err, args...)
 	return res, err
 }
 
 func (db *DebugDB) Prepare(query string) (*sql.Stmt, error) {
-	started := time.Now()
 	var (
 		res *sql.Stmt
 		err error
@@ -102,7 +87,6 @@ func (db *DebugDB) Prepare(query string) (*sql.Stmt, error) {
 	if !db.skipExec {
 		res, err = db.DB.Prepare(query)
 	}
-	telemetry.RecordSQLStatement(context.Background(), db.driverName, db.tableName, query, started, err)
 	db.logQuery(query, err, nil)
 	return res, err
 }
@@ -125,15 +109,13 @@ func (db *DebugDB) Begin() (Tx, error) {
 		return nil, err
 	}
 	return &DebugTx{
-		Tx:         tx,
-		debug:      db.debug,
-		tableName:  db.tableName,
-		driverName: db.driverName,
+		Tx:        tx,
+		debug:     db.debug,
+		tableName: db.tableName,
 	}, nil
 }
 
 func (db *DebugTx) Query(query string, args ...interface{}) (*sql.Rows, error) {
-	started := time.Now()
 	var (
 		res *sql.Rows
 		err error
@@ -142,13 +124,11 @@ func (db *DebugTx) Query(query string, args ...interface{}) (*sql.Rows, error) {
 		res, err = db.Tx.Query(query, args...)
 	}
 
-	telemetry.RecordSQLStatement(context.Background(), db.driverName, db.tableName, query, started, err)
 	db.logQuery(query, err, args...)
 	return res, err
 }
 
 func (db *DebugTx) Exec(query string, args ...interface{}) (sql.Result, error) {
-	started := time.Now()
 	var (
 		res sql.Result
 		err error
@@ -156,13 +136,11 @@ func (db *DebugTx) Exec(query string, args ...interface{}) (sql.Result, error) {
 	if !db.skipExec {
 		res, err = db.Tx.Exec(query, args...)
 	}
-	telemetry.RecordSQLStatement(context.Background(), db.driverName, db.tableName, query, started, err)
 	db.logQuery(query, err, args...)
 	return res, err
 }
 
 func (db *DebugTx) Prepare(query string) (*sql.Stmt, error) {
-	started := time.Now()
 	var (
 		res *sql.Stmt
 		err error
@@ -170,7 +148,6 @@ func (db *DebugTx) Prepare(query string) (*sql.Stmt, error) {
 	if db.skipExec {
 		res, err = db.Tx.Prepare(query)
 	}
-	telemetry.RecordSQLStatement(context.Background(), db.driverName, db.tableName, query, started, err)
 	db.logQuery(query, err)
 	return res, err
 }

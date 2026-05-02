@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	basic "github.com/1backend/1backend/examples/go/services/basic/internal"
 	"github.com/1backend/1backend/sdk/go/boot"
@@ -34,12 +36,27 @@ func main() {
 		selfUrl = "http://127.0.0.1:9111"
 	}
 
-	basicService, err := basic.NewService(&boot.Options{
+	options := &boot.Options{
 		SelfUrl: selfUrl,
-	})
+	}
+
+	telemetryShutdown, metricsPath, err := options.SetupTelemetry(context.Background(), "basic-svc")
+	if err != nil {
+		log.Fatalf("Failed to initialize telemetry: %v", err)
+	}
+	defer func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := telemetryShutdown(ctx); err != nil {
+			log.Printf("Failed to shut down telemetry: %v", err)
+		}
+	}()
+
+	basicService, err := basic.NewService(options)
 	if err != nil {
 		log.Fatalf("Failed to initialize basic service: %v", err)
 	}
+	metricsRoute := options.InstrumentRouter(basicService.Router, "basic-svc", metricsPath)
 
 	err = basicService.Start()
 	if err != nil {
@@ -48,5 +65,8 @@ func main() {
 	}
 
 	log.Println("Server started on " + selfUrl)
+	if metricsRoute != "" {
+		log.Println("Telemetry metrics endpoint enabled at " + metricsRoute)
+	}
 	log.Fatal(http.ListenAndServe(boot.ListenAddress(selfUrl), basicService.Router))
 }

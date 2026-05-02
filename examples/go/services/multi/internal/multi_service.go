@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	openapi "github.com/1backend/1backend/clients/go"
-	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
@@ -39,19 +38,11 @@ type Options struct {
 }
 
 func NewService(options *boot.Options) (*MultiService, error) {
-	options.LoadEnvars()
-
-	dconf := infra.DataStoreConfig{}
-	if options.Test {
-		dconf.Test = true
-		dconf.TablePrefix = "t_" + sdk.Id("")
-	}
-
 	service := &MultiService{
 		Options: options,
 	}
 
-	dsf, err := infra.NewDataStoreFactory(dconf)
+	dsf, err := options.NewDataStoreFactory()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot create datastore factory")
 	}

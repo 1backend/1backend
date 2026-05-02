@@ -25,7 +25,6 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore/indexplanner"
 	lock "github.com/1backend/1backend/sdk/go/lock"
 	"github.com/1backend/1backend/sdk/go/logger"
-	"github.com/1backend/1backend/sdk/go/telemetry"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/lib/pq"
 	_ "github.com/lib/pq"
@@ -96,15 +95,16 @@ func NewSQLStore(instance any, driverName string, db *sql.DB, tableName string, 
 		tableName = reflect.TypeOf(new(datastore.Row)).Elem().Name()
 	}
 
+	debugDB := NewDebugDB(db, tableName)
+	storeDB := instrumentDB(driverName, tableName, debugDB)
+
 	sstore := &SQLStore{
-		DB: &DebugDB{
-			DB: db,
-		},
+		DB:               debugDB,
 		instance:         instance,
 		driverName:       driverName,
 		tableName:        tableName,
 		placeholderStyle: placeholderStyle,
-		db:               NewDebugDB(db, tableName, driverName),
+		db:               storeDB,
 		fieldTypes:       map[string]reflect.Type{},
 		autoIndexMu:      &sync.Mutex{},
 		autoIndexLock:    options.autoIndexLock,
@@ -144,8 +144,6 @@ func NewSQLStore(instance any, driverName string, db *sql.DB, tableName string, 
 	if err := sstore.initAutoIndexes(instance); err != nil {
 		return nil, errors.Wrap(err, "error initializing automatic indexes")
 	}
-
-	telemetry.RegisterAutoIndexStatsProvider(driverName, tableName, sstore)
 
 	return sstore, nil
 }

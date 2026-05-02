@@ -16,10 +16,10 @@ import (
 	"time"
 
 	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/1backend/1backend/sdk/go/telemetry"
 	_ "github.com/1backend/1backend/server/docs"
 	"github.com/1backend/1backend/server/internal/di"
 	"github.com/1backend/1backend/server/internal/router"
-	"github.com/1backend/1backend/server/internal/telemetry"
 	"github.com/1backend/1backend/server/internal/universe"
 )
 
