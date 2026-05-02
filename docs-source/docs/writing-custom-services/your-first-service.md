@@ -25,6 +25,8 @@ You may notice that the following code uses a "Go SDK"—this is simply a set of
 
 The full code, including tests, is available in the [examples directory](https://github.com/1backend/1backend/tree/main/examples/go/services/basic).
 
+The example below uses `options.NewDataStoreFactory()` as the newer convenience path for SDK boot options. Existing services that already use `infra.NewDataStoreFactory(...)` do not need to migrate their datastore code; that factory remains supported and returns telemetry-instrumented stores.
+
 ```go
 // <!-- INCLUDE: ../../../examples/go/services/basic/internal/basic_service.go -->
 package basicservice
@@ -35,7 +37,6 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	basic "github.com/1backend/1backend/examples/go/services/basic/internal/types"
-	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/boot"
 	"github.com/1backend/1backend/sdk/go/client"
@@ -68,19 +69,11 @@ type Options struct {
 }
 
 func NewService(options *boot.Options) (*BasicService, error) {
-	options.LoadEnvars()
-
-	dconf := infra.DataStoreConfig{}
-	if options.Test {
-		dconf.Test = true
-		dconf.TablePrefix = "t_" + sdk.Id("")
-	}
-
 	service := &BasicService{
 		Options: options,
 	}
 
-	dsf, err := infra.NewDataStoreFactory(dconf)
+	dsf, err := options.NewDataStoreFactory()
 	if err != nil {
 		return nil, errors.Wrap(err, "cannot create datastore factory")
 	}

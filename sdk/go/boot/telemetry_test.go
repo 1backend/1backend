@@ -7,10 +7,21 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/1backend/1backend/sdk/go/datastore"
+	"github.com/1backend/1backend/sdk/go/infra"
 	"github.com/1backend/1backend/sdk/go/telemetry"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/require"
 )
+
+type telemetryFactoryObject struct {
+	Id   string
+	Name string
+}
+
+func (o telemetryFactoryObject) GetId() string {
+	return o.Id
+}
 
 func TestOptionsTelemetryInstrumentsServiceRouter(t *testing.T) {
 	options := &Options{}
@@ -43,6 +54,79 @@ func TestOptionsTelemetryInstrumentsServiceRouter(t *testing.T) {
 	require.Contains(t, string(body), "onebackend_http_server_requests_total")
 	require.Contains(t, string(body), `service_name="boot-test-svc"`)
 	require.Contains(t, string(body), `http_route="/boot-test-svc/ping"`)
+}
+
+func TestServiceTelemetryHelpersInstrumentRouterWithoutOptions(t *testing.T) {
+	_, metricsPath, err := SetupServiceTelemetry(t.Context(), "helper-test-svc")
+	require.NoError(t, err)
+
+	router := mux.NewRouter()
+	metricsRoute := InstrumentServiceRouter(router, "helper-test-svc", metricsPath)
+	require.Equal(t, "/helper-test-svc/metrics", metricsRoute)
+
+	router.HandleFunc("/helper-test-svc/ping", func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = w.Write([]byte("pong"))
+	}).Methods(http.MethodGet)
+
+	server := httptest.NewServer(router)
+	defer server.Close()
+
+	resp, err := http.Get(server.URL + "/helper-test-svc/ping")
+	require.NoError(t, err)
+	require.Equal(t, http.StatusOK, resp.StatusCode)
+	require.NoError(t, resp.Body.Close())
+
+	resp, err = http.Get(server.URL + metricsRoute)
+	require.NoError(t, err)
+	defer resp.Body.Close()
+	require.Equal(t, http.StatusOK, resp.StatusCode)
+
+	body, err := io.ReadAll(resp.Body)
+	require.NoError(t, err)
+	require.Contains(t, string(body), "onebackend_http_server_requests_total")
+	require.Contains(t, string(body), `service_name="helper-test-svc"`)
+	require.Contains(t, string(body), `http_route="/helper-test-svc/ping"`)
+}
+
+func TestInfraDataStoreFactoryEmitsTelemetryMetrics(t *testing.T) {
+	_, metricsPath, err := SetupServiceTelemetry(t.Context(), "infra-telemetry-test-svc")
+	require.NoError(t, err)
+
+	router := mux.NewRouter()
+	metricsRoute := InstrumentServiceRouter(router, "infra-telemetry-test-svc", metricsPath)
+	require.Equal(t, "/infra-telemetry-test-svc/metrics", metricsRoute)
+
+	server := httptest.NewServer(router)
+	defer server.Close()
+
+	factory, err := infra.NewDataStoreFactory(infra.DataStoreConfig{
+		HomeDir: t.TempDir(),
+	})
+	require.NoError(t, err)
+
+	store, err := factory.Create("telemetryObjects", telemetryFactoryObject{})
+	require.NoError(t, err)
+
+	require.NoError(t, store.Create(telemetryFactoryObject{
+		Id:   "row-1",
+		Name: "Ada",
+	}))
+	_, err = store.Query(datastore.Equals(datastore.Field("Name"), "Ada")).Find()
+	require.NoError(t, err)
+
+	resp, err := http.Get(server.URL + metricsRoute)
+	require.NoError(t, err)
+	defer resp.Body.Close()
+	require.Equal(t, http.StatusOK, resp.StatusCode)
+
+	bodyBytes, err := io.ReadAll(resp.Body)
+	require.NoError(t, err)
+	body := string(bodyBytes)
+
+	require.Contains(t, body, "onebackend_datastore_operations_total")
+	require.Contains(t, body, "onebackend_datastore_operation_duration_seconds")
+	require.Contains(t, body, "onebackend_datastore_autoindex_supported")
+	require.Contains(t, body, `db_collection_name="telemetryObjects"`)
 }
 
 func TestNewOptionsLoadsTelemetryByDefault(t *testing.T) {

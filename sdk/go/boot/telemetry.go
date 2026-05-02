@@ -14,6 +14,31 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// SetupServiceTelemetry initializes process-wide OpenTelemetry for a service
+// without requiring boot.Options. Existing services that already construct
+// datastores with infra.NewDataStoreFactory can call this during startup, then
+// pass the returned metrics path to InstrumentServiceRouter.
+func SetupServiceTelemetry(ctx context.Context, serviceName string) (telemetry.ShutdownFunc, string, error) {
+	return telemetry.Setup(ctx, telemetry.Config{
+		ServiceName: serviceName,
+	})
+}
+
+// InstrumentServiceRouter applies HTTP telemetry middleware and registers the
+// service metrics route without requiring boot.Options. Pass the metricsPath
+// returned by SetupServiceTelemetry; when telemetry is disabled that path is
+// empty, and this function leaves the router unchanged.
+func InstrumentServiceRouter(router *mux.Router, serviceName, metricsPath string) string {
+	if router == nil || metricsPath == "" {
+		return ""
+	}
+
+	metricsRoute := telemetry.ServiceMetricsPath(serviceName, metricsPath)
+	router.Use(telemetry.HTTPMiddleware(serviceName))
+	telemetry.RegisterMetricsRoute(router, metricsRoute)
+	return metricsRoute
+}
+
 // SetupTelemetry initializes the process-wide OpenTelemetry provider for a
 // service. Call this before constructing datastores when you want startup
 // datastore work to be visible in metrics.
@@ -50,10 +75,7 @@ func (o *Options) InstrumentRouter(router *mux.Router, serviceName, metricsPath 
 		return ""
 	}
 
-	metricsRoute := telemetry.ServiceMetricsPath(serviceName, metricsPath)
-	router.Use(telemetry.HTTPMiddleware(serviceName))
-	telemetry.RegisterMetricsRoute(router, metricsRoute)
-	return metricsRoute
+	return InstrumentServiceRouter(router, serviceName, metricsPath)
 }
 
 // TelemetryMetricsPath returns the process metrics path chosen during

@@ -16,7 +16,33 @@ The server records HTTP request counts, response times, response sizes, 4xx/5xx 
 
 ## Consuming services
 
-External services should use `boot.NewOptions(serviceName, ...)`. The default options initialize telemetry the first time `LoadEnvars` runs, which happens automatically when a service creates a datastore through `options.NewDataStoreFactory()`. This makes datastore startup work visible without a separate telemetry setup call.
+Existing services that already use `infra.NewDataStoreFactory(...)` do not need to change their datastore construction. That factory remains supported and automatically wraps created stores with datastore telemetry. To expose in-process HTTP and datastore metrics, add one telemetry setup call during startup and instrument the service router after routes are registered:
+
+```go
+shutdown, metricsPath, err := boot.SetupServiceTelemetry(context.Background(), "basic-svc")
+if err != nil {
+    return err
+}
+defer shutdown(context.Background())
+
+dataStoreFactory, err := infra.NewDataStoreFactory(infra.DataStoreConfig{})
+if err != nil {
+    return err
+}
+
+_, err = dataStoreFactory.Create("basicSvcPets", &basic.Pet{})
+if err != nil {
+    return err
+}
+
+router := mux.NewRouter()
+// Register service routes on router...
+
+metricsRoute := boot.InstrumentServiceRouter(router, "basic-svc", metricsPath)
+log.Println("metrics exposed at", metricsRoute)
+```
+
+New services can use `boot.NewOptions(serviceName, ...)` as a convenience. The default options initialize telemetry the first time `LoadEnvars` runs, which happens automatically when a service creates a datastore through `options.NewDataStoreFactory()`.
 
 ```go
 options := boot.NewOptions("basic-svc", boot.WithSelfUrl(selfURL))
@@ -33,8 +59,8 @@ log.Println("metrics exposed at", metricsRoute)
 
 With the default metrics path, a service named `basic-svc` exposes `/basic-svc/metrics`, matching the usual `/service-name/endpoint` routing style. The 1Backend proxy can route that endpoint like any other service endpoint, while the service still owns the in-process metrics for its handlers and datastore calls.
 
-Services that use `options.NewDataStoreFactory()` or `infra.NewDataStoreFactory(...)` automatically get datastore instrumentation. Services with a custom datastore can wrap it with `telemetry.InstrumentDataStore(...)`.
+Services that use `infra.NewDataStoreFactory(...)` or `options.NewDataStoreFactory()` automatically get datastore instrumentation. Services with a custom datastore can wrap it with `telemetry.InstrumentDataStore(...)`.
 
 ### Overrides
 
-Use `boot.WithTelemetryDisabled()` or `OB_OTEL_DISABLED=true` to turn telemetry off for a service. Use `boot.WithTelemetryConfig(telemetry.Config{...})` to override the service name, metrics path, version, or disabled flag. Existing services that construct `&boot.Options{}` directly can still call `SetupTelemetry(ctx, serviceName)` explicitly, but new services should prefer `boot.NewOptions`.
+Use `boot.WithTelemetryDisabled()` or `OB_OTEL_DISABLED=true` to turn telemetry off for a service using `boot.NewOptions`. Use `boot.WithTelemetryConfig(telemetry.Config{...})` to override the service name, metrics path, version, or disabled flag. Existing services that construct `&boot.Options{}` directly can still call `SetupTelemetry(ctx, serviceName)` explicitly.
