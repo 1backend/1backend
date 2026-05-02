@@ -139,7 +139,7 @@ func (p *PromptService) prompt(
 		logger.Error("Failed to publish firehose event", slog.Any("error", err))
 	}
 
-	go p.triggerPromptProcessing()
+	go p.notifyPromptQueued(context.Background(), prompt.Id)
 
 	rsp := &prompttypes.PromptResponse{
 		Prompt: prompt,
