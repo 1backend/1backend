@@ -3,6 +3,9 @@ package userservice_test
 import (
 	"context"
 	"fmt"
+	"io"
+	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -118,6 +121,67 @@ func TestExchangeToken(t *testing.T) {
 		require.Equal(t, "new-device", exchangedClaim.Device)
 		require.Equal(t, newApp, rsp.Token.App.Host)
 	})
+}
+
+func TestExchangeToken_UnauthorizedRequestReturns401(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{
+		Test: true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	req, err := http.NewRequest(
+		http.MethodPut,
+		server.Url+"/user-svc/token/exchange",
+		strings.NewReader(`{"newAppHost":"some-other-app"}`),
+	)
+	require.NoError(t, err)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	require.NoError(t, err)
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	require.NoError(t, err)
+
+	require.Equal(t, http.StatusUnauthorized, resp.StatusCode)
+	require.Equal(t, `{"error": "Unauthorized"}`, string(body))
+}
+
+func TestExchangeToken_MissingTargetAppReturns400Only(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{
+		Test: true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+	_, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
+	require.NoError(t, err)
+
+	req, err := http.NewRequest(
+		http.MethodPut,
+		server.Url+"/user-svc/token/exchange",
+		strings.NewReader(`{}`),
+	)
+	require.NoError(t, err)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+tokens[0].Token)
+
+	resp, err := http.DefaultClient.Do(req)
+	require.NoError(t, err)
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	require.NoError(t, err)
+
+	require.Equal(t, http.StatusBadRequest, resp.StatusCode)
+	require.Equal(t, `{"error": "New app host or app id is required"}`, string(body))
 }
 
 func TestExchangeToken_SameAppPreservesDeviceScopedActiveOrganization(t *testing.T) {

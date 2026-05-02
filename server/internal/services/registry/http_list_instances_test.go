@@ -38,7 +38,9 @@ func TestListInstances(t *testing.T) {
 
 	client1 := manyClients[0]
 
-	t.Run("register instance", func(t *testing.T) {
+	registerInstance := func(t *testing.T) {
+		t.Helper()
+
 		_, _, err = client1.RegistrySvcAPI.RegisterInstance(
 			context.Background(),
 		).Body(
@@ -46,6 +48,10 @@ func TestListInstances(t *testing.T) {
 				Url: mockBackend.URL,
 			}).Execute()
 		require.NoError(t, err, err)
+	}
+
+	t.Run("register instance", func(t *testing.T) {
+		registerInstance(t)
 	})
 
 	t.Run("list instances", func(t *testing.T) {
@@ -59,7 +65,8 @@ func TestListInstances(t *testing.T) {
 	})
 
 	t.Run("list instances works after the token expires", func(t *testing.T) {
-		time.Sleep(1 * time.Second)
+		registerInstance(t)
+		time.Sleep(1100 * time.Millisecond)
 
 		resp, _, err := client1.RegistrySvcAPI.ListInstances(
 			context.Background(),
