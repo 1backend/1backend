@@ -22,6 +22,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	pglock "github.com/1backend/1backend/sdk/go/lock/pg"
 	"github.com/1backend/1backend/sdk/go/middlewares"
+	"github.com/1backend/1backend/sdk/go/telemetry"
 	"github.com/docker/go-units"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -272,6 +273,7 @@ func BigBang(options *universe.Options) (*Universe, error) {
 	}
 
 	router := mux.NewRouter().SkipClean(true).UseEncodedPath()
+	router.Use(telemetry.HTTPMiddleware("1backend"))
 
 	configService, err := configservice.NewConfigService(
 		options,
@@ -505,6 +507,8 @@ func BigBang(options *universe.Options) (*Universe, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create proxy service")
 	}
+	telemetry.RegisterMetricsRoute(router, os.Getenv("OB_OTEL_METRICS_PATH"))
+
 	proxyService.RegisterRoutes(router)
 
 	router.HandleFunc("/swagger/", httpSwagger.WrapHandler)
@@ -542,6 +546,7 @@ func BigBang(options *universe.Options) (*Universe, error) {
 
 		if options.EdgeProxy || options.EdgeProxyTestMode {
 			univ.EdgeProxyHttpsRouter = mux.NewRouter().SkipClean(true).UseEncodedPath()
+			univ.EdgeProxyHttpsRouter.Use(telemetry.HTTPMiddleware("1backend-edge"))
 			proxyService.RegisterFrontendRoutes(univ.EdgeProxyHttpsRouter)
 
 			if options.EdgeProxyTestMode {

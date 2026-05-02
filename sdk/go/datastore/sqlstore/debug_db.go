@@ -11,8 +11,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/davecgh/go-spew/spew"
 )
 
 type DebugDB struct {
@@ -141,11 +141,15 @@ func (db *DebugTx) Exec(query string, args ...interface{}) (sql.Result, error) {
 }
 
 func (db *DebugTx) Prepare(query string) (*sql.Stmt, error) {
-	db.logQuery(query, nil)
+	var (
+		res *sql.Stmt
+		err error
+	)
 	if db.skipExec {
-		return db.Tx.Prepare(query)
+		res, err = db.Tx.Prepare(query)
 	}
-	return nil, nil
+	db.logQuery(query, err)
+	return res, err
 }
 
 func (db *DebugTx) logQuery(query string, err error, args ...interface{}) {
