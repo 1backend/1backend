@@ -10,6 +10,7 @@ package registryservice
 import (
 	"log/slog"
 	"net/http"
+	"strings"
 
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
@@ -74,12 +75,16 @@ func (rs *RegistryService) ListInstances(
 
 	isAdmin, err := rs.options.Authorizer.IsAdminFromRequest(publicKey, r)
 	if err != nil {
-		logger.Error(
-			"Error checking if user is admin",
-			slog.Any("error", err),
-		)
-		endpoint.InternalServerError(w)
-		return
+		if strings.Contains(err.Error(), "token is expired") {
+			isAdmin = false
+		} else {
+			logger.Error(
+				"Error checking if user is admin",
+				slog.Any("error", err),
+			)
+			endpoint.InternalServerError(w)
+			return
+		}
 	}
 
 	instances, err := rs.getInstances(isAuthRsp.User.Slug, isAdmin, List{
