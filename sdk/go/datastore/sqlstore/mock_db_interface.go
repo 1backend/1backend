@@ -107,6 +107,25 @@ func (mr *MockTxMockRecorder) Query(query any, args ...any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Query", reflect.TypeOf((*MockTx)(nil).Query), varargs...)
 }
 
+// QueryRow mocks base method.
+func (m *MockTx) QueryRow(query string, args ...any) *sql.Row {
+	m.ctrl.T.Helper()
+	varargs := []any{query}
+	for _, a := range args {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "QueryRow", varargs...)
+	ret0, _ := ret[0].(*sql.Row)
+	return ret0
+}
+
+// QueryRow indicates an expected call of QueryRow.
+func (mr *MockTxMockRecorder) QueryRow(query any, args ...any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]any{query}, args...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "QueryRow", reflect.TypeOf((*MockTx)(nil).QueryRow), varargs...)
+}
+
 // Rollback mocks base method.
 func (m *MockTx) Rollback() error {
 	m.ctrl.T.Helper()

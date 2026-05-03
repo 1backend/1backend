@@ -43,6 +43,9 @@ type Options struct {
 	// "postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
 	DbConnectionString string
 
+	// Optional read-replica connection string.
+	ReadDbConnectionString string
+
 	// Crucial for distributed features.
 	// Please see the documentation for the envar OB_NODE_ID
 	NodeId string
@@ -147,27 +150,28 @@ func StartService(options Options) (*ServiceProcess, error) {
 	}
 
 	envVars := map[string]string{
-		"OB_TEST":                   fmt.Sprintf("%v", options.Test),
-		"OB_SELF_URL":               options.Url,
-		"OB_FOLDER":                 options.ConfigPath,
-		"OB_SERVER_URL":             options.ServerUrl,
-		"OB_GPU_PLATFORM":           options.GpuPlatform,
-		"OB_NODE_ID":                options.NodeId,
-		"OB_AZ":                     options.Az,
-		"OB_REGION":                 options.Region,
-		"OB_LLM_HOST":               options.LLMHost,
-		"OB_VOLUME_NAME":            options.VolumeName,
-		"OB_DB_PREFIX":              options.DbPrefix,
-		"OB_DB":                     options.Db,
-		"OB_DB_CONNECTION_STRING":   options.DbConnectionString,
-		"OB_ENCRYPTION_KEY":         options.SecretEncryptionKey,
-		"OB_TOKEN_EXPIRATION":       fmt.Sprintf("%v", options.TokenExpiration),
-		"OB_TOKEN_AUTO_REFRESH_OFF": fmt.Sprintf("%v", options.TokenAutoRefreshOff),
-		"OB_EDGE_PROXY":             fmt.Sprintf("%v", options.EdgeProxy),
-		"OB_EDGE_PROXY_TEST_MODE":   fmt.Sprintf("%v", options.EdgeProxyTestMode),
-		"OB_EDGE_PROXY_HTTP_PORT":   fmt.Sprintf("%v", options.EdgeProxyHttpPort),
-		"OB_EDGE_PROXY_HTTPS_PORT":  fmt.Sprintf("%v", options.EdgeProxyHttpsPort),
-		"OB_VERIFY_CONTACTS":        fmt.Sprintf("%v", options.VerifyContacts),
+		"OB_TEST":                      fmt.Sprintf("%v", options.Test),
+		"OB_SELF_URL":                  options.Url,
+		"OB_FOLDER":                    options.ConfigPath,
+		"OB_SERVER_URL":                options.ServerUrl,
+		"OB_GPU_PLATFORM":              options.GpuPlatform,
+		"OB_NODE_ID":                   options.NodeId,
+		"OB_AZ":                        options.Az,
+		"OB_REGION":                    options.Region,
+		"OB_LLM_HOST":                  options.LLMHost,
+		"OB_VOLUME_NAME":               options.VolumeName,
+		"OB_DB_PREFIX":                 options.DbPrefix,
+		"OB_DB":                        options.Db,
+		"OB_DB_CONNECTION_STRING":      options.DbConnectionString,
+		"OB_DB_READ_CONNECTION_STRING": options.ReadDbConnectionString,
+		"OB_ENCRYPTION_KEY":            options.SecretEncryptionKey,
+		"OB_TOKEN_EXPIRATION":          fmt.Sprintf("%v", options.TokenExpiration),
+		"OB_TOKEN_AUTO_REFRESH_OFF":    fmt.Sprintf("%v", options.TokenAutoRefreshOff),
+		"OB_EDGE_PROXY":                fmt.Sprintf("%v", options.EdgeProxy),
+		"OB_EDGE_PROXY_TEST_MODE":      fmt.Sprintf("%v", options.EdgeProxyTestMode),
+		"OB_EDGE_PROXY_HTTP_PORT":      fmt.Sprintf("%v", options.EdgeProxyHttpPort),
+		"OB_EDGE_PROXY_HTTPS_PORT":     fmt.Sprintf("%v", options.EdgeProxyHttpsPort),
+		"OB_VERIFY_CONTACTS":           fmt.Sprintf("%v", options.VerifyContacts),
 	}
 
 	for key, value := range envVars {

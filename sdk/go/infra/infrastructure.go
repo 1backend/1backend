@@ -23,6 +23,8 @@ type InfrastructureOptions struct {
 
 	DbConnectionString string
 
+	ReadDbConnectionString string
+
 	HomeDir string
 }
 
@@ -60,11 +62,15 @@ func NewInfrastructure(options InfrastructureOptions) (*Infrastructure, error) {
 	if options.DbConnectionString == "" {
 		options.DbConnectionString = os.Getenv("OB_DB_CONNECTION_STRING")
 	}
+	if options.ReadDbConnectionString == "" {
+		options.ReadDbConnectionString = os.Getenv("OB_DB_READ_CONNECTION_STRING")
+	}
 
 	dopts := DataStoreConfig{
-		HomeDir:            options.HomeDir,
-		Db:                 options.Db,
-		DbConnectionString: options.DbConnectionString,
+		HomeDir:                options.HomeDir,
+		Db:                     options.Db,
+		DbConnectionString:     options.DbConnectionString,
+		ReadDbConnectionString: options.ReadDbConnectionString,
 	}
 
 	dataStoreFactory, err := NewDataStoreFactory(dopts)

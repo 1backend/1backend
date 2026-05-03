@@ -101,6 +101,13 @@ func (tx *otelTx) Query(query string, args ...interface{}) (*sql.Rows, error) {
 	return res, err
 }
 
+func (tx *otelTx) QueryRow(query string, args ...interface{}) *sql.Row {
+	started := time.Now()
+	row := tx.tx.QueryRow(query, args...)
+	telemetry.RecordSQLStatement(context.Background(), tx.driverName, tx.tableName, query, started, nil)
+	return row
+}
+
 func (tx *otelTx) Exec(query string, args ...interface{}) (sql.Result, error) {
 	started := time.Now()
 	res, err := tx.tx.Exec(query, args...)

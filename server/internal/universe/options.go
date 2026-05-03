@@ -37,6 +37,9 @@ type Options struct {
 	// "postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
 	DbConnectionString string
 
+	// Optional read-replica connection string.
+	ReadDbConnectionString string
+
 	// Crucial for distributed features.
 	// Please see the documentation for the envar OB_NODE_ID
 	NodeId string

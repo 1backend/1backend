@@ -53,6 +53,7 @@ type SQLStore struct {
 	// an instance of the object for the type information
 	instance         any
 	db               DB
+	readDB           DB
 	mu               sync.RWMutex
 	inTransaction    bool
 	tx               Tx
@@ -72,11 +73,18 @@ type SQLStoreOption func(*sqlStoreOptions)
 
 type sqlStoreOptions struct {
 	autoIndexLock lock.DistributedLock
+	readDB        *sql.DB
 }
 
 func WithAutoIndexLock(autoIndexLock lock.DistributedLock) SQLStoreOption {
 	return func(opts *sqlStoreOptions) {
 		opts.autoIndexLock = autoIndexLock
+	}
+}
+
+func WithReadDB(readDB *sql.DB) SQLStoreOption {
+	return func(opts *sqlStoreOptions) {
+		opts.readDB = readDB
 	}
 }
 
@@ -97,6 +105,11 @@ func NewSQLStore(instance any, driverName string, db *sql.DB, tableName string, 
 
 	debugDB := NewDebugDB(db, tableName)
 	storeDB := instrumentDB(driverName, tableName, debugDB)
+	readStoreDB := storeDB
+	if options.readDB != nil {
+		readDebugDB := NewDebugDB(options.readDB, tableName)
+		readStoreDB = instrumentDB(driverName, tableName, readDebugDB)
+	}
 
 	sstore := &SQLStore{
 		DB:               debugDB,
@@ -105,6 +118,7 @@ func NewSQLStore(instance any, driverName string, db *sql.DB, tableName string, 
 		tableName:        tableName,
 		placeholderStyle: placeholderStyle,
 		db:               storeDB,
+		readDB:           readStoreDB,
 		fieldTypes:       map[string]reflect.Type{},
 		autoIndexMu:      &sync.Mutex{},
 		autoIndexLock:    options.autoIndexLock,
@@ -114,6 +128,9 @@ func NewSQLStore(instance any, driverName string, db *sql.DB, tableName string, 
 		}),
 	}
 	sstore.db.SetDebug(debug)
+	if sstore.readDB != sstore.db {
+		sstore.readDB.SetDebug(debug)
+	}
 
 	typeMap, err := sstore.createTable(instance, sstore.db, tableName)
 	if err != nil {
@@ -157,6 +174,9 @@ func createNewElement(instance interface{}) interface{} {
 
 func (s *SQLStore) SetDebug(debug bool) {
 	s.db.SetDebug(debug)
+	if s.readDB != nil && s.readDB != s.db {
+		s.readDB.SetDebug(debug)
+	}
 }
 
 func (s *SQLStore) AutoIndexStats() datastore.AutoIndexStats {
@@ -170,7 +190,13 @@ func (s *SQLStore) AutoIndexStats() datastore.AutoIndexStats {
 }
 
 func (s *SQLStore) Close() error {
-	return s.db.Close()
+	err := s.db.Close()
+	if s.readDB != nil && s.readDB != s.db {
+		if readErr := s.readDB.Close(); err == nil {
+			err = readErr
+		}
+	}
+	return err
 }
 
 func (s *SQLStore) Refresh() error {
@@ -329,6 +355,7 @@ func (s *SQLStore) BeginTransaction() (datastore.DataStore, error) {
 		DB:               s.DB,
 		instance:         s.instance,
 		db:               s.db,
+		readDB:           s.readDB,
 		tableName:        s.tableName,
 		driverName:       s.driverName,
 		inTransaction:    true,
@@ -860,7 +887,7 @@ func (q *SQLQueryBuilder) Find() ([]datastore.Row, error) {
 		return nil, errors.Wrap(err, "error building select query")
 	}
 
-	rows, err := q.store.db.Query(query, params...)
+	rows, err := q.store.selectRows(query, params...)
 	q.observeExecution()
 	if err != nil {
 		return nil, errors.Wrap(err, "error querying")
@@ -1083,13 +1110,33 @@ func (q *SQLQueryBuilder) Count() (int64, error) {
 	query = fmt.Sprintf("SELECT COUNT(*) FROM (%s) AS subquery", query)
 
 	var count int64
-	err = q.store.db.QueryRow(query, params...).Scan(&count)
+	err = q.store.selectRow(query, params...).Scan(&count)
 	q.observeExecution()
 	if err != nil {
 		return 0, err
 	}
 
 	return count, nil
+}
+
+func (s *SQLStore) selectRows(query string, params ...any) (*sql.Rows, error) {
+	if s.inTransaction {
+		return s.tx.Query(query, params...)
+	}
+	if s.readDB != nil {
+		return s.readDB.Query(query, params...)
+	}
+	return s.db.Query(query, params...)
+}
+
+func (s *SQLStore) selectRow(query string, params ...any) *sql.Row {
+	if s.inTransaction {
+		return s.tx.QueryRow(query, params...)
+	}
+	if s.readDB != nil {
+		return s.readDB.QueryRow(query, params...)
+	}
+	return s.db.QueryRow(query, params...)
 }
 
 func (q *SQLQueryBuilder) Update(obj datastore.Row) error {
