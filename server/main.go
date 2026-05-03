@@ -9,10 +9,13 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/1backend/1backend/sdk/go/logger"
@@ -77,6 +80,20 @@ func main() {
 	}
 
 	port := router.GetPort()
+	srv.Addr = fmt.Sprintf(":%v", port)
+
+	shutdownCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+	go func() {
+		<-shutdownCtx.Done()
+
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := srv.Shutdown(ctx); err != nil {
+			logger.Error("HTTP shutdown failed", slog.String("error", err.Error()))
+			_ = srv.Close()
+		}
+	}()
 
 	go func() {
 		err := universe.StarterFunc()
@@ -89,8 +106,8 @@ func main() {
 		logger.Info("Server started", slog.String("port", port))
 	}()
 
-	err = http.ListenAndServe(fmt.Sprintf(":%v", port), srv.Handler)
-	if err != nil {
+	err = srv.ListenAndServe()
+	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		logger.Error("HTTP listen failed", slog.String("error", err.Error()))
 		os.Exit(1)
 	}
