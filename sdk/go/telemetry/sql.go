@@ -16,18 +16,33 @@ import (
 	"go.opentelemetry.io/otel/metric"
 )
 
+const (
+	SQLTargetPrimary     = "primary"
+	SQLTargetReadReplica = "read_replica"
+)
+
 // RecordSQLStatement records low-level SQL statement metrics without storing
 // raw SQL text as a metric label.
 func RecordSQLStatement(ctx context.Context, backend, table, statement string, started time.Time, err error) {
+	RecordSQLStatementTarget(ctx, backend, table, SQLTargetPrimary, statement, started, err)
+}
+
+// RecordSQLStatementTarget records low-level SQL statement metrics tagged with
+// the datastore connection target that executed the statement.
+func RecordSQLStatementTarget(ctx context.Context, backend, table, target, statement string, started time.Time, err error) {
 	ensureInstruments()
 	if ctx == nil {
 		ctx = context.Background()
+	}
+	if strings.TrimSpace(target) == "" {
+		target = SQLTargetPrimary
 	}
 
 	attrs := []attribute.KeyValue{
 		attribute.String("db.system", normalizeBackend(backend)),
 		attribute.String("db.collection.name", table),
 		attribute.String("db.operation.name", SQLStatementOperation(statement)),
+		attribute.String("datastore.sql.target", target),
 	}
 
 	sqlStatements.Add(ctx, 1, metric.WithAttributes(attrs...))
