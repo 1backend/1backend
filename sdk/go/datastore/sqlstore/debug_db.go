@@ -128,6 +128,12 @@ func (db *DebugTx) Query(query string, args ...interface{}) (*sql.Rows, error) {
 	return res, err
 }
 
+func (db *DebugTx) QueryRow(query string, args ...interface{}) *sql.Row {
+	row := db.Tx.QueryRow(query, args...)
+	db.logQuery(query, nil, args...)
+	return row
+}
+
 func (db *DebugTx) Exec(query string, args ...interface{}) (sql.Result, error) {
 	var (
 		res sql.Result

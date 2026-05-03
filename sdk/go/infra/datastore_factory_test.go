@@ -39,6 +39,9 @@ func TestDataStoreFactoryPostgresEnablesAutoIndexing(t *testing.T) {
 		if postgresFactory.lockConn != nil {
 			_ = postgresFactory.lockConn.Close()
 		}
+		if postgresFactory.readDB != nil {
+			_ = postgresFactory.readDB.Close()
+		}
 		if postgresFactory.db != nil {
 			_ = postgresFactory.db.Close()
 		}
@@ -73,4 +76,19 @@ func TestDataStoreFactoryPostgresEnablesAutoIndexing(t *testing.T) {
 		require.NoError(t, err)
 		return count == 1
 	}, 10*time.Second, 100*time.Millisecond)
+}
+
+func TestNewDataStoreFactoryLoadsReadConnectionStringFromEnv(t *testing.T) {
+	t.Setenv("OB_DB", "postgres")
+	t.Setenv("OB_DB_CONNECTION_STRING", "postgres://writer")
+	t.Setenv("OB_DB_READ_CONNECTION_STRING", "postgres://reader")
+
+	factory, err := NewDataStoreFactory(DataStoreConfig{
+		HomeDir: t.TempDir(),
+	})
+	require.NoError(t, err)
+
+	postgresFactory := factory.(*DataStoreFactoryPostgresImpl)
+	require.Equal(t, "postgres://writer", postgresFactory.options.DbConnectionString)
+	require.Equal(t, "postgres://reader", postgresFactory.options.ReadDbConnectionString)
 }

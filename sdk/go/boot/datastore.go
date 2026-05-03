@@ -10,12 +10,14 @@ package boot
 import "github.com/1backend/1backend/sdk/go/infra"
 
 // DataStoreConfig returns the datastore settings derived from boot options and
-// the usual OB_DB / OB_DB_CONNECTION_STRING environment variables.
+// the usual OB_DB / OB_DB_CONNECTION_STRING / OB_DB_READ_CONNECTION_STRING
+// environment variables.
 func (o *Options) DataStoreConfig() infra.DataStoreConfig {
 	return infra.DataStoreConfig{
-		Test:               o.Test,
-		Db:                 o.Db,
-		DbConnectionString: o.DbConnectionString,
+		Test:                   o.Test,
+		Db:                     o.Db,
+		DbConnectionString:     o.DbConnectionString,
+		ReadDbConnectionString: o.ReadDbConnectionString,
 	}
 }
 

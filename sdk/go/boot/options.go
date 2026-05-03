@@ -42,6 +42,9 @@ type Options struct {
 	// DbConnectionString is the database connection string.
 	DbConnectionString string
 
+	// ReadDbConnectionString is the optional read-replica database connection string.
+	ReadDbConnectionString string
+
 	// If set to true, expired tokens won't be autorefreshed by
 	// the server.
 	TokenAutoRefreshOff bool
@@ -150,6 +153,10 @@ func (o *Options) loadEnvars() error {
 
 	if o.DbConnectionString == "" {
 		o.DbConnectionString = os.Getenv("OB_DB_CONNECTION_STRING")
+	}
+
+	if o.ReadDbConnectionString == "" {
+		o.ReadDbConnectionString = os.Getenv("OB_DB_READ_CONNECTION_STRING")
 	}
 
 	if o.ClientFactory == nil {

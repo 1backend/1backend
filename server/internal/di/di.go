@@ -132,6 +132,9 @@ func BigBang(options *universe.Options) (*Universe, error) {
 	if options.DbConnectionString == "" {
 		options.DbConnectionString = os.Getenv("OB_DB_CONNECTION_STRING")
 	}
+	if options.ReadDbConnectionString == "" {
+		options.ReadDbConnectionString = os.Getenv("OB_DB_READ_CONNECTION_STRING")
+	}
 	if options.SecretEncryptionKey == "" {
 		options.SecretEncryptionKey = os.Getenv("OB_ENCRYPTION_KEY")
 		if options.SecretEncryptionKey == "" {
@@ -284,12 +287,13 @@ func BigBang(options *universe.Options) (*Universe, error) {
 
 	if options.DataStoreFactory == nil {
 		dc, err := infra.NewDataStoreFactory(infra.DataStoreConfig{
-			HomeDir:            options.HomeDir,
-			Test:               options.Test,
-			TablePrefix:        options.DbPrefix,
-			Db:                 options.Db,
-			DbConnectionString: options.DbConnectionString,
-			Lock:               options.Lock,
+			HomeDir:                options.HomeDir,
+			Test:                   options.Test,
+			TablePrefix:            options.DbPrefix,
+			Db:                     options.Db,
+			DbConnectionString:     options.DbConnectionString,
+			ReadDbConnectionString: options.ReadDbConnectionString,
+			Lock:                   options.Lock,
 		})
 		if err != nil {
 			return nil, err
