@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/gorilla/mux"
@@ -55,6 +56,7 @@ func TestHTTPAndDatastoreMetricsAreScrapeable(t *testing.T) {
 	require.NoError(t, store.Create(testTelemetryRow{ID: "pet_1"}))
 	_, err := store.Query(datastore.Equals([]string{"name"}, "Ada")).Find()
 	require.NoError(t, err)
+	RecordSQLStatementTarget(t.Context(), "postgres", "pets", SQLTargetReadReplica, "SELECT * FROM pets", time.Now(), nil)
 
 	body := getBody(t, server.URL+"/telemetry-test-svc/metrics")
 	require.Contains(t, body, "onebackend_http_server_requests_total")
@@ -65,7 +67,10 @@ func TestHTTPAndDatastoreMetricsAreScrapeable(t *testing.T) {
 	require.Contains(t, body, "onebackend_datastore_operations_total")
 	require.Contains(t, body, "onebackend_datastore_operation_duration_seconds")
 	require.Contains(t, body, "onebackend_datastore_autoindex_shape_hits")
+	require.Contains(t, body, "onebackend_sql_statements_total")
 	require.Contains(t, body, `db_collection_name="pets"`)
+	require.Contains(t, body, `db_operation_name="select"`)
+	require.Contains(t, body, `datastore_sql_target="read_replica"`)
 }
 
 func requireHTTPStatus(t *testing.T, url string, status int) {
