@@ -65,6 +65,26 @@ func parseFlagToMap(payload map[string]interface{}, flag string) error {
 	}
 
 	finalKey := keyParts[len(keyParts)-1]
+
+	if len(keyParts) == 2 && finalKey == "id" && !strings.Contains(key, ".") {
+		parentKey := keyParts[0]
+		if existingParent, exists := payload[parentKey]; exists {
+			if parentMap, ok := existingParent.(map[string]interface{}); ok {
+				if existingID, exists := parentMap[finalKey]; exists && len(parentMap) == 1 {
+					payload[parentKey] = []map[string]interface{}{
+						{finalKey: existingID},
+						{finalKey: value},
+					}
+					return nil
+				}
+			}
+			if parentArray, ok := existingParent.([]map[string]interface{}); ok {
+				payload[parentKey] = append(parentArray, map[string]interface{}{finalKey: value})
+				return nil
+			}
+		}
+	}
+
 	if existingValue, exists := currentMap[finalKey]; exists {
 		switch existingValue := existingValue.(type) {
 		case []interface{}:

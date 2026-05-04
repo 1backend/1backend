@@ -219,19 +219,13 @@ func (s *UserService) saveEnrolls(
 		existingUser[usr.GetId()] = true
 	}
 
-	currentAppI, found, err := s.appStore.Query(
-		datastore.Equals(
-			datastore.Field("id"),
-			appId,
-		),
-	).FindOne()
+	currentApp, found, err := s.appByID(appId)
 	if err != nil {
 		return nil, err
 	}
 	if !found {
 		return nil, fmt.Errorf("current app id '%s' not found", appId)
 	}
-	currentApp := currentAppI.(*user.App)
 
 	appsByHost := map[string]*user.App{}
 

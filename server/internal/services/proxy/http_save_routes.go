@@ -89,9 +89,7 @@ func (cs *ProxyService) deleteRoutes(req *proxy.DeleteRoutesRequest) error {
 		return errors.Wrap(err, "failed to delete routes from store")
 	}
 
-	// Clear cache as seen in saveRoutes
-	// @todo this is not going to work in a distributed setting
-	cs.routeCache.Clear()
+	cs.invalidateRouteCache()
 
 	return nil
 }

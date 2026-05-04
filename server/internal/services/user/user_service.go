@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
@@ -58,6 +59,10 @@ type UserService struct {
 	publicKeyPem string
 
 	configCache map[string]any
+
+	appCacheByID   sync.Map
+	appCacheByHost sync.Map
+	appLookupGroup singleflight.Group
 
 	tokenReplacementCache *ristretto.Cache
 	refreshGroup          singleflight.Group

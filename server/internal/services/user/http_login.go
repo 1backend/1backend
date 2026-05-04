@@ -410,16 +410,13 @@ func (s *UserService) generateAuthToken(
 
 	now := time.Now()
 
-	appI, found, err := s.appStore.Query(
-		datastore.Equals(datastore.Field("id"), appId),
-	).FindOne()
+	app, found, err := s.appByID(appId)
 	if err != nil {
 		return nil, fmt.Errorf("error finding app by id '%s': %v", appId, err)
 	}
 	if !found {
 		return nil, fmt.Errorf("app not found by id '%s'", appId)
 	}
-	app := appI.(*user.App)
 
 	app, err = s.getOrCreateApp(app.Host)
 	if err != nil {
@@ -469,17 +466,15 @@ func filterRolesForActiveOrganization(roles []string, activeOrganizationId strin
 }
 
 func (s *UserService) getOrCreateApp(host string) (*user.App, error) {
-	appI, found, err := s.appStore.Query(
-		datastore.Equals(datastore.Field("host"), host),
-	).FindOne()
+	app, found, err := s.appByHost(host)
 	if err != nil {
 		return nil, errors.Wrap(err, "error querying app by host")
 	}
 	if found {
-		return appI.(*user.App), nil
+		return app, nil
 	}
 
-	app := &user.App{
+	app = &user.App{
 		Id:   sdk.Id("app"),
 		Host: host,
 	}
@@ -489,5 +484,6 @@ func (s *UserService) getOrCreateApp(host string) (*user.App, error) {
 		return nil, errors.Wrap(err, "error creating app")
 	}
 
+	s.cacheApp(app)
 	return app, nil
 }

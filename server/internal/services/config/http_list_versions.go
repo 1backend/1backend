@@ -9,8 +9,12 @@ package configservice
 
 import (
 	"encoding/json"
+	"fmt"
+	"hash/maphash"
+	"io"
 	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
@@ -30,6 +34,7 @@ import (
 // @Tags Config Svc
 // @Accept json
 // @Produce json
+// @Param Cache-Control header string false "Bypass cache (use 'no-cache')"
 // @Param body body config.ListVersionsRequest true "List Configs Request"
 // @Success 200 {object} config.ListVersionsResponse "Current configuration"
 // @Failure 401 {string} string "Unauthorized"
@@ -42,15 +47,42 @@ func (cs *ConfigService) ListVersions(
 	// Version get should not be authorized because
 	// it is public, nonsensitive information.
 
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		endpoint.WriteString(w, http.StatusBadRequest, "Read Error")
+		return
+	}
+	defer r.Body.Close()
+
 	req := &config.ListVersionsRequest{}
 
-	err := json.NewDecoder(r.Body).Decode(req)
-	if err != nil {
+	if err := json.Unmarshal(bodyBytes, req); err != nil {
 		logger.Error("Failed to decode request body", slog.Any("error", err))
 		endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
 		return
 	}
-	defer r.Body.Close()
+
+	if req.Branch == "" {
+		req.Branch = defaultBranch
+	}
+
+	noCache := r.Header.Get("Cache-Control") == "no-cache" || r.Header.Get("Pragma") == "no-cache"
+	var cacheKey string
+
+	if !noCache {
+		var h maphash.Hash
+		h.SetSeed(hashSeed)
+		h.Write(bodyBytes)
+		bodyHash := h.Sum64()
+
+		v := cs.getNamespaceVersion(req.AppHost, req.Branch)
+		cacheKey = fmt.Sprintf("versions:%s:%s:%d:%x", req.AppHost, req.Branch, v, bodyHash)
+
+		if val, found := cs.cache.Get(cacheKey); found {
+			w.Write(val.([]byte))
+			return
+		}
+	}
 
 	if req.AppHost == "" {
 		logger.Error("AppHost missing in list configs request")
@@ -81,6 +113,20 @@ func (cs *ConfigService) ListVersions(
 	jsonData, _ := json.Marshal(config.ListVersionsResponse{
 		Versions: vers,
 	})
+
+	if !noCache {
+		cs.cache.SetWithTTL(
+			cacheKey,
+			jsonData,
+			int64(len(jsonData)),
+			5*time.Minute,
+		)
+
+		if cs.options.Test {
+			cs.cache.Wait()
+		}
+	}
+
 	_, err = w.Write([]byte(jsonData))
 	if err != nil {
 		logger.Error("Error writing response", slog.Any("error", err))

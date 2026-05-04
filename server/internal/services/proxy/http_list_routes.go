@@ -12,10 +12,8 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
-	"github.com/pkg/errors"
 
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 )
@@ -78,31 +76,5 @@ func (cs *ProxyService) ListRoutes(w http.ResponseWriter, r *http.Request) {
 }
 
 func (cs *ProxyService) listRoutes(req *proxy.ListRoutesRequest) ([]proxy.Route, error) {
-	filters := []datastore.Filter{}
-
-	if len(req.Ids) > 0 {
-		ids := []any{}
-		for _, id := range req.Ids {
-			ids = append(ids, id)
-		}
-		filters = append(filters, datastore.IsInList([]string{"id"}, ids...))
-	}
-
-	routeIs, err := cs.routeStore.Query(filters...).
-		Find()
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to query routes")
-	}
-
-	routes := make([]proxy.Route, 0, len(routeIs))
-	for _, routeI := range routeIs {
-		route, ok := routeI.(*proxy.Route)
-		if !ok {
-			return nil, errors.Errorf("expected route type, got %T", routeI)
-		}
-
-		routes = append(routes, *route)
-	}
-
-	return routes, nil
+	return cs.cachedRoutes(req.Ids)
 }

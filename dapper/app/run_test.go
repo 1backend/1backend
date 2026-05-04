@@ -67,9 +67,9 @@ func TestBasics(t *testing.T) {
 			},
 		}, nil, false)
 		assert.NoError(t, err)
-		assert.Equals(t, len(ct.FeaturesProcessed), 1)
+		assert.Equal(t, len(ct.FeaturesProcessed), 1)
 		// execute does not run because check succeeds
-		assert.Equals(t, ct.FeaturesProcessed[0].ExecutionResult == nil, true)
+		assert.Equal(t, ct.FeaturesProcessed[0].ExecutionResult == nil, true)
 	})
 
 	t.Run("'A' check fails -> 'B' check passes -> 'A' execute succeeds -> 'A' check succeeds", func(t *testing.T) {
@@ -91,9 +91,9 @@ func TestBasics(t *testing.T) {
 			},
 		}, nil, false)
 		assert.NoError(t, err)
-		assert.Equals(t, 2, len(ct.FeaturesProcessed))
+		assert.Equal(t, 2, len(ct.FeaturesProcessed))
 		// execute runs because first check fails
-		assert.Equals(t, ct.FeaturesProcessed[0].ExecutionResult != nil, true)
+		assert.Equal(t, ct.FeaturesProcessed[0].ExecutionResult != nil, true)
 	})
 
 	t.Run("'A' check fails -> 'B' check passes -> 'A' execute succeeds -> 'A' check fails", func(t *testing.T) {
@@ -110,9 +110,9 @@ func TestBasics(t *testing.T) {
 			},
 		}, nil, false)
 		assert.Error(t, err)
-		assert.Equals(t, 2, len(ct.FeaturesProcessed))
+		assert.Equal(t, 2, len(ct.FeaturesProcessed))
 		// execute runs because first check fails
-		assert.Equals(t, ct.FeaturesProcessed[0].ExecutionResult != nil, true)
-		assert.Equals(t, ct.FeaturesProcessed[1].ExecutionResult == nil, true)
+		assert.Equal(t, ct.FeaturesProcessed[0].ExecutionResult != nil, true)
+		assert.Equal(t, ct.FeaturesProcessed[1].ExecutionResult == nil, true)
 	})
 }

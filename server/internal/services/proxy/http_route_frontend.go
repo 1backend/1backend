@@ -19,7 +19,6 @@ import (
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
-	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/logger"
 
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
@@ -155,70 +154,18 @@ func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, er
 		}
 	}
 
-	routes := map[string]*proxy.Route{}
-	var missing []any
-
-	// 1. Check cache first (including negative cache)
-	for _, key := range candidates {
-		if v, ok := cs.routeCache.Load(key); ok {
-			if v == nil {
-				// cached miss
-				continue
-			}
-			routes[key] = v.(*proxy.Route)
-		} else {
-			missing = append(missing, key)
-		}
+	snapshot, err := cs.cachedRouteSnapshot()
+	if err != nil {
+		return "", sdk.NewHTTPError(
+			http.StatusInternalServerError,
+			fmt.Sprintf("failed to query routes: %v", err),
+		)
 	}
 
-	// 2. Fetch all missing from DB in one query
-	if len(missing) > 0 {
-		logger.Debug("Cache miss for routes", slog.Any("missing", missing))
-
-		sfKey := fmt.Sprintf("%s|%s", host, path)
-		v, err, _ := cs.sf.Do(sfKey, func() (interface{}, error) {
-
-			ri, err := cs.routeStore.Query(
-				datastore.IsInList(datastore.Field("id"), missing...),
-			).Find()
-			if err != nil {
-				return nil, sdk.NewHTTPError(
-					http.StatusInternalServerError,
-					fmt.Sprintf("failed to query route: %v", err),
-				)
-			}
-
-			return ri, nil
-		})
-
-		if err != nil {
-			return "", err
-		}
-
-		ri := v.([]datastore.Row)
-
-		foundMap := map[string]*proxy.Route{}
-
-		for _, r := range ri {
-			route := r.(*proxy.Route)
-			foundMap[route.Id] = route
-			cs.routeCache.Store(route.Id, route)
-			routes[route.Id] = route
-		}
-
-		// 3. Negative cache the rest
-		for _, k := range missing {
-			key := k.(string)
-			if _, ok := foundMap[key]; !ok {
-				cs.routeCache.Store(key, nil)
-			}
-		}
-	}
-
-	// 4. Pick longest match (candidates is already longest → shortest)
+	// Pick longest match (candidates is already longest to shortest).
 	var route *proxy.Route
 	for _, key := range candidates {
-		if r, ok := routes[key]; ok {
+		if r, ok := snapshot.route(key); ok {
 			route = r
 			break
 		}

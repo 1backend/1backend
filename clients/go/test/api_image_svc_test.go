@@ -1,3 +1,6 @@
+//go:build generated_api_tests
+// +build generated_api_tests
+
 /*
 1Backend
 
@@ -11,10 +14,10 @@ package openapi
 
 import (
 	"context"
+	openapiclient "github.com/1backend/1backend/clients/go"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
-	openapiclient "github.com/1backend/1backend/clients/go"
 )
 
 func Test_openapi_ImageSvcAPIService(t *testing.T) {
@@ -24,7 +27,7 @@ func Test_openapi_ImageSvcAPIService(t *testing.T) {
 
 	t.Run("Test ImageSvcAPIService ServeUploadedImage", func(t *testing.T) {
 
-		t.Skip("skip test")  // remove to run test
+		t.Skip("skip test") // remove to run test
 
 		var fileId string
 

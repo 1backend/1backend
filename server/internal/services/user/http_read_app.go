@@ -13,7 +13,6 @@ import (
 	"net/http"
 
 	sdk "github.com/1backend/1backend/sdk/go"
-	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
@@ -68,23 +67,15 @@ func (s *UserService) ReadApp(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) findApp(req *user.ReadAppRequest) (*user.App, error) {
-	filters := []datastore.Filter{}
-	if req.Host != "" {
-		filters = append(filters, datastore.Equals([]string{"host"}, req.Host))
-	}
-	if len(filters) == 0 {
+	if req.Host == "" {
 		return nil, nil
 	}
 
-	ai, found, err := s.appStore.Query(filters...).FindOne()
+	app, found, err := s.appByHost(req.Host)
 	if err != nil {
 		return nil, err
 	}
 	if !found {
-		return nil, nil
-	}
-	app, ok := ai.(*user.App)
-	if !ok {
 		return nil, nil
 	}
 	return app, nil
@@ -98,5 +89,6 @@ func (s *UserService) createApp(req *user.ReadAppRequest) (*user.App, error) {
 	if err := s.appStore.Upsert(app); err != nil {
 		return nil, err
 	}
+	s.cacheApp(app)
 	return app, nil
 }
