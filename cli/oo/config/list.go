@@ -70,7 +70,7 @@ func List(cmd *cobra.Command, args []string) error {
 	for _, config := range rsp.Configs {
 		jsonValue, err := json.Marshal(config.Data)
 		if err != nil {
-			return errors.Wrapf(err, "failed to marshal config data for ID '%s'", config)
+			return errors.Wrapf(err, "failed to marshal config data for ID '%s'", config.Id)
 		}
 
 		fmt.Fprintf(

@@ -13,7 +13,6 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
@@ -78,9 +77,7 @@ func (s *UserService) CreateUser(
 		return
 	}
 
-	appI, found, err := s.appStore.Query(
-		datastore.Equals(datastore.Field("host"), req.AppHost),
-	).FindOne()
+	app, found, err := s.appByHost(req.AppHost)
 	if err != nil {
 		logger.Error(
 			"Failed to query app",
@@ -97,10 +94,9 @@ func (s *UserService) CreateUser(
 		endpoint.WriteString(w, http.StatusBadRequest, "App not found")
 		return
 	}
-	appId := appI.(*user.App).Id
 
 	err = s.createUserWithoutVerification(
-		appId,
+		app.Id,
 		req.User,
 		req.Contacts,
 		req.Password,

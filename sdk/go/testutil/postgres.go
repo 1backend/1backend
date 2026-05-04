@@ -3,6 +3,9 @@ package testutil
 import (
 	"context"
 	"fmt"
+	"os"
+	"path/filepath"
+	"syscall"
 	"testing"
 	"time"
 
@@ -25,6 +28,18 @@ func StartPostgres(t *testing.T) string {
 	if !IsDockerAvailable(ctx) {
 		t.Skip("docker is required for postgres integration tests")
 	}
+
+	lockFile, err := os.OpenFile(
+		filepath.Join(os.TempDir(), "1backend-postgres-test.lock"),
+		os.O_CREATE|os.O_RDWR,
+		0600,
+	)
+	require.NoError(t, err)
+	require.NoError(t, syscall.Flock(int(lockFile.Fd()), syscall.LOCK_EX))
+	t.Cleanup(func() {
+		require.NoError(t, syscall.Flock(int(lockFile.Fd()), syscall.LOCK_UN))
+		require.NoError(t, lockFile.Close())
+	})
 
 	container, err := postgres.Run(ctx,
 		"postgres:16-alpine",

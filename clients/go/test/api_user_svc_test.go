@@ -1,3 +1,6 @@
+//go:build generated_api_tests
+// +build generated_api_tests
+
 /*
 1Backend
 
@@ -34,7 +37,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -48,7 +51,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -60,7 +63,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -72,7 +75,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -84,7 +87,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -96,7 +99,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -108,7 +111,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -122,7 +125,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -136,7 +139,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -150,7 +153,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -162,7 +165,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -174,7 +177,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -186,7 +189,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -200,7 +203,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -212,7 +215,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -220,11 +223,11 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		t.Skip("skip test") // remove to run test
 
-		resp, httpRes, err := apiClient.UserSvcAPI.ReadSelft.Background()).Execute()
+		resp, httpRes, err := apiClient.UserSvcAPI.ReadSelf(context.Background()).Execute()
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -236,7 +239,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -251,7 +254,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -265,7 +268,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -279,7 +282,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -293,7 +296,7 @@ func Test_openapi_UserSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 

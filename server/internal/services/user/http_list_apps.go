@@ -83,6 +83,40 @@ func (s *UserService) ListApps(w http.ResponseWriter, r *http.Request) {
 func (s *UserService) listApps(
 	req *user.ListAppsRequest,
 ) ([]user.App, error) {
+	if len(req.Ids) > 0 && len(req.Hosts) == 0 {
+		apps := make([]user.App, 0, len(req.Ids))
+		seen := map[string]bool{}
+		for _, id := range req.Ids {
+			app, found, err := s.appByID(id)
+			if err != nil {
+				return nil, err
+			}
+			if !found || seen[app.Id] {
+				continue
+			}
+			seen[app.Id] = true
+			apps = append(apps, *app)
+		}
+		return apps, nil
+	}
+
+	if len(req.Hosts) > 0 && len(req.Ids) == 0 {
+		apps := make([]user.App, 0, len(req.Hosts))
+		seen := map[string]bool{}
+		for _, host := range req.Hosts {
+			app, found, err := s.appByHost(host)
+			if err != nil {
+				return nil, err
+			}
+			if !found || seen[app.Id] {
+				continue
+			}
+			seen[app.Id] = true
+			apps = append(apps, *app)
+		}
+		return apps, nil
+	}
+
 	filters := []datastore.Filter{}
 
 	if len(req.Ids) > 0 {

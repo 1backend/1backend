@@ -56,9 +56,27 @@ func (s *UserService) UpdateApp(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *UserService) updateAppHost(id string, newHost string) error {
-	return s.appStore.Query(
+	existing, found, err := s.appByID(id)
+	if err != nil {
+		return err
+	}
+
+	err = s.appStore.Query(
 		datastore.Id(id),
 	).UpdateFields(map[string]interface{}{
 		"host": newHost,
 	})
+	if err != nil {
+		return err
+	}
+
+	if found {
+		s.invalidateAppCache(existing)
+		s.cacheApp(&user.App{
+			Id:   id,
+			Host: newHost,
+		})
+	}
+
+	return nil
 }

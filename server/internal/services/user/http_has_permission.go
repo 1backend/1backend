@@ -91,9 +91,7 @@ func (s *UserService) HasPermission(
 		return
 	}
 
-	appI, found, err := s.appStore.Query(
-		datastore.Equals(datastore.Field("id"), claims.AppId),
-	).FindOne()
+	app, found, err := s.appByID(claims.AppId)
 	if err != nil {
 		logger.Error(
 			"Failed to query app",
@@ -117,7 +115,7 @@ func (s *UserService) HasPermission(
 		AppId:      claims.AppId,
 		Until:      claims.ExpiresAt.Time,
 		User:       *usr,
-		App:        *appI.(*user.App),
+		App:        *app,
 	}
 
 	endpoint.WriteJSON(w, http.StatusOK, rsp)

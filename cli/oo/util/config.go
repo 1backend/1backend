@@ -73,9 +73,16 @@ func LoadConfig() (types.Config, error) {
 }
 
 func SaveConfig(config types.Config) error {
-	configPath := filepath.Join(
+	configDir := filepath.Join(
 		os.Getenv("HOME"),
 		".1backend",
+	)
+	if err := os.MkdirAll(configDir, 0755); err != nil {
+		return fmt.Errorf("failed to create config directory: %v", err)
+	}
+
+	configPath := filepath.Join(
+		configDir,
 		"cliConfig.yaml",
 	)
 

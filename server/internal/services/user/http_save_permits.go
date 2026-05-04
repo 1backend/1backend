@@ -155,16 +155,14 @@ func (cs *UserService) savePermits(
 
 		permitAppId := ""
 		if permit.AppHost != "" && permit.AppHost != "*" {
-			permitI, found, err := cs.appStore.Query(
-				datastore.Equals([]string{"host"}, permit.AppHost),
-			).FindOne()
+			app, found, err := cs.appByHost(permit.AppHost)
 			if err != nil {
 				return errors.Wrap(err, "failed to query app by host")
 			}
 			if !found {
 				return errors.Errorf("app with host %s not found", permit.AppHost)
 			}
-			permitAppId = permitI.(*user.App).Id
+			permitAppId = app.Id
 		} else if permit.AppHost == "*" {
 			permitAppId = "*"
 		} else {

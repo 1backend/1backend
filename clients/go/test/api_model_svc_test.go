@@ -1,3 +1,6 @@
+//go:build generated_api_tests
+// +build generated_api_tests
+
 /*
 1Backend
 
@@ -31,7 +34,7 @@ func Test_openapi_ModelSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -45,7 +48,7 @@ func Test_openapi_ModelSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -59,7 +62,7 @@ func Test_openapi_ModelSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -71,7 +74,7 @@ func Test_openapi_ModelSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -85,7 +88,7 @@ func Test_openapi_ModelSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -97,7 +100,7 @@ func Test_openapi_ModelSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 
@@ -111,7 +114,7 @@ func Test_openapi_ModelSvcAPIService(t *testing.T) {
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)
-		assert.Equals(t, 200, httpRes.StatusCode)
+		assert.Equal(t, 200, httpRes.StatusCode)
 
 	})
 

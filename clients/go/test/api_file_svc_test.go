@@ -1,3 +1,6 @@
+//go:build generated_api_tests
+// +build generated_api_tests
+
 /*
 1Backend
 
