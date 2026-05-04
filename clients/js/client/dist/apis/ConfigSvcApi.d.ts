@@ -13,6 +13,7 @@ import * as runtime from '../runtime';
 import type { ConfigSvcListConfigsRequest, ConfigSvcListConfigsResponse, ConfigSvcListVersionsRequest, ConfigSvcListVersionsResponse, ConfigSvcSaveConfigRequest } from '../models/index';
 export interface ListConfigVersionsRequest {
     body: ConfigSvcListVersionsRequest;
+    cacheControl?: string;
 }
 export interface ListConfigsRequest {
     body: ConfigSvcListConfigsRequest;

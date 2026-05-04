@@ -42,8 +42,9 @@ export declare class ConfigSvcApi {
      * Returns the historical versions of a configuration for a given app. Intended for retrieving the version history of a **single configuration ID**. Supplying multiple IDs is supported but not recommended, since results from different IDs will interleave in the same time-ordered list, making chronological paging ambiguous.
      * @summary List Versions
      * @param body List Configs Request
+     * @param cacheControl Bypass cache (use \&#39;no-cache\&#39;)
      */
-    listConfigVersions(body: ConfigSvcListVersionsRequest, options?: {
+    listConfigVersions(body: ConfigSvcListVersionsRequest, cacheControl?: string, options?: {
         headers: {
             [name: string]: string;
         };

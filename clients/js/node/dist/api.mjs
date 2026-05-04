@@ -9949,9 +9949,10 @@ class ConfigSvcApi {
      * Returns the historical versions of a configuration for a given app. Intended for retrieving the version history of a **single configuration ID**. Supplying multiple IDs is supported but not recommended, since results from different IDs will interleave in the same time-ordered list, making chronological paging ambiguous.
      * @summary List Versions
      * @param body List Configs Request
+     * @param cacheControl Bypass cache (use \&#39;no-cache\&#39;)
      */
-    listConfigVersions(body_1) {
-        return __awaiter(this, arguments, void 0, function* (body, options = { headers: {} }) {
+    listConfigVersions(body_1, cacheControl_1) {
+        return __awaiter(this, arguments, void 0, function* (body, cacheControl, options = { headers: {} }) {
             const localVarPath = this.basePath + '/config-svc/versions';
             let localVarQueryParameters = {};
             let localVarHeaderParams = Object.assign({}, this._defaultHeaders);
@@ -9968,6 +9969,7 @@ class ConfigSvcApi {
             if (body === null || body === undefined) {
                 throw new Error('Required parameter body was null or undefined when calling listConfigVersions.');
             }
+            localVarHeaderParams['Cache-Control'] = ObjectSerializer.serialize(cacheControl, "string");
             Object.assign(localVarHeaderParams, options.headers);
             let localVarRequestOptions = {
                 method: 'POST',
@@ -17036,7 +17038,7 @@ class UserSvcApi {
         });
     }
     /**
-     * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.  ReadSelf intentionally still works after token revocation until the token expires. This is to ensure that the user is not notified of token revocation (though some information is leaked by the count token functionality @todo).
+     * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
      * @summary Read Self
      * @param body Read Self Request
      */

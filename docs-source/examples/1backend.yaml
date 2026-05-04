@@ -4435,6 +4435,10 @@ paths:
         making chronological paging ambiguous.
       operationId: listConfigVersions
       parameters:
+      - description: Bypass cache (use 'no-cache')
+        in: header
+        name: Cache-Control
+        type: string
       - description: List Configs Request
         in: body
         name: body
@@ -7932,10 +7936,6 @@ paths:
         Typically called by single-page applications during the initial page load.
         While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,
         this endpoint returns additional data, including the full user object and associated organizations.
-
-        ReadSelf intentionally still works after token revocation until the token expires.
-        This is to ensure that the user is not notified of token revocation (though some information is
-        leaked by the count token functionality @todo).
       operationId: readSelf
       parameters:
       - description: Read Self Request
@@ -8068,6 +8068,10 @@ paths:
             $ref: '#/definitions/user_svc.ExchangeTokenResponse'
         "400":
           description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/user_svc.ErrorResponse'
         "404":

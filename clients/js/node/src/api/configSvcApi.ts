@@ -97,8 +97,9 @@ export class ConfigSvcApi {
      * Returns the historical versions of a configuration for a given app. Intended for retrieving the version history of a **single configuration ID**. Supplying multiple IDs is supported but not recommended, since results from different IDs will interleave in the same time-ordered list, making chronological paging ambiguous.
      * @summary List Versions
      * @param body List Configs Request
+     * @param cacheControl Bypass cache (use \&#39;no-cache\&#39;)
      */
-    public async listConfigVersions (body: ConfigSvcListVersionsRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: ConfigSvcListVersionsResponse;  }> {
+    public async listConfigVersions (body: ConfigSvcListVersionsRequest, cacheControl?: string, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: ConfigSvcListVersionsResponse;  }> {
         const localVarPath = this.basePath + '/config-svc/versions';
         let localVarQueryParameters: any = {};
         let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
@@ -116,6 +117,7 @@ export class ConfigSvcApi {
             throw new Error('Required parameter body was null or undefined when calling listConfigVersions.');
         }
 
+        localVarHeaderParams['Cache-Control'] = ObjectSerializer.serialize(cacheControl, "string");
         (<any>Object).assign(localVarHeaderParams, options.headers);
 
         let localVarUseFormData = false;

@@ -756,7 +756,7 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.  ReadSelf intentionally still works after token revocation until the token expires. This is to ensure that the user is not notified of token revocation (though some information is leaked by the count token functionality @todo).
+     * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
      * Read Self
      */
     readSelfRaw(requestParameters, initOverrides) {
@@ -779,7 +779,7 @@ export class UserSvcApi extends runtime.BaseAPI {
         });
     }
     /**
-     * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.  ReadSelf intentionally still works after token revocation until the token expires. This is to ensure that the user is not notified of token revocation (though some information is leaked by the count token functionality @todo).
+     * Retrieves user information based on the authentication token in the request header. Typically called by single-page applications during the initial page load. While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT, this endpoint returns additional data, including the full user object and associated organizations.
      * Read Self
      */
     readSelf() {

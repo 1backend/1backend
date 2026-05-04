@@ -33,6 +33,7 @@ import (
 	distlock "github.com/1backend/1backend/sdk/go/lock/local"
 	"github.com/1backend/1backend/sdk/go/logger"
 
+	"github.com/1backend/1backend/server/internal/bootstrap"
 	"github.com/1backend/1backend/server/internal/router"
 	chatservice "github.com/1backend/1backend/server/internal/services/chat"
 	configservice "github.com/1backend/1backend/server/internal/services/config"
@@ -185,6 +186,9 @@ func BigBang(options *universe.Options) (*Universe, error) {
 
 	if options.ConfigPath == "" {
 		options.ConfigPath = os.Getenv("OB_FOLDER")
+	}
+	if options.BootstrapPath == "" {
+		options.BootstrapPath = os.Getenv("OB_BOOTSTRAP_FOLDER")
 	}
 
 	if !options.EdgeProxy && os.Getenv("OB_EDGE_PROXY") == "true" {
@@ -566,6 +570,24 @@ func BigBang(options *universe.Options) (*Universe, error) {
 		err = containerService.Start()
 		if err != nil {
 			return errors.Wrap(err, "container service start failed")
+		}
+
+		if options.BootstrapPath != "" {
+			summary, err := bootstrap.Apply(context.Background(), options.BootstrapPath, bootstrap.Services{
+				SavePermits: userService.BootstrapSavePermits,
+				SaveEnrolls: userService.BootstrapSaveEnrolls,
+			})
+			if err != nil {
+				return errors.Wrap(err, "bootstrap manifest apply failed")
+			}
+			logger.Info("Applied bootstrap manifests",
+				slog.String("path", options.BootstrapPath),
+				slog.Int("permits", summary.AppliedPermits),
+				slog.Int("enrolls", summary.AppliedEnrolls),
+				slog.Int("skippedSecrets", summary.SkippedSecrets),
+				slog.Int("skippedUnsupported", summary.SkippedUnsupported),
+				slog.Int("skippedFiles", summary.SkippedFiles),
+			)
 		}
 
 		if options.EdgeProxy || options.EdgeProxyTestMode {

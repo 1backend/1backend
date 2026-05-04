@@ -230,7 +230,12 @@ func (s *UserService) saveEnrolls(
 	appsByHost := map[string]*user.App{}
 
 	for _, enroll := range req.Enrolls {
-		if enroll.AppHost != "" {
+		if enroll.AppHost == "*" {
+			appsByHost["*"] = &user.App{
+				Id:   "*",
+				Host: "*",
+			}
+		} else if enroll.AppHost != "" {
 			app, err := s.getOrCreateApp(enroll.AppHost)
 			if err != nil {
 				return nil, errors.Wrap(err, "error getting or creating app")

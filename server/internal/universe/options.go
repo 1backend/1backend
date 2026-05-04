@@ -30,6 +30,12 @@ type Options struct {
 	// If Test is true, this value is ignored and a random temporary folder is used instead.
 	ConfigPath string
 
+	// BootstrapPath points at a file or directory of startup manifests to apply
+	// after built-in services have started. It is configured via
+	// OB_BOOTSTRAP_FOLDER. Secret manifests are intentionally ignored by the
+	// bootstrap loader.
+	BootstrapPath string
+
 	// eg. mysql, postgres
 	Db string
 

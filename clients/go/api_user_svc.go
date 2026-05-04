@@ -363,10 +363,6 @@ Typically called by single-page applications during the initial page load.
 While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,
 this endpoint returns additional data, including the full user object and associated organizations.
 
-ReadSelf intentionally still works after token revocation until the token expires.
-This is to ensure that the user is not notified of token revocation (though some information is
-leaked by the count token functionality @todo).
-
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiReadSelfRequest
 	*/
@@ -1942,6 +1938,17 @@ func (a *UserSvcAPIService) ExchangeTokenExecute(r ApiExchangeTokenRequest) (*Us
 					newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
 		if localVarHTTPResponse.StatusCode == 404 {
 			var v UserSvcErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
@@ -2082,6 +2089,17 @@ func (a *UserSvcAPIService) ExchangeToken_1Execute(r ApiExchangeToken_0Request) 
 			error: localVarHTTPResponse.Status,
 		}
 		if localVarHTTPResponse.StatusCode == 400 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
 			var v UserSvcErrorResponse
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {
@@ -3775,10 +3793,6 @@ Retrieves user information based on the authentication token in the request head
 Typically called by single-page applications during the initial page load.
 While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,
 this endpoint returns additional data, including the full user object and associated organizations.
-
-ReadSelf intentionally still works after token revocation until the token expires.
-This is to ensure that the user is not notified of token revocation (though some information is
-leaked by the count token functionality @todo).
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiReadSelfRequest

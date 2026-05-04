@@ -10,6 +10,61 @@ tags:
 
 # Backend Environment Variables
 
+This page lists the `OB_*` environment variables used by the 1Backend server, SDK boot helpers, telemetry setup, and local test harness.
+
+## `OB_AZ`
+
+Sets the node availability zone metadata used by server/node registration code.
+
+For clustered or multi-node deployments, set this to the physical or cloud availability zone where the server instance runs, for example `us-east-1a`.
+
+## `OB_BOOTSTRAP_FOLDER`
+
+Points 1Backend at a file or directory of startup manifests to apply after the built-in services have started.
+
+```sh
+OB_BOOTSTRAP_FOLDER=/etc/1backend/bootstrap
+```
+
+This is intended for infrastructure-as-code bootstrapping, such as preview environments that need service-to-service permits before the application stack starts serving traffic.
+
+The loader applies supported non-secret manifests recursively. It understands folder-level entity defaults from `_meta.yaml` files and file-level `_meta` blocks.
+
+Folder names do not set `appHost`. App-scoped manifests must specify `appHost` explicitly. Use `appHost: "*"` for all apps.
+
+Supported v1 entities:
+
+- `user-svc:permit`
+- `user-svc:enroll`
+
+Other entities, including apps, configs, routes, and secrets, are intentionally skipped by this v1 loader. Add those through their existing APIs or a later explicit bootstrap phase.
+
+Secrets are intentionally not loaded by this mechanism. Any manifest with `entity: "secret-svc:secret"` and any file under a `secrets/` directory is skipped. Use a separate secret-management path for real secret values.
+
+Example:
+
+```yaml
+# /etc/1backend/bootstrap/permits/_meta.yaml
+entity: "user-svc:permit"
+```
+
+```yaml
+# /etc/1backend/bootstrap/permits/report-svc-list-users.yaml
+id: "report-svc-list-users"
+appHost: "*"
+permission: "user-svc:user:view"
+slugs:
+  - "report-svc"
+```
+
+```yaml
+# /etc/1backend/bootstrap/apps/tenant.example.com/enrolls/site-owner.yaml
+id: "site-owner"
+appHost: "tenant.example.com"
+contactId: "owner@example.com"
+role: "site-svc:admin"
+```
+
 ## `OB_CONTACT_EMAIL`
 
 Specifies the system-wide contact email address for operational and administrative use.
@@ -32,19 +87,50 @@ This address will not be used for login or user account purposes.
 
 You can use this envar to make 1Backend actually use a database instead of local file storage to store data.
 
+## `OB_DB_CONNECTION_STRING`
+
+Connection string for the primary/write database.
+
+For PostgreSQL:
+
+```sh
+OB_DB=postgres
+OB_DB_CONNECTION_STRING="postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
+```
+
+Naturally, you should change the details of the connection string to reflect your environment.
+
 ## `OB_DB_PREFIX`
 
 When specified, all tables in the database will be prefixed by this strings. Mostly useful for testing.
+
+## `OB_DB_READ_CONNECTION_STRING`
+
+Optional connection string for a read-replica database.
+
+When set, datastore reads can use this connection while writes continue to use `OB_DB_CONNECTION_STRING`. Leave it unset when your environment only has a primary database.
 
 ### PostgreSQL
 
 ```sh
 OB_DB=postgres
-OB_DB_DRIVER="postgres" # or "mysql"
 OB_DB_CONNECTION_STRING="postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
+OB_DB_READ_CONNECTION_STRING="postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
 ```
 
 Naturally, you should change the details of the connection string to reflect your environment.
+
+## `OB_EDGE_CACHE_ITEM_MAX_SIZE`
+
+Sets the maximum size of a single edge-proxy response that may be cached.
+
+Use byte-size strings understood by Docker's unit parser, such as `512KB`, `2MB`, or `50MB`.
+
+## `OB_EDGE_CACHE_MAX_SIZE`
+
+Sets the total edge-proxy cache size.
+
+Use byte-size strings such as `100MB` or `1GB`. Leave it unset to use the server default.
 
 ## `OB_EDGE_PROXY`
 
@@ -91,9 +177,31 @@ In production, this must be `443`. Any other value is only useful in testing.
 
 This key is used in the Secret Svc so secrets are encrypted at rest.
 
+## `OB_ENV`
+
+Sets the deployment environment label used by telemetry resource attributes.
+
+Examples: `dev`, `preview`, `staging`, `prod`.
+
+## `OB_FILE_GCS`
+
+When set to true, enables Google Cloud Storage-backed file storage.
+
+This requires `OB_GCP_SA_KEY` and `OB_GCS_BUCKET`.
+
 ## `OB_FOLDER`
 
 When specified, all data (uploads, downloads, image resize caches, models etc.) will be stored in this folder. Defaults to `~/.1backend`.
+
+## `OB_GCP_SA_KEY`
+
+Path to the Google Cloud service account key file used when `OB_FILE_GCS=true`.
+
+Treat the file contents as secret. Prefer mounting it from your secret manager rather than committing it into configuration files.
+
+## `OB_GCS_BUCKET`
+
+Google Cloud Storage bucket name used when `OB_FILE_GCS=true`.
 
 ## `OB_GPU_PLATFORM`
 
@@ -136,15 +244,55 @@ Host With 1Backend
 
 For information about this, please refer to the [Registry Svc Node section](/docs/built-in-services/registry-svc#node-management--cluster-topology)
 
+## `OB_OTEL_DISABLED`
+
+Disables OpenTelemetry setup and HTTP metrics instrumentation when set to true.
+
+```sh
+OB_OTEL_DISABLED=true
+```
+
+## `OB_OTEL_EXPORTER_OTLP_ENDPOINT`
+
+Sets the OTLP HTTP exporter endpoint used by telemetry.
+
+If the standard `OTEL_EXPORTER_OTLP_ENDPOINT` variable is already set, that standard variable takes precedence.
+
+## `OB_OTEL_METRICS_PATH`
+
+Sets the Prometheus-format metrics route. Defaults to `/metrics`.
+
+For service-specific SDK instrumentation, this path is combined with the service name where appropriate.
+
+## `OB_OTEL_TRACES`
+
+When set to true, enables OTLP trace export.
+
+## `OB_OTEL_TRACE_SAMPLE_RATIO`
+
+Sets the trace sampling ratio when traces are enabled.
+
+Use a number from `0` to `1`, for example `0.1` for 10% sampling or `1` for all traces.
+
 ## `OB_PORT`
 
 Sets the port used by the 1Backend server's internal API listener. Defaults to `11337`.
 
 If `OB_PORT` is not set, the server also derives the listen port from `OB_SELF_URL` when that URL includes a port.
 
+## `OB_REGION`
+
+Region metadata used by test-launched services and custom service processes that consume it.
+
+The built-in 1Backend server currently reads `OB_AZ` for its own region-related option as well as availability-zone metadata, so set `OB_AZ` for the server itself.
+
 ## `OB_VERIFY_CONTACTS`
 
 When set to true, registration of new users with a contact address requires an OTP to prove ownership of the contact.
+
+## `OB_VERSION`
+
+Sets the service version label used by telemetry.
 
 ## `OB_SERVER_URL`
 
@@ -209,6 +357,24 @@ When set to true, clients are responsible for handling the refresh of expired to
 ## `OB_TOKEN_EXPIRATION`
 
 Specifies the duration before a token expires. Use formats like 5m for five minutes, 10h for ten hours, etc.
+
+## `OB_TEST_SERVER_BIN`
+
+Test harness only.
+
+When integration tests launch a 1Backend server binary, this can point at the exact binary path to execute.
+
+## `OB_TEST_<SERVICE>_BIN`
+
+Test harness only.
+
+Overrides the binary path for one named service when tests launch service processes. The service name is uppercased and dashes are replaced with underscores.
+
+Example:
+
+```sh
+OB_TEST_USER_SVC_BIN=/tmp/user-svc
+```
 
 ## `OB_VOLUME_NAME`
 

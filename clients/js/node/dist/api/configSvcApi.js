@@ -79,9 +79,10 @@ export class ConfigSvcApi {
      * Returns the historical versions of a configuration for a given app. Intended for retrieving the version history of a **single configuration ID**. Supplying multiple IDs is supported but not recommended, since results from different IDs will interleave in the same time-ordered list, making chronological paging ambiguous.
      * @summary List Versions
      * @param body List Configs Request
+     * @param cacheControl Bypass cache (use \&#39;no-cache\&#39;)
      */
-    listConfigVersions(body_1) {
-        return __awaiter(this, arguments, void 0, function* (body, options = { headers: {} }) {
+    listConfigVersions(body_1, cacheControl_1) {
+        return __awaiter(this, arguments, void 0, function* (body, cacheControl, options = { headers: {} }) {
             const localVarPath = this.basePath + '/config-svc/versions';
             let localVarQueryParameters = {};
             let localVarHeaderParams = Object.assign({}, this._defaultHeaders);
@@ -98,6 +99,7 @@ export class ConfigSvcApi {
             if (body === null || body === undefined) {
                 throw new Error('Required parameter body was null or undefined when calling listConfigVersions.');
             }
+            localVarHeaderParams['Cache-Control'] = ObjectSerializer.serialize(cacheControl, "string");
             Object.assign(localVarHeaderParams, options.headers);
             let localVarUseFormData = false;
             let localVarRequestOptions = {

@@ -36,6 +36,7 @@ import {
 
 export interface ListConfigVersionsRequest {
     body: ConfigSvcListVersionsRequest;
+    cacheControl?: string;
 }
 
 export interface ListConfigsRequest {
@@ -69,6 +70,10 @@ export class ConfigSvcApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters['cacheControl'] != null) {
+            headerParameters['Cache-Control'] = String(requestParameters['cacheControl']);
+        }
 
 
         let urlPath = `/config-svc/versions`;
