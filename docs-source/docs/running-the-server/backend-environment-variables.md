@@ -59,7 +59,7 @@ The edge proxy acts as a public-facing reverse proxy, handling domain-based rout
 - Serve ACME HTTP-01 challenges (for automated TLS certificates, e.g., via Let's Encrypt) on port 80.
 - Handle public HTTPS traffic on port 443, routing incoming domain-based requests to appropriate backends or services based on their domain.
 
-When `OB_EDGE_PROXY` is not set to true, 1Backend will not start these public-facing routers. Only the internal API server on the `OB_SERVER_URL` port (default: 11337) will be active.
+When `OB_EDGE_PROXY` is not set to true, 1Backend will not start these public-facing routers. Only the internal API server on `OB_PORT` (default: 11337) will be active.
 
 **Typical Use Case**:
 
@@ -135,6 +135,12 @@ Host With 1Backend
 ## `OB_NODE_ID`
 
 For information about this, please refer to the [Registry Svc Node section](/docs/built-in-services/registry-svc#node-management--cluster-topology)
+
+## `OB_PORT`
+
+Sets the port used by the 1Backend server's internal API listener. Defaults to `11337`.
+
+If `OB_PORT` is not set, the server also derives the listen port from `OB_SELF_URL` when that URL includes a port.
 
 ## `OB_VERIFY_CONTACTS`
 

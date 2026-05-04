@@ -8,48 +8,68 @@
 package localstore
 
 import (
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
+	"path/filepath"
 	"reflect"
-	"sort"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/datastore/indexplanner"
-	"github.com/1backend/1backend/sdk/go/datastore/localstore/statemanager"
 	"github.com/1backend/1backend/sdk/go/reflector"
 	"github.com/flusflas/dipper"
 	"github.com/google/uuid"
+	_ "modernc.org/sqlite"
 )
+
+const localStoreTable = "rows"
 
 type LocalStore struct {
 	instance      any
-	data          map[string]any
-	mu            sync.RWMutex
-	lastID        int
+	db            *sql.DB
+	tx            *sql.Tx
+	mu            *sync.RWMutex
 	inTransaction bool
-	originalStore *LocalStore // Reference to the original store in case of transaction
-	stateManager  *statemanager.StateManager
 	filePath      string
+	debug         bool
 	autoIndexes   *indexplanner.Tracker
+}
+
+type storedRow struct {
+	id   string
+	data string
 }
 
 func NewLocalStore(instance any, filePath string) (*LocalStore, error) {
 	if filePath == "" {
-		tempFile, err := ioutil.TempFile("", uuid.NewString())
+		tempFile, err := os.CreateTemp("", uuid.NewString())
 		if err != nil {
 			return nil, err
 		}
 		filePath = tempFile.Name()
+		if err := tempFile.Close(); err != nil {
+			return nil, err
+		}
+	}
+
+	if err := os.MkdirAll(filepath.Dir(filePath), 0755); err != nil {
+		return nil, err
+	}
+
+	db, err := sql.Open("sqlite", filePath)
+	if err != nil {
+		return nil, err
 	}
 
 	ls := &LocalStore{
 		instance: instance,
-		data:     make(map[string]any),
+		db:       db,
+		mu:       &sync.RWMutex{},
 		filePath: filePath,
 		autoIndexes: indexplanner.NewTracker(indexplanner.TrackerOptions{
 			Backend:   "localstore",
@@ -57,45 +77,36 @@ func NewLocalStore(instance any, filePath string) (*LocalStore, error) {
 		}),
 	}
 
-	sm := statemanager.New(instance, func() []any {
-		vals, _ := ls.Query().Find()
-		is := []any{}
-		for _, v := range vals {
-			is = append(is, v)
-		}
-		return is
-	}, filePath)
-	ls.stateManager = sm
-
-	data, err := sm.LoadState()
-	if err != nil {
+	if err := ls.initDB(); err != nil {
+		_ = db.Close()
 		return nil, err
 	}
-	rowSlice := []datastore.Row{}
-
-	if data != nil {
-		v := reflect.ValueOf(data)
-
-		if v.Kind() != reflect.Slice {
-			panic("not a slice")
-		}
-
-		for i := 0; i < v.Len(); i++ {
-			elem := v.Index(i).Interface()
-			rowSlice = append(rowSlice, elem.(datastore.Row))
-		}
-	}
-	err = ls.CreateMany(rowSlice)
-	if err != nil {
-		return nil, err
-	}
-
-	go sm.PeriodicSaveState(10 * time.Second)
 
 	return ls, nil
 }
 
+func (s *LocalStore) initDB() error {
+	statements := []string{
+		"PRAGMA busy_timeout = 5000;",
+		"PRAGMA journal_mode = WAL;",
+		"PRAGMA synchronous = NORMAL;",
+		fmt.Sprintf(
+			"CREATE TABLE IF NOT EXISTS %s (id TEXT PRIMARY KEY, data TEXT NOT NULL CHECK (json_valid(data)));",
+			localStoreTable,
+		),
+	}
+
+	for _, statement := range statements {
+		if _, err := s.db.Exec(statement); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (s *LocalStore) SetDebug(debug bool) {
+	s.debug = debug
 }
 
 func (s *LocalStore) AutoIndexStats() datastore.AutoIndexStats {
@@ -112,60 +123,51 @@ func (s *LocalStore) Create(obj datastore.Row) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	return s.createWithoutLock(obj)
+	return s.create(obj)
 }
 
-func (s *LocalStore) Close() error {
-	return s.stateManager.Close()
-}
-
-func (s *LocalStore) Refresh() error {
-	return s.stateManager.Refresh()
-}
-
-func (s *LocalStore) createWithoutLock(obj datastore.Row) error {
-	id := obj.GetId()
-	_, ok := s.data[id]
-	if ok {
-		return datastore.ErrEntryAlreadyExists
-	}
-
-	v, err := reflector.DeepCopyIntoMap(obj)
+func (s *LocalStore) create(obj datastore.Row) error {
+	data, err := marshalRow(obj)
 	if err != nil {
 		return err
 	}
 
-	s.data[id] = v
-
-	s.stateManager.MarkChanged()
-	return nil
+	_, err = s.exec(
+		fmt.Sprintf("INSERT INTO %s (id, data) VALUES (?, ?);", localStoreTable),
+		obj.GetId(),
+		data,
+	)
+	if isConstraintError(err) {
+		return datastore.ErrEntryAlreadyExists
+	}
+	return err
 }
 
 func (s *LocalStore) CreateMany(objs []datastore.Row) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	for _, obj := range objs {
-		id := obj.GetId()
-		_, ok := s.data[id]
-		if ok {
-			return datastore.ErrEntryAlreadyExists
+	return s.withWriteTx(func(tx *sql.Tx) error {
+		for _, obj := range objs {
+			data, err := marshalRow(obj)
+			if err != nil {
+				return err
+			}
+
+			_, err = tx.Exec(
+				fmt.Sprintf("INSERT INTO %s (id, data) VALUES (?, ?);", localStoreTable),
+				obj.GetId(),
+				data,
+			)
+			if isConstraintError(err) {
+				return datastore.ErrEntryAlreadyExists
+			}
+			if err != nil {
+				return err
+			}
 		}
-	}
-
-	for _, obj := range objs {
-		id := obj.GetId()
-
-		v, err := reflector.DeepCopyIntoMap(obj)
-		if err != nil {
-			return err
-		}
-
-		s.data[id] = v
-	}
-
-	s.stateManager.MarkChanged()
-	return nil
+		return nil
+	})
 }
 
 func (s *LocalStore) Upsert(obj datastore.Row, opts ...datastore.UpsertOption) error {
@@ -174,18 +176,9 @@ func (s *LocalStore) Upsert(obj datastore.Row, opts ...datastore.UpsertOption) e
 
 	options := datastore.ParseUpsertOptions(opts...)
 	if len(options.Fields) == 0 {
-		if err := s.upsertWithoutLock(obj); err != nil {
-			return err
-		}
-		s.stateManager.MarkChanged()
-		return nil
+		return s.upsertFull(obj)
 	}
-
-	if err := s.upsertPartialWithoutLock(obj, options.Fields...); err != nil {
-		return err
-	}
-	s.stateManager.MarkChanged()
-	return nil
+	return s.upsertPartial(obj, options.Fields...)
 }
 
 func (s *LocalStore) UpsertMany(objs []datastore.Row, opts ...datastore.UpsertOption) error {
@@ -193,19 +186,85 @@ func (s *LocalStore) UpsertMany(objs []datastore.Row, opts ...datastore.UpsertOp
 	defer s.mu.Unlock()
 
 	options := datastore.ParseUpsertOptions(opts...)
-	for _, obj := range objs {
-		if len(options.Fields) == 0 {
-			if err := s.upsertWithoutLock(obj); err != nil {
-				return err
+	return s.withWriteTx(func(tx *sql.Tx) error {
+		for _, obj := range objs {
+			if len(options.Fields) == 0 {
+				if err := upsertFullTx(tx, obj); err != nil {
+					return err
+				}
+				continue
 			}
-		} else {
-			if err := s.upsertPartialWithoutLock(obj, options.Fields...); err != nil {
+
+			if err := s.upsertPartialTx(tx, obj, options.Fields...); err != nil {
 				return err
 			}
 		}
+		return nil
+	})
+}
+
+func (s *LocalStore) upsertFull(obj datastore.Row) error {
+	return s.withWriteTx(func(tx *sql.Tx) error {
+		return upsertFullTx(tx, obj)
+	})
+}
+
+func upsertFullTx(tx *sql.Tx, obj datastore.Row) error {
+	data, err := marshalRow(obj)
+	if err != nil {
+		return err
 	}
-	s.stateManager.MarkChanged()
-	return nil
+
+	_, err = tx.Exec(
+		fmt.Sprintf(
+			"INSERT INTO %s (id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data;",
+			localStoreTable,
+		),
+		obj.GetId(),
+		data,
+	)
+	return err
+}
+
+func (s *LocalStore) upsertPartial(obj datastore.Row, fields ...string) error {
+	return s.withWriteTx(func(tx *sql.Tx) error {
+		return s.upsertPartialTx(tx, obj, fields...)
+	})
+}
+
+func (s *LocalStore) upsertPartialTx(tx *sql.Tx, obj datastore.Row, fields ...string) error {
+	existing, found, err := rowByID(tx, obj.GetId())
+	if err != nil {
+		return err
+	}
+	if !found {
+		return upsertFullTx(tx, obj)
+	}
+
+	partialObj, err := reflector.DeepCopyIntoMap(obj)
+	if err != nil {
+		return err
+	}
+
+	updated, err := patchJSON(existing.data, func(target any) error {
+		for _, field := range fields {
+			value := getField(partialObj, field)
+			if err := setField(&target, field, value); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(
+		fmt.Sprintf("UPDATE %s SET data = ? WHERE id = ?;", localStoreTable),
+		updated,
+		obj.GetId(),
+	)
+	return err
 }
 
 func (s *LocalStore) Patch(id string, fields map[string]any) error {
@@ -216,59 +275,52 @@ func (s *LocalStore) PatchMany(updates []datastore.Patch) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	idField := s.idFieldName()
-	for _, update := range updates {
-		existingObj, exists := s.data[update.ID]
-		if !exists {
-			existingObj = map[string]any{}
-			if err := setField(&existingObj, idField, update.ID); err != nil {
+	return s.withWriteTx(func(tx *sql.Tx) error {
+		for _, update := range updates {
+			existing, found, err := rowByID(tx, update.ID)
+			if err != nil {
+				return err
+			}
+
+			baseData := existing.data
+			if !found {
+				base := map[string]any{}
+				if err := setField(&base, s.idFieldName(), update.ID); err != nil {
+					return err
+				}
+				bs, err := json.Marshal(base)
+				if err != nil {
+					return err
+				}
+				baseData = string(bs)
+			}
+
+			updated, err := patchJSON(baseData, func(target any) error {
+				for field, value := range update.Fields {
+					if err := setField(&target, field, value); err != nil {
+						return err
+					}
+				}
+				return nil
+			})
+			if err != nil {
+				return err
+			}
+
+			_, err = tx.Exec(
+				fmt.Sprintf(
+					"INSERT INTO %s (id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data;",
+					localStoreTable,
+				),
+				update.ID,
+				updated,
+			)
+			if err != nil {
 				return err
 			}
 		}
-
-		for field, value := range update.Fields {
-			if err := setField(&existingObj, field, value); err != nil {
-				return err
-			}
-		}
-
-		s.data[update.ID] = existingObj
-	}
-
-	s.stateManager.MarkChanged()
-	return nil
-}
-
-func (s *LocalStore) upsertWithoutLock(obj datastore.Row) error {
-	v, err := reflector.DeepCopyIntoMap(obj)
-	if err != nil {
-		return err
-	}
-
-	s.data[obj.GetId()] = v
-	return nil
-}
-
-func (s *LocalStore) upsertPartialWithoutLock(obj datastore.Row, fields ...string) error {
-	existingObj, exists := s.data[obj.GetId()]
-	if !exists {
-		return s.upsertWithoutLock(obj)
-	}
-
-	partialObj, err := reflector.DeepCopyIntoMap(obj)
-	if err != nil {
-		return err
-	}
-
-	for _, field := range fields {
-		value := getField(partialObj, field)
-		if err := setField(&existingObj, field, value); err != nil {
-			return err
-		}
-	}
-
-	s.data[obj.GetId()] = existingObj
-	return nil
+		return nil
+	})
 }
 
 func (s *LocalStore) idFieldName() string {
@@ -277,7 +329,7 @@ func (s *LocalStore) idFieldName() string {
 		t = t.Elem()
 	}
 
-	return t.Field(0).Name
+	return jsonFieldName(t.Field(0))
 }
 
 func (s *LocalStore) Query(filters ...datastore.Filter) datastore.QueryBuilder {
@@ -287,80 +339,133 @@ func (s *LocalStore) Query(filters ...datastore.Filter) datastore.QueryBuilder {
 }
 
 func (s *LocalStore) BeginTransaction() (datastore.DataStore, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.mu.RLock()
+	defer s.mu.RUnlock()
 
 	if s.inTransaction {
 		return nil, errors.New("already in a transaction")
 	}
 
-	// Create a copy of the current store data
-	newStore := &LocalStore{
+	tx, err := s.db.Begin()
+	if err != nil {
+		return nil, err
+	}
+
+	return &LocalStore{
 		instance:      s.instance,
-		data:          make(map[string]any),
-		lastID:        s.lastID,
+		db:            s.db,
+		tx:            tx,
+		mu:            s.mu,
 		inTransaction: true,
-		originalStore: s,
-		stateManager:  s.stateManager,
 		filePath:      s.filePath,
+		debug:         s.debug,
 		autoIndexes:   s.autoIndexes,
-	}
-
-	for k, v := range s.data {
-		newStore.data[k] = v
-	}
-
-	return newStore, nil
+	}, nil
 }
 
 func (s *LocalStore) Commit() error {
-	if !s.inTransaction || s.originalStore == nil {
+	if !s.inTransaction || s.tx == nil {
 		return errors.New("not in a transaction")
 	}
 
-	s.originalStore.mu.Lock()
-	defer s.originalStore.mu.Unlock()
-
-	// Apply the changes to the original store
-	for k, v := range s.data {
-		s.originalStore.data[k] = v
-	}
-
-	// Reset transaction state
+	err := s.tx.Commit()
+	s.tx = nil
 	s.inTransaction = false
-	s.originalStore.inTransaction = false
-	s.originalStore = nil
-
-	return nil
+	return err
 }
 
 func (s *LocalStore) Rollback() error {
-	if !s.inTransaction || s.originalStore == nil {
+	if !s.inTransaction || s.tx == nil {
 		return errors.New("not in a transaction")
 	}
 
-	// Simply discard the transaction store
+	err := s.tx.Rollback()
+	s.tx = nil
 	s.inTransaction = false
-	s.originalStore.inTransaction = false
-	s.originalStore = nil
-
-	return nil
+	return err
 }
 
 func (s *LocalStore) IsInTransaction() bool {
 	return s.inTransaction
 }
 
+func (s *LocalStore) Close() error {
+	if s.inTransaction {
+		if s.tx != nil {
+			err := s.tx.Rollback()
+			if err != nil && !errors.Is(err, sql.ErrTxDone) {
+				return err
+			}
+			s.tx = nil
+		}
+		s.inTransaction = false
+		return nil
+	}
+
+	return s.db.Close()
+}
+
+func (s *LocalStore) Refresh() error {
+	return nil
+}
+
+func (s *LocalStore) exec(query string, args ...any) (sql.Result, error) {
+	if s.debug {
+		fmt.Printf("[localstore] %s args=%v\n", query, args)
+	}
+	if s.tx != nil {
+		return s.tx.Exec(query, args...)
+	}
+	return s.db.Exec(query, args...)
+}
+
+func (s *LocalStore) query(query string, args ...any) (*sql.Rows, error) {
+	if s.debug {
+		fmt.Printf("[localstore] %s args=%v\n", query, args)
+	}
+	if s.tx != nil {
+		return s.tx.Query(query, args...)
+	}
+	return s.db.Query(query, args...)
+}
+
+func (s *LocalStore) queryRow(query string, args ...any) *sql.Row {
+	if s.debug {
+		fmt.Printf("[localstore] %s args=%v\n", query, args)
+	}
+	if s.tx != nil {
+		return s.tx.QueryRow(query, args...)
+	}
+	return s.db.QueryRow(query, args...)
+}
+
+func (s *LocalStore) withWriteTx(fn func(tx *sql.Tx) error) error {
+	if s.tx != nil {
+		return fn(s.tx)
+	}
+
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+
+	if err := fn(tx); err != nil {
+		_ = tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
+}
+
 type QueryBuilder struct {
-	store        *LocalStore
-	filters      []datastore.Filter
-	orderFields  []string
-	orderDescs   []bool
-	orderTypes   []datastore.SortingType
-	orderByRand  bool
-	limit        int64
-	after        []any
-	selectFields []string
+	store             *LocalStore
+	filters           []datastore.Filter
+	orderFields       []string
+	orderDescs        []bool
+	orderSortingTypes []datastore.SortingType
+	limit             int64
+	after             []any
+	selectFields      []string
 }
 
 func (q *QueryBuilder) OrderBy(options ...datastore.OrderBy) datastore.QueryBuilder {
@@ -370,13 +475,12 @@ func (q *QueryBuilder) OrderBy(options ...datastore.OrderBy) datastore.QueryBuil
 
 	q.orderFields = make([]string, len(options))
 	q.orderDescs = make([]bool, len(options))
-	q.orderTypes = make([]datastore.SortingType, len(options))
+	q.orderSortingTypes = make([]datastore.SortingType, len(options))
 
 	for i, option := range options {
 		q.orderFields[i] = option.Field
 		q.orderDescs[i] = option.Desc
-		q.orderTypes[i] = option.SortingType
-		q.orderByRand = q.orderByRand || option.SortingType == datastore.SortingTypeRandom
+		q.orderSortingTypes[i] = option.SortingType
 	}
 
 	return q
@@ -392,16 +496,9 @@ func (q *QueryBuilder) After(value ...any) datastore.QueryBuilder {
 		return q
 	}
 
-	q.after = value
-
-	for i := range q.after {
-		// JSON marshal time.Times
-		t, ok := q.after[i].(time.Time)
-		if !ok {
-			continue
-		}
-
-		q.after[i] = t.Format(time.RFC3339Nano)
+	q.after = make([]any, len(value))
+	for i := range value {
+		q.after[i] = normalizeParam(value[i])
 	}
 
 	return q
@@ -413,191 +510,77 @@ func (q *QueryBuilder) Select(fields ...string) datastore.QueryBuilder {
 }
 
 func (q *QueryBuilder) Find() ([]datastore.Row, error) {
-	q.store.mu.RLock()
-	defer q.store.mu.RUnlock()
-
-	var result []any
-	for _, obj := range q.store.data {
-		matched, err := q.match(obj)
-		if err != nil {
-			return nil, err
-		}
-		if matched {
-			result = append(result, obj)
-		}
-	}
-
-	// Sorting using all order fields
-	if len(q.orderFields) > 0 {
-		sort.Slice(result, func(i, j int) bool {
-			for idx, field := range q.orderFields {
-
-				if field == "" {
-					// Happens for random order
-					continue
-				}
-
-				vi := getField(result[i], field)
-				vj := getField(result[j], field)
-
-				desc := false
-				if idx < len(q.orderDescs) {
-					desc = q.orderDescs[idx]
-				}
-
-				if compare(vi, vj, desc) {
-					return true // i < j
-				}
-				if compare(vj, vi, desc) {
-					return false // j < i
-				}
-
-				// otherwise equal, check next field
-			}
-
-			return false
-		})
-	}
-
-	// Multi-field "after" pagination
-	if len(q.after) > 0 && len(q.orderFields) > 0 {
-		startIndex := -1
-		for i, obj := range result {
-			isAfter := false
-			equalSoFar := true
-
-			for k, field := range q.orderFields {
-				if k >= len(q.after) {
-					break
-				}
-
-				v := getField(obj, field)
-				desc := false
-				if k < len(q.orderDescs) {
-					desc = q.orderDescs[k]
-				}
-
-				// If still equal so far, check if current field is strictly after
-				if equalSoFar && compare(toBaseType(q.after[k]), toBaseType(v), desc) {
-					isAfter = true
-					break
-				}
-
-				// If not equal, stop equal tracking
-				if !equalWithZero(toBaseType(v), toBaseType(q.after[k])) {
-					equalSoFar = false
-					break
-				}
-
-			}
-
-			if isAfter {
-				startIndex = i
-				break
-			}
-		}
-
-		if startIndex != -1 {
-			result = result[startIndex:]
-		} else {
-			result = []any{}
-		}
-	}
-
-	// Limit
-	if q.limit > 0 && q.limit < int64(len(result)) {
-		result = result[:q.limit]
-	}
-
-	// Deep copy into correct type
-	sliceCopy, err := reflector.DeepCopySliceIntoType(result, q.store.instance)
+	query, params, err := q.buildSelectQuery(false, 0)
 	if err != nil {
 		return nil, err
 	}
 
-	ret := make([]datastore.Row, len(sliceCopy))
-	for i, v := range sliceCopy {
-		ret[i] = v.(datastore.Row)
-	}
-
+	rows, err := q.store.query(query, params...)
 	q.observe()
-	return ret, nil
-}
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-func equalWithZero(a, b any) bool {
-	av := reflect.ValueOf(a)
-	bv := reflect.ValueOf(b)
+	var result []datastore.Row
+	for rows.Next() {
+		var raw string
+		if err := rows.Scan(&raw); err != nil {
+			return nil, err
+		}
 
-	// Both nil → equal
-	if !av.IsValid() && !bv.IsValid() {
-		return true
+		obj, err := q.store.unmarshalRow(raw)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, obj)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
 	}
 
-	// If one side is nil, replace it with zero of the other's type
-	if !av.IsValid() {
-		av = reflect.Zero(bv.Type())
-	}
-	if !bv.IsValid() {
-		bv = reflect.Zero(av.Type())
-	}
-
-	// Unwrap pointers
-	if av.Kind() == reflect.Ptr && !av.IsNil() {
-		av = av.Elem()
-	}
-	if bv.Kind() == reflect.Ptr && !bv.IsNil() {
-		bv = bv.Elem()
-	}
-
-	// If types differ after normalization → not equal
-	if av.Type() != bv.Type() {
-		return false
-	}
-
-	return reflect.DeepEqual(av.Interface(), bv.Interface())
+	return result, nil
 }
 
 func (q *QueryBuilder) FindOne() (datastore.Row, bool, error) {
-	q.store.mu.RLock()
-	defer q.store.mu.RUnlock()
-
 	var empty datastore.Row
 
-	for _, obj := range q.store.data {
-		matched, err := q.match(obj)
-		if err != nil {
-			return nil, false, err
-		}
-		if matched {
-			cop, err := reflector.DeepCopyIntoType(obj, q.store.instance)
-			if err != nil {
-				return nil, false, err
-			}
-
-			q.observe()
-			return cop.(datastore.Row), true, nil
-		}
+	query, params, err := q.buildSelectQuery(false, 1)
+	if err != nil {
+		return empty, false, err
 	}
 
+	var raw string
+	err = q.store.queryRow(query, params...).Scan(&raw)
 	q.observe()
-	return empty, false, nil
+	if errors.Is(err, sql.ErrNoRows) {
+		return empty, false, nil
+	}
+	if err != nil {
+		return empty, false, err
+	}
+
+	obj, err := q.store.unmarshalRow(raw)
+	if err != nil {
+		return empty, false, err
+	}
+
+	return obj, true, nil
 }
 
 func (q *QueryBuilder) Count() (int64, error) {
-	q.store.mu.RLock()
-	defer q.store.mu.RUnlock()
+	query, params, err := q.buildSelectQuery(true, 0)
+	if err != nil {
+		return 0, err
+	}
 
 	var count int64
-	for _, obj := range q.store.data {
-		matched, err := q.match(obj)
-		if err != nil {
-			return 0, err
-		}
-		if matched {
-			count++
-		}
-	}
+	err = q.store.queryRow(query, params...).Scan(&count)
 	q.observe()
+	if err != nil {
+		return 0, err
+	}
+
 	return count, nil
 }
 
@@ -605,110 +588,500 @@ func (q *QueryBuilder) Update(obj datastore.Row) error {
 	q.store.mu.Lock()
 	defer q.store.mu.Unlock()
 
-	found := false
-	for id, existingObj := range q.store.data {
-		matched, err := q.match(existingObj)
-		if err != nil {
-			return err
-		}
-		if matched {
-			found = true
-
-			v, err := reflector.DeepCopyIntoMap(obj)
-			if err != nil {
-				return err
-			}
-
-			q.store.data[id] = v
-		}
+	ids, err := q.matchingIDs(q.store.tx)
+	if err != nil {
+		return err
 	}
-
-	if !found {
+	if len(ids) == 0 {
+		q.observe()
 		return errors.New("no records to update")
 	}
 
-	q.store.stateManager.MarkChanged()
-	q.observe()
+	data, err := marshalRow(obj)
+	if err != nil {
+		return err
+	}
 
-	return nil
+	err = q.store.withWriteTx(func(tx *sql.Tx) error {
+		for _, id := range ids {
+			if _, err := tx.Exec(fmt.Sprintf("UPDATE %s SET data = ? WHERE id = ?;", localStoreTable), data, id); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	q.observe()
+	return err
 }
 
 func (q *QueryBuilder) Upsert(obj datastore.Row) error {
 	q.store.mu.Lock()
 	defer q.store.mu.Unlock()
 
-	q.store.stateManager.MarkChanged()
-
-	found := false
-	for id, existingObj := range q.store.data {
-		matched, err := q.match(existingObj)
+	err := q.store.withWriteTx(func(tx *sql.Tx) error {
+		ids, err := q.matchingIDs(tx)
 		if err != nil {
 			return err
 		}
-		if matched {
-			found = true
+		if len(ids) == 0 {
+			return upsertFullTx(tx, obj)
+		}
 
-			v, err := reflector.DeepCopyIntoMap(obj)
-			if err != nil {
+		data, err := marshalRow(obj)
+		if err != nil {
+			return err
+		}
+		for _, id := range ids {
+			if _, err := tx.Exec(fmt.Sprintf("UPDATE %s SET data = ? WHERE id = ?;", localStoreTable), data, id); err != nil {
 				return err
 			}
-
-			q.store.data[id] = v
 		}
-	}
-
-	if !found {
-		err := q.store.createWithoutLock(obj)
-		q.observe()
-		return err
-	}
-
+		return nil
+	})
 	q.observe()
-	return nil
+	return err
 }
 
 func (q *QueryBuilder) UpdateFields(fields map[string]interface{}) error {
 	q.store.mu.Lock()
 	defer q.store.mu.Unlock()
 
-	for id, obj := range q.store.data {
-		matched, err := q.match(obj)
+	err := q.store.withWriteTx(func(tx *sql.Tx) error {
+		rows, err := q.matchingRows(tx)
 		if err != nil {
 			return err
 		}
-		if matched {
-			for field, value := range fields {
 
-				err := setField(&obj, field, value)
-				if err != nil {
-					return err
+		for _, row := range rows {
+			updated, err := patchJSON(row.data, func(target any) error {
+				for field, value := range fields {
+					if err := setField(&target, field, value); err != nil {
+						return err
+					}
 				}
+				return nil
+			})
+			if err != nil {
+				return err
 			}
-			q.store.data[id] = obj
+
+			if _, err := tx.Exec(fmt.Sprintf("UPDATE %s SET data = ? WHERE id = ?;", localStoreTable), updated, row.id); err != nil {
+				return err
+			}
 		}
-	}
-	q.store.stateManager.MarkChanged()
+
+		return nil
+	})
 	q.observe()
-	return nil
+	return err
 }
 
 func (q *QueryBuilder) Delete() error {
 	q.store.mu.Lock()
 	defer q.store.mu.Unlock()
 
-	for id, obj := range q.store.data {
-		matched, err := q.match(obj)
-		if err != nil {
-			return err
-		}
-		if matched {
+	where, params, err := q.buildWhere(false)
+	if err != nil {
+		return err
+	}
 
-			delete(q.store.data, id)
+	query := fmt.Sprintf("DELETE FROM %s", localStoreTable)
+	if where != "" {
+		query += " WHERE " + where
+	}
+
+	_, err = q.store.exec(query, params...)
+	q.observe()
+	return err
+}
+
+func (q *QueryBuilder) buildSelectQuery(count bool, forceLimit int64) (string, []any, error) {
+	where, params, err := q.buildWhere(true)
+	if err != nil {
+		return "", nil, err
+	}
+
+	selected := "data"
+	if count {
+		selected = "COUNT(*)"
+	}
+
+	query := fmt.Sprintf("SELECT %s FROM %s", selected, localStoreTable)
+	if where != "" {
+		query += " WHERE " + where
+	}
+
+	if !count && len(q.orderFields) > 0 {
+		orderParts := make([]string, 0, len(q.orderFields))
+		for i, field := range q.orderFields {
+			if i < len(q.orderSortingTypes) && q.orderSortingTypes[i] == datastore.SortingTypeRandom {
+				orderParts = append(orderParts, "RANDOM()")
+				continue
+			}
+
+			expr := fieldExpr(field, q.sortingTypeAt(i))
+			if i < len(q.orderDescs) && q.orderDescs[i] {
+				expr += " DESC"
+			}
+			orderParts = append(orderParts, expr)
+		}
+		query += " ORDER BY " + strings.Join(orderParts, ", ")
+	}
+
+	limit := q.limit
+	if forceLimit > 0 {
+		limit = forceLimit
+	}
+	if !count && limit > 0 {
+		query += " LIMIT ?"
+		params = append(params, limit)
+	}
+
+	return query, params, nil
+}
+
+func (q *QueryBuilder) buildWhere(includeAfter bool) (string, []any, error) {
+	var parts []string
+	var params []any
+
+	for _, filter := range q.filters {
+		sqlPart, sqlParams, err := q.compileFilter(filter)
+		if err != nil {
+			return "", nil, err
+		}
+		if sqlPart == "" {
+			continue
+		}
+		parts = append(parts, sqlPart)
+		params = append(params, sqlParams...)
+	}
+
+	if includeAfter && len(q.after) > 0 && len(q.orderFields) > 0 {
+		afterSQL, afterParams, err := q.compileAfter()
+		if err != nil {
+			return "", nil, err
+		}
+		if afterSQL != "" {
+			parts = append(parts, afterSQL)
+			params = append(params, afterParams...)
 		}
 	}
-	q.store.stateManager.MarkChanged()
-	q.observe()
-	return nil
+
+	return strings.Join(parts, " AND "), params, nil
+}
+
+func (q *QueryBuilder) compileFilter(filter datastore.Filter) (string, []any, error) {
+	switch filter.Op {
+	case datastore.OpOr:
+		var parts []string
+		var params []any
+		for _, subFilter := range filter.SubFilters {
+			part, subParams, err := q.compileFilter(subFilter)
+			if err != nil {
+				return "", nil, err
+			}
+			if part == "" {
+				continue
+			}
+			parts = append(parts, part)
+			params = append(params, subParams...)
+		}
+		if len(parts) == 0 {
+			return "0", nil, nil
+		}
+		return "(" + strings.Join(parts, " OR ") + ")", params, nil
+	case datastore.OpEquals:
+		return compileEquals(filter)
+	case datastore.OpIsInList:
+		return compileIsInList(filter)
+	case datastore.OpIntersects:
+		return compileIntersects(filter)
+	case datastore.OpContainsSubstring:
+		return compileStringMatch(filter, false)
+	case datastore.OpStartsWith:
+		return compileStringMatch(filter, true)
+	case datastore.OpLessThan:
+		return compileComparison(filter, "<")
+	case datastore.OpLessThanOrEqual:
+		return compileComparison(filter, "<=")
+	case datastore.OpGreaterThan:
+		return compileComparison(filter, ">")
+	case datastore.OpGreaterThanOrEqual:
+		return compileComparison(filter, ">=")
+	default:
+		return "", nil, fmt.Errorf("unknown filter %v", filter)
+	}
+}
+
+func compileEquals(filter datastore.Filter) (string, []any, error) {
+	values, err := filterValues(filter)
+	if err != nil {
+		return "", nil, err
+	}
+	if len(values) == 0 {
+		return "0", nil, nil
+	}
+
+	value := normalizeParam(values[0])
+
+	var parts []string
+	var params []any
+	for _, field := range filter.Fields {
+		path := jsonPath(field)
+		parts = append(parts, fmt.Sprintf(
+			"((json_type(data, %s) = 'array' AND EXISTS (SELECT 1 FROM json_each(data, %s) WHERE value = ?)) OR (json_type(data, %s) != 'array' AND %s = ?))",
+			sqlStringLiteral(path),
+			sqlStringLiteral(path),
+			sqlStringLiteral(path),
+			fieldExpr(field, datastore.SortingTypeDefault),
+		))
+		params = append(params, value, value)
+	}
+
+	if len(parts) == 0 {
+		return "0", nil, nil
+	}
+	return "(" + strings.Join(parts, " OR ") + ")", params, nil
+}
+
+func compileIsInList(filter datastore.Filter) (string, []any, error) {
+	values, err := filterValues(filter)
+	if err != nil {
+		return "", nil, err
+	}
+	if len(values) == 0 {
+		return "0", nil, nil
+	}
+
+	placeholders := strings.TrimRight(strings.Repeat("?,", len(values)), ",")
+	paramsForField := make([]any, 0, len(values))
+	for _, value := range values {
+		paramsForField = append(paramsForField, normalizeParam(value))
+	}
+
+	var parts []string
+	var params []any
+	for _, field := range filter.Fields {
+		parts = append(parts, fmt.Sprintf(
+			"(json_type(data, %s) != 'array' AND %s IN (%s))",
+			sqlStringLiteral(jsonPath(field)),
+			fieldExpr(field, datastore.SortingTypeDefault),
+			placeholders,
+		))
+		params = append(params, paramsForField...)
+	}
+
+	if len(parts) == 0 {
+		return "0", nil, nil
+	}
+	return "(" + strings.Join(parts, " OR ") + ")", params, nil
+}
+
+func compileIntersects(filter datastore.Filter) (string, []any, error) {
+	values, err := filterValues(filter)
+	if err != nil {
+		return "", nil, err
+	}
+	if len(values) == 0 {
+		return "0", nil, nil
+	}
+
+	valuesJSON, err := json.Marshal(values)
+	if err != nil {
+		return "", nil, err
+	}
+
+	var parts []string
+	var params []any
+	for _, field := range filter.Fields {
+		parts = append(parts, fmt.Sprintf(
+			"(json_type(data, %s) = 'array' AND EXISTS (SELECT 1 FROM json_each(data, %s) AS stored JOIN json_each(?) AS wanted ON stored.value = wanted.value))",
+			sqlStringLiteral(jsonPath(field)),
+			sqlStringLiteral(jsonPath(field)),
+		))
+		params = append(params, string(valuesJSON))
+	}
+
+	if len(parts) == 0 {
+		return "0", nil, nil
+	}
+	return "(" + strings.Join(parts, " OR ") + ")", params, nil
+}
+
+func compileStringMatch(filter datastore.Filter, startsWith bool) (string, []any, error) {
+	values, err := filterValues(filter)
+	if err != nil {
+		return "", nil, err
+	}
+	if len(values) == 0 {
+		return "0", nil, nil
+	}
+
+	value, ok := normalizeParam(values[0]).(string)
+	if !ok {
+		return "0", nil, nil
+	}
+
+	var parts []string
+	var params []any
+	for _, field := range filter.Fields {
+		path := jsonPath(field)
+		var scalarExpr string
+		var arrayExpr string
+		if startsWith {
+			scalarExpr = fmt.Sprintf("substr(CAST(%s AS TEXT), 1, length(?)) = ?", fieldExpr(field, datastore.SortingTypeDefault))
+			arrayExpr = fmt.Sprintf("substr(CAST(value AS TEXT), 1, length(?)) = ?")
+		} else {
+			scalarExpr = fmt.Sprintf("instr(CAST(%s AS TEXT), ?) > 0", fieldExpr(field, datastore.SortingTypeDefault))
+			arrayExpr = "instr(CAST(value AS TEXT), ?) > 0"
+		}
+
+		parts = append(parts, fmt.Sprintf(
+			"((json_type(data, %s) = 'array' AND EXISTS (SELECT 1 FROM json_each(data, %s) WHERE %s)) OR (json_type(data, %s) != 'array' AND %s))",
+			sqlStringLiteral(path),
+			sqlStringLiteral(path),
+			arrayExpr,
+			sqlStringLiteral(path),
+			scalarExpr,
+		))
+		if startsWith {
+			params = append(params, value, value, value, value)
+		} else {
+			params = append(params, value, value)
+		}
+	}
+
+	if len(parts) == 0 {
+		return "0", nil, nil
+	}
+	return "(" + strings.Join(parts, " OR ") + ")", params, nil
+}
+
+func compileComparison(filter datastore.Filter, op string) (string, []any, error) {
+	values, err := filterValues(filter)
+	if err != nil {
+		return "", nil, err
+	}
+	if len(values) != 1 {
+		return "", nil, errors.New("comparison operators require exactly one value")
+	}
+
+	value := normalizeParam(values[0])
+	sortingType := datastore.SortingTypeDefault
+	if isNumeric(value) {
+		sortingType = datastore.SortingTypeNumeric
+	}
+
+	var parts []string
+	var params []any
+	for _, field := range filter.Fields {
+		expr := fieldExpr(field, sortingType)
+		if sortingType == datastore.SortingTypeNumeric {
+			expr = numericFieldExpr(field)
+		}
+		parts = append(parts, fmt.Sprintf(
+			"(json_type(data, %s) != 'array' AND %s %s ?)",
+			sqlStringLiteral(jsonPath(field)),
+			expr,
+			op,
+		))
+		params = append(params, value)
+	}
+
+	if len(parts) == 0 {
+		return "0", nil, nil
+	}
+	return "(" + strings.Join(parts, " OR ") + ")", params, nil
+}
+
+func (q *QueryBuilder) compileAfter() (string, []any, error) {
+	var orParts []string
+	var params []any
+
+	max := len(q.orderFields)
+	if len(q.after) < max {
+		max = len(q.after)
+	}
+
+	for i := 0; i < max; i++ {
+		var andParts []string
+		for j := 0; j < i; j++ {
+			andParts = append(andParts, fmt.Sprintf("%s = ?", fieldExpr(q.orderFields[j], q.sortingTypeAt(j))))
+			params = append(params, normalizeParam(q.after[j]))
+		}
+
+		op := ">"
+		if i < len(q.orderDescs) && q.orderDescs[i] {
+			op = "<"
+		}
+		andParts = append(andParts, fmt.Sprintf("%s %s ?", fieldExpr(q.orderFields[i], q.sortingTypeAt(i)), op))
+		params = append(params, normalizeParam(q.after[i]))
+
+		orParts = append(orParts, "("+strings.Join(andParts, " AND ")+")")
+	}
+
+	if len(orParts) == 0 {
+		return "", nil, nil
+	}
+	return "(" + strings.Join(orParts, " OR ") + ")", params, nil
+}
+
+func (q *QueryBuilder) sortingTypeAt(index int) datastore.SortingType {
+	if index < len(q.orderSortingTypes) && q.orderSortingTypes[index] != "" {
+		return q.orderSortingTypes[index]
+	}
+	if index < len(q.after) && isNumeric(q.after[index]) {
+		return datastore.SortingTypeNumeric
+	}
+	return datastore.SortingTypeDefault
+}
+
+func (q *QueryBuilder) matchingRows(tx *sql.Tx) ([]storedRow, error) {
+	where, params, err := q.buildWhere(false)
+	if err != nil {
+		return nil, err
+	}
+
+	query := fmt.Sprintf("SELECT id, data FROM %s", localStoreTable)
+	if where != "" {
+		query += " WHERE " + where
+	}
+
+	var rows *sql.Rows
+	if tx != nil {
+		rows, err = tx.Query(query, params...)
+	} else {
+		rows, err = q.store.query(query, params...)
+	}
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var result []storedRow
+	for rows.Next() {
+		var row storedRow
+		if err := rows.Scan(&row.id, &row.data); err != nil {
+			return nil, err
+		}
+		result = append(result, row)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func (q *QueryBuilder) matchingIDs(tx *sql.Tx) ([]string, error) {
+	rows, err := q.matchingRows(tx)
+	if err != nil {
+		return nil, err
+	}
+	ids := make([]string, 0, len(rows))
+	for _, row := range rows {
+		ids = append(ids, row.id)
+	}
+	return ids, nil
 }
 
 func (q *QueryBuilder) observe() {
@@ -722,6 +1095,13 @@ func (q *QueryBuilder) observe() {
 }
 
 func (q *QueryBuilder) queryDefinition() datastore.Query {
+	afterJSON := ""
+	if len(q.after) > 0 {
+		if bs, err := json.Marshal(q.after); err == nil {
+			afterJSON = string(bs)
+		}
+	}
+
 	orderBys := make([]datastore.OrderBy, 0, len(q.orderFields))
 	for i, field := range q.orderFields {
 		orderBy := datastore.OrderBy{
@@ -730,17 +1110,10 @@ func (q *QueryBuilder) queryDefinition() datastore.Query {
 		if i < len(q.orderDescs) {
 			orderBy.Desc = q.orderDescs[i]
 		}
-		if i < len(q.orderTypes) {
-			orderBy.SortingType = q.orderTypes[i]
+		if i < len(q.orderSortingTypes) {
+			orderBy.SortingType = q.orderSortingTypes[i]
 		}
 		orderBys = append(orderBys, orderBy)
-	}
-
-	afterJSON := ""
-	if len(q.after) > 0 {
-		if bs, err := json.Marshal(q.after); err == nil {
-			afterJSON = string(bs)
-		}
 	}
 
 	return datastore.Query{
@@ -751,411 +1124,194 @@ func (q *QueryBuilder) queryDefinition() datastore.Query {
 	}
 }
 
-func evaluate(filter datastore.Filter, obj any) (bool, error) {
-	switch filter.Op {
-	case datastore.OpOr:
-		for _, filter := range filter.SubFilters {
-			matches, err := evaluate(filter, obj)
-			if err != nil {
-				return false, err
-			}
-			if matches {
-				return true, nil
-			}
+func (s *LocalStore) unmarshalRow(raw string) (datastore.Row, error) {
+	instanceType := reflect.TypeOf(s.instance)
+	if instanceType.Kind() == reflect.Ptr {
+		obj := reflect.New(instanceType.Elem())
+		if err := json.Unmarshal([]byte(raw), obj.Interface()); err != nil {
+			return nil, err
 		}
-		return false, nil
-
-	case datastore.OpEquals:
-		matchFunc := func(subject, test any) bool {
-			subject = toBaseType(subject)
-			test = toBaseType(test)
-			if subject == "dipper: field not found" {
-				panic("dipper")
-			}
-
-			return reflect.DeepEqual(test, subject)
+		row, ok := obj.Interface().(datastore.Row)
+		if !ok {
+			return nil, fmt.Errorf("%T does not implement datastore.Row", obj.Interface())
 		}
-
-		fieldNames := filter.Fields
-
-		matched := false
-		for _, fieldName := range fieldNames {
-			fieldValue := getField(obj, fieldName)
-
-			if fmt.Sprintf("%v", fieldValue) == "dipper: field not found" {
-				continue
-			}
-
-			var values []any
-			err := json.Unmarshal([]byte(filter.ValuesJson), &values)
-			if err != nil {
-				return false, err
-			}
-
-			value := values[0]
-			queryValue := reflect.ValueOf(value)
-			fieldV := reflect.ValueOf(fieldValue)
-
-			if fieldV.Kind() == reflect.Slice {
-				for i := 0; i < fieldV.Len(); i++ {
-					if matchFunc(fieldV.Index(i).Interface(), queryValue.Interface()) {
-						matched = true
-						continue
-					}
-				}
-			} else {
-				if matchFunc(fieldValue, value) {
-					matched = true
-				}
-			}
-		}
-		return matched, nil
-
-	case datastore.OpIsInList:
-		matchFunc := func(subject, test any) bool {
-			subject = toBaseType(subject)
-			test = toBaseType(test)
-
-			if subject == "dipper: field not found" {
-				panic("dipper")
-			}
-
-			return reflect.DeepEqual(test, subject)
-		}
-
-		fieldNames := filter.Fields
-
-		matched := false
-		for _, fieldName := range fieldNames {
-			fieldValue := getField(obj, fieldName)
-
-			if fmt.Sprintf("%v", fieldValue) == "dipper: field not found" {
-				continue
-			}
-
-			var values []any
-			err := json.Unmarshal([]byte(filter.ValuesJson), &values)
-			if err != nil {
-				return false, err
-			}
-
-			queryValue := reflect.ValueOf(values)
-			fieldV := reflect.ValueOf(fieldValue)
-
-			if fieldV.Kind() == reflect.Slice {
-				return false, errors.New("OpIsInList should not test slices - use OpIntersects instead")
-			} else if queryValue.Kind() == reflect.Slice {
-				for i := 0; i < queryValue.Len(); i++ {
-					if reflect.ValueOf(queryValue.Index(i).Interface()).Kind() == reflect.Slice {
-						return false, errors.New("OpIsInList slice member should not be a slice")
-					}
-					if matchFunc(fieldValue, queryValue.Index(i).Interface()) {
-						matched = true
-						continue
-					}
-				}
-			} else {
-				return false, nil
-			}
-		}
-		return matched, nil
-
-	case datastore.OpStartsWith:
-		matchFunc := func(subject, test any) bool {
-			testStr, testOk := test.(string)
-			subjectStr, subjectOk := subject.(string)
-			if !testOk || !subjectOk {
-				return false
-			}
-			return strings.HasPrefix(subjectStr, testStr)
-		}
-		fieldNames := filter.Fields
-
-		matched := false
-		for _, fieldName := range fieldNames {
-			fieldValue := getField(obj, fieldName)
-
-			if fmt.Sprintf("%v", fieldValue) == "dipper: field not found" {
-				continue
-			}
-
-			var values []any
-			err := json.Unmarshal([]byte(filter.ValuesJson), &values)
-			if err != nil {
-				return false, err
-			}
-
-			queryValue := reflect.ValueOf(values)
-			fieldV := reflect.ValueOf(fieldValue)
-
-			if fieldV.Kind() == reflect.Slice {
-				for i := 0; i < fieldV.Len(); i++ {
-					if matchFunc(fieldV.Index(i).Interface(), queryValue.Interface()) {
-						matched = true
-						continue
-					}
-				}
-			} else {
-				if matchFunc(fieldValue, values) {
-					matched = true
-				}
-			}
-		}
-		return matched, nil
-
-	case datastore.OpContainsSubstring:
-		matchFunc := func(subject, test any) bool {
-			testStr, testOk := test.(string)
-			subjectStr, subjectOk := subject.(string)
-
-			if !testOk || !subjectOk {
-				return false
-			}
-
-			return strings.Contains(subjectStr, testStr)
-		}
-		fieldNames := filter.Fields
-
-		matched := false
-		for _, fieldName := range fieldNames {
-			fieldValue := getField(obj, fieldName)
-
-			if fmt.Sprintf("%v", fieldValue) == "dipper: field not found" {
-				continue
-			}
-
-			var values []any
-			err := json.Unmarshal([]byte(filter.ValuesJson), &values)
-			if err != nil {
-				return false, err
-			}
-
-			value := values[0]
-
-			queryValue := reflect.ValueOf(value)
-			fieldV := reflect.ValueOf(fieldValue)
-
-			if fieldV.Kind() == reflect.Slice {
-				for i := 0; i < fieldV.Len(); i++ {
-					if matchFunc(fieldV.Index(i).Interface(), queryValue.Interface()) {
-						matched = true
-						continue
-					}
-				}
-			} else {
-				if matchFunc(fieldValue, value) {
-					matched = true
-				}
-			}
-		}
-		return matched, nil
-
-	case datastore.OpIntersects:
-		matchFunc := func(subject, test any) bool {
-			subject = toBaseType(subject)
-			test = toBaseType(test)
-			if subject == "dipper: field not found" {
-				panic("dipper")
-			}
-
-			return reflect.DeepEqual(test, subject)
-		}
-
-		fieldNames := filter.Fields
-
-		matched := false
-		for _, fieldName := range fieldNames {
-			fieldValue := getField(obj, fieldName)
-
-			if fmt.Sprintf("%v", fieldValue) == "dipper: field not found" {
-				continue
-			}
-
-			var values []any
-			err := json.Unmarshal([]byte(filter.ValuesJson), &values)
-			if err != nil {
-				return false, err
-			}
-
-			value := values
-			queryValue := reflect.ValueOf(value)
-			fieldV := reflect.ValueOf(fieldValue)
-
-			if fieldV.Kind() != reflect.Slice {
-				continue
-			}
-			if queryValue.Kind() != reflect.Slice {
-				continue
-			}
-
-			for i := 0; i < fieldV.Len(); i++ {
-				for j := 0; j < queryValue.Len(); j++ {
-					if matchFunc(fieldV.Index(i).Interface(), queryValue.Index(j).Interface()) {
-						matched = true
-						continue
-					}
-				}
-			}
-
-		}
-		return matched, nil
-	case datastore.OpLessThan, datastore.OpLessThanOrEqual, datastore.OpGreaterThan, datastore.OpGreaterThanOrEqual:
-		var values []any
-		err := json.Unmarshal([]byte(filter.ValuesJson), &values)
-		if err != nil {
-			return false, err
-		}
-		if len(values) != 1 {
-			return false, errors.New("comparison operators require exactly one value")
-		}
-
-		testValue := values[0]
-		for _, fieldName := range filter.Fields {
-			fieldValue := getField(obj, fieldName)
-			if fieldValue == nil {
-				continue
-			}
-
-			comp, ok := compareValues(fieldValue, testValue)
-			if !ok {
-				continue
-			}
-
-			switch filter.Op {
-			case datastore.OpLessThan:
-				if comp < 0 {
-					return true, nil
-				}
-			case datastore.OpLessThanOrEqual:
-				if comp <= 0 {
-					return true, nil
-				}
-			case datastore.OpGreaterThan:
-				if comp > 0 {
-					return true, nil
-				}
-			case datastore.OpGreaterThanOrEqual:
-				if comp >= 0 {
-					return true, nil
-				}
-			}
-		}
-		return false, nil
+		return row, nil
 	}
 
-	return false, fmt.Errorf("unknown filter %v", filter)
+	obj := reflect.New(instanceType)
+	if err := json.Unmarshal([]byte(raw), obj.Interface()); err != nil {
+		return nil, err
+	}
+	row, ok := obj.Elem().Interface().(datastore.Row)
+	if !ok {
+		return nil, fmt.Errorf("%T does not implement datastore.Row", obj.Elem().Interface())
+	}
+	return row, nil
 }
 
-func compareValues(subject, test any) (int, bool) {
-	left := toBaseType(subject)
-	right := toBaseType(test)
-
-	leftFloat, leftOK := asFloat64(left)
-	rightFloat, rightOK := asFloat64(right)
-	if leftOK && rightOK {
-		switch {
-		case leftFloat < rightFloat:
-			return -1, true
-		case leftFloat > rightFloat:
-			return 1, true
-		default:
-			return 0, true
-		}
+func marshalRow(obj datastore.Row) (string, error) {
+	bs, err := json.Marshal(obj)
+	if err != nil {
+		return "", err
 	}
-
-	leftTime, leftIsTime := asTime(left)
-	rightTime, rightIsTime := asTime(right)
-	if leftIsTime && rightIsTime {
-		switch {
-		case leftTime.Before(rightTime):
-			return -1, true
-		case leftTime.After(rightTime):
-			return 1, true
-		default:
-			return 0, true
-		}
-	}
-
-	leftString, leftIsString := left.(string)
-	rightString, rightIsString := right.(string)
-	if leftIsString && rightIsString {
-		switch {
-		case leftString < rightString:
-			return -1, true
-		case leftString > rightString:
-			return 1, true
-		default:
-			return 0, true
-		}
-	}
-
-	return 0, false
+	return string(bs), nil
 }
 
-func asFloat64(v any) (float64, bool) {
-	switch t := v.(type) {
-	case int:
-		return float64(t), true
-	case int8:
-		return float64(t), true
-	case int16:
-		return float64(t), true
-	case int32:
-		return float64(t), true
-	case int64:
-		return float64(t), true
-	case uint:
-		return float64(t), true
-	case uint8:
-		return float64(t), true
-	case uint16:
-		return float64(t), true
-	case uint32:
-		return float64(t), true
-	case uint64:
-		return float64(t), true
-	case float32:
-		return float64(t), true
-	case float64:
-		return t, true
+func rowByID(tx *sql.Tx, id string) (storedRow, bool, error) {
+	var row storedRow
+	err := tx.QueryRow(fmt.Sprintf("SELECT id, data FROM %s WHERE id = ?;", localStoreTable), id).Scan(&row.id, &row.data)
+	if errors.Is(err, sql.ErrNoRows) {
+		return storedRow{}, false, nil
+	}
+	if err != nil {
+		return storedRow{}, false, err
+	}
+	return row, true, nil
+}
+
+func patchJSON(raw string, patch func(target any) error) (string, error) {
+	var target any
+	if strings.TrimSpace(raw) == "" {
+		target = map[string]any{}
+	} else if err := json.Unmarshal([]byte(raw), &target); err != nil {
+		return "", err
+	}
+	if target == nil {
+		target = map[string]any{}
+	}
+
+	if err := patch(target); err != nil {
+		return "", err
+	}
+
+	bs, err := json.Marshal(target)
+	if err != nil {
+		return "", err
+	}
+	return string(bs), nil
+}
+
+func filterValues(filter datastore.Filter) ([]any, error) {
+	var values []any
+	if filter.ValuesJson == "" {
+		return values, nil
+	}
+	if err := json.Unmarshal([]byte(filter.ValuesJson), &values); err != nil {
+		return nil, err
+	}
+	return values, nil
+}
+
+func fieldExpr(field string, sortingType datastore.SortingType) string {
+	expr := fmt.Sprintf("json_extract(data, %s)", sqlStringLiteral(jsonPath(field)))
+	switch sortingType {
+	case datastore.SortingTypeNumeric:
+		return fmt.Sprintf("COALESCE(CAST(%s AS REAL), 0)", expr)
 	default:
-		return 0, false
+		return expr
 	}
 }
 
-func asTime(v any) (time.Time, bool) {
-	switch t := v.(type) {
-	case time.Time:
-		return t, true
-	case string:
-		parsed, err := datastore.ParseAnyDate(t)
-		if err != nil {
-			return time.Time{}, false
+func numericFieldExpr(field string) string {
+	return fmt.Sprintf("CAST(json_extract(data, %s) AS REAL)", sqlStringLiteral(jsonPath(field)))
+}
+
+func jsonPath(field string) string {
+	parts := strings.Split(field, ".")
+	for i := range parts {
+		if parts[i] == "" {
+			continue
 		}
-		return parsed, true
+		parts[i] = strings.ToLower(parts[i][:1]) + parts[i][1:]
+	}
+	return "$." + strings.Join(parts, ".")
+}
+
+func sqlStringLiteral(value string) string {
+	return "'" + strings.ReplaceAll(value, "'", "''") + "'"
+}
+
+func normalizeParam(value any) any {
+	if value == nil {
+		return nil
+	}
+
+	if t, ok := value.(time.Time); ok {
+		return t.Format(time.RFC3339Nano)
+	}
+
+	rv := reflect.ValueOf(value)
+	for rv.IsValid() && rv.Kind() == reflect.Ptr {
+		if rv.IsNil() {
+			return nil
+		}
+		rv = rv.Elem()
+		value = rv.Interface()
+	}
+	if !rv.IsValid() {
+		return nil
+	}
+
+	switch rv.Kind() {
+	case reflect.String:
+		return rv.String()
+	case reflect.Bool:
+		return rv.Bool()
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return rv.Int()
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return rv.Uint()
+	case reflect.Float32, reflect.Float64:
+		return rv.Float()
+	case reflect.Map, reflect.Slice, reflect.Array, reflect.Struct:
+		bs, err := json.Marshal(value)
+		if err != nil {
+			return fmt.Sprintf("%v", value)
+		}
+		return string(bs)
 	default:
-		return time.Time{}, false
+		return value
 	}
 }
 
-func (q *QueryBuilder) match(obj any) (bool, error) {
-	for _, filter := range q.filters {
-		matches, err := evaluate(filter, obj)
-		if err != nil {
-			return false, err
-		}
-		if !matches {
-			return false, nil
+func isNumeric(value any) bool {
+	switch value.(type) {
+	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64:
+		return true
+	default:
+		return false
+	}
+}
+
+func isConstraintError(err error) bool {
+	if err == nil {
+		return false
+	}
+	message := strings.ToLower(err.Error())
+	return strings.Contains(message, "constraint") || strings.Contains(message, "unique")
+}
+
+func jsonFieldName(field reflect.StructField) string {
+	tag := field.Tag.Get("json")
+	if tag == "-" {
+		return strings.ToLower(field.Name[:1]) + field.Name[1:]
+	}
+	if tag != "" {
+		name := strings.Split(tag, ",")[0]
+		if name != "" {
+			return name
 		}
 	}
-
-	return true, nil
+	return strings.ToLower(field.Name[:1]) + field.Name[1:]
 }
 
 func fixFieldName(s string) string {
 	parts := strings.Split(s, ".")
 	for i := range parts {
-		parts[i] = strings.ToLower(string(parts[i][0])) + parts[i][1:]
+		if parts[i] == "" {
+			continue
+		}
+		parts[i] = strings.ToLower(parts[i][:1]) + parts[i][1:]
 	}
 
 	return strings.Join(parts, ".")
@@ -1166,7 +1322,6 @@ func getField(obj any, field string) interface{} {
 
 	v := dipper.Get(obj, field)
 	if err := dipper.Error(v); err != nil {
-		// Field not found or other error → treat as missing
 		return nil
 	}
 	return v
@@ -1175,121 +1330,4 @@ func getField(obj any, field string) interface{} {
 func setField(obj any, field string, value interface{}) error {
 	field = fixFieldName(field)
 	return dipper.Set(obj, field, value)
-}
-
-func compare(vi, vj interface{}, desc bool) bool {
-	viVal := reflect.ValueOf(vi)
-	vjVal := reflect.ValueOf(vj)
-
-	// Treat nil or invalid as "missing"
-	viMissing := !viVal.IsValid() || (viVal.Kind() == reflect.Ptr && viVal.IsNil())
-	vjMissing := !vjVal.IsValid() || (vjVal.Kind() == reflect.Ptr && vjVal.IsNil())
-
-	if viMissing && vjMissing {
-		return false // equal
-	}
-
-	// Turn missing into zero of the other type
-	if viMissing && !vjMissing {
-		viVal = reflect.Zero(vjVal.Type())
-	}
-	if vjMissing && !viMissing {
-		vjVal = reflect.Zero(viVal.Type())
-	}
-
-	if viVal.Kind() == reflect.Ptr && !viVal.IsNil() {
-		viVal = viVal.Elem()
-	}
-	if vjVal.Kind() == reflect.Ptr && !vjVal.IsNil() {
-		vjVal = vjVal.Elem()
-	}
-
-	switch viVal.Kind() {
-	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		if desc {
-			return viVal.Int() > vjVal.Int()
-		}
-		return viVal.Int() < vjVal.Int()
-
-	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		if desc {
-			return viVal.Uint() > vjVal.Uint()
-		}
-		return viVal.Uint() < vjVal.Uint()
-
-	case reflect.Float32, reflect.Float64:
-		if desc {
-			return viVal.Float() > vjVal.Float()
-		}
-		return viVal.Float() < vjVal.Float()
-
-	case reflect.Bool:
-		if desc {
-			return viVal.Bool() && !vjVal.Bool() // true > false
-		}
-		return !viVal.Bool() && vjVal.Bool() // false < true
-
-	case reflect.String:
-		viStr := viVal.String()
-		vjStr := vjVal.String()
-
-		// Try to parse both strings as time
-		viTime, viErr := datastore.ParseAnyDate(viStr)
-		vjTime, vjErr := datastore.ParseAnyDate(vjStr)
-
-		if viErr == nil && vjErr == nil {
-			if desc {
-				return viTime.After(vjTime)
-			}
-			return viTime.Before(vjTime)
-		}
-
-		// Fallback to string comparison
-		if desc {
-			return viStr > vjStr
-		}
-		return viStr < vjStr
-
-	case reflect.Struct:
-		if viVal.Type() == reflect.TypeOf(time.Time{}) {
-			viTime := viVal.Interface().(time.Time)
-			vjTime := vjVal.Interface().(time.Time)
-			if desc {
-				return viTime.After(vjTime)
-			}
-			return viTime.Before(vjTime)
-		}
-	}
-
-	return false
-}
-func toBaseType(input interface{}) interface{} {
-	val := reflect.ValueOf(input)
-
-	if val.Kind() == reflect.Ptr {
-		val = val.Elem()
-	}
-
-	if val.Kind() == reflect.Invalid {
-		return input
-	}
-
-	// Recursively decompose until we reach the base type
-	for val.Kind() == reflect.Interface || val.Kind() == reflect.Ptr {
-		val = val.Elem()
-	}
-
-	if val.Kind() == reflect.String {
-		return val.String()
-	} else if val.Kind() == reflect.Int || val.Kind() == reflect.Int8 || val.Kind() == reflect.Int16 || val.Kind() == reflect.Int32 || val.Kind() == reflect.Int64 {
-		return float64(val.Int())
-	} else if val.Kind() == reflect.Uint || val.Kind() == reflect.Uint8 || val.Kind() == reflect.Uint16 || val.Kind() == reflect.Uint32 || val.Kind() == reflect.Uint64 {
-		return val.Uint()
-	} else if val.Kind() == reflect.Float32 || val.Kind() == reflect.Float64 {
-		return val.Float()
-	} else if val.Kind() == reflect.Bool {
-		return val.Bool()
-	}
-
-	return val.Interface()
 }

@@ -9,10 +9,7 @@ package registryservice
 
 import (
 	"net"
-	"os"
-	"os/signal"
 	"strings"
-	"syscall"
 	"time"
 
 	"github.com/1backend/1backend/sdk/go/datastore"
@@ -30,9 +27,6 @@ func (ns *RegistryService) instanceScan() {
 	ticker := time.NewTicker(instanceScanInterval)
 	defer ticker.Stop()
 
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
-
 	go func() {
 		ns.triggerChan <- struct{}{}
 	}()
@@ -48,9 +42,6 @@ func (ns *RegistryService) instanceScan() {
 			}
 
 			ns.instanceScanCycle()
-
-		case <-sigChan:
-			return
 		}
 	}
 

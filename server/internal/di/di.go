@@ -88,6 +88,19 @@ func BigBang(options *universe.Options) (*Universe, error) {
 	if options.GpuPlatform == "" {
 		options.GpuPlatform = os.Getenv("OB_GPU_PLATFORM")
 	}
+	if options.Port == 0 {
+		port := os.Getenv("OB_PORT")
+		if port != "" {
+			p, err := strconv.ParseInt(port, 10, 64)
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to parse OB_PORT")
+			}
+			options.Port = int(p)
+		}
+	}
+	if options.Port != 0 {
+		router.SetPort(options.Port)
+	}
 	if options.Url == "" {
 		options.Url = os.Getenv("OB_SELF_URL")
 	}
@@ -101,11 +114,18 @@ func BigBang(options *universe.Options) (*Universe, error) {
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to parse url")
 		}
-		p, err := strconv.ParseInt(uri.Port(), 10, 64)
-		if err != nil {
-			return nil, errors.Wrap(err, "failed to parse port")
+		if uri.Port() != "" {
+			p, err := strconv.ParseInt(uri.Port(), 10, 64)
+			if err != nil {
+				return nil, errors.Wrap(err, "failed to parse port")
+			}
+			if options.Port == 0 {
+				options.Port = int(p)
+				router.SetPort(options.Port)
+			}
+		} else if options.Port == 0 {
+			return nil, errors.New("failed to parse port")
 		}
-		router.SetPort(int(p))
 	}
 
 	if options.NodeId == "" {

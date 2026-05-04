@@ -12,13 +12,10 @@ import (
 	"fmt"
 	"log"
 	"log/slog"
-	"os"
 	"os/exec"
-	"os/signal"
 	"regexp"
 	"strconv"
 	"strings"
-	"syscall"
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
@@ -35,9 +32,6 @@ func (ns *RegistryService) nodeHeartbeat() {
 	ticker := time.NewTicker(15 * time.Second)
 	defer ticker.Stop()
 
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
-
 	go func() {
 		ns.triggerChan <- struct{}{}
 	}()
@@ -49,9 +43,6 @@ func (ns *RegistryService) nodeHeartbeat() {
 
 		case <-ns.triggerChan:
 			ns.heartbeatCycle()
-
-		case <-sigChan:
-			return
 		}
 	}
 }
