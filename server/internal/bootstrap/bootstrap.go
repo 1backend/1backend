@@ -10,23 +10,27 @@ import (
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
 
+	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 const (
 	EntityPermit = "user-svc:permit"
 	EntityEnroll = "user-svc:enroll"
+	EntityRoute  = "proxy-svc:route"
 	EntitySecret = "secret-svc:secret"
 )
 
 type Services struct {
 	SavePermits func(context.Context, []user.PermitInput) error
 	SaveEnrolls func(context.Context, []user.EnrollInput) error
+	SaveRoutes  func(context.Context, []proxy.RouteInput) error
 }
 
 type Summary struct {
 	AppliedPermits int
 	AppliedEnrolls int
+	AppliedRoutes  int
 
 	SkippedSecrets     int
 	SkippedUnsupported int
@@ -147,6 +151,18 @@ func applyFile(
 			return errors.Wrapf(err, "apply enrolls from %s", path)
 		}
 		summary.AppliedEnrolls += len(items)
+	case EntityRoute:
+		items, err := decodeEntities[proxy.RouteInput](doc)
+		if err != nil {
+			return errors.Wrapf(err, "decode routes from %s", path)
+		}
+		if services.SaveRoutes == nil {
+			return errors.Errorf("route bootstrap unsupported for %s", path)
+		}
+		if err := services.SaveRoutes(ctx, items); err != nil {
+			return errors.Wrapf(err, "apply routes from %s", path)
+		}
+		summary.AppliedRoutes += len(items)
 	default:
 		summary.SkippedUnsupported++
 	}
@@ -320,6 +336,8 @@ func inferEntityFromPath(path string) string {
 		return EntityEnroll
 	case "permits":
 		return EntityPermit
+	case "routes":
+		return EntityRoute
 	case "secrets":
 		return EntitySecret
 	default:
@@ -333,6 +351,8 @@ func inferEntityFromDir(path string) string {
 		return EntityEnroll
 	case "permits":
 		return EntityPermit
+	case "routes":
+		return EntityRoute
 	case "secrets":
 		return EntitySecret
 	default:

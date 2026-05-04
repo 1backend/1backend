@@ -8,6 +8,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
@@ -65,6 +66,7 @@ value: "but-has-no-meta"
 
 	var permits []user.PermitInput
 	var enrolls []user.EnrollInput
+	var routes []proxy.RouteInput
 
 	summary, err := Apply(context.Background(), dir, Services{
 		SavePermits: func(_ context.Context, items []user.PermitInput) error {
@@ -73,6 +75,10 @@ value: "but-has-no-meta"
 		},
 		SaveEnrolls: func(_ context.Context, items []user.EnrollInput) error {
 			enrolls = append(enrolls, items...)
+			return nil
+		},
+		SaveRoutes: func(_ context.Context, items []proxy.RouteInput) error {
+			routes = append(routes, items...)
 			return nil
 		},
 	})
@@ -90,10 +96,15 @@ value: "but-has-no-meta"
 	require.Equal(t, "owner@example.com", enrolls[0].ContactId)
 	require.Equal(t, "site-svc:admin", enrolls[0].Role)
 
+	require.Len(t, routes, 1)
+	require.Equal(t, "api.example.com", routes[0].Id)
+	require.Equal(t, "http://1backend:11337", routes[0].Target)
+
 	require.Equal(t, 4, summary.AppliedPermits)
 	require.Equal(t, 1, summary.AppliedEnrolls)
+	require.Equal(t, 1, summary.AppliedRoutes)
 	require.Equal(t, 1, summary.SkippedSecrets)
-	require.Equal(t, 3, summary.SkippedUnsupported)
+	require.Equal(t, 2, summary.SkippedUnsupported)
 }
 
 func requirePermit(t *testing.T, permits []user.PermitInput, id, appHost string) {
