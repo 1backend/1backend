@@ -16,6 +16,7 @@ import (
 	"log/slog"
 	"time"
 
+	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/logger"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
@@ -64,6 +65,10 @@ func (s *UserService) recordTokenRefreshActivity(
 	bucketStart := refreshedAt.Truncate(time.Hour)
 	bucketEnd := bucketStart.Add(time.Hour)
 	id := tokenRefreshActivityId(token.AppId, token.UserId, device, bucketStart)
+	internalId, err := sdk.InternalId(token.AppId, id)
+	if err != nil {
+		return errors.Wrap(err, "failed to create token refresh activity internal id")
+	}
 	appHost, err := s.tokenRefreshActivityAppHost(token)
 	if err != nil {
 		return err
@@ -92,6 +97,7 @@ func (s *UserService) recordTokenRefreshActivity(
 	}
 
 	activity := &user.TokenRefreshActivity{
+		InternalId:       internalId,
 		Id:               id,
 		CreatedAt:        refreshedAt,
 		UpdatedAt:        refreshedAt,
@@ -114,7 +120,11 @@ func (s *UserService) recordTokenRefreshActivity(
 		return errors.Wrap(err, "failed to create token refresh activity")
 	}
 
-	return s.recordTokenRefreshActivity(token, refreshedAt)
+	return s.tokenActivityStore.Query(datastore.Id(id)).UpdateFields(map[string]interface{}{
+		"lastRefreshedAt": refreshedAt,
+		"updatedAt":       refreshedAt,
+		"appHost":         appHost,
+	})
 }
 
 func (s *UserService) tokenRefreshActivityAppHost(token *user.Token) (string, error) {
