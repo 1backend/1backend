@@ -195,6 +195,11 @@ func (s *UserService) refreshToken(
 			return nil, errors.Wrap(err, "error creating token")
 		}
 
+		err = s.recordTokenRefreshActivity(token, now)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to record token refresh activity")
+		}
+
 		// Prune old tokens for the same device
 		tokens, err := s.tokenStore.Query(
 			datastore.Equals(datastore.Field("appId"), token.AppId),

@@ -41,19 +41,20 @@ type UserService struct {
 
 	token string
 
-	userStore         datastore.DataStore
-	credentialStore   datastore.DataStore
-	passwordStore     datastore.DataStore
-	tokenStore        datastore.DataStore
-	keyPairStore      datastore.DataStore
-	contactStore      datastore.DataStore
-	organizationStore datastore.DataStore
-	membershipStore   datastore.DataStore
-	activationStore   datastore.DataStore
-	permitStore       datastore.DataStore
-	enrollStore       datastore.DataStore
-	appStore          datastore.DataStore
-	otpStore          datastore.DataStore
+	userStore          datastore.DataStore
+	credentialStore    datastore.DataStore
+	passwordStore      datastore.DataStore
+	tokenStore         datastore.DataStore
+	tokenActivityStore datastore.DataStore
+	keyPairStore       datastore.DataStore
+	contactStore       datastore.DataStore
+	organizationStore  datastore.DataStore
+	membershipStore    datastore.DataStore
+	activationStore    datastore.DataStore
+	permitStore        datastore.DataStore
+	enrollStore        datastore.DataStore
+	appStore           datastore.DataStore
+	otpStore           datastore.DataStore
 
 	privateKey   *rsa.PrivateKey
 	publicKeyPem string
@@ -79,6 +80,14 @@ func NewUserService(
 	authTokensStore, err := options.DataStoreFactory.Create(
 		"userSvcTokens",
 		&usertypes.Token{},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	tokenActivityStore, err := options.DataStoreFactory.Create(
+		"userSvcTokenRefreshActivities",
+		&usertypes.TokenRefreshActivity{},
 	)
 	if err != nil {
 		return nil, err
@@ -185,6 +194,7 @@ func NewUserService(
 		options:               options,
 		userStore:             usersStore,
 		tokenStore:            authTokensStore,
+		tokenActivityStore:    tokenActivityStore,
 		credentialStore:       credentialsStore,
 		passwordStore:         passwordsStore,
 		keyPairStore:          keyPairsStore,
@@ -212,6 +222,8 @@ func (us *UserService) Start() error {
 	if err != nil {
 		return err
 	}
+
+	go us.publishTokenRefreshActivitiesLoop()
 
 	return nil
 }
